@@ -108,13 +108,13 @@ const REMINDERS = [
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
-  @keyframes twinkle      { 0%,100%{opacity:0.15} 50%{opacity:0.65} }
+  @keyframes twinkle      { 0%,100%{opacity:0.06} 50%{opacity:0.48} }
   @keyframes fadeUp       { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn       { from{opacity:0} to{opacity:1} }
-  @keyframes glow         { 0%,100%{box-shadow:0 0 28px rgba(139,90,160,0.28)} 50%{box-shadow:0 0 56px rgba(139,90,160,0.56)} }
-  @keyframes pulse        { 0%,100%{opacity:0.5} 50%{opacity:1} }
-  @keyframes sunrise      { from{opacity:0;transform:scale(0.85) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
-  @keyframes ringPulse    { 0%,100%{opacity:0.12;transform:scale(1)} 50%{opacity:0.3;transform:scale(1.05)} }
+  @keyframes glow         { 0%,100%{box-shadow:0 0 22px rgba(139,90,160,0.22)} 50%{box-shadow:0 0 46px rgba(139,90,160,0.46)} }
+  @keyframes pulse        { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  @keyframes sunrise      { from{opacity:0;transform:scale(0.88) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes ringPulse    { 0%,100%{opacity:0.08;transform:scale(1)} 50%{opacity:0.22;transform:scale(1.04)} }
   @keyframes heartbeat    { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes floatUp      { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes handFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
@@ -332,9 +332,9 @@ function ReminderScreen({ onBack }) {
                 {isDone ? "✓" : ""}
               </button>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
-                  <span style={{ fontSize:18 }}>{rem.icon}</span>
-                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5" }}>{rem.title}</span>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3, minWidth:0 }}>
+                  <span style={{ fontSize:18, flexShrink:0 }}>{rem.icon}</span>
+                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
                 </div>
                 <div style={{ fontSize:11, color:"#5a6a7a", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
@@ -440,7 +440,7 @@ function TerapiScreen({ onBack }) {
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55`, display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{c.emoji}</div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:11, color:"#5a6a7a" }}>{c.element} · {c.desc}</div>
+              <div style={{ fontSize:11, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
             {i<7 && <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>TEMEL</div>}
           </div>
@@ -461,7 +461,7 @@ function TerapiScreen({ onBack }) {
   );
 
   if (tPhase==="intro"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,padding:"36px 24px",position:"relative",zIndex:1 }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ marginBottom:32 }}>
         <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>REİKİ · ÇAKRA TERAPİSİ</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
@@ -480,7 +480,7 @@ function TerapiScreen({ onBack }) {
   );
 
   if (tPhase==="active"&&selected) return (
-    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px" }}>
+    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ fontSize:9,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
@@ -524,7 +524,7 @@ function TerapiScreen({ onBack }) {
           ))}
         </svg>
       </div>
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.8,maxWidth:240 }}>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
         {progress<0.25 && "Elini hissediyorsun..."}
         {progress>=0.25&&progress<0.5  && `${selected.name} ışığı yayılıyor...`}
         {progress>=0.5 &&progress<0.75 && "Enerji akıyor, bırak gelsin..."}
@@ -535,7 +535,7 @@ function TerapiScreen({ onBack }) {
   );
 
   if (tPhase==="done"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,padding:"36px 24px",position:"relative",zIndex:1 }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       {[...Array(10)].map((_,i) => (
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:11,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
@@ -605,14 +605,22 @@ export default function NiyetApp() {
   ];
 
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#05090f",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflow:"hidden",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflow:"hidden",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
-      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0, background:`radial-gradient(650px at ${orb.x}% ${orb.y}%,rgba(${ambientColor},0.07) 0%,transparent 70%)`,transition:"background 0.5s ease" }} />
+      {/* Sabit derin uzay arka planı */}
+      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
 
-      {[...Array(38)].map((_,i) => (
-        <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:i%6===0?2:1,height:i%6===0?2:1,borderRadius:"50%",background:"rgba(255,255,255,0.35)",animation:`twinkle ${2+(i%3)}s ease-in-out infinite`,animationDelay:`${(i*0.3)%3}s`,pointerEvents:"none",zIndex:0 }} />
-      ))}
+      {/* Fare takipli ambient */}
+      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0, background:`radial-gradient(700px at ${orb.x}% ${orb.y}%,rgba(${ambientColor},0.1) 0%,transparent 68%)`,transition:"background 1.2s ease" }} />
+
+      {[...Array(46)].map((_,i) => {
+        const sz = i%11===0?2.5:i%5===0?1.8:i%3===0?1.2:0.9;
+        const op = i%11===0?0.42:i%5===0?0.32:0.22;
+        return (
+          <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s`,pointerEvents:"none",zIndex:0 }} />
+        );
+      })}
 
       {/* GİRİŞ */}
       {screen==="giris" && (
@@ -689,12 +697,13 @@ export default function NiyetApp() {
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>REİKİ · GÜNÜN ÇAKRASI</div>
-            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"glow 3s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:5 }}>
+            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"glow 3s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:6 }}>
+              <div style={{ fontSize:40,lineHeight:1 }}>{chakra.emoji}</div>
               <div style={{ fontSize:9,letterSpacing:3,color:"rgba(255,255,255,0.62)" }}>{chakra.element}</div>
             </div>
-            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:12 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
-            <div style={{ fontSize:21,fontWeight:300,lineHeight:1.65,marginBottom:7 }}>{chakra.desc}</div>
-            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28 }}>Bugün bu merkezde kal.</div>
+            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
+            <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
+            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
             <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="niyet-btn" onClick={()=>setScreen("nefes")}>← geri</button>
@@ -785,9 +794,9 @@ export default function NiyetApp() {
 
       {/* BOTTOM NAV */}
       {!["giris","terapi","gun"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(5,9,15,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:100,padding:"8px 14px" }}>
+        <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?18:14,opacity:screen===n.id?1:0.28,transition:"all 0.28s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
+            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
               <span>{n.icon}</span>
               <span style={{ fontSize:6,letterSpacing:1.5,color:screen===n.id?"#a0b0c0":"transparent",transition:"color 0.3s" }}>{n.label.toUpperCase()}</span>
             </button>
