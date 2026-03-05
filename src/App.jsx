@@ -617,11 +617,72 @@ export default function NiyetApp() {
   const [chakra]                          = useState(CHAKRAS_7[Math.floor(Math.random()*7)]);
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
+  const [aiRapor,       setAiRapor]       = useState("");
+  const [aiLoading,     setAiLoading]     = useState(false);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const breathRef = useRef(null);
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
+
+  useEffect(() => {
+    if (screen !== "harita") return;
+    const bugun = {
+      tarih: new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}),
+      _dateKey: new Date().toDateString(),
+      niyet, kelimeler: selectedWords, chakra: chakra.name,
+      nefes: breathCount, ogrendim: aksamNote, sukur
+    };
+    const log = JSON.parse(localStorage.getItem("niyet_log")||"[]");
+    const filtered = log.filter(g=>g._dateKey!==bugun._dateKey);
+    filtered.unshift(bugun);
+    localStorage.setItem("niyet_log", JSON.stringify(filtered.slice(0,7)));
+    setAiRapor("");
+  },[screen]);
+
+  const generateRapor = async () => {
+    const apiKey = localStorage.getItem("niyet_api_key");
+    if (!apiKey) { setAiRapor("__no_key__"); return; }
+    const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
+    if (!gunler.length) return;
+    setAiLoading(true); setAiRapor("");
+    const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
+- Niyet: ${g.niyet||"—"}
+- Kelimeler: ${g.kelimeler?.join(", ")||"—"}
+- Çakra: ${g.chakra||"—"}
+- Nefes: ${g.nefes||0}
+- Bugün ne öğrendim: ${g.ogrendim||"—"}
+- Şükür: ${g.sukur||"—"}`).join("\n\n");
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json",
+          "x-api-key": apiKey,
+          "anthropic-version":"2023-06-01",
+          "anthropic-dangerous-direct-browser-access":"true"
+        },
+        body: JSON.stringify({
+          model:"claude-opus-4-6", max_tokens:1200,
+          system:`Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+
+Rapor şu başlıkları içermeli:
+**Haftanın Enerjisi** — Genel ruh hali ve enerji (2-3 cümle)
+**Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri
+**İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
+**Şükran Kalbi** — Şükür yazılarından bir sentez
+**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri
+
+Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 350 kelime.`,
+          messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
+        })
+      });
+      const data = await res.json();
+      const text = data.content?.[0]?.text;
+      setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
+    } catch(e) { setAiRapor("API'ye ulaşılamadı: "+e.message); }
+    finally { setAiLoading(false); }
+  };
 
   useEffect(() => {
     setBreathStarted(false);
@@ -848,6 +909,44 @@ export default function NiyetApp() {
               ))}
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
+          </div>
+          <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
+            {aiRapor==="__no_key__" ? (
+              <div>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
+                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
+                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
+                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                    onClick={()=>{
+                      const k=document.getElementById("apiKeyInput").value.trim();
+                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
+                    }}>Kaydet & Oluştur</button>
+                </div>
+              </div>
+            ) : !aiRapor && !aiLoading ? (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
+                <button className="niyet-btn-primary"
+                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                  onClick={generateRapor}>✦ Rapor Oluştur</button>
+              </div>
+            ) : aiLoading ? (
+              <div style={{ textAlign:"center",padding:"12px 0" }}>
+                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
+                <button onClick={()=>setAiRapor("")}
+                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
+                  YENİLE
+                </button>
+              </div>
+            )}
           </div>
           <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
