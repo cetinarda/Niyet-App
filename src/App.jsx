@@ -428,7 +428,8 @@ function TerapiScreen({ onBack }) {
     return () => clearInterval(particleRef.current);
   },[tPhase]);
 
-  const resetTerapi = () => { setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); clearInterval(timerRef.current); clearInterval(particleRef.current); };
+  const [showBackConfirm, setShowBackConfirm] = useState(false);
+  const resetTerapi = () => { setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -490,6 +491,26 @@ function TerapiScreen({ onBack }) {
 
   if (tPhase==="active"&&selected) return (
     <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"100vh" }}>
+      {showBackConfirm && (
+        <div style={{ position:"fixed",inset:0,zIndex:50,background:"rgba(4,8,16,0.88)",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px" }}>
+          <div style={{ textAlign:"center",maxWidth:280 }}>
+            <div style={{ fontSize:32,marginBottom:18 }}>🌿</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,letterSpacing:1,color:"#e8e0d5",marginBottom:10,lineHeight:1.5 }}>
+              Emin misin?
+            </div>
+            <div style={{ fontSize:13,color:"#7a8a9a",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
+              Bu an kendine hediye.<br />Biraz daha kal.
+            </div>
+            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="niyet-btn" onClick={resetTerapi}>çık</button>
+              <button className="niyet-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={()=>setShowBackConfirm(false)}>devam et →</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
+        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:18,padding:0,letterSpacing:1 }}>←</button>
+      </div>
       <div style={{ fontSize:9,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
