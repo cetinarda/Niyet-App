@@ -592,6 +592,7 @@ export default function NiyetApp() {
   const [selectedWords, setSelectedWords] = useState([]);
   const [breathPhase,   setBreathPhase]   = useState("inhale");
   const [breathCount,   setBreathCount]   = useState(0);
+  const [breathStarted, setBreathStarted] = useState(false);
   const [chakra]                          = useState(CHAKRAS_7[Math.floor(Math.random()*7)]);
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
@@ -602,7 +603,13 @@ export default function NiyetApp() {
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
   useEffect(() => {
-    if (screen!=="nefes") return;
+    setBreathStarted(false);
+    setBreathPhase("inhale");
+    clearInterval(breathRef.current);
+  },[screen]);
+
+  useEffect(() => {
+    if (screen!=="nefes" || !breathStarted) return;
     const cycle = () => {
       setBreathPhase("inhale");
       setTimeout(()=>setBreathPhase("hold"),4000);
@@ -612,13 +619,13 @@ export default function NiyetApp() {
     cycle();
     breathRef.current=setInterval(cycle,10000);
     return()=>clearInterval(breathRef.current);
-  },[screen]);
+  },[screen, breathStarted]);
 
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
-  const breathLabel = {inhale:"içine al",hold:"tut",exhale:"bırak"}[breathPhase];
-  const breathScale = breathPhase==="exhale" ? 1 : 1.6;
+  const breathLabel = breathStarted ? {inhale:"içine al",hold:"tut",exhale:"bırak"}[breathPhase] : "";
+  const breathScale = breathStarted ? (breathPhase==="exhale" ? 1 : 1.6) : 1;
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
   const ambientColor = {
@@ -712,11 +719,18 @@ export default function NiyetApp() {
             </div>
           </div>
           <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>Buradasın.</div>
-          <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathCount} nefes</div>
-          <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-            <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
-          </div>
+          <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathStarted ? `${breathCount} nefes` : ""}</div>
+          {!breathStarted ? (
+            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+              <button className="niyet-btn-primary" onClick={()=>setBreathStarted(true)}>BAŞLA</button>
+            </div>
+          ) : (
+            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+              <button className="niyet-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
+            </div>
+          )}
         </div>
       )}
 
