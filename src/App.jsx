@@ -515,23 +515,46 @@ function TerapiScreen({ onBack }) {
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:50,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
       <div style={{ fontSize:9,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{Math.round(progress*100)}% YÜKLENDI</div>
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
-        <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
-          <circle cx="74" cy="20" r="13" stroke={`${selected.pastel}88`} strokeWidth="1.2" fill="none" />
-          <line x1="74" y1="33" x2="74" y2="41" stroke={`${selected.pastel}66`} strokeWidth="1.2" />
-          <path d="M51 41 Q74 39 97 41 L95 87 Q74 91 53 87Z" stroke={`${selected.pastel}55`} strokeWidth="1.2" fill={`${selected.color}0a`} />
-          <path d="M53 49 Q39 59 35 77 Q33 87 37 93" stroke={`${selected.pastel}44`} strokeWidth="1.2" fill="none" strokeLinecap="round" />
-          <path d="M95 49 Q111 45 117 41 Q121 37 115 33" stroke={`${selected.pastel}88`} strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <path d="M115 33 Q121 27 117 23 Q113 19 109 23" stroke={`${selected.pastel}88`} strokeWidth="1.2" fill="none" strokeLinecap="round" />
-          <path d="M109 23 Q105 17 109 15 M113 21 Q109 15 113 13 M117 23 Q115 15 119 14" stroke={`${selected.pastel}66`} strokeWidth="1" strokeLinecap="round" fill="none" />
-          <path d="M65 87 Q63 105 61 121" stroke={`${selected.pastel}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
-          <path d="M83 87 Q85 105 87 121" stroke={`${selected.pastel}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
-          <circle cx="74" cy="59" r={4+progress*7} fill={`${selected.color}${hex(0.07+progress*0.18)}`} stroke={`${selected.pastel}${hex(0.28+progress*0.5)}`} strokeWidth="0.8" />
-          {[0,45,90,135,180,225,270,315].map((a,i) => (
-            <line key={i} x1="74" y1="59"
-              x2={74+Math.cos(a*Math.PI/180)*(9+progress*14)} y2={59+Math.sin(a*Math.PI/180)*(9+progress*14)}
-              stroke={`${selected.pastel}${hex((0.1+progress*0.28)*(i%2?0.5:1))}`} strokeWidth="0.8" strokeLinecap="round" />
-          ))}
-        </svg>
+        {(()=>{
+          const HP = {
+            "Kök":             {hy:83,lx:57,rx:91}, "Sakral":          {hy:77,lx:59,rx:89},
+            "Güneş Pleksusu":  {hy:68,lx:60,rx:88}, "Kalp":            {hy:57,lx:61,rx:87},
+            "Boğaz":           {hy:37,lx:68,rx:80}, "Üçüncü Göz":      {hy:17,lx:66,rx:82},
+            "Taç":             {hy:10,lx:67,rx:81}, "Yeryüzü Yıldızı": {hy:116,lx:63,rx:85},
+            "Ruh":             {hy:57,lx:61,rx:87}, "Kabartma":        {hy:63,lx:60,rx:88},
+            "Diyafram":        {hy:73,lx:59,rx:89}, "Güneş":           {hy:57,lx:61,rx:87},
+            "Paylaşım":        {hy:57,lx:61,rx:87}, "Thymus":          {hy:49,lx:62,rx:86},
+            "Ses Üstü":        {hy:42,lx:66,rx:82}, "Orion":           {hy:19,lx:65,rx:83},
+            "Alta Major":      {hy:22,lx:65,rx:83}, "Stellar Gateway": {hy:6, lx:67,rx:81},
+            "Soul Star":       {hy:6, lx:67,rx:81}, "Causal":          {hy:19,lx:65,rx:83},
+            "Lunar":           {hy:77,lx:59,rx:89}, "Zeta":            {hy:63,lx:60,rx:88},
+          };
+          const {hy=57,lx=61,rx=87} = HP[selected.name]||{};
+          const up = hy<49;
+          const my = (49+hy)/2;
+          const lArm = up ? `M53 49 Q55 ${my} ${lx} ${hy}` : `M53 49 Q37 ${my} ${lx} ${hy}`;
+          const rArm = up ? `M95 49 Q93 ${my} ${rx} ${hy}` : `M95 49 Q111 ${my} ${rx} ${hy}`;
+          const cl=selected.pastel, cg=selected.color;
+          return (
+            <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
+              <circle cx="74" cy="20" r="13" stroke={`${cl}88`} strokeWidth="1.2" fill="none" />
+              <line x1="74" y1="33" x2="74" y2="41" stroke={`${cl}66`} strokeWidth="1.2" />
+              <path d="M51 41 Q74 39 97 41 L95 87 Q74 91 53 87Z" stroke={`${cl}55`} strokeWidth="1.2" fill={`${cg}0a`} />
+              <path d="M65 87 Q63 105 61 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+              <path d="M83 87 Q85 105 87 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+              <path d={lArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+              <path d={rArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+              <circle cx={lx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+progress*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
+              <circle cx={rx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+progress*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
+              <circle cx="74" cy={hy} r={4+progress*8} fill={`${cg}${hex(0.06+progress*0.18)}`} stroke={`${cl}${hex(0.28+progress*0.5)}`} strokeWidth="0.8" />
+              {[0,45,90,135,180,225,270,315].map((a,i)=>(
+                <line key={i} x1="74" y1={hy}
+                  x2={74+Math.cos(a*Math.PI/180)*(9+progress*14)} y2={hy+Math.sin(a*Math.PI/180)*(9+progress*14)}
+                  stroke={`${cl}${hex((0.1+progress*0.28)*(i%2?0.5:1))}`} strokeWidth="0.8" strokeLinecap="round" />
+              ))}
+            </svg>
+          );
+        })()}
       </div>
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
         {progress<0.25 && "Elini hissediyorsun..."}
@@ -672,10 +695,7 @@ export default function NiyetApp() {
             </div>
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:11,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
-          <div style={{ display:"flex",gap:10 }}>
-            <button className="niyet-btn" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>nefes al</button>
-            <button className="niyet-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("chakra")}>İLERLE</button>
-          </div>
+          <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
         </div>
       )}
 
