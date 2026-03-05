@@ -116,6 +116,7 @@ const GLOBAL_CSS = `
   @keyframes sunrise      { from{opacity:0;transform:scale(0.88) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
   @keyframes ringPulse    { 0%,100%{opacity:0.08;transform:scale(1)} 50%{opacity:0.22;transform:scale(1.04)} }
   @keyframes heartbeat    { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
+  @keyframes slowPulse    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.09)} }
   @keyframes floatUp      { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes handFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
   @keyframes doneGlow     { 0%,100%{box-shadow:0 0 40px #4ade8088,0 0 80px #4ade8033} 50%{box-shadow:0 0 70px #4ade80bb,0 0 140px #4ade8055} }
@@ -466,7 +467,7 @@ function TerapiScreen({ onBack }) {
         <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>REİKİ · ÇAKRA TERAPİSİ</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
       </div>
-      <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"heartbeat 1.4s ease-in-out infinite", display:"flex",alignItems:"center",justifyContent:"center",fontSize:40 }}>{selected.emoji}</div>
+      <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} Çakrası</div>
       <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:24 }}>{selected.element.toUpperCase()}</div>
       <div style={{ fontSize:13,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
@@ -497,8 +498,8 @@ function TerapiScreen({ onBack }) {
           background:`radial-gradient(circle at 40% 38%,${selected.color}${hex(0.18+progress*0.22)},${selected.color}44,rgba(4,8,16,0.5))`,
           boxShadow:`0 0 ${28+progress*52}px ${selected.color}${hex(0.28+progress*0.3)},0 0 ${55+progress*85}px ${selected.color}${hex(0.1+progress*0.15)}`,
           border:`1px solid ${selected.pastel}${hex(0.2+progress*0.32)}`,
-          animation:heartAnim, display:"flex",alignItems:"center",justifyContent:"center",fontSize:46,
-        }}>{selected.emoji}</div>
+          animation:`slowPulse ${3.2-progress*0.8}s ease-in-out infinite`,
+        }} />
         {particles.map(p => (
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
@@ -539,7 +540,7 @@ function TerapiScreen({ onBack }) {
       {[...Array(10)].map((_,i) => (
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:11,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
-      <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"doneGlow 2s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",fontSize:50 }}>{selected.emoji}</div>
+      <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"slowPulse 3.5s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>Tamamlandı.</div>
       <div style={{ fontSize:13,color:"#5a6a7a",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
         {selected.name} çakran aktif.<br />Bu enerjiyi gün boyu taşı.
@@ -626,7 +627,7 @@ export default function NiyetApp() {
       {screen==="giris" && (
         <div style={{ maxWidth:340,textAlign:"center",padding:"48px 32px",position:"relative",zIndex:1 }}>
           <div className="fade-up">
-            <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",animation:"glow 3.5s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28 }}>🌿</div>
+            <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",boxShadow:"0 0 28px rgba(139,90,160,0.38),0 0 60px rgba(139,90,160,0.14)",animation:"slowPulse 4s ease-in-out infinite" }} />
           </div>
           <div className="fade-up" style={{ animationDelay:"0.2s",opacity:0 }}>
             <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Niyet</div>
@@ -647,7 +648,7 @@ export default function NiyetApp() {
       {screen==="sabah" && (
         <div style={{ maxWidth:390,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:32,animation:"sunrise 1s ease forwards" }}>
-            <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto",background:"radial-gradient(circle,rgba(255,155,55,0.52) 0%,rgba(255,95,35,0.16) 55%,transparent 70%)",animation:"glow 4s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",fontSize:42 }}>🌅</div>
+            <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto",background:"radial-gradient(circle,rgba(255,155,55,0.52) 0%,rgba(255,95,35,0.16) 55%,transparent 70%)",boxShadow:"0 0 38px rgba(255,130,45,0.42),0 0 80px rgba(255,95,35,0.18)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
             <div style={{ marginTop:12,fontSize:9,letterSpacing:5,color:"#5a6a7a" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
           <div style={{ marginBottom:26 }}>
@@ -697,10 +698,7 @@ export default function NiyetApp() {
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>REİKİ · GÜNÜN ÇAKRASI</div>
-            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"glow 3s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:6 }}>
-              <div style={{ fontSize:40,lineHeight:1 }}>{chakra.emoji}</div>
-              <div style={{ fontSize:9,letterSpacing:3,color:"rgba(255,255,255,0.62)" }}>{chakra.element}</div>
-            </div>
+            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"slowPulse 4s ease-in-out infinite" }} />
             <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
             <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
             <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
