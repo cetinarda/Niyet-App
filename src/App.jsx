@@ -216,7 +216,7 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
-function ReminderScreen({ onBack }) {
+function ReminderScreen({ onBack, onNext }) {
   const [done,    setDone]    = useState({});
   const [sent,    setSent]    = useState({});
   const [timing,  setTiming]  = useState(null);
@@ -381,6 +381,14 @@ function ReminderScreen({ onBack }) {
           </div>
         </div>
       )}
+
+      <button
+        className="niyet-btn-primary"
+        onClick={onNext}
+        style={{ width:"100%", marginTop:22, fontSize:11, letterSpacing:2 }}
+      >
+        akşam kapanışına geç →
+      </button>
     </div>
   );
 }
@@ -712,7 +720,7 @@ export default function NiyetApp() {
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>setScreen("aksam")} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
