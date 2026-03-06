@@ -447,7 +447,7 @@ function TerapiScreen({ onBack }) {
           <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
             style={{ marginBottom:8, animationDelay:`${i*0.04}s`, opacity:0 }}
             onClick={() => setSelected(c)}>
-            <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55`, display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{c.emoji}</div>
+            <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
               <div style={{ fontSize:11, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
