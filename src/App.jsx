@@ -718,6 +718,17 @@ export default function NiyetApp() {
     if (!apiKey) { setAiRapor("__no_key__"); return; }
     const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
     if (!gunler.length) return;
+
+    // IP başına tek ücretsiz kullanım kontrolü
+    try {
+      const ipRes = await fetch("https://api.ipify.org?format=json");
+      const { ip } = await ipRes.json();
+      const kullanim = JSON.parse(localStorage.getItem("niyet_rapor_kullanim")||"{}");
+      if ((kullanim[ip]||0) >= 1) { setAiRapor("__ucretli__"); return; }
+      kullanim[ip] = (kullanim[ip]||0) + 1;
+      localStorage.setItem("niyet_rapor_kullanim", JSON.stringify(kullanim));
+    } catch { /* IP alınamazsa engelleme */ }
+
     setAiLoading(true); setAiRapor("");
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
 - Niyet: ${g.niyet||"—"}
@@ -1080,7 +1091,28 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
-            {aiRapor==="__no_key__" ? (
+            {aiRapor==="__ucretli__" ? (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:22,marginBottom:10 }}>✨</div>
+                <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>Ücretsiz raporunu kullandın</div>
+                <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
+                  Her hafta derin bir içsel rapor almak için<br/>
+                  <strong style={{ color:"#9a7ab8" }}>Niyet Premium</strong>'a geç.
+                </div>
+                <div style={{ background:"rgba(139,90,160,0.08)",border:"1px solid rgba(139,90,160,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:14 }}>
+                  <div style={{ fontSize:10,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>PREMIUM</div>
+                  <div style={{ fontSize:12,color:"#c0b0d0",lineHeight:1.7 }}>
+                    ✦ Haftalık sınırsız AI rapor<br/>
+                    ✦ Derin astroloji & numeroloji analizi<br/>
+                    ✦ Kişisel büyüme takibi
+                  </div>
+                </div>
+                <a href="mailto:destek@niyet.app?subject=Premium%20%C3%9Cyelik"
+                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:11,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
+                  Premium'a Geç →
+                </a>
+              </div>
+            ) : aiRapor==="__no_key__" ? (
               <div>
                 <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
                 <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
