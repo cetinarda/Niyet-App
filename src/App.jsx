@@ -160,6 +160,25 @@ const GLOBAL_CSS = `
   @keyframes heartbeat    { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes slowPulse    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.09)} }
   @keyframes floatUp      { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
+  @keyframes energyFill   { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes pillGlow     { 0%,100%{box-shadow:0 0 8px rgba(139,90,160,0.4),0 0 22px rgba(100,60,200,0.18),inset 0 0 8px rgba(139,90,160,0.12)} 50%{box-shadow:0 0 18px rgba(180,100,255,0.7),0 0 44px rgba(100,60,200,0.38),inset 0 0 14px rgba(180,100,255,0.22)} }
+  @keyframes pillShimmer  { 0%{transform:translateX(-100%) skewX(-20deg)} 100%{transform:translateX(250%) skewX(-20deg)} }
+  .terapi-pill {
+    position:relative; overflow:hidden;
+    background: linear-gradient(270deg,#8b5aa0cc,#4a3ab0aa,#9b3eb0cc,#8b5aa0cc);
+    background-size:300% 100%;
+    animation: energyFill 2.8s ease-in-out infinite, pillGlow 2.8s ease-in-out infinite;
+    border:1px solid rgba(200,140,255,0.35) !important;
+    color:#e8d8ff !important;
+    letter-spacing:2px;
+    font-size:11px !important;
+  }
+  .terapi-pill::after {
+    content:"";
+    position:absolute; top:0; left:0; width:40%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+    animation:pillShimmer 2.2s ease-in-out infinite;
+  }
   @keyframes handFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
   @keyframes doneGlow     { 0%,100%{box-shadow:0 0 40px #4ade8088,0 0 80px #4ade8033} 50%{box-shadow:0 0 70px #4ade80bb,0 0 140px #4ade8055} }
   @keyframes sparkle      { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.6) rotate(180deg);opacity:0} }
@@ -889,7 +908,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
             <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
             <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
             <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
-            <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
+            <button className="niyet-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="niyet-btn" onClick={()=>setScreen("nefes")}>← geri</button>
               <button className="niyet-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
