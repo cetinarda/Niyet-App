@@ -866,6 +866,114 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
             </div>
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:11,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
+          {/* DOĞUM PROFİLİ KARTI */}
+          <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14,marginTop:10 }}>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>DOĞUM PROFİLİ</div>
+            {astro && !showBirthForm ? (
+              <div>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
+                  {[
+                    {label:"Burç",value:astro.burc},
+                    {label:"Yaşam Yolu",value:astro.yasam},
+                    {label:"Kişisel Yıl",value:astro.kisiselYil},
+                  ].map((s,i)=>(
+                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
+                      <div style={{ fontSize:7,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
+                      <div style={{ fontSize:15,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Biyoritm çubukları */}
+                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>BİYORİTM — BU HAFTA</div>
+                {[
+                  {label:"Fiziksel",val:astro.bio.fiziksel,color:"#e8a09a"},
+                  {label:"Duygusal",val:astro.bio.duygusal,color:"#85c1e9"},
+                  {label:"Zihinsel",val:astro.bio.zihinsel,color:"#aed581"},
+                ].map(({label,val,color})=>{
+                  const {pct,positive}=bioritmBar(val);
+                  return (
+                    <div key={label} style={{ marginBottom:7 }}>
+                      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
+                        <span style={{ fontSize:9,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
+                        <span style={{ fontSize:9,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
+                      </div>
+                      <div style={{ background:"rgba(255,255,255,0.04)",borderRadius:4,height:4,overflow:"hidden" }}>
+                        <div style={{ height:"100%",width:`${pct}%`,background:positive?`${color}99`:"rgba(120,100,140,0.4)",borderRadius:4,transition:"width 0.8s ease",marginLeft:positive?"50%":`calc(50% - ${pct}%)` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+                <button onClick={()=>setShowBirthForm(true)}
+                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
+                  tarihi değiştir
+                </button>
+              </div>
+            ) : showBirthForm || !astro ? (
+              <div>
+                <div style={{ fontSize:11,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
+                  Doğum tarihinle kişiselleştirilmiş<br/>enerji yorumu alırsın.
+                </div>
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM TARİHİ</div>
+                  <input type="date" className="niyet-input"
+                    style={{ fontSize:12,letterSpacing:0.5 }}
+                    value={birthInput}
+                    onChange={e=>setBirthInput(e.target.value)} />
+                </div>
+                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                  {astro && <button className="niyet-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
+                    onClick={()=>{
+                      if(!birthInput) return;
+                      localStorage.setItem("niyet_birth_date", birthInput);
+                      setBirthDate(birthInput);
+                      setShowBirthForm(false);
+                    }}>Kaydet</button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
+          <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:20 }}>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
+            {aiRapor==="__no_key__" ? (
+              <div>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
+                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
+                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
+                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                    onClick={()=>{
+                      const k=document.getElementById("apiKeyInput").value.trim();
+                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
+                    }}>Kaydet & Oluştur</button>
+                </div>
+              </div>
+            ) : !aiRapor && !aiLoading ? (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
+                <button className="niyet-btn-primary"
+                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                  onClick={generateRapor}>✦ Rapor Oluştur</button>
+              </div>
+            ) : aiLoading ? (
+              <div style={{ textAlign:"center",padding:"12px 0" }}>
+                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
+                <button onClick={()=>setAiRapor("")}
+                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
+                  YENİLE
+                </button>
+              </div>
+            )}
+          </div>
+
           <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
         </div>
       )}
@@ -991,113 +1099,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
               ))}
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
-          </div>
-          {/* DOĞUM PROFİLİ KARTI */}
-          <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>DOĞUM PROFİLİ</div>
-            {astro && !showBirthForm ? (
-              <div>
-                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
-                  {[
-                    {label:"Burç",value:astro.burc},
-                    {label:"Yaşam Yolu",value:astro.yasam},
-                    {label:"Kişisel Yıl",value:astro.kisiselYil},
-                  ].map((s,i)=>(
-                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
-                      <div style={{ fontSize:7,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
-                      <div style={{ fontSize:15,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
-                    </div>
-                  ))}
-                </div>
-                {/* Biyoritm çubukları */}
-                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>BİYORİTM — BU HAFTA</div>
-                {[
-                  {label:"Fiziksel",val:astro.bio.fiziksel,color:"#e8a09a"},
-                  {label:"Duygusal",val:astro.bio.duygusal,color:"#85c1e9"},
-                  {label:"Zihinsel",val:astro.bio.zihinsel,color:"#aed581"},
-                ].map(({label,val,color})=>{
-                  const {pct,positive}=bioritmBar(val);
-                  return (
-                    <div key={label} style={{ marginBottom:7 }}>
-                      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
-                        <span style={{ fontSize:9,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
-                        <span style={{ fontSize:9,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
-                      </div>
-                      <div style={{ background:"rgba(255,255,255,0.04)",borderRadius:4,height:4,overflow:"hidden" }}>
-                        <div style={{ height:"100%",width:`${pct}%`,background:positive?`${color}99`:"rgba(120,100,140,0.4)",borderRadius:4,transition:"width 0.8s ease",marginLeft:positive?"50%":`calc(50% - ${pct}%)` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-                <button onClick={()=>setShowBirthForm(true)}
-                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
-                  tarihi değiştir
-                </button>
-              </div>
-            ) : showBirthForm || !astro ? (
-              <div>
-                <div style={{ fontSize:11,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
-                  Doğum tarihinle kişiselleştirilmiş<br/>enerji yorumu alırsın.
-                </div>
-                <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM TARİHİ</div>
-                  <input type="date" className="niyet-input"
-                    style={{ fontSize:12,letterSpacing:0.5 }}
-                    value={birthInput}
-                    onChange={e=>setBirthInput(e.target.value)} />
-                </div>
-                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  {astro && <button className="niyet-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
-                    onClick={()=>{
-                      if(!birthInput) return;
-                      localStorage.setItem("niyet_birth_date", birthInput);
-                      setBirthDate(birthInput);
-                      setShowBirthForm(false);
-                    }}>Kaydet</button>
-                </div>
-              </div>
-            ) : null}
-          </div>
-
-          <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
-            {aiRapor==="__no_key__" ? (
-              <div>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
-                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
-                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
-                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                    onClick={()=>{
-                      const k=document.getElementById("apiKeyInput").value.trim();
-                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
-                    }}>Kaydet & Oluştur</button>
-                </div>
-              </div>
-            ) : !aiRapor && !aiLoading ? (
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
-                <button className="niyet-btn-primary"
-                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                  onClick={generateRapor}>✦ Rapor Oluştur</button>
-              </div>
-            ) : aiLoading ? (
-              <div style={{ textAlign:"center",padding:"12px 0" }}>
-                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
-              </div>
-            ) : (
-              <div>
-                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
-                <button onClick={()=>setAiRapor("")}
-                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
-                  YENİLE
-                </button>
-              </div>
-            )}
           </div>
           <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
