@@ -714,7 +714,7 @@ export default function NiyetApp() {
   },[screen]);
 
   const generateRapor = async () => {
-    const apiKey = localStorage.getItem("niyet_api_key");
+    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
     if (!apiKey) { setAiRapor("__no_key__"); return; }
     const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
     if (!gunler.length) return;
