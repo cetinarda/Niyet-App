@@ -680,6 +680,7 @@ export default function NiyetApp() {
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
+  const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("niyet_rapor_used") === "1");
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("niyet_birth_date")||"");
@@ -719,20 +720,18 @@ export default function NiyetApp() {
     const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
     if (!gunler.length) return;
 
-    // Cihaz bazlı kontrol (birincil — aynı tarayıcıyı engeller)
-    if (localStorage.getItem("niyet_rapor_used") === "1") { setAiRapor("__ucretli__"); return; }
-
-    // IP bazlı kontrol (ikincil — farklı cihazları engeller)
+    // IP bazlı kontrol
     try {
       const ipRes = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipRes.json();
       const kullanim = JSON.parse(localStorage.getItem("niyet_rapor_kullanim")||"{}");
-      if ((kullanim[ip]||0) >= 1) { setAiRapor("__ucretli__"); return; }
+      if ((kullanim[ip]||0) >= 1) { setRaporKullanildi(true); localStorage.setItem("niyet_rapor_used","1"); return; }
       kullanim[ip] = (kullanim[ip]||0) + 1;
       localStorage.setItem("niyet_rapor_kullanim", JSON.stringify(kullanim));
-    } catch { /* ipify ulaşılamazsa sadece cihaz kontrolüyle devam et */ }
+    } catch { /* ipify ulaşılamazsa devam et */ }
 
     localStorage.setItem("niyet_rapor_used", "1");
+    setRaporKullanildi(true);
 
     setAiLoading(true); setAiRapor("");
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
@@ -1096,7 +1095,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
-            {aiRapor==="__ucretli__" ? (
+            {raporKullanildi && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:22,marginBottom:10 }}>✨</div>
                 <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>Ücretsiz raporunu kullandın</div>
