@@ -32,6 +32,48 @@ const CHAKRAS_22 = [
 const MORNING_WORDS = ["huzur","akış","cesaret","sabır","berraklık","sevgi","güç","denge","özgürlük","neşe","şükür","güven"];
 const TERAPI_TOTAL = 60;
 
+// ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
+function reduceNum(n) {
+  while (n > 9 && n !== 11 && n !== 22 && n !== 33)
+    n = String(n).split("").reduce((a,d)=>a+parseInt(d),0);
+  return n;
+}
+function lifePathNumber(dateStr) {
+  const [y,m,d] = dateStr.split("-").map(Number);
+  const sum = reduceNum(d) + reduceNum(m) + [...String(y)].reduce((a,c)=>a+parseInt(c),0);
+  return reduceNum(sum);
+}
+function personalYear(dateStr) {
+  const [,m,d] = dateStr.split("-").map(Number);
+  const y = new Date().getFullYear();
+  return reduceNum(reduceNum(d) + reduceNum(m) + [...String(y)].reduce((a,c)=>a+parseInt(c),0));
+}
+function zodiacSign(dateStr) {
+  const [,m,d] = dateStr.split("-").map(Number);
+  const s = [
+    {n:"Oğlak",m:1,d:19},{n:"Kova",m:2,d:18},{n:"Balık",m:3,d:20},
+    {n:"Koç",m:4,d:19},{n:"Boğa",m:5,d:20},{n:"İkizler",m:6,d:20},
+    {n:"Yengeç",m:7,d:22},{n:"Aslan",m:8,d:22},{n:"Başak",m:9,d:22},
+    {n:"Terazi",m:10,d:22},{n:"Akrep",m:11,d:21},{n:"Yay",m:12,d:21},
+    {n:"Oğlak",m:12,d:31},
+  ];
+  return (s.find(x=>m<x.m||(m===x.m&&d<=x.d))||s[0]).n;
+}
+function biorhythm(dateStr) {
+  const days = Math.floor((Date.now()-new Date(dateStr))/86400000);
+  return {
+    fiziksel: Math.round(Math.sin(2*Math.PI*days/23)*100),
+    duygusal:  Math.round(Math.sin(2*Math.PI*days/28)*100),
+    zihinsel:  Math.round(Math.sin(2*Math.PI*days/33)*100),
+  };
+}
+function bioritmBar(val) {
+  const positive = val >= 0;
+  const pct = Math.abs(val);
+  return { pct, positive };
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 const REMINDERS = [
   {
     id:"ayna", icon:"🪞", title:"Aynada kendine bak",
@@ -621,7 +663,17 @@ export default function NiyetApp() {
   const [aiLoading,     setAiLoading]     = useState(false);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
+  const [birthDate,     setBirthDate]     = useState(()=>localStorage.getItem("niyet_birth_date")||"");
+  const [showBirthForm, setShowBirthForm] = useState(false);
+  const [birthInput,    setBirthInput]    = useState(()=>localStorage.getItem("niyet_birth_date")||"");
   const breathRef = useRef(null);
+
+  const astro = birthDate ? {
+    yasam:      lifePathNumber(birthDate),
+    kisiselYil: personalYear(birthDate),
+    burc:       zodiacSign(birthDate),
+    bio:        biorhythm(birthDate),
+  } : null;
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
@@ -653,6 +705,17 @@ export default function NiyetApp() {
 - Nefes: ${g.nefes||0}
 - Bugün ne öğrendim: ${g.ogrendim||"—"}
 - Şükür: ${g.sukur||"—"}`).join("\n\n");
+
+    const astroText = astro ? `
+Kullanıcının Doğum Profili:
+- Güneş Burcu: ${astro.burc}
+- Yaşam Yolu Sayısı: ${astro.yasam}
+- Kişisel Yıl Sayısı: ${astro.kisiselYil}
+- Bu Haftaki Biyoritm → Fiziksel: %${astro.bio.fiziksel}, Duygusal: %${astro.bio.duygusal}, Zihinsel: %${astro.bio.zihinsel}
+
+Bu bilgileri haftalık yorum yaparken dikkate al; burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.
+` : "";
+
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
@@ -663,17 +726,17 @@ export default function NiyetApp() {
           "anthropic-dangerous-direct-browser-access":"true"
         },
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1200,
-          system:`Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
-
+          model:"claude-opus-4-6", max_tokens:1400,
+          system:`Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini ve doğum profilini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+${astroText}
 Rapor şu başlıkları içermeli:
-**Haftanın Enerjisi** — Genel ruh hali ve enerji (2-3 cümle)
+**Haftanın Enerjisi** — Genel ruh hali, enerji ve burç/sayı etkisi (2-3 cümle)
 **Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
 **Şükran Kalbi** — Şükür yazılarından bir sentez
-**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri
+**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
 
-Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 350 kelime.`,
+Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 kelime.`,
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
@@ -910,6 +973,75 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 350 
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
           </div>
+          {/* DOĞUM PROFİLİ KARTI */}
+          <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14 }}>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>DOĞUM PROFİLİ</div>
+            {astro && !showBirthForm ? (
+              <div>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
+                  {[
+                    {label:"Burç",value:astro.burc},
+                    {label:"Yaşam Yolu",value:astro.yasam},
+                    {label:"Kişisel Yıl",value:astro.kisiselYil},
+                  ].map((s,i)=>(
+                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
+                      <div style={{ fontSize:7,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
+                      <div style={{ fontSize:15,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
+                    </div>
+                  ))}
+                </div>
+                {/* Biyoritm çubukları */}
+                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>BİYORİTM — BU HAFTA</div>
+                {[
+                  {label:"Fiziksel",val:astro.bio.fiziksel,color:"#e8a09a"},
+                  {label:"Duygusal",val:astro.bio.duygusal,color:"#85c1e9"},
+                  {label:"Zihinsel",val:astro.bio.zihinsel,color:"#aed581"},
+                ].map(({label,val,color})=>{
+                  const {pct,positive}=bioritmBar(val);
+                  return (
+                    <div key={label} style={{ marginBottom:7 }}>
+                      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
+                        <span style={{ fontSize:9,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
+                        <span style={{ fontSize:9,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
+                      </div>
+                      <div style={{ background:"rgba(255,255,255,0.04)",borderRadius:4,height:4,overflow:"hidden" }}>
+                        <div style={{ height:"100%",width:`${pct}%`,background:positive?`${color}99`:"rgba(120,100,140,0.4)",borderRadius:4,transition:"width 0.8s ease",marginLeft:positive?"50%":`calc(50% - ${pct}%)` }} />
+                      </div>
+                    </div>
+                  );
+                })}
+                <button onClick={()=>setShowBirthForm(true)}
+                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
+                  tarihi değiştir
+                </button>
+              </div>
+            ) : showBirthForm || !astro ? (
+              <div>
+                <div style={{ fontSize:11,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
+                  Doğum tarihinle kişiselleştirilmiş<br/>enerji yorumu alırsın.
+                </div>
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM TARİHİ</div>
+                  <input type="date" className="niyet-input"
+                    style={{ fontSize:12,letterSpacing:0.5 }}
+                    value={birthInput}
+                    onChange={e=>setBirthInput(e.target.value)} />
+                </div>
+                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                  {astro && <button className="niyet-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
+                    onClick={()=>{
+                      if(!birthInput) return;
+                      localStorage.setItem("niyet_birth_date", birthInput);
+                      setBirthDate(birthInput);
+                      setShowBirthForm(false);
+                    }}>Kaydet</button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
             {aiRapor==="__no_key__" ? (
