@@ -719,7 +719,10 @@ export default function NiyetApp() {
     const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
     if (!gunler.length) return;
 
-    // IP başına tek ücretsiz kullanım kontrolü
+    // Cihaz bazlı kontrol (birincil — aynı tarayıcıyı engeller)
+    if (localStorage.getItem("niyet_rapor_used") === "1") { setAiRapor("__ucretli__"); return; }
+
+    // IP bazlı kontrol (ikincil — farklı cihazları engeller)
     try {
       const ipRes = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipRes.json();
@@ -727,7 +730,9 @@ export default function NiyetApp() {
       if ((kullanim[ip]||0) >= 1) { setAiRapor("__ucretli__"); return; }
       kullanim[ip] = (kullanim[ip]||0) + 1;
       localStorage.setItem("niyet_rapor_kullanim", JSON.stringify(kullanim));
-    } catch { /* IP alınamazsa engelleme */ }
+    } catch { /* ipify ulaşılamazsa sadece cihaz kontrolüyle devam et */ }
+
+    localStorage.setItem("niyet_rapor_used", "1");
 
     setAiLoading(true); setAiRapor("");
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
