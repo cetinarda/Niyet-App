@@ -682,9 +682,11 @@ export default function NiyetApp() {
   const [aiLoading,     setAiLoading]     = useState(false);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
-  const [birthDate,     setBirthDate]     = useState(()=>localStorage.getItem("niyet_birth_date")||"");
-  const [showBirthForm, setShowBirthForm] = useState(false);
-  const [birthInput,    setBirthInput]    = useState(()=>localStorage.getItem("niyet_birth_date")||"");
+  const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("niyet_birth_date")||"");
+  const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("niyet_birth_time")||"");
+  const [showBirthForm,  setShowBirthForm]  = useState(false);
+  const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("niyet_birth_date")||"");
+  const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("niyet_birth_time")||"");
   const breathRef = useRef(null);
 
   const astro = birthDate ? {
@@ -729,10 +731,10 @@ export default function NiyetApp() {
 Kullanıcının Doğum Profili:
 - Güneş Burcu: ${astro.burc}
 - Yaşam Yolu Sayısı: ${astro.yasam}
-- Kişisel Yıl Sayısı: ${astro.kisiselYil}
+- Kişisel Yıl Sayısı: ${astro.kisiselYil}${birthTime ? `\n- Doğum Saati: ${birthTime}` : ""}
 - Bu Haftaki Biyoritm → Fiziksel: %${astro.bio.fiziksel}, Duygusal: %${astro.bio.duygusal}, Zihinsel: %${astro.bio.zihinsel}
 
-Bu bilgileri haftalık yorum yaparken dikkate al; burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.
+Bu bilgileri haftalık yorum yaparken dikkate al; burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.${birthTime ? " Doğum saatini yükselen burç ve günlük enerji ritmi için değerlendir." : ""}
 ` : "";
 
     try {
@@ -753,9 +755,11 @@ Rapor şu başlıkları içermeli:
 **Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
 **Şükran Kalbi** — Şükür yazılarından bir sentez
+**Bu Hafta Dikkat** — Bu hafta özellikle nelere dikkat etmeli, hangi enerji veya durumdan uzak durmalı (2-3 madde)
+**Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
 
-Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 kelime.`,
+Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 kelime.`,
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
@@ -903,6 +907,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
                     </div>
                   );
                 })}
+                {birthTime && (
+                  <div style={{ fontSize:10,color:"#7a6a9a",letterSpacing:1.5,marginTop:8,marginBottom:2,textAlign:"center" }}>
+                    ◷ {birthTime} doğum saati
+                  </div>
+                )}
                 <button onClick={()=>setShowBirthForm(true)}
                   style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
                   tarihi değiştir
@@ -920,6 +929,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
                     value={birthInput}
                     onChange={e=>setBirthInput(e.target.value)} />
                 </div>
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM SAATİ <span style={{ color:"#3a2a5a",fontSize:8,letterSpacing:1 }}>(opsiyonel)</span></div>
+                  <input type="time" className="niyet-input"
+                    style={{ fontSize:12,letterSpacing:0.5 }}
+                    value={birthTimeInput}
+                    onChange={e=>setBirthTimeInput(e.target.value)} />
+                </div>
                 <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
                   {astro && <button className="niyet-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
                   <button className="niyet-btn-primary"
@@ -928,50 +944,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
                       if(!birthInput) return;
                       localStorage.setItem("niyet_birth_date", birthInput);
                       setBirthDate(birthInput);
+                      if(birthTimeInput){ localStorage.setItem("niyet_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                       setShowBirthForm(false);
                     }}>Kaydet</button>
                 </div>
               </div>
             ) : null}
-          </div>
-
-          <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:20 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
-            {aiRapor==="__no_key__" ? (
-              <div>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
-                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
-                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
-                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                    onClick={()=>{
-                      const k=document.getElementById("apiKeyInput").value.trim();
-                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
-                    }}>Kaydet & Oluştur</button>
-                </div>
-              </div>
-            ) : !aiRapor && !aiLoading ? (
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
-                <button className="niyet-btn-primary"
-                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                  onClick={generateRapor}>✦ Rapor Oluştur</button>
-              </div>
-            ) : aiLoading ? (
-              <div style={{ textAlign:"center",padding:"12px 0" }}>
-                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
-              </div>
-            ) : (
-              <div>
-                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
-                <button onClick={()=>setAiRapor("")}
-                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
-                  YENİLE
-                </button>
-              </div>
-            )}
           </div>
 
           <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
@@ -1099,6 +1077,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 420 
               ))}
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
+          </div>
+          <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
+            {aiRapor==="__no_key__" ? (
+              <div>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
+                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
+                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
+                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                    onClick={()=>{
+                      const k=document.getElementById("apiKeyInput").value.trim();
+                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
+                    }}>Kaydet & Oluştur</button>
+                </div>
+              </div>
+            ) : !aiRapor && !aiLoading ? (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
+                <button className="niyet-btn-primary"
+                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                  onClick={generateRapor}>✦ Rapor Oluştur</button>
+              </div>
+            ) : aiLoading ? (
+              <div style={{ textAlign:"center",padding:"12px 0" }}>
+                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
+                <button onClick={()=>setAiRapor("")}
+                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
+                  YENİLE
+                </button>
+              </div>
+            )}
           </div>
           <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
