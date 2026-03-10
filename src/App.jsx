@@ -680,10 +680,24 @@ export default function NiyetApp() {
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
-  const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("niyet_rapor_used") === "1");
+  const [devMode, setDevMode] = useState(() => localStorage.getItem("niyet_dev_mode") === "1");
+  const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("niyet_rapor_used") === "1");
   const [rehberTab, setRehberTab] = useState("reiki");
-  const [reikiUsed, setReikiUsed] = useState(() => localStorage.getItem("niyet_reiki_used") === "1");
-  const [zihinselUsed, setZihinselUsed] = useState(() => localStorage.getItem("niyet_zihinsel_used") === "1");
+  const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("niyet_reiki_used") === "1");
+  const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("niyet_zihinsel_used") === "1");
+
+  function toggleDevMode() {
+    const next = !devMode;
+    if (next) {
+      localStorage.setItem("niyet_dev_mode", "1");
+    } else {
+      localStorage.removeItem("niyet_dev_mode");
+    }
+    setDevMode(next);
+    setRaporKullanildi(false);
+    setReikiUsed(next ? true : false);
+    setZihinselUsed(next ? true : false);
+  }
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("niyet_birth_date")||"");
@@ -1055,9 +1069,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
       {/* REHBER */}
       {screen==="rehber" && (
         <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
-          <div style={{ textAlign:"center",marginBottom:28 }}>
+          <div style={{ textAlign:"center",marginBottom:28,position:"relative" }}>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>BİLGİ</div>
             <div style={{ fontSize:24,fontWeight:300,letterSpacing:2 }}>Rehber</div>
+            <button onClick={toggleDevMode}
+              style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
+              {devMode ? "DEV ✓" : "DEV"}
+            </button>
           </div>
 
           {/* Tab seçici */}
