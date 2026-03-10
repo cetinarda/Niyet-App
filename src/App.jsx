@@ -1425,9 +1425,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             return (
               <>
                 <AramaPaneli
-                  baslik="Şikayet Ara"
+                  baslik="İçsel Ayna"
                   simge="☽"
-                  aciklama="bedeninin sesini dinle"
+                  aciklama="bedeninin mesajını oku"
                   renk="#a070d0"
                   value={sikayet}
                   onChange={setSikayet}
@@ -1436,21 +1436,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   analiz={sikayetAnaliz}
                   onAra={generateSikayetAnaliz}
                   onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-                  placeholder="örn: baş ağrısı, kabız, uyuyamıyorum, yorgunluk..."
-                />
-                <AramaPaneli
-                  baslik="Hastalık Ara"
-                  simge="✦"
-                  aciklama="ruhsal kökünü keşfet"
-                  renk="#5080d8"
-                  value={hastalik}
-                  onChange={setHastalik}
-                  his={hastalikHis}
-                  onHisChange={setHastalikHis}
-                  analiz={hastalikAnaliz}
-                  onAra={generateHastalikAnaliz}
-                  onSifirla={()=>{ setHastalikAnaliz(""); setHastalik(""); setHastalikHis(""); }}
-                  placeholder="örn: migren, reflü, kronik yorgunluk, anksiyete..."
+                  placeholder="örn: baş ağrısı, yorgunluk, uyuyamıyorum..."
                 />
               </>
             );
