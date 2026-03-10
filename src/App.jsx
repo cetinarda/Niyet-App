@@ -685,6 +685,9 @@ export default function NiyetApp() {
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
+  const [semptomInput, setSemptomInput] = useState("");
+  const [semptomAnaliz, setSemptomAnaliz] = useState("");
+  const [semptomAcik, setSemptomAcik] = useState(false);
   const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("niyet_reiki_used") === "1");
   const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("niyet_zihinsel_used") === "1");
 
@@ -792,6 +795,81 @@ ${astroText2}
       setChakraAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch {
       setChakraAnaliz("Bağlantı hatası, tekrar dene.");
+    }
+  };
+
+  const ZIHINSEL_LISTE = [
+    { organ:"Baş Ağrısı",    neden:"Kendini küçümseme, özeleştiri, korku" },
+    { organ:"Boyun",          neden:"Esneklik eksikliği, inatçılık, başkalarının bakış açısını görmek istememek" },
+    { organ:"Omuzlar",        neden:"Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi" },
+    { organ:"Kalp",           neden:"Sevgi ve neşeyi reddetmek, sertleşen kalp" },
+    { organ:"Sırt (üst)",     neden:"Duygusal destek eksikliği, sevilmediği hissi" },
+    { organ:"Sırt (alt)",     neden:"Para ve maddi destek korkusu" },
+    { organ:"Mide",           neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
+    { organ:"Bağırsaklar",    neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
+    { organ:"Kabız",          neden:"Eski düşünceleri ve alışkanlıkları bırakamama, geçmişe tutunma, korku" },
+    { organ:"Diz",            neden:"Ego, gurur, inat — eğilmemek" },
+    { organ:"Deri",           neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
+    { organ:"Boğaz",          neden:"Kendini ifade edememe, öfkeyi yutmak" },
+    { organ:"Gözler",         neden:"Geçmişi ya da geleceği görmek istememe" },
+    { organ:"Kulaklar",       neden:"Duymak istemediğin şeyler, öfke" },
+    { organ:"Akciğerler",     neden:"Hayatı tam almayı reddetme, üzüntü" },
+    { organ:"Karaciğer",      neden:"Kronik öfke, eleştiri, akıl yürütme" },
+    { organ:"Böbrekler",      neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
+    { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihnin durduramama" },
+    { organ:"Tansiyon",       neden:"Uzun süreli çözümsüz duygusal sorunlar, aşırı kontrol ihtiyacı" },
+    { organ:"Yorgunluk",      neden:"Direnç, sıkılmışlık, sevgisiz yaşama" },
+    { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
+    { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
+  ];
+  const REIKI_BILGI = `Reiki Rehberi:
+- 5 İlke: Bugün kızma / endişelenme / şükret / dürüst çalış / her canlıya şefkatle davran
+- Çakra frekansları: Kök 396Hz (güvenlik), Sakral 417Hz (yaratıcılık), Güneş Pleksusu 528Hz (güç), Kalp 639Hz (sevgi), Boğaz 741Hz (ifade), Üçüncü Göz 852Hz (sezgi), Taç 963Hz (bilinç)
+- El pozisyonları: Baş (sezgi) · Boğaz (ifade) · Kalp (sevgi) · Solar pleksus (güç-denge) · Karın (yaratıcılık-duygu) · Dizler & ayaklar (topraklama)
+- Seans: Niyetle başla → eller 2-5cm üstte → pozisyon başına 3-5dk → enerji akışını hisset → şükranla kapat`;
+
+  const generateSemptomAnaliz = async () => {
+    if (!semptomInput.trim()) return;
+    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
+    if (!apiKey) { setSemptomAnaliz("__no_key__"); return; }
+    setSemptomAnaliz("__loading__");
+    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
+    const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.${birthTime?` Doğum saati ${birthTime}.`:""}` : "";
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body: JSON.stringify({
+          model:"claude-opus-4-6", max_tokens:900,
+          system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
+          messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
+
+ZİHİNSEL NEDENLER REHBERİ:
+${zihinselListeText}
+
+${REIKI_BILGI}
+
+${astroText3}
+
+Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta tam, benzersiz bir yanıt üret:
+
+**Zihinsel-Duygusal Kök**
+(Bu semptomu tetikleyen en olası duygusal/zihinsel neden — 2 cümle)
+
+**İlgili Çakra & Enerji**
+(Hangi çakra, hangi frekans, bu çakranın tıkanması nasıl bu semptomu yaratır — 2 cümle)
+
+**Reiki Yaklaşımı**
+(Hangi el pozisyonu, nasıl bir niyet, hangi frekans müziği — pratik 2-3 adım)
+
+**Sana Özel Mesaj**
+(Doğum haritasına göre kişiselleştirilmiş, 2-3 cümle, şiirsel ve iyileştirici)` }],
+        }),
+      });
+      const d = await res.json();
+      setSemptomAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+    } catch {
+      setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
     }
   };
 
@@ -1140,6 +1218,73 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
               style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
               {devMode ? "DEV ✓" : "DEV"}
             </button>
+          </div>
+
+          {/* SEMPTOM ARAMA */}
+          <div style={{ marginBottom:22 }}>
+            {!semptomAcik ? (
+              <button onClick={()=>setSemptomAcik(true)}
+                style={{ width:"100%",display:"flex",alignItems:"center",gap:10,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 18px",cursor:"pointer",color:"#5a7a9a",fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:12,letterSpacing:0.5,transition:"all 0.25s" }}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(139,90,160,0.35)";e.currentTarget.style.color="#9a7ab8";}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.08)";e.currentTarget.style.color="#5a7a9a";}}>
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5L14 14"/></svg>
+                <span>Bir şikayet veya hastalık ara...</span>
+              </button>
+            ) : (
+              <div style={{ background:"rgba(20,10,40,0.7)",border:"1px solid rgba(139,90,160,0.25)",borderRadius:16,padding:"18px 18px 16px",backdropFilter:"blur(12px)" }}>
+                <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:12 }}>
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#9a7ab8" strokeWidth="1.5" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5L14 14"/></svg>
+                  <span style={{ fontSize:9,letterSpacing:3,color:"#7a5a90" }}>SEMPTOM & HASTALIK ARA</span>
+                  <button onClick={()=>{setSemptomAcik(false);setSemptomAnaliz("");setSemptomInput("");}}
+                    style={{ marginLeft:"auto",background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:14,lineHeight:1 }}>×</button>
+                </div>
+                {semptomAnaliz !== "__loading__" && semptomAnaliz !== "__no_key__" && !semptomAnaliz && (
+                  <div style={{ display:"flex",gap:8 }}>
+                    <input
+                      value={semptomInput}
+                      onChange={e=>setSemptomInput(e.target.value)}
+                      onKeyDown={e=>e.key==="Enter" && generateSemptomAnaliz()}
+                      placeholder="örn: kabız oldum, baş ağrısı, uyuyamıyorum..."
+                      style={{ flex:1,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 14px",color:"#d0c8e8",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none" }}
+                      autoFocus
+                    />
+                    <button onClick={generateSemptomAnaliz}
+                      style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,100,200,0.6))",border:"none",borderRadius:10,padding:"10px 14px",cursor:"pointer",color:"#e0d0f8",fontSize:13 }}>
+                      →
+                    </button>
+                  </div>
+                )}
+                {semptomAnaliz === "__loading__" && (
+                  <div style={{ textAlign:"center",padding:"16px 0" }}>
+                    <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
+                  </div>
+                )}
+                {semptomAnaliz === "__no_key__" && (
+                  <div>
+                    <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını gir.</div>
+                    <input id="semptomApiInput" type="password" placeholder="sk-ant-..." className="niyet-input" style={{ fontSize:11,marginBottom:10 }} />
+                    <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                      <button className="niyet-btn" onClick={()=>setSemptomAnaliz("")}>iptal</button>
+                      <button className="niyet-btn-primary"
+                        style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                        onClick={()=>{ const k=document.getElementById("semptomApiInput").value.trim(); if(k){localStorage.setItem("niyet_api_key",k);setSemptomAnaliz("");generateSemptomAnaliz();} }}>
+                        Kaydet & Analiz Et
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {semptomAnaliz && semptomAnaliz !== "__loading__" && semptomAnaliz !== "__no_key__" && (
+                  <div>
+                    <div style={{ fontSize:9,letterSpacing:2,color:"#9a7ab8",marginBottom:10 }}>{semptomInput.toUpperCase()} — ANALİZ</div>
+                    <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:2,whiteSpace:"pre-wrap" }}>{semptomAnaliz}</div>
+                    <button onClick={()=>{setSemptomAnaliz("");setSemptomInput("");}}
+                      style={{ background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2,marginTop:12,display:"block" }}>
+                      YENİ ARAMA
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Tab seçici */}
