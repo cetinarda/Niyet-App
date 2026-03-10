@@ -681,6 +681,9 @@ export default function NiyetApp() {
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("niyet_rapor_used") === "1");
+  const [rehberTab, setRehberTab] = useState("reiki");
+  const [reikiUsed, setReikiUsed] = useState(() => localStorage.getItem("niyet_reiki_used") === "1");
+  const [zihinselUsed, setZihinselUsed] = useState(() => localStorage.getItem("niyet_zihinsel_used") === "1");
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("niyet_birth_date")||"");
@@ -824,6 +827,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
     {id:"gun",icon:"☀️",label:"Gün"},
     {id:"aksam",icon:"🌙",label:"Akşam"},
     {id:"harita",icon:"◎",label:"Harita"},
+    {id:"rehber",icon:"📖",label:"Rehber"},
   ];
 
   return (
@@ -1045,6 +1049,122 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
             ))}
           </div>
           <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
+        </div>
+      )}
+
+      {/* REHBER */}
+      {screen==="rehber" && (
+        <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
+          <div style={{ textAlign:"center",marginBottom:28 }}>
+            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>BİLGİ</div>
+            <div style={{ fontSize:24,fontWeight:300,letterSpacing:2 }}>Rehber</div>
+          </div>
+
+          {/* Tab seçici */}
+          <div style={{ display:"flex",gap:0,marginBottom:24,background:"rgba(255,255,255,0.03)",borderRadius:14,padding:4,border:"1px solid rgba(255,255,255,0.07)" }}>
+            {[
+              {id:"reiki",label:"✦ Reiki Rehberi"},
+              {id:"zihinsel",label:"🧠 Zihinsel Nedenler"},
+            ].map(t=>(
+              <button key={t.id} onClick={()=>setRehberTab(t.id)}
+                style={{ flex:1,padding:"9px 0",background:rehberTab===t.id?"rgba(139,90,160,0.3)":"transparent",border:"none",borderRadius:11,color:rehberTab===t.id?"#d0b0f0":"#5a6a7a",fontSize:11,letterSpacing:0.8,cursor:"pointer",transition:"all 0.25s",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* REİKİ REHBERİ */}
+          {rehberTab==="reiki" && (
+            <div>
+              {!reikiUsed ? (
+                <div style={{ textAlign:"center",padding:"30px 20px" }}>
+                  <div style={{ fontSize:32,marginBottom:14 }}>🌸</div>
+                  <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:8 }}>Reiki Rehberi</div>
+                  <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:20 }}>
+                    Chakra sembolleri, enerji aktarım teknikleri<br/>ve el pozisyonları rehberi.<br/><br/>
+                    <strong style={{ color:"#9a7ab8" }}>1 ücretsiz kullanım</strong> hakkın var.
+                  </div>
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                    onClick={()=>{ localStorage.setItem("niyet_reiki_used","1"); setReikiUsed(true); }}>
+                    ✦ Rehberi Aç
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  {[
+                    { baslik:"Reiki Nedir?", icerik:"Reiki, evrensel yaşam enerjisinin eller aracılığıyla aktarıldığı bir iyileştirme yöntemidir. Japonya'da Dr. Mikao Usui tarafından 1900'lerin başında geliştirilmiştir." },
+                    { baslik:"5 Reiki İlkesi", icerik:"1. Bugün kızma\n2. Bugün endişelenme\n3. Bugün şükret\n4. Bugün dürüst çalış\n5. Bugün her canlıya şefkatle davran" },
+                    { baslik:"El Pozisyonları", icerik:"• Baş: Göz ve burun üzeri — sezgi\n• Şakaklar: Beyin dengeleme\n• Boğaz: İfade ve iletişim\n• Kalp: Sevgi ve şifa merkezi\n• Solar pleksus: Güç ve denge\n• Karın: Yaratıcılık ve duygu\n• Dizler & ayaklar: Topraklama" },
+                    { baslik:"Chakra Renkleri & Frekansları", icerik:"🔴 Kök — 396 Hz — Güvenlik\n🟠 Sakral — 417 Hz — Yaratıcılık\n🟡 Solar — 528 Hz — Güç\n💚 Kalp — 639 Hz — Sevgi\n🔵 Boğaz — 741 Hz — İfade\n🟣 Üçüncü Göz — 852 Hz — Sezgi\n⚪ Taç — 963 Hz — Bilinç" },
+                    { baslik:"Seans Süreci", icerik:"1. Niyetle başla — enerjiyi davetle\n2. Eller yaklaşık 2-5 cm üstte\n3. Her pozisyonda 3-5 dk kal\n4. Enerji akışını hisset\n5. Şükranla kapat" },
+                  ].map((k,i)=>(
+                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:13,padding:"14px 16px",marginBottom:10 }}>
+                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#9a6ab0",marginBottom:7 }}>{k.baslik.toUpperCase()}</div>
+                      <div style={{ fontSize:12,color:"#c0b0d8",lineHeight:1.85,whiteSpace:"pre-line" }}>{k.icerik}</div>
+                    </div>
+                  ))}
+                  <div style={{ textAlign:"center",marginTop:16,padding:"12px",background:"rgba(139,90,160,0.07)",border:"1px solid rgba(139,90,160,0.15)",borderRadius:12 }}>
+                    <div style={{ fontSize:10,color:"#7a5a90",letterSpacing:2 }}>PREMIUM</div>
+                    <div style={{ fontSize:11,color:"#5a6a7a",marginTop:4 }}>Kişisel Reiki seansı ve detaylı rehber için</div>
+                    <a href="mailto:destek@niyet.app?subject=Premium" style={{ fontSize:11,color:"#9a7ab8",textDecoration:"none" }}>Premium'a Geç →</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ZİHİNSEL NEDENLER */}
+          {rehberTab==="zihinsel" && (
+            <div>
+              {!zihinselUsed ? (
+                <div style={{ textAlign:"center",padding:"30px 20px" }}>
+                  <div style={{ fontSize:32,marginBottom:14 }}>🧠</div>
+                  <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:8 }}>Hastalıkların Zihinsel Nedenleri</div>
+                  <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:20 }}>
+                    Bedensel şikayetlerin arkasındaki<br/>duygusal ve zihinsel kökler.<br/><br/>
+                    <strong style={{ color:"#9a7ab8" }}>1 ücretsiz kullanım</strong> hakkın var.
+                  </div>
+                  <button className="niyet-btn-primary"
+                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                    onClick={()=>{ localStorage.setItem("niyet_zihinsel_used","1"); setZihinselUsed(true); }}>
+                    ✦ Rehberi Aç
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  {[
+                    { organ:"Baş Ağrısı",      neden:"Kendini küçümseme, özeleştiri, korku" },
+                    { organ:"Boyun",            neden:"Esneklik eksikliği, inatçılık, başkalarının bakış açısını görmek istememek" },
+                    { organ:"Omuzlar",          neden:"Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi" },
+                    { organ:"Kalp",             neden:"Sevgi ve neşeyi reddetmek, sertleşen kalp" },
+                    { organ:"Sırt (üst)",       neden:"Duygusal destek eksikliği, sevilmediği hissi" },
+                    { organ:"Sırt (alt)",       neden:"Para ve maddi destek korkusu" },
+                    { organ:"Mide",             neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
+                    { organ:"Bağırsaklar",      neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
+                    { organ:"Diz",              neden:"Ego, gurur, inat — eğilmemek" },
+                    { organ:"Deri",             neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
+                    { organ:"Boğaz",            neden:"Kendini ifade edememe, öfkeyi yutmak" },
+                    { organ:"Gözler",           neden:"Geçmişi ya da geleceği görmek istememe" },
+                    { organ:"Kulaklar",         neden:"Duymak istemediğin şeyler, öfke" },
+                    { organ:"Akciğerler",       neden:"Hayatı tam almayı reddetme, üzüntü" },
+                    { organ:"Karaciğer",        neden:"Kronik öfke, eleştiri, akıl yürütme" },
+                    { organ:"Böbrekler",        neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
+                  ].map((r,i)=>(
+                    <div key={i} style={{ display:"flex",gap:12,background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:12,padding:"11px 14px",marginBottom:8,alignItems:"flex-start" }}>
+                      <div style={{ fontSize:11,color:"#c0a0e0",fontWeight:600,minWidth:90,letterSpacing:0.3 }}>{r.organ}</div>
+                      <div style={{ fontSize:11,color:"#7a8a9a",lineHeight:1.7 }}>{r.neden}</div>
+                    </div>
+                  ))}
+                  <div style={{ textAlign:"center",marginTop:16,padding:"12px",background:"rgba(139,90,160,0.07)",border:"1px solid rgba(139,90,160,0.15)",borderRadius:12 }}>
+                    <div style={{ fontSize:10,color:"#7a5a90",letterSpacing:2 }}>PREMIUM</div>
+                    <div style={{ fontSize:11,color:"#5a6a7a",marginTop:4 }}>Tam liste ve kişisel analiz için</div>
+                    <a href="mailto:destek@niyet.app?subject=Premium" style={{ fontSize:11,color:"#9a7ab8",textDecoration:"none" }}>Premium'a Geç →</a>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 
