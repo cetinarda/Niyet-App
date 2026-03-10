@@ -795,17 +795,15 @@ export default function NiyetApp() {
 
   const generateChakraAnaliz = async () => {
     if (!chakraInput.trim()) return;
-    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
-    if (!apiKey) { setChakraAnaliz("__no_key__"); return; }
     setChakraAnaliz("__loading__");
     const idx = chakraEsle(chakraInput);
     const ch = CHAKRAS_7[idx];
     const zihinsel = CHAKRA_ZIHINSEL[idx];
     const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/.netlify/functions/ai-call", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:600,
           system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
@@ -822,8 +820,8 @@ ${astroText2}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
-      setChakraAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      setChakraAnaliz(d.text || "Analiz alınamadı.");
     } catch {
       setChakraAnaliz("Bağlantı hatası, tekrar dene.");
     }
@@ -861,15 +859,13 @@ ${astroText2}
 
   const generateSemptomAnaliz = async () => {
     if (!semptomInput.trim()) return;
-    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
-    if (!apiKey) { setSemptomAnaliz("__no_key__"); return; }
     setSemptomAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.${birthTime?` Doğum saati ${birthTime}.`:""}` : "";
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/.netlify/functions/ai-call", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
@@ -898,16 +894,14 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
-      setSemptomAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      setSemptomAnaliz(d.text || "Analiz alınamadı.");
     } catch {
       setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
     }
   };
 
   const generateRapor = async () => {
-    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
-    if (!apiKey) { setAiRapor("__no_key__"); return; }
     const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
     if (!gunler.length) return;
 
@@ -974,14 +968,9 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
 ` : "";
 
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("/.netlify/functions/ai-call", {
         method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "x-api-key": apiKey,
-          "anthropic-version":"2023-06-01",
-          "anthropic-dangerous-direct-browser-access":"true"
-        },
+        headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1700,
           system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun.
@@ -1003,8 +992,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         })
       });
       const data = await res.json();
-      const text = data.content?.[0]?.text;
-      setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
+      setAiRapor(data.text || data.error || "Rapor oluşturulamadı.");
     } catch(e) { setAiRapor("API'ye ulaşılamadı: "+e.message); }
     finally { setAiLoading(false); }
   };
@@ -1324,20 +1312,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
                   </div>
                 )}
-                {semptomAnaliz === "__no_key__" && (
-                  <div>
-                    <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını gir.</div>
-                    <input id="semptomApiInput" type="password" placeholder="sk-ant-..." className="niyet-input" style={{ fontSize:11,marginBottom:10 }} />
-                    <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                      <button className="niyet-btn" onClick={()=>setSemptomAnaliz("")}>iptal</button>
-                      <button className="niyet-btn-primary"
-                        style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                        onClick={()=>{ const k=document.getElementById("semptomApiInput").value.trim(); if(k){localStorage.setItem("niyet_api_key",k);setSemptomAnaliz("");generateSemptomAnaliz();} }}>
-                        Kaydet & Analiz Et
-                      </button>
-                    </div>
-                  </div>
-                )}
                 {semptomAnaliz && semptomAnaliz !== "__loading__" && semptomAnaliz !== "__no_key__" && (
                   <div>
                     <div style={{ fontSize:9,letterSpacing:2,color:"#9a7ab8",marginBottom:10 }}>{semptomInput.toUpperCase()} — ANALİZ</div>
@@ -1430,20 +1404,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {chakraAnaliz === "__loading__" ? (
                 <div style={{ textAlign:"center",padding:"20px 0" }}>
                   <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
-                </div>
-              ) : chakraAnaliz === "__no_key__" ? (
-                <div>
-                  <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını gir.</div>
-                  <input id="chakraApiInput" type="password" placeholder="sk-ant-..." className="niyet-input"
-                    style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
-                  <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                    <button className="niyet-btn" onClick={()=>setChakraAnaliz("")}>iptal</button>
-                    <button className="niyet-btn-primary"
-                      style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                      onClick={()=>{ const k=document.getElementById("chakraApiInput").value.trim(); if(k){localStorage.setItem("niyet_api_key",k);setChakraAnaliz("");generateChakraAnaliz();} }}>
-                      Kaydet & Analiz Et
-                    </button>
-                  </div>
                 </div>
               ) : chakraAnaliz ? (
                 <div>
@@ -1598,21 +1558,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:11,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
                   Premium'a Geç →
                 </a>
-              </div>
-            ) : aiRapor==="__no_key__" ? (
-              <div>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını bir kez gir,<br/>her hafta rapor oluştur.</div>
-                <input id="apiKeyInput" type="password" placeholder="sk-ant-..." className="niyet-input"
-                  style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
-                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  <button className="niyet-btn" onClick={()=>setAiRapor("")}>iptal</button>
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                    onClick={()=>{
-                      const k=document.getElementById("apiKeyInput").value.trim();
-                      if(k){localStorage.setItem("niyet_api_key",k);setAiRapor("");generateRapor();}
-                    }}>Kaydet & Oluştur</button>
-                </div>
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
