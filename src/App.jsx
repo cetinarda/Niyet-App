@@ -895,6 +895,19 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
     setRaporKullanildi(true);
 
     setAiLoading(true); setAiRapor("");
+
+    const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi — Gizli Benlik Rehberi (Tracy Marks):
+12. ev, bilinçdışının evi ve gizli benliğin yurdudur. Bastırılmış duygular, karmik izler, gölge benlik ve içsel yaşam burada gizlidir.
+
+Temel kavramlar:
+- Gölge Benlik: İfade edilemeyen duygular bilinçdışında büyür ve başkalarına yansıtılarak dışarıda görülür. "Dışarıdaki dünyada ne için savaşıyorsak, iç benliğimizde de bu mücadele vardır." (Carl Jung)
+- Bastırılmış Duygular: Haftanın verilerinde sürekli geri çekilen, ifade edilmeyen, görmezden gelinen temalar karmik kalıplara işaret eder.
+- Ya Hep Ya Hiç Modelleri: Aşırı bastırma → ani patlama döngüsü. Bir gün küçük, ertesi gün taşan enerji 12. ev dinamiğidir.
+- Karmik Deneyimler: Tekrar eden kelimeler, niyetler ve çakra örüntüleri geçmiş deneyimlerin izlerini taşıyabilir.
+- Bütünleşme: Gölgeyi kabullenmek özgürlük getirir. Karanlıkla yüzleşmek, altın madeni bulmaktır.
+- İçsel Ses: Rüyalar, sezgiler ve yalnızlıkta gelen mesajlar 12. evin armağanlarıdır.
+- Gizli Güçler: Yaratıcılık, sezgi, şefkat, tinsellik ve hizmet etme arzusu 12. evin hazineleridir.`;
+
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
 - Niyet: ${g.niyet||"—"}
 - Kelimeler: ${g.kelimeler?.join(", ")||"—"}
@@ -923,19 +936,22 @@ Bu bilgileri haftalık yorum yaparken dikkate al; burç enerjisini, yaşam yolu 
           "anthropic-dangerous-direct-browser-access":"true"
         },
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1400,
-          system:`Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini ve doğum profilini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+          model:"claude-opus-4-6", max_tokens:1700,
+          system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun.
 ${astroText}
+${GIZLI_BENLIK_REHBER}
+
 Rapor şu başlıkları içermeli:
 **Haftanın Enerjisi** — Genel ruh hali, enerji ve burç/sayı etkisi (2-3 cümle)
 **Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
+**Gizli Benlik & Gölge** — Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar, karmik örüntüler veya gölge yansımalar; bütünleşme için bir davet (2-3 cümle, şiirsel)
 **Şükran Kalbi** — Şükür yazılarından bir sentez
 **Bu Hafta Dikkat** — Bu hafta özellikle nelere dikkat etmeli, hangi enerji veya durumdan uzak durmalı (2-3 madde)
 **Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
 
-Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 kelime.`,
+Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`,
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
