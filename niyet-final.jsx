@@ -105,6 +105,71 @@ const REMINDERS = [
   },
 ];
 
+const hexToRgb = hex => {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+};
+
+const PROGRAM_21 = [
+  { gun:1,  tema:"Zemin",       emoji:"🌍", renk:"#8b6914", pastel:"#c8a96e",
+    gorevler:["Sabah 5 dakika çıplak ayakla yürü","Günün niyetini yüksek sesle 3 kez söyle","Akşam 1 şeye şükret"] },
+  { gun:2,  tema:"Nefes",       emoji:"🌬", renk:"#2980b9", pastel:"#85c1e9",
+    gorevler:["4-1.5-3.5 ritmiyle 10 nefes döngüsü yap","Sabah kalkmadan önce 3 derin nefes al","Nefes alırken gözlerini kapat ve bedeni hisset"] },
+  { gun:3,  tema:"Beden",       emoji:"🧘", renk:"#27ae60", pastel:"#82d9a3",
+    gorevler:["10 dakika esneme hareketi yap","Omuz ve boyun masajı yap (kendi kendine)","Akşam 2 dakika beden taraması: baştan ayağa hisset"] },
+  { gun:4,  tema:"Su",          emoji:"💧", renk:"#1a6b8a", pastel:"#6ab4cc",
+    gorevler:["Günde en az 8 bardak su iç","Her yudum suyu bilinçli iç — hisset","Suya şükran hisset"] },
+  { gun:5,  tema:"Doğa",        emoji:"🌿", renk:"#2d6a4f", pastel:"#74c69d",
+    gorevler:["10 dakika dışarıda yürü","Bir ağaca ya da bitkiye dokun","Gökyüzüne en az 2 dakika bak"] },
+  { gun:6,  tema:"Sessizlik",   emoji:"🤫", renk:"#34495e", pastel:"#85929e",
+    gorevler:["Sabah 10 dakika sessizlikte otur — hiçbir şey yapma","Telefonu 1 saat kapat","Yemek yerken ekransız ye"] },
+  { gun:7,  tema:"Minnet",      emoji:"🙏", renk:"#8b5a2b", pastel:"#d4a96e",
+    gorevler:["3 kişiye zihinsel olarak şükret","Bugün birine iyilik yap","Akşam 5 şükür listesi yaz"] },
+  { gun:8,  tema:"Kalp",        emoji:"💚", renk:"#1e8449", pastel:"#82d9a3",
+    gorevler:["Ellerini kalbine koy, 1 dakika sadece hisset","Sevdiğin birine 'seni seviyorum' de","Kendine şefkatli bir şey söyle"] },
+  { gun:9,  tema:"Işık",        emoji:"☀️", renk:"#d4ac0d", pastel:"#f9e79f",
+    gorevler:["Sabah güneşe bak, 3 derin nefes al","Gün içinde 10 dakika güneş ışığı al","Birine ışık ver: iltifat et ya da yardım et"] },
+  { gun:10, tema:"Ses",         emoji:"🎵", renk:"#1a5276", pastel:"#7fb3d3",
+    gorevler:["Sevdiğin bir müziği tam konsantrasyonla dinle","Kendi sesini duy: şarkı söyle veya sesini çıkar","Doğanın seslerini 5 dakika dinle"] },
+  { gun:11, tema:"Farkındalık", emoji:"✨", renk:"#7d3c98", pastel:"#c39bd3",
+    gorevler:["Bugün 5 anı bilinçli yaşa: 'şu an buradasın' de","Yemek yerken her lokmayı hisset","Akşam bugünün en güzel anını yaz"] },
+  { gun:12, tema:"Toprak",      emoji:"🌱", renk:"#5d4037", pastel:"#bcaaa4",
+    gorevler:["Toprağa çıplak ayakla bas, 5 dakika dur","Bir bitkiyi ya da toprağı elinle hisset","Toprakla bağını güçlendir"] },
+  { gun:13, tema:"Hareket",     emoji:"🌊", renk:"#0e6655", pastel:"#76d7c4",
+    gorevler:["10 dakika serbest hareket et ya da dans et","Vücudunu esnet: rahatlamasını hisset","Yürüyüşe çık ve her adımı hisset"] },
+  { gun:14, tema:"Yansıma",     emoji:"🪞", renk:"#2c3e50", pastel:"#85929e",
+    gorevler:["Bu 2 haftayı düşün: ne değişti?","Kendin için bir şey yap (banyo, müzik, doğa)","Yarın için bir niyet belirle"] },
+  { gun:15, tema:"İçgüdü",      emoji:"🔮", renk:"#6c3483", pastel:"#c39bd3",
+    gorevler:["Bugün içgüdülerine güven: kalbinin sesini duy","Bir karar alırken dur, nefes al, hisset","Sezginin seni nereye götürdüğünü yaz"] },
+  { gun:16, tema:"Bağlantı",    emoji:"🤝", renk:"#1a5276", pastel:"#85c1e9",
+    gorevler:["Sevdiğin birine gerçekten sor: 'Nasılsın?'","Bugün birini gözlemle: ona şefkatle bak","5 dakika sessizce otur, iç bağlantına giriş yap"] },
+  { gun:17, tema:"Akış",        emoji:"💫", renk:"#117a65", pastel:"#76d7c4",
+    gorevler:["Bugün bir şeyi sevdiğin için yap, 'zorunluluk' değil","Bir yaratıcı etkinlik dene (çiz, yaz, pişir)","Seni durduran bir şeyi bırak"] },
+  { gun:18, tema:"Sınırlar",    emoji:"🛡", renk:"#922b21", pastel:"#f1948a",
+    gorevler:["'Hayır' demen gereken bir şeye 'hayır' de","Kendi alanını koru: bir yalnızlık anı yarat","Sınırların neler? 2 tanesini yaz"] },
+  { gun:19, tema:"Şükür",       emoji:"🌻", renk:"#d4ac0d", pastel:"#f9e79f",
+    gorevler:["10 şükür yaz: küçük şeylere odaklan","Yaşayan birine 'seni takdir ediyorum' de","Bugünün en güzel anını akşam yaz"] },
+  { gun:20, tema:"Dönüşüm",     emoji:"🦋", renk:"#6c3483", pastel:"#d2b4de",
+    gorevler:["İşe yaramayan 1 alışkanlığı tanımla","Bu alışkanlığın yerine 1 küçük adım koy","Dönüşüm doğal: bugün bunu hisset"] },
+  { gun:21, tema:"Bütünleşme",  emoji:"🌟", renk:"#1b2631", pastel:"#aab7b8",
+    gorevler:["21 günü düşün: ne öğrendin, ne hissettin?","Kendine bir mektup yaz: 6 ay sonra aç","Bunu kutla: dans et, bağır, ağla — hissettir"] },
+];
+
+const PACKAGES = [
+  { id:"raporlama", emoji:"📊", baslik:"Sınırsız Raporlama", fiyat:"₺49/ay",
+    fiyatYillik:"₺399/yıl", renk:"#8b5aa0",
+    aciklama:"Günlük, haftalık ve aylık tüm istatistiklerine eriş. Çakra geçmişin, nefes sayın ve niyet arşivin sana açılır.",
+    ozellikler:["Haftalık detaylı rapor","Aylık çakra haritası","Niyet arşivi","Nefes geçmişi"] },
+  { id:"program21", emoji:"🌱", baslik:"21 Günlük Program", fiyat:"₺149",
+    fiyatYillik:null, renk:"#27ae60",
+    aciklama:"Her günün teması, ödevleri ve rehberli yolculuğu. 21 gün boyunca kendini yeniden keşfet.",
+    ozellikler:["21 günlük günlük ödevler","Her gün farklı tema","İlerleme takibi","Tamamlama rozeti"] },
+  { id:"hediye", emoji:"🎁", baslik:"Hediye Kartı", fiyat:"₺199",
+    fiyatYillik:null, renk:"#c0392b",
+    aciklama:"Sevdiğin birine Niyet Premium'u hediye et. Ödeme sonrası bir hediye kodu oluşturulur.",
+    ozellikler:["Anında hediye kodu","21 Günlük Program içerir","İstediğin kişiye gönder"] },
+];
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
@@ -197,6 +262,12 @@ const GLOBAL_CSS = `
   }
   .notif-btn:hover { background:rgba(255,255,255,0.1); color:#e8e0d5; }
   .notif-btn.sent { background:rgba(100,180,120,0.2); border-color:rgba(100,180,120,0.35); color:#82d9a3; }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .prem-tag {
+    font-size:9px; letter-spacing:2px; color:#4ade80;
+    background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.22);
+    border-radius:100px; padding:3px 9px; display:inline-block;
+  }
 `;
 
 async function sendNotif(title, body) {
@@ -554,6 +625,193 @@ function TerapiScreen({ onBack }) {
   return null;
 }
 
+function PaymentModal({ pkg, onSuccess, onClose }) {
+  const [step,     setStep]     = useState("form");
+  const [cardNo,   setCardNo]   = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiry,   setExpiry]   = useState("");
+  const [cvv,      setCvv]      = useState("");
+  const [giftCode, setGiftCode] = useState("");
+
+  const fmt    = v => v.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g,"$1 ").trim();
+  const fmtExp = v => { const d=v.replace(/\D/g,"").slice(0,4); return d.length>2?d.slice(0,2)+"/"+d.slice(2):d; };
+  const canPay = cardNo.replace(/\s/g,"").length===16 && cardName.length>=2 && expiry.length===5 && cvv.length===3;
+
+  const handlePay = () => {
+    setStep("loading");
+    setTimeout(() => {
+      const code = pkg.id==="hediye" ? "NİYET-"+Math.random().toString(36).toUpperCase().slice(2,8) : "";
+      setGiftCode(code);
+      setStep("success");
+      onSuccess(pkg.id);
+    }, 2200);
+  };
+
+  if (step==="loading") return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:22 }}>
+      <div style={{ width:56,height:56,borderRadius:"50%",border:"2px solid rgba(139,90,160,0.2)",borderTop:"2px solid #8b5aa0",animation:"spin 1s linear infinite" }} />
+      <div style={{ fontSize:11,color:"#5a6a7a",letterSpacing:3 }}>İŞLEMDE</div>
+    </div>
+  );
+
+  if (step==="success") return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20,textAlign:"center",padding:32 }}>
+      <div style={{ fontSize:56 }}>✨</div>
+      <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>Tamamlandı</div>
+      <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:1.8 }}><strong style={{color:"#e8e0d5"}}>{pkg.baslik}</strong><br/>aktif edildi.</div>
+      {giftCode && (
+        <div style={{ background:"rgba(139,90,160,0.12)",border:"1px solid rgba(139,90,160,0.28)",borderRadius:14,padding:"18px 28px",marginTop:8 }}>
+          <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",marginBottom:10 }}>HEDİYE KODUN</div>
+          <div style={{ fontSize:22,letterSpacing:5,color:"#d4b8f0",fontWeight:300 }}>{giftCode}</div>
+          <div style={{ fontSize:10,color:"#5a6a7a",marginTop:8,letterSpacing:1 }}>Bu kodu sevdiğin kişiye gönder</div>
+        </div>
+      )}
+      <button className="niyet-btn-primary" style={{ marginTop:8 }} onClick={onClose}>Devam Et</button>
+    </div>
+  );
+
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+      <div style={{ maxWidth:360,width:"100%",position:"relative" }}>
+        <button onClick={onClose} style={{ position:"absolute",top:-10,right:-10,background:"transparent",border:"none",color:"#4a5a6a",fontSize:18,cursor:"pointer",lineHeight:1 }}>✕</button>
+        <div style={{ textAlign:"center",marginBottom:28 }}>
+          <div style={{ fontSize:36,marginBottom:10 }}>{pkg.emoji}</div>
+          <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{pkg.baslik}</div>
+          <div style={{ fontSize:26,color:"#c8a96e",letterSpacing:2 }}>{pkg.fiyat}</div>
+        </div>
+        <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+          <input className="niyet-input" placeholder="Kart Numarası" value={cardNo} onChange={e=>setCardNo(fmt(e.target.value))} style={{ letterSpacing:2,fontSize:15 }} />
+          <input className="niyet-input" placeholder="Kart Üzerindeki İsim" value={cardName} onChange={e=>setCardName(e.target.value)} />
+          <div style={{ display:"flex",gap:10 }}>
+            <input className="niyet-input" placeholder="AA/YY" value={expiry} onChange={e=>setExpiry(fmtExp(e.target.value))} style={{ flex:1 }} />
+            <input className="niyet-input" placeholder="CVV" value={cvv} onChange={e=>setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} style={{ flex:1 }} />
+          </div>
+        </div>
+        <div style={{ marginTop:8,fontSize:10,color:"#2a3a4a",letterSpacing:0.5,textAlign:"center" }}>🔒 SSL ile korunmaktadır</div>
+        <button
+          className="niyet-btn-primary"
+          style={{ width:"100%",marginTop:18,opacity:canPay?1:0.4,cursor:canPay?"pointer":"default" }}
+          onClick={canPay?handlePay:undefined}
+        >
+          {pkg.fiyat} ÖDE
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PremiumScreen({ onBack, onBuy, features }) {
+  return (
+    <div style={{ maxWidth:420,width:"100%",padding:"34px 22px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:32 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#c8a96e",marginBottom:9 }}>✦ PREMİUM</div>
+        <div style={{ fontSize:24,fontWeight:300,letterSpacing:2,marginBottom:8 }}>Daha Derine Git</div>
+        <div style={{ fontSize:12,color:"#6a7a8a",lineHeight:1.7 }}>Uygulamanın tüm potansiyelini aç</div>
+      </div>
+      <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
+        {PACKAGES.map(pkg=>(
+          <div key={pkg.id} style={{ border:`1px solid ${pkg.renk}44`,borderRadius:20,padding:"20px 20px",background:`rgba(${hexToRgb(pkg.renk)},0.05)`,position:"relative" }}>
+            {features[pkg.id] && <span className="prem-tag" style={{ position:"absolute",top:14,right:16 }}>AKTİF</span>}
+            <div style={{ display:"flex",alignItems:"flex-start",gap:14,marginBottom:12 }}>
+              <div style={{ fontSize:30 }}>{pkg.emoji}</div>
+              <div>
+                <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,marginBottom:3 }}>{pkg.baslik}</div>
+                <div style={{ fontSize:20,color:"#c8a96e",letterSpacing:1 }}>{pkg.fiyat}</div>
+                {pkg.fiyatYillik && <div style={{ fontSize:10,color:"#5a6a7a" }}>{pkg.fiyatYillik} (en uygun)</div>}
+              </div>
+            </div>
+            <div style={{ fontSize:12,color:"#6a7a8a",lineHeight:1.7,marginBottom:12 }}>{pkg.aciklama}</div>
+            <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginBottom:features[pkg.id]?0:14 }}>
+              {pkg.ozellikler.map(o=>(
+                <span key={o} style={{ fontSize:10,color:`${pkg.renk}dd`,background:`rgba(${hexToRgb(pkg.renk)},0.08)`,border:`1px solid ${pkg.renk}30`,borderRadius:100,padding:"3px 9px" }}>✓ {o}</span>
+              ))}
+            </div>
+            {!features[pkg.id] && (
+              <button className="niyet-btn-primary" style={{ width:"100%",fontSize:12,letterSpacing:2 }} onClick={()=>onBuy(pkg)}>Satın Al</button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button className="niyet-btn" style={{ width:"100%",marginTop:18 }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
+function Program21Screen({ onBack }) {
+  const [tasks, setTasks] = useState(()=>{
+    try{ return JSON.parse(localStorage.getItem("niyet_p21_tasks")||"{}"); }catch{ return {}; }
+  });
+  const [startDate] = useState(()=>{
+    let d=localStorage.getItem("niyet_p21_start");
+    if(!d){ d=new Date().toISOString(); localStorage.setItem("niyet_p21_start",d); }
+    return d;
+  });
+
+  const dayNo = Math.min(21, Math.floor((Date.now()-new Date(startDate).getTime())/86400000)+1);
+  const gun = PROGRAM_21[dayNo-1];
+  const todayTasks = tasks[dayNo]||{};
+  const allDone = gun.gorevler.every((_,i)=>todayTasks[i]);
+  const completedDays = PROGRAM_21.filter((g,i)=>{
+    const d=tasks[i+1]||{};
+    return g.gorevler.every((_,j)=>d[j]);
+  }).length;
+
+  const toggleTask = i => {
+    const updated = {...tasks,[dayNo]:{...todayTasks,[i]:!todayTasks[i]}};
+    setTasks(updated);
+    localStorage.setItem("niyet_p21_tasks",JSON.stringify(updated));
+  };
+
+  return (
+    <div style={{ maxWidth:400,width:"100%",padding:"34px 22px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:24 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>21 GÜNLÜK PROGRAM</div>
+        <div style={{ background:"rgba(255,255,255,0.05)",borderRadius:100,height:5,overflow:"hidden",marginBottom:7 }}>
+          <div style={{ width:`${(completedDays/21)*100}%`,height:"100%",background:"linear-gradient(90deg,#4ade80,#8b5aa0)",borderRadius:100,transition:"width 0.5s" }} />
+        </div>
+        <div style={{ fontSize:10,color:"#5a6a7a",letterSpacing:1 }}>{completedDays} / 21 gün tamamlandı</div>
+      </div>
+      <div style={{ border:`1px solid ${gun.renk}55`,borderRadius:22,padding:"22px 20px",background:`rgba(${hexToRgb(gun.renk)},0.05)`,marginBottom:18 }}>
+        <div style={{ display:"flex",alignItems:"center",gap:14,marginBottom:20 }}>
+          <div style={{ width:54,height:54,borderRadius:"50%",background:`radial-gradient(circle,${gun.renk}aa,${gun.pastel}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24 }}>{gun.emoji}</div>
+          <div>
+            <div style={{ fontSize:9,letterSpacing:4,color:"#4a5a6a" }}>GÜN {gun.gun}</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:gun.pastel }}>{gun.tema}</div>
+          </div>
+        </div>
+        <div style={{ display:"flex",flexDirection:"column",gap:13 }}>
+          {gun.gorevler.map((gorev,i)=>(
+            <div key={i} onClick={()=>toggleTask(i)} style={{ display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer",opacity:todayTasks[i]?0.45:1,transition:"opacity 0.3s" }}>
+              <div style={{ width:22,height:22,borderRadius:"50%",flexShrink:0,marginTop:1,border:`1.5px solid ${todayTasks[i]?"#4ade80":"rgba(255,255,255,0.18)"}`,background:todayTasks[i]?"rgba(74,222,128,0.18)":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,transition:"all 0.22s" }}>
+                {todayTasks[i]&&"✓"}
+              </div>
+              <div style={{ fontSize:14,lineHeight:1.65,fontWeight:300,textDecoration:todayTasks[i]?"line-through":"none" }}>{gorev}</div>
+            </div>
+          ))}
+        </div>
+        {allDone && (
+          <div style={{ marginTop:18,textAlign:"center",padding:"11px",background:"rgba(74,222,128,0.07)",border:"1px solid rgba(74,222,128,0.18)",borderRadius:11 }}>
+            <div style={{ fontSize:12,color:"#4ade80",letterSpacing:1 }}>✓ Bugün tamamlandı</div>
+          </div>
+        )}
+      </div>
+      <div style={{ display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:20 }}>
+        {PROGRAM_21.map((g,i)=>{
+          const d=tasks[i+1]||{};
+          const done=g.gorevler.every((_,j)=>d[j]);
+          const isToday=i+1===dayNo;
+          return (
+            <div key={i} style={{ aspectRatio:"1",borderRadius:7,background:done?`rgba(${hexToRgb(g.renk)},0.45)`:isToday?"rgba(255,255,255,0.1)":"rgba(255,255,255,0.03)",border:isToday?"1px solid rgba(255,255,255,0.28)":"1px solid rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:isToday?"#fff":"#4a5a6a" }}>
+              {done?"✓":i+1}
+            </div>
+          );
+        })}
+      </div>
+      <button className="niyet-btn" style={{ width:"100%" }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
 export default function NiyetApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
@@ -566,6 +824,14 @@ export default function NiyetApp() {
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const breathRef = useRef(null);
+  const [premiumFeatures, setPremiumFeatures] = useState(()=>{ try{ return JSON.parse(localStorage.getItem("niyet_premium")||"{}"); }catch{ return {}; } });
+  const [payModal, setPayModal] = useState(null);
+  const handlePremiumSuccess = pkgId => {
+    const updated = {...premiumFeatures,[pkgId]:true};
+    setPremiumFeatures(updated);
+    localStorage.setItem("niyet_premium",JSON.stringify(updated));
+    setPayModal(null);
+  };
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
@@ -592,7 +858,7 @@ export default function NiyetApp() {
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
-    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",
+    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",premium:"139,90,160",program21:"45,120,65",
   }[screen]||"139,90,160";
 
   const NAV = [
@@ -788,12 +1054,59 @@ export default function NiyetApp() {
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
           </div>
+          {premiumFeatures.program21 && (
+            <button className="niyet-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("program21")}>🌱 21 Günlük Programım →</button>
+          )}
+          {premiumFeatures.raporlama && (
+            <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 18px",marginBottom:16,background:"rgba(200,169,110,0.03)" }}>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:12 }}>✦ DETAYLI RAPOR</div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9 }}>
+                {[
+                  {label:"Haftalık Nefes",value:`${breathCount * 7}`,color:"#82d9a3"},
+                  {label:"Aktif Günler",value:"7 / 7",color:"#85c1e9"},
+                  {label:"En Güçlü Çakra",value:chakra.name,color:chakra.pastel},
+                  {label:"Toplam Niyet",value:"21+",color:"#f0c27f"},
+                ].map((s,i)=>(
+                  <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"11px 13px" }}>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
+                    <div style={{ fontSize:14,color:s.color,fontWeight:300 }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {!premiumFeatures.raporlama && !premiumFeatures.program21 && (
+            <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 20px",marginBottom:16,textAlign:"center",background:"rgba(200,169,110,0.03)" }}>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:7 }}>✦ PREMİUM</div>
+              <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:12,lineHeight:1.7 }}>Sınırsız raporlama, 21 günlük program ve hediye kartı.</div>
+              <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,color:"#c8a96e",borderColor:"rgba(200,169,110,0.3)" }} onClick={()=>setScreen("premium")}>Keşfet →</button>
+            </div>
+          )}
           <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","terapi","gun"].includes(screen) && (
+      {screen==="premium" && (
+        <PremiumScreen
+          onBack={()=>setScreen("harita")}
+          onBuy={pkg=>setPayModal(pkg)}
+          features={premiumFeatures}
+        />
+      )}
+      {screen==="program21" && premiumFeatures.program21 && (
+        <Program21Screen onBack={()=>setScreen("premium")} />
+      )}
+
+      {payModal && (
+        <PaymentModal
+          pkg={payModal}
+          onSuccess={handlePremiumSuccess}
+          onClose={()=>setPayModal(null)}
+        />
+      )}
+
+      {!["giris","terapi","gun","premium","program21"].includes(screen) && (
         <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
