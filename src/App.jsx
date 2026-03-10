@@ -792,6 +792,7 @@ ${astroText2}
         }),
       });
       const d = await res.json();
+      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
       setChakraAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch {
       setChakraAnaliz("Bağlantı hatası, tekrar dene.");
@@ -867,6 +868,7 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
         }),
       });
       const d = await res.json();
+      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
       setSemptomAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch {
       setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
@@ -982,7 +984,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
     {id:"chakra",icon:"💜",label:"Çakra"},
     {id:"gun",icon:"☀️",label:"Gün"},
     {id:"aksam",icon:"🌙",label:"Akşam"},
-    {id:"harita",icon:<svg viewBox="0 0 14 14" style={{width:"1em",height:"1em",display:"inline-block",verticalAlign:"middle"}} fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round"><path d="M1 13V1h12v12H3V3h8v8H5V5h4v4H7V7"/></svg>,label:"Harita"},
+    {id:"harita",icon:"🗺️",label:"Harita"},
     {id:"rehber",icon:"📖",label:"Rehber"},
   ];
 
