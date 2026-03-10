@@ -716,6 +716,14 @@ export default function NiyetApp() {
   const [semptomAcik, setSemptomAcik] = useState(false);
   const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("niyet_reiki_used") === "1");
   const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("niyet_zihinsel_used") === "1");
+  // İki ayrı arama ekranı
+  const [sikayet, setSikayet] = useState("");
+  const [sikayetHis, setSikayetHis] = useState("");
+  const [sikayetAnaliz, setSikayetAnaliz] = useState("");
+  const [hastalik, setHastalik] = useState("");
+  const [hastalikHis, setHastalikHis] = useState("");
+  const [hastalikAnaliz, setHastalikAnaliz] = useState("");
+  const [raporKopyalandi, setRaporKopyalandi] = useState(false);
 
   function toggleDevMode() {
     const next = !devMode;
@@ -899,6 +907,88 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
     } catch {
       setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
     }
+  };
+
+  const generateSikayetAnaliz = async () => {
+    if (!sikayet.trim()) return;
+    setSikayetAnaliz("__loading__");
+    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
+    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body: JSON.stringify({
+          model:"claude-opus-4-6", max_tokens:900,
+          system:`Sen derin bir holistik enerji rehberisin. Şikayetlere duygusal-ruhsal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
+          messages:[{ role:"user", content:`Şikayet: "${sikayet}"${sikayetHis ? `\nNasıl hissediyorum: "${sikayetHis}"` : ""}
+
+ZİHİNSEL NEDENLER:
+${zihinselListeText}
+
+${REIKI_BILGI}
+${astroTxt}
+
+Şu formatta yanıt ver:
+
+**Zihinsel-Duygusal Kök**
+(En olası duygusal neden — 2 cümle)
+
+**İlgili Çakra & Enerji**
+(Çakra, frekans, tıkanma ilişkisi — 2 cümle)
+
+**Reiki Yaklaşımı**
+(El pozisyonu, niyet, frekans müziği — 2-3 adım)
+
+**Sana Özel Mesaj**
+(Kişiselleştirilmiş, şiirsel, iyileştirici — 2-3 cümle)` }],
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setSikayetAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+    } catch { setSikayetAnaliz("Bağlantı hatası, tekrar dene."); }
+  };
+
+  const generateHastalikAnaliz = async () => {
+    if (!hastalik.trim()) return;
+    setHastalikAnaliz("__loading__");
+    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
+    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body: JSON.stringify({
+          model:"claude-opus-4-6", max_tokens:900,
+          system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
+          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
+
+ZİHİNSEL NEDENLER:
+${zihinselListeText}
+
+${REIKI_BILGI}
+${astroTxt}
+
+Şu formatta yanıt ver:
+
+**Ruhsal Kök**
+(Bu hastalığın ruhsal-duygusal mesajı — 2 cümle)
+
+**Enerji & Çakra Dengesi**
+(Hangi enerji alanı etkileniyor, hangi çakra, nasıl bir blok — 2 cümle)
+
+**İyileşme Ritüeli**
+(Reiki el pozisyonu, frekans, kristal veya doğa önerisi — 2-3 adım)
+
+**Sana Özel Mesaj**
+(Doğum haritasına göre derin, şiirsel bir mesaj — 2-3 cümle)` }],
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setHastalikAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+    } catch { setHastalikAnaliz("Bağlantı hatası, tekrar dene."); }
   };
 
   const generateRapor = async () => {
@@ -1270,230 +1360,101 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* REHBER */}
       {screen==="rehber" && (
         <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
-          <div style={{ textAlign:"center",marginBottom:28,position:"relative" }}>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>BİLGİ</div>
-            <div style={{ fontSize:24,fontWeight:300,letterSpacing:2 }}>Rehber</div>
+          {/* Gizemli arka plan efekti */}
+          <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(60,20,100,0.35) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(20,40,100,0.3) 0%,transparent 60%)",pointerEvents:"none",zIndex:0 }} />
+          <div style={{ textAlign:"center",marginBottom:36,position:"relative" }}>
+            <div style={{ fontSize:9,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>✦ GİZEMLİ REHBERİ ✦</div>
+            <div style={{ fontSize:22,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>Şifa Arayışı</div>
+            <div style={{ fontSize:9,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>☽ bedenin mesajını oku ☽</div>
             <button onClick={toggleDevMode}
               style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
               {devMode ? "DEV ✓" : "DEV"}
             </button>
           </div>
 
-          {/* SEMPTOM ARAMA */}
-          <div style={{ marginBottom:22 }}>
-            {!semptomAcik ? (
-              <button onClick={()=>setSemptomAcik(true)}
-                style={{ width:"100%",display:"flex",alignItems:"center",gap:10,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 18px",cursor:"pointer",color:"#5a7a9a",fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:12,letterSpacing:0.5,transition:"all 0.25s" }}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(139,90,160,0.35)";e.currentTarget.style.color="#9a7ab8";}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.08)";e.currentTarget.style.color="#5a7a9a";}}>
-                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5L14 14"/></svg>
-                <span>Bir şikayet veya hastalık ara...</span>
-              </button>
-            ) : (
-              <div style={{ background:"rgba(20,10,40,0.7)",border:"1px solid rgba(139,90,160,0.25)",borderRadius:16,padding:"18px 18px 16px",backdropFilter:"blur(12px)" }}>
-                <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:12 }}>
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#9a7ab8" strokeWidth="1.5" strokeLinecap="round"><circle cx="6.5" cy="6.5" r="5"/><path d="M10.5 10.5L14 14"/></svg>
-                  <span style={{ fontSize:9,letterSpacing:3,color:"#7a5a90" }}>SEMPTOM & HASTALIK ARA</span>
-                  <button onClick={()=>{setSemptomAcik(false);setSemptomAnaliz("");setSemptomInput("");}}
-                    style={{ marginLeft:"auto",background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:14,lineHeight:1 }}>×</button>
-                </div>
-                {semptomAnaliz !== "__loading__" && semptomAnaliz !== "__no_key__" && !semptomAnaliz && (
-                  <div style={{ display:"flex",gap:8 }}>
-                    <input
-                      value={semptomInput}
-                      onChange={e=>setSemptomInput(e.target.value)}
-                      onKeyDown={e=>e.key==="Enter" && generateSemptomAnaliz()}
-                      placeholder="örn: kabız oldum, baş ağrısı, uyuyamıyorum..."
-                      style={{ flex:1,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 14px",color:"#d0c8e8",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none" }}
-                      autoFocus
-                    />
-                    <button onClick={generateSemptomAnaliz}
-                      style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,100,200,0.6))",border:"none",borderRadius:10,padding:"10px 14px",cursor:"pointer",color:"#e0d0f8",fontSize:13 }}>
-                      →
-                    </button>
-                  </div>
-                )}
-                {semptomAnaliz === "__loading__" && (
-                  <div style={{ textAlign:"center",padding:"16px 0" }}>
-                    <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
-                  </div>
-                )}
-                {semptomAnaliz && semptomAnaliz !== "__loading__" && semptomAnaliz !== "__no_key__" && (
+          {/* ARAMA PANELİ 1 — ŞİKAYET */}
+          {(() => {
+            const AramaPaneli = ({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder }) => (
+              <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
+                {/* Panel başlığı */}
+                <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
+                  <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0 }}>{simge}</div>
                   <div>
-                    <div style={{ fontSize:9,letterSpacing:2,color:"#9a7ab8",marginBottom:10 }}>{semptomInput.toUpperCase()} — ANALİZ</div>
-                    <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:2,whiteSpace:"pre-wrap" }}>{semptomAnaliz}</div>
-                    <button onClick={()=>{setSemptomAnaliz("");setSemptomInput("");}}
-                      style={{ background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2,marginTop:12,display:"block" }}>
-                      YENİ ARAMA
+                    <div style={{ fontSize:10,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
+                    <div style={{ fontSize:10,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
+                  </div>
+                </div>
+
+                {analiz === "__loading__" ? (
+                  <div style={{ textAlign:"center",padding:"24px 0" }}>
+                    <div style={{ fontSize:18,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
+                    <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>OKUNUM YAPILIYOR...</div>
+                  </div>
+                ) : analiz ? (
+                  <div>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} · ANALİZ</div>
+                    <div style={{ fontSize:12.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
+                    <button onClick={onSifirla}
+                      style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:9,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
+                      ✦ YENİ ARAMA
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <input
+                      value={value}
+                      onChange={e=>onChange(e.target.value)}
+                      placeholder={placeholder}
+                      style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
+                    />
+                    <textarea
+                      value={his}
+                      onChange={e=>onHisChange(e.target.value)}
+                      placeholder="Nasıl hissediyorsun? Nerede ve ne zaman başladı?"
+                      style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:11.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
+                    />
+                    <button onClick={onAra}
+                      style={{ width:"100%",background:`linear-gradient(135deg,${renk}60,${renk}30)`,border:`1px solid ${renk}40`,borderRadius:12,padding:"11px",cursor:"pointer",color:"#e8d8f8",fontSize:11,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+                      ✦ ANLAM ARA
                     </button>
                   </div>
                 )}
               </div>
-            )}
-          </div>
+            );
 
-          {/* Tab seçici */}
-          <div style={{ display:"flex",gap:0,marginBottom:24,background:"rgba(255,255,255,0.03)",borderRadius:14,padding:4,border:"1px solid rgba(255,255,255,0.07)" }}>
-            {[
-              {id:"reiki",label:"✦ Reiki"},
-              {id:"zihinsel",label:"🧠 Zihinsel"},
-              {id:"chakraanaliz",label:"🔮 Çakra"},
-            ].map(t=>(
-              <button key={t.id} onClick={()=>setRehberTab(t.id)}
-                style={{ flex:1,padding:"9px 0",background:rehberTab===t.id?"rgba(139,90,160,0.3)":"transparent",border:"none",borderRadius:11,color:rehberTab===t.id?"#d0b0f0":"#5a6a7a",fontSize:11,letterSpacing:0.8,cursor:"pointer",transition:"all 0.25s",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {/* REİKİ REHBERİ */}
-          {rehberTab==="reiki" && (
-            <div>
-              {!reikiUsed ? (
-                <div style={{ textAlign:"center",padding:"30px 20px" }}>
-                  <div style={{ fontSize:32,marginBottom:14 }}>🌸</div>
-                  <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:8 }}>Reiki Rehberi</div>
-                  <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:20 }}>
-                    Chakra sembolleri, enerji aktarım teknikleri<br/>ve el pozisyonları rehberi.<br/><br/>
-                    <strong style={{ color:"#9a7ab8" }}>1 ücretsiz kullanım</strong> hakkın var.
-                  </div>
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                    onClick={()=>{ localStorage.setItem("niyet_reiki_used","1"); setReikiUsed(true); }}>
-                    ✦ Rehberi Aç
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  {[
-                    { baslik:"Reiki Nedir?", icerik:"Reiki, evrensel yaşam enerjisinin eller aracılığıyla aktarıldığı bir iyileştirme yöntemidir. Japonya'da Dr. Mikao Usui tarafından 1900'lerin başında geliştirilmiştir." },
-                    { baslik:"5 Reiki İlkesi", icerik:"1. Bugün kızma\n2. Bugün endişelenme\n3. Bugün şükret\n4. Bugün dürüst çalış\n5. Bugün her canlıya şefkatle davran" },
-                    { baslik:"El Pozisyonları", icerik:"• Baş: Göz ve burun üzeri — sezgi\n• Şakaklar: Beyin dengeleme\n• Boğaz: İfade ve iletişim\n• Kalp: Sevgi ve şifa merkezi\n• Solar pleksus: Güç ve denge\n• Karın: Yaratıcılık ve duygu\n• Dizler & ayaklar: Topraklama" },
-                    { baslik:"Chakra Renkleri & Frekansları", icerik:"🔴 Kök — 396 Hz — Güvenlik\n🟠 Sakral — 417 Hz — Yaratıcılık\n🟡 Solar — 528 Hz — Güç\n💚 Kalp — 639 Hz — Sevgi\n🔵 Boğaz — 741 Hz — İfade\n🟣 Üçüncü Göz — 852 Hz — Sezgi\n⚪ Taç — 963 Hz — Bilinç" },
-                    { baslik:"Seans Süreci", icerik:"1. Niyetle başla — enerjiyi davetle\n2. Eller yaklaşık 2-5 cm üstte\n3. Her pozisyonda 3-5 dk kal\n4. Enerji akışını hisset\n5. Şükranla kapat" },
-                  ].map((k,i)=>(
-                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:13,padding:"14px 16px",marginBottom:10 }}>
-                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#9a6ab0",marginBottom:7 }}>{k.baslik.toUpperCase()}</div>
-                      <div style={{ fontSize:12,color:"#c0b0d8",lineHeight:1.85,whiteSpace:"pre-line" }}>{k.icerik}</div>
-                    </div>
-                  ))}
-                  <div style={{ textAlign:"center",marginTop:16,padding:"12px",background:"rgba(139,90,160,0.07)",border:"1px solid rgba(139,90,160,0.15)",borderRadius:12 }}>
-                    <div style={{ fontSize:10,color:"#7a5a90",letterSpacing:2 }}>PREMIUM</div>
-                    <div style={{ fontSize:11,color:"#5a6a7a",marginTop:4 }}>Kişisel Reiki seansı ve detaylı rehber için</div>
-                    <a href="mailto:destek@niyet.app?subject=Premium" style={{ fontSize:11,color:"#9a7ab8",textDecoration:"none" }}>Premium'a Geç →</a>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ZİHİNSEL NEDENLER */}
-          {/* ÇAKRA ANALİZİ */}
-          {rehberTab==="chakraanaliz" && (
-            <div>
-              <div style={{ textAlign:"center",marginBottom:20 }}>
-                <div style={{ fontSize:28,marginBottom:8 }}>🔮</div>
-                <div style={{ fontSize:15,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:6 }}>Kişisel Çakra Analizi</div>
-                <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8 }}>
-                  Nasıl hissettiğini yaz.<br/>
-                  Hangi çakranın sıkıştığını bulalım.
-                </div>
-              </div>
-              <div style={{ marginBottom:14 }}>
-                <textarea
-                  value={chakraInput}
-                  onChange={e=>setChakraInput(e.target.value)}
-                  placeholder="örn: ifade edemiyorum, kendimi anlatamıyorum..."
-                  style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:80,lineHeight:1.7,outline:"none" }}
+            return (
+              <>
+                <AramaPaneli
+                  baslik="Şikayet Ara"
+                  simge="☽"
+                  aciklama="bedeninin sesini dinle"
+                  renk="#a070d0"
+                  value={sikayet}
+                  onChange={setSikayet}
+                  his={sikayetHis}
+                  onHisChange={setSikayetHis}
+                  analiz={sikayetAnaliz}
+                  onAra={generateSikayetAnaliz}
+                  onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
+                  placeholder="örn: baş ağrısı, kabız, uyuyamıyorum, yorgunluk..."
                 />
-              </div>
-              {chakraAnaliz === "__loading__" ? (
-                <div style={{ textAlign:"center",padding:"20px 0" }}>
-                  <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
-                </div>
-              ) : chakraAnaliz ? (
-                <div>
-                  {(() => {
-                    const idx = chakraEsle(chakraInput);
-                    const ch = CHAKRAS_7[idx];
-                    return (
-                      <div style={{ background:`rgba(${parseInt(ch.color.slice(1,3),16)},${parseInt(ch.color.slice(3,5),16)},${parseInt(ch.color.slice(5,7),16)},0.1)`,border:`1px solid ${ch.pastel}33`,borderRadius:14,padding:"16px 18px",marginBottom:14 }}>
-                        <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:12 }}>
-                          <span style={{ fontSize:20 }}>{ch.emoji}</span>
-                          <div>
-                            <div style={{ fontSize:9,letterSpacing:2.5,color:ch.pastel }}>{ch.name.toUpperCase()} ÇAKRASI</div>
-                            <div style={{ fontSize:10,color:"#5a6a7a",marginTop:2 }}>{ch.element} · {ch.desc}</div>
-                          </div>
-                        </div>
-                        <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{chakraAnaliz}</div>
-                      </div>
-                    );
-                  })()}
-                  <button onClick={()=>{ setChakraAnaliz(""); setChakraInput(""); }}
-                    style={{ background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2,display:"block",margin:"0 auto" }}>
-                    YENİ ANALİZ
-                  </button>
-                </div>
-              ) : (
-                <button className="niyet-btn-primary"
-                  style={{ width:"100%",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:12 }}
-                  onClick={generateChakraAnaliz}>
-                  🔮 Analiz Et
-                </button>
-              )}
-            </div>
-          )}
-
-          {rehberTab==="zihinsel" && (
-            <div>
-              {!zihinselUsed ? (
-                <div style={{ textAlign:"center",padding:"30px 20px" }}>
-                  <div style={{ fontSize:32,marginBottom:14 }}>🧠</div>
-                  <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:8 }}>Hastalıkların Zihinsel Nedenleri</div>
-                  <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:20 }}>
-                    Bedensel şikayetlerin arkasındaki<br/>duygusal ve zihinsel kökler.<br/><br/>
-                    <strong style={{ color:"#9a7ab8" }}>1 ücretsiz kullanım</strong> hakkın var.
-                  </div>
-                  <button className="niyet-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                    onClick={()=>{ localStorage.setItem("niyet_zihinsel_used","1"); setZihinselUsed(true); }}>
-                    ✦ Rehberi Aç
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  {[
-                    { organ:"Baş Ağrısı",      neden:"Kendini küçümseme, özeleştiri, korku" },
-                    { organ:"Boyun",            neden:"Esneklik eksikliği, inatçılık, başkalarının bakış açısını görmek istememek" },
-                    { organ:"Omuzlar",          neden:"Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi" },
-                    { organ:"Kalp",             neden:"Sevgi ve neşeyi reddetmek, sertleşen kalp" },
-                    { organ:"Sırt (üst)",       neden:"Duygusal destek eksikliği, sevilmediği hissi" },
-                    { organ:"Sırt (alt)",       neden:"Para ve maddi destek korkusu" },
-                    { organ:"Mide",             neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
-                    { organ:"Bağırsaklar",      neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
-                    { organ:"Diz",              neden:"Ego, gurur, inat — eğilmemek" },
-                    { organ:"Deri",             neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
-                    { organ:"Boğaz",            neden:"Kendini ifade edememe, öfkeyi yutmak" },
-                    { organ:"Gözler",           neden:"Geçmişi ya da geleceği görmek istememe" },
-                    { organ:"Kulaklar",         neden:"Duymak istemediğin şeyler, öfke" },
-                    { organ:"Akciğerler",       neden:"Hayatı tam almayı reddetme, üzüntü" },
-                    { organ:"Karaciğer",        neden:"Kronik öfke, eleştiri, akıl yürütme" },
-                    { organ:"Böbrekler",        neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
-                  ].map((r,i)=>(
-                    <div key={i} style={{ display:"flex",gap:12,background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:12,padding:"11px 14px",marginBottom:8,alignItems:"flex-start" }}>
-                      <div style={{ fontSize:11,color:"#c0a0e0",fontWeight:600,minWidth:90,letterSpacing:0.3 }}>{r.organ}</div>
-                      <div style={{ fontSize:11,color:"#7a8a9a",lineHeight:1.7 }}>{r.neden}</div>
-                    </div>
-                  ))}
-                  <div style={{ textAlign:"center",marginTop:16,padding:"12px",background:"rgba(139,90,160,0.07)",border:"1px solid rgba(139,90,160,0.15)",borderRadius:12 }}>
-                    <div style={{ fontSize:10,color:"#7a5a90",letterSpacing:2 }}>PREMIUM</div>
-                    <div style={{ fontSize:11,color:"#5a6a7a",marginTop:4 }}>Tam liste ve kişisel analiz için</div>
-                    <a href="mailto:destek@niyet.app?subject=Premium" style={{ fontSize:11,color:"#9a7ab8",textDecoration:"none" }}>Premium'a Geç →</a>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+                <AramaPaneli
+                  baslik="Hastalık Ara"
+                  simge="✦"
+                  aciklama="ruhsal kökünü keşfet"
+                  renk="#5080d8"
+                  value={hastalik}
+                  onChange={setHastalik}
+                  his={hastalikHis}
+                  onHisChange={setHastalikHis}
+                  analiz={hastalikAnaliz}
+                  onAra={generateHastalikAnaliz}
+                  onSifirla={()=>{ setHastalikAnaliz(""); setHastalik(""); setHastalikHis(""); }}
+                  placeholder="örn: migren, reflü, kronik yorgunluk, anksiyete..."
+                />
+              </>
+            );
+          })()}
         </div>
       )}
 
@@ -1579,10 +1540,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : (
               <div>
                 <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
-                <button onClick={()=>setAiRapor("")}
-                  style={{ marginTop:14,background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
-                  YENİLE
-                </button>
+                <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
+                  <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
+                    style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:9,letterSpacing:2 }}>
+                    {raporKopyalandi ? "✓ KOPYALANDI" : "KOPYALA"}
+                  </button>
+                  {navigator.share && (
+                    <button onClick={()=>navigator.share({ title:"Haftalık İçsel Raporum", text:aiRapor })}
+                      style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:9,letterSpacing:2 }}>
+                      PAYLAŞ
+                    </button>
+                  )}
+                  <button onClick={()=>setAiRapor("")}
+                    style={{ background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:9,letterSpacing:2,marginLeft:"auto" }}>
+                    YENİLE
+                  </button>
+                </div>
               </div>
             )}
           </div>
