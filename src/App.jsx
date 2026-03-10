@@ -683,6 +683,8 @@ export default function NiyetApp() {
   const [devMode, setDevMode] = useState(() => localStorage.getItem("niyet_dev_mode") === "1");
   const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("niyet_rapor_used") === "1");
   const [rehberTab, setRehberTab] = useState("reiki");
+  const [chakraInput, setChakraInput] = useState("");
+  const [chakraAnaliz, setChakraAnaliz] = useState("");
   const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("niyet_reiki_used") === "1");
   const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("niyet_zihinsel_used") === "1");
 
@@ -730,6 +732,68 @@ export default function NiyetApp() {
     localStorage.setItem("niyet_log", JSON.stringify(filtered.slice(0,7)));
     setAiRapor("");
   },[screen]);
+
+  const CHAKRA_KEYWORDS = [
+    { idx:0, keywords:["güvensiz","korkuyorum","korku","para","maddi","güvende değil","temel","ev","aile","toprak","istikrar","aidiyetsiz","destek yok","hayatta kalamıyorum","köksüz"] },
+    { idx:1, keywords:["yaratıcı","ilişki","duygu","akış","zevk","suçluluk","utanç","hissed","cinsel","sevinç","neşe","coşku","kendimi bırakamıyorum"] },
+    { idx:2, keywords:["güç","kontrol","özgüven","kimlik","irade","sinir","öfke","küçüm","yetersiz","ego","cesaret","güçsüz","başaramıyorum","kendinle","kendime güvenemiyorum"] },
+    { idx:3, keywords:["sevgi","sevemiyorum","sevilemiyorum","kayıp","üzüntü","acı","af","şefkat","yalnız","kalp","bağlantı","merhamet","sevilmiyorum","sevilmek"] },
+    { idx:4, keywords:["ifade","söyleyemiyorum","anlatamıyorum","iletişim","ses","dürüstlük","konuşamıyorum","dinlenilmiyorum","anlaşılamıyorum","söz"] },
+    { idx:5, keywords:["sezgi","karar veremiyorum","netlik","yön","hayal","anlam","amaç","kafam karışık","göremiyorum","içgüdü","belirsiz","yol bulamıyorum"] },
+    { idx:6, keywords:["anlamsız","bağlantısız","spiritüel","ruh","bütünlük","evren","tanrı","amaç yok","boşluk","varoluş","neden yaşıyorum"] },
+  ];
+  const CHAKRA_ZIHINSEL = [
+    "Sırt (alt), Böbrekler — Para ve maddi destek korkusu; eleştiri ve başarısızlık korkusu",
+    "Bağırsaklar, Mide — Eski düşünceleri bırakamama; yeniliklere direnç",
+    "Mide, Karaciğer — Korku, yeni fikirlere direnç; kronik öfke ve eleştiri",
+    "Kalp, Sırt (üst), Akciğerler — Sevgi ve neşeyi reddetmek; duygusal destek eksikliği; üzüntü",
+    "Boğaz, Kulaklar — Kendini ifade edememe, öfkeyi yutmak; duymak istemediğin şeyler",
+    "Gözler, Baş Ağrısı — Geçmişi ya da geleceği görmek istememe; özeleştiri ve korku",
+    "Boyun, Omuzlar — Esneklik eksikliği; aşırı sorumluluk yükü",
+  ];
+
+  function chakraEsle(input) {
+    const t = (input||"").toLowerCase();
+    for (const { idx, keywords } of CHAKRA_KEYWORDS) {
+      if (keywords.some(k => t.includes(k))) return idx;
+    }
+    return 4; // default: Boğaz
+  }
+
+  const generateChakraAnaliz = async () => {
+    if (!chakraInput.trim()) return;
+    const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
+    if (!apiKey) { setChakraAnaliz("__no_key__"); return; }
+    setChakraAnaliz("__loading__");
+    const idx = chakraEsle(chakraInput);
+    const ch = CHAKRAS_7[idx];
+    const zihinsel = CHAKRA_ZIHINSEL[idx];
+    const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method:"POST",
+        headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        body: JSON.stringify({
+          model:"claude-opus-4-6", max_tokens:600,
+          system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
+          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
+
+İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi). Açıklaması: "${ch.desc}"
+Zihinsel-bedensel bağlantısı: ${zihinsel}
+${astroText2}
+
+Şimdi tamamen kişiselleştirilmiş bir mesaj yaz:
+1. Kullanıcının hissini nazikçe doğrula
+2. Bu çakra ve zihinsel köküyle bağlantısını anlat
+3. Doğum haritasına göre ona özel bir öneri veya mesaj sun` }],
+        }),
+      });
+      const d = await res.json();
+      setChakraAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
+    } catch {
+      setChakraAnaliz("Bağlantı hatası, tekrar dene.");
+    }
+  };
 
   const generateRapor = async () => {
     const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY || localStorage.getItem("niyet_api_key");
@@ -840,7 +904,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
     {id:"chakra",icon:"💜",label:"Çakra"},
     {id:"gun",icon:"☀️",label:"Gün"},
     {id:"aksam",icon:"🌙",label:"Akşam"},
-    {id:"harita",icon:"◎",label:"Harita"},
+    {id:"harita",icon:<svg viewBox="0 0 14 14" style={{width:"1em",height:"1em",display:"inline-block",verticalAlign:"middle"}} fill="none" stroke="currentColor" strokeWidth="1.15" strokeLinecap="round"><path d="M1 13V1h12v12H3V3h8v8H5V5h4v4H7V7"/></svg>,label:"Harita"},
     {id:"rehber",icon:"📖",label:"Rehber"},
   ];
 
@@ -1081,8 +1145,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
           {/* Tab seçici */}
           <div style={{ display:"flex",gap:0,marginBottom:24,background:"rgba(255,255,255,0.03)",borderRadius:14,padding:4,border:"1px solid rgba(255,255,255,0.07)" }}>
             {[
-              {id:"reiki",label:"✦ Reiki Rehberi"},
-              {id:"zihinsel",label:"🧠 Zihinsel Nedenler"},
+              {id:"reiki",label:"✦ Reiki"},
+              {id:"zihinsel",label:"🧠 Zihinsel"},
+              {id:"chakraanaliz",label:"🔮 Çakra"},
             ].map(t=>(
               <button key={t.id} onClick={()=>setRehberTab(t.id)}
                 style={{ flex:1,padding:"9px 0",background:rehberTab===t.id?"rgba(139,90,160,0.3)":"transparent",border:"none",borderRadius:11,color:rehberTab===t.id?"#d0b0f0":"#5a6a7a",fontSize:11,letterSpacing:0.8,cursor:"pointer",transition:"all 0.25s",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
@@ -1133,6 +1198,76 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 520 
           )}
 
           {/* ZİHİNSEL NEDENLER */}
+          {/* ÇAKRA ANALİZİ */}
+          {rehberTab==="chakraanaliz" && (
+            <div>
+              <div style={{ textAlign:"center",marginBottom:20 }}>
+                <div style={{ fontSize:28,marginBottom:8 }}>🔮</div>
+                <div style={{ fontSize:15,fontWeight:300,letterSpacing:1,color:"#d0b8e8",marginBottom:6 }}>Kişisel Çakra Analizi</div>
+                <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8 }}>
+                  Nasıl hissettiğini yaz.<br/>
+                  Hangi çakranın sıkıştığını bulalım.
+                </div>
+              </div>
+              <div style={{ marginBottom:14 }}>
+                <textarea
+                  value={chakraInput}
+                  onChange={e=>setChakraInput(e.target.value)}
+                  placeholder="örn: ifade edemiyorum, kendimi anlatamıyorum..."
+                  style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:80,lineHeight:1.7,outline:"none" }}
+                />
+              </div>
+              {chakraAnaliz === "__loading__" ? (
+                <div style={{ textAlign:"center",padding:"20px 0" }}>
+                  <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>ANALİZ EDİLİYOR...</div>
+                </div>
+              ) : chakraAnaliz === "__no_key__" ? (
+                <div>
+                  <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>Anthropic API anahtarını gir.</div>
+                  <input id="chakraApiInput" type="password" placeholder="sk-ant-..." className="niyet-input"
+                    style={{ fontSize:11,letterSpacing:0.5,marginBottom:10 }} />
+                  <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                    <button className="niyet-btn" onClick={()=>setChakraAnaliz("")}>iptal</button>
+                    <button className="niyet-btn-primary"
+                      style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                      onClick={()=>{ const k=document.getElementById("chakraApiInput").value.trim(); if(k){localStorage.setItem("niyet_api_key",k);setChakraAnaliz("");generateChakraAnaliz();} }}>
+                      Kaydet & Analiz Et
+                    </button>
+                  </div>
+                </div>
+              ) : chakraAnaliz ? (
+                <div>
+                  {(() => {
+                    const idx = chakraEsle(chakraInput);
+                    const ch = CHAKRAS_7[idx];
+                    return (
+                      <div style={{ background:`rgba(${parseInt(ch.color.slice(1,3),16)},${parseInt(ch.color.slice(3,5),16)},${parseInt(ch.color.slice(5,7),16)},0.1)`,border:`1px solid ${ch.pastel}33`,borderRadius:14,padding:"16px 18px",marginBottom:14 }}>
+                        <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:12 }}>
+                          <span style={{ fontSize:20 }}>{ch.emoji}</span>
+                          <div>
+                            <div style={{ fontSize:9,letterSpacing:2.5,color:ch.pastel }}>{ch.name.toUpperCase()} ÇAKRASI</div>
+                            <div style={{ fontSize:10,color:"#5a6a7a",marginTop:2 }}>{ch.element} · {ch.desc}</div>
+                          </div>
+                        </div>
+                        <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{chakraAnaliz}</div>
+                      </div>
+                    );
+                  })()}
+                  <button onClick={()=>{ setChakraAnaliz(""); setChakraInput(""); }}
+                    style={{ background:"none",border:"none",color:"#5a6a7a",cursor:"pointer",fontSize:10,letterSpacing:2,display:"block",margin:"0 auto" }}>
+                    YENİ ANALİZ
+                  </button>
+                </div>
+              ) : (
+                <button className="niyet-btn-primary"
+                  style={{ width:"100%",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:12 }}
+                  onClick={generateChakraAnaliz}>
+                  🔮 Analiz Et
+                </button>
+              )}
+            </div>
+          )}
+
           {rehberTab==="zihinsel" && (
             <div>
               {!zihinselUsed ? (
