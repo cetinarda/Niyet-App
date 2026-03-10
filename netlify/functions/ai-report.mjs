@@ -46,7 +46,6 @@ export const handler = async (event) => {
   const response = await client.messages.create({
     model: "claude-opus-4-6",
     max_tokens: 1200,
-    thinking: { type: "adaptive" },
     system: `Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
 
 Rapor şu başlıkları içermeli:

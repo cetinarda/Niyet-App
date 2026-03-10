@@ -73,6 +73,32 @@ function bioritmBar(val) {
   return { pct, positive };
 }
 // ─────────────────────────────────────────────────────────────────────────────
+const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Terazi","Akrep","Yay","Oğlak","Kova","Balık"];
+const EV_GEZEGEN = { "Koç":"Mars","Boğa":"Venüs","İkizler":"Merkür","Yengeç":"Ay","Aslan":"Güneş","Başak":"Merkür","Terazi":"Venüs","Akrep":"Pluto","Yay":"Jüpiter","Oğlak":"Satürn","Kova":"Uranüs","Balık":"Neptün" };
+const GEZEGEN_12EV_GUCLERI = {
+  "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
+  "Ay":     "Duygusal kendine yeterlilik, kendini besleme ve bakma becerisi, ihtiyaç duyan insanlara derin hassasiyet",
+  "Merkür": "Olağanüstü açık iç iletişim kurma yeteneği, içsel gelişim için yazma ve düşünmeyi araç olarak kullanma",
+  "Venüs":  "Kendine sevgi ve nezaket, yalnız olmaktan alınan haz, ideallere derin bağlılık, iç huzur",
+  "Mars":   "Her şeye yeniden başlayabilme kapasitesi, ruhunu keşfetme cesareti ve kararlılığı",
+  "Jüpiter":"Köklü inanç ve felsefi güç, olumlu ve iyimser yaklaşım, içsel yaşamın zenginliğiyle büyüme yeteneği",
+  "Satürn": "Öz disiplin, yalnızlıkla baş edebilme, sorumluluk üstlenme ve tek başına kararlılıkla çalışma",
+  "Uranüs": "Psikolojik özgürlük ve açık fikirlilik, kökleşmiş sezgiler, orijinallik ve beklenmedik durumlarla baş etme",
+  "Neptün": "Sonsuz inanç ve şefkat, esin kaynağının yüksek seviyelerine uyum, ideallere adanma ve özverili sevgi",
+  "Pluto":  "Derin psikolojik anlayış, boyun eğmeyen irade, gerilime dayanabilmek ve kendinizi canlandıracak müthiş güç",
+};
+function approxAscendant(dateStr, timeStr) {
+  if (!timeStr || !dateStr) return null;
+  const parts = timeStr.split(":");
+  if (parts.length < 2) return null;
+  const h = parseInt(parts[0]), m = parseInt(parts[1]);
+  const sunSign = zodiacSign(dateStr);
+  const sunIdx = ZODIAC_ORDER.indexOf(sunSign);
+  if (sunIdx < 0) return null;
+  // Yaklaşık: güneş doğuşunda (~6:00) Yükselen ≈ Güneş burcu; her 2 saatte +1 burç
+  const ascIdx = ((sunIdx + Math.round((h + m / 60 - 6) / 2)) % 12 + 12) % 12;
+  return ZODIAC_ORDER[ascIdx];
+}
 
 const REMINDERS = [
   {
@@ -719,6 +745,10 @@ export default function NiyetApp() {
     bio:        biorhythm(birthDate),
   } : null;
 
+  const yukselen   = birthDate && birthTime ? approxAscendant(birthDate, birthTime) : null;
+  const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
+  const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
+
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
   useEffect(() => {
@@ -896,17 +926,31 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
 
     setAiLoading(true); setAiRapor("");
 
-    const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi — Gizli Benlik Rehberi (Tracy Marks):
-12. ev, bilinçdışının evi ve gizli benliğin yurdudur. Bastırılmış duygular, karmik izler, gölge benlik ve içsel yaşam burada gizlidir.
+    const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi — Gizli Benlik Rehberi (Tracy Marks, "Gizli Benliğiniz"):
+12. ev bilinçdışının evi, gizli benliğin ve karmik belleğin yurdudur. Güneş her gün bu evden geçer; taşıdığı ışıltılı ve iyileştirici enerjiyi tüm diğer evlere yayar.
 
-Temel kavramlar:
-- Gölge Benlik: İfade edilemeyen duygular bilinçdışında büyür ve başkalarına yansıtılarak dışarıda görülür. "Dışarıdaki dünyada ne için savaşıyorsak, iç benliğimizde de bu mücadele vardır." (Carl Jung)
-- Bastırılmış Duygular: Haftanın verilerinde sürekli geri çekilen, ifade edilmeyen, görmezden gelinen temalar karmik kalıplara işaret eder.
-- Ya Hep Ya Hiç Modelleri: Aşırı bastırma → ani patlama döngüsü. Bir gün küçük, ertesi gün taşan enerji 12. ev dinamiğidir.
-- Karmik Deneyimler: Tekrar eden kelimeler, niyetler ve çakra örüntüleri geçmiş deneyimlerin izlerini taşıyabilir.
-- Bütünleşme: Gölgeyi kabullenmek özgürlük getirir. Karanlıkla yüzleşmek, altın madeni bulmaktır.
-- İçsel Ses: Rüyalar, sezgiler ve yalnızlıkta gelen mesajlar 12. evin armağanlarıdır.
-- Gizli Güçler: Yaratıcılık, sezgi, şefkat, tinsellik ve hizmet etme arzusu 12. evin hazineleridir.`;
+TEMEL KAVRAMLAR:
+• Gölge Benlik (Jung): "Dışarıdaki dünyada ne için savaşıyorsak, iç benliğimizde de bu mücadele vardır." Bastırılan enerji bilinçdışında büyür; başkalarına yansıtılarak dışarıda görülür. İnkar ettiğimiz özellikler en güçlü yansımalarımız olur.
+• Ya Hep Ya Hiç Modelleri: Bastırma ne kadar derinse, patlama o kadar sert olur. Bir gün küçük ve zayıf, ertesi gün taşan enerji — 12. ev dinamiğidir. Reddedilen her enerji, bilinçsizce büyüyüp şekil değiştirir.
+• Karmik Deneyimler: Tekrar eden kelimeler, niyetler ve örüntüler çözülmemiş geçmiş deneyimlerin izlerini taşır. 12. evdeki burç, geçmiş yaşamdaki Yükselen Burcu'nu gösterir.
+• Hassasiyet ve Hizmet: 12. ev enerjileri aşırı güvensizlik ve bağımlılık riskini taşıdığı gibi derin empati, şifacılık ve insanlığa hizmet potansiyelini de barındırır. Başkalarının duygularını kendinizinkiymiş gibi duyumsayabilirsiniz.
+• Tinsellik ve İnsanüstü Deneyimler: Bu ev kozmik birliğe ulaşmanın, tanrısal enerjiyi doğrudan deneyimlemenin evidir. Rüyalar, meditasyon, sezgiler ve müzik/şiir buranın armağanlarıdır.
+• Hayalgücü ve Yaratıcı Esinlenme: 12. ev aktif rüya yaşantısına ve yaratıcı esinlenmeye açıklık sağlar. Yazarlar, şairler ve müzisyenlerin çoğunda bu evde güçlü gezegenler bulunur.
+• Bütünleşme: Gölgeyle yüzleşmek karanlığı değil, içindeki altın madeni bulmaktır. Bastırılan enerjileri tanımak, onlara zaman tanımak, şefkatle kucaklamak bütünleşme yoludur. Günlük faaliyetler: rüyaları not etmek, başkalarında rahatsız edici özellikleri gözlemlemek, meditasyon.
+
+GİZLİ GÜÇLER (gezegenin yönetici enerjisine göre):
+• Güneş/Aslan: İçsel zenginliğe güven, canlandırma ve konsantrasyon, liderlik potansiyeli
+• Ay/Yengeç: Duygusal kendine yeterlilik, besleme becerisi, ihtiyaç duyanlara hassasiyet
+• Merkür/İkizler-Başak: Olağanüstü iç iletişim, içsel gelişim için yazma aracı
+• Venüs/Boğa-Terazi: Kendine sevgi, iç huzur, ideallere bağlılık, yalnızlıktan alınan haz
+• Mars/Koç: Yeniden başlayabilme kapasitesi, ruhunu keşfetme cesareti
+• Jüpiter/Yay: Köklü inanç, felsefi güç, olumlu yaklaşım, büyüme yeteneği
+• Satürn/Oğlak: Öz disiplin, yalnızlıkla baş etme, sorumluluk, tek başına kararlılık
+• Uranüs/Kova: Psikolojik özgürlük, açık fikirlilik, kökleşmiş sezgiler, orijinallik
+• Neptün/Balık: Sonsuz inanç, şefkat, esin kaynağına uyum, özverili sevgi
+• Pluto/Akrep: Derin psikolojik anlayış, boyun eğmeyen irade, dönüştürücü güç
+
+ANAHTAR SÖZCÜKLER: yalnızlık · iç gözlem · bastırılan duygular · karmik borçlar · çocukluk travmaları · bitirilmemiş işler · utanç ve suçluluk · sezgiler · hayalgücü · rüya yaşantısı · yaratıcı esinlenme · meditasyon · özverili sevgi · kriz anında ortaya çıkan içsel güç · gizli kaynaklar ve güçler`;
 
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
 - Niyet: ${g.niyet||"—"}
@@ -921,9 +965,12 @@ Kullanıcının Doğum Profili:
 - Güneş Burcu: ${astro.burc}
 - Yaşam Yolu Sayısı: ${astro.yasam}
 - Kişisel Yıl Sayısı: ${astro.kisiselYil}${birthTime ? `\n- Doğum Saati: ${birthTime}` : ""}
-- Bu Haftaki Biyoritm → Fiziksel: %${astro.bio.fiziksel}, Duygusal: %${astro.bio.duygusal}, Zihinsel: %${astro.bio.zihinsel}
+- Bu Haftaki Biyoritm → Fiziksel: %${astro.bio.fiziksel}, Duygusal: %${astro.bio.duygusal}, Zihinsel: %${astro.bio.zihinsel}${yukselen ? `
+- Tahmini Yükselen Burç: ${yukselen}
+- 12. Ev Burcu: ${ev12Burcu} (Yönetici Gezegen: ${ev12Gezegen})
+- 12. Ev Gizli Gücü: ${GEZEGEN_12EV_GUCLERI[ev12Gezegen]||""}` : ""}
 
-Bu bilgileri haftalık yorum yaparken dikkate al; burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.${birthTime ? " Doğum saatini yükselen burç ve günlük enerji ritmi için değerlendir." : ""}
+Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.${yukselen ? ` 12. Ev verisini 'Gizli Benlik & Gölge' bölümünde kişiye özel sentezle: ${ev12Gezegen} enerjisiyle bağlantılı bastırılmış temalar ve bu kişinin gizli güçleri.` : ""}
 ` : "";
 
     try {
