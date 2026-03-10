@@ -164,10 +164,79 @@ const PACKAGES = [
     fiyatYillik:null, renk:"#27ae60",
     aciklama:"Her günün teması, ödevleri ve rehberli yolculuğu. 21 gün boyunca kendini yeniden keşfet.",
     ozellikler:["21 günlük günlük ödevler","Her gün farklı tema","İlerleme takibi","Tamamlama rozeti"] },
+  { id:"rehber", emoji:"🔮", baslik:"Reiki Rehberi", fiyat:"₺79",
+    fiyatYillik:null, renk:"#8e44ad",
+    aciklama:"7 çakranın duygu & organ haritası + 24 hastalığın zihinsel nedeni. Kendi enerjinle çalış.",
+    ozellikler:["7 çakra duygusal harita","24+ hastalık & zihinsel neden","Arama ile hızlı erişim"] },
   { id:"hediye", emoji:"🎁", baslik:"Hediye Kartı", fiyat:"₺199",
     fiyatYillik:null, renk:"#c0392b",
     aciklama:"Sevdiğin birine Niyet Premium'u hediye et. Ödeme sonrası bir hediye kodu oluşturulur.",
     ozellikler:["Anında hediye kodu","21 Günlük Program içerir","İstediğin kişiye gönder"] },
+];
+
+const REIKI_CHAKRALAR = [
+  { isim:"Kök",            emoji:"🟥", renk:"#c0392b", pastel:"#e8a09a",
+    duygular:["Güvenlik","Hayatta kalma","Zemin","Temel ihtiyaçlar","Güven"],
+    beden:["Böbrekler","Omurilik","Siyatik siniri","Bacaklar","Ayaklar"],
+    dengesiz:["Depresyon","Derin üzüntü","Güvensizlik","Panik","Fiziksel dengesizlik"],
+    anahtar:"Güvende hisset. Yere bas." },
+  { isim:"Sakral",         emoji:"🟧", renk:"#e67e22", pastel:"#f0c27f",
+    duygular:["Yaratıcılık","Zevk","Cinsellik","İlişkiler","Akış"],
+    beden:["Pelvis","Üreme organları","Mesane","Lenf sistemi"],
+    dengesiz:["İlişki sorunları","Yaratıcılık blokajı","Cinsellik sorunları","Anksiyete"],
+    anahtar:"Hisset. Akmana izin ver." },
+  { isim:"Güneş Pleksusu", emoji:"🟨", renk:"#f1c40f", pastel:"#f7e18a",
+    duygular:["Kişisel güç","İrade","Özgüven","Sınırlar","Kimlik"],
+    beden:["Mide","Dalak","Pankreas","Karaciğer","Böbrekler","Sırt ortası"],
+    dengesiz:["Suçluluk","Utanç","Korku","Yetersizlik","Hareketsizlik"],
+    anahtar:"Güçlü ol. Işığın var." },
+  { isim:"Kalp",           emoji:"🟩", renk:"#27ae60", pastel:"#82d9a3",
+    duygular:["Sevgi","Şefkat","Kabul","Bağlantı","Affetme"],
+    beden:["Kalp","Akciğerler","Dolaşım sistemi","Kan","Sırt üstü"],
+    dengesiz:["Travma","Yas","Kayıp","Depresyon","İlişki sorunları","Kapanma"],
+    anahtar:"Sevgiyle aç. Kendine de." },
+  { isim:"Boğaz",          emoji:"🟦", renk:"#2980b9", pastel:"#85c1e9",
+    duygular:["İfade","Hakikat","Yaratıcılık","Kendini gösterme","Dürüstlük"],
+    beden:["Tiroit","Boğaz","Ses telleri","Akciğer üstü","Boyun"],
+    dengesiz:["Söyleyememek","Yutkunmak","Guatr","Larenjit","Tiroit sorunları"],
+    anahtar:"Bugün hakikatini söyle." },
+  { isim:"Üçüncü Göz",    emoji:"🟣", renk:"#8e44ad", pastel:"#c3a6d8",
+    duygular:["Sezgi","İç görü","Bilinç","Farkındalık","Altıncı his"],
+    beden:["Gözler","Burun","Kulaklar","Hipofiz bezi","Merkezi sinir sistemi"],
+    dengesiz:["Kafa karışıklığı","Hayal kuramama","Başağrısı","Odaklanamama"],
+    anahtar:"Bugün içeriye bak." },
+  { isim:"Taç",            emoji:"⬜", renk:"#9b59b6", pastel:"#d9b8e8",
+    duygular:["Evrensel bağlantı","Meditasyon","Bilinç","Bütünlük","Anlam"],
+    beden:["Beyin","Epifiz bezi","Merkezi sinir sistemi"],
+    dengesiz:["İzolasyon","Ruhsal kopukluk","Anlamsızlık","Hayat amacını kaybetme"],
+    anahtar:"Bugün bütünle bağlan." },
+];
+
+const REIKI_HASTALIKLAR = [
+  { ad:"Başağrısı",          emoji:"🤕", cakralar:["Üçüncü Göz","Taç","Güneş Pleksusu"],  zihinsel:"Baskı, kontrol ihtiyacı, mükemmeliyetçilik" },
+  { ad:"Depresyon",          emoji:"😔", cakralar:["Kök","Sakral","Taç"],                  zihinsel:"Temel güvensizlik, bağlantı kopukluğu, anlamsızlık" },
+  { ad:"Stres / Anksiyete",  emoji:"😰", cakralar:["Güneş Pleksusu","Kök","Kalp"],        zihinsel:"Geleceğe dair kontrol ihtiyacı, güvensizlik, yetmeme korkusu" },
+  { ad:"Sırt Ağrısı",        emoji:"😣", cakralar:["Güneş Pleksusu","Sakral","Kök"],      zihinsel:"Desteksiz hissetmek, sorumluluk yükü, mali kaygı" },
+  { ad:"Kalp Sorunları",     emoji:"❤️",  cakralar:["Kalp"],                               zihinsel:"Sevgisizlik, yas, travma, yalnızlık, affedememek" },
+  { ad:"Sindirim Sorunları", emoji:"🫃", cakralar:["Güneş Pleksusu","Kök"],               zihinsel:"Endişe, korku yutmak, hazmedilemeyenler" },
+  { ad:"Kan Basıncı",        emoji:"💓", cakralar:["Kalp","Boğaz"],                        zihinsel:"Bastırılmış öfke, kontrol ihtiyacı, kronik stres" },
+  { ad:"Diyabet",            emoji:"🩸", cakralar:["Güneş Pleksusu"],                      zihinsel:"Hayatın tatlılığına direniş, sevgisizlik, keder" },
+  { ad:"Tiroit Sorunları",   emoji:"🦋", cakralar:["Boğaz","Güneş Pleksusu"],             zihinsel:"Kendini ifade edememe, susmak zorunda kalmak, bastırılmış yaratıcılık" },
+  { ad:"Cilt Sorunları",     emoji:"🌡", cakralar:["Güneş Pleksusu"],                      zihinsel:"Öfke, tahriş, dışarıya karşı savunma, sınır sorunları" },
+  { ad:"Böbrek Sorunları",   emoji:"🫘", cakralar:["Kök","Güneş Pleksusu"],               zihinsel:"Derin korku, eleştiri, hayal kırıklığı, başarısızlık korkusu" },
+  { ad:"Alerjiler / Astım",  emoji:"🤧", cakralar:["Kalp","Boğaz"],                        zihinsel:"Baskı altında hissetmek, söylenmek isteyip söyleyememek" },
+  { ad:"Kabızlık",           emoji:"😮‍💨", cakralar:["Güneş Pleksusu","Kök"],              zihinsel:"Bırakamamak, kontrol, tutma, eski fikirlere yapışmak" },
+  { ad:"Karaciğer Sorunları",emoji:"⚡", cakralar:["Güneş Pleksusu"],                     zihinsel:"Öfke, şikayetler, kronik stres, öz kınama" },
+  { ad:"Uyku / Kabus",       emoji:"😴", cakralar:["Üçüncü Göz","Boğaz","Güneş Pleksusu"],zihinsel:"Bastırılmış korku, güvensizlik, kaygı" },
+  { ad:"Öfke / Sinirlilik",  emoji:"😤", cakralar:["Sakral","Güneş Pleksusu"],            zihinsel:"Sınırların ihlali, güçsüzlük hissi, bastırılmış ifade" },
+  { ad:"Romatizma / Artrit", emoji:"🦴", cakralar:["Kalp","Güneş Pleksusu"],              zihinsel:"Kırgınlık, kendine karşı katılık, esnek olmama" },
+  { ad:"Öksürük / Nezle",    emoji:"🤒", cakralar:["Boğaz","Kalp","Güneş Pleksusu"],     zihinsel:"Söylenemeyen şeyler, içe kapanma, kendini yıpratma" },
+  { ad:"Göz Sorunları",      emoji:"👁", cakralar:["Üçüncü Göz","Taç"],                   zihinsel:"Görmek istememe, geleceğe korku, gerçekten kaçma" },
+  { ad:"Kulak Sorunları",    emoji:"👂", cakralar:["Üçüncü Göz","Taç"],                   zihinsel:"Duymak istememe, eleştiriye kapalılık" },
+  { ad:"Menstrual Sorunlar", emoji:"🌸", cakralar:["Sakral","Üçüncü Göz","Taç"],          zihinsel:"Kadınlığı reddetmek, değersizlik hissi, cinselliğe dair korku" },
+  { ad:"Kaza / Yaralanma",   emoji:"🩹", cakralar:["Güneş Pleksusu","Kök"],               zihinsel:"Öz ceza, dikkat çekme ihtiyacı, hayatta yönelim kaybı" },
+  { ad:"Kanser",             emoji:"🎗", cakralar:["Tüm çakralar"],                        zihinsel:"Derin kırgınlık, acıyı içte taşımak, kendini yemek" },
+  { ad:"Bağımlılık",         emoji:"🍷", cakralar:["Güneş Pleksusu","Boğaz","Kök"],       zihinsel:"Gerçeklikten kaçış, acısından kurtulma, kendini uyuşturma" },
 ];
 
 const GLOBAL_CSS = `
@@ -812,6 +881,116 @@ function Program21Screen({ onBack }) {
   );
 }
 
+function ReikiRehberiScreen({ onBack }) {
+  const [tab,    setTab]    = useState("chakra");
+  const [secili, setSecili] = useState(null);
+  const [arama,  setArama]  = useState("");
+
+  const filtreliHastaliklar = arama
+    ? REIKI_HASTALIKLAR.filter(h=>h.ad.toLowerCase().includes(arama.toLowerCase()))
+    : REIKI_HASTALIKLAR;
+
+  return (
+    <div style={{ maxWidth:420,width:"100%",padding:"34px 20px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:22 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#c8a96e",marginBottom:8 }}>✦ REİKİ REHBERİ</div>
+        <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>Enerji & Şifa</div>
+      </div>
+      <div style={{ display:"flex",gap:0,marginBottom:22,background:"rgba(255,255,255,0.04)",borderRadius:100,padding:4 }}>
+        {[["chakra","💜 Çakra & Duygular"],["hastalik","🌿 Hastalık Rehberi"]].map(([id,label])=>(
+          <button key={id} onClick={()=>{setTab(id);setSecili(null);setArama("");}}
+            style={{ flex:1,padding:"9px 6px",borderRadius:100,border:"none",cursor:"pointer",fontSize:11,letterSpacing:0.8,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.25s",background:tab===id?"rgba(139,90,160,0.45)":"transparent",color:tab===id?"#e8e0d5":"#5a6a7a" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab==="chakra" && (
+        <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+          {REIKI_CHAKRALAR.map((c,i)=>(
+            <div key={i} onClick={()=>setSecili(secili===i?null:i)}
+              style={{ border:`1px solid ${c.renk}44`,borderRadius:16,padding:"15px 17px",background:`rgba(${hexToRgb(c.renk)},0.05)`,cursor:"pointer" }}>
+              <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+                <div style={{ width:40,height:40,borderRadius:"50%",background:`radial-gradient(circle,${c.renk}99,${c.pastel}33)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{c.emoji}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:15,fontWeight:300,letterSpacing:1,color:c.pastel }}>{c.isim} Çakrası</div>
+                  <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:0.8,marginTop:2 }}>{c.duygular.slice(0,3).join(" · ")}</div>
+                </div>
+                <div style={{ fontSize:10,color:"#3a4a5a" }}>{secili===i?"▲":"▼"}</div>
+              </div>
+              {secili===i && (
+                <div style={{ marginTop:13,paddingTop:13,borderTop:`1px solid ${c.renk}22` }}>
+                  <div style={{ marginBottom:10 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>DUYGULAR & KONULAR</div>
+                    <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                      {c.duygular.map(d=>(
+                        <span key={d} style={{ fontSize:11,color:c.pastel,background:`rgba(${hexToRgb(c.renk)},0.1)`,border:`1px solid ${c.renk}30`,borderRadius:100,padding:"3px 9px" }}>{d}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom:10 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:5 }}>BEDEN / ORGANLAR</div>
+                    <div style={{ fontSize:12,color:"#7a8a9a",lineHeight:1.7 }}>{c.beden.join(", ")}</div>
+                  </div>
+                  <div style={{ marginBottom:8 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>BLOKE OLUNCA</div>
+                    <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                      {c.dengesiz.map(d=>(
+                        <span key={d} style={{ fontSize:11,color:"#f1948a",background:"rgba(241,148,138,0.08)",border:"1px solid rgba(241,148,138,0.2)",borderRadius:100,padding:"3px 9px" }}>{d}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ fontSize:12,fontStyle:"italic",color:"#6a7a8a",marginTop:10,lineHeight:1.6 }}>✦ {c.anahtar}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="hastalik" && (
+        <div>
+          <input className="niyet-input" placeholder="Hastalık ara..." value={arama} onChange={e=>setArama(e.target.value)} style={{ marginBottom:13 }} />
+          <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+            {filtreliHastaliklar.map((h,i)=>(
+              <div key={i} onClick={()=>setSecili(secili===`h${i}`?null:`h${i}`)}
+                style={{ border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 16px",background:"rgba(255,255,255,0.02)",cursor:"pointer" }}>
+                <div style={{ display:"flex",alignItems:"center",gap:10 }}>
+                  <span style={{ fontSize:20 }}>{h.emoji}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:14,fontWeight:300 }}>{h.ad}</div>
+                    <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:0.5,marginTop:2 }}>{h.cakralar.join(" · ")}</div>
+                  </div>
+                  <div style={{ fontSize:10,color:"#3a4a5a" }}>{secili===`h${i}`?"▲":"▼"}</div>
+                </div>
+                {secili===`h${i}` && (
+                  <div style={{ marginTop:11,paddingTop:11,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                    <div style={{ marginBottom:8 }}>
+                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>ÇALIŞILACAK ÇAKRALAR</div>
+                      <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                        {h.cakralar.map(c=>{
+                          const chakra=REIKI_CHAKRALAR.find(r=>r.isim===c.split(" ")[0]);
+                          return <span key={c} style={{ fontSize:11,background:"rgba(139,90,160,0.12)",border:"1px solid rgba(139,90,160,0.28)",borderRadius:100,padding:"3px 9px",color:"#c3a6d8" }}>{chakra?.emoji||"✦"} {c}</span>;
+                        })}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:5 }}>ZİHİNSEL / DUYGUSAL NEDEN</div>
+                      <div style={{ fontSize:13,color:"#a0a8b0",lineHeight:1.7,fontStyle:"italic" }}>"{h.zihinsel}"</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button className="niyet-btn" style={{ width:"100%",marginTop:20 }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
 export default function NiyetApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
@@ -858,7 +1037,7 @@ export default function NiyetApp() {
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
-    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",premium:"139,90,160",program21:"45,120,65",
+    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",premium:"139,90,160",program21:"45,120,65",rehber:"142,68,173",
   }[screen]||"139,90,160";
 
   const NAV = [
@@ -1057,6 +1236,9 @@ export default function NiyetApp() {
           {premiumFeatures.program21 && (
             <button className="niyet-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("program21")}>🌱 21 Günlük Programım →</button>
           )}
+          {premiumFeatures.rehber && (
+            <button className="niyet-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("rehber")}>🔮 Reiki Rehberi →</button>
+          )}
           {premiumFeatures.raporlama && (
             <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 18px",marginBottom:16,background:"rgba(200,169,110,0.03)" }}>
               <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:12 }}>✦ DETAYLI RAPOR</div>
@@ -1097,6 +1279,9 @@ export default function NiyetApp() {
       {screen==="program21" && premiumFeatures.program21 && (
         <Program21Screen onBack={()=>setScreen("premium")} />
       )}
+      {screen==="rehber" && premiumFeatures.rehber && (
+        <ReikiRehberiScreen onBack={()=>setScreen("premium")} />
+      )}
 
       {payModal && (
         <PaymentModal
@@ -1106,7 +1291,7 @@ export default function NiyetApp() {
         />
       )}
 
-      {!["giris","terapi","gun","premium","program21"].includes(screen) && (
+      {!["giris","terapi","gun","premium","program21","rehber"].includes(screen) && (
         <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
