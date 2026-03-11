@@ -164,7 +164,6 @@ const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
   html, body { background: #080c14; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; }
-  body.scroll-lock { overflow-y: hidden; height: 100vh; }
 
   /* ── Animations ── */
   @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
@@ -452,7 +451,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
   useEffect(() => () => clearInterval(timerRef.current), []);
 
   return (
-    <div style={{ maxWidth:430, width:"100%", padding:"28px 20px 100px", position:"relative", zIndex:1 }}>
+    <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
         <div style={{ flex:1 }}>
@@ -615,7 +614,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
   if (tPhase==="list") return (
-    <div style={{ maxWidth:440, width:"100%", padding:"28px 20px 100px", position:"relative", zIndex:1 }}>
+    <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
         <div>
@@ -912,11 +911,6 @@ export default function SakinApp() {
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
-  useEffect(() => {
-    const lock = !["fiyat","sartlar","gizlilik","iade"].includes(screen);
-    document.body.classList.toggle("scroll-lock", lock);
-    return () => document.body.classList.remove("scroll-lock");
-  }, [screen]);
 
   useEffect(() => {
     if (screen !== "harita") return;
@@ -1358,7 +1352,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ color:"#6a6d88",fontSize:15,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
               {t("intro_text1")}<br />{t("intro_text2")}
             </div>
-            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>{t("btn_ready")}</button>
+            <button className="sakin-btn-primary" onClick={()=>{ setRehberTab("reiki"); setScreen("rehber"); }}>{t("btn_ready")}</button>
           </div>
         </div>
       )}
