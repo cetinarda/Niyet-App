@@ -1,6 +1,7 @@
 export const TRANS = {
   tr: {
     // Top nav
+    nav_about:    "SAKİN NEDİR?",
     nav_pricing:  "FİYATLANDIRMA",
     nav_terms:    "HİZMET ŞARTLARI",
     nav_privacy:  "GİZLİLİK",
@@ -251,6 +252,7 @@ export const TRANS = {
 
   en: {
     // Top nav
+    nav_about:    "WHAT IS SAKIN?",
     nav_pricing:  "PRICING",
     nav_terms:    "TERMS OF SERVICE",
     nav_privacy:  "PRIVACY",

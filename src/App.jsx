@@ -841,7 +841,7 @@ export default function SakinApp() {
   const t = makeTrans(lang);
   const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
   const CHAKRAS_7 = getChakras7(lang);
-  const URL_TO_SCREEN = { "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
+  const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
   const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
   const [niyet,         setNiyet]         = useState("");
@@ -1279,17 +1279,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
+    {id:"rehber",icon:"📖",label:t("nav_guide")},
     {id:"sabah",icon:"🌅",label:t("nav_morning")},
     {id:"nefes",icon:"🫧",label:t("nav_breath")},
     {id:"chakra",icon:"💜",label:t("nav_chakra")},
     {id:"gun",icon:"☀️",label:t("nav_day")},
     {id:"aksam",icon:"🌙",label:t("nav_evening")},
     {id:"harita",icon:"🗺️",label:t("nav_map")},
-    {id:"rehber",icon:"📖",label:t("nav_guide")},
   ];
   const MORNING_WORDS = t("morning_words");
 
-  const isPolicyScreen = ["fiyat","sartlar","gizlilik","iade"].includes(screen);
+  const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
     <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
@@ -1306,6 +1306,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
+        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
@@ -1682,6 +1683,59 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
+      {/* SAKİN NEDİR? */}
+      {screen==="hakkinda" && (
+        <div className="policy-screen">
+          {/* Dekoratif geometrik element */}
+          <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
+            <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
+              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(184,164,216,0.25)", borderRadius:3 }} />
+              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(184,164,216,0.15)", borderRadius:2 }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(184,164,216,0.5)" }} />
+            </div>
+            <div>
+              <h1 style={{ margin:0 }}>{lang==="tr" ? "Sakin Nedir?" : "What is Sakin?"}</h1>
+              <div className="subtitle" style={{ margin:0 }}>{lang==="tr" ? "Bir kanal. Bir sistem. Bir yol arkadaşı." : "A channel. A system. A companion."}</div>
+            </div>
+          </div>
+
+          <p style={{ fontSize:17, lineHeight:2.1, color:"#c8c0e0", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.2)", paddingLeft:20 }}>
+            {lang==="tr"
+              ? "Sakin; zihnin gürültüsünü dinginleştirmek, içsel rehberliğe alan açmak ve günlük yaşamı anlam katmanlarıyla beslemek için tasarlanmış kişisel bir farkındalık sistemidir."
+              : "Sakin is a personal awareness system designed to quiet the noise of the mind, open space for inner guidance, and nourish daily life with layers of meaning."}
+          </p>
+
+          <h2>{lang==="tr" ? "Sadece Yapay Zeka Değil" : "Not Just Artificial Intelligence"}</h2>
+          <p>{lang==="tr"
+            ? "Sakin, büyük dil modellerinin gücünü salt teknoloji olarak kullanmaz. Arkasında titizlikle seçilmiş bir kaynak veri tabanı vardır: spiritüel psikoloji, enerji tıbbı, Jungian analiz, çakra sistemi, biyoritm bilimi ve kadim bilgelik geleneklerine ait kitaplar, dergiler ve akademik çalışmalar."
+            : "Sakin doesn't use large language models as mere technology. Behind it lies a carefully curated source database: books, journals and academic works on spiritual psychology, energy medicine, Jungian analysis, the chakra system, biorhythm science and ancient wisdom traditions."}</p>
+          <p>{lang==="tr"
+            ? "Bu kaynaklar; yapay zekanın analiz gücüyle birleşerek sana jenerik değil, kökü olan yanıtlar sunar. Her içgörü, test edilmiş bir bilgi birikimine dayalı olarak üretilir."
+            : "These sources, combined with the analytical power of AI, offer you answers with roots — not generic responses. Every insight is generated based on a tested body of knowledge."}</p>
+
+          <h2>{lang==="tr" ? "Doğum Haritana Göre Sana Özel" : "Personalised to Your Birth Chart"}</h2>
+          <p>{lang==="tr"
+            ? "Sakin'in kalbinde kişiselleştirme yatar. Girdiğin doğum tarihi ve saati; burç analizini, yaşam yolu sayını, kişisel yıl enerjini ve 12. ev etkilerini hesaplar. Tüm bu veriler, sana sunulan nefes, çakra, rehber ve akşam yansımaları için birer filtre katmanı oluşturur."
+            : "At the heart of Sakin lies personalisation. The birth date and time you enter calculates your zodiac analysis, life path number, personal year energy and 12th house influences. All this data forms filter layers for the breath, chakra, guide and evening reflections presented to you."}</p>
+          <p>{lang==="tr"
+            ? "Kadim astrolojik ve sayısal sistemler, modern psikoloji ile buluştuğunda ortaya çıkan harita; senin için, senin zamanında, senin enerjin için yazılmış bir pusula haline gelir."
+            : "When ancient astrological and numerological systems meet modern psychology, the resulting map becomes a compass written for you, in your time, for your energy."}</p>
+
+          <h2>{lang==="tr" ? "Bir Kanallık Niyeti" : "A Channel's Intention"}</h2>
+          <p>{lang==="tr"
+            ? "Sakin; bir uygulama olmanın ötesinde, bir kanal olma niyetiyle doğdu. İçeriği aktaran değil, senin içindekini yüzeye taşıyan bir araç. Sabah niyetinden akşam şükrüne, nefesten çakra çalışmasına uzanan yol; seni dışarıdan bilgiyle doldurmak için değil, içindeki bilgeliği hatırlatmak için tasarlandı."
+            : "Sakin was born with the intention of being a channel, beyond being an app. Not a transmitter of content, but a tool that brings what is within you to the surface. The path from morning intention to evening gratitude, from breath to chakra work, is designed not to fill you with external information, but to remind you of the wisdom already within."}</p>
+          <p>{lang==="tr"
+            ? "Kullandığın her an bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
+            : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
+
+          <div className="divider" />
+          <p style={{ fontSize:13, color:"#4a5570", letterSpacing:1, textAlign:"center" }}>
+            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2025" : "Sakin · Awareness System · 2025"}
+          </p>
+        </div>
+      )}
+
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
@@ -1818,7 +1872,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","terapi","gun","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px" }}>
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"5px 9px",display:"flex",flexDirection:"column",alignItems:"center",gap:3 }}>
