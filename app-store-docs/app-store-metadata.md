@@ -1,10 +1,10 @@
-# App Store Metadata — Niyet
+# App Store Metadata — Sakin
 
 ## Temel Bilgiler
 
 | Alan | Değer |
 |---|---|
-| **Uygulama Adı** | Niyet |
+| **Uygulama Adı** | Sakin |
 | **Altyazı (Subtitle)** | Kendini hep hatırla. |
 | **Kategori (Birincil)** | Lifestyle (Yaşam Tarzı) |
 | **Kategori (İkincil)** | Productivity (Üretkenlik) |
@@ -21,7 +21,7 @@
 
 ### Türkçe Keywords
 ```
-niyet,farkındalık,meditasyon,nefes,çakra,reiki,motivasyon,alışkanlık,günlük,mindfulness
+sakin,farkındalık,meditasyon,nefes,çakra,reiki,motivasyon,alışkanlık,günlük,mindfulness
 ```
 
 ### İngilizce Keywords

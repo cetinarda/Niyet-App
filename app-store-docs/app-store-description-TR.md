@@ -1,7 +1,7 @@
 # App Store Açıklaması — Türkçe
 
 ## Uygulama Adı
-Niyet
+Sakin
 
 ## Altyazı (Subtitle — max 30 karakter)
 Kendini hep hatırla.
@@ -13,10 +13,10 @@ Bilgi yüklemez. Sadece hatırlatır. Sabah niyetinden akşam kapanışına, gü
 
 ## Tam Açıklama (max 4000 karakter)
 
-Niyet, sana bir şey öğretmez.
+Sakin, sana bir şey öğretmez.
 Sadece hatırlatır.
 
-Günün koşusunda kendini unuttuğun anlarda, Niyet seni nazikçe içe çeker. Karmaşık programlar yok, görev listeleri yok, baskı yok. Sadece sen ve bugünkü niyetin.
+Günün koşusunda kendini unuttuğun anlarda, Sakin seni nazikçe içe çeker. Karmaşık programlar yok, görev listeleri yok, baskı yok. Sadece sen ve bugünkü niyetin.
 
 **Sabah Rutini**
 Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: huzur, cesaret, akış, sevgi... Gün boyu bu kelimeler sana yol gösterir.
@@ -41,7 +41,7 @@ Bugün seninle nefes alan yüzlerce insan var. Yalnız değilsin.
 
 ---
 
-Niyet, karmaşık değil. Derin.
+Sakin, karmaşık değil. Derin.
 Sade tasarımı, yumuşak renkleri ve sessiz ritmiyle her gün yanında olmak için yapıldı.
 
 Kendine dönmek için bir dakikan var.

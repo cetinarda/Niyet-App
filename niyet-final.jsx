@@ -170,7 +170,7 @@ const PACKAGES = [
     ozellikler:["7 çakra duygusal harita","24+ hastalık & zihinsel neden","Arama ile hızlı erişim"] },
   { id:"hediye", emoji:"🎁", baslik:"Hediye Kartı", fiyat:"₺199",
     fiyatYillik:null, renk:"#c0392b",
-    aciklama:"Sevdiğin birine Niyet Premium'u hediye et. Ödeme sonrası bir hediye kodu oluşturulur.",
+    aciklama:"Sevdiğin birine Sakin Premium'u hediye et. Ödeme sonrası bir hediye kodu oluşturulur.",
     ozellikler:["Anında hediye kodu","21 Günlük Program içerir","İstediğin kişiye gönder"] },
 ];
 
@@ -258,27 +258,27 @@ const GLOBAL_CSS = `
   @keyframes checkPop     { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   .fade-up  { animation: fadeUp  0.8s ease forwards; }
   .slide-in { animation: slideIn 0.55s ease forwards; }
-  .niyet-input {
+  .sakin-input {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
     border-radius:12px; color:#e8e0d5;
     font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
     padding:13px 15px; width:100%; resize:none; outline:none; transition:border-color 0.3s;
   }
-  .niyet-input:focus { border-color:rgba(255,255,255,0.26); }
-  .niyet-btn {
+  .sakin-input:focus { border-color:rgba(255,255,255,0.26); }
+  .sakin-btn {
     background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
     border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:13px; letter-spacing:1.5px; padding:10px 22px; transition:all 0.28s;
   }
-  .niyet-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
-  .niyet-btn-primary {
+  .sakin-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
+  .sakin-btn-primary {
     background:linear-gradient(135deg,rgba(139,90,160,0.55),rgba(72,130,180,0.55));
     border:1px solid rgba(139,90,160,0.36); border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:14px; letter-spacing:2.5px; padding:12px 36px; transition:all 0.28s;
   }
-  .niyet-btn-primary:hover {
+  .sakin-btn-primary:hover {
     background:linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,130,180,0.8));
     transform:translateY(-2px);
   }
@@ -389,7 +389,7 @@ function ReminderScreen({ onBack }) {
   };
 
   const handleNotif = async (rem) => {
-    const result = await sendNotif("Niyet · " + rem.title, rem.notifBody);
+    const result = await sendNotif("Sakin · " + rem.title, rem.notifBody);
     if (result !== "sent") { setNotifOk(false); return; }
     setNotifOk(true);
     setSent(p => ({ ...p, [rem.id]: true }));
@@ -403,7 +403,7 @@ function ReminderScreen({ onBack }) {
     setNotifOk(true);
     REMINDERS.forEach((rem, i) => {
       setTimeout(() => {
-        new Notification("Niyet · " + rem.title, { body: rem.notifBody });
+        new Notification("Sakin · " + rem.title, { body: rem.notifBody });
         setSent(p => ({ ...p, [rem.id]: true }));
       }, i * 600);
     });
@@ -445,7 +445,7 @@ function ReminderScreen({ onBack }) {
         </div>
       )}
 
-      <button className="niyet-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
+      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
         📲 Tüm hatırlatıcıları telefona gönder
       </button>
 
@@ -592,7 +592,7 @@ function TerapiScreen({ onBack }) {
             <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>SEÇİLEN</div>
             <div style={{ fontSize:16,fontWeight:300 }}>{selected.name}</div>
           </div>
-          <button className="niyet-btn-primary"
+          <button className="sakin-btn-primary"
             style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:12 }}
             onClick={() => setTPhase("intro")}>TERAPİYE BAŞLA</button>
         </div>
@@ -613,8 +613,8 @@ function TerapiScreen({ onBack }) {
         Bir elini {selected.name.toLowerCase()} bölgende hisset.<br />Gözlerini yum.<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={() => setTPhase("list")}>← geri</button>
-        <button className="niyet-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
+        <button className="sakin-btn" onClick={() => setTPhase("list")}>← geri</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
       </div>
     </div>
   );
@@ -685,8 +685,8 @@ function TerapiScreen({ onBack }) {
         {selected.name} çakran aktif.<br />Bu enerjiyi gün boyu taşı.
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={resetTerapi}>diğer çakra</button>
-        <button className="niyet-btn" onClick={onBack}>ana ekran</button>
+        <button className="sakin-btn" onClick={resetTerapi}>diğer çakra</button>
+        <button className="sakin-btn" onClick={onBack}>ana ekran</button>
       </div>
     </div>
   );
@@ -735,7 +735,7 @@ function PaymentModal({ pkg, onSuccess, onClose }) {
           <div style={{ fontSize:10,color:"#5a6a7a",marginTop:8,letterSpacing:1 }}>Bu kodu sevdiğin kişiye gönder</div>
         </div>
       )}
-      <button className="niyet-btn-primary" style={{ marginTop:8 }} onClick={onClose}>Devam Et</button>
+      <button className="sakin-btn-primary" style={{ marginTop:8 }} onClick={onClose}>Devam Et</button>
     </div>
   );
 
@@ -749,16 +749,16 @@ function PaymentModal({ pkg, onSuccess, onClose }) {
           <div style={{ fontSize:26,color:"#c8a96e",letterSpacing:2 }}>{pkg.fiyat}</div>
         </div>
         <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-          <input className="niyet-input" placeholder="Kart Numarası" value={cardNo} onChange={e=>setCardNo(fmt(e.target.value))} style={{ letterSpacing:2,fontSize:15 }} />
-          <input className="niyet-input" placeholder="Kart Üzerindeki İsim" value={cardName} onChange={e=>setCardName(e.target.value)} />
+          <input className="sakin-input" placeholder="Kart Numarası" value={cardNo} onChange={e=>setCardNo(fmt(e.target.value))} style={{ letterSpacing:2,fontSize:15 }} />
+          <input className="sakin-input" placeholder="Kart Üzerindeki İsim" value={cardName} onChange={e=>setCardName(e.target.value)} />
           <div style={{ display:"flex",gap:10 }}>
-            <input className="niyet-input" placeholder="AA/YY" value={expiry} onChange={e=>setExpiry(fmtExp(e.target.value))} style={{ flex:1 }} />
-            <input className="niyet-input" placeholder="CVV" value={cvv} onChange={e=>setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} style={{ flex:1 }} />
+            <input className="sakin-input" placeholder="AA/YY" value={expiry} onChange={e=>setExpiry(fmtExp(e.target.value))} style={{ flex:1 }} />
+            <input className="sakin-input" placeholder="CVV" value={cvv} onChange={e=>setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} style={{ flex:1 }} />
           </div>
         </div>
         <div style={{ marginTop:8,fontSize:10,color:"#2a3a4a",letterSpacing:0.5,textAlign:"center" }}>🔒 SSL ile korunmaktadır</div>
         <button
-          className="niyet-btn-primary"
+          className="sakin-btn-primary"
           style={{ width:"100%",marginTop:18,opacity:canPay?1:0.4,cursor:canPay?"pointer":"default" }}
           onClick={canPay?handlePay:undefined}
         >
@@ -796,23 +796,23 @@ function PremiumScreen({ onBack, onBuy, features }) {
               ))}
             </div>
             {!features[pkg.id] && (
-              <button className="niyet-btn-primary" style={{ width:"100%",fontSize:12,letterSpacing:2 }} onClick={()=>onBuy(pkg)}>Satın Al</button>
+              <button className="sakin-btn-primary" style={{ width:"100%",fontSize:12,letterSpacing:2 }} onClick={()=>onBuy(pkg)}>Satın Al</button>
             )}
           </div>
         ))}
       </div>
-      <button className="niyet-btn" style={{ width:"100%",marginTop:18 }} onClick={onBack}>← Geri</button>
+      <button className="sakin-btn" style={{ width:"100%",marginTop:18 }} onClick={onBack}>← Geri</button>
     </div>
   );
 }
 
 function Program21Screen({ onBack }) {
   const [tasks, setTasks] = useState(()=>{
-    try{ return JSON.parse(localStorage.getItem("niyet_p21_tasks")||"{}"); }catch{ return {}; }
+    try{ return JSON.parse(localStorage.getItem("sakin_p21_tasks")||"{}"); }catch{ return {}; }
   });
   const [startDate] = useState(()=>{
-    let d=localStorage.getItem("niyet_p21_start");
-    if(!d){ d=new Date().toISOString(); localStorage.setItem("niyet_p21_start",d); }
+    let d=localStorage.getItem("sakin_p21_start");
+    if(!d){ d=new Date().toISOString(); localStorage.setItem("sakin_p21_start",d); }
     return d;
   });
 
@@ -828,7 +828,7 @@ function Program21Screen({ onBack }) {
   const toggleTask = i => {
     const updated = {...tasks,[dayNo]:{...todayTasks,[i]:!todayTasks[i]}};
     setTasks(updated);
-    localStorage.setItem("niyet_p21_tasks",JSON.stringify(updated));
+    localStorage.setItem("sakin_p21_tasks",JSON.stringify(updated));
   };
 
   return (
@@ -876,7 +876,7 @@ function Program21Screen({ onBack }) {
           );
         })}
       </div>
-      <button className="niyet-btn" style={{ width:"100%" }} onClick={onBack}>← Geri</button>
+      <button className="sakin-btn" style={{ width:"100%" }} onClick={onBack}>← Geri</button>
     </div>
   );
 }
@@ -950,7 +950,7 @@ function ReikiRehberiScreen({ onBack }) {
 
       {tab==="hastalik" && (
         <div>
-          <input className="niyet-input" placeholder="Hastalık ara..." value={arama} onChange={e=>setArama(e.target.value)} style={{ marginBottom:13 }} />
+          <input className="sakin-input" placeholder="Hastalık ara..." value={arama} onChange={e=>setArama(e.target.value)} style={{ marginBottom:13 }} />
           <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
             {filtreliHastaliklar.map((h,i)=>(
               <div key={i} onClick={()=>setSecili(secili===`h${i}`?null:`h${i}`)}
@@ -986,12 +986,12 @@ function ReikiRehberiScreen({ onBack }) {
         </div>
       )}
 
-      <button className="niyet-btn" style={{ width:"100%",marginTop:20 }} onClick={onBack}>← Geri</button>
+      <button className="sakin-btn" style={{ width:"100%",marginTop:20 }} onClick={onBack}>← Geri</button>
     </div>
   );
 }
 
-export default function NiyetApp() {
+export default function SakinApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
@@ -1003,12 +1003,12 @@ export default function NiyetApp() {
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const breathRef = useRef(null);
-  const [premiumFeatures, setPremiumFeatures] = useState(()=>{ try{ return JSON.parse(localStorage.getItem("niyet_premium")||"{}"); }catch{ return {}; } });
+  const [premiumFeatures, setPremiumFeatures] = useState(()=>{ try{ return JSON.parse(localStorage.getItem("sakin_premium")||"{}"); }catch{ return {}; } });
   const [payModal, setPayModal] = useState(null);
   const handlePremiumSuccess = pkgId => {
     const updated = {...premiumFeatures,[pkgId]:true};
     setPremiumFeatures(updated);
-    localStorage.setItem("niyet_premium",JSON.stringify(updated));
+    localStorage.setItem("sakin_premium",JSON.stringify(updated));
     setPayModal(null);
   };
 
@@ -1074,7 +1074,7 @@ export default function NiyetApp() {
             <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",animation:"glow 3.5s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28 }}>🌿</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.2s",opacity:0 }}>
-            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Niyet</div>
+            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.38s",opacity:0 }}>
             <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>Kendini hep hatırla</div>
@@ -1083,7 +1083,7 @@ export default function NiyetApp() {
             <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:2,marginBottom:46,fontStyle:"italic" }}>
               Bu uygulama sana bir şey öğretmez.<br />Sadece hatırlatır.
             </div>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
           </div>
         </div>
       )}
@@ -1097,7 +1097,7 @@ export default function NiyetApp() {
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>Bugünün niyeti nedir?</div>
-            <textarea className="niyet-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
+            <textarea className="sakin-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>3 KELIME SEÇ</div>
@@ -1109,8 +1109,8 @@ export default function NiyetApp() {
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:11,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
           <div style={{ display:"flex",gap:10 }}>
-            <button className="niyet-btn" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>nefes al</button>
-            <button className="niyet-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("chakra")}>İLERLE</button>
+            <button className="sakin-btn" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>nefes al</button>
+            <button className="sakin-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("chakra")}>İLERLE</button>
           </div>
         </div>
       )}
@@ -1130,8 +1130,8 @@ export default function NiyetApp() {
           <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>Buradasın.</div>
           <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathCount} nefes</div>
           <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-            <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
+            <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
           </div>
         </div>
       )}
@@ -1149,10 +1149,10 @@ export default function NiyetApp() {
             <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
             <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
             <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
-            <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
+            <button className="sakin-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={()=>setScreen("nefes")}>← geri</button>
-              <button className="niyet-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>← geri</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
             </div>
           </div>
         </div>
@@ -1171,11 +1171,11 @@ export default function NiyetApp() {
           {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:14,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Bugün ne öğrendin?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Şükür?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
           </div>
           <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
             {["🫶","⚡","🌊","✨","🌿"].map(em=>(
@@ -1184,7 +1184,7 @@ export default function NiyetApp() {
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
           </div>
-          <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
         </div>
       )}
 
@@ -1234,10 +1234,10 @@ export default function NiyetApp() {
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
           </div>
           {premiumFeatures.program21 && (
-            <button className="niyet-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("program21")}>🌱 21 Günlük Programım →</button>
+            <button className="sakin-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("program21")}>🌱 21 Günlük Programım →</button>
           )}
           {premiumFeatures.rehber && (
-            <button className="niyet-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("rehber")}>🔮 Reiki Rehberi →</button>
+            <button className="sakin-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("rehber")}>🔮 Reiki Rehberi →</button>
           )}
           {premiumFeatures.raporlama && (
             <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 18px",marginBottom:16,background:"rgba(200,169,110,0.03)" }}>
@@ -1261,10 +1261,10 @@ export default function NiyetApp() {
             <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 20px",marginBottom:16,textAlign:"center",background:"rgba(200,169,110,0.03)" }}>
               <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:7 }}>✦ PREMİUM</div>
               <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:12,lineHeight:1.7 }}>Sınırsız raporlama, 21 günlük program ve hediye kartı.</div>
-              <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,color:"#c8a96e",borderColor:"rgba(200,169,110,0.3)" }} onClick={()=>setScreen("premium")}>Keşfet →</button>
+              <button className="sakin-btn" style={{ fontSize:10,letterSpacing:2,color:"#c8a96e",borderColor:"rgba(200,169,110,0.3)" }} onClick={()=>setScreen("premium")}>Keşfet →</button>
             </div>
           )}
-          <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
       )}
 

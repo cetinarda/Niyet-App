@@ -212,27 +212,27 @@ const GLOBAL_CSS = `
   @keyframes checkPop     { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   .fade-up  { animation: fadeUp  0.8s ease forwards; }
   .slide-in { animation: slideIn 0.55s ease forwards; }
-  .niyet-input {
+  .sakin-input {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
     border-radius:12px; color:#e8e0d5;
     font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
     padding:13px 15px; width:100%; resize:none; outline:none; transition:border-color 0.3s;
   }
-  .niyet-input:focus { border-color:rgba(255,255,255,0.26); }
-  .niyet-btn {
+  .sakin-input:focus { border-color:rgba(255,255,255,0.26); }
+  .sakin-btn {
     background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
     border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:13px; letter-spacing:1.5px; padding:10px 22px; transition:all 0.28s;
   }
-  .niyet-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
-  .niyet-btn-primary {
+  .sakin-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
+  .sakin-btn-primary {
     background:linear-gradient(135deg,rgba(139,90,160,0.55),rgba(72,130,180,0.55));
     border:1px solid rgba(139,90,160,0.36); border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:14px; letter-spacing:2.5px; padding:12px 36px; transition:all 0.28s;
   }
-  .niyet-btn-primary:hover {
+  .sakin-btn-primary:hover {
     background:linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,130,180,0.8));
     transform:translateY(-2px);
   }
@@ -337,7 +337,7 @@ function ReminderScreen({ onBack, onNext }) {
   };
 
   const handleNotif = async (rem) => {
-    const result = await sendNotif("Niyet · " + rem.title, rem.notifBody);
+    const result = await sendNotif("Sakin · " + rem.title, rem.notifBody);
     if (result !== "sent") { setNotifOk(false); return; }
     setNotifOk(true);
     setSent(p => ({ ...p, [rem.id]: true }));
@@ -351,7 +351,7 @@ function ReminderScreen({ onBack, onNext }) {
     setNotifOk(true);
     REMINDERS.forEach((rem, i) => {
       setTimeout(() => {
-        new Notification("Niyet · " + rem.title, { body: rem.notifBody });
+        new Notification("Sakin · " + rem.title, { body: rem.notifBody });
         setSent(p => ({ ...p, [rem.id]: true }));
       }, i * 600);
     });
@@ -393,7 +393,7 @@ function ReminderScreen({ onBack, onNext }) {
         </div>
       )}
 
-      <button className="niyet-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
+      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
         📲 Tüm hatırlatıcıları telefona gönder
       </button>
 
@@ -470,7 +470,7 @@ function ReminderScreen({ onBack, onNext }) {
       )}
 
       <button
-        className="niyet-btn-primary"
+        className="sakin-btn-primary"
         onClick={onNext}
         style={{ width:"100%", marginTop:22, fontSize:11, letterSpacing:2 }}
       >
@@ -549,7 +549,7 @@ function TerapiScreen({ onBack }) {
             <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>SEÇİLEN</div>
             <div style={{ fontSize:16,fontWeight:300 }}>{selected.name}</div>
           </div>
-          <button className="niyet-btn-primary"
+          <button className="sakin-btn-primary"
             style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:12 }}
             onClick={() => setTPhase("intro")}>TERAPİYE BAŞLA</button>
         </div>
@@ -570,8 +570,8 @@ function TerapiScreen({ onBack }) {
         Bir elini {selected.name.toLowerCase()} bölgende hisset.<br />Gözlerini yum.<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={() => setTPhase("list")}>← geri</button>
-        <button className="niyet-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
+        <button className="sakin-btn" onClick={() => setTPhase("list")}>← geri</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
       </div>
     </div>
   );
@@ -589,8 +589,8 @@ function TerapiScreen({ onBack }) {
               Bu an kendine hediye.<br />Biraz daha kal.
             </div>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={resetTerapi}>çık</button>
-              <button className="niyet-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={()=>setShowBackConfirm(false)}>devam et →</button>
+              <button className="sakin-btn" onClick={resetTerapi}>çık</button>
+              <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={()=>setShowBackConfirm(false)}>devam et →</button>
             </div>
           </div>
         </div>
@@ -685,8 +685,8 @@ function TerapiScreen({ onBack }) {
         {selected.name} çakran aktif.<br />Bu enerjiyi gün boyu taşı.
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={resetTerapi}>diğer çakra</button>
-        <button className="niyet-btn" onClick={onBack}>ana ekran</button>
+        <button className="sakin-btn" onClick={resetTerapi}>diğer çakra</button>
+        <button className="sakin-btn" onClick={onBack}>ana ekran</button>
       </div>
     </div>
   );
@@ -694,7 +694,7 @@ function TerapiScreen({ onBack }) {
   return null;
 }
 
-export default function NiyetApp() {
+export default function SakinApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
@@ -706,16 +706,16 @@ export default function NiyetApp() {
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
-  const [devMode, setDevMode] = useState(() => localStorage.getItem("niyet_dev_mode") === "1");
-  const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("niyet_rapor_used") === "1");
+  const [devMode, setDevMode] = useState(() => localStorage.getItem("sakin_dev_mode") === "1");
+  const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("sakin_rapor_used") === "1");
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
   const [semptomInput, setSemptomInput] = useState("");
   const [semptomAnaliz, setSemptomAnaliz] = useState("");
   const [semptomAcik, setSemptomAcik] = useState(false);
-  const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("niyet_reiki_used") === "1");
-  const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("niyet_zihinsel_used") === "1");
+  const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("sakin_reiki_used") === "1");
+  const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("sakin_zihinsel_used") === "1");
   // İki ayrı arama ekranı
   const [sikayet, setSikayet] = useState("");
   const [sikayetHis, setSikayetHis] = useState("");
@@ -728,9 +728,9 @@ export default function NiyetApp() {
   function toggleDevMode() {
     const next = !devMode;
     if (next) {
-      localStorage.setItem("niyet_dev_mode", "1");
+      localStorage.setItem("sakin_dev_mode", "1");
     } else {
-      localStorage.removeItem("niyet_dev_mode");
+      localStorage.removeItem("sakin_dev_mode");
     }
     setDevMode(next);
     setRaporKullanildi(false);
@@ -739,11 +739,11 @@ export default function NiyetApp() {
   }
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
-  const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("niyet_birth_date")||"");
-  const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("niyet_birth_time")||"");
+  const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("sakin_birth_date")||"");
+  const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [showBirthForm,  setShowBirthForm]  = useState(false);
-  const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("niyet_birth_date")||"");
-  const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("niyet_birth_time")||"");
+  const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
+  const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef = useRef(null);
 
   const astro = birthDate ? {
@@ -767,10 +767,10 @@ export default function NiyetApp() {
       niyet, kelimeler: selectedWords, chakra: chakra.name,
       nefes: breathCount, ogrendim: aksamNote, sukur
     };
-    const log = JSON.parse(localStorage.getItem("niyet_log")||"[]");
+    const log = JSON.parse(localStorage.getItem("sakin_log")||"[]");
     const filtered = log.filter(g=>g._dateKey!==bugun._dateKey);
     filtered.unshift(bugun);
-    localStorage.setItem("niyet_log", JSON.stringify(filtered.slice(0,7)));
+    localStorage.setItem("sakin_log", JSON.stringify(filtered.slice(0,7)));
     setAiRapor("");
   },[screen]);
 
@@ -992,20 +992,20 @@ ${astroTxt}
   };
 
   const generateRapor = async () => {
-    const gunler = JSON.parse(localStorage.getItem("niyet_log")||"[]");
+    const gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]");
     if (!gunler.length) return;
 
     // IP bazlı kontrol
     try {
       const ipRes = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipRes.json();
-      const kullanim = JSON.parse(localStorage.getItem("niyet_rapor_kullanim")||"{}");
-      if ((kullanim[ip]||0) >= 1) { setRaporKullanildi(true); localStorage.setItem("niyet_rapor_used","1"); return; }
+      const kullanim = JSON.parse(localStorage.getItem("sakin_rapor_kullanim")||"{}");
+      if ((kullanim[ip]||0) >= 1) { setRaporKullanildi(true); localStorage.setItem("sakin_rapor_used","1"); return; }
       kullanim[ip] = (kullanim[ip]||0) + 1;
-      localStorage.setItem("niyet_rapor_kullanim", JSON.stringify(kullanim));
+      localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
     } catch { /* ipify ulaşılamazsa devam et */ }
 
-    localStorage.setItem("niyet_rapor_used", "1");
+    localStorage.setItem("sakin_rapor_used", "1");
     setRaporKullanildi(true);
 
     setAiLoading(true); setAiRapor("");
@@ -1160,7 +1160,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",boxShadow:"0 0 28px rgba(139,90,160,0.38),0 0 60px rgba(139,90,160,0.14)",animation:"slowPulse 4s ease-in-out infinite" }} />
           </div>
           <div className="fade-up" style={{ animationDelay:"0.2s",opacity:0 }}>
-            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Niyet</div>
+            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.38s",opacity:0 }}>
             <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>Kendini hep hatırla</div>
@@ -1169,7 +1169,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:2,marginBottom:46,fontStyle:"italic" }}>
               Bu uygulama sana bir şey öğretmez.<br />Sadece hatırlatır.
             </div>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
           </div>
         </div>
       )}
@@ -1183,7 +1183,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>Bugünün niyeti nedir?</div>
-            <textarea className="niyet-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
+            <textarea className="sakin-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>3 KELIME SEÇ</div>
@@ -1248,27 +1248,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM TARİHİ</div>
-                  <input type="date" className="niyet-input"
+                  <input type="date" className="sakin-input"
                     style={{ fontSize:12,letterSpacing:0.5 }}
                     value={birthInput}
                     onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM SAATİ <span style={{ color:"#3a2a5a",fontSize:8,letterSpacing:1 }}>(opsiyonel)</span></div>
-                  <input type="time" className="niyet-input"
+                  <input type="time" className="sakin-input"
                     style={{ fontSize:12,letterSpacing:0.5 }}
                     value={birthTimeInput}
                     onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
                 <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  {astro && <button className="niyet-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
-                  <button className="niyet-btn-primary"
+                  {astro && <button className="sakin-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
+                  <button className="sakin-btn-primary"
                     style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
                     onClick={()=>{
                       if(!birthInput) return;
-                      localStorage.setItem("niyet_birth_date", birthInput);
+                      localStorage.setItem("sakin_birth_date", birthInput);
                       setBirthDate(birthInput);
-                      if(birthTimeInput){ localStorage.setItem("niyet_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                      if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                       setShowBirthForm(false);
                     }}>Kaydet</button>
                 </div>
@@ -1276,7 +1276,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : null}
           </div>
 
-          <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
         </div>
       )}
 
@@ -1296,13 +1296,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathStarted ? `${breathCount} nefes` : ""}</div>
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-              <button className="niyet-btn-primary" onClick={()=>setBreathStarted(true)}>BAŞLA</button>
+              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+              <button className="sakin-btn-primary" onClick={()=>setBreathStarted(true)}>BAŞLA</button>
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-              <button className="niyet-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
             </div>
           )}
         </div>
@@ -1318,10 +1318,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
             <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
             <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
-            <button className="niyet-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
+            <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={()=>setScreen("nefes")}>← geri</button>
-              <button className="niyet-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>← geri</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
             </div>
           </div>
         </div>
@@ -1340,11 +1340,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:14,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Bugün ne öğrendin?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Şükür?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
           </div>
           <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
             {["🫶","⚡","🌊","✨","🌿"].map(em=>(
@@ -1353,7 +1353,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
           </div>
-          <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
         </div>
       )}
 
@@ -1497,7 +1497,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>Ücretsiz raporunu kullandın</div>
                 <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
                   Her hafta derin bir içsel rapor almak için<br/>
-                  <strong style={{ color:"#9a7ab8" }}>Niyet Premium</strong>'a geç.
+                  <strong style={{ color:"#9a7ab8" }}>Sakin Premium</strong>'a geç.
                 </div>
                 <div style={{ background:"rgba(139,90,160,0.08)",border:"1px solid rgba(139,90,160,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:14 }}>
                   <div style={{ fontSize:10,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>PREMIUM</div>
@@ -1507,7 +1507,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     ✦ Kişisel büyüme takibi
                   </div>
                 </div>
-                <a href="mailto:destek@niyet.app?subject=Premium%20%C3%9Cyelik"
+                <a href="mailto:destek@sakin.app?subject=Premium%20%C3%9Cyelik"
                   style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:11,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
                   Premium'a Geç →
                 </a>
@@ -1515,7 +1515,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
-                <button className="niyet-btn-primary"
+                <button className="sakin-btn-primary"
                   style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
                   onClick={generateRapor}>✦ Rapor Oluştur</button>
               </div>
@@ -1545,7 +1545,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             )}
           </div>
-          <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
       )}
 

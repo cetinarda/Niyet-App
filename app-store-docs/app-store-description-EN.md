@@ -1,7 +1,7 @@
 # App Store Description — English
 
 ## App Name
-Niyet (Intention)
+Sakin
 
 ## Subtitle (max 30 characters)
 Always remember yourself.
@@ -13,10 +13,10 @@ Not a teacher. A reminder. From morning intention to evening closing — a calm 
 
 ## Full Description (max 4000 characters)
 
-Niyet doesn't teach you anything.
+Sakin doesn't teach you anything.
 It just reminds you.
 
-When you lose yourself in the rush of the day, Niyet gently brings you back inward. No complex programs, no to-do lists, no pressure. Just you and today's intention.
+When you lose yourself in the rush of the day, Sakin gently brings you back inward. No complex programs, no to-do lists, no pressure. Just you and today's intention.
 
 **Morning Ritual**
 Start your day by setting an intention. Choose 3 words that resonate with you most: peace, courage, flow, love... These words will guide you throughout the day.
@@ -41,7 +41,7 @@ Hundreds of people are breathing with you today. You are not alone.
 
 ---
 
-Niyet is not complex. It is deep.
+Sakin is not complex. It is deep.
 With its minimal design, soft colors, and quiet rhythm — it is built to be by your side every day.
 
 You have one minute to return to yourself.

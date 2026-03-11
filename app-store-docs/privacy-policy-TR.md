@@ -1,10 +1,10 @@
-# Gizlilik Politikası — Niyet Uygulaması
+# Gizlilik Politikası — Sakin Uygulaması
 
 **Son güncelleme:** Mart 2026
 
 ## 1. Genel Bakış
 
-Niyet uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlamaktadır. Bu gizlilik politikası, Uygulamanın hangi verileri topladığını, bu verileri nasıl kullandığını ve kullanıcıların haklarını açıklamaktadır.
+Sakin uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlamaktadır. Bu gizlilik politikası, Uygulamanın hangi verileri topladığını, bu verileri nasıl kullandığını ve kullanıcıların haklarını açıklamaktadır.
 
 ## 2. Toplanan Veriler
 
@@ -36,7 +36,7 @@ Uygulama şu anda herhangi bir analitik veya izleme SDK'sı kullanmamaktadır. G
 Kullanıcı günlük hatırlatıcı bildirimleri için izin verirse:
 - Bildirimler yalnızca kullanıcının kendi cihazında tetiklenir.
 - Bildirim içerikleri sunucuya gönderilmez.
-- Bildirim izni iOS Ayarlar > Niyet menüsünden her zaman iptal edilebilir.
+- Bildirim izni iOS Ayarlar > Sakin menüsünden her zaman iptal edilebilir.
 
 ## 4. Üçüncü Taraf Hizmetleri
 
@@ -63,4 +63,4 @@ Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uy
 Gizlilik politikasına ilişkin sorularınız için:
 
 **E-posta:** [geliştirici e-posta adresi]
-**Uygulama Adı:** Niyet
+**Uygulama Adı:** Sakin

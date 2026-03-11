@@ -2,7 +2,7 @@
 
 ## Uygulamayı Açıklamak İçin Özet
 
-**Niyet**, kullanıcılara sabahtan akşama günlük bir farkındalık rutini sunan bir **Lifestyle / Productivity** uygulamasıdır. Uygulama herhangi bir tıbbi iddiada bulunmamakta; "hatırlatıcı", "alışkanlık oluşturma" ve "kişisel farkındalık" odaklı içerik sunmaktadır.
+**Sakin**, kullanıcılara sabahtan akşama günlük bir farkındalık rutini sunan bir **Lifestyle / Productivity** uygulamasıdır. Uygulama herhangi bir tıbbi iddiada bulunmamakta; "hatırlatıcı", "alışkanlık oluşturma" ve "kişisel farkındalık" odaklı içerik sunmaktadır.
 
 ---
 
