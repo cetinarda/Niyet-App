@@ -780,7 +780,9 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
 }
 
 export default function SakinApp() {
-  const [screen,        setScreen]        = useState("giris");
+  const URL_TO_SCREEN = { "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
+  const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
+  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
   const [breathPhase,   setBreathPhase]   = useState("inhale");
@@ -843,6 +845,11 @@ export default function SakinApp() {
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
+  useEffect(() => {
+    const onPop = () => setScreen(URL_TO_SCREEN[window.location.pathname] || "giris");
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   useEffect(() => {
     if (screen !== "harita") return;
@@ -1226,10 +1233,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÜST NAV */}
       <div className="top-nav">
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>FİYATLANDIRMA</button>
-        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>HİZMET ŞARTLARI</button>
-        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>GİZLİLİK</button>
-        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>İADE POLİTİKASI</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>FİYATLANDIRMA</button>
+        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>HİZMET ŞARTLARI</button>
+        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>GİZLİLİK</button>
+        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>İADE POLİTİKASI</button>
       </div>
 
       {/* Sabit derin uzay arka planı */}
@@ -1606,14 +1613,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </ul>
           </div>
 
-          {/* Raporlama */}
-          <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.22)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.35)",color:"#c3a6d8" }}>PRİUM</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Sınırsız Raporlama 📊</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:4 }}>₺49 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ ay</span></div>
-            <div style={{ fontSize:11,color:"#6a7a6a",marginBottom:14 }}>veya ₺399 / yıl <span style={{ fontSize:10,color:"#4a6a4a" }}>(en uygun)</span></div>
+          {/* Premium */}
+          <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>PREMİUM</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Sınırsız Raporlama + Reiki Rehberi 🔮📊</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ tek seferlik</span></div>
             <ul>
-              {["Haftalık sınırsız AI içsel rapor","Derin astroloji & numeroloji analizi","Aylık çakra haritası","Kişisel büyüme takibi","Nefes ve niyet arşivi"].map(f=>(
+              {["Haftalık sınırsız AI içsel rapor","Derin astroloji & numeroloji analizi","Aylık çakra haritası","Kişisel büyüme takibi","7 çakra için tam enerji rehberi","24+ fiziksel ve duygusal durum haritası","Semptom bazlı arama","El pozisyonları ve pratik uygulama","Süresiz erişim"].map(f=>(
                 <li key={f}>{f}</li>
               ))}
             </ul>
@@ -1626,18 +1632,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺149</div>
             <ul>
               {["21 günlük kişisel dönüşüm programı","Her gün için özel tema ve görevler","Toprak, Nefes, Su, Doğa, Sessizlik…","Süresiz erişim"].map(f=>(
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Reiki */}
-          <div className="pricing-card" style={{ background:"rgba(142,68,173,0.06)",border:"1px solid rgba(142,68,173,0.22)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(142,68,173,0.18)",border:"1px solid rgba(142,68,173,0.35)",color:"#ce93d8" }}>TEK SEFERLİK</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Reiki Rehberi 🔮</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺79</div>
-            <ul>
-              {["7 çakra için tam enerji rehberi","24+ fiziksel ve duygusal durum haritası","Semptom bazlı arama","El pozisyonları ve pratik uygulama","Süresiz erişim"].map(f=>(
                 <li key={f}>{f}</li>
               ))}
             </ul>
