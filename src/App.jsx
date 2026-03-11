@@ -1234,10 +1234,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
-        <button onClick={toggleLang} style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"4px 11px",color:"#8a9aaa",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif",marginLeft:6 }}>
-          {lang === "tr" ? "EN" : "TR"}
-        </button>
       </div>
+
+      {/* DİL BUTONU — sağ üst köşe */}
+      <button onClick={toggleLang} style={{ position:"fixed",top:12,right:14,zIndex:100,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"5px 13px",color:"#8a9aaa",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+        {lang === "tr" ? "EN" : "TR"}
+      </button>
 
       {/* Sabit derin uzay arka planı */}
       <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
