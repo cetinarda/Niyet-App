@@ -1827,7 +1827,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {!["giris","terapi","gun","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px" }}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"5px 9px",display:"flex",flexDirection:"column",alignItems:"center",gap:3 }}>
+            <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"5px 9px",display:"flex",flexDirection:"column",alignItems:"center",gap:3 }}>
               <span style={{ fontSize:screen===n.id?16:12,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
               <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:6,letterSpacing:2,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
             </button>
