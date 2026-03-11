@@ -163,6 +163,7 @@ const REMINDERS = REMINDERS_TR;
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
+  html, body { background: #04080e; margin: 0; padding: 0; min-height: 100%; }
   @keyframes twinkle      { 0%,100%{opacity:0.06} 50%{opacity:0.48} }
   @keyframes fadeUp       { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn       { from{opacity:0} to{opacity:1} }
@@ -273,22 +274,21 @@ const GLOBAL_CSS = `
   .notif-btn:hover { background:rgba(255,255,255,0.1); color:#e8e0d5; }
   .notif-btn.sent { background:rgba(100,180,120,0.2); border-color:rgba(100,180,120,0.35); color:#82d9a3; }
   .top-nav {
-    position:fixed; top:0; left:0; right:0; z-index:100;
-    display:flex; align-items:center; justify-content:center; gap:4px;
-    padding:10px 70px 10px 16px;
-    background:rgba(4,8,14,0.88); backdrop-filter:blur(20px);
-    border-bottom:1px solid rgba(255,255,255,0.06);
+    position:fixed; top:0; left:0; right:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center; gap:2px;
+    padding:8px 64px 8px 12px;
+    background:#04080e; border-bottom:1px solid rgba(255,255,255,0.1);
     overflow-x:auto; overflow-y:hidden;
   }
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:10px; letter-spacing:2px; color:rgba(200,190,220,0.75);
-    padding:6px 12px; border-radius:100px; transition:all 0.25s;
-    white-space:nowrap;
+    font-size:10px; letter-spacing:1.5px; color:#9a8fb0;
+    padding:6px 10px; border-radius:100px; transition:all 0.25s;
+    white-space:nowrap; flex-shrink:0;
   }
-  .top-nav-btn:hover { color:#e8e0d5; background:rgba(255,255,255,0.05); }
-  .top-nav-btn.active { color:#c3a6d8; background:rgba(139,90,160,0.15); border:1px solid rgba(139,90,160,0.22); }
+  .top-nav-btn:hover { color:#e8e0d5; background:rgba(255,255,255,0.07); }
+  .top-nav-btn.active { color:#c3a6d8; background:rgba(139,90,160,0.18); border:1px solid rgba(139,90,160,0.3); }
   .policy-screen {
     max-width:560px; width:100%; padding:88px 28px 100px;
     position:relative; z-index:1; text-align:left;
@@ -1238,7 +1238,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       </div>
 
       {/* DİL BUTONU — sağ üst köşe */}
-      <button onClick={toggleLang} style={{ position:"fixed",top:12,right:14,zIndex:100,background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"5px 13px",color:"#8a9aaa",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+      <button onClick={toggleLang} style={{ position:"fixed",top:8,right:12,zIndex:9999,background:"rgba(139,90,160,0.2)",border:"1px solid rgba(139,90,160,0.4)",borderRadius:20,padding:"5px 14px",color:"#c3a6d8",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
         {lang === "tr" ? "EN" : "TR"}
       </button>
 
