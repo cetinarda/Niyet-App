@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
+import { makeTrans } from "./i18n";
 
-const CHAKRAS_7 = [
+const CHAKRAS_7_TR = [
   { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥" },
   { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧" },
   { name:"Güneş Pleksusu", color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨" },
@@ -9,9 +10,19 @@ const CHAKRAS_7 = [
   { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣" },
   { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"Bugün bütünle bağlan.",            element:"Evren",  emoji:"⬜" },
 ];
+const CHAKRAS_7_EN = [
+  { name:"Root",         color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself today. Feel safe.",     element:"Earth",   emoji:"🟥" },
+  { name:"Sacral",       color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",        element:"Water",   emoji:"🟧" },
+  { name:"Solar Plexus", color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. You have your light.", element:"Fire",    emoji:"🟨" },
+  { name:"Heart",        color:"#27ae60", pastel:"#82d9a3", desc:"Open with love today. For yourself too.",element:"Air",    emoji:"🟩" },
+  { name:"Throat",       color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",               element:"Sound",   emoji:"🟦" },
+  { name:"Third Eye",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Look inward today.",                    element:"Light",   emoji:"🟣" },
+  { name:"Crown",        color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with the whole today.",         element:"Universe",emoji:"⬜" },
+];
+const getChakras7 = (lang) => lang === "en" ? CHAKRAS_7_EN : CHAKRAS_7_TR;
+const CHAKRAS_7 = CHAKRAS_7_TR;
 
-const CHAKRAS_22 = [
-  ...CHAKRAS_7,
+const CHAKRAS_22_EXTRA = [
   { name:"Yeryüzü Yıldızı", color:"#5d4037", pastel:"#bcaaa4", desc:"Toprakla bağını güçlendir.",     element:"Derinlik", emoji:"🌑" },
   { name:"Ruh",              color:"#880e4f", pastel:"#f48fb1", desc:"Ruhunun sesini duy.",             element:"Sevgi",    emoji:"💗" },
   { name:"Kabartma",         color:"#bf360c", pastel:"#ffab91", desc:"İçindeki ateşi hisset.",          element:"Dönüşüm", emoji:"🔥" },
@@ -28,6 +39,28 @@ const CHAKRAS_22 = [
   { name:"Lunar",            color:"#1b5e20", pastel:"#a5d6a7", desc:"Ay enerjisini çek.",              element:"Döngü",   emoji:"🌙" },
   { name:"Zeta",             color:"#006064", pastel:"#80deea", desc:"Frekansını yükselt.",             element:"Titreşim",emoji:"〰️"},
 ];
+const CHAKRAS_22_EXTRA_EN = [
+  { name:"Earth Star",      color:"#5d4037", pastel:"#bcaaa4", desc:"Strengthen your connection to earth.", element:"Depth",      emoji:"🌑" },
+  { name:"Soul",            color:"#880e4f", pastel:"#f48fb1", desc:"Hear the voice of your soul.",         element:"Love",       emoji:"💗" },
+  { name:"Causal Body",     color:"#bf360c", pastel:"#ffab91", desc:"Feel the fire within.",                element:"Transform",  emoji:"🔥" },
+  { name:"Diaphragm",       color:"#f57f17", pastel:"#ffe082", desc:"Be in your breath center.",            element:"Flow",       emoji:"🌬" },
+  { name:"Solar",           color:"#f9a825", pastel:"#fff176", desc:"Shine your light outward.",            element:"Radiance",   emoji:"☀️" },
+  { name:"Sharing",         color:"#558b2f", pastel:"#aed581", desc:"You grow by giving.",                  element:"Abundance",  emoji:"🌱" },
+  { name:"Thymus",          color:"#00695c", pastel:"#80cbc4", desc:"It is the heart of your immunity.",    element:"Protection", emoji:"🛡" },
+  { name:"Ultrasound",      color:"#0277bd", pastel:"#81d4fa", desc:"Feel the unspoken.",                   element:"Silence",    emoji:"🎵" },
+  { name:"Orion",           color:"#4527a0", pastel:"#b39ddb", desc:"Align with the universe.",             element:"Cosmic",     emoji:"⭐" },
+  { name:"Alta Major",      color:"#6a1b9a", pastel:"#ce93d8", desc:"Connect to ancestral wisdom.",         element:"Memory",     emoji:"🌀" },
+  { name:"Stellar Gateway", color:"#4a148c", pastel:"#e1bee7", desc:"Open the gate of light.",              element:"Passage",    emoji:"🌟" },
+  { name:"Soul Star",       color:"#1a237e", pastel:"#c5cae9", desc:"The highest state of your soul.",      element:"Infinite",   emoji:"✨" },
+  { name:"Causal",          color:"#311b92", pastel:"#d1c4e9", desc:"Connect with the reason.",             element:"Karma",      emoji:"🔮" },
+  { name:"Lunar",           color:"#1b5e20", pastel:"#a5d6a7", desc:"Draw the moon's energy.",              element:"Cycle",      emoji:"🌙" },
+  { name:"Zeta",            color:"#006064", pastel:"#80deea", desc:"Raise your frequency.",                element:"Vibration",  emoji:"〰️" },
+];
+const getChakras22 = (lang) => [
+  ...getChakras7(lang),
+  ...(lang === "en" ? CHAKRAS_22_EXTRA_EN : CHAKRAS_22_EXTRA),
+];
+const CHAKRAS_22 = [...CHAKRAS_7, ...CHAKRAS_22_EXTRA];
 
 const MORNING_WORDS = ["huzur","akış","cesaret","sabır","berraklık","sevgi","güç","denge","özgürlük","neşe","şükür","güven"];
 const TERAPI_TOTAL = 60;
@@ -100,78 +133,32 @@ function approxAscendant(dateStr, timeStr) {
   return ZODIAC_ORDER[ascIdx];
 }
 
-const REMINDERS = [
-  {
-    id:"ayna", icon:"🪞", title:"Aynada kendine bak",
-    subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",
-    duration:30, color:"rgba(180,160,220,0.7)",
-    borderColor:"rgba(180,160,220,0.25)",
-    notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak.",
-  },
-  {
-    id:"su", icon:"💧", title:"Su iç",
-    subtitle:"Bir bardak su iç ve hisset.",
-    duration:null, color:"rgba(72,130,200,0.7)",
-    borderColor:"rgba(72,130,200,0.25)",
-    notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat.",
-  },
-  {
-    id:"nefes", icon:"🌬", title:"Nefes farkındalığı",
-    subtitle:"1 dakika — sadece nefesini izle.",
-    duration:60, color:"rgba(100,160,210,0.7)",
-    borderColor:"rgba(100,160,210,0.25)",
-    notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın.",
-  },
-  {
-    id:"beden", icon:"🧍", title:"Beden egzersizi",
-    subtitle:"Omuz çevir · Boyun esnet · Gözleri dinlendir",
-    duration:120, color:"rgba(100,180,130,0.7)",
-    borderColor:"rgba(100,180,130,0.25)",
-    notifBody:"Omuzlarını çevir, boynunu esnet, gözlerini kapat. 2 dakika beden zamanı.",
-  },
-  {
-    id:"gunes", icon:"☀️", title:"Güneşi yüzünde hisset",
-    subtitle:"Dışarı çık. Yüzünü güneşe dön.",
-    duration:null, color:"rgba(240,180,60,0.7)",
-    borderColor:"rgba(240,180,60,0.25)",
-    notifBody:"Güneş seni bekliyor. Yüzünü kaldır, gözlerini yum, hisset.",
-  },
-  {
-    id:"agac", icon:"🌳", title:"Ağaca sarıl",
-    subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",
-    duration:30, color:"rgba(45,120,65,0.7)",
-    borderColor:"rgba(45,120,65,0.25)",
-    notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona — o da seni tutacak.",
-  },
-  {
-    id:"toprak", icon:"🌍", title:"Toprağa dokun",
-    subtitle:"Çıplak ayak ya da avucunla toprağa değdir.",
-    duration:30, color:"rgba(100,70,40,0.7)",
-    borderColor:"rgba(100,70,40,0.25)",
-    notifBody:"Ayakkabını çıkar. Toprağa bas. Yerin enerjisini hisset.",
-  },
-  {
-    id:"gok", icon:"☁️", title:"Gökyüzüne bak",
-    subtitle:"Bugün gökyüzüne baktın mı?",
-    duration:null, color:"rgba(80,140,200,0.7)",
-    borderColor:"rgba(80,140,200,0.25)",
-    notifBody:"Başını kaldır. Gökyüzüne bak. Sadece bak.",
-  },
-  {
-    id:"chakra_an", icon:"💜", title:"Çakra anı",
-    subtitle:"Bugünkü çakranda bir an dur.",
-    duration:null, color:"rgba(139,90,160,0.7)",
-    borderColor:"rgba(139,90,160,0.25)",
-    notifBody:"Gözlerini yum. Bugünkü çakranı hisset. Bir nefes yeter.",
-  },
-  {
-    id:"sosyal", icon:"📵", title:"Sosyal medya molası",
-    subtitle:"Gerçekten şimdi burada olmak istiyor musun?",
-    duration:null, color:"rgba(200,80,80,0.7)",
-    borderColor:"rgba(200,80,80,0.25)",
-    notifBody:"Telefonu koy. Bir dakika sadece var ol. Ekran bekler, an geçer.",
-  },
+const REMINDERS_TR = [
+  { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
+  { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
+  { id:"nefes",     icon:"🌬", title:"Nefes farkındalığı",         subtitle:"1 dakika — sadece nefesini izle.",                        duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın." },
+  { id:"beden",     icon:"🧍", title:"Beden egzersizi",            subtitle:"Omuz çevir · Boyun esnet · Gözleri dinlendir",            duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Omuzlarını çevir, boynunu esnet, gözlerini kapat. 2 dakika beden zamanı." },
+  { id:"gunes",     icon:"☀️", title:"Güneşi yüzünde hisset",     subtitle:"Dışarı çık. Yüzünü güneşe dön.",                         duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"Güneş seni bekliyor. Yüzünü kaldır, gözlerini yum, hisset." },
+  { id:"agac",      icon:"🌳", title:"Ağaca sarıl",                subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",            duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona — o da seni tutacak." },
+  { id:"toprak",    icon:"🌍", title:"Toprağa dokun",              subtitle:"Çıplak ayak ya da avucunla toprağa değdir.",              duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Ayakkabını çıkar. Toprağa bas. Yerin enerjisini hisset." },
+  { id:"gok",       icon:"☁️", title:"Gökyüzüne bak",             subtitle:"Bugün gökyüzüne baktın mı?",                             duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Başını kaldır. Gökyüzüne bak. Sadece bak." },
+  { id:"chakra_an", icon:"💜", title:"Çakra anı",                  subtitle:"Bugünkü çakranda bir an dur.",                           duration:null,color:"rgba(139,90,160,0.7)", borderColor:"rgba(139,90,160,0.25)",  notifBody:"Gözlerini yum. Bugünkü çakranı hisset. Bir nefes yeter." },
+  { id:"sosyal",    icon:"📵", title:"Sosyal medya molası",        subtitle:"Gerçekten şimdi burada olmak istiyor musun?",             duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Telefonu koy. Bir dakika sadece var ol. Ekran bekler, an geçer." },
 ];
+const REMINDERS_EN = [
+  { id:"ayna",      icon:"🪞", title:"Look at yourself in the mirror", subtitle:"30 seconds — look into your eyes. Just be.",              duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Go to the mirror. For 30 seconds, just look at yourself." },
+  { id:"su",        icon:"💧", title:"Drink water",                    subtitle:"Drink a glass of water and feel it.",                      duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Drink a glass of water. Feel it — cool, clean, life." },
+  { id:"nefes",     icon:"🌬", title:"Breath awareness",               subtitle:"1 minute — just observe your breath.",                     duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Stop. For one minute, just observe your breath. You are here." },
+  { id:"beden",     icon:"🧍", title:"Body exercise",                  subtitle:"Roll shoulders · Stretch neck · Rest eyes",               duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Roll your shoulders, stretch your neck, close your eyes. 2 minutes for your body." },
+  { id:"gunes",     icon:"☀️", title:"Feel the sun on your face",      subtitle:"Go outside. Turn your face to the sun.",                  duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"The sun is waiting for you. Lift your face, close your eyes, feel." },
+  { id:"agac",      icon:"🌳", title:"Hug a tree",                     subtitle:"Find a tree. Open your arms. Touch your heart.",          duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Go outside. Find a tree. Hug it — it will hold you too." },
+  { id:"toprak",    icon:"🌍", title:"Touch the earth",                subtitle:"Touch the ground with bare feet or your palm.",           duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Take off your shoes. Stand on the earth. Feel the energy of the ground." },
+  { id:"gok",       icon:"☁️", title:"Look at the sky",               subtitle:"Have you looked at the sky today?",                       duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Lift your head. Look at the sky. Just look." },
+  { id:"chakra_an", icon:"💜", title:"Chakra moment",                  subtitle:"Pause for a moment in today's chakra.",                   duration:null,color:"rgba(139,90,160,0.7)", borderColor:"rgba(139,90,160,0.25)",  notifBody:"Close your eyes. Feel today's chakra. One breath is enough." },
+  { id:"sosyal",    icon:"📵", title:"Social media break",             subtitle:"Do you really want to be here right now?",                duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Put the phone down. Just exist for a minute. The screen can wait, the moment can't." },
+];
+const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
+const REMINDERS = REMINDERS_TR;
 
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
@@ -340,7 +327,9 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
-function ReminderScreen({ onBack, onNext }) {
+function ReminderScreen({ onBack, onNext, lang = "tr" }) {
+  const t = makeTrans(lang);
+  const REMINDERS = getReminders(lang);
   const [done,    setDone]    = useState({});
   const [sent,    setSent]    = useState({});
   const [timing,  setTiming]  = useState(null);
@@ -401,8 +390,8 @@ function ReminderScreen({ onBack, onNext }) {
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>GÜN İÇİ</div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:20, fontWeight:300, letterSpacing:1.5 }}>Hatırlatıcılar</div>
+          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:20, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
         </div>
         <div style={{
           background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)",
@@ -421,17 +410,17 @@ function ReminderScreen({ onBack, onNext }) {
 
       {notifOk === false && (
         <div style={{ background:"rgba(200,80,80,0.12)", border:"1px solid rgba(200,80,80,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:12, color:"#e8a0a0", lineHeight:1.6 }}>
-          Bildirim izni gerekli. Tarayıcı ayarlarından izin ver.
+          {t("notif_denied")}
         </div>
       )}
       {notifOk === true && (
         <div style={{ background:"rgba(80,180,100,0.1)", border:"1px solid rgba(80,180,100,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:12, color:"#82d9a3", lineHeight:1.6, animation:"fadeIn 0.4s ease" }}>
-          ✦ Bildirim gönderildi
+          {t("notif_sent_ok")}
         </div>
       )}
 
       <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
-        📲 Tüm hatırlatıcıları telefona gönder
+        {t("send_all")}
       </button>
 
       <div style={{ maxHeight:"60vh", overflowY:"auto", paddingRight:2, scrollbarWidth:"none" }}>
@@ -486,7 +475,7 @@ function ReminderScreen({ onBack, onNext }) {
                 )}
               </div>
               <button className={`notif-btn ${sent[rem.id]?"sent":""}`} onClick={() => handleNotif(rem)}>
-                {sent[rem.id] ? "✓ gönderildi" : "bildir"}
+                {sent[rem.id] ? t("sent_label") : t("notify_label")}
               </button>
             </div>
           );
@@ -501,7 +490,7 @@ function ReminderScreen({ onBack, onNext }) {
         }}>
           <div style={{ fontSize:28, marginBottom:8 }}>🌿</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:18, color:"#82d9a3", letterSpacing:1 }}>
-            Bugün kendine dokundun.
+            {t("all_done_msg")}
           </div>
         </div>
       )}
@@ -511,13 +500,15 @@ function ReminderScreen({ onBack, onNext }) {
         onClick={onNext}
         style={{ width:"100%", marginTop:22, fontSize:11, letterSpacing:2 }}
       >
-        akşam kapanışına geç →
+        {t("btn_to_evening")}
       </button>
     </div>
   );
 }
 
-function TerapiScreen({ onBack }) {
+function TerapiScreen({ onBack, lang = "tr" }) {
+  const t = makeTrans(lang);
+  const CHAKRAS_22 = getChakras22(lang);
   const [tPhase,   setTPhase]   = useState("list");
   const [selected, setSelected] = useState(null);
   const [elapsed,  setElapsed]  = useState(0);
@@ -562,8 +553,8 @@ function TerapiScreen({ onBack }) {
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
         <div>
-          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>REİKİ</div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:2 }}>22 Çakra Terapi</div>
+          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
       </div>
       <div style={{ maxHeight:"62vh", overflowY:"auto", paddingRight:4, scrollbarWidth:"none" }}>
@@ -576,19 +567,19 @@ function TerapiScreen({ onBack }) {
               <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
               <div style={{ fontSize:11, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
-            {i<7 && <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>TEMEL</div>}
+            {i<7 && <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>{t("core_badge")}</div>}
           </div>
         ))}
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
           <div>
-            <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>SEÇİLEN</div>
+            <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>{t("selected_label")}</div>
             <div style={{ fontSize:16,fontWeight:300 }}>{selected.name}</div>
           </div>
           <button className="sakin-btn-primary"
             style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:12 }}
-            onClick={() => setTPhase("intro")}>TERAPİYE BAŞLA</button>
+            onClick={() => setTPhase("intro")}>{t("btn_start_therapy")}</button>
         </div>
       )}
     </div>
@@ -597,18 +588,18 @@ function TerapiScreen({ onBack }) {
   if (tPhase==="intro"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ marginBottom:32 }}>
-        <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>REİKİ · ÇAKRA TERAPİSİ</div>
+        <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
       </div>
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} Çakrası</div>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
       <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:24 }}>{selected.element.toUpperCase()}</div>
       <div style={{ fontSize:13,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
-        Bir elini {selected.name.toLowerCase()} bölgende hisset.<br />Gözlerini yum.<br />{selected.desc}
+        {t("intro_place_hand", selected.name)}<br />{t("intro_close_eyes")}<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="sakin-btn" onClick={() => setTPhase("list")}>← geri</button>
-        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
+        <button className="sakin-btn" onClick={() => setTPhase("list")}>{t("back")}</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>{t("btn_start")}</button>
       </div>
     </div>
   );
@@ -620,14 +611,14 @@ function TerapiScreen({ onBack }) {
           <div style={{ textAlign:"center",maxWidth:280 }}>
             <div style={{ fontSize:32,marginBottom:18 }}>🌿</div>
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,letterSpacing:1,color:"#e8e0d5",marginBottom:10,lineHeight:1.5 }}>
-              Emin misin?
+              {t("sure_title")}
             </div>
             <div style={{ fontSize:13,color:"#7a8a9a",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
-              Bu an kendine hediye.<br />Biraz daha kal.
+              {t("sure_body").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
             </div>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={resetTerapi}>çık</button>
-              <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={()=>setShowBackConfirm(false)}>devam et →</button>
+              <button className="sakin-btn" onClick={resetTerapi}>{t("btn_exit")}</button>
+              <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={()=>setShowBackConfirm(false)}>{t("btn_continue2")}</button>
             </div>
           </div>
         </div>
@@ -658,7 +649,7 @@ function TerapiScreen({ onBack }) {
         ))}
       </div>
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:50,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
-      <div style={{ fontSize:9,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{Math.round(progress*100)}% YÜKLENDI</div>
+      <div style={{ fontSize:9,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
         {(()=>{
           const HP = {
@@ -702,11 +693,11 @@ function TerapiScreen({ onBack }) {
         })()}
       </div>
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
-        {progress<0.25 && "Elini hissediyorsun..."}
-        {progress>=0.25&&progress<0.5  && `${selected.name} ışığı yayılıyor...`}
-        {progress>=0.5 &&progress<0.75 && "Enerji akıyor, bırak gelsin..."}
-        {progress>=0.75&&progress<0.95 && "Neredeyse tam. Hisset."}
-        {progress>=0.95 && `${selected.name} çakran doluyor. 💫`}
+        {progress<0.25 && t("progress_p1")}
+        {progress>=0.25&&progress<0.5  && t("progress_p2", selected.name)}
+        {progress>=0.5 &&progress<0.75 && t("progress_p3")}
+        {progress>=0.75&&progress<0.95 && t("progress_p4")}
+        {progress>=0.95 && t("progress_p5", selected.name)}
       </div>
     </div>
   );
@@ -717,13 +708,13 @@ function TerapiScreen({ onBack }) {
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:11,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
       <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"slowPulse 3.5s ease-in-out infinite" }} />
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>Tamamlandı.</div>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>{t("done_title")}</div>
       <div style={{ fontSize:13,color:"#5a6a7a",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
-        {selected.name} çakran aktif.<br />Bu enerjiyi gün boyu taşı.
+        {t("done_body", selected.name).split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="sakin-btn" onClick={resetTerapi}>diğer çakra</button>
-        <button className="sakin-btn" onClick={onBack}>ana ekran</button>
+        <button className="sakin-btn" onClick={resetTerapi}>{t("other_chakra")}</button>
+        <button className="sakin-btn" onClick={onBack}>{t("main_screen")}</button>
       </div>
     </div>
   );
@@ -731,7 +722,8 @@ function TerapiScreen({ onBack }) {
   return null;
 }
 
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder }) {
+function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder, lang = "tr" }) {
+  const t = makeTrans(lang);
   return (
     <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
       <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
@@ -744,15 +736,15 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
       {analiz === "__loading__" ? (
         <div style={{ textAlign:"center",padding:"24px 0" }}>
           <div style={{ fontSize:18,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
-          <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>OKUNUM YAPILIYOR...</div>
+          <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>{t("reading")}</div>
         </div>
       ) : analiz ? (
         <div>
-          <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} · ANALİZ</div>
+          <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
           <div style={{ fontSize:12.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
           <button onClick={onSifirla}
             style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:9,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
-            ✦ YENİ ARAMA
+            {t("btn_new_search")}
           </button>
         </div>
       ) : (
@@ -766,12 +758,12 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
           <textarea
             value={his}
             onChange={e=>onHisChange(e.target.value)}
-            placeholder="Nasıl hissediyorsun? Nerede ve ne zaman başladı?"
+            placeholder={t("feeling_ph")}
             style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:11.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
           />
           <button onClick={onAra}
             style={{ width:"100%",background:`linear-gradient(135deg,${renk}60,${renk}30)`,border:`1px solid ${renk}40`,borderRadius:12,padding:"11px",cursor:"pointer",color:"#e8d8f8",fontSize:11,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-            ✦ ANLAM ARA
+            {t("btn_search")}
           </button>
         </div>
       )}
@@ -780,6 +772,10 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
 }
 
 export default function SakinApp() {
+  const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "tr");
+  const t = makeTrans(lang);
+  const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
+  const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
   const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
@@ -1207,7 +1203,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
-  const breathLabel = breathStarted ? {inhale:"içine al",hold:"tut",exhale:"bırak"}[breathPhase] : "";
+  const breathLabel = breathStarted ? {inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale")}[breathPhase] : "";
   const breathScale = breathStarted ? (breathPhase==="exhale" ? 1 : 1.6) : 1;
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
@@ -1218,14 +1214,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"sabah",icon:"🌅",label:"Sabah"},
-    {id:"nefes",icon:"🫧",label:"Nefes"},
-    {id:"chakra",icon:"💜",label:"Çakra"},
-    {id:"gun",icon:"☀️",label:"Gün"},
-    {id:"aksam",icon:"🌙",label:"Akşam"},
-    {id:"harita",icon:"🗺️",label:"Harita"},
-    {id:"rehber",icon:"📖",label:"Rehber"},
+    {id:"sabah",icon:"🌅",label:t("nav_morning")},
+    {id:"nefes",icon:"🫧",label:t("nav_breath")},
+    {id:"chakra",icon:"💜",label:t("nav_chakra")},
+    {id:"gun",icon:"☀️",label:t("nav_day")},
+    {id:"aksam",icon:"🌙",label:t("nav_evening")},
+    {id:"harita",icon:"🗺️",label:t("nav_map")},
+    {id:"rehber",icon:"📖",label:t("nav_guide")},
   ];
+  const MORNING_WORDS = t("morning_words");
 
   return (
     <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflowX:"hidden",overflowY:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"auto":"hidden",position:"relative" }}>
@@ -1233,10 +1230,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÜST NAV */}
       <div className="top-nav">
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>FİYATLANDIRMA</button>
-        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>HİZMET ŞARTLARI</button>
-        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>GİZLİLİK</button>
-        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>İADE POLİTİKASI</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
+        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
+        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
+        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
+        <button onClick={toggleLang} style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:20,padding:"4px 11px",color:"#8a9aaa",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif",marginLeft:6 }}>
+          {lang === "tr" ? "EN" : "TR"}
+        </button>
       </div>
 
       {/* Sabit derin uzay arka planı */}
@@ -1263,13 +1263,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.38s",opacity:0 }}>
-            <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>Kendini hep hatırla</div>
+            <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>{t("tagline")}</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.6s",opacity:0 }}>
             <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:2,marginBottom:46,fontStyle:"italic" }}>
-              Bu uygulama sana bir şey öğretmez.<br />Sadece hatırlatır.
+              {t("intro_text1")}<br />{t("intro_text2")}
             </div>
-            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>{t("btn_ready")}</button>
           </div>
         </div>
       )}
@@ -1282,11 +1282,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ marginTop:12,fontSize:9,letterSpacing:5,color:"#5a6a7a" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
           <div style={{ marginBottom:26 }}>
-            <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>Bugünün niyeti nedir?</div>
-            <textarea className="sakin-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
+            <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>{t("intention_q")}</div>
+            <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
-            <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>3 KELIME SEÇ</div>
+            <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>{t("choose_words")}</div>
             <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
               {MORNING_WORDS.map(w=>(
                 <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
@@ -1296,14 +1296,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           {/* DOĞUM PROFİLİ KARTI */}
           <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14,marginTop:10 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>DOĞUM PROFİLİ</div>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>{t("birth_profile")}</div>
             {astro && !showBirthForm ? (
               <div>
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
                   {[
-                    {label:"Burç",value:astro.burc},
-                    {label:"Yaşam Yolu",value:astro.yasam},
-                    {label:"Kişisel Yıl",value:astro.kisiselYil},
+                    {label:t("birth_sign"),value:astro.burc},
+                    {label:t("birth_life_path"),value:astro.yasam},
+                    {label:t("birth_personal_yr"),value:astro.kisiselYil},
                   ].map((s,i)=>(
                     <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
                       <div style={{ fontSize:7,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
@@ -1312,11 +1312,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   ))}
                 </div>
                 {/* Biyoritm çubukları */}
-                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>BİYORİTM — BU HAFTA</div>
+                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>{t("bio_label")}</div>
                 {[
-                  {label:"Fiziksel",val:astro.bio.fiziksel,color:"#e8a09a"},
-                  {label:"Duygusal",val:astro.bio.duygusal,color:"#85c1e9"},
-                  {label:"Zihinsel",val:astro.bio.zihinsel,color:"#aed581"},
+                  {label:t("bio_physical"),val:astro.bio.fiziksel,color:"#e8a09a"},
+                  {label:t("bio_emotional"),val:astro.bio.duygusal,color:"#85c1e9"},
+                  {label:t("bio_mental"),val:astro.bio.zihinsel,color:"#aed581"},
                 ].map(({label,val,color})=>{
                   const {pct,positive}=bioritmBar(val);
                   return (
@@ -1333,35 +1333,35 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 })}
                 {birthTime && (
                   <div style={{ fontSize:10,color:"#7a6a9a",letterSpacing:1.5,marginTop:8,marginBottom:2,textAlign:"center" }}>
-                    ◷ {birthTime} doğum saati
+                    ◷ {birthTime} {t("birth_time_label")}
                   </div>
                 )}
                 <button onClick={()=>setShowBirthForm(true)}
                   style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
-                  tarihi değiştir
+                  {t("change_date")}
                 </button>
               </div>
             ) : showBirthForm || !astro ? (
               <div>
                 <div style={{ fontSize:11,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
-                  Doğum tarihinle kişiselleştirilmiş<br/>enerji yorumu alırsın.
+                  {t("birth_desc").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM TARİHİ</div>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_date_label")}</div>
                   <input type="date" className="sakin-input"
                     style={{ fontSize:12,letterSpacing:0.5 }}
                     value={birthInput}
                     onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>DOĞUM SAATİ <span style={{ color:"#3a2a5a",fontSize:8,letterSpacing:1 }}>(opsiyonel)</span></div>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_time_input")} <span style={{ color:"#3a2a5a",fontSize:8,letterSpacing:1 }}>{t("optional")}</span></div>
                   <input type="time" className="sakin-input"
                     style={{ fontSize:12,letterSpacing:0.5 }}
                     value={birthTimeInput}
                     onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
                 <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  {astro && <button className="sakin-btn" onClick={()=>setShowBirthForm(false)}>iptal</button>}
+                  {astro && <button className="sakin-btn" onClick={()=>setShowBirthForm(false)}>{t("cancel")}</button>}
                   <button className="sakin-btn-primary"
                     style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
                     onClick={()=>{
@@ -1370,20 +1370,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       setBirthDate(birthInput);
                       if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                       setShowBirthForm(false);
-                    }}>Kaydet</button>
+                    }}>{t("save")}</button>
                 </div>
               </div>
             ) : null}
           </div>
 
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>İLERLE</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>{t("btn_continue")}</button>
         </div>
       )}
 
       {/* NEFES */}
       {screen==="nefes" && (
         <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1 }}>
-          <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:48 }}>NEFES</div>
+          <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:48 }}>{t("breath_title")}</div>
           <div style={{ position:"relative",width:205,height:205,margin:"0 auto 40px" }}>
             {[1.72,1.45,1.2].map((s,i)=>(
               <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
@@ -1392,17 +1392,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
             </div>
           </div>
-          <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>Buradasın.</div>
-          <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathStarted ? `${breathCount} nefes` : ""}</div>
+          <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>{t("youre_here")}</div>
+          <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-              <button className="sakin-btn-primary" onClick={()=>setBreathStarted(true)}>BAŞLA</button>
+              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>setBreathStarted(true)}>{t("btn_start")}</button>
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-              <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>{t("btn_next")}</button>
             </div>
           )}
         </div>
@@ -1413,37 +1413,37 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1,maxWidth:360 }}>
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>REİKİ · GÜNÜN ÇAKRASI</div>
+            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>{t("chakra_subtitle")}</div>
             <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
+            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} {t("chakra_name_suf")}</div>
             <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
-            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
-            <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
+            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>{t("chakra_stay")}</div>
+            <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>← geri</button>
-              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>{t("btn_reminders")}</button>
             </div>
           </div>
         </div>
       )}
 
-      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>setScreen("aksam")} />}
+      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} lang={lang} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>setScreen("aksam")} lang={lang} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
         <div style={{ maxWidth:385,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:32 }}>
             <div style={{ fontSize:32,marginBottom:9 }}>🌙</div>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a" }}>AKŞAM KAPANIŞI</div>
+            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a" }}>{t("evening_label")}</div>
           </div>
           {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:14,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
-            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Bugün ne öğrendin?</div>
+            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
             <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
           </div>
           <div style={{ marginBottom:26 }}>
-            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Şükür?</div>
+            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
             <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
           </div>
           <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
@@ -1453,7 +1453,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
           </div>
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>{t("btn_see_week")}</button>
         </div>
       )}
 
@@ -1463,9 +1463,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Gizemli arka plan efekti */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(60,20,100,0.35) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(20,40,100,0.3) 0%,transparent 60%)",pointerEvents:"none",zIndex:0 }} />
           <div style={{ textAlign:"center",marginBottom:36,position:"relative" }}>
-            <div style={{ fontSize:9,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>✦ GİZEMLİ REHBERİ ✦</div>
-            <div style={{ fontSize:22,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>Şifa Arayışı</div>
-            <div style={{ fontSize:9,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>☽ bedenin mesajını oku ☽</div>
+            <div style={{ fontSize:9,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>{t("guide_sup")}</div>
+            <div style={{ fontSize:22,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>{t("guide_title")}</div>
+            <div style={{ fontSize:9,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>{t("guide_sub")}</div>
             <button onClick={toggleDevMode}
               style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
               {devMode ? "DEV ✓" : "DEV"}
@@ -1474,9 +1474,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* ARAMA PANELİ 1 — ŞİKAYET */}
           <AramaPaneli
-            baslik="İçsel Ayna"
-            simge="☽"
-            aciklama="bedeninin mesajını oku"
+            baslik={t("mirror_title")}
+            simge={t("mirror_icon")}
+            aciklama={t("mirror_desc")}
             renk="#a070d0"
             value={sikayet}
             onChange={setSikayet}
@@ -1485,7 +1485,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             analiz={sikayetAnaliz}
             onAra={generateSikayetAnaliz}
             onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-            placeholder="örn: baş ağrısı, yorgunluk, uyuyamıyorum..."
+            placeholder={t("mirror_ph")}
+            lang={lang}
           />
         </div>
       )}
@@ -1494,8 +1495,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {screen==="harita" && (
         <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>HAFTALIK</div>
-            <div style={{ fontSize:25,fontWeight:300,letterSpacing:2 }}>İçsel Harita</div>
+            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>{t("weekly_label")}</div>
+            <div style={{ fontSize:25,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
           </div>
           <div style={{ position:"relative",width:186,height:186,margin:"0 auto 34px" }}>
             <svg width="186" height="186" style={{ transform:"rotate(-90deg)" }}>
@@ -1510,15 +1511,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </svg>
             <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
               <div style={{ fontSize:25,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-              <div style={{ fontSize:8,letterSpacing:3,color:"#4a5a6a" }}>GÜN</div>
+              <div style={{ fontSize:8,letterSpacing:3,color:"#4a5a6a" }}>{t("day_pct")}</div>
             </div>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:32 }}>
             {[
-              {label:"En Aktif Çakra",value:chakra.name,color:chakra.pastel},
-              {label:"Nefes Sayısı",value:`${breathCount}`,color:"#82d9a3"},
-              {label:"Niyet Kelimesi",value:selectedWords[0]||"—",color:"#f0c27f"},
-              {label:"Bilinçli An",value:"3",color:"#85c1e9"},
+              {label:t("stat_chakra"),value:chakra.name,color:chakra.pastel},
+              {label:t("stat_breath"),value:`${breathCount}`,color:"#82d9a3"},
+              {label:t("stat_word"),value:selectedWords[0]||"—",color:"#f0c27f"},
+              {label:t("stat_mindful"),value:"3",color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
                 <div style={{ fontSize:8,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>{s.label.toUpperCase()}</div>
@@ -1527,47 +1528,47 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ))}
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.09),rgba(72,130,180,0.05))",border:"1px solid rgba(139,90,160,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center" }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a5a90",marginBottom:7 }}>ORKESTRA MODU</div>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a5a90",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
               {[...Array(7)].map((_,i)=>(
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
+            <div style={{ fontSize:11,color:"#7a8a9a" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>HAFTALIK AI RAPOR</div>
+            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
             {raporKullanildi && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:22,marginBottom:10 }}>✨</div>
-                <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>Ücretsiz raporunu kullandın</div>
+                <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
                 <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
-                  Her hafta derin bir içsel rapor almak için<br/>
-                  <strong style={{ color:"#9a7ab8" }}>Sakin Premium</strong>'a geç.
+                  {t("free_used_body")}<br/>
+                  <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
                 </div>
                 <div style={{ background:"rgba(139,90,160,0.08)",border:"1px solid rgba(139,90,160,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:14 }}>
-                  <div style={{ fontSize:10,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>PREMIUM</div>
+                  <div style={{ fontSize:10,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>{t("premium_label")}</div>
                   <div style={{ fontSize:12,color:"#c0b0d0",lineHeight:1.7 }}>
-                    ✦ Haftalık sınırsız AI rapor<br/>
-                    ✦ Derin astroloji & numeroloji analizi<br/>
-                    ✦ Kişisel büyüme takibi
+                    {t("premium_feat1")}<br/>
+                    {t("premium_feat2")}<br/>
+                    {t("premium_feat3")}
                   </div>
                 </div>
                 <a href="mailto:destek@sakin.app?subject=Premium%20%C3%9Cyelik"
                   style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:11,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
-                  Premium'a Geç →
+                  {t("btn_go_premium")}
                 </a>
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>Niyetlerin, şükranların ve öğrendiklerin<br/>AI ile haftalık rapora dönüşsün.</div>
+                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
                   style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
-                  onClick={generateRapor}>✦ Rapor Oluştur</button>
+                  onClick={generateRapor}>{t("btn_gen_report")}</button>
               </div>
             ) : aiLoading ? (
               <div style={{ textAlign:"center",padding:"12px 0" }}>
-                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>RAPOR HAZIRLANIYOR...</div>
+                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
               </div>
             ) : (
               <div>
@@ -1575,220 +1576,158 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
                   <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
                     style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:9,letterSpacing:2 }}>
-                    {raporKopyalandi ? "✓ KOPYALANDI" : "KOPYALA"}
+                    {raporKopyalandi ? t("copied_label") : t("copy_label")}
                   </button>
                   {navigator.share && (
-                    <button onClick={()=>navigator.share({ title:"Haftalık İçsel Raporum", text:aiRapor })}
+                    <button onClick={()=>navigator.share({ title:t("share_title"), text:aiRapor })}
                       style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:9,letterSpacing:2 }}>
-                      PAYLAŞ
+                      {t("share_label")}
                     </button>
                   )}
                   <button onClick={()=>setAiRapor("")}
                     style={{ background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:9,letterSpacing:2,marginLeft:"auto" }}>
-                    YENİLE
+                    {t("refresh_label")}
                   </button>
                 </div>
               </div>
             )}
           </div>
-          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>{t("btn_new_day")}</button>
         </div>
       )}
 
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
-          <h1>Fiyatlandırma</h1>
-          <div className="subtitle">SAKIN · ŞEFFAF FİYATLANDIRMA</div>
+          <h1>{t("pricing_title")}</h1>
+          <div className="subtitle">{t("pricing_sub")}</div>
 
           {/* Ücretsiz */}
           <div className="pricing-card" style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.08)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>ÜCRETSİZ</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Temel</div>
-            <div style={{ fontSize:28,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ sonsuza kadar</span></div>
-            <ul>
-              {["Günlük sabah rutini","Nefes egzersizi (4-1.5-3.5 ritmi)","7 Çakra rehberi","Gün içi hatırlatıcılar (10+)","Akşam kapanış ritüeli","Haftalık iç harita","1 ücretsiz AI raporu"].map(f=>(
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
+            <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>{t("free_badge")}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("free_plan")}</div>
+            <div style={{ fontSize:28,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:11,color:"#4a5a6a" }}>{t("free_forever")}</span></div>
+            <ul>{t("free_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* Premium */}
           <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>PREMİUM</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Sınırsız Raporlama + Reiki Rehberi 🔮📊</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ tek seferlik</span></div>
-            <ul>
-              {["Haftalık sınırsız AI içsel rapor","Derin astroloji & numeroloji analizi","Aylık çakra haritası","Kişisel büyüme takibi","7 çakra için tam enerji rehberi","24+ fiziksel ve duygusal durum haritası","Semptom bazlı arama","El pozisyonları ve pratik uygulama","Süresiz erişim"].map(f=>(
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
+            <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>{t("premium_badge")}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:11,color:"#4a5a6a" }}>{t("one_time")}</span></div>
+            <ul>{t("premium_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* 21 Günlük */}
           <div className="pricing-card" style={{ background:"rgba(45,120,65,0.06)",border:"1px solid rgba(45,120,65,0.22)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(45,120,65,0.18)",border:"1px solid rgba(45,120,65,0.35)",color:"#82d9a3" }}>TEK SEFERLİK</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>21 Günlük Program 🌱</div>
+            <div className="pricing-badge" style={{ background:"rgba(45,120,65,0.18)",border:"1px solid rgba(45,120,65,0.35)",color:"#82d9a3" }}>{t("program21_badge")}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("program21_plan")}</div>
             <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺149</div>
-            <ul>
-              {["21 günlük kişisel dönüşüm programı","Her gün için özel tema ve görevler","Toprak, Nefes, Su, Doğa, Sessizlik…","Süresiz erişim"].map(f=>(
-                <li key={f}>{f}</li>
-              ))}
-            </ul>
+            <ul>{t("program21_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* Hediye */}
           <div className="pricing-card" style={{ background:"rgba(192,57,43,0.06)",border:"1px solid rgba(192,57,43,0.22)" }}>
-            <div className="pricing-badge" style={{ background:"rgba(192,57,43,0.18)",border:"1px solid rgba(192,57,43,0.35)",color:"#f48fb1" }}>HEDİYE</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Hediye Kartı 🎁</div>
+            <div className="pricing-badge" style={{ background:"rgba(192,57,43,0.18)",border:"1px solid rgba(192,57,43,0.35)",color:"#f48fb1" }}>{t("gift_badge")}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("gift_plan")}</div>
             <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺199</div>
-            <p>Sevdiğin birine Sakin Premium deneyimini hediye et. Ödeme sonrası benzersiz bir hediye kodu oluşturulur.</p>
+            <p>{t("gift_desc")}</p>
           </div>
 
           <hr className="divider" />
-          <p style={{ fontSize:11,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>Tüm ödemeler güvenli ödeme altyapısı üzerinden gerçekleştirilir. Sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:11,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
       {/* HİZMET ŞARTLARI */}
       {screen==="sartlar" && (
         <div className="policy-screen">
-          <h1>Hizmet Şartları</h1>
-          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
-
-          <h2>1. KABUL</h2>
-          <p>Sakin uygulamasını ("Uygulama") kullanarak bu Hizmet Şartlarını ("Şartlar") kabul etmiş sayılırsınız. Bu Şartları kabul etmiyorsanız Uygulamayı kullanmayınız.</p>
-
-          <h2>2. HİZMET TANIMI</h2>
-          <p>Sakin; günlük farkındalık rutinleri, nefes egzersizleri, çakra rehberi, kişisel gelişim programları ve spiritüel wellness içerikleri sunan bir mobil web uygulamasıdır. Uygulama herhangi bir tıbbi, psikolojik veya terapötik hizmet sağlamaz.</p>
-
-          <h2>3. KULLANIM KOŞULLARI</h2>
-          <p>Uygulamayı kullanırken aşağıdakileri kabul edersiniz:</p>
-          <ul>
-            <li>Uygulama yalnızca kişisel, ticari olmayan amaçlarla kullanılabilir</li>
-            <li>Uygulama içeriği kopyalanamaz, dağıtılamaz veya tersine mühendislik uygulanamaz</li>
-            <li>Sistemi kötüye kullanacak, zarar verecek veya aşırı yükleyecek eylemler yasaktır</li>
-            <li>Yasal olmayan amaçlarla kullanım kesinlikle yasaktır</li>
-          </ul>
-
-          <h2>4. PREMİUM HİZMETLER</h2>
-          <p>Bazı özellikler ücretli olup satın alma gerektirmektedir. Ödeme işlemleri güvenli üçüncü taraf altyapısı üzerinden gerçekleştirilir. Satın alınan dijital içerikler, aşağıda belirtilen iade politikası kapsamındadır.</p>
-
-          <h2>5. FİKRİ MÜLKİYET</h2>
-          <p>Uygulama içeriğindeki tüm metin, tasarım, grafik, animasyon ve yazılım Sakin'e aittir ve telif hakkı ile fikri mülkiyet yasalarıyla korunmaktadır. Kullanıcıya yalnızca sınırlı, devredilemez, kişisel kullanım lisansı tanınmaktadır.</p>
-
-          <h2>6. SORUMLULUK REDDİ</h2>
-          <p>Sakin bir wellness uygulamasıdır; tıbbi tavsiye, tanı veya tedavi sunmaz. Uygulama içerikleri yalnızca bilgilendirme ve kişisel farkındalık amacıyla sunulmaktadır. Herhangi bir sağlık sorununda mutlaka bir uzman hekime danışınız.</p>
-
-          <h2>7. HİZMET DEĞİŞİKLİKLERİ</h2>
-          <p>Sakin, önceden bildirim yapmaksızın hizmetin içeriğini, özelliklerini veya fiyatlandırmasını değiştirme hakkını saklı tutar. Önemli değişiklikler uygulama içinde duyurulacaktır.</p>
-
-          <h2>8. UYGULANACAK HUKUK</h2>
-          <p>Bu Şartlar Türkiye Cumhuriyeti hukuku kapsamında yorumlanır ve uygulanır. Anlaşmazlıklarda Türkiye mahkemeleri yetkilidir.</p>
-
-          <h2>9. İLETİŞİM</h2>
-          <p>Hizmet Şartlarına ilişkin sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <h1>{t("terms_title")}</h1>
+          <div className="subtitle">{t("terms_updated")}</div>
+          <h2>{t("terms_s1")}</h2><p>{t("terms_s1p")}</p>
+          <h2>{t("terms_s2")}</h2><p>{t("terms_s2p")}</p>
+          <h2>{t("terms_s3")}</h2><p>{t("terms_s3p")}</p>
+          <ul>{t("terms_s3l").map(i=><li key={i}>{i}</li>)}</ul>
+          <h2>{t("terms_s4")}</h2><p>{t("terms_s4p")}</p>
+          <h2>{t("terms_s5")}</h2><p>{t("terms_s5p")}</p>
+          <h2>{t("terms_s6")}</h2><p>{t("terms_s6p")}</p>
+          <h2>{t("terms_s7")}</h2><p>{t("terms_s7p")}</p>
+          <h2>{t("terms_s8")}</h2><p>{t("terms_s8p")}</p>
+          <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
       {/* GİZLİLİK POLİTİKASI */}
       {screen==="gizlilik" && (
         <div className="policy-screen">
-          <h1>Gizlilik Politikası</h1>
-          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
+          <h1>{t("privacy_title")}</h1>
+          <div className="subtitle">{t("privacy_updated")}</div>
 
-          <h2>1. GENEL BAKIŞ</h2>
-          <p>Sakin uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlamaktadır. Gizliliğinizi ciddiye alıyoruz.</p>
+          <h2>{t("privacy_s1")}</h2>
+          <p>{t("privacy_s1p")}</p>
 
-          <h2>2. TOPLANAN VERİLER</h2>
-          <p>Aşağıdaki veriler yalnızca cihazınızda yerel olarak saklanır, hiçbir sunucuya iletilmez:</p>
-          <ul>
-            <li>Günlük niyet metni (o gün için yazdığınız hedef/niyet)</li>
-            <li>Seçilen motivasyon kelimeleri (sabah seçilen 3 kelime)</li>
-            <li>Akşam kapanış notları ve şükür metinleri</li>
-            <li>Nefes egzersizi sayısı ve tamamlanma durumları</li>
-            <li>Hatırlatıcı tamamlanma kayıtları</li>
-            <li>Doğum tarihi ve saati (astroloji özellikleri için, cihazda kalır)</li>
-            <li>Haftalık istatistikler (çakra, kelime ve nefes verileri)</li>
-          </ul>
+          <h2>{t("privacy_s2")}</h2>
+          <p>{t("privacy_s2p")}</p>
+          <ul>{t("privacy_s2l").map(i=><li key={i}>{i}</li>)}</ul>
 
-          <h2>3. TOPLAMADIĞIMIZ VERİLER</h2>
-          <p>Uygulama şu verileri kesinlikle toplamaz:</p>
-          <ul>
-            <li>Kişisel kimlik bilgileri (ad, soyad, e-posta, telefon)</li>
-            <li>Konum bilgisi</li>
-            <li>Sağlık veya tıbbi veriler</li>
-            <li>Biyometrik veriler</li>
-            <li>Kamera veya mikrofon erişimi</li>
-          </ul>
+          <h2>{t("privacy_s3")}</h2>
+          <p>{t("privacy_s3p")}</p>
+          <ul>{t("privacy_s3l").map(i=><li key={i}>{i}</li>)}</ul>
 
-          <h2>4. AI RAPOR ÖZELLİĞİ</h2>
-          <p>Haftalık AI raporu oluşturulurken, yalnızca o hafta için anonim ve özetlenmiş veriler (çakra seçimleri, kelimeler, nefes sayısı) Anthropic API'ye iletilir. Bu veriler kişisel kimliğinizle ilişkilendirilmez ve Anthropic'in gizlilik politikası kapsamındadır.</p>
+          <h2>{t("privacy_s4")}</h2>
+          <p>{t("privacy_s4p")}</p>
 
-          <h2>5. BİLDİRİMLER</h2>
-          <p>Günlük hatırlatıcı bildirimleri için izin verirseniz, bildirimler yalnızca cihazınızda yerel olarak tetiklenir. Bildirim içerikleri sunucuya gönderilmez. İzninizi iOS/Android Ayarlar &gt; Sakin menüsünden istediğiniz zaman iptal edebilirsiniz.</p>
+          <h2>{t("privacy_s5")}</h2>
+          <p>{t("privacy_s5p")}</p>
 
-          <h2>6. ÜÇÜNCÜ TARAF HİZMETLER</h2>
-          <p>Uygulama şu anda herhangi bir üçüncü taraf reklam ağı, analitik servisi veya sosyal medya entegrasyonu içermemektedir. Yalnızca AI rapor özelliği için Anthropic API kullanılmaktadır.</p>
+          <h2>{t("privacy_s6")}</h2>
+          <p>{t("privacy_s6p")}</p>
 
-          <h2>7. VERİ GÜVENLİĞİ</h2>
-          <p>Tüm kişisel verileriniz cihazınızda yerel olarak saklanır. Uygulamayı cihazınızdan kaldırdığınızda tüm yerel veriler otomatik olarak silinir.</p>
+          <h2>{t("privacy_s7")}</h2>
+          <p>{t("privacy_s7p")}</p>
 
-          <h2>8. ÇOCUKLARIN GİZLİLİĞİ</h2>
-          <p>Uygulama 4 yaş ve üzeri kullanıcılara yöneliktir. 13 yaşın altındaki çocuklardan bilerek herhangi bir veri toplanmamaktadır.</p>
+          <h2>{t("privacy_s8")}</h2>
+          <p>{t("privacy_s8p")}</p>
 
-          <h2>9. POLİTİKA DEĞİŞİKLİKLERİ</h2>
-          <p>Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uygulama güncellemesi notlarında belirtilecektir.</p>
+          <h2>{t("privacy_s9")}</h2>
+          <p>{t("privacy_s9p")}</p>
 
-          <h2>10. İLETİŞİM</h2>
-          <p>Gizlilik politikasına ilişkin sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-          <p style={{ fontSize:11,color:"#3a4a5a" }}>Uygulama Adı: Sakin</p>
+          <h2>{t("privacy_s10")}</h2>
+          <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:11,color:"#3a4a5a" }}>{t("privacy_app_name")}</p>
         </div>
       )}
 
       {/* İADE POLİTİKASI */}
       {screen==="iade" && (
         <div className="policy-screen">
-          <h1>İade Politikası</h1>
-          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
+          <h1>{t("refund_title")}</h1>
+          <div className="subtitle">{t("refund_updated")}</div>
 
-          <h2>1. GENEL KURAL</h2>
-          <p>Sakin'de sunulan premium içerikler dijital ürün niteliğindedir. Satın alma işleminin tamamlanmasıyla birlikte dijital içeriğe erişim hemen sağlandığından, genel kural olarak iade kabul edilmemektedir.</p>
-          <p>Ancak müşteri memnuniyetini ön planda tutuyoruz. Aşağıdaki koşullar çerçevesinde iade talebinizi değerlendiririz.</p>
+          <h2>{t("refund_s1")}</h2>
+          <p>{t("refund_s1p")}</p>
+          <p>{t("refund_s1p2")}</p>
 
-          <h2>2. İADE KABULEDİLEN DURUMLAR</h2>
-          <ul>
-            <li><strong style={{ color:"#c8c0b8" }}>Teknik arıza:</strong> Satın aldığınız özelliğe hiç erişemediyseniz ve destek ekibimiz sorunu 48 saat içinde çözemediyse</li>
-            <li><strong style={{ color:"#c8c0b8" }}>Çift ödeme:</strong> Aynı ürün için hatalı şekilde iki kez ödeme yapıldıysa</li>
-            <li><strong style={{ color:"#c8c0b8" }}>İlk 48 saat:</strong> Satın alma tarihinden itibaren 48 saat içinde, içeriğe hiç erişilmemişse iade değerlendirilebilir</li>
-          </ul>
+          <h2>{t("refund_s2")}</h2>
+          <ul>{t("refund_s2l").map(([bold,text])=><li key={bold}><strong style={{ color:"#c8c0b8" }}>{bold}:</strong> {text}</li>)}</ul>
 
-          <h2>3. İADE KABULEDİLMEYEN DURUMLAR</h2>
-          <ul>
-            <li>İçeriğe erişilmiş veya kullanılmış olması</li>
-            <li>Satın almadan 48 saat geçmiş olması</li>
-            <li>"Beğenmedim" veya "beklentimi karşılamadı" gerekçesi (ücretsiz deneme imkânı sunulmaktadır)</li>
-            <li>Hesap askıya alınma veya Hizmet Şartlarının ihlali durumu</li>
-          </ul>
+          <h2>{t("refund_s3")}</h2>
+          <ul>{t("refund_s3l").map(i=><li key={i}>{i}</li>)}</ul>
 
-          <h2>4. ABONELIK İPTALİ</h2>
-          <p>Aylık veya yıllık abonelik (Sınırsız Raporlama) için: mevcut dönem sona erene kadar erişiminiz devam eder. İptal işlemi bir sonraki ödeme döneminden önce gerçekleştirilmelidir. Kısmi dönem için iade yapılmamaktadır.</p>
+          <h2>{t("refund_s4")}</h2>
+          <p>{t("refund_s4p")}</p>
 
-          <h2>5. İADE SÜRECİ</h2>
-          <p>İade talebinde bulunmak için aşağıdaki bilgilerle bize ulaşın:</p>
-          <ul>
-            <li>Satın alma tarihi ve işlem numarası</li>
-            <li>Satın alınan ürün adı</li>
-            <li>İade gerekçesi</li>
-          </ul>
-          <p>E-posta: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-          <p>Talebiniz 5 iş günü içinde yanıtlanacaktır. Onaylanan iadeler, ödeme yönteminize bağlı olarak 5–10 iş günü içinde yansıtılır.</p>
+          <h2>{t("refund_s5")}</h2>
+          <p>{t("refund_s5p")}</p>
+          <ul>{t("refund_s5l").map(i=><li key={i}>{i}</li>)}</ul>
+          <p>{t("refund_s5p2")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("refund_s5p3")}</p>
 
-          <h2>6. YASAL HAKLAR</h2>
-          <p>Bu politika, Türkiye Mesafeli Sözleşmeler Yönetmeliği ve 6502 Sayılı Tüketicinin Korunması Hakkında Kanun kapsamındaki yasal haklarınızı etkilememektedir.</p>
+          <h2>{t("refund_s6")}</h2>
+          <p>{t("refund_s6p")}</p>
 
-          <h2>7. İLETİŞİM</h2>
-          <p>İade ve ödeme sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <h2>{t("refund_s7")}</h2>
+          <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
