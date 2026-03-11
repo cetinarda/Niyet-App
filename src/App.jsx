@@ -275,14 +275,15 @@ const GLOBAL_CSS = `
   .top-nav {
     position:fixed; top:0; left:0; right:0; z-index:100;
     display:flex; align-items:center; justify-content:center; gap:4px;
-    padding:10px 16px;
+    padding:10px 70px 10px 16px;
     background:rgba(4,8,14,0.88); backdrop-filter:blur(20px);
     border-bottom:1px solid rgba(255,255,255,0.06);
+    overflow-x:auto; overflow-y:hidden;
   }
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:10px; letter-spacing:2px; color:rgba(200,190,220,0.45);
+    font-size:10px; letter-spacing:2px; color:rgba(200,190,220,0.75);
     padding:6px 12px; border-radius:100px; transition:all 0.25s;
     white-space:nowrap;
   }
