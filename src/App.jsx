@@ -191,11 +191,11 @@ const GLOBAL_CSS = `
 
   /* ── Typography helpers ── */
   .label-sm {
-    font-family:'Jost',sans-serif; font-size:9px; font-weight:300;
+    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
     letter-spacing:3.5px; text-transform:uppercase; color:#4a5570;
   }
   .label-md {
-    font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
+    font-family:'Jost',sans-serif; font-size:12px; font-weight:300;
     letter-spacing:3px; text-transform:uppercase;
   }
 
@@ -212,12 +212,12 @@ const GLOBAL_CSS = `
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#6a6d88;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#6a6d88;
     padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
   }
   @media (max-width:390px) {
-    .top-nav-btn { font-size:9px; letter-spacing:1.5px; padding:0 7px; }
+    .top-nav-btn { font-size:10px; letter-spacing:1.5px; padding:0 7px; }
   }
   .top-nav-btn::after {
     content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
@@ -232,7 +232,7 @@ const GLOBAL_CSS = `
   .sakin-input {
     background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
     border-radius:10px; color:#ddd8f0;
-    font-family:'Cormorant Garamond',Georgia,serif; font-size:17px;
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:18px;
     padding:14px 16px; width:100%; resize:none; outline:none; transition:border-color 0.25s;
     line-height:1.65;
   }
@@ -244,7 +244,7 @@ const GLOBAL_CSS = `
     background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
     border-radius:100px; color:#b0aac8; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+    font-size:12px; letter-spacing:2.5px; text-transform:uppercase;
     padding:11px 24px; transition:all 0.22s;
   }
   .sakin-btn:hover { background:rgba(255,255,255,0.1); color:#ddd8f0; border-color:rgba(255,255,255,0.2); }
@@ -252,7 +252,7 @@ const GLOBAL_CSS = `
     background:linear-gradient(135deg,rgba(122,80,150,0.5),rgba(60,100,160,0.45));
     border:1px solid rgba(184,164,216,0.25); border-radius:100px; color:#ddd8f0; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+    font-size:12px; letter-spacing:2.5px; text-transform:uppercase;
     padding:13px 38px; transition:all 0.25s;
   }
   .sakin-btn-primary:hover {
@@ -265,7 +265,7 @@ const GLOBAL_CSS = `
   .word-chip {
     border-radius:6px; border:1px solid rgba(255,255,255,0.08); cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:12px; letter-spacing:1px; padding:8px 16px; transition:all 0.2s;
+    font-size:13px; letter-spacing:1px; padding:8px 16px; transition:all 0.2s;
     background:transparent; color:#6a6d88;
   }
   .word-chip:hover { border-color:rgba(184,164,216,0.3); color:#c0b8d8; background:rgba(184,164,216,0.05); }
@@ -305,14 +305,14 @@ const GLOBAL_CSS = `
     width:26px; height:26px; border-radius:6px; flex-shrink:0; margin-top:2px;
     border:1px solid rgba(255,255,255,0.14); background:transparent;
     cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center;
-    font-size:12px;
+    font-size:13px;
   }
   .check-btn.checked { background:rgba(100,200,120,0.2); border-color:rgba(100,200,120,0.5); animation:checkPop 0.3s ease; }
   .notif-btn {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
     border-radius:100px; color:#6a6d88; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    font-size:10px; letter-spacing:2px; text-transform:uppercase;
     padding:5px 13px; transition:all 0.2s; white-space:nowrap; flex-shrink:0;
   }
   .notif-btn:hover { background:rgba(255,255,255,0.09); color:#c0b8d8; }
@@ -340,33 +340,33 @@ const GLOBAL_CSS = `
   }
   @media (max-width:480px) {
     .policy-screen { padding:20px 18px 110px; }
-    .policy-screen h1 { font-size:20px; letter-spacing:3px; }
+    .policy-screen h1 { font-size:21px; letter-spacing:3px; }
   }
   .policy-screen h1 {
-    font-family:'Jost',sans-serif; font-weight:200; font-size:26px;
+    font-family:'Jost',sans-serif; font-weight:200; font-size:27px;
     letter-spacing:5px; text-transform:uppercase; margin-bottom:6px; color:#ddd8f0;
   }
   .policy-screen .subtitle {
-    font-family:'Jost',sans-serif; font-size:9px; font-weight:300;
+    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
     letter-spacing:3px; text-transform:uppercase; color:#3a4058; margin-bottom:42px;
   }
   .policy-screen h2 {
-    font-family:'Jost',sans-serif; font-size:10px; font-weight:400;
+    font-family:'Jost',sans-serif; font-size:11px; font-weight:400;
     letter-spacing:3px; text-transform:uppercase; color:#8a72a8;
     margin:34px 0 12px; padding-bottom:8px;
     border-bottom:1px solid rgba(138,114,168,0.15);
   }
   .policy-screen p {
-    font-family:'Cormorant Garamond',Georgia,serif; font-size:15px;
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
     color:#9a96b0; line-height:2; margin-bottom:12px;
   }
   .policy-screen ul { list-style:none; padding:0; margin:0 0 12px; }
   .policy-screen ul li {
-    font-family:'Cormorant Garamond',Georgia,serif; font-size:15px;
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
     color:#9a96b0; line-height:2; padding-left:18px; position:relative;
   }
   .policy-screen ul li::before {
-    content:"—"; position:absolute; left:0; font-size:11px; color:#5a4a78; top:2px;
+    content:"—"; position:absolute; left:0; font-size:12px; color:#5a4a78; top:2px;
   }
   .policy-screen a { color:#a890c8 !important; }
   .policy-screen .divider { border:none; border-top:1px solid rgba(255,255,255,0.05); margin:28px 0; }
@@ -379,7 +379,7 @@ const GLOBAL_CSS = `
   .pricing-card:hover { transform:translateY(-2px); }
   .pricing-badge {
     display:inline-block; font-family:'Jost',sans-serif; font-weight:300;
-    font-size:8px; letter-spacing:2.5px; text-transform:uppercase;
+    font-size:9px; letter-spacing:2.5px; text-transform:uppercase;
     padding:3px 11px; border-radius:100px; margin-bottom:11px;
   }
 `;
@@ -461,14 +461,14 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
   return (
     <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:0 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:20, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
         </div>
         <div style={{
           background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)",
-          borderRadius:100, padding:"5px 14px", fontSize:12, color:"#8a9aaa", letterSpacing:1,
+          borderRadius:100, padding:"5px 14px", fontSize:13, color:"#8a9aaa", letterSpacing:1,
         }}>{completedCount} / {REMINDERS.length}</div>
       </div>
 
@@ -482,17 +482,17 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
       </div>
 
       {notifOk === false && (
-        <div style={{ background:"rgba(200,80,80,0.12)", border:"1px solid rgba(200,80,80,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:12, color:"#e8a0a0", lineHeight:1.6 }}>
+        <div style={{ background:"rgba(200,80,80,0.12)", border:"1px solid rgba(200,80,80,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#e8a0a0", lineHeight:1.6 }}>
           {t("notif_denied")}
         </div>
       )}
       {notifOk === true && (
-        <div style={{ background:"rgba(80,180,100,0.1)", border:"1px solid rgba(80,180,100,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:12, color:"#82d9a3", lineHeight:1.6, animation:"fadeIn 0.4s ease" }}>
+        <div style={{ background:"rgba(80,180,100,0.1)", border:"1px solid rgba(80,180,100,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#82d9a3", lineHeight:1.6, animation:"fadeIn 0.4s ease" }}>
           {t("notif_sent_ok")}
         </div>
       )}
 
-      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
+      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:12, letterSpacing:2 }} onClick={sendAllNotifs}>
         {t("send_all")}
       </button>
 
@@ -520,10 +520,10 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
               </button>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3, minWidth:0 }}>
-                  <span style={{ fontSize:18, flexShrink:0 }}>{rem.icon}</span>
-                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
+                  <span style={{ fontSize:19, flexShrink:0 }}>{rem.icon}</span>
+                  <span style={{ fontSize:15, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
                 </div>
-                <div style={{ fontSize:11, color:"#5a6a7a", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
+                <div style={{ fontSize:12, color:"#5a6a7a", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                     <svg width="28" height="28" style={{ flexShrink:0 }}>
@@ -538,7 +538,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
                       background:"transparent",
                       border:`1px solid ${isTiming?rem.borderColor:"rgba(255,255,255,0.1)"}`,
                       borderRadius:100, color:isTiming?"#e8e0d5":"#5a6a7a",
-                      cursor:"pointer", fontSize:10, letterSpacing:1.5,
+                      cursor:"pointer", fontSize:11, letterSpacing:1.5,
                       padding:"4px 12px", transition:"all 0.22s",
                       fontFamily:"'Cormorant Garamond',Georgia,serif",
                     }}>
@@ -561,8 +561,8 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
           background:"rgba(100,180,120,0.06)", border:"1px solid rgba(100,180,120,0.18)",
           borderRadius:18, animation:"fadeIn 0.6s ease",
         }}>
-          <div style={{ fontSize:28, marginBottom:8 }}>🌿</div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:18, color:"#82d9a3", letterSpacing:1 }}>
+          <div style={{ fontSize:29, marginBottom:8 }}>🌿</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:19, color:"#82d9a3", letterSpacing:1 }}>
             {t("all_done_msg")}
           </div>
         </div>
@@ -571,7 +571,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
       <button
         className="sakin-btn-primary"
         onClick={onNext}
-        style={{ width:"100%", marginTop:22, fontSize:11, letterSpacing:2 }}
+        style={{ width:"100%", marginTop:22, fontSize:12, letterSpacing:2 }}
       >
         {t("btn_to_evening")}
       </button>
@@ -624,10 +624,10 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="list") return (
     <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:18, padding:0 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:0 }}>←</button>
         <div>
-          <div style={{ fontSize:9, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:22, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
       </div>
       <div style={{ maxHeight:"62vh", overflowY:"auto", paddingRight:4, scrollbarWidth:"none" }}>
@@ -637,21 +637,21 @@ function TerapiScreen({ onBack, lang = "tr" }) {
             onClick={() => setSelected(c)}>
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
             <div style={{ flex:1 }}>
-              <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:11, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
+              <div style={{ fontSize:14, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
+              <div style={{ fontSize:12, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
-            {i<7 && <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>{t("core_badge")}</div>}
+            {i<7 && <div style={{ fontSize:9,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>{t("core_badge")}</div>}
           </div>
         ))}
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
           <div>
-            <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>{t("selected_label")}</div>
-            <div style={{ fontSize:16,fontWeight:300 }}>{selected.name}</div>
+            <div style={{ fontSize:11,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>{t("selected_label")}</div>
+            <div style={{ fontSize:17,fontWeight:300 }}>{selected.name}</div>
           </div>
           <button className="sakin-btn-primary"
-            style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:12 }}
+            style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:13 }}
             onClick={() => setTPhase("intro")}>{t("btn_start_therapy")}</button>
         </div>
       )}
@@ -661,13 +661,13 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="intro"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ marginBottom:32 }}>
-        <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
+        <div style={{ fontSize:10,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
       </div>
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
-      <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:24 }}>{selected.element.toUpperCase()}</div>
-      <div style={{ fontSize:13,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
+      <div style={{ fontSize:11,letterSpacing:3,color:selected.pastel,marginBottom:24 }}>{selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:14,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
         {t("intro_place_hand", selected.name)}<br />{t("intro_close_eyes")}<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -683,10 +683,10 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         <div style={{ position:"fixed",inset:0,zIndex:50,background:"rgba(4,8,16,0.88)",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px" }}>
           <div style={{ textAlign:"center",maxWidth:280 }}>
             <div style={{ fontSize:32,marginBottom:18 }}>🌿</div>
-            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,letterSpacing:1,color:"#e8e0d5",marginBottom:10,lineHeight:1.5 }}>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:23,fontWeight:300,letterSpacing:1,color:"#e8e0d5",marginBottom:10,lineHeight:1.5 }}>
               {t("sure_title")}
             </div>
-            <div style={{ fontSize:13,color:"#7a8a9a",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
+            <div style={{ fontSize:14,color:"#7a8a9a",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
               {t("sure_body").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
             </div>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -697,9 +697,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:18,padding:0,letterSpacing:1 }}>←</button>
+        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:0,letterSpacing:1 }}>←</button>
       </div>
-      <div style={{ fontSize:9,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:10,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
           <div key={i} className="ring" style={{ width:230,height:230,transform:`scale(${s})`,animationDelay:`${i*0.55}s`,animationDuration:`${3+i*0.4}s`,borderColor:`${selected.color}${hex(0.13-i*0.025)}` }} />
@@ -721,8 +721,8 @@ function TerapiScreen({ onBack, lang = "tr" }) {
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
       </div>
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:50,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
-      <div style={{ fontSize:9,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
+      <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
         {(()=>{
           const HP = {
@@ -765,7 +765,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
           );
         })()}
       </div>
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:16,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
         {progress<0.25 && t("progress_p1")}
         {progress>=0.25&&progress<0.5  && t("progress_p2", selected.name)}
         {progress>=0.5 &&progress<0.75 && t("progress_p3")}
@@ -778,11 +778,11 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="done"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       {[...Array(10)].map((_,i) => (
-        <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:11,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
+        <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:12,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
       <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"slowPulse 3.5s ease-in-out infinite" }} />
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>{t("done_title")}</div>
-      <div style={{ fontSize:13,color:"#5a6a7a",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:29,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>{t("done_title")}</div>
+      <div style={{ fontSize:14,color:"#5a6a7a",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
         {t("done_body", selected.name).split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -800,23 +800,23 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
   return (
     <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
       <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
-        <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0 }}>{simge}</div>
+        <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{simge}</div>
         <div>
-          <div style={{ fontSize:10,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
-          <div style={{ fontSize:10,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
+          <div style={{ fontSize:11,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
+          <div style={{ fontSize:11,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
         </div>
       </div>
       {analiz === "__loading__" ? (
         <div style={{ textAlign:"center",padding:"24px 0" }}>
-          <div style={{ fontSize:18,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
-          <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>{t("reading")}</div>
+          <div style={{ fontSize:19,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
+          <div style={{ fontSize:10,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>{t("reading")}</div>
         </div>
       ) : analiz ? (
         <div>
-          <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:12.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
+          <div style={{ fontSize:10,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
+          <div style={{ fontSize:13.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
           <button onClick={onSifirla}
-            style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:9,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
+            style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:10,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
             {t("btn_new_search")}
           </button>
         </div>
@@ -827,16 +827,17 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
             onChange={e=>onChange(e.target.value)}
             onKeyDown={e=>{ if(e.key==="Enter" && value.trim()) onAra(); }}
             placeholder={placeholder}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:13.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
           />
           <textarea
             value={his}
             onChange={e=>onHisChange(e.target.value)}
+            onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey && value.trim()) { e.preventDefault(); onAra(); } }}
             placeholder={t("feeling_ph")}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:11.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
           />
-          <button onClick={onAra}
-            style={{ width:"100%",background:`linear-gradient(135deg,${renk}60,${renk}30)`,border:`1px solid ${renk}40`,borderRadius:12,padding:"11px",cursor:"pointer",color:"#e8d8f8",fontSize:11,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+          <button onClick={onAra} disabled={!value.trim()}
+            style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#e8d8f8":"#5a4a70",fontSize:12,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.2s" }}>
             {t("btn_search")}
           </button>
         </div>
@@ -1309,7 +1310,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6.5 1L1 6.5M1 6.5L6.5 12M1 6.5H12" stroke="rgba(184,164,216,0.5)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
         <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
@@ -1317,7 +1318,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
         {/* Dil butonu — nav'ın en sağında */}
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"4px 12px",color:"#c3a6d8",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,height:28,alignSelf:"center",marginRight:4 }}>
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"4px 12px",color:"#c3a6d8",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,height:28,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
@@ -1348,35 +1349,35 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.18s",opacity:0 }}>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:38,letterSpacing:12,fontWeight:200,marginBottom:8,color:"#ddd8f0" }}>Sakin</div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:40,letterSpacing:12,fontWeight:200,marginBottom:8,color:"#ddd8f0" }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.34s",opacity:0 }}>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#3a4058",marginBottom:52 }}>{t("tagline")}</div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#3a4058",marginBottom:52 }}>{t("tagline")}</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <div style={{ color:"#6a6d88",fontSize:15,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+                <div style={{ color:"#6a6d88",fontSize:16,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
                   {t("intro_text1")}<br />{t("intro_text2")}
                 </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"#6a5a90",marginBottom:22,textAlign:"center" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,textTransform:"uppercase",color:"#6a5a90",marginBottom:22,textAlign:"center" }}>
                   {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
                 </div>
                 <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:9,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
-                  <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
+                  <input type="date" className="sakin-input" style={{ fontSize:16,padding:"12px 14px" }}
                     value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:22 }}>
-                  <div style={{ fontSize:9,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
-                  <input type="time" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
+                  <input type="time" className="sakin-input" style={{ fontSize:16,padding:"12px 14px" }}
                     value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
-                <div style={{ fontSize:9,letterSpacing:1.5,color:"#3a3858",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                <div style={{ fontSize:10,letterSpacing:1.5,color:"#3a3858",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
@@ -1401,10 +1402,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
               <div style={{ position:"absolute",inset:-14,borderRadius:"50%",border:"1px solid rgba(255,140,50,0.08)" }} />
             </div>
-            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:4,textTransform:"uppercase",color:"#3a4058" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"#3a4058" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
           <div style={{ marginBottom:28 }}>
-            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
             <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
@@ -1414,11 +1415,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
               ))}
             </div>
-            {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:11,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
+            {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
           {/* DOĞUM PROFİLİ KARTI */}
           <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14,marginTop:10 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>{t("birth_profile")}</div>
+            <div style={{ fontSize:10,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>{t("birth_profile")}</div>
             {astro && !showBirthForm ? (
               <div>
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
@@ -1428,13 +1429,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     {label:t("birth_personal_yr"),value:astro.kisiselYil},
                   ].map((s,i)=>(
                     <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
-                      <div style={{ fontSize:7,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
-                      <div style={{ fontSize:15,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
+                      <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
+                      <div style={{ fontSize:16,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
                     </div>
                   ))}
                 </div>
                 {/* Biyoritm çubukları */}
-                <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>{t("bio_label")}</div>
+                <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>{t("bio_label")}</div>
                 {[
                   {label:t("bio_physical"),val:astro.bio.fiziksel,color:"#e8a09a"},
                   {label:t("bio_emotional"),val:astro.bio.duygusal,color:"#85c1e9"},
@@ -1444,8 +1445,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   return (
                     <div key={label} style={{ marginBottom:7 }}>
                       <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
-                        <span style={{ fontSize:9,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
-                        <span style={{ fontSize:9,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
+                        <span style={{ fontSize:10,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
+                        <span style={{ fontSize:10,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
                       </div>
                       <div style={{ background:"rgba(255,255,255,0.04)",borderRadius:4,height:4,overflow:"hidden" }}>
                         <div style={{ height:"100%",width:`${pct}%`,background:positive?`${color}99`:"rgba(120,100,140,0.4)",borderRadius:4,transition:"width 0.8s ease",marginLeft:positive?"50%":`calc(50% - ${pct}%)` }} />
@@ -1454,38 +1455,38 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   );
                 })}
                 {birthTime && (
-                  <div style={{ fontSize:10,color:"#7a6a9a",letterSpacing:1.5,marginTop:8,marginBottom:2,textAlign:"center" }}>
+                  <div style={{ fontSize:11,color:"#7a6a9a",letterSpacing:1.5,marginTop:8,marginBottom:2,textAlign:"center" }}>
                     ◷ {birthTime} {t("birth_time_label")}
                   </div>
                 )}
                 <button onClick={()=>setShowBirthForm(true)}
-                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:9,letterSpacing:2 }}>
+                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
                   {t("change_date")}
                 </button>
               </div>
             ) : showBirthForm || !astro ? (
               <div>
-                <div style={{ fontSize:11,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
+                <div style={{ fontSize:12,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
                   {t("birth_desc").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_date_label")}</div>
+                  <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_date_label")}</div>
                   <input type="date" className="sakin-input"
-                    style={{ fontSize:12,letterSpacing:0.5 }}
+                    style={{ fontSize:13,letterSpacing:0.5 }}
                     value={birthInput}
                     onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_time_input")} <span style={{ color:"#3a2a5a",fontSize:8,letterSpacing:1 }}>{t("optional")}</span></div>
+                  <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_time_input")} <span style={{ color:"#3a2a5a",fontSize:9,letterSpacing:1 }}>{t("optional")}</span></div>
                   <input type="time" className="sakin-input"
-                    style={{ fontSize:12,letterSpacing:0.5 }}
+                    style={{ fontSize:13,letterSpacing:0.5 }}
                     value={birthTimeInput}
                     onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
                 <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
                   {astro && <button className="sakin-btn" onClick={()=>setShowBirthForm(false)}>{t("cancel")}</button>}
                   <button className="sakin-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:11 }}
+                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:12 }}
                     onClick={()=>{
                       if(!birthInput) return;
                       localStorage.setItem("sakin_birth_date", birthInput);
@@ -1511,10 +1512,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
             ))}
             <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(139,90,160,0.24))",transition:"transform 4s ease",transform:`scale(${breathScale})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-              <div style={{ fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
             </div>
           </div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,letterSpacing:4,fontWeight:300,marginBottom:8,color:"#c8c0e0" }}>{t("youre_here")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:8,color:"#c8c0e0" }}>{t("youre_here")}</div>
           <div className="label-sm" style={{ marginBottom:44 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -1537,8 +1538,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div style={{ position:"relative",zIndex:1 }}>
             <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
             <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:chakra.pastel,marginBottom:16,opacity:0.9 }}>{chakra.name} {t("chakra_name_suf")}</div>
-            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:4,textTransform:"uppercase",color:chakra.pastel,marginBottom:16,opacity:0.9 }}>{chakra.name} {t("chakra_name_suf")}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
             <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
             <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -1557,20 +1558,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:32 }}>
             <div style={{ fontSize:32,marginBottom:9 }}>🌙</div>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a" }}>{t("evening_label")}</div>
+            <div style={{ fontSize:10,letterSpacing:5,color:"#4a5a6a" }}>{t("evening_label")}</div>
           </div>
-          {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:14,lineHeight:1.7 }}>"{niyet}"</div>}
+          {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
-            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
+            <div style={{ fontSize:13,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
             <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
           </div>
           <div style={{ marginBottom:26 }}>
-            <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
+            <div style={{ fontSize:13,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
             <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
           </div>
           <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
             {["🫶","⚡","🌊","✨","🌿"].map(em=>(
-              <button key={em} style={{ fontSize:21,background:"transparent",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:44,height:44,cursor:"pointer",transition:"all 0.2s" }}
+              <button key={em} style={{ fontSize:22,background:"transparent",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:44,height:44,cursor:"pointer",transition:"all 0.2s" }}
                 onMouseEnter={ev=>ev.target.style.transform="scale(1.22)"}
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
@@ -1585,11 +1586,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Gizemli arka plan efekti */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(60,20,100,0.35) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(20,40,100,0.3) 0%,transparent 60%)",pointerEvents:"none",zIndex:0 }} />
           <div style={{ textAlign:"center",marginBottom:36,position:"relative" }}>
-            <div style={{ fontSize:9,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>{t("guide_sup")}</div>
-            <div style={{ fontSize:22,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>{t("guide_title")}</div>
-            <div style={{ fontSize:9,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>{t("guide_sub")}</div>
+            <div style={{ fontSize:10,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>{t("guide_sup")}</div>
+            <div style={{ fontSize:23,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>{t("guide_title")}</div>
+            <div style={{ fontSize:10,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>{t("guide_sub")}</div>
             <button onClick={toggleDevMode}
-              style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
+              style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
               {devMode ? "DEV ✓" : "DEV"}
             </button>
           </div>
@@ -1617,8 +1618,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {screen==="harita" && (
         <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>{t("weekly_label")}</div>
-            <div style={{ fontSize:25,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
+            <div style={{ fontSize:10,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>{t("weekly_label")}</div>
+            <div style={{ fontSize:26,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
           </div>
           <div style={{ position:"relative",width:186,height:186,margin:"0 auto 34px" }}>
             <svg width="186" height="186" style={{ transform:"rotate(-90deg)" }}>
@@ -1632,8 +1633,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </defs>
             </svg>
             <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
-              <div style={{ fontSize:25,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-              <div style={{ fontSize:8,letterSpacing:3,color:"#4a5a6a" }}>{t("day_pct")}</div>
+              <div style={{ fontSize:26,fontWeight:300 }}>{Math.round(dayPct)}%</div>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#4a5a6a" }}>{t("day_pct")}</div>
             </div>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:32 }}>
@@ -1644,70 +1645,70 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {label:t("stat_mindful"),value:"3",color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                <div style={{ fontSize:8,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>{s.label.toUpperCase()}</div>
-                <div style={{ fontSize:16,color:s.color,fontWeight:300 }}>{s.value}</div>
+                <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>{s.label.toUpperCase()}</div>
+                <div style={{ fontSize:17,color:s.color,fontWeight:300 }}>{s.value}</div>
               </div>
             ))}
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.09),rgba(72,130,180,0.05))",border:"1px solid rgba(139,90,160,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center" }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#7a5a90",marginBottom:7 }}>{t("orchestra_label")}</div>
+            <div style={{ fontSize:10,letterSpacing:3.5,color:"#7a5a90",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
               {[...Array(7)].map((_,i)=>(
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:11,color:"#7a8a9a" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
+            <div style={{ fontSize:12,color:"#7a8a9a" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-            <div style={{ fontSize:9,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
+            <div style={{ fontSize:10,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
             {raporKullanildi && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:22,marginBottom:10 }}>✨</div>
-                <div style={{ fontSize:13,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
-                <div style={{ fontSize:11,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
+                <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
+                <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
+                <div style={{ fontSize:12,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
                   {t("free_used_body")}<br/>
                   <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
                 </div>
                 <div style={{ background:"rgba(139,90,160,0.08)",border:"1px solid rgba(139,90,160,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:14 }}>
-                  <div style={{ fontSize:10,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>{t("premium_label")}</div>
-                  <div style={{ fontSize:12,color:"#c0b0d0",lineHeight:1.7 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#7a5a90",marginBottom:6 }}>{t("premium_label")}</div>
+                  <div style={{ fontSize:13,color:"#c0b0d0",lineHeight:1.7 }}>
                     {t("premium_feat1")}<br/>
                     {t("premium_feat2")}<br/>
                     {t("premium_feat3")}
                   </div>
                 </div>
                 <a href="mailto:destek@sakin.app?subject=Premium%20%C3%9Cyelik"
-                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:11,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
+                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:12,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
                   {t("btn_go_premium")}
                 </a>
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:11,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+                <div style={{ fontSize:12,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
-                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:11 }}
+                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:12 }}
                   onClick={generateRapor}>{t("btn_gen_report")}</button>
               </div>
             ) : aiLoading ? (
               <div style={{ textAlign:"center",padding:"12px 0" }}>
-                <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
+                <div style={{ fontSize:10,letterSpacing:3,color:"#7a5a90",animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
               </div>
             ) : (
               <div>
-                <div style={{ fontSize:12.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
+                <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}>{aiRapor}</div>
                 <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
                   <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
-                    style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:9,letterSpacing:2 }}>
+                    style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:10,letterSpacing:2 }}>
                     {raporKopyalandi ? t("copied_label") : t("copy_label")}
                   </button>
                   {navigator.share && (
                     <button onClick={()=>navigator.share({ title:t("share_title"), text:aiRapor })}
-                      style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:9,letterSpacing:2 }}>
+                      style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:10,letterSpacing:2 }}>
                       {t("share_label")}
                     </button>
                   )}
                   <button onClick={()=>setAiRapor("")}
-                    style={{ background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:9,letterSpacing:2,marginLeft:"auto" }}>
+                    style={{ background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:10,letterSpacing:2,marginLeft:"auto" }}>
                     {t("refresh_label")}
                   </button>
                 </div>
@@ -1734,7 +1735,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           </div>
 
-          <p style={{ fontSize:17, lineHeight:2.1, color:"#c8c0e0", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.2)", paddingLeft:20 }}>
+          <p style={{ fontSize:18, lineHeight:2.1, color:"#c8c0e0", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.2)", paddingLeft:20 }}>
             {lang==="tr"
               ? "Sakin; zihnin gürültüsünü dinginleştirmek, içsel rehberliğe alan açmak ve günlük yaşamı anlam katmanlarıyla beslemek için tasarlanmış kişisel bir farkındalık sistemidir."
               : "Sakin is a personal awareness system designed to quiet the noise of the mind, open space for inner guidance, and nourish daily life with layers of meaning."}
@@ -1765,7 +1766,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
 
           <div className="divider" />
-          <p style={{ fontSize:13, color:"#4a5570", letterSpacing:1, textAlign:"center" }}>
+          <p style={{ fontSize:14, color:"#4a5570", letterSpacing:1, textAlign:"center" }}>
             {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2025" : "Sakin · Awareness System · 2025"}
           </p>
         </div>
@@ -1780,37 +1781,37 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Ücretsiz */}
           <div className="pricing-card" style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.08)" }}>
             <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>{t("free_badge")}</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("free_plan")}</div>
-            <div style={{ fontSize:28,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:11,color:"#4a5a6a" }}>{t("free_forever")}</span></div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("free_plan")}</div>
+            <div style={{ fontSize:29,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:12,color:"#4a5a6a" }}>{t("free_forever")}</span></div>
             <ul>{t("free_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* Premium */}
           <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
             <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>{t("premium_badge")}</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:11,color:"#4a5a6a" }}>{t("one_time")}</span></div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:12,color:"#4a5a6a" }}>{t("one_time")}</span></div>
             <ul>{t("premium_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* 21 Günlük */}
           <div className="pricing-card" style={{ background:"rgba(45,120,65,0.06)",border:"1px solid rgba(45,120,65,0.22)" }}>
             <div className="pricing-badge" style={{ background:"rgba(45,120,65,0.18)",border:"1px solid rgba(45,120,65,0.35)",color:"#82d9a3" }}>{t("program21_badge")}</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("program21_plan")}</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺149</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("program21_plan")}</div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺149</div>
             <ul>{t("program21_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
           {/* Hediye */}
           <div className="pricing-card" style={{ background:"rgba(192,57,43,0.06)",border:"1px solid rgba(192,57,43,0.22)" }}>
             <div className="pricing-badge" style={{ background:"rgba(192,57,43,0.18)",border:"1px solid rgba(192,57,43,0.35)",color:"#f48fb1" }}>{t("gift_badge")}</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("gift_plan")}</div>
-            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺199</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("gift_plan")}</div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺199</div>
             <p>{t("gift_desc")}</p>
           </div>
 
           <hr className="divider" />
-          <p style={{ fontSize:11,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:12,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
@@ -1869,7 +1870,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("privacy_s10")}</h2>
           <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-          <p style={{ fontSize:11,color:"#3a4a5a" }}>{t("privacy_app_name")}</p>
+          <p style={{ fontSize:12,color:"#3a4a5a" }}>{t("privacy_app_name")}</p>
         </div>
       )}
 
@@ -1912,7 +1913,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"4px 7px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
               <span style={{ fontSize:screen===n.id?15:11,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
-              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:6,letterSpacing:1.5,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
+              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
             </button>
           ))}
         </div>
