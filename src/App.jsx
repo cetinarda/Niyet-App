@@ -1302,6 +1302,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÜST NAV */}
       <div className="top-nav">
+        {/* Anasayfa butonu — sol */}
+        <button
+          onClick={()=>{ setScreen("sabah"); history.pushState(null,"","/"); }}
+          style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:"0 14px 0 8px",height:44,flexShrink:0,marginRight:4,borderRight:"1px solid rgba(255,255,255,0.06)" }}
+        >
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.5 1L1 6.5M1 6.5L6.5 12M1 6.5H12" stroke="rgba(184,164,216,0.5)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
+        </button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
