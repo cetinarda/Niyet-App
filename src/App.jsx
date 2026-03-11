@@ -825,6 +825,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
           <input
             value={value}
             onChange={e=>onChange(e.target.value)}
+            onKeyDown={e=>{ if(e.key==="Enter" && value.trim()) onAra(); }}
             placeholder={placeholder}
             style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
           />
@@ -971,9 +972,9 @@ export default function SakinApp() {
     const zihinsel = CHAKRA_ZIHINSEL[idx];
     const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
     try {
-      const res = await fetch("/.netlify/functions/ai-call", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:600,
           system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
@@ -990,8 +991,8 @@ ${astroText2}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
-      setChakraAnaliz(d.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setChakraAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch {
       setChakraAnaliz("Bağlantı hatası, tekrar dene.");
     }
@@ -1033,9 +1034,9 @@ ${astroText2}
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.${birthTime?` Doğum saati ${birthTime}.`:""}` : "";
     try {
-      const res = await fetch("/.netlify/functions/ai-call", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
@@ -1064,8 +1065,8 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
-      setSemptomAnaliz(d.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setSemptomAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch {
       setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
     }
@@ -1077,9 +1078,9 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
     try {
-      const res = await fetch("/.netlify/functions/ai-call", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holistik enerji rehberisin. Şikayetlere duygusal-ruhsal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
@@ -1107,8 +1108,8 @@ ${astroTxt}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
-      setSikayetAnaliz(d.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setSikayetAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch { setSikayetAnaliz("Bağlantı hatası, tekrar dene."); }
   };
 
@@ -1118,9 +1119,9 @@ ${astroTxt}
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
     try {
-      const res = await fetch("/.netlify/functions/ai-call", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
@@ -1148,8 +1149,8 @@ ${astroTxt}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
-      setHastalikAnaliz(d.text || "Analiz alınamadı.");
+      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      setHastalikAnaliz(d?.content?.[0]?.text || "Analiz alınamadı.");
     } catch { setHastalikAnaliz("Bağlantı hatası, tekrar dene."); }
   };
 
@@ -1220,9 +1221,9 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
 ` : "";
 
     try {
-      const res = await fetch("/.netlify/functions/ai-call", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1700,
           system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun.
@@ -1244,7 +1245,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         })
       });
       const data = await res.json();
-      setAiRapor(data.text || data.error || "Rapor oluşturulamadı.");
+      const text = data.content?.[0]?.text;
+      setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
     } catch(e) { setAiRapor("API'ye ulaşılamadı: "+e.message); }
     finally { setAiLoading(false); }
   };
