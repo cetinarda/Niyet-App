@@ -1365,7 +1365,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* SABAH */}
       {screen==="sabah" && (
-        <div style={{ maxWidth:390,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:390,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:36,animation:"sunrise 1s ease forwards" }}>
             <div style={{ position:"relative",width:88,height:88,margin:"0 auto" }}>
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
@@ -1474,7 +1474,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* NEFES */}
       {screen==="nefes" && (
-        <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1 }}>
+        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1 }}>
           <div className="label-sm" style={{ marginBottom:52,letterSpacing:5 }}>{t("breath_title")}</div>
           <div style={{ position:"relative",width:205,height:205,margin:"0 auto 40px" }}>
             {[1.72,1.45,1.2].map((s,i)=>(
@@ -1502,7 +1502,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÇAKRA */}
       {screen==="chakra" && (
-        <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1,maxWidth:360 }}>
+        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1,maxWidth:360 }}>
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
@@ -1524,7 +1524,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* AKŞAM */}
       {screen==="aksam" && (
-        <div style={{ maxWidth:385,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:32 }}>
             <div style={{ fontSize:32,marginBottom:9 }}>🌙</div>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a" }}>{t("evening_label")}</div>
@@ -1551,7 +1551,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* REHBER */}
       {screen==="rehber" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           {/* Gizemli arka plan efekti */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(60,20,100,0.35) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(20,40,100,0.3) 0%,transparent 60%)",pointerEvents:"none",zIndex:0 }} />
           <div style={{ textAlign:"center",marginBottom:36,position:"relative" }}>
@@ -1585,7 +1585,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* HARİTA */}
       {screen==="harita" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>{t("weekly_label")}</div>
             <div style={{ fontSize:25,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
