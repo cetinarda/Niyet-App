@@ -731,6 +731,54 @@ function TerapiScreen({ onBack }) {
   return null;
 }
 
+function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder }) {
+  return (
+    <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
+      <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
+        <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0 }}>{simge}</div>
+        <div>
+          <div style={{ fontSize:10,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
+          <div style={{ fontSize:10,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
+        </div>
+      </div>
+      {analiz === "__loading__" ? (
+        <div style={{ textAlign:"center",padding:"24px 0" }}>
+          <div style={{ fontSize:18,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
+          <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>OKUNUM YAPILIYOR...</div>
+        </div>
+      ) : analiz ? (
+        <div>
+          <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} · ANALİZ</div>
+          <div style={{ fontSize:12.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
+          <button onClick={onSifirla}
+            style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:9,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
+            ✦ YENİ ARAMA
+          </button>
+        </div>
+      ) : (
+        <div>
+          <input
+            value={value}
+            onChange={e=>onChange(e.target.value)}
+            placeholder={placeholder}
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
+          />
+          <textarea
+            value={his}
+            onChange={e=>onHisChange(e.target.value)}
+            placeholder="Nasıl hissediyorsun? Nerede ve ne zaman başladı?"
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:11.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
+          />
+          <button onClick={onAra}
+            style={{ width:"100%",background:`linear-gradient(135deg,${renk}60,${renk}30)`,border:`1px solid ${renk}40`,borderRadius:12,padding:"11px",cursor:"pointer",color:"#e8d8f8",fontSize:11,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+            ✦ ANLAM ARA
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SakinApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
@@ -1418,74 +1466,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
 
           {/* ARAMA PANELİ 1 — ŞİKAYET */}
-          {(() => {
-            const AramaPaneli = ({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder }) => (
-              <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
-                {/* Panel başlığı */}
-                <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
-                  <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0 }}>{simge}</div>
-                  <div>
-                    <div style={{ fontSize:10,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
-                    <div style={{ fontSize:10,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
-                  </div>
-                </div>
-
-                {analiz === "__loading__" ? (
-                  <div style={{ textAlign:"center",padding:"24px 0" }}>
-                    <div style={{ fontSize:18,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
-                    <div style={{ fontSize:9,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>OKUNUM YAPILIYOR...</div>
-                  </div>
-                ) : analiz ? (
-                  <div>
-                    <div style={{ fontSize:9,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} · ANALİZ</div>
-                    <div style={{ fontSize:12.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>{analiz}</div>
-                    <button onClick={onSifirla}
-                      style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:9,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
-                      ✦ YENİ ARAMA
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <input
-                      value={value}
-                      onChange={e=>onChange(e.target.value)}
-                      placeholder={placeholder}
-                      style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
-                    />
-                    <textarea
-                      value={his}
-                      onChange={e=>onHisChange(e.target.value)}
-                      placeholder="Nasıl hissediyorsun? Nerede ve ne zaman başladı?"
-                      style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:11.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
-                    />
-                    <button onClick={onAra}
-                      style={{ width:"100%",background:`linear-gradient(135deg,${renk}60,${renk}30)`,border:`1px solid ${renk}40`,borderRadius:12,padding:"11px",cursor:"pointer",color:"#e8d8f8",fontSize:11,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-                      ✦ ANLAM ARA
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-
-            return (
-              <>
-                <AramaPaneli
-                  baslik="İçsel Ayna"
-                  simge="☽"
-                  aciklama="bedeninin mesajını oku"
-                  renk="#a070d0"
-                  value={sikayet}
-                  onChange={setSikayet}
-                  his={sikayetHis}
-                  onHisChange={setSikayetHis}
-                  analiz={sikayetAnaliz}
-                  onAra={generateSikayetAnaliz}
-                  onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-                  placeholder="örn: baş ağrısı, yorgunluk, uyuyamıyorum..."
-                />
-              </>
-            );
-          })()}
+          <AramaPaneli
+            baslik="İçsel Ayna"
+            simge="☽"
+            aciklama="bedeninin mesajını oku"
+            renk="#a070d0"
+            value={sikayet}
+            onChange={setSikayet}
+            his={sikayetHis}
+            onHisChange={setSikayetHis}
+            analiz={sikayetAnaliz}
+            onAra={generateSikayetAnaliz}
+            onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
+            placeholder="örn: baş ağrısı, yorgunluk, uyuyamıyorum..."
+          />
         </div>
       )}
 
