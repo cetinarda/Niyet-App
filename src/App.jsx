@@ -285,6 +285,43 @@ const GLOBAL_CSS = `
   }
   .notif-btn:hover { background:rgba(255,255,255,0.1); color:#e8e0d5; }
   .notif-btn.sent { background:rgba(100,180,120,0.2); border-color:rgba(100,180,120,0.35); color:#82d9a3; }
+  .top-nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:center; gap:4px;
+    padding:10px 16px;
+    background:rgba(4,8,14,0.88); backdrop-filter:blur(20px);
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .top-nav-btn {
+    background:transparent; border:none; cursor:pointer;
+    font-family:'Cormorant Garamond',Georgia,serif;
+    font-size:10px; letter-spacing:2px; color:rgba(200,190,220,0.45);
+    padding:6px 12px; border-radius:100px; transition:all 0.25s;
+    white-space:nowrap;
+  }
+  .top-nav-btn:hover { color:#e8e0d5; background:rgba(255,255,255,0.05); }
+  .top-nav-btn.active { color:#c3a6d8; background:rgba(139,90,160,0.15); border:1px solid rgba(139,90,160,0.22); }
+  .policy-screen {
+    max-width:560px; width:100%; padding:88px 28px 100px;
+    position:relative; z-index:1; text-align:left;
+  }
+  .policy-screen h1 { font-size:22px; font-weight:300; letter-spacing:4px; margin-bottom:6px; color:#e8e0d5; }
+  .policy-screen .subtitle { font-size:10px; letter-spacing:3px; color:#4a5a6a; margin-bottom:36px; }
+  .policy-screen h2 { font-size:12px; letter-spacing:3px; color:#7a5a90; margin:28px 0 10px; }
+  .policy-screen p { font-size:13px; color:#8a9aaa; line-height:1.9; margin-bottom:10px; }
+  .policy-screen ul { list-style:none; padding:0; margin:0 0 10px; }
+  .policy-screen ul li { font-size:13px; color:#8a9aaa; line-height:1.9; padding-left:14px; position:relative; }
+  .policy-screen ul li::before { content:"✦"; position:absolute; left:0; font-size:8px; color:#7a5a90; top:3px; }
+  .policy-screen .divider { border:none; border-top:1px solid rgba(255,255,255,0.06); margin:24px 0; }
+  .pricing-card {
+    border-radius:18px; padding:20px 22px; margin-bottom:14px;
+    position:relative; transition:all 0.25s;
+  }
+  .pricing-card:hover { transform:translateY(-2px); }
+  .pricing-badge {
+    display:inline-block; font-size:9px; letter-spacing:2px;
+    padding:3px 10px; border-radius:100px; margin-bottom:10px;
+  }
 `;
 
 async function sendNotif(title, body) {
@@ -1136,8 +1173,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   ];
 
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflow:"hidden",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflowX:"hidden",overflowY:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"auto":"hidden",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
+
+      {/* ÜST NAV */}
+      <div className="top-nav">
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>FİYATLANDIRMA</button>
+        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>HİZMET ŞARTLARI</button>
+        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>GİZLİLİK</button>
+        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>İADE POLİTİKASI</button>
+      </div>
 
       {/* Sabit derin uzay arka planı */}
       <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
@@ -1549,8 +1594,218 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
+      {/* FİYATLANDIRMA */}
+      {screen==="fiyat" && (
+        <div className="policy-screen">
+          <h1>Fiyatlandırma</h1>
+          <div className="subtitle">SAKIN · ŞEFFAF FİYATLANDIRMA</div>
+
+          {/* Ücretsiz */}
+          <div className="pricing-card" style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.08)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>ÜCRETSİZ</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Temel</div>
+            <div style={{ fontSize:28,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ sonsuza kadar</span></div>
+            <ul>
+              {["Günlük sabah rutini","Nefes egzersizi (4-1.5-3.5 ritmi)","7 Çakra rehberi","Gün içi hatırlatıcılar (10+)","Akşam kapanış ritüeli","Haftalık iç harita","1 ücretsiz AI raporu"].map(f=>(
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Raporlama */}
+          <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.22)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.35)",color:"#c3a6d8" }}>PRİUM</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Sınırsız Raporlama 📊</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:4 }}>₺49 <span style={{ fontSize:11,color:"#4a5a6a" }}>/ ay</span></div>
+            <div style={{ fontSize:11,color:"#6a7a6a",marginBottom:14 }}>veya ₺399 / yıl <span style={{ fontSize:10,color:"#4a6a4a" }}>(en uygun)</span></div>
+            <ul>
+              {["Haftalık sınırsız AI içsel rapor","Derin astroloji & numeroloji analizi","Aylık çakra haritası","Kişisel büyüme takibi","Nefes ve niyet arşivi"].map(f=>(
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* 21 Günlük */}
+          <div className="pricing-card" style={{ background:"rgba(45,120,65,0.06)",border:"1px solid rgba(45,120,65,0.22)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(45,120,65,0.18)",border:"1px solid rgba(45,120,65,0.35)",color:"#82d9a3" }}>TEK SEFERLİK</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>21 Günlük Program 🌱</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺149</div>
+            <ul>
+              {["21 günlük kişisel dönüşüm programı","Her gün için özel tema ve görevler","Toprak, Nefes, Su, Doğa, Sessizlik…","Süresiz erişim"].map(f=>(
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Reiki */}
+          <div className="pricing-card" style={{ background:"rgba(142,68,173,0.06)",border:"1px solid rgba(142,68,173,0.22)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(142,68,173,0.18)",border:"1px solid rgba(142,68,173,0.35)",color:"#ce93d8" }}>TEK SEFERLİK</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Reiki Rehberi 🔮</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺79</div>
+            <ul>
+              {["7 çakra için tam enerji rehberi","24+ fiziksel ve duygusal durum haritası","Semptom bazlı arama","El pozisyonları ve pratik uygulama","Süresiz erişim"].map(f=>(
+                <li key={f}>{f}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Hediye */}
+          <div className="pricing-card" style={{ background:"rgba(192,57,43,0.06)",border:"1px solid rgba(192,57,43,0.22)" }}>
+            <div className="pricing-badge" style={{ background:"rgba(192,57,43,0.18)",border:"1px solid rgba(192,57,43,0.35)",color:"#f48fb1" }}>HEDİYE</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>Hediye Kartı 🎁</div>
+            <div style={{ fontSize:28,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺199</div>
+            <p>Sevdiğin birine Sakin Premium deneyimini hediye et. Ödeme sonrası benzersiz bir hediye kodu oluşturulur.</p>
+          </div>
+
+          <hr className="divider" />
+          <p style={{ fontSize:11,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>Tüm ödemeler güvenli ödeme altyapısı üzerinden gerçekleştirilir. Sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+        </div>
+      )}
+
+      {/* HİZMET ŞARTLARI */}
+      {screen==="sartlar" && (
+        <div className="policy-screen">
+          <h1>Hizmet Şartları</h1>
+          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
+
+          <h2>1. KABUL</h2>
+          <p>Sakin uygulamasını ("Uygulama") kullanarak bu Hizmet Şartlarını ("Şartlar") kabul etmiş sayılırsınız. Bu Şartları kabul etmiyorsanız Uygulamayı kullanmayınız.</p>
+
+          <h2>2. HİZMET TANIMI</h2>
+          <p>Sakin; günlük farkındalık rutinleri, nefes egzersizleri, çakra rehberi, kişisel gelişim programları ve spiritüel wellness içerikleri sunan bir mobil web uygulamasıdır. Uygulama herhangi bir tıbbi, psikolojik veya terapötik hizmet sağlamaz.</p>
+
+          <h2>3. KULLANIM KOŞULLARI</h2>
+          <p>Uygulamayı kullanırken aşağıdakileri kabul edersiniz:</p>
+          <ul>
+            <li>Uygulama yalnızca kişisel, ticari olmayan amaçlarla kullanılabilir</li>
+            <li>Uygulama içeriği kopyalanamaz, dağıtılamaz veya tersine mühendislik uygulanamaz</li>
+            <li>Sistemi kötüye kullanacak, zarar verecek veya aşırı yükleyecek eylemler yasaktır</li>
+            <li>Yasal olmayan amaçlarla kullanım kesinlikle yasaktır</li>
+          </ul>
+
+          <h2>4. PREMİUM HİZMETLER</h2>
+          <p>Bazı özellikler ücretli olup satın alma gerektirmektedir. Ödeme işlemleri güvenli üçüncü taraf altyapısı üzerinden gerçekleştirilir. Satın alınan dijital içerikler, aşağıda belirtilen iade politikası kapsamındadır.</p>
+
+          <h2>5. FİKRİ MÜLKİYET</h2>
+          <p>Uygulama içeriğindeki tüm metin, tasarım, grafik, animasyon ve yazılım Sakin'e aittir ve telif hakkı ile fikri mülkiyet yasalarıyla korunmaktadır. Kullanıcıya yalnızca sınırlı, devredilemez, kişisel kullanım lisansı tanınmaktadır.</p>
+
+          <h2>6. SORUMLULUK REDDİ</h2>
+          <p>Sakin bir wellness uygulamasıdır; tıbbi tavsiye, tanı veya tedavi sunmaz. Uygulama içerikleri yalnızca bilgilendirme ve kişisel farkındalık amacıyla sunulmaktadır. Herhangi bir sağlık sorununda mutlaka bir uzman hekime danışınız.</p>
+
+          <h2>7. HİZMET DEĞİŞİKLİKLERİ</h2>
+          <p>Sakin, önceden bildirim yapmaksızın hizmetin içeriğini, özelliklerini veya fiyatlandırmasını değiştirme hakkını saklı tutar. Önemli değişiklikler uygulama içinde duyurulacaktır.</p>
+
+          <h2>8. UYGULANACAK HUKUK</h2>
+          <p>Bu Şartlar Türkiye Cumhuriyeti hukuku kapsamında yorumlanır ve uygulanır. Anlaşmazlıklarda Türkiye mahkemeleri yetkilidir.</p>
+
+          <h2>9. İLETİŞİM</h2>
+          <p>Hizmet Şartlarına ilişkin sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+        </div>
+      )}
+
+      {/* GİZLİLİK POLİTİKASI */}
+      {screen==="gizlilik" && (
+        <div className="policy-screen">
+          <h1>Gizlilik Politikası</h1>
+          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
+
+          <h2>1. GENEL BAKIŞ</h2>
+          <p>Sakin uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlamaktadır. Gizliliğinizi ciddiye alıyoruz.</p>
+
+          <h2>2. TOPLANAN VERİLER</h2>
+          <p>Aşağıdaki veriler yalnızca cihazınızda yerel olarak saklanır, hiçbir sunucuya iletilmez:</p>
+          <ul>
+            <li>Günlük niyet metni (o gün için yazdığınız hedef/niyet)</li>
+            <li>Seçilen motivasyon kelimeleri (sabah seçilen 3 kelime)</li>
+            <li>Akşam kapanış notları ve şükür metinleri</li>
+            <li>Nefes egzersizi sayısı ve tamamlanma durumları</li>
+            <li>Hatırlatıcı tamamlanma kayıtları</li>
+            <li>Doğum tarihi ve saati (astroloji özellikleri için, cihazda kalır)</li>
+            <li>Haftalık istatistikler (çakra, kelime ve nefes verileri)</li>
+          </ul>
+
+          <h2>3. TOPLAMADIĞIMIZ VERİLER</h2>
+          <p>Uygulama şu verileri kesinlikle toplamaz:</p>
+          <ul>
+            <li>Kişisel kimlik bilgileri (ad, soyad, e-posta, telefon)</li>
+            <li>Konum bilgisi</li>
+            <li>Sağlık veya tıbbi veriler</li>
+            <li>Biyometrik veriler</li>
+            <li>Kamera veya mikrofon erişimi</li>
+          </ul>
+
+          <h2>4. AI RAPOR ÖZELLİĞİ</h2>
+          <p>Haftalık AI raporu oluşturulurken, yalnızca o hafta için anonim ve özetlenmiş veriler (çakra seçimleri, kelimeler, nefes sayısı) Anthropic API'ye iletilir. Bu veriler kişisel kimliğinizle ilişkilendirilmez ve Anthropic'in gizlilik politikası kapsamındadır.</p>
+
+          <h2>5. BİLDİRİMLER</h2>
+          <p>Günlük hatırlatıcı bildirimleri için izin verirseniz, bildirimler yalnızca cihazınızda yerel olarak tetiklenir. Bildirim içerikleri sunucuya gönderilmez. İzninizi iOS/Android Ayarlar &gt; Sakin menüsünden istediğiniz zaman iptal edebilirsiniz.</p>
+
+          <h2>6. ÜÇÜNCÜ TARAF HİZMETLER</h2>
+          <p>Uygulama şu anda herhangi bir üçüncü taraf reklam ağı, analitik servisi veya sosyal medya entegrasyonu içermemektedir. Yalnızca AI rapor özelliği için Anthropic API kullanılmaktadır.</p>
+
+          <h2>7. VERİ GÜVENLİĞİ</h2>
+          <p>Tüm kişisel verileriniz cihazınızda yerel olarak saklanır. Uygulamayı cihazınızdan kaldırdığınızda tüm yerel veriler otomatik olarak silinir.</p>
+
+          <h2>8. ÇOCUKLARIN GİZLİLİĞİ</h2>
+          <p>Uygulama 4 yaş ve üzeri kullanıcılara yöneliktir. 13 yaşın altındaki çocuklardan bilerek herhangi bir veri toplanmamaktadır.</p>
+
+          <h2>9. POLİTİKA DEĞİŞİKLİKLERİ</h2>
+          <p>Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uygulama güncellemesi notlarında belirtilecektir.</p>
+
+          <h2>10. İLETİŞİM</h2>
+          <p>Gizlilik politikasına ilişkin sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:11,color:"#3a4a5a" }}>Uygulama Adı: Sakin</p>
+        </div>
+      )}
+
+      {/* İADE POLİTİKASI */}
+      {screen==="iade" && (
+        <div className="policy-screen">
+          <h1>İade Politikası</h1>
+          <div className="subtitle">SON GÜNCELLEME: MART 2026</div>
+
+          <h2>1. GENEL KURAL</h2>
+          <p>Sakin'de sunulan premium içerikler dijital ürün niteliğindedir. Satın alma işleminin tamamlanmasıyla birlikte dijital içeriğe erişim hemen sağlandığından, genel kural olarak iade kabul edilmemektedir.</p>
+          <p>Ancak müşteri memnuniyetini ön planda tutuyoruz. Aşağıdaki koşullar çerçevesinde iade talebinizi değerlendiririz.</p>
+
+          <h2>2. İADE KABULEDİLEN DURUMLAR</h2>
+          <ul>
+            <li><strong style={{ color:"#c8c0b8" }}>Teknik arıza:</strong> Satın aldığınız özelliğe hiç erişemediyseniz ve destek ekibimiz sorunu 48 saat içinde çözemediyse</li>
+            <li><strong style={{ color:"#c8c0b8" }}>Çift ödeme:</strong> Aynı ürün için hatalı şekilde iki kez ödeme yapıldıysa</li>
+            <li><strong style={{ color:"#c8c0b8" }}>İlk 48 saat:</strong> Satın alma tarihinden itibaren 48 saat içinde, içeriğe hiç erişilmemişse iade değerlendirilebilir</li>
+          </ul>
+
+          <h2>3. İADE KABULEDİLMEYEN DURUMLAR</h2>
+          <ul>
+            <li>İçeriğe erişilmiş veya kullanılmış olması</li>
+            <li>Satın almadan 48 saat geçmiş olması</li>
+            <li>"Beğenmedim" veya "beklentimi karşılamadı" gerekçesi (ücretsiz deneme imkânı sunulmaktadır)</li>
+            <li>Hesap askıya alınma veya Hizmet Şartlarının ihlali durumu</li>
+          </ul>
+
+          <h2>4. ABONELIK İPTALİ</h2>
+          <p>Aylık veya yıllık abonelik (Sınırsız Raporlama) için: mevcut dönem sona erene kadar erişiminiz devam eder. İptal işlemi bir sonraki ödeme döneminden önce gerçekleştirilmelidir. Kısmi dönem için iade yapılmamaktadır.</p>
+
+          <h2>5. İADE SÜRECİ</h2>
+          <p>İade talebinde bulunmak için aşağıdaki bilgilerle bize ulaşın:</p>
+          <ul>
+            <li>Satın alma tarihi ve işlem numarası</li>
+            <li>Satın alınan ürün adı</li>
+            <li>İade gerekçesi</li>
+          </ul>
+          <p>E-posta: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>Talebiniz 5 iş günü içinde yanıtlanacaktır. Onaylanan iadeler, ödeme yönteminize bağlı olarak 5–10 iş günü içinde yansıtılır.</p>
+
+          <h2>6. YASAL HAKLAR</h2>
+          <p>Bu politika, Türkiye Mesafeli Sözleşmeler Yönetmeliği ve 6502 Sayılı Tüketicinin Korunması Hakkında Kanun kapsamındaki yasal haklarınızı etkilememektedir.</p>
+
+          <h2>7. İLETİŞİM</h2>
+          <p>İade ve ödeme sorularınız için: <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+        </div>
+      )}
+
       {/* BOTTOM NAV */}
-      {!["giris","terapi","gun"].includes(screen) && (
+      {!["giris","terapi","gun","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
