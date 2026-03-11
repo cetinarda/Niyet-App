@@ -1026,11 +1026,84 @@ ${astroText2}
     { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
     { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
   ];
-  const REIKI_BILGI = `Reiki Rehberi:
-- 5 İlke: Bugün kızma / endişelenme / şükret / dürüst çalış / her canlıya şefkatle davran
-- Çakra frekansları: Kök 396Hz (güvenlik), Sakral 417Hz (yaratıcılık), Güneş Pleksusu 528Hz (güç), Kalp 639Hz (sevgi), Boğaz 741Hz (ifade), Üçüncü Göz 852Hz (sezgi), Taç 963Hz (bilinç)
-- El pozisyonları: Baş (sezgi) · Boğaz (ifade) · Kalp (sevgi) · Solar pleksus (güç-denge) · Karın (yaratıcılık-duygu) · Dizler & ayaklar (topraklama)
-- Seans: Niyetle başla → eller 2-5cm üstte → pozisyon başına 3-5dk → enerji akışını hisset → şükranla kapat`;
+  const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın — Usui Işık Çemberi Ekolü)
+
+5 TEMEL PRENSİP (Dr. Mikao Usui):
+Bugün bana verilen tüm nimetler için minnettarım.
+Bugün hiçbir şey için endişe etmiyorum.
+Bugün hiçbir şeye kızmıyorum.
+Bugün dürüstüm.
+Bugün tüm varlıklara karşı nazik ve saygılıyım.
+
+ÇAKRALAR VE ENERJİ MERKEZLERİ:
+• Kök Çakra (Kırmızı, 396Hz) — güvenlik, maddi destek, hayatta kalma, topraklanma; böbrekler, omurilik, siyatik siniri. Depresyon ve korku bu çakrayı kapatır.
+• Sakral Çakra (Turuncu, 417Hz) — yaratıcılık, duygular, cinsellik, ilişkiler; üreme organları, mesane, bel. Boğaz çakrasıyla koordineli çalışır.
+• Solar Pleksus (Sarı, 528Hz) — kişisel güç, irade, özgüven, karmik bağ; sindirim sistemi, dalak, karaciğer, pankreas. En güçlü çakralardan biri; duygusal bedene açılan kapıdır.
+• Kalp Çakra (Yeşil, 639Hz) — sevgi, şefkat, bağışlama, bağlantı; kalp, akciğerler, dolaşım sistemi.
+• Boğaz Çakra (Mavi, 741Hz) — ifade, dürüstlük, iletişim; boğaz, tiroit, kulaklar. Sakral çakrasıyla koordineli çalışır.
+• Üçüncü Göz (İndigo, 852Hz) — sezgi, netlik, içgüdü, görüş; alın, sinirler, göz. Kök çakrasıyla koordineli çalışır.
+• Taç Çakra (Mor/Beyaz, 963Hz) — ruhsal bağlantı, bilinç, bütünlük, ilahi enerji.
+
+HASTALIKLARA ÇAKRA & EL POZİSYONU YAKLAŞIMI:
+• Baş ağrısı, göz, sinüs: Üçüncü Göz + Taç çakra, başın arkası
+• Boğaz, kulak, iletişim: Boğaz Çakra (yukarı+aşağı)
+• Kalp, akciğer, dolaşım: Kalp Çakra (ön + arka)
+• Mide, sindirim, bağırsak, kabız: Solar Pleksus + Karın çakrası + karaciğer
+• Sırt ağrısı: Solar Pleksus + Sakral + boyun arkası
+• Böbrek, mesane, bel: Kök + Sakral çakra
+• Depresyon: Kafa + Sakral + Kök çakra
+• Anksiyete, panik, korku: Solar Pleksus + Kök çakra
+• Cilt sorunları: Solar Pleksus + etkilenen bölge
+• Kanser: Tüm vücut tedavisi, etkilenen bölgeye 20-30dk
+• Yorgunluk, bağışıklık: Dalak + Solar Pleksus + tüm vücut
+
+REİKİ SEMBOLLERİ:
+• Cho Ku Rei (CKR): Güç sembolü — enerjiyi yoğunlaştırır, koruma ve temizleme
+• Sei He Ki (SHK): Zihinsel-duygusal sembol — bilinçaltı kodlama, alışkanlıkları dönüştürme
+• Hon Sha Ze Sho Nen (HSZN): Uzaktan Reiki — geçmişe/geleceğe enerji gönderme
+• Dai Ko Myo (DKM): Master sembolü — ruhsal şifa, en yüksek frekans, kalp çakrasından kalbe
+
+TEMEL ANLAYIŞ:
+Hastalıklar zihinsel ve duygusal kalıpların fiziksel bedende görünmesidir. Şifa çok boyutludur: fiziksel, duygusal, zihinsel ve ruhsal boyutları birlikte kapsar. Kişi hastalığın nedenini anlayıp içselleştiremediği sürece hastalık tekrar eder. Koşulsuz sevgi her şeyin şifasıdır — kişi kendini koşulsuz sevip kabul edebildiğinde gerçek şifa başlar.`;
+
+  const LOUISE_HAY_REHBER = `LOUISE L. HAY — DÜŞÜNCE GÜCÜYLE TEDAVİ (Kaynak: Kitap)
+
+TEMEL FELSEFE:
+Yaşamımızdaki her şey zihinsel düşünce kalıplarının sonucudur. Hastalıklar, içimizde bastırılmış olumsuz düşünce kalıplarının bedende ifade bulmasıdır. Zihinsel kalıbı değiştirince beden de değişir. Tüm şifanın temeli özsevgidir — kendini sevmek ve onaylamak her şeyi değiştirir. Geçmişi bağışlamak ise özgürleşmenin kapısıdır.
+
+BEDEN-ZİHİN BAĞLANTISI:
+• Akciğer sorunları: Yaşamdan korkmak, yaşamı dolu dolu almayı reddetmek, derin üzüntü, kendini değersiz bulmak
+• Kalp sorunları: Uzun süreli çözülmemiş duygusal sorunlar, neşeyi reddetmek, sevilmediğini hissetmek, sertleşen kalp
+• Sırt (alt) ağrısı: Para ve maddi destek korkusu, ekonomik endişe, eleştirilmek ve başarısızlık korkusu
+• Sırt (üst) ağrısı: Duygusal destek eksikliği, sevilmediğini hissetmek, destek görememe
+• Boyun sorunları: Esneksizlik, inatçılık, başka bakış açılarını görmek istememek
+• Omuz ağrısı: Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi
+• Baş ağrısı: Kendini küçümseme, özeleştiri, bastırılmış öfke, kontrol ihtiyacı
+• Mide sorunları: Yenilikleri sindirememe, korku, yeni fikirlere direnç
+• Bağırsak/kabız: Eski düşünceleri ve kalıpları bırakamama, geçmişe takılma
+• Boğaz sorunları: Kendini ifade edememe, öfkeyi yutmak, yaratıcılığı bastırmak
+• Kalp çarpıntısı: Panik, güvensizlik, aşırı heyecan, aşırı kontrol çabası
+• Cilt sorunları: Kimlik ve sınır kaybı, başkalarının tehdit hissettirmesi
+• Göz sorunları: Geçmişi ya da geleceği görmek istememe, çevreden duyulan korku
+• Kulak sorunları: Duymak istemediğin şeyler, öfke, duymayı reddetmek
+• Diz sorunları: Ego, gurur, inat — eğilmemek, esneyememek
+• Uyku sorunları: Korku, güvensizlik, zihnin duramaması, hayattan kaçma isteği
+• Kilo sorunları: Korku, korunma ihtiyacı, duyguları bastırma, sevilmemekten korkma
+• Yorgunluk: Direnç, sıkılmışlık, sevgisiz yaşama, anlam yoksunluğu
+• Tansiyon (yüksek): Uzun süreli çözülmemiş duygusal sorunlar, aşırı kontrol ihtiyacı
+• Alerjiler: Kendi gücünü yadsımak; kime ya da neye karşı reaksiyon veriyorsun?
+• Depresyon: Bastırılmış öfke, umutsuzluk, kendini küçümseme, yaşam sevincini kaybetmek
+• Anksiyete/panik: Yaşama güvenmemek, kontrol ihtiyacı, gelecek korkusu
+• Anemi: Yaşam sevincinden yoksunluk, "evet ama" yaklaşımı, yetersizlik duygusu
+• Karaciğer sorunları: Kronik öfke, eleştiri, kırgınlık, acı duygular
+• Böbrek sorunları: Hayal kırıklığı, başarısızlık korkusu, eleştiri
+• Tiroit sorunları: Kişisel iradenin engellenmesi, "benim sıram ne zaman gelecek?"
+
+ŞİFA YAKLAŞIMI:
+1. Hastalığın zihinsel nedenini fark et ve kabul et
+2. Kendini ve geçmişini bağışla — suçlamak enerji çalar
+3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
+4. Kendini sevmeyi öğren — bu tüm şifanın temelidir`;
 
   const generateSemptomAnaliz = async () => {
     if (!semptomInput.trim()) return;
@@ -1046,14 +1119,16 @@ ${astroText2}
           system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
 
-ZİHİNSEL NEDENLER REHBERİ:
-${zihinselListeText}
-
 ${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+EK ZİHİNSEL NEDENLER:
+${zihinselListeText}
 
 ${astroText3}
 
-Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta tam, benzersiz bir yanıt üret:
+Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zihinsel nedenler listesi) sentezleyerek analiz et. Şu formatta tam, benzersiz bir yanıt üret:
 
 **Zihinsel-Duygusal Kök**
 (Bu semptomu tetikleyen en olası duygusal/zihinsel neden — 2 cümle)
@@ -1090,13 +1165,15 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
           system:`Sen derin bir holistik enerji rehberisin. Şikayetlere duygusal-ruhsal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
           messages:[{ role:"user", content:`Şikayet: "${sikayet}"${sikayetHis ? `\nNasıl hissediyorum: "${sikayetHis}"` : ""}
 
-ZİHİNSEL NEDENLER:
-${zihinselListeText}
-
 ${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+EK ZİHİNSEL NEDENLER:
+${zihinselListeText}
 ${astroTxt}
 
-Şu formatta yanıt ver:
+Üç kaynağı (Reiki, Louise Hay ve zihinsel nedenler) sentezleyerek şu formatta yanıt ver:
 
 **Zihinsel-Duygusal Kök**
 (En olası duygusal neden — 2 cümle)
@@ -1131,13 +1208,15 @@ ${astroTxt}
           system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
           messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
 
-ZİHİNSEL NEDENLER:
-${zihinselListeText}
-
 ${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+EK ZİHİNSEL NEDENLER:
+${zihinselListeText}
 ${astroTxt}
 
-Şu formatta yanıt ver:
+Reiki ve Louise Hay kitabını birlikte referans alarak şu formatta yanıt ver:
 
 **Ruhsal Kök**
 (Bu hastalığın ruhsal-duygusal mesajı — 2 cümle)
