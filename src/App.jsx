@@ -161,84 +161,123 @@ const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
 const REMINDERS = REMINDERS_TR;
 
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
-  html, body { background: #04080e; margin: 0; padding: 0; min-height: 100%; }
-  @keyframes twinkle      { 0%,100%{opacity:0.06} 50%{opacity:0.48} }
-  @keyframes fadeUp       { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes fadeIn       { from{opacity:0} to{opacity:1} }
-  @keyframes glow         { 0%,100%{box-shadow:0 0 22px rgba(139,90,160,0.22)} 50%{box-shadow:0 0 46px rgba(139,90,160,0.46)} }
-  @keyframes pulse        { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
-  @keyframes sunrise      { from{opacity:0;transform:scale(0.88) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
-  @keyframes ringPulse    { 0%,100%{opacity:0.08;transform:scale(1)} 50%{opacity:0.22;transform:scale(1.04)} }
-  @keyframes heartbeat    { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
-  @keyframes slowPulse    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.09)} }
-  @keyframes floatUp      { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
-  @keyframes energyFill   { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
-  @keyframes pillGlow     { 0%,100%{box-shadow:0 0 8px rgba(139,90,160,0.4),0 0 22px rgba(100,60,200,0.18),inset 0 0 8px rgba(139,90,160,0.12)} 50%{box-shadow:0 0 18px rgba(180,100,255,0.7),0 0 44px rgba(100,60,200,0.38),inset 0 0 14px rgba(180,100,255,0.22)} }
-  @keyframes pillShimmer  { 0%{transform:translateX(-100%) skewX(-20deg)} 100%{transform:translateX(250%) skewX(-20deg)} }
-  .terapi-pill {
-    position:relative; overflow:hidden;
-    background: linear-gradient(270deg,#8b5aa0cc,#4a3ab0aa,#9b3eb0cc,#8b5aa0cc);
-    background-size:300% 100%;
-    animation: energyFill 2.8s ease-in-out infinite, pillGlow 2.8s ease-in-out infinite;
-    border:1px solid rgba(200,140,255,0.35) !important;
-    color:#e8d8ff !important;
-    letter-spacing:2px;
-    font-size:11px !important;
+  html, body { background: #080c14; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; }
+  body.scroll-lock { overflow-y: hidden; height: 100vh; }
+
+  /* ── Animations ── */
+  @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
+  @keyframes fadeUp      { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn      { from{opacity:0} to{opacity:1} }
+  @keyframes glow        { 0%,100%{box-shadow:0 0 22px rgba(139,90,160,0.22)} 50%{box-shadow:0 0 46px rgba(139,90,160,0.46)} }
+  @keyframes pulse       { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  @keyframes sunrise     { from{opacity:0;transform:scale(0.9) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes ringPulse   { 0%,100%{opacity:0.07;transform:scale(1)} 50%{opacity:0.2;transform:scale(1.04)} }
+  @keyframes heartbeat   { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
+  @keyframes slowPulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  @keyframes floatUp     { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
+  @keyframes energyFill  { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes pillGlow    { 0%,100%{box-shadow:0 0 8px rgba(139,90,160,0.4),0 0 22px rgba(100,60,200,0.18),inset 0 0 8px rgba(139,90,160,0.12)} 50%{box-shadow:0 0 18px rgba(180,100,255,0.7),0 0 44px rgba(100,60,200,0.38),inset 0 0 14px rgba(180,100,255,0.22)} }
+  @keyframes pillShimmer { 0%{transform:translateX(-100%) skewX(-20deg)} 100%{transform:translateX(250%) skewX(-20deg)} }
+  @keyframes handFloat   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
+  @keyframes doneGlow    { 0%,100%{box-shadow:0 0 40px #4ade8088,0 0 80px #4ade8033} 50%{box-shadow:0 0 70px #4ade80bb,0 0 140px #4ade8055} }
+  @keyframes sparkle     { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.6) rotate(180deg);opacity:0} }
+  @keyframes slideIn     { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
+  @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
+
+  .fade-up  { animation: fadeUp  0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .slide-in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+
+  /* ── Typography helpers ── */
+  .label-sm {
+    font-family:'Jost',sans-serif; font-size:9px; font-weight:300;
+    letter-spacing:3.5px; text-transform:uppercase; color:#4a5570;
   }
-  .terapi-pill::after {
-    content:"";
-    position:absolute; top:0; left:0; width:40%; height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
-    animation:pillShimmer 2.2s ease-in-out infinite;
+  .label-md {
+    font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
+    letter-spacing:3px; text-transform:uppercase;
   }
-  @keyframes handFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
-  @keyframes doneGlow     { 0%,100%{box-shadow:0 0 40px #4ade8088,0 0 80px #4ade8033} 50%{box-shadow:0 0 70px #4ade80bb,0 0 140px #4ade8055} }
-  @keyframes sparkle      { 0%{transform:scale(0) rotate(0deg);opacity:1} 100%{transform:scale(1.6) rotate(180deg);opacity:0} }
-  @keyframes slideIn      { from{opacity:0;transform:translateX(28px)} to{opacity:1;transform:translateX(0)} }
-  @keyframes checkPop     { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
-  .fade-up  { animation: fadeUp  0.8s ease forwards; }
-  .slide-in { animation: slideIn 0.55s ease forwards; }
+
+  /* ── Top nav ── */
+  .top-nav {
+    position:fixed; top:0; left:0; right:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center; gap:1px;
+    padding:0 68px 0 8px; height:44px;
+    background:#080c14; border-bottom:1px solid rgba(255,255,255,0.07);
+    overflow-x:auto; overflow-y:hidden;
+  }
+  .top-nav::-webkit-scrollbar { display:none; }
+  .top-nav-btn {
+    background:transparent; border:none; cursor:pointer;
+    font-family:'Jost',sans-serif; font-weight:300;
+    font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#6a6d88;
+    padding:0 11px; height:44px; transition:all 0.2s;
+    white-space:nowrap; flex-shrink:0; position:relative;
+  }
+  .top-nav-btn::after {
+    content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+    width:0; height:1px; background:#b8a4d8; transition:width 0.25s;
+  }
+  .top-nav-btn:hover { color:#c8c0e0; }
+  .top-nav-btn:hover::after { width:60%; }
+  .top-nav-btn.active { color:#c8b8e8; }
+  .top-nav-btn.active::after { width:60%; }
+
+  /* ── Inputs ── */
   .sakin-input {
-    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
-    border-radius:12px; color:#e8e0d5;
-    font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
-    padding:13px 15px; width:100%; resize:none; outline:none; transition:border-color 0.3s;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);
+    border-radius:10px; color:#ddd8f0;
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:17px;
+    padding:14px 16px; width:100%; resize:none; outline:none; transition:border-color 0.25s;
+    line-height:1.65;
   }
-  .sakin-input:focus { border-color:rgba(255,255,255,0.26); }
+  .sakin-input::placeholder { color:#3a4058; }
+  .sakin-input:focus { border-color:rgba(184,164,216,0.3); background:rgba(255,255,255,0.045); }
+
+  /* ── Buttons ── */
   .sakin-btn {
-    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
-    border-radius:100px; color:#e8e0d5; cursor:pointer;
-    font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:13px; letter-spacing:1.5px; padding:10px 22px; transition:all 0.28s;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+    border-radius:100px; color:#b0aac8; cursor:pointer;
+    font-family:'Jost',sans-serif; font-weight:300;
+    font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+    padding:11px 24px; transition:all 0.22s;
   }
-  .sakin-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
+  .sakin-btn:hover { background:rgba(255,255,255,0.1); color:#ddd8f0; border-color:rgba(255,255,255,0.2); }
   .sakin-btn-primary {
-    background:linear-gradient(135deg,rgba(139,90,160,0.55),rgba(72,130,180,0.55));
-    border:1px solid rgba(139,90,160,0.36); border-radius:100px; color:#e8e0d5; cursor:pointer;
-    font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:14px; letter-spacing:2.5px; padding:12px 36px; transition:all 0.28s;
+    background:linear-gradient(135deg,rgba(122,80,150,0.5),rgba(60,100,160,0.45));
+    border:1px solid rgba(184,164,216,0.25); border-radius:100px; color:#ddd8f0; cursor:pointer;
+    font-family:'Jost',sans-serif; font-weight:300;
+    font-size:11px; letter-spacing:2.5px; text-transform:uppercase;
+    padding:13px 38px; transition:all 0.25s;
   }
   .sakin-btn-primary:hover {
-    background:linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,130,180,0.8));
-    transform:translateY(-2px);
+    background:linear-gradient(135deg,rgba(122,80,150,0.75),rgba(60,100,160,0.7));
+    border-color:rgba(184,164,216,0.45); transform:translateY(-1px);
+    box-shadow:0 6px 24px rgba(122,80,150,0.22);
   }
+
+  /* ── Word chips ── */
   .word-chip {
-    border-radius:100px; border:1px solid rgba(255,255,255,0.12); cursor:pointer;
-    font-size:12px; letter-spacing:0.5px; padding:7px 15px; transition:all 0.22s;
-    background:transparent; color:#a8a0a0;
-    font-family:'Cormorant Garamond',Georgia,serif;
+    border-radius:6px; border:1px solid rgba(255,255,255,0.08); cursor:pointer;
+    font-family:'Jost',sans-serif; font-weight:300;
+    font-size:12px; letter-spacing:1px; padding:8px 16px; transition:all 0.2s;
+    background:transparent; color:#6a6d88;
   }
-  .word-chip:hover { border-color:rgba(255,255,255,0.3); color:#e8e0d5; }
-  .word-chip.selected { background:rgba(255,255,255,0.09); border-color:rgba(255,255,255,0.36); color:#fff; }
+  .word-chip:hover { border-color:rgba(184,164,216,0.3); color:#c0b8d8; background:rgba(184,164,216,0.05); }
+  .word-chip.selected { background:rgba(184,164,216,0.1); border-color:rgba(184,164,216,0.35); color:#ddd8f0; }
+
+  /* ── Chakra cards ── */
   .chakra-card {
-    border-radius:15px; border:1px solid rgba(255,255,255,0.06);
-    padding:13px 15px; cursor:pointer; transition:all 0.22s;
-    background:rgba(255,255,255,0.015); display:flex; align-items:center; gap:13px;
+    border-radius:12px; border:1px solid rgba(255,255,255,0.05);
+    padding:14px 16px; cursor:pointer; transition:all 0.2s;
+    background:rgba(255,255,255,0.02); display:flex; align-items:center; gap:14px;
   }
-  .chakra-card:hover { background:rgba(255,255,255,0.055); border-color:rgba(255,255,255,0.16); }
-  .chakra-card.active { border-color:rgba(255,255,255,0.28); background:rgba(255,255,255,0.07); }
+  .chakra-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.12); }
+  .chakra-card.active { border-color:rgba(184,164,216,0.3); background:rgba(184,164,216,0.06); }
+
+  /* ── Particles & rings ── */
   .particle {
     position:absolute; border-radius:50%;
     background:radial-gradient(circle,#86efac,#4ade80aa);
@@ -246,69 +285,95 @@ const GLOBAL_CSS = `
   }
   .ring {
     position:absolute; border-radius:50%;
-    border:1px solid rgba(74,222,128,0.18);
+    border:1px solid rgba(74,222,128,0.15);
     animation:ringPulse 3s ease-in-out infinite;
   }
+
+  /* ── Reminder cards ── */
   .rem-card {
-    border-radius:18px; border:1px solid rgba(255,255,255,0.07);
-    padding:16px 18px; background:rgba(255,255,255,0.02);
-    transition:all 0.25s; margin-bottom:10px;
+    border-radius:14px; border:1px solid rgba(255,255,255,0.05);
+    padding:17px 18px; background:rgba(255,255,255,0.02);
+    transition:all 0.22s; margin-bottom:9px;
     display:flex; align-items:flex-start; gap:14px;
   }
-  .rem-card.done { opacity:0.42; }
-  .rem-card:hover { background:rgba(255,255,255,0.04); }
+  .rem-card.done { opacity:0.38; }
+  .rem-card:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.09); }
   .check-btn {
-    width:26px; height:26px; border-radius:50%; flex-shrink:0; margin-top:2px;
-    border:1.5px solid rgba(255,255,255,0.2); background:transparent;
-    cursor:pointer; transition:all 0.22s; display:flex; align-items:center; justify-content:center;
-    font-size:13px;
+    width:26px; height:26px; border-radius:6px; flex-shrink:0; margin-top:2px;
+    border:1px solid rgba(255,255,255,0.14); background:transparent;
+    cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center;
+    font-size:12px;
   }
-  .check-btn.checked { background:rgba(100,200,120,0.3); border-color:rgba(100,200,120,0.6); animation:checkPop 0.3s ease; }
+  .check-btn.checked { background:rgba(100,200,120,0.2); border-color:rgba(100,200,120,0.5); animation:checkPop 0.3s ease; }
   .notif-btn {
-    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-    border-radius:100px; color:rgba(200,200,200,0.6); cursor:pointer;
-    font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:10px; letter-spacing:1.5px; padding:5px 13px; transition:all 0.22s;
-    white-space:nowrap; flex-shrink:0;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    border-radius:100px; color:#6a6d88; cursor:pointer;
+    font-family:'Jost',sans-serif; font-weight:300;
+    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    padding:5px 13px; transition:all 0.2s; white-space:nowrap; flex-shrink:0;
   }
-  .notif-btn:hover { background:rgba(255,255,255,0.1); color:#e8e0d5; }
-  .notif-btn.sent { background:rgba(100,180,120,0.2); border-color:rgba(100,180,120,0.35); color:#82d9a3; }
-  .top-nav {
-    position:fixed; top:0; left:0; right:0; z-index:9999;
-    display:flex; align-items:center; justify-content:center; gap:2px;
-    padding:8px 64px 8px 12px;
-    background:#04080e; border-bottom:1px solid rgba(255,255,255,0.1);
-    overflow-x:auto; overflow-y:hidden;
+  .notif-btn:hover { background:rgba(255,255,255,0.09); color:#c0b8d8; }
+  .notif-btn.sent { background:rgba(100,180,120,0.15); border-color:rgba(100,180,120,0.3); color:#7ed4a0; }
+
+  /* ── Terapi pill ── */
+  .terapi-pill {
+    position:relative; overflow:hidden;
+    background: linear-gradient(270deg,#7a50a0cc,#3a2ab0aa,#8b2eb0cc,#7a50a0cc);
+    background-size:300% 100%;
+    animation: energyFill 2.8s ease-in-out infinite, pillGlow 2.8s ease-in-out infinite;
+    border:1px solid rgba(184,140,255,0.3) !important;
+    color:#e0d0ff !important; letter-spacing:2.5px;
   }
-  .top-nav-btn {
-    background:transparent; border:none; cursor:pointer;
-    font-family:'Cormorant Garamond',Georgia,serif;
-    font-size:10px; letter-spacing:1.5px; color:#9a8fb0;
-    padding:6px 10px; border-radius:100px; transition:all 0.25s;
-    white-space:nowrap; flex-shrink:0;
+  .terapi-pill::after {
+    content:""; position:absolute; top:0; left:0; width:40%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);
+    animation:pillShimmer 2.2s ease-in-out infinite;
   }
-  .top-nav-btn:hover { color:#e8e0d5; background:rgba(255,255,255,0.07); }
-  .top-nav-btn.active { color:#c3a6d8; background:rgba(139,90,160,0.18); border:1px solid rgba(139,90,160,0.3); }
+
+  /* ── Policy screens ── */
   .policy-screen {
-    max-width:560px; width:100%; padding:88px 28px 100px;
+    max-width:580px; width:100%; padding:72px 32px 110px;
     position:relative; z-index:1; text-align:left;
   }
-  .policy-screen h1 { font-size:22px; font-weight:300; letter-spacing:4px; margin-bottom:6px; color:#e8e0d5; }
-  .policy-screen .subtitle { font-size:10px; letter-spacing:3px; color:#4a5a6a; margin-bottom:36px; }
-  .policy-screen h2 { font-size:12px; letter-spacing:3px; color:#7a5a90; margin:28px 0 10px; }
-  .policy-screen p { font-size:13px; color:#8a9aaa; line-height:1.9; margin-bottom:10px; }
-  .policy-screen ul { list-style:none; padding:0; margin:0 0 10px; }
-  .policy-screen ul li { font-size:13px; color:#8a9aaa; line-height:1.9; padding-left:14px; position:relative; }
-  .policy-screen ul li::before { content:"✦"; position:absolute; left:0; font-size:8px; color:#7a5a90; top:3px; }
-  .policy-screen .divider { border:none; border-top:1px solid rgba(255,255,255,0.06); margin:24px 0; }
+  .policy-screen h1 {
+    font-family:'Jost',sans-serif; font-weight:200; font-size:26px;
+    letter-spacing:5px; text-transform:uppercase; margin-bottom:6px; color:#ddd8f0;
+  }
+  .policy-screen .subtitle {
+    font-family:'Jost',sans-serif; font-size:9px; font-weight:300;
+    letter-spacing:3px; text-transform:uppercase; color:#3a4058; margin-bottom:42px;
+  }
+  .policy-screen h2 {
+    font-family:'Jost',sans-serif; font-size:10px; font-weight:400;
+    letter-spacing:3px; text-transform:uppercase; color:#8a72a8;
+    margin:34px 0 12px; padding-bottom:8px;
+    border-bottom:1px solid rgba(138,114,168,0.15);
+  }
+  .policy-screen p {
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:15px;
+    color:#9a96b0; line-height:2; margin-bottom:12px;
+  }
+  .policy-screen ul { list-style:none; padding:0; margin:0 0 12px; }
+  .policy-screen ul li {
+    font-family:'Cormorant Garamond',Georgia,serif; font-size:15px;
+    color:#9a96b0; line-height:2; padding-left:18px; position:relative;
+  }
+  .policy-screen ul li::before {
+    content:"—"; position:absolute; left:0; font-size:11px; color:#5a4a78; top:2px;
+  }
+  .policy-screen a { color:#a890c8 !important; }
+  .policy-screen .divider { border:none; border-top:1px solid rgba(255,255,255,0.05); margin:28px 0; }
+
+  /* ── Pricing cards ── */
   .pricing-card {
-    border-radius:18px; padding:20px 22px; margin-bottom:14px;
-    position:relative; transition:all 0.25s;
+    border-radius:16px; padding:22px 24px; margin-bottom:13px;
+    position:relative; transition:all 0.22s;
   }
   .pricing-card:hover { transform:translateY(-2px); }
   .pricing-badge {
-    display:inline-block; font-size:9px; letter-spacing:2px;
-    padding:3px 10px; border-radius:100px; margin-bottom:10px;
+    display:inline-block; font-family:'Jost',sans-serif; font-weight:300;
+    font-size:8px; letter-spacing:2.5px; text-transform:uppercase;
+    padding:3px 11px; border-radius:100px; margin-bottom:11px;
   }
 `;
 
@@ -847,6 +912,11 @@ export default function SakinApp() {
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
+  useEffect(() => {
+    const lock = !["fiyat","sartlar","gizlilik","iade"].includes(screen);
+    document.body.classList.toggle("scroll-lock", lock);
+    return () => document.body.classList.remove("scroll-lock");
+  }, [screen]);
 
   useEffect(() => {
     if (screen !== "harita") return;
@@ -1225,8 +1295,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   ];
   const MORNING_WORDS = t("morning_words");
 
+  const isPolicyScreen = ["fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflowX:"hidden",overflowY:["fiyat","sartlar","gizlilik","iade"].includes(screen)?"auto":"hidden",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV */}
@@ -1258,18 +1329,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* GİRİŞ */}
       {screen==="giris" && (
-        <div style={{ maxWidth:340,textAlign:"center",padding:"48px 32px",position:"relative",zIndex:1 }}>
-          <div className="fade-up">
-            <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",boxShadow:"0 0 28px rgba(139,90,160,0.38),0 0 60px rgba(139,90,160,0.14)",animation:"slowPulse 4s ease-in-out infinite" }} />
+        <div style={{ maxWidth:320,textAlign:"center",padding:"52px 32px",position:"relative",zIndex:1 }}>
+          {/* Geometrik elmas şekli */}
+          <div className="fade-up" style={{ marginBottom:36 }}>
+            <div style={{ position:"relative",width:72,height:72,margin:"0 auto" }}>
+              <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.2)",borderRadius:4,animation:"diamondSpin 12s linear infinite" }} />
+              <div style={{ position:"absolute",inset:10,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:3,animation:"diamondSpin 8s linear infinite reverse" }} />
+              <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:12,height:12,borderRadius:"50%",background:"rgba(184,164,216,0.6)",boxShadow:"0 0 18px rgba(184,164,216,0.5),0 0 36px rgba(122,80,150,0.3)" }} />
+            </div>
           </div>
-          <div className="fade-up" style={{ animationDelay:"0.2s",opacity:0 }}>
-            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Sakin</div>
+          <div className="fade-up" style={{ animationDelay:"0.18s",opacity:0 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:38,letterSpacing:12,fontWeight:200,marginBottom:8,color:"#ddd8f0" }}>Sakin</div>
           </div>
-          <div className="fade-up" style={{ animationDelay:"0.38s",opacity:0 }}>
-            <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>{t("tagline")}</div>
+          <div className="fade-up" style={{ animationDelay:"0.34s",opacity:0 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#3a4058",marginBottom:52 }}>{t("tagline")}</div>
           </div>
-          <div className="fade-up" style={{ animationDelay:"0.6s",opacity:0 }}>
-            <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:2,marginBottom:46,fontStyle:"italic" }}>
+          <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
+            <div style={{ color:"#6a6d88",fontSize:15,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
               {t("intro_text1")}<br />{t("intro_text2")}
             </div>
             <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>{t("btn_ready")}</button>
@@ -1280,16 +1356,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* SABAH */}
       {screen==="sabah" && (
         <div style={{ maxWidth:390,width:"100%",padding:"34px 26px 100px",position:"relative",zIndex:1 }}>
-          <div style={{ textAlign:"center",marginBottom:32,animation:"sunrise 1s ease forwards" }}>
-            <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto",background:"radial-gradient(circle,rgba(255,155,55,0.52) 0%,rgba(255,95,35,0.16) 55%,transparent 70%)",boxShadow:"0 0 38px rgba(255,130,45,0.42),0 0 80px rgba(255,95,35,0.18)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
-            <div style={{ marginTop:12,fontSize:9,letterSpacing:5,color:"#5a6a7a" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+          <div style={{ textAlign:"center",marginBottom:36,animation:"sunrise 1s ease forwards" }}>
+            <div style={{ position:"relative",width:88,height:88,margin:"0 auto" }}>
+              <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
+              <div style={{ position:"absolute",inset:-14,borderRadius:"50%",border:"1px solid rgba(255,140,50,0.08)" }} />
+            </div>
+            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:4,textTransform:"uppercase",color:"#3a4058" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
-          <div style={{ marginBottom:26 }}>
-            <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>{t("intention_q")}</div>
+          <div style={{ marginBottom:28 }}>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
             <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
-            <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>{t("choose_words")}</div>
+            <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
             <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
               {MORNING_WORDS.map(w=>(
                 <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
@@ -1386,7 +1465,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* NEFES */}
       {screen==="nefes" && (
         <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1 }}>
-          <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:48 }}>{t("breath_title")}</div>
+          <div className="label-sm" style={{ marginBottom:52,letterSpacing:5 }}>{t("breath_title")}</div>
           <div style={{ position:"relative",width:205,height:205,margin:"0 auto 40px" }}>
             {[1.72,1.45,1.2].map((s,i)=>(
               <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
@@ -1395,8 +1474,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
             </div>
           </div>
-          <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>{t("youre_here")}</div>
-          <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,letterSpacing:4,fontWeight:300,marginBottom:8,color:"#c8c0e0" }}>{t("youre_here")}</div>
+          <div className="label-sm" style={{ marginBottom:44 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
@@ -1416,11 +1495,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ textAlign:"center",padding:"34px 30px 100px",position:"relative",zIndex:1,maxWidth:360 }}>
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
-            <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>{t("chakra_subtitle")}</div>
+            <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
             <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} {t("chakra_name_suf")}</div>
-            <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
-            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>{t("chakra_stay")}</div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:chakra.pastel,marginBottom:16,opacity:0.9 }}>{chakra.name} {t("chakra_name_suf")}</div>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
+            <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
             <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("nefes")}>{t("back")}</button>
@@ -1736,11 +1815,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* BOTTOM NAV */}
       {!["giris","terapi","gun","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
+        <div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px" }}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
-              <span>{n.icon}</span>
-              <span style={{ fontSize:6,letterSpacing:1.5,color:screen===n.id?"#a0b0c0":"transparent",transition:"color 0.3s" }}>{n.label.toUpperCase()}</span>
+            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"5px 9px",display:"flex",flexDirection:"column",alignItems:"center",gap:3 }}>
+              <span style={{ fontSize:screen===n.id?16:12,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
+              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:6,letterSpacing:2,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
             </button>
           ))}
         </div>
