@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { makeTrans } from "./i18n";
 
+const ARAMA_API_KEY = import.meta.env.VITE_ARAMA_API_KEY;
+const RAPOR_API_KEY = import.meta.env.VITE_RAPOR_API_KEY;
+
 const CHAKRAS_7_TR = [
   { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥" },
   { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧" },
@@ -975,7 +978,7 @@ export default function SakinApp() {
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:600,
           system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
@@ -1037,7 +1040,7 @@ ${astroText2}
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
@@ -1081,7 +1084,7 @@ Bu semptomu yukarıdaki her iki rehberi birleştirerek analiz et ve şu formatta
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holistik enerji rehberisin. Şikayetlere duygusal-ruhsal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
@@ -1122,7 +1125,7 @@ ${astroTxt}
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
@@ -1168,9 +1171,6 @@ ${astroTxt}
       kullanim[ip] = (kullanim[ip]||0) + 1;
       localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
     } catch { /* ipify ulaşılamazsa devam et */ }
-
-    localStorage.setItem("sakin_rapor_used", "1");
-    setRaporKullanildi(true);
 
     setAiLoading(true); setAiRapor("");
 
@@ -1224,7 +1224,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
     try {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method:"POST",
-        headers:{"Content-Type":"application/json","x-api-key":import.meta.env.VITE_ANTHROPIC_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+        headers:{"Content-Type":"application/json","x-api-key":RAPOR_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1700,
           system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun.
@@ -1247,6 +1247,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       });
       const data = await res.json();
       const text = data.content?.[0]?.text;
+      if (text) {
+        localStorage.setItem("sakin_rapor_used", "1");
+        setRaporKullanildi(true);
+      }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
     } catch(e) { setAiRapor("API'ye ulaşılamadı: "+e.message); }
     finally { setAiLoading(false); }
