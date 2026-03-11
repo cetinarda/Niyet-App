@@ -202,18 +202,22 @@ const GLOBAL_CSS = `
   /* ── Top nav ── */
   .top-nav {
     position:fixed; top:0; left:0; right:0; z-index:9999;
-    display:flex; align-items:center; justify-content:center; gap:1px;
-    padding:0 68px 0 8px; height:44px;
+    display:flex; align-items:center; justify-content:flex-start; gap:0;
+    padding:0 4px; height:44px;
     background:#080c14; border-bottom:1px solid rgba(255,255,255,0.07);
     overflow-x:auto; overflow-y:hidden;
+    -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
   }
   .top-nav::-webkit-scrollbar { display:none; }
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:10px; letter-spacing:2.5px; text-transform:uppercase; color:#6a6d88;
-    padding:0 11px; height:44px; transition:all 0.2s;
+    font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#6a6d88;
+    padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
+  }
+  @media (max-width:390px) {
+    .top-nav-btn { font-size:9px; letter-spacing:1.5px; padding:0 7px; }
   }
   .top-nav-btn::after {
     content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
@@ -331,8 +335,12 @@ const GLOBAL_CSS = `
 
   /* ── Policy screens ── */
   .policy-screen {
-    max-width:580px; width:100%; padding:72px 32px 110px;
+    max-width:580px; width:100%; padding:28px 24px 110px;
     position:relative; z-index:1; text-align:left;
+  }
+  @media (max-width:480px) {
+    .policy-screen { padding:20px 18px 110px; }
+    .policy-screen h1 { font-size:20px; letter-spacing:3px; }
   }
   .policy-screen h1 {
     font-family:'Jost',sans-serif; font-weight:200; font-size:26px;
@@ -890,6 +898,7 @@ export default function SakinApp() {
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [showBirthForm,  setShowBirthForm]  = useState(false);
+  const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef = useRef(null);
@@ -1291,7 +1300,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:44,background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV */}
@@ -1299,24 +1308,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         {/* Anasayfa butonu — sol */}
         <button
           onClick={()=>{ setScreen("sabah"); history.pushState(null,"","/"); }}
-          style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6,padding:"0 14px 0 8px",height:44,flexShrink:0,marginRight:4,borderRight:"1px solid rgba(255,255,255,0.06)" }}
+          style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6.5 1L1 6.5M1 6.5L6.5 12M1 6.5H12" stroke="rgba(184,164,216,0.5)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:2.5,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:9,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
         <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
+        {/* Dil butonu — nav'ın en sağında */}
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"4px 12px",color:"#c3a6d8",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,height:28,alignSelf:"center",marginRight:4 }}>
+          {lang === "tr" ? "EN" : "TR"}
+        </button>
       </div>
-
-      {/* DİL BUTONU — sağ üst köşe */}
-      <button onClick={toggleLang} style={{ position:"fixed",top:8,right:12,zIndex:9999,background:"rgba(139,90,160,0.2)",border:"1px solid rgba(139,90,160,0.4)",borderRadius:20,padding:"5px 14px",color:"#c3a6d8",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-        {lang === "tr" ? "EN" : "TR"}
-      </button>
 
       {/* Sabit derin uzay arka planı */}
       <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
@@ -1334,7 +1342,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* GİRİŞ */}
       {screen==="giris" && (
-        <div style={{ maxWidth:320,textAlign:"center",padding:"52px 32px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:320,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
           {/* Geometrik elmas şekli */}
           <div className="fade-up" style={{ marginBottom:36 }}>
             <div style={{ position:"relative",width:72,height:72,margin:"0 auto" }}>
@@ -1350,10 +1358,41 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#3a4058",marginBottom:52 }}>{t("tagline")}</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
-            <div style={{ color:"#6a6d88",fontSize:15,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-              {t("intro_text1")}<br />{t("intro_text2")}
-            </div>
-            <button className="sakin-btn-primary" onClick={()=>{ setRehberTab("reiki"); setScreen("rehber"); }}>{t("btn_ready")}</button>
+            {girisPhase === "intro" ? (
+              <>
+                <div style={{ color:"#6a6d88",fontSize:15,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
+                  {t("intro_text1")}<br />{t("intro_text2")}
+                </div>
+                <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+              </>
+            ) : (
+              <div style={{ textAlign:"left" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:3,textTransform:"uppercase",color:"#6a5a90",marginBottom:22,textAlign:"center" }}>
+                  {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
+                </div>
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:9,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
+                  <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                    value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
+                </div>
+                <div style={{ marginBottom:22 }}>
+                  <div style={{ fontSize:9,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
+                  <input type="time" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                    value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
+                </div>
+                <div style={{ fontSize:9,letterSpacing:1.5,color:"#3a3858",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
+                </div>
+                <button className="sakin-btn-primary" style={{ width:"100%" }}
+                  onClick={()=>{
+                    if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); }
+                    if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                    setRehberTab("reiki"); setScreen("rehber");
+                  }}>
+                  {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -1873,11 +1912,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* BOTTOM NAV */}
       {!["giris","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:22,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px" }}>
+        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"5px 9px",display:"flex",flexDirection:"column",alignItems:"center",gap:3 }}>
-              <span style={{ fontSize:screen===n.id?16:12,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
-              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:6,letterSpacing:2,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
+            <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"4px 7px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
+              <span style={{ fontSize:screen===n.id?15:11,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
+              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:6,letterSpacing:1.5,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
             </button>
           ))}
         </div>
