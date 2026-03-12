@@ -2027,7 +2027,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       color:sikayet.trim()?"#fff":"#3a4058",fontSize:16,
                       display:"flex",alignItems:"center",justifyContent:"center",
                       transition:"all 0.25s",
-                    }}>✦</button>
+                    }}>
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <rect x="1.5" y="1.5" width="13" height="13" rx="1.8" transform="rotate(45 8 8)"
+                        stroke={sikayet.trim()?"rgba(255,255,255,0.9)":"rgba(100,90,140,0.4)"} strokeWidth="1.2"/>
+                      <circle cx="8" cy="8" r="2"
+                        fill={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(100,90,140,0.4)"}/>
+                    </svg>
+                  </button>
                 </div>
 
                 {/* Hızlı chip önerileri */}
