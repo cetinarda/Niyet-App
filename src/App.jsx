@@ -193,6 +193,7 @@ const GLOBAL_CSS = `
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
   @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
   @keyframes sliceGlow   { 0%,100%{opacity:0.7} 50%{opacity:1} }
+  @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
 
   .fade-up  { animation: fadeUp  0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
@@ -2478,20 +2479,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
+            const pulse = n.id==="mandala" && screen==="rehber";
             return (
               <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
                 style={{
-                  background: active ? `${n.color}22` : "transparent",
-                  border: active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
+                  border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
                   cursor:"pointer",
                   transition:"all 0.28s",
                   padding:"5px 8px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:2,
                   minWidth:36,
+                  animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
                 }}>
-                <span style={{ fontSize:active?15:12, color: active ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
