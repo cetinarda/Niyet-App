@@ -259,6 +259,26 @@ export const TRANS = {
     guide_cat_biorhythm: "Biyoritm",
     guide_cat_reiki: "Reiki & Terapi",
     guide_cat_app: "Uygulama Kavramları",
+
+    // Mandala Harita
+    mandala_title: "İçsel Yolculuk",
+    mandala_sub: "BUGÜNÜN HARİTASI",
+    mandala_streak: "gün serisi",
+    mandala_streak_best: "en iyi seri",
+    mandala_badge_3: "3 Gün",
+    mandala_badge_7: "1 Hafta",
+    mandala_badge_21: "21 Gün",
+    mandala_badge_40: "40 Gün",
+    mandala_complete: "Bugün tamamlandı!",
+    mandala_step_birth: "Doğum Profili",
+    mandala_step_morning: "Sabah Niyeti",
+    mandala_step_breath: "Nefes",
+    mandala_step_chakra: "Çakra",
+    mandala_step_day: "Gün Görevleri",
+    mandala_step_evening: "Akşam Kapanışı",
+    mandala_step_map: "Haftalık Harita",
+    mandala_locked: "Önceki adımı tamamla",
+    mandala_start: "başla →",
   },
 
   en: {
@@ -521,6 +541,26 @@ export const TRANS = {
     guide_cat_biorhythm: "Biorhythm",
     guide_cat_reiki: "Reiki & Therapy",
     guide_cat_app: "App Concepts",
+
+    // Mandala Map
+    mandala_title: "Inner Journey",
+    mandala_sub: "TODAY'S MAP",
+    mandala_streak: "day streak",
+    mandala_streak_best: "best streak",
+    mandala_badge_3: "3 Days",
+    mandala_badge_7: "1 Week",
+    mandala_badge_21: "21 Days",
+    mandala_badge_40: "40 Days",
+    mandala_complete: "Today is complete!",
+    mandala_step_birth: "Birth Profile",
+    mandala_step_morning: "Morning Intention",
+    mandala_step_breath: "Breath",
+    mandala_step_chakra: "Chakra",
+    mandala_step_day: "Daily Tasks",
+    mandala_step_evening: "Evening Close",
+    mandala_step_map: "Weekly Map",
+    mandala_locked: "Complete previous step",
+    mandala_start: "start →",
   },
 };
 

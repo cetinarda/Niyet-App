@@ -188,6 +188,10 @@ const GLOBAL_CSS = `
   @keyframes slideIn     { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
   @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
+  @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
+  @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
+  @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
 
   .fade-up  { animation: fadeUp  0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
   .slide-in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
@@ -902,7 +906,8 @@ export default function SakinApp() {
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
-  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
+  const hasBirth = !!localStorage.getItem("sakin_birth_date");
+  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || (hasBirth ? "mandala" : "giris"));
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
   const [breathPhase,   setBreathPhase]   = useState("inhale");
@@ -932,6 +937,50 @@ export default function SakinApp() {
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
   const [showKilavuz, setShowKilavuz] = useState(false);
+
+  // ── Streak & Step Tracking ──
+  const todayKey = new Date().toISOString().slice(0,10);
+  const [streakData, setStreakData] = useState(() => {
+    try {
+      const raw = localStorage.getItem("sakin_streak");
+      return raw ? JSON.parse(raw) : { current: 0, best: 0, lastDate: null, badges: [] };
+    } catch { return { current: 0, best: 0, lastDate: null, badges: [] }; }
+  });
+  const [stepsCompleted, setStepsCompleted] = useState(() => {
+    try {
+      const raw = localStorage.getItem("sakin_steps_" + todayKey);
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  });
+
+  const markStep = (stepId) => {
+    setStepsCompleted(prev => {
+      const next = { ...prev, [stepId]: true };
+      localStorage.setItem("sakin_steps_" + todayKey, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const MANDALA_STEPS = ["birth","sabah","nefes","chakra","gun","aksam","harita"];
+  const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+  const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
+
+  // Update streak when all steps complete
+  useEffect(() => {
+    if (!allStepsComplete) return;
+    setStreakData(prev => {
+      if (prev.lastDate === todayKey) return prev;
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      const isConsecutive = prev.lastDate === yesterday;
+      const newCurrent = isConsecutive ? prev.current + 1 : 1;
+      const newBest = Math.max(prev.best, newCurrent);
+      const newBadges = [...prev.badges];
+      [3,7,21,40].forEach(n => { if (newCurrent >= n && !newBadges.includes(n)) newBadges.push(n); });
+      const next = { current: newCurrent, best: newBest, lastDate: todayKey, badges: newBadges };
+      localStorage.setItem("sakin_streak", JSON.stringify(next));
+      return next;
+    });
+  }, [allStepsComplete, todayKey]);
 
   function toggleDevMode() {
     const next = !devMode;
@@ -1415,6 +1464,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
+    {id:"mandala",icon:"◎",label:lang==="tr"?"Yolculuk":"Journey"},
     {id:"rehber",icon:"📖",label:t("nav_guide")},
     {id:"sabah",icon:"🌅",label:t("nav_morning")},
     {id:"nefes",icon:"🫧",label:t("nav_breath")},
@@ -1434,7 +1484,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
-          onClick={()=>{ setScreen("sabah"); history.pushState(null,"","/"); }}
+          onClick={()=>{ setScreen("mandala"); history.pushState(null,"","/"); }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1513,9 +1563,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
                   onClick={()=>{
-                    if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); }
+                    if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    setRehberTab("reiki"); setScreen("rehber");
+                    setScreen("mandala");
                   }}>
                   {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
                 </button>
@@ -1524,6 +1574,185 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
         </div>
       )}
+
+      {/* MANDALA OYUN HARİTASI */}
+      {screen==="mandala" && (() => {
+        const steps = [
+          { id:"birth",  icon:"⭐", label:t("mandala_step_birth"),   color:"#c3a6d8", angle:0 },
+          { id:"sabah",  icon:"🌅", label:t("mandala_step_morning"), color:"#f0c27f", angle:51.4 },
+          { id:"nefes",  icon:"🫧", label:t("mandala_step_breath"),  color:"#85c1e9", angle:102.8 },
+          { id:"chakra", icon:"💜", label:t("mandala_step_chakra"),  color:"#c3a6d8", angle:154.3 },
+          { id:"gun",    icon:"☀️", label:t("mandala_step_day"),     color:"#f7e18a", angle:205.7 },
+          { id:"aksam",  icon:"🌙", label:t("mandala_step_evening"), color:"#a0b8d8", angle:257.1 },
+          { id:"harita", icon:"🗺️", label:t("mandala_step_map"),    color:"#82d9a3", angle:308.6 },
+        ];
+        const radius = 120;
+        const BADGE_MILESTONES = [
+          { days:3,  icon:"🌱", label:t("mandala_badge_3") },
+          { days:7,  icon:"🔥", label:t("mandala_badge_7") },
+          { days:21, icon:"⚡", label:t("mandala_badge_21") },
+          { days:40, icon:"👑", label:t("mandala_badge_40") },
+        ];
+        const nextStep = steps.find(s => !stepsCompleted[s.id]);
+
+        return (
+          <div style={{ maxWidth:420,width:"100%",padding:"62px 20px 120px",position:"relative",zIndex:1 }}>
+            {/* Header */}
+            <div style={{ textAlign:"center",marginBottom:8 }}>
+              <div className="label-sm" style={{ letterSpacing:5,marginBottom:6 }}>{t("mandala_sub")}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#ddd8f0" }}>{t("mandala_title")}</div>
+            </div>
+
+            {/* Streak */}
+            <div style={{ display:"flex",justifyContent:"center",gap:20,marginBottom:30,marginTop:14 }}>
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:28,fontWeight:300,color:"#f0a040",animation:streakData.current>=3?"streakFire 2s ease-in-out infinite":"none" }}>{streakData.current}</div>
+                <div style={{ fontSize:9,letterSpacing:2.5,color:"#5a4a7a",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("mandala_streak")}</div>
+              </div>
+              <div style={{ width:1,background:"rgba(255,255,255,0.06)" }} />
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:28,fontWeight:300,color:"#7a8a9a" }}>{streakData.best}</div>
+                <div style={{ fontSize:9,letterSpacing:2.5,color:"#3a4058",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("mandala_streak_best")}</div>
+              </div>
+            </div>
+
+            {/* Mandala */}
+            <div style={{ position:"relative",width:radius*2+80,height:radius*2+80,margin:"0 auto 28px" }}>
+              {/* Outer decorative ring */}
+              <div style={{ position:"absolute",inset:-8,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.08)",animation:"mandalaRotate 60s linear infinite" }} />
+              <div style={{ position:"absolute",inset:-20,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.04)",animation:"mandalaRotate 90s linear infinite reverse" }} />
+
+              {/* Connection lines */}
+              <svg style={{ position:"absolute",inset:0,width:"100%",height:"100%" }}>
+                {steps.map((step,i) => {
+                  const nextI = (i+1) % steps.length;
+                  const cx = radius+40, cy = radius+40;
+                  const x1 = cx + radius * Math.cos((step.angle-90)*Math.PI/180);
+                  const y1 = cy + radius * Math.sin((step.angle-90)*Math.PI/180);
+                  const x2 = cx + radius * Math.cos((steps[nextI].angle-90)*Math.PI/180);
+                  const y2 = cy + radius * Math.sin((steps[nextI].angle-90)*Math.PI/180);
+                  const done = stepsCompleted[step.id] && stepsCompleted[steps[nextI].id];
+                  return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={done ? "rgba(130,217,163,0.3)" : "rgba(255,255,255,0.05)"} strokeWidth="1.5" />;
+                })}
+              </svg>
+
+              {/* Center glow */}
+              <div style={{
+                position:"absolute",
+                left:"50%",top:"50%",transform:"translate(-50%,-50%)",
+                width:allStepsComplete?90:60,height:allStepsComplete?90:60,borderRadius:"50%",
+                background:allStepsComplete
+                  ? "radial-gradient(circle,rgba(130,217,163,0.5),rgba(74,222,128,0.15))"
+                  : `conic-gradient(from 0deg,${steps.map((s,i) => `${stepsCompleted[s.id] ? s.color+"88" : "rgba(255,255,255,0.03)"} ${i*51.4}deg ${(i+1)*51.4}deg`).join(",")})`,
+                boxShadow:allStepsComplete ? "0 0 40px rgba(74,222,128,0.3),0 0 80px rgba(74,222,128,0.1)" : "0 0 30px rgba(139,90,160,0.15)",
+                transition:"all 0.8s ease",
+                display:"flex",alignItems:"center",justifyContent:"center",
+              }}>
+                <div style={{ fontSize:allStepsComplete?11:9,letterSpacing:2,color:allStepsComplete?"#4ade80":"#6a5a90",fontFamily:"'Jost',sans-serif",textAlign:"center",lineHeight:1.4 }}>
+                  {allStepsComplete ? "✓" : `${completedStepCount}/${MANDALA_STEPS.length}`}
+                </div>
+              </div>
+
+              {/* Petal nodes */}
+              {steps.map((step, i) => {
+                const cx = radius+40, cy = radius+40;
+                const x = cx + radius * Math.cos((step.angle-90)*Math.PI/180);
+                const y = cy + radius * Math.sin((step.angle-90)*Math.PI/180);
+                const done = stepsCompleted[step.id];
+                const isNext = nextStep?.id === step.id;
+                const isLocked = !done && !isNext && i > 0 && !stepsCompleted[steps[i-1]?.id];
+
+                return (
+                  <button key={step.id}
+                    onClick={() => {
+                      if (isLocked) return;
+                      if (step.id === "birth") { setShowBirthForm(true); setScreen("sabah"); }
+                      else setScreen(step.id);
+                    }}
+                    style={{
+                      position:"absolute",
+                      left:x-28,top:y-28,width:56,height:56,borderRadius:"50%",
+                      background:done
+                        ? `radial-gradient(circle,${step.color}cc,${step.color}44)`
+                        : isNext
+                          ? `radial-gradient(circle,${step.color}55,${step.color}22)`
+                          : "rgba(255,255,255,0.03)",
+                      border:`2px solid ${done ? step.color+"88" : isNext ? step.color+"44" : "rgba(255,255,255,0.06)"}`,
+                      boxShadow:done ? `0 0 20px ${step.color}44` : isNext ? `0 0 12px ${step.color}22` : "none",
+                      cursor:isLocked?"default":"pointer",
+                      transition:"all 0.4s ease",
+                      display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",
+                      opacity:isLocked?0.3:1,
+                      animation:done ? `petalGlow 3s ease-in-out infinite ${i*0.4}s` : isNext ? "slowPulse 3s ease-in-out infinite" : "none",
+                      zIndex:2,
+                    }}
+                  >
+                    <span style={{ fontSize:done?20:16,filter:isLocked?"grayscale(1)":"none" }}>{done?"✓":step.icon}</span>
+                  </button>
+                );
+              })}
+
+              {/* Labels outside petals */}
+              {steps.map((step) => {
+                const cx = radius+40, cy = radius+40;
+                const labelR = radius + 42;
+                const lx = cx + labelR * Math.cos((step.angle-90)*Math.PI/180);
+                const ly = cy + labelR * Math.sin((step.angle-90)*Math.PI/180);
+                const done = stepsCompleted[step.id];
+                return (
+                  <div key={step.id+"lbl"} style={{
+                    position:"absolute",left:lx,top:ly,transform:"translate(-50%,-50%)",
+                    fontSize:8,letterSpacing:1.5,color:done?step.color:"#4a5a6a",
+                    fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
+                    textAlign:"center",whiteSpace:"nowrap",pointerEvents:"none",
+                    textShadow:done?`0 0 8px ${step.color}44`:"none",
+                  }}>{step.label}</div>
+                );
+              })}
+            </div>
+
+            {/* Today complete message */}
+            {allStepsComplete && (
+              <div className="fade-up" style={{ textAlign:"center",marginBottom:20,padding:"14px 18px",background:"rgba(74,222,128,0.06)",border:"1px solid rgba(74,222,128,0.18)",borderRadius:16 }}>
+                <div style={{ fontSize:24,marginBottom:6 }}>🌿</div>
+                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,color:"#82d9a3",letterSpacing:1 }}>{t("mandala_complete")}</div>
+              </div>
+            )}
+
+            {/* Next step CTA */}
+            {nextStep && !allStepsComplete && (
+              <div style={{ textAlign:"center",marginBottom:20 }}>
+                <button className="sakin-btn-primary" onClick={() => {
+                  if (nextStep.id === "birth") { setShowBirthForm(true); setScreen("sabah"); }
+                  else setScreen(nextStep.id);
+                }} style={{ fontSize:12,letterSpacing:2 }}>
+                  {nextStep.icon} {nextStep.label} — {t("mandala_start")}
+                </button>
+              </div>
+            )}
+
+            {/* Badge milestones */}
+            <div style={{ display:"flex",justifyContent:"center",gap:10,flexWrap:"wrap",marginTop:8 }}>
+              {BADGE_MILESTONES.map(b => {
+                const unlocked = streakData.badges.includes(b.days);
+                return (
+                  <div key={b.days} style={{
+                    background:unlocked?"rgba(255,255,255,0.04)":"rgba(255,255,255,0.015)",
+                    border:`1px solid ${unlocked?"rgba(255,200,60,0.25)":"rgba(255,255,255,0.04)"}`,
+                    borderRadius:12,padding:"8px 14px",textAlign:"center",
+                    opacity:unlocked?1:0.35,
+                    animation:unlocked?"badgeUnlock 0.5s ease":"none",
+                    transition:"all 0.3s",
+                  }}>
+                    <div style={{ fontSize:18,marginBottom:2 }}>{b.icon}</div>
+                    <div style={{ fontSize:8,letterSpacing:1.5,color:unlocked?"#f0c860":"#4a5a6a",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{b.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* SABAH */}
       {screen==="sabah" && (
@@ -1630,7 +1859,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : null}
           </div>
 
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>{t("btn_continue")}</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
         </div>
       )}
 
@@ -1656,7 +1885,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>{t("btn_next")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_next")}</button>
             </div>
           )}
         </div>
@@ -1675,14 +1904,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("nefes")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>{t("btn_reminders")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ markStep("chakra"); setScreen("gun"); }}>{t("btn_reminders")}</button>
             </div>
           </div>
         </div>
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} lang={lang} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>setScreen("aksam")} lang={lang} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
@@ -1707,7 +1936,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
           </div>
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>{t("btn_see_week")}</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
         </div>
       )}
 
@@ -1844,7 +2073,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             )}
           </div>
-          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>{t("btn_new_day")}</button>
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
         </div>
       )}
 
@@ -2040,7 +2269,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","mandala","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>(
             <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"4px 7px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
