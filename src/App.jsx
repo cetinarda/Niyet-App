@@ -194,8 +194,8 @@ const GLOBAL_CSS = `
 
   /* ── Typography helpers ── */
   .label-sm {
-    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
-    letter-spacing:3.5px; text-transform:uppercase; color:#4a5570;
+    font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
+    letter-spacing:3px; text-transform:uppercase; color:#4a5570;
   }
   .label-md {
     font-family:'Jost',sans-serif; font-size:12px; font-weight:300;
@@ -305,18 +305,18 @@ const GLOBAL_CSS = `
   .rem-card.done { opacity:0.38; }
   .rem-card:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.09); }
   .check-btn {
-    width:26px; height:26px; border-radius:6px; flex-shrink:0; margin-top:2px;
+    width:36px; height:36px; border-radius:8px; flex-shrink:0; margin-top:0;
     border:1px solid rgba(255,255,255,0.14); background:transparent;
     cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center;
-    font-size:13px;
+    font-size:15px;
   }
   .check-btn.checked { background:rgba(100,200,120,0.2); border-color:rgba(100,200,120,0.5); animation:checkPop 0.3s ease; }
   .notif-btn {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
     border-radius:100px; color:#6a6d88; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:10px; letter-spacing:2px; text-transform:uppercase;
-    padding:5px 13px; transition:all 0.2s; white-space:nowrap; flex-shrink:0;
+    font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
+    padding:8px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:36px;
   }
   .notif-btn:hover { background:rgba(255,255,255,0.09); color:#c0b8d8; }
   .notif-btn.sent { background:rgba(100,180,120,0.15); border-color:rgba(100,180,120,0.3); color:#7ed4a0; }
@@ -350,12 +350,12 @@ const GLOBAL_CSS = `
     letter-spacing:5px; text-transform:uppercase; margin-bottom:6px; color:#ddd8f0;
   }
   .policy-screen .subtitle {
-    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
-    letter-spacing:3px; text-transform:uppercase; color:#3a4058; margin-bottom:42px;
+    font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
+    letter-spacing:2.5px; text-transform:uppercase; color:#4a5068; margin-bottom:42px;
   }
   .policy-screen h2 {
-    font-family:'Jost',sans-serif; font-size:11px; font-weight:400;
-    letter-spacing:3px; text-transform:uppercase; color:#8a72a8;
+    font-family:'Jost',sans-serif; font-size:12px; font-weight:400;
+    letter-spacing:2.5px; text-transform:uppercase; color:#8a72a8;
     margin:34px 0 12px; padding-bottom:8px;
     border-bottom:1px solid rgba(138,114,168,0.15);
   }
@@ -382,8 +382,8 @@ const GLOBAL_CSS = `
   .pricing-card:hover { transform:translateY(-2px); }
   .pricing-badge {
     display:inline-block; font-family:'Jost',sans-serif; font-weight:300;
-    font-size:9px; letter-spacing:2.5px; text-transform:uppercase;
-    padding:3px 11px; border-radius:100px; margin-bottom:11px;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase;
+    padding:5px 12px; border-radius:100px; margin-bottom:11px;
   }
 `;
 
@@ -464,9 +464,9 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
   return (
     <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:0 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
+          <div style={{ fontSize:11, letterSpacing:4, color:"#4a5a6a" }}>{t("day_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
         </div>
         <div style={{
@@ -627,9 +627,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="list") return (
     <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:0 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div>
-          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
+          <div style={{ fontSize:11, letterSpacing:4, color:"#4a5a6a" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:22, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
       </div>
@@ -700,7 +700,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:0,letterSpacing:1 }}>←</button>
+        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
       </div>
       <div style={{ fontSize:10,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
@@ -860,11 +860,11 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
               <button
                 onClick={()=>setTipAcik(v=>!v)}
                 aria-label="Örnek sorular"
-                style={{ width:22,height:22,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:11,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
+                style={{ width:36,height:36,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
               >?</button>
               {tipAcik && (
                 <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(18,6,42,0.98),rgba(12,4,30,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
-                  <div style={{ fontSize:9,letterSpacing:3,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
+                  <div style={{ fontSize:10,letterSpacing:2.5,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
                     {lang==="tr" ? "ÖRNEK SORULAR" : "EXAMPLE QUESTIONS"}
                   </div>
                   {ornekler.map((s,i)=>(
@@ -883,7 +883,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
             onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey && value.trim()) { e.preventDefault(); onAra(); } }}
             placeholder={placeholder}
             rows={3}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:13.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:16,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
           />
           <button onClick={onAra} disabled={!value.trim()}
             style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#e8d8f8":"#5a4a70",fontSize:12,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.2s" }}>
@@ -1447,7 +1447,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
         {/* Dil butonu — nav'ın en sağında */}
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"4px 12px",color:"#c3a6d8",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,height:28,alignSelf:"center",marginRight:4 }}>
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"6px 14px",color:"#c3a6d8",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
@@ -1602,14 +1602,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_date_label")}</div>
                   <input type="date" className="sakin-input"
-                    style={{ fontSize:13,letterSpacing:0.5 }}
+                    style={{ fontSize:16,letterSpacing:0.5 }}
                     value={birthInput}
                     onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_time_input")} <span style={{ color:"#3a2a5a",fontSize:9,letterSpacing:1 }}>{t("optional")}</span></div>
                   <input type="time" className="sakin-input"
-                    style={{ fontSize:13,letterSpacing:0.5 }}
+                    style={{ fontSize:16,letterSpacing:0.5 }}
                     value={birthTimeInput}
                     onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
