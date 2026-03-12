@@ -1486,8 +1486,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <div style={{ color:"#6a6d88",fontSize:16,lineHeight:2.1,marginBottom:48,fontStyle:"italic",fontFamily:"'Cormorant Garamond',Georgia,serif" }}>
-                  {t("intro_text1")}<br />{t("intro_text2")}
+                <div style={{ marginBottom:48,fontFamily:"'Cormorant Garamond',Georgia,serif",textAlign:"center" }}>
+                  <div style={{ color:"#b0a8cc",fontSize:19,fontStyle:"italic",lineHeight:1.7,fontWeight:300 }}>{t("intro_text1")}</div>
+                  <div style={{ color:"#d4c8f0",fontSize:22,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
                 </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
               </>
