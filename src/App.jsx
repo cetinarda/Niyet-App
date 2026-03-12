@@ -1465,6 +1465,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
+    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror",   color:"#a070d0"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Harita":"Map",    color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
@@ -1484,7 +1485,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
-          onClick={()=>{ setScreen("mandala"); history.pushState(null,"","/"); }}
+          onClick={()=>{ setScreen("rehber"); history.pushState(null,"","/"); }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1565,7 +1566,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    setScreen("mandala");
+                    setRehberTab("reiki"); setScreen("rehber");
                   }}>
                   {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
                 </button>
@@ -1941,34 +1942,137 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* REHBER */}
+      {/* İÇSEL AYNA — Google-style merkezi arama */}
       {screen==="rehber" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
-          {/* Gizemli arka plan efekti */}
-          <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse at 30% 20%,rgba(60,20,100,0.35) 0%,transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(20,40,100,0.3) 0%,transparent 60%)",pointerEvents:"none",zIndex:0 }} />
-          <div style={{ textAlign:"center",marginBottom:36,position:"relative" }}>
-            <div style={{ fontSize:10,letterSpacing:6,color:"#4a3a6a",marginBottom:10 }}>{t("guide_sup")}</div>
-            <div style={{ fontSize:23,fontWeight:300,letterSpacing:3,color:"#c8b0e8",textShadow:"0 0 40px rgba(180,120,255,0.4)" }}>{t("guide_title")}</div>
-            <div style={{ fontSize:10,color:"#3a2a5a",marginTop:8,letterSpacing:2 }}>{t("guide_sub")}</div>
-            <button onClick={toggleDevMode}
-              style={{ position:"absolute",top:0,right:0,background:devMode?"rgba(255,180,0,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${devMode?"rgba(255,180,0,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:8,padding:"4px 9px",color:devMode?"#f0c040":"#4a5a6a",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
-              {devMode ? "DEV ✓" : "DEV"}
-            </button>
+        <div style={{ maxWidth:520,width:"100%",padding:"52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+          {/* Arka plan ambient */}
+          <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
+
+          {/* Logo gem */}
+          <div style={{ position:"relative",width:56,height:56,margin:"0 auto 18px",zIndex:1 }}>
+            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:6,animation:"diamondSpin 12s linear infinite" }} />
+            <div style={{ position:"absolute",inset:11,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.18)",borderRadius:4,animation:"diamondSpin 8s linear infinite reverse" }} />
+            <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.8)",boxShadow:"0 0 16px rgba(184,164,216,0.6),0 0 32px rgba(122,80,150,0.4)" }} />
           </div>
 
-          {/* ARAMA PANELİ 1 — ŞİKAYET */}
-          <AramaPaneli
-            baslik={t("mirror_title")}
-            simge={t("mirror_icon")}
-            aciklama={t("mirror_desc")}
-            renk="#a070d0"
-            value={sikayet}
-            onChange={setSikayet}
-            analiz={sikayetAnaliz}
-            onAra={generateSikayetAnaliz}
-            onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-            placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — her şeyi sorabilirsin..." : "Physical, emotional or spiritual — ask anything..."}
-            lang={lang}
-          />
+          {/* Başlık */}
+          <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
+            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
+              {lang==="tr" ? "İçsel Ayna" : "Inner Mirror"}
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,color:"#4a3a6a",textTransform:"uppercase" }}>
+              {lang==="tr" ? "Ruhsal rehberin · Bilgelik kaynağın" : "Your spiritual guide · Source of wisdom"}
+            </div>
+          </div>
+
+          {/* Ana arama kutusu veya sonuç */}
+          <div style={{ width:"100%",zIndex:1 }}>
+            {sikayetAnaliz === "__loading__" ? (
+              <div style={{ textAlign:"center",padding:"48px 0" }}>
+                <div style={{ fontSize:26,marginBottom:14,animation:"pulse 2s ease-in-out infinite" }}>🪞</div>
+                <div style={{ fontSize:10,letterSpacing:4,color:"#a070d0",animation:"pulse 1.5s ease-in-out infinite",fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "YANIT HAZIRLANIYOR" : "READING"}
+                </div>
+              </div>
+            ) : sikayetAnaliz ? (
+              /* SONUÇ EKRANI */
+              <div>
+                <div style={{ fontSize:10,letterSpacing:2.5,color:"#a070d0",opacity:0.8,marginBottom:14,fontFamily:"'Jost',sans-serif" }}>
+                  {sikayet.toUpperCase()} {t("analysis_suf")}
+                </div>
+                <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif",marginBottom:24 }}>
+                  {sikayetAnaliz}
+                </div>
+                <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
+                  style={{ background:"rgba(160,112,208,0.1)",border:"1px solid rgba(160,112,208,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:11,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                  {lang==="tr" ? "← Yeni arama" : "← New search"}
+                </button>
+              </div>
+            ) : (
+              /* ARAMA KUTUSU */
+              <div>
+                <div style={{ position:"relative",marginBottom:14 }}>
+                  <textarea
+                    value={sikayet}
+                    onChange={e=>setSikayet(e.target.value)}
+                    onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();generateSikayetAnaliz();} }}
+                    placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — ne merak ediyorsun?" : "Physical, emotional or spiritual — what do you wonder about?"}
+                    rows={3}
+                    autoFocus
+                    style={{
+                      width:"100%",boxSizing:"border-box",
+                      background:"rgba(255,255,255,0.035)",
+                      border:"1px solid rgba(160,112,208,0.3)",
+                      borderRadius:18,
+                      padding:"18px 60px 18px 20px",
+                      color:"#d0c8e8",fontSize:16,
+                      fontFamily:"'Cormorant Garamond',Georgia,serif",
+                      outline:"none",resize:"none",lineHeight:1.75,
+                      letterSpacing:0.5,
+                      transition:"border-color 0.2s, box-shadow 0.2s",
+                      boxShadow:"0 0 0 0 rgba(160,112,208,0)",
+                    }}
+                    onFocus={e=>{ e.target.style.borderColor="rgba(160,112,208,0.6)"; e.target.style.boxShadow="0 0 0 3px rgba(160,112,208,0.08)"; }}
+                    onBlur={e=>{ e.target.style.borderColor="rgba(160,112,208,0.3)"; e.target.style.boxShadow="none"; }}
+                  />
+                  {/* Inline arama butonu */}
+                  <button
+                    onClick={generateSikayetAnaliz}
+                    disabled={!sikayet.trim()}
+                    style={{
+                      position:"absolute",right:12,bottom:12,
+                      width:38,height:38,borderRadius:"50%",
+                      background:sikayet.trim()?"linear-gradient(135deg,rgba(160,112,208,0.8),rgba(100,60,200,0.6))":"rgba(255,255,255,0.05)",
+                      border:"none",cursor:sikayet.trim()?"pointer":"default",
+                      color:sikayet.trim()?"#fff":"#3a4058",fontSize:16,
+                      display:"flex",alignItems:"center",justifyContent:"center",
+                      transition:"all 0.25s",
+                    }}>✦</button>
+                </div>
+
+                {/* Hızlı chip önerileri */}
+                {!sikayet && (
+                  <div style={{ display:"flex",flexWrap:"wrap",gap:8,justifyContent:"center",marginTop:6 }}>
+                    {(lang==="tr"
+                      ? ["😔 Yorgunum","⚡ Enerji düşük","😟 Endişeliyim","🌀 Odaklanamıyorum","💫 Dengesizim","🫀 Beden ağrısı"]
+                      : ["😔 Exhausted","⚡ Low energy","😟 Anxious","🌀 Can't focus","💫 Off balance","🫀 Body pain"]
+                    ).map(chip=>(
+                      <button key={chip} onClick={()=>setSikayet(chip.replace(/^[\p{Emoji}\s]+/u,"").trim())}
+                        style={{
+                          background:"rgba(255,255,255,0.03)",
+                          border:"1px solid rgba(160,112,208,0.2)",
+                          borderRadius:20,padding:"7px 14px",
+                          color:"#8868b0",fontSize:12,
+                          fontFamily:"'Cormorant Garamond',Georgia,serif",
+                          cursor:"pointer",letterSpacing:0.5,
+                          transition:"all 0.2s",
+                        }}
+                        onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.5)"; e.currentTarget.style.color="#c0a0e0"; }}
+                        onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.2)"; e.currentTarget.style.color="#8868b0"; }}>
+                        {chip}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Örnek sorular linki */}
+                <div style={{ textAlign:"center",marginTop:18 }}>
+                  <button onClick={()=>setSikayet(lang==="tr" ? ORNEK_SORULAR_TR[Math.floor(Math.random()*ORNEK_SORULAR_TR.length)] : ORNEK_SORULAR_EN[Math.floor(Math.random()*ORNEK_SORULAR_EN.length)])}
+                    style={{ background:"none",border:"none",color:"rgba(160,112,208,0.5)",fontSize:10,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                    {lang==="tr" ? "ÖNERİ AL" : "SUGGEST"}
+                  </button>
+                </div>
+
+                {/* Dev mode */}
+                <div style={{ textAlign:"center",marginTop:24 }}>
+                  <button onClick={toggleDevMode}
+                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#3a4058",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
+                    {devMode ? "DEV ✓" : "DEV"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -2291,38 +2395,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             );
           })}
         </div>
-      )}
-
-      {/* İÇSEL AYNA SABİT BUTONU */}
-      {!["giris","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <button
-          onClick={()=>setScreen("rehber")}
-          style={{
-            position:"fixed",
-            bottom: !["terapi","gun"].includes(screen) ? 80 : 24,
-            left:18, zIndex:10000,
-            background: screen==="rehber"
-              ? "linear-gradient(135deg,rgba(160,100,210,0.6),rgba(100,60,180,0.5))"
-              : "rgba(8,12,20,0.88)",
-            border: screen==="rehber"
-              ? "1px solid rgba(180,120,255,0.5)"
-              : "1px solid rgba(160,100,210,0.3)",
-            borderRadius:24,
-            padding:"8px 14px",
-            color: screen==="rehber" ? "#e0d0f8" : "#a070d0",
-            fontSize:11,
-            letterSpacing:1.5,
-            cursor:"pointer",
-            fontFamily:"'Jost',sans-serif",
-            fontWeight:300,
-            backdropFilter:"blur(20px)",
-            display:"flex",alignItems:"center",gap:7,
-            transition:"all 0.28s",
-            boxShadow: screen==="rehber" ? "0 0 18px rgba(160,100,210,0.3)" : "none",
-          }}>
-          <span style={{fontSize:15}}>🪞</span>
-          <span>{lang==="tr"?"İçsel Ayna":"Inner Mirror"}</span>
-        </button>
       )}
 
       {/* FLOATING HELP BUTTON */}
