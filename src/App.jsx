@@ -937,6 +937,7 @@ export default function SakinApp() {
   const [hastalikHis, setHastalikHis] = useState("");
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
+  const [showOrnekler, setShowOrnekler] = useState(false);
   const [showKilavuz, setShowKilavuz] = useState(false);
 
   // ── Streak & Step Tracking ──
@@ -2062,12 +2063,109 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                 )}
 
-                {/* Örnek sorular linki */}
-                <div style={{ textAlign:"center",marginTop:18 }}>
-                  <button onClick={()=>setSikayet(lang==="tr" ? ORNEK_SORULAR_TR[Math.floor(Math.random()*ORNEK_SORULAR_TR.length)] : ORNEK_SORULAR_EN[Math.floor(Math.random()*ORNEK_SORULAR_EN.length)])}
-                    style={{ background:"none",border:"none",color:"rgba(160,112,208,0.5)",fontSize:10,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                    {lang==="tr" ? "ÖNERİ AL" : "SUGGEST"}
+                {/* Ne sorabilirim? butonu + detaylı soru kutucuğu */}
+                <div style={{ marginTop:20,position:"relative" }}>
+                  <button onClick={()=>setShowOrnekler(v=>!v)}
+                    style={{
+                      width:"100%",
+                      background:"rgba(160,112,208,0.06)",
+                      border:"1px solid rgba(160,112,208,0.2)",
+                      borderRadius:14,padding:"12px 18px",
+                      color:"#8868b0",
+                      cursor:"pointer",
+                      display:"flex",alignItems:"center",justifyContent:"space-between",
+                      fontFamily:"'Jost',sans-serif",fontWeight:300,
+                      transition:"all 0.2s",
+                    }}
+                    onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.4)"; e.currentTarget.style.color="#b090d8"; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.2)"; e.currentTarget.style.color="#8868b0"; }}>
+                    <span style={{ fontSize:11,letterSpacing:2 }}>{lang==="tr" ? "NE SORABİLİRİM?" : "WHAT CAN I ASK?"}</span>
+                    <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showOrnekler?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
                   </button>
+
+                  {showOrnekler && (
+                    <div style={{
+                      marginTop:8,
+                      background:"linear-gradient(160deg,rgba(12,5,32,0.97),rgba(8,4,22,0.95))",
+                      border:"1px solid rgba(160,112,208,0.2)",
+                      borderRadius:16,padding:"18px 16px",
+                      boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(160,112,208,0.08)",
+                    }}>
+                      {(lang==="tr" ? [
+                        { cat:"🌿 Beden & Sağlık", sorular:[
+                          "Kronik yorgunluk neden hep benimle?",
+                          "Sindirim sorunum var, ruhsal nedeni nedir?",
+                          "Baş ağrım sürekli geliyor, çakra bağlantısı var mı?",
+                          "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
+                        ]},
+                        { cat:"💜 Duygular & Zihin", sorular:[
+                          "Bu hafta neden bu kadar dengesiz hissediyorum?",
+                          "Sürekli endişeliyim, hangi çakram kapalı?",
+                          "Öfkemi nasıl dönüştürebilirim?",
+                          "Yalnızlık hissi içimde büyüyor, ne yapmalıyım?",
+                        ]},
+                        { cat:"⚡ Enerji & Çakra", sorular:[
+                          "Hangi çakramın enerjiye ihtiyacı var?",
+                          "Cinsel enerjimi yaratıma nasıl dönüştürürüm?",
+                          "Aura temizliği için ne önerirsin?",
+                          "Kök çakramı nasıl güçlendirebilirim?",
+                        ]},
+                        { cat:"🌙 Ruhsal Yolculuk", sorular:[
+                          "Hayatımda neden aynı döngüler tekrar ediyor?",
+                          "Misyonum nedir, nasıl anlayabilirim?",
+                          "İçsel sesimi nasıl daha net duyabilirim?",
+                          "Karanlık gecelerde kendimi nasıl tutabilirim?",
+                        ]},
+                      ] : [
+                        { cat:"🌿 Body & Health", sorular:[
+                          "Why is chronic fatigue always with me?",
+                          "I have digestive issues — what's the spiritual cause?",
+                          "Constant headaches — is there a chakra link?",
+                          "I can't sleep — what's the energetic reason?",
+                        ]},
+                        { cat:"💜 Emotions & Mind", sorular:[
+                          "Why do I feel so unbalanced this week?",
+                          "I'm constantly anxious — which chakra is blocked?",
+                          "How can I transform my anger?",
+                          "Loneliness is growing inside me — what should I do?",
+                        ]},
+                        { cat:"⚡ Energy & Chakra", sorular:[
+                          "Which of my chakras needs energy right now?",
+                          "How do I channel sexual energy into creativity?",
+                          "What do you recommend for aura cleansing?",
+                          "How can I strengthen my root chakra?",
+                        ]},
+                        { cat:"🌙 Spiritual Journey", sorular:[
+                          "Why do the same cycles keep repeating in my life?",
+                          "What is my mission and how can I understand it?",
+                          "How can I hear my inner voice more clearly?",
+                          "How do I hold myself together in dark nights?",
+                        ]},
+                      ]).map(({cat,sorular})=>(
+                        <div key={cat} style={{ marginBottom:14 }}>
+                          <div style={{ fontSize:9,letterSpacing:2.5,color:"rgba(160,112,208,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
+                          {sorular.map(s=>(
+                            <button key={s} onClick={()=>{ setSikayet(s); setShowOrnekler(false); }}
+                              style={{
+                                display:"block",width:"100%",textAlign:"left",
+                                background:"none",border:"none",
+                                borderBottom:"1px solid rgba(255,255,255,0.04)",
+                                padding:"9px 4px",
+                                color:"#b0a0cc",
+                                fontSize:13,
+                                fontFamily:"'Cormorant Garamond',Georgia,serif",
+                                cursor:"pointer",lineHeight:1.55,letterSpacing:0.3,
+                                transition:"color 0.15s",
+                              }}
+                              onMouseEnter={e=>{ e.currentTarget.style.color="#d8c8f0"; }}
+                              onMouseLeave={e=>{ e.currentTarget.style.color="#b0a0cc"; }}>
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Dev mode */}
