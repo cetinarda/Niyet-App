@@ -1904,10 +1904,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
             <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
             <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
-            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ markStep("chakra"); setScreen("gun"); }}>{t("btn_reminders")}</button>
-            </div>
           </div>
         </div>
       )}
