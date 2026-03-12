@@ -1485,7 +1485,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
-          onClick={()=>{ setScreen("rehber"); history.pushState(null,"","/"); }}
+          onClick={()=>{ setGirisPhase("intro"); setScreen("giris"); history.pushState(null,"","/"); }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
