@@ -931,6 +931,7 @@ export default function SakinApp() {
   const [hastalikHis, setHastalikHis] = useState("");
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
+  const [showKilavuz, setShowKilavuz] = useState(false);
 
   function toggleDevMode() {
     const next = !devMode;
@@ -2049,6 +2050,207 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ))}
         </div>
       )}
+
+      {/* FLOATING HELP BUTTON */}
+      {!["giris"].includes(screen) && !showKilavuz && (
+        <button
+          onClick={() => setShowKilavuz(true)}
+          style={{
+            position:"fixed", bottom: !["terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
+            right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
+            background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
+            color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
+            boxShadow:"0 4px 20px rgba(192,57,43,0.5), 0 0 30px rgba(231,76,60,0.3)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            transition:"all 0.25s", animation:"slowPulse 3s ease-in-out infinite",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 6px 28px rgba(192,57,43,0.7), 0 0 40px rgba(231,76,60,0.4)"; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(192,57,43,0.5), 0 0 30px rgba(231,76,60,0.3)"; }}
+        >?</button>
+      )}
+
+      {/* GLOSSARY / HELP GUIDE MODAL */}
+      {showKilavuz && (() => {
+        const glossary = lang === "tr" ? [
+          { cat: t("guide_cat_numerology"), items: [
+            { term: "Yaşam Yolu Sayısı (Life Path Number)", desc: "Doğum tarihindeki tüm rakamların tek haneli bir sayıya (veya 11, 22, 33 usta sayılarına) indirgenmesiyle bulunan kişisel sayıdır. Hayat amacını, doğal yeteneklerini ve yaşam yolculuğunun temel enerjisini temsil eder.", examples: [
+              { num: "1", meaning: "Lider, bağımsız, öncü. Kendi yolunu çizen, cesur ve kararlı bir enerji. Yenilik ve başlangıçların sayısı." },
+              { num: "2", meaning: "Diplomat, uyumlu, hassas. İşbirliği ve denge arayan, sezgisel ve nazik bir enerji. Ortaklık ve ilişki sayısı." },
+              { num: "3", meaning: "Yaratıcı, ifadeci, neşeli. Sanat, iletişim ve sosyal bağlantı enerjisi. Kendini ifade etme ve ilham sayısı." },
+              { num: "4", meaning: "İnşa edici, disiplinli, güvenilir. Düzen, istikrar ve sağlam temeller enerjisi. Çalışkanlık ve dayanıklılık sayısı." },
+              { num: "5", meaning: "Özgür ruh, maceracı, değişken. Özgürlük, seyahat ve deneyim enerjisi. Değişim ve esneklik sayısı." },
+              { num: "6", meaning: "Bakıcı, sorumlu, uyumlu. Aile, ev ve toplum enerjisi. Sevgi, şifa ve sorumluluk sayısı." },
+              { num: "7", meaning: "Araştırmacı, mistik, içe dönük. Maneviyat, analiz ve derin düşünce enerjisi. Bilgelik ve keşif sayısı." },
+              { num: "8", meaning: "Güç sahibi, hırslı, başarılı. Maddi bolluk, otorite ve başarı enerjisi. Denge ve karma sayısı." },
+              { num: "9", meaning: "İnsancıl, bilge, tamamlayıcı. Evrensel sevgi, şefkat ve bırakma enerjisi. Hizmet ve dönüşüm sayısı." },
+              { num: "11", meaning: "Usta Sayı — Sezgisel aydınlatıcı. Yüksek farkındalık, ilham ve spiritüel öğretmenlik enerjisi." },
+              { num: "22", meaning: "Usta Sayı — Usta inşacı. Büyük vizyonları gerçeğe dönüştürme gücü. Pratik idealizm enerjisi." },
+              { num: "33", meaning: "Usta Sayı — Usta öğretmen. Koşulsuz sevgi, şifa ve evrensel hizmet enerjisi." },
+            ]},
+            { term: "Kişisel Yıl Sayısı", desc: "Doğum gününüz ve ayınız ile içinde bulunduğunuz yılın rakamlarının toplanmasıyla hesaplanır. 1-9 arasında döngüsel bir enerji haritası sunar. Her yıl farklı bir tema ve enerji getirir.", examples: [
+              { num: "1. Yıl", meaning: "Yeni başlangıçlar, tohum ekme zamanı." },
+              { num: "2. Yıl", meaning: "Sabır, işbirliği ve bekleme zamanı." },
+              { num: "3. Yıl", meaning: "Yaratıcılık, ifade ve sosyallik zamanı." },
+              { num: "4. Yıl", meaning: "Temel atma, düzen kurma zamanı." },
+              { num: "5. Yıl", meaning: "Değişim, özgürlük ve macera zamanı." },
+              { num: "6. Yıl", meaning: "Sorumluluk, aile ve şifa zamanı." },
+              { num: "7. Yıl", meaning: "İçe dönüş, araştırma ve maneviyat zamanı." },
+              { num: "8. Yıl", meaning: "Güç, başarı ve maddi bolluk zamanı." },
+              { num: "9. Yıl", meaning: "Tamamlama, bırakma ve dönüşüm zamanı." },
+            ]},
+            { term: "İndirgeme (Reduce)", desc: "Numerolojide çok haneli sayıları tek haneye düşürme işlemidir. Tüm rakamlar toplanır, sonuç 9'dan büyükse tekrar toplanır. 11, 22 ve 33 \"Usta Sayılar\" olarak indirgenmez, özel anlamları korunur." },
+          ]},
+          { cat: t("guide_cat_astrology"), items: [
+            { term: "Burç (Güneş Burcu)", desc: "Doğduğunuz tarihte Güneş'in bulunduğu burçtur. Temel kişiliğinizi, egonuzu ve yaşam enerjinizi temsil eder. 12 burç vardır: Koç, Boğa, İkizler, Yengeç, Aslan, Başak, Terazi, Akrep, Yay, Oğlak, Kova, Balık." },
+            { term: "Yükselen Burç (Ascendant)", desc: "Doğum anında ufuk çizgisinde yükselen burçtur. Dış dünyanın sizi nasıl gördüğünü, fiziksel görünümünüzü ve ilk izleniminizi belirler. Hesaplamak için doğum saati gereklidir. Yaklaşık olarak her 2 saatte bir burç değişir." },
+            { term: "12. Ev & Yönetici Gezegen", desc: "Astrolojide 12. ev bilinçaltını, gizli güçleri, spiritüel potansiyeli ve içsel dünyayı temsil eder. Her evin bir yönetici gezegeni vardır ve bu gezegen o evin temalarını nasıl deneyimlediğinizi belirler." },
+            { term: "Gezegen Güçleri", desc: "Her gezegen farklı bir yaşam alanını ve enerjiyi yönetir: Güneş (benlik), Ay (duygular), Merkür (iletişim), Venüs (sevgi), Mars (aksiyon), Jüpiter (genişleme), Satürn (disiplin), Uranüs (özgünlük), Neptün (hayal gücü), Pluto (dönüşüm)." },
+          ]},
+          { cat: t("guide_cat_chakra"), items: [
+            { term: "Çakra Nedir?", desc: "Sanskrit dilinde \"tekerlek\" anlamına gelir. Vücuttaki enerji merkezleridir. 7 ana çakra omurga boyunca sıralanır. Her biri farklı fiziksel, duygusal ve spiritüel alanları yönetir." },
+            { term: "1. Kök Çakra (Muladhara)", desc: "Konum: Omurga tabanı. Renk: Kırmızı. Element: Toprak. Temsil: Güvenlik, hayatta kalma, temel ihtiyaçlar, topraklanma. Dengede: Güvende hissedersin. Dengesiz: Korku, kaygı, maddi endişeler." },
+            { term: "2. Sakral Çakra (Svadhisthana)", desc: "Konum: Göbek altı. Renk: Turuncu. Element: Su. Temsil: Yaratıcılık, duygular, cinsellik, zevk alma. Dengede: Akışta hissedersin. Dengesiz: Duygusal istikrarsızlık, yaratıcılık tıkanması." },
+            { term: "3. Güneş Pleksusu Çakra (Manipura)", desc: "Konum: Mide bölgesi. Renk: Sarı. Element: Ateş. Temsil: Özgüven, irade gücü, kişisel güç. Dengede: Güçlü ve kararlı hissedersin. Dengesiz: Güçsüzlük, kontrol sorunları." },
+            { term: "4. Kalp Çakra (Anahata)", desc: "Konum: Göğüs merkezi. Renk: Yeşil. Element: Hava. Temsil: Sevgi, şefkat, bağışlama, ilişkiler. Dengede: Sevgiyle açık hissedersin. Dengesiz: Kıskançlık, yalnızlık, bağlanma korkusu." },
+            { term: "5. Boğaz Çakra (Vishuddha)", desc: "Konum: Boğaz. Renk: Mavi. Element: Ses. Temsil: İletişim, kendini ifade, hakikat. Dengede: Rahatça konuşursun. Dengesiz: İfade zorluğu, yalan söyleme eğilimi." },
+            { term: "6. Üçüncü Göz Çakra (Ajna)", desc: "Konum: İki kaş arası. Renk: Mor/İndigo. Element: Işık. Temsil: Sezgi, içgörü, hayal gücü, bilgelik. Dengede: Sezgilerin güçlüdür. Dengesiz: Karar verememe, sezgisel tıkanıklık." },
+            { term: "7. Taç Çakra (Sahasrara)", desc: "Konum: Başın tepesi. Renk: Mor/Beyaz. Element: Evren. Temsil: Evrensel bağlantı, aydınlanma, spiritüel farkındalık. Dengede: Bütünle bağlı hissedersin. Dengesiz: Kopukluk, anlamsızlık hissi." },
+            { term: "22 Çakra Sistemi", desc: "7 ana çakranın ötesinde 15 ek enerji merkezi daha bulunur. Bunlar arasında Yeryüzü Yıldızı, Ruh, Thymus, Orion, Soul Star gibi daha ileri düzey enerji merkezleri yer alır. Reiki terapisinde bu genişletilmiş sistem kullanılır." },
+          ]},
+          { cat: t("guide_cat_biorhythm"), items: [
+            { term: "Biyoritm Nedir?", desc: "Doğum tarihinden itibaren başlayan üç döngüsel biyolojik ritimdir. Her döngü sinüs dalgası şeklinde pozitif ve negatif arasında salınır. Değerler -100 ile +100 arasında değişir." },
+            { term: "Fiziksel Biyoritm (23 gün)", desc: "Fiziksel enerji, güç, dayanıklılık ve koordinasyonu yansıtır. Pozitif dönemde enerjin yüksek, negatif dönemde dinlenme ihtiyacın artar. Kritik günlerde (0 geçişi) dikkatli ol." },
+            { term: "Duygusal Biyoritm (28 gün)", desc: "Duygusal denge, ruh hali, yaratıcılık ve sezgiyi yansıtır. Pozitif dönemde iyimser ve empatiğin, negatif dönemde hassas ve içe dönüksün." },
+            { term: "Zihinsel Biyoritm (33 gün)", desc: "Zihinsel keskinlik, konsantrasyon, hafıza ve analitik düşünme kapasitesini yansıtır. Pozitif dönemde zihnen aktif ve öğrenmeye açıksın, negatif dönemde odaklanma zorlaşır." },
+          ]},
+          { cat: t("guide_cat_reiki"), items: [
+            { term: "Reiki Nedir?", desc: "Japonca \"evrensel yaşam enerjisi\" anlamına gelen bir enerji şifa yöntemidir. Ellerin enerji merkezlerine (çakralara) yerleştirilmesiyle vücudun doğal şifa mekanizmasını aktive eder. Tıbbi bir tedavi değildir; tamamlayıcı bir wellness pratiğidir." },
+            { term: "Çakra Terapisi", desc: "Sakin'deki 60 saniyelik seanslar, seçtiğiniz çakraya odaklanmanızı sağlar. Elinizi ilgili bölgeye koyarak, gözlerinizi kapatarak ve nefes alarak o enerji merkeziyle bağ kurarsınız." },
+            { term: "Şifa Arayışı", desc: "AI destekli bir analiz aracıdır. Fiziksel veya duygusal bir durumu girdiğinizde, Reiki bilgeliği, Louise Hay'in zihinsel-duygusal neden haritası ve çakra teorisini birleştirerek kişiselleştirilmiş bir yorum sunar." },
+            { term: "Louise Hay Yöntemi", desc: "Fiziksel rahatsızlıkların altında yatan zihinsel ve duygusal nedenleri inceleyen bir yaklaşımdır. Örneğin baş ağrısı \"kendini geçersiz sayma\", sırt ağrısı \"duygusal destek eksikliği\" ile ilişkilendirilir." },
+            { term: "İçsel Ayna", desc: "Bedensel şikayetlerinizi veya duygusal durumunuzu yazarak içsel nedenlerini keşfetmenizi sağlayan AI analiz aracıdır." },
+          ]},
+          { cat: t("guide_cat_app"), items: [
+            { term: "Sabah Niyeti", desc: "Her güne bilinçli bir niyetle başlama pratiğidir. Kısa bir cümle veya kelime ile o günün odak noktasını belirlersiniz. Niyet, bilinçaltına yön verir ve günün akışını şekillendirir." },
+            { term: "3 Kelime Seçimi", desc: "Sabah rutininde sunulan 12 güç kelimesinden (huzur, akış, cesaret, sabır, berraklık, sevgi, güç, denge, özgürlük, neşe, şükür, güven) 3 tanesini seçersiniz. Bu kelimeler günün enerji yönelimini belirler." },
+            { term: "Nefes Egzersizi (4-1.5-3.5)", desc: "Al (4 sn) → Tut (1.5 sn) → Ver (3.5 sn) → Dinlen ritmiyle yapılan nefes pratiğidir. Parasempatik sinir sistemini aktive ederek stresi azaltır ve odaklanmayı artırır." },
+            { term: "Gün İçi Hatırlatıcılar", desc: "Gün boyunca farkındalığınızı korumanız için tasarlanmış 10 mikro pratiktir: aynaya bakmak, su içmek, nefes farkındalığı, beden egzersizi, güneşi hissetmek, ağaca sarılmak, toprağa dokunmak, gökyüzüne bakmak, çakra anı ve sosyal medya molası." },
+            { term: "Akşam Kapanışı", desc: "Günü bilinçli bir şekilde kapatma ritüelidir. \"Bugün ne öğrendin?\" ve \"Şükür?\" sorularıyla günün farkındalık özetini çıkarırsınız." },
+            { term: "Haftalık İç Harita", desc: "Haftanın istatistiklerini gösteren özet ekrandır: en aktif çakra, toplam nefes sayısı, niyet kelimeleri ve bilinçli an sayısı. AI raporu bu verilerden haftalık bir içgörü sentezi oluşturur." },
+            { term: "Doğum Profili", desc: "Doğum tarihiniz ve saatinizden hesaplanan kişisel enerji haritanızdır: burç, yaşam yolu sayısı, kişisel yıl sayısı, yükselen burç, 12. ev analizi ve haftalık biyoritm grafiği." },
+          ]},
+        ] : [
+          { cat: t("guide_cat_numerology"), items: [
+            { term: "Life Path Number", desc: "Calculated by reducing all digits of your birth date to a single digit (or master numbers 11, 22, 33). It represents your life purpose, natural talents, and the core energy of your journey.", examples: [
+              { num: "1", meaning: "Leader, independent, pioneer. Courageous and determined energy that charts its own course." },
+              { num: "2", meaning: "Diplomat, harmonious, sensitive. Cooperative and intuitive energy seeking balance." },
+              { num: "3", meaning: "Creative, expressive, joyful. Art, communication and social connection energy." },
+              { num: "4", meaning: "Builder, disciplined, reliable. Order, stability and solid foundations energy." },
+              { num: "5", meaning: "Free spirit, adventurous, changeable. Freedom, travel and experience energy." },
+              { num: "6", meaning: "Caretaker, responsible, harmonious. Family, home and community energy." },
+              { num: "7", meaning: "Researcher, mystic, introspective. Spirituality, analysis and deep thought energy." },
+              { num: "8", meaning: "Powerful, ambitious, successful. Material abundance, authority and achievement energy." },
+              { num: "9", meaning: "Humanitarian, wise, completing. Universal love, compassion and release energy." },
+              { num: "11", meaning: "Master Number — Intuitive illuminator. High awareness and spiritual teaching energy." },
+              { num: "22", meaning: "Master Number — Master builder. Power to turn grand visions into reality." },
+              { num: "33", meaning: "Master Number — Master teacher. Unconditional love, healing and universal service." },
+            ]},
+            { term: "Personal Year Number", desc: "Calculated by adding your birth day and month with the current year's digits. Provides a cyclical energy map from 1-9. Each year brings a different theme and energy." },
+            { term: "Reduction", desc: "The process of reducing multi-digit numbers to a single digit in numerology. All digits are added; if the result is greater than 9, they are added again. 11, 22, and 33 are \"Master Numbers\" and are not reduced." },
+          ]},
+          { cat: t("guide_cat_astrology"), items: [
+            { term: "Zodiac Sign (Sun Sign)", desc: "The sign the Sun was in at your birth. Represents your core personality, ego, and life energy. There are 12 signs: Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces." },
+            { term: "Ascendant (Rising Sign)", desc: "The sign rising on the horizon at your birth moment. Determines how the world sees you, your physical appearance and first impression. Birth time is required for calculation." },
+            { term: "12th House & Ruling Planet", desc: "In astrology, the 12th house represents the subconscious, hidden powers, spiritual potential and inner world. Each house has a ruling planet that determines how you experience its themes." },
+            { term: "Planetary Powers", desc: "Each planet governs different life areas: Sun (self), Moon (emotions), Mercury (communication), Venus (love), Mars (action), Jupiter (expansion), Saturn (discipline), Uranus (originality), Neptune (imagination), Pluto (transformation)." },
+          ]},
+          { cat: t("guide_cat_chakra"), items: [
+            { term: "What is a Chakra?", desc: "Means \"wheel\" in Sanskrit. Energy centers in the body. 7 main chakras align along the spine, each governing different physical, emotional and spiritual areas." },
+            { term: "1. Root Chakra (Muladhara)", desc: "Location: Base of spine. Color: Red. Element: Earth. Represents: Safety, survival, basic needs, grounding." },
+            { term: "2. Sacral Chakra (Svadhisthana)", desc: "Location: Below navel. Color: Orange. Element: Water. Represents: Creativity, emotions, sexuality, pleasure." },
+            { term: "3. Solar Plexus Chakra (Manipura)", desc: "Location: Stomach area. Color: Yellow. Element: Fire. Represents: Confidence, willpower, personal power." },
+            { term: "4. Heart Chakra (Anahata)", desc: "Location: Center of chest. Color: Green. Element: Air. Represents: Love, compassion, forgiveness, relationships." },
+            { term: "5. Throat Chakra (Vishuddha)", desc: "Location: Throat. Color: Blue. Element: Sound. Represents: Communication, self-expression, truth." },
+            { term: "6. Third Eye Chakra (Ajna)", desc: "Location: Between eyebrows. Color: Indigo. Element: Light. Represents: Intuition, insight, imagination, wisdom." },
+            { term: "7. Crown Chakra (Sahasrara)", desc: "Location: Top of head. Color: Violet/White. Element: Universe. Represents: Universal connection, enlightenment." },
+            { term: "22 Chakra System", desc: "Beyond the 7 main chakras, there are 15 additional energy centers including Earth Star, Soul, Thymus, Orion, Soul Star and more, used in extended Reiki therapy." },
+          ]},
+          { cat: t("guide_cat_biorhythm"), items: [
+            { term: "What is Biorhythm?", desc: "Three cyclical biological rhythms starting from your birth date. Each oscillates between positive and negative as sine waves, with values ranging from -100 to +100." },
+            { term: "Physical Biorhythm (23 days)", desc: "Reflects physical energy, strength, endurance and coordination. Positive periods = high energy, negative = rest needed." },
+            { term: "Emotional Biorhythm (28 days)", desc: "Reflects emotional balance, mood, creativity and intuition. Positive = optimistic, negative = sensitive and introverted." },
+            { term: "Mental Biorhythm (33 days)", desc: "Reflects mental sharpness, concentration, memory and analytical thinking. Positive = mentally active, negative = harder to focus." },
+          ]},
+          { cat: t("guide_cat_reiki"), items: [
+            { term: "What is Reiki?", desc: "A Japanese energy healing method meaning \"universal life energy\". Activates the body's natural healing mechanism by placing hands on energy centers (chakras). Not medical treatment; a complementary wellness practice." },
+            { term: "Chakra Therapy", desc: "60-second sessions in Sakin that help you focus on your chosen chakra by placing your hand on the area, closing your eyes and breathing." },
+            { term: "Healing Search", desc: "An AI-powered analysis tool that combines Reiki wisdom, Louise Hay's mental-emotional cause mapping and chakra theory to provide personalized insights." },
+            { term: "Louise Hay Method", desc: "An approach examining mental and emotional causes underlying physical ailments. For example, headaches linked to \"self-invalidation\", back pain to \"lack of emotional support\"." },
+            { term: "Inner Mirror", desc: "AI analysis tool that lets you discover inner causes by writing about your physical complaints or emotional states." },
+          ]},
+          { cat: t("guide_cat_app"), items: [
+            { term: "Morning Intention", desc: "The practice of starting each day with a conscious intention. You set the day's focus point with a short sentence or word." },
+            { term: "3 Word Selection", desc: "Choose 3 power words from 12 options (peace, flow, courage, patience, clarity, love, strength, balance, freedom, joy, gratitude, trust) to set the day's energy direction." },
+            { term: "Breath Exercise (4-1.5-3.5)", desc: "Inhale (4s) → Hold (1.5s) → Exhale (3.5s) → Rest rhythm. Activates the parasympathetic nervous system to reduce stress and improve focus." },
+            { term: "Daily Reminders", desc: "10 micro practices throughout the day: mirror gazing, drinking water, breath awareness, body exercise, feeling the sun, hugging a tree, touching earth, looking at sky, chakra moment, social media break." },
+            { term: "Evening Close", desc: "A ritual to consciously close the day. Extract your awareness summary with \"What did you learn today?\" and \"Gratitude?\" questions." },
+            { term: "Weekly Inner Map", desc: "Summary screen showing the week's stats: most active chakra, total breaths, intention words and mindful moments. AI report creates a weekly insight synthesis." },
+            { term: "Birth Profile", desc: "Your personal energy map calculated from your birth date and time: zodiac sign, life path number, personal year, ascendant, 12th house analysis and weekly biorhythm graph." },
+          ]},
+        ];
+
+        return (
+          <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:99999,background:"rgba(8,12,20,0.97)",backdropFilter:"blur(30px)",overflowY:"auto",animation:"fadeIn 0.3s ease" }}>
+            <div style={{ maxWidth:540,margin:"0 auto",padding:"24px 20px 60px" }}>
+              {/* Header */}
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
+                <div>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,fontWeight:300,letterSpacing:4,color:"#4a5570",textTransform:"uppercase",marginBottom:4 }}>{t("guide_help_sub")}</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,fontWeight:300,color:"#ddd8f0",letterSpacing:2 }}>{t("guide_help_title")}</div>
+                </div>
+                <button onClick={() => setShowKilavuz(false)} style={{ background:"rgba(192,57,43,0.15)",border:"1px solid rgba(192,57,43,0.3)",borderRadius:100,padding:"8px 20px",cursor:"pointer",color:"#e8a0a0",fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,textTransform:"uppercase",transition:"all 0.2s" }}
+                  onMouseEnter={e=>{ e.currentTarget.style.background="rgba(192,57,43,0.3)"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background="rgba(192,57,43,0.15)"; }}
+                >{t("guide_close")}</button>
+              </div>
+              <div style={{ height:1,background:"linear-gradient(90deg,transparent,rgba(192,57,43,0.3),transparent)",margin:"18px 0 28px" }} />
+
+              {/* Categories */}
+              {glossary.map((cat, ci) => (
+                <div key={ci} style={{ marginBottom:32 }}>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,fontWeight:300,letterSpacing:3,textTransform:"uppercase",color:"#c0392b",marginBottom:16,display:"flex",alignItems:"center",gap:10 }}>
+                    <span style={{ width:18,height:1,background:"#c0392b" }} />
+                    {cat.cat}
+                  </div>
+                  {cat.items.map((item, ii) => (
+                    <div key={ii} style={{ marginBottom:18,padding:"16px 18px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,transition:"all 0.2s" }}>
+                      <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:400,color:"#ddd8f0",letterSpacing:0.5,marginBottom:8 }}>{item.term}</div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,color:"#9a96b0",lineHeight:1.9,letterSpacing:0.3 }}>{item.desc}</div>
+                      {item.examples && (
+                        <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.05)" }}>
+                          {item.examples.map((ex, ei) => (
+                            <div key={ei} style={{ display:"flex",gap:10,marginBottom:8,alignItems:"flex-start" }}>
+                              <span style={{ fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:400,color:"#c0392b",minWidth:28,flexShrink:0,background:"rgba(192,57,43,0.1)",borderRadius:6,padding:"2px 6px",textAlign:"center" }}>{ex.num}</span>
+                              <span style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:14,color:"#8a86a0",lineHeight:1.75 }}>{ex.meaning}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              <div style={{ textAlign:"center",padding:"20px 0" }}>
+                <button onClick={() => setShowKilavuz(false)} style={{ background:"linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))",border:"1px solid rgba(192,57,43,0.35)",borderRadius:100,padding:"12px 36px",cursor:"pointer",color:"#e8c0c0",fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2.5,textTransform:"uppercase",transition:"all 0.2s" }}
+                  onMouseEnter={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.6),rgba(192,57,43,0.4))"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))"; }}
+                >{t("guide_close")}</button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

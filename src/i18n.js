@@ -248,6 +248,17 @@ export const TRANS = {
 
     // Morning words
     morning_words: ["huzur","akış","cesaret","sabır","berraklık","sevgi","güç","denge","özgürlük","neşe","şükür","güven"],
+
+    // Kullanım Kılavuzu
+    guide_help_title: "Kullanım Kılavuzu",
+    guide_help_sub: "SAKİN · TERİMLER SÖZLÜĞÜ",
+    guide_close: "kapat",
+    guide_cat_numerology: "Numeroloji",
+    guide_cat_astrology: "Astroloji",
+    guide_cat_chakra: "Çakralar",
+    guide_cat_biorhythm: "Biyoritm",
+    guide_cat_reiki: "Reiki & Terapi",
+    guide_cat_app: "Uygulama Kavramları",
   },
 
   en: {
@@ -499,6 +510,17 @@ export const TRANS = {
 
     // Morning words
     morning_words: ["peace","flow","courage","patience","clarity","love","strength","balance","freedom","joy","gratitude","trust"],
+
+    // Usage Guide
+    guide_help_title: "Usage Guide",
+    guide_help_sub: "SAKIN · GLOSSARY OF TERMS",
+    guide_close: "close",
+    guide_cat_numerology: "Numerology",
+    guide_cat_astrology: "Astrology",
+    guide_cat_chakra: "Chakras",
+    guide_cat_biorhythm: "Biorhythm",
+    guide_cat_reiki: "Reiki & Therapy",
+    guide_cat_app: "App Concepts",
   },
 };
 
