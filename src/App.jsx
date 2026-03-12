@@ -1207,7 +1207,7 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         method:"POST",
         headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:900,
+          model:"claude-opus-4-6", max_tokens:1400,
           system:`Sen derin bir holistik enerji rehberisin. Fiziksel şikayetler, duygusal sorular, çakra merakları, ruhsal arayışlar — her tür soruyu Reiki ve Louise Hay perspektifinden şiirsel ve içten yanıtlıyorsun. Türkçe yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"
 
@@ -1250,7 +1250,7 @@ ${astroTxt}
         method:"POST",
         headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:900,
+          model:"claude-opus-4-6", max_tokens:1400,
           system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
           messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
 
