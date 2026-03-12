@@ -798,13 +798,39 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   return null;
 }
 
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHisChange, analiz, onAra, onSifirla, placeholder, lang = "tr" }) {
+const ORNEK_SORULAR_TR = [
+  "Cinsel enerjimi nasıl yaratıma dönüştürebilirim?",
+  "Sindirim sistemimde sorun var!",
+  "Bu hafta dengesiz hissediyorum neden?",
+  "Hangi çakramın enerjiye ihtiyaç duyduğunu nasıl bileceğim?",
+  "Kronik yorgunluk neden hep benimle?",
+];
+const ORNEK_SORULAR_EN = [
+  "How can I channel my sexual energy into creativity?",
+  "I've been having digestive issues!",
+  "Why do I feel so unbalanced this week?",
+  "How do I know which chakra needs energy?",
+  "Why is chronic fatigue always with me?",
+];
+
+function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr" }) {
   const t = makeTrans(lang);
+  const [tipAcik, setTipAcik] = useState(false);
+  const tipRef = useRef(null);
+  const ornekler = lang === "tr" ? ORNEK_SORULAR_TR : ORNEK_SORULAR_EN;
+
+  useEffect(() => {
+    if (!tipAcik) return;
+    const handler = (e) => { if (tipRef.current && !tipRef.current.contains(e.target)) setTipAcik(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [tipAcik]);
+
   return (
     <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(10,4,30,0.92),rgba(15,8,40,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
       <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
         <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{simge}</div>
-        <div>
+        <div style={{ flex:1 }}>
           <div style={{ fontSize:11,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
           <div style={{ fontSize:11,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
         </div>
@@ -825,19 +851,39 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, his, onHi
         </div>
       ) : (
         <div>
-          <input
+          {/* Soru satırı: etiket + ? butonu */}
+          <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
+            <span style={{ fontSize:10,letterSpacing:2,color:`${renk}bb` }}>
+              {lang==="tr" ? "ne hissediyorsun, ne merak ediyorsun?" : "what do you feel or wonder about?"}
+            </span>
+            <div ref={tipRef} style={{ position:"relative" }}>
+              <button
+                onClick={()=>setTipAcik(v=>!v)}
+                aria-label="Örnek sorular"
+                style={{ width:22,height:22,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:11,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
+              >?</button>
+              {tipAcik && (
+                <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(18,6,42,0.98),rgba(12,4,30,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
+                  <div style={{ fontSize:9,letterSpacing:3,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
+                    {lang==="tr" ? "ÖRNEK SORULAR" : "EXAMPLE QUESTIONS"}
+                  </div>
+                  {ornekler.map((s,i)=>(
+                    <button key={i} onClick={()=>{ onChange(s); setTipAcik(false); }}
+                      style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none",borderBottom:i<ornekler.length-1?`1px solid ${renk}18`:"none",padding:"8px 4px",color:"#b8a8d0",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",cursor:"pointer",lineHeight:1.55,letterSpacing:0.2 }}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+          <textarea
             value={value}
             onChange={e=>onChange(e.target.value)}
-            onKeyDown={e=>{ if(e.key==="Enter" && value.trim()) onAra(); }}
-            placeholder={placeholder}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:13.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:10,letterSpacing:0.5 }}
-          />
-          <textarea
-            value={his}
-            onChange={e=>onHisChange(e.target.value)}
             onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey && value.trim()) { e.preventDefault(); onAra(); } }}
-            placeholder={t("feeling_ph")}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.025)",border:`1px solid ${renk}20`,borderRadius:12,padding:"10px 14px",color:"#b0a8d0",fontSize:12.5,fontFamily:"'Cormorant Garamond',Georgia,serif",resize:"none",height:72,lineHeight:1.75,outline:"none",marginBottom:12,letterSpacing:0.3 }}
+            placeholder={placeholder}
+            rows={3}
+            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:13.5,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
           />
           <button onClick={onAra} disabled={!value.trim()}
             style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#e8d8f8":"#5a4a70",fontSize:12,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.2s" }}>
@@ -1162,8 +1208,8 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         headers:{"Content-Type":"application/json","x-api-key":ARAMA_API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
-          system:`Sen derin bir holistik enerji rehberisin. Şikayetlere duygusal-ruhsal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
-          messages:[{ role:"user", content:`Şikayet: "${sikayet}"${sikayetHis ? `\nNasıl hissediyorum: "${sikayetHis}"` : ""}
+          system:`Sen derin bir holistik enerji rehberisin. Fiziksel şikayetler, duygusal sorular, çakra merakları, ruhsal arayışlar — her tür soruyu Reiki ve Louise Hay perspektifinden şiirsel ve içten yanıtlıyorsun. Türkçe yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
+          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"
 
 ${REIKI_BILGI}
 
@@ -1686,12 +1732,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             renk="#a070d0"
             value={sikayet}
             onChange={setSikayet}
-            his={sikayetHis}
-            onHisChange={setSikayetHis}
             analiz={sikayetAnaliz}
             onAra={generateSikayetAnaliz}
             onSifirla={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-            placeholder={t("mirror_ph")}
+            placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — her şeyi sorabilirsin..." : "Physical, emotional or spiritual — ask anything..."}
             lang={lang}
           />
         </div>
@@ -1831,6 +1875,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <p>{lang==="tr"
             ? "Bu kaynaklar; yapay zekanın analiz gücüyle birleşerek sana jenerik değil, kökü olan yanıtlar sunar. Her içgörü, test edilmiş bir bilgi birikimine dayalı olarak üretilir."
             : "These sources, combined with the analytical power of AI, offer you answers with roots — not generic responses. Every insight is generated based on a tested body of knowledge."}</p>
+          <p>{lang==="tr"
+            ? "Admin, yapay zekanın verilen cevapları Usui Reiki ilkeleri ve kendi geliştirdiği yaklaşımlar çerçevesinde nasıl yorumlaması gerektiği konusunda Sakin'i eğitir. Sakin'i ne kadar kullanırsan, o da senin dilini, örüntülerini ve ihtiyaçlarını bu yaklaşımlar ışığında daha iyi çözmeye başlar. Yani Sakin; pek çok kaynağın sentezi olmakla birlikte, algoritması özel olarak şekillendirilmiş ve nasıl düşünmesi gerektiği yönlendirilmiş bir sistem olarak çalışır."
+            : "The admin trains Sakin on how to interpret responses through the lens of Usui Reiki principles and personally developed approaches. The more you use Sakin, the better it learns to decode your language, patterns and needs in light of these frameworks. Sakin is thus a synthesis of many sources, yet operates as a system whose algorithm is specially shaped and whose way of thinking is intentionally guided."}</p>
 
           <h2>{lang==="tr" ? "Doğum Haritana Göre Sana Özel" : "Personalised to Your Birth Chart"}</h2>
           <p>{lang==="tr"
