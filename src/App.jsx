@@ -1731,7 +1731,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep.id)}>
-                {nextStep.icon} {nextStep.label} — {lang==="tr"?"başla →":"start →"}
+                {nextStep.id==="sabah" ? (lang==="tr"?"OYUNA BAŞLA →":"START THE JOURNEY →") : `${nextStep.icon} ${nextStep.label} — ${lang==="tr"?"başla →":"start →"}`}
               </button>
             ):null}
 
