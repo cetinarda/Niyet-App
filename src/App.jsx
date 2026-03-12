@@ -194,8 +194,8 @@ const GLOBAL_CSS = `
 
   /* ── Typography helpers ── */
   .label-sm {
-    font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
-    letter-spacing:3px; text-transform:uppercase; color:#4a5570;
+    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
+    letter-spacing:3.5px; text-transform:uppercase; color:#4a5570;
   }
   .label-md {
     font-family:'Jost',sans-serif; font-size:12px; font-weight:300;
@@ -466,7 +466,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:11, letterSpacing:4, color:"#4a5a6a" }}>{t("day_label")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
         </div>
         <div style={{
@@ -629,7 +629,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div>
-          <div style={{ fontSize:11, letterSpacing:4, color:"#4a5a6a" }}>{t("reiki_label")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:22, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
       </div>
