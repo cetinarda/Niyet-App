@@ -908,8 +908,7 @@ export default function SakinApp() {
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
-  const hasBirth = !!localStorage.getItem("sakin_birth_date");
-  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || (hasBirth ? "mandala" : "giris"));
+  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
   const [breathPhase,   setBreathPhase]   = useState("inhale");
@@ -1466,14 +1465,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"mandala",icon:"◎",label:lang==="tr"?"Yolculuk":"Journey"},
-    {id:"rehber",icon:"📖",label:t("nav_guide")},
-    {id:"sabah",icon:"🌅",label:t("nav_morning")},
-    {id:"nefes",icon:"🫧",label:t("nav_breath")},
-    {id:"chakra",icon:"💜",label:t("nav_chakra")},
-    {id:"gun",icon:"☀️",label:t("nav_day")},
-    {id:"aksam",icon:"🌙",label:t("nav_evening")},
-    {id:"harita",icon:"🗺️",label:t("nav_map")},
+    {id:"mandala",icon:"◎",  label:lang==="tr"?"Harita":"Map",    color:"#b87adc"},
+    {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
+    {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
+    {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
+    {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
+    {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
+    {id:"harita", icon:"🗺️", label:t("nav_map"),                   color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2272,14 +2270,59 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
-          {NAV.map(n=>(
-            <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }} style={{ background:"transparent",border:"none",cursor:"pointer",transition:"all 0.28s",transform:screen===n.id?"translateY(-2px)":"none",padding:"4px 7px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
-              <span style={{ fontSize:screen===n.id?15:11,opacity:screen===n.id?1:0.22,transition:"all 0.28s" }}>{n.icon}</span>
-              <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:screen===n.id?"#b8a4d8":"transparent",transition:"color 0.28s" }}>{n.label}</span>
-            </button>
-          ))}
+        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
+          {NAV.map(n=>{
+            const active = screen===n.id;
+            return (
+              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+                style={{
+                  background: active ? `${n.color}22` : "transparent",
+                  border: active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  borderRadius:22,
+                  cursor:"pointer",
+                  transition:"all 0.28s",
+                  padding:"5px 8px",
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:2,
+                  minWidth:36,
+                }}>
+                <span style={{ fontSize:active?15:12, color: active ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+              </button>
+            );
+          })}
         </div>
+      )}
+
+      {/* İÇSEL AYNA SABİT BUTONU */}
+      {!["giris","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+        <button
+          onClick={()=>setScreen("rehber")}
+          style={{
+            position:"fixed",
+            bottom: !["terapi","gun"].includes(screen) ? 80 : 24,
+            left:18, zIndex:10000,
+            background: screen==="rehber"
+              ? "linear-gradient(135deg,rgba(160,100,210,0.6),rgba(100,60,180,0.5))"
+              : "rgba(8,12,20,0.88)",
+            border: screen==="rehber"
+              ? "1px solid rgba(180,120,255,0.5)"
+              : "1px solid rgba(160,100,210,0.3)",
+            borderRadius:24,
+            padding:"8px 14px",
+            color: screen==="rehber" ? "#e0d0f8" : "#a070d0",
+            fontSize:11,
+            letterSpacing:1.5,
+            cursor:"pointer",
+            fontFamily:"'Jost',sans-serif",
+            fontWeight:300,
+            backdropFilter:"blur(20px)",
+            display:"flex",alignItems:"center",gap:7,
+            transition:"all 0.28s",
+            boxShadow: screen==="rehber" ? "0 0 18px rgba(160,100,210,0.3)" : "none",
+          }}>
+          <span style={{fontSize:15}}>🪞</span>
+          <span>{lang==="tr"?"İçsel Ayna":"Inner Mirror"}</span>
+        </button>
       )}
 
       {/* FLOATING HELP BUTTON */}
