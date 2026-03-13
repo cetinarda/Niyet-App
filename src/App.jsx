@@ -1959,7 +1959,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
             </div>
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,color:"#4a3a6a",textTransform:"uppercase" }}>
-              {lang==="tr" ? "Cevapları kalbinin süzgecinden geçir · Kalbinle onayla" : "Filter answers through your heart · Confirm with your heart"}
+              {lang==="tr" ? "Kalbinin süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
             </div>
           </div>
 
