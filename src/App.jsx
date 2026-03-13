@@ -1956,10 +1956,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Başlık */}
           <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
-              {lang==="tr" ? "İçsel Ayna" : "Inner Mirror"}
+              {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
             </div>
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,color:"#4a3a6a",textTransform:"uppercase" }}>
-              {lang==="tr" ? "Ruhsal rehberin · Bilgelik kaynağın" : "Your spiritual guide · Source of wisdom"}
+              {lang==="tr" ? "Cevapları kalbinin süzgecinden geçir · Kalbinle onayla" : "Filter answers through your heart · Confirm with your heart"}
             </div>
           </div>
 
