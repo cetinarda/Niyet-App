@@ -105,16 +105,150 @@ const REMINDERS = [
   },
 ];
 
+const hexToRgb = hex => {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+};
+
+const PROGRAM_21 = [
+  { gun:1,  tema:"Zemin",       emoji:"🌍", renk:"#8b6914", pastel:"#c8a96e",
+    gorevler:["Sabah 5 dakika çıplak ayakla yürü","Günün niyetini yüksek sesle 3 kez söyle","Akşam 1 şeye şükret"] },
+  { gun:2,  tema:"Nefes",       emoji:"🌬", renk:"#2980b9", pastel:"#85c1e9",
+    gorevler:["4-1.5-3.5 ritmiyle 10 nefes döngüsü yap","Sabah kalkmadan önce 3 derin nefes al","Nefes alırken gözlerini kapat ve bedeni hisset"] },
+  { gun:3,  tema:"Beden",       emoji:"🧘", renk:"#27ae60", pastel:"#82d9a3",
+    gorevler:["10 dakika esneme hareketi yap","Omuz ve boyun masajı yap (kendi kendine)","Akşam 2 dakika beden taraması: baştan ayağa hisset"] },
+  { gun:4,  tema:"Su",          emoji:"💧", renk:"#1a6b8a", pastel:"#6ab4cc",
+    gorevler:["Günde en az 8 bardak su iç","Her yudum suyu bilinçli iç — hisset","Suya şükran hisset"] },
+  { gun:5,  tema:"Doğa",        emoji:"🌿", renk:"#2d6a4f", pastel:"#74c69d",
+    gorevler:["10 dakika dışarıda yürü","Bir ağaca ya da bitkiye dokun","Gökyüzüne en az 2 dakika bak"] },
+  { gun:6,  tema:"Sessizlik",   emoji:"🤫", renk:"#34495e", pastel:"#85929e",
+    gorevler:["Sabah 10 dakika sessizlikte otur — hiçbir şey yapma","Telefonu 1 saat kapat","Yemek yerken ekransız ye"] },
+  { gun:7,  tema:"Minnet",      emoji:"🙏", renk:"#8b5a2b", pastel:"#d4a96e",
+    gorevler:["3 kişiye zihinsel olarak şükret","Bugün birine iyilik yap","Akşam 5 şükür listesi yaz"] },
+  { gun:8,  tema:"Kalp",        emoji:"💚", renk:"#1e8449", pastel:"#82d9a3",
+    gorevler:["Ellerini kalbine koy, 1 dakika sadece hisset","Sevdiğin birine 'seni seviyorum' de","Kendine şefkatli bir şey söyle"] },
+  { gun:9,  tema:"Işık",        emoji:"☀️", renk:"#d4ac0d", pastel:"#f9e79f",
+    gorevler:["Sabah güneşe bak, 3 derin nefes al","Gün içinde 10 dakika güneş ışığı al","Birine ışık ver: iltifat et ya da yardım et"] },
+  { gun:10, tema:"Ses",         emoji:"🎵", renk:"#1a5276", pastel:"#7fb3d3",
+    gorevler:["Sevdiğin bir müziği tam konsantrasyonla dinle","Kendi sesini duy: şarkı söyle veya sesini çıkar","Doğanın seslerini 5 dakika dinle"] },
+  { gun:11, tema:"Farkındalık", emoji:"✨", renk:"#7d3c98", pastel:"#c39bd3",
+    gorevler:["Bugün 5 anı bilinçli yaşa: 'şu an buradasın' de","Yemek yerken her lokmayı hisset","Akşam bugünün en güzel anını yaz"] },
+  { gun:12, tema:"Toprak",      emoji:"🌱", renk:"#5d4037", pastel:"#bcaaa4",
+    gorevler:["Toprağa çıplak ayakla bas, 5 dakika dur","Bir bitkiyi ya da toprağı elinle hisset","Toprakla bağını güçlendir"] },
+  { gun:13, tema:"Hareket",     emoji:"🌊", renk:"#0e6655", pastel:"#76d7c4",
+    gorevler:["10 dakika serbest hareket et ya da dans et","Vücudunu esnet: rahatlamasını hisset","Yürüyüşe çık ve her adımı hisset"] },
+  { gun:14, tema:"Yansıma",     emoji:"🪞", renk:"#2c3e50", pastel:"#85929e",
+    gorevler:["Bu 2 haftayı düşün: ne değişti?","Kendin için bir şey yap (banyo, müzik, doğa)","Yarın için bir niyet belirle"] },
+  { gun:15, tema:"İçgüdü",      emoji:"🔮", renk:"#6c3483", pastel:"#c39bd3",
+    gorevler:["Bugün içgüdülerine güven: kalbinin sesini duy","Bir karar alırken dur, nefes al, hisset","Sezginin seni nereye götürdüğünü yaz"] },
+  { gun:16, tema:"Bağlantı",    emoji:"🤝", renk:"#1a5276", pastel:"#85c1e9",
+    gorevler:["Sevdiğin birine gerçekten sor: 'Nasılsın?'","Bugün birini gözlemle: ona şefkatle bak","5 dakika sessizce otur, iç bağlantına giriş yap"] },
+  { gun:17, tema:"Akış",        emoji:"💫", renk:"#117a65", pastel:"#76d7c4",
+    gorevler:["Bugün bir şeyi sevdiğin için yap, 'zorunluluk' değil","Bir yaratıcı etkinlik dene (çiz, yaz, pişir)","Seni durduran bir şeyi bırak"] },
+  { gun:18, tema:"Sınırlar",    emoji:"🛡", renk:"#922b21", pastel:"#f1948a",
+    gorevler:["'Hayır' demen gereken bir şeye 'hayır' de","Kendi alanını koru: bir yalnızlık anı yarat","Sınırların neler? 2 tanesini yaz"] },
+  { gun:19, tema:"Şükür",       emoji:"🌻", renk:"#d4ac0d", pastel:"#f9e79f",
+    gorevler:["10 şükür yaz: küçük şeylere odaklan","Yaşayan birine 'seni takdir ediyorum' de","Bugünün en güzel anını akşam yaz"] },
+  { gun:20, tema:"Dönüşüm",     emoji:"🦋", renk:"#6c3483", pastel:"#d2b4de",
+    gorevler:["İşe yaramayan 1 alışkanlığı tanımla","Bu alışkanlığın yerine 1 küçük adım koy","Dönüşüm doğal: bugün bunu hisset"] },
+  { gun:21, tema:"Bütünleşme",  emoji:"🌟", renk:"#1b2631", pastel:"#aab7b8",
+    gorevler:["21 günü düşün: ne öğrendin, ne hissettin?","Kendine bir mektup yaz: 6 ay sonra aç","Bunu kutla: dans et, bağır, ağla — hissettir"] },
+];
+
+const PACKAGES = [
+  { id:"raporlama", emoji:"📊", baslik:"Sınırsız Raporlama", fiyat:"₺49/ay",
+    fiyatYillik:"₺399/yıl", renk:"#8b5aa0",
+    aciklama:"Günlük, haftalık ve aylık tüm istatistiklerine eriş. Çakra geçmişin, nefes sayın ve niyet arşivin sana açılır.",
+    ozellikler:["Haftalık detaylı rapor","Aylık çakra haritası","Niyet arşivi","Nefes geçmişi"] },
+  { id:"program21", emoji:"🌱", baslik:"21 Günlük Program", fiyat:"₺149",
+    fiyatYillik:null, renk:"#27ae60",
+    aciklama:"Her günün teması, ödevleri ve rehberli yolculuğu. 21 gün boyunca kendini yeniden keşfet.",
+    ozellikler:["21 günlük günlük ödevler","Her gün farklı tema","İlerleme takibi","Tamamlama rozeti"] },
+  { id:"rehber", emoji:"🔮", baslik:"Reiki Rehberi", fiyat:"₺79",
+    fiyatYillik:null, renk:"#8e44ad",
+    aciklama:"7 çakranın duygu & organ haritası + 24 hastalığın zihinsel nedeni. Kendi enerjinle çalış.",
+    ozellikler:["7 çakra duygusal harita","24+ hastalık & zihinsel neden","Arama ile hızlı erişim"] },
+  { id:"hediye", emoji:"🎁", baslik:"Hediye Kartı", fiyat:"₺199",
+    fiyatYillik:null, renk:"#c0392b",
+    aciklama:"Sevdiğin birine Sakin Premium'u hediye et. Ödeme sonrası bir hediye kodu oluşturulur.",
+    ozellikler:["Anında hediye kodu","21 Günlük Program içerir","İstediğin kişiye gönder"] },
+];
+
+const REIKI_CHAKRALAR = [
+  { isim:"Kök",            emoji:"🟥", renk:"#c0392b", pastel:"#e8a09a",
+    duygular:["Güvenlik","Hayatta kalma","Zemin","Temel ihtiyaçlar","Güven"],
+    beden:["Böbrekler","Omurilik","Siyatik siniri","Bacaklar","Ayaklar"],
+    dengesiz:["Depresyon","Derin üzüntü","Güvensizlik","Panik","Fiziksel dengesizlik"],
+    anahtar:"Güvende hisset. Yere bas." },
+  { isim:"Sakral",         emoji:"🟧", renk:"#e67e22", pastel:"#f0c27f",
+    duygular:["Yaratıcılık","Zevk","Cinsellik","İlişkiler","Akış"],
+    beden:["Pelvis","Üreme organları","Mesane","Lenf sistemi"],
+    dengesiz:["İlişki sorunları","Yaratıcılık blokajı","Cinsellik sorunları","Anksiyete"],
+    anahtar:"Hisset. Akmana izin ver." },
+  { isim:"Güneş Pleksusu", emoji:"🟨", renk:"#f1c40f", pastel:"#f7e18a",
+    duygular:["Kişisel güç","İrade","Özgüven","Sınırlar","Kimlik"],
+    beden:["Mide","Dalak","Pankreas","Karaciğer","Böbrekler","Sırt ortası"],
+    dengesiz:["Suçluluk","Utanç","Korku","Yetersizlik","Hareketsizlik"],
+    anahtar:"Güçlü ol. Işığın var." },
+  { isim:"Kalp",           emoji:"🟩", renk:"#27ae60", pastel:"#82d9a3",
+    duygular:["Sevgi","Şefkat","Kabul","Bağlantı","Affetme"],
+    beden:["Kalp","Akciğerler","Dolaşım sistemi","Kan","Sırt üstü"],
+    dengesiz:["Travma","Yas","Kayıp","Depresyon","İlişki sorunları","Kapanma"],
+    anahtar:"Sevgiyle aç. Kendine de." },
+  { isim:"Boğaz",          emoji:"🟦", renk:"#2980b9", pastel:"#85c1e9",
+    duygular:["İfade","Hakikat","Yaratıcılık","Kendini gösterme","Dürüstlük"],
+    beden:["Tiroit","Boğaz","Ses telleri","Akciğer üstü","Boyun"],
+    dengesiz:["Söyleyememek","Yutkunmak","Guatr","Larenjit","Tiroit sorunları"],
+    anahtar:"Bugün hakikatini söyle." },
+  { isim:"Üçüncü Göz",    emoji:"🟣", renk:"#8e44ad", pastel:"#c3a6d8",
+    duygular:["Sezgi","İç görü","Bilinç","Farkındalık","Altıncı his"],
+    beden:["Gözler","Burun","Kulaklar","Hipofiz bezi","Merkezi sinir sistemi"],
+    dengesiz:["Kafa karışıklığı","Hayal kuramama","Başağrısı","Odaklanamama"],
+    anahtar:"Bugün içeriye bak." },
+  { isim:"Taç",            emoji:"⬜", renk:"#9b59b6", pastel:"#d9b8e8",
+    duygular:["Evrensel bağlantı","Meditasyon","Bilinç","Bütünlük","Anlam"],
+    beden:["Beyin","Epifiz bezi","Merkezi sinir sistemi"],
+    dengesiz:["İzolasyon","Ruhsal kopukluk","Anlamsızlık","Hayat amacını kaybetme"],
+    anahtar:"Bugün bütünle bağlan." },
+];
+
+const REIKI_HASTALIKLAR = [
+  { ad:"Başağrısı",          emoji:"🤕", cakralar:["Üçüncü Göz","Taç","Güneş Pleksusu"],  zihinsel:"Baskı, kontrol ihtiyacı, mükemmeliyetçilik" },
+  { ad:"Depresyon",          emoji:"😔", cakralar:["Kök","Sakral","Taç"],                  zihinsel:"Temel güvensizlik, bağlantı kopukluğu, anlamsızlık" },
+  { ad:"Stres / Anksiyete",  emoji:"😰", cakralar:["Güneş Pleksusu","Kök","Kalp"],        zihinsel:"Geleceğe dair kontrol ihtiyacı, güvensizlik, yetmeme korkusu" },
+  { ad:"Sırt Ağrısı",        emoji:"😣", cakralar:["Güneş Pleksusu","Sakral","Kök"],      zihinsel:"Desteksiz hissetmek, sorumluluk yükü, mali kaygı" },
+  { ad:"Kalp Sorunları",     emoji:"❤️",  cakralar:["Kalp"],                               zihinsel:"Sevgisizlik, yas, travma, yalnızlık, affedememek" },
+  { ad:"Sindirim Sorunları", emoji:"🫃", cakralar:["Güneş Pleksusu","Kök"],               zihinsel:"Endişe, korku yutmak, hazmedilemeyenler" },
+  { ad:"Kan Basıncı",        emoji:"💓", cakralar:["Kalp","Boğaz"],                        zihinsel:"Bastırılmış öfke, kontrol ihtiyacı, kronik stres" },
+  { ad:"Diyabet",            emoji:"🩸", cakralar:["Güneş Pleksusu"],                      zihinsel:"Hayatın tatlılığına direniş, sevgisizlik, keder" },
+  { ad:"Tiroit Sorunları",   emoji:"🦋", cakralar:["Boğaz","Güneş Pleksusu"],             zihinsel:"Kendini ifade edememe, susmak zorunda kalmak, bastırılmış yaratıcılık" },
+  { ad:"Cilt Sorunları",     emoji:"🌡", cakralar:["Güneş Pleksusu"],                      zihinsel:"Öfke, tahriş, dışarıya karşı savunma, sınır sorunları" },
+  { ad:"Böbrek Sorunları",   emoji:"🫘", cakralar:["Kök","Güneş Pleksusu"],               zihinsel:"Derin korku, eleştiri, hayal kırıklığı, başarısızlık korkusu" },
+  { ad:"Alerjiler / Astım",  emoji:"🤧", cakralar:["Kalp","Boğaz"],                        zihinsel:"Baskı altında hissetmek, söylenmek isteyip söyleyememek" },
+  { ad:"Kabızlık",           emoji:"😮‍💨", cakralar:["Güneş Pleksusu","Kök"],              zihinsel:"Bırakamamak, kontrol, tutma, eski fikirlere yapışmak" },
+  { ad:"Karaciğer Sorunları",emoji:"⚡", cakralar:["Güneş Pleksusu"],                     zihinsel:"Öfke, şikayetler, kronik stres, öz kınama" },
+  { ad:"Uyku / Kabus",       emoji:"😴", cakralar:["Üçüncü Göz","Boğaz","Güneş Pleksusu"],zihinsel:"Bastırılmış korku, güvensizlik, kaygı" },
+  { ad:"Öfke / Sinirlilik",  emoji:"😤", cakralar:["Sakral","Güneş Pleksusu"],            zihinsel:"Sınırların ihlali, güçsüzlük hissi, bastırılmış ifade" },
+  { ad:"Romatizma / Artrit", emoji:"🦴", cakralar:["Kalp","Güneş Pleksusu"],              zihinsel:"Kırgınlık, kendine karşı katılık, esnek olmama" },
+  { ad:"Öksürük / Nezle",    emoji:"🤒", cakralar:["Boğaz","Kalp","Güneş Pleksusu"],     zihinsel:"Söylenemeyen şeyler, içe kapanma, kendini yıpratma" },
+  { ad:"Göz Sorunları",      emoji:"👁", cakralar:["Üçüncü Göz","Taç"],                   zihinsel:"Görmek istememe, geleceğe korku, gerçekten kaçma" },
+  { ad:"Kulak Sorunları",    emoji:"👂", cakralar:["Üçüncü Göz","Taç"],                   zihinsel:"Duymak istememe, eleştiriye kapalılık" },
+  { ad:"Menstrual Sorunlar", emoji:"🌸", cakralar:["Sakral","Üçüncü Göz","Taç"],          zihinsel:"Kadınlığı reddetmek, değersizlik hissi, cinselliğe dair korku" },
+  { ad:"Kaza / Yaralanma",   emoji:"🩹", cakralar:["Güneş Pleksusu","Kök"],               zihinsel:"Öz ceza, dikkat çekme ihtiyacı, hayatta yönelim kaybı" },
+  { ad:"Kanser",             emoji:"🎗", cakralar:["Tüm çakralar"],                        zihinsel:"Derin kırgınlık, acıyı içte taşımak, kendini yemek" },
+  { ad:"Bağımlılık",         emoji:"🍷", cakralar:["Güneş Pleksusu","Boğaz","Kök"],       zihinsel:"Gerçeklikten kaçış, acısından kurtulma, kendini uyuşturma" },
+];
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
-  @keyframes twinkle      { 0%,100%{opacity:0.15} 50%{opacity:0.65} }
+  @keyframes twinkle      { 0%,100%{opacity:0.06} 50%{opacity:0.48} }
   @keyframes fadeUp       { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn       { from{opacity:0} to{opacity:1} }
-  @keyframes glow         { 0%,100%{box-shadow:0 0 28px rgba(139,90,160,0.28)} 50%{box-shadow:0 0 56px rgba(139,90,160,0.56)} }
-  @keyframes pulse        { 0%,100%{opacity:0.5} 50%{opacity:1} }
-  @keyframes sunrise      { from{opacity:0;transform:scale(0.85) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
-  @keyframes ringPulse    { 0%,100%{opacity:0.12;transform:scale(1)} 50%{opacity:0.3;transform:scale(1.05)} }
+  @keyframes glow         { 0%,100%{box-shadow:0 0 22px rgba(139,90,160,0.22)} 50%{box-shadow:0 0 46px rgba(139,90,160,0.46)} }
+  @keyframes pulse        { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  @keyframes sunrise      { from{opacity:0;transform:scale(0.88) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes ringPulse    { 0%,100%{opacity:0.08;transform:scale(1)} 50%{opacity:0.22;transform:scale(1.04)} }
   @keyframes heartbeat    { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes floatUp      { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes handFloat    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-7px)} }
@@ -124,27 +258,27 @@ const GLOBAL_CSS = `
   @keyframes checkPop     { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   .fade-up  { animation: fadeUp  0.8s ease forwards; }
   .slide-in { animation: slideIn 0.55s ease forwards; }
-  .niyet-input {
+  .sakin-input {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
     border-radius:12px; color:#e8e0d5;
     font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
     padding:13px 15px; width:100%; resize:none; outline:none; transition:border-color 0.3s;
   }
-  .niyet-input:focus { border-color:rgba(255,255,255,0.26); }
-  .niyet-btn {
+  .sakin-input:focus { border-color:rgba(255,255,255,0.26); }
+  .sakin-btn {
     background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
     border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:13px; letter-spacing:1.5px; padding:10px 22px; transition:all 0.28s;
   }
-  .niyet-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
-  .niyet-btn-primary {
+  .sakin-btn:hover { background:rgba(255,255,255,0.13); border-color:rgba(255,255,255,0.26); }
+  .sakin-btn-primary {
     background:linear-gradient(135deg,rgba(139,90,160,0.55),rgba(72,130,180,0.55));
     border:1px solid rgba(139,90,160,0.36); border-radius:100px; color:#e8e0d5; cursor:pointer;
     font-family:'Cormorant Garamond',Georgia,serif;
     font-size:14px; letter-spacing:2.5px; padding:12px 36px; transition:all 0.28s;
   }
-  .niyet-btn-primary:hover {
+  .sakin-btn-primary:hover {
     background:linear-gradient(135deg,rgba(139,90,160,0.8),rgba(72,130,180,0.8));
     transform:translateY(-2px);
   }
@@ -197,6 +331,12 @@ const GLOBAL_CSS = `
   }
   .notif-btn:hover { background:rgba(255,255,255,0.1); color:#e8e0d5; }
   .notif-btn.sent { background:rgba(100,180,120,0.2); border-color:rgba(100,180,120,0.35); color:#82d9a3; }
+  @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  .prem-tag {
+    font-size:9px; letter-spacing:2px; color:#4ade80;
+    background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.22);
+    border-radius:100px; padding:3px 9px; display:inline-block;
+  }
 `;
 
 async function sendNotif(title, body) {
@@ -249,7 +389,7 @@ function ReminderScreen({ onBack }) {
   };
 
   const handleNotif = async (rem) => {
-    const result = await sendNotif("Niyet · " + rem.title, rem.notifBody);
+    const result = await sendNotif("Sakin · " + rem.title, rem.notifBody);
     if (result !== "sent") { setNotifOk(false); return; }
     setNotifOk(true);
     setSent(p => ({ ...p, [rem.id]: true }));
@@ -263,7 +403,7 @@ function ReminderScreen({ onBack }) {
     setNotifOk(true);
     REMINDERS.forEach((rem, i) => {
       setTimeout(() => {
-        new Notification("Niyet · " + rem.title, { body: rem.notifBody });
+        new Notification("Sakin · " + rem.title, { body: rem.notifBody });
         setSent(p => ({ ...p, [rem.id]: true }));
       }, i * 600);
     });
@@ -305,7 +445,7 @@ function ReminderScreen({ onBack }) {
         </div>
       )}
 
-      <button className="niyet-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
+      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:11, letterSpacing:2 }} onClick={sendAllNotifs}>
         📲 Tüm hatırlatıcıları telefona gönder
       </button>
 
@@ -332,9 +472,9 @@ function ReminderScreen({ onBack }) {
                 {isDone ? "✓" : ""}
               </button>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
-                  <span style={{ fontSize:18 }}>{rem.icon}</span>
-                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5" }}>{rem.title}</span>
+                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3, minWidth:0 }}>
+                  <span style={{ fontSize:18, flexShrink:0 }}>{rem.icon}</span>
+                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
                 </div>
                 <div style={{ fontSize:11, color:"#5a6a7a", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
@@ -440,7 +580,7 @@ function TerapiScreen({ onBack }) {
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55`, display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{c.emoji}</div>
             <div style={{ flex:1 }}>
               <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:11, color:"#5a6a7a" }}>{c.element} · {c.desc}</div>
+              <div style={{ fontSize:11, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
             {i<7 && <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>TEMEL</div>}
           </div>
@@ -452,7 +592,7 @@ function TerapiScreen({ onBack }) {
             <div style={{ fontSize:10,letterSpacing:3,color:selected.pastel,marginBottom:3 }}>SEÇİLEN</div>
             <div style={{ fontSize:16,fontWeight:300 }}>{selected.name}</div>
           </div>
-          <button className="niyet-btn-primary"
+          <button className="sakin-btn-primary"
             style={{ background:`linear-gradient(135deg,${selected.color}99,${selected.color}55)`, borderColor:`${selected.color}55`, padding:"9px 22px",fontSize:12 }}
             onClick={() => setTPhase("intro")}>TERAPİYE BAŞLA</button>
         </div>
@@ -461,7 +601,7 @@ function TerapiScreen({ onBack }) {
   );
 
   if (tPhase==="intro"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,padding:"36px 24px",position:"relative",zIndex:1 }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ marginBottom:32 }}>
         <div style={{ fontSize:9,letterSpacing:6,color:"#3a4a5a" }}>REİKİ · ÇAKRA TERAPİSİ</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
@@ -473,14 +613,14 @@ function TerapiScreen({ onBack }) {
         Bir elini {selected.name.toLowerCase()} bölgende hisset.<br />Gözlerini yum.<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={() => setTPhase("list")}>← geri</button>
-        <button className="niyet-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
+        <button className="sakin-btn" onClick={() => setTPhase("list")}>← geri</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>BAŞLA</button>
       </div>
     </div>
   );
 
   if (tPhase==="active"&&selected) return (
-    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px" }}>
+    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"100vh" }}>
       <div style={{ fontSize:9,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
@@ -524,7 +664,7 @@ function TerapiScreen({ onBack }) {
           ))}
         </svg>
       </div>
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.8,maxWidth:240 }}>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
         {progress<0.25 && "Elini hissediyorsun..."}
         {progress>=0.25&&progress<0.5  && `${selected.name} ışığı yayılıyor...`}
         {progress>=0.5 &&progress<0.75 && "Enerji akıyor, bırak gelsin..."}
@@ -535,7 +675,7 @@ function TerapiScreen({ onBack }) {
   );
 
   if (tPhase==="done"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,padding:"36px 24px",position:"relative",zIndex:1 }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
       {[...Array(10)].map((_,i) => (
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:11,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
@@ -545,8 +685,8 @@ function TerapiScreen({ onBack }) {
         {selected.name} çakran aktif.<br />Bu enerjiyi gün boyu taşı.
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="niyet-btn" onClick={resetTerapi}>diğer çakra</button>
-        <button className="niyet-btn" onClick={onBack}>ana ekran</button>
+        <button className="sakin-btn" onClick={resetTerapi}>diğer çakra</button>
+        <button className="sakin-btn" onClick={onBack}>ana ekran</button>
       </div>
     </div>
   );
@@ -554,7 +694,304 @@ function TerapiScreen({ onBack }) {
   return null;
 }
 
-export default function NiyetApp() {
+function PaymentModal({ pkg, onSuccess, onClose }) {
+  const [step,     setStep]     = useState("form");
+  const [cardNo,   setCardNo]   = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiry,   setExpiry]   = useState("");
+  const [cvv,      setCvv]      = useState("");
+  const [giftCode, setGiftCode] = useState("");
+
+  const fmt    = v => v.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g,"$1 ").trim();
+  const fmtExp = v => { const d=v.replace(/\D/g,"").slice(0,4); return d.length>2?d.slice(0,2)+"/"+d.slice(2):d; };
+  const canPay = cardNo.replace(/\s/g,"").length===16 && cardName.length>=2 && expiry.length===5 && cvv.length===3;
+
+  const handlePay = () => {
+    setStep("loading");
+    setTimeout(() => {
+      const code = pkg.id==="hediye" ? "NİYET-"+Math.random().toString(36).toUpperCase().slice(2,8) : "";
+      setGiftCode(code);
+      setStep("success");
+      onSuccess(pkg.id);
+    }, 2200);
+  };
+
+  if (step==="loading") return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:22 }}>
+      <div style={{ width:56,height:56,borderRadius:"50%",border:"2px solid rgba(139,90,160,0.2)",borderTop:"2px solid #8b5aa0",animation:"spin 1s linear infinite" }} />
+      <div style={{ fontSize:11,color:"#5a6a7a",letterSpacing:3 }}>İŞLEMDE</div>
+    </div>
+  );
+
+  if (step==="success") return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:20,textAlign:"center",padding:32 }}>
+      <div style={{ fontSize:56 }}>✨</div>
+      <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>Tamamlandı</div>
+      <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:1.8 }}><strong style={{color:"#e8e0d5"}}>{pkg.baslik}</strong><br/>aktif edildi.</div>
+      {giftCode && (
+        <div style={{ background:"rgba(139,90,160,0.12)",border:"1px solid rgba(139,90,160,0.28)",borderRadius:14,padding:"18px 28px",marginTop:8 }}>
+          <div style={{ fontSize:9,letterSpacing:3,color:"#7a5a90",marginBottom:10 }}>HEDİYE KODUN</div>
+          <div style={{ fontSize:22,letterSpacing:5,color:"#d4b8f0",fontWeight:300 }}>{giftCode}</div>
+          <div style={{ fontSize:10,color:"#5a6a7a",marginTop:8,letterSpacing:1 }}>Bu kodu sevdiğin kişiye gönder</div>
+        </div>
+      )}
+      <button className="sakin-btn-primary" style={{ marginTop:8 }} onClick={onClose}>Devam Et</button>
+    </div>
+  );
+
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:200,background:"rgba(4,8,14,0.97)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+      <div style={{ maxWidth:360,width:"100%",position:"relative" }}>
+        <button onClick={onClose} style={{ position:"absolute",top:-10,right:-10,background:"transparent",border:"none",color:"#4a5a6a",fontSize:18,cursor:"pointer",lineHeight:1 }}>✕</button>
+        <div style={{ textAlign:"center",marginBottom:28 }}>
+          <div style={{ fontSize:36,marginBottom:10 }}>{pkg.emoji}</div>
+          <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{pkg.baslik}</div>
+          <div style={{ fontSize:26,color:"#c8a96e",letterSpacing:2 }}>{pkg.fiyat}</div>
+        </div>
+        <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+          <input className="sakin-input" placeholder="Kart Numarası" value={cardNo} onChange={e=>setCardNo(fmt(e.target.value))} style={{ letterSpacing:2,fontSize:15 }} />
+          <input className="sakin-input" placeholder="Kart Üzerindeki İsim" value={cardName} onChange={e=>setCardName(e.target.value)} />
+          <div style={{ display:"flex",gap:10 }}>
+            <input className="sakin-input" placeholder="AA/YY" value={expiry} onChange={e=>setExpiry(fmtExp(e.target.value))} style={{ flex:1 }} />
+            <input className="sakin-input" placeholder="CVV" value={cvv} onChange={e=>setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} style={{ flex:1 }} />
+          </div>
+        </div>
+        <div style={{ marginTop:8,fontSize:10,color:"#2a3a4a",letterSpacing:0.5,textAlign:"center" }}>🔒 SSL ile korunmaktadır</div>
+        <button
+          className="sakin-btn-primary"
+          style={{ width:"100%",marginTop:18,opacity:canPay?1:0.4,cursor:canPay?"pointer":"default" }}
+          onClick={canPay?handlePay:undefined}
+        >
+          {pkg.fiyat} ÖDE
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PremiumScreen({ onBack, onBuy, features }) {
+  return (
+    <div style={{ maxWidth:420,width:"100%",padding:"34px 22px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:32 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#c8a96e",marginBottom:9 }}>✦ PREMİUM</div>
+        <div style={{ fontSize:24,fontWeight:300,letterSpacing:2,marginBottom:8 }}>Daha Derine Git</div>
+        <div style={{ fontSize:12,color:"#6a7a8a",lineHeight:1.7 }}>Uygulamanın tüm potansiyelini aç</div>
+      </div>
+      <div style={{ display:"flex",flexDirection:"column",gap:14 }}>
+        {PACKAGES.map(pkg=>(
+          <div key={pkg.id} style={{ border:`1px solid ${pkg.renk}44`,borderRadius:20,padding:"20px 20px",background:`rgba(${hexToRgb(pkg.renk)},0.05)`,position:"relative" }}>
+            {features[pkg.id] && <span className="prem-tag" style={{ position:"absolute",top:14,right:16 }}>AKTİF</span>}
+            <div style={{ display:"flex",alignItems:"flex-start",gap:14,marginBottom:12 }}>
+              <div style={{ fontSize:30 }}>{pkg.emoji}</div>
+              <div>
+                <div style={{ fontSize:16,fontWeight:300,letterSpacing:1,marginBottom:3 }}>{pkg.baslik}</div>
+                <div style={{ fontSize:20,color:"#c8a96e",letterSpacing:1 }}>{pkg.fiyat}</div>
+                {pkg.fiyatYillik && <div style={{ fontSize:10,color:"#5a6a7a" }}>{pkg.fiyatYillik} (en uygun)</div>}
+              </div>
+            </div>
+            <div style={{ fontSize:12,color:"#6a7a8a",lineHeight:1.7,marginBottom:12 }}>{pkg.aciklama}</div>
+            <div style={{ display:"flex",flexWrap:"wrap",gap:5,marginBottom:features[pkg.id]?0:14 }}>
+              {pkg.ozellikler.map(o=>(
+                <span key={o} style={{ fontSize:10,color:`${pkg.renk}dd`,background:`rgba(${hexToRgb(pkg.renk)},0.08)`,border:`1px solid ${pkg.renk}30`,borderRadius:100,padding:"3px 9px" }}>✓ {o}</span>
+              ))}
+            </div>
+            {!features[pkg.id] && (
+              <button className="sakin-btn-primary" style={{ width:"100%",fontSize:12,letterSpacing:2 }} onClick={()=>onBuy(pkg)}>Satın Al</button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button className="sakin-btn" style={{ width:"100%",marginTop:18 }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
+function Program21Screen({ onBack }) {
+  const [tasks, setTasks] = useState(()=>{
+    try{ return JSON.parse(localStorage.getItem("sakin_p21_tasks")||"{}"); }catch{ return {}; }
+  });
+  const [startDate] = useState(()=>{
+    let d=localStorage.getItem("sakin_p21_start");
+    if(!d){ d=new Date().toISOString(); localStorage.setItem("sakin_p21_start",d); }
+    return d;
+  });
+
+  const dayNo = Math.min(21, Math.floor((Date.now()-new Date(startDate).getTime())/86400000)+1);
+  const gun = PROGRAM_21[dayNo-1];
+  const todayTasks = tasks[dayNo]||{};
+  const allDone = gun.gorevler.every((_,i)=>todayTasks[i]);
+  const completedDays = PROGRAM_21.filter((g,i)=>{
+    const d=tasks[i+1]||{};
+    return g.gorevler.every((_,j)=>d[j]);
+  }).length;
+
+  const toggleTask = i => {
+    const updated = {...tasks,[dayNo]:{...todayTasks,[i]:!todayTasks[i]}};
+    setTasks(updated);
+    localStorage.setItem("sakin_p21_tasks",JSON.stringify(updated));
+  };
+
+  return (
+    <div style={{ maxWidth:400,width:"100%",padding:"34px 22px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:24 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>21 GÜNLÜK PROGRAM</div>
+        <div style={{ background:"rgba(255,255,255,0.05)",borderRadius:100,height:5,overflow:"hidden",marginBottom:7 }}>
+          <div style={{ width:`${(completedDays/21)*100}%`,height:"100%",background:"linear-gradient(90deg,#4ade80,#8b5aa0)",borderRadius:100,transition:"width 0.5s" }} />
+        </div>
+        <div style={{ fontSize:10,color:"#5a6a7a",letterSpacing:1 }}>{completedDays} / 21 gün tamamlandı</div>
+      </div>
+      <div style={{ border:`1px solid ${gun.renk}55`,borderRadius:22,padding:"22px 20px",background:`rgba(${hexToRgb(gun.renk)},0.05)`,marginBottom:18 }}>
+        <div style={{ display:"flex",alignItems:"center",gap:14,marginBottom:20 }}>
+          <div style={{ width:54,height:54,borderRadius:"50%",background:`radial-gradient(circle,${gun.renk}aa,${gun.pastel}44)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24 }}>{gun.emoji}</div>
+          <div>
+            <div style={{ fontSize:9,letterSpacing:4,color:"#4a5a6a" }}>GÜN {gun.gun}</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:gun.pastel }}>{gun.tema}</div>
+          </div>
+        </div>
+        <div style={{ display:"flex",flexDirection:"column",gap:13 }}>
+          {gun.gorevler.map((gorev,i)=>(
+            <div key={i} onClick={()=>toggleTask(i)} style={{ display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer",opacity:todayTasks[i]?0.45:1,transition:"opacity 0.3s" }}>
+              <div style={{ width:22,height:22,borderRadius:"50%",flexShrink:0,marginTop:1,border:`1.5px solid ${todayTasks[i]?"#4ade80":"rgba(255,255,255,0.18)"}`,background:todayTasks[i]?"rgba(74,222,128,0.18)":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,transition:"all 0.22s" }}>
+                {todayTasks[i]&&"✓"}
+              </div>
+              <div style={{ fontSize:14,lineHeight:1.65,fontWeight:300,textDecoration:todayTasks[i]?"line-through":"none" }}>{gorev}</div>
+            </div>
+          ))}
+        </div>
+        {allDone && (
+          <div style={{ marginTop:18,textAlign:"center",padding:"11px",background:"rgba(74,222,128,0.07)",border:"1px solid rgba(74,222,128,0.18)",borderRadius:11 }}>
+            <div style={{ fontSize:12,color:"#4ade80",letterSpacing:1 }}>✓ Bugün tamamlandı</div>
+          </div>
+        )}
+      </div>
+      <div style={{ display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4,marginBottom:20 }}>
+        {PROGRAM_21.map((g,i)=>{
+          const d=tasks[i+1]||{};
+          const done=g.gorevler.every((_,j)=>d[j]);
+          const isToday=i+1===dayNo;
+          return (
+            <div key={i} style={{ aspectRatio:"1",borderRadius:7,background:done?`rgba(${hexToRgb(g.renk)},0.45)`:isToday?"rgba(255,255,255,0.1)":"rgba(255,255,255,0.03)",border:isToday?"1px solid rgba(255,255,255,0.28)":"1px solid rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:isToday?"#fff":"#4a5a6a" }}>
+              {done?"✓":i+1}
+            </div>
+          );
+        })}
+      </div>
+      <button className="sakin-btn" style={{ width:"100%" }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
+function ReikiRehberiScreen({ onBack }) {
+  const [tab,    setTab]    = useState("chakra");
+  const [secili, setSecili] = useState(null);
+  const [arama,  setArama]  = useState("");
+
+  const filtreliHastaliklar = arama
+    ? REIKI_HASTALIKLAR.filter(h=>h.ad.toLowerCase().includes(arama.toLowerCase()))
+    : REIKI_HASTALIKLAR;
+
+  return (
+    <div style={{ maxWidth:420,width:"100%",padding:"34px 20px 100px",position:"relative",zIndex:1 }}>
+      <div style={{ textAlign:"center",marginBottom:22 }}>
+        <div style={{ fontSize:9,letterSpacing:5,color:"#c8a96e",marginBottom:8 }}>✦ REİKİ REHBERİ</div>
+        <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>Enerji & Şifa</div>
+      </div>
+      <div style={{ display:"flex",gap:0,marginBottom:22,background:"rgba(255,255,255,0.04)",borderRadius:100,padding:4 }}>
+        {[["chakra","💜 Çakra & Duygular"],["hastalik","🌿 Hastalık Rehberi"]].map(([id,label])=>(
+          <button key={id} onClick={()=>{setTab(id);setSecili(null);setArama("");}}
+            style={{ flex:1,padding:"9px 6px",borderRadius:100,border:"none",cursor:"pointer",fontSize:11,letterSpacing:0.8,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.25s",background:tab===id?"rgba(139,90,160,0.45)":"transparent",color:tab===id?"#e8e0d5":"#5a6a7a" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {tab==="chakra" && (
+        <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+          {REIKI_CHAKRALAR.map((c,i)=>(
+            <div key={i} onClick={()=>setSecili(secili===i?null:i)}
+              style={{ border:`1px solid ${c.renk}44`,borderRadius:16,padding:"15px 17px",background:`rgba(${hexToRgb(c.renk)},0.05)`,cursor:"pointer" }}>
+              <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+                <div style={{ width:40,height:40,borderRadius:"50%",background:`radial-gradient(circle,${c.renk}99,${c.pastel}33)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{c.emoji}</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:15,fontWeight:300,letterSpacing:1,color:c.pastel }}>{c.isim} Çakrası</div>
+                  <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:0.8,marginTop:2 }}>{c.duygular.slice(0,3).join(" · ")}</div>
+                </div>
+                <div style={{ fontSize:10,color:"#3a4a5a" }}>{secili===i?"▲":"▼"}</div>
+              </div>
+              {secili===i && (
+                <div style={{ marginTop:13,paddingTop:13,borderTop:`1px solid ${c.renk}22` }}>
+                  <div style={{ marginBottom:10 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>DUYGULAR & KONULAR</div>
+                    <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                      {c.duygular.map(d=>(
+                        <span key={d} style={{ fontSize:11,color:c.pastel,background:`rgba(${hexToRgb(c.renk)},0.1)`,border:`1px solid ${c.renk}30`,borderRadius:100,padding:"3px 9px" }}>{d}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom:10 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:5 }}>BEDEN / ORGANLAR</div>
+                    <div style={{ fontSize:12,color:"#7a8a9a",lineHeight:1.7 }}>{c.beden.join(", ")}</div>
+                  </div>
+                  <div style={{ marginBottom:8 }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>BLOKE OLUNCA</div>
+                    <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                      {c.dengesiz.map(d=>(
+                        <span key={d} style={{ fontSize:11,color:"#f1948a",background:"rgba(241,148,138,0.08)",border:"1px solid rgba(241,148,138,0.2)",borderRadius:100,padding:"3px 9px" }}>{d}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ fontSize:12,fontStyle:"italic",color:"#6a7a8a",marginTop:10,lineHeight:1.6 }}>✦ {c.anahtar}</div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {tab==="hastalik" && (
+        <div>
+          <input className="sakin-input" placeholder="Hastalık ara..." value={arama} onChange={e=>setArama(e.target.value)} style={{ marginBottom:13 }} />
+          <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+            {filtreliHastaliklar.map((h,i)=>(
+              <div key={i} onClick={()=>setSecili(secili===`h${i}`?null:`h${i}`)}
+                style={{ border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"13px 16px",background:"rgba(255,255,255,0.02)",cursor:"pointer" }}>
+                <div style={{ display:"flex",alignItems:"center",gap:10 }}>
+                  <span style={{ fontSize:20 }}>{h.emoji}</span>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:14,fontWeight:300 }}>{h.ad}</div>
+                    <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:0.5,marginTop:2 }}>{h.cakralar.join(" · ")}</div>
+                  </div>
+                  <div style={{ fontSize:10,color:"#3a4a5a" }}>{secili===`h${i}`?"▲":"▼"}</div>
+                </div>
+                {secili===`h${i}` && (
+                  <div style={{ marginTop:11,paddingTop:11,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+                    <div style={{ marginBottom:8 }}>
+                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>ÇALIŞILACAK ÇAKRALAR</div>
+                      <div style={{ display:"flex",flexWrap:"wrap",gap:5 }}>
+                        {h.cakralar.map(c=>{
+                          const chakra=REIKI_CHAKRALAR.find(r=>r.isim===c.split(" ")[0]);
+                          return <span key={c} style={{ fontSize:11,background:"rgba(139,90,160,0.12)",border:"1px solid rgba(139,90,160,0.28)",borderRadius:100,padding:"3px 9px",color:"#c3a6d8" }}>{chakra?.emoji||"✦"} {c}</span>;
+                        })}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:5 }}>ZİHİNSEL / DUYGUSAL NEDEN</div>
+                      <div style={{ fontSize:13,color:"#a0a8b0",lineHeight:1.7,fontStyle:"italic" }}>"{h.zihinsel}"</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <button className="sakin-btn" style={{ width:"100%",marginTop:20 }} onClick={onBack}>← Geri</button>
+    </div>
+  );
+}
+
+export default function SakinApp() {
   const [screen,        setScreen]        = useState("giris");
   const [niyet,         setNiyet]         = useState("");
   const [selectedWords, setSelectedWords] = useState([]);
@@ -566,6 +1003,14 @@ export default function NiyetApp() {
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const breathRef = useRef(null);
+  const [premiumFeatures, setPremiumFeatures] = useState(()=>{ try{ return JSON.parse(localStorage.getItem("sakin_premium")||"{}"); }catch{ return {}; } });
+  const [payModal, setPayModal] = useState(null);
+  const handlePremiumSuccess = pkgId => {
+    const updated = {...premiumFeatures,[pkgId]:true};
+    setPremiumFeatures(updated);
+    localStorage.setItem("sakin_premium",JSON.stringify(updated));
+    setPayModal(null);
+  };
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
 
@@ -592,7 +1037,7 @@ export default function NiyetApp() {
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
-    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",
+    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",premium:"139,90,160",program21:"45,120,65",rehber:"142,68,173",
   }[screen]||"139,90,160";
 
   const NAV = [
@@ -605,14 +1050,22 @@ export default function NiyetApp() {
   ];
 
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#05090f",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflow:"hidden",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",background:"#04080e",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#e8e0d5",overflow:"hidden",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
-      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0, background:`radial-gradient(650px at ${orb.x}% ${orb.y}%,rgba(${ambientColor},0.07) 0%,transparent 70%)`,transition:"background 0.5s ease" }} />
+      {/* Sabit derin uzay arka planı */}
+      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
 
-      {[...Array(38)].map((_,i) => (
-        <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:i%6===0?2:1,height:i%6===0?2:1,borderRadius:"50%",background:"rgba(255,255,255,0.35)",animation:`twinkle ${2+(i%3)}s ease-in-out infinite`,animationDelay:`${(i*0.3)%3}s`,pointerEvents:"none",zIndex:0 }} />
-      ))}
+      {/* Fare takipli ambient */}
+      <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0, background:`radial-gradient(700px at ${orb.x}% ${orb.y}%,rgba(${ambientColor},0.1) 0%,transparent 68%)`,transition:"background 1.2s ease" }} />
+
+      {[...Array(46)].map((_,i) => {
+        const sz = i%11===0?2.5:i%5===0?1.8:i%3===0?1.2:0.9;
+        const op = i%11===0?0.42:i%5===0?0.32:0.22;
+        return (
+          <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s`,pointerEvents:"none",zIndex:0 }} />
+        );
+      })}
 
       {/* GİRİŞ */}
       {screen==="giris" && (
@@ -621,7 +1074,7 @@ export default function NiyetApp() {
             <div style={{ width:76,height:76,borderRadius:"50%",margin:"0 auto 26px",background:"radial-gradient(circle,rgba(139,90,160,0.48),rgba(72,130,180,0.16))",border:"1px solid rgba(139,90,160,0.26)",animation:"glow 3.5s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28 }}>🌿</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.2s",opacity:0 }}>
-            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Niyet</div>
+            <div style={{ fontSize:44,letterSpacing:9,fontWeight:300,marginBottom:6 }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.38s",opacity:0 }}>
             <div style={{ fontSize:10,letterSpacing:4,color:"#5a6a7a",marginBottom:50 }}>Kendini hep hatırla</div>
@@ -630,7 +1083,7 @@ export default function NiyetApp() {
             <div style={{ color:"#7a8a9a",fontSize:14,lineHeight:2,marginBottom:46,fontStyle:"italic" }}>
               Bu uygulama sana bir şey öğretmez.<br />Sadece hatırlatır.
             </div>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("sabah")}>HAZİRIM</button>
           </div>
         </div>
       )}
@@ -644,7 +1097,7 @@ export default function NiyetApp() {
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:20,letterSpacing:1,marginBottom:14,fontWeight:300 }}>Bugünün niyeti nedir?</div>
-            <textarea className="niyet-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
+            <textarea className="sakin-input" rows={3} placeholder="Bugün için bir niyet yaz..." value={niyet} onChange={e=>setNiyet(e.target.value)} />
           </div>
           <div style={{ marginBottom:32 }}>
             <div style={{ fontSize:9,letterSpacing:4,color:"#5a6a7a",marginBottom:12 }}>3 KELIME SEÇ</div>
@@ -656,8 +1109,8 @@ export default function NiyetApp() {
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:11,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
           <div style={{ display:"flex",gap:10 }}>
-            <button className="niyet-btn" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>nefes al</button>
-            <button className="niyet-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("chakra")}>İLERLE</button>
+            <button className="sakin-btn" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>nefes al</button>
+            <button className="sakin-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("chakra")}>İLERLE</button>
           </div>
         </div>
       )}
@@ -677,8 +1130,8 @@ export default function NiyetApp() {
           <div style={{ fontSize:25,letterSpacing:5,fontWeight:300,marginBottom:6 }}>Buradasın.</div>
           <div style={{ fontSize:10,color:"#4a5a6a",letterSpacing:2,marginBottom:40 }}>{breathCount} nefes</div>
           <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-            <button className="niyet-btn" onClick={()=>setScreen("sabah")}>← geri</button>
-            <button className="niyet-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
+            <button className="sakin-btn" onClick={()=>setScreen("sabah")}>← geri</button>
+            <button className="sakin-btn-primary" onClick={()=>setScreen("chakra")}>devam →</button>
           </div>
         </div>
       )}
@@ -689,16 +1142,17 @@ export default function NiyetApp() {
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div style={{ fontSize:9,letterSpacing:5,color:"#4a5a6a",marginBottom:32 }}>REİKİ · GÜNÜN ÇAKRASI</div>
-            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"glow 3s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:5 }}>
+            <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"glow 3s ease-in-out infinite",display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:6 }}>
+              <div style={{ fontSize:40,lineHeight:1 }}>{chakra.emoji}</div>
               <div style={{ fontSize:9,letterSpacing:3,color:"rgba(255,255,255,0.62)" }}>{chakra.element}</div>
             </div>
-            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:12 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
-            <div style={{ fontSize:21,fontWeight:300,lineHeight:1.65,marginBottom:7 }}>{chakra.desc}</div>
-            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28 }}>Bugün bu merkezde kal.</div>
-            <button className="niyet-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
+            <div style={{ fontSize:11,letterSpacing:4,color:chakra.pastel,marginBottom:14 }}>{chakra.name.toUpperCase()} ÇAKRASI</div>
+            <div style={{ fontSize:20,fontWeight:300,lineHeight:1.75,marginBottom:10,wordBreak:"break-word" }}>{chakra.desc}</div>
+            <div style={{ fontSize:10,color:"#4a5a6a",marginBottom:28,letterSpacing:1 }}>Bugün bu merkezde kal.</div>
+            <button className="sakin-btn" style={{ fontSize:10,letterSpacing:2,marginBottom:28 }} onClick={()=>setScreen("terapi")}>✦ 22 Çakra Terapi →</button>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="niyet-btn" onClick={()=>setScreen("nefes")}>← geri</button>
-              <button className="niyet-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
+              <button className="sakin-btn" onClick={()=>setScreen("nefes")}>← geri</button>
+              <button className="sakin-btn-primary" onClick={()=>setScreen("gun")}>gün hatırlatıcıları →</button>
             </div>
           </div>
         </div>
@@ -717,11 +1171,11 @@ export default function NiyetApp() {
           {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:14,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Bugün ne öğrendin?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
           </div>
           <div style={{ marginBottom:26 }}>
             <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>Şükür?</div>
-            <textarea className="niyet-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
+            <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
           </div>
           <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
             {["🫶","⚡","🌊","✨","🌿"].map(em=>(
@@ -730,7 +1184,7 @@ export default function NiyetApp() {
                 onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
             ))}
           </div>
-          <button className="niyet-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
+          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("harita")}>HAFTAYI GÖR</button>
         </div>
       )}
 
@@ -779,15 +1233,68 @@ export default function NiyetApp() {
             </div>
             <div style={{ fontSize:11,color:"#7a8a9a" }}>Bugün <strong style={{ color:"#c8c0b8" }}>312 kişi</strong> seninle nefes aldı.</div>
           </div>
-          <button className="niyet-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
+          {premiumFeatures.program21 && (
+            <button className="sakin-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("program21")}>🌱 21 Günlük Programım →</button>
+          )}
+          {premiumFeatures.rehber && (
+            <button className="sakin-btn" style={{ width:"100%",marginBottom:10,fontSize:11,letterSpacing:2 }} onClick={()=>setScreen("rehber")}>🔮 Reiki Rehberi →</button>
+          )}
+          {premiumFeatures.raporlama && (
+            <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 18px",marginBottom:16,background:"rgba(200,169,110,0.03)" }}>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:12 }}>✦ DETAYLI RAPOR</div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9 }}>
+                {[
+                  {label:"Haftalık Nefes",value:`${breathCount * 7}`,color:"#82d9a3"},
+                  {label:"Aktif Günler",value:"7 / 7",color:"#85c1e9"},
+                  {label:"En Güçlü Çakra",value:chakra.name,color:chakra.pastel},
+                  {label:"Toplam Niyet",value:"21+",color:"#f0c27f"},
+                ].map((s,i)=>(
+                  <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"11px 13px" }}>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#4a5a6a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
+                    <div style={{ fontSize:14,color:s.color,fontWeight:300 }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {!premiumFeatures.raporlama && !premiumFeatures.program21 && (
+            <div style={{ border:"1px solid rgba(200,169,110,0.2)",borderRadius:17,padding:"16px 20px",marginBottom:16,textAlign:"center",background:"rgba(200,169,110,0.03)" }}>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#c8a96e",marginBottom:7 }}>✦ PREMİUM</div>
+              <div style={{ fontSize:12,color:"#6a7a8a",marginBottom:12,lineHeight:1.7 }}>Sınırsız raporlama, 21 günlük program ve hediye kartı.</div>
+              <button className="sakin-btn" style={{ fontSize:10,letterSpacing:2,color:"#c8a96e",borderColor:"rgba(200,169,110,0.3)" }} onClick={()=>setScreen("premium")}>Keşfet →</button>
+            </div>
+          )}
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>setScreen("giris")}>yeni güne başla</button>
         </div>
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","terapi","gun"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(5,9,15,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:100,padding:"8px 14px" }}>
+      {screen==="premium" && (
+        <PremiumScreen
+          onBack={()=>setScreen("harita")}
+          onBuy={pkg=>setPayModal(pkg)}
+          features={premiumFeatures}
+        />
+      )}
+      {screen==="program21" && premiumFeatures.program21 && (
+        <Program21Screen onBack={()=>setScreen("premium")} />
+      )}
+      {screen==="rehber" && premiumFeatures.rehber && (
+        <ReikiRehberiScreen onBack={()=>setScreen("premium")} />
+      )}
+
+      {payModal && (
+        <PaymentModal
+          pkg={payModal}
+          onSuccess={handlePremiumSuccess}
+          onClose={()=>setPayModal(null)}
+        />
+      )}
+
+      {!["giris","terapi","gun","premium","program21","rehber"].includes(screen) && (
+        <div style={{ position:"fixed",bottom:20,left:"50%",transform:"translateX(-50%)",display:"flex",gap:0,alignItems:"center",zIndex:20,background:"rgba(4,8,14,0.9)",backdropFilter:"blur(28px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"7px 10px" }}>
           {NAV.map(n=>(
-            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?18:14,opacity:screen===n.id?1:0.28,transition:"all 0.28s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 10px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
+            <button key={n.id} onClick={()=>setScreen(n.id)} style={{ background:"transparent",border:"none",cursor:"pointer",fontSize:screen===n.id?17:13,opacity:screen===n.id?1:0.26,transition:"all 0.32s",transform:screen===n.id?"translateY(-3px)":"none",padding:"4px 8px",display:"flex",flexDirection:"column",alignItems:"center",gap:2 }}>
               <span>{n.icon}</span>
               <span style={{ fontSize:6,letterSpacing:1.5,color:screen===n.id?"#a0b0c0":"transparent",transition:"color 0.3s" }}>{n.label.toUpperCase()}</span>
             </button>
