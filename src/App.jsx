@@ -646,18 +646,21 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     if (toneOn) { stopTone(); return; }
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtxRef.current = ctx;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
-    gain.connect(ctx.destination);
-    gainRef.current = gain;
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = hz;
-    osc.connect(gain);
-    osc.start();
-    oscRef.current = osc;
-    setToneOn(true);
+    const start = () => {
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
+      gain.connect(ctx.destination);
+      gainRef.current = gain;
+      const osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = hz;
+      osc.connect(gain);
+      osc.start();
+      oscRef.current = osc;
+      setToneOn(true);
+    };
+    ctx.state === "suspended" ? ctx.resume().then(start) : start();
   };
 
   const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
