@@ -5,22 +5,22 @@ const ARAMA_API_KEY = import.meta.env.VITE_ARAMA_API_KEY;
 const RAPOR_API_KEY = import.meta.env.VITE_RAPOR_API_KEY;
 
 const CHAKRAS_7_TR = [
-  { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥" },
-  { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧" },
-  { name:"Güneş Pleksusu", color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨" },
-  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün sevgiyle aç. Kendine de.",  element:"Hava",   emoji:"🟩" },
-  { name:"Boğaz",          color:"#2980b9", pastel:"#85c1e9", desc:"Bugün hakikatini söyle.",          element:"Ses",    emoji:"🟦" },
-  { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣" },
-  { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"Bugün bütünle bağlan.",            element:"Evren",  emoji:"⬜" },
+  { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396 },
+  { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧", hz:417 },
+  { name:"Güneş Pleksusu", color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨", hz:528 },
+  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün sevgiyle aç. Kendine de.",  element:"Hava",   emoji:"🟩", hz:639 },
+  { name:"Boğaz",          color:"#2980b9", pastel:"#85c1e9", desc:"Bugün hakikatini söyle.",          element:"Ses",    emoji:"🟦", hz:741 },
+  { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣", hz:852 },
+  { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"Bugün bütünle bağlan.",            element:"Evren",  emoji:"⬜", hz:963 },
 ];
 const CHAKRAS_7_EN = [
-  { name:"Root",         color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself today. Feel safe.",     element:"Earth",   emoji:"🟥" },
-  { name:"Sacral",       color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",        element:"Water",   emoji:"🟧" },
-  { name:"Solar Plexus", color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. You have your light.", element:"Fire",    emoji:"🟨" },
-  { name:"Heart",        color:"#27ae60", pastel:"#82d9a3", desc:"Open with love today. For yourself too.",element:"Air",    emoji:"🟩" },
-  { name:"Throat",       color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",               element:"Sound",   emoji:"🟦" },
-  { name:"Third Eye",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Look inward today.",                    element:"Light",   emoji:"🟣" },
-  { name:"Crown",        color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with the whole today.",         element:"Universe",emoji:"⬜" },
+  { name:"Root",         color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself today. Feel safe.",     element:"Earth",   emoji:"🟥", hz:396 },
+  { name:"Sacral",       color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",        element:"Water",   emoji:"🟧", hz:417 },
+  { name:"Solar Plexus", color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. You have your light.", element:"Fire",    emoji:"🟨", hz:528 },
+  { name:"Heart",        color:"#27ae60", pastel:"#82d9a3", desc:"Open with love today. For yourself too.",element:"Air",    emoji:"🟩", hz:639 },
+  { name:"Throat",       color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",               element:"Sound",   emoji:"🟦", hz:741 },
+  { name:"Third Eye",    color:"#8e44ad", pastel:"#c3a6d8", desc:"Look inward today.",                    element:"Light",   emoji:"🟣", hz:852 },
+  { name:"Crown",        color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with the whole today.",         element:"Universe",emoji:"⬜", hz:963 },
 ];
 const getChakras7 = (lang) => lang === "en" ? CHAKRAS_7_EN : CHAKRAS_7_TR;
 const CHAKRAS_7 = CHAKRAS_7_TR;
@@ -627,7 +627,40 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   },[tPhase]);
 
   const [showBackConfirm, setShowBackConfirm] = useState(false);
-  const resetTerapi = () => { setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
+  const [toneOn, setToneOn] = useState(false);
+  const audioCtxRef = useRef(null);
+  const oscRef      = useRef(null);
+  const gainRef     = useRef(null);
+
+  const stopTone = () => {
+    if (gainRef.current && audioCtxRef.current) {
+      gainRef.current.gain.linearRampToValueAtTime(0, audioCtxRef.current.currentTime + 0.8);
+    }
+    setTimeout(() => {
+      oscRef.current?.stop(); oscRef.current = null;
+    }, 820);
+    setToneOn(false);
+  };
+
+  const toggleTone = (hz) => {
+    if (toneOn) { stopTone(); return; }
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtxRef.current = ctx;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
+    gain.connect(ctx.destination);
+    gainRef.current = gain;
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = hz;
+    osc.connect(gain);
+    osc.start();
+    oscRef.current = osc;
+    setToneOn(true);
+  };
+
+  const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -676,12 +709,17 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       </div>
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
-      <div style={{ fontSize:11,letterSpacing:3,color:selected.pastel,marginBottom:24 }}>{selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:11,letterSpacing:3,color:selected.pastel,marginBottom:16 }}>{selected.element.toUpperCase()}</div>
+      {selected.hz && (
+        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:24,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}66`,borderRadius:20,padding:"6px 18px",color:selected.pastel,fontSize:11,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
+          {toneOn ? "⏹" : "▶"} {selected.hz} Hz
+        </button>
+      )}
       <div style={{ fontSize:14,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
         {t("intro_place_hand", selected.name)}<br />{t("intro_close_eyes")}<br />{selected.desc}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="sakin-btn" onClick={() => setTPhase("list")}>{t("back")}</button>
+        <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
         <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>{t("btn_start")}</button>
       </div>
     </div>
@@ -732,7 +770,12 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         ))}
       </div>
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
-      <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:24 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+      <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+      {selected.hz && (
+        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#4a5a6a",fontSize:10,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
+          {toneOn ? "⏹" : "▶"} {selected.hz} Hz
+        </button>
+      )}
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
         {(()=>{
           const HP = {
