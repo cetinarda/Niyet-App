@@ -616,19 +616,20 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       window.__sakinAudioCtx = audioCtxRef.current;
     }
     const ctx = audioCtxRef.current;
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
-    gain.connect(ctx.destination);
-    gainRef.current = gain;
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = hz;
-    osc.connect(gain);
-    osc.start();
-    oscRef.current = osc;
-    ctx.resume();
-    setToneOn(true);
+    ctx.resume().then(() => {
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
+      gain.connect(ctx.destination);
+      gainRef.current = gain;
+      const osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = hz;
+      osc.connect(gain);
+      osc.start();
+      oscRef.current = osc;
+      setToneOn(true);
+    });
   };
 
   const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
@@ -2489,7 +2490,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","mandala","terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
@@ -2520,7 +2521,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
-            position:"fixed", bottom: !["terapi","gun","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
+            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
             background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
             color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
