@@ -551,19 +551,6 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
 
-  // iOS AudioContext unlock: create ctx on first touch so it's ready
-  useEffect(() => {
-    const unlock = () => {
-      if (!window.__sakinAudioCtx) {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        ctx.resume();
-        window.__sakinAudioCtx = ctx;
-      }
-      document.removeEventListener("touchstart", unlock, true);
-    };
-    document.addEventListener("touchstart", unlock, true);
-    return () => document.removeEventListener("touchstart", unlock, true);
-  }, []);
 
   const progress  = Math.min(elapsed/TERAPI_TOTAL,1);
   const remaining = TERAPI_TOTAL-elapsed;
@@ -599,37 +586,37 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const gainRef     = useRef(null);
 
   const stopTone = () => {
-    if (gainRef.current && audioCtxRef.current) {
-      gainRef.current.gain.linearRampToValueAtTime(0, audioCtxRef.current.currentTime + 0.8);
+    const ctx = audioCtxRef.current;
+    if (gainRef.current && ctx) {
+      gainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
     }
     setTimeout(() => {
-      oscRef.current?.stop(); oscRef.current = null;
-      audioCtxRef.current?.suspend();
+      try { oscRef.current?.stop(); } catch(_) {}
+      oscRef.current = null;
+      gainRef.current = null;
+      try { audioCtxRef.current?.close(); } catch(_) {}
+      audioCtxRef.current = null;
     }, 820);
     setToneOn(false);
   };
 
   const toggleTone = (hz) => {
     if (toneOn) { stopTone(); return; }
-    if (!audioCtxRef.current) {
-      audioCtxRef.current = window.__sakinAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      window.__sakinAudioCtx = audioCtxRef.current;
-    }
-    const ctx = audioCtxRef.current;
-    ctx.resume().then(() => {
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
-      gain.connect(ctx.destination);
-      gainRef.current = gain;
-      const osc = ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.value = hz;
-      osc.connect(gain);
-      osc.start();
-      oscRef.current = osc;
-      setToneOn(true);
-    });
+    // iOS Safari: AudioContext must be created synchronously inside user gesture
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    audioCtxRef.current = ctx;
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
+    gain.connect(ctx.destination);
+    gainRef.current = gain;
+    const osc = ctx.createOscillator();
+    osc.type = "sine";
+    osc.frequency.value = hz;
+    osc.connect(gain);
+    osc.start();
+    oscRef.current = osc;
+    setToneOn(true);
   };
 
   const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
@@ -1795,88 +1782,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
-          {/* DOĞUM PROFİLİ KARTI */}
-          <div style={{ background:"linear-gradient(135deg,rgba(60,40,120,0.12),rgba(100,60,160,0.06))",border:"1px solid rgba(100,70,180,0.18)",borderRadius:17,padding:"16px 20px",marginBottom:14,marginTop:10 }}>
-            <div style={{ fontSize:10,letterSpacing:3.5,color:"#7a60b0",marginBottom:12,textAlign:"center" }}>{t("birth_profile")}</div>
-            {astro && !showBirthForm ? (
-              <div>
-                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14 }}>
-                  {[
-                    {label:t("birth_sign"),value:astro.burc},
-                    {label:t("birth_life_path"),value:astro.yasam},
-                    {label:t("birth_personal_yr"),value:astro.kisiselYil},
-                  ].map((s,i)=>(
-                    <div key={i} style={{ background:"rgba(255,255,255,0.025)",borderRadius:10,padding:"9px 10px",textAlign:"center",border:"1px solid rgba(255,255,255,0.04)" }}>
-                      <div style={{ fontSize:8,letterSpacing:2,color:"#5a4a7a",marginBottom:5 }}>{s.label.toUpperCase()}</div>
-                      <div style={{ fontSize:16,color:"#c3a6d8",fontWeight:300 }}>{s.value}</div>
-                    </div>
-                  ))}
-                </div>
-                {/* Biyoritm çubukları */}
-                <div style={{ fontSize:9,letterSpacing:2,color:"#5a4a7a",marginBottom:7 }}>{t("bio_label")}</div>
-                {[
-                  {label:t("bio_physical"),val:astro.bio.fiziksel,color:"#e8a09a"},
-                  {label:t("bio_emotional"),val:astro.bio.duygusal,color:"#85c1e9"},
-                  {label:t("bio_mental"),val:astro.bio.zihinsel,color:"#aed581"},
-                ].map(({label,val,color})=>{
-                  const {pct,positive}=bioritmBar(val);
-                  return (
-                    <div key={label} style={{ marginBottom:7 }}>
-                      <div style={{ display:"flex",justifyContent:"space-between",marginBottom:3 }}>
-                        <span style={{ fontSize:10,color:"#6a5a8a",letterSpacing:1 }}>{label}</span>
-                        <span style={{ fontSize:10,color:positive?color:"#6a5a6a" }}>{positive?"+":""}{val}%</span>
-                      </div>
-                      <div style={{ background:"rgba(255,255,255,0.04)",borderRadius:4,height:4,overflow:"hidden" }}>
-                        <div style={{ height:"100%",width:`${pct}%`,background:positive?`${color}99`:"rgba(120,100,140,0.4)",borderRadius:4,transition:"width 0.8s ease",marginLeft:positive?"50%":`calc(50% - ${pct}%)` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-                {birthTime && (
-                  <div style={{ fontSize:11,color:"#7a6a9a",letterSpacing:1.5,marginTop:8,marginBottom:2,textAlign:"center" }}>
-                    ◷ {birthTime} {t("birth_time_label")}
-                  </div>
-                )}
-                <button onClick={()=>setShowBirthForm(true)}
-                  style={{ marginTop:10,background:"none",border:"none",color:"#4a3a6a",cursor:"pointer",fontSize:10,letterSpacing:2 }}>
-                  {t("change_date")}
-                </button>
-              </div>
-            ) : showBirthForm || !astro ? (
-              <div>
-                <div style={{ fontSize:12,color:"#5a4a7a",marginBottom:10,lineHeight:1.7,textAlign:"center" }}>
-                  {t("birth_desc").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
-                </div>
-                <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_date_label")}</div>
-                  <input type="date" className="sakin-input"
-                    style={{ fontSize:16,letterSpacing:0.5 }}
-                    value={birthInput}
-                    onChange={e=>setBirthInput(e.target.value)} />
-                </div>
-                <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:10,letterSpacing:2,color:"#5a4a7a",marginBottom:6 }}>{t("birth_time_input")} <span style={{ color:"#3a2a5a",fontSize:9,letterSpacing:1 }}>{t("optional")}</span></div>
-                  <input type="time" className="sakin-input"
-                    style={{ fontSize:16,letterSpacing:0.5 }}
-                    value={birthTimeInput}
-                    onChange={e=>setBirthTimeInput(e.target.value)} />
-                </div>
-                <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                  {astro && <button className="sakin-btn" onClick={()=>setShowBirthForm(false)}>{t("cancel")}</button>}
-                  <button className="sakin-btn-primary"
-                    style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.6),rgba(60,80,160,0.4))",borderColor:"rgba(100,70,180,0.4)",fontSize:12 }}
-                    onClick={()=>{
-                      if(!birthInput) return;
-                      localStorage.setItem("sakin_birth_date", birthInput);
-                      setBirthDate(birthInput);
-                      if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                      setShowBirthForm(false);
-                    }}>{t("save")}</button>
-                </div>
-              </div>
-            ) : null}
-          </div>
-
           <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
         </div>
       )}
