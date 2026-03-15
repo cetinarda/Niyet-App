@@ -643,16 +643,15 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     setToneOn(false);
   };
 
-  const toggleTone = async (hz) => {
+  const toggleTone = (hz) => {
     if (toneOn) { stopTone(); return; }
     if (!audioCtxRef.current) {
       audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
     }
     const ctx = audioCtxRef.current;
-    await ctx.resume();
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.2);
+    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
     gain.connect(ctx.destination);
     gainRef.current = gain;
     const osc = ctx.createOscillator();
@@ -661,6 +660,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     osc.connect(gain);
     osc.start();
     oscRef.current = osc;
+    ctx.resume();
     setToneOn(true);
   };
 
