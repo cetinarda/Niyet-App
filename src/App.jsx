@@ -552,10 +552,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const particleRef = useRef(null);
 
 
-  const progress  = Math.min(elapsed/TERAPI_TOTAL,1);
-  const remaining = TERAPI_TOTAL-elapsed;
-  const mins = String(Math.floor(remaining/60)).padStart(2,"0");
-  const secs = String(remaining%60).padStart(2,"0");
+  const progress     = Math.min(elapsed/TERAPI_TOTAL,1);
+  const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
+  const displaySecs  = String(elapsed%60).padStart(2,"0");
 
   const playBeep = (freq=880, dur=0.14, vol=0.22) => {
     try {
@@ -572,20 +571,17 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   };
 
   useEffect(() => {
-    if (tPhase!=="active") return;
-    setShowCloseEyes(false);
+    if (tPhase!=="active" && tPhase!=="connected") return;
+    if (tPhase==="active") setShowCloseEyes(false);
     timerRef.current = setInterval(() => {
       setElapsed(e => {
         const next = e + 1;
-        if (next >= TERAPI_TOTAL) {
-          clearInterval(timerRef.current);
-          setTPhase("done");
-          return TERAPI_TOTAL;
-        }
         if (next === 5) setShowCloseEyes(true);
-        // Son 3 saniye: dıt sesi (remaining = TERAPI_TOTAL - next)
-        const remaining = TERAPI_TOTAL - next;
-        if (remaining <= 3 && remaining >= 1) playBeep(880, 0.14, 0.22);
+        // Bağlantı öncesi uyarı: kalan 7, 5, 3. saniyede dıt
+        const rem = TERAPI_TOTAL - next;
+        if (rem === 7 || rem === 5 || rem === 3) playBeep(880, 0.14, 0.22);
+        // 60. saniyede "connected" fazına geç ama timer durma
+        if (next === TERAPI_TOTAL) setTPhase("connected");
         return next;
       });
     },1000);
@@ -593,8 +589,8 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   },[tPhase]);
 
   useEffect(() => {
-    if (tPhase!=="done" || !selected) return;
-    // Bitiş: kısa dıt + konuşma bildirimi
+    if (tPhase!=="connected" || !selected) return;
+    // Bağlantı kuruldu: yükselen dıt + konuşma bildirimi
     playBeep(660, 0.22, 0.28);
     setTimeout(() => playBeep(880, 0.22, 0.28), 300);
     setTimeout(() => playBeep(1100, 0.35, 0.25), 600);
@@ -613,7 +609,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   }, [tPhase]);
 
   useEffect(() => {
-    if (tPhase!=="active") return;
+    if (tPhase!=="active" && tPhase!=="connected") return;
     particleRef.current = setInterval(() => {
       setParticles(prev => {
         const p = { id:Date.now()+Math.random(), x:33+Math.random()*34, y:42+Math.random()*22, size:3+Math.random()*5, dur:2+Math.random()*3, dx:(Math.random()-0.5)*65, dy:-(38+Math.random()*65) };
@@ -815,8 +811,11 @@ function TerapiScreen({ onBack, lang = "tr" }) {
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
       </div>
-      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{mins}:{secs}</div>
-      <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{displayMins}:{displaySecs}</div>
+      {tPhase==="connected"
+        ? <div style={{ fontSize:9,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
+        : <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+      }
       {selected.hz && (
         <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#4a5a6a",fontSize:10,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
