@@ -556,18 +556,28 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
   const displaySecs  = String(elapsed%60).padStart(2,"0");
 
-  const playBeep = (freq=880, dur=0.14, vol=0.22) => {
+  // Şifalı çan / singing bowl sesi: harmoniklerle zenginleştirilmiş
+  const playChime = (freq=432, vol=0.18, dur=2.8) => {
     try {
       const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const g = ctx.createGain();
-      g.gain.setValueAtTime(vol, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0, ctx.currentTime + dur);
-      g.connect(ctx.destination);
-      const o = ctx.createOscillator();
-      o.type = "sine"; o.frequency.value = freq;
-      o.connect(g); o.start(); o.stop(ctx.currentTime + dur);
-      o.onended = () => ctx.close();
+      // Temel frekans + üst harmonikler (singing bowl oranları)
+      [[1, vol], [2.76, vol*0.28], [5.4, vol*0.10]].forEach(([ratio, amp]) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = freq * ratio;
+        g.gain.setValueAtTime(0, ctx.currentTime);
+        g.gain.linearRampToValueAtTime(amp, ctx.currentTime + 0.025);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + dur);
+      });
+      setTimeout(() => { try { ctx.close(); } catch(_){} }, (dur+0.2)*1000);
     } catch(_) {}
+  };
+
+  // Bağlantı tamamlanma akoru: 3 çan eş zamanlı
+  const playConnectedChord = () => {
+    [396, 528, 660].forEach((f, i) => setTimeout(() => playChime(f, 0.16, 3.5), i*180));
   };
 
   useEffect(() => {
@@ -577,9 +587,11 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       setElapsed(e => {
         const next = e + 1;
         if (next === 5) setShowCloseEyes(true);
-        // Bağlantı öncesi uyarı: kalan 7, 5, 3. saniyede dıt
+        // Bağlantı öncesi uyarı: kalan 7, 5, 3. saniyede yükselen çan
         const rem = TERAPI_TOTAL - next;
-        if (rem === 7 || rem === 5 || rem === 3) playBeep(880, 0.14, 0.22);
+        if (rem === 7) playChime(396, 0.14, 2.0);
+        if (rem === 5) playChime(432, 0.16, 2.0);
+        if (rem === 3) playChime(528, 0.18, 2.2);
         // 60. saniyede "connected" fazına geç ama timer durma
         if (next === TERAPI_TOTAL) setTPhase("connected");
         return next;
@@ -590,21 +602,19 @@ function TerapiScreen({ onBack, lang = "tr" }) {
 
   useEffect(() => {
     if (tPhase!=="connected" || !selected) return;
-    // Bağlantı kuruldu: yükselen dıt + konuşma bildirimi
-    playBeep(660, 0.22, 0.28);
-    setTimeout(() => playBeep(880, 0.22, 0.28), 300);
-    setTimeout(() => playBeep(1100, 0.35, 0.25), 600);
+    // Bağlantı kuruldu: harmonik akor + konuşma bildirimi
+    playConnectedChord();
     if ("speechSynthesis" in window) {
       setTimeout(() => {
         const msg = t("connected_voice", selected.name);
         const utt = new SpeechSynthesisUtterance(msg);
         utt.lang = lang === "tr" ? "tr-TR" : "en-US";
-        utt.rate = 0.88;
-        utt.pitch = 1.0;
-        utt.volume = 0.9;
+        utt.rate = 0.82;
+        utt.pitch = 0.95;
+        utt.volume = 0.88;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utt);
-      }, 900);
+      }, 1400);
     }
   }, [tPhase]);
 
@@ -767,7 +777,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     </div>
   );
 
-  if (tPhase==="active"&&selected) return (
+  if ((tPhase==="active"||tPhase==="connected")&&selected) return (
     <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"100vh" }}>
       {showBackConfirm && (
         <div style={{ position:"fixed",inset:0,zIndex:50,background:"rgba(4,8,16,0.88)",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px" }}>
