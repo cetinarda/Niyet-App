@@ -413,10 +413,8 @@ async function sendNotif(title, body) {
 function ReminderScreen({ onBack, onNext, lang = "tr" }) {
   const t = makeTrans(lang);
   const REMINDERS = getReminders(lang);
-  const [done,    setDone]    = useState({});
-  const [sent,    setSent]    = useState({});
-  const [timing,  setTiming]  = useState(null);
-  const [notifOk, setNotifOk] = useState(null);
+  const [done,   setDone]   = useState({});
+  const [timing, setTiming] = useState(null);
   const timerRef = useRef(null);
 
   const completedCount = Object.values(done).filter(Boolean).length;
@@ -445,27 +443,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
     }, 1000);
   };
 
-  const handleNotif = async (rem) => {
-    const result = await sendNotif("Sakin · " + rem.title, rem.notifBody);
-    if (result !== "sent") { setNotifOk(false); return; }
-    setNotifOk(true);
-    setSent(p => ({ ...p, [rem.id]: true }));
-    setTimeout(() => setSent(p => ({ ...p, [rem.id]: false })), 4000);
-  };
-
-  const sendAllNotifs = async () => {
-    if (!("Notification" in window)) { setNotifOk(false); return; }
-    const perm = await Notification.requestPermission();
-    if (perm !== "granted") { setNotifOk(false); return; }
-    setNotifOk(true);
-    REMINDERS.forEach((rem, i) => {
-      setTimeout(() => {
-        new Notification("Sakin · " + rem.title, { body: rem.notifBody });
-        setSent(p => ({ ...p, [rem.id]: true }));
-      }, i * 600);
-    });
-  };
-
   useEffect(() => () => clearInterval(timerRef.current), []);
 
   return (
@@ -490,21 +467,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
           transition:"width 0.5s ease",
         }} />
       </div>
-
-      {notifOk === false && (
-        <div style={{ background:"rgba(200,80,80,0.12)", border:"1px solid rgba(200,80,80,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#e8a0a0", lineHeight:1.6 }}>
-          {t("notif_denied")}
-        </div>
-      )}
-      {notifOk === true && (
-        <div style={{ background:"rgba(80,180,100,0.1)", border:"1px solid rgba(80,180,100,0.22)", borderRadius:12, padding:"10px 14px", marginBottom:14, fontSize:13, color:"#82d9a3", lineHeight:1.6, animation:"fadeIn 0.4s ease" }}>
-          {t("notif_sent_ok")}
-        </div>
-      )}
-
-      <button className="sakin-btn" style={{ width:"100%", marginBottom:18, fontSize:12, letterSpacing:2 }} onClick={sendAllNotifs}>
-        {t("send_all")}
-      </button>
 
       <div style={{ maxHeight:"60vh", overflowY:"auto", paddingRight:2, scrollbarWidth:"none" }}>
         {REMINDERS.map((rem, i) => {
@@ -557,9 +519,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
                   </div>
                 )}
               </div>
-              <button className={`notif-btn ${sent[rem.id]?"sent":""}`} onClick={() => handleNotif(rem)}>
-                {sent[rem.id] ? t("sent_label") : t("notify_label")}
-              </button>
             </div>
           );
         })}
@@ -578,13 +537,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
         </div>
       )}
 
-      <button
-        className="sakin-btn-primary"
-        onClick={onNext}
-        style={{ width:"100%", marginTop:22, fontSize:12, letterSpacing:2 }}
-      >
-        {t("btn_to_evening")}
-      </button>
     </div>
   );
 }
@@ -598,6 +550,20 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const [particles,setParticles]= useState([]);
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
+
+  // iOS AudioContext unlock: create ctx on first touch so it's ready
+  useEffect(() => {
+    const unlock = () => {
+      if (!window.__sakinAudioCtx) {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        ctx.resume();
+        window.__sakinAudioCtx = ctx;
+      }
+      document.removeEventListener("touchstart", unlock, true);
+    };
+    document.addEventListener("touchstart", unlock, true);
+    return () => document.removeEventListener("touchstart", unlock, true);
+  }, []);
 
   const progress  = Math.min(elapsed/TERAPI_TOTAL,1);
   const remaining = TERAPI_TOTAL-elapsed;
@@ -646,7 +612,8 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const toggleTone = (hz) => {
     if (toneOn) { stopTone(); return; }
     if (!audioCtxRef.current) {
-      audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      audioCtxRef.current = window.__sakinAudioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      window.__sakinAudioCtx = audioCtxRef.current;
     }
     const ctx = audioCtxRef.current;
     const gain = ctx.createGain();

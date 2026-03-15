@@ -89,15 +89,9 @@ export const TRANS = {
     main_screen:       "ana ekran",
 
     // Hatırlatıcılar
-    day_label:         "GÜN İÇİ",
-    reminders_title:   "Hatırlatıcılar",
-    send_all:          "📲 Tüm hatırlatıcıları telefona gönder",
-    notif_denied:      "Bildirim izni gerekli. Tarayıcı ayarlarından izin ver.",
-    notif_sent_ok:     "✦ Bildirim gönderildi",
-    sent_label:        "✓ gönderildi",
-    notify_label:      "bildir",
+    day_label:         "BUGÜN",
+    reminders_title:   "Bugün bunları yaptın mı?",
     all_done_msg:      "Bugün kendine dokundun.",
-    btn_to_evening:    "akşam kapanışına geç →",
 
     // Akşam
     evening_label:     "AKŞAM KAPANIŞI",
@@ -371,15 +365,9 @@ export const TRANS = {
     main_screen:       "main screen",
 
     // Hatırlatıcılar
-    day_label:         "DURING THE DAY",
-    reminders_title:   "Reminders",
-    send_all:          "📲 Send all reminders to phone",
-    notif_denied:      "Notification permission required. Allow in browser settings.",
-    notif_sent_ok:     "✦ Notification sent",
-    sent_label:        "✓ sent",
-    notify_label:      "notify",
+    day_label:         "TODAY",
+    reminders_title:   "Did you do these today?",
     all_done_msg:      "Today you touched yourself.",
-    btn_to_evening:    "go to evening close →",
 
     // Akşam
     evening_label:     "EVENING CLOSE",
