@@ -557,18 +557,60 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const mins = String(Math.floor(remaining/60)).padStart(2,"0");
   const secs = String(remaining%60).padStart(2,"0");
 
+  const playBeep = (freq=880, dur=0.14, vol=0.22) => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(vol, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0, ctx.currentTime + dur);
+      g.connect(ctx.destination);
+      const o = ctx.createOscillator();
+      o.type = "sine"; o.frequency.value = freq;
+      o.connect(g); o.start(); o.stop(ctx.currentTime + dur);
+      o.onended = () => ctx.close();
+    } catch(_) {}
+  };
+
   useEffect(() => {
     if (tPhase!=="active") return;
     setShowCloseEyes(false);
     timerRef.current = setInterval(() => {
       setElapsed(e => {
-        if (e>=TERAPI_TOTAL) { clearInterval(timerRef.current); setTPhase("done"); return TERAPI_TOTAL; }
-        if (e+1 === 5) setShowCloseEyes(true);
-        return e+1;
+        const next = e + 1;
+        if (next >= TERAPI_TOTAL) {
+          clearInterval(timerRef.current);
+          setTPhase("done");
+          return TERAPI_TOTAL;
+        }
+        if (next === 5) setShowCloseEyes(true);
+        // Son 3 saniye: dıt sesi (remaining = TERAPI_TOTAL - next)
+        const remaining = TERAPI_TOTAL - next;
+        if (remaining <= 3 && remaining >= 1) playBeep(880, 0.14, 0.22);
+        return next;
       });
     },1000);
     return () => clearInterval(timerRef.current);
   },[tPhase]);
+
+  useEffect(() => {
+    if (tPhase!=="done" || !selected) return;
+    // Bitiş: kısa dıt + konuşma bildirimi
+    playBeep(660, 0.22, 0.28);
+    setTimeout(() => playBeep(880, 0.22, 0.28), 300);
+    setTimeout(() => playBeep(1100, 0.35, 0.25), 600);
+    if ("speechSynthesis" in window) {
+      setTimeout(() => {
+        const msg = t("connected_voice", selected.name);
+        const utt = new SpeechSynthesisUtterance(msg);
+        utt.lang = lang === "tr" ? "tr-TR" : "en-US";
+        utt.rate = 0.88;
+        utt.pitch = 1.0;
+        utt.volume = 0.9;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utt);
+      }, 900);
+    }
+  }, [tPhase]);
 
   useEffect(() => {
     if (tPhase!=="active") return;
@@ -622,7 +664,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
+  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
