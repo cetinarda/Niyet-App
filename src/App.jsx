@@ -559,9 +559,11 @@ function TerapiScreen({ onBack, lang = "tr" }) {
 
   useEffect(() => {
     if (tPhase!=="active") return;
+    setShowCloseEyes(false);
     timerRef.current = setInterval(() => {
       setElapsed(e => {
         if (e>=TERAPI_TOTAL) { clearInterval(timerRef.current); setTPhase("done"); return TERAPI_TOTAL; }
+        if (e+1 === 5) setShowCloseEyes(true);
         return e+1;
       });
     },1000);
@@ -580,6 +582,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   },[tPhase]);
 
   const [showBackConfirm, setShowBackConfirm] = useState(false);
+  const [showCloseEyes,  setShowCloseEyes]  = useState(false);
   const [toneOn, setToneOn] = useState(false);
   const audioCtxRef = useRef(null);
   const oscRef      = useRef(null);
@@ -619,7 +622,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
+  const resetTerapi = () => { stopTone(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -660,22 +663,64 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     </div>
   );
 
+  const positionSvg = (c, prog=0) => {
+    const HP = {
+      "Kök":{hy:83,lx:57,rx:91},"Sakral":{hy:77,lx:59,rx:89},
+      "Güneş Pleksusu":{hy:68,lx:60,rx:88},"Kalp":{hy:57,lx:61,rx:87},
+      "Boğaz":{hy:37,lx:68,rx:80},"Üçüncü Göz":{hy:17,lx:66,rx:82},
+      "Taç":{hy:10,lx:67,rx:81},"Yeryüzü Yıldızı":{hy:116,lx:63,rx:85},
+      "Ruh":{hy:57,lx:61,rx:87},"Kabartma":{hy:63,lx:60,rx:88},
+      "Diyafram":{hy:73,lx:59,rx:89},"Güneş":{hy:57,lx:61,rx:87},
+      "Paylaşım":{hy:57,lx:61,rx:87},"Thymus":{hy:49,lx:62,rx:86},
+      "Ses Üstü":{hy:42,lx:66,rx:82},"Orion":{hy:19,lx:65,rx:83},
+      "Alta Major":{hy:22,lx:65,rx:83},"Stellar Gateway":{hy:6,lx:67,rx:81},
+      "Soul Star":{hy:6,lx:67,rx:81},"Causal":{hy:19,lx:65,rx:83},
+      "Lunar":{hy:77,lx:59,rx:89},"Zeta":{hy:63,lx:60,rx:88},
+    };
+    const {hy=57,lx=61,rx=87}=HP[c.name]||{};
+    const up=hy<49; const my=(49+hy)/2;
+    const lArm=up?`M53 49 Q55 ${my} ${lx} ${hy}`:`M53 49 Q37 ${my} ${lx} ${hy}`;
+    const rArm=up?`M95 49 Q93 ${my} ${rx} ${hy}`:`M95 49 Q111 ${my} ${rx} ${hy}`;
+    const cl=c.pastel, cg=c.color;
+    return (
+      <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
+        <circle cx="74" cy="20" r="13" stroke={`${cl}88`} strokeWidth="1.2" fill="none" />
+        <line x1="74" y1="33" x2="74" y2="41" stroke={`${cl}66`} strokeWidth="1.2" />
+        <path d="M51 41 Q74 39 97 41 L95 87 Q74 91 53 87Z" stroke={`${cl}55`} strokeWidth="1.2" fill={`${cg}0a`} />
+        <path d="M65 87 Q63 105 61 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+        <path d="M83 87 Q85 105 87 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+        <path d={lArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+        <path d={rArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+        <circle cx={lx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+prog*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
+        <circle cx={rx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+prog*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
+        <circle cx="74" cy={hy} r={4+prog*8} fill={`${cg}${hex(0.06+prog*0.18)}`} stroke={`${cl}${hex(0.28+prog*0.5)}`} strokeWidth="0.8" />
+        {[0,45,90,135,180,225,270,315].map((a,i)=>(
+          <line key={i} x1="74" y1={hy}
+            x2={74+Math.cos(a*Math.PI/180)*(9+prog*14)} y2={hy+Math.sin(a*Math.PI/180)*(9+prog*14)}
+            stroke={`${cl}${hex((0.1+prog*0.28)*(i%2?0.5:1))}`} strokeWidth="0.8" strokeLinecap="round" />
+        ))}
+      </svg>
+    );
+  };
+
   if (tPhase==="intro"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
-      <div style={{ marginBottom:32 }}>
+      <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:10,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
       </div>
-      <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 24px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
+      <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 20px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
       <div style={{ fontSize:11,letterSpacing:3,color:selected.pastel,marginBottom:16 }}>{selected.element.toUpperCase()}</div>
       {selected.hz && (
-        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:24,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}66`,borderRadius:20,padding:"6px 18px",color:selected.pastel,fontSize:11,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
+        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:20,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}66`,borderRadius:20,padding:"6px 18px",color:selected.pastel,fontSize:11,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
         </button>
       )}
-      <div style={{ fontSize:14,color:"#6a7a8a",lineHeight:1.9,marginBottom:40,fontStyle:"italic" }}>
-        {t("intro_place_hand", selected.name)}<br />{t("intro_close_eyes")}<br />{selected.desc}
+      {/* Pozisyon göstergesi */}
+      <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
+      <div style={{ fontSize:12,color:"#5a6a7a",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
+        {t("intro_place_hand", selected.name)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
@@ -736,47 +781,13 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         </button>
       )}
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
-        {(()=>{
-          const HP = {
-            "Kök":             {hy:83,lx:57,rx:91}, "Sakral":          {hy:77,lx:59,rx:89},
-            "Güneş Pleksusu":  {hy:68,lx:60,rx:88}, "Kalp":            {hy:57,lx:61,rx:87},
-            "Boğaz":           {hy:37,lx:68,rx:80}, "Üçüncü Göz":      {hy:17,lx:66,rx:82},
-            "Taç":             {hy:10,lx:67,rx:81}, "Yeryüzü Yıldızı": {hy:116,lx:63,rx:85},
-            "Ruh":             {hy:57,lx:61,rx:87}, "Kabartma":        {hy:63,lx:60,rx:88},
-            "Diyafram":        {hy:73,lx:59,rx:89}, "Güneş":           {hy:57,lx:61,rx:87},
-            "Paylaşım":        {hy:57,lx:61,rx:87}, "Thymus":          {hy:49,lx:62,rx:86},
-            "Ses Üstü":        {hy:42,lx:66,rx:82}, "Orion":           {hy:19,lx:65,rx:83},
-            "Alta Major":      {hy:22,lx:65,rx:83}, "Stellar Gateway": {hy:6, lx:67,rx:81},
-            "Soul Star":       {hy:6, lx:67,rx:81}, "Causal":          {hy:19,lx:65,rx:83},
-            "Lunar":           {hy:77,lx:59,rx:89}, "Zeta":            {hy:63,lx:60,rx:88},
-          };
-          const {hy=57,lx=61,rx=87} = HP[selected.name]||{};
-          const up = hy<49;
-          const my = (49+hy)/2;
-          const lArm = up ? `M53 49 Q55 ${my} ${lx} ${hy}` : `M53 49 Q37 ${my} ${lx} ${hy}`;
-          const rArm = up ? `M95 49 Q93 ${my} ${rx} ${hy}` : `M95 49 Q111 ${my} ${rx} ${hy}`;
-          const cl=selected.pastel, cg=selected.color;
-          return (
-            <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
-              <circle cx="74" cy="20" r="13" stroke={`${cl}88`} strokeWidth="1.2" fill="none" />
-              <line x1="74" y1="33" x2="74" y2="41" stroke={`${cl}66`} strokeWidth="1.2" />
-              <path d="M51 41 Q74 39 97 41 L95 87 Q74 91 53 87Z" stroke={`${cl}55`} strokeWidth="1.2" fill={`${cg}0a`} />
-              <path d="M65 87 Q63 105 61 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
-              <path d="M83 87 Q85 105 87 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
-              <path d={lArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
-              <path d={rArm} stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
-              <circle cx={lx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+progress*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
-              <circle cx={rx} cy={hy} r="3.2" fill={`${cg}${hex(0.3+progress*0.5)}`} stroke={`${cl}88`} strokeWidth="0.8" />
-              <circle cx="74" cy={hy} r={4+progress*8} fill={`${cg}${hex(0.06+progress*0.18)}`} stroke={`${cl}${hex(0.28+progress*0.5)}`} strokeWidth="0.8" />
-              {[0,45,90,135,180,225,270,315].map((a,i)=>(
-                <line key={i} x1="74" y1={hy}
-                  x2={74+Math.cos(a*Math.PI/180)*(9+progress*14)} y2={hy+Math.sin(a*Math.PI/180)*(9+progress*14)}
-                  stroke={`${cl}${hex((0.1+progress*0.28)*(i%2?0.5:1))}`} strokeWidth="0.8" strokeLinecap="round" />
-              ))}
-            </svg>
-          );
-        })()}
+        {positionSvg(selected, progress)}
       </div>
+      {showCloseEyes && (
+        <div style={{ fontSize:12,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
+          {t("close_eyes_hint")}
+        </div>
+      )}
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:16,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
         {progress<0.25 && t("progress_p1")}
         {progress>=0.25&&progress<0.5  && t("progress_p2", selected.name)}
