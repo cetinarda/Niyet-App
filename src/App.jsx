@@ -551,16 +551,32 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const [particles,setParticles]= useState([]);
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
+  const chimeCxtRef = useRef(null);
 
 
   const progress     = Math.min(elapsed/TERAPI_TOTAL,1);
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
   const displaySecs  = String(elapsed%60).padStart(2,"0");
 
+  // iOS/Android için AudioContext'i kullanıcı gesture'ında unlock et
+  const unlockChimeCtx = () => {
+    try {
+      if (!chimeCxtRef.current) {
+        chimeCxtRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (chimeCxtRef.current.state === "suspended") chimeCxtRef.current.resume();
+      // Sessiz buffer çal — iOS kilidi açar
+      const buf = chimeCxtRef.current.createBuffer(1,1,22050);
+      const src = chimeCxtRef.current.createBufferSource();
+      src.buffer = buf; src.connect(chimeCxtRef.current.destination); src.start(0);
+    } catch(_) {}
+  };
+
   // Şifalı çan / singing bowl sesi: harmoniklerle zenginleştirilmiş
   const playChime = (freq=432, vol=0.18, dur=2.8) => {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = chimeCxtRef.current || new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === "suspended") { ctx.resume(); }
       // Temel frekans + üst harmonikler (singing bowl oranları)
       [[1, vol], [2.76, vol*0.28], [5.4, vol*0.10]].forEach(([ratio, amp]) => {
         const o = ctx.createOscillator();
@@ -572,7 +588,6 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         o.connect(g); g.connect(ctx.destination);
         o.start(); o.stop(ctx.currentTime + dur);
       });
-      setTimeout(() => { try { ctx.close(); } catch(_){} }, (dur+0.2)*1000);
     } catch(_) {}
   };
 
@@ -671,7 +686,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); };
+  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); try { chimeCxtRef.current?.close(); } catch(_){} chimeCxtRef.current = null; };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -774,7 +789,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
-        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => setTPhase("active")}>{t("btn_start")}</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); setTPhase("active"); }}>{t("btn_start")}</button>
       </div>
     </div>
   );
@@ -799,7 +814,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>setShowBackConfirm(true)} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
+        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
       </div>
       <div style={{ fontSize:10,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
@@ -1798,7 +1813,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep.id)}>
-                {nextStep.id==="sabah" ? (lang==="tr"?"OYUNA BAŞLA →":"START THE JOURNEY →") : `${nextStep.icon} ${nextStep.label} — ${lang==="tr"?"başla →":"start →"}`}
+                {nextStep.id==="sabah" ? (lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →") : `${nextStep.icon} ${nextStep.label} — ${lang==="tr"?"başla →":"start →"}`}
               </button>
             ):null}
 
