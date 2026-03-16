@@ -558,6 +558,18 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
   const displaySecs  = String(elapsed%60).padStart(2,"0");
 
+  // Mobilde arka plana geçince AudioContext suspend olur; geri gelince resume et
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!document.hidden) {
+        try { chimeCxtRef.current?.resume(); } catch(_) {}
+        try { audioCtxRef.current?.resume(); } catch(_) {}
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
   // iOS/Android için AudioContext'i kullanıcı gesture'ında unlock et
   const unlockChimeCtx = () => {
     try {
@@ -672,6 +684,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     // iOS Safari: AudioContext must be created synchronously inside user gesture
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtxRef.current = ctx;
+    ctx.resume();
     const gain = ctx.createGain();
     gain.gain.setValueAtTime(0, ctx.currentTime);
     gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
@@ -789,7 +802,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
-        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); setTPhase("active"); }}>{t("btn_start")}</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
       </div>
     </div>
   );
