@@ -704,7 +704,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         {CHAKRAS_22.map((c,i) => (
           <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
             style={{ marginBottom:8, animationDelay:`${i*0.04}s`, opacity:0 }}
-            onClick={() => setSelected(c)}>
+            onClick={() => { setSelected(c); setTPhase("intro"); }}>
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
             <div style={{ flex:1 }}>
               <div style={{ fontSize:14, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
