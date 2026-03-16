@@ -679,12 +679,13 @@ function TerapiScreen({ onBack, lang = "tr" }) {
     <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
-        <div>
+        <div style={{ flex:1 }}>
           <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:22, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#3a4a5a", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
       </div>
-      <div style={{ maxHeight:"62vh", overflowY:"auto", paddingRight:4, scrollbarWidth:"none" }}>
+      <div style={{ paddingRight:4, scrollbarWidth:"none" }}>
         {CHAKRAS_22.map((c,i) => (
           <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
             style={{ marginBottom:8, animationDelay:`${i*0.04}s`, opacity:0 }}
