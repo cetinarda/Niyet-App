@@ -2653,23 +2653,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
+            // On mandala screen: only rehber (Ayna) and mandala (Harita) are enabled
+            const isOnMandala = screen==="mandala";
+            const disabledOnMandala = isOnMandala && n.id!=="rehber" && n.id!=="mandala";
             return (
-              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              <button key={n.id}
+                onClick={()=>{ if(disabledOnMandala) return; if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
-                  cursor:"pointer",
+                  cursor: disabledOnMandala ? "default" : "pointer",
                   transition:"all 0.28s",
                   padding:"5px 8px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:2,
                   minWidth:36,
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
+                  opacity: disabledOnMandala ? 0.22 : 1,
+                  pointerEvents: disabledOnMandala ? "none" : "auto",
                 }}>
                 <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
                 <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
@@ -2684,7 +2690,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
-            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
+            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade","giris"].includes(screen) ? 80 : 24,
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
             background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
             color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
