@@ -55,6 +55,15 @@ export const TRANS = {
     breath_hold:   "tut",
     breath_exhale: "ver",
     breath_rest:   "dinlen",
+    breath_choose: "MOD SEÇ",
+    breath_calming:"GÜN İÇİ SAKİNLEŞTİRME",
+    breath_change: "← mod değiştir",
+    breath_mode_standart:    "Standart",
+    breath_mode_diyafram:    "Diyafram",
+    breath_mode_akciger:     "Akciğer",
+    breath_mode_478:         "4-7-8",
+    breath_mode_kutu:        "Kutu",
+    breath_mode_sakinletici: "Sakinleştirici",
 
     // Çakra
     chakra_subtitle:   "REİKİ · GÜNÜN ÇAKRASI",
@@ -334,6 +343,15 @@ export const TRANS = {
     breath_hold:   "hold",
     breath_exhale: "exhale",
     breath_rest:   "rest",
+    breath_choose: "CHOOSE MODE",
+    breath_calming:"DAILY CALM",
+    breath_change: "← change mode",
+    breath_mode_standart:    "Standard",
+    breath_mode_diyafram:    "Diaphragm",
+    breath_mode_akciger:     "Lung",
+    breath_mode_478:         "4-7-8",
+    breath_mode_kutu:        "Box",
+    breath_mode_sakinletici: "Calming",
 
     // Çakra
     chakra_subtitle:   "REIKI · TODAY'S CHAKRA",

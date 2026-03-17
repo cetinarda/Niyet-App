@@ -162,6 +162,15 @@ const REMINDERS_EN = [
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
 const REMINDERS = REMINDERS_TR;
 
+const BREATH_MODES_CONFIG = {
+  standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
+  diyafram:    { in: 4000, hold: 0,    out: 6000,  hold2: 0,    total: 10000 },
+  akciger:     { in: 5000, hold: 2000, out: 7000,  hold2: 0,    total: 14000 },
+  "478":       { in: 4000, hold: 7000, out: 8000,  hold2: 0,    total: 19000 },
+  kutu:        { in: 4000, hold: 4000, out: 4000,  hold2: 4000, total: 16000 },
+  sakinletici: { in: 4000, hold: 2000, out: 8000,  hold2: 0,    total: 14000 },
+};
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
   * { box-sizing: border-box; }
@@ -1008,6 +1017,7 @@ export default function SakinApp() {
   const [breathPhase,   setBreathPhase]   = useState("inhale");
   const [breathCount,   setBreathCount]   = useState(0);
   const [breathStarted, setBreathStarted] = useState(false);
+  const [breathMode,    setBreathMode]    = useState("standart");
   const [chakra]                          = useState(CHAKRAS_7[Math.floor(Math.random()*7)]);
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
@@ -1530,27 +1540,36 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   useEffect(() => {
     setBreathStarted(false);
     setBreathPhase("inhale");
+    setBreathMode("standart");
     clearInterval(breathRef.current);
   },[screen]);
 
   useEffect(() => {
     if (screen!=="nefes" || !breathStarted) return;
+    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
+    const toIds = [];
     const cycle = () => {
       setBreathPhase("inhale");
-      setTimeout(()=>setBreathPhase("hold"),4000);
-      setTimeout(()=>setBreathPhase("exhale"),5500);
-      setTimeout(()=>setBreathCount(c=>c+1),9500);
+      let t = tm.in;
+      if (tm.hold > 0)  { toIds.push(setTimeout(()=>setBreathPhase("hold"),  t)); t += tm.hold;  }
+      toIds.push(setTimeout(()=>setBreathPhase("exhale"), t)); t += tm.out;
+      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>setBreathPhase("hold2"), t)); }
+      toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
     };
     cycle();
-    breathRef.current=setInterval(cycle,10000);
-    return()=>clearInterval(breathRef.current);
-  },[screen, breathStarted]);
+    breathRef.current = setInterval(cycle, tm.total);
+    return () => { clearInterval(breathRef.current); toIds.forEach(clearTimeout); };
+  },[screen, breathStarted, breathMode]);
 
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
-  const breathLabel = breathStarted ? {inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale")}[breathPhase] : "";
-  const breathScale = breathStarted ? (breathPhase==="exhale" ? 1 : 1.6) : 1;
+  const breathLabel = breathStarted ? ({inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
+  const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2" ? 1 : 1.6) : 1;
+  const breathIsActive = breathPhase==="inhale"||breathPhase==="hold";
+  const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
+  const breathInDur  = `${tm.in/1000}s`;
+  const breathOutDur = `${tm.out/1000}s`;
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
   const ambientColor = {
@@ -1879,18 +1898,162 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* NEFES */}
       {screen==="nefes" && (
-        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1 }}>
-          <div className="label-sm" style={{ marginBottom:52,letterSpacing:5 }}>{t("breath_title")}</div>
-          <div style={{ position:"relative",width:205,height:205,margin:"0 auto 40px" }}>
-            {[1.72,1.45,1.2].map((s,i)=>(
-              <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
-            ))}
-            <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(139,90,160,0.24))",transition:"transform 4s ease",transform:`scale(${breathScale})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+        <div style={{ textAlign:"center",padding:"62px 20px 110px",position:"relative",zIndex:1,maxWidth:420,width:"100%" }}>
+          <div className="label-sm" style={{ marginBottom:32,letterSpacing:5 }}>{breathStarted ? t(`breath_mode_${breathMode}`) : t("breath_title")}</div>
+
+          {/* ── Visualization area ── */}
+          {(!breathStarted || breathMode==="standart") && (
+            <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
+              {[1.72,1.45,1.2].map((s,i)=>(
+                <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
+              ))}
+              <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(139,90,160,0.24))",transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+              </div>
             </div>
-          </div>
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:8,color:"#c8c0e0" }}>{t("youre_here")}</div>
-          <div className="label-sm" style={{ marginBottom:44 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
+          )}
+
+          {breathStarted && breathMode==="diyafram" && (
+            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px" }}>
+              <svg width="160" height="200" viewBox="0 0 160 200" style={{ overflow:"visible" }}>
+                {/* Rib cage sides */}
+                <path d="M 48 38 C 36 72 34 105 55 118 M 112 38 C 124 72 126 105 105 118" fill="none" stroke="rgba(80,200,180,0.22)" strokeWidth="1.5"/>
+                {/* Collar bones */}
+                <path d="M 52 34 Q 80 24 108 34" fill="none" stroke="rgba(80,200,180,0.2)" strokeWidth="1.5"/>
+                {/* Sternum */}
+                <line x1="80" y1="34" x2="80" y2="114" stroke="rgba(80,200,180,0.12)" strokeWidth="1.5"/>
+                {/* Ribs */}
+                {[0,1,2,3,4].map(i=>(
+                  <g key={i}>
+                    <path d={`M 80 ${48+i*13} C ${50-i*2} ${52+i*13} ${40-i*2} ${62+i*13} ${42-i*2} ${72+i*13}`} fill="none" stroke="rgba(80,200,180,0.1)" strokeWidth="1.1"/>
+                    <path d={`M 80 ${48+i*13} C ${110+i*2} ${52+i*13} ${120+i*2} ${62+i*13} ${118+i*2} ${72+i*13}`} fill="none" stroke="rgba(80,200,180,0.1)" strokeWidth="1.1"/>
+                  </g>
+                ))}
+                {/* Diaphragm arc */}
+                <path d="M 38 116 Q 80 94 122 116" fill="none" stroke="rgba(80,200,180,0.7)" strokeWidth="2.5"/>
+                {/* Belly fill – expands on inhale */}
+                <ellipse cx="80" cy="158"
+                  fill={`rgba(80,200,180,${0.06 + (breathIsActive?0.22:0)})`}
+                  stroke={`rgba(80,200,180,${0.25 + (breathIsActive?0.45:0)})`}
+                  strokeWidth="1.8"
+                  style={{
+                    transformOrigin:"80px 158px",
+                    transform:`scale(${breathIsActive?1:0.62})`,
+                    transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out, stroke ${breathIsActive?breathInDur:breathOutDur} ease-in-out`,
+                    rx:38, ry:28
+                  }}
+                />
+              </svg>
+              <div style={{ position:"absolute",bottom:18,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+            </div>
+          )}
+
+          {breathStarted && breathMode==="akciger" && (
+            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px",display:"flex",alignItems:"center",justifyContent:"center" }}>
+              <svg width="160" height="200" viewBox="0 0 160 200">
+                {/* Trachea */}
+                <line x1="80" y1="10" x2="80" y2="55" stroke="rgba(100,160,220,0.4)" strokeWidth="2.5" strokeLinecap="round"/>
+                <path d="M 80 55 C 80 65 58 65 55 80" fill="none" stroke="rgba(100,160,220,0.35)" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M 80 55 C 80 65 102 65 105 80" fill="none" stroke="rgba(100,160,220,0.35)" strokeWidth="2" strokeLinecap="round"/>
+                {/* Left lung outline */}
+                <path d="M 55 80 C 24 80 14 110 16 145 C 18 168 36 178 55 172 C 68 168 76 155 76 140 L 76 80 Z" fill="none" stroke="rgba(100,160,220,0.35)" strokeWidth="1.5"/>
+                {/* Right lung outline */}
+                <path d="M 105 80 C 136 80 146 110 144 145 C 142 168 124 178 105 172 C 92 168 84 155 84 140 L 84 80 Z" fill="none" stroke="rgba(100,160,220,0.35)" strokeWidth="1.5"/>
+                {/* Left lung fill – rises from bottom */}
+                <clipPath id="left-lung-clip">
+                  <path d="M 55 80 C 24 80 14 110 16 145 C 18 168 36 178 55 172 C 68 168 76 155 76 140 L 76 80 Z"/>
+                </clipPath>
+                <rect x="10" y={172-(breathIsActive?92:0)} width="72" height="92"
+                  fill={`rgba(100,160,220,${breathIsActive?0.28:0.04})`}
+                  clipPath="url(#left-lung-clip)"
+                  style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
+                />
+                {/* Right lung fill */}
+                <clipPath id="right-lung-clip">
+                  <path d="M 105 80 C 136 80 146 110 144 145 C 142 168 124 178 105 172 C 92 168 84 155 84 140 L 84 80 Z"/>
+                </clipPath>
+                <rect x="78" y={172-(breathIsActive?92:0)} width="72" height="92"
+                  fill={`rgba(100,160,220,${breathIsActive?0.28:0.04})`}
+                  clipPath="url(#right-lung-clip)"
+                  style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
+                />
+              </svg>
+              <div style={{ position:"absolute",bottom:6,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+            </div>
+          )}
+
+          {breathStarted && (breathMode==="478"||breathMode==="kutu"||breathMode==="sakinletici") && (
+            <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
+              {(() => {
+                const modeColors = { "478":"80,160,220", kutu:"140,100,220", sakinletici:"80,200,160" };
+                const c = modeColors[breathMode]||"80,130,200";
+                const s = breathScale;
+                return (
+                  <>
+                    {[1.72,1.45,1.2].map((sc,i)=>(
+                      <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
+                    ))}
+                    <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                      <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Timing hint when active */}
+          {breathStarted && (
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:4 }}>
+              {breathMode==="standart"    && "4 · 1.5 · 3.5"}
+              {breathMode==="diyafram"    && "4 · 6"}
+              {breathMode==="akciger"     && "5 · 2 · 7"}
+              {breathMode==="478"         && "4 · 7 · 8"}
+              {breathMode==="kutu"        && "4 · 4 · 4 · 4"}
+              {breathMode==="sakinletici" && "4 · 2 · 8"}
+            </div>
+          )}
+
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:6,color:"#c8c0e0" }}>{t("youre_here")}</div>
+          <div className="label-sm" style={{ marginBottom:28 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
+
+          {/* ── Mode selection (before start) ── */}
+          {!breathStarted && (
+            <div style={{ marginBottom:28 }}>
+              {/* Main breathing modes */}
+              <div className="label-sm" style={{ marginBottom:14,letterSpacing:4 }}>{t("breath_choose")}</div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:16 }}>
+                {[
+                  { id:"standart", icon:"🫧", color:"rgba(80,130,200,0.18)", border:"rgba(80,130,200,0.35)", rhythm:"4·1.5·3.5" },
+                  { id:"diyafram", icon:"🌬", color:"rgba(80,200,180,0.18)", border:"rgba(80,200,180,0.35)", rhythm:"4·6" },
+                  { id:"akciger",  icon:"🫁", color:"rgba(100,160,220,0.18)",border:"rgba(100,160,220,0.35)",rhythm:"5·2·7" },
+                ].map(m=>(
+                  <button key={m.id} onClick={()=>setBreathMode(m.id)} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                    <span style={{ fontSize:20 }}>{m.icon}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
+                  </button>
+                ))}
+              </div>
+              {/* Calming breathing modes */}
+              <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(139,90,160,0.7)" }}>{t("breath_calming")}</div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8 }}>
+                {[
+                  { id:"478",        icon:"✦",  color:"rgba(80,160,220,0.18)", border:"rgba(80,160,220,0.35)", rhythm:"4·7·8" },
+                  { id:"kutu",       icon:"⬜",  color:"rgba(140,100,220,0.18)",border:"rgba(140,100,220,0.35)",rhythm:"4·4·4·4" },
+                  { id:"sakinletici",icon:"🌿",  color:"rgba(80,200,160,0.18)", border:"rgba(80,200,160,0.35)", rhythm:"4·2·8" },
+                ].map(m=>(
+                  <button key={m.id} onClick={()=>setBreathMode(m.id)} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                    <span style={{ fontSize:18 }}>{m.icon}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Buttons ── */}
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
@@ -1898,7 +2061,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
+              <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
               <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_next")}</button>
             </div>
           )}
