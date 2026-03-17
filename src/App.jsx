@@ -2065,8 +2065,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
             </div>
           ) : (
-            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+            <div style={{ display:"flex",flexDirection:"column",gap:10,alignItems:"center" }}>
               <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
+              <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+                <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
+              </div>
             </div>
           )}
         </div>
