@@ -2065,12 +2065,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
             </div>
           ) : (
-            <div style={{ display:"flex",flexDirection:"column",gap:10,alignItems:"center" }}>
-              <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
-              <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-                <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
-                <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
-              </div>
+            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
             </div>
           )}
         </div>
@@ -2657,7 +2654,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
@@ -2667,7 +2664,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const disabledOnMandala = isOnMandala && n.id!=="rehber" && n.id!=="mandala";
             return (
               <button key={n.id}
-                onClick={()=>{ if(disabledOnMandala) return; if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+                onClick={()=>{ if(disabledOnMandala) return; if(n.id==="rehber") setRehberTab("reiki"); if(n.id==="nefes"){ setBreathStarted(false); clearInterval(breathRef.current); } setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
