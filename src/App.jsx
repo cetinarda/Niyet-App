@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { makeTrans } from "./i18n";
 
 const AI_CALL_URL = "/.netlify/functions/ai-call";
+const MAX_INPUT_LEN = 500;
+const sanitizeInput = (str) => (str || "").slice(0, MAX_INPUT_LEN).replace(/[<>{}]/g, "");
 
 const CHAKRAS_7_TR = [
   { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396 },
@@ -22,7 +24,6 @@ const CHAKRAS_7_EN = [
   { name:"Crown",        color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with the whole today.",         element:"Universe",emoji:"⬜", hz:963 },
 ];
 const getChakras7 = (lang) => lang === "en" ? CHAKRAS_7_EN : CHAKRAS_7_TR;
-const CHAKRAS_7 = CHAKRAS_7_TR;
 
 const CHAKRAS_22_EXTRA = [
   { name:"Yeryüzü Yıldızı", color:"#5d4037", pastel:"#bcaaa4", desc:"Toprakla bağını güçlendir.",     element:"Derinlik", emoji:"🌑" },
@@ -62,9 +63,7 @@ const getChakras22 = (lang) => [
   ...getChakras7(lang),
   ...(lang === "en" ? CHAKRAS_22_EXTRA_EN : CHAKRAS_22_EXTRA),
 ];
-const CHAKRAS_22 = [...CHAKRAS_7, ...CHAKRAS_22_EXTRA];
 
-const MORNING_WORDS = ["huzur","akış","cesaret","sabır","berraklık","sevgi","güç","denge","özgürlük","neşe","şükür","güven"];
 const TERAPI_TOTAL = 60;
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
@@ -160,7 +159,6 @@ const REMINDERS_EN = [
   { id:"sosyal",    icon:"📵", title:"Social media break",             subtitle:"Do you really want to be here right now?",                duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Put the phone down. Just exist for a minute. The screen can wait, the moment can't." },
 ];
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
-const REMINDERS = REMINDERS_TR;
 
 const BREATH_MODES_CONFIG = {
   standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
@@ -438,15 +436,15 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
     if (timing) clearInterval(timerRef.current);
     setTiming({ id: rem.id, elapsed: 0, total: rem.duration });
     timerRef.current = setInterval(() => {
-      setTiming(t => {
-        if (!t) return null;
-        const next = t.elapsed + 1;
-        if (next >= t.total) {
+      setTiming(prev => {
+        if (!prev) return null;
+        const next = prev.elapsed + 1;
+        if (next >= prev.total) {
           clearInterval(timerRef.current);
           setDone(p => ({ ...p, [rem.id]: true }));
           return null;
         }
-        return { ...t, elapsed: next };
+        return { ...prev, elapsed: next };
       });
     }, 1000);
   };
@@ -1018,7 +1016,8 @@ export default function SakinApp() {
   const [breathCount,   setBreathCount]   = useState(0);
   const [breathStarted, setBreathStarted] = useState(false);
   const [breathMode,    setBreathMode]    = useState("standart");
-  const [chakra]                          = useState(CHAKRAS_7[Math.floor(Math.random()*7)]);
+  const [chakraIndex]                      = useState(() => new Date().toDateString().split("").reduce((a,c) => a + c.charCodeAt(0), 0) % 7);
+  const chakra                             = CHAKRAS_7[chakraIndex];
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
@@ -1097,8 +1096,8 @@ export default function SakinApp() {
     }
     setDevMode(next);
     setRaporKullanildi(false);
-    setReikiUsed(next ? true : false);
-    setZihinselUsed(next ? true : false);
+    setReikiUsed(next ? false : true);
+    setZihinselUsed(next ? false : true);
   }
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
@@ -1121,7 +1120,7 @@ export default function SakinApp() {
   const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
 
-  useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
+  useEffect(() => { const timerId=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(timerId); },[]);
   useEffect(() => {
     const onPop = () => setScreen(URL_TO_SCREEN[window.location.pathname] || "giris");
     window.addEventListener("popstate", onPop);
@@ -1141,7 +1140,7 @@ export default function SakinApp() {
     filtered.unshift(bugun);
     localStorage.setItem("sakin_log", JSON.stringify(filtered.slice(0,7)));
     setAiRapor("");
-  },[screen]);
+  },[screen, niyet, selectedWords, chakra.name, breathCount, aksamNote, sukur]);
 
   const CHAKRA_KEYWORDS = [
     { idx:0, keywords:["güvensiz","korkuyorum","korku","para","maddi","güvende değil","temel","ev","aile","toprak","istikrar","aidiyetsiz","destek yok","hayatta kalamıyorum","köksüz"] },
@@ -1184,7 +1183,7 @@ export default function SakinApp() {
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:600,
           system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
-          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
+          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
 
 İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi). Açıklaması: "${ch.desc}"
 Zihinsel-bedensel bağlantısı: ${zihinsel}
@@ -1319,7 +1318,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:900,
           system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
-          messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
+          messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
 
 ${REIKI_BILGI}
 
@@ -1365,7 +1364,7 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1400,
           system:`Sen derin bir holistik enerji rehberisin. Fiziksel şikayetler, duygusal sorular, çakra merakları, ruhsal arayışlar — her tür soruyu Reiki ve Louise Hay perspektifinden şiirsel ve içten yanıtlıyorsun. Türkçe yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
-          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"
+          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"
 
 ${REIKI_BILGI}
 
@@ -1408,7 +1407,7 @@ ${astroTxt}
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1400,
           system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
-          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
+          messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
 ${REIKI_BILGI}
 
@@ -2380,7 +2379,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {label:t("stat_chakra"),value:chakra.name,color:chakra.pastel},
               {label:t("stat_breath"),value:`${breathCount}`,color:"#82d9a3"},
               {label:t("stat_word"),value:selectedWords[0]||"—",color:"#f0c27f"},
-              {label:t("stat_mindful"),value:"3",color:"#85c1e9"},
+              {label:t("stat_mindful"),value:`${completedStepCount}`,color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
                 <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>{s.label.toUpperCase()}</div>
@@ -2395,7 +2394,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:12,color:"#7a8a9a" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
+            <div style={{ fontSize:12,color:"#7a8a9a" }}>{t("orchestra_text", "312")}</div>
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:10,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
