@@ -1865,6 +1865,31 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 );
               })}
             </div>
+
+            {/* Harita — adım navigasyonu */}
+            <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
+              <div style={{fontSize:8,letterSpacing:3,color:"#3a4a5a",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
+              <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
+                {steps.map(step=>{
+                  const done=!!stepsCompleted[step.id];
+                  const isNext=nextStep?.id===step.id;
+                  return(
+                    <button key={step.id}
+                      onClick={()=>{ if(done||isNext) setScreen(step.id); }}
+                      style={{
+                        background: done?`rgba(${step.glow},0.14)`:isNext?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.02)",
+                        border:`1px solid ${done?`rgba(${step.glow},0.4)`:isNext?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.04)"}`,
+                        borderRadius:20,padding:"7px 13px",cursor:done||isNext?"pointer":"default",
+                        display:"flex",alignItems:"center",gap:5,
+                        opacity:done||isNext?1:0.3,transition:"all 0.2s",
+                      }}>
+                      <span style={{fontSize:12}}>{done?"✓":step.icon}</span>
+                      <span style={{fontFamily:"'Jost',sans-serif",fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:done?step.color:isNext?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.2)"}}>{step.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         );
       })()}
