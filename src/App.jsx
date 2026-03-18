@@ -1843,8 +1843,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
-                onClick={()=>setScreen(nextStep.id)}>
-                {nextStep.id==="sabah" ? (lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →") : `${nextStep.icon} ${nextStep.label} — ${lang==="tr"?"başla →":"start →"}`}
+                onClick={()=>setScreen("nefes")}>
+                {lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →"}
               </button>
             ):null}
 
