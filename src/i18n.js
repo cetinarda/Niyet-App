@@ -121,7 +121,7 @@ export const TRANS = {
     stat_mindful:      "Bilinçli An",
     orchestra_label:   "ORKESTRA MODU",
     orchestra_text:    (n) => `Bugün <strong>${n} kişi</strong> seninle nefes aldı.`,
-    ai_report_label:   "HAFTALIK AI RAPOR",
+    ai_report_label:   "HAFTALIK SAKİN RAPOR",
     free_used:         "Ücretsiz raporunu kullandın",
     free_used_body:    "Her hafta derin bir içsel rapor almak için",
     premium_name:      "Sakin Premium",
