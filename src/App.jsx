@@ -2063,6 +2063,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue")}</button>
             </div>
           ) : (
             <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:10 }}>
@@ -2665,21 +2666,34 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             // On mandala screen: only rehber (Ayna) and mandala (Harita) are enabled
             const isOnMandala = screen==="mandala";
             const disabledOnMandala = isOnMandala && n.id!=="rehber" && n.id!=="mandala";
+            // On harita screen: disable chakra nav to prevent direct jump
+            const isOnHarita = screen==="harita";
+            const disabledOnHarita = isOnHarita && n.id==="chakra";
+            const isDisabled = disabledOnMandala || disabledOnHarita;
+            // Steps that require sabah to be completed first
+            const sabahRequired = ["nefes","chakra","gun","aksam","harita"];
             return (
               <button key={n.id}
-                onClick={()=>{ if(disabledOnMandala) return; if(n.id==="rehber") setRehberTab("reiki"); if(n.id==="nefes"){ setBreathStarted(false); clearInterval(breathRef.current); } setScreen(n.id); }}
+                onClick={()=>{
+                  if(isDisabled) return;
+                  // If sabah not done, redirect to sabah before later steps
+                  if(!stepsCompleted["sabah"] && sabahRequired.includes(n.id)){ setScreen("sabah"); return; }
+                  if(n.id==="rehber") setRehberTab("reiki");
+                  if(n.id==="nefes"){ setBreathStarted(false); clearInterval(breathRef.current); }
+                  setScreen(n.id);
+                }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
-                  cursor: disabledOnMandala ? "default" : "pointer",
+                  cursor: isDisabled ? "default" : "pointer",
                   transition:"all 0.28s",
                   padding:"5px 8px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:2,
                   minWidth:36,
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
-                  opacity: disabledOnMandala ? 0.22 : 1,
-                  pointerEvents: disabledOnMandala ? "none" : "auto",
+                  opacity: isDisabled ? 0.22 : 1,
+                  pointerEvents: isDisabled ? "none" : "auto",
                 }}>
                 <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
                 <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
