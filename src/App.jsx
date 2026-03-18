@@ -1538,16 +1538,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   };
 
   useEffect(() => {
-    if (screen === "nefes") {
-      setBreathPhase("inhale");
-      setBreathMode("standart");
-      setBreathStarted(true);
-    } else {
-      setBreathStarted(false);
-      setBreathPhase("inhale");
-      setBreathMode("standart");
-      clearInterval(breathRef.current);
-    }
+    setBreathStarted(false);
+    setBreathPhase("inhale");
+    setBreathMode("standart");
+    clearInterval(breathRef.current);
   },[screen]);
 
   useEffect(() => {
@@ -1914,14 +1908,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
               ))}
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(139,90,160,0.24))",transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)" }}>{breathLabel}</div>
+                <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
               </div>
             </div>
           )}
 
           {breathStarted && breathMode==="diyafram" && (
-            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 32px" }}>
-            <div style={{ position:"relative",width:160,height:200 }}>
+            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px" }}>
               <svg width="160" height="200" viewBox="0 0 160 200" style={{ overflow:"visible" }}>
                 {/* Rib cage sides */}
                 <path d="M 48 38 C 36 72 34 105 55 118 M 112 38 C 124 72 126 105 105 118" fill="none" stroke="rgba(80,200,180,0.22)" strokeWidth="1.5"/>
@@ -1951,14 +1944,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   }}
                 />
               </svg>
-            </div>
-            <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)",textAlign:"center",marginTop:6 }}>{breathLabel}</div>
+              <div style={{ position:"absolute",bottom:18,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
             </div>
           )}
 
           {breathStarted && breathMode==="akciger" && (
-            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 32px" }}>
-              <div style={{ position:"relative",width:160,height:200 }}>
+            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px",display:"flex",alignItems:"center",justifyContent:"center" }}>
               <svg width="160" height="200" viewBox="0 0 160 200">
                 {/* Trachea */}
                 <line x1="80" y1="10" x2="80" y2="55" stroke="rgba(100,160,220,0.4)" strokeWidth="2.5" strokeLinecap="round"/>
@@ -1987,8 +1978,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
                 />
               </svg>
-              </div>
-              <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)",textAlign:"center",marginTop:6 }}>{breathLabel}</div>
+              <div style={{ position:"absolute",bottom:6,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
             </div>
           )}
 
@@ -2004,7 +1994,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
                     ))}
                     <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                      <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)" }}>{breathLabel}</div>
+                      <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
                     </div>
                   </>
                 );
@@ -2014,7 +2004,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* Timing hint when active */}
           {breathStarted && (
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:12 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:4 }}>
               {breathMode==="standart"    && "4 · 1.5 · 3.5"}
               {breathMode==="diyafram"    && "4 · 6"}
               {breathMode==="akciger"     && "5 · 2 · 7"}
@@ -2024,7 +2014,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           )}
 
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:14,color:"#c8c0e0" }}>{t("youre_here")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:6,color:"#c8c0e0" }}>{t("youre_here")}</div>
           <div className="label-sm" style={{ marginBottom:28 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
 
           {/* ── Mode selection (before start) ── */}
@@ -2038,7 +2028,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"diyafram", icon:"🌬", color:"rgba(80,200,180,0.18)", border:"rgba(80,200,180,0.35)", rhythm:"4·6" },
                   { id:"akciger",  icon:"🫁", color:"rgba(100,160,220,0.18)",border:"rgba(100,160,220,0.35)",rhythm:"5·2·7" },
                 ].map(m=>(
-                  <button key={m.id} onClick={()=>{ setBreathMode(m.id); setBreathStarted(true); }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                  <button key={m.id} onClick={()=>setBreathMode(m.id)} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:20 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
@@ -2053,7 +2043,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"kutu",       icon:"⬜",  color:"rgba(140,100,220,0.18)",border:"rgba(140,100,220,0.35)",rhythm:"4·4·4·4" },
                   { id:"sakinletici",icon:"🌿",  color:"rgba(80,200,160,0.18)", border:"rgba(80,200,160,0.35)", rhythm:"4·2·8" },
                 ].map(m=>(
-                  <button key={m.id} onClick={()=>{ setBreathMode(m.id); setBreathStarted(true); }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                  <button key={m.id} onClick={()=>setBreathMode(m.id)} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:18 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:8,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
@@ -2067,15 +2057,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue")}</button>
+              <button className="sakin-btn-primary" onClick={()=>setBreathStarted(true)}>{t("btn_start")}</button>
             </div>
           ) : (
-            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:10 }}>
-              <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-                <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
-                <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
-              </div>
-              <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); }} style={{ opacity:0.6,fontSize:10,letterSpacing:2 }}>{t("breath_change")}</button>
+            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_next")}</button>
             </div>
           )}
         </div>
@@ -2662,42 +2649,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
-            // On mandala screen: only rehber (Ayna) and mandala (Harita) are enabled
-            const isOnMandala = screen==="mandala";
-            const disabledOnMandala = isOnMandala && n.id!=="rehber" && n.id!=="mandala";
-            // On harita screen: disable chakra nav to prevent direct jump
-            const isOnHarita = screen==="harita";
-            const disabledOnHarita = isOnHarita && n.id==="chakra";
-            const isDisabled = disabledOnMandala || disabledOnHarita;
-            // Steps that require sabah to be completed first
-            const sabahRequired = ["nefes","chakra","gun","aksam","harita"];
             return (
-              <button key={n.id}
-                onClick={()=>{
-                  if(isDisabled) return;
-                  // If sabah not done, redirect to sabah before later steps
-                  if(!stepsCompleted["sabah"] && sabahRequired.includes(n.id)){ setScreen("sabah"); return; }
-                  if(n.id==="rehber") setRehberTab("reiki");
-                  if(n.id==="nefes"){ setBreathStarted(false); clearInterval(breathRef.current); }
-                  setScreen(n.id);
-                }}
+              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
-                  cursor: isDisabled ? "default" : "pointer",
+                  cursor:"pointer",
                   transition:"all 0.28s",
                   padding:"5px 8px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:2,
                   minWidth:36,
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
-                  opacity: isDisabled ? 0.22 : 1,
-                  pointerEvents: isDisabled ? "none" : "auto",
                 }}>
                 <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
                 <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
@@ -2712,7 +2680,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
-            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade","giris"].includes(screen) ? 80 : 24,
+            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
             background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
             color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
