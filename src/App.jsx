@@ -2065,9 +2065,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
             </div>
           ) : (
-            <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
+            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:10 }}>
+              <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
+                <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); setScreen("sabah"); }}>{t("back")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); markStep("nefes"); setScreen("chakra"); }}>{t("btn_continue2")}</button>
+              </div>
+              <button className="sakin-btn" onClick={()=>{ clearInterval(breathRef.current); setBreathStarted(false); setBreathPhase("inhale"); }} style={{ opacity:0.6,fontSize:10,letterSpacing:2 }}>{t("breath_change")}</button>
             </div>
           )}
         </div>
