@@ -1920,7 +1920,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           {breathStarted && breathMode==="diyafram" && (
-            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px" }}>
+            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 32px" }}>
+            <div style={{ position:"relative",width:160,height:200 }}>
               <svg width="160" height="200" viewBox="0 0 160 200" style={{ overflow:"visible" }}>
                 {/* Rib cage sides */}
                 <path d="M 48 38 C 36 72 34 105 55 118 M 112 38 C 124 72 126 105 105 118" fill="none" stroke="rgba(80,200,180,0.22)" strokeWidth="1.5"/>
@@ -1950,12 +1951,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   }}
                 />
               </svg>
-              <div style={{ position:"absolute",bottom:18,left:0,right:0,fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)" }}>{breathLabel}</div>
+            </div>
+            <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)",textAlign:"center",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
           {breathStarted && breathMode==="akciger" && (
-            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px",display:"flex",alignItems:"center",justifyContent:"center" }}>
+            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 32px" }}>
+              <div style={{ position:"relative",width:160,height:200 }}>
               <svg width="160" height="200" viewBox="0 0 160 200">
                 {/* Trachea */}
                 <line x1="80" y1="10" x2="80" y2="55" stroke="rgba(100,160,220,0.4)" strokeWidth="2.5" strokeLinecap="round"/>
@@ -1984,7 +1987,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
                 />
               </svg>
-              <div style={{ position:"absolute",bottom:6,left:0,right:0,fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)" }}>{breathLabel}</div>
+              </div>
+              <div style={{ fontSize:22,letterSpacing:3,fontWeight:300,color:"rgba(255,255,255,0.92)",textAlign:"center",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
@@ -2010,7 +2014,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* Timing hint when active */}
           {breathStarted && (
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:4 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:12 }}>
               {breathMode==="standart"    && "4 · 1.5 · 3.5"}
               {breathMode==="diyafram"    && "4 · 6"}
               {breathMode==="akciger"     && "5 · 2 · 7"}
@@ -2020,7 +2024,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           )}
 
-          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:6,color:"#c8c0e0" }}>{t("youre_here")}</div>
+          <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:27,letterSpacing:4,fontWeight:300,marginBottom:14,color:"#c8c0e0" }}>{t("youre_here")}</div>
           <div className="label-sm" style={{ marginBottom:28 }}>{breathStarted ? t("breath_count", breathCount) : ""}</div>
 
           {/* ── Mode selection (before start) ── */}
