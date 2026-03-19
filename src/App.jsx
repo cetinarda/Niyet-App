@@ -1947,7 +1947,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           {breathStarted && breathMode==="diyafram" && (
-            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px" }}>
+            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 18px" }}>
+              <div style={{ position:"relative",width:160,height:200 }}>
               <svg width="160" height="200" viewBox="0 0 160 200" style={{ overflow:"visible" }}>
                 {/* Rib cage sides */}
                 <path d="M 48 38 C 36 72 34 105 55 118 M 112 38 C 124 72 126 105 105 118" fill="none" stroke="rgba(80,200,180,0.22)" strokeWidth="1.5"/>
@@ -1977,7 +1978,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   }}
                 />
               </svg>
-              <div style={{ position:"absolute",bottom:18,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+              </div>
+              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
