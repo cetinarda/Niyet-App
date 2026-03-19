@@ -8,3 +8,9 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+[functions."ai-call"]
+  timeout = 26
+
+[functions."ai-report"]
+  timeout = 26
