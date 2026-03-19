@@ -1176,7 +1176,7 @@ export default function SakinApp() {
     const idx = chakraEsle(chakraInput);
     const ch = CHAKRAS_7[idx];
     const zihinsel = CHAKRA_ZIHINSEL[idx];
-    const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1311,7 +1311,7 @@ BEDEN-ZİHİN BAĞLANTISI:
     if (!semptomInput.trim()) return;
     setSemptomAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.${birthTime?` Doğum saati ${birthTime}.`:""}` : "";
+    const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1357,7 +1357,7 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
     if (!sikayet.trim()) return;
     setSikayetAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1400,7 +1400,7 @@ ${astroTxt}
     if (!hastalik.trim()) return;
     setHastalikAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}.` : "";
+    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
