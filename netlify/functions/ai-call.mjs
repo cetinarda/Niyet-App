@@ -5,6 +5,14 @@ export const handler = async (event) => {
 
   const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VITE_ARAMA_API_KEY;
 
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "API anahtarı bulunamadı (ANTHROPIC_API_KEY / VITE_ARAMA_API_KEY)" }),
+    };
+  }
+
   let body;
   try {
     body = JSON.parse(event.body);
@@ -35,10 +43,11 @@ export const handler = async (event) => {
   }
 
   if (!res.ok || data.error) {
+    const errMsg = data.error?.message || data.error || `HTTP ${res.status}`;
     return {
       statusCode: res.status,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Sunucu hatası" }),
+      body: JSON.stringify({ error: errMsg }),
     };
   }
 

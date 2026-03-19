@@ -1197,10 +1197,10 @@ ${astroText2}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
+      if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
-      setChakraAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene.");
+      setChakraAnaliz("Bağlantı hatası.");
     }
   };
 
@@ -1346,10 +1346,10 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
+      if (!res.ok || d.error) { setSemptomAnaliz("Hata: " + (d.error || res.status)); return; }
       setSemptomAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
-      setSemptomAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene.");
+      setSemptomAnaliz("Bağlantı hatası.");
     }
   };
 
@@ -1391,9 +1391,9 @@ ${astroTxt}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
+      if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
-    } catch { setSikayetAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); }
+    } catch(e) { setSikayetAnaliz("Bağlantı hatası: " + e.message); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -1434,9 +1434,9 @@ Reiki ve Louise Hay kitabını birlikte referans alarak şu formatta yanıt ver:
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setHastalikAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
+      if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
-    } catch { setHastalikAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); }
+    } catch(e) { setHastalikAnaliz("Bağlantı hatası: " + e.message); }
   };
 
   const generateRapor = async () => {
