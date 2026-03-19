@@ -1843,7 +1843,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
-                onClick={()=>setScreen("nefes")}>
+                onClick={()=>setScreen("sabah")}>
                 {lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →"}
               </button>
             ):null}
@@ -1875,7 +1875,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   const isNext=nextStep?.id===step.id;
                   return(
                     <button key={step.id}
-                      onClick={()=>{ if(done||isNext) setScreen(step.id); }}
+                      onClick={()=>{ if(step.id==="sabah" && done) return; if(done||isNext) setScreen(step.id); }}
                       style={{
                         background: done?`rgba(${step.glow},0.14)`:isNext?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.02)",
                         border:`1px solid ${done?`rgba(${step.glow},0.4)`:isNext?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.04)"}`,
@@ -1917,7 +1917,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
           </div>
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+          {selectedWords.length < 3 || !niyet.trim() ? (
+            <div style={{ textAlign:"center", fontSize:12, color:"#5a6a7a", letterSpacing:1, padding:"12px 0" }}>
+              {lang==="tr"
+                ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
+                : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
+            </div>
+          ) : (
+            <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+          )}
         </div>
       )}
 
@@ -2680,7 +2688,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ if(n.id==="sabah" && stepsCompleted["sabah"]) return; if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
