@@ -790,7 +790,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   };
 
   if (tPhase==="intro"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:10,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
@@ -816,7 +816,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   );
 
   if ((tPhase==="active"||tPhase==="connected")&&selected) return (
-    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"100vh" }}>
+    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       {showBackConfirm && (
         <div style={{ position:"fixed",inset:0,zIndex:50,background:"rgba(4,8,16,0.88)",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px" }}>
           <div style={{ textAlign:"center",maxWidth:280 }}>
@@ -888,7 +888,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   );
 
   if (tPhase==="done"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"100vh" }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       {[...Array(10)].map((_,i) => (
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:12,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
@@ -1984,7 +1984,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           {breathStarted && breathMode==="akciger" && (
-            <div style={{ position:"relative",width:160,height:200,margin:"0 auto 32px",display:"flex",alignItems:"center",justifyContent:"center" }}>
+            <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 32px" }}>
+              <div style={{ position:"relative",width:160,height:200 }}>
               <svg width="160" height="200" viewBox="0 0 160 200">
                 {/* Trachea */}
                 <line x1="80" y1="10" x2="80" y2="55" stroke="rgba(100,160,220,0.4)" strokeWidth="2.5" strokeLinecap="round"/>
@@ -2013,7 +2014,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
                 />
               </svg>
-              <div style={{ position:"absolute",bottom:6,left:0,right:0,fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+              </div>
+              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
