@@ -3,14 +3,7 @@ export const handler = async (event) => {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VITE_ARAMA_API_KEY;
-  if (!apiKey) {
-    return {
-      statusCode: 500,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "API anahtarı eksik." }),
-    };
-  }
+  const apiKey = process.env.ANTHROPIC_API_KEY;
 
   let body;
   try {
@@ -37,7 +30,7 @@ export const handler = async (event) => {
     return {
       statusCode: 502,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Anthropic API'ye ulaşılamadı: " + e.message }),
+      body: JSON.stringify({ error: "Bağlantı hatası" }),
     };
   }
 
@@ -45,7 +38,7 @@ export const handler = async (event) => {
     return {
       statusCode: res.status,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: data.error?.message || "API hatası" }),
+      body: JSON.stringify({ error: "Sunucu hatası" }),
     };
   }
 

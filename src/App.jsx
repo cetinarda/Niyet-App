@@ -1197,10 +1197,10 @@ ${astroText2}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setChakraAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
-      setChakraAnaliz("Bağlantı hatası, tekrar dene.");
+      setChakraAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene.");
     }
   };
 
@@ -1346,10 +1346,10 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setSemptomAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
       setSemptomAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
-      setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
+      setSemptomAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene.");
     }
   };
 
@@ -1391,9 +1391,9 @@ ${astroTxt}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setSikayetAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
-    } catch { setSikayetAnaliz("Bağlantı hatası, tekrar dene."); }
+    } catch { setSikayetAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -1434,9 +1434,9 @@ Reiki ve Louise Hay kitabını birlikte referans alarak şu formatta yanıt ver:
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setHastalikAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
-    } catch { setHastalikAnaliz("Bağlantı hatası, tekrar dene."); }
+    } catch { setHastalikAnaliz("Şu an yanıt alınamadı, lütfen tekrar dene."); }
   };
 
   const generateRapor = async () => {
@@ -1533,7 +1533,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         setRaporKullanildi(true);
       }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
-    } catch(e) { setAiRapor("API'ye ulaşılamadı: "+e.message); }
+    } catch(e) { setAiRapor("Şu an rapor oluşturulamadı, lütfen tekrar dene."); }
     finally { setAiLoading(false); }
   };
 
