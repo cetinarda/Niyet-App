@@ -21,17 +21,25 @@ export const handler = async (event) => {
 
   const { system, messages, model = "claude-opus-4-6", max_tokens = 1000 } = body;
 
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({ model, max_tokens, system, messages }),
-  });
-
-  const data = await res.json();
+  let res, data;
+  try {
+    res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({ model, max_tokens, system, messages }),
+    });
+    data = await res.json();
+  } catch (e) {
+    return {
+      statusCode: 502,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Anthropic API'ye ulaşılamadı: " + e.message }),
+    };
+  }
 
   if (!res.ok || data.error) {
     return {

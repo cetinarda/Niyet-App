@@ -1197,7 +1197,7 @@ ${astroText2}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setChakraAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
       setChakraAnaliz("Bağlantı hatası, tekrar dene.");
@@ -1346,7 +1346,7 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setSemptomAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
       setSemptomAnaliz(d?.text || "Analiz alınamadı.");
     } catch {
       setSemptomAnaliz("Bağlantı hatası, tekrar dene.");
@@ -1391,7 +1391,7 @@ ${astroTxt}
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setSikayetAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
     } catch { setSikayetAnaliz("Bağlantı hatası, tekrar dene."); }
   };
@@ -1434,7 +1434,7 @@ Reiki ve Louise Hay kitabını birlikte referans alarak şu formatta yanıt ver:
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error?.message || "API bağlantı hatası."}`); return; }
+      if (!res.ok || d.error) { setHastalikAnaliz(`Hata: ${d.error || "API bağlantı hatası."}`); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
     } catch { setHastalikAnaliz("Bağlantı hatası, tekrar dene."); }
   };
