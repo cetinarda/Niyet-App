@@ -32,7 +32,7 @@ export const handler = async (event) => {
     )
     .join("\n\n");
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || process.env.VITE_RAPOR_API_KEY });
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   try {
     const response = await client.messages.create({
