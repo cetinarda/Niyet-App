@@ -1718,7 +1718,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:44,background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:82,background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV */}
@@ -1733,24 +1733,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
-        {/* Ayna & Harita — üst nav */}
-        {SIDEBAR_ITEMS.map(n => (
-          <button key={n.id}
-            onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
-            style={{
-              background:"transparent", border:"none", cursor:"pointer",
-              display:"flex", alignItems:"center", gap:5,
-              padding:"0 10px", height:44, flexShrink:0,
-              borderRight:"1px solid rgba(255,255,255,0.06)",
-              fontFamily:"'Jost',sans-serif", fontWeight:300,
-              fontSize:11, letterSpacing:1.8, textTransform:"uppercase",
-              color: screen===n.id ? n.color : "rgba(184,164,216,0.45)",
-              transition:"color 0.2s",
-            }}>
-            <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
-            <span>{n.label}</span>
-          </button>
-        ))}
         <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
@@ -1760,6 +1742,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"6px 14px",color:"#c3a6d8",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
+      </div>
+
+      {/* AYNA & HARİTA BARI — üst navın altında */}
+      <div style={{ position:"fixed",top:44,left:0,right:0,zIndex:9998,height:38,background:"rgba(8,12,20,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+        {SIDEBAR_ITEMS.map(n=>{
+          const active = screen===n.id;
+          return (
+            <button key={n.id}
+              onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              style={{
+                background: active ? `${n.color}22` : "transparent",
+                border: active ? `1px solid ${n.color}44` : "1px solid transparent",
+                borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                padding:"4px 16px", display:"flex", alignItems:"center", gap:6,
+                fontFamily:"'Jost',sans-serif", fontWeight:300,
+                fontSize:11, letterSpacing:1.8, textTransform:"uppercase",
+                color: active ? n.color : `${n.color}77`,
+              }}>
+              <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
+              <span>{n.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Sabit derin uzay arka planı */}
