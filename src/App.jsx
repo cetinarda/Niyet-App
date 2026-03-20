@@ -1935,27 +1935,53 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"#3a4058" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
-          <div style={{ marginBottom:28 }}>
-            <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
-            <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
-          </div>
-          <div style={{ marginBottom:32 }}>
-            <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
-            <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
-              {MORNING_WORDS.map(w=>(
-                <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
-              ))}
-            </div>
-            {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
-          </div>
-          {selectedWords.length < 3 || !niyet.trim() ? (
-            <div style={{ textAlign:"center", fontSize:12, color:"#5a6a7a", letterSpacing:1, padding:"12px 0" }}>
-              {lang==="tr"
-                ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
-                : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
+          {stepsCompleted["sabah"] ? (
+            /* ── Tamamlandı: salt-okunur özet ── */
+            <div style={{ opacity:0.72 }}>
+              <div style={{ marginBottom:24 }}>
+                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,letterSpacing:0.5,marginBottom:10,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
+                <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:12,padding:"12px 14px",fontSize:14,color:"#a8a0c0",lineHeight:1.7,fontStyle:"italic" }}>
+                  {niyet || "—"}
+                </div>
+              </div>
+              <div style={{ marginBottom:28 }}>
+                <div className="label-sm" style={{ marginBottom:10 }}>{t("choose_words")}</div>
+                <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
+                  {MORNING_WORDS.map(w=>(
+                    <span key={w} style={{ padding:"5px 13px",borderRadius:20,fontSize:12,letterSpacing:0.5,background:selectedWords.includes(w)?"rgba(255,140,50,0.15)":"rgba(255,255,255,0.03)",border:`1px solid ${selectedWords.includes(w)?"rgba(255,140,50,0.3)":"rgba(255,255,255,0.06)"}`,color:selectedWords.includes(w)?"#f0a060":"#4a5a6a",cursor:"default" }}>{w}</span>
+                  ))}
+                </div>
+              </div>
+              <div style={{ textAlign:"center",fontSize:11,letterSpacing:2,color:"#5a6a7a",paddingTop:4 }}>
+                {lang==="tr" ? "Sabah niyetin kaydedildi · Yarın yenilenir" : "Morning intention saved · Resets tomorrow"}
+              </div>
             </div>
           ) : (
-            <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+            /* ── Düzenlenebilir form ── */
+            <>
+              <div style={{ marginBottom:28 }}>
+                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
+                <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
+              </div>
+              <div style={{ marginBottom:32 }}>
+                <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
+                <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
+                  {MORNING_WORDS.map(w=>(
+                    <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
+                  ))}
+                </div>
+                {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
+              </div>
+              {selectedWords.length < 3 || !niyet.trim() ? (
+                <div style={{ textAlign:"center", fontSize:12, color:"#5a6a7a", letterSpacing:1, padding:"12px 0" }}>
+                  {lang==="tr"
+                    ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
+                    : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
+                </div>
+              ) : (
+                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+              )}
+            </>
           )}
         </div>
       )}
@@ -2763,11 +2789,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
-                  cursor:"pointer",
+                  cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"all 0.28s",
                   padding:"5px 8px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:2,
                   minWidth:36,
+                  opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
                 }}>
                 <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
