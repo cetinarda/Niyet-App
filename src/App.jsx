@@ -1533,7 +1533,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         setRaporKullanildi(true);
       }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
-    } catch(e) { setAiRapor("Şu an rapor oluşturulamadı, lütfen tekrar dene."); }
+    } catch(e) { setAiRapor("Hata: " + e.message); }
     finally { setAiLoading(false); }
   };
 

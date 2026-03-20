@@ -29,7 +29,7 @@ export const handler = async (event) => {
   }));
 
   const geminiBody = {
-    system_instruction: system ? { parts: [{ text: system }] } : undefined,
+    ...(system ? { system_instruction: { parts: [{ text: system }] } } : {}),
     contents,
     generationConfig: { maxOutputTokens: max_tokens },
   };
