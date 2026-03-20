@@ -65,7 +65,7 @@ Rapor şu başlıkları içermeli:
 **Şükran Kalbi** — Şükür yazılarından bir sentez
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri
 
-Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et. Maksimum 350 kelime.`;
+Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et. Maksimum 500 kelime.`;
 
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -76,7 +76,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et.
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
-        max_tokens: 1200,
+        max_tokens: 2000,
         temperature: 0.2,
         messages: [
           { role: "system", content: systemPrompt },

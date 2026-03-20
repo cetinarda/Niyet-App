@@ -36,7 +36,7 @@ export const handler = async (event) => {
     return { statusCode: 400, body: "Geçersiz istek" };
   }
 
-  const { system, messages, max_tokens = 1000 } = body;
+  const { system, messages, max_tokens = 1800 } = body;
 
   // Fonksiyon seviyesinde sabit Türkçe zorlama — model ne olursa olsun geçerli
   const turkcePrefix = "Yalnızca Türkçe yaz. Cümleler akıcı, sade ve şiirsel olsun. Her kelime ayrı yazılsın. Çince, Japonca, Arapça veya başka yabancı karakter kesinlikle kullanma.\n\n";

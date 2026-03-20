@@ -302,7 +302,7 @@ const GLOBAL_CSS = `
     background:transparent; color:#6a6d88;
   }
   .word-chip:hover { border-color:rgba(184,164,216,0.3); color:#c0b8d8; background:rgba(184,164,216,0.05); }
-  .word-chip.selected { background:rgba(184,164,216,0.1); border-color:rgba(184,164,216,0.35); color:#ddd8f0; }
+  .word-chip.selected { background:rgba(184,164,216,0.18); border-color:rgba(184,164,216,0.6); color:#f0ecff; box-shadow:0 0 8px rgba(184,164,216,0.2); }
 
   /* ── Chakra cards ── */
   .chakra-card {
@@ -1993,7 +1993,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep?.id || "sabah")}>
-                {lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →"}
+                {lang==="tr"?(completedStepCount>0?"GÜNE DEVAM ET →":"GÜNE BAŞLA →"):(completedStepCount>0?"CONTINUE →":"START THE JOURNEY →")}
               </button>
             ):null}
 
@@ -2070,12 +2070,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   )) : <span style={{ color:"#4a5a6a",fontSize:13 }}>—</span>}
                 </div>
               </div>
-              <div style={{ textAlign:"center",fontSize:10,letterSpacing:2,color:"#4a5a6a",marginBottom:20,fontFamily:"'Jost',sans-serif" }}>
+              <div style={{ display:"flex",gap:8,marginBottom:20 }}>
+                <button className="sakin-btn-primary" style={{ flex:1 }} onClick={()=>setScreen("nefes")}>
+                  {t("btn_continue")}
+                </button>
+                <button onClick={()=>{ setStepsCompleted(prev=>{ const next={...prev}; delete next.sabah; localStorage.setItem("sakin_steps_"+todayKey,JSON.stringify(next)); return next; }); }}
+                  style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"0 16px",color:"#7a8a9a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap" }}>
+                  {lang==="tr"?"düzenle":"edit"}
+                </button>
+              </div>
+              <div style={{ textAlign:"center",fontSize:10,letterSpacing:2,color:"#3a4a5a",fontFamily:"'Jost',sans-serif" }}>
                 {lang==="tr" ? "Yarın yenilenir" : "Resets tomorrow"}
               </div>
-              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>
-                {t("btn_continue")}
-              </button>
             </div>
           ) : (
             /* ── Düzenlenebilir form ── */
