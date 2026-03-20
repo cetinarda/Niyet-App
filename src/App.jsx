@@ -1017,10 +1017,16 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
         <div>
           <div style={{ fontSize:10,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
           <div style={{ fontSize:13.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}><FreqText text={analiz} /></div>
-          <button onClick={onSifirla}
-            style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:10,letterSpacing:2.5,marginTop:16,padding:"6px 16px" }}>
-            {t("btn_new_search")}
-          </button>
+          <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
+            <button onClick={onSifirla}
+              style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:10,letterSpacing:2.5,padding:"6px 16px" }}>
+              {t("btn_new_search")}
+            </button>
+            <a href="/fiyatlandirma"
+              style={{ display:"inline-block",padding:"6px 16px",background:`linear-gradient(135deg,${renk}22,${renk}11)`,border:`1px solid ${renk}44`,borderRadius:20,color:renk,fontSize:10,letterSpacing:2,textDecoration:"none",cursor:"pointer" }}>
+              {lang==="tr" ? "Daha Fazlası → Premium" : "More → Premium"}
+            </a>
+          </div>
         </div>
       ) : (
         <div>
@@ -1268,13 +1274,28 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:320,
-          system:`Sen içsel bir aynasın. Kişinin söylediklerini yumuşakça geri yansıt — yargılamadan, kısaca. Türkçe yaz. "Sen" diye hitap et. Maksimum 3 cümle: 1) Hissini onayla. 2) Kitap bilgeliğinden tek bir içgörü ver. 3) Tek pratik öneri. Daha fazlası istenirse premium'a yönlendir.
+          model:"claude-opus-4-6", max_tokens:750,
+          system:`Sen derin bir çakra ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 ${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`"${chakraInput}"
-Çakra: ${ch.name} (${ch.element}) — ${ch.desc}
-Zihinsel kök: ${zihinsel}
-${astroText2}` }],
+          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
+
+İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
+Zihinsel-bedensel bağlantısı: ${zihinsel}
+${astroText2}
+
+Şu formatta yanıt ver:
+
+**Zihinsel-Duygusal Kök**
+(Bu çakra ve kullanıcının hissini bağla — 2 cümle, şefkatli)
+
+**Reiki ile Tedavi**
+(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım)
+
+**Kitap Bilgeliği**
+(Yukardaki kaynaklardan bu durumla en çok örtüşen tek bir içgörü — 1-2 cümle)
+
+**Sana Özel Mesaj**
+(Doğum haritasına göre kişiselleştirilmiş, şiirsel — 2 cümle)` }],
         }),
       });
       const d = await res.json();
@@ -1407,12 +1428,36 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:320,
-          system:`Sen içsel bir aynasın. Semptomu kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. 3 cümle: 1) Semptomu duygusal kökle onayla. 2) Hangi çakra + tek bir kitap içgörüsü. 3) Tek pratik öneri. Tıbbi tavsiye verme. Derin analiz için premium'a yönlendir.
+          model:"claude-opus-4-6", max_tokens:850,
+          system:`Sen derin bir holistik sağlık rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 ${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`Semptom: "${semptomInput}"
-Zihinsel nedenler özeti: ${ZIHINSEL_LISTE.filter(z=>semptomInput.toLowerCase().includes(z.organ.toLowerCase().split(" ")[0])).map(z=>`${z.organ}: ${z.neden}`).join("; ") || zihinselListeText.split("\n").slice(0,5).join("; ")}
-${astroText3}` }],
+          messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
+
+${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+Zihinsel nedenler:
+${zihinselListeText}
+
+${astroText3}
+
+Şu formatta yanıt ver:
+
+**Zihinsel-Duygusal Kök**
+(Bu semptomu tetikleyen en olası duygusal/zihinsel neden — 2 cümle)
+
+**İlgili Çakra & Enerji**
+(Hangi çakra, hangi frekans, tıkanma ilişkisi — 2 cümle)
+
+**Reiki ile Tedavi**
+(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)
+
+**Kitap Bilgeliği**
+(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
+
+**Sana Özel Mesaj**
+(Doğum haritasına göre kişiselleştirilmiş, şiirsel — 2 cümle)` }],
         }),
       });
       const d = await res.json();
@@ -1433,11 +1478,35 @@ ${astroText3}` }],
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:380,
-          system:`Sen içsel bir aynasın. Kişinin sorusunu/şikayetini kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. Maksimum 4 cümle: 1) Hissi onayla ve duygusal kökü işaret et. 2) İlgili çakra + kitap bilgeliğinden bir içgörü. 3) Tek pratik adım. 4) Daha derin analiz için premium'a yönlendir. Tıbbi tavsiye verme.
+          model:"claude-opus-4-6", max_tokens:1100,
+          system:`Sen derin bir holistik enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 ${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`"${sikayet}"${sikayetHis ? `\nHis: "${sikayetHis}"` : ""}
-${astroTxt}` }],
+          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"${sikayetHis ? `\nHissi: "${sikayetHis}"` : ""}
+
+${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+Zihinsel nedenler:
+${zihinselListeText}
+${astroTxt}
+
+Şu formatta yanıt ver:
+
+**Zihinsel-Duygusal Kök**
+(En olası duygusal neden — 2 cümle)
+
+**İlgili Çakra & Enerji**
+(Çakra, frekans, tıkanma ilişkisi — 2 cümle)
+
+**Reiki ile Tedavi**
+(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)
+
+**Kitap Bilgeliği**
+(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
+
+**Sana Özel Mesaj**
+(Kişiselleştirilmiş, şiirsel, iyileştirici — 2 cümle)` }],
         }),
       });
       const d = await res.json();
@@ -1456,11 +1525,35 @@ ${astroTxt}` }],
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:320,
-          system:`Sen içsel bir aynasın. Hastalığın ruhsal mesajını kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. 3 cümle: 1) Ruhsal-duygusal kökü nazikçe işaret et. 2) Kitap bilgeliğinden tek bir içgörü. 3) Tek pratik öneri. Tıbbi tavsiye verme. Derin analiz için premium'a yönlendir.
+          model:"claude-opus-4-6", max_tokens:1000,
+          system:`Sen derin bir holistik sağlık rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 ${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nHis: "${hastalikHis}"` : ""}
-${astroTxt}` }],
+          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
+
+${REIKI_BILGI}
+
+${LOUISE_HAY_REHBER}
+
+Zihinsel nedenler:
+${zihinselListeText}
+${astroTxt}
+
+Şu formatta yanıt ver:
+
+**Ruhsal Kök**
+(Bu hastalığın ruhsal-duygusal mesajı — 2 cümle)
+
+**Enerji & Çakra**
+(Hangi çakra, hangi enerji bloğu — 2 cümle)
+
+**Reiki ile Tedavi**
+(El pozisyonu, frekans, niyet — somut 2-3 adım)
+
+**Kitap Bilgeliği**
+(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
+
+**Sana Özel Mesaj**
+(Doğum haritasına göre, şiirsel — 2 cümle)` }],
         }),
       });
       const d = await res.json();
@@ -1874,7 +1967,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
-                onClick={()=>setScreen("sabah")}>
+                onClick={()=>setScreen(nextStep?.id || "sabah")}>
                 {lang==="tr"?"GÜNE BAŞLA →":"START THE JOURNEY →"}
               </button>
             ):null}
@@ -1952,9 +2045,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   ))}
                 </div>
               </div>
-              <div style={{ textAlign:"center",fontSize:11,letterSpacing:2,color:"#5a6a7a",paddingTop:4 }}>
+              <div style={{ textAlign:"center",fontSize:11,letterSpacing:2,color:"#5a6a7a",paddingTop:4,marginBottom:20 }}>
                 {lang==="tr" ? "Sabah niyetin kaydedildi · Yarın yenilenir" : "Morning intention saved · Resets tomorrow"}
               </div>
+              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>
+                {t("btn_continue")}
+              </button>
             </div>
           ) : (
             /* ── Düzenlenebilir form ── */
@@ -2784,7 +2880,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ if(n.id==="sabah" && stepsCompleted["sabah"]) return; if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
