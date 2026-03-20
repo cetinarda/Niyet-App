@@ -2031,22 +2031,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {stepsCompleted["sabah"] ? (
             /* ── Tamamlandı: salt-okunur özet ── */
             <div>
-              <div style={{ marginBottom:24 }}>
-                <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,letterSpacing:0.5,marginBottom:10,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
-                <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,140,50,0.18)",borderRadius:12,padding:"14px 16px",fontSize:15,color:"#ddd0f0",lineHeight:1.8,fontStyle:"italic" }}>
+              <div style={{ marginBottom:20 }}>
+                <div style={{ fontSize:10,letterSpacing:3,color:"#5a6a7a",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Bugünün niyeti":"Today's intention"}</div>
+                <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,140,50,0.2)",borderRadius:12,padding:"14px 16px",fontSize:15,color:"#e0d8f4",lineHeight:1.8,fontStyle:"italic" }}>
                   {niyet || "—"}
                 </div>
               </div>
               <div style={{ marginBottom:28 }}>
-                <div className="label-sm" style={{ marginBottom:10 }}>{t("choose_words")}</div>
-                <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
-                  {MORNING_WORDS.map(w=>(
-                    <span key={w} style={{ padding:"5px 13px",borderRadius:20,fontSize:12,letterSpacing:0.5,background:selectedWords.includes(w)?"rgba(255,140,50,0.15)":"rgba(255,255,255,0.03)",border:`1px solid ${selectedWords.includes(w)?"rgba(255,140,50,0.3)":"rgba(255,255,255,0.06)"}`,color:selectedWords.includes(w)?"#f0a060":"#4a5a6a",cursor:"default" }}>{w}</span>
-                  ))}
+                <div style={{ fontSize:10,letterSpacing:3,color:"#5a6a7a",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Seçilen kelimeler":"Selected words"}</div>
+                <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
+                  {selectedWords.length > 0 ? selectedWords.map(w=>(
+                    <span key={w} style={{ padding:"6px 16px",borderRadius:20,fontSize:13,letterSpacing:0.5,background:"rgba(255,140,50,0.12)",border:"1px solid rgba(255,140,50,0.28)",color:"#f0a060" }}>{w}</span>
+                  )) : <span style={{ color:"#4a5a6a",fontSize:13 }}>—</span>}
                 </div>
               </div>
-              <div style={{ textAlign:"center",fontSize:11,letterSpacing:2,color:"#5a6a7a",paddingTop:4,marginBottom:20 }}>
-                {lang==="tr" ? "Sabah niyetin kaydedildi · Yarın yenilenir" : "Morning intention saved · Resets tomorrow"}
+              <div style={{ textAlign:"center",fontSize:10,letterSpacing:2,color:"#4a5a6a",marginBottom:20,fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "Yarın yenilenir" : "Resets tomorrow"}
               </div>
               <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>setScreen("nefes")}>
                 {t("btn_continue")}

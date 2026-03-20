@@ -1,3 +1,15 @@
+function sanitizeTurkish(text) {
+  return text
+    .replace(/[\u4E00-\u9FFF\u3400-\u4DBF]/g, "")
+    .replace(/[\u3040-\u30FF\u31F0-\u31FF]/g, "")
+    .replace(/[\u0600-\u06FF\u0750-\u077F]/g, "")
+    .replace(/[\uAC00-\uD7FF\u1100-\u11FF]/g, "")
+    .replace(/[\u0900-\u097F]/g, "")
+    .replace(/[\u2E80-\u2EFF\u3000-\u303F]/g, "")
+    .replace(/([a-zğüşıöçA-ZĞÜŞİÖÇ])([A-ZĞÜŞİÖÇ])/g, "$1 $2")
+    .trim();
+}
+
 export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method not allowed" };
@@ -39,7 +51,9 @@ export const handler = async (event) => {
     )
     .join("\n\n");
 
-  const systemPrompt = `Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+  const systemPrompt = `Sen bir Türkçe asistansın. YALNIZCA düzgün Türkçe yaz. Hiçbir Çince, Japonca, Arapça veya Latin dışı karakter kullanma. Kelimeleri birleştirme. Cümle yapısı doğru Türkçe olsun.
+
+Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
 
 Rapor şu başlıkları içermeli:
 **Haftanın Enerjisi** — Genel ruh hali ve enerji (2-3 cümle)
@@ -60,6 +74,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et.
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         max_tokens: 1200,
+        temperature: 0.2,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: `Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.` },
@@ -77,7 +92,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et.
       };
     }
 
-    const rapor = data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.";
+    const rapor = sanitizeTurkish(data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.");
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
