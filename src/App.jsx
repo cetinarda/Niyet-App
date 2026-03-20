@@ -110,6 +110,21 @@ function bioritmBar(val) {
 // ─────────────────────────────────────────────────────────────────────────────
 const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Terazi","Akrep","Yay","Oğlak","Kova","Balık"];
 const EV_GEZEGEN = { "Koç":"Mars","Boğa":"Venüs","İkizler":"Merkür","Yengeç":"Ay","Aslan":"Güneş","Başak":"Merkür","Terazi":"Venüs","Akrep":"Pluto","Yay":"Jüpiter","Oğlak":"Satürn","Kova":"Uranüs","Balık":"Neptün" };
+// 12. Ev burç yorumları — Tracy Marks "Gizli Benliğiniz" kitabına göre
+const EV12_BURCU_ACIKLAMA = {
+  "Koç":     { tema:"Bastırılmış Cesaret & Öfke", yorum:"12. evinde Koç varsa bilinçdışında cüretkar, öncü bir enerji yatar. Başlatma gücün, bağımsız iradenin ve öfkeni ifade etme cesaretinin bastırıldığı bu evde karmik dersin, kendi iradesini tanımak ve eyleme geçmekten korkmamaktır. Gizli gücün: engellerden geçme kararlılığı." },
+  "Boğa":    { tema:"Bastırılmış Güvenlik & Değer", yorum:"12. evinde Boğa varsa köklenme, doğayla bağ ve maddi güvenlik ihtiyacın bilinçdışında derinleşir. Kendinle ilgili değer biçememe ya da bedeni ihmal etme bu evin gölgesidir. Karmik dersin: kendi değerini bedenselden ruhsala taşımak. Gizli gücün: sabır ve sarsılmaz kararlılık." },
+  "İkizler": { tema:"Bastırılmış Merak & İletişim", yorum:"12. evinde İkizler varsa yoğun iç konuşma, yazılı anlayış ve sözsüz iletişim için derin bir kapasite taşırsın. Düşüncelerini ifade etmekte zorlanman ya da bilgiyi içinde biriktirmen bu evin gölgesidir. Karmik dersin: içteki sesi dışa taşımak. Gizli gücün: yazma ve derin düşünce." },
+  "Yengeç":  { tema:"Bastırılmış Şefkat & Aile", yorum:"12. evinde Yengeç varsa duygusal güvenlik, bakım verme ve ev kavramı bilinçdışında güçlü bir yer tutar. Başkasına sığınma ihtiyacını ya da kendi çocukluk yaranı gizleme eğilimin bu evin gölgesidir. Karmik dersin: kendinle anne gibi ilgilenmek. Gizli gücün: derin empati ve sezgisel anlama." },
+  "Aslan":   { tema:"Bastırılmış Yaratıcılık & İfade", yorum:"12. evinde Aslan varsa yaratıcı potansiyel ve kalpten liderlik etme gücü sessizce derinleşir. Görünmek istememe, alkış almaktan kaçma ya da kendi parlaklığından utanma bu evin gölgesidir. Karmik dersin: özgün ifadene izin vermek. Gizli gücün: ışığını içten dışa taşıma kapasitesi." },
+  "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-analiz. Gizli gücün: detaylı anlama ve şifalı hizmet." },
+  "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinizden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
+  "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve şifa kapasitesi." },
+  "Yay":     { tema:"Bastırılmış Özgürlük & Anlam", yorum:"12. evinde Yay varsa felsefi bilgelik, anlam arayışı ve spiritüel özgürlük sessizce büyür. İnançlarını ya da yolculuk etme arzunu bastırmak bu evin gölgesidir. Karmik dersin: kendi hakikatine güvenmek ve ilerlemek. Gizli gücün: felsefi kavrayış ve geniş perspektif." },
+  "Oğlak":  { tema:"Bastırılmış Disiplin & Otorite", yorum:"12. evinde Oğlak varsa sorumluluk alma kapasitesi ve iç disiplin bilinçdışında güçlenir. Yetersizlik hissi, başaramamaktan korkma ya da otorite figürlerine duyulan gizli öfke bu evin gölgesidir. Karmik dersin: öz-otoritenle barışmak. Gizli gücün: sessiz, kararlı öz-güç." },
+  "Kova":    { tema:"Bastırılmış Özgünlük & İnsanlık", yorum:"12. evinde Kova varsa özgün olmak, kolektife katkı sunmak ve devrimci fikirler bilinçdışında çalışır. Aitlik korkusu ya da farklı olmaktan utanmak bu evin gölgesidir. Karmik dersin: bireysel özgünlüğünü insanlığa armağan etmek. Gizli gücün: yenilikçi sezgi ve topluluk hissi." },
+  "Balık":   { tema:"Bastırılmış Şefkat & Evrensel Bağ", yorum:"12. evinde Balık varsa sınırlar çözülür, evrensel sevgi ve spiritüel teslimiyete yönelik derin bir kapasite taşırsın. Gerçeklikten kaçma, öz-kurban ya da başkasında eriyip gitme bu evin gölgesidir. Karmik dersin: şefkat ve sınır arasındaki dengeyi bulmak. Gizli gücün: mistik bağlantı ve iyileştirici sevgi." },
+};
 const GEZEGEN_12EV_GUCLERI = {
   "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
   "Ay":     "Duygusal kendine yeterlilik, kendini besleme ve bakma becerisi, ihtiyaç duyan insanlara derin hassasiyet",
@@ -810,7 +825,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
-        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); playChime(528, 0.22, 3.5); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
       </div>
     </div>
   );
@@ -1158,6 +1173,28 @@ export default function SakinApp() {
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef = useRef(null);
+  const breathChimeRef = useRef(null);
+
+  const playStartChime = () => {
+    try {
+      if (!breathChimeRef.current) {
+        breathChimeRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const ctx = breathChimeRef.current;
+      if (ctx.state === "suspended") ctx.resume();
+      // Singing bowl çan sesi: temel frekans + harmonikler
+      [[432, 0.20], [432*2.76, 0.056], [432*5.4, 0.020]].forEach(([freq, amp]) => {
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = freq;
+        g.gain.setValueAtTime(0, ctx.currentTime);
+        g.gain.linearRampToValueAtTime(amp, ctx.currentTime + 0.03);
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.2);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(); o.stop(ctx.currentTime + 3.2);
+      });
+    } catch(_) {}
+  };
 
   const astro = birthDate ? {
     yasam:      lifePathNumber(birthDate),
@@ -2143,7 +2180,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>setBreathStarted(true)}>{t("btn_start")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ playStartChime(); setBreathStarted(true); }}>{t("btn_start")}</button>
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -2474,6 +2511,41 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ))}
           </div>
+          {/* ── 12. Ev Kartı ── */}
+          {ev12Burcu && ev12Gezegen && EV12_BURCU_ACIKLAMA[ev12Burcu] ? (
+            <div style={{ background:"linear-gradient(135deg,rgba(60,30,100,0.18),rgba(30,50,120,0.10))",border:"1px solid rgba(120,80,200,0.28)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
+              <div style={{ fontSize:10,letterSpacing:3.5,color:"#9070c0",marginBottom:12,textAlign:"center" }}>
+                {lang==="tr" ? "12. EV · GİZLİ BENLİK" : "12TH HOUSE · HIDDEN SELF"}
+              </div>
+              <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:14 }}>
+                <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,background:"radial-gradient(circle,rgba(120,80,220,0.5),rgba(60,30,120,0.2))",border:"1px solid rgba(120,80,200,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>
+                  ♆
+                </div>
+                <div>
+                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#c8b0e8",marginBottom:2 }}>{ev12Burcu} {lang==="tr" ? "Burcu" : "Sign"}</div>
+                  <div style={{ fontSize:11,color:"#7060a0",letterSpacing:1 }}>{lang==="tr" ? "Yönetici:" : "Ruler:"} {ev12Gezegen}</div>
+                </div>
+              </div>
+              <div style={{ fontSize:11,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
+                {EV12_BURCU_ACIKLAMA[ev12Burcu].tema}
+              </div>
+              <div style={{ fontSize:12.5,color:"#b0a0d0",lineHeight:1.85 }}>
+                {EV12_BURCU_ACIKLAMA[ev12Burcu].yorum}
+              </div>
+              <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(120,80,200,0.15)" }}>
+                <div style={{ fontSize:10,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{lang==="tr" ? "GİZLİ GÜCÜN" : "HIDDEN POWER"}</div>
+                <div style={{ fontSize:12,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[ev12Gezegen]}</div>
+              </div>
+            </div>
+          ) : birthDate && !birthTime ? (
+            <div style={{ background:"rgba(60,30,100,0.08)",border:"1px solid rgba(120,80,200,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
+              <div style={{ fontSize:11,color:"#7060a0",lineHeight:1.7 }}>
+                {lang==="tr"
+                  ? "12. Ev analizin için doğum saatini ekle → Profil → Doğum Saati"
+                  : "Add your birth time for 12th house analysis → Profile → Birth Time"}
+              </div>
+            </div>
+          ) : null}
           <div style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.09),rgba(72,130,180,0.05))",border:"1px solid rgba(139,90,160,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center" }}>
             <div style={{ fontSize:10,letterSpacing:3.5,color:"#7a5a90",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
