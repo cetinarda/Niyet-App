@@ -2875,9 +2875,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* LEFT SIDEBAR — Ayna & Harita */}
+      {/* RIGHT SIDEBAR — Ayna & Harita */}
       {!["giris"].includes(screen) && (
-        <div style={{ position:"fixed",left:0,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4,zIndex:9999,background:"rgba(8,12,20,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"0 14px 14px 0",padding:"10px 6px" }}>
+        <div style={{ position:"fixed",right:0,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4,zIndex:9999,background:"rgba(8,12,20,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"14px 0 0 14px",padding:"10px 6px" }}>
           {SIDEBAR_ITEMS.map(n=>{
             const active = screen===n.id;
             return (
