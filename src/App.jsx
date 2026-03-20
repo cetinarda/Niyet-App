@@ -1082,8 +1082,8 @@ export default function SakinApp() {
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
   const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
-  const [niyet,         setNiyet]         = useState("");
-  const [selectedWords, setSelectedWords] = useState([]);
+  const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+new Date().toISOString().slice(0,10))||"");
+  const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+new Date().toISOString().slice(0,10)))||[]; } catch { return []; } });
   const [breathPhase,   setBreathPhase]   = useState("inhale");
   const [breathCount,   setBreathCount]   = useState(0);
   const [breathStarted, setBreathStarted] = useState(false);
@@ -2030,10 +2030,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           {stepsCompleted["sabah"] ? (
             /* ── Tamamlandı: salt-okunur özet ── */
-            <div style={{ opacity:0.72 }}>
+            <div>
               <div style={{ marginBottom:24 }}>
                 <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,letterSpacing:0.5,marginBottom:10,fontWeight:300,lineHeight:1.5,color:"#c8c0e0" }}>{t("intention_q")}</div>
-                <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:12,padding:"12px 14px",fontSize:14,color:"#a8a0c0",lineHeight:1.7,fontStyle:"italic" }}>
+                <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,140,50,0.18)",borderRadius:12,padding:"14px 16px",fontSize:15,color:"#ddd0f0",lineHeight:1.8,fontStyle:"italic" }}>
                   {niyet || "—"}
                 </div>
               </div>
@@ -2075,7 +2075,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
                 </div>
               ) : (
-                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=new Date().toISOString().slice(0,10); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
               )}
             </>
           )}
