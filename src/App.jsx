@@ -187,7 +187,7 @@ const BREATH_MODES_CONFIG = {
 };
 
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Nunito:wght@300;400&display=swap');
   * { box-sizing: border-box; }
   html, body { background: #080c14; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; }
 
@@ -1016,7 +1016,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
       ) : analiz ? (
         <div>
           <div style={{ fontSize:10,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:13.5,color:"#ccc0e0",lineHeight:2,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif" }}><FreqText text={analiz} /></div>
+          <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Nunito','Jost',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} /></div>
           <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
             <button onClick={onSifirla}
               style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:10,letterSpacing:2.5,padding:"6px 16px" }}>
