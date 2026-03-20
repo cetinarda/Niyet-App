@@ -18,12 +18,12 @@ export const handler = async (event) => {
     };
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "API anahtarı bulunamadı (GEMINI_API_KEY)" }),
+      body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }),
     };
   }
 
@@ -50,26 +50,22 @@ Rapor şu başlıkları içermeli:
 
 Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et. Maksimum 350 kelime.`;
 
-  const geminiBody = {
-    system_instruction: { parts: [{ text: systemPrompt }] },
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: `Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.` }],
-      },
-    ],
-    generationConfig: { maxOutputTokens: 1200 },
-  };
-
   try {
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(geminiBody),
-      }
-    );
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        max_tokens: 1200,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.` },
+        ],
+      }),
+    });
     const data = await res.json();
 
     if (!res.ok || data.error) {
@@ -81,7 +77,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et.
       };
     }
 
-    const rapor = data.candidates?.[0]?.content?.parts?.[0]?.text || "Rapor oluşturulamadı.";
+    const rapor = data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.";
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
