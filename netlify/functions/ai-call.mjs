@@ -1,20 +1,16 @@
-// Türkçe olmayan Unicode bloklarını temizler (Çince, Japonca, Arapça, Korece vb.)
+// Türkçe/Latin olmayan karakterleri temizler
 function sanitizeTurkish(text) {
   return text
-    // CJK Unified Ideographs (Çince/Japonca/Korece karakterler)
-    .replace(/[\u4E00-\u9FFF\u3400-\u4DBF\u20000-\u2A6DF]/g, "")
-    // Japonca Hiragana & Katakana
-    .replace(/[\u3040-\u30FF\u31F0-\u31FF]/g, "")
-    // Arapça & Farsça
-    .replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/g, "")
-    // Korece Hangul
-    .replace(/[\uAC00-\uD7FF\u1100-\u11FF]/g, "")
-    // Devanagari (Hintçe)
-    .replace(/[\u0900-\u097F]/g, "")
-    // Çeşitli semboller (CJK radikaller vb.)
-    .replace(/[\u2E80-\u2EFF\u2F00-\u2FDF\u3000-\u303F]/g, "")
-    // Ardışık boşlukları tek boşluğa indir (kelime birleşme artefaktları)
-    .replace(/([a-zğüşıöçA-ZĞÜŞİÖÇ])([A-ZĞÜŞİÖÇ])/g, "$1 $2")
+    .replace(/[\u4E00-\u9FFF]/g, "")   // CJK Çince/Japonca
+    .replace(/[\u3400-\u4DBF]/g, "")   // CJK Extension A
+    .replace(/[\u3040-\u30FF]/g, "")   // Japonca Hiragana & Katakana
+    .replace(/[\u0600-\u06FF]/g, "")   // Arapça
+    .replace(/[\u0750-\u077F]/g, "")   // Arapça Supplement
+    .replace(/[\uAC00-\uD7A3]/g, "")   // Korece Hangul
+    .replace(/[\u1100-\u11FF]/g, "")   // Korece Jamo
+    .replace(/[\u0900-\u097F]/g, "")   // Devanagari (Hintçe)
+    .replace(/[\u3000-\u303F]/g, "")   // CJK Sembolleri
+    .replace(/[\u2E80-\u2EFF]/g, "")   // CJK Radikaller
     .trim();
 }
 
@@ -43,7 +39,7 @@ export const handler = async (event) => {
   const { system, messages, max_tokens = 1000 } = body;
 
   // Fonksiyon seviyesinde sabit Türkçe zorlama — model ne olursa olsun geçerli
-  const turkcePrefix = "Sen bir Türkçe asistansın. YALNIZCA düzgün Türkçe yaz. Hiçbir Çince, Japonca, Arapça, Korece veya Latin dışı karakter kullanma. Kelimeleri birleştirme, her kelime ayrı yazılsın. Cümle yapısı Türkçe dil bilgisine uygun olsun.\n\n";
+  const turkcePrefix = "Yalnızca Türkçe yaz. Cümleler akıcı, sade ve şiirsel olsun. Her kelime ayrı yazılsın. Çince, Japonca, Arapça veya başka yabancı karakter kesinlikle kullanma.\n\n";
 
   const groqMessages = [];
   if (system) groqMessages.push({ role: "system", content: turkcePrefix + system });

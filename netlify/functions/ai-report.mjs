@@ -1,12 +1,15 @@
 function sanitizeTurkish(text) {
   return text
-    .replace(/[\u4E00-\u9FFF\u3400-\u4DBF]/g, "")
-    .replace(/[\u3040-\u30FF\u31F0-\u31FF]/g, "")
-    .replace(/[\u0600-\u06FF\u0750-\u077F]/g, "")
-    .replace(/[\uAC00-\uD7FF\u1100-\u11FF]/g, "")
+    .replace(/[\u4E00-\u9FFF]/g, "")
+    .replace(/[\u3400-\u4DBF]/g, "")
+    .replace(/[\u3040-\u30FF]/g, "")
+    .replace(/[\u0600-\u06FF]/g, "")
+    .replace(/[\u0750-\u077F]/g, "")
+    .replace(/[\uAC00-\uD7A3]/g, "")
+    .replace(/[\u1100-\u11FF]/g, "")
     .replace(/[\u0900-\u097F]/g, "")
-    .replace(/[\u2E80-\u2EFF\u3000-\u303F]/g, "")
-    .replace(/([a-zğüşıöçA-ZĞÜŞİÖÇ])([A-ZĞÜŞİÖÇ])/g, "$1 $2")
+    .replace(/[\u3000-\u303F]/g, "")
+    .replace(/[\u2E80-\u2EFF]/g, "")
     .trim();
 }
 
@@ -51,7 +54,7 @@ export const handler = async (event) => {
     )
     .join("\n\n");
 
-  const systemPrompt = `Sen bir Türkçe asistansın. YALNIZCA düzgün Türkçe yaz. Hiçbir Çince, Japonca, Arapça veya Latin dışı karakter kullanma. Kelimeleri birleştirme. Cümle yapısı doğru Türkçe olsun.
+  const systemPrompt = `Yalnızca Türkçe yaz. Cümleler akıcı, sade ve şiirsel olsun. Çince, Japonca, Arapça veya yabancı karakter kullanma.
 
 Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
 
