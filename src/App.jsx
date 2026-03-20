@@ -1268,18 +1268,13 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:600,
-          system:`Sen derin bir çakra ve enerji rehberisin. Türkçe, şiirsel, içten ve kısa yaz (3-5 cümle). Kullanıcıyı "sen" diye hitap et.`,
-          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
-
-İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi). Açıklaması: "${ch.desc}"
-Zihinsel-bedensel bağlantısı: ${zihinsel}
-${astroText2}
-
-Şimdi tamamen kişiselleştirilmiş bir mesaj yaz:
-1. Kullanıcının hissini nazikçe doğrula
-2. Bu çakra ve zihinsel köküyle bağlantısını anlat
-3. Doğum haritasına göre ona özel bir öneri veya mesaj sun` }],
+          model:"claude-opus-4-6", max_tokens:320,
+          system:`Sen içsel bir aynasın. Kişinin söylediklerini yumuşakça geri yansıt — yargılamadan, kısaca. Türkçe yaz. "Sen" diye hitap et. Maksimum 3 cümle: 1) Hissini onayla. 2) Kitap bilgeliğinden tek bir içgörü ver. 3) Tek pratik öneri. Daha fazlası istenirse premium'a yönlendir.
+${KITAP_BILGELIGI}`,
+          messages:[{ role:"user", content:`"${chakraInput}"
+Çakra: ${ch.name} (${ch.element}) — ${ch.desc}
+Zihinsel kök: ${zihinsel}
+${astroText2}` }],
         }),
       });
       const d = await res.json();
@@ -1314,6 +1309,15 @@ ${astroText2}
     { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
     { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
   ];
+  const KITAP_BILGELIGI = `KİTAPLARDAN ÖZET BİLGELİK:
+• Jung (Kırmızı Kitap): Gölge bütünleşme — dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki altın madeni bulmak.
+• Kryon (DNA'nın 12 Tabakası): DNA bilinçle rezonans kurar; niyet, minnet ve frekans yükseltmeyle uyku halindeki potansiyel aktive olur. Sen tanrısal bir varlıksın, bunu hatırlamak için buradasın.
+• Tao Te Ching: Wu wei — zorlama değil akış. En derin güç direnmeden akan sudur. Basitlik ve boşluk sonsuz potansiyel taşır. Yanıt zorlamada değil sessizlikte gizlidir.
+• Yaşam Çiçeği (Drunvalo): Kutsal geometri evrenin dilidir; her çakra, her nefes, her hücre ilahi bir örüntü taşır. Merkaba ışık bedenini aktive eder.
+• Bir'in Yasası (Ra Materyali): Her şey tek bir bilinçtir. Sevgi evrenin birleştirici gücüdür. Başkasına hizmet kendi evrimine katkıdır. Sen hem öğreten hem öğrenilensin.`;
+
+  const PREMIUM_YONLENDIRME = `\n\n_(Daha derin analiz, kişisel terapi önerileri ve detaylı çakra haritası için Premium'u keşfet.)_`;
+
   const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın — Usui Işık Çemberi Ekolü)
 
 5 TEMEL PRENSİP (Dr. Mikao Usui):
@@ -1403,32 +1407,12 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:900,
-          system:`Sen derin bir holisitk sağlık rehberisin. Hastalık ve semptomlara hem Reiki hem de zihinsel-duygusal açıdan yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. Kullanıcıyı "sen" diye hitap et. Asla tıbbi tavsiye verme, ruhsal-duygusal perspektifi paylaş.`,
-          messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
-
-${REIKI_BILGI}
-
-${LOUISE_HAY_REHBER}
-
-EK ZİHİNSEL NEDENLER:
-${zihinselListeText}
-
-${astroText3}
-
-Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zihinsel nedenler listesi) sentezleyerek analiz et. Şu formatta tam, benzersiz bir yanıt üret:
-
-**Zihinsel-Duygusal Kök**
-(Bu semptomu tetikleyen en olası duygusal/zihinsel neden — 2 cümle)
-
-**İlgili Çakra & Enerji**
-(Hangi çakra, hangi frekans, bu çakranın tıkanması nasıl bu semptomu yaratır — 2 cümle)
-
-**Reiki Yaklaşımı**
-(Hangi el pozisyonu, nasıl bir niyet, hangi frekans müziği — pratik 2-3 adım)
-
-**Sana Özel Mesaj**
-(Doğum haritasına göre kişiselleştirilmiş, 2-3 cümle, şiirsel ve iyileştirici)` }],
+          model:"claude-opus-4-6", max_tokens:320,
+          system:`Sen içsel bir aynasın. Semptomu kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. 3 cümle: 1) Semptomu duygusal kökle onayla. 2) Hangi çakra + tek bir kitap içgörüsü. 3) Tek pratik öneri. Tıbbi tavsiye verme. Derin analiz için premium'a yönlendir.
+${KITAP_BILGELIGI}`,
+          messages:[{ role:"user", content:`Semptom: "${semptomInput}"
+Zihinsel nedenler özeti: ${ZIHINSEL_LISTE.filter(z=>semptomInput.toLowerCase().includes(z.organ.toLowerCase().split(" ")[0])).map(z=>`${z.organ}: ${z.neden}`).join("; ") || zihinselListeText.split("\n").slice(0,5).join("; ")}
+${astroText3}` }],
         }),
       });
       const d = await res.json();
@@ -1449,31 +1433,11 @@ Bu semptomu yukarıdaki üç kaynağı (Reiki bilgisi, Louise Hay kitabı ve zih
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1400,
-          system:`Sen derin bir holistik enerji rehberisin. Fiziksel şikayetler, duygusal sorular, çakra merakları, ruhsal arayışlar — her tür soruyu Reiki ve Louise Hay perspektifinden şiirsel ve içten yanıtlıyorsun. Türkçe yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
-          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"
-
-${REIKI_BILGI}
-
-${LOUISE_HAY_REHBER}
-
-EK ZİHİNSEL NEDENLER:
-${zihinselListeText}
-${astroTxt}
-
-Üç kaynağı (Reiki, Louise Hay ve zihinsel nedenler) sentezleyerek şu formatta yanıt ver:
-
-**Zihinsel-Duygusal Kök**
-(En olası duygusal neden — 2 cümle)
-
-**İlgili Çakra & Enerji**
-(Çakra, frekans, tıkanma ilişkisi — 2 cümle)
-
-**Reiki Yaklaşımı**
-(El pozisyonu, niyet, frekans müziği — 2-3 adım)
-
-**Sana Özel Mesaj**
-(Kişiselleştirilmiş, şiirsel, iyileştirici — 2-3 cümle)` }],
+          model:"claude-opus-4-6", max_tokens:380,
+          system:`Sen içsel bir aynasın. Kişinin sorusunu/şikayetini kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. Maksimum 4 cümle: 1) Hissi onayla ve duygusal kökü işaret et. 2) İlgili çakra + kitap bilgeliğinden bir içgörü. 3) Tek pratik adım. 4) Daha derin analiz için premium'a yönlendir. Tıbbi tavsiye verme.
+${KITAP_BILGELIGI}`,
+          messages:[{ role:"user", content:`"${sikayet}"${sikayetHis ? `\nHis: "${sikayetHis}"` : ""}
+${astroTxt}` }],
         }),
       });
       const d = await res.json();
@@ -1492,31 +1456,11 @@ ${astroTxt}
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1400,
-          system:`Sen derin bir holistik sağlık rehberisin. Hastalıklara ruhsal-enerjetik perspektiften yaklaşıyorsun. Türkçe, şiirsel ve içten yaz. "Sen" diye hitap et. Asla tıbbi tavsiye verme.`,
-          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
-
-${REIKI_BILGI}
-
-${LOUISE_HAY_REHBER}
-
-EK ZİHİNSEL NEDENLER:
-${zihinselListeText}
-${astroTxt}
-
-Reiki ve Louise Hay kitabını birlikte referans alarak şu formatta yanıt ver:
-
-**Ruhsal Kök**
-(Bu hastalığın ruhsal-duygusal mesajı — 2 cümle)
-
-**Enerji & Çakra Dengesi**
-(Hangi enerji alanı etkileniyor, hangi çakra, nasıl bir blok — 2 cümle)
-
-**İyileşme Ritüeli**
-(Reiki el pozisyonu, frekans, kristal veya doğa önerisi — 2-3 adım)
-
-**Sana Özel Mesaj**
-(Doğum haritasına göre derin, şiirsel bir mesaj — 2-3 cümle)` }],
+          model:"claude-opus-4-6", max_tokens:320,
+          system:`Sen içsel bir aynasın. Hastalığın ruhsal mesajını kısa ve şefkatle yansıt. Türkçe, "sen" diye hitap et. 3 cümle: 1) Ruhsal-duygusal kökü nazikçe işaret et. 2) Kitap bilgeliğinden tek bir içgörü. 3) Tek pratik öneri. Tıbbi tavsiye verme. Derin analiz için premium'a yönlendir.
+${KITAP_BILGELIGI}`,
+          messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nHis: "${hastalikHis}"` : ""}
+${astroTxt}` }],
         }),
       });
       const d = await res.json();
@@ -1594,9 +1538,10 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1700,
-          system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+          system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Yanıt ayna gibi olsun: Kişinin verisini yansıt, yargılama. Daha fazlası premium'da notu ekle.
 ${astroText}
 ${GIZLI_BENLIK_REHBER}
+${KITAP_BILGELIGI}
 
 Rapor şu başlıkları içermeli:
 **Haftanın Enerjisi** — Genel ruh hali, enerji ve burç/sayı etkisi (2-3 cümle)
