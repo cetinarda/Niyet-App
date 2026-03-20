@@ -1733,6 +1733,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
+        {/* Ayna & Harita — üst nav */}
+        {SIDEBAR_ITEMS.map(n => (
+          <button key={n.id}
+            onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+            style={{
+              background:"transparent", border:"none", cursor:"pointer",
+              display:"flex", alignItems:"center", gap:5,
+              padding:"0 10px", height:44, flexShrink:0,
+              borderRight:"1px solid rgba(255,255,255,0.06)",
+              fontFamily:"'Jost',sans-serif", fontWeight:300,
+              fontSize:11, letterSpacing:1.8, textTransform:"uppercase",
+              color: screen===n.id ? n.color : "rgba(184,164,216,0.45)",
+              transition:"color 0.2s",
+            }}>
+            <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
+            <span>{n.label}</span>
+          </button>
+        ))}
         <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
@@ -2872,33 +2890,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("refund_s7")}</h2>
           <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-        </div>
-      )}
-
-      {/* RIGHT SIDEBAR — Ayna & Harita */}
-      {!["giris"].includes(screen) && (
-        <div style={{ position:"fixed",right:0,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4,zIndex:9999,background:"rgba(8,12,20,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"14px 0 0 14px",padding:"10px 6px" }}>
-          {SIDEBAR_ITEMS.map(n=>{
-            const active = screen===n.id;
-            return (
-              <button key={n.id}
-                onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
-                title={n.label}
-                style={{
-                  background: active ? `${n.color}22` : "transparent",
-                  border: active ? `1px solid ${n.color}55` : "1px solid transparent",
-                  borderRadius:10,
-                  cursor:"pointer",
-                  transition:"all 0.25s",
-                  padding:"10px 8px",
-                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                  minWidth:44,
-                }}>
-                <span style={{ fontSize:active?20:17, color: active ? n.color : `${n.color}88`, transition:"all 0.25s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.2,textTransform:"uppercase",color:active?n.color:`${n.color}55`,transition:"color 0.25s",lineHeight:1,whiteSpace:"nowrap" }}>{n.label}</span>
-              </button>
-            );
-          })}
         </div>
       )}
 
