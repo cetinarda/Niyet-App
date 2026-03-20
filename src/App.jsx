@@ -1703,14 +1703,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror",   color:"#a070d0"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Harita":"Map",    color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
-    {id:"harita", icon:"🗺️", label:t("nav_map"),                   color:"#82d9a3"},
+  ];
+  const SIDEBAR_ITEMS = [
+    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"},
+    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2873,28 +2875,55 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
+      {/* LEFT SIDEBAR — Ayna & Harita */}
+      {!["giris"].includes(screen) && (
+        <div style={{ position:"fixed",left:0,top:"50%",transform:"translateY(-50%)",display:"flex",flexDirection:"column",gap:4,zIndex:9999,background:"rgba(8,12,20,0.88)",backdropFilter:"blur(24px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"0 14px 14px 0",padding:"10px 6px" }}>
+          {SIDEBAR_ITEMS.map(n=>{
+            const active = screen===n.id;
+            return (
+              <button key={n.id}
+                onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+                title={n.label}
+                style={{
+                  background: active ? `${n.color}22` : "transparent",
+                  border: active ? `1px solid ${n.color}55` : "1px solid transparent",
+                  borderRadius:10,
+                  cursor:"pointer",
+                  transition:"all 0.25s",
+                  padding:"10px 8px",
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,
+                  minWidth:44,
+                }}>
+                <span style={{ fontSize:active?20:17, color: active ? n.color : `${n.color}88`, transition:"all 0.25s", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.2,textTransform:"uppercase",color:active?n.color:`${n.color}55`,transition:"color 0.25s",lineHeight:1,whiteSpace:"nowrap" }}>{n.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"5px 6px",maxWidth:"calc(100vw - 24px)" }}>
+        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(8,12,20,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
                   background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
                   border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"all 0.28s",
-                  padding:"5px 8px",
-                  display:"flex",flexDirection:"column",alignItems:"center",gap:2,
-                  minWidth:36,
+                  padding:"8px 12px",
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,
+                  minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
                 }}>
-                <span style={{ fontSize:active?15:pulse?13:12, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:7,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:8,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
