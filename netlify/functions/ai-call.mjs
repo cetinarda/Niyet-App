@@ -3,13 +3,13 @@ export const handler = async (event) => {
     return { statusCode: 405, body: "Method not allowed" };
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VITE_ARAMA_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
     return {
       statusCode: 500,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "API anahtarı bulunamadı (ANTHROPIC_API_KEY)" }),
+      body: JSON.stringify({ error: "API anahtarı bulunamadı (GEMINI_API_KEY)" }),
     };
   }
 
@@ -20,19 +20,30 @@ export const handler = async (event) => {
     return { statusCode: 400, body: "Geçersiz istek" };
   }
 
-  const { system, messages, model = "claude-opus-4-6", max_tokens = 1000 } = body;
+  const { system, messages, max_tokens = 1000 } = body;
+
+  // Gemini formatına çevir
+  const contents = messages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+
+  const geminiBody = {
+    system_instruction: system ? { parts: [{ text: system }] } : undefined,
+    contents,
+    generationConfig: { maxOutputTokens: max_tokens },
+  };
 
   let res, data;
   try {
-    res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({ model, max_tokens, system, messages }),
-    });
+    res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(geminiBody),
+      }
+    );
     data = await res.json();
   } catch (e) {
     return {
@@ -43,7 +54,7 @@ export const handler = async (event) => {
   }
 
   if (!res.ok || data.error) {
-    const errMsg = data.error?.message || data.error || `HTTP ${res.status}`;
+    const errMsg = data.error?.message || `HTTP ${res.status}`;
     return {
       statusCode: res.status,
       headers: { "Content-Type": "application/json" },
@@ -51,7 +62,7 @@ export const handler = async (event) => {
     };
   }
 
-  const text = data.content?.find((b) => b.type === "text")?.text || "";
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
   return {
     statusCode: 200,
     headers: { "Content-Type": "application/json" },
