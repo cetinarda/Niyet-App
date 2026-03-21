@@ -1285,7 +1285,7 @@ ${astroText2}
 
 Yanıtını şu formatta ver:
 
-**Sana Ayna**
+**Ayna**
 (Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — sanki bir ayna tutuyorsun. Sorunun kaynağına işaret et ama kesin yargıda bulunma; "belki", "fark edebilirsin", "sormaya değer" gibi açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
 **Reiki ile Enerji Aktarımı**
@@ -1438,7 +1438,7 @@ ${astroText3}
 
 Yanıtını şu formatta ver:
 
-**Sana Ayna**
+**Ayna**
 (Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
 **Reiki ile Enerji Aktarımı**
@@ -1478,7 +1478,7 @@ ${astroTxt}
 
 Yanıtını şu formatta ver:
 
-**Sana Ayna**
+**Ayna**
 (Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak, "belki", "fark edebilirsin" gibi ifadeler kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
 **Reiki ile Enerji Aktarımı**
@@ -1516,7 +1516,7 @@ ${astroTxt}
 
 Yanıtını şu formatta ver:
 
-**Sana Ayna**
+**Ayna**
 (Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
 **Reiki ile Enerji Aktarımı**
