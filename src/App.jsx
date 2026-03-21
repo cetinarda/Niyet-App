@@ -1301,7 +1301,7 @@ Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
 Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım)` }],
+(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
         }),
       });
       const d = await res.json();
@@ -1481,7 +1481,7 @@ Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
 Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans müziği, niyet — somut 2-3 adım)` }],
+(El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
         }),
       });
       const d = await res.json();
@@ -1533,7 +1533,7 @@ Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
 Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)` }],
+(El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
         }),
       });
       const d = await res.json();
@@ -1583,7 +1583,7 @@ Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
 Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans, niyet — somut 2-3 adım)` }],
+(El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
         }),
       });
       const d = await res.json();
