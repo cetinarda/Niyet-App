@@ -960,24 +960,53 @@ function playFreqTone(hz, dur = 3.5) {
   } catch(_) {}
 }
 
-function FreqText({ text, style }) {
+function FreqText({ text, style, onNav }) {
   if (!text) return null;
-  const parts = text.split(/(\d+\s*Hz)/gi);
+  const parts = text.split(/(\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
+  const NEFES_IDS = {
+    "Akciğer":"akciger","Sakinleştirici":"sakinletici",
+    "Diyafram":"diyafram","Kutu":"kutu","4-7-8":"478","Standart":"standart"
+  };
+  const EKRAN_LABELS = {
+    terapi:"Çakra Terapisi 💜", nefes:"Nefes 🫧",
+    rehber:"Ayna 🪞", sabah:"Sabah Niyeti 🌅", aksam:"Akşam Kapanışı 🌙"
+  };
   return (
     <span style={style}>
       {parts.map((part, i) => {
-        const m = part.match(/^(\d+)\s*Hz$/i);
-        if (m) {
-          const hz = parseInt(m[1]);
+        const hzM = part.match(/^(\d+)\s*Hz$/i);
+        if (hzM) {
+          const hz = parseInt(hzM[1]);
           return (
-            <span
-              key={i}
-              onClick={() => playFreqTone(hz)}
-              title={`${hz} Hz — dokunarak çal`}
+            <span key={i} onClick={() => playFreqTone(hz)} title={`${hz} Hz — dokunarak çal`}
               style={{ color:"#c090f0", cursor:"pointer", borderBottom:"1px dotted rgba(192,144,240,0.6)", fontWeight:500, transition:"opacity 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.75"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
             >{part}</span>
+          );
+        }
+        const nefesM = part.match(/^\[\[NEFES:([^\]]+)\]\]$/i);
+        if (nefesM && onNav) {
+          const ad = nefesM[1].trim();
+          const id = NEFES_IDS[ad] || "standart";
+          return (
+            <span key={i} onClick={() => onNav("breath", id)} title={`${ad} nefes moduna git`}
+              style={{ color:"#70b8f0", cursor:"pointer", borderBottom:"1px solid rgba(112,184,240,0.5)", fontWeight:500, padding:"1px 5px", borderRadius:4, transition:"opacity 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+            >{ad} nefesi →</span>
+          );
+        }
+        const ekranM = part.match(/^\[\[EKRAN:([^\]]+)\]\]$/i);
+        if (ekranM && onNav) {
+          const id = ekranM[1].trim();
+          const label = EKRAN_LABELS[id] || id;
+          return (
+            <span key={i} onClick={() => onNav("screen", id)} title={`${label} bölümüne git`}
+              style={{ color:"#70f0b0", cursor:"pointer", borderBottom:"1px solid rgba(112,240,176,0.5)", fontWeight:500, padding:"1px 5px", borderRadius:4, transition:"opacity 0.15s" }}
+              onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
+              onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+            >{label} →</span>
           );
         }
         return <span key={i}>{part}</span>;
@@ -986,7 +1015,7 @@ function FreqText({ text, style }) {
   );
 }
 
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr" }) {
+function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr", onNav }) {
   const t = makeTrans(lang);
   const [tipAcik, setTipAcik] = useState(false);
   const tipRef = useRef(null);
@@ -1016,7 +1045,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
       ) : analiz ? (
         <div>
           <div style={{ fontSize:10,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Nunito','Jost',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} /></div>
+          <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Nunito','Jost',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
           <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
             <button onClick={onSifirla}
               style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:10,letterSpacing:2.5,padding:"6px 16px" }}>
@@ -1178,7 +1207,8 @@ export default function SakinApp() {
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
-  const breathRef = useRef(null);
+  const breathRef        = useRef(null);
+  const pendingBreathRef = useRef(null);
   const breathChimeRef = useRef(null);
 
   const playStartChime = () => {
@@ -1297,8 +1327,8 @@ Yanıtını şu formatta ver:
 **Senin için**
 Beslenme: (bu çakra ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
-Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
-Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
+Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri olsun: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart — ve kısa nedenini ekle
+Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
 (Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
@@ -1477,8 +1507,8 @@ Yanıtını şu formatta ver:
 **Senin için**
 Beslenme: (bu semptom ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
-Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
-Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
+Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri olsun: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart — ve kısa nedenini ekle
+Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
@@ -1529,8 +1559,8 @@ Yanıtını şu formatta ver:
 **Senin için**
 Beslenme: (bu konu ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
-Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
-Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
+Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri olsun: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart — ve kısa nedenini ekle
+Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
@@ -1579,8 +1609,8 @@ Yanıtını şu formatta ver:
 **Senin için**
 Beslenme: (bu hastalık ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
-Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
-Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
+Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri olsun: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart — ve kısa nedenini ekle
+Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
@@ -1694,7 +1724,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   useEffect(() => {
     setBreathStarted(false);
     setBreathPhase("inhale");
-    setBreathMode("standart");
+    const pending = pendingBreathRef.current;
+    if (pending) { setBreathMode(pending); pendingBreathRef.current = null; }
+    else { setBreathMode("standart"); }
     clearInterval(breathRef.current);
   },[screen]);
 
@@ -2404,7 +2436,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {sikayet.toUpperCase()} {t("analysis_suf")}
                 </div>
                 <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Cormorant Garamond',Georgia,serif",marginBottom:24 }}>
-                  <FreqText text={sikayetAnaliz} />
+                  <FreqText text={sikayetAnaliz} onNav={(type, val) => {
+                    if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
+                    else if (type === "screen") { setScreen(val); }
+                  }} />
                 </div>
                 <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
                   style={{ background:"rgba(160,112,208,0.1)",border:"1px solid rgba(160,112,208,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:11,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
