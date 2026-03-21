@@ -1275,7 +1275,7 @@ export default function SakinApp() {
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:750,
-          system:`Sen derin bir çakra ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
 
@@ -1283,19 +1283,13 @@ ${KITAP_BILGELIGI}`,
 Zihinsel-bedensel bağlantısı: ${zihinsel}
 ${astroText2}
 
-Şu formatta yanıt ver:
+Yanıtını şu formatta ver:
 
-**Zihinsel-Duygusal Kök**
-(Bu çakra ve kullanıcının hissini bağla — 2 cümle, şefkatli)
+**Sana Ayna**
+(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — sanki bir ayna tutuyorsun. Sorunun kaynağına işaret et ama kesin yargıda bulunma; "belki", "fark edebilirsin", "sormaya değer" gibi açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
-**Reiki ile Tedavi**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım)
-
-**Kitap Bilgeliği**
-(Yukardaki kaynaklardan bu durumla en çok örtüşen tek bir içgörü — 1-2 cümle)
-
-**Sana Özel Mesaj**
-(Doğum haritasına göre kişiselleştirilmiş, şiirsel — 2 cümle)` }],
+**Reiki ile Enerji Aktarımı**
+(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım)` }],
         }),
       });
       const d = await res.json();
@@ -1429,7 +1423,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:850,
-          system:`Sen derin bir holistik sağlık rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
 
@@ -1442,22 +1436,13 @@ ${zihinselListeText}
 
 ${astroText3}
 
-Şu formatta yanıt ver:
+Yanıtını şu formatta ver:
 
-**Zihinsel-Duygusal Kök**
-(Bu semptomu tetikleyen en olası duygusal/zihinsel neden — 2 cümle)
+**Sana Ayna**
+(Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
-**İlgili Çakra & Enerji**
-(Hangi çakra, hangi frekans, tıkanma ilişkisi — 2 cümle)
-
-**Reiki ile Tedavi**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)
-
-**Kitap Bilgeliği**
-(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
-
-**Sana Özel Mesaj**
-(Doğum haritasına göre kişiselleştirilmiş, şiirsel — 2 cümle)` }],
+**Reiki ile Enerji Aktarımı**
+(El pozisyonu, frekans müziği, niyet — somut 2-3 adım)` }],
         }),
       });
       const d = await res.json();
@@ -1479,7 +1464,7 @@ ${astroText3}
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1100,
-          system:`Sen derin bir holistik enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"${sikayetHis ? `\nHissi: "${sikayetHis}"` : ""}
 
@@ -1491,22 +1476,13 @@ Zihinsel nedenler:
 ${zihinselListeText}
 ${astroTxt}
 
-Şu formatta yanıt ver:
+Yanıtını şu formatta ver:
 
-**Zihinsel-Duygusal Kök**
-(En olası duygusal neden — 2 cümle)
+**Sana Ayna**
+(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak, "belki", "fark edebilirsin" gibi ifadeler kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
-**İlgili Çakra & Enerji**
-(Çakra, frekans, tıkanma ilişkisi — 2 cümle)
-
-**Reiki ile Tedavi**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)
-
-**Kitap Bilgeliği**
-(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
-
-**Sana Özel Mesaj**
-(Kişiselleştirilmiş, şiirsel, iyileştirici — 2 cümle)` }],
+**Reiki ile Enerji Aktarımı**
+(El pozisyonu, niyet, frekans müziği — somut 2-3 adım)` }],
         }),
       });
       const d = await res.json();
@@ -1526,7 +1502,7 @@ ${astroTxt}
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1000,
-          system:`Sen derin bir holistik sağlık rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
 
@@ -1538,22 +1514,13 @@ Zihinsel nedenler:
 ${zihinselListeText}
 ${astroTxt}
 
-Şu formatta yanıt ver:
+Yanıtını şu formatta ver:
 
-**Ruhsal Kök**
-(Bu hastalığın ruhsal-duygusal mesajı — 2 cümle)
+**Sana Ayna**
+(Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
 
-**Enerji & Çakra**
-(Hangi çakra, hangi enerji bloğu — 2 cümle)
-
-**Reiki ile Tedavi**
-(El pozisyonu, frekans, niyet — somut 2-3 adım)
-
-**Kitap Bilgeliği**
-(Bu durumla en çok örtüşen tek bir kaynak içgörüsü — 1-2 cümle)
-
-**Sana Özel Mesaj**
-(Doğum haritasına göre, şiirsel — 2 cümle)` }],
+**Reiki ile Enerji Aktarımı**
+(El pozisyonu, frekans, niyet — somut 2-3 adım)` }],
         }),
       });
       const d = await res.json();
@@ -1631,18 +1598,18 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1700,
-          system:`Sen derin bir içsel farkındalık ve astroloji rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Yanıt ayna gibi olsun: Kişinin verisini yansıt, yargılama. Daha fazlası premium'da notu ekle.
+          system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Ayna gibi yansıt — kişinin verisini geri ver, yargılama, kesin hüküm kurma. Sorunun kaynağına nokta atışı işaret et ama kapıyı açık bırak. Hataları değil, nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 ${astroText}
 ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
 
 Rapor şu başlıkları içermeli:
-**Haftanın Enerjisi** — Genel ruh hali, enerji ve burç/sayı etkisi (2-3 cümle)
-**Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri
-**İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
-**Gizli Benlik & Gölge** — Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar, karmik örüntüler veya gölge yansımalar; bütünleşme için bir davet (2-3 cümle, şiirsel)
+**Haftanın Yansıması** — Genel ruh hali, enerji ve burç/sayı etkisi — ayna gibi yansıt, yargılama (2-3 cümle)
+**Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri — kaynağa işaret et, açık kapı bırak
+**İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam — kişinin kendi içinde gördüklerini yansıt
+**Gizli Benlik & Gölge** — Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
 **Şükran Kalbi** — Şükür yazılarından bir sentez
-**Bu Hafta Dikkat** — Bu hafta özellikle nelere dikkat etmeli, hangi enerji veya durumdan uzak durmalı (2-3 madde)
+**Sana Bir Davet** — Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin — eleştiri değil, davet (2-3 madde)
 **Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
 
