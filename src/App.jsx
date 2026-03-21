@@ -433,18 +433,26 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
-function ReminderScreen({ onBack, onNext, lang = "tr" }) {
+function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   const t = makeTrans(lang);
   const REMINDERS = getReminders(lang);
-  const [done,   setDone]   = useState({});
+  const _todayKey = new Date().toISOString().slice(0, 10);
+  const _storageKey = "sakin_reminders_done_" + _todayKey;
+  const [done,   setDone]   = useState(() => { try { return JSON.parse(localStorage.getItem(_storageKey)) || {}; } catch { return {}; } });
   const [timing, setTiming] = useState(null);
   const timerRef = useRef(null);
 
   const completedCount = Object.values(done).filter(Boolean).length;
 
+  useEffect(() => { if (onTasksDone) onTasksDone(completedCount); }, [completedCount]);
+
   const toggleDone = (id) => {
     if (timing?.id === id) { clearInterval(timerRef.current); setTiming(null); }
-    setDone(p => ({ ...p, [id]: !p[id] }));
+    setDone(p => {
+      const next = { ...p, [id]: !p[id] };
+      localStorage.setItem(_storageKey, JSON.stringify(next));
+      return next;
+    });
   };
 
   const startTimer = (rem) => {
@@ -458,7 +466,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr" }) {
         const next = t.elapsed + 1;
         if (next >= t.total) {
           clearInterval(timerRef.current);
-          setDone(p => ({ ...p, [rem.id]: true }));
+          setDone(p => { const n={...p,[rem.id]:true}; localStorage.setItem(_storageKey,JSON.stringify(n)); return n; });
           return null;
         }
         return { ...t, elapsed: next };
@@ -1168,6 +1176,13 @@ export default function SakinApp() {
 
   const MANDALA_STEPS = ["sabah","nefes","chakra","gun","aksam","harita"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+  const [gunTasksDone, setGunTasksDone] = useState(() => {
+    try {
+      const k = "sakin_reminders_done_" + new Date().toISOString().slice(0,10);
+      const s = JSON.parse(localStorage.getItem(k)) || {};
+      return Object.values(s).filter(Boolean).length;
+    } catch { return 0; }
+  });
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
 
   // Update streak when all steps complete
@@ -1978,6 +1993,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {steps.map((step,i)=>{
                   const startDeg=-90+i*sweep, endDeg=startDeg+sweep;
                   const done=!!stepsCompleted[step.id];
+                  const partial=!done && step.id==="gun" && gunTasksDone>0;
                   const midDeg=startDeg+sweep/2, midRad=midDeg*Math.PI/180;
                   const iconR=(rIn+rOut)/2;
                   const iconX=cx+iconR*Math.cos(midRad), iconY=cy+iconR*Math.sin(midRad);
@@ -1988,26 +2004,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   return (
                     <g key={step.id} style={{cursor:done?"default":isNext?"pointer":"default"}}
                       onClick={()=>{ if(isNext&&!done) setScreen(step.id); }}>
-                      {/* glow hale behind done slice */}
-                      {done&&<path d={slicePath(cx,cy,rIn-3,rOut+6,startDeg,endDeg,3)}
-                        fill={`rgba(${step.glow},0.18)`}
+                      {/* glow hale behind done/partial slice */}
+                      {(done||partial)&&<path d={slicePath(cx,cy,rIn-3,rOut+6,startDeg,endDeg,3)}
+                        fill={`rgba(${step.glow},${partial?0.08:0.18})`}
                         style={{animation:`sliceGlow 2.5s ease-in-out infinite`,animationDelay:`${i*0.45}s`}}/>}
                       {/* slice body */}
                       <path d={slicePath(cx,cy,rIn,rOut,startDeg,endDeg,3)}
-                        fill={done?`url(#rg_${step.id})`:"rgba(255,255,255,0.026)"}
-                        stroke={done?`rgba(${step.glow},0.55)`:"rgba(255,255,255,0.055)"}
+                        fill={done?`url(#rg_${step.id})`:partial?`rgba(${step.glow},0.22)`:"rgba(255,255,255,0.026)"}
+                        stroke={done?`rgba(${step.glow},0.55)`:partial?`rgba(${step.glow},0.35)`:"rgba(255,255,255,0.055)"}
                         strokeWidth="0.6"
                         style={{transition:"fill 0.7s ease, stroke 0.7s ease"}}/>
                       {/* icon */}
                       <text x={iconX} y={iconY+1} textAnchor="middle" dominantBaseline="middle"
-                        fontSize={done?18:14} opacity={done?1:0.18}
+                        fontSize={done?18:14} opacity={done?1:partial?0.6:0.18}
                         style={{transition:"opacity 0.5s,font-size 0.5s",userSelect:"none"}}>
                         {done?"✓":step.icon}
                       </text>
                       {/* label */}
                       <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="middle"
                         fontSize="8" letterSpacing="1.5"
-                        fill={done?step.color:"rgba(70,80,100,0.6)"}
+                        fill={done?step.color:partial?`rgba(${step.glow},0.7)`:"rgba(70,80,100,0.6)"}
                         fontFamily="'Jost',sans-serif"
                         style={{textTransform:"uppercase",transition:"fill 0.5s",userSelect:"none"}}>
                         {step.label}
@@ -2367,7 +2383,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} lang={lang} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
@@ -2495,30 +2511,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </button>
                 </div>
 
-                {/* Hızlı chip önerileri */}
-                {!sikayet && (
-                  <div style={{ display:"flex",flexWrap:"wrap",gap:8,justifyContent:"center",marginTop:6 }}>
-                    {(lang==="tr"
-                      ? ["😔 Yorgunum","⚡ Enerji düşük","😟 Endişeliyim","🌀 Odaklanamıyorum","💫 Dengesizim","🫀 Beden ağrısı"]
-                      : ["😔 Exhausted","⚡ Low energy","😟 Anxious","🌀 Can't focus","💫 Off balance","🫀 Body pain"]
-                    ).map(chip=>(
-                      <button key={chip} onClick={()=>setSikayet(chip.replace(/^[\p{Emoji}\s]+/u,"").trim())}
-                        style={{
-                          background:"rgba(255,255,255,0.03)",
-                          border:"1px solid rgba(160,112,208,0.2)",
-                          borderRadius:20,padding:"7px 14px",
-                          color:"#8868b0",fontSize:12,
-                          fontFamily:"'Cormorant Garamond',Georgia,serif",
-                          cursor:"pointer",letterSpacing:0.5,
-                          transition:"all 0.2s",
-                        }}
-                        onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.5)"; e.currentTarget.style.color="#c0a0e0"; }}
-                        onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.2)"; e.currentTarget.style.color="#8868b0"; }}>
-                        {chip}
-                      </button>
-                    ))}
-                  </div>
-                )}
 
                 {/* Ne sorabilirim? butonu + detaylı soru kutucuğu */}
                 <div style={{ marginTop:20,position:"relative" }}>
@@ -2573,6 +2565,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           "İçsel sesimi nasıl daha net duyabilirim?",
                           "Karanlık gecelerde kendimi nasıl tutabilirim?",
                         ]},
+                        { cat:"🌀 Yaşam Geçişleri", sorular:[
+                          "Taşınma dönemindeyim, sırt ağrım başladı — bağlantısı var mı?",
+                          "İş değiştiriyorum ve içimde büyük bir kaygı var, nedeni ne olabilir?",
+                          "Ayrılık sürecindeyim, bedenimde ağırlık hissediyorum.",
+                          "Yeni bir başlangıç önümde, ama adım atmak zor geliyor.",
+                        ]},
                       ] : [
                         { cat:"🌿 Body & Health", sorular:[
                           "Why is chronic fatigue always with me?",
@@ -2597,6 +2595,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           "What is my mission and how can I understand it?",
                           "How can I hear my inner voice more clearly?",
                           "How do I hold myself together in dark nights?",
+                        ]},
+                        { cat:"🌀 Life Transitions", sorular:[
+                          "I'm moving homes and my back pain started — is there a connection?",
+                          "I'm changing jobs and feel deep anxiety — what might be the cause?",
+                          "I'm going through a separation and feel heaviness in my body.",
+                          "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
                       ]).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
