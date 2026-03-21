@@ -39,7 +39,7 @@ export const handler = async (event) => {
   const { system, messages, max_tokens = 1800 } = body;
 
   // Fonksiyon seviyesinde sabit Türkçe zorlama — model ne olursa olsun geçerli
-  const turkcePrefix = "Yalnızca Türkçe yaz. Cümleler akıcı, sade ve şiirsel olsun. Her kelime ayrı yazılsın. Çince, Japonca, Arapça veya başka yabancı karakter kesinlikle kullanma.\n\n";
+  const turkcePrefix = "Yalnızca Türkçe yaz. ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan; yerlerine baska karakter koyma. Cümleler akıcı, sade ve şiirsel olsun. Her kelime ayrı yazılsın. Çince, Japonca, Arapça veya başka yabancı karakter kesinlikle kullanma.\n\n";
 
   const groqMessages = [];
   if (system) groqMessages.push({ role: "system", content: turkcePrefix + system });

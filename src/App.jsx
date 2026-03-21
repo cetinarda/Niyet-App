@@ -1274,8 +1274,10 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:750,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
+          model:"claude-opus-4-6", max_tokens:1100,
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
 
@@ -1283,10 +1285,20 @@ ${KITAP_BILGELIGI}`,
 Zihinsel-bedensel bağlantısı: ${zihinsel}
 ${astroText2}
 
+${NEFES_REHBERI}
+
+${UYGULAMA_BOLUMLER}
+
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — sanki bir ayna tutuyorsun. Sorunun kaynağına işaret et ama kesin yargıda bulunma; "belki", "fark edebilirsin", "sormaya değer" gibi açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
+(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki" gibi yumuşak açılımlar kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+
+**Senin için**
+Beslenme: (bu çakra ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
+Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
+Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
 (Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım)` }],
@@ -1332,6 +1344,21 @@ Yanıtını şu formatta ver:
 • Bir'in Yasası (Ra Materyali): Her şey tek bir bilinçtir. Sevgi evrenin birleştirici gücüdür. Başkasına hizmet kendi evrimine katkıdır. Sen hem öğreten hem öğrenilensin.`;
 
   const PREMIUM_YONLENDIRME = `\n\n_(Daha derin analiz, kişisel terapi önerileri ve detaylı çakra haritası için Premium'u keşfet.)_`;
+
+  const NEFES_REHBERI = `UYGULAMADAKI NEFES MODLARI (en uygununu öner):
+• Standart (4-1.5-4): Genel denge, farkındalık, her durum için başlangıç
+• Diyafram (4-0-6): Stres, mide/karın gerginliği, duygusal boşalma
+• Akciğer (5-2-7): Akciğer sorunları, boğaz, derinleşme, yavaşlama
+• 4-7-8: Anksiyete, uyku sorunları, panik, sinir sistemi sakinleştirme
+• Kutu (4-4-4-4): Zihin odağı, öfke, stres yönetimi
+• Sakinleştirici (4-2-8): Akut gerginlik, öfke, ani sinir sistemi dengesi`;
+
+  const UYGULAMA_BOLUMLER = `UYGULAMANIN BÖLÜMLERİ (yönlendirme için):
+• Çakra Terapisi (💜): İlgili çakraya özel 60 saniyelik enerji seansı
+• Nefes (🫧): Beden-zihin entegrasyonu için nefes modu seçimi
+• Ayna (🪞): İçsel soruları derinlemesine işlemek için
+• Sabah Niyeti (🌅): Güne niyet ve enerji belirlemek için
+• Akşam Kapanışı (🌙): Günü tamamlamak, şükür ve öğrenim için`;
 
   const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın — Usui Işık Çemberi Ekolü)
 
@@ -1422,8 +1449,10 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:850,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
+          model:"claude-opus-4-6", max_tokens:1200,
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
 
@@ -1436,10 +1465,20 @@ ${zihinselListeText}
 
 ${astroText3}
 
+${NEFES_REHBERI}
+
+${UYGULAMA_BOLUMLER}
+
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
+(Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki" gibi yumuşak açılımlar kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+
+**Senin için**
+Beslenme: (bu semptom ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
+Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
+Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, frekans müziği, niyet — somut 2-3 adım)` }],
@@ -1464,7 +1503,9 @@ Yanıtını şu formatta ver:
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1100,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"${sikayetHis ? `\nHissi: "${sikayetHis}"` : ""}
 
@@ -1476,10 +1517,20 @@ Zihinsel nedenler:
 ${zihinselListeText}
 ${astroTxt}
 
+${NEFES_REHBERI}
+
+${UYGULAMA_BOLUMLER}
+
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak, "belki", "fark edebilirsin" gibi ifadeler kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
+(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki" gibi yumuşak açılımlar kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+
+**Senin için**
+Beslenme: (bu konu ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
+Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
+Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, niyet, frekans müziği — somut 2-3 adım)` }],
@@ -1501,8 +1552,10 @@ Yanıtını şu formatta ver:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1000,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; Arapça, Japonca, Çince veya başka hiçbir alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme. Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; soruyu açık tut, alanı genişlet. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
+          model:"claude-opus-4-6", max_tokens:1300,
+          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
+Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
 
@@ -1514,10 +1567,20 @@ Zihinsel nedenler:
 ${zihinselListeText}
 ${astroTxt}
 
+${NEFES_REHBERI}
+
+${UYGULAMA_BOLUMLER}
+
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; açık kapılar bırak. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, sade — 4-5 cümle)
+(Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma; "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki" gibi yumuşak açılımlar kullan. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+
+**Senin için**
+Beslenme: (bu hastalık ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
+Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Nefes: (yukarıdaki nefes modlarından en uygununu seç ve kısa nedenini yaz)
+Uygulama: (yukarıdaki bölümlerden en uygun olanına nazikçe yönlendir)
 
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, frekans, niyet — somut 2-3 adım)` }],
