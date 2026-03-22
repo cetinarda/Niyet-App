@@ -1150,6 +1150,10 @@ export default function SakinApp() {
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
   const [showOrnekler, setShowOrnekler] = useState(false);
   const [showKilavuz, setShowKilavuz] = useState(false);
+  // Kişiselleştirme: kullanıcının önceki sorgu geçmişini takip et
+  const [sorguGecmisi, setSorguGecmisi] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("sakin_sorgu_gecmisi")||"[]"); } catch { return []; }
+  });
 
   // ── Streak & Step Tracking ──
   const todayKey = new Date().toISOString().slice(0,10);
@@ -1307,6 +1311,28 @@ export default function SakinApp() {
     return 4; // default: Boğaz
   }
 
+  // Önceki sorgulara göre kişiselleştirme bağlamı oluştur
+  function kisiselBaglamOlustur(mevcutGecmis) {
+    if (!mevcutGecmis || mevcutGecmis.length === 0) return "";
+    const son3 = mevcutGecmis.slice(-3);
+    const konular = son3.map(s => `• ${s.tur}: "${s.konu.slice(0,60)}${s.konu.length>60?"…":""}"`).join("\n");
+    const sayac = mevcutGecmis.length;
+    const tonYonlendirmesi = sayac === 1
+      ? "Bu kişi seninle ilk kez konuşuyor; nazik ve tanışır gibi yaklaş."
+      : sayac <= 3
+      ? "Bu kişi seni birkaç kez ziyaret etti; biraz daha tanıdık ve kişisel bir dil kullanabilirsin."
+      : "Bu kişi seninle birden çok kez paylaştı; onu artık tanıyorsun gibi; önceki temalarla bağlantı kur, aynı kalıpları tekrarlama, format ve yaklaşımını çeşitlendir.";
+    return `\nKullanıcının önceki paylaşımları:\n${konular}\n${tonYonlendirmesi}\n`;
+  }
+
+  function sorguKaydet(tur, konu) {
+    setSorguGecmisi(prev => {
+      const yeni = [...prev, { tur, konu, zaman: new Date().toISOString() }].slice(-10);
+      localStorage.setItem("sakin_sorgu_gecmisi", JSON.stringify(yeni));
+      return yeni;
+    });
+  }
+
   const generateChakraAnaliz = async () => {
     if (!chakraInput.trim()) return;
     setChakraAnaliz("__loading__");
@@ -1314,6 +1340,7 @@ export default function SakinApp() {
     const ch = CHAKRAS_7[idx];
     const zihinsel = CHAKRA_ZIHINSEL[idx];
     const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
+    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1321,9 +1348,10 @@ export default function SakinApp() {
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
-Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Dil tonu: Yumuşak, şiirsel, şefkatli. Kesin yargı kurma. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir", "belki de bu", "olabilir ki", "e bilir ki içinde" gibi açık kapılar bırak.
 Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-${KITAP_BILGELIGI}`,
+Yanıtının en sonunda mutlaka şu kapanış cümlesini ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir."
+${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${chakraInput}"
 
 İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
@@ -1346,12 +1374,13 @@ Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri o
 Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
+(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Son cümle olarak mutlaka şunu ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir.")` }],
         }),
       });
       const d = await res.json();
       if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
+      sorguKaydet("çakra", chakraInput);
     } catch {
       setChakraAnaliz("Bağlantı hatası.");
     }
@@ -1489,6 +1518,7 @@ BEDEN-ZİHİN BAĞLANTISI:
     setSemptomAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
+    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1496,9 +1526,10 @@ BEDEN-ZİHİN BAĞLANTISI:
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1200,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
-Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Dil tonu: Yumuşak, şiirsel, şefkatli. Kesin yargı kurma. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir", "belki de bu", "olabilir ki", "e bilir ki içinde" gibi açık kapılar bırak.
 Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-${KITAP_BILGELIGI}`,
+Yanıtının en sonunda mutlaka şu kapanış cümlesini ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir."
+${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${semptomInput}"
 
 ${REIKI_BILGI}
@@ -1526,12 +1557,13 @@ Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri o
 Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
+(El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Son cümle olarak mutlaka şunu ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir.")` }],
         }),
       });
       const d = await res.json();
       if (!res.ok || d.error) { setSemptomAnaliz("Hata: " + (d.error || res.status)); return; }
       setSemptomAnaliz(d?.text || "Analiz alınamadı.");
+      sorguKaydet("semptom", semptomInput);
     } catch {
       setSemptomAnaliz("Bağlantı hatası.");
     }
@@ -1542,6 +1574,7 @@ Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan bir
     setSikayetAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
+    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1549,9 +1582,10 @@ Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan bir
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
-Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Dil tonu: Yumuşak, şiirsel, şefkatli. Kesin yargı kurma. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir", "belki de bu", "olabilir ki", "e bilir ki içinde" gibi açık kapılar bırak.
 Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-${KITAP_BILGELIGI}`,
+Yanıtının en sonunda mutlaka şu kapanış cümlesini ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir."
+${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sikayet}"${sikayetHis ? `\nHissi: "${sikayetHis}"` : ""}
 
 ${REIKI_BILGI}
@@ -1578,12 +1612,13 @@ Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri o
 Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
+(El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Son cümle olarak mutlaka şunu ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir.")` }],
         }),
       });
       const d = await res.json();
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
+      sorguKaydet("şikayet", sikayet);
     } catch(e) { setSikayetAnaliz("Bağlantı hatası: " + e.message); }
   };
 
@@ -1592,6 +1627,7 @@ Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan bir
     setHastalikAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
+    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
@@ -1599,9 +1635,10 @@ Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan bir
         body: JSON.stringify({
           model:"claude-opus-4-6", max_tokens:1300,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
-Dil tonu: Yumuşak, şiirsel, şefkatli. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir" gibi açık kapılar bırak.
+Dil tonu: Yumuşak, şiirsel, şefkatli. Kesin yargı kurma. "fark edebilirsin" yerine "kalbini dinlersen işitmenin muhtemedir ki", "olası ki bu his sana bir şey söylüyor", "içinde bir yer biliyor olabilir ki", "sormaya değer olabilir", "belki de bu", "olabilir ki", "e bilir ki içinde" gibi açık kapılar bırak.
 Kişinin sorusunun kaynağına nokta atışı işaret et ama kesin yargıda bulunma. Hataları ya da eksiklikleri değil, kişinin nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-${KITAP_BILGELIGI}`,
+Yanıtının en sonunda mutlaka şu kapanış cümlesini ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir."
+${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Hastalık: "${hastalik}"${hastalikHis ? `\nNasıl hissediyorum: "${hastalikHis}"` : ""}
 
 ${REIKI_BILGI}
@@ -1628,12 +1665,13 @@ Nefes: [[NEFES:ModAdı]] formatında yaz — ModAdı yalnızca şunlardan biri o
 Uygulama: [[EKRAN:ekranId]] formatında yaz — ekranId yalnızca şunlardan biri olsun: terapi, nefes, rehber, sabah, aksam — ve kısa açıklama ekle
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel.)` }],
+(El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Son cümle olarak mutlaka şunu ekle: "Ama en son kendi kalbine sor ve bu söylediklerimi kendi süzgecinden geçir.")` }],
         }),
       });
       const d = await res.json();
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
+      sorguKaydet("hastalık", hastalik);
     } catch(e) { setHastalikAnaliz("Bağlantı hatası: " + e.message); }
   };
 
