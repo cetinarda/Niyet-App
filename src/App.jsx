@@ -66,6 +66,94 @@ const getChakras22 = (lang) => [
 ];
 const TERAPI_TOTAL = 60;
 
+const FREQ_DATA_TR = [
+  { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
+    tema:"Ağrı Çözücü · Güvenlik",
+    aciklama:"174 Hz bedenin en derin katmanlarına iner. Fiziksel ağrıyı yumuşatır, hücrelere güvenlik sinyali gönderir. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
+    etkiler:["Fiziksel ağrıda rahatlama","Güvenlik hissi","Topraklanma","Derin kas gevşemesi"] },
+  { hz:285, name:"Hücre Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
+    tema:"Doku İyileşmesi · Enerji Alanı",
+    aciklama:"285 Hz enerji alanını onarır ve hücresel yenilenmeyi destekler. Bu frekans bedenin doğal iyileşme mekanizmasını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
+    etkiler:["Hücresel yenilenme","Enerji alanı onarımı","Bağışıklık desteği","Tazelenme hissi"] },
+  { hz:396, name:"Özgürleşme", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
+    tema:"Korku & Suçluluk Salınımı",
+    aciklama:"396 Hz kök çakrayla rezonansa girer. Bilinçaltındaki korku, suçluluk ve hayatta kalma kaygısını çözmeye yardımcı olur. Göğüs ve karın bölgesinde gevşeme, zihinsel gürültünün azalması ve 'içsel yük hafifliyor' hissi yaşanır.",
+    etkiler:["Suçluluk ve korku salınımını çözme","Kök enerji alanında rahatlama","Geçmişten gelen yükleri bırakma","Güven hissini yeniden hatırlama"] },
+  { hz:417, name:"Dönüşüm", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
+    tema:"Değişimi Kolaylaştırma · Travma Temizliği",
+    aciklama:"417 Hz sakral çakrayla çalışır. Travmatik deneyimlerin izlerini yumuşatır, değişime direnci çözer. Yaratıcılığın önündeki blokajları kaldırır. Dinleyenler duygusal bir 'çözülme' ve ardından hafiflik hissi tarif eder.",
+    etkiler:["Negatif enerjiyi dönüştürme","Travma izlerini yumuşatma","Değişime açıklık","Yaratıcı blokajları çözme"] },
+  { hz:432, name:"Evrensel Uyum", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
+    tema:"Doğanın Frekansı · Kalp Huzuru",
+    aciklama:"432 Hz 'evrenin frekansı' olarak bilinir. Doğadaki altın oranla uyumludur. Kalp atışını sakinleştirir, beyin dalgalarını alfa durumuna geçirir. Dinleyenler derin bir huzur, zamanın yavaşlaması ve 'eve dönüş' hissi yaşar.",
+    etkiler:["Doğayla uyum","Kalp ritmi dengeleme","Alfa beyin dalgaları","Derin huzur hissi"] },
+  { hz:528, name:"Sevgi Frekansı", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
+    tema:"DNA Onarımı · Mucize Tonu",
+    aciklama:"528 Hz 'Mucize Tonu' ya da 'Sevgi Frekansı' olarak adlandırılır. DNA onarımını desteklediği, hücrelerdeki suyu yeniden yapılandırdığı düşünülür. Güneş pleksusu çakrasıyla rezonansa girer. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
+    etkiler:["DNA onarımı","İç dönüşüm ve mucize","Sevgi titreşimi","Güneş pleksusu aktivasyonu"] },
+  { hz:639, name:"İlişki Uyumu", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
+    tema:"Bağlantı · İlişki İyileştirme",
+    aciklama:"639 Hz kalp çakrasını besler. İlişkilerdeki kırıklıkları onarır, empatiyi güçlendirir. Hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
+    etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası aktivasyonu","Bağ kurma kapasitesi"] },
+  { hz:741, name:"İfade & Arınma", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
+    tema:"Sezgisel İfade · Toksin Temizliği",
+    aciklama:"741 Hz boğaz çakrasıyla çalışır. Gerçeği söyleme cesaretini güçlendirir, hücresel toksinlerin atılmasını destekler. Problem çözme kapasitesini artırır. Dinleyenler boğaz bölgesinde açılma ve netleşen bir zihin deneyimler.",
+    etkiler:["Özgün ifade gücü","Toksin arındırma","Problem çözme","Zihinsel berraklık"] },
+  { hz:852, name:"Sezgisel Uyanış", color:"#8e44ad", pastel:"#c3a6d8", icon:"🔮",
+    tema:"Üçüncü Göz · Spiritüel Farkındalık",
+    aciklama:"852 Hz üçüncü göz çakrasını uyandırır. Sezgisel kapasiteyi güçlendirir, illüzyonları çözer. Meditasyonda daha derin katmanlara ulaşmayı kolaylaştırır. Dinleyenler alın bölgesinde hafif basınç, görsel imgeler ve 'perde kalkıyor' hissi tarif eder.",
+    etkiler:["Sezgi güçlenmesi","İllüzyonlardan uyanma","Derin meditasyon","Spiritüel farkındalık"] },
+  { hz:963, name:"İlahi Bağlantı", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
+    tema:"Taç Çakra · Yüksek Bilinç",
+    aciklama:"963 Hz taç çakrasını aktive eder. 'Tanrı frekansı' olarak da bilinir. Yüksek benlikle bağlantıyı güçlendirir, birlik bilincini deneyimlemeye davet eder. Dinleyenler baş tepesinde enerji akışı, hafiflik ve sınırsızlık hissi yaşar.",
+    etkiler:["Yüksek benlikle bağlantı","Birlik bilinci","Taç çakra aktivasyonu","Spiritüel aydınlanma"] },
+];
+
+const FREQ_DATA_EN = [
+  { hz:174, name:"Earth Frequency", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
+    tema:"Pain Relief · Safety",
+    aciklama:"174 Hz reaches the deepest layers of the body. It softens physical pain and sends safety signals to cells. Listeners often experience grounding, feeling their feet firmly on the earth, and tension dissolving from their shoulders.",
+    etkiler:["Physical pain relief","Sense of safety","Grounding","Deep muscle relaxation"] },
+  { hz:285, name:"Cell Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
+    tema:"Tissue Healing · Energy Field",
+    aciklama:"285 Hz repairs the energy field and supports cellular renewal. This frequency reminds the body of its natural healing mechanism. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
+    etkiler:["Cellular renewal","Energy field repair","Immune support","Refreshment"] },
+  { hz:396, name:"Liberation", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
+    tema:"Fear & Guilt Release",
+    aciklama:"396 Hz resonates with the root chakra. It helps dissolve subconscious fear, guilt, and survival anxiety. Listeners experience relaxation in the chest and abdomen, reduced mental noise, and a feeling of 'inner burden lifting'.",
+    etkiler:["Dissolving guilt and fear","Root energy relaxation","Releasing past burdens","Restoring trust"] },
+  { hz:417, name:"Transformation", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
+    tema:"Facilitating Change · Trauma Clearing",
+    aciklama:"417 Hz works with the sacral chakra. It softens traces of traumatic experiences and dissolves resistance to change. It removes creative blocks. Listeners describe an emotional 'unwinding' followed by lightness.",
+    etkiler:["Transforming negative energy","Softening trauma","Openness to change","Clearing creative blocks"] },
+  { hz:432, name:"Universal Harmony", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
+    tema:"Nature's Frequency · Heart Peace",
+    aciklama:"432 Hz is known as 'the frequency of the universe'. It's aligned with nature's golden ratio. It calms heart rate, shifts brainwaves to alpha state. Listeners experience deep peace, time slowing down, and a feeling of 'coming home'.",
+    etkiler:["Harmony with nature","Heart rhythm balancing","Alpha brainwaves","Deep peace"] },
+  { hz:528, name:"Love Frequency", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
+    tema:"DNA Repair · Miracle Tone",
+    aciklama:"528 Hz is called the 'Miracle Tone' or 'Love Frequency'. It is believed to support DNA repair and restructure water in cells. It resonates with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
+    etkiler:["DNA repair","Inner transformation","Love vibration","Solar plexus activation"] },
+  { hz:639, name:"Relationship Harmony", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
+    tema:"Connection · Relationship Healing",
+    aciklama:"639 Hz nourishes the heart chakra. It repairs fractures in relationships and strengthens empathy. It deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
+    etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra activation","Connection capacity"] },
+  { hz:741, name:"Expression & Cleansing", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
+    tema:"Intuitive Expression · Toxin Cleansing",
+    aciklama:"741 Hz works with the throat chakra. It strengthens the courage to speak truth and supports cellular detox. It enhances problem-solving capacity. Listeners experience throat opening and a clarifying mind.",
+    etkiler:["Authentic expression","Toxin cleansing","Problem solving","Mental clarity"] },
+  { hz:852, name:"Intuitive Awakening", color:"#8e44ad", pastel:"#c3a6d8", icon:"🔮",
+    tema:"Third Eye · Spiritual Awareness",
+    aciklama:"852 Hz awakens the third eye chakra. It strengthens intuitive capacity and dissolves illusions. It facilitates reaching deeper layers in meditation. Listeners describe light pressure on the forehead, visual images, and a 'veil lifting' sensation.",
+    etkiler:["Intuition strengthening","Awakening from illusion","Deep meditation","Spiritual awareness"] },
+  { hz:963, name:"Divine Connection", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
+    tema:"Crown Chakra · Higher Consciousness",
+    aciklama:"963 Hz activates the crown chakra. Also known as the 'God frequency'. It strengthens connection with the higher self and invites unity consciousness. Listeners experience energy flow at the crown, lightness, and boundlessness.",
+    etkiler:["Higher self connection","Unity consciousness","Crown chakra activation","Spiritual illumination"] },
+];
+
+const getFreqData = (lang) => lang === "en" ? FREQ_DATA_EN : FREQ_DATA_TR;
+
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
   while (n > 9 && n !== 11 && n !== 22 && n !== 33)
@@ -833,11 +921,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 20px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:24,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
       <div style={{ fontSize:13,letterSpacing:3,color:selected.pastel,marginBottom:16 }}>{selected.element.toUpperCase()}</div>
-      {selected.hz && (
-        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:20,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}66`,borderRadius:20,padding:"6px 18px",color:selected.pastel,fontSize:13,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
-          {toneOn ? "⏹" : "▶"} {selected.hz} Hz
-        </button>
-      )}
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
       <div style={{ fontSize:14,color:"#9aaaba",letterSpacing:1,marginBottom:12,fontStyle:"italic" }}>
@@ -1154,6 +1237,23 @@ export default function SakinApp() {
   const [breathMode,    setBreathMode]    = useState("standart");
   const [chakraIndex]                      = useState(() => new Date().toDateString().split("").reduce((a,c) => a + c.charCodeAt(0), 0) % 7);
   const chakra                             = CHAKRAS_7[chakraIndex];
+  const [activeFreq,    setActiveFreq]    = useState(null);
+  const [playingHz,     setPlayingHz]     = useState(null);
+  const freqCtxRef = useRef(null);
+  const freqOscRef = useRef(null);
+  const freqGainRef = useRef(null);
+  const stopFreqToneGlobal = () => {
+    if (freqGainRef.current && freqCtxRef.current) {
+      try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
+    }
+    setTimeout(() => {
+      try { freqOscRef.current?.stop(); } catch(_) {}
+      freqOscRef.current = null; freqGainRef.current = null;
+      try { freqCtxRef.current?.close(); } catch(_) {}
+      freqCtxRef.current = null;
+    }, 350);
+    setPlayingHz(null); setActiveFreq(null);
+  };
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
@@ -1206,7 +1306,7 @@ export default function SakinApp() {
     });
   };
 
-  const MANDALA_STEPS = ["sabah","nefes","chakra","gun","aksam","harita"];
+  const MANDALA_STEPS = ["sabah","nefes","ses","chakra","gun","aksam","harita"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   const [gunTasksDone, setGunTasksDone] = useState(() => {
     try {
@@ -1815,6 +1915,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     if (pending) { setBreathMode(pending); pendingBreathRef.current = null; }
     else { setBreathMode("standart"); }
     clearInterval(breathRef.current);
+    if (screen !== "ses") stopFreqToneGlobal();
   },[screen]);
 
   const speakBreathCue = (phase) => {
@@ -1858,7 +1959,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
   const ambientColor = {
-    giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",
+    giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",ses:"160,122,224",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
     gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",
   }[screen]||"139,90,160";
@@ -1867,6 +1968,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Harita":"Map",    color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
+    {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
@@ -2014,6 +2116,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const steps = [
           {id:"sabah",  label:lang==="tr"?"Sabah":"Morning",  icon:"🌅", color:"#f0a060", glow:"255,140,60"},
           {id:"nefes",  label:lang==="tr"?"Nefes":"Breath",   icon:"🫧", color:"#60b8e8", glow:"80,160,220"},
+          {id:"ses",    label:lang==="tr"?"Ses":"Sound",       icon:"🔊", color:"#a07ae0", glow:"160,122,224"},
           {id:"chakra", label:lang==="tr"?"Çakra":"Chakra",   icon:"💜", color:"#b87adc", glow:"180,100,255"},
           {id:"gun",    label:lang==="tr"?"Görevler":"Tasks",  icon:"☀️", color:"#e8d060", glow:"230,200,60"},
           {id:"aksam",  label:lang==="tr"?"Akşam":"Evening",  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
@@ -2445,11 +2548,123 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("chakra"); }}>{t("btn_next")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("ses"); }}>{t("btn_next")}</button>
             </div>
           )}
         </div>
       )}
+
+      {/* SES DALGALARI */}
+      {screen==="ses" && (() => {
+        const FREQS = getFreqData(lang);
+        const stopFreqTone = () => {
+          if (freqGainRef.current && freqCtxRef.current) {
+            freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8);
+          }
+          setTimeout(() => {
+            try { freqOscRef.current?.stop(); } catch(_) {}
+            freqOscRef.current = null; freqGainRef.current = null;
+            try { freqCtxRef.current?.close(); } catch(_) {}
+            freqCtxRef.current = null;
+          }, 820);
+          setPlayingHz(null);
+        };
+        const playFreq = (hz) => {
+          if (playingHz === hz) { stopFreqTone(); return; }
+          if (playingHz) stopFreqTone();
+          setTimeout(() => {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            freqCtxRef.current = ctx; ctx.resume();
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0, ctx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 1.5);
+            gain.connect(ctx.destination); freqGainRef.current = gain;
+            [[1, 1], [2.76, 0.28], [5.4, 0.10]].forEach(([ratio, amp]) => {
+              const o = ctx.createOscillator(); const g = ctx.createGain();
+              o.type = "sine"; o.frequency.value = hz * ratio;
+              g.gain.setValueAtTime(0, ctx.currentTime);
+              g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 1.5);
+              o.connect(g); g.connect(ctx.destination); o.start();
+              if (ratio === 1) { freqOscRef.current = o; freqGainRef.current = g; }
+            });
+            setPlayingHz(hz);
+          }, playingHz ? 850 : 0);
+        };
+        return (
+          <div style={{ maxWidth:440,width:"100%",padding:"52px 20px 120px",position:"relative",zIndex:1 }}>
+            <div style={{ textAlign:"center",marginBottom:28 }}>
+              <div className="label-sm" style={{ letterSpacing:5,marginBottom:8 }}>{t("sound_subtitle").toUpperCase()}</div>
+              <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0",marginBottom:12 }}>{t("sound_title")}</div>
+              <div style={{ fontSize:14,color:"#9aaaba",lineHeight:1.8,maxWidth:340,margin:"0 auto" }}>{t("sound_intro")}</div>
+            </div>
+
+            <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+              {FREQS.map((f, i) => {
+                const isPlaying = playingHz === f.hz;
+                const isExpanded = activeFreq === f.hz;
+                return (
+                  <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
+                    <div
+                      onClick={() => { setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
+                      style={{
+                        background: isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
+                        border: `1px solid ${isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
+                        borderRadius: isExpanded ? "15px 15px 0 0" : 15,
+                        padding:"14px 18px",cursor:"pointer",
+                        transition:"all 0.3s ease",
+                        display:"flex",alignItems:"center",gap:14,
+                      }}>
+                      <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,
+                        background:`radial-gradient(circle,${f.color}cc,${f.color}44)`,
+                        boxShadow: isPlaying ? `0 0 20px ${f.color}66` : "none",
+                        display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,
+                        animation: isPlaying ? "slowPulse 2s ease-in-out infinite" : "none",
+                        transition:"box-shadow 0.3s",
+                      }}>{f.icon}</div>
+                      <div style={{ flex:1,minWidth:0 }}>
+                        <div style={{ display:"flex",alignItems:"center",gap:8,marginBottom:3 }}>
+                          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:f.pastel,letterSpacing:2 }}>{f.hz} Hz</span>
+                          {isPlaying && <span style={{ fontSize:11,letterSpacing:2,color:f.color,textTransform:"uppercase",animation:"pulse 1.5s ease-in-out infinite" }}>{t("sound_playing")}</span>}
+                        </div>
+                        <div style={{ fontSize:14,color:"#c8c0e0",letterSpacing:0.5 }}>{f.name}</div>
+                        <div style={{ fontSize:13,color:"#8a7aaa",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
+                      </div>
+                      <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
+                        {isPlaying ? "⏹" : "▶"}
+                      </div>
+                    </div>
+
+                    {isExpanded && (
+                      <div style={{
+                        background:`linear-gradient(180deg,${f.color}0a,rgba(255,255,255,0.015))`,
+                        border:`1px solid ${f.color}33`,borderTop:"none",
+                        borderRadius:"0 0 15px 15px",padding:"16px 18px",
+                        animation:"fadeIn 0.4s ease",
+                      }}>
+                        <div style={{ fontSize:14,color:"#b0a0c8",lineHeight:1.85,marginBottom:14 }}>{f.aciklama}</div>
+                        <div style={{ fontSize:12,letterSpacing:2.5,color:`${f.color}aa`,marginBottom:8,textTransform:"uppercase" }}>{t("sound_effects")}</div>
+                        <div style={{ display:"flex",flexWrap:"wrap",gap:6 }}>
+                          {f.etkiler.map((e,j) => (
+                            <span key={j} style={{
+                              background:`${f.color}15`,border:`1px solid ${f.color}33`,
+                              borderRadius:20,padding:"4px 12px",fontSize:13,color:f.pastel,letterSpacing:0.3,
+                            }}>{e}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center" }}>
+              <button className="sakin-btn" onClick={()=>{ stopFreqTone(); setScreen("nefes"); }}>{t("back")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ÇAKRA */}
       {screen==="chakra" && (
@@ -3067,12 +3282,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* PROGRESS STRIP */}
-      {["sabah","nefes","chakra","gun","aksam","harita"].includes(screen) && (
+      {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
         <div style={{ position:"fixed",bottom:76,left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:6,background:"rgba(8,12,20,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {MANDALA_STEPS.map((s,i) => {
             const done = !!stepsCompleted[s];
             const isCurrent = screen === s || (screen === "terapi" && s === "chakra") || (screen === "gun" && s === "gun");
-            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",harita:"#82d9a3" };
+            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",ses:"#a07ae0",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",harita:"#82d9a3" };
             const c = stepColors[s] || "#888";
             return <div key={s} style={{ width:isCurrent?20:8,height:8,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
           })}

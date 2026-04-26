@@ -69,6 +69,17 @@ export const TRANS = {
     breath_mode_kutu:        "Kutu",
     breath_mode_sakinletici: "Sakinleştirici",
 
+    // Ses Dalgaları
+    nav_sound:         "Ses",
+    sound_title:       "Ses Dalgaları",
+    sound_subtitle:    "Frekans Akord",
+    sound_intro:       "Bu alanda kendinizi ses dalgalarıyla akord edebilirsiniz. Her frekans bedeninizde ve enerji alanın��zda farklı bir titreşim yaratır.",
+    sound_tap_to_play: "dokunarak çal",
+    sound_playing:     "çalıyor",
+    sound_stop:        "durdur",
+    sound_effects:     "Etkileri",
+    sound_btn_next:    "Sonraki Adıma Geç →",
+
     // Çakra
     chakra_subtitle:   "Reiki · Günün Çakrası",
     chakra_name_suf:   "Çakrası",
@@ -364,6 +375,17 @@ export const TRANS = {
     breath_mode_478:         "4-7-8",
     breath_mode_kutu:        "Box",
     breath_mode_sakinletici: "Calming",
+
+    // Sound Waves
+    nav_sound:         "Sound",
+    sound_title:       "Sound Waves",
+    sound_subtitle:    "Frequency Tuning",
+    sound_intro:       "Tune yourself with sound waves. Each frequency creates a different vibration in your body and energy field.",
+    sound_tap_to_play: "tap to play",
+    sound_playing:     "playing",
+    sound_stop:        "stop",
+    sound_effects:     "Effects",
+    sound_btn_next:    "Continue to Next Step →",
 
     // Çakra
     chakra_subtitle:   "REIKI · TODAY'S CHAKRA",
