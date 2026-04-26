@@ -535,7 +535,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
                   <span style={{ fontSize:19, flexShrink:0 }}>{rem.icon}</span>
                   <span style={{ fontSize:15, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
                 </div>
-                <div style={{ fontSize:12, color:"#9aaaba", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
+                <div style={{ fontSize:14, color:"#9aaaba", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                     <svg width="28" height="28" style={{ flexShrink:0 }}>
@@ -760,9 +760,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
             <div style={{ flex:1 }}>
               <div style={{ fontSize:14, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:12, color:"#9aaaba", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
+              <div style={{ fontSize:14, color:"#9aaaba", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
-            {i<7 && <div style={{ fontSize:12,letterSpacing:2,color:"#8a9aae",flexShrink:0 }}>{t("core_badge")}</div>}
+            {i<7 && <div style={{ fontSize:14,letterSpacing:2,color:"#8a9aae",flexShrink:0 }}>{t("core_badge")}</div>}
           </div>
         ))}
       </div>
@@ -836,7 +836,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       )}
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
-      <div style={{ fontSize:12,color:"#9aaaba",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
+      <div style={{ fontSize:14,color:"#9aaaba",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
         {t("intro_place_hand", selected.name)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -892,7 +892,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       </div>
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{displayMins}:{displaySecs}</div>
       {tPhase==="connected"
-        ? <div style={{ fontSize:12,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
+        ? <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
         : <div style={{ fontSize:13,letterSpacing:4,color:"#7a8a9e",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       }
       {selected.hz && (
@@ -904,7 +904,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         {positionSvg(selected, progress)}
       </div>
       {showCloseEyes && (
-        <div style={{ fontSize:12,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
+        <div style={{ fontSize:14,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
           {t("close_eyes_hint")}
         </div>
       )}
@@ -921,7 +921,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="done"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       {[...Array(10)].map((_,i) => (
-        <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:12,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
+        <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:14,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
       <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"slowPulse 3.5s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:29,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>{t("done_title")}</div>
@@ -1093,7 +1093,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
                   </div>
                   {ornekler.map((s,i)=>(
                     <button key={i} onClick={()=>{ onChange(s); setTipAcik(false); }}
-                      style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none",borderBottom:i<ornekler.length-1?`1px solid ${renk}18`:"none",padding:"8px 4px",color:"#b8a8d0",fontSize:12,fontFamily:"'Cormorant Garamond',Georgia,serif",cursor:"pointer",lineHeight:1.55,letterSpacing:0.2 }}>
+                      style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none",borderBottom:i<ornekler.length-1?`1px solid ${renk}18`:"none",padding:"8px 4px",color:"#b8a8d0",fontSize:14,fontFamily:"'Cormorant Garamond',Georgia,serif",cursor:"pointer",lineHeight:1.55,letterSpacing:0.2 }}>
                       {s}
                     </button>
                   ))}
@@ -1110,7 +1110,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
             style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:16,fontFamily:"'Cormorant Garamond',Georgia,serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
           />
           <button onClick={onAra} disabled={!value.trim()}
-            style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#e8d8f8":"#5a4a70",fontSize:12,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.2s" }}>
+            style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#e8d8f8":"#5a4a70",fontSize:14,letterSpacing:2,fontFamily:"'Cormorant Garamond',Georgia,serif",transition:"all 0.2s" }}>
             {t("btn_search")}
           </button>
         </div>
@@ -2002,17 +2002,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{display:"flex",gap:18,marginBottom:18,alignItems:"center"}}>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:30,fontWeight:200,color:"#f0a040",lineHeight:1,animation:streakData.current>=3?"streakFire 2s ease-in-out infinite":"none"}}>{streakData.current}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#9a8ab0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"gün serisi":"day streak"}</div>
+                <div style={{fontSize:14,letterSpacing:2.5,color:"#9a8ab0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"gün serisi":"day streak"}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:30,fontWeight:200,color:"#9aaaba",lineHeight:1}}>{streakData.best}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"en iyi":"best"}</div>
+                <div style={{fontSize:14,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"en iyi":"best"}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:30,fontWeight:200,color:allStepsComplete?"#82d9a3":"#c3a6d8",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#8a8aaa"}}>/{N}</span></div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
+                <div style={{fontSize:14,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
               </div>
             </div>
 
@@ -2115,7 +2115,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
               </div>
             ):nextStep?(
-              <button className="sakin-btn-primary" style={{marginTop:4,fontSize:12,letterSpacing:2}}
+              <button className="sakin-btn-primary" style={{marginTop:4,fontSize:14,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep?.id || "sabah")}>
                 {lang==="tr"?(completedStepCount>0?"GÜNE DEVAM ET →":"GÜNE BAŞLA →"):(completedStepCount>0?"CONTINUE →":"START THE JOURNEY →")}
               </button>
@@ -2141,7 +2141,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
             {/* Harita — adım navigasyonu */}
             <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
-              <div style={{fontSize:12,letterSpacing:3,color:"#7a8a9e",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
+              <div style={{fontSize:14,letterSpacing:3,color:"#7a8a9e",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
               <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
                 {steps.map(step=>{
                   const done=!!stepsCompleted[step.id];
@@ -2156,8 +2156,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         display:"flex",alignItems:"center",gap:5,
                         opacity:done||isNext?1:0.3,transition:"all 0.2s",
                       }}>
-                      <span style={{fontSize:12}}>{done?"✓":step.icon}</span>
-                      <span style={{fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,textTransform:"uppercase",color:done?step.color:isNext?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.2)"}}>{step.label}</span>
+                      <span style={{fontSize:14}}>{done?"✓":step.icon}</span>
+                      <span style={{fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,textTransform:"uppercase",color:done?step.color:isNext?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.2)"}}>{step.label}</span>
                     </button>
                   );
                 })}
@@ -2221,10 +2221,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
                   ))}
                 </div>
-                {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
+                {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
-                <div style={{ textAlign:"center", fontSize:12, color:"#9aaaba", letterSpacing:1, padding:"12px 0" }}>
+                <div style={{ textAlign:"center", fontSize:14, color:"#9aaaba", letterSpacing:1, padding:"12px 0" }}>
                   {lang==="tr"
                     ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
                     : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
@@ -2249,7 +2249,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
               ))}
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(139,90,160,0.24))",transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+                <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
               </div>
             </div>
           )}
@@ -2287,7 +2287,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 />
               </svg>
               </div>
-              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
+              <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
@@ -2323,7 +2323,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 />
               </svg>
               </div>
-              <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
+              <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
             </div>
           )}
 
@@ -2339,7 +2339,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
                     ))}
                     <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                      <div style={{ fontSize:12,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+                      <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
                     </div>
                   </>
                 );
@@ -2375,8 +2375,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 ].map(m=>(
                   <button key={m.id} onClick={()=>{ if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:20 }}>{m.icon}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
                   </button>
                 ))}
               </div>
@@ -2390,8 +2390,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 ].map(m=>(
                   <button key={m.id} onClick={()=>{ if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:18 }}>{m.icon}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
                   </button>
                 ))}
               </div>
@@ -2477,7 +2477,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
               {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
             </div>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
               {lang==="tr" ? "Süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
             </div>
           </div>
@@ -2650,7 +2650,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         ]},
                       ]).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
-                          <div style={{ fontSize:12,letterSpacing:2.5,color:"rgba(160,112,208,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
+                          <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(160,112,208,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
                           {sorular.map(s=>(
                             <button key={s} onClick={()=>{ setSikayet(s); setShowOrnekler(false); }}
                               style={{
@@ -2678,7 +2678,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {/* Dev mode */}
                 <div style={{ textAlign:"center",marginTop:24 }}>
                   <button onClick={toggleDevMode}
-                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#8a8aaa",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
+                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#8a8aaa",fontSize:14,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
                     {devMode ? "DEV ✓" : "DEV"}
                   </button>
                 </div>
@@ -2708,7 +2708,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </svg>
             <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
               <div style={{ fontSize:26,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-              <div style={{ fontSize:12,letterSpacing:3,color:"#8a9aae" }}>{t("day_pct")}</div>
+              <div style={{ fontSize:14,letterSpacing:3,color:"#8a9aae" }}>{t("day_pct")}</div>
             </div>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:32 }}>
@@ -2719,7 +2719,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {label:t("stat_mindful"),value:"3",color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                <div style={{ fontSize:12,letterSpacing:2.5,color:"#8a9aae",marginBottom:6 }}>{s.label.toUpperCase()}</div>
+                <div style={{ fontSize:14,letterSpacing:2.5,color:"#8a9aae",marginBottom:6 }}>{s.label.toUpperCase()}</div>
                 <div style={{ fontSize:17,color:s.color,fontWeight:300 }}>{s.value}</div>
               </div>
             ))}
@@ -2742,12 +2742,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:13,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
                 {EV12_BURCU_ACIKLAMA[ev12Burcu].tema}
               </div>
-              <div style={{ fontSize:12.5,color:"#b0a0d0",lineHeight:1.85 }}>
+              <div style={{ fontSize:14,color:"#b0a0d0",lineHeight:1.85 }}>
                 {EV12_BURCU_ACIKLAMA[ev12Burcu].yorum}
               </div>
               <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(120,80,200,0.15)" }}>
                 <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{lang==="tr" ? "GİZLİ GÜCÜN" : "HIDDEN POWER"}</div>
-                <div style={{ fontSize:12,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[ev12Gezegen]}</div>
+                <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[ev12Gezegen]}</div>
               </div>
             </div>
           ) : birthDate && !birthTime ? (
@@ -2766,7 +2766,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:12,color:"#a0b0ba" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
+            <div style={{ fontSize:14,color:"#a0b0ba" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
@@ -2774,7 +2774,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
                 <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
-                <div style={{ fontSize:12,color:"#9aaaba",lineHeight:1.8,marginBottom:16 }}>
+                <div style={{ fontSize:14,color:"#9aaaba",lineHeight:1.8,marginBottom:16 }}>
                   {t("free_used_body")}<br/>
                   <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
                 </div>
@@ -2787,15 +2787,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                 </div>
                 <a href="mailto:destek@sakin.app?subject=Premium%20%C3%9Cyelik"
-                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:12,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
+                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:22,color:"#e0d0f0",fontSize:14,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
                   {t("btn_go_premium")}
                 </a>
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:12,color:"#9aaaba",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+                <div style={{ fontSize:14,color:"#9aaaba",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
-                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:12 }}
+                  style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:14 }}
                   onClick={generateRapor}>{t("btn_gen_report")}</button>
               </div>
             ) : aiLoading ? (
@@ -2894,7 +2894,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="pricing-card" style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.08)" }}>
             <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>{t("free_badge")}</div>
             <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("free_plan")}</div>
-            <div style={{ fontSize:29,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:12,color:"#8a9aae" }}>{t("free_forever")}</span></div>
+            <div style={{ fontSize:29,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:14,color:"#8a9aae" }}>{t("free_forever")}</span></div>
             <ul>{t("free_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
@@ -2902,7 +2902,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
             <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>{t("premium_badge")}</div>
             <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
-            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:12,color:"#8a9aae" }}>{t("one_time")}</span></div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:14,color:"#8a9aae" }}>{t("one_time")}</span></div>
             <ul>{t("premium_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
@@ -2923,7 +2923,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
 
           <hr className="divider" />
-          <p style={{ fontSize:12,color:"#8a9aae",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:14,color:"#8a9aae",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
@@ -2982,7 +2982,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("privacy_s10")}</h2>
           <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-          <p style={{ fontSize:12,color:"#7a8a9e" }}>{t("privacy_app_name")}</p>
+          <p style={{ fontSize:14,color:"#7a8a9e" }}>{t("privacy_app_name")}</p>
         </div>
       )}
 
@@ -3040,7 +3040,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
                 }}>
                 <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:12,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:14,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
@@ -3238,7 +3238,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               ))}
 
               <div style={{ textAlign:"center",padding:"20px 0" }}>
-                <button onClick={() => setShowKilavuz(false)} style={{ background:"linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))",border:"1px solid rgba(192,57,43,0.35)",borderRadius:100,padding:"12px 36px",cursor:"pointer",color:"#e8c0c0",fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2.5,textTransform:"uppercase",transition:"all 0.2s" }}
+                <button onClick={() => setShowKilavuz(false)} style={{ background:"linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))",border:"1px solid rgba(192,57,43,0.35)",borderRadius:100,padding:"12px 36px",cursor:"pointer",color:"#e8c0c0",fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:2.5,textTransform:"uppercase",transition:"all 0.2s" }}
                   onMouseEnter={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.6),rgba(192,57,43,0.4))"; }}
                   onMouseLeave={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))"; }}
                 >{t("guide_close")}</button>
