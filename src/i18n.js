@@ -120,7 +120,7 @@ export const TRANS = {
     stat_word:         "Niyet Kelimesi",
     stat_mindful:      "Bilinçli An",
     orchestra_label:   "Orkestra Modu",
-    orchestra_text:    (n) => `Bugün <strong>${n} kişi</strong> seninle nefes aldı.`,
+    orchestra_text:    (n) => `Bugün ${n} kişi seninle nefes aldı.`,
     ai_report_label:   "Haftalık Sakin Rapor",
     free_used:         "Bu haftaki ücretsiz raporunu kullandın",
     free_used_body:    "Her hafta derin bir içsel rapor almak için",
@@ -391,7 +391,7 @@ export const TRANS = {
     // Hatırlatıcılar
     day_label:         "TODAY",
     reminders_title:   "Did you do these today?",
-    all_done_msg:      "Today you touched yourself.",
+    all_done_msg:      "Today you connected with yourself.",
 
     // Akşam
     evening_label:     "EVENING CLOSE",
@@ -408,7 +408,7 @@ export const TRANS = {
     stat_word:         "Intention Word",
     stat_mindful:      "Mindful Moment",
     orchestra_label:   "ORCHESTRA MODE",
-    orchestra_text:    (n) => `Today <strong>${n} people</strong> breathed with you.`,
+    orchestra_text:    (n) => `Today ${n} people breathed with you.`,
     ai_report_label:   "WEEKLY AI REPORT",
     free_used:         "You've used your free report",
     free_used_body:    "To receive a deep inner report every week",

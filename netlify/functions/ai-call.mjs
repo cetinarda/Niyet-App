@@ -16,7 +16,7 @@ function sanitizeTurkish(text) {
 
 export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: "Method not allowed" };
+    return { statusCode: 405, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   const apiKey = process.env.GROQ_API_KEY;
@@ -33,7 +33,7 @@ export const handler = async (event) => {
   try {
     body = JSON.parse(event.body);
   } catch {
-    return { statusCode: 400, body: "Geçersiz istek" };
+    return { statusCode: 400, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek" }) };
   }
 
   const { system, messages, max_tokens = 1800 } = body;
