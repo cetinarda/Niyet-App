@@ -2,108 +2,119 @@
 
 ## Temel Bilgiler
 
-| Alan | Değer |
+| Alan | Deger |
 |---|---|
-| **Uygulama Adı** | Sakin |
-| **Altyazı (Subtitle)** | Kendini hep hatırla. |
-| **Kategori (Birincil)** | Lifestyle (Yaşam Tarzı) |
-| **Kategori (İkincil)** | Productivity (Üretkenlik) |
-| **Yaş Sınıfı** | 4+ |
-| **Dil** | Türkçe (birincil), İngilizce |
-| **Ülkeler** | Türkiye (birincil), tüm bölgeler |
-
-> **ÖNEMLİ:** "Health & Fitness" kategorisi seçilmemelidir.
-> Bu kategori HealthKit zorunluluğu ve tıbbi inceleme gerektirir.
+| **Uygulama Adi** | Sakin |
+| **Altyazi (Subtitle)** | Kendini hep hatirla. |
+| **Kategori (Birincil)** | Lifestyle (Yasam Tarzi) |
+| **Kategori (Ikincil)** | Health & Fitness |
+| **Yas Sinifi** | 4+ |
+| **Dil** | Turkce (birincil), Ingilizce |
+| **Ulkeler** | Turkiye (birincil), tum bolgeler |
 
 ---
 
-## Anahtar Kelimeler (Keywords — max 100 karakter, virgülle ayrılmış)
+## Anahtar Kelimeler (Keywords — max 100 karakter)
 
-### Türkçe Keywords
+### Turkce Keywords
 ```
-sakin,farkındalık,meditasyon,nefes,çakra,reiki,motivasyon,alışkanlık,günlük,mindfulness
+sakin,farkindalik,meditasyon,nefes,cakra,reiki,motivasyon,aliskanlik,gunluk,mindfulness
 ```
 
-### İngilizce Keywords
+### Ingilizce Keywords
 ```
 intention,mindfulness,meditation,breathing,chakra,daily,habit,wellness,calm,reminder
 ```
 
 ---
 
-## Fiyatlandırma
+## Fiyatlandirma
 
-| Seçenek | Detay |
+| Alan | Deger |
 |---|---|
-| **Temel Model** | Ücretsiz (Freemium) |
-| **Premium Abonelik** | Henüz uygulanmadı — gelecek sürüm |
+| **Model** | Ucretli Uygulama (Paid App) |
+| **Fiyat** | $9.99 (Tier 10) |
+| **Uygulama Ici Satin Alma** | Yok |
+| **Abonelik** | Yok |
+| **Aciklama** | Tek seferlik odeme, omur boyu erisim |
 
 ---
 
-## App Store Connect — İnceleme Bilgileri
+## App Store Connect — Inceleme Bilgileri
 
-### Demo Hesabı
-Gerekmez — uygulama hesap kaydı olmadan kullanılabilir.
+### Demo Hesabi
+Gerekmez — uygulama hesap kaydi olmadan kullanilabilir.
 
-### İnceleme Notu
+### Inceleme Notu
 Bkz. `app-review-notes.md`
 
 ---
 
-## Desteklenen Cihazlar ve iOS Sürümleri
+## Desteklenen Cihazlar ve iOS Surumleri
 
-| Platform | Minimum Sürüm |
+| Platform | Minimum Surum |
 |---|---|
-| iPhone | iOS 16.0+ |
-| iPad | iPadOS 16.0+ |
-| Apple Watch | Henüz desteklenmiyor (gelecek sürüm) |
-| Mac (Catalyst) | Hayır |
+| iPhone | iOS 15.0+ |
+| iPad | iPadOS 15.0+ |
+| Apple Watch | Desteklenmiyor |
+| Mac (Catalyst) | Hayir |
 
 ---
 
-## Desteklenen Ekran Yönleri
+## Desteklenen Ekran Yonleri
 
-- Portrait (Dikey) — birincil
-- Landscape — opsiyonel
+- Portrait (Dikey) — tek yon
 
 ---
 
 ## App Store Screenshot Gereksinimleri
 
-Hazırlanması gereken ekran görüntüsü boyutları:
-
 | Cihaz | Boyut |
 |---|---|
-| iPhone 15 Pro Max | 1290 x 2796 px |
-| iPhone SE (3. nesil) | 1242 x 2208 px |
-| iPad Pro 12.9" (6. nesil) | 2048 x 2732 px |
+| iPhone 6.7" (15 Pro Max) | 1290 x 2796 px |
+| iPhone 6.5" (11 Pro Max) | 1242 x 2688 px |
+| iPhone 5.5" (SE) | 1242 x 2208 px |
+| iPad Pro 12.9" | 2048 x 2732 px |
 
-### Önerilen Screenshot Sırası
-1. Giriş ekranı — "Kendini hep hatırla" tagline'ı
-2. Sabah niyeti — kelime seçimi ekranı
-3. Nefes egzersizi — animasyon ekranı
-4. Günün çakrası — reiki ekranı
-5. Haftalık içsel harita — istatistikler
+### Onerilen Screenshot Sirasi
+1. Giris ekrani — "Kendini hep hatirla" tagline
+2. Sabah niyeti — kelime secimi ekrani
+3. Nefes egzersizi — animasyon ekrani
+4. Ses Dalgalari — solfeggio frekanslari
+5. Gunun cakrasi — reiki ekrani
+6. Icsel Ayna — AI analiz ekrani
+7. Haftalik icsel harita — istatistikler
 
 ---
 
 ## App Privacy — Data Types (App Store Connect)
 
-App Store Connect'te "App Privacy" bölümünde seçilecekler:
+### Secilecek Veri Turleri
 
-| Veri Türü | Toplanıyor mu? |
+| Veri Turu | Durum | Detay |
+|---|---|---|
+| User Content | Evet | AI ozellikleri icin kullanicinin yazdigi metin Groq API'ye gonderilir |
+
+### User Content Detay
+- **Linked to Identity:** Hayir
+- **Used for Tracking:** Hayir
+- **Purpose:** App Functionality
+- **Aciklama:** Kullanici metni anonim olarak AI hizmetine gonderilir, kisisel kimlik bilgisi icermez
+
+### Toplanmayan Veriler
+Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info,
+Contacts, Browsing History, Search History, Identifiers, Usage Data, Diagnostics
+
+---
+
+## Capacitor Build Bilgileri
+
+| Alan | Deger |
 |---|---|
-| Contact Info | Hayır |
-| Health & Fitness | Hayır |
-| Financial Info | Hayır |
-| Location | Hayır |
-| Sensitive Info | Hayır |
-| Contacts | Hayır |
-| User Content | Hayır (yalnızca cihazda) |
-| Browsing History | Hayır |
-| Search History | Hayır |
-| Identifiers | Hayır |
-| Usage Data | Hayır |
-| Diagnostics | Hayır |
-
-> **Seçilecek:** "No data collected from this app" veya yalnızca "User Content — Not linked to identity — Not used for tracking"
+| **App ID** | app.sakin.life |
+| **Capacitor** | 6.x |
+| **Web Dir** | dist |
+| **Xcode Min** | 15.0 |
+| **Swift** | 5.0 |
+| **Marketing Version** | 1.0 |
+| **Build Number** | 1 |
