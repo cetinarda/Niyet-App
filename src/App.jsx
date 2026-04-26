@@ -68,13 +68,13 @@ const TERAPI_TOTAL = 60;
 
 const FREQ_DATA_TR = [
   { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
-    tema:"Ağrı Çözücü · Güvenlik",
-    aciklama:"174 Hz bedenin en derin katmanlarına iner. Fiziksel ağrıyı yumuşatır, hücrelere güvenlik sinyali gönderir. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
-    etkiler:["Fiziksel ağrıda rahatlama","Güvenlik hissi","Topraklanma","Derin kas gevşemesi"] },
+    tema:"Topraklanma · Güvenlik",
+    aciklama:"174 Hz bedenin en derin katmanlarına iner. Güvenlik ve topraklanma hissini destekler. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
+    etkiler:["Derin rahatlama","Güvenlik hissi","Topraklanma","Kas gerilimini bırakma"] },
   { hz:285, name:"Hücre Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
-    tema:"Doku İyileşmesi · Enerji Alanı",
-    aciklama:"285 Hz enerji alanını onarır ve hücresel yenilenmeyi destekler. Bu frekans bedenin doğal iyileşme mekanizmasını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
-    etkiler:["Hücresel yenilenme","Enerji alanı onarımı","Bağışıklık desteği","Tazelenme hissi"] },
+    tema:"Yenilenme · Enerji Alanı",
+    aciklama:"285 Hz enerji alanını destekler ve yenilenme hissini güçlendirir. Bu frekans bedenin doğal canlılığını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
+    etkiler:["Yenilenme hissi","Enerji alanı desteği","Canlılık","Tazelenme hissi"] },
   { hz:396, name:"Özgürleşme", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
     tema:"Korku & Suçluluk Salınımı",
     aciklama:"396 Hz kök çakrayla rezonansa girer. Bilinçaltındaki korku, suçluluk ve hayatta kalma kaygısını çözmeye yardımcı olur. Göğüs ve karın bölgesinde gevşeme, zihinsel gürültünün azalması ve 'içsel yük hafifliyor' hissi yaşanır.",
@@ -88,17 +88,17 @@ const FREQ_DATA_TR = [
     aciklama:"432 Hz 'evrenin frekansı' olarak bilinir. Doğadaki altın oranla uyumludur. Kalp atışını sakinleştirir, beyin dalgalarını alfa durumuna geçirir. Dinleyenler derin bir huzur, zamanın yavaşlaması ve 'eve dönüş' hissi yaşar.",
     etkiler:["Doğayla uyum","Kalp ritmi dengeleme","Alfa beyin dalgaları","Derin huzur hissi"] },
   { hz:528, name:"Sevgi Frekansı", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
-    tema:"DNA Onarımı · Mucize Tonu",
-    aciklama:"528 Hz 'Mucize Tonu' ya da 'Sevgi Frekansı' olarak adlandırılır. DNA onarımını desteklediği, hücrelerdeki suyu yeniden yapılandırdığı düşünülür. Güneş pleksusu çakrasıyla rezonansa girer. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
-    etkiler:["DNA onarımı","İç dönüşüm ve mucize","Sevgi titreşimi","Güneş pleksusu aktivasyonu"] },
+    tema:"Sevgi Tonu · İç Dönüşüm",
+    aciklama:"528 Hz 'Mucize Tonu' ya da 'Sevgi Frekansı' olarak adlandırılır. Hücresel uyumu desteklediği ve Güneş pleksusu çakrasıyla rezonansa girdiği düşünülür. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
+    etkiler:["Hücresel uyum","İç dönüşüm ve mucize","Sevgi titreşimi","Güneş pleksusu aktivasyonu"] },
   { hz:639, name:"İlişki Uyumu", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
     tema:"Bağlantı · İlişki İyileştirme",
     aciklama:"639 Hz kalp çakrasını besler. İlişkilerdeki kırıklıkları onarır, empatiyi güçlendirir. Hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
     etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası aktivasyonu","Bağ kurma kapasitesi"] },
   { hz:741, name:"İfade & Arınma", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
-    tema:"Sezgisel İfade · Toksin Temizliği",
-    aciklama:"741 Hz boğaz çakrasıyla çalışır. Gerçeği söyleme cesaretini güçlendirir, hücresel toksinlerin atılmasını destekler. Problem çözme kapasitesini artırır. Dinleyenler boğaz bölgesinde açılma ve netleşen bir zihin deneyimler.",
-    etkiler:["Özgün ifade gücü","Toksin arındırma","Problem çözme","Zihinsel berraklık"] },
+    tema:"Sezgisel İfade · Enerji Arınması",
+    aciklama:"741 Hz boğaz çakrasıyla çalışır. Gerçeği söyleme cesaretini güçlendirir, enerji alanının arınmasını destekler. Problem çözme kapasitesini artırır. Dinleyenler boğaz bölgesinde açılma ve netleşen bir zihin deneyimler.",
+    etkiler:["Özgün ifade gücü","Enerji arınması","Problem çözme","Zihinsel berraklık"] },
   { hz:852, name:"Sezgisel Uyanış", color:"#8e44ad", pastel:"#c3a6d8", icon:"🔮",
     tema:"Üçüncü Göz · Spiritüel Farkındalık",
     aciklama:"852 Hz üçüncü göz çakrasını uyandırır. Sezgisel kapasiteyi güçlendirir, illüzyonları çözer. Meditasyonda daha derin katmanlara ulaşmayı kolaylaştırır. Dinleyenler alın bölgesinde hafif basınç, görsel imgeler ve 'perde kalkıyor' hissi tarif eder.",
@@ -111,13 +111,13 @@ const FREQ_DATA_TR = [
 
 const FREQ_DATA_EN = [
   { hz:174, name:"Earth Frequency", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
-    tema:"Pain Relief · Safety",
-    aciklama:"174 Hz reaches the deepest layers of the body. It softens physical pain and sends safety signals to cells. Listeners often experience grounding, feeling their feet firmly on the earth, and tension dissolving from their shoulders.",
-    etkiler:["Physical pain relief","Sense of safety","Grounding","Deep muscle relaxation"] },
+    tema:"Grounding · Safety",
+    aciklama:"174 Hz reaches the deepest layers of the body. It promotes a sense of safety and grounding. Listeners often experience feeling their feet firmly on the earth and tension dissolving from their shoulders.",
+    etkiler:["Deep relaxation","Sense of safety","Grounding","Muscle tension release"] },
   { hz:285, name:"Cell Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
-    tema:"Tissue Healing · Energy Field",
-    aciklama:"285 Hz repairs the energy field and supports cellular renewal. This frequency reminds the body of its natural healing mechanism. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
-    etkiler:["Cellular renewal","Energy field repair","Immune support","Refreshment"] },
+    tema:"Renewal · Energy Field",
+    aciklama:"285 Hz supports the energy field and promotes a sense of renewal. This frequency encourages the body's natural vitality. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
+    etkiler:["Sense of renewal","Energy field support","Vitality","Refreshment"] },
   { hz:396, name:"Liberation", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
     tema:"Fear & Guilt Release",
     aciklama:"396 Hz resonates with the root chakra. It helps dissolve subconscious fear, guilt, and survival anxiety. Listeners experience relaxation in the chest and abdomen, reduced mental noise, and a feeling of 'inner burden lifting'.",
@@ -131,17 +131,17 @@ const FREQ_DATA_EN = [
     aciklama:"432 Hz is known as 'the frequency of the universe'. It's aligned with nature's golden ratio. It calms heart rate, shifts brainwaves to alpha state. Listeners experience deep peace, time slowing down, and a feeling of 'coming home'.",
     etkiler:["Harmony with nature","Heart rhythm balancing","Alpha brainwaves","Deep peace"] },
   { hz:528, name:"Love Frequency", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
-    tema:"DNA Repair · Miracle Tone",
-    aciklama:"528 Hz is called the 'Miracle Tone' or 'Love Frequency'. It is believed to support DNA repair and restructure water in cells. It resonates with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
-    etkiler:["DNA repair","Inner transformation","Love vibration","Solar plexus activation"] },
+    tema:"Love Tone · Inner Transformation",
+    aciklama:"528 Hz is called the 'Miracle Tone' or 'Love Frequency'. It is believed to support cellular harmony and resonates with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
+    etkiler:["Cellular harmony","Inner transformation","Love vibration","Solar plexus activation"] },
   { hz:639, name:"Relationship Harmony", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
     tema:"Connection · Relationship Healing",
     aciklama:"639 Hz nourishes the heart chakra. It repairs fractures in relationships and strengthens empathy. It deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
     etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra activation","Connection capacity"] },
   { hz:741, name:"Expression & Cleansing", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
-    tema:"Intuitive Expression · Toxin Cleansing",
-    aciklama:"741 Hz works with the throat chakra. It strengthens the courage to speak truth and supports cellular detox. It enhances problem-solving capacity. Listeners experience throat opening and a clarifying mind.",
-    etkiler:["Authentic expression","Toxin cleansing","Problem solving","Mental clarity"] },
+    tema:"Intuitive Expression · Energy Cleansing",
+    aciklama:"741 Hz works with the throat chakra. It strengthens the courage to speak truth and supports energy field cleansing. It enhances problem-solving capacity. Listeners experience throat opening and a clarifying mind.",
+    etkiler:["Authentic expression","Energy cleansing","Problem solving","Mental clarity"] },
   { hz:852, name:"Intuitive Awakening", color:"#8e44ad", pastel:"#c3a6d8", icon:"🔮",
     tema:"Third Eye · Spiritual Awareness",
     aciklama:"852 Hz awakens the third eye chakra. It strengthens intuitive capacity and dissolves illusions. It facilitates reaching deeper layers in meditation. Listeners describe light pressure on the forehead, visual images, and a 'veil lifting' sensation.",
@@ -1258,6 +1258,24 @@ export default function SakinApp() {
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
+  const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
+  const [showAiConsent, setShowAiConsent] = useState(false);
+  const pendingAiAction = useRef(null);
+  const requireAiConsent = (action) => {
+    if (aiConsent) { action(); return; }
+    pendingAiAction.current = action;
+    setShowAiConsent(true);
+  };
+  const acceptAiConsent = () => {
+    localStorage.setItem("sakin_ai_consent", "1");
+    setAiConsent(true);
+    setShowAiConsent(false);
+    if (pendingAiAction.current) { pendingAiAction.current(); pendingAiAction.current = null; }
+  };
+  const declineAiConsent = () => {
+    setShowAiConsent(false);
+    pendingAiAction.current = null;
+  };
   const [devMode, setDevMode] = useState(() => localStorage.getItem("sakin_dev_mode") === "1");
   const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("sakin_rapor_used") === "1");
   const [rehberTab, setRehberTab] = useState("reiki");
@@ -2772,7 +2790,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <textarea
                     value={sikayet}
                     onChange={e=>setSikayet(e.target.value)}
-                    onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();generateSikayetAnaliz();} }}
+                    onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requireAiConsent(generateSikayetAnaliz);} }}
                     placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — ne merak ediyorsun?" : "Physical, emotional or spiritual — what do you wonder about?"}
                     rows={3}
                     autoFocus
@@ -2794,7 +2812,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   />
                   {/* Inline arama butonu */}
                   <button
-                    onClick={generateSikayetAnaliz}
+                    onClick={()=>requireAiConsent(generateSikayetAnaliz)}
                     disabled={!sikayet.trim()}
                     style={{
                       position:"absolute",right:12,bottom:12,
@@ -3059,7 +3077,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:14,color:"#9aaaba",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
                   style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:14 }}
-                  onClick={generateRapor}>{t("btn_gen_report")}</button>
+                  onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
               </div>
             ) : aiLoading ? (
               <div style={{ textAlign:"center",padding:"12px 0" }}>
@@ -3524,6 +3542,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
         );
       })()}
+
+      {showAiConsent && (
+        <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}
+          onClick={declineAiConsent}>
+          <div style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"32px 28px",maxWidth:400,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ textAlign:"center",marginBottom:20 }}>
+              <span style={{ fontSize:28 }}>🔒</span>
+              <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:18,fontWeight:500,color:"#e0d6f0",letterSpacing:1.5,margin:"12px 0 0" }}>{t("ai_consent_title")}</h3>
+            </div>
+            <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,color:"#b0a8c8",lineHeight:1.8,textAlign:"center",margin:"0 0 16px" }}>{t("ai_consent_body")}</p>
+            <div style={{ background:"rgba(139,90,160,0.1)",border:"1px solid rgba(139,90,160,0.15)",borderRadius:12,padding:"14px 16px",marginBottom:24 }}>
+              <p style={{ fontFamily:"'Jost',sans-serif",fontSize:12,color:"#9a8ab8",lineHeight:1.7,margin:0,letterSpacing:0.3 }}>{t("ai_consent_data")}</p>
+            </div>
+            <div style={{ display:"flex",gap:12 }}>
+              <button onClick={declineAiConsent}
+                style={{ flex:1,padding:"13px 0",borderRadius:100,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#8a86a0",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>{t("ai_consent_decline")}</button>
+              <button onClick={acceptAiConsent}
+                style={{ flex:1,padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",color:"#e8e0f4",fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",boxShadow:"0 4px 20px rgba(139,90,160,0.3)" }}>{t("ai_consent_accept")}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

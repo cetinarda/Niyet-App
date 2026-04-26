@@ -160,6 +160,13 @@ export const TRANS = {
     refresh_label:     "yenile",
     btn_new_day:       "yeni güne başla",
 
+    // AI Consent
+    ai_consent_title:  "Yapay Zeka Destekli Özellik",
+    ai_consent_body:   "Bu özellik, yazdığın metni kişiselleştirilmiş yanıt üretmek için yapay zeka hizmetine (Meta Llama / Groq) gönderir. Gönderilen metin anonimdir ve kimliğine bağlanmaz.",
+    ai_consent_data:   "Gönderilen: yazdığın metin. Gönderilmeyen: adın, konumun, cihaz bilgin.",
+    ai_consent_accept: "Kabul Et",
+    ai_consent_decline:"Vazgeç",
+
     // Rehber
     guide_sup:         "✦ içsel rehber ✦",
     guide_title:       "Şifa Arayışı",
@@ -466,6 +473,13 @@ export const TRANS = {
     share_title:       "My Weekly Inner Report",
     refresh_label:     "REFRESH",
     btn_new_day:       "start a new day",
+
+    // AI Consent
+    ai_consent_title:  "AI-Powered Feature",
+    ai_consent_body:   "This feature sends your text to an AI service (Meta Llama / Groq) to generate a personalized response. Your text is processed anonymously and is not linked to your identity.",
+    ai_consent_data:   "Sent: your text. Not sent: your name, location, device info.",
+    ai_consent_accept: "Accept",
+    ai_consent_decline:"Cancel",
 
     // Rehber
     guide_sup:         "✦ MYSTICAL GUIDE ✦",
