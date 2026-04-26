@@ -224,8 +224,8 @@ const GLOBAL_CSS = `
 
   /* ── Typography helpers ── */
   .label-sm {
-    font-family:'Jost',sans-serif; font-size:10px; font-weight:300;
-    letter-spacing:3.5px; text-transform:uppercase; color:#4a5570;
+    font-family:'Jost',sans-serif; font-size:13px; font-weight:300;
+    letter-spacing:3.5px; text-transform:uppercase; color:#9a9ab8;
   }
   .label-md {
     font-family:'Jost',sans-serif; font-size:12px; font-weight:300;
@@ -245,7 +245,7 @@ const GLOBAL_CSS = `
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
-    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#6a6d88;
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#a0a3be;
     padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
   }
@@ -269,13 +269,13 @@ const GLOBAL_CSS = `
     padding:14px 16px; width:100%; resize:none; outline:none; transition:border-color 0.25s;
     line-height:1.65;
   }
-  .sakin-input::placeholder { color:#3a4058; }
+  .sakin-input::placeholder { color:#6a6a88; }
   .sakin-input:focus { border-color:rgba(184,164,216,0.3); background:rgba(255,255,255,0.045); }
 
   /* ── Buttons ── */
   .sakin-btn {
     background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-    border-radius:100px; color:#b0aac8; cursor:pointer;
+    border-radius:100px; color:#d0cce8; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:12px; letter-spacing:2.5px; text-transform:uppercase;
     padding:11px 24px; transition:all 0.22s;
@@ -299,7 +299,7 @@ const GLOBAL_CSS = `
     border-radius:6px; border:1px solid rgba(255,255,255,0.08); cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:13px; letter-spacing:1px; padding:8px 16px; transition:all 0.2s;
-    background:transparent; color:#6a6d88;
+    background:transparent; color:#a0a3be;
   }
   .word-chip:hover { border-color:rgba(184,164,216,0.3); color:#c0b8d8; background:rgba(184,164,216,0.05); }
   .word-chip.selected { background:rgba(184,164,216,0.18); border-color:rgba(184,164,216,0.6); color:#f0ecff; box-shadow:0 0 8px rgba(184,164,216,0.2); }
@@ -343,7 +343,7 @@ const GLOBAL_CSS = `
   .check-btn.checked { background:rgba(100,200,120,0.2); border-color:rgba(100,200,120,0.5); animation:checkPop 0.3s ease; }
   .notif-btn {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
-    border-radius:100px; color:#6a6d88; cursor:pointer;
+    border-radius:100px; color:#a0a3be; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
     padding:8px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:36px;
@@ -381,7 +381,7 @@ const GLOBAL_CSS = `
   }
   .policy-screen .subtitle {
     font-family:'Jost',sans-serif; font-size:11px; font-weight:300;
-    letter-spacing:2.5px; text-transform:uppercase; color:#4a5068; margin-bottom:42px;
+    letter-spacing:2.5px; text-transform:uppercase; color:#8a90a8; margin-bottom:42px;
   }
   .policy-screen h2 {
     font-family:'Jost',sans-serif; font-size:12px; font-weight:400;
@@ -391,15 +391,15 @@ const GLOBAL_CSS = `
   }
   .policy-screen p {
     font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
-    color:#9a96b0; line-height:2; margin-bottom:12px;
+    color:#c8c4d8; line-height:2; margin-bottom:12px;
   }
   .policy-screen ul { list-style:none; padding:0; margin:0 0 12px; }
   .policy-screen ul li {
     font-family:'Cormorant Garamond',Georgia,serif; font-size:16px;
-    color:#9a96b0; line-height:2; padding-left:18px; position:relative;
+    color:#c8c4d8; line-height:2; padding-left:18px; position:relative;
   }
   .policy-screen ul li::before {
-    content:"—"; position:absolute; left:0; font-size:12px; color:#5a4a78; top:2px;
+    content:"—"; position:absolute; left:0; font-size:12px; color:#9a8ab0; top:2px;
   }
   .policy-screen a { color:#a890c8 !important; }
   .policy-screen .divider { border:none; border-top:1px solid rgba(255,255,255,0.05); margin:28px 0; }
@@ -479,16 +479,16 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   return (
     <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#9aaaba", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("day_label")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#8a9aae" }}>{t("day_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:21, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
         </div>
         <div style={{
           background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)",
-          borderRadius:100, padding:"5px 14px", fontSize:13, color:"#8a9aaa", letterSpacing:1,
+          borderRadius:100, padding:"5px 14px", fontSize:13, color:"#b0baca", letterSpacing:1,
         }}>{completedCount} / {REMINDERS.length}</div>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#3a4a5a", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#7a8a9e", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
       </div>
 
       <div style={{ height:2, background:"rgba(255,255,255,0.05)", borderRadius:1, marginBottom:20, overflow:"hidden" }}>
@@ -527,7 +527,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
                   <span style={{ fontSize:19, flexShrink:0 }}>{rem.icon}</span>
                   <span style={{ fontSize:15, letterSpacing:0.3, color:isDone?"#6a7a8a":"#e8e0d5", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
                 </div>
-                <div style={{ fontSize:12, color:"#5a6a7a", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
+                <div style={{ fontSize:12, color:"#9aaaba", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                     <svg width="28" height="28" style={{ flexShrink:0 }}>
@@ -541,7 +541,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
                     <button onClick={() => startTimer(rem)} style={{
                       background:"transparent",
                       border:`1px solid ${isTiming?rem.borderColor:"rgba(255,255,255,0.1)"}`,
-                      borderRadius:100, color:isTiming?"#e8e0d5":"#5a6a7a",
+                      borderRadius:100, color:isTiming?"#e8e0d5":"#9aaaba",
                       cursor:"pointer", fontSize:11, letterSpacing:1.5,
                       padding:"4px 12px", transition:"all 0.22s",
                       fontFamily:"'Cormorant Garamond',Georgia,serif",
@@ -737,12 +737,12 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="list") return (
     <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#5a6a7a", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#9aaaba", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
-          <div style={{ fontSize:10, letterSpacing:5, color:"#4a5a6a" }}>{t("reiki_label")}</div>
+          <div style={{ fontSize:10, letterSpacing:5, color:"#8a9aae" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif", fontSize:22, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#3a4a5a", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"#7a8a9e", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
       </div>
       <div style={{ paddingRight:4, scrollbarWidth:"none" }}>
         {CHAKRAS_22.map((c,i) => (
@@ -752,9 +752,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
             <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
             <div style={{ flex:1 }}>
               <div style={{ fontSize:14, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:12, color:"#5a6a7a", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
+              <div style={{ fontSize:12, color:"#9aaaba", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
             </div>
-            {i<7 && <div style={{ fontSize:9,letterSpacing:2,color:"#4a5a6a",flexShrink:0 }}>{t("core_badge")}</div>}
+            {i<7 && <div style={{ fontSize:9,letterSpacing:2,color:"#8a9aae",flexShrink:0 }}>{t("core_badge")}</div>}
           </div>
         ))}
       </div>
@@ -815,7 +815,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
   if (tPhase==="intro"&&selected) return (
     <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       <div style={{ marginBottom:24 }}>
-        <div style={{ fontSize:10,letterSpacing:6,color:"#3a4a5a" }}>{t("reiki_chakra_label")}</div>
+        <div style={{ fontSize:10,letterSpacing:6,color:"#7a8a9e" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
       </div>
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 20px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
@@ -828,7 +828,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       )}
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
-      <div style={{ fontSize:12,color:"#5a6a7a",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
+      <div style={{ fontSize:12,color:"#9aaaba",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
         {t("intro_place_hand", selected.name)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -847,7 +847,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:23,fontWeight:300,letterSpacing:1,color:"#e8e0d5",marginBottom:10,lineHeight:1.5 }}>
               {t("sure_title")}
             </div>
-            <div style={{ fontSize:14,color:"#7a8a9a",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
+            <div style={{ fontSize:14,color:"#a0b0ba",lineHeight:1.8,marginBottom:32,fontStyle:"italic" }}>
               {t("sure_body").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
             </div>
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -858,9 +858,9 @@ function TerapiScreen({ onBack, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} style={{ background:"none",border:"none",color:"#3a4a5a",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
+        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} style={{ background:"none",border:"none",color:"#7a8a9e",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
       </div>
-      <div style={{ fontSize:10,letterSpacing:5,color:"#3a4a5a",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:10,letterSpacing:5,color:"#7a8a9e",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
           <div key={i} className="ring" style={{ width:230,height:230,transform:`scale(${s})`,animationDelay:`${i*0.55}s`,animationDuration:`${3+i*0.4}s`,borderColor:`${selected.color}${hex(0.13-i*0.025)}` }} />
@@ -885,10 +885,10 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{displayMins}:{displaySecs}</div>
       {tPhase==="connected"
         ? <div style={{ fontSize:9,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
-        : <div style={{ fontSize:10,letterSpacing:4,color:"#3a4a5a",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
+        : <div style={{ fontSize:10,letterSpacing:4,color:"#7a8a9e",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       }
       {selected.hz && (
-        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#4a5a6a",fontSize:10,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
+        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#8a9aae",fontSize:10,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
         </button>
       )}
@@ -917,7 +917,7 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       ))}
       <div style={{ width:126,height:126,borderRadius:"50%",margin:"0 auto 26px",background:`radial-gradient(circle,${selected.color}44,${selected.color}11)`,boxShadow:`0 0 40px ${selected.color}88,0 0 80px ${selected.color}33`,animation:"slowPulse 3.5s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:29,fontWeight:300,letterSpacing:2,marginBottom:8,color:selected.pastel }}>{t("done_title")}</div>
-      <div style={{ fontSize:14,color:"#5a6a7a",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
+      <div style={{ fontSize:14,color:"#9aaaba",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
         {t("done_body", selected.name).split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
       </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
@@ -1042,7 +1042,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
         <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{simge}</div>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:11,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
-          <div style={{ fontSize:11,color:"#3a2a5a",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
+          <div style={{ fontSize:11,color:"#8a7aaa",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
         </div>
       </div>
       {analiz === "__loading__" ? (
@@ -1911,7 +1911,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:40,letterSpacing:12,fontWeight:200,marginBottom:8,color:"#ddd8f0" }}>Sakin</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.34s",opacity:0 }}>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#3a4058",marginBottom:52 }}>{t("tagline")}</div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#8a8aaa",marginBottom:52 }}>{t("tagline")}</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
@@ -1928,16 +1928,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
                 </div>
                 <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
+                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#9a8ab0",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
                   <input type="date" className="sakin-input" style={{ fontSize:16,padding:"12px 14px" }}
                     value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:22 }}>
-                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#5a4a78",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
+                  <div style={{ fontSize:10,letterSpacing:2.5,color:"#9a8ab0",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
                   <input type="time" className="sakin-input" style={{ fontSize:16,padding:"12px 14px" }}
                     value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
-                <div style={{ fontSize:10,letterSpacing:1.5,color:"#3a3858",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                <div style={{ fontSize:10,letterSpacing:1.5,color:"#8a88a8",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
@@ -1994,17 +1994,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{display:"flex",gap:18,marginBottom:18,alignItems:"center"}}>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:30,fontWeight:200,color:"#f0a040",lineHeight:1,animation:streakData.current>=3?"streakFire 2s ease-in-out infinite":"none"}}>{streakData.current}</div>
-                <div style={{fontSize:8,letterSpacing:2.5,color:"#5a4a7a",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"gün serisi":"day streak"}</div>
+                <div style={{fontSize:8,letterSpacing:2.5,color:"#9a8ab0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"gün serisi":"day streak"}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
-                <div style={{fontSize:30,fontWeight:200,color:"#5a6a7a",lineHeight:1}}>{streakData.best}</div>
-                <div style={{fontSize:8,letterSpacing:2.5,color:"#3a4058",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"en iyi":"best"}</div>
+                <div style={{fontSize:30,fontWeight:200,color:"#9aaaba",lineHeight:1}}>{streakData.best}</div>
+                <div style={{fontSize:8,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"en iyi":"best"}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
-                <div style={{fontSize:30,fontWeight:200,color:allStepsComplete?"#82d9a3":"#c3a6d8",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#3a4058"}}>/{N}</span></div>
-                <div style={{fontSize:8,letterSpacing:2.5,color:"#3a4058",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
+                <div style={{fontSize:30,fontWeight:200,color:allStepsComplete?"#82d9a3":"#c3a6d8",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#8a8aaa"}}>/{N}</span></div>
+                <div style={{fontSize:8,letterSpacing:2.5,color:"#8a8aaa",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
               </div>
             </div>
 
@@ -2125,7 +2125,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     opacity:unlocked?1:0.28,transition:"all 0.3s",
                   }}>
                     <div style={{fontSize:15,marginBottom:2}}>{b.icon}</div>
-                    <div style={{fontSize:7,letterSpacing:1.5,color:unlocked?"#f0c860":"#4a5a6a",fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{b.label}</div>
+                    <div style={{fontSize:7,letterSpacing:1.5,color:unlocked?"#f0c860":"#8a9aae",fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{b.label}</div>
                   </div>
                 );
               })}
@@ -2133,7 +2133,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
             {/* Harita — adım navigasyonu */}
             <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
-              <div style={{fontSize:8,letterSpacing:3,color:"#3a4a5a",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
+              <div style={{fontSize:8,letterSpacing:3,color:"#7a8a9e",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
               <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
                 {steps.map(step=>{
                   const done=!!stepsCompleted[step.id];
@@ -2167,23 +2167,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
               <div style={{ position:"absolute",inset:-14,borderRadius:"50%",border:"1px solid rgba(255,140,50,0.08)" }} />
             </div>
-            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"#3a4058" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:10,letterSpacing:4,textTransform:"uppercase",color:"#8a8aaa" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
           {stepsCompleted["sabah"] ? (
             /* ── Tamamlandı: salt-okunur özet ── */
             <div>
               <div style={{ marginBottom:20 }}>
-                <div style={{ fontSize:10,letterSpacing:3,color:"#5a6a7a",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Bugünün niyeti":"Today's intention"}</div>
+                <div style={{ fontSize:10,letterSpacing:3,color:"#9aaaba",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Bugünün niyeti":"Today's intention"}</div>
                 <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,140,50,0.2)",borderRadius:12,padding:"14px 16px",fontSize:15,color:"#e0d8f4",lineHeight:1.8,fontStyle:"italic" }}>
                   {niyet || "—"}
                 </div>
               </div>
               <div style={{ marginBottom:28 }}>
-                <div style={{ fontSize:10,letterSpacing:3,color:"#5a6a7a",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Seçilen kelimeler":"Selected words"}</div>
+                <div style={{ fontSize:10,letterSpacing:3,color:"#9aaaba",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Seçilen kelimeler":"Selected words"}</div>
                 <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
                   {selectedWords.length > 0 ? selectedWords.map(w=>(
                     <span key={w} style={{ padding:"6px 16px",borderRadius:20,fontSize:13,letterSpacing:0.5,background:"rgba(255,140,50,0.12)",border:"1px solid rgba(255,140,50,0.28)",color:"#f0a060" }}>{w}</span>
-                  )) : <span style={{ color:"#4a5a6a",fontSize:13 }}>—</span>}
+                  )) : <span style={{ color:"#8a9aae",fontSize:13 }}>—</span>}
                 </div>
               </div>
               <div style={{ display:"flex",gap:8,marginBottom:20 }}>
@@ -2191,11 +2191,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {t("btn_continue")}
                 </button>
                 <button onClick={()=>{ setStepsCompleted(prev=>{ const next={...prev}; delete next.sabah; localStorage.setItem("sakin_steps_"+todayKey,JSON.stringify(next)); return next; }); }}
-                  style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"0 16px",color:"#7a8a9a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap" }}>
+                  style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"0 16px",color:"#a0b0ba",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap" }}>
                   {lang==="tr"?"düzenle":"edit"}
                 </button>
               </div>
-              <div style={{ textAlign:"center",fontSize:10,letterSpacing:2,color:"#3a4a5a",fontFamily:"'Jost',sans-serif" }}>
+              <div style={{ textAlign:"center",fontSize:10,letterSpacing:2,color:"#7a8a9e",fontFamily:"'Jost',sans-serif" }}>
                 {lang==="tr" ? "Yarın yenilenir" : "Resets tomorrow"}
               </div>
             </div>
@@ -2213,10 +2213,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
                   ))}
                 </div>
-                {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#8a9aaa",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
+                {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:12,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
-                <div style={{ textAlign:"center", fontSize:12, color:"#5a6a7a", letterSpacing:1, padding:"12px 0" }}>
+                <div style={{ textAlign:"center", fontSize:12, color:"#9aaaba", letterSpacing:1, padding:"12px 0" }}>
                   {lang==="tr"
                     ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
                     : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
@@ -2428,9 +2428,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:32 }}>
             <div style={{ fontSize:32,marginBottom:9 }}>🌙</div>
-            <div style={{ fontSize:10,letterSpacing:5,color:"#4a5a6a" }}>{t("evening_label")}</div>
+            <div style={{ fontSize:10,letterSpacing:5,color:"#8a9aae" }}>{t("evening_label")}</div>
           </div>
-          {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#7a8a9a",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
+          {niyet && <div style={{ borderLeft:"2px solid rgba(139,90,160,0.32)",paddingLeft:15,marginBottom:26,color:"#a0b0ba",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
           <div style={{ marginBottom:18 }}>
             <div style={{ fontSize:13,color:"#6a7a8a",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
             <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
@@ -2469,7 +2469,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:28,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
               {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
             </div>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,color:"#4a3a6a",textTransform:"uppercase" }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
               {lang==="tr" ? "Süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
             </div>
           </div>
@@ -2536,7 +2536,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       width:38,height:38,borderRadius:"50%",
                       background:sikayet.trim()?"linear-gradient(135deg,rgba(160,112,208,0.8),rgba(100,60,200,0.6))":"rgba(255,255,255,0.05)",
                       border:"none",cursor:sikayet.trim()?"pointer":"default",
-                      color:sikayet.trim()?"#fff":"#3a4058",fontSize:16,
+                      color:sikayet.trim()?"#fff":"#8a8aaa",fontSize:16,
                       display:"flex",alignItems:"center",justifyContent:"center",
                       transition:"all 0.25s",
                     }}>
@@ -2670,7 +2670,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {/* Dev mode */}
                 <div style={{ textAlign:"center",marginTop:24 }}>
                   <button onClick={toggleDevMode}
-                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#3a4058",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
+                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#8a8aaa",fontSize:9,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
                     {devMode ? "DEV ✓" : "DEV"}
                   </button>
                 </div>
@@ -2684,7 +2684,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {screen==="harita" && (
         <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
-            <div style={{ fontSize:10,letterSpacing:5,color:"#4a5a6a",marginBottom:9 }}>{t("weekly_label")}</div>
+            <div style={{ fontSize:10,letterSpacing:5,color:"#8a9aae",marginBottom:9 }}>{t("weekly_label")}</div>
             <div style={{ fontSize:26,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
           </div>
           <div style={{ position:"relative",width:186,height:186,margin:"0 auto 34px" }}>
@@ -2700,7 +2700,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </svg>
             <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
               <div style={{ fontSize:26,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-              <div style={{ fontSize:9,letterSpacing:3,color:"#4a5a6a" }}>{t("day_pct")}</div>
+              <div style={{ fontSize:9,letterSpacing:3,color:"#8a9aae" }}>{t("day_pct")}</div>
             </div>
           </div>
           <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:32 }}>
@@ -2711,7 +2711,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {label:t("stat_mindful"),value:"3",color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                <div style={{ fontSize:9,letterSpacing:2.5,color:"#4a5a6a",marginBottom:6 }}>{s.label.toUpperCase()}</div>
+                <div style={{ fontSize:9,letterSpacing:2.5,color:"#8a9aae",marginBottom:6 }}>{s.label.toUpperCase()}</div>
                 <div style={{ fontSize:17,color:s.color,fontWeight:300 }}>{s.value}</div>
               </div>
             ))}
@@ -2758,7 +2758,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:12,color:"#7a8a9a" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
+            <div style={{ fontSize:12,color:"#a0b0ba" }} dangerouslySetInnerHTML={{ __html: t("orchestra_text", "312") }} />
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:10,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
@@ -2766,7 +2766,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
                 <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
-                <div style={{ fontSize:12,color:"#5a6a7a",lineHeight:1.8,marginBottom:16 }}>
+                <div style={{ fontSize:12,color:"#9aaaba",lineHeight:1.8,marginBottom:16 }}>
                   {t("free_used_body")}<br/>
                   <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
                 </div>
@@ -2785,7 +2785,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:12,color:"#5a6a7a",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+                <div style={{ fontSize:12,color:"#9aaaba",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
                   style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:12 }}
                   onClick={generateRapor}>{t("btn_gen_report")}</button>
@@ -2809,7 +2809,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     </button>
                   )}
                   <button onClick={()=>setAiRapor("")}
-                    style={{ background:"none",border:"none",color:"#4a5a6a",cursor:"pointer",fontSize:10,letterSpacing:2,marginLeft:"auto" }}>
+                    style={{ background:"none",border:"none",color:"#8a9aae",cursor:"pointer",fontSize:10,letterSpacing:2,marginLeft:"auto" }}>
                     {t("refresh_label")}
                   </button>
                 </div>
@@ -2870,7 +2870,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
 
           <div className="divider" />
-          <p style={{ fontSize:14, color:"#4a5570", letterSpacing:1, textAlign:"center" }}>
+          <p style={{ fontSize:14, color:"#9a9ab8", letterSpacing:1, textAlign:"center" }}>
             {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2025" : "Sakin · Awareness System · 2025"}
           </p>
         </div>
@@ -2886,7 +2886,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="pricing-card" style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.08)" }}>
             <div className="pricing-badge" style={{ background:"rgba(100,120,150,0.15)",border:"1px solid rgba(100,120,150,0.25)",color:"#7a9abb" }}>{t("free_badge")}</div>
             <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("free_plan")}</div>
-            <div style={{ fontSize:29,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:12,color:"#4a5a6a" }}>{t("free_forever")}</span></div>
+            <div style={{ fontSize:29,color:"#c8c0b8",letterSpacing:1,marginBottom:14 }}>₺0 <span style={{ fontSize:12,color:"#8a9aae" }}>{t("free_forever")}</span></div>
             <ul>{t("free_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
@@ -2894,7 +2894,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
             <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>{t("premium_badge")}</div>
             <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
-            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:12,color:"#4a5a6a" }}>{t("one_time")}</span></div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:12,color:"#8a9aae" }}>{t("one_time")}</span></div>
             <ul>{t("premium_features").map(f=>(<li key={f}>{f}</li>))}</ul>
           </div>
 
@@ -2915,7 +2915,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
 
           <hr className="divider" />
-          <p style={{ fontSize:12,color:"#4a5a6a",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:12,color:"#8a9aae",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
       )}
 
@@ -2974,7 +2974,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("privacy_s10")}</h2>
           <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
-          <p style={{ fontSize:12,color:"#3a4a5a" }}>{t("privacy_app_name")}</p>
+          <p style={{ fontSize:12,color:"#7a8a9e" }}>{t("privacy_app_name")}</p>
         </div>
       )}
 
@@ -3193,7 +3193,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {/* Header */}
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
                 <div>
-                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,fontWeight:300,letterSpacing:4,color:"#4a5570",textTransform:"uppercase",marginBottom:4 }}>{t("guide_help_sub")}</div>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,fontWeight:300,letterSpacing:4,color:"#9a9ab8",textTransform:"uppercase",marginBottom:4 }}>{t("guide_help_sub")}</div>
                   <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:26,fontWeight:300,color:"#ddd8f0",letterSpacing:2 }}>{t("guide_help_title")}</div>
                 </div>
                 <button onClick={() => setShowKilavuz(false)} style={{ background:"rgba(192,57,43,0.15)",border:"1px solid rgba(192,57,43,0.3)",borderRadius:100,padding:"8px 20px",cursor:"pointer",color:"#e8a0a0",fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,textTransform:"uppercase",transition:"all 0.2s" }}
@@ -3213,7 +3213,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {cat.items.map((item, ii) => (
                     <div key={ii} style={{ marginBottom:18,padding:"16px 18px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,transition:"all 0.2s" }}>
                       <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:400,color:"#ddd8f0",letterSpacing:0.5,marginBottom:8 }}>{item.term}</div>
-                      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,color:"#9a96b0",lineHeight:1.9,letterSpacing:0.3 }}>{item.desc}</div>
+                      <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:15,color:"#c8c4d8",lineHeight:1.9,letterSpacing:0.3 }}>{item.desc}</div>
                       {item.examples && (
                         <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.05)" }}>
                           {item.examples.map((ex, ei) => (
