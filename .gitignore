@@ -4,3 +4,9 @@ dist
 .env.local
 dist.zip
 dist_deploy.zip
+
+# iOS
+ios/App/Pods
+ios/App/App.xcworkspace/xcuserdata
+ios/App/DerivedData
+*.xcuserstate

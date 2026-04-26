@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { makeTrans } from "./i18n";
+import { Capacitor } from "@capacitor/core";
+import { SplashScreen } from "@capacitor/splash-screen";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
+
+const isNative = Capacitor.isNativePlatform();
+const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 
 const AI_CALL_URL = "/.netlify/functions/ai-call";
 const MAX_INPUT_LEN = 500;
@@ -1266,7 +1272,7 @@ export default function SakinApp() {
     pendingAiAction.current = action;
     setShowAiConsent(true);
   };
-  const acceptAiConsent = () => {
+  const acceptAiConsent = () => { haptic(ImpactStyle.Medium);
     localStorage.setItem("sakin_ai_consent", "1");
     setAiConsent(true);
     setShowAiConsent(false);
@@ -1409,6 +1415,7 @@ export default function SakinApp() {
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
+  useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   useEffect(() => {
     const onPop = () => {
       isPopRef.current = true;
@@ -2562,7 +2569,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ playStartChime(); setBreathStarted(true); }}>{t("btn_start")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ haptic(); playStartChime(); setBreathStarted(true); }}>{t("btn_start")}</button>
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
