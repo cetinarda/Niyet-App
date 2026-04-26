@@ -167,6 +167,25 @@ export const TRANS = {
     ai_consent_accept: "Kabul Et",
     ai_consent_decline:"Vazgeç",
 
+    // Premium / Paywall
+    premium_badge:     "Premium",
+    premium_locked:    "Bu özellik Premium ile açılır",
+    paywall_title:     "Sakin Premium",
+    paywall_subtitle:  "Tüm kapıları aç. Bir kez öde, ömür boyu seninle.",
+    paywall_price:     "₺349.99",
+    paywall_price_sub: "Tek seferlik ödeme · Abonelik yok",
+    paywall_btn_buy:   "Premium'a Geç",
+    paywall_btn_restore:"Satın Alımı Geri Yükle",
+    paywall_btn_close: "Ücretsiz Devam Et",
+    paywall_feat_ai:   "İçsel Ayna — AI destekli derin analiz",
+    paywall_feat_report:"Haftalık AI Rapor — kişisel içsel harita",
+    paywall_feat_breath:"Tüm nefes modları (7 farklı teknik)",
+    paywall_feat_sound:"Ses Dalgaları — 10 solfeggio frekansı",
+    paywall_feat_therapy:"22 Çakra Terapisi — derin enerji çalışması",
+    paywall_feat_astro:"Numeroloji & astroloji detayları",
+    paywall_restore_ok:"Satın alımın geri yüklendi!",
+    paywall_restore_fail:"Önceki satın alım bulunamadı.",
+
     // Rehber
     guide_sup:         "✦ içsel rehber ✦",
     guide_title:       "Şifa Arayışı",
@@ -480,6 +499,25 @@ export const TRANS = {
     ai_consent_data:   "Sent: your text. Not sent: your name, location, device info.",
     ai_consent_accept: "Accept",
     ai_consent_decline:"Cancel",
+
+    // Premium / Paywall
+    premium_badge:     "Premium",
+    premium_locked:    "This feature unlocks with Premium",
+    paywall_title:     "Sakin Premium",
+    paywall_subtitle:  "Unlock everything. Pay once, yours forever.",
+    paywall_price:     "$9.99",
+    paywall_price_sub: "One-time payment · No subscription",
+    paywall_btn_buy:   "Go Premium",
+    paywall_btn_restore:"Restore Purchase",
+    paywall_btn_close: "Continue Free",
+    paywall_feat_ai:   "Inner Mirror — AI-powered deep analysis",
+    paywall_feat_report:"Weekly AI Report — personal inner map",
+    paywall_feat_breath:"All breath modes (7 techniques)",
+    paywall_feat_sound:"Sound Waves — 10 solfeggio frequencies",
+    paywall_feat_therapy:"22 Chakra Therapy — deep energy work",
+    paywall_feat_astro:"Numerology & astrology details",
+    paywall_restore_ok:"Your purchase has been restored!",
+    paywall_restore_fail:"No previous purchase found.",
 
     // Rehber
     guide_sup:         "✦ MYSTICAL GUIDE ✦",

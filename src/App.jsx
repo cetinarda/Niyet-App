@@ -3,6 +3,7 @@ import { makeTrans } from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { initStore, purchaseLifetime, restorePurchases, isProductOwned, getPrice } from "./purchase";
 
 const isNative = Capacitor.isNativePlatform();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
@@ -1282,6 +1283,53 @@ export default function SakinApp() {
     setShowAiConsent(false);
     pendingAiAction.current = null;
   };
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState("");
+
+  useEffect(() => {
+    initStore().then(() => {
+      if (isProductOwned()) {
+        localStorage.setItem("sakin_premium", "1");
+        setIsPremium(true);
+      }
+    });
+  }, []);
+
+  const requirePremium = (action) => {
+    if (isPremium) { action(); return; }
+    setShowPaywall(true);
+  };
+
+  const handlePurchase = async () => {
+    setPurchaseLoading(true);
+    const res = await purchaseLifetime();
+    setPurchaseLoading(false);
+    if (res.ok || isProductOwned()) {
+      localStorage.setItem("sakin_premium", "1");
+      setIsPremium(true);
+      setShowPaywall(false);
+      haptic(ImpactStyle.Heavy);
+    }
+  };
+
+  const handleRestore = async () => {
+    setPurchaseLoading(true);
+    setRestoreMsg("");
+    const res = await restorePurchases();
+    setPurchaseLoading(false);
+    if (res.ok) {
+      localStorage.setItem("sakin_premium", "1");
+      setIsPremium(true);
+      setRestoreMsg(t("paywall_restore_ok"));
+      haptic(ImpactStyle.Medium);
+      setTimeout(() => setShowPaywall(false), 1500);
+    } else {
+      setRestoreMsg(t("paywall_restore_fail"));
+    }
+  };
+
   const [devMode, setDevMode] = useState(() => localStorage.getItem("sakin_dev_mode") === "1");
   const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("sakin_rapor_used") === "1");
   const [rehberTab, setRehberTab] = useState("reiki");
@@ -2027,8 +2075,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        {/* Dil butonu — nav'ın en sağında */}
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"6px 14px",color:"#c3a6d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
+        {!isPremium && <button onClick={()=>setShowPaywall(true)} style={{ marginLeft:"auto",flexShrink:0,background:"linear-gradient(135deg,rgba(139,90,160,0.3),rgba(72,100,200,0.2))",border:"1px solid rgba(139,90,160,0.4)",borderRadius:20,padding:"6px 14px",color:"#d4b8f0",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,minHeight:36,alignSelf:"center" }}>
+          ✦ Premium
+        </button>}
+        <button onClick={toggleLang} style={{ marginLeft:isPremium?"auto":4,flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"6px 14px",color:"#c3a6d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
@@ -2540,7 +2590,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"diyafram", icon:"🌬", color:"rgba(80,200,180,0.18)", border:"rgba(80,200,180,0.35)", rhythm:"4·6" },
                   { id:"akciger",  icon:"🫁", color:"rgba(100,160,220,0.18)",border:"rgba(100,160,220,0.35)",rhythm:"5·2·7" },
                 ].map(m=>(
-                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                  <button key={m.id} onClick={()=>{ const go = () => { if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }; if(m.id==="standart"||isPremium){ go(); } else { requirePremium(go); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:20 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
@@ -2555,7 +2605,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"kutu",       icon:"⬜",  color:"rgba(140,100,220,0.18)",border:"rgba(140,100,220,0.35)",rhythm:"4·4·4·4" },
                   { id:"sakinletici",icon:"🌿",  color:"rgba(80,200,160,0.18)", border:"rgba(80,200,160,0.35)", rhythm:"4·2·8" },
                 ].map(m=>(
-                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                  <button key={m.id} onClick={()=>{ const go = () => { if(breathMode===m.id){ playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }; if(m.id==="standart"||isPremium){ go(); } else { requirePremium(go); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:18 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
@@ -2631,7 +2681,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 return (
                   <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
                     <div
-                      onClick={() => { setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
+                      onClick={() => requirePremium(() => { setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); })}
                       style={{
                         background: isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
                         border: `1px solid ${isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
@@ -2702,7 +2752,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:chakra.pastel,marginBottom:16,opacity:0.9 }}>{chakra.name} {t("chakra_name_suf")}</div>
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
             <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
-            <button className="sakin-btn terapi-pill" style={{ marginBottom:14,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
+            <button className="sakin-btn terapi-pill" style={{ marginBottom:14,padding:"11px 28px" }} onClick={()=>requirePremium(()=>setScreen("terapi"))}>{t("btn_therapy")}{!isPremium && " 🔒"}</button>
             <div>
               <button className="sakin-btn-primary" style={{ padding:"10px 28px",fontSize:14 }} onClick={()=>{ markStep("chakra"); setScreen("gun"); }}>{t("btn_next")}</button>
             </div>
@@ -2797,7 +2847,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <textarea
                     value={sikayet}
                     onChange={e=>setSikayet(e.target.value)}
-                    onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requireAiConsent(generateSikayetAnaliz);} }}
+                    onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requirePremium(()=>requireAiConsent(generateSikayetAnaliz));} }}
                     placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — ne merak ediyorsun?" : "Physical, emotional or spiritual — what do you wonder about?"}
                     rows={3}
                     autoFocus
@@ -2819,7 +2869,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   />
                   {/* Inline arama butonu */}
                   <button
-                    onClick={()=>requireAiConsent(generateSikayetAnaliz)}
+                    onClick={()=>requirePremium(()=>requireAiConsent(generateSikayetAnaliz))}
                     disabled={!sikayet.trim()}
                     style={{
                       position:"absolute",right:12,bottom:12,
@@ -3084,7 +3134,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:14,color:"#9aaaba",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
                 <button className="sakin-btn-primary"
                   style={{ background:"linear-gradient(135deg,rgba(139,90,160,0.7),rgba(72,100,200,0.5))",borderColor:"rgba(139,90,160,0.4)",fontSize:14 }}
-                  onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
+                  onClick={()=>requirePremium(()=>requireAiConsent(generateRapor))}>{t("btn_gen_report")}</button>
               </div>
             ) : aiLoading ? (
               <div style={{ textAlign:"center",padding:"12px 0" }}>
@@ -3190,8 +3240,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="pricing-card" style={{ background:"rgba(139,90,160,0.06)",border:"1px solid rgba(139,90,160,0.3)" }}>
             <div className="pricing-badge" style={{ background:"rgba(139,90,160,0.18)",border:"1px solid rgba(139,90,160,0.4)",color:"#c3a6d8" }}>{t("premium_badge")}</div>
             <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,marginBottom:4,color:"#e8e0d5" }}>{t("premium_plan")}</div>
-            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>₺99 <span style={{ fontSize:14,color:"#8a9aae" }}>{t("one_time")}</span></div>
+            <div style={{ fontSize:29,color:"#c8a96e",letterSpacing:1,marginBottom:14 }}>{isNative ? getPrice() : t("paywall_price")} <span style={{ fontSize:14,color:"#8a9aae" }}>{t("paywall_price_sub")}</span></div>
             <ul>{t("premium_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+            {!isPremium && <button onClick={()=>setShowPaywall(true)} style={{ marginTop:12,width:"100%",padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,#8B5AA0,#4864C8)",color:"#fff",fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:500,letterSpacing:2,cursor:"pointer",textTransform:"uppercase" }}>{t("paywall_btn_buy")}</button>}
+            {isPremium && <div style={{ marginTop:12,textAlign:"center",padding:"10px 0",color:"#82d9a3",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.5 }}>✓ {t("premium_badge")}</div>}
           </div>
 
           {/* 21 Günlük */}
@@ -3549,6 +3601,46 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
         );
       })()}
+
+      {showPaywall && (
+        <div style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(8px)" }}
+          onClick={()=>{ setShowPaywall(false); setRestoreMsg(""); }}>
+          <div style={{ background:"linear-gradient(155deg,#1a1230,#0e1220,#141028)",border:"1px solid rgba(139,90,160,0.35)",borderRadius:24,padding:"36px 28px 28px",maxWidth:420,width:"100%",boxShadow:"0 24px 80px rgba(0,0,0,0.6)",position:"relative",overflow:"hidden" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#8B5AA0,#4864C8,#8B5AA0)",opacity:0.7 }}/>
+            <div style={{ textAlign:"center",marginBottom:24 }}>
+              <span style={{ fontSize:36 }}>✦</span>
+              <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:400,color:"#e8dff6",letterSpacing:2,margin:"12px 0 8px" }}>{t("paywall_title")}</h3>
+              <p style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:16,color:"#b0a8c8",lineHeight:1.6,margin:0 }}>{t("paywall_subtitle")}</p>
+            </div>
+            <div style={{ display:"flex",flexDirection:"column",gap:10,marginBottom:24 }}>
+              {["ai","report","breath","sound","therapy","astro"].map(k=>(
+                <div key={k} style={{ display:"flex",alignItems:"center",gap:12,padding:"8px 12px",background:"rgba(139,90,160,0.08)",borderRadius:10,border:"1px solid rgba(139,90,160,0.1)" }}>
+                  <span style={{ color:"#8B5AA0",fontSize:16,flexShrink:0 }}>✓</span>
+                  <span style={{ fontFamily:"'Jost',sans-serif",fontSize:13,color:"#c8c0e0",letterSpacing:0.3 }}>{t(`paywall_feat_${k}`)}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ textAlign:"center",marginBottom:20 }}>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:28,fontWeight:500,color:"#e8dff6",letterSpacing:1 }}>{isNative ? getPrice() : t("paywall_price")}</div>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:12,color:"#8a7aaa",letterSpacing:1,marginTop:4 }}>{t("paywall_price_sub")}</div>
+            </div>
+            <button onClick={handlePurchase} disabled={purchaseLoading}
+              style={{ width:"100%",padding:"15px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,#8B5AA0,#4864C8)",color:"#fff",fontFamily:"'Jost',sans-serif",fontSize:15,fontWeight:500,letterSpacing:2,cursor:purchaseLoading?"wait":"pointer",transition:"all 0.2s",boxShadow:"0 6px 24px rgba(139,90,160,0.4)",opacity:purchaseLoading?0.7:1,textTransform:"uppercase",marginBottom:10 }}>
+              {purchaseLoading ? "..." : t("paywall_btn_buy")}
+            </button>
+            <button onClick={handleRestore} disabled={purchaseLoading}
+              style={{ width:"100%",padding:"11px 0",borderRadius:100,border:"1px solid rgba(139,90,160,0.25)",background:"transparent",color:"#9a8ab8",fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",marginBottom:8 }}>
+              {t("paywall_btn_restore")}
+            </button>
+            {restoreMsg && <p style={{ textAlign:"center",fontFamily:"'Jost',sans-serif",fontSize:12,color:restoreMsg.includes("!") && !restoreMsg.includes("bulunamadı") && !restoreMsg.includes("No") ?"#82d9a3":"#e8a09a",margin:"4px 0 0" }}>{restoreMsg}</p>}
+            <button onClick={()=>{ setShowPaywall(false); setRestoreMsg(""); }}
+              style={{ width:"100%",padding:"10px 0",background:"transparent",border:"none",color:"#6a6480",fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1,cursor:"pointer",marginTop:4 }}>
+              {t("paywall_btn_close")}
+            </button>
+          </div>
+        </div>
+      )}
 
       {showAiConsent && (
         <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}
