@@ -55,6 +55,10 @@ export const TRANS = {
     breath_hold:   "tut",
     breath_exhale: "ver",
     breath_rest:   "dinlen",
+    breath_voice_inhale: "Nefes al",
+    breath_voice_hold:   "Tut",
+    breath_voice_exhale: "Ver",
+    breath_voice_rest:   "Dinlen",
     breath_choose: "bir mod seç",
     breath_calming:"gün içi sakinleştirme",
     breath_change: "← mod değiştir",
@@ -104,6 +108,10 @@ export const TRANS = {
     day_label:         "Bugün",
     reminders_title:   "Bugün bunları kendin için yaptın mı?",
     all_done_msg:      "Bugün kendine güzelce dokundun. 🌿",
+    btn_reminders_next:"Devam Et →",
+    terapi_duration:   "60 saniyelik seans",
+    btn_done_next:     "Tamamlandı → Sonraki Adım",
+    step_label:        (cur, total) => `${cur}/${total} adım`,
 
     // Akşam
     evening_label:     "Akşam Kapanışı",
@@ -343,6 +351,10 @@ export const TRANS = {
     breath_hold:   "hold",
     breath_exhale: "exhale",
     breath_rest:   "rest",
+    breath_voice_inhale: "Inhale",
+    breath_voice_hold:   "Hold",
+    breath_voice_exhale: "Exhale",
+    breath_voice_rest:   "Rest",
     breath_choose: "CHOOSE MODE",
     breath_calming:"DAILY CALM",
     breath_change: "← change mode",
@@ -392,6 +404,10 @@ export const TRANS = {
     day_label:         "TODAY",
     reminders_title:   "Did you do these today?",
     all_done_msg:      "Today you connected with yourself.",
+    btn_reminders_next:"Continue →",
+    terapi_duration:   "60-second session",
+    btn_done_next:     "Done → Next Step",
+    step_label:        (cur, total) => `${cur}/${total} steps`,
 
     // Akşam
     evening_label:     "EVENING CLOSE",

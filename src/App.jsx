@@ -575,11 +575,17 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
         </div>
       )}
 
+      {completedCount > 0 && onNext && (
+        <button className="sakin-btn-primary" style={{ width:"100%", marginTop:20 }} onClick={onNext}>
+          {t("btn_reminders_next")}
+        </button>
+      )}
+
     </div>
   );
 }
 
-function TerapiScreen({ onBack, lang = "tr" }) {
+function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const t = makeTrans(lang);
   const CHAKRAS_22 = getChakras22(lang);
   const [tPhase,   setTPhase]   = useState("list");
@@ -834,9 +840,10 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       )}
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
-      <div style={{ fontSize:14,color:"#9aaaba",letterSpacing:1,marginBottom:28,fontStyle:"italic" }}>
+      <div style={{ fontSize:14,color:"#9aaaba",letterSpacing:1,marginBottom:12,fontStyle:"italic" }}>
         {t("intro_place_hand", selected.name)}
       </div>
+      <div style={{ fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.3)",marginBottom:28 }}>{t("terapi_duration")}</div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
         <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); playChime(528, 0.22, 3.5); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
@@ -926,9 +933,12 @@ function TerapiScreen({ onBack, lang = "tr" }) {
       <div style={{ fontSize:14,color:"#9aaaba",marginBottom:36,fontStyle:"italic",lineHeight:1.8 }}>
         {t("done_body", selected.name).split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
       </div>
-      <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-        <button className="sakin-btn" onClick={resetTerapi}>{t("other_chakra")}</button>
-        <button className="sakin-btn" onClick={onBack}>{t("main_screen")}</button>
+      <div style={{ display:"flex",flexDirection:"column",gap:10,alignItems:"center" }}>
+        {onNext && <button className="sakin-btn-primary" style={{ width:"100%",maxWidth:260 }} onClick={() => { resetTerapi(); onNext(); }}>{t("btn_done_next")}</button>}
+        <div style={{ display:"flex",gap:10 }}>
+          <button className="sakin-btn" onClick={resetTerapi}>{t("other_chakra")}</button>
+          <button className="sakin-btn" onClick={onBack}>{t("main_screen")}</button>
+        </div>
       </div>
     </div>
   );
@@ -1123,8 +1133,19 @@ export default function SakinApp() {
   const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
-  const SCREEN_TO_URL = { fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
-  const [screen,        setScreen]        = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
+  const SCREEN_TO_URL = { hakkinda:"/hakkinda", fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
+  const [screen,        setScreenRaw]     = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
+  const screenHistoryRef = useRef([URL_TO_SCREEN[window.location.pathname] || "giris"]);
+  const isPopRef = useRef(false);
+  const setScreen = (s) => {
+    setScreenRaw(s);
+    if (!isPopRef.current) {
+      screenHistoryRef.current.push(s);
+      const url = SCREEN_TO_URL[s] || "/";
+      history.pushState({ screen: s }, "", url);
+    }
+    isPopRef.current = false;
+  };
   const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+new Date().toISOString().slice(0,10))||"");
   const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+new Date().toISOString().slice(0,10)))||[]; } catch { return []; } });
   const [breathPhase,   setBreathPhase]   = useState("inhale");
@@ -1271,7 +1292,13 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => {
-    const onPop = () => setScreen(URL_TO_SCREEN[window.location.pathname] || "giris");
+    const onPop = () => {
+      isPopRef.current = true;
+      const hist = screenHistoryRef.current;
+      if (hist.length > 1) hist.pop();
+      const prev = hist[hist.length - 1] || "giris";
+      setScreenRaw(prev);
+    };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
@@ -1790,21 +1817,33 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     clearInterval(breathRef.current);
   },[screen]);
 
+  const speakBreathCue = (phase) => {
+    if (!("speechSynthesis" in window)) return;
+    const voiceMap = { inhale: t("breath_voice_inhale"), hold: t("breath_voice_hold"), exhale: t("breath_voice_exhale"), hold2: t("breath_voice_rest") };
+    const text = voiceMap[phase];
+    if (!text) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = lang === "tr" ? "tr-TR" : "en-US";
+    utt.rate = 0.75; utt.pitch = 0.9; utt.volume = 0.7;
+    window.speechSynthesis.speak(utt);
+  };
+
   useEffect(() => {
     if (screen!=="nefes" || !breathStarted) return;
     const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
     const toIds = [];
     const cycle = () => {
-      setBreathPhase("inhale");
+      setBreathPhase("inhale"); speakBreathCue("inhale");
       let t = tm.in;
-      if (tm.hold > 0)  { toIds.push(setTimeout(()=>setBreathPhase("hold"),  t)); t += tm.hold;  }
-      toIds.push(setTimeout(()=>setBreathPhase("exhale"), t)); t += tm.out;
-      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>setBreathPhase("hold2"), t)); }
+      if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); speakBreathCue("hold"); },  t)); t += tm.hold;  }
+      toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); speakBreathCue("exhale"); }, t)); t += tm.out;
+      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); speakBreathCue("hold2"); }, t)); }
       toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
     };
     cycle();
     breathRef.current = setInterval(cycle, tm.total);
-    return () => { clearInterval(breathRef.current); toIds.forEach(clearTimeout); };
+    return () => { clearInterval(breathRef.current); toIds.forEach(clearTimeout); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); };
   },[screen, breathStarted, breathMode]);
 
   const hour   = time.getHours();
@@ -1847,7 +1886,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
-          onClick={()=>{ setGirisPhase("intro"); setScreen("giris"); history.pushState(null,"","/"); }}
+          onClick={()=>{ setGirisPhase("intro"); setScreen("giris"); }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1855,11 +1894,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
         </button>
-        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setScreen("hakkinda"); history.pushState(null,"","/hakkinda"); }}>{t("nav_about")}</button>
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setScreen("fiyat"); history.pushState(null,"","/fiyatlandirma"); }}>{t("nav_pricing")}</button>
-        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>{ setScreen("sartlar"); history.pushState(null,"","/hizmet-sartlari"); }}>{t("nav_terms")}</button>
-        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>{ setScreen("gizlilik"); history.pushState(null,"","/gizlilik"); }}>{t("nav_privacy")}</button>
-        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>{ setScreen("iade"); history.pushState(null,"","/iade-politikasi"); }}>{t("nav_refund")}</button>
+        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>setScreen("hakkinda")}>{t("nav_about")}</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
+        <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
+        <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
+        <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
         {/* Dil butonu — nav'ın en sağında */}
         <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(139,90,160,0.15)",border:"1px solid rgba(139,90,160,0.3)",borderRadius:20,padding:"6px 14px",color:"#c3a6d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
@@ -2242,7 +2281,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="label-sm" style={{ marginBottom:32,letterSpacing:5 }}>{breathStarted ? t(`breath_mode_${breathMode}`) : t("breath_title")}</div>
 
           {/* ── Visualization area ── */}
-          {(!breathStarted || breathMode==="standart") && (
+          {(breathStarted && breathMode==="standart") && (
             <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
               {[1.72,1.45,1.2].map((s,i)=>(
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
@@ -2422,12 +2461,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:chakra.pastel,marginBottom:16,opacity:0.9 }}>{chakra.name} {t("chakra_name_suf")}</div>
             <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:22,fontWeight:300,lineHeight:1.8,marginBottom:10,wordBreak:"break-word",color:"#c8c0e0" }}>{chakra.desc}</div>
             <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
-            <button className="sakin-btn terapi-pill" style={{ marginBottom:28,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
+            <button className="sakin-btn terapi-pill" style={{ marginBottom:14,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
+            <div>
+              <button className="sakin-btn-primary" style={{ padding:"10px 28px",fontSize:14 }} onClick={()=>{ markStep("chakra"); setScreen("gun"); }}>{t("btn_next")}</button>
+            </div>
           </div>
         </div>
       )}
 
-      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} lang={lang} />}
+      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} />}
       {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
 
       {/* AKŞAM */}
@@ -2725,9 +2767,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           {/* ── 12. Ev Kartı ── */}
           {ev12Burcu && ev12Gezegen && EV12_BURCU_ACIKLAMA[ev12Burcu] ? (
-            <div style={{ background:"linear-gradient(135deg,rgba(60,30,100,0.18),rgba(30,50,120,0.10))",border:"1px solid rgba(120,80,200,0.28)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-              <div style={{ fontSize:13,letterSpacing:3.5,color:"#9070c0",marginBottom:12,textAlign:"center" }}>
+            <div style={{ background:"linear-gradient(135deg,rgba(60,30,100,0.22),rgba(30,50,120,0.12))",border:"1px solid rgba(120,80,200,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
+              <div style={{ position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(120,80,220,0.15),transparent)",pointerEvents:"none" }} />
+              <div style={{ fontSize:13,letterSpacing:3.5,color:"#9070c0",marginBottom:6,textAlign:"center" }}>
                 {lang==="tr" ? "12. EV · GİZLİ BENLİK" : "12TH HOUSE · HIDDEN SELF"}
+              </div>
+              <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:18,fontWeight:300,textAlign:"center",color:"#d8c0f0",marginBottom:14,lineHeight:1.6 }}>
+                {lang==="tr"
+                  ? "Doğum saatine göre bu senin gizli benlik evin."
+                  : "Based on your birth time, this is your hidden self house."}
               </div>
               <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:14 }}>
                 <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,background:"radial-gradient(circle,rgba(120,80,220,0.5),rgba(60,30,120,0.2))",border:"1px solid rgba(120,80,200,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>
@@ -3015,6 +3063,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("refund_s7")}</h2>
           <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#7a5a90",textDecoration:"none" }}>destek@sakin.app</a></p>
+        </div>
+      )}
+
+      {/* PROGRESS STRIP */}
+      {["sabah","nefes","chakra","gun","aksam","harita"].includes(screen) && (
+        <div style={{ position:"fixed",bottom:76,left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:6,background:"rgba(8,12,20,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
+          {MANDALA_STEPS.map((s,i) => {
+            const done = !!stepsCompleted[s];
+            const isCurrent = screen === s || (screen === "terapi" && s === "chakra") || (screen === "gun" && s === "gun");
+            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",harita:"#82d9a3" };
+            const c = stepColors[s] || "#888";
+            return <div key={s} style={{ width:isCurrent?20:8,height:8,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
+          })}
+          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.3)",marginLeft:4 }}>{t("step_label", completedStepCount, MANDALA_STEPS.length)}</span>
         </div>
       )}
 
