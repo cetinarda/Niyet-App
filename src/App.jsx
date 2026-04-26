@@ -3,9 +3,11 @@ import { makeTrans } from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
+import { StatusBar, Style } from "@capacitor/status-bar";
 
 const isNative = Capacitor.isNativePlatform();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
+if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
 const AI_CALL_URL = "/.netlify/functions/ai-call";
 const MAX_INPUT_LEN = 500;
@@ -281,7 +283,8 @@ const BREATH_MODES_CONFIG = {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Nunito:wght@300;400&display=swap');
   * { box-sizing: border-box; }
-  html, body { background: #080c14; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; }
+  html, body { background: #080c14; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+  :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
 
   /* ── Animations ── */
   @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
@@ -328,7 +331,7 @@ const GLOBAL_CSS = `
   .top-nav {
     position:fixed; top:0; left:0; right:0; z-index:9999;
     display:flex; align-items:center; justify-content:flex-start; gap:0;
-    padding:0 4px; height:44px;
+    padding:var(--sat) 4px 0; height:calc(44px + var(--sat));
     background:#080c14; border-bottom:1px solid rgba(255,255,255,0.07);
     overflow-x:auto; overflow-y:hidden;
     -webkit-overflow-scrolling:touch; scroll-behavior:smooth;
@@ -1267,7 +1270,9 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const pendingAiAction = useRef(null);
+  const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
+    if (!navigator.onLine) { setOfflineMsg(t("ai_offline")); setTimeout(() => setOfflineMsg(""), 3000); return; }
     if (aiConsent) { action(); return; }
     pendingAiAction.current = action;
     setShowAiConsent(true);
@@ -2007,7 +2012,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:82,background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:"calc(82px + var(--sat))",background:"#080c14",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Cormorant Garamond',Georgia,serif",color:"#ddd8f0",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV */}
@@ -2033,7 +2038,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       </div>
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:44,left:0,right:0,zIndex:9998,height:38,background:"rgba(8,12,20,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,height:38,background:"rgba(8,12,20,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = screen===n.id;
           return (
@@ -3285,7 +3290,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* PROGRESS STRIP */}
       {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:76,left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:6,background:"rgba(8,12,20,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
+        <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:6,background:"rgba(8,12,20,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {MANDALA_STEPS.map((s,i) => {
             const done = !!stepsCompleted[s];
             const isCurrent = screen === s || (screen === "terapi" && s === "chakra") || (screen === "gun" && s === "gun");
@@ -3525,6 +3530,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
         );
       })()}
+
+      {offlineMsg && (
+        <div style={{ position:"fixed",bottom:"calc(120px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:99999,background:"rgba(192,57,43,0.9)",borderRadius:14,padding:"12px 24px",maxWidth:340,textAlign:"center",backdropFilter:"blur(8px)",animation:"fadeUp 0.3s ease" }}>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:13,color:"#fff",letterSpacing:0.5 }}>{offlineMsg}</span>
+        </div>
+      )}
 
       {showAiConsent && (
         <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}

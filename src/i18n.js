@@ -166,6 +166,7 @@ export const TRANS = {
     ai_consent_data:   "Gönderilen: yazdığın metin. Gönderilmeyen: adın, konumun, cihaz bilgin.",
     ai_consent_accept: "Kabul Et",
     ai_consent_decline:"Vazgeç",
+    ai_offline:        "Bu özellik internet bağlantısı gerektirir. Lütfen bağlantını kontrol et.",
 
     // Rehber
     guide_sup:         "✦ içsel rehber ✦",
@@ -471,8 +472,8 @@ export const TRANS = {
     ai_consent_data:   "Sent: your text. Not sent: your name, location, device info.",
     ai_consent_accept: "Accept",
     ai_consent_decline:"Cancel",
+    ai_offline:        "This feature requires an internet connection. Please check your connection.",
 
-    // Premium / Paywall
     // Rehber
     guide_sup:         "✦ MYSTICAL GUIDE ✦",
     guide_title:       "Healing Search",
