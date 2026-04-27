@@ -365,7 +365,7 @@ const GLOBAL_CSS = `
     line-height:1.65;
   }
   .sakin-input::placeholder { color:#6a6a88; }
-  .sakin-input:focus { border-color:rgba(184,164,216,0.3); background:rgba(255,255,255,0.045); }
+  .sakin-input:focus { border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.045); }
 
   /* ── Buttons ── */
   .sakin-btn {
@@ -378,14 +378,14 @@ const GLOBAL_CSS = `
   .sakin-btn:hover { background:rgba(255,255,255,0.1); color:#ffffff; border-color:rgba(255,255,255,0.2); }
   .sakin-btn-primary {
     background:linear-gradient(135deg,rgba(255,255,255,0.5),rgba(255,255,255,0.45));
-    border:1px solid rgba(184,164,216,0.25); border-radius:100px; color:#ffffff; cursor:pointer;
+    border:1px solid rgba(255,255,255,0.25); border-radius:100px; color:#ffffff; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:14px; letter-spacing:2.5px; text-transform:uppercase;
     padding:13px 38px; transition:all 0.25s;
   }
   .sakin-btn-primary:hover {
     background:linear-gradient(135deg,rgba(255,255,255,0.75),rgba(255,255,255,0.7));
-    border-color:rgba(184,164,216,0.45); transform:translateY(-1px);
+    border-color:rgba(255,255,255,0.45); transform:translateY(-1px);
     box-shadow:0 6px 24px rgba(255,255,255,0.22);
   }
 
@@ -396,8 +396,8 @@ const GLOBAL_CSS = `
     font-size:15px; letter-spacing:1px; padding:8px 16px; transition:all 0.2s;
     background:transparent; color:#888888;
   }
-  .word-chip:hover { border-color:rgba(184,164,216,0.3); color:#c0b8d8; background:rgba(184,164,216,0.05); }
-  .word-chip.selected { background:rgba(184,164,216,0.18); border-color:rgba(184,164,216,0.6); color:#f0ecff; box-shadow:0 0 8px rgba(184,164,216,0.2); }
+  .word-chip:hover { border-color:rgba(255,255,255,0.3); color:#c0b8d8; background:rgba(255,255,255,0.05); }
+  .word-chip.selected { background:rgba(255,255,255,0.18); border-color:rgba(255,255,255,0.6); color:#f0ecff; box-shadow:0 0 8px rgba(255,255,255,0.2); }
 
   /* ── Chakra cards ── */
   .chakra-card {
@@ -406,7 +406,7 @@ const GLOBAL_CSS = `
     background:rgba(255,255,255,0.02); display:flex; align-items:center; gap:14px;
   }
   .chakra-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.12); }
-  .chakra-card.active { border-color:rgba(184,164,216,0.3); background:rgba(184,164,216,0.06); }
+  .chakra-card.active { border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.06); }
 
   /* ── Particles & rings ── */
   .particle {
@@ -2023,9 +2023,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.5 1L1 6.5M1 6.5L6.5 12M1 6.5H12" stroke="rgba(184,164,216,0.5)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6.5 1L1 6.5M1 6.5L6.5 12M1 6.5H12" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(184,164,216,0.5)" }}>Sakin</span>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>Sakin</span>
         </button>
         <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>setScreen("hakkinda")}>{t("nav_about")}</button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
@@ -2076,33 +2076,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* GİRİŞ */}
       {screen==="giris" && (
-        <div style={{ maxWidth:320,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
-          {/* Geometrik elmas şekli */}
-          <div className="fade-up" style={{ marginBottom:36 }}>
-            <div style={{ position:"relative",width:72,height:72,margin:"0 auto" }}>
-              <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.2)",borderRadius:4,animation:"diamondSpin 12s linear infinite" }} />
-              <div style={{ position:"absolute",inset:10,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:3,animation:"diamondSpin 8s linear infinite reverse" }} />
-              <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:12,height:12,borderRadius:"50%",background:"rgba(184,164,216,0.6)",boxShadow:"0 0 18px rgba(184,164,216,0.5),0 0 36px rgba(255,255,255,0.3)" }} />
+        <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
+          {/* Gezegen — kozmik açılış */}
+          <div className="fade-up" style={{ marginBottom:24,position:"relative" }}>
+            {/* Gezegen halka */}
+            <div style={{ position:"relative",width:180,height:180,margin:"0 auto" }}>
+              {/* Dış orbit halkası */}
+              <div style={{ position:"absolute",inset:-20,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.04)",animation:"mandalaRotate 60s linear infinite" }} />
+              <div style={{ position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"mandalaRotate 40s linear infinite reverse" }} />
+              {/* Gezegen gövdesi */}
+              <div style={{ position:"absolute",inset:20,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 50%, transparent 70%)",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 0 60px rgba(255,255,255,0.04), inset 0 0 40px rgba(255,255,255,0.02)" }} />
+              {/* Logo — elmas */}
+              <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                <div style={{ position:"relative",width:56,height:56 }}>
+                  <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,animation:"diamondSpin 12s linear infinite" }} />
+                  <div style={{ position:"absolute",inset:10,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:3,animation:"diamondSpin 8s linear infinite reverse" }} />
+                  <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.7)",boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)" }} />
+                </div>
+              </div>
             </div>
           </div>
-          <div className="fade-up" style={{ animationDelay:"0.18s",opacity:0 }}>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:40,letterSpacing:12,fontWeight:200,marginBottom:8,color:"#ffffff" }}>Sakin</div>
+          <div className="fade-up" style={{ animationDelay:"0.3s",opacity:0 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,marginBottom:8,color:"#ffffff" }}>Sakin</div>
           </div>
-          <div className="fade-up" style={{ animationDelay:"0.34s",opacity:0 }}>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:4,fontWeight:300,textTransform:"uppercase",color:"#777777",marginBottom:52 }}>{t("tagline")}</div>
+          <div className="fade-up" style={{ animationDelay:"0.5s",opacity:0 }}>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:5,fontWeight:300,textTransform:"uppercase",color:"#555555",marginBottom:52 }}>{t("tagline")}</div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
                 <div style={{ marginBottom:48,fontFamily:"'Inter',sans-serif",textAlign:"center" }}>
-                  <div style={{ color:"#b0a8cc",fontSize:19,fontStyle:"italic",lineHeight:1.7,fontWeight:300 }}>{t("intro_text1")}</div>
-                  <div style={{ color:"#d4c8f0",fontSize:22,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
+                  <div style={{ color:"#888888",fontSize:19,fontStyle:"italic",lineHeight:1.7,fontWeight:300 }}>{t("intro_text1")}</div>
+                  <div style={{ color:"#cccccc",fontSize:22,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
                 </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,textTransform:"uppercase",color:"#6a5a90",marginBottom:22,textAlign:"center" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,textTransform:"uppercase",color:"#666666",marginBottom:22,textAlign:"center" }}>
                   {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
                 </div>
                 <div style={{ marginBottom:14 }}>
@@ -2115,7 +2126,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <input type="time" className="sakin-input" style={{ fontSize:16,padding:"12px 14px" }}
                     value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
-                <div style={{ fontSize:13,letterSpacing:1.5,color:"#8a88a8",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                <div style={{ fontSize:13,letterSpacing:1.5,color:"#666666",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
@@ -2274,7 +2285,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 )}
 
                 {/* thin outer ring */}
-                <circle cx={cx} cy={cy} r={rOut+12} fill="none" stroke="rgba(184,164,216,0.05)" strokeWidth="1"/>
+                <circle cx={cx} cy={cy} r={rOut+12} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
               </svg>
             </div>
 
@@ -2753,9 +2764,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* Logo gem */}
           <div style={{ position:"relative",width:56,height:56,margin:"0 auto 18px",zIndex:1 }}>
-            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:6,animation:"diamondSpin 12s linear infinite" }} />
-            <div style={{ position:"absolute",inset:11,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.18)",borderRadius:4,animation:"diamondSpin 8s linear infinite reverse" }} />
-            <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.8)",boxShadow:"0 0 16px rgba(184,164,216,0.6),0 0 32px rgba(255,255,255,0.4)" }} />
+            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:6,animation:"diamondSpin 12s linear infinite" }} />
+            <div style={{ position:"absolute",inset:11,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,animation:"diamondSpin 8s linear infinite reverse" }} />
+            <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.8)",boxShadow:"0 0 16px rgba(255,255,255,0.6),0 0 32px rgba(255,255,255,0.4)" }} />
           </div>
 
           {/* Başlık */}
@@ -3126,9 +3137,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
-              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(184,164,216,0.25)", borderRadius:3 }} />
-              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(184,164,216,0.15)", borderRadius:2 }} />
-              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(184,164,216,0.5)" }} />
+              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:3 }} />
+              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:2 }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.5)" }} />
             </div>
             <div>
               <h1 style={{ margin:0 }}>{lang==="tr" ? "Sakin Nedir?" : "What is Sakin?"}</h1>
@@ -3136,7 +3147,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           </div>
 
-          <p style={{ fontSize:18, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.2)", paddingLeft:20 }}>
+          <p style={{ fontSize:18, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(255,255,255,0.2)", paddingLeft:20 }}>
             {lang==="tr"
               ? "Sakin; zihnin gürültüsünü dinginleştirmek, içsel rehberliğe alan açmak ve günlük yaşamı anlam katmanlarıyla beslemek için tasarlanmış kişisel bir farkındalık sistemidir."
               : "Sakin is a personal awareness system designed to quiet the noise of the mind, open space for inner guidance, and nourish daily life with layers of meaning."}
