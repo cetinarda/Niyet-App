@@ -754,7 +754,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
     timerRef.current = setInterval(() => {
       setElapsed(e => {
         const next = e + 1;
-        if (next === 5) setShowCloseEyes(true);
+        if (next === TERAPI_TOTAL) setShowCloseEyes(true);
         // Bağlantı öncesi uyarı: kalan 7, 5, 3. saniyede yükselen çan
         const rem = TERAPI_TOTAL - next;
         if (rem === 7) playChime(396, 0.14, 2.0);
@@ -970,16 +970,10 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         {[2.15,1.8,1.5,1.25].map((s,i) => (
           <div key={i} className="ring" style={{ width:230,height:230,transform:`scale(${s})`,animationDelay:`${i*0.55}s`,animationDuration:`${3+i*0.4}s`,borderColor:`${selected.color}${hex(0.13-i*0.025)}` }} />
         ))}
-        <svg width="230" height="230" style={{ position:"absolute",transform:"rotate(-90deg)" }}>
-          <circle cx="115" cy="115" r="96" fill="none" stroke={`${selected.color}22`} strokeWidth="2" />
-          <circle cx="115" cy="115" r="96" fill="none" stroke={selected.pastel} strokeWidth="2.5" strokeLinecap="round"
-            strokeDasharray={`${2*Math.PI*96}`} strokeDashoffset={`${2*Math.PI*96*(1-progress)}`}
-            style={{ transition:"stroke-dashoffset 1s linear" }} />
-        </svg>
         <div style={{
           width:136,height:136,borderRadius:"50%",
-          background:`radial-gradient(circle at 40% 38%,${selected.color}${hex(0.18+progress*0.22)},${selected.color}44,rgba(4,8,16,0.5))`,
-          boxShadow:`0 0 ${28+progress*52}px ${selected.color}${hex(0.28+progress*0.3)},0 0 ${55+progress*85}px ${selected.color}${hex(0.1+progress*0.15)}`,
+          background:`radial-gradient(circle at 40% 38%,${selected.color}${hex(0.18+progress*0.22)},${selected.color}44,rgba(0,0,0,0.5))`,
+          boxShadow:`0 0 ${28+progress*52}px ${selected.color}${hex(0.28+progress*0.3)}`,
           border:`1px solid ${selected.pastel}${hex(0.2+progress*0.32)}`,
           animation:`slowPulse ${3.2-progress*0.8}s ease-in-out infinite`,
         }} />
@@ -987,11 +981,21 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
       </div>
-      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{displayMins}:{displaySecs}</div>
-      {tPhase==="connected"
-        ? <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
-        : <div style={{ fontSize:13,letterSpacing:4,color:"#777777",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
-      }
+      {/* Kutucuk progress bar + yüzde — 1 dk dolunca kaybolur */}
+      {progress < 1 && (
+        <div className="fade-up" style={{ width:"80%",maxWidth:240,marginBottom:16 }}>
+          <div style={{ display:"flex",justifyContent:"space-between",marginBottom:6 }}>
+            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#666666" }}>{displayMins}:{displaySecs}</span>
+            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>
+          </div>
+          <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
+            <div style={{ width:`${progress*100}%`,height:"100%",background:selected.pastel,borderRadius:2,transition:"width 1s linear",boxShadow:`0 0 8px ${selected.color}66` }} />
+          </div>
+        </div>
+      )}
+      {tPhase==="connected" && (
+        <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
+      )}
       {selected.hz && (
         <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#666666",fontSize:13,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
