@@ -307,6 +307,9 @@ const GLOBAL_CSS = `
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
   @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
   @keyframes sliceGlow   { 0%,100%{opacity:0.7} 50%{opacity:1} }
+  @keyframes neuralPulse { 0%{stroke-dashoffset:40;opacity:0} 30%{opacity:1} 70%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.3} }
+  @keyframes neuralDot   { 0%{r:1.5;opacity:0} 20%{opacity:0.8} 50%{r:3;opacity:1} 80%{opacity:0.6} 100%{r:2;opacity:0.2} }
+  @keyframes neuralGlow  { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
 
@@ -678,6 +681,47 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   );
 }
 
+function NeuralRepairSVG({ color = "#ffffff", active = false }) {
+  const nodes = [
+    {x:75,y:18},{x:42,y:32},{x:108,y:28},{x:25,y:55},{x:60,y:50},
+    {x:95,y:48},{x:125,y:58},{x:38,y:78},{x:75,y:72},{x:110,y:76},
+    {x:55,y:95},{x:90,y:92},{x:75,y:110},{x:30,y:105},{x:120,y:100},
+  ];
+  const links = [
+    [0,1],[0,2],[1,3],[1,4],[2,5],[2,6],[3,7],[4,5],[4,8],[5,9],
+    [7,10],[8,9],[8,11],[8,12],[10,12],[11,12],[7,13],[9,14],[3,13],[6,14],
+    [10,13],[11,14],[0,4],[0,5],[7,8],[9,6],
+  ];
+  if (!active) return null;
+  return (
+    <svg width="150" height="126" viewBox="0 0 150 126" style={{ opacity:0.7 }}>
+      {links.map(([a,b],i) => (
+        <line key={`l${i}`} x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
+          stroke={color} strokeWidth="0.6" opacity="0.15"
+          strokeDasharray="4 3"
+          style={{ animation:`neuralPulse ${2.2+i*0.15}s ease-in-out infinite`, animationDelay:`${i*0.18}s` }} />
+      ))}
+      {links.map(([a,b],i) => {
+        const mx = (nodes[a].x+nodes[b].x)/2, my = (nodes[a].y+nodes[b].y)/2;
+        return (
+          <circle key={`p${i}`} cx={mx} cy={my} r="1.5" fill={color}
+            style={{ animation:`neuralDot ${1.8+i*0.12}s ease-in-out infinite`, animationDelay:`${0.4+i*0.2}s` }} />
+        );
+      })}
+      {nodes.map((n,i) => (
+        <g key={`n${i}`}>
+          <circle cx={n.x} cy={n.y} r={i<3?4:i<7?3.5:3} fill="none" stroke={color} strokeWidth="0.8"
+            opacity={0.3+i*0.04} style={{ animation:`neuralGlow ${2.5+i*0.2}s ease-in-out infinite`, animationDelay:`${i*0.15}s` }} />
+          <circle cx={n.x} cy={n.y} r={i<3?1.8:1.2} fill={color} opacity={0.5}
+            style={{ animation:`neuralGlow ${2+i*0.18}s ease-in-out infinite`, animationDelay:`${i*0.12}s` }} />
+        </g>
+      ))}
+      <text x="75" y="124" textAnchor="middle" fontSize="7" letterSpacing="2" fill={color} opacity="0.3"
+        fontFamily="'Jost',sans-serif">NEURAL SYNC</text>
+    </svg>
+  );
+}
+
 function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const t = makeTrans(lang);
   const CHAKRAS_22 = getChakras22(lang);
@@ -1025,6 +1069,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#666666",fontSize:13,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
         </button>
+      )}
+      {toneOn && (
+        <div style={{ marginBottom:12,animation:"fadeIn 1.5s ease forwards",opacity:0 }}>
+          <NeuralRepairSVG color={selected.pastel} active={true} />
+        </div>
       )}
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
         {positionSvg(selected, progress)}
@@ -2673,6 +2722,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0",marginBottom:12 }}>{t("sound_title")}</div>
               <div style={{ fontSize:14,color:"#888888",lineHeight:1.8,maxWidth:340,margin:"0 auto" }}>{t("sound_intro")}</div>
             </div>
+
+            {playingHz && (
+              <div style={{ textAlign:"center",marginBottom:16,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
+                <NeuralRepairSVG color={FREQS.find(f=>f.hz===playingHz)?.pastel||"#ffffff"} active={true} />
+              </div>
+            )}
 
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
               {FREQS.map((f, i) => {
