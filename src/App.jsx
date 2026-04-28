@@ -954,25 +954,51 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   );
 
   const positionSvg = (c, prog=0) => {
+    const cl=c.pastel, cg=c.color;
+    const isSpiritual = c.level && c.level > 1;
+
+    if (isSpiritual) {
+      // Eller göğüste birleşik — sağ el altta, sol el üstte
+      const chy = 55; // göğüs merkezi
+      return (
+        <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
+          <circle cx="74" cy="20" r="13" stroke={`${cl}88`} strokeWidth="1.2" fill="none" />
+          <line x1="74" y1="33" x2="74" y2="41" stroke={`${cl}66`} strokeWidth="1.2" />
+          <path d="M51 41 Q74 39 97 41 L95 87 Q74 91 53 87Z" stroke={`${cl}55`} strokeWidth="1.2" fill={`${cg}0a`} />
+          <path d="M65 87 Q63 105 61 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+          <path d="M83 87 Q85 105 87 121" stroke={`${cl}44`} strokeWidth="1.2" strokeLinecap="round" fill="none" />
+          {/* Sağ kol — altta, göğse gelen (sağ el altta) */}
+          <path d="M95 49 Q88 52 78 58" stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          {/* Sol kol — üstte, göğse gelen */}
+          <path d="M53 49 Q60 50 70 54" stroke={`${cl}88`} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          {/* Sağ el (altta) */}
+          <ellipse cx="76" cy="58" rx="5" ry="3" fill={`${cg}${hex(0.3+prog*0.4)}`} stroke={`${cl}66`} strokeWidth="0.7" transform="rotate(-8 76 58)" />
+          {/* Sol el (üstte) */}
+          <ellipse cx="72" cy="54" rx="5" ry="3" fill={`${cg}${hex(0.3+prog*0.4)}`} stroke={`${cl}66`} strokeWidth="0.7" transform="rotate(8 72 54)" />
+          {/* Göğüs merkezi enerji */}
+          <circle cx="74" cy={chy} r={5+prog*7} fill={`${cg}${hex(0.08+prog*0.16)}`} stroke={`${cl}${hex(0.25+prog*0.45)}`} strokeWidth="0.8" />
+          {/* Taç üstü enerji halesi (ruhsal bağlantı) */}
+          <circle cx="74" cy="8" r={3+prog*5} fill={`${cg}${hex(0.04+prog*0.1)}`} stroke={`${cl}${hex(0.15+prog*0.3)}`} strokeWidth="0.6" />
+          {[0,60,120,180,240,300].map((a,i)=>(
+            <line key={i} x1="74" y1={chy}
+              x2={74+Math.cos(a*Math.PI/180)*(7+prog*10)} y2={chy+Math.sin(a*Math.PI/180)*(7+prog*10)}
+              stroke={`${cl}${hex((0.08+prog*0.22)*(i%2?0.5:1))}`} strokeWidth="0.6" strokeLinecap="round" />
+          ))}
+        </svg>
+      );
+    }
+
+    // Fiziksel boyut — eller ilgili bölgeye uzanır
     const HP = {
       "Kök":{hy:83,lx:57,rx:91},"Sakral":{hy:77,lx:59,rx:89},
       "Solar Pleksus":{hy:68,lx:60,rx:88},"Kalp":{hy:57,lx:61,rx:87},
       "Boğaz":{hy:37,lx:68,rx:80},"Üçüncü Göz":{hy:17,lx:66,rx:82},
       "Taç":{hy:10,lx:67,rx:81},
-      "Ruh Yıldızı":{hy:4,lx:67,rx:81},"Yıldız Kapısı":{hy:2,lx:67,rx:81},
-      "Güneş Çakrası":{hy:6,lx:67,rx:81},"Ay Çakrası":{hy:6,lx:67,rx:81},
-      "Mesih Çakrası":{hy:4,lx:67,rx:81},"Yıldız İletişim":{hy:2,lx:67,rx:81},
-      "İlahi Plan":{hy:2,lx:67,rx:81},"Monadik Bağlantı":{hy:2,lx:67,rx:81},
-      "Yükseliş":{hy:2,lx:67,rx:81},"Evrensel Işık":{hy:2,lx:67,rx:81},
-      "İlahi Niyet":{hy:2,lx:67,rx:81},"Kozmik Enerji":{hy:2,lx:67,rx:81},
-      "Varlık":{hy:2,lx:67,rx:81},"İlahi Yapı":{hy:2,lx:67,rx:81},
-      "Kaynak":{hy:2,lx:67,rx:81},
     };
     const {hy=57,lx=61,rx=87}=HP[c.name]||{};
     const up=hy<49; const my=(49+hy)/2;
     const lArm=up?`M53 49 Q55 ${my} ${lx} ${hy}`:`M53 49 Q37 ${my} ${lx} ${hy}`;
     const rArm=up?`M95 49 Q93 ${my} ${rx} ${hy}`:`M95 49 Q111 ${my} ${rx} ${hy}`;
-    const cl=c.pastel, cg=c.color;
     return (
       <svg width="148" height="126" viewBox="0 0 148 126" fill="none" style={{ animation:"handFloat 3s ease-in-out infinite" }}>
         <circle cx="74" cy="20" r="13" stroke={`${cl}88`} strokeWidth="1.2" fill="none" />
@@ -1006,7 +1032,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
       <div style={{ fontSize:14,color:"#888888",letterSpacing:1,marginBottom:12,fontStyle:"italic" }}>
-        {t("intro_place_hand", selected.name)}
+        {selected.level > 1
+          ? (lang==="tr" ? "Ellerini göğsünde birleştir. Sağ el altta." : "Join your hands at your chest. Right hand below.")
+          : t("intro_place_hand", selected.name)}
       </div>
       <div style={{ fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.3)",marginBottom:28 }}>{t("terapi_duration")}</div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
