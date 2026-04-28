@@ -13,65 +13,61 @@ const AI_CALL_URL = "/.netlify/functions/ai-call";
 const MAX_INPUT_LEN = 500;
 const sanitizeInput = (str) => (str || "").slice(0, MAX_INPUT_LEN).replace(/[<>{}]/g, "");
 
-const CHAKRAS_7_TR = [
-  { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396 },
-  { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧", hz:417 },
-  { name:"Güneş Pleksusu", color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨", hz:528 },
-  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün sevgiyle aç. Kendine de.",  element:"Hava",   emoji:"🟩", hz:639 },
-  { name:"Boğaz",          color:"#2980b9", pastel:"#85c1e9", desc:"Bugün hakikatini söyle.",          element:"Ses",    emoji:"🟦", hz:741 },
-  { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#aaaaaa", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣", hz:852 },
-  { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"Bugün bütünle bağlan.",            element:"Evren",  emoji:"⬜", hz:963 },
+const CHAKRAS_22_TR = [
+  { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396, level:1, konu:"Hayatta kalma ve güvenlik" },
+  { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧", hz:417, level:1, konu:"Yaratıcılık ve duygusal denge" },
+  { name:"Solar Pleksus",  color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨", hz:528, level:1, konu:"İrade ve kişisel güç" },
+  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün kalbini sevgiyle aç.",       element:"Hava",   emoji:"🟩", hz:639, level:1, konu:"Sevgi ve şifa" },
+  { name:"Boğaz",          color:"#2980b9", pastel:"#85c1e9", desc:"Bugün hakikatini söyle.",          element:"Ses",    emoji:"🟦", hz:741, level:1, konu:"İletişim ve ifade" },
+  { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#aaaaaa", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣", hz:852, level:1, konu:"Sezgi ve durugörü" },
+  { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"İlahi rehberliğe bağlan.",         element:"Evren",  emoji:"⬜", hz:963, level:1, konu:"İlahi rehberlik ve ruhsal farkındalık" },
+  { name:"Ruh Yıldızı",         color:"#7e57c2", pastel:"#b39ddb", desc:"Karmik kalıplarını çöz.",           element:"Karma",     emoji:"✨", level:2, konu:"Karmik kalıpların çözüldüğü yer" },
+  { name:"Yıldız Kapısı",       color:"#5c6bc0", pastel:"#9fa8da", desc:"Işık bedenine bağlan.",             element:"Işık Beden",emoji:"🌟", level:2, konu:"Işık bedenle bağlantı" },
+  { name:"Güneş Çakrası",       color:"#f9a825", pastel:"#fff176", desc:"Eril enerjiyi bütünle.",            element:"Eril",      emoji:"☀️", level:2, konu:"Tanrısal eril enerjinin bütünleşmesi" },
+  { name:"Ay Çakrası",          color:"#1b5e20", pastel:"#a5d6a7", desc:"Dişil enerjiyi bütünle.",           element:"Dişil",     emoji:"🌙", level:2, konu:"Tanrısal dişil enerjinin bütünleşmesi" },
+  { name:"Mesih Çakrası",       color:"#fdd835", pastel:"#fff9c4", desc:"Koşulsuz sevgiyi hisset.",          element:"Birlik",    emoji:"💛", level:2, konu:"Koşulsuz sevgi ve birlik bilinci" },
+  { name:"Yıldız İletişim",     color:"#0277bd", pastel:"#81d4fa", desc:"Galaktik varlıklarla bağ kur.",     element:"Galaktik",  emoji:"📡", level:2, konu:"Galaktik varlıklarla bağ kurma" },
+  { name:"İlahi Plan",          color:"#4527a0", pastel:"#b39ddb", desc:"Evrensel teslimiyete aç.",          element:"Teslimiyet",emoji:"🕊️", level:2, konu:"Evrensel teslimiyet" },
+  { name:"Monadik Bağlantı",    color:"#6a1b9a", pastel:"#ce93d8", desc:"Ruhun kaynağına eriş.",             element:"Monad",     emoji:"🔮", level:2, konu:"Ruhun kaynağına (Monad) erişim" },
+  { name:"Yükseliş",            color:"#b0bec5", pastel:"#eceff1", desc:"İlk yükseliş adımını at.",          element:"Yükseliş",  emoji:"🪽", level:3, konu:"İlk yükseliş adımı" },
+  { name:"Evrensel Işık",       color:"#cfd8dc", pastel:"#eceff1", desc:"Evrensel bilgiye eriş.",             element:"Bilgi",     emoji:"💫", level:3, konu:"Evrensel bilgiye erişim" },
+  { name:"İlahi Niyet",         color:"#b0bec5", pastel:"#e0e0e0", desc:"Ruhun görevini tamamla.",            element:"Görev",     emoji:"🎯", level:3, konu:"Ruhun görevini tamamlama süreci" },
+  { name:"Kozmik Enerji",       color:"#90a4ae", pastel:"#cfd8dc", desc:"Galaktik genişlemeye aç.",           element:"Kozmik",    emoji:"🌌", level:3, konu:"Galaktik genişleme" },
+  { name:"Varlık",              color:"#b0bec5", pastel:"#e0e0e0", desc:"Saf varoluşu deneyimle.",            element:"Varoluş",   emoji:"🫧", level:3, konu:"Saf varoluş ve bütünleşme" },
+  { name:"İlahi Yapı",          color:"#cfd8dc", pastel:"#eceff1", desc:"Evrensel yasalarla uyum.",            element:"Yasa",      emoji:"⚖️", level:3, konu:"Evrensel yasalarla uyum" },
+  { name:"Kaynak",              color:"#e0e0e0", pastel:"#f5f5f5", desc:"Tanrısal kaynakla birleş.",          element:"Platin Işık",emoji:"☀️", level:3, konu:"Tanrısal kaynakla tam birleşme" },
 ];
-const CHAKRAS_7_EN = [
-  { name:"Root",         color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself today. Feel safe.",     element:"Earth",   emoji:"🟥", hz:396 },
-  { name:"Sacral",       color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",        element:"Water",   emoji:"🟧", hz:417 },
-  { name:"Solar Plexus", color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. You have your light.", element:"Fire",    emoji:"🟨", hz:528 },
-  { name:"Heart",        color:"#27ae60", pastel:"#82d9a3", desc:"Open with love today. For yourself too.",element:"Air",    emoji:"🟩", hz:639 },
-  { name:"Throat",       color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",               element:"Sound",   emoji:"🟦", hz:741 },
-  { name:"Third Eye",    color:"#8e44ad", pastel:"#aaaaaa", desc:"Look inward today.",                    element:"Light",   emoji:"🟣", hz:852 },
-  { name:"Crown",        color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with the whole today.",         element:"Universe",emoji:"⬜", hz:963 },
+const CHAKRAS_22_EN = [
+  { name:"Root",            color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself. Feel safe.",          element:"Earth",      emoji:"🟥", hz:396, level:1, konu:"Survival and security" },
+  { name:"Sacral",          color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",       element:"Water",      emoji:"🟧", hz:417, level:1, konu:"Creativity and emotional balance" },
+  { name:"Solar Plexus",    color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. Your light shines.", element:"Fire",       emoji:"🟨", hz:528, level:1, konu:"Willpower and personal power" },
+  { name:"Heart",           color:"#27ae60", pastel:"#82d9a3", desc:"Open your heart with love.",          element:"Air",        emoji:"🟩", hz:639, level:1, konu:"Love and healing" },
+  { name:"Throat",          color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",              element:"Sound",      emoji:"🟦", hz:741, level:1, konu:"Communication and expression" },
+  { name:"Third Eye",       color:"#8e44ad", pastel:"#aaaaaa", desc:"Look inward today.",                  element:"Light",      emoji:"🟣", hz:852, level:1, konu:"Intuition and clairvoyance" },
+  { name:"Crown",           color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with divine guidance.",       element:"Universe",   emoji:"⬜", hz:963, level:1, konu:"Divine guidance and spiritual awareness" },
+  { name:"Soul Star",       color:"#7e57c2", pastel:"#b39ddb", desc:"Dissolve karmic patterns.",           element:"Karma",      emoji:"✨", level:2, konu:"Where karmic patterns dissolve" },
+  { name:"Stargate",        color:"#5c6bc0", pastel:"#9fa8da", desc:"Connect with your light body.",       element:"Light Body", emoji:"🌟", level:2, konu:"Light body connection" },
+  { name:"Solar Chakra",    color:"#f9a825", pastel:"#fff176", desc:"Integrate masculine energy.",         element:"Masculine",  emoji:"☀️", level:2, konu:"Integration of divine masculine energy" },
+  { name:"Lunar Chakra",    color:"#1b5e20", pastel:"#a5d6a7", desc:"Integrate feminine energy.",          element:"Feminine",   emoji:"🌙", level:2, konu:"Integration of divine feminine energy" },
+  { name:"Christ Chakra",   color:"#fdd835", pastel:"#fff9c4", desc:"Feel unconditional love.",            element:"Unity",      emoji:"💛", level:2, konu:"Unconditional love and unity consciousness" },
+  { name:"Star Comm",       color:"#0277bd", pastel:"#81d4fa", desc:"Connect with galactic beings.",      element:"Galactic",   emoji:"📡", level:2, konu:"Connection with galactic beings" },
+  { name:"Divine Plan",     color:"#4527a0", pastel:"#b39ddb", desc:"Open to universal surrender.",       element:"Surrender",  emoji:"🕊️", level:2, konu:"Universal surrender" },
+  { name:"Monadic Link",    color:"#6a1b9a", pastel:"#ce93d8", desc:"Access the soul's source.",           element:"Monad",      emoji:"🔮", level:2, konu:"Access to the soul's source (Monad)" },
+  { name:"Ascension",       color:"#b0bec5", pastel:"#eceff1", desc:"Take the first ascension step.",     element:"Ascension",  emoji:"🪽", level:3, konu:"First step of ascension" },
+  { name:"Universal Light", color:"#cfd8dc", pastel:"#eceff1", desc:"Access universal knowledge.",        element:"Knowledge",  emoji:"💫", level:3, konu:"Access to universal knowledge" },
+  { name:"Divine Intent",   color:"#b0bec5", pastel:"#e0e0e0", desc:"Complete the soul's mission.",       element:"Mission",    emoji:"🎯", level:3, konu:"The soul's mission completion" },
+  { name:"Cosmic Energy",   color:"#90a4ae", pastel:"#cfd8dc", desc:"Open to galactic expansion.",        element:"Cosmic",     emoji:"🌌", level:3, konu:"Galactic expansion" },
+  { name:"Being",           color:"#b0bec5", pastel:"#e0e0e0", desc:"Experience pure existence.",          element:"Existence",  emoji:"🫧", level:3, konu:"Pure existence and integration" },
+  { name:"Divine Structure",color:"#cfd8dc", pastel:"#eceff1", desc:"Align with universal laws.",         element:"Law",        emoji:"⚖️", level:3, konu:"Alignment with universal laws" },
+  { name:"Source",          color:"#e0e0e0", pastel:"#f5f5f5", desc:"Unite with the divine source.",      element:"Platinum Light",emoji:"☀️",level:3, konu:"Complete union with the divine source" },
 ];
-const getChakras7 = (lang) => lang === "en" ? CHAKRAS_7_EN : CHAKRAS_7_TR;
-const CHAKRAS_7 = CHAKRAS_7_TR;
-
-const CHAKRAS_22_EXTRA = [
-  { name:"Yeryüzü Yıldızı", color:"#5d4037", pastel:"#bcaaa4", desc:"Toprakla bağını güçlendir.",     element:"Derinlik", emoji:"🌑" },
-  { name:"Ruh",              color:"#880e4f", pastel:"#f48fb1", desc:"Ruhunun sesini duy.",             element:"Sevgi",    emoji:"💗" },
-  { name:"Kabartma",         color:"#bf360c", pastel:"#ffab91", desc:"İçindeki ateşi hisset.",          element:"Dönüşüm", emoji:"🔥" },
-  { name:"Diyafram",         color:"#f57f17", pastel:"#ffe082", desc:"Nefes merkezinde ol.",            element:"Akış",    emoji:"🌬" },
-  { name:"Güneş",            color:"#f9a825", pastel:"#fff176", desc:"Işığını dışa vur.",               element:"Parlama", emoji:"☀️" },
-  { name:"Paylaşım",         color:"#558b2f", pastel:"#aed581", desc:"Verirken büyürsün.",              element:"Bereket", emoji:"🌱" },
-  { name:"Thymus",           color:"#00695c", pastel:"#80cbc4", desc:"Bağışıklığın kalbidir.",          element:"Koruma",  emoji:"🛡" },
-  { name:"Ses Üstü",         color:"#0277bd", pastel:"#81d4fa", desc:"Söylenmeyeni hisset.",            element:"Sessizlik",emoji:"🎵"},
-  { name:"Orion",            color:"#4527a0", pastel:"#b39ddb", desc:"Evrenle uyum kur.",               element:"Kozmik",  emoji:"⭐" },
-  { name:"Alta Major",       color:"#6a1b9a", pastel:"#ce93d8", desc:"Ata bilgeliğine bağlan.",         element:"Hafıza",  emoji:"🌀" },
-  { name:"Stellar Gateway",  color:"#4a148c", pastel:"#e1bee7", desc:"Işık kapısını aç.",               element:"Geçiş",   emoji:"🌟" },
-  { name:"Soul Star",        color:"#1a237e", pastel:"#c5cae9", desc:"Ruhunun en yüksek hali.",         element:"Sonsuz",  emoji:"✨" },
-  { name:"Causal",           color:"#311b92", pastel:"#d1c4e9", desc:"Nedenle bağ kur.",                element:"Karma",   emoji:"🔮" },
-  { name:"Lunar",            color:"#1b5e20", pastel:"#a5d6a7", desc:"Ay enerjisini çek.",              element:"Döngü",   emoji:"🌙" },
-  { name:"Zeta",             color:"#006064", pastel:"#80deea", desc:"Frekansını yükselt.",             element:"Titreşim",emoji:"〰️"},
-];
-const CHAKRAS_22_EXTRA_EN = [
-  { name:"Earth Star",      color:"#5d4037", pastel:"#bcaaa4", desc:"Strengthen your connection to earth.", element:"Depth",      emoji:"🌑" },
-  { name:"Soul",            color:"#880e4f", pastel:"#f48fb1", desc:"Hear the voice of your soul.",         element:"Love",       emoji:"💗" },
-  { name:"Causal Body",     color:"#bf360c", pastel:"#ffab91", desc:"Feel the fire within.",                element:"Transform",  emoji:"🔥" },
-  { name:"Diaphragm",       color:"#f57f17", pastel:"#ffe082", desc:"Be in your breath center.",            element:"Flow",       emoji:"🌬" },
-  { name:"Solar",           color:"#f9a825", pastel:"#fff176", desc:"Shine your light outward.",            element:"Radiance",   emoji:"☀️" },
-  { name:"Sharing",         color:"#558b2f", pastel:"#aed581", desc:"You grow by giving.",                  element:"Abundance",  emoji:"🌱" },
-  { name:"Thymus",          color:"#00695c", pastel:"#80cbc4", desc:"It is the heart of your immunity.",    element:"Protection", emoji:"🛡" },
-  { name:"Ultrasound",      color:"#0277bd", pastel:"#81d4fa", desc:"Feel the unspoken.",                   element:"Silence",    emoji:"🎵" },
-  { name:"Orion",           color:"#4527a0", pastel:"#b39ddb", desc:"Align with the universe.",             element:"Cosmic",     emoji:"⭐" },
-  { name:"Alta Major",      color:"#6a1b9a", pastel:"#ce93d8", desc:"Connect to ancestral wisdom.",         element:"Memory",     emoji:"🌀" },
-  { name:"Stellar Gateway", color:"#4a148c", pastel:"#e1bee7", desc:"Open the gate of light.",              element:"Passage",    emoji:"🌟" },
-  { name:"Soul Star",       color:"#1a237e", pastel:"#c5cae9", desc:"The highest state of your soul.",      element:"Infinite",   emoji:"✨" },
-  { name:"Causal",          color:"#311b92", pastel:"#d1c4e9", desc:"Connect with the reason.",             element:"Karma",      emoji:"🔮" },
-  { name:"Lunar",           color:"#1b5e20", pastel:"#a5d6a7", desc:"Draw the moon's energy.",              element:"Cycle",      emoji:"🌙" },
-  { name:"Zeta",            color:"#006064", pastel:"#80deea", desc:"Raise your frequency.",                element:"Vibration",  emoji:"〰️" },
-];
-const getChakras22 = (lang) => [
-  ...getChakras7(lang),
-  ...(lang === "en" ? CHAKRAS_22_EXTRA_EN : CHAKRAS_22_EXTRA),
-];
+const getChakras7 = (lang) => (lang === "en" ? CHAKRAS_22_EN : CHAKRAS_22_TR).filter(c => c.level === 1);
+const getChakras22 = (lang) => lang === "en" ? CHAKRAS_22_EN : CHAKRAS_22_TR;
+const CHAKRAS_7 = CHAKRAS_22_TR.filter(c => c.level === 1);
+const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozmik Boyut" };
+const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
+const LEVEL_RANGES_TR = { 1:"Çakra 1–7", 2:"Çakra 8–15", 3:"Çakra 16–22" };
+const LEVEL_RANGES_EN = { 1:"Chakra 1–7", 2:"Chakra 8–15", 3:"Chakra 16–22" };
 const TERAPI_TOTAL = 60;
 
 const FREQ_DATA_TR = [
@@ -774,12 +770,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
     playConnectedChord();
     if ("speechSynthesis" in window) {
       setTimeout(() => {
-        const msg = t("connected_voice", selected.name);
-        const utt = new SpeechSynthesisUtterance(msg);
-        utt.lang = lang === "tr" ? "tr-TR" : "en-US";
-        utt.rate = 0.82;
-        utt.pitch = 0.95;
-        utt.volume = 0.88;
+        const utt = new SpeechSynthesisUtterance("Connected");
+        utt.lang = "en-US";
+        utt.rate = 0.78;
+        utt.pitch = 0.9;
+        utt.volume = 0.85;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utt);
       }, 1400);
@@ -853,19 +848,52 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         </div>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#777777", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
       </div>
-      <div style={{ paddingRight:4, scrollbarWidth:"none" }}>
-        {CHAKRAS_22.map((c,i) => (
-          <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
-            style={{ marginBottom:8, animationDelay:`${i*0.04}s`, opacity:0 }}
-            onClick={() => { setSelected(c); setTPhase("intro"); }}>
-            <div style={{ width:34,height:34,borderRadius:"50%",flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
-            <div style={{ flex:1 }}>
-              <div style={{ fontSize:14, letterSpacing:0.5, marginBottom:2 }}>{c.name}</div>
-              <div style={{ fontSize:14, color:"#888888", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.element} · {c.desc}</div>
-            </div>
-            {i<7 && <div style={{ fontSize:14,letterSpacing:2,color:"#666666",flexShrink:0 }}>{t("core_badge")}</div>}
+      {/* Ascension layout — bottom to top */}
+      <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
+        {/* Sun halo at top — Source energy */}
+        <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
+          <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
+            <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
+            <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
+            <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
           </div>
-        ))}
+          <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
+        </div>
+        {/* Level 3 → 2 → 1 (top to bottom = cosmic to physical) */}
+        {[3,2,1].map(level => {
+          const levelChakras = CHAKRAS_22.filter(c => c.level === level);
+          const levelLabel = (lang==="en" ? LEVEL_LABELS_EN : LEVEL_LABELS_TR)[level];
+          const levelRange = (lang==="en" ? LEVEL_RANGES_EN : LEVEL_RANGES_TR)[level];
+          const levelColors = { 3:"rgba(200,200,210,0.4)", 2:"rgba(140,100,220,0.4)", 1:"rgba(200,120,80,0.4)" };
+          return (
+            <div key={level}>
+              {/* Level divider */}
+              <div style={{ display:"flex", alignItems:"center", gap:10, margin:"6px 0 10px" }}>
+                <div style={{ flex:1, height:1, background:levelColors[level] }} />
+                <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:3, color:"#666666", textTransform:"uppercase", whiteSpace:"nowrap" }}>
+                  {levelLabel} <span style={{ color:"#555555", letterSpacing:1 }}>({levelRange})</span>
+                </div>
+                <div style={{ flex:1, height:1, background:levelColors[level] }} />
+              </div>
+              {/* Chakras in this level — reversed so highest number is at top */}
+              {[...levelChakras].reverse().map((c,i) => (
+                <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
+                  style={{ marginBottom:7, animationDelay:`${i*0.04}s`, opacity:0 }}
+                  onClick={() => { setSelected(c); setTPhase("intro"); }}>
+                  <div style={{ width:32, height:32, borderRadius:"50%", flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:1, color:level===3?"#cccccc":"#ffffff" }}>{c.name}</div>
+                    <div style={{ fontSize:12, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.konu}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+        {/* Earth anchor at bottom */}
+        <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+          <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+        </div>
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
@@ -884,16 +912,17 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const positionSvg = (c, prog=0) => {
     const HP = {
       "Kök":{hy:83,lx:57,rx:91},"Sakral":{hy:77,lx:59,rx:89},
-      "Güneş Pleksusu":{hy:68,lx:60,rx:88},"Kalp":{hy:57,lx:61,rx:87},
+      "Solar Pleksus":{hy:68,lx:60,rx:88},"Kalp":{hy:57,lx:61,rx:87},
       "Boğaz":{hy:37,lx:68,rx:80},"Üçüncü Göz":{hy:17,lx:66,rx:82},
-      "Taç":{hy:10,lx:67,rx:81},"Yeryüzü Yıldızı":{hy:116,lx:63,rx:85},
-      "Ruh":{hy:57,lx:61,rx:87},"Kabartma":{hy:63,lx:60,rx:88},
-      "Diyafram":{hy:73,lx:59,rx:89},"Güneş":{hy:57,lx:61,rx:87},
-      "Paylaşım":{hy:57,lx:61,rx:87},"Thymus":{hy:49,lx:62,rx:86},
-      "Ses Üstü":{hy:42,lx:66,rx:82},"Orion":{hy:19,lx:65,rx:83},
-      "Alta Major":{hy:22,lx:65,rx:83},"Stellar Gateway":{hy:6,lx:67,rx:81},
-      "Soul Star":{hy:6,lx:67,rx:81},"Causal":{hy:19,lx:65,rx:83},
-      "Lunar":{hy:77,lx:59,rx:89},"Zeta":{hy:63,lx:60,rx:88},
+      "Taç":{hy:10,lx:67,rx:81},
+      "Ruh Yıldızı":{hy:4,lx:67,rx:81},"Yıldız Kapısı":{hy:2,lx:67,rx:81},
+      "Güneş Çakrası":{hy:6,lx:67,rx:81},"Ay Çakrası":{hy:6,lx:67,rx:81},
+      "Mesih Çakrası":{hy:4,lx:67,rx:81},"Yıldız İletişim":{hy:2,lx:67,rx:81},
+      "İlahi Plan":{hy:2,lx:67,rx:81},"Monadik Bağlantı":{hy:2,lx:67,rx:81},
+      "Yükseliş":{hy:2,lx:67,rx:81},"Evrensel Işık":{hy:2,lx:67,rx:81},
+      "İlahi Niyet":{hy:2,lx:67,rx:81},"Kozmik Enerji":{hy:2,lx:67,rx:81},
+      "Varlık":{hy:2,lx:67,rx:81},"İlahi Yapı":{hy:2,lx:67,rx:81},
+      "Kaynak":{hy:2,lx:67,rx:81},
     };
     const {hy=57,lx=61,rx=87}=HP[c.name]||{};
     const up=hy<49; const my=(49+hy)/2;
@@ -1007,6 +1036,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       {showCloseEyes && (
         <div style={{ fontSize:14,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
           {t("close_eyes_hint")}
+        </div>
+      )}
+      {/* Chakra konu bilgisi — seans sırasında belirir */}
+      {progress>=0.15 && progress<0.85 && selected.konu && (
+        <div style={{ fontSize:12,color:`${selected.pastel}88`,letterSpacing:1.5,textAlign:"center",marginBottom:8,fontFamily:"'Jost',sans-serif",animation:"fadeIn 2s ease forwards",opacity:0 }}>
+          {lang==="tr" ? `Bu çakra ${selected.konu.toLowerCase()} ile bağlantılıdır.` : `This chakra is connected to ${selected.konu.toLowerCase()}.`}
         </div>
       )}
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
