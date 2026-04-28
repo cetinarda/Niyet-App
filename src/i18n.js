@@ -89,7 +89,7 @@ export const TRANS = {
 
     // Terapi
     reiki_label:       "Reiki",
-    therapy_title:     "22 Çakra Terapi",
+    therapy_title:     "22 Çakra Yükselişi",
     core_badge:        "temel",
     selected_label:    "seçilen",
     btn_start_therapy: "Terapiye başla",
@@ -99,7 +99,7 @@ export const TRANS = {
     intro_close_eyes:  "Gözlerini yum.",
     close_eyes_hint:   "Dilersen şimdi gözlerini yavaşça kapayabilirsin.",
     connected_label:   "● bağlantı kuruldu",
-    connected_voice:   (name) => `Bağlantı kuruldu. Şimdi ${name} çakranla iletişime geçebilirsin.`,
+    connected_voice:   () => "Connected",
     sure_title:        "Biraz daha kal...",
     sure_body:         "Bu an sana ait.\nKendine bu güzelliği armağan et.",
     btn_exit:          "çık",
@@ -120,7 +120,7 @@ export const TRANS = {
     reminders_title:   "Bugün bunları kendin için yaptın mı?",
     all_done_msg:      "Bugün kendine güzelce dokundun. 🌿",
     btn_reminders_next:"Devam Et →",
-    terapi_duration:   "60 saniyelik seans",
+    terapi_duration:   "60 saniyede bağlantı",
     btn_done_next:     "Tamamlandı → Sonraki Adım",
     step_label:        (cur, total) => `${cur}/${total} adım`,
 
@@ -395,7 +395,7 @@ export const TRANS = {
 
     // Terapi
     reiki_label:       "REIKI",
-    therapy_title:     "22 Chakra Therapy",
+    therapy_title:     "22 Chakra Ascension",
     core_badge:        "CORE",
     selected_label:    "SELECTED",
     btn_start_therapy: "START THERAPY",
@@ -405,7 +405,7 @@ export const TRANS = {
     intro_close_eyes:  "Close your eyes.",
     close_eyes_hint:   "You can close your eyes now if you wish.",
     connected_label:   "● CONNECTION ESTABLISHED",
-    connected_voice:   (name) => `Connection established. You can now communicate with your ${name} chakra.`,
+    connected_voice:   () => "Connected",
     sure_title:        "Are you sure?",
     sure_body:         "This moment is a gift to yourself.\nStay a little longer.",
     btn_exit:          "exit",
@@ -426,7 +426,7 @@ export const TRANS = {
     reminders_title:   "Did you do these today?",
     all_done_msg:      "Today you connected with yourself.",
     btn_reminders_next:"Continue →",
-    terapi_duration:   "60-second session",
+    terapi_duration:   "60-second connection",
     btn_done_next:     "Done → Next Step",
     step_label:        (cur, total) => `${cur}/${total} steps`,
 
