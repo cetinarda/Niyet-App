@@ -310,6 +310,9 @@ const GLOBAL_CSS = `
   @keyframes neuralPulse { 0%{stroke-dashoffset:40;opacity:0} 30%{opacity:1} 70%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.3} }
   @keyframes neuralDot   { 0%{r:1.5;opacity:0} 20%{opacity:0.8} 50%{r:3;opacity:1} 80%{opacity:0.6} 100%{r:2;opacity:0.2} }
   @keyframes neuralGlow  { 0%,100%{opacity:0.3} 50%{opacity:0.8} }
+  @keyframes electricRise { 0%{stroke-dashoffset:200;opacity:0.3} 50%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.6} }
+  @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
+  @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
 
@@ -2112,7 +2115,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"mandala",icon:"◎",  label:lang==="tr"?"Harita":"Map",    color:"#b87adc"},
+    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
@@ -2122,7 +2125,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   ];
   const SIDEBAR_ITEMS = [
     {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"},
-    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
+    {id:"harita", icon:"🗺️", label:lang==="tr"?"Bağlantı":"Connection",  color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2277,7 +2280,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {id:"chakra", label:lang==="tr"?"Çakra":"Chakra",   icon:"💜", color:"#b87adc", glow:"180,100,255"},
           {id:"gun",    label:lang==="tr"?"Görevler":"Tasks",  icon:"☀️", color:"#e8d060", glow:"230,200,60"},
           {id:"aksam",  label:lang==="tr"?"Akşam":"Evening",  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
-          {id:"harita", label:lang==="tr"?"Harita":"Map",     icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
+          {id:"harita", label:lang==="tr"?"Bağlantı":"Connection",     icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
         ];
         const N=steps.length, sweep=360/N;
         const cx=155, cy=155, rOut=135, rIn=62;
@@ -2293,7 +2296,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:8}}>
-              <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{lang==="tr"?"BUGÜNÜN YOLCULUĞU":"TODAY'S JOURNEY"}</div>
+              <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{lang==="tr"?"BUGÜNÜN BAĞLANTISI":"TODAY'S CONNECTION"}</div>
             </div>
 
             {/* Streak row */}
@@ -2314,96 +2317,135 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             </div>
 
-            {/* SVG Pasta Dilimi */}
-            <div style={{width:310,height:310}}>
-              <svg width="310" height="310" viewBox="0 0 310 310" style={{overflow:"visible"}}>
-                <defs>
-                  {steps.map(step=>(
-                    <radialGradient key={step.id} id={`rg_${step.id}`} cx="50%" cy="50%" r="50%">
-                      <stop offset="0%"   stopColor={`rgba(${step.glow},0.9)`}/>
-                      <stop offset="100%" stopColor={`rgba(${step.glow},0.3)`}/>
-                    </radialGradient>
-                  ))}
-                  <radialGradient id="rg_center" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%"   stopColor={allStepsComplete?"rgba(130,217,163,0.5)":"rgba(180,150,255,0.35)"}/>
-                    <stop offset="100%" stopColor="rgba(0,0,0,0)"/>
-                  </radialGradient>
-                  <filter id="sf">
-                    <feGaussianBlur stdDeviation="4" result="b"/>
-                    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-                  </filter>
-                </defs>
+            {/* İnsan İskeleti Çakra Bağlantı Sistemi */}
+            {(() => {
+              const pct = completedStepCount / N;
+              const lightY = 520 - pct * 480;
+              const chakraNodes = [
+                {y:500, label:lang==="tr"?"Yer":"Earth",     color:"#8B6914", zone:"sub"},
+                {y:430, label:steps[0].label,                color:steps[0].color, id:steps[0].id, zone:"lower"},
+                {y:378, label:steps[1].label,                color:steps[1].color, id:steps[1].id, zone:"lower"},
+                {y:326, label:steps[2].label,                color:steps[2].color, id:steps[2].id, zone:"mid"},
+                {y:274, label:steps[3].label,                color:steps[3].color, id:steps[3].id, zone:"mid"},
+                {y:222, label:steps[4].label,                color:steps[4].color, id:steps[4].id, zone:"upper"},
+                {y:170, label:steps[5].label,                color:steps[5].color, id:steps[5].id, zone:"upper"},
+                {y:118, label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
+                {y:40,  label:lang==="tr"?"Gök":"Sky",       color:"#cfd8dc", zone:"supra"},
+              ];
+              return (
+                <div style={{width:220,position:"relative"}}>
+                  <svg width="220" height="540" viewBox="0 0 220 540" style={{overflow:"visible"}}>
+                    <defs>
+                      <linearGradient id="riseGrad" x1="0" y1="1" x2="0" y2="0">
+                        <stop offset="0%" stopColor="rgba(255,200,60,0.6)"/>
+                        <stop offset="40%" stopColor="rgba(200,120,255,0.5)"/>
+                        <stop offset="100%" stopColor="rgba(180,220,255,0.4)"/>
+                      </linearGradient>
+                      <linearGradient id="spineGrad" x1="0" y1="1" x2="0" y2="0">
+                        <stop offset="0%" stopColor="rgba(255,255,255,0.03)"/>
+                        <stop offset="50%" stopColor="rgba(255,255,255,0.08)"/>
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.03)"/>
+                      </linearGradient>
+                      <filter id="glowF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                    </defs>
 
-                {steps.map((step,i)=>{
-                  const startDeg=-90+i*sweep, endDeg=startDeg+sweep;
-                  const done=!!stepsCompleted[step.id];
-                  const partial=!done && step.id==="gun" && gunTasksDone>0;
-                  const midDeg=startDeg+sweep/2, midRad=midDeg*Math.PI/180;
-                  const iconR=(rIn+rOut)/2;
-                  const iconX=cx+iconR*Math.cos(midRad), iconY=cy+iconR*Math.sin(midRad);
-                  const labelR=rOut+20;
-                  const labelX=cx+labelR*Math.cos(midRad), labelY=cy+labelR*Math.sin(midRad);
-                  const isNext=nextStep?.id===step.id;
+                    {/* Omurga — ana bağlantı çizgisi */}
+                    <line x1="110" y1="500" x2="110" y2="40" stroke="url(#spineGrad)" strokeWidth="2" />
 
-                  return (
-                    <g key={step.id} style={{cursor:done?"default":isNext?"pointer":"default"}}
-                      onClick={()=>{ if(isNext&&!done) setScreen(step.id); }}>
-                      {/* glow hale behind done/partial slice */}
-                      {(done||partial)&&<path d={slicePath(cx,cy,rIn-3,rOut+6,startDeg,endDeg,3)}
-                        fill={`rgba(${step.glow},${partial?0.08:0.18})`}
-                        style={{animation:`sliceGlow 2.5s ease-in-out infinite`,animationDelay:`${i*0.45}s`}}/>}
-                      {/* slice body */}
-                      <path d={slicePath(cx,cy,rIn,rOut,startDeg,endDeg,3)}
-                        fill={done?`url(#rg_${step.id})`:partial?`rgba(${step.glow},0.22)`:"rgba(255,255,255,0.026)"}
-                        stroke={done?`rgba(${step.glow},0.55)`:partial?`rgba(${step.glow},0.35)`:"rgba(255,255,255,0.055)"}
-                        strokeWidth="0.6"
-                        style={{transition:"fill 0.7s ease, stroke 0.7s ease"}}/>
-                      {/* icon */}
-                      <text x={iconX} y={iconY+1} textAnchor="middle" dominantBaseline="middle"
-                        fontSize={done?18:14} opacity={done?1:partial?0.6:0.18}
-                        style={{transition:"opacity 0.5s,font-size 0.5s",userSelect:"none"}}>
-                        {done?"✓":step.icon}
-                      </text>
-                      {/* label */}
-                      <text x={labelX} y={labelY} textAnchor="middle" dominantBaseline="middle"
-                        fontSize="8" letterSpacing="1.5"
-                        fill={done?step.color:partial?`rgba(${step.glow},0.7)`:"rgba(70,80,100,0.6)"}
-                        fontFamily="'Jost',sans-serif"
-                        style={{textTransform:"uppercase",transition:"fill 0.5s",userSelect:"none"}}>
-                        {step.label}
-                      </text>
-                    </g>
-                  );
-                })}
+                    {/* Işık yükselişi — görevler tamamlandıkça yukarı çıkar */}
+                    {pct > 0 && (
+                      <line x1="110" y1="500" x2="110" y2={lightY}
+                        stroke="url(#riseGrad)" strokeWidth="3" strokeLinecap="round"
+                        filter="url(#glowF)" opacity={0.5+pct*0.5}
+                        style={{transition:"y2 1s ease, opacity 0.8s"}} />
+                    )}
 
-                {/* center fill */}
-                <circle cx={cx} cy={cy} r={rIn-3} fill="url(#rg_center)" style={{transition:"fill 0.8s"}}/>
-                <circle cx={cx} cy={cy} r={rIn-3} fill="rgba(0,0,0,0.82)"/>
+                    {/* Elektrik akımı partikülleri — yükselen ışık üzerinde */}
+                    {pct > 0 && [0,1,2].map(i => (
+                      <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,255,200,0.8)"
+                        style={{animation:`electricRise ${2+i*0.7}s linear infinite`,animationDelay:`${i*0.6}s`}}>
+                        <animateMotion dur={`${2.5+i*0.5}s`} repeatCount="indefinite" begin={`${i*0.4}s`}>
+                          <mpath href="#spinePath" />
+                        </animateMotion>
+                      </circle>
+                    ))}
+                    <path id="spinePath" d="M110,500 L110,40" fill="none" stroke="none" />
 
-                {/* center text */}
-                {allStepsComplete?(
-                  <>
-                    <text x={cx} y={cy-8} textAnchor="middle" dominantBaseline="middle" fontSize="20" fill="#82d9a3">✓</text>
-                    <text x={cx} y={cy+11} textAnchor="middle" dominantBaseline="middle" fontSize="7" fill="#3a7a60"
-                      fontFamily="'Jost',sans-serif" letterSpacing="2">{lang==="tr"?"TAMAM":"DONE"}</text>
-                  </>
-                ):(
-                  <>
-                    <text x={cx} y={cy-6} textAnchor="middle" dominantBaseline="middle"
-                      fontSize="20" fontWeight="200" fill="#aaaaaa" fontFamily="'Inter',sans-serif">
-                      {completedStepCount}
-                    </text>
-                    <text x={cx} y={cy+10} textAnchor="middle" dominantBaseline="middle"
-                      fontSize="7" fill="rgba(100,90,140,0.6)" fontFamily="'Jost',sans-serif" letterSpacing="2">
-                      / {N}
-                    </text>
-                  </>
-                )}
+                    {/* İnsan silueti */}
+                    {/* Kafa */}
+                    <circle cx="110" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.2" />
+                    {/* Boyun */}
+                    <line x1="110" y1="122" x2="110" y2="140" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
+                    {/* Gövde */}
+                    <path d="M80 140 Q110 136 140 140 L136 330 Q110 336 84 330Z" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                    {/* Kollar */}
+                    <path d="M80 150 Q60 180 50 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    <path d="M140 150 Q160 180 170 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    {/* Bacaklar */}
+                    <path d="M94 330 Q90 390 85 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    <path d="M126 330 Q130 390 135 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
 
-                {/* thin outer ring */}
-                <circle cx={cx} cy={cy} r={rOut+12} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
-              </svg>
-            </div>
+                    {/* Çakra düğümleri */}
+                    {chakraNodes.map((node,i) => {
+                      const done = node.id ? !!stepsCompleted[node.id] : (node.zone==="sub" ? pct>0 : pct>=1);
+                      const isNext = node.id && nextStep?.id===node.id;
+                      const lit = node.y >= lightY;
+                      const r = (node.zone==="sub"||node.zone==="supra") ? 8 : 10;
+                      return (
+                        <g key={i} style={{cursor:isNext?"pointer":"default"}} onClick={()=>{ if(isNext) setScreen(node.id); }}>
+                          {/* Glow hale */}
+                          {(done||lit) && <circle cx="110" cy={node.y} r={r+8} fill={`${node.color}18`}
+                            style={{animation:`nodeCharge ${2+i*0.3}s ease-in-out infinite`,animationDelay:`${i*0.2}s`}} />}
+                          {/* Düğüm */}
+                          <circle cx="110" cy={node.y} r={r}
+                            fill={done?`${node.color}cc`:lit?`${node.color}44`:"rgba(255,255,255,0.04)"}
+                            stroke={done?`${node.color}`:lit?`${node.color}88`:"rgba(255,255,255,0.08)"}
+                            strokeWidth={done?"1.5":"0.8"}
+                            style={{transition:"fill 0.8s, stroke 0.8s"}} />
+                          {/* İç nokta */}
+                          {(done||lit) && <circle cx="110" cy={node.y} r={r*0.35} fill={`${node.color}`} opacity={done?0.9:0.4}
+                            style={{animation:done?`neuralGlow ${1.5+i*0.15}s ease-in-out infinite`:"none"}} />}
+                          {/* Etiket */}
+                          <text x={i%2===0?"72":"148"} y={node.y+1} textAnchor={i%2===0?"end":"start"}
+                            fontSize="8" letterSpacing="1.5" fill={done?node.color:lit?`${node.color}88`:"rgba(255,255,255,0.15)"}
+                            fontFamily="'Jost',sans-serif" style={{textTransform:"uppercase",transition:"fill 0.6s",userSelect:"none"}}>
+                            {node.label}
+                          </text>
+                          {/* Tamamlanma işareti */}
+                          {done && <text x="110" y={node.y+1} textAnchor="middle" dominantBaseline="middle"
+                            fontSize="10" fill="#ffffff" style={{userSelect:"none"}}>✓</text>}
+                          {/* Yatay enerji çizgisi */}
+                          {(done||lit) && <>
+                            <line x1={110-r-3} y1={node.y} x2={110-r-16} y2={node.y}
+                              stroke={`${node.color}${done?"66":"22"}`} strokeWidth="0.6" strokeDasharray="2 2"
+                              style={{animation:`spineGlow ${2+i*0.2}s ease-in-out infinite`}} />
+                            <line x1={110+r+3} y1={node.y} x2={110+r+16} y2={node.y}
+                              stroke={`${node.color}${done?"66":"22"}`} strokeWidth="0.6" strokeDasharray="2 2"
+                              style={{animation:`spineGlow ${2+i*0.2}s ease-in-out infinite`}} />
+                          </>}
+                        </g>
+                      );
+                    })}
+
+                    {/* Yer simgesi */}
+                    <text x="110" y="528" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                      fontFamily="'Jost',sans-serif">▼ {lang==="tr"?"YERYÜZÜ":"EARTH"}</text>
+
+                    {/* Gök simgesi */}
+                    <text x="110" y="22" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                      fontFamily="'Jost',sans-serif">▲ {lang==="tr"?"GÖK":"SKY"}</text>
+
+                    {/* Tam bağlantı efekti */}
+                    {allStepsComplete && <>
+                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#riseGrad)" strokeWidth="4" filter="url(#glowF)" opacity="0.8"
+                        strokeDasharray="6 4" style={{animation:`electricRise 1.8s linear infinite`}} />
+                      <text x="110" y="270" textAnchor="middle" fontSize="9" letterSpacing="3" fill="rgba(130,217,163,0.8)"
+                        fontFamily="'Jost',sans-serif">⚡ {lang==="tr"?"BAĞLANTI AKTİF":"CONNECTION ACTIVE"} ⚡</text>
+                    </>}
+                  </svg>
+                </div>
+              );
+            })()}
 
             {/* CTA */}
             {allStepsComplete?(
@@ -2439,7 +2481,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
             {/* Harita — adım navigasyonu */}
             <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
-              <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN HARİTASI":"DAY MAP"}</div>
+              <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN BAĞLANTISI":"DAY CONNECTION"}</div>
               <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
                 {steps.map(step=>{
                   const done=!!stepsCompleted[step.id];
