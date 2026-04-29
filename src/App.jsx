@@ -2121,7 +2121,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   ];
   const SIDEBAR_ITEMS = [
     {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"},
-    {id:"harita", icon:"🗺️", label:lang==="tr"?"Bağlantı":"Connection",  color:"#82d9a3"},
+    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2793,12 +2793,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:14,color:"#888888",lineHeight:1.8,maxWidth:340,margin:"0 auto" }}>{t("sound_intro")}</div>
             </div>
 
-            {playingHz && (
-              <div style={{ textAlign:"center",marginBottom:16,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
-                <NeuralRepairSVG color={FREQS.find(f=>f.hz===playingHz)?.pastel||"#ffffff"} active={true} />
-              </div>
-            )}
-
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
@@ -2829,6 +2823,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         </div>
                         <div style={{ fontSize:14,color:"#cccccc",letterSpacing:0.5 }}>{f.name}</div>
                         <div style={{ fontSize:13,color:"#666666",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
+                        {isPlaying && (
+                          <div style={{ marginTop:8,animation:"fadeIn 1s ease forwards",opacity:0 }}>
+                            <NeuralRepairSVG color={f.pastel} active={true} />
+                          </div>
+                        )}
                       </div>
                       <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
                         {isPlaying ? "⏹" : "▶"}
