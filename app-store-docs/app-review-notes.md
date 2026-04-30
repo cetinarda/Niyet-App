@@ -1,70 +1,84 @@
-# App Review Notes — Apple İnceleme Ekibine Notlar
+# App Review Notes — Apple Review Team
 
-## Uygulamayı Açıklamak İçin Özet
+## Application Summary
 
-**Sakin**, kullanıcılara sabahtan akşama günlük bir farkındalık rutini sunan bir **Lifestyle / Productivity** uygulamasıdır. Uygulama herhangi bir tıbbi iddiada bulunmamakta; "hatırlatıcı", "alışkanlık oluşturma" ve "kişisel farkındalık" odaklı içerik sunmaktadır.
+**Sakin** is a paid **Lifestyle** application that guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
 
----
-
-## İnceleme Ekibi İçin Teknik Notlar
-
-### Hesap / Demo Gereksinimi
-- Uygulama hesap kaydı **gerektirmez**.
-- Herhangi bir demo hesabına gerek yoktur.
-- Uygulama açıldığında doğrudan çalışmaya başlar.
-
-### Ana Akış
-1. Giriş ekranı → "HAZİRIM" butonuna bas
-2. Sabah niyetini yaz (herhangi bir metin girebilirsiniz)
-3. 3 motivasyon kelimesi seç
-4. Nefes egzersizi ekranına geç
-5. Çakra ekranını görüntüle
-6. Gün içi hatırlatıcılar listesini kontrol et
-7. Akşam kapanış notunu yaz
-8. Haftalık istatistik haritasını görüntüle
+**Price:** $9.99 one-time purchase. No in-app purchases, no subscriptions.
 
 ---
 
-## Kategori ve İçerik Uyumu
+## Technical Notes for Review Team
 
-| Konu | Açıklama |
+### Account / Demo
+- The app **does not require** account registration or login.
+- No demo account needed.
+- The app works immediately upon launch.
+
+### Main Flow
+1. Launch screen -> Tap "HAZIRIM" (I'm ready)
+2. Write a morning intention (any text)
+3. Select 3 motivation words
+4. Breathing exercise screen (tap a mode, then Start)
+5. Sound Waves — tap a solfeggio frequency to listen
+6. Daily chakra screen — view energy center info
+7. Daily reminders checklist
+8. Evening closure — write reflection notes
+9. Weekly statistics map with AI-generated report
+
+---
+
+## Category and Content Compliance
+
+| Topic | Detail |
 |---|---|
-| **Kategori** | Lifestyle — tıbbi/sağlık iddiası yoktur |
-| **HealthKit** | Kullanılmamaktadır |
-| **Tıbbi iddia** | Yoktur — "farkındalık" ve "hatırlatıcı" dili kullanılmıştır |
-| **Manevi içerik** | Reiki ve çakra terimleri kültürel/geleneksel bağlamda kullanılmıştır; belirli bir dini inancı temsil etmemektedir |
-| **Kullanıcı verisi** | Yalnızca cihazda yerel olarak saklanır, sunucuya iletilmez |
-| **Bildirimler** | Yalnızca kullanıcı izin verirse, local notification ile çalışır |
-| **Üçüncü taraf SDK** | Yoktur |
-| **Reklam** | Yoktur |
-| **Satın alma** | Bu sürümde uygulama içi satın alma yoktur |
+| **Category** | Lifestyle — no medical/health claims |
+| **HealthKit** | Not used |
+| **Medical claims** | None — uses "awareness" and "reminder" language |
+| **Spiritual content** | Reiki and chakra terms are used in cultural/traditional context; does not represent any specific religion |
+| **AI features** | Uses Groq API (Meta Llama) for personalized text analysis. Explicit user consent is required before first use (Apple Guideline 5.1.2(i)) |
+| **User data** | Stored locally on device only. AI features send anonymous text to API — no personal identifiers |
+| **Notifications** | Local notifications only, with user permission |
+| **Third-party SDKs** | Capacitor plugins (splash screen, haptics, status bar, local notifications) |
+| **Ads** | None |
+| **In-App Purchases** | None — paid app model |
+| **Privacy Manifest** | PrivacyInfo.xcprivacy included — declares UserDefaults API usage |
 
 ---
 
-## Özel Dikkat Gerektiren Alanlar
+## Areas Requiring Special Attention
 
-### Reiki ve Çakra İçeriği (Guideline 1.1)
-Uygulamada yer alan Reiki ve çakra içerikleri:
-- Belirli bir dini inancı temsil etmemektedir
-- Terapötik veya tıbbi bir tedavi olarak sunulmamaktadır
-- "Enerji farkındalığı" ve "bedensel farkındalık" bağlamında, kültürel bir uygulama olarak ele alınmaktadır
-- Hiçbir sağlık iddiası içermemektedir
+### AI-Powered Features (Guideline 5.1.2(i))
+The app includes two AI features:
+- **Inner Mirror (Icsel Ayna):** Analyzes user-written text and provides personalized spiritual reflection
+- **Weekly Report:** Generates a weekly summary based on daily journal entries
 
-### Orkestra Modu (Hayali Topluluk Sayısı)
-Haftalık harita ekranında görünen "Bugün 312 kişi seninle nefes aldı" ifadesi, motivasyonel amaçlı kullanılan bir **sabit/örnek değerdir**. Gerçek zamanlı bir veri bağlantısı temsil etmemektedir. Eğer bu ifade yanıltıcı bulunursa, içerik güncellemeye hazırız.
+**Data handling:**
+- User must explicitly consent before any data is sent (consent modal with Accept/Decline)
+- Only the user's written text is sent — no name, email, location, or device identifiers
+- AI provider: Groq API (Meta Llama 3.3 70B)
+- Groq does not use submitted data for model training
+- All communication is over HTTPS
 
-### Bildirim Kullanımı
-- Local Notification API kullanılmaktadır.
-- Push Notification (APNs) kullanılmamaktadır.
-- Bildirimler, kullanıcının seçtiği hatırlatıcılar için tetiklenir.
-- Kullanıcı sistemi ayarlardan bildirimleri istediği zaman kapatabilir.
+### Reiki and Chakra Content (Guideline 1.1)
+- Does not represent any specific religion
+- Not presented as therapeutic or medical treatment
+- Framed as "energy awareness" and "body awareness" in cultural context
+- Contains no health claims
+
+### Solfeggio Frequencies (Sound Waves)
+- 10 frequencies with spiritual/wellness descriptions
+- Descriptions use experiential language ("listeners describe...", "is believed to...")
+- No medical claims (pain relief, DNA repair, etc. have been removed)
+
+### Orchestra Mode (Simulated Community Count)
+The weekly map screen shows "312 people breathed with you today" — this is a **motivational placeholder**, not real-time data. Happy to update if this is considered misleading.
 
 ---
 
-## İletişim
+## Contact
 
-İnceleme sürecinde soru veya sorun oluşursa:
+For questions during the review process:
 
-**Geliştirici:** [Ad Soyad]
-**E-posta:** [e-posta adresi]
-**Telefon:** [telefon numarası — opsiyonel]
+**Developer:** Arda Cetin
+**Email:** destek@sakin.app

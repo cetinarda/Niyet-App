@@ -1,33 +1,44 @@
-import Anthropic from "@anthropic-ai/sdk";
-
-const HEADERS = { "Content-Type": "application/json" };
+function sanitizeTurkish(text) {
+  return text
+    .replace(/[\u4E00-\u9FFF]/g, "")
+    .replace(/[\u3400-\u4DBF]/g, "")
+    .replace(/[\u3040-\u30FF]/g, "")
+    .replace(/[\u0600-\u06FF]/g, "")
+    .replace(/[\u0750-\u077F]/g, "")
+    .replace(/[\uAC00-\uD7A3]/g, "")
+    .replace(/[\u1100-\u11FF]/g, "")
+    .replace(/[\u0900-\u097F]/g, "")
+    .replace(/[\u3000-\u303F]/g, "")
+    .replace(/[\u2E80-\u2EFF]/g, "")
+    .trim();
+}
 
 export const handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
-  }
-
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return {
-      statusCode: 500,
-      headers: HEADERS,
-      body: JSON.stringify({ error: "ANTHROPIC_API_KEY ortam değişkeni ayarlanmamış." }),
-    };
+    return { statusCode: 405, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   let gunler;
   try {
     ({ gunler } = JSON.parse(event.body));
   } catch {
-    return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
+    return { statusCode: 400, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
   }
 
   if (!gunler || gunler.length === 0) {
     return {
       statusCode: 400,
-      headers: HEADERS,
-      body: JSON.stringify({ error: "Rapor oluşturmak için en az 1 gün verisi gerekli." }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "En az 1 gün verisi gerekli." }),
+    };
+  }
+
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }),
     };
   }
 
@@ -43,43 +54,60 @@ export const handler = async (event) => {
     )
     .join("\n\n");
 
-  const client = new Anthropic({ apiKey });
+  const systemPrompt = `Yalnızca Türkçe yaz. Cümleler akıcı, sade ve şiirsel olsun. Çince, Japonca, Arapça veya yabancı karakter kullanma. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen".
 
-  try {
-    const response = await client.messages.create({
-      model: "claude-opus-4-6",
-      max_tokens: 1200,
-      system: `Sen derin bir içsel farkındalık rehberisin. Kullanıcının haftalık verilerini analiz edip Türkçe, şiirsel ve içten bir rapor yazıyorsun.
+Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini Türkçe, şiirsel ve içten bir rapor olarak yansıtıyorsun. Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
+
+Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 
 Rapor şu başlıkları içermeli:
-**Haftanın Enerjisi** — Genel ruh hali ve enerji (2-3 cümle)
-**Öne Çıkan Temalar** — Tekrar eden niyet kelimeleri, çakra örüntüleri
+**Haftanın Yansıması** — Genel ruh hali ve enerji — net ve doğrudan yansıt (2-3 cümle)
+**Öne Çıkan Temalar** — Tekrar eden niyet kelimeleri, çakra örüntüleri — kaynağa doğrudan işaret et
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam
 **Şükran Kalbi** — Şükür yazılarından bir sentez
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri
 
-Samimi, nazik, biraz şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et. Maksimum 350 kelime.`,
-      messages: [
-        {
-          role: "user",
-          content: `Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`,
-        },
-      ],
+Samimi, kendinden emin, şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap et. Maksimum 500 kelime.`;
+
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        max_tokens: 2000,
+        temperature: 0.2,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.` },
+        ],
+      }),
     });
+    const data = await res.json();
 
-    const textBlock = response.content.find((b) => b.type === "text");
-    const rapor = textBlock?.text || "Rapor oluşturulamadı.";
+    if (!res.ok || data.error) {
+      const errMsg = data.error?.message || `HTTP ${res.status}`;
+      return {
+        statusCode: res.status,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: errMsg }),
+      };
+    }
 
+    const rapor = sanitizeTurkish(data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.");
     return {
       statusCode: 200,
-      headers: HEADERS,
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ rapor }),
     };
-  } catch (err) {
+  } catch (e) {
     return {
       statusCode: 502,
-      headers: HEADERS,
-      body: JSON.stringify({ error: "AI servisiyle bağlantı kurulamadı. Lütfen tekrar deneyin." }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }),
     };
   }
 };
