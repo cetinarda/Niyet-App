@@ -72,86 +72,86 @@ const TERAPI_TOTAL = 60;
 
 const FREQ_DATA_TR = [
   { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
-    tema:"Topraklanma · Güvenlik", bird:"guguk", birdName:"Guguk Kuşu",
+    tema:"Topraklanma · Güvenlik", bird:"guguk",
     aciklama:"174 Hz bedenin en derin katmanlarına iner. Güvenlik ve topraklanma hissini destekler. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
     etkiler:["Derin rahatlama","Güvenlik hissi","Topraklanma","Kas gerilimini bırakma"] },
   { hz:285, name:"Hücre Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
-    tema:"Yenilenme · Enerji Alanı", bird:"dove", birdName:"Kumru",
+    tema:"Yenilenme · Enerji Alanı", bird:"dove",
     aciklama:"285 Hz enerji alanını destekler ve yenilenme hissini güçlendirir. Bu frekans bedenin doğal canlılığını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
     etkiler:["Yenilenme hissi","Enerji alanı desteği","Canlılık","Tazelenme hissi"] },
   { hz:396, name:"Özgürleşme", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
-    tema:"Korku & Suçluluk Salınımı", bird:"guguk", birdName:"Guguk Kuşu",
+    tema:"Korku & Suçluluk Salınımı", bird:"guguk",
     aciklama:"396 Hz kök çakrayla rezonansa girer. Bilinçaltındaki korku, suçluluk ve hayatta kalma kaygısını çözmeye yardımcı olur. Göğüs ve karın bölgesinde gevşeme, zihinsel gürültünün azalması ve 'içsel yük hafifliyor' hissi yaşanır.",
     etkiler:["Suçluluk ve korku salınımını çözme","Kök enerji alanında rahatlama","Geçmişten gelen yükleri bırakma","Güven hissini yeniden hatırlama"] },
   { hz:417, name:"Dönüşüm", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
-    tema:"Değişimi Kolaylaştırma · Travma Temizliği", bird:"bulbul", birdName:"Bülbül",
+    tema:"Değişimi Kolaylaştırma · Travma Temizliği", bird:"bulbul",
     aciklama:"417 Hz sakral çakrayla çalışır. Travmatik deneyimlerin izlerini yumuşatır, değişime direnci çözer. Yaratıcılığın önündeki blokajları kaldırır. Dinleyenler duygusal bir 'çözülme' ve ardından hafiflik hissi tarif eder.",
     etkiler:["Negatif enerjiyi dönüştürme","Travma izlerini yumuşatma","Değişime açıklık","Yaratıcı blokajları çözme"] },
   { hz:432, name:"Evrensel Uyum", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
-    tema:"Doğanın Frekansı · Kalp Huzuru", bird:"dove", birdName:"Kumru",
+    tema:"Doğanın Frekansı · Kalp Huzuru", bird:"dove",
     aciklama:"432 Hz 'evrenin frekansı' olarak bilinir. Doğadaki altın oranla uyumludur. Kalp atışını sakinleştirir, beyin dalgalarını alfa durumuna geçirir. Dinleyenler derin bir huzur, zamanın yavaşlaması ve 'eve dönüş' hissi yaşar.",
     etkiler:["Doğayla uyum","Kalp ritmi dengeleme","Alfa beyin dalgaları","Derin huzur hissi"] },
   { hz:528, name:"Sevgi Frekansı", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
-    tema:"Sevgi Tonu · İç Dönüşüm", bird:"kanarya", birdName:"Kanarya",
+    tema:"Sevgi Tonu · İç Dönüşüm", bird:"kanarya",
     aciklama:"528 Hz 'Mucize Tonu' ya da 'Sevgi Frekansı' olarak adlandırılır. Hücresel uyumu desteklediği ve Güneş pleksusu çakrasıyla rezonansa girdiği düşünülür. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
     etkiler:["Hücresel uyum","İç dönüşüm ve mucize","Sevgi titreşimi","Güneş pleksusu aktivasyonu"] },
   { hz:639, name:"İlişki Uyumu", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
-    tema:"Bağlantı · İlişki İyileştirme", bird:"dove", birdName:"Kumru",
+    tema:"Bağlantı · İlişki İyileştirme", bird:"dove",
     aciklama:"639 Hz kalp çakrasını besler. İlişkilerdeki kırıklıkları onarır, empatiyi güçlendirir. Hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
     etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası aktivasyonu","Bağ kurma kapasitesi"] },
   { hz:741, name:"İfade & Arınma", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
-    tema:"Sezgisel İfade · Enerji Arınması", bird:"otlegen", birdName:"Ötleğen",
+    tema:"Sezgisel İfade · Enerji Arınması", bird:"otlegen",
     aciklama:"741 Hz boğaz çakrasıyla çalışır. Gerçeği söyleme cesaretini güçlendirir, enerji alanının arınmasını destekler. Problem çözme kapasitesini artırır. Dinleyenler boğaz bölgesinde açılma ve netleşen bir zihin deneyimler.",
     etkiler:["Özgün ifade gücü","Enerji arınması","Problem çözme","Zihinsel berraklık"] },
   { hz:852, name:"Sezgisel Uyanış", color:"#8e44ad", pastel:"#aaaaaa", icon:"🔮",
-    tema:"Üçüncü Göz · Spiritüel Farkındalık", bird:"baykus", birdName:"Baykuş",
+    tema:"Üçüncü Göz · Spiritüel Farkındalık", bird:"baykus",
     aciklama:"852 Hz üçüncü göz çakrasını uyandırır. Sezgisel kapasiteyi güçlendirir, illüzyonları çözer. Meditasyonda daha derin katmanlara ulaşmayı kolaylaştırır. Dinleyenler alın bölgesinde hafif basınç, görsel imgeler ve 'perde kalkıyor' hissi tarif eder.",
     etkiler:["Sezgi güçlenmesi","İllüzyonlardan uyanma","Derin meditasyon","Spiritüel farkındalık"] },
   { hz:963, name:"İlahi Bağlantı", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
-    tema:"Taç Çakra · Yüksek Bilinç", bird:"kartal", birdName:"Kartal",
+    tema:"Taç Çakra · Yüksek Bilinç", bird:"kartal",
     aciklama:"963 Hz taç çakrasını aktive eder. 'Tanrı frekansı' olarak da bilinir. Yüksek benlikle bağlantıyı güçlendirir, birlik bilincini deneyimlemeye davet eder. Dinleyenler baş tepesinde enerji akışı, hafiflik ve sınırsızlık hissi yaşar.",
     etkiler:["Yüksek benlikle bağlantı","Birlik bilinci","Taç çakra aktivasyonu","Spiritüel aydınlanma"] },
 ];
 
 const FREQ_DATA_EN = [
   { hz:174, name:"Earth Frequency", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
-    tema:"Grounding · Safety", bird:"guguk", birdName:"Cuckoo",
+    tema:"Grounding · Safety", bird:"guguk",
     aciklama:"174 Hz reaches the deepest layers of the body. It promotes a sense of safety and grounding. Listeners often experience feeling their feet firmly on the earth and tension dissolving from their shoulders.",
     etkiler:["Deep relaxation","Sense of safety","Grounding","Muscle tension release"] },
   { hz:285, name:"Cell Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
-    tema:"Renewal · Energy Field", bird:"dove", birdName:"Dove",
+    tema:"Renewal · Energy Field", bird:"dove",
     aciklama:"285 Hz supports the energy field and promotes a sense of renewal. This frequency encourages the body's natural vitality. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
     etkiler:["Sense of renewal","Energy field support","Vitality","Refreshment"] },
   { hz:396, name:"Liberation", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
-    tema:"Fear & Guilt Release", bird:"guguk", birdName:"Cuckoo",
+    tema:"Fear & Guilt Release", bird:"guguk",
     aciklama:"396 Hz resonates with the root chakra. It helps dissolve subconscious fear, guilt, and survival anxiety. Listeners experience relaxation in the chest and abdomen, reduced mental noise, and a feeling of 'inner burden lifting'.",
     etkiler:["Dissolving guilt and fear","Root energy relaxation","Releasing past burdens","Restoring trust"] },
   { hz:417, name:"Transformation", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
-    tema:"Facilitating Change · Trauma Clearing", bird:"bulbul", birdName:"Nightingale",
+    tema:"Facilitating Change · Trauma Clearing", bird:"bulbul",
     aciklama:"417 Hz works with the sacral chakra. It softens traces of traumatic experiences and dissolves resistance to change. It removes creative blocks. Listeners describe an emotional 'unwinding' followed by lightness.",
     etkiler:["Transforming negative energy","Softening trauma","Openness to change","Clearing creative blocks"] },
   { hz:432, name:"Universal Harmony", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
-    tema:"Nature's Frequency · Heart Peace", bird:"dove", birdName:"Dove",
+    tema:"Nature's Frequency · Heart Peace", bird:"dove",
     aciklama:"432 Hz is known as 'the frequency of the universe'. It's aligned with nature's golden ratio. It calms heart rate, shifts brainwaves to alpha state. Listeners experience deep peace, time slowing down, and a feeling of 'coming home'.",
     etkiler:["Harmony with nature","Heart rhythm balancing","Alpha brainwaves","Deep peace"] },
   { hz:528, name:"Love Frequency", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
-    tema:"Love Tone · Inner Transformation", bird:"kanarya", birdName:"Canary",
+    tema:"Love Tone · Inner Transformation", bird:"kanarya",
     aciklama:"528 Hz is called the 'Miracle Tone' or 'Love Frequency'. It is believed to support cellular harmony and resonates with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
     etkiler:["Cellular harmony","Inner transformation","Love vibration","Solar plexus activation"] },
   { hz:639, name:"Relationship Harmony", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
-    tema:"Connection · Relationship Healing", bird:"dove", birdName:"Dove",
+    tema:"Connection · Relationship Healing", bird:"dove",
     aciklama:"639 Hz nourishes the heart chakra. It repairs fractures in relationships and strengthens empathy. It deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
     etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra activation","Connection capacity"] },
   { hz:741, name:"Expression & Cleansing", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
-    tema:"Intuitive Expression · Energy Cleansing", bird:"otlegen", birdName:"Warbler",
+    tema:"Intuitive Expression · Energy Cleansing", bird:"otlegen",
     aciklama:"741 Hz works with the throat chakra. It strengthens the courage to speak truth and supports energy field cleansing. It enhances problem-solving capacity. Listeners experience throat opening and a clarifying mind.",
     etkiler:["Authentic expression","Energy cleansing","Problem solving","Mental clarity"] },
   { hz:852, name:"Intuitive Awakening", color:"#8e44ad", pastel:"#aaaaaa", icon:"🔮",
-    tema:"Third Eye · Spiritual Awareness", bird:"baykus", birdName:"Owl",
+    tema:"Third Eye · Spiritual Awareness", bird:"baykus",
     aciklama:"852 Hz awakens the third eye chakra. It strengthens intuitive capacity and dissolves illusions. It facilitates reaching deeper layers in meditation. Listeners describe light pressure on the forehead, visual images, and a 'veil lifting' sensation.",
     etkiler:["Intuition strengthening","Awakening from illusion","Deep meditation","Spiritual awareness"] },
   { hz:963, name:"Divine Connection", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
-    tema:"Crown Chakra · Higher Consciousness", bird:"kartal", birdName:"Eagle",
+    tema:"Crown Chakra · Higher Consciousness", bird:"kartal",
     aciklama:"963 Hz activates the crown chakra. Also known as the 'God frequency'. It strengthens connection with the higher self and invites unity consciousness. Listeners experience energy flow at the crown, lightness, and boundlessness.",
     etkiler:["Higher self connection","Unity consciousness","Crown chakra activation","Spiritual illumination"] },
 ];
@@ -1384,7 +1384,7 @@ export default function SakinApp() {
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
     audio.loop = true;
-    audio.volume = 0.3;
+    audio.volume = 0.7;
     audio.play().catch(() => {});
     birdAudioRef.current = audio;
   };
@@ -2787,13 +2787,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             freqCtxRef.current = ctx; ctx.resume();
             const gain = ctx.createGain();
             gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 1.5);
+            gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 1.5);
             gain.connect(ctx.destination); freqGainRef.current = gain;
             [[1, 1], [2.76, 0.28], [5.4, 0.10]].forEach(([ratio, amp]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = "sine"; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
-              g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 1.5);
+              g.gain.linearRampToValueAtTime(0.06 * amp, ctx.currentTime + 1.5);
               o.connect(g); g.connect(ctx.destination); o.start();
               if (ratio === 1) { freqOscRef.current = o; freqGainRef.current = g; }
             });
@@ -2839,11 +2839,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         </div>
                         <div style={{ fontSize:14,color:"#cccccc",letterSpacing:0.5 }}>{f.name}</div>
                         <div style={{ fontSize:13,color:"#666666",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
-                        {isPlaying && f.birdName && (
-                          <div style={{ marginTop:5,fontSize:11,letterSpacing:1.5,color:`${f.color}aa`,display:"flex",alignItems:"center",gap:4 }}>
-                            <span style={{ fontSize:13 }}>🐦</span> {f.birdName}
-                          </div>
-                        )}
                         {isPlaying && (
                           <div style={{ marginTop:8,animation:"fadeIn 1s ease forwards",opacity:0 }}>
                             <NeuralRepairSVG color={f.pastel} active={true} />
