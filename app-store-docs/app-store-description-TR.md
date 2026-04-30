@@ -7,7 +7,7 @@ Sakin
 Kendini hep hatırla.
 
 ## Kısa Açıklama (Promotional Text — max 170 karakter)
-Bilgi yüklemez. Sadece hatırlatır. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı.
+Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı.
 
 ---
 
@@ -22,22 +22,28 @@ Günün koşusunda kendini unuttuğun anlarda, Sakin seni nazikçe içe çeker. 
 Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: huzur, cesaret, akış, sevgi... Gün boyu bu kelimeler sana yol gösterir.
 
 **Nefes Egzersizi**
-4-1.5-3.5 ritmiyle nefes al. Bir dakikan var. Hepsi bu kadar. Beden geri döner, zihin netleşir.
+6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici — hangisi sana iyi geliyorsa.
 
-**Günün Çakrası — Reiki**
-Her sabah sana özel bir enerji merkezi belirlenir. O gün o merkezde kal. 22 Çakra Terapisi ile istediğin enerji merkezinde 60 saniyelik derin bir deneyim yaşa.
+**Ses Dalgaları & Kuş Sesleri**
+10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Beyin ve sinir sistemi senkronizasyon animasyonuyla derinleş.
+
+**22 Çakra Yükselişi**
+Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle çalış. 60 saniyede bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjinin akışına izin ver.
+
+**İçsel Ayna — AI Destekli Yansıtma**
+Aklındaki soruyu yaz, yapay zeka sana çakra bazlı bir yansıtma sunsun. Reiki analizi, zihinsel-fiziksel bağlantı ve sağlık farkındalığı — hepsi bir arada.
 
 **Gün İçi Hatırlatıcılar**
-Aynada kendine bak. Su iç. Güneşi hisset. Ağaca sarıl. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
+Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
 
 **Akşam Kapanışı**
 Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
 
-**Haftalık İçsel Harita**
-Haftanın sonunda seni bekleyen bir ayna: en aktif çakran, toplam nefesin, niyetin, bilinçli anların. Kendini dışarıdan gör.
+**Bağlantı & İlerleme**
+Gün serisi, frekans dinleme süresi ve tamamlanan adımlarla kendini takip et. İnsan iskeleti üzerinde çakra bağlantı sisteminde ışığın aşağıdan yukarıya yükselişini izle.
 
-**Orkestra Modu**
-Bugün seninle nefes alan yüzlerce insan var. Yalnız değilsin.
+**Haftalık İçsel Rapor**
+Haftanın sonunda AI destekli kişisel rapor: çakra örüntüleri, frekans dinleme süren, ruh halin, doğum haritanla sentezlenmiş derin bir ayna.
 
 ---
 

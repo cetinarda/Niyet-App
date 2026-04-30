@@ -7,7 +7,7 @@ Sakin
 Always remember yourself.
 
 ## Promotional Text (max 170 characters)
-Not a teacher. A reminder. From morning intention to evening closing — a calm daily companion that brings you back to yourself.
+Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing.
 
 ---
 
@@ -22,22 +22,28 @@ When you lose yourself in the rush of the day, Sakin gently brings you back inwa
 Start your day by setting an intention. Choose 3 words that resonate with you most: peace, courage, flow, love... These words will guide you throughout the day.
 
 **Breathing Exercise**
-Breathe with a 4-1.5-3.5 rhythm. You have one minute. That's all. The body returns, the mind clears.
+Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming — whichever feels right for you.
 
-**Daily Chakra — Reiki**
-Each morning, a unique energy center is chosen for you. Stay centered there for the day. With the 22-Chakra Therapy, experience a deep 60-second session at the energy center of your choice.
+**Sound Waves & Bird Sounds**
+Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. Deepen your experience with neural sync animation.
+
+**22 Chakra Ascension**
+Work with 22 energy centers across physical, spiritual, and divine dimensions. Connect in 60 seconds. Place your hand on the area, close your eyes, and let the energy flow.
+
+**Inner Mirror — AI-Powered Reflection**
+Write your question, and AI offers a chakra-based reflection. Reiki analysis, mental-physical connection, and health awareness — all in one place.
 
 **Daily Reminders**
-Look at yourself in the mirror. Drink water. Feel the sun. Hug a tree. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
+Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
 
 **Evening Closing**
 What did you learn today? What are you grateful for? A few sentences are enough. The day closes, and you feel whole.
 
-**Weekly Inner Map**
-At the end of the week, a mirror awaits you: your most active chakra, total breaths, your intention, your conscious moments. See yourself from the outside.
+**Connection & Progress**
+Track your day streak, frequency listening time, and completed steps. Watch the light rise from earth to sky on the human body chakra connection system.
 
-**Orchestra Mode**
-Hundreds of people are breathing with you today. You are not alone.
+**Weekly Inner Report**
+At the end of the week, an AI-powered personal report: chakra patterns, frequency listening duration, mood, synthesized with your birth chart — a deep mirror.
 
 ---
 
