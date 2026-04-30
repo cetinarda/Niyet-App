@@ -1371,7 +1371,7 @@ export default function SakinApp() {
   const freqOscRef = useRef(null);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
-  const BIRD_EXT = { guguk:"m4a", bulbul:"wav", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3" };
+  const BIRD_EXT = { guguk:"m4a", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3" };
   const stopBirdSound = () => {
     if (birdAudioRef.current) {
       birdAudioRef.current.pause();
