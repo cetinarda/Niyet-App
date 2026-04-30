@@ -1276,7 +1276,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
       ) : analiz ? (
         <div>
           <div style={{ fontSize:13,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Nunito','Jost',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
+          <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
           <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
             <button onClick={onSifirla}
               style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"6px 16px" }}>
@@ -2258,17 +2258,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* MANDALA HARİTA — pasta dilimi */}
+      {/* BAĞLANTI — insan iskeleti çakra sistemi */}
       {screen==="mandala" && (() => {
-        function slicePath(cx,cy,rIn,rOut,startDeg,endDeg,gap=3){
-          const s=(startDeg+gap/2)*Math.PI/180, e=(endDeg-gap/2)*Math.PI/180;
-          const la=(endDeg-startDeg-gap)>180?1:0;
-          const x1=cx+rOut*Math.cos(s),y1=cy+rOut*Math.sin(s);
-          const x2=cx+rOut*Math.cos(e),y2=cy+rOut*Math.sin(e);
-          const x3=cx+rIn*Math.cos(e), y3=cy+rIn*Math.sin(e);
-          const x4=cx+rIn*Math.cos(s), y4=cy+rIn*Math.sin(s);
-          return `M${x1} ${y1} A${rOut} ${rOut} 0 ${la} 1 ${x2} ${y2} L${x3} ${y3} A${rIn} ${rIn} 0 ${la} 0 ${x4} ${y4}Z`;
-        }
         const steps = [
           {id:"sabah",  label:lang==="tr"?"Sabah":"Morning",  icon:"🌅", color:"#f0a060", glow:"255,140,60"},
           {id:"nefes",  label:lang==="tr"?"Nefes":"Breath",   icon:"🫧", color:"#60b8e8", glow:"80,160,220"},
@@ -2278,8 +2269,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {id:"aksam",  label:lang==="tr"?"Akşam":"Evening",  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
           {id:"harita", label:lang==="tr"?"Bağlantı":"Connection",     icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
         ];
-        const N=steps.length, sweep=360/N;
-        const cx=155, cy=155, rOut=135, rIn=62;
+        const N=steps.length;
         const BADGES=[
           {days:3, icon:"🌱",label:lang==="tr"?"3 Gün":"3 Days"},
           {days:7, icon:"🔥",label:lang==="tr"?"1 Hafta":"1 Week"},
