@@ -1371,7 +1371,7 @@ export default function SakinApp() {
   const freqOscRef = useRef(null);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
-  const BIRD_EXT = { guguk:"m4a", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3" };
+  const BIRD_EXT = { guguk:"m4a", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
   const stopBirdSound = () => {
     if (birdAudioRef.current) {
       birdAudioRef.current.pause();
@@ -1379,12 +1379,12 @@ export default function SakinApp() {
       birdAudioRef.current = null;
     }
   };
-  const playBirdSound = (birdKey) => {
+  const playBirdSound = (birdKey, vol = 0.7) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
     audio.loop = true;
-    audio.volume = 0.7;
+    audio.volume = vol;
     audio.play().catch(() => {});
     birdAudioRef.current = audio;
   };
@@ -2797,7 +2797,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               o.connect(g); g.connect(ctx.destination); o.start();
               if (ratio === 1) { freqOscRef.current = o; freqGainRef.current = g; }
             });
-            if (freqData?.bird) playBirdSound(freqData.bird);
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 1.0 : 0.7);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
