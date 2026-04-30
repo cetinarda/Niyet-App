@@ -1397,6 +1397,24 @@ export default function SakinApp() {
     stopBirdSound();
     setPlayingHz(null); setActiveFreq(null);
   };
+  const [freqListenSec, setFreqListenSec] = useState(() => {
+    try { return parseInt(localStorage.getItem("sakin_freq_sec_" + todayKey)) || 0; } catch { return 0; }
+  });
+  const freqTimerRef = useRef(null);
+  useEffect(() => {
+    if (playingHz) {
+      freqTimerRef.current = setInterval(() => {
+        setFreqListenSec(prev => {
+          const next = prev + 1;
+          localStorage.setItem("sakin_freq_sec_" + todayKey, String(next));
+          return next;
+        });
+      }, 1000);
+    } else {
+      clearInterval(freqTimerRef.current);
+    }
+    return () => clearInterval(freqTimerRef.current);
+  }, [playingHz]);
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
   const [aiRapor,       setAiRapor]       = useState("");
@@ -1573,14 +1591,14 @@ export default function SakinApp() {
       tarih: new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric"}),
       _dateKey: new Date().toDateString(),
       niyet, kelimeler: selectedWords, chakra: chakra.name,
-      nefes: breathCount, ogrendim: aksamNote, sukur
+      nefes: breathCount, freqSaniye: freqListenSec, ogrendim: aksamNote, sukur
     };
     const log = JSON.parse(localStorage.getItem("sakin_log")||"[]");
     const filtered = log.filter(g=>g._dateKey!==bugun._dateKey);
     filtered.unshift(bugun);
     localStorage.setItem("sakin_log", JSON.stringify(filtered.slice(0,7)));
     setAiRapor("");
-  },[screen, niyet, selectedWords, chakra.name, breathCount, aksamNote, sukur]);
+  },[screen, niyet, selectedWords, chakra.name, breathCount, freqListenSec, aksamNote, sukur]);
 
   const CHAKRA_KEYWORDS = [
     { idx:0, keywords:["güvensiz","korkuyorum","korku","para","maddi","güvende değil","temel","ev","aile","toprak","istikrar","aidiyetsiz","destek yok","hayatta kalamıyorum","köksüz"] },
@@ -2015,13 +2033,16 @@ GİZLİ GÜÇLER (gezegenin yönetici enerjisine göre):
 
 ANAHTAR SÖZCÜKLER: yalnızlık · iç gözlem · bastırılan duygular · karmik borçlar · çocukluk travmaları · bitirilmemiş işler · utanç ve suçluluk · sezgiler · hayalgücü · rüya yaşantısı · yaratıcı esinlenme · meditasyon · özverili sevgi · kriz anında ortaya çıkan içsel güç · gizli kaynaklar ve güçler`;
 
+    const toplamFreqSn = gunler.reduce((t,g) => t + (g.freqSaniye||0), 0);
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
 - Niyet: ${g.niyet||"—"}
 - Kelimeler: ${g.kelimeler?.join(", ")||"—"}
 - Çakra: ${g.chakra||"—"}
 - Nefes: ${g.nefes||0}
+- Frekans dinleme: ${g.freqSaniye ? (g.freqSaniye>=60 ? Math.floor(g.freqSaniye/60)+" dk "+g.freqSaniye%60+" sn" : g.freqSaniye+" sn") : "—"}
 - Bugün ne öğrendim: ${g.ogrendim||"—"}
 - Şükür: ${g.sukur||"—"}`).join("\n\n");
+    const freqOzet = toplamFreqSn > 0 ? `\nBu hafta toplam frekans dinleme süresi: ${Math.floor(toplamFreqSn/60)} dakika ${toplamFreqSn%60} saniye.` : "";
 
     const astroText = astro ? `
 Kullanıcının Doğum Profili:
@@ -2053,13 +2074,14 @@ Rapor şu başlıkları içermeli:
 **Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri — kaynağa doğrudan işaret et
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam — kişinin kendi içinde gördüklerini yansıt
 **Gizli Benlik & Gölge** — Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
+**Frekans & Ses Yolculuğu** — Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
 **Şükran Kalbi** — Şükür yazılarından bir sentez
 **Sana Bir Davet** — Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin — eleştiri değil, davet (2-3 madde)
 **Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`,
-          messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
+          messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
       const data = await res.json();
@@ -2319,6 +2341,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:200,color:allStepsComplete?"#82d9a3":"#aaaaaa",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#777777"}}>/{N}</span></div>
                 <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
+              </div>
+              <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:26,fontWeight:200,color:freqListenSec>0?"#a07ae0":"#888888",lineHeight:1}}>{freqListenSec>=60?`${Math.floor(freqListenSec/60)}m`:freqListenSec>0?`${freqListenSec}s`:"—"}</div>
+                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"frekans":"freq"}</div>
               </div>
             </div>
 
