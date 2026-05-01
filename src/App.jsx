@@ -75,7 +75,7 @@ const FREQ_DATA_TR = [
     tema:"Topraklanma · Güvenlik", bird:"guguk",
     aciklama:"174 Hz bedenin en derin katmanlarına iner. Güvenlik ve topraklanma hissini destekler. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
     etkiler:["Derin rahatlama","Güvenlik hissi","Topraklanma","Kas gerilimini bırakma"] },
-  { hz:285, name:"Hücre Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
+  { hz:285, name:"Enerji Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
     tema:"Yenilenme · Enerji Alanı", bird:"dove",
     aciklama:"285 Hz enerji alanını destekler ve yenilenme hissini güçlendirir. Bu frekans bedenin doğal canlılığını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
     etkiler:["Yenilenme hissi","Enerji alanı desteği","Canlılık","Tazelenme hissi"] },
@@ -118,7 +118,7 @@ const FREQ_DATA_EN = [
     tema:"Grounding · Safety", bird:"guguk",
     aciklama:"174 Hz reaches the deepest layers of the body. It promotes a sense of safety and grounding. Listeners often experience feeling their feet firmly on the earth and tension dissolving from their shoulders.",
     etkiler:["Deep relaxation","Sense of safety","Grounding","Muscle tension release"] },
-  { hz:285, name:"Cell Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
+  { hz:285, name:"Energy Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
     tema:"Renewal · Energy Field", bird:"dove",
     aciklama:"285 Hz supports the energy field and promotes a sense of renewal. This frequency encourages the body's natural vitality. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
     etkiler:["Sense of renewal","Energy field support","Vitality","Refreshment"] },
@@ -684,7 +684,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   );
 }
 
-function NeuralRepairSVG({ color = "#ffffff", active = false }) {
+function HarmonySVG({ color = "#ffffff", active = false }) {
   const nodes = [
     {x:75,y:18},{x:42,y:32},{x:108,y:28},{x:25,y:55},{x:60,y:50},
     {x:95,y:48},{x:125,y:58},{x:38,y:78},{x:75,y:72},{x:110,y:76},
@@ -720,7 +720,7 @@ function NeuralRepairSVG({ color = "#ffffff", active = false }) {
         </g>
       ))}
       <text x="75" y="124" textAnchor="middle" fontSize="7" letterSpacing="2" fill={color} opacity="0.3"
-        fontFamily="'Jost',sans-serif">NEURAL SYNC</text>
+        fontFamily="'Jost',sans-serif">HARMONY</text>
     </svg>
   );
 }
@@ -1103,7 +1103,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       )}
       {toneOn && (
         <div style={{ marginBottom:12,animation:"fadeIn 1.5s ease forwards",opacity:0 }}>
-          <NeuralRepairSVG color={selected.pastel} active={true} />
+          <HarmonySVG color={selected.pastel} active={true} />
         </div>
       )}
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
@@ -1367,7 +1367,7 @@ export default function SakinApp() {
   const freqOscRef = useRef(null);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
-  const BIRD_EXT = { guguk:"m4a", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
+  const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
   const stopBirdSound = () => {
     if (birdAudioRef.current) {
       birdAudioRef.current.pause();
@@ -1662,7 +1662,7 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -1840,7 +1840,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1200,
+          model:"llama-3.3-70b-versatile", max_tokens:1200,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -1896,7 +1896,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -1949,7 +1949,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1300,
+          model:"llama-3.3-70b-versatile", max_tokens:1300,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -2062,7 +2062,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-opus-4-6", max_tokens:1700,
+          model:"llama-3.3-70b-versatile", max_tokens:1700,
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${astroText}
@@ -2864,7 +2864,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         <div style={{ fontSize:13,color:"#666666",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
                         {isPlaying && (
                           <div style={{ marginTop:8,animation:"fadeIn 1s ease forwards",opacity:0 }}>
-                            <NeuralRepairSVG color={f.pastel} active={true} />
+                            <HarmonySVG color={f.pastel} active={true} />
                           </div>
                         )}
                       </div>
