@@ -1627,6 +1627,28 @@ export default function SakinApp() {
   }
 
   // Önceki sorgulara göre kişiselleştirme bağlamı oluştur
+  const kisiselProfil = () => {
+    const parts = [];
+    if (birthDate) parts.push(`Doğum: ${birthDate}`);
+    if (birthTime) parts.push(`Saat: ${birthTime}`);
+    if (astro) {
+      parts.push(`Burç: ${astro.burc}`);
+      parts.push(`Yaşam Yolu: ${astro.yasam}`);
+      parts.push(`Kişisel Yıl: ${astro.kisiselYil}`);
+      parts.push(`Biyoritm: F%${astro.bio.fiziksel} D%${astro.bio.duygusal} Z%${astro.bio.zihinsel}`);
+    }
+    if (yukselen) parts.push(`Yükselen: ${yukselen}`);
+    if (ev12Gezegen) parts.push(`12.Ev: ${ev12Gezegen}`);
+    if (niyet) parts.push(`Bugünkü niyet: ${niyet}`);
+    if (selectedWords?.length) parts.push(`Niyet kelimeleri: ${selectedWords.join(", ")}`);
+    if (chakra?.name) parts.push(`Seçili çakra: ${chakra.name}`);
+    if (breathCount > 0) parts.push(`Nefes sayısı: ${breathCount}`);
+    if (streakData?.current > 0) parts.push(`Seri: ${streakData.current} gün`);
+    const seed = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+    parts.push(`Oturum: ${seed}`);
+    return parts.length > 0 ? `\nKişisel profil:\n${parts.join(" | ")}\nBu bilgileri yanıtına derinlemesine yansıt — her kişi için farklı, özgün ve kişiye özel yanıt üret. Aynı kalıpları tekrarlama, her yanıt benzersiz olsun.\n` : "";
+  };
+
   function kisiselBaglamOlustur(mevcutGecmis) {
     if (!mevcutGecmis || mevcutGecmis.length === 0) return "";
     const son3 = mevcutGecmis.slice(-3);
@@ -1666,7 +1688,7 @@ export default function SakinApp() {
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
 
 İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
@@ -1844,7 +1866,7 @@ BEDEN-ZİHİN BAĞLANTISI:
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
 
 ${REIKI_BILGI}
@@ -1900,7 +1922,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -1953,7 +1975,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -2064,7 +2086,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
           model:"llama-3.3-70b-versatile", max_tokens:1700,
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${astroText}
+${kisiselProfil()}${astroText}
 ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
 
