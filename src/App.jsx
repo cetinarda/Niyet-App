@@ -2653,35 +2653,51 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {breathStarted && breathMode==="diyafram" && (
             <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 18px" }}>
-              <div style={{ position:"relative",width:160,height:200 }}>
-              <svg width="160" height="200" viewBox="0 0 160 200" style={{ overflow:"visible" }}>
-                {/* Rib cage sides */}
-                <path d="M 48 38 C 36 72 34 105 55 118 M 112 38 C 124 72 126 105 105 118" fill="none" stroke="rgba(80,200,180,0.22)" strokeWidth="1.5"/>
-                {/* Collar bones */}
-                <path d="M 52 34 Q 80 24 108 34" fill="none" stroke="rgba(80,200,180,0.2)" strokeWidth="1.5"/>
-                {/* Sternum */}
-                <line x1="80" y1="34" x2="80" y2="114" stroke="rgba(80,200,180,0.12)" strokeWidth="1.5"/>
-                {/* Ribs */}
-                {[0,1,2,3,4].map(i=>(
-                  <g key={i}>
-                    <path d={`M 80 ${48+i*13} C ${50-i*2} ${52+i*13} ${40-i*2} ${62+i*13} ${42-i*2} ${72+i*13}`} fill="none" stroke="rgba(80,200,180,0.1)" strokeWidth="1.1"/>
-                    <path d={`M 80 ${48+i*13} C ${110+i*2} ${52+i*13} ${120+i*2} ${62+i*13} ${118+i*2} ${72+i*13}`} fill="none" stroke="rgba(80,200,180,0.1)" strokeWidth="1.1"/>
-                  </g>
-                ))}
-                {/* Diaphragm arc */}
-                <path d="M 38 116 Q 80 94 122 116" fill="none" stroke="rgba(80,200,180,0.7)" strokeWidth="2.5"/>
-                {/* Belly fill – expands on inhale */}
-                <ellipse cx="80" cy="158"
-                  fill={`rgba(80,200,180,${0.06 + (breathIsActive?0.22:0)})`}
-                  stroke={`rgba(80,200,180,${0.25 + (breathIsActive?0.45:0)})`}
-                  strokeWidth="1.8"
+              <div style={{ position:"relative",width:180,height:260 }}>
+              <svg width="180" height="260" viewBox="0 0 180 260" style={{ overflow:"visible" }}>
+                {/* Side profile body silhouette */}
+                <path d="M 90 12 C 102 12 110 22 110 35 C 110 48 102 56 90 58 C 78 56 70 48 70 35 C 70 22 78 12 90 12" fill="none" stroke="rgba(80,200,180,0.25)" strokeWidth="1.2"/>
+                {/* Neck */}
+                <path d="M 82 58 L 82 72 M 98 58 L 98 72" stroke="rgba(80,200,180,0.2)" strokeWidth="1.2"/>
+                {/* Shoulders & torso outline */}
+                <path d="M 82 72 C 60 74 48 78 44 88 L 44 170 C 44 185 55 195 72 195 L 108 195 C 125 195 136 185 136 170 L 136 88 C 132 78 120 74 98 72" fill="none" stroke="rgba(80,200,180,0.2)" strokeWidth="1.2"/>
+                {/* Lung area - left */}
+                <path d="M 56 85 C 52 90 50 100 52 118 C 54 128 62 132 70 130 L 70 85 C 66 82 60 82 56 85" fill="rgba(80,200,180,0.06)" stroke="rgba(80,200,180,0.15)" strokeWidth="1"/>
+                {/* Lung area - right */}
+                <path d="M 124 85 C 128 90 130 100 128 118 C 126 128 118 132 110 130 L 110 85 C 114 82 120 82 124 85" fill="rgba(80,200,180,0.06)" stroke="rgba(80,200,180,0.15)" strokeWidth="1"/>
+                {/* Diaphragm muscle line - moves down on inhale */}
+                <path d={`M 48 ${breathIsActive?142:132} Q 90 ${breathIsActive?124:114} 132 ${breathIsActive?142:132}`}
+                  fill="none" stroke="rgba(80,200,180,0.8)" strokeWidth="2.5" strokeLinecap="round"
+                  style={{ transition:`d ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}/>
+                <text x="155" y={breathIsActive?142:132} fill="rgba(80,200,180,0.5)" fontSize="9" fontFamily="'Jost',sans-serif"
+                  style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
+                  {lang==="tr"?"diyafram":"diaphragm"}
+                </text>
+                {/* Belly area - expands on inhale */}
+                <ellipse cx="90" cy="168"
+                  fill={`rgba(80,200,180,${breathIsActive?0.25:0.05})`}
+                  stroke={`rgba(80,200,180,${breathIsActive?0.6:0.2})`}
+                  strokeWidth="1.5"
                   style={{
-                    transformOrigin:"80px 158px",
-                    transform:`scale(${breathIsActive?1:0.62})`,
-                    transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out, stroke ${breathIsActive?breathInDur:breathOutDur} ease-in-out`,
-                    rx:38, ry:28
+                    transformOrigin:"90px 168px",
+                    transform:`scaleX(${breathIsActive?1.15:0.85}) scaleY(${breathIsActive?1.2:0.7})`,
+                    transition:`all ${breathIsActive?breathInDur:breathOutDur} ease-in-out`,
                   }}
+                  rx="36" ry="24"
                 />
+                <text x="90" y="172" textAnchor="middle" fill={`rgba(80,200,180,${breathIsActive?0.7:0.3})`} fontSize="9" fontFamily="'Jost',sans-serif"
+                  style={{ transition:`fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
+                  {lang==="tr"?"karın":"belly"}
+                </text>
+                {/* Arrow indicators */}
+                <g style={{ opacity:breathIsActive?1:0.2, transition:`opacity ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
+                  <path d="M 48 155 L 38 155 M 43 150 L 38 155 L 43 160" fill="none" stroke="rgba(80,200,180,0.5)" strokeWidth="1.2"/>
+                  <path d="M 132 155 L 142 155 M 137 150 L 142 155 L 137 160" fill="none" stroke="rgba(80,200,180,0.5)" strokeWidth="1.2"/>
+                </g>
+                {/* Chest label */}
+                <text x="90" y="108" textAnchor="middle" fill="rgba(80,200,180,0.3)" fontSize="9" fontFamily="'Jost',sans-serif">
+                  {lang==="tr"?"göğüs sabit":"chest still"}
+                </text>
               </svg>
               </div>
               <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)",marginTop:6 }}>{breathLabel}</div>
@@ -2724,10 +2740,38 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           )}
 
-          {breathStarted && (breathMode==="478"||breathMode==="kutu"||breathMode==="sakinletici") && (
+          {breathStarted && breathMode==="kutu" && (
             <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
               {(() => {
-                const modeColors = { "478":"80,160,220", kutu:"140,100,220", sakinletici:"80,200,160" };
+                const c = "140,100,220";
+                const s = breathScale;
+                const phaseIdx = {inhale:0,hold:1,exhale:2,hold2:3}[breathPhase]||0;
+                return (
+                  <>
+                    {[1.72,1.45,1.2].map((sc,i)=>(
+                      <div key={i} style={{ position:"absolute",inset:0,borderRadius:16,border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
+                    ))}
+                    <div style={{ position:"absolute",inset:0,borderRadius:16,background:`linear-gradient(135deg,rgba(${c},0.45),rgba(${c},0.12))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:12 }}>
+                      <svg width="60" height="60" viewBox="0 0 60 60">
+                        {[[5,5,55,5],[55,5,55,55],[55,55,5,55],[5,55,5,5]].map(([x1,y1,x2,y2],i)=>(
+                          <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={i===phaseIdx?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.2)"} strokeWidth={i===phaseIdx?2.5:1.2} strokeLinecap="round"/>
+                        ))}
+                        {[[5,5],[55,5],[55,55],[5,55]].map(([cx,cy],i)=>(
+                          <circle key={i} cx={cx} cy={cy} r={i===phaseIdx?4:2.5} fill={i===phaseIdx?`rgba(${c},1)`:"rgba(255,255,255,0.3)"}/>
+                        ))}
+                      </svg>
+                      <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          )}
+
+          {breathStarted && (breathMode==="478"||breathMode==="sakinletici") && (
+            <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
+              {(() => {
+                const modeColors = { "478":"80,160,220", sakinletici:"80,200,160" };
                 const c = modeColors[breathMode]||"80,130,200";
                 const s = breathScale;
                 return (
@@ -2762,6 +2806,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* ── Mode selection (before start) ── */}
           {!breathStarted && (
             <div style={{ marginBottom:28 }}>
+              {/* Selected mode description */}
+              <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"12px 16px",marginBottom:18,minHeight:42,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                <div style={{ fontSize:13,fontWeight:300,color:"rgba(200,190,220,0.6)",lineHeight:1.5,textAlign:"center" }}>
+                  {t(`breath_desc_${breathMode}`)}
+                </div>
+              </div>
               {/* Main breathing modes */}
               <div className="label-sm" style={{ marginBottom:14,letterSpacing:4 }}>{t("breath_choose")}</div>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:16 }}>

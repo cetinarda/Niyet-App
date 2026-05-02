@@ -68,6 +68,12 @@ export const TRANS = {
     breath_mode_478:         "4-7-8",
     breath_mode_kutu:        "Kutu",
     breath_mode_sakinletici: "Sakinleştirici",
+    breath_desc_standart:    "Temel nefes ritmi. Nefes alıp vermeye odaklan, zihni yavaşlat.",
+    breath_desc_diyafram:    "Karın bölgesini şişirerek nefes al. Göğüs değil, karın hareket eder. Derin gevşeme sağlar.",
+    breath_desc_akciger:     "Akciğerleri tam kapasiteyle doldur. Göğüs kafesi genişler, enerji artar.",
+    breath_desc_478:         "4 sn nefes al, 7 sn tut, 8 sn ver. Sinir sistemini sakinleştirir, uykuya hazırlar.",
+    breath_desc_kutu:        "Eşit sürelerle al, tut, ver, bekle. Odaklanma ve zihinsel netlik sağlar.",
+    breath_desc_sakinletici: "Uzun verişle parasempatik sistemi aktive eder. Stres ve kaygıyı azaltır.",
 
     // Ses Dalgaları
     nav_sound:         "Ses",
@@ -383,6 +389,12 @@ export const TRANS = {
     breath_mode_478:         "4-7-8",
     breath_mode_kutu:        "Box",
     breath_mode_sakinletici: "Calming",
+    breath_desc_standart:    "Basic breathing rhythm. Focus on inhale and exhale, slow the mind.",
+    breath_desc_diyafram:    "Breathe by expanding your belly, not your chest. Brings deep relaxation.",
+    breath_desc_akciger:     "Fill your lungs to full capacity. Chest expands, energy increases.",
+    breath_desc_478:         "Inhale 4s, hold 7s, exhale 8s. Calms the nervous system, prepares for sleep.",
+    breath_desc_kutu:        "Equal timing: inhale, hold, exhale, hold. Builds focus and mental clarity.",
+    breath_desc_sakinletici: "Long exhale activates parasympathetic system. Reduces stress and anxiety.",
 
     // Sound Waves
     nav_sound:         "Sound",
