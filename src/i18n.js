@@ -126,6 +126,15 @@ export const TRANS = {
 
     // Akşam
     evening_label:     "Akşam Kapanışı",
+    evening_subtitle:  "Bugünü geride bırak.\nKendine dön.",
+    evening_ritual:    "3 adımlık akşam ritüeli",
+    evening_step1:     "Bırak",
+    evening_step1_desc:"Bugün seni yoran her şeyi zihninden bırak.",
+    evening_step2:     "Şükret",
+    evening_step2_desc:"İyi gelen 3 şeyi hatırla ve kalbine teşekkür et.",
+    evening_step3:     "Teslim ol",
+    evening_step3_desc:"Kontrolü bırak, huzura teslim ol. Nefesinle kal.",
+    evening_quote:     "Bugün bitti.\nSen varsın, bu yeter.",
     learned_q:         "Bugün sana ne öğretti?",
     gratitude_q:       "Bugün neye şükrediyorsun?",
     btn_see_week:      "Haftama bak →",
@@ -431,10 +440,19 @@ export const TRANS = {
     step_label:        (cur, total) => `${cur}/${total} steps`,
 
     // Akşam
-    evening_label:     "EVENING CLOSE",
-    learned_q:         "What did you learn today?",
-    gratitude_q:       "Gratitude?",
-    btn_see_week:      "SEE THE WEEK",
+    evening_label:     "Evening Close",
+    evening_subtitle:  "Leave today behind.\nReturn to yourself.",
+    evening_ritual:    "3-step evening ritual",
+    evening_step1:     "Let go",
+    evening_step1_desc:"Release everything that weighed on you today.",
+    evening_step2:     "Be grateful",
+    evening_step2_desc:"Remember 3 things that felt good and thank your heart.",
+    evening_step3:     "Surrender",
+    evening_step3_desc:"Release control, surrender to peace. Stay with your breath.",
+    evening_quote:     "Today is done.\nYou are here, that is enough.",
+    learned_q:         "What did today teach you?",
+    gratitude_q:       "What are you grateful for?",
+    btn_see_week:      "See my week →",
 
     // Harita
     weekly_label:      "WEEKLY",
