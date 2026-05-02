@@ -57,7 +57,8 @@ export const handler = async (event) => {
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         max_tokens,
-        temperature: 0.2,
+        temperature: 0.75,
+        top_p: 0.9,
         messages: groqMessages,
       }),
     });
