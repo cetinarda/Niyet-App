@@ -424,20 +424,20 @@ const GLOBAL_CSS = `
 
   /* ── Reminder cards ── */
   .rem-card {
-    border-radius:14px; border:1px solid rgba(255,255,255,0.05);
-    padding:17px 18px; background:rgba(255,255,255,0.02);
-    transition:all 0.22s; margin-bottom:9px;
-    display:flex; align-items:flex-start; gap:14px;
+    border-radius:18px; border:1px solid rgba(255,255,255,0.06);
+    padding:18px 20px; background:rgba(255,255,255,0.04);
+    transition:all 0.3s; margin-bottom:12px;
+    display:flex; align-items:flex-start; gap:16px;
   }
   .rem-card.done { opacity:0.38; }
-  .rem-card:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.09); }
+  .rem-card:hover { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); }
   .check-btn {
-    width:36px; height:36px; border-radius:8px; flex-shrink:0; margin-top:0;
-    border:1px solid rgba(255,255,255,0.14); background:transparent;
-    cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center;
-    font-size:15px;
+    width:34px; height:34px; border-radius:50%; flex-shrink:0; margin-top:2px;
+    border:2px solid rgba(160,120,220,0.25); background:rgba(160,120,220,0.1);
+    cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:transparent;
   }
-  .check-btn.checked { background:rgba(100,200,120,0.2); border-color:rgba(100,200,120,0.5); animation:checkPop 0.3s ease; }
+  .check-btn.checked { background:rgba(160,120,220,0.3); border-color:rgba(160,120,220,0.7); color:#b090e0; animation:checkPop 0.3s ease; }
   .notif-btn {
     background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
     border-radius:100px; color:#888888; cursor:pointer;
@@ -624,15 +624,10 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
                 background: isTiming ? `linear-gradient(135deg,${rem.color}0a,transparent)` : undefined,
               }}
             >
-              <button className={`check-btn ${isDone?"checked":""}`} onClick={() => toggleDone(rem.id)}>
-                {isDone ? "✓" : ""}
-              </button>
+              <div style={{ fontSize:28, flexShrink:0, width:38, textAlign:"center", display:"flex", alignItems:"center", justifyContent:"center" }}>{rem.icon}</div>
               <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3, minWidth:0 }}>
-                  <span style={{ fontSize:19, flexShrink:0 }}>{rem.icon}</span>
-                  <span style={{ fontSize:14, letterSpacing:0.3, color:isDone?"#666666":"#ffffff", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", minWidth:0 }}>{rem.title}</span>
-                </div>
-                <div style={{ fontSize:14, color:"#888888", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
+                <div style={{ fontSize:16, fontWeight:500, color:isDone?"#666666":"#d8d0e8", marginBottom:4 }}>{rem.title}</div>
+                <div style={{ fontSize:13, fontWeight:300, color:"rgba(200,190,220,0.5)", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
                 {rem.duration && !isDone && (
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                     <svg width="28" height="28" style={{ flexShrink:0 }}>
@@ -656,6 +651,9 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
                   </div>
                 )}
               </div>
+              <button className={`check-btn ${isDone?"checked":""}`} onClick={() => toggleDone(rem.id)} style={{alignSelf:"center"}}>
+                {isDone ? "✓" : ""}
+              </button>
             </div>
           );
         })}
