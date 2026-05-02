@@ -1002,6 +1002,263 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
   );
 }
 
+// ─── Simulated community data helpers ──────────────────────────────────────
+
+function seededRand(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function getLiveCount() {
+  const h = new Date().getHours();
+  const base = h >= 6 && h < 10 ? 480 : h >= 10 && h < 14 ? 310 : h >= 19 && h < 23 ? 420 : 180;
+  const jitter = Math.floor(seededRand(Date.now() / 30000) * 80) - 40;
+  return Math.max(80, base + jitter);
+}
+
+function getOrchestraCount() {
+  return Math.floor(getLiveCount() * 0.28);
+}
+
+const COMMUNITY_WORDS_TR = ["huzur","akış","güven","sevgi","cesaret","berraklık","denge","şükür","güç","neşe","özgürlük","sabır"];
+const COMMUNITY_WORDS_EN = ["peace","flow","trust","love","courage","clarity","balance","gratitude","strength","joy","freedom","patience"];
+
+const SAMPLE_INTENTIONS_TR = [
+  "Bugün kendime nazik olmayı seçiyorum.",
+  "Koşullar ne olursa olsun sakin kalacağım.",
+  "Hayatımda yer açmak istediğim şeylere odaklanıyorum.",
+  "Bugün bir adım daha atmak yeterli.",
+  "Minnettarlıkla başlıyorum.",
+  "Her nefeste biraz daha huzurlanıyorum.",
+  "Kendimi olduğu gibi kabul ediyorum.",
+];
+
+const SAMPLE_INTENTIONS_EN = [
+  "Today I choose to be gentle with myself.",
+  "I will stay calm whatever happens.",
+  "I focus on what I want to invite into my life.",
+  "Taking one more step today is enough.",
+  "I begin with gratitude.",
+  "With each breath I find more peace.",
+  "I accept myself as I am.",
+];
+
+function BaglanScreen({ lang = "tr", chakra, niyet, CHAKRAS_7 }) {
+  const t = makeTrans(lang);
+  const [joined, setJoined] = useState(false);
+  const [orchPhase, setOrchPhase] = useState("exhale");
+  const [orchProgress, setOrchProgress] = useState(0);
+  const orchTimerRef = useRef(null);
+  const [liveCount, setLiveCount] = useState(getLiveCount);
+  const orchCount = getOrchestraCount() + (joined ? 1 : 0);
+
+  // Pulse live count slowly
+  useEffect(() => {
+    const id = setInterval(() => setLiveCount(getLiveCount()), 15000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Orchestra breathing cycle: 4s inhale, 1.5s hold, 3.5s exhale
+  useEffect(() => {
+    if (!joined) { setOrchPhase("exhale"); setOrchProgress(0); return; }
+    const PHASES = [
+      { name: "inhale", dur: 4000 },
+      { name: "hold",   dur: 1500 },
+      { name: "exhale", dur: 3500 },
+    ];
+    let phaseIdx = 0;
+    let start = Date.now();
+
+    function tick() {
+      const elapsed = Date.now() - start;
+      const { dur } = PHASES[phaseIdx];
+      const pct = Math.min(elapsed / dur, 1);
+      setOrchProgress(pct);
+      setOrchPhase(PHASES[phaseIdx].name);
+      if (pct >= 1) {
+        phaseIdx = (phaseIdx + 1) % PHASES.length;
+        start = Date.now();
+      }
+      orchTimerRef.current = requestAnimationFrame(tick);
+    }
+    orchTimerRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(orchTimerRef.current);
+  }, [joined]);
+
+  const today = new Date().toDateString();
+  const seed = today.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const communityWords = lang === "tr" ? COMMUNITY_WORDS_TR : COMMUNITY_WORDS_EN;
+  const topWords = [...communityWords].sort(() => seededRand(seed + communityWords.indexOf(_v => true)) - 0.5).slice(0, 6);
+
+  // Pick 4 words by seeded sort
+  const wordOrder = communityWords.map((w, i) => ({ w, r: seededRand(seed + i) })).sort((a, b) => b.r - a.r);
+  const topWordsFinal = wordOrder.slice(0, 6).map(x => x.w);
+
+  const intentions = lang === "tr" ? SAMPLE_INTENTIONS_TR : SAMPLE_INTENTIONS_EN;
+  const todayIntentions = intentions.map((s, i) => ({ s, r: seededRand(seed + i * 7) })).sort((a, b) => b.r - a.r).slice(0, 3).map(x => x.s);
+
+  const orchLabel = orchPhase === "inhale" ? t("baglan_inhale") : orchPhase === "hold" ? t("baglan_hold") : t("baglan_exhale");
+  const orchScale = orchPhase === "inhale" ? 0.85 + orchProgress * 0.3 : orchPhase === "hold" ? 1.15 : 1.15 - orchProgress * 0.3;
+
+  // Word frequency simulation: top word gets most votes
+  const wordCounts = topWordsFinal.map((_, i) => Math.floor(seededRand(seed + i * 13) * 60 + 20 - i * 5));
+  const maxCount = Math.max(...wordCounts);
+
+  return (
+    <div style={{ maxWidth: 405, width: "100%", padding: "62px 26px 120px", position: "relative", zIndex: 1 }}>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: 36 }}>
+        <div style={{ fontSize: 10, letterSpacing: 5, color: "#7a5a90", marginBottom: 8, animation: "pulse 2.5s ease-in-out infinite" }}>{t("baglan_sup")}</div>
+        <div style={{ fontSize: 26, fontWeight: 300, letterSpacing: 2, marginBottom: 6 }}>{t("baglan_title")}</div>
+        <div style={{ fontSize: 10, letterSpacing: 4, color: "#4a5a6a" }}>{t("baglan_sub")}</div>
+      </div>
+
+      {/* Live count card */}
+      <div style={{ background: "rgba(255,255,255,0.022)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 17, padding: "20px 22px", marginBottom: 18, display: "flex", alignItems: "center", gap: 18 }}>
+        <div style={{ position: "relative", width: 48, height: 48, flexShrink: 0 }}>
+          {[0, 1, 2].map(i => (
+            <span key={i} style={{
+              position: "absolute", inset: 0, borderRadius: "50%",
+              border: "1px solid rgba(139,90,160,0.4)",
+              animation: `pulse ${1.4 + i * 0.5}s ease-out infinite`,
+              animationDelay: `${i * 0.4}s`,
+            }} />
+          ))}
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "radial-gradient(circle,#c090e0,#8b5aa0)", boxShadow: "0 0 12px rgba(139,90,160,0.7)" }} />
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 300, color: "#d0b8f0", letterSpacing: 1 }}>{t("baglan_live_count", liveCount.toLocaleString())}</div>
+          <div style={{ fontSize: 11, color: "#4a5a6a", letterSpacing: 1, marginTop: 3 }}>{t("baglan_live_desc")}</div>
+        </div>
+      </div>
+
+      {/* Collective energy — today's chakra */}
+      <div style={{ background: `linear-gradient(135deg,${chakra.color}12,rgba(0,0,0,0))`, border: `1px solid ${chakra.color}25`, borderRadius: 17, padding: "16px 20px", marginBottom: 18 }}>
+        <div style={{ fontSize: 10, letterSpacing: 3.5, color: "#7a5a90", marginBottom: 10 }}>{t("baglan_energy_label")}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10 }}>
+          {CHAKRAS_7.map((c, i) => (
+            <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+              <div style={{
+                width: c.name === chakra.name ? 13 : 8,
+                height: c.name === chakra.name ? 13 : 8,
+                borderRadius: "50%",
+                background: c.name === chakra.name ? `radial-gradient(circle,${c.pastel},${c.color})` : `${c.color}55`,
+                boxShadow: c.name === chakra.name ? `0 0 14px ${c.color}80` : "none",
+                transition: "all 0.4s",
+                animation: c.name === chakra.name ? "pulse 2s ease-in-out infinite" : "none",
+              }} />
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 12, color: chakra.pastel, letterSpacing: 1 }}>{chakra.name} · {t("baglan_energy_sub")}</div>
+      </div>
+
+      {/* Top community words */}
+      <div style={{ background: "rgba(255,255,255,0.018)", border: "1px solid rgba(255,255,255,0.055)", borderRadius: 17, padding: "16px 20px", marginBottom: 18 }}>
+        <div style={{ fontSize: 10, letterSpacing: 3.5, color: "#7a5a90", marginBottom: 4 }}>{t("baglan_words_label")}</div>
+        <div style={{ fontSize: 10, color: "#4a5a6a", marginBottom: 12, letterSpacing: 1 }}>{t("baglan_words_sub")}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+          {topWordsFinal.map((word, i) => {
+            const pct = Math.round((wordCounts[i] / maxCount) * 100);
+            return (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ fontSize: 12, color: "#b0a0cc", width: 70, flexShrink: 0, letterSpacing: 0.5 }}>{word}</div>
+                <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ width: `${pct}%`, height: "100%", background: `linear-gradient(90deg,#8b5aa0,#4882b8)`, borderRadius: 4, transition: "width 0.8s ease" }} />
+                </div>
+                <div style={{ fontSize: 10, color: "#4a5a6a", width: 26, textAlign: "right" }}>{wordCounts[i]}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Orchestra mode */}
+      <div style={{ background: "linear-gradient(135deg,rgba(139,90,160,0.1),rgba(72,130,180,0.06))", border: "1px solid rgba(139,90,160,0.2)", borderRadius: 17, padding: "20px 22px", marginBottom: 18 }}>
+        <div style={{ fontSize: 10, letterSpacing: 3.5, color: "#9a6ab0", marginBottom: 4 }}>{t("baglan_breath_label")}</div>
+        <div style={{ fontSize: 10, color: "#4a5a6a", marginBottom: 16, letterSpacing: 1 }}>{t("baglan_breath_sub")}</div>
+
+        {joined ? (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ position: "relative", width: 90, height: 90, margin: "0 auto 14px" }}>
+              <div style={{
+                position: "absolute", inset: 0,
+                borderRadius: "50%",
+                background: `radial-gradient(circle,rgba(139,90,160,${0.25 + orchProgress * 0.2}),rgba(72,100,200,0.1))`,
+                border: "1px solid rgba(139,90,160,0.35)",
+                transform: `scale(${orchScale})`,
+                transition: "transform 0.1s linear",
+                boxShadow: `0 0 ${20 + orchProgress * 18}px rgba(139,90,160,0.3)`,
+              }} />
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div style={{ fontSize: 12, letterSpacing: 3, color: "#c0a0e0", textTransform: "uppercase" }}>{orchLabel}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 11, color: "#7a8a9a", marginBottom: 14, letterSpacing: 1 }}>{t("baglan_breath_active", orchCount)}</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: 14 }}>
+              {[...Array(Math.min(orchCount, 9))].map((_, i) => (
+                <span key={i} style={{
+                  display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                  background: i === 0 ? "#c090e0" : `radial-gradient(circle,${CHAKRAS_7[i % 7].pastel},transparent)`,
+                  boxShadow: i === 0 ? "0 0 8px rgba(192,144,224,0.8)" : "none",
+                  animation: `pulse ${1 + i * 0.2}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.12}s`,
+                }} />
+              ))}
+              {orchCount > 9 && <span style={{ fontSize: 10, color: "#4a5a6a", alignSelf: "center" }}>+{orchCount - 9}</span>}
+            </div>
+            <button
+              onClick={() => setJoined(false)}
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 22, padding: "7px 22px", cursor: "pointer", color: "#6a7a8a", fontSize: 10, letterSpacing: 3 }}>
+              {t("baglan_breath_leave")}
+            </button>
+          </div>
+        ) : (
+          <div style={{ textAlign: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: 6, marginBottom: 14 }}>
+              {[...Array(7)].map((_, i) => (
+                <span key={i} style={{
+                  display: "inline-block", width: 8, height: 8, borderRadius: "50%",
+                  background: `radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,
+                  animation: `pulse ${1 + i * 0.2}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.14}s`,
+                }} />
+              ))}
+            </div>
+            <div style={{ fontSize: 12, color: "#5a6a7a", marginBottom: 16, letterSpacing: 1 }}>{t("baglan_breath_active", orchCount)}</div>
+            <button
+              onClick={() => setJoined(true)}
+              style={{ background: "linear-gradient(135deg,rgba(139,90,160,0.6),rgba(72,100,200,0.4))", border: "1px solid rgba(139,90,160,0.35)", borderRadius: 22, padding: "9px 28px", cursor: "pointer", color: "#e0d0f0", fontSize: 11, letterSpacing: 3 }}>
+              {t("baglan_breath_join")}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Today's community intentions */}
+      <div style={{ background: "rgba(255,255,255,0.018)", border: "1px solid rgba(255,255,255,0.055)", borderRadius: 17, padding: "16px 20px", marginBottom: 18 }}>
+        <div style={{ fontSize: 10, letterSpacing: 3.5, color: "#7a5a90", marginBottom: 4 }}>{t("baglan_intentions_label")}</div>
+        <div style={{ fontSize: 10, color: "#4a5a6a", marginBottom: 14, letterSpacing: 1 }}>{t("baglan_intentions_sub")}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          {todayIntentions.map((s, i) => (
+            <div key={i} style={{ background: "rgba(255,255,255,0.025)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#c0b8d8", lineHeight: 1.6, letterSpacing: 0.3 }}>
+              {s}
+            </div>
+          ))}
+          {niyet && (
+            <div style={{ background: "rgba(139,90,160,0.08)", border: "1px solid rgba(139,90,160,0.2)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#d0c0e8", lineHeight: 1.6, letterSpacing: 0.3, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+              <span>{niyet}</span>
+              <span style={{ fontSize: 9, letterSpacing: 2, color: "#9a7ab8", flexShrink: 0, marginTop: 2 }}>{t("baglan_you_badge")}</span>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "tr");
   const t = makeTrans(lang);
@@ -1574,7 +1831,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
-    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",
+    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",baglan:"60,140,180",
   }[screen]||"139,90,160";
 
   const NAV = [
@@ -1586,6 +1843,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
     {id:"harita", icon:"🗺️", label:t("nav_map"),                   color:"#82d9a3"},
+    {id:"baglan", icon:"◉",  label:t("nav_baglan"),                color:"#a0c8e0"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2454,6 +2712,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
         </div>
+      )}
+
+      {screen==="baglan" && (
+        <BaglanScreen lang={lang} chakra={chakra} niyet={niyet} CHAKRAS_7={CHAKRAS_7} />
       )}
 
       {/* SAKİN NEDİR? */}
