@@ -2937,19 +2937,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!aksamRitualChecks.every(Boolean) ? (
             <>
               <div style={{ textAlign:"center",marginBottom:28 }}>
-                <div style={{ fontSize:28,marginBottom:12 }}>🌙</div>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style={{margin:"0 auto 12px",display:"block",opacity:0.7}}>
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="#b090e0" strokeWidth="1.2" fill="none"/>
+                </svg>
                 <div style={{ fontSize:13,letterSpacing:5,color:"rgba(200,190,220,0.5)",textTransform:"uppercase",marginBottom:16 }}>{t("evening_label")}</div>
                 <div style={{ fontSize:18,fontWeight:300,color:"#d8d0e8",lineHeight:1.6,whiteSpace:"pre-line" }}>{t("evening_subtitle")}</div>
               </div>
               <div style={{ fontSize:12,letterSpacing:4,color:"rgba(200,190,220,0.4)",textAlign:"center",textTransform:"uppercase",marginBottom:20 }}>{t("evening_ritual")}</div>
               {[
-                { icon:"🌙", title:t("evening_step1"), desc:t("evening_step1_desc") },
-                { icon:"💜", title:t("evening_step2"), desc:t("evening_step2_desc") },
-                { icon:"✨", title:t("evening_step3"), desc:t("evening_step3_desc") },
+                { icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="#b090e0" strokeWidth="1.2"/></svg>, title:t("evening_step1"), desc:t("evening_step1_desc") },
+                { icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 4 14.5 4 9.5C4 6.5 6.5 4 9 4c1.5 0 2.5.8 3 1.5C12.5 4.8 13.5 4 15 4c2.5 0 5 2.5 5 5.5C20 14.5 12 21 12 21z" stroke="#b090e0" strokeWidth="1.2" fill="none"/></svg>, title:t("evening_step2"), desc:t("evening_step2_desc") },
+                { icon:<svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="#b090e0" strokeWidth="1.2"/><circle cx="12" cy="12" r="3" stroke="#b090e0" strokeWidth="1" opacity="0.5"/></svg>, title:t("evening_step3"), desc:t("evening_step3_desc") },
               ].map((step, i) => (
                 <div key={i} onClick={() => setAksamRitualChecks(prev => { const n=[...prev]; n[i]=!n[i]; return n; })}
                   style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:18,padding:"18px 20px",marginBottom:12,display:"flex",alignItems:"center",gap:16,cursor:"pointer",transition:"all 0.3s" }}>
-                  <div style={{ fontSize:28,flexShrink:0,width:38,textAlign:"center" }}>{step.icon}</div>
+                  <div style={{ flexShrink:0,width:38,textAlign:"center",display:"flex",alignItems:"center",justifyContent:"center" }}>{step.icon}</div>
                   <div style={{ flex:1 }}>
                     <div style={{ fontSize:16,fontWeight:500,color:"#d8d0e8",marginBottom:4 }}>{step.title}</div>
                     <div style={{ fontSize:13,fontWeight:300,color:"rgba(200,190,220,0.5)",lineHeight:1.5 }}>{step.desc}</div>
@@ -2958,9 +2960,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
               ))}
               <div style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:18,padding:"18px 20px",marginTop:8,display:"flex",alignItems:"center",gap:16 }}>
-                <div style={{ fontSize:22,color:"rgba(200,190,220,0.2)",flexShrink:0,fontFamily:"Georgia,serif" }}>"</div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{flexShrink:0,opacity:0.25}}>
+                  <path d="M10 8c0-2.2-1.8-4-4-4S2 5.8 2 8c0 2 1 3 2 4h4l2-2V8zM22 8c0-2.2-1.8-4-4-4s-4 1.8-4 4v2l2 2h4c1-1 2-2 2-4z" stroke="#b090e0" strokeWidth="1.2"/>
+                </svg>
                 <div style={{ fontSize:14,fontWeight:300,color:"rgba(200,190,220,0.45)",lineHeight:1.6,flex:1,whiteSpace:"pre-line" }}>{t("evening_quote")}</div>
-                <div style={{ fontSize:18,color:"rgba(200,190,220,0.15)",flexShrink:0 }}>♡</div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{flexShrink:0,opacity:0.15}}>
+                  <path d="M12 21C12 21 4 14.5 4 9.5C4 6.5 6.5 4 9 4c1.5 0 2.5.8 3 1.5C12.5 4.8 13.5 4 15 4c2.5 0 5 2.5 5 5.5C20 14.5 12 21 12 21z" stroke="#b090e0" strokeWidth="1.2"/>
+                </svg>
               </div>
             </>
           ) : (
