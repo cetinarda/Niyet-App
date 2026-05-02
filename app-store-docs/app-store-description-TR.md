@@ -36,8 +36,8 @@ Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır,
 **Haftalık İçsel Harita**
 Haftanın sonunda seni bekleyen bir ayna: en aktif çakran, toplam nefesin, niyetin, bilinçli anların. Kendini dışarıdan gör.
 
-**Orkestra Modu**
-Bugün seninle nefes alan yüzlerce insan var. Yalnız değilsin.
+**Bağlan — Topluluk**
+Seninle aynı anda uygulamayı açık tutan yüzlerce insan var. Günün kolektif enerjisini hisset, topluluğun niyet kelimelerini gör, Orkestra Modu ile herkesle birlikte nefes al.
 
 ---
 

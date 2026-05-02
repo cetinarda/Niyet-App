@@ -83,7 +83,8 @@ Hazırlanması gereken ekran görüntüsü boyutları:
 2. Sabah niyeti — kelime seçimi ekranı
 3. Nefes egzersizi — animasyon ekranı
 4. Günün çakrası — reiki ekranı
-5. Haftalık içsel harita — istatistikler
+5. Bağlan — topluluk ekranı (orkestra modu + niyet kelimeleri)
+6. Haftalık içsel harita — istatistikler
 
 ---
 

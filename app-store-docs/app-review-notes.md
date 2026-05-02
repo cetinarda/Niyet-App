@@ -22,6 +22,7 @@
 6. Gün içi hatırlatıcılar listesini kontrol et
 7. Akşam kapanış notunu yaz
 8. Haftalık istatistik haritasını görüntüle
+9. **Bağlan** ekranında (alt navigasyon ◉ simgesi) topluluk özelliklerini inceleyin
 
 ---
 
@@ -50,8 +51,8 @@ Uygulamada yer alan Reiki ve çakra içerikleri:
 - "Enerji farkındalığı" ve "bedensel farkındalık" bağlamında, kültürel bir uygulama olarak ele alınmaktadır
 - Hiçbir sağlık iddiası içermemektedir
 
-### Orkestra Modu (Hayali Topluluk Sayısı)
-Haftalık harita ekranında görünen "Bugün 312 kişi seninle nefes aldı" ifadesi, motivasyonel amaçlı kullanılan bir **sabit/örnek değerdir**. Gerçek zamanlı bir veri bağlantısı temsil etmemektedir. Eğer bu ifade yanıltıcı bulunursa, içerik güncellemeye hazırız.
+### Bağlan Ekranı — Topluluk Sayısı (Simüle Veri)
+**Bağlan** ekranında ve haftalık harita widget'ında gösterilen kullanıcı sayıları (örn. "480 kişi") sabit bir veritabanından değil, günün saatine göre deterministik bir formülle hesaplanmakta; her 30 saniyede hafif varyasyon göstermektedir. Gerçek zamanlı bir sunucu bağlantısı **yoktur**. Bu tasarım kararı kasıtlıdır: uygulama motivasyonel bir topluluk hissi yaratmak için bu yöntemi kullanmaktadır. Yanıltıcı bulunursa sayıları kaldırmaya veya "örnek veri" etiketi eklemeye hazırız.
 
 ### Bildirim Kullanımı
 - Local Notification API kullanılmaktadır.

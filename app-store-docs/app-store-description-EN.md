@@ -36,8 +36,8 @@ What did you learn today? What are you grateful for? A few sentences are enough.
 **Weekly Inner Map**
 At the end of the week, a mirror awaits you: your most active chakra, total breaths, your intention, your conscious moments. See yourself from the outside.
 
-**Orchestra Mode**
-Hundreds of people are breathing with you today. You are not alone.
+**Connect — Community**
+Hundreds of people have this app open at the same time as you. Feel the collective energy of the day, see the community's top intention words, and breathe together with everyone in Orchestra Mode.
 
 ---
 

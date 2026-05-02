@@ -1088,9 +1088,8 @@ function BaglanScreen({ lang = "tr", chakra, niyet, CHAKRAS_7 }) {
   const today = new Date().toDateString();
   const seed = today.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
   const communityWords = lang === "tr" ? COMMUNITY_WORDS_TR : COMMUNITY_WORDS_EN;
-  const topWords = [...communityWords].sort(() => seededRand(seed + communityWords.indexOf(_v => true)) - 0.5).slice(0, 6);
 
-  // Pick 4 words by seeded sort
+  // Pick 6 words by seeded sort
   const wordOrder = communityWords.map((w, i) => ({ w, r: seededRand(seed + i) })).sort((a, b) => b.r - a.r);
   const topWordsFinal = wordOrder.slice(0, 6).map(x => x.w);
 
@@ -2652,7 +2651,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:12,color:"#7a8a9a" }}>{t("orchestra_text", "312")}</div>
+            <div style={{ fontSize:12,color:"#7a8a9a" }}>{t("orchestra_text", getLiveCount())}</div>
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(100,60,160,0.12),rgba(60,80,140,0.07))",border:"1px solid rgba(139,90,160,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:10,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
