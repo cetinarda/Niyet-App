@@ -1417,6 +1417,7 @@ export default function SakinApp() {
   }, [playingHz]);
   const [aksamNote,     setAksamNote]     = useState("");
   const [sukur,         setSukur]         = useState("");
+  const [aksamRitualChecks, setAksamRitualChecks] = useState([false, false, false]);
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
@@ -2929,27 +2930,60 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* AKŞAM */}
       {screen==="aksam" && (
         <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
-          <div style={{ textAlign:"center",marginBottom:32 }}>
-            <div style={{ fontSize:28,marginBottom:9 }}>🌙</div>
-            <div style={{ fontSize:13,letterSpacing:5,color:"#666666" }}>{t("evening_label")}</div>
-          </div>
-          {niyet && <div style={{ borderLeft:"2px solid rgba(255,255,255,0.32)",paddingLeft:15,marginBottom:26,color:"#888888",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
-          <div style={{ marginBottom:18 }}>
-            <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
-            <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
-          </div>
-          <div style={{ marginBottom:26 }}>
-            <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
-            <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
-          </div>
-          <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
-            {["🫶","⚡","🌊","✨","🌿"].map(em=>(
-              <button key={em} style={{ fontSize:22,background:"transparent",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:44,height:44,cursor:"pointer",transition:"all 0.2s" }}
-                onMouseEnter={ev=>ev.target.style.transform="scale(1.22)"}
-                onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
-            ))}
-          </div>
-          <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
+          {!aksamRitualChecks.every(Boolean) ? (
+            <>
+              <div style={{ textAlign:"center",marginBottom:28 }}>
+                <div style={{ fontSize:28,marginBottom:12 }}>🌙</div>
+                <div style={{ fontSize:13,letterSpacing:5,color:"rgba(200,190,220,0.5)",textTransform:"uppercase",marginBottom:16 }}>{t("evening_label")}</div>
+                <div style={{ fontSize:18,fontWeight:300,color:"#d8d0e8",lineHeight:1.6,whiteSpace:"pre-line" }}>{t("evening_subtitle")}</div>
+              </div>
+              <div style={{ fontSize:12,letterSpacing:4,color:"rgba(200,190,220,0.4)",textAlign:"center",textTransform:"uppercase",marginBottom:20 }}>{t("evening_ritual")}</div>
+              {[
+                { icon:"🌙", title:t("evening_step1"), desc:t("evening_step1_desc") },
+                { icon:"💜", title:t("evening_step2"), desc:t("evening_step2_desc") },
+                { icon:"✨", title:t("evening_step3"), desc:t("evening_step3_desc") },
+              ].map((step, i) => (
+                <div key={i} onClick={() => setAksamRitualChecks(prev => { const n=[...prev]; n[i]=!n[i]; return n; })}
+                  style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:18,padding:"18px 20px",marginBottom:12,display:"flex",alignItems:"center",gap:16,cursor:"pointer",transition:"all 0.3s" }}>
+                  <div style={{ fontSize:28,flexShrink:0,width:38,textAlign:"center" }}>{step.icon}</div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontSize:16,fontWeight:500,color:"#d8d0e8",marginBottom:4 }}>{step.title}</div>
+                    <div style={{ fontSize:13,fontWeight:300,color:"rgba(200,190,220,0.5)",lineHeight:1.5 }}>{step.desc}</div>
+                  </div>
+                  <div style={{ width:34,height:34,borderRadius:"50%",background:aksamRitualChecks[i]?"rgba(160,120,220,0.3)":"rgba(160,120,220,0.1)",border:`2px solid ${aksamRitualChecks[i]?"rgba(160,120,220,0.7)":"rgba(160,120,220,0.25)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all 0.3s",fontSize:16,color:aksamRitualChecks[i]?"#b090e0":"transparent" }}>✓</div>
+                </div>
+              ))}
+              <div style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:18,padding:"18px 20px",marginTop:8,display:"flex",alignItems:"center",gap:16 }}>
+                <div style={{ fontSize:22,color:"rgba(200,190,220,0.2)",flexShrink:0,fontFamily:"Georgia,serif" }}>"</div>
+                <div style={{ fontSize:14,fontWeight:300,color:"rgba(200,190,220,0.45)",lineHeight:1.6,flex:1,whiteSpace:"pre-line" }}>{t("evening_quote")}</div>
+                <div style={{ fontSize:18,color:"rgba(200,190,220,0.15)",flexShrink:0 }}>♡</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ textAlign:"center",marginBottom:32 }}>
+                <div style={{ fontSize:28,marginBottom:9 }}>🌙</div>
+                <div style={{ fontSize:13,letterSpacing:5,color:"#666666" }}>{t("evening_label")}</div>
+              </div>
+              {niyet && <div style={{ borderLeft:"2px solid rgba(255,255,255,0.32)",paddingLeft:15,marginBottom:26,color:"#888888",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
+              <div style={{ marginBottom:18 }}>
+                <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
+                <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
+              </div>
+              <div style={{ marginBottom:26 }}>
+                <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
+                <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
+              </div>
+              <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
+                {["🫶","⚡","🌊","✨","🌿"].map(em=>(
+                  <button key={em} style={{ fontSize:22,background:"transparent",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:44,height:44,cursor:"pointer",transition:"all 0.2s" }}
+                    onMouseEnter={ev=>ev.target.style.transform="scale(1.22)"}
+                    onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
+                ))}
+              </div>
+              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
+            </>
+          )}
         </div>
       )}
 
