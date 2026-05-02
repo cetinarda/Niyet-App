@@ -893,7 +893,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:19, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#777777", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
+        <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
       </div>
       {/* Ascension layout — bottom to top */}
       <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
