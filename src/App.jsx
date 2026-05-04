@@ -1447,6 +1447,38 @@ export default function SakinApp() {
   };
   const [devMode, setDevMode] = useState(() => localStorage.getItem("sakin_dev_mode") === "1");
   const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("sakin_rapor_used") === "1");
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
+  const [showLicenseModal, setShowLicenseModal] = useState(false);
+  const [licenseInput, setLicenseInput] = useState("");
+  const [licenseError, setLicenseError] = useState("");
+  const [licenseLoading, setLicenseLoading] = useState(false);
+  const validateLicense = async () => {
+    const key = licenseInput.trim();
+    if (!key) return;
+    setLicenseLoading(true);
+    setLicenseError("");
+    try {
+      const res = await fetch("/.netlify/functions/validate-license", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ license_key: key }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        localStorage.setItem("sakin_premium", "1");
+        localStorage.setItem("sakin_license_key", key);
+        setIsPremium(true);
+        setShowLicenseModal(false);
+        setLicenseInput("");
+        haptic(ImpactStyle.Heavy);
+      } else {
+        setLicenseError(lang === "tr" ? "Geçersiz lisans anahtarı" : "Invalid license key");
+      }
+    } catch {
+      setLicenseError(lang === "tr" ? "Bağlantı hatası, tekrar dene" : "Connection error, try again");
+    }
+    setLicenseLoading(false);
+  };
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
@@ -2358,12 +2390,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"mandalaRotate 40s linear infinite reverse" }} />
               {/* Gezegen gövdesi */}
               <div style={{ position:"absolute",inset:20,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 50%, transparent 70%)",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 0 60px rgba(255,255,255,0.04), inset 0 0 40px rgba(255,255,255,0.02)" }} />
-              {/* Logo — elmas */}
+              {/* Logo — kare + nokta */}
               <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center" }}>
                 <div style={{ position:"relative",width:56,height:56 }}>
-                  <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,animation:"diamondSpin 12s linear infinite" }} />
-                  <div style={{ position:"absolute",inset:10,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:3,animation:"diamondSpin 8s linear infinite reverse" }} />
-                  <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.7)",boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)" }} />
+                  <svg viewBox="0 0 56 56" width="56" height="56" style={{ position:"absolute",inset:0 }}>
+                    <rect x="4" y="4" width="48" height="48" rx="10" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
+                  </svg>
+                  <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.9)",boxShadow:"0 0 20px rgba(184,164,216,0.5),0 0 40px rgba(122,80,150,0.3)" }} />
                 </div>
               </div>
             </div>
@@ -3476,7 +3509,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
-            {raporKullanildi && !aiRapor && !aiLoading ? (
+            {raporKullanildi && !isPremium && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
                 <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
@@ -3484,18 +3517,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {t("free_used_body")}<br/>
                   <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
                 </div>
-                <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:12,padding:"12px 16px",marginBottom:14 }}>
-                  <div style={{ fontSize:13,letterSpacing:2,color:"#888888",marginBottom:6 }}>{t("premium_label")}</div>
-                  <div style={{ fontSize:13,color:"#c0b0d0",lineHeight:1.7 }}>
-                    {t("premium_feat1")}<br/>
-                    {t("premium_feat2")}<br/>
-                    {t("premium_feat3")}
-                  </div>
-                </div>
-                <a href="mailto:destek@sakin.app?subject=Premium%20%C3%9Cyelik"
-                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",border:"1px solid rgba(255,255,255,0.4)",borderRadius:22,color:"#cccccc",fontSize:14,letterSpacing:1,textDecoration:"none",cursor:"pointer" }}>
+                <button onClick={() => setScreen("fiyat")}
+                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",border:"1px solid rgba(255,255,255,0.4)",borderRadius:22,color:"#cccccc",fontSize:14,letterSpacing:1,cursor:"pointer" }}>
                   {t("btn_go_premium")}
-                </a>
+                </button>
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
@@ -3540,9 +3565,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
-              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:3 }} />
-              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:2 }} />
-              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.5)" }} />
+              <svg viewBox="0 0 40 40" width="40" height="40">
+                <rect x="4" y="4" width="32" height="32" rx="7" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
+                <circle cx="20" cy="20" r="4" fill="rgba(184,164,216,0.8)"/>
+              </svg>
             </div>
             <div>
               <h1 style={{ margin:0 }}>{lang==="tr" ? "Sakin Nedir?" : "What is Sakin?"}</h1>
@@ -3596,14 +3622,45 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h1>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
-          <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
-            <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#ffffff,#ffffff,#ffffff)",opacity:0.6,borderRadius:"3px 3px 0 0" }}/>
-            <div className="pricing-badge" style={{ background:"rgba(255,255,255,0.18)",border:"1px solid rgba(255,255,255,0.4)",color:"#aaaaaa" }}>✦ {t("paid_app_badge")}</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
-            <div style={{ fontSize:28,color:"#ffffff",letterSpacing:1,marginBottom:6 }}>{t("paid_app_price")}</div>
-            <div style={{ fontSize:13,color:"#666666",letterSpacing:1,marginBottom:18 }}>{t("paid_app_price_sub")}</div>
-            <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
-          </div>
+          {isPremium ? (
+            <div style={{ textAlign:"center",padding:"32px 0" }}>
+              <div style={{ width:64,height:64,borderRadius:"50%",background:"rgba(80,200,120,0.15)",border:"1px solid rgba(80,200,120,0.3)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px" }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#50c878" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#50c878",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "Premium Aktif" : "Premium Active"}
+              </div>
+              <div style={{ fontSize:14,color:"#888",letterSpacing:1 }}>
+                {lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked for lifetime."}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#ffffff,#ffffff,#ffffff)",opacity:0.6,borderRadius:"3px 3px 0 0" }}/>
+                <div className="pricing-badge" style={{ background:"rgba(255,255,255,0.18)",border:"1px solid rgba(255,255,255,0.4)",color:"#aaaaaa" }}>✦ {t("paid_app_badge")}</div>
+                <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
+                <div style={{ fontSize:28,color:"#ffffff",letterSpacing:1,marginBottom:6 }}>{t("paid_app_price")}</div>
+                <div style={{ fontSize:13,color:"#666666",letterSpacing:1,marginBottom:18 }}>{t("paid_app_price_sub")}</div>
+                <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+              </div>
+
+              <button className="sakin-btn-primary" style={{ width:"100%",marginBottom:16,fontSize:15,letterSpacing:2,padding:"14px 0" }}
+                onClick={() => window.open(t("lemon_checkout_url"), "_blank")}>
+                {lang==="tr" ? "Satın Al →" : "Buy Now →"}
+              </button>
+
+              <div style={{ textAlign:"center",marginBottom:20 }}>
+                <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>
+                  {lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}
+                </div>
+                <button onClick={() => setShowLicenseModal(true)}
+                  style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
+                </button>
+              </div>
+            </>
+          )}
 
           <hr className="divider" />
           <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
@@ -3948,6 +4005,53 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {offlineMsg && (
         <div style={{ position:"fixed",bottom:"calc(120px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:99999,background:"rgba(192,57,43,0.9)",borderRadius:14,padding:"12px 24px",maxWidth:340,textAlign:"center",backdropFilter:"blur(8px)",animation:"fadeUp 0.3s ease" }}>
           <span style={{ fontFamily:"'Jost',sans-serif",fontSize:13,color:"#fff",letterSpacing:0.5 }}>{offlineMsg}</span>
+        </div>
+      )}
+
+      {/* LİSANS AKTİVASYON MODALI */}
+      {showLicenseModal && (
+        <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}
+          onClick={() => setShowLicenseModal(false)}>
+          <div style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"32px 28px",maxWidth:400,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ textAlign:"center",marginBottom:20 }}>
+              <div style={{ position:"relative",width:48,height:48,margin:"0 auto 12px" }}>
+                <svg viewBox="0 0 48 48" width="48" height="48">
+                  <rect x="8" y="8" width="32" height="32" rx="6" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="2"/>
+                  <circle cx="24" cy="24" r="4" fill="rgba(184,164,216,0.8)"/>
+                </svg>
+              </div>
+              <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#ffffff",letterSpacing:1.5,margin:0 }}>
+                {lang==="tr" ? "Lisans Aktivasyonu" : "License Activation"}
+              </h3>
+            </div>
+            <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#999999",lineHeight:1.8,textAlign:"center",margin:"0 0 20px" }}>
+              {lang==="tr" ? "Satın alma sonrası e-posta ile gelen lisans anahtarını gir." : "Enter the license key you received via email after purchase."}
+            </p>
+            <input
+              type="text"
+              className="sakin-input"
+              placeholder={lang==="tr" ? "XXXXX-XXXXX-XXXXX-XXXXX" : "XXXXX-XXXXX-XXXXX-XXXXX"}
+              value={licenseInput}
+              onChange={e => setLicenseInput(e.target.value)}
+              style={{ fontSize:15,padding:"12px 14px",marginBottom:8,textAlign:"center",letterSpacing:2,fontFamily:"monospace" }}
+            />
+            {licenseError && (
+              <div style={{ fontSize:13,color:"#e06060",textAlign:"center",marginBottom:8 }}>{licenseError}</div>
+            )}
+            <button className="sakin-btn-primary"
+              style={{ width:"100%",marginTop:12,fontSize:14,letterSpacing:2,padding:"13px 0",opacity:licenseLoading?0.6:1 }}
+              disabled={licenseLoading}
+              onClick={validateLicense}>
+              {licenseLoading
+                ? (lang==="tr" ? "Doğrulanıyor..." : "Validating...")
+                : (lang==="tr" ? "Aktifleştir" : "Activate")}
+            </button>
+            <button onClick={() => setShowLicenseModal(false)}
+              style={{ width:"100%",marginTop:8,padding:"10px 0",background:"transparent",border:"none",color:"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+              {lang==="tr" ? "Vazgeç" : "Cancel"}
+            </button>
+          </div>
         </div>
       )}
 

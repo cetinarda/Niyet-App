@@ -205,7 +205,8 @@ export const TRANS = {
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Bir kez öde, ömür boyu seninle. Abonelik yok.",
     paid_app_features: ["Sabah niyeti ve motivasyon kelimeleri","7 farklı nefes egzersizi tekniği","10 solfeggio frekansı (Ses Dalgaları)","22 Çakra Terapisi — derin enerji çalışması","İçsel Ayna — AI destekli kişisel analiz","Haftalık AI içsel rapor","Gün içi hatırlatıcılar (10+)","Akşam kapanış ritüeli","Haftalık iç harita ve istatistikler","Numeroloji & astroloji detayları","Reiki rehberi ve semptom haritası","Süresiz erişim — güncelleme dahil"],
-    pricing_footer:    "App Store üzerinden güvenle satın alınır. Sorularınız için:",
+    pricing_footer:    "Güvenli ödeme altyapısı ile satın alınır. Sorularınız için:",
+    lemon_checkout_url:"https://sakin.lemonsqueezy.com/buy",
 
     // Hizmet Şartları
     terms_title:       "Hizmet Şartları",
@@ -526,7 +527,8 @@ export const TRANS = {
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Pay once, yours forever. No subscription.",
     paid_app_features: ["Morning intention and motivation words","7 different breathing techniques","10 solfeggio frequencies (Sound Waves)","22 Chakra Therapy — deep energy work","Inner Mirror — AI-powered personal analysis","Weekly AI inner report","Daily reminders (10+)","Evening closing ritual","Weekly inner map and statistics","Numerology & astrology details","Reiki guide and symptom map","Lifetime access — updates included"],
-    pricing_footer:    "Purchased securely through the App Store. For questions:",
+    pricing_footer:    "Purchased securely via our payment provider. For questions:",
+    lemon_checkout_url:"https://sakin.lemonsqueezy.com/buy",
 
     // Terms of Service
     terms_title:       "Terms of Service",
