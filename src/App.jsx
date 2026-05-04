@@ -315,6 +315,13 @@ const GLOBAL_CSS = `
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+  @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
+  @keyframes introSquareDraw { from{stroke-dashoffset:1600} to{stroke-dashoffset:0} }
+  @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
+  @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes introLineExpand { from{width:0} to{width:60px} }
+  @keyframes introItemSlide { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
 
   .fade-up  { animation: fadeUp  0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
   .slide-in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
@@ -1532,6 +1539,9 @@ export default function SakinApp() {
   const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
+  const [introPhase, setIntroPhase] = useState(0);
+  const [introExiting, setIntroExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef        = useRef(null);
@@ -1572,6 +1582,19 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
+  useEffect(() => {
+    if (!showIntro) return;
+    const timers = [
+      setTimeout(() => setIntroPhase(1), 600),
+      setTimeout(() => setIntroPhase(2), 1800),
+      setTimeout(() => setIntroPhase(3), 3000),
+      setTimeout(() => setIntroPhase(4), 4200),
+      setTimeout(() => setIntroPhase(5), 5400),
+      setTimeout(() => { setIntroExiting(true); }, 6800),
+      setTimeout(() => { setShowIntro(false); sessionStorage.setItem("sakin_intro_seen","1"); }, 7600),
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [showIntro]);
   useEffect(() => {
     const onPop = () => {
       isPopRef.current = true;
@@ -2250,6 +2273,78 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s`,pointerEvents:"none",zIndex:0 }} />
         );
       })}
+
+      {/* INTRO ANİMASYON */}
+      {showIntro && (
+        <div style={{
+          position:"fixed",inset:0,zIndex:99999,background:"#000",
+          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+          animation: introExiting ? "introFadeOut 0.8s ease forwards" : "none",
+        }}>
+          {/* Logo: kare + nokta */}
+          <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
+            <svg viewBox="0 0 120 120" width="120" height="120" style={{ position:"absolute",inset:0 }}>
+              <rect x="10" y="10" width="100" height="100" rx="16"
+                fill="none" stroke="rgba(184,164,216,0.6)" strokeWidth="3"
+                strokeDasharray="400" style={{ animation:"introSquareDraw 1.5s ease forwards" }} />
+            </svg>
+            <div style={{
+              position:"absolute",left:"50%",top:"50%",width:18,height:18,borderRadius:"50%",
+              background:"rgba(184,164,216,0.9)",
+              boxShadow:"0 0 30px rgba(184,164,216,0.5),0 0 60px rgba(122,80,150,0.3)",
+              animation:"introDotScale 0.8s 0.6s ease both",
+            }} />
+          </div>
+
+          {/* Sakin yazısı */}
+          {introPhase >= 1 && (
+            <div style={{ animation:"introTextUp 0.7s ease forwards",marginBottom:8 }}>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,color:"#fff" }}>Sakin</div>
+            </div>
+          )}
+
+          {/* Çizgi ayırıcı */}
+          {introPhase >= 1 && (
+            <div style={{ height:1,background:"rgba(184,164,216,0.3)",margin:"16px 0 32px",animation:"introLineExpand 0.6s 0.3s ease both" }} />
+          )}
+
+          {/* Özellik kartları */}
+          <div style={{ display:"flex",flexDirection:"column",gap:16,alignItems:"center" }}>
+            {introPhase >= 2 && (
+              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Nefes & Meditasyon" : "Breath & Meditation"}
+                </span>
+              </div>
+            )}
+            {introPhase >= 3 && (
+              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Çakra & Frekans" : "Chakra & Frequency"}
+                </span>
+              </div>
+            )}
+            {introPhase >= 4 && (
+              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Kişisel Harita" : "Personal Map"}
+                </span>
+              </div>
+            )}
+            {introPhase >= 5 && (
+              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Günlük Ritüel" : "Daily Ritual"}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* GİRİŞ */}
       {screen==="giris" && (
