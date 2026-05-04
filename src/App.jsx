@@ -3645,10 +3645,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
               </div>
 
-              <button className="sakin-btn-primary" style={{ width:"100%",marginBottom:16,fontSize:15,letterSpacing:2,padding:"14px 0" }}
-                onClick={() => window.open(t("lemon_checkout_url"), "_blank")}>
+              <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
+                style={{ display:"block",width:"100%",marginBottom:16,fontSize:15,letterSpacing:2,padding:"14px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box" }}>
                 {lang==="tr" ? "Satın Al →" : "Buy Now →"}
-              </button>
+              </a>
 
               <div style={{ textAlign:"center",marginBottom:20 }}>
                 <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>
