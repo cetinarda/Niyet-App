@@ -1445,8 +1445,12 @@ export default function SakinApp() {
     setShowAiConsent(false);
     pendingAiAction.current = null;
   };
-  const [devMode, setDevMode] = useState(() => localStorage.getItem("sakin_dev_mode") === "1");
-  const [raporKullanildi, setRaporKullanildi] = useState(() => !devMode && localStorage.getItem("sakin_rapor_used") === "1");
+  const [isOwner, setIsOwner] = useState(false);
+  useEffect(() => {
+    fetch("/.netlify/functions/check-owner").then(r=>r.json()).then(d=>{ if(d.owner) setIsOwner(true); }).catch(()=>{});
+  }, []);
+  const devMode = isOwner;
+  const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
   const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
   const [showLicenseModal, setShowLicenseModal] = useState(false);
   const [licenseInput, setLicenseInput] = useState("");
@@ -1553,18 +1557,9 @@ export default function SakinApp() {
     });
   }, [allStepsComplete, todayKey]);
 
-  function toggleDevMode() {
-    const next = !devMode;
-    if (next) {
-      localStorage.setItem("sakin_dev_mode", "1");
-    } else {
-      localStorage.removeItem("sakin_dev_mode");
-    }
-    setDevMode(next);
-    setRaporKullanildi(false);
-    setReikiUsed(next ? false : true);
-    setZihinselUsed(next ? false : true);
-  }
+  useEffect(() => {
+    if (isOwner) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
+  }, [isOwner]);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("sakin_birth_date")||"");
@@ -3408,13 +3403,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   )}
                 </div>
 
-                {/* Dev mode */}
-                <div style={{ textAlign:"center",marginTop:24 }}>
-                  <button onClick={toggleDevMode}
-                    style={{ background:devMode?"rgba(255,180,0,0.1)":"transparent",border:`1px solid ${devMode?"rgba(255,180,0,0.3)":"rgba(255,255,255,0.05)"}`,borderRadius:6,padding:"3px 8px",color:devMode?"#f0c040":"#777777",fontSize:14,letterSpacing:1.5,cursor:"pointer",fontFamily:"monospace" }}>
-                    {devMode ? "DEV ✓" : "DEV"}
-                  </button>
-                </div>
               </div>
             )}
           </div>
