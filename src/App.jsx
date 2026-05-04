@@ -3625,20 +3625,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ) : (
             <>
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
-                <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#ffffff,#ffffff,#ffffff)",opacity:0.6,borderRadius:"3px 3px 0 0" }}/>
-                <div className="pricing-badge" style={{ background:"rgba(255,255,255,0.18)",border:"1px solid rgba(255,255,255,0.4)",color:"#aaaaaa" }}>✦ {t("paid_app_badge")}</div>
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
+                <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
                 <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
-                <div style={{ fontSize:28,color:"#ffffff",letterSpacing:1,marginBottom:6 }}>{t("paid_app_price")}</div>
-                <div style={{ fontSize:13,color:"#666666",letterSpacing:1,marginBottom:18 }}>{t("paid_app_price_sub")}</div>
+                <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("paid_app_price")}</div>
+                <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:6 }}>{t("paid_app_price_sub")}</div>
+                <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
+                  {lang==="tr" ? "Ömür Boyu Lisans" : "Lifetime License"}
+                </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+
+                <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
+                  {lang==="tr" ? "Satın Al →" : "Buy Now →"}
+                </a>
               </div>
 
-              <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
-                style={{ display:"block",width:"100%",marginBottom:16,fontSize:15,letterSpacing:2,padding:"14px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box" }}>
-                {lang==="tr" ? "Satın Al →" : "Buy Now →"}
-              </a>
-
-              <div style={{ textAlign:"center",marginBottom:20 }}>
+              <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
                 <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>
                   {lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}
                 </div>
