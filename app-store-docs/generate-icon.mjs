@@ -9,20 +9,26 @@ const html = `<!DOCTYPE html>
 * { margin:0; padding:0; }
 body { width:1024px; height:1024px; overflow:hidden; background:#080c14; display:flex; align-items:center; justify-content:center; }
 </style></head><body>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
-  <rect width="1024" height="1024" fill="#080c14"/>
-  <rect x="160" y="160" width="704" height="704" rx="64"
-        fill="none" stroke="rgba(184,164,216,0.55)" stroke-width="38"
-        transform="rotate(45 512 512)"/>
-  <rect x="288" y="288" width="448" height="448" rx="48"
-        fill="none" stroke="rgba(184,164,216,0.3)" stroke-width="32"
-        transform="rotate(45 512 512)"/>
-  <circle cx="512" cy="512" r="160" fill="rgba(122,80,150,0.25)"/>
-  <circle cx="512" cy="512" r="90" fill="rgba(184,164,216,0.9)"/>
-  <circle cx="512" cy="512" r="90" fill="rgba(184,164,216,0.5)" filter="url(#glow)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="1024" height="1024">
+  <rect width="32" height="32" rx="6" fill="#080c14"/>
+  <rect x="5" y="5" width="22" height="22" rx="2"
+        fill="none"
+        stroke="rgba(184,164,216,0.55)"
+        stroke-width="1.2"
+        transform="rotate(45 16 16)"/>
+  <rect x="9" y="9" width="14" height="14" rx="1.5"
+        fill="none"
+        stroke="rgba(184,164,216,0.3)"
+        stroke-width="1"
+        transform="rotate(45 16 16)"/>
+  <circle cx="16" cy="16" r="2.8"
+          fill="rgba(184,164,216,0.9)"
+          filter="url(#glow)"/>
+  <circle cx="16" cy="16" r="5"
+          fill="rgba(122,80,150,0.25)"/>
   <defs>
-    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="48" result="blur"/>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
