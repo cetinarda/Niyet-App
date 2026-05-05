@@ -11,13 +11,18 @@ body { width:1024px; height:1024px; overflow:hidden; background:#080c14; display
 </style></head><body>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <rect width="1024" height="1024" fill="#080c14"/>
-  <rect x="212" y="212" width="600" height="600" rx="80"
-        fill="none" stroke="rgba(184,164,216,0.6)" stroke-width="32"/>
-  <circle cx="512" cy="512" r="72" fill="rgba(184,164,216,0.9)"/>
-  <circle cx="512" cy="512" r="72" fill="rgba(184,164,216,0.35)" filter="url(#glow)"/>
+  <rect x="160" y="160" width="704" height="704" rx="64"
+        fill="none" stroke="rgba(184,164,216,0.55)" stroke-width="38"
+        transform="rotate(45 512 512)"/>
+  <rect x="288" y="288" width="448" height="448" rx="48"
+        fill="none" stroke="rgba(184,164,216,0.3)" stroke-width="32"
+        transform="rotate(45 512 512)"/>
+  <circle cx="512" cy="512" r="160" fill="rgba(122,80,150,0.25)"/>
+  <circle cx="512" cy="512" r="90" fill="rgba(184,164,216,0.9)"/>
+  <circle cx="512" cy="512" r="90" fill="rgba(184,164,216,0.5)" filter="url(#glow)"/>
   <defs>
-    <filter id="glow" x="-200%" y="-200%" width="500%" height="500%">
-      <feGaussianBlur stdDeviation="36" result="blur"/>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="48" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
