@@ -1253,7 +1253,7 @@ function FreqText({ text, style, onNav }) {
   );
 }
 
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr", onNav }) {
+function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr", onNav, isPremium, devMode, onSatinAl }) {
   const t = makeTrans(lang);
   const [tipAcik, setTipAcik] = useState(false);
   const tipRef = useRef(null);
@@ -1283,16 +1283,25 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
       ) : analiz ? (
         <div>
           <div style={{ fontSize:13,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
+          <div style={{ position:"relative" }}>
+            <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3, ...(!isPremium && !devMode ? { maxHeight:120, overflow:"hidden" } : {}) }}><FreqText text={analiz} onNav={onNav} /></div>
+            {!isPremium && !devMode && (
+              <>
+                <div style={{ position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
+                <div style={{ textAlign:"center",marginTop:8 }}>
+                  <button onClick={onSatinAl}
+                    style={{ padding:"8px 20px",background:`linear-gradient(135deg,${renk}33,${renk}22)`,border:`1px solid ${renk}55`,borderRadius:20,color:renk,fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
+                    {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
           <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
             <button onClick={onSifirla}
               style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"6px 16px" }}>
               {t("btn_new_search")}
             </button>
-            <a href="/fiyatlandirma"
-              style={{ display:"inline-block",padding:"6px 16px",background:`linear-gradient(135deg,${renk}22,${renk}11)`,border:`1px solid ${renk}44`,borderRadius:20,color:renk,fontSize:13,letterSpacing:2,textDecoration:"none",cursor:"pointer" }}>
-              {lang==="tr" ? "Daha Fazlası → Premium" : "More → Premium"}
-            </a>
           </div>
         </div>
       ) : (
@@ -2263,7 +2272,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           style={ screen!=="hakkinda" ? { animation:"aboutPulse 2s ease-in-out infinite", color:"#b8a4d8" } : undefined }>
           {t("nav_about")}
         </button>
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}
+          style={ screen!=="fiyat" ? { animation:"aboutPulse 2s ease-in-out infinite", color:"#b8a4d8" } : undefined }>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
@@ -3160,11 +3170,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:13,letterSpacing:2.5,color:"#a070d0",opacity:0.8,marginBottom:14,fontFamily:"'Jost',sans-serif" }}>
                   {sikayet.toUpperCase()} {t("analysis_suf")}
                 </div>
-                <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24 }}>
-                  <FreqText text={sikayetAnaliz} onNav={(type, val) => {
-                    if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
-                    else if (type === "screen") { setScreen(val); }
-                  }} />
+                <div style={{ position:"relative" }}>
+                  <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24, ...(!isPremium && !devMode ? { maxHeight:120, overflow:"hidden" } : {}) }}>
+                    <FreqText text={sikayetAnaliz} onNav={(type, val) => {
+                      if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
+                      else if (type === "screen") { setScreen(val); }
+                    }} />
+                  </div>
+                  {!isPremium && !devMode && (
+                    <>
+                      <div style={{ position:"absolute",bottom:24,left:0,right:0,height:70,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
+                      <div style={{ textAlign:"center",marginBottom:16 }}>
+                        <button onClick={()=>setScreen("fiyat")}
+                          style={{ padding:"9px 22px",background:"linear-gradient(135deg,rgba(160,112,208,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(160,112,208,0.5)",borderRadius:22,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
+                          {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
                   style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
@@ -3404,8 +3427,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:13,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
                 {EV12_BURCU_ACIKLAMA[ev12Burcu].tema}
               </div>
-              <div style={{ fontSize:14,color:"#b0a0d0",lineHeight:1.85 }}>
-                {EV12_BURCU_ACIKLAMA[ev12Burcu].yorum}
+              <div style={{ position:"relative" }}>
+                <div style={{ fontSize:14,color:"#b0a0d0",lineHeight:1.85, ...(!isPremium && !devMode ? { maxHeight:80, overflow:"hidden" } : {}) }}>
+                  {EV12_BURCU_ACIKLAMA[ev12Burcu].yorum}
+                </div>
+                {!isPremium && !devMode && (
+                  <>
+                    <div style={{ position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
+                    <div style={{ textAlign:"center",marginTop:8 }}>
+                      <button onClick={()=>setScreen("fiyat")}
+                        style={{ padding:"8px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:20,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
+                        {lang==="tr" ? "Devamını Oku → Satın Al" : "Read More → Buy"}
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
               <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.15)" }}>
                 <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{lang==="tr" ? "GİZLİ GÜCÜN" : "HIDDEN POWER"}</div>
@@ -3458,7 +3494,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             ) : (
               <div>
-                <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}><FreqText text={aiRapor} /></div>
+                <div style={{ position:"relative" }}>
+                  <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap", ...(!isPremium && !devMode ? { maxHeight:140, overflow:"hidden" } : {}) }}><FreqText text={aiRapor} /></div>
+                  {!isPremium && !devMode && (
+                    <>
+                      <div style={{ position:"absolute",bottom:0,left:0,right:0,height:70,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
+                      <div style={{ textAlign:"center",marginTop:8 }}>
+                        <button onClick={()=>setScreen("fiyat")}
+                          style={{ padding:"8px 20px",background:"linear-gradient(135deg,rgba(154,106,176,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(154,106,176,0.5)",borderRadius:20,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
+                          {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
                 <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
                   <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
                     style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:13,letterSpacing:2 }}>

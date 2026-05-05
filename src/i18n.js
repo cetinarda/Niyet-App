@@ -2,7 +2,7 @@ export const TRANS = {
   tr: {
     // Top nav
     nav_about:    "SAKİN NEDİR?",
-    nav_pricing:  "FİYATLANDIRMA",
+    nav_pricing:  "SATIN AL",
     nav_terms:    "HİZMET ŞARTLARI",
     nav_privacy:  "GİZLİLİK",
     nav_refund:   "İADE POLİTİKASI",
@@ -460,7 +460,7 @@ export const TRANS = {
   en: {
     // Top nav
     nav_about:    "WHAT IS SAKIN?",
-    nav_pricing:  "PRICING",
+    nav_pricing:  "BUY NOW",
     nav_terms:    "TERMS OF SERVICE",
     nav_privacy:  "PRIVACY",
     nav_refund:   "REFUND POLICY",
