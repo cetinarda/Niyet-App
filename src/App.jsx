@@ -317,7 +317,7 @@ const GLOBAL_CSS = `
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
-  @keyframes introSquareDraw { from{stroke-dashoffset:1600} to{stroke-dashoffset:0} }
+  @keyframes introDiamondAppear { from{opacity:0;transform:rotate(45deg) scale(0.5)} to{opacity:1;transform:rotate(45deg) scale(1)} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes introLineExpand { from{width:0} to{width:60px} }
@@ -2308,17 +2308,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
           animation: introExiting ? "introFadeOut 0.8s ease forwards" : "none",
         }}>
-          {/* Logo: kare + nokta */}
+          {/* Logo: elmas — çizilip dönmeye başlıyor */}
           <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
-            <svg viewBox="0 0 120 120" width="120" height="120" style={{ position:"absolute",inset:0 }}>
-              <rect x="10" y="10" width="100" height="100" rx="16"
-                fill="none" stroke="rgba(184,164,216,0.6)" strokeWidth="3"
-                strokeDasharray="400" style={{ animation:"introSquareDraw 1.5s ease forwards" }} />
-            </svg>
+            {/* Dış elmas */}
             <div style={{
-              position:"absolute",left:"50%",top:"50%",width:18,height:18,borderRadius:"50%",
-              background:"rgba(184,164,216,0.9)",
-              boxShadow:"0 0 30px rgba(184,164,216,0.5),0 0 60px rgba(122,80,150,0.3)",
+              position:"absolute",inset:0,
+              border:"1.5px solid rgba(255,255,255,0.25)",borderRadius:6,
+              transform:"rotate(45deg)",
+              animation: introPhase >= 1 ? "diamondSpin 12s linear infinite" : "none",
+              opacity: 0,
+              ...(introPhase >= 0 ? { animation: introPhase >= 1 ? "introDiamondAppear 0.8s ease forwards, diamondSpin 12s 0.8s linear infinite" : "introDiamondAppear 0.8s ease forwards" } : {}),
+            }} />
+            {/* İç elmas */}
+            <div style={{
+              position:"absolute",inset:20,
+              border:"1.5px solid rgba(255,255,255,0.12)",borderRadius:5,
+              transform:"rotate(45deg)",
+              opacity: 0,
+              ...(introPhase >= 0 ? { animation: introPhase >= 1 ? "introDiamondAppear 0.8s 0.3s ease forwards, diamondSpin 8s 1.1s linear infinite reverse" : "introDiamondAppear 0.8s 0.3s ease forwards" } : {}),
+            }} />
+            {/* Merkez nokta */}
+            <div style={{
+              position:"absolute",left:"50%",top:"50%",width:14,height:14,borderRadius:"50%",
+              background:"rgba(255,255,255,0.7)",
+              boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)",
               animation:"introDotScale 0.8s 0.6s ease both",
             }} />
           </div>
@@ -2385,13 +2398,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"mandalaRotate 40s linear infinite reverse" }} />
               {/* Gezegen gövdesi */}
               <div style={{ position:"absolute",inset:20,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 50%, transparent 70%)",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 0 60px rgba(255,255,255,0.04), inset 0 0 40px rgba(255,255,255,0.02)" }} />
-              {/* Logo — kare + nokta */}
+              {/* Logo — elmas */}
               <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center" }}>
                 <div style={{ position:"relative",width:56,height:56 }}>
-                  <svg viewBox="0 0 56 56" width="56" height="56" style={{ position:"absolute",inset:0 }}>
-                    <rect x="4" y="4" width="48" height="48" rx="10" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
-                  </svg>
-                  <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.9)",boxShadow:"0 0 20px rgba(184,164,216,0.5),0 0 40px rgba(122,80,150,0.3)" }} />
+                  <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,animation:"diamondSpin 12s linear infinite" }} />
+                  <div style={{ position:"absolute",inset:10,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:3,animation:"diamondSpin 8s linear infinite reverse" }} />
+                  <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.7)",boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)" }} />
                 </div>
               </div>
             </div>
@@ -3553,10 +3565,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
-              <svg viewBox="0 0 40 40" width="40" height="40">
-                <rect x="4" y="4" width="32" height="32" rx="7" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
-                <circle cx="20" cy="20" r="4" fill="rgba(184,164,216,0.8)"/>
-              </svg>
+              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:3 }} />
+              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:2 }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.5)" }} />
             </div>
             <div>
               <h1 style={{ margin:0 }}>{lang==="tr" ? "Sakin Nedir?" : "What is Sakin?"}</h1>
