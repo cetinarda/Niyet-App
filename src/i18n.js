@@ -105,28 +105,28 @@ export const TRANS = {
     intro_close_eyes:  "Gözlerini yum.",
     close_eyes_hint:   "Dilersen şimdi gözlerini yavaşça kapayabilirsin.",
     close_eyes_chakra: {
-      "Kök":            "Dilersen gözlerini kapat ve ayaklarının yere sağlamca bastığını, güvende olduğunu hayal et.",
-      "Sakral":         "Dilersen gözlerini kapat ve duygularının özgürce aktığını, yaratıcılığının canlandığını hayal et.",
-      "Solar Pleksus":  "Dilersen gözlerini kapat ve karnında parlayan güçlü bir ışık hayal et. Gücün seninle.",
-      "Kalp":           "Dilersen gözlerini kapat ve kalbinden yayılan sıcak bir sevgi ışığı hayal et.",
-      "Boğaz":          "Dilersen gözlerini kapat ve ifade edemediğin her şeyi özgürce söylediğini hayal et.",
-      "Üçüncü Göz":    "Dilersen gözlerini kapat ve alnının ortasında açılan bir iç göz hayal et. Netlik seninle.",
-      "Taç":            "Dilersen gözlerini kapat ve en yüksek niyetlerini, ilahi bağlantını hayal et.",
-      "Ruh Yıldızı":    "Dilersen gözlerini kapat ve karmik kalıplarının çözüldüğünü hayal et.",
-      "Yıldız Kapısı":  "Dilersen gözlerini kapat ve ışık bedeninin parladığını hayal et.",
-      "Güneş Çakrası":  "Dilersen gözlerini kapat ve içindeki eril gücün dengelendiğini hayal et.",
-      "Ay Çakrası":     "Dilersen gözlerini kapat ve içindeki dişil enerjinin bütünleştiğini hayal et.",
-      "Mesih Çakrası":  "Dilersen gözlerini kapat ve koşulsuz sevginin seni sardığını hayal et.",
-      "Yıldız İletişim":"Dilersen gözlerini kapat ve evrensel bilgelikle bağ kurduğunu hayal et.",
-      "İlahi Plan":     "Dilersen gözlerini kapat ve evrensel teslimiyete açıldığını hayal et.",
-      "Monadik Bağlantı":"Dilersen gözlerini kapat ve ruhunun kaynağına dokunduğunu hayal et.",
-      "Yükseliş":       "Dilersen gözlerini kapat ve yükselişin ilk adımını attığını hayal et.",
-      "Evrensel Işık":  "Dilersen gözlerini kapat ve evrensel bilginin içine aktığını hayal et.",
-      "İlahi Niyet":    "Dilersen gözlerini kapat ve ruhunun görevini tamamladığını hayal et.",
-      "Kozmik Enerji":  "Dilersen gözlerini kapat ve galaktik genişlemeye açıldığını hayal et.",
-      "Varlık":         "Dilersen gözlerini kapat ve saf varoluşu deneyimlediğini hayal et.",
-      "İlahi Yapı":     "Dilersen gözlerini kapat ve evrensel yasalarla uyum içinde olduğunu hayal et.",
-      "Kaynak":         "Dilersen gözlerini kapat ve tanrısal kaynakla birleştiğini hayal et.",
+      "Kök":            "Gözlerini kapat. Ayaklarının altındaki toprağı hisset. Güvende olduğunu hatırla.",
+      "Sakral":         "Gözlerini kapat. Duygularının serbest akışını hisset. Hatırlamasan da kalbinle bırak.",
+      "Solar Pleksus":  "Gözlerini kapat. Karnındaki sıcaklığı hisset. İçindeki gücü hatırla.",
+      "Kalp":           "Gözlerini kapat. Göğsündeki genişlemeyi hisset. Sevgiyi hatırla, hep oradaydı.",
+      "Boğaz":          "Gözlerini kapat. Söyleyemediğin şeyleri düşün. Onları kalbinle hisset, bırakılmayı bekliyorlar.",
+      "Üçüncü Göz":    "Gözlerini kapat. Alnının ortasına odaklan. İç sesin ne diyorsa onu dinle.",
+      "Taç":            "Gözlerini kapat. En yüksek niyetlerini hatırlamaya çalış. Hatırlamasan da kalbinle hisset.",
+      "Ruh Yıldızı":    "Gözlerini kapat. Tekrar eden kalıplarını düşün. Hangisini bırakmaya hazırsın?",
+      "Yıldız Kapısı":  "Gözlerini kapat. Bedeninin ötesindeki ışığı hissetmeye çalış.",
+      "Güneş Çakrası":  "Gözlerini kapat. İçindeki kararlılığı ve cesareti hatırla. O güç hep seninleydi.",
+      "Ay Çakrası":     "Gözlerini kapat. İçindeki yumuşaklığı ve sezgiyi hisset. Ona güven.",
+      "Mesih Çakrası":  "Gözlerini kapat. Koşulsuz sevildiğini hatırla. Bunu hak etmek için bir şey yapmana gerek yok.",
+      "Yıldız İletişim":"Gözlerini kapat. Yalnız olmadığını hisset. Evren seninle konuşuyor, dinle.",
+      "İlahi Plan":     "Gözlerini kapat. Kontrolü bırak. Hayatın akışına güvenmeyi dene.",
+      "Monadik Bağlantı":"Gözlerini kapat. Ruhunun nereden geldiğini hatırlamaya çalış. Hatırlamasan da hisset.",
+      "Yükseliş":       "Gözlerini kapat. Bedenindeki hafifliği fark et. Yükselmeye izin ver.",
+      "Evrensel Işık":  "Gözlerini kapat. Zaten bildiğin ama unuttuğun şeyleri hatırlamaya çalış.",
+      "İlahi Niyet":    "Gözlerini kapat. Ruhunun görevini hatırlamaya çalış. Hatırlamasan da kalbinle hisset.",
+      "Kozmik Enerji":  "Gözlerini kapat. Sınırlarının ötesini hisset. Sen düşündüğünden büyüksün.",
+      "Varlık":         "Gözlerini kapat. Düşünmeyi bırak. Sadece var ol. Bu yeter.",
+      "İlahi Yapı":     "Gözlerini kapat. Her şeyin bir düzeni olduğunu hatırla. Sen de o düzenin parçasısın.",
+      "Kaynak":         "Gözlerini kapat. Kaynağa dön. Orası senin evin. Hatırla.",
     },
     connected_label:   "● bağlantı kuruldu",
     connected_voice:   () => "Connected",
@@ -140,6 +140,118 @@ export const TRANS = {
     progress_p3:       "Enerji akıyor, bırak gelsin...",
     progress_p4:       "Neredeyse hazır. Hisset.",
     progress_p5:       (name) => `${name} çakran dolup taşıyor. 💫`,
+    chakra_facts: {
+      "Kök": [
+        "Kök çakra, bedenin en düşük titreşimli enerji merkezidir. 396 Hz frekansıyla rezonansa girer ve korku kalıplarını çözmeye yardımcı olur.",
+        "Sanskrit adı 'Muladhara'dır — 'kök destek' anlamına gelir. Böbrek üstü bezleriyle bağlantılıdır ve adrenalin üretimini etkiler.",
+        "Toprak elementiyle ilişkilidir. Dengeli olduğunda güvenlik, istikrar ve maddi bereket hissi verir. Dengesizlikte kaygı ve güvensizlik ortaya çıkar."
+      ],
+      "Sakral": [
+        "Sakral çakra, yaratıcılık ve duygusal akışın merkezidir. Su elementiyle ilişkilidir — tıpkı su gibi esnek ve akışkan olmayı öğretir.",
+        "Sanskrit adı 'Svadhisthana' — 'benliğin yeri' demektir. Üreme organları ve böbreklerle doğrudan bağlantılıdır.",
+        "417 Hz frekansıyla çalışır. Dengeli olduğunda zevk alabilme, ilişkilerde sağlıklı bağ kurma ve duygusal esneklik sağlar."
+      ],
+      "Solar Pleksus": [
+        "Solar Pleksus, kişisel gücün ve iradenin merkezidir. Ateş elementiyle ilişkilidir — içsel ateşini yakar ve özgüvenini güçlendirir.",
+        "Sanskrit adı 'Manipura' — 'mücevher şehri' anlamına gelir. Pankreas ve sindirim sistemiyle bağlantılıdır.",
+        "528 Hz frekansıyla rezonansa girer. DNA onarımıyla ilişkilendirilen bu frekans, dönüşüm ve mucize frekansı olarak bilinir."
+      ],
+      "Kalp": [
+        "Kalp çakra, alt ve üst çakralar arasında köprü görevi görür. Hava elementiyle ilişkilidir — sevgiyi her yöne yayar.",
+        "Sanskrit adı 'Anahata' — 'vurulmamış ses' demektir. Timus beziyle bağlantılıdır ve bağışıklık sistemini etkiler.",
+        "639 Hz frekansıyla çalışır. Bu frekans ilişkileri iyileştirir, bağlantı ve uyumu güçlendirir."
+      ],
+      "Boğaz": [
+        "Boğaz çakra, ifadenin ve hakikatin merkezidir. Ses elementiyle ilişkilidir — sesin sadece fiziksel değil, enerjetik bir titreşimdir.",
+        "Sanskrit adı 'Vishuddha' — 'arındırma' demektir. Tiroid beziyle bağlantılıdır ve metabolizmayı etkiler.",
+        "741 Hz frekansıyla çalışır. Bu frekans sezgisel uyanış ve ifade özgürlüğü sağlar."
+      ],
+      "Üçüncü Göz": [
+        "Üçüncü Göz, sezgi ve durugörünün merkezidir. Işık elementiyle ilişkilidir — iç görüşü ve farkındalığı açar.",
+        "Sanskrit adı 'Ajna' — 'komut' veya 'algılama' demektir. Epifiz (pineal) beziyle bağlantılıdır ve melatonin üretimini etkiler.",
+        "852 Hz frekansıyla çalışır. Spiritüel düzene dönüşü destekler ve iç sesi güçlendirir."
+      ],
+      "Taç": [
+        "Taç çakra, ilahi bağlantının ve kozmik bilincin merkezidir. Evren elementiyle ilişkilidir — saf farkındalığın kapısıdır.",
+        "Sanskrit adı 'Sahasrara' — 'bin yapraklı lotus' demektir. Hipofiz beziyle bağlantılıdır ve tüm hormonal sistemi yönetir.",
+        "963 Hz frekansıyla çalışır. 'Tanrı frekansı' olarak bilinir ve birlik bilincini aktive eder."
+      ],
+      "Ruh Yıldızı": [
+        "8. çakra olan Ruh Yıldızı, başın yaklaşık 15 cm üzerinde bulunur. Karmik kayıtların ve ruh sözleşmelerinin tutulduğu yerdir.",
+        "Bu çakra aktive olduğunda geçmiş yaşam anılarına ve ruhsal derslere erişim açılır.",
+        "Ruh Yıldızı, bireysel benlikten evrensel benliğe geçişin kapısıdır. Burada ego çözülmeye başlar."
+      ],
+      "Yıldız Kapısı": [
+        "9. çakra, ışık bedenle bağlantının kurulduğu merkezdir. Fiziksel bedenin ötesindeki enerji alanını aktive eder.",
+        "Merkaba — ışık beden geometrisi — bu çakra üzerinden şekillenir. Astral seyahat bu merkezle ilişkilidir.",
+        "Yıldız Kapısı açıldığında kişi, boyutlar arası farkındalık geliştirir ve ruhsal rehberlerle bağlantı güçlenir."
+      ],
+      "Güneş Çakrası": [
+        "10. çakra, ilahi eril enerjinin bütünleştiği merkezdir. Güneşin yaratıcı, koruyucu ve yönlendirici gücünü temsil eder.",
+        "Bu çakra dengeli olduğunda liderlik, kararlılık ve koruyucu güç sağlıklı biçimde ifade edilir.",
+        "Eril enerji sadece erkeklere ait değildir — her insanda bulunan eylem, mantık ve yapı gücüdür."
+      ],
+      "Ay Çakrası": [
+        "11. çakra, ilahi dişil enerjinin bütünleştiği merkezdir. Ayın alıcı, sezgisel ve besleyici gücünü temsil eder.",
+        "Bu çakra dengeli olduğunda empati, sezgi ve şefkat doğal biçimde akar.",
+        "Dişil enerji sadece kadınlara ait değildir — her insanda bulunan alıcılık, sezgi ve yaratma gücüdür."
+      ],
+      "Mesih Çakrası": [
+        "12. çakra, koşulsuz sevginin ve birlik bilincinin merkezidir. Tüm ayrılık yanılsamasının çözüldüğü noktadır.",
+        "Bu çakra, İsa bilinci veya Budda bilinci olarak da bilinir — dini değil, evrensel bir uyanış durumudur.",
+        "Aktive olduğunda kişi, tüm varlıklara karşı derin bir şefkat ve birlik duygusu yaşar."
+      ],
+      "Yıldız İletişim": [
+        "13. çakra, galaktik varlıklarla ve yüksek boyutsal rehberlerle iletişimin kurulduğu merkezdir.",
+        "Bu çakra üzerinden kozmik bilgi aktarımı gerçekleşir. Channeling ve telepati bu merkezle ilişkilidir.",
+        "Aktive olduğunda evrensel bilgeliğe erişim açılır ve kişi kozmik ailesini hissetmeye başlar."
+      ],
+      "İlahi Plan": [
+        "14. çakra, evrensel teslimiyetin ve ilahi planla uyumun merkezidir. Bireysel iradenin evrensel iradeyle birleştiği noktadır.",
+        "Bu çakra aktive olduğunda 'bırakma' sanatı öğrenilir — kontrol değil, güven ön plana çıkar.",
+        "İlahi plan çakrası, hayatın akışına teslim olma ve her deneyimde anlam bulma kapasitesini güçlendirir."
+      ],
+      "Monadik Bağlantı": [
+        "15. çakra, ruhun en yüksek kaynağı olan Monad ile bağlantının kurulduğu merkezdir.",
+        "Monad, binlerce enkarnasyonun deneyimlerini barındıran 'üst ruh'tur. Bu çakra o bilgeliğe erişim sağlar.",
+        "Aktive olduğunda kişi, tek bir yaşamın ötesinde bir varoluş perspektifi kazanır."
+      ],
+      "Yükseliş": [
+        "16. çakra, yükselişin — fiziksel yoğunluktan ışık frekansına geçişin — başladığı merkezdir.",
+        "Yükseliş, bedenin terk edilmesi değil, bilincin genişlemesiyle birlikte bedenin de dönüşmesidir.",
+        "Bu çakra aktive olduğunda hücresel hafıza temizlenir ve beden daha yüksek frekanslara uyum sağlamaya başlar."
+      ],
+      "Evrensel Işık": [
+        "17. çakra, evrensel bilginin — Akashik kayıtların — erişildiği merkezdir.",
+        "Akashik kayıtlar, tüm ruhların tüm deneyimlerinin tutulduğu evrensel hafızadır.",
+        "Bu çakra aktive olduğunda kişi, evrenin işleyiş yasalarını sezgisel olarak kavramaya başlar."
+      ],
+      "İlahi Niyet": [
+        "18. çakra, ruhun bu yaşamdaki en yüksek amacının — ilahi niyetinin — tezahür ettiği merkezdir.",
+        "Her ruh, enkarne olmadan önce belirli dersler ve görevler seçer. Bu çakra o sözleşmeyi hatırlatır.",
+        "Aktive olduğunda kişi, yaşam amacını netleştirir ve her eylemi bu amaçla hizalar."
+      ],
+      "Kozmik Enerji": [
+        "19. çakra, galaktik genişlemenin ve kozmik enerjiyle bütünleşmenin merkezidir.",
+        "Bu seviyede birey, Dünya bilincinin ötesine geçer ve galaktik bir perspektif kazanır.",
+        "Kozmik enerji çakrası, evrendeki tüm enerji ağlarıyla uyumlanmayı sağlar."
+      ],
+      "Varlık": [
+        "20. çakra, saf varoluşun — 'Ben'im' halinin ötesindeki 'Var olan'ın — deneyimlendiği merkezdir.",
+        "Bu seviyede düşünce, duygu ve kimlik çözülür; geriye yalnızca saf farkındalık kalır.",
+        "Varlık çakrası, tüm etiketlerin ve tanımların ötesinde, özün deneyimlenmesini sağlar."
+      ],
+      "İlahi Yapı": [
+        "21. çakra, evrensel yasaların — karma, rezonans, titreşim, çekim — bütünleştiği merkezdir.",
+        "Bu seviyede kişi, evrenin matematiksel ve geometrik düzenini sezgisel olarak kavrar.",
+        "İlahi yapı çakrası, kutsal geometri ve evrensel düzenle tam uyum halinde olmayı sağlar."
+      ],
+      "Kaynak": [
+        "22. çakra, tanrısal kaynakla tam birleşmenin gerçekleştiği en yüksek merkezdir. Platin ışık elementiyle ilişkilidir.",
+        "Bu seviyede bireysel bilinç, evrensel bilinçle tamamen birleşir. Ayrılık yanılsaması sona erer.",
+        "Kaynak çakrası, tüm çakra sisteminin taçlandığı ve döngünün tamamlandığı nihai noktadır."
+      ],
+    },
     done_title:        "Tamamlandı.",
     done_body:         (name) => `${name} çakran şimdi canlı ve aktif.\nBu güzel enerjiyi gün boyu içinde taşı.`,
     other_chakra:      "diğer çakra",
@@ -451,28 +563,28 @@ export const TRANS = {
     intro_close_eyes:  "Close your eyes.",
     close_eyes_hint:   "You can close your eyes now if you wish.",
     close_eyes_chakra: {
-      "Root":            "Close your eyes and imagine your feet firmly grounded, feeling completely safe.",
-      "Sacral":          "Close your eyes and imagine your emotions flowing freely, your creativity awakening.",
-      "Solar Plexus":    "Close your eyes and imagine a powerful light shining in your core. Your strength is with you.",
-      "Heart":           "Close your eyes and imagine warm loving light radiating from your heart.",
-      "Throat":          "Close your eyes and imagine freely expressing everything you've been holding back.",
-      "Third Eye":       "Close your eyes and imagine an inner eye opening at the center of your forehead. Clarity is yours.",
-      "Crown":           "Close your eyes and imagine your highest intentions, your divine connection.",
-      "Soul Star":       "Close your eyes and imagine your karmic patterns dissolving.",
-      "Stargate":        "Close your eyes and imagine your light body glowing brightly.",
-      "Solar Chakra":    "Close your eyes and imagine your inner masculine energy finding balance.",
-      "Lunar Chakra":    "Close your eyes and imagine your inner feminine energy becoming whole.",
-      "Christ Chakra":   "Close your eyes and imagine unconditional love surrounding you.",
-      "Star Comm":       "Close your eyes and imagine connecting with universal wisdom.",
-      "Divine Plan":     "Close your eyes and imagine opening to universal surrender.",
-      "Monadic Link":    "Close your eyes and imagine touching the source of your soul.",
-      "Ascension":       "Close your eyes and imagine taking the first step of ascension.",
-      "Universal Light": "Close your eyes and imagine universal knowledge flowing into you.",
-      "Divine Intent":   "Close your eyes and imagine your soul completing its mission.",
-      "Cosmic Energy":   "Close your eyes and imagine opening to galactic expansion.",
-      "Being":           "Close your eyes and imagine experiencing pure existence.",
-      "Divine Structure":"Close your eyes and imagine being in harmony with universal laws.",
-      "Source":          "Close your eyes and imagine uniting with the divine source.",
+      "Root":            "Close your eyes. Feel the ground beneath your feet. Remember — you are safe.",
+      "Sacral":          "Close your eyes. Let your emotions flow. Even if you can't name them, feel them with your heart.",
+      "Solar Plexus":    "Close your eyes. Feel the warmth in your core. Remember your power.",
+      "Heart":           "Close your eyes. Feel the expansion in your chest. Remember love — it was always there.",
+      "Throat":          "Close your eyes. Think of what you haven't been able to say. Feel it with your heart — it's waiting to be released.",
+      "Third Eye":       "Close your eyes. Focus on the center of your forehead. Listen to whatever your inner voice says.",
+      "Crown":           "Close your eyes. Try to remember your highest intentions. Even if you can't, feel them with your heart.",
+      "Soul Star":       "Close your eyes. Think about your repeating patterns. Which one are you ready to release?",
+      "Stargate":        "Close your eyes. Try to feel the light beyond your body.",
+      "Solar Chakra":    "Close your eyes. Remember the determination and courage within you. That power was always yours.",
+      "Lunar Chakra":    "Close your eyes. Feel the softness and intuition within you. Trust it.",
+      "Christ Chakra":   "Close your eyes. Remember that you are loved unconditionally. You don't need to earn it.",
+      "Star Comm":       "Close your eyes. Feel that you are not alone. The universe is speaking to you — listen.",
+      "Divine Plan":     "Close your eyes. Let go of control. Try trusting the flow of life.",
+      "Monadic Link":    "Close your eyes. Try to remember where your soul came from. Even if you can't, feel it.",
+      "Ascension":       "Close your eyes. Notice the lightness in your body. Allow yourself to rise.",
+      "Universal Light": "Close your eyes. Try to remember the things you already know but have forgotten.",
+      "Divine Intent":   "Close your eyes. Try to remember your soul's purpose. Even if you can't, feel it with your heart.",
+      "Cosmic Energy":   "Close your eyes. Feel beyond your limits. You are bigger than you think.",
+      "Being":           "Close your eyes. Stop thinking. Just exist. That is enough.",
+      "Divine Structure":"Close your eyes. Remember that everything has an order. You are part of that order.",
+      "Source":          "Close your eyes. Return to the source. That is your home. Remember.",
     },
     connected_label:   "● CONNECTION ESTABLISHED",
     connected_voice:   () => "Connected",
@@ -486,6 +598,118 @@ export const TRANS = {
     progress_p3:       "Energy is flowing, let it come...",
     progress_p4:       "Almost full. Feel it.",
     progress_p5:       (name) => `Your ${name} chakra is filling. 💫`,
+    chakra_facts: {
+      "Root": [
+        "The Root chakra resonates at 396 Hz and helps dissolve fear patterns. It is connected to the adrenal glands and adrenaline production.",
+        "Its Sanskrit name 'Muladhara' means 'root support'. It is associated with the Earth element and governs our sense of safety and stability.",
+        "When balanced, it provides security, stability and material abundance. When imbalanced, anxiety and insecurity arise."
+      ],
+      "Sacral": [
+        "The Sacral chakra is the center of creativity and emotional flow. Associated with the Water element — it teaches us to be flexible and fluid like water.",
+        "Its Sanskrit name 'Svadhisthana' means 'dwelling place of the self'. It is directly connected to the reproductive organs and kidneys.",
+        "It works at 417 Hz. When balanced, it enables healthy pleasure, relationships and emotional resilience."
+      ],
+      "Solar Plexus": [
+        "The Solar Plexus is the center of personal power and will. Associated with the Fire element — it ignites your inner fire and strengthens confidence.",
+        "Its Sanskrit name 'Manipura' means 'city of jewels'. It is connected to the pancreas and digestive system.",
+        "It resonates at 528 Hz — known as the transformation and miracle frequency, associated with DNA repair."
+      ],
+      "Heart": [
+        "The Heart chakra serves as a bridge between lower and upper chakras. Associated with the Air element — it radiates love in every direction.",
+        "Its Sanskrit name 'Anahata' means 'unstruck sound'. It is connected to the thymus gland and affects the immune system.",
+        "It works at 639 Hz. This frequency heals relationships and strengthens connection and harmony."
+      ],
+      "Throat": [
+        "The Throat chakra is the center of expression and truth. Associated with the Sound element — your voice is not just physical but an energetic vibration.",
+        "Its Sanskrit name 'Vishuddha' means 'purification'. It is connected to the thyroid gland and affects metabolism.",
+        "It works at 741 Hz. This frequency enables intuitive awakening and freedom of expression."
+      ],
+      "Third Eye": [
+        "The Third Eye is the center of intuition and clairvoyance. Associated with the Light element — it opens inner vision and awareness.",
+        "Its Sanskrit name 'Ajna' means 'command' or 'perception'. It is connected to the pineal gland and affects melatonin production.",
+        "It works at 852 Hz. It supports return to spiritual order and strengthens the inner voice."
+      ],
+      "Crown": [
+        "The Crown chakra is the center of divine connection and cosmic consciousness. Associated with the Universe element — it is the gateway to pure awareness.",
+        "Its Sanskrit name 'Sahasrara' means 'thousand-petaled lotus'. It is connected to the pituitary gland and governs the entire hormonal system.",
+        "It works at 963 Hz. Known as the 'God frequency', it activates unity consciousness."
+      ],
+      "Soul Star": [
+        "The 8th chakra, Soul Star, is located about 15 cm above the head. It is where karmic records and soul contracts are held.",
+        "When this chakra is activated, access to past life memories and spiritual lessons opens up.",
+        "The Soul Star is the gateway from individual self to universal self. Here, the ego begins to dissolve."
+      ],
+      "Stargate": [
+        "The 9th chakra is the center where connection with the light body is established. It activates the energy field beyond the physical body.",
+        "Merkaba — light body geometry — is shaped through this chakra. Astral travel is associated with this center.",
+        "When the Stargate opens, interdimensional awareness develops and connection with spiritual guides strengthens."
+      ],
+      "Solar Chakra": [
+        "The 10th chakra is the center where divine masculine energy integrates. It represents the Sun's creative, protective and guiding power.",
+        "When balanced, leadership, determination and protective power are expressed in healthy ways.",
+        "Masculine energy belongs to everyone — it is the power of action, logic and structure within every person."
+      ],
+      "Lunar Chakra": [
+        "The 11th chakra is the center where divine feminine energy integrates. It represents the Moon's receptive, intuitive and nurturing power.",
+        "When balanced, empathy, intuition and compassion flow naturally.",
+        "Feminine energy belongs to everyone — it is the power of receptivity, intuition and creation within every person."
+      ],
+      "Christ Chakra": [
+        "The 12th chakra is the center of unconditional love and unity consciousness. It is the point where all illusion of separation dissolves.",
+        "This chakra is also known as Christ consciousness or Buddha consciousness — not religious, but a universal state of awakening.",
+        "When activated, one experiences a deep compassion and sense of unity towards all beings."
+      ],
+      "Star Comm": [
+        "The 13th chakra is the center where communication with galactic beings and higher dimensional guides is established.",
+        "Cosmic knowledge transfer occurs through this chakra. Channeling and telepathy are associated with this center.",
+        "When activated, access to universal wisdom opens and one begins to sense their cosmic family."
+      ],
+      "Divine Plan": [
+        "The 14th chakra is the center of universal surrender and alignment with the divine plan.",
+        "When this chakra is activated, the art of 'letting go' is learned — trust, not control, takes priority.",
+        "The Divine Plan chakra strengthens the capacity to surrender to life's flow and find meaning in every experience."
+      ],
+      "Monadic Link": [
+        "The 15th chakra is the center where connection with the Monad — the soul's highest source — is established.",
+        "The Monad is the 'oversoul' that holds the experiences of thousands of incarnations. This chakra provides access to that wisdom.",
+        "When activated, one gains a perspective of existence beyond a single lifetime."
+      ],
+      "Ascension": [
+        "The 16th chakra is the center where ascension — the transition from physical density to light frequency — begins.",
+        "Ascension is not leaving the body, but transformation of the body along with expansion of consciousness.",
+        "When activated, cellular memory is cleared and the body begins to adapt to higher frequencies."
+      ],
+      "Universal Light": [
+        "The 17th chakra is the center where universal knowledge — the Akashic records — is accessed.",
+        "The Akashic records are the universal memory holding all experiences of all souls.",
+        "When activated, one begins to intuitively grasp the operating laws of the universe."
+      ],
+      "Divine Intent": [
+        "The 18th chakra is the center where the soul's highest purpose — divine intent — manifests.",
+        "Every soul chooses certain lessons and missions before incarnating. This chakra reminds us of that contract.",
+        "When activated, one clarifies their life purpose and aligns every action with this purpose."
+      ],
+      "Cosmic Energy": [
+        "The 19th chakra is the center of galactic expansion and integration with cosmic energy.",
+        "At this level, the individual transcends Earth consciousness and gains a galactic perspective.",
+        "The Cosmic Energy chakra enables attunement with all energy networks in the universe."
+      ],
+      "Being": [
+        "The 20th chakra is the center where pure existence — 'the one that exists' beyond 'I am' — is experienced.",
+        "At this level, thought, emotion and identity dissolve; only pure awareness remains.",
+        "The Being chakra enables the experience of essence beyond all labels and definitions."
+      ],
+      "Divine Structure": [
+        "The 21st chakra is the center where universal laws — karma, resonance, vibration, attraction — integrate.",
+        "At this level, one intuitively grasps the mathematical and geometric order of the universe.",
+        "The Divine Structure chakra enables complete harmony with sacred geometry and universal order."
+      ],
+      "Source": [
+        "The 22nd chakra is the highest center where complete union with the divine source occurs. Associated with Platinum Light.",
+        "At this level, individual consciousness completely merges with universal consciousness. The illusion of separation ends.",
+        "The Source chakra is the ultimate point where the entire chakra system is crowned and the cycle is completed."
+      ],
+    },
     done_title:        "Complete.",
     done_body:         (name) => `Your ${name} chakra is active.\nCarry this energy throughout the day.`,
     other_chakra:      "other chakra",
