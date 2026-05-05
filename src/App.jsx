@@ -318,6 +318,7 @@ const GLOBAL_CSS = `
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
   @keyframes introDiamondAppear { from{opacity:0;transform:rotate(45deg) scale(0.5)} to{opacity:1;transform:rotate(45deg) scale(1)} }
+  @keyframes aboutPulse { 0%,100%{opacity:0.5;text-shadow:none} 50%{opacity:1;text-shadow:0 0 12px rgba(184,164,216,0.6)} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes introLineExpand { from{width:0} to{width:60px} }
@@ -1566,9 +1567,9 @@ export default function SakinApp() {
   const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
-  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
-  const [introPhase, setIntroPhase] = useState(0);
-  const [introExiting, setIntroExiting] = useState(false);
+  const [hakkindaIntro, setHakkindaIntro] = useState(true);
+  const [hakkindaPhase, setHakkindaPhase] = useState(0);
+  const [hakkindaExiting, setHakkindaExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef        = useRef(null);
@@ -1610,18 +1611,20 @@ export default function SakinApp() {
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   useEffect(() => {
-    if (!showIntro) return;
+    if (screen !== "hakkinda" || !hakkindaIntro) return;
+    setHakkindaPhase(0);
+    setHakkindaExiting(false);
     const timers = [
-      setTimeout(() => setIntroPhase(1), 600),
-      setTimeout(() => setIntroPhase(2), 1800),
-      setTimeout(() => setIntroPhase(3), 3000),
-      setTimeout(() => setIntroPhase(4), 4200),
-      setTimeout(() => setIntroPhase(5), 5400),
-      setTimeout(() => { setIntroExiting(true); }, 6800),
-      setTimeout(() => { setShowIntro(false); sessionStorage.setItem("sakin_intro_seen","1"); }, 7600),
+      setTimeout(() => setHakkindaPhase(1), 600),
+      setTimeout(() => setHakkindaPhase(2), 1800),
+      setTimeout(() => setHakkindaPhase(3), 3000),
+      setTimeout(() => setHakkindaPhase(4), 4200),
+      setTimeout(() => setHakkindaPhase(5), 5400),
+      setTimeout(() => { setHakkindaExiting(true); }, 6800),
+      setTimeout(() => { setHakkindaIntro(false); }, 7600),
     ];
     return () => timers.forEach(clearTimeout);
-  }, [showIntro]);
+  }, [screen, hakkindaIntro]);
   useEffect(() => {
     const onPop = () => {
       isPopRef.current = true;
@@ -2254,7 +2257,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>Sakin</span>
         </button>
-        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>setScreen("hakkinda")}>{t("nav_about")}</button>
+        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`}
+          onClick={()=>{ setHakkindaIntro(true); setHakkindaPhase(0); setHakkindaExiting(false); setScreen("hakkinda"); }}
+          style={ screen!=="hakkinda" ? { animation:"aboutPulse 2s ease-in-out infinite", color:"#b8a4d8" } : undefined }>
+          {t("nav_about")}
+        </button>
         <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
@@ -2300,91 +2307,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s`,pointerEvents:"none",zIndex:0 }} />
         );
       })}
-
-      {/* INTRO ANİMASYON */}
-      {showIntro && (
-        <div style={{
-          position:"fixed",inset:0,zIndex:99999,background:"#000",
-          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-          animation: introExiting ? "introFadeOut 0.8s ease forwards" : "none",
-        }}>
-          {/* Logo: elmas — çizilip dönmeye başlıyor */}
-          <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
-            {/* Dış elmas */}
-            <div style={{
-              position:"absolute",inset:0,
-              border:"1.5px solid rgba(255,255,255,0.25)",borderRadius:6,
-              transform:"rotate(45deg)",
-              animation: introPhase >= 1 ? "diamondSpin 12s linear infinite" : "none",
-              opacity: 0,
-              ...(introPhase >= 0 ? { animation: introPhase >= 1 ? "introDiamondAppear 0.8s ease forwards, diamondSpin 12s 0.8s linear infinite" : "introDiamondAppear 0.8s ease forwards" } : {}),
-            }} />
-            {/* İç elmas */}
-            <div style={{
-              position:"absolute",inset:20,
-              border:"1.5px solid rgba(255,255,255,0.12)",borderRadius:5,
-              transform:"rotate(45deg)",
-              opacity: 0,
-              ...(introPhase >= 0 ? { animation: introPhase >= 1 ? "introDiamondAppear 0.8s 0.3s ease forwards, diamondSpin 8s 1.1s linear infinite reverse" : "introDiamondAppear 0.8s 0.3s ease forwards" } : {}),
-            }} />
-            {/* Merkez nokta */}
-            <div style={{
-              position:"absolute",left:"50%",top:"50%",width:14,height:14,borderRadius:"50%",
-              background:"rgba(255,255,255,0.7)",
-              boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)",
-              animation:"introDotScale 0.8s 0.6s ease both",
-            }} />
-          </div>
-
-          {/* Sakin yazısı */}
-          {introPhase >= 1 && (
-            <div style={{ animation:"introTextUp 0.7s ease forwards",marginBottom:8 }}>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,color:"#fff" }}>Sakin</div>
-            </div>
-          )}
-
-          {/* Çizgi ayırıcı */}
-          {introPhase >= 1 && (
-            <div style={{ height:1,background:"rgba(184,164,216,0.3)",margin:"16px 0 32px",animation:"introLineExpand 0.6s 0.3s ease both" }} />
-          )}
-
-          {/* Özellik kartları */}
-          <div style={{ display:"flex",flexDirection:"column",gap:16,alignItems:"center" }}>
-            {introPhase >= 2 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Nefes & Meditasyon" : "Breath & Meditation"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 3 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Çakra & Frekans" : "Chakra & Frequency"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 4 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Kişisel Harita" : "Personal Map"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 5 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Günlük Ritüel" : "Daily Ritual"}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* GİRİŞ */}
       {screen==="giris" && (
@@ -3561,12 +3483,84 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* SAKİN NEDİR? */}
       {screen==="hakkinda" && (
-        <div className="policy-screen">
+        <div className="policy-screen" style={{ position:"relative" }}>
+          {/* Intro animasyon overlay */}
+          {hakkindaIntro && (
+            <div style={{
+              position:"fixed",inset:0,zIndex:99999,background:"#000",
+              display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
+              animation: hakkindaExiting ? "introFadeOut 0.8s ease forwards" : "none",
+            }}>
+              <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
+                <div style={{
+                  position:"absolute",inset:0,
+                  border:"1.5px solid rgba(255,255,255,0.25)",borderRadius:6,
+                  opacity:0,
+                  animation: hakkindaPhase >= 1 ? "introDiamondAppear 0.8s ease forwards, diamondSpin 12s 0.8s linear infinite" : "introDiamondAppear 0.8s ease forwards",
+                }} />
+                <div style={{
+                  position:"absolute",inset:20,
+                  border:"1.5px solid rgba(255,255,255,0.12)",borderRadius:5,
+                  opacity:0,
+                  animation: hakkindaPhase >= 1 ? "introDiamondAppear 0.8s 0.3s ease forwards, diamondSpin 8s 1.1s linear infinite reverse" : "introDiamondAppear 0.8s 0.3s ease forwards",
+                }} />
+                <div style={{
+                  position:"absolute",left:"50%",top:"50%",width:14,height:14,borderRadius:"50%",
+                  background:"rgba(255,255,255,0.7)",
+                  boxShadow:"0 0 20px rgba(255,255,255,0.5),0 0 40px rgba(255,255,255,0.2)",
+                  animation:"introDotScale 0.8s 0.6s ease both",
+                }} />
+              </div>
+              {hakkindaPhase >= 1 && (
+                <div style={{ animation:"introTextUp 0.7s ease forwards",marginBottom:8 }}>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,color:"#fff" }}>Sakin</div>
+                </div>
+              )}
+              {hakkindaPhase >= 1 && (
+                <div style={{ height:1,background:"rgba(184,164,216,0.3)",margin:"16px 0 32px",animation:"introLineExpand 0.6s 0.3s ease both" }} />
+              )}
+              <div style={{ display:"flex",flexDirection:"column",gap:16,alignItems:"center" }}>
+                {hakkindaPhase >= 2 && (
+                  <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                    <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                      {lang==="tr" ? "Nefes & Meditasyon" : "Breath & Meditation"}
+                    </span>
+                  </div>
+                )}
+                {hakkindaPhase >= 3 && (
+                  <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                    <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                      {lang==="tr" ? "Çakra & Frekans" : "Chakra & Frequency"}
+                    </span>
+                  </div>
+                )}
+                {hakkindaPhase >= 4 && (
+                  <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                    <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                      {lang==="tr" ? "Kişisel Harita" : "Personal Map"}
+                    </span>
+                  </div>
+                )}
+                {hakkindaPhase >= 5 && (
+                  <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
+                    <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
+                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
+                      {lang==="tr" ? "Günlük Ritüel" : "Daily Ritual"}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
-              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:3 }} />
-              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:2 }} />
+              <div style={{ position:"absolute", inset:0, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.25)", borderRadius:3, animation:"diamondSpin 12s linear infinite" }} />
+              <div style={{ position:"absolute", inset:10, transform:"rotate(45deg)", border:"1px solid rgba(255,255,255,0.15)", borderRadius:2, animation:"diamondSpin 8s linear infinite reverse" }} />
               <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.5)" }} />
             </div>
             <div>
