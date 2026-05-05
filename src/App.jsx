@@ -319,6 +319,7 @@ const GLOBAL_CSS = `
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
   @keyframes introDiamondAppear { from{opacity:0;transform:rotate(45deg) scale(0.5)} to{opacity:1;transform:rotate(45deg) scale(1)} }
   @keyframes aboutPulse { 0%,100%{opacity:0.5;text-shadow:none} 50%{opacity:1;text-shadow:0 0 12px rgba(184,164,216,0.6)} }
+  @keyframes readyPulse { 0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.2)} 50%{box-shadow:0 0 24px rgba(255,255,255,0.5),0 0 48px rgba(184,164,216,0.3)} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes introLineExpand { from{width:0} to{width:60px} }
@@ -2343,7 +2344,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ color:"#888888",fontSize:16,fontStyle:"italic",lineHeight:1.7,fontWeight:300 }}>{t("intro_text1")}</div>
                   <div style={{ color:"#cccccc",fontSize:18,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
                 </div>
-                <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" style={{ animation:"readyPulse 2s ease-in-out infinite" }} onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
