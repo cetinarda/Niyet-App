@@ -1122,7 +1122,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       </div>
       {showCloseEyes && (
         <div style={{ fontSize:14,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
-          {t("close_eyes_hint")}
+          {(t("close_eyes_chakra") && t("close_eyes_chakra")[selected.name]) || t("close_eyes_hint")}
         </div>
       )}
       {/* Chakra konu bilgisi — seans sırasında belirir */}
