@@ -1132,10 +1132,10 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         </div>
       )}
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
-        {progress<0.25 && t("progress_p1")}
-        {progress>=0.25&&progress<0.5  && t("progress_p2", selected.name)}
-        {progress>=0.5 &&progress<0.75 && t("progress_p3")}
-        {progress>=0.75&&progress<0.95 && t("progress_p4")}
+        {progress<0.1 && t("progress_p1")}
+        {progress>=0.1&&progress<0.33 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[0] : t("progress_p2", selected.name); })()}
+        {progress>=0.33&&progress<0.66 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[1] : t("progress_p3"); })()}
+        {progress>=0.66&&progress<0.95 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[2] : t("progress_p4"); })()}
         {progress>=0.95 && t("progress_p5", selected.name)}
       </div>
     </div>
