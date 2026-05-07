@@ -314,7 +314,11 @@ const GLOBAL_CSS = `
   @keyframes electricRise { 0%{stroke-dashoffset:200;opacity:0.3} 50%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.6} }
   @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
-  @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
+  @keyframes navPulse    { 0%,100%{opacity:0.5;filter:brightness(1)} 50%{opacity:1;filter:brightness(1.5)} }
+  @keyframes cosmicGlow  { 0%{opacity:0;transform:scale(0.92);filter:blur(4px)} 100%{opacity:1;transform:scale(1);filter:blur(0px)} }
+  @keyframes starAppear  { 0%{opacity:0;transform:translateY(6px) scale(0.9)} 40%{opacity:0.6} 100%{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes cosmicFade  { 0%{opacity:0;filter:brightness(0.5) blur(2px)} 100%{opacity:1;filter:brightness(1) blur(0)} }
+  @keyframes orbitGlow   { 0%,100%{box-shadow:0 0 6px rgba(184,164,216,0.15)} 50%{box-shadow:0 0 18px rgba(184,164,216,0.35),0 0 36px rgba(184,164,216,0.1)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
@@ -328,6 +332,7 @@ const GLOBAL_CSS = `
 
   .fade-up  { animation: fadeUp  0.75s cubic-bezier(0.16,1,0.3,1) forwards; }
   .slide-in { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) forwards; }
+  .screen-enter { animation: cosmicFade 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
 
   /* ── Typography helpers ── */
   .label-sm {
@@ -356,8 +361,11 @@ const GLOBAL_CSS = `
     padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
   }
-  @media (max-width:390px) {
-    .top-nav-btn { font-size:12px; letter-spacing:1.5px; padding:0 7px; }
+  @media (max-width:430px) {
+    .top-nav-btn { font-size:11px; letter-spacing:1.2px; padding:0 6px; }
+  }
+  @media (max-width:375px) {
+    .top-nav-btn { font-size:10px; letter-spacing:1px; padding:0 5px; }
   }
   .top-nav-btn::after {
     content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
@@ -2241,22 +2249,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       </div>
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,height:38,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,height:38,background:"rgba(4,4,12,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(184,164,216,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = screen===n.id;
           return (
             <button key={n.id}
               onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
               style={{
-                background: active ? `${n.color}22` : "transparent",
-                border: active ? `1px solid ${n.color}44` : "1px solid transparent",
-                borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : "transparent",
+                border: active ? `1px solid ${n.color}35` : "1px solid transparent",
+                borderRadius:20, cursor:"pointer", transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",
                 padding:"4px 16px", display:"flex", alignItems:"center", gap:6,
                 fontFamily:"'Jost',sans-serif", fontWeight:300,
                 fontSize:13, letterSpacing:1.8, textTransform:"uppercase",
                 color: active ? n.color : `${n.color}77`,
+                boxShadow: active ? `0 0 12px ${n.color}15` : "none",
               }}>
-              <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
+              <span style={{ fontSize:14, lineHeight:1, filter: active ? `drop-shadow(0 0 4px ${n.color}55)` : "none", transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)" }}>{n.icon}</span>
               <span>{n.label}</span>
             </button>
           );
@@ -3819,26 +3828,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
+        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(4,4,12,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(184,164,216,0.08)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)",boxShadow:"0 0 30px rgba(0,0,0,0.6),inset 0 0 20px rgba(184,164,216,0.03)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
             return (
               <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
-                  background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
-                  border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : pulse ? `${n.color}10` : "transparent",
+                  border: active ? `1px solid ${n.color}35` : pulse ? `1px solid ${n.color}30` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
-                  transition:"all 0.28s",
+                  transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",
                   padding:"8px 12px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
                   minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
+                  animation: pulse ? "navPulse 3s ease-in-out infinite" : "none",
+                  boxShadow: active ? `0 0 16px ${n.color}18,0 0 32px ${n.color}08` : "none",
                 }}>
-                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)", lineHeight:1, filter: active ? `drop-shadow(0 0 6px ${n.color}66)` : "none" }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
