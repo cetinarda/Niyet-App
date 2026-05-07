@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakin — App Store Arşiv Dokümanı</title>
+<style>
+@media print {
+  body { font-size: 11px; }
+  .page-break { page-break-before: always; }
+  .no-print { display: none; }
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: #fff; color: #1a1a1a;
+  max-width: 800px; margin: 0 auto; padding: 40px 32px;
+  line-height: 1.7; font-size: 14px;
+}
+h1 { font-size: 28px; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+h2 { font-size: 20px; font-weight: 600; color: #2d1b69; margin-top: 36px; margin-bottom: 12px; border-bottom: 2px solid #e8e0f0; padding-bottom: 6px; }
+h3 { font-size: 16px; font-weight: 600; color: #3d2b79; margin-top: 24px; margin-bottom: 8px; }
+h4 { font-size: 14px; font-weight: 600; color: #555; margin-top: 16px; margin-bottom: 6px; }
+p { margin-bottom: 10px; }
+.subtitle { color: #777; font-size: 15px; margin-bottom: 24px; }
+.date { color: #999; font-size: 12px; margin-bottom: 32px; display: block; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 13px; }
+th, td { text-align: left; padding: 8px 12px; border: 1px solid #e0e0e0; }
+th { background: #f5f0fa; color: #2d1b69; font-weight: 600; white-space: nowrap; }
+td { vertical-align: top; }
+.field-label { font-weight: 600; color: #333; min-width: 180px; white-space: nowrap; }
+code { background: #f5f0fa; padding: 2px 6px; border-radius: 3px; font-size: 12px; color: #5a3d8a; }
+pre { background: #f8f6fc; border: 1px solid #e8e0f0; border-radius: 6px; padding: 14px 16px; font-size: 12px; line-height: 1.6; overflow-x: auto; margin: 10px 0 16px; white-space: pre-wrap; }
+ul, ol { margin: 8px 0 16px 24px; }
+li { margin-bottom: 4px; }
+.section-box { background: #faf8fd; border: 1px solid #e8e0f0; border-radius: 8px; padding: 20px; margin: 16px 0; }
+.warning { background: #fff8e1; border-left: 4px solid #f5a623; padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+.success { background: #e8f5e9; border-left: 4px solid #4caf50; padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+.checklist { list-style: none; margin-left: 0; padding-left: 0; }
+.checklist li { padding: 4px 0 4px 28px; position: relative; }
+.checklist li::before { content: "☐"; position: absolute; left: 4px; color: #999; }
+.toc { background: #f9f7fd; border: 1px solid #e8e0f0; border-radius: 8px; padding: 20px 24px; margin: 20px 0 32px; }
+.toc ul { list-style: none; margin: 0; padding: 0; }
+.toc li { padding: 3px 0; }
+.toc a { color: #2d1b69; text-decoration: none; }
+.toc a:hover { text-decoration: underline; }
+.print-btn { position: fixed; bottom: 24px; right: 24px; background: #2d1b69; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+.print-btn:hover { background: #3d2b79; }
+.lang-tag { display: inline-block; background: #e8e0f0; color: #2d1b69; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; margin-right: 6px; vertical-align: middle; }
+hr { border: none; border-top: 1px solid #eee; margin: 32px 0; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">PDF Olarak Kaydet</button>
+
+<h1>Sakin — App Store Arşiv Dokümanı</h1>
+<p class="subtitle">Tüm App Store Connect bilgileri, görsel tasarım planı ve yükleme kılavuzu</p>
+<span class="date">Hazırlanma Tarihi: Mayıs 2026 &nbsp;|&nbsp; Versiyon: 1.2 (Build 3) &nbsp;|&nbsp; Bundle ID: app.sakin.life</span>
+
+<div class="toc">
+<strong>İçindekiler</strong>
+<ul>
+<li><a href="#s1">1. Uygulama Temel Bilgileri</a></li>
+<li><a href="#s2">2. App Store Connect — Tüm Metin Alanları</a></li>
+<li><a href="#s3">3. Fiyatlandırma & In-App Purchase Kurulumu</a></li>
+<li><a href="#s4">4. Açıklamalar — Tam Metin (TR + EN)</a></li>
+<li><a href="#s5">5. App Review Notes (İnceleme Ekibi İçin)</a></li>
+<li><a href="#s6">6. Screenshot Tasarım Planı</a></li>
+<li><a href="#s7">7. Screenshot Üretim & Yükleme Kılavuzu</a></li>
+<li><a href="#s8">8. App Icon</a></li>
+<li><a href="#s9">9. Build Yükleme Adımları (Xcode)</a></li>
+<li><a href="#s10">10. Submission Öncesi Kontrol Listesi</a></li>
+<li><a href="#s11">11. Apple Ret Gerekçeleri & Çözümler</a></li>
+</ul>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s1">1. Uygulama Temel Bilgileri</h2>
+
+<table>
+<tr><td class="field-label">Uygulama Adı</td><td>Sakin</td></tr>
+<tr><td class="field-label">Bundle Identifier</td><td><code>app.sakin.life</code></td></tr>
+<tr><td class="field-label">Altyazı (TR)</td><td>Kendini hep hatırla.</td></tr>
+<tr><td class="field-label">Altyazı (EN)</td><td>Always remember yourself.</td></tr>
+<tr><td class="field-label">Birincil Kategori</td><td>Lifestyle (Yaşam Tarzı)</td></tr>
+<tr><td class="field-label">İkincil Kategori</td><td>Entertainment (Eğlence)</td></tr>
+<tr><td class="field-label">Yaş Sınıfı</td><td>4+</td></tr>
+<tr><td class="field-label">Diller</td><td>Türkçe (birincil), English</td></tr>
+<tr><td class="field-label">Ülkeler</td><td>Tüm bölgeler (Türkiye birincil)</td></tr>
+<tr><td class="field-label">Minimum iOS</td><td>iOS 16.0+</td></tr>
+<tr><td class="field-label">Desteklenen Cihazlar</td><td>iPhone, iPad</td></tr>
+<tr><td class="field-label">Ekran Yönü</td><td>Portrait (Dikey)</td></tr>
+<tr><td class="field-label">Version</td><td>1.2</td></tr>
+<tr><td class="field-label">Build</td><td>3</td></tr>
+<tr><td class="field-label">Capacitor</td><td>6.x</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s2" class="page-break">2. App Store Connect — Tüm Metin Alanları</h2>
+
+<h3>2.1 — App Information Sayfası</h3>
+<table>
+<tr><td class="field-label">Name</td><td>Sakin</td></tr>
+<tr><td class="field-label">Primary Language</td><td>Turkish</td></tr>
+<tr><td class="field-label">Primary Category</td><td>Lifestyle</td></tr>
+<tr><td class="field-label">Secondary Category</td><td>Entertainment</td></tr>
+<tr><td class="field-label">Content Rights</td><td>"Does not contain, show, or access third-party content"</td></tr>
+<tr><td class="field-label">Age Rating</td><td>4+ (No objectionable content)</td></tr>
+</table>
+
+<h3>2.2 — Version Information (Türkçe)</h3>
+<table>
+<tr><td class="field-label">Subtitle</td><td>Kendini hep hatırla.</td></tr>
+<tr><td class="field-label">Promotional Text</td><td>Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı.</td></tr>
+<tr><td class="field-label">Description</td><td><em>Bkz. Bölüm 4 — Tam Metin</em></td></tr>
+<tr><td class="field-label">Keywords</td><td><code>sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rahatlama</code></td></tr>
+<tr><td class="field-label">What's New</td><td>
+• Tüm içerikler güncellendi ve iyileştirildi<br>
+• Farkındalık odaklı yeni deneyim<br>
+• Kuş sesleri eşliğinde frekans dinleme<br>
+• Performans iyileştirmeleri</td></tr>
+<tr><td class="field-label">Support URL</td><td>https://sakin.app</td></tr>
+<tr><td class="field-label">Marketing URL</td><td>https://sakin.app</td></tr>
+<tr><td class="field-label">Privacy Policy URL</td><td>https://sakin.app/privacy</td></tr>
+</table>
+
+<h3>2.3 — Version Information (English)</h3>
+<table>
+<tr><td class="field-label">Subtitle</td><td>Always remember yourself.</td></tr>
+<tr><td class="field-label">Promotional Text</td><td>Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing.</td></tr>
+<tr><td class="field-label">Description</td><td><em>Bkz. Bölüm 4 — Tam Metin</em></td></tr>
+<tr><td class="field-label">Keywords</td><td><code>calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation</code></td></tr>
+<tr><td class="field-label">What's New</td><td>
+• All content updated and improved<br>
+• New awareness-focused experience<br>
+• Frequency listening with bird sounds<br>
+• Performance improvements</td></tr>
+<tr><td class="field-label">Support URL</td><td>https://sakin.app</td></tr>
+<tr><td class="field-label">Marketing URL</td><td>https://sakin.app</td></tr>
+<tr><td class="field-label">Privacy Policy URL</td><td>https://sakin.app/privacy</td></tr>
+</table>
+
+<h3>2.4 — App Review Information</h3>
+<table>
+<tr><td class="field-label">Contact First Name</td><td>Arda</td></tr>
+<tr><td class="field-label">Contact Last Name</td><td>Cetin</td></tr>
+<tr><td class="field-label">Contact Email</td><td>destek@sakin.app</td></tr>
+<tr><td class="field-label">Contact Phone</td><td><em>(kendi telefon numaranı gir)</em></td></tr>
+<tr><td class="field-label">Demo Account</td><td>Not required — uygulama hesap kaydı gerektirmiyor</td></tr>
+<tr><td class="field-label">Notes</td><td><em>Bkz. Bölüm 5 — App Review Notes tam metni</em></td></tr>
+</table>
+
+<h3>2.5 — App Privacy (Data Types)</h3>
+<div class="section-box">
+<p><strong>"Does your app collect any data?"</strong> → <strong>Yes</strong></p>
+<table>
+<tr><th>Veri Türü</th><th>Collected</th><th>Linked to Identity</th><th>Used for Tracking</th><th>Purpose</th></tr>
+<tr><td>User Content (Other Data)</td><td>Yes</td><td>No</td><td>No</td><td>App Functionality</td></tr>
+</table>
+<p style="font-size:12px;color:#666;margin-top:8px;">Açıklama: Kullanıcı metni anonim olarak AI hizmetine (Groq API) gönderilir, kişisel kimlik bilgisi içermez. Cihazda depolanır.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s3" class="page-break">3. Fiyatlandırma & In-App Purchase Kurulumu</h2>
+
+<h3>3.1 — Fiyat Modeli</h3>
+<table>
+<tr><td class="field-label">App Price</td><td><strong>Free</strong> (Ücretsiz İndirme)</td></tr>
+<tr><td class="field-label">In-App Purchases</td><td>2 adet</td></tr>
+</table>
+
+<h3>3.2 — Yıllık Abonelik Kurulumu</h3>
+<div class="section-box">
+<p><strong>App Store Connect > Subscriptions > + Subscription Group</strong></p>
+<table>
+<tr><td class="field-label">Subscription Group Name</td><td>Sakin Premium</td></tr>
+<tr><td class="field-label">Reference Name</td><td>Yearly Premium</td></tr>
+<tr><td class="field-label">Product ID</td><td><code>app.sakin.life.yearly</code></td></tr>
+<tr><td class="field-label">Duration</td><td>1 Year</td></tr>
+<tr><td class="field-label">Price</td><td>$4.99 (Tier 5)</td></tr>
+<tr><td class="field-label">Localization (TR)</td><td>Yıllık Premium — Tüm özellikler</td></tr>
+<tr><td class="field-label">Localization (EN)</td><td>Yearly Premium — All features</td></tr>
+</table>
+</div>
+
+<h3>3.3 — Ömür Boyu Lisans Kurulumu</h3>
+<div class="section-box">
+<p><strong>App Store Connect > In-App Purchases > + Non-Consumable</strong></p>
+<table>
+<tr><td class="field-label">Reference Name</td><td>Lifetime License</td></tr>
+<tr><td class="field-label">Product ID</td><td><code>app.sakin.life.lifetime</code></td></tr>
+<tr><td class="field-label">Price</td><td>$19.99 (Tier 30)</td></tr>
+<tr><td class="field-label">Localization (TR)</td><td>Ömür Boyu Lisans — Tek seferlik, tüm özellikler</td></tr>
+<tr><td class="field-label">Localization (EN)</td><td>Lifetime License — One-time, all features</td></tr>
+</table>
+</div>
+
+<div class="warning">
+<strong>Fiyat ayarlarken:</strong> App Store Connect > Pricing and Availability > App Price alanında "Free" seçili olmalı. IAP fiyatları ayrıca Subscriptions ve In-App Purchases bölümlerinden ayarlanır.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s4" class="page-break">4. Açıklamalar — Tam Metin</h2>
+
+<h3><span class="lang-tag">TR</span> Türkçe Açıklama (Description)</h3>
+<pre>Sakin, sana bir şey öğretmez.
+Sadece hatırlatır.
+
+Günün koşusunda kendini unuttuğun anlarda, Sakin seni nazikçe içe çeker. Karmaşık programlar yok, görev listeleri yok, baskı yok. Sadece sen ve bugünkü niyetin.
+
+**Sabah Rutini**
+Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: huzur, cesaret, akış, sevgi... Gün boyu bu kelimeler sana yol gösterir.
+
+**Nefes Egzersizi**
+6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici — hangisi sana iyi geliyorsa.
+
+**Ses Dalgaları & Kuş Sesleri**
+10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Rahatlama ve farkındalık deneyimi sunar.
+
+**22 Çakra Farkındalığı**
+Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle tanış. 60 saniyede farkındalık pratiği yap. Elini bölgende hisset, gözlerini kapat, nefesine odaklan.
+
+**İçsel Ayna — AI Destekli Yansıtma**
+Aklındaki soruyu yaz, yapay zeka sana kişisel bir farkındalık yansıtması sunsun. Duygusal farkındalık perspektifinden kişiselleştirilmiş içgörüler.
+
+**Gün İçi Hatırlatıcılar**
+Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
+
+**Akşam Kapanışı**
+Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
+
+**Bağlantı & İlerleme**
+Gün serisi, frekans dinleme süresi ve tamamlanan adımlarla kendini takip et.
+
+**Haftalık İçsel Rapor**
+Haftanın sonunda AI destekli kişisel rapor: frekans dinleme süren, ruh halin ve kişisel farkındalık yansıtması.
+
+---
+
+Sakin, karmaşık değil. Derin.
+Sade tasarımı, yumuşak renkleri ve sessiz ritmiyle her gün yanında olmak için yapıldı.
+
+Bu uygulama tıbbi teşhis veya tedavi amacı taşımaz. Kişisel farkındalık ve rahatlama deneyimi sunar. Sağlık sorunları için mutlaka bir uzmana danışınız.
+
+Kendine dönmek için bir dakikan var.</pre>
+
+<h3><span class="lang-tag">EN</span> English Description</h3>
+<pre>Sakin doesn't teach you anything.
+It just reminds you.
+
+When you lose yourself in the rush of the day, Sakin gently brings you back inward. No complex programs, no to-do lists, no pressure. Just you and today's intention.
+
+**Morning Ritual**
+Start your day by setting an intention. Choose 3 words that resonate with you most: peace, courage, flow, love... These words will guide you throughout the day.
+
+**Breathing Exercise**
+Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming — whichever feels right for you.
+
+**Sound Waves & Bird Sounds**
+Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. A relaxation and awareness experience.
+
+**22 Chakra Awareness**
+Explore 22 energy centers across physical, spiritual, and divine dimensions. Practice a 60-second awareness exercise. Place your hand on the area, close your eyes, and focus on your breath.
+
+**Inner Mirror — AI-Powered Reflection**
+Write your question, and AI offers a personalized awareness reflection. Emotional awareness insights from a personal growth perspective.
+
+**Daily Reminders**
+Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
+
+**Evening Closing**
+What did you learn today? What are you grateful for? A few sentences are enough. The day closes, and you feel whole.
+
+**Connection & Progress**
+Track your day streak, frequency listening time, and completed steps.
+
+**Weekly Inner Report**
+At the end of the week, an AI-powered personal report: frequency listening duration, mood, and personal awareness reflection.
+
+---
+
+Sakin is not complex. It is deep.
+With its minimal design, soft colors, and quiet rhythm — it is built to be by your side every day.
+
+This app does not provide medical diagnosis or treatment. It offers a personal awareness and relaxation experience. Always consult a healthcare professional for health concerns.
+
+You have one minute to return to yourself.</pre>
+
+<!-- ============================================================ -->
+<h2 id="s5" class="page-break">5. App Review Notes (Tam Metin)</h2>
+<p style="font-size:12px;color:#666;margin-bottom:8px;">Bu metni App Store Connect > App Review Information > Notes alanına yapıştır.</p>
+
+<pre>**Sakin** is a free-to-download **Lifestyle** application with in-app purchases that guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
+
+**Pricing:** Free download with two premium plans:
+- **Yearly Subscription:** $4.99/year (Auto-Renewable) — Product ID: app.sakin.life.yearly
+- **Lifetime License:** $19.99 (Non-Consumable) — Product ID: app.sakin.life.lifetime
+
+## Technical Notes for Review Team
+
+### Account / Demo
+- The app does not require account registration or login.
+- No demo account needed.
+- The app works immediately upon launch.
+
+### Main Flow
+1. Launch screen → Tap "Hazırım" (I'm ready)
+2. Write a morning intention (any text)
+3. Select 3 motivation words
+4. Breathing exercise screen (tap a mode, then Start)
+5. Sound Waves — tap a solfeggio frequency to listen (accompanied by bird sounds)
+6. 22 Chakra Awareness — view energy center info, start 60-second connection
+7. Daily reminders checklist
+8. Evening closure — write reflection notes
+9. Connection screen — human body chakra system with progress tracking
+10. Weekly AI-generated inner report
+
+## Category and Content Compliance
+
+| Topic | Detail |
+|---|---|
+| Category | Lifestyle — no medical/health claims |
+| Secondary Category | Entertainment |
+| HealthKit | Not used |
+| Medical claims | None — uses "awareness" and "reminder" language |
+| Spiritual content | Chakra terms used in cultural/traditional context; does not represent any specific religion |
+| AI features | Uses Groq API (Meta Llama) for personalized text analysis. Explicit user consent required before first use |
+| User data | Stored locally on device only. AI features send anonymous text to API — no personal identifiers |
+| In-App Purchases | $4.99/year subscription + $19.99 lifetime (via StoreKit / cordova-plugin-purchase) |
+| External Payments | None in iOS app. Web version uses separate payment provider |
+| Audio | Solfeggio frequency tones (Web Audio API) and bird sound recordings from local assets. No streaming |
+
+## AI-Powered Features
+- Inner Mirror: Analyzes user-written text, provides personalized awareness reflection
+- Emotional Awareness Analysis: Maps emotional patterns to body awareness
+- Weekly Report: Generates weekly summary based on journal entries and frequency listening time
+- AI provider: Groq API (Meta Llama 3.3 70B)
+- Groq does not use submitted data for model training
+- All communication over HTTPS
+- AI responses include disclaimer about not being medical advice
+
+## Contact
+Developer: Arda Cetin
+Email: destek@sakin.app</pre>
+
+<!-- ============================================================ -->
+<h2 id="s6" class="page-break">6. Screenshot Tasarım Planı</h2>
+
+<h3>6.1 — Gerekli Boyutlar</h3>
+<table>
+<tr><th>Cihaz</th><th>Boyut (px)</th><th>Zorunlu</th></tr>
+<tr><td>iPhone 6.7" (15/16 Pro Max)</td><td>1290 x 2796</td><td>Evet</td></tr>
+<tr><td>iPhone 6.5" (11 Pro Max, XS Max)</td><td>1242 x 2688</td><td>Evet</td></tr>
+<tr><td>iPhone 5.5" (8 Plus, SE)</td><td>1242 x 2208</td><td>Evet</td></tr>
+<tr><td>iPad Pro 12.9"</td><td>2048 x 2732</td><td>iPad desteği varsa</td></tr>
+</table>
+
+<div class="success">
+<strong>Kolaylık:</strong> 6.7" ve 6.5" boyutları için aynı görseli kullanabilirsin — Apple otomatik ölçekler. Minimum 3, maksimum 10 screenshot.
+</div>
+
+<h3>6.2 — Tasarım Kuralları</h3>
+<ul>
+<li><strong>Arka plan:</strong> Koyu gradient (#0a0e1a → #1a1040) — uygulamanın temasıyla uyumlu</li>
+<li><strong>Başlık fontu:</strong> SF Pro Display Bold veya benzeri, beyaz renk, üst 1/4'te</li>
+<li><strong>Cihaz çerçevesi:</strong> Opsiyonel — Apple artık çerçevesiz screenshot'ları tercih ediyor</li>
+<li><strong>Metin dili:</strong> TR ve EN ayrı lokalizasyon olarak yüklenir</li>
+</ul>
+
+<div class="warning">
+<strong>YASAK:</strong> Screenshot'larda "şifa", "tedavi", "onarım", "DNA", "healing" kelimeleri OLMAMALI. Apple 1.4.1 ve 2.3.8 riski!
+</div>
+
+<h3>6.3 — 7 Screenshot Planı (Sıralı)</h3>
+
+<table>
+<tr><th>#</th><th>Ekran</th><th>Başlık (TR)</th><th>Başlık (EN)</th><th>Tasarım Notu</th></tr>
+<tr>
+<td>1</td>
+<td>Karşılama / Giriş</td>
+<td>Kendini hep hatırla</td>
+<td>Always remember yourself</td>
+<td>Koyu mor/lacivert arka plan, "Sakin" logosu ve tagline ortada</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Sabah Niyeti</td>
+<td>Günün niyetini belirle</td>
+<td>Set your daily intention</td>
+<td>Niyet yazma + 3 kelime seçili, kutucuklar parlak/aktif</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Nefes Egzersizi</td>
+<td>Nefesinle bedenine dön</td>
+<td>Return to your body</td>
+<td>Nefes dairesi en geniş halinde, "Nefes Al" görünsün</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Ses Dalgaları</td>
+<td>Kuş sesleri eşliğinde frekanslar</td>
+<td>Frequencies with bird sounds</td>
+<td>Frekans listesi + dalga animasyonu aktif, kuş ikonu</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Çakra Farkındalığı</td>
+<td>22 enerji merkezi farkındalığı</td>
+<td>22 energy center awareness</td>
+<td>İnsan silueti üzerinde renkli çakra noktaları</td>
+</tr>
+<tr>
+<td>6</td>
+<td>İçsel Ayna (AI)</td>
+<td>AI destekli kişisel yansıtma</td>
+<td>AI-powered personal reflection</td>
+<td>Yansıtma metni okunabilir görünsün</td>
+</tr>
+<tr>
+<td>7</td>
+<td>İlerleme & Bağlantı</td>
+<td>Günlük ilerlemeyi takip et</td>
+<td>Track your daily progress</td>
+<td>Streak sayısı ve tamamlanmış adımlar</td>
+</tr>
+</table>
+
+<div class="success">
+<strong>Minimum 3 yeterli:</strong> Hemen yüklemek için Screenshot 1 (Giriş), 3 (Nefes), 5 (Çakra) ile başlayabilirsin. Sonra diğerlerini eklersin.
+</div>
+
+<!-- ============================================================ -->
+<h2 id="s7" class="page-break">7. Screenshot Üretim & Yükleme Kılavuzu</h2>
+
+<h3>7.1 — Screenshot Alma Adımları</h3>
+<ol>
+<li>Xcode'da simulator aç: <strong>iPhone 15 Pro Max</strong> (6.7")</li>
+<li>Uygulamayı çalıştır (<code>npx cap open ios</code> → Run)</li>
+<li>Her ekranı uygun duruma getir (niyet yazılmış, kelimeler seçilmiş, nefes aktif vb.)</li>
+<li><kbd>Cmd + S</kbd> ile simulator screenshot al</li>
+<li>Figma'da <strong>1290 x 2796 px</strong> frame oluştur</li>
+<li>Üste başlık metni ekle (SF Pro Bold, beyaz, 64-72px)</li>
+<li>Alta screenshot'ı yerleştir</li>
+<li>PNG olarak export et</li>
+<li>Aynısını 6.5" (1242 x 2688) ve 5.5" (1242 x 2208) boyutlarında tekrarla</li>
+</ol>
+
+<h3>7.2 — App Store Connect'e Yükleme</h3>
+<ol>
+<li>App Store Connect > My Apps > Sakin > ilgili versiyon sayfası</li>
+<li>Sol menüde dil seçimine dikkat et (Türkçe / English ayrı ayrı)</li>
+<li><strong>iPhone 6.7" Display</strong> alanına 1290x2796 görselleri sürükle</li>
+<li><strong>iPhone 6.5" Display</strong> alanına 1242x2688 görselleri sürükle</li>
+<li>Sıralamayı yukarıdaki 1-7 plana göre düzenle</li>
+<li>Her iki dil için de tekrarla</li>
+</ol>
+
+<h3>7.3 — Araç Önerileri</h3>
+<table>
+<tr><th>Araç</th><th>Kullanım</th><th>Fiyat</th></tr>
+<tr><td>Xcode Simulator</td><td>Ham screenshot alma</td><td>Ücretsiz</td></tr>
+<tr><td>Figma</td><td>Çerçeve + başlık ekleme</td><td>Ücretsiz plan yeterli</td></tr>
+<tr><td>Screenshots Pro</td><td>Otomatik App Store formatı</td><td>Ücretli</td></tr>
+<tr><td>LaunchMatic</td><td>AI destekli üretim</td><td>Ücretli</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s8">8. App Icon</h2>
+
+<table>
+<tr><td class="field-label">Boyut</td><td>1024 x 1024 px</td></tr>
+<tr><td class="field-label">Format</td><td>PNG, şeffaf arka plan YOK</td></tr>
+<tr><td class="field-label">Köşe Yuvarlama</td><td>Apple otomatik uygular — kare olarak yükle</td></tr>
+<tr><td class="field-label">Tasarım</td><td>Zen-minimalist: koyu uzay gradienti, ince elmas çerçeve, merkez ışıklı nokta, frekans halkaları</td></tr>
+<tr><td class="field-label">Konum</td><td><code>ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png</code></td></tr>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="s9" class="page-break">9. Build Yükleme Adımları (Xcode)</h2>
+
+<h3>9.1 — Kod Hazırlığı (Terminal)</h3>
+<pre>
+# 1. Proje klasörüne git
+cd /path/to/Niyet-App
+
+# 2. Son kodu çek
+git pull origin claude/check-sakin-life-update-CIpM8
+
+# 3. Bağımlılıkları kur
+npm install
+
+# 4. Production build oluştur
+npm run build
+
+# 5. Capacitor sync (iOS dosyalarını güncelle)
+npx cap sync ios
+
+# 6. Xcode'da aç
+npx cap open ios
+</pre>
+
+<h3>9.2 — Xcode Ayarları</h3>
+<table>
+<tr><td class="field-label">Bundle Identifier</td><td><code>app.sakin.life</code></td></tr>
+<tr><td class="field-label">Version (Marketing)</td><td>1.2</td></tr>
+<tr><td class="field-label">Build</td><td>3</td></tr>
+<tr><td class="field-label">Deployment Target</td><td>iOS 16.0</td></tr>
+<tr><td class="field-label">Signing</td><td>Automatic (Apple Developer Account)</td></tr>
+<tr><td class="field-label">Device</td><td>Any iOS Device (arm64)</td></tr>
+</table>
+
+<h3>9.3 — Archive & Upload</h3>
+<ol>
+<li>Xcode > <strong>Product > Archive</strong></li>
+<li>Archive tamamlanınca <strong>"Distribute App"</strong> tıkla</li>
+<li><strong>"App Store Connect"</strong> seç</li>
+<li><strong>"Upload"</strong> seç</li>
+<li>Tüm seçenekleri varsayılan bırak</li>
+<li><strong>"Upload"</strong> ile yükle</li>
+<li>App Store Connect'te build'in işlenmesini bekle (5-15 dakika)</li>
+<li>Build göründükten sonra versiyon sayfasında build'i seç</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2 id="s10" class="page-break">10. Submission Öncesi Kontrol Listesi</h2>
+
+<h3>Kod Kontrolleri</h3>
+<ul class="checklist">
+<li>LemonSqueezy kodu iOS sürümünde devre dışı (yalnızca web'de)</li>
+<li>StoreKit (cordova-plugin-purchase) IAP entegrasyonu çalışıyor</li>
+<li>Tüm tıbbi/şifa ifadeleri temizlendi (Guideline 1.4.1)</li>
+<li>AI promptlarında tıbbi uyarı var</li>
+<li>Frekans açıklamalarında "deneyimsel dil" kullanılıyor</li>
+<li>Privacy consent modal'ı AI kullanımından önce gösteriliyor</li>
+<li>iOS'ta paywall ve SATIN AL butonu doğru çalışıyor</li>
+<li>Kaynak referansları (citation) frekans ve çakra bölümlerinde mevcut</li>
+</ul>
+
+<h3>Metadata Kontrolleri</h3>
+<ul class="checklist">
+<li>Kategori: Lifestyle + Entertainment (Health & Fitness DEĞİL)</li>
+<li>Keywords'te "reiki", "wellness", "healing" YOK</li>
+<li>Açıklamalarda "şifa", "tedavi", "onarım" YOK</li>
+<li>Fiyat: Ücretsiz + 2 IAP ($4.99/yıl + $19.99 ömür boyu)</li>
+<li>Privacy Policy linki çalışıyor (sakin.app/privacy)</li>
+<li>Terms of Use linki çalışıyor (sakin.app/terms)</li>
+<li>Screenshot'larda tıbbi/şifa içerik YOK</li>
+<li>What's New girildi (TR + EN)</li>
+<li>Promotional Text girildi (TR + EN)</li>
+</ul>
+
+<h3>Yükleme Kontrolleri</h3>
+<ul class="checklist">
+<li>Build, App Store Connect'te görünüyor</li>
+<li>Version bilgisi doğru (1.2, Build 3)</li>
+<li>Tüm screenshot'lar yüklendi (min. 3 adet, TR + EN)</li>
+<li>App Icon 1024x1024 px yüklendi</li>
+<li>Review Notes girildi</li>
+<li>App Privacy tamamlandı</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2 id="s11" class="page-break">11. Apple Ret Gerekçeleri & Çözümler</h2>
+
+<h3>Guideline 1.4.1 — Safety: Physical Harm</h3>
+<p><strong>Sorun:</strong> Uygulama içinde tıbbi teşhis, tedavi ve şifa iddiaları vardı.</p>
+
+<h4>Yapılan Düzeltmeler:</h4>
+<ul>
+<li>Tüm organ bağlantıları kaldırıldı (böbrek üstü bezleri, timus, tiroid, epifiz vb.)</li>
+<li>"DNA onarımı", "Hücresel uyum", "Travma temizliği" ifadeleri kaldırıldı</li>
+<li>Louise Hay hastalık-duygu eşleştirmesi → "Duygusal Farkındalık Rehberi"</li>
+<li>Reiki tedavi protokolleri → "Enerji Farkındalık Rehberi"</li>
+<li>Şifalı bitki tavsiyeleri kaldırıldı</li>
+<li>AI promptlarına "Asla tıbbi teşhis koyma" uyarısı eklendi</li>
+<li>"Mucize Tonu", "aktive eder" ifadeleri kaldırıldı</li>
+<li>"aktive olduğunda" → "deneyimlendiğinde"</li>
+<li>"enerji şifa yöntemi" → "farkındalık pratiği"</li>
+<li>Nefes açıklamalarında "parasempatik sistemi aktive eder" kaldırıldı</li>
+<li>Tıbbi uyarı metni tüm AI yanıtlarına eklendi</li>
+<li>Frekans ve çakra içeriklerine kaynak referansları (Gregoryen ilahileri, Veda geleneği) eklendi</li>
+</ul>
+
+<h3>Guideline 2.3.8 — Accurate Metadata</h3>
+<p><strong>Sorun:</strong> Metadata uyuşmazlığı, yer tutucu ikon, harici ödeme.</p>
+
+<h4>Yapılan Düzeltmeler:</h4>
+<ul>
+<li>LemonSqueezy iOS sürümünden kaldırıldı (sadece web'de)</li>
+<li>Kategori: Health & Fitness → Lifestyle + Entertainment</li>
+<li>Keywords'ten "reiki" ve "wellness" kaldırıldı</li>
+<li>"Çakra Yükselişi" → "Çakra Farkındalığı"</li>
+<li>Yeni zen-minimalist app icon tasarlandı (yer tutucu değil)</li>
+<li>Fiyat modeli güncellendi: Ücretsiz + IAP</li>
+<li>iOS'ta StoreKit ile IAP entegrasyonu yapıldı</li>
+</ul>
+
+<hr>
+
+<p style="text-align:center;color:#999;font-size:12px;margin-top:40px;">
+Sakin — App Store Arşiv Dokümanı &nbsp;|&nbsp; Mayıs 2026 &nbsp;|&nbsp; Geliştirici: Arda Cetin &nbsp;|&nbsp; destek@sakin.app
+</p>
+
+</body>
+</html>
