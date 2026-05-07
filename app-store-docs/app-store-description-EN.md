@@ -53,3 +53,16 @@ With its minimal design, soft colors, and quiet rhythm — it is built to be by 
 This app does not provide medical diagnosis or treatment. It offers a personal awareness and relaxation experience. Always consult a healthcare professional for health concerns.
 
 You have one minute to return to yourself.
+
+---
+
+## Subscription Information (Append to description)
+
+Subscription Details:
+• Sakin Yearly Access: $4.99/year
+• Payment is charged to your Apple ID account upon confirmation of purchase
+• Subscription automatically renews unless canceled at least 24 hours before the end of the current period
+• Renewal is charged within 24 hours before the end of the current period
+• You can manage and cancel your subscriptions in your account settings after purchase
+• Privacy Policy: https://sakin.app/privacy
+• Terms of Use: https://sakin.app/terms

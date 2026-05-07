@@ -2,9 +2,9 @@
 
 ## Application Summary
 
-**Sakin** is a paid **Lifestyle** application that guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
+**Sakin** is a free-to-download **Lifestyle** application with an auto-renewable subscription ($4.99/year). It guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
 
-**Price:** $9.99 one-time purchase. No in-app purchases, no subscriptions.
+**Price:** Free download. $4.99/year auto-renewable subscription for full access.
 
 ---
 
@@ -13,19 +13,33 @@
 ### Account / Demo
 - The app **does not require** account registration or login.
 - No demo account needed.
-- The app works immediately upon launch.
+- Subscription is required to access features after download.
 
 ### Main Flow
-1. Launch screen → Tap "Hazırım" (I'm ready)
-2. Write a morning intention (any text)
-3. Select 3 motivation words
-4. Breathing exercise screen (tap a mode, then Start)
-5. Sound Waves — tap a solfeggio frequency to listen (accompanied by bird sounds)
-6. 22 Chakra Ascension — view energy center info, start 60-second connection
-7. Daily reminders checklist
-8. Evening closure — write reflection notes
-9. Connection screen — human body chakra system with progress tracking
-10. Weekly AI-generated inner report
+1. Launch screen → Subscription paywall
+2. After subscribing → Tap "Hazırım" (I'm ready)
+3. Write a morning intention (any text)
+4. Select 3 motivation words
+5. Breathing exercise screen (tap a mode, then Start)
+6. Sound Waves — tap a solfeggio frequency to listen (accompanied by bird sounds)
+7. 22 Chakra Awareness — view energy center info, start 60-second connection
+8. Daily reminders checklist
+9. Evening closure — write reflection notes
+10. Connection screen — human body chakra system with progress tracking
+11. Weekly AI-generated inner report
+
+---
+
+## In-App Purchases
+
+| Product | Type | Price | Duration |
+|---|---|---|---|
+| Sakin Yearly Access | Auto-Renewable Subscription | $4.99 | 1 Year |
+
+- Single subscription tier — unlocks all features
+- No consumable or non-consumable IAPs
+- Managed entirely through Apple StoreKit
+- No external payment mechanisms within the iOS app
 
 ---
 
@@ -34,15 +48,17 @@
 | Topic | Detail |
 |---|---|
 | **Category** | Lifestyle — no medical/health claims |
+| **Secondary Category** | Entertainment |
 | **HealthKit** | Not used |
 | **Medical claims** | None — uses "awareness" and "reminder" language |
-| **Spiritual content** | Reiki and chakra terms are used in cultural/traditional context; does not represent any specific religion |
+| **Spiritual content** | Chakra terms are used in cultural/traditional context; does not represent any specific religion |
 | **AI features** | Uses Groq API (Meta Llama) for personalized text analysis. Explicit user consent is required before first use (Apple Guideline 5.1.2(i)) |
 | **User data** | Stored locally on device only. AI features send anonymous text to API — no personal identifiers |
 | **Notifications** | Local notifications only, with user permission |
 | **Third-party SDKs** | Capacitor plugins (splash screen, haptics, status bar, local notifications) |
 | **Ads** | None |
-| **In-App Purchases** | None — paid app model |
+| **In-App Purchases** | Auto-renewable subscription — $4.99/year |
+| **External Payments** | None — iOS app uses Apple IAP exclusively |
 | **Privacy Manifest** | PrivacyInfo.xcprivacy included — declares UserDefaults API usage |
 | **Audio** | App plays solfeggio frequency tones (Web Audio API oscillator) and bird sound recordings from local assets. No streaming. |
 | **Microphone** | Not used |
@@ -52,12 +68,17 @@
 
 ## Areas Requiring Special Attention
 
+### Subscription Model (Guideline 3.1.2)
+- Auto-renewable subscription at $4.99/year
+- Subscription is presented on a dedicated paywall screen
+- Terms of Use and Privacy Policy links are visible on the paywall
+- Subscription management info: "Ayarlar > Apple Kimliği > Abonelikler" displayed
+- No external or alternative payment methods in the iOS app
+
 ### AI-Powered Features (Guideline 5.1.2(i))
 The app includes AI features:
-- **Inner Mirror (İçsel Ayna):** Analyzes user-written text and provides personalized spiritual reflection
-- **Reiki Analysis:** Chakra-based analysis of user concerns
-- **Mental-Physical Analysis:** Maps emotional patterns to body awareness
-- **Health Awareness:** Non-medical awareness suggestions based on user input
+- **Inner Mirror (İçsel Ayna):** Analyzes user-written text and provides personalized awareness reflection
+- **Emotional Awareness Analysis:** Maps emotional patterns to body awareness
 - **Weekly Report:** Generates a weekly summary based on daily journal entries and frequency listening time
 
 **Data handling:**
@@ -68,7 +89,7 @@ The app includes AI features:
 - All communication is over HTTPS
 - AI responses include disclaimer: "Bu yansıtma profesyonel tıbbi tavsiye yerine geçmez"
 
-### Reiki and Chakra Content (Guideline 1.1)
+### Chakra Content (Guideline 1.1)
 - Does not represent any specific religion
 - Not presented as therapeutic or medical treatment
 - Framed as "energy awareness" and "body awareness" in cultural context
@@ -85,7 +106,7 @@ The app includes AI features:
 ### Audio Content
 - Solfeggio frequency tones generated via Web Audio API (oscillator)
 - Bird sound recordings bundled as local assets (~12MB total)
-- SpeechSynthesis API used for single word ("Connected") during chakra therapy
+- SpeechSynthesis API used for single word ("Connected") during chakra awareness
 - No streaming, no external audio sources
 
 ### Client-Server Model Mismatch

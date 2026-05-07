@@ -1,6 +1,6 @@
 # Gizlilik Politikası — Sakin Uygulaması
 
-**Son güncelleme:** Nisan 2026
+**Son güncelleme:** Mayıs 2026
 
 ## 1. Genel Bakış
 
@@ -73,8 +73,17 @@ Kullanıcı günlük hatırlatıcı bildirimleri için izin verirse:
 | Hizmet | Amaç | Paylaşılan Veri |
 |---|---|---|
 | Groq API (Meta Llama) | AI destekli kişisel yansıtma | Kullanıcının yazdığı metin (anonim) |
+| Apple StoreKit | Abonelik yönetimi | Satın alma durumu (Apple tarafından yönetilir) |
 
 Uygulama herhangi bir reklam ağı, analitik servisi veya sosyal medya entegrasyonu içermemektedir.
+
+## 4.1 Abonelik Bilgisi
+
+- **Sakin Yıllık Erişim:** $4.99/yıl otomatik yenilenen abonelik
+- Ödeme, Apple Kimliği hesabınızdan tahsil edilir
+- Abonelik, dönem bitiminden 24 saat önce iptal edilmezse otomatik yenilenir
+- Aboneliklerinizi Ayarlar > Apple Kimliği > Abonelikler bölümünden yönetebilirsiniz
+- Ücretsiz deneme süresi sunulmamaktadır
 
 ## 5. Veri Güvenliği
 

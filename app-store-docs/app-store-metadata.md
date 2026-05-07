@@ -5,9 +5,10 @@
 | Alan | Değer |
 |---|---|
 | **Uygulama Adı** | Sakin |
-| **Altyazı (Subtitle)** | Kendini hep hatırla. |
+| **Altyazı (Subtitle — TR)** | Kendini hep hatırla. |
+| **Altyazı (Subtitle — EN)** | Always remember yourself. |
 | **Kategori (Birincil)** | Lifestyle (Yaşam Tarzı) |
-| **Kategori (İkincil)** | Health & Fitness |
+| **Kategori (İkincil)** | Entertainment (Eğlence) |
 | **Yaş Sınıfı** | 4+ |
 | **Dil** | Türkçe (birincil), İngilizce |
 | **Ülkeler** | Türkiye (birincil), tüm bölgeler |
@@ -16,15 +17,17 @@
 
 ## Anahtar Kelimeler (Keywords — max 100 karakter)
 
-### Türkçe Keywords
+### Türkçe Keywords (80 karakter)
 ```
-sakin,farkındalık,meditasyon,nefes,çakra,reiki,frekans,kuş,günlük,mindfulness
+sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rahatlama
 ```
 
-### İngilizce Keywords
+### İngilizce Keywords (93 karakter)
 ```
-intention,mindfulness,meditation,breathing,chakra,frequency,bird,wellness,calm,reminder
+calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation
 ```
+
+> **Kaldırılanlar:** `reiki`, `wellness` — Apple 1.4.1 uyumluluğu için sağlık/şifa çağrışımlı kelimeler çıkarıldı.
 
 ---
 
@@ -32,11 +35,21 @@ intention,mindfulness,meditation,breathing,chakra,frequency,bird,wellness,calm,r
 
 | Alan | Değer |
 |---|---|
-| **Model** | Ücretli Uygulama (Paid App) |
-| **Fiyat** | $9.99 (Tier 10) |
-| **Uygulama İçi Satın Alma** | Yok |
-| **Abonelik** | Yok |
-| **Açıklama** | Tek seferlik ödeme, ömür boyu erişim |
+| **Model** | Ücretsiz İndirme + Uygulama İçi Abonelik |
+| **İndirme Fiyatı** | Ücretsiz ($0.00) |
+| **Abonelik** | $4.99/yıl — Otomatik Yenilenen Abonelik |
+| **Abonelik Adı (TR)** | Sakin Yıllık Erişim |
+| **Abonelik Adı (EN)** | Sakin Yearly Access |
+| **Abonelik Açıklama (TR)** | Tüm özelliklere sınırsız erişim. Yıllık olarak otomatik yenilenir. |
+| **Abonelik Açıklama (EN)** | Unlimited access to all features. Renews automatically every year. |
+| **Deneme Süresi** | Yok |
+| **Ücretsiz İçerik** | Yok — abonelik olmadan uygulama kullanılamaz |
+
+### App Store Connect — Subscription Group
+- **Grup Adı:** Sakin Premium
+- **Ürün ID:** `app.sakin.life.yearly`
+- **Süre:** 1 Yıl (Auto-Renewable)
+- **Fiyat Tier:** $4.99
 
 ---
 
@@ -81,9 +94,9 @@ Bkz. `app-review-notes.md`
 2. Sabah niyeti — kelime seçimi ekranı
 3. Nefes egzersizi — animasyon ekranı
 4. Ses Dalgaları — solfeggio frekansları + kuş sesleri
-5. 22 Çakra Yükselişi — çakra terapi ekranı
-6. İçsel Ayna — AI analiz ekranı
-7. Bağlantı ekranı — insan iskeleti çakra bağlantı sistemi
+5. 22 Çakra Farkındalığı — çakra bağlantı ekranı
+6. İçsel Ayna — AI farkındalık yansıtma ekranı
+7. Bağlantı ekranı — ilerleme ve gün serisi takibi
 
 ---
 
@@ -94,12 +107,19 @@ Bkz. `app-review-notes.md`
 | Veri Türü | Durum | Detay |
 |---|---|---|
 | User Content | Evet | AI özellikleri için kullanıcının yazdığı metin Groq API'ye gönderilir |
+| Purchase History | Evet | Abonelik durumu (StoreKit tarafından yönetilir) |
 
 ### User Content Detay
 - **Linked to Identity:** Hayır
 - **Used for Tracking:** Hayır
 - **Purpose:** App Functionality
 - **Açıklama:** Kullanıcı metni anonim olarak AI hizmetine gönderilir, kişisel kimlik bilgisi içermez
+
+### Purchase History Detay
+- **Linked to Identity:** Hayır
+- **Used for Tracking:** Hayır
+- **Purpose:** App Functionality
+- **Açıklama:** Abonelik durumu Apple StoreKit tarafından yönetilir, üçüncü tarafa iletilmez
 
 ### Toplanmayan Veriler
 Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info,
@@ -116,5 +136,5 @@ Contacts, Browsing History, Search History, Identifiers, Usage Data, Diagnostics
 | **Web Dir** | dist |
 | **Xcode Min** | 15.0 |
 | **Swift** | 5.0 |
-| **Marketing Version** | 1.0 |
-| **Build Number** | 1 |
+| **Marketing Version** | 1.1 |
+| **Build Number** | 2 |
