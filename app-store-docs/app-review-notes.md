@@ -2,9 +2,11 @@
 
 ## Application Summary
 
-**Sakin** is a paid **Lifestyle** application ($4.99) that guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
+**Sakin** is a free-to-download **Lifestyle** application with in-app purchases that guides users through a daily mindfulness routine — from morning intention to evening closure. The app does not make any medical claims; it focuses on "reminders", "habit building" and "personal awareness".
 
-**Price:** $4.99 one-time purchase. No in-app purchases, no subscriptions. All future updates included.
+**Pricing:** Free download with two premium plans:
+- **Yearly Subscription:** $4.99/year (Auto-Renewable) — Product ID: `app.sakin.life.yearly`
+- **Lifetime License:** $19.99 (Non-Consumable) — Product ID: `app.sakin.life.lifetime`
 
 ---
 
@@ -43,7 +45,7 @@
 | **Notifications** | Local notifications only, with user permission |
 | **Third-party SDKs** | Capacitor plugins (splash screen, haptics, status bar, local notifications) |
 | **Ads** | None |
-| **In-App Purchases** | None — paid app model |
+| **In-App Purchases** | Yes — $4.99/year subscription + $19.99 lifetime (via StoreKit / cordova-plugin-purchase) |
 | **External Payments** | None in iOS app. Web version (sakin.app) uses separate payment provider. |
 | **Privacy Manifest** | PrivacyInfo.xcprivacy included — declares UserDefaults API usage |
 | **Audio** | App plays solfeggio frequency tones (Web Audio API oscillator) and bird sound recordings from local assets. No streaming. |

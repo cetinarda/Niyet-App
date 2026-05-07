@@ -33,11 +33,12 @@ calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,dai
 
 | Alan | Değer |
 |---|---|
-| **Model** | Ücretli Uygulama (Paid App) |
-| **Fiyat** | $4.99 (Tier 5) |
-| **Uygulama İçi Satın Alma** | Yok |
-| **Abonelik** | Yok |
-| **Açıklama** | Tek seferlik ödeme, tüm özellikler açık, güncellemeler ücretsiz |
+| **Model** | Ücretsiz İndirme + IAP (Freemium) |
+| **Fiyat** | Ücretsiz |
+| **Uygulama İçi Satın Alma** | Evet (2 adet) |
+| **Yıllık Abonelik** | $4.99/yıl — `app.sakin.life.yearly` (Auto-Renewable Subscription) |
+| **Ömür Boyu Lisans** | $19.99 — `app.sakin.life.lifetime` (Non-Consumable) |
+| **Açıklama** | Ücretsiz indirme, premium özelliklere yıllık abonelik veya tek seferlik ömür boyu lisans ile erişim |
 
 ---
 

@@ -30,8 +30,8 @@
 - ✅ Kategori: Health & Fitness → Entertainment olarak değiştirildi
 - ✅ Anahtar kelimelerden "reiki" ve "wellness" kaldırıldı
 - ✅ "Çakra Yükselişi" → "Çakra Farkındalığı" olarak değiştirildi
-- ✅ Fiyat modeli: $9.99 → $4.99 ücretli uygulama olarak güncellendi
-- ✅ iOS'ta LemonSqueezy tamamen devre dışı, isPremium=true (ücretli uygulama = herkes premium)
+- ✅ Fiyat modeli: Ücretsiz indirme + $4.99/yıl abonelik veya $19.99 ömür boyu lisans
+- ✅ iOS'ta LemonSqueezy tamamen devre dışı, StoreKit (cordova-plugin-purchase) ile IAP entegrasyonu
 
 ---
 
@@ -53,11 +53,28 @@
 
 | Alan | Değer |
 |---|---|
-| **App Price** | $4.99 (Tier 5) |
+| **App Price** | Free (Ücretsiz) |
 | **Availability** | All territories |
 | **Pre-Order** | Hayır |
-| **In-App Purchases** | Yok |
-| **Subscriptions** | Yok |
+| **In-App Purchases** | Evet — Ömür Boyu Lisans $19.99 (Non-Consumable) |
+| **Subscriptions** | Evet — Yıllık $4.99 (Auto-Renewable) |
+
+#### App Store Connect — In-App Purchases Kurulumu
+
+1. **Subscription Group** oluştur: "Sakin Premium"
+2. Subscription ekle:
+   - **Reference Name:** Yearly Premium
+   - **Product ID:** `app.sakin.life.yearly`
+   - **Duration:** 1 Year
+   - **Price:** $4.99 (Tier 5)
+   - **Localization (TR):** Yıllık Premium — Tüm özellikler
+   - **Localization (EN):** Yearly Premium — All features
+3. Non-Consumable IAP ekle:
+   - **Reference Name:** Lifetime License
+   - **Product ID:** `app.sakin.life.lifetime`
+   - **Price:** $19.99 (Tier 30)
+   - **Localization (TR):** Ömür Boyu Lisans — Tek seferlik, tüm özellikler
+   - **Localization (EN):** Lifetime License — One-time, all features
 
 ### 2.4 — Version Information (TR)
 
@@ -259,7 +276,7 @@ npx cap open ios
 
 ### 5.3 — Archive ve Yükleme
 
-> **Not:** StoreKit gerektirmez. $4.99 ücretli uygulama — Apple ödemeyi store'da halleder.
+> **Not:** `cordova-plugin-purchase` kullanılır. Ücretsiz indirme + StoreKit IAP ile $4.99/yıl veya $19.99 ömür boyu.
 
 ```
 1. Xcode > Product > Archive
@@ -278,7 +295,7 @@ npx cap open ios
 - [ ] Tüm screenshot'lar yüklendi (TR + EN)
 - [ ] Açıklamalar girildi (TR + EN)
 - [ ] Keywords girildi
-- [ ] Fiyat $4.99 olarak ayarlandı
+- [ ] Fiyat: Ücretsiz + IAP'lar tanımlandı ($4.99/yıl + $19.99 ömür boyu)
 - [ ] Privacy Policy URL çalışıyor
 - [ ] Terms of Use URL çalışıyor
 - [ ] Review Notes girildi
@@ -289,18 +306,19 @@ npx cap open ios
 ## BÖLÜM 6: Submission Öncesi Kontrol Listesi
 
 ### Kod Kontrolleri
-- [ ] LemonSqueezy kodu iOS sürümünde devre dışı (isPremium=true on native)
+- [ ] LemonSqueezy kodu iOS sürümünde devre dışı (yalnızca web'de)
+- [ ] StoreKit (cordova-plugin-purchase) IAP entegrasyonu çalışıyor
 - [ ] Tüm tıbbi/şifa ifadeleri temizlendi (1.4.1)
 - [ ] AI promptlarında tıbbi uyarı var
 - [ ] Frekans açıklamalarında "deneyimsel dil" kullanılıyor
 - [ ] Privacy consent modal'ı AI kullanımından önce gösteriliyor
-- [ ] iOS'ta SATIN AL butonu gizli (ücretli uygulama, zaten ödemiş)
+- [ ] iOS'ta SATIN AL butonu ve paywall doğru çalışıyor
 
 ### Metadata Kontrolleri
 - [ ] Kategori: Lifestyle + Entertainment (Health & Fitness DEĞİL)
 - [ ] Keywords'te "reiki", "wellness", "healing" YOK
 - [ ] Açıklamalarda "şifa", "tedavi", "onarım" YOK
-- [ ] Fiyat: $4.99 ücretli uygulama (IAP/abonelik YOK)
+- [ ] Fiyat: Ücretsiz + 2 IAP ($4.99/yıl abonelik + $19.99 ömür boyu)
 - [ ] Privacy Policy ve Terms of Use linkleri çalışıyor
 - [ ] Screenshot'larda tıbbi/şifa içerik YOK
 
@@ -321,7 +339,7 @@ npx cap open ios
 | Terms of Use eksik | ret riski | sakin.app/terms yayında olmalı |
 | AI consent modal yok | 5.1.2 ret | İlk kullanımda onay modal'ı |
 | "Reiki" keyword'de | 1.4.1 / 2.3.8 risk | Keywords'ten kaldırıldı |
-| Fiyat bilgisi yanlış | 2.3.8 ret | $4.99 ücretli uygulama |
+| Fiyat bilgisi yanlış | 2.3.8 ret | Ücretsiz + $4.99/yıl ve $19.99 ömür boyu IAP |
 | Screenshot'ta "şifa" yazıyor | 2.3.8 ret | Temiz screenshot'lar |
 
 ---
@@ -337,7 +355,7 @@ Aşağıdaki sayfaların `sakin.app` domain'inde yayında olması gerekir:
 Aşağıdakileri içermeli:
 - Hizmet tanımı
 - Kullanım koşulları
-- Ücretli uygulama bilgisi ($4.99 tek seferlik)
+- Abonelik ve satın alma bilgisi ($4.99/yıl + $19.99 ömür boyu)
 - İade politikası (Apple'ın standart politikasına yönlendirme)
 - Sorumluluk reddi (tıbbi amaç taşımaz)
 - İletişim bilgisi

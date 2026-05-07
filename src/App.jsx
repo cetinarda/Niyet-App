@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
@@ -1462,7 +1463,7 @@ export default function SakinApp() {
   }, []);
   const devMode = isOwner;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
-  const [isPremium, setIsPremium] = useState(() => isNative ? true : localStorage.getItem("sakin_premium") === "1");
+  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
   const [showLicenseModal, setShowLicenseModal] = useState(false);
   const [licenseInput, setLicenseInput] = useState("");
   const [licenseError, setLicenseError] = useState("");
@@ -1494,14 +1495,33 @@ export default function SakinApp() {
     }
     setLicenseLoading(false);
   };
+  const [purchaseLoading, setPurchaseLoading] = useState(null);
+  const [restoreLoading, setRestoreLoading] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState("");
   useEffect(() => {
-    if (!isNative && !document.querySelector('script[src*="lemonsqueezy"]')) {
+    if (isNative) {
+      onPurchaseUpdate((ok) => { if (ok) setIsPremium(true); });
+      initStore();
+    } else if (!document.querySelector('script[src*="lemonsqueezy"]')) {
       const s = document.createElement("script");
       s.src = "https://assets.lemonsqueezy.com/lemon.js";
       s.defer = true;
       document.body.appendChild(s);
     }
   }, []);
+  const handlePurchase = async (fn, id) => {
+    setPurchaseLoading(id);
+    const r = await fn();
+    setPurchaseLoading(null);
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+  };
+  const handleRestore = async () => {
+    setRestoreLoading(true); setRestoreMsg("");
+    const r = await restorePurchases();
+    setRestoreLoading(false);
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    else setRestoreMsg(t("sub_no_purchase"));
+  };
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
@@ -2210,7 +2230,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           style={ screen!=="hakkinda" ? { animation:"aboutPulse 2s ease-in-out infinite", color:"#b8a4d8" } : undefined }>
           {t("nav_about")}
         </button>
-        {!isNative && <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}
+        {!isPremium && <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}
           style={ screen!=="fiyat" ? { animation:"aboutPulse 2s ease-in-out infinite", color:"#b8a4d8" } : undefined }>{t("nav_pricing")}</button>}
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
@@ -3615,6 +3635,50 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked."}
               </div>
             </div>
+          ) : isNative ? (
+            <>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 20px" }}>{t("sub_features").map(f=>(
+                <li key={f} style={{ display:"flex",alignItems:"center",gap:8,padding:"5px 0",fontSize:14,color:"#ccc" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b8a4d8" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>{f}
+                </li>
+              ))}</ul>
+
+              <div style={{ display:"flex",gap:12,marginBottom:16 }}>
+                {/* YILLIK */}
+                <div style={{ flex:1,background:"linear-gradient(145deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"2px solid rgba(184,164,216,0.4)",borderRadius:16,padding:"20px 14px",textAlign:"center",position:"relative" }}>
+                  <div style={{ position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#b8a4d8,#7a5096)",borderRadius:12,padding:"3px 12px",fontSize:10,letterSpacing:2,color:"#fff",textTransform:"uppercase",whiteSpace:"nowrap" }}>{t("sub_yearly_badge")}</div>
+                  <div style={{ fontSize:28,color:"#fff",fontWeight:200,marginTop:8 }}>{t("sub_yearly_price")}</div>
+                  <div style={{ fontSize:11,color:"#b8a4d8",letterSpacing:1,marginTop:4 }}>{t("sub_yearly_desc")}</div>
+                  <button onClick={()=>handlePurchase(purchaseYearly,"yearly")} disabled={!!purchaseLoading}
+                    style={{ width:"100%",marginTop:14,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1 }}>
+                    {purchaseLoading==="yearly" ? "..." : (t("sub_buy")+" →")}
+                  </button>
+                </div>
+                {/* ÖMÜR BOYU */}
+                <div style={{ flex:1,background:"linear-gradient(145deg,rgba(255,215,0,0.08),rgba(255,215,0,0.02))",border:"1px solid rgba(255,215,0,0.25)",borderRadius:16,padding:"20px 14px",textAlign:"center",position:"relative" }}>
+                  <div style={{ position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",background:"linear-gradient(135deg,#d4af37,#b8860b)",borderRadius:12,padding:"3px 12px",fontSize:10,letterSpacing:2,color:"#fff",textTransform:"uppercase",whiteSpace:"nowrap" }}>{t("sub_lifetime_badge")}</div>
+                  <div style={{ fontSize:28,color:"#fff",fontWeight:200,marginTop:8 }}>{t("sub_lifetime_price")}</div>
+                  <div style={{ fontSize:11,color:"#d4af37",letterSpacing:1,marginTop:4 }}>{t("sub_lifetime_desc")}</div>
+                  <button onClick={()=>handlePurchase(purchaseLifetime,"lifetime")} disabled={!!purchaseLoading}
+                    style={{ width:"100%",marginTop:14,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1 }}>
+                    {purchaseLoading==="lifetime" ? "..." : (t("sub_buy")+" →")}
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ textAlign:"center",marginBottom:12 }}>
+                <button onClick={handleRestore} disabled={restoreLoading}
+                  style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:22,padding:"10px 24px",cursor:restoreLoading?"wait":"pointer",color:"#999",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:restoreLoading?0.6:1 }}>
+                  {restoreLoading ? "..." : t("sub_restore")}
+                </button>
+                {restoreMsg && <div style={{ fontSize:12,color:"#e06060",marginTop:8 }}>{restoreMsg}</div>}
+              </div>
+              <div style={{ fontSize:10,color:"#555",lineHeight:1.7,textAlign:"center",padding:"0 8px",marginTop:8 }}>{t("sub_terms_text")}</div>
+              <div style={{ textAlign:"center",marginTop:10,display:"flex",justifyContent:"center",gap:16 }}>
+                <a href="https://sakin.app/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
+                <a href="https://sakin.app/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
+              </div>
+            </>
           ) : (
             <>
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
@@ -3627,17 +3691,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {lang==="tr" ? "Ömür Boyu Lisans" : "Lifetime License"}
                 </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
-
                 <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
                   style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
                   {lang==="tr" ? "Satın Al →" : "Buy Now →"}
                 </a>
               </div>
-
               <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
-                <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>
-                  {lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}
-                </div>
+                <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>{lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}</div>
                 <button onClick={() => setShowLicenseModal(true)}
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
@@ -4059,6 +4119,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 style={{ flex:1,padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",color:"#ffffff",fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",boxShadow:"0 4px 20px rgba(255,255,255,0.3)" }}>{t("ai_consent_accept")}</button>
             </div>
           </div>
+        </div>
+      )}
+
+      {isNative && !isPremium && !isOwner && screen !== "giris" && screen !== "fiyat" && (
+        <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.98) 60%,transparent)",padding:"60px 20px 24px",textAlign:"center" }}>
+          <div style={{ fontFamily:"'Jost',sans-serif",fontSize:18,fontWeight:300,letterSpacing:2,color:"#ffffff",marginBottom:6 }}>{t("sub_paywall_title")}</div>
+          <div style={{ fontSize:13,color:"#999",whiteSpace:"pre-line",lineHeight:1.6,marginBottom:16 }}>{t("sub_paywall_desc")}</div>
+          <div style={{ display:"flex",gap:10,maxWidth:340,margin:"0 auto 12px" }}>
+            <button onClick={()=>handlePurchase(purchaseYearly,"yearly")} disabled={!!purchaseLoading}
+              style={{ flex:1,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1 }}>
+              {purchaseLoading==="yearly" ? "..." : t("sub_yearly_price")}
+            </button>
+            <button onClick={()=>handlePurchase(purchaseLifetime,"lifetime")} disabled={!!purchaseLoading}
+              style={{ flex:1,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1 }}>
+              {purchaseLoading==="lifetime" ? "..." : t("sub_lifetime_price")}
+            </button>
+          </div>
+          <button onClick={()=>setScreen("fiyat")} style={{ background:"none",border:"none",color:"#777",fontSize:12,letterSpacing:1,fontFamily:"'Jost',sans-serif",cursor:"pointer",textDecoration:"underline" }}>
+            {lang==="tr" ? "Detaylar" : "Details"}
+          </button>
         </div>
       )}
 

@@ -1,6 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 
-const PRODUCT_ID = "app.sakin.life.yearly";
+const YEARLY_ID = "app.sakin.life.yearly";
+const LIFETIME_ID = "app.sakin.life.lifetime";
 const isNative = Capacitor.isNativePlatform();
 
 let purchaseUpdateCallback = null;
@@ -14,11 +15,10 @@ export async function initStore() {
 
   const { store, ProductType, Platform } = window.CdvPurchase;
 
-  store.register([{
-    id: PRODUCT_ID,
-    type: ProductType.PAID_SUBSCRIPTION,
-    platform: Platform.APPLE_APPSTORE,
-  }]);
+  store.register([
+    { id: YEARLY_ID, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE },
+    { id: LIFETIME_ID, type: ProductType.NON_CONSUMABLE, platform: Platform.APPLE_APPSTORE },
+  ]);
 
   store.when()
     .approved(transaction => transaction.verify())
@@ -32,26 +32,23 @@ export async function initStore() {
   return true;
 }
 
-export function getProduct() {
-  if (!isNative || !window.CdvPurchase) return null;
-  return window.CdvPurchase.store.get(PRODUCT_ID);
-}
-
 export function isSubscribed() {
   if (!isNative || !window.CdvPurchase) {
     return localStorage.getItem("sakin_premium") === "1";
   }
-  const product = window.CdvPurchase.store.get(PRODUCT_ID);
-  if (product && product.owned) {
+  const { store } = window.CdvPurchase;
+  const yearly = store.get(YEARLY_ID);
+  const lifetime = store.get(LIFETIME_ID);
+  if ((yearly && yearly.owned) || (lifetime && lifetime.owned)) {
     localStorage.setItem("sakin_premium", "1");
     return true;
   }
   return localStorage.getItem("sakin_premium") === "1";
 }
 
-export async function purchaseYearly() {
+export async function purchaseProduct(productId) {
   if (!isNative || !window.CdvPurchase) return { success: false, error: "not_available" };
-  const product = window.CdvPurchase.store.get(PRODUCT_ID);
+  const product = window.CdvPurchase.store.get(productId);
   if (!product) return { success: false, error: "product_not_found" };
   const offer = product.getOffer();
   if (!offer) return { success: false, error: "no_offer" };
@@ -63,17 +60,15 @@ export async function purchaseYearly() {
   }
 }
 
+export const purchaseYearly = () => purchaseProduct(YEARLY_ID);
+export const purchaseLifetime = () => purchaseProduct(LIFETIME_ID);
+
 export async function restorePurchases() {
   if (!isNative || !window.CdvPurchase) return { success: false, error: "not_available" };
   try {
     await window.CdvPurchase.store.restorePurchases();
-    const product = window.CdvPurchase.store.get(PRODUCT_ID);
-    if (product && product.owned) {
-      localStorage.setItem("sakin_premium", "1");
-      if (purchaseUpdateCallback) purchaseUpdateCallback(true);
-      return { success: true };
-    }
-    return { success: false, error: "no_subscription" };
+    if (isSubscribed()) return { success: true };
+    return { success: false, error: "no_purchase" };
   } catch (err) {
     return { success: false, error: err.message || "restore_failed" };
   }
