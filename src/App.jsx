@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { initStore, purchaseYearly, restorePurchases, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
@@ -1493,6 +1494,36 @@ export default function SakinApp() {
       setLicenseError(lang === "tr" ? "Bağlantı hatası, tekrar dene" : "Connection error, try again");
     }
     setLicenseLoading(false);
+  };
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+  const [restoreLoading, setRestoreLoading] = useState(false);
+  const [restoreMessage, setRestoreMessage] = useState("");
+  useEffect(() => {
+    if (isNative) {
+      onPurchaseUpdate((premium) => { if (premium) setIsPremium(true); });
+      initStore();
+    } else {
+      if (!document.querySelector('script[src*="lemonsqueezy"]')) {
+        const s = document.createElement("script");
+        s.src = "https://assets.lemonsqueezy.com/lemon.js";
+        s.defer = true;
+        document.body.appendChild(s);
+      }
+    }
+  }, []);
+  const handlePurchase = async () => {
+    setPurchaseLoading(true);
+    const result = await purchaseYearly();
+    setPurchaseLoading(false);
+    if (result.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+  };
+  const handleRestore = async () => {
+    setRestoreLoading(true);
+    setRestoreMessage("");
+    const result = await restorePurchases();
+    setRestoreLoading(false);
+    if (result.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    else { setRestoreMessage(t("sub_no_subscription")); }
   };
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
@@ -3601,12 +3632,45 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#50c878" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#50c878",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "Premium Aktif" : "Premium Active"}
+                {isNative ? t("sub_active") : (lang==="tr" ? "Premium Aktif" : "Premium Active")}
               </div>
               <div style={{ fontSize:14,color:"#888",letterSpacing:1 }}>
-                {lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked for lifetime."}
+                {isNative ? t("sub_active_desc") : (lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked.")}
               </div>
             </div>
+          ) : isNative ? (
+            <>
+              <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
+                <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("sub_badge")}</div>
+                <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("sub_plan")}</div>
+                <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("sub_price")}</div>
+                <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:16 }}>{t("sub_price_desc")}</div>
+                <ul>{t("sub_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+
+                <button onClick={handlePurchase} disabled={purchaseLoading}
+                  className="sakin-btn-primary"
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",opacity:purchaseLoading?0.6:1,cursor:purchaseLoading?"wait":"pointer" }}>
+                  {purchaseLoading ? "..." : (t("sub_buy") + " →")}
+                </button>
+              </div>
+
+              <div style={{ textAlign:"center",marginTop:20,marginBottom:12 }}>
+                <button onClick={handleRestore} disabled={restoreLoading}
+                  style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:restoreLoading?"wait":"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:restoreLoading?0.6:1 }}>
+                  {restoreLoading ? "..." : t("sub_restore")}
+                </button>
+                {restoreMessage && <div style={{ fontSize:12,color:"#e06060",marginTop:8 }}>{restoreMessage}</div>}
+              </div>
+
+              <div style={{ fontSize:11,color:"#555",lineHeight:1.7,textAlign:"center",padding:"0 12px",marginTop:8 }}>
+                {t("sub_terms_text")}
+              </div>
+              <div style={{ textAlign:"center",marginTop:12,display:"flex",justifyContent:"center",gap:16 }}>
+                <a href="https://sakin.app/privacy" style={{ fontSize:12,color:"#777",textDecoration:"underline" }}>{lang==="tr" ? "Gizlilik Politikası" : "Privacy Policy"}</a>
+                <a href="https://sakin.app/terms" style={{ fontSize:12,color:"#777",textDecoration:"underline" }}>{lang==="tr" ? "Kullanım Koşulları" : "Terms of Use"}</a>
+              </div>
+            </>
           ) : (
             <>
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
@@ -4049,6 +4113,51 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 style={{ flex:1,padding:"13px 0",borderRadius:100,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#666666",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>{t("ai_consent_decline")}</button>
               <button onClick={acceptAiConsent}
                 style={{ flex:1,padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",color:"#ffffff",fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",boxShadow:"0 4px 20px rgba(255,255,255,0.3)" }}>{t("ai_consent_accept")}</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* iOS PAYWALL — abonelik olmadan uygulamaya erişim yok */}
+      {isNative && !isPremium && !devMode && (
+        <div style={{ position:"fixed",inset:0,zIndex:200000,background:"linear-gradient(180deg,#080c14 0%,#0f1528 40%,#1a1040 100%)",display:"flex",flexDirection:"column",alignItems:"center",overflow:"auto",padding:"60px 24px 40px",boxSizing:"border-box" }}>
+          <div style={{ fontSize:36,fontFamily:"'Jost',sans-serif",fontWeight:200,letterSpacing:8,color:"#ffffff",marginBottom:4,textTransform:"uppercase" }}>Sakin</div>
+          <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:3,marginBottom:32,fontFamily:"'Jost',sans-serif" }}>
+            {lang==="tr" ? "KENDİNİ HEP HATIRLA" : "ALWAYS REMEMBER YOURSELF"}
+          </div>
+
+          <div style={{ width:"100%",maxWidth:360 }}>
+            <div style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:20,padding:"28px 24px",marginBottom:20 }}>
+              {t("sub_features").map((f,i) => (
+                <div key={i} style={{ display:"flex",alignItems:"center",gap:10,padding:"7px 0" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b8a4d8" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span style={{ fontSize:14,color:"#ddd",fontFamily:"'Inter',sans-serif",letterSpacing:0.5 }}>{f}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign:"center",marginBottom:20 }}>
+              <div style={{ fontSize:40,color:"#ffffff",fontWeight:200,letterSpacing:1,fontFamily:"'Jost',sans-serif" }}>{t("sub_price")}</div>
+              <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginTop:4 }}>{t("sub_price_desc")}</div>
+            </div>
+
+            <button onClick={handlePurchase} disabled={purchaseLoading}
+              style={{ display:"block",width:"100%",fontSize:17,letterSpacing:3,padding:"17px 0",textAlign:"center",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.75))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.4)",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading?0.6:1,marginBottom:14 }}>
+              {purchaseLoading ? "..." : (t("sub_buy") + " →")}
+            </button>
+
+            <button onClick={handleRestore} disabled={restoreLoading}
+              style={{ display:"block",width:"100%",background:"transparent",border:"1px solid rgba(255,255,255,0.12)",borderRadius:22,padding:"12px 0",cursor:restoreLoading?"wait":"pointer",color:"#999",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:restoreLoading?0.6:1,marginBottom:8 }}>
+              {restoreLoading ? "..." : t("sub_restore")}
+            </button>
+            {restoreMessage && <div style={{ fontSize:12,color:"#e06060",textAlign:"center",marginBottom:8 }}>{restoreMessage}</div>}
+
+            <div style={{ fontSize:10,color:"#555",lineHeight:1.7,textAlign:"center",padding:"0 8px",marginTop:16 }}>
+              {t("sub_terms_text")}
+            </div>
+            <div style={{ textAlign:"center",marginTop:12,display:"flex",justifyContent:"center",gap:16,paddingBottom:20 }}>
+              <a href="https://sakin.app/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr" ? "Gizlilik" : "Privacy"}</a>
+              <a href="https://sakin.app/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr" ? "Koşullar" : "Terms"}</a>
             </div>
           </div>
         </div>
