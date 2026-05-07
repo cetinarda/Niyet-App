@@ -303,8 +303,6 @@ const GLOBAL_CSS = `
   @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
   @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-  @keyframes aboutPulse { 0%,100%{opacity:0.5;text-shadow:none} 50%{opacity:1;text-shadow:0 0 12px rgba(184,164,216,0.6)} }
-  @keyframes readyPulse { 0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.2)} 50%{box-shadow:0 0 24px rgba(255,255,255,0.5),0 0 48px rgba(184,164,216,0.3)} }
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
   @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
