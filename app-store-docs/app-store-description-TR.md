@@ -54,15 +54,3 @@ Bu uygulama tıbbi teşhis veya tedavi amacı taşımaz. Kişisel farkındalık 
 
 Kendine dönmek için bir dakikan var.
 
----
-
-## Abonelik Bilgisi (Açıklamanın sonuna eklenecek)
-
-Abonelik Bilgileri:
-• Sakin Yıllık Erişim: ₺249,99/yıl ($4,99/yıl)
-• Ödeme, satın alma onaylandığında Apple Kimliği hesabınızdan tahsil edilir
-• Abonelik, geçerli dönemin bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir
-• Yenileme bedeli, geçerli dönemin bitiminden 24 saat içinde hesabınızdan tahsil edilir
-• Aboneliklerinizi satın aldıktan sonra hesap ayarlarınızdan yönetebilir ve iptal edebilirsiniz
-• Gizlilik Politikası: https://sakin.app/privacy
-• Kullanım Koşulları: https://sakin.app/terms

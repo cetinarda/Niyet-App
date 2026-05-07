@@ -27,29 +27,17 @@ sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rah
 calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation
 ```
 
-> **Kaldırılanlar:** `reiki`, `wellness` — Apple 1.4.1 uyumluluğu için sağlık/şifa çağrışımlı kelimeler çıkarıldı.
-
 ---
 
 ## Fiyatlandırma
 
 | Alan | Değer |
 |---|---|
-| **Model** | Ücretsiz İndirme + Uygulama İçi Abonelik |
-| **İndirme Fiyatı** | Ücretsiz ($0.00) |
-| **Abonelik** | $4.99/yıl — Otomatik Yenilenen Abonelik |
-| **Abonelik Adı (TR)** | Sakin Yıllık Erişim |
-| **Abonelik Adı (EN)** | Sakin Yearly Access |
-| **Abonelik Açıklama (TR)** | Tüm özelliklere sınırsız erişim. Yıllık olarak otomatik yenilenir. |
-| **Abonelik Açıklama (EN)** | Unlimited access to all features. Renews automatically every year. |
-| **Deneme Süresi** | Yok |
-| **Ücretsiz İçerik** | Yok — abonelik olmadan uygulama kullanılamaz |
-
-### App Store Connect — Subscription Group
-- **Grup Adı:** Sakin Premium
-- **Ürün ID:** `app.sakin.life.yearly`
-- **Süre:** 1 Yıl (Auto-Renewable)
-- **Fiyat Tier:** $4.99
+| **Model** | Ücretli Uygulama (Paid App) |
+| **Fiyat** | $4.99 (Tier 5) |
+| **Uygulama İçi Satın Alma** | Yok |
+| **Abonelik** | Yok |
+| **Açıklama** | Tek seferlik ödeme, tüm özellikler açık, güncellemeler ücretsiz |
 
 ---
 
@@ -107,19 +95,12 @@ Bkz. `app-review-notes.md`
 | Veri Türü | Durum | Detay |
 |---|---|---|
 | User Content | Evet | AI özellikleri için kullanıcının yazdığı metin Groq API'ye gönderilir |
-| Purchase History | Evet | Abonelik durumu (StoreKit tarafından yönetilir) |
 
 ### User Content Detay
 - **Linked to Identity:** Hayır
 - **Used for Tracking:** Hayır
 - **Purpose:** App Functionality
 - **Açıklama:** Kullanıcı metni anonim olarak AI hizmetine gönderilir, kişisel kimlik bilgisi içermez
-
-### Purchase History Detay
-- **Linked to Identity:** Hayır
-- **Used for Tracking:** Hayır
-- **Purpose:** App Functionality
-- **Açıklama:** Abonelik durumu Apple StoreKit tarafından yönetilir, üçüncü tarafa iletilmez
 
 ### Toplanmayan Veriler
 Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info,

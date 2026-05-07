@@ -30,8 +30,8 @@
 - ✅ Kategori: Health & Fitness → Entertainment olarak değiştirildi
 - ✅ Anahtar kelimelerden "reiki" ve "wellness" kaldırıldı
 - ✅ "Çakra Yükselişi" → "Çakra Farkındalığı" olarak değiştirildi
-- ✅ Fiyat modeli: Ücretli uygulama → Ücretsiz + $4.99/yıl abonelik olarak değiştirildi
-- ✅ Açıklamalara abonelik bilgisi ve yasal metinler eklendi
+- ✅ Fiyat modeli: $9.99 → $4.99 ücretli uygulama olarak güncellendi
+- ✅ iOS'ta LemonSqueezy tamamen devre dışı, isPremium=true (ücretli uygulama = herkes premium)
 
 ---
 
@@ -53,42 +53,18 @@
 
 | Alan | Değer |
 |---|---|
-| **App Price** | Free (Ücretsiz) |
+| **App Price** | $4.99 (Tier 5) |
 | **Availability** | All territories |
 | **Pre-Order** | Hayır |
-
-### 2.3 — In-App Purchases (Subscriptions)
-
-**App Store Connect > Monetization > Subscriptions** bölümünden:
-
-1. **Subscription Group** oluştur: `Sakin Premium`
-2. **Ürün ekle:**
-
-| Alan | Değer |
-|---|---|
-| **Reference Name** | Sakin Yearly Access |
-| **Product ID** | `app.sakin.life.yearly` |
-| **Type** | Auto-Renewable Subscription |
-| **Duration** | 1 Year |
-| **Price** | $4.99 (Tier 5) |
-| **Display Name (TR)** | Sakin Yıllık Erişim |
-| **Display Name (EN)** | Sakin Yearly Access |
-| **Description (TR)** | Tüm özelliklere sınırsız erişim. Yıllık olarak otomatik yenilenir. |
-| **Description (EN)** | Unlimited access to all features. Renews automatically every year. |
-
-3. **Subscription Group Localization:**
-
-| Alan (TR) | Değer |
-|---|---|
-| **Subscription Group Display Name** | Sakin Premium |
-| **App-Specific Shared Secret** | Otomatik oluşturulur |
+| **In-App Purchases** | Yok |
+| **Subscriptions** | Yok |
 
 ### 2.4 — Version Information (TR)
 
 | Alan | Değer |
 |---|---|
 | **Promotional Text** | Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı. |
-| **Description** | `app-store-description-TR.md` dosyasındaki tam metin + abonelik bilgisi |
+| **Description** | `app-store-description-TR.md` dosyasındaki tam metin |
 | **Keywords** | `sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rahatlama` |
 | **Support URL** | https://sakin.app |
 | **Marketing URL** | https://sakin.app |
@@ -99,7 +75,7 @@
 | Alan | Değer |
 |---|---|
 | **Promotional Text** | Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing. |
-| **Description** | `app-store-description-EN.md` dosyasındaki tam metin + subscription info |
+| **Description** | `app-store-description-EN.md` dosyasındaki tam metin |
 | **Keywords** | `calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation` |
 | **Support URL** | https://sakin.app |
 | **Marketing URL** | https://sakin.app |
@@ -148,12 +124,6 @@ Seçilecek kategori:
    - Used for Tracking: No
    - Purpose: App Functionality
 
-2. **Purchases > Purchase History**
-   - Data Type: Purchase History (StoreKit)
-   - Collected: Yes
-   - Linked to User: No
-   - Used for Tracking: No
-   - Purpose: App Functionality
 
 ---
 
@@ -287,28 +257,9 @@ npx cap open ios
 | **Signing** | Automatic (Apple Developer Account) |
 | **Capabilities** | Push Notifications (local only) |
 
-### 5.3 — StoreKit Yapılandırması
+### 5.3 — Archive ve Yükleme
 
-Xcode'da StoreKit entegrasyonu:
-
-1. **Capacitor Plugin ekle** (opsiyonel — native veya plugin):
-   ```bash
-   npm install @capawesome/capacitor-in-app-purchases
-   npx cap sync ios
-   ```
-
-2. **StoreKit Configuration File** oluştur (test için):
-   - Xcode > File > New > StoreKit Configuration File
-   - Auto-Renewable Subscription ekle: `app.sakin.life.yearly`
-   - Price: $4.99
-   - Duration: 1 Year
-
-3. **App Store Connect'te ürün oluştur** (production):
-   - Monetization > Subscriptions
-   - Subscription Group: "Sakin Premium"
-   - Product: `app.sakin.life.yearly` — $4.99/year
-
-### 5.4 — Archive ve Yükleme
+> **Not:** StoreKit gerektirmez. $4.99 ücretli uygulama — Apple ödemeyi store'da halleder.
 
 ```
 1. Xcode > Product > Archive
@@ -327,7 +278,7 @@ Xcode'da StoreKit entegrasyonu:
 - [ ] Tüm screenshot'lar yüklendi (TR + EN)
 - [ ] Açıklamalar girildi (TR + EN)
 - [ ] Keywords girildi
-- [ ] Abonelik ürünü oluşturuldu ve "Ready to Submit" durumunda
+- [ ] Fiyat $4.99 olarak ayarlandı
 - [ ] Privacy Policy URL çalışıyor
 - [ ] Terms of Use URL çalışıyor
 - [ ] Review Notes girildi
@@ -338,28 +289,24 @@ Xcode'da StoreKit entegrasyonu:
 ## BÖLÜM 6: Submission Öncesi Kontrol Listesi
 
 ### Kod Kontrolleri
-- [ ] LemonSqueezy kodu iOS sürümünde devre dışı/kaldırıldı
-- [ ] Apple IAP (StoreKit) entegrasyonu çalışıyor
+- [ ] LemonSqueezy kodu iOS sürümünde devre dışı (isPremium=true on native)
 - [ ] Tüm tıbbi/şifa ifadeleri temizlendi (1.4.1)
 - [ ] AI promptlarında tıbbi uyarı var
 - [ ] Frekans açıklamalarında "deneyimsel dil" kullanılıyor
 - [ ] Privacy consent modal'ı AI kullanımından önce gösteriliyor
-- [ ] Abonelik paywall'ı düzgün çalışıyor
-- [ ] Abonelik yönetim linki çalışıyor
+- [ ] iOS'ta SATIN AL butonu gizli (ücretli uygulama, zaten ödemiş)
 
 ### Metadata Kontrolleri
 - [ ] Kategori: Lifestyle + Entertainment (Health & Fitness DEĞİL)
 - [ ] Keywords'te "reiki", "wellness", "healing" YOK
 - [ ] Açıklamalarda "şifa", "tedavi", "onarım" YOK
-- [ ] Abonelik bilgisi açıklamanın sonunda var
+- [ ] Fiyat: $4.99 ücretli uygulama (IAP/abonelik YOK)
 - [ ] Privacy Policy ve Terms of Use linkleri çalışıyor
 - [ ] Screenshot'larda tıbbi/şifa içerik YOK
 
 ### Yasal Kontroller
 - [ ] Privacy Policy web'de yayında
-- [ ] Terms of Use web'de yayında (abonelik için zorunlu)
-- [ ] Abonelik auto-renew bilgisi açıklamada var
-- [ ] İptal talimatı açıklamada var
+- [ ] Terms of Use web'de yayında (sakin.app/terms)
 
 ---
 
@@ -369,12 +316,12 @@ Xcode'da StoreKit entegrasyonu:
 |---|---|---|
 | "DNA onarımı" gibi ifadeler | 1.4.1 ret | Deneyimsel dil kullan |
 | Health & Fitness kategorisi | 2.3.8 ret | Lifestyle + Entertainment |
-| LemonSqueezy iOS'ta | 3.1.1 ret (harici ödeme) | Sadece Apple IAP |
+| LemonSqueezy iOS'ta | 3.1.1 ret (harici ödeme) | iOS'ta devre dışı |
 | Privacy Policy eksik | 5.1.1 ret | sakin.app/privacy yayında olmalı |
-| Terms of Use eksik | 3.1.2 ret (abonelik) | sakin.app/terms yayında olmalı |
+| Terms of Use eksik | ret riski | sakin.app/terms yayında olmalı |
 | AI consent modal yok | 5.1.2 ret | İlk kullanımda onay modal'ı |
 | "Reiki" keyword'de | 1.4.1 / 2.3.8 risk | Keywords'ten kaldırıldı |
-| Abonelik bilgisi açıklamada yok | 3.1.2 ret | Açıklama sonuna eklendi |
+| Fiyat bilgisi yanlış | 2.3.8 ret | $4.99 ücretli uygulama |
 | Screenshot'ta "şifa" yazıyor | 2.3.8 ret | Temiz screenshot'lar |
 
 ---
@@ -387,12 +334,15 @@ Aşağıdaki sayfaların `sakin.app` domain'inde yayında olması gerekir:
 `privacy-policy-TR.md` dosyasını web sayfası olarak yayınla. İngilizce versiyonu da olmalı.
 
 ### 8.2 — Terms of Use (sakin.app/terms)
-Apple abonelik gereksinimleri gereği aşağıdakileri içermeli:
-- Abonelik fiyatı ve süresi
-- Otomatik yenileme bilgisi
-- İptal talimatları
-- Para iade politikası (Apple'ın standart politikasına yönlendirme)
+Aşağıdakileri içermeli:
+- Hizmet tanımı
+- Kullanım koşulları
+- Ücretli uygulama bilgisi ($4.99 tek seferlik)
+- İade politikası (Apple'ın standart politikasına yönlendirme)
+- Sorumluluk reddi (tıbbi amaç taşımaz)
 - İletişim bilgisi
+
+> ✅ `public/terms.html` dosyası oluşturuldu — sakin.app/terms adresinde yayınlanacak.
 
 ### 8.3 — Support (sakin.app)
 - SSS bölümü
