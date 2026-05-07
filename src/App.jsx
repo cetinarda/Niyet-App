@@ -75,10 +75,10 @@ const FREQ_DATA_TR = [
   { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
     tema:"Topraklanma · Güvenlik", bird:"guguk",
     aciklama:"174 Hz bedenin en derin katmanlarına iner. Güvenlik ve topraklanma hissini destekler. Dinleyenler genelde ayaklarının yere basma hissinin güçlendiğini, omuzlardaki gerginliğin çözüldüğünü deneyimler.",
-    etkiler:["Derin rahatlama","Güvenlik hissi","Topraklanma","Kas gerilimini bırakma"] },
+    etkiler:["Derin rahatlama","Güvenlik hissi","Topraklanma","Bedensel gevşeme"] },
   { hz:285, name:"Enerji Yenileyici", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
     tema:"Yenilenme · Enerji Alanı", bird:"dove",
-    aciklama:"285 Hz enerji alanını destekler ve yenilenme hissini güçlendirir. Bu frekans bedenin doğal canlılığını hatırlatır. Dinleyenler ciltte karıncalanma, ellerde sıcaklık ve genel bir tazelenme hissi tarif eder.",
+    aciklama:"285 Hz enerji alanını desteklediğine ve yenilenme hissini güçlendirdiğine inanılır. Bu frekans bedenin doğal canlılığını hatırlatır. Dinleyenler hafif bir enerji hissi ve genel bir tazelenme deneyimlediklerini tarif eder.",
     etkiler:["Yenilenme hissi","Enerji alanı desteği","Canlılık","Tazelenme hissi"] },
   { hz:396, name:"Özgürleşme", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
     tema:"Korku & Suçluluk Salınımı", bird:"guguk",
@@ -99,14 +99,14 @@ const FREQ_DATA_TR = [
   { hz:639, name:"İlişki Uyumu", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
     tema:"Bağlantı · İlişki Uyumu", bird:"dove",
     aciklama:"639 Hz kalp çakrasıyla ilişkilendirilir. Empatiyi güçlendirir, hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
-    etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası aktivasyonu","Bağ kurma kapasitesi"] },
+    etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası farkındalığı","Bağ kurma kapasitesi"] },
   { hz:741, name:"İfade & Arınma", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
     tema:"Sezgisel İfade · Enerji Arınması", bird:"yedek",
     aciklama:"741 Hz boğaz çakrasıyla çalışır. Gerçeği söyleme cesaretini güçlendirir, enerji alanının arınmasını destekler. Problem çözme kapasitesini artırır. Dinleyenler boğaz bölgesinde açılma ve netleşen bir zihin deneyimler.",
     etkiler:["Özgün ifade gücü","Enerji arınması","Problem çözme","Zihinsel berraklık"] },
   { hz:852, name:"Sezgisel Uyanış", color:"#8e44ad", pastel:"#aaaaaa", icon:"🔮",
     tema:"Üçüncü Göz · Spiritüel Farkındalık", bird:"baykus",
-    aciklama:"852 Hz üçüncü göz çakrasını uyandırır. Sezgisel kapasiteyi güçlendirir, illüzyonları çözer. Meditasyonda daha derin katmanlara ulaşmayı kolaylaştırır. Dinleyenler alın bölgesinde hafif basınç, görsel imgeler ve 'perde kalkıyor' hissi tarif eder.",
+    aciklama:"852 Hz üçüncü göz çakrasıyla ilişkilendirilir. Sezgisel farkındalığı destekler ve meditasyonda daha derin katmanlara ulaşmayı kolaylaştırdığına inanılır. Dinleyenler alın bölgesinde hafif basınç, görsel imgeler ve 'perde kalkıyor' hissi tarif eder.",
     etkiler:["Sezgi güçlenmesi","İllüzyonlardan uyanma","Derin meditasyon","Spiritüel farkındalık"] },
   { hz:963, name:"İlahi Bağlantı", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
     tema:"Taç Çakra · Yüksek Bilinç", bird:"kartal",
@@ -118,10 +118,10 @@ const FREQ_DATA_EN = [
   { hz:174, name:"Earth Frequency", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
     tema:"Grounding · Safety", bird:"guguk",
     aciklama:"174 Hz reaches the deepest layers of the body. It promotes a sense of safety and grounding. Listeners often experience feeling their feet firmly on the earth and tension dissolving from their shoulders.",
-    etkiler:["Deep relaxation","Sense of safety","Grounding","Muscle tension release"] },
+    etkiler:["Deep relaxation","Sense of safety","Grounding","Body relaxation"] },
   { hz:285, name:"Energy Renewal", color:"#6B8E23", pastel:"#b8d68a", icon:"🌿",
     tema:"Renewal · Energy Field", bird:"dove",
-    aciklama:"285 Hz supports the energy field and promotes a sense of renewal. This frequency encourages the body's natural vitality. Listeners describe skin tingling, warmth in hands, and a general sense of refreshment.",
+    aciklama:"285 Hz is believed to support the energy field and promote a sense of renewal. This frequency encourages a feeling of natural vitality. Listeners describe a subtle energy sensation and a general sense of refreshment.",
     etkiler:["Sense of renewal","Energy field support","Vitality","Refreshment"] },
   { hz:396, name:"Liberation", color:"#c0392b", pastel:"#e8a09a", icon:"🔓",
     tema:"Fear & Guilt Release", bird:"guguk",
@@ -142,14 +142,14 @@ const FREQ_DATA_EN = [
   { hz:639, name:"Relationship Harmony", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
     tema:"Connection · Relationship Harmony", bird:"dove",
     aciklama:"639 Hz is associated with the heart chakra. It strengthens empathy and deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
-    etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra activation","Connection capacity"] },
+    etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra awareness","Connection capacity"] },
   { hz:741, name:"Expression & Cleansing", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
     tema:"Intuitive Expression · Energy Cleansing", bird:"yedek",
     aciklama:"741 Hz works with the throat chakra. It strengthens the courage to speak truth and supports energy field cleansing. It enhances problem-solving capacity. Listeners experience throat opening and a clarifying mind.",
     etkiler:["Authentic expression","Energy cleansing","Problem solving","Mental clarity"] },
   { hz:852, name:"Intuitive Awakening", color:"#8e44ad", pastel:"#aaaaaa", icon:"🔮",
     tema:"Third Eye · Spiritual Awareness", bird:"baykus",
-    aciklama:"852 Hz awakens the third eye chakra. It strengthens intuitive capacity and dissolves illusions. It facilitates reaching deeper layers in meditation. Listeners describe light pressure on the forehead, visual images, and a 'veil lifting' sensation.",
+    aciklama:"852 Hz is associated with the third eye chakra. It is believed to support intuitive awareness and facilitate reaching deeper layers in meditation. Listeners describe light pressure on the forehead, visual images, and a 'veil lifting' sensation.",
     etkiler:["Intuition strengthening","Awakening from illusion","Deep meditation","Spiritual awareness"] },
   { hz:963, name:"Divine Connection", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
     tema:"Crown Chakra · Higher Consciousness", bird:"kartal",
@@ -1143,6 +1143,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         {progress>=0.66&&progress<0.95 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[2] : t("progress_p4"); })()}
         {progress>=0.95 && t("progress_p5", selected.name)}
       </div>
+      {progress>=0.1 && <div style={{ fontSize:9,color:"#444",textAlign:"center",marginTop:12,maxWidth:260,lineHeight:1.5,fontStyle:"italic" }}>{t("chakra_source")}</div>}
     </div>
   );
 
@@ -2988,7 +2989,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       }}>
                         <div style={{ fontSize:14,color:"#b0a0c8",lineHeight:1.85,marginBottom:14 }}>{f.aciklama}</div>
                         <div style={{ fontSize:12,letterSpacing:2.5,color:`${f.color}aa`,marginBottom:8,textTransform:"uppercase" }}>{t("sound_effects")}</div>
-                        <div style={{ display:"flex",flexWrap:"wrap",gap:6 }}>
+                        <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:10 }}>
                           {f.etkiler.map((e,j) => (
                             <span key={j} style={{
                               background:`${f.color}15`,border:`1px solid ${f.color}33`,
@@ -2996,6 +2997,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                             }}>{e}</span>
                           ))}
                         </div>
+                        <div style={{ fontSize:10,color:"#555",lineHeight:1.6,fontStyle:"italic",borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:8 }}>{t("sound_source")}</div>
                       </div>
                     )}
                   </div>

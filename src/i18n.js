@@ -85,6 +85,8 @@ export const TRANS = {
     sound_stop:        "durdur",
     sound_effects:     "Etkileri",
     sound_btn_next:    "Sonraki Adıma Geç →",
+    sound_source:      "Kaynak: Solfeggio frekansları Ortaçağ Gregoryen ilahilerinden türetilmiş geleneksel ses pratikleridir. Buradaki bilgiler kişisel deneyim ve geleneksel uygulamalara dayanır; tıbbi iddia içermez.",
+    chakra_source:     "Kaynak: Çakra sistemi kadim Hint Veda geleneğine (MÖ 1500-500) dayanır. Buradaki bilgiler geleneksel enerji felsefesinden alınmıştır; tıbbi teşhis veya tedavi amacı taşımaz.",
 
     // Çakra
     chakra_subtitle:   "Reiki · Günün Çakrası",
@@ -143,7 +145,7 @@ export const TRANS = {
     chakra_facts: {
       "Kök": [
         "Kök çakra, bedenin en düşük titreşimli enerji merkezidir. 396 Hz frekansıyla rezonansa girer ve korku kalıplarını çözmeye yardımcı olur.",
-        "Sanskrit adı 'Muladhara'dır — 'kök destek' anlamına gelir. Böbrek üstü bezleriyle bağlantılıdır ve adrenalin üretimini etkiler.",
+        "Sanskrit adı 'Muladhara'dır — 'kök destek' anlamına gelir. Geleneksel enerji sistemlerinde bedenin temel enerji noktası olarak kabul edilir.",
         "Toprak elementiyle ilişkilidir. Dengeli olduğunda güvenlik, istikrar ve maddi bereket hissi verir. Dengesizlikte kaygı ve güvensizlik ortaya çıkar."
       ],
       "Sakral": [
@@ -153,7 +155,7 @@ export const TRANS = {
       ],
       "Solar Pleksus": [
         "Solar Pleksus, kişisel gücün ve iradenin merkezidir. Ateş elementiyle ilişkilidir — içsel ateşini yakar ve özgüvenini güçlendirir.",
-        "Sanskrit adı 'Manipura' — 'mücevher şehri' anlamına gelir. Pankreas ve sindirim sistemiyle bağlantılıdır.",
+        "Sanskrit adı 'Manipura' — 'mücevher şehri' anlamına gelir. Geleneksel Hint enerji sisteminde iradenin merkezi olarak kabul edilir.",
         "528 Hz frekansıyla rezonansa girer. 'Sevgi frekansı' olarak bilinir ve içsel dönüşümü destekler."
       ],
       "Kalp": [
@@ -563,6 +565,8 @@ export const TRANS = {
     sound_stop:        "stop",
     sound_effects:     "Effects",
     sound_btn_next:    "Continue to Next Step →",
+    sound_source:      "Source: Solfeggio frequencies are traditional sound practices derived from medieval Gregorian chants. Information here is based on personal experience and traditional practices; no medical claims are made.",
+    chakra_source:     "Source: The chakra system originates from the ancient Indian Vedic tradition (1500-500 BCE). Information here is drawn from traditional energy philosophy; it is not intended as medical diagnosis or treatment.",
 
     // Çakra
     chakra_subtitle:   "REIKI · TODAY'S CHAKRA",
