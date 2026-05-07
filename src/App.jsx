@@ -1294,17 +1294,17 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
         <div>
           <div style={{ fontSize:13,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
           <div style={{ position:"relative" }}>
-            <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3, ...(!isPremium && !devMode ? { maxHeight:120, overflow:"hidden" } : {}) }}><FreqText text={analiz} onNav={onNav} /></div>
+            <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
             {!isPremium && !devMode && (
-              <>
-                <div style={{ position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
-                <div style={{ textAlign:"center",marginTop:8 }}>
-                  <button onClick={onSatinAl}
-                    style={{ padding:"8px 20px",background:`linear-gradient(135deg,${renk}33,${renk}22)`,border:`1px solid ${renk}55`,borderRadius:20,color:renk,fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
-                    {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
-                  </button>
+              <div style={{ textAlign:"center",marginTop:16,padding:"16px",background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:16 }}>
+                <div style={{ fontSize:12,color:"#b8a4d8",letterSpacing:1.5,marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "Detaylı analiz, kişisel öneriler ve egzersizler" : "Detailed analysis, personal tips and exercises"}
                 </div>
-              </>
+                <button onClick={onSatinAl}
+                  style={{ padding:"10px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(122,80,150,0.5))",border:"none",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "Premium ile Keşfet →" : "Discover with Premium →"}
+                </button>
+              </div>
             )}
           </div>
           <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
@@ -1783,12 +1783,12 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:freeMaxTokens(1100),
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}${freePromptSuffix}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
 
 İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
@@ -1837,7 +1837,11 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 • Farkındalık Geleneği: Her nefes, her an bir farkındalık fırsatıdır. Şimdiki ana dönmek, kendine nazik olmak — bu yolculuğun temelidir.
 • Evrensel Bilgelik: Sevgi birleştirici bir güçtür. Başkasına hizmet kendi gelişimine katkıdır. Öğretmek ve öğrenmek aynı yolculuktur.`;
 
-  const PREMIUM_YONLENDIRME = `\n\n_(Daha derin analiz, kişisel terapi önerileri ve detaylı çakra haritası için Premium'u keşfet.)_`;
+  const isFree = !isPremium && !devMode;
+  const FREE_OZET_TR = "\n\nÖNEMLİ: Kullanıcı ücretsiz üyedir. YALNIZCA 2-3 cümlelik kısa bir farkındalık özeti ver. Detaylara, egzersizlere ve önerilere girme. Özeti verdikten sonra son cümle olarak şunu yaz: 'Daha derin bir yansıtma ve kişisel öneriler için Premium ile tanış.'";
+  const FREE_OZET_EN = "\n\nIMPORTANT: The user is on the free plan. Give ONLY a 2-3 sentence awareness summary. Do not include exercises, recommendations or detailed analysis. End with: 'For deeper reflection and personal recommendations, discover Premium.'";
+  const freePromptSuffix = isFree ? (lang === "tr" ? FREE_OZET_TR : FREE_OZET_EN) : "";
+  const freeMaxTokens = (full) => isFree ? 200 : full;
 
   const NEFES_REHBERI = `UYGULAMADAKI NEFES MODLARI (en uygununu öner):
 • Standart (4-1.5-4): Genel denge, farkındalık, her durum için başlangıç
@@ -1896,12 +1900,12 @@ FARKINDA OL:
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1200,
+          model:"llama-3.3-70b-versatile", max_tokens:freeMaxTokens(1200),
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}${freePromptSuffix}`,
           messages:[{ role:"user", content:`Kullanıcının durumu: "${sanitizeInput(semptomInput)}"
 
 ${REIKI_BILGI}
@@ -1949,12 +1953,12 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:freeMaxTokens(1100),
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}${freePromptSuffix}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -1999,12 +2003,12 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1300,
+          model:"llama-3.3-70b-versatile", max_tokens:freeMaxTokens(1300),
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}${freePromptSuffix}`,
           messages:[{ role:"user", content:`Kullanıcının durumu: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -2113,12 +2117,12 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1700,
+          model:"llama-3.3-70b-versatile", max_tokens:freeMaxTokens(1700),
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${kisiselProfil()}${astroText}
 ${GIZLI_BENLIK_REHBER}
-${KITAP_BILGELIGI}
+${KITAP_BILGELIGI}${freePromptSuffix}
 
 Rapor şu başlıkları içermeli:
 **Haftanın Yansıması** — Genel ruh hali, enerji ve burç/sayı etkisi — net ve doğrudan yansıt (2-3 cümle)
@@ -3140,22 +3144,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {sikayet.toUpperCase()} {t("analysis_suf")}
                 </div>
                 <div style={{ position:"relative" }}>
-                  <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24, ...(!isPremium && !devMode ? { maxHeight:120, overflow:"hidden" } : {}) }}>
+                  <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24 }}>
                     <FreqText text={sikayetAnaliz} onNav={(type, val) => {
                       if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
                       else if (type === "screen") { setScreen(val); }
                     }} />
                   </div>
                   {!isPremium && !devMode && (
-                    <>
-                      <div style={{ position:"absolute",bottom:24,left:0,right:0,height:70,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
-                      <div style={{ textAlign:"center",marginBottom:16 }}>
-                        <button onClick={()=>setScreen("fiyat")}
-                          style={{ padding:"9px 22px",background:"linear-gradient(135deg,rgba(160,112,208,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(160,112,208,0.5)",borderRadius:22,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
-                          {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
-                        </button>
+                    <div style={{ textAlign:"center",marginBottom:16,padding:"16px",background:"linear-gradient(145deg,rgba(160,112,208,0.08),rgba(160,112,208,0.03))",border:"1px solid rgba(160,112,208,0.15)",borderRadius:16 }}>
+                      <div style={{ fontSize:12,color:"#b8a4d8",letterSpacing:1.5,marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? "Detaylı analiz, kişisel öneriler ve egzersizler" : "Detailed analysis, personal tips and exercises"}
                       </div>
-                    </>
+                      <button onClick={()=>setScreen("fiyat")}
+                        style={{ padding:"10px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(122,80,150,0.5))",border:"none",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? "Premium ile Keşfet →" : "Discover with Premium →"}
+                      </button>
+                    </div>
                   )}
                 </div>
                 <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
@@ -3405,8 +3409,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <div style={{ position:"absolute",bottom:0,left:0,right:0,height:60,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
                     <div style={{ textAlign:"center",marginTop:8 }}>
                       <button onClick={()=>setScreen("fiyat")}
-                        style={{ padding:"8px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:20,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
-                        {lang==="tr" ? "Devamını Oku → Satın Al" : "Read More → Buy"}
+                        style={{ padding:"10px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(122,80,150,0.5))",border:"none",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? "Premium ile Keşfet →" : "Discover with Premium →"}
                       </button>
                     </div>
                   </>
@@ -3464,17 +3468,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : (
               <div>
                 <div style={{ position:"relative" }}>
-                  <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap", ...(!isPremium && !devMode ? { maxHeight:140, overflow:"hidden" } : {}) }}><FreqText text={aiRapor} /></div>
+                  <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}><FreqText text={aiRapor} /></div>
                   {!isPremium && !devMode && (
-                    <>
-                      <div style={{ position:"absolute",bottom:0,left:0,right:0,height:70,background:"linear-gradient(transparent,rgba(8,12,20,0.95))",pointerEvents:"none" }} />
-                      <div style={{ textAlign:"center",marginTop:8 }}>
-                        <button onClick={()=>setScreen("fiyat")}
-                          style={{ padding:"8px 20px",background:"linear-gradient(135deg,rgba(154,106,176,0.3),rgba(120,80,150,0.2))",border:"1px solid rgba(154,106,176,0.5)",borderRadius:20,color:"#d8c0f0",fontSize:13,letterSpacing:1.5,cursor:"pointer" }}>
-                          {lang==="tr" ? "Tamamını Oku → Satın Al" : "Read Full → Buy"}
-                        </button>
+                    <div style={{ textAlign:"center",marginTop:16,padding:"16px",background:"linear-gradient(145deg,rgba(154,106,176,0.08),rgba(154,106,176,0.03))",border:"1px solid rgba(154,106,176,0.15)",borderRadius:16 }}>
+                      <div style={{ fontSize:12,color:"#b8a4d8",letterSpacing:1.5,marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? "Detaylı haftalık rapor, kişisel öneriler ve derin analiz" : "Detailed weekly report, personal tips and deep analysis"}
                       </div>
-                    </>
+                      <button onClick={()=>setScreen("fiyat")}
+                        style={{ padding:"10px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(122,80,150,0.5))",border:"none",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? "Premium ile Keşfet →" : "Discover with Premium →"}
+                      </button>
+                    </div>
                   )}
                 </div>
                 <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
