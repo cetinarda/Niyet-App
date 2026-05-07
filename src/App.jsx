@@ -17,7 +17,7 @@ const CHAKRAS_22_TR = [
   { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396, level:1, konu:"Hayatta kalma ve güvenlik" },
   { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧", hz:417, level:1, konu:"Yaratıcılık ve duygusal denge" },
   { name:"Solar Pleksus",  color:"#f1c40f", pastel:"#f7e18a", desc:"Bugün güçlü ol. Işığın var.",     element:"Ateş",   emoji:"🟨", hz:528, level:1, konu:"İrade ve kişisel güç" },
-  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün kalbini sevgiyle aç.",       element:"Hava",   emoji:"🟩", hz:639, level:1, konu:"Sevgi ve şifa" },
+  { name:"Kalp",           color:"#27ae60", pastel:"#82d9a3", desc:"Bugün kalbini sevgiyle aç.",       element:"Hava",   emoji:"🟩", hz:639, level:1, konu:"Sevgi ve bağlantı" },
   { name:"Boğaz",          color:"#2980b9", pastel:"#85c1e9", desc:"Bugün hakikatini söyle.",          element:"Ses",    emoji:"🟦", hz:741, level:1, konu:"İletişim ve ifade" },
   { name:"Üçüncü Göz",    color:"#8e44ad", pastel:"#aaaaaa", desc:"Bugün içeriye bak.",               element:"Işık",   emoji:"🟣", hz:852, level:1, konu:"Sezgi ve durugörü" },
   { name:"Taç",            color:"#9b59b6", pastel:"#d9b8e8", desc:"İlahi rehberliğe bağlan.",         element:"Evren",  emoji:"⬜", hz:963, level:1, konu:"İlahi rehberlik ve ruhsal farkındalık" },
@@ -41,7 +41,7 @@ const CHAKRAS_22_EN = [
   { name:"Root",            color:"#c0392b", pastel:"#e8a09a", desc:"Ground yourself. Feel safe.",          element:"Earth",      emoji:"🟥", hz:396, level:1, konu:"Survival and security" },
   { name:"Sacral",          color:"#e67e22", pastel:"#f0c27f", desc:"Feel today. Let yourself flow.",       element:"Water",      emoji:"🟧", hz:417, level:1, konu:"Creativity and emotional balance" },
   { name:"Solar Plexus",    color:"#f1c40f", pastel:"#f7e18a", desc:"Be strong today. Your light shines.", element:"Fire",       emoji:"🟨", hz:528, level:1, konu:"Willpower and personal power" },
-  { name:"Heart",           color:"#27ae60", pastel:"#82d9a3", desc:"Open your heart with love.",          element:"Air",        emoji:"🟩", hz:639, level:1, konu:"Love and healing" },
+  { name:"Heart",           color:"#27ae60", pastel:"#82d9a3", desc:"Open your heart with love.",          element:"Air",        emoji:"🟩", hz:639, level:1, konu:"Love and connection" },
   { name:"Throat",          color:"#2980b9", pastel:"#85c1e9", desc:"Speak your truth today.",              element:"Sound",      emoji:"🟦", hz:741, level:1, konu:"Communication and expression" },
   { name:"Third Eye",       color:"#8e44ad", pastel:"#aaaaaa", desc:"Look inward today.",                  element:"Light",      emoji:"🟣", hz:852, level:1, konu:"Intuition and clairvoyance" },
   { name:"Crown",           color:"#9b59b6", pastel:"#d9b8e8", desc:"Connect with divine guidance.",       element:"Universe",   emoji:"⬜", hz:963, level:1, konu:"Divine guidance and spiritual awareness" },
@@ -84,20 +84,20 @@ const FREQ_DATA_TR = [
     aciklama:"396 Hz kök çakrayla rezonansa girer. Bilinçaltındaki korku, suçluluk ve hayatta kalma kaygısını çözmeye yardımcı olur. Göğüs ve karın bölgesinde gevşeme, zihinsel gürültünün azalması ve 'içsel yük hafifliyor' hissi yaşanır.",
     etkiler:["Suçluluk ve korku salınımını çözme","Kök enerji alanında rahatlama","Geçmişten gelen yükleri bırakma","Güven hissini yeniden hatırlama"] },
   { hz:417, name:"Dönüşüm", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
-    tema:"Değişimi Kolaylaştırma · Travma Temizliği", bird:"bulbul",
-    aciklama:"417 Hz sakral çakrayla çalışır. Travmatik deneyimlerin izlerini yumuşatır, değişime direnci çözer. Yaratıcılığın önündeki blokajları kaldırır. Dinleyenler duygusal bir 'çözülme' ve ardından hafiflik hissi tarif eder.",
-    etkiler:["Negatif enerjiyi dönüştürme","Travma izlerini yumuşatma","Değişime açıklık","Yaratıcı blokajları çözme"] },
+    tema:"Değişimi Kolaylaştırma · Duygusal Dönüşüm", bird:"bulbul",
+    aciklama:"417 Hz sakral çakrayla çalışır. Değişime direnci yumuşatır ve yaratıcılığın önündeki blokajları kaldırır. Dinleyenler duygusal bir 'çözülme' ve ardından hafiflik hissi tarif eder.",
+    etkiler:["Negatif enerjiyi dönüştürme","Duygusal rahatlama","Değişime açıklık","Yaratıcı blokajları çözme"] },
   { hz:432, name:"Evrensel Uyum", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
     tema:"Doğanın Frekansı · Kalp Huzuru", bird:"dove",
-    aciklama:"432 Hz 'evrenin frekansı' olarak bilinir. Doğadaki altın oranla uyumludur. Kalp atışını sakinleştirir, beyin dalgalarını alfa durumuna geçirir. Dinleyenler derin bir huzur, zamanın yavaşlaması ve 'eve dönüş' hissi yaşar.",
-    etkiler:["Doğayla uyum","Kalp ritmi dengeleme","Alfa beyin dalgaları","Derin huzur hissi"] },
+    aciklama:"432 Hz 'evrenin frekansı' olarak bilinir. Doğadaki altın oranla uyumludur. Dinleyenler derin bir huzur, zamanın yavaşlaması ve 'eve dönüş' hissi yaşar.",
+    etkiler:["Doğayla uyum","Dinginlik hissi","Derin rahatlama","Derin huzur hissi"] },
   { hz:528, name:"Sevgi Frekansı", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
     tema:"Sevgi Tonu · İç Dönüşüm", bird:"kanarya",
-    aciklama:"528 Hz 'Mucize Tonu' ya da 'Sevgi Frekansı' olarak adlandırılır. Hücresel uyumu desteklediği ve Güneş pleksusu çakrasıyla rezonansa girdiği düşünülür. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
-    etkiler:["Hücresel uyum","İç dönüşüm ve mucize","Sevgi titreşimi","Güneş pleksusu aktivasyonu"] },
+    aciklama:"528 Hz 'Sevgi Frekansı' olarak adlandırılır. Güneş pleksusu çakrasıyla rezonansa girdiği düşünülür. Dinleyenler kalp bölgesinde açılma ve derin bir sevgi dalgası hisseder.",
+    etkiler:["İçsel uyum","İç dönüşüm","Sevgi titreşimi","Farkındalık derinleşmesi"] },
   { hz:639, name:"İlişki Uyumu", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
-    tema:"Bağlantı · İlişki İyileştirme", bird:"dove",
-    aciklama:"639 Hz kalp çakrasını besler. İlişkilerdeki kırıklıkları onarır, empatiyi güçlendirir. Hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
+    tema:"Bağlantı · İlişki Uyumu", bird:"dove",
+    aciklama:"639 Hz kalp çakrasıyla ilişkilendirilir. Empatiyi güçlendirir, hem kendine hem başkalarına karşı şefkati derinleştirir. Dinleyenler göğüs bölgesinde genişleme, yalnızlık hissinin azalması ve bağlanma sıcaklığı yaşar.",
     etkiler:["İlişkileri uyumlaştırma","Empati güçlenmesi","Kalp çakrası aktivasyonu","Bağ kurma kapasitesi"] },
   { hz:741, name:"İfade & Arınma", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
     tema:"Sezgisel İfade · Enerji Arınması", bird:"yedek",
@@ -109,8 +109,8 @@ const FREQ_DATA_TR = [
     etkiler:["Sezgi güçlenmesi","İllüzyonlardan uyanma","Derin meditasyon","Spiritüel farkındalık"] },
   { hz:963, name:"İlahi Bağlantı", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
     tema:"Taç Çakra · Yüksek Bilinç", bird:"kartal",
-    aciklama:"963 Hz taç çakrasını aktive eder. 'Tanrı frekansı' olarak da bilinir. Yüksek benlikle bağlantıyı güçlendirir, birlik bilincini deneyimlemeye davet eder. Dinleyenler baş tepesinde enerji akışı, hafiflik ve sınırsızlık hissi yaşar.",
-    etkiler:["Yüksek benlikle bağlantı","Birlik bilinci","Taç çakra aktivasyonu","Spiritüel aydınlanma"] },
+    aciklama:"963 Hz taç çakrasıyla ilişkilendirilir. Yüksek benlikle bağlantıyı güçlendirdiğine inanılır. Dinleyenler baş tepesinde hafiflik ve sınırsızlık hissi yaşar.",
+    etkiler:["Yüksek benlikle bağlantı","Birlik hissi","Taç çakra farkındalığı","Spiritüel derinleşme"] },
 ];
 
 const FREQ_DATA_EN = [
@@ -127,20 +127,20 @@ const FREQ_DATA_EN = [
     aciklama:"396 Hz resonates with the root chakra. It helps dissolve subconscious fear, guilt, and survival anxiety. Listeners experience relaxation in the chest and abdomen, reduced mental noise, and a feeling of 'inner burden lifting'.",
     etkiler:["Dissolving guilt and fear","Root energy relaxation","Releasing past burdens","Restoring trust"] },
   { hz:417, name:"Transformation", color:"#e67e22", pastel:"#f0c27f", icon:"🔄",
-    tema:"Facilitating Change · Trauma Clearing", bird:"bulbul",
-    aciklama:"417 Hz works with the sacral chakra. It softens traces of traumatic experiences and dissolves resistance to change. It removes creative blocks. Listeners describe an emotional 'unwinding' followed by lightness.",
-    etkiler:["Transforming negative energy","Softening trauma","Openness to change","Clearing creative blocks"] },
+    tema:"Facilitating Change · Emotional Release", bird:"bulbul",
+    aciklama:"417 Hz is associated with the sacral chakra. It dissolves resistance to change and removes creative blocks. Listeners describe an emotional 'unwinding' followed by lightness.",
+    etkiler:["Transforming negative energy","Emotional release","Openness to change","Clearing creative blocks"] },
   { hz:432, name:"Universal Harmony", color:"#2c3e50", pastel:"#95a5b6", icon:"🎵",
     tema:"Nature's Frequency · Heart Peace", bird:"dove",
-    aciklama:"432 Hz is known as 'the frequency of the universe'. It's aligned with nature's golden ratio. It calms heart rate, shifts brainwaves to alpha state. Listeners experience deep peace, time slowing down, and a feeling of 'coming home'.",
-    etkiler:["Harmony with nature","Heart rhythm balancing","Alpha brainwaves","Deep peace"] },
+    aciklama:"432 Hz is known as 'the frequency of the universe'. It's aligned with nature's golden ratio. Listeners experience deep peace, time slowing down, and a feeling of 'coming home'.",
+    etkiler:["Harmony with nature","Stillness","Deep relaxation","Deep peace"] },
   { hz:528, name:"Love Frequency", color:"#f1c40f", pastel:"#f7e18a", icon:"💛",
     tema:"Love Tone · Inner Transformation", bird:"kanarya",
-    aciklama:"528 Hz is called the 'Miracle Tone' or 'Love Frequency'. It is believed to support cellular harmony and resonates with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
-    etkiler:["Cellular harmony","Inner transformation","Love vibration","Solar plexus activation"] },
+    aciklama:"528 Hz is called the 'Love Frequency'. It is associated with the solar plexus chakra. Listeners feel an opening in the heart area and a deep wave of love.",
+    etkiler:["Inner harmony","Inner transformation","Love vibration","Deepened awareness"] },
   { hz:639, name:"Relationship Harmony", color:"#27ae60", pastel:"#82d9a3", icon:"💚",
-    tema:"Connection · Relationship Healing", bird:"dove",
-    aciklama:"639 Hz nourishes the heart chakra. It repairs fractures in relationships and strengthens empathy. It deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
+    tema:"Connection · Relationship Harmony", bird:"dove",
+    aciklama:"639 Hz is associated with the heart chakra. It strengthens empathy and deepens compassion for both self and others. Listeners experience expansion in the chest, less loneliness, and warmth of connection.",
     etkiler:["Harmonizing relationships","Empathy strengthening","Heart chakra activation","Connection capacity"] },
   { hz:741, name:"Expression & Cleansing", color:"#2980b9", pastel:"#85c1e9", icon:"🔵",
     tema:"Intuitive Expression · Energy Cleansing", bird:"yedek",
@@ -152,8 +152,8 @@ const FREQ_DATA_EN = [
     etkiler:["Intuition strengthening","Awakening from illusion","Deep meditation","Spiritual awareness"] },
   { hz:963, name:"Divine Connection", color:"#9b59b6", pastel:"#d9b8e8", icon:"👑",
     tema:"Crown Chakra · Higher Consciousness", bird:"kartal",
-    aciklama:"963 Hz activates the crown chakra. Also known as the 'God frequency'. It strengthens connection with the higher self and invites unity consciousness. Listeners experience energy flow at the crown, lightness, and boundlessness.",
-    etkiler:["Higher self connection","Unity consciousness","Crown chakra activation","Spiritual illumination"] },
+    aciklama:"963 Hz is associated with the crown chakra. It is believed to strengthen connection with the higher self. Listeners experience lightness and boundlessness.",
+    etkiler:["Higher self connection","Sense of unity","Crown chakra awareness","Spiritual deepening"] },
 ];
 
 const getFreqData = (lang) => lang === "en" ? FREQ_DATA_EN : FREQ_DATA_TR;
@@ -208,13 +208,13 @@ const EV12_BURCU_ACIKLAMA = {
   "İkizler": { tema:"Bastırılmış Merak & İletişim", yorum:"12. evinde İkizler varsa yoğun iç konuşma, yazılı anlayış ve sözsüz iletişim için derin bir kapasite taşırsın. Düşüncelerini ifade etmekte zorlanman ya da bilgiyi içinde biriktirmen bu evin gölgesidir. Karmik dersin: içteki sesi dışa taşımak. Gizli gücün: yazma ve derin düşünce." },
   "Yengeç":  { tema:"Bastırılmış Şefkat & Aile", yorum:"12. evinde Yengeç varsa duygusal güvenlik, bakım verme ve ev kavramı bilinçdışında güçlü bir yer tutar. Başkasına sığınma ihtiyacını ya da kendi çocukluk yaranı gizleme eğilimin bu evin gölgesidir. Karmik dersin: kendinle anne gibi ilgilenmek. Gizli gücün: derin empati ve sezgisel anlama." },
   "Aslan":   { tema:"Bastırılmış Yaratıcılık & İfade", yorum:"12. evinde Aslan varsa yaratıcı potansiyel ve kalpten liderlik etme gücü sessizce derinleşir. Görünmek istememe, alkış almaktan kaçma ya da kendi parlaklığından utanma bu evin gölgesidir. Karmik dersin: özgün ifadene izin vermek. Gizli gücün: ışığını içten dışa taşıma kapasitesi." },
-  "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-analiz. Gizli gücün: detaylı anlama ve şifalı hizmet." },
+  "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-farkındalık. Gizli gücün: detaylı anlama ve içten hizmet." },
   "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinizden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
-  "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve şifa kapasitesi." },
+  "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve dönüşüm kapasitesi." },
   "Yay":     { tema:"Bastırılmış Özgürlük & Anlam", yorum:"12. evinde Yay varsa felsefi bilgelik, anlam arayışı ve spiritüel özgürlük sessizce büyür. İnançlarını ya da yolculuk etme arzunu bastırmak bu evin gölgesidir. Karmik dersin: kendi hakikatine güvenmek ve ilerlemek. Gizli gücün: felsefi kavrayış ve geniş perspektif." },
   "Oğlak":  { tema:"Bastırılmış Disiplin & Otorite", yorum:"12. evinde Oğlak varsa sorumluluk alma kapasitesi ve iç disiplin bilinçdışında güçlenir. Yetersizlik hissi, başaramamaktan korkma ya da otorite figürlerine duyulan gizli öfke bu evin gölgesidir. Karmik dersin: öz-otoritenle barışmak. Gizli gücün: sessiz, kararlı öz-güç." },
   "Kova":    { tema:"Bastırılmış Özgünlük & İnsanlık", yorum:"12. evinde Kova varsa özgün olmak, kolektife katkı sunmak ve devrimci fikirler bilinçdışında çalışır. Aitlik korkusu ya da farklı olmaktan utanmak bu evin gölgesidir. Karmik dersin: bireysel özgünlüğünü insanlığa armağan etmek. Gizli gücün: yenilikçi sezgi ve topluluk hissi." },
-  "Balık":   { tema:"Bastırılmış Şefkat & Evrensel Bağ", yorum:"12. evinde Balık varsa sınırlar çözülür, evrensel sevgi ve spiritüel teslimiyete yönelik derin bir kapasite taşırsın. Gerçeklikten kaçma, öz-kurban ya da başkasında eriyip gitme bu evin gölgesidir. Karmik dersin: şefkat ve sınır arasındaki dengeyi bulmak. Gizli gücün: mistik bağlantı ve iyileştirici sevgi." },
+  "Balık":   { tema:"Bastırılmış Şefkat & Evrensel Bağ", yorum:"12. evinde Balık varsa sınırlar çözülür, evrensel sevgi ve spiritüel teslimiyete yönelik derin bir kapasite taşırsın. Gerçeklikten kaçma, öz-kurban ya da başkasında eriyip gitme bu evin gölgesidir. Karmik dersin: şefkat ve sınır arasındaki dengeyi bulmak. Gizli gücün: mistik bağlantı ve koşulsuz sevgi." },
 };
 const GEZEGEN_12EV_GUCLERI = {
   "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
@@ -774,7 +774,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
     } catch(_) {}
   };
 
-  // Şifalı çan / singing bowl sesi: harmoniklerle zenginleştirilmiş
+  // Singing bowl sesi: harmoniklerle zenginleştirilmiş
   const playChime = (freq=432, vol=0.18, dur=2.8) => {
     try {
       const ctx = chimeCxtRef.current || new (window.AudioContext || window.webkitAudioContext)();
@@ -1765,16 +1765,15 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun duygusal kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu çakra ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
-**Reiki ile Enerji Aktarımı**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+**Farkındalık Notu**
+(Şiirsel, zarif bir kapanışla bitir: kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
         }),
       });
       const d = await res.json();
@@ -1787,35 +1786,19 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
   };
 
   const ZIHINSEL_LISTE = [
-    { organ:"Baş Ağrısı",    neden:"Kendini küçümseme, özeleştiri, korku" },
-    { organ:"Boyun",          neden:"Esneklik eksikliği, inatçılık, başkalarının bakış açısını görmek istememek" },
-    { organ:"Omuzlar",        neden:"Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi" },
-    { organ:"Kalp",           neden:"Sevgi ve neşeyi reddetmek, sertleşen kalp" },
-    { organ:"Sırt (üst)",     neden:"Duygusal destek eksikliği, sevilmediği hissi" },
-    { organ:"Sırt (alt)",     neden:"Para ve maddi destek korkusu" },
-    { organ:"Mide",           neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
-    { organ:"Bağırsaklar",    neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
-    { organ:"Kabız",          neden:"Eski düşünceleri ve alışkanlıkları bırakamama, geçmişe tutunma, korku" },
-    { organ:"Diz",            neden:"Ego, gurur, inat — eğilmemek" },
-    { organ:"Deri",           neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
-    { organ:"Boğaz",          neden:"Kendini ifade edememe, öfkeyi yutmak" },
-    { organ:"Gözler",         neden:"Geçmişi ya da geleceği görmek istememe" },
-    { organ:"Kulaklar",       neden:"Duymak istemediğin şeyler, öfke" },
-    { organ:"Akciğerler",     neden:"Hayatı tam almayı reddetme, üzüntü" },
-    { organ:"Karaciğer",      neden:"Kronik öfke, eleştiri, akıl yürütme" },
-    { organ:"Böbrekler",      neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
-    { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihnin durduramama" },
-    { organ:"Tansiyon",       neden:"Uzun süreli çözümsüz duygusal sorunlar, aşırı kontrol ihtiyacı" },
-    { organ:"Yorgunluk",      neden:"Direnç, sıkılmışlık, sevgisiz yaşama" },
-    { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
-    { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
+    { organ:"Gerginlik",      neden:"Aşırı sorumluluk yükü, mükemmeliyetçilik" },
+    { organ:"Huzursuzluk",    neden:"Değişime direnç, kontrolü bırakamama" },
+    { organ:"Kaygı",          neden:"Güvensizlik, belirsizlik korkusu" },
+    { organ:"Yorgunluk",      neden:"Direnç, motivasyon eksikliği, duygusal tükenme" },
+    { organ:"Uyku zorluğu",   neden:"Zihnin durulamaması, güvensizlik" },
+    { organ:"Öfke",           neden:"Sınır ihlali, ifade edilemeyen duygular" },
+    { organ:"Üzüntü",         neden:"Kayıp hissi, bırakamama" },
   ];
-  const KITAP_BILGELIGI = `KİTAPLARDAN ÖZET BİLGELİK:
-• Jung (Kırmızı Kitap): Gölge bütünleşme — dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki altın madeni bulmak.
-• Kryon (DNA'nın 12 Tabakası): DNA bilinçle rezonans kurar; niyet, minnet ve frekans yükseltmeyle uyku halindeki potansiyel aktive olur. Sen tanrısal bir varlıksın, bunu hatırlamak için buradasın.
+  const KITAP_BILGELIGI = `İLHAM KAYNAKLARI:
+• Jung: Gölge bütünleşme — dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki potansiyeli keşfetmek.
 • Tao Te Ching: Wu wei — zorlama değil akış. En derin güç direnmeden akan sudur. Basitlik ve boşluk sonsuz potansiyel taşır. Yanıt zorlamada değil sessizlikte gizlidir.
-• Yaşam Çiçeği (Drunvalo): Kutsal geometri evrenin dilidir; her çakra, her nefes, her hücre ilahi bir örüntü taşır. Merkaba ışık bedenini aktive eder.
-• Bir'in Yasası (Ra Materyali): Her şey tek bir bilinçtir. Sevgi evrenin birleştirici gücüdür. Başkasına hizmet kendi evrimine katkıdır. Sen hem öğreten hem öğrenilensin.`;
+• Farkındalık Geleneği: Her nefes, her an bir farkındalık fırsatıdır. Şimdiki ana dönmek, kendine nazik olmak — bu yolculuğun temelidir.
+• Evrensel Bilgelik: Sevgi birleştirici bir güçtür. Başkasına hizmet kendi gelişimine katkıdır. Öğretmek ve öğrenmek aynı yolculuktur.`;
 
   const PREMIUM_YONLENDIRME = `\n\n_(Daha derin analiz, kişisel terapi önerileri ve detaylı çakra haritası için Premium'u keşfet.)_`;
 
@@ -1834,7 +1817,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 • Sabah Niyeti (🌅): Güne niyet ve enerji belirlemek için
 • Akşam Kapanışı (🌙): Günü tamamlamak, şükür ve öğrenim için`;
 
-  const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın — Usui Işık Çemberi Ekolü)
+  const REIKI_BILGI = `ENERJİ FARKINDALIK REHBERİ
 
 5 TEMEL PRENSİP (Dr. Mikao Usui):
 Bugün bana verilen tüm nimetler için minnettarım.
@@ -1844,74 +1827,26 @@ Bugün dürüstüm.
 Bugün tüm varlıklara karşı nazik ve saygılıyım.
 
 ÇAKRALAR VE ENERJİ MERKEZLERİ:
-• Kök Çakra (Kırmızı, 396Hz) — güvenlik, maddi destek, hayatta kalma, topraklanma; böbrekler, omurilik, siyatik siniri. Depresyon ve korku bu çakrayı kapatır.
-• Sakral Çakra (Turuncu, 417Hz) — yaratıcılık, duygular, cinsellik, ilişkiler; üreme organları, mesane, bel. Boğaz çakrasıyla koordineli çalışır.
-• Solar Pleksus (Sarı, 528Hz) — kişisel güç, irade, özgüven, karmik bağ; sindirim sistemi, dalak, karaciğer, pankreas. En güçlü çakralardan biri; duygusal bedene açılan kapıdır.
-• Kalp Çakra (Yeşil, 639Hz) — sevgi, şefkat, bağışlama, bağlantı; kalp, akciğerler, dolaşım sistemi.
-• Boğaz Çakra (Mavi, 741Hz) — ifade, dürüstlük, iletişim; boğaz, tiroit, kulaklar. Sakral çakrasıyla koordineli çalışır.
-• Üçüncü Göz (İndigo, 852Hz) — sezgi, netlik, içgüdü, görüş; alın, sinirler, göz. Kök çakrasıyla koordineli çalışır.
-• Taç Çakra (Mor/Beyaz, 963Hz) — ruhsal bağlantı, bilinç, bütünlük, ilahi enerji.
+• Kök Çakra (Kırmızı, 396Hz) — güvenlik, topraklanma, hayatta kalma hissi.
+• Sakral Çakra (Turuncu, 417Hz) — yaratıcılık, duygusal denge, ilişkiler.
+• Solar Pleksus (Sarı, 528Hz) — kişisel güç, irade, özgüven.
+• Kalp Çakra (Yeşil, 639Hz) — sevgi, şefkat, bağışlama, bağlantı.
+• Boğaz Çakra (Mavi, 741Hz) — ifade, dürüstlük, iletişim.
+• Üçüncü Göz (İndigo, 852Hz) — sezgi, netlik, içsel görüş.
+• Taç Çakra (Mor/Beyaz, 963Hz) — ruhsal bağlantı, bütünlük hissi.
 
-HASTALIKLARA ÇAKRA & EL POZİSYONU YAKLAŞIMI:
-• Baş ağrısı, göz, sinüs: Üçüncü Göz + Taç çakra, başın arkası
-• Boğaz, kulak, iletişim: Boğaz Çakra (yukarı+aşağı)
-• Kalp, akciğer, dolaşım: Kalp Çakra (ön + arka)
-• Mide, sindirim, bağırsak, kabız: Solar Pleksus + Karın çakrası + karaciğer
-• Sırt ağrısı: Solar Pleksus + Sakral + boyun arkası
-• Böbrek, mesane, bel: Kök + Sakral çakra
-• Depresyon: Kafa + Sakral + Kök çakra
-• Anksiyete, panik, korku: Solar Pleksus + Kök çakra
-• Cilt sorunları: Solar Pleksus + etkilenen bölge
-• Kanser: Tüm vücut tedavisi, etkilenen bölgeye 20-30dk
-• Yorgunluk, bağışıklık: Dalak + Solar Pleksus + tüm vücut
+ÖNEMLİ UYARI: Bu bilgiler geleneksel enerji farkındalık pratiklerinden alınmıştır. Tıbbi teşhis veya tedavi amacı taşımaz. Sağlık sorunları için mutlaka bir uzmana danışılmalıdır.`;
 
-REİKİ SEMBOLLERİ:
-• Cho Ku Rei (CKR): Güç sembolü — enerjiyi yoğunlaştırır, koruma ve temizleme
-• Sei He Ki (SHK): Zihinsel-duygusal sembol — bilinçaltı kodlama, alışkanlıkları dönüştürme
-• Hon Sha Ze Sho Nen (HSZN): Uzaktan Reiki — geçmişe/geleceğe enerji gönderme
-• Dai Ko Myo (DKM): Master sembolü — ruhsal şifa, en yüksek frekans, kalp çakrasından kalbe
+  const LOUISE_HAY_REHBER = `DUYGUSAL FARKINDALIK REHBERİ
 
-TEMEL ANLAYIŞ:
-Hastalıklar zihinsel ve duygusal kalıpların fiziksel bedende görünmesidir. Şifa çok boyutludur: fiziksel, duygusal, zihinsel ve ruhsal boyutları birlikte kapsar. Kişi hastalığın nedenini anlayıp içselleştiremediği sürece hastalık tekrar eder. Koşulsuz sevgi her şeyin şifasıdır — kişi kendini koşulsuz sevip kabul edebildiğinde gerçek şifa başlar.`;
+TEMEL YAKLAŞIM:
+Düşünce kalıplarımız duygusal dünyamızı şekillendirir. Kendimize karşı nazik olmak, geçmişi bağışlamak ve olumlu düşünce alışkanlıkları geliştirmek içsel dengeyi destekler. Bu bir tıbbi yaklaşım değil, kişisel farkındalık pratiğidir.
 
-  const LOUISE_HAY_REHBER = `LOUISE L. HAY — DÜŞÜNCE GÜCÜYLE TEDAVİ (Kaynak: Kitap)
-
-TEMEL FELSEFE:
-Yaşamımızdaki her şey zihinsel düşünce kalıplarının sonucudur. Hastalıklar, içimizde bastırılmış olumsuz düşünce kalıplarının bedende ifade bulmasıdır. Zihinsel kalıbı değiştirince beden de değişir. Tüm şifanın temeli özsevgidir — kendini sevmek ve onaylamak her şeyi değiştirir. Geçmişi bağışlamak ise özgürleşmenin kapısıdır.
-
-BEDEN-ZİHİN BAĞLANTISI:
-• Akciğer sorunları: Yaşamdan korkmak, yaşamı dolu dolu almayı reddetmek, derin üzüntü, kendini değersiz bulmak
-• Kalp sorunları: Uzun süreli çözülmemiş duygusal sorunlar, neşeyi reddetmek, sevilmediğini hissetmek, sertleşen kalp
-• Sırt (alt) ağrısı: Para ve maddi destek korkusu, ekonomik endişe, eleştirilmek ve başarısızlık korkusu
-• Sırt (üst) ağrısı: Duygusal destek eksikliği, sevilmediğini hissetmek, destek görememe
-• Boyun sorunları: Esneksizlik, inatçılık, başka bakış açılarını görmek istememek
-• Omuz ağrısı: Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi
-• Baş ağrısı: Kendini küçümseme, özeleştiri, bastırılmış öfke, kontrol ihtiyacı
-• Mide sorunları: Yenilikleri sindirememe, korku, yeni fikirlere direnç
-• Bağırsak/kabız: Eski düşünceleri ve kalıpları bırakamama, geçmişe takılma
-• Boğaz sorunları: Kendini ifade edememe, öfkeyi yutmak, yaratıcılığı bastırmak
-• Kalp çarpıntısı: Panik, güvensizlik, aşırı heyecan, aşırı kontrol çabası
-• Cilt sorunları: Kimlik ve sınır kaybı, başkalarının tehdit hissettirmesi
-• Göz sorunları: Geçmişi ya da geleceği görmek istememe, çevreden duyulan korku
-• Kulak sorunları: Duymak istemediğin şeyler, öfke, duymayı reddetmek
-• Diz sorunları: Ego, gurur, inat — eğilmemek, esneyememek
-• Uyku sorunları: Korku, güvensizlik, zihnin duramaması, hayattan kaçma isteği
-• Kilo sorunları: Korku, korunma ihtiyacı, duyguları bastırma, sevilmemekten korkma
-• Yorgunluk: Direnç, sıkılmışlık, sevgisiz yaşama, anlam yoksunluğu
-• Tansiyon (yüksek): Uzun süreli çözülmemiş duygusal sorunlar, aşırı kontrol ihtiyacı
-• Alerjiler: Kendi gücünü yadsımak; kime ya da neye karşı reaksiyon veriyorsun?
-• Depresyon: Bastırılmış öfke, umutsuzluk, kendini küçümseme, yaşam sevincini kaybetmek
-• Anksiyete/panik: Yaşama güvenmemek, kontrol ihtiyacı, gelecek korkusu
-• Anemi: Yaşam sevincinden yoksunluk, "evet ama" yaklaşımı, yetersizlik duygusu
-• Karaciğer sorunları: Kronik öfke, eleştiri, kırgınlık, acı duygular
-• Böbrek sorunları: Hayal kırıklığı, başarısızlık korkusu, eleştiri
-• Tiroit sorunları: Kişisel iradenin engellenmesi, "benim sıram ne zaman gelecek?"
-
-ŞİFA YAKLAŞIMI:
-1. Hastalığın zihinsel nedenini fark et ve kabul et
-2. Kendini ve geçmişini bağışla — suçlamak enerji çalar
-3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
-4. Kendini sevmeyi öğren — bu tüm şifanın temelidir`;
+FARKINDA OL:
+1. Tekrar eden düşünce kalıplarını fark et
+2. Kendini ve geçmişini bağışla
+3. Olumlu düşünce alışkanlıkları geliştir
+4. Kendine sevgi ve şefkat göster`;
 
   const generateSemptomAnaliz = async () => {
     if (!semptomInput.trim()) return;
@@ -1930,13 +1865,11 @@ Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
+          messages:[{ role:"user", content:`Kullanıcının durumu: "${sanitizeInput(semptomInput)}"
 
 ${REIKI_BILGI}
 
-${LOUISE_HAY_REHBER}
-
-Zihinsel nedenler:
+Duygusal farkındalık rehberi:
 ${zihinselListeText}
 
 ${astroText3}
@@ -1948,16 +1881,15 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Durumu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Duygusal kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu semptom ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
-**Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+**Farkındalık Notu**
+(Şiirsel, zarif bir kapanışla bitir: kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
         }),
       });
       const d = await res.json();
@@ -1986,13 +1918,11 @@ Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
+          messages:[{ role:"user", content:`Kullanıcının sorusu: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
 ${REIKI_BILGI}
 
-${LOUISE_HAY_REHBER}
-
-Zihinsel nedenler:
+Duygusal farkındalık rehberi:
 ${zihinselListeText}
 ${astroTxt}
 
@@ -2003,16 +1933,15 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Soruyu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Duygusal kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu konu ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
-**Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+**Farkındalık Notu**
+(Şiirsel, zarif bir kapanışla bitir: kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
         }),
       });
       const d = await res.json();
@@ -2039,13 +1968,13 @@ Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
+          messages:[{ role:"user", content:`Kullanıcının durumu: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
 ${REIKI_BILGI}
 
 ${LOUISE_HAY_REHBER}
 
-Zihinsel nedenler:
+Duygusal farkındalık rehberi:
 ${zihinselListeText}
 ${astroTxt}
 
@@ -2053,19 +1982,20 @@ ${NEFES_REHBERI}
 
 ${UYGULAMA_BOLUMLER}
 
+ÖNEMLİ: Asla tıbbi teşhis koyma, tedavi önerme veya ilaç tavsiyesi verme. Bu bir farkındalık ve kişisel keşif aracıdır, tıbbi bir araç değildir.
+
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Durumu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Duygusal kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu hastalık ve duruma özel 3-4 besin veya şifalı bitki — kısa, net)
 Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
-**Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+**Farkındalık Notu**
+(Şiirsel, zarif bir kapanışla bitir: kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap. Sonuna şunu ekle: "Bu yansıtma kişisel farkındalık amacıyla sunulmuştur, profesyonel tıbbi tavsiye yerine geçmez.")` }],
         }),
       });
       const d = await res.json();
@@ -2092,13 +2022,13 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     setAiLoading(true); setAiRapor("");
 
     const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi — Gizli Benlik Rehberi (Tracy Marks, "Gizli Benliğiniz"):
-12. ev bilinçdışının evi, gizli benliğin ve karmik belleğin yurdudur. Güneş her gün bu evden geçer; taşıdığı ışıltılı ve iyileştirici enerjiyi tüm diğer evlere yayar.
+12. ev bilinçdışının evi, gizli benliğin ve karmik belleğin yurdudur. Güneş her gün bu evden geçer; taşıdığı ışıltılı ve dönüştürücü enerjiyi tüm diğer evlere yayar.
 
 TEMEL KAVRAMLAR:
 • Gölge Benlik (Jung): "Dışarıdaki dünyada ne için savaşıyorsak, iç benliğimizde de bu mücadele vardır." Bastırılan enerji bilinçdışında büyür; başkalarına yansıtılarak dışarıda görülür. İnkar ettiğimiz özellikler en güçlü yansımalarımız olur.
 • Ya Hep Ya Hiç Modelleri: Bastırma ne kadar derinse, patlama o kadar sert olur. Bir gün küçük ve zayıf, ertesi gün taşan enerji — 12. ev dinamiğidir. Reddedilen her enerji, bilinçsizce büyüyüp şekil değiştirir.
 • Karmik Deneyimler: Tekrar eden kelimeler, niyetler ve örüntüler çözülmemiş geçmiş deneyimlerin izlerini taşır. 12. evdeki burç, geçmiş yaşamdaki Yükselen Burcu'nu gösterir.
-• Hassasiyet ve Hizmet: 12. ev enerjileri aşırı güvensizlik ve bağımlılık riskini taşıdığı gibi derin empati, şifacılık ve insanlığa hizmet potansiyelini de barındırır. Başkalarının duygularını kendinizinkiymiş gibi duyumsayabilirsiniz.
+• Hassasiyet ve Hizmet: 12. ev enerjileri aşırı güvensizlik ve bağımlılık riskini taşıdığı gibi derin empati ve insanlığa hizmet potansiyelini de barındırır. Başkalarının duygularını kendinizinkiymiş gibi duyumsayabilirsiniz.
 • Tinsellik ve İnsanüstü Deneyimler: Bu ev kozmik birliğe ulaşmanın, tanrısal enerjiyi doğrudan deneyimlemenin evidir. Rüyalar, meditasyon, sezgiler ve müzik/şiir buranın armağanlarıdır.
 • Hayalgücü ve Yaratıcı Esinlenme: 12. ev aktif rüya yaşantısına ve yaratıcı esinlenmeye açıklık sağlar. Yazarlar, şairler ve müzisyenlerin çoğunda bu evde güçlü gezegenler bulunur.
 • Bütünleşme: Gölgeyle yüzleşmek karanlığı değil, içindeki altın madeni bulmaktır. Bastırılan enerjileri tanımak, onlara zaman tanımak, şefkatle kucaklamak bütünleşme yoludur. Günlük faaliyetler: rüyaları not etmek, başkalarında rahatsız edici özellikleri gözlemlemek, meditasyon.
@@ -3875,13 +3805,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               { num: "3", meaning: "Yaratıcı, ifadeci, neşeli. Sanat, iletişim ve sosyal bağlantı enerjisi. Kendini ifade etme ve ilham sayısı." },
               { num: "4", meaning: "İnşa edici, disiplinli, güvenilir. Düzen, istikrar ve sağlam temeller enerjisi. Çalışkanlık ve dayanıklılık sayısı." },
               { num: "5", meaning: "Özgür ruh, maceracı, değişken. Özgürlük, seyahat ve deneyim enerjisi. Değişim ve esneklik sayısı." },
-              { num: "6", meaning: "Bakıcı, sorumlu, uyumlu. Aile, ev ve toplum enerjisi. Sevgi, şifa ve sorumluluk sayısı." },
+              { num: "6", meaning: "Bakıcı, sorumlu, uyumlu. Aile, ev ve toplum enerjisi. Sevgi ve sorumluluk sayısı." },
               { num: "7", meaning: "Araştırmacı, mistik, içe dönük. Maneviyat, analiz ve derin düşünce enerjisi. Bilgelik ve keşif sayısı." },
               { num: "8", meaning: "Güç sahibi, hırslı, başarılı. Maddi bolluk, otorite ve başarı enerjisi. Denge ve karma sayısı." },
               { num: "9", meaning: "İnsancıl, bilge, tamamlayıcı. Evrensel sevgi, şefkat ve bırakma enerjisi. Hizmet ve dönüşüm sayısı." },
               { num: "11", meaning: "Usta Sayı — Sezgisel aydınlatıcı. Yüksek farkındalık, ilham ve spiritüel öğretmenlik enerjisi." },
               { num: "22", meaning: "Usta Sayı — Usta inşacı. Büyük vizyonları gerçeğe dönüştürme gücü. Pratik idealizm enerjisi." },
-              { num: "33", meaning: "Usta Sayı — Usta öğretmen. Koşulsuz sevgi, şifa ve evrensel hizmet enerjisi." },
+              { num: "33", meaning: "Usta Sayı — Usta öğretmen. Koşulsuz sevgi ve evrensel hizmet enerjisi." },
             ]},
             { term: "Kişisel Yıl Sayısı", desc: "Doğum gününüz ve ayınız ile içinde bulunduğunuz yılın rakamlarının toplanmasıyla hesaplanır. 1-9 arasında döngüsel bir enerji haritası sunar. Her yıl farklı bir tema ve enerji getirir.", examples: [
               { num: "1. Yıl", meaning: "Yeni başlangıçlar, tohum ekme zamanı." },
@@ -3889,7 +3819,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               { num: "3. Yıl", meaning: "Yaratıcılık, ifade ve sosyallik zamanı." },
               { num: "4. Yıl", meaning: "Temel atma, düzen kurma zamanı." },
               { num: "5. Yıl", meaning: "Değişim, özgürlük ve macera zamanı." },
-              { num: "6. Yıl", meaning: "Sorumluluk, aile ve şifa zamanı." },
+              { num: "6. Yıl", meaning: "Sorumluluk, aile ve denge zamanı." },
               { num: "7. Yıl", meaning: "İçe dönüş, araştırma ve maneviyat zamanı." },
               { num: "8. Yıl", meaning: "Güç, başarı ve maddi bolluk zamanı." },
               { num: "9. Yıl", meaning: "Tamamlama, bırakma ve dönüşüm zamanı." },
@@ -3920,16 +3850,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             { term: "Zihinsel Biyoritm (33 gün)", desc: "Zihinsel keskinlik, konsantrasyon, hafıza ve analitik düşünme kapasitesini yansıtır. Pozitif dönemde zihnen aktif ve öğrenmeye açıksın, negatif dönemde odaklanma zorlaşır." },
           ]},
           { cat: t("guide_cat_reiki"), items: [
-            { term: "Reiki Nedir?", desc: "Japonca \"evrensel yaşam enerjisi\" anlamına gelen bir enerji şifa yöntemidir. Ellerin enerji merkezlerine (çakralara) yerleştirilmesiyle vücudun doğal şifa mekanizmasını aktive eder. Tıbbi bir tedavi değildir; tamamlayıcı bir wellness pratiğidir." },
+            { term: "Reiki Nedir?", desc: "Japonca \"evrensel yaşam enerjisi\" anlamına gelen bir farkındalık pratiğidir. Ellerin enerji merkezlerine (çakralara) yerleştirilmesiyle beden farkındalığını destekler. Tıbbi bir tedavi değildir; tamamlayıcı bir wellness pratiğidir." },
             { term: "Çakra Terapisi", desc: "Sakin'deki 60 saniyelik seanslar, seçtiğiniz çakraya odaklanmanızı sağlar. Elinizi ilgili bölgeye koyarak, gözlerinizi kapatarak ve nefes alarak o enerji merkeziyle bağ kurarsınız." },
-            { term: "Şifa Arayışı", desc: "AI destekli bir analiz aracıdır. Fiziksel veya duygusal bir durumu girdiğinizde, Reiki bilgeliği, Louise Hay'in zihinsel-duygusal neden haritası ve çakra teorisini birleştirerek kişiselleştirilmiş bir yorum sunar." },
+            { term: "Farkındalık Arayışı", desc: "AI destekli bir farkındalık aracıdır. Duygusal bir durumu girdiğinizde, çakra farkındalığı ve kişisel farkındalık perspektiflerini birleştirerek kişiselleştirilmiş bir yorum sunar." },
             { term: "Louise Hay Yöntemi", desc: "Fiziksel rahatsızlıkların altında yatan zihinsel ve duygusal nedenleri inceleyen bir yaklaşımdır. Örneğin baş ağrısı \"kendini geçersiz sayma\", sırt ağrısı \"duygusal destek eksikliği\" ile ilişkilendirilir." },
             { term: "İçsel Ayna", desc: "Bedensel şikayetlerinizi veya duygusal durumunuzu yazarak içsel nedenlerini keşfetmenizi sağlayan AI analiz aracıdır." },
           ]},
           { cat: t("guide_cat_app"), items: [
             { term: "Sabah Niyeti", desc: "Her güne bilinçli bir niyetle başlama pratiğidir. Kısa bir cümle veya kelime ile o günün odak noktasını belirlersiniz. Niyet, bilinçaltına yön verir ve günün akışını şekillendirir." },
             { term: "3 Kelime Seçimi", desc: "Sabah rutininde sunulan 12 güç kelimesinden (huzur, akış, cesaret, sabır, berraklık, sevgi, güç, denge, özgürlük, neşe, şükür, güven) 3 tanesini seçersiniz. Bu kelimeler günün enerji yönelimini belirler." },
-            { term: "Nefes Egzersizi (4-1.5-3.5)", desc: "Al (4 sn) → Tut (1.5 sn) → Ver (3.5 sn) → Dinlen ritmiyle yapılan nefes pratiğidir. Parasempatik sinir sistemini aktive ederek stresi azaltır ve odaklanmayı artırır." },
+            { term: "Nefes Egzersizi (4-1.5-3.5)", desc: "Al (4 sn) → Tut (1.5 sn) → Ver (3.5 sn) → Dinlen ritmiyle yapılan nefes pratiğidir. Derin rahatlama sağlayarak stresi azaltmaya ve odaklanmayı artırmaya yardımcı olur." },
             { term: "Gün İçi Hatırlatıcılar", desc: "Gün boyunca farkındalığınızı korumanız için tasarlanmış 10 mikro pratiktir: aynaya bakmak, su içmek, nefes farkındalığı, beden egzersizi, güneşi hissetmek, ağaca sarılmak, toprağa dokunmak, gökyüzüne bakmak, çakra anı ve sosyal medya molası." },
             { term: "Akşam Kapanışı", desc: "Günü bilinçli bir şekilde kapatma ritüelidir. \"Bugün ne öğrendin?\" ve \"Şükür?\" sorularıyla günün farkındalık özetini çıkarırsınız." },
             { term: "Haftalık İç Harita", desc: "Haftanın istatistiklerini gösteren özet ekrandır: en aktif çakra, toplam nefes sayısı, niyet kelimeleri ve bilinçli an sayısı. AI raporu bu verilerden haftalık bir içgörü sentezi oluşturur." },
@@ -3949,7 +3879,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               { num: "9", meaning: "Humanitarian, wise, completing. Universal love, compassion and release energy." },
               { num: "11", meaning: "Master Number — Intuitive illuminator. High awareness and spiritual teaching energy." },
               { num: "22", meaning: "Master Number — Master builder. Power to turn grand visions into reality." },
-              { num: "33", meaning: "Master Number — Master teacher. Unconditional love, healing and universal service." },
+              { num: "33", meaning: "Master Number — Master teacher. Unconditional love and universal service." },
             ]},
             { term: "Personal Year Number", desc: "Calculated by adding your birth day and month with the current year's digits. Provides a cyclical energy map from 1-9. Each year brings a different theme and energy." },
             { term: "Reduction", desc: "The process of reducing multi-digit numbers to a single digit in numerology. All digits are added; if the result is greater than 9, they are added again. 11, 22, and 33 are \"Master Numbers\" and are not reduced." },
@@ -3978,16 +3908,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             { term: "Mental Biorhythm (33 days)", desc: "Reflects mental sharpness, concentration, memory and analytical thinking. Positive = mentally active, negative = harder to focus." },
           ]},
           { cat: t("guide_cat_reiki"), items: [
-            { term: "What is Reiki?", desc: "A Japanese energy healing method meaning \"universal life energy\". Activates the body's natural healing mechanism by placing hands on energy centers (chakras). Not medical treatment; a complementary wellness practice." },
+            { term: "What is Reiki?", desc: "A Japanese awareness practice meaning \"universal life energy\". Supports body awareness through placing hands on energy centers (chakras). Not medical treatment; a complementary wellness practice." },
             { term: "Chakra Therapy", desc: "60-second sessions in Sakin that help you focus on your chosen chakra by placing your hand on the area, closing your eyes and breathing." },
-            { term: "Healing Search", desc: "An AI-powered analysis tool that combines Reiki wisdom, Louise Hay's mental-emotional cause mapping and chakra theory to provide personalized insights." },
+            { term: "Awareness Search", desc: "An AI-powered awareness tool that combines chakra awareness and personal insight perspectives to provide personalized reflections." },
             { term: "Louise Hay Method", desc: "An approach examining mental and emotional causes underlying physical ailments. For example, headaches linked to \"self-invalidation\", back pain to \"lack of emotional support\"." },
             { term: "Inner Mirror", desc: "AI analysis tool that lets you discover inner causes by writing about your physical complaints or emotional states." },
           ]},
           { cat: t("guide_cat_app"), items: [
             { term: "Morning Intention", desc: "The practice of starting each day with a conscious intention. You set the day's focus point with a short sentence or word." },
             { term: "3 Word Selection", desc: "Choose 3 power words from 12 options (peace, flow, courage, patience, clarity, love, strength, balance, freedom, joy, gratitude, trust) to set the day's energy direction." },
-            { term: "Breath Exercise (4-1.5-3.5)", desc: "Inhale (4s) → Hold (1.5s) → Exhale (3.5s) → Rest rhythm. Activates the parasympathetic nervous system to reduce stress and improve focus." },
+            { term: "Breath Exercise (4-1.5-3.5)", desc: "Inhale (4s) → Hold (1.5s) → Exhale (3.5s) → Rest rhythm. Promotes deep relaxation to help reduce stress and improve focus." },
             { term: "Daily Reminders", desc: "10 micro practices throughout the day: mirror gazing, drinking water, breath awareness, body exercise, feeling the sun, hugging a tree, touching earth, looking at sky, chakra moment, social media break." },
             { term: "Evening Close", desc: "A ritual to consciously close the day. Extract your awareness summary with \"What did you learn today?\" and \"Gratitude?\" questions." },
             { term: "Weekly Inner Map", desc: "Summary screen showing the week's stats: most active chakra, total breaths, intention words and mindful moments. AI report creates a weekly insight synthesis." },

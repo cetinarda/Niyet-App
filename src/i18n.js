@@ -73,7 +73,7 @@ export const TRANS = {
     breath_desc_akciger:     "Akciğerleri tam kapasiteyle doldur. Göğüs kafesi genişler, enerji artar.",
     breath_desc_478:         "4 sn nefes al, 7 sn tut, 8 sn ver. Sinir sistemini sakinleştirir, uykuya hazırlar.",
     breath_desc_kutu:        "Eşit sürelerle al, tut, ver, bekle. Odaklanma ve zihinsel netlik sağlar.",
-    breath_desc_sakinletici: "Uzun verişle parasempatik sistemi aktive eder. Stres ve kaygıyı azaltır.",
+    breath_desc_sakinletici: "Uzun verişle derin rahatlama sağlar. Stres ve kaygıyı azaltmaya yardımcı olur.",
 
     // Ses Dalgaları
     nav_sound:         "Ses",
@@ -148,42 +148,42 @@ export const TRANS = {
       ],
       "Sakral": [
         "Sakral çakra, yaratıcılık ve duygusal akışın merkezidir. Su elementiyle ilişkilidir — tıpkı su gibi esnek ve akışkan olmayı öğretir.",
-        "Sanskrit adı 'Svadhisthana' — 'benliğin yeri' demektir. Üreme organları ve böbreklerle doğrudan bağlantılıdır.",
+        "Sanskrit adı 'Svadhisthana' — 'benliğin yeri' demektir. Su elementiyle derin bağlantısı vardır.",
         "417 Hz frekansıyla çalışır. Dengeli olduğunda zevk alabilme, ilişkilerde sağlıklı bağ kurma ve duygusal esneklik sağlar."
       ],
       "Solar Pleksus": [
         "Solar Pleksus, kişisel gücün ve iradenin merkezidir. Ateş elementiyle ilişkilidir — içsel ateşini yakar ve özgüvenini güçlendirir.",
         "Sanskrit adı 'Manipura' — 'mücevher şehri' anlamına gelir. Pankreas ve sindirim sistemiyle bağlantılıdır.",
-        "528 Hz frekansıyla rezonansa girer. DNA onarımıyla ilişkilendirilen bu frekans, dönüşüm ve mucize frekansı olarak bilinir."
+        "528 Hz frekansıyla rezonansa girer. 'Sevgi frekansı' olarak bilinir ve içsel dönüşümü destekler."
       ],
       "Kalp": [
         "Kalp çakra, alt ve üst çakralar arasında köprü görevi görür. Hava elementiyle ilişkilidir — sevgiyi her yöne yayar.",
-        "Sanskrit adı 'Anahata' — 'vurulmamış ses' demektir. Timus beziyle bağlantılıdır ve bağışıklık sistemini etkiler.",
-        "639 Hz frekansıyla çalışır. Bu frekans ilişkileri iyileştirir, bağlantı ve uyumu güçlendirir."
+        "Sanskrit adı 'Anahata' — 'vurulmamış ses' demektir. Sevgi ve şefkatin merkezi olarak bilinir.",
+        "639 Hz frekansıyla çalışır. Bu frekans bağlantı ve uyumu güçlendirdiğine inanılır."
       ],
       "Boğaz": [
         "Boğaz çakra, ifadenin ve hakikatin merkezidir. Ses elementiyle ilişkilidir — sesin sadece fiziksel değil, enerjetik bir titreşimdir.",
-        "Sanskrit adı 'Vishuddha' — 'arındırma' demektir. Tiroid beziyle bağlantılıdır ve metabolizmayı etkiler.",
+        "Sanskrit adı 'Vishuddha' — 'arındırma' demektir. İfade ve dürüstlüğün merkezi olarak bilinir.",
         "741 Hz frekansıyla çalışır. Bu frekans sezgisel uyanış ve ifade özgürlüğü sağlar."
       ],
       "Üçüncü Göz": [
         "Üçüncü Göz, sezgi ve durugörünün merkezidir. Işık elementiyle ilişkilidir — iç görüşü ve farkındalığı açar.",
-        "Sanskrit adı 'Ajna' — 'komut' veya 'algılama' demektir. Epifiz (pineal) beziyle bağlantılıdır ve melatonin üretimini etkiler.",
+        "Sanskrit adı 'Ajna' — 'komut' veya 'algılama' demektir. Sezgi ve iç görüşün merkezi olarak bilinir.",
         "852 Hz frekansıyla çalışır. Spiritüel düzene dönüşü destekler ve iç sesi güçlendirir."
       ],
       "Taç": [
         "Taç çakra, ilahi bağlantının ve kozmik bilincin merkezidir. Evren elementiyle ilişkilidir — saf farkındalığın kapısıdır.",
-        "Sanskrit adı 'Sahasrara' — 'bin yapraklı lotus' demektir. Hipofiz beziyle bağlantılıdır ve tüm hormonal sistemi yönetir.",
-        "963 Hz frekansıyla çalışır. 'Tanrı frekansı' olarak bilinir ve birlik bilincini aktive eder."
+        "Sanskrit adı 'Sahasrara' — 'bin yapraklı lotus' demektir. Ruhsal bağlantının en yüksek noktası olarak bilinir.",
+        "963 Hz frekansıyla çalışır. 'Tanrı frekansı' olarak bilinir ve birlik hissini desteklediğine inanılır."
       ],
       "Ruh Yıldızı": [
         "8. çakra olan Ruh Yıldızı, başın yaklaşık 15 cm üzerinde bulunur. Karmik kayıtların ve ruh sözleşmelerinin tutulduğu yerdir.",
-        "Bu çakra aktive olduğunda geçmiş yaşam anılarına ve ruhsal derslere erişim açılır.",
+        "Bu çakra deneyimlendiğinde derin bir içsel bilgelik hissi uyanır.",
         "Ruh Yıldızı, bireysel benlikten evrensel benliğe geçişin kapısıdır. Burada ego çözülmeye başlar."
       ],
       "Yıldız Kapısı": [
-        "9. çakra, ışık bedenle bağlantının kurulduğu merkezdir. Fiziksel bedenin ötesindeki enerji alanını aktive eder.",
-        "Merkaba — ışık beden geometrisi — bu çakra üzerinden şekillenir. Astral seyahat bu merkezle ilişkilidir.",
+        "9. çakra, ışık bedenle bağlantının kurulduğu merkezdir. Derin farkındalık ve genişleme hissiyle ilişkilidir.",
+        "Kutsal geometri geleneğinde önemli bir yer tutar. Derin meditasyon pratikleriyle ilişkilidir.",
         "Yıldız Kapısı açıldığında kişi, boyutlar arası farkındalık geliştirir ve ruhsal rehberlerle bağlantı güçlenir."
       ],
       "Güneş Çakrası": [
@@ -199,37 +199,37 @@ export const TRANS = {
       "Mesih Çakrası": [
         "12. çakra, koşulsuz sevginin ve birlik bilincinin merkezidir. Tüm ayrılık yanılsamasının çözüldüğü noktadır.",
         "Bu çakra, İsa bilinci veya Budda bilinci olarak da bilinir — dini değil, evrensel bir uyanış durumudur.",
-        "Aktive olduğunda kişi, tüm varlıklara karşı derin bir şefkat ve birlik duygusu yaşar."
+        "Deneyimlendiğinde kişi, tüm varlıklara karşı derin bir şefkat ve birlik duygusu yaşar."
       ],
       "Yıldız İletişim": [
         "13. çakra, galaktik varlıklarla ve yüksek boyutsal rehberlerle iletişimin kurulduğu merkezdir.",
         "Bu çakra üzerinden kozmik bilgi aktarımı gerçekleşir. Channeling ve telepati bu merkezle ilişkilidir.",
-        "Aktive olduğunda evrensel bilgeliğe erişim açılır ve kişi kozmik ailesini hissetmeye başlar."
+        "Deneyimlendiğinde evrensel bilgelik hissi derinleşir ve kişi kozmik bağlantısını hissetmeye başlar."
       ],
       "İlahi Plan": [
         "14. çakra, evrensel teslimiyetin ve ilahi planla uyumun merkezidir. Bireysel iradenin evrensel iradeyle birleştiği noktadır.",
-        "Bu çakra aktive olduğunda 'bırakma' sanatı öğrenilir — kontrol değil, güven ön plana çıkar.",
+        "Bu çakra deneyimlendiğinde 'bırakma' sanatı öğrenilir — kontrol değil, güven ön plana çıkar.",
         "İlahi plan çakrası, hayatın akışına teslim olma ve her deneyimde anlam bulma kapasitesini güçlendirir."
       ],
       "Monadik Bağlantı": [
         "15. çakra, ruhun en yüksek kaynağı olan Monad ile bağlantının kurulduğu merkezdir.",
         "Monad, binlerce enkarnasyonun deneyimlerini barındıran 'üst ruh'tur. Bu çakra o bilgeliğe erişim sağlar.",
-        "Aktive olduğunda kişi, tek bir yaşamın ötesinde bir varoluş perspektifi kazanır."
+        "Deneyimlendiğinde kişi, tek bir yaşamın ötesinde bir varoluş perspektifi kazanır."
       ],
       "Yükseliş": [
         "16. çakra, yükselişin — fiziksel yoğunluktan ışık frekansına geçişin — başladığı merkezdir.",
         "Yükseliş, bedenin terk edilmesi değil, bilincin genişlemesiyle birlikte bedenin de dönüşmesidir.",
-        "Bu çakra aktive olduğunda hücresel hafıza temizlenir ve beden daha yüksek frekanslara uyum sağlamaya başlar."
+        "Bu çakra deneyimlendiğinde derin bir dönüşüm hissi yaşanır ve iç dünya genişlemeye başlar."
       ],
       "Evrensel Işık": [
         "17. çakra, evrensel bilginin — Akashik kayıtların — erişildiği merkezdir.",
         "Akashik kayıtlar, tüm ruhların tüm deneyimlerinin tutulduğu evrensel hafızadır.",
-        "Bu çakra aktive olduğunda kişi, evrenin işleyiş yasalarını sezgisel olarak kavramaya başlar."
+        "Bu çakra deneyimlendiğinde kişi, evrenin işleyiş yasalarını sezgisel olarak kavramaya başlar."
       ],
       "İlahi Niyet": [
         "18. çakra, ruhun bu yaşamdaki en yüksek amacının — ilahi niyetinin — tezahür ettiği merkezdir.",
         "Her ruh, enkarne olmadan önce belirli dersler ve görevler seçer. Bu çakra o sözleşmeyi hatırlatır.",
-        "Aktive olduğunda kişi, yaşam amacını netleştirir ve her eylemi bu amaçla hizalar."
+        "Deneyimlendiğinde kişi, yaşam amacını netleştirir ve her eylemi bu amaçla hizalar."
       ],
       "Kozmik Enerji": [
         "19. çakra, galaktik genişlemenin ve kozmik enerjiyle bütünleşmenin merkezidir.",
@@ -321,7 +321,7 @@ export const TRANS = {
 
     // Rehber
     guide_sup:         "✦ içsel rehber ✦",
-    guide_title:       "Şifa Arayışı",
+    guide_title:       "Farkındalık Arayışı",
     guide_sub:         "☽ bedeninin mesajını dinle ☽",
     mirror_title:      "İçsel Ayna",
     mirror_icon:       "☽",
@@ -531,7 +531,7 @@ export const TRANS = {
     breath_desc_akciger:     "Fill your lungs to full capacity. Chest expands, energy increases.",
     breath_desc_478:         "Inhale 4s, hold 7s, exhale 8s. Calms the nervous system, prepares for sleep.",
     breath_desc_kutu:        "Equal timing: inhale, hold, exhale, hold. Builds focus and mental clarity.",
-    breath_desc_sakinletici: "Long exhale activates parasympathetic system. Reduces stress and anxiety.",
+    breath_desc_sakinletici: "Long exhale promotes deep relaxation. Helps reduce stress and anxiety.",
 
     // Sound Waves
     nav_sound:         "Sound",
@@ -600,48 +600,48 @@ export const TRANS = {
     progress_p5:       (name) => `Your ${name} chakra is filling. 💫`,
     chakra_facts: {
       "Root": [
-        "The Root chakra resonates at 396 Hz and helps dissolve fear patterns. It is connected to the adrenal glands and adrenaline production.",
+        "The Root chakra resonates at 396 Hz and is associated with dissolving fear patterns. It represents safety and grounding.",
         "Its Sanskrit name 'Muladhara' means 'root support'. It is associated with the Earth element and governs our sense of safety and stability.",
         "When balanced, it provides security, stability and material abundance. When imbalanced, anxiety and insecurity arise."
       ],
       "Sacral": [
         "The Sacral chakra is the center of creativity and emotional flow. Associated with the Water element — it teaches us to be flexible and fluid like water.",
-        "Its Sanskrit name 'Svadhisthana' means 'dwelling place of the self'. It is directly connected to the reproductive organs and kidneys.",
+        "Its Sanskrit name 'Svadhisthana' means 'dwelling place of the self'. It is deeply connected to the Water element.",
         "It works at 417 Hz. When balanced, it enables healthy pleasure, relationships and emotional resilience."
       ],
       "Solar Plexus": [
         "The Solar Plexus is the center of personal power and will. Associated with the Fire element — it ignites your inner fire and strengthens confidence.",
-        "Its Sanskrit name 'Manipura' means 'city of jewels'. It is connected to the pancreas and digestive system.",
-        "It resonates at 528 Hz — known as the transformation and miracle frequency, associated with DNA repair."
+        "Its Sanskrit name 'Manipura' means 'city of jewels'. It represents inner fire and personal power.",
+        "It resonates at 528 Hz — known as the 'Love Frequency', it supports inner transformation."
       ],
       "Heart": [
         "The Heart chakra serves as a bridge between lower and upper chakras. Associated with the Air element — it radiates love in every direction.",
-        "Its Sanskrit name 'Anahata' means 'unstruck sound'. It is connected to the thymus gland and affects the immune system.",
-        "It works at 639 Hz. This frequency heals relationships and strengthens connection and harmony."
+        "Its Sanskrit name 'Anahata' means 'unstruck sound'. It is known as the center of love and compassion.",
+        "It works at 639 Hz. This frequency is believed to support connection and harmony."
       ],
       "Throat": [
         "The Throat chakra is the center of expression and truth. Associated with the Sound element — your voice is not just physical but an energetic vibration.",
-        "Its Sanskrit name 'Vishuddha' means 'purification'. It is connected to the thyroid gland and affects metabolism.",
+        "Its Sanskrit name 'Vishuddha' means 'purification'. It is known as the center of expression and truth.",
         "It works at 741 Hz. This frequency enables intuitive awakening and freedom of expression."
       ],
       "Third Eye": [
         "The Third Eye is the center of intuition and clairvoyance. Associated with the Light element — it opens inner vision and awareness.",
-        "Its Sanskrit name 'Ajna' means 'command' or 'perception'. It is connected to the pineal gland and affects melatonin production.",
+        "Its Sanskrit name 'Ajna' means 'command' or 'perception'. It is known as the center of intuition and inner vision.",
         "It works at 852 Hz. It supports return to spiritual order and strengthens the inner voice."
       ],
       "Crown": [
         "The Crown chakra is the center of divine connection and cosmic consciousness. Associated with the Universe element — it is the gateway to pure awareness.",
-        "Its Sanskrit name 'Sahasrara' means 'thousand-petaled lotus'. It is connected to the pituitary gland and governs the entire hormonal system.",
-        "It works at 963 Hz. Known as the 'God frequency', it activates unity consciousness."
+        "Its Sanskrit name 'Sahasrara' means 'thousand-petaled lotus'. It is known as the highest point of spiritual connection.",
+        "It works at 963 Hz. Known as the 'God frequency', it is believed to support a sense of unity."
       ],
       "Soul Star": [
         "The 8th chakra, Soul Star, is located about 15 cm above the head. It is where karmic records and soul contracts are held.",
-        "When this chakra is activated, access to past life memories and spiritual lessons opens up.",
+        "When this chakra is experienced, a deep sense of inner wisdom awakens.",
         "The Soul Star is the gateway from individual self to universal self. Here, the ego begins to dissolve."
       ],
       "Stargate": [
-        "The 9th chakra is the center where connection with the light body is established. It activates the energy field beyond the physical body.",
-        "Merkaba — light body geometry — is shaped through this chakra. Astral travel is associated with this center.",
+        "The 9th chakra is the center where connection with the light body is established. It is associated with deep awareness and expansion.",
+        "Sacred geometry traditions hold this chakra in high regard. Deep meditation practices are associated with this center.",
         "When the Stargate opens, interdimensional awareness develops and connection with spiritual guides strengthens."
       ],
       "Solar Chakra": [
@@ -657,37 +657,37 @@ export const TRANS = {
       "Christ Chakra": [
         "The 12th chakra is the center of unconditional love and unity consciousness. It is the point where all illusion of separation dissolves.",
         "This chakra is also known as Christ consciousness or Buddha consciousness — not religious, but a universal state of awakening.",
-        "When activated, one experiences a deep compassion and sense of unity towards all beings."
+        "When experienced, one feels a deep compassion and sense of unity towards all beings."
       ],
       "Star Comm": [
         "The 13th chakra is the center where communication with galactic beings and higher dimensional guides is established.",
         "Cosmic knowledge transfer occurs through this chakra. Channeling and telepathy are associated with this center.",
-        "When activated, access to universal wisdom opens and one begins to sense their cosmic family."
+        "When experienced, a sense of universal wisdom deepens and one begins to sense their cosmic connection."
       ],
       "Divine Plan": [
         "The 14th chakra is the center of universal surrender and alignment with the divine plan.",
-        "When this chakra is activated, the art of 'letting go' is learned — trust, not control, takes priority.",
+        "When this chakra is experienced, the art of 'letting go' is learned — trust, not control, takes priority.",
         "The Divine Plan chakra strengthens the capacity to surrender to life's flow and find meaning in every experience."
       ],
       "Monadic Link": [
         "The 15th chakra is the center where connection with the Monad — the soul's highest source — is established.",
         "The Monad is the 'oversoul' that holds the experiences of thousands of incarnations. This chakra provides access to that wisdom.",
-        "When activated, one gains a perspective of existence beyond a single lifetime."
+        "When experienced, one gains a perspective of existence beyond a single lifetime."
       ],
       "Ascension": [
         "The 16th chakra is the center where ascension — the transition from physical density to light frequency — begins.",
         "Ascension is not leaving the body, but transformation of the body along with expansion of consciousness.",
-        "When activated, cellular memory is cleared and the body begins to adapt to higher frequencies."
+        "When experienced, a deep sense of transformation arises and the inner world begins to expand."
       ],
       "Universal Light": [
         "The 17th chakra is the center where universal knowledge — the Akashic records — is accessed.",
         "The Akashic records are the universal memory holding all experiences of all souls.",
-        "When activated, one begins to intuitively grasp the operating laws of the universe."
+        "When experienced, one begins to intuitively grasp the operating laws of the universe."
       ],
       "Divine Intent": [
         "The 18th chakra is the center where the soul's highest purpose — divine intent — manifests.",
         "Every soul chooses certain lessons and missions before incarnating. This chakra reminds us of that contract.",
-        "When activated, one clarifies their life purpose and aligns every action with this purpose."
+        "When experienced, one clarifies their life purpose and aligns every action with this purpose."
       ],
       "Cosmic Energy": [
         "The 19th chakra is the center of galactic expansion and integration with cosmic energy.",
@@ -779,7 +779,7 @@ export const TRANS = {
 
     // Rehber
     guide_sup:         "✦ MYSTICAL GUIDE ✦",
-    guide_title:       "Healing Search",
+    guide_title:       "Awareness Search",
     guide_sub:         "☽ read your body's message ☽",
     mirror_title:      "Inner Mirror",
     mirror_icon:       "☽",

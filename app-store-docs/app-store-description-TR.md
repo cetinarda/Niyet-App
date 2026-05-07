@@ -25,13 +25,13 @@ Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: hu
 6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici — hangisi sana iyi geliyorsa.
 
 **Ses Dalgaları & Kuş Sesleri**
-10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Beyin ve sinir sistemi senkronizasyon animasyonuyla derinleş.
+10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Rahatlama ve farkındalık deneyimi sunar.
 
-**22 Çakra Yükselişi**
-Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle çalış. 60 saniyede bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjinin akışına izin ver.
+**22 Çakra Farkındalığı**
+Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle tanış. 60 saniyede farkındalık pratiği yap. Elini bölgende hisset, gözlerini kapat, nefesine odaklan.
 
 **İçsel Ayna — AI Destekli Yansıtma**
-Aklındaki soruyu yaz, yapay zeka sana çakra bazlı bir yansıtma sunsun. Reiki analizi, zihinsel-fiziksel bağlantı ve sağlık farkındalığı — hepsi bir arada.
+Aklındaki soruyu yaz, yapay zeka sana kişisel bir farkındalık yansıtması sunsun. Duygusal farkındalık perspektifinden kişiselleştirilmiş içgörüler.
 
 **Gün İçi Hatırlatıcılar**
 Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
@@ -40,14 +40,16 @@ Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev deği
 Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
 
 **Bağlantı & İlerleme**
-Gün serisi, frekans dinleme süresi ve tamamlanan adımlarla kendini takip et. İnsan iskeleti üzerinde çakra bağlantı sisteminde ışığın aşağıdan yukarıya yükselişini izle.
+Gün serisi, frekans dinleme süresi ve tamamlanan adımlarla kendini takip et.
 
 **Haftalık İçsel Rapor**
-Haftanın sonunda AI destekli kişisel rapor: çakra örüntüleri, frekans dinleme süren, ruh halin, doğum haritanla sentezlenmiş derin bir ayna.
+Haftanın sonunda AI destekli kişisel rapor: frekans dinleme süren, ruh halin ve kişisel farkındalık yansıtması.
 
 ---
 
 Sakin, karmaşık değil. Derin.
 Sade tasarımı, yumuşak renkleri ve sessiz ritmiyle her gün yanında olmak için yapıldı.
+
+Bu uygulama tıbbi teşhis veya tedavi amacı taşımaz. Kişisel farkındalık ve rahatlama deneyimi sunar. Sağlık sorunları için mutlaka bir uzmana danışınız.
 
 Kendine dönmek için bir dakikan var.

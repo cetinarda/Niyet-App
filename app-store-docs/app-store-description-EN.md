@@ -25,13 +25,13 @@ Start your day by setting an intention. Choose 3 words that resonate with you mo
 Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming — whichever feels right for you.
 
 **Sound Waves & Bird Sounds**
-Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. Deepen your experience with neural sync animation.
+Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. A relaxation and awareness experience.
 
-**22 Chakra Ascension**
-Work with 22 energy centers across physical, spiritual, and divine dimensions. Connect in 60 seconds. Place your hand on the area, close your eyes, and let the energy flow.
+**22 Chakra Awareness**
+Explore 22 energy centers across physical, spiritual, and divine dimensions. Practice a 60-second awareness exercise. Place your hand on the area, close your eyes, and focus on your breath.
 
 **Inner Mirror — AI-Powered Reflection**
-Write your question, and AI offers a chakra-based reflection. Reiki analysis, mental-physical connection, and health awareness — all in one place.
+Write your question, and AI offers a personalized awareness reflection. Emotional awareness insights from a personal growth perspective.
 
 **Daily Reminders**
 Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
@@ -40,14 +40,16 @@ Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. Thes
 What did you learn today? What are you grateful for? A few sentences are enough. The day closes, and you feel whole.
 
 **Connection & Progress**
-Track your day streak, frequency listening time, and completed steps. Watch the light rise from earth to sky on the human body chakra connection system.
+Track your day streak, frequency listening time, and completed steps.
 
 **Weekly Inner Report**
-At the end of the week, an AI-powered personal report: chakra patterns, frequency listening duration, mood, synthesized with your birth chart — a deep mirror.
+At the end of the week, an AI-powered personal report: frequency listening duration, mood, and personal awareness reflection.
 
 ---
 
 Sakin is not complex. It is deep.
 With its minimal design, soft colors, and quiet rhythm — it is built to be by your side every day.
+
+This app does not provide medical diagnosis or treatment. It offers a personal awareness and relaxation experience. Always consult a healthcare professional for health concerns.
 
 You have one minute to return to yourself.
