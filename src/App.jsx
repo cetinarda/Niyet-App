@@ -3692,6 +3692,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </>
           ) : (
             <>
+              <ul style={{ listStyle:"none",padding:0,margin:"0 0 20px" }}>{t("paid_app_features").map(f=>(
+                <li key={f} style={{ display:"flex",alignItems:"center",gap:8,padding:"5px 0",fontSize:14,color:"#ccc" }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b8a4d8" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>{f}
+                </li>
+              ))}</ul>
+
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
@@ -3701,18 +3707,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
                   {lang==="tr" ? "Ömür Boyu Lisans" : "Lifetime License"}
                 </div>
-                <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
                 <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
+                  style={{ display:"block",width:"100%",marginTop:12,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
                   {lang==="tr" ? "Satın Al →" : "Buy Now →"}
                 </a>
               </div>
-              <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
+              <div style={{ textAlign:"center",marginTop:20,marginBottom:12 }}>
                 <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>{lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}</div>
                 <button onClick={() => setShowLicenseModal(true)}
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
                 </button>
+              </div>
+              <div style={{ fontSize:10,color:"#555",lineHeight:1.7,textAlign:"center",padding:"0 8px",marginTop:8 }}>
+                {lang==="tr" ? "Güvenli ödeme LemonSqueezy altyapısı ile gerçekleştirilir. Satın alma sonrası lisans anahtarınız e-posta ile gönderilir." : "Secure payment processed via LemonSqueezy. Your license key will be sent via email after purchase."}
+              </div>
+              <div style={{ textAlign:"center",marginTop:10,display:"flex",justifyContent:"center",gap:16 }}>
+                <a href="https://sakin.app/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
+                <a href="https://sakin.app/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
               </div>
             </>
           )}
@@ -4134,6 +4146,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
+      {/* iOS Paywall — StoreKit butonları */}
       {isNative && !isPremium && !isOwner && screen !== "giris" && screen !== "fiyat" && (
         <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.98) 60%,transparent)",padding:"60px 20px 24px",textAlign:"center" }}>
           <div style={{ fontFamily:"'Jost',sans-serif",fontSize:18,fontWeight:300,letterSpacing:2,color:"#ffffff",marginBottom:6 }}>{t("sub_paywall_title")}</div>
@@ -4151,6 +4164,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <button onClick={()=>setScreen("fiyat")} style={{ background:"none",border:"none",color:"#777",fontSize:12,letterSpacing:1,fontFamily:"'Jost',sans-serif",cursor:"pointer",textDecoration:"underline" }}>
             {lang==="tr" ? "Detaylar" : "Details"}
           </button>
+        </div>
+      )}
+
+      {/* Web Banner — LemonSqueezy yönlendirmesi */}
+      {!isNative && !isPremium && !isOwner && screen !== "giris" && screen !== "fiyat" && (
+        <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.95) 70%,transparent)",padding:"40px 20px 20px",textAlign:"center" }}>
+          <div style={{ display:"flex",gap:10,maxWidth:360,margin:"0 auto 8px",alignItems:"center",justifyContent:"center" }}>
+            <div style={{ flex:1 }}>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:300,letterSpacing:1.5,color:"#fff" }}>{t("sub_paywall_title")}</div>
+              <div style={{ fontSize:11,color:"#999",marginTop:2 }}>{t("paid_app_price")} · {lang==="tr"?"Ömür boyu erişim":"Lifetime access"}</div>
+            </div>
+            <button onClick={()=>setScreen("fiyat")}
+              style={{ padding:"10px 24px",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:"pointer",whiteSpace:"nowrap" }}>
+              {lang==="tr" ? "Satın Al →" : "Buy Now →"}
+            </button>
+          </div>
         </div>
       )}
 
