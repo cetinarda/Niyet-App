@@ -1159,16 +1159,15 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         {progress>=0.95 && t("progress_p5", selected.name)}
       </div>
 
-      {/* Çakra bilgisi — ayrı alan */}
-      {progress>=0.15 && progress<1 && (
-        <div style={{ marginTop:20,padding:"14px 18px",background:`${selected.color}08`,border:`1px solid ${selected.color}18`,borderRadius:14,maxWidth:isTablet?360:280,width:"100%",animation:"fadeIn 2s ease forwards",opacity:0 }}>
+      {/* Çakra bilgisi — rehber bittikten sonra belir */}
+      {progress>=0.35 && progress<1 && (
+        <div style={{ marginTop:16,padding:"14px 18px",background:`${selected.color}08`,border:`1px solid ${selected.color}18`,borderRadius:14,maxWidth:isTablet?360:280,width:"100%",animation:"fadeIn 2s ease forwards",opacity:0 }}>
           <div style={{ fontSize:11,letterSpacing:2.5,color:`${selected.pastel}88`,textTransform:"uppercase",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>
-            {lang==="tr" ? `${selected.name} · ${selected.konu||""}` : `${selected.name} · ${selected.konu||""}`}
+            {selected.name} · {selected.konu||""}
           </div>
           <div style={{ fontSize:13,color:`${selected.pastel}99`,lineHeight:1.8,fontFamily:"'Inter',sans-serif" }}>
-            {(() => { const facts = t("chakra_facts")?.[selected.name]; if (!facts) return ""; if (progress<0.4) return facts[0]; if (progress<0.7) return facts[1]; return facts[2]; })()}
+            {(() => { const facts = t("chakra_facts")?.[selected.name]; if (!facts) return ""; if (progress<0.55) return facts[0]; if (progress<0.8) return facts[1]; return facts[2]; })()}
           </div>
-          <div style={{ fontSize:9,color:"#444",marginTop:8,lineHeight:1.5,fontStyle:"italic" }}>{t("chakra_source")}</div>
         </div>
       )}
     </div>
