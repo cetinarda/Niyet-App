@@ -7,7 +7,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
-const isTablet = window.innerWidth >= 768;
+const isTablet = isNative && window.innerWidth >= 768;
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
