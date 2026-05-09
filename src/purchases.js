@@ -15,9 +15,12 @@ export async function initStore() {
 
   const { store, ProductType, Platform } = window.CdvPurchase;
 
+  const isIOS = Capacitor.getPlatform() === "ios";
+  const platform = isIOS ? Platform.APPLE_APPSTORE : Platform.GOOGLE_PLAY;
+
   store.register([
-    { id: YEARLY_ID, type: ProductType.PAID_SUBSCRIPTION, platform: Platform.APPLE_APPSTORE },
-    { id: LIFETIME_ID, type: ProductType.NON_CONSUMABLE, platform: Platform.APPLE_APPSTORE },
+    { id: YEARLY_ID, type: ProductType.PAID_SUBSCRIPTION, platform },
+    { id: LIFETIME_ID, type: ProductType.NON_CONSUMABLE, platform },
   ]);
 
   store.when()
@@ -28,7 +31,7 @@ export async function initStore() {
       if (purchaseUpdateCallback) purchaseUpdateCallback(true);
     });
 
-  await store.initialize([Platform.APPLE_APPSTORE]);
+  await store.initialize([platform]);
   return true;
 }
 

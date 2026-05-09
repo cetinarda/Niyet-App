@@ -7,6 +7,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
+const isTablet = window.innerWidth >= 768;
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
@@ -538,6 +539,23 @@ const GLOBAL_CSS = `
     .rem-card { padding:18px 16px; }
     .chakra-card { padding:16px 18px; }
   }
+
+  /* ── iPad / Tablet ── */
+  @media (min-width: 768px) {
+    .top-nav-btn { font-size:14px; letter-spacing:2.5px; padding:0 14px; min-height:44px; }
+    .sakin-input { font-size:17px; padding:16px 18px; }
+    .sakin-btn { font-size:14px; padding:13px 28px; min-height:44px; }
+    .sakin-btn-primary { font-size:14px; padding:14px 36px; min-height:44px; }
+    .word-chip { font-size:15px; padding:10px 18px; min-height:44px; display:inline-flex; align-items:center; }
+    .policy-screen { max-width:680px; padding:40px 32px 120px; }
+    .policy-screen h1 { font-size:28px; }
+    .policy-screen h2 { font-size:16px; }
+    .policy-screen p, .policy-screen ul li { font-size:16px; }
+    .rem-card { padding:20px 24px; }
+    .check-btn { width:44px; height:44px; font-size:20px; }
+    .chakra-card { padding:18px 22px; }
+    .pricing-card { padding:28px 30px; }
+  }
 `;
 
 async function sendNotif(title, body) {
@@ -600,7 +618,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   useEffect(() => () => clearInterval(timerRef.current), []);
 
   return (
-    <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
+    <div style={{ maxWidth:isTablet?640:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
@@ -902,7 +920,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
   if (tPhase==="list") return (
-    <div style={{ maxWidth:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
+    <div style={{ maxWidth:isTablet?660:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
@@ -1040,7 +1058,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   };
 
   if (tPhase==="intro"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:isTablet?500:330,width:"100%",padding:"36px 24px 96px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       <div style={{ marginBottom:24 }}>
         <div style={{ fontSize:13,letterSpacing:6,color:"#777777" }}>{t("reiki_chakra_label")}</div>
         <div style={{ width:38,height:1,background:`${selected.color}44`,margin:"10px auto" }} />
@@ -1064,7 +1082,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   );
 
   if ((tPhase==="active"||tPhase==="connected")&&selected) return (
-    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
+    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",position:"relative",zIndex:1,width:"100%",maxWidth:isTablet?560:370,padding:"18px 22px 80px",overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       {showBackConfirm && (
         <div style={{ position:"fixed",inset:0,zIndex:50,background:"rgba(4,8,16,0.88)",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 32px" }}>
           <div style={{ textAlign:"center",maxWidth:280 }}>
@@ -1148,7 +1166,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   );
 
   if (tPhase==="done"&&selected) return (
-    <div className="fade-up" style={{ textAlign:"center",maxWidth:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
+    <div className="fade-up" style={{ textAlign:"center",maxWidth:isTablet?480:310,width:"100%",padding:"36px 24px 80px",position:"relative",zIndex:1,overflowY:"auto",maxHeight:"calc(100vh - 44px)" }}>
       {[...Array(10)].map((_,i) => (
         <div key={i} style={{ position:"absolute",left:`${10+i*9}%`,top:`${10+(i%4)*18}%`,fontSize:14,color:selected.pastel,animation:`sparkle ${0.7+i*0.18}s ease-out forwards`,animationDelay:`${i*0.09}s` }}>✦</div>
       ))}
@@ -1505,6 +1523,7 @@ export default function SakinApp() {
     setLicenseLoading(false);
   };
   const [purchaseLoading, setPurchaseLoading] = useState(null);
+  const [purchaseError, setPurchaseError] = useState("");
   const [restoreLoading, setRestoreLoading] = useState(false);
   const [restoreMsg, setRestoreMsg] = useState("");
   useEffect(() => {
@@ -1520,9 +1539,15 @@ export default function SakinApp() {
   }, []);
   const handlePurchase = async (fn, id) => {
     setPurchaseLoading(id);
+    setPurchaseError("");
     const r = await fn();
     setPurchaseLoading(null);
     if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    else {
+      setPurchaseError(lang === "tr"
+        ? "Satın alma şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin."
+        : "Purchase is currently unavailable. Please try again later.");
+    }
   };
   const handleRestore = async () => {
     setRestoreLoading(true); setRestoreMsg("");
@@ -2293,7 +2318,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* GİRİŞ */}
       {screen==="giris" && (
-        <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:isTablet?560:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
           {/* Gezegen — kozmik açılış */}
           <div className="fade-up" style={{ marginBottom:24,position:"relative" }}>
             {/* Gezegen halka */}
@@ -2381,7 +2406,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
         return (
-          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{maxWidth:isTablet?600:400,width:"100%",padding:"54px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:8}}>
               <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{lang==="tr"?"BUGÜNÜN BAĞLANTISI":"TODAY'S CONNECTION"}</div>
@@ -2602,7 +2627,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* SABAH */}
       {screen==="sabah" && (
-        <div style={{ maxWidth:390,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:isTablet?600:390,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:36,animation:"sunrise 1s ease forwards" }}>
             <div style={{ position:"relative",width:88,height:88,margin:"0 auto" }}>
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
@@ -2672,7 +2697,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* NEFES */}
       {screen==="nefes" && (
-        <div style={{ textAlign:"center",padding:"62px 20px 110px",position:"relative",zIndex:1,maxWidth:420,width:"100%" }}>
+        <div style={{ textAlign:"center",padding:"62px 20px 110px",position:"relative",zIndex:1,maxWidth:isTablet?640:420,width:"100%" }}>
           <div className="label-sm" style={{ marginBottom:32,letterSpacing:5 }}>{breathStarted ? t(`breath_mode_${breathMode}`) : t("breath_title")}</div>
 
           {/* ── Visualization area ── */}
@@ -2936,7 +2961,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           }, playingHz ? 850 : 0);
         };
         return (
-          <div style={{ maxWidth:440,width:"100%",padding:"52px 20px 120px",position:"relative",zIndex:1 }}>
+          <div style={{ maxWidth:isTablet?660:440,width:"100%",padding:"52px 20px 120px",position:"relative",zIndex:1 }}>
             <div style={{ textAlign:"center",marginBottom:28 }}>
               <div className="label-sm" style={{ letterSpacing:5,marginBottom:8 }}>{t("sound_subtitle").toUpperCase()}</div>
               <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0",marginBottom:12 }}>{t("sound_title")}</div>
@@ -3019,7 +3044,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÇAKRA */}
       {screen==="chakra" && (
-        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1,maxWidth:360 }}>
+        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1,maxWidth:isTablet?560:360 }}>
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
@@ -3040,7 +3065,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* AKŞAM */}
       {screen==="aksam" && (
-        <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:isTablet?600:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           {!aksamRitualChecks.every(Boolean) ? (
             <>
               <div style={{ textAlign:"center",marginBottom:28 }}>
@@ -3107,7 +3132,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* REHBER */}
       {/* İÇSEL AYNA — Google-style merkezi arama */}
       {screen==="rehber" && (
-        <div style={{ maxWidth:520,width:"100%",padding:"52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+        <div style={{ maxWidth:isTablet?700:520,width:"100%",padding:"52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
           {/* Arka plan ambient */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
 
@@ -3342,7 +3367,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* HARİTA */}
       {screen==="harita" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:isTablet?620:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
             <div style={{ fontSize:13,letterSpacing:5,color:"#666666",marginBottom:9 }}>{t("weekly_label")}</div>
             <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
@@ -3665,7 +3690,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ fontSize:28,color:"#fff",fontWeight:200,marginTop:8 }}>{t("sub_yearly_price")}</div>
                   <div style={{ fontSize:11,color:"#b8a4d8",letterSpacing:1,marginTop:4 }}>{t("sub_yearly_desc")}</div>
                   <button onClick={()=>handlePurchase(purchaseYearly,"yearly")} disabled={!!purchaseLoading}
-                    style={{ width:"100%",marginTop:14,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1 }}>
+                    style={{ width:"100%",marginTop:14,padding:isTablet?"14px 0":"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:isTablet?15:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1,minHeight:44 }}>
                     {purchaseLoading==="yearly" ? "..." : (t("sub_buy")+" →")}
                   </button>
                 </div>
@@ -3675,12 +3700,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ fontSize:28,color:"#fff",fontWeight:200,marginTop:8 }}>{t("sub_lifetime_price")}</div>
                   <div style={{ fontSize:11,color:"#d4af37",letterSpacing:1,marginTop:4 }}>{t("sub_lifetime_desc")}</div>
                   <button onClick={()=>handlePurchase(purchaseLifetime,"lifetime")} disabled={!!purchaseLoading}
-                    style={{ width:"100%",marginTop:14,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1 }}>
+                    style={{ width:"100%",marginTop:14,padding:isTablet?"14px 0":"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:isTablet?15:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1,minHeight:44 }}>
                     {purchaseLoading==="lifetime" ? "..." : (t("sub_buy")+" →")}
                   </button>
                 </div>
               </div>
 
+              {purchaseError && <div style={{ fontSize:13,color:"#e06060",textAlign:"center",marginBottom:12,padding:"10px 16px",background:"rgba(224,96,96,0.08)",border:"1px solid rgba(224,96,96,0.2)",borderRadius:12 }}>{purchaseError}</div>}
               <div style={{ textAlign:"center",marginBottom:12 }}>
                 <button onClick={handleRestore} disabled={restoreLoading}
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:22,padding:"10px 24px",cursor:restoreLoading?"wait":"pointer",color:"#999",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:restoreLoading?0.6:1 }}>
@@ -3690,8 +3716,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
               <div style={{ fontSize:10,color:"#555",lineHeight:1.7,textAlign:"center",padding:"0 8px",marginTop:8 }}>{t("sub_terms_text")}</div>
               <div style={{ textAlign:"center",marginTop:10,display:"flex",justifyContent:"center",gap:16 }}>
-                <a href="https://sakin.app/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
-                <a href="https://sakin.app/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
+                <a href="https://sakin.life/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
+                <a href="https://sakin.life/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
               </div>
             </>
           ) : (
@@ -3727,8 +3753,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {lang==="tr" ? "Güvenli ödeme LemonSqueezy altyapısı ile gerçekleştirilir. Satın alma sonrası lisans anahtarınız e-posta ile gönderilir." : "Secure payment processed via LemonSqueezy. Your license key will be sent via email after purchase."}
               </div>
               <div style={{ textAlign:"center",marginTop:10,display:"flex",justifyContent:"center",gap:16 }}>
-                <a href="https://sakin.app/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
-                <a href="https://sakin.app/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
+                <a href="https://sakin.life/privacy" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Gizlilik":"Privacy"}</a>
+                <a href="https://sakin.life/terms" style={{ fontSize:11,color:"#777",textDecoration:"underline" }}>{lang==="tr"?"Koşullar":"Terms"}</a>
               </div>
             </>
           )}
@@ -3846,7 +3872,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(4,4,12,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(184,164,216,0.08)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)",boxShadow:"0 0 30px rgba(0,0,0,0.6),inset 0 0 20px rgba(184,164,216,0.03)" }}>
+        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:isTablet?6:2,alignItems:"center",zIndex:9999,background:"rgba(4,4,12,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(184,164,216,0.08)",borderRadius:100,padding:isTablet?"8px 16px":"6px 8px",maxWidth:"calc(100vw - 24px)",boxShadow:"0 0 30px rgba(0,0,0,0.6),inset 0 0 20px rgba(184,164,216,0.03)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
@@ -3858,9 +3884,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",
-                  padding:"8px 12px",
-                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                  minWidth:48,
+                  padding:isTablet?"10px 16px":"8px 12px",
+                  display:"flex",flexDirection:"column",alignItems:"center",gap:isTablet?5:3,
+                  minWidth:isTablet?56:48,
+                  minHeight:isTablet?48:undefined,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
                   animation: pulse ? "navPulse 3s ease-in-out infinite" : "none",
                   boxShadow: active ? `0 0 16px ${n.color}18,0 0 32px ${n.color}08` : "none",
@@ -4023,7 +4050,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
         return (
           <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:99999,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(30px)",overflowY:"auto",animation:"fadeIn 0.3s ease" }}>
-            <div style={{ maxWidth:540,margin:"0 auto",padding:"24px 20px 60px" }}>
+            <div style={{ maxWidth:isTablet?720:540,margin:"0 auto",padding:"24px 20px 60px" }}>
               {/* Header */}
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
                 <div>
@@ -4155,13 +4182,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.98) 60%,transparent)",padding:"60px 20px 24px",textAlign:"center" }}>
           <div style={{ fontFamily:"'Jost',sans-serif",fontSize:18,fontWeight:300,letterSpacing:2,color:"#ffffff",marginBottom:6 }}>{t("sub_paywall_title")}</div>
           <div style={{ fontSize:13,color:"#999",whiteSpace:"pre-line",lineHeight:1.6,marginBottom:16 }}>{t("sub_paywall_desc")}</div>
-          <div style={{ display:"flex",gap:10,maxWidth:340,margin:"0 auto 12px" }}>
+          <div style={{ display:"flex",gap:10,maxWidth:isTablet?440:340,margin:"0 auto 12px" }}>
             <button onClick={()=>handlePurchase(purchaseYearly,"yearly")} disabled={!!purchaseLoading}
-              style={{ flex:1,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1 }}>
+              style={{ flex:1,padding:isTablet?"14px 0":"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",color:"#fff",fontSize:isTablet?14:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="yearly"?0.6:1,minHeight:44 }}>
               {purchaseLoading==="yearly" ? "..." : t("sub_yearly_price")}
             </button>
             <button onClick={()=>handlePurchase(purchaseLifetime,"lifetime")} disabled={!!purchaseLoading}
-              style={{ flex:1,padding:"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1 }}>
+              style={{ flex:1,padding:isTablet?"14px 0":"12px 0",borderRadius:22,border:"none",background:"linear-gradient(135deg,rgba(212,175,55,0.7),rgba(184,134,11,0.6))",color:"#fff",fontSize:isTablet?14:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",cursor:purchaseLoading?"wait":"pointer",opacity:purchaseLoading==="lifetime"?0.6:1,minHeight:44 }}>
               {purchaseLoading==="lifetime" ? "..." : t("sub_lifetime_price")}
             </button>
           </div>
