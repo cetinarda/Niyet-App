@@ -1143,25 +1143,28 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
         {positionSvg(selected, progress)}
       </div>
-      {showCloseEyes && (
-        <div style={{ fontSize:14,color:selected.pastel,letterSpacing:1.5,fontStyle:"italic",marginBottom:10,animation:"fadeIn 1.2s ease forwards",opacity:0 }}>
-          {(t("close_eyes_chakra") && t("close_eyes_chakra")[selected.name]) || t("close_eyes_hint")}
-        </div>
-      )}
-      {/* Chakra konu bilgisi — seans sırasında belirir */}
-      {progress>=0.15 && progress<0.85 && selected.konu && (
-        <div style={{ fontSize:12,color:`${selected.pastel}88`,letterSpacing:1.5,textAlign:"center",marginBottom:8,fontFamily:"'Jost',sans-serif",animation:"fadeIn 2s ease forwards",opacity:0 }}>
-          {lang==="tr" ? `Bu çakra ${selected.konu.toLowerCase()} ile bağlantılıdır.` : `This chakra is connected to ${selected.konu.toLowerCase()}.`}
-        </div>
-      )}
-      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
-        {progress<0.1 && t("progress_p1")}
-        {progress>=0.1&&progress<0.33 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[0] : t("progress_p2", selected.name); })()}
-        {progress>=0.33&&progress<0.66 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[1] : t("progress_p3"); })()}
-        {progress>=0.66&&progress<0.95 && (() => { const facts = t("chakra_facts")?.[selected.name]; return facts ? facts[2] : t("progress_p4"); })()}
+      {/* Rehber — ilk 1 dakika kullanıcıyı yönlendir */}
+      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.5+progress*0.45)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:isTablet?340:270,minHeight:28 }}>
+        {progress<0.08 && t("progress_p1")}
+        {progress>=0.08&&progress<0.2 && ((t("close_eyes_chakra") && t("close_eyes_chakra")[selected.name]) || t("close_eyes_hint"))}
+        {progress>=0.2&&progress<0.4 && t("progress_p2", selected.name)}
+        {progress>=0.4&&progress<0.65 && t("progress_p3")}
+        {progress>=0.65&&progress<0.95 && t("progress_p4")}
         {progress>=0.95 && t("progress_p5", selected.name)}
       </div>
-      {progress>=0.1 && <div style={{ fontSize:9,color:"#444",textAlign:"center",marginTop:12,maxWidth:260,lineHeight:1.5,fontStyle:"italic" }}>{t("chakra_source")}</div>}
+
+      {/* Çakra bilgisi — ayrı alan */}
+      {progress>=0.15 && progress<1 && (
+        <div style={{ marginTop:20,padding:"14px 18px",background:`${selected.color}08`,border:`1px solid ${selected.color}18`,borderRadius:14,maxWidth:isTablet?360:280,width:"100%",animation:"fadeIn 2s ease forwards",opacity:0 }}>
+          <div style={{ fontSize:11,letterSpacing:2.5,color:`${selected.pastel}88`,textTransform:"uppercase",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>
+            {lang==="tr" ? `${selected.name} · ${selected.konu||""}` : `${selected.name} · ${selected.konu||""}`}
+          </div>
+          <div style={{ fontSize:13,color:`${selected.pastel}99`,lineHeight:1.8,fontFamily:"'Inter',sans-serif" }}>
+            {(() => { const facts = t("chakra_facts")?.[selected.name]; if (!facts) return ""; if (progress<0.4) return facts[0]; if (progress<0.7) return facts[1]; return facts[2]; })()}
+          </div>
+          <div style={{ fontSize:9,color:"#444",marginTop:8,lineHeight:1.5,fontStyle:"italic" }}>{t("chakra_source")}</div>
+        </div>
+      )}
     </div>
   );
 

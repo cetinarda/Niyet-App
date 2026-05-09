@@ -137,10 +137,10 @@ export const TRANS = {
     btn_exit:          "çık",
     btn_continue2:     "ileri →",
     pct_loaded:        (n) => `${n}% hazırlanıyor`,
-    progress_p1:       "Elinin sıcaklığını hissediyorsun...",
-    progress_p2:       (name) => `${name} ışığı nazikçe yayılıyor...`,
-    progress_p3:       "Enerji akıyor, bırak gelsin...",
-    progress_p4:       "Neredeyse hazır. Hisset.",
+    progress_p1:       "Ellerini çakra bölgesine koy...",
+    progress_p2:       (name) => `Ellerinden sıcak bir enerji aktığını hayal et...`,
+    progress_p3:       "Nefesini takip et... derin ve yavaş...",
+    progress_p4:       "Düşünceleri bırak. Sadece hisset.",
     progress_p5:       (name) => `${name} çakran dolup taşıyor. 💫`,
     chakra_facts: {
       "Kök": [
@@ -617,10 +617,10 @@ export const TRANS = {
     btn_exit:          "exit",
     btn_continue2:     "continue →",
     pct_loaded:        (n) => `${n}% LOADED`,
-    progress_p1:       "You feel your hand...",
-    progress_p2:       (name) => `${name} light is spreading...`,
-    progress_p3:       "Energy is flowing, let it come...",
-    progress_p4:       "Almost full. Feel it.",
+    progress_p1:       "Place your hands on the chakra area...",
+    progress_p2:       (name) => `Imagine warm energy flowing from your hands...`,
+    progress_p3:       "Follow your breath... deep and slow...",
+    progress_p4:       "Let go of thoughts. Just feel.",
     progress_p5:       (name) => `Your ${name} chakra is filling. 💫`,
     chakra_facts: {
       "Root": [
