@@ -820,9 +820,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
     } catch(_) {}
   };
 
-  // Bağlantı tamamlanma akoru: 3 çan eş zamanlı
+  // Bağlantı tamamlanma akoru: yumuşak, şefkatli 3 çan
   const playConnectedChord = () => {
-    [396, 528, 660].forEach((f, i) => setTimeout(() => playChime(f, 0.16, 3.5), i*180));
+    [396, 528, 660].forEach((f, i) => setTimeout(() => playChime(f, 0.10, 5.0), i*300));
   };
 
   useEffect(() => {
@@ -847,18 +847,21 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
 
   useEffect(() => {
     if (tPhase!=="connected" || !selected) return;
-    // Bağlantı kuruldu: harmonik akor + konuşma bildirimi
+    // Bağlantı kuruldu: yumuşak harmonik akor + şefkatli sesli bildirim
     playConnectedChord();
     if ("speechSynthesis" in window) {
       setTimeout(() => {
-        const utt = new SpeechSynthesisUtterance("Connected");
-        utt.lang = "en-US";
-        utt.rate = 0.78;
-        utt.pitch = 0.9;
-        utt.volume = 0.85;
+        const voices = window.speechSynthesis.getVoices();
+        const soft = voices.find(v => /samantha|karen|moira|tessa|female/i.test(v.name)) || voices.find(v => v.lang.startsWith(lang === "tr" ? "tr" : "en"));
+        const utt = new SpeechSynthesisUtterance(lang === "tr" ? "Bağlantı kuruldu" : "Connected");
+        utt.lang = lang === "tr" ? "tr-TR" : "en-US";
+        utt.rate = 0.6;
+        utt.pitch = 1.1;
+        utt.volume = 0.5;
+        if (soft) utt.voice = soft;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utt);
-      }, 1400);
+      }, 1800);
     }
   }, [tPhase]);
 
@@ -1127,7 +1130,10 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       </div>
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:52,fontWeight:300,letterSpacing:4,lineHeight:1,color:selected.pastel,textShadow:`0 0 ${20+progress*32}px ${selected.color}88`,marginBottom:4 }}>{displayMins}:{displaySecs}</div>
       {tPhase==="connected"
-        ? <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>{t("connected_label")}</div>
+        ? <div style={{ textAlign:"center",marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>
+            <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:6 }}>{t("connected_label")}</div>
+            <div style={{ fontSize:13,color:`${selected.pastel}99`,fontStyle:"italic",letterSpacing:0.5 }}>{t("connected_flow")}</div>
+          </div>
         : <div style={{ fontSize:13,letterSpacing:4,color:"#777777",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       }
       {selected.hz && (
