@@ -3760,7 +3760,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           <hr className="divider" />
-          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
         </div>
       )}
 
@@ -3778,7 +3778,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("terms_s6")}</h2><p>{t("terms_s6p")}</p>
           <h2>{t("terms_s7")}</h2><p>{t("terms_s7p")}</p>
           <h2>{t("terms_s8")}</h2><p>{t("terms_s8p")}</p>
-          <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
         </div>
       )}
 
@@ -3818,7 +3818,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <p>{t("privacy_s9p")}</p>
 
           <h2>{t("privacy_s10")}</h2>
-          <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
           <p style={{ fontSize:14,color:"#777777" }}>{t("privacy_app_name")}</p>
         </div>
       )}
@@ -3845,14 +3845,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("refund_s5")}</h2>
           <p>{t("refund_s5p")}</p>
           <ul>{t("refund_s5l").map(i=><li key={i}>{i}</li>)}</ul>
-          <p>{t("refund_s5p2")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("refund_s5p2")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
           <p>{t("refund_s5p3")}</p>
 
           <h2>{t("refund_s6")}</h2>
           <p>{t("refund_s6p")}</p>
 
           <h2>{t("refund_s7")}</h2>
-          <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("refund_s7p")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
         </div>
       )}
 
