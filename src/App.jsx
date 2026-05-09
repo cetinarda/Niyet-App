@@ -1146,9 +1146,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <HarmonySVG color={selected.pastel} active={true} />
         </div>
       )}
-      <div style={{ marginBottom:18,opacity:0.65+progress*0.35 }}>
-        {positionSvg(selected, progress)}
-      </div>
+      {progress<0.35 && (
+        <div style={{ marginBottom:18,opacity:0.65+progress*0.35,transition:"opacity 1s ease" }}>
+          {positionSvg(selected, progress)}
+        </div>
+      )}
       {/* Rehber — ilk 1 dakika kullanıcıyı yönlendir */}
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.5+progress*0.45)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:isTablet?340:270,minHeight:28 }}>
         {progress<0.08 && t("progress_p1")}
