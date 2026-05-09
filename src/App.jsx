@@ -1132,7 +1132,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       {tPhase==="connected"
         ? <div style={{ textAlign:"center",marginBottom:12,animation:"fadeIn 1.5s ease forwards" }}>
             <div style={{ fontSize:14,letterSpacing:4,color:selected.pastel,marginBottom:6 }}>{t("connected_label")}</div>
-            <div style={{ fontSize:13,color:`${selected.pastel}99`,fontStyle:"italic",letterSpacing:0.5 }}>{t("connected_flow")}</div>
+            <div style={{ fontSize:13,color:`${selected.pastel}99`,fontStyle:"italic",letterSpacing:0.5,lineHeight:1.8,whiteSpace:"pre-line" }}>{t("connected_flow")}</div>
           </div>
         : <div style={{ fontSize:13,letterSpacing:4,color:"#777777",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       }
@@ -1153,9 +1153,8 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
       )}
       {/* Rehber — ilk 1 dakika kullanıcıyı yönlendir */}
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:15,fontStyle:"italic",color:`${selected.pastel}${hex(0.5+progress*0.45)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:isTablet?340:270,minHeight:28 }}>
-        {progress<0.08 && t("progress_p1")}
-        {progress>=0.08&&progress<0.2 && ((t("close_eyes_chakra") && t("close_eyes_chakra")[selected.name]) || t("close_eyes_hint"))}
-        {progress>=0.2&&progress<0.4 && t("progress_p2", selected.name)}
+        {progress<0.15 && t("progress_p1")}
+        {progress>=0.15&&progress<0.4 && t("progress_p2", selected.name)}
         {progress>=0.4&&progress<0.65 && t("progress_p3")}
         {progress>=0.65&&progress<0.95 && t("progress_p4")}
         {progress>=0.95 && t("progress_p5", selected.name)}
