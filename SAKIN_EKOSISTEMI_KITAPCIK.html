@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakin Ekosistemi — App Suite Stratejisi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  @page {
+    size: A5;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #6b5b8c;
+    }
+  }
+  @page :first {
+    margin: 0;
+    @bottom-center { content: none; }
+  }
+
+  :root {
+    --night: #2e2540;
+    --plum: #4a3a6b;
+    --lavender: #8a7fa8;
+    --moonstone: #c5b8d4;
+    --cream: #faf6ef;
+    --sand: #f0e9dc;
+    --gold: #c9a14a;
+    --terra: #c97b5f;
+    --mint: #7a9b8e;
+    --line: #d8cce8;
+    --ink: #1f1830;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--cream);
+  }
+
+  .book {
+    max-width: 148mm;
+    margin: 0 auto;
+    background: var(--cream);
+  }
+
+  /* ===== Cover ===== */
+  .cover {
+    page-break-after: always;
+    height: 210mm;
+    background: linear-gradient(150deg, #2e2540 0%, #4a3a6b 50%, #6b5b8c 100%);
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22mm 18mm;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: "✦";
+    position: absolute;
+    font-size: 320pt;
+    opacity: 0.05;
+    right: -60pt;
+    bottom: -100pt;
+    color: var(--gold);
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    width: 80px; height: 80px;
+    border: 1pt solid rgba(201,161,74,0.4);
+    border-radius: 50%;
+    top: 32mm; right: 28mm;
+  }
+
+  .cover .symbol {
+    display: flex;
+    gap: 14pt;
+    font-size: 16pt;
+    opacity: 0.7;
+  }
+  .cover .symbol span {
+    width: 26pt; height: 26pt;
+    border: 0.5pt solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12pt;
+  }
+  .cover .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 8.5pt;
+    letter-spacing: 4pt;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-top: 10pt;
+  }
+  .cover h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 50pt;
+    line-height: 1.0;
+    margin: 14pt 0 6pt 0;
+    letter-spacing: -0.5pt;
+  }
+  .cover h1 em {
+    font-style: italic;
+    color: #f0d9a8;
+    font-weight: 300;
+    font-size: 36pt;
+    display: block;
+    margin-top: 4pt;
+  }
+  .cover .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17pt;
+    line-height: 1.3;
+    opacity: 0.95;
+    max-width: 95mm;
+  }
+  .cover .meta {
+    border-top: 0.5pt solid rgba(255,255,255,0.35);
+    padding-top: 12pt;
+    font-size: 9pt;
+    line-height: 1.7;
+    opacity: 0.88;
+  }
+  .cover .meta strong { font-weight: 500; letter-spacing: 0.5pt; color: #f0d9a8; }
+
+  /* ===== Inner Pages ===== */
+  .page { page-break-after: always; padding: 0; }
+  .page:last-child { page-break-after: auto; }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 22pt;
+    line-height: 1.15;
+    color: var(--plum);
+    margin: 0 0 4pt 0;
+    letter-spacing: -0.3pt;
+  }
+  h2 .num {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 9.5pt;
+    color: var(--lavender);
+    letter-spacing: 3pt;
+    vertical-align: middle;
+    margin-right: 10pt;
+    border: 0.5pt solid var(--lavender);
+    padding: 2pt 8pt;
+    border-radius: 20pt;
+  }
+  h2 + .lede {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12pt;
+    color: var(--lavender);
+    margin: 0 0 14pt 0;
+    padding-bottom: 10pt;
+    border-bottom: 0.5pt solid var(--line);
+  }
+
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 13pt;
+    color: var(--ink);
+    margin: 14pt 0 4pt 0;
+  }
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 9.5pt;
+    text-transform: uppercase;
+    letter-spacing: 1.5pt;
+    color: var(--plum);
+    margin: 12pt 0 4pt 0;
+  }
+
+  p { margin: 0 0 8pt 0; }
+  ul, ol { margin: 0 0 10pt 0; padding-left: 18pt; }
+  ul li, ol li { margin-bottom: 3pt; }
+  ul { list-style: none; padding-left: 0; }
+  ul li { padding-left: 16pt; position: relative; }
+  ul li::before {
+    content: "✦";
+    position: absolute;
+    left: 2pt;
+    color: var(--gold);
+    font-size: 8pt;
+    line-height: 1.65;
+  }
+
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+
+  blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13pt;
+    line-height: 1.4;
+    color: var(--plum);
+    border-left: 2pt solid var(--lavender);
+    padding: 4pt 0 4pt 14pt;
+    margin: 12pt 0;
+  }
+
+  .pullquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16pt;
+    line-height: 1.3;
+    color: var(--lavender);
+    text-align: center;
+    margin: 18pt auto;
+    max-width: 95%;
+    padding: 10pt 0;
+    border-top: 0.5pt solid var(--line);
+    border-bottom: 0.5pt solid var(--line);
+  }
+
+  .callout {
+    background: var(--sand);
+    border-left: 2pt solid var(--terra);
+    padding: 10pt 12pt;
+    margin: 10pt 0;
+    font-size: 9.5pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout strong { color: var(--terra); }
+
+  .callout-good {
+    background: #eef5f0;
+    border-left-color: var(--mint);
+  }
+  .callout-good strong { color: var(--mint); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8pt;
+    margin: 8pt 0;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6pt;
+    margin: 8pt 0;
+  }
+  .card {
+    background: var(--sand);
+    padding: 8pt 10pt;
+    border-radius: 4pt;
+    font-size: 9pt;
+    line-height: 1.5;
+  }
+  .card h4 {
+    margin-top: 0;
+    color: var(--plum);
+    font-size: 8.5pt;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8pt 0;
+    font-size: 9pt;
+  }
+  th, td {
+    text-align: left;
+    padding: 5pt 6pt;
+    border-bottom: 0.5pt solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--sand);
+    color: var(--plum);
+    font-weight: 600;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  code, .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    background: var(--sand);
+    padding: 1pt 5pt;
+    border-radius: 3pt;
+    color: var(--plum);
+  }
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: var(--night);
+    color: var(--moonstone);
+    padding: 10pt 12pt;
+    border-radius: 4pt;
+    overflow-x: auto;
+    line-height: 1.55;
+    margin: 8pt 0;
+  }
+  pre .comment { color: #8c7ba8; }
+  pre .key { color: #f0d9a8; }
+
+  /* TOC */
+  .toc { padding: 8pt 0; }
+  .toc-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 6pt;
+    font-size: 10pt;
+  }
+  .toc-num { color: var(--lavender); font-weight: 500; width: 22pt; flex: none; }
+  .toc-title { flex: 1; color: var(--ink); }
+  .toc-dots {
+    flex: 1;
+    border-bottom: 0.5pt dotted var(--line);
+    margin: 0 6pt;
+    transform: translateY(-3pt);
+  }
+  .toc-page { color: var(--plum); font-weight: 500; }
+
+  .tag {
+    display: inline-block;
+    background: var(--sand);
+    color: var(--plum);
+    font-size: 8pt;
+    font-weight: 500;
+    padding: 2pt 8pt;
+    border-radius: 12pt;
+    margin: 0 3pt 3pt 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+  }
+
+  /* App ecosystem visualization */
+  .ecosystem {
+    text-align: center;
+    margin: 18pt 0;
+    padding: 18pt 10pt;
+    background: linear-gradient(180deg, var(--sand) 0%, transparent 100%);
+    border-radius: 8pt;
+  }
+  .ecosystem .hub {
+    display: inline-block;
+    background: var(--plum);
+    color: var(--cream);
+    padding: 12pt 22pt;
+    border-radius: 50pt;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16pt;
+    margin-bottom: 8pt;
+    box-shadow: 0 4pt 12pt rgba(74,58,107,0.25);
+  }
+  .ecosystem .arrow {
+    color: var(--lavender);
+    font-size: 14pt;
+    line-height: 1;
+    margin: 4pt 0;
+  }
+  .ecosystem .satellites {
+    display: flex;
+    justify-content: center;
+    gap: 6pt;
+    flex-wrap: wrap;
+    margin-top: 8pt;
+  }
+  .ecosystem .sat {
+    background: var(--cream);
+    border: 1pt solid var(--lavender);
+    padding: 8pt 12pt;
+    border-radius: 30pt;
+    font-size: 9pt;
+    color: var(--plum);
+    font-weight: 500;
+    min-width: 80pt;
+  }
+  .ecosystem .sat-icon {
+    font-size: 14pt;
+    display: block;
+    margin-bottom: 2pt;
+  }
+
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+  }
+  .checklist li {
+    padding-left: 22pt;
+    position: relative;
+    margin-bottom: 5pt;
+  }
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 4pt;
+    top: -1pt;
+    color: var(--lavender);
+    font-size: 11pt;
+  }
+
+  .closing {
+    text-align: center;
+    padding: 40pt 20pt;
+  }
+  .closing .symbol { font-size: 28pt; color: var(--gold); }
+  .closing h2 {
+    font-size: 28pt;
+    color: var(--plum);
+    margin: 12pt 0;
+    border: none;
+  }
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13pt;
+    color: var(--lavender);
+  }
+
+  .small { font-size: 8.5pt; color: #6b5b8c; }
+  .accent { color: var(--terra); font-weight: 500; }
+  .mint-text { color: var(--mint); font-weight: 500; }
+
+  @media print {
+    body { background: white; }
+    .book { background: white; }
+    .no-print { display: none; }
+    h2, h3 { page-break-after: avoid; }
+    table, blockquote, .callout, .pullquote, .ecosystem, pre { page-break-inside: avoid; }
+  }
+
+  @media screen {
+    body { padding: 20px 0; }
+    .book { box-shadow: 0 8px 40px rgba(46,37,64,0.18); }
+    .page, .cover { padding: 16mm; min-height: 210mm; }
+    .cover { padding: 22mm 18mm; }
+    .print-hint {
+      position: fixed;
+      top: 12px; right: 12px;
+      background: var(--terra);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-hint no-print">📖 Yazdır → PDF olarak kaydet (Ctrl/Cmd + P)</div>
+
+<div class="book">
+
+<!-- ============= COVER ============= -->
+<section class="cover">
+  <div>
+    <div class="symbol"><span>🌙</span><span>✦</span><span>♾</span></div>
+    <div class="eyebrow">App Suite Stratejisi</div>
+    <h1>Sakin<br><em>Ekosistemi.</em></h1>
+    <div class="subtitle">Bir marka.<br>Birçok kapı.<br>Tek ritim.</div>
+  </div>
+  <div class="meta">
+    <strong>SAKIN.LIFE · APP FAMILY ARCHITECTURE</strong><br>
+    Apple App Store uyumlu spin-off stratejisi<br>
+    Master + Hayvan Rehberliği + Kristal + Human Design + ...<br><br>
+    <em>Mayıs 2026 · Stratejik Mimari Kitapçığı</em>
+  </div>
+</section>
+
+<!-- ============= TOC ============= -->
+<section class="page">
+  <h2><span class="num">İÇİNDEKİLER</span></h2>
+  <p class="lede">App Store'da spin-off ailesi nasıl kurulur — Apple onaylı, sürdürülebilir, ölçeklenebilir.</p>
+  <div class="toc">
+    <div class="toc-row"><span class="toc-num">01</span><span class="toc-title">Vizyon — Bir Marka, Birçok Kapı</span><span class="toc-dots"></span><span class="toc-page">04</span></div>
+    <div class="toc-row"><span class="toc-num">02</span><span class="toc-title">Apple'ın Tutumu — Üç Anahtar Kural</span><span class="toc-dots"></span><span class="toc-page">05</span></div>
+    <div class="toc-row"><span class="toc-num">03</span><span class="toc-title">Bundle ID Hiyerarşisi</span><span class="toc-dots"></span><span class="toc-page">07</span></div>
+    <div class="toc-row"><span class="toc-num">04</span><span class="toc-title">Subscription Group — Ekosistemin Kalbi</span><span class="toc-dots"></span><span class="toc-page">08</span></div>
+    <div class="toc-row"><span class="toc-num">05</span><span class="toc-title">Auth & Veri Mimarisi</span><span class="toc-dots"></span><span class="toc-page">10</span></div>
+    <div class="toc-row"><span class="toc-num">06</span><span class="toc-title">Cross-Promotion Mekanizmaları</span><span class="toc-dots"></span><span class="toc-page">12</span></div>
+    <div class="toc-row"><span class="toc-num">07</span><span class="toc-title">App Aday Listesi & Önceliklendirme</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-row"><span class="toc-num">08</span><span class="toc-title">Görsel Kimlik Sistemi</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-row"><span class="toc-num">09</span><span class="toc-title">18 Aylık Yol Haritası</span><span class="toc-dots"></span><span class="toc-page">16</span></div>
+    <div class="toc-row"><span class="toc-num">10</span><span class="toc-title">App Store Submission Checklist</span><span class="toc-dots"></span><span class="toc-page">17</span></div>
+    <div class="toc-row"><span class="toc-num">11</span><span class="toc-title">Riskler & Kaçınılacaklar</span><span class="toc-dots"></span><span class="toc-page">18</span></div>
+    <div class="toc-row"><span class="toc-num">12</span><span class="toc-title">Finansal Model</span><span class="toc-dots"></span><span class="toc-page">19</span></div>
+  </div>
+  <div class="pullquote">"Adobe gibi. Google gibi. Sakin gibi."</div>
+</section>
+
+<!-- ============= 1. VİZYON ============= -->
+<section class="page">
+  <h2><span class="num">01</span>Vizyon</h2>
+  <p class="lede">Bir marka, birçok kapı, tek ritim. Kullanıcı her keşif için ayrı bir Sakin app'i indirir; Sakin Premium ile hepsi tek aboneliğe açılır.</p>
+
+  <div class="ecosystem">
+    <div class="hub">SAKIN ✦ MASTER</div>
+    <div class="arrow">↓</div>
+    <div class="satellites">
+      <div class="sat"><span class="sat-icon">🐺</span>Hayvan Rehberi</div>
+      <div class="sat"><span class="sat-icon">💎</span>Kristal & Taş</div>
+      <div class="sat"><span class="sat-icon">⚡</span>Human Design</div>
+    </div>
+    <div class="satellites" style="margin-top: 4pt;">
+      <div class="sat"><span class="sat-icon">🔮</span>Tarot</div>
+      <div class="sat"><span class="sat-icon">🔢</span>Numeroloji</div>
+      <div class="sat"><span class="sat-icon">⭐</span>Astroloji Derin</div>
+    </div>
+  </div>
+
+  <h3>Neden çoklu app?</h3>
+  <ul>
+    <li><strong>ASO derinliği:</strong> "kristal anlamları" arayan kullanıcı doğrudan Sakin Kristal'i bulur — Master app'e gömülü olsa kaybolurdu.</li>
+    <li><strong>Niş otoritesi:</strong> Her app kendi kategorisinde top 10'a girebilir; Master app "wellness" gibi geniş bir kategoride boğulur.</li>
+    <li><strong>İndirme tekrarı:</strong> Kullanıcı bir Sakin app'i indirip sevdikten sonra ailenin diğerlerine açıktır — CAC %60+ düşer.</li>
+    <li><strong>Risk dağıtımı:</strong> Bir app review'da takılırsa diğerleri yaşar; tek app stratejisinde tek arıza tüm geliri vurur.</li>
+    <li><strong>Sürüm hızı:</strong> Küçük app'ler hızlı çıkar; Master app her küçük güncelleme için tüm ekosistemi taşımak zorunda kalmaz.</li>
+  </ul>
+
+  <div class="pullquote">"Tek hesap. Tek abonelik. Birçok pratik."</div>
+</section>
+
+<!-- ============= 2. APPLE ============= -->
+<section class="page">
+  <h2><span class="num">02</span>Apple'ın Tutumu</h2>
+  <p class="lede">Bu strateji yıllardır onaylı. Adobe, Google, Microsoft, Meta, Calm, Headspace aynı yapıyı kullanıyor. Üç kural bilinirse risk sıfır.</p>
+
+  <h3>Kural 1 · Guideline 4.3 (Spam) — En Hassas</h3>
+  <p>Apple "aynı app'in farklı paketlenmiş versiyonu"nu reddeder. <strong>Senin senaryon güvende</strong>: hayvan rehberi, kristal, Human Design <em>gerçekten farklı içerik domainleri</em>.</p>
+  <div class="callout"><strong>Test sorusu:</strong> "Aynı kullanıcı, aynı problem için bunlardan birini açar?" Cevap "hayır, ayrı anlarda ayrı ihtiyaçlar" → güvende.</div>
+
+  <h3>Kural 2 · Guideline 4.2.2 — "Minimum Functionality"</h3>
+  <p>Master app <em>sadece launcher</em> olamaz. Kendi başına işlevsel olmalı. Sakin Master'da sabah niyeti + nefes + çakra + reiki var — kural karşılanıyor.</p>
+
+  <h3>Kural 3 · Guideline 5.1.2 — Veri Paylaşımı</h3>
+  <p>Aynı geliştirici hesabındaki app'ler arası veri paylaşımı serbest <strong>ama</strong> kullanıcıya açıkça bildirilmeli. App Privacy detayları her app için ayrı doldurulur.</p>
+</section>
+
+<section class="page">
+  <h3>Apple'ın Resmi Desteklediği Mekanizmalar</h3>
+  <table>
+    <tr><th>Özellik</th><th>Ne işe yarar</th></tr>
+    <tr><td><code>Subscription Group</code></td><td>Tek abonelik, çok app erişimi</td></tr>
+    <tr><td><code>SKStoreProductViewController</code></td><td>App içinden diğer app'in Store sayfası</td></tr>
+    <tr><td>Universal Links</td><td>App'ler arası deep linking</td></tr>
+    <tr><td>App Groups</td><td>Aynı Team ID app'leri arası shared data</td></tr>
+    <tr><td>iCloud Container Sharing</td><td>Cihazlar arası senkron, app'ler arası</td></tr>
+    <tr><td>Sign in with Apple</td><td>Tek hesap → tüm app'ler</td></tr>
+    <tr><td>App Bundles (Mac)</td><td>Ailenin paket fiyatı (iOS yok henüz)</td></tr>
+  </table>
+
+  <h3>Gerçek Dünya Örnekleri</h3>
+  <div class="grid-2">
+    <div class="card"><h4>Adobe</h4>Photoshop · Lightroom · Express · Fresco · Illustrator. Tek Creative Cloud aboneliği.</div>
+    <div class="card"><h4>Google</h4>Maps · Photos · Drive · Gmail · Calendar · Translate. Tek hesap, ayrı app'ler.</div>
+    <div class="card"><h4>Meta</h4>Facebook · Messenger · Instagram · Threads · WhatsApp. Tamamen ayrı app'ler.</div>
+    <div class="card"><h4>Calm Inc.</h4>Calm · Calm Body · Stem · Calm Sleep Stories. Subscription Group ile birleşik.</div>
+  </div>
+
+  <div class="callout callout-good"><strong>Sonuç:</strong> Apple bu modeli sevdiği gibi <em>aktif olarak</em> destekliyor. Ekosistem ne kadar tutarlı kurulursa o kadar onaylı.</div>
+</section>
+
+<!-- ============= 3. BUNDLE ID ============= -->
+<section class="page">
+  <h2><span class="num">03</span>Bundle ID Hiyerarşisi</h2>
+  <p class="lede">Bundle ID yapısı Apple'a "bu bir aile, spam değil" sinyali verir. Tutarlı naming convention kritik.</p>
+
+<pre><span class="comment"># Tek "reverse domain" kökü: life.sakin.*</span>
+
+life.sakin.app           <span class="comment"># Master Sakin (sabah, nefes, çakra)</span>
+life.sakin.animals       <span class="comment"># Hayvan Rehberliği</span>
+life.sakin.crystals      <span class="comment"># Kristal & Taş Rehberi</span>
+life.sakin.humandesign   <span class="comment"># Human Design</span>
+life.sakin.tarot         <span class="comment"># Tarot</span>
+life.sakin.numerology    <span class="comment"># Numeroloji</span>
+life.sakin.astrology     <span class="comment"># Astroloji Derin</span>
+life.sakin.reiki         <span class="comment"># Reiki Ustalığı</span>
+life.sakin.bulusma       <span class="comment"># KR Buluşmaları (etkinlik app'i)</span></pre>
+
+  <h3>App Store Görünüm Adı Konvansiyonu</h3>
+  <p>Her app App Store'da <strong>tutarlı bir prefix</strong> ile görünür — kullanıcı "ailenin parçası" olduğunu hemen anlar.</p>
+
+  <table>
+    <tr><th>Bundle</th><th>App Store Adı</th><th>Subtitle</th></tr>
+    <tr><td><code>life.sakin.app</code></td><td><strong>Sakin</strong></td><td>Kendine hep dön</td></tr>
+    <tr><td><code>life.sakin.animals</code></td><td><strong>Sakin Hayvan Rehberi</strong></td><td>Ruhunun yoldaşını bul</td></tr>
+    <tr><td><code>life.sakin.crystals</code></td><td><strong>Sakin Kristal</strong></td><td>Taşların dilini öğren</td></tr>
+    <tr><td><code>life.sakin.humandesign</code></td><td><strong>Sakin Human Design</strong></td><td>Tasarımını tanı</td></tr>
+  </table>
+
+  <div class="callout"><strong>Apple Developer Account:</strong> Hepsi tek <em>Team ID</em> altında. Bu, App Groups ve shared keychain için zorunlu. <em>Ayrı developer hesaplarına</em> bölme — ekosistem çöker.</div>
+</section>
+
+<!-- ============= 4. SUBSCRIPTION GROUP ============= -->
+<section class="page">
+  <h2><span class="num">04</span>Subscription Group</h2>
+  <p class="lede">Ekosistemin para motoru. Tek abonelik tüm app'leri açar. Kullanıcı için anlamlı, sen için churn azaltıcı.</p>
+
+  <h3>Nasıl çalışır?</h3>
+  <p>App Store Connect'te <strong>tek bir Subscription Group</strong> oluşturursun: <em>"Sakin Premium"</em>. Tüm app'lerin In-App Purchase tanımları bu grubu kullanır.</p>
+  <p>Kullanıcı Sakin Master'da abone olduğunda, <strong>Sakin Kristal'i indirip açtığında premium otomatik aktif</strong> — Apple StoreKit bunu kendi senkronize ediyor.</p>
+
+  <h3>Önerilen Plan Yapısı</h3>
+  <table>
+    <tr><th>Plan</th><th>Fiyat</th><th>Açtığı</th></tr>
+    <tr><td>Ücretsiz</td><td>0 ₺</td><td>Her app'in temel modu (kanca)</td></tr>
+    <tr><td><strong>Sakin Premium Aylık</strong></td><td>89 ₺/ay</td><td>Tüm app'lerin tüm özellikleri</td></tr>
+    <tr><td><strong>Sakin Premium Yıllık</strong></td><td>590 ₺/yıl<br><span class="small">~49 ₺/ay</span></td><td>Tüm app'ler + 1 doğum haritası raporu</td></tr>
+  </table>
+
+  <div class="callout callout-good"><strong>Apple bonusu:</strong> StoreKit 2 ile aynı Subscription Group içinde upgrade/downgrade/crossgrade tamamen otomatik. Kullanıcı Aylık'tan Yıllık'a geçtiğinde proration kendiliğinden hesaplanır.</div>
+</section>
+
+<section class="page">
+  <h3>Subscription Tier Stratejisi</h3>
+  <p>Her app'i <strong>standalone satılabilir</strong> da yap — ama Premium tek paketi her zaman daha cazip görünsün:</p>
+
+  <table>
+    <tr><th>Seçenek</th><th>Fiyat</th><th>Mantık</th></tr>
+    <tr><td>Sakin Kristal tek başına</td><td>49 ₺/ay</td><td>Sadece bu app'i kullanan</td></tr>
+    <tr><td>Sakin Hayvan tek başına</td><td>49 ₺/ay</td><td>Sadece bu app'i kullanan</td></tr>
+    <tr><td><strong>Sakin Premium (hepsi)</strong></td><td><strong>89 ₺/ay</strong></td><td>2 app'ten fazla kullanırsa bile karlı</td></tr>
+  </table>
+
+  <p class="small">İki app standalone abonelik almak Premium'dan daha pahalı olmalı — bu, kullanıcıyı doğal olarak ekosisteme yönlendirir. Anchoring etkisi.</p>
+
+  <h3>Subscription Group Kuralları (Apple)</h3>
+  <ul>
+    <li>Bir kullanıcı aynı grupta <strong>birden fazla aktif aboneliğe</strong> sahip olamaz — geçişler otomatik</li>
+    <li>Grup içinde <strong>hiyerarşik level'lar</strong> tanımlanır: Premium en üst level olur</li>
+    <li>Üst level'a geçiş <strong>anında</strong>, alt level'a geçiş <strong>dönem sonunda</strong></li>
+    <li>Family Sharing tek tıkla açılabilir — aile içi 6 kişiye kadar (LTV artırıcı)</li>
+  </ul>
+
+  <h3>Lifetime ve Tek Seferlik Ürünler</h3>
+  <p>Subscription Group dışında, kalıcı ürünler de satılır:</p>
+  <ul>
+    <li><strong>Doğum Haritası PDF Raporu</strong> — 99 ₺ tek seferlik (Astroloji app'inde)</li>
+    <li><strong>Human Design Ayrıntılı Bodygraph</strong> — 149 ₺ tek seferlik</li>
+    <li><strong>"Sakin Lifetime"</strong> — 2.990 ₺ tek seferlik (Premium'un sonsuz versiyonu, %20 erken benimser)</li>
+  </ul>
+</section>
+
+<!-- ============= 5. AUTH ============= -->
+<section class="page">
+  <h2><span class="num">05</span>Auth & Veri Mimarisi</h2>
+  <p class="lede">Tek hesap, tüm app'lerde aynı profil. Doğum tarihi bir kez girilir, üç app aynı veriden okur.</p>
+
+  <h3>Önerilen Stack</h3>
+<pre><span class="key">Auth:</span>      Sign in with Apple + e-posta yedek
+<span class="key">Backend:</span>   Supabase (PostgreSQL + Realtime + Auth)
+<span class="key">Storage:</span>   Supabase Storage (kullanıcı görselleri)
+<span class="key">Sync:</span>      iCloud KVS + CloudKit (offline backup)
+<span class="key">Analytics:</span> RevenueCat (subscription) + PostHog (UX)
+<span class="key">Push:</span>      OneSignal (cross-app cohort gönderimi)</pre>
+
+  <h3>Veri Şeması (Tek Source of Truth)</h3>
+<pre><span class="comment">// Tek users tablosu, app_id-bazlı izolasyon</span>
+users
+  ├── id (uuid)
+  ├── email
+  ├── apple_user_id
+  ├── birth_date, birth_time, birth_place
+  ├── name, gender
+  └── premium_status (RevenueCat senkron)
+
+user_app_data
+  ├── user_id → users.id
+  ├── app_id  ('sakin' | 'animals' | 'crystals' | ...)
+  ├── data    (JSONB — her app kendi alanını yazar)
+  └── updated_at</pre>
+
+  <div class="callout"><strong>Önemli:</strong> Row-Level Security (RLS) ile <code>app_id</code> izolasyonu — kristal app'i hayvan app'inin verisini okuyamaz. Apple App Privacy beyanlarında bunu belirtirsen review hızlanır.</div>
+</section>
+
+<section class="page">
+  <h3>Cross-App Profil Paylaşımı (UX Akışı)</h3>
+  <ol>
+    <li>Kullanıcı <strong>Sakin Master</strong>'ı indirir → Sign in with Apple → doğum bilgileri girer.</li>
+    <li>Kullanıcı <strong>Sakin Human Design</strong>'ı indirir → açılır açılmaz <em>"Sakin hesabınla devam et"</em> butonu → tek tıkla giriş.</li>
+    <li>HD app'i, doğum verisini <strong>backend'den otomatik çeker</strong> — kullanıcı veriyi tekrar girmez.</li>
+    <li>HD app'i kendi hesaplamalarını yapar, sonucu <code>user_app_data</code>'ya yazar.</li>
+    <li>Sakin Master'a dönen kullanıcı, "Senin Human Design tipin: Generator" hatırlatmasını ana ekranda görür.</li>
+  </ol>
+
+  <div class="callout callout-good"><strong>Bu akış kullanıcı için sihirdir.</strong> Ekosistem hissi tam olarak burada doğar — "tüm app'ler beni tanıyor".</div>
+
+  <h3>Onboarding Sürtünmesi Kaldırıldı</h3>
+  <p>Yeni Sakin app'i indiren kullanıcı için onboarding genelde 6-8 ekrandır (rakipler 12+ ekran). Sakin ekosistemi içinden gelen kullanıcı için <strong>2 ekran</strong>: hoş geldin + bu app ne yapar. Bu, retention'ın 1. günden itibaren %30+ avantaj sağlar.</p>
+
+  <h3>Veri İhracı (Yasal Zorunluluk)</h3>
+  <p>GDPR + CCPA + Türkiye KVKK gereği kullanıcı verisini istediğinde indirme/silme imkanı. Tek backend olduğu için bu da kolay: tek <code>DELETE FROM users WHERE id = ?</code> ile tüm app'lerdeki veri silinir.</p>
+</section>
+
+<!-- ============= 6. CROSS-PROMOTION ============= -->
+<section class="page">
+  <h2><span class="num">06</span>Cross-Promotion Mekanizmaları</h2>
+  <p class="lede">Apple'ın izin verdiği — hatta önerdiği — yöntemlerle ekosistem içi büyüme. CAC (kullanıcı edinme maliyeti) %60+ düşer.</p>
+
+  <h3>1 · In-App App Store Card</h3>
+  <p><code>SKStoreProductViewController</code> ile diğer Sakin app'inin Store sayfası kullanıcı app'ten çıkmadan açılır. Tek tıkla indirme.</p>
+  <p><strong>Yerleştirme:</strong> "Bu hafta seninle uyumlu Sakin app'i" kartı, ana ekranın altında. Mağaza pornografisi yapma — haftada 1 öneri yeter.</p>
+
+  <h3>2 · Universal Links</h3>
+  <p>Sakin Master'da bir kullanıcının <em>"Senin yıldız taşın: Ametist"</em> kartına tıkladığında:</p>
+  <ul>
+    <li>Sakin Kristal yüklü ise → app açılır, doğrudan Ametist sayfasına gider</li>
+    <li>Yüklü değilse → App Store sayfası açılır (Sakin Kristal indir)</li>
+  </ul>
+  <p><code>sakin.life/crystal/amethyst</code> linki bunu tek seferde halleder.</p>
+
+  <h3>3 · "Sakin Ailesi" Kartı</h3>
+  <p>Her app'in Profil/Ayarlar ekranında sabit bir bölüm: <em>"Sakin Ailesinin Diğer Üyeleri"</em>. Yüklü olmayan app'ler kartla gösterilir, indirme tek tık. Tüm app'lerde aynı kart, aynı tasarım.</p>
+
+  <h3>4 · Email & Push Cross-Promotion</h3>
+  <p>Bir Sakin app'inin abonesi başka bir Sakin app'i için ayda <strong>en fazla 1</strong> push alır. Bunun üstü kullanıcıyı yorar, opt-out artar.</p>
+  <div class="callout"><strong>ATT (App Tracking Transparency):</strong> Aynı geliştirici app'leri arası kullanıcı verisi paylaşımı bile ATT izni gerektirir. "Sakin Ailesi içinde verilerini paylaşmak ister misin?" izni onboarding'de iste.</div>
+
+  <h3>5 · Bundle Promo Kodları</h3>
+  <p>Premium kullanıcılarına ayda 3 hediye promo kodu — başkasına bir Sakin app'i hediye edebilir. Viral mekanik + sosyal kanıt.</p>
+</section>
+
+<!-- ============= 7. APP ADAY LİSTESİ ============= -->
+<section class="page">
+  <h2><span class="num">07</span>App Aday Listesi</h2>
+  <p class="lede">Önceliklendirme matrisi: pazar boşluğu × üretim eforu × ekosistem değeri.</p>
+
+  <table>
+    <tr><th>App</th><th>Eforu</th><th>Pazar</th><th>Öncelik</th></tr>
+    <tr><td><strong>Human Design</strong></td><td>Orta (4-6 ay)</td><td>Boş, tutkulu</td><td><span class="accent">★★★★★</span></td></tr>
+    <tr><td><strong>Hayvan Rehberi</strong></td><td>Hafif (2-3 ay)</td><td>Niş, sadık</td><td><span class="accent">★★★★</span></td></tr>
+    <tr><td><strong>Kristal & Taş</strong></td><td>Görsel-ağır (3-4 ay)</td><td>Geniş, viral</td><td><span class="accent">★★★★</span></td></tr>
+    <tr><td>Tarot</td><td>Orta (3-4 ay)</td><td>Doymuş ama büyük</td><td>★★★</td></tr>
+    <tr><td>Numeroloji</td><td>Hafif (2 ay)</td><td>Orta</td><td>★★★</td></tr>
+    <tr><td>Astroloji Derin</td><td>Ağır (6-8 ay)</td><td>Doymuş</td><td>★★</td></tr>
+    <tr><td>Reiki Ustalığı</td><td>Orta + uzman</td><td>Çok niş</td><td>★★</td></tr>
+    <tr><td>KR Buluşmaları</td><td>Hafif (1-2 ay)</td><td>Müdavim odaklı</td><td>★★</td></tr>
+  </table>
+
+  <h3>Öncelik 1 — Human Design (önerilen ilk spin-off)</h3>
+  <ul>
+    <li>Türkiye'de "Human Design app türkçe" araması neredeyse boş</li>
+    <li>Hesaplama motoru bir kez yazılır, sonsuz kullanım</li>
+    <li>Tipoloji (Generator, Projector vb.) viral paylaşım</li>
+    <li>Doğum verisi zaten Sakin Master'da varsa — onboarding 0 sürtünme</li>
+  </ul>
+
+  <h3>Öncelik 2 — Hayvan Rehberi</h3>
+  <ul>
+    <li>80-120 hayvan kartı + içerik = hızlı üretim</li>
+    <li>"Bugün senin ruh hayvanın" bildirimi günlük açılış kancası</li>
+    <li>Kart paylaşımı viral (Instagram story formatı)</li>
+  </ul>
+
+  <h3>Öncelik 3 — Kristal & Taş</h3>
+  <ul>
+    <li>Yüksek görsel değer — Pinterest / Instagram'da viral kart formatı</li>
+    <li>"Yıldız işaretine göre kristal" çapraz Astroloji ile</li>
+    <li>Fiziksel ürün satışına köprü (kristal mağazası ortaklığı)</li>
+  </ul>
+</section>
+
+<section class="page">
+  <h3>Her App'in Standalone Değer Önerisi</h3>
+  <p>Her app, başka Sakin app'i bilmeyen biri için bile <strong>tek başına anlamlı</strong> olmalı. Aksi halde Apple "minimum functionality" reddi gönderir.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>🐺 Hayvan Rehberi</h4>
+      <em>Ruhunun yoldaşını bul.</em><br><br>
+      Doğum tarihinden ruh hayvanı, günlük rehber hayvan, totem kartları, hayvan medisin'i. Tek başına da çalışır.
+    </div>
+    <div class="card">
+      <h4>💎 Sakin Kristal</h4>
+      <em>Taşların dilini öğren.</em><br><br>
+      300+ kristal/taş ansiklopedisi, niyete göre öneri, çakra-kristal eşleştirmesi, kristal bakımı rehberi.
+    </div>
+    <div class="card">
+      <h4>⚡ Human Design</h4>
+      <em>Tasarımını tanı.</em><br><br>
+      Doğum verisinden bodygraph, tip/strateji/otorite, kapı ve kanal yorumları, günlük transit etkisi.
+    </div>
+    <div class="card">
+      <h4>🔮 Tarot</h4>
+      <em>Kartlar konuşsun.</em><br><br>
+      78 kart deck, günlük tek kart çekimi, üç-kart spread, Celtic Cross. AI destekli yorum.
+    </div>
+  </div>
+
+  <div class="callout"><strong>Stratejik prensip:</strong> Her app <em>standalone freemium</em>, premium ile <em>ekosistem birleşimi</em>. Yeni kullanıcı tek app deneyer, değer alır, sonra ekosistemi keşfeder.</div>
+</section>
+
+<!-- ============= 8. GÖRSEL KİMLİK ============= -->
+<section class="page">
+  <h2><span class="num">08</span>Görsel Kimlik Sistemi</h2>
+  <p class="lede">Aynı aile, farklı bireyler. App Store'da yan yana görüldüğünde aileye ait olduğu anlaşılır, kopyası olmadığı da.</p>
+
+  <h3>İkon Kuralları</h3>
+  <ul>
+    <li><strong>Sabit:</strong> Yumuşak köşe stili, aynı ışıklandırma yönü, aynı arka plan dokusu</li>
+    <li><strong>Değişken:</strong> Merkezi sembol her app'e özgü — pençe / elmas / bodygraph / kart</li>
+    <li><strong>Renk teması:</strong> Her app'in baskın bir aksanı: Master (yeşil), Hayvan (toprak), Kristal (lavanta), HD (gece mavi)</li>
+  </ul>
+
+  <h3>Renk Sistemi</h3>
+  <table>
+    <tr><th>App</th><th>Ana</th><th>Aksan</th><th>His</th></tr>
+    <tr><td>Master</td><td>#7A8B6F</td><td>#C97B5F</td><td>Toprağa bağlı</td></tr>
+    <tr><td>Hayvan</td><td>#8C6F4F</td><td>#C9A14A</td><td>Yabani, sıcak</td></tr>
+    <tr><td>Kristal</td><td>#8A7FA8</td><td>#F0D9A8</td><td>Mistik, parıltılı</td></tr>
+    <tr><td>Human Design</td><td>#2E2540</td><td>#C9A14A</td><td>Geometrik, derin</td></tr>
+    <tr><td>Tarot</td><td>#4A3A6B</td><td>#C97B5F</td><td>Ezoterik, klasik</td></tr>
+  </table>
+
+  <h3>Tipografi (Tüm Ekosistem Ortak)</h3>
+  <ul>
+    <li><strong>Başlıklar:</strong> Cormorant Garamond (yumuşak serif)</li>
+    <li><strong>Metin:</strong> Inter (humanist sans)</li>
+    <li><strong>Veri/teknik:</strong> JetBrains Mono</li>
+  </ul>
+
+  <h3>Onboarding "Aile Kartı"</h3>
+  <p>Her app'in 1. açılışında 3 saniyelik bir kart: <em>"Sakin Ailesinin parçası"</em> + diğer app ikonları küçük strip halinde. Bu, kullanıcıya ekosistemi <strong>indirmeden önce</strong> hissettirir.</p>
+</section>
+
+<!-- ============= 9. YOL HARİTASI ============= -->
+<section class="page">
+  <h2><span class="num">09</span>18 Aylık Yol Haritası</h2>
+  <p class="lede">Adım adım, ekosistem büyümesi. Her faz bir öncekinin verisini test eder.</p>
+
+  <h3>Faz 0 · Hazırlık (Ay 1-2)</h3>
+  <ul>
+    <li>Sakin Master'a Sign in with Apple + Supabase backend taşıma</li>
+    <li>Subscription Group App Store Connect'te kurulum</li>
+    <li>RevenueCat entegrasyonu (subscription tracking)</li>
+    <li>Brand guidelines + ikon sistem dokümanı</li>
+  </ul>
+
+  <h3>Faz 1 · İlk Spin-off (Ay 3-6)</h3>
+  <ul>
+    <li><strong>Sakin Human Design</strong> launch</li>
+    <li>Cross-promotion mekanizmaları test (3 app card slot ama 2 app var)</li>
+    <li>Subscription Group'un crossgrade davranışı izlenir</li>
+    <li>Hedef: Master kullanıcıların %25'i HD'yi indirir</li>
+  </ul>
+
+  <h3>Faz 2 · Ailenin Genişlemesi (Ay 7-12)</h3>
+  <ul>
+    <li><strong>Sakin Hayvan Rehberi</strong> + <strong>Sakin Kristal</strong> launch</li>
+    <li>Bundle marketing'i başlar — "4 app, 1 abonelik"</li>
+    <li>Web sayfası: <em>sakin.life</em> ekosistem hub'ına dönüşür</li>
+    <li>Hedef: Premium MRR %150 artış</li>
+  </ul>
+
+  <h3>Faz 3 · Niş Derinliği (Ay 13-18)</h3>
+  <ul>
+    <li><strong>Tarot, Numeroloji, Reiki</strong> launch (hızlı ve hafif)</li>
+    <li>Family Sharing aktif — LTV %40 artış beklentisi</li>
+    <li>Lifetime Premium fırsatı pazarlanır</li>
+    <li>B2B kurumsal wellness paketi pilotu</li>
+  </ul>
+
+  <div class="callout callout-good"><strong>18. ay hedefi:</strong> 7 app, 100K+ aktif kullanıcı, 25K+ Premium abone, ortalama LTV 1.500 ₺.</div>
+</section>
+
+<!-- ============= 10. CHECKLIST ============= -->
+<section class="page">
+  <h2><span class="num">10</span>Submission Checklist</h2>
+  <p class="lede">Her yeni Sakin app'i App Store'a göndermeden önce işaretlenecekler.</p>
+
+  <h3>App Store Connect Hazırlığı</h3>
+  <ul class="checklist">
+    <li>Bundle ID <code>life.sakin.*</code> formatında</li>
+    <li>Subscription Group "Sakin Premium" altında IAP tanımlı</li>
+    <li>App Store kategorisi doğru (Health & Fitness / Lifestyle)</li>
+    <li>Age Rating doğru (genelde 4+)</li>
+    <li>App Privacy detayları doldurulmuş (her app ayrı)</li>
+    <li>Screenshots — Sakin aile estetiğine uygun (5-8 adet, her cihaz)</li>
+  </ul>
+
+  <h3>App Review Notes (Apple'a Mesaj)</h3>
+  <p>Şu metni her yeni Sakin app'inin review notes'una koy:</p>
+  <blockquote>"This app is part of the Sakin ecosystem (sakin.life). It focuses specifically on [DOMAIN]. Sister apps include [LIST]. Each app serves a distinct user need. Sakin Premium subscription unlocks all sister apps via shared Subscription Group. Test account credentials: [...]"</blockquote>
+
+  <h3>App Store Açıklaması</h3>
+  <ul class="checklist">
+    <li>İlk paragraf: app'in <strong>standalone değeri</strong></li>
+    <li>Orta: özellik listesi (premium / ücretsiz ayrımı net)</li>
+    <li>Son: <em>"Sakin Ailesinin parçası — sakin.life"</em></li>
+    <li>Anahtar kelimeler: domain'e özgü ("kristal anlamları", "ruh hayvanı testi" vb.)</li>
+  </ul>
+
+  <h3>Tek Geliştirici Hesabı Disiplini</h3>
+  <ul class="checklist">
+    <li>Tüm app'ler <strong>aynı Team ID</strong> altında — App Groups için zorunlu</li>
+    <li>Geliştirici sertifikaları paylaşımlı</li>
+    <li>App Store Connect rolleri net tanımlı (kim hangi app'e bakıyor)</li>
+  </ul>
+</section>
+
+<!-- ============= 11. RİSK ============= -->
+<section class="page">
+  <h2><span class="num">11</span>Riskler & Kaçınılacaklar</h2>
+  <p class="lede">Bilinen tuzaklar. Önceden işaretlenirse hiçbiri başına gelmez.</p>
+
+  <h3>🚫 KESİNLİKLE YAPMA</h3>
+  <ul>
+    <li><strong>Aynı içeriği farklı paketleyip ayrı app yapma.</strong> "Sakin Spirit Animals" + "Sakin Totem Guide" + "Sakin Animal Oracle" → 4.3 reddi garanti.</li>
+    <li><strong>Master app'i sadece launcher yapma.</strong> Kendi başına işlevsel olmalı (4.2.2).</li>
+    <li><strong>App'ler arası veri paylaşımını kullanıcıya bildirmeden yapma.</strong> Privacy bildirimi her app'te eksiksiz.</li>
+    <li><strong>Push spam'i yapma.</strong> Cross-promotion push ayda 1 ile sınırlı.</li>
+    <li><strong>Premium aboneliği "açıkça" promote etmeyen app yapma.</strong> Ücretsiz versiyondan premium'a geçiş yolu net olmalı.</li>
+  </ul>
+
+  <h3>⚠️ DİKKAT</h3>
+  <ul>
+    <li><strong>Review reddi olduğunda</strong> dosyalı itiraz et — Apple bu modeli destekliyor, doğru sunum ile rededler ters döner.</li>
+    <li><strong>Subscription Group değişiklikleri</strong> mevcut abonelere etki eder — fiyat / içerik değiştirirken legacy plan oluştur.</li>
+    <li><strong>App Privacy Manifest</strong> 2024'ten beri zorunlu — her app için ayrı doldurmayı unutma.</li>
+    <li><strong>Family Sharing</strong> bir kez aktif olur, geri kapatılamaz — açmadan önce ekonomik etkiyi ölç.</li>
+    <li><strong>App'ler arası veri tutarlılığı</strong> bug'ları kritik — bir app yanlış doğum tarihi yazsa diğer hesaplamalar bozulur.</li>
+  </ul>
+
+  <h3>✓ HER ZAMAN YAP</h3>
+  <ul>
+    <li>Her app review'a göndermeden önce <strong>fresh App Store hesabı</strong> ile test et.</li>
+    <li>Subscription geçişlerini <strong>StoreKit Sandbox</strong>'ta tüm senaryolar için doğrula.</li>
+    <li>Restore Purchases butonu <strong>her app'te erişilebilir</strong> bir yerde olsun.</li>
+    <li>Sakin Master <strong>her zaman ekosistemin temel taşı</strong> — onun aksaklığı tüm aileyi vurur.</li>
+  </ul>
+</section>
+
+<!-- ============= 12. FİNANSAL MODEL ============= -->
+<section class="page">
+  <h2><span class="num">12</span>Finansal Model</h2>
+  <p class="lede">Tek app vs ekosistem — gelir potansiyeli farkı.</p>
+
+  <h3>Tek App Modeli (Şimdiki)</h3>
+  <table>
+    <tr><th>Metrik</th><th>Değer</th></tr>
+    <tr><td>Aktif kullanıcı</td><td>10.000</td></tr>
+    <tr><td>Premium dönüşüm</td><td>%4 (400 abone)</td></tr>
+    <tr><td>ARPU (yıllık)</td><td>590 ₺</td></tr>
+    <tr><td><strong>Yıllık gelir</strong></td><td><strong>236.000 ₺</strong></td></tr>
+  </table>
+
+  <h3>Ekosistem Modeli (18. Ay Hedef)</h3>
+  <table>
+    <tr><th>Metrik</th><th>Değer</th></tr>
+    <tr><td>Toplam aktif kullanıcı (7 app)</td><td>100.000</td></tr>
+    <tr><td>Premium dönüşüm</td><td>%6 (cross-app etkisi)</td></tr>
+    <tr><td>Premium abone</td><td>6.000</td></tr>
+    <tr><td>Standalone abone</td><td>2.000</td></tr>
+    <tr><td>Lifetime alımları (yıllık)</td><td>200 × 2.990 ₺</td></tr>
+    <tr><td>Tek seferlik raporlar</td><td>1.500 × 99 ₺</td></tr>
+    <tr><td><strong>Yıllık gelir</strong></td><td><strong>~5.7M ₺</strong></td></tr>
+  </table>
+
+  <p class="small">Apple komisyonu (%15-30 abonelik kademesine göre) düşüldükten sonra net.</p>
+
+  <h3>Üretim Maliyeti</h3>
+  <ul>
+    <li>İlk Faz 0 (backend + altyapı): <strong>~150K ₺</strong> (3 ay)</li>
+    <li>Her yeni app ortalama: <strong>200-400K ₺</strong> (UI/UX + içerik üretimi + dev + QA)</li>
+    <li>18 ay toplam yatırım: <strong>~2-2.5M ₺</strong></li>
+  </ul>
+
+  <div class="callout callout-good"><strong>ROI:</strong> 18. ayda yıllık gelir yatırımı geçer. 24. ayda yıllık net kar başlar. Cumulative break-even: ~ay 30.</div>
+</section>
+
+<!-- ============= CLOSING ============= -->
+<section class="page">
+  <div class="closing">
+    <div class="symbol">✦</div>
+    <h2>Bir marka.<br>Birçok kapı.</h2>
+    <p>Tek hesap. Tek abonelik.<br>Birçok pratik.</p>
+
+    <div style="margin-top: 60pt; font-size: 9pt; color: var(--lavender); font-style: normal;">
+      <strong>SAKIN EKOSİSTEMİ</strong><br>
+      App Store Family Strategy<br><br>
+      <em>sakin.life</em><br><br>
+      <span class="small">Apple App Store Guidelines 4.3 / 4.2.2 / 5.1.2 uyumlu<br>Mayıs 2026 stratejik mimari kitapçığı</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>
