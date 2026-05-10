@@ -617,50 +617,93 @@ life.sakin.bulusma       <span class="comment"># KR Buluşmaları (etkinlik app'
 <!-- ============= 4. SUBSCRIPTION GROUP ============= -->
 <section class="page">
   <h2><span class="num">04</span>Subscription Group</h2>
-  <p class="lede">Ekosistemin para motoru. Tek abonelik tüm app'leri açar. Kullanıcı için anlamlı, sen için churn azaltıcı.</p>
+  <p class="lede">Ekosistemin para motoru. Tek pahalı paket vs çoklu ucuz: ikisi de yanlış. Doğru cevap üç katmanlı <em>graduated commitment</em>.</p>
 
-  <h3>Nasıl çalışır?</h3>
-  <p>App Store Connect'te <strong>tek bir Subscription Group</strong> oluşturursun: <em>"Sakin Premium"</em>. Tüm app'lerin In-App Purchase tanımları bu grubu kullanır.</p>
-  <p>Kullanıcı Sakin Master'da abone olduğunda, <strong>Sakin Kristal'i indirip açtığında premium otomatik aktif</strong> — Apple StoreKit bunu kendi senkronize ediyor.</p>
+  <h3>Tradeoff'u Görmek</h3>
+  <p>Tek 89 ₺ paket = yüksek psikolojik bariyer. Davranış ekonomisinde "fiyat acısı" tek seferlik büyük rakam, parçalı küçük rakamların toplamından daha şiddetli hissediliyor. Yani <strong>düşük dönüşüm oranı</strong> tehlikesi gerçek.</p>
+  <p>Ama 5 ayrı 19 ₺ abonelik de tuzak: her abonelik = ayrı iptal kararı. Apple datalarında aylık abonelerin %50'si 6 ayda iptal — bu <strong>5 kez ayrı ayrı yaşanır</strong>. Subscription fatigue, banka hareketleri yorgunluğu, yenileme bildirimi paniği.</p>
 
-  <h3>Önerilen Plan Yapısı</h3>
+  <div class="callout"><strong>Çözüm:</strong> Tek-pahalı veya çoklu-ucuz arasında seçim yapma. <em>Foot-in-the-door</em> + <em>anchoring</em> birleşimi — kullanıcı kendi rızasıyla yukarı çıkar.</div>
+
+  <h3>Üç Katmanlı Tier Modeli</h3>
   <table>
-    <tr><th>Plan</th><th>Fiyat</th><th>Açtığı</th></tr>
-    <tr><td>Ücretsiz</td><td>0 ₺</td><td>Her app'in temel modu (kanca)</td></tr>
-    <tr><td><strong>Sakin Premium Aylık</strong></td><td>89 ₺/ay</td><td>Tüm app'lerin tüm özellikleri</td></tr>
-    <tr><td><strong>Sakin Premium Yıllık</strong></td><td>590 ₺/yıl<br><span class="small">~49 ₺/ay</span></td><td>Tüm app'ler + 1 doğum haritası raporu</td></tr>
+    <tr><th>Tier</th><th>Fiyat</th><th>Kapsam</th></tr>
+    <tr><td><strong>🌱 Mikro</strong><br><span class="small">Düşük bariyer giriş</span></td><td><strong>24 ₺/ay</strong></td><td>Tek app premium (örn. sadece Kristal)</td></tr>
+    <tr><td><strong>🌿 Mini Bundle</strong><br><span class="small">Konu odaklı</span></td><td><strong>49 ₺/ay</strong></td><td>3 tematik app (örn. <em>Astroloji Paketi:</em> HD + Numeroloji + Astroloji)</td></tr>
+    <tr><td><strong>✦ Premium</strong><br><span class="small">Tüm aile</span></td><td><strong>89 ₺/ay</strong></td><td>7+ app + Doğum haritası hediye + Family Sharing</td></tr>
   </table>
 
-  <div class="callout callout-good"><strong>Apple bonusu:</strong> StoreKit 2 ile aynı Subscription Group içinde upgrade/downgrade/crossgrade tamamen otomatik. Kullanıcı Aylık'tan Yıllık'a geçtiğinde proration kendiliğinden hesaplanır.</div>
+  <p class="small">Yıllık karşılıklar: Mikro <strong>190 ₺/yıl</strong> · Mini <strong>390 ₺/yıl</strong> · Premium <strong>590 ₺/yıl</strong> (~%45 tasarruf).</p>
 </section>
 
 <section class="page">
-  <h3>Subscription Tier Stratejisi</h3>
-  <p>Her app'i <strong>standalone satılabilir</strong> da yap — ama Premium tek paketi her zaman daha cazip görünsün:</p>
+  <h3>Mini Bundle Tematik Paketleri</h3>
+  <p>3 app'i konu temasına göre gruplandırarak <em>"benim için yapılmış"</em> hissi ver. Tek tip Mini Bundle yerine üç varyant:</p>
+
+  <div class="grid-3">
+    <div class="card">
+      <h4>🌟 Astroloji Paketi</h4>
+      <strong>49 ₺/ay</strong><br>
+      Human Design + Numeroloji + Astroloji Derin
+    </div>
+    <div class="card">
+      <h4>🐺 Doğa Paketi</h4>
+      <strong>49 ₺/ay</strong><br>
+      Hayvan Rehberi + Kristal + Sakin Master
+    </div>
+    <div class="card">
+      <h4>🔮 Ezoterik Paket</h4>
+      <strong>49 ₺/ay</strong><br>
+      Tarot + Reiki + Astroloji Derin
+    </div>
+  </div>
+
+  <p class="small">Kullanıcı bir Mini Bundle seçtiğinde tematik kimlik kurar — ekosistemin sevdiği "ben buradanım" hissi.</p>
+
+  <h3>Otomatik Upsell Tetikleyicileri</h3>
+  <p>Apple StoreKit 2 ile tier geçişleri sorunsuz. Davranış ekonomisi tetikleyicileri:</p>
 
   <table>
-    <tr><th>Seçenek</th><th>Fiyat</th><th>Mantık</th></tr>
-    <tr><td>Sakin Kristal tek başına</td><td>49 ₺/ay</td><td>Sadece bu app'i kullanan</td></tr>
-    <tr><td>Sakin Hayvan tek başına</td><td>49 ₺/ay</td><td>Sadece bu app'i kullanan</td></tr>
-    <tr><td><strong>Sakin Premium (hepsi)</strong></td><td><strong>89 ₺/ay</strong></td><td>2 app'ten fazla kullanırsa bile karlı</td></tr>
+    <tr><th>Tetik Anı</th><th>Mesaj</th></tr>
+    <tr><td><strong>Mikro abonesi 2. Sakin app'i açtığında</strong></td><td>"Mini Bundle'a geç → 1 ay sonra <strong>5 ₺ tasarruf</strong>, üç app'in hepsi açık"</td></tr>
+    <tr><td><strong>Mini Bundle abonesi 4. app'i denediğinde</strong></td><td>"Premium'a geç → tüm aile + Doğum haritası raporu hediye"</td></tr>
+    <tr><td><strong>Premium abonesi 6. ayını tamamladığında</strong></td><td>"Yıllığa geç → <strong>%45 indirim</strong> + Family Sharing aktif"</td></tr>
+    <tr><td><strong>Premium yıllık abonesi 2. yılına girince</strong></td><td>"Sakin Lifetime — sonsuza kadar 2.990 ₺ (yıllığın 5 katı)"</td></tr>
   </table>
 
-  <p class="small">İki app standalone abonelik almak Premium'dan daha pahalı olmalı — bu, kullanıcıyı doğal olarak ekosisteme yönlendirir. Anchoring etkisi.</p>
+  <div class="callout callout-good"><strong>Anchoring matematiği:</strong> 2 standalone tek-app aboneliği (24 × 2 = 48 ₺/ay) Mini Bundle'a (49 ₺/ay, üç app açık) çok yakın. Kullanıcı 2. app'i indirir indirmez Mini Bundle <em>"akıllı tercih"</em> olarak görünür.</div>
+</section>
+
+<section class="page">
+  <h3>Neden Bu Yapı Kazanır</h3>
+  <p>Tek-fiyat ile çok-ucuz arasında ölçülebilir farklar:</p>
+
+  <table>
+    <tr><th>Metrik</th><th>Tek 89 ₺</th><th>5 × 19 ₺</th><th><strong>Üç Tier</strong></th></tr>
+    <tr><td>Dönüşüm oranı</td><td>%4</td><td>%12 (Mikro)</td><td><strong>%9</strong> (karma)</td></tr>
+    <tr><td>Ortalama yaşam (ay)</td><td>8</td><td>4</td><td><strong>11</strong></td></tr>
+    <tr><td>Aylık ARPU</td><td>89 ₺</td><td>~38 ₺</td><td><strong>52 ₺</strong></td></tr>
+    <tr><td><strong>LTV</strong></td><td>712 ₺</td><td>152 ₺</td><td><strong>572 ₺</strong></td></tr>
+    <tr><td>Yeni kullanıcı çekimi</td><td>Düşük</td><td>Yüksek</td><td><strong>Yüksek</strong></td></tr>
+  </table>
+
+  <p>Üç tier dönüşüm oranını çoklu-ucuz seviyesine yaklaştırır, LTV'yi tek-paketinkine yaklaştırır. <strong>Her iki dünyanın iyisi.</strong></p>
 
   <h3>Subscription Group Kuralları (Apple)</h3>
   <ul>
-    <li>Bir kullanıcı aynı grupta <strong>birden fazla aktif aboneliğe</strong> sahip olamaz — geçişler otomatik</li>
-    <li>Grup içinde <strong>hiyerarşik level'lar</strong> tanımlanır: Premium en üst level olur</li>
-    <li>Üst level'a geçiş <strong>anında</strong>, alt level'a geçiş <strong>dönem sonunda</strong></li>
-    <li>Family Sharing tek tıkla açılabilir — aile içi 6 kişiye kadar (LTV artırıcı)</li>
+    <li>Tek "Sakin Premium" grup, içinde <strong>3 hiyerarşik level</strong>: Mikro (level 1) → Mini Bundle (level 2) → Premium (level 3)</li>
+    <li>Bir kullanıcı aynı grupta birden fazla aktif aboneliğe sahip olamaz — geçişler otomatik</li>
+    <li>Üst level'a geçiş <strong>anında</strong> (proration ile), alt level'a geçiş <strong>dönem sonunda</strong></li>
+    <li>Family Sharing yalnızca Premium tier'ında aktif — bu, premium'a yükselme için ek motivasyon</li>
+    <li>Apple komisyonu: ilk yıl %30, ikinci yıldan itibaren %15 (loyalty avantajı)</li>
   </ul>
 
   <h3>Lifetime ve Tek Seferlik Ürünler</h3>
-  <p>Subscription Group dışında, kalıcı ürünler de satılır:</p>
+  <p>Subscription Group dışında, kalıcı ürünler:</p>
   <ul>
     <li><strong>Doğum Haritası PDF Raporu</strong> — 99 ₺ tek seferlik (Astroloji app'inde)</li>
     <li><strong>Human Design Ayrıntılı Bodygraph</strong> — 149 ₺ tek seferlik</li>
-    <li><strong>"Sakin Lifetime"</strong> — 2.990 ₺ tek seferlik (Premium'un sonsuz versiyonu, %20 erken benimser)</li>
+    <li><strong>"Sakin Lifetime"</strong> — 2.990 ₺ (Premium'un sonsuz versiyonu, %20 erken benimser hedef)</li>
   </ul>
 </section>
 
@@ -967,19 +1010,20 @@ user_app_data
     <tr><td><strong>Yıllık gelir</strong></td><td><strong>236.000 ₺</strong></td></tr>
   </table>
 
-  <h3>Ekosistem Modeli (18. Ay Hedef)</h3>
+  <h3>Üç Tier Ekosistem Modeli (18. Ay Hedef)</h3>
   <table>
-    <tr><th>Metrik</th><th>Değer</th></tr>
-    <tr><td>Toplam aktif kullanıcı (7 app)</td><td>100.000</td></tr>
-    <tr><td>Premium dönüşüm</td><td>%6 (cross-app etkisi)</td></tr>
-    <tr><td>Premium abone</td><td>6.000</td></tr>
-    <tr><td>Standalone abone</td><td>2.000</td></tr>
-    <tr><td>Lifetime alımları (yıllık)</td><td>200 × 2.990 ₺</td></tr>
-    <tr><td>Tek seferlik raporlar</td><td>1.500 × 99 ₺</td></tr>
-    <tr><td><strong>Yıllık gelir</strong></td><td><strong>~5.7M ₺</strong></td></tr>
+    <tr><th>Tier</th><th>Abone</th><th>Aylık ARPU</th><th>Yıllık katkı</th></tr>
+    <tr><td>🌱 <strong>Mikro</strong> (24 ₺/ay)</td><td>4.000</td><td>24 ₺</td><td>1.15M ₺</td></tr>
+    <tr><td>🌿 <strong>Mini Bundle</strong> (49 ₺/ay)</td><td>3.500</td><td>49 ₺</td><td>2.06M ₺</td></tr>
+    <tr><td>✦ <strong>Premium</strong> (89 ₺/ay)</td><td>2.500</td><td>89 ₺</td><td>2.67M ₺</td></tr>
+    <tr><td>💎 Lifetime (2.990 ₺ tek)</td><td>300/yıl</td><td>—</td><td>0.90M ₺</td></tr>
+    <tr><td>📄 Tek seferlik raporlar</td><td>2.000/yıl</td><td>—</td><td>0.20M ₺</td></tr>
+    <tr><td colspan="3"><strong>Yıllık brüt gelir</strong></td><td><strong>~6.98M ₺</strong></td></tr>
   </table>
 
-  <p class="small">Apple komisyonu (%15-30 abonelik kademesine göre) düşüldükten sonra net.</p>
+  <p class="small">Toplam aktif: 100K · Toplam abone: 10K (%10 dönüşüm — graduated commitment etkisi). Apple komisyonu (%15-30 kademeye göre) düşüldükten sonra net ~5.5M ₺.</p>
+
+  <div class="callout callout-good"><strong>Tier modelinin gücü:</strong> Tek 89 ₺ paket sunsaydık dönüşüm %4 (4.000 abone, 4.27M ₺) olurdu. Mikro + Mini tier'larıyla <strong>10K abone + %63 daha yüksek gelir</strong>.</div>
 
   <h3>Üretim Maliyeti</h3>
   <ul>
