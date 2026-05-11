@@ -3964,12 +3964,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:isTablet?6:2,alignItems:"center",zIndex:9999,background:"rgba(4,4,12,0.94)",backdropFilter:"blur(32px)",border:"1px solid rgba(184,164,216,0.08)",borderRadius:100,padding:isTablet?"8px 16px":"6px 8px",maxWidth:"calc(100vw - 24px)",boxShadow:"0 0 30px rgba(0,0,0,0.6),inset 0 0 20px rgba(184,164,216,0.03)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
-            const pulse = n.id==="mandala" && screen==="rehber";
             return (
               <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
-                  background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : pulse ? `${n.color}10` : "transparent",
-                  border: active ? `1px solid ${n.color}35` : pulse ? `1px solid ${n.color}30` : "1px solid transparent",
+                  background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : "transparent",
+                  border: active ? `1px solid ${n.color}35` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",
@@ -3978,11 +3977,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   minWidth:isTablet?56:48,
                   minHeight:isTablet?48:undefined,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: pulse ? "navPulse 3s ease-in-out infinite" : "none",
+                  animation: active ? "navPulse 3s ease-in-out infinite" : "none",
                   boxShadow: active ? `0 0 16px ${n.color}18,0 0 32px ${n.color}08` : "none",
                 }}>
-                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)", lineHeight:1, filter: active ? `drop-shadow(0 0 6px ${n.color}66)` : "none" }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:15, color: active ? n.color : `${n.color}55`, transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)", lineHeight:1, filter: active ? `drop-shadow(0 0 6px ${n.color}66)` : "none" }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:`${n.color}44`,transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
