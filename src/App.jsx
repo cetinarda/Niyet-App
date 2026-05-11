@@ -766,6 +766,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const [selected, setSelected] = useState(null);
   const [elapsed,  setElapsed]  = useState(0);
   const [particles,setParticles]= useState([]);
+  const [showInfo, setShowInfo] = useState(false);
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
   const chimeCxtRef = useRef(null);
@@ -928,10 +929,22 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("reiki_label")}</div>
-          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:19, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
+          <div style={{ display:"flex",alignItems:"center",gap:8 }}>
+            <div style={{ fontFamily:"'Inter',sans-serif", fontSize:19, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
+            <button onClick={()=>setShowInfo(true)} aria-label={t("chakra_what")} style={{ width:22,height:22,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:12,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0 }}>?</button>
+          </div>
         </div>
         <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
       </div>
+      {showInfo && (
+        <div onClick={()=>setShowInfo(false)} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:20,padding:"28px 24px",maxWidth:420,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}>
+            <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#b8a4d8",letterSpacing:1.5,margin:"0 0 14px",textAlign:"center" }}>{t("chakra_what")}</h3>
+            <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbb",lineHeight:1.8,margin:"0 0 20px" }}>{t("chakra_what_desc")}</p>
+            <button onClick={()=>setShowInfo(false)} style={{ width:"100%",padding:"12px 0",borderRadius:100,border:"1px solid rgba(184,164,216,0.35)",background:"rgba(184,164,216,0.1)",color:"#b8a4d8",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:2,cursor:"pointer" }}>{lang==="tr"?"Anladım":"Got it"}</button>
+          </div>
+        </div>
+      )}
       {/* Ascension layout — bottom to top */}
       <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
         {/* Sun halo at top — Source energy */}
@@ -1416,6 +1429,7 @@ export default function SakinApp() {
   const chakra                             = CHAKRAS_7[chakraIndex];
   const [activeFreq,    setActiveFreq]    = useState(null);
   const [playingHz,     setPlayingHz]     = useState(null);
+  const [showSolfeggioInfo, setShowSolfeggioInfo] = useState(false);
   const freqCtxRef = useRef(null);
   const freqOscRef = useRef(null);
   const freqGainRef = useRef(null);
@@ -1706,6 +1720,30 @@ export default function SakinApp() {
     ];
     return () => timers.forEach(clearTimeout);
   }, [screen, hakkindaIntro]);
+  // Gün değişimi: uygulama açıkken gece 00:00 olunca günlük verileri yenile
+  useEffect(() => {
+    const checkDateChange = () => {
+      const currentKey = new Date().toISOString().slice(0,10);
+      if (currentKey !== todayKey) {
+        setNiyet("");
+        setSelectedWords([]);
+        try {
+          Object.keys(localStorage).forEach(k => {
+            const m = k.match(/^(sakin_niyet_|sakin_words_|sakin_steps_|sakin_freq_sec_|sakin_reminders_done_)(\d{4}-\d{2}-\d{2})$/);
+            if (m) {
+              const keyDate = new Date(m[2]);
+              const cutoff = new Date(Date.now() - 8 * 24 * 60 * 60 * 1000);
+              if (keyDate < cutoff) localStorage.removeItem(k);
+            }
+          });
+        } catch(_) {}
+        window.location.reload();
+      }
+    };
+    const interval = setInterval(checkDateChange, 60000);
+    return () => clearInterval(interval);
+  }, [todayKey]);
+
   useEffect(() => {
     const onPop = () => {
       isPopRef.current = true;
@@ -2241,17 +2279,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
+    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
   ];
   const SIDEBAR_ITEMS = [
-    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"},
-    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
+    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", hint:lang==="tr"?"AI Yansıtma":"AI Reflection", color:"#a070d0"},
+    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  hint:lang==="tr"?"Haftalık Rapor":"Weekly Report", color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2306,6 +2344,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               }}>
               <span style={{ fontSize:14, lineHeight:1, filter: active ? `drop-shadow(0 0 4px ${n.color}55)` : "none", transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)" }}>{n.icon}</span>
               <span>{n.label}</span>
+              {n.hint && <span style={{ fontSize:10, letterSpacing:0.8, color:`${n.color}55`, textTransform:"none", marginLeft:2, fontStyle:"italic" }}>· {n.hint}</span>}
             </button>
           );
         })}
@@ -2973,7 +3012,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div style={{ maxWidth:isTablet?660:440,width:"100%",padding:"52px 20px 120px",position:"relative",zIndex:1 }}>
             <div style={{ textAlign:"center",marginBottom:28 }}>
               <div className="label-sm" style={{ letterSpacing:5,marginBottom:8 }}>{t("sound_subtitle").toUpperCase()}</div>
-              <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0",marginBottom:12 }}>{t("sound_title")}</div>
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginBottom:12 }}>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0" }}>{t("sound_title")}</div>
+                <button onClick={()=>setShowSolfeggioInfo(true)} aria-label={t("solfeggio_what")} style={{ width:24,height:24,borderRadius:"50%",border:"1px solid rgba(208,192,240,0.3)",background:"rgba(208,192,240,0.08)",color:"#d0c0f0",fontSize:13,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0 }}>?</button>
+              </div>
               <div style={{ fontSize:14,color:"#888888",lineHeight:1.8,maxWidth:340,margin:"0 auto" }}>{t("sound_intro")}</div>
             </div>
 
@@ -3651,6 +3693,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ? "Kadim astrolojik ve sayısal sistemler, modern psikoloji ile buluştuğunda ortaya çıkan harita; senin için, senin zamanında, senin enerjin için yazılmış bir pusula haline gelir."
             : "When ancient astrological and numerological systems meet modern psychology, the resulting map becomes a compass written for you, in your time, for your energy."}</p>
 
+          <h2>{lang==="tr" ? "Sakin'de Neler Var?" : "What's in Sakin?"}</h2>
+          <div style={{ display:"grid",gap:12,marginBottom:24 }}>
+            {(lang==="tr" ? [
+              { icon:"🌅", title:"Sabah Niyeti", desc:"Güne niyet ve 3 motivasyon kelimesiyle başla. Zihni yönlendirir, odağı belirler." },
+              { icon:"🫧", title:"Nefes Egzersizi", desc:"7 farklı teknik: 4-7-8, diyafram, kutu nefesi, sakinleştirici nefes. Sinir sistemini dengeler." },
+              { icon:"🔊", title:"Ses Dalgaları", desc:"10 solfeggio frekansı (396-963 Hz). Her biri farklı çakra ve enerji merkezine yöneliktir." },
+              { icon:"💜", title:"22 Çakra Terapi", desc:"60 saniyelik rehberli enerji seansı. Temel 7 çakra + 15 yüksek frekans çakra." },
+              { icon:"☀️", title:"Günlük Hatırlatıcılar", desc:"Şükür, su, doğa, hareket gibi anlık farkındalık görevleri." },
+              { icon:"🌙", title:"Akşam Kapanışı", desc:"Günü kapatma ritüeli, öğrenilenleri ve şükür notlarını topla." },
+              { icon:"🪞", title:"Ayna · AI Yansıtma", desc:"Semptomlarını veya sorularını yansıt; ruhsal kök neden analizi al." },
+              { icon:"🗺️", title:"Harita · Haftalık Rapor", desc:"Doğum haritan ve haftalık pratiklerine göre kişisel AI raporu." },
+              { icon:"◎", title:"Bağlantı (Mandala)", desc:"Tamamladığın adımlarla açılan günlük mandala görseli." },
+            ] : [
+              { icon:"🌅", title:"Morning Intention", desc:"Start the day with intention and 3 motivation words. Directs the mind, sets focus." },
+              { icon:"🫧", title:"Breath Exercise", desc:"7 techniques: 4-7-8, diaphragm, box breathing, calming breath. Balances the nervous system." },
+              { icon:"🔊", title:"Sound Waves", desc:"10 solfeggio frequencies (396-963 Hz). Each targets a different chakra and energy center." },
+              { icon:"💜", title:"22 Chakra Therapy", desc:"60-second guided energy session. Core 7 chakras + 15 higher frequency chakras." },
+              { icon:"☀️", title:"Daily Reminders", desc:"Mindfulness micro-tasks: gratitude, water, nature, movement." },
+              { icon:"🌙", title:"Evening Closing", desc:"Day-closing ritual, gather learnings and gratitude notes." },
+              { icon:"🪞", title:"Mirror · AI Reflection", desc:"Reflect symptoms or questions; receive spiritual root-cause analysis." },
+              { icon:"🗺️", title:"Map · Weekly Report", desc:"Personal AI report based on your birth chart and weekly practices." },
+              { icon:"◎", title:"Connection (Mandala)", desc:"Daily mandala visual that unfolds as you complete each step." },
+            ]).map(f => (
+              <div key={f.title} style={{ display:"flex",gap:14,padding:"14px 16px",background:"rgba(184,164,216,0.04)",border:"1px solid rgba(184,164,216,0.1)",borderRadius:14 }}>
+                <div style={{ fontSize:22,lineHeight:1,flexShrink:0 }}>{f.icon}</div>
+                <div>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:400,letterSpacing:1.5,color:"#d0c0f0",marginBottom:4 }}>{f.title}</div>
+                  <div style={{ fontSize:13,color:"#aaa",lineHeight:1.7 }}>{f.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h2>{lang==="tr" ? "Nasıl Kullanılır?" : "How to Use?"}</h2>
+          <p>{lang==="tr"
+            ? "Uygulamayı açtığında alt menüde gün akışını sırasıyla görürsün: Sabah → Nefes → Ses → Çakra → Gün → Akşam → Bağlantı. Üstte ise Ayna (AI yansıtma) ve Harita (haftalık rapor) ayrı sekmelerde durur. Sırayla ilerleyebilirsin ya da istediğin adımdan başlayabilirsin."
+            : "When you open the app, the bottom menu shows the daily flow in order: Morning → Breath → Sound → Chakra → Day → Evening → Connection. At the top, Mirror (AI reflection) and Map (weekly report) sit in separate tabs. You can follow the flow or start from any step."}</p>
+
           <h2>{lang==="tr" ? "Bir Kanallık Niyeti" : "A Channel's Intention"}</h2>
           <p>{lang==="tr"
             ? "Sakin; bir uygulama olmanın ötesinde, bir kanal olma niyetiyle doğdu. İçeriği aktaran değil, senin içindekini yüzeye taşıyan bir araç. Sabah niyetinden akşam şükrüne, nefesten çakra çalışmasına uzanan yol; seni dışarıdan bilgiyle doldurmak için değil, içindeki bilgeliği hatırlatmak için tasarlandı."
@@ -4159,6 +4239,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               style={{ width:"100%",marginTop:8,padding:"10px 0",background:"transparent",border:"none",color:"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
               {lang==="tr" ? "Vazgeç" : "Cancel"}
             </button>
+          </div>
+        </div>
+      )}
+
+      {showSolfeggioInfo && (
+        <div onClick={()=>setShowSolfeggioInfo(false)} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(208,192,240,0.3)",borderRadius:20,padding:"28px 24px",maxWidth:420,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}>
+            <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#d0c0f0",letterSpacing:1.5,margin:"0 0 14px",textAlign:"center" }}>{t("solfeggio_what")}</h3>
+            <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbb",lineHeight:1.8,margin:"0 0 20px" }}>{t("solfeggio_desc")}</p>
+            <button onClick={()=>setShowSolfeggioInfo(false)} style={{ width:"100%",padding:"12px 0",borderRadius:100,border:"1px solid rgba(208,192,240,0.35)",background:"rgba(208,192,240,0.1)",color:"#d0c0f0",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:2,cursor:"pointer" }}>{lang==="tr"?"Anladım":"Got it"}</button>
           </div>
         </div>
       )}
