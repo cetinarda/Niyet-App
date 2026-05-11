@@ -331,7 +331,6 @@ const GLOBAL_CSS = `
   @keyframes channelWall  { 0%,100%{opacity:0.15} 50%{opacity:0.4} }
   @keyframes particleUp   { 0%{opacity:0} 5%{opacity:1} 90%{opacity:0.8} 100%{opacity:0} }
   @keyframes particleDown { 0%{opacity:0} 5%{opacity:1} 90%{opacity:0.8} 100%{opacity:0} }
-  @keyframes channelBreathe { 0%,100%{rx:12;ry:210} 50%{rx:15;ry:215} }
   @keyframes nodeFlash { 0%,100%{r:10;opacity:0.2} 50%{r:14;opacity:0.6} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
   @keyframes introLineExpand { from{width:0} to{width:60px} }
@@ -2577,18 +2576,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         <stop offset="60%" stopColor="rgba(101,67,33,0.2)"/>
                         <stop offset="100%" stopColor="rgba(60,30,10,0)"/>
                       </radialGradient>
-                      <linearGradient id="descendGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(180,220,255,0.6)"/>
-                        <stop offset="40%" stopColor="rgba(200,120,255,0.5)"/>
-                        <stop offset="100%" stopColor="rgba(255,200,60,0.4)"/>
-                      </linearGradient>
-                      <linearGradient id="channelGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="rgba(255,240,200,0.5)"/>
-                        <stop offset="25%" stopColor="rgba(200,180,255,0.4)"/>
-                        <stop offset="50%" stopColor="rgba(130,217,163,0.5)"/>
-                        <stop offset="75%" stopColor="rgba(200,180,255,0.4)"/>
-                        <stop offset="100%" stopColor="rgba(180,140,80,0.5)"/>
-                      </linearGradient>
                       <filter id="glowF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
                       <filter id="softBlur"><feGaussianBlur stdDeviation="2"/></filter>
                       <filter id="channelGlow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -2752,56 +2739,82 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       fontFamily="'Jost',sans-serif" style={{transition:"fill 1s"}}>⟁ {lang==="tr"?"YERYÜZÜ":"EARTH"}</text>
 
                     {/* Tam bağlantı efekti — çift yönlü enerji kanalı */}
-                    {allStepsComplete && <>
-                      {/* Kanal çekirdeği — merkez ışık */}
-                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#channelGrad)" strokeWidth="6" filter="url(#channelGlow)" opacity="0.6"
+                    {allStepsComplete && (() => {
+                      const cNodes = chakraNodes.filter(n=>n.id);
+                      const yMin=40, yMax=500, span=yMax-yMin;
+                      const pctY = y => ((y-yMin)/span*100).toFixed(1)+"%";
+                      return <>
+                      {/* Çakra renkli kanal gradienti */}
+                      <defs>
+                        <linearGradient id="chakraChannelGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#cfd8dc" stopOpacity="0.6"/>
+                          {[...cNodes].reverse().map(n =>
+                            <stop key={n.id} offset={pctY(n.y)} stopColor={n.color} stopOpacity="0.7"/>
+                          )}
+                          <stop offset="100%" stopColor="#8B6914" stopOpacity="0.5"/>
+                        </linearGradient>
+                        <linearGradient id="chakraChannelUp" x1="0" y1="1" x2="0" y2="0">
+                          <stop offset="0%" stopColor="#8B6914" stopOpacity="0.8"/>
+                          {cNodes.map(n =>
+                            <stop key={n.id+"u"} offset={pctY(n.y)} stopColor={n.color} stopOpacity="0.9"/>
+                          )}
+                          <stop offset="100%" stopColor="#cfd8dc" stopOpacity="0.7"/>
+                        </linearGradient>
+                        <linearGradient id="chakraChannelDn" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="#cfd8dc" stopOpacity="0.7"/>
+                          {[...cNodes].reverse().map(n =>
+                            <stop key={n.id+"d"} offset={pctY(n.y)} stopColor={n.color} stopOpacity="0.8"/>
+                          )}
+                          <stop offset="100%" stopColor="#8B6914" stopOpacity="0.6"/>
+                        </linearGradient>
+                      </defs>
+                      {/* Kanal çekirdeği — çakra renkli merkez ışık */}
+                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#chakraChannelGrad)" strokeWidth="6" filter="url(#channelGlow)" opacity="0.5"
                         style={{animation:"channelPulse 3s ease-in-out infinite"}} />
-                      {/* Kanal duvarları — paralel çizgiler */}
-                      <line x1="104" y1="500" x2="104" y2="40" stroke="rgba(200,180,255,0.2)" strokeWidth="0.8"
+                      {/* Kanal duvarları */}
+                      <line x1="104" y1="500" x2="104" y2="40" stroke="url(#chakraChannelGrad)" strokeWidth="0.8" opacity="0.25"
                         style={{animation:"channelWall 2.5s ease-in-out infinite"}} />
-                      <line x1="116" y1="500" x2="116" y2="40" stroke="rgba(200,180,255,0.2)" strokeWidth="0.8"
+                      <line x1="116" y1="500" x2="116" y2="40" stroke="url(#chakraChannelGrad)" strokeWidth="0.8" opacity="0.25"
                         style={{animation:"channelWall 2.5s ease-in-out infinite",animationDelay:"0.3s"}} />
-                      {/* Yükselen akım — yeryüzünden kaynağa */}
-                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#riseGrad)" strokeWidth="3" strokeLinecap="round"
+                      {/* Yükselen akım — çakra renkli ışık akışı */}
+                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#chakraChannelUp)" strokeWidth="3" strokeLinecap="round"
                         strokeDasharray="12 18" style={{animation:"electricRise 2.4s linear infinite"}} />
-                      {/* İnen akım — kaynaktan yeryüzüne */}
-                      <line x1="110" y1="40" x2="110" y2="500" stroke="url(#descendGrad)" strokeWidth="2.5" strokeLinecap="round"
+                      {/* İnen akım — çakra renkli ışık akışı */}
+                      <line x1="110" y1="40" x2="110" y2="500" stroke="url(#chakraChannelDn)" strokeWidth="2.5" strokeLinecap="round"
                         strokeDasharray="8 22" style={{animation:"electricRise 3s linear infinite",animationDelay:"0.6s",animationDirection:"reverse"}} />
-                      {/* Yukarı akan partiküller */}
-                      {[0,1,2,3,4].map(i => (
-                        <circle key={`up${i}`} r={2.5-i*0.3} fill={["rgba(255,200,60,0.9)","rgba(200,120,255,0.85)","rgba(130,217,163,0.9)","rgba(180,220,255,0.8)","rgba(255,240,200,0.85)"][i]}>
-                          <animateMotion dur={`${2.2+i*0.4}s`} repeatCount="indefinite" begin={`${i*0.5}s`}>
-                            <mpath href="#spinePath"/>
-                          </animateMotion>
-                          <animate attributeName="opacity" values="0;1;0.9;0" dur={`${2.2+i*0.4}s`} repeatCount="indefinite" begin={`${i*0.5}s`}/>
-                        </circle>
-                      ))}
-                      {/* Aşağı akan partiküller */}
-                      {[0,1,2,3].map(i => (
-                        <circle key={`dn${i}`} r={2-i*0.2} fill={["rgba(180,220,255,0.85)","rgba(220,200,255,0.8)","rgba(255,240,200,0.75)","rgba(200,180,255,0.7)"][i]}>
-                          <animateMotion dur={`${2.6+i*0.5}s`} repeatCount="indefinite" begin={`${i*0.6+0.3}s`}>
-                            <mpath href="#downPath"/>
-                          </animateMotion>
-                          <animate attributeName="opacity" values="0;0.9;0.8;0" dur={`${2.6+i*0.5}s`} repeatCount="indefinite" begin={`${i*0.6+0.3}s`}/>
-                        </circle>
-                      ))}
-                      {/* Çakra düğüm parlamaları — akım geçişi */}
-                      {chakraNodes.filter(n=>n.id).map((n,i) => (
+                      {/* Bölge bazlı partiküller — her çakranın renginde yukarı */}
+                      {cNodes.map((n,i) => {
+                        const nextY = i > 0 ? cNodes[i-1].y : yMin;
+                        return (
+                          <circle key={`zup${i}`} r="2.2" fill={n.color} opacity="0">
+                            <animateMotion dur={`${1.2+i*0.15}s`} repeatCount="indefinite" begin={`${i*0.35}s`}
+                              path={`M110,${n.y} L110,${nextY}`} />
+                            <animate attributeName="opacity" values="0;0.9;0.8;0" dur={`${1.2+i*0.15}s`} repeatCount="indefinite" begin={`${i*0.35}s`} />
+                          </circle>
+                        );
+                      })}
+                      {/* Bölge bazlı partiküller — her çakranın renginde aşağı */}
+                      {[...cNodes].reverse().map((n,i) => {
+                        const nextY = i < cNodes.length-1 ? [...cNodes].reverse()[i+1].y : yMax;
+                        return (
+                          <circle key={`zdn${i}`} r="1.8" fill={n.color} opacity="0">
+                            <animateMotion dur={`${1.4+i*0.15}s`} repeatCount="indefinite" begin={`${i*0.4+0.2}s`}
+                              path={`M110,${n.y} L110,${nextY}`} />
+                            <animate attributeName="opacity" values="0;0.8;0.7;0" dur={`${1.4+i*0.15}s`} repeatCount="indefinite" begin={`${i*0.4+0.2}s`} />
+                          </circle>
+                        );
+                      })}
+                      {/* Çakra düğüm parlamaları */}
+                      {cNodes.map((n,i) => (
                         <circle key={`flash${i}`} cx="110" cy={n.y} r="10" fill="none"
                           stroke={n.color} strokeWidth="1.5" opacity="0.3"
                           style={{animation:`nodeFlash ${1.8+i*0.15}s ease-in-out infinite`,animationDelay:`${i*0.25}s`}} />
                       ))}
-                      {/* Genişleyen dış aura — bağlantı alanı */}
-                      <ellipse cx="110" cy="280" rx="12" ry="210" fill="none"
-                        stroke="rgba(130,217,163,0.12)" strokeWidth="2" filter="url(#softBlur)"
-                        style={{animation:"channelBreathe 4s ease-in-out infinite"}} />
-                      <ellipse cx="110" cy="280" rx="18" ry="220" fill="none"
-                        stroke="rgba(200,180,255,0.06)" strokeWidth="1"
-                        style={{animation:"channelBreathe 5s ease-in-out infinite",animationDelay:"1s"}} />
                       {/* Etiket */}
                       <text x="110" y="395" textAnchor="middle" fontSize="8" letterSpacing="3" fill="rgba(130,217,163,0.85)"
                         fontFamily="'Jost',sans-serif" style={{animation:"neuralGlow 2s ease-in-out infinite"}}>✦ {lang==="tr"?"İLETKEN AKTİF":"CONDUCTOR ACTIVE"} ✦</text>
-                    </>}
+                    </>;
+                    })()}
                   </svg>
                 </div>
               );
