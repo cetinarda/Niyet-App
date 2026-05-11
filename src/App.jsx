@@ -556,6 +556,24 @@ const GLOBAL_CSS = `
     .chakra-card { padding:18px 22px; }
     .pricing-card { padding:28px 30px; }
   }
+
+  /* ── Accessibility ── */
+  *:focus { outline: none; }
+  *:focus-visible {
+    outline: 2px solid rgba(176,160,200,0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  button:focus-visible, [role="button"]:focus-visible {
+    box-shadow: 0 0 0 2px rgba(176,160,200,0.85);
+  }
+  .sr-only {
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
 `;
 
 async function sendNotif(title, body) {
@@ -620,7 +638,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   return (
     <div style={{ maxWidth:isTablet?640:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
+        <button onClick={onBack} aria-label={lang==="tr"?"Geri":"Back"} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("day_label")}</div>
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:18, fontWeight:300, letterSpacing:1.5 }}>{t("reminders_title")}</div>
@@ -629,7 +647,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
           background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.1)",
           borderRadius:100, padding:"5px 14px", fontSize:13, color:"#b0baca", letterSpacing:1,
         }}>{completedCount} / {REMINDERS.length}</div>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#777777", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
+        <button onClick={onBack} aria-label={lang==="tr"?"Kapat":"Close"} style={{ background:"none", border:"none", color:"#777777", cursor:"pointer", fontSize:20, lineHeight:1, padding:"8px 4px 8px 8px" }}>✕</button>
       </div>
 
       <div style={{ height:2, background:"rgba(255,255,255,0.05)", borderRadius:1, marginBottom:20, overflow:"hidden" }}>
@@ -767,6 +785,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const [elapsed,  setElapsed]  = useState(0);
   const [particles,setParticles]= useState([]);
   const [showInfo, setShowInfo] = useState(false);
+  const [chakraFilter, setChakraFilter] = useState("base");
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
   const chimeCxtRef = useRef(null);
@@ -926,7 +945,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   if (tPhase==="list") return (
     <div style={{ maxWidth:isTablet?660:440, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:28 }}>
-        <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
+        <button onClick={onBack} aria-label={lang==="tr"?"Geri":"Back"} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("reiki_label")}</div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
@@ -937,7 +956,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
       </div>
       {showInfo && (
-        <div onClick={()=>setShowInfo(false)} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
+        <div onClick={()=>setShowInfo(false)} role="dialog" aria-modal="true" aria-label={t("chakra_what")} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
           <div onClick={e=>e.stopPropagation()} style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:20,padding:"28px 24px",maxWidth:420,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}>
             <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#b8a4d8",letterSpacing:1.5,margin:"0 0 14px",textAlign:"center" }}>{t("chakra_what")}</h3>
             <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbb",lineHeight:1.8,margin:"0 0 20px" }}>{t("chakra_what_desc")}</p>
@@ -945,19 +964,38 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           </div>
         </div>
       )}
+      {/* Filter tabs — Temel 7 / Yüksek 15 */}
+      <div role="tablist" aria-label={lang==="tr"?"Çakra filtresi":"Chakra filter"} style={{ display:"flex", gap:8, marginBottom:20, padding:4, background:"rgba(255,255,255,0.03)", border:"1px solid rgba(255,255,255,0.06)", borderRadius:12 }}>
+        {[
+          { id:"base", label:lang==="tr"?"Temel 7":"Base 7",     sub:lang==="tr"?"Klasik çakralar":"Classical" },
+          { id:"high", label:lang==="tr"?"Yüksek 15":"Higher 15",sub:lang==="tr"?"Ruhsal & kozmik":"Spiritual & cosmic" },
+        ].map(tab => {
+          const active = chakraFilter === tab.id;
+          return (
+            <button key={tab.id} role="tab" aria-selected={active}
+              onClick={()=>setChakraFilter(tab.id)}
+              style={{ flex:1, padding:"10px 8px", borderRadius:9, border:"none", cursor:"pointer", background: active ? "rgba(176,160,200,0.18)" : "transparent", color: active ? "#d0c0f0" : "#888888", fontFamily:"'Jost',sans-serif", letterSpacing:1.5, transition:"all 0.25s", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
+              <span style={{ fontSize:13, fontWeight:500 }}>{tab.label}</span>
+              <span style={{ fontSize:10, letterSpacing:1.2, color:active?"#aaa":"#666", textTransform:"uppercase" }}>{tab.sub}</span>
+            </button>
+          );
+        })}
+      </div>
       {/* Ascension layout — bottom to top */}
       <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
-        {/* Sun halo at top — Source energy */}
-        <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
-          <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
-            <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
-            <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+        {/* Sun halo at top — Source energy (only when showing higher levels) */}
+        {chakraFilter==="high" && (
+          <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
+            <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
+              <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
+              <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
           </div>
-          <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
-        </div>
-        {/* Level 3 → 2 → 1 (top to bottom = cosmic to physical) */}
-        {[3,2,1].map(level => {
+        )}
+        {/* Levels — base shows only 1, high shows 3→2 */}
+        {(chakraFilter==="base" ? [1] : [3,2]).map(level => {
           const levelChakras = CHAKRAS_22.filter(c => c.level === level);
           const levelLabel = (lang==="en" ? LEVEL_LABELS_EN : LEVEL_LABELS_TR)[level];
           const levelRange = (lang==="en" ? LEVEL_RANGES_EN : LEVEL_RANGES_TR)[level];
@@ -987,10 +1025,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
             </div>
           );
         })}
-        {/* Earth anchor at bottom */}
-        <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
-          <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
-        </div>
+        {/* Earth anchor at bottom (only on base tab — physical grounding) */}
+        {chakraFilter==="base" && (
+          <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+          </div>
+        )}
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
@@ -1117,7 +1157,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} style={{ background:"none",border:"none",color:"#777777",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
+        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} aria-label={lang==="tr"?"Geri":"Back"} style={{ background:"none",border:"none",color:"#777777",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
       </div>
       <div style={{ fontSize:13,letterSpacing:5,color:"#777777",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
@@ -1675,6 +1715,7 @@ export default function SakinApp() {
   const [hakkindaExiting, setHakkindaExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
+  const [editBirth,      setEditBirth]      = useState(false);
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
   const breathChimeRef = useRef(null);
@@ -2735,6 +2776,45 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               })}
             </div>
 
+            {/* Bu hafta — özet şerit */}
+            {(() => {
+              const log = (() => { try { return JSON.parse(localStorage.getItem("sakin_log")||"[]"); } catch { return []; } })();
+              if (!log.length) return null;
+              const totalNefes = log.reduce((s,g)=>s+(g.nefes||0),0);
+              const totalFreqMin = Math.floor(log.reduce((s,g)=>s+(g.freqSaniye||0),0)/60);
+              const chakraFreq = {};
+              log.forEach(g=>{ if(g.chakra) chakraFreq[g.chakra]=(chakraFreq[g.chakra]||0)+1; });
+              const topChakra = Object.entries(chakraFreq).sort((a,b)=>b[1]-a[1])[0]?.[0];
+              return (
+                <div role="button" tabIndex={0}
+                  onClick={()=>setScreen("harita")}
+                  onKeyDown={e=>{ if(e.key==="Enter"||e.key===" ") setScreen("harita"); }}
+                  aria-label={lang==="tr"?"Haftalık özeti aç":"Open weekly summary"}
+                  style={{ marginTop:22,padding:"14px 18px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,cursor:"pointer",transition:"all 0.25s",width:"100%",maxWidth:isTablet?440:330 }}>
+                  <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
+                    <span style={{ fontSize:11,letterSpacing:3,color:"#777777",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Bu hafta":"This week"}</span>
+                    <span style={{ fontSize:11,letterSpacing:2,color:"#888888",fontFamily:"'Jost',sans-serif" }}>{log.length} {lang==="tr"?"gün":"days"} →</span>
+                  </div>
+                  <div style={{ display:"flex",alignItems:"center",justifyContent:"space-around",gap:8 }}>
+                    <div style={{ textAlign:"center",flex:1 }}>
+                      <div style={{ fontSize:18,fontWeight:200,color:"#60b8e8",lineHeight:1 }}>{totalNefes}</div>
+                      <div style={{ fontSize:10,letterSpacing:1.5,color:"#666666",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"nefes":"breath"}</div>
+                    </div>
+                    <div style={{ width:1,height:24,background:"rgba(255,255,255,0.06)" }} />
+                    <div style={{ textAlign:"center",flex:1 }}>
+                      <div style={{ fontSize:18,fontWeight:200,color:"#a07ae0",lineHeight:1 }}>{totalFreqMin}<span style={{ fontSize:11,color:"#888" }}>m</span></div>
+                      <div style={{ fontSize:10,letterSpacing:1.5,color:"#666666",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"frekans":"freq"}</div>
+                    </div>
+                    <div style={{ width:1,height:24,background:"rgba(255,255,255,0.06)" }} />
+                    <div style={{ textAlign:"center",flex:1.4,minWidth:0 }}>
+                      <div style={{ fontSize:13,fontWeight:300,color:"#b87adc",lineHeight:1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>{topChakra || "—"}</div>
+                      <div style={{ fontSize:10,letterSpacing:1.5,color:"#666666",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"çakra":"chakra"}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Harita — adım navigasyonu */}
             <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
               <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN BAĞLANTISI":"DAY CONNECTION"}</div>
@@ -2773,6 +2853,54 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:"#777777" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
+          {/* Doğum profili kartı */}
+          {birthDate && !editBirth && (
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,140,50,0.12)",borderRadius:12,padding:"10px 14px",marginBottom:22 }}>
+              <div style={{ display:"flex",alignItems:"center",gap:10,minWidth:0 }}>
+                <span style={{ fontSize:18 }} aria-hidden="true">🌙</span>
+                <div style={{ minWidth:0 }}>
+                  <div style={{ fontSize:13,color:"#e0d8f4",letterSpacing:0.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis" }}>
+                    {new Date(birthDate).toLocaleDateString(lang==="tr"?"tr-TR":"en-US",{day:"numeric",month:"long",year:"numeric"})}
+                    {birthTime ? ` · ${birthTime}` : ""}
+                  </div>
+                  <div style={{ fontSize:11,letterSpacing:2.5,color:"#888888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    {astro?.burc || zodiacSign(birthDate)}
+                  </div>
+                </div>
+              </div>
+              <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setEditBirth(true); }}
+                aria-label={lang==="tr"?"Doğum profilini düzenle":"Edit birth profile"}
+                style={{ background:"none",border:"1px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:"#888888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",flexShrink:0 }}>
+                {lang==="tr"?"düzenle":"edit"}
+              </button>
+            </div>
+          )}
+          {editBirth && (
+            <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,140,50,0.18)",borderRadius:14,padding:"14px 16px",marginBottom:22 }}>
+              <div style={{ fontSize:12,letterSpacing:2.5,color:"#888888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10 }}>
+                {lang==="tr"?"Doğum profili":"Birth profile"}
+              </div>
+              <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+                <input type="date" className="sakin-input" value={birthInput} onChange={e=>setBirthInput(e.target.value)} aria-label={lang==="tr"?"Doğum tarihi":"Birth date"} />
+                <input type="time" className="sakin-input" value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} aria-label={lang==="tr"?"Doğum saati (opsiyonel)":"Birth time (optional)"} placeholder={lang==="tr"?"Saat (opsiyonel)":"Time (optional)"} />
+              </div>
+              <div style={{ display:"flex",gap:8,marginTop:12 }}>
+                <button onClick={()=>{ setEditBirth(false); setBirthInput(birthDate); setBirthTimeInput(birthTime); }}
+                  style={{ flex:1,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px",color:"#888888",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr"?"İptal":"Cancel"}
+                </button>
+                <button onClick={()=>{
+                  if (birthInput) { localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); }
+                  if (birthTimeInput) { localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                  else { localStorage.removeItem("sakin_birth_time"); setBirthTime(""); }
+                  setEditBirth(false);
+                }} disabled={!birthInput}
+                  style={{ flex:1,background:birthInput?"rgba(255,140,50,0.2)":"rgba(255,255,255,0.04)",border:`1px solid ${birthInput?"rgba(255,140,50,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:10,padding:"10px",color:birthInput?"#f0a060":"#555555",fontSize:13,letterSpacing:1.5,cursor:birthInput?"pointer":"not-allowed",fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr"?"Kaydet":"Save"}
+                </button>
+              </div>
+            </div>
+          )}
           {stepsCompleted["sabah"] ? (
             /* ── Tamamlandı: salt-okunur özet ── */
             <div>
@@ -3264,7 +3392,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
                 ))}
               </div>
-              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
+              <div style={{ background:"linear-gradient(135deg,rgba(176,144,224,0.08),rgba(130,217,163,0.04))",border:"1px solid rgba(176,144,224,0.18)",borderRadius:16,padding:"14px 18px",marginBottom:12,display:"flex",alignItems:"center",gap:14 }}>
+                <span style={{ fontSize:22 }} aria-hidden="true">🗺️</span>
+                <div style={{ flex:1,minWidth:0 }}>
+                  <div style={{ fontSize:13,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",marginBottom:2 }}>
+                    {lang==="tr"?"Haftalık İçsel Harita":"Weekly Inner Map"}
+                  </div>
+                  <div style={{ fontSize:12,color:"#888888",lineHeight:1.5 }}>
+                    {lang==="tr"?"Bu haftanın özeti ve AI yansıması seni bekliyor.":"Your week's summary and AI reflection await."}
+                  </div>
+                </div>
+              </div>
+              <button className="sakin-btn-primary" style={{ width:"100%" }} aria-label={lang==="tr"?"Haftalık raporu aç":"Open weekly report"} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
             </>
           )}
         </div>
@@ -4056,6 +4195,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const active = screen===n.id;
             return (
               <button key={n.id} onClick={()=>{ setScreen(n.id); }}
+                aria-label={n.label} aria-current={active?"page":undefined}
                 style={{
                   background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : "transparent",
                   border: active ? `1px solid ${n.color}35` : "1px solid transparent",
@@ -4082,6 +4222,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {!["giris"].includes(screen) && !showKilavuz && (
         <button
           onClick={() => setShowKilavuz(true)}
+          aria-label={lang==="tr"?"Yardım ve kılavuz":"Help and guide"}
           style={{
             position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
@@ -4333,7 +4474,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {showSolfeggioInfo && (
-        <div onClick={()=>setShowSolfeggioInfo(false)} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
+        <div onClick={()=>setShowSolfeggioInfo(false)} role="dialog" aria-modal="true" aria-label={t("solfeggio_what")} style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.78)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(6px)" }}>
           <div onClick={e=>e.stopPropagation()} style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(208,192,240,0.3)",borderRadius:20,padding:"28px 24px",maxWidth:420,width:"100%",boxShadow:"0 20px 60px rgba(0,0,0,0.5)" }}>
             <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#d0c0f0",letterSpacing:1.5,margin:"0 0 14px",textAlign:"center" }}>{t("solfeggio_what")}</h3>
             <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbb",lineHeight:1.8,margin:"0 0 20px" }}>{t("solfeggio_desc")}</p>
