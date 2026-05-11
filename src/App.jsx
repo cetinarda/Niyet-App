@@ -1654,6 +1654,14 @@ export default function SakinApp() {
   }, [allStepsComplete, todayKey]);
 
   useEffect(() => {
+    if (breathCount >= 5 && !stepsCompleted.nefes) markStep("nefes");
+  }, [breathCount]);
+
+  useEffect(() => {
+    if (freqListenSec >= 120 && !stepsCompleted.ses) markStep("ses");
+  }, [freqListenSec]);
+
+  useEffect(() => {
     if (isOwner) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
   }, [isOwner]);
   const [time,          setTime]          = useState(new Date());
