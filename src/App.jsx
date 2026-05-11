@@ -2483,7 +2483,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             </div>
 
-            {/* İnsan İskeleti Çakra Bağlantı Sistemi */}
+            {/* Yer ile Gök arasında — İletken Beden */}
             {(() => {
               const pct = completedStepCount / N;
               const lightY = 520 - pct * 480;
@@ -2507,18 +2507,75 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         <stop offset="40%" stopColor="rgba(200,120,255,0.5)"/>
                         <stop offset="100%" stopColor="rgba(180,220,255,0.4)"/>
                       </linearGradient>
-                      <linearGradient id="spineGrad" x1="0" y1="1" x2="0" y2="0">
-                        <stop offset="0%" stopColor="rgba(255,255,255,0.03)"/>
-                        <stop offset="50%" stopColor="rgba(255,255,255,0.08)"/>
-                        <stop offset="100%" stopColor="rgba(255,255,255,0.03)"/>
+                      <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="rgba(220,200,255,0.18)"/>
+                        <stop offset="50%" stopColor="rgba(200,180,240,0.10)"/>
+                        <stop offset="100%" stopColor="rgba(180,150,100,0.08)"/>
                       </linearGradient>
+                      <radialGradient id="sourceGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(255,240,200,0.9)"/>
+                        <stop offset="40%" stopColor="rgba(220,200,255,0.4)"/>
+                        <stop offset="100%" stopColor="rgba(180,150,255,0)"/>
+                      </radialGradient>
+                      <radialGradient id="earthGrad" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stopColor="rgba(139,105,20,0.5)"/>
+                        <stop offset="60%" stopColor="rgba(101,67,33,0.2)"/>
+                        <stop offset="100%" stopColor="rgba(60,30,10,0)"/>
+                      </radialGradient>
                       <filter id="glowF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                      <filter id="softBlur"><feGaussianBlur stdDeviation="2"/></filter>
                     </defs>
 
-                    {/* Omurga — ana bağlantı çizgisi */}
-                    <line x1="110" y1="500" x2="110" y2="40" stroke="url(#spineGrad)" strokeWidth="2" />
+                    {/* KAYNAK — gökte parlayan ışık (tepe) */}
+                    <circle cx="110" cy="25" r={28+pct*22} fill="url(#sourceGrad)" opacity={0.4+pct*0.6}
+                      style={{animation:"slowPulse 4s ease-in-out infinite",transition:"r 1s ease, opacity 1s"}}/>
+                    {pct >= 1 && [0,1,2].map(i => (
+                      <circle key={`ray${i}`} cx="110" cy="25" r={32+i*12} fill="none"
+                        stroke="rgba(255,240,200,0.15)" strokeWidth="0.8"
+                        style={{animation:`ringPulse ${3+i*0.5}s ease-in-out infinite`,animationDelay:`${i*0.4}s`}}/>
+                    ))}
 
-                    {/* Işık yükselişi — görevler tamamlandıkça yukarı çıkar */}
+                    {/* YERYÜZÜ — kök zemini */}
+                    <ellipse cx="110" cy="515" rx={50+pct*30} ry={10+pct*4} fill="url(#earthGrad)" opacity={0.6+pct*0.4}
+                      style={{transition:"rx 1s ease"}}/>
+                    {/* Kök çizgileri — ayaklardan toprağa */}
+                    {pct > 0 && [
+                      "M100 478 Q88 495 78 518",
+                      "M120 478 Q132 495 142 518",
+                      "M110 478 L110 522",
+                      "M95 478 Q92 502 88 524",
+                      "M125 478 Q128 502 132 524",
+                    ].map((d,i) => (
+                      <path key={`root${i}`} d={d} fill="none"
+                        stroke="rgba(180,140,80,0.35)" strokeWidth={0.6+pct*0.4} strokeLinecap="round"
+                        opacity={pct*0.9}
+                        style={{transition:"opacity 1.2s, stroke-width 1s"}}/>
+                    ))}
+
+                    {/* AURA — etraftaki ışık alanı */}
+                    {pct > 0.2 && (
+                      <ellipse cx="110" cy="280" rx={70+pct*25} ry={210+pct*30} fill="none"
+                        stroke={`rgba(220,200,255,${0.06+pct*0.08})`} strokeWidth="1" filter="url(#softBlur)"
+                        style={{animation:"slowPulse 5s ease-in-out infinite"}}/>
+                    )}
+                    {pct >= 1 && (
+                      <ellipse cx="110" cy="280" rx="105" ry="245" fill="none"
+                        stroke="rgba(255,240,200,0.12)" strokeWidth="1.5"
+                        style={{animation:"orbitGlow 4s ease-in-out infinite"}}/>
+                    )}
+
+                    {/* OMURGA — yer ile gök arası iletken kanal */}
+                    <line x1="110" y1="500" x2="110" y2="40" stroke="rgba(255,255,255,0.05)" strokeWidth="1.5" />
+
+                    {/* AŞAĞI iniş — kaynaktan bedene (görevler tamamlandıkça artar) */}
+                    {pct > 0 && (
+                      <line x1="110" y1="40" x2="110" y2={40 + pct * 460}
+                        stroke="url(#riseGrad)" strokeWidth="2.5" strokeLinecap="round"
+                        filter="url(#glowF)" opacity={0.35+pct*0.35}
+                        style={{transition:"y2 1s ease, opacity 0.8s"}} />
+                    )}
+
+                    {/* YUKARI yükseliş — bedenden göğe */}
                     {pct > 0 && (
                       <line x1="110" y1="500" x2="110" y2={lightY}
                         stroke="url(#riseGrad)" strokeWidth="3" strokeLinecap="round"
@@ -2526,7 +2583,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         style={{transition:"y2 1s ease, opacity 0.8s"}} />
                     )}
 
-                    {/* Elektrik akımı partikülleri — yükselen ışık üzerinde */}
+                    {/* Elektrik akımı — yukarı yönlü partiküller */}
                     {pct > 0 && [0,1,2].map(i => (
                       <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,255,200,0.8)"
                         style={{animation:`electricRise ${2+i*0.7}s linear infinite`,animationDelay:`${i*0.6}s`}}>
@@ -2535,21 +2592,46 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         </animateMotion>
                       </circle>
                     ))}
+                    {/* Aşağı yönlü partiküller — kaynaktan inen */}
+                    {pct > 0.3 && [0,1].map(i => (
+                      <circle key={`dp${i}`} cx="110" r="1.5" fill="rgba(220,200,255,0.7)"
+                        style={{animationDelay:`${i*0.8}s`}}>
+                        <animateMotion dur={`${3+i*0.4}s`} repeatCount="indefinite" begin={`${i*0.5}s`}>
+                          <mpath href="#downPath" />
+                        </animateMotion>
+                      </circle>
+                    ))}
                     <path id="spinePath" d="M110,500 L110,40" fill="none" stroke="none" />
+                    <path id="downPath" d="M110,40 L110,500" fill="none" stroke="none" />
 
-                    {/* İnsan silueti */}
-                    {/* Kafa */}
-                    <circle cx="110" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.2" />
+                    {/* IŞIK BEDENİ — yumuşak gradient siluet */}
+                    {/* Aura halesi - kafa */}
+                    <circle cx="110" cy="100" r={28+pct*6} fill="url(#sourceGrad)" opacity={0.15+pct*0.25}
+                      style={{transition:"opacity 1s, r 1s"}}/>
+                    {/* Kafa - dolu gradient */}
+                    <circle cx="110" cy="100" r="20" fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.18)" strokeWidth="0.8" />
                     {/* Boyun */}
-                    <line x1="110" y1="122" x2="110" y2="140" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
-                    {/* Gövde */}
-                    <path d="M80 140 Q110 136 140 140 L136 330 Q110 336 84 330Z" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-                    {/* Kollar */}
-                    <path d="M80 150 Q60 180 50 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
-                    <path d="M140 150 Q160 180 170 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
-                    {/* Bacaklar */}
-                    <path d="M94 330 Q90 390 85 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
-                    <path d="M126 330 Q130 390 135 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    <path d="M104 118 Q110 122 116 118 L116 138 Q110 142 104 138 Z" fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.12)" strokeWidth="0.6"/>
+                    {/* Gövde — yumuşak ışık formu */}
+                    <path d="M78 142 Q110 138 142 142 Q146 230 138 332 Q110 340 82 332 Q74 230 78 142 Z"
+                      fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.14)" strokeWidth="0.8"/>
+                    {/* Kollar — yer ile dengede açılmış */}
+                    <path d="M80 152 Q56 200 48 248 Q46 252 50 252 Q60 200 84 156 Z"
+                      fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.10)" strokeWidth="0.5"/>
+                    <path d="M140 152 Q164 200 172 248 Q174 252 170 252 Q160 200 136 156 Z"
+                      fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.10)" strokeWidth="0.5"/>
+                    {/* Bacaklar — köke uzanan */}
+                    <path d="M90 332 Q86 400 80 476 Q84 482 96 478 Q102 400 102 336 Z"
+                      fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.10)" strokeWidth="0.5"/>
+                    <path d="M130 332 Q134 400 140 476 Q136 482 124 478 Q118 400 118 336 Z"
+                      fill="url(#bodyGrad)" stroke="rgba(220,200,255,0.10)" strokeWidth="0.5"/>
+                    {/* Avuçlar — açık eller, alıcı poz */}
+                    {pct > 0.3 && <>
+                      <circle cx="48" cy="252" r={3+pct*1.5} fill="rgba(255,240,200,0.4)" opacity={pct}
+                        style={{animation:"slowPulse 3s ease-in-out infinite"}}/>
+                      <circle cx="172" cy="252" r={3+pct*1.5} fill="rgba(255,240,200,0.4)" opacity={pct}
+                        style={{animation:"slowPulse 3s ease-in-out infinite",animationDelay:"0.5s"}}/>
+                    </>}
 
                     {/* Çakra düğümleri */}
                     {chakraNodes.map((node,i) => {
@@ -2593,20 +2675,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       );
                     })}
 
-                    {/* Yer simgesi */}
-                    <text x="110" y="528" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▼ {lang==="tr"?"YERYÜZÜ":"EARTH"}</text>
+                    {/* KAYNAK etiketi */}
+                    <text x="110" y="13" textAnchor="middle" fontSize="7" letterSpacing="3" fill={`rgba(255,240,200,${0.3+pct*0.4})`}
+                      fontFamily="'Jost',sans-serif" style={{transition:"fill 1s"}}>✦ {lang==="tr"?"KAYNAK":"SOURCE"}</text>
 
-                    {/* Gök simgesi */}
-                    <text x="110" y="22" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▲ {lang==="tr"?"GÖK":"SKY"}</text>
+                    {/* YERYÜZÜ etiketi */}
+                    <text x="110" y="535" textAnchor="middle" fontSize="7" letterSpacing="3" fill={`rgba(180,140,80,${0.3+pct*0.4})`}
+                      fontFamily="'Jost',sans-serif" style={{transition:"fill 1s"}}>⟁ {lang==="tr"?"YERYÜZÜ":"EARTH"}</text>
 
-                    {/* Tam bağlantı efekti */}
+                    {/* Tam bağlantı efekti — iletken aktif */}
                     {allStepsComplete && <>
                       <line x1="110" y1="500" x2="110" y2="40" stroke="url(#riseGrad)" strokeWidth="4" filter="url(#glowF)" opacity="0.8"
                         strokeDasharray="6 4" style={{animation:`electricRise 1.8s linear infinite`}} />
-                      <text x="110" y="270" textAnchor="middle" fontSize="9" letterSpacing="3" fill="rgba(130,217,163,0.8)"
-                        fontFamily="'Jost',sans-serif">⚡ {lang==="tr"?"BAĞLANTI AKTİF":"CONNECTION ACTIVE"} ⚡</text>
+                      <text x="110" y="395" textAnchor="middle" fontSize="8" letterSpacing="3" fill="rgba(130,217,163,0.85)"
+                        fontFamily="'Jost',sans-serif">✦ {lang==="tr"?"İLETKEN AKTİF":"CONDUCTOR ACTIVE"} ✦</text>
                     </>}
                   </svg>
                 </div>
