@@ -91,7 +91,7 @@ export const TRANS = {
     chakra_source:     "Kaynak: Çakra sistemi kadim Hint Veda geleneğine (MÖ 1500-500) dayanır. Buradaki bilgiler geleneksel enerji felsefesinden alınmıştır; tıbbi teşhis veya tedavi amacı taşımaz.",
 
     // Çakra
-    chakra_subtitle:   "Reiki · Günün Çakrası",
+    chakra_subtitle:   "ENERJİYİ YÖNLENDİR",
     chakra_name_suf:   "Çakrası",
     chakra_stay:       "Bugün bu merkezde huzurla kal.",
     btn_therapy:       "✦ 22 Çakra Terapi →",
@@ -576,7 +576,7 @@ export const TRANS = {
     chakra_source:     "Source: The chakra system originates from the ancient Indian Vedic tradition (1500-500 BCE). Information here is drawn from traditional energy philosophy; it is not intended as medical diagnosis or treatment.",
 
     // Çakra
-    chakra_subtitle:   "REIKI · TODAY'S CHAKRA",
+    chakra_subtitle:   "DIRECT YOUR ENERGY",
     chakra_name_suf:   "CHAKRA",
     chakra_stay:       "Stay in this center today.",
     btn_therapy:       "✦ 22 Chakra Therapy →",
