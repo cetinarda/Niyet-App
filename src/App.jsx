@@ -4599,7 +4599,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* iOS Paywall — StoreKit butonları */}
       {isNative && !isPremium && !isOwner && screen !== "giris" && screen !== "fiyat" && (
-        <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.98) 60%,transparent)",padding:isTablet?"60px 40px 32px":"60px 20px 24px",textAlign:"center" }}>
+        <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:9998,background:"linear-gradient(to top,rgba(10,10,10,0.98) 60%,transparent)",padding:isTablet?"60px 40px 100px":"60px 20px 90px",textAlign:"center" }}>
           <div style={{ fontFamily:"'Jost',sans-serif",fontSize:isTablet?20:18,fontWeight:300,letterSpacing:2,color:"#ffffff",marginBottom:6 }}>{t("sub_paywall_title")}</div>
           <div style={{ fontSize:isTablet?15:13,color:"#999",whiteSpace:"pre-line",lineHeight:1.6,marginBottom:16 }}>{t("sub_paywall_desc")}</div>
           <div style={{ display:"flex",gap:10,maxWidth:isTablet?540:340,margin:"0 auto 12px" }}>
