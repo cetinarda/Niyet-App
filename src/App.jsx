@@ -1597,6 +1597,27 @@ export default function SakinApp() {
   const [purchaseError, setPurchaseError] = useState("");
   const [restoreLoading, setRestoreLoading] = useState(false);
   const [restoreMsg, setRestoreMsg] = useState("");
+  const [fbOpen, setFbOpen] = useState(false);
+  const [fbMsg, setFbMsg] = useState("");
+  const [fbCat, setFbCat] = useState("");
+  const [fbSending, setFbSending] = useState(false);
+  const [fbDone, setFbDone] = useState(false);
+  const sendFeedback = async () => {
+    if (!fbMsg.trim() || fbSending) return;
+    setFbSending(true);
+    try {
+      await fetch("/.netlify/functions/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: fbMsg.trim(), category: fbCat || "genel", lang, timestamp: new Date().toISOString() }),
+      });
+      setFbDone(true);
+      setFbMsg("");
+      setFbCat("");
+      setTimeout(() => { setFbDone(false); setFbOpen(false); }, 2500);
+    } catch { setFbDone(false); }
+    setFbSending(false);
+  };
   useEffect(() => {
     if (isNative) {
       onPurchaseUpdate((ok) => { if (ok) setIsPremium(true); });
@@ -4060,8 +4081,65 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
 
           <div className="divider" />
+
+          {/* Geri Bildirim */}
+          {!fbOpen ? (
+            <div style={{ textAlign:"center",marginBottom:24 }}>
+              <button onClick={()=>setFbOpen(true)}
+                style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:16,padding:"14px 28px",cursor:"pointer",color:"#b8a4d8",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",minHeight:44 }}>
+                {lang==="tr" ? "💬  Geri Bildirim Gönder" : "💬  Send Feedback"}
+              </button>
+            </div>
+          ) : (
+            <div style={{ background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.02))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:18,padding:"20px 18px",marginBottom:24 }}>
+              <div style={{ fontSize:13,letterSpacing:2.5,color:"#b8a4d8",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "GERİ BİLDİRİM" : "FEEDBACK"}
+              </div>
+              {fbDone ? (
+                <div style={{ textAlign:"center",padding:"20px 0" }}>
+                  <div style={{ fontSize:28,marginBottom:8 }}>✓</div>
+                  <div style={{ fontSize:14,color:"#50c878",letterSpacing:1.5 }}>
+                    {lang==="tr" ? "Teşekkürler! Mesajın iletildi." : "Thank you! Your message was sent."}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div style={{ display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",justifyContent:"center" }}>
+                    {(lang==="tr"
+                      ? [["oneri","Öneri"],["hata","Hata"],["icerik","İçerik"],["genel","Genel"]]
+                      : [["oneri","Suggestion"],["hata","Bug"],["icerik","Content"],["genel","General"]]
+                    ).map(([k,v])=>(
+                      <button key={k} onClick={()=>setFbCat(k)}
+                        style={{ padding:"6px 14px",borderRadius:20,border:`1px solid ${fbCat===k?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:fbCat===k?"rgba(184,164,216,0.15)":"transparent",color:fbCat===k?"#b8a4d8":"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={fbMsg}
+                    onChange={e=>setFbMsg(e.target.value)}
+                    placeholder={lang==="tr" ? "Düşüncelerinizi paylaşın..." : "Share your thoughts..."}
+                    rows={3}
+                    maxLength={1000}
+                    style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
+                  />
+                  <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
+                    <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
+                      style={{ padding:"10px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:13,cursor:"pointer",letterSpacing:1,minHeight:44 }}>
+                      {lang==="tr" ? "İptal" : "Cancel"}
+                    </button>
+                    <button onClick={sendFeedback} disabled={!fbMsg.trim() || fbSending}
+                      style={{ padding:"10px 24px",borderRadius:12,border:"none",background:fbMsg.trim()?"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.6))":"rgba(255,255,255,0.05)",color:fbMsg.trim()?"#fff":"#555",fontSize:13,cursor:fbMsg.trim()?"pointer":"default",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",minHeight:44,opacity:fbSending?0.6:1 }}>
+                      {fbSending ? "..." : (lang==="tr" ? "Gönder →" : "Send →")}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center" }}>
-            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2025" : "Sakin · Awareness System · 2025"}
+            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2026" : "Sakin · Awareness System · 2026"}
           </p>
         </div>
       )}
