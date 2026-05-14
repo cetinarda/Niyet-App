@@ -1636,11 +1636,16 @@ export default function SakinApp() {
       const r = await fn();
       setPurchaseLoading(null);
       if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+      else if (r.error === "user_cancelled") { /* kullanıcı iptal etti, hata gösterme */ }
       else {
         const msg = r.error === "product_not_found" || r.error === "no_offer"
           ? (lang === "tr"
             ? "Abonelik ürünleri yüklenemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
             : "Subscription products could not be loaded. Please check your internet connection and try again.")
+          : r.error === "not_available"
+          ? (lang === "tr"
+            ? "Mağaza bağlantısı kurulamadı. Lütfen uygulamayı yeniden başlatıp tekrar deneyin."
+            : "Could not connect to the store. Please restart the app and try again.")
           : (lang === "tr"
             ? "Satın alma şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin."
             : "Purchase is currently unavailable. Please try again later.");

@@ -1,64 +1,88 @@
 import { Capacitor } from "@capacitor/core";
+import { Purchases, LOG_LEVEL } from "@revenuecat/purchases-capacitor";
 
 const YEARLY_ID = "app.sakin.life.yearly";
 const LIFETIME_ID = "app.sakin.life.lifetime";
+const ENTITLEMENT_ID = "premium";
 const isNative = Capacitor.isNativePlatform();
 
+const RC_API_KEY_IOS = "REPLACE_WITH_REVENUECAT_IOS_API_KEY";
+
 let purchaseUpdateCallback = null;
+let storeReady = false;
 
 export function onPurchaseUpdate(callback) {
   purchaseUpdateCallback = callback;
 }
 
 export async function initStore() {
-  if (!isNative || !window.CdvPurchase) return false;
+  if (!isNative) return false;
+  if (RC_API_KEY_IOS === "REPLACE_WITH_REVENUECAT_IOS_API_KEY") {
+    console.warn("RevenueCat API key not configured");
+    return false;
+  }
+  try {
+    await Purchases.setLogLevel({ level: LOG_LEVEL.DEBUG });
+    await Purchases.configure({ apiKey: RC_API_KEY_IOS });
+    storeReady = true;
+    const subbed = await checkEntitlement();
+    if (subbed && purchaseUpdateCallback) purchaseUpdateCallback(true);
+    return true;
+  } catch (e) {
+    console.warn("RevenueCat init failed:", e);
+    return false;
+  }
+}
 
-  const { store, ProductType, Platform } = window.CdvPurchase;
-
-  const isIOS = Capacitor.getPlatform() === "ios";
-  const platform = isIOS ? Platform.APPLE_APPSTORE : Platform.GOOGLE_PLAY;
-
-  store.register([
-    { id: YEARLY_ID, type: ProductType.PAID_SUBSCRIPTION, platform },
-    { id: LIFETIME_ID, type: ProductType.NON_CONSUMABLE, platform },
-  ]);
-
-  store.when()
-    .approved(transaction => transaction.verify())
-    .verified(receipt => {
-      receipt.finish();
+async function checkEntitlement() {
+  try {
+    const { customerInfo } = await Purchases.getCustomerInfo();
+    const active = customerInfo.entitlements.active[ENTITLEMENT_ID];
+    if (active) {
       localStorage.setItem("sakin_premium", "1");
-      if (purchaseUpdateCallback) purchaseUpdateCallback(true);
-    });
-
-  await store.initialize([platform]);
-  return true;
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
 }
 
 export function isSubscribed() {
-  if (!isNative || !window.CdvPurchase) {
-    return localStorage.getItem("sakin_premium") === "1";
-  }
-  const { store } = window.CdvPurchase;
-  const yearly = store.get(YEARLY_ID);
-  const lifetime = store.get(LIFETIME_ID);
-  if ((yearly && yearly.owned) || (lifetime && lifetime.owned)) {
-    localStorage.setItem("sakin_premium", "1");
-    return true;
-  }
   return localStorage.getItem("sakin_premium") === "1";
 }
 
+export async function checkSubscriptionStatus() {
+  if (!isNative || !storeReady) return isSubscribed();
+  const result = await checkEntitlement();
+  if (result) return true;
+  return localStorage.getItem("sakin_premium") === "1";
+}
+
+async function findPackage(productId) {
+  const { offerings } = await Purchases.getOfferings();
+  if (!offerings.current) return null;
+  const packages = offerings.current.availablePackages;
+  return packages.find(p => p.product.identifier === productId) || null;
+}
+
 export async function purchaseProduct(productId) {
-  if (!isNative || !window.CdvPurchase) return { success: false, error: "not_available" };
-  const product = window.CdvPurchase.store.get(productId);
-  if (!product) return { success: false, error: "product_not_found" };
-  const offer = product.getOffer();
-  if (!offer) return { success: false, error: "no_offer" };
+  if (!isNative || !storeReady) return { success: false, error: "not_available" };
   try {
-    await window.CdvPurchase.store.order(offer);
-    return { success: true };
+    const pkg = await findPackage(productId);
+    if (!pkg) return { success: false, error: "product_not_found" };
+    const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
+    const active = customerInfo.entitlements.active[ENTITLEMENT_ID];
+    if (active) {
+      localStorage.setItem("sakin_premium", "1");
+      if (purchaseUpdateCallback) purchaseUpdateCallback(true);
+      return { success: true };
+    }
+    return { success: false, error: "not_entitled" };
   } catch (err) {
+    if (err.code === "1" || err.userCancelled) {
+      return { success: false, error: "user_cancelled" };
+    }
     return { success: false, error: err.message || "purchase_failed" };
   }
 }
@@ -67,10 +91,15 @@ export const purchaseYearly = () => purchaseProduct(YEARLY_ID);
 export const purchaseLifetime = () => purchaseProduct(LIFETIME_ID);
 
 export async function restorePurchases() {
-  if (!isNative || !window.CdvPurchase) return { success: false, error: "not_available" };
+  if (!isNative || !storeReady) return { success: false, error: "not_available" };
   try {
-    await window.CdvPurchase.store.restorePurchases();
-    if (isSubscribed()) return { success: true };
+    const { customerInfo } = await Purchases.restorePurchases();
+    const active = customerInfo.entitlements.active[ENTITLEMENT_ID];
+    if (active) {
+      localStorage.setItem("sakin_premium", "1");
+      if (purchaseUpdateCallback) purchaseUpdateCallback(true);
+      return { success: true };
+    }
     return { success: false, error: "no_purchase" };
   } catch (err) {
     return { success: false, error: err.message || "restore_failed" };
