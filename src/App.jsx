@@ -1642,7 +1642,7 @@ export default function SakinApp() {
           ? (lang === "tr"
             ? "Abonelik ürünleri yüklenemedi. Lütfen internet bağlantınızı kontrol edip tekrar deneyin."
             : "Subscription products could not be loaded. Please check your internet connection and try again.")
-          : r.error === "not_available"
+          : (r.error === "not_available" || r.error === "plugin_not_loaded" || r.error === "init_failed")
           ? (lang === "tr"
             ? "Mağaza bağlantısı kurulamadı. Lütfen uygulamayı yeniden başlatıp tekrar deneyin."
             : "Could not connect to the store. Please restart the app and try again.")
