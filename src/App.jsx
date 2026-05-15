@@ -7,7 +7,17 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
-const isTablet = isNative && window.innerWidth >= 768;
+const detectTablet = () => {
+  const w = Math.max(window.innerWidth, window.innerHeight);
+  if (w >= 768) {
+    if (isNative) return true;
+    if (/iPad/.test(navigator.userAgent)) return true;
+    if (/Macintosh/.test(navigator.userAgent) && 'ontouchend' in document) return true;
+    if (navigator.maxTouchPoints > 1 && w >= 768) return true;
+  }
+  return false;
+};
+let isTablet = detectTablet();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
@@ -430,6 +440,7 @@ const GLOBAL_CSS = `
     border-radius:12px; border:1px solid rgba(255,255,255,0.05);
     padding:14px 16px; cursor:pointer; transition:all 0.2s;
     background:rgba(255,255,255,0.02); display:flex; align-items:center; gap:14px;
+    min-height:44px;
   }
   .chakra-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.12); }
   .chakra-card.active { border-color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.06); }
@@ -456,7 +467,7 @@ const GLOBAL_CSS = `
   .rem-card.done { opacity:0.38; }
   .rem-card:hover { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); }
   .check-btn {
-    width:34px; height:34px; border-radius:50%; flex-shrink:0; margin-top:2px;
+    width:44px; height:44px; border-radius:50%; flex-shrink:0; margin-top:2px;
     border:2px solid rgba(160,120,220,0.25); background:rgba(160,120,220,0.1);
     cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;
     font-size:16px; color:transparent;
@@ -467,7 +478,7 @@ const GLOBAL_CSS = `
     border-radius:100px; color:#888888; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:13px; letter-spacing:1.5px; text-transform:uppercase;
-    padding:8px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:36px;
+    padding:10px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:44px;
   }
   .notif-btn:hover { background:rgba(255,255,255,0.09); color:#c0b8d8; }
   .notif-btn.sent { background:rgba(100,180,120,0.15); border-color:rgba(100,180,120,0.3); color:#7ed4a0; }
@@ -958,7 +969,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("reiki_label")}</div>
           <div style={{ display:"flex",alignItems:"center",gap:8 }}>
             <div style={{ fontFamily:"'Inter',sans-serif", fontSize:19, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
-            <button onClick={()=>setShowInfo(true)} aria-label={t("chakra_what")} style={{ width:isTablet?36:22,height:isTablet?36:22,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:isTablet?16:12,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0,minHeight:isTablet?44:22,minWidth:isTablet?44:22,display:"flex",alignItems:"center",justifyContent:"center" }}>?</button>
+            <button onClick={()=>setShowInfo(true)} aria-label={t("chakra_what")} style={{ width:isTablet?36:22,height:isTablet?36:22,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:isTablet?16:12,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0,minHeight:44,minWidth:44,display:"flex",alignItems:"center",justifyContent:"center" }}>?</button>
           </div>
         </div>
         <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:isTablet?15:13, letterSpacing:2, padding:isTablet?"12px 8px":"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif",minHeight:44 }}>{lang==="tr"?"Devam →":"Next →"}</button>
@@ -982,7 +993,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           return (
             <button key={tab.id} role="tab" aria-selected={active}
               onClick={()=>setChakraFilter(tab.id)}
-              style={{ flex:1, padding:"10px 8px", borderRadius:9, border:"none", cursor:"pointer", background: active ? "rgba(176,160,200,0.18)" : "transparent", color: active ? "#d0c0f0" : "#888888", fontFamily:"'Jost',sans-serif", letterSpacing:1.5, transition:"all 0.25s", display:"flex", flexDirection:"column", alignItems:"center", gap:2 }}>
+              style={{ flex:1, padding:"10px 8px", borderRadius:9, border:"none", cursor:"pointer", background: active ? "rgba(176,160,200,0.18)" : "transparent", color: active ? "#d0c0f0" : "#888888", fontFamily:"'Jost',sans-serif", letterSpacing:1.5, transition:"all 0.25s", display:"flex", flexDirection:"column", alignItems:"center", gap:2, minHeight:44 }}>
               <span style={{ fontSize:13, fontWeight:500 }}>{tab.label}</span>
               <span style={{ fontSize:10, letterSpacing:1.2, color:active?"#aaa":"#666", textTransform:"uppercase" }}>{tab.sub}</span>
             </button>
@@ -1165,7 +1176,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         </div>
       )}
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
-        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} aria-label={lang==="tr"?"Geri":"Back"} style={{ background:"none",border:"none",color:"#777777",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
+        <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} aria-label={lang==="tr"?"Geri":"Back"} style={{ background:"none",border:"none",color:"#777777",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1,minHeight:44,minWidth:44 }}>←</button>
       </div>
       <div style={{ fontSize:13,letterSpacing:5,color:"#777777",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
@@ -1198,7 +1209,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         : <div style={{ fontSize:13,letterSpacing:4,color:"#777777",marginBottom:12 }}>{t("pct_loaded", Math.round(progress*100))}</div>
       }
       {selected.hz && (
-        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"5px 16px",color:toneOn?selected.pastel:"#666666",fontSize:13,letterSpacing:3,cursor:"pointer",transition:"all 0.3s" }}>
+        <button onClick={() => toggleTone(selected.hz)} style={{ marginBottom:16,background:toneOn?`${selected.color}33`:"transparent",border:`1px solid ${selected.color}${toneOn?"99":"44"}`,borderRadius:20,padding:"10px 16px",color:toneOn?selected.pastel:"#666666",fontSize:13,letterSpacing:3,cursor:"pointer",transition:"all 0.3s",minHeight:44 }}>
           {toneOn ? "⏹" : "▶"} {selected.hz} Hz
         </button>
       )}
@@ -1413,7 +1424,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
               <button
                 onClick={()=>setTipAcik(v=>!v)}
                 aria-label="Örnek sorular"
-                style={{ width:36,height:36,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
+                style={{ width:44,height:44,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
               >?</button>
               {tipAcik && (
                 <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(0,0,0,0.98),rgba(0,0,0,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
@@ -1452,6 +1463,13 @@ export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "tr");
   const t = makeTrans(lang);
   const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
+  const [tabletMode, setTabletMode] = useState(detectTablet);
+  useEffect(() => {
+    const onResize = () => { const v = detectTablet(); isTablet = v; setTabletMode(v); };
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => { window.removeEventListener("resize", onResize); window.removeEventListener("orientationchange", onResize); };
+  }, []);
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { hakkinda:"/hakkinda", fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
@@ -2415,13 +2433,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,height:38,background:"rgba(4,4,12,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(184,164,216,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(4,4,12,0.96)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(184,164,216,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = screen===n.id;
           return (
@@ -2431,7 +2449,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 background: active ? `radial-gradient(ellipse at center,${n.color}20,${n.color}08)` : "transparent",
                 border: active ? `1px solid ${n.color}35` : "1px solid transparent",
                 borderRadius:20, cursor:"pointer", transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)",
-                padding:"4px 16px", display:"flex", alignItems:"center", gap:6,
+                padding:"6px 16px", display:"flex", alignItems:"center", gap:6, minHeight:44,
                 fontFamily:"'Jost',sans-serif", fontWeight:300,
                 fontSize:13, letterSpacing:1.8, textTransform:"uppercase",
                 color: active ? n.color : `${n.color}77`,
@@ -2987,7 +3005,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
               <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setEditBirth(true); }}
                 aria-label={lang==="tr"?"Doğum profilini düzenle":"Edit birth profile"}
-                style={{ background:"none",border:"1px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"6px 12px",color:"#888888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",flexShrink:0 }}>
+                style={{ background:"none",border:"1px solid rgba(255,255,255,0.12)",borderRadius:8,padding:"10px 12px",color:"#888888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",flexShrink:0,minHeight:44 }}>
                 {lang==="tr"?"düzenle":"edit"}
               </button>
             </div>
@@ -3349,7 +3367,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div className="label-sm" style={{ letterSpacing:5,marginBottom:8 }}>{t("sound_subtitle").toUpperCase()}</div>
               <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:10,marginBottom:12 }}>
                 <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0" }}>{t("sound_title")}</div>
-                <button onClick={()=>setShowSolfeggioInfo(true)} aria-label={t("solfeggio_what")} style={{ width:24,height:24,borderRadius:"50%",border:"1px solid rgba(208,192,240,0.3)",background:"rgba(208,192,240,0.08)",color:"#d0c0f0",fontSize:13,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0 }}>?</button>
+                <button onClick={()=>setShowSolfeggioInfo(true)} aria-label={t("solfeggio_what")} style={{ width:24,height:24,borderRadius:"50%",border:"1px solid rgba(208,192,240,0.3)",background:"rgba(208,192,240,0.08)",color:"#d0c0f0",fontSize:13,cursor:"pointer",fontFamily:"'Jost',sans-serif",lineHeight:1,padding:0,minHeight:44,minWidth:44,display:"flex",alignItems:"center",justifyContent:"center" }}>?</button>
               </div>
               <div style={{ fontSize:14,color:"#888888",lineHeight:1.8,maxWidth:340,margin:"0 auto" }}>{t("sound_intro")}</div>
             </div>
