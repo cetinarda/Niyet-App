@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Sakin — Akşam Screenshot</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Jost:wght@300;400;500&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  width: 1242px;
+  height: 2688px;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background: #06060e;
+  position: relative;
+}
+
+.bg-glow {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(ellipse 60% 30% at 50% 45%, rgba(80,60,160,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 20% at 50% 85%, rgba(60,40,140,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 40% at 50% 20%, rgba(30,20,80,0.2) 0%, transparent 60%);
+}
+
+.top-star {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 52px;
+  color: #c8a84e;
+  text-shadow: 0 0 40px rgba(200,168,78,0.5), 0 0 80px rgba(200,168,78,0.2);
+}
+
+.hero {
+  position: absolute;
+  top: 180px;
+  width: 100%;
+  text-align: center;
+}
+
+.hero h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 128px;
+  font-weight: 300;
+  color: #e8e0f0;
+  letter-spacing: 4px;
+  line-height: 1.1;
+  text-shadow: 0 0 60px rgba(180,160,220,0.3);
+}
+
+.hero-divider {
+  margin: 24px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.hero-divider .dot {
+  font-size: 28px;
+  color: #c8a84e;
+  text-shadow: 0 0 20px rgba(200,168,78,0.5);
+}
+
+.hero p {
+  font-family: 'Inter', sans-serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(200,190,220,0.6);
+  letter-spacing: 3px;
+}
+
+/* Phone frame */
+.phone-frame {
+  position: absolute;
+  top: 620px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 720px;
+  height: 1560px;
+  background: #0c0c18;
+  border-radius: 80px;
+  border: 3px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  box-shadow:
+    0 0 80px rgba(80,60,160,0.2),
+    0 40px 120px rgba(0,0,0,0.6),
+    inset 0 0 1px rgba(255,255,255,0.1);
+}
+
+/* Notch */
+.notch-area {
+  position: relative;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+}
+
+.notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 280px;
+  height: 48px;
+  background: #000;
+  border-radius: 0 0 28px 28px;
+}
+
+.notch-time {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;
+  z-index: 2;
+}
+
+.notch-icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+}
+
+/* Signal bars SVG-like */
+.signal-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 20px;
+}
+
+.signal-bars .bar {
+  width: 5px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+.signal-bars .bar:nth-child(1) { height: 6px; }
+.signal-bars .bar:nth-child(2) { height: 10px; }
+.signal-bars .bar:nth-child(3) { height: 14px; }
+.signal-bars .bar:nth-child(4) { height: 18px; }
+
+/* WiFi icon */
+.wifi-icon {
+  width: 26px;
+  height: 20px;
+  position: relative;
+}
+
+.wifi-icon svg {
+  width: 26px;
+  height: 20px;
+}
+
+/* Battery */
+.battery {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.battery-body {
+  width: 40px;
+  height: 20px;
+  border: 2px solid #fff;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.battery-body::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  right: 3px;
+  bottom: 3px;
+  background: #fff;
+  border-radius: 1px;
+}
+
+.battery-tip {
+  width: 4px;
+  height: 10px;
+  background: #fff;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Screen content */
+.screen-content {
+  padding: 20px 40px 20px;
+  position: relative;
+}
+
+/* Landscape header */
+.landscape {
+  width: 100%;
+  height: 340px;
+  background: linear-gradient(180deg, #0c0c18 0%, #1a1230 30%, #2a1840 50%, #1a1230 80%, #0c0c18 100%);
+  border-radius: 24px;
+  margin-bottom: 30px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.landscape::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(180,160,255,0.15) 0%, transparent 70%);
+}
+
+.mountains {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, rgba(20,10,40,0.8) 100%);
+}
+
+.landscape .label-sm {
+  font-family: 'Jost', sans-serif;
+  font-size: 22px;
+  letter-spacing: 8px;
+  color: rgba(200,190,220,0.5);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  z-index: 1;
+}
+
+.landscape .moon {
+  font-size: 72px;
+  margin-bottom: 16px;
+  z-index: 1;
+}
+
+.landscape .title {
+  font-family: 'Inter', sans-serif;
+  font-size: 36px;
+  font-weight: 300;
+  color: #d8d0e8;
+  text-align: center;
+  line-height: 1.5;
+  z-index: 1;
+}
+
+.landscape .sub-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 20px;
+  letter-spacing: 6px;
+  color: rgba(200,190,220,0.35);
+  margin-top: 20px;
+  z-index: 1;
+}
+
+.landscape .divider-line {
+  width: 50px;
+  height: 2px;
+  background: rgba(200,190,220,0.2);
+  margin-top: 12px;
+  z-index: 1;
+}
+
+/* Step cards */
+.step-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 22px;
+  padding: 28px 30px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.step-icon {
+  font-size: 38px;
+  flex-shrink: 0;
+  width: 52px;
+  text-align: center;
+}
+
+.step-text { flex: 1; }
+
+.step-text h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  font-weight: 500;
+  color: #d8d0e8;
+  margin-bottom: 6px;
+}
+
+.step-text p {
+  font-size: 22px;
+  font-weight: 300;
+  color: rgba(200,190,220,0.5);
+  line-height: 1.5;
+}
+
+.step-check {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(160,120,220,0.15);
+  border: 2px solid rgba(160,120,220,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #b090e0;
+  font-size: 24px;
+}
+
+/* Quote card */
+.quote-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 22px;
+  padding: 28px 30px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.quote-mark {
+  font-size: 36px;
+  color: rgba(200,190,220,0.2);
+  flex-shrink: 0;
+  font-family: Georgia, serif;
+}
+
+.quote-text {
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(200,190,220,0.45);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.quote-heart {
+  font-size: 30px;
+  color: rgba(200,190,220,0.15);
+  flex-shrink: 0;
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: rgba(6,6,14,0.95);
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 16px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-item .nav-icon { font-size: 28px; opacity: 0.3; }
+.nav-item .nav-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
+}
+
+.nav-item.active .nav-icon { opacity: 1; }
+.nav-item.active .nav-label { color: rgba(200,180,240,0.8); }
+.nav-item.active { position: relative; }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  width: 40px;
+  height: 3px;
+  background: rgba(200,180,240,0.5);
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="top-star">✦</div>
+
+<div class="hero">
+  <h1>Günü bırak</h1>
+  <div class="hero-divider"><span class="dot">✦</span></div>
+  <p>İçeride kalanla kal</p>
+</div>
+
+<div class="phone-frame">
+  <!-- Notch status bar -->
+  <div class="notch-area">
+    <span class="notch-time">9:41</span>
+    <div class="notch"></div>
+    <div class="notch-icons">
+      <div class="signal-bars">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <svg class="wifi-icon" viewBox="0 0 26 20" fill="none">
+        <path d="M13 18.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" fill="#fff"/>
+        <path d="M8.5 14c1.2-1.2 2.8-1.8 4.5-1.8s3.3.6 4.5 1.8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M5 10.5c2.1-2.1 5-3.3 8-3.3s5.9 1.2 8 3.3" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M1.5 7C4.7 3.8 8.7 2 13 2s8.3 1.8 11.5 5" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div class="battery">
+        <div class="battery-body"></div>
+        <div class="battery-tip"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen-content">
+    <div class="landscape">
+      <div class="label-sm">AKŞAM KAPANIŞI</div>
+      <div class="moon">🌙</div>
+      <div class="title">Bugünü geride bırak.<br>Kendine dön.</div>
+      <div class="sub-label">3 ADIMLIK AKŞAM RİTÜELİ</div>
+      <div class="divider-line"></div>
+      <div class="mountains"></div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-icon">🌙</div>
+      <div class="step-text">
+        <h3>1. Bırak</h3>
+        <p>Bugün seni yoran her şeyi<br>zihninden bırak.</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-icon">💜</div>
+      <div class="step-text">
+        <h3>2. Şükret</h3>
+        <p>İyi gelen 3 şeyi hatırla<br>ve kalbine teşekkür et.</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-icon">✨</div>
+      <div class="step-text">
+        <h3>3. Teslim ol</h3>
+        <p>Kontrolü bırak, huzura teslim ol.<br>Nefesinle kal.</p>
+      </div>
+      <div class="step-check">✓</div>
+    </div>
+
+    <div class="quote-card">
+      <div class="quote-mark">"</div>
+      <div class="quote-text">Bugün bitti.<br>Sen varsın, bu yeter.</div>
+      <div class="quote-heart">♡</div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-item"><span class="nav-icon">◎</span><span class="nav-label">Bağlantı</span></div>
+    <div class="nav-item"><span class="nav-icon">🌅</span><span class="nav-label">Sabah</span></div>
+    <div class="nav-item"><span class="nav-icon">◯</span><span class="nav-label">Nefes</span></div>
+    <div class="nav-item"><span class="nav-icon">🔊</span><span class="nav-label">Ses</span></div>
+    <div class="nav-item"><span class="nav-icon">💜</span><span class="nav-label">Çakra</span></div>
+    <div class="nav-item"><span class="nav-icon">☀️</span><span class="nav-label">Gün</span></div>
+    <div class="nav-item active"><span class="nav-icon">🌙</span><span class="nav-label">Akşam</span></div>
+  </div>
+</div>
+
+</body>
+</html>

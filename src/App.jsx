@@ -6,6 +6,17 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
 
 const isNative = Capacitor.isNativePlatform();
+const detectTablet = () => {
+  const w = Math.max(window.innerWidth, window.innerHeight);
+  if (w >= 768) {
+    if (isNative) return true;
+    if (/iPad/.test(navigator.userAgent)) return true;
+    if (/Macintosh/.test(navigator.userAgent) && 'ontouchend' in document) return true;
+    if (navigator.maxTouchPoints > 1 && w >= 768) return true;
+  }
+  return false;
+};
+let isTablet = detectTablet();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
@@ -439,7 +450,7 @@ const GLOBAL_CSS = `
   .rem-card.done { opacity:0.38; }
   .rem-card:hover { background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.1); }
   .check-btn {
-    width:34px; height:34px; border-radius:50%; flex-shrink:0; margin-top:2px;
+    width:44px; height:44px; border-radius:50%; flex-shrink:0; margin-top:2px;
     border:2px solid rgba(160,120,220,0.25); background:rgba(160,120,220,0.1);
     cursor:pointer; transition:all 0.3s; display:flex; align-items:center; justify-content:center;
     font-size:16px; color:transparent;
@@ -450,7 +461,7 @@ const GLOBAL_CSS = `
     border-radius:100px; color:#888888; cursor:pointer;
     font-family:'Jost',sans-serif; font-weight:300;
     font-size:13px; letter-spacing:1.5px; text-transform:uppercase;
-    padding:8px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:36px;
+    padding:10px 14px; transition:all 0.2s; white-space:nowrap; flex-shrink:0; min-height:44px;
   }
   .notif-btn:hover { background:rgba(255,255,255,0.09); color:#c0b8d8; }
   .notif-btn.sent { background:rgba(100,180,120,0.15); border-color:rgba(100,180,120,0.3); color:#7ed4a0; }
@@ -1308,7 +1319,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
               <button
                 onClick={()=>setTipAcik(v=>!v)}
                 aria-label="Örnek sorular"
-                style={{ width:36,height:36,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
+                style={{ width:44,height:44,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
               >?</button>
               {tipAcik && (
                 <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(0,0,0,0.98),rgba(0,0,0,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
@@ -1347,6 +1358,13 @@ export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "tr");
   const t = makeTrans(lang);
   const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
+  const [tabletMode, setTabletMode] = useState(detectTablet);
+  useEffect(() => {
+    const onResize = () => { const v = detectTablet(); isTablet = v; setTabletMode(v); };
+    window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
+    return () => { window.removeEventListener("resize", onResize); window.removeEventListener("orientationchange", onResize); };
+  }, []);
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { hakkinda:"/hakkinda", fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
@@ -2263,13 +2281,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:36,alignSelf:"center",marginRight:4 }}>
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,height:38,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = screen===n.id;
           return (
@@ -3149,7 +3167,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <div style={{ fontSize:16,fontWeight:500,color:"#d8d0e8",marginBottom:4 }}>{step.title}</div>
                     <div style={{ fontSize:13,fontWeight:300,color:"rgba(200,190,220,0.5)",lineHeight:1.5 }}>{step.desc}</div>
                   </div>
-                  <div style={{ width:34,height:34,borderRadius:"50%",background:aksamRitualChecks[i]?"rgba(160,120,220,0.3)":"rgba(160,120,220,0.1)",border:`2px solid ${aksamRitualChecks[i]?"rgba(160,120,220,0.7)":"rgba(160,120,220,0.25)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all 0.3s",fontSize:16,color:aksamRitualChecks[i]?"#b090e0":"transparent" }}>✓</div>
+                  <div style={{ width:44,height:44,borderRadius:"50%",background:aksamRitualChecks[i]?"rgba(160,120,220,0.3)":"rgba(160,120,220,0.1)",border:`2px solid ${aksamRitualChecks[i]?"rgba(160,120,220,0.7)":"rgba(160,120,220,0.25)"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"all 0.3s",fontSize:16,color:aksamRitualChecks[i]?"#b090e0":"transparent" }}>✓</div>
                 </div>
               ))}
               <div style={{ background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.04)",borderRadius:18,padding:"18px 20px",marginTop:8,display:"flex",alignItems:"center",gap:16 }}>
@@ -3273,7 +3291,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     disabled={!sikayet.trim()}
                     style={{
                       position:"absolute",right:12,bottom:12,
-                      width:38,height:38,borderRadius:"50%",
+                      width:44,height:44,borderRadius:"50%",
                       background:sikayet.trim()?"linear-gradient(135deg,rgba(255,255,255,0.8),rgba(255,255,255,0.6))":"rgba(255,255,255,0.05)",
                       border:"none",cursor:sikayet.trim()?"pointer":"default",
                       color:sikayet.trim()?"#fff":"#777777",fontSize:15,

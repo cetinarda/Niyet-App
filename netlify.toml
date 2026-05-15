@@ -14,3 +14,19 @@
 
 [functions."ai-report"]
   timeout = 26
+
+[[headers]]
+  for = "/privacy/*"
+  [headers.values]
+    Content-Type = "text/html; charset=UTF-8"
+
+[[headers]]
+  for = "/terms/*"
+  [headers.values]
+    Content-Type = "text/html; charset=UTF-8"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false

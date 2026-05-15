@@ -1,6 +1,6 @@
 # Gizlilik Politikası — Sakin Uygulaması
 
-**Son güncelleme:** Nisan 2026
+**Son güncelleme:** Mayıs 2026
 
 ## 1. Genel Bakış
 
@@ -15,19 +15,22 @@ Aşağıdaki veriler yalnızca kullanıcının kendi cihazında (yerel depolamad
 - **Seçilen motivasyon kelimeleri:** Sabah seçilen 3 kelime
 - **Akşam kapanış notları:** "Bugün ne öğrendim?" ve şükür notları
 - **Nefes sayısı:** Tamamlanan nefes egzersizi sayısı
+- **Frekans dinleme süresi:** Ses dalgaları bölümünde geçirilen süre (saniye)
 - **Hatırlatıcı tamamlanma durumu:** Günlük görevlerin işaretlenme durumu
-- **Haftalık istatistikler:** Çakra, kelime ve nefes verileri (cihazda özet olarak tutulur)
+- **Haftalık istatistikler:** Çakra, kelime, nefes ve frekans dinleme verileri (cihazda özet olarak tutulur)
 - **Doğum tarihi ve saati:** Kişiselleştirilmiş içerik için (isteğe bağlı, yalnızca cihazda)
+- **Gün serisi verisi:** Ardışık kullanım günleri (streak)
 
 ### 2.2 AI Destekli Özellikler — Üçüncü Taraf Veri Paylaşımı
 
-Uygulama, "İçsel Ayna" ve "Haftalık Rapor" gibi AI destekli özelliklerde kullanıcının yazdığı metinleri kişiselleştirilmiş yanıt üretmek amacıyla üçüncü taraf yapay zeka hizmetlerine gönderir.
+Uygulama, "İçsel Ayna", "Reiki Analizi", "Zihinsel-Fiziksel Analiz", "Sağlık Farkındalığı" ve "Haftalık Rapor" gibi AI destekli özelliklerde kullanıcının yazdığı metinleri kişiselleştirilmiş yanıt üretmek amacıyla üçüncü taraf yapay zeka hizmetlerine gönderir.
 
 **AI sağlayıcısı:** Meta Llama (Groq altyapısı üzerinden)
 
 **Gönderilen veri tipleri:**
 - Kullanıcının yazdığı soru veya şikayet metni
 - Günlük niyet ve motivasyon kelimeleri (yalnızca haftalık rapor için)
+- Frekans dinleme süresi (haftalık rapor için)
 - Doğum tarihi bilgisi (varsa, kişiselleştirme amacıyla)
 
 **Gönderilmeyen veriler:**
@@ -52,7 +55,10 @@ Uygulama aşağıdaki verileri **kesinlikle toplamaz**:
 - Üçüncü taraf hesap bilgileri
 - Reklam veya takip amaçlı tanımlayıcılar
 
-### 2.4 Analitik Veriler
+### 2.4 Ses Dosyaları
+Uygulama kuş sesi kayıtları içerir. Bu dosyalar uygulamayla birlikte yerel olarak depolanır; herhangi bir ses kaydı yapılmaz ve mikrofon erişimi kullanılmaz.
+
+### 2.5 Analitik Veriler
 Uygulama herhangi bir analitik veya izleme SDK'sı kullanmamaktadır.
 
 ## 3. Bildirimler
@@ -67,8 +73,17 @@ Kullanıcı günlük hatırlatıcı bildirimleri için izin verirse:
 | Hizmet | Amaç | Paylaşılan Veri |
 |---|---|---|
 | Groq API (Meta Llama) | AI destekli kişisel yansıtma | Kullanıcının yazdığı metin (anonim) |
+| Apple StoreKit | Abonelik yönetimi | Satın alma durumu (Apple tarafından yönetilir) |
 
 Uygulama herhangi bir reklam ağı, analitik servisi veya sosyal medya entegrasyonu içermemektedir.
+
+## 4.1 Abonelik Bilgisi
+
+- **Sakin Yıllık Erişim:** $4.99/yıl otomatik yenilenen abonelik
+- Ödeme, Apple Kimliği hesabınızdan tahsil edilir
+- Abonelik, dönem bitiminden 24 saat önce iptal edilmezse otomatik yenilenir
+- Aboneliklerinizi Ayarlar > Apple Kimliği > Abonelikler bölümünden yönetebilirsiniz
+- Ücretsiz deneme süresi sunulmamaktadır
 
 ## 5. Veri Güvenliği
 
