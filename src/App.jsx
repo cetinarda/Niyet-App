@@ -879,21 +879,28 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
 
   const toggleTone = (hz) => {
     if (toneOn) { stopTone(); return; }
-    // iOS Safari: AudioContext must be created synchronously inside user gesture
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     audioCtxRef.current = ctx;
     ctx.resume();
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 1.5);
-    gain.connect(ctx.destination);
-    gainRef.current = gain;
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    osc.frequency.value = hz;
-    osc.connect(gain);
-    osc.start();
-    oscRef.current = osc;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 2);
+    master.connect(ctx.destination);
+    gainRef.current = master;
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.type = "sine"; lfo.frequency.value = 0.15;
+    lfoGain.gain.value = 0.03;
+    lfo.connect(lfoGain); lfoGain.connect(master.gain);
+    lfo.start();
+    [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.12, "sine"], [2.01, 0.06, "triangle"]].forEach(([ratio, amp, type]) => {
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = type; o.frequency.value = hz * ratio;
+      g.gain.setValueAtTime(0, ctx.currentTime);
+      g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 2);
+      o.connect(g); g.connect(master); o.start();
+      if (ratio === 1) oscRef.current = o;
+    });
     setToneOn(true);
   };
 
@@ -1191,20 +1198,20 @@ const ORNEK_SORULAR_EN = [
 function playFreqTone(hz, dur = 3.5) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.08);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-    gain.connect(ctx.destination);
-    [[1, 1], [2.76, 0.28], [5.4, 0.10]].forEach(([ratio, amp]) => {
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 0.4);
+    master.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+    master.connect(ctx.destination);
+    [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
       const o = ctx.createOscillator();
       const g = ctx.createGain();
-      o.type = "sine";
+      o.type = type;
       o.frequency.value = hz * ratio;
       g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.18 * amp, ctx.currentTime + 0.08);
+      g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 0.4);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-      o.connect(g); g.connect(ctx.destination);
+      o.connect(g); g.connect(master);
       o.start(); o.stop(ctx.currentTime + dur);
     });
     setTimeout(() => { try { ctx.close(); } catch(_) {} }, (dur + 0.5) * 1000);
@@ -3024,17 +3031,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           setTimeout(() => {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             freqCtxRef.current = ctx; ctx.resume();
-            const gain = ctx.createGain();
-            gain.gain.setValueAtTime(0, ctx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 1.5);
-            gain.connect(ctx.destination); freqGainRef.current = gain;
-            [[1, 1], [2.76, 0.28], [5.4, 0.10]].forEach(([ratio, amp]) => {
+            const master = ctx.createGain();
+            master.gain.setValueAtTime(0, ctx.currentTime);
+            master.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 2);
+            master.connect(ctx.destination); freqGainRef.current = master;
+            const lfo = ctx.createOscillator();
+            const lfoGain = ctx.createGain();
+            lfo.type = "sine"; lfo.frequency.value = 0.12;
+            lfoGain.gain.value = 0.012;
+            lfo.connect(lfoGain); lfoGain.connect(master.gain);
+            lfo.start();
+            [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
-              o.type = "sine"; o.frequency.value = hz * ratio;
+              o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
-              g.gain.linearRampToValueAtTime(0.06 * amp, ctx.currentTime + 1.5);
-              o.connect(g); g.connect(ctx.destination); o.start();
-              if (ratio === 1) { freqOscRef.current = o; freqGainRef.current = g; }
+              g.gain.linearRampToValueAtTime(0.06 * amp, ctx.currentTime + 2);
+              o.connect(g); g.connect(master); o.start();
+              if (ratio === 1) { freqOscRef.current = o; }
             });
             if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 1.0 : 0.7);
             setPlayingHz(hz);
