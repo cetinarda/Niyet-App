@@ -748,6 +748,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
   const CHAKRAS_22 = getChakras22(lang);
   const [tPhase,   setTPhase]   = useState("list");
   const [selected, setSelected] = useState(null);
+  const [chakraTab, setChakraTab] = useState("temel");
   const [elapsed,  setElapsed]  = useState(0);
   const [particles,setParticles]= useState([]);
   const timerRef    = useRef(null);
@@ -920,26 +921,42 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
         </div>
         <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
       </div>
-      {/* Ascension layout — bottom to top */}
+      {/* Tab toggle */}
+      <div style={{ display:"flex", borderRadius:12, overflow:"hidden", border:"1px solid rgba(255,255,255,0.1)", marginBottom:20 }}>
+        <button onClick={() => setChakraTab("temel")} style={{
+          flex:1, padding:"12px 0", background: chakraTab==="temel" ? "rgba(160,122,224,0.15)" : "transparent",
+          border:"none", borderRight:"1px solid rgba(255,255,255,0.1)", cursor:"pointer", textAlign:"center",
+        }}>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Temel 7":"Classic 7"}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"KLASİK ÇAKRALAR":"CLASSIC CHAKRAS"}</div>
+        </button>
+        <button onClick={() => setChakraTab("yuksek")} style={{
+          flex:1, padding:"12px 0", background: chakraTab==="yuksek" ? "rgba(160,122,224,0.15)" : "transparent",
+          border:"none", cursor:"pointer", textAlign:"center",
+        }}>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Yüksek 15":"Higher 15"}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC"}</div>
+        </button>
+      </div>
+
       <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
-        {/* Sun halo at top — Source energy */}
-        <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
-          <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
-            <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
-            <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+        {chakraTab === "yuksek" && (
+          <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
+            <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
+              <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
+              <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
           </div>
-          <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
-        </div>
-        {/* Level 3 → 2 → 1 (top to bottom = cosmic to physical) */}
-        {[3,2,1].map(level => {
+        )}
+        {(chakraTab === "temel" ? [1] : [3,2]).map(level => {
           const levelChakras = CHAKRAS_22.filter(c => c.level === level);
           const levelLabel = (lang==="en" ? LEVEL_LABELS_EN : LEVEL_LABELS_TR)[level];
           const levelRange = (lang==="en" ? LEVEL_RANGES_EN : LEVEL_RANGES_TR)[level];
           const levelColors = { 3:"rgba(200,200,210,0.4)", 2:"rgba(140,100,220,0.4)", 1:"rgba(200,120,80,0.4)" };
           return (
             <div key={level}>
-              {/* Level divider */}
               <div style={{ display:"flex", alignItems:"center", gap:10, margin:"6px 0 10px" }}>
                 <div style={{ flex:1, height:1, background:levelColors[level] }} />
                 <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:3, color:"#666666", textTransform:"uppercase", whiteSpace:"nowrap" }}>
@@ -947,7 +964,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
                 </div>
                 <div style={{ flex:1, height:1, background:levelColors[level] }} />
               </div>
-              {/* Chakras in this level — reversed so highest number is at top */}
               {[...levelChakras].reverse().map((c,i) => (
                 <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
                   style={{ marginBottom:7, animationDelay:`${i*0.04}s`, opacity:0 }}
@@ -962,10 +978,16 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
             </div>
           );
         })}
-        {/* Earth anchor at bottom */}
-        <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
-          <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
-        </div>
+        {chakraTab === "temel" && (
+          <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+          </div>
+        )}
+        {chakraTab === "yuksek" && (
+          <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+          </div>
+        )}
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
@@ -1844,8 +1866,9 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("çakra", chakraInput);
-    } catch {
-      setChakraAnaliz("Bağlantı hatası.");
+    } catch(e) {
+      setChakraAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again.");
+      console.error("ChakraAnaliz error:", e);
     }
   };
 
@@ -2082,7 +2105,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("şikayet", sikayet);
-    } catch { setSikayetAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); }
+    } catch(e) { setSikayetAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); console.error("SikayetAnaliz error:", e); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -2135,7 +2158,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("hastalık", hastalik);
-    } catch { setHastalikAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); }
+    } catch(e) { setHastalikAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); console.error("HastalikAnaliz error:", e); }
   };
 
   const generateRapor = async () => {
@@ -2238,7 +2261,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         setRaporKullanildi(true);
       }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
-    } catch { setAiRapor(lang==="tr" ? "Bağlantı hatası. Lütfen tekrar dene." : "Connection error. Please try again."); }
+    } catch(e) { setAiRapor(lang==="tr" ? "Bağlantı hatası. Lütfen tekrar dene." : "Connection error. Please try again."); console.error("AiRapor error:", e); }
     finally { setAiLoading(false); }
   };
 
