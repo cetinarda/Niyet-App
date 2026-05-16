@@ -1715,6 +1715,7 @@ export default function SakinApp() {
       setTimeout(() => {
         setShowIntro(false);
         sessionStorage.setItem("sakin_intro_seen","1");
+        if (isNative) setScreen("mandala");
       }, 2400),
     ];
     return () => timers.forEach(clearTimeout);
