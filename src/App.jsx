@@ -2540,7 +2540,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
         return (
-          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 90px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+            {/* Back button */}
+            <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
+              style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
+              ←
+            </button>
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:8}}>
               <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{lang==="tr"?"BUGÜNÜN BAĞLANTISI":"TODAY'S CONNECTION"}</div>
@@ -2761,7 +2766,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* SABAH */}
       {screen==="sabah" && (
-        <div style={{ maxWidth:390,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:390,width:"100%",padding:"62px 26px 170px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:36,animation:"sunrise 1s ease forwards" }}>
             <div style={{ position:"relative",width:88,height:88,margin:"0 auto" }}>
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
@@ -2831,7 +2836,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* NEFES */}
       {screen==="nefes" && (
-        <div style={{ textAlign:"center",padding:"62px 20px 110px",position:"relative",zIndex:1,maxWidth:420,width:"100%" }}>
+        <div style={{ textAlign:"center",padding:"62px 20px 170px",position:"relative",zIndex:1,maxWidth:420,width:"100%" }}>
           <div className="label-sm" style={{ marginBottom:32,letterSpacing:5 }}>{breathStarted ? t(`breath_mode_${breathMode}`) : t("breath_title")}</div>
 
           {/* ── Visualization area ── */}
@@ -3101,7 +3106,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           }, playingHz ? 850 : 0);
         };
         return (
-          <div style={{ maxWidth:440,width:"100%",padding:"52px 20px 120px",position:"relative",zIndex:1 }}>
+          <div style={{ maxWidth:440,width:"100%",padding:"52px 20px 170px",position:"relative",zIndex:1 }}>
             <div style={{ textAlign:"center",marginBottom:28 }}>
               <div className="label-sm" style={{ letterSpacing:5,marginBottom:8 }}>{t("sound_subtitle").toUpperCase()}</div>
               <div style={{ fontFamily:"'Inter',sans-serif",fontSize:26,fontWeight:300,letterSpacing:2,color:"#d0c0f0",marginBottom:12 }}>{t("sound_title")}</div>
@@ -3183,7 +3188,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* ÇAKRA */}
       {screen==="chakra" && (
-        <div style={{ textAlign:"center",padding:"62px 30px 110px",position:"relative",zIndex:1,maxWidth:360 }}>
+        <div style={{ textAlign:"center",padding:"62px 30px 170px",position:"relative",zIndex:1,maxWidth:360 }}>
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
@@ -3204,7 +3209,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* AKŞAM */}
       {screen==="aksam" && (
-        <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:385,width:"100%",padding:"62px 26px 170px",position:"relative",zIndex:1 }}>
           {!aksamRitualChecks.every(Boolean) ? (
             <>
               <div style={{ textAlign:"center",marginBottom:28 }}>
@@ -3271,7 +3276,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* REHBER */}
       {/* İÇSEL AYNA — Google-style merkezi arama */}
       {screen==="rehber" && (
-        <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 120px" : "52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+        <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 170px" : "52px 24px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
           {/* Arka plan ambient */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
 
@@ -3497,7 +3502,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* HARİTA */}
       {screen==="harita" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 110px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 170px",position:"relative",zIndex:1 }}>
           <div style={{ textAlign:"center",marginBottom:40 }}>
             <div style={{ fontSize:13,letterSpacing:5,color:"#666666",marginBottom:9 }}>{t("weekly_label")}</div>
             <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
