@@ -1,16 +1,26 @@
 export const handler = async (event) => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: corsHeaders, body: "" };
+  }
+
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   let body;
   try { body = JSON.parse(event.body); } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid request" }) };
+    return { statusCode: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Invalid request" }) };
   }
 
   const { license_key } = body;
   if (!license_key || typeof license_key !== "string" || license_key.length > 100) {
-    return { statusCode: 400, body: JSON.stringify({ valid: false, error: "Invalid key" }) };
+    return { statusCode: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ valid: false, error: "Invalid key" }) };
   }
 
   try {
@@ -24,20 +34,20 @@ export const handler = async (event) => {
     if (data.valid) {
       return {
         statusCode: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
         body: JSON.stringify({ valid: true, name: data.meta?.customer_name || "" }),
       };
     }
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ valid: false, error: data.error || "Invalid license" }),
     };
-  } catch (e) {
+  } catch {
     return {
       statusCode: 502,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ valid: false, error: "Connection error" }),
     };
   }

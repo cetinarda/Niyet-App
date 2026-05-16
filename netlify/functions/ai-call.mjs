@@ -15,8 +15,18 @@ function sanitizeTurkish(text) {
 }
 
 export const handler = async (event) => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: corsHeaders, body: "" };
+  }
+
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   const apiKey = process.env.GROQ_API_KEY;
@@ -24,7 +34,7 @@ export const handler = async (event) => {
   if (!apiKey) {
     return {
       statusCode: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }),
     };
   }
@@ -33,7 +43,7 @@ export const handler = async (event) => {
   try {
     body = JSON.parse(event.body);
   } catch {
-    return { statusCode: 400, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek" }) };
+    return { statusCode: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek" }) };
   }
 
   const { system, messages, max_tokens = 1800 } = body;
@@ -66,7 +76,7 @@ export const handler = async (event) => {
   } catch (e) {
     return {
       statusCode: 502,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }),
     };
   }
@@ -75,7 +85,7 @@ export const handler = async (event) => {
     const errMsg = data.error?.message || `HTTP ${res.status}`;
     return {
       statusCode: res.status,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: errMsg }),
     };
   }
@@ -84,7 +94,7 @@ export const handler = async (event) => {
   const text = sanitizeTurkish(raw);
   return {
     statusCode: 200,
-    headers: { "Content-Type": "application/json" },
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
     body: JSON.stringify({ text }),
   };
 };

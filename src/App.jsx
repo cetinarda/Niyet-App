@@ -886,20 +886,20 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
     ctx.resume();
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 2);
+    master.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 2);
     master.connect(ctx.destination);
     gainRef.current = master;
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.type = "sine"; lfo.frequency.value = 0.15;
-    lfoGain.gain.value = 0.03;
+    lfoGain.gain.value = 0.05;
     lfo.connect(lfoGain); lfoGain.connect(master.gain);
     lfo.start();
     [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.12, "sine"], [2.01, 0.06, "triangle"]].forEach(([ratio, amp, type]) => {
       const o = ctx.createOscillator(); const g = ctx.createGain();
       o.type = type; o.frequency.value = hz * ratio;
       g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 2);
+      g.gain.linearRampToValueAtTime(0.28 * amp, ctx.currentTime + 2);
       o.connect(g); g.connect(master); o.start();
       if (ratio === 1) oscRef.current = o;
     });
@@ -1202,7 +1202,7 @@ function playFreqTone(hz, dur = 3.5) {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 0.4);
+    master.gain.linearRampToValueAtTime(0.30, ctx.currentTime + 0.4);
     master.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
     master.connect(ctx.destination);
     [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
@@ -1211,7 +1211,7 @@ function playFreqTone(hz, dur = 3.5) {
       o.type = type;
       o.frequency.value = hz * ratio;
       g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 0.4);
+      g.gain.linearRampToValueAtTime(0.30 * amp, ctx.currentTime + 0.4);
       g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
       o.connect(g); g.connect(master);
       o.start(); o.stop(ctx.currentTime + dur);
@@ -3080,19 +3080,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             freqCtxRef.current = ctx; ctx.resume();
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
-            master.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 2);
+            master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 2);
             master.connect(ctx.destination); freqGainRef.current = master;
             const lfo = ctx.createOscillator();
             const lfoGain = ctx.createGain();
             lfo.type = "sine"; lfo.frequency.value = 0.12;
-            lfoGain.gain.value = 0.012;
+            lfoGain.gain.value = 0.04;
             lfo.connect(lfoGain); lfoGain.connect(master.gain);
             lfo.start();
             [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
-              g.gain.linearRampToValueAtTime(0.06 * amp, ctx.currentTime + 2);
+              g.gain.linearRampToValueAtTime(0.22 * amp, ctx.currentTime + 2);
               o.connect(g); g.connect(master); o.start();
               if (ratio === 1) { freqOscRef.current = o; }
             });
@@ -3271,26 +3271,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* REHBER */}
       {/* İÇSEL AYNA — Google-style merkezi arama */}
       {screen==="rehber" && (
-        <div style={{ maxWidth:520,width:"100%",padding:"52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+        <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 120px" : "52px 24px 120px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
           {/* Arka plan ambient */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
 
-          {/* Logo gem */}
-          <div style={{ position:"relative",width:56,height:56,margin:"0 auto 18px",zIndex:1 }}>
-            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:6,animation:"diamondSpin 12s linear infinite" }} />
-            <div style={{ position:"absolute",inset:11,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,animation:"diamondSpin 8s linear infinite reverse" }} />
-            <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.8)",boxShadow:"0 0 16px rgba(255,255,255,0.6),0 0 32px rgba(255,255,255,0.4)" }} />
-          </div>
+          {!sikayetAnaliz && (
+            <>
+              {/* Logo gem */}
+              <div style={{ position:"relative",width:56,height:56,margin:"0 auto 18px",zIndex:1 }}>
+                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:6,animation:"diamondSpin 12s linear infinite" }} />
+                <div style={{ position:"absolute",inset:11,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,animation:"diamondSpin 8s linear infinite reverse" }} />
+                <div style={{ position:"absolute",inset:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(255,255,255,0.8)",boxShadow:"0 0 16px rgba(255,255,255,0.6),0 0 32px rgba(255,255,255,0.4)" }} />
+              </div>
 
-          {/* Başlık */}
-          <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
-            <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
-              {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
-            </div>
-            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
-              {lang==="tr" ? "Süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
-            </div>
-          </div>
+              {/* Başlık */}
+              <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
+                  {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
+                </div>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
+                </div>
+              </div>
+            </>
+          )}
 
           {/* Ana arama kutusu veya sonuç */}
           <div style={{ width:"100%",zIndex:1 }}>

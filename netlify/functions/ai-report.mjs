@@ -14,21 +14,31 @@ function sanitizeTurkish(text) {
 }
 
 export const handler = async (event) => {
+  const corsHeaders = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 204, headers: corsHeaders, body: "" };
+  }
+
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
   }
 
   let gunler;
   try {
     ({ gunler } = JSON.parse(event.body));
   } catch {
-    return { statusCode: 400, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
+    return { statusCode: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
   }
 
   if (!gunler || gunler.length === 0) {
     return {
       statusCode: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "En az 1 gün verisi gerekli." }),
     };
   }
@@ -37,7 +47,7 @@ export const handler = async (event) => {
   if (!apiKey) {
     return {
       statusCode: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }),
     };
   }
@@ -92,7 +102,7 @@ Samimi, kendinden emin, şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap 
       const errMsg = data.error?.message || `HTTP ${res.status}`;
       return {
         statusCode: res.status,
-        headers: { "Content-Type": "application/json" },
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
         body: JSON.stringify({ error: errMsg }),
       };
     }
@@ -100,13 +110,13 @@ Samimi, kendinden emin, şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap 
     const rapor = sanitizeTurkish(data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.");
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ rapor }),
     };
   } catch (e) {
     return {
       statusCode: 502,
-      headers: { "Content-Type": "application/json" },
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }),
     };
   }
