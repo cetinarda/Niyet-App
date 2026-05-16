@@ -1433,7 +1433,7 @@ export default function SakinApp() {
       birdAudioRef.current = null;
     }
   };
-  const playBirdSound = (birdKey, vol = 0.7) => {
+  const playBirdSound = (birdKey, vol = 0.3) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
@@ -3054,7 +3054,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               o.connect(g); g.connect(master); o.start();
               if (ratio === 1) { freqOscRef.current = o; }
             });
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 1.0 : 0.7);
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.5 : 0.3);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
