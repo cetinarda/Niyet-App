@@ -1707,16 +1707,16 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
+  useEffect(() => { if (isNative && screen === "rehber") setScreen("gun"); }, [screen]);
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
-      setTimeout(() => setIntroPhase(1), 600),
-      setTimeout(() => setIntroPhase(2), 1800),
-      setTimeout(() => setIntroPhase(3), 3000),
-      setTimeout(() => setIntroPhase(4), 4200),
-      setTimeout(() => setIntroPhase(5), 5400),
-      setTimeout(() => { setIntroExiting(true); }, 6800),
-      setTimeout(() => { setShowIntro(false); sessionStorage.setItem("sakin_intro_seen","1"); }, 7600),
+      setTimeout(() => { setIntroExiting(true); }, 1800),
+      setTimeout(() => {
+        setShowIntro(false);
+        sessionStorage.setItem("sakin_intro_seen","1");
+        if (isNative) setScreen("sabah");
+      }, 2400),
     ];
     return () => timers.forEach(clearTimeout);
   }, [showIntro]);
@@ -2400,74 +2400,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         );
       })}
 
-      {/* INTRO ANİMASYON */}
+      {/* INTRO ANİMASYON — dönen kare */}
       {showIntro && (
         <div style={{
           position:"fixed",inset:0,zIndex:99999,background:"#000",
-          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-          animation: introExiting ? "introFadeOut 0.8s ease forwards" : "none",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          animation: introExiting ? "introFadeOut 0.6s ease forwards" : "none",
         }}>
-          {/* Logo: kare + nokta */}
-          <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
-            <svg viewBox="0 0 120 120" width="120" height="120" style={{ position:"absolute",inset:0 }}>
-              <rect x="10" y="10" width="100" height="100" rx="16"
-                fill="none" stroke="rgba(184,164,216,0.6)" strokeWidth="3"
-                strokeDasharray="400" style={{ animation:"introSquareDraw 1.5s ease forwards" }} />
-            </svg>
-            <div style={{
-              position:"absolute",left:"50%",top:"50%",width:18,height:18,borderRadius:"50%",
-              background:"rgba(184,164,216,0.9)",
-              boxShadow:"0 0 30px rgba(184,164,216,0.5),0 0 60px rgba(122,80,150,0.3)",
-              animation:"introDotScale 0.8s 0.6s ease both",
-            }} />
-          </div>
-
-          {/* Sakin yazısı */}
-          {introPhase >= 1 && (
-            <div style={{ animation:"introTextUp 0.7s ease forwards",marginBottom:8 }}>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,color:"#fff" }}>Sakin</div>
-            </div>
-          )}
-
-          {/* Çizgi ayırıcı */}
-          {introPhase >= 1 && (
-            <div style={{ height:1,background:"rgba(184,164,216,0.3)",margin:"16px 0 32px",animation:"introLineExpand 0.6s 0.3s ease both" }} />
-          )}
-
-          {/* Özellik kartları */}
-          <div style={{ display:"flex",flexDirection:"column",gap:16,alignItems:"center" }}>
-            {introPhase >= 2 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Nefes & Meditasyon" : "Breath & Meditation"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 3 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Çakra & Frekans" : "Chakra & Frequency"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 4 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Kişisel Harita" : "Personal Map"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 5 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Günlük Ritüel" : "Daily Ritual"}
-                </span>
-              </div>
-            )}
+          <div style={{ position:"relative",width:120,height:120 }}>
+            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:12,animation:"diamondSpin 12s linear infinite" }} />
+            <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:8,animation:"diamondSpin 8s linear infinite reverse" }} />
+            <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:16,height:16,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 20px rgba(255,255,255,0.6),0 0 40px rgba(255,255,255,0.4)" }} />
           </div>
         </div>
       )}
@@ -2475,24 +2418,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* GİRİŞ */}
       {screen==="giris" && (
         <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
-          {/* Gezegen — kozmik açılış */}
-          <div className="fade-up" style={{ marginBottom:24,position:"relative" }}>
-            {/* Gezegen halka */}
-            <div style={{ position:"relative",width:180,height:180,margin:"0 auto" }}>
-              {/* Dış orbit halkası */}
-              <div style={{ position:"absolute",inset:-20,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.04)",animation:"mandalaRotate 60s linear infinite" }} />
-              <div style={{ position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"mandalaRotate 40s linear infinite reverse" }} />
-              {/* Gezegen gövdesi */}
-              <div style={{ position:"absolute",inset:20,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 50%, transparent 70%)",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 0 60px rgba(255,255,255,0.04), inset 0 0 40px rgba(255,255,255,0.02)" }} />
-              {/* Logo — kare + nokta */}
-              <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                <div style={{ position:"relative",width:56,height:56 }}>
-                  <svg viewBox="0 0 56 56" width="56" height="56" style={{ position:"absolute",inset:0 }}>
-                    <rect x="4" y="4" width="48" height="48" rx="10" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
-                  </svg>
-                  <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.9)",boxShadow:"0 0 20px rgba(184,164,216,0.5),0 0 40px rgba(122,80,150,0.3)" }} />
-                </div>
-              </div>
+          {/* Dönen kare logosu */}
+          <div className="fade-up" style={{ marginBottom:36,position:"relative" }}>
+            <div style={{ position:"relative",width:100,height:100,margin:"0 auto" }}>
+              <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:10,animation:"diamondSpin 12s linear infinite" }} />
+              <div style={{ position:"absolute",inset:20,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,animation:"diamondSpin 8s linear infinite reverse" }} />
+              <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:14,height:14,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 20px rgba(255,255,255,0.6),0 0 40px rgba(255,255,255,0.4)" }} />
             </div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.3s",opacity:0 }}>
