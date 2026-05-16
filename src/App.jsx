@@ -3853,7 +3853,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
-            const sabahPulse = n.id==="sabah" && !navPulsed && screen!=="sabah";
+            const sabahPulse = n.id==="sabah" && !navPulsed && screen==="sabah";
             return (
               <button key={n.id} onClick={()=>{ setNavPulsed(true); setScreen(n.id); }}
                 style={{
