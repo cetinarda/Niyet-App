@@ -1867,7 +1867,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("çakra", chakraInput);
     } catch(e) {
-      setChakraAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again.");
+      setChakraAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e)));
       console.error("ChakraAnaliz error:", e);
     }
   };
@@ -2105,7 +2105,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("şikayet", sikayet);
-    } catch(e) { setSikayetAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); console.error("SikayetAnaliz error:", e); }
+    } catch(e) { setSikayetAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -2158,7 +2158,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("hastalık", hastalik);
-    } catch(e) { setHastalikAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); console.error("HastalikAnaliz error:", e); }
+    } catch(e) { setHastalikAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
   };
 
   const generateRapor = async () => {
