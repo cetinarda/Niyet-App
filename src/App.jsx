@@ -2321,7 +2321,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
@@ -2332,6 +2331,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const SIDEBAR_ITEMS = [
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
+    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
   ];
   const MORNING_WORDS = t("morning_words");
 
@@ -2462,7 +2462,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    if (isNative) { setScreen("gun"); } else { setRehberTab("reiki"); setScreen("rehber"); }
+                    if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
                   }}>
                   {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
                 </button>
