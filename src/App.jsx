@@ -2439,6 +2439,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ color:"#cccccc",fontSize:18,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
                 </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+                <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
+                  <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
+                  <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
+                </div>
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
