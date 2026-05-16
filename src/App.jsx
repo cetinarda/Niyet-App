@@ -4,6 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
 const detectTablet = () => {
@@ -1482,6 +1483,51 @@ export default function SakinApp() {
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
   const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
+  const [purchaseLoading, setPurchaseLoading] = useState(null);
+  const [purchaseError, setPurchaseError] = useState("");
+  const [iapReady, setIapReady] = useState(false);
+
+  useEffect(() => {
+    if (!isNative) return;
+    onPurchaseUpdate((purchased) => {
+      if (purchased) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    });
+    initStore().then((ok) => {
+      setIapReady(ok);
+      if (ok) {
+        const owned = isSubscribed();
+        if (owned) { setIsPremium(true); }
+        else { localStorage.removeItem("sakin_premium"); setIsPremium(false); }
+      }
+    });
+  }, []);
+
+  const handlePurchase = async (fn, id) => {
+    setPurchaseLoading(id);
+    setPurchaseError("");
+    const r = await fn();
+    setPurchaseLoading(null);
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    else {
+      setPurchaseError(lang === "tr"
+        ? "Satın alma şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin."
+        : "Purchase is currently unavailable. Please try again later.");
+    }
+  };
+
+  const handleRestore = async () => {
+    setPurchaseLoading("restore");
+    setPurchaseError("");
+    const r = await restorePurchases();
+    setPurchaseLoading(null);
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+    else {
+      setPurchaseError(lang === "tr"
+        ? "Aktif abonelik bulunamadı."
+        : "No active subscription found.");
+    }
+  };
+
   const [showLicenseModal, setShowLicenseModal] = useState(false);
   const [licenseInput, setLicenseInput] = useState("");
   const [licenseError, setLicenseError] = useState("");
@@ -3658,6 +3704,37 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked for lifetime."}
               </div>
             </div>
+          ) : isNative ? (
+            <>
+              <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
+                <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
+                <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
+                <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
+                <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+
+                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading}
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
+                  {purchaseLoading === "yearly" ? "..." : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
+                </button>
+                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading}
+                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
+                  {purchaseLoading === "lifetime" ? "..." : (lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime")}
+                </button>
+              </div>
+
+              {purchaseError && (
+                <div style={{ textAlign:"center",marginTop:16,padding:"12px 16px",background:"rgba(255,80,80,0.1)",border:"1px solid rgba(255,80,80,0.2)",borderRadius:12,fontSize:13,color:"#ff6666",letterSpacing:0.5 }}>
+                  {purchaseError}
+                </div>
+              )}
+
+              <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
+                <button onClick={handleRestore} disabled={!!purchaseLoading}
+                  style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:purchaseLoading ? 0.5 : 1 }}>
+                  {purchaseLoading === "restore" ? "..." : (lang==="tr" ? "Satın Alımları Geri Yükle" : "Restore Purchases")}
+                </button>
+              </div>
+            </>
           ) : (
             <>
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
