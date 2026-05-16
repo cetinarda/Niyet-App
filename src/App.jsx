@@ -20,7 +20,8 @@ let isTablet = detectTablet();
 const haptic = (style = ImpactStyle.Light) => { if (isNative) Haptics.impact({ style }).catch(() => {}); };
 if (isNative) StatusBar.setStyle({ style: Style.Dark }).catch(() => {});
 
-const AI_CALL_URL = "/.netlify/functions/ai-call";
+const API_BASE = isNative ? "https://sakin.life" : "";
+const AI_CALL_URL = API_BASE + "/.netlify/functions/ai-call";
 const MAX_INPUT_LEN = 500;
 const sanitizeInput = (str) => (str || "").slice(0, MAX_INPUT_LEN).replace(/[<>{}]/g, "");
 
@@ -1476,9 +1477,9 @@ export default function SakinApp() {
   };
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
-    fetch("/.netlify/functions/check-owner").then(r=>r.json()).then(d=>{ if(d.owner) setIsOwner(true); }).catch(()=>{});
+    fetch(API_BASE + "/.netlify/functions/check-owner").then(r=>r.json()).then(d=>{ if(d.owner) setIsOwner(true); }).catch(()=>{});
   }, []);
-  const devMode = isOwner;
+  const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
   const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
   const [showLicenseModal, setShowLicenseModal] = useState(false);
@@ -1491,7 +1492,7 @@ export default function SakinApp() {
     setLicenseLoading(true);
     setLicenseError("");
     try {
-      const res = await fetch("/.netlify/functions/validate-license", {
+      const res = await fetch(API_BASE + "/.netlify/functions/validate-license", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ license_key: key }),
@@ -1587,7 +1588,7 @@ export default function SakinApp() {
   }, [allStepsComplete, todayKey]);
 
   useEffect(() => {
-    if (isOwner) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
+    if (isOwner && !isNative) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
   }, [isOwner]);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
