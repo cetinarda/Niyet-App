@@ -327,6 +327,7 @@ const GLOBAL_CSS = `
   @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
+  @keyframes navFadeIn   { 0%{opacity:0.3;transform:scale(0.92)} 100%{opacity:1;transform:scale(1)} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
@@ -1665,6 +1666,7 @@ export default function SakinApp() {
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
+  const [navPulsed, setNavPulsed] = useState(false);
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
@@ -2352,8 +2354,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </svg>
           <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"rgba(255,255,255,0.5)" }}>Sakin</span>
         </button>
-        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>setScreen("hakkinda")}>{t("nav_about")}</button>
-        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>setScreen("fiyat")}>{t("nav_pricing")}</button>
+        <button className={`top-nav-btn${screen==="hakkinda"?" active":""}`} onClick={()=>{ setNavPulsed(true); setScreen("hakkinda"); }} style={!navPulsed && screen==="giris" ? {animation:"navPulse 2s ease-in-out infinite"} : {}}>{t("nav_about")}</button>
+        <button className={`top-nav-btn${screen==="fiyat"?" active":""}`} onClick={()=>{ setNavPulsed(true); setScreen("fiyat"); }} style={!navPulsed && screen==="giris" ? {animation:"navPulse 2s ease-in-out infinite",animationDelay:"0.3s"} : {}}>{t("nav_pricing")}</button>
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
@@ -3851,22 +3853,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {NAV.map(n=>{
             const active = screen===n.id;
             const pulse = n.id==="mandala" && screen==="rehber";
+            const sabahPulse = n.id==="sabah" && !navPulsed && screen==="sabah";
             return (
-              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ setNavPulsed(true); setScreen(n.id); }}
                 style={{
-                  background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
-                  border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  background: active ? `${n.color}22` : "transparent",
+                  border: (pulse||sabahPulse) ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
-                  transition:"all 0.28s",
+                  transition:"all 0.4s ease",
                   padding:"8px 12px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
                   minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
+                  animation: (pulse||sabahPulse) ? "navPulse 2s ease-in-out infinite" : active ? "navFadeIn 0.4s ease forwards" : "none",
                 }}>
-                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:(pulse||sabahPulse)?16:15, color: active ? n.color : (pulse||sabahPulse) ? n.color : `${n.color}55`, transition:"all 0.4s ease", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:(pulse||sabahPulse)?n.color:`${n.color}44`,transition:"color 0.4s ease",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
