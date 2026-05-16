@@ -328,6 +328,7 @@ const GLOBAL_CSS = `
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
+  @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
@@ -1666,7 +1667,6 @@ export default function SakinApp() {
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
-  const [navPulsed, setNavPulsed] = useState(false);
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
@@ -3852,24 +3852,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
-            const pulse = n.id==="mandala" && screen==="rehber";
-            const sabahPulse = n.id==="sabah" && !navPulsed && screen==="sabah";
+            const sabahHint = n.id==="sabah" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ setNavPulsed(true); setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
-                  background: active ? `${n.color}22` : "transparent",
-                  border: (pulse||sabahPulse) ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
+                  border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
-                  transition:"background 0.5s ease, border 0.5s ease, color 0.5s ease",
+                  transition:"background 0.5s ease, border 0.5s ease",
                   padding:"8px 12px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
                   minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: pulse ? "navPulse 2s ease-in-out infinite" : sabahPulse ? "navPulse 2s ease-in-out infinite" : active ? "navGlow 2.4s ease-in-out infinite" : "none",
+                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
-                <span style={{ fontSize:active?18:(pulse||sabahPulse)?16:15, color: active ? n.color : (pulse||sabahPulse) ? n.color : `${n.color}55`, transition:"color 0.5s ease, font-size 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:(pulse||sabahPulse)?n.color:`${n.color}44`,transition:"color 0.5s ease",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:sabahHint?n.color:`${n.color}44`,transition:"color 0.5s ease",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
