@@ -560,9 +560,10 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
-function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
+function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, isPremium, onPremium }) {
   const t = makeTrans(lang);
-  const REMINDERS = getReminders(lang);
+  const ALL_REMINDERS = getReminders(lang);
+  const REMINDERS = !isNative && !isPremium ? ALL_REMINDERS.slice(0, 5) : ALL_REMINDERS;
   const _todayKey = new Date().toISOString().slice(0, 10);
   const _storageKey = "sakin_reminders_done_" + _todayKey;
   const [done,   setDone]   = useState(() => { try { return JSON.parse(localStorage.getItem(_storageKey)) || {}; } catch { return {}; } });
@@ -680,6 +681,13 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
           );
         })}
       </div>
+
+      {!isNative && !isPremium && ALL_REMINDERS.length > REMINDERS.length && (
+        <button onClick={onPremium}
+          style={{ display:"block",width:"100%",marginTop:16,background:"none",border:"1px solid rgba(184,164,216,0.2)",borderRadius:14,padding:"14px",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif",textAlign:"center" }}>
+          {lang==="tr" ? `✦ +${ALL_REMINDERS.length - REMINDERS.length} hatırlatıcı daha — Premium ile aç` : `✦ +${ALL_REMINDERS.length - REMINDERS.length} more reminders — Unlock with Premium`}
+        </button>
+      )}
 
       {completedCount === REMINDERS.length && (
         <div style={{
@@ -932,12 +940,13 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Temel 7":"Classic 7"}</div>
           <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"KLASİK ÇAKRALAR":"CLASSIC CHAKRAS"}</div>
         </button>
-        <button onClick={() => setChakraTab("yuksek")} style={{
+        <button onClick={() => { if (!isNative && !isPremium) { setScreen("fiyat"); return; } setChakraTab("yuksek"); }} style={{
           flex:1, padding:"12px 0", background: chakraTab==="yuksek" ? "rgba(160,122,224,0.15)" : "transparent",
-          border:"none", cursor:"pointer", textAlign:"center",
+          border:"none", cursor:"pointer", textAlign:"center", position:"relative",
+          opacity: !isNative && !isPremium ? 0.45 : 1,
         }}>
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Yüksek 15":"Higher 15"}</div>
-          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC"}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{!isNative && !isPremium ? "✦ PREMIUM" : (lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC")}</div>
         </button>
       </div>
 
@@ -2797,10 +2806,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ marginBottom:32 }}>
                 <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
                 <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
-                  {MORNING_WORDS.map(w=>(
+                  {((!isNative && !isPremium) ? MORNING_WORDS.slice(0,6) : MORNING_WORDS).map(w=>(
                     <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
                   ))}
                 </div>
+                {!isNative && !isPremium && (
+                  <button onClick={()=>setScreen("fiyat")} style={{ display:"block",margin:"12px auto 0",background:"none",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"8px 20px",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "✦ Tüm kelimeleri aç" : "✦ Unlock all words"}
+                  </button>
+                )}
                 {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
@@ -3012,6 +3026,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
               {/* Calming breathing modes */}
               <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t("breath_calming")}</div>
+              {!isNative && !isPremium ? (
+                <div style={{ position:"relative" }}>
+                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,opacity:0.3,pointerEvents:"none" }}>
+                    {[
+                      { id:"478", icon:"✦", rhythm:"4·7·8" },
+                      { id:"kutu", icon:"⬜", rhythm:"4·4·4·4" },
+                      { id:"sakinletici", icon:"🌿", rhythm:"4·2·8" },
+                    ].map(m=>(
+                      <div key={m.id} style={{ background:"rgba(255,255,255,0.04)",border:"1.5px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"10px 6px",display:"flex",flexDirection:"column",alignItems:"center",gap:5 }}>
+                        <span style={{ fontSize:18 }}>{m.icon}</span>
+                        <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:"rgba(255,255,255,0.4)",textTransform:"uppercase" }}>{t(`breath_mode_${m.id}`)}</span>
+                        <span style={{ fontSize:14,color:"rgba(255,255,255,0.2)" }}>{m.rhythm}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={()=>setScreen("fiyat")} style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.4)",borderRadius:14,border:"1px solid rgba(184,164,216,0.2)",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "✦ Premium ile Aç" : "✦ Unlock with Premium"}
+                  </button>
+                </div>
+              ) : (
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8 }}>
                 {[
                   { id:"478",        icon:"✦",  color:"rgba(80,160,220,0.18)", border:"rgba(80,160,220,0.35)", rhythm:"4·7·8" },
@@ -3025,6 +3059,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </button>
                 ))}
               </div>
+              )}
             </div>
           )}
 
@@ -3105,17 +3140,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
                 const isExpanded = activeFreq === f.hz;
+                const isLocked = !isNative && !isPremium && i >= 5;
                 return (
                   <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
                     <div
-                      onClick={() => { setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
+                      onClick={() => { if (isLocked) { setScreen("fiyat"); return; } setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
                       style={{
-                        background: isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
-                        border: `1px solid ${isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
+                        background: isLocked ? "rgba(255,255,255,0.015)" : isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
+                        border: `1px solid ${isLocked ? "rgba(255,255,255,0.04)" : isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
                         borderRadius: isExpanded ? "15px 15px 0 0" : 15,
                         padding:"14px 18px",cursor:"pointer",
                         transition:"all 0.3s ease",
                         display:"flex",alignItems:"center",gap:14,
+                        opacity: isLocked ? 0.4 : 1,
                       }}>
                       <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,
                         background:`radial-gradient(circle,${f.color}cc,${f.color}44)`,
@@ -3193,7 +3230,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} isPremium={isPremium} onPremium={()=>setScreen("fiyat")} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (

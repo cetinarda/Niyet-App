@@ -32,6 +32,12 @@
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = ""
+    Content-Security-Policy = "frame-ancestors 'self' https://kozmikgemi.com https://www.kozmikgemi.com https://*.kozmikgemi.com https://kozmikgemi.netlify.app"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
