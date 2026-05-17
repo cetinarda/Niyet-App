@@ -3811,6 +3811,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
                 </button>
               </div>
+
+              <div style={{ textAlign:"center",marginTop:8,marginBottom:24,padding:"18px 20px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:16 }}>
+                <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10 }}>
+                  <span style={{ fontSize:16 }}>🔒</span>
+                  <span style={{ fontSize:13,letterSpacing:2,color:"#888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    {lang==="tr" ? "Güvenli Ödeme" : "Secure Payment"}
+                  </span>
+                </div>
+                <div style={{ fontSize:13,color:"#666",lineHeight:1.8,letterSpacing:0.3 }}>
+                  {lang==="tr"
+                    ? "Ödemeler, uluslararası lisanslı dijital ödeme altyapısı Lemon Squeezy tarafından güvenle işlenmektedir. Kredi kartı bilgileriniz Sakin tarafından saklanmaz."
+                    : "Payments are securely processed by Lemon Squeezy, a licensed international digital payment platform. Your credit card information is never stored by Sakin."}
+                </div>
+                <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-block",marginTop:10,fontSize:12,letterSpacing:1.5,color:"#b8a4d8",textDecoration:"none",borderBottom:"1px solid rgba(184,164,216,0.3)",paddingBottom:2 }}>
+                  lemonsqueezy.com →
+                </a>
+              </div>
             </>
           )}
 
