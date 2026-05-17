@@ -560,10 +560,9 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
-function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, isPremium, onPremium }) {
+function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   const t = makeTrans(lang);
-  const ALL_REMINDERS = getReminders(lang);
-  const REMINDERS = !isNative && !isPremium ? ALL_REMINDERS.slice(0, 5) : ALL_REMINDERS;
+  const REMINDERS = getReminders(lang);
   const _todayKey = new Date().toISOString().slice(0, 10);
   const _storageKey = "sakin_reminders_done_" + _todayKey;
   const [done,   setDone]   = useState(() => { try { return JSON.parse(localStorage.getItem(_storageKey)) || {}; } catch { return {}; } });
@@ -681,13 +680,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, isPremium, o
           );
         })}
       </div>
-
-      {!isNative && !isPremium && ALL_REMINDERS.length > REMINDERS.length && (
-        <button onClick={onPremium}
-          style={{ display:"block",width:"100%",marginTop:16,background:"none",border:"1px solid rgba(184,164,216,0.2)",borderRadius:14,padding:"14px",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif",textAlign:"center" }}>
-          {lang==="tr" ? `✦ +${ALL_REMINDERS.length - REMINDERS.length} hatırlatıcı daha — Premium ile aç` : `✦ +${ALL_REMINDERS.length - REMINDERS.length} more reminders — Unlock with Premium`}
-        </button>
-      )}
 
       {completedCount === REMINDERS.length && (
         <div style={{
@@ -940,13 +932,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Temel 7":"Classic 7"}</div>
           <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"KLASİK ÇAKRALAR":"CLASSIC CHAKRAS"}</div>
         </button>
-        <button onClick={() => { if (!isNative && !isPremium) { setScreen("fiyat"); return; } setChakraTab("yuksek"); }} style={{
+        <button onClick={() => setChakraTab("yuksek")} style={{
           flex:1, padding:"12px 0", background: chakraTab==="yuksek" ? "rgba(160,122,224,0.15)" : "transparent",
-          border:"none", cursor:"pointer", textAlign:"center", position:"relative",
-          opacity: !isNative && !isPremium ? 0.45 : 1,
+          border:"none", cursor:"pointer", textAlign:"center",
         }}>
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Yüksek 15":"Higher 15"}</div>
-          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{!isNative && !isPremium ? "✦ PREMIUM" : (lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC")}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC"}</div>
         </button>
       </div>
 
@@ -3230,7 +3221,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} isPremium={isPremium} onPremium={()=>setScreen("fiyat")} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
@@ -3782,6 +3773,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
+          <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
+            style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
+            ←
+          </button>
           <h1>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
