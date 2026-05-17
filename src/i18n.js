@@ -87,7 +87,7 @@ export const TRANS = {
     sound_btn_next:    "Sonraki Adıma Geç →",
 
     // Çakra
-    chakra_subtitle:   "Reiki · Günün Çakrası",
+    chakra_subtitle:   "Enerjiyi Yönlendir",
     chakra_name_suf:   "Çakrası",
     chakra_stay:       "Bugün bu merkezde huzurla kal.",
     btn_therapy:       "✦ 22 Çakra Terapi →",
@@ -409,7 +409,7 @@ export const TRANS = {
     sound_btn_next:    "Continue to Next Step →",
 
     // Çakra
-    chakra_subtitle:   "REIKI · TODAY'S CHAKRA",
+    chakra_subtitle:   "Direct the Energy",
     chakra_name_suf:   "CHAKRA",
     chakra_stay:       "Stay in this center today.",
     btn_therapy:       "✦ 22 Chakra Therapy →",
