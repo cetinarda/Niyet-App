@@ -36,7 +36,7 @@
   for = "/*"
   [headers.values]
     X-Frame-Options = ""
-    Content-Security-Policy = "frame-ancestors 'self' https://kozmikgemi.com https://www.kozmikgemi.com https://*.kozmikgemi.com https://kozmikgemi.netlify.app"
+    Content-Security-Policy = "frame-ancestors 'self' https://kozmikgemi.netlify.app https://kozmikgemi.com https://www.kozmikgemi.com https://*.kozmikgemi.com https://*.netlify.app;"
 
 [[redirects]]
   from = "/*"
