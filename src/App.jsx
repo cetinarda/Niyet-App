@@ -1425,6 +1425,7 @@ export default function SakinApp() {
   const [playingHz,     setPlayingHz]     = useState(null);
   const freqCtxRef = useRef(null);
   const freqOscRef = useRef(null);
+  const freqOscsRef = useRef([]);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
   const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
@@ -1449,6 +1450,8 @@ export default function SakinApp() {
       try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
     }
     setTimeout(() => {
+      freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+      freqOscsRef.current = [];
       try { freqOscRef.current?.stop(); } catch(_) {}
       freqOscRef.current = null; freqGainRef.current = null;
       try { freqCtxRef.current?.close(); } catch(_) {}
@@ -3048,6 +3051,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8);
           }
           setTimeout(() => {
+            freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+            freqOscsRef.current = [];
             try { freqOscRef.current?.stop(); } catch(_) {}
             freqOscRef.current = null; freqGainRef.current = null;
             try { freqCtxRef.current?.close(); } catch(_) {}
@@ -3063,6 +3068,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           setTimeout(() => {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             freqCtxRef.current = ctx; ctx.resume();
+            const allOscs = [];
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
             master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 2);
@@ -3072,15 +3078,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             lfo.type = "sine"; lfo.frequency.value = 0.12;
             lfoGain.gain.value = 0.04;
             lfo.connect(lfoGain); lfoGain.connect(master.gain);
-            lfo.start();
+            lfo.start(); allOscs.push(lfo);
             [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
               g.gain.linearRampToValueAtTime(0.22 * amp, ctx.currentTime + 2);
               o.connect(g); g.connect(master); o.start();
+              allOscs.push(o);
               if (ratio === 1) { freqOscRef.current = o; }
             });
+            freqOscsRef.current = allOscs;
             if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.5 : 0.3);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
