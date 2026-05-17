@@ -7,7 +7,6 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
-const isIframe = (() => { try { return window.self !== window.top; } catch { return true; } })();
 const detectTablet = () => {
   const w = Math.max(window.innerWidth, window.innerHeight);
   if (w >= 768) {
@@ -2411,19 +2410,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           );
         })}
       </div>
-
-      {/* iframe banner */}
-      {isIframe && (
-        <div style={{ position:"fixed",bottom:0,left:0,right:0,zIndex:99999,background:"linear-gradient(135deg,rgba(30,20,50,0.97),rgba(20,15,40,0.97))",backdropFilter:"blur(20px)",borderTop:"1px solid rgba(184,164,216,0.15)",padding:"10px 16px",display:"flex",alignItems:"center",justifyContent:"center",gap:12 }}>
-          <span style={{ fontSize:12,color:"#999",letterSpacing:0.5,fontFamily:"'Jost',sans-serif" }}>
-            {lang==="tr" ? "Tam deneyim için" : "For full experience"}
-          </span>
-          <a href="https://sakin.life" target="_blank" rel="noopener noreferrer"
-            style={{ fontSize:12,letterSpacing:1.5,color:"#b8a4d8",textDecoration:"none",border:"1px solid rgba(184,164,216,0.3)",borderRadius:16,padding:"5px 14px",fontFamily:"'Jost',sans-serif" }}>
-            sakin.life →
-          </a>
-        </div>
-      )}
 
       {/* Sabit derin uzay arka planı */}
       <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
