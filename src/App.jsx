@@ -1493,6 +1493,7 @@ export default function SakinApp() {
   const [aiLoading,     setAiLoading]     = useState(false);
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
+  const [showAilesi, setShowAilesi] = useState(false);
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -2411,10 +2412,56 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
+        {!isNative && (
+          <button onClick={()=>setShowAilesi(!showAilesi)} style={{ marginLeft:"auto",flexShrink:0,background: showAilesi?"rgba(184,164,216,0.15)":"rgba(255,255,255,0.06)",border:`1px solid ${showAilesi?"rgba(184,164,216,0.4)":"rgba(255,255,255,0.12)"}`,borderRadius:20,padding:"6px 14px",color: showAilesi?"#b8a4d8":"#aaaaaa",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,alignSelf:"center",textTransform:"uppercase",transition:"all 0.2s" }}>
+            ✦ {lang==="tr"?"Ailesi":"Family"}
+          </button>
+        )}
+        <button onClick={toggleLang} style={{ marginLeft: isNative?"auto":4,flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
+
+      {/* SAKİN AİLESİ PANELİ */}
+      {showAilesi && !isNative && (
+        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
+            <div style={{ textAlign:"center",marginBottom:8 }}>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{lang==="tr"?"Sakin Ailesi":"Sakin Family"}</div>
+              <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
+            </div>
+            {[
+              { name:"Sakin Hayvan", url:"https://sakinhayvan.netlify.app/", icon:"🐾", color:"#a0d8b4",
+                desc: lang==="tr"
+                  ? "Rüyanda ya da gerçek hayatında sana rehberliğe gelen hayvanların ne söylediğini öğren."
+                  : "Discover what the animals guiding you in dreams or real life are telling you." },
+              { name:"Sakin Mitler", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+                desc: lang==="tr"
+                  ? "Hangi mit, arketip, imge ve sembol sana ne söylüyor? Hepsi bir arada, tüm detaylarıyla."
+                  : "What are myths, archetypes, images and symbols telling you? All in one place." },
+              { name:"Sakin Design", url:"https://sakindesign.netlify.app/", icon:"◈", color:"#b4a0d8",
+                desc: lang==="tr"
+                  ? "Kendi tasarımını, hangi sistemle dünyaya geldiğini öğrenmenin en derin yolu."
+                  : "The deepest way to learn your design and how you came into this world." },
+            ].map(app=>(
+              <a key={app.name} href={app.url} target="_blank" rel="noopener noreferrer"
+                style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",textDecoration:"none",display:"flex",alignItems:"center",gap:14,transition:"border-color 0.2s" }}
+                onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
+                onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
+                <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
+                <div style={{ flex:1,minWidth:0 }}>
+                  <div style={{ fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{app.name}</div>
+                  <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{app.desc}</div>
+                </div>
+                <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
+              </a>
+            ))}
+            <button onClick={()=>setShowAilesi(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {lang==="tr"?"Kapat":"Close"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
       <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
