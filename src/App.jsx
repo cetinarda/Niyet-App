@@ -2480,7 +2480,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               }}>
               <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
               <span>{n.label}</span>
-              {n.glow && <span style={{ fontSize:8, marginLeft:2, color:n.color, opacity:0.8 }}>●</span>}
             </button>
           );
         })}
