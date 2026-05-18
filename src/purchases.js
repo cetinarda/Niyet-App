@@ -115,6 +115,17 @@ export function isSubscribed() {
   return localStorage.getItem("sakin_premium") === "1";
 }
 
+function isCancelError(err) {
+  if (!err) return false;
+  const code = err.code;
+  const cancelCode = window.CdvPurchase?.ErrorCode?.PAYMENT_CANCELLED;
+  if (cancelCode && code === cancelCode) return true;
+  if (code === 2 || code === 6777003 || code === "E_USER_CANCELLED" || code === "SKErrorDomain2") return true;
+  const msg = (err.message || err.error || "").toLowerCase();
+  if (msg.includes("cancel") || msg.includes("iptal") || msg.includes("abbruch")) return true;
+  return false;
+}
+
 export async function purchaseProduct(productId) {
   if (!isNative) return { success: false, error: "not_native" };
   if (!window.CdvPurchase) return { success: false, error: "plugin_not_loaded" };
@@ -136,11 +147,17 @@ export async function purchaseProduct(productId) {
     const result = await window.CdvPurchase.store.order(offer);
     if (result && result.isError) {
       console.warn("[IAP] order error:", result.code, result.message);
+      if (isCancelError(result)) {
+        return { success: false, error: "cancelled", cancelled: true };
+      }
       return { success: false, error: result.message || "order_failed" };
     }
     return { success: true };
   } catch (err) {
     console.warn("[IAP] order exception:", err);
+    if (isCancelError(err)) {
+      return { success: false, error: "cancelled", cancelled: true };
+    }
     return { success: false, error: err?.message || "purchase_failed" };
   }
 }

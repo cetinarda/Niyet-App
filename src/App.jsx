@@ -1507,12 +1507,25 @@ export default function SakinApp() {
     setPurchaseError("");
     const r = await fn();
     setPurchaseLoading(null);
-    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
-    else {
-      setPurchaseError(lang === "tr"
-        ? "Satın alma şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin."
-        : "Purchase is currently unavailable. Please try again later.");
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); return; }
+    if (r.cancelled || r.error === "cancelled") return;
+    const errLower = (r.error || "").toLowerCase();
+    if (errLower.includes("cancel") || errLower.includes("iptal")) return;
+    let msg;
+    if (r.error === "products_not_loaded") {
+      msg = lang === "tr"
+        ? "App Store ürünleri yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin."
+        : "App Store products could not load. Check your internet connection and try again.";
+    } else if (r.error === "already_owned") {
+      msg = lang === "tr"
+        ? "Bu ürünü zaten aldınız. 'Satın Alımları Geri Yükle' butonuna basın."
+        : "You already own this product. Tap 'Restore Purchases'.";
+    } else {
+      msg = lang === "tr"
+        ? "Satın alma tamamlanamadı. Lütfen tekrar deneyin."
+        : "Purchase could not be completed. Please try again.";
     }
+    setPurchaseError(msg);
   };
 
   const handleRestore = async () => {
