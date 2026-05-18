@@ -1,66 +1,107 @@
-function sanitizeTurkish(text) {
-  return text
-    .replace(/[\u4E00-\u9FFF]/g, "")
-    .replace(/[\u3400-\u4DBF]/g, "")
-    .replace(/[\u3040-\u30FF]/g, "")
-    .replace(/[\u0600-\u06FF]/g, "")
-    .replace(/[\u0750-\u077F]/g, "")
-    .replace(/[\uAC00-\uD7A3]/g, "")
-    .replace(/[\u1100-\u11FF]/g, "")
-    .replace(/[\u0900-\u097F]/g, "")
-    .replace(/[\u3000-\u303F]/g, "")
-    .replace(/[\u2E80-\u2EFF]/g, "")
-    .trim();
-}
+const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life"];
 
-export const handler = async (event) => {
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
+function getCorsHeaders(event) {
+  const origin = event.headers?.origin || "";
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowed,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
+}
+
+const rateMap = new Map();
+const RATE_WINDOW = 60_000;
+const RATE_MAX = 5;
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now - entry.start > RATE_WINDOW) {
+    rateMap.set(ip, { start: now, count: 1 });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_MAX;
+}
+
+function getClientIP(event) {
+  return event.headers["x-forwarded-for"]?.split(",")[0]?.trim()
+    || event.headers["client-ip"]
+    || event.headers["x-real-ip"]
+    || "unknown";
+}
+
+function sanitizeTurkish(text) {
+  return text
+    .replace(/[一-鿿]/g, "")
+    .replace(/[㐀-䶿]/g, "")
+    .replace(/[぀-ヿ]/g, "")
+    .replace(/[؀-ۿ]/g, "")
+    .replace(/[ݐ-ݿ]/g, "")
+    .replace(/[가-힣]/g, "")
+    .replace(/[ᄀ-ᇿ]/g, "")
+    .replace(/[ऀ-ॿ]/g, "")
+    .replace(/[　-〿]/g, "")
+    .replace(/[⺀-⻿]/g, "")
+    .trim();
+}
+
+function truncStr(val, max) {
+  if (typeof val !== "string") return "";
+  return val.slice(0, max);
+}
+
+export const handler = async (event) => {
+  const cors = getCorsHeaders(event);
 
   if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: corsHeaders, body: "" };
+    return { statusCode: 204, headers: cors, body: "" };
   }
 
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+  }
+
+  const ip = getClientIP(event);
+  if (isRateLimited(ip)) {
+    return { statusCode: 429, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Çok fazla istek. Biraz bekle." }) };
   }
 
   let gunler;
   try {
     ({ gunler } = JSON.parse(event.body));
   } catch {
-    return { statusCode: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
+    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
   }
 
-  if (!gunler || gunler.length === 0) {
-    return {
-      statusCode: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "En az 1 gün verisi gerekli." }),
-    };
+  if (!Array.isArray(gunler) || gunler.length === 0 || gunler.length > 7) {
+    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "1-7 gün verisi gerekli." }) };
+  }
+
+  for (const g of gunler) {
+    if (!g || typeof g !== "object") {
+      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz gün verisi" }) };
+    }
+    if (g.kelimeler && (!Array.isArray(g.kelimeler) || g.kelimeler.length > 10)) {
+      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz kelimeler" }) };
+    }
   }
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return {
-      statusCode: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }),
-    };
+    return { statusCode: 500, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }) };
   }
 
   const gunlerText = gunler
     .map(
-      (g, i) => `Gün ${i + 1} (${g.tarih}):
-- Niyet: ${g.niyet || "—"}
-- Kelimeler: ${g.kelimeler?.join(", ") || "—"}
-- Günün çakrası: ${g.chakra || "—"}
-- Nefes sayısı: ${g.nefes || 0}
-- Bugün ne öğrendim: ${g.ogrendim || "—"}
-- Şükür: ${g.sukur || "—"}`
+      (g, i) => `Gün ${i + 1} (${truncStr(g.tarih, 20)}):
+- Niyet: ${truncStr(g.niyet, 500) || "—"}
+- Kelimeler: ${(g.kelimeler || []).map(k => truncStr(String(k), 50)).join(", ") || "—"}
+- Günün çakrası: ${truncStr(g.chakra, 50) || "—"}
+- Nefes sayısı: ${parseInt(g.nefes) || 0}
+- Bugün ne öğrendim: ${truncStr(g.ogrendim, 500) || "—"}
+- Şükür: ${truncStr(g.sukur, 500) || "—"}`
     )
     .join("\n\n");
 
@@ -100,24 +141,12 @@ Samimi, kendinden emin, şiirsel bir dil kullan. Kullanıcıya "sen" diye hitap 
 
     if (!res.ok || data.error) {
       const errMsg = data.error?.message || `HTTP ${res.status}`;
-      return {
-        statusCode: res.status,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        body: JSON.stringify({ error: errMsg }),
-      };
+      return { statusCode: res.status, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: errMsg }) };
     }
 
     const rapor = sanitizeTurkish(data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.");
-    return {
-      statusCode: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify({ rapor }),
-    };
+    return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ rapor }) };
   } catch (e) {
-    return {
-      statusCode: 502,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }),
-    };
+    return { statusCode: 502, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }) };
   }
 };
