@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate, onProductsLoaded, areProductsLoaded } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
 const detectTablet = () => {
@@ -332,6 +332,8 @@ const GLOBAL_CSS = `
   @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
+  @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
+  @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
@@ -753,6 +755,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const CHAKRAS_22 = getChakras22(lang);
   const [tPhase,   setTPhase]   = useState("list");
   const [selected, setSelected] = useState(null);
+  const [chakraTab, setChakraTab] = useState("temel");
   const [elapsed,  setElapsed]  = useState(0);
   const [particles,setParticles]= useState([]);
   const timerRef    = useRef(null);
@@ -925,26 +928,42 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         </div>
         <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
       </div>
-      {/* Ascension layout — bottom to top */}
+      {/* Tab toggle */}
+      <div style={{ display:"flex", borderRadius:12, overflow:"hidden", border:"1px solid rgba(255,255,255,0.1)", marginBottom:20 }}>
+        <button onClick={() => setChakraTab("temel")} style={{
+          flex:1, padding:"12px 0", background: chakraTab==="temel" ? "rgba(160,122,224,0.15)" : "transparent",
+          border:"none", borderRight:"1px solid rgba(255,255,255,0.1)", cursor:"pointer", textAlign:"center",
+        }}>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Temel 7":"Classic 7"}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"KLASİK ÇAKRALAR":"CLASSIC CHAKRAS"}</div>
+        </button>
+        <button onClick={() => setChakraTab("yuksek")} style={{
+          flex:1, padding:"12px 0", background: chakraTab==="yuksek" ? "rgba(160,122,224,0.15)" : "transparent",
+          border:"none", cursor:"pointer", textAlign:"center",
+        }}>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Yüksek 15":"Higher 15"}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC"}</div>
+        </button>
+      </div>
+
       <div style={{ paddingRight:4, scrollbarWidth:"none", display:"flex", flexDirection:"column" }}>
-        {/* Sun halo at top — Source energy */}
-        <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
-          <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
-            <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
-            <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
-            <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+        {chakraTab === "yuksek" && (
+          <div style={{ textAlign:"center", marginBottom:20, padding:"18px 0" }}>
+            <div style={{ position:"relative", width:80, height:80, margin:"0 auto" }}>
+              <div style={{ position:"absolute", inset:-16, borderRadius:"50%", background:"radial-gradient(circle, rgba(255,220,100,0.15), transparent 70%)", animation:"slowPulse 4s ease-in-out infinite" }} />
+              <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
+              <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
           </div>
-          <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
-        </div>
-        {/* Level 3 → 2 → 1 (top to bottom = cosmic to physical) */}
-        {[3,2,1].map(level => {
+        )}
+        {(chakraTab === "temel" ? [1] : [3,2]).map(level => {
           const levelChakras = CHAKRAS_22.filter(c => c.level === level);
           const levelLabel = (lang==="en" ? LEVEL_LABELS_EN : LEVEL_LABELS_TR)[level];
           const levelRange = (lang==="en" ? LEVEL_RANGES_EN : LEVEL_RANGES_TR)[level];
           const levelColors = { 3:"rgba(200,200,210,0.4)", 2:"rgba(140,100,220,0.4)", 1:"rgba(200,120,80,0.4)" };
           return (
             <div key={level}>
-              {/* Level divider */}
               <div style={{ display:"flex", alignItems:"center", gap:10, margin:"6px 0 10px" }}>
                 <div style={{ flex:1, height:1, background:levelColors[level] }} />
                 <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:3, color:"#666666", textTransform:"uppercase", whiteSpace:"nowrap" }}>
@@ -952,7 +971,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
                 </div>
                 <div style={{ flex:1, height:1, background:levelColors[level] }} />
               </div>
-              {/* Chakras in this level — reversed so highest number is at top */}
               {[...levelChakras].reverse().map((c,i) => {
                 const locked = !isPremium && c.level !== 1;
                 return (
@@ -970,10 +988,16 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
             </div>
           );
         })}
-        {/* Earth anchor at bottom */}
-        <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
-          <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
-        </div>
+        {chakraTab === "temel" && (
+          <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+          </div>
+        )}
+        {chakraTab === "yuksek" && (
+          <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+          </div>
+        )}
       </div>
       {selected && (
         <div style={{ marginTop:18, background:`linear-gradient(135deg,${selected.color}18,transparent)`, border:`1px solid ${selected.color}44`, borderRadius:15, padding:"14px 18px", display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
@@ -1409,6 +1433,7 @@ export default function SakinApp() {
   const [playingHz,     setPlayingHz]     = useState(null);
   const freqCtxRef = useRef(null);
   const freqOscRef = useRef(null);
+  const freqOscsRef = useRef([]);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
   const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
@@ -1419,7 +1444,7 @@ export default function SakinApp() {
       birdAudioRef.current = null;
     }
   };
-  const playBirdSound = (birdKey, vol = 0.7) => {
+  const playBirdSound = (birdKey, vol = 0.3) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
@@ -1433,6 +1458,8 @@ export default function SakinApp() {
       try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
     }
     setTimeout(() => {
+      freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+      freqOscsRef.current = [];
       try { freqOscRef.current?.stop(); } catch(_) {}
       freqOscRef.current = null; freqGainRef.current = null;
       try { freqCtxRef.current?.close(); } catch(_) {}
@@ -1494,14 +1521,17 @@ export default function SakinApp() {
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
+  const [productsReady, setProductsReady] = useState(false);
 
   useEffect(() => {
     if (!isNative) return;
     onPurchaseUpdate((purchased) => {
       if (purchased) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
     });
+    onProductsLoaded(() => setProductsReady(true));
     initStore().then((ok) => {
       setIapReady(ok);
+      if (areProductsLoaded()) setProductsReady(true);
       if (ok) {
         const owned = isSubscribed();
         if (owned) { setIsPremium(true); }
@@ -1561,7 +1591,7 @@ export default function SakinApp() {
     try {
       const res = await fetch(API_BASE + "/.netlify/functions/validate-license", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({ license_key: key }),
       });
       const data = await res.json();
@@ -1579,6 +1609,27 @@ export default function SakinApp() {
       setLicenseError(lang === "tr" ? "Bağlantı hatası, tekrar dene" : "Connection error, try again");
     }
     setLicenseLoading(false);
+  };
+  const [fbOpen, setFbOpen] = useState(false);
+  const [fbMsg, setFbMsg] = useState("");
+  const [fbCat, setFbCat] = useState("");
+  const [fbSending, setFbSending] = useState(false);
+  const [fbDone, setFbDone] = useState(false);
+  const sendFeedback = async () => {
+    if (!fbMsg.trim() || fbSending) return;
+    setFbSending(true);
+    try {
+      await fetch("/.netlify/functions/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: fbMsg.trim(), category: fbCat || "genel", lang, timestamp: new Date().toISOString() }),
+      });
+      setFbDone(true);
+      setFbMsg("");
+      setFbCat("");
+      setTimeout(() => { setFbDone(false); setFbOpen(false); }, 2500);
+    } catch { setFbDone(false); }
+    setFbSending(false);
   };
   const [rehberTab, setRehberTab] = useState("reiki");
   const [chakraInput, setChakraInput] = useState("");
@@ -1706,16 +1757,15 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
+  useEffect(() => { if (isNative && screen === "rehber") setScreen("gun"); }, [screen]);
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
-      setTimeout(() => setIntroPhase(1), 600),
-      setTimeout(() => setIntroPhase(2), 1800),
-      setTimeout(() => setIntroPhase(3), 3000),
-      setTimeout(() => setIntroPhase(4), 4200),
-      setTimeout(() => setIntroPhase(5), 5400),
-      setTimeout(() => { setIntroExiting(true); }, 6800),
-      setTimeout(() => { setShowIntro(false); sessionStorage.setItem("sakin_intro_seen","1"); }, 7600),
+      setTimeout(() => { setIntroExiting(true); }, 1800),
+      setTimeout(() => {
+        setShowIntro(false);
+        sessionStorage.setItem("sakin_intro_seen","1");
+      }, 2400),
     ];
     return () => timers.forEach(clearTimeout);
   }, [showIntro]);
@@ -1828,7 +1878,7 @@ export default function SakinApp() {
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
@@ -1865,8 +1915,9 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("çakra", chakraInput);
-    } catch {
-      setChakraAnaliz("Bağlantı hatası.");
+    } catch(e) {
+      setChakraAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e)));
+      console.error("ChakraAnaliz error:", e);
     }
   };
 
@@ -2006,7 +2057,7 @@ BEDEN-ZİHİN BAĞLANTISI:
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1200,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
@@ -2062,7 +2113,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
@@ -2103,7 +2154,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("şikayet", sikayet);
-    } catch { setSikayetAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); }
+    } catch(e) { setSikayetAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -2115,7 +2166,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1300,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
@@ -2156,7 +2207,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("hastalık", hastalik);
-    } catch { setHastalikAnaliz(lang==="tr" ? "Bağlantı hatası. Lütfen internet bağlantını kontrol edip tekrar dene." : "Connection error. Please check your internet and try again."); }
+    } catch(e) { setHastalikAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
   };
 
   const generateRapor = async () => {
@@ -2228,7 +2279,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
     try {
       const res = await fetch(AI_CALL_URL, {
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1700,
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
@@ -2259,7 +2310,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         setRaporKullanildi(true);
       }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
-    } catch { setAiRapor(lang==="tr" ? "Bağlantı hatası. Lütfen tekrar dene." : "Connection error. Please try again."); }
+    } catch(e) { setAiRapor(lang==="tr" ? "Bağlantı hatası. Lütfen tekrar dene." : "Connection error. Please try again."); console.error("AiRapor error:", e); }
     finally { setAiLoading(false); }
   };
 
@@ -2323,7 +2374,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   }[screen]||"139,90,160";
 
   const NAV = [
-    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
@@ -2332,8 +2382,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
-    {id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"},
+    ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
+    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
@@ -2402,74 +2453,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         );
       })}
 
-      {/* INTRO ANİMASYON */}
+      {/* INTRO ANİMASYON — dönen kare */}
       {showIntro && (
         <div style={{
           position:"fixed",inset:0,zIndex:99999,background:"#000",
-          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",
-          animation: introExiting ? "introFadeOut 0.8s ease forwards" : "none",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          animation: introExiting ? "introFadeOut 0.6s ease forwards" : "none",
         }}>
-          {/* Logo: kare + nokta */}
-          <div style={{ position:"relative",width:120,height:120,marginBottom:40,animation:"introFadeIn 1s ease forwards" }}>
-            <svg viewBox="0 0 120 120" width="120" height="120" style={{ position:"absolute",inset:0 }}>
-              <rect x="10" y="10" width="100" height="100" rx="16"
-                fill="none" stroke="rgba(184,164,216,0.6)" strokeWidth="3"
-                strokeDasharray="400" style={{ animation:"introSquareDraw 1.5s ease forwards" }} />
-            </svg>
-            <div style={{
-              position:"absolute",left:"50%",top:"50%",width:18,height:18,borderRadius:"50%",
-              background:"rgba(184,164,216,0.9)",
-              boxShadow:"0 0 30px rgba(184,164,216,0.5),0 0 60px rgba(122,80,150,0.3)",
-              animation:"introDotScale 0.8s 0.6s ease both",
-            }} />
-          </div>
-
-          {/* Sakin yazısı */}
-          {introPhase >= 1 && (
-            <div style={{ animation:"introTextUp 0.7s ease forwards",marginBottom:8 }}>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:42,letterSpacing:14,fontWeight:200,color:"#fff" }}>Sakin</div>
-            </div>
-          )}
-
-          {/* Çizgi ayırıcı */}
-          {introPhase >= 1 && (
-            <div style={{ height:1,background:"rgba(184,164,216,0.3)",margin:"16px 0 32px",animation:"introLineExpand 0.6s 0.3s ease both" }} />
-          )}
-
-          {/* Özellik kartları */}
-          <div style={{ display:"flex",flexDirection:"column",gap:16,alignItems:"center" }}>
-            {introPhase >= 2 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Nefes & Meditasyon" : "Breath & Meditation"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 3 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Çakra & Frekans" : "Chakra & Frequency"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 4 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Kişisel Harita" : "Personal Map"}
-                </span>
-              </div>
-            )}
-            {introPhase >= 5 && (
-              <div style={{ animation:"introItemSlide 0.5s ease forwards",display:"flex",alignItems:"center",gap:12 }}>
-                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="3" fill="rgba(184,164,216,0.8)"/></svg>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:3,color:"#888",fontWeight:300,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Günlük Ritüel" : "Daily Ritual"}
-                </span>
-              </div>
-            )}
+          <div style={{ position:"relative",width:120,height:120 }}>
+            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:12,animation:"diamondSpin 12s linear infinite" }} />
+            <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:8,animation:"diamondSpin 8s linear infinite reverse" }} />
+            <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:16,height:16,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 20px rgba(255,255,255,0.6),0 0 40px rgba(255,255,255,0.4)" }} />
           </div>
         </div>
       )}
@@ -2477,24 +2471,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* GİRİŞ */}
       {screen==="giris" && (
         <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
-          {/* Gezegen — kozmik açılış */}
-          <div className="fade-up" style={{ marginBottom:24,position:"relative" }}>
-            {/* Gezegen halka */}
-            <div style={{ position:"relative",width:180,height:180,margin:"0 auto" }}>
-              {/* Dış orbit halkası */}
-              <div style={{ position:"absolute",inset:-20,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.04)",animation:"mandalaRotate 60s linear infinite" }} />
-              <div style={{ position:"absolute",inset:-10,borderRadius:"50%",border:"1px solid rgba(255,255,255,0.06)",animation:"mandalaRotate 40s linear infinite reverse" }} />
-              {/* Gezegen gövdesi */}
-              <div style={{ position:"absolute",inset:20,borderRadius:"50%",background:"radial-gradient(circle at 35% 35%, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 50%, transparent 70%)",border:"1px solid rgba(255,255,255,0.08)",boxShadow:"0 0 60px rgba(255,255,255,0.04), inset 0 0 40px rgba(255,255,255,0.02)" }} />
-              {/* Logo — kare + nokta */}
-              <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center" }}>
-                <div style={{ position:"relative",width:56,height:56 }}>
-                  <svg viewBox="0 0 56 56" width="56" height="56" style={{ position:"absolute",inset:0 }}>
-                    <rect x="4" y="4" width="48" height="48" rx="10" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
-                  </svg>
-                  <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:10,height:10,borderRadius:"50%",background:"rgba(184,164,216,0.9)",boxShadow:"0 0 20px rgba(184,164,216,0.5),0 0 40px rgba(122,80,150,0.3)" }} />
-                </div>
-              </div>
+          {/* Dönen kare logosu */}
+          <div className="fade-up" style={{ marginBottom:36,position:"relative" }}>
+            <div style={{ position:"relative",width:100,height:100,margin:"0 auto" }}>
+              <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.35)",borderRadius:10,animation:"diamondSpin 12s linear infinite" }} />
+              <div style={{ position:"absolute",inset:20,transform:"rotate(45deg)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,animation:"diamondSpin 8s linear infinite reverse" }} />
+              <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:14,height:14,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 20px rgba(255,255,255,0.6),0 0 40px rgba(255,255,255,0.4)" }} />
             </div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.3s",opacity:0 }}>
@@ -2511,6 +2493,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ color:"#cccccc",fontSize:18,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
                 </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+                <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
+                  <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
+                  <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
+                </div>
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
@@ -2534,7 +2520,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    setRehberTab("reiki"); setScreen("rehber");
+                    if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
                   }}>
                   {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
                 </button>
@@ -2849,6 +2835,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     );
                   })}
                 </div>
+                {!isNative && !isPremium && (
+                  <button onClick={()=>setScreen("fiyat")} style={{ display:"block",margin:"12px auto 0",background:"none",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"8px 20px",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "✦ Tüm kelimeleri aç" : "✦ Unlock all words"}
+                  </button>
+                )}
                 {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
@@ -3060,6 +3051,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
               {/* Calming breathing modes */}
               <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t("breath_calming")}</div>
+              {!isNative && !isPremium ? (
+                <div style={{ position:"relative" }}>
+                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,opacity:0.3,pointerEvents:"none" }}>
+                    {[
+                      { id:"478", icon:"✦", rhythm:"4·7·8" },
+                      { id:"kutu", icon:"⬜", rhythm:"4·4·4·4" },
+                      { id:"sakinletici", icon:"🌿", rhythm:"4·2·8" },
+                    ].map(m=>(
+                      <div key={m.id} style={{ background:"rgba(255,255,255,0.04)",border:"1.5px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"10px 6px",display:"flex",flexDirection:"column",alignItems:"center",gap:5 }}>
+                        <span style={{ fontSize:18 }}>{m.icon}</span>
+                        <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:"rgba(255,255,255,0.4)",textTransform:"uppercase" }}>{t(`breath_mode_${m.id}`)}</span>
+                        <span style={{ fontSize:14,color:"rgba(255,255,255,0.2)" }}>{m.rhythm}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button onClick={()=>setScreen("fiyat")} style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.4)",borderRadius:14,border:"1px solid rgba(184,164,216,0.2)",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "✦ Premium ile Aç" : "✦ Unlock with Premium"}
+                  </button>
+                </div>
+              ) : (
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8 }}>
                 {[
                   { id:"478",        icon:"✦",  color:"rgba(80,160,220,0.18)", border:"rgba(80,160,220,0.35)", rhythm:"4·7·8" },
@@ -3077,6 +3088,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   );
                 })}
               </div>
+              )}
             </div>
           )}
 
@@ -3103,6 +3115,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8);
           }
           setTimeout(() => {
+            freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+            freqOscsRef.current = [];
             try { freqOscRef.current?.stop(); } catch(_) {}
             freqOscRef.current = null; freqGainRef.current = null;
             try { freqCtxRef.current?.close(); } catch(_) {}
@@ -3118,6 +3132,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           setTimeout(() => {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             freqCtxRef.current = ctx; ctx.resume();
+            const allOscs = [];
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
             master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 2);
@@ -3127,16 +3142,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             lfo.type = "sine"; lfo.frequency.value = 0.12;
             lfoGain.gain.value = 0.04;
             lfo.connect(lfoGain); lfoGain.connect(master.gain);
-            lfo.start();
+            lfo.start(); allOscs.push(lfo);
             [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
               g.gain.linearRampToValueAtTime(0.22 * amp, ctx.currentTime + 2);
               o.connect(g); g.connect(master); o.start();
+              allOscs.push(o);
               if (ratio === 1) { freqOscRef.current = o; }
             });
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 1.0 : 0.7);
+            freqOscsRef.current = allOscs;
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.5 : 0.3);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
@@ -3152,19 +3169,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
                 const isExpanded = activeFreq === f.hz;
-                const locked = !isPremium && PREMIUM_FREQ_HZ.includes(f.hz);
+                const isLocked = !isPremium && PREMIUM_FREQ_HZ.includes(f.hz);
                 return (
                   <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
                     <div
-                      onClick={() => { if(locked){ setScreen("fiyat"); return; } setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
+                      onClick={() => { if (isLocked) { setScreen("fiyat"); return; } setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
                       style={{
-                        background: isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
-                        border: `1px solid ${isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
+                        background: isLocked ? "rgba(255,255,255,0.015)" : isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
+                        border: `1px solid ${isLocked ? "rgba(255,255,255,0.04)" : isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
                         borderRadius: isExpanded ? "15px 15px 0 0" : 15,
                         padding:"14px 18px",cursor:"pointer",
                         transition:"all 0.3s ease",
                         display:"flex",alignItems:"center",gap:14,
-                        opacity:locked?0.5:1,
+                        opacity: isLocked ? 0.5 : 1,
                       }}>
                       <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,
                         background:`radial-gradient(circle,${f.color}cc,${f.color}44)`,
@@ -3312,7 +3329,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* REHBER */}
       {/* İÇSEL AYNA — Google-style merkezi arama */}
-      {screen==="rehber" && (
+      {screen==="rehber" && !isNative && (
         <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 170px" : "52px 24px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
           {/* Arka plan ambient */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
@@ -3624,6 +3641,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
           </div>
+          {!isNative && (
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
             {raporKullanildi && !isPremium && !aiRapor && !aiLoading ? (
@@ -3672,6 +3690,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             )}
           </div>
+          )}
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
         </div>
       )}
@@ -3727,8 +3746,65 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
 
           <div className="divider" />
+
+          {/* Geri Bildirim */}
+          {!fbOpen ? (
+            <div style={{ textAlign:"center",marginBottom:24 }}>
+              <button onClick={()=>setFbOpen(true)}
+                style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:16,padding:"14px 28px",cursor:"pointer",color:"#b8a4d8",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",minHeight:44 }}>
+                {lang==="tr" ? "💬  Geri Bildirim Gönder" : "💬  Send Feedback"}
+              </button>
+            </div>
+          ) : (
+            <div style={{ background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.02))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:18,padding:"20px 18px",marginBottom:24 }}>
+              <div style={{ fontSize:13,letterSpacing:2.5,color:"#b8a4d8",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "GERİ BİLDİRİM" : "FEEDBACK"}
+              </div>
+              {fbDone ? (
+                <div style={{ textAlign:"center",padding:"20px 0" }}>
+                  <div style={{ fontSize:28,marginBottom:8 }}>✓</div>
+                  <div style={{ fontSize:14,color:"#50c878",letterSpacing:1.5 }}>
+                    {lang==="tr" ? "Teşekkürler! Mesajın iletildi." : "Thank you! Your message was sent."}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div style={{ display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",justifyContent:"center" }}>
+                    {(lang==="tr"
+                      ? [["oneri","Öneri"],["hata","Hata"],["icerik","İçerik"],["genel","Genel"]]
+                      : [["oneri","Suggestion"],["hata","Bug"],["icerik","Content"],["genel","General"]]
+                    ).map(([k,v])=>(
+                      <button key={k} onClick={()=>setFbCat(k)}
+                        style={{ padding:"6px 14px",borderRadius:20,border:`1px solid ${fbCat===k?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:fbCat===k?"rgba(184,164,216,0.15)":"transparent",color:fbCat===k?"#b8a4d8":"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    value={fbMsg}
+                    onChange={e=>setFbMsg(e.target.value)}
+                    placeholder={lang==="tr" ? "Düşüncelerinizi paylaşın..." : "Share your thoughts..."}
+                    rows={3}
+                    maxLength={1000}
+                    style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
+                  />
+                  <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
+                    <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
+                      style={{ padding:"10px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:13,cursor:"pointer",letterSpacing:1,minHeight:44 }}>
+                      {lang==="tr" ? "İptal" : "Cancel"}
+                    </button>
+                    <button onClick={sendFeedback} disabled={!fbMsg.trim() || fbSending}
+                      style={{ padding:"10px 24px",borderRadius:12,border:"none",background:fbMsg.trim()?"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.6))":"rgba(255,255,255,0.05)",color:fbMsg.trim()?"#fff":"#555",fontSize:13,cursor:fbMsg.trim()?"pointer":"default",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",minHeight:44,opacity:fbSending?0.6:1 }}>
+                      {fbSending ? "..." : (lang==="tr" ? "Gönder →" : "Send →")}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
           <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center" }}>
-            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2025" : "Sakin · Awareness System · 2025"}
+            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2026" : "Sakin · Awareness System · 2026"}
           </p>
         </div>
       )}
@@ -3736,6 +3812,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
+          <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
+            style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
+            ←
+          </button>
           <h1>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
@@ -3759,15 +3839,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
-                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading}
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
-                  {purchaseLoading === "yearly" ? "..." : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
+                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading || !productsReady}
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                  {purchaseLoading === "yearly" ? "..." : !productsReady ? (lang==="tr" ? "Yükleniyor..." : "Loading...") : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
                 </button>
-                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading}
-                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
-                  {purchaseLoading === "lifetime" ? "..." : (lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime")}
+                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
+                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                  {purchaseLoading === "lifetime" ? "..." : !productsReady ? (lang==="tr" ? "Yükleniyor..." : "Loading...") : (lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime")}
                 </button>
               </div>
+
+              {!productsReady && !purchaseError && (
+                <div style={{ textAlign:"center",marginTop:16,fontSize:12,color:"#888",letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "App Store ürünleri yükleniyor..." : "Loading App Store products..."}
+                </div>
+              )}
 
               {purchaseError && (
                 <div style={{ textAlign:"center",marginTop:16,padding:"12px 16px",background:"rgba(255,80,80,0.1)",border:"1px solid rgba(255,80,80,0.2)",borderRadius:12,fontSize:13,color:"#ff6666",letterSpacing:0.5 }}>
@@ -3791,7 +3877,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("paid_app_price")}</div>
                 <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:6 }}>{t("paid_app_price_sub")}</div>
                 <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
-                  {lang==="tr" ? "Ömür Boyu Lisans" : "Lifetime License"}
+                  {lang==="tr" ? "Ömür Boyu Lisans · İlk 100 Kişiye" : "Lifetime License · First 100 People"}
                 </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
@@ -3809,6 +3895,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
                   {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
                 </button>
+              </div>
+
+              <div style={{ textAlign:"center",marginTop:8,marginBottom:24,padding:"18px 20px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:16 }}>
+                <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10 }}>
+                  <span style={{ fontSize:16 }}>🔒</span>
+                  <span style={{ fontSize:13,letterSpacing:2,color:"#888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    {lang==="tr" ? "Güvenli Ödeme" : "Secure Payment"}
+                  </span>
+                </div>
+                <div style={{ fontSize:13,color:"#666",lineHeight:1.8,letterSpacing:0.3 }}>
+                  {lang==="tr"
+                    ? "Ödemeler, uluslararası lisanslı dijital ödeme altyapısı Lemon Squeezy tarafından güvenle işlenmektedir. Kredi kartı bilgileriniz Sakin tarafından saklanmaz."
+                    : "Payments are securely processed by Lemon Squeezy, a licensed international digital payment platform. Your credit card information is never stored by Sakin."}
+                </div>
+                <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-block",marginTop:10,fontSize:12,letterSpacing:1.5,color:"#b8a4d8",textDecoration:"none",borderBottom:"1px solid rgba(184,164,216,0.3)",paddingBottom:2 }}>
+                  lemonsqueezy.com →
+                </a>
               </div>
             </>
           )}
@@ -3929,23 +4033,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
-            const pulse = n.id==="mandala" && screen==="rehber";
+            const sabahHint = n.id==="sabah" && screen==="rehber";
             return (
               <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
-                  background: pulse ? `${n.color}18` : active ? `${n.color}22` : "transparent",
-                  border: pulse ? `1px solid ${n.color}55` : active ? `1px solid ${n.color}44` : "1px solid transparent",
+                  background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
+                  border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
-                  transition:"all 0.28s",
+                  transition:"background 0.5s ease, border 0.5s ease",
                   padding:"8px 12px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
                   minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: pulse ? "navPulse 2s ease-in-out infinite" : "none",
+                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
-                <span style={{ fontSize:active?18:pulse?16:15, color: active ? n.color : pulse ? n.color : `${n.color}55`, transition:"all 0.28s", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:pulse?n.color:`${n.color}44`,transition:"color 0.28s",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:sabahHint?n.color:`${n.color}44`,transition:"color 0.5s ease",lineHeight:1 }}>{n.label}</span>
               </button>
             );
           })}
