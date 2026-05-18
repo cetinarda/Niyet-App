@@ -3204,7 +3204,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         )}
                       </div>
                       <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
-                        {locked ? "🔒" : isPlaying ? "⏹" : "▶"}
+                        {isLocked ? "🔒" : isPlaying ? "⏹" : "▶"}
                       </div>
                     </div>
 
