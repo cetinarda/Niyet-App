@@ -289,6 +289,11 @@ const BREATH_MODES_CONFIG = {
   sakinletici: { in: 4000, hold: 2000, out: 8000,  hold2: 0,    total: 14000 },
 };
 
+const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici"];
+const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
+const PREMIUM_WORDS_TR = ["berraklik", "guc", "ozgurluk", "nese", "sukur", "guven"];
+const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
   * { box-sizing: border-box; }
@@ -743,7 +748,7 @@ function HarmonySVG({ color = "#ffffff", active = false }) {
   );
 }
 
-function TerapiScreen({ onBack, onNext, lang = "tr" }) {
+function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywall = () => {} }) {
   const t = makeTrans(lang);
   const CHAKRAS_22 = getChakras22(lang);
   const [tPhase,   setTPhase]   = useState("list");
@@ -948,17 +953,20 @@ function TerapiScreen({ onBack, onNext, lang = "tr" }) {
                 <div style={{ flex:1, height:1, background:levelColors[level] }} />
               </div>
               {/* Chakras in this level — reversed so highest number is at top */}
-              {[...levelChakras].reverse().map((c,i) => (
+              {[...levelChakras].reverse().map((c,i) => {
+                const locked = !isPremium && c.level !== 1;
+                return (
                 <div key={c.name} className={`chakra-card slide-in ${selected?.name===c.name?"active":""}`}
-                  style={{ marginBottom:7, animationDelay:`${i*0.04}s`, opacity:0 }}
-                  onClick={() => { setSelected(c); setTPhase("intro"); }}>
+                  style={{ marginBottom:7, animationDelay:`${i*0.04}s`, opacity:locked?0.45:0 }}
+                  onClick={() => { if(locked){ onPaywall(); return; } setSelected(c); setTPhase("intro"); }}>
                   <div style={{ width:32, height:32, borderRadius:"50%", flexShrink:0, background:`radial-gradient(circle,${c.color}cc,${c.color}44)`, boxShadow:`0 0 10px ${c.color}55` }} />
                   <div style={{ flex:1, minWidth:0 }}>
-                    <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:1, color:level===3?"#cccccc":"#ffffff" }}>{c.name}</div>
+                    <div style={{ fontSize:13, letterSpacing:0.5, marginBottom:1, color:level===3?"#cccccc":"#ffffff" }}>{locked && "🔒 "}{c.name}</div>
                     <div style={{ fontSize:12, color:"#777777", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.konu}</div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           );
         })}
@@ -2296,7 +2304,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
-  const toggleWord = w => setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
+  const toggleWord = w => {
+    if (!isPremium && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
+    setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
+  };
   const breathLabel = breathStarted ? ({inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
   const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2" ? 1 : 1.6) : 1;
   const breathIsActive = breathPhase==="inhale"||breathPhase==="hold";
@@ -2325,6 +2336,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
   ];
   const MORNING_WORDS = t("morning_words");
+  const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
@@ -2827,9 +2839,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ marginBottom:32 }}>
                 <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
                 <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
-                  {MORNING_WORDS.map(w=>(
-                    <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}>{w}</button>
-                  ))}
+                  {MORNING_WORDS.map(w=>{
+                    const locked = !isPremium && PREMIUM_WORDS.includes(w);
+                    return (
+                      <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}
+                        style={locked ? { opacity:0.45, position:"relative" } : {}}>
+                        {locked && <span style={{ marginRight:5,fontSize:11 }}>🔒</span>}{w}
+                      </button>
+                    );
+                  })}
                 </div>
                 {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
@@ -3047,13 +3065,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"478",        icon:"✦",  color:"rgba(80,160,220,0.18)", border:"rgba(80,160,220,0.35)", rhythm:"4·7·8" },
                   { id:"kutu",       icon:"⬜",  color:"rgba(140,100,220,0.18)",border:"rgba(140,100,220,0.35)",rhythm:"4·4·4·4" },
                   { id:"sakinletici",icon:"🌿",  color:"rgba(80,200,160,0.18)", border:"rgba(80,200,160,0.35)", rhythm:"4·2·8" },
-                ].map(m=>(
-                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ haptic(); playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                ].map(m=>{
+                  const locked = !isPremium && PREMIUM_BREATH_MODES.includes(m.id);
+                  return (
+                  <button key={m.id} onClick={()=>{ if(locked){ setScreen("fiyat"); return; } if(breathMode===m.id){ haptic(); playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease", opacity:locked?0.5:1, position:"relative" }}>
+                    {locked && <span style={{ position:"absolute",top:6,right:8,fontSize:11 }}>🔒</span>}
                     <span style={{ fontSize:18 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -3130,10 +3152,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
                 const isExpanded = activeFreq === f.hz;
+                const locked = !isPremium && PREMIUM_FREQ_HZ.includes(f.hz);
                 return (
                   <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
                     <div
-                      onClick={() => { setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
+                      onClick={() => { if(locked){ setScreen("fiyat"); return; } setActiveFreq(isExpanded ? null : f.hz); playFreq(f.hz); }}
                       style={{
                         background: isPlaying ? `linear-gradient(135deg,${f.color}22,${f.color}0a)` : "rgba(255,255,255,0.025)",
                         border: `1px solid ${isPlaying ? f.color+"66" : "rgba(255,255,255,0.06)"}`,
@@ -3141,6 +3164,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         padding:"14px 18px",cursor:"pointer",
                         transition:"all 0.3s ease",
                         display:"flex",alignItems:"center",gap:14,
+                        opacity:locked?0.5:1,
                       }}>
                       <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,
                         background:`radial-gradient(circle,${f.color}cc,${f.color}44)`,
@@ -3163,7 +3187,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         )}
                       </div>
                       <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
-                        {isPlaying ? "⏹" : "▶"}
+                        {locked ? "🔒" : isPlaying ? "⏹" : "▶"}
                       </div>
                     </div>
 
@@ -3217,7 +3241,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} />}
+      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
       {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
 
       {/* AKŞAM */}
@@ -3590,7 +3614,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             </div>
           ) : null}
-          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center" }}>
+          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
+            <div style={{ position:"absolute",top:10,right:12,fontSize:10,letterSpacing:2,padding:"3px 9px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{lang==="tr" ? "YAKINDA" : "COMING SOON"}</div>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#888888",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
               {[...Array(7)].map((_,i)=>(
