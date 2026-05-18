@@ -79,14 +79,14 @@ export const handler = async (event) => {
 
   const { system, messages, max_tokens } = body;
 
-  if (system !== undefined && (typeof system !== "string" || system.length > 5000)) {
+  if (system !== undefined && (typeof system !== "string" || system.length > 12000)) {
     return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz system" }) };
   }
   if (!Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
     return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz messages" }) };
   }
   for (const m of messages) {
-    if (!m || typeof m.content !== "string" || m.content.length > 8000) {
+    if (!m || typeof m.content !== "string" || m.content.length > 16000) {
       return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Mesaj içeriği geçersiz" }) };
     }
     if (!VALID_ROLES.includes(m.role)) {
