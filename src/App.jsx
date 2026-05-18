@@ -310,6 +310,7 @@ const GLOBAL_CSS = `
   @keyframes ringPulse   { 0%,100%{opacity:0.07;transform:scale(1)} 50%{opacity:0.2;transform:scale(1.04)} }
   @keyframes heartbeat   { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes slowPulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  @keyframes ailesiPulse { 0%,100%{opacity:0.7;box-shadow:0 0 8px rgba(240,192,96,0.1)} 50%{opacity:1;box-shadow:0 0 18px rgba(240,192,96,0.25)} }
   @keyframes floatUp     { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes energyFill  { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
   @keyframes pillGlow    { 0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.4),0 0 22px rgba(255,255,255,0.18),inset 0 0 8px rgba(255,255,255,0.12)} 50%{box-shadow:0 0 18px rgba(255,255,255,0.7),0 0 44px rgba(255,255,255,0.38),inset 0 0 14px rgba(255,255,255,0.22)} }
@@ -2386,7 +2387,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
-    ...(!isNative ? [{id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#b8a4d8"}] : []),
+    ...(!isNative ? [{id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#f0c060", glow:true}] : []),
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
@@ -2467,16 +2468,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <button key={n.id}
               onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
               style={{
-                background: active ? `${n.color}22` : "transparent",
-                border: active ? `1px solid ${n.color}44` : "1px solid transparent",
+                background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
+                border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
                 borderRadius:20, cursor:"pointer", transition:"all 0.25s",
                 padding:"4px 16px", display:"flex", alignItems:"center", gap:6,
-                fontFamily:"'Jost',sans-serif", fontWeight:300,
+                fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 400 : 300,
                 fontSize:13, letterSpacing:1.8, textTransform:"uppercase",
-                color: active ? n.color : `${n.color}77`,
+                color: active ? n.color : n.glow ? n.color : `${n.color}77`,
+                animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
+                boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
               }}>
               <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
               <span>{n.label}</span>
+              {n.glow && <span style={{ fontSize:8, marginLeft:2, color:n.color, opacity:0.8 }}>●</span>}
             </button>
           );
         })}
