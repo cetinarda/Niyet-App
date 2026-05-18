@@ -2386,6 +2386,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
+    ...(!isNative ? [{id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#b8a4d8"}] : []),
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
@@ -2412,12 +2413,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        {!isNative && (
-          <button onClick={()=>setShowAilesi(!showAilesi)} style={{ marginLeft:"auto",flexShrink:0,background: showAilesi?"rgba(184,164,216,0.15)":"rgba(255,255,255,0.06)",border:`1px solid ${showAilesi?"rgba(184,164,216,0.4)":"rgba(255,255,255,0.12)"}`,borderRadius:20,padding:"6px 14px",color: showAilesi?"#b8a4d8":"#aaaaaa",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,alignSelf:"center",textTransform:"uppercase",transition:"all 0.2s" }}>
-            ✦ {lang==="tr"?"Ailesi":"Family"}
-          </button>
-        )}
-        <button onClick={toggleLang} style={{ marginLeft: isNative?"auto":4,flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
+        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
@@ -2466,10 +2462,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* AYNA & HARİTA BARI — üst navın altında */}
       <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
         {SIDEBAR_ITEMS.map(n=>{
-          const active = screen===n.id;
+          const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
             <button key={n.id}
-              onClick={()=>{ if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
               style={{
                 background: active ? `${n.color}22` : "transparent",
                 border: active ? `1px solid ${n.color}44` : "1px solid transparent",
