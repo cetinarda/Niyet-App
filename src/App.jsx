@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate, onProductsLoaded, areProductsLoaded } from "./purchases";
 
 const isNative = Capacitor.isNativePlatform();
 const detectTablet = () => {
@@ -1513,14 +1513,17 @@ export default function SakinApp() {
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
+  const [productsReady, setProductsReady] = useState(false);
 
   useEffect(() => {
     if (!isNative) return;
     onPurchaseUpdate((purchased) => {
       if (purchased) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
     });
+    onProductsLoaded(() => setProductsReady(true));
     initStore().then((ok) => {
       setIapReady(ok);
+      if (areProductsLoaded()) setProductsReady(true);
       if (ok) {
         const owned = isSubscribed();
         if (owned) { setIsPremium(true); }
@@ -1534,12 +1537,23 @@ export default function SakinApp() {
     setPurchaseError("");
     const r = await fn();
     setPurchaseLoading(null);
-    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
-    else {
-      setPurchaseError(lang === "tr"
-        ? "Satın alma şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin."
-        : "Purchase is currently unavailable. Please try again later.");
+    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); return; }
+    if (r.cancelled) return;
+    let msg;
+    if (r.error === "products_not_loaded") {
+      msg = lang === "tr"
+        ? "App Store ürünleri yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin."
+        : "App Store products could not load. Check your internet connection and try again.";
+    } else if (r.error === "already_owned") {
+      msg = lang === "tr"
+        ? "Bu ürünü zaten aldınız. 'Satın Alımları Geri Yükle' butonuna basın."
+        : "You already own this product. Tap 'Restore Purchases'.";
+    } else {
+      msg = lang === "tr"
+        ? "Satın alma tamamlanamadı. Lütfen tekrar deneyin."
+        : "Purchase could not be completed. Please try again.";
     }
+    setPurchaseError(msg);
   };
 
   const handleRestore = async () => {
@@ -3800,15 +3814,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
-                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading}
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
-                  {purchaseLoading === "yearly" ? "..." : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
+                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading || !productsReady}
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                  {purchaseLoading === "yearly" ? "..." : !productsReady ? (lang==="tr" ? "Yükleniyor..." : "Loading...") : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
                 </button>
-                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading}
-                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:"pointer",opacity:purchaseLoading ? 0.5 : 1 }}>
-                  {purchaseLoading === "lifetime" ? "..." : (lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime")}
+                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
+                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                  {purchaseLoading === "lifetime" ? "..." : !productsReady ? (lang==="tr" ? "Yükleniyor..." : "Loading...") : (lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime")}
                 </button>
               </div>
+
+              {!productsReady && !purchaseError && (
+                <div style={{ textAlign:"center",marginTop:16,fontSize:12,color:"#888",letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "App Store ürünleri yükleniyor..." : "Loading App Store products..."}
+                </div>
+              )}
 
               {purchaseError && (
                 <div style={{ textAlign:"center",marginTop:16,padding:"12px 16px",background:"rgba(255,80,80,0.1)",border:"1px solid rgba(255,80,80,0.2)",borderRadius:12,fontSize:13,color:"#ff6666",letterSpacing:0.5 }}>
