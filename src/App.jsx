@@ -3984,8 +3984,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           )}
 
-          <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center" }}>
+          <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center", lineHeight:2 }}>
             {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2026" : "Sakin · Awareness System · 2026"}
+            <br/>
+            <span style={{ fontSize:12, color:"#555555", letterSpacing:1.5 }}>Arda Çetin</span>
           </p>
         </div>
       )}
