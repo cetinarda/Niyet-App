@@ -349,30 +349,49 @@ const REMINDERS_EN = [
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
 
 const APP_STORE_URL = "https://apps.apple.com/tr/app/sakin-life/id6765619382?l=tr";
-function AppStoreBadge({ lang = "tr", size = "md" }) {
-  const isLg = size === "lg";
+function AppStoreBadge({ lang = "tr" }) {
   return (
     <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
       style={{
-        display:"inline-flex",alignItems:"center",gap: isLg?12:9,
-        padding: isLg?"12px 24px":"8px 16px",
-        background:"#000",border:"1.5px solid rgba(255,255,255,0.85)",
-        borderRadius: isLg?14:10,color:"#fff",textDecoration:"none",
-        transition:"all 0.25s",cursor:"pointer",
-        boxShadow:"0 0 0 rgba(255,255,255,0)"
+        display:"inline-flex",alignItems:"center",gap:9,
+        padding:"7px 16px 7px 13px",
+        background:"linear-gradient(135deg,rgba(230,235,250,0.10),rgba(170,185,220,0.04))",
+        border:"1px solid rgba(220,225,240,0.28)",
+        borderRadius:24,
+        color:"#dde2f2",textDecoration:"none",
+        fontFamily:"'Jost',sans-serif",
+        fontSize:10.5,letterSpacing:3,textTransform:"uppercase",fontWeight:300,
+        boxShadow:"0 0 14px rgba(180,200,240,0.06), inset 0 0 10px rgba(220,225,240,0.03)",
+        transition:"all 0.4s",cursor:"pointer",whiteSpace:"nowrap"
       }}
-      onMouseEnter={e => { e.currentTarget.style.background="#0a0a0a"; e.currentTarget.style.boxShadow="0 0 28px rgba(255,255,255,0.18)"; e.currentTarget.style.transform="translateY(-1px)"; }}
-      onMouseLeave={e => { e.currentTarget.style.background="#000"; e.currentTarget.style.boxShadow="0 0 0 rgba(255,255,255,0)"; e.currentTarget.style.transform="translateY(0)"; }}>
-      <svg width={isLg?26:22} height={isLg?30:26} viewBox="0 0 24 28" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <rect x="4" y="2" width="16" height="24" rx="3" />
-        <line x1="10" y1="22" x2="14" y2="22" />
-        <path d="M12 7v8" />
-        <path d="M9 12l3 3 3-3" />
+      onMouseEnter={e => {
+        e.currentTarget.style.background="linear-gradient(135deg,rgba(230,235,250,0.18),rgba(170,185,220,0.07))";
+        e.currentTarget.style.boxShadow="0 0 24px rgba(180,200,240,0.22), inset 0 0 14px rgba(220,225,240,0.07)";
+        e.currentTarget.style.color="#f4f6ff";
+        e.currentTarget.style.borderColor="rgba(220,225,240,0.5)";
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background="linear-gradient(135deg,rgba(230,235,250,0.10),rgba(170,185,220,0.04))";
+        e.currentTarget.style.boxShadow="0 0 14px rgba(180,200,240,0.06), inset 0 0 10px rgba(220,225,240,0.03)";
+        e.currentTarget.style.color="#dde2f2";
+        e.currentTarget.style.borderColor="rgba(220,225,240,0.28)";
+      }}>
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <defs>
+          <radialGradient id="asGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9"/>
+            <stop offset="55%" stopColor="#c8d0e8" stopOpacity="0.45"/>
+            <stop offset="100%" stopColor="#7080a8" stopOpacity="0"/>
+          </radialGradient>
+          <linearGradient id="asSpark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f4f6ff"/>
+            <stop offset="100%" stopColor="#b8c4e0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="8" cy="8" r="7" fill="url(#asGlow)"/>
+        <path d="M8 1.5 L8.55 7.45 L14.5 8 L8.55 8.55 L8 14.5 L7.45 8.55 L1.5 8 L7.45 7.45 Z" fill="url(#asSpark)"/>
       </svg>
-      <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
-        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{lang==="tr" ? "App Store'dan" : "Download on the"}</span>
-        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{lang==="tr" ? "İndir" : "App Store"}</span>
-      </div>
+      <span>{lang==="tr" ? "App Store'da" : "On App Store"}</span>
     </a>
   );
 }
@@ -2759,11 +2778,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
                 </div>
                 {!isNative && (
-                  <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
-                    <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
-                      {lang==="tr" ? "Telefonunda yanında taşı" : "Take it with you"}
-                    </div>
-                    <AppStoreBadge lang={lang} size="lg" />
+                  <div style={{ marginTop:38,display:"flex",justifyContent:"center" }}>
+                    <AppStoreBadge lang={lang} />
                   </div>
                 )}
               </>
@@ -4180,20 +4196,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ? "Kullandığın her an bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
 
-          {!isNative && (
-            <div style={{ margin:"36px 0",padding:"28px 24px",background:"linear-gradient(135deg,rgba(184,164,216,0.10),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:18,textAlign:"center" }}>
-              <div style={{ fontSize:11,letterSpacing:4,color:"#9080b8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
-                {lang==="tr" ? "iOS Uygulaması" : "iOS App"}
-              </div>
-              <div style={{ fontSize:16,color:"#d0c8e8",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:18,fontStyle:"italic" }}>
-                {lang==="tr"
-                  ? "Sakin'i telefonunda taşı — günlük pratikler, bildirimler ve içsel rehberlik her zaman yanında."
-                  : "Carry Sakin in your pocket — daily practices, notifications and inner guidance always with you."}
-              </div>
-              <AppStoreBadge lang={lang} size="lg" />
-            </div>
-          )}
-
           <div className="divider" />
 
           {/* Geri Bildirim */}
@@ -4257,6 +4259,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <br/>
             <span style={{ fontSize:12, color:"#555555", letterSpacing:1.5 }}>Arda Çetin</span>
           </p>
+          {!isNative && (
+            <div style={{ display:"flex",justifyContent:"center",marginTop:28 }}>
+              <AppStoreBadge lang={lang} />
+            </div>
+          )}
         </div>
       )}
 
@@ -4329,22 +4336,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </>
           ) : (
             <>
-              <div style={{ margin:"0 0 28px",padding:"22px 22px",background:"linear-gradient(135deg,rgba(80,140,220,0.10),rgba(80,140,220,0.03))",border:"1px solid rgba(120,160,220,0.28)",borderRadius:18,textAlign:"center",position:"relative",overflow:"hidden" }}>
-                <div style={{ position:"absolute",top:-20,right:-20,width:120,height:120,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,140,220,0.15),transparent)",pointerEvents:"none" }} />
-                <div style={{ fontSize:11,letterSpacing:4,color:"#7090c0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:8,position:"relative" }}>
-                  {lang==="tr" ? "iPhone Kullanıcıları" : "iPhone Users"}
-                </div>
-                <div style={{ fontSize:16,color:"#c8d8f0",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:16,fontStyle:"italic",position:"relative" }}>
-                  {lang==="tr"
-                    ? "Sakin'i App Store'dan indir — abonelik ya da ömür boyu satın alma seçenekleriyle."
-                    : "Get Sakin from the App Store — with subscription or lifetime purchase options."}
-                </div>
-                <AppStoreBadge lang={lang} size="lg" />
-                <div style={{ marginTop:14,fontSize:11,color:"#5878a0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",position:"relative" }}>
-                  {lang==="tr" ? "veya web sürümü için aşağıdan satın al" : "or purchase web version below"}
-                </div>
-              </div>
-
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
@@ -4394,6 +4385,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <hr className="divider" />
           <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          {!isNative && (
+            <div style={{ display:"flex",justifyContent:"center",marginTop:28 }}>
+              <AppStoreBadge lang={lang} />
+            </div>
+          )}
         </div>
       )}
 
@@ -4412,6 +4408,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("terms_s7")}</h2><p>{t("terms_s7p")}</p>
           <h2>{t("terms_s8")}</h2><p>{t("terms_s8p")}</p>
           <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          {!isNative && (
+            <div style={{ display:"flex",justifyContent:"center",marginTop:28 }}>
+              <AppStoreBadge lang={lang} />
+            </div>
+          )}
         </div>
       )}
 
@@ -4453,6 +4454,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("privacy_s10")}</h2>
           <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
           <p style={{ fontSize:14,color:"#777777" }}>{t("privacy_app_name")}</p>
+          {!isNative && (
+            <div style={{ display:"flex",justifyContent:"center",marginTop:28 }}>
+              <AppStoreBadge lang={lang} />
+            </div>
+          )}
         </div>
       )}
 
@@ -4486,6 +4492,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <h2>{t("refund_s7")}</h2>
           <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          {!isNative && (
+            <div style={{ display:"flex",justifyContent:"center",marginTop:28 }}>
+              <AppStoreBadge lang={lang} />
+            </div>
+          )}
         </div>
       )}
 
