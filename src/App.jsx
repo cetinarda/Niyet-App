@@ -1650,6 +1650,18 @@ export default function SakinApp() {
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
   const [showOrnekler, setShowOrnekler] = useState(false);
+  const [showKozmik, setShowKozmik] = useState(false);
+  const [kozmikData, setKozmikData] = useState(null);
+  const [kozmikLoading, setKozmikLoading] = useState(false);
+  const fetchKozmik = async () => {
+    if (kozmikData || kozmikLoading) return;
+    setKozmikLoading(true);
+    try {
+      const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy");
+      if (r.ok) setKozmikData(await r.json());
+    } catch { /* sessiz */ }
+    setKozmikLoading(false);
+  };
   const [showKilavuz, setShowKilavuz] = useState(false);
   // Kişiselleştirme: kullanıcının önceki sorgu geçmişini takip et
   const [sorguGecmisi, setSorguGecmisi] = useState(() => {
@@ -3617,6 +3629,105 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           ))}
                         </div>
                       ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Haftanın Kozmik Enerji Durumu */}
+                <div style={{ marginTop:10,position:"relative" }}>
+                  <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
+                    style={{
+                      width:"100%",
+                      background:"rgba(184,164,216,0.06)",
+                      border:"1px solid rgba(184,164,216,0.25)",
+                      borderRadius:14,padding:"12px 18px",
+                      color:"#a888d0",cursor:"pointer",
+                      display:"flex",alignItems:"center",justifyContent:"space-between",
+                      fontFamily:"'Jost',sans-serif",fontWeight:300,
+                      transition:"all 0.2s",
+                    }}
+                    onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
+                    onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
+                    <span style={{ fontSize:13,letterSpacing:2 }}>✦ {lang==="tr" ? "HAFTANIN KOZMİK ENERJİSİ" : "WEEK'S COSMIC ENERGY"}</span>
+                    <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+                  </button>
+
+                  {showKozmik && (
+                    <div style={{
+                      marginTop:8,
+                      background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
+                      border:"1px solid rgba(184,164,216,0.25)",
+                      borderRadius:16,padding:"16px 18px",
+                      boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
+                    }}>
+                      {kozmikLoading && (
+                        <div style={{ textAlign:"center",color:"#888",fontSize:13,padding:"20px 0" }}>
+                          {lang==="tr" ? "NOAA verileri yükleniyor..." : "Loading NOAA data..."}
+                        </div>
+                      )}
+                      {!kozmikLoading && !kozmikData && (
+                        <div style={{ textAlign:"center",color:"#888",fontSize:13,padding:"20px 0" }}>
+                          {lang==="tr" ? "Veri alınamadı. İnternet bağlantını kontrol et." : "Could not fetch data."}
+                        </div>
+                      )}
+                      {!kozmikLoading && kozmikData && (
+                        <>
+                          <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
+                            <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
+                              {lang==="tr" ? "Şu Anki Durum" : "Current State"}
+                            </div>
+                            <div style={{ fontSize:18,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>
+                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{lang==="tr" ? kozmikData.interpretation.current.tr : kozmikData.interpretation.current.en}</span>
+                            </div>
+                          </div>
+
+                          <div style={{ marginBottom:14 }}>
+                            <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:8 }}>
+                              {lang==="tr" ? "Son 7 Gün" : "Past 7 Days"}
+                            </div>
+                            <div style={{ display:"flex",alignItems:"flex-end",justifyContent:"space-between",gap:4,height:80,marginBottom:6 }}>
+                              {kozmikData.past_7_days.daily.map(d=>{
+                                const h = Math.max(8, (d.kp/9)*70);
+                                const color = d.kp<3?"#82d9a3":d.kp<5?"#d9c682":d.kp<6?"#d99a82":"#e06a6a";
+                                return (
+                                  <div key={d.day} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
+                                    <div style={{ fontSize:10,color:"#aaa",fontFamily:"'Jost',sans-serif" }}>{d.kp}</div>
+                                    <div style={{ width:"100%",height:h,background:`linear-gradient(180deg,${color}cc,${color}55)`,borderRadius:"4px 4px 0 0",border:`1px solid ${color}aa` }} />
+                                    <div style={{ fontSize:9,color:"#666",letterSpacing:0.5 }}>{d.day.slice(5).replace("-","/")}</div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div style={{ fontSize:12,color:"#999",lineHeight:1.6 }}>
+                              {lang==="tr"
+                                ? `Hafta ortalaması: Kp ${kozmikData.past_7_days.avg_kp}, en yüksek: ${kozmikData.past_7_days.max_kp} (${kozmikData.interpretation.week_peak.tr})`
+                                : `Week avg: Kp ${kozmikData.past_7_days.avg_kp}, peak: ${kozmikData.past_7_days.max_kp} (${kozmikData.interpretation.week_peak.en})`}
+                            </div>
+                          </div>
+
+                          {kozmikData.next_3_days.forecast_max_kp !== null && (
+                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
+                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
+                                {lang==="tr" ? "Önümüzdeki 3 Gün" : "Next 3 Days"}
+                              </div>
+                              <div style={{ fontSize:14,color:"#c0a0e8" }}>
+                                {lang==="tr"
+                                  ? `Tahmini en yüksek: Kp ${kozmikData.next_3_days.forecast_max_kp} (${kozmikData.interpretation.forecast_peak?.tr})`
+                                  : `Forecast peak: Kp ${kozmikData.next_3_days.forecast_max_kp} (${kozmikData.interpretation.forecast_peak?.en})`}
+                              </div>
+                            </div>
+                          )}
+
+                          <div style={{ fontSize:11,color:"#777",lineHeight:1.7,paddingTop:10,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
+                            {lang==="tr"
+                              ? "Kp index Dünya'nın jeomanyetik aktivitesini gösterir. Yüksek değerler (5+) güneş fırtınalarıyla ilişkilidir — sinir sistemi hassasiyeti, uyku bozukluğu, yoğun rüyalar görülebilir. Düşük değerler (0-2) sakin dönemlerdir."
+                              : "Kp index reflects Earth's geomagnetic activity. High values (5+) signal solar storms — nervous system sensitivity, sleep disturbance, vivid dreams may occur. Low values (0-2) are calm periods."}
+                          </div>
+                          <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
+                            {lang==="tr" ? "Kaynak: " : "Source: "}NOAA Space Weather
+                          </div>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
