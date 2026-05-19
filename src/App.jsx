@@ -255,6 +255,73 @@ function approxAscendant(dateStr, timeStr) {
   return ZODIAC_ORDER[ascIdx];
 }
 
+// Ortalama Kuzey Ay Düğümü — Meeus formülü (yaklaşık, ±1° hata)
+// Düğüm 18.6 yılda bir burç döngüsü tamamlar, retrograd hareket eder.
+function approxNorthNode(dateStr) {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  const j2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
+  const daysSince = (d.getTime() - j2000) / 86400000;
+  let nodeDeg = 125.04452 - 0.0529538083 * daysSince;
+  nodeDeg = ((nodeDeg % 360) + 360) % 360;
+  return ZODIAC_ORDER[Math.floor(nodeDeg / 30)];
+}
+
+// Draconic Güneş = natal Güneş burcunu Kuzey Düğüm 0° Koç olacak şekilde döndür
+function draconicSun(natalSunSign, northNodeSign) {
+  if (!natalSunSign || !northNodeSign) return null;
+  const sIdx = ZODIAC_ORDER.indexOf(natalSunSign);
+  const nIdx = ZODIAC_ORDER.indexOf(northNodeSign);
+  if (sIdx < 0 || nIdx < 0) return null;
+  return ZODIAC_ORDER[((sIdx - nIdx) % 12 + 12) % 12];
+}
+
+// Draconic Güneş yorumları — Pamela Crane / Ronald Davison sistemi (1970'ler)
+// Ruhun bu bedene girmeden önceki kökeni / kimliği
+const DRACONIC_SUN_KISA = {
+  "Koç":     "Ruhun savaşçı kökenli — cesaret, başlatma gücü ve öncülük enerjisi getirdin.",
+  "Boğa":    "Ruhun bahçıvan kökenli — sabır, beden bilgeliği ve içsel huzur enerjisi getirdin.",
+  "İkizler": "Ruhun haberci kökenli — merak, bilgi köprüleme ve bağlantı kurma yeteneği getirdin.",
+  "Yengeç":  "Ruhun şifacı kökenli — derin şefkat, duygusal hafıza ve koruma içgüdüsü getirdin.",
+  "Aslan":   "Ruhun ışık taşıyıcı kökenli — yaratıcı kıvılcım, kalp gücü ve özgün ifade getirdin.",
+  "Başak":   "Ruhun zanaatkâr kökenli — hizmet, detay disiplini ve iyileştirme becerisi getirdin.",
+  "Terazi":  "Ruhun arabulucu kökenli — uyum arzusu, adalet duygusu ve estetik hassasiyet getirdin.",
+  "Akrep":   "Ruhun dönüştürücü kökenli — derinlik, psikolojik içgörü ve dönüşüm gücü getirdin.",
+  "Yay":     "Ruhun gezgin filozof kökenli — hakikat arayışı, özgürlük ve geniş ufuk getirdin.",
+  "Oğlak":   "Ruhun usta-inşacı kökenli — disiplin, hedef bilinci ve uzun vadeli kararlılık getirdin.",
+  "Kova":    "Ruhun vizyoner-devrimci kökenli — bağımsız zihin, kolektif vizyon ve özgünlük getirdin.",
+  "Balık":   "Ruhun mistik kökenli — evrensel sevgi, sezgisel bilgi ve teslimiyet kapasitesi getirdin.",
+};
+const DRACONIC_SUN_DETAY = {
+  "Koç":     "Ruhsal kökeninde sen bir öncüsün. Bu bedene girmeden önce yeni alanlar açma, ilk adımı atma ve yalın iradeyle hareket etme tecrübesi taşıyordun. Eğer natal Güneşin pasif veya uyumlu bir burçtaysa hayatın boyunca 'sakin görünmeye zorlandığını' ama içinde durmayan bir savaşçı yaşadığını hissedersin. Misyonun: kendi iradenin meşru olduğunu hatırlamak, başkalarının onayını beklemeden başlamak. Gölgen: bastırılmış öfke ve aceleyle hareket. Şifan: cesaretle teslimiyeti dengelemek — kılıcı doğru anda çekmek.",
+  "Boğa":    "Ruhsal kökeninde sen bir bahçıvan, bir köklendiricisin. Bu bedene girmeden önce maddeyi kutsamayı, beden bilgeliğini ve yavaş güzelliği öğrenmiştin. Natal Güneşin hızlı bir burçtaysa hayatın boyunca 'koşturmaya zorlandığını' ama ruhunun durmak, dokunmak, beslemek istediğini hissedersin. Misyonun: ruhu maddeye indirip kutsallık katmak, beden ve doğa üzerinden iyileşmek. Gölgen: aşırı tutunma ve hareketsizlik. Şifan: değer hissini dış sahipliklerden değil, kendi varlığından almak.",
+  "İkizler": "Ruhsal kökeninde sen bir habercisin — köprü kuran, çeviren, yayan bir varlık. Bu bedene girmeden önce bilgiyi taşımak ve dünyaları birbirine bağlamak deneyimini biriktirmiştin. Natal Güneşin sessiz veya derin bir burçtaysa içindeki seslerin çokluğunu kimseye anlatamadığını hissedersin. Misyonun: gördüğünü, duyduğunu, sezdiğini sade dile çevirmek. Gölgen: dağınıklık ve yüzeyselliğe kaçma. Şifan: zihnini bir hizmet aracı olarak kullanmak — laf değil, ışık taşımak.",
+  "Yengeç":  "Ruhsal kökeninde sen bir şifacı, bir bakıcı, bir anasın. Bu bedene girmeden önce duygusal hafızanın derinliklerinde yüzmüş, başkalarının yaralarını taşımayı öğrenmiştin. Natal Güneşin soğuk veya analitik bir burçtaysa hayatın boyunca 'sert görünmek zorunda kaldığını' ama içinde okyanus taşıdığını hissedersin. Misyonun: duygusal güvenlik alanı yaratmak, kendine ve başkalarına ana şefkati sunmak. Gölgen: aşırı korumacılık ve duygusal tutsaklık. Şifan: önce kendi iç çocuğuna anne olmak.",
+  "Aslan":   "Ruhsal kökeninde sen bir ışık taşıyıcısın — kalpten yaratan, alkışlanmadan da parlayan bir varlık. Bu bedene girmeden önce sahnenin kutsallığını, yaratıcılığın tanrısal olduğunu biliyordun. Natal Güneşin alçakgönüllü bir burçtaysa hayatın boyunca 'küçülmeye, fark edilmemeye' çalıştığını ama içindeki kralın/kraliçenin huzursuzlandığını hissedersin. Misyonun: ışığını saklamadan, gösteriş yapmadan ortaya koymak. Gölgen: onaya ihtiyaç ve kibir. Şifan: parlamayı bir hizmet olarak görmek — ışığın başkasının yolunu aydınlatır.",
+  "Başak":   "Ruhsal kökeninde sen bir zanaatkâr ve şifacısın — detayda kutsalı görme yeteneği taşıyordun. Bu bedene girmeden önce hizmet etmenin alçakgönüllü bir tanrısallık olduğunu öğrenmiştin. Natal Güneşin geniş ve dağınık bir burçtaysa kendini sürekli 'düzeltmek, sistematize etmek zorunda' hissedersin. Misyonun: kusurlu olanı yargılamak değil, ona itinayla bakım vermek. Gölgen: aşırı eleştiri ve mükemmellik takıntısı. Şifan: şefkatli analiz — önce kendine.",
+  "Terazi":  "Ruhsal kökeninde sen bir arabulucu, bir estet, bir denge ustasısın. Bu bedene girmeden önce ilişkilerin ve uyumun kutsallığını öğrenmiştin. Natal Güneşin bağımsız ya da çatışmacı bir burçtaysa hayatın boyunca 'tek başına savaşmak zorunda kalmaktan' yorgun hissedersin. Misyonun: ortaklıklar üzerinden büyümek, adaleti ince bir sezgiyle taşımak. Gölgen: karar verememe ve onay ihtiyacı. Şifan: kendine evet demeyi öğrenmek — ancak o zaman gerçek dengeyi kurarsın.",
+  "Akrep":   "Ruhsal kökeninde sen bir simyacı, bir dönüştürücüsün — yaşamın altında ölümün ve ölümün altında yeniden doğuşun olduğunu biliyordun. Bu bedene girmeden önce yoğun duyguların ve psikolojik derinliğin kutsallığını öğrenmiştin. Natal Güneşin hafif veya neşeli bir burçtaysa hayatın boyunca 'fazla derin, fazla yoğun' olarak yargılandığını hissedersin. Misyonun: kendinin ve başkalarının gölgesine korkmadan inmek, dönüştürmek. Gölgen: kontrol ve güvensizlik. Şifan: derinliğini bir şifa hediyesi olarak kullanmak.",
+  "Yay":     "Ruhsal kökeninde sen bir gezgin filozof, bir hakikat avcısısın. Bu bedene girmeden önce farklı kültürlerin, inançların ve ufukların bilgisini biriktirmiştin. Natal Güneşin yerleşik veya gelenekselci bir burçtaysa hayatın boyunca 'bir yere ait olmaya zorlandığını' ama ruhunun sınırsız bir özgürlük istediğini hissedersin. Misyonun: hakikati yaşamak ve paylaşmak — kürsüden değil, yoldan. Gölgen: dogmatiklik ve sürekli kaçış. Şifan: aradığın bilgeliğin başlangıç noktasının kendi içinde olduğunu fark etmek.",
+  "Oğlak":   "Ruhsal kökeninde sen bir usta-inşacı, bir bilge yaşlısın. Bu bedene girmeden önce zamanın, sorumluluğun ve maddi tezahürün disiplinini öğrenmiştin. Natal Güneşin oyunlu veya pasif bir burçtaysa hayatın boyunca 'fazla ciddi, fazla yetişkin' olduğunu hissedersin. Misyonun: kendi otoriteni dış otoritelerden bağımsız inşa etmek, kalıcı bir şey kurmak. Gölgen: katılık ve duygusal mesafe. Şifan: başarının sevgiyle dengelenmesi — inşa ettiğinin içinde yumuşaklığa yer açmak.",
+  "Kova":    "Ruhsal kökeninde sen bir vizyoner, bir devrimcisin — geleceği şimdide görme yeteneği getirmiştin. Bu bedene girmeden önce kolektifin evrimine bağlanmış, kalıpların dışında düşünmeyi öğrenmiştin. Natal Güneşin geleneksel veya bağımlı bir burçtaysa hayatın boyunca 'kalıplara sıkışmaktan' boğulduğunu hissedersin. Misyonun: özgün vizyonunu insanlığa armağan etmek, eski yapıları kibarca dönüştürmek. Gölgen: kopukluk ve duygusal mesafe. Şifan: bağımsızlığı yalnızlık değil, hizmet olarak yaşamak.",
+  "Balık":   "Ruhsal kökeninde sen bir mistik, bir okyanussun — sınırların ötesinden geldin. Bu bedene girmeden önce evrensel sevginin, teslimiyetin ve birleşmenin bilgisini taşıyordun. Natal Güneşin keskin veya sınırları net bir burçtaysa hayatın boyunca 'fazla yumuşak, fazla erimiş' olarak yargılandığını hissedersin. Misyonun: şefkati ve sezgiyi günlük hayata yerleştirmek — sınırını koruyarak sevmek. Gölgen: kaçış ve kendini kurban etme. Şifan: ilahi olanla bağını korurken ayaklarını yere basmak.",
+};
+const DRACONIC_SUN_KISA_EN = {
+  "Koç":     "Your soul is of warrior origin — you brought courage, initiating force and pioneering energy.",
+  "Boğa":    "Your soul is of gardener origin — you brought patience, body wisdom and inner peace.",
+  "İkizler": "Your soul is of messenger origin — you brought curiosity, bridge-building and connective intelligence.",
+  "Yengeç":  "Your soul is of healer origin — you brought deep compassion, emotional memory and protective instinct.",
+  "Aslan":   "Your soul is of light-bearer origin — you brought creative spark, heart-power and authentic expression.",
+  "Başak":   "Your soul is of craftsperson origin — you brought devotion to service, precision and healing attention.",
+  "Terazi":  "Your soul is of mediator origin — you brought longing for harmony, sense of justice and aesthetic refinement.",
+  "Akrep":   "Your soul is of transformer origin — you brought depth, psychological insight and alchemical power.",
+  "Yay":     "Your soul is of wandering philosopher origin — you brought truth-seeking, freedom and wide horizons.",
+  "Oğlak":   "Your soul is of master-builder origin — you brought discipline, focus and long-term resolve.",
+  "Kova":    "Your soul is of visionary-rebel origin — you brought independent mind, collective vision and originality.",
+  "Balık":   "Your soul is of mystic origin — you brought universal love, intuitive knowing and capacity for surrender.",
+};
+
 const REMINDERS_TR = [
   { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
   { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
@@ -280,6 +347,35 @@ const REMINDERS_EN = [
   { id:"sosyal",    icon:"📵", title:"Social media break",             subtitle:"Do you really want to be here right now?",                duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Put the phone down. Just exist for a minute. The screen can wait, the moment can't." },
 ];
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
+
+const APP_STORE_URL = "https://apps.apple.com/tr/app/sakin-life/id6765619382?l=tr";
+function AppStoreBadge({ lang = "tr", size = "md" }) {
+  const isLg = size === "lg";
+  return (
+    <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
+      style={{
+        display:"inline-flex",alignItems:"center",gap: isLg?12:9,
+        padding: isLg?"12px 24px":"8px 16px",
+        background:"#000",border:"1.5px solid rgba(255,255,255,0.85)",
+        borderRadius: isLg?14:10,color:"#fff",textDecoration:"none",
+        transition:"all 0.25s",cursor:"pointer",
+        boxShadow:"0 0 0 rgba(255,255,255,0)"
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background="#0a0a0a"; e.currentTarget.style.boxShadow="0 0 28px rgba(255,255,255,0.18)"; e.currentTarget.style.transform="translateY(-1px)"; }}
+      onMouseLeave={e => { e.currentTarget.style.background="#000"; e.currentTarget.style.boxShadow="0 0 0 rgba(255,255,255,0)"; e.currentTarget.style.transform="translateY(0)"; }}>
+      <svg width={isLg?26:22} height={isLg?30:26} viewBox="0 0 24 28" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="4" y="2" width="16" height="24" rx="3" />
+        <line x1="10" y1="22" x2="14" y2="22" />
+        <path d="M12 7v8" />
+        <path d="M9 12l3 3 3-3" />
+      </svg>
+      <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
+        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{lang==="tr" ? "App Store'dan" : "Download on the"}</span>
+        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{lang==="tr" ? "İndir" : "App Store"}</span>
+      </div>
+    </a>
+  );
+}
 
 const BREATH_MODES_CONFIG = {
   standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
@@ -1833,6 +1929,8 @@ export default function SakinApp() {
   const yukselen   = birthDate && birthTime ? approxAscendant(birthDate, birthTime) : null;
   const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
+  const kuzeyDugum = birthDate ? approxNorthNode(birthDate) : null;
+  const draconicGunes = astro && kuzeyDugum ? draconicSun(astro.burc, kuzeyDugum) : null;
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
@@ -2660,6 +2758,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
                   <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
                 </div>
+                {!isNative && (
+                  <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
+                    <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                      {lang==="tr" ? "Telefonunda yanında taşı" : "Take it with you"}
+                    </div>
+                    <AppStoreBadge lang={lang} size="lg" />
+                  </div>
+                )}
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
@@ -3894,6 +4000,64 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </button>
             </div>
           ) : null}
+          {/* ── Draconic Harita Kartı (ruh kökeni) ── */}
+          {birthDate && draconicGunes ? (
+            <div style={{ background:"linear-gradient(135deg,rgba(40,20,80,0.45),rgba(20,40,80,0.30))",border:"1px solid rgba(140,120,220,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
+              <div style={{ position:"absolute",top:-30,left:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(100,140,220,0.18),transparent)",pointerEvents:"none" }} />
+              <div style={{ position:"absolute",bottom:-30,right:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,120,220,0.14),transparent)",pointerEvents:"none" }} />
+              <div style={{ fontSize:13,letterSpacing:3.5,color:"#a890e0",marginBottom:6,textAlign:"center" }}>
+                {lang==="tr" ? "DRACONİK HARİTA · RUHUN KÖKENİ" : "DRACONIC CHART · SOUL ORIGIN"}
+              </div>
+              <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,fontWeight:300,textAlign:"center",color:"#b8a8d8",marginBottom:16,lineHeight:1.65,fontStyle:"italic" }}>
+                {lang==="tr"
+                  ? "Natal harita kim olduğunu söyler. Draconik harita ruhunun bu bedene girmeden önce ne olduğunu söyler."
+                  : "Your natal chart tells who you are. The Draconic chart tells what your soul was before entering this body."}
+              </div>
+              <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:14,padding:"10px 12px",background:"rgba(255,255,255,0.04)",borderRadius:12,border:"1px solid rgba(140,120,220,0.18)" }}>
+                <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"1px solid rgba(220,200,255,0.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20 }}>
+                  ☉
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#d0c0f0",marginBottom:2 }}>
+                    {lang==="tr" ? "Draconik Güneşin:" : "Your Draconic Sun:"} <strong style={{ color:"#e8d8ff" }}>{draconicGunes}</strong>
+                  </div>
+                  <div style={{ fontSize:12,color:"#8878b8",letterSpacing:0.5 }}>
+                    {lang==="tr" ? `Kuzey Düğüm yaklaşık: ${kuzeyDugum}` : `North Node approx: ${kuzeyDugum}`}
+                  </div>
+                </div>
+              </div>
+              <div style={{ fontSize:14,color:"#c8b8e8",lineHeight:1.85,marginBottom:14 }}>
+                {lang==="tr" ? DRACONIC_SUN_KISA[draconicGunes] : DRACONIC_SUN_KISA_EN[draconicGunes]}
+              </div>
+              {isPremium ? (
+                <div style={{ paddingTop:14,borderTop:"1px solid rgba(140,120,220,0.25)" }}>
+                  <div style={{ fontSize:11,letterSpacing:2.5,color:"#9080c8",marginBottom:8 }}>
+                    {lang==="tr" ? "DETAYLI RUHSAL OKUMA" : "DETAILED SOUL READING"}
+                  </div>
+                  <div style={{ fontSize:13.5,color:"#b8a8d8",lineHeight:1.9 }}>
+                    {DRACONIC_SUN_DETAY[draconicGunes]}
+                  </div>
+                </div>
+              ) : (
+                <div style={{ paddingTop:14,borderTop:"1px solid rgba(140,120,220,0.25)",textAlign:"center" }}>
+                  <div style={{ fontSize:12,color:"#8878b8",lineHeight:1.7,marginBottom:10,fontStyle:"italic" }}>
+                    {lang==="tr"
+                      ? "Draconik Güneşinin ruh misyonu, gölgesi ve şifa yolunu içeren detaylı okuma Premium'da."
+                      : "The detailed reading of your Draconic Sun's soul mission, shadow and healing path is in Premium."}
+                  </div>
+                  <button onClick={()=>setScreen("fiyat")}
+                    style={{ padding:"9px 22px",borderRadius:22,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(140,120,220,0.25),rgba(100,80,180,0.15))",color:"#d8c8f8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "Detaylı Yorum · Premium" : "Detailed Reading · Premium"}
+                  </button>
+                </div>
+              )}
+              <div style={{ marginTop:14,paddingTop:10,borderTop:"1px solid rgba(140,120,220,0.15)",fontSize:10,letterSpacing:1.5,color:"#605080",textAlign:"center",fontStyle:"italic" }}>
+                {lang==="tr"
+                  ? "Pamela Crane & Ronald Davison sistemi (1970'ler) · yaklaşık hesap"
+                  : "Pamela Crane & Ronald Davison system (1970s) · approximation"}
+              </div>
+            </div>
+          ) : null}
           {birthDate && (
             <div style={{ textAlign:"center",marginBottom:16 }}>
               <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
@@ -4015,6 +4179,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <p>{lang==="tr"
             ? "Kullandığın her an bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
+
+          {!isNative && (
+            <div style={{ margin:"36px 0",padding:"28px 24px",background:"linear-gradient(135deg,rgba(184,164,216,0.10),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:18,textAlign:"center" }}>
+              <div style={{ fontSize:11,letterSpacing:4,color:"#9080b8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
+                {lang==="tr" ? "iOS Uygulaması" : "iOS App"}
+              </div>
+              <div style={{ fontSize:16,color:"#d0c8e8",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:18,fontStyle:"italic" }}>
+                {lang==="tr"
+                  ? "Sakin'i telefonunda taşı — günlük pratikler, bildirimler ve içsel rehberlik her zaman yanında."
+                  : "Carry Sakin in your pocket — daily practices, notifications and inner guidance always with you."}
+              </div>
+              <AppStoreBadge lang={lang} size="lg" />
+            </div>
+          )}
 
           <div className="divider" />
 
@@ -4151,6 +4329,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </>
           ) : (
             <>
+              <div style={{ margin:"0 0 28px",padding:"22px 22px",background:"linear-gradient(135deg,rgba(80,140,220,0.10),rgba(80,140,220,0.03))",border:"1px solid rgba(120,160,220,0.28)",borderRadius:18,textAlign:"center",position:"relative",overflow:"hidden" }}>
+                <div style={{ position:"absolute",top:-20,right:-20,width:120,height:120,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,140,220,0.15),transparent)",pointerEvents:"none" }} />
+                <div style={{ fontSize:11,letterSpacing:4,color:"#7090c0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:8,position:"relative" }}>
+                  {lang==="tr" ? "iPhone Kullanıcıları" : "iPhone Users"}
+                </div>
+                <div style={{ fontSize:16,color:"#c8d8f0",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:16,fontStyle:"italic",position:"relative" }}>
+                  {lang==="tr"
+                    ? "Sakin'i App Store'dan indir — abonelik ya da ömür boyu satın alma seçenekleriyle."
+                    : "Get Sakin from the App Store — with subscription or lifetime purchase options."}
+                </div>
+                <AppStoreBadge lang={lang} size="lg" />
+                <div style={{ marginTop:14,fontSize:11,color:"#5878a0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",position:"relative" }}>
+                  {lang==="tr" ? "veya web sürümü için aşağıdan satın al" : "or purchase web version below"}
+                </div>
+              </div>
+
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
@@ -4390,6 +4584,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             { term: "Burç (Güneş Burcu)", desc: "Doğduğunuz tarihte Güneş'in bulunduğu burçtur. Temel kişiliğinizi, egonuzu ve yaşam enerjinizi temsil eder. 12 burç vardır: Koç, Boğa, İkizler, Yengeç, Aslan, Başak, Terazi, Akrep, Yay, Oğlak, Kova, Balık." },
             { term: "Yükselen Burç (Ascendant)", desc: "Doğum anında ufuk çizgisinde yükselen burçtur. Dış dünyanın sizi nasıl gördüğünü, fiziksel görünümünüzü ve ilk izleniminizi belirler. Hesaplamak için doğum saati gereklidir. Yaklaşık olarak her 2 saatte bir burç değişir." },
             { term: "12. Ev & Yönetici Gezegen", desc: "Astrolojide 12. ev bilinçaltını, gizli güçleri, spiritüel potansiyeli ve içsel dünyayı temsil eder. Her evin bir yönetici gezegeni vardır ve bu gezegen o evin temalarını nasıl deneyimlediğinizi belirler." },
+            { term: "Draconik Harita", desc: "Natal harita kim olduğunu söyler, Draconik harita ruhunun bu bedene girmeden önce ne olduğunu söyler. Kuzey Ay Düğümü 0° Koç'a sabitlenerek hesaplanır ve tüm gezegenlerin ruhsal eksen sıfırlandığında nerede durduğunu gösterir. Pamela Crane ve Ronald Davison tarafından 1970'lerde sistemleştirilmiştir. Draconik Güneş ruhun gerçek kimliği, natal Güneş bu hayatta giydiği maskedir; ikisi farklı burçtaysa kişi sürekli rol yapıyor gibi hissedebilir." },
             { term: "Gezegen Güçleri", desc: "Her gezegen farklı bir yaşam alanını ve enerjiyi yönetir: Güneş (benlik), Ay (duygular), Merkür (iletişim), Venüs (sevgi), Mars (aksiyon), Jüpiter (genişleme), Satürn (disiplin), Uranüs (özgünlük), Neptün (hayal gücü), Pluto (dönüşüm)." },
           ]},
           { cat: t("guide_cat_chakra"), items: [
