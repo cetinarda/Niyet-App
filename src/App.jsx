@@ -2261,6 +2261,26 @@ GİZLİ GÜÇLER (gezegenin yönetici enerjisine göre):
 
 ANAHTAR SÖZCÜKLER: yalnızlık · iç gözlem · bastırılan duygular · karmik borçlar · çocukluk travmaları · bitirilmemiş işler · utanç ve suçluluk · sezgiler · hayalgücü · rüya yaşantısı · yaratıcı esinlenme · meditasyon · özverili sevgi · kriz anında ortaya çıkan içsel güç · gizli kaynaklar ve güçler`;
 
+    // Kozmik enerji verisi (NOAA Kp index — 7 gün + 3 gün tahmin)
+    let kozmikText = "";
+    try {
+      const kRes = await fetch(API_BASE + "/.netlify/functions/cosmic-energy");
+      if (kRes.ok) {
+        const k = await kRes.json();
+        const dailyStr = k.past_7_days.daily.map(d => `${d.day}: Kp=${d.kp} (${d.tr})`).join("; ");
+        const fcStr = k.next_3_days.forecast_max_kp !== null
+          ? `Önümüzdeki 3 günde tahmini max Kp=${k.next_3_days.forecast_max_kp} (${k.interpretation.forecast_peak?.tr || "—"})`
+          : "Tahmin verisi alınamadı";
+        kozmikText = `\nKOZMİK ENERJİ DURUMU (NOAA Space Weather):
+- Şu anki Kp index: ${k.past_7_days.current_kp} (${k.interpretation.current.tr})
+- Son 7 gün ortalama: ${k.past_7_days.avg_kp}, en yüksek: ${k.past_7_days.max_kp} (${k.interpretation.week_peak.tr})
+- Günlük max: ${dailyStr}
+- ${fcStr}
+
+NOT: Kp index Dünya'nın jeomanyetik aktivitesini ölçer. Yüksek değerler (5+) güneş fırtınası, sinir sistemi hassasiyeti, uyku bozukluğu, baş dönmesi, yoğun rüyalar ve duygusal dalgalanmalarla ilişkilidir. Düşük değerler (0-2) sakin, denge dönemleridir. Bu hafta yaşadıkların kozmik enerjiyle de ilişkili olabilir — raporda bu boyutu yansıt.`;
+      }
+    } catch { /* opsiyonel */ }
+
     const toplamFreqSn = gunler.reduce((t,g) => t + (g.freqSaniye||0), 0);
     const gunlerText = gunler.map((g,i)=>`Gün ${i+1} (${g.tarih}):
 - Niyet: ${g.niyet||"—"}
@@ -2293,7 +2313,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
           model:"llama-3.3-70b-versatile", max_tokens:1700,
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
-${kisiselProfil()}${astroText}
+${kisiselProfil()}${astroText}${kozmikText}
 ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
 
@@ -2306,7 +2326,7 @@ Rapor şu başlıkları içermeli:
 **Şükran Kalbi** — Şükür yazılarından bir sentez
 **Sana Bir Davet** — Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin — eleştiri değil, davet (2-3 madde)
 **Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
-**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}
+**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu** — Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`,
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}\n\nLütfen haftalık içsel raporumu oluştur.`}]
