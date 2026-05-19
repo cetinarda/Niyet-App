@@ -1425,7 +1425,7 @@ export default function SakinApp() {
   const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+new Date().toISOString().slice(0,10))||"");
   const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+new Date().toISOString().slice(0,10)))||[]; } catch { return []; } });
   const [breathPhase,   setBreathPhase]   = useState("inhale");
-  const [breathCount,   setBreathCount]   = useState(0);
+  const [breathCount,   setBreathCount]   = useState(()=>{ try { return parseInt(localStorage.getItem("sakin_breath_"+new Date().toISOString().slice(0,10)))||0; } catch { return 0; } });
   const [breathStarted, setBreathStarted] = useState(false);
   const [breathMode,    setBreathMode]    = useState("standart");
   const [chakraIndex]                      = useState(() => new Date().toDateString().split("").reduce((a,c) => a + c.charCodeAt(0), 0) % 7);
@@ -1487,9 +1487,9 @@ export default function SakinApp() {
     }
     return () => clearInterval(freqTimerRef.current);
   }, [playingHz]);
-  const [aksamNote,     setAksamNote]     = useState("");
-  const [sukur,         setSukur]         = useState("");
-  const [aksamRitualChecks, setAksamRitualChecks] = useState([false, false, false]);
+  const [aksamNote,     setAksamNote]     = useState(()=>localStorage.getItem("sakin_aksamnote_"+new Date().toISOString().slice(0,10))||"");
+  const [sukur,         setSukur]         = useState(()=>localStorage.getItem("sakin_sukur_"+new Date().toISOString().slice(0,10))||"");
+  const [aksamRitualChecks, setAksamRitualChecks] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_ritual_"+new Date().toISOString().slice(0,10)))||[false,false,false]; } catch { return [false,false,false]; } });
   const [aiRapor,       setAiRapor]       = useState("");
   const [aiLoading,     setAiLoading]     = useState(false);
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
@@ -1658,6 +1658,13 @@ export default function SakinApp() {
 
   // ── Streak & Step Tracking ──
   const todayKey = new Date().toISOString().slice(0,10);
+
+  // Günlük state'leri localStorage'a persist et (Safari kapatıp açınca kaybolmasın)
+  useEffect(()=>{ localStorage.setItem("sakin_breath_"+todayKey, String(breathCount)); }, [breathCount, todayKey]);
+  useEffect(()=>{ localStorage.setItem("sakin_aksamnote_"+todayKey, aksamNote); }, [aksamNote, todayKey]);
+  useEffect(()=>{ localStorage.setItem("sakin_sukur_"+todayKey, sukur); }, [sukur, todayKey]);
+  useEffect(()=>{ localStorage.setItem("sakin_ritual_"+todayKey, JSON.stringify(aksamRitualChecks)); }, [aksamRitualChecks, todayKey]);
+
   const [streakData, setStreakData] = useState(() => {
     try {
       const raw = localStorage.getItem("sakin_streak");
