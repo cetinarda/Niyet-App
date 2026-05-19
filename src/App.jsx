@@ -5,6 +5,7 @@ import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate, onProductsLoaded, areProductsLoaded } from "./purchases";
+import { LocalNotifications } from "@capacitor/local-notifications";
 
 const isNative = Capacitor.isNativePlatform();
 const detectTablet = () => {
@@ -566,6 +567,55 @@ async function sendNotif(title, body) {
   return "denied";
 }
 
+const DAILY_REMINDERS_TR = [
+  "Aynaya bak ve gülümse",
+  "Bir bardak su iç, bedenini hisset",
+  "Üç derin nefes al, şu anı fark et",
+  "Güneşi hisset, ışığı içine çek",
+  "Ayaklarını yere bas, toprağı hisset",
+  "Gökyüzüne bak, genişliği hatırla",
+  "Ellerini kalbine koy, minnetle nefes al",
+  "Bedenini esnet, omuzlarını gevşet",
+  "Bugünkü niyetini hatırla",
+  "Bir an dur. Sadece ol.",
+];
+const DAILY_REMINDERS_EN = [
+  "Look in the mirror and smile",
+  "Drink a glass of water, feel your body",
+  "Take three deep breaths, notice this moment",
+  "Feel the sunlight, draw it within",
+  "Press your feet to the ground, feel the earth",
+  "Look at the sky, remember the vastness",
+  "Place your hands on your heart, breathe with gratitude",
+  "Stretch your body, relax your shoulders",
+  "Remember today's intention",
+  "Pause for a moment. Just be.",
+];
+
+async function scheduleDailyReminders(lang) {
+  if (!isNative) return;
+  try {
+    const perm = await LocalNotifications.requestPermissions();
+    if (perm.display !== "granted") return;
+    await LocalNotifications.cancel({ notifications: Array.from({length:10},(_,i)=>({id:9000+i})) });
+    const todayKey = new Date().toISOString().slice(0,10);
+    const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
+    if (lastScheduled === todayKey) return;
+    const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
+    const shuffled = [...reminders].sort(() => Math.random() - 0.5);
+    const picked = shuffled.slice(0, 3);
+    const now = new Date();
+    const hours = [9, 13, 18];
+    const notifications = picked.map((body, i) => {
+      const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours[i], Math.floor(Math.random()*30), 0);
+      if (at <= now) at.setDate(at.getDate() + 1);
+      return { id: 9000 + i, title: "Sakin", body, schedule: { at }, sound: null, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    });
+    await LocalNotifications.schedule({ notifications });
+    localStorage.setItem("sakin_notif_scheduled", todayKey);
+  } catch (e) { console.warn("[Notif]", e); }
+}
+
 function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
   const t = makeTrans(lang);
   const REMINDERS = getReminders(lang);
@@ -763,8 +813,13 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const particleRef = useRef(null);
   const chimeCxtRef = useRef(null);
 
+  const getChakraDuration = () => {
+    const count = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
+    return Math.min(30 + count * 5, 90);
+  };
+  const terapiDuration = useRef(getChakraDuration());
 
-  const progress     = Math.min(elapsed/TERAPI_TOTAL,1);
+  const progress     = Math.min(elapsed/terapiDuration.current,1);
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
   const displaySecs  = String(elapsed%60).padStart(2,"0");
 
@@ -821,17 +876,20 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   useEffect(() => {
     if (tPhase!=="active" && tPhase!=="connected") return;
     if (tPhase==="active") setShowCloseEyes(false);
+    const dur = terapiDuration.current;
     timerRef.current = setInterval(() => {
       setElapsed(e => {
         const next = e + 1;
-        if (next === TERAPI_TOTAL) setShowCloseEyes(true);
-        // Bağlantı öncesi uyarı: kalan 7, 5, 3. saniyede yükselen çan
-        const rem = TERAPI_TOTAL - next;
+        if (next === dur) setShowCloseEyes(true);
+        const rem = dur - next;
         if (rem === 7) playChime(396, 0.14, 2.0);
         if (rem === 5) playChime(432, 0.16, 2.0);
         if (rem === 3) playChime(528, 0.18, 2.2);
-        // 60. saniyede "connected" fazına geç ama timer durma
-        if (next === TERAPI_TOTAL) setTPhase("connected");
+        if (next === dur) {
+          setTPhase("connected");
+          const prev = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
+          localStorage.setItem("sakin_chakra_sessions", String(prev + 1));
+        }
         return next;
       });
     },1000);
@@ -1424,7 +1482,7 @@ export default function SakinApp() {
   };
   const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+new Date().toISOString().slice(0,10))||"");
   const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+new Date().toISOString().slice(0,10)))||[]; } catch { return []; } });
-  const [breathPhase,   setBreathPhase]   = useState("inhale");
+  const [breathPhase,   setBreathPhase]   = useState("ready");
   const [breathCount,   setBreathCount]   = useState(()=>{ try { return parseInt(localStorage.getItem("sakin_breath_"+new Date().toISOString().slice(0,10)))||0; } catch { return 0; } });
   const [breathStarted, setBreathStarted] = useState(false);
   const [breathMode,    setBreathMode]    = useState("standart");
@@ -1778,6 +1836,7 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
+  useEffect(() => { scheduleDailyReminders(lang); }, []);
   useEffect(() => { if (isNative && screen === "rehber") setScreen("gun"); }, [screen]);
   useEffect(() => {
     if (!showIntro) return;
@@ -2357,7 +2416,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   useEffect(() => {
     setBreathStarted(false);
-    setBreathPhase("inhale");
+    setBreathPhase("ready");
     const pending = pendingBreathRef.current;
     if (pending) { setBreathMode(pending); pendingBreathRef.current = null; }
     else { setBreathMode("standart"); }
@@ -2389,9 +2448,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); speakBreathCue("hold2"); }, t)); }
       toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
     };
-    cycle();
-    breathRef.current = setInterval(cycle, tm.total);
-    return () => { clearInterval(breathRef.current); toIds.forEach(clearTimeout); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); };
+    setBreathPhase("ready");
+    const startDelay = setTimeout(() => {
+      cycle();
+      breathRef.current = setInterval(cycle, tm.total);
+    }, 600);
+    return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); };
   },[screen, breathStarted, breathMode]);
 
   const hour   = time.getHours();
@@ -2400,13 +2462,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     if (!isPremium && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
     setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
   };
-  const breathLabel = breathStarted ? ({inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
-  const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2" ? 1 : 1.6) : 1;
+  const breathLabel = breathStarted ? ({ready:"",inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
+  const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2"||breathPhase==="ready" ? 1 : 1.6) : 1;
   const breathIsActive = breathPhase==="inhale"||breathPhase==="hold";
   const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
   const breathInDur  = `${tm.in/1000}s`;
   const breathOutDur = `${tm.out/1000}s`;
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
+
+  const SWIPE_SCREENS = ["sabah","nefes","ses","chakra","gun","aksam"];
+  const touchStartRef = useRef(null);
+  const handleTouchStart = e => { touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() }; };
+  const handleTouchEnd = e => {
+    if (!touchStartRef.current) return;
+    const dx = e.changedTouches[0].clientX - touchStartRef.current.x;
+    const dy = e.changedTouches[0].clientY - touchStartRef.current.y;
+    const dt = Date.now() - touchStartRef.current.t;
+    touchStartRef.current = null;
+    if (dt > 500 || Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+    const idx = SWIPE_SCREENS.indexOf(screen);
+    if (idx === -1) return;
+    if (dx < -60 && idx < SWIPE_SCREENS.length - 1) setScreen(SWIPE_SCREENS[idx + 1]);
+    if (dx > 60 && idx > 0) setScreen(SWIPE_SCREENS[idx - 1]);
+  };
 
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",ses:"160,122,224",
@@ -2433,7 +2511,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   return (
-    <div onMouseMove={handleMouseMove} style={{ minHeight:"100vh",paddingTop:"calc(82px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop:"calc(82px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV */}
@@ -3805,13 +3883,37 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           ) : birthDate && !birthTime ? (
             <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
-              <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7 }}>
+              <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
                 {lang==="tr"
-                  ? "12. Ev analizin için doğum saatini ekle → Profil → Doğum Saati"
-                  : "Add your birth time for 12th house analysis → Profile → Birth Time"}
+                  ? "12. Ev analizin için doğum saatini ekle"
+                  : "Add your birth time for 12th house analysis"}
               </div>
+              <button onClick={()=>setShowBirthForm(true)}
+                style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "Doğum Saati Ekle" : "Add Birth Time"}
+              </button>
+            </div>
+          ) : !birthDate ? (
+            <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
+              <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
+                {lang==="tr"
+                  ? "Kişisel haritanı oluşturmak için doğum bilgini ekle"
+                  : "Add your birth info to create your personal chart"}
+              </div>
+              <button onClick={()=>setShowBirthForm(true)}
+                style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                {lang==="tr" ? "Doğum Bilgisi Ekle" : "Add Birth Info"}
+              </button>
             </div>
           ) : null}
+          {birthDate && (
+            <div style={{ textAlign:"center",marginBottom:16 }}>
+              <button onClick={()=>setShowBirthForm(true)}
+                style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
+                {lang==="tr" ? "Doğum bilgilerini değiştir" : "Change birth info"}
+              </button>
+            </div>
+          )}
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
             <div style={{ position:"absolute",top:10,right:12,fontSize:10,letterSpacing:2,padding:"3px 9px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{lang==="tr" ? "YAKINDA" : "COMING SOON"}</div>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#888888",marginBottom:7 }}>{t("orchestra_label")}</div>
@@ -4512,6 +4614,40 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <button onClick={acceptAiConsent}
                 style={{ flex:1,padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",color:"#ffffff",fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",boxShadow:"0 4px 20px rgba(255,255,255,0.3)" }}>{t("ai_consent_accept")}</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showBirthForm && (
+        <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(8px)" }}
+          onClick={()=>setShowBirthForm(false)}>
+          <div style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:20,padding:"28px 24px",maxWidth:380,width:"100%" }}
+            onClick={e=>e.stopPropagation()}>
+            <div style={{ fontSize:13,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:20,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+              {lang==="tr" ? "Doğum Bilgileri" : "Birth Info"}
+            </div>
+            <div style={{ marginBottom:14 }}>
+              <div style={{ fontSize:12,letterSpacing:2,color:"#777",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "DOĞUM TARİHİ" : "DATE OF BIRTH"}</div>
+              <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px",width:"100%",boxSizing:"border-box" }}
+                value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
+            </div>
+            <div style={{ marginBottom:20 }}>
+              <div style={{ fontSize:12,letterSpacing:2,color:"#777",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "DOĞUM SAATİ" : "BIRTH TIME"}</div>
+              <input type="time" className="sakin-input" style={{ fontSize:15,padding:"12px 14px",width:"100%",boxSizing:"border-box" }}
+                value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
+            </div>
+            <button style={{ width:"100%",padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(120,80,180,0.5))",color:"#fff",fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,cursor:"pointer" }}
+              onClick={()=>{
+                if(birthInput){ localStorage.setItem("sakin_birth_date",birthInput); setBirthDate(birthInput); }
+                if(birthTimeInput){ localStorage.setItem("sakin_birth_time",birthTimeInput); setBirthTime(birthTimeInput); }
+                setShowBirthForm(false);
+              }}>
+              {lang==="tr" ? "Kaydet" : "Save"}
+            </button>
+            <button onClick={()=>setShowBirthForm(false)}
+              style={{ width:"100%",marginTop:8,padding:"10px 0",background:"transparent",border:"none",color:"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+              {lang==="tr" ? "Vazgeç" : "Cancel"}
+            </button>
           </div>
         </div>
       )}
