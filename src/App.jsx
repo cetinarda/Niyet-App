@@ -2823,7 +2823,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       const lit = node.y >= lightY;
                       const r = (node.zone==="sub"||node.zone==="supra") ? 8 : 10;
                       return (
-                        <g key={i} style={{cursor:isNext?"pointer":"default"}} onClick={()=>{ if(isNext) setScreen(node.id); }}>
+                        <g key={i} style={{cursor:node.id?"pointer":"default"}} onClick={()=>{ if(node.id) setScreen(node.id); }}>
                           {/* Glow hale */}
                           {(done||lit) && <circle cx="110" cy={node.y} r={r+8} fill={`${node.color}18`}
                             style={{animation:`nodeCharge ${2+i*0.3}s ease-in-out infinite`,animationDelay:`${i*0.2}s`}} />}
@@ -3030,7 +3030,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {[1.72,1.45,1.2].map((s,i)=>(
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
               ))}
-              <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(255,255,255,0.24))",transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
+              <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(255,255,255,0.24))",transition:breathPhase==="ready"?"none":`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
                 <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
               </div>
             </div>
@@ -3108,7 +3108,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <rect x="10" y={172-(breathIsActive?92:0)} width="72" height="92"
                   fill={`rgba(100,160,220,${breathIsActive?0.28:0.04})`}
                   clipPath="url(#left-lung-clip)"
-                  style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
+                  style={{ transition:breathPhase==="ready"?"none":`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
                 />
                 {/* Right lung fill */}
                 <clipPath id="right-lung-clip">
@@ -3117,7 +3117,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <rect x="78" y={172-(breathIsActive?92:0)} width="72" height="92"
                   fill={`rgba(100,160,220,${breathIsActive?0.28:0.04})`}
                   clipPath="url(#right-lung-clip)"
-                  style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
+                  style={{ transition:breathPhase==="ready"?"none":`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out, fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}
                 />
               </svg>
               </div>
@@ -3205,7 +3205,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   { id:"diyafram", icon:"🌬", color:"rgba(80,200,180,0.18)", border:"rgba(80,200,180,0.35)", rhythm:"4·6" },
                   { id:"akciger",  icon:"🫁", color:"rgba(100,160,220,0.18)",border:"rgba(100,160,220,0.35)",rhythm:"5·2·7" },
                 ].map(m=>(
-                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ haptic(); playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
+                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
                     <span style={{ fontSize:20 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
@@ -3242,7 +3242,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 ].map(m=>{
                   const locked = !isPremium && PREMIUM_BREATH_MODES.includes(m.id);
                   return (
-                  <button key={m.id} onClick={()=>{ if(locked){ setScreen("fiyat"); return; } if(breathMode===m.id){ haptic(); playStartChime(); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease", opacity:locked?0.5:1, position:"relative" }}>
+                  <button key={m.id} onClick={()=>{ if(locked){ setScreen("fiyat"); return; } if(breathMode===m.id){ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease", opacity:locked?0.5:1, position:"relative" }}>
                     {locked && <span style={{ position:"absolute",top:6,right:8,fontSize:11 }}>🔒</span>}
                     <span style={{ fontSize:18 }}>{m.icon}</span>
                     <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
@@ -3259,11 +3259,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
               <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ haptic(); playStartChime(); setBreathStarted(true); }}>{t("btn_start")}</button>
+              <button className="sakin-btn-primary" onClick={()=>{ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); }}>{t("btn_start")}</button>
             </div>
           ) : (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("inhale"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
+              <button className="sakin-btn" onClick={()=>{ setBreathStarted(false); setBreathPhase("ready"); clearInterval(breathRef.current); }}>{t("breath_change")}</button>
               <button className="sakin-btn-primary" onClick={()=>{ markStep("nefes"); setScreen("ses"); }}>{t("btn_next")}</button>
             </div>
           )}
@@ -3881,26 +3881,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[ev12Gezegen]}</div>
               </div>
             </div>
-          ) : birthDate && !birthTime ? (
+          ) : (birthDate && !birthTime) || !birthDate ? (
             <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
               <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
                 {lang==="tr"
-                  ? "12. Ev analizin için doğum saatini ekle"
-                  : "Add your birth time for 12th house analysis"}
+                  ? (birthDate ? "12. Ev analizin için doğum saatini ekle" : "Kişisel haritanı oluşturmak için doğum bilgini ekle")
+                  : (birthDate ? "Add your birth time for 12th house analysis" : "Add your birth info to create your personal chart")}
               </div>
-              <button onClick={()=>setShowBirthForm(true)}
-                style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "Doğum Saati Ekle" : "Add Birth Time"}
-              </button>
-            </div>
-          ) : !birthDate ? (
-            <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
-              <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
-                {lang==="tr"
-                  ? "Kişisel haritanı oluşturmak için doğum bilgini ekle"
-                  : "Add your birth info to create your personal chart"}
-              </div>
-              <button onClick={()=>setShowBirthForm(true)}
+              <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
                 style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
                 {lang==="tr" ? "Doğum Bilgisi Ekle" : "Add Birth Info"}
               </button>
@@ -3908,7 +3896,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ) : null}
           {birthDate && (
             <div style={{ textAlign:"center",marginBottom:16 }}>
-              <button onClick={()=>setShowBirthForm(true)}
+              <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
                 style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
                 {lang==="tr" ? "Doğum bilgilerini değiştir" : "Change birth info"}
               </button>
@@ -4103,6 +4091,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </button>
           <h1>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
+
+          <div style={{ textAlign:"center",margin:"20px 0 28px",padding:"16px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:16 }}>
+            <div style={{ fontSize:14,color:"#c8b8e0",lineHeight:2,fontStyle:"italic",letterSpacing:0.5 }}>
+              {lang==="tr"
+                ? "Bu fiyatlar, Sakin'le birlikte yola çıkan ilk 100 kişi için özel olarak belirlendi. Seninle bu yolculuğa başlamak bizim için çok değerli."
+                : "These prices are specially set for the first 100 people who embark on this journey with Sakin. Starting this path with you means the world to us."}
+            </div>
+          </div>
 
           {isPremium ? (
             <div style={{ textAlign:"center",padding:"32px 0" }}>
@@ -4618,39 +4614,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {showBirthForm && (
-        <div style={{ position:"fixed",inset:0,zIndex:99999,background:"rgba(0,0,0,0.8)",display:"flex",alignItems:"center",justifyContent:"center",padding:20,backdropFilter:"blur(8px)" }}
-          onClick={()=>setShowBirthForm(false)}>
-          <div style={{ background:"linear-gradient(145deg,#141828,#0e1220)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:20,padding:"28px 24px",maxWidth:380,width:"100%" }}
-            onClick={e=>e.stopPropagation()}>
-            <div style={{ fontSize:13,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:20,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
-              {lang==="tr" ? "Doğum Bilgileri" : "Birth Info"}
-            </div>
-            <div style={{ marginBottom:14 }}>
-              <div style={{ fontSize:12,letterSpacing:2,color:"#777",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "DOĞUM TARİHİ" : "DATE OF BIRTH"}</div>
-              <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px",width:"100%",boxSizing:"border-box" }}
-                value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
-            </div>
-            <div style={{ marginBottom:20 }}>
-              <div style={{ fontSize:12,letterSpacing:2,color:"#777",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "DOĞUM SAATİ" : "BIRTH TIME"}</div>
-              <input type="time" className="sakin-input" style={{ fontSize:15,padding:"12px 14px",width:"100%",boxSizing:"border-box" }}
-                value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
-            </div>
-            <button style={{ width:"100%",padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(184,164,216,0.6),rgba(120,80,180,0.5))",color:"#fff",fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,cursor:"pointer" }}
-              onClick={()=>{
-                if(birthInput){ localStorage.setItem("sakin_birth_date",birthInput); setBirthDate(birthInput); }
-                if(birthTimeInput){ localStorage.setItem("sakin_birth_time",birthTimeInput); setBirthTime(birthTimeInput); }
-                setShowBirthForm(false);
-              }}>
-              {lang==="tr" ? "Kaydet" : "Save"}
-            </button>
-            <button onClick={()=>setShowBirthForm(false)}
-              style={{ width:"100%",marginTop:8,padding:"10px 0",background:"transparent",border:"none",color:"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-              {lang==="tr" ? "Vazgeç" : "Cancel"}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
