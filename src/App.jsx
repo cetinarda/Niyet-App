@@ -3648,7 +3648,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     }}
                     onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
                     onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-                    <span style={{ fontSize:13,letterSpacing:2 }}>✦ {lang==="tr" ? "HAFTANIN KOZMİK ENERJİSİ" : "WEEK'S COSMIC ENERGY"}</span>
+                    <span style={{ fontSize:13,letterSpacing:2 }}>{lang==="tr" ? "HAFTANIN KOZMİK ENERJİSİ" : "WEEK'S COSMIC ENERGY"}</span>
                     <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
                   </button>
 
