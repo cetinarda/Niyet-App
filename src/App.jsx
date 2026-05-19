@@ -3430,11 +3430,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
               {/* Başlık */}
               <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
-                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0",marginBottom:6 }}>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0" }}>
                   {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
-                </div>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:4,color:"#9a8aba",textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Süzgecinden geçir ve onayla" : "Filter through your heart and confirm"}
                 </div>
               </div>
             </>
