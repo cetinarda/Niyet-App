@@ -2700,7 +2700,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             onClick={()=>setEmbeddedApp(null)}
             aria-label={lang==="tr"?"Geri":"Back"}
             style={{
-              position:"fixed",top:"calc(2px + var(--sat))",left:8,zIndex:10002,
+              position:"fixed",top:"max(4px, calc(var(--sat) - 38px))",left:8,zIndex:10002,
               background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
               border:"1px solid rgba(255,255,255,0.15)",
               borderRadius:"50%",width:36,height:36,padding:0,
