@@ -2680,25 +2680,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div className="hide-scrollbar" style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"flex-start",gap:4,padding:"6px 12px",overflowX:"auto",overflowY:"hidden",WebkitOverflowScrolling:"touch" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
             <button key={n.id}
               onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
               style={{
+                flex:"1 1 0", minWidth:0,
                 background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
                 border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
                 borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                padding:"4px 16px", display:"flex", alignItems:"center", gap:6,
+                padding:"5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
                 fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 400 : 300,
-                fontSize:13, letterSpacing:1.8, textTransform:"uppercase",
+                fontSize:12, letterSpacing:1.4, textTransform:"uppercase",
                 color: active ? n.color : n.glow ? n.color : `${n.color}77`,
                 animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
                 boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
+                whiteSpace:"nowrap", overflow:"hidden",
               }}>
-              <span style={{ fontSize:14, lineHeight:1 }}>{n.icon}</span>
-              <span>{n.label}</span>
+              <span style={{ fontSize:13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+              <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{n.label}</span>
             </button>
           );
         })}
