@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakin · Kitapçık</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0a0f; color:#fff; font-family:'Inter',sans-serif; line-height:1.7; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .page {
+    width: 210mm; min-height: 297mm; margin: 0 auto;
+    padding: 48px 44px; position: relative; overflow: hidden;
+    page-break-after: always; display:flex; flex-direction:column;
+  }
+  @media screen {
+    .page { margin-bottom: 20px; border-radius: 8px; box-shadow: 0 0 60px rgba(120,80,200,0.15); }
+  }
+  @media print {
+    body { background: #0a0a0f; }
+    .page { margin: 0; border-radius: 0; box-shadow: none; }
+  }
+
+  /* Gen Z color palette */
+  .grad-text { background: linear-gradient(135deg, #c084fc, #818cf8, #38bdf8, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .grad-text-warm { background: linear-gradient(135deg, #fb923c, #f472b6, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .grad-text-cool { background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .grad-text-green { background: linear-gradient(135deg, #34d399, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .pill { display:inline-block; padding:6px 16px; border-radius:100px; font-size:11px; letter-spacing:3px; text-transform:uppercase; font-family:'Jost',sans-serif; }
+  .bubble { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:20px 24px; }
+  .glow-box { position:relative; border-radius:24px; padding:28px; overflow:hidden; }
+  .glow-box::before { content:''; position:absolute; inset:-2px; border-radius:26px; background:linear-gradient(135deg,#c084fc33,#818cf833,#38bdf833); z-index:-1; }
+  .glow-box::after { content:''; position:absolute; inset:0; border-radius:24px; background:#0a0a0f; z-index:-1; }
+
+  .emoji-big { font-size:48px; line-height:1; }
+  .emoji-med { font-size:32px; line-height:1; }
+  .tag { display:inline-block; background:rgba(192,132,252,0.12); border:1px solid rgba(192,132,252,0.2); border-radius:8px; padding:4px 12px; font-size:12px; color:#c084fc; margin:3px; font-family:'Jost',sans-serif; letter-spacing:1px; }
+  .tag-green { background:rgba(52,211,153,0.12); border-color:rgba(52,211,153,0.2); color:#34d399; }
+  .tag-blue { background:rgba(56,189,248,0.12); border-color:rgba(56,189,248,0.2); color:#38bdf8; }
+  .tag-orange { background:rgba(251,146,60,0.12); border-color:rgba(251,146,60,0.2); color:#fb923c; }
+  .tag-pink { background:rgba(244,114,182,0.12); border-color:rgba(244,114,182,0.2); color:#f472b6; }
+
+  .progress-bar { height:6px; border-radius:3px; background:rgba(255,255,255,0.06); overflow:hidden; margin:8px 0; }
+  .progress-fill { height:100%; border-radius:3px; transition:width 0.3s; }
+
+  .connection-node { width:14px; height:14px; border-radius:50%; display:inline-block; }
+  .connection-line { width:32px; height:2px; display:inline-block; vertical-align:middle; margin:0 4px; }
+
+  .page-num { position:absolute; bottom:28px; right:44px; font-size:11px; color:#444; letter-spacing:2px; font-family:'Jost',sans-serif; }
+  .page-footer { position:absolute; bottom:28px; left:44px; font-size:10px; color:#333; letter-spacing:2px; font-family:'Jost',sans-serif; text-transform:uppercase; }
+
+  .checklist-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:12px; }
+  .check-box { width:20px; height:20px; border-radius:6px; border:1.5px solid rgba(255,255,255,0.15); flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; font-size:12px; }
+
+  .step-card { display:flex; gap:16px; align-items:flex-start; margin-bottom:16px; }
+  .step-num { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; flex-shrink:0; font-family:'Jost',sans-serif; }
+  .step-content { flex:1; }
+  .step-content h3 { font-size:15px; font-weight:500; margin-bottom:2px; font-family:'Jost',sans-serif; letter-spacing:1px; }
+  .step-content p { font-size:12.5px; color:#999; line-height:1.7; }
+
+  .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .feature-item { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:16px; padding:16px; text-align:center; }
+  .feature-item .emoji-med { margin-bottom:8px; }
+  .feature-item h4 { font-size:13px; letter-spacing:2px; margin-bottom:4px; font-family:'Jost',sans-serif; }
+  .feature-item p { font-size:11px; color:#888; line-height:1.6; }
+
+  .quote-block { border-left:3px solid; padding:12px 20px; margin:16px 0; border-radius:0 12px 12px 0; background:rgba(255,255,255,0.02); }
+  .quote-block p { font-size:13px; font-style:italic; line-height:1.8; }
+  .quote-block .author { font-size:11px; color:#666; margin-top:6px; font-style:normal; }
+
+  .meme-box { background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.12); border-radius:16px; padding:16px 20px; text-align:center; margin:12px 0; }
+  .meme-box .emoji-big { margin-bottom:6px; }
+  .meme-box p { font-size:13px; color:#bbb; }
+  .meme-box .small { font-size:11px; color:#666; margin-top:4px; }
+
+  .ailesi-card { display:flex; align-items:center; gap:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+  .ailesi-icon { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+  .ailesi-card h4 { font-size:14px; font-weight:500; letter-spacing:1px; font-family:'Jost',sans-serif; margin-bottom:2px; }
+  .ailesi-card p { font-size:11.5px; color:#999; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ SAYFA 1: KAPAK ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 30% 20%,rgba(129,140,248,0.08),transparent 60%),radial-gradient(ellipse at 70% 80%,rgba(192,132,252,0.06),transparent 50%),#0a0a0f; justify-content:center; align-items:center; text-align:center;">
+
+  <div style="margin-bottom:24px;">
+    <span class="pill" style="border:1px solid rgba(192,132,252,0.3);color:#c084fc;">Farkındalık Sistemi</span>
+  </div>
+
+  <div style="font-size:72px;font-weight:200;letter-spacing:12px;font-family:'Jost',sans-serif;margin-bottom:16px;" class="grad-text">Sakin</div>
+
+  <div style="font-size:16px;color:#888;font-style:italic;max-width:380px;margin:0 auto 48px;line-height:2;">
+    Bir uygulama değil, bir frekans geçidi.<br>
+    Kullan ve kendinle bağlantı kur.
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:48px;">
+    <span class="connection-node" style="background:#c084fc;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#c084fc,#818cf8);"></span>
+    <span class="connection-node" style="background:#818cf8;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8);"></span>
+    <span class="connection-node" style="background:#38bdf8;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#38bdf8,#34d399);"></span>
+    <span class="connection-node" style="background:#34d399;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#34d399,#fb923c);"></span>
+    <span class="connection-node" style="background:#fb923c;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#fb923c,#f472b6);"></span>
+    <span class="connection-node" style="background:#f472b6;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#f472b6,#c084fc);"></span>
+    <span class="connection-node" style="background:#c084fc;"></span>
+  </div>
+
+  <div style="font-size:11px;color:#555;letter-spacing:3px;font-family:'Jost',sans-serif;text-transform:uppercase;">sakin.life · 2026</div>
+
+  <div class="meme-box" style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);width:280px;border-style:solid;border-color:rgba(192,132,252,0.15);">
+    <p style="font-size:12px;">spoiler: meditasyon uygulaması değil 🫣</p>
+    <p class="small">ama nefes alacaksın, o kesin</p>
+  </div>
+
+  <div class="page-num">01</div>
+</div>
+
+<!-- ═══════════════ SAYFA 2: SORUN ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 80% 20%,rgba(244,114,182,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="text-align:center;margin-bottom:36px;">
+    <div class="emoji-big">🫠</div>
+    <div style="font-size:28px;font-weight:300;letter-spacing:3px;font-family:'Jost',sans-serif;margin-top:16px;" class="grad-text-warm">Tanıdık mı?</div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:32px;">
+    <div class="bubble" style="border-color:rgba(244,114,182,0.15);">
+      <div style="font-size:14px;">😵‍💫 Sabah gözünü açtığında ilk refleksin telefona uzanmak</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;">bağlantı durumu: kendinle — ❌ kesildi</div>
+    </div>
+    <div class="bubble" style="border-color:rgba(251,146,60,0.15);">
+      <div style="font-size:14px;">🧠 Zihnin durmadan konuşuyor, sen dinliyorsun bile değil</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;">bağlantı durumu: bedeninle — ❌ kesildi</div>
+    </div>
+    <div class="bubble" style="border-color:rgba(192,132,252,0.15);">
+      <div style="font-size:14px;">🌀 "Bir şeyler eksik" hissi ama ne olduğunu bilmiyorsun</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;">bağlantı durumu: ruhunla — ❌ kesildi</div>
+    </div>
+    <div class="bubble" style="border-color:rgba(56,189,248,0.15);">
+      <div style="font-size:14px;">📱 20 uygulama indirdin, hiçbirini 3 günden fazla kullanmadın</div>
+      <div style="font-size:11px;color:#666;margin-top:4px;">bağlantı durumu: niyetinle — ❌ kesildi</div>
+    </div>
+  </div>
+
+  <div class="glow-box" style="text-align:center;margin-top:auto;">
+    <div style="font-size:13px;color:#c084fc;letter-spacing:2px;font-family:'Jost',sans-serif;margin-bottom:8px;">GÜZEL HABER</div>
+    <div style="font-size:16px;color:#ddd;line-height:1.9;">
+      Bu bağlantıları yeniden kurmak<br>
+      düşündüğün kadar zor değil.<br>
+      <span style="color:#888;font-size:13px;">sadece bir sistem lazım. ve biraz niyet.</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">02</div>
+</div>
+
+<!-- ═══════════════ SAYFA 3: SAKİN NEDİR ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 20% 60%,rgba(129,140,248,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="text-align:center;margin-bottom:32px;">
+    <div style="font-size:11px;letter-spacing:5px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;margin-bottom:8px;">Peki</div>
+    <div style="font-size:32px;font-weight:300;letter-spacing:4px;font-family:'Jost',sans-serif;" class="grad-text">Sakin Nedir?</div>
+  </div>
+
+  <div class="quote-block" style="border-color:#c084fc;">
+    <p style="color:#d4b8f0;">Sakin, sana bir şey öğretmez. Sadece hatırlatır. Günün koşusunda kendini unuttuğun anlarda, seni nazikçe içe çeker.</p>
+  </div>
+
+  <div style="margin:24px 0;">
+    <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:20px;">
+      Sakin bir <span style="text-decoration:line-through;color:#666;">meditasyon uygulaması</span> değil.<br>
+      Sakin bir <span style="text-decoration:line-through;color:#666;">terapi aracı</span> değil.<br>
+      Sakin bir <span style="text-decoration:line-through;color:#666;">to-do listesi</span> değil.<br><br>
+      Sakin bir <strong style="color:#c084fc;">farkındalık sistemi</strong>.
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;">
+    <span class="tag">nefes</span>
+    <span class="tag-green tag">çakra</span>
+    <span class="tag-blue tag">frekans</span>
+    <span class="tag-orange tag">niyet</span>
+    <span class="tag-pink tag">bağlantı</span>
+    <span class="tag">AI rehber</span>
+    <span class="tag-green tag">doğum haritası</span>
+    <span class="tag-blue tag">kozmik enerji</span>
+  </div>
+
+  <div class="meme-box">
+    <p>başka uygulamalar: "7 günde mindful ol!" 🧘</p>
+    <p style="margin-top:8px;color:#c084fc;">sakin: "canım, önce nefes al bakalım" 🫧</p>
+    <p class="small">no rush. sadece bağlan.</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;">
+      <span class="connection-node" style="background:#c084fc;box-shadow:0 0 12px #c084fc88;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 1/7 — SAKİN'İ TANIDIM</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">03</div>
+</div>
+
+<!-- ═══════════════ SAYFA 4: SABAH NİYETİ ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 50% 30%,rgba(251,146,60,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#fb923c44,#fb923c11);border:1.5px solid #fb923c55;display:flex;align-items:center;justify-content:center;font-size:28px;">🌅</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 1</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#fb923c;font-family:'Jost',sans-serif;">Sabah Niyeti</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:24px;">
+    Her sabah sana üç kelime sunulur. Günün niyetini belirlersin. Bu kelimeler gün boyunca pusulan olur — kararlarında, düşüncelerinde, nefesinde.
+  </div>
+
+  <div class="bubble" style="margin-bottom:20px;text-align:center;">
+    <div style="font-size:11px;color:#888;letter-spacing:3px;margin-bottom:12px;font-family:'Jost',sans-serif;">BUGÜNKÜ NİYETİN</div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <span class="tag-orange tag" style="font-size:14px;padding:8px 18px;">şükran</span>
+      <span class="tag-orange tag" style="font-size:14px;padding:8px 18px;">sabır</span>
+      <span class="tag-orange tag" style="font-size:14px;padding:8px 18px;">akış</span>
+    </div>
+  </div>
+
+  <div class="meme-box">
+    <p>alarm çalıyor → telefona uzanıyorsun → instagram açılıyor</p>
+    <p style="margin-top:6px;">alarm çalıyor → <span style="color:#fb923c;">sakin açılıyor</span> → niyetini seçiyorsun → gün başlıyor ✨</p>
+    <p class="small">plot twist: ikisi de 30 saniye sürüyor</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:14%;background:linear-gradient(90deg,#c084fc,#fb923c);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#fb923c;box-shadow:0 0 12px #fb923c88;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 2/7 — NİYETİNLE</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">04</div>
+</div>
+
+<!-- ═══════════════ SAYFA 5: NEFES ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 60% 40%,rgba(56,189,248,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#38bdf844,#38bdf811);border:1.5px solid #38bdf855;display:flex;align-items:center;justify-content:center;font-size:28px;">🫧</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 2</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#38bdf8;font-family:'Jost',sans-serif;">Nefes Egzersizi</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:20px;">
+    6 farklı nefes moduyla bedenine dön. Akciğer animasyonu seninle birlikte nefes alır. Gerçek zamanlı rehberlik — nefes al, tut, bırak.
+  </div>
+
+  <div class="feature-grid" style="margin-bottom:20px;">
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">Standart</div>
+      <div style="font-size:11px;color:#888;">4-4 temel ritim</div>
+    </div>
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">Diyafram</div>
+      <div style="font-size:11px;color:#888;">derin karın nefesi</div>
+    </div>
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">Akciğer</div>
+      <div style="font-size:11px;color:#888;">kapasite genişletme</div>
+    </div>
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">4-7-8</div>
+      <div style="font-size:11px;color:#888;">uyku & sakinlik</div>
+    </div>
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">Kutu</div>
+      <div style="font-size:11px;color:#888;">Navy SEAL tekniği</div>
+    </div>
+    <div class="feature-item">
+      <div style="font-size:13px;color:#38bdf8;font-family:'Jost',sans-serif;letter-spacing:1px;">Sakinleştirici</div>
+      <div style="font-size:11px;color:#888;">panik & anksiyete</div>
+    </div>
+  </div>
+
+  <div class="meme-box">
+    <p>terapi: 500₺/saat</p>
+    <p>yoga: sabah 6'da kalk</p>
+    <p style="color:#38bdf8;margin-top:6px;">sakin nefes: 2 dakika, yataktan bile çıkma 🛌</p>
+    <p class="small">akciğerlerin seni sevecek</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:28%;background:linear-gradient(90deg,#c084fc,#38bdf8);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#38bdf8;box-shadow:0 0 12px #38bdf888;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 3/7 — BEDENİNLE</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">05</div>
+</div>
+
+<!-- ═══════════════ SAYFA 6: SES DALGALARI ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 40% 50%,rgba(129,140,248,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#818cf844,#818cf811);border:1.5px solid #818cf855;display:flex;align-items:center;justify-content:center;font-size:28px;">🔊</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 3</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#818cf8;font-family:'Jost',sans-serif;">Ses Dalgaları</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:20px;">
+    10 solfeggio frekansı, her biri kendine ait bir kuş sesiyle. 174Hz'den 963Hz'e — bedenin en derin katmanlarından en yüksek bilince.
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;">
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">174 Hz</div>
+      <div style="font-size:11px;color:#888;">ağrı & stres çözücü</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">285 Hz</div>
+      <div style="font-size:11px;color:#888;">doku onarımı</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">396 Hz</div>
+      <div style="font-size:11px;color:#888;">korku & suçluluk</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">417 Hz</div>
+      <div style="font-size:11px;color:#888;">değişim & dönüşüm</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">528 Hz</div>
+      <div style="font-size:11px;color:#888;">DNA onarımı 💎</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">639 Hz</div>
+      <div style="font-size:11px;color:#888;">ilişki & bağlantı</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">741 Hz</div>
+      <div style="font-size:11px;color:#888;">sezgi & uyanış</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">852 Hz</div>
+      <div style="font-size:11px;color:#888;">üçüncü göz</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">936 Hz</div>
+      <div style="font-size:11px;color:#888;">pineal aktivasyonu</div>
+    </div>
+    <div style="background:rgba(129,140,248,0.06);border-radius:10px;padding:10px 14px;">
+      <div style="font-size:18px;font-weight:600;color:#818cf8;font-family:'Jost',sans-serif;">963 Hz</div>
+      <div style="font-size:11px;color:#888;">kozmik bilinç 👁️</div>
+    </div>
+  </div>
+
+  <div class="meme-box">
+    <p>spotify: lo-fi beats to study to 🎵</p>
+    <p style="color:#818cf8;margin-top:6px;">sakin: solfeggio beats to transcend to 🌌</p>
+    <p class="small">+ kuş sesleri. bedava.</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:42%;background:linear-gradient(90deg,#c084fc,#818cf8);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#818cf8;box-shadow:0 0 12px #818cf888;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 4/7 — TİTREŞİMİNLE</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">06</div>
+</div>
+
+<!-- ═══════════════ SAYFA 7: ÇAKRA ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 50% 60%,rgba(192,132,252,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:28px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#c084fc44,#c084fc11);border:1.5px solid #c084fc55;display:flex;align-items:center;justify-content:center;font-size:28px;">💜</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 4</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#c084fc;font-family:'Jost',sans-serif;">22 Çakra Yükselişi</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:20px;">
+    Sadece 7 değil — 22 enerji merkezi. Fiziksel, ruhsal ve ilahi boyutta. Elini bölgende hisset, gözlerini kapat, bağlantı kur.
+  </div>
+
+  <div style="display:flex;justify-content:center;margin-bottom:24px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+      <div style="font-size:11px;color:#888;letter-spacing:2px;margin-bottom:4px;">ENERJİ MERKEZLERİN</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <div style="width:18px;height:18px;border-radius:50%;background:#e879f9;box-shadow:0 0 8px #e879f966;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#818cf8;box-shadow:0 0 8px #818cf866;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#38bdf8;box-shadow:0 0 8px #38bdf866;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d39966;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#fbbf24;box-shadow:0 0 8px #fbbf2466;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:16px;height:16px;border-radius:50%;background:#fb923c;box-shadow:0 0 8px #fb923c66;"></div>
+        <div style="width:2px;height:8px;background:rgba(255,255,255,0.1);"></div>
+        <div style="width:18px;height:18px;border-radius:50%;background:#f87171;box-shadow:0 0 8px #f8717166;"></div>
+      </div>
+      <div style="font-size:10px;color:#666;margin-top:4px;">7/22 gösterildi — geri kalanı sende ✨</div>
+    </div>
+  </div>
+
+  <div class="bubble" style="margin-bottom:16px;">
+    <div style="font-size:13px;color:#c084fc;letter-spacing:2px;font-family:'Jost',sans-serif;margin-bottom:6px;">PROGRESİF SİSTEM</div>
+    <div style="font-size:13px;color:#999;line-height:1.8;">
+      İlk seansta 30 saniye, her seferinde +5 saniye. Yavaş yavaş derinleş — zorlamadan, senin hızında. Maksimum 90 saniye.
+    </div>
+  </div>
+
+  <div class="meme-box">
+    <p>arkadaşın: "çakra falan boş işler ya" 🙄</p>
+    <p style="color:#c084fc;margin-top:6px;">sen, 3 hafta sonra: "kök çakram bugün çok aktif" 💜</p>
+    <p class="small">character development 📈</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:57%;background:linear-gradient(90deg,#c084fc,#e879f9);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#c084fc;box-shadow:0 0 12px #c084fc88;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 5/7 — ENERJİNLE</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">07</div>
+</div>
+
+<!-- ═══════════════ SAYFA 8: GÜN İÇİ + AKŞAM ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 30% 30%,rgba(251,191,36,0.05),transparent 50%),radial-gradient(ellipse at 70% 70%,rgba(56,189,248,0.05),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#fbbf2444,#fbbf2411);border:1.5px solid #fbbf2455;display:flex;align-items:center;justify-content:center;font-size:28px;">☀️</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 5</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#fbbf24;font-family:'Jost',sans-serif;">Gün İçi Görevler</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:16px;">
+    Seni ana bağlayan küçük dokunuşlar. Her biri 1 dakikadan kısa.
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px;">
+    <div class="checklist-item">
+      <div class="check-box" style="border-color:#fbbf2444;">☀️</div>
+      <div><div style="font-size:13px;color:#ddd;">Güneşi hisset</div><div style="font-size:11px;color:#777;">yüzünü pencereye dön, 30 saniye</div></div>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box" style="border-color:#38bdf844;">💧</div>
+      <div><div style="font-size:13px;color:#ddd;">Su iç</div><div style="font-size:11px;color:#777;">farkında olarak, yudumla</div></div>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box" style="border-color:#c084fc44;">🪞</div>
+      <div><div style="font-size:13px;color:#ddd;">Aynaya bak</div><div style="font-size:11px;color:#777;">gözlerinin içine, 10 saniye</div></div>
+    </div>
+    <div class="checklist-item">
+      <div class="check-box" style="border-color:#34d39944;">🌿</div>
+      <div><div style="font-size:13px;color:#ddd;">Toprağa dokun</div><div style="font-size:11px;color:#777;">topraklama, grounding</div></div>
+    </div>
+  </div>
+
+  <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 0 24px;"></div>
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#38bdf844,#38bdf811);border:1.5px solid #38bdf855;display:flex;align-items:center;justify-content:center;font-size:28px;">🌙</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 6</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#7ab0e0;font-family:'Jost',sans-serif;">Akşam Kapanışı</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:16px;">
+    Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
+  </div>
+
+  <div class="meme-box">
+    <p>gece 2'de: neden böyle hissediyorum acaba 🤔</p>
+    <p style="color:#7ab0e0;margin-top:6px;">sakin akşam kapanışından sonra: uyku go brrr 😴</p>
+    <p class="small">kapanmayan günler birikir. kapat.</p>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:85%;background:linear-gradient(90deg,#c084fc,#38bdf8,#34d399);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#fbbf24;box-shadow:0 0 12px #fbbf2488;"></span>
+      <span class="connection-node" style="background:#7ab0e0;box-shadow:0 0 12px #7ab0e088;margin-left:-4px;"></span>
+      <span style="font-size:12px;color:#888;letter-spacing:2px;font-family:'Jost',sans-serif;">BAĞLANTI 6/7 — ANLA & GÜNLE</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">08</div>
+</div>
+
+<!-- ═══════════════ SAYFA 9: RAPOR + EKSTRA ÖZELLİKLER ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 50% 40%,rgba(52,211,153,0.06),transparent 50%),#0a0a0f;">
+
+  <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,#34d39944,#34d39911);border:1.5px solid #34d39955;display:flex;align-items:center;justify-content:center;font-size:28px;">✦</div>
+    <div>
+      <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;">Adım 7</div>
+      <div style="font-size:24px;font-weight:300;letter-spacing:3px;color:#34d399;font-family:'Jost',sans-serif;">Haftalık İçsel Rapor</div>
+    </div>
+  </div>
+
+  <div style="font-size:14px;color:#ccc;line-height:2;margin-bottom:16px;">
+    AI destekli kişisel raporun: çakra örüntüleri, frekans sürelerin, kozmik enerji analizi, doğum haritanla kişiselleştirilmiş içgörüler.
+  </div>
+
+  <div class="glow-box" style="margin-bottom:24px;">
+    <div style="font-size:11px;color:#34d399;letter-spacing:3px;font-family:'Jost',sans-serif;margin-bottom:10px;">RAPOR ÖNİZLEME</div>
+    <div style="font-size:12px;color:#999;line-height:1.8;">
+      "Bu hafta kalp çakranla yoğun çalıştın. Şükran niyetin 5 gün boyunca rehberin oldu. 528Hz frekansında toplam 23 dakika geçirdin. Kozmik enerji Kp=4 seviyesinde — duygusal dalgalanmalar normal..."
+    </div>
+  </div>
+
+  <div style="height:1px;background:rgba(255,255,255,0.06);margin:0 0 20px;"></div>
+
+  <div style="font-size:11px;letter-spacing:4px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;text-align:center;margin-bottom:16px;">Bonus Özellikler</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px;">
+    <div style="text-align:center;background:rgba(255,255,255,0.03);border-radius:14px;padding:14px 8px;">
+      <div style="font-size:24px;margin-bottom:6px;">🗺️</div>
+      <div style="font-size:11px;color:#c084fc;font-family:'Jost',sans-serif;letter-spacing:1px;">Doğum Haritası</div>
+      <div style="font-size:10px;color:#777;margin-top:4px;">burç, yaşam yolu, 12. ev</div>
+    </div>
+    <div style="text-align:center;background:rgba(255,255,255,0.03);border-radius:14px;padding:14px 8px;">
+      <div style="font-size:24px;margin-bottom:6px;">🤖</div>
+      <div style="font-size:11px;color:#c084fc;font-family:'Jost',sans-serif;letter-spacing:1px;">AI Rehber</div>
+      <div style="font-size:10px;color:#777;margin-top:4px;">reiki & psikoloji</div>
+    </div>
+    <div style="text-align:center;background:rgba(255,255,255,0.03);border-radius:14px;padding:14px 8px;">
+      <div style="font-size:24px;margin-bottom:6px;">🌍</div>
+      <div style="font-size:11px;color:#c084fc;font-family:'Jost',sans-serif;letter-spacing:1px;">Kozmik Enerji</div>
+      <div style="font-size:10px;color:#777;margin-top:4px;">NOAA Kp indeksi</div>
+    </div>
+  </div>
+
+  <div style="margin-top:auto;">
+    <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#c084fc,#818cf8,#38bdf8,#34d399,#fbbf24,#fb923c,#f472b6);"></div></div>
+    <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:8px;">
+      <span class="connection-node" style="background:#34d399;box-shadow:0 0 12px #34d39988;"></span>
+      <span style="font-size:12px;color:#34d399;letter-spacing:2px;font-family:'Jost',sans-serif;">TÜM BAĞLANTILAR TAMAMLANDI ✦</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">09</div>
+</div>
+
+<!-- ═══════════════ SAYFA 10: SAKİN AİLESİ ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 50% 50%,rgba(192,132,252,0.05),transparent 50%),#0a0a0f;">
+
+  <div style="text-align:center;margin-bottom:32px;">
+    <div style="font-size:11px;letter-spacing:5px;color:#888;text-transform:uppercase;font-family:'Jost',sans-serif;margin-bottom:8px;">Tek Başına Değilsin</div>
+    <div style="font-size:28px;font-weight:300;letter-spacing:4px;font-family:'Jost',sans-serif;" class="grad-text">Sakin Ailesi</div>
+    <div style="font-size:13px;color:#888;margin-top:8px;font-style:italic;">Farklı kapılardan aynı merkeze.</div>
+  </div>
+
+  <div class="ailesi-card" style="border-color:rgba(160,216,180,0.15);">
+    <div class="ailesi-icon" style="background:radial-gradient(circle,#a0d8b444,#a0d8b411);">◈</div>
+    <div style="flex:1;">
+      <h4 style="color:#a0d8b4;">Sakin Hayvan</h4>
+      <p>Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi. Her kart sana bir mesaj taşır.</p>
+    </div>
+  </div>
+
+  <div class="ailesi-card" style="border-color:rgba(216,180,160,0.15);">
+    <div class="ailesi-icon" style="background:radial-gradient(circle,#d8b4a044,#d8b4a011);">🏛️</div>
+    <div style="flex:1;">
+      <h4 style="color:#d8b4a0;">Sakin Mitler</h4>
+      <p>Jung'un izinde günlük arketip, mit ve imge okuması. Her gün üç deste açılır. Gölgenle tanış, kahramanını hatırla.</p>
+    </div>
+  </div>
+
+  <div class="ailesi-card" style="border-color:rgba(180,160,216,0.15);">
+    <div class="ailesi-icon" style="background:radial-gradient(circle,#b4a0d844,#b4a0d811);">⌖</div>
+    <div style="flex:1;">
+      <h4 style="color:#b4a0d8;">Sakin Tasarım</h4>
+      <p>Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar. Sen zaten tasarlanmışsın.</p>
+    </div>
+  </div>
+
+  <div class="meme-box" style="margin-top:24px;">
+    <p>marvel: cinematic universe 🦸</p>
+    <p style="color:#c084fc;margin-top:6px;">sakin: spiritual universe ✦</p>
+    <p class="small">crossover event: senin iç dünyan</p>
+  </div>
+
+  <div style="margin-top:auto;text-align:center;">
+    <div style="font-size:13px;color:#888;line-height:2;margin-bottom:12px;">
+      Her uygulama farklı bir boyuttan çalışır.<br>
+      Ama hepsi aynı şeyi söyler:<br>
+      <span style="color:#c084fc;">"Kendinle bağlantı kur."</span>
+    </div>
+  </div>
+
+  <div class="page-footer">sakin · kitapçık</div>
+  <div class="page-num">10</div>
+</div>
+
+<!-- ═══════════════ SAYFA 11: KAPANIŞ ═══════════════ -->
+<div class="page" style="background:radial-gradient(ellipse at 50% 50%,rgba(192,132,252,0.08),transparent 60%),#0a0a0f; justify-content:center; align-items:center; text-align:center;">
+
+  <div style="margin-bottom:48px;">
+    <div style="font-size:48px;margin-bottom:24px;">✦</div>
+    <div style="font-size:28px;font-weight:200;letter-spacing:4px;font-family:'Jost',sans-serif;margin-bottom:16px;" class="grad-text">
+      Bağlantıyı kur.
+    </div>
+    <div style="font-size:15px;color:#999;line-height:2.2;max-width:380px;margin:0 auto;">
+      Karmaşık değil. Derin.<br>
+      Sadece birkaç sakin anını ver,<br>
+      gerisini hatırlayacaksın.
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:48px;">
+    <span class="connection-node" style="background:#c084fc;box-shadow:0 0 10px #c084fc66;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#c084fc,#818cf8);"></span>
+    <span class="connection-node" style="background:#818cf8;box-shadow:0 0 10px #818cf866;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8);"></span>
+    <span class="connection-node" style="background:#38bdf8;box-shadow:0 0 10px #38bdf866;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#38bdf8,#34d399);"></span>
+    <span class="connection-node" style="background:#34d399;box-shadow:0 0 10px #34d39966;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#34d399,#fbbf24);"></span>
+    <span class="connection-node" style="background:#fbbf24;box-shadow:0 0 10px #fbbf2466;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#fbbf24,#fb923c);"></span>
+    <span class="connection-node" style="background:#fb923c;box-shadow:0 0 10px #fb923c66;"></span>
+    <span class="connection-line" style="background:linear-gradient(90deg,#fb923c,#f472b6);"></span>
+    <span class="connection-node" style="background:#f472b6;box-shadow:0 0 10px #f472b666;"></span>
+  </div>
+
+  <div style="margin-bottom:48px;">
+    <div style="display:inline-block;padding:14px 36px;border-radius:100px;background:linear-gradient(135deg,rgba(192,132,252,0.5),rgba(129,140,248,0.4));font-family:'Jost',sans-serif;font-size:14px;letter-spacing:2px;">sakin.life</div>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div style="font-size:13px;color:#666;letter-spacing:2px;font-family:'Jost',sans-serif;">Sakin · Farkındalık Sistemi · 2026</div>
+    <div style="font-size:12px;color:#555;letter-spacing:2px;margin-top:6px;font-family:'Jost',sans-serif;">Arda Çetin</div>
+  </div>
+
+  <div class="meme-box" style="position:absolute;bottom:60px;left:50%;transform:translateX(-50%);width:260px;border-style:solid;border-color:rgba(192,132,252,0.12);">
+    <p style="font-size:12px;">bu kitapçığı okuduğun için bile<br>bir adım attın 🫶</p>
+    <p class="small">tebrikler, bağlantı başladı.</p>
+  </div>
+
+  <div class="page-num">11</div>
+</div>
+
+</body>
+</html>
