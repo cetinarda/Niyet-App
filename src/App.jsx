@@ -1620,6 +1620,7 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
@@ -4160,7 +4161,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {screen==="hakkinda" && (
         <div className="policy-screen">
 
+          {/* ── SEKMELER ── */}
+          <div style={{ display:"flex",gap:8,marginBottom:32,justifyContent:"center" }}>
+            {[
+              {id:"yolculuk", label:lang==="tr"?"Yolculuk":"Journey"},
+              {id:"nedir", label:lang==="tr"?"Sakin Nedir?":"What is Sakin?"},
+            ].map(tab=>(
+              <button key={tab.id} onClick={()=>setHakkindaTab(tab.id)}
+                style={{ padding:"8px 20px",borderRadius:20,border:`1px solid ${hakkindaTab===tab.id?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:hakkindaTab===tab.id?"rgba(184,164,216,0.15)":"transparent",color:hakkindaTab===tab.id?"#b8a4d8":"#888",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",transition:"all 0.2s" }}>
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
           {/* ── YOL HARİTASI ── */}
+          {hakkindaTab==="yolculuk" && (
           <div style={{ marginBottom:48 }}>
             <div style={{ textAlign:"center",marginBottom:28 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{lang==="tr"?"YOLCULUĞUN HARİTASI":"YOUR JOURNEY MAP"}</div>
@@ -4195,9 +4210,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             </div>
           </div>
+          )}
 
-          <div className="divider" style={{ marginBottom:40 }} />
-
+          {/* ── SAKİN NEDİR? ── */}
+          {hakkindaTab==="nedir" && (
+          <>
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
@@ -4303,7 +4320,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
           )}
 
-          <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center", lineHeight:2 }}>
+          </>
+          )}
+
+          <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center", lineHeight:2, marginTop:32 }}>
             {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2026" : "Sakin · Awareness System · 2026"}
             <br/>
             <span style={{ fontSize:12, color:"#555555", letterSpacing:1.5 }}>Arda Çetin</span>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakin · Farkındalık Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#000; color:#fff; font-family:'Inter',sans-serif; line-height:1.8; min-height:100vh; }
+  .container { max-width:640px; margin:0 auto; padding:60px 28px 80px; }
+
+  .hero { text-align:center; margin-bottom:64px; }
+  .hero-label { font-size:11px; letter-spacing:6px; color:#888; text-transform:uppercase; margin-bottom:12px; font-family:'Jost',sans-serif; }
+  .hero-title { font-size:32px; font-weight:200; letter-spacing:4px; color:#d0c0f0; font-family:'Jost',sans-serif; margin-bottom:16px; }
+  .hero-sub { font-size:15px; color:#999; font-style:italic; line-height:2; max-width:480px; margin:0 auto; }
+
+  .quote { border-left:2px solid rgba(184,164,216,0.4); padding:20px 24px; margin:0 0 56px; background:rgba(184,164,216,0.04); border-radius:0 12px 12px 0; }
+  .quote p { font-size:16px; color:#c8b8e0; font-style:italic; line-height:2; }
+
+  .section-title { font-size:11px; letter-spacing:5px; color:#888; text-transform:uppercase; text-align:center; margin-bottom:32px; font-family:'Jost',sans-serif; }
+
+  .timeline { position:relative; padding-left:36px; margin-bottom:56px; }
+  .timeline::before { content:''; position:absolute; left:14px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,#f0a060,#60b8e8,#a07ae0,#b87adc,#e8d060,#7ab0e0,#82d9a3); border-radius:2px; }
+  .step { position:relative; margin-bottom:28px; }
+  .step:last-child { margin-bottom:0; }
+  .step-dot { position:absolute; left:-30px; top:4px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .step-title { font-size:15px; font-weight:500; letter-spacing:1px; margin-bottom:4px; font-family:'Jost',sans-serif; }
+  .step-desc { font-size:13px; color:#999; line-height:1.9; }
+
+  .features { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:56px; }
+  @media(max-width:480px) { .features { grid-template-columns:1fr; } }
+  .feature-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 16px; }
+  .feature-icon { font-size:22px; margin-bottom:8px; }
+  .feature-title { font-size:13px; letter-spacing:2px; color:#b8a4d8; margin-bottom:6px; font-family:'Jost',sans-serif; }
+  .feature-text { font-size:12px; color:#888; line-height:1.8; }
+
+  .cta { text-align:center; margin:48px 0; padding:32px 24px; background:linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03)); border:1px solid rgba(184,164,216,0.15); border-radius:18px; }
+  .cta-text { font-size:15px; color:#c8b8e0; margin-bottom:20px; font-style:italic; }
+  .cta-btn { display:inline-block; padding:14px 36px; border-radius:100px; background:linear-gradient(135deg,rgba(184,164,216,0.6),rgba(120,80,180,0.5)); color:#fff; text-decoration:none; font-family:'Jost',sans-serif; font-size:14px; letter-spacing:2px; border:none; }
+  .cta-btn:hover { opacity:0.85; }
+
+  .footer { text-align:center; margin-top:56px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.06); }
+  .footer p { font-size:13px; color:#666; letter-spacing:1.5px; }
+  .footer .name { font-size:12px; color:#555; letter-spacing:2px; margin-top:4px; }
+
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-label">Farkındalık Sistemi</div>
+    <div class="hero-title">Sakin</div>
+    <div class="hero-sub">Bir uygulama değil, bir frekans geçidi. Zihnin gürültüsünü kısar ve seni kendi merkezine geri çeker.</div>
+  </div>
+
+  <div class="quote">
+    <p>Sakin, sana bir şey öğretmez. Sadece hatırlatır. Günün koşusunda kendini unuttuğun anlarda, seni nazikçe içe çeker.</p>
+  </div>
+
+  <div class="section-title">Yolculuğun Haritası</div>
+
+  <div class="timeline">
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#f0a06044,#f0a06011);border:1.5px solid #f0a06055">🌅</div>
+      <div class="step-title" style="color:#f0a060">Sabah Niyeti</div>
+      <div class="step-desc">Güne bir niyetle başla. Seni en çok ifade eden 3 kelimeyi seç — gün boyunca pusulan olsunlar.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#60b8e844,#60b8e811);border:1.5px solid #60b8e855">🫧</div>
+      <div class="step-title" style="color:#60b8e8">Nefes Egzersizi</div>
+      <div class="step-desc">6 farklı modla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu, sakinleştirici.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#a07ae044,#a07ae011);border:1.5px solid #a07ae055">🔊</div>
+      <div class="step-title" style="color:#a07ae0">Ses Dalgaları</div>
+      <div class="step-desc">10 solfeggio frekansını kuş sesleri eşliğinde dinle. Her frekansın kendine ait bir doğa sesi var.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#b87adc44,#b87adc11);border:1.5px solid #b87adc55">💜</div>
+      <div class="step-title" style="color:#b87adc">22 Çakra Yükselişi</div>
+      <div class="step-desc">Enerji merkezlerinle bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjin aksın.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#e8d06044,#e8d06011);border:1.5px solid #e8d06055">☀️</div>
+      <div class="step-title" style="color:#e8d060">Gün İçi Görevler</div>
+      <div class="step-desc">Aynaya bak. Su iç. Güneşi hisset. Toprağa dokun. Seni ana bağlayan dokunuşlar.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#7ab0e044,#7ab0e011);border:1.5px solid #7ab0e055">🌙</div>
+      <div class="step-title" style="color:#7ab0e0">Akşam Kapanışı</div>
+      <div class="step-desc">Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#82d9a344,#82d9a311);border:1.5px solid #82d9a355">✦</div>
+      <div class="step-title" style="color:#82d9a3">Haftalık İçsel Rapor</div>
+      <div class="step-desc">AI destekli kişisel raporun: çakra örüntüleri, frekans süren, kozmik enerji — derin bir iç ayna.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title">Neler Var?</div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🌬</div>
+      <div class="feature-title">6 Nefes Modu</div>
+      <div class="feature-text">Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici nefes egzersizleri</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎵</div>
+      <div class="feature-title">10 Solfeggio</div>
+      <div class="feature-text">174Hz'den 963Hz'e, kuş sesleri eşliğinde şifalı frekanslar</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💜</div>
+      <div class="feature-title">22 Çakra</div>
+      <div class="feature-text">Fiziksel, ruhsal ve ilahi boyutta enerji merkezi çalışması</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-title">Doğum Haritası</div>
+      <div class="feature-text">Burç, yaşam yolu, 12. ev, draconik harita — kişiselleştirilmiş içerik</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <div class="feature-title">AI Rehber</div>
+      <div class="feature-text">Reiki ve spiritüel psikoloji kaynaklı yapay zeka içsel rehber</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌍</div>
+      <div class="feature-title">Kozmik Enerji</div>
+      <div class="feature-text">NOAA uydu verisiyle haftalık Kp indeksi ve jeomanyetik analiz</div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-text">Karmaşık değil. Derin.<br>Sadece birkaç sakin anını ver, gerisini hatırlayacaksın.</div>
+    <a href="https://sakin.life" class="cta-btn">Sakin'i Keşfet →</a>
+  </div>
+
+  <div class="footer">
+    <p>Sakin · Farkındalık Sistemi · 2026</p>
+    <p class="name">Arda Çetin</p>
+  </div>
+
+</div>
+</body>
+</html>
