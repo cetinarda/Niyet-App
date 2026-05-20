@@ -2700,7 +2700,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             onClick={()=>setEmbeddedApp(null)}
             aria-label={lang==="tr"?"Geri":"Back"}
             style={{
-              position:"fixed",top:"calc(10px + var(--sat))",left:10,zIndex:10002,
+              position:"fixed",top:"calc(2px + var(--sat))",left:8,zIndex:10002,
               background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
               border:"1px solid rgba(255,255,255,0.15)",
               borderRadius:"50%",width:36,height:36,padding:0,
@@ -2814,13 +2814,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
                 </div>
-                <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box" }}
+                <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
                   }}>
-                  {lang==="tr" ? (birthInput ? "Haritama Göre Devam Et →" : "Atla ve Devam Et →") : (birthInput ? "Continue with My Chart →" : "Skip & Continue →")}
+                  {lang==="tr" ? (birthInput ? "Devam Et →" : "Atla →") : (birthInput ? "Continue →" : "Skip →")}
                 </button>
               </div>
             )}
