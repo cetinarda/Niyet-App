@@ -1909,6 +1909,39 @@ export default function SakinApp() {
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   useEffect(() => { scheduleDailyReminders(lang); }, []);
+  // Sakin Ailesi bridge: embed'ler kendi profil'lerini yazdığında ad/doğum bilgisini sakin_* anahtarlarına sync et
+  useEffect(() => {
+    if (isNative) return;
+    const setIfChanged = (key, val) => {
+      if (val && localStorage.getItem(key) !== val) {
+        localStorage.setItem(key, val);
+        if (key === "sakin_birth_date") setBirthDate(val);
+        if (key === "sakin_birth_time") setBirthTime(val);
+      }
+    };
+    const handleStorage = (e) => {
+      try {
+        if (!e.newValue) return;
+        if (e.key === "@tura_profile" || e.key === "@mitler_profile") {
+          const p = JSON.parse(e.newValue);
+          if (p?.name) setIfChanged("sakin_name", String(p.name).trim());
+          if (p?.birthDate) setIfChanged("sakin_birth_date", p.birthDate);
+          if (typeof p?.birthHour === "number") {
+            const t = String(p.birthHour).padStart(2,"0") + ":" + String(p.birthMinute || 0).padStart(2,"0");
+            setIfChanged("sakin_birth_time", t);
+          }
+        } else if (e.key === "@tasarim_profiles") {
+          const arr = JSON.parse(e.newValue);
+          const p = Array.isArray(arr) ? arr[arr.length - 1] : null;
+          if (p?.name) setIfChanged("sakin_name", String(p.name).trim());
+          if (p?.birthDate) setIfChanged("sakin_birth_date", p.birthDate);
+          if (p?.birthTime) setIfChanged("sakin_birth_time", p.birthTime);
+        }
+      } catch(_) {}
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
   useEffect(() => { if (isNative && screen === "rehber") setScreen("gun"); }, [screen]);
   useEffect(() => {
     if (!showIntro) return;
@@ -2766,14 +2799,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : (
               <div style={{ textAlign:"left" }}>
                 <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,textTransform:"uppercase",color:"#666666",marginBottom:22,textAlign:"center" }}>
-                  {lang==="tr" ? "Bilgilerin" : "Your Info"}
-                </div>
-                <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Adın" : "Your Name"}</div>
-                  <input type="text" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
-                    placeholder={lang==="tr" ? "İsim (ya da rumuz)" : "Name (or alias)"}
-                    maxLength={40}
-                    value={nameInput} onChange={e=>setNameInput(e.target.value)} />
+                  {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
@@ -2790,8 +2816,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
                   onClick={()=>{
-                    const trimmedName = (nameInput || "").trim();
-                    if(trimmedName){ localStorage.setItem("sakin_name", trimmedName); setUserName(trimmedName); }
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }

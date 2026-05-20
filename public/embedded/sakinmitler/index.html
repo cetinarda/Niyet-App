@@ -40,6 +40,11 @@
       } catch(e) { console.warn('Sakin bridge:', e); }
     })();
   </script>
+      <style>
+      /* Sakin embed scroll override */
+      html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
+      #root { height: auto !important; min-height: 100vh !important; }
+    </style>
   </head>
 
   <body>

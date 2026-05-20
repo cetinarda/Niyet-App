@@ -25,7 +25,12 @@
     </style>
   <meta name="theme-color" content="#0D0B14">
 <meta name="description" content="Human Design bodygraph ve haftalık kişisel rapor.">
-<link rel="icon" href="/embedded/humandesign/favicon.ico" /></head>
+<link rel="icon" href="/embedded/humandesign/favicon.ico" />    <style>
+      /* Sakin embed scroll override — embed iframe contexts must scroll */
+      html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
+      #root { height: auto !important; min-height: 100vh !important; }
+    </style>
+  </head>
 
   <body>
     <!-- Use static rendering with Expo Router to support running without JavaScript. -->
