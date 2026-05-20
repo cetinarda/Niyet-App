@@ -389,6 +389,7 @@ const GLOBAL_CSS = `
   @keyframes slideIn     { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
   @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
+  @keyframes portalIn    { 0%{opacity:0;transform:scale(0.92);filter:blur(8px)} 60%{filter:blur(2px)} 100%{opacity:1;transform:scale(1);filter:blur(0)} }
   @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
@@ -1622,6 +1623,7 @@ export default function SakinApp() {
   const [showAilesi, setShowAilesi] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
+  const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
@@ -1893,6 +1895,40 @@ export default function SakinApp() {
         g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 3.2);
         o.connect(g); g.connect(ctx.destination);
         o.start(); o.stop(ctx.currentTime + 3.2);
+      });
+    } catch(_) {}
+  };
+
+  // Galaktik portal açılış sesi — 3 yükselen ton + ışıltı, embed app açılırken
+  const playPortalSound = () => {
+    try {
+      if (!breathChimeRef.current) {
+        breathChimeRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const ctx = breathChimeRef.current;
+      if (ctx.state === "suspended") ctx.resume();
+      const t0 = ctx.currentTime;
+      // Üç yükselen sinüs notası
+      [[523, 0.0, 0.6], [659, 0.12, 0.7], [880, 0.24, 0.9]].forEach(([f, delay, dur]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.setValueAtTime(f, t0 + delay);
+        o.frequency.linearRampToValueAtTime(f * 1.12, t0 + delay + dur);
+        g.gain.setValueAtTime(0, t0 + delay);
+        g.gain.linearRampToValueAtTime(0.10, t0 + delay + 0.04);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0 + delay); o.stop(t0 + delay + dur);
+      });
+      // Yüksek ışıltı (harmonikler)
+      [1760, 2640].forEach((f, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = f;
+        const d = 0.3 + i*0.15;
+        g.gain.setValueAtTime(0, t0 + 0.18 + i*0.05);
+        g.gain.linearRampToValueAtTime(0.025, t0 + 0.22 + i*0.05);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22 + d);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0 + 0.18 + i*0.05); o.stop(t0 + 0.22 + d);
       });
     } catch(_) {}
   };
@@ -2672,7 +2708,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
                 <button
-                  onClick={()=>{ setEmbeddedApp({ name: app.name, path: app.embed }); setShowAilesi(false); }}
+                  onClick={()=>{ playPortalSound(); haptic(); setEmbedLoaded(false); setEmbeddedApp({ name: app.name, path: app.embed, color: app.color }); setTimeout(()=>setShowAilesi(false), 250); }}
                   style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
                   <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
                   <div style={{ flex:1,minWidth:0 }}>
@@ -2690,20 +2726,39 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* EMBEDDED APP — fullscreen iframe overlay */}
+      {/* EMBEDDED APP — fullscreen iframe overlay with cosmic portal transition */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",animation:"portalIn 0.45s ease-out" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block" }}
+            onLoad={()=>setEmbedLoaded(true)}
+            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 0.55s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
+          {/* Kozmik portal yükleme katmanı */}
+          {!embedLoaded && (
+            <div style={{ position:"fixed",inset:0,zIndex:10001,pointerEvents:"none",background:`radial-gradient(ellipse 70% 50% at 50% 50%,rgba(${(embeddedApp.color||"#b4a0d8").replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.18) 0%,rgba(10,6,18,0.95) 60%,#000 100%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.3s ease" }}>
+              {/* Yıldızlar */}
+              {[[22,18],[78,30],[14,52],[88,55],[48,12],[62,72],[18,82],[82,78],[40,42],[55,28]].map(([x,y],i)=>(
+                <div key={i} style={{ position:"absolute",left:`${x}%`,top:`${y}%`,width:2,height:2,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 4px rgba(255,255,255,0.5)",animation:`twinkle ${2+i*0.3}s ease-in-out infinite`,animationDelay:`${i*0.15}s` }}/>
+              ))}
+              {/* Merkez dönen kare */}
+              <div style={{ position:"relative",width:80,height:80,marginBottom:18 }}>
+                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1.5px solid ${embeddedApp.color||"rgba(255,255,255,0.45)"}`,borderRadius:8,animation:"diamondSpin 2.2s linear infinite" }}/>
+                <div style={{ position:"absolute",inset:18,transform:"rotate(45deg)",border:`1px solid ${embeddedApp.color||"rgba(255,255,255,0.25)"}`,borderRadius:5,opacity:0.6,animation:"diamondSpin 1.6s linear infinite reverse" }}/>
+                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:8,height:8,borderRadius:"50%",background:embeddedApp.color||"#fff",boxShadow:`0 0 22px ${embeddedApp.color||"rgba(255,255,255,0.6)"},0 0 44px ${embeddedApp.color||"rgba(255,255,255,0.3)"}`,animation:"pulse 1.4s ease-in-out infinite" }}/>
+              </div>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:5,color:embeddedApp.color||"#d0c0f0",textTransform:"uppercase",opacity:0.85 }}>
+                {embeddedApp.name}
+              </div>
+            </div>
+          )}
           <button
-            onClick={()=>setEmbeddedApp(null)}
+            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); }}
             aria-label={lang==="tr"?"Geri":"Back"}
             style={{
-              position:"fixed",top:"max(4px, calc(var(--sat) - 38px))",left:8,zIndex:10002,
+              position:"fixed",top:"max(4px, calc(var(--sat) - 38px))",left:8,zIndex:10003,
               background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
               border:"1px solid rgba(255,255,255,0.15)",
               borderRadius:"50%",width:36,height:36,padding:0,
