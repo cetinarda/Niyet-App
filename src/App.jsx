@@ -1668,6 +1668,7 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -2662,35 +2663,77 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
             </div>
             {[
-              { name:"Sakin Hayvan", url:"https://sakinhayvan.netlify.app/", icon:"🐾", color:"#a0d8b4",
+              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/", url:"https://sakinhayvan.netlify.app/", icon:"🐾", color:"#a0d8b4",
                 desc: lang==="tr"
                   ? "Rüyanda ya da gerçek hayatında sana rehberliğe gelen hayvanların ne söylediğini öğren."
                   : "Discover what the animals guiding you in dreams or real life are telling you." },
-              { name:"Sakin Mitler", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+              { name:"Sakin Mitler", embed:"/embedded/sakinmitler/", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
                 desc: lang==="tr"
                   ? "Hangi mit, arketip, imge ve sembol sana ne söylüyor? Hepsi bir arada, tüm detaylarıyla."
                   : "What are myths, archetypes, images and symbols telling you? All in one place." },
-              { name:"Sakin Design", url:"https://sakindesign.netlify.app/", icon:"◈", color:"#b4a0d8",
+              { name:"Sakin Design", embed:"/embedded/humandesign/", url:"https://sakindesign.netlify.app/", icon:"◈", color:"#b4a0d8",
                 desc: lang==="tr"
                   ? "Kendi tasarımını, hangi sistemle dünyaya geldiğini öğrenmenin en derin yolu."
                   : "The deepest way to learn your design and how you came into this world." },
+              { name:"SoulProfile", embed:"/embedded/soulprofile/", url:"https://soulprofile.life/", icon:"✦", color:"#f0c8a0",
+                desc: lang==="tr"
+                  ? "Galaktik karne — astroloji, Human Design ve numerolojinin birleşimi."
+                  : "Galactic profile card — astrology, Human Design and numerology combined." },
             ].map(app=>(
-              <a key={app.name} href={app.url} target="_blank" rel="noopener noreferrer"
-                style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",textDecoration:"none",display:"flex",alignItems:"center",gap:14,transition:"border-color 0.2s" }}
+              <div key={app.name}
+                style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
-                <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
-                <div style={{ flex:1,minWidth:0 }}>
-                  <div style={{ fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{app.name}</div>
-                  <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{app.desc}</div>
-                </div>
-                <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
-              </a>
+                <button
+                  onClick={()=>{ setEmbeddedApp({ name: app.name, path: app.embed }); setShowAilesi(false); }}
+                  style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
+                  <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
+                  <div style={{ flex:1,minWidth:0 }}>
+                    <div style={{ fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{app.name}</div>
+                    <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{app.desc}</div>
+                  </div>
+                  <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
+                </button>
+                <a href={app.url} target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize:11,color:"#666",letterSpacing:1.2,textDecoration:"none",alignSelf:"flex-end",fontFamily:"'Jost',sans-serif",opacity:0.7 }}
+                  onMouseEnter={e=>e.currentTarget.style.color="#aaa"}
+                  onMouseLeave={e=>e.currentTarget.style.color="#666"}>
+                  {lang==="tr" ? "↗ Ayrı sekmede aç" : "↗ Open externally"}
+                </a>
+              </div>
             ))}
             <button onClick={()=>setShowAilesi(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
               {lang==="tr"?"Kapat":"Close"}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* EMBEDDED APP — fullscreen iframe overlay */}
+      {embeddedApp && !isNative && (
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column" }}>
+          <iframe
+            src={embeddedApp.path}
+            title={embeddedApp.name}
+            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000" }}
+            allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
+          />
+          <button
+            onClick={()=>setEmbeddedApp(null)}
+            aria-label={lang==="tr"?"Kapat":"Close"}
+            style={{
+              position:"fixed",top:"calc(12px + var(--sat))",right:12,zIndex:10002,
+              background:"rgba(0,0,0,0.75)",backdropFilter:"blur(12px)",
+              border:"1px solid rgba(255,255,255,0.2)",
+              borderRadius:100,padding:"8px 16px",color:"#fff",
+              fontSize:13,letterSpacing:2,cursor:"pointer",
+              fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
+              display:"flex",alignItems:"center",gap:6,
+              boxShadow:"0 4px 16px rgba(0,0,0,0.5)"
+            }}>
+            <span style={{ fontSize:16,lineHeight:1 }}>✕</span>
+            <span>{lang==="tr"?"Kapat":"Close"}</span>
+          </button>
         </div>
       )}
 
