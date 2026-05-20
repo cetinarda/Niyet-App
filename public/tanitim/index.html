@@ -35,6 +35,16 @@
   .feature-title { font-size:13px; letter-spacing:2px; color:#b8a4d8; margin-bottom:6px; font-family:'Jost',sans-serif; }
   .feature-text { font-size:12px; color:#888; line-height:1.8; }
 
+  .ailesi { margin-bottom:56px; }
+  .ailesi-grid { display:flex; flex-direction:column; gap:14px; }
+  .ailesi-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:18px 20px; display:flex; align-items:center; gap:16px; text-decoration:none; color:inherit; transition:border-color 0.25s; }
+  .ailesi-card:hover { border-color:rgba(255,255,255,0.2); }
+  .ailesi-icon { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .ailesi-name { font-size:15px; font-weight:500; color:#fff; letter-spacing:1px; margin-bottom:4px; font-family:'Jost',sans-serif; }
+  .ailesi-desc { font-size:12.5px; color:#999; line-height:1.8; }
+  .ailesi-arrow { color:rgba(255,255,255,0.2); font-size:18px; flex-shrink:0; margin-left:auto; }
+  .ailesi-intro { font-size:14px; color:#888; text-align:center; font-style:italic; margin-bottom:24px; line-height:1.9; }
+
   .cta { text-align:center; margin:48px 0; padding:32px 24px; background:linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03)); border:1px solid rgba(184,164,216,0.15); border-radius:18px; }
   .cta-text { font-size:15px; color:#c8b8e0; margin-bottom:20px; font-style:italic; }
   .cta-btn { display:inline-block; padding:14px 36px; border-radius:100px; background:linear-gradient(135deg,rgba(184,164,216,0.6),rgba(120,80,180,0.5)); color:#fff; text-decoration:none; font-family:'Jost',sans-serif; font-size:14px; letter-spacing:2px; border:none; }
@@ -134,6 +144,39 @@
       <div class="feature-icon">🌍</div>
       <div class="feature-title">Kozmik Enerji</div>
       <div class="feature-text">NOAA uydu verisiyle haftalık Kp indeksi ve jeomanyetik analiz</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="ailesi">
+    <div class="section-title">Sakin Ailesi</div>
+    <div class="ailesi-intro">Sakin'in frekansını taşıyan kardeş uygulamalar.<br>Her biri farklı bir kapıdan aynı merkeze çeker.</div>
+    <div class="ailesi-grid">
+      <a href="https://sakinhayvan.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#a0d8b466'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#a0d8b444,#a0d8b411)">◈</div>
+        <div>
+          <div class="ailesi-name" style="color:#a0d8b4">Sakin Hayvan</div>
+          <div class="ailesi-desc">Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
+      <a href="https://sakinmitler.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#d8b4a066'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#d8b4a044,#d8b4a011)">🏛️</div>
+        <div>
+          <div class="ailesi-name" style="color:#d8b4a0">Sakin Mitler</div>
+          <div class="ailesi-desc">Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
+      <a href="https://sakindesign.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#b4a0d866'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#b4a0d844,#b4a0d811)">⌖</div>
+        <div>
+          <div class="ailesi-name" style="color:#b4a0d8">Sakin Tasarım</div>
+          <div class="ailesi-desc">Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
     </div>
   </div>
 
