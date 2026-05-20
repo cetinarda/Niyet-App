@@ -2615,18 +2615,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
             </div>
             {[
-              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/", url:"https://sakinhayvan.netlify.app/", icon:"🐾", color:"#a0d8b4",
+              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
                 desc: lang==="tr"
-                  ? "Rüyanda ya da gerçek hayatında sana rehberliğe gelen hayvanların ne söylediğini öğren."
-                  : "Discover what the animals guiding you in dreams or real life are telling you." },
+                  ? "Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi."
+                  : "Words, Stones, Nagual — daily three-card draws through Anatolian wisdom and spirit guidance." },
               { name:"Sakin Mitler", embed:"/embedded/sakinmitler/", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
                 desc: lang==="tr"
-                  ? "Hangi mit, arketip, imge ve sembol sana ne söylüyor? Hepsi bir arada, tüm detaylarıyla."
-                  : "What are myths, archetypes, images and symbols telling you? All in one place." },
-              { name:"Sakin Design", embed:"/embedded/humandesign/", url:"https://sakindesign.netlify.app/", icon:"◈", color:"#b4a0d8",
+                  ? "Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır."
+                  : "Daily archetype, myth and image reading in the footsteps of Jung — three decks open each day." },
+              { name:"Sakin Tasarım", embed:"/embedded/humandesign/", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: lang==="tr"
-                  ? "Kendi tasarımını, hangi sistemle dünyaya geldiğini öğrenmenin en derin yolu."
-                  : "The deepest way to learn your design and how you came into this world." },
+                  ? "Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar."
+                  : "Your Human Design chart from birth date, time and city — type, inner authority, profile, centers and channels." },
             ].map(app=>(
               <div key={app.name}
                 style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
