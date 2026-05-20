@@ -55,6 +55,22 @@
   .footer .name { font-size:12px; color:#555; letter-spacing:2px; margin-top:4px; }
 
   .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  .problem-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+  .problem-text { font-size:14px; color:#ccc; }
+  .problem-label { font-size:11px; margin-top:4px; letter-spacing:1px; }
+  .bridge-box { text-align:center; padding:20px 24px; background:rgba(184,164,216,0.06); border:1px solid rgba(184,164,216,0.12); border-radius:16px; margin-bottom:48px; }
+  .bridge-title { font-size:11px; color:#c084fc; letter-spacing:2px; font-family:'Jost',sans-serif; margin-bottom:6px; }
+  .bridge-text { font-size:14px; color:#ccc; line-height:1.9; }
+  .nedir-block { margin-bottom:32px; }
+  .nedir-text { font-size:15px; color:#ccc; line-height:2.2; }
+  .nedir-strike { text-decoration:line-through; color:#666; }
+  .nedir-highlight { color:#c084fc; font-weight:500; }
+  .connection-bar { display:flex; align-items:center; justify-content:center; gap:4px; margin:16px 0; }
+  .conn-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .conn-line { width:16px; height:1.5px; display:inline-block; }
+  .complete-box { text-align:center; padding:20px; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.12); border-radius:16px; margin:48px 0; }
+  .complete-text { font-size:12px; color:#34d399; letter-spacing:2px; font-family:'Jost',sans-serif; margin-top:10px; }
 </style>
 </head>
 <body>
@@ -63,12 +79,65 @@
   <div class="hero">
     <div class="hero-label">Farkındalık Sistemi</div>
     <div class="hero-title">Sakin</div>
-    <div class="hero-sub">Bir uygulama değil, bir frekans geçidi. Zihnin gürültüsünü kısar ve seni kendi merkezine geri çeker.</div>
+    <div class="hero-sub">Bir uygulama değil, bir frekans geçidi.<br>Kullan ve kendinle bağlantı kur.</div>
   </div>
 
   <div class="quote">
     <p>Sakin, sana bir şey öğretmez. Sadece hatırlatır. Günün koşusunda kendini unuttuğun anlarda, seni nazikçe içe çeker.</p>
   </div>
+
+  <!-- Tanıdık mı? -->
+  <div class="section-title">Tanıdık mı?</div>
+
+  <div class="problem-card">
+    <div class="problem-text">😵‍💫 Sabah gözünü açtığında ilk refleksin telefona uzanmak</div>
+    <div class="problem-label" style="color:#f472b6">bağlantı: kendinle — kesildi ✕</div>
+  </div>
+  <div class="problem-card">
+    <div class="problem-text">🧠 Zihnin durmadan konuşuyor, sen dinliyorsun bile değil</div>
+    <div class="problem-label" style="color:#fb923c">bağlantı: bedeninle — kesildi ✕</div>
+  </div>
+  <div class="problem-card">
+    <div class="problem-text">🌀 "Bir şeyler eksik" hissi ama ne olduğunu bilmiyorsun</div>
+    <div class="problem-label" style="color:#c084fc">bağlantı: ruhunla — kesildi ✕</div>
+  </div>
+  <div class="problem-card" style="margin-bottom:24px">
+    <div class="problem-text">📱 20 uygulama indirdin, hiçbirini 3 günden fazla kullanmadın</div>
+    <div class="problem-label" style="color:#38bdf8">bağlantı: niyetinle — kesildi ✕</div>
+  </div>
+
+  <div class="bridge-box">
+    <div class="bridge-title">GÜZEL HABER</div>
+    <div class="bridge-text">Bu bağlantıları yeniden kurmak düşündüğün kadar zor değil.<br>Sadece bir sistem lazım. Ve biraz niyet.</div>
+  </div>
+
+  <!-- Sakin Nedir? -->
+  <div class="nedir-block">
+    <div class="nedir-text">
+      Sakin bir <span class="nedir-strike">meditasyon uygulaması</span> değil.<br>
+      Sakin bir <span class="nedir-strike">terapi aracı</span> değil.<br>
+      Sakin bir <span class="nedir-strike">to-do listesi</span> değil.<br><br>
+      Sakin bir <span class="nedir-highlight">farkındalık sistemi</span>.
+    </div>
+  </div>
+
+  <div class="connection-bar">
+    <span class="conn-dot" style="background:#c084fc"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#c084fc,#818cf8)"></span>
+    <span class="conn-dot" style="background:#818cf8"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8)"></span>
+    <span class="conn-dot" style="background:#38bdf8"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#38bdf8,#34d399)"></span>
+    <span class="conn-dot" style="background:#34d399"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#34d399,#fbbf24)"></span>
+    <span class="conn-dot" style="background:#fbbf24"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#fbbf24,#fb923c)"></span>
+    <span class="conn-dot" style="background:#fb923c"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#fb923c,#f472b6)"></span>
+    <span class="conn-dot" style="background:#f472b6"></span>
+  </div>
+
+  <div class="divider"></div>
 
   <div class="section-title">Yolculuğun Haritası</div>
 
@@ -178,6 +247,25 @@
         <div class="ailesi-arrow">→</div>
       </a>
     </div>
+  </div>
+
+  <div class="complete-box">
+    <div class="connection-bar">
+      <span class="conn-dot" style="background:#c084fc;box-shadow:0 0 6px #c084fc66"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#c084fc,#818cf8)"></span>
+      <span class="conn-dot" style="background:#818cf8;box-shadow:0 0 6px #818cf866"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8)"></span>
+      <span class="conn-dot" style="background:#38bdf8;box-shadow:0 0 6px #38bdf866"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#38bdf8,#34d399)"></span>
+      <span class="conn-dot" style="background:#34d399;box-shadow:0 0 6px #34d39966"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#34d399,#fbbf24)"></span>
+      <span class="conn-dot" style="background:#fbbf24;box-shadow:0 0 6px #fbbf2466"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#fbbf24,#fb923c)"></span>
+      <span class="conn-dot" style="background:#fb923c;box-shadow:0 0 6px #fb923c66"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#fb923c,#f472b6)"></span>
+      <span class="conn-dot" style="background:#f472b6;box-shadow:0 0 6px #f472b666"></span>
+    </div>
+    <div class="complete-text">TÜM BAĞLANTILAR TAMAMLANDI ✦</div>
   </div>
 
   <div class="cta">

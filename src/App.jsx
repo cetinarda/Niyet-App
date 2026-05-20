@@ -4217,21 +4217,64 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* ── SAKİN NEDİR? ── */}
           {hakkindaTab==="nedir" && (
           <>
-          {/* Dekoratif geometrik element */}
-          <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
-            <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
-              <svg viewBox="0 0 40 40" width="40" height="40">
-                <rect x="4" y="4" width="32" height="32" rx="7" fill="none" stroke="rgba(184,164,216,0.5)" strokeWidth="1.5"/>
-                <circle cx="20" cy="20" r="4" fill="rgba(184,164,216,0.8)"/>
-              </svg>
-            </div>
-            <div>
-              <h1 style={{ margin:0 }}>{lang==="tr" ? "Sakin Nedir?" : "What is Sakin?"}</h1>
-              <div className="subtitle" style={{ margin:0 }}>{lang==="tr" ? "Bir kanal. Bir sistem. Bir yol arkadaşı." : "A channel. A system. A companion."}</div>
+          {/* Başlık — Bağlantı metaforu */}
+          <div style={{ textAlign:"center",marginBottom:36 }}>
+            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{lang==="tr"?"Kullan ve":"Use and"}</div>
+            <h1 style={{ margin:0,fontSize:22,fontWeight:300,letterSpacing:3,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Kendinle Bağlantı Kur":"Connect with Yourself"}</h1>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:4,marginTop:16 }}>
+              {["#c084fc","#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"].map((c,i)=>(
+                <span key={i} style={{ display:"flex",alignItems:"center",gap:4 }}>
+                  <span style={{ width:10,height:10,borderRadius:"50%",background:c,display:"inline-block" }} />
+                  {i<6 && <span style={{ width:16,height:1.5,background:`linear-gradient(90deg,${c},${["#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"][i]})`,display:"inline-block" }} />}
+                </span>
+              ))}
             </div>
           </div>
 
-          <p style={{ fontSize:15, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(255,255,255,0.2)", paddingLeft:20 }}>
+          {/* Tanıdık mı? */}
+          <div style={{ marginBottom:28 }}>
+            <div style={{ textAlign:"center",fontSize:18,marginBottom:16,color:"#999",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr"?"Tanıdık mı?":"Sound familiar?"}</div>
+            {[
+              { emoji:"😵‍💫", text:lang==="tr"?"Sabah gözünü açtığında ilk refleksin telefona uzanmak":"Your first reflex in the morning is reaching for your phone", label:lang==="tr"?"kendinle — kesildi":"with yourself — disconnected", color:"#f472b6" },
+              { emoji:"🧠", text:lang==="tr"?"Zihnin durmadan konuşuyor, sen dinliyorsun bile değil":"Your mind won't stop talking, you're not even listening", label:lang==="tr"?"bedeninle — kesildi":"with your body — disconnected", color:"#fb923c" },
+              { emoji:"🌀", text:lang==="tr"?"\"Bir şeyler eksik\" hissi ama ne olduğunu bilmiyorsun":"\"Something's missing\" but you can't name it", label:lang==="tr"?"ruhunla — kesildi":"with your soul — disconnected", color:"#c084fc" },
+              { emoji:"📱", text:lang==="tr"?"20 uygulama indirdin, hiçbirini 3 günden fazla kullanmadın":"Downloaded 20 apps, didn't use any past 3 days", label:lang==="tr"?"niyetinle — kesildi":"with your intention — disconnected", color:"#38bdf8" },
+            ].map((item,i)=>(
+              <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10 }}>
+                <div style={{ fontSize:14,color:"#ccc" }}>{item.emoji} {item.text}</div>
+                <div style={{ fontSize:11,color:item.color,marginTop:4,letterSpacing:1 }}>{lang==="tr"?"bağlantı":"connection"}: {item.label} ✕</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Güzel haber köprüsü */}
+          <div style={{ textAlign:"center",padding:"20px 24px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:16,marginBottom:32 }}>
+            <div style={{ fontSize:11,color:"#c084fc",letterSpacing:2,fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{lang==="tr"?"GÜZEL HABER":"GOOD NEWS"}</div>
+            <div style={{ fontSize:14,color:"#ccc",lineHeight:1.9 }}>
+              {lang==="tr"
+                ? "Bu bağlantıları yeniden kurmak düşündüğün kadar zor değil. Sadece bir sistem lazım. Ve biraz niyet."
+                : "Reconnecting is not as hard as you think. You just need a system. And a bit of intention."}
+            </div>
+          </div>
+
+          {/* Sakin nedir tanımı */}
+          <div style={{ marginBottom:28 }}>
+            <div style={{ fontSize:15,color:"#ccc",lineHeight:2.2,marginBottom:16 }}>
+              {lang==="tr" ? (
+                <>Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>meditasyon uygulaması</span> değil.<br/>
+                Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>terapi aracı</span> değil.<br/>
+                Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>to-do listesi</span> değil.<br/><br/>
+                Sakin bir <strong style={{ color:"#c084fc" }}>farkındalık sistemi</strong>.</>
+              ) : (
+                <>Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>meditation app</span>.<br/>
+                Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>therapy tool</span>.<br/>
+                Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>to-do list</span>.<br/><br/>
+                Sakin is an <strong style={{ color:"#c084fc" }}>awareness system</strong>.</>
+              )}
+            </div>
+          </div>
+
+          <p style={{ fontSize:15, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.3)", paddingLeft:20 }}>
             {lang==="tr"
               ? "Sakin; zihnin gürültüsünü dinginleştirmek, içsel rehberliğe alan açmak ve günlük yaşamı anlam katmanlarıyla beslemek için tasarlanmış kişisel bir farkındalık sistemidir."
               : "Sakin is a personal awareness system designed to quiet the noise of the mind, open space for inner guidance, and nourish daily life with layers of meaning."}
@@ -4263,6 +4306,43 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <p>{lang==="tr"
             ? "Kullandığın her an bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
             : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
+
+          {/* Sakin Ailesi */}
+          <div style={{ marginTop:36,marginBottom:28 }}>
+            <h2>{lang==="tr"?"Sakin Ailesi":"Sakin Family"}</h2>
+            <p style={{ marginBottom:16 }}>{lang==="tr"?"Sakin'in frekansını taşıyan kardeş uygulamalar. Her biri farklı bir kapıdan aynı merkeze çeker.":"Sister apps carrying Sakin's frequency. Each pulls you to the same center from a different door."}</p>
+            {[
+              { name:"Sakin Hayvan", icon:"◈", color:"#a0d8b4",
+                desc:lang==="tr"?"Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi.":"Words, Stones, Nagual — daily three-card draws through Anatolian wisdom and spirit guidance." },
+              { name:"Sakin Mitler", icon:"🏛️", color:"#d8b4a0",
+                desc:lang==="tr"?"Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır.":"Daily archetype, myth and image reading in the footsteps of Jung — three decks open each day." },
+              { name:"Sakin Tasarım", icon:"⌖", color:"#b4a0d8",
+                desc:lang==="tr"?"Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar.":"Your Human Design chart from birth date, time and city — type, inner authority, profile, centers and channels." },
+            ].map((app,i)=>(
+              <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:14 }}>
+                <div style={{ width:42,height:42,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>{app.icon}</div>
+                <div style={{ flex:1,minWidth:0 }}>
+                  <div style={{ fontSize:14,fontWeight:500,color:app.color,letterSpacing:1,marginBottom:2,fontFamily:"'Jost',sans-serif" }}>{app.name}</div>
+                  <div style={{ fontSize:12,color:"#999",lineHeight:1.7 }}>{app.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tüm bağlantılar tamamlandı */}
+          <div style={{ textAlign:"center",padding:"20px",background:"rgba(52,211,153,0.06)",border:"1px solid rgba(52,211,153,0.12)",borderRadius:16,marginBottom:8 }}>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:4,marginBottom:10 }}>
+              {["#c084fc","#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"].map((c,i)=>(
+                <span key={i} style={{ display:"flex",alignItems:"center",gap:4 }}>
+                  <span style={{ width:8,height:8,borderRadius:"50%",background:c,display:"inline-block",boxShadow:`0 0 6px ${c}66` }} />
+                  {i<6 && <span style={{ width:12,height:1.5,background:`linear-gradient(90deg,${c},${["#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"][i]})`,display:"inline-block" }} />}
+                </span>
+              ))}
+            </div>
+            <div style={{ fontSize:12,color:"#34d399",letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
+              {lang==="tr"?"TÜM BAĞLANTILAR TAMAMLANDI ✦":"ALL CONNECTIONS COMPLETE ✦"}
+            </div>
+          </div>
 
           <div className="divider" />
 
