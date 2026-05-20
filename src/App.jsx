@@ -667,21 +667,28 @@ async function scheduleDailyReminders(lang) {
   try {
     const perm = await LocalNotifications.requestPermissions();
     if (perm.display !== "granted") return;
-    await LocalNotifications.cancel({ notifications: Array.from({length:10},(_,i)=>({id:9000+i})) });
     const todayKey = new Date().toISOString().slice(0,10);
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
+    // Önce kontrol et: bugün zaten planlandıysa hiçbir şeye dokunma (kalan
+    // bildirimleri iptal etme bug'ı bu sayede kapanır)
     if (lastScheduled === todayKey) return;
+    // Şimdi mevcut tüm slotları iptal edip yeniden planla
+    await LocalNotifications.cancel({ notifications: Array.from({length:30},(_,i)=>({id:9000+i})) });
     const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const shuffled = [...reminders].sort(() => Math.random() - 0.5);
-    const picked = shuffled.slice(0, 3);
-    const now = new Date();
     const hours = [9, 13, 18];
-    const notifications = picked.map((body, i) => {
-      const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours[i], Math.floor(Math.random()*30), 0);
-      if (at <= now) at.setDate(at.getDate() + 1);
-      return { id: 9000 + i, title: "Sakin", body, schedule: { at }, sound: null, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
-    });
-    await LocalNotifications.schedule({ notifications });
+    const now = new Date();
+    const notifications = [];
+    // 3 günlük forward schedule — kullanıcı app'i her gün açmasa da bildirimler gelmeye devam etsin
+    for (let d = 0; d < 3; d++) {
+      const shuffled = [...reminders].sort(() => Math.random() - 0.5);
+      const picked = shuffled.slice(0, 3);
+      picked.forEach((body, i) => {
+        const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, hours[i], Math.floor(Math.random()*30), 0);
+        if (at <= now) return; // geçmiş slot atla
+        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, sound: null, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
+      });
+    }
+    if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", todayKey);
   } catch (e) { console.warn("[Notif]", e); }
 }
