@@ -4159,6 +4159,45 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* SAKİN NEDİR? */}
       {screen==="hakkinda" && (
         <div className="policy-screen">
+
+          {/* ── YOL HARİTASI ── */}
+          <div style={{ marginBottom:48 }}>
+            <div style={{ textAlign:"center",marginBottom:28 }}>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{lang==="tr"?"YOLCULUĞUN HARİTASI":"YOUR JOURNEY MAP"}</div>
+              <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Seni neler bekliyor?":"What awaits you?"}</div>
+            </div>
+
+            <div style={{ position:"relative",paddingLeft:32 }}>
+              <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
+
+              {[
+                { icon:"🌅", color:"#f0a060", title:lang==="tr"?"Sabah Niyeti":"Morning Intention", desc:lang==="tr"?"Güne bir niyetle başla. Seni en çok ifade eden 3 kelimeyi seç — gün boyunca pusulan olsunlar.":"Start your day with an intention. Choose 3 words that express you — let them be your compass." },
+                { icon:"🫧", color:"#60b8e8", title:lang==="tr"?"Nefes Egzersizi":"Breathwork", desc:lang==="tr"?"6 farklı modla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu, sakinleştirici — hangisi sana iyi geliyorsa.":"Return to your body with 6 modes. Standard, diaphragm, lung, 4-7-8, box, calming — whichever feels right." },
+                { icon:"🔊", color:"#a07ae0", title:lang==="tr"?"Ses Dalgaları":"Sound Waves", desc:lang==="tr"?"10 solfeggio frekansını kuş sesleri eşliğinde dinle. Her frekansın kendine ait bir doğa sesi var.":"Listen to 10 solfeggio frequencies with birdsong. Each frequency has its own nature sound." },
+                { icon:"💜", color:"#b87adc", title:lang==="tr"?"22 Çakra Yükselişi":"22 Chakra Rise", desc:lang==="tr"?"60 saniyede enerji merkezlerinle bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjin aksın.":"Connect with your energy centers in 60 seconds. Feel your hand, close your eyes, let energy flow." },
+                { icon:"☀️", color:"#e8d060", title:lang==="tr"?"Gün İçi Görevler":"Daily Tasks", desc:lang==="tr"?"Aynaya bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni ana bağlayan dokunuşlar.":"Look in the mirror. Drink water. Feel the sun. Touch the earth. Not tasks — touches that ground you." },
+                { icon:"🌙", color:"#7ab0e0", title:lang==="tr"?"Akşam Kapanışı":"Evening Closure", desc:lang==="tr"?"Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.":"What did you learn today? What are you grateful for? A few sentences are enough." },
+                { icon:"✦", color:"#82d9a3", title:lang==="tr"?"Haftalık Rapor":"Weekly Report", desc:lang==="tr"?"AI destekli kişisel raporun: çakra örüntüleri, frekans süren, kozmik enerji — derin bir iç ayna.":"Your AI-powered personal report: chakra patterns, frequency time, cosmic energy — a deep inner mirror." },
+              ].map((step,i) => (
+                <div key={i} style={{ position:"relative",marginBottom:i<6?24:0,paddingBottom:i<6?4:0 }}>
+                  <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
+                  <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title}</div>
+                  <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign:"center",marginTop:28,padding:"14px 20px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:14 }}>
+              <div style={{ fontSize:13,color:"#b8a4d8",fontStyle:"italic",lineHeight:1.8 }}>
+                {lang==="tr"
+                  ? "Her adım bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
+                  : "Every step a practice, every practice a trace, every trace a part of your map."}
+              </div>
+            </div>
+          </div>
+
+          <div className="divider" style={{ marginBottom:40 }} />
+
           {/* Dekoratif geometrik element */}
           <div style={{ display:"flex", alignItems:"center", gap:16, marginBottom:48 }}>
             <div style={{ position:"relative", width:40, height:40, flexShrink:0 }}>
