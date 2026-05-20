@@ -2688,7 +2688,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* EMBEDDED APP — fullscreen iframe overlay */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"var(--sat)",paddingBottom:"var(--sab)" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"calc(56px + var(--sat))",paddingBottom:"var(--sab)" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
@@ -2797,18 +2797,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
               </>
             ) : (
-              <div style={{ textAlign:"left" }}>
-                <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
-                  <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+              <div style={{ textAlign:"left",maxWidth:300,margin:"0 auto" }}>
+                <div style={{ marginBottom:10 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
+                  <input type="date" className="sakin-input" style={{ fontSize:14,padding:"9px 12px" }}
                     value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
                 </div>
-                <div style={{ marginBottom:22 }}>
-                  <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
-                  <input type="time" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
+                  <input type="time" className="sakin-input" style={{ fontSize:14,padding:"9px 12px" }}
                     value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
                 </div>
-                <div style={{ fontSize:13,letterSpacing:1.5,color:"#666666",marginBottom:22,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
+                <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
