@@ -40,6 +40,21 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Allow embedded apps (sakinhayvan, sakinmitler, humandesign, soulprofile)
+# to be loaded as same-origin iframes inside Sakin.
+[[headers]]
+  for = "/embedded/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+
+# Serve /embedded/* as static assets — must come BEFORE the SPA fallback
+# so Vite's index.html doesn't swallow the embedded app routes.
+[[redirects]]
+  from = "/embedded/*"
+  to = "/embedded/:splat"
+  status = 200
+  force = false
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
