@@ -2650,15 +2650,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
             </div>
             {[
-              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
+              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
                 desc: lang==="tr"
                   ? "Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi."
                   : "Words, Stones, Nagual — daily three-card draws through Anatolian wisdom and spirit guidance." },
-              { name:"Sakin Mitler", embed:"/embedded/sakinmitler/", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+              { name:"Sakin Mitler", embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
                 desc: lang==="tr"
                   ? "Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır."
                   : "Daily archetype, myth and image reading in the footsteps of Jung — three decks open each day." },
-              { name:"Sakin Tasarım", embed:"/embedded/humandesign/", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
+              { name:"Sakin Tasarım", embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: lang==="tr"
                   ? "Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar."
                   : "Your Human Design chart from birth date, time and city — type, inner authority, profile, centers and channels." },
@@ -2798,9 +2798,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </>
             ) : (
               <div style={{ textAlign:"left" }}>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,textTransform:"uppercase",color:"#666666",marginBottom:22,textAlign:"center" }}>
-                  {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
-                </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
                   <input type="date" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
