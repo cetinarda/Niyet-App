@@ -2688,7 +2688,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* EMBEDDED APP — fullscreen iframe overlay */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"calc(56px + var(--sat))",paddingBottom:"var(--sab)" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"calc(80px + var(--sat))",paddingBottom:"var(--sab)" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}

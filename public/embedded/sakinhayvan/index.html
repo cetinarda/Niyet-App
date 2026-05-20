@@ -60,28 +60,28 @@
         }
       }*/
     </style>
-  <link rel="icon" href="/embedded/sakinhayvan/favicon.ico" />  <script>
-    /* Sakin Life bridge: pre-seed profile from host localStorage (sakin_name, sakin_birth_date, sakin_birth_time) */
+  <link rel="icon" href="/embedded/sakinhayvan/favicon.ico" />    <style>
+      /* Sakin embed scroll override */
+      html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
+      #root { height: auto !important; min-height: 100vh !important; }
+    </style>
+      <script>
+    /* Sakin Life bridge: seed profile from host localStorage */
     (function() {
       try {
         var n = localStorage.getItem('sakin_name');
         var d = localStorage.getItem('sakin_birth_date');
         var t = localStorage.getItem('sakin_birth_time');
         var existing = localStorage.getItem('@tura_profile');
-        if (n && d && !existing) {
+        if ((n || d) && !existing) {
           var h = 12, mn = 0;
           if (t) { var p = t.split(':'); h = parseInt(p[0])||12; mn = parseInt(p[1])||0; }
-          var profile = { name: n, birthDate: d, birthHour: h, birthMinute: mn };
+          var profile = { name: n || '', birthDate: d || '', birthHour: h, birthMinute: mn };
           localStorage.setItem('@tura_profile', JSON.stringify(profile));
         }
       } catch(e) { console.warn('Sakin bridge:', e); }
     })();
-  </script>
-      <style>
-      /* Sakin embed scroll override */
-      html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
-      #root { height: auto !important; min-height: 100vh !important; }
-    </style>
+    </script>
   </head>
 
   <body>
@@ -135,6 +135,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-8e1e8b04008c93cd46e8451df784a52c.js" defer></script>
+  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-962d8357a159ba600455192374e0d11d.js" defer></script>
 </body>
 </html>
