@@ -2689,7 +2689,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* EMBEDDED APP — fullscreen iframe overlay */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"calc(80px + var(--sat))",paddingBottom:"var(--sab)" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
@@ -2698,19 +2698,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           />
           <button
             onClick={()=>setEmbeddedApp(null)}
-            aria-label={lang==="tr"?"Kapat":"Close"}
+            aria-label={lang==="tr"?"Geri":"Back"}
             style={{
-              position:"fixed",top:"calc(12px + var(--sat))",right:12,zIndex:10002,
-              background:"rgba(0,0,0,0.75)",backdropFilter:"blur(12px)",
-              border:"1px solid rgba(255,255,255,0.2)",
-              borderRadius:100,padding:"8px 16px",color:"#fff",
-              fontSize:13,letterSpacing:2,cursor:"pointer",
-              fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
-              display:"flex",alignItems:"center",gap:6,
-              boxShadow:"0 4px 16px rgba(0,0,0,0.5)"
-            }}>
-            <span style={{ fontSize:16,lineHeight:1 }}>✕</span>
-            <span>{lang==="tr"?"Kapat":"Close"}</span>
+              position:"fixed",top:"calc(10px + var(--sat))",left:10,zIndex:10002,
+              background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
+              border:"1px solid rgba(255,255,255,0.15)",
+              borderRadius:"50%",width:36,height:36,padding:0,
+              color:"rgba(255,255,255,0.85)",fontSize:18,cursor:"pointer",
+              display:"flex",alignItems:"center",justifyContent:"center",
+              boxShadow:"0 2px 10px rgba(0,0,0,0.4)",
+              transition:"opacity 0.25s",opacity:0.6
+            }}
+            onMouseEnter={e=>e.currentTarget.style.opacity=1}
+            onMouseLeave={e=>e.currentTarget.style.opacity=0.6}
+            onTouchStart={e=>e.currentTarget.style.opacity=1}>
+            ←
           </button>
         </div>
       )}
