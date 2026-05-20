@@ -1859,12 +1859,14 @@ export default function SakinApp() {
   const [orb,           setOrb]           = useState({x:50,y:50});
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
+  const [userName,       setUserName]       = useState(()=>localStorage.getItem("sakin_name")||"");
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
+  const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
@@ -2764,7 +2766,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ) : (
               <div style={{ textAlign:"left" }}>
                 <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,textTransform:"uppercase",color:"#666666",marginBottom:22,textAlign:"center" }}>
-                  {lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}
+                  {lang==="tr" ? "Bilgilerin" : "Your Info"}
+                </div>
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Adın" : "Your Name"}</div>
+                  <input type="text" className="sakin-input" style={{ fontSize:15,padding:"12px 14px" }}
+                    placeholder={lang==="tr" ? "İsim (ya da rumuz)" : "Name (or alias)"}
+                    maxLength={40}
+                    value={nameInput} onChange={e=>setNameInput(e.target.value)} />
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:13,letterSpacing:2.5,color:"#777777",marginBottom:6,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
@@ -2781,6 +2790,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%" }}
                   onClick={()=>{
+                    const trimmedName = (nameInput || "").trim();
+                    if(trimmedName){ localStorage.setItem("sakin_name", trimmedName); setUserName(trimmedName); }
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }

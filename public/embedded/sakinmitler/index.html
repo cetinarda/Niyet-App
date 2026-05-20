@@ -23,7 +23,24 @@
         flex: 1;
       }
     </style>
-  <link rel="icon" href="/embedded/sakinmitler/favicon.ico" /></head>
+  <link rel="icon" href="/embedded/sakinmitler/favicon.ico" />  <script>
+    /* Sakin Life bridge: pre-seed profile from host localStorage */
+    (function() {
+      try {
+        var n = localStorage.getItem('sakin_name');
+        var d = localStorage.getItem('sakin_birth_date');
+        var t = localStorage.getItem('sakin_birth_time');
+        var existing = localStorage.getItem('@mitler_profile');
+        if (n && d && !existing) {
+          var h = 12, mn = 0;
+          if (t) { var p = t.split(':'); h = parseInt(p[0])||12; mn = parseInt(p[1])||0; }
+          var profile = { name: n, birthDate: d, birthHour: h, birthMinute: mn };
+          localStorage.setItem('@mitler_profile', JSON.stringify(profile));
+        }
+      } catch(e) { console.warn('Sakin bridge:', e); }
+    })();
+  </script>
+  </head>
 
   <body>
     <!-- Use static rendering with Expo Router to support running without JavaScript. -->
