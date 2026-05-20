@@ -26,6 +26,11 @@
     Content-Type = "text/html; charset=UTF-8"
 
 [[headers]]
+  for = "/tanitim/*"
+  [headers.values]
+    Content-Type = "text/html; charset=UTF-8"
+
+[[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
     Access-Control-Allow-Origin = "https://sakin.life"
@@ -52,6 +57,13 @@
 [[redirects]]
   from = "/embedded/*"
   to = "/embedded/:splat"
+  status = 200
+  force = false
+
+# Serve /tanitim/* as static HTML
+[[redirects]]
+  from = "/tanitim/*"
+  to = "/tanitim/:splat"
   status = 200
   force = false
 
