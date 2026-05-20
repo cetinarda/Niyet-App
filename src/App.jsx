@@ -4449,6 +4449,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </>
           )}
 
+          {!isPremium && (
+            <div style={{ marginTop:24,padding:"18px 18px 16px",background:"linear-gradient(135deg,rgba(240,200,120,0.06),rgba(184,164,216,0.04))",border:"1px solid rgba(240,200,120,0.18)",borderRadius:16 }}>
+              <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:6,textAlign:"center" }}>
+                ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
+              </div>
+              <div style={{ fontSize:13,color:"#a89878",lineHeight:1.7,textAlign:"center",fontStyle:"italic",marginBottom:14 }}>
+                {lang==="tr"
+                  ? "Hepsi Sakin'in içinde, ek ücret yok."
+                  : "All inside Sakin, no extra cost."}
+              </div>
+              <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
+                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
+                  <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"günlük üç kart: Sözler, Taşlar, Nagual":"daily three cards: Words, Stones, Nagual"}
+                </div>
+                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
+                  <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
+                </div>
+                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
+                  <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
+                </div>
+              </div>
+            </div>
+          )}
+
           <hr className="divider" />
           <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
         </div>
