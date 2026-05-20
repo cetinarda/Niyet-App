@@ -669,17 +669,16 @@ async function scheduleDailyReminders(lang) {
     if (perm.display !== "granted") return;
     const todayKey = new Date().toISOString().slice(0,10);
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
-    // Önce kontrol et: bugün zaten planlandıysa hiçbir şeye dokunma (kalan
-    // bildirimleri iptal etme bug'ı bu sayede kapanır)
+    // Bugün zaten planlandıysa hiçbir şeye dokunma
     if (lastScheduled === todayKey) return;
-    // Şimdi mevcut tüm slotları iptal edip yeniden planla
-    await LocalNotifications.cancel({ notifications: Array.from({length:30},(_,i)=>({id:9000+i})) });
+    // Mevcut tüm slotları + eski tek-seferlik repeating pingi temizle
+    await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}] });
     const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
     const hours = [9, 13, 18];
     const now = new Date();
     const notifications = [];
-    // 3 günlük forward schedule — kullanıcı app'i her gün açmasa da bildirimler gelmeye devam etsin
-    for (let d = 0; d < 3; d++) {
+    // 7 günlük forward schedule — 3 günlük slot × 7 gün = 21 varyasyonlu bildirim
+    for (let d = 0; d < 7; d++) {
       const shuffled = [...reminders].sort(() => Math.random() - 0.5);
       const picked = shuffled.slice(0, 3);
       picked.forEach((body, i) => {
@@ -688,6 +687,17 @@ async function scheduleDailyReminders(lang) {
         notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, sound: null, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
       });
     }
+    // Tekrarlayan sabah pingi — app hiç açılmasa da sonsuza dek her sabah 8'de düşer
+    const morningBody = lang === "tr" ? "Bugün kendine dön. Bir nefes yeter." : "Come back to yourself today. One breath is enough.";
+    notifications.push({
+      id: 9100,
+      title: "Sakin",
+      body: morningBody,
+      schedule: { on: { hour: 8, minute: 0 }, every: "day", allowWhileIdle: true },
+      sound: null,
+      smallIcon: "ic_stat_icon_config_sample",
+      iconColor: "#b8a4d8",
+    });
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", todayKey);
   } catch (e) { console.warn("[Notif]", e); }
