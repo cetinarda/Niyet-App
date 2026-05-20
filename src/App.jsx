@@ -4451,6 +4451,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
+                <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
+                  <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
+                    ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
+                  </div>
+                  <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"rehber hayvanın sana ne söylüyor?":"what is your guide animal telling you?"}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
+                    </div>
+                  </div>
+                </div>
+
                 <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading || !productsReady}
                   style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
                   {purchaseLoading === "yearly" ? "..." : !productsReady ? (lang==="tr" ? "Yükleniyor..." : "Loading...") : (lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly")}
@@ -4493,6 +4510,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
+                <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
+                  <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
+                    ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
+                  </div>
+                  <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"rehber hayvanın sana ne söylüyor?":"what is your guide animal telling you?"}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
+                    </div>
+                  </div>
+                </div>
+
                 <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
                   style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
                   {lang==="tr" ? "Satın Al →" : "Buy Now →"}
@@ -4527,30 +4561,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </a>
               </div>
             </>
-          )}
-
-          {!isPremium && (
-            <div style={{ marginTop:24,padding:"18px 18px 16px",background:"linear-gradient(135deg,rgba(240,200,120,0.06),rgba(184,164,216,0.04))",border:"1px solid rgba(240,200,120,0.18)",borderRadius:16 }}>
-              <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:6,textAlign:"center" }}>
-                ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
-              </div>
-              <div style={{ fontSize:13,color:"#a89878",lineHeight:1.7,textAlign:"center",fontStyle:"italic",marginBottom:14 }}>
-                {lang==="tr"
-                  ? "Hepsi Sakin'in içinde, ek ücret yok."
-                  : "All inside Sakin, no extra cost."}
-              </div>
-              <div style={{ display:"flex",flexDirection:"column",gap:8 }}>
-                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
-                  <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"günlük üç kart: Sözler, Taşlar, Nagual":"daily three cards: Words, Stones, Nagual"}
-                </div>
-                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
-                  <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
-                </div>
-                <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.6 }}>
-                  <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
-                </div>
-              </div>
-            </div>
           )}
 
           <hr className="divider" />
