@@ -2642,12 +2642,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                   <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
                 </button>
-                <a href={app.url} target="_blank" rel="noopener noreferrer"
-                  style={{ fontSize:11,color:"#666",letterSpacing:1.2,textDecoration:"none",alignSelf:"flex-end",fontFamily:"'Jost',sans-serif",opacity:0.7 }}
-                  onMouseEnter={e=>e.currentTarget.style.color="#aaa"}
-                  onMouseLeave={e=>e.currentTarget.style.color="#666"}>
-                  {lang==="tr" ? "↗ Ayrı sekmede aç" : "↗ Open externally"}
-                </a>
               </div>
             ))}
             <button onClick={()=>setShowAilesi(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
@@ -2659,11 +2653,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* EMBEDDED APP — fullscreen iframe overlay */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",paddingTop:"var(--sat)",paddingBottom:"var(--sab)" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000" }}
+            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
           <button
@@ -2686,7 +2680,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",gap:4,padding:"0 8px" }}>
+      <div className="hide-scrollbar" style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"flex-start",gap:4,padding:"6px 12px",overflowX:"auto",overflowY:"hidden",WebkitOverflowScrolling:"touch" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
@@ -2759,10 +2753,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <div style={{ marginBottom:48,fontFamily:"'Inter',sans-serif",textAlign:"center" }}>
-                  <div style={{ color:"#888888",fontSize:16,fontStyle:"italic",lineHeight:1.7,fontWeight:300 }}>{t("intro_text1")}</div>
-                  <div style={{ color:"#cccccc",fontSize:18,fontStyle:"italic",lineHeight:1.7,fontWeight:400,marginTop:6,letterSpacing:0.5 }}>{t("intro_text2")}</div>
-                </div>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
