@@ -1622,6 +1622,9 @@ export default function SakinApp() {
   const [showAilesi, setShowAilesi] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
+  const [showIdCard, setShowIdCard] = useState(false);
+  const [idCardPhoto, setIdCardPhoto] = useState(null);
+  const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -4155,9 +4158,216 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             )}
           </div>
           )}
+          <button onClick={()=>setShowIdCard(true)}
+            style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
+            ✦ {lang==="tr" ? "Galaktik Kimlik Oluştur" : "Create Galactic ID"}
+          </button>
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
         </div>
       )}
+
+      {/* GALAKTİK KİMLİK KARTI */}
+      {showIdCard && (() => {
+        // Read embed apps' usage from same-origin localStorage (no medical claims, just factual counts)
+        const animalCount = (() => { try { const a = JSON.parse(localStorage.getItem("@tura_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
+        const mythCount = (() => { try { const a = JSON.parse(localStorage.getItem("@mitler_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
+        const hdProfile = (() => { try { const a = JSON.parse(localStorage.getItem("@tasarim_profiles") || "[]"); return Array.isArray(a) && a.length ? a[0] : null; } catch { return null; } })();
+        const displayName = (idCardName || "Yolcu").slice(0, 24);
+        const burc = astro?.burc || "—";
+        const yasamYolu = astro?.yasam || "—";
+        const kisiselYil = astro?.kisiselYil || "—";
+        const yuk = yukselen || "—";
+        const ev12 = ev12Burcu || "—";
+        const dra = draconicGunes || "—";
+        const days = streakData?.current ?? 0;
+        const best = streakData?.best ?? 0;
+
+        const downloadCard = async () => {
+          const svgEl = document.getElementById("galaktik-id-card-svg");
+          if (!svgEl) return;
+          const svgStr = new XMLSerializer().serializeToString(svgEl);
+          const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+          const url = URL.createObjectURL(svgBlob);
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 1080; canvas.height = 1920;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#000"; ctx.fillRect(0,0,1080,1920);
+            ctx.drawImage(img, 0, 0, 1080, 1920);
+            canvas.toBlob(async (blob) => {
+              if (!blob) return;
+              const file = new File([blob], "sakin-galaktik-kimlik.png", { type: "image/png" });
+              try {
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                  await navigator.share({ files: [file], title: "Galaktik Kimlik · Sakin Life" });
+                } else {
+                  const dl = URL.createObjectURL(blob);
+                  const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.png"; a.click();
+                  setTimeout(()=>URL.revokeObjectURL(dl), 1000);
+                }
+              } catch(_) {}
+              URL.revokeObjectURL(url);
+            }, "image/png");
+          };
+          img.src = url;
+        };
+
+        const StatRow = ({label, value, color}) => (
+          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5 }}>
+            <span style={{ fontSize:10,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{label}</span>
+            <span style={{ fontSize:12,color: color||"#d0c8e8",fontWeight:500,letterSpacing:0.5 }}>{value}</span>
+          </div>
+        );
+
+        return (
+          <div onClick={()=>setShowIdCard(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+            <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
+              {/* Card preview */}
+              <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
+                {/* Stars */}
+                {[[18,26,1],[88,42,0.8],[42,18,0.6],[160,80,0.7],[300,50,0.9],[330,180,0.8],[60,200,0.5],[280,260,0.7],[40,300,0.6]].map(([x,y,o],i)=>(
+                  <div key={i} style={{ position:"absolute",left:x,top:y,width:2,height:2,borderRadius:"50%",background:`rgba(255,255,255,${o})`,boxShadow:`0 0 4px rgba(255,255,255,${o*0.5})` }}/>
+                ))}
+                <div style={{ textAlign:"center",position:"relative" }}>
+                  <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>✦ Sakin Life · Galaktik Kimlik ✦</div>
+                  <div style={{ width:88,height:88,borderRadius:"50%",margin:"10px auto 12px",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                    {!idCardPhoto && "✦"}
+                  </div>
+                  <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={lang==="tr"?"Adın":"Your Name"} maxLength={24}
+                    style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
+                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `Yaşam Yolu ${yasamYolu}` : "—"}</div>
+                </div>
+                <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8 }}>
+                  <StatRow label={lang==="tr"?"Burç":"Sun"} value={burc} color="#f0c860"/>
+                  <StatRow label={lang==="tr"?"Yükselen":"Asc"} value={yuk} color="#a0d8b4"/>
+                  <StatRow label={lang==="tr"?"12. Ev":"12th"} value={ev12} color="#c8b0e8"/>
+                  <StatRow label={lang==="tr"?"Draconik":"Draconic"} value={dra} color="#d8c8f0"/>
+                  <StatRow label={lang==="tr"?"Yaşam Yolu":"Life Path"} value={yasamYolu}/>
+                  <StatRow label={lang==="tr"?"Kişisel Yıl":"Personal Yr"} value={kisiselYil}/>
+                </div>
+                {hdProfile && (hdProfile.type || hdProfile.profile) && (
+                  <div style={{ padding:"8px 12px",background:"rgba(180,160,216,0.08)",border:"1px solid rgba(180,160,216,0.18)",borderRadius:10,marginBottom:8,textAlign:"center" }}>
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:3 }}>Human Design</div>
+                    <div style={{ fontSize:12,color:"#d0c8e8",letterSpacing:0.5 }}>{hdProfile.type || ""}{hdProfile.profile ? ` · ${hdProfile.profile}` : ""}</div>
+                  </div>
+                )}
+                <div style={{ display:"flex",justifyContent:"space-around",padding:"10px 6px",background:"rgba(255,255,255,0.025)",borderRadius:10,marginBottom:10 }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:18,color:"#f0a040",fontWeight:300,lineHeight:1 }}>{days}</div>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Gün serisi":"Streak"}</div>
+                  </div>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:18,color:"#82d9a3",fontWeight:300,lineHeight:1 }}>{best}</div>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"En iyi":"Best"}</div>
+                  </div>
+                  {animalCount > 0 && (
+                    <div style={{ textAlign:"center" }}>
+                      <div style={{ fontSize:18,color:"#a0d8b4",fontWeight:300,lineHeight:1 }}>{animalCount}</div>
+                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Hayvan":"Animal"}</div>
+                    </div>
+                  )}
+                  {mythCount > 0 && (
+                    <div style={{ textAlign:"center" }}>
+                      <div style={{ fontSize:18,color:"#d8b4a0",fontWeight:300,lineHeight:1 }}>{mythCount}</div>
+                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Mit":"Myth"}</div>
+                    </div>
+                  )}
+                </div>
+                <div style={{ textAlign:"center",fontSize:9,letterSpacing:3,color:"#605080",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>sakin.life</div>
+              </div>
+              {/* Actions */}
+              <div style={{ display:"flex",flexDirection:"column",gap:8,marginTop:14 }}>
+                <label style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                  📷 {lang==="tr"?"Fotoğraf Yükle":"Upload Photo"}
+                  <input type="file" accept="image/*" style={{ display:"none" }}
+                    onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                </label>
+                <button onClick={downloadCard}
+                  style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
+                  ↓ {lang==="tr"?"İndir / Paylaş":"Download / Share"}
+                </button>
+                <button onClick={()=>setShowIdCard(false)}
+                  style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                  {lang==="tr"?"Kapat":"Close"}
+                </button>
+              </div>
+              {/* Hidden high-resolution SVG used for export */}
+              <svg id="galaktik-id-card-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" style={{ position:"absolute",left:-99999,top:0,pointerEvents:"none" }}>
+                <defs>
+                  <linearGradient id="idBg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#0a0612"/>
+                    <stop offset="50%" stopColor="#1a1230"/>
+                    <stop offset="100%" stopColor="#0a0612"/>
+                  </linearGradient>
+                  <radialGradient id="idPhotoBg" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="rgba(180,140,240,0.55)"/>
+                    <stop offset="100%" stopColor="rgba(80,40,140,0.25)"/>
+                  </radialGradient>
+                </defs>
+                <rect width="1080" height="1920" fill="url(#idBg)"/>
+                {[[60,80,3],[260,140,2],[140,220,1.5],[500,180,2.5],[820,140,3],[940,440,2],[180,500,1.5],[760,640,2],[120,760,1.5],[880,820,2.5],[420,900,1.5],[640,990,1.8],[280,1080,1.5],[820,1140,2],[160,1240,1.5],[560,1320,2],[940,1430,1.5],[120,1520,2],[700,1610,1.8],[400,1730,1.5]].map(([x,y,r],i)=>(
+                  <circle key={i} cx={x} cy={y} r={r} fill="rgba(255,255,255,0.8)"/>
+                ))}
+                <text x="540" y="180" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="34" letterSpacing="14" fill="#9080c0">✦ SAKIN LIFE · GALAKTIK KIMLIK ✦</text>
+                {idCardPhoto ? (
+                  <>
+                    <defs>
+                      <clipPath id="photoClip"><circle cx="540" cy="380" r="160"/></clipPath>
+                    </defs>
+                    <image href={idCardPhoto} x="380" y="220" width="320" height="320" clipPath="url(#photoClip)" preserveAspectRatio="xMidYMid slice"/>
+                    <circle cx="540" cy="380" r="160" fill="none" stroke="rgba(220,200,255,0.5)" strokeWidth="4"/>
+                  </>
+                ) : (
+                  <>
+                    <circle cx="540" cy="380" r="160" fill="url(#idPhotoBg)" stroke="rgba(220,200,255,0.5)" strokeWidth="4"/>
+                    <text x="540" y="410" textAnchor="middle" fontSize="120" fill="#fff">✦</text>
+                  </>
+                )}
+                <text x="540" y="640" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" letterSpacing="8" fill="#fff">{displayName.toUpperCase()}</text>
+                <text x="540" y="700" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="28" letterSpacing="6" fill="#a890c8">{burc !== "—" ? burc.toUpperCase() : ""} {yasamYolu !== "—" ? `· YAŞAM YOLU ${yasamYolu}` : ""}</text>
+                {/* Stats grid */}
+                {[
+                  [lang==="tr"?"BURÇ":"SUN", burc, "#f0c860", 100, 820],
+                  [lang==="tr"?"YÜKSELEN":"ASC", yuk, "#a0d8b4", 560, 820],
+                  [lang==="tr"?"12. EV":"12TH", ev12, "#c8b0e8", 100, 940],
+                  ["DRACONİK", dra, "#d8c8f0", 560, 940],
+                  [lang==="tr"?"YAŞAM YOLU":"LIFE PATH", String(yasamYolu), "#d0c8e8", 100, 1060],
+                  [lang==="tr"?"KIŞISEL YIL":"PERSONAL YR", String(kisiselYil), "#d0c8e8", 560, 1060],
+                ].map(([label, val, color, x, y], i) => (
+                  <g key={i}>
+                    <rect x={x} y={y} width="420" height="92" rx="14" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.06)"/>
+                    <text x={x+22} y={y+34} fontFamily="'Jost',sans-serif" fontSize="22" letterSpacing="4" fill="#7a7090">{label}</text>
+                    <text x={x+22} y={y+72} fontFamily="'Jost',sans-serif" fontSize="36" fill={color} fontWeight="500">{val}</text>
+                  </g>
+                ))}
+                {/* Streak stats */}
+                <rect x="100" y="1200" width="880" height="160" rx="14" fill="rgba(255,255,255,0.025)"/>
+                <g>
+                  <text x="280" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#f0a040">{days}</text>
+                  <text x="280" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"GÜN SERISI":"STREAK"}</text>
+                </g>
+                <g>
+                  <text x="540" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#82d9a3">{best}</text>
+                  <text x="540" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"EN IYI":"BEST"}</text>
+                </g>
+                <g>
+                  <text x="800" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#a0d8b4">{animalCount + mythCount}</text>
+                  <text x="800" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"KART":"CARDS"}</text>
+                </g>
+                {hdProfile && hdProfile.type && (
+                  <g>
+                    <rect x="100" y="1410" width="880" height="100" rx="14" fill="rgba(180,160,216,0.08)" stroke="rgba(180,160,216,0.18)"/>
+                    <text x="540" y="1450" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="5" fill="#9080b8">HUMAN DESIGN</text>
+                    <text x="540" y="1490" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="32" fill="#d0c8e8">{hdProfile.type}{hdProfile.profile ? ` · ${hdProfile.profile}` : ""}</text>
+                  </g>
+                )}
+                <text x="540" y="1820" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="30" letterSpacing="14" fill="#605080">SAKIN.LIFE</text>
+              </svg>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* SAKİN NEDİR? */}
       {screen==="hakkinda" && (
