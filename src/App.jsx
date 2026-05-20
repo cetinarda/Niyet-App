@@ -2574,7 +2574,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
-    ...(!isNative ? [{id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#f0c060", glow:true}] : []),
+    {id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
@@ -2607,7 +2607,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       </div>
 
       {/* SAKİN AİLESİ PANELİ */}
-      {showAilesi && !isNative && (
+      {showAilesi && (
         <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:8 }}>
@@ -2627,10 +2627,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 desc: lang==="tr"
                   ? "Kendi tasarımını, hangi sistemle dünyaya geldiğini öğrenmenin en derin yolu."
                   : "The deepest way to learn your design and how you came into this world." },
-              { name:"SoulProfile", embed:"/embedded/soulprofile/", url:"https://soulprofile.life/", icon:"✦", color:"#f0c8a0",
-                desc: lang==="tr"
-                  ? "Galaktik karne — astroloji, Human Design ve numerolojinin birleşimi."
-                  : "Galactic profile card — astrology, Human Design and numerology combined." },
             ].map(app=>(
               <div key={app.name}
                 style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
@@ -2662,7 +2658,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* EMBEDDED APP — fullscreen iframe overlay */}
-      {embeddedApp && !isNative && (
+      {embeddedApp && (
         <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column" }}>
           <iframe
             src={embeddedApp.path}
