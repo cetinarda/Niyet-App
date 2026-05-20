@@ -389,7 +389,9 @@ const GLOBAL_CSS = `
   @keyframes slideIn     { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
   @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
-  @keyframes portalIn    { 0%{opacity:0;transform:scale(0.92);filter:blur(8px)} 60%{filter:blur(2px)} 100%{opacity:1;transform:scale(1);filter:blur(0)} }
+  @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
+  @keyframes portalRingPulse { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0.85} 100%{transform:translate(-50%,-50%) scale(3.2);opacity:0} }
+  @keyframes portalTunnel    { 0%{transform:translate(-50%,-50%) scale(0.4) rotate(0deg);opacity:0.9} 50%{opacity:0.5} 100%{transform:translate(-50%,-50%) scale(2.4) rotate(180deg);opacity:0} }
   @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
@@ -1899,7 +1901,7 @@ export default function SakinApp() {
     } catch(_) {}
   };
 
-  // Galaktik portal açılış sesi — 3 yükselen ton + ışıltı, embed app açılırken
+  // Yıldız geçidi açılış sesi — uzun, dalgalı, derin
   const playPortalSound = () => {
     try {
       if (!breathChimeRef.current) {
@@ -1908,27 +1910,39 @@ export default function SakinApp() {
       const ctx = breathChimeRef.current;
       if (ctx.state === "suspended") ctx.resume();
       const t0 = ctx.currentTime;
-      // Üç yükselen sinüs notası
-      [[523, 0.0, 0.6], [659, 0.12, 0.7], [880, 0.24, 0.9]].forEach(([f, delay, dur]) => {
+      // Yavaş yükselen drone — yıldız geçidi açılışı (3 notalı çekirdek)
+      [[392, 0.0, 1.6, 0.08], [523, 0.25, 1.7, 0.09], [784, 0.55, 1.6, 0.08]].forEach(([f, delay, dur, amp]) => {
         const o = ctx.createOscillator(), g = ctx.createGain();
         o.type = "sine"; o.frequency.setValueAtTime(f, t0 + delay);
-        o.frequency.linearRampToValueAtTime(f * 1.12, t0 + delay + dur);
+        o.frequency.linearRampToValueAtTime(f * 1.08, t0 + delay + dur);
         g.gain.setValueAtTime(0, t0 + delay);
-        g.gain.linearRampToValueAtTime(0.10, t0 + delay + 0.04);
+        g.gain.linearRampToValueAtTime(amp, t0 + delay + 0.25);
+        g.gain.linearRampToValueAtTime(amp * 0.7, t0 + delay + dur * 0.6);
         g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + dur);
         o.connect(g); g.connect(ctx.destination);
         o.start(t0 + delay); o.stop(t0 + delay + dur);
       });
-      // Yüksek ışıltı (harmonikler)
-      [1760, 2640].forEach((f, i) => {
+      // Yumuşak nefes/whoosh — alt frekans dalga
+      [[110, 0.0, 2.0, 0.05, "triangle"], [165, 0.4, 1.6, 0.04, "triangle"]].forEach(([f, delay, dur, amp, type]) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = type; o.frequency.setValueAtTime(f, t0 + delay);
+        o.frequency.linearRampToValueAtTime(f * 1.5, t0 + delay + dur);
+        g.gain.setValueAtTime(0, t0 + delay);
+        g.gain.linearRampToValueAtTime(amp, t0 + delay + 0.3);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + delay + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0 + delay); o.stop(t0 + delay + dur);
+      });
+      // Yüksek ışıltı (kıvılcımlar)
+      [1568, 2093, 2637].forEach((f, i) => {
         const o = ctx.createOscillator(), g = ctx.createGain();
         o.type = "sine"; o.frequency.value = f;
-        const d = 0.3 + i*0.15;
-        g.gain.setValueAtTime(0, t0 + 0.18 + i*0.05);
-        g.gain.linearRampToValueAtTime(0.025, t0 + 0.22 + i*0.05);
-        g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.22 + d);
+        const d = 0.5 + i*0.2, dl = 0.6 + i*0.18;
+        g.gain.setValueAtTime(0, t0 + dl);
+        g.gain.linearRampToValueAtTime(0.02, t0 + dl + 0.05);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + dl + d);
         o.connect(g); g.connect(ctx.destination);
-        o.start(t0 + 0.18 + i*0.05); o.stop(t0 + 0.22 + d);
+        o.start(t0 + dl); o.stop(t0 + dl + d);
       });
     } catch(_) {}
   };
@@ -2726,34 +2740,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* EMBEDDED APP — fullscreen iframe overlay with cosmic portal transition */}
+      {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
       {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",animation:"portalIn 0.45s ease-out" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",animation:"portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" }}>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            onLoad={()=>setEmbedLoaded(true)}
-            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 0.55s ease-out" }}
+            onLoad={()=>setTimeout(()=>setEmbedLoaded(true), 1100)}
+            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
-          {/* Kozmik portal yükleme katmanı */}
-          {!embedLoaded && (
-            <div style={{ position:"fixed",inset:0,zIndex:10001,pointerEvents:"none",background:`radial-gradient(ellipse 70% 50% at 50% 50%,rgba(${(embeddedApp.color||"#b4a0d8").replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.18) 0%,rgba(10,6,18,0.95) 60%,#000 100%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.3s ease" }}>
-              {/* Yıldızlar */}
-              {[[22,18],[78,30],[14,52],[88,55],[48,12],[62,72],[18,82],[82,78],[40,42],[55,28]].map(([x,y],i)=>(
-                <div key={i} style={{ position:"absolute",left:`${x}%`,top:`${y}%`,width:2,height:2,borderRadius:"50%",background:"rgba(255,255,255,0.85)",boxShadow:"0 0 4px rgba(255,255,255,0.5)",animation:`twinkle ${2+i*0.3}s ease-in-out infinite`,animationDelay:`${i*0.15}s` }}/>
-              ))}
-              {/* Merkez dönen kare */}
-              <div style={{ position:"relative",width:80,height:80,marginBottom:18 }}>
-                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1.5px solid ${embeddedApp.color||"rgba(255,255,255,0.45)"}`,borderRadius:8,animation:"diamondSpin 2.2s linear infinite" }}/>
-                <div style={{ position:"absolute",inset:18,transform:"rotate(45deg)",border:`1px solid ${embeddedApp.color||"rgba(255,255,255,0.25)"}`,borderRadius:5,opacity:0.6,animation:"diamondSpin 1.6s linear infinite reverse" }}/>
-                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:8,height:8,borderRadius:"50%",background:embeddedApp.color||"#fff",boxShadow:`0 0 22px ${embeddedApp.color||"rgba(255,255,255,0.6)"},0 0 44px ${embeddedApp.color||"rgba(255,255,255,0.3)"}`,animation:"pulse 1.4s ease-in-out infinite" }}/>
+          {/* Yıldız geçidi yükleme katmanı */}
+          {!embedLoaded && (() => {
+            const colorHex = (embeddedApp.color || "#b4a0d8").replace('#','');
+            const rgb = colorHex.match(/.{2}/g).map(h => parseInt(h, 16)).join(',');
+            return (
+              <div style={{ position:"fixed",inset:0,zIndex:10001,pointerEvents:"none",background:`radial-gradient(ellipse 80% 60% at 50% 50%,rgba(${rgb},0.22) 0%,rgba(20,10,40,0.92) 50%,#000 100%)`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",animation:"fadeIn 0.5s ease",transition:"opacity 0.8s ease-out",opacity: embedLoaded ? 0 : 1 }}>
+                {/* Twinkle yıldızlar */}
+                {[[12,14],[24,28],[78,22],[88,40],[6,46],[94,58],[16,72],[82,76],[34,8],[68,12],[44,90],[58,84],[28,52],[72,52]].map(([x,y],i)=>(
+                  <div key={i} style={{ position:"absolute",left:`${x}%`,top:`${y}%`,width:2,height:2,borderRadius:"50%",background:"rgba(255,255,255,0.9)",boxShadow:"0 0 4px rgba(255,255,255,0.6)",animation:`twinkle ${2.5+i*0.25}s ease-in-out infinite`,animationDelay:`${i*0.12}s` }}/>
+                ))}
+                {/* Yayılan halkalar — yıldız geçidi çekirdeği */}
+                {[0, 0.5, 1.0, 1.5].map((delay,i)=>(
+                  <div key={`ring${i}`} style={{ position:"absolute",left:"50%",top:"50%",width:120,height:120,marginLeft:-60,marginTop:-60,borderRadius:"50%",border:`1.5px solid rgba(${rgb},0.5)`,boxShadow:`0 0 24px rgba(${rgb},0.3),inset 0 0 24px rgba(${rgb},0.2)`,animation:`portalRingPulse 2.6s cubic-bezier(0.4,0,0.2,1) infinite`,animationDelay:`${delay}s` }}/>
+                ))}
+                {/* Dönen tünel halkası */}
+                <div style={{ position:"absolute",left:"50%",top:"50%",width:200,height:200,marginLeft:-100,marginTop:-100,borderRadius:"50%",border:`2px dashed rgba(${rgb},0.4)`,animation:"portalTunnel 3.2s linear infinite" }}/>
+                {/* Merkez dönen elmas + ışık */}
+                <div style={{ position:"relative",width:100,height:100,marginBottom:24 }}>
+                  <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1.5px solid ${embeddedApp.color || "rgba(255,255,255,0.5)"}`,borderRadius:10,animation:"diamondSpin 4.2s linear infinite",boxShadow:`0 0 22px rgba(${rgb},0.4)` }}/>
+                  <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:`1px solid ${embeddedApp.color || "rgba(255,255,255,0.3)"}`,borderRadius:6,opacity:0.7,animation:"diamondSpin 3s linear infinite reverse" }}/>
+                  <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:12,height:12,borderRadius:"50%",background:embeddedApp.color || "#fff",boxShadow:`0 0 28px ${embeddedApp.color || "rgba(255,255,255,0.7)"},0 0 56px ${embeddedApp.color || "rgba(255,255,255,0.4)"}`,animation:"pulse 2s ease-in-out infinite" }}/>
+                </div>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:6,color:embeddedApp.color || "#d0c0f0",textTransform:"uppercase",opacity:0.9,animation:"fadeUp 1.2s ease-out 0.3s both" }}>
+                  {embeddedApp.name}
+                </div>
               </div>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:5,color:embeddedApp.color||"#d0c0f0",textTransform:"uppercase",opacity:0.85 }}>
-                {embeddedApp.name}
-              </div>
-            </div>
-          )}
+            );
+          })()}
           <button
             onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); }}
             aria-label={lang==="tr"?"Geri":"Back"}
