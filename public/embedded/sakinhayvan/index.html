@@ -61,9 +61,12 @@
       }*/
     </style>
   <link rel="icon" href="/embedded/sakinhayvan/favicon.ico" />    <style>
-      /* Sakin embed scroll override */
-      html, body { overflow-y: auto !important; overflow-x: hidden !important; height: auto !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
-      #root { height: auto !important; min-height: 100vh !important; }
+      /* Sakin embed scroll override — keep an explicit height chain so React Native Web
+         ScrollViews (e.g. animal detail) can scroll internally. The previous override set
+         html/body/#root to height:auto which collapsed the flex chain and broke per-screen
+         scrolling. */
+      html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
+      #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
       <script>
     /* Sakin Life bridge: seed profile from host localStorage */
@@ -135,6 +138,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-962d8357a159ba600455192374e0d11d.js" defer></script>
+  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-d3e2f3561c2eb593fa4269ed9fc45543.js" defer></script>
 </body>
 </html>
