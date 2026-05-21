@@ -1827,6 +1827,7 @@ export default function SakinApp() {
   const [selectedMoods, setSelectedMoods] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
+  const [idCardRenderedUrl, setIdCardRenderedUrl] = useState(null);
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -4418,7 +4419,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
             <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
           </div>
-          {!isNative && (
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
             {raporKullanildi && !isPremium && !aiRapor && !aiLoading ? (
@@ -4467,7 +4467,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             )}
           </div>
-          )}
           <button onClick={()=>setShowIdCard(true)}
             style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
             ✦ {lang==="tr" ? "Galaktik Kimlik Oluştur" : "Create Galactic ID"}
@@ -4507,18 +4506,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ctx.drawImage(img, 0, 0, 1080, 1920);
             canvas.toBlob(async (blob) => {
               if (!blob) return;
-              const file = new File([blob], "sakin-galaktik-kimlik.png", { type: "image/png" });
+              const dl = URL.createObjectURL(blob);
+              setIdCardRenderedUrl(dl); // inline görsel: uzun bas → Fotoğraflara Ekle (iOS native akış)
+              const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
               try {
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                   await navigator.share({ files: [file], title: "Galaktik Kimlik · Sakin Life" });
-                } else {
-                  const dl = URL.createObjectURL(blob);
-                  const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.png"; a.click();
-                  setTimeout(()=>URL.revokeObjectURL(dl), 1000);
+                } else if (!isNative) {
+                  const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
                 }
               } catch(_) {}
               URL.revokeObjectURL(url);
-            }, "image/png");
+            }, "image/jpeg", 0.92);
           };
           img.src = url;
         };
@@ -4531,7 +4530,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         );
 
         return (
-          <div onClick={()=>setShowIdCard(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+          <div onClick={()=>{ setShowIdCard(false); if(idCardRenderedUrl){ URL.revokeObjectURL(idCardRenderedUrl); setIdCardRenderedUrl(null); } }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
               {/* Card preview */}
               <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
@@ -4597,11 +4596,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
                   ↓ {lang==="tr"?"İndir / Paylaş":"Download / Share"}
                 </button>
-                <button onClick={()=>setShowIdCard(false)}
+                <button onClick={()=>{ setShowIdCard(false); if(idCardRenderedUrl){ URL.revokeObjectURL(idCardRenderedUrl); setIdCardRenderedUrl(null); } }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   {lang==="tr"?"Kapat":"Close"}
                 </button>
               </div>
+              {/* Render edilen JPEG — uzun bas → Fotoğraflara Ekle (iOS Photos native akış) */}
+              {idCardRenderedUrl && (
+                <div style={{ marginTop:14,padding:"12px 12px 10px",background:"rgba(0,0,0,0.55)",border:"1px solid rgba(255,255,255,0.10)",borderRadius:14 }}>
+                  <div style={{ fontSize:11,letterSpacing:2.5,color:"#a890c8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8 }}>
+                    {lang==="tr" ? "Görsele uzun bas → Fotoğraflara Ekle" : "Long-press image → Add to Photos"}
+                  </div>
+                  <img src={idCardRenderedUrl} alt="Galaktik Kimlik" style={{ width:"100%",borderRadius:10,display:"block",userSelect:"none",WebkitUserSelect:"none",WebkitTouchCallout:"default" }} />
+                </div>
+              )}
               {/* Hidden high-resolution SVG used for export */}
               <svg id="galaktik-id-card-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" style={{ position:"absolute",left:-99999,top:0,pointerEvents:"none" }}>
                 <defs>
