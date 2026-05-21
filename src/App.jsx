@@ -362,6 +362,162 @@ const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
 const PREMIUM_WORDS_TR = ["berraklik", "guc", "ozgurluk", "nese", "sukur", "guven"];
 const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
 
+// Zihni Boşalt — kaleidoskop modları (procedural; tıbbi iddia yok)
+const MIND_MODES = [
+  { id:"sukunet",   labelTr:"Sükûnet",   labelEn:"Stillness",  subTr:"Yavaşla, gevşe",     subEn:"Slow down, soften",     colors:["#3a8a6a","#5ab488","#a0d8b4","#76c49a","#4a9a78"], frequencies:[110, 165, 220],       lfo:0.06, glow:"rgba(120,210,160,0.18)" },
+  { id:"berraklik", labelTr:"Berraklık", labelEn:"Clarity",    subTr:"Zihni billurla",     subEn:"Crystallise the mind",  colors:["#b88040","#e8a850","#f0c860","#d09060","#c88840"], frequencies:[174, 261, 392],       lfo:0.18, glow:"rgba(232,168,80,0.18)" },
+  { id:"teslimiyet",labelTr:"Teslimiyet",labelEn:"Surrender",  subTr:"Yumuşakça çözül",    subEn:"Dissolve gently",       colors:["#3a2858","#5a4080","#8068b0","#4a3870","#382650"], frequencies:[64, 96, 128],         lfo:0.04, glow:"rgba(120,80,180,0.18)" },
+  { id:"genislik",  labelTr:"Genişlik",  labelEn:"Spaciousness",subTr:"Geniş bak",         subEn:"See wide",              colors:["#4080a0","#60a8c8","#80c0e0","#a0d8e8","#5090b0"], frequencies:[196, 294, 392, 588],  lfo:0.10, glow:"rgba(120,180,220,0.18)" },
+];
+
+// Zihni Boşalt — fullscreen kaleidoskop + procedural drone müzik
+function KaleidoscopeView({ mode, lang, onClose }) {
+  const canvasRef = useRef(null);
+  const audioRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const setSize = () => {
+      const w = window.innerWidth, h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    setSize();
+    window.addEventListener("resize", setSize);
+
+    // Web Audio drone — procedural sine wave katmanları
+    let aCtx, masterGain, oscillators = [];
+    try {
+      aCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (aCtx.state === "suspended") aCtx.resume();
+      masterGain = aCtx.createGain();
+      masterGain.gain.setValueAtTime(0, aCtx.currentTime);
+      masterGain.gain.linearRampToValueAtTime(0.18, aCtx.currentTime + 2.5);
+      masterGain.connect(aCtx.destination);
+      mode.frequencies.forEach((f, i) => {
+        const o = aCtx.createOscillator(), g = aCtx.createGain();
+        o.type = "sine"; o.frequency.value = f;
+        const base = 0.32 / mode.frequencies.length;
+        g.gain.value = base;
+        const lfo = aCtx.createOscillator(), lfoGain = aCtx.createGain();
+        lfo.type = "sine"; lfo.frequency.value = mode.lfo + i*0.02;
+        lfoGain.gain.value = base * 0.45;
+        lfo.connect(lfoGain); lfoGain.connect(g.gain);
+        o.connect(g); g.connect(masterGain);
+        o.start(); lfo.start();
+        oscillators.push(o, lfo);
+      });
+    } catch(_) {}
+    audioRef.current = { aCtx, masterGain, oscillators };
+
+    // Particle init
+    const particles = [];
+    for (let i = 0; i < 36; i++) {
+      particles.push({
+        a: (i / 36) * Math.PI * 2,
+        rPct: 0.10 + Math.random() * 0.42,
+        speed: (Math.random() * 0.0006 + 0.00025) * (Math.random() < 0.5 ? 1 : -1),
+        size: 4 + Math.random() * 9,
+        colorIdx: Math.floor(Math.random() * mode.colors.length),
+        wobble: Math.random() * Math.PI * 2,
+        wobbleAmp: 12 + Math.random() * 22,
+      });
+    }
+
+    let t = 0;
+    const draw = () => {
+      t += 0.012;
+      const w = window.innerWidth, h = window.innerHeight;
+      const cx = w / 2, cy = h / 2;
+      const sides = 8;
+      const maxR = Math.min(w, h) * 0.55;
+
+      ctx.fillStyle = "rgba(0,0,0,0.045)";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(t * 0.04);
+
+      for (let s = 0; s < sides; s++) {
+        ctx.save();
+        ctx.rotate((Math.PI * 2 / sides) * s);
+        if (s % 2) ctx.scale(1, -1);
+        particles.forEach((p, i) => {
+          p.a += p.speed;
+          const r = p.rPct * maxR + Math.sin(t * 0.7 + p.wobble) * p.wobbleAmp;
+          const x = Math.cos(p.a) * r;
+          const y = Math.sin(p.a) * r;
+          const sz = p.size + Math.sin(t * 1.6 + i * 0.25) * 3;
+          const color = mode.colors[(p.colorIdx + Math.floor(t * 0.25)) % mode.colors.length];
+          ctx.globalAlpha = 0.42;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, sz, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.restore();
+      }
+      ctx.restore();
+      rafRef.current = requestAnimationFrame(draw);
+    };
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      window.removeEventListener("resize", setSize);
+      cancelAnimationFrame(rafRef.current);
+      if (audioRef.current) {
+        const { aCtx, oscillators, masterGain } = audioRef.current;
+        try {
+          masterGain.gain.cancelScheduledValues(aCtx.currentTime);
+          masterGain.gain.linearRampToValueAtTime(0, aCtx.currentTime + 0.6);
+        } catch(_) {}
+        setTimeout(() => {
+          oscillators.forEach(o => { try { o.stop(); } catch(_){} });
+          try { aCtx.close(); } catch(_) {}
+        }, 700);
+      }
+    };
+  }, [mode]);
+
+  return (
+    <div style={{ position:"fixed",inset:0,zIndex:10010,background:"#000",animation:"fadeIn 0.7s ease" }}>
+      <canvas ref={canvasRef} style={{ width:"100%",height:"100%",display:"block" }} />
+      <div style={{ position:"fixed",bottom:"calc(40px + var(--sab))",left:0,right:0,textAlign:"center",pointerEvents:"none",animation:"fadeUp 1.4s ease-out 0.6s both" }}>
+        <div style={{ fontSize:11,letterSpacing:6,color:"rgba(255,255,255,0.55)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:8 }}>
+          {lang==="tr" ? mode.labelTr : mode.labelEn}
+        </div>
+        <div style={{ fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.28)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+          {lang==="tr" ? "✦ kulaklığını tak · gözlerini yumuşat · bırak" : "✦ headphones on · soften your eyes · let go"}
+        </div>
+      </div>
+      <button onClick={onClose} aria-label={lang==="tr"?"Kapat":"Close"}
+        style={{
+          position:"fixed",top:"calc(10px + var(--sat))",right:10,zIndex:10011,
+          background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
+          border:"1px solid rgba(255,255,255,0.15)",
+          borderRadius:"50%",width:36,height:36,padding:0,
+          color:"rgba(255,255,255,0.8)",fontSize:16,cursor:"pointer",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          opacity:0.55,transition:"opacity 0.3s",
+        }}
+        onMouseEnter={e=>e.currentTarget.style.opacity=1}
+        onMouseLeave={e=>e.currentTarget.style.opacity=0.55}
+        onTouchStart={e=>e.currentTarget.style.opacity=1}>
+        ✕
+      </button>
+    </div>
+  );
+}
+
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
   * { box-sizing: border-box; }
@@ -1644,6 +1800,8 @@ export default function SakinApp() {
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
+  const [showMindClear, setShowMindClear] = useState(false);
+  const [activeMindMode, setActiveMindMode] = useState(null);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   const pendingAiAction = useRef(null);
@@ -3563,6 +3721,39 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
 
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+              {/* Zihni Boşalt — kaleidoskop + drone müzik ilk sırada */}
+              <div className="slide-in" style={{ animationDelay:"0s",opacity:0 }}>
+                <div
+                  onClick={() => setShowMindClear(true)}
+                  style={{
+                    background: "linear-gradient(135deg,rgba(120,200,180,0.14),rgba(60,100,140,0.08))",
+                    border: "1px solid rgba(120,200,180,0.32)",
+                    borderRadius: 15,
+                    padding: "14px 18px",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 14,
+                    boxShadow: "0 0 22px rgba(120,200,180,0.10)",
+                  }}>
+                  <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,
+                    background:"radial-gradient(circle,rgba(160,220,200,0.6),rgba(80,140,120,0.25))",
+                    boxShadow:"0 0 18px rgba(120,200,180,0.35)",
+                    display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,color:"#fff" }}>
+                    ◎
+                  </div>
+                  <div style={{ flex:1,minWidth:0 }}>
+                    <div style={{ fontSize:15,fontWeight:500,color:"#d8efe4",letterSpacing:1,marginBottom:3,fontFamily:"'Jost',sans-serif" }}>
+                      {lang==="tr" ? "Zihni Boşalt" : "Empty the Mind"}
+                    </div>
+                    <div style={{ fontSize:12,color:"#88b0a0",lineHeight:1.5,letterSpacing:0.3 }}>
+                      {lang==="tr" ? "Kaleidoskop ve drone müziğiyle zihnini dinlendir" : "Rest your mind with kaleidoscope and drone music"}
+                    </div>
+                  </div>
+                  <div style={{ color:"rgba(160,220,200,0.5)",fontSize:18,flexShrink:0 }}>→</div>
+                </div>
+              </div>
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
                 const isExpanded = activeFreq === f.hz;
@@ -4464,6 +4655,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
         );
       })()}
+
+      {/* ZİHNİ BOŞALT — mod seçim menüsü */}
+      {showMindClear && !activeMindMode && (
+        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:480,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
+            <div style={{ textAlign:"center",marginBottom:6 }}>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{lang==="tr" ? "Zihni Boşalt" : "Empty the Mind"}</div>
+              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{lang==="tr" ? "Bugün nereye sığınmak istersin?" : "Where do you want to retreat today?"}</div>
+              <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{lang==="tr" ? "Kulaklığını tak. Sadece izle, sadece dinle." : "Put on your headphones. Just watch, just listen."}</div>
+            </div>
+            <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10 }}>
+              {MIND_MODES.map(m => (
+                <button key={m.id} onClick={()=>setActiveMindMode(m)}
+                  style={{
+                    background: `linear-gradient(140deg,${m.colors[0]}55,${m.colors[1]}1a)`,
+                    border: `1px solid ${m.colors[1]}55`,
+                    borderRadius: 16, padding: "20px 14px",
+                    cursor:"pointer", textAlign:"center", minHeight:110,
+                    display:"flex", flexDirection:"column", justifyContent:"center", gap:7,
+                    transition:"all 0.3s",
+                    boxShadow:`0 0 20px ${m.glow}`,
+                  }}
+                  onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow=`0 0 32px ${m.glow.replace('0.18','0.32')}`; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=`0 0 20px ${m.glow}`; }}>
+                  <div style={{ fontSize:15,color:"#fff",letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",fontWeight:500 }}>{lang==="tr" ? m.labelTr : m.labelEn}</div>
+                  <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.62)",lineHeight:1.5,letterSpacing:0.4 }}>{lang==="tr" ? m.subTr : m.subEn}</div>
+                </button>
+              ))}
+            </div>
+            <button onClick={()=>setShowMindClear(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {lang==="tr" ? "Kapat" : "Close"}
+            </button>
+          </div>
+        </div>
+      )}
+      {activeMindMode && (
+        <KaleidoscopeView mode={activeMindMode} lang={lang} onClose={()=>{ setActiveMindMode(null); setShowMindClear(false); }} />
+      )}
 
       {/* SAKİN NEDİR? */}
       {screen==="hakkinda" && (
