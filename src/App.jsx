@@ -360,6 +360,28 @@ const BREATH_MODES_CONFIG = {
 const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici"];
 const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
 const PREMIUM_WORDS_TR = ["berraklik", "guc", "ozgurluk", "nese", "sukur", "guven"];
+
+// Duygu durumları — kullanıcı seçer, frekanslar karışır (procedural; tıbbi iddia yok)
+const MIND_MOODS = [
+  { id:"endiseli",  icon:"🌊", labelTr:"Endişeli",     labelEn:"Anxious",      frequencies:[96, 144, 216],  colors:["#4a8aa0","#7ab0c4"] },
+  { id:"uzgun",     icon:"🌧", labelTr:"Üzgün",        labelEn:"Sad",          frequencies:[174, 261, 349], colors:["#5a4878","#7868a8"] },
+  { id:"ofkeli",    icon:"🔥", labelTr:"Öfkeli",       labelEn:"Angry",        frequencies:[90, 135, 180],  colors:["#8a4040","#b07070"] },
+  { id:"uykusuz",   icon:"🌙", labelTr:"Uykusuz",      labelEn:"Sleepless",    frequencies:[48, 72, 96],    colors:["#283848","#485870"] },
+  { id:"dagiNik",   icon:"🌪", labelTr:"Dağınık",      labelEn:"Scattered",    frequencies:[256, 384, 512], colors:["#5a8aa0","#80b0c8"] },
+  { id:"yalniz",    icon:"🌒", labelTr:"Yalnız",       labelEn:"Lonely",       frequencies:[220, 330, 440], colors:["#705a98","#9078b8"] },
+  { id:"tukenmis",  icon:"🍂", labelTr:"Tükenmiş",     labelEn:"Burnt out",    frequencies:[64, 96, 192],   colors:["#705a40","#a08868"] },
+  { id:"sikisik",   icon:"⛓",  labelTr:"Sıkışmış",     labelEn:"Stuck",        frequencies:[110, 220, 330], colors:["#587858","#80a080"] },
+  { id:"belirsiz",  icon:"🌫", labelTr:"Belirsizlikte",labelEn:"Uncertain",    frequencies:[128, 192, 256], colors:["#606078","#8888a0"] },
+  { id:"kirik",     icon:"💔", labelTr:"Kalbi kırık",  labelEn:"Heartbroken",  frequencies:[174, 220, 261], colors:["#883858","#b06080"] },
+  { id:"donuk",     icon:"❄",  labelTr:"Donuk",        labelEn:"Numb",         frequencies:[55, 82, 110],   colors:["#405878","#608098"] },
+  { id:"asiri",     icon:"🧠", labelTr:"Aşırı düşünen",labelEn:"Overthinking", frequencies:[256, 320, 384], colors:["#9070b0","#b090d0"] },
+  { id:"sukran",    icon:"✨", labelTr:"Şükran arıyor",labelEn:"Seeking gratitude",frequencies:[256, 384, 528],colors:["#a08838","#c8a868"] },
+  { id:"yeni",      icon:"🌱", labelTr:"Yenilik istiyor",labelEn:"Wants newness",frequencies:[174, 261, 432],colors:["#588858","#80b080"] },
+  { id:"donusum",   icon:"🦋", labelTr:"Dönüşmek istiyor",labelEn:"Wants transformation",frequencies:[111, 222, 444],colors:["#7a4898","#a070c0"] },
+  { id:"akış",      icon:"💧", labelTr:"Akmak istiyor",labelEn:"Wants to flow",frequencies:[145, 217, 290], colors:["#3a8aa0","#60b0c0"] },
+  { id:"kendine",   icon:"🌸", labelTr:"Kendine dönmek",labelEn:"Return to self",frequencies:[174, 285, 432],colors:["#a08068","#c8a888"] },
+  { id:"enerji",    icon:"☀️", labelTr:"Enerji istiyor",labelEn:"Wants energy",frequencies:[396, 528, 741], colors:["#e8a850","#f0c860"] },
+];
 const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
 
 // Zihni Boşalt — kaleidoskop modları (procedural; tıbbi iddia yok)
@@ -1802,6 +1824,7 @@ export default function SakinApp() {
   const [showIdCard, setShowIdCard] = useState(false);
   const [showMindClear, setShowMindClear] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
+  const [selectedMoods, setSelectedMoods] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   const pendingAiAction = useRef(null);
@@ -4684,7 +4707,76 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </button>
               ))}
             </div>
-            <button onClick={()=>setShowMindClear(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+
+            {/* Duygu durumuna göre karışım — kullanıcı kendi karışımını yapar */}
+            <div style={{ marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ textAlign:"center",marginBottom:10 }}>
+                <div style={{ fontSize:11,letterSpacing:4,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{lang==="tr" ? "veya kendi karışımını yap" : "or build your own mix"}</div>
+                <div style={{ fontSize:11,color:"#666",lineHeight:1.6 }}>{lang==="tr" ? "Bugün nasıl hissediyorsun? (en fazla 3 seç)" : "How do you feel today? (pick up to 3)"}</div>
+              </div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6 }}>
+                {MIND_MOODS.map(mood => {
+                  const sel = selectedMoods.includes(mood.id);
+                  const full = selectedMoods.length >= 3 && !sel;
+                  return (
+                    <button key={mood.id}
+                      disabled={full}
+                      onClick={()=>{
+                        setSelectedMoods(prev => sel ? prev.filter(x=>x!==mood.id) : (prev.length < 3 ? [...prev, mood.id] : prev));
+                      }}
+                      style={{
+                        background: sel ? `linear-gradient(140deg,${mood.colors[0]}66,${mood.colors[1]}22)` : "rgba(255,255,255,0.025)",
+                        border: `1px solid ${sel ? mood.colors[1]+"99" : "rgba(255,255,255,0.07)"}`,
+                        borderRadius: 12, padding: "8px 4px",
+                        cursor: full ? "not-allowed" : "pointer",
+                        opacity: full ? 0.3 : 1,
+                        transition: "all 0.2s",
+                        display:"flex", flexDirection:"column", alignItems:"center", gap:3,
+                        boxShadow: sel ? `0 0 14px ${mood.colors[1]}44` : "none",
+                      }}>
+                      <span style={{ fontSize:16,lineHeight:1 }}>{mood.icon}</span>
+                      <span style={{ fontSize:9.5,color: sel ? "#fff" : "rgba(255,255,255,0.55)",letterSpacing:0.4,lineHeight:1.2,fontFamily:"'Jost',sans-serif" }}>
+                        {lang==="tr" ? mood.labelTr : mood.labelEn}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {selectedMoods.length > 0 && (
+                <button onClick={()=>{
+                  const picks = MIND_MOODS.filter(m => selectedMoods.includes(m.id));
+                  // Frekansları birleştir + tekrarsızlaştır
+                  const freqs = Array.from(new Set(picks.flatMap(p => p.frequencies))).slice(0, 6);
+                  // Renkleri harmanla
+                  const colors = Array.from(new Set(picks.flatMap(p => p.colors)));
+                  const labels = picks.map(p => lang==="tr" ? p.labelTr : p.labelEn);
+                  const customMode = {
+                    id: "kendi",
+                    labelTr: picks.map(p=>p.labelTr).join(" · "),
+                    labelEn: picks.map(p=>p.labelEn).join(" · "),
+                    colors,
+                    frequencies: freqs,
+                    lfo: 0.08 + picks.length * 0.04,
+                    glow: `rgba(${picks[0].colors[1].slice(1).match(/.{2}/g).map(h=>parseInt(h,16)).join(',')},0.18)`,
+                  };
+                  setActiveMindMode(customMode);
+                  setSelectedMoods([]);
+                }}
+                  style={{
+                    marginTop:12, width:"100%",
+                    padding:"12px 16px", borderRadius:24,
+                    border: "1px solid rgba(200,220,255,0.4)",
+                    background: "linear-gradient(135deg,rgba(160,200,240,0.25),rgba(80,120,180,0.15))",
+                    color:"#e0e8f0", fontSize:13, letterSpacing:2,
+                    cursor:"pointer", fontFamily:"'Jost',sans-serif", textTransform:"uppercase",
+                    boxShadow:"0 0 22px rgba(160,200,240,0.18)",
+                  }}>
+                  ◎ {lang==="tr" ? `Karışımı Başlat (${selectedMoods.length})` : `Start Mix (${selectedMoods.length})`}
+                </button>
+              )}
+            </div>
+
+            <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
               {lang==="tr" ? "Kapat" : "Close"}
             </button>
           </div>
