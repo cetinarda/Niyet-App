@@ -2915,11 +2915,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
+  // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
+  // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
+  const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
   return (
-    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop:"calc(82px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(82px + var(--sat))" : "calc(44px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
-      {/* ÜST NAV */}
+      {/* ÜST NAV — iOS feature ekranlarında gizli (Ailesi'nde mini link var) */}
+      {topNavVisible && (
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
@@ -2940,6 +2944,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
+      )}
 
       {/* SAKİN AİLESİ PANELİ */}
       {showAilesi && (
@@ -2979,7 +2984,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </button>
               </div>
             ))}
-            <button onClick={()=>setShowAilesi(false)} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+            {/* Policy mini-linkler — top-nav iOS feature ekranlarında gizli, buradan erişim */}
+            <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+              {[
+                ["hakkinda", lang==="tr"?"Sakin Nedir":"About"],
+                ["fiyat",    lang==="tr"?"Fiyatlandırma":"Pricing"],
+                ["sartlar",  lang==="tr"?"Şartlar":"Terms"],
+                ["gizlilik", lang==="tr"?"Gizlilik":"Privacy"],
+                ["iade",     lang==="tr"?"İade":"Refund"],
+              ].map(([sc,lbl])=>(
+                <button key={sc} onClick={()=>{ setShowAilesi(false); setScreen(sc); }}
+                  style={{ background:"none",border:"none",padding:"4px 2px",color:"#777",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                  {lbl}
+                </button>
+              ))}
+            </div>
+            <button onClick={()=>setShowAilesi(false)} style={{ marginTop:6,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
               {lang==="tr"?"Kapat":"Close"}
             </button>
           </div>
@@ -3046,7 +3066,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
