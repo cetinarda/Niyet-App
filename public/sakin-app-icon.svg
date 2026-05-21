@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="iconBg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#15101e"/>
+      <stop offset="100%" stop-color="#080610"/>
+    </radialGradient>
+    <radialGradient id="iconCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f0d8ff"/>
+      <stop offset="55%" stop-color="#d4a8ff"/>
+      <stop offset="100%" stop-color="#a878d8"/>
+    </radialGradient>
+    <filter id="iconGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="10" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="iconCoreGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="18" result="b1"/>
+      <feGaussianBlur stdDeviation="36" in="SourceGraphic" result="b2"/>
+      <feMerge>
+        <feMergeNode in="b2"/>
+        <feMergeNode in="b1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Arka plan (iOS otomatik yuvarlar; düz kare yeterli) -->
+  <rect width="1024" height="1024" fill="url(#iconBg)"/>
+
+  <!-- Çerçeve karesi — canlı mor, parıltılı -->
+  <g filter="url(#iconGlow)">
+    <rect x="232" y="232" width="560" height="560" rx="100" ry="100"
+          fill="none" stroke="#d4a8ff" stroke-width="10" stroke-opacity="0.95"/>
+  </g>
+
+  <!-- Merkez ışıklı nokta -->
+  <g filter="url(#iconCoreGlow)">
+    <circle cx="512" cy="512" r="42" fill="url(#iconCore)"/>
+  </g>
+</svg>
