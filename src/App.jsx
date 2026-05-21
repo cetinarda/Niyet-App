@@ -348,6 +348,54 @@ const REMINDERS_EN = [
 ];
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
 
+const APP_STORE_URL = "https://apps.apple.com/tr/app/sakin-life/id6765619382?l=tr";
+function AppStoreBadge({ lang = "tr" }) {
+  return (
+    <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
+      style={{
+        display:"inline-flex",alignItems:"center",gap:9,
+        padding:"7px 16px 7px 13px",
+        background:"linear-gradient(135deg,rgba(230,235,250,0.10),rgba(170,185,220,0.04))",
+        border:"1px solid rgba(220,225,240,0.28)",
+        borderRadius:24,
+        color:"#dde2f2",textDecoration:"none",
+        fontFamily:"'Jost',sans-serif",
+        fontSize:10.5,letterSpacing:3,textTransform:"uppercase",fontWeight:300,
+        boxShadow:"0 0 14px rgba(180,200,240,0.06), inset 0 0 10px rgba(220,225,240,0.03)",
+        transition:"all 0.4s",cursor:"pointer",whiteSpace:"nowrap"
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.background="linear-gradient(135deg,rgba(230,235,250,0.18),rgba(170,185,220,0.07))";
+        e.currentTarget.style.boxShadow="0 0 24px rgba(180,200,240,0.22), inset 0 0 14px rgba(220,225,240,0.07)";
+        e.currentTarget.style.color="#f4f6ff";
+        e.currentTarget.style.borderColor="rgba(220,225,240,0.5)";
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.background="linear-gradient(135deg,rgba(230,235,250,0.10),rgba(170,185,220,0.04))";
+        e.currentTarget.style.boxShadow="0 0 14px rgba(180,200,240,0.06), inset 0 0 10px rgba(220,225,240,0.03)";
+        e.currentTarget.style.color="#dde2f2";
+        e.currentTarget.style.borderColor="rgba(220,225,240,0.28)";
+      }}>
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <defs>
+          <radialGradient id="asGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9"/>
+            <stop offset="55%" stopColor="#c8d0e8" stopOpacity="0.45"/>
+            <stop offset="100%" stopColor="#7080a8" stopOpacity="0"/>
+          </radialGradient>
+          <linearGradient id="asSpark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f4f6ff"/>
+            <stop offset="100%" stopColor="#b8c4e0"/>
+          </linearGradient>
+        </defs>
+        <circle cx="8" cy="8" r="7" fill="url(#asGlow)"/>
+        <path d="M8 1.5 L8.55 7.45 L14.5 8 L8.55 8.55 L8 14.5 L7.45 8.55 L1.5 8 L7.45 7.45 Z" fill="url(#asSpark)"/>
+      </svg>
+      <span>{lang==="tr" ? "App Store'da" : "On App Store"}</span>
+    </a>
+  );
+}
+
 const BREATH_MODES_CONFIG = {
   standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
   diyafram:    { in: 4000, hold: 0,    out: 6000,  hold2: 0,    total: 10000 },
@@ -2897,6 +2945,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
                   <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
                 </div>
+                {!isNative && (
+                  <div style={{ marginTop:32,display:"flex",justifyContent:"center" }}>
+                    <AppStoreBadge lang={lang} />
+                  </div>
+                )}
               </>
             ) : (
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
