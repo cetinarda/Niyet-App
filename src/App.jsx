@@ -2868,14 +2868,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
-  // iOS'ta ana feature ekranlarında top-nav (Sakin Nedir/Fiyat/...) gizli. Web'de her zaman görünür.
-  const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
   return (
-    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(82px + var(--sat))" : "calc(44px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop:"calc(82px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
-      {/* ÜST NAV — iOS'ta ana feature ekranlarında gizli */}
-      {topNavVisible && (
+      {/* ÜST NAV */}
       <div className="top-nav">
         {/* Anasayfa butonu — sol */}
         <button
@@ -2896,7 +2893,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
-      )}
 
       {/* SAKİN AİLESİ PANELİ */}
       {showAilesi && (
@@ -3003,7 +2999,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       )}
 
       {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
+      <div style={{ position:"fixed",top:"calc(44px + var(--sat))",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
@@ -3060,11 +3056,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* GİRİŞ */}
       {screen==="giris" && (
         <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
-          {/* Logo — app icon (yuvarlak kare + canlı mor merkez) */}
+          {/* Dönen kare logosu — zarif mor parıltı */}
           <div className="fade-up" style={{ marginBottom:36,position:"relative" }}>
             <div style={{ position:"relative",width:100,height:100,margin:"0 auto" }}>
-              <div style={{ position:"absolute",inset:0,border:"2px solid rgba(212,168,255,0.92)",borderRadius:24,boxShadow:"0 0 14px rgba(212,168,255,0.42),inset 0 0 10px rgba(212,168,255,0.10)" }} />
-              <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:14,height:14,borderRadius:"50%",background:"radial-gradient(circle,#f0d8ff,#d4a8ff 55%,#a878d8)",boxShadow:"0 0 22px rgba(212,168,255,0.78),0 0 44px rgba(184,140,232,0.5)",animation:"pulse 2.6s ease-in-out infinite" }} />
+              <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(200,180,235,0.55)",borderRadius:10,animation:"diamondSpin 12s linear infinite",boxShadow:"0 0 14px rgba(184,164,216,0.32),inset 0 0 10px rgba(184,164,216,0.10)" }} />
+              <div style={{ position:"absolute",inset:20,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.32)",borderRadius:6,animation:"diamondSpin 8s linear infinite reverse",boxShadow:"0 0 10px rgba(160,140,200,0.22)" }} />
+              <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:14,height:14,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,0.95),rgba(220,205,240,0.8))",boxShadow:"0 0 20px rgba(220,200,240,0.65),0 0 40px rgba(184,164,216,0.45)" }} />
             </div>
           </div>
           <div className="fade-up" style={{ animationDelay:"0.3s",opacity:0 }}>

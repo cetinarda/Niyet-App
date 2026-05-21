@@ -1,4 +1,4 @@
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life"];
+const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
 
 function getCorsHeaders(event) {
   const origin = event.headers?.origin || "";
