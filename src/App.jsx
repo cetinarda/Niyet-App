@@ -844,15 +844,18 @@ async function scheduleDailyReminders(lang) {
   if (!isNative) return;
   try {
     const perm = await LocalNotifications.requestPermissions();
-    if (perm.display !== "granted") return;
+    if (perm.display !== "granted") {
+      console.warn("[Notif] permission not granted:", perm.display);
+      return;
+    }
     const todayKey = new Date().toISOString().slice(0,10);
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
     // Bugün zaten planlandıysa hiçbir şeye dokunma
     if (lastScheduled === todayKey) return;
-    // Mevcut tüm slotları + eski tek-seferlik repeating pingi temizle
-    await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}] });
+    // Mevcut tüm slotları temizle (9000-9039 + sabah pingleri 9100/9101)
+    await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
     const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const hours = [9, 13, 18];
+    const hours = [10, 14, 19];
     const now = new Date();
     const notifications = [];
     // 7 günlük forward schedule — 3 günlük slot × 7 gün = 21 varyasyonlu bildirim
@@ -862,23 +865,35 @@ async function scheduleDailyReminders(lang) {
       picked.forEach((body, i) => {
         const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, hours[i], Math.floor(Math.random()*30), 0);
         if (at <= now) return; // geçmiş slot atla
-        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, sound: null, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
+        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
       });
     }
-    // Tekrarlayan sabah pingi — app hiç açılmasa da sonsuza dek her sabah 8'de düşer
-    const morningBody = lang === "tr" ? "Bugün kendine dön. Bir nefes yeter." : "Come back to yourself today. One breath is enough.";
+    // Sabah günaydın pingi — her gün 7:30, app hiç açılmasa da düşer
+    notifications.push({
+      id: 9101,
+      title: "Sakin",
+      body: lang === "tr" ? "Günaydın. Bugün nasıl hissetmek istersin?" : "Good morning. How do you want to feel today?",
+      schedule: { on: { hour: 7, minute: 30 } },
+      smallIcon: "ic_stat_icon_config_sample",
+      iconColor: "#b8a4d8",
+    });
+    // İkinci sabah pingi — saat 9, ilk pingi kaçıranlar için
     notifications.push({
       id: 9100,
       title: "Sakin",
-      body: morningBody,
-      schedule: { on: { hour: 8, minute: 0 }, every: "day", allowWhileIdle: true },
-      sound: null,
+      body: lang === "tr" ? "Bugün kendine dön. Bir nefes yeter." : "Come back to yourself today. One breath is enough.",
+      schedule: { on: { hour: 9, minute: 0 } },
       smallIcon: "ic_stat_icon_config_sample",
       iconColor: "#b8a4d8",
     });
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", todayKey);
-  } catch (e) { console.warn("[Notif]", e); }
+    // Diagnostik: gerçekten kuyrukta kaç bildirim var?
+    try {
+      const pending = await LocalNotifications.getPending();
+      console.log("[Notif] scheduled, pending count:", pending?.notifications?.length);
+    } catch(_) {}
+  } catch (e) { console.warn("[Notif] error:", e); }
 }
 
 function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
