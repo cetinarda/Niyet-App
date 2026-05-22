@@ -3067,8 +3067,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           animation: introExiting ? "introFadeOut 0.6s ease forwards" : "none",
         }}>
           <div style={{ position:"relative",width:120,height:120 }}>
-            <div style={{ position:"absolute",inset:0,border:"2px solid rgba(212,168,255,0.92)",borderRadius:28,boxShadow:"0 0 18px rgba(212,168,255,0.45),inset 0 0 14px rgba(212,168,255,0.10)" }} />
-            <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:18,height:18,borderRadius:"50%",background:"radial-gradient(circle,#f0d8ff,#d4a8ff 55%,#a878d8)",boxShadow:"0 0 26px rgba(212,168,255,0.85),0 0 52px rgba(184,140,232,0.55)",animation:"pulse 2.6s ease-in-out infinite" }} />
+            <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(200,180,235,0.55)",borderRadius:12,animation:"diamondSpin 12s linear infinite",boxShadow:"0 0 16px rgba(184,164,216,0.35),inset 0 0 12px rgba(184,164,216,0.10)" }} />
+            <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.32)",borderRadius:8,animation:"diamondSpin 8s linear infinite reverse",boxShadow:"0 0 12px rgba(160,140,200,0.24)" }} />
+            <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:16,height:16,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,0.95),rgba(220,205,240,0.8))",boxShadow:"0 0 22px rgba(220,200,240,0.7),0 0 44px rgba(184,164,216,0.5)" }} />
           </div>
         </div>
       )}
