@@ -396,8 +396,101 @@ function AppStoreBadge({ lang = "tr" }) {
   );
 }
 
+// Procedural noise + doğa sesi yardımcıları
+function makeNoiseBuffer(ctx, durationSec, type) {
+  const length = Math.floor(ctx.sampleRate * durationSec);
+  const buf = ctx.createBuffer(1, length, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  if (type === "pink") {
+    let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+    for (let i = 0; i < length; i++) {
+      const w = Math.random()*2-1;
+      b0 = 0.99886*b0 + w*0.0555179;
+      b1 = 0.99332*b1 + w*0.0750759;
+      b2 = 0.96900*b2 + w*0.1538520;
+      b3 = 0.86650*b3 + w*0.3104856;
+      b4 = 0.55000*b4 + w*0.5329522;
+      b5 = -0.7616*b5 - w*0.0168980;
+      data[i] = (b0+b1+b2+b3+b4+b5+b6+w*0.5362)*0.11;
+      b6 = w*0.115926;
+    }
+  } else if (type === "brown") {
+    let last = 0;
+    for (let i = 0; i < length; i++) {
+      const w = Math.random()*2-1;
+      last = (last + 0.02*w) / 1.02;
+      data[i] = last * 3.5;
+    }
+  } else {
+    for (let i = 0; i < length; i++) data[i] = Math.random()*2-1;
+  }
+  return buf;
+}
+
+function startRain(ctx, masterGain) {
+  const src = ctx.createBufferSource();
+  src.buffer = makeNoiseBuffer(ctx, 4, "pink");
+  src.loop = true;
+  const hpf = ctx.createBiquadFilter(); hpf.type = "highpass"; hpf.frequency.value = 500;
+  const lpf = ctx.createBiquadFilter(); lpf.type = "lowpass";  lpf.frequency.value = 5500;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 2.5);
+  src.connect(hpf); hpf.connect(lpf); lpf.connect(g); g.connect(masterGain);
+  src.start();
+  return { sources:[src], oscillators:[], gain:g, timeouts:[] };
+}
+
+function startWind(ctx, masterGain) {
+  const src = ctx.createBufferSource();
+  src.buffer = makeNoiseBuffer(ctx, 4, "pink");
+  src.loop = true;
+  const bpf = ctx.createBiquadFilter(); bpf.type = "bandpass"; bpf.frequency.value = 700; bpf.Q.value = 0.6;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0, ctx.currentTime);
+  g.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 3.5);
+  // Gust LFO — cutoff sweep
+  const lfo = ctx.createOscillator(); lfo.type = "sine"; lfo.frequency.value = 0.08;
+  const lfoGain = ctx.createGain(); lfoGain.gain.value = 450;
+  lfo.connect(lfoGain); lfoGain.connect(bpf.frequency);
+  // Slow gain modulation
+  const lfo2 = ctx.createOscillator(); lfo2.type = "sine"; lfo2.frequency.value = 0.12;
+  const lfo2Gain = ctx.createGain(); lfo2Gain.gain.value = 0.05;
+  lfo2.connect(lfo2Gain); lfo2Gain.connect(g.gain);
+  src.connect(bpf); bpf.connect(g); g.connect(masterGain);
+  src.start(); lfo.start(); lfo2.start();
+  return { sources:[src], oscillators:[lfo, lfo2], gain:g, timeouts:[] };
+}
+
+function startThunder(ctx, masterGain) {
+  const timeouts = [];
+  let active = true;
+  const fire = () => {
+    if (!active || ctx.state === "closed") return;
+    const dur = 3 + Math.random() * 2.5;
+    const src = ctx.createBufferSource();
+    src.buffer = makeNoiseBuffer(ctx, dur, "brown");
+    const lpf = ctx.createBiquadFilter(); lpf.type = "lowpass"; lpf.frequency.value = 130;
+    const lpf2 = ctx.createBiquadFilter(); lpf2.type = "lowpass"; lpf2.frequency.value = 200;
+    const g = ctx.createGain();
+    const t0 = ctx.currentTime;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(0.55, t0 + 0.35);
+    g.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+    src.connect(lpf); lpf.connect(lpf2); lpf2.connect(g); g.connect(masterGain);
+    try { src.start(t0); src.stop(t0 + dur + 0.1); } catch(_) {}
+    const next = 18000 + Math.random() * 28000;
+    timeouts.push(setTimeout(fire, next));
+  };
+  timeouts.push(setTimeout(fire, 4000 + Math.random() * 8000));
+  return {
+    sources:[], oscillators:[], gain:null, timeouts,
+    stopActive: () => { active = false; }
+  };
+}
+
 // Zihni Boşalt — fullscreen kaleidoskop + procedural drone müzik
-function KaleidoscopeView({ mode, lang, onClose }) {
+function KaleidoscopeView({ mode, nature = [], lang, onClose }) {
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
   const rafRef = useRef(null);
@@ -419,7 +512,7 @@ function KaleidoscopeView({ mode, lang, onClose }) {
     window.addEventListener("resize", setSize);
 
     // Web Audio drone — procedural sine wave katmanları
-    let aCtx, masterGain, oscillators = [];
+    let aCtx, masterGain, natureMaster, oscillators = [], natureNodes = [];
     try {
       aCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (aCtx.state === "suspended") aCtx.resume();
@@ -440,8 +533,20 @@ function KaleidoscopeView({ mode, lang, onClose }) {
         o.start(); lfo.start();
         oscillators.push(o, lfo);
       });
+      // Doğa sesleri — drone'un yanına ayrı master ile bağla (kapatma rampası ayrı)
+      if (nature && nature.length > 0) {
+        natureMaster = aCtx.createGain();
+        natureMaster.gain.setValueAtTime(0, aCtx.currentTime);
+        natureMaster.gain.linearRampToValueAtTime(1, aCtx.currentTime + 1.5);
+        natureMaster.connect(aCtx.destination);
+        nature.forEach(kind => {
+          if (kind === "rain")    natureNodes.push(startRain(aCtx, natureMaster));
+          if (kind === "wind")    natureNodes.push(startWind(aCtx, natureMaster));
+          if (kind === "thunder") natureNodes.push(startThunder(aCtx, natureMaster));
+        });
+      }
     } catch(_) {}
-    audioRef.current = { aCtx, masterGain, oscillators };
+    audioRef.current = { aCtx, masterGain, natureMaster, oscillators, natureNodes };
 
     // Particle init
     const particles = [];
@@ -500,18 +605,33 @@ function KaleidoscopeView({ mode, lang, onClose }) {
       window.removeEventListener("resize", setSize);
       cancelAnimationFrame(rafRef.current);
       if (audioRef.current) {
-        const { aCtx, oscillators, masterGain } = audioRef.current;
+        const { aCtx, oscillators, masterGain, natureMaster, natureNodes } = audioRef.current;
         try {
           masterGain.gain.cancelScheduledValues(aCtx.currentTime);
           masterGain.gain.linearRampToValueAtTime(0, aCtx.currentTime + 0.6);
         } catch(_) {}
+        try {
+          if (natureMaster) {
+            natureMaster.gain.cancelScheduledValues(aCtx.currentTime);
+            natureMaster.gain.linearRampToValueAtTime(0, aCtx.currentTime + 0.6);
+          }
+        } catch(_) {}
+        // Thunder timeout'larını hemen iptal et — yeni patlama tetiklemesin
+        (natureNodes||[]).forEach(n => {
+          (n.timeouts||[]).forEach(id => clearTimeout(id));
+          if (typeof n.stopActive === "function") n.stopActive();
+        });
         setTimeout(() => {
           oscillators.forEach(o => { try { o.stop(); } catch(_){} });
+          (natureNodes||[]).forEach(n => {
+            (n.sources||[]).forEach(s => { try { s.stop(); } catch(_){} });
+            (n.oscillators||[]).forEach(o => { try { o.stop(); } catch(_){} });
+          });
           try { aCtx.close(); } catch(_) {}
         }, 700);
       }
     };
-  }, [mode]);
+  }, [mode, nature]);
 
   return (
     <div style={{ position:"fixed",inset:0,zIndex:10010,background:"#000",animation:"fadeIn 0.7s ease" }}>
@@ -585,6 +705,13 @@ const MIND_MOODS = [
   { id:"kendine",   icon:"🌸", labelTr:"Kendine dönmek",labelEn:"Return to self",frequencies:[174, 285, 432],colors:["#a08068","#c8a888"] },
   { id:"enerji",    icon:"☀️", labelTr:"Enerji istiyor",labelEn:"Wants energy",frequencies:[396, 528, 741], colors:["#e8a850","#f0c860"] },
 ];
+// Doğa sesleri — kullanıcı seçer, drone'a katman olarak eklenir (procedural)
+const NATURE_SOUNDS = [
+  { id:"rain",    icon:"🌧", labelTr:"Yağmur",        labelEn:"Rain" },
+  { id:"thunder", icon:"⛈", labelTr:"Gök gürültüsü", labelEn:"Thunder" },
+  { id:"wind",    icon:"🍃", labelTr:"Rüzgar",        labelEn:"Wind" },
+];
+
 const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
 
 const GLOBAL_CSS = `
@@ -1887,6 +2014,7 @@ export default function SakinApp() {
   const [showMindClear, setShowMindClear] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
   const [selectedMoods, setSelectedMoods] = useState([]);
+  const [selectedNature, setSelectedNature] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   const [idCardRenderedUrl, setIdCardRenderedUrl] = useState(null);
@@ -4783,6 +4911,31 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{lang==="tr" ? "Bugün nereye sığınmak istersin?" : "Where do you want to retreat today?"}</div>
               <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{lang==="tr" ? "Kulaklığını tak. Sadece izle, sadece dinle." : "Put on your headphones. Just watch, just listen."}</div>
             </div>
+
+            {/* Doğa sesleri — opsiyonel katman, drone'un altına serilir */}
+            <div style={{ display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap" }}>
+              {NATURE_SOUNDS.map(n => {
+                const sel = selectedNature.includes(n.id);
+                return (
+                  <button key={n.id}
+                    onClick={()=>setSelectedNature(prev => sel ? prev.filter(x=>x!==n.id) : [...prev, n.id])}
+                    style={{
+                      background: sel ? "linear-gradient(135deg,rgba(160,200,240,0.22),rgba(80,120,180,0.12))" : "rgba(255,255,255,0.025)",
+                      border: `1px solid ${sel ? "rgba(160,200,240,0.55)" : "rgba(255,255,255,0.08)"}`,
+                      borderRadius: 100, padding: "7px 13px",
+                      cursor:"pointer", display:"inline-flex", alignItems:"center", gap:6,
+                      color: sel ? "#e0e8f0" : "rgba(255,255,255,0.55)",
+                      fontSize: 11.5, letterSpacing: 0.5, fontFamily: "'Jost',sans-serif",
+                      transition: "all 0.2s",
+                      boxShadow: sel ? "0 0 14px rgba(160,200,240,0.22)" : "none",
+                    }}>
+                    <span style={{ fontSize:13,lineHeight:1 }}>{n.icon}</span>
+                    <span>{lang==="tr" ? n.labelTr : n.labelEn}</span>
+                  </button>
+                );
+              })}
+            </div>
+
             <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:10 }}>
               {MIND_MODES.map(m => (
                 <button key={m.id} onClick={()=>setActiveMindMode(m)}
@@ -4871,14 +5024,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               )}
             </div>
 
-            <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+            <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
               {lang==="tr" ? "Kapat" : "Close"}
             </button>
           </div>
         </div>
       )}
       {activeMindMode && (
-        <KaleidoscopeView mode={activeMindMode} lang={lang} onClose={()=>{ setActiveMindMode(null); setShowMindClear(false); }} />
+        <KaleidoscopeView mode={activeMindMode} nature={selectedNature} lang={lang} onClose={()=>{ setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); }} />
       )}
 
       {/* SAKİN NEDİR? */}
