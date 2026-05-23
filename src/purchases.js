@@ -139,16 +139,22 @@ export async function initStore() {
 
 export function isSubscribed() {
   if (!isNative || !window.CdvPurchase) {
+    // Web: localStorage tek otorite
     return localStorage.getItem("sakin_premium") === "1";
   }
+  // iOS/Android: SADECE store.owned otoritedir. localStorage'a güvenme — eski test/dev değerleri
+  // ya da bug'dan kalma "1" değerleri sahte premium üretebilir.
   const store = window.CdvPurchase.store;
   const yearly = store.get(YEARLY_ID);
   const lifetime = store.get(LIFETIME_ID);
-  if ((yearly && yearly.owned) || (lifetime && lifetime.owned)) {
+  const owned = (yearly && yearly.owned) || (lifetime && lifetime.owned);
+  if (owned) {
     localStorage.setItem("sakin_premium", "1");
     return true;
   }
-  return localStorage.getItem("sakin_premium") === "1";
+  // Native + ürün owned değil → eski localStorage değerini temizle, premium yok
+  localStorage.removeItem("sakin_premium");
+  return false;
 }
 
 function isCancelError(err) {
@@ -210,7 +216,13 @@ export async function purchaseProduct(productId) {
       }
       return { success: false, error: result.message || "order_failed" };
     }
-    return { success: true };
+    // ORDER PLACED ≠ PURCHASE COMPLETE.
+    // store.order() sadece App Store ödeme sayfasını açar. Gerçek tamamlanma
+    // approved → verified callback chain'inden gelir (initStore içinde tanımlı).
+    // Buradan success: true dönmek, henüz ödenmemiş bir satın alma için premium
+    // aktifleştirir (BUG). Bu yüzden orderPlaced flag'i dönüyoruz — premium ATAMA
+    // YAPMAYIN. Asıl premium grant'i onPurchaseUpdate callback'inden gelecek.
+    return { orderPlaced: true };
   } catch (err) {
     console.warn("[IAP] order exception:", err);
     if (isCancelError(err)) {

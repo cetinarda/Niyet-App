@@ -2123,7 +2123,12 @@ export default function SakinApp() {
   useEffect(() => {
     if (!isNative) return;
     onPurchaseUpdate((purchased) => {
-      if (purchased) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
+      if (purchased) {
+        setIsPremium(true);
+        setPurchaseLoading(null);
+        setPurchaseError("");
+        haptic(ImpactStyle.Heavy);
+      }
     });
     onProductsLoaded(() => setProductsReady(true));
     initStore().then((ok) => {
@@ -2141,8 +2146,15 @@ export default function SakinApp() {
     setPurchaseLoading(id);
     setPurchaseError("");
     const r = await fn();
+    // r.orderPlaced: Apple ödeme sayfası açıldı, asıl premium grant'i verified
+    // callback'inde gelecek (onPurchaseUpdate → setIsPremium(true)). Burada YAPMA.
+    if (r.orderPlaced) {
+      // Ödeme sayfasında bekle. Callback gelene kadar loading state'i koruyalım.
+      // 60 sn içinde verified gelmezse loading'i kaldır (kullanıcı sayfada takılmış olabilir).
+      setTimeout(() => { setPurchaseLoading(prev => prev === id ? null : prev); }, 60000);
+      return;
+    }
     setPurchaseLoading(null);
-    if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); return; }
     if (r.cancelled || r.error === "cancelled") return;
     const errLower = (r.error || "").toLowerCase();
     if (errLower.includes("cancel") || errLower.includes("iptal")) return;
