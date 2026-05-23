@@ -719,7 +719,7 @@ const BREATH_MODES_CONFIG = {
 
 const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici"];
 const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
-const PREMIUM_WORDS_TR = ["berraklik", "guc", "ozgurluk", "nese", "sukur", "guven"];
+const PREMIUM_WORDS_TR = ["berraklık", "güç", "özgürlük", "neşe", "şükür", "güven"];
 
 // Zihni Boşalt — kaleidoskop modları (procedural; tıbbi iddia yok)
 const MIND_MODES = [
@@ -2111,7 +2111,10 @@ export default function SakinApp() {
   }, []);
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
-  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
+  const [isPremium, setIsPremium] = useState(() => {
+    if (isNative) return false; // iOS: sadece IAP isSubscribed() premium verir; localStorage'a güvenme
+    return localStorage.getItem("sakin_premium") === "1";
+  });
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
@@ -3131,6 +3134,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
   // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
   const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
+
+  // Üst bar — fixed kalır, kıpırdamaz; aşağı scroll yapılırsa kaybolur, geri çıkıldığında gelir
+  const [barHidden, setBarHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      if (y < 24) { setBarHidden(false); lastScrollYRef.current = y; return; }
+      if (y > lastScrollYRef.current + 6) setBarHidden(true);
+      else if (y < lastScrollYRef.current - 6) setBarHidden(false);
+      lastScrollYRef.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  // Ekran değişince yukarı kaydır + bar görünür yap
+  useEffect(() => { window.scrollTo(0, 0); setBarHidden(false); }, [screen]);
   return (
     <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
@@ -3225,7 +3245,46 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            onLoad={()=>setTimeout(()=>setEmbedLoaded(true), 1100)}
+            onLoad={(e)=>{
+              setTimeout(()=>setEmbedLoaded(true), 1100);
+              // Embed'lere ortak CSS override inject — form taşmalarını engelle
+              try {
+                const doc = e.target.contentDocument;
+                if (!doc) return;
+                const style = doc.createElement("style");
+                style.id = "sakin-embed-fixes";
+                style.textContent = `
+                  /* Form input'larının ekran dışına taşmasını engelle */
+                  input, textarea, select {
+                    max-width: 100% !important;
+                    min-width: 0 !important;
+                    box-sizing: border-box !important;
+                  }
+                  /* RN/Expo TextInput container'ları (genelde flex grid) */
+                  [class*="TextInput"], [data-class~="r-input"] {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  /* Tipik flex-row grid'ler — date picker satırı vb */
+                  [style*="flex-direction: row"], [style*="flexDirection: row"], [style*="flexDirection:row"] {
+                    flex-wrap: wrap !important;
+                    min-width: 0 !important;
+                  }
+                  [style*="flex-direction: row"] > *, [style*="flexDirection: row"] > *, [style*="flexDirection:row"] > * {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  /* Genel container — yatay scroll engelle */
+                  body, #root, [class*="root"] {
+                    max-width: 100vw !important;
+                    overflow-x: hidden !important;
+                  }
+                  /* Form satırlarında padding/gap düşür */
+                  [style*="grid"] { max-width: 100% !important; }
+                `;
+                doc.head.appendChild(style);
+              } catch(err) { /* cross-origin or already injected — sessiz geç */ }
+            }}
             style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
@@ -3278,8 +3337,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA & HARİTA BARI — üst navın altında, scroll ile birlikte kayar (yapışık değil — absolute, fixed değil) */}
-      <div style={{ position:"absolute",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
+      {/* AYNA & HARİTA BARI — sabit (kıpırdamaz), aşağı scroll'da kayar */}
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px",transform: barHidden ? "translateY(-160%)" : "translateY(0)",transition:"transform 0.32s cubic-bezier(0.25,0.1,0.25,1)" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
