@@ -491,10 +491,31 @@ function startThunder(ctx, masterGain) {
 }
 
 // Zihni Boşalt — fullscreen kaleidoskop + procedural drone müzik
-function KaleidoscopeView({ mode, nature = [], lang, onClose }) {
+function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false, onPremium = () => {} }) {
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
   const rafRef = useRef(null);
+  const [timeUp, setTimeUp] = useState(false);
+
+  // Non-premium: 30 sn sonra paywall aç + sesi yumuşakça kıs
+  useEffect(() => {
+    if (isPremium) return;
+    const id = setTimeout(() => {
+      setTimeUp(true);
+      try {
+        const a = audioRef.current;
+        if (a && a.aCtx && a.masterGain) {
+          a.masterGain.gain.cancelScheduledValues(a.aCtx.currentTime);
+          a.masterGain.gain.linearRampToValueAtTime(0.02, a.aCtx.currentTime + 1.2);
+        }
+        if (a && a.aCtx && a.natureMaster) {
+          a.natureMaster.gain.cancelScheduledValues(a.aCtx.currentTime);
+          a.natureMaster.gain.linearRampToValueAtTime(0.05, a.aCtx.currentTime + 1.2);
+        }
+      } catch(_) {}
+    }, 30000);
+    return () => clearTimeout(id);
+  }, [isPremium, mode]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -659,6 +680,30 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose }) {
         onTouchStart={e=>e.currentTarget.style.opacity=1}>
         ✕
       </button>
+      {/* 30 sn paywall — kaleidoskop arkada akmaya devam eder, üstünde yumuşak overlay */}
+      {timeUp && (
+        <div style={{ position:"fixed",inset:0,zIndex:10012,background:"rgba(0,0,0,0.78)",backdropFilter:"blur(18px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 20px calc(20px + var(--sab))",animation:"fadeIn 0.7s ease" }}>
+          <div style={{ maxWidth:340,width:"100%",textAlign:"center" }}>
+            <div style={{ fontSize:30,marginBottom:14,letterSpacing:6 }}>✦</div>
+            <div style={{ fontSize:15,letterSpacing:3,color:"rgba(255,255,255,0.92)",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,fontWeight:300 }}>
+              {lang==="tr" ? "Bir nefes daha mı?" : "One more breath?"}
+            </div>
+            <div style={{ fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.85,marginBottom:24 }}>
+              {lang==="tr"
+                ? "30 saniyelik sığınağın doldu. Sınırsız zihni boşaltma, mod & doğa sesi karışımları Premium'da."
+                : "Your 30-second retreat is full. Unlimited mind-clearing, mode & nature mixes are in Premium."}
+            </div>
+            <button onClick={onPremium}
+              style={{ display:"block",width:"100%",padding:"12px 18px",borderRadius:24,border:"1px solid rgba(220,200,255,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,boxShadow:"0 4px 22px rgba(122,80,150,0.4)" }}>
+              ✦ {lang==="tr" ? "Premium ile Aç" : "Unlock with Premium"}
+            </button>
+            <button onClick={onClose}
+              style={{ display:"block",width:"100%",padding:"10px 18px",borderRadius:24,border:"1px solid rgba(255,255,255,0.12)",background:"transparent",color:"rgba(255,255,255,0.55)",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {lang==="tr" ? "Kapat" : "Close"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1992,7 +2037,6 @@ export default function SakinApp() {
   const [selectedNature, setSelectedNature] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
-  const [idCardRenderedUrl, setIdCardRenderedUrl] = useState(null);
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -3024,6 +3068,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
+    {id:"giris",  icon:"⌂", label:lang==="tr"?"Giriş":"Home", color:"#c0a8e0"},
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
@@ -3037,7 +3082,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
   const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
   return (
-    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(82px + var(--sat))" : "calc(44px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
 
       {/* ÜST NAV — iOS feature ekranlarında gizli (Ailesi'nde mini link var) */}
@@ -3183,13 +3228,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA & HARİTA BARI — üst navın altında */}
-      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
+      {/* AYNA & HARİTA BARI — üst navın altında, scroll ile birlikte kayar (yapışık değil — absolute, fixed değil) */}
+      <div style={{ position:"absolute",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
             <button key={n.id}
-              onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); setScreen(n.id); }}
+              onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); if(n.id==="giris") setGirisPhase("intro"); setScreen(n.id); }}
               style={{
                 flex:"1 1 0", minWidth:0,
                 background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
@@ -4606,17 +4651,28 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
-            {raporKullanildi && !isPremium && !aiRapor && !aiLoading ? (
+            {!isPremium && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
-                <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:8 }}>{t("free_used")}</div>
-                <div style={{ fontSize:14,color:"#888888",lineHeight:1.8,marginBottom:16 }}>
-                  {t("free_used_body")}<br/>
-                  <strong style={{ color:"#9a7ab8" }}>{t("premium_name")}</strong>{t("premium_suffix")}
+                <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:10,letterSpacing:0.5 }}>
+                  {lang==="tr" ? "Bu haftaki içsel haritan hazır" : "Your inner map for the week is ready"}
+                </div>
+                <div style={{ fontSize:13.5,color:"#a89cb8",lineHeight:1.85,marginBottom:8,textAlign:"left" }}>
+                  {lang==="tr"
+                    ? "AI rehberin bu haftaki nefeslerini, çakra dengeni, niyet kelimelerini ve biyoritmini doğum profilinle birlikte sentezliyor. Sana özel — şiirsel, içten, derin."
+                    : "Your AI guide synthesises this week's breaths, chakra balance, intention words and biorhythm with your birth profile. Personalised — poetic, sincere, deep."}
+                </div>
+                <div style={{ fontSize:12.5,color:"#8878a8",lineHeight:1.75,marginBottom:16,padding:"10px 12px",background:"rgba(184,164,216,0.06)",borderRadius:10,border:"1px solid rgba(184,164,216,0.15)" }}>
+                  {lang==="tr"
+                    ? "✦ Bastırılmış temalar · gölge işaretleri · gizli güç · şifa yolu — hepsi 12. ev bilgeliğiyle yorumlanır."
+                    : "✦ Suppressed themes · shadow signs · hidden power · healing path — all interpreted with 12th house wisdom."}
+                </div>
+                <div style={{ fontSize:11.5,color:"#7868a0",marginBottom:14,fontStyle:"italic",letterSpacing:0.3 }}>
+                  {lang==="tr" ? "Haftalık derin okuma Premium üyelikte." : "Weekly deep reading available in Premium."}
                 </div>
                 <button onClick={() => setScreen("fiyat")}
-                  style={{ display:"inline-block",padding:"9px 22px",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",border:"1px solid rgba(255,255,255,0.4)",borderRadius:22,color:"#cccccc",fontSize:14,letterSpacing:1,cursor:"pointer" }}>
-                  {t("btn_go_premium")}
+                  style={{ display:"inline-block",padding:"11px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",border:"1px solid rgba(220,200,255,0.5)",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
+                  ✦ {lang==="tr" ? "Premium ile Aç" : "Unlock with Premium"}
                 </button>
               </div>
             ) : !aiRapor && !aiLoading ? (
@@ -4679,32 +4735,62 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const downloadCard = async () => {
           const svgEl = document.getElementById("galaktik-id-card-svg");
           if (!svgEl) return;
-          const svgStr = new XMLSerializer().serializeToString(svgEl);
+          // SVG'den fotoğrafı çıkar — data URL'li image canvas'ı taint edip siyah çıkmasına neden olur (iOS WKWebView)
+          const svgClone = svgEl.cloneNode(true);
+          svgClone.querySelectorAll("image").forEach(el => el.remove());
+          const svgStr = new XMLSerializer().serializeToString(svgClone);
           const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-          const url = URL.createObjectURL(svgBlob);
-          const img = new Image();
-          img.onload = () => {
+          const svgUrl = URL.createObjectURL(svgBlob);
+          const svgImg = new Image();
+          svgImg.onload = async () => {
             const canvas = document.createElement("canvas");
             canvas.width = 1080; canvas.height = 1920;
             const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#000"; ctx.fillRect(0,0,1080,1920);
-            ctx.drawImage(img, 0, 0, 1080, 1920);
+            ctx.fillStyle = "#0a0612"; ctx.fillRect(0,0,1080,1920);
+            ctx.drawImage(svgImg, 0, 0, 1080, 1920);
+            // Fotoğrafı ayrıca composite et (data URL olarak doğrudan canvas'a)
+            if (idCardPhoto) {
+              await new Promise((resolve) => {
+                const photoImg = new Image();
+                photoImg.onload = () => {
+                  ctx.save();
+                  ctx.beginPath();
+                  ctx.arc(540, 380, 160, 0, Math.PI * 2);
+                  ctx.clip();
+                  const r = Math.max(320 / photoImg.width, 320 / photoImg.height);
+                  const w = photoImg.width * r, h = photoImg.height * r;
+                  ctx.drawImage(photoImg, 540 - w/2, 380 - h/2, w, h);
+                  ctx.restore();
+                  ctx.beginPath();
+                  ctx.arc(540, 380, 160, 0, Math.PI * 2);
+                  ctx.strokeStyle = "rgba(220,200,255,0.5)";
+                  ctx.lineWidth = 4;
+                  ctx.stroke();
+                  resolve();
+                };
+                photoImg.onerror = resolve;
+                photoImg.src = idCardPhoto;
+              });
+            }
+            URL.revokeObjectURL(svgUrl);
             canvas.toBlob(async (blob) => {
               if (!blob) return;
-              const dl = URL.createObjectURL(blob);
-              setIdCardRenderedUrl(dl); // inline görsel: uzun bas → Fotoğraflara Ekle (iOS native akış)
               const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
               try {
+                // iOS: navigator.share file ile → share sheet'te "Görseli Kaydet" çıkar (Fotoğraflar)
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                  await navigator.share({ files: [file], title: "Galaktik Kimlik · Sakin Life" });
-                } else if (!isNative) {
+                  await navigator.share({ files: [file] });
+                } else {
+                  // Web fallback: direkt indirme
+                  const dl = URL.createObjectURL(blob);
                   const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
+                  setTimeout(() => URL.revokeObjectURL(dl), 3000);
                 }
               } catch(_) {}
-              URL.revokeObjectURL(url);
             }, "image/jpeg", 0.92);
           };
-          img.src = url;
+          svgImg.onerror = () => { URL.revokeObjectURL(svgUrl); };
+          svgImg.src = svgUrl;
         };
 
         const StatRow = ({label, value, color}) => (
@@ -4715,7 +4801,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         );
 
         return (
-          <div onClick={()=>{ setShowIdCard(false); if(idCardRenderedUrl){ URL.revokeObjectURL(idCardRenderedUrl); setIdCardRenderedUrl(null); } }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+          <div onClick={()=>{ setShowIdCard(false); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
               {/* Card preview */}
               <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
@@ -4779,22 +4865,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </label>
                 <button onClick={downloadCard}
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
-                  ↓ {lang==="tr"?"İndir / Paylaş":"Download / Share"}
+                  ↓ {lang==="tr"?"Galeriye Kaydet":"Save to Gallery"}
                 </button>
-                <button onClick={()=>{ setShowIdCard(false); if(idCardRenderedUrl){ URL.revokeObjectURL(idCardRenderedUrl); setIdCardRenderedUrl(null); } }}
+                <button onClick={()=>{ setShowIdCard(false); }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   {lang==="tr"?"Kapat":"Close"}
                 </button>
               </div>
-              {/* Render edilen JPEG — uzun bas → Fotoğraflara Ekle (iOS Photos native akış) */}
-              {idCardRenderedUrl && (
-                <div style={{ marginTop:14,padding:"12px 12px 10px",background:"rgba(0,0,0,0.55)",border:"1px solid rgba(255,255,255,0.10)",borderRadius:14 }}>
-                  <div style={{ fontSize:11,letterSpacing:2.5,color:"#a890c8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8 }}>
-                    {lang==="tr" ? "Görsele uzun bas → Fotoğraflara Ekle" : "Long-press image → Add to Photos"}
-                  </div>
-                  <img src={idCardRenderedUrl} alt="Galaktik Kimlik" style={{ width:"100%",borderRadius:10,display:"block",userSelect:"none",WebkitUserSelect:"none",WebkitTouchCallout:"default" }} />
-                </div>
-              )}
               {/* Hidden high-resolution SVG used for export */}
               <svg id="galaktik-id-card-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" style={{ position:"absolute",left:-99999,top:0,pointerEvents:"none" }}>
                 <defs>
@@ -5001,7 +5078,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
       {activeMindMode && (
-        <KaleidoscopeView mode={activeMindMode} nature={selectedNature} lang={lang} onClose={()=>{ setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); }} />
+        <KaleidoscopeView mode={activeMindMode} nature={selectedNature} lang={lang} isPremium={isPremium} onPremium={()=>{ setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); setScreen("fiyat"); }} onClose={()=>{ setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); }} />
       )}
 
       {/* SAKİN NEDİR? */}
