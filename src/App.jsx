@@ -708,6 +708,56 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
   );
 }
 
+const BREATH_MODES_CONFIG = {
+  standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
+  diyafram:    { in: 4000, hold: 0,    out: 6000,  hold2: 0,    total: 10000 },
+  akciger:     { in: 5000, hold: 2000, out: 7000,  hold2: 0,    total: 14000 },
+  "478":       { in: 4000, hold: 7000, out: 8000,  hold2: 0,    total: 19000 },
+  kutu:        { in: 4000, hold: 4000, out: 4000,  hold2: 4000, total: 16000 },
+  sakinletici: { in: 4000, hold: 2000, out: 8000,  hold2: 0,    total: 14000 },
+};
+
+const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici"];
+const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
+const PREMIUM_WORDS_TR = ["berraklık", "güç", "özgürlük", "neşe", "şükür", "güven"];
+
+// Zihni Boşalt — kaleidoskop modları (procedural; tıbbi iddia yok)
+const MIND_MODES = [
+  { id:"sukunet",   labelTr:"Sükûnet",   labelEn:"Stillness",  subTr:"Yavaşla, gevşe",     subEn:"Slow down, soften",     colors:["#3a8a6a","#5ab488","#a0d8b4","#76c49a","#4a9a78"], frequencies:[110, 165, 220],       lfo:0.06, glow:"rgba(120,210,160,0.18)" },
+  { id:"berraklik", labelTr:"Berraklık", labelEn:"Clarity",    subTr:"Zihni billurla",     subEn:"Crystallise the mind",  colors:["#b88040","#e8a850","#f0c860","#d09060","#c88840"], frequencies:[174, 261, 392],       lfo:0.18, glow:"rgba(232,168,80,0.18)" },
+  { id:"teslimiyet",labelTr:"Teslimiyet",labelEn:"Surrender",  subTr:"Yumuşakça çözül",    subEn:"Dissolve gently",       colors:["#3a2858","#5a4080","#8068b0","#4a3870","#382650"], frequencies:[64, 96, 128],         lfo:0.04, glow:"rgba(120,80,180,0.18)" },
+  { id:"genislik",  labelTr:"Genişlik",  labelEn:"Spaciousness",subTr:"Geniş bak",         subEn:"See wide",              colors:["#4080a0","#60a8c8","#80c0e0","#a0d8e8","#5090b0"], frequencies:[196, 294, 392, 588],  lfo:0.10, glow:"rgba(120,180,220,0.18)" },
+];
+
+// Duygu durumları — kullanıcı seçer, frekanslar karışır (procedural; tıbbi iddia yok)
+const MIND_MOODS = [
+  { id:"endiseli",  icon:"🌊", labelTr:"Endişeli",     labelEn:"Anxious",      frequencies:[96, 144, 216],  colors:["#4a8aa0","#7ab0c4"] },
+  { id:"uzgun",     icon:"🌧", labelTr:"Üzgün",        labelEn:"Sad",          frequencies:[174, 261, 349], colors:["#5a4878","#7868a8"] },
+  { id:"ofkeli",    icon:"🔥", labelTr:"Öfkeli",       labelEn:"Angry",        frequencies:[90, 135, 180],  colors:["#8a4040","#b07070"] },
+  { id:"uykusuz",   icon:"🌙", labelTr:"Uykusuz",      labelEn:"Sleepless",    frequencies:[48, 72, 96],    colors:["#283848","#485870"] },
+  { id:"dagiNik",   icon:"🌪", labelTr:"Dağınık",      labelEn:"Scattered",    frequencies:[256, 384, 512], colors:["#5a8aa0","#80b0c8"] },
+  { id:"yalniz",    icon:"🌒", labelTr:"Yalnız",       labelEn:"Lonely",       frequencies:[220, 330, 440], colors:["#705a98","#9078b8"] },
+  { id:"tukenmis",  icon:"🍂", labelTr:"Tükenmiş",     labelEn:"Burnt out",    frequencies:[64, 96, 192],   colors:["#705a40","#a08868"] },
+  { id:"sikisik",   icon:"⛓",  labelTr:"Sıkışmış",     labelEn:"Stuck",        frequencies:[110, 220, 330], colors:["#587858","#80a080"] },
+  { id:"belirsiz",  icon:"🌫", labelTr:"Belirsizlikte",labelEn:"Uncertain",    frequencies:[128, 192, 256], colors:["#606078","#8888a0"] },
+  { id:"kirik",     icon:"💔", labelTr:"Kalbi kırık",  labelEn:"Heartbroken",  frequencies:[174, 220, 261], colors:["#883858","#b06080"] },
+  { id:"donuk",     icon:"❄",  labelTr:"Donuk",        labelEn:"Numb",         frequencies:[55, 82, 110],   colors:["#405878","#608098"] },
+  { id:"asiri",     icon:"🧠", labelTr:"Aşırı düşünen",labelEn:"Overthinking", frequencies:[256, 320, 384], colors:["#9070b0","#b090d0"] },
+  { id:"sukran",    icon:"✨", labelTr:"Şükran arıyor",labelEn:"Seeking gratitude",frequencies:[256, 384, 528],colors:["#a08838","#c8a868"] },
+  { id:"yeni",      icon:"🌱", labelTr:"Yenilik istiyor",labelEn:"Wants newness",frequencies:[174, 261, 432],colors:["#588858","#80b080"] },
+  { id:"donusum",   icon:"🦋", labelTr:"Dönüşmek istiyor",labelEn:"Wants transformation",frequencies:[111, 222, 444],colors:["#7a4898","#a070c0"] },
+  { id:"akış",      icon:"💧", labelTr:"Akmak istiyor",labelEn:"Wants to flow",frequencies:[145, 217, 290], colors:["#3a8aa0","#60b0c0"] },
+  { id:"kendine",   icon:"🌸", labelTr:"Kendine dönmek",labelEn:"Return to self",frequencies:[174, 285, 432],colors:["#a08068","#c8a888"] },
+  { id:"enerji",    icon:"☀️", labelTr:"Enerji istiyor",labelEn:"Wants energy",frequencies:[396, 528, 741], colors:["#e8a850","#f0c860"] },
+];
+// Doğa sesleri — kullanıcı seçer, drone'a katman olarak eklenir (procedural)
+const NATURE_SOUNDS = [
+  { id:"rain",    icon:"🌧", labelTr:"Yağmur",        labelEn:"Rain" },
+  { id:"thunder", icon:"⛈", labelTr:"Gök gürültüsü", labelEn:"Thunder" },
+  { id:"wind",    icon:"🍃", labelTr:"Rüzgar",        labelEn:"Wind" },
+];
+
+const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
 
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
@@ -2061,7 +2111,10 @@ export default function SakinApp() {
   }, []);
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
-  const [isPremium, setIsPremium] = useState(() => localStorage.getItem("sakin_premium") === "1");
+  const [isPremium, setIsPremium] = useState(() => {
+    if (isNative) return false; // iOS: sadece IAP isSubscribed() premium verir; localStorage'a güvenme
+    return localStorage.getItem("sakin_premium") === "1";
+  });
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
@@ -3081,6 +3134,23 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
   // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
   const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
+
+  // Üst bar — fixed kalır, kıpırdamaz; aşağı scroll yapılırsa kaybolur, geri çıkıldığında gelir
+  const [barHidden, setBarHidden] = useState(false);
+  const lastScrollYRef = useRef(0);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      if (y < 24) { setBarHidden(false); lastScrollYRef.current = y; return; }
+      if (y > lastScrollYRef.current + 6) setBarHidden(true);
+      else if (y < lastScrollYRef.current - 6) setBarHidden(false);
+      lastScrollYRef.current = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  // Ekran değişince yukarı kaydır + bar görünür yap
+  useEffect(() => { window.scrollTo(0, 0); setBarHidden(false); }, [screen]);
   return (
     <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
@@ -3175,7 +3245,46 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            onLoad={()=>setTimeout(()=>setEmbedLoaded(true), 1100)}
+            onLoad={(e)=>{
+              setTimeout(()=>setEmbedLoaded(true), 1100);
+              // Embed'lere ortak CSS override inject — form taşmalarını engelle
+              try {
+                const doc = e.target.contentDocument;
+                if (!doc) return;
+                const style = doc.createElement("style");
+                style.id = "sakin-embed-fixes";
+                style.textContent = `
+                  /* Form input'larının ekran dışına taşmasını engelle */
+                  input, textarea, select {
+                    max-width: 100% !important;
+                    min-width: 0 !important;
+                    box-sizing: border-box !important;
+                  }
+                  /* RN/Expo TextInput container'ları (genelde flex grid) */
+                  [class*="TextInput"], [data-class~="r-input"] {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  /* Tipik flex-row grid'ler — date picker satırı vb */
+                  [style*="flex-direction: row"], [style*="flexDirection: row"], [style*="flexDirection:row"] {
+                    flex-wrap: wrap !important;
+                    min-width: 0 !important;
+                  }
+                  [style*="flex-direction: row"] > *, [style*="flexDirection: row"] > *, [style*="flexDirection:row"] > * {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  /* Genel container — yatay scroll engelle */
+                  body, #root, [class*="root"] {
+                    max-width: 100vw !important;
+                    overflow-x: hidden !important;
+                  }
+                  /* Form satırlarında padding/gap düşür */
+                  [style*="grid"] { max-width: 100% !important; }
+                `;
+                doc.head.appendChild(style);
+              } catch(err) { /* cross-origin or already injected — sessiz geç */ }
+            }}
             style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
@@ -3228,8 +3337,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA & HARİTA BARI — üst navın altında, scroll ile birlikte kayar (yapışık değil — absolute, fixed değil) */}
-      <div style={{ position:"absolute",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
+      {/* AYNA & HARİTA BARI — sabit (kıpırdamaz), aşağı scroll'da kayar */}
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px",transform: barHidden ? "translateY(-160%)" : "translateY(0)",transition:"transform 0.32s cubic-bezier(0.25,0.1,0.25,1)" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
