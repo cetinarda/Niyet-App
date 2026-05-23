@@ -1029,7 +1029,7 @@ async function scheduleDailyReminders(lang) {
     // Mevcut tüm slotları temizle (9000-9039 + sabah pingleri 9100/9101)
     await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
     const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const hours = [10, 14, 19];
+    const hours = [9, 13, 18];
     const now = new Date();
     const notifications = [];
     // 7 günlük forward schedule — 3 günlük slot × 7 gün = 21 varyasyonlu bildirim
@@ -1048,15 +1048,6 @@ async function scheduleDailyReminders(lang) {
       title: "Sakin",
       body: lang === "tr" ? "Günaydın. Bugün nasıl hissetmek istersin?" : "Good morning. How do you want to feel today?",
       schedule: { on: { hour: 7, minute: 30 } },
-      smallIcon: "ic_stat_icon_config_sample",
-      iconColor: "#b8a4d8",
-    });
-    // İkinci sabah pingi — saat 9, ilk pingi kaçıranlar için
-    notifications.push({
-      id: 9100,
-      title: "Sakin",
-      body: lang === "tr" ? "Bugün kendine dön. Bir nefes yeter." : "Come back to yourself today. One breath is enough.",
-      schedule: { on: { hour: 9, minute: 0 } },
       smallIcon: "ic_stat_icon_config_sample",
       iconColor: "#b8a4d8",
     });
