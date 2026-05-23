@@ -3146,23 +3146,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
   // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
   const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
-
-  // Üst bar — fixed kalır, kıpırdamaz; aşağı scroll yapılırsa kaybolur, geri çıkıldığında gelir
-  const [barHidden, setBarHidden] = useState(false);
-  const lastScrollYRef = useRef(0);
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY || 0;
-      if (y < 24) { setBarHidden(false); lastScrollYRef.current = y; return; }
-      if (y > lastScrollYRef.current + 6) setBarHidden(true);
-      else if (y < lastScrollYRef.current - 6) setBarHidden(false);
-      lastScrollYRef.current = y;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  // Ekran değişince yukarı kaydır + bar görünür yap
-  useEffect(() => { window.scrollTo(0, 0); setBarHidden(false); }, [screen]);
   return (
     <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
@@ -3349,8 +3332,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA & HARİTA BARI — sabit (kıpırdamaz), aşağı scroll'da kayar */}
-      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px",transform: barHidden ? "translateY(-160%)" : "translateY(0)",transition:"transform 0.32s cubic-bezier(0.25,0.1,0.25,1)" }}>
+      {/* AYNA & HARİTA BARI — üst navın altında sabit */}
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : "var(--sat)",left:0,right:0,zIndex:9998,minHeight:44,background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:"6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
