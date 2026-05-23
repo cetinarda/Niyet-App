@@ -1014,6 +1014,37 @@ const DAILY_REMINDERS_EN = [
   "Pause for a moment. Just be.",
 ];
 
+// Aynı tarih → aynı 3 mesaj. Cache localStorage'da. Yeniden schedule'larda mesaj sabit kalır.
+function dailyPicks(reminders, dateStr, lang) {
+  const key = `sakin_picks_${lang}_${dateStr}`;
+  try {
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      const arr = JSON.parse(cached);
+      if (Array.isArray(arr) && arr.length === 3) return arr;
+    }
+  } catch(_) {}
+  const shuffled = [...reminders].sort(() => Math.random() - 0.5);
+  const picks = shuffled.slice(0, 3);
+  try { localStorage.setItem(key, JSON.stringify(picks)); } catch(_) {}
+  return picks;
+}
+
+function cleanupOldPicks() {
+  try {
+    const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
+    const toRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k || !k.startsWith("sakin_picks_")) continue;
+      const dateStr = k.split("_").pop();
+      const t = new Date(dateStr).getTime();
+      if (!isNaN(t) && t < cutoff) toRemove.push(k);
+    }
+    toRemove.forEach(k => localStorage.removeItem(k));
+  } catch(_) {}
+}
+
 async function scheduleDailyReminders(lang) {
   if (!isNative) return;
   try {
@@ -1028,14 +1059,17 @@ async function scheduleDailyReminders(lang) {
     if (lastScheduled === todayKey) return;
     // Mevcut tüm slotları temizle (9000-9039 + sabah pingleri 9100/9101)
     await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
+    cleanupOldPicks();
     const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
     const hours = [9, 13, 18];
     const now = new Date();
     const notifications = [];
-    // 7 günlük forward schedule — 3 günlük slot × 7 gün = 21 varyasyonlu bildirim
+    // 7 günlük forward schedule — her gün için sabit (cache'li) 3 mesaj, böylece
+    // dünden bugüne firing olmuş bir mesaj bugün tekrar planlanmaz
     for (let d = 0; d < 7; d++) {
-      const shuffled = [...reminders].sort(() => Math.random() - 0.5);
-      const picked = shuffled.slice(0, 3);
+      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+      const dateStr = dayDate.toISOString().slice(0,10);
+      const picked = dailyPicks(reminders, dateStr, lang);
       picked.forEach((body, i) => {
         const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, hours[i], Math.floor(Math.random()*30), 0);
         if (at <= now) return; // geçmiş slot atla
