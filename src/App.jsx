@@ -5443,22 +5443,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                 </div>
 
-                <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading || !productsReady}
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:15,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
-                  {purchaseLoading === "yearly"
-                    ? "..."
-                    : !productsReady
-                    ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
-                    : <>{lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly"}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $9.99</span></>}
-                </button>
-                <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
-                  style={{ display:"block",width:"100%",marginBottom:0,fontSize:15,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
-                  {purchaseLoading === "lifetime"
-                    ? "..."
-                    : !productsReady
-                    ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
-                    : <>{lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime"}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $19.99</span></>}
-                </button>
+                {(() => {
+                  const yearlyInfo = productsReady ? getProductInfo(YEARLY_PRODUCT_ID) : null;
+                  const lifetimeInfo = productsReady ? getProductInfo(LIFETIME_PRODUCT_ID) : null;
+                  return (
+                    <>
+                      <button onClick={() => handlePurchase(purchaseYearly, "yearly")} disabled={!!purchaseLoading || !productsReady}
+                        style={{ display:"block",width:"100%",marginTop:20,marginBottom:12,fontSize:15,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                        {purchaseLoading === "yearly"
+                          ? "..."
+                          : !productsReady
+                          ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
+                          : <>{lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly"}{yearlyInfo?.price ? <span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· {yearlyInfo.price}</span> : ""}</>}
+                      </button>
+                      <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
+                        style={{ display:"block",width:"100%",marginBottom:0,fontSize:15,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
+                        {purchaseLoading === "lifetime"
+                          ? "..."
+                          : !productsReady
+                          ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
+                          : <>{lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime"}{lifetimeInfo?.price ? <span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· {lifetimeInfo.price}</span> : ""}</>}
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
 
               {!productsReady && !purchaseError && (
