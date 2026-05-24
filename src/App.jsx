@@ -3133,6 +3133,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
+    {id:"giris",  icon:"⌂", label:lang==="tr"?"Giriş":"Home", color:"#c0a8e0"},
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
@@ -3331,8 +3332,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA & HARİTA BARI — üst navın altında sabit. top:0 + paddingTop:sat ile safe area zone'u da kapatır (status bar arkası transparan kalmasın). */}
-      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,zIndex:9998,minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",paddingTop: topNavVisible ? 0 : "var(--sat)",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
+      {/* AYNA & HARİTA BARI — sabit. iOS feature ekranlarında en üstte (safe area dahil); web/policy/giriş'te topNav'ın altında. */}
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,zIndex:9998,minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
