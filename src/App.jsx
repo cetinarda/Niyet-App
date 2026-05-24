@@ -4786,65 +4786,194 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const best = streakData?.best ?? 0;
 
         const downloadCard = async () => {
-          const svgEl = document.getElementById("galaktik-id-card-svg");
-          if (!svgEl) return;
-          // SVG'den fotoğrafı çıkar — data URL'li image canvas'ı taint edip siyah çıkmasına neden olur (iOS WKWebView)
-          const svgClone = svgEl.cloneNode(true);
-          svgClone.querySelectorAll("image").forEach(el => el.remove());
-          const svgStr = new XMLSerializer().serializeToString(svgClone);
-          const svgBlob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-          const svgUrl = URL.createObjectURL(svgBlob);
-          const svgImg = new Image();
-          svgImg.onload = async () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = 1080; canvas.height = 1920;
-            const ctx = canvas.getContext("2d");
-            ctx.fillStyle = "#0a0612"; ctx.fillRect(0,0,1080,1920);
-            ctx.drawImage(svgImg, 0, 0, 1080, 1920);
-            // Fotoğrafı ayrıca composite et (data URL olarak doğrudan canvas'a)
-            if (idCardPhoto) {
-              await new Promise((resolve) => {
-                const photoImg = new Image();
-                photoImg.onload = () => {
-                  ctx.save();
-                  ctx.beginPath();
-                  ctx.arc(540, 380, 160, 0, Math.PI * 2);
-                  ctx.clip();
-                  const r = Math.max(320 / photoImg.width, 320 / photoImg.height);
-                  const w = photoImg.width * r, h = photoImg.height * r;
-                  ctx.drawImage(photoImg, 540 - w/2, 380 - h/2, w, h);
-                  ctx.restore();
-                  ctx.beginPath();
-                  ctx.arc(540, 380, 160, 0, Math.PI * 2);
-                  ctx.strokeStyle = "rgba(220,200,255,0.5)";
-                  ctx.lineWidth = 4;
-                  ctx.stroke();
-                  resolve();
-                };
-                photoImg.onerror = resolve;
-                photoImg.src = idCardPhoto;
-              });
-            }
-            URL.revokeObjectURL(svgUrl);
-            canvas.toBlob(async (blob) => {
-              if (!blob) return;
-              const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
-              try {
-                // iOS: navigator.share file ile → share sheet'te "Görseli Kaydet" çıkar (Fotoğraflar)
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                  await navigator.share({ files: [file] });
-                } else {
-                  // Web fallback: direkt indirme
-                  const dl = URL.createObjectURL(blob);
-                  const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
-                  setTimeout(() => URL.revokeObjectURL(dl), 3000);
-                }
-              } catch(_) {}
-            }, "image/jpeg", 0.92);
-          };
-          svgImg.onerror = () => { URL.revokeObjectURL(svgUrl); };
-          svgImg.src = svgUrl;
+          // SVG-to-Image iOS WKWebView'da text/font'ları render etmiyor — saf canvas 2D ile çiz
+          const canvas = document.createElement("canvas");
+          canvas.width = 1080; canvas.height = 1920;
+          const ctx = canvas.getContext("2d");
+
+          // 1. Arka plan gradient
+          const bg = ctx.createLinearGradient(0, 0, 0, 1920);
+          bg.addColorStop(0, "#0a0612");
+          bg.addColorStop(0.5, "#1a1230");
+          bg.addColorStop(1, "#0a0612");
+          ctx.fillStyle = bg;
+          ctx.fillRect(0, 0, 1080, 1920);
+
+          // 2. Yıldızlar
+          const stars = [[60,80,3],[260,140,2],[140,220,1.5],[500,180,2.5],[820,140,3],[940,440,2],[180,500,1.5],[760,640,2],[120,760,1.5],[880,820,2.5],[420,900,1.5],[640,990,1.8],[280,1080,1.5],[820,1140,2],[160,1240,1.5],[560,1320,2],[940,1430,1.5],[120,1520,2],[700,1610,1.8],[400,1730,1.5]];
+          ctx.fillStyle = "rgba(255,255,255,0.8)";
+          stars.forEach(([x,y,r]) => {
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          // 3. Header
+          ctx.fillStyle = "#9080c0";
+          ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("✦ SAKIN LIFE · GALAKTIK KIMLIK ✦", 540, 180);
+
+          // 4. Fotoğraf (varsa) veya placeholder
+          if (idCardPhoto) {
+            await new Promise((resolve) => {
+              const img = new Image();
+              img.onload = () => {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(540, 380, 160, 0, Math.PI * 2);
+                ctx.clip();
+                const r = Math.max(320 / img.width, 320 / img.height);
+                const w = img.width * r, h = img.height * r;
+                ctx.drawImage(img, 540 - w/2, 380 - h/2, w, h);
+                ctx.restore();
+                resolve();
+              };
+              img.onerror = resolve;
+              img.src = idCardPhoto;
+            });
+          } else {
+            // Placeholder radial gradient
+            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, 160);
+            rg.addColorStop(0, "rgba(180,140,240,0.55)");
+            rg.addColorStop(1, "rgba(80,40,140,0.25)");
+            ctx.fillStyle = rg;
+            ctx.beginPath();
+            ctx.arc(540, 380, 160, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fff";
+            ctx.font = "120px -apple-system, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("✦", 540, 420);
+          }
+          // Foto çerçevesi
+          ctx.beginPath();
+          ctx.arc(540, 380, 160, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(220,200,255,0.5)";
+          ctx.lineWidth = 4;
+          ctx.stroke();
+
+          // 5. Ad
+          ctx.fillStyle = "#fff";
+          ctx.font = "300 56px -apple-system, 'Jost', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(displayName.toUpperCase(), 540, 640);
+
+          // 6. Burç · Yaşam Yolu
+          ctx.fillStyle = "#a890c8";
+          ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
+          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · YAŞAM YOLU ${yasamYolu}` : ""}`;
+          if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
+
+          // 7. Stat boxes (2x3 grid)
+          const stats = [
+            [lang==="tr"?"BURÇ":"SUN",          burc,                  "#f0c860", 100, 820],
+            [lang==="tr"?"YÜKSELEN":"ASC",      yuk,                   "#a0d8b4", 560, 820],
+            [lang==="tr"?"12. EV":"12TH",       ev12,                  "#c8b0e8", 100, 940],
+            ["DRACONİK",                        dra,                   "#d8c8f0", 560, 940],
+            [lang==="tr"?"YAŞAM YOLU":"LIFE PATH", String(yasamYolu),  "#d0c8e8", 100, 1060],
+            [lang==="tr"?"KİŞİSEL YIL":"PERSONAL YR", String(kisiselYil), "#d0c8e8", 560, 1060],
+          ];
+          stats.forEach(([label, val, color, x, y]) => {
+            // box
+            ctx.fillStyle = "rgba(255,255,255,0.025)";
+            roundRect(ctx, x, y, 420, 92, 14);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(255,255,255,0.06)";
+            ctx.lineWidth = 1;
+            roundRect(ctx, x, y, 420, 92, 14);
+            ctx.stroke();
+            // label
+            ctx.fillStyle = "#7a7090";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(label, x + 22, y + 36);
+            // value
+            ctx.fillStyle = color;
+            ctx.font = "500 32px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(val, x + 22, y + 76);
+          });
+
+          // 8. Streak stats
+          ctx.fillStyle = "rgba(255,255,255,0.025)";
+          roundRect(ctx, 100, 1200, 880, 160, 14);
+          ctx.fill();
+          // Streak number
+          ctx.fillStyle = "#f0a040";
+          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(String(days), 280, 1280);
+          ctx.fillStyle = "#7a7090";
+          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(lang==="tr" ? "GÜN SERİSİ" : "STREAK", 280, 1330);
+          // Best
+          ctx.fillStyle = "#82d9a3";
+          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(String(best), 540, 1280);
+          ctx.fillStyle = "#7a7090";
+          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(lang==="tr" ? "EN İYİ" : "BEST", 540, 1330);
+          // Cards
+          ctx.fillStyle = "#a0d8b4";
+          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(String(animalCount + mythCount), 800, 1280);
+          ctx.fillStyle = "#7a7090";
+          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(lang==="tr" ? "KART" : "CARDS", 800, 1330);
+
+          // 9. HD bölümü (varsa)
+          if (hdProfile && hdProfile.type) {
+            ctx.fillStyle = "rgba(180,160,216,0.08)";
+            roundRect(ctx, 100, 1410, 880, 100, 14);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(180,160,216,0.18)";
+            ctx.lineWidth = 1;
+            roundRect(ctx, 100, 1410, 880, 100, 14);
+            ctx.stroke();
+            ctx.fillStyle = "#9080b8";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.fillText("HUMAN DESIGN", 540, 1450);
+            ctx.fillStyle = "#d0c8e8";
+            ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, 1490);
+          }
+
+          // 10. Footer
+          ctx.fillStyle = "#605080";
+          ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("SAKIN.LIFE", 540, 1820);
+
+          // Export
+          canvas.toBlob(async (blob) => {
+            if (!blob) return;
+            const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
+            try {
+              if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file] });
+              } else {
+                const dl = URL.createObjectURL(blob);
+                const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
+                setTimeout(() => URL.revokeObjectURL(dl), 3000);
+              }
+            } catch(_) {}
+          }, "image/jpeg", 0.92);
         };
+
+        // Rounded rect helper
+        function roundRect(ctx, x, y, w, h, r) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+          ctx.closePath();
+        }
 
         const StatRow = ({label, value, color}) => (
           <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5 }}>
@@ -4925,78 +5054,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {lang==="tr"?"Kapat":"Close"}
                 </button>
               </div>
-              {/* Hidden high-resolution SVG used for export */}
-              <svg id="galaktik-id-card-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920" style={{ position:"absolute",left:-99999,top:0,pointerEvents:"none" }}>
-                <defs>
-                  <linearGradient id="idBg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#0a0612"/>
-                    <stop offset="50%" stopColor="#1a1230"/>
-                    <stop offset="100%" stopColor="#0a0612"/>
-                  </linearGradient>
-                  <radialGradient id="idPhotoBg" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="rgba(180,140,240,0.55)"/>
-                    <stop offset="100%" stopColor="rgba(80,40,140,0.25)"/>
-                  </radialGradient>
-                </defs>
-                <rect width="1080" height="1920" fill="url(#idBg)"/>
-                {[[60,80,3],[260,140,2],[140,220,1.5],[500,180,2.5],[820,140,3],[940,440,2],[180,500,1.5],[760,640,2],[120,760,1.5],[880,820,2.5],[420,900,1.5],[640,990,1.8],[280,1080,1.5],[820,1140,2],[160,1240,1.5],[560,1320,2],[940,1430,1.5],[120,1520,2],[700,1610,1.8],[400,1730,1.5]].map(([x,y,r],i)=>(
-                  <circle key={i} cx={x} cy={y} r={r} fill="rgba(255,255,255,0.8)"/>
-                ))}
-                <text x="540" y="180" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="34" letterSpacing="14" fill="#9080c0">✦ SAKIN LIFE · GALAKTIK KIMLIK ✦</text>
-                {idCardPhoto ? (
-                  <>
-                    <defs>
-                      <clipPath id="photoClip"><circle cx="540" cy="380" r="160"/></clipPath>
-                    </defs>
-                    <image href={idCardPhoto} x="380" y="220" width="320" height="320" clipPath="url(#photoClip)" preserveAspectRatio="xMidYMid slice"/>
-                    <circle cx="540" cy="380" r="160" fill="none" stroke="rgba(220,200,255,0.5)" strokeWidth="4"/>
-                  </>
-                ) : (
-                  <>
-                    <circle cx="540" cy="380" r="160" fill="url(#idPhotoBg)" stroke="rgba(220,200,255,0.5)" strokeWidth="4"/>
-                    <text x="540" y="410" textAnchor="middle" fontSize="120" fill="#fff">✦</text>
-                  </>
-                )}
-                <text x="540" y="640" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" letterSpacing="8" fill="#fff">{displayName.toUpperCase()}</text>
-                <text x="540" y="700" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="28" letterSpacing="6" fill="#a890c8">{burc !== "—" ? burc.toUpperCase() : ""} {yasamYolu !== "—" ? `· YAŞAM YOLU ${yasamYolu}` : ""}</text>
-                {/* Stats grid */}
-                {[
-                  [lang==="tr"?"BURÇ":"SUN", burc, "#f0c860", 100, 820],
-                  [lang==="tr"?"YÜKSELEN":"ASC", yuk, "#a0d8b4", 560, 820],
-                  [lang==="tr"?"12. EV":"12TH", ev12, "#c8b0e8", 100, 940],
-                  ["DRACONİK", dra, "#d8c8f0", 560, 940],
-                  [lang==="tr"?"YAŞAM YOLU":"LIFE PATH", String(yasamYolu), "#d0c8e8", 100, 1060],
-                  [lang==="tr"?"KIŞISEL YIL":"PERSONAL YR", String(kisiselYil), "#d0c8e8", 560, 1060],
-                ].map(([label, val, color, x, y], i) => (
-                  <g key={i}>
-                    <rect x={x} y={y} width="420" height="92" rx="14" fill="rgba(255,255,255,0.025)" stroke="rgba(255,255,255,0.06)"/>
-                    <text x={x+22} y={y+34} fontFamily="'Jost',sans-serif" fontSize="22" letterSpacing="4" fill="#7a7090">{label}</text>
-                    <text x={x+22} y={y+72} fontFamily="'Jost',sans-serif" fontSize="36" fill={color} fontWeight="500">{val}</text>
-                  </g>
-                ))}
-                {/* Streak stats */}
-                <rect x="100" y="1200" width="880" height="160" rx="14" fill="rgba(255,255,255,0.025)"/>
-                <g>
-                  <text x="280" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#f0a040">{days}</text>
-                  <text x="280" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"GÜN SERISI":"STREAK"}</text>
-                </g>
-                <g>
-                  <text x="540" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#82d9a3">{best}</text>
-                  <text x="540" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"EN IYI":"BEST"}</text>
-                </g>
-                <g>
-                  <text x="800" y="1270" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="64" fontWeight="300" fill="#a0d8b4">{animalCount + mythCount}</text>
-                  <text x="800" y="1320" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="4" fill="#7a7090">{lang==="tr"?"KART":"CARDS"}</text>
-                </g>
-                {hdProfile && hdProfile.type && (
-                  <g>
-                    <rect x="100" y="1410" width="880" height="100" rx="14" fill="rgba(180,160,216,0.08)" stroke="rgba(180,160,216,0.18)"/>
-                    <text x="540" y="1450" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="20" letterSpacing="5" fill="#9080b8">HUMAN DESIGN</text>
-                    <text x="540" y="1490" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="32" fill="#d0c8e8">{hdProfile.type}{hdProfile.profile ? ` · ${hdProfile.profile}` : ""}</text>
-                  </g>
-                )}
-                <text x="540" y="1820" textAnchor="middle" fontFamily="'Jost',sans-serif" fontSize="30" letterSpacing="14" fill="#605080">SAKIN.LIFE</text>
-              </svg>
             </div>
           </div>
         );
