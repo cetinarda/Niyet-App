@@ -2036,6 +2036,7 @@ export default function SakinApp() {
   const [selectedNature, setSelectedNature] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
+  const [idCardRenderedUrl, setIdCardRenderedUrl] = useState(null);
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   const requireAiConsent = (action) => {
@@ -4944,20 +4945,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ctx.textAlign = "center";
           ctx.fillText("SAKIN.LIFE", 540, 1820);
 
-          // Export
-          canvas.toBlob(async (blob) => {
+          // Export — görseli inline göster, kullanıcı uzun basıp Fotoğraflar'a ekleyebilsin
+          canvas.toBlob((blob) => {
             if (!blob) return;
-            const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
-            try {
-              if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file] });
-              } else {
-                const dl = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
-                setTimeout(() => URL.revokeObjectURL(dl), 3000);
-              }
-            } catch(_) {}
+            if (idCardRenderedUrl) { try { URL.revokeObjectURL(idCardRenderedUrl); } catch(_){} }
+            const dl = URL.createObjectURL(blob);
+            setIdCardRenderedUrl(dl);
+            if (!isNative) {
+              // Web: doğrudan indir
+              const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
+            }
           }, "image/jpeg", 0.92);
+        };
+
+        const shareCard = async () => {
+          if (!idCardRenderedUrl) return;
+          try {
+            const res = await fetch(idCardRenderedUrl);
+            const blob = await res.blob();
+            const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({ files: [file] });
+            }
+          } catch(_) {}
         };
 
         // Rounded rect helper
@@ -5047,13 +5057,31 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </label>
                 <button onClick={downloadCard}
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
-                  ↓ {lang==="tr"?"Galeriye Kaydet":"Save to Gallery"}
+                  {idCardRenderedUrl ? (lang==="tr"?"↻ Yeniden Oluştur":"↻ Regenerate") : (lang==="tr"?"✦ Kartı Oluştur":"✦ Generate Card")}
                 </button>
-                <button onClick={()=>{ setShowIdCard(false); }}
+                <button onClick={()=>{ setShowIdCard(false); if(idCardRenderedUrl){ try{URL.revokeObjectURL(idCardRenderedUrl);}catch(_){} setIdCardRenderedUrl(null); } }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   {lang==="tr"?"Kapat":"Close"}
                 </button>
               </div>
+              {/* Oluşturulan görsel — uzun bas → Fotoğraflara Kaydet (iOS native akış) */}
+              {idCardRenderedUrl && (
+                <div style={{ marginTop:16,padding:"14px 12px 12px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:14,textAlign:"center" }}>
+                  <div style={{ fontSize:11,letterSpacing:2.5,color:"#d0c0f0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4,fontWeight:500 }}>
+                    {lang==="tr" ? "Kartın hazır ✦" : "Your card is ready ✦"}
+                  </div>
+                  <div style={{ fontSize:11.5,color:"#a890c8",lineHeight:1.6,marginBottom:10 }}>
+                    {lang==="tr" ? "Görsele basılı tut → \"Fotoğraflara Ekle\"" : "Long-press image → \"Add to Photos\""}
+                  </div>
+                  <img src={idCardRenderedUrl} alt="Galaktik Kimlik" style={{ width:"100%",borderRadius:12,display:"block",userSelect:"none",WebkitUserSelect:"none",WebkitTouchCallout:"default" }} />
+                  {isNative && (
+                    <button onClick={shareCard}
+                      style={{ marginTop:12,padding:"9px 22px",borderRadius:22,border:"1px solid rgba(255,255,255,0.15)",background:"rgba(255,255,255,0.05)",color:"#c8b8e8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                      ↗ {lang==="tr"?"Paylaş":"Share"}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         );
