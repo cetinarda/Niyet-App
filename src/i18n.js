@@ -17,6 +17,10 @@ export const TRANS = {
     nav_evening:  "Akşam",
     nav_map:      "Harita",
     nav_guide:    "Rehber",
+    nav_home:     "Giriş",
+    nav_connection:"Bağlantı",
+    nav_family:   "Ailesi",
+    nav_mirror:   "Ayna",
 
     // Giris
     tagline:      "Kendini hep hatırla",
@@ -339,6 +343,10 @@ export const TRANS = {
     nav_evening:  "Evening",
     nav_map:      "Map",
     nav_guide:    "Guide",
+    nav_home:     "Home",
+    nav_connection:"Connection",
+    nav_family:   "Family",
+    nav_mirror:   "Mirror",
 
     // Giris
     tagline:      "Always remember yourself",
