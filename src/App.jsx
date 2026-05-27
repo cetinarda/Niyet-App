@@ -75,8 +75,9 @@ const CHAKRAS_22_EN = [
   { name:"Divine Structure",color:"#cfd8dc", pastel:"#eceff1", desc:"Align with universal laws.",         element:"Law",        emoji:"⚖️", level:3, konu:"Alignment with universal laws" },
   { name:"Source",          color:"#e0e0e0", pastel:"#f5f5f5", desc:"Unite with the divine source.",      element:"Platinum Light",emoji:"☀️",level:3, konu:"Complete union with the divine source" },
 ];
-const getChakras7 = (lang) => (lang === "en" ? CHAKRAS_22_EN : CHAKRAS_22_TR).filter(c => c.level === 1);
-const getChakras22 = (lang) => lang === "en" ? CHAKRAS_22_EN : CHAKRAS_22_TR;
+// Chakra verisi sadece TR ve EN'de mevcut; diğer diller (DE/ES/PT/FR/JA) için EN fallback
+const getChakras7 = (lang) => (lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN).filter(c => c.level === 1);
+const getChakras22 = (lang) => lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN;
 const CHAKRAS_7 = CHAKRAS_22_TR.filter(c => c.level === 1);
 const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozmik Boyut" };
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
@@ -1491,8 +1492,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         )}
         {(chakraTab === "temel" ? [1] : [3,2]).map(level => {
           const levelChakras = CHAKRAS_22.filter(c => c.level === level);
-          const levelLabel = (lang==="en" ? LEVEL_LABELS_EN : LEVEL_LABELS_TR)[level];
-          const levelRange = (lang==="en" ? LEVEL_RANGES_EN : LEVEL_RANGES_TR)[level];
+          // TR sadece TR'de; DE/ES/PT/FR/JA için EN fallback
+          const levelLabel = (lang==="tr" ? LEVEL_LABELS_TR : LEVEL_LABELS_EN)[level];
+          const levelRange = (lang==="tr" ? LEVEL_RANGES_TR : LEVEL_RANGES_EN)[level];
           const levelColors = { 3:"rgba(200,200,210,0.4)", 2:"rgba(140,100,220,0.4)", 1:"rgba(200,120,80,0.4)" };
           return (
             <div key={level}>
@@ -3090,11 +3092,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
-    {id:"giris",  icon:"⌂", label:lang==="tr"?"Giriş":"Home", color:"#c0a8e0"},
-    ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:lang==="tr"?"Ayna":"Mirror", color:"#a070d0"}]),
-    {id:"harita", icon:"🗺️", label:lang==="tr"?"Harita":"Map",  color:"#82d9a3"},
-    {id:"mandala",icon:"◎",  label:lang==="tr"?"Bağlantı":"Connection", color:"#b87adc"},
-    {id:"ailesi", icon:"✦", label:lang==="tr"?"Ailesi":"Family", color:"#f0c060", glow:true},
+    {id:"giris",  icon:"⌂", label:t("nav_home"), color:"#c0a8e0"},
+    ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:t("nav_mirror"), color:"#a070d0"}]),
+    {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
+    {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
+    {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
