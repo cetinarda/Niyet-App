@@ -1,3 +1,5 @@
+import { EXTRA_LANGS } from "./i18n-extras";
+
 export const TRANS = {
   tr: {
     // Top nav
@@ -644,11 +646,27 @@ export const TRANS = {
   },
 };
 
+// Ek dilleri TRANS objesine merge et
+Object.assign(TRANS, EXTRA_LANGS);
+
 export function makeTrans(lang) {
-  const d = TRANS[lang] || TRANS.tr;
+  const d = TRANS[lang] || TRANS.en;
+  const fallback = TRANS.en;
   return (key, ...args) => {
-    const val = d[key];
+    let val = d[key];
+    if (val === undefined) val = fallback[key];
     if (typeof val === "function") return val(...args);
     return val ?? key;
   };
 }
+
+// Desteklenen diller — UI dropdown için (sade kod gösterimi)
+export const LANGUAGES = [
+  { code: "en",    label: "EN" },
+  { code: "tr",    label: "TR" },
+  { code: "de",    label: "DE" },
+  { code: "es",    label: "ES" },
+  { code: "pt-BR", label: "PT" },
+  { code: "fr",    label: "FR" },
+  { code: "ja",    label: "JA" },
+];
