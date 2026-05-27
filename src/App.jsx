@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { makeTrans } from "./i18n";
+import { makeTrans, LANGUAGES } from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
@@ -1928,9 +1928,17 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
 }
 
 export default function SakinApp() {
-  const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "tr");
+  const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
+  const [langOpen, setLangOpen] = useState(false);
   const t = makeTrans(lang);
-  const toggleLang = () => { const nl = lang === "tr" ? "en" : "tr"; setLang(nl); localStorage.setItem("sakin_lang", nl); };
+  const toggleLang = () => {
+    // Sırayla dilleri döndür (EN → TR → DE → ES → PT-BR → FR → JA → EN ...)
+    const codes = LANGUAGES.map(l => l.code);
+    const idx = codes.indexOf(lang);
+    const nl = codes[(idx + 1) % codes.length] || "en";
+    setLang(nl);
+    localStorage.setItem("sakin_lang", nl);
+  };
   const [tabletMode, setTabletMode] = useState(detectTablet);
   useEffect(() => {
     const onResize = () => { const v = detectTablet(); isTablet = v; setTabletMode(v); };
@@ -3359,8 +3367,28 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
-                  <button onClick={()=>{ setLang("tr"); localStorage.setItem("sakin_lang","tr"); }} style={{ background:lang==="tr"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="tr"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="tr"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>TR</button>
-                  <button onClick={()=>{ setLang("en"); localStorage.setItem("sakin_lang","en"); }} style={{ background:lang==="en"?"rgba(255,255,255,0.12)":"transparent",border:"1px solid rgba(255,255,255,"+(lang==="en"?"0.3":"0.1")+")",borderRadius:20,padding:"6px 18px",color:lang==="en"?"#fff":"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>EN</button>
+                  {/* Dil dropdown — sade kod (EN/TR/DE/ES/PT/FR/JA) */}
+                  <div style={{ position:"relative" }}>
+                    <button onClick={()=>setLangOpen(o=>!o)}
+                      style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:20,padding:"6px 14px",color:"#ddd",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,minWidth:64,display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6 }}>
+                      <span>{(LANGUAGES.find(l=>l.code===lang)?.label) || lang.toUpperCase()}</span>
+                      <span style={{ fontSize:9,opacity:0.7,transform: langOpen ? "rotate(180deg)" : "none",transition:"transform 0.2s" }}>▾</span>
+                    </button>
+                    {langOpen && (
+                      <>
+                        <div onClick={()=>setLangOpen(false)} style={{ position:"fixed",inset:0,zIndex:9999 }} />
+                        <div style={{ position:"absolute",top:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",zIndex:10000,background:"rgba(15,10,25,0.96)",backdropFilter:"blur(20px)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:14,padding:6,display:"flex",flexDirection:"column",gap:2,boxShadow:"0 12px 32px rgba(0,0,0,0.55)",minWidth:80 }}>
+                          {LANGUAGES.map(l => (
+                            <button key={l.code}
+                              onClick={()=>{ setLang(l.code); localStorage.setItem("sakin_lang",l.code); setLangOpen(false); }}
+                              style={{ background: lang===l.code ? "rgba(184,164,216,0.18)" : "transparent",border:"none",borderRadius:8,padding:"7px 14px",color: lang===l.code ? "#fff" : "#aaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,textAlign:"center" }}>
+                              {l.label}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </>
             ) : (
