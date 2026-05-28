@@ -5546,6 +5546,34 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
                     : <>{lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime"}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $19.99</span></>}
                 </button>
+
+                {/* Auto-renewable subscription disclosure — Apple Guideline 3.1.2(c) gerekliliği */}
+                <div style={{ marginTop:16,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.08)",fontSize:11.5,color:"#888",lineHeight:1.7,letterSpacing:0.3 }}>
+                  <div style={{ fontWeight:500,color:"#aaa",marginBottom:6,fontSize:12,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                    {lang==="tr" ? "Abonelik Bilgileri" : "Subscription Info"}
+                  </div>
+                  <div style={{ marginBottom:6 }}>
+                    <strong style={{ color:"#bbb" }}>{lang==="tr" ? "Yıllık Premium" : "Yearly Premium"}</strong> · {lang==="tr" ? "12 ay · $9.99/yıl · otomatik yenilenir" : "12 months · $9.99/year · auto-renewable"}
+                  </div>
+                  <div style={{ marginBottom:6 }}>
+                    <strong style={{ color:"#bbb" }}>{lang==="tr" ? "Ömür Boyu" : "Lifetime"}</strong> · {lang==="tr" ? "$19.99 · tek ödeme · abonelik değil" : "$19.99 · one-time · not a subscription"}
+                  </div>
+                  <div style={{ marginBottom:10,color:"#777",fontSize:11 }}>
+                    {lang==="tr"
+                      ? "Yıllık abonelik mevcut dönem sona ermeden en az 24 saat önce iptal edilmediği sürece otomatik yenilenir. Ödeme satın alma onayında Apple ID hesabınızdan çekilir. Aboneliğinizi iPhone Ayarlar'dan yönetebilir/iptal edebilirsiniz."
+                      : "Yearly subscription auto-renews unless cancelled at least 24 hours before the end of the current period. Payment is charged to your Apple ID account at purchase confirmation. You can manage or cancel your subscription in iPhone Settings."}
+                  </div>
+                  <div style={{ display:"flex",gap:14,flexWrap:"wrap" }}>
+                    <button onClick={()=>setScreen("sartlar")}
+                      style={{ background:"none",border:"none",padding:0,color:"#b8a4d8",fontSize:11.5,letterSpacing:0.3,cursor:"pointer",textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif" }}>
+                      {lang==="tr" ? "Hizmet Şartları (EULA)" : "Terms of Use (EULA)"}
+                    </button>
+                    <button onClick={()=>setScreen("gizlilik")}
+                      style={{ background:"none",border:"none",padding:0,color:"#b8a4d8",fontSize:11.5,letterSpacing:0.3,cursor:"pointer",textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif" }}>
+                      {lang==="tr" ? "Gizlilik Politikası" : "Privacy Policy"}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {!productsReady && !purchaseError && (
