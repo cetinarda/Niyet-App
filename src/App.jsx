@@ -683,25 +683,40 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
       </button>
       {/* 30 sn paywall — kaleidoskop arkada akmaya devam eder, üstünde yumuşak overlay */}
       {timeUp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10012,background:"rgba(0,0,0,0.78)",backdropFilter:"blur(18px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 20px calc(20px + var(--sab))",animation:"fadeIn 0.7s ease" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10012,background:"rgba(0,0,0,0.78)",backdropFilter:"blur(18px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 20px calc(20px + var(--sab))",animation:"fadeIn 0.7s ease",overflowY:"auto" }}>
           <div style={{ maxWidth:340,width:"100%",textAlign:"center" }}>
             <div style={{ fontSize:30,marginBottom:14,letterSpacing:6 }}>✦</div>
             <div style={{ fontSize:15,letterSpacing:3,color:"rgba(255,255,255,0.92)",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,fontWeight:300 }}>
               {lang==="tr" ? "Bir nefes daha mı?" : "One more breath?"}
             </div>
-            <div style={{ fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.85,marginBottom:24 }}>
+            <div style={{ fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.85,marginBottom:14 }}>
               {lang==="tr"
                 ? "30 saniyelik sığınağın doldu. Sınırsız zihni boşaltma, mod & doğa sesi karışımları Premium'da."
                 : "Your 30-second retreat is full. Unlimited mind-clearing, mode & nature mixes are in Premium."}
+            </div>
+            {/* Abonelik özeti + 3.1.2(c) gerekli bilgiler */}
+            <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.55)",lineHeight:1.6,marginBottom:14,padding:"10px 12px",background:"rgba(255,255,255,0.04)",borderRadius:10,border:"1px solid rgba(255,255,255,0.08)" }}>
+              {lang==="tr" ? "Yıllık Premium · 12 ay · $9.99/yıl · otomatik yenilenir  ·  Ömür Boyu · $19.99" : "Yearly Premium · 12 mo · $9.99/yr · auto-renewable  ·  Lifetime · $19.99"}
             </div>
             <button onClick={onPremium}
               style={{ display:"block",width:"100%",padding:"12px 18px",borderRadius:24,border:"1px solid rgba(220,200,255,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,boxShadow:"0 4px 22px rgba(122,80,150,0.4)" }}>
               ✦ {lang==="tr" ? "Premium ile Aç" : "Unlock with Premium"}
             </button>
             <button onClick={onClose}
-              style={{ display:"block",width:"100%",padding:"10px 18px",borderRadius:24,border:"1px solid rgba(255,255,255,0.12)",background:"transparent",color:"rgba(255,255,255,0.55)",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              style={{ display:"block",width:"100%",padding:"10px 18px",borderRadius:24,border:"1px solid rgba(255,255,255,0.12)",background:"transparent",color:"rgba(255,255,255,0.55)",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:12 }}>
               {lang==="tr" ? "Kapat" : "Close"}
             </button>
+            {/* GERÇEK functional URL linkleri — Safari'de açılır */}
+            <div style={{ display:"flex",justifyContent:"center",gap:18,flexWrap:"wrap" }}>
+              <a href="https://sakin.life/terms/" target="_blank" rel="noopener noreferrer"
+                style={{ color:"rgba(184,164,216,0.85)",fontSize:11.5,textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif",padding:"6px 4px" }}>
+                {lang==="tr" ? "Hizmet Şartları (EULA)" : "Terms of Use (EULA)"}
+              </a>
+              <a href="https://sakin.life/privacy/" target="_blank" rel="noopener noreferrer"
+                style={{ color:"rgba(184,164,216,0.85)",fontSize:11.5,textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif",padding:"6px 4px" }}>
+                {lang==="tr" ? "Gizlilik Politikası" : "Privacy Policy"}
+              </a>
+            </div>
           </div>
         </div>
       )}
