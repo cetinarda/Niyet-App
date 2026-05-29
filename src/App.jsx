@@ -853,8 +853,8 @@ const GLOBAL_CSS = `
   .top-nav::-webkit-scrollbar { display:none; }
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
-    font-family:'Jost',sans-serif; font-weight:300;
-    font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#888888;
+    font-family:'Jost',sans-serif; font-weight:500;
+    font-size:13.5px; letter-spacing:2px; text-transform:uppercase; color:#aaaaaa;
     padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
   }
@@ -3498,7 +3498,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
+                    setScreen("sabah");
                   }}>
                   {lang==="tr" ? (birthInput ? "Devam Et →" : "Atla →") : (birthInput ? "Continue →" : "Skip →")}
                 </button>
