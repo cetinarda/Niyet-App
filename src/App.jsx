@@ -256,6 +256,77 @@ function approxAscendant(dateStr, timeStr) {
   return ZODIAC_ORDER[ascIdx];
 }
 
+// Doğum şehri → koordinat + saat dilimi. Türkiye 81 il + büyük dünya şehirleri.
+// [enlem, boylam, UTC offset]. Türkiye için offset 3 (DST geçmişi yaklaşık).
+const CITY_DB = {
+  "adana":[37.00,35.32,3],"adıyaman":[37.76,38.28,3],"afyonkarahisar":[38.76,30.54,3],"ağrı":[39.72,43.05,3],
+  "amasya":[40.65,35.83,3],"ankara":[39.93,32.86,3],"antalya":[36.90,30.69,3],"artvin":[41.18,41.82,3],
+  "aydın":[37.85,27.84,3],"balıkesir":[39.65,27.88,3],"bilecik":[40.14,29.98,3],"bingöl":[39.06,40.50,3],
+  "bitlis":[38.40,42.11,3],"bolu":[40.74,31.61,3],"burdur":[37.72,30.29,3],"bursa":[40.19,29.06,3],
+  "çanakkale":[40.16,26.41,3],"çankırı":[40.60,33.62,3],"çorum":[40.55,34.95,3],"denizli":[37.78,29.09,3],
+  "diyarbakır":[37.91,40.24,3],"edirne":[41.68,26.56,3],"elazığ":[38.68,39.22,3],"erzincan":[39.75,39.50,3],
+  "erzurum":[39.90,41.27,3],"eskişehir":[39.78,30.52,3],"gaziantep":[37.07,37.38,3],"giresun":[40.91,38.39,3],
+  "gümüşhane":[40.46,39.48,3],"hakkari":[37.58,43.74,3],"hatay":[36.20,36.16,3],"isparta":[37.76,30.55,3],
+  "mersin":[36.81,34.64,3],"istanbul":[41.01,28.98,3],"izmir":[38.42,27.14,3],"kars":[40.60,43.10,3],
+  "kastamonu":[41.39,33.78,3],"kayseri":[38.73,35.48,3],"kırklareli":[41.74,27.22,3],"kırşehir":[39.15,34.16,3],
+  "kocaeli":[40.77,29.92,3],"konya":[37.87,32.48,3],"kütahya":[39.42,29.98,3],"malatya":[38.35,38.31,3],
+  "manisa":[38.61,27.43,3],"kahramanmaraş":[37.58,36.93,3],"mardin":[37.31,40.74,3],"muğla":[37.22,28.36,3],
+  "muş":[38.73,41.49,3],"nevşehir":[38.62,34.71,3],"niğde":[37.97,34.68,3],"ordu":[40.98,37.88,3],
+  "rize":[41.02,40.52,3],"sakarya":[40.69,30.43,3],"samsun":[41.29,36.33,3],"siirt":[37.93,41.95,3],
+  "sinop":[42.03,35.15,3],"sivas":[39.75,37.02,3],"tekirdağ":[40.98,27.51,3],"tokat":[40.31,36.55,3],
+  "trabzon":[41.00,39.72,3],"tunceli":[39.11,39.55,3],"şanlıurfa":[37.17,38.79,3],"uşak":[38.68,29.41,3],
+  "van":[38.49,43.41,3],"yozgat":[39.82,34.81,3],"zonguldak":[41.45,31.79,3],"aksaray":[38.37,34.03,3],
+  "bayburt":[40.26,40.23,3],"karaman":[37.18,33.22,3],"kırıkkale":[39.85,33.52,3],"batman":[37.88,41.13,3],
+  "şırnak":[37.52,42.46,3],"bartın":[41.64,32.34,3],"ardahan":[41.11,42.70,3],"iğdır":[39.92,44.04,3],
+  "yalova":[40.65,29.27,3],"karabük":[41.20,32.62,3],"kilis":[36.72,37.12,3],"osmaniye":[37.07,36.25,3],
+  "düzce":[40.84,31.16,3],
+  "london":[51.51,-0.13,0],"londra":[51.51,-0.13,0],"paris":[48.86,2.35,1],"berlin":[52.52,13.40,1],
+  "madrid":[40.42,-3.70,1],"rome":[41.90,12.50,1],"roma":[41.90,12.50,1],"amsterdam":[52.37,4.90,1],
+  "moscow":[55.76,37.62,3],"moskova":[55.76,37.62,3],"dubai":[25.20,55.27,4],"new york":[40.71,-74.01,-5],
+  "los angeles":[34.05,-118.24,-8],"chicago":[41.88,-87.63,-6],"toronto":[43.65,-79.38,-5],
+  "tokyo":[35.68,139.69,9],"tokyo":[35.68,139.69,9],"beijing":[39.90,116.41,8],"sydney":[-33.87,151.21,10],
+  "tehran":[35.69,51.39,3.5],"tahran":[35.69,51.39,3.5],"baku":[40.41,49.87,4],"bakü":[40.41,49.87,4],
+  "lefkoşa":[35.19,33.36,3],"nicosia":[35.19,33.36,3],
+};
+const CITY_NAMES = Object.keys(CITY_DB);
+function normalizeCity(s){ return (s||"").toLowerCase().trim()
+  .replace(/i̇/g,"i").replace(/İ/g,"i"); }
+function lookupCity(input){
+  if (!input) return null;
+  const q = normalizeCity(input);
+  if (CITY_DB[q]) return CITY_DB[q];
+  // "Kayseri Develi" gibi → içinde geçen il adını bul
+  const hit = CITY_NAMES.find(n => q.includes(n) || n.includes(q));
+  return hit ? CITY_DB[hit] : null;
+}
+
+// Gerçek yükselen burç — yıldız zamanı + küresel astronomi (doğum şehri gerekir)
+function preciseAscendant(dateStr, timeStr, cityInput) {
+  if (!dateStr || !timeStr) return null;
+  const loc = lookupCity(cityInput);
+  if (!loc) return null;
+  const [lat, lon, tz] = loc;
+  const [hh, mm] = timeStr.split(":").map(Number);
+  if (isNaN(hh) || isNaN(mm)) return null;
+  const dParts = dateStr.split("-").map(Number); // YYYY-MM-DD
+  let [Y, Mo, Da] = dParts;
+  if (!Y || !Mo || !Da) return null;
+  const D2R = Math.PI/180, R2D = 180/Math.PI;
+  const ut = hh + mm/60 - tz;        // yerel saat → UT
+  let y = Y, m = Mo, d = Da + ut/24;
+  if (m <= 2) { y -= 1; m += 12; }
+  const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4);
+  const JD = Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + B - 1524.5;
+  const Tj = (JD - 2451545.0)/36525;
+  let GMST = 280.46061837 + 360.98564736629*(JD - 2451545.0) + 0.000387933*Tj*Tj - (Tj*Tj*Tj)/38710000;
+  GMST = ((GMST % 360) + 360) % 360;
+  const ramc = (((GMST + lon) % 360 + 360) % 360) * D2R;  // yerel yıldız zamanı
+  const eps = 23.4393 * D2R;
+  let asc = Math.atan2(Math.cos(ramc), -(Math.sin(ramc)*Math.cos(eps) + Math.tan(lat*D2R)*Math.sin(eps)));
+  let deg = ((asc*R2D) % 360 + 360) % 360;
+  return ZODIAC_ORDER[Math.floor(deg/30)];
+}
+
 // Ortalama Kuzey Ay Düğümü — Meeus formülü (yaklaşık, ±1° hata)
 // Düğüm 18.6 yılda bir burç döngüsü tamamlar, retrograd hareket eder.
 function approxNorthNode(dateStr) {
@@ -2393,6 +2464,8 @@ export default function SakinApp() {
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
+  const [birthCity,      setBirthCity]      = useState(()=>localStorage.getItem("sakin_birth_city")||"");
+  const [birthCityInput, setBirthCityInput] = useState(()=>localStorage.getItem("sakin_birth_city")||"");
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
   const breathChimeRef = useRef(null);
@@ -2471,7 +2544,10 @@ export default function SakinApp() {
     bio:        biorhythm(birthDate),
   } : null;
 
-  const yukselen   = birthDate && birthTime ? approxAscendant(birthDate, birthTime) : null;
+  // Doğum şehri varsa gerçek yükselen (yıldız zamanı + koordinat); yoksa kaba tahmin
+  const yukselen   = birthDate && birthTime
+    ? (preciseAscendant(birthDate, birthTime, birthCity) || approxAscendant(birthDate, birthTime))
+    : null;
   const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
   const kuzeyDugum = birthDate ? approxNorthNode(birthDate) : null;
@@ -3528,10 +3604,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <input type="date" className="sakin-input" style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
                     value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
                 </div>
-                <div style={{ marginBottom:14 }}>
+                <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
                   <input type="time" className="sakin-input" style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
                     value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
+                </div>
+                <div style={{ marginBottom:14 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Şehri (yükselen için)" : "Birth City (for ascendant)"}</div>
+                  <input type="text" className="sakin-input" list="city-list" placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"} style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
+                    value={birthCityInput} onChange={e=>setBirthCityInput(e.target.value)} />
+                  <datalist id="city-list">
+                    {CITY_NAMES.map(c => <option key={c} value={c.charAt(0).toUpperCase()+c.slice(1)} />)}
+                  </datalist>
                 </div>
                 <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
@@ -3540,6 +3624,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   onClick={()=>{
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                    if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                     setScreen("sabah");
                   }}>
                   {lang==="tr" ? (birthInput ? "Devam Et →" : "Atla →") : (birthInput ? "Continue →" : "Skip →")}
