@@ -5471,8 +5471,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 { icon:"🌙", color:"#7ab0e0", title:lang==="tr"?"6 · Akşam Kapanışı":"6 · Evening Closure", desc:lang==="tr"?"Z raporunu al, zihnin geçici belleğini boşalt. Bugün ne öğrendin, neye şükrediyorsun?":"Get your Z-report, clear the mind's working memory. What did today teach you, what are you grateful for?" },
                 { icon:"☽", color:"#c8b0e8", title:lang==="tr"?"7 · Ayna Geçidi":"7 · Mirror Portal", desc:lang==="tr"?"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor — bedenin de bir mesaj taşır.":"Find the mysterious portal at the right edge. Step in, ask your inner mirror — your body carries a message too." },
                 { icon:"✦", color:"#82d9a3", title:lang==="tr"?"8 · Haftalık Rapor":"8 · Weekly Report", desc:lang==="tr"?"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritm. Kendinle bağını derinleştir.":"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself." },
-              ].map((step,i) => (
-                <div key={i} style={{ position:"relative",marginBottom:i<7?24:0,paddingBottom:i<7?4:0 }}>
+                { icon:"◎", color:"#b87adc", title:lang==="tr"?"9 · Bağlantı":"9 · Connection", desc:lang==="tr"?"Sakin'i kullandıkça gün içinde kaynak enerjisiyle bağlantını güçlendirirsin — her dokunuş seni özüne yaklaştırır.":"As you use Sakin through the day, you strengthen your connection to source energy — each touch draws you closer to your essence." },
+                { icon:"✧", color:"#f0c060", title:lang==="tr"?"10 · Sakin Ailesi":"10 · Sakin Family", desc:lang==="tr"?"Rüyanda ya da gerçekte sana ısrarla görünen rehber hayvan, bitki ve kristallerin sana ne söylediğini; yaşam planında hangi arketip senaryosunun içinde olduğunu; ve tasarımının sırlarını keşfet.":"Discover what the guide animals, plants and crystals that keep appearing to you — in dreams or waking life — are telling you; which archetypal scenario you're living in your life plan; and the secrets of your design." },
+              ].map((step,i,arr) => (
+                <div key={i} style={{ position:"relative",marginBottom:i<arr.length-1?24:0,paddingBottom:i<arr.length-1?4:0 }}>
                   <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
                   <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title}</div>
                   <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc}</div>
@@ -5483,8 +5485,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ textAlign:"center",marginTop:28,padding:"16px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.10),rgba(130,217,163,0.06))",border:"1px solid rgba(184,164,216,0.18)",borderRadius:14 }}>
               <div style={{ fontSize:13,color:"#d0c0f0",fontStyle:"italic",lineHeight:1.85 }}>
                 {lang==="tr"
-                  ? "Sekiz adım, bir döngü. Her tekrar bir iz, her iz seni kendine bir adım daha yaklaştırır."
-                  : "Eight steps, one cycle. Each repetition a trace, each trace draws you one step closer to yourself."}
+                  ? "On adım, bir döngü. Her tekrar bir iz, her iz seni kendine bir adım daha yaklaştırır."
+                  : "Ten steps, one cycle. Each repetition a trace, each trace draws you one step closer to yourself."}
               </div>
             </div>
           </div>
