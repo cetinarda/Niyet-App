@@ -3177,7 +3177,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
-    {id:"giris",  icon:"⌂", label:t("nav_home"), color:"#c0a8e0"},
+    // Web: 'Giriş' butonu yok (üst SAKIN logo'su zaten giriş'e döner)
+    ...(isNative ? [{id:"giris",  icon:"⌂", label:t("nav_home"), color:"#c0a8e0"}] : []),
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
     {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
@@ -5374,18 +5375,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </div>
 
             <div style={{ position:"relative",paddingLeft:32 }}>
-              <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
+              <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(200,184,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
 
               {[
-                { icon:"🌅", color:"#f0a060", title:lang==="tr"?"Sabah Niyeti":"Morning Intention", desc:lang==="tr"?"Güne bir niyetle başla. Seni en çok ifade eden 3 kelimeyi seç — gün boyunca pusulan olsunlar.":"Start your day with an intention. Choose 3 words that express you — let them be your compass." },
-                { icon:"🫧", color:"#60b8e8", title:lang==="tr"?"Nefes Egzersizi":"Breathwork", desc:lang==="tr"?"6 farklı modla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu, sakinleştirici — hangisi sana iyi geliyorsa.":"Return to your body with 6 modes. Standard, diaphragm, lung, 4-7-8, box, calming — whichever feels right." },
-                { icon:"🔊", color:"#a07ae0", title:lang==="tr"?"Ses Dalgaları":"Sound Waves", desc:lang==="tr"?"10 solfeggio frekansını kuş sesleri eşliğinde dinle. Her frekansın kendine ait bir doğa sesi var.":"Listen to 10 solfeggio frequencies with birdsong. Each frequency has its own nature sound." },
-                { icon:"💜", color:"#b87adc", title:lang==="tr"?"22 Çakra Yükselişi":"22 Chakra Rise", desc:lang==="tr"?"60 saniyede enerji merkezlerinle bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjin aksın.":"Connect with your energy centers in 60 seconds. Feel your hand, close your eyes, let energy flow." },
-                { icon:"☀️", color:"#e8d060", title:lang==="tr"?"Gün İçi Görevler":"Daily Tasks", desc:lang==="tr"?"Aynaya bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni ana bağlayan dokunuşlar.":"Look in the mirror. Drink water. Feel the sun. Touch the earth. Not tasks — touches that ground you." },
-                { icon:"🌙", color:"#7ab0e0", title:lang==="tr"?"Akşam Kapanışı":"Evening Closure", desc:lang==="tr"?"Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.":"What did you learn today? What are you grateful for? A few sentences are enough." },
-                { icon:"✦", color:"#82d9a3", title:lang==="tr"?"Haftalık Rapor":"Weekly Report", desc:lang==="tr"?"AI destekli kişisel raporun: çakra örüntüleri, frekans süren, kozmik enerji — derin bir iç ayna.":"Your AI-powered personal report: chakra patterns, frequency time, cosmic energy — a deep inner mirror." },
+                { icon:"🌅", color:"#f0a060", title:lang==="tr"?"1 · Sabah Niyeti":"1 · Morning Intention", desc:lang==="tr"?"Güne bir niyetle başla. Seçtiğin 3 kelime ve cümlen — günün enerjisini sen belirlersin.":"Start the day with an intention. Three words and a sentence — you set the day's energy." },
+                { icon:"🫧", color:"#60b8e8", title:lang==="tr"?"2 · Nefes":"2 · Breath", desc:lang==="tr"?"Bedene dön. Birkaç nefesle zihni yavaşlat, ritmini bul.":"Return to the body. Slow the mind with a few breaths, find your rhythm." },
+                { icon:"🔊", color:"#a07ae0", title:lang==="tr"?"3 · Ses Frekansları":"3 · Sound Frequencies", desc:lang==="tr"?"Solfeggio frekanslarıyla kendini akord et. Kuş sesleri eşliğinde içsel diapazon yeniden hizalanır.":"Tune yourself with solfeggio frequencies. With birdsong, your inner pitch realigns." },
+                { icon:"💜", color:"#b87adc", title:lang==="tr"?"4 · Çakra Şifası":"4 · Chakra Healing", desc:lang==="tr"?"Niyetinle enerjiyi yönlendir. Eli bölgeye değdir, gözleri yum — çakralarına şifa akar.":"Direct energy with intention. Place your hand, close your eyes — healing flows into your chakras." },
+                { icon:"☀️", color:"#e8d060", title:lang==="tr"?"5 · Gün Hatırlatmaları":"5 · Daily Reminders", desc:lang==="tr"?"Su iç. Güneşi hisset. Toprağa dokun. Küçük dokunuşlar seni ana bağlar — anda kalırsın.":"Drink water. Feel the sun. Touch the earth. Small touches return you to the present." },
+                { icon:"🌙", color:"#7ab0e0", title:lang==="tr"?"6 · Akşam Kapanışı":"6 · Evening Closure", desc:lang==="tr"?"Z raporunu al, zihnin geçici belleğini boşalt. Bugün ne öğrendin, neye şükrediyorsun?":"Get your Z-report, clear the mind's working memory. What did today teach you, what are you grateful for?" },
+                { icon:"☽", color:"#c8b0e8", title:lang==="tr"?"7 · Ayna Geçidi":"7 · Mirror Portal", desc:lang==="tr"?"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor — bedenin de bir mesaj taşır.":"Find the mysterious portal at the right edge. Step in, ask your inner mirror — your body carries a message too." },
+                { icon:"✦", color:"#82d9a3", title:lang==="tr"?"8 · Haftalık Rapor":"8 · Weekly Report", desc:lang==="tr"?"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritm. Kendinle bağını derinleştir.":"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself." },
               ].map((step,i) => (
-                <div key={i} style={{ position:"relative",marginBottom:i<6?24:0,paddingBottom:i<6?4:0 }}>
+                <div key={i} style={{ position:"relative",marginBottom:i<7?24:0,paddingBottom:i<7?4:0 }}>
                   <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
                   <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title}</div>
                   <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc}</div>
@@ -5393,11 +5395,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               ))}
             </div>
 
-            <div style={{ textAlign:"center",marginTop:28,padding:"14px 20px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:14 }}>
-              <div style={{ fontSize:13,color:"#b8a4d8",fontStyle:"italic",lineHeight:1.8 }}>
+            <div style={{ textAlign:"center",marginTop:28,padding:"16px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.10),rgba(130,217,163,0.06))",border:"1px solid rgba(184,164,216,0.18)",borderRadius:14 }}>
+              <div style={{ fontSize:13,color:"#d0c0f0",fontStyle:"italic",lineHeight:1.85 }}>
                 {lang==="tr"
-                  ? "Her adım bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
-                  : "Every step a practice, every practice a trace, every trace a part of your map."}
+                  ? "Sekiz adım, bir döngü. Her tekrar bir iz, her iz seni kendine bir adım daha yaklaştırır."
+                  : "Eight steps, one cycle. Each repetition a trace, each trace draws you one step closer to yourself."}
               </div>
             </div>
           </div>
