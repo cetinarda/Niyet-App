@@ -2152,6 +2152,21 @@ export default function SakinApp() {
     });
   }, []);
 
+  // Foreground'a dönünce premium durumunu yeniden doğrula — subscription expire olduysa
+  // (sandbox'ta hızlandırılmış) app relaunch beklemeden paywall'a döner. Apple 2.1 testi için.
+  useEffect(() => {
+    if (!isNative) return;
+    const recheck = () => {
+      if (document.visibilityState !== "visible") return;
+      try {
+        const owned = isSubscribed(); // canlı store.owned okur
+        setIsPremium(owned);
+      } catch(_) {}
+    };
+    document.addEventListener("visibilitychange", recheck);
+    return () => document.removeEventListener("visibilitychange", recheck);
+  }, []);
+
   const handlePurchase = async (fn, id) => {
     setPurchaseLoading(id);
     setPurchaseError("");
