@@ -787,6 +787,10 @@ const GLOBAL_CSS = `
   @keyframes fadeIn      { from{opacity:0} to{opacity:1} }
   @keyframes glow        { 0%,100%{box-shadow:0 0 22px rgba(255,255,255,0.22)} 50%{box-shadow:0 0 46px rgba(255,255,255,0.46)} }
   @keyframes pulse       { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
+  @keyframes portalPulse {
+    0%,100% { box-shadow: 0 0 24px rgba(160,120,220,0.40), inset 0 0 18px rgba(184,164,216,0.30), 0 0 64px rgba(160,120,220,0.20); }
+    50%     { box-shadow: 0 0 32px rgba(160,120,220,0.55), inset 0 0 24px rgba(184,164,216,0.42), 0 0 88px rgba(160,120,220,0.32); }
+  }
   @keyframes sunrise     { from{opacity:0;transform:scale(0.9) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
   @keyframes ringPulse   { 0%,100%{opacity:0.07;transform:scale(1)} 50%{opacity:0.2;transform:scale(1.04)} }
   @keyframes heartbeat   { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
@@ -3174,7 +3178,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   ];
   const SIDEBAR_ITEMS = [
     {id:"giris",  icon:"⌂", label:t("nav_home"), color:"#c0a8e0"},
-    ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:t("nav_mirror"), color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
     {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
@@ -3212,6 +3215,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {lang === "tr" ? "EN" : "TR"}
         </button>
       </div>
+      )}
+
+      {/* GİZEMLİ GEÇİT — Ayna'ya açılan portal (sadece web, ana ekranlarda) */}
+      {!isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && !showAilesi && !embeddedApp && (
+        <button
+          onClick={()=>{ setRehberTab("reiki"); setScreen("rehber"); }}
+          title={lang==="tr" ? "Aynaya gir" : "Enter the Mirror"}
+          style={{
+            position:"fixed",
+            right:"-22px",
+            top:"50%",
+            transform:"translateY(-50%)",
+            zIndex:9997,
+            width:88, height:88,
+            borderRadius:"50%",
+            border:"1px solid rgba(184,164,216,0.45)",
+            background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.55) 0%, rgba(60,30,90,0.85) 55%, rgba(20,10,35,0.95) 100%)",
+            backdropFilter:"blur(14px)",
+            cursor:"pointer",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color:"rgba(232,218,250,0.92)",
+            fontSize:30, lineHeight:1,
+            boxShadow:"0 0 24px rgba(160,120,220,0.40), inset 0 0 18px rgba(184,164,216,0.30), 0 0 64px rgba(160,120,220,0.20)",
+            animation:"portalPulse 4.5s ease-in-out infinite",
+            transition:"right 0.5s cubic-bezier(0.25,0.1,0.25,1), box-shadow 0.4s ease",
+            padding:0,
+          }}
+          onMouseEnter={e=>{
+            e.currentTarget.style.right = "8px";
+            e.currentTarget.style.boxShadow = "0 0 38px rgba(160,120,220,0.65), inset 0 0 26px rgba(184,164,216,0.45), 0 0 96px rgba(160,120,220,0.35)";
+          }}
+          onMouseLeave={e=>{
+            e.currentTarget.style.right = "-22px";
+            e.currentTarget.style.boxShadow = "0 0 24px rgba(160,120,220,0.40), inset 0 0 18px rgba(184,164,216,0.30), 0 0 64px rgba(160,120,220,0.20)";
+          }}
+        >
+          <span style={{ filter:"drop-shadow(0 0 6px rgba(232,218,250,0.6))" }}>☽</span>
+        </button>
       )}
 
       {/* SAKİN AİLESİ PANELİ */}
