@@ -5626,11 +5626,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* Geri Bildirim */}
           {!fbOpen ? (
-            <div style={{ textAlign:"center",marginBottom:24 }}>
+            <div style={{ textAlign:"center",marginBottom:24,display:"flex",justifyContent:"center",alignItems:"center",gap:14,flexWrap:"wrap" }}>
               <button onClick={()=>setFbOpen(true)}
                 style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:16,padding:"14px 28px",cursor:"pointer",color:"#b8a4d8",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",minHeight:44 }}>
                 {lang==="tr" ? "💬  Geri Bildirim Gönder" : "💬  Send Feedback"}
               </button>
+              {!isNative && (
+                <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer"
+                  style={{ display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,rgba(228,64,95,0.10),rgba(184,164,216,0.04))",border:"1px solid rgba(228,64,95,0.22)",borderRadius:16,padding:"14px 22px",color:"#e8a0b4",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textDecoration:"none",minHeight:44 }}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                  @sakin.app
+                </a>
+              )}
             </div>
           ) : (
             <div style={{ background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.02))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:18,padding:"20px 18px",marginBottom:24 }}>
@@ -5879,7 +5886,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           <hr className="divider" />
-          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a>{!isNative && <> · <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer" style={{ color:"#e8a0b4",textDecoration:"none" }}>@sakin.app</a></>}</p>
         </div>
       )}
 
@@ -5897,7 +5904,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("terms_s6")}</h2><p>{t("terms_s6p")}</p>
           <h2>{t("terms_s7")}</h2><p>{t("terms_s7p")}</p>
           <h2>{t("terms_s8")}</h2><p>{t("terms_s8p")}</p>
-          <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <h2>{t("terms_s9")}</h2><p>{t("terms_s9p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a>{!isNative && <> · <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer" style={{ color:"#e8a0b4",textDecoration:"none" }}>@sakin.app</a></>}</p>
         </div>
       )}
 
@@ -5937,7 +5944,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <p>{t("privacy_s9p")}</p>
 
           <h2>{t("privacy_s10")}</h2>
-          <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a>{!isNative && <> · <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer" style={{ color:"#e8a0b4",textDecoration:"none" }}>@sakin.app</a></>}</p>
           <p style={{ fontSize:14,color:"#777777" }}>{t("privacy_app_name")}</p>
         </div>
       )}
@@ -5964,14 +5971,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <h2>{t("refund_s5")}</h2>
           <p>{t("refund_s5p")}</p>
           <ul>{t("refund_s5l").map(i=><li key={i}>{i}</li>)}</ul>
-          <p>{t("refund_s5p2")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("refund_s5p2")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a>{!isNative && <> · <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer" style={{ color:"#e8a0b4",textDecoration:"none" }}>@sakin.app</a></>}</p>
           <p>{t("refund_s5p3")}</p>
 
           <h2>{t("refund_s6")}</h2>
           <p>{t("refund_s6p")}</p>
 
           <h2>{t("refund_s7")}</h2>
-          <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+          <p>{t("refund_s7p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a>{!isNative && <> · <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer" style={{ color:"#e8a0b4",textDecoration:"none" }}>@sakin.app</a></>}</p>
         </div>
       )}
 
