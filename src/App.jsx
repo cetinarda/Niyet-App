@@ -256,6 +256,40 @@ const PERSONAL_YEAR_DESC = {
   },
 };
 
+// Ay evresi — referans yeni ay: 2000-01-06 18:14 UTC. Sinodik ay = 29.5305888531 gün.
+// Saf matematik; API gerekmez, çevrimdışı çalışır.
+function moonPhase(date = new Date()) {
+  const REF_NEW = Date.UTC(2000, 0, 6, 18, 14);
+  const SYNODIC = 29.5305888531;
+  const days = (date.getTime() - REF_NEW) / 86400000;
+  const age = ((days % SYNODIC) + SYNODIC) % SYNODIC; // 0..29.53
+  const frac = age / SYNODIC;                          // 0=yeni, 0.5=dolunay
+  const phases = [
+    { key:"new",     emoji:"🌑", tr:"Yeni Ay",      en:"New Moon"        },
+    { key:"wax_c",   emoji:"🌒", tr:"İlk Hilal",    en:"Waxing Crescent" },
+    { key:"first_q", emoji:"🌓", tr:"İlk Dördün",   en:"First Quarter"   },
+    { key:"wax_g",   emoji:"🌔", tr:"Şişkin Ay",    en:"Waxing Gibbous"  },
+    { key:"full",    emoji:"🌕", tr:"Dolunay",      en:"Full Moon"       },
+    { key:"wan_g",   emoji:"🌖", tr:"Azalan Şişkin",en:"Waning Gibbous"  },
+    { key:"last_q",  emoji:"🌗", tr:"Son Dördün",   en:"Last Quarter"    },
+    { key:"wan_c",   emoji:"🌘", tr:"Son Hilal",    en:"Waning Crescent" },
+  ];
+  // 8 bölge: 0..3.69 yeni, 3.69..7.38 hilal, ... her biri ~3.69 gün
+  const idx = Math.floor(((age + SYNODIC/16) % SYNODIC) / (SYNODIC/8)) % 8;
+  const cur = phases[idx];
+  const fullAge = SYNODIC / 2;
+  const daysToFull = age <= fullAge ? (fullAge - age) : (SYNODIC + fullAge - age);
+  const daysToNew  = SYNODIC - age;
+  const illumination = Math.round((1 - Math.cos(2 * Math.PI * frac)) / 2 * 100); // % aydınlanma
+  return {
+    ...cur,
+    age: Math.round(age * 10) / 10,
+    illumination,
+    daysToFull: Math.round(daysToFull * 10) / 10,
+    daysToNew:  Math.round(daysToNew  * 10) / 10,
+  };
+}
+
 function biorhythm(dateStr) {
   const days = Math.floor((Date.now()-new Date(dateStr))/86400000);
   return {
@@ -4930,11 +4964,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           {lang==="tr" ? "Veri alınamadı. İnternet bağlantını kontrol et." : "Could not fetch data."}
                         </div>
                       )}
-                      {!kozmikLoading && kozmikData && (
+                      {!kozmikLoading && kozmikData && (() => {
+                        const moon = moonPhase();
+                        return (
                         <>
+                          {/* AY EVRESİ — saf matematik, çevrimdışı bile çalışır */}
+                          <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
+                            <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
+                            <div style={{ flex:1,minWidth:0 }}>
+                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{lang==="tr" ? "Ayın Evresi" : "Moon Phase"}</div>
+                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr" ? moon.tr : moon.en} · {moon.illumination}%</div>
+                              <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
+                                {lang==="tr"
+                                  ? `Dolunay: ${moon.daysToFull < 0.5 ? "bugün" : moon.daysToFull < 1.5 ? "yarın" : `${Math.round(moon.daysToFull)} gün sonra`} · Yeni Ay: ${Math.round(moon.daysToNew)} gün`
+                                  : `Full Moon: ${moon.daysToFull < 0.5 ? "today" : moon.daysToFull < 1.5 ? "tomorrow" : `in ${Math.round(moon.daysToFull)} days`} · New Moon: ${Math.round(moon.daysToNew)} days`}
+                              </div>
+                            </div>
+                          </div>
+
                           <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
                             <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                              {lang==="tr" ? "Şu Anki Durum" : "Current State"}
+                              {lang==="tr" ? "Jeomanyetik Aktivite" : "Geomagnetic Activity"}
                             </div>
                             <div style={{ fontSize:18,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>
                               Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{lang==="tr" ? kozmikData.interpretation.current.tr : kozmikData.interpretation.current.en}</span>
@@ -4978,16 +5028,48 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                             </div>
                           )}
 
+                          {/* GÜNEŞ PATLAMALARI (son 24 saat) */}
+                          {kozmikData.solar_flares_24h && (
+                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
+                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
+                                {lang==="tr" ? "Güneş Patlamaları · 24 saat" : "Solar Flares · 24h"}
+                              </div>
+                              {kozmikData.solar_flares_24h.count === 0 ? (
+                                <div style={{ fontSize:14,color:"#82d9a3" }}>{lang==="tr" ? "Sakin — patlama yok" : "Quiet — no flares"}</div>
+                              ) : (
+                                <div style={{ fontSize:14,color:"#d0c0f0" }}>
+                                  {kozmikData.solar_flares_24h.count}× · {lang==="tr" ? "en güçlü" : "max"} <span style={{ color: kozmikData.solar_flares_24h.max_class?.[0]==="X" ? "#e06a6a" : kozmikData.solar_flares_24h.max_class?.[0]==="M" ? "#d99a82" : "#d9c682", fontWeight:500 }}>{kozmikData.solar_flares_24h.max_class}</span>
+                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {lang==="tr" ? kozmikData.interpretation.flares.tr : kozmikData.interpretation.flares.en}</span>}
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* GÜNEŞ RÜZGARI (DSCOVR) */}
+                          {kozmikData.solar_wind && kozmikData.solar_wind.speed != null && (
+                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
+                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
+                                {lang==="tr" ? "Güneş Rüzgarı" : "Solar Wind"}
+                              </div>
+                              <div style={{ fontSize:14,color:"#d0c0f0" }}>
+                                {kozmikData.solar_wind.speed} km/s
+                                {kozmikData.solar_wind.density != null && <span style={{ color:"#888" }}> · {kozmikData.solar_wind.density} p/cm³</span>}
+                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {lang==="tr" ? kozmikData.interpretation.wind.tr : kozmikData.interpretation.wind.en}</span>}
+                              </div>
+                            </div>
+                          )}
+
                           <div style={{ fontSize:11,color:"#777",lineHeight:1.7,paddingTop:10,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
                             {lang==="tr"
-                              ? "Kp index Dünya'nın jeomanyetik aktivitesini gösterir. Yüksek değerler (5+) güneş fırtınalarıyla ilişkilidir — sinir sistemi hassasiyeti, uyku bozukluğu, yoğun rüyalar görülebilir. Düşük değerler (0-2) sakin dönemlerdir."
-                              : "Kp index reflects Earth's geomagnetic activity. High values (5+) signal solar storms — nervous system sensitivity, sleep disturbance, vivid dreams may occur. Low values (0-2) are calm periods."}
+                              ? "Kp jeomanyetik fırtınayı, X-ışını sınıfı (B/C/M/X) güneş patlamasının şiddetini, güneş rüzgarı hızı (400+ km/s) gelen plazma akışını gösterir. Yüksek değerler — sinir sistemi hassasiyeti, uyku bozukluğu, yoğun rüyalar, baş ağrısı."
+                              : "Kp shows geomagnetic storms, X-ray class (B/C/M/X) shows flare intensity, solar wind speed (400+ km/s) shows incoming plasma. High values — nervous system sensitivity, sleep disruption, vivid dreams, headaches."}
                           </div>
                           <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
-                            {lang==="tr" ? "Kaynak: " : "Source: "}NOAA Space Weather
+                            {lang==="tr" ? "Kaynak: " : "Source: "}NOAA Space Weather · {lang==="tr" ? "Ay: astronomik hesap" : "Moon: astronomical calc"}
                           </div>
                         </>
-                      )}
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
