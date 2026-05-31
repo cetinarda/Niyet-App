@@ -3291,8 +3291,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
-    // Ayna: iOS'ta alt nav'da kalıcı ikon — her ana ekranda görünür, geçitle İçsel Ayna'ya açılır
-    ...(isNative ? [{id:"rehber", icon:"🪞", label:"", color:"#a070d0", iconOnly:true, glow:true}] : []),
   ];
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
@@ -3395,6 +3393,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </button>
           </div>
         </div>
+      )}
+
+      {/* AYNA BUTONU — sağ üst köşe, küçük sakin hilal (iOS native, ana ekranlarda) */}
+      {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
+        <button
+          onClick={()=>{ haptic(); setMirrorPortalActive(true); setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050); }}
+          aria-label={lang==="tr" ? "Aynaya gir" : "Enter the Mirror"}
+          style={{
+            position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 64px)", right:14,
+            zIndex:9997, width:44, height:44, borderRadius:"50%",
+            border:"1px solid rgba(184,164,216,0.35)",
+            background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.45) 0%, rgba(60,30,90,0.75) 60%, rgba(20,10,35,0.9) 100%)",
+            backdropFilter:"blur(10px)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color:"rgba(232,218,250,0.9)", fontSize:18, lineHeight:1,
+            boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
+            padding:0, cursor:"pointer",
+          }}
+        >
+          <span style={{ filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+        </button>
       )}
 
       {/* AYNA GEÇİDİ — Sakin Ailesi girişiyle aynı stargate portal geçişi */}
@@ -6050,26 +6069,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const active = screen===n.id;
             const sabahHint = n.id==="sabah" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{
-                  if(n.id==="rehber"){ if(screen==="rehber") return; haptic(); setMirrorPortalActive(true); setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050); return; }
-                  setScreen(n.id);
-                }}
+              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
                 style={{
                   background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
                   border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"background 0.5s ease, border 0.5s ease",
-                  padding: n.iconOnly ? "8px 8px" : "8px 9px",
+                  padding:"8px 12px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                  minWidth: n.iconOnly ? 38 : 44,
+                  minWidth:48,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : (n.glow && !active ? "navSoftPulse 3.2s ease-in-out infinite" : "none"),
+                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
-                <span style={{ fontSize: n.iconOnly ? (active?20:17) : (active?18:15), color: active ? n.color : sabahHint ? n.color : (n.glow ? `${n.color}aa` : `${n.color}55`), transition:"color 0.5s ease", lineHeight:1, filter: n.glow ? `drop-shadow(0 0 5px ${n.color}66)` : "none" }}>{n.icon}</span>
-                {!n.iconOnly && (
-                  <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
-                )}
+                <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
               </button>
             );
           })}
