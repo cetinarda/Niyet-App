@@ -3441,15 +3441,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
                 borderRadius:20, cursor:"pointer", transition:"all 0.25s",
                 padding: n.iconOnly ? "5px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
-                fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 400 : 300,
-                fontSize:12, letterSpacing:1.4, textTransform:"uppercase",
-                color: active ? n.color : n.glow ? n.color : `${n.color}77`,
+                fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 500 : 500,
+                fontSize:12, letterSpacing:1.2,
+                color: active ? n.color : n.glow ? n.color : `${n.color}88`,
                 animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
                 boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
                 whiteSpace:"nowrap", overflow:"hidden",
               }}>
               <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
-              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{n.label}</span>}
+              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>}
             </button>
           );
         })}
@@ -5974,7 +5974,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
                 <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:11,letterSpacing:1.5,textTransform:"uppercase",color:active?n.color:sabahHint?n.color:`${n.color}44`,transition:"color 0.5s ease",lineHeight:1 }}>{n.label}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
               </button>
             );
           })}
