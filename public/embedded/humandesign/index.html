@@ -71,12 +71,13 @@
         // 2) Profil zaten varsa dokunma.
         if (ex) return;
 
-        // 3) Host'tan veri al.
-        var n = localStorage.getItem('sakin_name');
+        // 3) Host'tan veri al. İsim opsiyonel (HD sadece etiket için kullanır,
+        //    chart hesabında yok). Asıl gerekli: tarih + saat + şehir.
+        var n = localStorage.getItem('sakin_name') || '';
         var d = localStorage.getItem('sakin_birth_date');
         var t = localStorage.getItem('sakin_birth_time');
         var c = localStorage.getItem('sakin_birth_city');
-        if (!n || !d || !t || !c) return; // tam set yoksa onboarding'e bırak
+        if (!d || !t || !c) return; // tarih/saat/şehir yoksa onboarding'e bırak
 
         // 4) CITY_DB — HD bundle şeması: {name, lat, lng, tz, country, dst}.
         //    Sakin'in 81 il + büyük dünya şehri DB'sinden türetildi.
