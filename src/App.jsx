@@ -2040,6 +2040,68 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
   );
 }
 
+// Mobil klavye dostu doğum tarihi — GG / AA / YYYY ayrı sayısal alanlar, otomatik geçişli
+function SmartDateInput({ value, onChange, lang }) {
+  const valid = value && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const [d, setD] = useState(valid ? value.slice(8,10) : "");
+  const [m, setM] = useState(valid ? value.slice(5,7) : "");
+  const [y, setY] = useState(valid ? value.slice(0,4) : "");
+  const dRef = useRef(null), mRef = useRef(null), yRef = useRef(null);
+  const emit = (dd, mm, yy) => {
+    const di = parseInt(dd,10), mi = parseInt(mm,10), yi = parseInt(yy,10);
+    if (dd && mm && yy.length===4 && di>=1 && di<=31 && mi>=1 && mi<=12 && yi>=1900 && yi<=2100)
+      onChange(`${yy}-${String(mi).padStart(2,"0")}-${String(di).padStart(2,"0")}`);
+    else onChange("");
+  };
+  // boş alanda backspace → önceki alana dön
+  const backTo = (cur, ref) => e => { if (e.key==="Backspace" && cur==="") { e.preventDefault(); ref.current?.focus(); } };
+  const cell = { fontSize:16,padding:"11px 8px",textAlign:"center",MozAppearance:"textfield" };
+  return (
+    <div style={{ display:"flex",alignItems:"center",gap:6 }}>
+      <input ref={dRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
+        placeholder={lang==="tr"?"GG":"DD"} value={d} maxLength={2} style={{ ...cell,width:52 }}
+        onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setD(v); emit(v,m,y); if(v.length===2) mRef.current?.focus(); }} />
+      <span style={{ color:"#555",fontSize:16 }}>/</span>
+      <input ref={mRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
+        placeholder={lang==="tr"?"AA":"MM"} value={m} maxLength={2} style={{ ...cell,width:52 }}
+        onKeyDown={backTo(m, dRef)}
+        onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setM(v); emit(d,v,y); if(v.length===2) yRef.current?.focus(); }} />
+      <span style={{ color:"#555",fontSize:16 }}>/</span>
+      <input ref={yRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
+        placeholder={lang==="tr"?"YYYY":"YYYY"} value={y} maxLength={4} style={{ ...cell,flex:1,minWidth:0 }}
+        onKeyDown={backTo(y, mRef)}
+        onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,4); setY(v); emit(d,m,v); }} />
+    </div>
+  );
+}
+
+// Mobil klavye dostu doğum saati — SS : DD ayrı sayısal alanlar, otomatik geçişli
+function SmartTimeInput({ value, onChange, lang }) {
+  const valid = value && /^\d{1,2}:\d{2}$/.test(value);
+  const [h, setH] = useState(valid ? value.split(":")[0] : "");
+  const [mn, setMn] = useState(valid ? value.split(":")[1] : "");
+  const hRef = useRef(null), mnRef = useRef(null);
+  const emit = (hh, mm) => {
+    const hi = parseInt(hh,10), mi = parseInt(mm,10);
+    if (hh && mm.length===2 && hi>=0 && hi<=23 && mi>=0 && mi<=59)
+      onChange(`${String(hi).padStart(2,"0")}:${mm}`);
+    else onChange("");
+  };
+  const cell = { fontSize:16,padding:"11px 8px",textAlign:"center",MozAppearance:"textfield" };
+  return (
+    <div style={{ display:"flex",alignItems:"center",gap:6 }}>
+      <input ref={hRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
+        placeholder={lang==="tr"?"SS":"HH"} value={h} maxLength={2} style={{ ...cell,width:64 }}
+        onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setH(v); emit(v,mn); if(v.length===2) mnRef.current?.focus(); }} />
+      <span style={{ color:"#555",fontSize:16 }}>:</span>
+      <input ref={mnRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
+        placeholder={lang==="tr"?"DD":"MM"} value={mn} maxLength={2} style={{ ...cell,width:64 }}
+        onKeyDown={e=>{ if(e.key==="Backspace" && mn==="") { e.preventDefault(); hRef.current?.focus(); } }}
+        onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setMn(v); emit(h,v); }} />
+    </div>
+  );
+}
+
 export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
   const [langOpen, setLangOpen] = useState(false);
@@ -3620,13 +3682,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
-                  <input type="date" className="sakin-input" style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
-                    value={birthInput} onChange={e=>setBirthInput(e.target.value)} />
+                  <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
-                  <input type="time" className="sakin-input" style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
-                    value={birthTimeInput} onChange={e=>setBirthTimeInput(e.target.value)} />
+                  <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Şehri (yükselen için)" : "Birth City (for ascendant)"}</div>
