@@ -2367,6 +2367,24 @@ export default function SakinApp() {
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
+  // ESC tuşuyla embed'den çıkış — web kullanıcıları için bir fallback (back button bulunamazsa)
+  useEffect(() => {
+    if (!embeddedApp) return;
+    const onKey = (e) => { if (e.key === "Escape") { setEmbeddedApp(null); setEmbedLoaded(false); } };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [embeddedApp]);
+  // Embed iframe'lerinden gelen "Premium'a yönlendir" mesajını dinle (postMessage köprüsü)
+  useEffect(() => {
+    const onMsg = (e) => {
+      if (e?.data?.type === "sakin-premium-cta") {
+        setEmbeddedApp(null); setEmbedLoaded(false);
+        setScreen("fiyat");
+      }
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  }, []);
   const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
   const [showMindClear, setShowMindClear] = useState(false);
@@ -3728,6 +3746,77 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   [style*="grid"] { max-width: 100% !important; }
                 `;
                 doc.head.appendChild(style);
+
+                // SAKİN TASARIM (Human Design) — sadece bu uygulamaya özel premium gating:
+                // Bodygraph, profil özeti ve başlıklar görünür kalır; uzun açıklama
+                // paragrafları (140+ karakter, yaprak elementler) buzlanır, dipte CTA bar
+                // postMessage ile host'a "fiyat ekranına git" sinyali gönderir.
+                if (!isPremium && (embeddedApp.path||"").indexOf("humandesign") !== -1) {
+                  const blurStyle = doc.createElement("style");
+                  blurStyle.id = "sakin-premium-gate";
+                  blurStyle.textContent = `
+                    .sakin-blur-paragraph {
+                      filter: blur(5.5px) saturate(0.65) brightness(0.92);
+                      user-select: none !important;
+                      -webkit-user-select: none !important;
+                      pointer-events: none !important;
+                      transition: filter 0.3s ease;
+                    }
+                    .sakin-premium-cta-bar {
+                      position: fixed; bottom: 18px; left: 14px; right: 14px;
+                      background: linear-gradient(135deg, rgba(184,164,216,0.94), rgba(122,80,150,0.92));
+                      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+                      border: 1px solid rgba(255,255,255,0.22);
+                      border-radius: 16px; padding: 14px 18px;
+                      color: #fff; font-family: 'Jost', sans-serif;
+                      font-size: 13px; letter-spacing: 1.8px; text-transform: uppercase;
+                      text-align: center; cursor: pointer; z-index: 99999;
+                      box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(184,164,216,0.4);
+                      display: flex; align-items: center; justify-content: center; gap: 8px;
+                      animation: sakinCtaPulse 2.4s ease-in-out infinite;
+                    }
+                    @keyframes sakinCtaPulse {
+                      0%,100% { box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(184,164,216,0.4); }
+                      50%     { box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 40px rgba(184,164,216,0.65); }
+                    }
+                  `;
+                  doc.head.appendChild(blurStyle);
+
+                  const applyBlur = () => {
+                    try {
+                      const all = doc.querySelectorAll("div, p, span");
+                      for (let i=0; i<all.length; i++) {
+                        const el = all[i];
+                        if (el.classList && el.classList.contains("sakin-blur-paragraph")) continue;
+                        if (el.children && el.children.length > 0) continue; // sadece yaprak
+                        const txt = (el.textContent || "").trim();
+                        if (txt.length >= 140) {
+                          el.classList.add("sakin-blur-paragraph");
+                        }
+                      }
+                    } catch(_) {}
+                  };
+
+                  // CTA bar — tek bir kez ekle
+                  const ensureCta = () => {
+                    if (doc.getElementById("sakin-cta-bar")) return;
+                    const cta = doc.createElement("button");
+                    cta.id = "sakin-cta-bar";
+                    cta.className = "sakin-premium-cta-bar";
+                    cta.textContent = (lang === "tr") ? "✦  Premium ile detayları aç" : "✦  Unlock details with Premium";
+                    cta.addEventListener("click", () => {
+                      try { window.parent.postMessage({ type: "sakin-premium-cta" }, "*"); } catch(_) {}
+                    });
+                    doc.body.appendChild(cta);
+                  };
+
+                  // İlk uygulama + dinamik içerik için MutationObserver
+                  applyBlur(); ensureCta();
+                  try {
+                    const mo = new MutationObserver(() => { applyBlur(); ensureCta(); });
+                    mo.observe(doc.body, { childList: true, subtree: true });
+                  } catch(_) {}
+                }
               } catch(err) { /* cross-origin or already injected — sessiz geç */ }
             }}
             style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
@@ -3763,21 +3852,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           })()}
           <button
             onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); }}
-            aria-label={lang==="tr"?"Geri":"Back"}
+            aria-label={lang==="tr"?"Sakin'e dön":"Back to Sakin"}
             style={{
-              position:"fixed",top:"max(4px, calc(var(--sat) - 38px))",left:8,zIndex:10003,
-              background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
-              border:"1px solid rgba(255,255,255,0.15)",
-              borderRadius:"50%",width:36,height:36,padding:0,
-              color:"rgba(255,255,255,0.85)",fontSize:18,cursor:"pointer",
-              display:"flex",alignItems:"center",justifyContent:"center",
-              boxShadow:"0 2px 10px rgba(0,0,0,0.4)",
-              transition:"opacity 0.25s",opacity:0.6
+              position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
+              background:"rgba(15,8,30,0.88)", backdropFilter:"blur(20px)",
+              border:"1px solid rgba(184,164,216,0.45)",
+              borderRadius:100, padding:"9px 16px 9px 12px",
+              color:"#e8dcff", fontSize:13, letterSpacing:1.5, fontFamily:"'Jost',sans-serif", fontWeight:400,
+              cursor:"pointer", display:"flex", alignItems:"center", gap:6,
+              boxShadow:"0 4px 18px rgba(0,0,0,0.55), 0 0 18px rgba(184,164,216,0.18)",
+              transition:"transform 0.15s ease",
             }}
-            onMouseEnter={e=>e.currentTarget.style.opacity=1}
-            onMouseLeave={e=>e.currentTarget.style.opacity=0.6}
-            onTouchStart={e=>e.currentTarget.style.opacity=1}>
-            ←
+            onMouseDown={e=>e.currentTarget.style.transform="scale(0.94)"}
+            onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
+            onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+            <span style={{ fontSize:17, lineHeight:1 }}>←</span>
+            <span>SAKİN</span>
           </button>
         </div>
       )}
