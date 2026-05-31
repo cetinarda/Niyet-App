@@ -3226,7 +3226,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
-    // Giriş üst bardan kaldırıldı → sol-orta floating buton (aşağıda). Web'de zaten yok.
+    // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
+    {id:"giris",  icon:"⌂", label:"", color:"#c0a8e0", iconOnly:true},
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:t("nav_mirror"), color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
@@ -3432,12 +3433,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           return (
             <button key={n.id}
               onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); if(n.id==="giris") setGirisPhase("intro"); setScreen(n.id); }}
+              aria-label={n.iconOnly ? t("nav_home") : undefined}
               style={{
-                flex:"1 1 0", minWidth:0,
+                flex: n.iconOnly ? "0 0 auto" : "1 1 0", minWidth:0,
+                width: n.iconOnly ? 40 : undefined,
                 background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
                 border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
                 borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                padding:"5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
+                padding: n.iconOnly ? "5px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
                 fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 400 : 300,
                 fontSize:12, letterSpacing:1.4, textTransform:"uppercase",
                 color: active ? n.color : n.glow ? n.color : `${n.color}77`,
@@ -3445,8 +3448,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
                 whiteSpace:"nowrap", overflow:"hidden",
               }}>
-              <span style={{ fontSize:13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
-              <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{n.label}</span>
+              <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{n.label}</span>}
             </button>
           );
         })}
@@ -3484,26 +3487,6 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ✕
           </button>
         </div>
-      )}
-
-      {/* GİRİŞ — sol-alt floating buton (sağ-alt yardım butonuyla simetrik). Sadece iOS, giriş ekranı dışında */}
-      {isNative && screen !== "giris" && (
-        <button
-          onClick={()=>{ haptic(); setGirisPhase("intro"); setScreen("giris"); }}
-          aria-label={lang==="tr"?"Giriş":"Home"}
-          style={{
-            position:"fixed", left:14, bottom:"calc(80px + var(--sab))", zIndex:9997,
-            width:44, height:44,
-            background:"linear-gradient(135deg,rgba(192,168,224,0.18),rgba(122,80,150,0.12))",
-            backdropFilter:"blur(14px)",
-            border:"1px solid rgba(192,168,224,0.32)",
-            borderRadius:"50%",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            cursor:"pointer", color:"#c0a8e0", fontSize:18,
-            boxShadow:"0 4px 14px rgba(0,0,0,0.4), 0 0 16px rgba(122,80,150,0.18)",
-          }}>
-          ⌂
-        </button>
       )}
 
       {/* Sabit derin uzay arka planı */}
