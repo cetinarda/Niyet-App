@@ -837,15 +837,6 @@ const GLOBAL_CSS = `
   @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
   @keyframes portalRingPulse { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0.85} 100%{transform:translate(-50%,-50%) scale(3.2);opacity:0} }
   @keyframes portalTunnel    { 0%{transform:translate(-50%,-50%) scale(0.4) rotate(0deg);opacity:0.9} 50%{opacity:0.5} 100%{transform:translate(-50%,-50%) scale(2.4) rotate(180deg);opacity:0} }
-  @keyframes portalPulse {
-    0%,100% { box-shadow: 0 0 20px rgba(160,120,220,0.40), inset 0 0 14px rgba(184,164,216,0.30), 0 0 50px rgba(160,120,220,0.20); }
-    50%     { box-shadow: 0 0 28px rgba(160,120,220,0.58), inset 0 0 20px rgba(184,164,216,0.45), 0 0 72px rgba(160,120,220,0.35); }
-  }
-  @keyframes mirrorRipple {
-    0%   { clip-path: circle(0% at calc(100% - 36px) 50%); opacity: 1; }
-    65%  { clip-path: circle(160% at calc(100% - 36px) 50%); opacity: 0.92; }
-    100% { clip-path: circle(160% at calc(100% - 36px) 50%); opacity: 0; }
-  }
   @keyframes mirrorReveal {
     0%   { opacity:0; filter:blur(24px) brightness(0.3); transform:scale(1.06); }
     100% { opacity:1; filter:blur(0) brightness(1); transform:scale(1); }
@@ -3300,6 +3291,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
+    // Ayna: iOS'ta alt nav'da kalıcı ikon — her ana ekranda görünür, geçitle İçsel Ayna'ya açılır
+    ...(isNative ? [{id:"rehber", icon:"🪞", label:"", color:"#a070d0", iconOnly:true, glow:true}] : []),
   ];
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
@@ -3404,43 +3397,28 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* GİZEMLİ GEÇİT — Ayna'ya açılan portal (iOS native ana ekranlarında) */}
-      {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && (
-        <button
-          onClick={()=>{
-            haptic();
-            setMirrorPortalActive(true);
-            setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 850);
-          }}
-          style={{
-            position:"fixed",
-            right:"-18px",
-            top:"50%",
-            transform:"translateY(-50%)",
-            zIndex:9997,
-            width:72, height:72,
-            borderRadius:"50%",
-            border:"1px solid rgba(184,164,216,0.45)",
-            background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.55) 0%, rgba(60,30,90,0.85) 55%, rgba(20,10,35,0.95) 100%)",
-            backdropFilter:"blur(14px)",
-            cursor:"pointer",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            color:"rgba(232,218,250,0.92)",
-            fontSize:24, lineHeight:1,
-            animation:"portalPulse 4.5s ease-in-out infinite",
-            padding:0,
-          }}
-        >
-          <span style={{ filter:"drop-shadow(0 0 5px rgba(232,218,250,0.6))", marginLeft:"-8px" }}>☽</span>
-        </button>
-      )}
-
-      {/* Ayna Geçidi — "through the mirror" transition ripple */}
-      {mirrorPortalActive && (
-        <div style={{ position:"fixed",inset:0,zIndex:9998,pointerEvents:"none",overflow:"hidden",
-          background:"radial-gradient(ellipse 80% 60% at calc(100% - 36px) 50%, rgba(220,190,255,0.98) 0%, rgba(140,80,220,0.96) 25%, rgba(40,15,80,0.95) 55%, #000 85%)",
-          animation:"mirrorRipple 0.85s cubic-bezier(0.18,0,0.4,0.95) forwards" }} />
-      )}
+      {/* AYNA GEÇİDİ — Sakin Ailesi girişiyle aynı stargate portal geçişi */}
+      {mirrorPortalActive && (() => {
+        const rgb = "160,112,208"; // ayna moru #a070d0
+        return (
+          <div style={{ position:"fixed",inset:0,zIndex:10001,background:"radial-gradient(circle at 50% 50%, #0a0612 0%, #000 75%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:28,animation:"portalIn 1.2s cubic-bezier(0.25,0.1,0.25,1)",pointerEvents:"none" }}>
+            <div style={{ position:"relative",width:120,height:120 }}>
+              {[0,1,2].map(i=>(
+                <div key={`mring${i}`} style={{ position:"absolute",left:"50%",top:"50%",width:120,height:120,marginLeft:-60,marginTop:-60,borderRadius:"50%",border:`1.5px solid rgba(${rgb},0.5)`,boxShadow:`0 0 24px rgba(${rgb},0.3),inset 0 0 24px rgba(${rgb},0.2)`,animation:`portalRingPulse 2.6s cubic-bezier(0.4,0,0.2,1) infinite`,animationDelay:`${i*0.5}s` }}/>
+              ))}
+              {/* dönen elmas */}
+              <div style={{ position:"absolute",left:"50%",top:"50%",width:120,height:120,marginLeft:-60,marginTop:-60 }}>
+                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1.5px solid #a070d0",borderRadius:10,animation:"diamondSpin 4.2s linear infinite",boxShadow:`0 0 22px rgba(${rgb},0.4)` }}/>
+                <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:"1px solid #a070d0",borderRadius:6,opacity:0.7,animation:"diamondSpin 3s linear infinite reverse" }}/>
+                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:12,height:12,borderRadius:"50%",background:"#fff",boxShadow:`0 0 28px rgba(${rgb},0.7),0 0 56px rgba(${rgb},0.4)`,animation:"pulse 2s ease-in-out infinite" }}/>
+              </div>
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:6,color:"#d0c0f0",textTransform:"uppercase",opacity:0.9,animation:"fadeUp 1.2s ease-out 0.3s both" }}>
+              {lang==="tr" ? "İçsel Ayna" : "Inner Mirror"}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
       {embeddedApp && (
@@ -6072,21 +6050,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             const active = screen===n.id;
             const sabahHint = n.id==="sabah" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{
+                  if(n.id==="rehber"){ if(screen==="rehber") return; haptic(); setMirrorPortalActive(true); setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050); return; }
+                  setScreen(n.id);
+                }}
                 style={{
                   background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
                   border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
                   borderRadius:22,
                   cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
                   transition:"background 0.5s ease, border 0.5s ease",
-                  padding:"8px 12px",
+                  padding: n.iconOnly ? "8px 8px" : "8px 9px",
                   display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                  minWidth:48,
+                  minWidth: n.iconOnly ? 38 : 44,
                   opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
+                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : (n.glow && !active ? "navSoftPulse 3.2s ease-in-out infinite" : "none"),
                 }}>
-                <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
+                <span style={{ fontSize: n.iconOnly ? (active?20:17) : (active?18:15), color: active ? n.color : sabahHint ? n.color : (n.glow ? `${n.color}aa` : `${n.color}55`), transition:"color 0.5s ease", lineHeight:1, filter: n.glow ? `drop-shadow(0 0 5px ${n.color}66)` : "none" }}>{n.icon}</span>
+                {!n.iconOnly && (
+                  <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
+                )}
               </button>
             );
           })}
