@@ -287,6 +287,11 @@ function bioritmBar(val) {
 // ─────────────────────────────────────────────────────────────────────────────
 const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Terazi","Akrep","Yay","Oğlak","Kova","Balık"];
 const EV_GEZEGEN = { "Koç":"Mars","Boğa":"Venüs","İkizler":"Merkür","Yengeç":"Ay","Aslan":"Güneş","Başak":"Merkür","Terazi":"Venüs","Akrep":"Pluto","Yay":"Jüpiter","Oğlak":"Satürn","Kova":"Uranüs","Balık":"Neptün" };
+// TR → EN display maps for zodiac & planet names (UI surfacing only — internal keys stay TR)
+const ZODIAC_EN = { "Koç":"Aries","Boğa":"Taurus","İkizler":"Gemini","Yengeç":"Cancer","Aslan":"Leo","Başak":"Virgo","Terazi":"Libra","Akrep":"Scorpio","Yay":"Sagittarius","Oğlak":"Capricorn","Kova":"Aquarius","Balık":"Pisces" };
+const PLANET_EN = { "Güneş":"Sun","Ay":"Moon","Merkür":"Mercury","Venüs":"Venus","Mars":"Mars","Jüpiter":"Jupiter","Satürn":"Saturn","Uranüs":"Uranus","Neptün":"Neptune","Pluto":"Pluto" };
+const zodiacDisplay = (sign, lang) => (lang === "tr" || !sign || sign === "—") ? sign : (ZODIAC_EN[sign] || sign);
+const planetDisplay = (planet, lang) => (lang === "tr" || !planet) ? planet : (PLANET_EN[planet] || planet);
 // 12. Ev burç yorumları — Tracy Marks "Gizli Benliğiniz" kitabına göre
 const EV12_BURCU_ACIKLAMA = {
   tr: {
@@ -5028,8 +5033,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   ♆
                 </div>
                 <div>
-                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#c8b0e8",marginBottom:2 }}>{ev12Burcu} {lang==="tr" ? "Burcu" : "Sign"}</div>
-                  <div style={{ fontSize:13,color:"#7060a0",letterSpacing:1 }}>{lang==="tr" ? "Yönetici:" : "Ruler:"} {ev12Gezegen}</div>
+                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#c8b0e8",marginBottom:2 }}>{zodiacDisplay(ev12Burcu, lang)} {lang==="tr" ? "Burcu" : "Sign"}</div>
+                  <div style={{ fontSize:13,color:"#7060a0",letterSpacing:1 }}>{lang==="tr" ? "Yönetici:" : "Ruler:"} {planetDisplay(ev12Gezegen, lang)}</div>
                 </div>
               </div>
               <div style={{ fontSize:13,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
@@ -5075,10 +5080,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:13,letterSpacing:0.5,color:"#d0c0f0",marginBottom:2 }}>
-                    {lang==="tr" ? "Draconik Güneşin:" : "Your Draconic Sun:"} <strong style={{ color:"#e8d8ff" }}>{draconicGunes}</strong>
+                    {lang==="tr" ? "Draconik Güneşin:" : "Your Draconic Sun:"} <strong style={{ color:"#e8d8ff" }}>{zodiacDisplay(draconicGunes, lang)}</strong>
                   </div>
                   <div style={{ fontSize:12,color:"#8878b8",letterSpacing:0.5 }}>
-                    {lang==="tr" ? `Kuzey Düğüm yaklaşık: ${kuzeyDugum}` : `North Node approx: ${kuzeyDugum}`}
+                    {lang==="tr" ? `Kuzey Düğüm yaklaşık: ${kuzeyDugum}` : `North Node approx: ${zodiacDisplay(kuzeyDugum, lang)}`}
                   </div>
                 </div>
               </div>
@@ -5205,13 +5210,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const animalCount = (() => { try { const a = JSON.parse(localStorage.getItem("@tura_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
         const mythCount = (() => { try { const a = JSON.parse(localStorage.getItem("@mitler_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
         const hdProfile = (() => { try { const a = JSON.parse(localStorage.getItem("@tasarim_profiles") || "[]"); return Array.isArray(a) && a.length ? a[0] : null; } catch { return null; } })();
-        const displayName = (idCardName || "Yolcu").slice(0, 24);
-        const burc = astro?.burc || "—";
+        const displayName = (idCardName || (lang==="tr" ? "Yolcu" : "Traveler")).slice(0, 24);
+        const burc = zodiacDisplay(astro?.burc, lang) || "—";
         const yasamYolu = astro?.yasam || "—";
         const kisiselYil = astro?.kisiselYil || "—";
-        const yuk = yukselen || "—";
-        const ev12 = ev12Burcu || "—";
-        const dra = draconicGunes || "—";
+        const yuk = zodiacDisplay(yukselen, lang) || "—";
+        const ev12 = zodiacDisplay(ev12Burcu, lang) || "—";
+        const dra = zodiacDisplay(draconicGunes, lang) || "—";
         const days = streakData?.current ?? 0;
         const best = streakData?.best ?? 0;
 
@@ -5242,7 +5247,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ctx.fillStyle = "#9080c0";
           ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText("✦ SAKIN LIFE · GALAKTIK KIMLIK ✦", 540, 180);
+          ctx.fillText(lang==="tr" ? "✦ SAKIN LIFE · GALAKTIK KIMLIK ✦" : "✦ SAKIN LIFE · GALACTIC ID ✦", 540, 180);
 
           // 4. Fotoğraf (varsa) veya placeholder
           if (idCardPhoto) {
@@ -5292,7 +5297,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           // 6. Burç · Yaşam Yolu
           ctx.fillStyle = "#a890c8";
           ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
-          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · YAŞAM YOLU ${yasamYolu}` : ""}`;
+          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · ${lang==="tr" ? "YAŞAM YOLU" : "LIFE PATH"} ${yasamYolu}` : ""}`;
           if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
 
           // 7. Stat boxes (2x3 grid)
@@ -5300,7 +5305,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             [lang==="tr"?"BURÇ":"SUN",          burc,                  "#f0c860", 100, 820],
             [lang==="tr"?"YÜKSELEN":"ASC",      yuk,                   "#a0d8b4", 560, 820],
             [lang==="tr"?"12. EV":"12TH",       ev12,                  "#c8b0e8", 100, 940],
-            ["DRACONİK",                        dra,                   "#d8c8f0", 560, 940],
+            [lang==="tr"?"DRACONİK":"DRACONIC", dra,                   "#d8c8f0", 560, 940],
             [lang==="tr"?"YAŞAM YOLU":"LIFE PATH", String(yasamYolu),  "#d0c8e8", 100, 1060],
             [lang==="tr"?"KİŞİSEL YIL":"PERSONAL YR", String(kisiselYil), "#d0c8e8", 560, 1060],
           ];
@@ -5422,13 +5427,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div key={i} style={{ position:"absolute",left:x,top:y,width:2,height:2,borderRadius:"50%",background:`rgba(255,255,255,${o})`,boxShadow:`0 0 4px rgba(255,255,255,${o*0.5})` }}/>
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
-                  <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>✦ Sakin Life · Galaktik Kimlik ✦</div>
+                  <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{lang==="tr" ? "✦ Sakin Life · Galaktik Kimlik ✦" : "✦ Sakin Life · Galactic ID ✦"}</div>
                   <div style={{ width:88,height:88,borderRadius:"50%",margin:"10px auto 12px",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
                     {!idCardPhoto && "✦"}
                   </div>
                   <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={lang==="tr"?"Adın":"Your Name"} maxLength={24}
                     style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
-                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `Yaşam Yolu ${yasamYolu}` : "—"}</div>
+                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `${lang==="tr" ? "Yaşam Yolu" : "Life Path"} ${yasamYolu}` : "—"}</div>
                 </div>
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8 }}>
                   <StatRow label={lang==="tr"?"Burç":"Sun"} value={burc} color="#f0c860"/>
