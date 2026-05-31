@@ -32,6 +32,26 @@
       html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
+    <script>
+    /* Sakin Life bridge: host'tan doğum profilini seed et (tarih + saat + şehir) */
+    (function() {
+      try {
+        var d = localStorage.getItem('sakin_birth_date');
+        if (!d) return;                                  // tarih yoksa hiç dokunma
+        var ex = localStorage.getItem('@tasarim_profiles');
+        var list = ex ? JSON.parse(ex) : [];
+        if (Array.isArray(list) && list.length) return;  // zaten profil var → üzerine yazma
+        var n = localStorage.getItem('sakin_name') || '';
+        var t = localStorage.getItem('sakin_birth_time') || '';
+        var c = localStorage.getItem('sakin_birth_city') || '';
+        var id = Math.random().toString(36).slice(2, 10);
+        var profile = { id: id, name: n, birthDate: d, birthTime: t, city: c, createdAt: new Date().toISOString() };
+        localStorage.setItem('@tasarim_profiles', JSON.stringify([profile]));
+        localStorage.setItem('@tasarim_active', id);
+        localStorage.setItem('@tasarim_onboarded', '1');
+      } catch(e) { console.warn('Sakin bridge:', e); }
+    })();
+    </script>
   </head>
 
   <body>
