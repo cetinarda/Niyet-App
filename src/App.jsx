@@ -1593,6 +1593,17 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
+  // TerapiScreen unmount olunca (kullanıcı başka ekrana geçince) çalan tone'u durdur —
+  // yoksa ses orphan AudioContext'te kalır, kullanıcı geri dönünce kapatma UI'sı yok.
+  useEffect(() => {
+    return () => {
+      try { oscRef.current?.stop(); } catch(_) {}
+      try { gainRef.current?.disconnect(); } catch(_) {}
+      oscRef.current = null;
+      gainRef.current = null;
+    };
+  }, []);
+
   // iOS/Android için AudioContext'i kullanıcı gesture'ında unlock et
   const unlockChimeCtx = () => {
     try {
@@ -4954,21 +4965,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       borderRadius:16,padding:"16px 18px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
                     }}>
-                      {kozmikLoading && (
-                        <div style={{ textAlign:"center",color:"#888",fontSize:13,padding:"20px 0" }}>
-                          {lang==="tr" ? "NOAA verileri yükleniyor..." : "Loading NOAA data..."}
-                        </div>
-                      )}
-                      {!kozmikLoading && !kozmikData && (
-                        <div style={{ textAlign:"center",color:"#888",fontSize:13,padding:"20px 0" }}>
-                          {lang==="tr" ? "Veri alınamadı. İnternet bağlantını kontrol et." : "Could not fetch data."}
-                        </div>
-                      )}
-                      {!kozmikLoading && kozmikData && (() => {
+                      {(() => {
                         const moon = moonPhase();
                         return (
                         <>
-                          {/* AY EVRESİ — saf matematik, çevrimdışı bile çalışır */}
+                          {/* AY EVRESİ — saf matematik, NOAA olmadan da görünür */}
                           <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
                             <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
                             <div style={{ flex:1,minWidth:0 }}>
@@ -4981,6 +4982,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               </div>
                             </div>
                           </div>
+                        </>
+                        );
+                      })()}
+                      {kozmikLoading && (
+                        <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
+                          {lang==="tr" ? "NOAA güneş verileri yükleniyor…" : "Loading NOAA solar data…"}
+                        </div>
+                      )}
+                      {!kozmikLoading && !kozmikData && (
+                        <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
+                          {lang==="tr" ? "Güneş verisi şu an alınamadı. Ay evresi her zaman görünür." : "Solar data unavailable right now. Moon phase always shows."}
+                        </div>
+                      )}
+                      {!kozmikLoading && kozmikData && (() => {
+                        return (
+                        <>
 
                           <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
                             <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
