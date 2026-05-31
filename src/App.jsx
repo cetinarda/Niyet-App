@@ -215,6 +215,62 @@ function zodiacSign(dateStr) {
   ];
   return (s.find(x=>m<x.m||(m===x.m&&d<=x.d))||s[0]).n;
 }
+// Yaşam yolu sayılarının kısa anlamı (TR + EN). Usta sayılar 11/22/33 dahil.
+const LIFE_PATH_DESC = {
+  tr: {
+    1:"Lider, öncü. Kendi yolunu açar, başlatır, bağımsızca yön belirler.",
+    2:"Diplomat, sezgili. İlişkilerde köprü kurar, denge ve barış arar.",
+    3:"Yaratıcı ifade. Söz, sanat ve neşeyle dünyaya dokunur.",
+    4:"İnşa edici. Sabırla, disiplinle sağlam temeller atar.",
+    5:"Özgür ruh. Değişim, hareket, çeşitlilik onun nefesidir.",
+    6:"Şefkat ve sorumluluk. Aile ve toplulukta hizmet eder.",
+    7:"Bilge arayışçı. İçe döner, derinleşir; mistik ve analitik.",
+    8:"Güç ve denge. Maddi ve manevi dünyada ustalık ister.",
+    9:"İnsani hizmet. Geniş şefkat, evrensel bakış, tamamlanma.",
+    11:"Sezgi ustası. İlhamı kanalize eden ışık taşıyıcı.",
+    22:"Ana mimar. Büyük vizyonu somut gerçeğe dönüştüren.",
+    33:"Şefkat öğretmeni. Bilgeliği sevgiyle paylaşan.",
+  },
+  en: {
+    1:"Leader, pioneer. Opens new paths, sets direction independently.",
+    2:"Diplomat, intuitive. Bridge-builder, seeker of balance and peace.",
+    3:"Creative voice. Touches the world through expression, art, joy.",
+    4:"Builder. Lays solid foundations with patience and discipline.",
+    5:"Free spirit. Change, movement, variety — that's the breath.",
+    6:"Love & responsibility. Serves family and community.",
+    7:"Wise seeker. Turns inward; mystical and analytical at once.",
+    8:"Power & balance. Mastery across material and spiritual worlds.",
+    9:"Humanitarian. Wide compassion, universal view, completion.",
+    11:"Master of intuition. A lightbearer channeling inspiration.",
+    22:"Master builder. Turns grand vision into tangible reality.",
+    33:"Master of compassion. Shares wisdom through love.",
+  },
+};
+const PERSONAL_YEAR_DESC = {
+  tr: {
+    1:"Yeni döngünün başlangıcı. Tohum ek, yön belirle.",
+    2:"İşbirliği yılı. Sabır, denge, ilişkilerde derinlik.",
+    3:"Yaratım ve ifade. Sosyallik, neşe, projelerin akışı.",
+    4:"İnşa yılı. Disiplin, somut emek, sağlam temel.",
+    5:"Değişim yılı. Hareket, yeni alanlar, esneklik.",
+    6:"Sorumluluk yılı. Ev, aile, şifa, hizmet.",
+    7:"İçe dönüş yılı. Çalışma, bilgelik, sessizlik.",
+    8:"Hasat yılı. Güç, başarı, maddi ve ruhsal denge.",
+    9:"Tamamlanma yılı. Bırak, affet, yeni döngüye yer aç.",
+  },
+  en: {
+    1:"A new cycle begins. Plant seeds, set direction.",
+    2:"Year of cooperation. Patience, balance, deeper bonds.",
+    3:"Creation & expression. Social, joyful, projects flow.",
+    4:"Year of building. Discipline, real work, solid ground.",
+    5:"Year of change. Movement, new ground, flexibility.",
+    6:"Year of responsibility. Home, family, healing, service.",
+    7:"Year of inward turn. Study, wisdom, quiet.",
+    8:"Year of harvest. Power, success, material & spiritual balance.",
+    9:"Year of completion. Release, forgive, make space for the next cycle.",
+  },
+};
+
 function biorhythm(dateStr) {
   const days = Math.floor((Date.now()-new Date(dateStr))/86400000);
   return {
@@ -3675,6 +3731,25 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                 </div>
               </>
+            ) : (birthDate && !showBirthForm) ? (
+              /* Doğum bilgisi zaten girilmiş → özet kart + "değiştir" */
+              <div style={{ textAlign:"center",maxWidth:300,margin:"0 auto",display:"flex",flexDirection:"column",gap:14 }}>
+                <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"18px 18px",display:"flex",flexDirection:"column",gap:8 }}>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}</div>
+                  <div style={{ fontSize:14,color:"#d8c8f0",letterSpacing:1,fontFamily:"'Inter',sans-serif",lineHeight:1.8 }}>
+                    {birthDate}{birthTime ? ` · ${birthTime}` : ""}
+                    {birthCity ? <><br/>{birthCity}</> : null}
+                  </div>
+                </div>
+                <button onClick={()=>setShowBirthForm(true)}
+                  style={{ background:"none",border:"1px solid rgba(255,255,255,0.18)",borderRadius:100,padding:"10px 22px",color:"#bbb",fontSize:12,letterSpacing:1.8,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Doğum bilgilerini değiştir" : "Edit birth info"}
+                </button>
+                <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
+                  onClick={()=>{ if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); } }}>
+                  {lang==="tr" ? "Devam Et →" : "Continue →"}
+                </button>
+              </div>
             ) : (
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
                 <div style={{ marginBottom:10 }}>
@@ -3687,7 +3762,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Şehri (yükselen için)" : "Birth City (for ascendant)"}</div>
-                  <input type="text" className="sakin-input" list="city-list" placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"} style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
+                  <input type="text" className="sakin-input" list="city-list"
+                    name="sakin-birth-city" id="sakin-birth-city"
+                    autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
+                    placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"}
+                    style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
                     value={birthCityInput} onChange={e=>setBirthCityInput(e.target.value)} />
                   <datalist id="city-list">
                     {CITY_NAMES.map(c => <option key={c} value={c.charAt(0).toUpperCase()+c.slice(1)} />)}
@@ -3701,9 +3780,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
+                    setShowBirthForm(false);
                     if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
                   }}>
-                  {lang==="tr" ? (birthInput ? "Devam Et →" : "Atla →") : (birthInput ? "Continue →" : "Skip →")}
+                  {lang==="tr" ? (birthInput ? (birthDate ? "Kaydet →" : "Devam Et →") : "Atla →") : (birthInput ? (birthDate ? "Save →" : "Continue →") : "Skip →")}
                 </button>
               </div>
             )}
@@ -4001,7 +4081,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <>
               <div style={{ marginBottom:28 }}>
                 <div style={{ fontFamily:"'Inter',sans-serif",fontSize:19,letterSpacing:0.5,marginBottom:14,fontWeight:300,lineHeight:1.5,color:"#cccccc" }}>{t("intention_q")}</div>
-                <textarea className="sakin-input" rows={3} placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
+                <textarea className="sakin-input" rows={3} autoComplete="off" autoCorrect="off" placeholder={t("intention_ph")} value={niyet} onChange={e=>setNiyet(e.target.value)} />
               </div>
               <div style={{ marginBottom:32 }}>
                 <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
@@ -4522,11 +4602,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {niyet && <div style={{ borderLeft:"2px solid rgba(255,255,255,0.32)",paddingLeft:15,marginBottom:26,color:"#888888",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
               <div style={{ marginBottom:18 }}>
                 <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
-                <textarea className="sakin-input" rows={2} placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
+                <textarea className="sakin-input" rows={2} autoComplete="off" autoCorrect="off" placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
               </div>
               <div style={{ marginBottom:26 }}>
                 <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
-                <textarea className="sakin-input" rows={2} placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
+                <textarea className="sakin-input" rows={2} autoComplete="off" autoCorrect="off" placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
               </div>
               <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
                 {["🫶","⚡","🌊","✨","🌿"].map(em=>(
@@ -4602,6 +4682,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requireAiConsent(generateSikayetAnaliz);} }}
                     placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — ne merak ediyorsun?" : "Physical, emotional or spiritual — what do you wonder about?"}
                     rows={3}
+                    autoComplete="off" autoCorrect="off"
                     autoFocus
                     style={{
                       width:"100%",boxSizing:"border-box",
@@ -5355,6 +5436,28 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     </div>
                   )}
                 </div>
+                {/* Yaşam Yolu + Kişisel Yıl kısa anlamı */}
+                {(() => {
+                  const lp = LIFE_PATH_DESC[lang]?.[yasamYolu];
+                  const py = PERSONAL_YEAR_DESC[lang]?.[kisiselYil];
+                  if (!lp && !py) return null;
+                  return (
+                    <div style={{ display:"flex",flexDirection:"column",gap:8,marginBottom:10 }}>
+                      {lp && (
+                        <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
+                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Yaşam Yolu":"Life Path"} {yasamYolu}</div>
+                          <div style={{ fontSize:11,color:"#c8c0d8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{lp}</div>
+                        </div>
+                      )}
+                      {py && (
+                        <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
+                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Kişisel Yıl":"Personal Year"} {kisiselYil}</div>
+                          <div style={{ fontSize:11,color:"#c8c0d8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{py}</div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
                 <div style={{ textAlign:"center",fontSize:9,letterSpacing:3,color:"#605080",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>sakin.life</div>
               </div>
               {/* Actions */}
@@ -5368,6 +5471,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
                   ↓ {lang==="tr"?"İndir / Paylaş":"Download / Share"}
                 </button>
+                <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer"
+                  style={{ textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(220,140,200,0.3)",background:"linear-gradient(135deg,rgba(240,100,160,0.10),rgba(140,80,200,0.10))",color:"#e0a0c8",fontSize:12,letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                  <span style={{ fontSize:14 }}>◐</span> @sakin.app
+                </a>
                 <button onClick={()=>{ setShowIdCard(false); }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   {lang==="tr"?"Kapat":"Close"}
