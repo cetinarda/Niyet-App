@@ -69,20 +69,30 @@
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
       <script>
-    /* Sakin Life köprüsü KALDIRILDI: bu app profili {name, element, birthDate,
-       fullName, birthHour, birthMinute, birthCity} bekliyor. 'element' alanı
-       uygulamanın kendi onboarding'indeki kişilik/element testiyle belirleniyor
-       (ateş/hava/toprak/su) — host bunu sağlayamaz. Eksik 'element' ile seed
-       edince profil geçersiz sayılıp uygulama bilgileri tekrar soruyordu.
-       Aşağıdaki temizlik, önceki köprünün yazdığı eksik profili siler ki
-       kullanıcı uygulamanın kendi akışını sorunsuz görsün. */
+    /* Sakin Hayvan köprüsü KALDIRILDI (kalıcı): bu app profili
+       {name, element, birthDate, fullName, birthHour, birthMinute, birthCity}
+       bekliyor. 'element' alanı uygulamanın çok-soruluk kişilik testiyle
+       belirleniyor (ateş/hava/toprak/su) — burç/doğum tarihinden türetilmiyor.
+       Bundle'da herhangi bir geçici/öntanımlı element fallback'i yok; element
+       eksikse z(birthDate, element) animal hesabı null döner ve hatalı profil
+       üretir. Bu yüzden host'tan eksik veriyle seed YAPMAK YANLIŞTIR — köprü
+       kasten kapalı tutuluyor. Aşağıdaki temizlik, önceki bridge'in yazmış
+       olabileceği eksik (element'siz) ya da hatalı tipli profili siler. */
     (function() {
       try {
         var ex = localStorage.getItem('@tura_profile');
         if (!ex) return;
-        var p = JSON.parse(ex);
-        // Köprünün yazdığı profilde 'element' yok → eksik/bozuk.
-        if (p && !p.element) localStorage.removeItem('@tura_profile');
+        var p;
+        try { p = JSON.parse(ex); }
+        catch(e) { localStorage.removeItem('@tura_profile'); return; }
+        if (!p || typeof p !== 'object') {
+          localStorage.removeItem('@tura_profile'); return;
+        }
+        // Element zorunlu ve ateş/hava/toprak/su olmalı.
+        var validEl = ['ateş','hava','toprak','su'];
+        if (!p.element || validEl.indexOf(p.element) === -1) {
+          localStorage.removeItem('@tura_profile');
+        }
       } catch(e) { /* sessiz geç */ }
     })();
     </script>
