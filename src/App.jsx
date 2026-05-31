@@ -12,9 +12,7 @@ const isNative = Capacitor.isNativePlatform();
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
 const APP_VERSION = "1.2.4";
-// ⚠️ App Store Connect'ten Sakin'in gerçek App ID'sini koy (örn: id1234567890).
-// App Store Connect → My Apps → Sakin → App Information → "Apple ID" alanı.
-const APP_STORE_URL = "https://apps.apple.com/app/sakin/idAPPSTOREID";
+const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
