@@ -2403,6 +2403,7 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const [embedLoaded, setEmbedLoaded] = useState(false);
@@ -3565,6 +3566,82 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ textAlign:"center",marginBottom:8 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{lang==="tr"?"Sakin Ailesi":"Sakin Family"}</div>
               <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
+            </div>
+
+            {/* SENİN BİLGİLERİN — ad/soyad input + Sakin girişten gelen doğum bilgisi özeti (kapalı) */}
+            <div style={{ background:"rgba(184,164,216,0.04)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:14,padding:"14px 16px",display:"flex",flexDirection:"column",gap:10 }}>
+              <div style={{ fontSize:10,letterSpacing:3,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Senin Bilgilerin":"Your Info"}</div>
+              <input type="text"
+                value={userName}
+                onChange={e=>{
+                  const v = e.target.value;
+                  setUserName(v); setNameInput(v);
+                  try { localStorage.setItem("sakin_name", v); } catch(_){}
+                }}
+                placeholder={lang==="tr"?"Adın ve soyadın":"Your full name"}
+                autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
+                style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
+
+              {birthDate ? (
+                <>
+                  <div style={{ fontSize:12,color:"#b0a8c8",lineHeight:1.7,letterSpacing:0.3 }}>
+                    {birthDate}{birthTime ? ` · ${birthTime}` : ""}{birthCity ? ` · ${birthCity}` : ""}
+                  </div>
+                  {!ailesiEditBirth && (
+                    <button onClick={()=>setAilesiEditBirth(true)}
+                      style={{ alignSelf:"flex-start",background:"none",border:"1px dashed rgba(184,164,216,0.3)",borderRadius:100,padding:"6px 14px",color:"#9080b0",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                      {lang==="tr"?"Doğum bilgilerini değiştir":"Edit birth info"}
+                    </button>
+                  )}
+                </>
+              ) : (
+                /* Sakin girişinde hiç doğum bilgisi girilmediyse hemen formu aç */
+                <div style={{ fontSize:12,color:"#888",fontStyle:"italic" }}>
+                  {lang==="tr"?"Doğum bilgini henüz girmedin. Aşağıya gir; tüm aile uygulamaları kullanacak.":"You haven't entered your birth info yet. Fill in below — all family apps will use it."}
+                </div>
+              )}
+
+              {(ailesiEditBirth || !birthDate) && (
+                <div style={{ display:"flex",flexDirection:"column",gap:8,paddingTop:6,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+                  <div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Tarihi":"Date of Birth"}</div>
+                    <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Saati":"Birth Time"}</div>
+                    <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Şehri":"Birth City"}</div>
+                    <input type="text" list="city-list"
+                      name="sakin-birth-city-ailesi" id="sakin-birth-city-ailesi"
+                      autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
+                      placeholder={lang==="tr"?"ör. İstanbul, Kayseri, Londra":"e.g. Istanbul, Kayseri, London"}
+                      value={birthCityInput} onChange={e=>setBirthCityInput(e.target.value)}
+                      style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
+                    <datalist id="city-list">
+                      {CITY_NAMES.map(c => <option key={c} value={c.charAt(0).toUpperCase()+c.slice(1)} />)}
+                    </datalist>
+                  </div>
+                  <div style={{ display:"flex",gap:8,marginTop:4 }}>
+                    <button onClick={()=>{
+                        if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
+                        if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                        if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
+                        setAilesiEditBirth(false);
+                      }}
+                      style={{ flex:1,background:"linear-gradient(135deg,rgba(184,164,216,0.35),rgba(122,80,150,0.3))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:100,padding:"9px 14px",color:"#fff",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                      {lang==="tr"?"Kaydet":"Save"}
+                    </button>
+                    {birthDate && (
+                      <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setBirthCityInput(birthCity); setAilesiEditBirth(false); }}
+                        style={{ background:"none",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,padding:"9px 14px",color:"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                        {lang==="tr"?"Vazgeç":"Cancel"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
             {[
               { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
