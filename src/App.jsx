@@ -1617,25 +1617,29 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const gainRef     = useRef(null);
 
   const stopTone = () => {
+    // ctx'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     const ctx = audioCtxRef.current;
     if (gainRef.current && ctx) {
-      gainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8);
+      try { gainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8); } catch(_) {}
     }
     setTimeout(() => {
       try { oscRef.current?.stop(); } catch(_) {}
       oscRef.current = null;
       gainRef.current = null;
-      try { audioCtxRef.current?.close(); } catch(_) {}
-      audioCtxRef.current = null;
+      // audioCtxRef'i close etmiyoruz; toggleTone tekrar açtığında reuse edilecek.
     }, 820);
     setToneOn(false);
   };
 
   const toggleTone = (hz) => {
     if (toneOn) { stopTone(); return; }
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    audioCtxRef.current = ctx;
-    ctx.resume();
+    // ctx'i gesture handler'ın İLK satırında oluştur/resume et — iOS WKWebView için kritik.
+    if (!audioCtxRef.current) {
+      try { audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch(_) {}
+    }
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
     master.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 2);
@@ -1658,7 +1662,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); try { chimeCxtRef.current?.close(); } catch(_){} chimeCxtRef.current = null; };
+  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -1974,9 +1978,17 @@ const ORNEK_SORULAR_EN = [
   "Why is chronic fatigue always with me?",
 ];
 
+// Module-level AudioContext singleton — iOS WKWebView her yeni ctx'i gesture context'i
+// kaybedebileceği için reuse ediyoruz. Kullanıcı ilk gesture'ında ctx oluşur, sonra
+// her ses çalmada aynı ctx'i kullanırız; close ASLA çağırmayız.
+let __freqToneCtx = null;
 function playFreqTone(hz, dur = 3.5) {
   try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!__freqToneCtx) {
+      __freqToneCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    const ctx = __freqToneCtx;
+    if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
     master.gain.linearRampToValueAtTime(0.30, ctx.currentTime + 0.4);
@@ -1993,7 +2005,6 @@ function playFreqTone(hz, dur = 3.5) {
       o.connect(g); g.connect(master);
       o.start(); o.stop(ctx.currentTime + dur);
     });
-    setTimeout(() => { try { ctx.close(); } catch(_) {} }, (dur + 0.5) * 1000);
   } catch(_) {}
 }
 
@@ -2277,8 +2288,7 @@ export default function SakinApp() {
       freqOscsRef.current = [];
       try { freqOscRef.current?.stop(); } catch(_) {}
       freqOscRef.current = null; freqGainRef.current = null;
-      try { freqCtxRef.current?.close(); } catch(_) {}
-      freqCtxRef.current = null;
+      // freqCtxRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     }, 350);
     stopBirdSound();
     setPlayingHz(null); setActiveFreq(null);
@@ -4425,16 +4435,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {screen==="ses" && (() => {
         const FREQS = getFreqData(lang);
         const stopFreqTone = () => {
+          // ctx'i ASLA close etme — iOS WKWebView gesture context'i kaybedince yeni ctx açılamaz.
+          // Sadece osc'leri durdur ve gain'i sıfırla; ctx singleton olarak yeniden kullanılır.
           if (freqGainRef.current && freqCtxRef.current) {
-            freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8);
+            try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8); } catch(_) {}
           }
           setTimeout(() => {
             freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
             freqOscsRef.current = [];
             try { freqOscRef.current?.stop(); } catch(_) {}
             freqOscRef.current = null; freqGainRef.current = null;
-            try { freqCtxRef.current?.close(); } catch(_) {}
-            freqCtxRef.current = null;
           }, 820);
           stopBirdSound();
           setPlayingHz(null);
@@ -4443,9 +4453,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           if (playingHz === hz) { stopFreqTone(); return; }
           if (playingHz) stopFreqTone();
           const freqData = FREQS.find(f => f.hz === hz);
+          // KRİTİK: AudioContext'i gesture handler'ın İLK satırında oluştur ve resume et.
+          // setTimeout içinde oluşturulursa iOS gesture context'ini kaybeder ve ses çıkmaz.
+          if (!freqCtxRef.current) {
+            try { freqCtxRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch(_) {}
+          }
+          if (freqCtxRef.current?.state === "suspended") { try { freqCtxRef.current.resume(); } catch(_) {} }
           setTimeout(() => {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            freqCtxRef.current = ctx; ctx.resume();
+            const ctx = freqCtxRef.current;
+            if (!ctx) return;
             const allOscs = [];
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
