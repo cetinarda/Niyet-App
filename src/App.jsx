@@ -3195,7 +3195,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
-    {id:"giris",  icon:"⌂", label:t("nav_home"), color:"#c0a8e0"},
+    // Giriş üst bardan kaldırıldı → sol-orta floating buton (aşağıda). Web'de zaten yok.
     ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:t("nav_mirror"), color:"#a070d0"}]),
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
@@ -3420,6 +3420,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           );
         })}
       </div>
+
+      {/* GİRİŞ — sol-orta floating buton (sadece iOS, giriş ekranı dışında) */}
+      {isNative && screen !== "giris" && (
+        <button
+          onClick={()=>{ haptic(); setGirisPhase("intro"); setScreen("giris"); }}
+          aria-label={lang==="tr"?"Giriş":"Home"}
+          style={{
+            position:"fixed", left:0, top:"50%", transform:"translateY(-50%)", zIndex:9997,
+            width:40, height:54, paddingLeft:3,
+            background:"linear-gradient(135deg,rgba(192,168,224,0.16),rgba(122,80,150,0.10))",
+            backdropFilter:"blur(14px)",
+            border:"1px solid rgba(192,168,224,0.28)", borderLeft:"none",
+            borderRadius:"0 18px 18px 0",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            cursor:"pointer", color:"#c0a8e0", fontSize:19,
+            boxShadow:"0 0 18px rgba(122,80,150,0.22)",
+          }}>
+          ⌂
+        </button>
+      )}
 
       {/* Sabit derin uzay arka planı */}
       <div style={{ position:"fixed",inset:0,pointerEvents:"none",zIndex:0,background:"radial-gradient(ellipse 80% 60% at 20% 80%,rgba(60,30,90,0.12) 0%,transparent 60%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(30,50,100,0.1) 0%,transparent 55%)" }} />
