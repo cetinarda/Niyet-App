@@ -39,6 +39,18 @@ function windDescription(speed) {
   return { tr: "fırtına seviyesi", en: "storm-level" };
 }
 
+// fetch + timeout — Netlify function 10s sınırına takılmasın
+async function fetchWithTimeout(url, ms = 4500) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const r = await fetch(url, { signal: ctrl.signal });
+    return r;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export const handler = async (event) => {
   const cors = getCorsHeaders(event);
 
@@ -46,21 +58,29 @@ export const handler = async (event) => {
     return { statusCode: 204, headers: cors, body: "" };
   }
 
+  // 4 endpoint paralel — biri çökerse diğerleri gelir
+  const [kpResult, fcResult, flareResult, windResult] = await Promise.allSettled([
+    fetchWithTimeout("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json").then(r => r.json()),
+    fetchWithTimeout("https://services.swpc.noaa.gov/text/3-day-forecast.txt").then(r => r.text()),
+    fetchWithTimeout("https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json").then(r => r.json()),
+    fetchWithTimeout("https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json").then(r => r.json()),
+  ]);
+
   try {
-    // Past 7 days Kp index (3-hourly values)
-    const kpRes = await fetch("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json");
-    const kpRaw = await kpRes.json();
-    // Format: [["time_tag", "Kp", "a_running", "station_count"], [...]]
-    const header = kpRaw[0];
+    // Past 7 days Kp index (3-hourly values) — bu ana veri, fail olursa 502
+    if (kpResult.status !== "fulfilled") {
+      throw new Error("Kp data unavailable: " + (kpResult.reason?.message || "unknown"));
+    }
+    const kpRaw = kpResult.value;
     const rows = kpRaw.slice(1);
     const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const recent = rows
+    const kpRecent = rows
       .filter(r => new Date(r[0]).getTime() >= sevenDaysAgo)
       .map(r => ({ time: r[0], kp: parseFloat(r[1]) }));
 
     // Daily max Kp (most relevant for energy interpretation)
     const dailyMax = {};
-    for (const e of recent) {
+    for (const e of kpRecent) {
       const day = e.time.slice(0, 10);
       if (!dailyMax[day] || e.kp > dailyMax[day]) dailyMax[day] = e.kp;
     }
@@ -68,18 +88,12 @@ export const handler = async (event) => {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([day, kp]) => ({ day, kp, ...kpDescription(kp) }));
 
-    const avgKp = recent.length ? recent.reduce((s, e) => s + e.kp, 0) / recent.length : 0;
-    const maxKp = recent.length ? Math.max(...recent.map(e => e.kp)) : 0;
-    const currentKp = recent.length ? recent[recent.length - 1].kp : 0;
+    const avgKp = kpRecent.length ? kpRecent.reduce((s, e) => s + e.kp, 0) / kpRecent.length : 0;
+    const maxKp = kpRecent.length ? Math.max(...kpRecent.map(e => e.kp)) : 0;
+    const currentKp = kpRecent.length ? kpRecent[kpRecent.length - 1].kp : 0;
 
-    // 3-day forecast (text format)
-    let forecastText = "";
-    try {
-      const fcRes = await fetch("https://services.swpc.noaa.gov/text/3-day-forecast.txt");
-      forecastText = await fcRes.text();
-    } catch { /* optional */ }
-
-    // Extract forecast Kp values from text (simple regex)
+    // 3-day forecast (opsiyonel)
+    const forecastText = fcResult.status === "fulfilled" ? fcResult.value : "";
     const forecastKp = [];
     const fcMatch = forecastText.match(/NOAA Kp index breakdown[\s\S]{0,2000}/);
     if (fcMatch) {
@@ -93,41 +107,41 @@ export const handler = async (event) => {
       ? Math.max(...forecastKp.flatMap(f => [f.day1, f.day2, f.day3]))
       : null;
 
-    // GÜNEŞ PATLAMALARI (son 24 saat) — NOAA GOES X-ray
+    // GÜNEŞ PATLAMALARI (son 24 saat) — opsiyonel
     let flares24h = { count: 0, max_class: null };
-    try {
-      const fRes = await fetch("https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json");
-      const fJson = await fRes.json();
-      const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
-      const recentFlares = (fJson || []).filter(f => f.max_time && new Date(f.max_time).getTime() >= dayAgo);
-      // class rank: A < B < C < M < X
-      const rank = { A: 1, B: 2, C: 3, M: 4, X: 5 };
-      const ranked = recentFlares
-        .map(f => ({ cls: f.max_class || f.begin_class, t: f.max_time }))
-        .filter(f => f.cls);
-      let top = null;
-      for (const f of ranked) {
-        const rk = rank[f.cls[0]?.toUpperCase()] || 0;
-        if (!top || rk > (rank[top.cls[0]?.toUpperCase()] || 0)) top = f;
-      }
-      flares24h = { count: ranked.length, max_class: top?.cls || null, max_time: top?.t || null };
-    } catch { /* optional */ }
+    if (flareResult.status === "fulfilled") {
+      try {
+        const fJson = flareResult.value;
+        const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
+        const recentFlares = (fJson || []).filter(f => f.max_time && new Date(f.max_time).getTime() >= dayAgo);
+        const rank = { A: 1, B: 2, C: 3, M: 4, X: 5 };
+        const ranked = recentFlares
+          .map(f => ({ cls: f.max_class || f.begin_class, t: f.max_time }))
+          .filter(f => f.cls);
+        let top = null;
+        for (const f of ranked) {
+          const rk = rank[f.cls[0]?.toUpperCase()] || 0;
+          if (!top || rk > (rank[top.cls[0]?.toUpperCase()] || 0)) top = f;
+        }
+        flares24h = { count: ranked.length, max_class: top?.cls || null, max_time: top?.t || null };
+      } catch { /* sessiz geç */ }
+    }
 
-    // GÜNEŞ RÜZGARI (en güncel) — NOAA DSCOVR plazma
+    // GÜNEŞ RÜZGARI (en güncel) — opsiyonel
     let solarWind = { speed: null, density: null };
-    try {
-      const wRes = await fetch("https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json");
-      const wRows = await wRes.json();
-      // [["time_tag","density","speed","temperature"], [...], ...]
-      const recent = wRows.slice(1).slice(-30); // son ~30 ölçüm
-      const valid = recent
-        .map(r => ({ density: parseFloat(r[1]), speed: parseFloat(r[2]) }))
-        .filter(r => isFinite(r.speed) && r.speed > 0);
-      if (valid.length) {
-        const last = valid[valid.length - 1];
-        solarWind = { speed: Math.round(last.speed), density: Math.round(last.density * 10) / 10 };
-      }
-    } catch { /* optional */ }
+    if (windResult.status === "fulfilled") {
+      try {
+        const wRows = windResult.value;
+        const windRecent = wRows.slice(1).slice(-30);
+        const valid = windRecent
+          .map(r => ({ density: parseFloat(r[1]), speed: parseFloat(r[2]) }))
+          .filter(r => isFinite(r.speed) && r.speed > 0);
+        if (valid.length) {
+          const last = valid[valid.length - 1];
+          solarWind = { speed: Math.round(last.speed), density: Math.round(last.density * 10) / 10 };
+        }
+      } catch { /* sessiz geç */ }
+    }
 
     const summary = {
       generated_at: new Date().toISOString(),
