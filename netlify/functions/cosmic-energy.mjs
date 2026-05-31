@@ -20,6 +20,25 @@ function kpDescription(kp) {
   return { tr: "aşırı fırtına", en: "extreme storm", level: "G5" };
 }
 
+function flareDescription(maxClass) {
+  // M ve X sınıfları "önemli"; B/C sakin
+  if (!maxClass) return { tr: "sakin", en: "quiet" };
+  const c = maxClass[0]?.toUpperCase();
+  if (c === "X") return { tr: "büyük patlama", en: "major flare" };
+  if (c === "M") return { tr: "orta patlama", en: "moderate flare" };
+  if (c === "C") return { tr: "küçük patlama", en: "minor flare" };
+  return { tr: "sakin", en: "quiet" };
+}
+
+function windDescription(speed) {
+  if (speed == null) return null;
+  if (speed < 400) return { tr: "yavaş", en: "slow" };
+  if (speed < 500) return { tr: "normal", en: "normal" };
+  if (speed < 600) return { tr: "hızlı", en: "fast" };
+  if (speed < 700) return { tr: "çok hızlı", en: "very fast" };
+  return { tr: "fırtına seviyesi", en: "storm-level" };
+}
+
 export const handler = async (event) => {
   const cors = getCorsHeaders(event);
 
@@ -74,6 +93,42 @@ export const handler = async (event) => {
       ? Math.max(...forecastKp.flatMap(f => [f.day1, f.day2, f.day3]))
       : null;
 
+    // GÜNEŞ PATLAMALARI (son 24 saat) — NOAA GOES X-ray
+    let flares24h = { count: 0, max_class: null };
+    try {
+      const fRes = await fetch("https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json");
+      const fJson = await fRes.json();
+      const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      const recentFlares = (fJson || []).filter(f => f.max_time && new Date(f.max_time).getTime() >= dayAgo);
+      // class rank: A < B < C < M < X
+      const rank = { A: 1, B: 2, C: 3, M: 4, X: 5 };
+      const ranked = recentFlares
+        .map(f => ({ cls: f.max_class || f.begin_class, t: f.max_time }))
+        .filter(f => f.cls);
+      let top = null;
+      for (const f of ranked) {
+        const rk = rank[f.cls[0]?.toUpperCase()] || 0;
+        if (!top || rk > (rank[top.cls[0]?.toUpperCase()] || 0)) top = f;
+      }
+      flares24h = { count: ranked.length, max_class: top?.cls || null, max_time: top?.t || null };
+    } catch { /* optional */ }
+
+    // GÜNEŞ RÜZGARI (en güncel) — NOAA DSCOVR plazma
+    let solarWind = { speed: null, density: null };
+    try {
+      const wRes = await fetch("https://services.swpc.noaa.gov/products/solar-wind/plasma-1-day.json");
+      const wRows = await wRes.json();
+      // [["time_tag","density","speed","temperature"], [...], ...]
+      const recent = wRows.slice(1).slice(-30); // son ~30 ölçüm
+      const valid = recent
+        .map(r => ({ density: parseFloat(r[1]), speed: parseFloat(r[2]) }))
+        .filter(r => isFinite(r.speed) && r.speed > 0);
+      if (valid.length) {
+        const last = valid[valid.length - 1];
+        solarWind = { speed: Math.round(last.speed), density: Math.round(last.density * 10) / 10 };
+      }
+    } catch { /* optional */ }
+
     const summary = {
       generated_at: new Date().toISOString(),
       past_7_days: {
@@ -86,10 +141,14 @@ export const handler = async (event) => {
         forecast_max_kp: forecastMaxKp,
         slots: forecastKp,
       },
+      solar_flares_24h: flares24h,
+      solar_wind: solarWind,
       interpretation: {
         current: kpDescription(currentKp),
         week_peak: kpDescription(maxKp),
         forecast_peak: forecastMaxKp !== null ? kpDescription(forecastMaxKp) : null,
+        flares: flareDescription(flares24h.max_class),
+        wind: windDescription(solarWind.speed),
       },
     };
 
