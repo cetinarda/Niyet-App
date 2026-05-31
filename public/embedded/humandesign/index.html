@@ -33,23 +33,25 @@
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
     <script>
-    /* Sakin Life bridge: host'tan doğum profilini seed et (tarih + saat + şehir) */
+    /* Human Design köprüsü KALDIRILDI: bu app'in city alanı {name,lat,lng,tz}
+       obje bekliyor; host'tan gelen düz string ile seed etmek bodygraph
+       hesabını çökertip beyaz ekrana yol açıyordu. Geocoding gerektiği için
+       host doğru city objesini sağlayamaz — uygulamanın kendi onboarding'i
+       şehri arar ve koordinata çevirir. Aşağıdaki temizlik, önceki hatalı
+       köprünün yazdığı bozuk profili siler ki kullanıcı onboarding'i görsün. */
     (function() {
       try {
-        var d = localStorage.getItem('sakin_birth_date');
-        if (!d) return;                                  // tarih yoksa hiç dokunma
         var ex = localStorage.getItem('@tasarim_profiles');
-        var list = ex ? JSON.parse(ex) : [];
-        if (Array.isArray(list) && list.length) return;  // zaten profil var → üzerine yazma
-        var n = localStorage.getItem('sakin_name') || '';
-        var t = localStorage.getItem('sakin_birth_time') || '';
-        var c = localStorage.getItem('sakin_birth_city') || '';
-        var id = Math.random().toString(36).slice(2, 10);
-        var profile = { id: id, name: n, birthDate: d, birthTime: t, city: c, createdAt: new Date().toISOString() };
-        localStorage.setItem('@tasarim_profiles', JSON.stringify([profile]));
-        localStorage.setItem('@tasarim_active', id);
-        localStorage.setItem('@tasarim_onboarded', '1');
-      } catch(e) { console.warn('Sakin bridge:', e); }
+        if (!ex) return;
+        var list = JSON.parse(ex);
+        // Köprünün yazdığı profil: city bir string (obje değil) → bozuk.
+        var broken = Array.isArray(list) && list.some(function(p){ return p && typeof p.city === 'string'; });
+        if (broken) {
+          localStorage.removeItem('@tasarim_profiles');
+          localStorage.removeItem('@tasarim_active');
+          localStorage.removeItem('@tasarim_onboarded');
+        }
+      } catch(e) { /* sessiz geç */ }
     })();
     </script>
   </head>
