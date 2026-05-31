@@ -11,7 +11,7 @@ const isNative = Capacitor.isNativePlatform();
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.2.4";
+const APP_VERSION = "1.2.5";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 function compareVer(a, b) {
@@ -837,6 +837,19 @@ const GLOBAL_CSS = `
   @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
   @keyframes portalRingPulse { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0.85} 100%{transform:translate(-50%,-50%) scale(3.2);opacity:0} }
   @keyframes portalTunnel    { 0%{transform:translate(-50%,-50%) scale(0.4) rotate(0deg);opacity:0.9} 50%{opacity:0.5} 100%{transform:translate(-50%,-50%) scale(2.4) rotate(180deg);opacity:0} }
+  @keyframes portalPulse {
+    0%,100% { box-shadow: 0 0 20px rgba(160,120,220,0.40), inset 0 0 14px rgba(184,164,216,0.30), 0 0 50px rgba(160,120,220,0.20); }
+    50%     { box-shadow: 0 0 28px rgba(160,120,220,0.58), inset 0 0 20px rgba(184,164,216,0.45), 0 0 72px rgba(160,120,220,0.35); }
+  }
+  @keyframes mirrorRipple {
+    0%   { clip-path: circle(0% at calc(100% - 36px) 50%); opacity: 1; }
+    65%  { clip-path: circle(160% at calc(100% - 36px) 50%); opacity: 0.92; }
+    100% { clip-path: circle(160% at calc(100% - 36px) 50%); opacity: 0; }
+  }
+  @keyframes mirrorReveal {
+    0%   { opacity:0; filter:blur(24px) brightness(0.3); transform:scale(1.06); }
+    100% { opacity:1; filter:blur(0) brightness(1); transform:scale(1); }
+  }
   @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
@@ -2329,6 +2342,7 @@ export default function SakinApp() {
     setFbSending(false);
   };
   const [rehberTab, setRehberTab] = useState("reiki");
+  const [mirrorPortalActive, setMirrorPortalActive] = useState(false);
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
   const [semptomInput, setSemptomInput] = useState("");
@@ -2562,7 +2576,7 @@ export default function SakinApp() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
-  useEffect(() => { if (isNative && screen === "rehber") setScreen("gun"); }, [screen]);
+  // rehber screen is now enabled on iOS via the mirror portal
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
@@ -3214,7 +3228,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const ambientColor = {
     giris:"139,90,160",sabah:"220,130,50",nefes:"80,130,200",ses:"160,122,224",
     chakra:`${parseInt(chakra.color.slice(1,3),16)},${parseInt(chakra.color.slice(3,5),16)},${parseInt(chakra.color.slice(5,7),16)}`,
-    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",
+    gun:"120,90,180",terapi:"74,160,100",aksam:"60,70,140",harita:"100,80,180",rehber:"120,60,180",
   }[screen]||"139,90,160";
 
   const NAV = [
@@ -3326,6 +3340,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </button>
           </div>
         </div>
+      )}
+
+      {/* GİZEMLİ GEÇİT — Ayna'ya açılan portal (iOS native ana ekranlarında) */}
+      {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && (
+        <button
+          onClick={()=>{
+            haptic();
+            setMirrorPortalActive(true);
+            setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 850);
+          }}
+          style={{
+            position:"fixed",
+            right:"-18px",
+            top:"50%",
+            transform:"translateY(-50%)",
+            zIndex:9997,
+            width:72, height:72,
+            borderRadius:"50%",
+            border:"1px solid rgba(184,164,216,0.45)",
+            background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.55) 0%, rgba(60,30,90,0.85) 55%, rgba(20,10,35,0.95) 100%)",
+            backdropFilter:"blur(14px)",
+            cursor:"pointer",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color:"rgba(232,218,250,0.92)",
+            fontSize:24, lineHeight:1,
+            animation:"portalPulse 4.5s ease-in-out infinite",
+            padding:0,
+          }}
+        >
+          <span style={{ filter:"drop-shadow(0 0 5px rgba(232,218,250,0.6))", marginLeft:"-8px" }}>☽</span>
+        </button>
+      )}
+
+      {/* Ayna Geçidi — "through the mirror" transition ripple */}
+      {mirrorPortalActive && (
+        <div style={{ position:"fixed",inset:0,zIndex:9998,pointerEvents:"none",overflow:"hidden",
+          background:"radial-gradient(ellipse 80% 60% at calc(100% - 36px) 50%, rgba(220,190,255,0.98) 0%, rgba(140,80,220,0.96) 25%, rgba(40,15,80,0.95) 55%, #000 85%)",
+          animation:"mirrorRipple 0.85s cubic-bezier(0.18,0,0.4,0.95) forwards" }} />
       )}
 
       {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
@@ -4434,8 +4486,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* REHBER */}
       {/* İÇSEL AYNA — Google-style merkezi arama */}
-      {screen==="rehber" && !isNative && (
-        <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 170px" : "52px 24px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center" }}>
+      {screen==="rehber" && (
+        <div style={{ maxWidth:520,width:"100%",padding: sikayetAnaliz ? "20px 24px 170px" : "52px 24px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center",animation:isNative?"mirrorReveal 1.1s cubic-bezier(0.25,0.1,0.25,1)":"none" }}>
           {/* Arka plan ambient */}
           <div style={{ position:"fixed",inset:0,background:"radial-gradient(ellipse 70% 50% at 50% 35%,rgba(120,60,200,0.12) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
 
