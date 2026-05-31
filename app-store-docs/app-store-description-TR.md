@@ -7,7 +7,7 @@ Sakin
 Kendini hep hatırla.
 
 ## Kısa Açıklama (Promotional Text — max 170 karakter)
-Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı.
+Sabah niyet, gün boyu frekans ve nefes, akşam kapanış. Kaleydoskopik seslerle zihnini boşalt, on adımda kendine dön. Sade bir farkındalık sistemi.
 
 ---
 

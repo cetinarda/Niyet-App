@@ -7,7 +7,7 @@ Sakin
 Always remember yourself.
 
 ## Promotional Text (max 170 characters)
-Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing.
+Morning intention, frequencies and breath, evening closure. Empty your mind with kaleidoscopic sound, return to yourself in ten steps. A calm awareness system.
 
 ---
 
