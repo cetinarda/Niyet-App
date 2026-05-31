@@ -4,7 +4,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscribed, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, YEARLY_PRODUCT_ID, LIFETIME_PRODUCT_ID } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, YEARLY_PRODUCT_ID, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 
 const isNative = Capacitor.isNativePlatform();
@@ -2061,7 +2061,9 @@ export default function SakinApp() {
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
   const [isPremium, setIsPremium] = useState(() => {
-    if (isNative) return false; // iOS: sadece IAP isSubscribed() premium verir; localStorage'a güvenme
+    // iOS: premium yalnızca kullanıcı bizzat Subscribe/Buy/Restore'a basınca verilir.
+    // Apple ID seviyesinde cache'lenmiş eski receipt'lere güvenme.
+    if (isNative) return false;
     return localStorage.getItem("sakin_premium") === "1";
   });
   const [purchaseLoading, setPurchaseLoading] = useState(null);
@@ -2083,11 +2085,13 @@ export default function SakinApp() {
     initStore().then((ok) => {
       setIapReady(ok);
       if (areProductsLoaded()) setProductsReady(true);
-      if (ok) {
-        const owned = isSubscribed();
-        if (owned) { setIsPremium(true); }
-        else { localStorage.removeItem("sakin_premium"); setIsPremium(false); }
-      }
+      // NOTE: We do NOT call isSubscribed() here. store.owned reflects Apple's
+      // cached transaction history for the Apple ID — including stale sandbox
+      // subs, family-shared, refunded-but-cached. Auto-granting from that would
+      // hand Premium to anyone whose Apple ID has any historical receipt.
+      // Premium is only granted via:
+      //   1) handlePurchase → user-initiated Subscribe/Buy → verified callback
+      //   2) handleRestore  → user-initiated "Restore Purchases" button
     });
   }, []);
 

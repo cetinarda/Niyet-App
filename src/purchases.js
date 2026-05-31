@@ -9,6 +9,7 @@ let productsLoadedCallback = null;
 let storeReady = false;
 let productsLoaded = false;
 let lastInitError = null;
+let userInitiatedAction = false;
 
 export function onPurchaseUpdate(callback) {
   purchaseUpdateCallback = callback;
@@ -105,11 +106,25 @@ export async function initStore() {
         }
       })
       .approved((transaction) => {
-        console.log("[IAP] approved:", transaction.products?.map(p => p.id));
+        // Apple replays historical transactions (stale sandbox subs, family-shared,
+        // refunded-but-cached, expired auto-renews) at store.initialize() and during
+        // background renewal. Honoring them grants Premium without payment. Only honor
+        // a transaction when the current user explicitly initiated a Subscribe/Buy/Restore.
+        if (!userInitiatedAction) {
+          console.log("[IAP] ignoring background/replayed transaction:", transaction.transactionId);
+          try { transaction.finish(); } catch (e) { /* noop */ }
+          return;
+        }
+        console.log("[IAP] approved (user-initiated):", transaction.products?.map(p => p.id));
         return transaction.verify();
       })
       .verified((receipt) => {
-        console.log("[IAP] verified");
+        if (!userInitiatedAction) {
+          console.log("[IAP] ignoring verified for non-user-initiated transaction");
+          try { receipt.finish(); } catch (e) { /* noop */ }
+          return;
+        }
+        console.log("[IAP] verified (user-initiated)");
         receipt.finish();
         localStorage.setItem("sakin_premium", "1");
         if (purchaseUpdateCallback) purchaseUpdateCallback(true);
@@ -207,11 +222,15 @@ export async function purchaseProduct(productId) {
     return { success: false, error: "no_offer" };
   }
 
+  userInitiatedAction = true;
+  setTimeout(() => { userInitiatedAction = false; }, 5 * 60 * 1000);
+
   try {
     const result = await window.CdvPurchase.store.order(offer);
     if (result && result.isError) {
       console.warn("[IAP] order error:", result.code, result.message);
       if (isCancelError(result)) {
+        userInitiatedAction = false;
         return { success: false, error: "cancelled", cancelled: true };
       }
       return { success: false, error: result.message || "order_failed" };
@@ -237,12 +256,16 @@ export const purchaseLifetime = () => purchaseProduct(LIFETIME_ID);
 
 export async function restorePurchases() {
   if (!isNative || !window.CdvPurchase) return { success: false, error: "not_available" };
+  userInitiatedAction = true;
   try {
     await window.CdvPurchase.store.restorePurchases();
+    await new Promise((r) => setTimeout(r, 2000));
     if (isSubscribed()) return { success: true };
     return { success: false, error: "no_purchase" };
   } catch (err) {
     return { success: false, error: err?.message || "restore_failed" };
+  } finally {
+    setTimeout(() => { userInitiatedAction = false; }, 5000);
   }
 }
 
