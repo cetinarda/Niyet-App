@@ -69,20 +69,21 @@
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
       <script>
-    /* Sakin Life bridge: seed profile from host localStorage */
+    /* Sakin Life köprüsü KALDIRILDI: bu app profili {name, element, birthDate,
+       fullName, birthHour, birthMinute, birthCity} bekliyor. 'element' alanı
+       uygulamanın kendi onboarding'indeki kişilik/element testiyle belirleniyor
+       (ateş/hava/toprak/su) — host bunu sağlayamaz. Eksik 'element' ile seed
+       edince profil geçersiz sayılıp uygulama bilgileri tekrar soruyordu.
+       Aşağıdaki temizlik, önceki köprünün yazdığı eksik profili siler ki
+       kullanıcı uygulamanın kendi akışını sorunsuz görsün. */
     (function() {
       try {
-        var n = localStorage.getItem('sakin_name');
-        var d = localStorage.getItem('sakin_birth_date');
-        var t = localStorage.getItem('sakin_birth_time');
-        var existing = localStorage.getItem('@tura_profile');
-        if ((n || d) && !existing) {
-          var h = 12, mn = 0;
-          if (t) { var p = t.split(':'); h = parseInt(p[0])||12; mn = parseInt(p[1])||0; }
-          var profile = { name: n || '', birthDate: d || '', birthHour: h, birthMinute: mn };
-          localStorage.setItem('@tura_profile', JSON.stringify(profile));
-        }
-      } catch(e) { console.warn('Sakin bridge:', e); }
+        var ex = localStorage.getItem('@tura_profile');
+        if (!ex) return;
+        var p = JSON.parse(ex);
+        // Köprünün yazdığı profilde 'element' yok → eksik/bozuk.
+        if (p && !p.element) localStorage.removeItem('@tura_profile');
+      } catch(e) { /* sessiz geç */ }
     })();
     </script>
   </head>
