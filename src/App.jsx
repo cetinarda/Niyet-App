@@ -8,6 +8,23 @@ import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, isSubscr
 import { LocalNotifications } from "@capacitor/local-notifications";
 
 const isNative = Capacitor.isNativePlatform();
+
+// Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
+// Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
+const APP_VERSION = "1.2.4";
+// ⚠️ App Store Connect'ten Sakin'in gerçek App ID'sini koy (örn: id1234567890).
+// App Store Connect → My Apps → Sakin → App Information → "Apple ID" alanı.
+const APP_STORE_URL = "https://apps.apple.com/app/sakin/idAPPSTOREID";
+
+function compareVer(a, b) {
+  const pa = String(a||"").split(".").map(n => parseInt(n)||0);
+  const pb = String(b||"").split(".").map(n => parseInt(n)||0);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const x = pa[i] || 0, y = pb[i] || 0;
+    if (x !== y) return x < y ? -1 : 1;
+  }
+  return 0;
+}
 const detectTablet = () => {
   const w = Math.max(window.innerWidth, window.innerHeight);
   if (w >= 768) {
@@ -2161,6 +2178,22 @@ export default function SakinApp() {
   const [purchaseError, setPurchaseError] = useState("");
   const [iapReady, setIapReady] = useState(false);
   const [productsReady, setProductsReady] = useState(false);
+  const [updateInfo, setUpdateInfo] = useState(null); // { version, notes_tr, notes_en } — daha yeni sürüm varsa
+  const [updateDismissed, setUpdateDismissed] = useState(() => localStorage.getItem("sakin_update_dismissed_v") || "");
+
+  // App açılınca latest-ios-version.json'u kontrol et — daha yeni varsa banner göster
+  useEffect(() => {
+    if (!isNative) return;
+    fetch("https://sakin.life/latest-ios-version.json", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.version) return;
+        if (compareVer(APP_VERSION, data.version) < 0) {
+          setUpdateInfo({ version: data.version, notes_tr: data.release_notes_tr || "", notes_en: data.release_notes_en || "" });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!isNative) return;
@@ -3421,21 +3454,55 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         })}
       </div>
 
-      {/* GİRİŞ — sol-orta floating buton (sadece iOS, giriş ekranı dışında) */}
+      {/* APP GÜNCELLE banner — daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse */}
+      {isNative && updateInfo && updateDismissed !== updateInfo.version && (
+        <div style={{
+          position:"fixed", top:"calc(44px + var(--sat) + 8px)", left:10, right:10, zIndex:10005,
+          background:"linear-gradient(135deg,rgba(184,164,216,0.92),rgba(122,80,150,0.88))",
+          backdropFilter:"blur(18px)",
+          border:"1px solid rgba(220,200,255,0.3)", borderRadius:14,
+          padding:"10px 12px 10px 14px",
+          display:"flex", alignItems:"center", gap:10,
+          boxShadow:"0 6px 24px rgba(0,0,0,0.45)",
+          fontFamily:"'Inter',sans-serif",
+          animation:"fadeUp 0.5s ease-out",
+        }}>
+          <div style={{ fontSize:18, lineHeight:1 }}>✦</div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:13, fontWeight:500, color:"#fff", letterSpacing:0.3, marginBottom:2 }}>
+              {lang==="tr" ? `Yeni sürüm hazır · ${updateInfo.version}` : `New version available · ${updateInfo.version}`}
+            </div>
+            <div style={{ fontSize:11.5, color:"rgba(255,255,255,0.82)", lineHeight:1.4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+              {lang==="tr" ? (updateInfo.notes_tr || "Yeni özellikler ve iyileştirmeler") : (updateInfo.notes_en || "New features and improvements")}
+            </div>
+          </div>
+          <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
+            style={{ background:"rgba(255,255,255,0.22)", border:"1px solid rgba(255,255,255,0.4)", borderRadius:18, padding:"7px 14px", color:"#fff", fontSize:12, letterSpacing:1, fontFamily:"'Jost',sans-serif", textDecoration:"none", whiteSpace:"nowrap" }}>
+            {lang==="tr" ? "Güncelle" : "Update"}
+          </a>
+          <button onClick={()=>{ setUpdateDismissed(updateInfo.version); localStorage.setItem("sakin_update_dismissed_v", updateInfo.version); }}
+            aria-label="Dismiss"
+            style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.7)", fontSize:18, cursor:"pointer", padding:"0 4px", lineHeight:1 }}>
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* GİRİŞ — sol-alt floating buton (sağ-alt yardım butonuyla simetrik). Sadece iOS, giriş ekranı dışında */}
       {isNative && screen !== "giris" && (
         <button
           onClick={()=>{ haptic(); setGirisPhase("intro"); setScreen("giris"); }}
           aria-label={lang==="tr"?"Giriş":"Home"}
           style={{
-            position:"fixed", left:0, top:"50%", transform:"translateY(-50%)", zIndex:9997,
-            width:40, height:54, paddingLeft:3,
-            background:"linear-gradient(135deg,rgba(192,168,224,0.16),rgba(122,80,150,0.10))",
+            position:"fixed", left:14, bottom:"calc(80px + var(--sab))", zIndex:9997,
+            width:44, height:44,
+            background:"linear-gradient(135deg,rgba(192,168,224,0.18),rgba(122,80,150,0.12))",
             backdropFilter:"blur(14px)",
-            border:"1px solid rgba(192,168,224,0.28)", borderLeft:"none",
-            borderRadius:"0 18px 18px 0",
+            border:"1px solid rgba(192,168,224,0.32)",
+            borderRadius:"50%",
             display:"flex", alignItems:"center", justifyContent:"center",
-            cursor:"pointer", color:"#c0a8e0", fontSize:19,
-            boxShadow:"0 0 18px rgba(122,80,150,0.22)",
+            cursor:"pointer", color:"#c0a8e0", fontSize:18,
+            boxShadow:"0 4px 14px rgba(0,0,0,0.4), 0 0 16px rgba(122,80,150,0.18)",
           }}>
           ⌂
         </button>

@@ -1,0 +1,7 @@
+{
+  "version": "1.2.4",
+  "build": 1,
+  "min_supported": "1.2.0",
+  "release_notes_tr": "Yeni: gerçek yükselen burç & 12. ev hesabı (doğum şehri ile). İyileştirmeler.",
+  "release_notes_en": "New: real ascendant & 12th house calculation (from birth city). Improvements."
+}
