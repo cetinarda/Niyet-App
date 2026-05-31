@@ -274,30 +274,60 @@ const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Tera
 const EV_GEZEGEN = { "Koç":"Mars","Boğa":"Venüs","İkizler":"Merkür","Yengeç":"Ay","Aslan":"Güneş","Başak":"Merkür","Terazi":"Venüs","Akrep":"Pluto","Yay":"Jüpiter","Oğlak":"Satürn","Kova":"Uranüs","Balık":"Neptün" };
 // 12. Ev burç yorumları — Tracy Marks "Gizli Benliğiniz" kitabına göre
 const EV12_BURCU_ACIKLAMA = {
-  "Koç":     { tema:"Bastırılmış Cesaret & Öfke", yorum:"12. evinde Koç varsa bilinçdışında cüretkar, öncü bir enerji yatar. Başlatma gücün, bağımsız iradenin ve öfkeni ifade etme cesaretinin bastırıldığı bu evde karmik dersin, kendi iradesini tanımak ve eyleme geçmekten korkmamaktır. Gizli gücün: engellerden geçme kararlılığı." },
-  "Boğa":    { tema:"Bastırılmış Güvenlik & Değer", yorum:"12. evinde Boğa varsa köklenme, doğayla bağ ve maddi güvenlik ihtiyacın bilinçdışında derinleşir. Kendinle ilgili değer biçememe ya da bedeni ihmal etme bu evin gölgesidir. Karmik dersin: kendi değerini bedenselden ruhsala taşımak. Gizli gücün: sabır ve sarsılmaz kararlılık." },
-  "İkizler": { tema:"Bastırılmış Merak & İletişim", yorum:"12. evinde İkizler varsa yoğun iç konuşma, yazılı anlayış ve sözsüz iletişim için derin bir kapasite taşırsın. Düşüncelerini ifade etmekte zorlanman ya da bilgiyi içinde biriktirmen bu evin gölgesidir. Karmik dersin: içteki sesi dışa taşımak. Gizli gücün: yazma ve derin düşünce." },
-  "Yengeç":  { tema:"Bastırılmış Şefkat & Aile", yorum:"12. evinde Yengeç varsa duygusal güvenlik, bakım verme ve ev kavramı bilinçdışında güçlü bir yer tutar. Başkasına sığınma ihtiyacını ya da kendi çocukluk yaranı gizleme eğilimin bu evin gölgesidir. Karmik dersin: kendinle anne gibi ilgilenmek. Gizli gücün: derin empati ve sezgisel anlama." },
-  "Aslan":   { tema:"Bastırılmış Yaratıcılık & İfade", yorum:"12. evinde Aslan varsa yaratıcı potansiyel ve kalpten liderlik etme gücü sessizce derinleşir. Görünmek istememe, alkış almaktan kaçma ya da kendi parlaklığından utanma bu evin gölgesidir. Karmik dersin: özgün ifadene izin vermek. Gizli gücün: ışığını içten dışa taşıma kapasitesi." },
-  "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-analiz. Gizli gücün: detaylı anlama ve şifalı hizmet." },
-  "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinizden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
-  "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve şifa kapasitesi." },
-  "Yay":     { tema:"Bastırılmış Özgürlük & Anlam", yorum:"12. evinde Yay varsa felsefi bilgelik, anlam arayışı ve spiritüel özgürlük sessizce büyür. İnançlarını ya da yolculuk etme arzunu bastırmak bu evin gölgesidir. Karmik dersin: kendi hakikatine güvenmek ve ilerlemek. Gizli gücün: felsefi kavrayış ve geniş perspektif." },
-  "Oğlak":  { tema:"Bastırılmış Disiplin & Otorite", yorum:"12. evinde Oğlak varsa sorumluluk alma kapasitesi ve iç disiplin bilinçdışında güçlenir. Yetersizlik hissi, başaramamaktan korkma ya da otorite figürlerine duyulan gizli öfke bu evin gölgesidir. Karmik dersin: öz-otoritenle barışmak. Gizli gücün: sessiz, kararlı öz-güç." },
-  "Kova":    { tema:"Bastırılmış Özgünlük & İnsanlık", yorum:"12. evinde Kova varsa özgün olmak, kolektife katkı sunmak ve devrimci fikirler bilinçdışında çalışır. Aitlik korkusu ya da farklı olmaktan utanmak bu evin gölgesidir. Karmik dersin: bireysel özgünlüğünü insanlığa armağan etmek. Gizli gücün: yenilikçi sezgi ve topluluk hissi." },
-  "Balık":   { tema:"Bastırılmış Şefkat & Evrensel Bağ", yorum:"12. evinde Balık varsa sınırlar çözülür, evrensel sevgi ve spiritüel teslimiyete yönelik derin bir kapasite taşırsın. Gerçeklikten kaçma, öz-kurban ya da başkasında eriyip gitme bu evin gölgesidir. Karmik dersin: şefkat ve sınır arasındaki dengeyi bulmak. Gizli gücün: mistik bağlantı ve iyileştirici sevgi." },
+  tr: {
+    "Koç":     { tema:"Bastırılmış Cesaret & Öfke", yorum:"12. evinde Koç varsa bilinçdışında cüretkar, öncü bir enerji yatar. Başlatma gücün, bağımsız iradenin ve öfkeni ifade etme cesaretinin bastırıldığı bu evde karmik dersin, kendi iradesini tanımak ve eyleme geçmekten korkmamaktır. Gizli gücün: engellerden geçme kararlılığı." },
+    "Boğa":    { tema:"Bastırılmış Güvenlik & Değer", yorum:"12. evinde Boğa varsa köklenme, doğayla bağ ve maddi güvenlik ihtiyacın bilinçdışında derinleşir. Kendinle ilgili değer biçememe ya da bedeni ihmal etme bu evin gölgesidir. Karmik dersin: kendi değerini bedenselden ruhsala taşımak. Gizli gücün: sabır ve sarsılmaz kararlılık." },
+    "İkizler": { tema:"Bastırılmış Merak & İletişim", yorum:"12. evinde İkizler varsa yoğun iç konuşma, yazılı anlayış ve sözsüz iletişim için derin bir kapasite taşırsın. Düşüncelerini ifade etmekte zorlanman ya da bilgiyi içinde biriktirmen bu evin gölgesidir. Karmik dersin: içteki sesi dışa taşımak. Gizli gücün: yazma ve derin düşünce." },
+    "Yengeç":  { tema:"Bastırılmış Şefkat & Aile", yorum:"12. evinde Yengeç varsa duygusal güvenlik, bakım verme ve ev kavramı bilinçdışında güçlü bir yer tutar. Başkasına sığınma ihtiyacını ya da kendi çocukluk yaranı gizleme eğilimin bu evin gölgesidir. Karmik dersin: kendinle anne gibi ilgilenmek. Gizli gücün: derin empati ve sezgisel anlama." },
+    "Aslan":   { tema:"Bastırılmış Yaratıcılık & İfade", yorum:"12. evinde Aslan varsa yaratıcı potansiyel ve kalpten liderlik etme gücü sessizce derinleşir. Görünmek istememe, alkış almaktan kaçma ya da kendi parlaklığından utanma bu evin gölgesidir. Karmik dersin: özgün ifadene izin vermek. Gizli gücün: ışığını içten dışa taşıma kapasitesi." },
+    "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-analiz. Gizli gücün: detaylı anlama ve şifalı hizmet." },
+    "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinizden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
+    "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve şifa kapasitesi." },
+    "Yay":     { tema:"Bastırılmış Özgürlük & Anlam", yorum:"12. evinde Yay varsa felsefi bilgelik, anlam arayışı ve spiritüel özgürlük sessizce büyür. İnançlarını ya da yolculuk etme arzunu bastırmak bu evin gölgesidir. Karmik dersin: kendi hakikatine güvenmek ve ilerlemek. Gizli gücün: felsefi kavrayış ve geniş perspektif." },
+    "Oğlak":  { tema:"Bastırılmış Disiplin & Otorite", yorum:"12. evinde Oğlak varsa sorumluluk alma kapasitesi ve iç disiplin bilinçdışında güçlenir. Yetersizlik hissi, başaramamaktan korkma ya da otorite figürlerine duyulan gizli öfke bu evin gölgesidir. Karmik dersin: öz-otoritenle barışmak. Gizli gücün: sessiz, kararlı öz-güç." },
+    "Kova":    { tema:"Bastırılmış Özgünlük & İnsanlık", yorum:"12. evinde Kova varsa özgün olmak, kolektife katkı sunmak ve devrimci fikirler bilinçdışında çalışır. Aitlik korkusu ya da farklı olmaktan utanmak bu evin gölgesidir. Karmik dersin: bireysel özgünlüğünü insanlığa armağan etmek. Gizli gücün: yenilikçi sezgi ve topluluk hissi." },
+    "Balık":   { tema:"Bastırılmış Şefkat & Evrensel Bağ", yorum:"12. evinde Balık varsa sınırlar çözülür, evrensel sevgi ve spiritüel teslimiyete yönelik derin bir kapasite taşırsın. Gerçeklikten kaçma, öz-kurban ya da başkasında eriyip gitme bu evin gölgesidir. Karmik dersin: şefkat ve sınır arasındaki dengeyi bulmak. Gizli gücün: mistik bağlantı ve iyileştirici sevgi." },
+  },
+  en: {
+    "Koç":     { tema:"Suppressed Courage & Anger", yorum:"With Aries in your 12th, a daring, pioneering energy rests in your unconscious. Your power to begin, your independent will and the courage to express anger are held back here. Your karmic lesson: recognise your own will and stop fearing action. Your hidden strength: the resolve to push through obstacles." },
+    "Boğa":    { tema:"Suppressed Security & Worth", yorum:"With Taurus in your 12th, your need for rooting, contact with nature and material safety deepens unconsciously. Difficulty valuing yourself or neglecting the body is this house's shadow. Your karmic lesson: carry your worth from the bodily into the soulful. Your hidden strength: patience and unshakeable resolve." },
+    "İkizler": { tema:"Suppressed Curiosity & Communication", yorum:"With Gemini in your 12th, you hold a deep capacity for inner dialogue, written understanding and wordless communication. Struggling to express your thoughts or hoarding knowledge inside is this house's shadow. Your karmic lesson: carry the inner voice outward. Your hidden strength: writing and deep reflection." },
+    "Yengeç":  { tema:"Suppressed Tenderness & Family", yorum:"With Cancer in your 12th, emotional security, caretaking and the idea of home hold strong space in your unconscious. The tendency to hide your need to lean on someone — or to hide your childhood wound — is this house's shadow. Your karmic lesson: mother yourself. Your hidden strength: deep empathy and intuitive understanding." },
+    "Aslan":   { tema:"Suppressed Creativity & Expression", yorum:"With Leo in your 12th, creative potential and heart-led leadership quietly deepen. Not wanting to be seen, avoiding applause or feeling shame about your own brilliance is this house's shadow. Your karmic lesson: allow your authentic expression. Your hidden strength: the capacity to carry your light from within to without." },
+    "Başak":   { tema:"Suppressed Perfectionism & Service", yorum:"With Virgo in your 12th, an analytical mind and the desire to serve work in your unconscious. Criticising yourself or others, hunting for flaws, or over-controlling the body is this house's shadow. Your karmic lesson: a compassionate self-analysis. Your hidden strength: precise understanding and healing service." },
+    "Terazi":  { tema:"Suppressed Balance & Relationship", yorum:"With Libra in your 12th, the longing for harmony, the search for justice and the need for balance in relationships work in the depths. Avoiding conflict or giving up yourself to make another happy is this house's shadow. Your karmic lesson: make peace with your own needs. Your hidden strength: intuitive diplomacy." },
+    "Akrep":   { tema:"Suppressed Transformation & Depth", yorum:"With Scorpio in your 12th, intense emotions, secrets and the power of psychological transformation gather in your unconscious. Insecurity, the need to control or fear of loss is this house's shadow. Your karmic lesson: go deep and be reborn. Your hidden strength: radical psychological insight and the capacity to heal." },
+    "Yay":     { tema:"Suppressed Freedom & Meaning", yorum:"With Sagittarius in your 12th, philosophical wisdom, the search for meaning and spiritual freedom grow quietly. Suppressing your beliefs or your urge to travel is this house's shadow. Your karmic lesson: trust your own truth and move forward. Your hidden strength: philosophical insight and wide perspective." },
+    "Oğlak":  { tema:"Suppressed Discipline & Authority", yorum:"With Capricorn in your 12th, your capacity for responsibility and inner discipline strengthen unconsciously. A feeling of inadequacy, fear of failing or hidden anger toward authority is this house's shadow. Your karmic lesson: make peace with your own authority. Your hidden strength: quiet, steady self-power." },
+    "Kova":    { tema:"Suppressed Originality & Humanity", yorum:"With Aquarius in your 12th, being original, contributing to the collective and revolutionary ideas work in your unconscious. Fear of not belonging, or shame about being different, is this house's shadow. Your karmic lesson: gift your individual originality to humanity. Your hidden strength: innovative intuition and a sense of community." },
+    "Balık":   { tema:"Suppressed Compassion & Universal Bond", yorum:"With Pisces in your 12th, boundaries dissolve and you carry a deep capacity for universal love and spiritual surrender. Escaping reality, self-sacrifice or losing yourself in another is this house's shadow. Your karmic lesson: find the balance between compassion and boundary. Your hidden strength: mystical connection and healing love." },
+  },
 };
 const GEZEGEN_12EV_GUCLERI = {
-  "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
-  "Ay":     "Duygusal kendine yeterlilik, kendini besleme ve bakma becerisi, ihtiyaç duyan insanlara derin hassasiyet",
-  "Merkür": "Olağanüstü açık iç iletişim kurma yeteneği, içsel gelişim için yazma ve düşünmeyi araç olarak kullanma",
-  "Venüs":  "Kendine sevgi ve nezaket, yalnız olmaktan alınan haz, ideallere derin bağlılık, iç huzur",
-  "Mars":   "Her şeye yeniden başlayabilme kapasitesi, ruhunu keşfetme cesareti ve kararlılığı",
-  "Jüpiter":"Köklü inanç ve felsefi güç, olumlu ve iyimser yaklaşım, içsel yaşamın zenginliğiyle büyüme yeteneği",
-  "Satürn": "Öz disiplin, yalnızlıkla baş edebilme, sorumluluk üstlenme ve tek başına kararlılıkla çalışma",
-  "Uranüs": "Psikolojik özgürlük ve açık fikirlilik, kökleşmiş sezgiler, orijinallik ve beklenmedik durumlarla baş etme",
-  "Neptün": "Sonsuz inanç ve şefkat, esin kaynağının yüksek seviyelerine uyum, ideallere adanma ve özverili sevgi",
-  "Pluto":  "Derin psikolojik anlayış, boyun eğmeyen irade, gerilime dayanabilmek ve kendinizi canlandıracak müthiş güç",
+  tr: {
+    "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
+    "Ay":     "Duygusal kendine yeterlilik, kendini besleme ve bakma becerisi, ihtiyaç duyan insanlara derin hassasiyet",
+    "Merkür": "Olağanüstü açık iç iletişim kurma yeteneği, içsel gelişim için yazma ve düşünmeyi araç olarak kullanma",
+    "Venüs":  "Kendine sevgi ve nezaket, yalnız olmaktan alınan haz, ideallere derin bağlılık, iç huzur",
+    "Mars":   "Her şeye yeniden başlayabilme kapasitesi, ruhunu keşfetme cesareti ve kararlılığı",
+    "Jüpiter":"Köklü inanç ve felsefi güç, olumlu ve iyimser yaklaşım, içsel yaşamın zenginliğiyle büyüme yeteneği",
+    "Satürn": "Öz disiplin, yalnızlıkla baş edebilme, sorumluluk üstlenme ve tek başına kararlılıkla çalışma",
+    "Uranüs": "Psikolojik özgürlük ve açık fikirlilik, kökleşmiş sezgiler, orijinallik ve beklenmedik durumlarla baş etme",
+    "Neptün": "Sonsuz inanç ve şefkat, esin kaynağının yüksek seviyelerine uyum, ideallere adanma ve özverili sevgi",
+    "Pluto":  "Derin psikolojik anlayış, boyun eğmeyen irade, gerilime dayanabilmek ve kendinizi canlandıracak müthiş güç",
+  },
+  en: {
+    "Güneş":  "Trust in inner richness, self-renewal and concentration, leadership potential",
+    "Ay":     "Emotional self-sufficiency, the skill of nourishing yourself, deep sensitivity to those in need",
+    "Merkür": "An extraordinary ability for clear inner communication, using writing and reflection as tools for inner growth",
+    "Venüs":  "Self-love and gentleness, joy in solitude, deep devotion to ideals, inner peace",
+    "Mars":   "The capacity to begin everything again, the courage and resolve to explore your own soul",
+    "Jüpiter":"Rooted faith and philosophical strength, an optimistic outlook, the ability to grow through the richness of inner life",
+    "Satürn": "Self-discipline, the ability to face solitude, taking responsibility and working alone with resolve",
+    "Uranüs": "Psychological freedom and open-mindedness, ingrained intuitions, originality and the ability to meet the unexpected",
+    "Neptün": "Endless faith and compassion, attunement to high levels of inspiration, devotion to ideals and selfless love",
+    "Pluto":  "Deep psychological insight, an unyielding will, capacity to bear tension and tremendous strength to renew yourself",
+  },
 };
 function approxAscendant(dateStr, timeStr) {
   if (!timeStr || !dateStr) return null;
@@ -3241,7 +3271,7 @@ Kullanıcının Doğum Profili:
 - Bu Haftaki Biyoritm → Fiziksel: %${astro.bio.fiziksel}, Duygusal: %${astro.bio.duygusal}, Zihinsel: %${astro.bio.zihinsel}${yukselen ? `
 - Tahmini Yükselen Burç: ${yukselen}
 - 12. Ev Burcu: ${ev12Burcu} (Yönetici Gezegen: ${ev12Gezegen})
-- 12. Ev Gizli Gücü: ${GEZEGEN_12EV_GUCLERI[ev12Gezegen]||""}` : ""}
+- 12. Ev Gizli Gücü: ${GEZEGEN_12EV_GUCLERI.tr[ev12Gezegen]||""}` : ""}
 
 Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu sayısının özelliklerini ve biyoritm durumunu rapora yansıt.${yukselen ? ` 12. Ev verisini 'Gizli Benlik & Gölge' bölümünde kişiye özel sentezle: ${ev12Gezegen} enerjisiyle bağlantılı bastırılmış temalar ve bu kişinin gizli güçleri.` : ""}
 ` : "";
@@ -4966,7 +4996,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             ))}
           </div>
           {/* ── 12. Ev Kartı ── */}
-          {ev12Burcu && ev12Gezegen && EV12_BURCU_ACIKLAMA[ev12Burcu] ? (
+          {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
             <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.22),rgba(255,255,255,0.12))",border:"1px solid rgba(255,255,255,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(120,80,220,0.15),transparent)",pointerEvents:"none" }} />
               <div style={{ fontSize:13,letterSpacing:3.5,color:"#9070c0",marginBottom:6,textAlign:"center" }}>
@@ -4987,14 +5017,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
               </div>
               <div style={{ fontSize:13,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
-                {EV12_BURCU_ACIKLAMA[ev12Burcu].tema}
+                {(EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]).tema}
               </div>
               <div style={{ fontSize:14,color:"#b0a0d0",lineHeight:1.85 }}>
-                {EV12_BURCU_ACIKLAMA[ev12Burcu].yorum}
+                {(EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]).yorum}
               </div>
               <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.15)" }}>
                 <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{lang==="tr" ? "GİZLİ GÜCÜN" : "HIDDEN POWER"}</div>
-                <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[ev12Gezegen]}</div>
+                <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[lang]?.[ev12Gezegen] || GEZEGEN_12EV_GUCLERI.tr[ev12Gezegen]}</div>
               </div>
             </div>
           ) : (birthDate && !birthTime) || !birthDate ? (
