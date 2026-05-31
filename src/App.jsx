@@ -2367,10 +2367,30 @@ export default function SakinApp() {
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
+  const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Hayvan/Mitler kotası dolduysa frost+CTA
+  // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
+  const AILESI_FREE_OPENS = 3;
+  const handleOpenEmbed = (app) => {
+    playPortalSound(); haptic(); setEmbedLoaded(false);
+    const m = (app.embed || "").match(/\/embedded\/([^/]+)/);
+    const appKey = m ? m[1] : "unknown";
+    const isHD = appKey === "humandesign";
+    let exceeded = false;
+    if (!isPremium && !isHD) {
+      const storageKey = "sakin_ailesi_opens_" + appKey;
+      const prev = parseInt(localStorage.getItem(storageKey) || "0", 10) || 0;
+      const next = prev + 1;
+      try { localStorage.setItem(storageKey, String(next)); } catch(_) {}
+      exceeded = next > AILESI_FREE_OPENS;
+    }
+    setEmbedQuotaExceeded(exceeded);
+    setEmbeddedApp({ name: app.name, path: app.embed, color: app.color });
+    setTimeout(()=>setShowAilesi(false), 250);
+  };
   // ESC tuşuyla embed'den çıkış — web kullanıcıları için bir fallback (back button bulunamazsa)
   useEffect(() => {
     if (!embeddedApp) return;
-    const onKey = (e) => { if (e.key === "Escape") { setEmbeddedApp(null); setEmbedLoaded(false); } };
+    const onKey = (e) => { if (e.key === "Escape") { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [embeddedApp]);
@@ -3625,7 +3645,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
                 onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
                 <button
-                  onClick={()=>{ playPortalSound(); haptic(); setEmbedLoaded(false); setEmbeddedApp({ name: app.name, path: app.embed, color: app.color }); setTimeout(()=>setShowAilesi(false), 250); }}
+                  onClick={()=>handleOpenEmbed(app)}
                   style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
                   <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
                   <div style={{ flex:1,minWidth:0 }}>
@@ -3850,8 +3870,45 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             );
           })()}
+          {/* Hayvan/Mitler kotası dolduysa frost gate: iframe yüklendikten sonra üstüne biner */}
+          {embedQuotaExceeded && embedLoaded && (() => {
+            const rgb = (embeddedApp.color || "#b4a0d8").replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',');
+            return (
+              <div style={{ position:"fixed", inset:0, zIndex:10002, backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)",
+                background:`radial-gradient(ellipse 80% 60% at 50% 40%, rgba(${rgb},0.22) 0%, rgba(15,8,30,0.88) 70%, rgba(0,0,0,0.95) 100%)`,
+                display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
+                padding:"40px 28px", gap:18, animation:"fadeIn 0.5s ease" }}>
+                <div style={{ fontSize:38, lineHeight:1, opacity:0.85, filter:`drop-shadow(0 0 18px rgba(${rgb},0.5))` }}>✦</div>
+                <div style={{ fontSize:11, letterSpacing:5, color:`rgba(${rgb},0.85)`, textTransform:"uppercase", fontFamily:"'Jost',sans-serif" }}>
+                  {lang==="tr" ? "Sakin Ailesi" : "Sakin Family"}
+                </div>
+                <div style={{ fontSize:22, color:"#fff", fontFamily:"'Jost',sans-serif", fontWeight:300, textAlign:"center", maxWidth:320, lineHeight:1.4, letterSpacing:1 }}>
+                  {lang==="tr" ? "Devam etmek için Premium gerekli" : "Premium needed to continue"}
+                </div>
+                <div style={{ fontSize:13, color:"#b8a8d0", lineHeight:1.7, textAlign:"center", maxWidth:300, fontFamily:"'Inter',sans-serif" }}>
+                  {lang==="tr"
+                    ? `${embeddedApp.name} için ${AILESI_FREE_OPENS} ücretsiz açılışın tamamlandı. Premium ile sınırsız aç ve tüm aile uygulamalarına eriş.`
+                    : `Your ${AILESI_FREE_OPENS} free opens of ${embeddedApp.name} are done. Unlock unlimited access to all family apps with Premium.`}
+                </div>
+                <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setScreen("fiyat"); }}
+                  style={{ marginTop:8, background:"linear-gradient(135deg, rgba(184,164,216,0.95), rgba(122,80,150,0.92))",
+                    border:"1px solid rgba(255,255,255,0.22)", borderRadius:100, padding:"14px 34px",
+                    color:"#fff", fontSize:13, letterSpacing:2.5, cursor:"pointer",
+                    fontFamily:"'Jost',sans-serif", textTransform:"uppercase",
+                    boxShadow:`0 8px 28px rgba(0,0,0,0.55), 0 0 28px rgba(${rgb},0.5)` }}>
+                  {lang==="tr" ? "✦ Premium'a Geç" : "✦ Get Premium"}
+                </button>
+                <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); }}
+                  style={{ background:"none", border:"1px solid rgba(255,255,255,0.18)", borderRadius:100, padding:"9px 22px",
+                    color:"#888", fontSize:11, letterSpacing:1.8, cursor:"pointer",
+                    fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
+                  {lang==="tr" ? "Şimdi değil" : "Not now"}
+                </button>
+              </div>
+            );
+          })()}
           <button
-            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); }}
+            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); }}
             aria-label={lang==="tr"?"Sakin'e dön":"Back to Sakin"}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
