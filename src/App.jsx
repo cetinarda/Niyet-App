@@ -2267,7 +2267,7 @@ function SmartCityInput({ value, onChange, lang }) {
   const matches = q.length >= 1
     ? CITY_NAMES.filter(n => n.startsWith(q)).concat(CITY_NAMES.filter(n => !n.startsWith(q) && n.includes(q))).slice(0, 6)
     : [];
-  const recognized = !!value && !!lookupCity(value);
+  const recognized = !!value && !!CITY_DB[q];
   const showList = focused && matches.length > 0 && !(matches.length === 1 && recognized);
   return (
     <div style={{ position:"relative" }}>
@@ -2291,7 +2291,7 @@ function SmartCityInput({ value, onChange, lang }) {
             const label = cap(n);
             return (
               <button key={n} type="button"
-                onMouseDown={e=>{ e.preventDefault(); onChange(label); setFocused(false); }}
+                onPointerDown={e=>{ e.preventDefault(); onChange(label); setFocused(false); }}
                 style={{ display:"block",width:"100%",textAlign:"left",background:"transparent",
                   border:"none",borderBottom:"1px solid rgba(255,255,255,0.05)",
                   padding:"11px 14px",color:"#d8c8f0",fontSize:14,cursor:"pointer",fontFamily:"'Inter',sans-serif" }}>
