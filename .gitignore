@@ -12,6 +12,5 @@ ios/App/DerivedData
 *.xcuserstate
 
 # Claude Code (kişisel ayarlar dışında — proje slash komutları repoda kalsın)
-.claude/
+.claude/*
 !.claude/commands/
-!.claude/commands/**
