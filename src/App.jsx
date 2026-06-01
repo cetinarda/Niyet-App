@@ -1023,6 +1023,7 @@ const GLOBAL_CSS = `
   @keyframes heartbeat   { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes slowPulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
   @keyframes ailesiPulse { 0%,100%{opacity:0.7;box-shadow:0 0 8px rgba(240,192,96,0.1)} 50%{opacity:1;box-shadow:0 0 18px rgba(240,192,96,0.25)} }
+  @keyframes askPulse { 0%,100%{ box-shadow:0 0 12px rgba(184,148,224,0.45), inset 0 0 8px rgba(255,255,255,0.15); transform:scale(1); } 50%{ box-shadow:0 0 28px rgba(184,148,224,0.85), 0 0 44px rgba(184,148,224,0.35), inset 0 0 14px rgba(255,255,255,0.30); transform:scale(1.06); } }
   @keyframes floatUp     { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes energyFill  { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
   @keyframes pillGlow    { 0%,100%{box-shadow:0 0 8px rgba(255,255,255,0.4),0 0 22px rgba(255,255,255,0.18),inset 0 0 8px rgba(255,255,255,0.12)} 50%{box-shadow:0 0 18px rgba(255,255,255,0.7),0 0 44px rgba(255,255,255,0.38),inset 0 0 14px rgba(255,255,255,0.22)} }
@@ -5554,24 +5555,34 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     onFocus={e=>{ e.target.style.borderColor="rgba(255,255,255,0.6)"; e.target.style.boxShadow="0 0 0 3px rgba(255,255,255,0.08)"; }}
                     onBlur={e=>{ e.target.style.borderColor="rgba(255,255,255,0.3)"; e.target.style.boxShadow="none"; }}
                   />
-                  {/* Inline arama butonu */}
+                  {/* Inline arama butonu — boşken bile dikkat çekici mor pulse */}
                   <button
                     onClick={()=>requireAiConsent(generateSikayetAnaliz)}
                     disabled={!sikayet.trim()}
                     style={{
                       position:"absolute",right:12,bottom:12,
                       width:44,height:44,borderRadius:"50%",
-                      background:sikayet.trim()?"linear-gradient(135deg,rgba(255,255,255,0.8),rgba(255,255,255,0.6))":"rgba(255,255,255,0.05)",
-                      border:"none",cursor:sikayet.trim()?"pointer":"default",
-                      color:sikayet.trim()?"#fff":"#777777",fontSize:15,
-                      display:"flex",alignItems:"center",justifyContent:"center",
+                      background: sikayet.trim()
+                        ? "linear-gradient(135deg,rgba(255,255,255,0.85),rgba(220,200,255,0.7))"
+                        : "radial-gradient(circle at 35% 35%, rgba(184,148,224,0.55) 0%, rgba(124,84,170,0.75) 60%, rgba(60,30,90,0.85) 100%)",
+                      border: sikayet.trim()
+                        ? "none"
+                        : "1px solid rgba(220,200,255,0.5)",
+                      cursor: sikayet.trim() ? "pointer" : "pointer",
+                      color: sikayet.trim() ? "#fff" : "rgba(245,235,255,0.95)",
+                      fontSize:15,
+                      display:"flex", alignItems:"center", justifyContent:"center",
                       transition:"all 0.25s",
+                      boxShadow: sikayet.trim()
+                        ? "0 4px 14px rgba(0,0,0,0.3)"
+                        : "0 0 16px rgba(184,148,224,0.55), inset 0 0 10px rgba(255,255,255,0.18)",
+                      animation: sikayet.trim() ? "none" : "askPulse 2s ease-in-out infinite",
                     }}>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <rect x="1.5" y="1.5" width="13" height="13" rx="1.8" transform="rotate(45 8 8)"
-                        stroke={sikayet.trim()?"rgba(255,255,255,0.9)":"rgba(100,90,140,0.4)"} strokeWidth="1.2"/>
+                        stroke={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(245,235,255,0.95)"} strokeWidth="1.2"/>
                       <circle cx="8" cy="8" r="2"
-                        fill={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(100,90,140,0.4)"}/>
+                        fill={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(245,235,255,0.95)"}/>
                     </svg>
                   </button>
                 </div>
