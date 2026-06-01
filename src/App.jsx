@@ -3900,21 +3900,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 const style = doc.createElement("style");
                 style.id = "sakin-embed-fixes";
                 style.textContent = `
-                  /* Embed'in kendi safe-area padding'ine DOKUNMA — status bar altında
-                     başlıkları korumak için gerekli. Yalnızca iOS scroll-bounce'u engelle. */
-                  html, body {
-                    overscroll-behavior-y: none !important;
-                  }
-                  /* Embed başlık alanı (header / title row) bizim sol üstteki dairesel
-                     geri butonumuzla çakışmasın — sola 56px boşluk bırak.
-                     RN/Expo derlenmiş bundle'larında header genelde body'nin ilk
-                     büyük çocuğu; class isimleri bilinmediği için emniyetli selector kümesi. */
+                  /* Embed'in kendi safe-area padding'ine DOKUNMA — başlığı korumak için. */
+                  html, body { overscroll-behavior-y: none !important; }
+                  /* Embed başlık satırı bizim sol üstteki 32px dairesel geri butonumuzun
+                     altında kalmasın. Yaygın RN/Expo seçicileri + body'nin ilk child'ı. */
                   body > div:first-child > div:first-child,
                   header,
                   [role="banner"],
                   [class*="Header"],
-                  [class*="header"] {
-                    padding-left: 56px !important;
+                  [class*="header"],
+                  [class*="TopBar"],
+                  [class*="topbar"] {
+                    padding-left: 48px !important;
                   }
                   /* Form input'larının ekran dışına taşmasını engelle */
                   input, textarea, select {
@@ -3945,6 +3942,59 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   [style*="grid"] { max-width: 100% !important; }
                 `;
                 doc.head.appendChild(style);
+
+                // Embed'lere bilgi köprüsü: doğum bilgileri + isim + seçili dil.
+                // Embed dinliyorsa kendi formunu atlayıp host'tan gelen veriyi kullanır.
+                // Embed dinlemiyorsa zararsız — birden çok denemeyle (load + 800ms gecikme) garanti.
+                const sendBridge = () => {
+                  try {
+                    const target = e.target.contentWindow;
+                    if (!target) return;
+                    const payload = {
+                      type: "sakin-bridge",
+                      lang,
+                      birth: {
+                        date: birthDate || "",
+                        time: birthTime || "",
+                        city: birthCity || "",
+                      },
+                      name: ownerName || "",
+                      premium: !!isPremium,
+                    };
+                    target.postMessage(payload, "*");
+                  } catch(_) {}
+                };
+                sendBridge();
+                setTimeout(sendBridge, 800);
+                setTimeout(sendBridge, 2000);
+
+                // Embed'lerdeki gereksiz menüleri gizle: "Profil" tab + "Dil/Language" seçici.
+                // Sakin Ailesi'nde isim/doğum/dil zaten alındı; embed kendi formunu sunmamalı.
+                const hideRedundantMenus = () => {
+                  try {
+                    const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], li");
+                    for (let i = 0; i < all.length; i++) {
+                      const el = all[i];
+                      if (el.dataset && el.dataset.sakinHidden === "1") continue;
+                      const txt = (el.textContent || "").trim().toLowerCase();
+                      // Profil/Profile tab — bottom nav öğesi
+                      // Dil/Language seçici — settings menu
+                      const isProfilTab = (txt === "profil" || txt === "profile");
+                      const isLangPicker = (txt === "dil" || txt === "language" || txt === "sprache" ||
+                                            txt === "idioma" || txt === "langue" || txt === "言語");
+                      const isSettings = (txt === "ayarlar" || txt === "settings");
+                      if (isProfilTab || isLangPicker || isSettings) {
+                        el.style.display = "none";
+                        el.dataset.sakinHidden = "1";
+                      }
+                    }
+                  } catch(_) {}
+                };
+                hideRedundantMenus();
+                // RN/Expo geç render edebilir; ek geçişler
+                setTimeout(hideRedundantMenus, 600);
+                setTimeout(hideRedundantMenus, 1500);
+                setTimeout(hideRedundantMenus, 3500);
 
                 // SAKİN TASARIM (Human Design) — sadece bu uygulamaya özel premium gating:
                 // Bodygraph, profil özeti ve başlıklar görünür kalır; uzun açıklama
@@ -4095,13 +4145,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
             aria-label={t("common_back")}
             style={{
-              position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
-              width:38, height:38, borderRadius:"50%", padding:0,
-              background:"rgba(15,8,30,0.88)", backdropFilter:"blur(20px)",
-              border:"1px solid rgba(184,164,216,0.45)",
-              color:"#e8dcff", fontSize:18, lineHeight:1,
+              position:"fixed", top:"calc(var(--sat, 0px) + 6px)", left:8, zIndex:10003,
+              width:32, height:32, borderRadius:"50%", padding:0,
+              background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
+              border:"1px solid rgba(184,164,216,0.5)",
+              color:"#e8dcff", fontSize:15, lineHeight:1,
               cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
-              boxShadow:"0 4px 18px rgba(0,0,0,0.55), 0 0 18px rgba(184,164,216,0.18)",
+              boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
               transition:"transform 0.15s ease",
             }}
             onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
