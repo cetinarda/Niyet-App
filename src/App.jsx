@@ -2430,14 +2430,22 @@ export default function SakinApp() {
   const lastFreqLabelRef = useRef("");
   const startSilenceKeepAlive = () => {
     try {
+      // Tercih: DOM'daki <audio> elementi (preload önceden tamamlanmış olur);
+      // değilse on-the-fly Audio() ile yedek.
+      const dom = (typeof document !== "undefined") && document.getElementById("sakin-silence-loop");
+      if (dom) {
+        const p = dom.play();
+        if (p && typeof p.catch === "function") p.catch(() => {});
+        silenceAudioRef.current = dom;
+        return;
+      }
       if (!silenceAudioRef.current) {
         const a = new Audio("/silence.wav");
         a.loop = true;
-        a.volume = 0.01; // gerçek sessiz; bazı iOS sürümleri vol=0 ile rotayı kapatabilir
+        a.volume = 0.05; // iOS bazen <0.02'i "sessiz" sayıp AVAudioSession'ı bırakır; 0.05 güvenli
         a.preload = "auto";
         silenceAudioRef.current = a;
       }
-      // .play() bir Promise döner — kullanıcı jesti dışında reddedilebilir; sessiz yut.
       const p = silenceAudioRef.current.play();
       if (p && typeof p.catch === "function") p.catch(() => {});
     } catch (_) {}
@@ -3694,6 +3702,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   return (
     <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
+      {/* iOS WKWebView'in AVAudioSession rotasını açık tutan sessiz loop ses. Frekans
+          çaldığında play(), durdurduğunda pause(). DOM elementi olarak preload edilir;
+          böylece play() ilk kullanıcı jestinde anında çalışır. */}
+      {isNative && (
+        <audio id="sakin-silence-loop" src="/silence.wav" loop preload="auto"
+               style={{ display:"none" }} />
+      )}
 
       {/* ÜST NAV — iOS feature ekranlarında gizli (Ailesi'nde mini link var) */}
       {topNavVisible && (
@@ -3844,7 +3859,27 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* AYNA BUTONU — sağ üst köşe, küçük sakin hilal (iOS native, ana ekranlarda) */}
       {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
         <button
-          onClick={()=>{ haptic(); setMirrorPortalActive(true); setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050); }}
+          onClick={()=>{
+            haptic();
+            // Yumuşak ayna chime — Web Audio API, sine wave fade in/out (Sakin Ailesi'nden daha hafif)
+            try {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              const now = ctx.currentTime;
+              // İki harmonik ton: temel + beşli (perfect fifth) — uhrevi his
+              [528, 792].forEach((freq, i) => {
+                const o = ctx.createOscillator(), g = ctx.createGain();
+                o.type = "sine"; o.frequency.value = freq;
+                g.gain.setValueAtTime(0, now);
+                g.gain.linearRampToValueAtTime(0.06 - i*0.025, now + 0.08);
+                g.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+                o.connect(g).connect(ctx.destination);
+                o.start(now); o.stop(now + 1.15);
+              });
+              setTimeout(() => { try { ctx.close(); } catch(_) {} }, 1300);
+            } catch(_) {}
+            setMirrorPortalActive(true);
+            setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050);
+          }}
           aria-label={t("mirror_aria")}
           style={{
             position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 64px)", right:14,
@@ -3900,10 +3935,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 const style = doc.createElement("style");
                 style.id = "sakin-embed-fixes";
                 style.textContent = `
-                  /* Embed'in kendi safe-area padding'ine DOKUNMA — başlığı korumak için. */
-                  html, body { overscroll-behavior-y: none !important; }
-                  /* Embed başlık satırı bizim sol üstteki 32px dairesel geri butonumuzun
-                     altında kalmasın. Yaygın RN/Expo seçicileri + body'nin ilk child'ı. */
+                  /* Embed'in üst safe-area boşluğunu sıfırla — host iframe ekranın tepesinden
+                     başlıyor; embed kendi safe-area-inset-top padding'ini eklerse üstte siyah
+                     bant oluşuyor. Status bar zaten host'tan görünür kalır. */
+                  html, body {
+                    overscroll-behavior-y: none !important;
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                  }
+                  #root, [class*="root"], [class*="App"] {
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                  }
+                  /* Embed başlık satırı bizim sol üstteki 32px+8 dairesel geri butonumuzla
+                     çakışmasın — sola 48px boşluk. Yaygın RN/Expo seçicileri. */
                   body > div:first-child > div:first-child,
                   header,
                   [role="banner"],
@@ -3968,22 +4013,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 setTimeout(sendBridge, 800);
                 setTimeout(sendBridge, 2000);
 
-                // Embed'lerdeki gereksiz menüleri gizle: "Profil" tab + "Dil/Language" seçici.
+                // Embed'lerdeki gereksiz menüleri gizle: "Profil" tab + dil seçici.
                 // Sakin Ailesi'nde isim/doğum/dil zaten alındı; embed kendi formunu sunmamalı.
+                const LANG_CODES = new Set(["tr","en","de","es","pt","fr","ja","ar","ru","it","nl"]);
+                const LANG_NAMES = new Set([
+                  "dil","language","sprache","idioma","langue","言語",
+                  "türkçe","english","deutsch","español","português","français","日本語"
+                ]);
+                const SETTINGS_NAMES = new Set(["ayarlar","settings","einstellungen","ajustes","configurações","paramètres","設定"]);
+                const PROFILE_NAMES = new Set(["profil","profile","profil","perfil","perfil","profil","プロフィール"]);
                 const hideRedundantMenus = () => {
                   try {
-                    const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], li");
+                    const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], [role='link'], li, div[onclick], [class*='lang'], [class*='Lang']");
                     for (let i = 0; i < all.length; i++) {
                       const el = all[i];
                       if (el.dataset && el.dataset.sakinHidden === "1") continue;
                       const txt = (el.textContent || "").trim().toLowerCase();
-                      // Profil/Profile tab — bottom nav öğesi
-                      // Dil/Language seçici — settings menu
-                      const isProfilTab = (txt === "profil" || txt === "profile");
-                      const isLangPicker = (txt === "dil" || txt === "language" || txt === "sprache" ||
-                                            txt === "idioma" || txt === "langue" || txt === "言語");
-                      const isSettings = (txt === "ayarlar" || txt === "settings");
-                      if (isProfilTab || isLangPicker || isSettings) {
+                      const len = txt.length;
+                      // Kısa metinli (2-3 karakter) dil kodu dropdown'ları: "TR", "EN", "DE", vs.
+                      const isShortLangCode = (len === 2 || len === 3) && LANG_CODES.has(txt);
+                      // Tam metin eşleşmesi: dil/profil/ayarlar
+                      const isLangPicker = LANG_NAMES.has(txt);
+                      const isProfilTab = PROFILE_NAMES.has(txt);
+                      const isSettings = SETTINGS_NAMES.has(txt);
+                      if (isShortLangCode || isLangPicker || isProfilTab || isSettings) {
                         el.style.display = "none";
                         el.dataset.sakinHidden = "1";
                       }
@@ -3995,6 +4048,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 setTimeout(hideRedundantMenus, 600);
                 setTimeout(hideRedundantMenus, 1500);
                 setTimeout(hideRedundantMenus, 3500);
+                setTimeout(hideRedundantMenus, 6000);
 
                 // SAKİN TASARIM (Human Design) — sadece bu uygulamaya özel premium gating:
                 // Bodygraph, profil özeti ve başlıklar görünür kalır; uzun açıklama
