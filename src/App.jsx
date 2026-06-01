@@ -4143,15 +4143,46 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 // ata div'lerini gizle, sonra yakın "Continue/Devam/Save" butonuna click.
                 let onboardingSkipAttempts = 0;
                 const trySkipOnboarding = () => {
-                  if (onboardingSkipAttempts > 3) return;
+                  if (onboardingSkipAttempts > 4) return;
                   onboardingSkipAttempts++;
                   try {
-                    const dateInputs = doc.querySelectorAll('input[type="date"], input[type="time"], input[type="datetime-local"]');
-                    if (dateInputs.length === 0) return; // birth form yok, atla
-                    // Yaygın "ilerle/atla" butonu metinleri (7 dilde)
+                    const dateInputs = doc.querySelectorAll('input[type="date"], input[type="time"], input[type="datetime-local"], input[type="text"]');
+                    const dateInputArr = Array.from(dateInputs).filter(inp => {
+                      // Doğum tarihi içeren input'ları belirle: type=date/time, veya
+                      // placeholder/name/id "birth"/"doğum"/"dob" içeren text input
+                      if (["date","time","datetime-local"].includes(inp.type)) return true;
+                      const meta = (inp.name + " " + inp.id + " " + (inp.placeholder||"") + " " + (inp.getAttribute("aria-label")||"")).toLowerCase();
+                      return /(birth|doğum|dob|geburt|nacim|naissance|生年)/.test(meta);
+                    });
+                    if (dateInputArr.length === 0) return; // birth form yok, çık
+
+                    // Input'ları host'un birth bilgisiyle doldur + change event tetikle
+                    const fillInput = (inp, value) => {
+                      try {
+                        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+                        if (setter) setter.call(inp, value); else inp.value = value;
+                        inp.dispatchEvent(new Event("input", { bubbles: true }));
+                        inp.dispatchEvent(new Event("change", { bubbles: true }));
+                      } catch(_) {}
+                    };
+                    dateInputArr.forEach(inp => {
+                      const meta = (inp.name + " " + inp.id + " " + (inp.placeholder||"") + " " + (inp.getAttribute("aria-label")||"") + " " + inp.type).toLowerCase();
+                      if (inp.type === "time" || /time|saat|hour|stunde|hora|heure|時間/.test(meta)) {
+                        fillInput(inp, birthTime || "12:00");
+                      } else if (/city|şehir|stadt|ciudad|cidade|ville|都市/.test(meta)) {
+                        fillInput(inp, birthCity || "");
+                      } else if (/name|isim|ad\b|nombre|nome|nom|名前/.test(meta)) {
+                        fillInput(inp, ownerName || "");
+                      } else {
+                        // Doğum tarihi (veya bilinmeyen) — date format
+                        fillInput(inp, birthDate || "");
+                      }
+                    });
+
+                    // Sonra "ilerle/devam" butonuna programatik click
                     const SKIP_LABELS = new Set([
                       "continue","devam","devam et","next","ileri","skip","atla",
-                      "save","kaydet","start","başla","submit","tamam","ok",
+                      "save","kaydet","start","başla","submit","tamam","ok","→",
                       "weiter","überspringen","speichern",
                       "continuar","saltar","guardar",
                       "continuer","passer","enregistrer",
@@ -4161,16 +4192,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     for (let i = 0; i < buttons.length; i++) {
                       const b = buttons[i];
                       const txt = (b.textContent || b.value || "").trim().toLowerCase();
-                      if (SKIP_LABELS.has(txt)) {
+                      if (SKIP_LABELS.has(txt) || /(continue|devam|skip|atla|save|kaydet|submit|ileri|next)/.test(txt)) {
                         try { b.click(); } catch(_) {}
                         break;
                       }
                     }
                   } catch(_) {}
                 };
-                setTimeout(trySkipOnboarding, 3500);
-                setTimeout(trySkipOnboarding, 6000);
-                setTimeout(trySkipOnboarding, 9000);
+                setTimeout(trySkipOnboarding, 2500);
+                setTimeout(trySkipOnboarding, 5000);
+                setTimeout(trySkipOnboarding, 8000);
+                setTimeout(trySkipOnboarding, 12000);
 
                 // Embed'lerdeki gereksiz menüleri gizle: "Profil" tab + dil seçici.
                 // Sakin Ailesi'nde isim/doğum/dil zaten alındı; embed kendi formunu sunmamalı.
@@ -4354,8 +4386,36 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             );
           })()}
+          {/* Akıllı geri buton: embed iç sayfasında geziniliyorsa içeride geri, ana
+              sayfadaysa Sakin Ailesi'ne çık. Uzun bas (≥500ms) → her zaman Ailesi'ne. */}
           <button
-            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
+            onClick={(ev)=>{
+              const el = ev.currentTarget;
+              const wasLong = el._sakinLongPress;
+              el._sakinLongPress = false;
+              if (!wasLong) {
+                try {
+                  const iframe = document.querySelector("iframe[title]");
+                  const cw = iframe && iframe.contentWindow;
+                  if (cw && cw.history && cw.history.length > 1) {
+                    cw.history.back();
+                    return; // embed içinde geri gidildi
+                  }
+                } catch(_) {}
+              }
+              setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true);
+            }}
+            onTouchStart={(ev)=>{
+              const el = ev.currentTarget;
+              el.style.transform = "scale(0.92)";
+              el._sakinPressTimer = setTimeout(() => { el._sakinLongPress = true; try { haptic(ImpactStyle.Medium); } catch(_) {} }, 500);
+            }}
+            onTouchEnd={(ev)=>{ clearTimeout(ev.currentTarget._sakinPressTimer); ev.currentTarget.style.transform = "scale(1)"; }}
+            onTouchCancel={(ev)=>{ clearTimeout(ev.currentTarget._sakinPressTimer); ev.currentTarget.style.transform = "scale(1)"; }}
+            onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
+            onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
+            onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
+            title={t("common_back")}
             aria-label={t("common_back")}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 6px)", left:8, zIndex:10003,
@@ -4366,11 +4426,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
               boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
               transition:"transform 0.15s ease",
-            }}
-            onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
-            onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
-            onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
+            }}>
             ←
+          </button>
+          {/* Sağ üstte küçük "✕ ailesi" — açık çıkış kestirmesi (3 app için) */}
+          <button
+            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
+            title={lang==="tr"?"Sakin Ailesi":"Sakin Family"}
+            aria-label={lang==="tr"?"Sakin Ailesi":"Sakin Family"}
+            style={{
+              position:"fixed", top:"calc(var(--sat, 0px) + 6px)", right:8, zIndex:10003,
+              padding:"6px 11px", borderRadius:100,
+              background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
+              border:"1px solid rgba(184,164,216,0.5)",
+              color:"#e8dcff", fontSize:10, letterSpacing:2,
+              cursor:"pointer", fontFamily:"'Jost',sans-serif",
+              boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
+            }}>
+            ✕ {lang==="tr"?"AİLE":"FAMILY"}
           </button>
         </div>
       )}
