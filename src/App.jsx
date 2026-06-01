@@ -1032,8 +1032,8 @@ const GLOBAL_CSS = `
   .top-nav::-webkit-scrollbar { display:none; }
   .top-nav-btn {
     background:transparent; border:none; cursor:pointer;
-    font-family:'Jost',sans-serif; font-weight:300;
-    font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#888888;
+    font-family:'Jost',sans-serif; font-weight:500;
+    font-size:13.5px; letter-spacing:2px; text-transform:uppercase; color:#aaaaaa;
     padding:0 10px; height:44px; transition:all 0.2s;
     white-space:nowrap; flex-shrink:0; position:relative;
   }
@@ -4082,7 +4082,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {lang==="tr" ? "Doğum bilgilerini değiştir" : "Edit birth info"}
                 </button>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
-                  onClick={()=>{ if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); } }}>
+                  onClick={()=>{ setScreen("sabah"); }}>
                   {lang==="tr" ? "Devam Et →" : "Continue →"}
                 </button>
               </div>
@@ -4117,7 +4117,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                     setShowBirthForm(false);
-                    if (isNative) { setScreen("sabah"); } else { setRehberTab("reiki"); setScreen("rehber"); }
+                    setScreen("sabah");
                   }}>
                   {lang==="tr" ? (birthInput ? (birthDate ? "Kaydet →" : "Devam Et →") : "Atla →") : (birthInput ? (birthDate ? "Save →" : "Continue →") : "Skip →")}
                 </button>
