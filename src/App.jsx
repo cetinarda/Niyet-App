@@ -3953,22 +3953,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           })()}
           <button
             onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
-            aria-label={lang==="tr"?"Sakin'e dön":"Back to Sakin"}
+            aria-label={lang==="tr"?"Geri":"Back"}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
+              width:38, height:38, borderRadius:"50%", padding:0,
               background:"rgba(15,8,30,0.88)", backdropFilter:"blur(20px)",
               border:"1px solid rgba(184,164,216,0.45)",
-              borderRadius:100, padding:"9px 16px 9px 12px",
-              color:"#e8dcff", fontSize:13, letterSpacing:1.5, fontFamily:"'Jost',sans-serif", fontWeight:400,
-              cursor:"pointer", display:"flex", alignItems:"center", gap:6,
+              color:"#e8dcff", fontSize:18, lineHeight:1,
+              cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
               boxShadow:"0 4px 18px rgba(0,0,0,0.55), 0 0 18px rgba(184,164,216,0.18)",
               transition:"transform 0.15s ease",
             }}
-            onMouseDown={e=>e.currentTarget.style.transform="scale(0.94)"}
+            onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
             onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
             onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}>
-            <span style={{ fontSize:17, lineHeight:1 }}>←</span>
-            <span>SAKİN</span>
+            ←
           </button>
         </div>
       )}
