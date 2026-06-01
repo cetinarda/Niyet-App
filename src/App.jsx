@@ -10,6 +10,7 @@ import { LocalNotifications } from "@capacitor/local-notifications";
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
 // Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
 import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } from "./cityDb";
+import { showNowPlaying, clearNowPlaying, updateNowPlayingState, onRemoteCommand } from "./nowplaying";
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -2420,6 +2421,35 @@ export default function SakinApp() {
   const freqOscsRef = useRef([]);
   const freqGainRef = useRef(null);
   const birdAudioRef = useRef(null);
+  // Sessizlik keepalive — iOS WKWebView Web Audio'yu (oscillator) arka planda askıya alır.
+  // Çalan bir HTMLAudioElement varsa AVAudioSession.playback rotası açık kalır,
+  // bu da Web Audio'nun arka planda çalmaya devam etmesini sağlar.
+  // Dosya: public/silence.wav (3 sn, 8kHz mono PCM ~47KB, ses dosyasında gerçek sıfır örnekler).
+  const silenceAudioRef = useRef(null);
+  const lastFreqHzRef = useRef(null);
+  const lastFreqLabelRef = useRef("");
+  const startSilenceKeepAlive = () => {
+    try {
+      if (!silenceAudioRef.current) {
+        const a = new Audio("/silence.wav");
+        a.loop = true;
+        a.volume = 0.01; // gerçek sessiz; bazı iOS sürümleri vol=0 ile rotayı kapatabilir
+        a.preload = "auto";
+        silenceAudioRef.current = a;
+      }
+      // .play() bir Promise döner — kullanıcı jesti dışında reddedilebilir; sessiz yut.
+      const p = silenceAudioRef.current.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    } catch (_) {}
+  };
+  const stopSilenceKeepAlive = () => {
+    try {
+      if (silenceAudioRef.current) {
+        silenceAudioRef.current.pause();
+        silenceAudioRef.current.currentTime = 0;
+      }
+    } catch (_) {}
+  };
   const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
   const stopBirdSound = () => {
     if (birdAudioRef.current) {
@@ -2449,6 +2479,8 @@ export default function SakinApp() {
       // freqCtxRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     }, 350);
     stopBirdSound();
+    stopSilenceKeepAlive();
+    clearNowPlaying();
     setPlayingHz(null); setActiveFreq(null);
   };
   const [freqListenSec, setFreqListenSec] = useState(() => {
@@ -2930,6 +2962,24 @@ export default function SakinApp() {
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   useEffect(() => { scheduleDailyReminders(lang); }, []);
+  // Kilit ekranı / Control Center / Dynamic Island uzaktan kumanda olayları.
+  // Native Swift plugin (SakinNowPlaying.swift) play/pause/stop'a basıldığında
+  // window.dispatchEvent ile bildirir; biz Web Audio durdurma yoluna aktarırız.
+  useEffect(() => {
+    if (!isNative) return;
+    const off = onRemoteCommand({
+      onPause:  () => { stopFreqToneGlobal(); },
+      onStop:   () => { stopFreqToneGlobal(); },
+      onToggle: () => { stopFreqToneGlobal(); },
+      // Play (resume): aynı Hz'i yeniden başlat. AVAudioSession aktif olduğu için
+      // arka plandan resume edebiliriz; setPlayingHz state akışını korumak için
+      // sade bir custom event dispatch ediyoruz — ses ekranı zaten açıksa kullanıcı
+      // butona basacak. Lock-screen Play'i şu an "stop"a eşitliyoruz çünkü Web Audio
+      // arka planda yeniden createOscillator'ı tutarlı şekilde yapamıyor.
+      onPlay:   () => { /* no-op; arka planda yeni oscillator yaratmak iOS WKWebView'da güvenilmez */ },
+    });
+    return off;
+  }, []);
   // Sakin Ailesi bridge: embed'ler kendi profil'lerini yazdığında ad/doğum bilgisini sakin_* anahtarlarına sync et
   useEffect(() => {
     if (isNative) return;
@@ -4822,12 +4872,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             freqOscRef.current = null; freqGainRef.current = null;
           }, 820);
           stopBirdSound();
+          stopSilenceKeepAlive();
+          clearNowPlaying();
           setPlayingHz(null);
         };
         const playFreq = (hz) => {
           if (playingHz === hz) { stopFreqTone(); return; }
           if (playingHz) stopFreqTone();
           const freqData = FREQS.find(f => f.hz === hz);
+          // Now Playing meta + arka plan keepalive — Web Audio'nun arka planda devamı için.
+          const label = freqData ? `${hz} Hz · ${freqData.name}` : `${hz} Hz`;
+          lastFreqHzRef.current = hz;
+          lastFreqLabelRef.current = label;
+          startSilenceKeepAlive();
+          showNowPlaying({ title: label, artist: "Sakin" });
           // KRİTİK: AudioContext'i gesture handler'ın İLK satırında oluştur ve resume et.
           // setTimeout içinde oluşturulursa iOS gesture context'ini kaybeder ve ses çıkmaz.
           if (!freqCtxRef.current) {
