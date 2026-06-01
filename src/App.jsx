@@ -3781,6 +3781,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 const style = doc.createElement("style");
                 style.id = "sakin-embed-fixes";
                 style.textContent = `
+                  /* Üst safe-area boşluğunu sıfırla — host wrapper zaten ekran tepesinden başlıyor,
+                     embed kendi safe-area padding'ini ekleyince üstte siyah bant kalıyor.
+                     Ayrıca iOS scroll-bounce'ı engelle (yukarı çekince siyah boşluk açılmasın). */
+                  html, body {
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                    overscroll-behavior-y: none !important;
+                    -webkit-overflow-scrolling: auto !important;
+                  }
+                  #root, [class*="root"], [class*="App"], [data-class~="r-root"] {
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                  }
                   /* Form input'larının ekran dışına taşmasını engelle */
                   input, textarea, select {
                     max-width: 100% !important;
