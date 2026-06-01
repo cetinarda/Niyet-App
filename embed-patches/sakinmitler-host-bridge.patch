@@ -1,0 +1,84 @@
+diff --git a/src/store/useStore.ts b/src/store/useStore.ts
+index eb5d82b..179158b 100644
+--- a/src/store/useStore.ts
++++ b/src/store/useStore.ts
+@@ -51,6 +51,63 @@ const STORAGE_KEYS = {
+ 
+ const todayStr = () => new Date().toISOString().split('T')[0];
+ 
++// SAKİN HOST KÖPRÜSÜ — Sakin ana uygulaması (host), bu embed'i bir iframe içinde
++// açtığında isim + doğum bilgisini embed'in localStorage'ına yazar (aynı origin).
++// Burada o veriyi okuyup profili otomatik kurarız; böylece kullanıcı Sakin'de zaten
++// girdiği bilgileri TEKRAR girmez ve onboarding atlanır.
++function zodiacElement(birthDate?: string): UserProfile['element'] {
++  if (!birthDate) return 'ateş';
++  const parts = birthDate.split('-').map(Number);
++  // YYYY-MM-DD bekleniyor; ay/gün al
++  const m = parts[1], d = parts[2];
++  if (!m || !d) return 'ateş';
++  const md = m * 100 + d;
++  // ateş: Koç(3/21-4/19) Aslan(7/23-8/22) Yay(11/22-12/21)
++  // toprak: Boğa(4/20-5/20) Başak(8/23-9/22) Oğlak(12/22-1/19)
++  // hava: İkizler(5/21-6/20) Terazi(9/23-10/22) Kova(1/20-2/18)
++  // su: Yengeç(6/21-7/22) Akrep(10/23-11/21) Balık(2/19-3/20)
++  if ((md>=321&&md<=419)||(md>=723&&md<=822)||(md>=1122&&md<=1221)) return 'ateş';
++  if ((md>=420&&md<=520)||(md>=823&&md<=922)||(md>=1222)||(md<=119)) return 'toprak';
++  if ((md>=521&&md<=620)||(md>=923&&md<=1022)||(md>=120&&md<=218)) return 'hava';
++  return 'su';
++}
++function tryLoadSakinBridge(): UserProfile | null {
++  try {
++    if (typeof window === 'undefined' || !window.localStorage) return null;
++    const ls = window.localStorage;
++    const get = (...keys: string[]) => { for (const k of keys) { const v = ls.getItem(k); if (v) return v; } return ''; };
++    const name = get('sakin_name', 'user_name', 'userName');
++    const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
++    // Host verisi yoksa köprü yok — normal onboarding'e düş
++    if (!name && !birthDate) return null;
++    // Doğum saati (HH:MM) — opsiyonel; saat/dakikaya ayır
++    const birthTime = get('sakin_birth_time', 'birth_time', 'birthTime');
++    let birthHour: number | undefined;
++    let birthMinute: number | undefined;
++    if (birthTime) {
++      const tp = birthTime.split(':').map((s) => parseInt(s, 10));
++      if (!isNaN(tp[0])) birthHour = tp[0];
++      if (!isNaN(tp[1])) birthMinute = tp[1];
++    }
++    const birthCity = get('sakin_birth_city', 'birth_city', 'birthCity') || undefined;
++    return {
++      name: name || 'Sakin',
++      fullName: name || undefined,
++      birthDate: birthDate || undefined,
++      birthHour,
++      birthMinute,
++      birthCity,
++      element: zodiacElement(birthDate),
++      createdAt: new Date().toISOString(),
++      streak: 0,
++      totalReadings: 0,
++      level: 1,
++    };
++  } catch {
++    return null;
++  }
++}
++
+ function pickRandom<T>(arr: T[]): T {
+   return arr[Math.floor(Math.random() * arr.length)];
+ }
+@@ -82,7 +139,14 @@ export function useMitlerStore() {
+       ]);
+ 
+       if (!profileRaw) {
+-        setIsNewUser(true);
++        // Önce Sakin host köprüsünü dene — host isim+doğum yazdıysa onboarding'i atla
++        const bridged = tryLoadSakinBridge();
++        if (bridged) {
++          setProfile(bridged);
++          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(bridged));
++        } else {
++          setIsNewUser(true);
++        }
+       } else {
+         setProfile(JSON.parse(profileRaw));
+       }
