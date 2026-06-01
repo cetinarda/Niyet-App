@@ -2258,6 +2258,58 @@ function SmartTimeInput({ value, onChange, lang }) {
   );
 }
 
+// Doğum şehri — <datalist> iOS WKWebView'da dropdown göstermediği için özel öneri listesi.
+// Yazınca il/şehir önerileri açılır, dokunarak seçilir; tanınan şehirde ✓ gösterilir.
+function SmartCityInput({ value, onChange, lang }) {
+  const [focused, setFocused] = useState(false);
+  const q = normalizeCity(value);
+  const cap = s => s.split(" ").map(w => (w ? w.charAt(0).toLocaleUpperCase("tr") + w.slice(1) : w)).join(" ");
+  const matches = q.length >= 1
+    ? CITY_NAMES.filter(n => n.startsWith(q)).concat(CITY_NAMES.filter(n => !n.startsWith(q) && n.includes(q))).slice(0, 6)
+    : [];
+  const recognized = !!value && !!lookupCity(value);
+  const showList = focused && matches.length > 0 && !(matches.length === 1 && recognized);
+  return (
+    <div style={{ position:"relative" }}>
+      <input type="text" className="sakin-input"
+        autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
+        placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"}
+        style={{ fontSize:14,padding:"10px 34px 10px 12px",width:"100%",boxSizing:"border-box" }}
+        value={value}
+        onChange={e=>onChange(e.target.value)}
+        onFocus={()=>setFocused(true)}
+        onBlur={()=>setTimeout(()=>setFocused(false), 160)} />
+      {recognized && (
+        <span style={{ position:"absolute",right:12,top:"22px",transform:"translateY(-50%)",color:"#7ec699",fontSize:15,pointerEvents:"none" }}>✓</span>
+      )}
+      {showList && (
+        <div style={{ position:"absolute",top:"calc(100% + 4px)",left:0,right:0,zIndex:30,
+          background:"rgba(15,10,25,0.98)",backdropFilter:"blur(20px)",
+          border:"1px solid rgba(184,164,216,0.25)",borderRadius:12,overflow:"hidden",
+          boxShadow:"0 12px 32px rgba(0,0,0,0.6)",maxHeight:228,overflowY:"auto" }}>
+          {matches.map(n => {
+            const label = cap(n);
+            return (
+              <button key={n} type="button"
+                onMouseDown={e=>{ e.preventDefault(); onChange(label); setFocused(false); }}
+                style={{ display:"block",width:"100%",textAlign:"left",background:"transparent",
+                  border:"none",borderBottom:"1px solid rgba(255,255,255,0.05)",
+                  padding:"11px 14px",color:"#d8c8f0",fontSize:14,cursor:"pointer",fontFamily:"'Inter',sans-serif" }}>
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {!recognized && value && value.trim().length >= 2 && matches.length === 0 && (
+        <div style={{ fontSize:11,color:"#9a8aae",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.5,lineHeight:1.4 }}>
+          {lang==="tr" ? "Listede yok — yükselen için en yakın ili seç" : "Not in list — pick the nearest city for ascendant"}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
   const [langOpen, setLangOpen] = useState(false);
@@ -3596,15 +3648,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                   <div>
                     <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Şehri":"Birth City"}</div>
-                    <input type="text" list="city-list"
-                      name="sakin-birth-city-ailesi" id="sakin-birth-city-ailesi"
-                      autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
-                      placeholder={lang==="tr"?"ör. İstanbul, Kayseri, Londra":"e.g. Istanbul, Kayseri, London"}
-                      value={birthCityInput} onChange={e=>setBirthCityInput(e.target.value)}
-                      style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
-                    <datalist id="city-list">
-                      {CITY_NAMES.map(c => <option key={c} value={c.charAt(0).toUpperCase()+c.slice(1)} />)}
-                    </datalist>
+                    <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
                   </div>
                   <div style={{ display:"flex",gap:8,marginTop:4 }}>
                     <button onClick={()=>{
@@ -3908,7 +3952,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             );
           })()}
           <button
-            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); }}
+            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
             aria-label={lang==="tr"?"Sakin'e dön":"Back to Sakin"}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
@@ -4098,15 +4142,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Şehri (yükselen için)" : "Birth City (for ascendant)"}</div>
-                  <input type="text" className="sakin-input" list="city-list"
-                    name="sakin-birth-city" id="sakin-birth-city"
-                    autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
-                    placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"}
-                    style={{ fontSize:14,padding:"9px 12px",width:"100%",boxSizing:"border-box" }}
-                    value={birthCityInput} onChange={e=>setBirthCityInput(e.target.value)} />
-                  <datalist id="city-list">
-                    {CITY_NAMES.map(c => <option key={c} value={c.charAt(0).toUpperCase()+c.slice(1)} />)}
-                  </datalist>
+                  <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
                 </div>
                 <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
@@ -4119,7 +4155,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     setShowBirthForm(false);
                     setScreen("sabah");
                   }}>
-                  {lang==="tr" ? (birthInput ? (birthDate ? "Kaydet →" : "Devam Et →") : "Atla →") : (birthInput ? (birthDate ? "Save →" : "Continue →") : "Skip →")}
+                  {lang==="tr" ? ((birthInput||birthTimeInput||birthCityInput) ? "Kaydet →" : "Atla →") : ((birthInput||birthTimeInput||birthCityInput) ? "Save →" : "Skip →")}
                 </button>
               </div>
             )}
