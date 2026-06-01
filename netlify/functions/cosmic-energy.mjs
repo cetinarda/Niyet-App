@@ -10,33 +10,35 @@ function getCorsHeaders(event) {
   };
 }
 
+// 7-lang sözlük: tr / en / de / es / pt / fr / ja
+// Ton: Sakin'in sesi — düşük perdeden, sade, küçük harf tercihli.
 function kpDescription(kp) {
-  if (kp < 3) return { tr: "sakin", en: "calm", level: "low" };
-  if (kp < 5) return { tr: "hafif aktif", en: "unsettled", level: "moderate" };
-  if (kp === 5) return { tr: "küçük fırtına", en: "minor storm", level: "G1" };
-  if (kp === 6) return { tr: "orta fırtına", en: "moderate storm", level: "G2" };
-  if (kp === 7) return { tr: "güçlü fırtına", en: "strong storm", level: "G3" };
-  if (kp === 8) return { tr: "şiddetli fırtına", en: "severe storm", level: "G4" };
-  return { tr: "aşırı fırtına", en: "extreme storm", level: "G5" };
+  if (kp < 3)   return { tr:"sakin",            en:"calm",           de:"ruhig",            es:"calmo",            pt:"calmo",            fr:"calme",            ja:"穏やか",       level:"low" };
+  if (kp < 5)   return { tr:"hafif aktif",      en:"unsettled",      de:"leicht unruhig",   es:"levemente activo", pt:"levemente ativo",  fr:"légèrement agité", ja:"少し活発",     level:"moderate" };
+  if (kp === 5) return { tr:"küçük fırtına",    en:"minor storm",    de:"kleiner Sturm",    es:"tormenta menor",   pt:"tempestade leve",  fr:"orage mineur",     ja:"小さな嵐",     level:"G1" };
+  if (kp === 6) return { tr:"orta fırtına",     en:"moderate storm", de:"mäßiger Sturm",    es:"tormenta moderada",pt:"tempestade moderada",fr:"orage modéré",   ja:"中程度の嵐",   level:"G2" };
+  if (kp === 7) return { tr:"güçlü fırtına",    en:"strong storm",   de:"starker Sturm",    es:"tormenta fuerte",  pt:"tempestade forte", fr:"orage fort",       ja:"強い嵐",       level:"G3" };
+  if (kp === 8) return { tr:"şiddetli fırtına", en:"severe storm",   de:"heftiger Sturm",   es:"tormenta severa",  pt:"tempestade severa",fr:"orage sévère",     ja:"激しい嵐",     level:"G4" };
+  return        { tr:"aşırı fırtına",           en:"extreme storm",  de:"extremer Sturm",   es:"tormenta extrema", pt:"tempestade extrema",fr:"orage extrême",   ja:"極端な嵐",     level:"G5" };
 }
 
 function flareDescription(maxClass) {
   // M ve X sınıfları "önemli"; B/C sakin
-  if (!maxClass) return { tr: "sakin", en: "quiet" };
+  if (!maxClass) return { tr:"sakin", en:"quiet", de:"ruhig", es:"tranquilo", pt:"tranquilo", fr:"calme", ja:"静か" };
   const c = maxClass[0]?.toUpperCase();
-  if (c === "X") return { tr: "büyük patlama", en: "major flare" };
-  if (c === "M") return { tr: "orta patlama", en: "moderate flare" };
-  if (c === "C") return { tr: "küçük patlama", en: "minor flare" };
-  return { tr: "sakin", en: "quiet" };
+  if (c === "X") return { tr:"büyük patlama",  en:"major flare",    de:"große Eruption",     es:"erupción mayor",    pt:"erupção maior",    fr:"éruption majeure",  ja:"大規模フレア" };
+  if (c === "M") return { tr:"orta patlama",   en:"moderate flare", de:"mittlere Eruption",  es:"erupción moderada", pt:"erupção moderada", fr:"éruption modérée",  ja:"中規模フレア" };
+  if (c === "C") return { tr:"küçük patlama",  en:"minor flare",    de:"kleine Eruption",    es:"erupción menor",    pt:"erupção menor",    fr:"éruption mineure",  ja:"小規模フレア" };
+  return           { tr:"sakin",             en:"quiet",          de:"ruhig",              es:"tranquilo",         pt:"tranquilo",        fr:"calme",             ja:"静か" };
 }
 
 function windDescription(speed) {
   if (speed == null) return null;
-  if (speed < 400) return { tr: "yavaş", en: "slow" };
-  if (speed < 500) return { tr: "normal", en: "normal" };
-  if (speed < 600) return { tr: "hızlı", en: "fast" };
-  if (speed < 700) return { tr: "çok hızlı", en: "very fast" };
-  return { tr: "fırtına seviyesi", en: "storm-level" };
+  if (speed < 400) return { tr:"yavaş",          en:"slow",       de:"langsam",     es:"lento",          pt:"lento",          fr:"lent",         ja:"ゆるやか" };
+  if (speed < 500) return { tr:"normal",         en:"normal",     de:"normal",      es:"normal",         pt:"normal",         fr:"normal",       ja:"通常" };
+  if (speed < 600) return { tr:"hızlı",          en:"fast",       de:"schnell",     es:"rápido",         pt:"rápido",         fr:"rapide",       ja:"速い" };
+  if (speed < 700) return { tr:"çok hızlı",      en:"very fast",  de:"sehr schnell",es:"muy rápido",     pt:"muito rápido",   fr:"très rapide",  ja:"とても速い" };
+  return            { tr:"fırtına seviyesi",   en:"storm-level",de:"Sturmstärke", es:"nivel tormenta", pt:"nível tempestade",fr:"niveau orageux",ja:"嵐レベル" };
 }
 
 // fetch + timeout — Netlify function 10s sınırına takılmasın

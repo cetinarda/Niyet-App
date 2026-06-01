@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { makeTrans, LANGUAGES } from "./i18n";
+import { getGlossary } from "./glossary";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
@@ -191,6 +192,44 @@ const FREQ_DATA_EN = [
     etkiler:["Higher self connection","Unity consciousness","Crown chakra activation","Spiritual illumination"] },
 ];
 
+// ── i18n yardımcıları (DE/ES/PT/FR/JA için) ──────────────────────────────
+// Suffix mapping: tr→Tr, en→En, de→De, es→Es, pt-BR→Pt, fr→Fr, ja→Ja
+const LANG_SUFFIX = { tr:"Tr", en:"En", de:"De", es:"Es", "pt-BR":"Pt", fr:"Fr", ja:"Ja" };
+// Yedek tablo (obj-of-langs): obj.de / obj.es / obj["pt-BR"] / obj.fr / obj.ja
+const LANG_KEY = { tr:"tr", en:"en", de:"de", es:"es", "pt-BR":"pt", fr:"fr", ja:"ja" };
+// labelTr/labelEn/labelDe/... gibi alanlardan dile göre okuyan helper.
+// Fallback: EN -> TR (her zaman bir şey döner).
+function pickLabel(item, lang, base = "label") {
+  if (!item) return "";
+  const sfx = LANG_SUFFIX[lang] || "En";
+  return item[base + sfx] || item[base + "En"] || item[base + "Tr"] || "";
+}
+// {tr, en, de, es, pt, fr, ja} şeklindeki objeden dile göre okur.
+function pickLang(obj, lang) {
+  if (!obj) return "";
+  const key = LANG_KEY[lang] || "en";
+  return obj[key] || obj.en || obj.tr || "";
+}
+
+// Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
+// EN sürümündeki ad temel kabul edildi.
+const FREQ_NAME_I18N = {
+  174: { tr:"Toprak Frekansı",    en:"Earth Frequency",       de:"Erdfrequenz",            es:"Frecuencia Terrestre",     pt:"Frequência da Terra",     fr:"Fréquence de la Terre",  ja:"地球の周波数" },
+  285: { tr:"Enerji Yenileyici",  en:"Energy Renewal",        de:"Energieerneuerung",      es:"Renovación Energética",    pt:"Renovação Energética",    fr:"Renouveau Énergétique",  ja:"エネルギーの再生" },
+  396: { tr:"Özgürleşme",         en:"Liberation",            de:"Befreiung",              es:"Liberación",               pt:"Libertação",              fr:"Libération",             ja:"解放" },
+  417: { tr:"Dönüşüm",            en:"Transformation",        de:"Verwandlung",            es:"Transformación",           pt:"Transformação",           fr:"Transformation",         ja:"変容" },
+  432: { tr:"Evrensel Uyum",      en:"Universal Harmony",     de:"Universelle Harmonie",   es:"Armonía Universal",        pt:"Harmonia Universal",      fr:"Harmonie Universelle",   ja:"宇宙の調和" },
+  528: { tr:"Sevgi Frekansı",     en:"Love Frequency",        de:"Liebesfrequenz",         es:"Frecuencia del Amor",      pt:"Frequência do Amor",      fr:"Fréquence de l'Amour",   ja:"愛の周波数" },
+  639: { tr:"İlişki Uyumu",       en:"Relationship Harmony",  de:"Beziehungsharmonie",     es:"Armonía Relacional",       pt:"Harmonia Relacional",     fr:"Harmonie Relationnelle", ja:"つながりの調和" },
+  741: { tr:"İfade & Arınma",     en:"Expression & Cleansing",de:"Ausdruck & Reinigung",   es:"Expresión y Purificación", pt:"Expressão e Purificação", fr:"Expression & Purification", ja:"表現と浄化" },
+  852: { tr:"Sezgisel Uyanış",    en:"Intuitive Awakening",   de:"Intuitives Erwachen",    es:"Despertar Intuitivo",      pt:"Despertar Intuitivo",     fr:"Éveil Intuitif",         ja:"直感の目覚め" },
+  963: { tr:"İlahi Bağlantı",     en:"Divine Connection",     de:"Göttliche Verbindung",   es:"Conexión Divina",          pt:"Conexão Divina",          fr:"Connexion Divine",       ja:"神聖なつながり" },
+};
+const getFreqName = (hz, lang) => {
+  const row = FREQ_NAME_I18N[hz];
+  if (!row) return "";
+  return pickLang(row, lang);
+};
 const getFreqData = (lang) => lang === "en" ? FREQ_DATA_EN : FREQ_DATA_TR;
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
@@ -600,40 +639,48 @@ const PREMIUM_WORDS_TR = ["berraklık", "güç", "özgürlük", "neşe", "şük�
 
 // Duygu durumları — kullanıcı seçer, frekanslar karışır (procedural; tıbbi iddia yok)
 const MIND_MOODS = [
-  { id:"endiseli",  icon:"🌊", labelTr:"Endişeli",     labelEn:"Anxious",      frequencies:[96, 144, 216],  colors:["#4a8aa0","#7ab0c4"] },
-  { id:"uzgun",     icon:"🌧", labelTr:"Üzgün",        labelEn:"Sad",          frequencies:[174, 261, 349], colors:["#5a4878","#7868a8"] },
-  { id:"ofkeli",    icon:"🔥", labelTr:"Öfkeli",       labelEn:"Angry",        frequencies:[90, 135, 180],  colors:["#8a4040","#b07070"] },
-  { id:"uykusuz",   icon:"🌙", labelTr:"Uykusuz",      labelEn:"Sleepless",    frequencies:[48, 72, 96],    colors:["#283848","#485870"] },
-  { id:"dagiNik",   icon:"🌪", labelTr:"Dağınık",      labelEn:"Scattered",    frequencies:[256, 384, 512], colors:["#5a8aa0","#80b0c8"] },
-  { id:"yalniz",    icon:"🌒", labelTr:"Yalnız",       labelEn:"Lonely",       frequencies:[220, 330, 440], colors:["#705a98","#9078b8"] },
-  { id:"tukenmis",  icon:"🍂", labelTr:"Tükenmiş",     labelEn:"Burnt out",    frequencies:[64, 96, 192],   colors:["#705a40","#a08868"] },
-  { id:"sikisik",   icon:"⛓",  labelTr:"Sıkışmış",     labelEn:"Stuck",        frequencies:[110, 220, 330], colors:["#587858","#80a080"] },
-  { id:"belirsiz",  icon:"🌫", labelTr:"Belirsizlikte",labelEn:"Uncertain",    frequencies:[128, 192, 256], colors:["#606078","#8888a0"] },
-  { id:"kirik",     icon:"💔", labelTr:"Kalbi kırık",  labelEn:"Heartbroken",  frequencies:[174, 220, 261], colors:["#883858","#b06080"] },
-  { id:"donuk",     icon:"❄",  labelTr:"Donuk",        labelEn:"Numb",         frequencies:[55, 82, 110],   colors:["#405878","#608098"] },
-  { id:"asiri",     icon:"🧠", labelTr:"Aşırı düşünen",labelEn:"Overthinking", frequencies:[256, 320, 384], colors:["#9070b0","#b090d0"] },
-  { id:"sukran",    icon:"✨", labelTr:"Şükran arıyor",labelEn:"Seeking gratitude",frequencies:[256, 384, 528],colors:["#a08838","#c8a868"] },
-  { id:"yeni",      icon:"🌱", labelTr:"Yenilik istiyor",labelEn:"Wants newness",frequencies:[174, 261, 432],colors:["#588858","#80b080"] },
-  { id:"donusum",   icon:"🦋", labelTr:"Dönüşmek istiyor",labelEn:"Wants transformation",frequencies:[111, 222, 444],colors:["#7a4898","#a070c0"] },
-  { id:"akış",      icon:"💧", labelTr:"Akmak istiyor",labelEn:"Wants to flow",frequencies:[145, 217, 290], colors:["#3a8aa0","#60b0c0"] },
-  { id:"kendine",   icon:"🌸", labelTr:"Kendine dönmek",labelEn:"Return to self",frequencies:[174, 285, 432],colors:["#a08068","#c8a888"] },
-  { id:"enerji",    icon:"☀️", labelTr:"Enerji istiyor",labelEn:"Wants energy",frequencies:[396, 528, 741], colors:["#e8a850","#f0c860"] },
+  { id:"endiseli",  icon:"🌊", labelTr:"Endişeli",     labelEn:"Anxious",            labelDe:"Ängstlich",       labelEs:"Ansioso",            labelPt:"Ansioso",            labelFr:"Anxieux",            labelJa:"不安",         frequencies:[96, 144, 216],  colors:["#4a8aa0","#7ab0c4"] },
+  { id:"uzgun",     icon:"🌧", labelTr:"Üzgün",        labelEn:"Sad",                labelDe:"Traurig",         labelEs:"Triste",             labelPt:"Triste",             labelFr:"Triste",             labelJa:"悲しい",       frequencies:[174, 261, 349], colors:["#5a4878","#7868a8"] },
+  { id:"ofkeli",    icon:"🔥", labelTr:"Öfkeli",       labelEn:"Angry",              labelDe:"Wütend",          labelEs:"Enfadado",           labelPt:"Com raiva",          labelFr:"En colère",          labelJa:"怒り",         frequencies:[90, 135, 180],  colors:["#8a4040","#b07070"] },
+  { id:"uykusuz",   icon:"🌙", labelTr:"Uykusuz",      labelEn:"Sleepless",          labelDe:"Schlaflos",       labelEs:"Insomne",            labelPt:"Sem sono",           labelFr:"Insomniaque",        labelJa:"眠れない",     frequencies:[48, 72, 96],    colors:["#283848","#485870"] },
+  { id:"dagiNik",   icon:"🌪", labelTr:"Dağınık",      labelEn:"Scattered",          labelDe:"Zerstreut",       labelEs:"Disperso",           labelPt:"Disperso",           labelFr:"Éparpillé",          labelJa:"散漫",         frequencies:[256, 384, 512], colors:["#5a8aa0","#80b0c8"] },
+  { id:"yalniz",    icon:"🌒", labelTr:"Yalnız",       labelEn:"Lonely",             labelDe:"Einsam",          labelEs:"Solo",               labelPt:"Solitário",          labelFr:"Seul",               labelJa:"孤独",         frequencies:[220, 330, 440], colors:["#705a98","#9078b8"] },
+  { id:"tukenmis",  icon:"🍂", labelTr:"Tükenmiş",     labelEn:"Burnt out",          labelDe:"Ausgebrannt",     labelEs:"Agotado",            labelPt:"Esgotado",           labelFr:"Épuisé",             labelJa:"燃え尽き",     frequencies:[64, 96, 192],   colors:["#705a40","#a08868"] },
+  { id:"sikisik",   icon:"⛓",  labelTr:"Sıkışmış",     labelEn:"Stuck",              labelDe:"Festgefahren",    labelEs:"Atascado",           labelPt:"Travado",            labelFr:"Bloqué",             labelJa:"行き詰まり",   frequencies:[110, 220, 330], colors:["#587858","#80a080"] },
+  { id:"belirsiz",  icon:"🌫", labelTr:"Belirsizlikte",labelEn:"Uncertain",          labelDe:"Unsicher",        labelEs:"Incierto",           labelPt:"Incerto",            labelFr:"Incertain",          labelJa:"不確か",       frequencies:[128, 192, 256], colors:["#606078","#8888a0"] },
+  { id:"kirik",     icon:"💔", labelTr:"Kalbi kırık",  labelEn:"Heartbroken",        labelDe:"Herzschmerz",     labelEs:"Corazón roto",       labelPt:"Coração partido",    labelFr:"Cœur brisé",         labelJa:"心が痛い",     frequencies:[174, 220, 261], colors:["#883858","#b06080"] },
+  { id:"donuk",     icon:"❄",  labelTr:"Donuk",        labelEn:"Numb",               labelDe:"Taub",            labelEs:"Insensible",         labelPt:"Entorpecido",        labelFr:"Engourdi",           labelJa:"麻痺",         frequencies:[55, 82, 110],   colors:["#405878","#608098"] },
+  { id:"asiri",     icon:"🧠", labelTr:"Aşırı düşünen",labelEn:"Overthinking",       labelDe:"Grübelnd",        labelEs:"Pensando demás",     labelPt:"Pensando demais",    labelFr:"Trop pensif",        labelJa:"考えすぎ",     frequencies:[256, 320, 384], colors:["#9070b0","#b090d0"] },
+  { id:"sukran",    icon:"✨", labelTr:"Şükran arıyor",labelEn:"Seeking gratitude",  labelDe:"Sucht Dankbarkeit",labelEs:"Buscando gratitud", labelPt:"Buscando gratidão",  labelFr:"Cherche la gratitude", labelJa:"感謝を求めて", frequencies:[256, 384, 528],colors:["#a08838","#c8a868"] },
+  { id:"yeni",      icon:"🌱", labelTr:"Yenilik istiyor",labelEn:"Wants newness",    labelDe:"Sehnt sich nach Neuem", labelEs:"Quiere novedad", labelPt:"Quer novidade",      labelFr:"Veut du neuf",       labelJa:"新しさ求む",   frequencies:[174, 261, 432],colors:["#588858","#80b080"] },
+  { id:"donusum",   icon:"🦋", labelTr:"Dönüşmek istiyor",labelEn:"Wants transformation",labelDe:"Will sich wandeln",labelEs:"Quiere transformarse",labelPt:"Quer transformação",labelFr:"Veut se transformer",labelJa:"変わりたい",   frequencies:[111, 222, 444],colors:["#7a4898","#a070c0"] },
+  { id:"akış",      icon:"💧", labelTr:"Akmak istiyor",labelEn:"Wants to flow",      labelDe:"Will fließen",    labelEs:"Quiere fluir",       labelPt:"Quer fluir",         labelFr:"Veut couler",        labelJa:"流れたい",     frequencies:[145, 217, 290], colors:["#3a8aa0","#60b0c0"] },
+  { id:"kendine",   icon:"🌸", labelTr:"Kendine dönmek",labelEn:"Return to self",    labelDe:"Zu sich finden",  labelEs:"Volver a sí",        labelPt:"Voltar a si",        labelFr:"Revenir à soi",      labelJa:"自分に還る",   frequencies:[174, 285, 432],colors:["#a08068","#c8a888"] },
+  { id:"enerji",    icon:"☀️", labelTr:"Enerji istiyor",labelEn:"Wants energy",      labelDe:"Will Energie",    labelEs:"Quiere energía",     labelPt:"Quer energia",       labelFr:"Veut de l'énergie",  labelJa:"活力を求めて", frequencies:[396, 528, 741], colors:["#e8a850","#f0c860"] },
 ];
 const PREMIUM_WORDS_EN = ["clarity", "strength", "freedom", "joy", "gratitude", "trust"];
 
 // Doğa sesleri — kullanıcı seçer, drone'a katman olarak eklenir (procedural)
 const NATURE_SOUNDS = [
-  { id:"rain",    icon:"🌧", labelTr:"Yağmur",        labelEn:"Rain" },
-  { id:"thunder", icon:"⛈", labelTr:"Gök gürültüsü", labelEn:"Thunder" },
-  { id:"wind",    icon:"🍃", labelTr:"Rüzgar",        labelEn:"Wind" },
+  { id:"rain",    icon:"🌧", labelTr:"Yağmur",        labelEn:"Rain",    labelDe:"Regen",   labelEs:"Lluvia",  labelPt:"Chuva",   labelFr:"Pluie",   labelJa:"雨" },
+  { id:"thunder", icon:"⛈", labelTr:"Gök gürültüsü", labelEn:"Thunder", labelDe:"Donner",  labelEs:"Trueno",  labelPt:"Trovão",  labelFr:"Tonnerre",labelJa:"雷" },
+  { id:"wind",    icon:"🍃", labelTr:"Rüzgar",        labelEn:"Wind",    labelDe:"Wind",    labelEs:"Viento",  labelPt:"Vento",   labelFr:"Vent",    labelJa:"風" },
 ];
 
 // Zihni Boşalt — kaleidoskop modları (procedural; tıbbi iddia yok)
 const MIND_MODES = [
-  { id:"sukunet",   labelTr:"Sükûnet",   labelEn:"Stillness",  subTr:"Yavaşla, gevşe",     subEn:"Slow down, soften",     colors:["#3a8a6a","#5ab488","#a0d8b4","#76c49a","#4a9a78"], frequencies:[110, 165, 220],       lfo:0.06, glow:"rgba(120,210,160,0.18)" },
-  { id:"berraklik", labelTr:"Berraklık", labelEn:"Clarity",    subTr:"Zihni billurla",     subEn:"Crystallise the mind",  colors:["#b88040","#e8a850","#f0c860","#d09060","#c88840"], frequencies:[174, 261, 392],       lfo:0.18, glow:"rgba(232,168,80,0.18)" },
-  { id:"teslimiyet",labelTr:"Teslimiyet",labelEn:"Surrender",  subTr:"Yumuşakça çözül",    subEn:"Dissolve gently",       colors:["#3a2858","#5a4080","#8068b0","#4a3870","#382650"], frequencies:[64, 96, 128],         lfo:0.04, glow:"rgba(120,80,180,0.18)" },
-  { id:"genislik",  labelTr:"Genişlik",  labelEn:"Spaciousness",subTr:"Geniş bak",         subEn:"See wide",              colors:["#4080a0","#60a8c8","#80c0e0","#a0d8e8","#5090b0"], frequencies:[196, 294, 392, 588],  lfo:0.10, glow:"rgba(120,180,220,0.18)" },
+  { id:"sukunet",   labelTr:"Sükûnet",   labelEn:"Stillness",     labelDe:"Stille",        labelEs:"Quietud",       labelPt:"Quietude",       labelFr:"Calme",        labelJa:"静けさ",
+                    subTr:"Yavaşla, gevşe",     subEn:"Slow down, soften",      subDe:"Verlangsame, lass los",     subEs:"Reduce, suaviza",          subPt:"Desacelere, amoleça",       subFr:"Ralentis, adoucis",     subJa:"ゆっくり、和らげる",
+                    colors:["#3a8a6a","#5ab488","#a0d8b4","#76c49a","#4a9a78"], frequencies:[110, 165, 220],       lfo:0.06, glow:"rgba(120,210,160,0.18)" },
+  { id:"berraklik", labelTr:"Berraklık", labelEn:"Clarity",       labelDe:"Klarheit",      labelEs:"Claridad",      labelPt:"Clareza",        labelFr:"Clarté",       labelJa:"明晰",
+                    subTr:"Zihni billurla",     subEn:"Crystallise the mind",   subDe:"Den Geist klären",          subEs:"Cristaliza la mente",      subPt:"Cristalize a mente",        subFr:"Cristallise l'esprit",  subJa:"心を澄ます",
+                    colors:["#b88040","#e8a850","#f0c860","#d09060","#c88840"], frequencies:[174, 261, 392],       lfo:0.18, glow:"rgba(232,168,80,0.18)" },
+  { id:"teslimiyet",labelTr:"Teslimiyet",labelEn:"Surrender",     labelDe:"Hingabe",       labelEs:"Entrega",       labelPt:"Entrega",        labelFr:"Lâcher-prise", labelJa:"委ねる",
+                    subTr:"Yumuşakça çözül",    subEn:"Dissolve gently",        subDe:"Sanft loslassen",           subEs:"Disuélvete con suavidad",  subPt:"Dissolva com suavidade",    subFr:"Dissous-toi doucement", subJa:"そっと溶ける",
+                    colors:["#3a2858","#5a4080","#8068b0","#4a3870","#382650"], frequencies:[64, 96, 128],         lfo:0.04, glow:"rgba(120,80,180,0.18)" },
+  { id:"genislik",  labelTr:"Genişlik",  labelEn:"Spaciousness",  labelDe:"Weite",         labelEs:"Amplitud",      labelPt:"Amplidão",       labelFr:"Espace",       labelJa:"広がり",
+                    subTr:"Geniş bak",          subEn:"See wide",               subDe:"Schau weit",                subEs:"Mira con amplitud",        subPt:"Olhe com amplidão",         subFr:"Regarde large",         subJa:"広く見つめる",
+                    colors:["#4080a0","#60a8c8","#80c0e0","#a0d8e8","#5090b0"], frequencies:[196, 294, 392, 588],  lfo:0.10, glow:"rgba(120,180,220,0.18)" },
 ];
 
 // Procedural noise + doğa sesi yardımcıları
@@ -897,7 +944,7 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
       <canvas ref={canvasRef} style={{ width:"100%",height:"100%",display:"block" }} />
       <div style={{ position:"fixed",bottom:"calc(40px + var(--sab))",left:0,right:0,textAlign:"center",pointerEvents:"none",animation:"fadeUp 1.4s ease-out 0.6s both" }}>
         <div style={{ fontSize:11,letterSpacing:6,color:"rgba(255,255,255,0.55)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:8 }}>
-          {lang==="tr" ? mode.labelTr : mode.labelEn}
+          {pickLabel(mode, lang)}
         </div>
         <div style={{ fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.28)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
           {t("kaleido_hint")}
@@ -2031,6 +2078,50 @@ const ORNEK_SORULAR_EN = [
   "How do I know which chakra needs energy?",
   "Why is chronic fatigue always with me?",
 ];
+const ORNEK_SORULAR_DE = [
+  "Wie kann ich meine sexuelle Energie in Kreativität wandeln?",
+  "Ich habe Verdauungsprobleme!",
+  "Warum fühle ich mich diese Woche so aus dem Gleichgewicht?",
+  "Wie erkenne ich, welches Chakra Energie braucht?",
+  "Warum begleitet mich chronische Müdigkeit?",
+];
+const ORNEK_SORULAR_ES = [
+  "¿Cómo puedo canalizar mi energía sexual hacia la creatividad?",
+  "¡Tengo problemas digestivos!",
+  "¿Por qué me siento tan desequilibrado esta semana?",
+  "¿Cómo sé qué chakra necesita energía?",
+  "¿Por qué la fatiga crónica siempre me acompaña?",
+];
+const ORNEK_SORULAR_PT = [
+  "Como posso canalizar minha energia sexual para a criatividade?",
+  "Estou tendo problemas digestivos!",
+  "Por que me sinto tão desequilibrado esta semana?",
+  "Como saber qual chakra precisa de energia?",
+  "Por que a fadiga crônica está sempre comigo?",
+];
+const ORNEK_SORULAR_FR = [
+  "Comment canaliser mon énergie sexuelle vers la créativité ?",
+  "J'ai des problèmes digestifs !",
+  "Pourquoi je me sens si déséquilibré cette semaine ?",
+  "Comment savoir quel chakra a besoin d'énergie ?",
+  "Pourquoi la fatigue chronique est-elle toujours avec moi ?",
+];
+const ORNEK_SORULAR_JA = [
+  "性的なエネルギーをどうやって創造性に変えられますか？",
+  "消化器系に問題があります！",
+  "今週、なぜこんなにバランスを失っていると感じるのでしょう？",
+  "どのチャクラがエネルギーを必要としているか、どう分かりますか？",
+  "なぜ慢性的な疲労がいつも私と一緒にいるのですか？",
+];
+const ORNEK_SORULAR_BY_LANG = {
+  tr: ORNEK_SORULAR_TR,
+  en: ORNEK_SORULAR_EN,
+  de: ORNEK_SORULAR_DE,
+  es: ORNEK_SORULAR_ES,
+  "pt-BR": ORNEK_SORULAR_PT,
+  fr: ORNEK_SORULAR_FR,
+  ja: ORNEK_SORULAR_JA,
+};
 
 // Module-level AudioContext singleton — iOS WKWebView her yeni ctx'i gesture context'i
 // kaybedebileceği için reuse ediyoruz. Kullanıcı ilk gesture'ında ctx oluşur, sonra
@@ -2121,7 +2212,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
   const t = makeTrans(lang);
   const [tipAcik, setTipAcik] = useState(false);
   const tipRef = useRef(null);
-  const ornekler = lang === "tr" ? ORNEK_SORULAR_TR : ORNEK_SORULAR_EN;
+  const ornekler = ORNEK_SORULAR_BY_LANG[lang] || ORNEK_SORULAR_EN;
 
   useEffect(() => {
     if (!tipAcik) return;
@@ -5053,7 +5144,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           if (playingHz) stopFreqTone();
           const freqData = FREQS.find(f => f.hz === hz);
           // Now Playing meta + arka plan keepalive — Web Audio'nun arka planda devamı için.
-          const label = freqData ? `${hz} Hz · ${freqData.name}` : `${hz} Hz`;
+          // Frekans adını 7 dilden uygun olanı seç (TR/EN dışında DE/ES/PT/FR/JA da var)
+          const freqName = getFreqName(hz, lang) || freqData?.name || "";
+          const label = freqName ? `${hz} Hz · ${freqName}` : `${hz} Hz`;
           lastFreqHzRef.current = hz;
           lastFreqLabelRef.current = label;
           startSilenceKeepAlive();
@@ -5582,7 +5675,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               {t("mirror_geo_activity")}
                             </div>
                             <div style={{ fontSize:18,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>
-                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{kozmikData.interpretation.current[lang==="tr"?"tr":"en"]}</span>
+                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{pickLang(kozmikData.interpretation.current, lang)}</span>
                             </div>
                           </div>
 
@@ -5604,7 +5697,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               })}
                             </div>
                             <div style={{ fontSize:12,color:"#999",lineHeight:1.6 }}>
-                              {t("mirror_week_summary").replace("{avg}", String(kozmikData.past_7_days.avg_kp)).replace("{max}", String(kozmikData.past_7_days.max_kp)).replace("{label}", kozmikData.interpretation.week_peak[lang==="tr"?"tr":"en"])}
+                              {t("mirror_week_summary").replace("{avg}", String(kozmikData.past_7_days.avg_kp)).replace("{max}", String(kozmikData.past_7_days.max_kp)).replace("{label}", pickLang(kozmikData.interpretation.week_peak, lang))}
                             </div>
                           </div>
 
@@ -5614,7 +5707,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                                 {t("mirror_next_3_days")}
                               </div>
                               <div style={{ fontSize:14,color:"#c0a0e8" }}>
-                                {t("mirror_forecast_text").replace("{max}", String(kozmikData.next_3_days.forecast_max_kp)).replace("{label}", kozmikData.interpretation.forecast_peak?.[lang==="tr"?"tr":"en"] || "")}
+                                {t("mirror_forecast_text").replace("{max}", String(kozmikData.next_3_days.forecast_max_kp)).replace("{label}", pickLang(kozmikData.interpretation.forecast_peak, lang) || "")}
                               </div>
                             </div>
                           )}
@@ -5630,7 +5723,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               ) : (
                                 <div style={{ fontSize:14,color:"#d0c0f0" }}>
                                   {kozmikData.solar_flares_24h.count}× · {t("mirror_max_short")} <span style={{ color: kozmikData.solar_flares_24h.max_class?.[0]==="X" ? "#e06a6a" : kozmikData.solar_flares_24h.max_class?.[0]==="M" ? "#d99a82" : "#d9c682", fontWeight:500 }}>{kozmikData.solar_flares_24h.max_class}</span>
-                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {kozmikData.interpretation.flares[lang==="tr"?"tr":"en"]}</span>}
+                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {pickLang(kozmikData.interpretation.flares, lang)}</span>}
                                 </div>
                               )}
                             </div>
@@ -5645,7 +5738,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               <div style={{ fontSize:14,color:"#d0c0f0" }}>
                                 {kozmikData.solar_wind.speed} km/s
                                 {kozmikData.solar_wind.density != null && <span style={{ color:"#888" }}> · {kozmikData.solar_wind.density} p/cm³</span>}
-                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {kozmikData.interpretation.wind[lang==="tr"?"tr":"en"]}</span>}
+                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {pickLang(kozmikData.interpretation.wind, lang)}</span>}
                               </div>
                             </div>
                           )}
@@ -6223,7 +6316,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       boxShadow: sel ? "0 0 14px rgba(160,200,240,0.22)" : "none",
                     }}>
                     <span style={{ fontSize:13,lineHeight:1 }}>{n.icon}</span>
-                    <span>{lang==="tr" ? n.labelTr : n.labelEn}</span>
+                    <span>{pickLabel(n, lang)}</span>
                   </button>
                 );
               })}
@@ -6243,8 +6336,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   }}
                   onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow=`0 0 32px ${m.glow.replace('0.18','0.32')}`; }}
                   onMouseLeave={e=>{ e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=`0 0 20px ${m.glow}`; }}>
-                  <div style={{ fontSize:15,color:"#fff",letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",fontWeight:500 }}>{lang==="tr" ? m.labelTr : m.labelEn}</div>
-                  <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.62)",lineHeight:1.5,letterSpacing:0.4 }}>{lang==="tr" ? m.subTr : m.subEn}</div>
+                  <div style={{ fontSize:15,color:"#fff",letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",fontWeight:500 }}>{pickLabel(m, lang)}</div>
+                  <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.62)",lineHeight:1.5,letterSpacing:0.4 }}>{pickLabel(m, lang, "sub")}</div>
                 </button>
               ))}
             </div>
@@ -6277,7 +6370,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       }}>
                       <span style={{ fontSize:16,lineHeight:1 }}>{mood.icon}</span>
                       <span style={{ fontSize:9.5,color: sel ? "#fff" : "rgba(255,255,255,0.55)",letterSpacing:0.4,lineHeight:1.2,fontFamily:"'Jost',sans-serif" }}>
-                        {lang==="tr" ? mood.labelTr : mood.labelEn}
+                        {pickLabel(mood, lang)}
                       </span>
                     </button>
                   );
@@ -6290,11 +6383,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   const freqs = Array.from(new Set(picks.flatMap(p => p.frequencies))).slice(0, 6);
                   // Renkleri harmanla
                   const colors = Array.from(new Set(picks.flatMap(p => p.colors)));
-                  const labels = picks.map(p => lang==="tr" ? p.labelTr : p.labelEn);
+                  const labels = picks.map(p => pickLabel(p, lang));
                   const customMode = {
                     id: "kendi",
                     labelTr: picks.map(p=>p.labelTr).join(" · "),
                     labelEn: picks.map(p=>p.labelEn).join(" · "),
+                    labelDe: picks.map(p=>p.labelDe).join(" · "),
+                    labelEs: picks.map(p=>p.labelEs).join(" · "),
+                    labelPt: picks.map(p=>p.labelPt).join(" · "),
+                    labelFr: picks.map(p=>p.labelFr).join(" · "),
+                    labelJa: picks.map(p=>p.labelJa).join(" · "),
                     colors,
                     frequencies: freqs,
                     lfo: 0.08 + picks.length * 0.04,
@@ -6896,134 +6994,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
       {/* GLOSSARY / HELP GUIDE MODAL */}
       {showKilavuz && (() => {
-        const glossary = lang === "tr" ? [
-          { cat: t("guide_cat_numerology"), items: [
-            { term: "Yaşam Yolu Sayısı (Life Path Number)", desc: "Doğum tarihindeki tüm rakamların tek haneli bir sayıya (veya 11, 22, 33 usta sayılarına) indirgenmesiyle bulunan kişisel sayıdır. Hayat amacını, doğal yeteneklerini ve yaşam yolculuğunun temel enerjisini temsil eder.", examples: [
-              { num: "1", meaning: "Lider, bağımsız, öncü. Kendi yolunu çizen, cesur ve kararlı bir enerji. Yenilik ve başlangıçların sayısı." },
-              { num: "2", meaning: "Diplomat, uyumlu, hassas. İşbirliği ve denge arayan, sezgisel ve nazik bir enerji. Ortaklık ve ilişki sayısı." },
-              { num: "3", meaning: "Yaratıcı, ifadeci, neşeli. Sanat, iletişim ve sosyal bağlantı enerjisi. Kendini ifade etme ve ilham sayısı." },
-              { num: "4", meaning: "İnşa edici, disiplinli, güvenilir. Düzen, istikrar ve sağlam temeller enerjisi. Çalışkanlık ve dayanıklılık sayısı." },
-              { num: "5", meaning: "Özgür ruh, maceracı, değişken. Özgürlük, seyahat ve deneyim enerjisi. Değişim ve esneklik sayısı." },
-              { num: "6", meaning: "Bakıcı, sorumlu, uyumlu. Aile, ev ve toplum enerjisi. Sevgi, şifa ve sorumluluk sayısı." },
-              { num: "7", meaning: "Araştırmacı, mistik, içe dönük. Maneviyat, analiz ve derin düşünce enerjisi. Bilgelik ve keşif sayısı." },
-              { num: "8", meaning: "Güç sahibi, hırslı, başarılı. Maddi bolluk, otorite ve başarı enerjisi. Denge ve karma sayısı." },
-              { num: "9", meaning: "İnsancıl, bilge, tamamlayıcı. Evrensel sevgi, şefkat ve bırakma enerjisi. Hizmet ve dönüşüm sayısı." },
-              { num: "11", meaning: "Usta Sayı — Sezgisel aydınlatıcı. Yüksek farkındalık, ilham ve spiritüel öğretmenlik enerjisi." },
-              { num: "22", meaning: "Usta Sayı — Usta inşacı. Büyük vizyonları gerçeğe dönüştürme gücü. Pratik idealizm enerjisi." },
-              { num: "33", meaning: "Usta Sayı — Usta öğretmen. Koşulsuz sevgi, şifa ve evrensel hizmet enerjisi." },
-            ]},
-            { term: "Kişisel Yıl Sayısı", desc: "Doğum gününüz ve ayınız ile içinde bulunduğunuz yılın rakamlarının toplanmasıyla hesaplanır. 1-9 arasında döngüsel bir enerji haritası sunar. Her yıl farklı bir tema ve enerji getirir.", examples: [
-              { num: "1. Yıl", meaning: "Yeni başlangıçlar, tohum ekme zamanı." },
-              { num: "2. Yıl", meaning: "Sabır, işbirliği ve bekleme zamanı." },
-              { num: "3. Yıl", meaning: "Yaratıcılık, ifade ve sosyallik zamanı." },
-              { num: "4. Yıl", meaning: "Temel atma, düzen kurma zamanı." },
-              { num: "5. Yıl", meaning: "Değişim, özgürlük ve macera zamanı." },
-              { num: "6. Yıl", meaning: "Sorumluluk, aile ve şifa zamanı." },
-              { num: "7. Yıl", meaning: "İçe dönüş, araştırma ve maneviyat zamanı." },
-              { num: "8. Yıl", meaning: "Güç, başarı ve maddi bolluk zamanı." },
-              { num: "9. Yıl", meaning: "Tamamlama, bırakma ve dönüşüm zamanı." },
-            ]},
-            { term: "İndirgeme (Reduce)", desc: "Numerolojide çok haneli sayıları tek haneye düşürme işlemidir. Tüm rakamlar toplanır, sonuç 9'dan büyükse tekrar toplanır. 11, 22 ve 33 \"Usta Sayılar\" olarak indirgenmez, özel anlamları korunur." },
-          ]},
-          { cat: t("guide_cat_astrology"), items: [
-            { term: "Burç (Güneş Burcu)", desc: "Doğduğunuz tarihte Güneş'in bulunduğu burçtur. Temel kişiliğinizi, egonuzu ve yaşam enerjinizi temsil eder. 12 burç vardır: Koç, Boğa, İkizler, Yengeç, Aslan, Başak, Terazi, Akrep, Yay, Oğlak, Kova, Balık." },
-            { term: "Yükselen Burç (Ascendant)", desc: "Doğum anında ufuk çizgisinde yükselen burçtur. Dış dünyanın sizi nasıl gördüğünü, fiziksel görünümünüzü ve ilk izleniminizi belirler. Hesaplamak için doğum saati gereklidir. Yaklaşık olarak her 2 saatte bir burç değişir." },
-            { term: "12. Ev & Yönetici Gezegen", desc: "Astrolojide 12. ev bilinçaltını, gizli güçleri, spiritüel potansiyeli ve içsel dünyayı temsil eder. Her evin bir yönetici gezegeni vardır ve bu gezegen o evin temalarını nasıl deneyimlediğinizi belirler." },
-            { term: "Draconik Harita", desc: "Natal harita kim olduğunu söyler, Draconik harita ruhunun bu bedene girmeden önce ne olduğunu söyler. Kuzey Ay Düğümü 0° Koç'a sabitlenerek hesaplanır ve tüm gezegenlerin ruhsal eksen sıfırlandığında nerede durduğunu gösterir. Pamela Crane ve Ronald Davison tarafından 1970'lerde sistemleştirilmiştir. Draconik Güneş ruhun gerçek kimliği, natal Güneş bu hayatta giydiği maskedir; ikisi farklı burçtaysa kişi sürekli rol yapıyor gibi hissedebilir." },
-            { term: "Gezegen Güçleri", desc: "Her gezegen farklı bir yaşam alanını ve enerjiyi yönetir: Güneş (benlik), Ay (duygular), Merkür (iletişim), Venüs (sevgi), Mars (aksiyon), Jüpiter (genişleme), Satürn (disiplin), Uranüs (özgünlük), Neptün (hayal gücü), Pluto (dönüşüm)." },
-          ]},
-          { cat: t("guide_cat_chakra"), items: [
-            { term: "Çakra Nedir?", desc: "Sanskrit dilinde \"tekerlek\" anlamına gelir. Vücuttaki enerji merkezleridir. 7 ana çakra omurga boyunca sıralanır. Her biri farklı fiziksel, duygusal ve spiritüel alanları yönetir." },
-            { term: "1. Kök Çakra (Muladhara)", desc: "Konum: Omurga tabanı. Renk: Kırmızı. Element: Toprak. Temsil: Güvenlik, hayatta kalma, temel ihtiyaçlar, topraklanma. Dengede: Güvende hissedersin. Dengesiz: Korku, kaygı, maddi endişeler." },
-            { term: "2. Sakral Çakra (Svadhisthana)", desc: "Konum: Göbek altı. Renk: Turuncu. Element: Su. Temsil: Yaratıcılık, duygular, cinsellik, zevk alma. Dengede: Akışta hissedersin. Dengesiz: Duygusal istikrarsızlık, yaratıcılık tıkanması." },
-            { term: "3. Güneş Pleksusu Çakra (Manipura)", desc: "Konum: Mide bölgesi. Renk: Sarı. Element: Ateş. Temsil: Özgüven, irade gücü, kişisel güç. Dengede: Güçlü ve kararlı hissedersin. Dengesiz: Güçsüzlük, kontrol sorunları." },
-            { term: "4. Kalp Çakra (Anahata)", desc: "Konum: Göğüs merkezi. Renk: Yeşil. Element: Hava. Temsil: Sevgi, şefkat, bağışlama, ilişkiler. Dengede: Sevgiyle açık hissedersin. Dengesiz: Kıskançlık, yalnızlık, bağlanma korkusu." },
-            { term: "5. Boğaz Çakra (Vishuddha)", desc: "Konum: Boğaz. Renk: Mavi. Element: Ses. Temsil: İletişim, kendini ifade, hakikat. Dengede: Rahatça konuşursun. Dengesiz: İfade zorluğu, yalan söyleme eğilimi." },
-            { term: "6. Üçüncü Göz Çakra (Ajna)", desc: "Konum: İki kaş arası. Renk: Mor/İndigo. Element: Işık. Temsil: Sezgi, içgörü, hayal gücü, bilgelik. Dengede: Sezgilerin güçlüdür. Dengesiz: Karar verememe, sezgisel tıkanıklık." },
-            { term: "7. Taç Çakra (Sahasrara)", desc: "Konum: Başın tepesi. Renk: Mor/Beyaz. Element: Evren. Temsil: Evrensel bağlantı, aydınlanma, spiritüel farkındalık. Dengede: Bütünle bağlı hissedersin. Dengesiz: Kopukluk, anlamsızlık hissi." },
-            { term: "22 Çakra Sistemi", desc: "7 ana çakranın ötesinde 15 ek enerji merkezi daha bulunur. Bunlar arasında Yeryüzü Yıldızı, Ruh, Thymus, Orion, Soul Star gibi daha ileri düzey enerji merkezleri yer alır. Reiki terapisinde bu genişletilmiş sistem kullanılır." },
-          ]},
-          { cat: t("guide_cat_biorhythm"), items: [
-            { term: "Biyoritm Nedir?", desc: "Doğum tarihinden itibaren başlayan üç döngüsel biyolojik ritimdir. Her döngü sinüs dalgası şeklinde pozitif ve negatif arasında salınır. Değerler -100 ile +100 arasında değişir." },
-            { term: "Fiziksel Biyoritm (23 gün)", desc: "Fiziksel enerji, güç, dayanıklılık ve koordinasyonu yansıtır. Pozitif dönemde enerjin yüksek, negatif dönemde dinlenme ihtiyacın artar. Kritik günlerde (0 geçişi) dikkatli ol." },
-            { term: "Duygusal Biyoritm (28 gün)", desc: "Duygusal denge, ruh hali, yaratıcılık ve sezgiyi yansıtır. Pozitif dönemde iyimser ve empatiğin, negatif dönemde hassas ve içe dönüksün." },
-            { term: "Zihinsel Biyoritm (33 gün)", desc: "Zihinsel keskinlik, konsantrasyon, hafıza ve analitik düşünme kapasitesini yansıtır. Pozitif dönemde zihnen aktif ve öğrenmeye açıksın, negatif dönemde odaklanma zorlaşır." },
-          ]},
-          { cat: t("guide_cat_reiki"), items: [
-            { term: "Reiki Nedir?", desc: "Japonca \"evrensel yaşam enerjisi\" anlamına gelen bir farkındalık pratiğidir. Ellerin enerji merkezlerine (çakralara) yerleştirilmesiyle kişisel farkındalık ve rahatlama deneyimi sunar. Tıbbi bir tedavi veya teşhis yöntemi değildir; profesyonel sağlık hizmetinin yerine geçmez." },
-            { term: "Çakra Terapisi", desc: "Sakin'deki 60 saniyelik seanslar, seçtiğiniz çakraya odaklanmanızı sağlar. Elinizi ilgili bölgeye koyarak, gözlerinizi kapatarak ve nefes alarak o enerji merkeziyle bağ kurarsınız." },
-            { term: "Şifa Arayışı", desc: "AI destekli bir analiz aracıdır. Fiziksel veya duygusal bir durumu girdiğinizde, Reiki bilgeliği, Louise Hay'in zihinsel-duygusal neden haritası ve çakra teorisini birleştirerek kişiselleştirilmiş bir yorum sunar." },
-            { term: "Louise Hay Yöntemi", desc: "Fiziksel rahatsızlıkların altında yatan zihinsel ve duygusal nedenleri inceleyen bir yaklaşımdır. Örneğin baş ağrısı \"kendini geçersiz sayma\", sırt ağrısı \"duygusal destek eksikliği\" ile ilişkilendirilir." },
-            { term: "İçsel Ayna", desc: "Bedensel şikayetlerinizi veya duygusal durumunuzu yazarak içsel nedenlerini keşfetmenizi sağlayan AI analiz aracıdır." },
-          ]},
-          { cat: t("guide_cat_app"), items: [
-            { term: "Sabah Niyeti", desc: "Her güne bilinçli bir niyetle başlama pratiğidir. Kısa bir cümle veya kelime ile o günün odak noktasını belirlersiniz. Niyet, bilinçaltına yön verir ve günün akışını şekillendirir." },
-            { term: "3 Kelime Seçimi", desc: "Sabah rutininde sunulan 12 güç kelimesinden (huzur, akış, cesaret, sabır, berraklık, sevgi, güç, denge, özgürlük, neşe, şükür, güven) 3 tanesini seçersiniz. Bu kelimeler günün enerji yönelimini belirler." },
-            { term: "Nefes Egzersizi (4-1.5-3.5)", desc: "Al (4 sn) → Tut (1.5 sn) → Ver (3.5 sn) → Dinlen ritmiyle yapılan nefes pratiğidir. Parasempatik sinir sistemini aktive ederek stresi azaltır ve odaklanmayı artırır." },
-            { term: "Gün İçi Hatırlatıcılar", desc: "Gün boyunca farkındalığınızı korumanız için tasarlanmış 10 mikro pratiktir: aynaya bakmak, su içmek, nefes farkındalığı, beden egzersizi, güneşi hissetmek, ağaca sarılmak, toprağa dokunmak, gökyüzüne bakmak, çakra anı ve sosyal medya molası." },
-            { term: "Akşam Kapanışı", desc: "Günü bilinçli bir şekilde kapatma ritüelidir. \"Bugün ne öğrendin?\" ve \"Şükür?\" sorularıyla günün farkındalık özetini çıkarırsınız." },
-            { term: "Haftalık İç Harita", desc: "Haftanın istatistiklerini gösteren özet ekrandır: en aktif çakra, toplam nefes sayısı, niyet kelimeleri ve bilinçli an sayısı. AI raporu bu verilerden haftalık bir içgörü sentezi oluşturur." },
-            { term: "Doğum Profili", desc: "Doğum tarihiniz ve saatinizden hesaplanan kişisel enerji haritanızdır: burç, yaşam yolu sayısı, kişisel yıl sayısı, yükselen burç, 12. ev analizi ve haftalık biyoritm grafiği." },
-          ]},
-        ] : [
-          { cat: t("guide_cat_numerology"), items: [
-            { term: "Life Path Number", desc: "Calculated by reducing all digits of your birth date to a single digit (or master numbers 11, 22, 33). It represents your life purpose, natural talents, and the core energy of your journey.", examples: [
-              { num: "1", meaning: "Leader, independent, pioneer. Courageous and determined energy that charts its own course." },
-              { num: "2", meaning: "Diplomat, harmonious, sensitive. Cooperative and intuitive energy seeking balance." },
-              { num: "3", meaning: "Creative, expressive, joyful. Art, communication and social connection energy." },
-              { num: "4", meaning: "Builder, disciplined, reliable. Order, stability and solid foundations energy." },
-              { num: "5", meaning: "Free spirit, adventurous, changeable. Freedom, travel and experience energy." },
-              { num: "6", meaning: "Caretaker, responsible, harmonious. Family, home and community energy." },
-              { num: "7", meaning: "Researcher, mystic, introspective. Spirituality, analysis and deep thought energy." },
-              { num: "8", meaning: "Powerful, ambitious, successful. Material abundance, authority and achievement energy." },
-              { num: "9", meaning: "Humanitarian, wise, completing. Universal love, compassion and release energy." },
-              { num: "11", meaning: "Master Number — Intuitive illuminator. High awareness and spiritual teaching energy." },
-              { num: "22", meaning: "Master Number — Master builder. Power to turn grand visions into reality." },
-              { num: "33", meaning: "Master Number — Master teacher. Unconditional love, healing and universal service." },
-            ]},
-            { term: "Personal Year Number", desc: "Calculated by adding your birth day and month with the current year's digits. Provides a cyclical energy map from 1-9. Each year brings a different theme and energy." },
-            { term: "Reduction", desc: "The process of reducing multi-digit numbers to a single digit in numerology. All digits are added; if the result is greater than 9, they are added again. 11, 22, and 33 are \"Master Numbers\" and are not reduced." },
-          ]},
-          { cat: t("guide_cat_astrology"), items: [
-            { term: "Zodiac Sign (Sun Sign)", desc: "The sign the Sun was in at your birth. Represents your core personality, ego, and life energy. There are 12 signs: Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces." },
-            { term: "Ascendant (Rising Sign)", desc: "The sign rising on the horizon at your birth moment. Determines how the world sees you, your physical appearance and first impression. Birth time is required for calculation." },
-            { term: "12th House & Ruling Planet", desc: "In astrology, the 12th house represents the subconscious, hidden powers, spiritual potential and inner world. Each house has a ruling planet that determines how you experience its themes." },
-            { term: "Planetary Powers", desc: "Each planet governs different life areas: Sun (self), Moon (emotions), Mercury (communication), Venus (love), Mars (action), Jupiter (expansion), Saturn (discipline), Uranus (originality), Neptune (imagination), Pluto (transformation)." },
-          ]},
-          { cat: t("guide_cat_chakra"), items: [
-            { term: "What is a Chakra?", desc: "Means \"wheel\" in Sanskrit. Energy centers in the body. 7 main chakras align along the spine, each governing different physical, emotional and spiritual areas." },
-            { term: "1. Root Chakra (Muladhara)", desc: "Location: Base of spine. Color: Red. Element: Earth. Represents: Safety, survival, basic needs, grounding." },
-            { term: "2. Sacral Chakra (Svadhisthana)", desc: "Location: Below navel. Color: Orange. Element: Water. Represents: Creativity, emotions, sexuality, pleasure." },
-            { term: "3. Solar Plexus Chakra (Manipura)", desc: "Location: Stomach area. Color: Yellow. Element: Fire. Represents: Confidence, willpower, personal power." },
-            { term: "4. Heart Chakra (Anahata)", desc: "Location: Center of chest. Color: Green. Element: Air. Represents: Love, compassion, forgiveness, relationships." },
-            { term: "5. Throat Chakra (Vishuddha)", desc: "Location: Throat. Color: Blue. Element: Sound. Represents: Communication, self-expression, truth." },
-            { term: "6. Third Eye Chakra (Ajna)", desc: "Location: Between eyebrows. Color: Indigo. Element: Light. Represents: Intuition, insight, imagination, wisdom." },
-            { term: "7. Crown Chakra (Sahasrara)", desc: "Location: Top of head. Color: Violet/White. Element: Universe. Represents: Universal connection, enlightenment." },
-            { term: "22 Chakra System", desc: "Beyond the 7 main chakras, there are 15 additional energy centers including Earth Star, Soul, Thymus, Orion, Soul Star and more, used in extended Reiki therapy." },
-          ]},
-          { cat: t("guide_cat_biorhythm"), items: [
-            { term: "What is Biorhythm?", desc: "Three cyclical biological rhythms starting from your birth date. Each oscillates between positive and negative as sine waves, with values ranging from -100 to +100." },
-            { term: "Physical Biorhythm (23 days)", desc: "Reflects physical energy, strength, endurance and coordination. Positive periods = high energy, negative = rest needed." },
-            { term: "Emotional Biorhythm (28 days)", desc: "Reflects emotional balance, mood, creativity and intuition. Positive = optimistic, negative = sensitive and introverted." },
-            { term: "Mental Biorhythm (33 days)", desc: "Reflects mental sharpness, concentration, memory and analytical thinking. Positive = mentally active, negative = harder to focus." },
-          ]},
-          { cat: t("guide_cat_reiki"), items: [
-            { term: "What is Reiki?", desc: "A Japanese energy healing method meaning \"universal life energy\". Activates the body's natural healing mechanism by placing hands on energy centers (chakras). Not medical treatment; a complementary wellness practice." },
-            { term: "Chakra Therapy", desc: "60-second sessions in Sakin that help you focus on your chosen chakra by placing your hand on the area, closing your eyes and breathing." },
-            { term: "Healing Search", desc: "An AI-powered analysis tool that combines Reiki wisdom, Louise Hay's mental-emotional cause mapping and chakra theory to provide personalized insights." },
-            { term: "Louise Hay Method", desc: "An approach examining mental and emotional causes underlying physical ailments. For example, headaches linked to \"self-invalidation\", back pain to \"lack of emotional support\"." },
-            { term: "Inner Mirror", desc: "AI analysis tool that lets you discover inner causes by writing about your physical complaints or emotional states." },
-          ]},
-          { cat: t("guide_cat_app"), items: [
-            { term: "Morning Intention", desc: "The practice of starting each day with a conscious intention. You set the day's focus point with a short sentence or word." },
-            { term: "3 Word Selection", desc: "Choose 3 power words from 12 options (peace, flow, courage, patience, clarity, love, strength, balance, freedom, joy, gratitude, trust) to set the day's energy direction." },
-            { term: "Breath Exercise (4-1.5-3.5)", desc: "Inhale (4s) → Hold (1.5s) → Exhale (3.5s) → Rest rhythm. Activates the parasympathetic nervous system to reduce stress and improve focus." },
-            { term: "Daily Reminders", desc: "10 micro practices throughout the day: mirror gazing, drinking water, breath awareness, body exercise, feeling the sun, hugging a tree, touching earth, looking at sky, chakra moment, social media break." },
-            { term: "Evening Close", desc: "A ritual to consciously close the day. Extract your awareness summary with \"What did you learn today?\" and \"Gratitude?\" questions." },
-            { term: "Weekly Inner Map", desc: "Summary screen showing the week's stats: most active chakra, total breaths, intention words and mindful moments. AI report creates a weekly insight synthesis." },
-            { term: "Birth Profile", desc: "Your personal energy map calculated from your birth date and time: zodiac sign, life path number, personal year, ascendant, 12th house analysis and weekly biorhythm graph." },
-          ]},
-        ];
+        const glossary = getGlossary(lang).map(c => ({ ...c, cat: t(c.cat) }));
 
         return (
           <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:99999,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(30px)",overflowY:"auto",animation:"fadeIn 0.3s ease" }}>
