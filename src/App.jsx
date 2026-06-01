@@ -3685,12 +3685,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           aria-label={lang==="tr" ? "Aynaya gir" : "Enter the Mirror"}
           style={{
             position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 64px)", right:14,
-            zIndex:9997, width:44, height:44, borderRadius:"50%",
+            zIndex:9997, width:36, height:36, borderRadius:"50%",
             border:"1px solid rgba(184,164,216,0.35)",
             background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.45) 0%, rgba(60,30,90,0.75) 60%, rgba(20,10,35,0.9) 100%)",
             backdropFilter:"blur(10px)",
             display:"flex", alignItems:"center", justifyContent:"center",
-            color:"rgba(232,218,250,0.9)", fontSize:18, lineHeight:1,
+            color:"rgba(232,218,250,0.9)", fontSize:15, lineHeight:1,
             boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
             padding:0, cursor:"pointer",
           }}
