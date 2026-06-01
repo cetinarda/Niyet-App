@@ -3988,9 +3988,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 `;
                 doc.head.appendChild(style);
 
-                // Embed'lere bilgi köprüsü: doğum bilgileri + isim + seçili dil.
-                // Embed dinliyorsa kendi formunu atlayıp host'tan gelen veriyi kullanır.
-                // Embed dinlemiyorsa zararsız — birden çok denemeyle (load + 800ms gecikme) garanti.
+                // Embed'lere bilgi köprüsü — ÜÇ KANAL:
+                // (1) postMessage — embed dinliyorsa anında yakalar
+                // (2) embed localStorage'ı — same-origin, doğrudan yazıyoruz; embed
+                //     ilk açılışta okuyup onboarding'i atlayabilir
+                // (3) global window değişkeni — embed JS'inin doğrudan eriştiği değer
+                // Hangi anahtarı kullandığını bilmediğimiz için yaygın varyantları yazıyoruz.
                 const sendBridge = () => {
                   try {
                     const target = e.target.contentWindow;
@@ -4007,11 +4010,76 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       premium: !!isPremium,
                     };
                     target.postMessage(payload, "*");
+                    // localStorage: yaygın anahtarları aynı veriyle doldur
+                    try {
+                      const ls = target.localStorage;
+                      if (ls) {
+                        const set = (k, v) => { try { if (v) ls.setItem(k, v); } catch(_) {} };
+                        // Sakin host anahtarları (host ile aynı schema)
+                        set("sakin_birth_date", birthDate || "");
+                        set("sakin_birth_time", birthTime || "");
+                        set("sakin_birth_city", birthCity || "");
+                        set("sakin_name", ownerName || "");
+                        set("sakin_lang", lang || "tr");
+                        set("sakin_premium", isPremium ? "1" : "0");
+                        // Embed varyantları — yaygın isim adetleri
+                        set("birth_date", birthDate || ""); set("birthDate", birthDate || "");
+                        set("birth_time", birthTime || ""); set("birthTime", birthTime || "");
+                        set("birth_city", birthCity || ""); set("birthCity", birthCity || "");
+                        set("user_name", ownerName || ""); set("userName", ownerName || "");
+                        set("language", lang || "tr"); set("locale", lang || "tr");
+                        // Onboarding/profil "tamamlandı" bayrakları
+                        set("onboarding_completed", "true");
+                        set("onboardingCompleted", "true");
+                        set("hasCompletedOnboarding", "true");
+                        set("birth_info_collected", "true");
+                        set("profile_completed", "true");
+                      }
+                    } catch(_) {}
+                    // Global window pencere bayrağı (bazı embed'ler buraya bakar)
+                    try {
+                      target.__SAKIN_BRIDGE__ = payload;
+                    } catch(_) {}
                   } catch(_) {}
                 };
                 sendBridge();
-                setTimeout(sendBridge, 800);
-                setTimeout(sendBridge, 2000);
+                setTimeout(sendBridge, 600);
+                setTimeout(sendBridge, 1500);
+                setTimeout(sendBridge, 3500);
+
+                // Embed onboarding atlama: bridge gönderildi, embed hâlâ doğum bilgisi
+                // formu gösteriyorsa otomatik "devam" et. Önce input[type=date|time]
+                // ata div'lerini gizle, sonra yakın "Continue/Devam/Save" butonuna click.
+                let onboardingSkipAttempts = 0;
+                const trySkipOnboarding = () => {
+                  if (onboardingSkipAttempts > 3) return;
+                  onboardingSkipAttempts++;
+                  try {
+                    const dateInputs = doc.querySelectorAll('input[type="date"], input[type="time"], input[type="datetime-local"]');
+                    if (dateInputs.length === 0) return; // birth form yok, atla
+                    // Yaygın "ilerle/atla" butonu metinleri (7 dilde)
+                    const SKIP_LABELS = new Set([
+                      "continue","devam","devam et","next","ileri","skip","atla",
+                      "save","kaydet","start","başla","submit","tamam","ok",
+                      "weiter","überspringen","speichern",
+                      "continuar","saltar","guardar",
+                      "continuer","passer","enregistrer",
+                      "次へ","スキップ","保存"
+                    ]);
+                    const buttons = doc.querySelectorAll('button, [role="button"], a, input[type="submit"]');
+                    for (let i = 0; i < buttons.length; i++) {
+                      const b = buttons[i];
+                      const txt = (b.textContent || b.value || "").trim().toLowerCase();
+                      if (SKIP_LABELS.has(txt)) {
+                        try { b.click(); } catch(_) {}
+                        break;
+                      }
+                    }
+                  } catch(_) {}
+                };
+                setTimeout(trySkipOnboarding, 3500);
+                setTimeout(trySkipOnboarding, 6000);
+                setTimeout(trySkipOnboarding, 9000);
 
                 // Embed'lerdeki gereksiz menüleri gizle: "Profil" tab + dil seçici.
                 // Sakin Ailesi'nde isim/doğum/dil zaten alındı; embed kendi formunu sunmamalı.
