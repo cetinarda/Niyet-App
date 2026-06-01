@@ -2484,6 +2484,24 @@ export default function SakinApp() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [embeddedApp]);
+
+  // Embed unmount cleanup — disconnect MutationObserver(s) that the iframe onLoad
+  // installed into the embed document. Without this, every open→close cycle leaks
+  // a runaway observer that keeps querySelectorAll'ing the dead iframe's body,
+  // accumulating until iOS OOM-kills the process (observed: ~9 min, iPhone 17).
+  useEffect(() => {
+    if (embeddedApp) return; // cleanup only fires on the transition from set→null
+    // Walk any leftover iframes in the document and shut down their observers.
+    try {
+      const iframes = document.querySelectorAll("iframe");
+      iframes.forEach(f => {
+        if (f._sakinObserver) {
+          try { f._sakinObserver.disconnect(); } catch(_) {}
+          f._sakinObserver = null;
+        }
+      });
+    } catch(_) {}
+  }, [embeddedApp]);
   // Embed iframe'lerinden gelen "Premium'a yönlendir" mesajını dinle (postMessage köprüsü)
   useEffect(() => {
     const onMsg = (e) => {
@@ -3901,7 +3919,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   `;
                   doc.head.appendChild(blurStyle);
 
+                  // Throttle: querySelectorAll over RN/Expo subtree is expensive; cap at 5/s.
+                  let lastApply = 0;
                   const applyBlur = () => {
+                    const now = Date.now();
+                    if (now - lastApply < 200) return;
+                    lastApply = now;
                     try {
                       const all = doc.querySelectorAll("div, p, span");
                       for (let i=0; i<all.length; i++) {
@@ -3929,11 +3952,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     doc.body.appendChild(cta);
                   };
 
-                  // İlk uygulama + dinamik içerik için MutationObserver
+                  // İlk uygulama + dinamik içerik için MutationObserver — stored on
+                  // iframe element so the unmount effect can disconnect it.
                   applyBlur(); ensureCta();
                   try {
                     const mo = new MutationObserver(() => { applyBlur(); ensureCta(); });
                     mo.observe(doc.body, { childList: true, subtree: true });
+                    e.target._sakinObserver = mo;
                   } catch(_) {}
                 }
               } catch(err) { /* cross-origin or already injected — sessiz geç */ }
