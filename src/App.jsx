@@ -6,6 +6,10 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, YEARLY_PRODUCT_ID, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
+// Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
+// kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
+// Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
+import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } from "./cityDb";
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -430,10 +434,15 @@ const CITY_DB = {
 };
 const CITY_NAMES = Object.keys(CITY_DB);
 function normalizeCity(s){ return (s||"").toLowerCase().trim().replace(/i̇/g,"i").replace(/İ/g,"i"); }
+// lookupCity: önce küçük yerleşik DB, sonra büyük GeoNames DB (yüklenmişse),
+// son çare olarak substring eşleşmesi. preciseAscendant senkron çağırır;
+// büyük DB yüklenmediyse yine de yerleşik 81 il + büyük dünya şehirleri çalışır.
 function lookupCity(input){
   if (!input) return null;
   const q = normalizeCity(input);
   if (CITY_DB[q]) return CITY_DB[q];
+  const big = lookupCityBig(q);
+  if (big) return big;
   const hit = CITY_NAMES.find(n => q.includes(n) || n.includes(q));
   return hit ? CITY_DB[hit] : null;
 }
@@ -2260,14 +2269,32 @@ function SmartTimeInput({ value, onChange, lang }) {
 
 // Doğum şehri — <datalist> iOS WKWebView'da dropdown göstermediği için özel öneri listesi.
 // Yazınca il/şehir önerileri açılır, dokunarak seçilir; tanınan şehirde ✓ gösterilir.
+// Büyük dünya şehri DB'si (~36k satır) dinamik import() ile odaklanma anında yüklenir.
 function SmartCityInput({ value, onChange, lang }) {
   const [focused, setFocused] = useState(false);
+  // bigReady state, büyük DB yüklendiğinde yeniden render tetikler.
+  const [bigReady, setBigReady] = useState(isCitiesLoaded());
+  useEffect(() => {
+    if (bigReady) return;
+    let alive = true;
+    ensureCitiesLoaded().then(() => { if (alive) setBigReady(isCitiesLoaded()); });
+    return () => { alive = false; };
+  }, [bigReady]);
   const q = normalizeCity(value);
   const cap = s => s.split(" ").map(w => (w ? w.charAt(0).toLocaleUpperCase("tr") + w.slice(1) : w)).join(" ");
-  const matches = q.length >= 1
-    ? CITY_NAMES.filter(n => n.startsWith(q)).concat(CITY_NAMES.filter(n => !n.startsWith(q) && n.includes(q))).slice(0, 6)
-    : [];
-  const recognized = !!value && !!CITY_DB[q];
+  // Eşleşmeler: önce yerleşik küçük DB (hızlı, hatasız), sonra büyük DB'den ek öneriler.
+  let matches = [];
+  if (q.length >= 1) {
+    const small = CITY_NAMES.filter(n => n.startsWith(q))
+      .concat(CITY_NAMES.filter(n => !n.startsWith(q) && n.includes(q)));
+    const big = bigReady ? findCityMatches(q, 12) : [];
+    const seen = new Set();
+    for (const n of [...small, ...big]) {
+      if (!seen.has(n)) { seen.add(n); matches.push(n); }
+      if (matches.length >= 8) break;
+    }
+  }
+  const recognized = !!value && (!!CITY_DB[q] || (bigReady && !!lookupCityBig(q)));
   const showList = focused && matches.length > 0 && !(matches.length === 1 && recognized);
   return (
     <div style={{ position:"relative" }}>
@@ -2328,6 +2355,17 @@ export default function SakinApp() {
     window.addEventListener("resize", onResize);
     window.addEventListener("orientationchange", onResize);
     return () => { window.removeEventListener("resize", onResize); window.removeEventListener("orientationchange", onResize); };
+  }, []);
+  // Kayıtlı doğum şehri varsa büyük şehir DB'sini eager yükle ki
+  // preciseAscendant (Köln, Marsilya gibi yerleşik küçük DB'de olmayan şehirler için)
+  // yeniden hesaplanabilsin. Yükleme tamamlanınca _citiesTick state'i artar ve yeniden render olur.
+  const [_citiesTick, _setCitiesTick] = useState(0);
+  useEffect(() => {
+    const saved = localStorage.getItem("sakin_birth_city");
+    if (!saved) return;
+    let alive = true;
+    ensureCitiesLoaded().then(() => { if (alive) _setCitiesTick(t => t + 1); });
+    return () => { alive = false; };
   }, []);
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };

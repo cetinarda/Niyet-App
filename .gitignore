@@ -5,6 +5,9 @@ dist
 dist.zip
 dist_deploy.zip
 
+# build-cities source cache (107 MB raw GeoNames JSON; regenerable from upstream)
+.cache
+
 # iOS
 ios/App/Pods
 ios/App/App.xcworkspace/xcuserdata
