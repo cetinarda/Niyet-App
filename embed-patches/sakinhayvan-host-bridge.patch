@@ -1,71 +1,192 @@
+diff --git a/app.json b/app.json
+index 6328ed4..c6e66ca 100644
+--- a/app.json
++++ b/app.json
+@@ -7,6 +7,9 @@
+     "icon": "./assets/icon.png",
+     "userInterfaceStyle": "dark",
+     "newArchEnabled": true,
++    "experiments": {
++      "baseUrl": "/embedded/sakinhayvan"
++    },
+     "splash": {
+       "image": "./assets/splash-icon.png",
+       "resizeMode": "contain",
+diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
+index 9d6997d..99a1093 100644
+--- a/src/screens/ProfileScreen.tsx
++++ b/src/screens/ProfileScreen.tsx
+@@ -1,4 +1,4 @@
+-import React, { useState, useMemo } from 'react';
++import React, { useState, useMemo, useEffect } from 'react';
+ import {
+   View,
+   Text,
+@@ -9,7 +9,7 @@ import {
+ } from 'react-native';
+ import { useSafeAreaInsets } from 'react-native-safe-area-context';
+ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
+-import { useTuraStore } from '../store/useStore';
++import { useTuraStore, readSakinBridge } from '../store/useStore';
+ import stonesData from '../data/stones.json';
+ import animalsData from '../data/animals.json';
+ import nagualsData from '../data/naguals.json';
+@@ -46,6 +46,10 @@ export function ProfileScreen() {
+   const [birthMonth, setBirthMonth] = useState('');
+   const [birthYear, setBirthYear] = useState('');
+ 
++  // Host (Sakin) isim+doğum tarihini sağladı mı? Sağladıysa onboarding'i kısaltırız:
++  // step 2'de (unsur seçimi) "Yola Çık" doğrudan profili oluşturur, birth adımı atlanır.
++  const [bridged, setBridged] = useState(false);
++
+   // inline birth data edit (when already profiled but no birth data)
+   const [showBirthForm, setShowBirthForm] = useState(false);
+   const [editFullName, setEditFullName] = useState('');
+@@ -53,6 +57,33 @@ export function ProfileScreen() {
+   const [editMonth, setEditMonth] = useState('');
+   const [editYear, setEditYear] = useState('');
+ 
++  // SAKİN HOST KÖPRÜSÜ (kısmi atlama): Host isim+doğum tarihi yazdıysa, bu alanları
++  // onboarding'e ön-doldur ve kullanıcıyı doğrudan UNSUR (element) seçimine (step 2)
++  // götür. İsim+doğum yeniden SORULMAZ, ama element KASTEN sorulmaya devam eder —
++  // çünkü element burç/tarihten türetilemez, kullanıcının kişisel seçimidir.
++  // Profil sadece kullanıcı element'i seçtikten sonra (handleOnboarding) yazılır.
++  useEffect(() => {
++    if (profile) return; // zaten profil var; köprüye gerek yok
++    const bridge = readSakinBridge();
++    if (!bridge) return;
++    if (bridge.name) {
++      setName(bridge.name);
++      setFullName(bridge.name);
++    }
++    if (bridge.birthDate) {
++      const [y, m, d] = bridge.birthDate.split('-');
++      if (d) setBirthDay(String(parseInt(d, 10) || ''));
++      if (m) setBirthMonth(String(parseInt(m, 10) || ''));
++      if (y) setBirthYear(y);
++    }
++    // İsim varsa step 1'i (isim sorusu) atla, doğrudan unsur seçimine git.
++    if (bridge.name) {
++      setBridged(true);
++      setStep(2);
++    }
++    // eslint-disable-next-line react-hooks/exhaustive-deps
++  }, [profile]);
++
+   const topStoneId  = getTopStat(stats.stoneCounts);
+   const topAnimalId = getTopStat(stats.animalCounts);
+   const topSource   = getTopStat(stats.sourceCounts);
+@@ -104,7 +135,18 @@ export function ProfileScreen() {
+     if (step === 1 && name.trim().length > 0) {
+       setStep(2);
+     } else if (step === 2) {
+-      setStep(3);
++      // Host köprüsü isim+doğumu sağladıysa birth adımını (step 3) atla:
++      // kullanıcı element'i seçti, profili doğrudan oluştur. Element burada GERÇEK
++      // bir kullanıcı seçimidir (türetilmiş değil), o yüzden profil geçerli.
++      if (bridged) {
++        const bd = birthDataValid(birthDay, birthMonth, birthYear)
++          ? formatBirthDate(birthDay, birthMonth, birthYear)
++          : undefined;
++        await createProfile(name.trim(), element, bd, fullName.trim() || undefined);
++        setShowOnboarding(false);
++      } else {
++        setStep(3);
++      }
+     } else if (step === 3) {
+       const bd = birthDataValid(birthDay, birthMonth, birthYear)
+         ? formatBirthDate(birthDay, birthMonth, birthYear)
+@@ -224,7 +266,7 @@ export function ProfileScreen() {
+           disabled={step === 1 && name.trim().length === 0}
+         >
+           <Text style={styles.onboardingBtnText}>
+-            {step === 1 ? 'Devam Et →' : step === 2 ? 'Devam Et →' : 'Yola Çık ✦'}
++            {step === 1 ? 'Devam Et →' : step === 2 ? (bridged ? 'Yola Çık ✦' : 'Devam Et →') : 'Yola Çık ✦'}
+           </Text>
+         </TouchableOpacity>
+ 
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
-index 292b10c..492c430 100644
+index 492c430..1fb8b6c 100644
 --- a/src/store/useStore.ts
 +++ b/src/store/useStore.ts
-@@ -52,6 +52,50 @@ const STORAGE_KEYS = {
+@@ -52,44 +52,35 @@ const STORAGE_KEYS = {
  
  const todayStr = () => new Date().toISOString().split('T')[0];
  
-+// SAKİN HOST KÖPRÜSÜ — Sakin ana uygulaması (host), bu embed'i bir iframe içinde
-+// açtığında isim + doğum bilgisini embed'in localStorage'ına yazar (aynı origin).
-+// Burada o veriyi okuyup profili otomatik kurarız; böylece kullanıcı Sakin'de zaten
-+// girdiği bilgileri TEKRAR girmez ve onboarding atlanır.
-+function zodiacElement(birthDate?: string): UserProfile['element'] {
-+  if (!birthDate) return 'ateş';
-+  const parts = birthDate.split('-').map(Number);
-+  // YYYY-MM-DD bekleniyor; ay/gün al
-+  const m = parts[1], d = parts[2];
-+  if (!m || !d) return 'ateş';
-+  const md = m * 100 + d;
-+  // ateş: Koç(3/21-4/19) Aslan(7/23-8/22) Yay(11/22-12/21)
-+  // toprak: Boğa(4/20-5/20) Başak(8/23-9/22) Oğlak(12/22-1/19)
-+  // hava: İkizler(5/21-6/20) Terazi(9/23-10/22) Kova(1/20-2/18)
-+  // su: Yengeç(6/21-7/22) Akrep(10/23-11/21) Balık(2/19-3/20)
-+  if ((md>=321&&md<=419)||(md>=723&&md<=822)||(md>=1122&&md<=1221)) return 'ateş';
-+  if ((md>=420&&md<=520)||(md>=823&&md<=922)||(md>=1222)||(md<=119)) return 'toprak';
-+  if ((md>=521&&md<=620)||(md>=923&&md<=1022)||(md>=120&&md<=218)) return 'hava';
-+  return 'su';
-+}
-+function tryLoadSakinBridge(): UserProfile | null {
-+  try {
-+    if (typeof window === 'undefined' || !window.localStorage) return null;
-+    const ls = window.localStorage;
-+    const get = (...keys: string[]) => { for (const k of keys) { const v = ls.getItem(k); if (v) return v; } return ''; };
-+    const name = get('sakin_name', 'user_name', 'userName');
-+    const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
-+    // Host verisi yoksa köprü yok — normal onboarding'e düş
-+    if (!name && !birthDate) return null;
-+    return {
-+      name: name || 'Sakin',
-+      fullName: name || undefined,
-+      birthDate: birthDate || undefined,
-+      element: zodiacElement(birthDate),
-+      createdAt: new Date().toISOString(),
-+      streak: 0,
-+      totalReadings: 0,
-+      level: 1,
-+    };
-+  } catch {
-+    return null;
-+  }
-+}
-+
- function pickRandom<T>(arr: T[]): T {
-   return arr[Math.floor(Math.random() * arr.length)];
+-// SAKİN HOST KÖPRÜSÜ — Sakin ana uygulaması (host), bu embed'i bir iframe içinde
+-// açtığında isim + doğum bilgisini embed'in localStorage'ına yazar (aynı origin).
+-// Burada o veriyi okuyup profili otomatik kurarız; böylece kullanıcı Sakin'de zaten
+-// girdiği bilgileri TEKRAR girmez ve onboarding atlanır.
+-function zodiacElement(birthDate?: string): UserProfile['element'] {
+-  if (!birthDate) return 'ateş';
+-  const parts = birthDate.split('-').map(Number);
+-  // YYYY-MM-DD bekleniyor; ay/gün al
+-  const m = parts[1], d = parts[2];
+-  if (!m || !d) return 'ateş';
+-  const md = m * 100 + d;
+-  // ateş: Koç(3/21-4/19) Aslan(7/23-8/22) Yay(11/22-12/21)
+-  // toprak: Boğa(4/20-5/20) Başak(8/23-9/22) Oğlak(12/22-1/19)
+-  // hava: İkizler(5/21-6/20) Terazi(9/23-10/22) Kova(1/20-2/18)
+-  // su: Yengeç(6/21-7/22) Akrep(10/23-11/21) Balık(2/19-3/20)
+-  if ((md>=321&&md<=419)||(md>=723&&md<=822)||(md>=1122&&md<=1221)) return 'ateş';
+-  if ((md>=420&&md<=520)||(md>=823&&md<=922)||(md>=1222)||(md<=119)) return 'toprak';
+-  if ((md>=521&&md<=620)||(md>=923&&md<=1022)||(md>=120&&md<=218)) return 'hava';
+-  return 'su';
++// SAKİN HOST KÖPRÜSÜ (kısmi) — Sakin ana uygulaması (host) bu embed'i aynı-origin
++// bir iframe içinde açtığında isim + doğum tarihini embed'in localStorage'ına yazar.
++// Burada SADECE isim+doğum tarihini okuruz; profili OTOMATİK KURMAYIZ ve element'i
++// ASLA türetmeyiz. Bu app'in 'element' alanı (ateş/hava/toprak/su) çok-soruluk kişilik
++// testiyle belirlenir, burç/doğum tarihinden DEĞİL. Element'siz profil yazmak animal
++// hesabını bozar (null döner). Bu yüzden köprü yalnızca onboarding'i ön-doldurmak için
++// kullanılır: kullanıcı isim+doğumu yeniden GİRMEZ ama element'i kendisi SEÇER.
++export interface SakinBridge {
++  name: string;
++  birthDate?: string; // YYYY-MM-DD
  }
-@@ -84,7 +128,14 @@ export function useTuraStore() {
+-function tryLoadSakinBridge(): UserProfile | null {
++export function readSakinBridge(): SakinBridge | null {
+   try {
+     if (typeof window === 'undefined' || !window.localStorage) return null;
+     const ls = window.localStorage;
+-    const get = (...keys: string[]) => { for (const k of keys) { const v = ls.getItem(k); if (v) return v; } return ''; };
++    const get = (...keys: string[]) => {
++      for (const k of keys) {
++        const v = ls.getItem(k);
++        if (v && v.trim()) return v.trim();
++      }
++      return '';
++    };
+     const name = get('sakin_name', 'user_name', 'userName');
+     const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
+-    // Host verisi yoksa köprü yok — normal onboarding'e düş
++    // Host verisi yoksa köprü yok — normal (tam) onboarding'e düş
+     if (!name && !birthDate) return null;
+     return {
+-      name: name || 'Sakin',
+-      fullName: name || undefined,
++      name: name || '',
+       birthDate: birthDate || undefined,
+-      element: zodiacElement(birthDate),
+-      createdAt: new Date().toISOString(),
+-      streak: 0,
+-      totalReadings: 0,
+-      level: 1,
+     };
+   } catch {
+     return null;
+@@ -128,14 +119,7 @@ export function useTuraStore() {
        ]);
  
        if (!profileRaw) {
--        setIsNewUser(true);
-+        // Önce Sakin host köprüsünü dene — host isim+doğum yazdıysa onboarding'i atla
-+        const bridged = tryLoadSakinBridge();
-+        if (bridged) {
-+          setProfile(bridged);
-+          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(bridged));
-+        } else {
-+          setIsNewUser(true);
-+        }
+-        // Önce Sakin host köprüsünü dene — host isim+doğum yazdıysa onboarding'i atla
+-        const bridged = tryLoadSakinBridge();
+-        if (bridged) {
+-          setProfile(bridged);
+-          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(bridged));
+-        } else {
+-          setIsNewUser(true);
+-        }
++        setIsNewUser(true);
        } else {
          setProfile(JSON.parse(profileRaw));
        }

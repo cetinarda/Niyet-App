@@ -4401,64 +4401,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             );
           })()}
-          {/* Akıllı geri buton: embed iç sayfasında geziniliyorsa içeride geri, ana
-              sayfadaysa Sakin Ailesi'ne çık. Uzun bas (≥500ms) → her zaman Ailesi'ne. */}
+          {/* TEK ÇIKIŞ BUTONU — sol üstte ← geri ok, tek tıkta Sakin Ailesi'ne döner.
+              Embed içi gezinme embed'in KENDİ alt sekmeleriyle (Hayvanlar/Bul/Arşiv...).
+              İki buton karmaşası kaldırıldı (kullanıcı kararı). */}
           <button
-            onClick={(ev)=>{
-              const el = ev.currentTarget;
-              const wasLong = el._sakinLongPress;
-              el._sakinLongPress = false;
-              if (!wasLong) {
-                try {
-                  const iframe = document.querySelector("iframe[title]");
-                  const cw = iframe && iframe.contentWindow;
-                  if (cw && cw.history && cw.history.length > 1) {
-                    cw.history.back();
-                    return; // embed içinde geri gidildi
-                  }
-                } catch(_) {}
-              }
-              setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true);
-            }}
-            onTouchStart={(ev)=>{
-              const el = ev.currentTarget;
-              el.style.transform = "scale(0.92)";
-              el._sakinPressTimer = setTimeout(() => { el._sakinLongPress = true; try { haptic(ImpactStyle.Medium); } catch(_) {} }, 500);
-            }}
-            onTouchEnd={(ev)=>{ clearTimeout(ev.currentTarget._sakinPressTimer); ev.currentTarget.style.transform = "scale(1)"; }}
-            onTouchCancel={(ev)=>{ clearTimeout(ev.currentTarget._sakinPressTimer); ev.currentTarget.style.transform = "scale(1)"; }}
+            onClick={()=>{ try { haptic(); } catch(_) {} setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
             onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
             onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
             onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
-            title={t("common_back")}
-            aria-label={t("common_back")}
+            title={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
+            aria-label={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 6px)", left:8, zIndex:10003,
-              width:32, height:32, borderRadius:"50%", padding:0,
+              padding:"7px 14px 7px 11px", borderRadius:100,
               background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
               border:"1px solid rgba(184,164,216,0.5)",
-              color:"#e8dcff", fontSize:15, lineHeight:1,
-              cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center",
+              color:"#e8dcff", fontSize:11, letterSpacing:1.5, lineHeight:1,
+              cursor:"pointer", display:"flex", alignItems:"center", gap:6,
+              fontFamily:"'Jost',sans-serif",
               boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
               transition:"transform 0.15s ease",
             }}>
-            ←
-          </button>
-          {/* Sağ üstte küçük "✕ ailesi" — açık çıkış kestirmesi (3 app için) */}
-          <button
-            onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
-            title={lang==="tr"?"Sakin Ailesi":"Sakin Family"}
-            aria-label={lang==="tr"?"Sakin Ailesi":"Sakin Family"}
-            style={{
-              position:"fixed", top:"calc(var(--sat, 0px) + 6px)", right:8, zIndex:10003,
-              padding:"6px 11px", borderRadius:100,
-              background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
-              border:"1px solid rgba(184,164,216,0.5)",
-              color:"#e8dcff", fontSize:10, letterSpacing:2,
-              cursor:"pointer", fontFamily:"'Jost',sans-serif",
-              boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
-            }}>
-            ✕ {lang==="tr"?"AİLE":"FAMILY"}
+            <span style={{ fontSize:15 }}>←</span>
+            {lang==="tr"?"AİLE":"FAMILY"}
           </button>
         </div>
       )}

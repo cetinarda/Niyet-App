@@ -1,36 +1,136 @@
+diff --git a/app.json b/app.json
+index 32df25a..6194441 100644
+--- a/app.json
++++ b/app.json
+@@ -25,6 +25,9 @@
+     },
+     "web": {
+       "favicon": "./assets/favicon.png"
++    },
++    "experiments": {
++      "baseUrl": "/embedded/sakinmitler"
+     }
+   }
+ }
+diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
+index 5ef8190..4a7388c 100644
+--- a/src/screens/ProfileScreen.tsx
++++ b/src/screens/ProfileScreen.tsx
+@@ -1,4 +1,4 @@
+-import React, { useState, useMemo } from 'react';
++import React, { useState, useMemo, useEffect } from 'react';
+ import {
+   View,
+   Text,
+@@ -45,7 +45,7 @@ function openExternal(url: string) {
+ 
+ export function ProfileScreen() {
+   const insets = useSafeAreaInsets();
+-  const { profile, isNewUser, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey } = useMitlerStore();
++  const { profile, isNewUser, sakinPrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey } = useMitlerStore();
+   const { lang, t, setLanguage } = useLanguage();
+   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
+ 
+@@ -77,6 +77,34 @@ export function ProfileScreen() {
+   const [birthMonth, setBirthMonth] = useState('');
+   const [birthYear, setBirthYear] = useState('');
+ 
++  // birth extras from Sakin host bridge (saat/dakika/şehir, onboarding formunda alan yok)
++  const [bridgeHour, setBridgeHour] = useState<number | undefined>(undefined);
++  const [bridgeMinute, setBridgeMinute] = useState<number | undefined>(undefined);
++  const [bridgeCity, setBridgeCity] = useState<string | undefined>(undefined);
++
++  // SAKİN KÖPRÜSÜ — KISMİ ATLAMA: host isim+doğum yazdıysa o alanları ön-doldur ve
++  // doğrudan element (kişilik) adımına atla. Element ASLA türetilmez; kullanıcı seçer.
++  const [bridgeApplied, setBridgeApplied] = useState(false);
++  useEffect(() => {
++    if (bridgeApplied || !sakinPrefill || profile) return;
++    if (sakinPrefill.name) setName(sakinPrefill.name);
++    if (sakinPrefill.fullName) setFullName(sakinPrefill.fullName);
++    if (sakinPrefill.birthDate) {
++      const parts = sakinPrefill.birthDate.split('-'); // YYYY-MM-DD
++      if (parts.length === 3) {
++        setBirthYear(parts[0] || '');
++        setBirthMonth(String(parseInt(parts[1], 10) || ''));
++        setBirthDay(String(parseInt(parts[2], 10) || ''));
++      }
++    }
++    setBridgeHour(sakinPrefill.birthHour);
++    setBridgeMinute(sakinPrefill.birthMinute);
++    setBridgeCity(sakinPrefill.birthCity);
++    // İsim host'tan geldi → isim adımını (1) atla, element seçim adımına (2) geç.
++    if (sakinPrefill.name) setStep(2);
++    setBridgeApplied(true);
++  }, [sakinPrefill, profile, bridgeApplied]);
++
+   // inline birth data edit (when already profiled but no birth data)
+   const [showBirthForm, setShowBirthForm] = useState(false);
+   const [editFullName, setEditFullName] = useState('');
+@@ -146,13 +174,25 @@ export function ProfileScreen() {
+       const bd = birthDataValid(birthDay, birthMonth, birthYear)
+         ? formatBirthDate(birthDay, birthMonth, birthYear)
+         : undefined;
+-      await createProfile(name.trim(), element, bd, fullName.trim() || undefined);
++      await createProfile(name.trim(), element, bd, fullName.trim() || undefined, {
++        birthHour: bridgeHour,
++        birthMinute: bridgeMinute,
++        birthCity: bridgeCity,
++      });
+       setShowOnboarding(false);
+     }
+   };
+ 
+   const handleSkipBirth = async () => {
+-    await createProfile(name.trim(), element);
++    // Host doğum verisi geldiyse "atla" yine de o veriyi korusun (sadece element seçildi).
++    const bd = birthDataValid(birthDay, birthMonth, birthYear)
++      ? formatBirthDate(birthDay, birthMonth, birthYear)
++      : undefined;
++    await createProfile(name.trim(), element, bd, fullName.trim() || undefined, {
++      birthHour: bridgeHour,
++      birthMinute: bridgeMinute,
++      birthCity: bridgeCity,
++    });
+     setShowOnboarding(false);
+   };
+ 
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
-index eb5d82b..179158b 100644
+index eb5d82b..30bad28 100644
 --- a/src/store/useStore.ts
 +++ b/src/store/useStore.ts
-@@ -51,6 +51,63 @@ const STORAGE_KEYS = {
+@@ -51,6 +51,62 @@ const STORAGE_KEYS = {
  
  const todayStr = () => new Date().toISOString().split('T')[0];
  
 +// SAKİN HOST KÖPRÜSÜ — Sakin ana uygulaması (host), bu embed'i bir iframe içinde
 +// açtığında isim + doğum bilgisini embed'in localStorage'ına yazar (aynı origin).
-+// Burada o veriyi okuyup profili otomatik kurarız; böylece kullanıcı Sakin'de zaten
-+// girdiği bilgileri TEKRAR girmez ve onboarding atlanır.
-+function zodiacElement(birthDate?: string): UserProfile['element'] {
-+  if (!birthDate) return 'ateş';
-+  const parts = birthDate.split('-').map(Number);
-+  // YYYY-MM-DD bekleniyor; ay/gün al
-+  const m = parts[1], d = parts[2];
-+  if (!m || !d) return 'ateş';
-+  const md = m * 100 + d;
-+  // ateş: Koç(3/21-4/19) Aslan(7/23-8/22) Yay(11/22-12/21)
-+  // toprak: Boğa(4/20-5/20) Başak(8/23-9/22) Oğlak(12/22-1/19)
-+  // hava: İkizler(5/21-6/20) Terazi(9/23-10/22) Kova(1/20-2/18)
-+  // su: Yengeç(6/21-7/22) Akrep(10/23-11/21) Balık(2/19-3/20)
-+  if ((md>=321&&md<=419)||(md>=723&&md<=822)||(md>=1122&&md<=1221)) return 'ateş';
-+  if ((md>=420&&md<=520)||(md>=823&&md<=922)||(md>=1222)||(md<=119)) return 'toprak';
-+  if ((md>=521&&md<=620)||(md>=923&&md<=1022)||(md>=120&&md<=218)) return 'hava';
-+  return 'su';
++//
++// ÖNEMLİ: `element` bir KİŞİLİK SORUSUDUR (onboarding adım 2 — "Hangi unsura yakın
++// hissediyorsun?"), doğum tarihinden TÜRETİLEMEZ. Zodyaktan element üretmek kardeş
++// uygulamada (sakinhayvan) hataya yol açtı. Bu yüzden host köprüsü SADECE isim + doğum
++// bilgisini ÖN-DOLDURUR; profili kendisi YARATMAZ. Onboarding gösterilmeye devam eder
++// ama isim adımı atlanıp doğrudan element seçim adımına atlanır (KISMİ atlama). Profil
++// yalnızca kullanıcı bir element seçtikten sonra yazılır — elementsiz/geçersiz profil ASLA.
++export interface SakinPrefill {
++  name: string;
++  fullName?: string;
++  birthDate?: string;   // YYYY-MM-DD
++  birthHour?: number;
++  birthMinute?: number;
++  birthCity?: string;
 +}
-+function tryLoadSakinBridge(): UserProfile | null {
++
++function loadSakinPrefill(): SakinPrefill | null {
 +  try {
 +    if (typeof window === 'undefined' || !window.localStorage) return null;
 +    const ls = window.localStorage;
-+    const get = (...keys: string[]) => { for (const k of keys) { const v = ls.getItem(k); if (v) return v; } return ''; };
++    const get = (...keys: string[]) => {
++      for (const k of keys) {
++        const v = ls.getItem(k);
++        if (v) return v;
++      }
++      return '';
++    };
 +    const name = get('sakin_name', 'user_name', 'userName');
 +    const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
 +    // Host verisi yoksa köprü yok — normal onboarding'e düş
@@ -41,22 +141,17 @@ index eb5d82b..179158b 100644
 +    let birthMinute: number | undefined;
 +    if (birthTime) {
 +      const tp = birthTime.split(':').map((s) => parseInt(s, 10));
-+      if (!isNaN(tp[0])) birthHour = tp[0];
-+      if (!isNaN(tp[1])) birthMinute = tp[1];
++      if (Number.isFinite(tp[0])) birthHour = tp[0];
++      if (Number.isFinite(tp[1])) birthMinute = tp[1];
 +    }
 +    const birthCity = get('sakin_birth_city', 'birth_city', 'birthCity') || undefined;
 +    return {
-+      name: name || 'Sakin',
++      name: name || '',
 +      fullName: name || undefined,
 +      birthDate: birthDate || undefined,
 +      birthHour,
 +      birthMinute,
 +      birthCity,
-+      element: zodiacElement(birthDate),
-+      createdAt: new Date().toISOString(),
-+      streak: 0,
-+      totalReadings: 0,
-+      level: 1,
 +    };
 +  } catch {
 +    return null;
@@ -66,19 +161,58 @@ index eb5d82b..179158b 100644
  function pickRandom<T>(arr: T[]): T {
    return arr[Math.floor(Math.random() * arr.length)];
  }
-@@ -82,7 +139,14 @@ export function useMitlerStore() {
+@@ -67,6 +123,9 @@ export function useMitlerStore() {
+   });
+   const [isLoading, setIsLoading] = useState(true);
+   const [isNewUser, setIsNewUser] = useState(false);
++  // Sakin host köprüsünden gelen ön-doldurma verisi (isim + doğum). Element içermez;
++  // onboarding ekranı bunu okuyup alanları doldurur ve element adımına atlar.
++  const [sakinPrefill, setSakinPrefill] = useState<SakinPrefill | null>(null);
+ 
+   useEffect(() => {
+     loadAll();
+@@ -82,6 +141,11 @@ export function useMitlerStore() {
        ]);
  
        if (!profileRaw) {
--        setIsNewUser(true);
-+        // Önce Sakin host köprüsünü dene — host isim+doğum yazdıysa onboarding'i atla
-+        const bridged = tryLoadSakinBridge();
-+        if (bridged) {
-+          setProfile(bridged);
-+          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(bridged));
-+        } else {
-+          setIsNewUser(true);
-+        }
++        // Henüz profil yok → onboarding gösterilecek. Sakin host köprüsünü dene:
++        // host isim/doğum yazdıysa onları ÖN-DOLDUR (profili YARATMA — element bir
++        // kişilik sorusudur ve kullanıcı seçmeli). Köprü yoksa düz yeni-kullanıcı akışı.
++        const prefill = loadSakinPrefill();
++        if (prefill) setSakinPrefill(prefill);
+         setIsNewUser(true);
        } else {
          setProfile(JSON.parse(profileRaw));
-       }
+@@ -122,12 +186,16 @@ export function useMitlerStore() {
+     element: UserProfile['element'],
+     birthDate?: string,
+     fullName?: string,
++    extras?: { birthHour?: number; birthMinute?: number; birthCity?: string },
+   ) => {
+     const p: UserProfile = {
+       name,
+       element,
+       birthDate,
+       fullName,
++      birthHour: extras?.birthHour,
++      birthMinute: extras?.birthMinute,
++      birthCity: extras?.birthCity,
+       createdAt: new Date().toISOString(),
+       streak: 0,
+       totalReadings: 0,
+@@ -135,6 +203,7 @@ export function useMitlerStore() {
+     };
+     await saveProfile(p);
+     setIsNewUser(false);
++    setSakinPrefill(null);
+   }, [saveProfile]);
+ 
+   const updateBirthData = useCallback(async (
+@@ -242,6 +311,7 @@ export function useMitlerStore() {
+     stats,
+     isLoading,
+     isNewUser,
++    sakinPrefill,
+     createProfile,
+     saveProfile,
+     updateBirthData,

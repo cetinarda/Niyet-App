@@ -1,3 +1,99 @@
+diff --git a/app.json b/app.json
+index 2784c87..8111acf 100644
+--- a/app.json
++++ b/app.json
+@@ -8,6 +8,9 @@
+     "userInterfaceStyle": "dark",
+     "newArchEnabled": true,
+     "primaryColor": "#C9A84C",
++    "experiments": {
++      "baseUrl": "/embedded/humandesign"
++    },
+     "description": "Doğum verinden Human Design haritanı çıkar; tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor al. Tüm hesaplama cihazında, sunucusuz.",
+     "githubUrl": "https://github.com/cetinarda/humandesign",
+     "platforms": ["ios", "android", "web"],
+diff --git a/package-lock.json b/package-lock.json
+index 6a6bd5e..1b7af6e 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -3278,7 +3278,7 @@
+       "version": "19.1.17",
+       "resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.17.tgz",
+       "integrity": "sha512-Qec1E3mhALmaspIrhWt9jkQMNdw6bReVu64mjvhbhq2NFPftLPVr+l1SZgmw/66WwBNpDh7ao5AT6gF5v41PFA==",
+-      "dev": true,
++      "devOptional": true,
+       "license": "MIT",
+       "dependencies": {
+         "csstype": "^3.0.2"
+@@ -4407,7 +4407,7 @@
+       "version": "3.2.3",
+       "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
+       "integrity": "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==",
+-      "dev": true,
++      "devOptional": true,
+       "license": "MIT"
+     },
+     "node_modules/debug": {
+@@ -9104,7 +9104,7 @@
+       "version": "5.9.3",
+       "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+-      "dev": true,
++      "devOptional": true,
+       "license": "Apache-2.0",
+       "bin": {
+         "tsc": "bin/tsc",
+diff --git a/src/navigation/TabNavigator.tsx b/src/navigation/TabNavigator.tsx
+index a1da3fa..641d849 100644
+--- a/src/navigation/TabNavigator.tsx
++++ b/src/navigation/TabNavigator.tsx
+@@ -26,9 +26,20 @@ const TABS: { key: Tab; label: string; emoji: string; activeColor: string }[] =
+ ];
+ 
+ export function TabNavigator() {
+-  const [activeTab, setActiveTab] = useState<Tab>('home');
+   const insets = useSafeAreaInsets();
+-  const { isOnboarded, isLoading, setOnboarded } = useTasarimStore();
++  const { isOnboarded, isLoading, setOnboarded, initialTab } = useTasarimStore();
++  // Köprü eksik veri verdiyse açılışta doğrudan Profil sekmesine (ön-doldurulmuş
++  // form) düş; aksi halde her zamanki gibi 'home'.
++  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
++  const [tabPinned, setTabPinned] = useState(false);
++
++  // Store ilk yüklemede initialTab'i async belirler; kullanıcı henüz dokunmadıysa
++  // (tabPinned=false) güncel initialTab'e hizala.
++  React.useEffect(() => {
++    if (!tabPinned) setActiveTab(initialTab);
++  }, [initialTab, tabPinned]);
++
++  const goTab = (t: Tab) => { setTabPinned(true); setActiveTab(t); };
+ 
+   if (isLoading) {
+     return <View style={[styles.container, { backgroundColor: Colors.background }]} />;
+@@ -41,11 +52,11 @@ export function TabNavigator() {
+   const renderScreen = () => {
+     switch (activeTab) {
+       case 'home':
+-        return <HomeScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
++        return <HomeScreen onNavigate={(t) => goTab(t as Tab)} />;
+       case 'chart':
+-        return <ChartScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
++        return <ChartScreen onNavigate={(t) => goTab(t as Tab)} />;
+       case 'report':
+-        return <ReportScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
++        return <ReportScreen onNavigate={(t) => goTab(t as Tab)} />;
+       case 'glossary':
+         return <GlossaryScreen />;
+       case 'profile':
+@@ -67,7 +78,7 @@ export function TabNavigator() {
+               <TouchableOpacity
+                 key={tab.key}
+                 style={styles.tabItem}
+-                onPress={() => setActiveTab(tab.key)}
++                onPress={() => goTab(tab.key)}
+                 activeOpacity={0.7}
+                 accessibilityRole="tab"
+                 accessibilityState={{ selected: isActive }}
 diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
 index bb715ca..094a62c 100644
 --- a/src/screens/ProfileScreen.tsx
@@ -77,7 +173,7 @@ index bb715ca..094a62c 100644
    const [submitting, setSubmitting] = useState(false);
  
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
-index a1f350f..ab97eb0 100644
+index a1f350f..c6c0dc5 100644
 --- a/src/store/useStore.ts
 +++ b/src/store/useStore.ts
 @@ -1,6 +1,6 @@
@@ -159,7 +255,7 @@ index a1f350f..ab97eb0 100644
  interface StoreValue {
    profiles: SavedProfile[];
    activeProfile: SavedProfile | null;
-@@ -41,6 +105,10 @@ interface StoreValue {
+@@ -41,6 +105,13 @@ interface StoreValue {
    chart: HumanDesignChart | null;
    isLoading: boolean;
    isOnboarded: boolean;
@@ -167,18 +263,22 @@ index a1f350f..ab97eb0 100644
 +  // null ise köprü yok ya da profil zaten kuruldu. ProfileScreen formunu
 +  // bununla ön-doldurur, böylece kullanıcı yalnızca eksik alanı tamamlar.
 +  bridgePrefill: SakinBridge | null;
++  // Açılışta hangi sekmeye düşülecek. Köprü eksik veri verdiyse 'profile'
++  // (ön-doldurulmuş form), aksi halde 'home'.
++  initialTab: 'home' | 'profile';
    addProfile: (
      name: string, birthDate: string, birthTime: string, city: City, makeActive?: boolean,
    ) => Promise<SavedProfile>;
-@@ -65,6 +133,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -65,6 +136,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
    const [isLoading, setIsLoading] = useState(true);
    const [isOnboarded, setIsOnboarded] = useState(false);
    const [chart, setChart] = useState<HumanDesignChart | null>(null);
 +  const [bridgePrefill, setBridgePrefill] = useState<SakinBridge | null>(null);
++  const [initialTab, setInitialTab] = useState<'home' | 'profile'>('home');
  
    useEffect(() => {
      (async () => {
-@@ -76,13 +145,54 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -76,13 +149,56 @@ export function StoreProvider({ children }: { children: ReactNode }) {
            AsyncStorage.getItem(STORAGE_KEYS.ONBOARDED),
          ]);
          const list: SavedProfile[] = pRaw ? JSON.parse(pRaw) : [];
@@ -213,8 +313,10 @@ index a1f350f..ab97eb0 100644
 +              onboarded = true;
 +              await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
 +            } else {
-+              // Eksik veri: formu ön-doldur, hukuki onboarding'i atla
++              // Eksik veri: formu ön-doldur, hukuki onboarding'i atla ve doğrudan
++              // Profil sekmesine düş — kullanıcı yalnızca eksik alanı tamamlar.
 +              setBridgePrefill(bridge);
++              setInitialTab('profile');
 +              onboarded = true;
 +              await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
 +            }
@@ -237,7 +339,7 @@ index a1f350f..ab97eb0 100644
            if (found) {
              try {
                setChart(computeChart(found.birthDate, found.birthTime, found.city));
-@@ -144,6 +254,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -144,6 +260,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
      }
      setIsOnboarded(true);
      await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
@@ -245,12 +347,12 @@ index a1f350f..ab97eb0 100644
      return profile;
    }, []);
  
-@@ -191,7 +302,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -191,7 +308,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
    }, []);
  
    const value: StoreValue = {
 -    profiles, activeProfile, stats, chart, isLoading, isOnboarded,
-+    profiles, activeProfile, stats, chart, isLoading, isOnboarded, bridgePrefill,
++    profiles, activeProfile, stats, chart, isLoading, isOnboarded, bridgePrefill, initialTab,
      addProfile, selectProfile, deleteProfile, updateProfilePhoto,
      setOnboarded, getLevelTitle,
    };
