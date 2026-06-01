@@ -32,22 +32,67 @@ function getClientIP(event) {
     || "unknown";
 }
 
-function sanitizeTurkish(text) {
-  return text
-    .replace(/[一-鿿]/g, "")
-    .replace(/[㐀-䶿]/g, "")
-    .replace(/[぀-ヿ]/g, "")
-    .replace(/[؀-ۿ]/g, "")
-    .replace(/[ݐ-ݿ]/g, "")
-    .replace(/[가-힣]/g, "")
-    .replace(/[ᄀ-ᇿ]/g, "")
-    .replace(/[ऀ-ॿ]/g, "")
-    .replace(/[　-〿]/g, "")
-    .replace(/[⺀-⻿]/g, "")
-    .trim();
+// Strip foreign-script glyph runs that the model sometimes hallucinates.
+// In TR mode we strip ALL non-Latin scripts (legacy behavior).
+// In other modes we only strip scripts that the target language does NOT use,
+// otherwise we'd delete the entire response (e.g. Japanese kanji).
+function buildSanitizer(lang) {
+  // ranges → which language(s) need them
+  const ranges = {
+    cjkUnified: { re: /[一-鿿]/g, keepFor: ["ja"] },   // Han / Kanji
+    cjkExtA:    { re: /[㐀-䶿]/g, keepFor: ["ja"] },
+    hiragana:   { re: /[぀-ゟ]/g, keepFor: ["ja"] },
+    katakana:   { re: /[゠-ヿ]/g, keepFor: ["ja"] },
+    arabic:     { re: /[؀-ۿ]/g, keepFor: [] },
+    syriac:     { re: /[ݐ-ݿ]/g, keepFor: [] },
+    hangul:     { re: /[가-힯]/g, keepFor: [] },
+    hangulJamo: { re: /[ᄀ-ᇿ]/g, keepFor: [] },
+    devanagari: { re: /[ऀ-ॿ]/g, keepFor: [] },
+    cjkSymbols: { re: /[　-〿]/g, keepFor: ["ja"] },
+    kangxi:     { re: /[⺀-⻿]/g, keepFor: ["ja"] },
+  };
+  return (text) => {
+    let out = text;
+    for (const { re, keepFor } of Object.values(ranges)) {
+      if (!keepFor.includes(lang)) out = out.replace(re, "");
+    }
+    return out.trim();
+  };
 }
 
 const VALID_ROLES = ["user", "assistant", "system"];
+
+// Supported UI languages. Codes match src/i18n.js LANGUAGES.
+const LANG_META = {
+  "tr":    { name: "Turkish",              native: "Türkçe",            sample: "Türkçe karakterleri (ş ğ ı ü ö ç İ) eksiksiz kullan." },
+  "en":    { name: "English",              native: "English",           sample: "Use natural, fluent English." },
+  "de":    { name: "German",               native: "Deutsch",           sample: "Verwende deutsche Umlaute (ä ö ü ß) korrekt." },
+  "es":    { name: "Spanish",              native: "Español",           sample: "Usa los acentos y la ñ correctamente." },
+  "pt-BR": { name: "Brazilian Portuguese", native: "Português (Brasil)", sample: "Use os acentos do português brasileiro corretamente." },
+  "fr":    { name: "French",               native: "Français",          sample: "Utilise les accents français (é è ê à ç) correctement." },
+  "ja":    { name: "Japanese",             native: "日本語",            sample: "自然な日本語で、ひらがな・カタカナ・漢字を適切に使ってください。" },
+};
+
+function normalizeLang(raw) {
+  if (typeof raw !== "string") return "tr";
+  const v = raw.trim();
+  if (LANG_META[v]) return v;
+  // tolerate short forms
+  const short = v.toLowerCase().split(/[-_]/)[0];
+  const fallback = { pt: "pt-BR" }[short] || short;
+  return LANG_META[fallback] ? fallback : "tr";
+}
+
+// English meta-instruction is intentional: LLMs follow English directives most reliably.
+function buildLanguageDirective(lang) {
+  const meta = LANG_META[lang];
+  return `LANGUAGE LOCK — HIGHEST PRIORITY:
+You MUST write the ENTIRE response in ${meta.name} (${meta.native}), regardless of the language of the user's input, the language of the context/system text, or any examples shown. Do NOT translate the user's input; only the OUTPUT must be in ${meta.name}.
+Do not switch languages mid-response. Do not add parenthetical translations. ${meta.sample}
+Do not use Chinese, Arabic, Korean, Devanagari, or any script that is not part of ${meta.name}${lang === "ja" ? "" : " (Japanese scripts only allowed when the output language is Japanese)"}.
+
+`;
+}
 
 export const handler = async (event) => {
   const cors = getCorsHeaders(event);
@@ -77,7 +122,8 @@ export const handler = async (event) => {
     return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek" }) };
   }
 
-  const { system, messages, max_tokens } = body;
+  const { system, messages, max_tokens, lang: rawLang } = body;
+  const lang = normalizeLang(rawLang);
 
   if (system !== undefined && (typeof system !== "string" || system.length > 12000)) {
     return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz system" }) };
@@ -96,11 +142,10 @@ export const handler = async (event) => {
 
   const safeMaxTokens = Math.min(Math.max(parseInt(max_tokens) || 1800, 100), 1800);
 
-  const turkcePrefix = "Yalnızca Türkçe yaz. ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan; yerlerine baska karakter koyma. Cümleler akıcı, sade ve şiirsel olsun. Her kelime ayrı yazılsın. Çince, Japonca, Arapça veya başka yabancı karakter kesinlikle kullanma.\n\n";
+  const langDirective = buildLanguageDirective(lang);
 
   const groqMessages = [];
-  if (system) groqMessages.push({ role: "system", content: turkcePrefix + system });
-  else groqMessages.push({ role: "system", content: turkcePrefix });
+  groqMessages.push({ role: "system", content: langDirective + (system || "") });
   for (const m of messages) groqMessages.push({ role: m.role, content: m.content });
 
   let res, data;
@@ -130,6 +175,7 @@ export const handler = async (event) => {
   }
 
   const raw = data.choices?.[0]?.message?.content || "";
-  const text = sanitizeTurkish(raw);
+  const sanitize = buildSanitizer(lang);
+  const text = sanitize(raw);
   return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ text }) };
 };

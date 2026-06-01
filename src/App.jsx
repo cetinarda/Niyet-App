@@ -3850,18 +3850,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 const style = doc.createElement("style");
                 style.id = "sakin-embed-fixes";
                 style.textContent = `
-                  /* Üst safe-area boşluğunu sıfırla — host wrapper zaten ekran tepesinden başlıyor,
-                     embed kendi safe-area padding'ini ekleyince üstte siyah bant kalıyor.
-                     Ayrıca iOS scroll-bounce'ı engelle (yukarı çekince siyah boşluk açılmasın). */
+                  /* Embed'in kendi safe-area padding'ine DOKUNMA — status bar altında
+                     başlıkları korumak için gerekli. Yalnızca iOS scroll-bounce'u engelle. */
                   html, body {
-                    padding-top: 0 !important;
-                    margin-top: 0 !important;
                     overscroll-behavior-y: none !important;
-                    -webkit-overflow-scrolling: auto !important;
                   }
-                  #root, [class*="root"], [class*="App"], [data-class~="r-root"] {
-                    padding-top: 0 !important;
-                    margin-top: 0 !important;
+                  /* Embed başlık alanı (header / title row) bizim sol üstteki dairesel
+                     geri butonumuzla çakışmasın — sola 56px boşluk bırak.
+                     RN/Expo derlenmiş bundle'larında header genelde body'nin ilk
+                     büyük çocuğu; class isimleri bilinmediği için emniyetli selector kümesi. */
+                  body > div:first-child > div:first-child,
+                  header,
+                  [role="banner"],
+                  [class*="Header"],
+                  [class*="header"] {
+                    padding-left: 56px !important;
                   }
                   /* Form input'larının ekran dışına taşmasını engelle */
                   input, textarea, select {
