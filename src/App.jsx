@@ -5555,7 +5555,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     onFocus={e=>{ e.target.style.borderColor="rgba(255,255,255,0.6)"; e.target.style.boxShadow="0 0 0 3px rgba(255,255,255,0.08)"; }}
                     onBlur={e=>{ e.target.style.borderColor="rgba(255,255,255,0.3)"; e.target.style.boxShadow="none"; }}
                   />
-                  {/* Inline arama butonu — boşken bile dikkat çekici mor pulse */}
+                  {/* Inline arama butonu — boşken sabit/sönük; yazınca parlar + pulse
+                      ("yazını bitirince buraya bas" hissi, Sakin Ailesi butonu gibi) */}
                   <button
                     onClick={()=>requireAiConsent(generateSikayetAnaliz)}
                     disabled={!sikayet.trim()}
@@ -5563,26 +5564,26 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       position:"absolute",right:12,bottom:12,
                       width:44,height:44,borderRadius:"50%",
                       background: sikayet.trim()
-                        ? "linear-gradient(135deg,rgba(255,255,255,0.85),rgba(220,200,255,0.7))"
-                        : "radial-gradient(circle at 35% 35%, rgba(184,148,224,0.55) 0%, rgba(124,84,170,0.75) 60%, rgba(60,30,90,0.85) 100%)",
+                        ? "radial-gradient(circle at 35% 35%, rgba(200,168,240,0.75) 0%, rgba(150,104,200,0.85) 60%, rgba(90,50,130,0.92) 100%)"
+                        : "rgba(255,255,255,0.05)",
                       border: sikayet.trim()
-                        ? "none"
-                        : "1px solid rgba(220,200,255,0.5)",
-                      cursor: sikayet.trim() ? "pointer" : "pointer",
-                      color: sikayet.trim() ? "#fff" : "rgba(245,235,255,0.95)",
+                        ? "1px solid rgba(220,200,255,0.6)"
+                        : "1px solid rgba(255,255,255,0.12)",
+                      cursor: sikayet.trim() ? "pointer" : "default",
+                      color: sikayet.trim() ? "rgba(245,235,255,0.98)" : "#777777",
                       fontSize:15,
                       display:"flex", alignItems:"center", justifyContent:"center",
-                      transition:"all 0.25s",
+                      transition:"all 0.3s",
                       boxShadow: sikayet.trim()
-                        ? "0 4px 14px rgba(0,0,0,0.3)"
-                        : "0 0 16px rgba(184,148,224,0.55), inset 0 0 10px rgba(255,255,255,0.18)",
-                      animation: sikayet.trim() ? "none" : "askPulse 2s ease-in-out infinite",
+                        ? "0 0 18px rgba(184,148,224,0.6), inset 0 0 10px rgba(255,255,255,0.2)"
+                        : "none",
+                      animation: sikayet.trim() ? "askPulse 1.8s ease-in-out infinite" : "none",
                     }}>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                       <rect x="1.5" y="1.5" width="13" height="13" rx="1.8" transform="rotate(45 8 8)"
-                        stroke={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(245,235,255,0.95)"} strokeWidth="1.2"/>
+                        stroke={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(100,90,140,0.4)"} strokeWidth="1.2"/>
                       <circle cx="8" cy="8" r="2"
-                        fill={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(245,235,255,0.95)"}/>
+                        fill={sikayet.trim()?"rgba(255,255,255,0.95)":"rgba(100,90,140,0.4)"}/>
                     </svg>
                   </button>
                 </div>
