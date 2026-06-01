@@ -2578,15 +2578,19 @@ export default function SakinApp() {
     });
   }, []);
 
-  // Foreground'a dönünce premium durumunu yeniden doğrula — subscription expire olduysa
-  // (sandbox'ta hızlandırılmış) app relaunch beklemeden paywall'a döner. Apple 2.1 testi için.
+  // Foreground recheck — REVOKE-ONLY. store.owned stale/replayed receipt'lerden
+  // FALSE pozitif verebilir (992ab50 fix'i bunu yasakladı). Bu yüzden burada SADECE
+  // revoke yaparız: owned=false → premium iptal et. owned=true → DOKUNMA, çünkü
+  // yeni premium yalnızca .verified callback'i ile (userInitiatedAction=true iken) verilir.
+  // Bu Apple 2.1 expired-sub testini geçer, ama cached receipt'lerden bedavaya
+  // premium grant'ini engeller.
   useEffect(() => {
     if (!isNative) return;
     const recheck = () => {
       if (document.visibilityState !== "visible") return;
       try {
-        const owned = isSubscribed(); // canlı store.owned okur
-        setIsPremium(owned);
+        const owned = isSubscribed();
+        if (!owned) setIsPremium(false); // sadece iptal et, asla grant verme
       } catch(_) {}
     };
     document.addEventListener("visibilitychange", recheck);

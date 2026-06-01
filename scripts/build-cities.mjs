@@ -393,6 +393,7 @@ function makeRow(c, tzOffsets) {
   const lat = c.coordinates?.lat ?? null;
   const lon = c.coordinates?.lon ?? null;
   if (lat == null || lon == null) return null;
+  const pop = Number(c.population) || 0;
   const row = [
     name,
     Math.round(lat * 10000) / 10000,
@@ -401,6 +402,8 @@ function makeRow(c, tzOffsets) {
     c.country_code || "",
   ];
   if (ascii !== name) row.push(ascii);
+  else row.push(""); // placeholder so pop is always at index 6
+  row.push(pop); // transient: used for sort tiebreaker, stripped before write
   return row;
 }
 
@@ -469,18 +472,58 @@ async function main() {
   }
   console.log(`[build-cities] aliases added: ${aliasAdded} (missed: ${aliasMissed})`);
 
-  // Sort: TR first, then others. Within group, by name asc.
+  // Manual overrides — districts/cities that GeoNames misses or wrongly localizes.
+  // Format matches makeRow output: [name, lat, lon, tz, cc, ascii, pop].
+  const MANUAL_OVERRIDES = [
+    ["Beşiktaş", 41.0429, 29.0094, 3, "TR", "Besiktas", 200000],
+    ["Kadıköy", 40.9833, 29.0333, 3, "TR", "Kadikoy", 500000],
+    // Big-name disambiguators: ensure famous city wins by virtue of giant pop
+    ["Cairo", 30.0444, 31.2357, 2, "EG", "Cairo", 10000000],
+    ["Athens", 37.9838, 23.7275, 2, "GR", "Athens", 3000000],
+    ["Warsaw", 52.2297, 21.0122, 1, "PL", "Warsaw", 1800000],
+    ["Damascus", 33.5138, 36.2765, 2, "SY", "Damascus", 2200000],
+    ["Jerusalem", 31.7683, 35.2137, 2, "IL", "Jerusalem", 950000],
+    ["Naples", 40.8518, 14.2681, 1, "IT", "Naples", 950000],
+    ["Barcelona", 41.3851, 2.1734, 1, "ES", "Barcelona", 1600000],
+    ["Perth", -31.9505, 115.8605, 8, "AU", "Perth", 2100000],
+    ["Birmingham", 52.4862, -1.8904, 0, "GB", "Birmingham", 1100000],
+    ["Riyadh", 24.7136, 46.6753, 3, "SA", "Riyadh", 7000000],
+    ["Colombo", 6.9271, 79.8612, 5.5, "LK", "Colombo", 750000],
+    ["Cologne", 50.9375, 6.9603, 1, "DE", "Cologne", 1100000], // English alias for Köln
+  ];
+  let overrideAdded = 0;
+  for (const o of MANUAL_OVERRIDES) {
+    // Inject at top with high pop — sort will keep them first
+    out.push([...o]);
+    overrideAdded++;
+  }
+  console.log(`[build-cities] manual overrides added: ${overrideAdded}`);
+
+  // Sort: TR first, then others. Within group: name asc, then population DESC
+  // (so same-named cities resolve to the most populous one in the byKey first-wins map).
   out.sort((a, b) => {
     const tA = a[4] === "TR" ? 0 : 1;
     const tB = b[4] === "TR" ? 0 : 1;
     if (tA !== tB) return tA - tB;
-    return a[0].localeCompare(b[0]);
+    const nameCmp = a[0].localeCompare(b[0]);
+    if (nameCmp !== 0) return nameCmp;
+    const popA = a[6] || 0;
+    const popB = b[6] || 0;
+    return popB - popA; // higher pop first → wins first-wins in cityDb.js
+  });
+
+  // Strip transient pop field (index 6) before writing.
+  // Trim trailing empty ascii placeholder so unchanged rows stay compact.
+  const finalRows = out.map(r => {
+    const trimmed = r.slice(0, 6); // [name, lat, lon, tz, cc, ascii]
+    if (trimmed[5] === "" || trimmed[5] === undefined) trimmed.pop();
+    return trimmed;
   });
 
   await fs.mkdir(path.dirname(OUT_FILE), { recursive: true });
-  const text = JSON.stringify(out);
+  const text = JSON.stringify(finalRows);
   await fs.writeFile(OUT_FILE, text, "utf-8");
-  console.log(`[build-cities] wrote ${OUT_FILE} (${(text.length/1024).toFixed(1)} kB raw, ${out.length} rows)`);
+  console.log(`[build-cities] wrote ${OUT_FILE} (${(text.length/1024).toFixed(1)} kB raw, ${finalRows.length} rows)`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
