@@ -3947,8 +3947,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         </div>
       )}
 
-      {/* AYNA BUTONU — sağ üst köşe, küçük sakin hilal (iOS native, ana ekranlarda) */}
-      {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
+      {/* AYNA BUTONU — gizli geçit. iOS: sağ üst küçük hilal (dokunma).
+          Web mobil: sağ orta kenarda yarı gizli crescent (yarısı ekran dışı). */}
+      {!isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
         <button
           onClick={()=>{
             haptic();
@@ -3972,7 +3973,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050);
           }}
           aria-label={t("mirror_aria")}
-          style={{
+          title={t("mirror_aria")}
+          style={ isNative ? {
+            // iOS: sağ üst köşe, tam görünür küçük hilal
             position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 64px)", right:14,
             zIndex:9997, width:36, height:36, borderRadius:"50%",
             border:"1px solid rgba(184,164,216,0.35)",
@@ -3982,6 +3985,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             color:"rgba(232,218,250,0.9)", fontSize:15, lineHeight:1,
             boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
             padding:0, cursor:"pointer",
+          } : {
+            // Web mobil: sağ orta kenarda yarı gizli geçit (yarısı ekran dışında)
+            position:"fixed", top:"50%", right:-26, transform:"translateY(-50%)",
+            zIndex:9997, width:64, height:64, borderRadius:"50%",
+            border:"1px solid rgba(184,164,216,0.30)",
+            background:"radial-gradient(circle at 30% 35%, rgba(160,112,208,0.40) 0%, rgba(60,30,90,0.72) 60%, rgba(20,10,35,0.9) 100%)",
+            backdropFilter:"blur(8px)",
+            display:"flex", alignItems:"center", justifyContent:"flex-start", paddingLeft:10,
+            color:"rgba(232,218,250,0.85)", fontSize:22, lineHeight:1,
+            boxShadow:"0 0 22px rgba(160,120,220,0.28), inset 0 0 12px rgba(184,164,216,0.20)",
+            cursor:"pointer",
           }}
         >
           <span style={{ filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
