@@ -5972,8 +5972,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </button>
             </div>
           )}
-          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
-            <div style={{ position:"absolute",top:10,right:12,fontSize:10,letterSpacing:2,padding:"3px 9px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{t("map_coming_soon")}</div>
+          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"40px 20px 16px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
+            {/* COMING SOON badge — üstte ortalı, kendi satırında; uzun dillerde (EN) label'a binmez */}
+            <div style={{ position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",fontSize:9,letterSpacing:1.5,padding:"3px 10px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{t("map_coming_soon")}</div>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#888888",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
               {[...Array(7)].map((_,i)=>(
