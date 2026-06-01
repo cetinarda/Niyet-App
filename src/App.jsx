@@ -728,6 +728,7 @@ function startThunder(ctx, masterGain) {
 
 // Zihni Boşalt — fullscreen kaleidoskop + procedural drone müzik
 function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false, onPremium = () => {} }) {
+  const t = makeTrans(lang);
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
   const rafRef = useRef(null);
@@ -898,10 +899,10 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
           {lang==="tr" ? mode.labelTr : mode.labelEn}
         </div>
         <div style={{ fontSize:10,letterSpacing:3,color:"rgba(255,255,255,0.28)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
-          {lang==="tr" ? "✦ kulaklığını tak · gözlerini yumuşat · bırak" : "✦ headphones on · soften your eyes · let go"}
+          {t("kaleido_hint")}
         </div>
       </div>
-      <button onClick={onClose} aria-label={lang==="tr"?"Kapat":"Close"}
+      <button onClick={onClose} aria-label={t("common_close")}
         style={{
           position:"fixed",top:"calc(10px + var(--sat))",right:10,zIndex:10011,
           background:"rgba(0,0,0,0.55)",backdropFilter:"blur(16px)",
@@ -922,34 +923,32 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
           <div style={{ maxWidth:340,width:"100%",textAlign:"center" }}>
             <div style={{ fontSize:30,marginBottom:14,letterSpacing:6 }}>✦</div>
             <div style={{ fontSize:15,letterSpacing:3,color:"rgba(255,255,255,0.92)",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,fontWeight:300 }}>
-              {lang==="tr" ? "Bir nefes daha mı?" : "One more breath?"}
+              {t("premium_one_more_breath")}
             </div>
             <div style={{ fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.85,marginBottom:14 }}>
-              {lang==="tr"
-                ? "30 saniyelik sığınağın doldu. Sınırsız zihni boşaltma, mod & doğa sesi karışımları Premium'da."
-                : "Your 30-second retreat is full. Unlimited mind-clearing, mode & nature mixes are in Premium."}
+              {t("premium_kaleido_30s_full")}
             </div>
             {/* Abonelik özeti + 3.1.2(c) gerekli bilgiler */}
             <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.55)",lineHeight:1.6,marginBottom:14,padding:"10px 12px",background:"rgba(255,255,255,0.04)",borderRadius:10,border:"1px solid rgba(255,255,255,0.08)" }}>
-              {lang==="tr" ? "Yıllık Premium · 12 ay · $9.99/yıl · otomatik yenilenir  ·  Ömür Boyu · $19.99" : "Yearly Premium · 12 mo · $9.99/yr · auto-renewable  ·  Lifetime · $19.99"}
+              {t("premium_subscription_summary")}
             </div>
             <button onClick={onPremium}
               style={{ display:"block",width:"100%",padding:"12px 18px",borderRadius:24,border:"1px solid rgba(220,200,255,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",color:"#fff",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,boxShadow:"0 4px 22px rgba(122,80,150,0.4)" }}>
-              ✦ {lang==="tr" ? "Premium ile Aç" : "Unlock with Premium"}
+              {t("premium_unlock_breath")}
             </button>
             <button onClick={onClose}
               style={{ display:"block",width:"100%",padding:"10px 18px",borderRadius:24,border:"1px solid rgba(255,255,255,0.12)",background:"transparent",color:"rgba(255,255,255,0.55)",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:12 }}>
-              {lang==="tr" ? "Kapat" : "Close"}
+              {t("common_close")}
             </button>
             {/* GERÇEK functional URL linkleri — Safari'de açılır */}
             <div style={{ display:"flex",justifyContent:"center",gap:18,flexWrap:"wrap" }}>
               <a href="https://sakin.life/terms/" target="_blank" rel="noopener noreferrer"
                 style={{ color:"rgba(184,164,216,0.85)",fontSize:11.5,textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif",padding:"6px 4px" }}>
-                {lang==="tr" ? "Hizmet Şartları (EULA)" : "Terms of Use (EULA)"}
+                {t("premium_eula")}
               </a>
               <a href="https://sakin.life/privacy/" target="_blank" rel="noopener noreferrer"
                 style={{ color:"rgba(184,164,216,0.85)",fontSize:11.5,textDecoration:"underline",textUnderlineOffset:2,fontFamily:"'Inter',sans-serif",padding:"6px 4px" }}>
-                {lang==="tr" ? "Gizlilik Politikası" : "Privacy Policy"}
+                {t("premium_privacy")}
               </a>
             </div>
           </div>
@@ -1329,7 +1328,7 @@ async function scheduleDailyReminders(lang) {
     notifications.push({
       id: 9101,
       title: "Sakin",
-      body: lang === "tr" ? "Günaydın. Bugün nasıl hissetmek istersin?" : "Good morning. How do you want to feel today?",
+      body: t("reminder_morning_body"),
       schedule: { on: { hour: 7, minute: 30 } },
       smallIcon: "ic_stat_icon_config_sample",
       iconColor: "#b8a4d8",
@@ -1728,7 +1727,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
           <div style={{ fontSize:13, letterSpacing:5, color:"#666666" }}>{t("reiki_label")}</div>
           <div style={{ fontFamily:"'Inter',sans-serif", fontSize:19, fontWeight:300, letterSpacing:2 }}>{t("therapy_title")}</div>
         </div>
-        <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Devam →":"Next →"}</button>
+        <button onClick={() => { resetTerapi(); onNext(); }} style={{ background:"none", border:"none", color:"#a07ae0", cursor:"pointer", fontSize:13, letterSpacing:2, padding:"8px 4px 8px 8px", fontFamily:"'Jost',sans-serif" }}>{t("common_next")}</button>
       </div>
       {/* Tab toggle */}
       <div style={{ display:"flex", borderRadius:12, overflow:"hidden", border:"1px solid rgba(255,255,255,0.1)", marginBottom:20 }}>
@@ -1736,15 +1735,15 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
           flex:1, padding:"12px 0", background: chakraTab==="temel" ? "rgba(160,122,224,0.15)" : "transparent",
           border:"none", borderRight:"1px solid rgba(255,255,255,0.1)", cursor:"pointer", textAlign:"center",
         }}>
-          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Temel 7":"Classic 7"}</div>
-          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"KLASİK ÇAKRALAR":"CLASSIC CHAKRAS"}</div>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="temel" ? 500 : 300, color: chakraTab==="temel" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{t("chakra_classic7")}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="temel" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{t("chakra_classic7_sub")}</div>
         </button>
         <button onClick={() => setChakraTab("yuksek")} style={{
           flex:1, padding:"12px 0", background: chakraTab==="yuksek" ? "rgba(160,122,224,0.15)" : "transparent",
           border:"none", cursor:"pointer", textAlign:"center",
         }}>
-          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{lang==="tr"?"Yüksek 15":"Higher 15"}</div>
-          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{lang==="tr"?"RUHSAL & KOZMİK":"SPIRITUAL & COSMIC"}</div>
+          <div style={{ fontFamily:"'Inter',sans-serif", fontSize:15, fontWeight: chakraTab==="yuksek" ? 500 : 300, color: chakraTab==="yuksek" ? "#d0c0f0" : "#888888", letterSpacing:1 }}>{t("chakra_higher15")}</div>
+          <div style={{ fontSize:11, letterSpacing:2, color: chakraTab==="yuksek" ? "#a07ae0" : "#555555", textTransform:"uppercase", marginTop:2 }}>{t("chakra_higher15_sub")}</div>
         </button>
       </div>
 
@@ -1756,7 +1755,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
               <div style={{ position:"absolute", inset:0, borderRadius:"50%", background:"radial-gradient(circle at 40% 38%, rgba(255,235,180,0.25), rgba(255,200,80,0.08) 60%, transparent 80%)", border:"1px solid rgba(255,220,120,0.18)", boxShadow:"0 0 40px rgba(255,200,80,0.15), 0 0 80px rgba(255,180,60,0.06)" }} />
               <div style={{ position:"absolute", inset:"50%", transform:"translate(-50%,-50%)", width:8, height:8, borderRadius:"50%", background:"rgba(255,235,180,0.7)", boxShadow:"0 0 16px rgba(255,220,120,0.6)" }} />
             </div>
-            <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{lang==="tr"?"Kaynak Enerjisi":"Source Energy"}</div>
+            <div style={{ fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#888888", textTransform:"uppercase", marginTop:10 }}>{t("chakra_source_energy")}</div>
           </div>
         )}
         {(chakraTab === "temel" ? [1] : [3,2]).map(level => {
@@ -1793,12 +1792,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         })}
         {chakraTab === "temel" && (
           <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
-            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {t("chakra_earth")}</div>
           </div>
         )}
         {chakraTab === "yuksek" && (
           <div style={{ textAlign:"center", marginTop:10, paddingBottom:8 }}>
-            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {lang==="tr"?"Yeryüzü":"Earth"}</div>
+            <div style={{ fontSize:12, letterSpacing:3, color:"#555555", fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>⬇ {t("chakra_earth")}</div>
           </div>
         )}
       </div>
@@ -1896,7 +1895,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
       <div style={{ fontSize:14,color:"#888888",letterSpacing:1,marginBottom:12,fontStyle:"italic" }}>
         {selected.level > 1
-          ? (lang==="tr" ? "Ellerini göğsünde birleştir. Sağ el altta." : "Join your hands at your chest. Right hand below.")
+          ? t("chakra_join_hands")
           : t("intro_place_hand", selected.name)}
       </div>
       <div style={{ fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.3)",marginBottom:28 }}>{t("terapi_duration")}</div>
@@ -1981,7 +1980,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       {/* Chakra konu bilgisi — seans sırasında belirir */}
       {progress>=0.15 && progress<0.85 && selected.konu && (
         <div style={{ fontSize:12,color:`${selected.pastel}88`,letterSpacing:1.5,textAlign:"center",marginBottom:8,fontFamily:"'Jost',sans-serif",animation:"fadeIn 2s ease forwards",opacity:0 }}>
-          {lang==="tr" ? `Bu çakra ${selected.konu.toLowerCase()} ile bağlantılıdır.` : `This chakra is connected to ${selected.konu.toLowerCase()}.`}
+          {t("chakra_connected").replace("{topic}", selected.konu.toLowerCase())}
         </div>
       )}
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,fontStyle:"italic",color:`${selected.pastel}${hex(0.38+progress*0.55)}`,letterSpacing:0.5,textAlign:"center",lineHeight:1.9,maxWidth:270 }}>
@@ -2155,7 +2154,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
             </button>
             <a href="/fiyatlandirma"
               style={{ display:"inline-block",padding:"6px 16px",background:`linear-gradient(135deg,${renk}22,${renk}11)`,border:`1px solid ${renk}44`,borderRadius:20,color:renk,fontSize:13,letterSpacing:2,textDecoration:"none",cursor:"pointer" }}>
-              {lang==="tr" ? "Daha Fazlası → Premium" : "More → Premium"}
+              {t("premium_unlock_more")}
             </a>
           </div>
         </div>
@@ -2164,7 +2163,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
           {/* Soru satırı: etiket + ? butonu */}
           <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
             <span style={{ fontSize:13,letterSpacing:2,color:`${renk}bb` }}>
-              {lang==="tr" ? "ne hissediyorsun, ne merak ediyorsun?" : "what do you feel or wonder about?"}
+              {t("ne_hissediyorsun_label")}
             </span>
             <div ref={tipRef} style={{ position:"relative" }}>
               <button
@@ -2175,7 +2174,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
               {tipAcik && (
                 <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(0,0,0,0.98),rgba(0,0,0,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
                   <div style={{ fontSize:13,letterSpacing:2.5,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
-                    {lang==="tr" ? "ÖRNEK SORULAR" : "EXAMPLE QUESTIONS"}
+                    {t("ornek_sorular")}
                   </div>
                   {ornekler.map((s,i)=>(
                     <button key={i} onClick={()=>{ onChange(s); setTipAcik(false); }}
@@ -2207,6 +2206,7 @@ function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, o
 
 // Mobil klavye dostu doğum tarihi — GG / AA / YYYY ayrı sayısal alanlar, otomatik geçişli
 function SmartDateInput({ value, onChange, lang }) {
+  const t = makeTrans(lang);
   const valid = value && /^\d{4}-\d{2}-\d{2}$/.test(value);
   const [d, setD] = useState(valid ? value.slice(8,10) : "");
   const [m, setM] = useState(valid ? value.slice(5,7) : "");
@@ -2224,16 +2224,16 @@ function SmartDateInput({ value, onChange, lang }) {
   return (
     <div style={{ display:"flex",alignItems:"center",gap:6 }}>
       <input ref={dRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
-        placeholder={lang==="tr"?"GG":"DD"} value={d} maxLength={2} style={{ ...cell,width:52 }}
+        placeholder={t("date_ph_day")} value={d} maxLength={2} style={{ ...cell,width:52 }}
         onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setD(v); emit(v,m,y); if(v.length===2) mRef.current?.focus(); }} />
       <span style={{ color:"#555",fontSize:16 }}>/</span>
       <input ref={mRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
-        placeholder={lang==="tr"?"AA":"MM"} value={m} maxLength={2} style={{ ...cell,width:52 }}
+        placeholder={t("date_ph_month")} value={m} maxLength={2} style={{ ...cell,width:52 }}
         onKeyDown={backTo(m, dRef)}
         onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setM(v); emit(d,v,y); if(v.length===2) yRef.current?.focus(); }} />
       <span style={{ color:"#555",fontSize:16 }}>/</span>
       <input ref={yRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
-        placeholder={lang==="tr"?"YYYY":"YYYY"} value={y} maxLength={4} style={{ ...cell,flex:1,minWidth:0 }}
+        placeholder={t("date_ph_year")} value={y} maxLength={4} style={{ ...cell,flex:1,minWidth:0 }}
         onKeyDown={backTo(y, mRef)}
         onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,4); setY(v); emit(d,m,v); }} />
     </div>
@@ -2242,6 +2242,7 @@ function SmartDateInput({ value, onChange, lang }) {
 
 // Mobil klavye dostu doğum saati — SS : DD ayrı sayısal alanlar, otomatik geçişli
 function SmartTimeInput({ value, onChange, lang }) {
+  const t = makeTrans(lang);
   const valid = value && /^\d{1,2}:\d{2}$/.test(value);
   const [h, setH] = useState(valid ? value.split(":")[0] : "");
   const [mn, setMn] = useState(valid ? value.split(":")[1] : "");
@@ -2256,11 +2257,11 @@ function SmartTimeInput({ value, onChange, lang }) {
   return (
     <div style={{ display:"flex",alignItems:"center",gap:6 }}>
       <input ref={hRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
-        placeholder={lang==="tr"?"SS":"HH"} value={h} maxLength={2} style={{ ...cell,width:64 }}
+        placeholder={t("time_ph_hour")} value={h} maxLength={2} style={{ ...cell,width:64 }}
         onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setH(v); emit(v,mn); if(v.length===2) mnRef.current?.focus(); }} />
       <span style={{ color:"#555",fontSize:16 }}>:</span>
       <input ref={mnRef} className="sakin-input" inputMode="numeric" pattern="[0-9]*" autoComplete="off"
-        placeholder={lang==="tr"?"DD":"MM"} value={mn} maxLength={2} style={{ ...cell,width:64 }}
+        placeholder={t("time_ph_min")} value={mn} maxLength={2} style={{ ...cell,width:64 }}
         onKeyDown={e=>{ if(e.key==="Backspace" && mn==="") { e.preventDefault(); hRef.current?.focus(); } }}
         onChange={e=>{ const v=e.target.value.replace(/\D/g,"").slice(0,2); setMn(v); emit(h,v); }} />
     </div>
@@ -2271,6 +2272,7 @@ function SmartTimeInput({ value, onChange, lang }) {
 // Yazınca il/şehir önerileri açılır, dokunarak seçilir; tanınan şehirde ✓ gösterilir.
 // Büyük dünya şehri DB'si (~36k satır) dinamik import() ile odaklanma anında yüklenir.
 function SmartCityInput({ value, onChange, lang }) {
+  const t = makeTrans(lang);
   const [focused, setFocused] = useState(false);
   // bigReady state, büyük DB yüklendiğinde yeniden render tetikler.
   const [bigReady, setBigReady] = useState(isCitiesLoaded());
@@ -2300,7 +2302,7 @@ function SmartCityInput({ value, onChange, lang }) {
     <div style={{ position:"relative" }}>
       <input type="text" className="sakin-input"
         autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
-        placeholder={lang==="tr"?"ör. Kayseri, İstanbul, Londra":"e.g. Istanbul, London, New York"}
+        placeholder={t("city_ph")}
         style={{ fontSize:14,padding:"10px 34px 10px 12px",width:"100%",boxSizing:"border-box" }}
         value={value}
         onChange={e=>onChange(e.target.value)}
@@ -2330,8 +2332,37 @@ function SmartCityInput({ value, onChange, lang }) {
       )}
       {!recognized && value && value.trim().length >= 2 && matches.length === 0 && (
         <div style={{ fontSize:11,color:"#9a8aae",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.5,lineHeight:1.4 }}>
-          {lang==="tr" ? "Listede yok — yükselen için en yakın ili seç" : "Not in list — pick the nearest city for ascendant"}
+          {t("city_not_in_list")}
         </div>
+      )}
+    </div>
+  );
+}
+
+// LangPicker — giris-screen ile aynı tasarım, tüm dil değiştirme yüzeylerinde paylaşılır
+function LangPicker({ lang, setLang, compact = false }) {
+  const [open, setOpen] = useState(false);
+  const cur = LANGUAGES.find(l => l.code === lang)?.label || lang.toUpperCase();
+  return (
+    <div style={{ position:"relative" }}>
+      <button onClick={()=>setOpen(o=>!o)}
+        style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.18)", borderRadius:20, padding: compact ? "5px 11px" : "6px 14px", color:"#ddd", fontSize:13, letterSpacing:1.5, cursor:"pointer", fontFamily:"'Jost',sans-serif", fontWeight:400, minWidth: compact ? 56 : 64, minHeight:44, display:"inline-flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+        <span>{cur}</span>
+        <span style={{ fontSize:9, opacity:0.7, transform: open ? "rotate(180deg)" : "none", transition:"transform 0.2s" }}>▾</span>
+      </button>
+      {open && (
+        <>
+          <div onClick={()=>setOpen(false)} style={{ position:"fixed", inset:0, zIndex:9999 }} />
+          <div style={{ position:"absolute", top:"calc(100% + 6px)", right:0, zIndex:10000, background:"rgba(15,10,25,0.96)", backdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.55)", minWidth:80 }}>
+            {LANGUAGES.map(l => (
+              <button key={l.code}
+                onClick={()=>{ setLang(l.code); localStorage.setItem("sakin_lang", l.code); setOpen(false); }}
+                style={{ background: lang===l.code ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:8, padding:"7px 14px", color: lang===l.code ? "#fff" : "#aaa", fontSize:13, letterSpacing:1.5, cursor:"pointer", fontFamily:"'Jost',sans-serif", fontWeight:400, textAlign:"center" }}>
+                {l.label}
+              </button>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -2341,14 +2372,6 @@ export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
   const [langOpen, setLangOpen] = useState(false);
   const t = makeTrans(lang);
-  const toggleLang = () => {
-    // Sırayla dilleri döndür (EN → TR → DE → ES → PT-BR → FR → JA → EN ...)
-    const codes = LANGUAGES.map(l => l.code);
-    const idx = codes.indexOf(lang);
-    const nl = codes[(idx + 1) % codes.length] || "en";
-    setLang(nl);
-    localStorage.setItem("sakin_lang", nl);
-  };
   const [tabletMode, setTabletMode] = useState(detectTablet);
   useEffect(() => {
     const onResize = () => { const v = detectTablet(); isTablet = v; setTabletMode(v); };
@@ -2633,17 +2656,11 @@ export default function SakinApp() {
     if (errLower.includes("cancel") || errLower.includes("iptal")) return;
     let msg;
     if (r.error === "products_not_loaded") {
-      msg = lang === "tr"
-        ? "App Store ürünleri yüklenemedi. İnternet bağlantınızı kontrol edip tekrar deneyin."
-        : "App Store products could not load. Check your internet connection and try again.";
+      msg = t("err_products_not_loaded");
     } else if (r.error === "already_owned") {
-      msg = lang === "tr"
-        ? "Bu ürünü zaten aldınız. 'Satın Alımları Geri Yükle' butonuna basın."
-        : "You already own this product. Tap 'Restore Purchases'.";
+      msg = t("err_already_owned");
     } else {
-      msg = lang === "tr"
-        ? "Satın alma tamamlanamadı. Lütfen tekrar deneyin."
-        : "Purchase could not be completed. Please try again.";
+      msg = t("err_purchase_generic");
     }
     setPurchaseError(msg);
   };
@@ -2655,9 +2672,7 @@ export default function SakinApp() {
     setPurchaseLoading(null);
     if (r.success) { setIsPremium(true); haptic(ImpactStyle.Heavy); }
     else {
-      setPurchaseError(lang === "tr"
-        ? "Aktif abonelik bulunamadı."
-        : "No active subscription found.");
+      setPurchaseError(t("err_no_subscription"));
     }
   };
 
@@ -2685,10 +2700,10 @@ export default function SakinApp() {
         setLicenseInput("");
         haptic(ImpactStyle.Heavy);
       } else {
-        setLicenseError(lang === "tr" ? "Geçersiz lisans anahtarı" : "Invalid license key");
+        setLicenseError(t("err_invalid_license"));
       }
     } catch {
-      setLicenseError(lang === "tr" ? "Bağlantı hatası, tekrar dene" : "Connection error, try again");
+      setLicenseError(t("err_connection_retry"));
     }
     setLicenseLoading(false);
   };
@@ -3071,7 +3086,7 @@ export default function SakinApp() {
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -3107,7 +3122,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       setChakraAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("çakra", chakraInput);
     } catch(e) {
-      setChakraAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e)));
+      setChakraAnaliz(t("err_connection_prefix") + (e?.message || String(e)));
       console.error("ChakraAnaliz error:", e);
     }
   };
@@ -3250,7 +3265,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1200,
+          model:"llama-3.3-70b-versatile", max_tokens:1200, lang,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -3306,7 +3321,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100,
+          model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -3345,7 +3360,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("şikayet", sikayet);
-    } catch(e) { setSikayetAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
+    } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
 
   const generateHastalikAnaliz = async () => {
@@ -3359,7 +3374,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1300,
+          model:"llama-3.3-70b-versatile", max_tokens:1300, lang,
           system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -3398,7 +3413,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
       setHastalikAnaliz(d?.text || "Analiz alınamadı.");
       sorguKaydet("hastalık", hastalik);
-    } catch(e) { setHastalikAnaliz((lang==="tr" ? "Bağlantı hatası: " : "Connection error: ") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
+    } catch(e) { setHastalikAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
   };
 
   const generateRapor = async () => {
@@ -3492,7 +3507,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1700,
+          model:"llama-3.3-70b-versatile", max_tokens:1700, lang,
           system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
 ${kisiselProfil()}${astroText}${kozmikText}
@@ -3521,7 +3536,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         setRaporKullanildi(true);
       }
       setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
-    } catch(e) { setAiRapor(lang==="tr" ? "Bağlantı hatası. Lütfen tekrar dene." : "Connection error. Please try again."); console.error("AiRapor error:", e); }
+    } catch(e) { setAiRapor(t("err_connection_full")); console.error("AiRapor error:", e); }
     finally { setAiLoading(false); }
   };
 
@@ -3542,7 +3557,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
     if (!text) return;
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = lang === "tr" ? "tr-TR" : "en-US";
+    utt.lang = t("voice_lang");
     utt.rate = 0.75; utt.pitch = 0.9; utt.volume = 0.7;
     window.speechSynthesis.speak(utt);
   };
@@ -3648,9 +3663,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <button onClick={toggleLang} style={{ marginLeft:"auto",flexShrink:0,background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"#aaaaaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,minHeight:44,minWidth:44,alignSelf:"center",marginRight:4 }}>
-          {lang === "tr" ? "EN" : "TR"}
-        </button>
+        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
+          <LangPicker lang={lang} setLang={setLang} compact />
+        </div>
       </div>
       )}
 
@@ -3659,13 +3674,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:8 }}>
-              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{lang==="tr"?"Sakin Ailesi":"Sakin Family"}</div>
-              <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Keşfet":"Explore"}</div>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
+              <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
             </div>
 
             {/* SENİN BİLGİLERİN — ad/soyad input + Sakin girişten gelen doğum bilgisi özeti (kapalı) */}
             <div style={{ background:"rgba(184,164,216,0.04)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:14,padding:"14px 16px",display:"flex",flexDirection:"column",gap:10 }}>
-              <div style={{ fontSize:10,letterSpacing:3,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Senin Bilgilerin":"Your Info"}</div>
+              <div style={{ fontSize:10,letterSpacing:3,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_your_info")}</div>
               <input type="text"
                 value={userName}
                 onChange={e=>{
@@ -3673,7 +3688,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   setUserName(v); setNameInput(v);
                   try { localStorage.setItem("sakin_name", v); } catch(_){}
                 }}
-                placeholder={lang==="tr"?"Adın ve soyadın":"Your full name"}
+                placeholder={t("ailesi_name_ph")}
                 autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
                 style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
 
@@ -3685,29 +3700,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {!ailesiEditBirth && (
                     <button onClick={()=>setAilesiEditBirth(true)}
                       style={{ alignSelf:"flex-start",background:"none",border:"1px dashed rgba(184,164,216,0.3)",borderRadius:100,padding:"6px 14px",color:"#9080b0",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                      {lang==="tr"?"Doğum bilgilerini değiştir":"Edit birth info"}
+                      {t("ailesi_edit_birth")}
                     </button>
                   )}
                 </>
               ) : (
                 /* Sakin girişinde hiç doğum bilgisi girilmediyse hemen formu aç */
                 <div style={{ fontSize:12,color:"#888",fontStyle:"italic" }}>
-                  {lang==="tr"?"Doğum bilgini henüz girmedin. Aşağıya gir; tüm aile uygulamaları kullanacak.":"You haven't entered your birth info yet. Fill in below — all family apps will use it."}
+                  {t("ailesi_no_birth")}
                 </div>
               )}
 
               {(ailesiEditBirth || !birthDate) && (
                 <div style={{ display:"flex",flexDirection:"column",gap:8,paddingTop:6,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
                   <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Tarihi":"Date of Birth"}</div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
                     <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
                   </div>
                   <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Saati":"Birth Time"}</div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_label2")}</div>
                     <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
                   </div>
                   <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Doğum Şehri":"Birth City"}</div>
+                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_label")}</div>
                     <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
                   </div>
                   <div style={{ display:"flex",gap:8,marginTop:4 }}>
@@ -3718,12 +3733,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         setAilesiEditBirth(false);
                       }}
                       style={{ flex:1,background:"linear-gradient(135deg,rgba(184,164,216,0.35),rgba(122,80,150,0.3))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:100,padding:"9px 14px",color:"#fff",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                      {lang==="tr"?"Kaydet":"Save"}
+                      {t("common_save")}
                     </button>
                     {birthDate && (
                       <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setBirthCityInput(birthCity); setAilesiEditBirth(false); }}
                         style={{ background:"none",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,padding:"9px 14px",color:"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                        {lang==="tr"?"Vazgeç":"Cancel"}
+                        {t("common_cancel")}
                       </button>
                     )}
                   </div>
@@ -3731,18 +3746,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               )}
             </div>
             {[
-              { name:"Sakin Hayvan", embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
-                desc: lang==="tr"
-                  ? "Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi."
-                  : "Words, Stones, Nagual — daily three-card draws through Anatolian wisdom and spirit guidance." },
-              { name:"Sakin Mitler", embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
-                desc: lang==="tr"
-                  ? "Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır."
-                  : "Daily archetype, myth and image reading in the footsteps of Jung — three decks open each day." },
-              { name:"Sakin Tasarım", embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
-                desc: lang==="tr"
-                  ? "Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar."
-                  : "Your Human Design chart from birth date, time and city — type, inner authority, profile, centers and channels." },
+              { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
+                desc: t("ailesi_hayvan_desc") },
+              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+                desc: t("ailesi_mitler_desc") },
+              { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
+                desc: t("ailesi_tasarim_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
@@ -3763,11 +3772,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             {/* Policy mini-linkler — top-nav iOS feature ekranlarında gizli, buradan erişim */}
             <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
               {[
-                ["hakkinda", lang==="tr"?"Sakin Nedir":"About"],
-                ["fiyat",    lang==="tr"?"Fiyatlandırma":"Pricing"],
-                ["sartlar",  lang==="tr"?"Şartlar":"Terms"],
-                ["gizlilik", lang==="tr"?"Gizlilik":"Privacy"],
-                ["iade",     lang==="tr"?"İade":"Refund"],
+                ["hakkinda", t("ailesi_policy_about")],
+                ["fiyat",    t("ailesi_policy_pricing")],
+                ["sartlar",  t("ailesi_policy_terms")],
+                ["gizlilik", t("ailesi_policy_privacy")],
+                ["iade",     t("ailesi_policy_refund")],
               ].map(([sc,lbl])=>(
                 <button key={sc} onClick={()=>{ setShowAilesi(false); setScreen(sc); }}
                   style={{ background:"none",border:"none",padding:"4px 2px",color:"#777",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
@@ -3776,7 +3785,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               ))}
             </div>
             <button onClick={()=>setShowAilesi(false)} style={{ marginTop:6,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-              {lang==="tr"?"Kapat":"Close"}
+              {t("common_close")}
             </button>
           </div>
         </div>
@@ -3786,7 +3795,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {isNative && !isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
         <button
           onClick={()=>{ haptic(); setMirrorPortalActive(true); setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050); }}
-          aria-label={lang==="tr" ? "Aynaya gir" : "Enter the Mirror"}
+          aria-label={t("mirror_aria")}
           style={{
             position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 64px)", right:14,
             zIndex:9997, width:36, height:36, borderRadius:"50%",
@@ -3820,7 +3829,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               </div>
             </div>
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:6,color:"#d0c0f0",textTransform:"uppercase",opacity:0.9,animation:"fadeUp 1.2s ease-out 0.3s both" }}>
-              {lang==="tr" ? "İçsel Ayna" : "Inner Mirror"}
+              {t("mirror_label")}
             </div>
           </div>
         );
@@ -3945,7 +3954,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     const cta = doc.createElement("button");
                     cta.id = "sakin-cta-bar";
                     cta.className = "sakin-premium-cta-bar";
-                    cta.textContent = (lang === "tr") ? "✦  Premium ile detayları aç" : "✦  Unlock details with Premium";
+                    cta.textContent = t("mirror_premium_cta");
                     cta.addEventListener("click", () => {
                       try { window.parent.postMessage({ type: "sakin-premium-cta" }, "*"); } catch(_) {}
                     });
@@ -4004,15 +4013,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 padding:"40px 28px", gap:18, animation:"fadeIn 0.5s ease" }}>
                 <div style={{ fontSize:38, lineHeight:1, opacity:0.85, filter:`drop-shadow(0 0 18px rgba(${rgb},0.5))` }}>✦</div>
                 <div style={{ fontSize:11, letterSpacing:5, color:`rgba(${rgb},0.85)`, textTransform:"uppercase", fontFamily:"'Jost',sans-serif" }}>
-                  {lang==="tr" ? "Sakin Ailesi" : "Sakin Family"}
+                  {t("ailesi_title")}
                 </div>
                 <div style={{ fontSize:22, color:"#fff", fontFamily:"'Jost',sans-serif", fontWeight:300, textAlign:"center", maxWidth:320, lineHeight:1.4, letterSpacing:1 }}>
-                  {lang==="tr" ? "Devam etmek için Premium gerekli" : "Premium needed to continue"}
+                  {t("ailesi_premium_needed_title")}
                 </div>
                 <div style={{ fontSize:13, color:"#b8a8d0", lineHeight:1.7, textAlign:"center", maxWidth:300, fontFamily:"'Inter',sans-serif" }}>
-                  {lang==="tr"
-                    ? `${embeddedApp.name} için ${AILESI_FREE_OPENS} ücretsiz açılışın tamamlandı. Premium ile sınırsız aç ve tüm aile uygulamalarına eriş.`
-                    : `Your ${AILESI_FREE_OPENS} free opens of ${embeddedApp.name} are done. Unlock unlimited access to all family apps with Premium.`}
+                  {t("ailesi_premium_quota").replace("{name}", embeddedApp.name).replace("{free}", String(AILESI_FREE_OPENS))}
                 </div>
                 <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setScreen("fiyat"); }}
                   style={{ marginTop:8, background:"linear-gradient(135deg, rgba(184,164,216,0.95), rgba(122,80,150,0.92))",
@@ -4020,20 +4027,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     color:"#fff", fontSize:13, letterSpacing:2.5, cursor:"pointer",
                     fontFamily:"'Jost',sans-serif", textTransform:"uppercase",
                     boxShadow:`0 8px 28px rgba(0,0,0,0.55), 0 0 28px rgba(${rgb},0.5)` }}>
-                  {lang==="tr" ? "✦ Premium'a Geç" : "✦ Get Premium"}
+                  {t("ailesi_get_premium")}
                 </button>
                 <button onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); }}
                   style={{ background:"none", border:"1px solid rgba(255,255,255,0.18)", borderRadius:100, padding:"9px 22px",
                     color:"#888", fontSize:11, letterSpacing:1.8, cursor:"pointer",
                     fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Şimdi değil" : "Not now"}
+                  {t("common_not_now")}
                 </button>
               </div>
             );
           })()}
           <button
             onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
-            aria-label={lang==="tr"?"Geri":"Back"}
+            aria-label={t("common_back")}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) + 12px)", left:12, zIndex:10003,
               width:38, height:38, borderRadius:"50%", padding:0,
@@ -4075,7 +4082,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 whiteSpace:"nowrap", overflow:"hidden",
               }}>
               <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
-              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>}
+              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
             </button>
           );
         })}
@@ -4097,15 +4104,15 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <div style={{ fontSize:18, lineHeight:1 }}>✦</div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ fontSize:13, fontWeight:500, color:"#fff", letterSpacing:0.3, marginBottom:2 }}>
-              {lang==="tr" ? `Yeni sürüm hazır · ${updateInfo.version}` : `New version available · ${updateInfo.version}`}
+              {`${t("update_new_version")} · ${updateInfo.version}`}
             </div>
             <div style={{ fontSize:11.5, color:"rgba(255,255,255,0.82)", lineHeight:1.4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-              {lang==="tr" ? (updateInfo.notes_tr || "Yeni özellikler ve iyileştirmeler") : (updateInfo.notes_en || "New features and improvements")}
+              {(lang==="tr" ? updateInfo.notes_tr : updateInfo.notes_en) || t("update_default_notes")}
             </div>
           </div>
           <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
             style={{ background:"rgba(255,255,255,0.22)", border:"1px solid rgba(255,255,255,0.4)", borderRadius:18, padding:"7px 14px", color:"#fff", fontSize:12, letterSpacing:1, fontFamily:"'Jost',sans-serif", textDecoration:"none", whiteSpace:"nowrap" }}>
-            {lang==="tr" ? "Güncelle" : "Update"}
+            {t("update_button")}
           </a>
           <button onClick={()=>{ setUpdateDismissed(updateInfo.version); localStorage.setItem("sakin_update_dismissed_v", updateInfo.version); }}
             aria-label="Dismiss"
@@ -4166,35 +4173,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
-                  {/* Dil dropdown — sade kod (EN/TR/DE/ES/PT/FR/JA) */}
-                  <div style={{ position:"relative" }}>
-                    <button onClick={()=>setLangOpen(o=>!o)}
-                      style={{ background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:20,padding:"6px 14px",color:"#ddd",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,minWidth:64,display:"inline-flex",alignItems:"center",justifyContent:"center",gap:6 }}>
-                      <span>{(LANGUAGES.find(l=>l.code===lang)?.label) || lang.toUpperCase()}</span>
-                      <span style={{ fontSize:9,opacity:0.7,transform: langOpen ? "rotate(180deg)" : "none",transition:"transform 0.2s" }}>▾</span>
-                    </button>
-                    {langOpen && (
-                      <>
-                        <div onClick={()=>setLangOpen(false)} style={{ position:"fixed",inset:0,zIndex:9999 }} />
-                        <div style={{ position:"absolute",top:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",zIndex:10000,background:"rgba(15,10,25,0.96)",backdropFilter:"blur(20px)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:14,padding:6,display:"flex",flexDirection:"column",gap:2,boxShadow:"0 12px 32px rgba(0,0,0,0.55)",minWidth:80 }}>
-                          {LANGUAGES.map(l => (
-                            <button key={l.code}
-                              onClick={()=>{ setLang(l.code); localStorage.setItem("sakin_lang",l.code); setLangOpen(false); }}
-                              style={{ background: lang===l.code ? "rgba(184,164,216,0.18)" : "transparent",border:"none",borderRadius:8,padding:"7px 14px",color: lang===l.code ? "#fff" : "#aaa",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,textAlign:"center" }}>
-                              {l.label}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
+                  <LangPicker lang={lang} setLang={setLang} />
                 </div>
               </>
             ) : (birthDate && !showBirthForm) ? (
               /* Doğum bilgisi zaten girilmiş → özet kart + "değiştir" */
               <div style={{ textAlign:"center",maxWidth:300,margin:"0 auto",display:"flex",flexDirection:"column",gap:14 }}>
                 <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"18px 18px",display:"flex",flexDirection:"column",gap:8 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Bilgilerin" : "Your Birth Info"}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_your_info")}</div>
                   <div style={{ fontSize:14,color:"#d8c8f0",letterSpacing:1,fontFamily:"'Inter',sans-serif",lineHeight:1.8 }}>
                     {birthDate}{birthTime ? ` · ${birthTime}` : ""}
                     {birthCity ? <><br/>{birthCity}</> : null}
@@ -4202,29 +4188,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <button onClick={()=>setShowBirthForm(true)}
                   style={{ background:"none",border:"1px solid rgba(255,255,255,0.18)",borderRadius:100,padding:"10px 22px",color:"#bbb",fontSize:12,letterSpacing:1.8,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:400,textTransform:"uppercase" }}>
-                  {lang==="tr" ? "Doğum bilgilerini değiştir" : "Edit birth info"}
+                  {t("birth_edit_info")}
                 </button>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{ setScreen("sabah"); }}>
-                  {lang==="tr" ? "Devam Et →" : "Continue →"}
+                  {t("common_continue")}
                 </button>
               </div>
             ) : (
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Tarihi" : "Date of Birth"}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
                   <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Saati (isteğe bağlı)" : "Birth Time (optional)"}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_optional")}</div>
                   <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
                 </div>
                 <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lang==="tr" ? "Doğum Şehri (yükselen için)" : "Birth City (for ascendant)"}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_ascendant")}</div>
                   <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
                 </div>
                 <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
-                  {lang==="tr" ? "🔒  Verileriniz sunucularda saklanmaz · Yalnızca cihazınızda tutulur" : "🔒  Your data is never stored on servers · Kept on your device only"}
+                  {t("birth_data_safe")}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
@@ -4234,7 +4220,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     setShowBirthForm(false);
                     setScreen("sabah");
                   }}>
-                  {lang==="tr" ? ((birthInput||birthTimeInput||birthCityInput) ? "Kaydet →" : "Atla →") : ((birthInput||birthTimeInput||birthCityInput) ? "Save →" : "Skip →")}
+                  {(birthInput||birthTimeInput||birthCityInput) ? t("birth_save_arrow") : t("birth_skip_arrow")}
                 </button>
               </div>
             )}
@@ -4245,20 +4231,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* BAĞLANTI — insan iskeleti çakra sistemi */}
       {screen==="mandala" && (() => {
         const steps = [
-          {id:"sabah",  label:lang==="tr"?"Sabah":"Morning",  icon:"🌅", color:"#f0a060", glow:"255,140,60"},
-          {id:"nefes",  label:lang==="tr"?"Nefes":"Breath",   icon:"🫧", color:"#60b8e8", glow:"80,160,220"},
-          {id:"ses",    label:lang==="tr"?"Ses":"Sound",       icon:"🔊", color:"#a07ae0", glow:"160,122,224"},
-          {id:"chakra", label:lang==="tr"?"Çakra":"Chakra",   icon:"💜", color:"#b87adc", glow:"180,100,255"},
-          {id:"gun",    label:lang==="tr"?"Görevler":"Tasks",  icon:"☀️", color:"#e8d060", glow:"230,200,60"},
-          {id:"aksam",  label:lang==="tr"?"Akşam":"Evening",  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
-          {id:"harita", label:lang==="tr"?"Bağlantı":"Connection",     icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
+          {id:"sabah",  label:t("bnav_morning"),  icon:"🌅", color:"#f0a060", glow:"255,140,60"},
+          {id:"nefes",  label:t("bnav_breath"),   icon:"🫧", color:"#60b8e8", glow:"80,160,220"},
+          {id:"ses",    label:t("bnav_sound"),    icon:"🔊", color:"#a07ae0", glow:"160,122,224"},
+          {id:"chakra", label:t("bnav_chakra"),   icon:"💜", color:"#b87adc", glow:"180,100,255"},
+          {id:"gun",    label:t("bnav_day"),      icon:"☀️", color:"#e8d060", glow:"230,200,60"},
+          {id:"aksam",  label:t("bnav_evening"),  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
+          {id:"harita", label:t("bnav_connection"), icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
         ];
         const N=steps.length;
         const BADGES=[
-          {days:3, icon:"🌱",label:lang==="tr"?"3 Gün":"3 Days"},
-          {days:7, icon:"🔥",label:lang==="tr"?"1 Hafta":"1 Week"},
-          {days:21,icon:"⚡",label:lang==="tr"?"21 Gün":"21 Days"},
-          {days:40,icon:"👑",label:lang==="tr"?"40 Gün":"40 Days"},
+          {days:3, icon:"🌱",label:t("bnav_3day")},
+          {days:7, icon:"🔥",label:t("bnav_1week")},
+          {days:21,icon:"⚡",label:t("bnav_21day")},
+          {days:40,icon:"👑",label:t("bnav_40day")},
         ];
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
@@ -4271,29 +4257,29 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             </button>
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:8}}>
-              <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{lang==="tr"?"BUGÜNÜN BAĞLANTISI":"TODAY'S CONNECTION"}</div>
+              <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{t("mandala_today_label")}</div>
             </div>
 
             {/* Streak row */}
             <div style={{display:"flex",gap:18,marginBottom:18,alignItems:"center"}}>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:200,color:"#f0a040",lineHeight:1,animation:streakData.current>=3?"streakFire 2s ease-in-out infinite":"none"}}>{streakData.current}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"gün serisi":"day streak"}</div>
+                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_streak")}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:200,color:"#888888",lineHeight:1}}>{streakData.best}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"en iyi":"best"}</div>
+                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_best")}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:200,color:allStepsComplete?"#82d9a3":"#aaaaaa",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#777777"}}>/{N}</span></div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"adım":"steps"}</div>
+                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_steps")}</div>
               </div>
               <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
               <div style={{textAlign:"center"}}>
                 <div style={{fontSize:26,fontWeight:200,color:freqListenSec>0?"#a07ae0":"#888888",lineHeight:1}}>{freqListenSec>=60?`${Math.floor(freqListenSec/60)}m`:freqListenSec>0?`${freqListenSec}s`:"—"}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{lang==="tr"?"frekans":"freq"}</div>
+                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_freq")}</div>
               </div>
             </div>
 
@@ -4302,7 +4288,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               const pct = completedStepCount / N;
               const lightY = 520 - pct * 480;
               const chakraNodes = [
-                {y:500, label:lang==="tr"?"Yer":"Earth",     color:"#8B6914", zone:"sub"},
+                {y:500, label:t("mandala_earth_lower"),     color:"#8B6914", zone:"sub"},
                 {y:430, label:steps[0].label,                color:steps[0].color, id:steps[0].id, zone:"lower"},
                 {y:378, label:steps[1].label,                color:steps[1].color, id:steps[1].id, zone:"lower"},
                 {y:326, label:steps[2].label,                color:steps[2].color, id:steps[2].id, zone:"mid"},
@@ -4310,7 +4296,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {y:222, label:steps[4].label,                color:steps[4].color, id:steps[4].id, zone:"upper"},
                 {y:170, label:steps[5].label,                color:steps[5].color, id:steps[5].id, zone:"upper"},
                 {y:118, label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
-                {y:40,  label:lang==="tr"?"Gök":"Sky",       color:"#cfd8dc", zone:"supra"},
+                {y:40,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
               return (
                 <div style={{width:220,position:"relative"}}>
@@ -4409,18 +4395,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
                     {/* Yer simgesi */}
                     <text x="110" y="528" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▼ {lang==="tr"?"YERYÜZÜ":"EARTH"}</text>
+                      fontFamily="'Jost',sans-serif">▼ {t("mandala_earth_upper")}</text>
 
                     {/* Gök simgesi */}
                     <text x="110" y="22" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▲ {lang==="tr"?"GÖK":"SKY"}</text>
+                      fontFamily="'Jost',sans-serif">▲ {t("mandala_sky_upper")}</text>
 
                     {/* Tam bağlantı efekti */}
                     {allStepsComplete && <>
                       <line x1="110" y1="500" x2="110" y2="40" stroke="url(#riseGrad)" strokeWidth="4" filter="url(#glowF)" opacity="0.8"
                         strokeDasharray="6 4" style={{animation:`electricRise 1.8s linear infinite`}} />
                       <text x="110" y="270" textAnchor="middle" fontSize="9" letterSpacing="3" fill="rgba(130,217,163,0.8)"
-                        fontFamily="'Jost',sans-serif">⚡ {lang==="tr"?"BAĞLANTI AKTİF":"CONNECTION ACTIVE"} ⚡</text>
+                        fontFamily="'Jost',sans-serif">⚡ {t("mandala_connection_active")} ⚡</text>
                     </>}
                   </svg>
                 </div>
@@ -4431,13 +4417,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             {allStepsComplete?(
               <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(74,222,128,0.06)",border:"1px solid rgba(74,222,128,0.16)",borderRadius:16,maxWidth:280,width:"100%"}}>
                 <div style={{fontFamily:"'Inter',sans-serif",fontSize:15,color:"#82d9a3",letterSpacing:1}}>
-                  🌿 {lang==="tr"?"Bugün tamamlandı":"Today complete"}
+                  🌿 {t("mandala_today_complete")}
                 </div>
               </div>
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:13,letterSpacing:2}}
                 onClick={()=>setScreen(nextStep?.id || "sabah")}>
-                {lang==="tr"?(completedStepCount>0?"GÜNE DEVAM ET →":"GÜNE BAŞLA →"):(completedStepCount>0?"CONTINUE →":"START THE JOURNEY →")}
+                {completedStepCount>0 ? t("mandala_continue_today") : t("mandala_start_today")}
               </button>
             ):null}
 
@@ -4461,7 +4447,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
             {/* Harita — adım navigasyonu */}
             <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
-              <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{lang==="tr"?"GÜNÜN BAĞLANTISI":"DAY CONNECTION"}</div>
+              <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{t("mandala_day_label")}</div>
               <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
                 {steps.map(step=>{
                   const done=!!stepsCompleted[step.id];
@@ -4495,19 +4481,19 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,155,55,0.4) 0%,rgba(255,95,35,0.1) 55%,transparent 70%)",boxShadow:"0 0 32px rgba(255,130,45,0.3),0 0 64px rgba(255,95,35,0.12)",animation:"slowPulse 4.5s ease-in-out infinite" }} />
               <div style={{ position:"absolute",inset:-14,borderRadius:"50%",border:"1px solid rgba(255,140,50,0.08)" }} />
             </div>
-            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:"#777777" }}>{time.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"})}</div>
+            <div style={{ marginTop:16,fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:13,letterSpacing:4,textTransform:"uppercase",color:"#777777" }}>{time.toLocaleTimeString(t("locale_code"),{hour:"2-digit",minute:"2-digit"})}</div>
           </div>
           {stepsCompleted["sabah"] ? (
             /* ── Tamamlandı: salt-okunur özet ── */
             <div>
               <div style={{ marginBottom:20 }}>
-                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Bugünün niyeti":"Today's intention"}</div>
+                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{t("common_today_intent")}</div>
                 <div style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,140,50,0.2)",borderRadius:12,padding:"14px 16px",fontSize:14,color:"#e0d8f4",lineHeight:1.8,fontStyle:"italic" }}>
                   {niyet || "—"}
                 </div>
               </div>
               <div style={{ marginBottom:28 }}>
-                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{lang==="tr"?"Seçilen kelimeler":"Selected words"}</div>
+                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",marginBottom:10,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{t("common_selected_words")}</div>
                 <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
                   {selectedWords.length > 0 ? selectedWords.map(w=>(
                     <span key={w} style={{ padding:"6px 16px",borderRadius:20,fontSize:13,letterSpacing:0.5,background:"rgba(255,140,50,0.12)",border:"1px solid rgba(255,140,50,0.28)",color:"#f0a060" }}>{w}</span>
@@ -4520,11 +4506,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </button>
                 <button onClick={()=>{ setStepsCompleted(prev=>{ const next={...prev}; delete next.sabah; localStorage.setItem("sakin_steps_"+todayKey,JSON.stringify(next)); return next; }); }}
                   style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:12,padding:"0 16px",color:"#888888",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap" }}>
-                  {lang==="tr"?"düzenle":"edit"}
+                  {t("common_edit")}
                 </button>
               </div>
               <div style={{ textAlign:"center",fontSize:13,letterSpacing:2,color:"#777777",fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "Yarın yenilenir" : "Resets tomorrow"}
+                {t("common_resets_tomorrow")}
               </div>
             </div>
           ) : (
@@ -4549,16 +4535,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 {!isPremium && (
                   <button onClick={()=>setScreen("fiyat")} style={{ display:"block",margin:"12px auto 0",background:"none",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"8px 20px",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                    {lang==="tr" ? "✦ Tüm kelimeleri aç" : "✦ Unlock all words"}
+                    {t("premium_unlock_words")}
                   </button>
                 )}
                 {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
                 <div style={{ textAlign:"center", fontSize:14, color:"#888888", letterSpacing:1, padding:"12px 0" }}>
-                  {lang==="tr"
-                    ? `${niyet.trim() ? "✓" : "○"} Niyetini yaz  ·  ${selectedWords.length}/3 kelime seç`
-                    : `${niyet.trim() ? "✓" : "○"} Write your intention  ·  ${selectedWords.length}/3 words`}
+                  {`${niyet.trim() ? "✓" : "○"} ${t("premium_unlock_word_hint").replace("{n}", String(selectedWords.length))}`}
                 </div>
               ) : (
                 <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=new Date().toISOString().slice(0,10); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
@@ -4605,7 +4589,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   style={{ transition:`d ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}/>
                 <text x="155" y={breathIsActive?142:132} fill="rgba(80,200,180,0.5)" fontSize="9" fontFamily="'Jost',sans-serif"
                   style={{ transition:`y ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
-                  {lang==="tr"?"diyafram":"diaphragm"}
+                  {t("sabah_diyafram")}
                 </text>
                 {/* Belly area - expands on inhale */}
                 <ellipse cx="90" cy="168"
@@ -4621,7 +4605,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 />
                 <text x="90" y="172" textAnchor="middle" fill={`rgba(80,200,180,${breathIsActive?0.7:0.3})`} fontSize="9" fontFamily="'Jost',sans-serif"
                   style={{ transition:`fill ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
-                  {lang==="tr"?"karın":"belly"}
+                  {t("sabah_belly")}
                 </text>
                 {/* Arrow indicators */}
                 <g style={{ opacity:breathIsActive?1:0.2, transition:`opacity ${breathIsActive?breathInDur:breathOutDur} ease-in-out` }}>
@@ -4630,7 +4614,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </g>
                 {/* Chest label */}
                 <text x="90" y="108" textAnchor="middle" fill="rgba(80,200,180,0.3)" fontSize="9" fontFamily="'Jost',sans-serif">
-                  {lang==="tr"?"göğüs sabit":"chest still"}
+                  {t("sabah_chest_still")}
                 </text>
               </svg>
               </div>
@@ -4779,7 +4763,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     ))}
                   </div>
                   <button onClick={()=>setScreen("fiyat")} style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.4)",borderRadius:14,border:"1px solid rgba(184,164,216,0.2)",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
-                    {lang==="tr" ? "✦ Premium ile Aç" : "✦ Unlock with Premium"}
+                    {t("premium_unlock_breath")}
                   </button>
                 </div>
               ) : (
@@ -4908,10 +4892,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   </div>
                   <div style={{ flex:1,minWidth:0 }}>
                     <div style={{ fontSize:15,fontWeight:500,color:"#d8efe4",letterSpacing:1,marginBottom:3,fontFamily:"'Jost',sans-serif" }}>
-                      {lang==="tr" ? "Zihni Boşalt" : "Empty the Mind"}
+                      {t("mind_empty")}
                     </div>
                     <div style={{ fontSize:12,color:"#88b0a0",lineHeight:1.5,letterSpacing:0.3 }}>
-                      {lang==="tr" ? "Kaleidoskop ve drone müziğiyle zihnini dinlendir" : "Rest your mind with kaleidoscope and drone music"}
+                      {t("mind_rest")}
                     </div>
                   </div>
                   <div style={{ color:"rgba(160,220,200,0.5)",fontSize:18,flexShrink:0 }}>→</div>
@@ -5097,7 +5081,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {/* Başlık */}
               <div style={{ textAlign:"center",marginBottom:36,zIndex:1 }}>
                 <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0" }}>
-                  {lang==="tr" ? "Kalbine Sor" : "Ask Your Heart"}
+                  {t("mirror_ask_heart")}
                 </div>
               </div>
             </>
@@ -5109,7 +5093,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"center",padding:"48px 0" }}>
                 <div style={{ fontSize:26,marginBottom:14,animation:"pulse 2s ease-in-out infinite" }}>🪞</div>
                 <div style={{ fontSize:13,letterSpacing:4,color:"#a070d0",animation:"pulse 1.5s ease-in-out infinite",fontFamily:"'Jost',sans-serif" }}>
-                  {lang==="tr" ? "YANIT HAZIRLANIYOR" : "READING"}
+                  {t("mirror_reading")}
                 </div>
               </div>
             ) : sikayetAnaliz ? (
@@ -5126,7 +5110,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
                   style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                  {lang==="tr" ? "← Yeni arama" : "← New search"}
+                  {t("mirror_new_search")}
                 </button>
               </div>
             ) : (
@@ -5137,7 +5121,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     value={sikayet}
                     onChange={e=>setSikayet(e.target.value)}
                     onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requireAiConsent(generateSikayetAnaliz);} }}
-                    placeholder={lang==="tr" ? "Fiziksel, duygusal ya da ruhsal — ne merak ediyorsun?" : "Physical, emotional or spiritual — what do you wonder about?"}
+                    placeholder={t("mirror_input_ph")}
                     rows={3}
                     autoComplete="off" autoCorrect="off"
                     autoFocus
@@ -5196,7 +5180,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     }}
                     onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(255,255,255,0.4)"; e.currentTarget.style.color="#b090d8"; }}
                     onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(255,255,255,0.2)"; e.currentTarget.style.color="#8868b0"; }}>
-                    <span style={{ fontSize:13,letterSpacing:2 }}>{lang==="tr" ? "NE SORABİLİRİM?" : "WHAT CAN I ASK?"}</span>
+                    <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_what_to_ask")}</span>
                     <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showOrnekler?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
                   </button>
 
@@ -5209,62 +5193,62 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
                       {(lang==="tr" ? [
-                        { cat:"🌿 Beden & Sağlık", sorular:[
+                        { cat:t("ask_cat_body"), sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Sindirim sorunum var, ruhsal nedeni nedir?",
                           "Baş ağrım sürekli geliyor, çakra bağlantısı var mı?",
                           "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
                         ]},
-                        { cat:"💜 Duygular & Zihin", sorular:[
+                        { cat:t("ask_cat_emotions"), sorular:[
                           "Bu hafta neden bu kadar dengesiz hissediyorum?",
                           "Sürekli endişeliyim, hangi çakram kapalı?",
                           "Öfkemi nasıl dönüştürebilirim?",
                           "Yalnızlık hissi içimde büyüyor, ne yapmalıyım?",
                         ]},
-                        { cat:"⚡ Enerji & Çakra", sorular:[
+                        { cat:t("ask_cat_chakra"), sorular:[
                           "Hangi çakramın enerjiye ihtiyacı var?",
                           "Cinsel enerjimi yaratıma nasıl dönüştürürüm?",
                           "Aura temizliği için ne önerirsin?",
                           "Kök çakramı nasıl güçlendirebilirim?",
                         ]},
-                        { cat:"🌙 Ruhsal Yolculuk", sorular:[
+                        { cat:t("ask_cat_spiritual"), sorular:[
                           "Hayatımda neden aynı döngüler tekrar ediyor?",
                           "Misyonum nedir, nasıl anlayabilirim?",
                           "İçsel sesimi nasıl daha net duyabilirim?",
                           "Karanlık gecelerde kendimi nasıl tutabilirim?",
                         ]},
-                        { cat:"🌀 Yaşam Geçişleri", sorular:[
+                        { cat:t("ask_cat_transitions"), sorular:[
                           "Taşınma dönemindeyim, sırt ağrım başladı — bağlantısı var mı?",
                           "İş değiştiriyorum ve içimde büyük bir kaygı var, nedeni ne olabilir?",
                           "Ayrılık sürecindeyim, bedenimde ağırlık hissediyorum.",
                           "Yeni bir başlangıç önümde, ama adım atmak zor geliyor.",
                         ]},
                       ] : [
-                        { cat:"🌿 Body & Health", sorular:[
+                        { cat:t("ask_cat_body"), sorular:[
                           "Why is chronic fatigue always with me?",
                           "I have digestive issues — what's the spiritual cause?",
                           "Constant headaches — is there a chakra link?",
                           "I can't sleep — what's the energetic reason?",
                         ]},
-                        { cat:"💜 Emotions & Mind", sorular:[
+                        { cat:t("ask_cat_emotions"), sorular:[
                           "Why do I feel so unbalanced this week?",
                           "I'm constantly anxious — which chakra is blocked?",
                           "How can I transform my anger?",
                           "Loneliness is growing inside me — what should I do?",
                         ]},
-                        { cat:"⚡ Energy & Chakra", sorular:[
+                        { cat:t("ask_cat_chakra"), sorular:[
                           "Which of my chakras needs energy right now?",
                           "How do I channel sexual energy into creativity?",
                           "What do you recommend for aura cleansing?",
                           "How can I strengthen my root chakra?",
                         ]},
-                        { cat:"🌙 Spiritual Journey", sorular:[
+                        { cat:t("ask_cat_spiritual"), sorular:[
                           "Why do the same cycles keep repeating in my life?",
                           "What is my mission and how can I understand it?",
                           "How can I hear my inner voice more clearly?",
                           "How do I hold myself together in dark nights?",
                         ]},
-                        { cat:"🌀 Life Transitions", sorular:[
+                        { cat:t("ask_cat_transitions"), sorular:[
                           "I'm moving homes and my back pain started — is there a connection?",
                           "I'm changing jobs and feel deep anxiety — what might be the cause?",
                           "I'm going through a separation and feel heaviness in my body.",
@@ -5312,7 +5296,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     }}
                     onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
                     onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-                    <span style={{ fontSize:13,letterSpacing:2 }}>{lang==="tr" ? "HAFTANIN KOZMİK ENERJİSİ" : "WEEK'S COSMIC ENERGY"}</span>
+                    <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
                     <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
                   </button>
 
@@ -5332,12 +5316,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
                             <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
                             <div style={{ flex:1,minWidth:0 }}>
-                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{lang==="tr" ? "Ayın Evresi" : "Moon Phase"}</div>
+                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
                               <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr" ? moon.tr : moon.en} · {moon.illumination}%</div>
                               <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
-                                {lang==="tr"
-                                  ? `Dolunay: ${moon.daysToFull < 0.5 ? "bugün" : moon.daysToFull < 1.5 ? "yarın" : `${Math.round(moon.daysToFull)} gün sonra`} · Yeni Ay: ${Math.round(moon.daysToNew)} gün`
-                                  : `Full Moon: ${moon.daysToFull < 0.5 ? "today" : moon.daysToFull < 1.5 ? "tomorrow" : `in ${Math.round(moon.daysToFull)} days`} · New Moon: ${Math.round(moon.daysToNew)} days`}
+                                {(() => {
+                                  const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
+                                  const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
+                                  return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
+                                })()}
                               </div>
                             </div>
                           </div>
@@ -5346,12 +5332,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       })()}
                       {kozmikLoading && (
                         <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
-                          {lang==="tr" ? "NOAA güneş verileri yükleniyor…" : "Loading NOAA solar data…"}
+                          {t("mirror_noaa_loading")}
                         </div>
                       )}
                       {!kozmikLoading && !kozmikData && (
                         <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
-                          {lang==="tr" ? "Güneş verisi şu an alınamadı. Ay evresi her zaman görünür." : "Solar data unavailable right now. Moon phase always shows."}
+                          {t("mirror_noaa_unavail")}
                         </div>
                       )}
                       {!kozmikLoading && kozmikData && (() => {
@@ -5360,16 +5346,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
                           <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
                             <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                              {lang==="tr" ? "Jeomanyetik Aktivite" : "Geomagnetic Activity"}
+                              {t("mirror_geo_activity")}
                             </div>
                             <div style={{ fontSize:18,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>
-                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{lang==="tr" ? kozmikData.interpretation.current.tr : kozmikData.interpretation.current.en}</span>
+                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{kozmikData.interpretation.current[lang==="tr"?"tr":"en"]}</span>
                             </div>
                           </div>
 
                           <div style={{ marginBottom:14 }}>
                             <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:8 }}>
-                              {lang==="tr" ? "Son 7 Gün" : "Past 7 Days"}
+                              {t("mirror_past_7_days")}
                             </div>
                             <div style={{ display:"flex",alignItems:"flex-end",justifyContent:"space-between",gap:4,height:80,marginBottom:6 }}>
                               {kozmikData.past_7_days.daily.map(d=>{
@@ -5385,21 +5371,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                               })}
                             </div>
                             <div style={{ fontSize:12,color:"#999",lineHeight:1.6 }}>
-                              {lang==="tr"
-                                ? `Hafta ortalaması: Kp ${kozmikData.past_7_days.avg_kp}, en yüksek: ${kozmikData.past_7_days.max_kp} (${kozmikData.interpretation.week_peak.tr})`
-                                : `Week avg: Kp ${kozmikData.past_7_days.avg_kp}, peak: ${kozmikData.past_7_days.max_kp} (${kozmikData.interpretation.week_peak.en})`}
+                              {t("mirror_week_summary").replace("{avg}", String(kozmikData.past_7_days.avg_kp)).replace("{max}", String(kozmikData.past_7_days.max_kp)).replace("{label}", kozmikData.interpretation.week_peak[lang==="tr"?"tr":"en"])}
                             </div>
                           </div>
 
                           {kozmikData.next_3_days.forecast_max_kp !== null && (
                             <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
                               <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {lang==="tr" ? "Önümüzdeki 3 Gün" : "Next 3 Days"}
+                                {t("mirror_next_3_days")}
                               </div>
                               <div style={{ fontSize:14,color:"#c0a0e8" }}>
-                                {lang==="tr"
-                                  ? `Tahmini en yüksek: Kp ${kozmikData.next_3_days.forecast_max_kp} (${kozmikData.interpretation.forecast_peak?.tr})`
-                                  : `Forecast peak: Kp ${kozmikData.next_3_days.forecast_max_kp} (${kozmikData.interpretation.forecast_peak?.en})`}
+                                {t("mirror_forecast_text").replace("{max}", String(kozmikData.next_3_days.forecast_max_kp)).replace("{label}", kozmikData.interpretation.forecast_peak?.[lang==="tr"?"tr":"en"] || "")}
                               </div>
                             </div>
                           )}
@@ -5408,14 +5390,14 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           {kozmikData.solar_flares_24h && (
                             <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
                               <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {lang==="tr" ? "Güneş Patlamaları · 24 saat" : "Solar Flares · 24h"}
+                                {t("mirror_solar_flares")}
                               </div>
                               {kozmikData.solar_flares_24h.count === 0 ? (
-                                <div style={{ fontSize:14,color:"#82d9a3" }}>{lang==="tr" ? "Sakin — patlama yok" : "Quiet — no flares"}</div>
+                                <div style={{ fontSize:14,color:"#82d9a3" }}>{t("mirror_quiet_flares")}</div>
                               ) : (
                                 <div style={{ fontSize:14,color:"#d0c0f0" }}>
-                                  {kozmikData.solar_flares_24h.count}× · {lang==="tr" ? "en güçlü" : "max"} <span style={{ color: kozmikData.solar_flares_24h.max_class?.[0]==="X" ? "#e06a6a" : kozmikData.solar_flares_24h.max_class?.[0]==="M" ? "#d99a82" : "#d9c682", fontWeight:500 }}>{kozmikData.solar_flares_24h.max_class}</span>
-                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {lang==="tr" ? kozmikData.interpretation.flares.tr : kozmikData.interpretation.flares.en}</span>}
+                                  {kozmikData.solar_flares_24h.count}× · {t("mirror_max_short")} <span style={{ color: kozmikData.solar_flares_24h.max_class?.[0]==="X" ? "#e06a6a" : kozmikData.solar_flares_24h.max_class?.[0]==="M" ? "#d99a82" : "#d9c682", fontWeight:500 }}>{kozmikData.solar_flares_24h.max_class}</span>
+                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {kozmikData.interpretation.flares[lang==="tr"?"tr":"en"]}</span>}
                                 </div>
                               )}
                             </div>
@@ -5425,23 +5407,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                           {kozmikData.solar_wind && kozmikData.solar_wind.speed != null && (
                             <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
                               <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {lang==="tr" ? "Güneş Rüzgarı" : "Solar Wind"}
+                                {t("mirror_solar_wind")}
                               </div>
                               <div style={{ fontSize:14,color:"#d0c0f0" }}>
                                 {kozmikData.solar_wind.speed} km/s
                                 {kozmikData.solar_wind.density != null && <span style={{ color:"#888" }}> · {kozmikData.solar_wind.density} p/cm³</span>}
-                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {lang==="tr" ? kozmikData.interpretation.wind.tr : kozmikData.interpretation.wind.en}</span>}
+                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {kozmikData.interpretation.wind[lang==="tr"?"tr":"en"]}</span>}
                               </div>
                             </div>
                           )}
 
                           <div style={{ fontSize:11,color:"#777",lineHeight:1.7,paddingTop:10,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                            {lang==="tr"
-                              ? "Kp jeomanyetik fırtınayı, X-ışını sınıfı (B/C/M/X) güneş patlamasının şiddetini, güneş rüzgarı hızı (400+ km/s) gelen plazma akışını gösterir. Yüksek değerler — sinir sistemi hassasiyeti, uyku bozukluğu, yoğun rüyalar, baş ağrısı."
-                              : "Kp shows geomagnetic storms, X-ray class (B/C/M/X) shows flare intensity, solar wind speed (400+ km/s) shows incoming plasma. High values — nervous system sensitivity, sleep disruption, vivid dreams, headaches."}
+                            {t("mirror_noaa_legend")}
                           </div>
                           <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
-                            {lang==="tr" ? "Kaynak: " : "Source: "}NOAA Space Weather · {lang==="tr" ? "Ay: astronomik hesap" : "Moon: astronomical calc"}
+                            {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
                           </div>
                         </>
                         );
@@ -5497,20 +5477,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.22),rgba(255,255,255,0.12))",border:"1px solid rgba(255,255,255,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(120,80,220,0.15),transparent)",pointerEvents:"none" }} />
               <div style={{ fontSize:13,letterSpacing:3.5,color:"#9070c0",marginBottom:6,textAlign:"center" }}>
-                {lang==="tr" ? "12. EV · GİZLİ BENLİK" : "12TH HOUSE · HIDDEN SELF"}
+                {t("map_12h_title")}
               </div>
               <div style={{ fontFamily:"'Inter',sans-serif",fontSize:15,fontWeight:300,textAlign:"center",color:"#d8c0f0",marginBottom:14,lineHeight:1.6 }}>
-                {lang==="tr"
-                  ? "Doğum saatine göre bu senin gizli benlik evin."
-                  : "Based on your birth time, this is your hidden self house."}
+                {t("map_12h_desc")}
               </div>
               <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:14 }}>
                 <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,background:"radial-gradient(circle,rgba(120,80,220,0.5),rgba(60,30,120,0.2))",border:"1px solid rgba(255,255,255,0.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18 }}>
                   ♆
                 </div>
                 <div>
-                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#c8b0e8",marginBottom:2 }}>{zodiacDisplay(ev12Burcu, lang)} {lang==="tr" ? "Burcu" : "Sign"}</div>
-                  <div style={{ fontSize:13,color:"#7060a0",letterSpacing:1 }}>{lang==="tr" ? "Yönetici:" : "Ruler:"} {planetDisplay(ev12Gezegen, lang)}</div>
+                  <div style={{ fontSize:13,letterSpacing:0.5,color:"#c8b0e8",marginBottom:2 }}>{zodiacDisplay(ev12Burcu, lang)} {t("map_sign_suf")}</div>
+                  <div style={{ fontSize:13,color:"#7060a0",letterSpacing:1 }}>{t("map_ruler")} {planetDisplay(ev12Gezegen, lang)}</div>
                 </div>
               </div>
               <div style={{ fontSize:13,letterSpacing:2,color:"#8060b0",marginBottom:8,fontStyle:"italic" }}>
@@ -5520,20 +5498,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 {(EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]).yorum}
               </div>
               <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.15)" }}>
-                <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{lang==="tr" ? "GİZLİ GÜCÜN" : "HIDDEN POWER"}</div>
+                <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{t("map_hidden_power")}</div>
                 <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[lang]?.[ev12Gezegen] || GEZEGEN_12EV_GUCLERI.tr[ev12Gezegen]}</div>
               </div>
             </div>
           ) : (birthDate && !birthTime) || !birthDate ? (
             <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
               <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
-                {lang==="tr"
-                  ? (birthDate ? "12. Ev analizin için doğum saatini ekle" : "Kişisel haritanı oluşturmak için doğum bilgini ekle")
-                  : (birthDate ? "Add your birth time for 12th house analysis" : "Add your birth info to create your personal chart")}
+                {birthDate ? t("map_12h_need_time") : t("map_12h_need_birth")}
               </div>
               <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
                 style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "Doğum Bilgisi Ekle" : "Add Birth Info"}
+                {t("add_birth_info")}
               </button>
             </div>
           ) : null}
@@ -5543,12 +5519,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ position:"absolute",top:-30,left:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(100,140,220,0.18),transparent)",pointerEvents:"none" }} />
               <div style={{ position:"absolute",bottom:-30,right:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,120,220,0.14),transparent)",pointerEvents:"none" }} />
               <div style={{ fontSize:13,letterSpacing:3.5,color:"#a890e0",marginBottom:6,textAlign:"center" }}>
-                {lang==="tr" ? "DRACONİK HARİTA · RUHUN KÖKENİ" : "DRACONIC CHART · SOUL ORIGIN"}
+                {t("map_draconic_title")}
               </div>
               <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,fontWeight:300,textAlign:"center",color:"#b8a8d8",marginBottom:16,lineHeight:1.65,fontStyle:"italic" }}>
-                {lang==="tr"
-                  ? "Natal harita kim olduğunu söyler. Draconik harita ruhunun bu bedene girmeden önce ne olduğunu söyler."
-                  : "Your natal chart tells who you are. The Draconic chart tells what your soul was before entering this body."}
+                {t("map_draconic_desc")}
               </div>
               <div style={{ display:"flex",alignItems:"center",gap:12,marginBottom:14,padding:"10px 12px",background:"rgba(255,255,255,0.04)",borderRadius:12,border:"1px solid rgba(140,120,220,0.18)" }}>
                 <div style={{ width:44,height:44,borderRadius:"50%",flexShrink:0,background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"1px solid rgba(220,200,255,0.35)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20 }}>
@@ -5556,10 +5530,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ fontSize:13,letterSpacing:0.5,color:"#d0c0f0",marginBottom:2 }}>
-                    {lang==="tr" ? "Draconik Güneşin:" : "Your Draconic Sun:"} <strong style={{ color:"#e8d8ff" }}>{zodiacDisplay(draconicGunes, lang)}</strong>
+                    {t("map_draconic_sun")} <strong style={{ color:"#e8d8ff" }}>{zodiacDisplay(draconicGunes, lang)}</strong>
                   </div>
                   <div style={{ fontSize:12,color:"#8878b8",letterSpacing:0.5 }}>
-                    {lang==="tr" ? `Kuzey Düğüm yaklaşık: ${kuzeyDugum}` : `North Node approx: ${zodiacDisplay(kuzeyDugum, lang)}`}
+                    {t("map_north_node").replace("{sign}", zodiacDisplay(kuzeyDugum, lang) || kuzeyDugum || "")}
                   </div>
                 </div>
               </div>
@@ -5569,7 +5543,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {isPremium ? (
                 <div style={{ paddingTop:14,borderTop:"1px solid rgba(140,120,220,0.25)" }}>
                   <div style={{ fontSize:11,letterSpacing:2.5,color:"#9080c8",marginBottom:8 }}>
-                    {lang==="tr" ? "DETAYLI RUHSAL OKUMA" : "DETAILED SOUL READING"}
+                    {t("map_detailed_soul")}
                   </div>
                   <div style={{ fontSize:13.5,color:"#b8a8d8",lineHeight:1.9 }}>
                     {DRACONIC_SUN_DETAY[lang]?.[draconicGunes] || DRACONIC_SUN_DETAY.tr[draconicGunes]}
@@ -5578,20 +5552,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               ) : (
                 <div style={{ paddingTop:14,borderTop:"1px solid rgba(140,120,220,0.25)",textAlign:"center" }}>
                   <div style={{ fontSize:12,color:"#8878b8",lineHeight:1.7,marginBottom:10,fontStyle:"italic" }}>
-                    {lang==="tr"
-                      ? "Draconik Güneşinin ruh misyonu, gölgesi ve şifa yolunu içeren detaylı okuma Premium'da."
-                      : "The detailed reading of your Draconic Sun's soul mission, shadow and healing path is in Premium."}
+                    {t("map_premium_draconic_desc")}
                   </div>
                   <button onClick={()=>setScreen("fiyat")}
                     style={{ padding:"9px 22px",borderRadius:22,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(140,120,220,0.25),rgba(100,80,180,0.15))",color:"#d8c8f8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                    {lang==="tr" ? "Detaylı Yorum · Premium" : "Detailed Reading · Premium"}
+                    {t("map_detailed_premium")}
                   </button>
                 </div>
               )}
               <div style={{ marginTop:14,paddingTop:10,borderTop:"1px solid rgba(140,120,220,0.15)",fontSize:10,letterSpacing:1.5,color:"#605080",textAlign:"center",fontStyle:"italic" }}>
-                {lang==="tr"
-                  ? "Pamela Crane & Ronald Davison sistemi (1970'ler) · yaklaşık hesap"
-                  : "Pamela Crane & Ronald Davison system (1970s) · approximation"}
+                {t("map_draconic_credit")}
               </div>
             </div>
           ) : null}
@@ -5599,12 +5569,12 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ textAlign:"center",marginBottom:16 }}>
               <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
                 style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
-                {lang==="tr" ? "Doğum bilgilerini değiştir" : "Change birth info"}
+                {t("birth_change_lower")}
               </button>
             </div>
           )}
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"16px 20px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
-            <div style={{ position:"absolute",top:10,right:12,fontSize:10,letterSpacing:2,padding:"3px 9px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{lang==="tr" ? "YAKINDA" : "COMING SOON"}</div>
+            <div style={{ position:"absolute",top:10,right:12,fontSize:10,letterSpacing:2,padding:"3px 9px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{t("map_coming_soon")}</div>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#888888",marginBottom:7 }}>{t("orchestra_label")}</div>
             <div style={{ marginBottom:5 }}>
               {[...Array(7)].map((_,i)=>(
@@ -5619,24 +5589,20 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
                 <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:10,letterSpacing:0.5 }}>
-                  {lang==="tr" ? "Bu haftaki içsel haritan hazır" : "Your inner map for the week is ready"}
+                  {t("map_weekly_ready")}
                 </div>
                 <div style={{ fontSize:13.5,color:"#a89cb8",lineHeight:1.85,marginBottom:8,textAlign:"left" }}>
-                  {lang==="tr"
-                    ? "AI rehberin bu haftaki nefeslerini, çakra dengeni, niyet kelimelerini ve biyoritmini doğum profilinle birlikte sentezliyor. Sana özel — şiirsel, içten, derin."
-                    : "Your AI guide synthesises this week's breaths, chakra balance, intention words and biorhythm with your birth profile. Personalised — poetic, sincere, deep."}
+                  {t("map_weekly_desc")}
                 </div>
                 <div style={{ fontSize:12.5,color:"#8878a8",lineHeight:1.75,marginBottom:16,padding:"10px 12px",background:"rgba(184,164,216,0.06)",borderRadius:10,border:"1px solid rgba(184,164,216,0.15)" }}>
-                  {lang==="tr"
-                    ? "✦ Bastırılmış temalar · gölge işaretleri · gizli güç · şifa yolu — hepsi 12. ev bilgeliğiyle yorumlanır."
-                    : "✦ Suppressed themes · shadow signs · hidden power · healing path — all interpreted with 12th house wisdom."}
+                  {t("map_weekly_themes")}
                 </div>
                 <div style={{ fontSize:11.5,color:"#7868a0",marginBottom:14,fontStyle:"italic",letterSpacing:0.3 }}>
-                  {lang==="tr" ? "Haftalık derin okuma Premium üyelikte." : "Weekly deep reading available in Premium."}
+                  {t("map_weekly_premium_note")}
                 </div>
                 <button onClick={() => setScreen("fiyat")}
                   style={{ display:"inline-block",padding:"11px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",border:"1px solid rgba(220,200,255,0.5)",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
-                  ✦ {lang==="tr" ? "Premium ile Aç" : "Unlock with Premium"}
+                  {t("premium_unlock_card")}
                 </button>
               </div>
             ) : !aiRapor && !aiLoading ? (
@@ -5674,7 +5640,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           </div>
           <button onClick={()=>setShowIdCard(true)}
             style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
-            ✦ {lang==="tr" ? "Galaktik Kimlik Oluştur" : "Create Galactic ID"}
+            {t("map_create_galactic_id")}
           </button>
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
         </div>
@@ -5686,7 +5652,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         const animalCount = (() => { try { const a = JSON.parse(localStorage.getItem("@tura_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
         const mythCount = (() => { try { const a = JSON.parse(localStorage.getItem("@mitler_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
         const hdProfile = (() => { try { const a = JSON.parse(localStorage.getItem("@tasarim_profiles") || "[]"); return Array.isArray(a) && a.length ? a[0] : null; } catch { return null; } })();
-        const displayName = (idCardName || (lang==="tr" ? "Yolcu" : "Traveler")).slice(0, 24);
+        const displayName = (idCardName || t("gid_default_name")).slice(0, 24);
         const burc = zodiacDisplay(astro?.burc, lang) || "—";
         const yasamYolu = astro?.yasam || "—";
         const kisiselYil = astro?.kisiselYil || "—";
@@ -5723,7 +5689,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ctx.fillStyle = "#9080c0";
           ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(lang==="tr" ? "✦ SAKIN LIFE · GALAKTIK KIMLIK ✦" : "✦ SAKIN LIFE · GALACTIC ID ✦", 540, 180);
+          ctx.fillText(t("gid_header"), 540, 180);
 
           // 4. Fotoğraf (varsa) veya placeholder
           if (idCardPhoto) {
@@ -5773,17 +5739,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           // 6. Burç · Yaşam Yolu
           ctx.fillStyle = "#a890c8";
           ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
-          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · ${lang==="tr" ? "YAŞAM YOLU" : "LIFE PATH"} ${yasamYolu}` : ""}`;
+          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
           if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
 
           // 7. Stat boxes (2x3 grid)
           const stats = [
-            [lang==="tr"?"BURÇ":"SUN",          burc,                  "#f0c860", 100, 820],
-            [lang==="tr"?"YÜKSELEN":"ASC",      yuk,                   "#a0d8b4", 560, 820],
-            [lang==="tr"?"12. EV":"12TH",       ev12,                  "#c8b0e8", 100, 940],
-            [lang==="tr"?"DRACONİK":"DRACONIC", dra,                   "#d8c8f0", 560, 940],
-            [lang==="tr"?"YAŞAM YOLU":"LIFE PATH", String(yasamYolu),  "#d0c8e8", 100, 1060],
-            [lang==="tr"?"KİŞİSEL YIL":"PERSONAL YR", String(kisiselYil), "#d0c8e8", 560, 1060],
+            [t("gid_sun"),          burc,                  "#f0c860", 100, 820],
+            [t("gid_asc"),          yuk,                   "#a0d8b4", 560, 820],
+            [t("gid_12th"),         ev12,                  "#c8b0e8", 100, 940],
+            [t("gid_draconic"),     dra,                   "#d8c8f0", 560, 940],
+            [t("gid_life_path_card"), String(yasamYolu),   "#d0c8e8", 100, 1060],
+            [t("gid_personal_year_card"), String(kisiselYil), "#d0c8e8", 560, 1060],
           ];
           stats.forEach(([label, val, color, x, y]) => {
             // box
@@ -5816,21 +5782,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           ctx.fillText(String(days), 280, 1280);
           ctx.fillStyle = "#7a7090";
           ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(lang==="tr" ? "GÜN SERİSİ" : "STREAK", 280, 1330);
+          ctx.fillText(t("gid_streak"), 280, 1330);
           // Best
           ctx.fillStyle = "#82d9a3";
           ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
           ctx.fillText(String(best), 540, 1280);
           ctx.fillStyle = "#7a7090";
           ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(lang==="tr" ? "EN İYİ" : "BEST", 540, 1330);
+          ctx.fillText(t("gid_best"), 540, 1330);
           // Cards
           ctx.fillStyle = "#a0d8b4";
           ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
           ctx.fillText(String(animalCount + mythCount), 800, 1280);
           ctx.fillStyle = "#7a7090";
           ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(lang==="tr" ? "KART" : "CARDS", 800, 1330);
+          ctx.fillText(t("gid_cards_label"), 800, 1330);
 
           // 9. HD bölümü (varsa)
           if (hdProfile && hdProfile.type) {
@@ -5903,21 +5869,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div key={i} style={{ position:"absolute",left:x,top:y,width:2,height:2,borderRadius:"50%",background:`rgba(255,255,255,${o})`,boxShadow:`0 0 4px rgba(255,255,255,${o*0.5})` }}/>
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
-                  <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{lang==="tr" ? "✦ Sakin Life · Galaktik Kimlik ✦" : "✦ Sakin Life · Galactic ID ✦"}</div>
+                  <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
                   <div style={{ width:88,height:88,borderRadius:"50%",margin:"10px auto 12px",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
                     {!idCardPhoto && "✦"}
                   </div>
-                  <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={lang==="tr"?"Adın":"Your Name"} maxLength={24}
+                  <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={t("gid_your_name_ph")} maxLength={24}
                     style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
-                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `${lang==="tr" ? "Yaşam Yolu" : "Life Path"} ${yasamYolu}` : "—"}</div>
+                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `${t("gid_life_path_lower")} ${yasamYolu}` : "—"}</div>
                 </div>
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8 }}>
-                  <StatRow label={lang==="tr"?"Burç":"Sun"} value={burc} color="#f0c860"/>
-                  <StatRow label={lang==="tr"?"Yükselen":"Asc"} value={yuk} color="#a0d8b4"/>
-                  <StatRow label={lang==="tr"?"12. Ev":"12th"} value={ev12} color="#c8b0e8"/>
-                  <StatRow label={lang==="tr"?"Draconik":"Draconic"} value={dra} color="#d8c8f0"/>
-                  <StatRow label={lang==="tr"?"Yaşam Yolu":"Life Path"} value={yasamYolu}/>
-                  <StatRow label={lang==="tr"?"Kişisel Yıl":"Personal Yr"} value={kisiselYil}/>
+                  <StatRow label={t("gid_sun_lower")} value={burc} color="#f0c860"/>
+                  <StatRow label={t("gid_asc_lower")} value={yuk} color="#a0d8b4"/>
+                  <StatRow label={t("gid_12th_lower")} value={ev12} color="#c8b0e8"/>
+                  <StatRow label={t("gid_draconic_lower")} value={dra} color="#d8c8f0"/>
+                  <StatRow label={t("gid_yaşam_yolu_lower")} value={yasamYolu}/>
+                  <StatRow label={t("gid_personal_yr_lower")} value={kisiselYil}/>
                 </div>
                 {hdProfile && (hdProfile.type || hdProfile.profile) && (
                   <div style={{ padding:"8px 12px",background:"rgba(180,160,216,0.08)",border:"1px solid rgba(180,160,216,0.18)",borderRadius:10,marginBottom:8,textAlign:"center" }}>
@@ -5928,22 +5894,22 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ display:"flex",justifyContent:"space-around",padding:"10px 6px",background:"rgba(255,255,255,0.025)",borderRadius:10,marginBottom:10 }}>
                   <div style={{ textAlign:"center" }}>
                     <div style={{ fontSize:18,color:"#f0a040",fontWeight:300,lineHeight:1 }}>{days}</div>
-                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Gün serisi":"Streak"}</div>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_streak_lower")}</div>
                   </div>
                   <div style={{ textAlign:"center" }}>
                     <div style={{ fontSize:18,color:"#82d9a3",fontWeight:300,lineHeight:1 }}>{best}</div>
-                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"En iyi":"Best"}</div>
+                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_best_lower")}</div>
                   </div>
                   {animalCount > 0 && (
                     <div style={{ textAlign:"center" }}>
                       <div style={{ fontSize:18,color:"#a0d8b4",fontWeight:300,lineHeight:1 }}>{animalCount}</div>
-                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Hayvan":"Animal"}</div>
+                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_animal_lower")}</div>
                     </div>
                   )}
                   {mythCount > 0 && (
                     <div style={{ textAlign:"center" }}>
                       <div style={{ fontSize:18,color:"#d8b4a0",fontWeight:300,lineHeight:1 }}>{mythCount}</div>
-                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{lang==="tr"?"Mit":"Myth"}</div>
+                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_myth_lower")}</div>
                     </div>
                   )}
                 </div>
@@ -5956,13 +5922,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     <div style={{ display:"flex",flexDirection:"column",gap:8,marginBottom:10 }}>
                       {lp && (
                         <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
-                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Yaşam Yolu":"Life Path"} {yasamYolu}</div>
+                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{t("gid_life_path_lower")} {yasamYolu}</div>
                           <div style={{ fontSize:11,color:"#c8c0d8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{lp}</div>
                         </div>
                       )}
                       {py && (
                         <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
-                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Kişisel Yıl":"Personal Year"} {kisiselYil}</div>
+                          <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{t("gid_personal_year_full")} {kisiselYil}</div>
                           <div style={{ fontSize:11,color:"#c8c0d8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{py}</div>
                         </div>
                       )}
@@ -5974,13 +5940,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               {/* Actions */}
               <div style={{ display:"flex",flexDirection:"column",gap:8,marginTop:14 }}>
                 <label style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  📷 {lang==="tr"?"Fotoğraf Yükle":"Upload Photo"}
+                  {t("gid_upload_photo")}
                   <input type="file" accept="image/*" style={{ display:"none" }}
                     onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
                 </label>
                 <button onClick={downloadCard}
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
-                  ↓ {lang==="tr"?"İndir / Paylaş":"Download / Share"}
+                  {t("gid_download_share")}
                 </button>
                 <a href="https://instagram.com/sakin.app" target="_blank" rel="noopener noreferrer"
                   style={{ textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(220,140,200,0.3)",background:"linear-gradient(135deg,rgba(240,100,160,0.10),rgba(140,80,200,0.10))",color:"#e0a0c8",fontSize:12,letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
@@ -5988,7 +5954,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </a>
                 <button onClick={()=>{ setShowIdCard(false); }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  {lang==="tr"?"Kapat":"Close"}
+                  {t("common_close")}
                 </button>
               </div>
             </div>
@@ -6001,9 +5967,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
         <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:480,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:6 }}>
-              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{lang==="tr" ? "Zihni Boşalt" : "Empty the Mind"}</div>
-              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{lang==="tr" ? "Bugün nereye sığınmak istersin?" : "Where do you want to retreat today?"}</div>
-              <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{lang==="tr" ? "Kulaklığını tak. Sadece izle, sadece dinle." : "Put on your headphones. Just watch, just listen."}</div>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("mind_title")}</div>
+              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{t("mind_subtitle")}</div>
+              <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{t("mind_subdesc")}</div>
             </div>
 
             {/* Doğa sesleri — opsiyonel katman, drone'un altına serilir */}
@@ -6053,8 +6019,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             {/* Duygu durumuna göre karışım — kullanıcı kendi karışımını yapar */}
             <div style={{ marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
               <div style={{ textAlign:"center",marginBottom:10 }}>
-                <div style={{ fontSize:11,letterSpacing:4,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{lang==="tr" ? "veya kendi karışımını yap" : "or build your own mix"}</div>
-                <div style={{ fontSize:11,color:"#666",lineHeight:1.6 }}>{lang==="tr" ? "Bugün nasıl hissediyorsun? (en fazla 3 seç)" : "How do you feel today? (pick up to 3)"}</div>
+                <div style={{ fontSize:11,letterSpacing:4,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{t("mind_or_custom")}</div>
+                <div style={{ fontSize:11,color:"#666",lineHeight:1.6 }}>{t("mind_pick_3")}</div>
               </div>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6 }}>
                 {MIND_MOODS.map(mood => {
@@ -6113,13 +6079,13 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     cursor:"pointer", fontFamily:"'Jost',sans-serif", textTransform:"uppercase",
                     boxShadow:"0 0 22px rgba(160,200,240,0.18)",
                   }}>
-                  ◎ {lang==="tr" ? `Karışımı Başlat (${selectedMoods.length})` : `Start Mix (${selectedMoods.length})`}
+                  ◎ {t("mind_start_mix").replace("{n}", String(selectedMoods.length))}
                 </button>
               )}
             </div>
 
             <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-              {lang==="tr" ? "Kapat" : "Close"}
+              {t("common_close")}
             </button>
           </div>
         </div>
@@ -6135,8 +6101,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {/* ── SEKMELER ── */}
           <div style={{ display:"flex",gap:8,marginBottom:32,justifyContent:"center" }}>
             {[
-              {id:"yolculuk", label:lang==="tr"?"Yolculuk":"Journey"},
-              {id:"nedir", label:lang==="tr"?"Sakin Nedir?":"What is Sakin?"},
+              {id:"yolculuk", label:t("about_tab_journey")},
+              {id:"nedir", label:t("about_tab_what")},
             ].map(tab=>(
               <button key={tab.id} onClick={()=>setHakkindaTab(tab.id)}
                 style={{ padding:"8px 20px",borderRadius:20,border:`1px solid ${hakkindaTab===tab.id?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:hakkindaTab===tab.id?"rgba(184,164,216,0.15)":"transparent",color:hakkindaTab===tab.id?"#b8a4d8":"#888",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",transition:"all 0.2s" }}>
@@ -6149,21 +6115,21 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           {hakkindaTab==="yolculuk" && (
           <div style={{ marginBottom:48 }}>
             <div style={{ textAlign:"center",marginBottom:28 }}>
-              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{lang==="tr"?"YOLCULUĞUN HARİTASI":"YOUR JOURNEY MAP"}</div>
-              <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Seni neler bekliyor?":"What awaits you?"}</div>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{t("about_journey_map")}</div>
+              <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("about_journey_awaits")}</div>
             </div>
 
             <div style={{ position:"relative",paddingLeft:32 }}>
               <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
 
               {[
-                { icon:"🌅", color:"#f0a060", title:lang==="tr"?"Sabah Niyeti":"Morning Intention", desc:lang==="tr"?"Güne bir niyetle başla. Seni en çok ifade eden 3 kelimeyi seç — gün boyunca pusulan olsunlar.":"Start your day with an intention. Choose 3 words that express you — let them be your compass." },
-                { icon:"🫧", color:"#60b8e8", title:lang==="tr"?"Nefes Egzersizi":"Breathwork", desc:lang==="tr"?"6 farklı modla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu, sakinleştirici — hangisi sana iyi geliyorsa.":"Return to your body with 6 modes. Standard, diaphragm, lung, 4-7-8, box, calming — whichever feels right." },
-                { icon:"🔊", color:"#a07ae0", title:lang==="tr"?"Ses Dalgaları":"Sound Waves", desc:lang==="tr"?"10 solfeggio frekansını kuş sesleri eşliğinde dinle. Her frekansın kendine ait bir doğa sesi var.":"Listen to 10 solfeggio frequencies with birdsong. Each frequency has its own nature sound." },
-                { icon:"💜", color:"#b87adc", title:lang==="tr"?"22 Çakra Yükselişi":"22 Chakra Rise", desc:lang==="tr"?"60 saniyede enerji merkezlerinle bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjin aksın.":"Connect with your energy centers in 60 seconds. Feel your hand, close your eyes, let energy flow." },
-                { icon:"☀️", color:"#e8d060", title:lang==="tr"?"Gün İçi Görevler":"Daily Tasks", desc:lang==="tr"?"Aynaya bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni ana bağlayan dokunuşlar.":"Look in the mirror. Drink water. Feel the sun. Touch the earth. Not tasks — touches that ground you." },
-                { icon:"🌙", color:"#7ab0e0", title:lang==="tr"?"Akşam Kapanışı":"Evening Closure", desc:lang==="tr"?"Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.":"What did you learn today? What are you grateful for? A few sentences are enough." },
-                { icon:"✦", color:"#82d9a3", title:lang==="tr"?"Haftalık Rapor":"Weekly Report", desc:lang==="tr"?"AI destekli kişisel raporun: çakra örüntüleri, frekans süren, kozmik enerji — derin bir iç ayna.":"Your AI-powered personal report: chakra patterns, frequency time, cosmic energy — a deep inner mirror." },
+                { icon:"🌅", color:"#f0a060", title:t("about_step_morning_title"), desc:t("about_step_morning_desc") },
+                { icon:"🫧", color:"#60b8e8", title:t("about_step_breath_title"), desc:t("about_step_breath_desc") },
+                { icon:"🔊", color:"#a07ae0", title:t("about_step_sound_title"), desc:t("about_step_sound_desc") },
+                { icon:"💜", color:"#b87adc", title:t("about_step_chakra_title"), desc:t("about_step_chakra_desc") },
+                { icon:"☀️", color:"#e8d060", title:t("about_step_day_title"), desc:t("about_step_day_desc") },
+                { icon:"🌙", color:"#7ab0e0", title:t("about_step_evening_title"), desc:t("about_step_evening_desc") },
+                { icon:"✦", color:"#82d9a3", title:t("about_step_report_title"), desc:t("about_step_report_desc") },
               ].map((step,i) => (
                 <div key={i} style={{ position:"relative",marginBottom:i<6?24:0,paddingBottom:i<6?4:0 }}>
                   <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
@@ -6175,9 +6141,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
             <div style={{ textAlign:"center",marginTop:28,padding:"14px 20px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:14 }}>
               <div style={{ fontSize:13,color:"#b8a4d8",fontStyle:"italic",lineHeight:1.8 }}>
-                {lang==="tr"
-                  ? "Her adım bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
-                  : "Every step a practice, every practice a trace, every trace a part of your map."}
+                {t("about_journey_outro")}
               </div>
             </div>
           </div>
@@ -6188,8 +6152,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           <>
           {/* Başlık — Bağlantı metaforu */}
           <div style={{ textAlign:"center",marginBottom:36 }}>
-            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{lang==="tr"?"Kullan ve":"Use and"}</div>
-            <h1 style={{ margin:0,fontSize:22,fontWeight:300,letterSpacing:3,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{lang==="tr"?"Kendinle Bağlantı Kur":"Connect with Yourself"}</h1>
+            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{t("about_use_and")}</div>
+            <h1 style={{ margin:0,fontSize:22,fontWeight:300,letterSpacing:3,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("about_connect")}</h1>
             <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:4,marginTop:16 }}>
               {["#c084fc","#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"].map((c,i)=>(
                 <span key={i} style={{ display:"flex",alignItems:"center",gap:4 }}>
@@ -6202,91 +6166,66 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           {/* Tanıdık mı? */}
           <div style={{ marginBottom:28 }}>
-            <div style={{ textAlign:"center",fontSize:18,marginBottom:16,color:"#999",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr"?"Tanıdık mı?":"Sound familiar?"}</div>
+            <div style={{ textAlign:"center",fontSize:18,marginBottom:16,color:"#999",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{t("about_familiar")}</div>
             {[
-              { emoji:"😵‍💫", text:lang==="tr"?"Sabah gözünü açtığında ilk refleksin telefona uzanmak":"Your first reflex in the morning is reaching for your phone", label:lang==="tr"?"kendinle — kesildi":"with yourself — disconnected", color:"#f472b6" },
-              { emoji:"🧠", text:lang==="tr"?"Zihnin durmadan konuşuyor, sen dinliyorsun bile değil":"Your mind won't stop talking, you're not even listening", label:lang==="tr"?"bedeninle — kesildi":"with your body — disconnected", color:"#fb923c" },
-              { emoji:"🌀", text:lang==="tr"?"\"Bir şeyler eksik\" hissi ama ne olduğunu bilmiyorsun":"\"Something's missing\" but you can't name it", label:lang==="tr"?"ruhunla — kesildi":"with your soul — disconnected", color:"#c084fc" },
-              { emoji:"📱", text:lang==="tr"?"20 uygulama indirdin, hiçbirini 3 günden fazla kullanmadın":"Downloaded 20 apps, didn't use any past 3 days", label:lang==="tr"?"niyetinle — kesildi":"with your intention — disconnected", color:"#38bdf8" },
+              { emoji:"😵‍💫", text:t("about_card1_text"), label:t("about_card1_label"), color:"#f472b6" },
+              { emoji:"🧠", text:t("about_card2_text"), label:t("about_card2_label"), color:"#fb923c" },
+              { emoji:"🌀", text:t("about_card3_text"), label:t("about_card3_label"), color:"#c084fc" },
+              { emoji:"📱", text:t("about_card4_text"), label:t("about_card4_label"), color:"#38bdf8" },
             ].map((item,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10 }}>
                 <div style={{ fontSize:14,color:"#ccc" }}>{item.emoji} {item.text}</div>
-                <div style={{ fontSize:11,color:item.color,marginTop:4,letterSpacing:1 }}>{lang==="tr"?"bağlantı":"connection"}: {item.label} ✕</div>
+                <div style={{ fontSize:11,color:item.color,marginTop:4,letterSpacing:1 }}>{t("about_card_conn_prefix")}: {item.label} ✕</div>
               </div>
             ))}
           </div>
 
           {/* Güzel haber köprüsü */}
           <div style={{ textAlign:"center",padding:"20px 24px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:16,marginBottom:32 }}>
-            <div style={{ fontSize:11,color:"#c084fc",letterSpacing:2,fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{lang==="tr"?"GÜZEL HABER":"GOOD NEWS"}</div>
+            <div style={{ fontSize:11,color:"#c084fc",letterSpacing:2,fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{t("about_good_news_label")}</div>
             <div style={{ fontSize:14,color:"#ccc",lineHeight:1.9 }}>
-              {lang==="tr"
-                ? "Bu bağlantıları yeniden kurmak düşündüğün kadar zor değil. Sadece bir sistem lazım. Ve biraz niyet."
-                : "Reconnecting is not as hard as you think. You just need a system. And a bit of intention."}
+              {t("about_good_news_text")}
             </div>
           </div>
 
           {/* Sakin nedir tanımı */}
           <div style={{ marginBottom:28 }}>
             <div style={{ fontSize:15,color:"#ccc",lineHeight:2.2,marginBottom:16 }}>
-              {lang==="tr" ? (
-                <>Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>meditasyon uygulaması</span> değil.<br/>
-                Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>terapi aracı</span> değil.<br/>
-                Sakin bir <span style={{ textDecoration:"line-through",color:"#666" }}>to-do listesi</span> değil.<br/><br/>
-                Sakin bir <strong style={{ color:"#c084fc" }}>farkındalık sistemi</strong>.</>
-              ) : (
-                <>Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>meditation app</span>.<br/>
-                Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>therapy tool</span>.<br/>
-                Sakin is not a <span style={{ textDecoration:"line-through",color:"#666" }}>to-do list</span>.<br/><br/>
-                Sakin is an <strong style={{ color:"#c084fc" }}>awareness system</strong>.</>
-              )}
+              {t("about_sakin_not_meditation")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_meditation")}</span>{lang==="tr"?" değil":""}.<br/>
+              {t("about_sakin_not_therapy")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_therapy")}</span>{lang==="tr"?" değil":""}.<br/>
+              {t("about_sakin_not_todo")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_todo")}</span>{lang==="tr"?" değil":""}.<br/><br/>
+              {t("about_sakin_is")} <strong style={{ color:"#c084fc" }}>{t("about_sakin_awareness_system")}</strong>.
             </div>
           </div>
 
           <p style={{ fontSize:15, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.3)", paddingLeft:20 }}>
-            {lang==="tr"
-              ? "Sakin; zihnin gürültüsünü dinginleştirmek, içsel rehberliğe alan açmak ve günlük yaşamı anlam katmanlarıyla beslemek için tasarlanmış kişisel bir farkındalık sistemidir."
-              : "Sakin is a personal awareness system designed to quiet the noise of the mind, open space for inner guidance, and nourish daily life with layers of meaning."}
+            {t("about_intro_quote")}
           </p>
 
-          <h2>{lang==="tr" ? "Sadece Yapay Zeka Değil" : "Not Just Artificial Intelligence"}</h2>
-          <p>{lang==="tr"
-            ? "Sakin, büyük dil modellerinin gücünü salt teknoloji olarak kullanmaz. Arkasında titizlikle seçilmiş bir kaynak veri tabanı vardır: spiritüel psikoloji, enerji tıbbı, Jungian analiz, çakra sistemi, biyoritm bilimi ve kadim bilgelik geleneklerine ait kitaplar, dergiler ve akademik çalışmalar."
-            : "Sakin doesn't use large language models as mere technology. Behind it lies a carefully curated source database: books, journals and academic works on spiritual psychology, energy medicine, Jungian analysis, the chakra system, biorhythm science and ancient wisdom traditions."}</p>
-          <p>{lang==="tr"
-            ? "Bu kaynaklar; yapay zekanın analiz gücüyle birleşerek sana jenerik değil, kökü olan yanıtlar sunar. Her içgörü, test edilmiş bir bilgi birikimine dayalı olarak üretilir."
-            : "These sources, combined with the analytical power of AI, offer you answers with roots — not generic responses. Every insight is generated based on a tested body of knowledge."}</p>
-          <p>{lang==="tr"
-            ? "Admin, yapay zekanın verilen cevapları Usui Reiki ilkeleri ve kendi geliştirdiği yaklaşımlar çerçevesinde nasıl yorumlaması gerektiği konusunda Sakin'i eğitir. Sakin'i ne kadar kullanırsan, o da senin dilini, örüntülerini ve ihtiyaçlarını bu yaklaşımlar ışığında daha iyi çözmeye başlar. Yani Sakin; pek çok kaynağın sentezi olmakla birlikte, algoritması özel olarak şekillendirilmiş ve nasıl düşünmesi gerektiği yönlendirilmiş bir sistem olarak çalışır. Her günün ödevlerini düzenli yaparsan seni hızlı tanır, haftanı kolayca raporlar ve analiz eder."
-            : "The admin trains Sakin on how to interpret responses through the lens of Usui Reiki principles and personally developed approaches. The more you use Sakin, the better it learns to decode your language, patterns and needs in light of these frameworks. Sakin is thus a synthesis of many sources, yet operates as a system whose algorithm is specially shaped and whose way of thinking is intentionally guided. If you complete each day's exercises regularly, it gets to know you quickly and can easily report and analyse your week."}</p>
+          <h2>{t("about_not_just_ai")}</h2>
+          <p>{t("about_p1")}</p>
+          <p>{t("about_p2")}</p>
+          <p>{t("about_p3")}</p>
 
-          <h2>{lang==="tr" ? "Doğum Haritana Göre Sana Özel" : "Personalised to Your Birth Chart"}</h2>
-          <p>{lang==="tr"
-            ? "Sakin'in kalbinde kişiselleştirme yatar. Girdiğin doğum tarihi ve saati; burç analizini, yaşam yolu sayını, kişisel yıl enerjini ve 12. ev etkilerini hesaplar. Tüm bu veriler, sana sunulan nefes, çakra, rehber ve akşam yansımaları için birer filtre katmanı oluşturur."
-            : "At the heart of Sakin lies personalisation. The birth date and time you enter calculates your zodiac analysis, life path number, personal year energy and 12th house influences. All this data forms filter layers for the breath, chakra, guide and evening reflections presented to you."}</p>
-          <p>{lang==="tr"
-            ? "Kadim astrolojik ve sayısal sistemler, modern psikoloji ile buluştuğunda ortaya çıkan harita; senin için, senin zamanında, senin enerjin için yazılmış bir pusula haline gelir."
-            : "When ancient astrological and numerological systems meet modern psychology, the resulting map becomes a compass written for you, in your time, for your energy."}</p>
+          <h2>{t("about_birth_title")}</h2>
+          <p>{t("about_birth_p1")}</p>
+          <p>{t("about_birth_p2")}</p>
 
-          <h2>{lang==="tr" ? "Bir Kanallık Niyeti" : "A Channel's Intention"}</h2>
-          <p>{lang==="tr"
-            ? "Sakin; bir uygulama olmanın ötesinde, bir kanal olma niyetiyle doğdu. İçeriği aktaran değil, senin içindekini yüzeye taşıyan bir araç. Sabah niyetinden akşam şükrüne, nefesten çakra çalışmasına uzanan yol; seni dışarıdan bilgiyle doldurmak için değil, içindeki bilgeliği hatırlatmak için tasarlandı."
-            : "Sakin was born with the intention of being a channel, beyond being an app. Not a transmitter of content, but a tool that brings what is within you to the surface. The path from morning intention to evening gratitude, from breath to chakra work, is designed not to fill you with external information, but to remind you of the wisdom already within."}</p>
-          <p>{lang==="tr"
-            ? "Kullandığın her an bir pratik, her pratik bir iz, her iz senin haritanın bir parçası olur."
-            : "Every moment you use it becomes a practice, every practice a trace, every trace a part of your map."}</p>
+          <h2>{t("about_channel_title")}</h2>
+          <p>{t("about_channel_p1")}</p>
+          <p>{t("about_channel_p2")}</p>
 
           {/* Sakin Ailesi */}
           <div style={{ marginTop:36,marginBottom:28 }}>
-            <h2>{lang==="tr"?"Sakin Ailesi":"Sakin Family"}</h2>
-            <p style={{ marginBottom:16 }}>{lang==="tr"?"Sakin'in frekansını taşıyan kardeş uygulamalar. Her biri farklı bir kapıdan aynı merkeze çeker.":"Sister apps carrying Sakin's frequency. Each pulls you to the same center from a different door."}</p>
+            <h2>{t("about_family_section")}</h2>
+            <p style={{ marginBottom:16 }}>{t("about_family_desc")}</p>
             {[
-              { name:"Sakin Hayvan", icon:"◈", color:"#a0d8b4",
-                desc:lang==="tr"?"Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi.":"Words, Stones, Nagual — daily three-card draws through Anatolian wisdom and spirit guidance." },
-              { name:"Sakin Mitler", icon:"🏛️", color:"#d8b4a0",
-                desc:lang==="tr"?"Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır.":"Daily archetype, myth and image reading in the footsteps of Jung — three decks open each day." },
-              { name:"Sakin Tasarım", icon:"⌖", color:"#b4a0d8",
-                desc:lang==="tr"?"Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar.":"Your Human Design chart from birth date, time and city — type, inner authority, profile, centers and channels." },
+              { name:t("ailesi_hayvan_name"), icon:"◈", color:"#a0d8b4",
+                desc:t("ailesi_hayvan_desc") },
+              { name:t("ailesi_mitler_name"), icon:"🏛️", color:"#d8b4a0",
+                desc:t("ailesi_mitler_desc") },
+              { name:t("ailesi_tasarim_name"), icon:"⌖", color:"#b4a0d8",
+                desc:t("ailesi_tasarim_desc") },
             ].map((app,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:14 }}>
                 <div style={{ width:42,height:42,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>{app.icon}</div>
@@ -6309,7 +6248,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               ))}
             </div>
             <div style={{ fontSize:12,color:"#34d399",letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
-              {lang==="tr"?"TÜM BAĞLANTILAR TAMAMLANDI ✦":"ALL CONNECTIONS COMPLETE ✦"}
+              {t("about_all_complete")}
             </div>
           </div>
 
@@ -6320,28 +6259,30 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             <div style={{ textAlign:"center",marginBottom:24 }}>
               <button onClick={()=>setFbOpen(true)}
                 style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:16,padding:"14px 28px",cursor:"pointer",color:"#b8a4d8",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",minHeight:44 }}>
-                {lang==="tr" ? "💬  Geri Bildirim Gönder" : "💬  Send Feedback"}
+                {t("about_send_feedback")}
               </button>
             </div>
           ) : (
             <div style={{ background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.02))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:18,padding:"20px 18px",marginBottom:24 }}>
               <div style={{ fontSize:13,letterSpacing:2.5,color:"#b8a4d8",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "GERİ BİLDİRİM" : "FEEDBACK"}
+                {t("about_feedback_header")}
               </div>
               {fbDone ? (
                 <div style={{ textAlign:"center",padding:"20px 0" }}>
                   <div style={{ fontSize:28,marginBottom:8 }}>✓</div>
                   <div style={{ fontSize:14,color:"#50c878",letterSpacing:1.5 }}>
-                    {lang==="tr" ? "Teşekkürler! Mesajın iletildi." : "Thank you! Your message was sent."}
+                    {t("about_feedback_thanks")}
                   </div>
                 </div>
               ) : (
                 <>
                   <div style={{ display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",justifyContent:"center" }}>
-                    {(lang==="tr"
-                      ? [["oneri","Öneri"],["hata","Hata"],["icerik","İçerik"],["genel","Genel"]]
-                      : [["oneri","Suggestion"],["hata","Bug"],["icerik","Content"],["genel","General"]]
-                    ).map(([k,v])=>(
+                    {[
+                      ["oneri", t("about_feedback_cat_oneri")],
+                      ["hata", t("about_feedback_cat_hata")],
+                      ["icerik", t("about_feedback_cat_icerik")],
+                      ["genel", t("about_feedback_cat_genel")],
+                    ].map(([k,v])=>(
                       <button key={k} onClick={()=>setFbCat(k)}
                         style={{ padding:"6px 14px",borderRadius:20,border:`1px solid ${fbCat===k?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:fbCat===k?"rgba(184,164,216,0.15)":"transparent",color:fbCat===k?"#b8a4d8":"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>
                         {v}
@@ -6351,7 +6292,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <textarea
                     value={fbMsg}
                     onChange={e=>setFbMsg(e.target.value)}
-                    placeholder={lang==="tr" ? "Düşüncelerinizi paylaşın..." : "Share your thoughts..."}
+                    placeholder={t("about_feedback_ph")}
                     rows={3}
                     maxLength={1000}
                     style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
@@ -6359,11 +6300,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
                     <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
                       style={{ padding:"10px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:13,cursor:"pointer",letterSpacing:1,minHeight:44 }}>
-                      {lang==="tr" ? "İptal" : "Cancel"}
+                      {t("about_feedback_cancel")}
                     </button>
                     <button onClick={sendFeedback} disabled={!fbMsg.trim() || fbSending}
                       style={{ padding:"10px 24px",borderRadius:12,border:"none",background:fbMsg.trim()?"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.6))":"rgba(255,255,255,0.05)",color:fbMsg.trim()?"#fff":"#555",fontSize:13,cursor:fbMsg.trim()?"pointer":"default",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",minHeight:44,opacity:fbSending?0.6:1 }}>
-                      {fbSending ? "..." : (lang==="tr" ? "Gönder →" : "Send →")}
+                      {fbSending ? "..." : t("about_feedback_send")}
                     </button>
                   </div>
                 </>
@@ -6375,7 +6316,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
           )}
 
           <p style={{ fontSize:14, color:"#777777", letterSpacing:1, textAlign:"center", lineHeight:2, marginTop:32 }}>
-            {lang==="tr" ? "Sakin · Farkındalık Sistemi · 2026" : "Sakin · Awareness System · 2026"}
+            {t("about_footer")}
             <br/>
             <span style={{ fontSize:12, color:"#555555", letterSpacing:1.5 }}>Arda Çetin</span>
           </p>
@@ -6394,9 +6335,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
           <div style={{ textAlign:"center",margin:"20px 0 28px",padding:"16px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:16 }}>
             <div style={{ fontSize:14,color:"#c8b8e0",lineHeight:2,fontStyle:"italic",letterSpacing:0.5 }}>
-              {lang==="tr"
-                ? "Bu fiyatlar, Sakin'le birlikte yola çıkan ilk 100 kişi için özel olarak belirlendi. Seninle bu yolculuğa başlamak bizim için çok değerli."
-                : "These prices are specially set for the first 100 people who embark on this journey with Sakin. Starting this path with you means the world to us."}
+              {t("premium_first100_intro")}
             </div>
           </div>
 
@@ -6406,10 +6345,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#50c878" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
               </div>
               <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#50c878",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
-                {lang==="tr" ? "Premium Aktif" : "Premium Active"}
+                {t("premium_active")}
               </div>
               <div style={{ fontSize:14,color:"#888",letterSpacing:1 }}>
-                {lang==="tr" ? "Tüm özellikler sınırsız kullanımınıza açık." : "All features are unlocked for lifetime."}
+                {t("premium_active_desc")}
               </div>
             </div>
           ) : isNative ? (
@@ -6422,17 +6361,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
                 <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
                   <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
-                    ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
+                    ✦ {t("ailesi_family_bonus")}
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"rehber hayvanın sana ne söylüyor?":"what is your guide animal telling you?"}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
                     </div>
                   </div>
                 </div>
@@ -6442,43 +6381,41 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   {purchaseLoading === "yearly"
                     ? "..."
                     : !productsReady
-                    ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
-                    : <>{lang==="tr" ? "Yıllık Abone Ol" : "Subscribe Yearly"}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $9.99</span></>}
+                    ? t("premium_loading")
+                    : <>{t("premium_subscribe_yearly")}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $9.99</span></>}
                 </button>
                 <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
                   style={{ display:"block",width:"100%",marginBottom:0,fontSize:15,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06))",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28,color:"#fff",cursor:(purchaseLoading || !productsReady) ? "default" : "pointer",opacity:(purchaseLoading || !productsReady) ? 0.5 : 1 }}>
                   {purchaseLoading === "lifetime"
                     ? "..."
                     : !productsReady
-                    ? (lang==="tr" ? "Yükleniyor..." : "Loading...")
-                    : <>{lang==="tr" ? "Ömür Boyu Satın Al" : "Buy Lifetime"}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $19.99</span></>}
+                    ? t("premium_loading")
+                    : <>{t("premium_buy_lifetime")}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $19.99</span></>}
                 </button>
 
                 {/* Auto-renewable subscription disclosure — Apple Guideline 3.1.2(c) gerekliliği */}
                 <div style={{ marginTop:16,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.08)" }}>
                   <div style={{ fontWeight:500,color:"#aaa",marginBottom:8,fontSize:12,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
-                    {lang==="tr" ? "Abonelik Bilgileri" : "Subscription Info"}
+                    {t("premium_subscription_info")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:5 }}>
-                    <strong style={{ color:"#ccc" }}>{lang==="tr" ? "Yıllık Premium" : "Yearly Premium"}</strong> — {lang==="tr" ? "12 ay, $9.99/yıl, otomatik yenilenir" : "12 months, $9.99/year, auto-renewable"}
+                    <strong style={{ color:"#ccc" }}>{t("premium_yearly_name")}</strong> — {t("premium_yearly_terms")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:8 }}>
-                    <strong style={{ color:"#ccc" }}>{lang==="tr" ? "Ömür Boyu" : "Lifetime"}</strong> — {lang==="tr" ? "$19.99, tek ödeme (abonelik değil)" : "$19.99, one-time (not a subscription)"}
+                    <strong style={{ color:"#ccc" }}>{t("premium_lifetime_name")}</strong> — {t("premium_lifetime_terms")}
                   </div>
                   <div style={{ fontSize:11,color:"#777",lineHeight:1.65,marginBottom:14 }}>
-                    {lang==="tr"
-                      ? "Yıllık abonelik mevcut dönem sona ermeden en az 24 saat önce iptal edilmediği sürece otomatik yenilenir. Ödeme satın alma onayında Apple ID hesabınızdan çekilir. Aboneliğinizi iPhone Ayarlar'dan yönetebilir/iptal edebilirsiniz."
-                      : "Yearly subscription auto-renews unless cancelled at least 24 hours before the end of the current period. Payment is charged to your Apple ID account at purchase confirmation. You can manage or cancel your subscription in iPhone Settings."}
+                    {t("premium_renewal_text")}
                   </div>
                   {/* GERÇEK functional URL linkleri (Apple 3.1.2c) — Safari'de açılır, in-app setScreen değil */}
                   <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
                     <a href="https://sakin.life/terms/" target="_blank" rel="noopener noreferrer"
                       style={{ display:"block",textAlign:"center",padding:"13px 12px",borderRadius:14,border:"1px solid rgba(184,164,216,0.45)",background:"rgba(184,164,216,0.10)",color:"#d8c8f0",fontSize:13.5,letterSpacing:0.5,textDecoration:"underline",textUnderlineOffset:3,fontFamily:"'Inter',sans-serif",fontWeight:400 }}>
-                      {lang==="tr" ? "Hizmet Şartları (EULA)" : "Terms of Use (EULA)"}
+                      {t("premium_eula")}
                     </a>
                     <a href="https://sakin.life/privacy/" target="_blank" rel="noopener noreferrer"
                       style={{ display:"block",textAlign:"center",padding:"13px 12px",borderRadius:14,border:"1px solid rgba(184,164,216,0.45)",background:"rgba(184,164,216,0.10)",color:"#d8c8f0",fontSize:13.5,letterSpacing:0.5,textDecoration:"underline",textUnderlineOffset:3,fontFamily:"'Inter',sans-serif",fontWeight:400 }}>
-                      {lang==="tr" ? "Gizlilik Politikası" : "Privacy Policy"}
+                      {t("premium_privacy")}
                     </a>
                   </div>
                 </div>
@@ -6486,7 +6423,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
               {!productsReady && !purchaseError && (
                 <div style={{ textAlign:"center",marginTop:16,fontSize:12,color:"#888",letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
-                  {lang==="tr" ? "App Store ürünleri yükleniyor..." : "Loading App Store products..."}
+                  {t("premium_app_store_loading")}
                 </div>
               )}
 
@@ -6499,7 +6436,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
                 <button onClick={handleRestore} disabled={!!purchaseLoading}
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",opacity:purchaseLoading ? 0.5 : 1 }}>
-                  {purchaseLoading === "restore" ? "..." : (lang==="tr" ? "Satın Alımları Geri Yükle" : "Restore Purchases")}
+                  {purchaseLoading === "restore" ? "..." : t("premium_restore")}
                 </button>
               </div>
             </>
@@ -6512,40 +6449,40 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("paid_app_price")}</div>
                 <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:6 }}>{t("paid_app_price_sub")}</div>
                 <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
-                  {lang==="tr" ? "Ömür Boyu Lisans · İlk 100 Kişiye" : "Lifetime License · First 100 People"}
+                  {t("premium_first100")}
                 </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
                 <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
                   <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
-                    ✦ {lang==="tr" ? "Bonus · Sakin Ailesi" : "Bonus · Sakin Family"}
+                    ✦ {t("ailesi_family_bonus")}
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ Sakin Hayvan</strong> — {lang==="tr"?"rehber hayvanın sana ne söylüyor?":"what is your guide animal telling you?"}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 Sakin Mitler</strong> — {lang==="tr"?"Jung izinde arketip, mit ve imge okuması":"archetype, myth and image reading in Jung's path"}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ Sakin Tasarım</strong> — {lang==="tr"?"Human Design bodygraph ve raporu":"Human Design bodygraph and report"}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
                     </div>
                   </div>
                 </div>
 
                 <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
                   style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
-                  {lang==="tr" ? "Satın Al →" : "Buy Now →"}
+                  {t("premium_buy_now")}
                 </a>
               </div>
 
               <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
                 <div style={{ fontSize:13,color:"#666",letterSpacing:1,marginBottom:10 }}>
-                  {lang==="tr" ? "Zaten satın aldıysan:" : "Already purchased?"}
+                  {t("premium_already_bought")}
                 </div>
                 <button onClick={() => setShowLicenseModal(true)}
                   style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:22,padding:"10px 24px",cursor:"pointer",color:"#aaa",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif" }}>
-                  {lang==="tr" ? "Lisans Anahtarı Gir" : "Enter License Key"}
+                  {t("premium_enter_license")}
                 </button>
               </div>
 
@@ -6553,13 +6490,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10 }}>
                   <span style={{ fontSize:16 }}>🔒</span>
                   <span style={{ fontSize:13,letterSpacing:2,color:"#888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                    {lang==="tr" ? "Güvenli Ödeme" : "Secure Payment"}
+                    {t("premium_secure_payment")}
                   </span>
                 </div>
                 <div style={{ fontSize:13,color:"#666",lineHeight:1.8,letterSpacing:0.3 }}>
-                  {lang==="tr"
-                    ? "Ödemeler, uluslararası lisanslı dijital ödeme altyapısı Lemon Squeezy tarafından güvenle işlenmektedir. Kredi kartı bilgileriniz Sakin tarafından saklanmaz."
-                    : "Payments are securely processed by Lemon Squeezy, a licensed international digital payment platform. Your credit card information is never stored by Sakin."}
+                  {t("premium_secure_desc")}
                 </div>
                 <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener noreferrer"
                   style={{ display:"inline-block",marginTop:10,fontSize:12,letterSpacing:1.5,color:"#b8a4d8",textDecoration:"none",borderBottom:"1px solid rgba(184,164,216,0.3)",paddingBottom:2 }}>
@@ -6701,7 +6636,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
                 <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(lang==="tr"?"tr-TR":"en-US")}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>
               </button>
             );
           })}
@@ -6930,16 +6865,16 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </svg>
               </div>
               <h3 style={{ fontFamily:"'Jost',sans-serif",fontSize:16,fontWeight:500,color:"#ffffff",letterSpacing:1.5,margin:0 }}>
-                {lang==="tr" ? "Lisans Aktivasyonu" : "License Activation"}
+                {t("license_title")}
               </h3>
             </div>
             <p style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#999999",lineHeight:1.8,textAlign:"center",margin:"0 0 20px" }}>
-              {lang==="tr" ? "Satın alma sonrası e-posta ile gelen lisans anahtarını gir." : "Enter the license key you received via email after purchase."}
+              {t("license_desc")}
             </p>
             <input
               type="text"
               className="sakin-input"
-              placeholder={lang==="tr" ? "XXXXX-XXXXX-XXXXX-XXXXX" : "XXXXX-XXXXX-XXXXX-XXXXX"}
+              placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
               value={licenseInput}
               onChange={e => setLicenseInput(e.target.value)}
               style={{ fontSize:15,padding:"12px 14px",marginBottom:8,textAlign:"center",letterSpacing:2,fontFamily:"monospace" }}
@@ -6951,13 +6886,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
               style={{ width:"100%",marginTop:12,fontSize:14,letterSpacing:2,padding:"13px 0",opacity:licenseLoading?0.6:1 }}
               disabled={licenseLoading}
               onClick={validateLicense}>
-              {licenseLoading
-                ? (lang==="tr" ? "Doğrulanıyor..." : "Validating...")
-                : (lang==="tr" ? "Aktifleştir" : "Activate")}
+              {licenseLoading ? t("license_validating") : t("license_activate")}
             </button>
             <button onClick={() => setShowLicenseModal(false)}
               style={{ width:"100%",marginTop:8,padding:"10px 0",background:"transparent",border:"none",color:"#666",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-              {lang==="tr" ? "Vazgeç" : "Cancel"}
+              {t("common_cancel")}
             </button>
           </div>
         </div>
