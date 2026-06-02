@@ -4204,7 +4204,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         time: birthTime || "",
                         city: birthCity || "",
                       },
-                      name: ownerName || "",
+                      name: userName || "",
                       premium: !!isPremium,
                     };
                     target.postMessage(payload, "*");
@@ -4217,7 +4217,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         set("sakin_birth_date", birthDate || "");
                         set("sakin_birth_time", birthTime || "");
                         set("sakin_birth_city", birthCity || "");
-                        set("sakin_name", ownerName || "");
+                        set("sakin_name", userName || "");
                         set("sakin_lang", lang || "tr");
                         // GERÇEK KOORDİNAT (humandesign için): host şehri 36k DB'de çözüp
                         // lat/lon/tz'yi geçirir; embed kendi 118-şehir listesine bakmadan
@@ -4236,7 +4236,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         set("birth_date", birthDate || ""); set("birthDate", birthDate || "");
                         set("birth_time", birthTime || ""); set("birthTime", birthTime || "");
                         set("birth_city", birthCity || ""); set("birthCity", birthCity || "");
-                        set("user_name", ownerName || ""); set("userName", ownerName || "");
+                        set("user_name", userName || ""); set("userName", userName || "");
                         set("language", lang || "tr"); set("locale", lang || "tr");
                         // Onboarding/profil "tamamlandı" bayrakları
                         set("onboarding_completed", "true");
@@ -4291,7 +4291,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       } else if (/city|şehir|stadt|ciudad|cidade|ville|都市/.test(meta)) {
                         fillInput(inp, birthCity || "");
                       } else if (/name|isim|ad\b|nombre|nome|nom|名前/.test(meta)) {
-                        fillInput(inp, ownerName || "");
+                        fillInput(inp, userName || "");
                       } else {
                         // Doğum tarihi (veya bilinmeyen) — date format
                         fillInput(inp, birthDate || "");
