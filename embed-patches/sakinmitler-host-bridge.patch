@@ -1,218 +1,204 @@
-diff --git a/app.json b/app.json
-index 32df25a..6194441 100644
---- a/app.json
-+++ b/app.json
-@@ -25,6 +25,9 @@
-     },
-     "web": {
-       "favicon": "./assets/favicon.png"
-+    },
-+    "experiments": {
-+      "baseUrl": "/embedded/sakinmitler"
-     }
-   }
- }
 diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
-index 5ef8190..4a7388c 100644
+index 4a5e021..a6cf630 100644
 --- a/src/screens/ProfileScreen.tsx
 +++ b/src/screens/ProfileScreen.tsx
-@@ -1,4 +1,4 @@
--import React, { useState, useMemo } from 'react';
-+import React, { useState, useMemo, useEffect } from 'react';
- import {
-   View,
-   Text,
-@@ -45,7 +45,7 @@ function openExternal(url: string) {
+@@ -45,14 +45,25 @@ function openExternal(url: string) {
  
  export function ProfileScreen() {
    const insets = useSafeAreaInsets();
--  const { profile, isNewUser, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey } = useMitlerStore();
-+  const { profile, isNewUser, sakinPrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey } = useMitlerStore();
+-  const { profile, isNewUser, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
++  const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
    const { lang, t, setLanguage } = useLanguage();
    const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
  
-@@ -77,6 +77,34 @@ export function ProfileScreen() {
-   const [birthMonth, setBirthMonth] = useState('');
-   const [birthYear, setBirthYear] = useState('');
+   const [showOnboarding, setShowOnboarding] = useState(isNewUser);
+-  const [name, setName] = useState('');
++  // ── SAKİN HOST KÖPRÜSÜ — onboarding kısayolu ────────────────────────────────
++  // Host ad + doğum bilgisini verdiyse onboarding TEK ekrana iner: yalnızca
++  // element seçici. Ad (step 1) ve doğum (step 3) ekranları HİÇ render edilmez;
++  // değerler host'tan sessizce alınır. Element doğumdan TÜRETİLEMEZ (arketip/mit
++  // hesabını bozar), bu yüzden kullanıcı yalnızca onu seçer.
++  //
++  // `bridged` İLK render'da doğrudur: store, bridgePrefill'i lazy initializer ile
++  // senkron localStorage'tan okur (bkz. useStore.ts), dolayısıyla burada async bir
++  // tik beklemeden hazırdır. step bu yüzden ilk render'da element adımına ayarlanır.
++  const ELEMENT_STEP = 2;
++  const bridged = !!(bridgePrefill?.name);
++  const [name, setName] = useState(bridgePrefill?.name ?? '');
+   const [element, setElement] = useState<typeof ELEMENTS[number]>('ateş');
+-  const [step, setStep] = useState(1);
++  const [step, setStep] = useState(bridged ? ELEMENT_STEP : 1);
+   const [openEntry, setOpenEntry] = useState<MitlerEntry | null>(null);
  
-+  // birth extras from Sakin host bridge (saat/dakika/şehir, onboarding formunda alan yok)
-+  const [bridgeHour, setBridgeHour] = useState<number | undefined>(undefined);
-+  const [bridgeMinute, setBridgeMinute] = useState<number | undefined>(undefined);
-+  const [bridgeCity, setBridgeCity] = useState<string | undefined>(undefined);
-+
-+  // SAKİN KÖPRÜSÜ — KISMİ ATLAMA: host isim+doğum yazdıysa o alanları ön-doldur ve
-+  // doğrudan element (kişilik) adımına atla. Element ASLA türetilmez; kullanıcı seçer.
-+  const [bridgeApplied, setBridgeApplied] = useState(false);
-+  useEffect(() => {
-+    if (bridgeApplied || !sakinPrefill || profile) return;
-+    if (sakinPrefill.name) setName(sakinPrefill.name);
-+    if (sakinPrefill.fullName) setFullName(sakinPrefill.fullName);
-+    if (sakinPrefill.birthDate) {
-+      const parts = sakinPrefill.birthDate.split('-'); // YYYY-MM-DD
-+      if (parts.length === 3) {
-+        setBirthYear(parts[0] || '');
-+        setBirthMonth(String(parseInt(parts[1], 10) || ''));
-+        setBirthDay(String(parseInt(parts[2], 10) || ''));
-+      }
-+    }
-+    setBridgeHour(sakinPrefill.birthHour);
-+    setBridgeMinute(sakinPrefill.birthMinute);
-+    setBridgeCity(sakinPrefill.birthCity);
-+    // İsim host'tan geldi → isim adımını (1) atla, element seçim adımına (2) geç.
-+    if (sakinPrefill.name) setStep(2);
-+    setBridgeApplied(true);
-+  }, [sakinPrefill, profile, bridgeApplied]);
-+
+   const openArchetype = (a: typeof archetypesData[0]) =>
+@@ -71,11 +82,17 @@ export function ProfileScreen() {
+       tagline: '', detailMeta: `${i.tradition} · ${i.category}`, searchBlob: '', data: i,
+     });
+ 
+-  // step 3 birth data
+-  const [fullName, setFullName] = useState('');
+-  const [birthDay, setBirthDay] = useState('');
+-  const [birthMonth, setBirthMonth] = useState('');
+-  const [birthYear, setBirthYear] = useState('');
++  // step 3 birth data — köprüden gelen değerlerle pre-fill
++  const bridgeDateParts = (() => {
++    const bd = bridgePrefill?.birthDate;
++    if (!bd) return { d: '', m: '', y: '' };
++    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(bd);
++    return m ? { y: m[1], m: m[2], d: m[3] } : { d: '', m: '', y: '' };
++  })();
++  const [fullName, setFullName] = useState(bridgePrefill?.name ?? '');
++  const [birthDay, setBirthDay] = useState(bridgeDateParts.d);
++  const [birthMonth, setBirthMonth] = useState(bridgeDateParts.m);
++  const [birthYear, setBirthYear] = useState(bridgeDateParts.y);
+ 
    // inline birth data edit (when already profiled but no birth data)
    const [showBirthForm, setShowBirthForm] = useState(false);
-   const [editFullName, setEditFullName] = useState('');
-@@ -146,13 +174,25 @@ export function ProfileScreen() {
-       const bd = birthDataValid(birthDay, birthMonth, birthYear)
-         ? formatBirthDate(birthDay, birthMonth, birthYear)
-         : undefined;
--      await createProfile(name.trim(), element, bd, fullName.trim() || undefined);
-+      await createProfile(name.trim(), element, bd, fullName.trim() || undefined, {
-+        birthHour: bridgeHour,
-+        birthMinute: bridgeMinute,
-+        birthCity: bridgeCity,
-+      });
-       setShowOnboarding(false);
-     }
-   };
+@@ -131,6 +148,18 @@ export function ProfileScreen() {
+     parseInt(y) >= 1900 && parseInt(y) <= new Date().getFullYear();
  
-   const handleSkipBirth = async () => {
--    await createProfile(name.trim(), element);
-+    // Host doğum verisi geldiyse "atla" yine de o veriyi korusun (sadece element seçildi).
-+    const bd = birthDataValid(birthDay, birthMonth, birthYear)
-+      ? formatBirthDate(birthDay, birthMonth, birthYear)
-+      : undefined;
-+    await createProfile(name.trim(), element, bd, fullName.trim() || undefined, {
-+      birthHour: bridgeHour,
-+      birthMinute: bridgeMinute,
-+      birthCity: bridgeCity,
-+    });
-     setShowOnboarding(false);
-   };
+   const handleOnboarding = async () => {
++    // KÖPRÜ AKIŞI: element seçildi → host'tan gelen ad + doğum ile profili
++    // doğrudan kur. step 3 (doğum formu) hiç gösterilmez/girilmez.
++    if (bridged) {
++      await createProfile(
++        (bridgePrefill?.name ?? '').trim() || 'Sakin',
++        element,
++        bridgePrefill?.birthDate,
++        (bridgePrefill?.name ?? '').trim() || undefined,
++      );
++      setShowOnboarding(false);
++      return;
++    }
+     if (step === 1 && name.trim().length > 0) {
+       setStep(2);
+     } else if (step === 2) {
+@@ -279,7 +308,7 @@ export function ProfileScreen() {
+           disabled={step === 1 && name.trim().length === 0}
+         >
+           <Text style={styles.onboardingBtnText}>
+-            {step < 3 ? t('common.continue') : t('profile.onboarding.start')}
++            {bridged || step >= 3 ? t('profile.onboarding.start') : t('common.continue')}
+           </Text>
+         </TouchableOpacity>
  
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
-index eb5d82b..30bad28 100644
+index ef49ec9..5dfd145 100644
 --- a/src/store/useStore.ts
 +++ b/src/store/useStore.ts
-@@ -51,6 +51,62 @@ const STORAGE_KEYS = {
+@@ -57,6 +57,61 @@ function pickRandom<T>(arr: T[]): T {
+   return arr[Math.floor(Math.random() * arr.length)];
+ }
  
- const todayStr = () => new Date().toISOString().split('T')[0];
- 
-+// SAKİN HOST KÖPRÜSÜ — Sakin ana uygulaması (host), bu embed'i bir iframe içinde
-+// açtığında isim + doğum bilgisini embed'in localStorage'ına yazar (aynı origin).
++// ─────────────────────────────────────────────────────────────────────────────
++// SAKİN HOST KÖPRÜSÜ
++// Sakin ana uygulaması embed'i bir iframe içinde aynı origin'de açar ve
++// kullanıcının ad/doğum bilgisini localStorage'a yazar. Burada onu okuyup
++// onboarding formunu ÖN-DOLDURMAK için kullanırız.
 +//
-+// ÖNEMLİ: `element` bir KİŞİLİK SORUSUDUR (onboarding adım 2 — "Hangi unsura yakın
-+// hissediyorsun?"), doğum tarihinden TÜRETİLEMEZ. Zodyaktan element üretmek kardeş
-+// uygulamada (sakinhayvan) hataya yol açtı. Bu yüzden host köprüsü SADECE isim + doğum
-+// bilgisini ÖN-DOLDURUR; profili kendisi YARATMAZ. Onboarding gösterilmeye devam eder
-+// ama isim adımı atlanıp doğrudan element seçim adımına atlanır (KISMİ atlama). Profil
-+// yalnızca kullanıcı bir element seçtikten sonra yazılır — elementsiz/geçersiz profil ASLA.
-+export interface SakinPrefill {
-+  name: string;
-+  fullName?: string;
++// KRİTİK: Bu app'in profili 'element' alanını kullanır — element kullanıcının
++// kişilik testi/seçimiyle belirlenir (ateş/su/toprak/hava), doğum verisinden
++// TÜRETİLEMEZ. Köprü asla element üretmez ve TEK BAŞINA profil oluşturmaz;
++// sadece ad + doğum alanlarını forma akıtır. Element'siz profil mythos
++// hesabını bozar (eski iz: HTML-bridge'in yazdığı element'siz profiller).
++// ─────────────────────────────────────────────────────────────────────────────
++
++export interface SakinBridge {
++  name?: string;
 +  birthDate?: string;   // YYYY-MM-DD
-+  birthHour?: number;
-+  birthMinute?: number;
++  birthHour?: number;   // 0-23
++  birthMinute?: number; // 0-59
 +  birthCity?: string;
 +}
 +
-+function loadSakinPrefill(): SakinPrefill | null {
++export function readSakinBridge(): SakinBridge | null {
 +  try {
-+    if (typeof window === 'undefined' || !window.localStorage) return null;
-+    const ls = window.localStorage;
++    if (typeof window === 'undefined' || !(window as any).localStorage) return null;
++    const ls = (window as any).localStorage as Storage;
 +    const get = (...keys: string[]) => {
-+      for (const k of keys) {
-+        const v = ls.getItem(k);
-+        if (v) return v;
-+      }
++      for (const k of keys) { const v = ls.getItem(k); if (v) return v; }
 +      return '';
 +    };
 +    const name = get('sakin_name', 'user_name', 'userName');
 +    const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
-+    // Host verisi yoksa köprü yok — normal onboarding'e düş
-+    if (!name && !birthDate) return null;
-+    // Doğum saati (HH:MM) — opsiyonel; saat/dakikaya ayır
 +    const birthTime = get('sakin_birth_time', 'birth_time', 'birthTime');
++    const birthCity = get('sakin_birth_city', 'birth_city', 'birthCity');
++    if (!name && !birthDate && !birthTime && !birthCity) return null;
 +    let birthHour: number | undefined;
 +    let birthMinute: number | undefined;
 +    if (birthTime) {
-+      const tp = birthTime.split(':').map((s) => parseInt(s, 10));
-+      if (Number.isFinite(tp[0])) birthHour = tp[0];
-+      if (Number.isFinite(tp[1])) birthMinute = tp[1];
++      const parts = birthTime.split(':');
++      const h = parseInt(parts[0] || '', 10);
++      const m = parseInt(parts[1] || '', 10);
++      if (!isNaN(h) && h >= 0 && h <= 23) birthHour = h;
++      if (!isNaN(m) && m >= 0 && m <= 59) birthMinute = m;
 +    }
-+    const birthCity = get('sakin_birth_city', 'birth_city', 'birthCity') || undefined;
 +    return {
-+      name: name || '',
-+      fullName: name || undefined,
++      name: name || undefined,
 +      birthDate: birthDate || undefined,
 +      birthHour,
 +      birthMinute,
-+      birthCity,
++      birthCity: birthCity || undefined,
 +    };
 +  } catch {
 +    return null;
 +  }
 +}
 +
- function pickRandom<T>(arr: T[]): T {
-   return arr[Math.floor(Math.random() * arr.length)];
- }
-@@ -67,6 +123,9 @@ export function useMitlerStore() {
+ export function useMitlerStore() {
+   const [profile, setProfile] = useState<UserProfile | null>(null);
+   const [dailyReading, setDailyReading] = useState<DailyReading | null>(null);
+@@ -69,6 +124,15 @@ export function useMitlerStore() {
    });
    const [isLoading, setIsLoading] = useState(true);
    const [isNewUser, setIsNewUser] = useState(false);
-+  // Sakin host köprüsünden gelen ön-doldurma verisi (isim + doğum). Element içermez;
-+  // onboarding ekranı bunu okuyup alanları doldurur ve element adımına atlar.
-+  const [sakinPrefill, setSakinPrefill] = useState<SakinPrefill | null>(null);
++  // Sakin host'undan gelen, onboarding formuna pre-fill için saklanan veri.
++  // Profil zaten varsa null. Element üretmez — sadece ad + doğum alanları.
++  //
++  // SENKRON OKUMA: localStorage (web) eşzamanlıdır. Köprüyü İLK render'da hazır
++  // olması için lazy initializer ile senkron okuruz. Böylece ProfileScreen,
++  // bridge varlığını AsyncStorage Promise'i çözülmeden önce — ilk render'da —
++  // görür ve element adımına doğrudan başlar (ad/doğum ekranları hiç açılmaz).
++  // Profil zaten varsa loadAll() bunu null'a çeker (aşağıda).
++  const [bridgePrefill, setBridgePrefill] = useState<SakinBridge | null>(() => readSakinBridge());
+   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
  
    useEffect(() => {
-     loadAll();
-@@ -82,6 +141,11 @@ export function useMitlerStore() {
-       ]);
+@@ -89,8 +153,13 @@ export function useMitlerStore() {
  
        if (!profileRaw) {
-+        // Henüz profil yok → onboarding gösterilecek. Sakin host köprüsünü dene:
-+        // host isim/doğum yazdıysa onları ÖN-DOLDUR (profili YARATMA — element bir
-+        // kişilik sorusudur ve kullanıcı seçmeli). Köprü yoksa düz yeni-kullanıcı akışı.
-+        const prefill = loadSakinPrefill();
-+        if (prefill) setSakinPrefill(prefill);
          setIsNewUser(true);
++        // Köprü zaten lazy-init ile senkron okundu (yukarı bak); profil yoksa
++        // olduğu gibi bırakırız. NOT: Element içermez — kullanıcı yine seçer.
        } else {
          setProfile(JSON.parse(profileRaw));
-@@ -122,12 +186,16 @@ export function useMitlerStore() {
-     element: UserProfile['element'],
-     birthDate?: string,
-     fullName?: string,
-+    extras?: { birthHour?: number; birthMinute?: number; birthCity?: string },
-   ) => {
-     const p: UserProfile = {
-       name,
-       element,
-       birthDate,
-       fullName,
-+      birthHour: extras?.birthHour,
-+      birthMinute: extras?.birthMinute,
-+      birthCity: extras?.birthCity,
-       createdAt: new Date().toISOString(),
-       streak: 0,
-       totalReadings: 0,
-@@ -135,6 +203,7 @@ export function useMitlerStore() {
++        // Profil zaten var: senkron seed'lenmiş köprüyü geçersiz kıl, yoksa
++        // mevcut kullanıcıya yanlışlıkla onboarding ön-doldurması sızar.
++        setBridgePrefill(null);
+       }
+ 
+       if (dailyRaw) {
+@@ -141,6 +210,7 @@ export function useMitlerStore() {
      };
      await saveProfile(p);
      setIsNewUser(false);
-+    setSakinPrefill(null);
++    setBridgePrefill(null); // profil kuruldu — köprü pre-fill'i artık gereksiz
    }, [saveProfile]);
  
    const updateBirthData = useCallback(async (
-@@ -242,6 +311,7 @@ export function useMitlerStore() {
+@@ -252,6 +322,7 @@ export function useMitlerStore() {
+       traditionCounts: {},
+     });
+     setIsNewUser(true);
++    setBridgePrefill(null);
+   }, []);
+ 
+   // Returns the translation key for the level title; the consumer translates.
+@@ -272,6 +343,7 @@ export function useMitlerStore() {
      stats,
      isLoading,
      isNewUser,
-+    sakinPrefill,
++    bridgePrefill,
+     disclaimerAccepted,
      createProfile,
      saveProfile,
-     updateBirthData,
