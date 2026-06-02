@@ -4422,8 +4422,8 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
             onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
             onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
-            title={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
-            aria-label={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
+            title={"Sakin " + t("nav_family")}
+            aria-label={"Sakin " + t("nav_family")}
             style={{
               position:"fixed", top:"calc(var(--sat, 0px) - 4px)", left:8, zIndex:10003,
               padding:"7px 14px 7px 11px", borderRadius:100,
