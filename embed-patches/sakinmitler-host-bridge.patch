@@ -1,5 +1,44 @@
+diff --git a/app.json b/app.json
+index df07c67..527913b 100644
+--- a/app.json
++++ b/app.json
+@@ -20,14 +20,19 @@
+       "infoPlist": {
+         "LSApplicationCategoryType": "public.app-category.lifestyle",
+         "ITSAppUsesNonExemptEncryption": false,
+-        "CFBundleLocalizations": ["tr", "en"],
++        "CFBundleLocalizations": [
++          "tr",
++          "en"
++        ],
+         "CFBundleDevelopmentRegion": "tr"
+       },
+       "privacyManifests": {
+         "NSPrivacyAccessedAPITypes": [
+           {
+             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
++            "NSPrivacyAccessedAPITypeReasons": [
++              "CA92.1"
++            ]
+           }
+         ],
+         "NSPrivacyTracking": false,
+@@ -55,6 +60,9 @@
+           }
+         }
+       ]
+-    ]
++    ],
++    "experiments": {
++      "baseUrl": "/embedded/sakinmitler"
++    }
+   }
+-}
++}
+\ No newline at end of file
 diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
-index 4a5e021..a6cf630 100644
+index 4a5e021..cd080ef 100644
 --- a/src/screens/ProfileScreen.tsx
 +++ b/src/screens/ProfileScreen.tsx
 @@ -45,14 +45,25 @@ function openExternal(url: string) {
@@ -7,8 +46,9 @@ index 4a5e021..a6cf630 100644
  export function ProfileScreen() {
    const insets = useSafeAreaInsets();
 -  const { profile, isNewUser, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
+-  const { lang, t, setLanguage } = useLanguage();
 +  const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
-   const { lang, t, setLanguage } = useLanguage();
++  const { lang, t } = useLanguage();
    const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
  
    const [showOnboarding, setShowOnboarding] = useState(isNewUser);
@@ -82,6 +122,78 @@ index 4a5e021..a6cf630 100644
            </Text>
          </TouchableOpacity>
  
+@@ -399,30 +428,7 @@ export function ProfileScreen() {
+               </View>
+             </View>
+ 
+-            {/* Human Design — temel info + Sakin Design'a yönlendirme */}
+-            <View style={[styles.analysisCard, { borderColor: Colors.purple + '40' }]}>
+-              <View style={styles.analysisHeader}>
+-                <View style={[styles.analysisBadge, { backgroundColor: Colors.purple + '20' }]}>
+-                  <Text style={{ fontSize: 18 }}>◈</Text>
+-                </View>
+-                <View style={styles.analysisHeaderText}>
+-                  <Text style={[styles.analysisTitle, { color: Colors.purpleLight }]}>Human Design</Text>
+-                  <Text style={styles.analysisMeta}>{t('profile.hd.soonNote')}</Text>
+-                </View>
+-                <View style={styles.previewBadge}>
+-                  <Text style={styles.previewBadgeText}>{t('profile.hd.previewBadge')}</Text>
+-                </View>
+-              </View>
+-              <Text style={styles.analysisDesc}>{t('profile.hd.placeholder')}</Text>
+-              <TouchableOpacity
+-                style={styles.hdCtaBtn}
+-                onPress={() => openExternal('https://sakindesign.netlify.app/')}
+-                activeOpacity={0.85}
+-              >
+-                <Text style={styles.hdCtaText}>{t('profile.hd.cta')}</Text>
+-                <Text style={styles.hdCtaSub}>{t('profile.hd.ctaSub')}</Text>
+-              </TouchableOpacity>
+-            </View>
++            {/* Human Design teaser removed — dedicated Sakin Tasarım app owns HD content. */}
+ 
+             {/* Weekly Reading */}
+             <View style={[styles.analysisCard, { borderColor: Colors.teal + '60' }]}>
+@@ -648,30 +654,7 @@ export function ProfileScreen() {
+         </View>
+       </View>
+ 
+-      {/* Dil */}
+-      <View style={styles.section}>
+-        <Text style={styles.sectionTitle}>{t('profile.language')}</Text>
+-        <View style={styles.langRow}>
+-          {(['tr', 'en'] as const).map(code => {
+-            const active = lang === code;
+-            return (
+-              <TouchableOpacity
+-                key={code}
+-                style={[styles.langBtn, active && styles.langBtnActive]}
+-                onPress={() => setLanguage(code)}
+-                activeOpacity={0.85}
+-              >
+-                <Text style={[styles.langLabel, { color: active ? Colors.gold : Colors.textMuted }]}>
+-                  {t(code === 'tr' ? 'profile.language.tr' : 'profile.language.en')}
+-                </Text>
+-              </TouchableOpacity>
+-            );
+-          })}
+-        </View>
+-        {lang === 'en' && (
+-          <Text style={styles.langNote}>{t('profile.contentLangNote')}</Text>
+-        )}
+-      </View>
++      {/* Language picker removed — host (Sakin) controls language. */}
+ 
+       {/* Veri ve Gizlilik */}
+       <View style={styles.section}>
+@@ -715,7 +698,6 @@ export function ProfileScreen() {
+             { key: 'tas',         symbol: '◈', active: false, current: false, url: '' },
+             { key: 'bitki',       symbol: '✿', active: false, current: false, url: '' },
+             { key: 'mitler',      symbol: '⚡', active: true,  current: true,  url: '' },
+-            { key: 'hd',          symbol: '◉', active: true,  current: false, url: 'https://sakindesign.netlify.app' },
+             { key: 'numeroloji',  symbol: '◎', active: false, current: false, url: '' },
+           ].map(app => {
+             const name = t(`family.app.${app.key}.name` as any);
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
 index ef49ec9..5dfd145 100644
 --- a/src/store/useStore.ts

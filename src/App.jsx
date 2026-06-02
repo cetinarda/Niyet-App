@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { getGlossary } from "./glossary";
 import { Capacitor } from "@capacitor/core";
@@ -1641,9 +1642,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   // yoksa ses orphan AudioContext'te kalır, kullanıcı geri dönünce kapatma UI'sı yok.
   useEffect(() => {
     return () => {
-      try { oscRef.current?.stop(); } catch(_) {}
+      // TÜM osilatörleri durdur (LFO + harmonikler) — yoksa LFO/harmonikler
+      // arka planda çalmaya devam eder (alçalıp yükselen ses).
+      try { (oscsRef.current || []).forEach(o => { try { o.stop(); } catch(_) {} }); } catch(_) {}
       try { gainRef.current?.disconnect(); } catch(_) {}
-      oscRef.current = null;
+      oscsRef.current = [];
       gainRef.current = null;
     };
   }, []);
@@ -1741,18 +1744,22 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const [showCloseEyes,  setShowCloseEyes]  = useState(false);
   const [toneOn, setToneOn] = useState(false);
   const audioCtxRef = useRef(null);
-  const oscRef      = useRef(null);
+  const oscsRef     = useRef([]);   // TÜM osilatörler: LFO + 4 harmonik (hepsi durdurulmalı)
   const gainRef     = useRef(null);
 
   const stopTone = () => {
     // ctx'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     const ctx = audioCtxRef.current;
     if (gainRef.current && ctx) {
+      try { gainRef.current.gain.cancelScheduledValues(ctx.currentTime); } catch(_) {}
       try { gainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8); } catch(_) {}
     }
     setTimeout(() => {
-      try { oscRef.current?.stop(); } catch(_) {}
-      oscRef.current = null;
+      // LFO + tüm harmonikleri durdur — yoksa LFO master.gain'i modüle edip
+      // ses tam susmaz (alçalıp yükselir) ve harmonikler çalmaya devam eder.
+      (oscsRef.current || []).forEach(o => { try { o.stop(); } catch(_) {} });
+      oscsRef.current = [];
+      try { gainRef.current?.disconnect(); } catch(_) {}
       gainRef.current = null;
       // audioCtxRef'i close etmiyoruz; toggleTone tekrar açtığında reuse edilecek.
     }, 820);
@@ -1773,20 +1780,23 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     master.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 2);
     master.connect(ctx.destination);
     gainRef.current = master;
+    const oscs = [];
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.type = "sine"; lfo.frequency.value = 0.15;
     lfoGain.gain.value = 0.05;
     lfo.connect(lfoGain); lfoGain.connect(master.gain);
     lfo.start();
+    oscs.push(lfo); // LFO da durdurulacaklar listesinde
     [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.12, "sine"], [2.01, 0.06, "triangle"]].forEach(([ratio, amp, type]) => {
       const o = ctx.createOscillator(); const g = ctx.createGain();
       o.type = type; o.frequency.value = hz * ratio;
       g.gain.setValueAtTime(0, ctx.currentTime);
       g.gain.linearRampToValueAtTime(0.28 * amp, ctx.currentTime + 2);
       o.connect(g); g.connect(master); o.start();
-      if (ratio === 1) oscRef.current = o;
+      oscs.push(o); // her harmonik durdurulacaklar listesinde
     });
+    oscsRef.current = oscs;
     setToneOn(true);
   };
 
@@ -2481,7 +2491,7 @@ function LangPicker({ lang, setLang, compact = false }) {
         <span>{cur}</span>
         <span style={{ fontSize:9, opacity:0.7, transform: open ? "rotate(180deg)" : "none", transition:"transform 0.2s" }}>▾</span>
       </button>
-      {open && pos && (
+      {open && pos && createPortal(
         <>
           <div onClick={()=>setOpen(false)} style={{ position:"fixed", inset:0, zIndex:100000 }} />
           <div style={{ position:"fixed", top:pos.top, right:pos.right, zIndex:100001, background:"rgba(15,10,25,0.97)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.14)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.6)", minWidth:90, maxHeight:"70vh", overflowY:"auto" }}>
@@ -2493,7 +2503,8 @@ function LangPicker({ lang, setLang, compact = false }) {
               </button>
             ))}
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );
@@ -4208,6 +4219,18 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                         set("sakin_birth_city", birthCity || "");
                         set("sakin_name", ownerName || "");
                         set("sakin_lang", lang || "tr");
+                        // GERÇEK KOORDİNAT (humandesign için): host şehri 36k DB'de çözüp
+                        // lat/lon/tz'yi geçirir; embed kendi 118-şehir listesine bakmadan
+                        // gerçek koordinatla HD grafiği hesaplar. Varsayılan değil — kullanıcının
+                        // girdiği şehrin gerçek koordinatı.
+                        try {
+                          const loc = lookupCity(birthCity);
+                          if (loc && loc.length >= 3) {
+                            set("sakin_birth_lat", String(loc[0]));
+                            set("sakin_birth_lon", String(loc[1]));
+                            set("sakin_birth_tz",  String(loc[2]));
+                          }
+                        } catch(_) {}
                         set("sakin_premium", isPremium ? "1" : "0");
                         // Embed varyantları — yaygın isim adetleri
                         set("birth_date", birthDate || ""); set("birthDate", birthDate || "");
