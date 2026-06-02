@@ -4041,20 +4041,33 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 const style = doc.createElement("style");
                 style.id = "sakin-embed-fixes";
                 style.textContent = `
-                  /* Embed'in üst safe-area boşluğunu sıfırla — host iframe ekranın tepesinden
-                     başlıyor; embed kendi safe-area-inset-top padding'ini eklerse üstte siyah
-                     bant oluşuyor. Status bar zaten host'tan görünür kalır. */
+                  /* Embed'in üst safe-area boşluğunu AGRESİF sıfırla — host iframe ekranın
+                     tepesinden başlıyor; embed kendi safe-area-inset-top kullanırsa siyah
+                     bant kalıyor. Status bar host tarafında görünür. */
                   html, body {
                     overscroll-behavior-y: none !important;
                     padding-top: 0 !important;
                     margin-top: 0 !important;
                   }
-                  #root, [class*="root"], [class*="App"] {
+                  #root, [class*="root"], [class*="App"], [class*="Container"], [class*="container"] {
                     padding-top: 0 !important;
                     margin-top: 0 !important;
                   }
-                  /* Embed başlık satırı bizim sol üstteki 32px+8 dairesel geri butonumuzla
-                     çakışmasın — sola 48px boşluk. Yaygın RN/Expo seçicileri. */
+                  /* RN/Expo SafeAreaView genelde inline padding-top:env(safe-area-inset-top)
+                     verir → bu da kesik üst boşluğa sebep. Hepsini ezelim. */
+                  [style*="padding-top: env(safe-area-inset-top"],
+                  [style*="paddingTop: env(safe-area-inset-top"],
+                  [style*="padding-top:env(safe-area-inset-top"],
+                  [style*="paddingTop:env(safe-area-inset-top"] {
+                    padding-top: 0 !important;
+                  }
+                  /* Sticky/fixed header'lar (varsa) safe-area kullanmasın */
+                  [style*="position: sticky"][style*="top:"],
+                  [style*="position: fixed"][style*="top:"] {
+                    top: 0 !important;
+                  }
+                  /* Embed başlık satırı bizim sol üstteki dairesel geri butonumuzla
+                     çakışmasın — sola 64px boşluk (FAMILY butonu için). */
                   body > div:first-child > div:first-child,
                   header,
                   [role="banner"],
@@ -4062,7 +4075,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   [class*="header"],
                   [class*="TopBar"],
                   [class*="topbar"] {
-                    padding-left: 48px !important;
+                    padding-left: 64px !important;
                   }
                   /* Form input'larının ekran dışına taşmasını engelle */
                   input, textarea, select {
@@ -4412,7 +4425,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
             title={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
             aria-label={lang==="tr"?"Sakin Ailesi'ne dön":"Back to Sakin Family"}
             style={{
-              position:"fixed", top:"calc(var(--sat, 0px) + 6px)", left:8, zIndex:10003,
+              position:"fixed", top:"calc(var(--sat, 0px) - 4px)", left:8, zIndex:10003,
               padding:"7px 14px 7px 11px", borderRadius:100,
               background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
               border:"1px solid rgba(184,164,216,0.5)",
