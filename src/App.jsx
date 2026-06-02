@@ -2435,22 +2435,34 @@ function SmartCityInput({ value, onChange, lang }) {
 // LangPicker — giris-screen ile aynı tasarım, tüm dil değiştirme yüzeylerinde paylaşılır
 function LangPicker({ lang, setLang, compact = false }) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState(null);
+  const btnRef = useRef(null);
   const cur = LANGUAGES.find(l => l.code === lang)?.label || lang.toUpperCase();
+  // Dropdown'u position:fixed olarak aç — yoksa parent .top-nav'ın
+  // overflow-y:hidden'ı listeyi kesiyordu (web'de dil seçici "çalışmıyor"
+  // görünüyordu). getBoundingClientRect ile buton konumundan hesapla.
+  const toggle = () => {
+    if (!open && btnRef.current) {
+      const r = btnRef.current.getBoundingClientRect();
+      setPos({ top: r.bottom + 6, right: Math.max(8, window.innerWidth - r.right) });
+    }
+    setOpen(o => !o);
+  };
   return (
     <div style={{ position:"relative" }}>
-      <button onClick={()=>setOpen(o=>!o)}
+      <button ref={btnRef} onClick={toggle}
         style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.18)", borderRadius:20, padding: compact ? "5px 11px" : "6px 14px", color:"#ddd", fontSize:13, letterSpacing:1.5, cursor:"pointer", fontFamily:"'Jost',sans-serif", fontWeight:400, minWidth: compact ? 56 : 64, minHeight:44, display:"inline-flex", alignItems:"center", justifyContent:"center", gap:6 }}>
         <span>{cur}</span>
         <span style={{ fontSize:9, opacity:0.7, transform: open ? "rotate(180deg)" : "none", transition:"transform 0.2s" }}>▾</span>
       </button>
-      {open && (
+      {open && pos && (
         <>
-          <div onClick={()=>setOpen(false)} style={{ position:"fixed", inset:0, zIndex:9999 }} />
-          <div style={{ position:"absolute", top:"calc(100% + 6px)", right:0, zIndex:10000, background:"rgba(15,10,25,0.96)", backdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.55)", minWidth:80 }}>
+          <div onClick={()=>setOpen(false)} style={{ position:"fixed", inset:0, zIndex:100000 }} />
+          <div style={{ position:"fixed", top:pos.top, right:pos.right, zIndex:100001, background:"rgba(15,10,25,0.97)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.14)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.6)", minWidth:90, maxHeight:"70vh", overflowY:"auto" }}>
             {LANGUAGES.map(l => (
               <button key={l.code}
                 onClick={()=>{ setLang(l.code); localStorage.setItem("sakin_lang", l.code); setOpen(false); }}
-                style={{ background: lang===l.code ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:8, padding:"7px 14px", color: lang===l.code ? "#fff" : "#aaa", fontSize:13, letterSpacing:1.5, cursor:"pointer", fontFamily:"'Jost',sans-serif", fontWeight:400, textAlign:"center" }}>
+                style={{ background: lang===l.code ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:8, padding:"9px 16px", color: lang===l.code ? "#fff" : "#aaa", fontSize:13, letterSpacing:1.5, cursor:"pointer", fontFamily:"'Jost',sans-serif", fontWeight:400, textAlign:"center", whiteSpace:"nowrap" }}>
                 {l.label}
               </button>
             ))}
@@ -3792,7 +3804,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
   // Erişim: Ailesi panelinin altında policy linkleri her yerden 1 tıkla
-  const topNavVisible = !isNative || isPolicyScreen || screen === "giris";
+  // iOS: topNav SADECE policy ekranlarında. Girişte topNav'ı GİZLE — yoksa
+  // topNav (top:0) + Ayna/Harita barı (top:44+sat) üst üste binip sıkışık
+  // görünüyordu (#6). Policy linklerine Ailesi panelinden erişiliyor zaten.
+  // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
+  const topNavVisible = !isNative || isPolicyScreen;
   return (
     <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
