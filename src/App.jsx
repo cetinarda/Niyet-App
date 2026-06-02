@@ -24,11 +24,27 @@ const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 // Türkçe yaz" talimatı EN/DE/... seçiliyken bile modeli Türkçe yazmaya zorluyordu
 // (backend dil kilidini eziyordu). Bu helper dili dinamik yapar.
 const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"Spanish (Español)", "pt-BR":"Brazilian Portuguese (Português)", fr:"French (Français)", ja:"Japanese (日本語)" };
-function aiLangRule(lang) {
-  if (lang === "tr") return `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma.`;
+// AI prompt'ları dile göre TAMAMEN ayrı. Daha önce Türkçe gövde + sadece tek satır
+// "respond in English" emri vardı — model gövdedeki Türkçe + Türkçe alıntı cümleleri
+// kopyalayıp Türkçe cevap veriyordu. Çözüm: lang === "tr" değilse, prompt'u tamamen
+// İngilizce yaz (çıktı dilini hedef dile yönlendiren ultra-net emirle).
+function buildMirrorSystemPrompt(lang) {
+  if (lang === "tr") {
+    return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
+Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
+Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
+  }
   const name = AI_LANG_NAMES[lang] || "English";
-  return `WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. This language requirement is absolute and overrides every other instruction in this prompt. Do NOT write in Turkish under any circumstances. ${lang === "ja" ? "Use natural Japanese with kanji and kana." : `Write naturally and correctly in ${name}.`}`;
+  return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence — including disclaimers, opening lines, and any quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
+Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
+Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
+At the very BEGINNING of your response, add this sentence translated naturally into ${name}: "This answer is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
+// Geriye dönük uyumluluk için alias (eski kod yerleri varsa)
+const aiLangRule = (lang) => lang === "tr"
+  ? `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç gibi karakterleri kullan.`
+  : `WRITE ONLY IN ${AI_LANG_NAMES[lang] || "English"}. Do NOT write in Turkish.`;
 
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
@@ -3259,10 +3275,7 @@ export default function SakinApp() {
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+          system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
 
@@ -3438,10 +3451,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1200, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+          system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
 
@@ -3494,10 +3504,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+          system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
@@ -3547,10 +3554,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1300, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+          system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
@@ -4304,9 +4308,39 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   "türkçe","english","deutsch","español","português","français","日本語"
                 ]);
                 const SETTINGS_NAMES = new Set(["ayarlar","settings","einstellungen","ajustes","configurações","paramètres","設定"]);
-                // Profil/Terimler/Sözlük + policy linkleri embed'in kendi menüleridir —
-                // DOKUNMUYORUZ (kullanıcı: alt menüler görünsün, hareket edebilsin).
-                // Sadece dil seçici + ayarlar gizlenir (host'ta zaten dil seçimi var).
+                // Embed'e özel ek gizleme listesi:
+                //   Hayvan: policy + HD + tam-ad dil seçenekleri
+                //   Mitler: HD + tam-ad dil seçenekleri (policy KALIR)
+                //   Tasarım: ek gizleme yok (kendi app'i, her şey kendi)
+                const path = embeddedApp.path || "";
+                const isHayvanEmbed = path.indexOf("sakinhayvan") !== -1;
+                const isMitlerEmbed = path.indexOf("sakinmitler") !== -1;
+                const POLICY_HIDE = new Set([
+                  "sakin nedir","sakin nedir?","nedir","nedir?","what is sakin","what is sakin?",
+                  "fiyatlandırma","fiyatlar","fiyat","pricing","prices","premium fiyat",
+                  "hakkında","about","about us",
+                  "şartlar","kullanım şartları","terms","terms of service",
+                  "gizlilik","gizlilik politikası","privacy","privacy policy",
+                  "iade","iade politikası","refund","refund policy",
+                ]);
+                const HD_HIDE = new Set([
+                  "human design","sakin tasarım","tasarım","hd","sakin design","tasarim",
+                  "sakin tasarim","insan tasarımı","insan tasarimi",
+                ]);
+                // ⚠️ MITLER hesap-silme butonu gizleme (#20). Apple 5.1.1(v) hesap silme
+                // gerektiriyor; embed'in kendi butonunu gizliyoruz ama host (Sakin) hâlâ
+                // hesap silme sağlamalı, yoksa red riski. Şu an Sakin'de hesap silme YOK
+                // — TODO: Apple submission'dan önce host'a "Hesabımı sil" eklemek lazım,
+                // yoksa bu embed'in butonu hayat kurtarıcıydı. Kullanıcı kendi kararı.
+                const ACCOUNT_DELETE_HIDE = new Set([
+                  "profilimi ve verilerimi sil","hesabımı sil","verilerimi sil","profilimi sil",
+                  "delete my profile and data","delete my account","delete account","delete data",
+                  "delete profile","delete profile and data","verilerimi temizle",
+                ]);
+                const FULL_LANG_HIDE = new Set([
+                  "türkçe","english","türkçe / english","tr · türkçe","en · english",
+                  "türkçe/english","tr/en","change language","dili değiştir",
+                ]);
                 const hideRedundantMenus = () => {
                   try {
                     const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], [role='link'], li, div[onclick], [class*='lang'], [class*='Lang']");
@@ -4318,7 +4352,11 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       const isShortLangCode = (len === 2 || len === 3) && LANG_CODES.has(txt);
                       const isLangPicker = LANG_NAMES.has(txt);
                       const isSettings = SETTINGS_NAMES.has(txt);
-                      if (isShortLangCode || isLangPicker || isSettings) {
+                      const isFullLang = FULL_LANG_HIDE.has(txt);
+                      const isHD = (isHayvanEmbed || isMitlerEmbed) && HD_HIDE.has(txt);
+                      const isPolicy = isHayvanEmbed && POLICY_HIDE.has(txt);
+                      const isAcctDel = isMitlerEmbed && ACCOUNT_DELETE_HIDE.has(txt);
+                      if (isShortLangCode || isLangPicker || isSettings || isFullLang || isHD || isPolicy || isAcctDel) {
                         el.style.display = "none";
                         el.dataset.sakinHidden = "1";
                       }
