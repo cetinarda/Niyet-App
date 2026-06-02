@@ -4355,8 +4355,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       const isFullLang = FULL_LANG_HIDE.has(txt);
                       const isHD = (isHayvanEmbed || isMitlerEmbed) && HD_HIDE.has(txt);
                       const isPolicy = isHayvanEmbed && POLICY_HIDE.has(txt);
-                      const isAcctDel = isMitlerEmbed && ACCOUNT_DELETE_HIDE.has(txt);
-                      if (isShortLangCode || isLangPicker || isSettings || isFullLang || isHD || isPolicy || isAcctDel) {
+                      // #20 hesap-silme butonu KALSIN (kullanıcı kararı, Apple 5.1.1(v) için iyi).
+                      // ACCOUNT_DELETE_HIDE listesi tanımlı ama uygulanmıyor.
+                      if (isShortLangCode || isLangPicker || isSettings || isFullLang || isHD || isPolicy) {
                         el.style.display = "none";
                         el.dataset.sakinHidden = "1";
                       }
