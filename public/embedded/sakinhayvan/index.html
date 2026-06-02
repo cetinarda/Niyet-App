@@ -69,15 +69,9 @@
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
       <script>
-    /* Sakin Hayvan köprüsü KALDIRILDI (kalıcı): bu app profili
-       {name, element, birthDate, fullName, birthHour, birthMinute, birthCity}
-       bekliyor. 'element' alanı uygulamanın çok-soruluk kişilik testiyle
-       belirleniyor (ateş/hava/toprak/su) — burç/doğum tarihinden türetilmiyor.
-       Bundle'da herhangi bir geçici/öntanımlı element fallback'i yok; element
-       eksikse z(birthDate, element) animal hesabı null döner ve hatalı profil
-       üretir. Bu yüzden host'tan eksik veriyle seed YAPMAK YANLIŞTIR — köprü
-       kasten kapalı tutuluyor. Aşağıdaki temizlik, önceki bridge'in yazmış
-       olabileceği eksik (element'siz) ya da hatalı tipli profili siler. */
+    /* @tura_profile invalid-profile cleanup. Önceki bridge sürümleri element'siz
+       profil yazmış olabilir; bunlar animal/myth hesabını bozar. Burada element'i
+       eksik veya geçersiz olan profilleri silip onboarding'i tekrar tetikleriz. */
     (function() {
       try {
         var ex = localStorage.getItem('@tura_profile');
@@ -88,7 +82,6 @@
         if (!p || typeof p !== 'object') {
           localStorage.removeItem('@tura_profile'); return;
         }
-        // Element zorunlu ve ateş/hava/toprak/su olmalı.
         var validEl = ['ateş','hava','toprak','su'];
         if (!p.element || validEl.indexOf(p.element) === -1) {
           localStorage.removeItem('@tura_profile');
@@ -149,6 +142,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-d3e2f3561c2eb593fa4269ed9fc45543.js" defer></script>
+  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-f1cadd34e01eb81f762ef48698a24ee5.js" defer></script>
 </body>
 </html>

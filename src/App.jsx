@@ -4029,6 +4029,42 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
       {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
       {embeddedApp && (
         <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",animation:"portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" }}>
+          {/* ÜST BAR — status bar'ı kaplar (tam ekran kesik fix), embed içeriğini
+              kapatmaz (iframe bar'ın ALTINDA başlar). Sol: ← Aile, orta: SAKİN {APP}. */}
+          <div style={{
+            flexShrink:0, paddingTop:"var(--sat, 0px)",
+            height:"calc(var(--sat, 0px) + 44px)", boxSizing:"border-box",
+            background:"linear-gradient(180deg, rgba(10,6,20,0.98) 0%, rgba(10,6,20,0.92) 100%)",
+            borderBottom:"1px solid rgba(184,164,216,0.18)",
+            display:"flex", alignItems:"center", position:"relative",
+          }}>
+            <button
+              onClick={()=>{ try { haptic(); } catch(_) {} setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
+              onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
+              onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
+              onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
+              title={"Sakin " + t("nav_family")}
+              aria-label={"Sakin " + t("nav_family")}
+              style={{
+                marginLeft:8, padding:"7px 13px 7px 10px", borderRadius:100,
+                background:"rgba(184,164,216,0.12)", border:"1px solid rgba(184,164,216,0.4)",
+                color:"#e8dcff", fontSize:11, letterSpacing:1.2, lineHeight:1,
+                cursor:"pointer", display:"flex", alignItems:"center", gap:5,
+                fontFamily:"'Jost',sans-serif", transition:"transform 0.15s ease", flexShrink:0,
+              }}>
+              <span style={{ fontSize:15 }}>←</span>
+              {t("nav_family")}
+            </button>
+            {/* Orta başlık: SAKİN {APP} */}
+            <div style={{
+              position:"absolute", left:"50%", top:"var(--sat, 0px)", transform:"translateX(-50%)",
+              height:44, display:"flex", alignItems:"center", pointerEvents:"none",
+              fontFamily:"'Jost',sans-serif", fontSize:12, letterSpacing:3,
+              color: embeddedApp.color || "#d0c0f0", textTransform:"uppercase", whiteSpace:"nowrap",
+            }}>
+              {embeddedApp.name}
+            </div>
+          </div>
           <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
@@ -4348,7 +4384,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 }
               } catch(err) { /* cross-origin or already injected — sessiz geç */ }
             }}
-            style={{ flex:1,width:"100%",height:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
+            style={{ flex:"1 1 auto",minHeight:0,width:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
           />
           {/* Yıldız geçidi yükleme katmanı */}
@@ -4411,33 +4447,24 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                     fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
                   {t("common_not_now")}
                 </button>
+                {/* Sakin menüleri — free kullanıcı kotası dolunca embed'den çıkıp Sakin'in
+                    ana bölümlerine 1 tıkla geçebilsin (yoksa ana sayfaya dönüp soğuyor). */}
+                <div style={{ display:"flex", gap:8, marginTop:18, flexWrap:"wrap", justifyContent:"center" }}>
+                  {SIDEBAR_ITEMS.filter(n=>!n.iconOnly).map(n=>(
+                    <button key={n.id}
+                      onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
+                        if(n.id==="ailesi"){ setShowAilesi(true); return; } setScreen(n.id); }}
+                      style={{ background:`${n.color}18`, border:`1px solid ${n.color}44`, borderRadius:100,
+                        padding:"8px 16px", color:n.color, fontSize:11, letterSpacing:1.5, cursor:"pointer",
+                        fontFamily:"'Jost',sans-serif", display:"flex", alignItems:"center", gap:5 }}>
+                      <span style={{ fontSize:13 }}>{n.icon}</span>{n.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             );
           })()}
-          {/* TEK ÇIKIŞ BUTONU — sol üstte ← geri ok, tek tıkta Sakin Ailesi'ne döner.
-              Embed içi gezinme embed'in KENDİ alt sekmeleriyle (Hayvanlar/Bul/Arşiv...).
-              İki buton karmaşası kaldırıldı (kullanıcı kararı). */}
-          <button
-            onClick={()=>{ try { haptic(); } catch(_) {} setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
-            onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
-            onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
-            onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
-            title={"Sakin " + t("nav_family")}
-            aria-label={"Sakin " + t("nav_family")}
-            style={{
-              position:"fixed", top:"calc(var(--sat, 0px) - 4px)", left:8, zIndex:10003,
-              padding:"7px 14px 7px 11px", borderRadius:100,
-              background:"rgba(15,8,30,0.92)", backdropFilter:"blur(20px)",
-              border:"1px solid rgba(184,164,216,0.5)",
-              color:"#e8dcff", fontSize:11, letterSpacing:1.5, lineHeight:1,
-              cursor:"pointer", display:"flex", alignItems:"center", gap:6,
-              fontFamily:"'Jost',sans-serif",
-              boxShadow:"0 4px 18px rgba(0,0,0,0.7), 0 0 14px rgba(184,164,216,0.22)",
-              transition:"transform 0.15s ease",
-            }}>
-            <span style={{ fontSize:15 }}>←</span>
-            {lang==="tr"?"AİLE":"FAMILY"}
-          </button>
+          {/* Çıkış butonu artık üst bar'da (yukarıda). Eski absolute buton kaldırıldı. */}
         </div>
       )}
 
