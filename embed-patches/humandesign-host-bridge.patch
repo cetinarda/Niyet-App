@@ -1,179 +1,5 @@
-diff --git a/app.json b/app.json
-index 2784c87..8111acf 100644
---- a/app.json
-+++ b/app.json
-@@ -8,6 +8,9 @@
-     "userInterfaceStyle": "dark",
-     "newArchEnabled": true,
-     "primaryColor": "#C9A84C",
-+    "experiments": {
-+      "baseUrl": "/embedded/humandesign"
-+    },
-     "description": "Doğum verinden Human Design haritanı çıkar; tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor al. Tüm hesaplama cihazında, sunucusuz.",
-     "githubUrl": "https://github.com/cetinarda/humandesign",
-     "platforms": ["ios", "android", "web"],
-diff --git a/package-lock.json b/package-lock.json
-index 6a6bd5e..1b7af6e 100644
---- a/package-lock.json
-+++ b/package-lock.json
-@@ -3278,7 +3278,7 @@
-       "version": "19.1.17",
-       "resolved": "https://registry.npmjs.org/@types/react/-/react-19.1.17.tgz",
-       "integrity": "sha512-Qec1E3mhALmaspIrhWt9jkQMNdw6bReVu64mjvhbhq2NFPftLPVr+l1SZgmw/66WwBNpDh7ao5AT6gF5v41PFA==",
--      "dev": true,
-+      "devOptional": true,
-       "license": "MIT",
-       "dependencies": {
-         "csstype": "^3.0.2"
-@@ -4407,7 +4407,7 @@
-       "version": "3.2.3",
-       "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
-       "integrity": "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==",
--      "dev": true,
-+      "devOptional": true,
-       "license": "MIT"
-     },
-     "node_modules/debug": {
-@@ -9104,7 +9104,7 @@
-       "version": "5.9.3",
-       "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
-       "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
--      "dev": true,
-+      "devOptional": true,
-       "license": "Apache-2.0",
-       "bin": {
-         "tsc": "bin/tsc",
-diff --git a/src/navigation/TabNavigator.tsx b/src/navigation/TabNavigator.tsx
-index a1da3fa..641d849 100644
---- a/src/navigation/TabNavigator.tsx
-+++ b/src/navigation/TabNavigator.tsx
-@@ -26,9 +26,20 @@ const TABS: { key: Tab; label: string; emoji: string; activeColor: string }[] =
- ];
- 
- export function TabNavigator() {
--  const [activeTab, setActiveTab] = useState<Tab>('home');
-   const insets = useSafeAreaInsets();
--  const { isOnboarded, isLoading, setOnboarded } = useTasarimStore();
-+  const { isOnboarded, isLoading, setOnboarded, initialTab } = useTasarimStore();
-+  // Köprü eksik veri verdiyse açılışta doğrudan Profil sekmesine (ön-doldurulmuş
-+  // form) düş; aksi halde her zamanki gibi 'home'.
-+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
-+  const [tabPinned, setTabPinned] = useState(false);
-+
-+  // Store ilk yüklemede initialTab'i async belirler; kullanıcı henüz dokunmadıysa
-+  // (tabPinned=false) güncel initialTab'e hizala.
-+  React.useEffect(() => {
-+    if (!tabPinned) setActiveTab(initialTab);
-+  }, [initialTab, tabPinned]);
-+
-+  const goTab = (t: Tab) => { setTabPinned(true); setActiveTab(t); };
- 
-   if (isLoading) {
-     return <View style={[styles.container, { backgroundColor: Colors.background }]} />;
-@@ -41,11 +52,11 @@ export function TabNavigator() {
-   const renderScreen = () => {
-     switch (activeTab) {
-       case 'home':
--        return <HomeScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
-+        return <HomeScreen onNavigate={(t) => goTab(t as Tab)} />;
-       case 'chart':
--        return <ChartScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
-+        return <ChartScreen onNavigate={(t) => goTab(t as Tab)} />;
-       case 'report':
--        return <ReportScreen onNavigate={(t) => setActiveTab(t as Tab)} />;
-+        return <ReportScreen onNavigate={(t) => goTab(t as Tab)} />;
-       case 'glossary':
-         return <GlossaryScreen />;
-       case 'profile':
-@@ -67,7 +78,7 @@ export function TabNavigator() {
-               <TouchableOpacity
-                 key={tab.key}
-                 style={styles.tabItem}
--                onPress={() => setActiveTab(tab.key)}
-+                onPress={() => goTab(tab.key)}
-                 activeOpacity={0.7}
-                 accessibilityRole="tab"
-                 accessibilityState={{ selected: isActive }}
-diff --git a/src/screens/ProfileScreen.tsx b/src/screens/ProfileScreen.tsx
-index bb715ca..094a62c 100644
---- a/src/screens/ProfileScreen.tsx
-+++ b/src/screens/ProfileScreen.tsx
-@@ -12,7 +12,7 @@ const TERMS_URL = 'https://sakin.life/tasarim/kosullar';
- const SUPPORT_EMAIL = 'info@sakin.life';
- import { useSafeAreaInsets } from 'react-native-safe-area-context';
- import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
--import { useTasarimStore } from '../store/useStore';
-+import { useTasarimStore, SakinBridge } from '../store/useStore';
- import { CITIES, City, searchCities } from '../data/cities';
- import { TYPES } from '../data/types';
- 
-@@ -20,10 +20,12 @@ export function ProfileScreen() {
-   const insets = useSafeAreaInsets();
-   const {
-     profiles, activeProfile, stats, getLevelTitle,
--    addProfile, selectProfile, deleteProfile, chart,
-+    addProfile, selectProfile, deleteProfile, chart, bridgePrefill,
-   } = useTasarimStore();
- 
--  const [showForm, setShowForm] = useState(false);
-+  // Host eksik veri verdiyse (örn. saat yok) doğrudan ön-doldurulmuş forma düş —
-+  // kullanıcı yalnızca eksik alanı tamamlar, sıfırdan giriş yapmaz.
-+  const [showForm, setShowForm] = useState(!!bridgePrefill);
-   const [showIdCard, setShowIdCard] = useState(false);
- 
-   if (showIdCard) {
-@@ -53,6 +55,7 @@ export function ProfileScreen() {
-   if (showForm) {
-     return (
-       <NewProfileForm
-+        prefill={bridgePrefill}
-         onCancel={() => setShowForm(false)}
-         onSave={async (name, date, time, city) => {
-           await addProfile(name, date, time, city, true);
-@@ -245,24 +248,34 @@ function fmtTime(d: Date) {
- function NewProfileForm({
-   onCancel,
-   onSave,
-+  prefill,
- }: {
-   onCancel: () => void;
-   onSave: (name: string, date: string, time: string, city: City) => Promise<void>;
-+  prefill?: SakinBridge | null;
- }) {
-   const insets = useSafeAreaInsets();
--  const [name, setName] = useState('');
-+  const [name, setName] = useState(prefill?.name ?? '');
- 
-   // Native: birleşik Date; Web: ayrı text inputlar
--  const [birth, setBirth] = useState<Date | null>(null);
-+  // Köprü ön-doldurması varsa native Date'i de date+time'dan kur (varsa).
-+  const [birth, setBirth] = useState<Date | null>(() => {
-+    if (prefill?.birthDate) {
-+      const [y, mo, d] = prefill.birthDate.split('-').map(Number);
-+      const [h, mi] = (prefill.birthTime ?? '12:00').split(':').map(Number);
-+      if (y && mo && d) return new Date(y, mo - 1, d, h || 12, mi || 0, 0, 0);
-+    }
-+    return null;
-+  });
-   const [dateOpen, setDateOpen] = useState(false);
-   const [timeOpen, setTimeOpen] = useState(false);
- 
--  // Web fallback için
--  const [dateStr, setDateStr] = useState('');   // YYYY-MM-DD
--  const [timeStr, setTimeStr] = useState('');   // HH:MM
-+  // Web fallback için — köprü string'lerini doğrudan kullan
-+  const [dateStr, setDateStr] = useState(prefill?.birthDate ?? '');   // YYYY-MM-DD
-+  const [timeStr, setTimeStr] = useState(prefill?.birthTime ?? '');   // HH:MM
- 
--  const [cityQuery, setCityQuery] = useState('');
--  const [city, setCity] = useState<City | null>(null);
-+  const [cityQuery, setCityQuery] = useState(prefill?.city?.name ?? '');
-+  const [city, setCity] = useState<City | null>(prefill?.city ?? null);
-   const [error, setError] = useState<string | null>(null);
-   const [submitting, setSubmitting] = useState(false);
- 
 diff --git a/src/store/useStore.ts b/src/store/useStore.ts
-index a1f350f..82a8942 100644
+index a1f350f..2a88963 100644
 --- a/src/store/useStore.ts
 +++ b/src/store/useStore.ts
 @@ -1,6 +1,6 @@
@@ -184,7 +10,7 @@ index a1f350f..82a8942 100644
  import { computeChart, HumanDesignChart } from '../utils/humanDesign';
  
  export interface SavedProfile {
-@@ -34,6 +34,86 @@ function makeId() {
+@@ -34,6 +34,87 @@ function makeId() {
    return Math.random().toString(36).slice(2, 10);
  }
  
@@ -239,23 +65,24 @@ index a1f350f..82a8942 100644
 +    const cityRaw = get('sakin_birth_city', 'birth_city', 'birthCity');
 +    // Host hiçbir şey yazmadıysa köprü yok — normal akışa düş
 +    if (!name && !birthDate && !birthTime && !cityRaw) return null;
-+    // GERÇEK KOORDİNAT: host (Sakin) şehri kendi 36k DB'sinde çözüp lat/lon/tz'yi
-+    // yazar. Bu varsa, embed'in 118-şehir listesine bakmadan DOĞRUDAN kullan —
-+    // böylece her şehir çözülür (varsayılan/tahmin DEĞİL, kullanıcının gerçek yeri).
-+    let city = resolveCity(cityRaw);
-+    if (!city) {
-+      const lat = parseFloat(get('sakin_birth_lat'));
-+      const lon = parseFloat(get('sakin_birth_lon'));
-+      const tz  = parseFloat(get('sakin_birth_tz'));
-+      if (Number.isFinite(lat) && Number.isFinite(lon)) {
-+        city = {
-+          name: cityRaw || 'Doğum yeri',
-+          lat, lng: lon,
-+          tz: Number.isFinite(tz) ? tz : 0,
-+          country: '', dst: 'none',
-+        };
-+      }
++    // ŞEHİR KOORDİNATI — BİRİNCİL: host (Sakin) şehri kendi 36k DB'sinde çözüp
++    // lat/lon/tz'yi yazar. Bu, embed'in 118-şehir listesinden DAHA KAPSAMLI ve
++    // Sakin'in YÜKSELEN BURÇ hesabıyla AYNI DB → tutarlı sonuç. Host koordinatı
++    // varsa onu kullan (gerçek yer, varsayılan/tahmin değil). Yoksa (host'suz/eski
++    // profil) embed'in kendi 118-listesi FALLBACK.
++    let city: City | null = null;
++    const lat = parseFloat(get('sakin_birth_lat'));
++    const lon = parseFloat(get('sakin_birth_lon'));
++    const tz  = parseFloat(get('sakin_birth_tz'));
++    if (Number.isFinite(lat) && Number.isFinite(lon)) {
++      city = {
++        name: cityRaw || 'Doğum yeri',
++        lat, lng: lon,
++        tz: Number.isFinite(tz) ? tz : 0,
++        country: '', dst: 'none',
++      };
 +    }
++    if (!city) city = resolveCity(cityRaw);
 +    return {
 +      name: name || undefined,
 +      birthDate: birthDate || undefined,
@@ -271,7 +98,7 @@ index a1f350f..82a8942 100644
  interface StoreValue {
    profiles: SavedProfile[];
    activeProfile: SavedProfile | null;
-@@ -41,6 +121,13 @@ interface StoreValue {
+@@ -41,6 +122,13 @@ interface StoreValue {
    chart: HumanDesignChart | null;
    isLoading: boolean;
    isOnboarded: boolean;
@@ -285,7 +112,7 @@ index a1f350f..82a8942 100644
    addProfile: (
      name: string, birthDate: string, birthTime: string, city: City, makeActive?: boolean,
    ) => Promise<SavedProfile>;
-@@ -65,6 +152,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -65,6 +153,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
    const [isLoading, setIsLoading] = useState(true);
    const [isOnboarded, setIsOnboarded] = useState(false);
    const [chart, setChart] = useState<HumanDesignChart | null>(null);
@@ -294,7 +121,7 @@ index a1f350f..82a8942 100644
  
    useEffect(() => {
      (async () => {
-@@ -76,13 +165,56 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -76,13 +166,56 @@ export function StoreProvider({ children }: { children: ReactNode }) {
            AsyncStorage.getItem(STORAGE_KEYS.ONBOARDED),
          ]);
          const list: SavedProfile[] = pRaw ? JSON.parse(pRaw) : [];
@@ -355,7 +182,7 @@ index a1f350f..82a8942 100644
            if (found) {
              try {
                setChart(computeChart(found.birthDate, found.birthTime, found.city));
-@@ -144,6 +276,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -144,6 +277,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
      }
      setIsOnboarded(true);
      await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
@@ -363,7 +190,7 @@ index a1f350f..82a8942 100644
      return profile;
    }, []);
  
-@@ -191,7 +324,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
+@@ -191,7 +325,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
    }, []);
  
    const value: StoreValue = {
