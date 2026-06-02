@@ -139,7 +139,11 @@ Do not use Chinese, Arabic, Korean, Devanagari, or any script that is not part o
 
 // ---- Hard limits -------------------------------------------------------------
 const MAX_BODY_BYTES = 64 * 1024;          // 64KB body size cap
-const MAX_USER_CONTENT_CHARS = 4000;       // total characters across messages[].content
+const MAX_USER_CONTENT_CHARS = 16000;      // total chars across messages[].content. Restored to the
+                                           // pre-security-rewrite per-message value (16000): these prompts
+                                           // legitimately carry large static guides (Reiki/Louise Hay,
+                                           // breath/section refs) inside the user turn. 4000 silently broke
+                                           // all 5 ai-call screens in prod with HTTP 413 "Input too long".
 const MAX_SYSTEM_CHARS = 12000;            // system prompt cap (client-supplied; trusted but bounded)
 const MAX_TOKENS_CEIL = 2000;              // server-side clamp regardless of client value
 const MAX_TOKENS_FLOOR = 100;
