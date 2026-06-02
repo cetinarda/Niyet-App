@@ -3779,7 +3779,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
     {id:"giris",  icon:"⌂", label:"", color:"#c0a8e0", iconOnly:true},
-    ...(isNative ? [] : [{id:"rehber", icon:"🪞", label:t("nav_mirror"), color:"#a070d0"}]),
+    // Ayna (rehber) — ÜST NAV'A KOYMUYORUZ (ne iOS ne web). Her iki platformda
+    // da sağ kenardaki floating ☽ gizli geçit ile açılır (App.jsx ~3951).
+    // Bu satır web'de üst panelde "🪞 Ayna" yazı linki gösteriyordu — KALDIRILDI.
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
     {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
