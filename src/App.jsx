@@ -42,6 +42,19 @@ Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid h
 Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
 At the very BEGINNING of your response, add this sentence translated naturally into ${name}: "This answer is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
+// Haftalık rapor (generateRapor) için dil-farkındalıklı sistem prompt'u.
+// Mirror prompt'una analoji: lang === "tr" Türkçe kalıbı, diğerleri tamamen İngilizce
+// kalıba dönüşür ve modeli hedef dile kilitler (LANGUAGE LOCK backend'de prepend edilir,
+// burası gövdedeki Türkçe sızıntısını engeller).
+function buildReportSystemPrompt(lang) {
+  if (lang === "tr") {
+    return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
+Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
+  }
+  const name = AI_LANG_NAMES[lang] || "English";
+  return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence — including quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love.
+At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
+}
 // Geriye dönük uyumluluk için alias (eski kod yerleri varsa)
 const aiLangRule = (lang) => lang === "tr"
   ? `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç gibi karakterleri kullan.`
@@ -2660,6 +2673,12 @@ export default function SakinApp() {
   const [showAilesi, setShowAilesi] = useState(false);
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
+  // App Store Guideline 5.1.1(v) — account deletion. Modal + helper state.
+  // NOT: src/purchases.js'e DOKUNULMAZ. Apple'ın silme şartı KULLANICI verileri içindir;
+  // abonelik iptali kullanıcının App Store ayarlarından kendi yaptığı ayrı bir işlemdir
+  // (UI'da bunu hatırlatıyoruz). Burada localStorage temizlenir + React state sıfırlanır.
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteToast, setDeleteToast] = useState("");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Hayvan/Mitler kotası dolduysa frost+CTA
   // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
@@ -3024,6 +3043,64 @@ export default function SakinApp() {
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
   const breathChimeRef = useRef(null);
+
+  // App Store Guideline 5.1.1(v) — Account / Data deletion.
+  // - Tüm sakin_* localStorage anahtarlarını siler (eski/yeni tüm cihaz-yerel veriler).
+  // - sakin_intro_seen (sessionStorage) dahil — kullanıcı temiz intro görsün.
+  // - React state'i sıfırlar: ad, doğum bilgisi, niyet/sözcükler, nefes/ses/şükür/ritüel/
+  //   sukur/aksamnote, çakra inputları, sorgu geçmişi, streak, steps, freq dinleme,
+  //   AI consent, premium UI flag, rapor flag, reiki/zihinsel kullanım flag'leri.
+  // - Kullanıcıyı giris/intro ekranına döndürür ve kısa bir onay tost'u gösterir.
+  // - DİKKAT: src/purchases.js'e DOKUNULMAZ. Apple'ın silme şartı USER DATA içindir;
+  //   abonelik iptali kullanıcının App Store ayarlarından kendi yaptığı ayrı bir işlemdir.
+  //   Premium UI flag'i (setIsPremium(false)) sadece görsel reset; restore ile geri gelir.
+  const deleteAccountData = () => {
+    try { haptic(ImpactStyle.Heavy); } catch(_) {}
+    // 1) localStorage: sakin_ ile başlayan tüm anahtarları topla ve sil (iterasyon
+    //    sırasında silmek index kaymasına yol açar — önce topla, sonra sil).
+    try {
+      const toRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith("sakin_")) toRemove.push(k);
+      }
+      toRemove.forEach(k => { try { localStorage.removeItem(k); } catch(_) {} });
+    } catch(_) {}
+    // 2) sessionStorage: intro flag'i kaldır ki kullanıcı temiz başlasın.
+    try { sessionStorage.removeItem("sakin_intro_seen"); } catch(_) {}
+    // 3) React state reset — localStorage temizliğinden sonra mount değerleri stale
+    //    olabilir; setter'larla zorla sıfırla.
+    setUserName(""); setNameInput(""); setIdCardName("");
+    setBirthDate(""); setBirthInput("");
+    setBirthTime(""); setBirthTimeInput("");
+    setBirthCity(""); setBirthCityInput("");
+    setNiyet(""); setSelectedWords([]);
+    setBreathCount(0); setBreathStarted(false); setBreathMode("standart"); setBreathPhase("ready");
+    setAksamNote(""); setSukur(""); setAksamRitualChecks([false,false,false]);
+    setFreqListenSec(0);
+    setSorguGecmisi([]);
+    setStreakData({ current: 0, best: 0, lastDate: null, badges: [] });
+    setStepsCompleted({});
+    setChakraInput(""); setChakraAnaliz("");
+    setSemptomInput(""); setSemptomAnaliz("");
+    setSikayet(""); setSikayetHis(""); setSikayetAnaliz("");
+    setHastalik(""); setHastalikHis(""); setHastalikAnaliz("");
+    setAiRapor("");
+    setAiConsent(false);
+    setRaporKullanildi(false);
+    setReikiUsed(false); setZihinselUsed(false);
+    setIsPremium(false); // sadece UI flag — Apple subscription'a dokunulmadı (yukarı bak)
+    // 4) UI: tüm modal/panel kapat, kullanıcıyı temiz giris/intro'ya götür.
+    setShowDeleteConfirm(false);
+    setShowAilesi(false);
+    setAilesiEditBirth(false);
+    setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
+    setGirisPhase("intro");
+    setScreen("giris");
+    // 5) Kısa onay tost'u — 2.5sn sonra otomatik kapan.
+    setDeleteToast(t("delete_done_toast"));
+    setTimeout(() => setDeleteToast(""), 2500);
+  };
 
   const playStartChime = () => {
     try {
@@ -3695,13 +3772,13 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1700, lang,
-          system:`Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
-Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+          system:`${buildReportSystemPrompt(lang)}
 ${kisiselProfil()}${astroText}${kozmikText}
 ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
 
-Rapor şu başlıkları içermeli:
+${lang === "tr"
+  ? `Rapor şu başlıkları içermeli:
 **Haftanın Yansıması** — Genel ruh hali, enerji ve burç/sayı etkisi — net ve doğrudan yansıt (2-3 cümle)
 **Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri — kaynağa doğrudan işaret et
 **İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam — kişinin kendi içinde gördüklerini yansıt
@@ -3712,7 +3789,19 @@ Rapor şu başlıkları içermeli:
 **Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
 **Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu** — Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
 
-Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`,
+Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`
+  : `The report MUST include the following sections (translate each section heading naturally into ${AI_LANG_NAMES[lang] || "English"}; keep the **bold** markdown around each heading):
+**Reflection of the Week** — Overall mood, energy and zodiac/number influence — clear and direct (2-3 sentences)
+**Recurring Themes** — Repeating words and chakra patterns — point directly at the source
+**Inner Growth** — Meaning extracted from what was learned — reflect what the person saw inside themselves
+**Hidden Self & Shadow** — Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
+**Frequency & Sound Journey** — Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
+**Heart of Gratitude** — A synthesis of the gratitude entries
+**An Invitation** — How can you offer yourself love this week, where can you look — invitation, not criticism (2-3 bullets)
+**Remember** — The 2-3 most important things to remind yourself this week (short, concise)
+**Intention for Next Week** — A short, inspiring suggestion${astro ? "\n**Cosmic Note** — A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State** — Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
+
+Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
@@ -3984,10 +4073,56 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 </button>
               ))}
             </div>
+            {/* App Store Guideline 5.1.1(v) — Hesap/veri silme. Politika linkleriyle aynı
+                muted dil, hafifçe daha düşük opaklıkta. Promote etmiyoruz; erişilebilir. */}
+            <div style={{ display:"flex",justifyContent:"center",marginTop:2 }}>
+              <button onClick={()=>setShowDeleteConfirm(true)}
+                style={{ background:"none",border:"none",padding:"4px 2px",color:"#666",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {t("delete_account_link")}
+              </button>
+            </div>
             <button onClick={()=>setShowAilesi(false)} style={{ marginTop:6,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
               {t("common_close")}
             </button>
           </div>
+        </div>
+      )}
+
+      {/* HESAP / VERİ SİLME ONAY MODALI — App Store Guideline 5.1.1(v).
+          Ailesi paneli üstünde (zIndex daha yüksek). "Sil" destruktif kırmızı,
+          "Vazgeç" default. Onayla → deleteAccountData() çağrılır. */}
+      {showDeleteConfirm && (
+        <div onClick={()=>setShowDeleteConfirm(false)}
+          style={{ position:"fixed",inset:0,zIndex:10010,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
+          <div onClick={e=>e.stopPropagation()}
+            style={{ maxWidth:380,width:"100%",background:"#15101c",border:"1px solid rgba(232,80,80,0.25)",borderRadius:18,padding:"24px 22px",display:"flex",flexDirection:"column",gap:16 }}>
+            <div style={{ fontSize:11,letterSpacing:4,color:"#e85050",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center" }}>
+              {t("delete_confirm_title")}
+            </div>
+            <div style={{ fontSize:14,lineHeight:1.65,color:"#d0c4d8",fontFamily:"'Inter',sans-serif",textAlign:"left" }}>
+              {t("delete_confirm_body")}
+            </div>
+            <div style={{ fontSize:11,lineHeight:1.55,color:"#888",fontFamily:"'Inter',sans-serif",fontStyle:"italic" }}>
+              {t("delete_confirm_subscription_note")}
+            </div>
+            <div style={{ display:"flex",gap:10,marginTop:4 }}>
+              <button onClick={()=>setShowDeleteConfirm(false)}
+                style={{ flex:1,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,padding:"12px 14px",color:"#d0c4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {t("delete_confirm_cancel")}
+              </button>
+              <button onClick={deleteAccountData}
+                style={{ flex:1,background:"linear-gradient(135deg,#a83030,#7a1818)",border:"1px solid rgba(232,80,80,0.6)",borderRadius:100,padding:"12px 14px",color:"#fff",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",fontWeight:500 }}>
+                {t("delete_confirm_delete")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SİLME ONAY TOST'U — 2.5sn sonra otomatik kapanır */}
+      {deleteToast && (
+        <div style={{ position:"fixed",left:"50%",bottom:80,transform:"translateX(-50%)",zIndex:10020,background:"rgba(20,16,28,0.95)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"12px 22px",color:"#d0c0f0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",backdropFilter:"blur(10px)",boxShadow:"0 6px 24px rgba(0,0,0,0.5)" }}>
+          {deleteToast}
         </div>
       )}
 

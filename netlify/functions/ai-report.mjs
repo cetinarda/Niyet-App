@@ -1,28 +1,61 @@
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+// Hardened Groq proxy for the weekly inner-report generation.
+// Mirrors the security layers in ai-call.mjs. See that file's top comment
+// for the in-memory rate-limit caveat (Netlify warm-vs-cold containers).
 
-function getCorsHeaders(event) {
-  const origin = event.headers?.origin || "";
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+// ---- CORS / origin allowlist -------------------------------------------------
+
+const ALLOWED_EXACT_ORIGINS = new Set([
+  "https://sakin.life",
+  "https://www.sakin.life",
+  "capacitor://localhost",
+  "ionic://localhost",
+]);
+const ALLOWED_ORIGIN_SUFFIXES = [".netlify.app"];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (ALLOWED_EXACT_ORIGINS.has(origin)) return true;
+  try {
+    const u = new URL(origin);
+    if (u.protocol !== "https:") return false;
+    return ALLOWED_ORIGIN_SUFFIXES.some((suf) => u.hostname.endsWith(suf));
+  } catch {
+    return false;
+  }
+}
+
+function buildCorsHeaders(origin) {
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin",
   };
 }
 
+// ---- Rate limit (per-IP sliding window) -------------------------------------
+// Report generation is heavier than chat, so cap is tighter.
+// Sliding window: 10 reports / 10 minutes per IP. timestamps[] eviction.
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 10;
 const rateMap = new Map();
-const RATE_WINDOW = 60_000;
-const RATE_MAX = 5;
 
 function isRateLimited(ip) {
   const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now - entry.start > RATE_WINDOW) {
-    rateMap.set(ip, { start: now, count: 1 });
-    return false;
+  const arr = rateMap.get(ip) || [];
+  const fresh = arr.filter((t) => now - t < RATE_WINDOW_MS);
+  if (fresh.length >= RATE_MAX) {
+    rateMap.set(ip, fresh);
+    return true;
   }
-  entry.count++;
-  return entry.count > RATE_MAX;
+  fresh.push(now);
+  rateMap.set(ip, fresh);
+  if (rateMap.size > 5000 && Math.random() < 0.01) {
+    for (const [k, v] of rateMap) {
+      if (!v.length || now - v[v.length - 1] > RATE_WINDOW_MS) rateMap.delete(k);
+    }
+  }
+  return false;
 }
 
 function getClientIP(event) {
@@ -32,8 +65,7 @@ function getClientIP(event) {
     || "unknown";
 }
 
-// Strip foreign-script glyph runs that the model sometimes hallucinates.
-// Keep scripts that the target language legitimately needs (e.g. kanji for JA).
+// ---- Output sanitizer (preserved) -------------------------------------------
 function buildSanitizer(lang) {
   const ranges = {
     cjkUnified: { re: /[一-鿿]/g, keepFor: ["ja"] },
@@ -62,6 +94,7 @@ function truncStr(val, max) {
   return val.slice(0, max);
 }
 
+// ---- Language plumbing (preserved) ------------------------------------------
 const LANG_META = {
   "tr":    { name: "Turkish",              native: "Türkçe" },
   "en":    { name: "English",              native: "English" },
@@ -81,8 +114,6 @@ function normalizeLang(raw) {
   return LANG_META[fallback] ? fallback : "tr";
 }
 
-// Localized field labels for the per-day summary block.
-// Keeps the structure identical across languages so prompt logic stays unified.
 const DAY_LABELS = {
   "tr":    { day: "Gün",  date: "tarih", intent: "Niyet",     words: "Kelimeler", chakra: "Günün çakrası",     breaths: "Nefes sayısı",  learned: "Bugün ne öğrendim",      gratitude: "Şükür" },
   "en":    { day: "Day",  date: "date",  intent: "Intention", words: "Words",     chakra: "Today's chakra",     breaths: "Breath count",  learned: "What I learned today",   gratitude: "Gratitude" },
@@ -93,7 +124,6 @@ const DAY_LABELS = {
   "ja":    { day: "日",   date: "日付",  intent: "意図",      words: "言葉",      chakra: "今日のチャクラ",     breaths: "呼吸回数",      learned: "今日学んだこと",         gratitude: "感謝" },
 };
 
-// Localized user-facing preamble that asks for the report.
 const USER_PROMPT_PREAMBLE = {
   "tr":    (block) => `Bu haftaki günlük verilerim:\n\n${block}\n\nLütfen haftalık içsel raporumu oluştur.`,
   "en":    (block) => `My daily entries for this week:\n\n${block}\n\nPlease generate my weekly inner report.`,
@@ -104,7 +134,6 @@ const USER_PROMPT_PREAMBLE = {
   "ja":    (block) => `今週の日々の記録：\n\n${block}\n\n週間の内省レポートを作成してください。`,
 };
 
-// English meta-instructions — LLMs follow these most reliably.
 function buildSystemPrompt(lang) {
   const meta = LANG_META[lang];
   return `LANGUAGE LOCK — HIGHEST PRIORITY:
@@ -130,47 +159,97 @@ VOICE:
 Warm, confident, poetic. Address the user as "you" (in ${meta.name}'s natural second-person form). Maximum 500 words.`;
 }
 
+// ---- Hard limits -------------------------------------------------------------
+const MAX_BODY_BYTES = 64 * 1024;          // 64KB body size cap
+const MAX_USER_CONTENT_CHARS = 4000;       // total user-influenced characters in `gunler`
+const MAX_MAX_TOKENS = 2000;               // server-side ceiling (we set this, but enforce explicitly)
+const MAX_DAYS = 7;
+
+const GENERIC_AI_ERROR = "AI temporarily unavailable";
+
+function jsonResponse(statusCode, corsHeaders, payload) {
+  return {
+    statusCode,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  };
+}
+
 export const handler = async (event) => {
-  const cors = getCorsHeaders(event);
+  const origin = event.headers?.origin || event.headers?.Origin || "";
+  const originOk = isAllowedOrigin(origin);
+  const cors = originOk ? buildCorsHeaders(origin) : {};
 
   if (event.httpMethod === "OPTIONS") {
+    if (!originOk) {
+      return { statusCode: 403, body: "" };
+    }
     return { statusCode: 204, headers: cors, body: "" };
   }
 
+  if (!originOk) {
+    return { statusCode: 403, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Origin not allowed" }) };
+  }
+
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+    return jsonResponse(405, cors, { error: "Method not allowed" });
+  }
+
+  // ---- Body size cap ---
+  const rawBody = event.body || "";
+  const bodyBytes = event.isBase64Encoded
+    ? Math.floor(rawBody.length * 0.75)
+    : Buffer.byteLength(rawBody, "utf8");
+  if (bodyBytes > MAX_BODY_BYTES) {
+    return jsonResponse(413, cors, { error: "Payload too large" });
   }
 
   const ip = getClientIP(event);
   if (isRateLimited(ip)) {
-    return { statusCode: 429, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Çok fazla istek. Biraz bekle." }) };
+    return jsonResponse(429, cors, { error: "Too many requests. Please slow down." });
   }
 
   let gunler, rawLang;
   try {
-    const parsed = JSON.parse(event.body);
+    const parsed = JSON.parse(rawBody);
     gunler = parsed.gunler;
     rawLang = parsed.lang;
   } catch {
-    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
+    return jsonResponse(400, cors, { error: "Invalid request body" });
   }
 
-  if (!Array.isArray(gunler) || gunler.length === 0 || gunler.length > 7) {
-    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "1-7 gün verisi gerekli." }) };
+  if (!Array.isArray(gunler) || gunler.length === 0 || gunler.length > MAX_DAYS) {
+    return jsonResponse(400, cors, { error: "1-7 days of data required." });
   }
 
+  // ---- Per-day validation + total user-content length cap ---
+  let totalUserChars = 0;
   for (const g of gunler) {
     if (!g || typeof g !== "object") {
-      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz gün verisi" }) };
+      return jsonResponse(400, cors, { error: "Invalid day entry" });
     }
     if (g.kelimeler && (!Array.isArray(g.kelimeler) || g.kelimeler.length > 10)) {
-      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz kelimeler" }) };
+      return jsonResponse(400, cors, { error: "Invalid words" });
     }
+    // Sum every user-supplied string field; this is the cost-driving surface.
+    for (const field of ["tarih", "niyet", "chakra", "ogrendim", "sukur"]) {
+      const v = g[field];
+      if (typeof v === "string") totalUserChars += v.length;
+    }
+    if (Array.isArray(g.kelimeler)) {
+      for (const k of g.kelimeler) {
+        if (typeof k === "string") totalUserChars += k.length;
+      }
+    }
+  }
+  if (totalUserChars > MAX_USER_CONTENT_CHARS) {
+    return jsonResponse(413, cors, { error: "Input too long" });
   }
 
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return { statusCode: 500, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }) };
+    console.error("[ai-report] GROQ_API_KEY missing in environment");
+    return jsonResponse(500, cors, { error: GENERIC_AI_ERROR });
   }
 
   const lang = normalizeLang(rawLang);
@@ -191,8 +270,10 @@ export const handler = async (event) => {
   const systemPrompt = buildSystemPrompt(lang);
   const userPrompt = USER_PROMPT_PREAMBLE[lang](gunlerText);
 
+  // ---- Upstream call. Generic error to client; full detail only to server log. ---
+  let res, data;
   try {
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -200,7 +281,7 @@ export const handler = async (event) => {
       },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
-        max_tokens: 2000,
+        max_tokens: MAX_MAX_TOKENS,
         temperature: 0.2,
         messages: [
           { role: "system", content: systemPrompt },
@@ -208,17 +289,18 @@ export const handler = async (event) => {
         ],
       }),
     });
-    const data = await res.json();
-
-    if (!res.ok || data.error) {
-      const errMsg = data.error?.message || `HTTP ${res.status}`;
-      return { statusCode: res.status, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: errMsg }) };
-    }
-
-    const sanitize = buildSanitizer(lang);
-    const rapor = sanitize(data.choices?.[0]?.message?.content || "Rapor oluşturulamadı.");
-    return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ rapor }) };
+    data = await res.json();
   } catch (e) {
-    return { statusCode: 502, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }) };
+    console.error("[ai-report] upstream fetch failed:", e?.message || e);
+    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
   }
+
+  if (!res.ok || data?.error) {
+    console.error("[ai-report] upstream error:", res.status, data?.error?.message || data?.error || "(no body)");
+    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
+  }
+
+  const sanitize = buildSanitizer(lang);
+  const rapor = sanitize(data.choices?.[0]?.message?.content || "");
+  return jsonResponse(200, cors, { rapor });
 };

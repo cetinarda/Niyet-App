@@ -370,6 +370,15 @@ export const TRANS = {
     ailesi_get_premium: "✦ Premium'a Geç",
     ailesi_family_bonus: "Bonus · Sakin Ailesi",
 
+    // ===== Hesap / veri silme (App Store 5.1.1(v)) =====
+    delete_account_link:           "Hesabımı ve verilerimi sil",
+    delete_confirm_title:          "Hesabını sil",
+    delete_confirm_body:           "Tüm verilerin (ad, doğum bilgisi, niyetler, geçmiş, abonelik bilgileri) bu cihazdan kalıcı olarak silinecek. Bu işlem geri alınamaz.",
+    delete_confirm_subscription_note: "Not: Aktif bir App Store aboneliğin varsa iPhone Ayarlar → Apple Kimliği → Abonelikler bölümünden ayrıca iptal etmen gerekir.",
+    delete_confirm_cancel:         "Vazgeç",
+    delete_confirm_delete:         "Sil",
+    delete_done_toast:             "Verilerin silindi",
+
     // ===== Birth form =====
     birth_dob_label: "Doğum Tarihi",
     birth_time_label2: "Doğum Saati",
@@ -1050,6 +1059,15 @@ export const TRANS = {
     ailesi_premium_quota: "Your {free} free opens of {name} are done. Unlock unlimited access to all family apps with Premium.",
     ailesi_get_premium: "✦ Get Premium",
     ailesi_family_bonus: "Bonus · Sakin Family",
+
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "Delete my account and data",
+    delete_confirm_title:          "Delete your account",
+    delete_confirm_body:           "All your data (name, birth info, intentions, history, subscription info) will be permanently deleted from this device. This action cannot be undone.",
+    delete_confirm_subscription_note: "Note: if you have an active App Store subscription, you must also cancel it separately in iPhone Settings → Apple ID → Subscriptions.",
+    delete_confirm_cancel:         "Cancel",
+    delete_confirm_delete:         "Delete",
+    delete_done_toast:             "Your data has been deleted",
 
     // ===== Birth form =====
     birth_dob_label: "Date of Birth",

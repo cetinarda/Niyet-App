@@ -284,6 +284,15 @@ export const EXTRA_LANGS = {
     ailesi_get_premium: "✦ Premium holen",
     ailesi_family_bonus: "Bonus · Sakin Familie",
 
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "Mein Konto und meine Daten löschen",
+    delete_confirm_title:          "Konto löschen",
+    delete_confirm_body:           "Alle deine Daten (Name, Geburtsdaten, Intentionen, Verlauf, Abonnementinformationen) werden dauerhaft von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
+    delete_confirm_subscription_note: "Hinweis: Falls du ein aktives App-Store-Abonnement hast, musst du es zusätzlich in iPhone-Einstellungen → Apple-ID → Abonnements kündigen.",
+    delete_confirm_cancel:         "Abbrechen",
+    delete_confirm_delete:         "Löschen",
+    delete_done_toast:             "Deine Daten wurden gelöscht",
+
     birth_dob_label: "Geburtsdatum",
     birth_time_label2: "Geburtszeit",
     birth_city_label: "Geburtsort",
@@ -855,6 +864,15 @@ export const EXTRA_LANGS = {
     ailesi_premium_quota: "Tus {free} aperturas gratis de {name} están agotadas. Desbloquea acceso ilimitado a todas las apps de la familia con Premium.",
     ailesi_get_premium: "✦ Obtener Premium",
     ailesi_family_bonus: "Bono · Familia Sakin",
+
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "Eliminar mi cuenta y mis datos",
+    delete_confirm_title:          "Eliminar tu cuenta",
+    delete_confirm_body:           "Todos tus datos (nombre, datos de nacimiento, intenciones, historial, información de suscripción) se eliminarán de forma permanente de este dispositivo. Esta acción no se puede deshacer.",
+    delete_confirm_subscription_note: "Nota: si tienes una suscripción activa en la App Store, también deberás cancelarla por separado en Ajustes del iPhone → ID de Apple → Suscripciones.",
+    delete_confirm_cancel:         "Cancelar",
+    delete_confirm_delete:         "Eliminar",
+    delete_done_toast:             "Tus datos se han eliminado",
 
     birth_dob_label: "Fecha de Nacimiento",
     birth_time_label2: "Hora de Nacimiento",
@@ -1428,6 +1446,15 @@ export const EXTRA_LANGS = {
     ailesi_get_premium: "✦ Obter Premium",
     ailesi_family_bonus: "Bônus · Família Sakin",
 
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "Excluir minha conta e meus dados",
+    delete_confirm_title:          "Excluir sua conta",
+    delete_confirm_body:           "Todos os seus dados (nome, dados de nascimento, intenções, histórico, informações da assinatura) serão permanentemente excluídos deste dispositivo. Esta ação não pode ser desfeita.",
+    delete_confirm_subscription_note: "Observação: se você tiver uma assinatura ativa na App Store, também será necessário cancelá-la separadamente em Ajustes do iPhone → ID Apple → Assinaturas.",
+    delete_confirm_cancel:         "Cancelar",
+    delete_confirm_delete:         "Excluir",
+    delete_done_toast:             "Seus dados foram excluídos",
+
     birth_dob_label: "Data de Nascimento",
     birth_time_label2: "Hora de Nascimento",
     birth_city_label: "Cidade de Nascimento",
@@ -2000,6 +2027,15 @@ export const EXTRA_LANGS = {
     ailesi_get_premium: "✦ Obtenir Premium",
     ailesi_family_bonus: "Bonus · Famille Sakin",
 
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "Supprimer mon compte et mes données",
+    delete_confirm_title:          "Supprimer ton compte",
+    delete_confirm_body:           "Toutes tes données (nom, informations de naissance, intentions, historique, informations d'abonnement) seront supprimées définitivement de cet appareil. Cette action est irréversible.",
+    delete_confirm_subscription_note: "Remarque : si tu as un abonnement App Store actif, tu dois également l'annuler séparément dans Réglages iPhone → Identifiant Apple → Abonnements.",
+    delete_confirm_cancel:         "Annuler",
+    delete_confirm_delete:         "Supprimer",
+    delete_done_toast:             "Tes données ont été supprimées",
+
     birth_dob_label: "Date de Naissance",
     birth_time_label2: "Heure de Naissance",
     birth_city_label: "Ville de Naissance",
@@ -2571,6 +2607,15 @@ export const EXTRA_LANGS = {
     ailesi_premium_quota: "{name} の無料 {free} 回が終了しました。プレミアムですべてのファミリーアプリへ無制限アクセス。",
     ailesi_get_premium: "✦ プレミアムを取得",
     ailesi_family_bonus: "ボーナス · Sakin ファミリー",
+
+    // ===== Account / data deletion (App Store 5.1.1(v)) =====
+    delete_account_link:           "アカウントとデータを削除",
+    delete_confirm_title:          "アカウントを削除",
+    delete_confirm_body:           "すべてのデータ(名前、出生情報、意図、履歴、サブスクリプション情報)がこのデバイスから完全に削除されます。この操作は取り消せません。",
+    delete_confirm_subscription_note: "ご注意:App Storeで有効なサブスクリプションがある場合は、iPhone「設定」→「Apple ID」→「サブスクリプション」から別途キャンセルしてください。",
+    delete_confirm_cancel:         "キャンセル",
+    delete_confirm_delete:         "削除",
+    delete_done_toast:             "データが削除されました",
 
     birth_dob_label: "生年月日",
     birth_time_label2: "出生時刻",

@@ -1,28 +1,74 @@
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+// Hardened Groq proxy for in-app AI calls.
+// Security layers (in order): origin allowlist → method check → body size cap →
+// per-IP sliding window rate limit → schema validation → user-content length cap →
+// server-side max_tokens clamp → upstream call with generic error sanitization.
+//
+// CAVEAT (in-memory rate limit): Netlify Functions are container-warm but ephemeral.
+// State here survives across invocations on the same warm container only. A determined
+// attacker who hits enough cold containers (or different regions) bypasses this layer.
+// For production-grade protection use a shared store (Upstash Redis, Netlify Blobs).
+// Documented in the security-hardening pass.
 
-function getCorsHeaders(event) {
-  const origin = event.headers?.origin || "";
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+// ---- CORS / origin allowlist -------------------------------------------------
+
+// Production-allowed exact origins.
+const ALLOWED_EXACT_ORIGINS = new Set([
+  "https://sakin.life",
+  "https://www.sakin.life",
+  "capacitor://localhost",
+  "ionic://localhost",
+]);
+// Suffix matches (Netlify deploy previews / embed proxies).
+const ALLOWED_ORIGIN_SUFFIXES = [".netlify.app"];
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (ALLOWED_EXACT_ORIGINS.has(origin)) return true;
+  try {
+    const u = new URL(origin);
+    if (u.protocol !== "https:") return false;
+    return ALLOWED_ORIGIN_SUFFIXES.some((suf) => u.hostname.endsWith(suf));
+  } catch {
+    return false;
+  }
+}
+
+function buildCorsHeaders(origin) {
+  // Echo back ONLY if allowed; never auto-substitute (that would silently widen CORS).
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    "Vary": "Origin",
   };
 }
 
+// ---- Rate limit (per-IP sliding window) -------------------------------------
+// Max 20 requests per 10 minutes per IP. timestamps[] eviction.
+// In-memory only — see CAVEAT at top of file.
+
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const RATE_MAX = 20;
 const rateMap = new Map();
-const RATE_WINDOW = 60_000;
-const RATE_MAX = 12;
 
 function isRateLimited(ip) {
   const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now - entry.start > RATE_WINDOW) {
-    rateMap.set(ip, { start: now, count: 1 });
-    return false;
+  const arr = rateMap.get(ip) || [];
+  // Evict timestamps older than the window.
+  const fresh = arr.filter((t) => now - t < RATE_WINDOW_MS);
+  if (fresh.length >= RATE_MAX) {
+    rateMap.set(ip, fresh);
+    return true;
   }
-  entry.count++;
-  return entry.count > RATE_MAX;
+  fresh.push(now);
+  rateMap.set(ip, fresh);
+  // Best-effort housekeeping: occasionally purge cold IPs to bound memory.
+  if (rateMap.size > 5000 && Math.random() < 0.01) {
+    for (const [k, v] of rateMap) {
+      if (!v.length || now - v[v.length - 1] > RATE_WINDOW_MS) rateMap.delete(k);
+    }
+  }
+  return false;
 }
 
 function getClientIP(event) {
@@ -32,14 +78,12 @@ function getClientIP(event) {
     || "unknown";
 }
 
+// ---- Output sanitizer (preserved from original) -----------------------------
 // Strip foreign-script glyph runs that the model sometimes hallucinates.
-// In TR mode we strip ALL non-Latin scripts (legacy behavior).
-// In other modes we only strip scripts that the target language does NOT use,
-// otherwise we'd delete the entire response (e.g. Japanese kanji).
+// Keep scripts the target language legitimately uses (e.g. kanji for JA).
 function buildSanitizer(lang) {
-  // ranges → which language(s) need them
   const ranges = {
-    cjkUnified: { re: /[一-鿿]/g, keepFor: ["ja"] },   // Han / Kanji
+    cjkUnified: { re: /[一-鿿]/g, keepFor: ["ja"] },
     cjkExtA:    { re: /[㐀-䶿]/g, keepFor: ["ja"] },
     hiragana:   { re: /[぀-ゟ]/g, keepFor: ["ja"] },
     katakana:   { re: /[゠-ヿ]/g, keepFor: ["ja"] },
@@ -62,7 +106,7 @@ function buildSanitizer(lang) {
 
 const VALID_ROLES = ["user", "assistant", "system"];
 
-// Supported UI languages. Codes match src/i18n.js LANGUAGES.
+// ---- Language plumbing (preserved) ------------------------------------------
 const LANG_META = {
   "tr":    { name: "Turkish",              native: "Türkçe",            sample: "Türkçe karakterleri (ş ğ ı ü ö ç İ) eksiksiz kullan." },
   "en":    { name: "English",              native: "English",           sample: "Use natural, fluent English." },
@@ -77,7 +121,6 @@ function normalizeLang(raw) {
   if (typeof raw !== "string") return "tr";
   const v = raw.trim();
   if (LANG_META[v]) return v;
-  // tolerate short forms
   const short = v.toLowerCase().split(/[-_]/)[0];
   const fallback = { pt: "pt-BR" }[short] || short;
   return LANG_META[fallback] ? fallback : "tr";
@@ -94,60 +137,120 @@ Do not use Chinese, Arabic, Korean, Devanagari, or any script that is not part o
 `;
 }
 
-export const handler = async (event) => {
-  const cors = getCorsHeaders(event);
+// ---- Hard limits -------------------------------------------------------------
+const MAX_BODY_BYTES = 64 * 1024;          // 64KB body size cap
+const MAX_USER_CONTENT_CHARS = 4000;       // total characters across messages[].content
+const MAX_SYSTEM_CHARS = 12000;            // system prompt cap (client-supplied; trusted but bounded)
+const MAX_TOKENS_CEIL = 2000;              // server-side clamp regardless of client value
+const MAX_TOKENS_FLOOR = 100;
+const MAX_TOKENS_DEFAULT = 1800;
+const MAX_MESSAGES = 30;
 
+// Generic error returned to ALL upstream/internal failures. Never leak details to client.
+const GENERIC_AI_ERROR = "AI temporarily unavailable";
+
+function jsonResponse(statusCode, corsHeaders, payload) {
+  return {
+    statusCode,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  };
+}
+
+export const handler = async (event) => {
+  const origin = event.headers?.origin || event.headers?.Origin || "";
+  const originOk = isAllowedOrigin(origin);
+  // For disallowed origins return 403 with NO Allow-Origin header (so browser blocks too).
+  const cors = originOk ? buildCorsHeaders(origin) : {};
+
+  // ---- CORS preflight ---
   if (event.httpMethod === "OPTIONS") {
+    if (!originOk) {
+      return { statusCode: 403, body: "" };
+    }
     return { statusCode: 204, headers: cors, body: "" };
   }
 
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Method not allowed" }) };
+  // ---- Origin lockdown ---
+  if (!originOk) {
+    return { statusCode: 403, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Origin not allowed" }) };
   }
 
+  // ---- Method check ---
+  if (event.httpMethod !== "POST") {
+    return jsonResponse(405, cors, { error: "Method not allowed" });
+  }
+
+  // ---- Body size cap (before parse to avoid wasting CPU on huge payloads) ---
+  const rawBody = event.body || "";
+  // event.body is a string; Buffer.byteLength gives true byte size for base64/UTF-8.
+  const bodyBytes = event.isBase64Encoded
+    ? Math.floor(rawBody.length * 0.75)
+    : Buffer.byteLength(rawBody, "utf8");
+  if (bodyBytes > MAX_BODY_BYTES) {
+    return jsonResponse(413, cors, { error: "Payload too large" });
+  }
+
+  // ---- Rate limit ---
   const ip = getClientIP(event);
   if (isRateLimited(ip)) {
-    return { statusCode: 429, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Çok fazla istek. Biraz bekle." }) };
+    return jsonResponse(429, cors, { error: "Too many requests. Please slow down." });
   }
 
+  // ---- Env / config (server-only; never reflected) ---
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
-    return { statusCode: 500, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "API anahtarı bulunamadı (GROQ_API_KEY)" }) };
+    console.error("[ai-call] GROQ_API_KEY missing in environment");
+    return jsonResponse(500, cors, { error: GENERIC_AI_ERROR });
   }
 
+  // ---- Body parse ---
   let body;
   try {
-    body = JSON.parse(event.body);
+    body = JSON.parse(rawBody);
   } catch {
-    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz istek" }) };
+    return jsonResponse(400, cors, { error: "Invalid request body" });
   }
 
   const { system, messages, max_tokens, lang: rawLang } = body;
   const lang = normalizeLang(rawLang);
 
-  if (system !== undefined && (typeof system !== "string" || system.length > 12000)) {
-    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz system" }) };
+  // ---- Schema validation ---
+  if (system !== undefined && (typeof system !== "string" || system.length > MAX_SYSTEM_CHARS)) {
+    return jsonResponse(400, cors, { error: "Invalid system" });
   }
-  if (!Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
-    return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz messages" }) };
+  if (!Array.isArray(messages) || messages.length === 0 || messages.length > MAX_MESSAGES) {
+    return jsonResponse(400, cors, { error: "Invalid messages" });
   }
+
+  // ---- Total user-content length cap (cost control) ---
+  // Sum the bytes of all messages[].content — this is the user-influenced surface.
+  let totalUserChars = 0;
   for (const m of messages) {
-    if (!m || typeof m.content !== "string" || m.content.length > 16000) {
-      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Mesaj içeriği geçersiz" }) };
+    if (!m || typeof m.content !== "string") {
+      return jsonResponse(400, cors, { error: "Invalid message content" });
     }
     if (!VALID_ROLES.includes(m.role)) {
-      return { statusCode: 400, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Geçersiz rol" }) };
+      return jsonResponse(400, cors, { error: "Invalid role" });
     }
+    totalUserChars += m.content.length;
+  }
+  if (totalUserChars > MAX_USER_CONTENT_CHARS) {
+    return jsonResponse(413, cors, { error: "Input too long" });
   }
 
-  const safeMaxTokens = Math.min(Math.max(parseInt(max_tokens) || 1800, 100), 1800);
+  // ---- Server-side max_tokens clamp (never trust client for cost-critical fields) ---
+  const requested = parseInt(max_tokens) || MAX_TOKENS_DEFAULT;
+  const safeMaxTokens = Math.min(Math.max(requested, MAX_TOKENS_FLOOR), MAX_TOKENS_CEIL);
 
+  // ---- Build upstream payload ---
   const langDirective = buildLanguageDirective(lang);
+  const groqMessages = [
+    { role: "system", content: langDirective + (system || "") },
+    ...messages.map((m) => ({ role: m.role, content: m.content })),
+  ];
 
-  const groqMessages = [];
-  groqMessages.push({ role: "system", content: langDirective + (system || "") });
-  for (const m of messages) groqMessages.push({ role: m.role, content: m.content });
-
+  // ---- Upstream call. Any failure → generic error to client; details only to server log. ---
   let res, data;
   try {
     res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -166,16 +269,19 @@ export const handler = async (event) => {
     });
     data = await res.json();
   } catch (e) {
-    return { statusCode: 502, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Bağlantı hatası: " + e.message }) };
+    // Server-side log only; never include exception message or stack in client response.
+    console.error("[ai-call] upstream fetch failed:", e?.message || e);
+    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
   }
 
-  if (!res.ok || data.error) {
-    const errMsg = data.error?.message || `HTTP ${res.status}`;
-    return { statusCode: res.status, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: errMsg }) };
+  if (!res.ok || data?.error) {
+    // Log full upstream error server-side for debugging — NEVER echo to client.
+    console.error("[ai-call] upstream error:", res.status, data?.error?.message || data?.error || "(no body)");
+    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
   }
 
   const raw = data.choices?.[0]?.message?.content || "";
   const sanitize = buildSanitizer(lang);
   const text = sanitize(raw);
-  return { statusCode: 200, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ text }) };
+  return jsonResponse(200, cors, { text });
 };
