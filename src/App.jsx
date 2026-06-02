@@ -20,6 +20,16 @@ const isNative = Capacitor.isNativePlatform();
 const APP_VERSION = "1.2.5";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
+// AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
+// Türkçe yaz" talimatı EN/DE/... seçiliyken bile modeli Türkçe yazmaya zorluyordu
+// (backend dil kilidini eziyordu). Bu helper dili dinamik yapar.
+const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"Spanish (Español)", "pt-BR":"Brazilian Portuguese (Português)", fr:"French (Français)", ja:"Japanese (日本語)" };
+function aiLangRule(lang) {
+  if (lang === "tr") return `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma.`;
+  const name = AI_LANG_NAMES[lang] || "English";
+  return `WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. This language requirement is absolute and overrides every other instruction in this prompt. Do NOT write in Turkish under any circumstances. ${lang === "ja" ? "Use natural Japanese with kanji and kana." : `Write naturally and correctly in ${name}.`}`;
+}
+
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
   const pb = String(b||"").split(".").map(n => parseInt(n)||0);
@@ -3249,7 +3259,7 @@ export default function SakinApp() {
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
@@ -3428,7 +3438,7 @@ BEDEN-ZİHİN BAĞLANTISI:
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1200, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
@@ -3484,7 +3494,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
@@ -3537,7 +3547,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:1300, lang,
-          system:`Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+          system:`Sen derin bir ayna ve enerji rehberisin. ${aiLangRule(lang)} "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
@@ -4294,7 +4304,9 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                   "türkçe","english","deutsch","español","português","français","日本語"
                 ]);
                 const SETTINGS_NAMES = new Set(["ayarlar","settings","einstellungen","ajustes","configurações","paramètres","設定"]);
-                const PROFILE_NAMES = new Set(["profil","profile","profil","perfil","perfil","profil","プロフィール"]);
+                // Profil/Terimler/Sözlük + policy linkleri embed'in kendi menüleridir —
+                // DOKUNMUYORUZ (kullanıcı: alt menüler görünsün, hareket edebilsin).
+                // Sadece dil seçici + ayarlar gizlenir (host'ta zaten dil seçimi var).
                 const hideRedundantMenus = () => {
                   try {
                     const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], [role='link'], li, div[onclick], [class*='lang'], [class*='Lang']");
@@ -4303,13 +4315,10 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       if (el.dataset && el.dataset.sakinHidden === "1") continue;
                       const txt = (el.textContent || "").trim().toLowerCase();
                       const len = txt.length;
-                      // Kısa metinli (2-3 karakter) dil kodu dropdown'ları: "TR", "EN", "DE", vs.
                       const isShortLangCode = (len === 2 || len === 3) && LANG_CODES.has(txt);
-                      // Tam metin eşleşmesi: dil/profil/ayarlar
                       const isLangPicker = LANG_NAMES.has(txt);
-                      const isProfilTab = PROFILE_NAMES.has(txt);
                       const isSettings = SETTINGS_NAMES.has(txt);
-                      if (isShortLangCode || isLangPicker || isProfilTab || isSettings) {
+                      if (isShortLangCode || isLangPicker || isSettings) {
                         el.style.display = "none";
                         el.dataset.sakinHidden = "1";
                       }
@@ -4339,13 +4348,17 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                       transition: filter 0.3s ease;
                     }
                     .sakin-premium-cta-bar {
-                      position: fixed; bottom: 18px; left: 14px; right: 14px;
+                      /* Embed'in KENDİ alt menü/tab bar'ının ÜSTÜNde dursun, onu kapatmasın.
+                         (Kullanıcı: "kilidi aç butonunu menülerin üstüne koy".) Alt tab bar
+                         ~64px + safe-area; CTA'yı onun üstüne yerleştir. */
+                      position: fixed; bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+                      left: 14px; right: 14px;
                       background: linear-gradient(135deg, rgba(184,164,216,0.94), rgba(122,80,150,0.92));
                       backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
                       border: 1px solid rgba(255,255,255,0.22);
-                      border-radius: 16px; padding: 14px 18px;
+                      border-radius: 16px; padding: 13px 18px;
                       color: #fff; font-family: 'Jost', sans-serif;
-                      font-size: 13px; letter-spacing: 1.8px; text-transform: uppercase;
+                      font-size: 12.5px; letter-spacing: 1.8px; text-transform: uppercase;
                       text-align: center; cursor: pointer; z-index: 99999;
                       box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(184,164,216,0.4);
                       display: flex; align-items: center; justify-content: center; gap: 8px;
