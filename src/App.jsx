@@ -4339,28 +4339,44 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 ]);
                 const FULL_LANG_HIDE = new Set([
                   "türkçe","english","türkçe / english","tr · türkçe","en · english",
-                  "türkçe/english","tr/en","change language","dili değiştir",
+                  "türkçe/english","tr/en","change language","dili değiştir","language","dil",
                 ]);
+                const shouldHideText = (txt) => {
+                  const len = txt.length;
+                  if (!txt || len > 28) return false; // uzun metin = container, atla
+                  if ((len === 2 || len === 3) && LANG_CODES.has(txt)) return true;
+                  if (LANG_NAMES.has(txt)) return true;
+                  if (SETTINGS_NAMES.has(txt)) return true;
+                  if (FULL_LANG_HIDE.has(txt)) return true;
+                  if ((isHayvanEmbed || isMitlerEmbed) && HD_HIDE.has(txt)) return true;
+                  if (isHayvanEmbed && POLICY_HIDE.has(txt)) return true;
+                  return false;
+                };
+                // RN/Expo Web butonları genelde <div> (role/onclick YOK) olarak render
+                // edilir — bu yüzden TÜM elementleri tarayıp YAPRAK metni eşleştiriyoruz,
+                // sonra tıklanabilir parent'ı (varsa) gizliyoruz. Önceki querySelector
+                // sadece button/a/[role] arıyordu, div-tabanlı menüleri kaçırıyordu.
                 const hideRedundantMenus = () => {
                   try {
-                    const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], [role='link'], li, div[onclick], [class*='lang'], [class*='Lang']");
+                    const all = doc.querySelectorAll("*");
                     for (let i = 0; i < all.length; i++) {
                       const el = all[i];
+                      if (el.childElementCount > 0) continue; // sadece metin taşıyan yaprak
                       if (el.dataset && el.dataset.sakinHidden === "1") continue;
                       const txt = (el.textContent || "").trim().toLowerCase();
-                      const len = txt.length;
-                      const isShortLangCode = (len === 2 || len === 3) && LANG_CODES.has(txt);
-                      const isLangPicker = LANG_NAMES.has(txt);
-                      const isSettings = SETTINGS_NAMES.has(txt);
-                      const isFullLang = FULL_LANG_HIDE.has(txt);
-                      const isHD = (isHayvanEmbed || isMitlerEmbed) && HD_HIDE.has(txt);
-                      const isPolicy = isHayvanEmbed && POLICY_HIDE.has(txt);
-                      // #20 hesap-silme butonu KALSIN (kullanıcı kararı, Apple 5.1.1(v) için iyi).
-                      // ACCOUNT_DELETE_HIDE listesi tanımlı ama uygulanmıyor.
-                      if (isShortLangCode || isLangPicker || isSettings || isFullLang || isHD || isPolicy) {
-                        el.style.display = "none";
-                        el.dataset.sakinHidden = "1";
+                      if (!shouldHideText(txt)) continue;
+                      // Tıklanabilir/satır ata'sını gizle (RN: Touchable > Text). En fazla
+                      // 2 seviye yukarı; buton/role bulunca dur, yoksa parent'ı gizle.
+                      let target = el;
+                      let p = el.parentElement;
+                      for (let up = 0; up < 2 && p; up++) {
+                        const role = p.getAttribute && p.getAttribute("role");
+                        if (p.tagName === "BUTTON" || role === "button" || (p.hasAttribute && p.hasAttribute("tabindex"))) { target = p; break; }
+                        target = p; p = p.parentElement;
                       }
+                      target.style.display = "none";
+                      try { target.dataset.sakinHidden = "1"; } catch(_) {}
+                      el.style.display = "none";
                     }
                   } catch(_) {}
                 };
@@ -4370,6 +4386,34 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
                 setTimeout(hideRedundantMenus, 1500);
                 setTimeout(hideRedundantMenus, 3500);
                 setTimeout(hideRedundantMenus, 6000);
+
+                // #21 — Mitler "Sakin Ailesi" listesinde AKTİF olanları en üste taşı.
+                // "AKTİF/ACTIVE" rozetinin satır ata'sını bulup container'ın başına al.
+                const sortActiveFamilyTop = () => {
+                  if (!isMitlerEmbed) return;
+                  try {
+                    const all = doc.querySelectorAll("*");
+                    for (let i = 0; i < all.length; i++) {
+                      const b = all[i];
+                      if (b.childElementCount > 0) continue;
+                      const t = (b.textContent || "").trim().toLowerCase();
+                      if (t !== "aktif" && t !== "active") continue;
+                      // Satır ata'sını bul: kardeşi olan ilk anlamlı blok (liste item)
+                      let row = b;
+                      for (let up = 0; up < 6 && row.parentElement; up++) {
+                        const parent = row.parentElement;
+                        if (parent.childElementCount >= 2 && (row.offsetHeight || 0) > 40) break;
+                        row = parent;
+                      }
+                      const container = row.parentElement;
+                      if (container && container.firstElementChild && container.firstElementChild !== row) {
+                        container.insertBefore(row, container.firstElementChild);
+                      }
+                    }
+                  } catch(_) {}
+                };
+                setTimeout(sortActiveFamilyTop, 1800);
+                setTimeout(sortActiveFamilyTop, 4000);
 
                 // SAKİN TASARIM (Human Design) — sadece bu uygulamaya özel premium gating:
                 // Bodygraph, profil özeti ve başlıklar görünür kalır; uzun açıklama
