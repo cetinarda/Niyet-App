@@ -2577,13 +2577,26 @@ function LangPicker({ lang, setLang, compact = false }) {
   const [pos, setPos] = useState(null);
   const btnRef = useRef(null);
   const cur = LANGUAGES.find(l => l.code === lang)?.label || lang.toUpperCase();
-  // Dropdown'u position:fixed olarak aç — yoksa parent .top-nav'ın
-  // overflow-y:hidden'ı listeyi kesiyordu (web'de dil seçici "çalışmıyor"
-  // görünüyordu). getBoundingClientRect ile buton konumundan hesapla.
+  // Dropdown'u position:fixed olarak aç. Yatayda buton merkezine hizala +
+  // viewport kenarlarından clamp et (dar telefonlarda taşmasın). Dikeyde
+  // aşağıda yer varsa aşağı, yoksa yukarı aç. maxHeight ekrana göre dinamik
+  // — 7 dil + safe-area + alt çıkıntı olan ekranlarda da hepsi görünür.
   const toggle = () => {
     if (!open && btnRef.current) {
       const r = btnRef.current.getBoundingClientRect();
-      setPos({ top: r.bottom + 6, right: Math.max(8, window.innerWidth - r.right) });
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const W = 112;                       // dropdown tahmini genişlik
+      const H = LANGUAGES.length * 38 + 18; // dropdown tahmini yükseklik
+      const PAD = 10;
+      // Yatay: buton merkezine hizala, kenarlardan clamp
+      const left = Math.max(PAD, Math.min(vw - W - PAD, r.left + r.width/2 - W/2));
+      // Dikey: aşağı/yukarı tercih
+      const below = vh - r.bottom - PAD;
+      const above = r.top - PAD;
+      const openDown = below >= H || below >= above;
+      const maxH = Math.max(140, openDown ? below : above);
+      const top = openDown ? r.bottom + 6 : Math.max(PAD, r.top - 6 - Math.min(H, maxH));
+      setPos({ top, left, maxHeight: maxH, width: W });
     }
     setOpen(o => !o);
   };
@@ -2597,7 +2610,7 @@ function LangPicker({ lang, setLang, compact = false }) {
       {open && pos && createPortal(
         <>
           <div onClick={()=>setOpen(false)} style={{ position:"fixed", inset:0, zIndex:100000 }} />
-          <div style={{ position:"fixed", top:pos.top, right:pos.right, zIndex:100001, background:"rgba(15,10,25,0.97)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.14)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.6)", minWidth:90, maxHeight:"70vh", overflowY:"auto" }}>
+          <div style={{ position:"fixed", top:pos.top, left:pos.left, width:pos.width, zIndex:100001, background:"rgba(15,10,25,0.97)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", border:"1px solid rgba(255,255,255,0.14)", borderRadius:14, padding:6, display:"flex", flexDirection:"column", gap:2, boxShadow:"0 12px 32px rgba(0,0,0,0.6)", maxHeight:pos.maxHeight, overflowY:"auto" }}>
             {LANGUAGES.map(l => (
               <button key={l.code}
                 onClick={()=>{ setLang(l.code); localStorage.setItem("sakin_lang", l.code); setOpen(false); }}
