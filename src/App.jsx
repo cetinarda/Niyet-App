@@ -6952,20 +6952,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
           </div>
 
-          {!isNative && (
-            <div style={{ margin:"36px 0",padding:"28px 24px",background:"linear-gradient(135deg,rgba(184,164,216,0.10),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:18,textAlign:"center" }}>
-              <div style={{ fontSize:11,letterSpacing:4,color:"#9080b8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
-                {lang==="tr" ? "iOS Uygulaması" : "iOS App"}
-              </div>
-              <div style={{ fontSize:16,color:"#d0c8e8",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:18,fontStyle:"italic" }}>
-                {lang==="tr"
-                  ? "Sakin'i telefonunda taşı — günlük pratikler, bildirimler ve içsel rehberlik her zaman yanında."
-                  : "Carry Sakin in your pocket — daily practices, notifications and inner guidance always with you."}
-              </div>
-              <AppStoreBadge lang={lang} size="lg" />
-            </div>
-          )}
-
           <div className="divider" />
 
           {/* Geri Bildirim */}
@@ -7156,22 +7142,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </>
           ) : (
             <>
-              <div style={{ margin:"0 0 28px",padding:"22px 22px",background:"linear-gradient(135deg,rgba(80,140,220,0.10),rgba(80,140,220,0.03))",border:"1px solid rgba(120,160,220,0.28)",borderRadius:18,textAlign:"center",position:"relative",overflow:"hidden" }}>
-                <div style={{ position:"absolute",top:-20,right:-20,width:120,height:120,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,140,220,0.15),transparent)",pointerEvents:"none" }} />
-                <div style={{ fontSize:11,letterSpacing:4,color:"#7090c0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:8,position:"relative" }}>
-                  {lang==="tr" ? "iPhone Kullanıcıları" : "iPhone Users"}
-                </div>
-                <div style={{ fontSize:16,color:"#c8d8f0",fontWeight:300,letterSpacing:0.3,lineHeight:1.7,marginBottom:16,fontStyle:"italic",position:"relative" }}>
-                  {lang==="tr"
-                    ? "Sakin'i App Store'dan indir — abonelik ya da ömür boyu satın alma seçenekleriyle."
-                    : "Get Sakin from the App Store — with subscription or lifetime purchase options."}
-                </div>
-                <AppStoreBadge lang={lang} size="lg" />
-                <div style={{ marginTop:14,fontSize:11,color:"#5878a0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",position:"relative" }}>
-                  {lang==="tr" ? "veya web sürümü için aşağıdan satın al" : "or purchase web version below"}
-                </div>
-              </div>
-
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
