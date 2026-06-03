@@ -4401,6 +4401,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         set("birth_city", birthCity || ""); set("birthCity", birthCity || "");
                         set("user_name", userName || ""); set("userName", userName || "");
                         set("language", lang || "tr"); set("locale", lang || "tr");
+                        // Sakin Hayvan (Tura store) — kendi AsyncStorage key'i @tura_profile.
+                        // Bundle host'tan okuma fonksiyonu içeriyor (b()) ama UI'a bağlamamış;
+                        // doğrudan profile key'ini set ediyoruz ki onboarding atlansın.
+                        try {
+                          if (userName || birthDate || birthCity) {
+                            const hm = (birthTime || "").split(":");
+                            const bh = parseInt(hm[0], 10);
+                            const bm = parseInt(hm[1], 10);
+                            const turaProfile = {
+                              name: userName || undefined,
+                              birthDate: birthDate || undefined,
+                              birthHour: (!isNaN(bh) && bh >= 0 && bh <= 23) ? bh : undefined,
+                              birthMinute: (!isNaN(bm) && bm >= 0 && bm <= 59) ? bm : undefined,
+                              birthCity: birthCity || undefined,
+                            };
+                            ls.setItem("@tura_profile", JSON.stringify(turaProfile));
+                          }
+                        } catch(_) {}
                         // Onboarding/profil "tamamlandı" bayrakları
                         set("onboarding_completed", "true");
                         set("onboardingCompleted", "true");
