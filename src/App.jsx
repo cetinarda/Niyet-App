@@ -1493,29 +1493,24 @@ async function scheduleDailyReminders(lang) {
     const reminders = isTr ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
     const mornings  = isTr ? MORNING_PINGS_TR  : MORNING_PINGS_EN;
     const promos    = isTr ? FEATURE_PROMOS_TR : FEATURE_PROMOS_EN;
-    const hours = [9, 13, 18];
     const now = new Date();
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
-    // 7 günlük forward schedule. Her takvim günü için mesajlar dayNumber'a göre
-    // deterministik seçilir; aynı gün her zaman aynı (yeniden schedule'da sabit),
-    // günler arası tekrar havuz boyu kadar gecikir (hatırlatma havuzu 28 → ~9 gün).
+    const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
+    // 7 günlük forward schedule. Günde 3 bildirim: 07:30 sabah + 13:00 söz + 21:00
+    // özellik. Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj,
+    // yeniden schedule'da sabit). Söz havuzu 28 → 28 günde bir tekrar.
     for (let d = 0; d < 7; d++) {
-      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      const dn = dayNumber(dayDate);
-      // 07:30 — sabah pingi (varyasyonlu, havuz boyunca döner)
+      const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
+      // 07:30 — sabah pingi
       const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 7, 30, 0);
-      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: mornings[((dn % mornings.length) + mornings.length) % mornings.length], schedule: { at: mAt }, ...icon });
-      // 09:00 / 13:00 / 18:00 — günlük hatırlatmalar (3 ardışık index)
-      hours.forEach((h, i) => {
-        const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, h, Math.floor(Math.random()*30), 0);
-        if (at <= now) return; // geçmiş slot atla
-        const body = reminders[(((dn * 3 + i) % reminders.length) + reminders.length) % reminders.length];
-        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, ...icon });
-      });
-      // 21:00 — günde 1 program özelliği daveti (havuz boyunca döner)
+      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, ...icon });
+      // 13:00 — günlük söz (rastgele dakika 0-29)
+      const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
+      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: pick(reminders, dn), schedule: { at: sAt }, ...icon });
+      // 21:00 — program özelliği daveti
       const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
-      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: promos[((dn % promos.length) + promos.length) % promos.length], schedule: { at: pAt }, ...icon });
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: pick(promos, dn), schedule: { at: pAt }, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", stamp);
