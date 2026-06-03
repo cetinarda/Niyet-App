@@ -2709,10 +2709,28 @@ export default function SakinApp() {
   const [deleteToast, setDeleteToast] = useState("");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
   const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Hayvan/Mitler kotası dolduysa frost+CTA
+  // Sakin Mitler özel: bundle her mount'ta Math.random ile "günün 4 miti"ni yeniden seçtiği için
+  // kapat/aç döngüsünde mitler değişiyordu. Çözüm: iframe'i overlay container'da sürekli DOM'da
+  // tut, sadece display:none ile gizle. Gün değişimi olunca key değişir → yeniden mount → yeni mitler.
+  // mitlerSession bir kez set olunca uygulama kapatılana kadar kalır (sticky).
+  const [mitlerSession, setMitlerSession] = useState(null); // null | { day: "YYYY-MM-DD" }
+  const mitlerIframeRef = useRef(null);
+  const mitlerLoadedOnceRef = useRef(false);
   // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
   const AILESI_FREE_OPENS = 3;
   const handleOpenEmbed = (app) => {
-    playPortalSound(); haptic(); setEmbedLoaded(false);
+    playPortalSound(); haptic();
+    // Mitler sticky davranışı: aynı gün + iframe daha önce yüklü → embedLoaded'ı direkt true
+    // tut (kapatma sırasında false'a çekildi; sticky iframe RAM'de hâlâ olduğu için onLoad
+    // bir daha tetiklenmez). Yeni gün veya ilk açılış → loading layer normal akış.
+    const isMitlerEmbed = (app.embed || "").indexOf("sakinmitler") !== -1;
+    const today = new Date().toISOString().slice(0, 10);
+    const isMitlerStickyHit = isMitlerEmbed && mitlerLoadedOnceRef.current && mitlerSession && mitlerSession.day === today;
+    if (isMitlerStickyHit) {
+      setEmbedLoaded(true);
+    } else {
+      setEmbedLoaded(false);
+    }
     const m = (app.embed || "").match(/\/embedded\/([^/]+)/);
     const appKey = m ? m[1] : "unknown";
     const isHD = appKey === "humandesign";
@@ -2744,6 +2762,20 @@ export default function SakinApp() {
           localStorage.setItem("@tura_profile", JSON.stringify(turaProfile));
         }
       } catch(_) {}
+    }
+    // Sakin Mitler: sticky iframe. Gün karşılaştır — gün aynıysa aynı session devam,
+    // gün değiştiyse key değişir → iframe re-mount → yeni günün mitleri seçilir.
+    // Bu kontrol SADECE açılış anında yapılır (kullanıcı mitler açıkken gece yarısı
+    // geçerse iframe değişmesin — UX).
+    if (isMitlerEmbed) {
+      if (!mitlerSession || mitlerSession.day !== today) {
+        // Yeni gün (veya ilk açılış) → iframe yeniden mount edilecek → loading göstermek için
+        // mitlerLoadedOnceRef'i sıfırla; embedLoaded yukarıda false'a çekildi, onLoad true yapacak.
+        mitlerLoadedOnceRef.current = false;
+        setMitlerSession({ day: today });
+      }
+      // Aksi (aynı gün, sticky iframe RAM'de): handleOpenEmbed başında setEmbedLoaded(false) zaten
+      // SKIP edildi (isMitlerAlreadyLoaded), embedLoaded true kaldı → loading flash yok.
     }
     setEmbeddedApp({ name: app.name, path: app.embed, color: app.color });
     setTimeout(()=>setShowAilesi(false), 250);
@@ -4253,11 +4285,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       })()}
 
       {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
-      {embeddedApp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display:"flex",flexDirection:"column",animation:"portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" }}>
+      {(embeddedApp || mitlerSession) && (
+        // mitlerSession sticky: embeddedApp null olsa bile container DOM'da kalır (display:none) →
+        // mitler iframe yeniden mount olmaz → "günün 4 miti" sabit kalır. Sadece üst bar/loading/quota
+        // UI'ı `embeddedApp` varsa anlam ifade ettiği için ya gizleniyor ya da koşulla render ediliyor.
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display: embeddedApp ? "flex" : "none",flexDirection:"column",animation: embeddedApp ? "portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" : "none" }}>
           {/* ÜST BAR — status bar'ı kaplar (tam ekran kesik fix), embed içeriğini
               kapatmaz (iframe bar'ın ALTINDA başlar). Sol: ← Aile, orta: SAKİN {APP}. */}
-          <div style={{
+          {embeddedApp && <div style={{
             flexShrink:0, paddingTop:"var(--sat, 0px)",
             height:"calc(var(--sat, 0px) + 44px)", boxSizing:"border-box",
             background:"linear-gradient(180deg, rgba(10,6,20,0.98) 0%, rgba(10,6,20,0.92) 100%)",
@@ -4290,8 +4325,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             }}>
               {embeddedApp.name}
             </div>
-          </div>
-          <iframe
+          </div>}
+          {/* Shared onLoad handler — hem standart iframe hem de sticky mitler iframe için.
+              Closure her render'da yeniden oluştuğundan state'ler (lang, birth*, isPremium, userName)
+              güncel kalır. embeddedApp null olduğunda mitler kapalı demektir — handler ne path
+              ne color okumaya çalışmaz (üst seviye guard yok, ama mitler için isMitlerEmbed=true). */}
+          {embeddedApp && !((embeddedApp.path||"").indexOf("sakinmitler") !== -1) && <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
             onLoad={(e)=>{
@@ -4680,9 +4719,235 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             }}
             style={{ flex:"1 1 auto",minHeight:0,width:"100%",border:"none",background:"#000",display:"block",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
             allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
-          />
-          {/* Yıldız geçidi yükleme katmanı */}
-          {!embedLoaded && (() => {
+          />}
+          {/* STICKY SAKİN MİTLER IFRAME — overlay container'da sürekli mount kalır; ekran/kapatma
+              sırasında sadece display:none ile gizlenir. Bu sayede Expo bundle her açılışta yeniden
+              Math.random ile "günün 4 mitini" SEÇMEZ; aynı mitler kalır. Key=mitlerSession.day
+              olduğundan gün değişince iframe re-mount → yeni mitler. onLoad handler'ı yukarıdaki
+              standart iframe ile birebir aynı kodu çalıştırır (closure güncel state'leri alır). */}
+          {mitlerSession && <iframe
+            key={mitlerSession.day}
+            ref={mitlerIframeRef}
+            src="/embedded/sakinmitler/index.html"
+            title={t("ailesi_mitler_name") || "Sakin Mitler"}
+            onLoad={(e)=>{
+              mitlerLoadedOnceRef.current = true;
+              setTimeout(()=>setEmbedLoaded(true), 1100);
+              // Embed'lere ortak CSS override inject — form taşmalarını engelle
+              try {
+                const doc = e.target.contentDocument;
+                if (!doc) return;
+                const style = doc.createElement("style");
+                style.id = "sakin-embed-fixes";
+                style.textContent = `
+                  html, body {
+                    overscroll-behavior-y: none !important;
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                  }
+                  #root, [class*="root"], [class*="App"], [class*="Container"], [class*="container"] {
+                    padding-top: 0 !important;
+                    margin-top: 0 !important;
+                  }
+                  [style*="padding-top: env(safe-area-inset-top"],
+                  [style*="paddingTop: env(safe-area-inset-top"],
+                  [style*="padding-top:env(safe-area-inset-top"],
+                  [style*="paddingTop:env(safe-area-inset-top"] {
+                    padding-top: 0 !important;
+                  }
+                  [style*="position: sticky"][style*="top:"],
+                  [style*="position: fixed"][style*="top:"] {
+                    top: 0 !important;
+                  }
+                  body > div:first-child > div:first-child,
+                  header,
+                  [role="banner"],
+                  [class*="Header"],
+                  [class*="header"],
+                  [class*="TopBar"],
+                  [class*="topbar"] {
+                    padding-left: 64px !important;
+                  }
+                  input, textarea, select {
+                    max-width: 100% !important;
+                    min-width: 0 !important;
+                    box-sizing: border-box !important;
+                  }
+                  [class*="TextInput"], [data-class~="r-input"] {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  [style*="flex-direction: row"], [style*="flexDirection: row"], [style*="flexDirection:row"] {
+                    flex-wrap: wrap !important;
+                    min-width: 0 !important;
+                  }
+                  [style*="flex-direction: row"] > *, [style*="flexDirection: row"] > *, [style*="flexDirection:row"] > * {
+                    min-width: 0 !important;
+                    flex-shrink: 1 !important;
+                  }
+                  body, #root, [class*="root"] {
+                    max-width: 100vw !important;
+                    overflow-x: hidden !important;
+                  }
+                  [style*="grid"] { max-width: 100% !important; }
+                `;
+                doc.head.appendChild(style);
+
+                // Bilgi köprüsü (postMessage + same-origin localStorage + window flag)
+                const sendBridge = () => {
+                  try {
+                    const target = e.target.contentWindow;
+                    if (!target) return;
+                    const payload = {
+                      type: "sakin-bridge",
+                      lang,
+                      birth: { date: birthDate || "", time: birthTime || "", city: birthCity || "" },
+                      name: userName || "",
+                      premium: !!isPremium,
+                    };
+                    target.postMessage(payload, "*");
+                    try {
+                      const ls = target.localStorage;
+                      if (ls) {
+                        const set = (k, v) => { try { if (v) ls.setItem(k, v); } catch(_) {} };
+                        set("sakin_birth_date", birthDate || "");
+                        set("sakin_birth_time", birthTime || "");
+                        set("sakin_birth_city", birthCity || "");
+                        set("sakin_name", userName || "");
+                        set("sakin_lang", lang || "tr");
+                        try {
+                          const loc = lookupCity(birthCity);
+                          if (loc && loc.length >= 3) {
+                            set("sakin_birth_lat", String(loc[0]));
+                            set("sakin_birth_lon", String(loc[1]));
+                            set("sakin_birth_tz",  String(loc[2]));
+                          }
+                        } catch(_) {}
+                        set("sakin_premium", isPremium ? "1" : "0");
+                        set("birth_date", birthDate || ""); set("birthDate", birthDate || "");
+                        set("birth_time", birthTime || ""); set("birthTime", birthTime || "");
+                        set("birth_city", birthCity || ""); set("birthCity", birthCity || "");
+                        set("user_name", userName || ""); set("userName", userName || "");
+                        set("language", lang || "tr"); set("locale", lang || "tr");
+                        set("onboarding_completed", "true");
+                        set("onboardingCompleted", "true");
+                        set("hasCompletedOnboarding", "true");
+                        set("birth_info_collected", "true");
+                        set("profile_completed", "true");
+                      }
+                    } catch(_) {}
+                    try { target.__SAKIN_BRIDGE__ = payload; } catch(_) {}
+                  } catch(_) {}
+                };
+                sendBridge();
+                setTimeout(sendBridge, 600);
+                setTimeout(sendBridge, 1500);
+                setTimeout(sendBridge, 3500);
+
+                // Embed onboarding atlama (mitler de aynı kalıp formu kullanır)
+                let onboardingSkipAttempts = 0;
+                const trySkipOnboarding = () => {
+                  if (onboardingSkipAttempts > 4) return;
+                  onboardingSkipAttempts++;
+                  try {
+                    const dateInputs = doc.querySelectorAll('input[type="date"], input[type="time"], input[type="datetime-local"], input[type="text"]');
+                    const dateInputArr = Array.from(dateInputs).filter(inp => {
+                      if (["date","time","datetime-local"].includes(inp.type)) return true;
+                      const meta = (inp.name + " " + inp.id + " " + (inp.placeholder||"") + " " + (inp.getAttribute("aria-label")||"")).toLowerCase();
+                      return /(birth|doğum|dob|geburt|nacim|naissance|生年)/.test(meta);
+                    });
+                    if (dateInputArr.length === 0) return;
+                    const fillInput = (inp, value) => {
+                      try {
+                        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+                        if (setter) setter.call(inp, value); else inp.value = value;
+                        inp.dispatchEvent(new Event("input", { bubbles: true }));
+                        inp.dispatchEvent(new Event("change", { bubbles: true }));
+                      } catch(_) {}
+                    };
+                    dateInputArr.forEach(inp => {
+                      const meta = (inp.name + " " + inp.id + " " + (inp.placeholder||"") + " " + (inp.getAttribute("aria-label")||"") + " " + inp.type).toLowerCase();
+                      if (inp.type === "time" || /time|saat|hour|stunde|hora|heure|時間/.test(meta)) {
+                        fillInput(inp, birthTime || "12:00");
+                      } else if (/city|şehir|stadt|ciudad|cidade|ville|都市/.test(meta)) {
+                        fillInput(inp, birthCity || "");
+                      } else if (/name|isim|ad\b|nombre|nome|nom|名前/.test(meta)) {
+                        fillInput(inp, userName || "");
+                      } else {
+                        fillInput(inp, birthDate || "");
+                      }
+                    });
+                    const SKIP_LABELS = new Set([
+                      "continue","devam","devam et","next","ileri","skip","atla",
+                      "save","kaydet","start","başla","submit","tamam","ok","→",
+                      "weiter","überspringen","speichern",
+                      "continuar","saltar","guardar",
+                      "continuer","passer","enregistrer",
+                      "次へ","スキップ","保存"
+                    ]);
+                    const buttons = doc.querySelectorAll('button, [role="button"], a, input[type="submit"]');
+                    for (let i = 0; i < buttons.length; i++) {
+                      const b = buttons[i];
+                      const txt = (b.textContent || b.value || "").trim().toLowerCase();
+                      if (SKIP_LABELS.has(txt) || /(continue|devam|skip|atla|save|kaydet|submit|ileri|next)/.test(txt)) {
+                        try { b.click(); } catch(_) {}
+                        break;
+                      }
+                    }
+                  } catch(_) {}
+                };
+                setTimeout(trySkipOnboarding, 2500);
+                setTimeout(trySkipOnboarding, 5000);
+                setTimeout(trySkipOnboarding, 8000);
+                setTimeout(trySkipOnboarding, 12000);
+
+                // Mitler için: HD + tam-ad dil seçenekleri gizle (policy KALIR)
+                const LANG_CODES = new Set(["tr","en","de","es","pt","fr","ja","ar","ru","it","nl"]);
+                const LANG_NAMES = new Set([
+                  "dil","language","sprache","idioma","langue","言語",
+                  "türkçe","english","deutsch","español","português","français","日本語"
+                ]);
+                const SETTINGS_NAMES = new Set(["ayarlar","settings","einstellungen","ajustes","configurações","paramètres","設定"]);
+                const HD_HIDE = new Set([
+                  "human design","sakin tasarım","tasarım","hd","sakin design","tasarim",
+                  "sakin tasarim","insan tasarımı","insan tasarimi",
+                ]);
+                const FULL_LANG_HIDE = new Set([
+                  "türkçe","english","türkçe / english","tr · türkçe","en · english",
+                  "türkçe/english","tr/en","change language","dili değiştir",
+                ]);
+                const hideRedundantMenus = () => {
+                  try {
+                    const all = doc.querySelectorAll("a, button, [role='tab'], [role='button'], [role='link'], li, div[onclick], [class*='lang'], [class*='Lang']");
+                    for (let i = 0; i < all.length; i++) {
+                      const el = all[i];
+                      if (el.dataset && el.dataset.sakinHidden === "1") continue;
+                      const txt = (el.textContent || "").trim().toLowerCase();
+                      const len = txt.length;
+                      const isShortLangCode = (len === 2 || len === 3) && LANG_CODES.has(txt);
+                      const isLangPicker = LANG_NAMES.has(txt);
+                      const isSettings = SETTINGS_NAMES.has(txt);
+                      const isFullLang = FULL_LANG_HIDE.has(txt);
+                      const isHD = HD_HIDE.has(txt);
+                      if (isShortLangCode || isLangPicker || isSettings || isFullLang || isHD) {
+                        el.style.display = "none";
+                        el.dataset.sakinHidden = "1";
+                      }
+                    }
+                  } catch(_) {}
+                };
+                hideRedundantMenus();
+                setTimeout(hideRedundantMenus, 600);
+                setTimeout(hideRedundantMenus, 1500);
+                setTimeout(hideRedundantMenus, 3500);
+                setTimeout(hideRedundantMenus, 6000);
+              } catch(err) { /* cross-origin or already injected — sessiz geç */ }
+            }}
+            style={{ flex:"1 1 auto",minHeight:0,width:"100%",border:"none",background:"#000",display: (embeddedApp && (embeddedApp.path||"").indexOf("sakinmitler") !== -1) ? "block" : "none",opacity: embedLoaded ? 1 : 0,transition:"opacity 1.2s ease-out" }}
+            allow="accelerometer; gyroscope; clipboard-write; encrypted-media"
+          />}
+          {/* Yıldız geçidi yükleme katmanı — sadece bir embed açıkken */}
+          {embeddedApp && !embedLoaded && (() => {
             const colorHex = (embeddedApp.color || "#b4a0d8").replace('#','');
             const rgb = colorHex.match(/.{2}/g).map(h => parseInt(h, 16)).join(',');
             return (
@@ -4710,7 +4975,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             );
           })()}
           {/* Hayvan/Mitler kotası dolduysa frost gate: iframe yüklendikten sonra üstüne biner */}
-          {embedQuotaExceeded && embedLoaded && (() => {
+          {embeddedApp && embedQuotaExceeded && embedLoaded && (() => {
             const rgb = (embeddedApp.color || "#b4a0d8").replace('#','').match(/.{2}/g).map(h=>parseInt(h,16)).join(',');
             return (
               <div style={{ position:"fixed", inset:0, zIndex:10002, backdropFilter:"blur(14px)", WebkitBackdropFilter:"blur(14px)",
