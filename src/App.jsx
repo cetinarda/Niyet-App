@@ -1365,6 +1365,24 @@ const DAILY_REMINDERS_TR = [
   "Bedenini esnet, omuzlarını gevşet",
   "Bugünkü niyetini hatırla",
   "Bir an dur. Sadece ol.",
+  "Çeneni gevşet, dilini damağından indir",
+  "Telefonu bırak, bir dakika sadece var ol",
+  "Pencereyi aç, temiz havayı içine çek",
+  "Omuzlarını kulaklarından uzaklaştır",
+  "Gözlerini kapat, üçe kadar nefes say",
+  "İçinden bile olsa bir 'teşekkür ederim' de",
+  "Yürürken adımlarını hisset, acele etme",
+  "Bugün seni güldüren tek şeyi hatırla",
+  "Karnından nefes al, göğsünden değil",
+  "Bir bitkiye bak, yapraklarını izle",
+  "Kendine nazik bir cümle kur",
+  "Sırtını dikleştir, başını hafifçe yukarı al",
+  "Elini kalbine koy, atışını dinle",
+  "Bir kokuyu fark et — kahve, toprak, yağmur",
+  "Şu an neredeysen, oraya tümüyle gel",
+  "Kasıtlı olarak yavaşla, bir hareketi ağırdan al",
+  "Bugünü bir kelimeyle adlandır, sahiplen",
+  "Avuçlarını birbirine sürt, sıcaklığı yüzüne koy",
 ];
 const DAILY_REMINDERS_EN = [
   "Look in the mirror and smile",
@@ -1377,37 +1395,80 @@ const DAILY_REMINDERS_EN = [
   "Stretch your body, relax your shoulders",
   "Remember today's intention",
   "Pause for a moment. Just be.",
+  "Relax your jaw, drop your tongue from the roof",
+  "Put the phone down, just exist for a minute",
+  "Open the window, draw in the fresh air",
+  "Move your shoulders away from your ears",
+  "Close your eyes, count three breaths",
+  "Say a 'thank you' — even if only inside",
+  "Feel your steps as you walk, don't rush",
+  "Recall the one thing that made you smile today",
+  "Breathe from your belly, not your chest",
+  "Look at a plant, watch its leaves",
+  "Form one kind sentence toward yourself",
+  "Straighten your back, lift your head slightly",
+  "Place your hand on your heart, listen to it beat",
+  "Notice a scent — coffee, earth, rain",
+  "Wherever you are, arrive there fully",
+  "Slow down on purpose, take one motion gently",
+  "Name today in a single word, own it",
+  "Rub your palms together, place the warmth on your face",
+];
+// Sabah pingleri — her gün 7:30, havuz boyunca döner (varyasyon)
+const MORNING_PINGS_TR = [
+  "Günaydın. Bugün nasıl hissetmek istersin?",
+  "Günaydın. İlk nefesini derinden al.",
+  "Yeni bir gün. Niyetini tek cümlede söyle.",
+  "Günaydın. Bugün kendine ne diliyorsun?",
+  "Gözlerini aç, güne üç nefesle başla.",
+  "Günaydın. Acele yok — güne sakin gir.",
+  "Bugün senin. Küçük bir iyilikle başla.",
+];
+const MORNING_PINGS_EN = [
+  "Good morning. How do you want to feel today?",
+  "Good morning. Take your first breath deeply.",
+  "A new day. Say your intention in one sentence.",
+  "Good morning. What do you wish for yourself today?",
+  "Open your eyes, start the day with three breaths.",
+  "Good morning. No rush — enter the day calmly.",
+  "Today is yours. Begin with a small kindness.",
+];
+// Program özelliği davetleri — her gün 21:00, günde 1 tane, havuz boyunca döner
+const FEATURE_PROMOS_TR = [
+  "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
+  "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
+  "432 Hz çalsın, kalp atışın yavaşlasın — frekanslara göz at.",
+  "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
+  "Aynaya 30 saniye bak — Ayna alıştırmasını dene.",
+  "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
+  "Totem hayvanın ne diyor? Sakin Hayvanı keşfet.",
+  "Bir mit, bir sembol — bugünün Sakin Mitleri seni bekliyor.",
+  "Haftalık içsel raporun hazır olabilir — bir bak.",
+  "528 Hz, 'Sevgi Frekansı' — bir dakika dinle, hisset.",
+  "Bir bardak su, üç nefes, bir niyet — Sakin'le küçük bir mola.",
+  "396 Hz kök çakranı topraklar — gözlerini kapat, dinle.",
+];
+const FEATURE_PROMOS_EN = [
+  "Want to calm down in 1 minute with sound frequencies?",
+  "Breathe in, out... it's the perfect time to try Calm Breath.",
+  "Let 432 Hz play, let your heartbeat slow — explore the frequencies.",
+  "Do you know today's chakra? Pause for a moment in the Chakra screen.",
+  "Look in the mirror for 30 seconds — try the Mirror exercise.",
+  "How's the cosmic weather today? Check the Galactic screen.",
+  "What does your totem animal say? Discover Calm Animal.",
+  "A myth, a symbol — today's Calm Myths await you.",
+  "Your weekly inner report might be ready — take a look.",
+  "528 Hz, the 'Love Frequency' — listen for a minute, feel it.",
+  "A glass of water, three breaths, one intention — a small break with Sakin.",
+  "396 Hz grounds your root chakra — close your eyes, listen.",
 ];
 
-// Aynı tarih → aynı 3 mesaj. Cache localStorage'da. Yeniden schedule'larda mesaj sabit kalır.
-function dailyPicks(reminders, dateStr, lang) {
-  const key = `sakin_picks_${lang}_${dateStr}`;
-  try {
-    const cached = localStorage.getItem(key);
-    if (cached) {
-      const arr = JSON.parse(cached);
-      if (Array.isArray(arr) && arr.length === 3) return arr;
-    }
-  } catch(_) {}
-  const shuffled = [...reminders].sort(() => Math.random() - 0.5);
-  const picks = shuffled.slice(0, 3);
-  try { localStorage.setItem(key, JSON.stringify(picks)); } catch(_) {}
-  return picks;
-}
-
-function cleanupOldPicks() {
-  try {
-    const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
-    const toRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!k || !k.startsWith("sakin_picks_")) continue;
-      const dateStr = k.split("_").pop();
-      const t = new Date(dateStr).getTime();
-      if (!isNaN(t) && t < cutoff) toRemove.push(k);
-    }
-    toRemove.forEach(k => localStorage.removeItem(k));
-  } catch(_) {}
+// Bir takvim günü için deterministik gün numarası. Mesaj seçimi bu sayıya göre
+// havuz boyunca eşit aralıklı döndüğü için, aynı gün her zaman aynı mesajı verir
+// (yeniden schedule'da sabit) ve günler arası tekrar havuz uzunluğu kadar gecikir.
+function dayNumber(dateObj) {
+  const midnight = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+  return Math.floor(midnight.getTime() / 86400000);
 }
 
 async function scheduleDailyReminders(lang) {
@@ -1422,34 +1483,37 @@ async function scheduleDailyReminders(lang) {
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
     // Bugün zaten planlandıysa hiçbir şeye dokunma
     if (lastScheduled === todayKey) return;
-    // Mevcut tüm slotları temizle (9000-9039 + sabah pingleri 9100/9101)
-    await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
-    cleanupOldPicks();
-    const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
+    // Mevcut tüm slotları temizle: hatırlatmalar 9000-9020, sabah 9050-9056,
+    // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
+    await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
+    const isTr = lang === "tr";
+    const reminders = isTr ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
+    const mornings  = isTr ? MORNING_PINGS_TR  : MORNING_PINGS_EN;
+    const promos    = isTr ? FEATURE_PROMOS_TR : FEATURE_PROMOS_EN;
     const hours = [9, 13, 18];
     const now = new Date();
     const notifications = [];
-    // 7 günlük forward schedule — her gün için sabit (cache'li) 3 mesaj, böylece
-    // dünden bugüne firing olmuş bir mesaj bugün tekrar planlanmaz
+    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    // 7 günlük forward schedule. Her takvim günü için mesajlar dayNumber'a göre
+    // deterministik seçilir; aynı gün her zaman aynı (yeniden schedule'da sabit),
+    // günler arası tekrar havuz boyu kadar gecikir (hatırlatma havuzu 28 → ~9 gün).
     for (let d = 0; d < 7; d++) {
       const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      const dateStr = dayDate.toISOString().slice(0,10);
-      const picked = dailyPicks(reminders, dateStr, lang);
-      picked.forEach((body, i) => {
-        const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, hours[i], Math.floor(Math.random()*30), 0);
+      const dn = dayNumber(dayDate);
+      // 07:30 — sabah pingi (varyasyonlu, havuz boyunca döner)
+      const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 7, 30, 0);
+      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: mornings[((dn % mornings.length) + mornings.length) % mornings.length], schedule: { at: mAt }, ...icon });
+      // 09:00 / 13:00 / 18:00 — günlük hatırlatmalar (3 ardışık index)
+      hours.forEach((h, i) => {
+        const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, h, Math.floor(Math.random()*30), 0);
         if (at <= now) return; // geçmiş slot atla
-        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
+        const body = reminders[(((dn * 3 + i) % reminders.length) + reminders.length) % reminders.length];
+        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, ...icon });
       });
+      // 21:00 — günde 1 program özelliği daveti (havuz boyunca döner)
+      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: promos[((dn % promos.length) + promos.length) % promos.length], schedule: { at: pAt }, ...icon });
     }
-    // Sabah günaydın pingi — her gün 7:30, app hiç açılmasa da düşer
-    notifications.push({
-      id: 9101,
-      title: "Sakin",
-      body: t("reminder_morning_body"),
-      schedule: { on: { hour: 7, minute: 30 } },
-      smallIcon: "ic_stat_icon_config_sample",
-      iconColor: "#b8a4d8",
-    });
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", todayKey);
     // Diagnostik: gerçekten kuyrukta kaç bildirim var?
