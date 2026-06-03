@@ -17,3 +17,6 @@ ios/App/DerivedData
 # Claude Code (kişisel ayarlar dışında — proje slash komutları repoda kalsın)
 .claude/*
 !.claude/commands/
+
+# Background agent çıktıları — geçici raporlar, kullanıcıya gönderilir, repo'da yer tutmaz
+agent_logs/
