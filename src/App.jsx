@@ -2787,6 +2787,26 @@ export default function SakinApp() {
       exceeded = next > AILESI_FREE_OPENS;
     }
     setEmbedQuotaExceeded(exceeded);
+    // Hayvan (Tura) preemptive bridge: bundle AsyncStorage init'i iframe load'tan
+    // önce çalışabildiği için, @tura_profile'ı iframe oluşmadan ÖNCE same-origin
+    // localStorage'a yazıyoruz. Bundle init ettiğinde değer hazır.
+    if (app.embed && app.embed.indexOf("sakinhayvan") !== -1) {
+      try {
+        if (userName || birthDate || birthCity) {
+          const hm = (birthTime || "").split(":");
+          const bh = parseInt(hm[0], 10);
+          const bm = parseInt(hm[1], 10);
+          const turaProfile = {
+            name: userName || undefined,
+            birthDate: birthDate || undefined,
+            birthHour: (!isNaN(bh) && bh >= 0 && bh <= 23) ? bh : undefined,
+            birthMinute: (!isNaN(bm) && bm >= 0 && bm <= 59) ? bm : undefined,
+            birthCity: birthCity || undefined,
+          };
+          localStorage.setItem("@tura_profile", JSON.stringify(turaProfile));
+        }
+      } catch(_) {}
+    }
     setEmbeddedApp({ name: app.name, path: app.embed, color: app.color });
     setTimeout(()=>setShowAilesi(false), 250);
   };
