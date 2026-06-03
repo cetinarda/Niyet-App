@@ -1480,9 +1480,12 @@ async function scheduleDailyReminders(lang) {
       return;
     }
     const todayKey = new Date().toISOString().slice(0,10);
+    // Damga = tarih + dil. Aynı gün dili değiştirirsen (TR↔EN) damga değişir,
+    // yeniden planlanır; aşağıdaki cancel eski dildeki kuyruğu temizler.
+    const stamp = todayKey + "_" + lang;
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
-    // Bugün zaten planlandıysa hiçbir şeye dokunma
-    if (lastScheduled === todayKey) return;
+    // Aynı gün + aynı dil zaten planlandıysa hiçbir şeye dokunma
+    if (lastScheduled === stamp) return;
     // Mevcut tüm slotları temizle: hatırlatmalar 9000-9020, sabah 9050-9056,
     // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
     await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
@@ -1515,7 +1518,7 @@ async function scheduleDailyReminders(lang) {
       if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: promos[((dn % promos.length) + promos.length) % promos.length], schedule: { at: pAt }, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
-    localStorage.setItem("sakin_notif_scheduled", todayKey);
+    localStorage.setItem("sakin_notif_scheduled", stamp);
     // Diagnostik: gerçekten kuyrukta kaç bildirim var?
     try {
       const pending = await LocalNotifications.getPending();
@@ -3279,7 +3282,8 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
-  useEffect(() => { scheduleDailyReminders(lang); }, []);
+  // lang bağımlılığı: dil değişince bildirimler yeni dilde yeniden planlanır
+  useEffect(() => { scheduleDailyReminders(lang); }, [lang]);
   // Kilit ekranı / Control Center / Dynamic Island uzaktan kumanda olayları.
   // Native Swift plugin (SakinNowPlaying.swift) play/pause/stop'a basıldığında
   // window.dispatchEvent ile bildirir; biz Web Audio durdurma yoluna aktarırız.
