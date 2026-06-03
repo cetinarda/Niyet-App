@@ -664,7 +664,6 @@ const REMINDERS_EN = [
 ];
 const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
 
-const APP_STORE_URL = "https://apps.apple.com/tr/app/sakin-life/id6765619382?l=tr";
 function AppStoreBadge({ lang = "tr", size = "md" }) {
   const isLg = size === "lg";
   return (
