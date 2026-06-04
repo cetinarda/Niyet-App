@@ -26,7 +26,10 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
 - **Tek React kod tabanı.** `src/App.jsx` ~6300 satır. `const isNative = Capacitor.isNativePlatform()` (App.jsx:10) iOS vs web'i ayırır.
 - **iOS = Capacitor + Swift Package Manager.** Podfile YOK, `pod install` ÇALIŞTIRMA. Çıktı `ios/App/App.xcodeproj/`.
 - **Web = Vite → Netlify.** `npm run build` → `dist/`. Netlify deploy branch ayrı (yukarı bak).
-- **Embedded apps:** `public/embedded/{humandesign, sakinhayvan, sakinmitler, soulprofile}/`. Hepsi **DERLENMIŞ Expo bundle'ları** (`_expo/static/js/...`). Kaynak burada YOK, içlerini değiştirme. Stil davranışı için sadece host'tan CSS injection ile müdahale edebilirsin (App.jsx'deki iframe `onLoad` içine bak).
+- **Embedded apps:** `public/embedded/{humandesign, sakinhayvan, sakinmitler, soulprofile}/`. Hepsi **DERLENMIŞ Expo bundle'ları** (`_expo/static/js/...`) — bunlar ÜRETİLEN çıktı, elle düzenleme.
+  - **`sakinmitler` ARTIK MONOREPO'DA.** Kaynak: `apps/mitler/` (tam Expo + RN projesi). Değişiklik orada yapılır, sonra `npm run build:mitler` (= `node scripts/build-embed.mjs mitler`) bundle'ı yeniden üretip `public/embedded/sakinmitler/`'a senkron eder. Pipeline: `expo export` → index.html'e scroll-override `<style>` enjekte → mirror. `npm run build:mitler -- --check` byte-identical doğrular. Eski `cetinarda/sakinmitler` GitHub reposu artık ÖLÜ (kaynak buraya taşındı, patch dosyası silindi — git geçmişinde).
+  - **`sakinhayvan` + `humandesign` HENÜZ TAŞINMADI.** Bunlar hâlâ eski akış: GitHub kaynak (`cetinarda/sakinhayvan`) + `embed-patches/*.patch` → `npx expo export` → bundle. Kaynak burada YOK; sadece patch ile köprü değişikliği saklanıyor. (Monorepo'ya taşıma planı: Mitler pilotu örnek alınacak.)
+  - Stil davranışı için (taşınmamışlarda) host'tan CSS injection ile müdahale: App.jsx'deki iframe `onLoad` içine bak.
 - **Embedded ↔ host köprüsü:** `postMessage` ile (`sakin-premium-cta` mesajı vs). `storage` event köprüsü web-only, iOS'ta çalışmaz.
 - **Şehir veritabanı:** `CITY_DB` + `SmartCityInput` bileşeni. `<datalist>` iOS WKWebView'da çalışmaz — özel dropdown kullanılıyor.
 - **Astroloji:** `preciseAscendant` (App.jsx:441) lat/lon + standart UTC offset kullanır. DST uygulanmıyor (kasıtlı sadelik). Doğum şehri zorunlu yükselen burç için.

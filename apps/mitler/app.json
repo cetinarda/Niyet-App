@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "Sakin Mitler",
+    "slug": "sakinmitler",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "scheme": "sakinmitler",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0B14"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "life.sakin.mitler",
+      "buildNumber": "1",
+      "infoPlist": {
+        "LSApplicationCategoryType": "public.app-category.lifestyle",
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleLocalizations": [
+          "tr",
+          "en"
+        ],
+        "CFBundleDevelopmentRegion": "tr"
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
+          }
+        ],
+        "NSPrivacyTracking": false,
+        "NSPrivacyCollectedDataTypes": []
+      }
+    },
+    "android": {
+      "package": "life.sakin.mitler",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "baseUrl": "/embedded/sakinmitler"
+    }
+  }
+}

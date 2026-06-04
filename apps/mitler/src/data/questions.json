@@ -1,0 +1,58 @@
+[
+  {
+    "id": "q1",
+    "text": "Hayatın akışında kendini hangisinde daha çok bulursun?",
+    "options": [
+      { "label": "Sağlam bir yapı, plan, düzen kurmak", "scores": ["ar017", "ar023", "ar026"] },
+      { "label": "Beklenmedik bir akışı izlemek, kapı açıkken geçmek", "scores": ["ar009", "ar016", "ar014"] }
+    ]
+  },
+  {
+    "id": "q2",
+    "text": "Karşılaşmadığın bir zorluk önüne çıktığında ilk içgüdün?",
+    "options": [
+      { "label": "Cesaretle üzerine yürümek, denemek", "scores": ["ar006", "ar023", "ar017"] },
+      { "label": "İçeri çekilmek, anlamlandırmak, sonra hareket etmek", "scores": ["ar007", "ar024", "ar038"] }
+    ]
+  },
+  {
+    "id": "q3",
+    "text": "Enerjini en çok hangisi besler?",
+    "options": [
+      { "label": "Yaratmak, ifade etmek, paylaşmak", "scores": ["ar012", "ar011", "ar020"] },
+      { "label": "Sessizlikte oturmak, derinleşmek, sezmek", "scores": ["ar007", "ar024", "ar005"] }
+    ]
+  },
+  {
+    "id": "q4",
+    "text": "İçindeki en eski yara hangisine daha yakın?",
+    "options": [
+      { "label": "Terk edilmişlik, yalnız kalmak", "scores": ["ar013", "ar010", "ar035"] },
+      { "label": "Yetersizlik, görünmemek", "scores": ["ar001", "ar002", "ar013"] }
+    ]
+  },
+  {
+    "id": "q5",
+    "text": "Bir karar anında neye güvenirsin?",
+    "options": [
+      { "label": "Sezgiye, içeriden gelen sese", "scores": ["ar003", "ar007", "ar022"] },
+      { "label": "Mantığa, dış dünyanın işaretlerine", "scores": ["ar004", "ar017", "ar026"] }
+    ]
+  },
+  {
+    "id": "q6",
+    "text": "Çevren seni en çok nasıl tanır?",
+    "options": [
+      { "label": "Bakım veren, taşıyan, koruyan biri", "scores": ["ar008", "ar018", "ar030"] },
+      { "label": "Soru soran, kuralı kıran, sınırı zorlayan biri", "scores": ["ar014", "ar009", "ar022"] }
+    ]
+  },
+  {
+    "id": "q7",
+    "text": "İçinde uyumayan, hep çağıran şey hangisi?",
+    "options": [
+      { "label": "Bir bütünleşme — kayıp parçaları toplamak", "scores": ["ar005", "ar040", "ar031"] },
+      { "label": "Bir dönüşüm — eskiyi yakıp yenisini doğurmak", "scores": ["ar019", "ar039", "ar025"] }
+    ]
+  }
+]
