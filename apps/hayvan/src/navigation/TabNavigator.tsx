@@ -19,8 +19,8 @@ import { useI18n } from '../i18n/useI18n';
 type Tab = 'home' | 'animals' | 'archive' | 'profile';
 
 const TABS: { key: Tab; labelKey: string; symbol: string; activeColor: string }[] = [
-  { key: 'home',    labelKey: 'tabs.today',    symbol: '✦',  activeColor: Colors.gold },
   { key: 'animals', labelKey: 'tabs.animals',  symbol: '⊕',  activeColor: Colors.tealLight },
+  { key: 'home',    labelKey: 'tabs.today',    symbol: '✦',  activeColor: Colors.gold },
   { key: 'archive', labelKey: 'tabs.archive',  symbol: '◈',  activeColor: Colors.purple },
   { key: 'profile', labelKey: 'tabs.profile',  symbol: '⊙',  activeColor: Colors.sakinLavender },
 ];
@@ -29,7 +29,7 @@ const TAB_BAR_H = 56; // approximate tab bar height for padding calculation
 const MAX_W = 480;
 
 export function TabNavigator() {
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [activeTab, setActiveTab] = useState<Tab>('animals');
   const insets = useSafeAreaInsets();
   const { height: winH } = useWindowDimensions();
   const { t } = useI18n();

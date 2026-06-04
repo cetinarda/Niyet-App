@@ -18,14 +18,14 @@ import { useLanguage } from '../i18n/useLanguage';
 type Tab = 'home' | 'mitler' | 'archive' | 'profile';
 
 const TAB_CONFIG: { key: Tab; tKey: 'tab.home' | 'tab.mitler' | 'tab.archive' | 'tab.profile'; symbol: string; activeColor: string }[] = [
-  { key: 'home',    tKey: 'tab.home',    symbol: '✦',  activeColor: Colors.gold },
   { key: 'mitler',  tKey: 'tab.mitler',  symbol: '⊕',  activeColor: Colors.tealLight },
+  { key: 'home',    tKey: 'tab.home',    symbol: '✦',  activeColor: Colors.gold },
   { key: 'archive', tKey: 'tab.archive', symbol: '◈',  activeColor: Colors.purple },
   { key: 'profile', tKey: 'tab.profile', symbol: '⊙',  activeColor: Colors.sakinLavender },
 ];
 
 export function TabNavigator() {
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+  const [activeTab, setActiveTab] = useState<Tab>('mitler');
   const insets = useSafeAreaInsets();
   const { t } = useLanguage();
 
