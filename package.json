@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:mitler": "node scripts/build-embed.mjs mitler",
-    "build:embeds": "npm run build:mitler"
+    "build:tasarim": "node scripts/build-embed.mjs tasarim",
+    "build:embeds": "npm run build:mitler && npm run build:tasarim"
   },
   "dependencies": {
     "@capacitor/cli": "^8.3.1",
