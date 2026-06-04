@@ -1,0 +1,1402 @@
+[
+  {
+    "id": "q001",
+    "text": "Gel, gel, ne olursan ol, yine gel. İster kâfir, ister mecusi, ister puta tapan ol, yine gel. Bizim dergâhımız ümitsizlik dergâhı değildir. Yüz kere tövbeni bozmuş olsan da, yine gel.",
+    "original": "بیا بیا هر آنچه هستی باز آ",
+    "source": "Mevlana Rumi",
+    "category": "kabul",
+    "rarity": "rare",
+    "textEn": "Come, come, whoever you are. Wanderer, idolater, worshiper of fire, come even though you have broken your vows a thousand times. Ours is not a caravan of despair. Come, yet again, come.",
+    "categoryEn": "acceptance"
+  },
+  {
+    "id": "q002",
+    "text": "Dün akıllıydım, dünyayı değiştirmek istiyordum. Bugün bilgeyim, kendimi değiştiriyorum.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "degisim",
+    "rarity": "common",
+    "textEn": "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
+    "categoryEn": "transformation"
+  },
+  {
+    "id": "q003",
+    "text": "Ateşin içinde yanmayan şeyin hiçbir değeri yoktur.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "cesaret",
+    "rarity": "common",
+    "textEn": "Whatever does not burn in the fire has no worth.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q004",
+    "text": "Aşk gelince bütün eksiklikler gider. Aşk gelince utanç da gider, korku da.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "When love arrives, all imperfections fall away. When love arrives, shame departs, and fear with it.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q005",
+    "text": "Sesin duyulmuyor diye ağlama. Belki de sesin tam çıkmayan yerden, sessizlikten çıkıyor.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "sabir",
+    "rarity": "uncommon",
+    "textEn": "Do not weep because your voice goes unheard. Perhaps your true voice rises from the silence itself.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q006",
+    "text": "Hakikat güneş gibidir; perde çekersen gözden kaybolur ama güneş yine de oradadır.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "hakikat",
+    "rarity": "uncommon",
+    "textEn": "Truth is like the sun; draw a veil over it and it disappears from sight, yet the sun remains where it always was.",
+    "categoryEn": "truth"
+  },
+  {
+    "id": "q007",
+    "text": "Biz neredeyiz? Sevgilinin bulunduğu yerde. Neyiz biz? Onun içinde bir damlacık.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "Where are we? Wherever the Beloved is. What are we? A single droplet within Him.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q008",
+    "text": "Kendini bilen, Rabbini bilir.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "nefis",
+    "rarity": "common",
+    "textEn": "Whoever knows themselves knows their Lord.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q009",
+    "text": "Bir mum diğer bir mumu tutuşturmakla ışığından bir şey yitirmez.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "cömertlik",
+    "rarity": "common",
+    "textEn": "A candle loses nothing of its light by lighting another candle.",
+    "categoryEn": "generosity"
+  },
+  {
+    "id": "q010",
+    "text": "Kalp bir ayna gibidir. Onu pas tutmuşsa, ışık yansımaz. Ama cilalanınca her şeyi gösterir.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "The heart is like a mirror. When rust covers it, no light reflects. But once polished, it reveals everything.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q011",
+    "text": "İçinde bir nehir var; onu bulmak için çöle gitme.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "There is a river within you; do not go to the desert to find it.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q012",
+    "text": "Sabır acıdır ama meyvesi tatlıdır.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "sabir",
+    "rarity": "common",
+    "textEn": "Patience is bitter, but its fruit is sweet.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q013",
+    "text": "Ney, ayrılığı anlatır. Hepimiz birer neyiz, köküzden koparılmış.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "hasret",
+    "rarity": "rare",
+    "textEn": "The reed tells the tale of separation. We are all reeds, torn from our roots.",
+    "categoryEn": "longing"
+  },
+  {
+    "id": "q014",
+    "text": "Susarsan lal olursun, konuşursan kelam olursun. Seç.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "irade",
+    "rarity": "uncommon",
+    "textEn": "If you stay silent, you become mute; if you speak, you become the Word. Choose.",
+    "categoryEn": "will"
+  },
+  {
+    "id": "q015",
+    "text": "Gönlünü yıka, temizle; o Allah'ın evi olacak.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "Wash your heart, cleanse it; it shall become the house of God.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q016",
+    "text": "Kâinat bir kitaptır. Her yaprağında bir sır gizlidir.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "hikmet",
+    "rarity": "uncommon",
+    "textEn": "The universe is a book. On every page a secret is hidden.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q017",
+    "text": "Aşk ateşiyle yanan, dünyayı değiştirir.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Whoever burns with the fire of love transforms the world.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q018",
+    "text": "Herkes göründüğü gibi değildir; herkes gördüğü kadar görebilir.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "No one is as they appear; each can see only as much as they themselves see.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q019",
+    "text": "Ya olduğun gibi görün, ya göründüğün gibi ol.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "dürüstlük",
+    "rarity": "rare",
+    "textEn": "Either appear as you are, or be as you appear.",
+    "categoryEn": "honesty"
+  },
+  {
+    "id": "q020",
+    "text": "Yolun ortasında durma. Ortası yoktur yolun; ya ileri ya geri.",
+    "original": "",
+    "source": "Mevlana Rumi",
+    "category": "irade",
+    "rarity": "uncommon",
+    "textEn": "Do not stand still in the middle of the road. The road has no middle; either forward or back.",
+    "categoryEn": "will"
+  },
+  {
+    "id": "q021",
+    "text": "Birlik şarabını içince, ayrılık acısı sona erer.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "birlik",
+    "rarity": "rare",
+    "textEn": "Once you drink the wine of unity, the pain of separation comes to an end.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q022",
+    "text": "Korktuğun şeyin yanına git. Orada hazine bulursun.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "Walk toward what you fear. There you will find treasure.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q023",
+    "text": "Gerçek dost, seni olduğun gibi kabul eden değil, olabileceğin en iyi hale doğru çekendir.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "dostluk",
+    "rarity": "uncommon",
+    "textEn": "A true friend is not one who accepts you as you are, but one who draws you toward the best you can become.",
+    "categoryEn": "friendship"
+  },
+  {
+    "id": "q024",
+    "text": "Gölgeni bırak, güneşi takip et.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "degisim",
+    "rarity": "common",
+    "textEn": "Leave your shadow behind and follow the sun.",
+    "categoryEn": "transformation"
+  },
+  {
+    "id": "q025",
+    "text": "İçindeki denizi fark et. Dışarıda pınar arama.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "Notice the sea within you. Do not seek a spring outside.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q026",
+    "text": "Bir insan bir anda bile değişebilir. Bu değişime kapını açık tut.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "degisim",
+    "rarity": "common",
+    "textEn": "A person can change in a single moment. Keep your door open to that change.",
+    "categoryEn": "transformation"
+  },
+  {
+    "id": "q027",
+    "text": "Aşk bir ateştir; ya yakar dönüştürür, ya da yok eder.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Love is a fire; it either burns and transforms you, or it destroys you.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q028",
+    "text": "Sessizlik bazen en derin konuşmadır.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "Silence is sometimes the deepest of all conversations.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q029",
+    "text": "Seni en iyi tanıyan, sana en çok zorluk çıkarandır. Çünkü o seni dönüştürür.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "degisim",
+    "rarity": "rare",
+    "textEn": "The one who knows you best is the one who challenges you the most. For that one transforms you.",
+    "categoryEn": "transformation"
+  },
+  {
+    "id": "q030",
+    "text": "Nur, karanlığın içinden gelir. Karanlıktan kaçma.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "Light comes through the darkness. Do not flee the dark.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q031",
+    "text": "Her nefes bir hediyedir; farkında mısın?",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "sükür",
+    "rarity": "common",
+    "textEn": "Each breath is a gift; are you aware of it?",
+    "categoryEn": "gratitude"
+  },
+  {
+    "id": "q032",
+    "text": "Kalbinde ne varsa, dilin onu konuşur.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "kalp",
+    "rarity": "common",
+    "textEn": "Whatever is in your heart, your tongue will speak.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q033",
+    "text": "Yüz kere düşsen de, yüz bir kere kalk.",
+    "original": "",
+    "source": "Şems-i Tebrizi",
+    "category": "sabir",
+    "rarity": "uncommon",
+    "textEn": "Though you fall a hundred times, rise a hundred and one.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q034",
+    "text": "Ben Yunus'um, bu dünyaya bir kez gelirim. Sevgiyi bırakacak ne var ki geride?",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "I am Yunus, I come to this world but once. What is there to leave behind but love?",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q035",
+    "text": "Ben gelmedim dava için, benim işim sevi için. Dost'un evi gönüllerdir, gönüller yapmaya geldim.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "I came not for quarrel; my work is love. The house of the Beloved is in hearts, and I came to build hearts.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q036",
+    "text": "Sevelim sevilelim; bu dünya kimseye kalmaz.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Let us love and be loved; this world is for no one to keep.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q037",
+    "text": "İlim ilim bilmektir, ilim kendin bilmektir. Sen kendini bilmezsen, bu nice okumaktır.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "nefis",
+    "rarity": "uncommon",
+    "textEn": "Knowledge is to know knowledge; knowledge is to know oneself. If you do not know yourself, what good is all this reading?",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q038",
+    "text": "Bir kez gönül yıktıysan, kıldığın namaz değil. Yetmiş iki millet bile etmez o günahı.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "If you break a heart even once, your prayers are not prayers. Not even seventy-two nations can absolve that sin.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q039",
+    "text": "Cennet cennet dedikleri birkaç köşkle birkaç huri. İsteyene ver sen anı, bana seni gerek seni.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "What they call paradise is a few mansions and a few houris. Give it to whoever wants it; what I want is You, only You.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q040",
+    "text": "Ete kemiğe büründüm, Yunus diye göründüm.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "birlik",
+    "rarity": "rare",
+    "textEn": "I clothed myself in flesh and bone, and appeared as Yunus.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q041",
+    "text": "Aşkın aldı benden beni, bana seni gerek seni.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Your love has taken me from myself; what I need is You, only You.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q042",
+    "text": "Dost elinden içtim şarap, bende kalmadı hesap.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "I drank wine from the hand of the Beloved; no reckoning remains in me.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q043",
+    "text": "Benim ile ün ü sanım, gönlümdeki dost dostum.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ic_ses",
+    "rarity": "common",
+    "textEn": "My name and renown are with me; the friend in my heart is my truest friend.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q044",
+    "text": "Adım adım benden öte, bana taş atan kişinin. Her attığı benim için, gül demeye başladım.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "sabir",
+    "rarity": "uncommon",
+    "textEn": "Step by step beyond myself I go. For each stone thrown at me, I have begun to say: a rose.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q045",
+    "text": "Ne ararsan kendinde ara. Kudüs'te Mekke'de değil.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ic_ses",
+    "rarity": "common",
+    "textEn": "Whatever you seek, seek within yourself. Not in Jerusalem, not in Mecca.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q046",
+    "text": "Şu dünya bir pınar gibidir, içenler doymaz.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "This world is like a spring; those who drink are never satisfied.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q047",
+    "text": "Gönlüm bir bülbül gibi, dost bahçesinde öter.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "My heart is like a nightingale that sings in the Beloved's garden.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q048",
+    "text": "Söz ola kese savaşı, söz ola kestire başı. Söz ola ağulu aşı, yağ ile bal eyleye.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "hikmet",
+    "rarity": "uncommon",
+    "textEn": "A word can end a war, a word can sever a head. A word can turn bitter poison into honey and oil.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q049",
+    "text": "Bir ben vardır bende benden içeru.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "ic_ses",
+    "rarity": "rare",
+    "textEn": "There is an I within me, deeper than myself.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q050",
+    "text": "Hak'tan gelen şerbeti içtik elhamdülillah.",
+    "original": "",
+    "source": "Yunus Emre",
+    "category": "sükür",
+    "rarity": "common",
+    "textEn": "We have drunk the sherbet that comes from the Truth, praise be to God.",
+    "categoryEn": "gratitude"
+  },
+  {
+    "id": "q051",
+    "text": "Hararet nardadır, sacda değil. Keramet baştadır, taçta değil.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "hikmet",
+    "rarity": "uncommon",
+    "textEn": "The heat is in the fire, not in the pan. The grace is in the head, not in the crown.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q052",
+    "text": "Eline, beline, diline sahip ol.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "nefis",
+    "rarity": "common",
+    "textEn": "Master your hand, your loins, and your tongue.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q053",
+    "text": "Okunacak en büyük kitap insandır.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "nefis",
+    "rarity": "uncommon",
+    "textEn": "The greatest book to be read is the human being.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q054",
+    "text": "Kadınları okutunuz. Bir milleti kurtarmak için evvela analarını irfanlı yetiştirmek lazımdır.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "bilgi",
+    "rarity": "rare",
+    "textEn": "Educate your women. To save a nation, one must first raise its mothers in wisdom.",
+    "categoryEn": "knowledge"
+  },
+  {
+    "id": "q055",
+    "text": "Mürşidin sözü, suyun taşı yalaması gibidir. Yavaş ama emin.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "sabir",
+    "rarity": "uncommon",
+    "textEn": "The word of the master is like water wearing away a stone. Slow, but sure.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q056",
+    "text": "Gönül Çalab'ın tahtı, Çalab gönüle baktı.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "The heart is the throne of God; God looked upon the heart.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q057",
+    "text": "Her ne ararsan arayı arayı. Kendinden başka bir şey bulamazsın.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "ic_ses",
+    "rarity": "common",
+    "textEn": "Search and search for whatever you seek. You will find nothing but yourself.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q058",
+    "text": "Dört kapı kırk makam: şeriat, tarikat, marifet, hakikat.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "yol",
+    "rarity": "rare",
+    "textEn": "Four gates and forty stations: sharia, tariqa, marifa, haqiqa.",
+    "categoryEn": "path"
+  },
+  {
+    "id": "q059",
+    "text": "İncinsen de incitme.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "sabir",
+    "rarity": "common",
+    "textEn": "Though you be wounded, wound no one.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q060",
+    "text": "Dünya gamı çekmek, ahiret için hazırlanmak değildir. Şimdi yap iyi olanı.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "an",
+    "rarity": "uncommon",
+    "textEn": "To bear the world's sorrow is not the same as preparing for the hereafter. Do the good now.",
+    "categoryEn": "present moment"
+  },
+  {
+    "id": "q061",
+    "text": "Kul hatasını bilirse, Hak affeder.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "tevbe",
+    "rarity": "common",
+    "textEn": "If the servant knows their fault, the Truth forgives.",
+    "categoryEn": "repentance"
+  },
+  {
+    "id": "q062",
+    "text": "Şu dünya fanidir. Temelden inşa ettiğin gönlü yap.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "kalp",
+    "rarity": "common",
+    "textEn": "This world is fleeting. Build the heart you raise from its foundation.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q063",
+    "text": "Kırklar meclisinde içilen şarap sevgi şarabıdır.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "The wine drunk in the gathering of the Forty is the wine of love.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q064",
+    "text": "Alim olmak kolaydır, insan olmak zordur.",
+    "original": "",
+    "source": "Hacı Bektaş Veli",
+    "category": "nefis",
+    "rarity": "uncommon",
+    "textEn": "It is easy to be a scholar; it is hard to be a human being.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q065",
+    "text": "Pir Sultan'ım Sivas'ta, adını bilmez bizi. Şah bizi andı mı? Andıysa, ne iyi.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "hasret",
+    "rarity": "rare",
+    "textEn": "I am Pir Sultan in Sivas; he knows not even our name. Has the Shah remembered us? If he has, how good.",
+    "categoryEn": "longing"
+  },
+  {
+    "id": "q066",
+    "text": "Bize de sormazlar halden, ne çekeriz bilmezler.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "hasret",
+    "rarity": "uncommon",
+    "textEn": "No one asks us of our state; they do not know what we bear.",
+    "categoryEn": "longing"
+  },
+  {
+    "id": "q067",
+    "text": "Kul olayım kalem tutan eline. Yazılanı silemezsek de yazarız.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "irade",
+    "rarity": "uncommon",
+    "textEn": "May I be servant to the hand that holds the pen. Even if we cannot erase what is written, still we write.",
+    "categoryEn": "will"
+  },
+  {
+    "id": "q068",
+    "text": "Hak yoluna gidenlerin, geri dönmek ayıptır.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "yol",
+    "rarity": "uncommon",
+    "textEn": "For those who walk the path of Truth, to turn back is shameful.",
+    "categoryEn": "path"
+  },
+  {
+    "id": "q069",
+    "text": "Eğer bir gün ölüm hakkında düşünürsen, sevgi üzerine düşün daha çok.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "If one day you think upon death, think more upon love.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q070",
+    "text": "Dağlar ile taşlar ile çağırayım Mevlam seni.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "teslimiyet",
+    "rarity": "uncommon",
+    "textEn": "With mountains and with stones, I will call upon You, my Lord.",
+    "categoryEn": "surrender"
+  },
+  {
+    "id": "q071",
+    "text": "Zulüm ile baki kalmaz, er geç hak yerini bulur.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "adalet",
+    "rarity": "common",
+    "textEn": "Tyranny does not endure; sooner or later truth finds its place.",
+    "categoryEn": "justice"
+  },
+  {
+    "id": "q072",
+    "text": "Gönlüm düştü bir derde, derman yok mu bilmezem.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "hasret",
+    "rarity": "common",
+    "textEn": "My heart has fallen into sorrow; I know not whether a cure exists.",
+    "categoryEn": "longing"
+  },
+  {
+    "id": "q073",
+    "text": "Allah bir, Muhammed hak, Ali arslan-ı Huda.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "inanc",
+    "rarity": "common",
+    "textEn": "Allah is one, Muhammad is truth, Ali is the lion of God.",
+    "categoryEn": "faith"
+  },
+  {
+    "id": "q074",
+    "text": "Mümin olan ikrar verir, sözünde durmak gerek.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "dürüstlük",
+    "rarity": "uncommon",
+    "textEn": "The believer gives their word; one must stand by what one says.",
+    "categoryEn": "honesty"
+  },
+  {
+    "id": "q075",
+    "text": "Bahçende gül açar mı? Açarsa getir bana.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Does a rose bloom in your garden? If it does, bring it to me.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q076",
+    "text": "Hakk'a yürüyen er olmak; gönlünü temiz tutmak gerek.",
+    "original": "",
+    "source": "Pir Sultan Abdal",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "To be one who walks unto the Truth, you must keep your heart clean.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q077",
+    "text": "İlk mektep anadır. İyi ana, iyi ümmet.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "bilgi",
+    "rarity": "uncommon",
+    "textEn": "The first school is the mother. A good mother makes a good people.",
+    "categoryEn": "knowledge"
+  },
+  {
+    "id": "q078",
+    "text": "Her kim Allah'ı severse, halkı da sever.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Whoever loves God also loves the people.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q079",
+    "text": "Yetmiş yaşında yere girdim hicap ile, Allah yolunda ölmek şeref.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "teslimiyet",
+    "rarity": "rare",
+    "textEn": "At seventy I entered the earth in humility; to die in the path of God is an honor.",
+    "categoryEn": "surrender"
+  },
+  {
+    "id": "q080",
+    "text": "Nefsi yenmek, dağ yenmekten büyüktür.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "nefis",
+    "rarity": "uncommon",
+    "textEn": "To conquer the self is greater than to conquer a mountain.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q081",
+    "text": "Hak yoluna koyulanlar yorulmaz.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "irade",
+    "rarity": "common",
+    "textEn": "Those who set out on the path of the Truth do not grow weary.",
+    "categoryEn": "will"
+  },
+  {
+    "id": "q082",
+    "text": "Gönlü geniş ol. Dar gönülde ilim durmaz.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "kalp",
+    "rarity": "common",
+    "textEn": "Be wide of heart. Knowledge cannot dwell in a narrow heart.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q083",
+    "text": "Merd ol, yiğit ol; sözünde dur.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "dürüstlük",
+    "rarity": "common",
+    "textEn": "Be upright, be brave; stand by your word.",
+    "categoryEn": "honesty"
+  },
+  {
+    "id": "q084",
+    "text": "Dünyayı seven Allah'ı unutur; Allah'ı seven dünyayı.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "zühd",
+    "rarity": "uncommon",
+    "textEn": "Whoever loves the world forgets God; whoever loves God forgets the world.",
+    "categoryEn": "detachment"
+  },
+  {
+    "id": "q085",
+    "text": "Hakikat şarabını içmeden gerçek âşık olunamaz.",
+    "original": "",
+    "source": "Ahmed Yesevi",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Without drinking the wine of truth, one cannot become a true lover.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q086",
+    "text": "Ben Nesimiyem, hakikat eriyim. Deriyi yüzseler de içimi alamazlar.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "cesaret",
+    "rarity": "rare",
+    "textEn": "I am Nesimi, a man of truth. Though they flay my skin, they cannot take what is within.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q087",
+    "text": "İçimde Allah saklıdır, bulmak isteyen içine baksın.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "birlik",
+    "rarity": "rare",
+    "textEn": "Within me, God is hidden; let whoever wishes to find Him look within.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q088",
+    "text": "Ben bu isme layık mıyım? Söyle yüreğim.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "Am I worthy of this name? Tell me, my heart.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q089",
+    "text": "Enel Hak sırrını gizleme, söyle cesaretle.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "Do not hide the secret of 'I am the Truth'; speak it with courage.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q090",
+    "text": "Yere göğe sığmam, bir müminin gönlüne sığarım.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "birlik",
+    "rarity": "rare",
+    "textEn": "I do not fit in earth or sky, but I fit within a believer's heart.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q091",
+    "text": "Güzellik senin içinde; ayna çatlasa da bu gerçek değişmez.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "Beauty is within you; though the mirror crack, this truth does not change.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q092",
+    "text": "Ölümden korkan hayatı yaşayamaz.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "cesaret",
+    "rarity": "common",
+    "textEn": "Whoever fears death cannot truly live.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q093",
+    "text": "Tanrı'yı insanda ara, taşta değil.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "birlik",
+    "rarity": "uncommon",
+    "textEn": "Seek God in the human being, not in stone.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q094",
+    "text": "Derd-i aşk devası olmaz, ama derde değer.",
+    "original": "",
+    "source": "Nesimi",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "There is no cure for the sickness of love, yet the sickness is worth it.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q095",
+    "text": "Kaygusuz abdal gezer dağda bayırda. Dünya ona dar, gönül ona geniş.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "zühd",
+    "rarity": "uncommon",
+    "textEn": "Kaygusuz the dervish wanders over hills and dales. The world is too narrow for him, his heart is wide.",
+    "categoryEn": "detachment"
+  },
+  {
+    "id": "q096",
+    "text": "Benim Hakk'ım bende saklı, ne hac ne dağ ne deniz.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "My Truth is hidden within me; not in pilgrimage, mountain, or sea.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q097",
+    "text": "Dünya tuzağına düşme, keklik gibi uçup git.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "zühd",
+    "rarity": "common",
+    "textEn": "Do not fall into the world's snare; fly away like the partridge.",
+    "categoryEn": "detachment"
+  },
+  {
+    "id": "q098",
+    "text": "Allah aşkını içmişem, ne un ne ekmek isterem.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "I have drunk the love of God; I need neither flour nor bread.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q099",
+    "text": "Gerçek fakr budur: ne varsa ver, ne yoksa isteme.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "cömertlik",
+    "rarity": "rare",
+    "textEn": "True poverty is this: give whatever you have, and ask for nothing you do not.",
+    "categoryEn": "generosity"
+  },
+  {
+    "id": "q100",
+    "text": "Dost ile dost ol, dosta düşman olma.",
+    "original": "",
+    "source": "Kaygusuz Abdal",
+    "category": "dostluk",
+    "rarity": "common",
+    "textEn": "Be a friend to your friend; never be foe to a friend.",
+    "categoryEn": "friendship"
+  },
+  {
+    "id": "q101",
+    "text": "Gönül ev sahibini bilirse, ne gam ne keder.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "kalp",
+    "rarity": "uncommon",
+    "textEn": "If the heart knows its master, there is neither grief nor sorrow.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q102",
+    "text": "Mevla'm bana yeter, başka neye muhtacım?",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "teslimiyet",
+    "rarity": "common",
+    "textEn": "My Lord is enough for me; what else could I need?",
+    "categoryEn": "surrender"
+  },
+  {
+    "id": "q103",
+    "text": "Aşk ateşine yanmayan; sufi, arif, alim değildir.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "One who has not burned in the fire of love is no Sufi, no sage, no scholar.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q104",
+    "text": "Marifet bu değil mi: herkeste Hak'kı görmek.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "birlik",
+    "rarity": "uncommon",
+    "textEn": "Is this not gnosis: to see the Truth in everyone?",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q105",
+    "text": "Gönlünde şüphe varsa, önce onu temizle.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "kalp",
+    "rarity": "common",
+    "textEn": "If there is doubt in your heart, cleanse that first.",
+    "categoryEn": "heart"
+  },
+  {
+    "id": "q106",
+    "text": "Ney gibi inliyorum ayrılıktan. Ama bu iniş beni Hakk'a götürüyor.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "hasret",
+    "rarity": "uncommon",
+    "textEn": "Like the reed flute, I wail with separation. But this lament carries me toward the Truth.",
+    "categoryEn": "longing"
+  },
+  {
+    "id": "q107",
+    "text": "Senden sana çok yakın bir yol var; git.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "ic_ses",
+    "rarity": "rare",
+    "textEn": "There is a path from you to you, very near; walk it.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q108",
+    "text": "Varlığım yokluğumdan gelir. Yok olursam var olurum.",
+    "original": "",
+    "source": "Niyazi Mısri",
+    "category": "birlik",
+    "rarity": "rare",
+    "textEn": "My being comes from my nothingness. If I become nothing, I truly am.",
+    "categoryEn": "unity"
+  },
+  {
+    "id": "q109",
+    "text": "Aşık Veysel'im, bağlar beni bu toprağa. Bu toprak benim, ben bu toprağım.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "toprak",
+    "rarity": "uncommon",
+    "textEn": "I am Aşık Veysel, bound to this earth. This earth is mine, and I am this earth.",
+    "categoryEn": "earth"
+  },
+  {
+    "id": "q110",
+    "text": "Gözlerim görmese de gönlüm görür. Gerçek ışık içten gelir.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "Though my eyes do not see, my heart sees. True light comes from within.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q111",
+    "text": "Uzun ince bir yoldayım, gidiyorum gündüz gece.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "yol",
+    "rarity": "common",
+    "textEn": "I walk a long and narrow road, going on by day and by night.",
+    "categoryEn": "path"
+  },
+  {
+    "id": "q112",
+    "text": "Bahçemizde gül biter, bülbüller öter. Güzellik bitimsizdir.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Roses bloom in our garden, nightingales sing. Beauty has no end.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q113",
+    "text": "En güzel köy senin büyüdüğün, en güzel ana senin anan.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "toprak",
+    "rarity": "common",
+    "textEn": "The most beautiful village is the one where you grew up; the most beautiful mother is your own.",
+    "categoryEn": "earth"
+  },
+  {
+    "id": "q114",
+    "text": "Dünya bir misafirhanedir, misafir kınamaz evi.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "The world is a guesthouse; a guest does not find fault with the house.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q115",
+    "text": "Sevda dağları aşar, nehirleri geçer. Ama ilk adım ayaktan değil, gönülden atılır.",
+    "original": "",
+    "source": "Aşık Veysel",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Love crosses mountains and rivers. But the first step is taken not by the foot, but by the heart.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q116",
+    "text": "Dadaloğlu der ki: Er odur ki, sözünde durur.",
+    "original": "",
+    "source": "Dadaloğlu",
+    "category": "dürüstlük",
+    "rarity": "common",
+    "textEn": "Dadaloğlu says: A true man is one who stands by his word.",
+    "categoryEn": "honesty"
+  },
+  {
+    "id": "q117",
+    "text": "Ferman padişahın, dağlar bizimdir. Hiçbir güç kökten sökelemez bizi.",
+    "original": "",
+    "source": "Dadaloğlu",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "The decree is the sultan's, but the mountains are ours. No force can uproot us.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q118",
+    "text": "Ele güne karşı şeref, ev içinde insanlık.",
+    "original": "",
+    "source": "Dadaloğlu",
+    "category": "nefis",
+    "rarity": "common",
+    "textEn": "Honor before the world, humanity within the home.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q119",
+    "text": "Aslana yiğitlik gerekmez, kuzuya gerekir.",
+    "original": "",
+    "source": "Dadaloğlu",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "The lion need not prove its courage; the lamb must.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q120",
+    "text": "Köroğlu der ki: Meydan okumak yiğitliğin başıdır.",
+    "original": "",
+    "source": "Köroğlu",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "Köroğlu says: To dare is the beginning of bravery.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q121",
+    "text": "At cinsinden belli olur, er yiğitten.",
+    "original": "",
+    "source": "Köroğlu",
+    "category": "irade",
+    "rarity": "common",
+    "textEn": "A horse is known by its breed, a man by his valor.",
+    "categoryEn": "will"
+  },
+  {
+    "id": "q122",
+    "text": "Dağ başını duman almış, geçilmez diye çekilme. Duman da dağdır, yol da.",
+    "original": "",
+    "source": "Köroğlu",
+    "category": "cesaret",
+    "rarity": "uncommon",
+    "textEn": "Mist has covered the mountain's peak; do not turn back saying it cannot be crossed. The mist is part of the mountain, and so is the road.",
+    "categoryEn": "courage"
+  },
+  {
+    "id": "q123",
+    "text": "Karac'oğlan der ki: Güzel seven güzel olur.",
+    "original": "",
+    "source": "Karacaoğlan",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Karacaoğlan says: One who loves the beautiful becomes beautiful.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q124",
+    "text": "Yüksek yerde oturan, derin vadiye bakar. Bak da öğren.",
+    "original": "",
+    "source": "Karacaoğlan",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "He who sits in the high place gazes upon the deep valley. Look and learn.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q125",
+    "text": "Sevda bu kadar mı güzel? Güzellik bu kadar mı sevdaya yakın?",
+    "original": "",
+    "source": "Karacaoğlan",
+    "category": "ask",
+    "rarity": "common",
+    "textEn": "Can love be this beautiful? Can beauty be this close to love?",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q126",
+    "text": "Su uyur düşman uyumaz; sen de uyanık ol.",
+    "original": "",
+    "source": "Karacaoğlan",
+    "category": "hikmet",
+    "rarity": "uncommon",
+    "textEn": "Water sleeps, but the enemy does not; you too must stay watchful.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q127",
+    "text": "Gönül sevdalara düşmeden önce uyarır. Dinle onu.",
+    "original": "",
+    "source": "Karacaoğlan",
+    "category": "ic_ses",
+    "rarity": "uncommon",
+    "textEn": "The heart gives warning before falling into love. Listen to it.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q128",
+    "text": "Kul Himmet der ki: Hakikat kapısını açacak tek anahtar sevgidir.",
+    "original": "",
+    "source": "Kul Himmet",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Kul Himmet says: The only key that opens the door of truth is love.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q129",
+    "text": "Yol erinin nişanı: söylediği ile yaptığı birdir.",
+    "original": "",
+    "source": "Kul Himmet",
+    "category": "dürüstlük",
+    "rarity": "common",
+    "textEn": "The mark of one upon the path: what they say and what they do are one.",
+    "categoryEn": "honesty"
+  },
+  {
+    "id": "q130",
+    "text": "Hakk'ı seven zalim olmaz.",
+    "original": "",
+    "source": "Kul Himmet",
+    "category": "adalet",
+    "rarity": "common",
+    "textEn": "Whoever loves the Truth cannot be a tyrant.",
+    "categoryEn": "justice"
+  },
+  {
+    "id": "q131",
+    "text": "Aşk bir bahr-i ummandır, içinde inci saklıdır.",
+    "original": "",
+    "source": "Kul Himmet",
+    "category": "ask",
+    "rarity": "uncommon",
+    "textEn": "Love is a boundless ocean; within it, pearls are hidden.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q132",
+    "text": "Sır verme her yabancıya, için dolar dışa taşar.",
+    "original": "",
+    "source": "Kul Himmet",
+    "category": "hikmet",
+    "rarity": "common",
+    "textEn": "Do not share your secret with every stranger; what fills within will spill outside.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q133",
+    "text": "Mevlana sever, Şems sever, Yunus sever; çünkü aşk tek bir nehirdir.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "ask",
+    "rarity": "rare",
+    "textEn": "Mevlana loves, Şems loves, Yunus loves; for love is a single river.",
+    "categoryEn": "love"
+  },
+  {
+    "id": "q134",
+    "text": "Nefsi öldürmeden, ruh dirileemez.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "nefis",
+    "rarity": "uncommon",
+    "textEn": "Without slaying the ego, the soul cannot come alive.",
+    "categoryEn": "self"
+  },
+  {
+    "id": "q135",
+    "text": "Halvette olsan da halk içinde, halkta olsan da halvette.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "ic_ses",
+    "rarity": "rare",
+    "textEn": "Be in solitude even amid the crowd, be among the crowd even in solitude.",
+    "categoryEn": "inner voice"
+  },
+  {
+    "id": "q136",
+    "text": "Derviş dünyaya iki eliyle sarılmaz.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "zühd",
+    "rarity": "common",
+    "textEn": "A dervish does not embrace the world with both hands.",
+    "categoryEn": "detachment"
+  },
+  {
+    "id": "q137",
+    "text": "Sabır ile koruk helva olur.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "sabir",
+    "rarity": "common",
+    "textEn": "With patience, sour grapes become sweet halva.",
+    "categoryEn": "patience"
+  },
+  {
+    "id": "q138",
+    "text": "Şükür kapısını açan, bolluk içinde yaşar.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "sükür",
+    "rarity": "common",
+    "textEn": "Whoever opens the door of gratitude lives in abundance.",
+    "categoryEn": "gratitude"
+  },
+  {
+    "id": "q139",
+    "text": "Her güzelliğin altında bir acı yatar. Her olgunluğun altında bir yara.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "hikmet",
+    "rarity": "uncommon",
+    "textEn": "Beneath every beauty lies a sorrow. Beneath every ripeness, a wound.",
+    "categoryEn": "wisdom"
+  },
+  {
+    "id": "q140",
+    "text": "Bülbülün gülden ayrı düşmesi gibidir insan Hakk'tan.",
+    "original": "",
+    "source": "Tasavvuf Geleneği",
+    "category": "hasret",
+    "rarity": "uncommon",
+    "textEn": "As the nightingale is parted from the rose, so is the human from the Truth.",
+    "categoryEn": "longing"
+  }
+]
