@@ -8,7 +8,6 @@ import { useSakinHayvanStore } from './src/store/useStore';
 import { Colors } from './src/theme/colors';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { LanguageProvider } from './src/i18n/LanguageContext';
-import { WebFooter } from './src/components/WebFooter';
 
 function Root() {
   const { authReady, isAuthenticated } = useSakinHayvanStore();
@@ -35,8 +34,8 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <LanguageProvider>
+          {/* WebFooter removed — host (sakin.life) provides its own policy footer. */}
           <Root />
-          <WebFooter />
         </LanguageProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

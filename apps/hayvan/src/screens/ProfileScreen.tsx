@@ -605,92 +605,7 @@ export function ProfileScreen() {
               </View>
             </View>
 
-            {/* Human Design */}
-            <View style={[styles.analysisCard, { borderColor: Colors.purple + '60' }]}>
-              <View style={styles.analysisHeader}>
-                <View style={[styles.analysisBadge, { backgroundColor: Colors.purple + '20' }]}>
-                  <Text style={{ fontSize: 18 }}>◈</Text>
-                </View>
-                <View style={styles.analysisHeaderText}>
-                  <View style={styles.titleRow}>
-                    <Text style={[styles.analysisTitle, { color: Colors.purpleLight }]}>
-                      {lang === 'en' ? (HD_TYPE_EN[analysis.hd.type] ?? analysis.hd.type) : analysis.hd.type}
-                    </Text>
-                    <HelpButton termKey={hdTypeToGlossaryKey(analysis.hd.type)} />
-                  </View>
-                  <View style={styles.titleRow}>
-                    <Text style={styles.analysisMeta}>
-                      {`${t('profile.personalMap.humanDesign')} · ${t('profile.personalMap.strategy')}: ${lang === 'en' ? (HD_STRATEGY_EN[analysis.hd.strategy] ?? analysis.hd.strategy) : analysis.hd.strategy}`}
-                      {!analysis.hd.confident && !profile.hdTypeOverride ? ` ${t('profile.personalMap.estimated')}` : ''}
-                    </Text>
-                    <HelpButton termKey="humanDesign" />
-                  </View>
-                </View>
-                <TouchableOpacity onPress={() => setShowHDPicker(v => !v)} style={styles.hdEditBtn}>
-                  <Text style={[styles.hdEditText, { color: Colors.purple }]}>✎</Text>
-                </TouchableOpacity>
-              </View>
-              {showHDPicker && (
-                <View style={[styles.hdPicker, { borderColor: Colors.purple + '30' }]}>
-                  <Text style={[styles.hdPickerLabel, { color: Colors.textMuted }]}>{t('profile.personalMap.hdTypeSelectHint')}</Text>
-                  {(['Jeneratör', 'Manifesting Jeneratör', 'Projektör', 'Manifestor', 'Reflektör'] as const).map(hdType => (
-                    <TouchableOpacity
-                      key={hdType}
-                      style={[styles.hdPickerItem, analysis.hd.type === hdType && { backgroundColor: Colors.purple + '20' }]}
-                      onPress={() => { updateHDType(hdType); setShowHDPicker(false); }}
-                    >
-                      <Text style={[styles.hdPickerText, { color: analysis.hd.type === hdType ? Colors.purpleLight : Colors.textSecondary }]}>
-                        {analysis.hd.type === hdType ? '◈ ' : '○ '}{lang === 'en' ? (HD_TYPE_EN[hdType] ?? hdType) : hdType}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                  <Text style={styles.hdDisclaimer}>
-                    {t('profile.personalMap.hdDisclaimer')}
-                  </Text>
-                </View>
-              )}
-              {/* Real gates — always accurate regardless of type confidence */}
-              <View style={[styles.gatesBox, { borderColor: Colors.purple + '30' }]}>
-                <Text style={styles.gatesTitle}>{t('profile.personalMap.sunGates')}</Text>
-                <View style={styles.gatesRow}>
-                  <View style={styles.gateCell}>
-                    <Text style={[styles.gateNum, { color: Colors.purpleLight }]}>
-                      {analysis.hd.gates.consciousSun}.{analysis.hd.gates.consciousSunLine}
-                    </Text>
-                    <Text style={styles.gateLabel}>{t('profile.personalMap.consciousSun')}</Text>
-                    <Text style={styles.gateName}>{GATE_NAMES[analysis.hd.gates.consciousSun]}</Text>
-                  </View>
-                  <View style={styles.gateCell}>
-                    <Text style={[styles.gateNum, { color: Colors.tealLight }]}>
-                      {analysis.hd.gates.designSun}.{analysis.hd.gates.designSunLine}
-                    </Text>
-                    <Text style={styles.gateLabel}>{t('profile.personalMap.designSun')}</Text>
-                    <Text style={styles.gateName}>{GATE_NAMES[analysis.hd.gates.designSun]}</Text>
-                  </View>
-                </View>
-                {!analysis.hd.confident && !profile.hdTypeOverride && (
-                  <Text style={styles.gatesNote}>
-                    {t('profile.personalMap.gatesNote')}
-                  </Text>
-                )}
-              </View>
-
-              {premium.isPremium ? (
-                <>
-                  <Text style={styles.analysisDesc}>{analysis.hd.desc}</Text>
-                  <View style={[styles.notSelfBox, { borderColor: Colors.purple + '30' }]}>
-                    <Text style={[styles.notSelfLabel, { color: Colors.purple }]}>{t('profile.personalMap.notSelf')}</Text>
-                    <Text style={styles.notSelfText}>{analysis.hd.notSelf}</Text>
-                  </View>
-                </>
-              ) : (
-                <PremiumTeaser
-                  hint={t('profile.premium.hdTeaser')}
-                  color={Colors.purple}
-                  onUnlock={() => setShowPaywall(true)}
-                />
-              )}
-            </View>
+            {/* Human Design teaser removed — dedicated Sakin Tasarım app owns HD content. */}
 
             {/* Weekly Reading */}
             <View style={[styles.analysisCard, { borderColor: Colors.teal + '60' }]}>
@@ -1018,27 +933,7 @@ export function ProfileScreen() {
         </View>
       </View>
 
-      {/* Language */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('profile.language.title' as any)}</Text>
-        <View style={styles.langBigRow}>
-          <TouchableOpacity
-            style={[styles.langBigBtn, language === 'tr' && styles.langBigBtnActive]}
-            onPress={() => setLanguage('tr')}
-            activeOpacity={0.75}
-          >
-            <Text style={[styles.langBigBtnText, language === 'tr' && styles.langBigBtnTextActive]}>Türkçe</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.langBigBtn, language === 'en' && styles.langBigBtnActive]}
-            onPress={() => setLanguage('en')}
-            activeOpacity={0.75}
-          >
-            <Text style={[styles.langBigBtnText, language === 'en' && styles.langBigBtnTextActive]}>English</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.langNote}>{t('profile.language.note' as any)}</Text>
-      </View>
+      {/* Language picker removed — host (Sakin) controls language via the bridge. */}
 
       {/* ── DEV-only — stripped from production builds ── */}
       {__DEV__ && (
