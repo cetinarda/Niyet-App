@@ -6938,48 +6938,63 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ctx.fillText(val, x + 22, y + 76);
           });
 
-          // 8. Streak stats
-          ctx.fillStyle = "rgba(255,255,255,0.025)";
-          roundRect(ctx, 100, 1200, 880, 160, 14);
-          ctx.fill();
-          // Streak number
-          ctx.fillStyle = "#f0a040";
-          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
-          ctx.textAlign = "center";
-          ctx.fillText(String(days), 280, 1280);
-          ctx.fillStyle = "#7a7090";
-          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(t("gid_streak"), 280, 1330);
-          // Best
-          ctx.fillStyle = "#82d9a3";
-          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(String(best), 540, 1280);
-          ctx.fillStyle = "#7a7090";
-          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(t("gid_best"), 540, 1330);
-          // Cards
-          ctx.fillStyle = "#a0d8b4";
-          ctx.font = "300 58px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(String(animalCount + mythCount), 800, 1280);
-          ctx.fillStyle = "#7a7090";
-          ctx.font = "300 18px -apple-system, 'Jost', sans-serif";
-          ctx.fillText(t("gid_cards_label"), 800, 1330);
+          // 8. Element dağılımı — yüzdeler (galaktik kartta KOMPAKT 2x2 grid; pasta
+          // sadece HD embed'inde). Veri: Sakin Tasarım embed'inin yazdığı localStorage.
+          // Eski gün-serisi/en-iyi/kart istatistikleri kaldırıldı; yer buraya açıldı.
+          let yAfterElements = 1170;
+          try {
+            const ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
+            if (ed && ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) > 0.5) {
+              const isEn = lang === "en";
+              ctx.fillStyle = "#7a7090";
+              ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText(isEn ? "ELEMENT BALANCE" : "ELEMENT DAĞILIMI", 540, 1250);
+              const items = [
+                ["ates","#E0683C","△", isEn?"Fire":"Ateş"],
+                ["toprak","#6FA86F","⊕", isEn?"Earth":"Toprak"],
+                ["hava","#D8C25C","○", isEn?"Air":"Hava"],
+                ["su","#5C9AD8","▽", isEn?"Water":"Su"],
+              ];
+              items.forEach(([k,color,glyph,name], i) => {
+                const col = i % 2, row = Math.floor(i / 2);
+                const x = 100 + col * 460, y = 1290 + row * 100;
+                ctx.fillStyle = "rgba(255,255,255,0.025)";
+                roundRect(ctx, x, y, 420, 84, 14); ctx.fill();
+                ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+                roundRect(ctx, x, y, 420, 84, 14); ctx.stroke();
+                ctx.fillStyle = color; ctx.textAlign = "left";
+                ctx.font = "400 30px -apple-system, 'Jost', sans-serif";
+                ctx.fillText(glyph, x + 26, y + 54);
+                ctx.fillStyle = "#cfc8e0";
+                ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+                ctx.fillText(name, x + 66, y + 53);
+                const pct = Math.round((ed[k]||0)*100);
+                ctx.fillStyle = color; ctx.textAlign = "right";
+                ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
+                ctx.fillText(isEn ? `${pct}%` : `%${pct}`, x + 394, y + 54);
+              });
+              yAfterElements = 1490;
+            }
+          } catch(_) {}
 
-          // 9. HD bölümü (varsa)
+          // 9. HD bölümü (varsa) — element dağılımının altına
           if (hdProfile && hdProfile.type) {
+            const hy = yAfterElements + 20;
             ctx.fillStyle = "rgba(180,160,216,0.08)";
-            roundRect(ctx, 100, 1410, 880, 100, 14);
+            roundRect(ctx, 100, hy, 880, 100, 14);
             ctx.fill();
             ctx.strokeStyle = "rgba(180,160,216,0.18)";
             ctx.lineWidth = 1;
-            roundRect(ctx, 100, 1410, 880, 100, 14);
+            roundRect(ctx, 100, hy, 880, 100, 14);
             ctx.stroke();
             ctx.fillStyle = "#9080b8";
             ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
-            ctx.fillText("HUMAN DESIGN", 540, 1450);
+            ctx.textAlign = "center";
+            ctx.fillText("HUMAN DESIGN", 540, hy + 40);
             ctx.fillStyle = "#d0c8e8";
             ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
-            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, 1490);
+            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, hy + 80);
           }
 
           // 10. Footer
