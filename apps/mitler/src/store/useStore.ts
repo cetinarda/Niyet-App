@@ -112,6 +112,22 @@ export function readSakinBridge(): SakinBridge | null {
   }
 }
 
+// Doğum tarihinden (güneş burcu) element türet. Köprüyle profil OTOMATİK kurulurken
+// element sorulmaz; kullanıcı isterse Profil'de değiştirir.
+export function elementFromBirthDate(birthDate?: string): UserProfile['element'] {
+  if (!birthDate) return undefined;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(birthDate);
+  if (!m) return undefined;
+  const mo = parseInt(m[2], 10), d = parseInt(m[3], 10);
+  const fire  = (mo === 3 && d >= 21) || (mo === 4 && d <= 19) || (mo === 7 && d >= 23) || (mo === 8 && d <= 22) || (mo === 11 && d >= 22) || (mo === 12 && d <= 21);
+  const earth = (mo === 4 && d >= 20) || (mo === 5 && d <= 20) || (mo === 8 && d >= 23) || (mo === 9 && d <= 22) || (mo === 12 && d >= 22) || (mo === 1 && d <= 19);
+  const air   = (mo === 5 && d >= 21) || (mo === 6 && d <= 20) || (mo === 9 && d >= 23) || (mo === 10 && d <= 22) || (mo === 1 && d >= 20) || (mo === 2 && d <= 18);
+  if (fire) return 'ateş';
+  if (earth) return 'toprak';
+  if (air) return 'hava';
+  return 'su'; // Yengeç/Akrep/Balık
+}
+
 export function useMitlerStore() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [dailyReading, setDailyReading] = useState<DailyReading | null>(null);
@@ -152,9 +168,32 @@ export function useMitlerStore() {
       if (disclaimerRaw === 'accepted') setDisclaimerAccepted(true);
 
       if (!profileRaw) {
-        setIsNewUser(true);
-        // Köprü zaten lazy-init ile senkron okundu (yukarı bak); profil yoksa
-        // olduğu gibi bırakırız. NOT: Element içermez — kullanıcı yine seçer.
+        // KÖPRÜ — OTOMATİK PROFİL (HD gibi): host doğum tarihi verdiyse profili
+        // sessizce kur, onboarding'i HİÇ gösterme; doğrudan rehberliğe geç. Element
+        // burçtan türetilir (kullanıcı isterse Profil'de değiştirir). Birth yoksa
+        // (nadir) eski akış: formu ön-doldur (element adımı).
+        const bridge = readSakinBridge();
+        if (bridge?.birthDate) {
+          const auto: UserProfile = {
+            name: (bridge.name || 'Sakin').trim() || 'Sakin',
+            fullName: bridge.name || undefined,
+            element: elementFromBirthDate(bridge.birthDate),
+            birthDate: bridge.birthDate,
+            birthHour: (typeof bridge.birthHour === 'number') ? bridge.birthHour : undefined,
+            birthMinute: (typeof bridge.birthMinute === 'number') ? bridge.birthMinute : undefined,
+            birthCity: bridge.birthCity,
+            createdAt: new Date().toISOString(),
+            streak: 0,
+            totalReadings: 0,
+            level: 1,
+          };
+          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(auto));
+          setProfile(auto);
+          setBridgePrefill(null);
+          setIsNewUser(false);
+        } else {
+          setIsNewUser(true);
+        }
       } else {
         setProfile(JSON.parse(profileRaw));
         // Profil zaten var: senkron seed'lenmiş köprüyü geçersiz kıl, yoksa
