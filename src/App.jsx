@@ -2850,7 +2850,9 @@ export default function SakinApp() {
     const isHD = appKey === "humandesign";
     let exceeded = false;
     if (!isPremium && !isHD) {
-      const storageKey = "sakin_ailesi_opens_" + appKey;
+      // GÜNLÜK kota: anahtara tarih eklenir → her gün 3 ücretsiz açılış sıfırdan başlar.
+      const todayKey = new Date().toISOString().slice(0, 10);
+      const storageKey = "sakin_ailesi_opens_" + appKey + "_" + todayKey;
       const prev = parseInt(localStorage.getItem(storageKey) || "0", 10) || 0;
       const next = prev + 1;
       try { localStorage.setItem(storageKey, String(next)); } catch(_) {}
@@ -3259,6 +3261,7 @@ export default function SakinApp() {
   const [birthCityInput, setBirthCityInput] = useState(()=>localStorage.getItem("sakin_birth_city")||"");
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
+  const panicAutoStartRef = useRef(false); // panik butonu: nefesi doğrudan başlat (premium istisnası)
   const breathChimeRef = useRef(null);
 
   // App Store Guideline 5.1.1(v) — Account / Data deletion.
@@ -4042,6 +4045,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     else { setBreathMode("standart"); }
     clearInterval(breathRef.current);
     if (screen !== "ses") stopFreqToneGlobal();
+    // PANİK BUTONU: en uygun sakinleştirici tekniği (4-7-8) doğrudan başlat —
+    // premium kilidi olsa bile (panik istisnası), kullanıcıya sormadan.
+    if (screen === "nefes" && panicAutoStartRef.current) {
+      panicAutoStartRef.current = false;
+      try { playStartChime(); } catch(_) {}
+      setBreathPhase("ready");
+      setBreathStarted(true);
+    }
   },[screen]);
 
   const speakBreathCue = (phase) => {
@@ -4401,32 +4412,37 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
-      {/* PANİK BUTONU — sol üst, her ekranda erişilebilir (embed/policy/portal hariç).
-          Tıklayınca ücretsiz sakinleştirici diyafram nefesine götürür (premium-gate YOK). */}
+      {/* PANİK BUTONU — sol üst banner, her ekranda erişilebilir (embed/policy/portal hariç).
+          Tıklayınca en uygun sakinleştirici nefesi (4-7-8) DOĞRUDAN başlatır; teknik
+          premium olsa bile panik istisnası ile çalışır (sormaz, gate yok). */}
       {!isPolicyScreen && !embeddedApp && !mirrorPortalActive && (
         <button
           onClick={()=>{
             try { haptic(); } catch(_) {}
-            pendingBreathRef.current = "diyafram";
+            pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
+            panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
             setScreen("nefes");
           }}
           aria-label={t("panic_aria")}
           title={t("panic_aria")}
           style={{
             position:"fixed",
-            // Nav barının ALTINA hizalı (üst-sol), nav home butonuyla çakışmasın.
-            top:"calc(env(safe-area-inset-top, 0px) + 78px)",
-            left:14, zIndex:9997, width:38, height:38, borderRadius:"50%",
+            // Nav barının biraz daha ALTINA — üstteki nav/ay ikonuyla çakışmasın.
+            top:"calc(env(safe-area-inset-top, 0px) + 120px)",
+            left:14, zIndex:9997,
+            display:"flex", alignItems:"center", gap:7,
+            padding:"8px 14px", borderRadius:100,
             border:"1px solid rgba(224,120,120,0.45)",
-            background:"radial-gradient(circle at 35% 35%, rgba(224,110,110,0.42) 0%, rgba(120,40,40,0.72) 62%, rgba(40,14,14,0.9) 100%)",
+            background:"linear-gradient(135deg, rgba(224,110,110,0.42) 0%, rgba(120,40,40,0.72) 100%)",
             backdropFilter:"blur(10px)",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            color:"rgba(255,235,235,0.95)", fontSize:16, lineHeight:1,
+            color:"rgba(255,235,235,0.95)", fontSize:11.5, letterSpacing:1.5, lineHeight:1,
+            fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500,
             boxShadow:"0 0 16px rgba(224,110,110,0.30), inset 0 0 10px rgba(255,180,180,0.18)",
-            padding:0, cursor:"pointer",
+            cursor:"pointer", whiteSpace:"nowrap",
           }}
         >
-          <span style={{ display:"block", lineHeight:1, filter:"drop-shadow(0 0 3px rgba(255,200,200,0.5))" }}>🫧</span>
+          <span style={{ display:"block", lineHeight:1, fontSize:14, filter:"drop-shadow(0 0 3px rgba(255,200,200,0.5))" }}>🫧</span>
+          <span>{t("panic_button")}</span>
         </button>
       )}
 
@@ -7073,28 +7089,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div style={{ fontSize:12,color:"#d0c8e8",letterSpacing:0.5 }}>{hdProfile.type || ""}{hdProfile.profile ? ` · ${hdProfile.profile}` : ""}</div>
                   </div>
                 )}
-                <div style={{ display:"flex",justifyContent:"space-around",padding:"10px 6px",background:"rgba(255,255,255,0.025)",borderRadius:10,marginBottom:10 }}>
-                  <div style={{ textAlign:"center" }}>
-                    <div style={{ fontSize:18,color:"#f0a040",fontWeight:300,lineHeight:1 }}>{days}</div>
-                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_streak_lower")}</div>
-                  </div>
-                  <div style={{ textAlign:"center" }}>
-                    <div style={{ fontSize:18,color:"#82d9a3",fontWeight:300,lineHeight:1 }}>{best}</div>
-                    <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_best_lower")}</div>
-                  </div>
-                  {animalCount > 0 && (
-                    <div style={{ textAlign:"center" }}>
-                      <div style={{ fontSize:18,color:"#a0d8b4",fontWeight:300,lineHeight:1 }}>{animalCount}</div>
-                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_animal_lower")}</div>
+                {/* Element dağılımı — gün serisi/en-iyi/hayvan-mit yerine (Kozmik Ağırlık).
+                    Veri: Sakin Tasarım embed'inin yazdığı localStorage. Yoksa gizle. */}
+                {(() => {
+                  let ed = null;
+                  try { ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null"); } catch(_) {}
+                  const sum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
+                  if (!ed || sum <= 0.5) return null;
+                  const isEn = lang === "en";
+                  const items = [
+                    ["ates","#E0683C","△", isEn?"Fire":"Ateş"],
+                    ["toprak","#6FA86F","⊕", isEn?"Earth":"Toprak"],
+                    ["hava","#D8C25C","○", isEn?"Air":"Hava"],
+                    ["su","#5C9AD8","▽", isEn?"Water":"Su"],
+                  ];
+                  return (
+                    <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:10 }}>
+                      <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginBottom:8,textAlign:"center" }}>{isEn?"Element Balance":"Element Dağılımı"}</div>
+                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
+                        {items.map(([k,color,glyph,name]) => (
+                          <div key={k} style={{ display:"flex",alignItems:"center",gap:7 }}>
+                            <span style={{ fontSize:13,color }}>{glyph}</span>
+                            <span style={{ fontSize:11,color:"#cfc8e0",flex:1 }}>{name}</span>
+                            <span style={{ fontSize:13,color,fontWeight:600 }}>{isEn?`${Math.round((ed[k]||0)*100)}%`:`%${Math.round((ed[k]||0)*100)}`}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  )}
-                  {mythCount > 0 && (
-                    <div style={{ textAlign:"center" }}>
-                      <div style={{ fontSize:18,color:"#d8b4a0",fontWeight:300,lineHeight:1 }}>{mythCount}</div>
-                      <div style={{ fontSize:8,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",marginTop:3 }}>{t("gid_myth_lower")}</div>
-                    </div>
-                  )}
-                </div>
+                  );
+                })()}
                 {/* Yaşam Yolu + Kişisel Yıl kısa anlamı */}
                 {(() => {
                   const lp = LIFE_PATH_DESC[lang]?.[yasamYolu];

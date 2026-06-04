@@ -13,6 +13,7 @@ import { sunLongitude, moonLongitude, julianDay } from '../utils/ephemeris';
 import { longitudeToGate } from '../utils/humanDesign';
 import { elementDistribution } from '../utils/elements';
 import { ElementPie } from '../components/ElementPie';
+import { ElementDetail } from '../components/ElementDetail';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
@@ -29,6 +30,7 @@ function greetingByHour(): string {
 export function HomeScreen({ onNavigate }: Props) {
   const insets = useSafeAreaInsets();
   const { activeProfile, chart } = useTasarimStore();
+  const [elemDetailOpen, setElemDetailOpen] = React.useState(false);
 
   const today = useMemo(() => {
     const jd = julianDay(new Date());
@@ -48,7 +50,7 @@ export function HomeScreen({ onNavigate }: Props) {
 
   if (!activeProfile) {
     return (
-      <View style={[styles.empty, { paddingTop: insets.top + 80 }]}>
+      <View style={[styles.empty, { paddingTop: insets.top + 48 }]}>
         <Text style={styles.brand}>SAKİN · TASARIM</Text>
         <Text style={styles.emptyTitle}>Hoş geldin</Text>
         <Text style={styles.emptyDesc}>
@@ -76,7 +78,7 @@ export function HomeScreen({ onNavigate }: Props) {
       style={styles.container}
       contentContainerStyle={[
         styles.content,
-        { paddingTop: insets.top + Spacing.xxl, paddingBottom: Spacing.xxl },
+        { paddingTop: insets.top + Spacing.sm, paddingBottom: Spacing.xxl },
       ]}
       showsVerticalScrollIndicator={false}
     >
@@ -131,12 +133,25 @@ export function HomeScreen({ onNavigate }: Props) {
 
       {/* Element dağılımı — natal gezegenlerin ateş/toprak/hava/su dengesi */}
       {elemDist && (
-        <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Element Dağılımı</Text>
+        <TouchableOpacity
+          style={styles.section}
+          onPress={() => setElemDetailOpen(true)}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel="Element detaylarını gör"
+        >
+          <View style={styles.elemHeadRow}>
+            <Text style={styles.sectionLabel}>Element Dağılımı</Text>
+            <Text style={styles.elemDetailHint}>Detay →</Text>
+          </View>
           <View style={{ alignItems: 'center', paddingVertical: 8 }}>
             <ElementPie dist={elemDist} lang="tr" />
           </View>
-        </View>
+        </TouchableOpacity>
+      )}
+
+      {elemDist && (
+        <ElementDetail dist={elemDist} visible={elemDetailOpen} onClose={() => setElemDetailOpen(false)} />
       )}
 
       {/* Alt linkler — minimal satırlar */}
@@ -288,6 +303,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     letterSpacing: 2,
     color: Colors.textMuted,
+    marginBottom: Spacing.md,
+  },
+  elemHeadRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  elemDetailHint: {
+    fontSize: 12,
+    color: Colors.gold,
+    letterSpacing: 0.3,
     marginBottom: Spacing.md,
   },
 

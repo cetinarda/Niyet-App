@@ -11,6 +11,7 @@ export interface SavedProfile {
   city: City;
   createdAt: string;
   photoUri?: string;     // lokal asset URI (lokal stilize foto)
+  fromBridge?: boolean;  // Sakin host köprüsünden otomatik kuruldu (host değişince güncellenir)
 }
 
 export interface UserStats {
@@ -171,39 +172,55 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         let chartComputed = false;
 
         // ── SAKİN HOST KÖPRÜSÜ ────────────────────────────────────────────────
-        // Henüz hiç profil yokken host verisini dene. Tam veri varsa profili kur
-        // ve onboarding'i atla; eksikse formu ön-doldurmak için sakla + hukuki
-        // onboarding'i yine atla (host kullanıcısı zaten Sakin'de kabul etti).
-        if (list.length === 0) {
+        // Host (Sakin) her embed açılışında güncel doğum bilgisini same-origin
+        // localStorage'a yazar. Burada HER açılışta okuruz: tam veri varsa köprü
+        // profilini (fromBridge) kurar/GÜNCELLERİZ → host'ta doğum bilgisi
+        // değişince harita ve element dağılımı anında yeniden hesaplanır.
+        // Kullanıcının HD içinde elle eklediği başka profillere DOKUNMAYIZ.
+        {
           const bridge = readSakinBridge();
-          if (bridge) {
-            if (bridge.complete) {
-              const bridged: SavedProfile = {
-                id: makeId(),
-                name: bridge.name || 'Sakin',
-                birthDate: bridge.birthDate!,
-                birthTime: bridge.birthTime!,
-                city: bridge.city!,
-                createdAt: new Date().toISOString(),
-              };
-              list.push(bridged);
+          if (bridge && bridge.complete) {
+            const existing = list.find(p => p.fromBridge);
+            const changed = !existing ||
+              existing.birthDate !== bridge.birthDate ||
+              existing.birthTime !== bridge.birthTime ||
+              existing.city?.name !== bridge.city!.name ||
+              (!!bridge.name && existing.name !== bridge.name);
+            if (changed) {
+              if (existing) {
+                // Host doğum bilgisi değişti → köprü profilini yerinde güncelle
+                existing.name = bridge.name || existing.name;
+                existing.birthDate = bridge.birthDate!;
+                existing.birthTime = bridge.birthTime!;
+                existing.city = bridge.city!;
+              } else {
+                list.unshift({
+                  id: makeId(),
+                  name: bridge.name || 'Sakin',
+                  birthDate: bridge.birthDate!,
+                  birthTime: bridge.birthTime!,
+                  city: bridge.city!,
+                  createdAt: new Date().toISOString(),
+                  fromBridge: true,
+                });
+              }
               await AsyncStorage.setItem(STORAGE_KEYS.PROFILES, JSON.stringify(list));
-              await AsyncStorage.setItem(STORAGE_KEYS.ACTIVE, bridged.id);
-              activeIdToSet = bridged.id;
-              try {
-                setChart(computeChart(bridged.birthDate, bridged.birthTime, bridged.city));
-                chartComputed = true;
-              } catch (e) { console.error('bridge chart calc:', e); }
-              onboarded = true;
-              await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
-            } else {
-              // Eksik veri: formu ön-doldur, hukuki onboarding'i atla ve doğrudan
-              // Profil sekmesine düş — kullanıcı yalnızca eksik alanı tamamlar.
-              setBridgePrefill(bridge);
-              setInitialTab('profile');
-              onboarded = true;
-              await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
             }
+            const bridged = list.find(p => p.fromBridge)!;
+            activeIdToSet = bridged.id;
+            await AsyncStorage.setItem(STORAGE_KEYS.ACTIVE, bridged.id);
+            try {
+              setChart(computeChart(bridged.birthDate, bridged.birthTime, bridged.city));
+              chartComputed = true;
+            } catch (e) { console.error('bridge chart calc:', e); }
+            onboarded = true;
+            await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
+          } else if (bridge && list.length === 0) {
+            // Eksik veri (ilk açılış): formu ön-doldur, hukuki onboarding'i atla.
+            setBridgePrefill(bridge);
+            setInitialTab('profile');
+            onboarded = true;
+            await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
           }
         }
         // ──────────────────────────────────────────────────────────────────────

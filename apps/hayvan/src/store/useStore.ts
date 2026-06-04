@@ -32,6 +32,7 @@ export interface UserProfile {
   lastOpenDate?: string;
   totalReadings: number;
   level: number;
+  fromBridge?: boolean;  // Sakin host köprüsünden kuruldu → host doğum bilgisi değişince güncellenir
 }
 
 export interface ArchiveEntry {
@@ -237,6 +238,7 @@ export function useSakinHayvanStore() {
             totalReadings: 0,
             level: 1,
           };
+          auto.fromBridge = true;
           await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(auto));
           setProfile(auto);
           setBridgePrefill(null);
@@ -245,7 +247,30 @@ export function useSakinHayvanStore() {
           setIsNewUser(true);
         }
       } else {
-        setProfile(JSON.parse(profileRaw));
+        const existing: UserProfile = JSON.parse(profileRaw);
+        // Host doğum bilgisi değişti mi? Köprüyle kurulan profili güncelle (seri/
+        // okuma sayacı korunur). Elle kurulmuş profillere DOKUNMA.
+        const bridge = readSakinBridge();
+        if (existing.fromBridge && bridge?.birthDate && (
+          existing.birthDate !== bridge.birthDate ||
+          (typeof bridge.birthHour === 'number' && existing.birthHour !== bridge.birthHour) ||
+          (!!bridge.name && existing.fullName !== bridge.name)
+        )) {
+          const updated: UserProfile = {
+            ...existing,
+            name: (bridge.name || existing.name).trim() || existing.name,
+            fullName: bridge.name || existing.fullName,
+            element: elementFromBirthDate(bridge.birthDate),
+            birthDate: bridge.birthDate,
+            birthHour: typeof bridge.birthHour === 'number' ? bridge.birthHour : existing.birthHour,
+            birthMinute: typeof bridge.birthMinute === 'number' ? bridge.birthMinute : existing.birthMinute,
+            birthCity: bridge.birthCity ?? existing.birthCity,
+          };
+          await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(updated));
+          setProfile(updated);
+        } else {
+          setProfile(existing);
+        }
         setBridgePrefill(null); // mevcut kullanıcıya köprü ön-doldurması sızmasın
       }
 
