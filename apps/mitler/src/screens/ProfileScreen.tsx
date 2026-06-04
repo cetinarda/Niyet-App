@@ -59,12 +59,7 @@ function postToHost(payload: object, fallbackUrl?: string) {
 
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { profile, isNewUser, bridgePrefill, createProfile, saveProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
-  const [showElementPicker, setShowElementPicker] = useState(false);
-  const elementLabel = (el: string) => t(
-    el === 'ateş' ? 'profile.element.fire' : el === 'su' ? 'profile.element.water' :
-    el === 'toprak' ? 'profile.element.earth' : 'profile.element.air'
-  );
+  const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
   const { lang, t } = useLanguage();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
 
@@ -360,30 +355,18 @@ export function ProfileScreen() {
         </View>
         <Text style={styles.heroName}>{profile.name}</Text>
         <Text style={styles.heroLevel}>{levelTitle}</Text>
-        <TouchableOpacity onPress={() => setShowElementPicker(v => !v)} activeOpacity={0.7}>
-          <Text style={styles.heroElement}>
-            {ELEMENT_EMOJIS[profile.element || 'ateş']} {profile.element ? elementLabel(profile.element) : t('profile.elementSeparator')}  ✎
-          </Text>
-        </TouchableOpacity>
-        {showElementPicker && (
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {ELEMENTS.map(el => {
-              const active = profile.element === el;
-              return (
-                <TouchableOpacity
-                  key={el}
-                  onPress={async () => { await saveProfile({ ...profile, element: el }); setShowElementPicker(false); }}
-                  activeOpacity={0.75}
-                  style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 100, borderWidth: 1, borderColor: active ? Colors.teal : 'rgba(255,255,255,0.14)', backgroundColor: active ? Colors.teal + '22' : 'transparent' }}
-                >
-                  <Text style={{ color: active ? Colors.tealLight : Colors.textMuted, fontSize: 13 }}>
-                    {ELEMENT_EMOJIS[el]} {elementLabel(el)}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        )}
+        <Text style={styles.heroElement}>
+          {ELEMENT_EMOJIS[profile.element || 'ateş']} {
+            profile.element
+              ? t(
+                  profile.element === 'ateş'   ? 'profile.element.fire'  :
+                  profile.element === 'su'     ? 'profile.element.water' :
+                  profile.element === 'toprak' ? 'profile.element.earth' :
+                                                 'profile.element.air'
+                )
+              : t('profile.elementSeparator')
+          }
+        </Text>
       </View>
 
       <View style={styles.statsRow}>

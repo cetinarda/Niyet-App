@@ -87,8 +87,7 @@ const HD_STRATEGY_EN: Record<string, string> = {
 
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { profile, isNewUser, bridgePrefill, createProfile, saveProfile, updateBirthData, updateHDType, stats, getTopStat, getLevelTitle, session, signOut, deleteAccount, setLanguage, language } = useSakinHayvanStore();
-  const [showElementPicker, setShowElementPicker] = useState(false);
+  const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, updateHDType, stats, getTopStat, getLevelTitle, session, signOut, deleteAccount, setLanguage, language } = useSakinHayvanStore();
   const { t, lang } = useI18n();
   const premium = usePremium();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -504,30 +503,9 @@ export function ProfileScreen() {
         </View>
         <Text style={styles.heroName}>{profile.name}</Text>
         <Text style={styles.heroLevel}>{levelTitle}</Text>
-        <TouchableOpacity onPress={() => setShowElementPicker(v => !v)} activeOpacity={0.7}>
-          <Text style={styles.heroElement}>
-            {ELEMENT_EMOJIS[profile.element || 'ateş']} {profile.element || t('profile.elementNotSet')}  ✎
-          </Text>
-        </TouchableOpacity>
-        {showElementPicker && (
-          <View style={{ flexDirection: 'row', gap: 8, marginTop: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {ELEMENTS.map(el => {
-              const active = profile.element === el;
-              return (
-                <TouchableOpacity
-                  key={el}
-                  onPress={async () => { await saveProfile({ ...profile, element: el }); setShowElementPicker(false); }}
-                  activeOpacity={0.75}
-                  style={{ paddingVertical: 7, paddingHorizontal: 14, borderRadius: 100, borderWidth: 1, borderColor: active ? Colors.teal : 'rgba(255,255,255,0.14)', backgroundColor: active ? Colors.teal + '22' : 'transparent' }}
-                >
-                  <Text style={{ color: active ? Colors.tealLight : Colors.textMuted, fontSize: 13 }}>
-                    {ELEMENT_EMOJIS[el]} {el}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        )}
+        <Text style={styles.heroElement}>
+          {ELEMENT_EMOJIS[profile.element || 'ateş']} {profile.element || t('profile.elementNotSet')}
+        </Text>
       </View>
 
       {/* Stats */}
