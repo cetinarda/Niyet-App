@@ -84,7 +84,8 @@ export function HomeScreen({ onNavigate }: Props) {
     >
       <View style={styles.headerBlock}>
         <Starfield width={520} height={180} density={0.45} seed={5} />
-        <Text style={styles.brand}>SAKİN · TASARIM</Text>
+        {/* Marka yazısı kaldırıldı — host zaten 'Sakin Tasarım' başlığını gösteriyor
+            (selamlama üstünde ikinci kez tekrar etmesin). */}
         <Text style={styles.greeting}>
           {greetingByHour()},{'\n'}{activeProfile.name}
         </Text>

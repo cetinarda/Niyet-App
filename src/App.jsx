@@ -4408,9 +4408,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
             padding:0, cursor:"pointer",
           } : {
-            // Web: iOS gibi sağ ÜST köşede tam görünür küçük hilal (eskiden sağ
-            // orta kenarda yarı gizliydi — kullanıcı isteğiyle yukarı alındı).
-            position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 70px)", right:14,
+            // Web: iOS gibi sağ ÜST köşede tam görünür küçük hilal. 'Ailesi' (✦)
+            // üst-nav butonuyla çakışmasın diye biraz daha aşağıda.
+            position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 124px)", right:14,
             zIndex:9997, width:36, height:36, borderRadius:"50%",
             border:"1px solid rgba(184,164,216,0.35)",
             background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.45) 0%, rgba(60,30,90,0.75) 60%, rgba(20,10,35,0.9) 100%)",
@@ -7025,11 +7025,54 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, hy + 80);
           }
 
+          // 9.5. Yaşam Yolu + Kişisel Yıl açıklamaları — önizlemedeki bilgiler artık
+          // indirilen fotoğrafta da görünür (kullanıcı isteği). Kalan dikey alana göre
+          // satır sayısı uyarlanır; taşarsa son satır kısaltılır.
+          {
+            const lpDesc = (LIFE_PATH_DESC[lang] || {})[yasamYolu];
+            const pyDesc = (PERSONAL_YEAR_DESC[lang] || {})[kisiselYil];
+            const blocks = [];
+            if (lpDesc) blocks.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
+            if (pyDesc) blocks.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
+            if (blocks.length) {
+              let infoY = (hdProfile && hdProfile.type) ? (yAfterElements + 140) : (yAfterElements + 40);
+              const linesPer = Math.max(2, Math.min(4, Math.floor(((1850 - infoY) / blocks.length - 34) / 32)));
+              const wrapLines = (text, maxW, maxLines) => {
+                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+                const words = String(text).split(/\s+/); const out = []; let cur = "";
+                for (const w of words) {
+                  const test = cur ? cur + " " + w : w;
+                  if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = w; } else cur = test;
+                }
+                if (cur) out.push(cur);
+                if (out.length > maxLines) {
+                  const kept = out.slice(0, maxLines);
+                  let last = kept[maxLines - 1];
+                  while (last.length && ctx.measureText(last + "…").width > maxW) last = last.replace(/\s*\S$/, "");
+                  kept[maxLines - 1] = last + "…";
+                  return kept;
+                }
+                return out;
+              };
+              blocks.forEach(([label, desc]) => {
+                ctx.textAlign = "left";
+                ctx.fillStyle = "#9080b8";
+                ctx.font = "600 22px -apple-system, 'Jost', sans-serif";
+                ctx.fillText(label, 100, infoY);
+                infoY += 34;
+                ctx.fillStyle = "#bcb4cf";
+                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+                wrapLines(desc, 880, linesPer).forEach((ln) => { ctx.fillText(ln, 100, infoY); infoY += 32; });
+                infoY += 16;
+              });
+            }
+          }
+
           // 10. Footer
           ctx.fillStyle = "#605080";
           ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText("SAKIN.LIFE", 540, 1820);
+          ctx.fillText("SAKIN.LIFE", 540, 1880);
 
           // Export → share sheet (Save to Files, paylaş vs.)
           canvas.toBlob(async (blob) => {

@@ -17,6 +17,16 @@ export function ElementDetail({ dist, visible, onClose }: {
   const dominant = ORDER.reduce((a, b) => (dist[b] > dist[a] ? b : a), 'ates' as ElementKey);
   const interp = elementInterpretation(dist);
 
+  // Premium durumu host'tan (same-origin localStorage). Premium DEĞİLSE özet açık,
+  // detaylar (yüzdeler, gezegenler, sentez, yöntem) blur'lu → dokununca host paywall.
+  const isPremium = (() => {
+    try { return typeof window !== 'undefined' && (window as any).localStorage?.getItem('sakin_premium') === '1'; }
+    catch { return false; }
+  })();
+  const openPremium = () => {
+    try { (window as any).parent?.postMessage({ type: 'sakin-premium-cta' }, '*'); } catch (_) {}
+  };
+
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <View style={styles.backdrop}>
@@ -50,8 +60,15 @@ export function ElementDetail({ dist, visible, onClose }: {
               </View>
             </View>
 
-            {/* Tek satır özet */}
+            {/* Tek satır özet — HER ZAMAN açık (teaser) */}
             <Text style={styles.headline}>{interp.headline}</Text>
+
+            {/* Detaylar — premium değilse blur'lu; dokununca host paywall açılır */}
+            <View style={{ position: 'relative' }}>
+            <View
+              style={!isPremium ? [styles.blurWrap, { filter: 'blur(7px)' } as any] : undefined}
+              pointerEvents={isPremium ? 'auto' : 'none'}
+            >
 
             {/* Element başına anlam — yüzde + rol cümlesi (yorum) */}
             <View style={styles.meaningBox}>
@@ -120,6 +137,23 @@ export function ElementDetail({ dist, visible, onClose }: {
                 ekstra vurgu kazanır. Kuzey Ay Düğümü karmik yön olarak hafifçe katılır.
               </Text>
             </View>
+
+            </View>{/* /blur wrap */}
+            {!isPremium && (
+              <TouchableOpacity
+                style={styles.lockOverlay}
+                onPress={openPremium}
+                activeOpacity={0.9}
+                accessibilityRole="button"
+                accessibilityLabel="Premium ile element detaylarını aç"
+              >
+                <Text style={styles.lockIcon}>🔒</Text>
+                <Text style={styles.lockTitle}>Element detayları Premium'da</Text>
+                <Text style={styles.lockDesc}>Gezegen katkıları, yüzdeler ve sentez Sakin Premium ile açılır.</Text>
+                <View style={styles.lockBtn}><Text style={styles.lockBtnTxt}>Premium ile aç</Text></View>
+              </TouchableOpacity>
+            )}
+            </View>{/* /position relative */}
           </ScrollView>
         </View>
       </View>
@@ -166,6 +200,21 @@ const styles = StyleSheet.create({
   synthTitle: { fontSize: 16, color: '#efeaf7', fontWeight: '700', marginBottom: 7 },
   synthTxt: { fontSize: 13, color: '#bcb4cf', lineHeight: 20 },
   bodiesLabel: { fontSize: 11, letterSpacing: 2, color: '#8a7fb0', marginBottom: 12 },
+
+  blurWrap: { opacity: 0.6 },
+  lockOverlay: {
+    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+    alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24,
+    backgroundColor: 'rgba(21,18,31,0.32)', borderRadius: 14,
+  },
+  lockIcon: { fontSize: 30, marginBottom: 10 },
+  lockTitle: { fontSize: 16, color: '#efeaf7', fontWeight: '700', marginBottom: 6, textAlign: 'center' },
+  lockDesc: { fontSize: 12.5, color: '#cfc8e0', textAlign: 'center', lineHeight: 18, marginBottom: 14 },
+  lockBtn: {
+    paddingHorizontal: 22, paddingVertical: 10, borderRadius: 999,
+    backgroundColor: 'rgba(216,194,92,0.18)', borderWidth: 1, borderColor: 'rgba(216,194,92,0.55)',
+  },
+  lockBtnTxt: { color: '#e6d27a', fontSize: 13, letterSpacing: 0.5, fontWeight: '600' },
 
   elemBlock: { marginBottom: 18 },
   elemHead: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },

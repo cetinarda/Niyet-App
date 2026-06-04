@@ -139,9 +139,12 @@ export function ProfileScreen() {
   };
 
   const analysis = useMemo(() => {
-    if (!profile?.fullName || !profile?.birthDate) return null;
+    // İsim host'tan gelir (fullName); yoksa görünen ada düş — embed ASLA doğum/
+    // profil formu sormaz, host (giriş + Sakin Ailesi) doğum bilgisinin sahibidir.
+    const nm = profile?.fullName || profile?.name;
+    if (!nm || !profile?.birthDate) return null;
     try {
-      const nums   = calcNumerology(profile.fullName, profile.birthDate);
+      const nums   = calcNumerology(nm, profile.birthDate);
       const weekly = getWeeklyReading(nums, lang);
       const lp     = getLifePathMeaning(nums.lifePath, lang);
       return { nums, weekly, lp };
@@ -550,30 +553,7 @@ export function ProfileScreen() {
               <Text style={styles.skipText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.unlockBtn}
-            onPress={() => {
-              setEditFullName(profile.fullName || '');
-              if (profile.birthDate) {
-                const [y, m, d] = profile.birthDate.split('-');
-                setEditDay(String(parseInt(d, 10)));
-                setEditMonth(String(parseInt(m, 10)));
-                setEditYear(y);
-              } else {
-                setEditDay(''); setEditMonth(''); setEditYear('');
-              }
-              setEditHour(profile.birthHour !== undefined ? String(profile.birthHour) : '');
-              setEditMinute(profile.birthMinute !== undefined ? String(profile.birthMinute) : '');
-              setEditCity(profile.birthCity || '');
-              setShowBirthForm(true);
-            }}
-          >
-            <Text style={styles.unlockIcon}>✦</Text>
-            <Text style={styles.unlockTitle}>{t('profile.unlock.title')}</Text>
-            <Text style={styles.unlockDesc}>{t('profile.unlock.desc')}</Text>
-          </TouchableOpacity>
-        )}
+        ) : null}
       </View>
 
       {/* Mit Haritan */}

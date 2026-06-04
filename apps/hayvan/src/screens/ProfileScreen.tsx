@@ -173,9 +173,12 @@ export function ProfileScreen() {
 
   // compute analysis when birth data is present
   const analysis = useMemo(() => {
-    if (!profile?.fullName || !profile?.birthDate) return null;
+    // İsim host'tan gelir; yoksa görünen ada düş — embed ASLA doğum/profil formu
+    // sormaz, host (giriş + Sakin Ailesi) doğum bilgisinin sahibidir.
+    const nm = profile?.fullName || profile?.name;
+    if (!nm || !profile?.birthDate) return null;
     try {
-      const nums   = calcNumerology(profile.fullName, profile.birthDate);
+      const nums   = calcNumerology(nm, profile.birthDate);
       const hd     = getHDProfile(
         profile.birthDate,
         profile.birthHour,
@@ -736,22 +739,7 @@ export function ProfileScreen() {
             </TouchableOpacity>
           </View>
           </KeyboardAvoidingView>
-        ) : (
-          <TouchableOpacity
-            style={styles.unlockBtn}
-            onPress={() => {
-              setEditFullName('');
-              setEditDay(''); setEditMonth(''); setEditYear('');
-              setShowBirthForm(true);
-            }}
-          >
-            <Text style={styles.unlockIcon}>✦</Text>
-            <Text style={styles.unlockTitle}>{t('profile.personalMap.unlock.title')}</Text>
-            <Text style={styles.unlockDesc}>
-              {t('profile.personalMap.unlock.desc')}
-            </Text>
-          </TouchableOpacity>
-        )}
+        ) : null}
       </View>
 
       {/* Hayvan Rehberliği */}
