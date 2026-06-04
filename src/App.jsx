@@ -4383,19 +4383,50 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
             padding:0, cursor:"pointer",
           } : {
-            // Web mobil: sağ orta kenarda yarı gizli geçit (yarısı ekran dışında)
-            position:"fixed", top:"50%", right:-26, transform:"translateY(-50%)",
-            zIndex:9997, width:64, height:64, borderRadius:"50%",
+            // Web mobil: sağ orta kenarda yarı gizli geçit. Dairenin sol ~yarısı
+            // görünür; crescent bu görünür yarının TAM ortasında durmalı. Görünür
+            // genişlik = width - |right| = 60 - 24 = 36px → crescent merkezi ~18px.
+            position:"fixed", top:"50%", right:-24, transform:"translateY(-50%)",
+            zIndex:9997, width:60, height:60, borderRadius:"50%",
             border:"1px solid rgba(184,164,216,0.30)",
             background:"radial-gradient(circle at 30% 35%, rgba(160,112,208,0.40) 0%, rgba(60,30,90,0.72) 60%, rgba(20,10,35,0.9) 100%)",
             backdropFilter:"blur(8px)",
-            display:"flex", alignItems:"center", justifyContent:"flex-start", paddingLeft:10,
-            color:"rgba(232,218,250,0.85)", fontSize:22, lineHeight:1,
+            display:"flex", alignItems:"center", justifyContent:"flex-start", paddingLeft:11,
+            color:"rgba(232,218,250,0.85)", fontSize:20, lineHeight:1,
             boxShadow:"0 0 22px rgba(160,120,220,0.28), inset 0 0 12px rgba(184,164,216,0.20)",
             cursor:"pointer",
           }}
         >
-          <span style={{ filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+          <span style={{ display:"block", lineHeight:1, transform:"translateY(-0.5px)", filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+        </button>
+      )}
+
+      {/* PANİK BUTONU — sol üst, her ekranda erişilebilir (embed/policy/portal hariç).
+          Tıklayınca ücretsiz sakinleştirici diyafram nefesine götürür (premium-gate YOK). */}
+      {!isPolicyScreen && !embeddedApp && !mirrorPortalActive && (
+        <button
+          onClick={()=>{
+            try { haptic(); } catch(_) {}
+            pendingBreathRef.current = "diyafram";
+            setScreen("nefes");
+          }}
+          aria-label={t("panic_aria")}
+          title={t("panic_aria")}
+          style={{
+            position:"fixed",
+            // Nav barının ALTINA hizalı (üst-sol), nav home butonuyla çakışmasın.
+            top:"calc(env(safe-area-inset-top, 0px) + 78px)",
+            left:14, zIndex:9997, width:38, height:38, borderRadius:"50%",
+            border:"1px solid rgba(224,120,120,0.45)",
+            background:"radial-gradient(circle at 35% 35%, rgba(224,110,110,0.42) 0%, rgba(120,40,40,0.72) 62%, rgba(40,14,14,0.9) 100%)",
+            backdropFilter:"blur(10px)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color:"rgba(255,235,235,0.95)", fontSize:16, lineHeight:1,
+            boxShadow:"0 0 16px rgba(224,110,110,0.30), inset 0 0 10px rgba(255,180,180,0.18)",
+            padding:0, cursor:"pointer",
+          }}
+        >
+          <span style={{ display:"block", lineHeight:1, filter:"drop-shadow(0 0 3px rgba(255,200,200,0.5))" }}>🫧</span>
         </button>
       )}
 

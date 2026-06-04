@@ -495,6 +495,7 @@ export const TRANS = {
 
     // ===== Inner Mirror (ayna) =====
     mirror_aria: "Aynaya gir",
+    panic_aria: "Panik — sakinleştirici nefese git",
     mirror_label: "İçsel Ayna",
     mirror_premium_cta: "✦  Premium ile detayları aç",
     mirror_ask_heart: "İçsel Ayna",
@@ -1185,6 +1186,7 @@ export const TRANS = {
 
     // ===== Inner Mirror (ayna) =====
     mirror_aria: "Enter the Mirror",
+    panic_aria: "Panic — go to calming breath",
     mirror_label: "Inner Mirror",
     mirror_premium_cta: "✦  Unlock details with Premium",
     mirror_ask_heart: "Inner Mirror",
