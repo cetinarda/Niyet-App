@@ -79,7 +79,7 @@ export function AnimalsHubScreen() {
       {/* Panel content fills remaining space */}
       <View style={styles.body}>
         {panel === 'library' && <AnimalLibraryScreen onClose={noClose} embedded />}
-        {panel === 'finder'  && <AnimalFinderScreen  onClose={noClose} embedded prefillBirthDate={profile?.birthDate} />}
+        {panel === 'finder'  && <AnimalFinderScreen  onClose={noClose} embedded prefillBirthDate={profile?.birthDate} prefillBirthHour={profile?.birthHour} prefillBirthCity={profile?.birthCity} />}
         {panel === 'nagual'  && <NagualScreen        onClose={noClose} embedded />}
       </View>
     </View>

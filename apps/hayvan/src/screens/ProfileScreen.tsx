@@ -412,6 +412,8 @@ export function ProfileScreen() {
       <AnimalFinderScreen
         onClose={() => setShowAnimalFinder(false)}
         prefillBirthDate={profile.birthDate}
+        prefillBirthHour={profile.birthHour}
+        prefillBirthCity={profile.birthCity}
       />
     );
   }

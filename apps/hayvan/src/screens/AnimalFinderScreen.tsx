@@ -243,10 +243,12 @@ function findAnimalByBirth(day: number, month: number, year: number, hour?: numb
 interface Props {
   onClose: () => void;
   prefillBirthDate?: string; // YYYY-MM-DD
+  prefillBirthHour?: number; // 0-23  (sakin_birth_time'dan)
+  prefillBirthCity?: string;
   embedded?: boolean;
 }
 
-export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Props) {
+export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour, prefillBirthCity, embedded }: Props) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
   const localAnimals = useLocalizedAnimals();
@@ -260,13 +262,25 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Prop
     ? ((localAnimals.find((a: any) => a.id === result.animal.id) as typeof animalsData[0] | undefined) || result.animal)
     : null;
 
-  // birth form
+  // birth form — host'tan gelen tüm doğum bilgisi ön-doldurulur
   const prefill = prefillBirthDate?.split('-') ?? [];
   const [bDay,   setBDay]   = useState(prefill[2] ? String(parseInt(prefill[2])) : '');
   const [bMonth, setBMonth] = useState(prefill[1] ? String(parseInt(prefill[1])) : '');
   const [bYear,  setBYear]  = useState(prefill[0] ?? '');
-  const [bHour,  setBHour]  = useState('');
-  const [bCity,  setBCity]  = useState('');
+  const [bHour,  setBHour]  = useState(prefillBirthHour != null ? String(prefillBirthHour) : '');
+  const [bCity,  setBCity]  = useState(prefillBirthCity ?? '');
+
+  // Prop sonradan gelirse (store async yüklenince) boş alanları doldur — kullanıcı
+  // değiştirdiyse ezme. Sadece bir-yön: boş → dolu.
+  React.useEffect(() => {
+    const p = prefillBirthDate?.split('-') ?? [];
+    if (p[2] && !bDay)   setBDay(String(parseInt(p[2])));
+    if (p[1] && !bMonth) setBMonth(String(parseInt(p[1])));
+    if (p[0] && !bYear)  setBYear(p[0]);
+    if (prefillBirthHour != null && !bHour) setBHour(String(prefillBirthHour));
+    if (prefillBirthCity && !bCity) setBCity(prefillBirthCity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefillBirthDate, prefillBirthHour, prefillBirthCity]);
 
   const cardFade   = useRef(new Animated.Value(1)).current;
   const resultFade = useRef(new Animated.Value(0)).current;
