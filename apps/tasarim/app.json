@@ -54,6 +54,9 @@
       "backgroundColor": "#0D0B14",
       "lang": "tr",
       "display": "standalone"
+    },
+    "experiments": {
+      "baseUrl": "/embedded/humandesign"
     }
   }
 }

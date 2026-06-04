@@ -11,6 +11,8 @@ import { TYPES } from '../data/types';
 import { AUTHORITIES } from '../data/authorities';
 import { sunLongitude, moonLongitude, julianDay } from '../utils/ephemeris';
 import { longitudeToGate } from '../utils/humanDesign';
+import { elementDistribution } from '../utils/elements';
+import { ElementPie } from '../components/ElementPie';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
@@ -34,6 +36,15 @@ export function HomeScreen({ onNavigate }: Props) {
     const moon = longitudeToGate(moonLongitude(jd));
     return { sun, moon };
   }, []);
+
+  // Astrolojik element dağılımı (natal 10 gezegen). Host galaktik kimlik kartı da
+  // okuyabilsin diye same-origin localStorage'a yazılır.
+  const elemDist = useMemo(() => (chart ? elementDistribution(chart.personalityJD) : null), [chart]);
+  React.useEffect(() => {
+    if (elemDist && typeof window !== 'undefined' && (window as any).localStorage) {
+      try { (window as any).localStorage.setItem('sakin_element_dist', JSON.stringify(elemDist)); } catch (_) {}
+    }
+  }, [elemDist]);
 
   if (!activeProfile) {
     return (
@@ -117,6 +128,16 @@ export function HomeScreen({ onNavigate }: Props) {
           name={moonInfo.name}
         />
       </View>
+
+      {/* Element dağılımı — natal gezegenlerin ateş/toprak/hava/su dengesi */}
+      {elemDist && (
+        <View style={styles.section}>
+          <Text style={styles.sectionLabel}>Element Dağılımı</Text>
+          <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+            <ElementPie dist={elemDist} lang="tr" />
+          </View>
+        </View>
+      )}
 
       {/* Alt linkler — minimal satırlar */}
       <View style={styles.section}>
