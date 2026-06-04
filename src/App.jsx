@@ -16,6 +16,25 @@ import { showNowPlaying, clearNowPlaying, updateNowPlayingState, onRemoteCommand
 
 const isNative = Capacitor.isNativePlatform();
 
+// ── Audio context kayıt defteri ───────────────────────────────────────────────
+// iOS Safari uygulama bir süre arka planda kalınca TÜM AudioContext'leri
+// "suspended"/"interrupted" yapar; geri dönüşte hepsini resume etmezsek geçiş
+// efektleri ve frekans tonları susar. Oluşturulan her context'i burada toplayıp
+// görünürlük/gesture'da topluca resume ederiz. __makeAudioCtx fonksiyon-bildirimi
+// olduğu için hoist edilir (aşağıdaki tüm kullanımlardan önce hazır).
+const __sakinAudioCtxs = new Set();
+function __makeAudioCtx() {
+  const Ctor = window.AudioContext || window.webkitAudioContext;
+  const c = new Ctor();
+  try { __sakinAudioCtxs.add(c); } catch (_) {}
+  return c;
+}
+function __resumeAllAudio() {
+  __sakinAudioCtxs.forEach((c) => {
+    try { if (c && c.state === "suspended") c.resume(); } catch (_) {}
+  });
+}
+
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
 const APP_VERSION = "1.2.5";
@@ -889,7 +908,7 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
     // Web Audio drone — procedural sine wave katmanları
     let aCtx, masterGain, natureMaster, oscillators = [], natureNodes = [];
     try {
-      aCtx = new (window.AudioContext || window.webkitAudioContext)();
+      aCtx = __makeAudioCtx();
       if (aCtx.state === "suspended") aCtx.resume();
       masterGain = aCtx.createGain();
       masterGain.gain.setValueAtTime(0, aCtx.currentTime);
@@ -1696,7 +1715,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const unlockChimeCtx = () => {
     try {
       if (!chimeCxtRef.current) {
-        chimeCxtRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        chimeCxtRef.current = __makeAudioCtx();
       }
       if (chimeCxtRef.current.state === "suspended") chimeCxtRef.current.resume();
       // Sessiz buffer çal — iOS kilidi açar
@@ -1709,7 +1728,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   // Şifalı çan / singing bowl sesi: harmoniklerle zenginleştirilmiş
   const playChime = (freq=432, vol=0.18, dur=2.8) => {
     try {
-      const ctx = chimeCxtRef.current || new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = chimeCxtRef.current || __makeAudioCtx();
       if (ctx.state === "suspended") { ctx.resume(); }
       // Temel frekans + üst harmonikler (singing bowl oranları)
       [[1, vol], [2.76, vol*0.28], [5.4, vol*0.10]].forEach(([ratio, amp]) => {
@@ -1811,7 +1830,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     if (toneOn) { stopTone(); return; }
     // ctx'i gesture handler'ın İLK satırında oluştur/resume et — iOS WKWebView için kritik.
     if (!audioCtxRef.current) {
-      try { audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch(_) {}
+      try { audioCtxRef.current = __makeAudioCtx(); } catch(_) {}
     }
     const ctx = audioCtxRef.current;
     if (!ctx) return;
@@ -2208,7 +2227,7 @@ let __freqToneCtx = null;
 function playFreqTone(hz, dur = 3.5) {
   try {
     if (!__freqToneCtx) {
-      __freqToneCtx = new (window.AudioContext || window.webkitAudioContext)();
+      __freqToneCtx = __makeAudioCtx();
     }
     const ctx = __freqToneCtx;
     if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
@@ -2568,6 +2587,26 @@ export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
   const [langOpen, setLangOpen] = useState(false);
   const t = makeTrans(lang);
+
+  // ── iOS Safari ses kurtarma ─────────────────────────────────────────────────
+  // Uygulama arka plandan dönünce / kullanıcı tekrar dokununca TÜM kayıtlı
+  // AudioContext'leri resume et. iOS resume'u çoğu zaman bir user-gesture içinde
+  // kabul ettiği için pointerdown'ı da dinleriz (capture, pasif). Aksi halde uzun
+  // seans sonrası geçiş efektleri + frekans tonları sessiz kalıyor.
+  useEffect(() => {
+    const onVisible = () => { if (!document.hidden) __resumeAllAudio(); };
+    const onGesture = () => { __resumeAllAudio(); };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onVisible);       // iOS BFCache dönüşü
+    window.addEventListener("focus", onVisible);
+    window.addEventListener("pointerdown", onGesture, { capture: true, passive: true });
+    return () => {
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onVisible);
+      window.removeEventListener("focus", onVisible);
+      window.removeEventListener("pointerdown", onGesture, { capture: true });
+    };
+  }, []);
   const [tabletMode, setTabletMode] = useState(detectTablet);
   useEffect(() => {
     const onResize = () => { const v = detectTablet(); isTablet = v; setTabletMode(v); };
@@ -2793,6 +2832,9 @@ export default function SakinApp() {
     setEmbeddedApp({ name: app.name, path: app.embed, color: app.color });
     setTimeout(()=>setShowAilesi(false), 250);
   };
+  // Embed'lerin kardeş uygulamaya in-app geçişi için güncel referans (bayat closure önlemi)
+  const handleOpenEmbedRef = useRef(null);
+  handleOpenEmbedRef.current = handleOpenEmbed;
   // ESC tuşuyla embed'den çıkış — web kullanıcıları için bir fallback (back button bulunamazsa)
   useEffect(() => {
     if (!embeddedApp) return;
@@ -2818,17 +2860,37 @@ export default function SakinApp() {
       });
     } catch(_) {}
   }, [embeddedApp]);
-  // Embed iframe'lerinden gelen "Premium'a yönlendir" mesajını dinle (postMessage köprüsü)
+  // Embed iframe'lerinden gelen mesajları dinle (postMessage köprüsü).
+  // Same-origin only: embed'ler bizimle aynı origin'de — keyfi origin'i yoksay.
   useEffect(() => {
+    const EMBED_BY_KEY = {
+      hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
+      mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
+      tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
+    };
     const onMsg = (e) => {
-      if (e?.data?.type === "sakin-premium-cta") {
+      if (e.origin !== window.location.origin) return;
+      const type = e?.data?.type;
+      if (type === "sakin-premium-cta") {
         setEmbeddedApp(null); setEmbedLoaded(false);
         setScreen("fiyat");
+      } else if (type === "sakin-open-embed") {
+        // Bir embed, kardeş aile uygulamasını in-app açmak istiyor (eski netlify
+        // linki yerine). Hedefi host'un kendi embed akışıyla aç.
+        const target = EMBED_BY_KEY[e?.data?.app];
+        if (target && handleOpenEmbedRef.current) {
+          setEmbedLoaded(false);
+          handleOpenEmbedRef.current(target);
+        }
+      } else if (type === "sakin-close-embed") {
+        // Embed içinden "sakin.life" ana merkeze dön — embed'i kapat, Ailesi panelini aç.
+        setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
+        setShowAilesi(true);
       }
     };
     window.addEventListener("message", onMsg);
     return () => window.removeEventListener("message", onMsg);
-  }, []);
+  }, [t]);
   const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
   const [showMindClear, setShowMindClear] = useState(false);
@@ -3198,7 +3260,7 @@ export default function SakinApp() {
   const playStartChime = () => {
     try {
       if (!breathChimeRef.current) {
-        breathChimeRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        breathChimeRef.current = __makeAudioCtx();
       }
       const ctx = breathChimeRef.current;
       if (ctx.state === "suspended") ctx.resume();
@@ -3220,7 +3282,7 @@ export default function SakinApp() {
   const playPortalSound = () => {
     try {
       if (!breathChimeRef.current) {
-        breathChimeRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        breathChimeRef.current = __makeAudioCtx();
       }
       const ctx = breathChimeRef.current;
       if (ctx.state === "suspended") ctx.resume();
@@ -4227,7 +4289,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             haptic();
             // Yumuşak ayna chime — Web Audio API, sine wave fade in/out (Sakin Ailesi'nden daha hafif)
             try {
-              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              const ctx = __makeAudioCtx();
               const now = ctx.currentTime;
               // İki harmonik ton: temel + beşli (perfect fifth) — uhrevi his
               [528, 792].forEach((freq, i) => {
@@ -5827,7 +5889,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // KRİTİK: AudioContext'i gesture handler'ın İLK satırında oluştur ve resume et.
           // setTimeout içinde oluşturulursa iOS gesture context'ini kaybeder ve ses çıkmaz.
           if (!freqCtxRef.current) {
-            try { freqCtxRef.current = new (window.AudioContext || window.webkitAudioContext)(); } catch(_) {}
+            try { freqCtxRef.current = __makeAudioCtx(); } catch(_) {}
           }
           if (freqCtxRef.current?.state === "suspended") { try { freqCtxRef.current.resume(); } catch(_) {} }
           setTimeout(() => {
