@@ -3,7 +3,7 @@ import {
   Modal, View, Text, ScrollView, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ElementDistribution, ELEMENT_META, ElementKey } from '../utils/elements';
+import { ElementDistribution, ELEMENT_META, ElementKey, elementInterpretation } from '../utils/elements';
 import { ElementPie } from './ElementPie';
 
 const ORDER: ElementKey[] = ['ates', 'toprak', 'hava', 'su'];
@@ -13,8 +13,9 @@ export function ElementDetail({ dist, visible, onClose }: {
 }) {
   const insets = useSafeAreaInsets();
 
-  // Baskın element
+  // Baskın element + Sakin Tasarım dilinde yorum
   const dominant = ORDER.reduce((a, b) => (dist[b] > dist[a] ? b : a), 'ates' as ElementKey);
+  const interp = elementInterpretation(dist);
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
@@ -48,6 +49,31 @@ export function ElementDetail({ dist, visible, onClose }: {
                 <Text style={styles.dominantDesc}>{ELEMENT_META[dominant].desc}</Text>
               </View>
             </View>
+
+            {/* Tek satır özet */}
+            <Text style={styles.headline}>{interp.headline}</Text>
+
+            {/* Element başına anlam — yüzde + rol cümlesi (yorum) */}
+            <View style={styles.meaningBox}>
+              {interp.lines.map((ln) => (
+                <View key={ln.key} style={styles.meaningRow}>
+                  <Text style={[styles.meaningGlyph, { color: ELEMENT_META[ln.key].color }]}>{ELEMENT_META[ln.key].glyph}</Text>
+                  <Text style={styles.meaningTxt}>
+                    <Text style={[styles.meaningName, { color: ELEMENT_META[ln.key].color }]}>{ELEMENT_META[ln.key].tr} (%{ln.pct}) </Text>
+                    → {ln.text}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Sentez — baskın ikili + bileşik enerji */}
+            <View style={styles.synthBox}>
+              <Text style={styles.synthTitle}>{interp.pairTitle}</Text>
+              <Text style={styles.synthTxt}>{interp.pairText}</Text>
+              <Text style={[styles.synthTxt, { marginTop: 8 }]}>{interp.shadowText}</Text>
+            </View>
+
+            <Text style={styles.bodiesLabel}>HARİTANDAKİ GÖVDELER</Text>
 
             {/* Element başına dağılım + katkı veren gövdeler */}
             {ORDER.map((k) => {
@@ -126,6 +152,20 @@ const styles = StyleSheet.create({
   dominantLabel: { fontSize: 11, letterSpacing: 1.5, color: '#8a7fb0' },
   dominantName: { fontSize: 19, fontWeight: '600', marginTop: 2 },
   dominantDesc: { fontSize: 13, color: '#b8b0c8', lineHeight: 19, marginTop: 6 },
+
+  headline: { fontSize: 14.5, color: '#e3def0', lineHeight: 22, marginBottom: 16 },
+  meaningBox: { marginBottom: 16 },
+  meaningRow: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 11, gap: 9 },
+  meaningGlyph: { fontSize: 15, width: 18, textAlign: 'center', marginTop: 1 },
+  meaningTxt: { flex: 1, fontSize: 13, color: '#bcb4cf', lineHeight: 20 },
+  meaningName: { fontWeight: '600' },
+  synthBox: {
+    backgroundColor: 'rgba(184,164,216,0.06)', borderRadius: 14, padding: 16, marginBottom: 18,
+    borderWidth: 1, borderColor: 'rgba(184,164,216,0.16)',
+  },
+  synthTitle: { fontSize: 16, color: '#efeaf7', fontWeight: '700', marginBottom: 7 },
+  synthTxt: { fontSize: 13, color: '#bcb4cf', lineHeight: 20 },
+  bodiesLabel: { fontSize: 11, letterSpacing: 2, color: '#8a7fb0', marginBottom: 12 },
 
   elemBlock: { marginBottom: 18 },
   elemHead: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },

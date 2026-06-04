@@ -562,24 +562,9 @@ export function ProfileScreen() {
       <View style={styles.section}>
         <View style={styles.sectionTitleRow}>
           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>{t('profile.personalMap.title')}</Text>
-          {analysis && !showBirthForm && (
-            <TouchableOpacity
-              onPress={() => {
-                const parts = profile.birthDate?.split('-') ?? [];
-                setEditFullName(profile.fullName || '');
-                setEditDay(parts[2] ? String(parseInt(parts[2])) : '');
-                setEditMonth(parts[1] ? String(parseInt(parts[1])) : '');
-                setEditYear(parts[0] ?? '');
-                setEditHour(profile.birthHour !== undefined ? String(profile.birthHour) : '');
-                setEditMinute(profile.birthMinute !== undefined ? String(profile.birthMinute).padStart(2, '0') : '');
-                setEditCity(profile.birthCity || '');
-                setShowBirthForm(true);
-              }}
-              style={styles.editBirthBtn}
-            >
-              <Text style={styles.editBirthText}>{t('profile.personalMap.editBtn')}</Text>
-            </TouchableOpacity>
-          )}
+          {/* Doğum bilgisi düzenleme embed'de GİZLİ — doğum bilgisi yalnızca host
+              (Sakin giriş + Sakin Ailesi paneli) üzerinden girilir/değiştirilir.
+              Embed sadece rehberlik gösterir, hiçbir doğum alanı göstermez. */}
         </View>
 
         {analysis ? (

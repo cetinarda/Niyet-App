@@ -87,6 +87,72 @@ function signOf(lon: number): number {
   return Math.floor((((lon % 360) + 360) % 360) / 30);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// YORUM — element dengesini Sakin Tasarım diliyle anlatır. Baskın/destekleyici/
+// düşük element sıralamasına ve baskın ikilinin bileşik enerjisine göre üretilir.
+
+const ELEM_CORE: Record<ElementKey, string> = {
+  ates:   'yaşam enerjisi, ilham, harekete geçme isteği, öncülük ve içsel tutku',
+  toprak: 'pratiklik, beden, istikrar ve somut olanı sabırla inşa etme',
+  hava:   'fikirler, öğrenme, iletişim ve farklı perspektifleri görme yeteneği',
+  su:     'duygusal hassasiyet, sezgi, derinlik ve bağ kurma',
+};
+
+// Baskın ikilinin (ilk iki element) bileşik enerji teması
+const PAIR_THEME: Record<string, string> = {
+  'ates+hava':   'ilham almak, keşfetmek, öğretmek, üretmek ve anlam aramak',
+  'ates+toprak': 'vizyonu somut işe çevirmek, harekete geçmek ve dayanıklı üretim',
+  'ates+su':     'tutku ile sezgiyi birleştirmek, ilhamla hissetmek ve yaratıcı ifade',
+  'hava+toprak': 'fikirleri pratiğe dökmek, planlamak ve işleyen sistemler kurmak',
+  'su+toprak':   'şefkatle inşa etmek, güven ve bakım, köklü duygusal istikrar',
+  'hava+su':     'duyguyu kelimelerle anlamlandırmak, empati ve derin iletişim',
+};
+
+// En düşük elementin gölge/eğilim notu
+const SHADOW_NOTE: Record<ElementKey, string> = {
+  ates:   'İçsel ateşin düşük olması, kendini başlatmakta ya da enerjiyi sürekli tutmakta zaman zaman zorluk olarak çalışabilir.',
+  toprak: 'Toprağın düşük olması, hevesi ve fikri günlük yaşamda topraklamakta/sürdürmekte zorlanma olarak çalışabilir.',
+  hava:   'Havanın düşük olması, içsel deneyimi dışarıya anlatmakta veya mesafe alıp objektif bakmakta zorluk olarak çalışabilir.',
+  su:     'Suyun düşük olması, yoğun duygusal süreçleri zihinselleştirme veya anlamlandırma eğilimi olarak çalışabilir.',
+};
+
+export interface ElementLine { key: ElementKey; pct: number; text: string; }
+export interface ElementInterpretation {
+  lines: ElementLine[];      // sıralı (yüksekten düşüğe), her birinde anlam + rol cümlesi
+  pairTitle: string;         // "Ateş + Hava ≈ %70"
+  pairText: string;          // bileşik enerji cümlesi
+  shadowText: string;        // en düşük element notu
+  headline: string;          // tek satır özet
+}
+
+export function elementInterpretation(dist: ElementDistribution): ElementInterpretation {
+  const ranked = (['ates', 'toprak', 'hava', 'su'] as ElementKey[])
+    .map((k) => ({ k, v: dist[k] }))
+    .sort((a, b) => b.v - a.v);
+
+  const lines: ElementLine[] = ranked.map((r, i) => {
+    const pct = Math.round(r.v * 100);
+    let role: string;
+    if (i === 0) role = 'baskın.';
+    else if (i === 1) role = 'destekleyici.';
+    else if (i === 2) role = 'mevcut ama temel motivasyonun değil.';
+    else role = 'var, ancak karar mekanizmanın merkezinde değil.';
+    return { key: r.k, pct, text: `${ELEM_CORE[r.k]} — ${role}` };
+  });
+
+  const a = ranked[0].k, b = ranked[1].k;
+  const pairPct = Math.round((ranked[0].v + ranked[1].v) * 100);
+  const pairKey = [a, b].sort().join('+');
+  const theme = PAIR_THEME[pairKey] || 'kendine özgü bir denge';
+  const pairTitle = `${ELEMENT_META[a].tr} + ${ELEMENT_META[b].tr} ≈ %${pairPct}`;
+  const pairText = `Yaşam enerjin daha çok ${theme} üzerinden akıyor.`;
+
+  const lowest = ranked[ranked.length - 1].k;
+  const headline = `${ELEMENT_META[ranked[0].k].tr} baskın bir tasarımsın; ${ELEMENT_META[a].tr.toLocaleLowerCase('tr')} ve ${ELEMENT_META[b].tr.toLocaleLowerCase('tr')} birlikte enerjinin omurgasını kuruyor.`;
+
+  return { lines, pairTitle, pairText, shadowText: SHADOW_NOTE[lowest], headline };
+}
+
 export function elementDistribution(personalityJD: number): ElementDistribution {
   const pos = allPositions(personalityJD);
   // 10 klasik gezegen + Kuzey Ay Düğümü (HD'ye özgü earth/southNode hariç)

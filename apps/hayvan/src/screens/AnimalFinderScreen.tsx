@@ -376,7 +376,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.gold }]} onPress={() => setMode('birth')} activeOpacity={0.8}>
+          <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.gold }]} onPress={() => { if (birthValid) { handleBirthSubmit(); } else { setMode('birth'); } }} activeOpacity={0.8}>
             <Text style={styles.modeBtnEmoji}>☀</Text>
             <View style={styles.modeBtnText}>
               <Text style={[styles.modeBtnTitle, { color: Colors.gold }]}>{t('animalFinder.intro.birthBtn.title')}</Text>
