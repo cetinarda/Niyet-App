@@ -2894,6 +2894,9 @@ export default function SakinApp() {
     setEmbeddedApp({ name: app.name, path: app.embed, color: app.color });
     setTimeout(()=>setShowAilesi(false), 250);
   };
+  // Embed'lerin kardeş uygulamaya in-app geçişi için güncel referans (bayat closure önlemi)
+  const handleOpenEmbedRef = useRef(null);
+  handleOpenEmbedRef.current = handleOpenEmbed;
   // ESC tuşuyla embed'den çıkış — web kullanıcıları için bir fallback (back button bulunamazsa)
   useEffect(() => {
     if (!embeddedApp) return;
@@ -2919,17 +2922,37 @@ export default function SakinApp() {
       });
     } catch(_) {}
   }, [embeddedApp]);
-  // Embed iframe'lerinden gelen "Premium'a yönlendir" mesajını dinle (postMessage köprüsü)
+  // Embed iframe'lerinden gelen mesajları dinle (postMessage köprüsü).
+  // Same-origin only: embed'ler bizimle aynı origin'de — keyfi origin'i yoksay.
   useEffect(() => {
+    const EMBED_BY_KEY = {
+      hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
+      mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
+      tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
+    };
     const onMsg = (e) => {
-      if (e?.data?.type === "sakin-premium-cta") {
+      if (e.origin !== window.location.origin) return;
+      const type = e?.data?.type;
+      if (type === "sakin-premium-cta") {
         setEmbeddedApp(null); setEmbedLoaded(false);
         setScreen("fiyat");
+      } else if (type === "sakin-open-embed") {
+        // Bir embed, kardeş aile uygulamasını in-app açmak istiyor (eski netlify
+        // linki yerine). Hedefi host'un kendi embed akışıyla aç.
+        const target = EMBED_BY_KEY[e?.data?.app];
+        if (target && handleOpenEmbedRef.current) {
+          setEmbedLoaded(false);
+          handleOpenEmbedRef.current(target);
+        }
+      } else if (type === "sakin-close-embed") {
+        // Embed içinden "sakin.life" ana merkeze dön — embed'i kapat, Ailesi panelini aç.
+        setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
+        setShowAilesi(true);
       }
     };
     window.addEventListener("message", onMsg);
     return () => window.removeEventListener("message", onMsg);
-  }, []);
+  }, [t]);
   const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
   const [showMindClear, setShowMindClear] = useState(false);

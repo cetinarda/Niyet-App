@@ -43,6 +43,20 @@ function openExternal(url: string) {
   }
 }
 
+// Embed → Sakin host köprüsü. Aile uygulamaları sakin.life içinde tam-ekran iframe.
+// Eski netlify linkini açmak yerine host'a postMessage yollayıp kardeş uygulamayı
+// IN-APP açtırırız (iframe içinde Safari'ye çıkma = App Store 4.2 riski). Native'de
+// (standalone) fallback olarak link açılır.
+function postToHost(payload: object, fallbackUrl?: string) {
+  try {
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.postMessage(payload, window.location.origin);
+      return;
+    }
+  } catch { /* ignore */ }
+  if (fallbackUrl) openExternal(fallbackUrl);
+}
+
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, stats, getTopStat, getLevelTitleKey, clearAllData } = useMitlerStore();
@@ -676,7 +690,7 @@ export function ProfileScreen() {
 
         <TouchableOpacity
           style={styles.familyMaster}
-          onPress={() => openExternal('https://sakin.life')}
+          onPress={() => postToHost({ type: 'sakin-close-embed' }, 'https://sakin.life')}
           activeOpacity={0.75}
         >
           <Text style={styles.familyMasterSymbol}>✦</Text>
@@ -709,7 +723,7 @@ export function ProfileScreen() {
                 key={app.key}
                 style={[styles.familyCard, app.active && styles.familyCardActive]}
                 {...(isClickable
-                  ? { onPress: () => openExternal(app.url), activeOpacity: 0.75 }
+                  ? { onPress: () => postToHost({ type: 'sakin-open-embed', app: app.key }, app.url), activeOpacity: 0.75 }
                   : {})}
               >
                 <Text style={[styles.familySymbol, app.active && { color: Colors.teal }]}>

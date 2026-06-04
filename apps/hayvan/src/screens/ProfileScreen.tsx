@@ -30,6 +30,20 @@ import { HelpButton } from '../components/HelpButton';
 import { scheduleDailyReminder, cancelDailyReminder, requestNotificationPermissionWithRationale } from '../lib/notifications';
 import { useI18n } from '../i18n/useI18n';
 
+// Embed → Sakin host köprüsü. Aile uygulamaları sakin.life içinde tam-ekran iframe
+// olarak açılır; eski netlify linklerini açmak yerine host'a postMessage yollayıp
+// kardeş uygulamayı IN-APP açtırırız (iframe içinde Safari'ye çıkmak App Store 4.2
+// riski + kafa karıştırıcı). Native'de (standalone app) fallback olarak link açılır.
+function postToHost(payload: object, fallbackUrl?: string) {
+  try {
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.postMessage(payload, window.location.origin);
+      return;
+    }
+  } catch { /* ignore */ }
+  if (fallbackUrl) Linking.openURL(fallbackUrl).catch(() => {});
+}
+
 function hdTypeToGlossaryKey(type: string): string {
   switch (type) {
     case 'Jeneratör':             return 'jeneratör';
@@ -859,7 +873,7 @@ export function ProfileScreen() {
         {/* sakin.life master link */}
         <TouchableOpacity
           style={styles.familyMaster}
-          onPress={() => Linking.openURL('https://sakin.life')}
+          onPress={() => postToHost({ type: 'sakin-close-embed' }, 'https://sakin.life')}
           activeOpacity={0.75}
         >
           <Text style={styles.familyMasterSymbol}>✦</Text>
@@ -873,8 +887,8 @@ export function ProfileScreen() {
         <View style={styles.familyGrid}>
           {[
             { name: t('profile.sakinFamily.apps.animalGuidance'), symbol: '⊕', desc: t('profile.sakinFamily.appDescs.animalGuidance'), active: true,  onPress: undefined },
-            { name: t('profile.sakinFamily.apps.myths'),          symbol: '⚡', desc: t('profile.sakinFamily.appDescs.myths'),          active: true,  onPress: () => Linking.openURL('https://sakinmitler.netlify.app/') },
-            { name: t('profile.sakinFamily.apps.humanDesign'),    symbol: '◉', desc: t('profile.sakinFamily.appDescs.humanDesign'),    active: true,  onPress: () => Linking.openURL('https://sakindesign.netlify.app/') },
+            { name: t('profile.sakinFamily.apps.myths'),          symbol: '⚡', desc: t('profile.sakinFamily.appDescs.myths'),          active: true,  onPress: () => postToHost({ type: 'sakin-open-embed', app: 'mitler' },  'https://sakinmitler.netlify.app/') },
+            { name: t('profile.sakinFamily.apps.humanDesign'),    symbol: '◉', desc: t('profile.sakinFamily.appDescs.humanDesign'),    active: true,  onPress: () => postToHost({ type: 'sakin-open-embed', app: 'tasarim' }, 'https://sakindesign.netlify.app/') },
             { name: t('profile.sakinFamily.apps.stoneGuidance'),  symbol: '◈', desc: t('profile.sakinFamily.appDescs.stoneGuidance'),  active: false, onPress: undefined },
             { name: t('profile.sakinFamily.apps.plantGuidance'),  symbol: '✿', desc: t('profile.sakinFamily.appDescs.plantGuidance'),  active: false, onPress: undefined },
             { name: t('profile.sakinFamily.apps.numerology'),     symbol: '◎', desc: t('profile.sakinFamily.appDescs.numerology'),     active: false, onPress: undefined },
