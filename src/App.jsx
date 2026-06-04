@@ -1110,6 +1110,7 @@ const GLOBAL_CSS = `
   @keyframes heartbeat   { 0%,100%{transform:scale(1)} 14%{transform:scale(1.07)} 28%{transform:scale(1)} 42%{transform:scale(1.04)} }
   @keyframes slowPulse   { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
   @keyframes ailesiPulse { 0%,100%{opacity:0.7;box-shadow:0 0 8px rgba(240,192,96,0.1)} 50%{opacity:1;box-shadow:0 0 18px rgba(240,192,96,0.25)} }
+  @keyframes panicPulse { 0%,100%{opacity:0.78;box-shadow:0 0 10px rgba(224,110,110,0.25)} 50%{opacity:1;box-shadow:0 0 22px rgba(224,110,110,0.55)} }
   @keyframes askPulse { 0%,100%{ box-shadow:0 0 12px rgba(184,148,224,0.45), inset 0 0 8px rgba(255,255,255,0.15); transform:scale(1); } 50%{ box-shadow:0 0 28px rgba(184,148,224,0.85), 0 0 44px rgba(184,148,224,0.35), inset 0 0 14px rgba(255,255,255,0.30); transform:scale(1.06); } }
   @keyframes floatUp     { 0%{opacity:0;transform:translate(0,0) scale(0.4)} 20%{opacity:1} 80%{opacity:0.5} 100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.3)} }
   @keyframes energyFill  { 0%{background-position:100% 50%} 100%{background-position:0% 50%} }
@@ -4024,6 +4025,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); };
   },[screen, breathStarted, breathMode]);
 
+  // Nefes ekranı bir overlay ile kapandığında (Sakin Ailesi/embed, kimlik kartı,
+  // zihni boşalt, ayna geçidi) nefesi TAMAMEN durdur: "nefes al/ver" sesi ve sayaç
+  // arka planda sürmesin. Panik akışından girip başka menüye geçince de geçerli.
+  useEffect(() => {
+    const occluded = embeddedApp || showIdCard || showMindClear || activeMindMode || mirrorPortalActive;
+    if (occluded && breathStarted) {
+      setBreathStarted(false);
+      setBreathPhase("ready");
+      clearInterval(breathRef.current);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+  }, [embeddedApp, showIdCard, showMindClear, activeMindMode, mirrorPortalActive, breathStarted]);
+
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => {
@@ -4331,28 +4345,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
             padding:0, cursor:"pointer",
           } : {
-            // Web mobil: sağ orta kenarda yarı gizli geçit. Dairenin sol ~yarısı
-            // görünür; crescent bu görünür yarının TAM ortasında durmalı. Görünür
-            // genişlik = width - |right| = 60 - 24 = 36px → crescent merkezi ~18px.
-            position:"fixed", top:"50%", right:-24, transform:"translateY(-50%)",
-            zIndex:9997, width:60, height:60, borderRadius:"50%",
-            border:"1px solid rgba(184,164,216,0.30)",
-            background:"radial-gradient(circle at 30% 35%, rgba(160,112,208,0.40) 0%, rgba(60,30,90,0.72) 60%, rgba(20,10,35,0.9) 100%)",
-            backdropFilter:"blur(8px)",
-            display:"flex", alignItems:"center", justifyContent:"flex-start", paddingLeft:11,
-            color:"rgba(232,218,250,0.85)", fontSize:20, lineHeight:1,
-            boxShadow:"0 0 22px rgba(160,120,220,0.28), inset 0 0 12px rgba(184,164,216,0.20)",
-            cursor:"pointer",
+            // Web: iOS gibi sağ ÜST köşede tam görünür küçük hilal (eskiden sağ
+            // orta kenarda yarı gizliydi — kullanıcı isteğiyle yukarı alındı).
+            position:"fixed", top:"calc(env(safe-area-inset-top, 0px) + 70px)", right:14,
+            zIndex:9997, width:36, height:36, borderRadius:"50%",
+            border:"1px solid rgba(184,164,216,0.35)",
+            background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.45) 0%, rgba(60,30,90,0.75) 60%, rgba(20,10,35,0.9) 100%)",
+            backdropFilter:"blur(10px)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            color:"rgba(232,218,250,0.9)", fontSize:15, lineHeight:1,
+            boxShadow:"0 0 16px rgba(160,120,220,0.30), inset 0 0 10px rgba(184,164,216,0.22)",
+            padding:0, cursor:"pointer",
           }}
         >
           <span style={{ display:"block", lineHeight:1, transform:"translateY(-0.5px)", filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
         </button>
       )}
 
-      {/* PANİK BUTONU — sol üst banner, her ekranda erişilebilir (embed/policy/portal hariç).
-          Tıklayınca en uygun sakinleştirici nefesi (4-7-8) DOĞRUDAN başlatır; teknik
-          premium olsa bile panik istisnası ile çalışır (sormaz, gate yok). */}
-      {!isPolicyScreen && !embeddedApp && !mirrorPortalActive && (
+      {/* PANİK BUTONU — yalnızca GİRİŞ ekranında sol üst banner (kullanıcı isteğiyle
+          diğer ekranlarda gizli). Tıklayınca en uygun sakinleştirici nefesi (4-7-8)
+          DOĞRUDAN başlatır; teknik premium olsa bile panik istisnası ile çalışır. */}
+      {screen === "giris" && !embeddedApp && !mirrorPortalActive && (
         <button
           onClick={()=>{
             try { haptic(); } catch(_) {}
@@ -4369,16 +4382,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             left:14, zIndex:9997,
             display:"flex", alignItems:"center", gap:7,
             padding:"8px 14px", borderRadius:100,
-            border:"1px solid rgba(224,120,120,0.45)",
+            border:"1px solid rgba(224,120,120,0.5)",
             background:"linear-gradient(135deg, rgba(224,110,110,0.42) 0%, rgba(120,40,40,0.72) 100%)",
             backdropFilter:"blur(10px)",
             color:"rgba(255,235,235,0.95)", fontSize:11.5, letterSpacing:1.5, lineHeight:1,
             fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500,
-            boxShadow:"0 0 16px rgba(224,110,110,0.30), inset 0 0 10px rgba(255,180,180,0.18)",
+            animation:"panicPulse 2.5s ease-in-out infinite",
             cursor:"pointer", whiteSpace:"nowrap",
           }}
         >
-          <span style={{ display:"block", lineHeight:1, fontSize:14, filter:"drop-shadow(0 0 3px rgba(255,200,200,0.5))" }}>🫧</span>
           <span>{t("panic_button")}</span>
         </button>
       )}
