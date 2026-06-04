@@ -4,14 +4,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TabNavigator } from './src/navigation/TabNavigator';
 import { AuthScreen } from './src/screens/AuthScreen';
-import { useTuraStore } from './src/store/useStore';
+import { useSakinHayvanStore } from './src/store/useStore';
 import { Colors } from './src/theme/colors';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { LanguageProvider } from './src/i18n/LanguageContext';
 import { WebFooter } from './src/components/WebFooter';
 
 function Root() {
-  const { authReady, isAuthenticated } = useTuraStore();
+  const { authReady, isAuthenticated } = useSakinHayvanStore();
   const [skipAuth, setSkipAuth] = useState(false);
 
   if (!authReady) {

@@ -22,7 +22,7 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSMotionUsageDescription": "Tura uses motion data to detect when you shake your phone to draw the day's guidance card.",
+        "NSMotionUsageDescription": "Sakin Hayvan uses motion data to detect when you shake your phone to draw the day's guidance card.",
         "ITSAppUsesNonExemptEncryption": false,
         "UIRequiresFullScreen": false
       },
@@ -97,6 +97,9 @@
         }
       ]
     ],
+    "experiments": {
+      "baseUrl": "/embedded/sakinhayvan"
+    },
     "extra": {
       "supportUrl": "https://sakinhayvan.netlify.app/support",
       "privacyUrl": "https://sakinhayvan.netlify.app/privacy",

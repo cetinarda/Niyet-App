@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import stonesData from '../data/stones.json';
 import animalsData from '../data/animals.json';
 import nagualsData from '../data/naguals.json';
@@ -73,7 +73,7 @@ const HD_STRATEGY_EN: Record<string, string> = {
 
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { profile, isNewUser, createProfile, updateBirthData, updateHDType, stats, getTopStat, getLevelTitle, session, signOut, deleteAccount, setLanguage, language } = useTuraStore();
+  const { profile, isNewUser, bridgePrefill, createProfile, updateBirthData, updateHDType, stats, getTopStat, getLevelTitle, session, signOut, deleteAccount, setLanguage, language } = useSakinHayvanStore();
   const { t, lang } = useI18n();
   const premium = usePremium();
   const [showPaywall, setShowPaywall] = useState(false);
@@ -82,19 +82,31 @@ export function ProfileScreen() {
   const [licenseStatus, setLicenseStatus] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle');
   const [licenseMsg, setLicenseMsg] = useState('');
 
-  const [showOnboarding, setShowOnboarding] = useState(isNewUser);
-  const [name, setName] = useState('');
-  const [element, setElement] = useState<typeof ELEMENTS[number]>('ateş');
-  const [step, setStep] = useState(1);
+  // ── SAKİN HOST KÖPRÜSÜ — onboarding kısayolu ──────────────────────────────
+  // Host ad + doğum verdiyse onboarding TEK ekrana iner: yalnızca element seçici.
+  // Ad (step 1) ve doğum (step 3) ekranları gösterilmez; değerler host'tan gelir.
+  // Element doğumdan türetilemez (arketip hesabını bozar), onu kullanıcı seçer.
+  const ELEMENT_STEP = 2;
+  const bridged = !!(bridgePrefill?.name);
+  const bridgeDateParts = (() => {
+    const bd = bridgePrefill?.birthDate;
+    const m = bd ? /^(\d{4})-(\d{2})-(\d{2})$/.exec(bd) : null;
+    return m ? { y: m[1], m: m[2], d: m[3] } : { d: '', m: '', y: '' };
+  })();
 
-  // step 3 birth data
-  const [fullName, setFullName] = useState('');
-  const [birthDay, setBirthDay] = useState('');
-  const [birthMonth, setBirthMonth] = useState('');
-  const [birthYear, setBirthYear] = useState('');
-  const [birthHour, setBirthHour] = useState('');
-  const [birthMinuteOb, setBirthMinuteOb] = useState('');
-  const [birthCity, setBirthCity] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(isNewUser);
+  const [name, setName] = useState(bridgePrefill?.name ?? '');
+  const [element, setElement] = useState<typeof ELEMENTS[number]>('ateş');
+  const [step, setStep] = useState(bridged ? ELEMENT_STEP : 1);
+
+  // step 3 birth data — köprüden gelen değerlerle ön-doldurulur
+  const [fullName, setFullName] = useState(bridgePrefill?.name ?? '');
+  const [birthDay, setBirthDay] = useState(bridgeDateParts.d);
+  const [birthMonth, setBirthMonth] = useState(bridgeDateParts.m);
+  const [birthYear, setBirthYear] = useState(bridgeDateParts.y);
+  const [birthHour, setBirthHour] = useState(bridgePrefill?.birthHour != null ? String(bridgePrefill.birthHour).padStart(2, '0') : '');
+  const [birthMinuteOb, setBirthMinuteOb] = useState(bridgePrefill?.birthMinute != null ? String(bridgePrefill.birthMinute).padStart(2, '0') : '');
+  const [birthCity, setBirthCity] = useState(bridgePrefill?.birthCity ?? '');
 
   // inline birth data edit (when already profiled but no birth data)
   const [showBirthForm, setShowBirthForm] = useState(false);
@@ -181,6 +193,18 @@ export function ProfileScreen() {
   // ── Onboarding ────────────────────────────────────────────────────────────────────────
 
   const handleOnboarding = async () => {
+    // KÖPRÜ AKIŞI: element seçildi → host'tan gelen ad + doğum ile profili kur.
+    // step 3 (doğum formu) hiç gösterilmez/girilmez.
+    if (bridged) {
+      const bp = bridgePrefill!;
+      await createProfile(
+        (bp.name ?? '').trim() || 'Sakin', element, bp.birthDate,
+        (bp.name ?? '').trim() || undefined,
+        bp.birthHour, bp.birthMinute, bp.birthCity,
+      );
+      setShowOnboarding(false);
+      return;
+    }
     if (step === 1 && name.trim().length > 0) {
       setStep(2);
     } else if (step === 2) {
@@ -368,7 +392,7 @@ export function ProfileScreen() {
             disabled={step === 1 && name.trim().length === 0}
           >
             <Text style={styles.onboardingBtnText}>
-              {step < 3 ? t('profile.onboarding.continueBtn') : t('profile.onboarding.startBtn')}
+              {bridged || step >= 3 ? t('profile.onboarding.startBtn') : t('profile.onboarding.continueBtn')}
             </Text>
           </TouchableOpacity>
           {step === 3 && (

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useI18n } from '../i18n/useI18n';
 
-const DISCLAIMER_KEY = '@tura_disclaimer_shown';
+const DISCLAIMER_KEY = '@sakinhayvan_disclaimer_shown';
 
 export function DisclaimerModal() {
   const { t, lang } = useI18n();

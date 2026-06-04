@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchEntitlement, isIapAvailable, purchase as iapPurchase, restore as iapRestore, type PlanKey } from './iap';
 import { checkSupabaseEntitlement } from './entitlement';
 
-const PREMIUM_CACHE_KEY = '@tura_premium_cache';
+const PREMIUM_CACHE_KEY = '@sakinhayvan_premium_cache';
 
 // App is currently free — all features unlocked for all users.
 const APP_IS_FREE = true;

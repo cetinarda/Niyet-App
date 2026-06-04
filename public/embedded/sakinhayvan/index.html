@@ -62,33 +62,11 @@
     </style>
   <link rel="icon" href="/embedded/sakinhayvan/favicon.ico" />    <style>
       /* Sakin embed scroll override — keep an explicit height chain so React Native Web
-         ScrollViews (e.g. animal detail) can scroll internally. The previous override set
-         html/body/#root to height:auto which collapsed the flex chain and broke per-screen
-         scrolling. */
+         ScrollViews can scroll internally. Previous override set html/body/#root height to
+         auto which collapsed the flex chain and broke per-screen scrolling on detail views. */
       html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
-      <script>
-    /* @tura_profile invalid-profile cleanup. Önceki bridge sürümleri element'siz
-       profil yazmış olabilir; bunlar animal/myth hesabını bozar. Burada element'i
-       eksik veya geçersiz olan profilleri silip onboarding'i tekrar tetikleriz. */
-    (function() {
-      try {
-        var ex = localStorage.getItem('@tura_profile');
-        if (!ex) return;
-        var p;
-        try { p = JSON.parse(ex); }
-        catch(e) { localStorage.removeItem('@tura_profile'); return; }
-        if (!p || typeof p !== 'object') {
-          localStorage.removeItem('@tura_profile'); return;
-        }
-        var validEl = ['ateş','hava','toprak','su'];
-        if (!p.element || validEl.indexOf(p.element) === -1) {
-          localStorage.removeItem('@tura_profile');
-        }
-      } catch(e) { /* sessiz geç */ }
-    })();
-    </script>
   </head>
 
   <body>
@@ -142,6 +120,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-174159fa497b4ae204a6c9414ec3685a.js" defer></script>
+  <script src="/embedded/sakinhayvan/_expo/static/js/web/index-f20a6d669b019806cb05fdad5f2f7257.js" defer></script>
 </body>
 </html>

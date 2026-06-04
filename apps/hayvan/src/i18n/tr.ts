@@ -226,7 +226,7 @@ export const tr = {
   profile: {
     // Onboarding
     onboarding: {
-      title: "TURA'ya Hoş Geldin",
+      title: "Sakin Hayvan'a Hoş Geldin",
       subtitle: "Anadolu'nun kadim geleneğinden günlük rehberlik",
       step1Question: 'Adın nedir, yolcu?',
       step1Placeholder: 'Adını yaz...',
@@ -409,7 +409,7 @@ export const tr = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Günlük hatırlatma',
-      rationaleMessage: 'Tura, her sabah 08:00\'de günün kartını çekmen için sessiz bir hatırlatma göndersin mi? Bildirim hiçbir şekilde reklam veya pazarlama amacıyla kullanılmaz.',
+      rationaleMessage: 'Sakin Hayvan, her sabah 08:00\'de günün kartını çekmen için sessiz bir hatırlatma göndersin mi? Bildirim hiçbir şekilde reklam veya pazarlama amacıyla kullanılmaz.',
       rationaleConfirm: 'İzin Ver',
       rationaleCancel: 'Şimdi Değil',
     },

@@ -105,7 +105,7 @@ export function AuthScreen({ onContinueOffline }: Props) {
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.symbol}>✦</Text>
-      <Text style={styles.title}>TURA</Text>
+      <Text style={styles.title}>Sakin Hayvan</Text>
       <Text style={styles.subtitle}>
         {t('auth.subtitle' as any)}
       </Text>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import type { Lang } from './index';
 
 import animalsData from '../data/animals.json';
@@ -33,7 +33,7 @@ export function localizeAll<T extends Record<string, any>>(items: T[], lang: Lan
 }
 
 export function useLang(): Lang {
-  const { language } = useTuraStore();
+  const { language } = useSakinHayvanStore();
   return language ?? 'tr';
 }
 

@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, TAB_BAR_HEIGHT } from '../theme/colors';
 import nagualsData from '../data/naguals.json';
 import animalsData from '../data/animals.json';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import { calcLifePath } from '../utils/numerology';
 import { calcHDType } from '../utils/humanDesign';
 import { useI18n } from '../i18n/useI18n';
@@ -75,7 +75,7 @@ function buildReason(lang: 'tr' | 'en', element: string, lifePath: number, hdTyp
 export function NagualScreen({ onClose, embedded }: Props) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
-  const { profile } = useTuraStore();
+  const { profile } = useSakinHayvanStore();
   const localNaguals = useLocalizedNaguals() as Nagual[];
   const localAnimals = useLocalizedAnimals() as Animal[];
   const [rawNagual] = useState<Nagual>(() => getWeeklyNagual());

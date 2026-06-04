@@ -51,11 +51,11 @@ export interface Stats {
 }
 
 const STORAGE_KEYS = {
-  PROFILE: '@tura_profile',
-  DAILY: '@tura_daily',
-  ARCHIVE: '@tura_archive',
-  STATS: '@tura_stats',
-  LANGUAGE: '@tura_language',
+  PROFILE: '@sakinhayvan_profile',
+  DAILY: '@sakinhayvan_daily',
+  ARCHIVE: '@sakinhayvan_archive',
+  STATS: '@sakinhayvan_stats',
+  LANGUAGE: '@sakinhayvan_language',
 };
 
 const todayStr = () => new Date().toISOString().split('T')[0];
@@ -64,7 +64,61 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-export function useTuraStore() {
+// ─────────────────────────────────────────────────────────────────────────────
+// SAKİN HOST KÖPRÜSÜ
+// Embed, Sakin host'u ile AYNI origin'de bir iframe içinde açılır; host kullanıcının
+// ad/doğum bilgisini `sakin_*` localStorage anahtarlarına yazar. Burada onları
+// SENKRON okuyup onboarding'i ön-doldururuz. Eski preemptive-write (profile-key)
+// hack'ine gerek yok — bu okuma ilk render'da hazırdır, yarış koşulu olmaz.
+//
+// KRİTİK: Profil 'element' alanını kullanır (ateş/su/toprak/hava) — bu kullanıcı
+// seçimidir, doğumdan TÜRETİLEMEZ. Köprü asla element üretmez, tek başına profil
+// kurmaz; sadece ad + doğum alanlarını forma akıtır.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SakinBridge {
+  name?: string;
+  birthDate?: string;   // YYYY-MM-DD
+  birthHour?: number;   // 0-23
+  birthMinute?: number; // 0-59
+  birthCity?: string;
+}
+
+export function readSakinBridge(): SakinBridge | null {
+  try {
+    if (typeof window === 'undefined' || !(window as any).localStorage) return null;
+    const ls = (window as any).localStorage as Storage;
+    const get = (...keys: string[]) => {
+      for (const k of keys) { const v = ls.getItem(k); if (v) return v; }
+      return '';
+    };
+    const name = get('sakin_name', 'user_name', 'userName');
+    const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
+    const birthTime = get('sakin_birth_time', 'birth_time', 'birthTime');
+    const birthCity = get('sakin_birth_city', 'birth_city', 'birthCity');
+    if (!name && !birthDate && !birthTime && !birthCity) return null;
+    let birthHour: number | undefined;
+    let birthMinute: number | undefined;
+    if (birthTime) {
+      const parts = birthTime.split(':');
+      const h = parseInt(parts[0] || '', 10);
+      const m = parseInt(parts[1] || '', 10);
+      if (!isNaN(h) && h >= 0 && h <= 23) birthHour = h;
+      if (!isNaN(m) && m >= 0 && m <= 59) birthMinute = m;
+    }
+    return {
+      name: name || undefined,
+      birthDate: birthDate || undefined,
+      birthHour,
+      birthMinute,
+      birthCity: birthCity || undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function useSakinHayvanStore() {
   const { language, setLanguage } = useLanguage();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [dailyReading, setDailyReading] = useState<DailyReading | null>(null);
@@ -78,6 +132,10 @@ export function useTuraStore() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
+  // Host'tan gelen, onboarding'i ön-doldurmak için saklanan veri. SENKRON okunur
+  // (lazy initializer) ki ProfileScreen ilk render'da köprüyü görsün; profil zaten
+  // varsa loadAll bunu null'a çeker. Element içermez — kullanıcı yine seçer.
+  const [bridgePrefill, setBridgePrefill] = useState<SakinBridge | null>(() => readSakinBridge());
   const [session, setSession] = useState<Session | null>(null);
   const [authReady, setAuthReady] = useState(!isSupabaseConfigured);
 
@@ -144,8 +202,10 @@ export function useTuraStore() {
 
       if (!profileRaw) {
         setIsNewUser(true);
+        // Köprü lazy-init ile senkron okundu; profil yoksa olduğu gibi bırakılır.
       } else {
         setProfile(JSON.parse(profileRaw));
+        setBridgePrefill(null); // mevcut kullanıcıya köprü ön-doldurması sızmasın
       }
 
       if (dailyRaw) {
@@ -196,6 +256,7 @@ export function useTuraStore() {
     };
     await saveProfile(p);
     setIsNewUser(false);
+    setBridgePrefill(null); // profil kuruldu — köprü ön-doldurması artık gereksiz
   }, [saveProfile]);
 
   const updateBirthData = useCallback(async (
@@ -305,6 +366,7 @@ export function useTuraStore() {
     stats,
     isLoading,
     isNewUser,
+    bridgePrefill,
     session,
     authReady,
     isAuthenticated: !!session || !isSupabaseConfigured,

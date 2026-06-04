@@ -1,40 +1,33 @@
-# Tura — Hayvan Rehberliği
+# Sakin Hayvan — embed source (monorepo)
 
-Tura is the **first sub-app** of the sakin.life ecosystem.
+Bu, **Sakin Hayvan Rehberi** uygulamasının kaynağıdır. Niyet-App monorepo'sunun
+parçası: `apps/hayvan/`. Buradan derlenen web bundle `public/embedded/sakinhayvan/`
+altına gider ve Sakin host'u (sakin.life / iOS) tarafından iframe ile gömülür.
 
-## Ecosystem Overview
+## Derleme
 
-| App | Focus | Data source | Status |
-|-----|-------|-------------|--------|
-| **sakin.life** | Master / landing | — | Active |
-| **Tura** (this repo) | Hayvan Rehberliği | `src/data/animals.json` | Active |
-| Taş Rehberliği | Crystal guidance | `src/data/stones.json` | Future |
-| Bitki Rehberliği | Plant wisdom | new | Future |
-| Mitler ve İmgeler | Archetypes/symbols | `src/data/naguals.json` | Future |
-| Human Design | HD system | `src/utils/humanDesign.ts` | Future |
-| Numeroloji | Numerology | `src/utils/numerology.ts` | Future |
+Repo kökünden:
+```
+npm run build:hayvan          # expo export → public/embedded/sakinhayvan (byte-identical değilse YAZMAZ)
+npm run build:hayvan -- --force   # yeni bundle'ı bilerek gönder
+```
+`scripts/build-embed.mjs` + kökteki `build-embed` pipeline'ı kullanılır.
 
-## What Tura Contains (scope)
+## Önemli notlar
 
-- **Hayvanlar tab**: Animal library, Nagual finder, spirit-animal quiz
-- **Bugün tab**: Daily deck with 2 cards — Hayvan + Söz (quote)
-- **Arşiv tab**: Past readings
-- **Profil tab**: User profile, numerology, Human Design preview, Sakin Ailesi ecosystem links
+- **`metro.config.js`** web'de `react-native-purchases` (iOS-only IAP) modülünü
+  stub'lar → web tek bundle olur (host IAP'yi kendi yönetir). Bunu silme.
+- **Köprü:** Embed, host ile aynı origin'de çalışır. `readSakinBridge()`
+  (`src/store/useStore.ts`) host'un yazdığı `sakin_name` / `sakin_birth_date` /
+  `sakin_birth_time` / `sakin_birth_city` anahtarlarını **senkron** okur ve
+  onboarding'i atlar. Eski `@tura_profile` preemptive-write hack'ine ihtiyaç yok.
+- **Storage anahtarları** `@sakinhayvan_*` (eski `@tura_*`'tan yeniden adlandırıldı).
+- **Marka:** "Tura" eski iç isimdi; kod artık `useSakinHayvanStore` + Sakin Hayvan
+  metinleri kullanır. Kullanıcıya görünen ad app.json'da "Sakin Hayvan Rehberi".
 
-## Data Files Preserved for Future Apps
+## İçerik
 
-- `src/data/stones.json` → Taş Rehberliği
-- `src/data/naguals.json` → Mitler ve İmgeler  
-- `src/utils/humanDesign.ts` → standalone HD app
-- `src/utils/numerology.ts` → Numeroloji app
-
-## Design System
-
-All sakin.life ecosystem apps share the same design language:
-- Colors: `#0A0911` background, teal `#57A7A7`, gold `#DAAF5C`, lavender `#B0A0C8`
-- Typography: light weight for headings, minimal letterSpacing
-- Icon: dark bg + white center dot + thin teal ring (sub-brand mark)
-
-## Branch
-
-Active development branch: `claude/tura-quotes-app-iiv48`
+- `src/data/animals.json` — hayvan rehberlikleri (TR+EN)
+- `src/data/stones.json`, `naguals.json`, `quotes.json` — taş/nagual/söz içerikleri
+- Ekranlar: Home (Bugün), AnimalsHub, Nagual, Archive, Myths, Profile, Paywall, Auth
+- `src/utils/` — numerology, humanDesign, weeklyReading

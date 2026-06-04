@@ -16,7 +16,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import quotesData from '../data/quotes.json';
 import animalsData from '../data/animals.json';
 import philosophersData from '../data/philosophers.json';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers } from '../i18n/localize';
@@ -151,7 +151,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const { t } = useI18n();
-  const { profile, dailyReading, generateDailyReading, updateStats } = useTuraStore();
+  const { profile, dailyReading, generateDailyReading, updateStats } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const quotes = useLocalizedQuotes();
   const philosophers = useLocalizedPhilosophers();

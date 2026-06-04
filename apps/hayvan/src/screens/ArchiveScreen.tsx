@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, TAB_BAR_HEIGHT } from '../theme/colors';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
 
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedNaguals, useLocalizedStones } from '../i18n/localize';
@@ -26,7 +26,7 @@ const FILTERS: { key: FilterType; color: string }[] = [
 export function ArchiveScreen() {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
-  const { archive, stats, getTopStat } = useTuraStore();
+  const { archive, stats, getTopStat } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const quotes = useLocalizedQuotes();
   const naguals = useLocalizedNaguals();

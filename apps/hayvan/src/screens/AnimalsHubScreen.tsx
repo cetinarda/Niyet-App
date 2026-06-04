@@ -12,7 +12,7 @@ import { HelpButton } from '../components/HelpButton';
 import { AnimalLibraryScreen } from './AnimalLibraryScreen';
 import { AnimalFinderScreen } from './AnimalFinderScreen';
 import { NagualScreen } from './NagualScreen';
-import { useTuraStore } from '../store/useStore';
+import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
 
 type Panel = 'library' | 'finder' | 'nagual';
@@ -25,7 +25,7 @@ const PANELS = [
 
 export function AnimalsHubScreen() {
   const insets = useSafeAreaInsets();
-  const { profile } = useTuraStore();
+  const { profile } = useSakinHayvanStore();
   const [panel, setPanel] = useState<Panel>('library');
   const { t } = useI18n();
 

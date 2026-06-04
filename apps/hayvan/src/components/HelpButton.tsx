@@ -116,7 +116,7 @@ export function GlossaryModal({
               showsVerticalScrollIndicator={false}
             >
               <Text style={styles.intro}>
-                Tura'da geçen kavramların kısa açıklamaları. Bir terime tıkla, detayını oku.
+                Sakin Hayvan'da geçen kavramların kısa açıklamaları. Bir terime tıkla, detayını oku.
               </Text>
               {entries.map(([key, e]) => (
                 <TouchableOpacity

@@ -226,7 +226,7 @@ export const en = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Welcome to TURA',
+      title: 'Welcome to Sakin Hayvan',
       subtitle: 'Daily guidance from the ancient Anatolian tradition',
       step1Question: 'What is your name, traveller?',
       step1Placeholder: 'Type your name...',
@@ -409,7 +409,7 @@ export const en = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Daily reminder',
-      rationaleMessage: 'Should Tura send a quiet reminder at 08:00 each morning so you can draw your daily card? Notifications are never used for advertising or marketing.',
+      rationaleMessage: 'Should Sakin Hayvan send a quiet reminder at 08:00 each morning so you can draw your daily card? Notifications are never used for advertising or marketing.',
       rationaleConfirm: 'Allow',
       rationaleCancel: 'Not Now',
     },
