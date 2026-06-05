@@ -106,28 +106,25 @@ export async function initStore() {
         }
       })
       .approved((transaction) => {
-        // Apple replays historical transactions (stale sandbox subs, family-shared,
-        // refunded-but-cached, expired auto-renews) at store.initialize() and during
-        // background renewal. Honoring them grants Premium without payment. Only honor
-        // a transaction when the current user explicitly initiated a Subscribe/Buy/Restore.
-        if (!userInitiatedAction) {
-          console.log("[IAP] ignoring background/replayed transaction:", transaction.transactionId);
-          try { transaction.finish(); } catch (e) { /* noop */ }
-          return;
-        }
-        console.log("[IAP] approved (user-initiated):", transaction.products?.map(p => p.id));
+        // Verify ALL approved transactions — including Apple's replayed/background ones
+        // at store.initialize() (cold start) and during renewals — so each product's real
+        // `owned`/expiry state gets established by the plugin. Without this, a valid
+        // subscriber appears non-Premium on every cold start until they manually tap
+        // "Restore Purchases". Whether Premium is GRANTED is NOT decided here: it is
+        // decided afterwards by isSubscribed()'s authoritative `owned` check (which honors
+        // subscription expiry), so an expired/stale replay resolves to owned=false and
+        // grants nothing — preserving the no-free-Premium protection.
+        console.log("[IAP] approved:", transaction.transactionId, "userInitiated:", userInitiatedAction);
         return transaction.verify();
       })
       .verified((receipt) => {
-        if (!userInitiatedAction) {
-          console.log("[IAP] ignoring verified for non-user-initiated transaction");
-          try { receipt.finish(); } catch (e) { /* noop */ }
-          return;
-        }
-        console.log("[IAP] verified (user-initiated)");
         receipt.finish();
-        localStorage.setItem("sakin_premium", "1");
-        if (purchaseUpdateCallback) purchaseUpdateCallback(true);
+        // owned-based gate: isSubscribed() reads store.get(...).owned and writes/cleans the
+        // local flag accordingly. Active entitlement → Premium persists across launches;
+        // expired/refunded replay → owned=false → no grant. The Subscribe/Restore flows
+        // still drive the purchase UX; this only keeps a real entitlement alive on relaunch.
+        const entitled = isSubscribed();
+        if (entitled && purchaseUpdateCallback) purchaseUpdateCallback(true);
       });
 
     await store.initialize([platform]);
