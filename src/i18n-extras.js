@@ -319,6 +319,7 @@ export const EXTRA_LANGS = {
     birth_date_required: "Gib ein gültiges Geburtsdatum ein (Tag / Monat / Jahr)",
     sakin_intro_title: "Möchtest du Sakin kennenlernen?",
     sakin_intro_cta: "Was ist Sakin?",
+    premium_upgrade_lifetime_desc: "Du bist bereits Premium — wenn du möchtest, wechsle von der jährlichen Verlängerung zum einmaligen Lifetime-Zugang.",
     sakin_intro_skip: "Überspringen",
     add_birth_info: "Geburtsdaten hinzufügen",
 
@@ -913,6 +914,7 @@ export const EXTRA_LANGS = {
     birth_date_required: "Introduce una fecha de nacimiento válida (día / mes / año)",
     sakin_intro_title: "¿Quieres conocer Sakin?",
     sakin_intro_cta: "¿Qué es Sakin?",
+    premium_upgrade_lifetime_desc: "Ya eres Premium — si quieres, cambia de la renovación anual al acceso de por vida con un único pago.",
     sakin_intro_skip: "Saltar",
     add_birth_info: "Agregar Datos de Nacimiento",
 
@@ -1507,6 +1509,7 @@ export const EXTRA_LANGS = {
     birth_date_required: "Insere uma data de nascimento válida (dia / mês / ano)",
     sakin_intro_title: "Queres conhecer o Sakin?",
     sakin_intro_cta: "O que é o Sakin?",
+    premium_upgrade_lifetime_desc: "Já és Premium — se quiseres, troca a renovação anual pelo acesso Vitalício com pagamento único.",
     sakin_intro_skip: "Saltar",
     add_birth_info: "Adicionar Dados de Nascimento",
 
@@ -2101,6 +2104,7 @@ export const EXTRA_LANGS = {
     birth_date_required: "Entre une date de naissance valide (jour / mois / année)",
     sakin_intro_title: "Envie de découvrir Sakin ?",
     sakin_intro_cta: "Qu'est-ce que Sakin ?",
+    premium_upgrade_lifetime_desc: "Tu es déjà Premium — si tu veux, passe du renouvellement annuel à l'accès à vie en un seul paiement.",
     sakin_intro_skip: "Passer",
     add_birth_info: "Ajouter les Informations de Naissance",
 
@@ -2695,6 +2699,7 @@ export const EXTRA_LANGS = {
     birth_date_required: "有効な生年月日を入力してください（日／月／年）",
     sakin_intro_title: "Sakin について知りたいですか？",
     sakin_intro_cta: "Sakin とは？",
+    premium_upgrade_lifetime_desc: "すでにPremiumです — ご希望なら、年間更新から一度きりの買い切り（ライフタイム）に切り替えられます。",
     sakin_intro_skip: "スキップ",
     add_birth_info: "出生情報を追加",
 

@@ -6,7 +6,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 // Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
@@ -7526,6 +7526,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:14,color:"#888",letterSpacing:1 }}>
                 {t("premium_active_desc")}
               </div>
+              {/* F1: Yıllık abone → ömür boyu geçiş. Ömür boyu sahibi değilse upgrade butonu. */}
+              {isNative && !((getProductInfo(LIFETIME_PRODUCT_ID)||{}).owned) && (
+                <div style={{ marginTop:30,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.08)" }}>
+                  <div style={{ fontSize:13.5,color:"#b0a8c8",lineHeight:1.65,marginBottom:16 }}>{t("premium_upgrade_lifetime_desc")}</div>
+                  <button onClick={() => handlePurchase(purchaseLifetime, "lifetime")} disabled={!!purchaseLoading || !productsReady}
+                    style={{ display:"block",width:"100%",fontSize:15,letterSpacing:2,padding:"15px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.5),rgba(122,80,150,0.45))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",cursor:(purchaseLoading||!productsReady)?"default":"pointer",opacity:(purchaseLoading||!productsReady)?0.5:1 }}>
+                    {purchaseLoading==="lifetime" ? "..." : !productsReady ? t("premium_loading") : <>{t("premium_buy_lifetime")}<span style={{ marginLeft:8,opacity:0.85,fontWeight:300 }}>· $19.99</span></>}
+                  </button>
+                </div>
+              )}
             </div>
           ) : isNative ? (
             <>

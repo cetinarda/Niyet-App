@@ -16,8 +16,8 @@ Bu dosya, test turlarında çıkan bug/istekleri takip eder. Oturumlar arası ka
 ## 🔧 Açık buglar
 - **B2** — Yeniden kurulumda (delete+reinstall) premium otomatik gelmiyor; "Restore Purchases" gerekiyor. Minor. (İyileştirme: `already_owned` → otomatik grant, veya açılışta auto-restore.)
 
-## 💡 İstekler (feature)
-- **F1 (#4)** — Yıllık abone → ömür boyu geçiş: satış sayfasında net yol/menü yok. (Buton var ama premium'ken sayfaya ulaşım/net "geçiş" eksik.)
+## ✅ F1 — tamamlandı
+- **F1 (#4)** — Fiyat ekranı premium'ken satın-alma butonlarını gizliyordu → yıllık abone ömür boyu butonunu göremiyordu. Artık: premium ama ömür boyu sahibi DEĞİLSE "Ömür Boyu'na Geç" butonu + açıklama gösterilir (`premium_upgrade_lifetime_desc`, 7 dil). Ömür boyu sahibinde gizli.
 
 ## ✅ F2 — tamamlandı
 - **F2 (#5+#6)** — "Sakin'i tanı" tanıtım popup'ı eklendi: ilk 3 açılışta (splash sonrası, onboarding dışında) gösterilir; "Sakin Nedir?" → about/nedir sekmesini açar, "Atla" kapatır. Sayaç: localStorage `sakin_intro_opens`. 7 dil.
