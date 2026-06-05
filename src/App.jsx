@@ -37,7 +37,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.2.5";
+const APP_VERSION = "1.2.6";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA

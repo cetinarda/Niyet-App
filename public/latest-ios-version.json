@@ -1,7 +1,7 @@
 {
-  "version": "1.2.5",
+  "version": "1.2.6",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Yeni: İçsel Ayna artık uygulamada — sağ kenardaki gizemli geçitten gir.",
-  "release_notes_en": "New: Inner Mirror now in the app — enter through the mysterious portal on the right edge."
+  "release_notes_tr": "Sakin Ailesi artık tek dokunuşla uygulama içinde: Hayvan, Mitler ve Tasarım birbirine bağlandı. Yeni: panik anı desteği, Tasarım element analizi ve galaktik kartta yaşam yolu açıklamaları.",
+  "release_notes_en": "The Sakin Family now flows in-app with a single tap — Animal, Myths and Design are connected. New: panic-moment support, Design element analysis, and life-path notes on your galactic card."
 }
