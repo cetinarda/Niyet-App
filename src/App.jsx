@@ -2870,6 +2870,7 @@ export default function SakinApp() {
       hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
       mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
       tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
+      taslar:  { name: t("ailesi_taslar_name"),  embed: "/embedded/sakintaslar/index.html", color: "#a0d8d8" },
     };
     const onMsg = (e) => {
       if (e.origin !== window.location.origin) return;
@@ -4221,6 +4222,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
+              { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
+                desc: t("ailesi_taslar_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
@@ -7428,6 +7431,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 desc:t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), icon:"⌖", color:"#b4a0d8",
                 desc:t("ailesi_tasarim_desc") },
+              { name:t("ailesi_taslar_name"), icon:"💎", color:"#a0d8d8",
+                desc:t("ailesi_taslar_desc") },
             ].map((app,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:14 }}>
                 <div style={{ width:42,height:42,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>{app.icon}</div>
