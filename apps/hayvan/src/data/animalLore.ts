@@ -1925,6 +1925,530 @@ export const ANIMAL_LORE: Record<string, AnimalLore> = {
     ],
   },
 
+  // ─── a101 Balina ────────────────────────────────────────────────────────
+  a101: {
+    jung: {
+      tr: 'Balina, kolektif bilinçaltının kendisidir — yüzeyin çok altında uzanan o uçsuz derinlik. Jung\'un "okyanus" dediği bilinçdışına dalış; Yunus\'un balığın karnındaki üç günü gibi, egonun ölüp dönüştüğü kuluçka karanlığı. Bastırılan her duygunun saklandığı dipsiz arşiv.',
+      en: 'The Whale is the Collective Unconscious itself — that boundless depth stretching far beneath the surface. The dive into the unconscious that Jung called "the ocean"; like Jonah\'s three days in the belly, the incubating darkness where the ego dies and is transformed. The bottomless archive where every suppressed emotion is kept.',
+    },
+    dream: {
+      tr: 'Rüyada balina — bilinçaltından yüzeye doğru yükselen kocaman bir şeyin habercisidir: uzun süredir bastırdığın bir duygu, bir hakikat ya da yaratıcı bir çağrı. Sular durgunsa huzur, fırtınalıysa yüzleşilmeyi bekleyen dipsel bir akıntı.',
+      en: 'A whale in dream — heralds something immense rising from the unconscious toward the surface: a long-suppressed emotion, a truth, or a creative calling. Calm waters mean peace; stormy ones, a deep current waiting to be faced.',
+    },
+    shadow: {
+      tr: 'Duygunun ağırlığında o kadar derine dalmak ki yüzeye, nefese ve ışığa dönmeyi unutmak — melankoliye, geçmişe ya da başkalarının acısına boğulmak. Balina gölgesi dipte kalmayı derinlik sanır; oysa balina bile nefes almak için yükselir.',
+      en: 'Diving so deep into the weight of feeling that you forget to return to the surface, to breath and light — drowning in melancholy, in the past, or in others\' pain. The Whale\'s shadow mistakes staying at the bottom for depth; yet even the whale rises to breathe.',
+    },
+    whenAppears: {
+      tr: 'Eski bir yası ya da duyguyu işlemen gereken dönemlerde; içindeki kadim belleğe ve ailenden gelen sessiz mirasa kulak verme zamanında; ya da yaratıcı bir şarkının derinlerden yüzeye çıkmak istediği anda.',
+      en: 'In times when you must process an old grief or emotion; when it is time to listen to the ancient memory within you and the silent inheritance from your lineage; or when a creative song wishes to rise from the depths to the surface.',
+    },
+    traditions: [
+      { culture: { tr: 'Maori (Polinezya)', en: 'Māori (Polynesia)' }, meaning: { tr: 'Balina kutsal atadır (tipuna). Paikea efsanesinde ata, okyanusu bir balinanın sırtında aşarak yeni topraklara ulaşır — insanla deniz arasındaki kutsal sözleşmenin taşıyıcısı.', en: 'The whale is a sacred ancestor (tipuna). In the Paikea legend the ancestor crosses the ocean on a whale\'s back to reach new lands — carrier of the sacred covenant between humanity and the sea.' } },
+      { culture: { tr: 'Pasifik Kuzeybatı Yerlileri', en: 'Pacific Northwest Peoples' }, meaning: { tr: 'Haida ve Makah geleneğinde balina bereketin ve toplumsal armağanın simgesidir; totem direklerinde yer alır, gelişi tüm köyü doyuran kutsal bir cömertlik anlatısıdır.', en: 'In Haida and Makah tradition the whale symbolizes abundance and communal gift; it appears on totem poles, and its arrival is a sacred story of generosity that feeds an entire village.' } },
+      { culture: { tr: 'İbrani / İslam', en: 'Hebrew / Islamic' }, meaning: { tr: 'Yunus peygamber kıssasında balinanın karnı bir ölüm-yeniden doğuş eşiğidir; karanlığın içine inip teslim olarak ve dönüşerek çıkmanın simgesi.', en: 'In the account of the prophet Jonah, the whale\'s belly is a threshold of death and rebirth; the symbol of descending into darkness, surrendering, and emerging transformed.' } },
+      { culture: { tr: 'İnuit', en: 'Inuit' }, meaning: { tr: 'Deniz tanrıçası Sedna\'nın çocukları ve halka rızık veren kutsal varlıklar; deniz canlılarıyla insan arasındaki saygı dengesinin bekçileri.', en: 'Children of the sea goddess Sedna and sacred beings that provide for the people; guardians of the balance of respect between humanity and the creatures of the sea.' } },
+      { culture: { tr: 'Japon Shinto', en: 'Japanese Shinto' }, meaning: { tr: 'Balina (kujira) okyanus tanrısının lütfu sayılır; Ebisu\'nun bolluğunu taşıyan, kıyı köylerine bereket getiren deniz kamisidir.', en: 'The whale (kujira) is seen as a grace of the ocean god; a sea kami that carries Ebisu\'s abundance and brings bounty to coastal villages.' } },
+    ],
+    myths: [
+      { tr: 'Paikea (Balina Binicisi): Maori atası Paikea, kardeşinin ihaneti yüzünden denizde boğulmak üzereyken bir balina onu sırtına alır ve okyanusu aşarak Aotearoa\'ya (Yeni Zelanda) ulaştırır. Onun soyu, balinayla kurulan o kutsal bağı bugün de taşır.', en: 'Paikea (the Whale Rider): the Māori ancestor Paikea, about to drown at sea through his brother\'s betrayal, is taken upon a whale\'s back and carried across the ocean to Aotearoa (New Zealand). His descendants still carry that sacred bond with the whale today.' },
+      { tr: 'Yunus ile Balina: Görevinden kaçan Yunus fırtınada denize atılır ve büyük bir balık onu yutar. Karanlığın içinde üç gün dua eder, teslim olur; balina onu kıyıya bırakır. Karnın karanlığı bir mezar değil bir rahimdir — Yunus oradan yeniden doğmuş olarak çıkar.', en: 'Jonah and the Whale: fleeing his calling, Jonah is cast into the sea in a storm and a great fish swallows him. Within the darkness he prays for three days and surrenders; the whale releases him to shore. The darkness of the belly is not a grave but a womb — Jonah emerges from it reborn.' },
+    ],
+  },
+
+  // ─── a102 İspermeçet Balinası ───────────────────────────────────────────
+  a102: {
+    jung: {
+      tr: 'İspermeçet balinası, bilinçaltının en dibine inip oradan sağ dönen "Derin Dalgıç" arketipidir — okyanusun ışıksız diplerine ego olmadan, yalnızca yankıyla yolunu bulan ruh. Beyninin ağırlığı ona değil, içindeki sessizliğe işaret eder: en büyük zihin, en derin karanlıkta avlanır.',
+      en: 'The Sperm Whale is the "Deep Diver" archetype that descends to the very bottom of the unconscious and returns alive — the soul that finds its way through the lightless deeps without ego, by echo alone. The weight of its brain points not to itself but to the silence within: the largest mind hunts in the deepest dark.',
+    },
+    dream: {
+      tr: 'Rüyada ispermeçet balinası — derin bir hakikate dalmaya çağrıldığını söyler: yüzeyde bulunamayacak bir cevap, ışığın ulaşmadığı bir derinlikte seni bekliyor. Dipten yükseliyorsa, uzun bir içsel keşfin sonunda nefes almak üzeresin.',
+      en: 'A sperm whale in dream — tells you that you are called to dive into a deep truth: an answer that cannot be found at the surface awaits you in a depth where light does not reach. If it rises from below, you are about to draw breath at the end of a long inner descent.',
+    },
+    shadow: {
+      tr: 'Derinliğe takıntı: bilgiye ve gizemin dibine o kadar dalmak ki gündelik ışığa, sıradan sevince yabancılaşmak. İspermeçet gölgesi, Ahab gibi tek bir karanlık takıntının peşinde tüm hayatını harcar — derinlik bir bilgelik değil, bir saplantı olur.',
+      en: 'Obsession with depth: diving so far into knowledge and the bottom of mystery that you become a stranger to everyday light and ordinary joy. The sperm whale\'s shadow, like Ahab, spends a whole life chasing a single dark obsession — depth becomes not wisdom but fixation.',
+    },
+    whenAppears: {
+      tr: 'Yüzeysel cevapların yetmediği, bir sorunun köküne inmen gereken dönemlerde; sessizliğe çekilip iç sesini yankıyla dinlemen gerektiği anda belirir.',
+      en: 'It appears in times when surface answers no longer suffice and you must descend to the root of a question; when you must withdraw into silence and listen to your inner voice by its echo.',
+    },
+    traditions: [
+      { culture: { tr: 'Azor / Portekiz Denizcileri', en: 'Azorean / Portuguese Whalers' }, meaning: { tr: 'İspermeçet balinası okyanusun "büyük efendisi" sayılır; geçmişin balina avcıları için hem rızık hem de karşılaşıldığında insanı küçülten kadim bir güçtür — denizin sınırını çizen varlık.', en: 'The sperm whale is regarded as the "great lord" of the ocean; for the whalers of the past it was both sustenance and an ancient power that humbled whoever met it — the being that drew the boundary of the sea.' } },
+      { culture: { tr: 'Polinezya', en: 'Polynesian' }, meaning: { tr: 'İspermeçet dişi (parāoa) Maori şefliğinin kutsal simgesidir; reisin yetkesini ve atasal bağı taşıyan, denizin armağanı olan kutsal nesne.', en: 'The sperm whale tooth (parāoa) is a sacred emblem of Māori chieftainship; a hallowed object, a gift of the sea, that carries the chief\'s authority and the ancestral bond.' } },
+      { culture: { tr: 'Yeni İngiltere (Nantucket)', en: 'New England (Nantucket)' }, meaning: { tr: 'Melville\'in Moby Dick\'inde beyaz ispermeçet, doğanın anlaşılamaz, ele geçirilemez gizemidir; insanın takıntısına ayna tutan aşkın bir varlık.', en: 'In Melville\'s Moby-Dick the white sperm whale is the unknowable, ungraspable mystery of nature; a transcendent being that mirrors human obsession back at it.' } },
+      { culture: { tr: 'İnuit', en: 'Inuit' }, meaning: { tr: 'Derin deniz canlıları Sedna\'nın çocukları sayılır; ispermeçet, insanın ulaşamayacağı diplerin bekçisi, saygı gösterilmesi gereken kadim bir ruhtur.', en: 'The deep-sea creatures are counted among Sedna\'s children; the sperm whale is the keeper of depths beyond human reach, an ancient spirit that must be honored.' } },
+    ],
+    myths: [
+      { tr: 'Moby Dick: Kaptan Ahab, bir bacağını koparan beyaz balina Moby Dick\'in peşine düşer ve bütün mürettebatını bu intikam takıntısının içine sürükler. Balina yenilmez kalır; Ahab\'ı da gemisini de dibe çeker. Anlatı, anlaşılmazın peşinde benliğini yitiren insanın trajedisidir.', en: 'Moby-Dick: Captain Ahab pursues the white whale that tore off his leg, dragging his entire crew into the vortex of his vengeful obsession. The whale remains unconquered and pulls both Ahab and his ship to the deep. The tale is the tragedy of a man who loses himself chasing the unknowable.' },
+    ],
+  },
+
+  // ─── a103 Orka ──────────────────────────────────────────────────────────
+  a103: {
+    jung: {
+      tr: 'Orka, "Dönüştürücü Şef" arketipidir — derin sularda dolaşan, ailesini kuşaktan kuşağa aktarılan bir bilgiyle yöneten anaerkil bilgelik. Hem zarif hem ölümcül; karanlık ile aydınlığı (siyah-beyaz) tek bedende taşıyan, bütünlüğün dengelenmiş gücü.',
+      en: 'The Orca is the "Transformer Chief" archetype — the matriarchal wisdom that roams the deep waters and leads its family by knowledge passed down through generations. At once graceful and lethal; carrying dark and light (black and white) in a single body, the balanced power of wholeness.',
+    },
+    dream: {
+      tr: 'Rüyada orka — güçlü bir topluluğa ya da aile bağına ait olduğunu hatırlatır; etrafında seni koruyan görünmez bir sürü var. Tek başına süzülüyorsa, kendi gücüne ve sezgine güvenme zamanı.',
+      en: 'An orca in dream — reminds you that you belong to a powerful community or family bond; an unseen pod surrounds and protects you. If it glides alone, it is time to trust your own power and intuition.',
+    },
+    shadow: {
+      tr: 'Sürünün gücünü baskıya çevirmek: aileye ya da gruba o kadar sıkı bağlanmak ki dışarıdakine acımasızlaşmak, "biz" ve "onlar" diye keskin bir sınır çizmek. Orka gölgesi, koruyuculuğu hükmetmeye dönüştüren liderdir.',
+      en: 'Turning the pod\'s power into domination: bonding so tightly to family or group that you become merciless to the outsider, drawing a sharp line of "us" and "them." The orca\'s shadow is the leader who turns protection into rule.',
+    },
+    whenAppears: {
+      tr: 'Aileni ya da topluluğunu yönetmen, bir grubu bir arada tutman gereken dönemlerde; sezgine güvenip avına (hedefine) kararlı bir koordinasyonla gitmen gerektiği anda belirir.',
+      en: 'It appears when you must lead your family or community, hold a group together; when you must trust your intuition and move toward your quarry (your goal) with decisive coordination.',
+    },
+    traditions: [
+      { culture: { tr: 'Haida (Pasifik Kuzeybatı)', en: 'Haida (Pacific Northwest)' }, meaning: { tr: 'Orka (skana) su altı dünyasının şefidir; ölülerin ruhlarını öteki âleme taşıyan, denizin altında insan biçiminde yaşayan kutsal halk. Totem direklerinin başlıca koruyucu figürü.', en: 'The orca (skana) is the chief of the underwater world; the sacred people who carry the souls of the dead to the otherworld and live in human form beneath the sea. A principal guardian figure on totem poles.' } },
+      { culture: { tr: 'Tlingit', en: 'Tlingit' }, meaning: { tr: 'Orka (keet) klan atasıdır; bir avcının yonttuğu ilk orka heykelinin canlanıp denize dalmasıyla doğduğuna inanılır — sadakatin ve aile koruyuculuğunun simgesi.', en: 'The orca (keet) is a clan ancestor; believed born when the first orca a hunter carved came to life and dove into the sea — a symbol of loyalty and family guardianship.' } },
+      { culture: { tr: 'Nuu-chah-nulth', en: 'Nuu-chah-nulth' }, meaning: { tr: 'Orka, şeflerin ruhunun denizdeki devamı sayılır; bir orka görmek, ölmüş bir reisin halkını ziyarete geldiğine işarettir.', en: 'The orca is regarded as the continuation at sea of chiefs\' souls; to see one is a sign that a departed leader has come to visit his people.' } },
+      { culture: { tr: 'Maori', en: 'Māori' }, meaning: { tr: 'Orkalar (maki) okyanusun bekçileri ve taonga (hazine) sayılır; Tangaroa\'nın, deniz tanrısının koruması altındaki kutsal canlılardır.', en: 'Orcas (maki) are regarded as guardians of the ocean and taonga (treasure); sacred creatures under the protection of Tangaroa, the god of the sea.' } },
+    ],
+    myths: [
+      { tr: 'Natsilane ve Katil Balina: Tlingit efsanesinde kıskanç kayınbiraderleri tarafından ıssız bir adaya terk edilen avcı Natsilane, deniz ruhlarının yardımıyla ahşaptan ilk orkayı yontar. Heykele can verir ve onu kendisini terk edenlerin peşine salar; o günden beri orka denizin adaletini ve sadakatini taşır.', en: 'Natsilane and the Killer Whale: in Tlingit legend the hunter Natsilane, marooned on a barren island by his jealous brothers-in-law, carves the first orca from wood with the help of sea spirits. He gives the figure life and sends it after those who abandoned him; ever since, the orca carries the justice and loyalty of the sea.' },
+    ],
+  },
+
+  // ─── a104 Ahtapot ───────────────────────────────────────────────────────
+  a104: {
+    jung: {
+      tr: 'Ahtapot, "Uyum Sağlayan Zekâ" arketipidir — sekiz kolu ve dağılmış zihni ile her duruma akan, biçim değiştiren bilinç. Kemiksiz bedeni, katı egonun yokluğunu temsil eder: sınırlarını yumuşatabilen, her deliğe sığabilen, gerektiğinde görünmez olabilen ruhsal esneklik.',
+      en: 'The Octopus is the "Adaptive Intelligence" archetype — a shape-shifting consciousness that flows into every situation with its eight arms and distributed mind. Its boneless body represents the absence of a rigid ego: a spiritual flexibility that can soften its boundaries, fit into any crevice, and become invisible when it must.',
+    },
+    dream: {
+      tr: 'Rüyada ahtapot — bir durumu her yönden kavradığını ya da kavraman gerektiğini söyler; çok şeyi aynı anda tutan zekâna güven. Seni sarıyorsa: kontrol altına almaya çalıştığın bir bağdan ya da duygudan kurtulma zamanı.',
+      en: 'An octopus in dream — tells you that you grasp, or must grasp, a situation from every direction; trust the intelligence that holds many things at once. If it wraps around you: it is time to free yourself from a bond or emotion you are trying to control.',
+    },
+    shadow: {
+      tr: 'Kamuflajın gölgesi: o kadar iyi uyum sağlamak ki gerçek benliğini kaybetmek, her ortama göre renk değiştirip kim olduğunu unutmak. Sekiz kolla her şeyi kontrol etmeye çalışmak da manipülasyona, başkalarını sarıp tutmaya dönüşebilir.',
+      en: 'The shadow of camouflage: adapting so well that you lose your true self, changing color for every setting until you forget who you are. Trying to control everything with eight arms can also turn into manipulation, into wrapping around and gripping others.',
+    },
+    whenAppears: {
+      tr: 'Karmaşık, çok katmanlı bir soruna esneklikle yaklaşman gereken dönemlerde; sıkışıp kaldığın bir yerden zekânla sıyrılman ya da bir süre görünmez kalıp kendini koruman gerektiği anda belirir.',
+      en: 'It appears when you must approach a complex, many-layered problem with flexibility; when you must slip free of a tight place by your wits, or stay invisible for a while to protect yourself.',
+    },
+    traditions: [
+      { culture: { tr: 'Hawaii (Polinezya)', en: 'Hawaiian (Polynesian)' }, meaning: { tr: 'Kanaloa, okyanus ve yeraltı tanrısı, sıklıkla ahtapot (heʻe) biçiminde tasvir edilir; bazı anlatılarda ahtapot, önceki bir evrenin tek hayatta kalanıdır — kadim, gizemli bir bilginin taşıyıcısı.', en: 'Kanaloa, god of the ocean and underworld, is often depicted in the form of an octopus (heʻe); in some accounts the octopus is the lone survivor of a previous universe — bearer of ancient, mysterious knowledge.' } },
+      { culture: { tr: 'Japon', en: 'Japanese' }, meaning: { tr: 'Akkorokamui — Ainu geleneğinin devasa, kızıl ahtapot ruhu; hem korkulan hem de şifa ve denizcilik için yardımına başvurulan, çift yönlü güce sahip bir kami.', en: 'Akkorokamui — the colossal red octopus spirit of Ainu tradition; a kami of dual power, both feared and appealed to for healing and safe passage at sea.' } },
+      { culture: { tr: 'Antik Akdeniz (Minos)', en: 'Ancient Mediterranean (Minoan)' }, meaning: { tr: 'Minos seramiğinde ahtapot, kolları sarmal dolanmış biçimde bereketin, denizin canlılığının ve sonsuz akışkanlığın simgesidir.', en: 'On Minoan pottery the octopus, its arms coiling in spirals, is a symbol of abundance, the vitality of the sea, and endless fluidity.' } },
+      { culture: { tr: 'İskandinav / Denizci Folkloru', en: 'Norse / Seafarers\' Folklore' }, meaning: { tr: 'Devasa kafadanbacaklı Kraken efsanesi, ahtaposun derinliklerin bilinmezini ve insanın gözünden saklı kadim gücünü cisimleştirmesinden doğar.', en: 'The legend of the giant cephalopod Kraken arises from the octopus embodying the unknown of the depths and an ancient power hidden from human sight.' } },
+    ],
+    myths: [
+      { tr: 'Kanaloa ve Ahtapot: Hawaii kozmolojisinde ahtapot, mevcut yaratılıştan önceki bir dünyadan kaçıp gelen tek varlıktır. Sekiz kolunda önceki evrenin sırlarını taşır; bu yüzden kadim, başka türlü bir zekânın simgesi sayılır — bizimkinden önceki bir aklın hayatta kalan parçası.', en: 'Kanaloa and the Octopus: in Hawaiian cosmology the octopus is the sole being that escaped from a world prior to the present creation. In its eight arms it carries the secrets of the earlier universe; hence it is regarded as a symbol of an ancient, alien intelligence — the surviving fragment of a mind that came before ours.' },
+    ],
+  },
+
+  // ─── a105 Denizatı ──────────────────────────────────────────────────────
+  a105: {
+    jung: {
+      tr: 'Denizatı, "Nazik Baba" arketipidir — gücün şiddetle değil sabırla, korumayla ve incelikle taşındığı eril enerji. Yavrularını kendi bedeninde taşıyan tek erkek olarak, içsel ataerkil/anaerkil kutupları birleştirir: hassasiyetin de bir güç olduğunu öğreten varlık.',
+      en: 'The Seahorse is the "Gentle Father" archetype — a masculine energy in which strength is carried not by force but by patience, protection, and delicacy. As the only male to bear its young in its own body, it unites the inner paternal and maternal poles: a being that teaches that tenderness, too, is a power.',
+    },
+    dream: {
+      tr: 'Rüyada denizatı — sabırla bekleyip beslediğin bir şeyin (bir proje, bir ilişki, bir çocuk) olgunlaşmakta olduğunu söyler. Yavaş ve nazik akışına güven; bu canlı acele etmeyi bilmez, korumayı bilir.',
+      en: 'A seahorse in dream — tells you that something you have patiently waited upon and nurtured (a project, a relationship, a child) is maturing. Trust its slow and gentle current; this creature knows nothing of haste, only of protection.',
+    },
+    shadow: {
+      tr: 'Naziklik gölgesi: o kadar kırılgan ve yavaş olmak ki akıntıya tutunamayıp sürüklenmek, kendini koruyamamak. Ya da koruyuculuğu fazla sahiplenmeye, taşıdığını asla bırakmamaya çevirip büyümesine izin vermemek.',
+      en: 'The shadow of gentleness: being so fragile and slow that you cannot hold to the current and are swept along, unable to protect yourself. Or turning protectiveness into possessiveness, never releasing what you carry and so not letting it grow.',
+    },
+    whenAppears: {
+      tr: 'Bir şeyi (ya da birini) sabırla, şiddet kullanmadan büyütmen gereken dönemlerde; eril gücünü sertlikle değil incelikle ifade etmen gerektiği anda belirir.',
+      en: 'It appears when you must raise something (or someone) patiently, without force; when you must express your masculine strength through delicacy rather than harshness.',
+    },
+    traditions: [
+      { culture: { tr: 'Yunan Mitolojisi', en: 'Greek Mythology' }, meaning: { tr: 'Hippokampos — yarı at yarı balık deniz atı, Poseidon\'un arabasını çeker. Denizin yumuşatılmış, evcilleştirilmiş gücünü; suyun üzerinde gezen ilahi iradeyi simgeler.', en: 'Hippocampus — the half-horse, half-fish sea steed that draws Poseidon\'s chariot. It symbolizes the gentled, tamed power of the sea; the divine will that travels upon the water.' } },
+      { culture: { tr: 'Antik Roma', en: 'Ancient Rome' }, meaning: { tr: 'Neptün\'ün maiyetinde resmedilen denizatı, denizcilere güç ve koruma getiren uğurlu bir simge; mozaiklerde bereket ve emniyetli yolculuk işareti.', en: 'Depicted in Neptune\'s retinue, the seahorse is an auspicious emblem bringing strength and protection to sailors; in mosaics, a sign of abundance and safe passage.' } },
+      { culture: { tr: 'Çin', en: 'Chinese' }, meaning: { tr: 'Denizatı küçük bir su ejderhası sayılır; güç, kararlılık ve geleneksel tıpta erkek hayat enerjisinin (yang) yenilenmesinin simgesidir.', en: 'The seahorse is regarded as a small water dragon; a symbol of power, perseverance, and, in traditional medicine, the renewal of masculine life energy (yang).' } },
+      { culture: { tr: 'Avrupa Denizci Folkloru', en: 'European Seafarers\' Folklore' }, meaning: { tr: 'Denizatı, kaybolan ruhları öbür dünyaya güvenle taşıyan bir rehber sayılırdı; nazik ama kararlı yol göstericiliğin simgesi.', en: 'The seahorse was held to be a guide that safely carries lost souls to the otherworld; a symbol of gentle yet steadfast guidance.' } },
+    ],
+    myths: [
+      { tr: 'Poseidon\'un Hippokamposları: Yunan mitinde deniz tanrısı Poseidon, dalgaların üzerinde altından arabasını yarı at yarı balık hippokamposlara çektirir. Bu varlıklar fırtınayı sükûnete çevirebilir; denizin vahşi gücünün, ilahi bir iradeyle nasıl nazik ve yönlendirilebilir kılındığını anlatır.', en: 'Poseidon\'s Hippocampi: in Greek myth the sea god Poseidon has his golden chariot drawn over the waves by the half-horse, half-fish hippocampi. These beings can turn storm into calm; the tale tells how the wild power of the sea is made gentle and steerable by a divine will.' },
+    ],
+  },
+
+  // ─── a106 Denizanası ────────────────────────────────────────────────────
+  a106: {
+    jung: {
+      tr: 'Denizanası, "Biçimsiz Akış" arketipidir — egonun, omurganın, sabit benliğin olmadığı saf teslimiyet. Akıntıya direnmeyip onunla bir olan bilinç; ışık geçiren saydam bedeniyle, hiçbir şeyi tutmadan her şeye izin veren bir varlık. Neredeyse ölümsüzlüğü, ölümü bile bir dönüşüm hâline getirir.',
+      en: 'The Jellyfish is the "Formless Flow" archetype — pure surrender, without ego, without spine, without a fixed self. A consciousness that does not resist the current but becomes one with it; with its translucent, light-passing body, a being that grasps nothing and allows everything. Its near-immortality turns even death into a transformation.',
+    },
+    dream: {
+      tr: 'Rüyada denizanası — kontrolü bırakıp hayatın akışına teslim olma çağrısıdır; direnmediğin sürece taşınacaksın. Yakıyorsa: pasifliğin ya da sınırsızlığın seni yaraladığı, bir biçim/sınır kurman gerektiği uyarısı.',
+      en: 'A jellyfish in dream — is a call to release control and surrender to the flow of life; so long as you do not resist, you will be carried. If it stings: a warning that passivity or boundlessness is wounding you, that you must form a shape, a boundary.',
+    },
+    shadow: {
+      tr: 'Biçimsizliğin gölgesi: hiçbir omurgası, sınırı, kararı olmamak — her akıntıya kapılıp kendi yönünü asla seçememek. Pasif teslimiyet, sorumluluktan kaçışa dönüşür; ve dokununca yakan zehir, savunmasız görünenin sessiz öfkesini ele verir.',
+      en: 'The shadow of formlessness: having no spine, no boundary, no decision — drifting with every current and never choosing your own direction. Passive surrender becomes flight from responsibility; and the venom that stings on touch betrays the silent rage of the seemingly defenseless.',
+    },
+    whenAppears: {
+      tr: 'Çok savaştığın, fazla kontrol etmeye çalıştığın bir süreçte bırakmayı öğrenmen gereken dönemlerde; ya da bir dönüşümün (eski benliğin ölüp yenisinin doğmasının) eşiğinde belirir.',
+      en: 'It appears when you must learn to let go in a process you have fought too hard, tried too much to control; or on the threshold of a transformation — the old self dying, the new being born.',
+    },
+    traditions: [
+      { culture: { tr: 'Budist', en: 'Buddhist' }, meaning: { tr: 'Denizanasının biçimsiz, geçici varlığı anicca (gelip-geçicilik) öğretisinin canlı bir simgesidir; tutunmamanın, akışa direnmemenin ve benliğin akışkanlığının hatırlatıcısı.', en: 'The jellyfish\'s formless, transient existence is a living emblem of the teaching of anicca (impermanence); a reminder of non-attachment, of not resisting the flow, and of the fluidity of the self.' } },
+      { culture: { tr: 'Japon', en: 'Japanese' }, meaning: { tr: 'Bir yaratılış efsanesinde başlangıçtaki dünya, henüz katılaşmamış "denizanası gibi yüzen" bir biçimsizlikti; kurage böylece var oluşun ilk, henüz şekillenmemiş hâlini temsil eder.', en: 'In one creation myth the primordial world was a not-yet-solidified formlessness that "floated like a jellyfish"; the kurage thus represents the first, unshaped state of existence.' } },
+      { culture: { tr: 'Polinezya', en: 'Polynesian' }, meaning: { tr: 'Saydam denizanası, ay ışığını ve okyanus ruhlarını taşıyan bir varlık sayılır; gece denizinde parıldaması, görünmez âlemlerin yüzeye dokunuşu olarak okunur.', en: 'The translucent jellyfish is regarded as a being that carries moonlight and ocean spirits; its glow in the night sea is read as the touch of unseen realms upon the surface.' } },
+      { culture: { tr: 'Modern Deniz Bilimi / Sembolizm', en: 'Modern Marine Science / Symbolism' }, meaning: { tr: 'Turritopsis dohrnii — "ölümsüz denizanası" yaşlandığında genç polip hâline geri dönebilir; ölümü bir başlangıca çeviren bu döngü, biyolojik yeniden doğuşun çağdaş simgesi olmuştur.', en: 'Turritopsis dohrnii — the "immortal jellyfish" can revert to its young polyp stage when it ages; this cycle, turning death into a beginning, has become a contemporary emblem of biological rebirth.' } },
+    ],
+    myths: [
+      { tr: 'Maymun ve Denizanası (Japon Masalı): Deniz ejderhası kralının vezirine maymun karaciğeri gerekince, görevi yumuşak ve saf denizanasına verir. Maymun kurnazlıkla onu kandırır; başarısızlığının cezası olarak ejderha kral denizanasının kemiklerini ezer — bu yüzden bugün denizanası omurgasız, biçimsizdir. Masal, fazla saf ve biçimsiz olmanın bedelini anlatır.', en: 'The Monkey and the Jellyfish (Japanese Tale): when the dragon king of the sea needs a monkey\'s liver, he gives the task to the soft, naïve jellyfish. The monkey tricks it cleverly; as punishment for its failure the dragon king crushes the jellyfish\'s bones — and so today the jellyfish is spineless and formless. The tale tells the price of being too naïve and too shapeless.' },
+    ],
+  },
+
+  // ─── a107 Fok ───────────────────────────────────────────────────────────
+  a107: {
+    jung: {
+      tr: 'Fok, "İki Dünya Arasındaki Yolcu" arketipidir — denizin (bilinçaltı, duygu) ve karanın (bilinç, toplum) eşiğinde yaşayan, iki âleme de ait ama hiçbirine tam ait olmayan ruh. Selkie\'nin derisini çıkarması gibi, görünüşün altındaki gerçek özlemi ve duygusal hakikati taşır.',
+      en: 'The Seal is the "Traveler Between Two Worlds" archetype — a soul that lives on the threshold of the sea (the unconscious, emotion) and the land (consciousness, society), belonging to both realms yet wholly to neither. Like the selkie shedding its skin, it carries the true longing and emotional truth beneath appearances.',
+    },
+    dream: {
+      tr: 'Rüyada fok — duyguların ile gündelik hayatın arasında bir köprü kurman gerektiğini söyler; bastırdığın bir özlem yüzeye çıkmak istiyor. Karaya çıkıyorsa: derindeki bir duyguyu nihayet dünyada ifade etme zamanı.',
+      en: 'A seal in dream — tells you that you must bridge your emotions and your everyday life; a suppressed longing wishes to surface. If it comes ashore: it is time at last to express a deep feeling in the world.',
+    },
+    shadow: {
+      tr: 'Eşikte sıkışmak: ne tamamen denize (duyguya) ne karaya (gerçekliğe) ait olamamak, sürekli bir özlemle iki dünya arasında savrulmak. Selkie gölgesi, kendi "derisini" (özgürlüğünü, gerçek doğasını) başkasının saklamasına izin verip esir düşmektir.',
+      en: 'Stuck at the threshold: belonging fully neither to the sea (emotion) nor the land (reality), tossed forever between two worlds in a constant longing. The selkie\'s shadow is to let another hide your "skin" (your freedom, your true nature) and so fall captive.',
+    },
+    whenAppears: {
+      tr: 'Derin bir duyguyla ya da özlemle yüzleşmen gereken dönemlerde; gerçek doğanı bir süre saklamış olup onu geri istemen, "derini" yeniden giyinmen gerektiği anda belirir.',
+      en: 'It appears when you must face a deep emotion or longing; when you have hidden your true nature for a time and must reclaim it, must put your "skin" back on.',
+    },
+    traditions: [
+      { culture: { tr: 'İskoç / İrlanda Kelt', en: 'Scottish / Irish Celtic' }, meaning: { tr: 'Selkie — denizde fok, karada insan biçimine giren şekil değiştirici. Derisi çalınırsa karada esir kalır; geri bulduğunda hep denize döner. Özgürlük, özlem ve gerçek doğaya sadakatin simgesi.', en: 'Selkie — a shape-shifter, seal at sea and human form on land. If its skin is stolen it remains captive ashore; when it recovers it, it always returns to the sea. A symbol of freedom, longing, and fidelity to one\'s true nature.' } },
+      { culture: { tr: 'İnuit', en: 'Inuit' }, meaning: { tr: 'Foklar deniz tanrıçası Sedna\'nın parmaklarından doğan çocuklarıdır; halkın temel rızkı ve denizle insan arasındaki saygı sözleşmesinin kutsal teminatı.', en: 'Seals are the children born of the sea goddess Sedna\'s fingers; the people\'s essential sustenance and the sacred pledge of the covenant of respect between the sea and humanity.' } },
+      { culture: { tr: 'İskandinav (Faroe / İzlanda)', en: 'Norse (Faroe / Iceland)' }, meaning: { tr: 'Yılda bir gece insan biçimine girip karada dans eden fok-insanlar; suya geri dönen ruhların, kayıpların ve karşılıksız özlemin anlatısı.', en: 'Seal-folk who once a year take human form and dance ashore; a narrative of souls returning to the water, of the lost, and of unrequited longing.' } },
+      { culture: { tr: 'Çukçi / Sibirya', en: 'Chukchi / Siberian' }, meaning: { tr: 'Fok, kutup denizlerinin koruyucu ruhu ve avcının kendisine saygı göstermesi gereken bir armağan; doğru ritüelle avlanmazsa rızkını geri çeker.', en: 'The seal is a guardian spirit of the polar seas and a gift the hunter must honor; if not taken with the proper rite, it withdraws its sustenance.' } },
+    ],
+    myths: [
+      { tr: 'Selkie Gelini: Bir balıkçı, kayalıkta derisini çıkarıp insana dönüşen bir selkie kadını görür ve derisini gizler. Kadın karada onunla evlenir, çocukları olur, ama gözleri hep denizdedir. Yıllar sonra çocuklarından biri saklı deriyi bulur; selkie onu giyer ve denize, gerçek evine geri döner. Hikâye, başkasının seni elinde tutması için gerçek doğanı bastırmanın sürmeyeceğini anlatır.', en: 'The Selkie Bride: a fisherman sees a selkie woman shed her skin on the rocks and turn human, and he hides the skin. She marries him ashore, bears children, yet her eyes are ever on the sea. Years later one of the children finds the hidden skin; the selkie dons it and returns to the sea, her true home. The tale tells that suppressing your true nature so another may keep you cannot last.' },
+    ],
+  },
+
+  // ─── a108 Narval ────────────────────────────────────────────────────────
+  a108: {
+    jung: {
+      tr: 'Narval, "Yanılsamayı Delen Hakikat" arketipidir — "denizin tek boynuzlu atı". Buzlu sularda görünmez gezen, alnındaki tek dişiyle (aslında uzamış bir azı diş) hakikatin tek bir noktaya odaklanmış gücünü taşır: yüzeyin altındaki gizli gerçeği delip geçen sezgi.',
+      en: 'The Narwhal is the "Truth That Pierces Illusion" archetype — "the unicorn of the sea." Roaming unseen in icy waters, with the single tusk on its brow (in truth an elongated tooth) it carries the focused power of a single-pointed truth: the intuition that pierces the hidden reality beneath the surface.',
+    },
+    dream: {
+      tr: 'Rüyada narval — bir yanılsamanın, bir yalanın ya da bir karmaşanın içinden tek bir net hakikate ulaşmak üzere olduğunu söyler. Boynuzu sana dönükse: keskin sezginle delmen gereken bir gizem var.',
+      en: 'A narwhal in dream — tells you that you are about to reach a single clear truth through an illusion, a lie, or a confusion. If its tusk turns toward you: there is a mystery you must pierce with your keen intuition.',
+    },
+    shadow: {
+      tr: 'Hakikat kılıcının gölgesi: keskin sezgiyi başkalarını delip geçen acımasız bir doğrulukla kullanmak, "ben gerçeği söylüyorum" diye yaralamak. Ya da kendi boynuzunun (yeteneğinin, farkının) onu garip ve yalnız kıldığını sanıp buzlu sulara saklanmak.', en: 'The shadow of the sword of truth: using keen intuition with a merciless rightness that pierces others, wounding under the banner of "I am only telling the truth." Or hiding away in icy waters, believing one\'s tusk (one\'s gift, one\'s difference) makes one strange and alone.',
+    },
+    whenAppears: {
+      tr: 'Bir karmaşanın ya da aldatmanın içinden gerçeği görmen gereken dönemlerde; seni farklı kılan tekil yeteneğini saklamak yerine onurlandırman gerektiği anda belirir.',
+      en: 'It appears when you must see the truth through a confusion or a deception; when you must honor rather than hide the singular gift that sets you apart.',
+    },
+    traditions: [
+      { culture: { tr: 'İnuit', en: 'Inuit' }, meaning: { tr: 'Bir efsanede narval, denize sürüklenen kör ya da zalim bir kadının saçlarının burularak boynuza dönüşmesiyle doğar; arktik denizin gizemini ve kaderin dönüşümünü taşır.', en: 'In one legend the narwhal is born when the twisted hair of a blind or cruel woman swept into the sea becomes its horn; it carries the mystery of the Arctic sea and the turning of fate.' } },
+      { culture: { tr: 'Ortaçağ Avrupası', en: 'Medieval Europe' }, meaning: { tr: 'Narval dişleri "tek boynuzlu at boynuzu" (alicorn) diye satılır, zehri etkisizleştirdiğine ve şifa verdiğine inanılırdı; kralların hazinelerinde en kıymetli, en mucizevi nesnelerdendi.', en: 'Narwhal tusks were sold as "unicorn horns" (alicorn), believed to neutralize poison and to heal; among the most precious and miraculous objects in royal treasuries.' } },
+      { culture: { tr: 'Viking / Norse', en: 'Viking / Norse' }, meaning: { tr: 'Vikingler narval dişlerini uzak diyarlara büyük servet karşılığı satar, kaynağını sır olarak saklardı; diş, gizli bilgiyle korunan efsanevi bir hazinenin simgesiydi.', en: 'Vikings sold narwhal tusks to distant lands for great fortunes, keeping their source a secret; the tusk became a symbol of a legendary treasure guarded by hidden knowledge.' } },
+      { culture: { tr: 'Çağdaş Sembolizm', en: 'Contemporary Symbolism' }, meaning: { tr: 'Tek boynuzlu atla kurulan bağ nedeniyle narval; saflık, sezgi ve maddi dünyanın ötesindeki gizli bilgiye erişimin simgesi sayılır.', en: 'Through its link to the unicorn, the narwhal is regarded as a symbol of purity, intuition, and access to hidden knowledge beyond the material world.' } },
+    ],
+    myths: [
+      { tr: 'Narvalın Doğuşu (İnuit): Bir avlanma efsanesinde, oğlunu denize sürükleyen bir beyaz balinaya bağlı kadının kendisi de suya çekilir; saçları burularak narvalın spiral dişine dönüşür ve o, denizin kadim bir ruhu olur. Anlatı, kederin ve kaderin nasıl başka bir varlığa dönüştüğünü işler.', en: 'The Birth of the Narwhal (Inuit): in a hunting legend a woman bound to a beluga that drags her son to the sea is herself pulled into the water; her hair twists into the narwhal\'s spiral tusk and she becomes an ancient spirit of the sea. The tale works through how grief and fate are transformed into another being.' },
+      { tr: 'Tek Boynuzlu At Aldatmacası: Ortaçağ Avrupası\'nda tüccarlar, kuzey denizlerinden gelen narval dişlerini efsanevi tek boynuzlu atın boynuzu diye satardı. Krallar zehre karşı bu "alicorn"a servetler ödedi. Yüzeydeki yanılsama (unicorn) altındaki gerçeği (narval) gizlerken, narval da yanılsamayı delen hakikatin simgesi oldu.', en: 'The Unicorn Deception: in medieval Europe merchants sold narwhal tusks from the northern seas as the horn of the legendary unicorn. Kings paid fortunes for this "alicorn" against poison. While the surface illusion (the unicorn) hid the reality beneath it (the narwhal), the narwhal itself became the symbol of the truth that pierces illusion.' },
+    ],
+  },
+
+  // ─── a109 Gergedan ──────────────────────────────────────────────────────
+  a109: {
+    jung: {
+      tr: 'Gergedan, "Zırhlı Yalnız" arketipidir — kadim, ağır, sarsılmaz bir güç; kalın derisiyle (sınırlarıyla) dünyaya karşı korunan ama yalnızlığını da onunla taşıyan benlik. Gözleri zayıf görse de toprağa kök salmış varlığıyla, dış görünüşe değil köke ve güce dayanan bir duruşu temsil eder.',
+      en: 'The Rhinoceros is the "Armored Solitary" archetype — an ancient, heavy, unshakable power; a self protected against the world by its thick skin (its boundaries) yet bearing its solitude through that same hide. Though its eyes see poorly, with its earth-rooted presence it represents a stance grounded not in appearance but in root and strength.',
+    },
+    dream: {
+      tr: 'Rüyada gergedan — sarsılmaz bir güce ve sınır koyma hakkına sahip olduğunu hatırlatır; kimse seni kolayca itemez. Sana doğru hücum ediyorsa: bastırdığın ham bir öfke ya da bir hakikat, yüzleşilmek için üzerine geliyor.',
+      en: 'A rhinoceros in dream — reminds you that you possess an unshakable strength and the right to set boundaries; no one can easily push you. If it charges at you: a raw anger or a truth you have suppressed is bearing down on you to be confronted.',
+    },
+    shadow: {
+      tr: 'Zırhın gölgesi: kalın deri öyle kalınlaşır ki kimseyi içeri almamak, sevgiye ve değişime kapanmak. Zayıf gören gözler ise körlüğe döner: yalnızca önündeki tek hedefe odaklanıp, körü körüne hücum edip etrafı çiğnemek.',
+      en: 'The shadow of the armor: the thick skin thickens until it lets no one in, closing off to love and change. The weak-sighted eyes turn to blindness: fixating on the single target ahead, charging blindly and trampling all around.',
+    },
+    whenAppears: {
+      tr: 'Sınırlarını savunman, sarsılmaz bir kararlılıkla durman gereken dönemlerde; dış baskıya karşı kendi ağırlığına ve köküne güvenmen gerektiği anda belirir.',
+      en: 'It appears when you must defend your boundaries and stand with unshakable resolve; when you must trust your own weight and root against outer pressure.',
+    },
+    traditions: [
+      { culture: { tr: 'Afrika (Çeşitli Halklar)', en: 'African (Various Peoples)' }, meaning: { tr: 'Gergedan, savanın kadim ve güçlü bir bekçisi sayılır; bazı geleneklerde gücün, dayanıklılığın ve yağmurla bağlantılı toprak enerjisinin simgesidir.', en: 'The rhinoceros is regarded as an ancient and powerful guardian of the savanna; in some traditions a symbol of strength, endurance, and an earth energy linked to the rains.' } },
+      { culture: { tr: 'Hint / Vedik', en: 'Indian / Vedic' }, meaning: { tr: 'Tek boynuzlu Hint gergedanı, kralların gücünü ve kadim toprağın dayanıklılığını simgeler; bazı anlatılarda kutsal arınma törenlerinde anılır.', en: 'The single-horned Indian rhinoceros symbolizes the power of kings and the endurance of the ancient earth; in some accounts it is invoked in sacred rites of purification.' } },
+      { culture: { tr: 'Rönesans Avrupası', en: 'Renaissance Europe' }, meaning: { tr: 'Dürer\'in 1515 tarihli ünlü gravüründe gergedan, zırhlı, yenilmez bir kadim güç olarak resmedildi; canlıyı görmeden çizilen bu imge yüzyıllarca Avrupa\'nın gergedan tahayyülünü belirledi.', en: 'In Dürer\'s famous 1515 woodcut the rhinoceros was depicted as an armored, invincible ancient power; drawn without ever seeing the living animal, this image shaped Europe\'s imagination of the rhino for centuries.' } },
+      { culture: { tr: 'Çin', en: 'Chinese' }, meaning: { tr: 'Eski Çin\'de gergedan boynuzu kupaları koruyucu ve arındırıcı sayılırdı; gergedan, kötülüğü uzak tutan ve uzun ömür getiren bir güç simgesiydi.', en: 'In old China cups of rhino horn were held to be protective and purifying; the rhinoceros was a symbol of a power that warded off evil and brought long life.' } },
+    ],
+    myths: [
+      { tr: 'Dürer\'in Gergedanı: 1515\'te Lizbon\'a getirilen bir Hint gergedanını hiç görmeyen Albrecht Dürer, yalnızca bir mektup tarifine dayanarak onu zırh plakalarıyla kaplı, neredeyse mitolojik bir savaş canavarı olarak çizdi. Bu hayalî zırhlı imge gerçeğinden daha güçlü çıktı ve yüzyıllar boyunca insanların zihnindeki "gergedan" oldu — algının gerçeği nasıl bükebildiğinin simgesi.', en: 'Dürer\'s Rhinoceros: Albrecht Dürer, who never saw the Indian rhinoceros brought to Lisbon in 1515, drew it from a written description alone as a near-mythological war-beast plated in armor. This imagined armored image proved more powerful than the reality and became, for centuries, the "rhinoceros" in people\'s minds — a symbol of how perception can bend the truth.' },
+    ],
+  },
+
+  // ─── a110 Zürafa ────────────────────────────────────────────────────────
+  a110: {
+    jung: {
+      tr: 'Zürafa, "Uzak Görüşlü Nazik" arketipidir — en yükseğe uzanan boynuyla geniş ufku gören, ama hareketleri zarif ve sakin olan bilgelik. Kalbinden başına kadar uzanan o uzun yol, sezgi (gönül) ile idrak (akıl) arasında köprü kuran; yükseklikten bakarken bile şiddete başvurmayan asil duruşu temsil eder.',
+      en: 'The Giraffe is the "Far-Sighted Gentle One" archetype — a wisdom that, with its highest-reaching neck, sees the wide horizon, yet whose movements are graceful and calm. That long road from heart to head represents a bridge between intuition (the heart) and comprehension (the mind); a noble bearing that, even while looking down from a height, never resorts to violence.',
+    },
+    dream: {
+      tr: 'Rüyada zürafa — olaylara daha yüksek, daha geniş bir perspektiften bakman gerektiğini söyler; uzaktaki bir fırsatı ya da tehlikeyi görme yetin açılıyor. Sana doğru eğiliyorsa: yüksek bilgeliği nazikçe sana iletiyor.',
+      en: 'A giraffe in dream — tells you to look at things from a higher, wider perspective; your capacity to see a distant opportunity or danger is opening. If it bends toward you: it is gently passing high wisdom down to you.',
+    },
+    shadow: {
+      tr: 'Yüksekten bakmanın gölgesi: o kadar uzağı ve yükseği görmek ki ayağının dibindekini, anı ve yakınındakileri ihmal etmek; tepeden bakmaya, kibre ve kopukluğa dönüşmek. Ya da boynunu uzatıp her şeyi görmek isterken kendini fazla açıkta, savunmasız bırakmak.',
+      en: 'The shadow of looking down from on high: seeing so far and so high that you neglect what is at your feet, the present moment, and those nearby; turning to condescension, pride, and detachment. Or, stretching your neck to see everything, leaving yourself too exposed and defenseless.',
+    },
+    whenAppears: {
+      tr: 'Bir duruma yukarıdan, geniş bir bakışla yaklaşman gereken dönemlerde; gücünü ve görüşünü incelikle, sertliğe başvurmadan kullanman gerektiği anda belirir.',
+      en: 'It appears when you must approach a situation from above, with a wide view; when you must use your strength and sight with grace, without resorting to harshness.',
+    },
+    traditions: [
+      { culture: { tr: 'San / Buşman (Güney Afrika)', en: 'San / Bushmen (Southern Africa)' }, meaning: { tr: 'Zürafa, yağmur dansı ritüellerinde ve kaya resimlerinde kutsal bir hayvandır; zarif yürüyüşü yağmurun ve şifanın gelişiyle ilişkilendirilen bir "yağmur hayvanı"dır.', en: 'The giraffe is a sacred animal in rain-dance rituals and rock paintings; a "rain animal" whose graceful gait is associated with the coming of rain and of healing.' } },
+      { culture: { tr: 'Antik Mısır', en: 'Ancient Egypt' }, meaning: { tr: 'Zürafa (mmy) bir hiyeroglif işaretidir ve "öngörmek, kehanette bulunmak" anlamı taşır; uzaktan görme yetisi, geleceği görmenin simgesi sayılırdı.', en: 'The giraffe (mmy) is a hieroglyphic sign meaning "to foretell, to prophesy"; its ability to see from afar was regarded as a symbol of seeing the future.' } },
+      { culture: { tr: 'Çin (Ming Hanedanı)', en: 'Chinese (Ming Dynasty)' }, meaning: { tr: 'Afrika\'dan getirilen ilk zürafa imparatorluk sarayında efsanevi qilin (kutsal, hayırlı yaratık) sanıldı; barışın, erdemli yönetimin ve göksel onayın uğurlu habercisi olarak kutlandı.', en: 'The first giraffe brought from Africa was taken at the imperial court for the legendary qilin (a sacred, auspicious creature); celebrated as a fortunate herald of peace, virtuous rule, and heavenly approval.' } },
+      { culture: { tr: 'Doğu Afrika (Çeşitli Halklar)', en: 'East African (Various Peoples)' }, meaning: { tr: 'Zürafa, sessizliği ve narin duruşuyla zarafetin, sabrın ve geniş görüşün simgesi sayılır; sürüsünü yüksekten kollayan nazik bir gözcüdür.', en: 'With its silence and delicate bearing the giraffe is regarded as a symbol of grace, patience, and broad vision; a gentle watcher that keeps guard over its herd from on high.' } },
+    ],
+    myths: [
+      { tr: 'Zürafa Nasıl Uzun Boylu Oldu (Afrika Halk Masalı): Bir kuraklık döneminde tüm hayvanlar otlakları tükenince, zürafa ve bir başka hayvan, sihirli bir bitkinin kökünü çiğneyerek boyunun uzamasını ister. Açgözlülük etmeyip sabırla bekleyen zürafanın boynu, en yüksek ağaçların yapraklarına uzanacak kadar uzar; böylece kuraklıkta hayatta kalır. Masal, yükseğe ulaşmanın sabır ve ölçüyle geldiğini anlatır.', en: 'How the Giraffe Got Its Height (African Folk Tale): in a time of drought, when all the animals\' pastures run dry, the giraffe and another animal chew the root of a magic plant to grow taller. The patient, ungreedy giraffe\'s neck lengthens until it can reach the leaves of the tallest trees, and so it survives the drought. The tale tells that reaching high comes through patience and measure.' },
+    ],
+  },
+
+  // ─── a111 Goril ─────────────────────────────────────────────────────────
+  a111: {
+    jung: {
+      tr: 'Goril, "Nazik Dev" arketipidir — muazzam fiziksel güce sahip ama onu gösterişe değil koruma ve dinginliğe adamış eril otorite. Gümüşsırt liderliği gibi, gerçek gücün kükremekte değil, ailenin huzurunu sessizce sağlamakta olduğunu öğreten vakarlı, ölçülü baba enerjisi.',
+      en: 'The Gorilla is the "Gentle Giant" archetype — a masculine authority of immense physical strength devoted not to display but to protection and stillness. Like the silverback\'s leadership, a dignified, measured paternal energy that teaches that true power lies not in roaring but in quietly securing the family\'s peace.',
+    },
+    dream: {
+      tr: 'Rüyada goril — içindeki sakin gücü ve koruyucu otoriteyi hatırlatır; saygı görmek için bağırmana gerek yok. Göğsünü dövüyorsa: bir sınır çizmen, varlığını sakince ama net biçimde ortaya koyman gerekiyor.',
+      en: 'A gorilla in dream — reminds you of the calm strength and protective authority within you; you need not shout to be respected. If it beats its chest: you must draw a boundary, asserting your presence calmly but clearly.',
+    },
+    shadow: {
+      tr: 'Gücün gölgesi: dinginlik bastırılmış öfkeye dönüşür ve gümüşsırt, koruyuculuğunu hükmetmeye, otoritesini zorbalığa çevirir. Ya da tersi: muazzam gücünü hiç kullanmamak, çatışmadan kaçınmak için kendini sürekli geri çekip ailesini savunamamak.',
+      en: 'The shadow of strength: stillness turns into suppressed rage, and the silverback turns its protection into domination, its authority into tyranny. Or the reverse: never using its immense strength, withdrawing endlessly to avoid conflict and so failing to defend its family.',
+    },
+    whenAppears: {
+      tr: 'Bir grubu ya da aileyi sakin bir otoriteyle korumana ihtiyaç duyulan dönemlerde; gücünü kanıtlamak yerine onu ölçülü ve vakarlı biçimde taşıman gerektiği anda belirir.',
+      en: 'It appears when a group or family needs to be protected by a calm authority; when you must carry your strength with measure and dignity rather than proving it.',
+    },
+    traditions: [
+      { culture: { tr: 'Orta Afrika (Çeşitli Halklar)', en: 'Central African (Various Peoples)' }, meaning: { tr: 'Goril, ormanın güçlü ve saygın bir varlığı sayılır; bazı geleneklerde atalarla ya da orman ruhlarıyla bağlantılı, gücüne saygı duyulması gereken bir akraba olarak görülür.', en: 'The gorilla is regarded as a powerful and respected being of the forest; in some traditions seen as a kin linked to the ancestors or forest spirits, whose strength must be honored.' } },
+      { culture: { tr: 'Antik Kartaca', en: 'Ancient Carthage' }, meaning: { tr: 'Kâşif Hanno\'nun M.Ö. 5. yüzyıldaki Batı Afrika seferinde karşılaştığı "gorillai" adlı tüylü, vahşi varlıklar; "goril" adının ve Avrupa hayalindeki gizemli orman devinin kökeni.', en: 'The hairy, wild beings called "gorillai" that the explorer Hanno met on his 5th-century BCE voyage along West Africa; the origin of the name "gorilla" and of the mysterious forest giant in the European imagination.' } },
+      { culture: { tr: 'Bantu Geleneği', en: 'Bantu Tradition' }, meaning: { tr: 'Büyük maymunlar, bazı Bantu anlatılarında insan ile orman arasındaki sınırda yaşayan, hem korkulan hem saygı duyulan akrabalar; doğanın gücünü ve aile düzenini temsil eder.', en: 'The great apes, in some Bantu narratives, are kin who live on the border between humanity and the forest, both feared and respected; they represent the power of nature and the order of the family.' } },
+      { culture: { tr: 'Modern Sembolizm', en: 'Modern Symbolism' }, meaning: { tr: 'Gümüşsırt goril çağdaş kültürde sessiz liderliğin, aile koruyuculuğunun ve gereksiz şiddete başvurmayan asil gücün simgesi hâline gelmiştir.', en: 'The silverback gorilla has become, in contemporary culture, a symbol of quiet leadership, family protection, and a noble strength that does not stoop to needless violence.' } },
+    ],
+    myths: [
+      { tr: 'Hanno\'nun Gorillaisi: Kartacalı denizci Hanno, Batı Afrika kıyısını keşfederken bir adada tüylü, vahşi varlıklarla karşılaşır; yerli rehberleri onlara "gorillai" der. Hanno\'nun kayıtları yüzyıllar sonra bu büyük maymunlara adını verir. Anlatı, bilinmeyenin sınırındaki güçlü, gizemli varlığın insan hayalinde nasıl efsaneleştiğini gösterir.', en: 'Hanno\'s Gorillai: the Carthaginian seafarer Hanno, exploring the West African coast, encounters hairy, wild beings on an island; his native guides call them "gorillai." Hanno\'s account, centuries later, gives these great apes their name. The narrative shows how a powerful, mysterious being on the edge of the unknown is mythologized in the human imagination.' },
+    ],
+  },
+
+  // ─── a112 Panda ─────────────────────────────────────────────────────────
+  a112: {
+    jung: {
+      tr: 'Panda, "Dengelenmiş Zıtlık" arketipidir — siyah ve beyazı, gücü ve nazikliği, yalnızlığı ve sevimliliği tek bedende uzlaştıran yin-yang varlığı. Ayı gücüne sahip olduğu hâlde bambunun sadeliğiyle yetinen; çatışmayı değil dinginliği seçen, az ile çok yaşamayı bilen Tao bilgeliği.',
+      en: 'The Panda is the "Reconciled Opposites" archetype — a yin-yang being that harmonizes black and white, strength and gentleness, solitude and endearment in a single body. Though it possesses the strength of a bear, it is content with the simplicity of bamboo; a Taoist wisdom that chooses stillness over conflict and knows how to live abundantly with little.',
+    },
+    dream: {
+      tr: 'Rüyada panda — hayatındaki zıtlıkları (iş ve dinlenme, güç ve yumuşaklık) dengelemen gerektiğini söyler; sadeliğe ve barışa dönme çağrısı. Huzurla bambu yiyorsa: ihtiyacın olan şey daha fazlası değil, sahip olduğunla dingin olmak.',
+      en: 'A panda in dream — tells you to balance the opposites in your life (work and rest, strength and softness); a call to return to simplicity and peace. If it eats bamboo in serenity: what you need is not more, but stillness with what you already have.',
+    },
+    shadow: {
+      tr: 'Dengenin gölgesi: barışı korumak için her şeyden geri çekilmek, çatışmadan o kadar kaçmak ki edilgenliğe ve yalıtılmışlığa gömülmek. Ya da sadeliği bahane edip büyümeyi, gücünü kullanmayı reddetmek — bambunun konforunda uyuşmak.',
+      en: 'The shadow of balance: withdrawing from everything to keep the peace, fleeing conflict so thoroughly that you sink into passivity and isolation. Or using simplicity as an excuse to refuse growth and the use of your strength — going numb in the comfort of bamboo.',
+    },
+    whenAppears: {
+      tr: 'Hayatındaki uçları dengelemen, sadeliğe ve iç huzura dönmen gereken dönemlerde; güçlü olduğun hâlde nazik ve barışçıl kalmayı seçmen gerektiği anda belirir.',
+      en: 'It appears when you must balance the extremes in your life and return to simplicity and inner peace; when you must choose to remain gentle and peaceful even though you are strong.',
+    },
+    traditions: [
+      { culture: { tr: 'Çin (Tao)', en: 'Chinese (Taoist)' }, meaning: { tr: 'Pandanın siyah-beyaz deseni yin ve yang\'ın mükemmel dengesini cisimleştirir; karşıt güçlerin uyumunu, ölçüyü ve doğayla akış içinde yaşamayı simgeler.', en: 'The panda\'s black-and-white pattern embodies the perfect balance of yin and yang; it symbolizes the harmony of opposing forces, measure, and living in flow with nature.' } },
+      { culture: { tr: 'Eski Çin (Han Hanedanı)', en: 'Ancient China (Han Dynasty)' }, meaning: { tr: 'Panda kadim Çin\'de barışın ve diplomasinin simgesi sayılırdı; bir efsaneye göre savaşan taraflar pandanın bayrağı altında ateşkes ilan ederdi, çünkü panda hiçbir canlıyı incitmez.', en: 'In ancient China the panda was regarded as a symbol of peace and diplomacy; by one legend warring sides declared truce under the panda\'s banner, for the panda harms no living thing.' } },
+      { culture: { tr: 'Tibet / Çin Sınır Halkları', en: 'Tibetan / Sino-Border Peoples' }, meaning: { tr: 'Bir efsanede pandanın kara lekeleri, ölen bir çobanı yası tutan pandaların gözlerini, kollarını ve kulaklarını kül-gözyaşıyla karartmasından doğar; pandayı şefkat ve yas ile ilişkilendirir.', en: 'In one legend the panda\'s black markings arise when pandas mourning a dead shepherdess blacken their eyes, arms, and ears with ash and tears; it links the panda with compassion and grief.' } },
+      { culture: { tr: 'Modern Çin', en: 'Modern China' }, meaning: { tr: 'Panda ulusal bir simge ve "panda diplomasisi" aracı hâline gelmiştir; barış, dostluk ve uluslar arası uyumun çağdaş elçisidir.', en: 'The panda has become a national symbol and the instrument of "panda diplomacy"; a contemporary envoy of peace, friendship, and harmony among nations.' } },
+    ],
+    myths: [
+      { tr: 'Pandanın Kara Lekeleri: Bir Çin efsanesinde pandalar bir zamanlar bembeyazdı. Onları leoparlardan koruyan genç bir çoban kız bir gün bir yavru pandayı kurtarırken can verir. Pandalar cenazesinde yas tutarken, geleneğe göre kollarına kül sürerler; ağlarken gözlerini sildiklerinde, kucaklaştıklarında ve kulaklarını kapattıklarında kül her yere bulaşır. O günden beri pandalar yaslarını siyah lekeler olarak taşır — şefkatin ve kaybın izi.', en: 'The Panda\'s Black Markings: in a Chinese legend pandas were once pure white. A young shepherdess who protected them from leopards dies one day saving a panda cub. As the pandas mourn at her funeral, by custom they smear ash on their arms; when they wipe their weeping eyes, embrace one another, and cover their ears, the ash spreads everywhere. Ever since, pandas carry their grief as black markings — the trace of compassion and loss.' },
+    ],
+  },
+
+  // ─── a113 Köstebek ──────────────────────────────────────────────────────
+  a113: {
+    jung: {
+      tr: 'Köstebek, "Yeraltının Bilgesi" arketipidir — gözleri görmese de toprağın altında, karanlıkta yolunu bulan iç görü. Dış dünyanın ışığına değil, sezgiye ve dokunuşa güvenen bilinçaltı kâşifi; gizli olanı, bastırılmışı, kökleri eşeleyip yüzeye çıkaran sessiz emek.',
+      en: 'The Mole is the "Sage of the Underground" archetype — an inner sight that finds its way in the dark beneath the earth, though its eyes do not see. An explorer of the unconscious that trusts not the light of the outer world but intuition and touch; a silent labor that digs up the hidden, the repressed, the roots, and brings them to the surface.',
+    },
+    dream: {
+      tr: 'Rüyada köstebek — gözle görülmeyeni, yüzeyin altındaki gizli bir gerçeği sezginle bulman gerektiğini söyler. Yeraltında ilerliyorsa: görünmeyen, sabırlı bir emek seni hedefe götürüyor; sonuç henüz yüzeyde görünmese de.',
+      en: 'A mole in dream — tells you to find with your intuition what the eye does not see, a hidden truth beneath the surface. If it tunnels underground: an unseen, patient labor is carrying you toward your goal, though the result is not yet visible at the surface.',
+    },
+    shadow: {
+      tr: 'Yeraltının gölgesi: ışığa, yüzeye, başkalarına hiç çıkmamak; sürekli kendi karanlık tünellerinde, geçmişte ya da takıntılarda eşelenip dünyaya kör kalmak. Köstebek gölgesi, içe dönüklüğü saplantılı bir izolasyona ve görünmeyene takılı bir körlüğe çevirir.',
+      en: 'The shadow of the underground: never coming up to the light, to the surface, to others; forever digging in your own dark tunnels, in the past or in obsessions, and staying blind to the world. The mole\'s shadow turns introversion into an obsessive isolation and a blindness fixed on the unseen.',
+    },
+    whenAppears: {
+      tr: 'Yüzeydeki gürültüden çekilip içe, derine, gizli olana yönelmen gereken dönemlerde; görünmez ve sabırlı bir emekle, sonucu hemen görmeden çalışman gerektiği anda belirir.',
+      en: 'It appears when you must withdraw from the noise of the surface and turn inward, deep, to the hidden; when you must work with an unseen and patient labor, without seeing the result at once.',
+    },
+    traditions: [
+      { culture: { tr: 'Kızılderili (Çeşitli Halklar)', en: 'Native American (Various Peoples)' }, meaning: { tr: 'Köstebek, yeraltı dünyasının ve toprak enerjisinin bekçisi sayılır; körlüğü bir eksiklik değil, iç görüye ve toprağa kulak verme yetisi olarak yorumlanır.', en: 'The mole is regarded as a keeper of the underworld and of earth energy; its blindness is read not as a lack but as the capacity for inner sight and for listening to the earth.' } },
+      { culture: { tr: 'Avrupa Folkloru', en: 'European Folklore' }, meaning: { tr: 'Köstebek tepecikleri ve gizli yolları nedeniyle köstebek; saklı bilginin, görünmez emeğin ve toprağın altındaki sırların simgesidir. Bazı geleneklerde uğurlu, bazılarında ise alttan iş çeviren kurnazlığın işareti.', en: 'For its molehills and hidden paths the mole is a symbol of secret knowledge, of unseen labor, and of secrets beneath the earth. In some traditions auspicious, in others a sign of cunning that works from below.' } },
+      { culture: { tr: 'Antik Yunan', en: 'Ancient Greek' }, meaning: { tr: 'Kör kâhin Tiresias\'ın bir versiyonunda köstebeğe dönüştürüldüğü anlatılır; körlük ile içsel bilgelik, görünenin ötesini görme yetisi arasında bağ kurulur.', en: 'In one version of the blind seer Tiresias he is said to be turned into a mole; a link is drawn between blindness and inner wisdom, the capacity to see beyond the visible.' } },
+      { culture: { tr: 'Slav Folkloru', en: 'Slavic Folklore' }, meaning: { tr: 'Köstebek yeraltının ve ölüler diyarının eşiğinde duran bir varlık sayılır; toprağı bilen, gizli zenginlikleri ve kökleri tanıyan kadim bir işçi olarak görülür.', en: 'The mole is regarded as a being standing at the threshold of the underground and the realm of the dead; seen as an ancient laborer that knows the earth, the hidden riches, and the roots.' } },
+    ],
+    myths: [
+      { tr: 'Köstebek ile Güneş (Halk Masalı): Bir efsaneye göre köstebek bir zamanlar gören gözlere sahipti, ama yeraltının zenginliklerine ve sırlarına o kadar tutkundu ki güneşe ve yüzeyin dünyasına sırtını döndü. Karanlıkta yaşamayı seçtiği için gözleri zamanla kapandı; karşılığında dokunuşu ve sezgisi öyle keskinleşti ki toprağın altında hiç yolunu şaşırmaz oldu. Masal, bir duyuyu kaybedenin bir başkasını nasıl bilgeliğe çevirdiğini anlatır.', en: 'The Mole and the Sun (Folk Tale): by one legend the mole once had seeing eyes, but it was so enamored of the riches and secrets of the underground that it turned its back on the sun and the world of the surface. Because it chose to live in darkness its eyes closed over time; in return its touch and intuition grew so keen that it never loses its way beneath the earth. The tale tells how one who loses a sense turns another into wisdom.' },
+    ],
+  },
+
+  // ─── a114 Pangolin ──────────────────────────────────────────────────────
+  a114: {
+    jung: {
+      tr: 'Pangolin, "Korunan Kutsal" arketipidir — tehlike anında kıvrılıp pulları dışta tek bir küre olan, kendini şiddetle değil teslimiyetle ve sabırla koruyan varlık. Zırhının altındaki yumuşaklığı saklayan; saldırmadan, yalnızca toparlanıp bekleyerek hayatta kalan içsel sığınak ve dokunulmazlık.',
+      en: 'The Pangolin is the "Protected Sacred" archetype — a being that, in danger, curls into a single sphere with its scales facing out, defending itself not by force but by surrender and patience. It hides the softness beneath its armor; an inner sanctuary and inviolability that survives without attacking, only by gathering in and waiting.',
+    },
+    dream: {
+      tr: 'Rüyada pangolin — kendini koruman, bir süre içine çekilip dış dünyaya kapanman gerektiğini söyler; bu bir kaçış değil, kutsal bir savunmadır. Kıvrılıp top oluyorsa: saldırmadan, yalnızca sınır koyup yumuşak özünü koruyarak güvende kalabilirsin.',
+      en: 'A pangolin in dream — tells you to protect yourself, to withdraw inward for a time and close off to the outer world; this is not flight but a sacred defense. If it curls into a ball: you can stay safe without attacking, only by setting a boundary and guarding your soft core.',
+    },
+    shadow: {
+      tr: 'Zırhın gölgesi: tehlike geçtikten çok sonra bile açılamamak, sürekli kıvrılıp herkese ve her şeye kapanmak; korunmayı bir hapishaneye çevirmek. Pangolin gölgesi, yumuşak özünü o kadar saklar ki sevgiye, temasa ve hayata kapanır — güvenlik, yalnızlığa dönüşür.',
+      en: 'The shadow of the armor: being unable to unfurl long after the danger has passed, forever curling up and closing off to everyone and everything; turning protection into a prison. The pangolin\'s shadow hides its soft core so well that it shuts out love, touch, and life — safety turns into solitude.',
+    },
+    whenAppears: {
+      tr: 'Kendini koruman, hassas özünü dış tehditten sakınman gereken dönemlerde; savaşmak yerine sabırla içine çekilip fırtınanın geçmesini beklemen gerektiği anda belirir.',
+      en: 'It appears when you must protect yourself and shield your tender core from outer threat; when you must withdraw inward with patience and wait out the storm rather than fight.',
+    },
+    traditions: [
+      { culture: { tr: 'Güney Afrika (Tswana / Venda)', en: 'Southern African (Tswana / Venda)' }, meaning: { tr: 'Pangolin son derece kutsal ve nadir bir armağan sayılır; bir pangolin görmek ya da bulmak büyük bir uğur ve yağmurla, bereketle ilişkili kutsal bir işarettir — şefe sunulacak kadar değerlidir.', en: 'The pangolin is regarded as an exceedingly sacred and rare gift; to see or find one is great fortune, a sacred sign linked with rain and abundance — precious enough to be presented to the chief.' } },
+      { culture: { tr: 'Lele (Kongo)', en: 'Lele (Congo)' }, meaning: { tr: 'Lele halkı için pangolin, sınıflandırmaya sığmayan kutsal bir varlıktır (pullu ama memeli, ağaca da çıkar, suya da girer); şifa ve bereket törenlerinde merkezde yer alan kutsal bir aracı.', en: 'For the Lele people the pangolin is a sacred being that defies classification (scaled yet a mammal, climbing trees and entering water); a sacred mediator at the heart of rites of healing and fertility.' } },
+      { culture: { tr: 'Çin / Güneydoğu Asya', en: 'Chinese / Southeast Asian' }, meaning: { tr: 'Pangolin geleneksel olarak yeraltını ve yerüstünü birbirine bağlayan bir varlık (chuan shan jia — "dağı delen") sayılır; gizli geçitlerin ve dünyalar arası bağın simgesi.', en: 'The pangolin is traditionally regarded as a being that connects the underworld and the surface (chuan shan jia — "the one that bores through the mountain"); a symbol of hidden passages and of the link between worlds.' } },
+      { culture: { tr: 'Batı Afrika (Çeşitli Halklar)', en: 'West African (Various Peoples)' }, meaning: { tr: 'Pangolin, zararsızlığı ve kendini yalnızca savunmayla koruması nedeniyle barışın, masumiyetin ve şiddetsiz dayanıklılığın simgesi sayılır; bazı geleneklerde dokunulmaz, korunması gereken kutsal hayvan.', en: 'For its harmlessness and its purely defensive self-protection the pangolin is regarded as a symbol of peace, innocence, and nonviolent endurance; in some traditions an inviolable, sacred animal that must be protected.' } },
+    ],
+    myths: [
+      { tr: 'Pangolin Armağanı (Güney Afrika): Birçok Güney Afrika geleneğinde, bir pangolinle karşılaşmak son derece nadir ve kutsal bir olaydır. Bulunan bir pangolinin yağmur getirdiğine, kuraklığı sona erdirdiğine inanılır; bu yüzden onu bulan kişi onu şefe ya da yağmur yapıcıya sunar. Şiddete başvurmadan yalnızca kıvrılıp kendini koruyan bu varlık, savunmasız görünenin nasıl kutsal sayılabileceğini gösterir.', en: 'The Pangolin Gift (Southern Africa): in many Southern African traditions, to encounter a pangolin is an exceedingly rare and sacred event. A pangolin that is found is believed to bring rain and end drought; so the one who finds it presents it to the chief or the rainmaker. This being, which protects itself only by curling up without recourse to violence, shows how the seemingly defenseless can be held sacred.' },
+    ],
+  },
+
+  // ─── a115 Grifon ────────────────────────────────────────────────────────
+  a115: {
+    jung: {
+      tr: 'Grifon, "Hazinenin Bekçisi" arketipidir — aslanın (yerin, gücün kralı) ve kartalın (göğün, ruhun kralı) birleşmesi; madde ile ruhun, içgüdü ile bilgeliğin tek bedendeki sentezi. Altını ve kutsal sırrı koruyan ilahi muhafız: gerçek değere ancak onun denemesini geçenin erişebildiği eşik bekçisi.',
+      en: 'The Griffin is the "Guardian of Treasure" archetype — the union of the lion (king of earth and strength) and the eagle (king of sky and spirit); the synthesis, in one body, of matter and spirit, of instinct and wisdom. A divine guardian that protects gold and the sacred secret: a threshold-keeper to whose treasure only the one who passes its trial may reach.',
+    },
+    dream: {
+      tr: 'Rüyada grifon — değerli bir şeyi (bir yeteneği, bir hakikati, bir mirası) koruman ya da onu hak ederek kazanman gerektiğini söyler. Bir kapıda nöbet tutuyorsa: önemli bir eşiğin önündesin ve geçmek için bir sınavın var.',
+      en: 'A griffin in dream — tells you to guard something precious (a gift, a truth, an inheritance) or to earn it by deserving it. If it stands watch at a gate: you are before an important threshold and have a trial to pass to cross it.',
+    },
+    shadow: {
+      tr: 'Bekçinin gölgesi: koruduğun hazinenin (gücünün, bilginin, sevdiklerinin) üzerine öyle abanmak ki onu kimseyle paylaşamamak, kıskanç ve saldırgan bir muhafıza dönüşmek. Grifon gölgesi, koruma içgüdüsünü cimriliğe ve kapalılığa; bekçiliği hapishane gardiyanlığına çevirir.',
+      en: 'The shadow of the guardian: clinging so tightly to the treasure you protect (your power, your knowledge, your loved ones) that you can share it with no one, turning into a jealous and aggressive sentinel. The griffin\'s shadow turns the instinct to protect into miserliness and closure; the keeper into a prison warden.',
+    },
+    whenAppears: {
+      tr: 'Değerli bir şeyi koruman ya da bir eşikten geçmeyi hak etmen gereken dönemlerde; içindeki yer (güç) ile gök (ruh) güçlerini birleştirip bütünlüğüne sahip çıkman gerektiği anda belirir.',
+      en: 'It appears when you must guard something precious or earn passage across a threshold; when you must unite the earth (strength) and sky (spirit) powers within you and claim your wholeness.',
+    },
+    traditions: [
+      { culture: { tr: 'Antik Yunan', en: 'Ancient Greek' }, meaning: { tr: 'Grifonlar, kuzeyin uçlarındaki altın yataklarını tek gözlü Arimaspların hırsızlığından koruyan efsanevi bekçilerdir; hazinenin ve dokunulmaz kutsalın muhafızı.', en: 'Griffins are the legendary guardians that protect the gold deposits at the edges of the north from the theft of the one-eyed Arimaspians; keepers of treasure and of the inviolable sacred.' } },
+      { culture: { tr: 'Pers / İran', en: 'Persian / Iranian' }, meaning: { tr: 'Pers sanatında (Persepolis kabartmaları) grifon, kraliyet gücünün ve ilahi korumanın simgesidir; tahtın ve kutsal düzenin bekçisi olarak saray kapılarını süsler.', en: 'In Persian art (the Persepolis reliefs) the griffin is a symbol of royal power and divine protection; adorning palace gates as guardian of the throne and of the sacred order.' } },
+      { culture: { tr: 'İskit', en: 'Scythian' }, meaning: { tr: 'İskit altın işçiliğinde grifon en sık işlenen figürlerdendir; bozkırın altınını ve ölülerin hazinesini koruyan, göçebe gücünün ve öteki dünyanın muhafızı.', en: 'In Scythian goldwork the griffin is among the most frequently wrought figures; guardian of the steppe\'s gold and of the treasure of the dead, sentinel of nomadic power and of the otherworld.' } },
+      { culture: { tr: 'Ortaçağ Hristiyan', en: 'Medieval Christian' }, meaning: { tr: 'Grifon, aslanın (yer) ve kartalın (gök) birliğiyle hem insani hem ilahi doğayı taşıyan İsa\'nın bir simgesi sayıldı; göğü ve yeri birleştiren, sadakatin ve gücün bekçisi.', en: 'The griffin, uniting the lion (earth) and the eagle (sky), was taken as a symbol of Christ bearing both human and divine natures; a keeper of fidelity and strength that unites heaven and earth.' } },
+    ],
+    myths: [
+      { tr: 'Grifonlar ve Arimasplar: Antik Yunan coğrafyacılarının (Herodotos, Aristeas) anlattığına göre, dünyanın kuzey uçlarında, soğuk dağların ardında grifonlar altın madenlerini korur. Tek gözlü göçebe halk Arimasplar bu altını çalmaya çalışır ve grifonlarla bitmek bilmez bir savaş içindedir. Anlatı, en büyük hazineye ancak en güçlü bekçiyi aşabilenin ulaşabileceğini söyler — değer, onu koruyan tehlikeyle ölçülür.', en: 'Griffins and the Arimaspians: as the ancient Greek geographers (Herodotus, Aristeas) tell, at the northern edges of the world, beyond the cold mountains, griffins guard the gold mines. The one-eyed nomadic Arimaspians try to steal this gold and are locked in endless war with the griffins. The tale says that only the one who can overcome the strongest guardian may reach the greatest treasure — worth is measured by the danger that protects it.' },
+    ],
+  },
+
+  // ─── a116 Sfenks ────────────────────────────────────────────────────────
+  a116: {
+    jung: {
+      tr: 'Sfenks, "Eşik Bekçisi ve Bilmecenin Sahibi" arketipidir — insan başı (bilinç, akıl) ile aslan bedeninin (içgüdü, güç) birliği; iki dünya arasındaki kapıda duran, geçmek isteyene bir sır soran muhafız. Cevabı kendi içinde olan bir bilmeceyle, kişiyi gerçek benliğiyle yüzleşmeye zorlayan kadim bilgelik.',
+      en: 'The Sphinx is the "Threshold Guardian and Keeper of the Riddle" archetype — the union of a human head (consciousness, reason) and a lion\'s body (instinct, strength); a guardian standing at the gate between two worlds, posing a secret to whoever would pass. An ancient wisdom that, with a riddle whose answer lies within, forces a person to confront their true self.',
+    },
+    dream: {
+      tr: 'Rüyada sfenks — önemli bir eşikte olduğunu ve geçmek için bir bilmeceyi (bir hayat sorusunu, bir sırrı) çözmen gerektiğini söyler. Sana bir soru soruyorsa: cevabı dışarıda arama, o senin içinde gizli.',
+      en: 'A sphinx in dream — tells you that you are at an important threshold and must solve a riddle (a life question, a secret) to pass. If it poses a question: do not seek the answer outside; it is hidden within you.',
+    },
+    shadow: {
+      tr: 'Bilmecenin gölgesi: her şeyi gizemle, sırla ve çözülmez bilmecelerle örtmek; açık ve dürüst olmak yerine başkalarını sonu gelmez bir muammada bırakmak. Sfenks gölgesi, bilgisini bir güç oyununa çevirir ve cevaplanamayan soruyu çözenleri yutar — kibrin ve manipülasyonun bekçisi.',
+      en: 'The shadow of the riddle: veiling everything in mystery, secrecy, and unsolvable riddles; leaving others in an endless enigma instead of being open and honest. The sphinx\'s shadow turns its knowledge into a power game and devours those who cannot solve the unanswerable question — a guardian of pride and manipulation.',
+    },
+    whenAppears: {
+      tr: 'Bir hayat eşiğinde, büyük bir sırrı ya da kendine dair bir soruyu çözmen gereken dönemlerde; gizli bir bilgiye ancak iç dürüstlükle erişebileceğin anda belirir.',
+      en: 'It appears at a threshold of life, when you must solve a great secret or a question about yourself; when you can reach a hidden knowledge only through inner honesty.',
+    },
+    traditions: [
+      { culture: { tr: 'Antik Mısır', en: 'Ancient Egypt' }, meaning: { tr: 'Giza\'nın Büyük Sfenksi, kutsal mabedlerin ve kralın mezarının bekçisidir; firavunun gücünü, güneş tanrısını ve görünen ile görünmez âlemin eşiğini koruyan hayırlı bir muhafız.', en: 'The Great Sphinx of Giza is the guardian of the sacred temples and the king\'s tomb; a benevolent protector of the pharaoh\'s power, of the sun god, and of the threshold between the seen and unseen realms.' } },
+      { culture: { tr: 'Antik Yunan', en: 'Ancient Greek' }, meaning: { tr: 'Thebai Sfenksi, kente musallat olan, bilmecesini çözemeyenleri öldüren bir canavardır; bilginin sınavını ve cevaplanamayan sorunun ölümcül eşiğini temsil eder.', en: 'The Sphinx of Thebes is a monster that plagues the city and kills those who cannot solve its riddle; it represents the trial of knowledge and the deadly threshold of the unanswerable question.' } },
+      { culture: { tr: 'Mezopotamya / Yakın Doğu', en: 'Mesopotamian / Near Eastern' }, meaning: { tr: 'İnsan başlı, kanatlı aslan-boğa muhafızlar (lamassu/şedu), saray ve tapınak kapılarını kötülükten koruyan eşik bekçileridir; sfenks imgesinin kadim akrabaları.', en: 'The human-headed, winged lion-bull guardians (lamassu/shedu) are threshold-keepers protecting palace and temple gates from evil; ancient kin of the sphinx image.' } },
+      { culture: { tr: 'Hellenistik / Roma', en: 'Hellenistic / Roman' }, meaning: { tr: 'Sfenks, sır saklamanın ve gizemli bilgeliğin simgesi olarak mezar taşlarını ve tapınak girişlerini bekler; bilginin sessiz, gizemli bekçisi.', en: 'The sphinx, as a symbol of keeping secrets and of mysterious wisdom, watches over tombstones and temple entrances; the silent, enigmatic guardian of knowledge.' } },
+    ],
+    myths: [
+      { tr: 'Oidipus ve Sfenks: Thebai\'yi kuşatan Sfenks, kente girmek isteyen herkese şu bilmeceyi sorar: "Sabah dört, öğlen iki, akşam üç ayak üstünde yürüyen nedir?" Cevap veremeyeni boğar. Oidipus cevabı bulur: "İnsan — bebekken emekler, yetişkinken iki ayakla, yaşlanınca bastonla yürür." Bilmece çözülünce Sfenks kendini uçurumdan atar. Anlatı, en büyük eşik bekçisinin sorusunun aslında insanın kendisi olduğunu gösterir.', en: 'Oedipus and the Sphinx: the Sphinx besieging Thebes asks all who would enter the city this riddle: "What walks on four legs in the morning, two at noon, and three in the evening?" It strangles whoever cannot answer. Oedipus finds the answer: "Man — as an infant he crawls, as an adult he walks on two legs, in old age he leans on a cane." When the riddle is solved the Sphinx throws itself from the cliff. The tale shows that the greatest threshold guardian\'s question is, in truth, the human being itself.' },
+    ],
+  },
+
+  // ─── a117 Pegasus ───────────────────────────────────────────────────────
+  a117: {
+    jung: {
+      tr: 'Pegasus, "Yaratıcı Yükseliş" arketipidir — kanatlı at; yaşam gücünün (atın) ruhsal ilhamla (kanatların) birleşip yere bağlı içgüdüyü göğe taşımasıdır. Medusa\'nın (bastırılmış dehşetin, gölgenin) kanından doğması, en karanlık yaranın bile şiirsel ilhama ve yükselişe dönüşebileceğini söyler.',
+      en: 'Pegasus is the "Creative Ascent" archetype — the winged horse; the life force (the horse) uniting with spiritual inspiration (the wings) to carry earthbound instinct to the sky. Its birth from the blood of Medusa (the repressed terror, the shadow) tells that even the darkest wound can be transformed into poetic inspiration and ascent.',
+    },
+    dream: {
+      tr: 'Rüyada Pegasus — yaratıcı bir ilhamın ya da bir hayalin seni yükseltmek üzere olduğunu söyler; ayakların yerden kesilecek. Onu eyerleyebiliyorsan: ham tutkunu ilhama dönüştürüp yükselebilirsin. Seni düşürüyorsa: kibre kapılmadan, ölçüyle uç.',
+      en: 'Pegasus in dream — tells you that a creative inspiration or a dream is about to lift you; your feet will leave the ground. If you can saddle it: you can transform raw passion into inspiration and rise. If it throws you down: fly with measure, without falling into pride.',
+    },
+    shadow: {
+      tr: 'Yükselişin gölgesi: ilhamın ve hayal gücünün kanatlarıyla o kadar yükseğe çıkmak ki gerçeklikten kopmak, ayağın yerden kesilip Bellerophon gibi kibre kapılarak düşmek. Ya da tam tersi: kanatları olduğu hâlde hiç uçmamak, ilhamı eyerleyip kullanamadan yerde tutmak.',
+      en: 'The shadow of ascent: rising so high on the wings of inspiration and imagination that you break from reality, your feet leaving the ground until, like Bellerophon, you fall through pride. Or the opposite: never flying though you have wings, keeping inspiration grounded, unable to saddle and use it.',
+    },
+    whenAppears: {
+      tr: 'Yaratıcı bir ilhamın, bir hayalin ya da bir tutkunun seni yeni bir yüksekliğe taşımak istediği dönemlerde; bir yarayı ya da karanlığı sanata ve yükselişe dönüştürmen gerektiği anda belirir.',
+      en: 'It appears when a creative inspiration, a dream, or a passion wishes to carry you to a new height; when you must transform a wound or a darkness into art and ascent.',
+    },
+    traditions: [
+      { culture: { tr: 'Antik Yunan', en: 'Ancient Greek' }, meaning: { tr: 'Pegasus, Medusa\'nın kesilen başından doğan kanatlı attır; Olympos\'a Zeus\'un şimşeklerini taşır ve ilham perilerinin (Musaların) dağında yaşar — şiirsel ilhamın ve göksel yükselişin simgesi.', en: 'Pegasus is the winged horse born from Medusa\'s severed head; he bears Zeus\'s thunderbolts to Olympus and dwells on the mountain of the Muses — a symbol of poetic inspiration and heavenly ascent.' } },
+      { culture: { tr: 'Yunan (Musalar / Helikon)', en: 'Greek (Muses / Helicon)' }, meaning: { tr: 'Pegasus toynağını yere vurduğunda Helikon Dağı\'nda Hippokrene ("at pınarı") kaynağı fışkırır; bu sudan içen şairlere ilham geleceğine inanılır — yaratıcılığın kaynağı.', en: 'When Pegasus strikes the earth with his hoof, the spring Hippocrene ("the horse\'s fountain") gushes forth on Mount Helicon; poets who drink from this water are believed to receive inspiration — the wellspring of creativity.' } },
+      { culture: { tr: 'Rönesans / Avrupa', en: 'Renaissance / European' }, meaning: { tr: 'Pegasus, Rönesans\'tan beri sanatın, şiirin ve dehanın amblemi olmuştur; yer ile gök arasında köprü kuran, maddi olandan ilahi ilhama yükselişin simgesi.', en: 'Since the Renaissance Pegasus has been the emblem of art, poetry, and genius; a symbol of the bridge between earth and sky, of the ascent from the material to divine inspiration.' } },
+      { culture: { tr: 'Astronomi / Babil-Yunan', en: 'Astronomy / Babylonian-Greek' }, meaning: { tr: 'Pegasus gökyüzüne bir takımyıldız olarak yerleştirilir; sonsuz yükselişin, ölümlü olanın ölümsüzlüğe kavuşmasının ve ruhun göğe yazılmasının simgesidir.', en: 'Pegasus is set in the sky as a constellation; a symbol of endless ascent, of the mortal attaining immortality, and of the soul inscribed upon the heavens.' } },
+    ],
+    myths: [
+      { tr: 'Pegasus\'un Doğuşu ve Bellerophon: Perseus, Medusa\'nın başını kestiğinde, gorgonun kanından kanatlı at Pegasus fışkırır — dehşetin içinden doğan güzellik. Kahraman Bellerophon onu Athena\'nın armağanı altın bir gemle ehlileştirir ve sırtında Khimera canavarını öldürür. Ama zafer kibre dönüşünce Bellerophon Pegasus\'la Olympos\'a, tanrıların katına çıkmaya kalkar; Zeus bir at sineği gönderir, Pegasus şahlanır ve Bellerophon yere düşer. Pegasus tek başına göğe yükselip yıldızlar arasına yerleşir. Anlatı, ilhamın yükseltebileceğini ama kibrin düşüreceğini söyler.', en: 'The Birth of Pegasus and Bellerophon: when Perseus severs Medusa\'s head, the winged horse Pegasus springs from the gorgon\'s blood — beauty born from terror. The hero Bellerophon tames him with a golden bridle, Athena\'s gift, and on his back slays the Chimera. But when victory turns to pride, Bellerophon tries to ride Pegasus to Olympus, to the seat of the gods; Zeus sends a gadfly, Pegasus rears, and Bellerophon falls to earth. Pegasus alone ascends to the sky and takes his place among the stars. The tale says that inspiration can raise you up, but pride will cast you down.' },
+    ],
+  },
+
+  // ─── a118 Mamut ─────────────────────────────────────────────────────────
+  a118: {
+    jung: {
+      tr: 'Mamut, "Atasal Bellek" arketipidir — buzun altında korunmuş derin zaman; kişisel hayatın çok ötesindeki kadim güç ve kolektif hafıza. Soyu tükenmiş ama hâlâ rüyalarımızda yürüyen dev, atalarımızın ve dünyanın en eski belleğinin taşıyıcısıdır: unutulanın, kemikleşmiş kökenin sessiz çağrısı.',
+      en: 'The Mammoth is the "Ancestral Memory" archetype — deep time preserved beneath the ice; an ancient power and collective memory far beyond personal life. The extinct giant that still walks in our dreams, the bearer of the oldest memory of our ancestors and of the world: the silent call of the forgotten, of the fossilized origin.',
+    },
+    dream: {
+      tr: 'Rüyada mamut — atalarından, geçmişinden ya da çok eski bir bellekten gelen bir gücün yüzeye çıkmak istediğini söyler; kadim, sabırlı bir dayanıklılık seninle. Buzdan çıkıyorsa: uzun süre donmuş, unutulmuş bir hakikat ya da yetenek yeniden canlanıyor.',
+      en: 'A mammoth in dream — tells you that a power from your ancestors, your past, or a very ancient memory wishes to surface; an ancient, patient endurance is with you. If it emerges from ice: a long-frozen, forgotten truth or gift is coming back to life.',
+    },
+    shadow: {
+      tr: 'Derin zamanın gölgesi: geçmişe, atalara, "eski güzel günlere" o kadar bağlanmak ki şimdide yaşayamamak; soyu tükenmiş bir dünyaya, eskinin buzuna gömülüp değişime ve yeniye kapanmak. Mamut gölgesi, kadim gücü bir nostaljiye ve donmuş bir geçmişe hapseder.',
+      en: 'The shadow of deep time: clinging so tightly to the past, to the ancestors, to "the good old days" that you cannot live in the present; buried in an extinct world, in the ice of the old, closed off to change and the new. The mammoth\'s shadow imprisons ancient power in nostalgia and a frozen past.',
+    },
+    whenAppears: {
+      tr: 'Atasal bir güce, kökenlerine ya da çok eski bir belleğe bağlanman gereken dönemlerde; donmuş, unutulmuş bir gücü ya da hakikati yeniden hayata çağırman gerektiği anda belirir.',
+      en: 'It appears when you must connect to an ancestral power, to your origins, or to a very ancient memory; when you must call a frozen, forgotten power or truth back to life.',
+    },
+    traditions: [
+      { culture: { tr: 'Sibirya (Hanti / Yakut / Evenki)', en: 'Siberian (Khanty / Yakut / Evenki)' }, meaning: { tr: 'Buzdan çıkan mamut dişlerinden ötürü mamut, yeraltında yaşayan dev bir "toprak/su öküzü" sayılırdı; ışığa çıkınca öldüğüne inanılan, yeraltı dünyasına ait kadim bir ruh.', en: 'Because of the mammoth tusks emerging from the ice, the mammoth was held to be a giant "earth/water ox" living underground; an ancient spirit of the underworld believed to die when it came into the light.' } },
+      { culture: { tr: 'Çin', en: 'Chinese' }, meaning: { tr: 'Eski Çin kayıtlarında mamut, kuzeyin donmuş topraklarında yaşayan, asla güneş görmeyen dev bir yeraltı yaratığı (yin shu — "gizli sıçan/fare") olarak anlatılır; toprağın derinindeki gizemin simgesi.', en: 'In old Chinese records the mammoth is described as a giant underground creature (yin shu — "the hidden rat") that lives in the frozen lands of the north and never sees the sun; a symbol of the mystery deep within the earth.' } },
+      { culture: { tr: 'Kuzey Amerika Yerlileri', en: 'Native North American' }, meaning: { tr: 'Bazı yerli geleneklerde dev kemikler, kadim bir "büyük canavar" ya da atasal dev hayvan olarak anlatılır; geçmiş çağların gücünü ve dünyanın gençliğindeki devleri hatırlatan kemik-belleği.', en: 'In some Native traditions the giant bones are told of as an ancient "great monster" or ancestral giant beast; a bone-memory recalling the power of past ages and the giants of the world\'s youth.' } },
+      { culture: { tr: 'Buz Çağı / Tarih Öncesi', en: 'Ice Age / Prehistoric' }, meaning: { tr: 'Mamut, Avrupa mağara resimlerinin (Chauvet, Rouffignac) en eski ve en güçlü figürlerindendir; insanlığın ilk sanatının ve atasal belleğinin merkezindeki dev, kadim bir bereket ve güç simgesi.', en: 'The mammoth is among the oldest and most powerful figures of European cave painting (Chauvet, Rouffignac); the giant at the heart of humanity\'s first art and ancestral memory, an ancient symbol of abundance and power.' } },
+    ],
+    myths: [
+      { tr: 'Yeraltının Toprak Devi (Sibirya): Sibirya halkları, donmuş toprakta ortaya çıkan dev mamut kemiklerini ve dişlerini, yeraltında yaşayan kör bir dev yaratığın kalıntıları sanırdı. Bu varlığın köstebek gibi toprağı kazarak ilerlediğine, ama yanlışlıkla gün ışığına çıkarsa anında öldüğüne inanılırdı; bu yüzden onu hiç kimse canlı görmemişti. Anlatı, derin zamanın ve yeraltının gücünün ışığın dünyasına ait olmadığını, ancak kemik ve bellek olarak yüzeye sızdığını söyler.', en: 'The Earth Giant of the Underworld (Siberia): the peoples of Siberia took the giant mammoth bones and tusks that surfaced from the frozen ground to be the remains of a blind giant creature living underground. This being was believed to burrow through the earth like a mole, but to die at once if it came by accident into daylight; and so no one had ever seen it alive. The tale says that the power of deep time and the underworld does not belong to the world of light, but seeps to the surface only as bone and memory.' },
+    ],
+  },
+
 };
 
 export function getAnimalLore(id: string): AnimalLore | undefined {
