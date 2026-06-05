@@ -225,7 +225,6 @@ export const EXTRA_LANGS = {
 
     mandala_title: "Innere Reise",
     mandala_sub: "DIE KARTE VON HEUTE",
-    mandala_streak: "Tage in Folge",
     mandala_streak_best: "beste Serie",
     mandala_badge_3: "3 Tage",
     mandala_badge_7: "1 Woche",
@@ -820,7 +819,6 @@ export const EXTRA_LANGS = {
 
     mandala_title: "Viaje Interior",
     mandala_sub: "MAPA DE HOY",
-    mandala_streak: "días seguidos",
     mandala_streak_best: "mejor racha",
     mandala_badge_3: "3 Días",
     mandala_badge_7: "1 Semana",
@@ -1415,7 +1413,6 @@ export const EXTRA_LANGS = {
 
     mandala_title: "Jornada Interior",
     mandala_sub: "MAPA DE HOJE",
-    mandala_streak: "dias seguidos",
     mandala_streak_best: "melhor sequência",
     mandala_badge_3: "3 Dias",
     mandala_badge_7: "1 Semana",
@@ -2010,7 +2007,6 @@ export const EXTRA_LANGS = {
 
     mandala_title: "Voyage Intérieur",
     mandala_sub: "CARTE D'AUJOURD'HUI",
-    mandala_streak: "jours d'affilée",
     mandala_streak_best: "meilleure série",
     mandala_badge_3: "3 Jours",
     mandala_badge_7: "1 Semaine",
@@ -2605,7 +2601,6 @@ export const EXTRA_LANGS = {
 
     mandala_title: "内なる旅",
     mandala_sub: "今日のマップ",
-    mandala_streak: "連続日数",
     mandala_streak_best: "最高記録",
     mandala_badge_3: "3日",
     mandala_badge_7: "1週間",

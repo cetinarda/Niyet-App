@@ -309,7 +309,6 @@ export const TRANS = {
     // Mandala Harita
     mandala_title: "İçsel Yolculuk",
     mandala_sub: "BUGÜNÜN HARİTASI",
-    mandala_streak: "gün serisi",
     mandala_streak_best: "en iyi seri",
     mandala_badge_3: "3 Gün",
     mandala_badge_7: "1 Hafta",
@@ -1013,7 +1012,6 @@ export const TRANS = {
     // Mandala Map
     mandala_title: "Inner Journey",
     mandala_sub: "TODAY'S MAP",
-    mandala_streak: "day streak",
     mandala_streak_best: "best streak",
     mandala_badge_3: "3 Days",
     mandala_badge_7: "1 Week",

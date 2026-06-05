@@ -486,18 +486,7 @@ const GEZEGEN_12EV_GUCLERI = {
     "Pluto":  "Deep psychological insight, an unyielding will, capacity to bear tension and tremendous strength to renew yourself",
   },
 };
-function approxAscendant(dateStr, timeStr) {
-  if (!timeStr || !dateStr) return null;
-  const parts = timeStr.split(":");
-  if (parts.length < 2) return null;
-  const h = parseInt(parts[0]), m = parseInt(parts[1]);
-  const sunSign = zodiacSign(dateStr);
-  const sunIdx = ZODIAC_ORDER.indexOf(sunSign);
-  if (sunIdx < 0) return null;
-  // Yaklaşık: güneş doğuşunda (~6:00) Yükselen ≈ Güneş burcu; her 2 saatte +1 burç
-  const ascIdx = ((sunIdx + Math.round((h + m / 60 - 6) / 2)) % 12 + 12) % 12;
-  return ZODIAC_ORDER[ascIdx];
-}
+// approxAscendant kaldırıldı — preciseAscendant tamamen ikame etti, çağrılmıyordu.
 
 // Doğum şehri → koordinat + saat dilimi. Türkiye 81 il + büyük dünya şehirleri.
 // [enlem, boylam, UTC offset]. Türkiye için offset 3 (DST geçmişi yaklaşık).
@@ -3211,14 +3200,20 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // F2: "Sakini tanı" tanıtım popup'ı — yalnızca ilk 3 açılışta gösterilir.
+  // F2: "Sakini tanı" tanıtım popup'ı — yalnızca ilk 3 GERÇEKTEN gösterilen açılışta.
+  // Sayaç, popup görünebildiğinde (splash bitti + onboarding dışı) artar; böylece
+  // onboarding/splash sırasındaki açılışlarda 3 hak boşa tükenmez. Ref ile oturumda tek sefer.
   const [showSakinIntro, setShowSakinIntro] = useState(false);
+  const sakinIntroCheckedRef = useRef(false);
   useEffect(() => {
+    if (sakinIntroCheckedRef.current) return;
+    if (showIntro || screen === "giris") return; // splash sürerken / onboarding'de bekle
+    sakinIntroCheckedRef.current = true;
     try {
       const n = parseInt(localStorage.getItem("sakin_intro_opens") || "0", 10);
       if (n < 3) { localStorage.setItem("sakin_intro_opens", String(n + 1)); setShowSakinIntro(true); }
     } catch(_) {}
-  }, []);
+  });
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
