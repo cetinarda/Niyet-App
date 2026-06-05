@@ -316,6 +316,7 @@ export const EXTRA_LANGS = {
     time_ph_min: "MM",
     city_ph: "z. B. Berlin, München, Wien",
     city_not_in_list: "Nicht in der Liste — wähle die nächstgelegene Stadt für den Aszendenten",
+    birth_date_required: "Gib ein gültiges Geburtsdatum ein (Tag / Monat / Jahr)",
     add_birth_info: "Geburtsdaten hinzufügen",
 
     update_new_version: "Neue Version verfügbar",
@@ -906,6 +907,7 @@ export const EXTRA_LANGS = {
     time_ph_min: "MM",
     city_ph: "p. ej. Madrid, Barcelona, México",
     city_not_in_list: "No está en la lista — elige la ciudad más cercana para el ascendente",
+    birth_date_required: "Introduce una fecha de nacimiento válida (día / mes / año)",
     add_birth_info: "Agregar Datos de Nacimiento",
 
     update_new_version: "Nueva versión disponible",
@@ -1496,6 +1498,7 @@ export const EXTRA_LANGS = {
     time_ph_min: "MM",
     city_ph: "ex. São Paulo, Rio, Lisboa",
     city_not_in_list: "Não está na lista — escolha a cidade mais próxima para o ascendente",
+    birth_date_required: "Insere uma data de nascimento válida (dia / mês / ano)",
     add_birth_info: "Adicionar Dados de Nascimento",
 
     update_new_version: "Nova versão disponível",
@@ -2086,6 +2089,7 @@ export const EXTRA_LANGS = {
     time_ph_min: "MM",
     city_ph: "ex. Paris, Lyon, Marseille",
     city_not_in_list: "Pas dans la liste — choisis la ville la plus proche pour l'ascendant",
+    birth_date_required: "Entre une date de naissance valide (jour / mois / année)",
     add_birth_info: "Ajouter les Informations de Naissance",
 
     update_new_version: "Nouvelle version disponible",
@@ -2676,6 +2680,7 @@ export const EXTRA_LANGS = {
     time_ph_min: "MM",
     city_ph: "例: 東京、大阪、京都",
     city_not_in_list: "リストにない — アセンダントには最寄りの都市を選択",
+    birth_date_required: "有効な生年月日を入力してください（日／月／年）",
     add_birth_info: "出生情報を追加",
 
     update_new_version: "新バージョン利用可能",

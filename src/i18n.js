@@ -403,6 +403,7 @@ export const TRANS = {
     time_ph_min: "DD",
     city_ph: "ör. Kayseri, İstanbul, Londra",
     city_not_in_list: "Listede yok — yükselen için en yakın ili seç",
+    birth_date_required: "Geçerli bir doğum tarihi gir (gün / ay / yıl)",
     add_birth_info: "Doğum Bilgisi Ekle",
 
     // ===== Update banner =====
@@ -1102,6 +1103,7 @@ export const TRANS = {
     time_ph_min: "MM",
     city_ph: "e.g. Istanbul, London, New York",
     city_not_in_list: "Not in list — pick the nearest city for ascendant",
+    birth_date_required: "Enter a valid birth date (day / month / year)",
     add_birth_info: "Add Birth Info",
 
     // ===== Update banner =====

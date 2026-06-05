@@ -3121,6 +3121,7 @@ export default function SakinApp() {
   const [birthCity,      setBirthCity]      = useState(()=>localStorage.getItem("sakin_birth_city")||"");
   const [birthCityInput, setBirthCityInput] = useState(()=>localStorage.getItem("sakin_birth_city")||"");
   const [cityWarn,       setCityWarn]       = useState(false);
+  const [dateWarn,       setDateWarn]       = useState(false);
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
   const panicAutoStartRef = useRef(false); // panik butonu: nefesi doğrudan başlat (premium istisnası)
@@ -4108,7 +4109,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ display:"flex",flexDirection:"column",gap:8,paddingTop:6,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
                   <div>
                     <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
-                    <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
+                    <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
+                    {dateWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("birth_date_required")}</div>}
                   </div>
                   <div>
                     <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_label2")}</div>
@@ -4125,7 +4127,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         // tanınmıyorsa: yanlış yükselen üretmemek için o şehri kaydetme +
                         // uyarı göster + formu açık tut (kullanıcı düzeltebilsin). Save artık
                         // hiçbir durumda "hiçbir şey yapmadan" takılmaz.
-                        if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
+                        if(!birthInput){ setDateWarn(true); setAilesiEditBirth(true); return; } // geçerli tarih şart — sessiz başarısızlık yok
+                        setDateWarn(false);
+                        localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth");
                         if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                         if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); setAilesiEditBirth(true); return; }
                         setCityWarn(false);
@@ -5242,7 +5246,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
-                  <SmartDateInput value={birthInput} onChange={setBirthInput} lang={lang} />
+                  <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
+                  {dateWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("birth_date_required")}</div>}
                 </div>
                 <div style={{ marginBottom:10 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_optional")}</div>
@@ -5258,6 +5263,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
+                    // Onboarding atlanabilir: hiçbir şey girilmediyse geç. Ama bir şey
+                    // girilip tarih geçersizse sessiz geçme — uyar.
+                    if((birthTimeInput || birthCityInput) && !birthInput){ setDateWarn(true); return; }
+                    setDateWarn(false);
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; }
