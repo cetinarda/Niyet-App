@@ -515,7 +515,7 @@ const CITY_DB = {
   "kocaeli":[40.77,29.92,3],"konya":[37.87,32.48,3],"kütahya":[39.42,29.98,3],"malatya":[38.35,38.31,3],
   "manisa":[38.61,27.43,3],"kahramanmaraş":[37.58,36.93,3],"mardin":[37.31,40.74,3],"muğla":[37.22,28.36,3],
   "muş":[38.73,41.49,3],"nevşehir":[38.62,34.71,3],"niğde":[37.97,34.68,3],"ordu":[40.98,37.88,3],
-  "rize":[41.02,40.52,3],"sakarya":[40.69,30.43,3],"samsun":[41.29,36.33,3],"siirt":[37.93,41.95,3],
+  "rize":[41.02,40.52,3],"sakarya":[40.69,30.43,3],"adapazarı":[40.78,30.40,3],"samsun":[41.29,36.33,3],"siirt":[37.93,41.95,3],
   "sinop":[42.03,35.15,3],"sivas":[39.75,37.02,3],"tekirdağ":[40.98,27.51,3],"tokat":[40.31,36.55,3],
   "trabzon":[41.00,39.72,3],"tunceli":[39.11,39.55,3],"şanlıurfa":[37.17,38.79,3],"uşak":[38.68,29.41,3],
   "van":[38.49,43.41,3],"yozgat":[39.82,34.81,3],"zonguldak":[41.45,31.79,3],"aksaray":[38.37,34.03,3],
@@ -547,6 +547,23 @@ function lookupCity(input){
 }
 
 // Gerçek yükselen burç — yıldız zamanı + küresel astronomi (doğum şehri gerekir)
+// Türkiye'nin tarihsel UTC offset'i. CITY_DB tüm TR illerini +3 saklar; ancak
+// Türkiye 8 Eylül 2016'ya kadar standart UTC+2 idi (kışın), yazları DST ile +3.
+// Doğum tarihine göre doğru offset'i döndürür — yükselen/ev hesabı için kritik:
+// sınıra yakın doğumlarda 1 saatlik hata yükselen burcu 1 burç kaydırabiliyordu.
+// (lat/lon kutusu Türkiye'yi izole eder; Moskova/Tahran/Kıbrıs/dünya şehirleri etkilenmez.)
+function effectiveUtcOffset(lat, lon, tz, Y, Mo, Da) {
+  const isTurkey = tz === 3 && lat >= 35.5 && lat <= 42.5 && lon >= 25 && lon <= 45;
+  if (!isTurkey) return tz;
+  const ymd = Y*10000 + Mo*100 + Da;
+  if (ymd >= 20160908) return 3; // kalıcı +3 dönemi (8 Eylül 2016'dan beri)
+  // 2016 öncesi: kış +2, yaz (DST) +3 — yaklaşık son-Pazar Mart → son-Pazar Ekim
+  const lastSun = (yr, mo) => { const d = new Date(Date.UTC(yr, mo, 0)); return d.getUTCDate() - d.getUTCDay(); };
+  const dstStart = Y*10000 + 300 + lastSun(Y, 3);
+  const dstEnd   = Y*10000 + 1000 + lastSun(Y, 10);
+  return (ymd >= dstStart && ymd < dstEnd) ? 3 : 2;
+}
+
 function preciseAscendant(dateStr, timeStr, cityInput) {
   if (!dateStr || !timeStr) return null;
   const loc = lookupCity(cityInput);
@@ -557,7 +574,7 @@ function preciseAscendant(dateStr, timeStr, cityInput) {
   let [Y, Mo, Da] = dateStr.split("-").map(Number);
   if (!Y || !Mo || !Da) return null;
   const D2R = Math.PI/180, R2D = 180/Math.PI;
-  const ut = hh + mm/60 - tz;
+  const ut = hh + mm/60 - effectiveUtcOffset(lat, lon, tz, Y, Mo, Da);
   let y = Y, m = Mo, d = Da + ut/24;
   if (m <= 2) { y -= 1; m += 12; }
   const A = Math.floor(y/100), B = 2 - A + Math.floor(A/4);
