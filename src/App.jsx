@@ -3994,10 +3994,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   },[screen]);
 
   const speakBreathCue = (phase) => {
-    // Sesli komut (TTS) KAPALI: tarayıcı/cihazın seçtiği sistem sesi bazı dillerde
-    // (özellikle EN) bozuk/ürkütücü çıkıyordu. Görsel daire animasyonu + çan sesi
-    // yeterli ve daha sakin. Geri açmak için aşağıdaki `return;` satırını kaldır.
-    return;
     if (!("speechSynthesis" in window)) return;
     const voiceMap = { inhale: t("breath_voice_inhale"), hold: t("breath_voice_hold"), exhale: t("breath_voice_exhale"), hold2: t("breath_voice_rest") };
     const text = voiceMap[phase];
