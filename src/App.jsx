@@ -3119,6 +3119,7 @@ export default function SakinApp() {
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [birthCity,      setBirthCity]      = useState(()=>localStorage.getItem("sakin_birth_city")||"");
   const [birthCityInput, setBirthCityInput] = useState(()=>localStorage.getItem("sakin_birth_city")||"");
+  const [cityWarn,       setCityWarn]       = useState(false);
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
   const panicAutoStartRef = useRef(false); // panik butonu: nefesi doğrudan başlat (premium istisnası)
@@ -3258,7 +3259,7 @@ export default function SakinApp() {
 
   // Doğum şehri varsa gerçek yükselen (yıldız zamanı + koordinat); yoksa kaba tahmin
   const yukselen   = birthDate && birthTime
-    ? (preciseAscendant(birthDate, birthTime, birthCity) || approxAscendant(birthDate, birthTime))
+    ? preciseAscendant(birthDate, birthTime, birthCity)
     : null;
   const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
@@ -4114,10 +4115,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div>
                     <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_label")}</div>
-                    <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
+                    <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
+                    {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
                   </div>
                   <div style={{ display:"flex",gap:8,marginTop:4 }}>
                     <button onClick={()=>{
+                        if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; } setCityWarn(false);
                         if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                         if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                         if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
@@ -5239,13 +5242,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <div style={{ marginBottom:14 }}>
                   <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_ascendant")}</div>
-                  <SmartCityInput value={birthCityInput} onChange={setBirthCityInput} lang={lang} />
+                  <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
+                  {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
                 </div>
                 <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {t("birth_data_safe")}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
+                    if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; } setCityWarn(false);
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
@@ -6710,8 +6715,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const burc = zodiacDisplay(astro?.burc, lang) || "—";
         const yasamYolu = astro?.yasam || "—";
         const kisiselYil = astro?.kisiselYil || "—";
-        const yuk = zodiacDisplay(yukselen, lang) || "—";
-        const ev12 = zodiacDisplay(ev12Burcu, lang) || "—";
+        const needCity = !!(birthDate && birthTime && !yukselen);
+        const yuk = zodiacDisplay(yukselen, lang) || (needCity ? t("gid_need_city") : "—");
+        const ev12 = zodiacDisplay(ev12Burcu, lang) || (needCity ? t("gid_need_city") : "—");
         const dra = zodiacDisplay(draconicGunes, lang) || "—";
         const days = streakData?.current ?? 0;
         const best = streakData?.best ?? 0;
