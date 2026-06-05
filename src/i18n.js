@@ -406,6 +406,7 @@ export const TRANS = {
     birth_date_required: "Geçerli bir doğum tarihi gir (gün / ay / yıl)",
     sakin_intro_title: "Sakin'i tanımak ister misin?",
     sakin_intro_cta: "Sakin Nedir?",
+    premium_upgrade_lifetime_desc: "Zaten Premium'sun — istersen yıllık yenilemeyi bırakıp tek seferlik Ömür Boyu erişime geçebilirsin.",
     sakin_intro_skip: "Atla",
     add_birth_info: "Doğum Bilgisi Ekle",
 
@@ -1109,6 +1110,7 @@ export const TRANS = {
     birth_date_required: "Enter a valid birth date (day / month / year)",
     sakin_intro_title: "Want to get to know Sakin?",
     sakin_intro_cta: "What is Sakin?",
+    premium_upgrade_lifetime_desc: "You're already Premium — if you like, switch from yearly renewal to one-time Lifetime access.",
     sakin_intro_skip: "Skip",
     add_birth_info: "Add Birth Info",
 
