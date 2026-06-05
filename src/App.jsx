@@ -3115,6 +3115,14 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
+  // F2: "Sakini tanı" tanıtım popup'ı — yalnızca ilk 3 açılışta gösterilir.
+  const [showSakinIntro, setShowSakinIntro] = useState(false);
+  useEffect(() => {
+    try {
+      const n = parseInt(localStorage.getItem("sakin_intro_opens") || "0", 10);
+      if (n < 3) { localStorage.setItem("sakin_intro_opens", String(n + 1)); setShowSakinIntro(true); }
+    } catch(_) {}
+  }, []);
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
@@ -5186,6 +5194,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:"1px solid rgba(200,180,235,0.55)",borderRadius:12,animation:"diamondSpin 12s linear infinite",boxShadow:"0 0 16px rgba(184,164,216,0.35),inset 0 0 12px rgba(184,164,216,0.10)" }} />
             <div style={{ position:"absolute",inset:24,transform:"rotate(45deg)",border:"1px solid rgba(184,164,216,0.32)",borderRadius:8,animation:"diamondSpin 8s linear infinite reverse",boxShadow:"0 0 12px rgba(160,140,200,0.24)" }} />
             <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:16,height:16,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,255,255,0.95),rgba(220,205,240,0.8))",boxShadow:"0 0 22px rgba(220,200,240,0.7),0 0 44px rgba(184,164,216,0.5)" }} />
+          </div>
+        </div>
+      )}
+
+      {/* F2: "Sakini tanı" tanıtım popup'ı — ilk 3 açılışta, splash bitince ve onboarding dışında */}
+      {showSakinIntro && !showIntro && screen !== "giris" && (
+        <div onClick={()=>setShowSakinIntro(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)" }}>
+            <div style={{ fontSize:26,marginBottom:14 }}>✦</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8dcff",marginBottom:22,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{t("sakin_intro_title")}</div>
+            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
+              style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer" }}>
+              {t("sakin_intro_cta")}
+            </button>
+            <button onClick={()=>setShowSakinIntro(false)}
+              style={{ background:"none",border:"none",color:"#9080b0",fontSize:13,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
+              {t("sakin_intro_skip")}
+            </button>
           </div>
         </div>
       )}

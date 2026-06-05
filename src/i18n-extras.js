@@ -317,6 +317,9 @@ export const EXTRA_LANGS = {
     city_ph: "z. B. Berlin, München, Wien",
     city_not_in_list: "Nicht in der Liste — wähle die nächstgelegene Stadt für den Aszendenten",
     birth_date_required: "Gib ein gültiges Geburtsdatum ein (Tag / Monat / Jahr)",
+    sakin_intro_title: "Möchtest du Sakin kennenlernen?",
+    sakin_intro_cta: "Was ist Sakin?",
+    sakin_intro_skip: "Überspringen",
     add_birth_info: "Geburtsdaten hinzufügen",
 
     update_new_version: "Neue Version verfügbar",
@@ -908,6 +911,9 @@ export const EXTRA_LANGS = {
     city_ph: "p. ej. Madrid, Barcelona, México",
     city_not_in_list: "No está en la lista — elige la ciudad más cercana para el ascendente",
     birth_date_required: "Introduce una fecha de nacimiento válida (día / mes / año)",
+    sakin_intro_title: "¿Quieres conocer Sakin?",
+    sakin_intro_cta: "¿Qué es Sakin?",
+    sakin_intro_skip: "Saltar",
     add_birth_info: "Agregar Datos de Nacimiento",
 
     update_new_version: "Nueva versión disponible",
@@ -1499,6 +1505,9 @@ export const EXTRA_LANGS = {
     city_ph: "ex. São Paulo, Rio, Lisboa",
     city_not_in_list: "Não está na lista — escolha a cidade mais próxima para o ascendente",
     birth_date_required: "Insere uma data de nascimento válida (dia / mês / ano)",
+    sakin_intro_title: "Queres conhecer o Sakin?",
+    sakin_intro_cta: "O que é o Sakin?",
+    sakin_intro_skip: "Saltar",
     add_birth_info: "Adicionar Dados de Nascimento",
 
     update_new_version: "Nova versão disponível",
@@ -2090,6 +2099,9 @@ export const EXTRA_LANGS = {
     city_ph: "ex. Paris, Lyon, Marseille",
     city_not_in_list: "Pas dans la liste — choisis la ville la plus proche pour l'ascendant",
     birth_date_required: "Entre une date de naissance valide (jour / mois / année)",
+    sakin_intro_title: "Envie de découvrir Sakin ?",
+    sakin_intro_cta: "Qu'est-ce que Sakin ?",
+    sakin_intro_skip: "Passer",
     add_birth_info: "Ajouter les Informations de Naissance",
 
     update_new_version: "Nouvelle version disponible",
@@ -2681,6 +2693,9 @@ export const EXTRA_LANGS = {
     city_ph: "例: 東京、大阪、京都",
     city_not_in_list: "リストにない — アセンダントには最寄りの都市を選択",
     birth_date_required: "有効な生年月日を入力してください（日／月／年）",
+    sakin_intro_title: "Sakin について知りたいですか？",
+    sakin_intro_cta: "Sakin とは？",
+    sakin_intro_skip: "スキップ",
     add_birth_info: "出生情報を追加",
 
     update_new_version: "新バージョン利用可能",

@@ -18,7 +18,9 @@ Bu dosya, test turlarında çıkan bug/istekleri takip eder. Oturumlar arası ka
 
 ## 💡 İstekler (feature)
 - **F1 (#4)** — Yıllık abone → ömür boyu geçiş: satış sayfasında net yol/menü yok. (Buton var ama premium'ken sayfaya ulaşım/net "geçiş" eksik.)
-- **F2 (#5+#6)** — Doğum bilgisi girişinden sonra "Sakin Nedir?" tanıtım popup'ı (Tıkla / Atla). **İlk 3 açılışta** göster, sonra gösterme.
+
+## ✅ F2 — tamamlandı
+- **F2 (#5+#6)** — "Sakin'i tanı" tanıtım popup'ı eklendi: ilk 3 açılışta (splash sonrası, onboarding dışında) gösterilir; "Sakin Nedir?" → about/nedir sekmesini açar, "Atla" kapatır. Sayaç: localStorage `sakin_intro_opens`. 7 dil.
 
 ## 🧹 Son adım
 - Her şey bitince: bir ajan **ölü kod temizliği + mimari inceleme + bug taraması** yapacak.

@@ -404,6 +404,9 @@ export const TRANS = {
     city_ph: "ör. Kayseri, İstanbul, Londra",
     city_not_in_list: "Listede yok — yükselen için en yakın ili seç",
     birth_date_required: "Geçerli bir doğum tarihi gir (gün / ay / yıl)",
+    sakin_intro_title: "Sakin'i tanımak ister misin?",
+    sakin_intro_cta: "Sakin Nedir?",
+    sakin_intro_skip: "Atla",
     add_birth_info: "Doğum Bilgisi Ekle",
 
     // ===== Update banner =====
@@ -1104,6 +1107,9 @@ export const TRANS = {
     city_ph: "e.g. Istanbul, London, New York",
     city_not_in_list: "Not in list — pick the nearest city for ascendant",
     birth_date_required: "Enter a valid birth date (day / month / year)",
+    sakin_intro_title: "Want to get to know Sakin?",
+    sakin_intro_cta: "What is Sakin?",
+    sakin_intro_skip: "Skip",
     add_birth_info: "Add Birth Info",
 
     // ===== Update banner =====
