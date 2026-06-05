@@ -4216,9 +4216,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div style={{ display:"flex",gap:8,marginTop:4 }}>
                     <button onClick={()=>{
-                        if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; } setCityWarn(false);
+                        // Doğum tarihi/saati HER ZAMAN kaydedilsin (kaybolmasın). Şehir
+                        // tanınmıyorsa: yanlış yükselen üretmemek için o şehri kaydetme +
+                        // uyarı göster + formu açık tut (kullanıcı düzeltebilsin). Save artık
+                        // hiçbir durumda "hiçbir şey yapmadan" takılmaz.
                         if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                         if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                        if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); setAilesiEditBirth(true); return; }
+                        setCityWarn(false);
                         if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                         setAilesiEditBirth(false);
                       }}
@@ -5348,9 +5353,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
-                    if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; } setCityWarn(false);
                     if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
                     if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                    if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; }
+                    setCityWarn(false);
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                     setShowBirthForm(false);
                     setScreen("sabah");
