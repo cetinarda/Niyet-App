@@ -2930,7 +2930,11 @@ export default function SakinApp() {
     if (r.error === "products_not_loaded") {
       msg = t("err_products_not_loaded");
     } else if (r.error === "already_owned") {
-      msg = t("err_already_owned");
+      // Bu ürüne zaten sahipsin → Restore gerektirmeden premium ver (reinstall sonrası
+      // "Satın Al"a basınca premium döner). Store sahipliği onayladığı için güvenli.
+      try { localStorage.setItem("sakin_premium", "1"); } catch(_){}
+      setIsPremium(true); haptic(ImpactStyle.Heavy);
+      return;
     } else {
       msg = t("err_purchase_generic");
     }
