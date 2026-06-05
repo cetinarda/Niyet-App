@@ -7735,10 +7735,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                 </div>
 
-                <a href={t("lemon_checkout_url") + "?embed=1"} className="sakin-btn-primary lemonsqueezy-button"
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",textDecoration:"none",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)" }}>
-                  {t("premium_buy_now")}
-                </a>
+                {/* Web satın alma geçici olarak pasif — satın alma App Store üzerinden yapılıyor.
+                    Buton görsel olarak aynı kalır ama sönük + tıklanamaz; altında App Store yönlendirmesi. */}
+                <div aria-disabled="true"
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",opacity:0.4,cursor:"not-allowed",pointerEvents:"none",userSelect:"none" }}>
+                  {t("web_purchase_soon")}
+                </div>
+                <div style={{ marginTop:13,textAlign:"center",fontSize:13,color:"#9a8ac0",letterSpacing:0.4,lineHeight:1.6 }}>
+                  {t("web_purchase_appstore_note")}
+                </div>
+                <div style={{ marginTop:14,display:"flex",justifyContent:"center" }}>
+                  <AppStoreBadge lang={lang} size="lg" />
+                </div>
               </div>
 
               <div style={{ textAlign:"center",marginTop:20,marginBottom:20 }}>
