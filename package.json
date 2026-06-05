@@ -10,7 +10,8 @@
     "build:mitler": "node scripts/build-embed.mjs mitler",
     "build:tasarim": "node scripts/build-embed.mjs tasarim",
     "build:hayvan": "node scripts/build-embed.mjs hayvan",
-    "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan"
+    "build:taslar": "node scripts/build-embed.mjs taslar",
+    "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan && npm run build:taslar"
   },
   "dependencies": {
     "@capacitor/cli": "^8.3.1",

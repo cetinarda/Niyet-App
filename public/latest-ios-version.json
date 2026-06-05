@@ -2,6 +2,6 @@
   "version": "1.2.7",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Yükselen burç ve ev hesabı artık daha doğru: Türkiye'nin tarihsel saat dilimi (kış/yaz) dikkate alınıyor, burç sınırına yakın doğumlarda yükselen ve evler doğru çıkıyor. Doğum şehri tanınmazsa yanlış hesap yapılmaz; en yakın ili seçmen istenir.",
-  "release_notes_en": "Rising sign and house calculations are now more accurate: Turkey's historical time zone (winter/summer) is honored, so charts with a rising sign near a cusp resolve correctly. If your birth city isn't recognized, no incorrect chart is shown — you're asked to pick the nearest city."
+  "release_notes_tr": "Yeni: Sakin Taşlar — kristal/şifalı taş rehberin artık Sakin Ailesi'nde. Ayrıca 18 yeni hayvan (balina, orka ve daha fazlası) derin mitolojik bilgileriyle eklendi. Yükselen burç ve ev hesabı daha doğru: Türkiye'nin tarihsel saat dilimi dikkate alınıyor, doğum şehri tanınmazsa en yakın ili seçmen istenir.",
+  "release_notes_en": "New: Sakin Taşlar — your crystal & healing-stone guide now joins the Sakin Family. Plus 18 new animals (whale, orca and more) with deep mythological lore. Rising sign and house calculations are more accurate: Turkey's historical time zone is honored, and if your birth city isn't recognized you're asked to pick the nearest one."
 }
