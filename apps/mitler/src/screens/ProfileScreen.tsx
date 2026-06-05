@@ -688,11 +688,15 @@ export function ProfileScreen() {
 
         <View style={styles.familyGrid}>
           {[
-            { key: 'hayvan',      symbol: '⊕', active: true,  current: false, url: 'https://sakinhayvan.netlify.app' },
-            { key: 'tas',         symbol: '◈', active: false, current: false, url: '' },
-            { key: 'bitki',       symbol: '✿', active: false, current: false, url: '' },
-            { key: 'mitler',      symbol: '⚡', active: true,  current: true,  url: '' },
-            { key: 'numeroloji',  symbol: '◎', active: false, current: false, url: '' },
+            // Aktif uygulamalar üstte: bu app (Mitler) → Hayvan → Human Design.
+            // Sonra yakında gelecek olanlar. Hayvan ve HD host'a postMessage ile
+            // in-app açılır (eski netlify linki değil) — Hayvan app'indeki davranışın aynısı.
+            { key: 'mitler',      symbol: '⚡', active: true,  current: true,  embed: '',        url: '' },
+            { key: 'hayvan',      symbol: '⊕', active: true,  current: false, embed: 'hayvan',  url: 'https://sakinhayvan.netlify.app/' },
+            { key: 'hd',          symbol: '◉', active: true,  current: false, embed: 'tasarim', url: 'https://sakindesign.netlify.app/' },
+            { key: 'tas',         symbol: '◈', active: false, current: false, embed: '',        url: '' },
+            { key: 'bitki',       symbol: '✿', active: false, current: false, embed: '',        url: '' },
+            { key: 'numeroloji',  symbol: '◎', active: false, current: false, embed: '',        url: '' },
           ].map(app => {
             const name = t(`family.app.${app.key}.name` as any);
             const desc = t(`family.app.${app.key}.desc` as any);
@@ -703,7 +707,7 @@ export function ProfileScreen() {
                 key={app.key}
                 style={[styles.familyCard, app.active && styles.familyCardActive]}
                 {...(isClickable
-                  ? { onPress: () => postToHost({ type: 'sakin-open-embed', app: app.key }, app.url), activeOpacity: 0.75 }
+                  ? { onPress: () => postToHost({ type: 'sakin-open-embed', app: app.embed || app.key }, app.url), activeOpacity: 0.75 }
                   : {})}
               >
                 <Text style={[styles.familySymbol, app.active && { color: Colors.teal }]}>
