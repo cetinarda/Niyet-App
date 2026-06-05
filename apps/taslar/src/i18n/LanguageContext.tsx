@@ -13,10 +13,27 @@ const LanguageContext = createContext<LanguageContextValue>({
   setLanguage: async () => {},
 });
 
+// Host köprüsü: Sakin host'u (sakin.life) seçili dili `sakin_lang` localStorage
+// anahtarına yazar (tr/en/de/es/pt/fr/ja). Embed yalnızca tr/en içerdiğinden,
+// host dili tr ise tr, diğer tüm dillerde en'e düşeriz. Host dili kullanıcının
+// embed-içi seçiminden ÖNCELİKLİDİR (tek dil kaynağı host olsun).
+function readHostLang(): Lang | null {
+  try {
+    const v = typeof localStorage !== 'undefined' ? localStorage.getItem('sakin_lang') : null;
+    if (!v) return null;
+    return v === 'tr' ? 'tr' : 'en';
+  } catch {
+    return null;
+  }
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<Lang>('tr');
+  // Senkron başlat: host dili varsa onunla (TR yanıp sönmesi olmasın).
+  const [language, setLanguageState] = useState<Lang>(() => readHostLang() ?? 'tr');
 
   useEffect(() => {
+    const host = readHostLang();
+    if (host) { setLanguageState(host); return; } // host dili öncelikli
     AsyncStorage.getItem('@sakinhayvan_language').then(v => {
       if (v === 'en' || v === 'tr') setLanguageState(v as Lang);
     });
