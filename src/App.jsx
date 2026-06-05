@@ -6,13 +6,13 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, YEARLY_PRODUCT_ID, LIFETIME_PRODUCT_ID } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 // Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
 // Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
 import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } from "./cityDb";
-import { showNowPlaying, clearNowPlaying, updateNowPlayingState, onRemoteCommand } from "./nowplaying";
+import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -74,11 +74,6 @@ Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce düny
   return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence — including quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love.
 At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
-// Geriye dönük uyumluluk için alias (eski kod yerleri varsa)
-const aiLangRule = (lang) => lang === "tr"
-  ? `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç gibi karakterleri kullan.`
-  : `WRITE ONLY IN ${AI_LANG_NAMES[lang] || "English"}. Do NOT write in Turkish.`;
-
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
   const pb = String(b||"").split(".").map(n => parseInt(n)||0);
@@ -163,7 +158,6 @@ const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozm
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
 const LEVEL_RANGES_TR = { 1:"Çakra 1–7", 2:"Çakra 8–15", 3:"Çakra 16–22" };
 const LEVEL_RANGES_EN = { 1:"Chakra 1–7", 2:"Chakra 8–15", 3:"Chakra 16–22" };
-const TERAPI_TOTAL = 60;
 
 const FREQ_DATA_TR = [
   { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
@@ -415,11 +409,6 @@ function biorhythm(dateStr) {
     duygusal:  Math.round(Math.sin(2*Math.PI*days/28)*100),
     zihinsel:  Math.round(Math.sin(2*Math.PI*days/33)*100),
   };
-}
-function bioritmBar(val) {
-  const positive = val >= 0;
-  const pct = Math.abs(val);
-  return { pct, positive };
 }
 // ─────────────────────────────────────────────────────────────────────────────
 const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Terazi","Akrep","Yay","Oğlak","Kova","Balık"];
@@ -2224,65 +2213,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   return null;
 }
 
-const ORNEK_SORULAR_TR = [
-  "Cinsel enerjimi nasıl yaratıma dönüştürebilirim?",
-  "Sindirim sistemimde sorun var!",
-  "Bu hafta dengesiz hissediyorum neden?",
-  "Hangi çakramın enerjiye ihtiyaç duyduğunu nasıl bileceğim?",
-  "Kronik yorgunluk neden hep benimle?",
-];
-const ORNEK_SORULAR_EN = [
-  "How can I channel my sexual energy into creativity?",
-  "I've been having digestive issues!",
-  "Why do I feel so unbalanced this week?",
-  "How do I know which chakra needs energy?",
-  "Why is chronic fatigue always with me?",
-];
-const ORNEK_SORULAR_DE = [
-  "Wie kann ich meine sexuelle Energie in Kreativität wandeln?",
-  "Ich habe Verdauungsprobleme!",
-  "Warum fühle ich mich diese Woche so aus dem Gleichgewicht?",
-  "Wie erkenne ich, welches Chakra Energie braucht?",
-  "Warum begleitet mich chronische Müdigkeit?",
-];
-const ORNEK_SORULAR_ES = [
-  "¿Cómo puedo canalizar mi energía sexual hacia la creatividad?",
-  "¡Tengo problemas digestivos!",
-  "¿Por qué me siento tan desequilibrado esta semana?",
-  "¿Cómo sé qué chakra necesita energía?",
-  "¿Por qué la fatiga crónica siempre me acompaña?",
-];
-const ORNEK_SORULAR_PT = [
-  "Como posso canalizar minha energia sexual para a criatividade?",
-  "Estou tendo problemas digestivos!",
-  "Por que me sinto tão desequilibrado esta semana?",
-  "Como saber qual chakra precisa de energia?",
-  "Por que a fadiga crônica está sempre comigo?",
-];
-const ORNEK_SORULAR_FR = [
-  "Comment canaliser mon énergie sexuelle vers la créativité ?",
-  "J'ai des problèmes digestifs !",
-  "Pourquoi je me sens si déséquilibré cette semaine ?",
-  "Comment savoir quel chakra a besoin d'énergie ?",
-  "Pourquoi la fatigue chronique est-elle toujours avec moi ?",
-];
-const ORNEK_SORULAR_JA = [
-  "性的なエネルギーをどうやって創造性に変えられますか？",
-  "消化器系に問題があります！",
-  "今週、なぜこんなにバランスを失っていると感じるのでしょう？",
-  "どのチャクラがエネルギーを必要としているか、どう分かりますか？",
-  "なぜ慢性的な疲労がいつも私と一緒にいるのですか？",
-];
-const ORNEK_SORULAR_BY_LANG = {
-  tr: ORNEK_SORULAR_TR,
-  en: ORNEK_SORULAR_EN,
-  de: ORNEK_SORULAR_DE,
-  es: ORNEK_SORULAR_ES,
-  "pt-BR": ORNEK_SORULAR_PT,
-  fr: ORNEK_SORULAR_FR,
-  ja: ORNEK_SORULAR_JA,
-};
-
 // Module-level AudioContext singleton — iOS WKWebView her yeni ctx'i gesture context'i
 // kaybedebileceği için reuse ediyoruz. Kullanıcı ilk gesture'ında ctx oluşur, sonra
 // her ses çalmada aynı ctx'i kullanırız; close ASLA çağırmayız.
@@ -2365,94 +2295,6 @@ function FreqText({ text, style, onNav }) {
         return <span key={i}>{part}</span>;
       })}
     </span>
-  );
-}
-
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr", onNav }) {
-  const t = makeTrans(lang);
-  const [tipAcik, setTipAcik] = useState(false);
-  const tipRef = useRef(null);
-  const ornekler = ORNEK_SORULAR_BY_LANG[lang] || ORNEK_SORULAR_EN;
-
-  useEffect(() => {
-    if (!tipAcik) return;
-    const handler = (e) => { if (tipRef.current && !tipRef.current.contains(e.target)) setTipAcik(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [tipAcik]);
-
-  return (
-    <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(0,0,0,0.92),rgba(0,0,0,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
-      <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
-        <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{simge}</div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:13,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
-          <div style={{ fontSize:13,color:"#666666",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
-        </div>
-      </div>
-      {analiz === "__loading__" ? (
-        <div style={{ textAlign:"center",padding:"24px 0" }}>
-          <div style={{ fontSize:19,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
-          <div style={{ fontSize:13,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>{t("reading")}</div>
-        </div>
-      ) : analiz ? (
-        <div>
-          <div style={{ fontSize:13,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
-          <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
-            <button onClick={onSifirla}
-              style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"6px 16px" }}>
-              {t("btn_new_search")}
-            </button>
-            <a href="/fiyatlandirma"
-              style={{ display:"inline-block",padding:"6px 16px",background:`linear-gradient(135deg,${renk}22,${renk}11)`,border:`1px solid ${renk}44`,borderRadius:20,color:renk,fontSize:13,letterSpacing:2,textDecoration:"none",cursor:"pointer" }}>
-              {t("premium_unlock_more")}
-            </a>
-          </div>
-        </div>
-      ) : (
-        <div>
-          {/* Soru satırı: etiket + ? butonu */}
-          <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
-            <span style={{ fontSize:13,letterSpacing:2,color:`${renk}bb` }}>
-              {t("ne_hissediyorsun_label")}
-            </span>
-            <div ref={tipRef} style={{ position:"relative" }}>
-              <button
-                onClick={()=>setTipAcik(v=>!v)}
-                aria-label="Örnek sorular"
-                style={{ width:44,height:44,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
-              >?</button>
-              {tipAcik && (
-                <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(0,0,0,0.98),rgba(0,0,0,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
-                  <div style={{ fontSize:13,letterSpacing:2.5,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
-                    {t("ornek_sorular")}
-                  </div>
-                  {ornekler.map((s,i)=>(
-                    <button key={i} onClick={()=>{ onChange(s); setTipAcik(false); }}
-                      style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none",borderBottom:i<ornekler.length-1?`1px solid ${renk}18`:"none",padding:"8px 4px",color:"#b8a8d0",fontSize:14,fontFamily:"'Inter',sans-serif",cursor:"pointer",lineHeight:1.55,letterSpacing:0.2 }}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <textarea
-            value={value}
-            onChange={e=>onChange(e.target.value)}
-            onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey && value.trim()) { e.preventDefault(); onAra(); } }}
-            placeholder={placeholder}
-            rows={3}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
-          />
-          <button onClick={onAra} disabled={!value.trim()}
-            style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#ffffff":"#555555",fontSize:14,letterSpacing:2,fontFamily:"'Inter',sans-serif",transition:"all 0.2s" }}>
-            {t("btn_search")}
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 
