@@ -1,7 +1,7 @@
 {
-  "version": "1.2.6",
+  "version": "1.2.7",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Sakin Ailesi artık tek dokunuşla uygulama içinde: Hayvan, Mitler ve Tasarım birbirine bağlandı. Yeni: panik anı desteği, Tasarım element analizi ve galaktik kartta yaşam yolu açıklamaları.",
-  "release_notes_en": "The Sakin Family now flows in-app with a single tap — Animal, Myths and Design are connected. New: panic-moment support, Design element analysis, and life-path notes on your galactic card."
+  "release_notes_tr": "Yükselen burç ve ev hesabı artık daha doğru: Türkiye'nin tarihsel saat dilimi (kış/yaz) dikkate alınıyor, böylece burç sınırına yakın doğumlarda yükselen ve evler doğru hesaplanıyor.",
+  "release_notes_en": "Rising sign and house calculations are now more accurate: Turkey's historical time zone (winter/summer) is taken into account, so charts with a rising sign near a cusp resolve correctly."
 }
