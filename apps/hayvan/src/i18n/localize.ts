@@ -15,14 +15,19 @@ const EN_SUFFIX_FIELDS = [
   'howToUse', 'affirmation', 'category',
 ] as const;
 
+// Dil → veri alanı suffix'i. Çevrilmiş içerik eklendikçe (ör. nameDe, originEs…)
+// otomatik kullanılır; yoksa İngilizce (...En), o da yoksa Türkçe (orijinal alan).
+const LANG_SUFFIX: Record<string, string> = {
+  tr: '', en: 'En', de: 'De', es: 'Es', pt: 'Pt', fr: 'Fr', ja: 'Ja',
+};
+
 export function localize<T extends Record<string, any>>(item: T, lang: Lang): T {
   if (lang === 'tr' || !item) return item;
+  const suffix = LANG_SUFFIX[lang] ?? 'En';
   const result: any = { ...item };
   for (const field of EN_SUFFIX_FIELDS) {
-    const enKey = `${field}En`;
-    if (enKey in item && (item as any)[enKey] != null) {
-      result[field] = (item as any)[enKey];
-    }
+    const v = (item as any)[`${field}${suffix}`] ?? (item as any)[`${field}En`];
+    if (v != null) result[field] = v; // yoksa orijinal (tr) alan kalır
   }
   return result as T;
 }
@@ -57,10 +62,10 @@ export function useLocalizedStones() {
   return useMemo(() => localizeAll(stonesData as any[], lang), [lang]);
 }
 
-type Bilingual = { tr: string; en: string };
+type Bilingual = { tr: string; en: string } & { [k: string]: string | undefined };
 function pickB(b: Bilingual | undefined, lang: Lang): string | undefined {
   if (!b) return undefined;
-  return lang === 'en' ? (b.en ?? b.tr) : b.tr;
+  return (b as any)[lang] ?? b.en ?? b.tr; // seçili dil → en → tr
 }
 
 export function useLocalizedLore(animalId: string) {

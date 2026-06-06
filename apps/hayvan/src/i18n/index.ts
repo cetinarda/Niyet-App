@@ -1,14 +1,24 @@
 import { tr } from './tr';
 import { en } from './en';
+import { de } from './de';
+import { es } from './es';
+import { pt } from './pt';
+import { fr } from './fr';
+import { ja } from './ja';
 
-export type Lang = 'tr' | 'en';
+export type Lang = 'tr' | 'en' | 'de' | 'es' | 'pt' | 'fr' | 'ja';
 export type Translations = typeof tr;
 
-// Cast `en` to Translations so the Record assignment is type-safe.
-// Both objects share the same key structure; the literal types differ.
-export const translations: Record<Lang, Translations> = {
+// Çevrilmiş diller eklendikçe buraya import edilip registry'ye yazılır.
+// Eksik dil ya da eksik anahtar otomatik olarak en → tr'ye düşer (graceful fallback).
+export const translations: Partial<Record<Lang, Translations>> = {
   tr,
   en: en as unknown as Translations,
+  de: de as unknown as Translations,
+  es: es as unknown as Translations,
+  pt: pt as unknown as Translations,
+  fr: fr as unknown as Translations,
+  ja: ja as unknown as Translations,
 };
 
 // Deep nested key accessor — t('home.greeting.morning', lang)
@@ -23,11 +33,14 @@ type DeepKeys<T, Prefix extends string = ''> = {
 export type TranslationKey = DeepKeys<Translations>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getNestedValue(obj: any, path: string): string {
+function getRaw(obj: any, path: string): string | null {
+  if (!obj) return null;
   const result = path.split('.').reduce((acc: any, key: string) => acc?.[key], obj);
-  return typeof result === 'string' ? result : path;
+  return typeof result === 'string' ? result : null;
 }
 
+// Seçili dilde anahtar yoksa İngilizce, o da yoksa Türkçe, o da yoksa anahtarın kendisi.
 export function t(key: TranslationKey, lang: Lang): string {
-  return getNestedValue(translations[lang], key as string);
+  const k = key as string;
+  return getRaw(translations[lang], k) ?? getRaw(translations.en, k) ?? getRaw(translations.tr, k) ?? k;
 }
