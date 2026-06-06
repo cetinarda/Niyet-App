@@ -14,7 +14,15 @@ async function bootstrap() {
   bootstrapped = true;
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
-    if (stored === 'tr' || stored === 'en') {
+    if (
+      stored === 'tr' ||
+      stored === 'en' ||
+      stored === 'de' ||
+      stored === 'es' ||
+      stored === 'pt' ||
+      stored === 'fr' ||
+      stored === 'ja'
+    ) {
       currentLang = stored;
       listeners.forEach(l => l(currentLang));
     }
