@@ -7,7 +7,17 @@
     "category": "kabul",
     "rarity": "rare",
     "textEn": "Come, come, whoever you are. Wanderer, idolater, worshiper of fire, come even though you have broken your vows a thousand times. Ours is not a caravan of despair. Come, yet again, come.",
-    "categoryEn": "acceptance"
+    "categoryEn": "acceptance",
+    "textDe": "Komm, komm, wer du auch bist. Wanderer, Götzendiener, Feueranbeter, komm, auch wenn du deine Gelübde tausendmal gebrochen hast. Unsere ist keine Karawane der Verzweiflung. Komm, komm noch einmal.",
+    "categoryDe": "Annahme",
+    "textEs": "Ven, ven, quienquiera que seas. Errante, idólatra, adorador del fuego, ven aunque hayas roto tus votos mil veces. La nuestra no es una caravana de desesperación. Ven, una vez más, ven.",
+    "categoryEs": "aceptación",
+    "textPt": "Vem, vem, sejas quem fores. Errante, idólatra, adorador do fogo, vem ainda que tenhas quebrado teus votos mil vezes. A nossa não é uma caravana de desespero. Vem, mais uma vez, vem.",
+    "categoryPt": "aceitação",
+    "textFr": "Viens, viens, qui que tu sois. Errant, idolâtre, adorateur du feu, viens même si tu as rompu tes vœux mille fois. La nôtre n'est pas une caravane du désespoir. Viens, encore une fois, viens.",
+    "categoryFr": "acceptation",
+    "textJa": "おいで、おいで、あなたが何者であろうと。さすらい人でも、偶像を拝む者でも、火を崇める者でも、おいで。千度誓いを破ったとしても、おいで。私たちのもとは絶望の隊商ではない。さあ、もう一度、おいで。",
+    "categoryJa": "受容"
   },
   {
     "id": "q002",
@@ -17,7 +27,17 @@
     "category": "degisim",
     "rarity": "common",
     "textEn": "Yesterday I was clever, so I wanted to change the world. Today I am wise, so I am changing myself.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Gestern war ich klug, darum wollte ich die Welt verändern. Heute bin ich weise, darum verändere ich mich selbst.",
+    "categoryDe": "Wandlung",
+    "textEs": "Ayer era inteligente, por eso quería cambiar el mundo. Hoy soy sabio, por eso me cambio a mí mismo.",
+    "categoryEs": "transformación",
+    "textPt": "Ontem eu era esperto, por isso queria mudar o mundo. Hoje sou sábio, por isso mudo a mim mesmo.",
+    "categoryPt": "transformação",
+    "textFr": "Hier j'étais intelligent, alors je voulais changer le monde. Aujourd'hui je suis sage, alors je me change moi-même.",
+    "categoryFr": "transformation",
+    "textJa": "昨日の私は賢かったので、世界を変えたいと思った。今日の私は智慧を得たので、自分自身を変えている。",
+    "categoryJa": "変容"
   },
   {
     "id": "q003",
@@ -27,7 +47,17 @@
     "category": "cesaret",
     "rarity": "common",
     "textEn": "Whatever does not burn in the fire has no worth.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Was nicht im Feuer brennt, hat keinen Wert.",
+    "categoryDe": "Mut",
+    "textEs": "Lo que no arde en el fuego no tiene valor.",
+    "categoryEs": "valentía",
+    "textPt": "Aquilo que não arde no fogo não tem valor.",
+    "categoryPt": "coragem",
+    "textFr": "Ce qui ne brûle pas dans le feu n'a aucune valeur.",
+    "categoryFr": "courage",
+    "textJa": "火の中で燃えないものに、価値はない。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q004",
@@ -37,7 +67,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "When love arrives, all imperfections fall away. When love arrives, shame departs, and fear with it.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wenn die Liebe kommt, fallen alle Unvollkommenheiten ab. Wenn die Liebe kommt, weicht die Scham, und mit ihr die Furcht.",
+    "categoryDe": "Liebe",
+    "textEs": "Cuando llega el amor, caen todas las imperfecciones. Cuando llega el amor, se va la vergüenza, y con ella el miedo.",
+    "categoryEs": "amor",
+    "textPt": "Quando o amor chega, caem todas as imperfeições. Quando o amor chega, a vergonha parte, e com ela o medo.",
+    "categoryPt": "amor",
+    "textFr": "Quand l'amour arrive, toutes les imperfections tombent. Quand l'amour arrive, la honte s'en va, et la peur avec elle.",
+    "categoryFr": "amour",
+    "textJa": "愛が訪れると、すべての欠点は落ちていく。愛が訪れると、恥は去り、恐れもともに去る。",
+    "categoryJa": "愛"
   },
   {
     "id": "q005",
@@ -47,7 +87,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "Do not weep because your voice goes unheard. Perhaps your true voice rises from the silence itself.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Weine nicht, weil deine Stimme ungehört bleibt. Vielleicht erhebt sich deine wahre Stimme gerade aus der Stille selbst.",
+    "categoryDe": "Geduld",
+    "textEs": "No llores porque tu voz no es escuchada. Quizá tu verdadera voz se eleve del propio silencio.",
+    "categoryEs": "paciencia",
+    "textPt": "Não chores porque a tua voz não é ouvida. Talvez a tua verdadeira voz se erga do próprio silêncio.",
+    "categoryPt": "paciência",
+    "textFr": "Ne pleure pas parce que ta voix n'est pas entendue. Peut-être ta vraie voix s'élève-t-elle du silence même.",
+    "categoryFr": "patience",
+    "textJa": "声が届かないからと泣くな。あなたの真の声は、その沈黙そのものから立ちのぼるのかもしれない。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q006",
@@ -57,7 +107,17 @@
     "category": "hakikat",
     "rarity": "uncommon",
     "textEn": "Truth is like the sun; draw a veil over it and it disappears from sight, yet the sun remains where it always was.",
-    "categoryEn": "truth"
+    "categoryEn": "truth",
+    "textDe": "Die Wahrheit ist wie die Sonne; verhülle sie, und sie verschwindet aus dem Blick, doch die Sonne bleibt, wo sie immer war.",
+    "categoryDe": "Wahrheit",
+    "textEs": "La verdad es como el sol; échale un velo y desaparece de la vista, pero el sol sigue donde siempre estuvo.",
+    "categoryEs": "verdad",
+    "textPt": "A verdade é como o sol; lança-lhe um véu e ela desaparece da vista, mas o sol permanece onde sempre esteve.",
+    "categoryPt": "verdade",
+    "textFr": "La vérité est comme le soleil ; jette un voile sur elle et elle disparaît du regard, mais le soleil reste où il a toujours été.",
+    "categoryFr": "vérité",
+    "textJa": "真実は太陽のようだ。覆いをかければ視界から消えるが、太陽はいつもの場所にとどまっている。",
+    "categoryJa": "真実"
   },
   {
     "id": "q007",
@@ -67,7 +127,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "Where are we? Wherever the Beloved is. What are we? A single droplet within Him.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wo sind wir? Wo immer der Geliebte ist. Was sind wir? Ein einziger Tropfen in Ihm.",
+    "categoryDe": "Liebe",
+    "textEs": "¿Dónde estamos? Donde esté el Amado. ¿Qué somos? Una sola gota dentro de Él.",
+    "categoryEs": "amor",
+    "textPt": "Onde estamos? Onde quer que esteja o Amado. O que somos? Uma única gota dentro Dele.",
+    "categoryPt": "amor",
+    "textFr": "Où sommes-nous ? Là où est l'Aimé. Que sommes-nous ? Une seule goutte en Lui.",
+    "categoryFr": "amour",
+    "textJa": "私たちはどこにいる？愛する者のいるところに。私たちとは何か？彼の中の一滴の雫。",
+    "categoryJa": "愛"
   },
   {
     "id": "q008",
@@ -77,7 +147,17 @@
     "category": "nefis",
     "rarity": "common",
     "textEn": "Whoever knows themselves knows their Lord.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Wer sich selbst erkennt, erkennt seinen Herrn.",
+    "categoryDe": "Selbst",
+    "textEs": "Quien se conoce a sí mismo conoce a su Señor.",
+    "categoryEs": "ser",
+    "textPt": "Quem conhece a si mesmo conhece o seu Senhor.",
+    "categoryPt": "eu",
+    "textFr": "Qui se connaît soi-même connaît son Seigneur.",
+    "categoryFr": "soi",
+    "textJa": "己を知る者は、その主を知る。",
+    "categoryJa": "自己"
   },
   {
     "id": "q009",
@@ -87,7 +167,17 @@
     "category": "cömertlik",
     "rarity": "common",
     "textEn": "A candle loses nothing of its light by lighting another candle.",
-    "categoryEn": "generosity"
+    "categoryEn": "generosity",
+    "textDe": "Eine Kerze verliert nichts von ihrem Licht, wenn sie eine andere Kerze entzündet.",
+    "categoryDe": "Großzügigkeit",
+    "textEs": "Una vela no pierde nada de su luz al encender otra vela.",
+    "categoryEs": "generosidad",
+    "textPt": "Uma vela nada perde da sua luz ao acender outra vela.",
+    "categoryPt": "generosidade",
+    "textFr": "Une bougie ne perd rien de sa lumière en allumant une autre bougie.",
+    "categoryFr": "générosité",
+    "textJa": "ろうそくは、別のろうそくに火を灯しても、その光を少しも失わない。",
+    "categoryJa": "寛大さ"
   },
   {
     "id": "q010",
@@ -97,7 +187,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "The heart is like a mirror. When rust covers it, no light reflects. But once polished, it reveals everything.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Das Herz ist wie ein Spiegel. Wenn Rost ihn bedeckt, spiegelt kein Licht. Doch einmal poliert, offenbart er alles.",
+    "categoryDe": "Herz",
+    "textEs": "El corazón es como un espejo. Cuando lo cubre el óxido, ninguna luz se refleja. Pero una vez pulido, lo revela todo.",
+    "categoryEs": "corazón",
+    "textPt": "O coração é como um espelho. Quando a ferrugem o cobre, nenhuma luz se reflete. Mas, uma vez polido, revela tudo.",
+    "categoryPt": "coração",
+    "textFr": "Le cœur est comme un miroir. Quand la rouille le couvre, aucune lumière ne s'y reflète. Mais une fois poli, il révèle tout.",
+    "categoryFr": "cœur",
+    "textJa": "心は鏡のようだ。錆が覆えば光は映らない。だが一度磨かれれば、すべてを映し出す。",
+    "categoryJa": "心"
   },
   {
     "id": "q011",
@@ -107,7 +207,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "There is a river within you; do not go to the desert to find it.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "In dir ist ein Fluss; geh nicht in die Wüste, um ihn zu finden.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Hay un río dentro de ti; no vayas al desierto a buscarlo.",
+    "categoryEs": "voz interior",
+    "textPt": "Há um rio dentro de ti; não vás ao deserto procurá-lo.",
+    "categoryPt": "voz interior",
+    "textFr": "Il y a une rivière en toi ; ne va pas au désert pour la trouver.",
+    "categoryFr": "voix intérieure",
+    "textJa": "あなたの中に川がある。それを探しに砂漠へ行くな。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q012",
@@ -117,7 +227,17 @@
     "category": "sabir",
     "rarity": "common",
     "textEn": "Patience is bitter, but its fruit is sweet.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Geduld ist bitter, doch ihre Frucht ist süß.",
+    "categoryDe": "Geduld",
+    "textEs": "La paciencia es amarga, pero su fruto es dulce.",
+    "categoryEs": "paciencia",
+    "textPt": "A paciência é amarga, mas o seu fruto é doce.",
+    "categoryPt": "paciência",
+    "textFr": "La patience est amère, mais son fruit est doux.",
+    "categoryFr": "patience",
+    "textJa": "忍耐は苦いが、その実は甘い。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q013",
@@ -127,7 +247,17 @@
     "category": "hasret",
     "rarity": "rare",
     "textEn": "The reed tells the tale of separation. We are all reeds, torn from our roots.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Das Rohr erzählt die Geschichte der Trennung. Wir alle sind Rohre, aus unseren Wurzeln gerissen.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "La caña cuenta la historia de la separación. Todos somos cañas, arrancadas de nuestras raíces.",
+    "categoryEs": "añoranza",
+    "textPt": "A cana conta a história da separação. Somos todos canas, arrancadas de nossas raízes.",
+    "categoryPt": "saudade",
+    "textFr": "Le roseau raconte l'histoire de la séparation. Nous sommes tous des roseaux, arrachés à nos racines.",
+    "categoryFr": "nostalgie",
+    "textJa": "葦は別離の物語を語る。私たちは皆、根から引き裂かれた葦だ。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q014",
@@ -137,7 +267,17 @@
     "category": "irade",
     "rarity": "uncommon",
     "textEn": "If you stay silent, you become mute; if you speak, you become the Word. Choose.",
-    "categoryEn": "will"
+    "categoryEn": "will",
+    "textDe": "Bleibst du still, wirst du stumm; sprichst du, wirst du zum Wort. Wähle.",
+    "categoryDe": "Wille",
+    "textEs": "Si callas, te vuelves mudo; si hablas, te vuelves la Palabra. Elige.",
+    "categoryEs": "voluntad",
+    "textPt": "Se ficares calado, tornas-te mudo; se falares, tornas-te a Palavra. Escolhe.",
+    "categoryPt": "vontade",
+    "textFr": "Si tu te tais, tu deviens muet ; si tu parles, tu deviens la Parole. Choisis.",
+    "categoryFr": "volonté",
+    "textJa": "黙していれば、唖となる。語れば、言葉となる。選びなさい。",
+    "categoryJa": "意志"
   },
   {
     "id": "q015",
@@ -147,7 +287,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "Wash your heart, cleanse it; it shall become the house of God.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Wasche dein Herz, reinige es; es wird zum Haus Gottes werden.",
+    "categoryDe": "Herz",
+    "textEs": "Lava tu corazón, purifícalo; se volverá la casa de Dios.",
+    "categoryEs": "corazón",
+    "textPt": "Lava o teu coração, purifica-o; ele se tornará a casa de Deus.",
+    "categoryPt": "coração",
+    "textFr": "Lave ton cœur, purifie-le ; il deviendra la maison de Dieu.",
+    "categoryFr": "cœur",
+    "textJa": "心を洗い、清めよ。それは神の家となる。",
+    "categoryJa": "心"
   },
   {
     "id": "q016",
@@ -157,7 +307,17 @@
     "category": "hikmet",
     "rarity": "uncommon",
     "textEn": "The universe is a book. On every page a secret is hidden.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Das Universum ist ein Buch. Auf jeder Seite ist ein Geheimnis verborgen.",
+    "categoryDe": "Weisheit",
+    "textEs": "El universo es un libro. En cada página se oculta un secreto.",
+    "categoryEs": "sabiduría",
+    "textPt": "O universo é um livro. Em cada página esconde-se um segredo.",
+    "categoryPt": "sabedoria",
+    "textFr": "L'univers est un livre. Sur chaque page se cache un secret.",
+    "categoryFr": "sagesse",
+    "textJa": "宇宙は一冊の書だ。どの頁にも秘密が隠されている。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q017",
@@ -167,7 +327,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Whoever burns with the fire of love transforms the world.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wer im Feuer der Liebe brennt, verwandelt die Welt.",
+    "categoryDe": "Liebe",
+    "textEs": "Quien arde con el fuego del amor transforma el mundo.",
+    "categoryEs": "amor",
+    "textPt": "Quem arde com o fogo do amor transforma o mundo.",
+    "categoryPt": "amor",
+    "textFr": "Celui qui brûle du feu de l'amour transforme le monde.",
+    "categoryFr": "amour",
+    "textJa": "愛の火に燃える者は、世界を変える。",
+    "categoryJa": "愛"
   },
   {
     "id": "q018",
@@ -177,7 +347,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "No one is as they appear; each can see only as much as they themselves see.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Niemand ist, wie er erscheint; jeder kann nur so viel sehen, wie er selbst sieht.",
+    "categoryDe": "Weisheit",
+    "textEs": "Nadie es como parece; cada uno solo puede ver cuanto ve por sí mismo.",
+    "categoryEs": "sabiduría",
+    "textPt": "Ninguém é como aparenta; cada um só consegue ver tanto quanto vê por si.",
+    "categoryPt": "sabedoria",
+    "textFr": "Personne n'est tel qu'il paraît ; chacun ne peut voir qu'autant qu'il voit lui-même.",
+    "categoryFr": "sagesse",
+    "textJa": "誰も見かけ通りではない。人はそれぞれ、自分が見るだけしか見ることができない。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q019",
@@ -187,7 +367,17 @@
     "category": "dürüstlük",
     "rarity": "rare",
     "textEn": "Either appear as you are, or be as you appear.",
-    "categoryEn": "honesty"
+    "categoryEn": "honesty",
+    "textDe": "Erscheine, wie du bist, oder sei, wie du erscheinst.",
+    "categoryDe": "Ehrlichkeit",
+    "textEs": "O muéstrate como eres, o sé como te muestras.",
+    "categoryEs": "honestidad",
+    "textPt": "Ou mostra-te como és, ou sê como te mostras.",
+    "categoryPt": "honestidade",
+    "textFr": "Ou parais tel que tu es, ou sois tel que tu parais.",
+    "categoryFr": "honnêteté",
+    "textJa": "ありのままに現れるか、現れる通りであれ。",
+    "categoryJa": "誠実さ"
   },
   {
     "id": "q020",
@@ -197,7 +387,17 @@
     "category": "irade",
     "rarity": "uncommon",
     "textEn": "Do not stand still in the middle of the road. The road has no middle; either forward or back.",
-    "categoryEn": "will"
+    "categoryEn": "will",
+    "textDe": "Bleib nicht in der Mitte des Weges stehen. Der Weg hat keine Mitte; entweder vorwärts oder zurück.",
+    "categoryDe": "Wille",
+    "textEs": "No te quedes parado en medio del camino. El camino no tiene medio; o adelante o atrás.",
+    "categoryEs": "voluntad",
+    "textPt": "Não fiques parado no meio do caminho. O caminho não tem meio; ou para a frente ou para trás.",
+    "categoryPt": "vontade",
+    "textFr": "Ne reste pas immobile au milieu du chemin. Le chemin n'a pas de milieu ; soit en avant, soit en arrière.",
+    "categoryFr": "volonté",
+    "textJa": "道の真ん中で立ち止まるな。道に真ん中はない。前へ進むか、後ろへ退くか。",
+    "categoryJa": "意志"
   },
   {
     "id": "q021",
@@ -207,7 +407,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "Once you drink the wine of unity, the pain of separation comes to an end.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Hast du einmal den Wein der Einheit getrunken, endet der Schmerz der Trennung.",
+    "categoryDe": "Einheit",
+    "textEs": "Una vez que bebes el vino de la unidad, el dolor de la separación llega a su fin.",
+    "categoryEs": "unidad",
+    "textPt": "Uma vez que bebas o vinho da unidade, a dor da separação chega ao fim.",
+    "categoryPt": "unidade",
+    "textFr": "Une fois que tu bois le vin de l'unité, la douleur de la séparation prend fin.",
+    "categoryFr": "unité",
+    "textJa": "ひとたび一なるものの酒を飲めば、別離の痛みは終わりを迎える。",
+    "categoryJa": "一体"
   },
   {
     "id": "q022",
@@ -217,7 +427,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "Walk toward what you fear. There you will find treasure.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Geh auf das zu, was du fürchtest. Dort wirst du den Schatz finden.",
+    "categoryDe": "Mut",
+    "textEs": "Camina hacia lo que temes. Allí encontrarás el tesoro.",
+    "categoryEs": "valentía",
+    "textPt": "Caminha em direção àquilo que temes. Ali encontrarás o tesouro.",
+    "categoryPt": "coragem",
+    "textFr": "Marche vers ce que tu crains. Là tu trouveras le trésor.",
+    "categoryFr": "courage",
+    "textJa": "恐れるものへ向かって歩め。そこに宝を見いだすだろう。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q023",
@@ -227,7 +447,17 @@
     "category": "dostluk",
     "rarity": "uncommon",
     "textEn": "A true friend is not one who accepts you as you are, but one who draws you toward the best you can become.",
-    "categoryEn": "friendship"
+    "categoryEn": "friendship",
+    "textDe": "Ein wahrer Freund ist nicht der, der dich nimmt, wie du bist, sondern der dich zum Besten zieht, das du werden kannst.",
+    "categoryDe": "Freundschaft",
+    "textEs": "Un verdadero amigo no es quien te acepta como eres, sino quien te impulsa hacia lo mejor que puedes llegar a ser.",
+    "categoryEs": "amistad",
+    "textPt": "Um verdadeiro amigo não é aquele que te aceita como és, mas aquele que te impulsiona ao melhor que podes vir a ser.",
+    "categoryPt": "amizade",
+    "textFr": "Un vrai ami n'est pas celui qui t'accepte tel que tu es, mais celui qui t'attire vers le meilleur que tu peux devenir.",
+    "categoryFr": "amitié",
+    "textJa": "真の友とは、あなたをありのまま受け入れる者ではなく、あなたがなりうる最善へと引き上げる者だ。",
+    "categoryJa": "友情"
   },
   {
     "id": "q024",
@@ -237,7 +467,17 @@
     "category": "degisim",
     "rarity": "common",
     "textEn": "Leave your shadow behind and follow the sun.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Lass deinen Schatten hinter dir und folge der Sonne.",
+    "categoryDe": "Wandlung",
+    "textEs": "Deja tu sombra atrás y sigue al sol.",
+    "categoryEs": "transformación",
+    "textPt": "Deixa a tua sombra para trás e segue o sol.",
+    "categoryPt": "transformação",
+    "textFr": "Laisse ton ombre derrière toi et suis le soleil.",
+    "categoryFr": "transformation",
+    "textJa": "影を後にして、太陽に従え。",
+    "categoryJa": "変容"
   },
   {
     "id": "q025",
@@ -247,7 +487,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "Notice the sea within you. Do not seek a spring outside.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Beachte das Meer in dir. Suche keine Quelle draußen.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Advierte el mar que hay en ti. No busques un manantial afuera.",
+    "categoryEs": "voz interior",
+    "textPt": "Repara no mar que há em ti. Não procures uma nascente lá fora.",
+    "categoryPt": "voz interior",
+    "textFr": "Remarque la mer en toi. Ne cherche pas une source au-dehors.",
+    "categoryFr": "voix intérieure",
+    "textJa": "あなたの中の海に気づきなさい。外に泉を求めるな。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q026",
@@ -257,7 +507,17 @@
     "category": "degisim",
     "rarity": "common",
     "textEn": "A person can change in a single moment. Keep your door open to that change.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Ein Mensch kann sich in einem einzigen Augenblick wandeln. Halte deine Tür für diesen Wandel offen.",
+    "categoryDe": "Wandlung",
+    "textEs": "Una persona puede cambiar en un solo instante. Mantén tu puerta abierta a ese cambio.",
+    "categoryEs": "transformación",
+    "textPt": "Uma pessoa pode mudar num único instante. Mantém a tua porta aberta a essa mudança.",
+    "categoryPt": "transformação",
+    "textFr": "Une personne peut changer en un seul instant. Garde ta porte ouverte à ce changement.",
+    "categoryFr": "transformation",
+    "textJa": "人はただ一瞬で変わりうる。その変化に扉を開けておきなさい。",
+    "categoryJa": "変容"
   },
   {
     "id": "q027",
@@ -267,7 +527,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Love is a fire; it either burns and transforms you, or it destroys you.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Die Liebe ist ein Feuer; entweder brennt sie und verwandelt dich, oder sie zerstört dich.",
+    "categoryDe": "Liebe",
+    "textEs": "El amor es un fuego; o te quema y te transforma, o te destruye.",
+    "categoryEs": "amor",
+    "textPt": "O amor é um fogo; ou te queima e te transforma, ou te destrói.",
+    "categoryPt": "amor",
+    "textFr": "L'amour est un feu ; soit il te brûle et te transforme, soit il te détruit.",
+    "categoryFr": "amour",
+    "textJa": "愛は火だ。あなたを燃やして変えるか、滅ぼすかのどちらかだ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q028",
@@ -277,7 +547,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "Silence is sometimes the deepest of all conversations.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Stille ist manchmal das tiefste aller Gespräche.",
+    "categoryDe": "Weisheit",
+    "textEs": "El silencio es a veces la más profunda de todas las conversaciones.",
+    "categoryEs": "sabiduría",
+    "textPt": "O silêncio é, por vezes, a mais profunda de todas as conversas.",
+    "categoryPt": "sabedoria",
+    "textFr": "Le silence est parfois la plus profonde de toutes les conversations.",
+    "categoryFr": "sagesse",
+    "textJa": "沈黙は時に、あらゆる会話の中で最も深いものだ。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q029",
@@ -287,7 +567,17 @@
     "category": "degisim",
     "rarity": "rare",
     "textEn": "The one who knows you best is the one who challenges you the most. For that one transforms you.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Der, der dich am besten kennt, ist der, der dich am meisten herausfordert. Denn er verwandelt dich.",
+    "categoryDe": "Wandlung",
+    "textEs": "Quien mejor te conoce es quien más te desafía. Pues ese te transforma.",
+    "categoryEs": "transformación",
+    "textPt": "Quem melhor te conhece é quem mais te desafia. Pois esse te transforma.",
+    "categoryPt": "transformação",
+    "textFr": "Celui qui te connaît le mieux est celui qui te met le plus à l'épreuve. Car celui-là te transforme.",
+    "categoryFr": "transformation",
+    "textJa": "あなたを最もよく知る者は、あなたを最も試す者だ。その者があなたを変えるのだから。",
+    "categoryJa": "変容"
   },
   {
     "id": "q030",
@@ -297,7 +587,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "Light comes through the darkness. Do not flee the dark.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Das Licht kommt durch die Dunkelheit. Fliehe nicht vor dem Dunkel.",
+    "categoryDe": "Mut",
+    "textEs": "La luz llega a través de la oscuridad. No huyas de lo oscuro.",
+    "categoryEs": "valentía",
+    "textPt": "A luz vem através da escuridão. Não fujas do escuro.",
+    "categoryPt": "coragem",
+    "textFr": "La lumière vient à travers les ténèbres. Ne fuis pas l'obscurité.",
+    "categoryFr": "courage",
+    "textJa": "光は闇を通して来る。闇から逃げるな。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q031",
@@ -307,7 +607,17 @@
     "category": "sükür",
     "rarity": "common",
     "textEn": "Each breath is a gift; are you aware of it?",
-    "categoryEn": "gratitude"
+    "categoryEn": "gratitude",
+    "textDe": "Jeder Atemzug ist ein Geschenk; bist du dir dessen bewusst?",
+    "categoryDe": "Dankbarkeit",
+    "textEs": "Cada aliento es un regalo; ¿eres consciente de ello?",
+    "categoryEs": "gratitud",
+    "textPt": "Cada respiração é um presente; estás ciente disso?",
+    "categoryPt": "gratidão",
+    "textFr": "Chaque souffle est un présent ; en es-tu conscient ?",
+    "categoryFr": "gratitude",
+    "textJa": "ひと息ひと息が贈り物だ。あなたはそれに気づいているか。",
+    "categoryJa": "感謝"
   },
   {
     "id": "q032",
@@ -317,7 +627,17 @@
     "category": "kalp",
     "rarity": "common",
     "textEn": "Whatever is in your heart, your tongue will speak.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Was in deinem Herzen ist, wird deine Zunge sprechen.",
+    "categoryDe": "Herz",
+    "textEs": "Lo que haya en tu corazón, tu lengua lo hablará.",
+    "categoryEs": "corazón",
+    "textPt": "O que houver no teu coração, a tua língua falará.",
+    "categoryPt": "coração",
+    "textFr": "Ce qui est dans ton cœur, ta langue le dira.",
+    "categoryFr": "cœur",
+    "textJa": "心にあるものを、舌は語る。",
+    "categoryJa": "心"
   },
   {
     "id": "q033",
@@ -327,7 +647,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "Though you fall a hundred times, rise a hundred and one.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Auch wenn du hundertmal fällst, erhebe dich einhundertundeinmal.",
+    "categoryDe": "Geduld",
+    "textEs": "Aunque caigas cien veces, levántate ciento una.",
+    "categoryEs": "paciencia",
+    "textPt": "Ainda que caias cem vezes, ergue-te cento e uma.",
+    "categoryPt": "paciência",
+    "textFr": "Même si tu tombes cent fois, relève-toi cent une fois.",
+    "categoryFr": "patience",
+    "textJa": "百度倒れても、百一度立ち上がれ。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q034",
@@ -337,7 +667,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "I am Yunus, I come to this world but once. What is there to leave behind but love?",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Ich bin Yunus, ich komme nur einmal in diese Welt. Was bleibt zu hinterlassen außer Liebe?",
+    "categoryDe": "Liebe",
+    "textEs": "Soy Yunus, vengo a este mundo una sola vez. ¿Qué hay que dejar atrás sino amor?",
+    "categoryEs": "amor",
+    "textPt": "Sou Yunus, venho a este mundo apenas uma vez. O que há para deixar senão amor?",
+    "categoryPt": "amor",
+    "textFr": "Je suis Yunus, je ne viens qu'une fois en ce monde. Que reste-t-il à laisser sinon l'amour ?",
+    "categoryFr": "amour",
+    "textJa": "私はユヌス、この世に来るのはただ一度。愛のほかに、遺すものなどあろうか。",
+    "categoryJa": "愛"
   },
   {
     "id": "q035",
@@ -347,7 +687,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "I came not for quarrel; my work is love. The house of the Beloved is in hearts, and I came to build hearts.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Ich kam nicht zum Streit; mein Werk ist die Liebe. Das Haus des Geliebten ist in den Herzen, und ich kam, um Herzen zu bauen.",
+    "categoryDe": "Liebe",
+    "textEs": "No vine a reñir; mi labor es el amor. La casa del Amado está en los corazones, y vine a construir corazones.",
+    "categoryEs": "amor",
+    "textPt": "Não vim para a briga; o meu trabalho é o amor. A casa do Amado está nos corações, e vim construir corações.",
+    "categoryPt": "amor",
+    "textFr": "Je ne suis pas venu pour la querelle ; mon œuvre est l'amour. La maison de l'Aimé est dans les cœurs, et je suis venu bâtir des cœurs.",
+    "categoryFr": "amour",
+    "textJa": "私は争いのために来たのではない。私の仕事は愛だ。愛する者の家は心の中にあり、私は心を築くために来た。",
+    "categoryJa": "愛"
   },
   {
     "id": "q036",
@@ -357,7 +707,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Let us love and be loved; this world is for no one to keep.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Lasst uns lieben und geliebt werden; diese Welt gehört keinem für immer.",
+    "categoryDe": "Liebe",
+    "textEs": "Amemos y seamos amados; este mundo no es de nadie para conservarlo.",
+    "categoryEs": "amor",
+    "textPt": "Amemos e sejamos amados; este mundo não é de ninguém para guardar.",
+    "categoryPt": "amor",
+    "textFr": "Aimons et soyons aimés ; ce monde n'est à personne pour le garder.",
+    "categoryFr": "amour",
+    "textJa": "愛し、愛されよう。この世は誰のものとしてとどまるものでもない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q037",
@@ -367,7 +727,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "Knowledge is to know knowledge; knowledge is to know oneself. If you do not know yourself, what good is all this reading?",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Wissen ist, das Wissen zu kennen; Wissen ist, sich selbst zu kennen. Wenn du dich selbst nicht kennst, was nützt all das Lesen?",
+    "categoryDe": "Selbst",
+    "textEs": "El conocimiento es conocer el conocimiento; el conocimiento es conocerse a uno mismo. Si no te conoces a ti, ¿de qué sirve tanta lectura?",
+    "categoryEs": "ser",
+    "textPt": "O conhecimento é conhecer o conhecimento; o conhecimento é conhecer a si mesmo. Se não te conheces, de que serve toda essa leitura?",
+    "categoryPt": "eu",
+    "textFr": "Le savoir, c'est connaître le savoir ; le savoir, c'est se connaître soi-même. Si tu ne te connais pas, à quoi bon toutes ces lectures ?",
+    "categoryFr": "soi",
+    "textJa": "知とは知を知ること。知とは己を知ること。己を知らねば、あれほどの読書が何の役に立とう。",
+    "categoryJa": "自己"
   },
   {
     "id": "q038",
@@ -377,7 +747,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "If you break a heart even once, your prayers are not prayers. Not even seventy-two nations can absolve that sin.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Brichst du ein Herz auch nur einmal, sind deine Gebete keine Gebete. Nicht einmal zweiundsiebzig Völker können diese Sünde tilgen.",
+    "categoryDe": "Herz",
+    "textEs": "Si rompes un corazón aunque sea una vez, tus oraciones no son oraciones. Ni siquiera setenta y dos naciones pueden absolver ese pecado.",
+    "categoryEs": "corazón",
+    "textPt": "Se partires um coração ao menos uma vez, as tuas orações não são orações. Nem mesmo setenta e duas nações podem absolver esse pecado.",
+    "categoryPt": "coração",
+    "textFr": "Si tu brises un cœur ne serait-ce qu'une fois, tes prières ne sont pas des prières. Même soixante-douze nations ne peuvent absoudre ce péché.",
+    "categoryFr": "cœur",
+    "textJa": "ただ一度でも心を傷つければ、あなたの祈りは祈りではない。七十二の民族をもってしても、その罪は赦せない。",
+    "categoryJa": "心"
   },
   {
     "id": "q039",
@@ -387,7 +767,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "What they call paradise is a few mansions and a few houris. Give it to whoever wants it; what I want is You, only You.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Was sie Paradies nennen, sind ein paar Villen und ein paar Huris. Gib es, wem es begehrt; was ich will, bist Du, nur Du.",
+    "categoryDe": "Liebe",
+    "textEs": "Lo que llaman paraíso son unas mansiones y unas huríes. Dáselo a quien lo quiera; lo que yo quiero eres Tú, solo Tú.",
+    "categoryEs": "amor",
+    "textPt": "O que chamam de paraíso são algumas mansões e algumas húris. Dá-o a quem o quiser; o que eu quero és Tu, só Tu.",
+    "categoryPt": "amor",
+    "textFr": "Ce qu'ils appellent paradis n'est que quelques demeures et quelques houris. Donne-le à qui le veut ; ce que je veux, c'est Toi, rien que Toi.",
+    "categoryFr": "amour",
+    "textJa": "彼らが楽園と呼ぶものは、いくつかの館といくつかの天女。欲しい者にやればよい。私が欲しいのはあなた、ただあなただけ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q040",
@@ -397,7 +787,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "I clothed myself in flesh and bone, and appeared as Yunus.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Ich kleidete mich in Fleisch und Bein und erschien als Yunus.",
+    "categoryDe": "Einheit",
+    "textEs": "Me vestí de carne y hueso, y aparecí como Yunus.",
+    "categoryEs": "unidad",
+    "textPt": "Vesti-me de carne e osso, e apareci como Yunus.",
+    "categoryPt": "unidade",
+    "textFr": "Je me suis vêtu de chair et d'os, et je suis apparu sous le nom de Yunus.",
+    "categoryFr": "unité",
+    "textJa": "私は肉と骨をまとい、ユヌスとして現れた。",
+    "categoryJa": "一体"
   },
   {
     "id": "q041",
@@ -407,7 +807,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Your love has taken me from myself; what I need is You, only You.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Deine Liebe hat mich von mir selbst genommen; was ich brauche, bist Du, nur Du.",
+    "categoryDe": "Liebe",
+    "textEs": "Tu amor me ha apartado de mí mismo; lo que necesito eres Tú, solo Tú.",
+    "categoryEs": "amor",
+    "textPt": "O teu amor tirou-me de mim mesmo; o que preciso és Tu, só Tu.",
+    "categoryPt": "amor",
+    "textFr": "Ton amour m'a pris à moi-même ; ce dont j'ai besoin, c'est Toi, rien que Toi.",
+    "categoryFr": "amour",
+    "textJa": "あなたの愛が私を私自身から奪った。私に必要なのはあなた、ただあなただけ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q042",
@@ -417,7 +827,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "I drank wine from the hand of the Beloved; no reckoning remains in me.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Ich trank Wein aus der Hand des Geliebten; keine Rechenschaft bleibt mehr in mir.",
+    "categoryDe": "Liebe",
+    "textEs": "Bebí vino de la mano del Amado; ya no queda cuenta alguna en mí.",
+    "categoryEs": "amor",
+    "textPt": "Bebi vinho da mão do Amado; já não resta conta alguma em mim.",
+    "categoryPt": "amor",
+    "textFr": "J'ai bu le vin de la main de l'Aimé ; il ne reste plus en moi aucun compte à rendre.",
+    "categoryFr": "amour",
+    "textJa": "私は愛する者の手から酒を飲んだ。もはや私の中に勘定は残っていない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q043",
@@ -427,7 +847,17 @@
     "category": "ic_ses",
     "rarity": "common",
     "textEn": "My name and renown are with me; the friend in my heart is my truest friend.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Mein Name und mein Ruhm sind bei mir; der Freund in meinem Herzen ist mein wahrster Freund.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Mi nombre y mi fama están conmigo; el amigo en mi corazón es mi amigo más verdadero.",
+    "categoryEs": "voz interior",
+    "textPt": "O meu nome e a minha fama estão comigo; o amigo no meu coração é o meu amigo mais verdadeiro.",
+    "categoryPt": "voz interior",
+    "textFr": "Mon nom et ma renommée sont avec moi ; l'ami dans mon cœur est mon ami le plus vrai.",
+    "categoryFr": "voix intérieure",
+    "textJa": "名も誉れも私とともにある。私の心の中の友こそ、最も真の友だ。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q044",
@@ -437,7 +867,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "Step by step beyond myself I go. For each stone thrown at me, I have begun to say: a rose.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Schritt für Schritt gehe ich über mich selbst hinaus. Für jeden Stein, der nach mir geworfen wird, habe ich begonnen zu sagen: eine Rose.",
+    "categoryDe": "Geduld",
+    "textEs": "Paso a paso más allá de mí mismo voy. Por cada piedra que me arrojan, he empezado a decir: una rosa.",
+    "categoryEs": "paciencia",
+    "textPt": "Passo a passo, para além de mim mesmo eu vou. Por cada pedra que me atiram, comecei a dizer: uma rosa.",
+    "categoryPt": "paciência",
+    "textFr": "Pas à pas, je vais au-delà de moi-même. À chaque pierre qu'on me jette, j'ai commencé à dire : une rose.",
+    "categoryFr": "patience",
+    "textJa": "一歩ずつ、私は自分を越えていく。私に投げられる石の一つひとつに、私は「バラだ」と言い始めた。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q045",
@@ -447,7 +887,17 @@
     "category": "ic_ses",
     "rarity": "common",
     "textEn": "Whatever you seek, seek within yourself. Not in Jerusalem, not in Mecca.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Was du auch suchst, suche es in dir selbst. Nicht in Jerusalem, nicht in Mekka.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Lo que busques, búscalo dentro de ti. No en Jerusalén, ni en La Meca.",
+    "categoryEs": "voz interior",
+    "textPt": "O que quer que busques, busca-o dentro de ti. Não em Jerusalém, nem em Meca.",
+    "categoryPt": "voz interior",
+    "textFr": "Quoi que tu cherches, cherche-le en toi-même. Ni à Jérusalem, ni à La Mecque.",
+    "categoryFr": "voix intérieure",
+    "textJa": "何を求めるにせよ、自分の中に求めよ。エルサレムでもなく、メッカでもなく。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q046",
@@ -457,7 +907,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "This world is like a spring; those who drink are never satisfied.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Diese Welt ist wie eine Quelle; wer trinkt, wird niemals satt.",
+    "categoryDe": "Weisheit",
+    "textEs": "Este mundo es como un manantial; quienes beben nunca quedan saciados.",
+    "categoryEs": "sabiduría",
+    "textPt": "Este mundo é como uma nascente; quem bebe nunca se sacia.",
+    "categoryPt": "sabedoria",
+    "textFr": "Ce monde est comme une source ; ceux qui boivent ne sont jamais rassasiés.",
+    "categoryFr": "sagesse",
+    "textJa": "この世は泉のようだ。飲む者は決して満たされない。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q047",
@@ -467,7 +927,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "My heart is like a nightingale that sings in the Beloved's garden.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Mein Herz ist wie eine Nachtigall, die im Garten des Geliebten singt.",
+    "categoryDe": "Liebe",
+    "textEs": "Mi corazón es como un ruiseñor que canta en el jardín del Amado.",
+    "categoryEs": "amor",
+    "textPt": "O meu coração é como um rouxinol que canta no jardim do Amado.",
+    "categoryPt": "amor",
+    "textFr": "Mon cœur est comme un rossignol qui chante dans le jardin de l'Aimé.",
+    "categoryFr": "amour",
+    "textJa": "私の心は、愛する者の庭でさえずるナイチンゲールのようだ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q048",
@@ -477,7 +947,17 @@
     "category": "hikmet",
     "rarity": "uncommon",
     "textEn": "A word can end a war, a word can sever a head. A word can turn bitter poison into honey and oil.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Ein Wort kann einen Krieg beenden, ein Wort kann ein Haupt abtrennen. Ein Wort kann bitteres Gift in Honig und Öl verwandeln.",
+    "categoryDe": "Weisheit",
+    "textEs": "Una palabra puede acabar una guerra, una palabra puede cortar una cabeza. Una palabra puede volver miel y aceite el veneno amargo.",
+    "categoryEs": "sabiduría",
+    "textPt": "Uma palavra pode acabar uma guerra, uma palavra pode cortar uma cabeça. Uma palavra pode tornar mel e óleo o veneno amargo.",
+    "categoryPt": "sabedoria",
+    "textFr": "Un mot peut mettre fin à une guerre, un mot peut trancher une tête. Un mot peut changer un poison amer en miel et en huile.",
+    "categoryFr": "sagesse",
+    "textJa": "一言が戦を終わらせ、一言が首を落とす。一言が苦い毒を蜜と油に変える。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q049",
@@ -487,7 +967,17 @@
     "category": "ic_ses",
     "rarity": "rare",
     "textEn": "There is an I within me, deeper than myself.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "In mir ist ein Ich, tiefer als ich selbst.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Hay un yo dentro de mí, más hondo que yo mismo.",
+    "categoryEs": "voz interior",
+    "textPt": "Há um eu dentro de mim, mais profundo do que eu mesmo.",
+    "categoryPt": "voz interior",
+    "textFr": "Il y a un moi en moi, plus profond que moi-même.",
+    "categoryFr": "voix intérieure",
+    "textJa": "私の中に、私自身より深い「私」がいる。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q050",
@@ -497,7 +987,17 @@
     "category": "sükür",
     "rarity": "common",
     "textEn": "We have drunk the sherbet that comes from the Truth, praise be to God.",
-    "categoryEn": "gratitude"
+    "categoryEn": "gratitude",
+    "textDe": "Wir haben den Sirup getrunken, der von der Wahrheit kommt, gelobt sei Gott.",
+    "categoryDe": "Dankbarkeit",
+    "textEs": "Hemos bebido el sorbete que viene de la Verdad, alabado sea Dios.",
+    "categoryEs": "gratitud",
+    "textPt": "Bebemos o xarope que vem da Verdade, louvado seja Deus.",
+    "categoryPt": "gratidão",
+    "textFr": "Nous avons bu le sirop qui vient de la Vérité, louange à Dieu.",
+    "categoryFr": "gratitude",
+    "textJa": "私たちは真実から来る甘露を飲んだ。神に讃えあれ。",
+    "categoryJa": "感謝"
   },
   {
     "id": "q051",
@@ -507,7 +1007,17 @@
     "category": "hikmet",
     "rarity": "uncommon",
     "textEn": "The heat is in the fire, not in the pan. The grace is in the head, not in the crown.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Die Hitze ist im Feuer, nicht in der Pfanne. Die Gnade ist im Haupt, nicht in der Krone.",
+    "categoryDe": "Weisheit",
+    "textEs": "El calor está en el fuego, no en la sartén. La gracia está en la cabeza, no en la corona.",
+    "categoryEs": "sabiduría",
+    "textPt": "O calor está no fogo, não na panela. A graça está na cabeça, não na coroa.",
+    "categoryPt": "sabedoria",
+    "textFr": "La chaleur est dans le feu, non dans la poêle. La grâce est dans la tête, non dans la couronne.",
+    "categoryFr": "sagesse",
+    "textJa": "熱は火の中にあり、鍋の中にはない。恵みは頭の中にあり、冠の中にはない。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q052",
@@ -517,7 +1027,17 @@
     "category": "nefis",
     "rarity": "common",
     "textEn": "Master your hand, your loins, and your tongue.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Beherrsche deine Hand, deine Lenden und deine Zunge.",
+    "categoryDe": "Selbst",
+    "textEs": "Domina tu mano, tus entrañas y tu lengua.",
+    "categoryEs": "ser",
+    "textPt": "Domina a tua mão, as tuas entranhas e a tua língua.",
+    "categoryPt": "eu",
+    "textFr": "Maîtrise ta main, tes reins et ta langue.",
+    "categoryFr": "soi",
+    "textJa": "己の手と、腰と、舌を治めよ。",
+    "categoryJa": "自己"
   },
   {
     "id": "q053",
@@ -527,7 +1047,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "The greatest book to be read is the human being.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Das größte Buch, das es zu lesen gilt, ist der Mensch.",
+    "categoryDe": "Selbst",
+    "textEs": "El mayor libro que se ha de leer es el ser humano.",
+    "categoryEs": "ser",
+    "textPt": "O maior livro a ser lido é o ser humano.",
+    "categoryPt": "eu",
+    "textFr": "Le plus grand livre à lire est l'être humain.",
+    "categoryFr": "soi",
+    "textJa": "読むべき最も偉大な書は、人間そのものだ。",
+    "categoryJa": "自己"
   },
   {
     "id": "q054",
@@ -537,7 +1067,17 @@
     "category": "bilgi",
     "rarity": "rare",
     "textEn": "Educate your women. To save a nation, one must first raise its mothers in wisdom.",
-    "categoryEn": "knowledge"
+    "categoryEn": "knowledge",
+    "textDe": "Bildet eure Frauen. Um ein Volk zu retten, muss man zuerst seine Mütter in Weisheit erziehen.",
+    "categoryDe": "Wissen",
+    "textEs": "Educa a tus mujeres. Para salvar a una nación, primero hay que criar a sus madres en la sabiduría.",
+    "categoryEs": "conocimiento",
+    "textPt": "Educa as tuas mulheres. Para salvar uma nação, é preciso primeiro criar as suas mães na sabedoria.",
+    "categoryPt": "conhecimento",
+    "textFr": "Éduque tes femmes. Pour sauver une nation, il faut d'abord élever ses mères dans la sagesse.",
+    "categoryFr": "savoir",
+    "textJa": "あなたの女性たちを教育せよ。国を救うには、まずその母たちを智慧のうちに育てねばならない。",
+    "categoryJa": "知識"
   },
   {
     "id": "q055",
@@ -547,7 +1087,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "The word of the master is like water wearing away a stone. Slow, but sure.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Das Wort des Meisters ist wie Wasser, das einen Stein aushöhlt. Langsam, doch gewiss.",
+    "categoryDe": "Geduld",
+    "textEs": "La palabra del maestro es como el agua que desgasta una piedra. Lenta, pero segura.",
+    "categoryEs": "paciencia",
+    "textPt": "A palavra do mestre é como a água que desgasta a pedra. Lenta, mas certa.",
+    "categoryPt": "paciência",
+    "textFr": "La parole du maître est comme l'eau qui use une pierre. Lente, mais sûre.",
+    "categoryFr": "patience",
+    "textJa": "師の言葉は、石をすり減らす水のようだ。ゆっくりと、しかし確かに。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q056",
@@ -557,7 +1107,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "The heart is the throne of God; God looked upon the heart.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Das Herz ist der Thron Gottes; Gott blickte auf das Herz.",
+    "categoryDe": "Herz",
+    "textEs": "El corazón es el trono de Dios; Dios miró al corazón.",
+    "categoryEs": "corazón",
+    "textPt": "O coração é o trono de Deus; Deus olhou para o coração.",
+    "categoryPt": "coração",
+    "textFr": "Le cœur est le trône de Dieu ; Dieu a regardé le cœur.",
+    "categoryFr": "cœur",
+    "textJa": "心は神の御座。神は心をご覧になった。",
+    "categoryJa": "心"
   },
   {
     "id": "q057",
@@ -567,7 +1127,17 @@
     "category": "ic_ses",
     "rarity": "common",
     "textEn": "Search and search for whatever you seek. You will find nothing but yourself.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Suche und suche, was du auch suchst. Du wirst nichts als dich selbst finden.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Busca y busca lo que busques. No hallarás más que a ti mismo.",
+    "categoryEs": "voz interior",
+    "textPt": "Procura e procura o que quer que busques. Nada encontrarás senão a ti mesmo.",
+    "categoryPt": "voz interior",
+    "textFr": "Cherche et cherche encore ce que tu cherches. Tu ne trouveras rien d'autre que toi-même.",
+    "categoryFr": "voix intérieure",
+    "textJa": "何を求めようと、探して、探し続けよ。己自身のほかには何も見いださないだろう。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q058",
@@ -577,7 +1147,17 @@
     "category": "yol",
     "rarity": "rare",
     "textEn": "Four gates and forty stations: sharia, tariqa, marifa, haqiqa.",
-    "categoryEn": "path"
+    "categoryEn": "path",
+    "textDe": "Vier Tore und vierzig Stufen: Scharia, Tariqa, Marifa, Haqiqa.",
+    "categoryDe": "Weg",
+    "textEs": "Cuatro puertas y cuarenta estaciones: sharia, tariqa, marifa, haqiqa.",
+    "categoryEs": "sendero",
+    "textPt": "Quatro portas e quarenta estações: xaria, tariqa, marifa, haqiqa.",
+    "categoryPt": "caminho",
+    "textFr": "Quatre portes et quarante stations : charia, tariqa, marifa, haqiqa.",
+    "categoryFr": "voie",
+    "textJa": "四つの門と四十の階梯——シャリーア、タリーカ、マアリファ、ハキーカ。",
+    "categoryJa": "道"
   },
   {
     "id": "q059",
@@ -587,7 +1167,17 @@
     "category": "sabir",
     "rarity": "common",
     "textEn": "Though you be wounded, wound no one.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Auch wenn du verwundet bist, verwunde keinen.",
+    "categoryDe": "Geduld",
+    "textEs": "Aunque estés herido, no hieras a nadie.",
+    "categoryEs": "paciencia",
+    "textPt": "Ainda que estejas ferido, não firas ninguém.",
+    "categoryPt": "paciência",
+    "textFr": "Même blessé, ne blesse personne.",
+    "categoryFr": "patience",
+    "textJa": "たとえ傷ついても、誰も傷つけるな。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q060",
@@ -597,7 +1187,17 @@
     "category": "an",
     "rarity": "uncommon",
     "textEn": "To bear the world's sorrow is not the same as preparing for the hereafter. Do the good now.",
-    "categoryEn": "present moment"
+    "categoryEn": "present moment",
+    "textDe": "Den Kummer der Welt zu tragen ist nicht dasselbe wie sich auf das Jenseits vorzubereiten. Tu das Gute jetzt.",
+    "categoryDe": "Gegenwart",
+    "textEs": "Cargar con el dolor del mundo no es lo mismo que prepararse para el más allá. Haz el bien ahora.",
+    "categoryEs": "presente",
+    "textPt": "Carregar a tristeza do mundo não é o mesmo que preparar-se para o além. Faz o bem agora.",
+    "categoryPt": "presente",
+    "textFr": "Porter le chagrin du monde n'est pas la même chose que se préparer à l'au-delà. Fais le bien maintenant.",
+    "categoryFr": "présent",
+    "textJa": "世の憂いを背負うことは、来世に備えることと同じではない。善は今、行え。",
+    "categoryJa": "今この瞬間"
   },
   {
     "id": "q061",
@@ -607,7 +1207,17 @@
     "category": "tevbe",
     "rarity": "common",
     "textEn": "If the servant knows their fault, the Truth forgives.",
-    "categoryEn": "repentance"
+    "categoryEn": "repentance",
+    "textDe": "Wenn der Diener seinen Fehler erkennt, vergibt die Wahrheit.",
+    "categoryDe": "Reue",
+    "textEs": "Si el siervo conoce su falta, la Verdad perdona.",
+    "categoryEs": "arrepentimiento",
+    "textPt": "Se o servo conhece a sua falta, a Verdade perdoa.",
+    "categoryPt": "arrependimento",
+    "textFr": "Si le serviteur connaît sa faute, la Vérité pardonne.",
+    "categoryFr": "repentir",
+    "textJa": "僕がその過ちを知れば、真実は赦したまう。",
+    "categoryJa": "悔悟"
   },
   {
     "id": "q062",
@@ -617,7 +1227,17 @@
     "category": "kalp",
     "rarity": "common",
     "textEn": "This world is fleeting. Build the heart you raise from its foundation.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Diese Welt ist vergänglich. Baue das Herz, das du errichtest, von Grund auf.",
+    "categoryDe": "Herz",
+    "textEs": "Este mundo es fugaz. Construye desde sus cimientos el corazón que levantas.",
+    "categoryEs": "corazón",
+    "textPt": "Este mundo é passageiro. Constrói desde os alicerces o coração que ergues.",
+    "categoryPt": "coração",
+    "textFr": "Ce monde est éphémère. Bâtis dès ses fondations le cœur que tu élèves.",
+    "categoryFr": "cœur",
+    "textJa": "この世は移ろう。あなたが築き上げる心を、その土台から建てよ。",
+    "categoryJa": "心"
   },
   {
     "id": "q063",
@@ -627,7 +1247,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "The wine drunk in the gathering of the Forty is the wine of love.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Der Wein, der in der Versammlung der Vierzig getrunken wird, ist der Wein der Liebe.",
+    "categoryDe": "Liebe",
+    "textEs": "El vino que se bebe en la reunión de los Cuarenta es el vino del amor.",
+    "categoryEs": "amor",
+    "textPt": "O vinho que se bebe na reunião dos Quarenta é o vinho do amor.",
+    "categoryPt": "amor",
+    "textFr": "Le vin bu dans l'assemblée des Quarante est le vin de l'amour.",
+    "categoryFr": "amour",
+    "textJa": "四十人の集いで飲まれる酒は、愛の酒だ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q064",
@@ -637,7 +1267,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "It is easy to be a scholar; it is hard to be a human being.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Es ist leicht, ein Gelehrter zu sein; es ist schwer, ein Mensch zu sein.",
+    "categoryDe": "Selbst",
+    "textEs": "Es fácil ser un erudito; es difícil ser un ser humano.",
+    "categoryEs": "ser",
+    "textPt": "É fácil ser um erudito; é difícil ser um ser humano.",
+    "categoryPt": "eu",
+    "textFr": "Il est facile d'être un savant ; il est difficile d'être un être humain.",
+    "categoryFr": "soi",
+    "textJa": "学者であることはたやすい。人間であることは難しい。",
+    "categoryJa": "自己"
   },
   {
     "id": "q065",
@@ -647,7 +1287,17 @@
     "category": "hasret",
     "rarity": "rare",
     "textEn": "I am Pir Sultan in Sivas; he knows not even our name. Has the Shah remembered us? If he has, how good.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Ich bin Pir Sultan in Sivas; er kennt nicht einmal unseren Namen. Hat der Schah unser gedacht? Wenn ja, wie schön.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Soy Pir Sultan en Sivas; ni siquiera conoce nuestro nombre. ¿Se ha acordado el Sah de nosotros? Si lo ha hecho, qué bien.",
+    "categoryEs": "añoranza",
+    "textPt": "Sou Pir Sultan em Sivas; ele nem sequer conhece o nosso nome. Terá o Xá se lembrado de nós? Se sim, que bom.",
+    "categoryPt": "saudade",
+    "textFr": "Je suis Pir Sultan à Sivas ; il ne connaît même pas notre nom. Le Chah s'est-il souvenu de nous ? S'il l'a fait, comme c'est bon.",
+    "categoryFr": "nostalgie",
+    "textJa": "私はスィヴァスのピル・スルタン。彼は我らの名すら知らぬ。シャーは我らを思い出したか。もしそうなら、何と嬉しいことか。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q066",
@@ -657,7 +1307,17 @@
     "category": "hasret",
     "rarity": "uncommon",
     "textEn": "No one asks us of our state; they do not know what we bear.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Niemand fragt nach unserem Zustand; sie wissen nicht, was wir tragen.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Nadie nos pregunta por nuestro estado; no saben lo que cargamos.",
+    "categoryEs": "añoranza",
+    "textPt": "Ninguém nos pergunta pelo nosso estado; não sabem o que carregamos.",
+    "categoryPt": "saudade",
+    "textFr": "Personne ne nous demande notre état ; ils ne savent pas ce que nous portons.",
+    "categoryFr": "nostalgie",
+    "textJa": "誰も我らの境遇を問わぬ。我らが何を背負っているかを、彼らは知らぬ。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q067",
@@ -667,7 +1327,17 @@
     "category": "irade",
     "rarity": "uncommon",
     "textEn": "May I be servant to the hand that holds the pen. Even if we cannot erase what is written, still we write.",
-    "categoryEn": "will"
+    "categoryEn": "will",
+    "textDe": "Diener sei ich der Hand, die die Feder hält. Auch wenn wir das Geschriebene nicht tilgen können, schreiben wir dennoch.",
+    "categoryDe": "Wille",
+    "textEs": "Que sea siervo de la mano que sostiene la pluma. Aunque no podamos borrar lo escrito, aun así escribimos.",
+    "categoryEs": "voluntad",
+    "textPt": "Que eu seja servo da mão que segura a pena. Ainda que não possamos apagar o que está escrito, mesmo assim escrevemos.",
+    "categoryPt": "vontade",
+    "textFr": "Que je sois serviteur de la main qui tient la plume. Même si nous ne pouvons effacer ce qui est écrit, nous écrivons quand même.",
+    "categoryFr": "volonté",
+    "textJa": "ペンを握る手の僕でありたい。書かれたものを消せずとも、それでもなお我らは書く。",
+    "categoryJa": "意志"
   },
   {
     "id": "q068",
@@ -677,7 +1347,17 @@
     "category": "yol",
     "rarity": "uncommon",
     "textEn": "For those who walk the path of Truth, to turn back is shameful.",
-    "categoryEn": "path"
+    "categoryEn": "path",
+    "textDe": "Für die, die den Weg der Wahrheit gehen, ist Umkehren eine Schande.",
+    "categoryDe": "Weg",
+    "textEs": "Para quienes recorren el camino de la Verdad, volver atrás es vergonzoso.",
+    "categoryEs": "sendero",
+    "textPt": "Para os que percorrem o caminho da Verdade, voltar atrás é vergonhoso.",
+    "categoryPt": "caminho",
+    "textFr": "Pour ceux qui marchent sur la voie de la Vérité, faire demi-tour est une honte.",
+    "categoryFr": "voie",
+    "textJa": "真実の道を歩む者にとって、引き返すことは恥だ。",
+    "categoryJa": "道"
   },
   {
     "id": "q069",
@@ -687,7 +1367,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "If one day you think upon death, think more upon love.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wenn du eines Tages an den Tod denkst, denke mehr an die Liebe.",
+    "categoryDe": "Liebe",
+    "textEs": "Si un día piensas en la muerte, piensa más en el amor.",
+    "categoryEs": "amor",
+    "textPt": "Se um dia pensares na morte, pensa mais no amor.",
+    "categoryPt": "amor",
+    "textFr": "Si un jour tu penses à la mort, pense davantage à l'amour.",
+    "categoryFr": "amour",
+    "textJa": "いつか死を思うなら、それ以上に愛を思え。",
+    "categoryJa": "愛"
   },
   {
     "id": "q070",
@@ -697,7 +1387,17 @@
     "category": "teslimiyet",
     "rarity": "uncommon",
     "textEn": "With mountains and with stones, I will call upon You, my Lord.",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Mit den Bergen und den Steinen werde ich Dich anrufen, mein Herr.",
+    "categoryDe": "Hingabe",
+    "textEs": "Con las montañas y con las piedras Te invocaré, mi Señor.",
+    "categoryEs": "entrega",
+    "textPt": "Com as montanhas e com as pedras Te invocarei, meu Senhor.",
+    "categoryPt": "entrega",
+    "textFr": "Avec les montagnes et avec les pierres, je T'invoquerai, mon Seigneur.",
+    "categoryFr": "abandon",
+    "textJa": "山々とともに、石々とともに、私はあなたを呼びます、わが主よ。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q071",
@@ -707,7 +1407,17 @@
     "category": "adalet",
     "rarity": "common",
     "textEn": "Tyranny does not endure; sooner or later truth finds its place.",
-    "categoryEn": "justice"
+    "categoryEn": "justice",
+    "textDe": "Tyrannei dauert nicht; früher oder später findet die Wahrheit ihren Platz.",
+    "categoryDe": "Gerechtigkeit",
+    "textEs": "La tiranía no perdura; tarde o temprano la verdad halla su lugar.",
+    "categoryEs": "justicia",
+    "textPt": "A tirania não perdura; mais cedo ou mais tarde a verdade encontra o seu lugar.",
+    "categoryPt": "justiça",
+    "textFr": "La tyrannie ne dure pas ; tôt ou tard la vérité trouve sa place.",
+    "categoryFr": "justice",
+    "textJa": "暴政は続かぬ。遅かれ早かれ、真実はその場所を見いだす。",
+    "categoryJa": "正義"
   },
   {
     "id": "q072",
@@ -717,7 +1427,17 @@
     "category": "hasret",
     "rarity": "common",
     "textEn": "My heart has fallen into sorrow; I know not whether a cure exists.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Mein Herz ist in Kummer gefallen; ich weiß nicht, ob es eine Heilung gibt.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Mi corazón ha caído en la pena; no sé si existe cura.",
+    "categoryEs": "añoranza",
+    "textPt": "O meu coração caiu na tristeza; não sei se há cura.",
+    "categoryPt": "saudade",
+    "textFr": "Mon cœur est tombé dans le chagrin ; je ne sais s'il existe un remède.",
+    "categoryFr": "nostalgie",
+    "textJa": "私の心は悲しみに沈んだ。癒しがあるのかどうか、私には分からぬ。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q073",
@@ -727,7 +1447,17 @@
     "category": "inanc",
     "rarity": "common",
     "textEn": "Allah is one, Muhammad is truth, Ali is the lion of God.",
-    "categoryEn": "faith"
+    "categoryEn": "faith",
+    "textDe": "Allah ist einer, Mohammed ist Wahrheit, Ali ist der Löwe Gottes.",
+    "categoryDe": "Glaube",
+    "textEs": "Alá es uno, Mahoma es verdad, Alí es el león de Dios.",
+    "categoryEs": "fe",
+    "textPt": "Alá é um, Maomé é verdade, Ali é o leão de Deus.",
+    "categoryPt": "fé",
+    "textFr": "Allah est un, Mahomet est vérité, Ali est le lion de Dieu.",
+    "categoryFr": "foi",
+    "textJa": "アッラーは唯一、ムハンマドは真実、アリーは神の獅子。",
+    "categoryJa": "信仰"
   },
   {
     "id": "q074",
@@ -737,7 +1467,17 @@
     "category": "dürüstlük",
     "rarity": "uncommon",
     "textEn": "The believer gives their word; one must stand by what one says.",
-    "categoryEn": "honesty"
+    "categoryEn": "honesty",
+    "textDe": "Der Gläubige gibt sein Wort; man muss zu dem stehen, was man sagt.",
+    "categoryDe": "Ehrlichkeit",
+    "textEs": "El creyente da su palabra; hay que cumplir lo que se dice.",
+    "categoryEs": "honestidad",
+    "textPt": "O crente dá a sua palavra; é preciso cumprir o que se diz.",
+    "categoryPt": "honestidade",
+    "textFr": "Le croyant donne sa parole ; il faut tenir ce qu'on dit.",
+    "categoryFr": "honnêteté",
+    "textJa": "信ずる者は言葉を与える。言ったことには立たねばならぬ。",
+    "categoryJa": "誠実さ"
   },
   {
     "id": "q075",
@@ -747,7 +1487,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Does a rose bloom in your garden? If it does, bring it to me.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Blüht eine Rose in deinem Garten? Wenn ja, bring sie mir.",
+    "categoryDe": "Liebe",
+    "textEs": "¿Florece una rosa en tu jardín? Si florece, tráemela.",
+    "categoryEs": "amor",
+    "textPt": "Floresce uma rosa no teu jardim? Se floresce, traz-ma.",
+    "categoryPt": "amor",
+    "textFr": "Une rose fleurit-elle dans ton jardin ? Si oui, apporte-la-moi.",
+    "categoryFr": "amour",
+    "textJa": "あなたの庭にバラは咲くか。咲くなら、私に持ってきてくれ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q076",
@@ -757,7 +1507,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "To be one who walks unto the Truth, you must keep your heart clean.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Um einer zu sein, der zur Wahrheit schreitet, musst du dein Herz rein halten.",
+    "categoryDe": "Herz",
+    "textEs": "Para ser de quienes caminan hacia la Verdad, debes mantener limpio tu corazón.",
+    "categoryEs": "corazón",
+    "textPt": "Para seres dos que caminham para a Verdade, deves manter o teu coração limpo.",
+    "categoryPt": "coração",
+    "textFr": "Pour être de ceux qui marchent vers la Vérité, tu dois garder ton cœur pur.",
+    "categoryFr": "cœur",
+    "textJa": "真実へ歩む者の一人であるには、心を清く保たねばならぬ。",
+    "categoryJa": "心"
   },
   {
     "id": "q077",
@@ -767,7 +1527,17 @@
     "category": "bilgi",
     "rarity": "uncommon",
     "textEn": "The first school is the mother. A good mother makes a good people.",
-    "categoryEn": "knowledge"
+    "categoryEn": "knowledge",
+    "textDe": "Die erste Schule ist die Mutter. Eine gute Mutter macht ein gutes Volk.",
+    "categoryDe": "Wissen",
+    "textEs": "La primera escuela es la madre. Una buena madre hace un buen pueblo.",
+    "categoryEs": "conocimiento",
+    "textPt": "A primeira escola é a mãe. Uma boa mãe faz um bom povo.",
+    "categoryPt": "conhecimento",
+    "textFr": "La première école est la mère. Une bonne mère fait un bon peuple.",
+    "categoryFr": "savoir",
+    "textJa": "最初の学校は母だ。良き母が良き民をつくる。",
+    "categoryJa": "知識"
   },
   {
     "id": "q078",
@@ -777,7 +1547,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Whoever loves God also loves the people.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wer Gott liebt, liebt auch die Menschen.",
+    "categoryDe": "Liebe",
+    "textEs": "Quien ama a Dios ama también a las personas.",
+    "categoryEs": "amor",
+    "textPt": "Quem ama a Deus ama também as pessoas.",
+    "categoryPt": "amor",
+    "textFr": "Qui aime Dieu aime aussi les hommes.",
+    "categoryFr": "amour",
+    "textJa": "神を愛する者は、人々をも愛する。",
+    "categoryJa": "愛"
   },
   {
     "id": "q079",
@@ -787,7 +1567,17 @@
     "category": "teslimiyet",
     "rarity": "rare",
     "textEn": "At seventy I entered the earth in humility; to die in the path of God is an honor.",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Mit siebzig trat ich in Demut in die Erde; im Weg Gottes zu sterben ist eine Ehre.",
+    "categoryDe": "Hingabe",
+    "textEs": "A los setenta entré en la tierra con humildad; morir en el camino de Dios es un honor.",
+    "categoryEs": "entrega",
+    "textPt": "Aos setenta entrei na terra com humildade; morrer no caminho de Deus é uma honra.",
+    "categoryPt": "entrega",
+    "textFr": "À soixante-dix ans je suis entré en terre dans l'humilité ; mourir dans la voie de Dieu est un honneur.",
+    "categoryFr": "abandon",
+    "textJa": "七十にして謙虚に大地へ入った。神の道に死ぬことは誉れだ。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q080",
@@ -797,7 +1587,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "To conquer the self is greater than to conquer a mountain.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Das Selbst zu erobern ist größer, als einen Berg zu erobern.",
+    "categoryDe": "Selbst",
+    "textEs": "Conquistar el yo es más grande que conquistar una montaña.",
+    "categoryEs": "ser",
+    "textPt": "Conquistar o eu é maior do que conquistar uma montanha.",
+    "categoryPt": "eu",
+    "textFr": "Conquérir le soi est plus grand que conquérir une montagne.",
+    "categoryFr": "soi",
+    "textJa": "己に克つことは、山を征するより大きい。",
+    "categoryJa": "自己"
   },
   {
     "id": "q081",
@@ -807,7 +1607,17 @@
     "category": "irade",
     "rarity": "common",
     "textEn": "Those who set out on the path of the Truth do not grow weary.",
-    "categoryEn": "will"
+    "categoryEn": "will",
+    "textDe": "Die sich auf den Weg der Wahrheit machen, werden nicht müde.",
+    "categoryDe": "Wille",
+    "textEs": "Quienes parten por el camino de la Verdad no se cansan.",
+    "categoryEs": "voluntad",
+    "textPt": "Os que partem pelo caminho da Verdade não se cansam.",
+    "categoryPt": "vontade",
+    "textFr": "Ceux qui se mettent en route sur la voie de la Vérité ne se lassent pas.",
+    "categoryFr": "volonté",
+    "textJa": "真実の道に旅立つ者は疲れない。",
+    "categoryJa": "意志"
   },
   {
     "id": "q082",
@@ -817,7 +1627,17 @@
     "category": "kalp",
     "rarity": "common",
     "textEn": "Be wide of heart. Knowledge cannot dwell in a narrow heart.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Sei weit im Herzen. Wissen kann nicht in einem engen Herzen wohnen.",
+    "categoryDe": "Herz",
+    "textEs": "Sé de corazón amplio. El conocimiento no puede morar en un corazón estrecho.",
+    "categoryEs": "corazón",
+    "textPt": "Sê de coração amplo. O conhecimento não pode morar num coração estreito.",
+    "categoryPt": "coração",
+    "textFr": "Sois large de cœur. Le savoir ne peut habiter un cœur étroit.",
+    "categoryFr": "cœur",
+    "textJa": "心を広く持て。知は狭い心には宿れない。",
+    "categoryJa": "心"
   },
   {
     "id": "q083",
@@ -827,7 +1647,17 @@
     "category": "dürüstlük",
     "rarity": "common",
     "textEn": "Be upright, be brave; stand by your word.",
-    "categoryEn": "honesty"
+    "categoryEn": "honesty",
+    "textDe": "Sei aufrecht, sei mutig; stehe zu deinem Wort.",
+    "categoryDe": "Ehrlichkeit",
+    "textEs": "Sé recto, sé valiente; cumple tu palabra.",
+    "categoryEs": "honestidad",
+    "textPt": "Sê reto, sê corajoso; cumpre a tua palavra.",
+    "categoryPt": "honestidade",
+    "textFr": "Sois droit, sois courageux ; tiens ta parole.",
+    "categoryFr": "honnêteté",
+    "textJa": "まっすぐであれ、勇敢であれ。己の言葉に立て。",
+    "categoryJa": "誠実さ"
   },
   {
     "id": "q084",
@@ -837,7 +1667,17 @@
     "category": "zühd",
     "rarity": "uncommon",
     "textEn": "Whoever loves the world forgets God; whoever loves God forgets the world.",
-    "categoryEn": "detachment"
+    "categoryEn": "detachment",
+    "textDe": "Wer die Welt liebt, vergisst Gott; wer Gott liebt, vergisst die Welt.",
+    "categoryDe": "Loslösung",
+    "textEs": "Quien ama el mundo olvida a Dios; quien ama a Dios olvida el mundo.",
+    "categoryEs": "desapego",
+    "textPt": "Quem ama o mundo esquece Deus; quem ama Deus esquece o mundo.",
+    "categoryPt": "desapego",
+    "textFr": "Qui aime le monde oublie Dieu ; qui aime Dieu oublie le monde.",
+    "categoryFr": "détachement",
+    "textJa": "世を愛する者は神を忘れ、神を愛する者は世を忘れる。",
+    "categoryJa": "離脱"
   },
   {
     "id": "q085",
@@ -847,7 +1687,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Without drinking the wine of truth, one cannot become a true lover.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Ohne den Wein der Wahrheit zu trinken, kann man kein wahrer Liebender werden.",
+    "categoryDe": "Liebe",
+    "textEs": "Sin beber el vino de la verdad, no se puede llegar a ser un verdadero amante.",
+    "categoryEs": "amor",
+    "textPt": "Sem beber o vinho da verdade, não se pode tornar um verdadeiro amante.",
+    "categoryPt": "amor",
+    "textFr": "Sans boire le vin de la vérité, on ne peut devenir un vrai amant.",
+    "categoryFr": "amour",
+    "textJa": "真実の酒を飲まずに、真の恋する者にはなれない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q086",
@@ -857,7 +1707,17 @@
     "category": "cesaret",
     "rarity": "rare",
     "textEn": "I am Nesimi, a man of truth. Though they flay my skin, they cannot take what is within.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Ich bin Nesimi, ein Mann der Wahrheit. Auch wenn sie mir die Haut abziehen, können sie nicht nehmen, was darin ist.",
+    "categoryDe": "Mut",
+    "textEs": "Soy Nesimi, hombre de verdad. Aunque me desuellen, no pueden quitarme lo que llevo dentro.",
+    "categoryEs": "valentía",
+    "textPt": "Sou Nesimi, homem de verdade. Ainda que me esfolem a pele, não podem levar o que há dentro.",
+    "categoryPt": "coragem",
+    "textFr": "Je suis Nesimi, homme de vérité. Même s'ils m'écorchent la peau, ils ne peuvent prendre ce qui est au-dedans.",
+    "categoryFr": "courage",
+    "textJa": "私はネスィミ、真実の人。たとえ皮を剝がれても、内にあるものは奪えない。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q087",
@@ -867,7 +1727,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "Within me, God is hidden; let whoever wishes to find Him look within.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "In mir ist Gott verborgen; wer Ihn finden will, schaue in sich hinein.",
+    "categoryDe": "Einheit",
+    "textEs": "Dentro de mí está oculto Dios; que quien desee hallarlo mire en su interior.",
+    "categoryEs": "unidad",
+    "textPt": "Dentro de mim está oculto Deus; quem quiser encontrá-Lo, olhe para dentro de si.",
+    "categoryPt": "unidade",
+    "textFr": "En moi Dieu est caché ; que celui qui veut Le trouver regarde au-dedans.",
+    "categoryFr": "unité",
+    "textJa": "私の中に神は隠れている。見いだしたい者は、己の内を見るがよい。",
+    "categoryJa": "一体"
   },
   {
     "id": "q088",
@@ -877,7 +1747,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "Am I worthy of this name? Tell me, my heart.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Bin ich dieses Namens würdig? Sag es mir, mein Herz.",
+    "categoryDe": "innere Stimme",
+    "textEs": "¿Soy digno de este nombre? Dímelo, corazón mío.",
+    "categoryEs": "voz interior",
+    "textPt": "Sou digno deste nome? Diz-me, meu coração.",
+    "categoryPt": "voz interior",
+    "textFr": "Suis-je digne de ce nom ? Dis-le-moi, mon cœur.",
+    "categoryFr": "voix intérieure",
+    "textJa": "私はこの名にふさわしいか。教えてくれ、わが心よ。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q089",
@@ -887,7 +1767,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "Do not hide the secret of 'I am the Truth'; speak it with courage.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Verbirg nicht das Geheimnis von ‚Ich bin die Wahrheit‘; sprich es mit Mut.",
+    "categoryDe": "Mut",
+    "textEs": "No ocultes el secreto de 'Yo soy la Verdad'; dilo con valor.",
+    "categoryEs": "valentía",
+    "textPt": "Não escondas o segredo de 'Eu sou a Verdade'; di-lo com coragem.",
+    "categoryPt": "coragem",
+    "textFr": "Ne cache pas le secret de « Je suis la Vérité » ; dis-le avec courage.",
+    "categoryFr": "courage",
+    "textJa": "「我は真実なり」という秘密を隠すな。勇気をもって語れ。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q090",
@@ -897,7 +1787,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "I do not fit in earth or sky, but I fit within a believer's heart.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Ich passe nicht in Erde oder Himmel, doch ich passe in das Herz eines Gläubigen.",
+    "categoryDe": "Einheit",
+    "textEs": "No quepo en la tierra ni en el cielo, pero quepo en el corazón de un creyente.",
+    "categoryEs": "unidad",
+    "textPt": "Não caibo na terra nem no céu, mas caibo no coração de um crente.",
+    "categoryPt": "unidade",
+    "textFr": "Je ne tiens ni dans la terre ni dans le ciel, mais je tiens dans le cœur d'un croyant.",
+    "categoryFr": "unité",
+    "textJa": "私は地にも天にも収まらぬが、信ずる者の心には収まる。",
+    "categoryJa": "一体"
   },
   {
     "id": "q091",
@@ -907,7 +1807,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "Beauty is within you; though the mirror crack, this truth does not change.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Die Schönheit ist in dir; auch wenn der Spiegel zerspringt, ändert sich diese Wahrheit nicht.",
+    "categoryDe": "innere Stimme",
+    "textEs": "La belleza está dentro de ti; aunque el espejo se quiebre, esta verdad no cambia.",
+    "categoryEs": "voz interior",
+    "textPt": "A beleza está dentro de ti; ainda que o espelho se quebre, esta verdade não muda.",
+    "categoryPt": "voz interior",
+    "textFr": "La beauté est en toi ; même si le miroir se brise, cette vérité ne change pas.",
+    "categoryFr": "voix intérieure",
+    "textJa": "美はあなたの中にある。鏡が割れても、この真実は変わらない。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q092",
@@ -917,7 +1827,17 @@
     "category": "cesaret",
     "rarity": "common",
     "textEn": "Whoever fears death cannot truly live.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Wer den Tod fürchtet, kann nicht wahrhaft leben.",
+    "categoryDe": "Mut",
+    "textEs": "Quien teme a la muerte no puede vivir de verdad.",
+    "categoryEs": "valentía",
+    "textPt": "Quem teme a morte não pode viver de verdade.",
+    "categoryPt": "coragem",
+    "textFr": "Qui craint la mort ne peut vraiment vivre.",
+    "categoryFr": "courage",
+    "textJa": "死を恐れる者は、真に生きることができない。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q093",
@@ -927,7 +1847,17 @@
     "category": "birlik",
     "rarity": "uncommon",
     "textEn": "Seek God in the human being, not in stone.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Suche Gott im Menschen, nicht im Stein.",
+    "categoryDe": "Einheit",
+    "textEs": "Busca a Dios en el ser humano, no en la piedra.",
+    "categoryEs": "unidad",
+    "textPt": "Procura Deus no ser humano, não na pedra.",
+    "categoryPt": "unidade",
+    "textFr": "Cherche Dieu dans l'être humain, non dans la pierre.",
+    "categoryFr": "unité",
+    "textJa": "神を人間の中に求めよ、石の中にではなく。",
+    "categoryJa": "一体"
   },
   {
     "id": "q094",
@@ -937,7 +1867,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "There is no cure for the sickness of love, yet the sickness is worth it.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Es gibt keine Heilung für die Krankheit der Liebe, und doch ist die Krankheit es wert.",
+    "categoryDe": "Liebe",
+    "textEs": "No hay cura para la enfermedad del amor, y sin embargo la enfermedad vale la pena.",
+    "categoryEs": "amor",
+    "textPt": "Não há cura para a doença do amor, e ainda assim a doença vale a pena.",
+    "categoryPt": "amor",
+    "textFr": "Il n'y a pas de remède à la maladie de l'amour, et pourtant la maladie en vaut la peine.",
+    "categoryFr": "amour",
+    "textJa": "愛という病に癒しはない。それでも、その病は値する。",
+    "categoryJa": "愛"
   },
   {
     "id": "q095",
@@ -947,7 +1887,17 @@
     "category": "zühd",
     "rarity": "uncommon",
     "textEn": "Kaygusuz the dervish wanders over hills and dales. The world is too narrow for him, his heart is wide.",
-    "categoryEn": "detachment"
+    "categoryEn": "detachment",
+    "textDe": "Kaygusuz der Derwisch wandert über Hügel und Täler. Die Welt ist ihm zu eng, sein Herz ist weit.",
+    "categoryDe": "Loslösung",
+    "textEs": "Kaygusuz el derviche vaga por cerros y valles. El mundo le es demasiado estrecho, su corazón es amplio.",
+    "categoryEs": "desapego",
+    "textPt": "Kaygusuz, o dervixe, vagueia por colinas e vales. O mundo é demasiado estreito para ele, o seu coração é amplo.",
+    "categoryPt": "desapego",
+    "textFr": "Kaygusuz le derviche erre par monts et par vaux. Le monde lui est trop étroit, son cœur est vaste.",
+    "categoryFr": "détachement",
+    "textJa": "托鉢僧カイグスズは丘や谷をさすらう。世は彼には狭すぎる、彼の心は広い。",
+    "categoryJa": "離脱"
   },
   {
     "id": "q096",
@@ -957,7 +1907,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "My Truth is hidden within me; not in pilgrimage, mountain, or sea.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Meine Wahrheit ist in mir verborgen; nicht in Pilgerfahrt, Berg oder Meer.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Mi Verdad está oculta dentro de mí; no en la peregrinación, la montaña ni el mar.",
+    "categoryEs": "voz interior",
+    "textPt": "A minha Verdade está oculta dentro de mim; não na peregrinação, na montanha ou no mar.",
+    "categoryPt": "voz interior",
+    "textFr": "Ma Vérité est cachée en moi ; ni dans le pèlerinage, ni dans la montagne, ni dans la mer.",
+    "categoryFr": "voix intérieure",
+    "textJa": "私の真実は私の中に隠れている。巡礼にも、山にも、海にもない。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q097",
@@ -967,7 +1927,17 @@
     "category": "zühd",
     "rarity": "common",
     "textEn": "Do not fall into the world's snare; fly away like the partridge.",
-    "categoryEn": "detachment"
+    "categoryEn": "detachment",
+    "textDe": "Falle nicht in die Falle der Welt; flieg davon wie das Rebhuhn.",
+    "categoryDe": "Loslösung",
+    "textEs": "No caigas en la trampa del mundo; vuela lejos como la perdiz.",
+    "categoryEs": "desapego",
+    "textPt": "Não caias na armadilha do mundo; voa para longe como a perdiz.",
+    "categoryPt": "desapego",
+    "textFr": "Ne tombe pas dans le piège du monde ; envole-toi comme la perdrix.",
+    "categoryFr": "détachement",
+    "textJa": "世の罠に落ちるな。ヤマウズラのように飛び去れ。",
+    "categoryJa": "離脱"
   },
   {
     "id": "q098",
@@ -977,7 +1947,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "I have drunk the love of God; I need neither flour nor bread.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Ich habe die Liebe Gottes getrunken; ich brauche weder Mehl noch Brot.",
+    "categoryDe": "Liebe",
+    "textEs": "He bebido el amor de Dios; no necesito harina ni pan.",
+    "categoryEs": "amor",
+    "textPt": "Bebi o amor de Deus; não preciso de farinha nem de pão.",
+    "categoryPt": "amor",
+    "textFr": "J'ai bu l'amour de Dieu ; je n'ai besoin ni de farine ni de pain.",
+    "categoryFr": "amour",
+    "textJa": "私は神の愛を飲んだ。粉もパンもいらない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q099",
@@ -987,7 +1967,17 @@
     "category": "cömertlik",
     "rarity": "rare",
     "textEn": "True poverty is this: give whatever you have, and ask for nothing you do not.",
-    "categoryEn": "generosity"
+    "categoryEn": "generosity",
+    "textDe": "Wahre Armut ist dies: gib, was du hast, und bitte um nichts, was du nicht hast.",
+    "categoryDe": "Großzügigkeit",
+    "textEs": "La verdadera pobreza es esta: da cuanto tienes y no pidas nada de lo que no tienes.",
+    "categoryEs": "generosidad",
+    "textPt": "A verdadeira pobreza é esta: dá o que tiveres e nada peças do que não tens.",
+    "categoryPt": "generosidade",
+    "textFr": "La vraie pauvreté est celle-ci : donne tout ce que tu as, et ne demande rien que tu n'aies pas.",
+    "categoryFr": "générosité",
+    "textJa": "真の貧しさとはこれだ——持てるものをすべて与え、持たぬものを何も求めぬこと。",
+    "categoryJa": "寛大さ"
   },
   {
     "id": "q100",
@@ -997,7 +1987,17 @@
     "category": "dostluk",
     "rarity": "common",
     "textEn": "Be a friend to your friend; never be foe to a friend.",
-    "categoryEn": "friendship"
+    "categoryEn": "friendship",
+    "textDe": "Sei deinem Freund ein Freund; sei niemals einem Freund ein Feind.",
+    "categoryDe": "Freundschaft",
+    "textEs": "Sé amigo de tu amigo; nunca seas enemigo de un amigo.",
+    "categoryEs": "amistad",
+    "textPt": "Sê amigo do teu amigo; nunca sejas inimigo de um amigo.",
+    "categoryPt": "amizade",
+    "textFr": "Sois un ami pour ton ami ; ne sois jamais l'ennemi d'un ami.",
+    "categoryFr": "amitié",
+    "textJa": "友には友であれ。決して友の敵となるな。",
+    "categoryJa": "友情"
   },
   {
     "id": "q101",
@@ -1007,7 +2007,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "If the heart knows its master, there is neither grief nor sorrow.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Kennt das Herz seinen Herrn, gibt es weder Gram noch Kummer.",
+    "categoryDe": "Herz",
+    "textEs": "Si el corazón conoce a su señor, no hay ni pena ni dolor.",
+    "categoryEs": "corazón",
+    "textPt": "Se o coração conhece o seu senhor, não há nem mágoa nem tristeza.",
+    "categoryPt": "coração",
+    "textFr": "Si le cœur connaît son maître, il n'y a ni peine ni chagrin.",
+    "categoryFr": "cœur",
+    "textJa": "心がその主を知れば、嘆きも悲しみもない。",
+    "categoryJa": "心"
   },
   {
     "id": "q102",
@@ -1017,7 +2027,17 @@
     "category": "teslimiyet",
     "rarity": "common",
     "textEn": "My Lord is enough for me; what else could I need?",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Mein Herr genügt mir; was könnte ich sonst noch brauchen?",
+    "categoryDe": "Hingabe",
+    "textEs": "Mi Señor me basta; ¿qué más podría necesitar?",
+    "categoryEs": "entrega",
+    "textPt": "O meu Senhor me basta; de que mais eu precisaria?",
+    "categoryPt": "entrega",
+    "textFr": "Mon Seigneur me suffit ; de quoi d'autre aurais-je besoin ?",
+    "categoryFr": "abandon",
+    "textJa": "わが主で十分だ。ほかに何が必要だろう。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q103",
@@ -1027,7 +2047,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "One who has not burned in the fire of love is no Sufi, no sage, no scholar.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Wer nicht im Feuer der Liebe gebrannt hat, ist kein Sufi, kein Weiser, kein Gelehrter.",
+    "categoryDe": "Liebe",
+    "textEs": "Quien no ha ardido en el fuego del amor no es sufí, ni sabio, ni erudito.",
+    "categoryEs": "amor",
+    "textPt": "Quem não ardeu no fogo do amor não é sufi, nem sábio, nem erudito.",
+    "categoryPt": "amor",
+    "textFr": "Celui qui n'a pas brûlé du feu de l'amour n'est ni soufi, ni sage, ni savant.",
+    "categoryFr": "amour",
+    "textJa": "愛の火に燃えたことのない者は、スーフィーでも、賢者でも、学者でもない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q104",
@@ -1037,7 +2067,17 @@
     "category": "birlik",
     "rarity": "uncommon",
     "textEn": "Is this not gnosis: to see the Truth in everyone?",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Ist dies nicht Gnosis: die Wahrheit in jedem zu sehen?",
+    "categoryDe": "Einheit",
+    "textEs": "¿No es esto gnosis: ver la Verdad en todos?",
+    "categoryEs": "unidad",
+    "textPt": "Não é isto gnose: ver a Verdade em todos?",
+    "categoryPt": "unidade",
+    "textFr": "N'est-ce pas là la gnose : voir la Vérité en chacun ?",
+    "categoryFr": "unité",
+    "textJa": "これこそ叡智ではないか——すべての人の中に真実を見ることは。",
+    "categoryJa": "一体"
   },
   {
     "id": "q105",
@@ -1047,7 +2087,17 @@
     "category": "kalp",
     "rarity": "common",
     "textEn": "If there is doubt in your heart, cleanse that first.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Ist Zweifel in deinem Herzen, reinige zuerst diesen.",
+    "categoryDe": "Herz",
+    "textEs": "Si hay duda en tu corazón, limpia primero eso.",
+    "categoryEs": "corazón",
+    "textPt": "Se há dúvida no teu coração, limpa primeiro isso.",
+    "categoryPt": "coração",
+    "textFr": "S'il y a du doute dans ton cœur, purifie d'abord cela.",
+    "categoryFr": "cœur",
+    "textJa": "心に疑いがあるなら、まずそれを清めよ。",
+    "categoryJa": "心"
   },
   {
     "id": "q106",
@@ -1057,7 +2107,17 @@
     "category": "hasret",
     "rarity": "uncommon",
     "textEn": "Like the reed flute, I wail with separation. But this lament carries me toward the Truth.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Wie die Rohrflöte klage ich vor Trennung. Doch dieses Klagen trägt mich zur Wahrheit.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Como la flauta de caña, gimo por la separación. Pero este lamento me lleva hacia la Verdad.",
+    "categoryEs": "añoranza",
+    "textPt": "Como a flauta de cana, gemo de separação. Mas este lamento leva-me à Verdade.",
+    "categoryPt": "saudade",
+    "textFr": "Comme la flûte de roseau, je gémis de la séparation. Mais ce lament me porte vers la Vérité.",
+    "categoryFr": "nostalgie",
+    "textJa": "葦笛のように、私は別離を嘆く。だがこの嘆きは私を真実へと運ぶ。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q107",
@@ -1067,7 +2127,17 @@
     "category": "ic_ses",
     "rarity": "rare",
     "textEn": "There is a path from you to you, very near; walk it.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Es gibt einen Weg von dir zu dir, ganz nah; geh ihn.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Hay un camino de ti hacia ti, muy cercano; recórrelo.",
+    "categoryEs": "voz interior",
+    "textPt": "Há um caminho de ti para ti, muito perto; percorre-o.",
+    "categoryPt": "voz interior",
+    "textFr": "Il existe un chemin de toi à toi, tout proche ; parcours-le.",
+    "categoryFr": "voix intérieure",
+    "textJa": "あなたからあなたへの道がある、ごく近くに。それを歩め。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q108",
@@ -1077,7 +2147,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "My being comes from my nothingness. If I become nothing, I truly am.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Mein Sein kommt aus meinem Nichts. Werde ich zu nichts, dann bin ich wahrhaft.",
+    "categoryDe": "Einheit",
+    "textEs": "Mi ser viene de mi nada. Si me vuelvo nada, verdaderamente soy.",
+    "categoryEs": "unidad",
+    "textPt": "O meu ser vem do meu nada. Se me torno nada, verdadeiramente sou.",
+    "categoryPt": "unidade",
+    "textFr": "Mon être vient de mon néant. Si je deviens rien, alors je suis vraiment.",
+    "categoryFr": "unité",
+    "textJa": "私の存在は私の無から来る。無となれば、私は真にある。",
+    "categoryJa": "一体"
   },
   {
     "id": "q109",
@@ -1087,7 +2167,17 @@
     "category": "toprak",
     "rarity": "uncommon",
     "textEn": "I am Aşık Veysel, bound to this earth. This earth is mine, and I am this earth.",
-    "categoryEn": "earth"
+    "categoryEn": "earth",
+    "textDe": "Ich bin Aşık Veysel, an diese Erde gebunden. Diese Erde ist mein, und ich bin diese Erde.",
+    "categoryDe": "Erde",
+    "textEs": "Soy Aşık Veysel, ligado a esta tierra. Esta tierra es mía, y yo soy esta tierra.",
+    "categoryEs": "tierra",
+    "textPt": "Sou Aşık Veysel, ligado a esta terra. Esta terra é minha, e eu sou esta terra.",
+    "categoryPt": "terra",
+    "textFr": "Je suis Aşık Veysel, lié à cette terre. Cette terre est mienne, et je suis cette terre.",
+    "categoryFr": "terre",
+    "textJa": "私はアーシュク・ヴェイセル、この大地に結ばれている。この大地は私のもの、そして私はこの大地だ。",
+    "categoryJa": "大地"
   },
   {
     "id": "q110",
@@ -1097,7 +2187,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "Though my eyes do not see, my heart sees. True light comes from within.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Auch wenn meine Augen nicht sehen, sieht mein Herz. Wahres Licht kommt von innen.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Aunque mis ojos no vean, mi corazón ve. La verdadera luz viene de dentro.",
+    "categoryEs": "voz interior",
+    "textPt": "Ainda que os meus olhos não vejam, o meu coração vê. A verdadeira luz vem de dentro.",
+    "categoryPt": "voz interior",
+    "textFr": "Même si mes yeux ne voient pas, mon cœur voit. La vraie lumière vient de l'intérieur.",
+    "categoryFr": "voix intérieure",
+    "textJa": "私の目は見えずとも、私の心は見る。真の光は内から来る。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q111",
@@ -1107,7 +2207,17 @@
     "category": "yol",
     "rarity": "common",
     "textEn": "I walk a long and narrow road, going on by day and by night.",
-    "categoryEn": "path"
+    "categoryEn": "path",
+    "textDe": "Ich gehe einen langen und schmalen Weg, bei Tag und bei Nacht.",
+    "categoryDe": "Weg",
+    "textEs": "Recorro un camino largo y estrecho, andando de día y de noche.",
+    "categoryEs": "sendero",
+    "textPt": "Percorro um caminho longo e estreito, seguindo de dia e de noite.",
+    "categoryPt": "caminho",
+    "textFr": "Je parcours un chemin long et étroit, avançant de jour et de nuit.",
+    "categoryFr": "voie",
+    "textJa": "私は長く細い道を歩む、昼も夜も進みながら。",
+    "categoryJa": "道"
   },
   {
     "id": "q112",
@@ -1117,7 +2227,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Roses bloom in our garden, nightingales sing. Beauty has no end.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "In unserem Garten blühen Rosen, Nachtigallen singen. Die Schönheit hat kein Ende.",
+    "categoryDe": "Liebe",
+    "textEs": "En nuestro jardín florecen rosas, cantan los ruiseñores. La belleza no tiene fin.",
+    "categoryEs": "amor",
+    "textPt": "No nosso jardim florescem rosas, cantam rouxinóis. A beleza não tem fim.",
+    "categoryPt": "amor",
+    "textFr": "Dans notre jardin fleurissent les roses, chantent les rossignols. La beauté n'a pas de fin.",
+    "categoryFr": "amour",
+    "textJa": "私たちの庭にはバラが咲き、ナイチンゲールがさえずる。美に終わりはない。",
+    "categoryJa": "愛"
   },
   {
     "id": "q113",
@@ -1127,7 +2247,17 @@
     "category": "toprak",
     "rarity": "common",
     "textEn": "The most beautiful village is the one where you grew up; the most beautiful mother is your own.",
-    "categoryEn": "earth"
+    "categoryEn": "earth",
+    "textDe": "Das schönste Dorf ist das, in dem du aufgewachsen bist; die schönste Mutter ist deine eigene.",
+    "categoryDe": "Erde",
+    "textEs": "El pueblo más hermoso es aquel donde creciste; la madre más hermosa es la tuya.",
+    "categoryEs": "tierra",
+    "textPt": "A aldeia mais bela é aquela onde cresceste; a mãe mais bela é a tua própria.",
+    "categoryPt": "terra",
+    "textFr": "Le plus beau village est celui où tu as grandi ; la plus belle mère est la tienne.",
+    "categoryFr": "terre",
+    "textJa": "最も美しい村はあなたが育った村、最も美しい母はあなた自身の母だ。",
+    "categoryJa": "大地"
   },
   {
     "id": "q114",
@@ -1137,7 +2267,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "The world is a guesthouse; a guest does not find fault with the house.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Die Welt ist ein Gasthaus; ein Gast tadelt das Haus nicht.",
+    "categoryDe": "Weisheit",
+    "textEs": "El mundo es una casa de huéspedes; un huésped no le pone reparos a la casa.",
+    "categoryEs": "sabiduría",
+    "textPt": "O mundo é uma hospedaria; um hóspede não acha defeitos na casa.",
+    "categoryPt": "sabedoria",
+    "textFr": "Le monde est une maison d'hôtes ; un hôte ne trouve pas à redire à la maison.",
+    "categoryFr": "sagesse",
+    "textJa": "世は宿屋だ。客は宿に難癖をつけない。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q115",
@@ -1147,7 +2287,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Love crosses mountains and rivers. But the first step is taken not by the foot, but by the heart.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Die Liebe überquert Berge und Flüsse. Doch den ersten Schritt tut nicht der Fuß, sondern das Herz.",
+    "categoryDe": "Liebe",
+    "textEs": "El amor cruza montañas y ríos. Pero el primer paso no lo da el pie, sino el corazón.",
+    "categoryEs": "amor",
+    "textPt": "O amor atravessa montanhas e rios. Mas o primeiro passo não é dado pelo pé, e sim pelo coração.",
+    "categoryPt": "amor",
+    "textFr": "L'amour franchit montagnes et rivières. Mais le premier pas n'est pas fait par le pied, mais par le cœur.",
+    "categoryFr": "amour",
+    "textJa": "愛は山や川を越える。だが最初の一歩は足ではなく、心によって踏み出される。",
+    "categoryJa": "愛"
   },
   {
     "id": "q116",
@@ -1157,7 +2307,17 @@
     "category": "dürüstlük",
     "rarity": "common",
     "textEn": "Dadaloğlu says: A true man is one who stands by his word.",
-    "categoryEn": "honesty"
+    "categoryEn": "honesty",
+    "textDe": "Dadaloğlu sagt: Ein wahrer Mann ist der, der zu seinem Wort steht.",
+    "categoryDe": "Ehrlichkeit",
+    "textEs": "Dadaloğlu dice: un hombre de verdad es aquel que cumple su palabra.",
+    "categoryEs": "honestidad",
+    "textPt": "Dadaloğlu diz: um homem de verdade é aquele que cumpre a sua palavra.",
+    "categoryPt": "honestidade",
+    "textFr": "Dadaloğlu dit : un vrai homme est celui qui tient sa parole.",
+    "categoryFr": "honnêteté",
+    "textJa": "ダダルオールは言う——真の男とは、己の言葉に立つ者だ。",
+    "categoryJa": "誠実さ"
   },
   {
     "id": "q117",
@@ -1167,7 +2327,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "The decree is the sultan's, but the mountains are ours. No force can uproot us.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Der Erlass gehört dem Sultan, doch die Berge sind unser. Keine Macht kann uns entwurzeln.",
+    "categoryDe": "Mut",
+    "textEs": "El decreto es del sultán, pero las montañas son nuestras. Ninguna fuerza puede arrancarnos.",
+    "categoryEs": "valentía",
+    "textPt": "O decreto é do sultão, mas as montanhas são nossas. Nenhuma força pode arrancar-nos.",
+    "categoryPt": "coragem",
+    "textFr": "Le décret est au sultan, mais les montagnes sont à nous. Aucune force ne peut nous déraciner.",
+    "categoryFr": "courage",
+    "textJa": "勅令はスルタンのもの、だが山々は我らのもの。いかなる力も我らを根こそぎにはできぬ。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q118",
@@ -1177,7 +2347,17 @@
     "category": "nefis",
     "rarity": "common",
     "textEn": "Honor before the world, humanity within the home.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Ehre vor der Welt, Menschlichkeit im Haus.",
+    "categoryDe": "Selbst",
+    "textEs": "Honor ante el mundo, humanidad dentro del hogar.",
+    "categoryEs": "ser",
+    "textPt": "Honra perante o mundo, humanidade dentro do lar.",
+    "categoryPt": "eu",
+    "textFr": "Honneur devant le monde, humanité au sein du foyer.",
+    "categoryFr": "soi",
+    "textJa": "世の前では誉れを、家の中では人としての温かさを。",
+    "categoryJa": "自己"
   },
   {
     "id": "q119",
@@ -1187,7 +2367,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "The lion need not prove its courage; the lamb must.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Der Löwe braucht seinen Mut nicht zu beweisen; das Lamm muss es.",
+    "categoryDe": "Mut",
+    "textEs": "El león no necesita probar su valor; el cordero sí.",
+    "categoryEs": "valentía",
+    "textPt": "O leão não precisa provar a sua coragem; o cordeiro precisa.",
+    "categoryPt": "coragem",
+    "textFr": "Le lion n'a pas besoin de prouver son courage ; l'agneau le doit.",
+    "categoryFr": "courage",
+    "textJa": "獅子はその勇気を証す必要はない。証すべきは子羊だ。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q120",
@@ -1197,7 +2387,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "Köroğlu says: To dare is the beginning of bravery.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Köroğlu sagt: Zu wagen ist der Anfang der Tapferkeit.",
+    "categoryDe": "Mut",
+    "textEs": "Köroğlu dice: atreverse es el principio de la valentía.",
+    "categoryEs": "valentía",
+    "textPt": "Köroğlu diz: ousar é o começo da bravura.",
+    "categoryPt": "coragem",
+    "textFr": "Köroğlu dit : oser est le commencement de la bravoure.",
+    "categoryFr": "courage",
+    "textJa": "キョルオールは言う——敢えてすることが、勇敢さの始まりだ。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q121",
@@ -1207,7 +2407,17 @@
     "category": "irade",
     "rarity": "common",
     "textEn": "A horse is known by its breed, a man by his valor.",
-    "categoryEn": "will"
+    "categoryEn": "will",
+    "textDe": "Ein Pferd erkennt man an seiner Rasse, einen Mann an seiner Tapferkeit.",
+    "categoryDe": "Wille",
+    "textEs": "Al caballo se le conoce por su raza, al hombre por su valor.",
+    "categoryEs": "voluntad",
+    "textPt": "O cavalo conhece-se pela raça, o homem pelo valor.",
+    "categoryPt": "vontade",
+    "textFr": "On connaît le cheval à sa race, l'homme à sa vaillance.",
+    "categoryFr": "volonté",
+    "textJa": "馬はその血統で、人はその武勇で知られる。",
+    "categoryJa": "意志"
   },
   {
     "id": "q122",
@@ -1217,7 +2427,17 @@
     "category": "cesaret",
     "rarity": "uncommon",
     "textEn": "Mist has covered the mountain's peak; do not turn back saying it cannot be crossed. The mist is part of the mountain, and so is the road.",
-    "categoryEn": "courage"
+    "categoryEn": "courage",
+    "textDe": "Nebel hat den Gipfel des Berges bedeckt; kehre nicht um mit den Worten, er sei nicht zu überqueren. Der Nebel gehört zum Berg, und so auch der Weg.",
+    "categoryDe": "Mut",
+    "textEs": "La niebla ha cubierto la cima del monte; no te vuelvas diciendo que no se puede cruzar. La niebla es parte del monte, y también lo es el camino.",
+    "categoryEs": "valentía",
+    "textPt": "A névoa cobriu o cume da montanha; não voltes atrás dizendo que não dá para atravessar. A névoa é parte da montanha, e o caminho também.",
+    "categoryPt": "coragem",
+    "textFr": "La brume a couvert le sommet de la montagne ; ne fais pas demi-tour en disant qu'on ne peut la franchir. La brume fait partie de la montagne, et le chemin aussi.",
+    "categoryFr": "courage",
+    "textJa": "霧が山の頂を覆った。越えられぬと言って引き返すな。霧も山の一部、そして道もまた。",
+    "categoryJa": "勇気"
   },
   {
     "id": "q123",
@@ -1227,7 +2447,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Karacaoğlan says: One who loves the beautiful becomes beautiful.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Karacaoğlan sagt: Wer das Schöne liebt, wird schön.",
+    "categoryDe": "Liebe",
+    "textEs": "Karacaoğlan dice: quien ama lo bello se vuelve bello.",
+    "categoryEs": "amor",
+    "textPt": "Karacaoğlan diz: quem ama o belo torna-se belo.",
+    "categoryPt": "amor",
+    "textFr": "Karacaoğlan dit : qui aime le beau devient beau.",
+    "categoryFr": "amour",
+    "textJa": "カラジャオールは言う——美しいものを愛する者は、美しくなる。",
+    "categoryJa": "愛"
   },
   {
     "id": "q124",
@@ -1237,7 +2467,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "He who sits in the high place gazes upon the deep valley. Look and learn.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Wer am hohen Ort sitzt, blickt ins tiefe Tal. Schau und lerne.",
+    "categoryDe": "Weisheit",
+    "textEs": "Quien se sienta en lo alto contempla el valle profundo. Mira y aprende.",
+    "categoryEs": "sabiduría",
+    "textPt": "Quem se senta no alto contempla o vale profundo. Olha e aprende.",
+    "categoryPt": "sabedoria",
+    "textFr": "Celui qui siège en haut contemple la vallée profonde. Regarde et apprends.",
+    "categoryFr": "sagesse",
+    "textJa": "高き場所に座す者は、深き谷を見つめる。見て、学べ。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q125",
@@ -1247,7 +2487,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Can love be this beautiful? Can beauty be this close to love?",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Kann die Liebe so schön sein? Kann die Schönheit der Liebe so nah sein?",
+    "categoryDe": "Liebe",
+    "textEs": "¿Puede el amor ser tan hermoso? ¿Puede la belleza estar tan cerca del amor?",
+    "categoryEs": "amor",
+    "textPt": "Pode o amor ser tão belo? Pode a beleza estar tão perto do amor?",
+    "categoryPt": "amor",
+    "textFr": "L'amour peut-il être si beau ? La beauté peut-elle être si proche de l'amour ?",
+    "categoryFr": "amour",
+    "textJa": "愛はこれほど美しくありうるのか。美は愛にこれほど近くありうるのか。",
+    "categoryJa": "愛"
   },
   {
     "id": "q126",
@@ -1257,7 +2507,17 @@
     "category": "hikmet",
     "rarity": "uncommon",
     "textEn": "Water sleeps, but the enemy does not; you too must stay watchful.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Das Wasser schläft, doch der Feind nicht; auch du musst wachsam bleiben.",
+    "categoryDe": "Weisheit",
+    "textEs": "El agua duerme, pero el enemigo no; tú también debes permanecer alerta.",
+    "categoryEs": "sabiduría",
+    "textPt": "A água dorme, mas o inimigo não; tu também deves permanecer vigilante.",
+    "categoryPt": "sabedoria",
+    "textFr": "L'eau dort, mais l'ennemi non ; toi aussi tu dois rester vigilant.",
+    "categoryFr": "sagesse",
+    "textJa": "水は眠るが、敵は眠らぬ。あなたもまた、警戒を怠るな。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q127",
@@ -1267,7 +2527,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "The heart gives warning before falling into love. Listen to it.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Das Herz warnt, bevor es in die Liebe fällt. Höre auf es.",
+    "categoryDe": "innere Stimme",
+    "textEs": "El corazón avisa antes de caer en el amor. Escúchalo.",
+    "categoryEs": "voz interior",
+    "textPt": "O coração avisa antes de cair no amor. Escuta-o.",
+    "categoryPt": "voz interior",
+    "textFr": "Le cœur avertit avant de tomber en amour. Écoute-le.",
+    "categoryFr": "voix intérieure",
+    "textJa": "心は愛に落ちる前に告げる。それに耳を傾けよ。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q128",
@@ -1277,7 +2547,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Kul Himmet says: The only key that opens the door of truth is love.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Kul Himmet sagt: Der einzige Schlüssel, der die Tür der Wahrheit öffnet, ist die Liebe.",
+    "categoryDe": "Liebe",
+    "textEs": "Kul Himmet dice: la única llave que abre la puerta de la verdad es el amor.",
+    "categoryEs": "amor",
+    "textPt": "Kul Himmet diz: a única chave que abre a porta da verdade é o amor.",
+    "categoryPt": "amor",
+    "textFr": "Kul Himmet dit : la seule clé qui ouvre la porte de la vérité est l'amour.",
+    "categoryFr": "amour",
+    "textJa": "クル・ヒンメトは言う——真実の扉を開く唯一の鍵は愛だ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q129",
@@ -1287,7 +2567,17 @@
     "category": "dürüstlük",
     "rarity": "common",
     "textEn": "The mark of one upon the path: what they say and what they do are one.",
-    "categoryEn": "honesty"
+    "categoryEn": "honesty",
+    "textDe": "Das Zeichen eines Menschen auf dem Weg: was er sagt und was er tut, sind eins.",
+    "categoryDe": "Ehrlichkeit",
+    "textEs": "La marca de quien va por el camino: lo que dice y lo que hace son una sola cosa.",
+    "categoryEs": "honestidad",
+    "textPt": "A marca de quem segue o caminho: o que diz e o que faz são uma só coisa.",
+    "categoryPt": "honestidade",
+    "textFr": "La marque de celui qui est sur la voie : ce qu'il dit et ce qu'il fait ne font qu'un.",
+    "categoryFr": "honnêteté",
+    "textJa": "道を行く者の印——その言葉とその行いが一つであること。",
+    "categoryJa": "誠実さ"
   },
   {
     "id": "q130",
@@ -1297,7 +2587,17 @@
     "category": "adalet",
     "rarity": "common",
     "textEn": "Whoever loves the Truth cannot be a tyrant.",
-    "categoryEn": "justice"
+    "categoryEn": "justice",
+    "textDe": "Wer die Wahrheit liebt, kann kein Tyrann sein.",
+    "categoryDe": "Gerechtigkeit",
+    "textEs": "Quien ama la Verdad no puede ser un tirano.",
+    "categoryEs": "justicia",
+    "textPt": "Quem ama a Verdade não pode ser um tirano.",
+    "categoryPt": "justiça",
+    "textFr": "Qui aime la Vérité ne peut être un tyran.",
+    "categoryFr": "justice",
+    "textJa": "真実を愛する者は、暴君にはなれない。",
+    "categoryJa": "正義"
   },
   {
     "id": "q131",
@@ -1307,7 +2607,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Love is a boundless ocean; within it, pearls are hidden.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Die Liebe ist ein grenzenloser Ozean; in ihm sind Perlen verborgen.",
+    "categoryDe": "Liebe",
+    "textEs": "El amor es un océano sin límites; en él se ocultan las perlas.",
+    "categoryEs": "amor",
+    "textPt": "O amor é um oceano sem limites; dentro dele escondem-se pérolas.",
+    "categoryPt": "amor",
+    "textFr": "L'amour est un océan sans limites ; en lui sont cachées les perles.",
+    "categoryFr": "amour",
+    "textJa": "愛は果てなき大海。その中に真珠が隠されている。",
+    "categoryJa": "愛"
   },
   {
     "id": "q132",
@@ -1317,7 +2627,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "Do not share your secret with every stranger; what fills within will spill outside.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Teile dein Geheimnis nicht mit jedem Fremden; was sich innen füllt, läuft nach außen über.",
+    "categoryDe": "Weisheit",
+    "textEs": "No compartas tu secreto con cualquier extraño; lo que se llena por dentro se derrama por fuera.",
+    "categoryEs": "sabiduría",
+    "textPt": "Não partilhes o teu segredo com qualquer estranho; o que se enche por dentro transborda por fora.",
+    "categoryPt": "sabedoria",
+    "textFr": "Ne partage pas ton secret avec chaque étranger ; ce qui se remplit au-dedans déborde au-dehors.",
+    "categoryFr": "sagesse",
+    "textJa": "秘密をどんな見知らぬ者とも分かち合うな。内に満ちるものは外へあふれる。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q133",
@@ -1327,7 +2647,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "Mevlana loves, Şems loves, Yunus loves; for love is a single river.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Mevlana liebt, Şems liebt, Yunus liebt; denn die Liebe ist ein einziger Fluss.",
+    "categoryDe": "Liebe",
+    "textEs": "Mevlana ama, Şems ama, Yunus ama; pues el amor es un solo río.",
+    "categoryEs": "amor",
+    "textPt": "Mevlana ama, Şems ama, Yunus ama; pois o amor é um só rio.",
+    "categoryPt": "amor",
+    "textFr": "Mevlana aime, Şems aime, Yunus aime ; car l'amour est une seule rivière.",
+    "categoryFr": "amour",
+    "textJa": "メヴラーナは愛し、シェムスは愛し、ユヌスは愛する。愛はただ一筋の川なのだから。",
+    "categoryJa": "愛"
   },
   {
     "id": "q134",
@@ -1337,7 +2667,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "Without slaying the ego, the soul cannot come alive.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Ohne das Ego zu töten, kann die Seele nicht lebendig werden.",
+    "categoryDe": "Selbst",
+    "textEs": "Sin dar muerte al ego, el alma no puede cobrar vida.",
+    "categoryEs": "ser",
+    "textPt": "Sem matar o ego, a alma não pode ganhar vida.",
+    "categoryPt": "eu",
+    "textFr": "Sans tuer l'ego, l'âme ne peut prendre vie.",
+    "categoryFr": "soi",
+    "textJa": "自我を殺さずに、魂は生き生きとはなれない。",
+    "categoryJa": "自己"
   },
   {
     "id": "q135",
@@ -1347,7 +2687,17 @@
     "category": "ic_ses",
     "rarity": "rare",
     "textEn": "Be in solitude even amid the crowd, be among the crowd even in solitude.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Sei in der Einsamkeit selbst inmitten der Menge, sei unter der Menge selbst in der Einsamkeit.",
+    "categoryDe": "innere Stimme",
+    "textEs": "Está en soledad aun en medio de la multitud, está entre la multitud aun en la soledad.",
+    "categoryEs": "voz interior",
+    "textPt": "Está na solidão mesmo no meio da multidão, está entre a multidão mesmo na solidão.",
+    "categoryPt": "voz interior",
+    "textFr": "Sois dans la solitude même au milieu de la foule, sois parmi la foule même dans la solitude.",
+    "categoryFr": "voix intérieure",
+    "textJa": "群衆の中にあっても孤独にあれ、孤独の中にあっても群衆の中にあれ。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q136",
@@ -1357,7 +2707,17 @@
     "category": "zühd",
     "rarity": "common",
     "textEn": "A dervish does not embrace the world with both hands.",
-    "categoryEn": "detachment"
+    "categoryEn": "detachment",
+    "textDe": "Ein Derwisch umarmt die Welt nicht mit beiden Händen.",
+    "categoryDe": "Loslösung",
+    "textEs": "Un derviche no abraza el mundo con ambas manos.",
+    "categoryEs": "desapego",
+    "textPt": "Um dervixe não abraça o mundo com ambas as mãos.",
+    "categoryPt": "desapego",
+    "textFr": "Un derviche n'embrasse pas le monde à deux mains.",
+    "categoryFr": "détachement",
+    "textJa": "托鉢僧は両手で世界を抱きしめない。",
+    "categoryJa": "離脱"
   },
   {
     "id": "q137",
@@ -1367,7 +2727,17 @@
     "category": "sabir",
     "rarity": "common",
     "textEn": "With patience, sour grapes become sweet halva.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Mit Geduld werden saure Trauben zu süßer Halva.",
+    "categoryDe": "Geduld",
+    "textEs": "Con paciencia, las uvas agrias se vuelven dulce halva.",
+    "categoryEs": "paciencia",
+    "textPt": "Com paciência, as uvas azedas tornam-se doce halva.",
+    "categoryPt": "paciência",
+    "textFr": "Avec la patience, les raisins acides deviennent un doux halva.",
+    "categoryFr": "patience",
+    "textJa": "忍耐をもってすれば、酸いぶどうも甘いハルヴァになる。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q138",
@@ -1377,7 +2747,17 @@
     "category": "sükür",
     "rarity": "common",
     "textEn": "Whoever opens the door of gratitude lives in abundance.",
-    "categoryEn": "gratitude"
+    "categoryEn": "gratitude",
+    "textDe": "Wer die Tür der Dankbarkeit öffnet, lebt in Fülle.",
+    "categoryDe": "Dankbarkeit",
+    "textEs": "Quien abre la puerta de la gratitud vive en abundancia.",
+    "categoryEs": "gratitud",
+    "textPt": "Quem abre a porta da gratidão vive em abundância.",
+    "categoryPt": "gratidão",
+    "textFr": "Qui ouvre la porte de la gratitude vit dans l'abondance.",
+    "categoryFr": "gratitude",
+    "textJa": "感謝の扉を開く者は、豊かさの中に生きる。",
+    "categoryJa": "感謝"
   },
   {
     "id": "q139",
@@ -1387,7 +2767,17 @@
     "category": "hikmet",
     "rarity": "uncommon",
     "textEn": "Beneath every beauty lies a sorrow. Beneath every ripeness, a wound.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Unter jeder Schönheit liegt ein Kummer. Unter jeder Reife eine Wunde.",
+    "categoryDe": "Weisheit",
+    "textEs": "Bajo cada belleza yace una pena. Bajo cada madurez, una herida.",
+    "categoryEs": "sabiduría",
+    "textPt": "Sob cada beleza jaz uma tristeza. Sob cada maturidade, uma ferida.",
+    "categoryPt": "sabedoria",
+    "textFr": "Sous chaque beauté repose un chagrin. Sous chaque maturité, une blessure.",
+    "categoryFr": "sagesse",
+    "textJa": "どの美の下にも悲しみが横たわる。どの円熟の下にも傷がある。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q140",
@@ -1397,7 +2787,17 @@
     "category": "hasret",
     "rarity": "uncommon",
     "textEn": "As the nightingale is parted from the rose, so is the human from the Truth.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Wie die Nachtigall von der Rose getrennt ist, so ist der Mensch von der Wahrheit.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Como el ruiseñor está separado de la rosa, así lo está el ser humano de la Verdad.",
+    "categoryEs": "añoranza",
+    "textPt": "Como o rouxinol está separado da rosa, assim está o ser humano da Verdade.",
+    "categoryPt": "saudade",
+    "textFr": "Comme le rossignol est séparé de la rose, ainsi l'être humain l'est de la Vérité.",
+    "categoryFr": "nostalgie",
+    "textJa": "ナイチンゲールがバラから引き離されているように、人間は真実から引き離されている。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q141",
@@ -1407,7 +2807,17 @@
     "category": "hasret",
     "rarity": "rare",
     "textEn": "Listen to the reed, how it tells a tale, complaining of separations.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Höre auf das Rohr, wie es eine Geschichte erzählt und über die Trennungen klagt.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Escucha a la caña, cómo cuenta una historia, lamentándose de las separaciones.",
+    "categoryEs": "añoranza",
+    "textPt": "Escuta a cana, como conta uma história, queixando-se das separações.",
+    "categoryPt": "saudade",
+    "textFr": "Écoute le roseau, comme il raconte une histoire, se plaignant des séparations.",
+    "categoryFr": "nostalgie",
+    "textJa": "葦に耳を傾けよ、いかに物語を語り、別離を嘆くかを。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q142",
@@ -1417,7 +2827,17 @@
     "category": "hasret",
     "rarity": "uncommon",
     "textEn": "Ever since they cut me from the reed bed, men and women have moaned at my lament.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Seit sie mich aus dem Röhricht schnitten, haben Männer und Frauen bei meinem Klagen geseufzt.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Desde que me cortaron del cañaveral, hombres y mujeres han gemido ante mi lamento.",
+    "categoryEs": "añoranza",
+    "textPt": "Desde que me cortaram do canavial, homens e mulheres gemeram ante o meu lamento.",
+    "categoryPt": "saudade",
+    "textFr": "Depuis qu'on m'a coupé de la roselière, hommes et femmes ont gémi à ma plainte.",
+    "categoryFr": "nostalgie",
+    "textJa": "葦原から切り取られて以来、男も女も私の嘆きにうめいてきた。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q143",
@@ -1427,7 +2847,17 @@
     "category": "hasret",
     "rarity": "rare",
     "textEn": "I want a heart torn to shreds by separation, that I may unfold to it the pain of longing.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Ich will ein Herz, von der Trennung zerrissen, damit ich ihm den Schmerz der Sehnsucht entfalten kann.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Quiero un corazón hecho jirones por la separación, para desplegarle el dolor de la añoranza.",
+    "categoryEs": "añoranza",
+    "textPt": "Quero um coração feito em farrapos pela separação, para lhe desdobrar a dor da saudade.",
+    "categoryPt": "saudade",
+    "textFr": "Je veux un cœur déchiré en lambeaux par la séparation, pour lui déployer la douleur de la nostalgie.",
+    "categoryFr": "nostalgie",
+    "textJa": "私は別離に引き裂かれた心が欲しい、そこに憧れの痛みを開いて見せるために。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q144",
@@ -1437,7 +2867,17 @@
     "category": "hasret",
     "rarity": "uncommon",
     "textEn": "Whoever is left far from their source seeks once more the time of reunion.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Wer fern von seiner Quelle blieb, sucht aufs Neue die Zeit der Wiedervereinigung.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "Quien queda lejos de su origen busca de nuevo el tiempo del reencuentro.",
+    "categoryEs": "añoranza",
+    "textPt": "Quem fica longe da sua origem busca de novo o tempo do reencontro.",
+    "categoryPt": "saudade",
+    "textFr": "Celui qui est resté loin de sa source cherche de nouveau le temps des retrouvailles.",
+    "categoryFr": "nostalgie",
+    "textJa": "己の源から遠く離れた者は、再び再会のときを求める。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q145",
@@ -1447,7 +2887,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "The reed's cry is fire, not wind; whoever lacks this fire, let them be nothing.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Der Schrei des Rohrs ist Feuer, nicht Wind; wem dieses Feuer fehlt, der sei nichts.",
+    "categoryDe": "Liebe",
+    "textEs": "El llanto de la caña es fuego, no viento; quien carezca de este fuego, que sea nada.",
+    "categoryEs": "amor",
+    "textPt": "O choro da cana é fogo, não vento; quem não tiver este fogo, que seja nada.",
+    "categoryPt": "amor",
+    "textFr": "Le cri du roseau est feu, non vent ; que celui qui manque de ce feu ne soit rien.",
+    "categoryFr": "amour",
+    "textJa": "葦の叫びは火であり、風ではない。この火を欠く者は、無であれ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q146",
@@ -1457,7 +2907,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "It is the fire of love that fell upon the reed; the ferment of love that fell upon the wine.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Es ist das Feuer der Liebe, das auf das Rohr fiel; der Rausch der Liebe, der auf den Wein fiel.",
+    "categoryDe": "Liebe",
+    "textEs": "Es el fuego del amor el que cayó sobre la caña; el fermento del amor el que cayó sobre el vino.",
+    "categoryEs": "amor",
+    "textPt": "É o fogo do amor que caiu sobre a cana; o fermento do amor que caiu sobre o vinho.",
+    "categoryPt": "amor",
+    "textFr": "C'est le feu de l'amour qui est tombé sur le roseau ; le ferment de l'amour qui est tombé sur le vin.",
+    "categoryFr": "amour",
+    "textJa": "葦に落ちたのは愛の火、酒に落ちたのは愛の酵母だ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q147",
@@ -1467,7 +2927,17 @@
     "category": "degisim",
     "rarity": "rare",
     "textEn": "I was raw, I became cooked, I was burned.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Ich war roh, ich wurde gekocht, ich wurde verbrannt.",
+    "categoryDe": "Wandlung",
+    "textEs": "Era crudo, me cocí, ardí.",
+    "categoryEs": "transformación",
+    "textPt": "Eu era cru, fiquei cozido, fui queimado.",
+    "categoryPt": "transformação",
+    "textFr": "J'étais cru, je suis devenu cuit, j'ai été brûlé.",
+    "categoryFr": "transformation",
+    "textJa": "私は生だった、煮えた、そして焼かれた。",
+    "categoryJa": "変容"
   },
   {
     "id": "q148",
@@ -1477,7 +2947,17 @@
     "category": "kalp",
     "rarity": "common",
     "textEn": "With the Beloved's coming, a spaciousness opens in the heart; this heart is another door.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Mit dem Kommen des Geliebten öffnet sich eine Weite im Herzen; dieses Herz ist eine andere Tür.",
+    "categoryDe": "Herz",
+    "textEs": "Con la llegada del Amado se abre una amplitud en el corazón; este corazón es otra puerta.",
+    "categoryEs": "corazón",
+    "textPt": "Com a chegada do Amado, abre-se uma amplidão no coração; este coração é outra porta.",
+    "categoryPt": "coração",
+    "textFr": "À la venue de l'Aimé, une ampleur s'ouvre dans le cœur ; ce cœur est une autre porte.",
+    "categoryFr": "cœur",
+    "textJa": "愛する者の訪れとともに、心に広がりが開く。この心は、もう一つの扉だ。",
+    "categoryJa": "心"
   },
   {
     "id": "q149",
@@ -1487,7 +2967,17 @@
     "category": "zühd",
     "rarity": "uncommon",
     "textEn": "We did not come to this world to remain; we have lodged at an inn and will set out again.",
-    "categoryEn": "detachment"
+    "categoryEn": "detachment",
+    "textDe": "Wir kamen nicht in diese Welt, um zu bleiben; wir haben in einer Herberge Quartier genommen und werden wieder aufbrechen.",
+    "categoryDe": "Loslösung",
+    "textEs": "No vinimos a este mundo para quedarnos; nos hemos hospedado en una posada y partiremos de nuevo.",
+    "categoryEs": "desapego",
+    "textPt": "Não viemos a este mundo para ficar; hospedámo-nos numa estalagem e partiremos de novo.",
+    "categoryPt": "desapego",
+    "textFr": "Nous ne sommes pas venus en ce monde pour rester ; nous avons logé dans une auberge et repartirons.",
+    "categoryFr": "détachement",
+    "textJa": "私たちはとどまるためにこの世へ来たのではない。宿に泊まり、また旅立つのだ。",
+    "categoryJa": "離脱"
   },
   {
     "id": "q150",
@@ -1497,7 +2987,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "Water takes the shape of its vessel; the heart takes its color from what is placed within it.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Das Wasser nimmt die Form seines Gefäßes an; das Herz nimmt die Farbe dessen an, was man hineinlegt.",
+    "categoryDe": "Weisheit",
+    "textEs": "El agua toma la forma de su recipiente; el corazón toma el color de lo que se pone dentro.",
+    "categoryEs": "sabiduría",
+    "textPt": "A água toma a forma do seu recipiente; o coração toma a cor daquilo que se coloca dentro.",
+    "categoryPt": "sabedoria",
+    "textFr": "L'eau prend la forme de son récipient ; le cœur prend la couleur de ce qu'on y dépose.",
+    "categoryFr": "sagesse",
+    "textJa": "水は器の形をとる。心はそこに置かれたものの色をとる。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q151",
@@ -1507,7 +3007,17 @@
     "category": "degisim",
     "rarity": "uncommon",
     "textEn": "When the vineyard is undone the grape becomes wine; you too must come apart, that you may become something else.",
-    "categoryEn": "transformation"
+    "categoryEn": "transformation",
+    "textDe": "Wenn der Weinberg vergeht, wird die Traube zu Wein; auch du musst zerfallen, damit du etwas anderes wirst.",
+    "categoryDe": "Wandlung",
+    "textEs": "Cuando el viñedo se deshace, la uva se vuelve vino; tú también debes deshacerte para volverte otra cosa.",
+    "categoryEs": "transformación",
+    "textPt": "Quando o vinhedo se desfaz, a uva torna-se vinho; tu também deves desfazer-te, para te tornares outra coisa.",
+    "categoryPt": "transformação",
+    "textFr": "Quand la vigne se défait, le raisin devient vin ; toi aussi tu dois te défaire, pour devenir autre chose.",
+    "categoryFr": "transformation",
+    "textJa": "ぶどう畑が解けるとき、ぶどうは酒となる。あなたもまた、ほどけてこそ、別のものになれる。",
+    "categoryJa": "変容"
   },
   {
     "id": "q152",
@@ -1517,7 +3027,17 @@
     "category": "ic_ses",
     "rarity": "rare",
     "textEn": "You are nothing but thought, brother; the rest is bone and sinew. Think a rose and you are a rose garden; think a thorn and you are thorn brush.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Du bist nichts als Gedanke, Bruder; der Rest ist Knochen und Sehne. Denk eine Rose, und du bist ein Rosengarten; denk einen Dorn, und du bist Dorngestrüpp.",
+    "categoryDe": "innere Stimme",
+    "textEs": "No eres más que pensamiento, hermano; el resto es hueso y tendón. Piensa una rosa y eres un jardín de rosas; piensa una espina y eres un zarzal.",
+    "categoryEs": "voz interior",
+    "textPt": "Não és senão pensamento, irmão; o resto é osso e tendão. Pensa uma rosa e és um roseiral; pensa um espinho e és um espinheiro.",
+    "categoryPt": "voz interior",
+    "textFr": "Tu n'es rien que pensée, mon frère ; le reste est os et tendon. Pense une rose et tu es un jardin de roses ; pense une épine et tu es un buisson d'épines.",
+    "categoryFr": "voix intérieure",
+    "textJa": "兄弟よ、あなたは思いにほかならぬ。残りは骨と腱だ。バラを思えばバラ園となり、棘を思えば棘の茂みとなる。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q153",
@@ -1527,7 +3047,17 @@
     "category": "an",
     "rarity": "common",
     "textEn": "Yesterday has passed, and its words passed with it; today one must speak a new word.",
-    "categoryEn": "present moment"
+    "categoryEn": "present moment",
+    "textDe": "Gestern ist vergangen, und mit ihm seine Worte; heute muss man ein neues Wort sprechen.",
+    "categoryDe": "Gegenwart",
+    "textEs": "El ayer ha pasado, y con él pasaron sus palabras; hoy hay que decir una palabra nueva.",
+    "categoryEs": "presente",
+    "textPt": "O ontem passou, e com ele passaram as suas palavras; hoje é preciso dizer uma palavra nova.",
+    "categoryPt": "presente",
+    "textFr": "Hier est passé, et ses paroles avec lui ; aujourd'hui il faut dire une parole nouvelle.",
+    "categoryFr": "présent",
+    "textJa": "昨日は過ぎ、その言葉も過ぎ去った。今日は新しい言葉を語らねばならぬ。",
+    "categoryJa": "今この瞬間"
   },
   {
     "id": "q154",
@@ -1537,7 +3067,17 @@
     "category": "an",
     "rarity": "common",
     "textEn": "Yesterday is gone, and yesterday's talk is gone; now it is time to speak of new things.",
-    "categoryEn": "present moment"
+    "categoryEn": "present moment",
+    "textDe": "Das Gestern ist fort, und das Gerede von gestern ist fort; nun ist es Zeit, von Neuem zu sprechen.",
+    "categoryDe": "Gegenwart",
+    "textEs": "El ayer se ha ido, y la charla de ayer se ha ido; ahora es tiempo de hablar de cosas nuevas.",
+    "categoryEs": "presente",
+    "textPt": "O ontem foi-se, e a conversa de ontem foi-se; agora é tempo de falar de coisas novas.",
+    "categoryPt": "presente",
+    "textFr": "Hier s'en est allé, et les propos d'hier s'en sont allés ; il est temps maintenant de parler de choses nouvelles.",
+    "categoryFr": "présent",
+    "textJa": "昨日は去り、昨日の話も去った。今は新しいことを語るときだ。",
+    "categoryJa": "今この瞬間"
   },
   {
     "id": "q155",
@@ -1547,7 +3087,17 @@
     "category": "teslimiyet",
     "rarity": "uncommon",
     "textEn": "We are as if at the bottom of a well; the One who lets down the rope is the One who draws us up. Trust the hand that lowers the rope.",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Wir sind wie am Grund eines Brunnens; der das Seil hinablässt, ist der, der uns heraufzieht. Vertraue der Hand, die das Seil senkt.",
+    "categoryDe": "Hingabe",
+    "textEs": "Somos como si estuviéramos en el fondo de un pozo; quien arroja la cuerda es quien nos saca. Confía en la mano que baja la cuerda.",
+    "categoryEs": "entrega",
+    "textPt": "Somos como que no fundo de um poço; quem desce a corda é quem nos puxa para cima. Confia na mão que baixa a corda.",
+    "categoryPt": "entrega",
+    "textFr": "Nous sommes comme au fond d'un puits ; celui qui descend la corde est celui qui nous remonte. Fais confiance à la main qui abaisse la corde.",
+    "categoryFr": "abandon",
+    "textJa": "私たちは井戸の底にいるかのようだ。綱を下ろす者こそ、私たちを引き上げる者。綱を下ろす手を信じよ。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q156",
@@ -1557,7 +3107,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "If you enter a garden, see the roses, not the thorns; whoever beholds the rose, their heart becomes a rose.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Trittst du in einen Garten, sieh die Rosen, nicht die Dornen; wer die Rose schaut, dessen Herz wird zur Rose.",
+    "categoryDe": "Weisheit",
+    "textEs": "Si entras en un jardín, mira las rosas, no las espinas; quien contempla la rosa, su corazón se vuelve rosa.",
+    "categoryEs": "sabiduría",
+    "textPt": "Se entrares num jardim, vê as rosas, não os espinhos; quem contempla a rosa, o seu coração torna-se rosa.",
+    "categoryPt": "sabedoria",
+    "textFr": "Si tu entres dans un jardin, vois les roses, non les épines ; qui contemple la rose, son cœur devient rose.",
+    "categoryFr": "sagesse",
+    "textJa": "庭に入るなら、棘ではなくバラを見よ。バラを見つめる者の心は、バラとなる。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q157",
@@ -1567,7 +3127,17 @@
     "category": "sabir",
     "rarity": "common",
     "textEn": "Answer evil with good; for evil is smoke and good is light.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Begegne dem Bösen mit Gutem; denn das Böse ist Rauch und das Gute ist Licht.",
+    "categoryDe": "Geduld",
+    "textEs": "Responde al mal con el bien; pues el mal es humo y el bien es luz.",
+    "categoryEs": "paciencia",
+    "textPt": "Responde ao mal com o bem; pois o mal é fumo e o bem é luz.",
+    "categoryPt": "paciência",
+    "textFr": "Réponds au mal par le bien ; car le mal est fumée et le bien est lumière.",
+    "categoryFr": "patience",
+    "textJa": "悪には善で応えよ。悪は煙、善は光なのだから。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q158",
@@ -1577,7 +3147,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "Be patient; for patience is the key that opens relief from distress.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Sei geduldig; denn die Geduld ist der Schlüssel, der die Erleichterung aus der Not öffnet.",
+    "categoryDe": "Geduld",
+    "textEs": "Sé paciente; pues la paciencia es la llave que abre el alivio en la angustia.",
+    "categoryEs": "paciencia",
+    "textPt": "Sê paciente; pois a paciência é a chave que abre o alívio na aflição.",
+    "categoryPt": "paciência",
+    "textFr": "Sois patient ; car la patience est la clé qui ouvre le soulagement dans la détresse.",
+    "categoryFr": "patience",
+    "textJa": "忍耐せよ。忍耐は苦難からの安らぎを開く鍵なのだから。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q159",
@@ -1587,7 +3167,17 @@
     "category": "tevbe",
     "rarity": "uncommon",
     "textEn": "Mount the steed of repentance; this steed crosses long roads in a single moment.",
-    "categoryEn": "repentance"
+    "categoryEn": "repentance",
+    "textDe": "Besteige das Ross der Reue; dieses Ross durchquert lange Wege in einem einzigen Augenblick.",
+    "categoryDe": "Reue",
+    "textEs": "Monta el corcel del arrepentimiento; este corcel cruza largos caminos en un solo instante.",
+    "categoryEs": "arrepentimiento",
+    "textPt": "Monta o corcel do arrependimento; este corcel atravessa longos caminhos num único instante.",
+    "categoryPt": "arrependimento",
+    "textFr": "Monte le coursier du repentir ; ce coursier franchit de longs chemins en un seul instant.",
+    "categoryFr": "repentir",
+    "textJa": "悔悟の駿馬に乗れ。この馬は、ただ一瞬で長い道を駆け抜ける。",
+    "categoryJa": "悔悟"
   },
   {
     "id": "q160",
@@ -1597,7 +3187,17 @@
     "category": "tevbe",
     "rarity": "common",
     "textEn": "The moment the servant understands their fault, the door of the lodge opens to them.",
-    "categoryEn": "repentance"
+    "categoryEn": "repentance",
+    "textDe": "In dem Augenblick, da der Diener seinen Fehler versteht, öffnet sich ihm die Tür der Loge.",
+    "categoryDe": "Reue",
+    "textEs": "En el momento en que el siervo comprende su falta, se le abre la puerta de la logia.",
+    "categoryEs": "arrepentimiento",
+    "textPt": "No momento em que o servo compreende a sua falta, abre-se-lhe a porta da loja.",
+    "categoryPt": "arrependimento",
+    "textFr": "À l'instant où le serviteur comprend sa faute, la porte de la loge s'ouvre à lui.",
+    "categoryFr": "repentir",
+    "textJa": "僕が己の過ちを悟るその瞬間、修道場の扉が彼に開かれる。",
+    "categoryJa": "悔悟"
   },
   {
     "id": "q161",
@@ -1607,7 +3207,17 @@
     "category": "ask",
     "rarity": "rare",
     "textEn": "Love is such a sea that its foam has covered even the face of the heavens.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Die Liebe ist ein solches Meer, dass ihr Schaum selbst das Antlitz der Himmel bedeckt hat.",
+    "categoryDe": "Liebe",
+    "textEs": "El amor es un mar tan grande que su espuma ha cubierto hasta el rostro de los cielos.",
+    "categoryEs": "amor",
+    "textPt": "O amor é um mar tão grande que a sua espuma cobriu até a face dos céus.",
+    "categoryPt": "amor",
+    "textFr": "L'amour est une mer telle que son écume a couvert jusqu'au visage des cieux.",
+    "categoryFr": "amour",
+    "textJa": "愛はその泡が天の顔さえ覆うほどの海だ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q162",
@@ -1617,7 +3227,17 @@
     "category": "ask",
     "rarity": "common",
     "textEn": "Love makes heavy burdens light; with love every pain turns sweet.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Die Liebe macht schwere Lasten leicht; mit der Liebe wird jeder Schmerz süß.",
+    "categoryDe": "Liebe",
+    "textEs": "El amor hace ligeras las cargas pesadas; con amor todo dolor se vuelve dulce.",
+    "categoryEs": "amor",
+    "textPt": "O amor torna leves os fardos pesados; com amor toda dor se torna doce.",
+    "categoryPt": "amor",
+    "textFr": "L'amour rend légers les lourds fardeaux ; avec l'amour toute douleur devient douce.",
+    "categoryFr": "amour",
+    "textJa": "愛は重い荷を軽くする。愛とともに、どんな痛みも甘くなる。",
+    "categoryJa": "愛"
   },
   {
     "id": "q163",
@@ -1627,7 +3247,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "Reason is like a traveler upon a lame donkey; love, by contrast, flies upon wings.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Der Verstand ist wie ein Reisender auf einem lahmen Esel; die Liebe dagegen fliegt auf Flügeln.",
+    "categoryDe": "Liebe",
+    "textEs": "La razón es como un viajero sobre un asno cojo; el amor, en cambio, vuela sobre alas.",
+    "categoryEs": "amor",
+    "textPt": "A razão é como um viajante sobre um burro coxo; o amor, ao contrário, voa sobre asas.",
+    "categoryPt": "amor",
+    "textFr": "La raison est comme un voyageur sur un âne boiteux ; l'amour, au contraire, vole sur des ailes.",
+    "categoryFr": "amour",
+    "textJa": "理性は足の不自由なロバに乗る旅人のようだ。一方、愛は翼で飛ぶ。",
+    "categoryJa": "愛"
   },
   {
     "id": "q164",
@@ -1637,7 +3267,17 @@
     "category": "birlik",
     "rarity": "uncommon",
     "textEn": "The parts are drawn toward their wholes; so are we drawn toward our origin, toward the Beloved.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Die Teile werden zu ihren Ganzen gezogen; so werden auch wir zu unserem Ursprung gezogen, zum Geliebten.",
+    "categoryDe": "Einheit",
+    "textEs": "Las partes son atraídas hacia sus todos; así somos atraídos hacia nuestro origen, hacia el Amado.",
+    "categoryEs": "unidad",
+    "textPt": "As partes são atraídas para os seus todos; assim somos atraídos para a nossa origem, para o Amado.",
+    "categoryPt": "unidade",
+    "textFr": "Les parties sont attirées vers leurs touts ; ainsi sommes-nous attirés vers notre origine, vers l'Aimé.",
+    "categoryFr": "unité",
+    "textJa": "部分はその全体へと引き寄せられる。そのように私たちも己の源へ、愛する者へと引き寄せられる。",
+    "categoryJa": "一体"
   },
   {
     "id": "q165",
@@ -1647,7 +3287,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "When the drop reaches the sea it becomes the sea; you too must let go of your self, that you may merge with the ocean.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Wenn der Tropfen das Meer erreicht, wird er zum Meer; auch du musst dein Selbst loslassen, damit du mit dem Ozean verschmilzt.",
+    "categoryDe": "Einheit",
+    "textEs": "Cuando la gota llega al mar se vuelve mar; tú también debes soltar tu yo para fundirte con el océano.",
+    "categoryEs": "unidad",
+    "textPt": "Quando a gota chega ao mar torna-se mar; tu também deves soltar o teu eu, para te fundires com o oceano.",
+    "categoryPt": "unidade",
+    "textFr": "Quand la goutte atteint la mer, elle devient la mer ; toi aussi tu dois lâcher ton soi, pour te fondre dans l'océan.",
+    "categoryFr": "unité",
+    "textJa": "雫が海に達すれば海となる。あなたもまた己を手放してこそ、大海と一つになれる。",
+    "categoryJa": "一体"
   },
   {
     "id": "q166",
@@ -1657,7 +3307,17 @@
     "category": "yol",
     "rarity": "uncommon",
     "textEn": "The human being is a bridge between two worlds; do not linger upon it, pass over.",
-    "categoryEn": "path"
+    "categoryEn": "path",
+    "textDe": "Der Mensch ist eine Brücke zwischen zwei Welten; verweile nicht auf ihr, geh hinüber.",
+    "categoryDe": "Weg",
+    "textEs": "El ser humano es un puente entre dos mundos; no te demores en él, pasa al otro lado.",
+    "categoryEs": "sendero",
+    "textPt": "O ser humano é uma ponte entre dois mundos; não te demores nela, passa para o outro lado.",
+    "categoryPt": "caminho",
+    "textFr": "L'être humain est un pont entre deux mondes ; ne t'attarde pas dessus, passe de l'autre côté.",
+    "categoryFr": "voie",
+    "textJa": "人間は二つの世界を結ぶ橋だ。その上にとどまるな、渡り越えよ。",
+    "categoryJa": "道"
   },
   {
     "id": "q167",
@@ -1667,7 +3327,17 @@
     "category": "ic_ses",
     "rarity": "uncommon",
     "textEn": "The guiding light is within; whoever seeks a candle outside has put out their own sun.",
-    "categoryEn": "inner voice"
+    "categoryEn": "inner voice",
+    "textDe": "Das führende Licht ist innen; wer draußen eine Kerze sucht, hat seine eigene Sonne ausgelöscht.",
+    "categoryDe": "innere Stimme",
+    "textEs": "La luz que guía está dentro; quien busca una vela afuera ha apagado su propio sol.",
+    "categoryEs": "voz interior",
+    "textPt": "A luz que guia está dentro; quem procura uma vela lá fora apagou o seu próprio sol.",
+    "categoryPt": "voz interior",
+    "textFr": "La lumière qui guide est au-dedans ; qui cherche une bougie au-dehors a éteint son propre soleil.",
+    "categoryFr": "voix intérieure",
+    "textJa": "導きの光は内にある。外にろうそくを求める者は、己の太陽を消したのだ。",
+    "categoryJa": "内なる声"
   },
   {
     "id": "q168",
@@ -1677,7 +3347,17 @@
     "category": "cömertlik",
     "rarity": "common",
     "textEn": "Be generous; for the earth receives the seed generously and returns it manifold.",
-    "categoryEn": "generosity"
+    "categoryEn": "generosity",
+    "textDe": "Sei großzügig; denn die Erde empfängt den Samen großzügig und gibt ihn vielfach zurück.",
+    "categoryDe": "Großzügigkeit",
+    "textEs": "Sé generoso; pues la tierra recibe la semilla con generosidad y la devuelve multiplicada.",
+    "categoryEs": "generosidad",
+    "textPt": "Sê generoso; pois a terra recebe a semente com generosidade e devolve-a multiplicada.",
+    "categoryPt": "generosidade",
+    "textFr": "Sois généreux ; car la terre reçoit la graine avec générosité et la rend au centuple.",
+    "categoryFr": "générosité",
+    "textJa": "寛大であれ。大地は種を寛大に受け、幾倍にもして返すのだから。",
+    "categoryJa": "寛大さ"
   },
   {
     "id": "q169",
@@ -1687,7 +3367,17 @@
     "category": "cömertlik",
     "rarity": "common",
     "textEn": "The giving hand is above the receiving hand; by giving you do not grow less, you grow more.",
-    "categoryEn": "generosity"
+    "categoryEn": "generosity",
+    "textDe": "Die gebende Hand steht über der nehmenden; durch Geben wirst du nicht weniger, du wirst mehr.",
+    "categoryDe": "Großzügigkeit",
+    "textEs": "La mano que da está por encima de la que recibe; al dar no menguas, creces.",
+    "categoryEs": "generosidad",
+    "textPt": "A mão que dá está acima da que recebe; ao dar não diminuis, cresces.",
+    "categoryPt": "generosidade",
+    "textFr": "La main qui donne est au-dessus de celle qui reçoit ; en donnant tu ne deviens pas moindre, tu deviens plus grand.",
+    "categoryFr": "générosité",
+    "textJa": "与える手は受け取る手の上にある。与えても減るのではなく、増えるのだ。",
+    "categoryJa": "寛大さ"
   },
   {
     "id": "q170",
@@ -1697,7 +3387,17 @@
     "category": "sükür",
     "rarity": "common",
     "textEn": "Give thanks; for gratitude is the tether of blessing, binding it to you.",
-    "categoryEn": "gratitude"
+    "categoryEn": "gratitude",
+    "textDe": "Sei dankbar; denn die Dankbarkeit ist das Band des Segens, das ihn an dich bindet.",
+    "categoryDe": "Dankbarkeit",
+    "textEs": "Da gracias; pues la gratitud es la atadura de la bendición, que la liga a ti.",
+    "categoryEs": "gratitud",
+    "textPt": "Dá graças; pois a gratidão é a amarra da bênção, que a prende a ti.",
+    "categoryPt": "gratidão",
+    "textFr": "Rends grâce ; car la gratitude est l'attache de la bénédiction, qui la lie à toi.",
+    "categoryFr": "gratitude",
+    "textJa": "感謝せよ。感謝は恵みをあなたに結びつける綱なのだから。",
+    "categoryJa": "感謝"
   },
   {
     "id": "q171",
@@ -1707,7 +3407,17 @@
     "category": "an",
     "rarity": "common",
     "textEn": "Each morning we are born anew; leave yesterday's worries in their bed.",
-    "categoryEn": "present moment"
+    "categoryEn": "present moment",
+    "textDe": "Jeden Morgen werden wir neu geboren; lass die Sorgen von gestern in ihrem Bett.",
+    "categoryDe": "Gegenwart",
+    "textEs": "Cada mañana nacemos de nuevo; deja las preocupaciones de ayer en su lecho.",
+    "categoryEs": "presente",
+    "textPt": "A cada manhã nascemos de novo; deixa as preocupações de ontem no seu leito.",
+    "categoryPt": "presente",
+    "textFr": "Chaque matin nous naissons à nouveau ; laisse les soucis d'hier dans leur lit.",
+    "categoryFr": "présent",
+    "textJa": "毎朝、私たちは新たに生まれる。昨日の憂いはその寝床に置いておけ。",
+    "categoryJa": "今この瞬間"
   },
   {
     "id": "q172",
@@ -1717,7 +3427,17 @@
     "category": "kalp",
     "rarity": "uncommon",
     "textEn": "Polish the mirror of the heart; a rusted mirror shows neither form nor light.",
-    "categoryEn": "heart"
+    "categoryEn": "heart",
+    "textDe": "Poliere den Spiegel des Herzens; ein verrosteter Spiegel zeigt weder Gestalt noch Licht.",
+    "categoryDe": "Herz",
+    "textEs": "Pule el espejo del corazón; un espejo oxidado no muestra ni forma ni luz.",
+    "categoryEs": "corazón",
+    "textPt": "Pole o espelho do coração; um espelho enferrujado não mostra nem forma nem luz.",
+    "categoryPt": "coração",
+    "textFr": "Polis le miroir du cœur ; un miroir rouillé ne montre ni forme ni lumière.",
+    "categoryFr": "cœur",
+    "textJa": "心の鏡を磨け。錆びた鏡は、姿も光も映さない。",
+    "categoryJa": "心"
   },
   {
     "id": "q173",
@@ -1727,7 +3447,17 @@
     "category": "nefis",
     "rarity": "common",
     "textEn": "The ego grows insolent the more it is fed; the more you starve it, the gentler it becomes.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Das Ego wird umso anmaßender, je mehr man es füttert; je mehr du es hungern lässt, desto sanfter wird es.",
+    "categoryDe": "Selbst",
+    "textEs": "El ego se vuelve más insolente cuanto más se le alimenta; cuanto más lo dejas en ayunas, más manso se vuelve.",
+    "categoryEs": "ser",
+    "textPt": "O ego torna-se mais insolente quanto mais o alimentas; quanto mais o deixas em jejum, mais manso se torna.",
+    "categoryPt": "eu",
+    "textFr": "L'ego devient d'autant plus insolent qu'on le nourrit ; plus tu l'affames, plus il devient doux.",
+    "categoryFr": "soi",
+    "textJa": "自我は養えば養うほど傲慢になる。飢えさせるほど、穏やかになる。",
+    "categoryJa": "自己"
   },
   {
     "id": "q174",
@@ -1737,7 +3467,17 @@
     "category": "nefis",
     "rarity": "uncommon",
     "textEn": "Whoever searches for the self in the end learns to pass beyond the self.",
-    "categoryEn": "self"
+    "categoryEn": "self",
+    "textDe": "Wer nach dem Selbst sucht, lernt am Ende, über das Selbst hinauszugehen.",
+    "categoryDe": "Selbst",
+    "textEs": "Quien busca el yo aprende al fin a ir más allá del yo.",
+    "categoryEs": "ser",
+    "textPt": "Quem procura o eu aprende, ao fim, a ir além do eu.",
+    "categoryPt": "eu",
+    "textFr": "Qui cherche le soi apprend à la fin à dépasser le soi.",
+    "categoryFr": "soi",
+    "textJa": "自己を探す者は、ついには自己を越えていくことを学ぶ。",
+    "categoryJa": "自己"
   },
   {
     "id": "q175",
@@ -1747,7 +3487,17 @@
     "category": "birlik",
     "rarity": "rare",
     "textEn": "After my death, do not seek my grave in the ground; it is in the hearts of those who know.",
-    "categoryEn": "unity"
+    "categoryEn": "unity",
+    "textDe": "Such nach meinem Tod mein Grab nicht in der Erde; es ist in den Herzen derer, die wissen.",
+    "categoryDe": "Einheit",
+    "textEs": "Después de mi muerte, no busques mi tumba en la tierra; está en los corazones de quienes saben.",
+    "categoryEs": "unidad",
+    "textPt": "Depois da minha morte, não procures o meu túmulo na terra; está nos corações dos que sabem.",
+    "categoryPt": "unidade",
+    "textFr": "Après ma mort, ne cherche pas ma tombe dans la terre ; elle est dans les cœurs de ceux qui savent.",
+    "categoryFr": "unité",
+    "textJa": "私の死後、地中に私の墓を探すな。それは知る者たちの心の中にある。",
+    "categoryJa": "一体"
   },
   {
     "id": "q176",
@@ -1757,7 +3507,17 @@
     "category": "teslimiyet",
     "rarity": "rare",
     "textEn": "Our death is our wedding night; for separation ends and reunion begins.",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Unser Tod ist unsere Hochzeitsnacht; denn die Trennung endet und die Wiedervereinigung beginnt.",
+    "categoryDe": "Hingabe",
+    "textEs": "Nuestra muerte es nuestra noche de bodas; pues la separación termina y comienza el reencuentro.",
+    "categoryEs": "entrega",
+    "textPt": "A nossa morte é a nossa noite de núpcias; pois a separação termina e o reencontro começa.",
+    "categoryPt": "entrega",
+    "textFr": "Notre mort est notre nuit de noces ; car la séparation finit et les retrouvailles commencent.",
+    "categoryFr": "abandon",
+    "textJa": "私たちの死は、私たちの婚礼の夜だ。別離が終わり、再会が始まるのだから。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q177",
@@ -1767,7 +3527,17 @@
     "category": "dostluk",
     "rarity": "common",
     "textEn": "A friend is the physician of the heart; do not hide your sorrow from them.",
-    "categoryEn": "friendship"
+    "categoryEn": "friendship",
+    "textDe": "Ein Freund ist der Arzt des Herzens; verbirg deinen Kummer nicht vor ihm.",
+    "categoryDe": "Freundschaft",
+    "textEs": "Un amigo es el médico del corazón; no le ocultes tu pena.",
+    "categoryEs": "amistad",
+    "textPt": "Um amigo é o médico do coração; não lhe escondas a tua tristeza.",
+    "categoryPt": "amizade",
+    "textFr": "Un ami est le médecin du cœur ; ne lui cache pas ton chagrin.",
+    "categoryFr": "amitié",
+    "textJa": "友は心の医者だ。あなたの悲しみを彼から隠すな。",
+    "categoryJa": "友情"
   },
   {
     "id": "q178",
@@ -1777,7 +3547,17 @@
     "category": "hikmet",
     "rarity": "common",
     "textEn": "If your speech is silver, your silence is gold; yet a word in its proper place is like a pearl.",
-    "categoryEn": "wisdom"
+    "categoryEn": "wisdom",
+    "textDe": "Ist deine Rede Silber, so ist dein Schweigen Gold; doch ein Wort am rechten Ort ist wie eine Perle.",
+    "categoryDe": "Weisheit",
+    "textEs": "Si tu palabra es plata, tu silencio es oro; pero una palabra en su justo lugar es como una perla.",
+    "categoryEs": "sabiduría",
+    "textPt": "Se a tua fala é prata, o teu silêncio é ouro; mas uma palavra no seu devido lugar é como uma pérola.",
+    "categoryPt": "sabedoria",
+    "textFr": "Si ta parole est d'argent, ton silence est d'or ; mais un mot à sa juste place est comme une perle.",
+    "categoryFr": "sagesse",
+    "textJa": "あなたの言葉が銀なら、沈黙は金だ。だが、ふさわしい場所に置かれた一言は真珠のようだ。",
+    "categoryJa": "知恵"
   },
   {
     "id": "q179",
@@ -1787,7 +3567,17 @@
     "category": "teslimiyet",
     "rarity": "uncommon",
     "textEn": "Do not fear; what is meant to reach you will not go to another.",
-    "categoryEn": "surrender"
+    "categoryEn": "surrender",
+    "textDe": "Fürchte dich nicht; was dich erreichen soll, geht nicht zu einem anderen.",
+    "categoryDe": "Hingabe",
+    "textEs": "No temas; lo que ha de llegarte no irá a otro.",
+    "categoryEs": "entrega",
+    "textPt": "Não temas; o que te há de chegar não irá para outro.",
+    "categoryPt": "entrega",
+    "textFr": "Ne crains pas ; ce qui doit te parvenir n'ira pas à un autre.",
+    "categoryFr": "abandon",
+    "textJa": "恐れるな。あなたに届くべきものは、他の者のところへは行かない。",
+    "categoryJa": "明け渡し"
   },
   {
     "id": "q180",
@@ -1797,7 +3587,17 @@
     "category": "sabir",
     "rarity": "uncommon",
     "textEn": "The Truth tests hearts; the heart of the patient one comes forth shining like gold.",
-    "categoryEn": "patience"
+    "categoryEn": "patience",
+    "textDe": "Die Wahrheit prüft die Herzen; das Herz des Geduldigen geht hervor und glänzt wie Gold.",
+    "categoryDe": "Geduld",
+    "textEs": "La Verdad pone a prueba los corazones; el corazón del paciente sale reluciente como el oro.",
+    "categoryEs": "paciencia",
+    "textPt": "A Verdade põe os corações à prova; o coração do paciente sai reluzente como o ouro.",
+    "categoryPt": "paciência",
+    "textFr": "La Vérité éprouve les cœurs ; le cœur du patient en ressort brillant comme l'or.",
+    "categoryFr": "patience",
+    "textJa": "真実は心を試す。忍耐する者の心は、金のように輝いて現れる。",
+    "categoryJa": "忍耐"
   },
   {
     "id": "q181",
@@ -1807,7 +3607,17 @@
     "category": "ask",
     "rarity": "uncommon",
     "textEn": "The claim of love is easily spoken; but its proof appears in the hardship one endures.",
-    "categoryEn": "love"
+    "categoryEn": "love",
+    "textDe": "Den Anspruch auf Liebe spricht man leicht aus; doch ihr Beweis zeigt sich in der Härte, die man erträgt.",
+    "categoryDe": "Liebe",
+    "textEs": "La pretensión del amor se dice con facilidad; pero su prueba aparece en la dureza que uno soporta.",
+    "categoryEs": "amor",
+    "textPt": "A pretensão do amor diz-se com facilidade; mas a sua prova aparece na dureza que se suporta.",
+    "categoryPt": "amor",
+    "textFr": "Prétendre à l'amour se dit aisément ; mais sa preuve apparaît dans l'épreuve que l'on endure.",
+    "categoryFr": "amour",
+    "textJa": "愛を主張することはたやすい。だがその証は、耐え忍ぶ苦難の中に現れる。",
+    "categoryJa": "愛"
   },
   {
     "id": "q182",
@@ -1817,7 +3627,17 @@
     "category": "hasret",
     "rarity": "rare",
     "textEn": "Not only does the thirsty seek the water; the water too, unseen, seeks the thirsty.",
-    "categoryEn": "longing"
+    "categoryEn": "longing",
+    "textDe": "Nicht nur der Durstige sucht das Wasser; auch das Wasser sucht, ungesehen, den Durstigen.",
+    "categoryDe": "Sehnsucht",
+    "textEs": "No solo el sediento busca el agua; el agua también, sin que se vea, busca al sediento.",
+    "categoryEs": "añoranza",
+    "textPt": "Não só o sedento procura a água; a água também, sem que se veja, procura o sedento.",
+    "categoryPt": "saudade",
+    "textFr": "Non seulement l'assoiffé cherche l'eau ; l'eau aussi, invisible, cherche l'assoiffé.",
+    "categoryFr": "nostalgie",
+    "textJa": "渇いた者が水を求めるだけではない。水もまた、見えぬところで渇いた者を求めている。",
+    "categoryJa": "憧れ"
   },
   {
     "id": "q183",
@@ -1827,7 +3647,17 @@
     "category": "kabul",
     "rarity": "common",
     "textEn": "One door closes, another opens; look not at the darkness but at the opening door.",
-    "categoryEn": "acceptance"
+    "categoryEn": "acceptance",
+    "textDe": "Eine Tür schließt sich, eine andere öffnet sich; schau nicht auf das Dunkel, sondern auf die sich öffnende Tür.",
+    "categoryDe": "Annahme",
+    "textEs": "Una puerta se cierra, otra se abre; no mires la oscuridad, sino la puerta que se abre.",
+    "categoryEs": "aceptación",
+    "textPt": "Uma porta fecha-se, outra abre-se; não olhes para a escuridão, mas para a porta que se abre.",
+    "categoryPt": "aceitação",
+    "textFr": "Une porte se ferme, une autre s'ouvre ; ne regarde pas l'obscurité mais la porte qui s'ouvre.",
+    "categoryFr": "acceptation",
+    "textJa": "一つの扉が閉じれば、もう一つが開く。闇ではなく、開きゆく扉を見よ。",
+    "categoryJa": "受容"
   },
   {
     "id": "q184",
@@ -1837,6 +3667,16 @@
     "category": "kabul",
     "rarity": "uncommon",
     "textEn": "Do not blame the night; the stars become visible only in the dark.",
-    "categoryEn": "acceptance"
+    "categoryEn": "acceptance",
+    "textDe": "Tadle nicht die Nacht; die Sterne werden nur im Dunkel sichtbar.",
+    "categoryDe": "Annahme",
+    "textEs": "No culpes a la noche; las estrellas solo se hacen visibles en lo oscuro.",
+    "categoryEs": "aceptación",
+    "textPt": "Não culpes a noite; as estrelas só se tornam visíveis no escuro.",
+    "categoryPt": "aceitação",
+    "textFr": "Ne blâme pas la nuit ; les étoiles ne deviennent visibles que dans l'obscurité.",
+    "categoryFr": "acceptation",
+    "textJa": "夜を責めるな。星は闇の中でこそ見えるようになる。",
+    "categoryJa": "受容"
   }
 ]
