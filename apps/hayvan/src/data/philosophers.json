@@ -5,7 +5,17 @@
     "origin": "Belh · Konya",
     "tradition": "Mevlevilik",
     "originEn": "Balkh · Konya",
-    "traditionEn": "Mevlevi Order (Whirling Dervishes)"
+    "traditionEn": "Mevlevi Order (Whirling Dervishes)",
+    "originDe": "Balch · Konya",
+    "traditionDe": "Mevlevi-Orden (Drehende Derwische)",
+    "originEs": "Balj · Konya",
+    "traditionEs": "Orden mevleví (derviches giróvagos)",
+    "originPt": "Balkh · Cónia",
+    "traditionPt": "Ordem Mevlevi (dervixes giróvagos)",
+    "originFr": "Balkh · Konya",
+    "traditionFr": "Ordre Mevlevi (derviches tourneurs)",
+    "originJa": "バルフ・コンヤ",
+    "traditionJa": "メヴレヴィー教団(旋舞教団)"
   },
   "Şems-i Tebrizi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Shams-e_Tabrizi.jpg&width=300",
@@ -13,7 +23,17 @@
     "origin": "Tebriz",
     "tradition": "Sûfizm",
     "originEn": "Tabriz",
-    "traditionEn": "Sufism"
+    "traditionEn": "Sufism",
+    "originDe": "Täbris",
+    "traditionDe": "Sufismus",
+    "originEs": "Tabriz",
+    "traditionEs": "Sufismo",
+    "originPt": "Tabriz",
+    "traditionPt": "Sufismo",
+    "originFr": "Tabriz",
+    "traditionFr": "Soufisme",
+    "originJa": "タブリーズ",
+    "traditionJa": "スーフィズム"
   },
   "Yunus Emre": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Yunus_Emre.jpg&width=300",
@@ -21,7 +41,17 @@
     "origin": "Anadolu",
     "tradition": "Halk Tasavvufu",
     "originEn": "Anatolia",
-    "traditionEn": "Folk Sufism"
+    "traditionEn": "Folk Sufism",
+    "originDe": "Anatolien",
+    "traditionDe": "Volkstümlicher Sufismus",
+    "originEs": "Anatolia",
+    "traditionEs": "Sufismo popular",
+    "originPt": "Anatólia",
+    "traditionPt": "Sufismo popular",
+    "originFr": "Anatolie",
+    "traditionFr": "Soufisme populaire",
+    "originJa": "アナトリア",
+    "traditionJa": "民衆スーフィズム"
   },
   "Hacı Bektaş Veli": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Haci_Bektas_Veli.jpg&width=300",
@@ -29,7 +59,17 @@
     "origin": "Nişabur · Hacıbektaş",
     "tradition": "Bektaşilik",
     "originEn": "Nishapur · Hacıbektaş",
-    "traditionEn": "Bektashi Order"
+    "traditionEn": "Bektashi Order",
+    "originDe": "Nischapur · Hacıbektaş",
+    "traditionDe": "Bektaschi-Orden",
+    "originEs": "Nishapur · Hacıbektaş",
+    "traditionEs": "Orden bektashí",
+    "originPt": "Nishapur · Hacıbektaş",
+    "traditionPt": "Ordem Bektashi",
+    "originFr": "Nichapour · Hacıbektaş",
+    "traditionFr": "Ordre Bektachi",
+    "originJa": "ニーシャープール・ハジュベクタシュ",
+    "traditionJa": "ベクタシュ教団"
   },
   "Pir Sultan Abdal": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Pir_Sultan_Abdal.jpg&width=300",
@@ -37,7 +77,17 @@
     "origin": "Banaz, Sivas",
     "tradition": "Alevi Geleneği",
     "originEn": "Banaz, Sivas",
-    "traditionEn": "Alevi Tradition"
+    "traditionEn": "Alevi Tradition",
+    "originDe": "Banaz, Sivas",
+    "traditionDe": "Alevitische Tradition",
+    "originEs": "Banaz, Sivas",
+    "traditionEs": "Tradición aleví",
+    "originPt": "Banaz, Sivas",
+    "traditionPt": "Tradição alevi",
+    "originFr": "Banaz, Sivas",
+    "traditionFr": "Tradition alévie",
+    "originJa": "バナズ、スィヴァス",
+    "traditionJa": "アレヴィーの伝統"
   },
   "Ahmed Yesevi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Khoja_Ahmed_Yasawi.jpg&width=300",
@@ -45,7 +95,17 @@
     "origin": "Sayram · Yesi (Türkistan)",
     "tradition": "Yesevilik",
     "originEn": "Sayram · Yasi (Turkestan)",
-    "traditionEn": "Yasawi Order"
+    "traditionEn": "Yasawi Order",
+    "originDe": "Sayram · Yasi (Turkestan)",
+    "traditionDe": "Yasawi-Orden",
+    "originEs": "Sayram · Yasi (Turkestán)",
+    "traditionEs": "Orden yasawí",
+    "originPt": "Sayram · Yasi (Turquestão)",
+    "traditionPt": "Ordem Yasawi",
+    "originFr": "Sayram · Yasi (Turkestan)",
+    "traditionFr": "Ordre Yasawi",
+    "originJa": "サイラム・ヤシ(トルキスタン)",
+    "traditionJa": "ヤサヴィー教団"
   },
   "Nesimi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Imadaddin_Nasimi.jpg&width=300",
@@ -53,7 +113,17 @@
     "origin": "Şirvan",
     "tradition": "Hurûfilik",
     "originEn": "Shirvan",
-    "traditionEn": "Hurufism"
+    "traditionEn": "Hurufism",
+    "originDe": "Schirwan",
+    "traditionDe": "Hurufismus",
+    "originEs": "Shirván",
+    "traditionEs": "Hurufismo",
+    "originPt": "Shirvan",
+    "traditionPt": "Hurufismo",
+    "originFr": "Chirvan",
+    "traditionFr": "Houroufisme",
+    "originJa": "シルヴァン",
+    "traditionJa": "フルーフィー教"
   },
   "Kaygusuz Abdal": {
     "imageUrl": "",
@@ -61,7 +131,17 @@
     "origin": "Alanya",
     "tradition": "Bektaşilik",
     "originEn": "Alanya",
-    "traditionEn": "Bektashi Order"
+    "traditionEn": "Bektashi Order",
+    "originDe": "Alanya",
+    "traditionDe": "Bektaschi-Orden",
+    "originEs": "Alanya",
+    "traditionEs": "Orden bektashí",
+    "originPt": "Alanya",
+    "traditionPt": "Ordem Bektashi",
+    "originFr": "Alanya",
+    "traditionFr": "Ordre Bektachi",
+    "originJa": "アランヤ",
+    "traditionJa": "ベクタシュ教団"
   },
   "Niyazi Mısri": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Niyazi_Misri.jpg&width=300",
@@ -69,7 +149,17 @@
     "origin": "Soğanlı · Bursa",
     "tradition": "Halvetilik",
     "originEn": "Soğanlı · Bursa",
-    "traditionEn": "Khalwati Order"
+    "traditionEn": "Khalwati Order",
+    "originDe": "Soğanlı · Bursa",
+    "traditionDe": "Halveti-Orden",
+    "originEs": "Soğanlı · Bursa",
+    "traditionEs": "Orden jalwatí",
+    "originPt": "Soğanlı · Bursa",
+    "traditionPt": "Ordem Khalwati",
+    "originFr": "Soğanlı · Bursa",
+    "traditionFr": "Ordre Khalwati",
+    "originJa": "ソアンル・ブルサ",
+    "traditionJa": "ハルヴェティー教団"
   },
   "Aşık Veysel": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Asik_Veysel.jpg&width=300",
@@ -77,7 +167,17 @@
     "origin": "Şarkışla, Sivas",
     "tradition": "Halk Ozanı",
     "originEn": "Şarkışla, Sivas",
-    "traditionEn": "Folk Bard (Aşık)"
+    "traditionEn": "Folk Bard (Aşık)",
+    "originDe": "Şarkışla, Sivas",
+    "traditionDe": "Volksbarde (Aşık)",
+    "originEs": "Şarkışla, Sivas",
+    "traditionEs": "Bardo popular (aşık)",
+    "originPt": "Şarkışla, Sivas",
+    "traditionPt": "Bardo popular (aşık)",
+    "originFr": "Şarkışla, Sivas",
+    "traditionFr": "Barde populaire (aşık)",
+    "originJa": "シャルクシュラ、スィヴァス",
+    "traditionJa": "民衆の吟遊詩人(アシュク)"
   },
   "Dadaloğlu": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Dadaloglu.jpg&width=300",
@@ -85,7 +185,17 @@
     "origin": "Toroslar",
     "tradition": "Halk Ozanı",
     "originEn": "Taurus Mountains",
-    "traditionEn": "Folk Bard (Aşık)"
+    "traditionEn": "Folk Bard (Aşık)",
+    "originDe": "Taurusgebirge",
+    "traditionDe": "Volksbarde (Aşık)",
+    "originEs": "Montes Tauro",
+    "traditionEs": "Bardo popular (aşık)",
+    "originPt": "Montes Tauro",
+    "traditionPt": "Bardo popular (aşık)",
+    "originFr": "Monts Taurus",
+    "traditionFr": "Barde populaire (aşık)",
+    "originJa": "タウルス山脈",
+    "traditionJa": "民衆の吟遊詩人(アシュク)"
   },
   "Köroğlu": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Koroglu.jpg&width=300",
@@ -93,7 +203,17 @@
     "origin": "Anadolu",
     "tradition": "Halk Destanı",
     "originEn": "Anatolia",
-    "traditionEn": "Folk Epic"
+    "traditionEn": "Folk Epic",
+    "originDe": "Anatolien",
+    "traditionDe": "Volksepos",
+    "originEs": "Anatolia",
+    "traditionEs": "Epopeya popular",
+    "originPt": "Anatólia",
+    "traditionPt": "Epopeia popular",
+    "originFr": "Anatolie",
+    "traditionFr": "Épopée populaire",
+    "originJa": "アナトリア",
+    "traditionJa": "民衆叙事詩"
   },
   "Karacaoğlan": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Karacaoglan.jpg&width=300",
@@ -101,7 +221,17 @@
     "origin": "Toroslar",
     "tradition": "Halk Ozanı",
     "originEn": "Taurus Mountains",
-    "traditionEn": "Folk Bard (Aşık)"
+    "traditionEn": "Folk Bard (Aşık)",
+    "originDe": "Taurusgebirge",
+    "traditionDe": "Volksbarde (Aşık)",
+    "originEs": "Montes Tauro",
+    "traditionEs": "Bardo popular (aşık)",
+    "originPt": "Montes Tauro",
+    "traditionPt": "Bardo popular (aşık)",
+    "originFr": "Monts Taurus",
+    "traditionFr": "Barde populaire (aşık)",
+    "originJa": "タウルス山脈",
+    "traditionJa": "民衆の吟遊詩人(アシュク)"
   },
   "Kul Himmet": {
     "imageUrl": "",
@@ -109,7 +239,17 @@
     "origin": "Tokat",
     "tradition": "Alevi Geleneği",
     "originEn": "Tokat",
-    "traditionEn": "Alevi Tradition"
+    "traditionEn": "Alevi Tradition",
+    "originDe": "Tokat",
+    "traditionDe": "Alevitische Tradition",
+    "originEs": "Tokat",
+    "traditionEs": "Tradición aleví",
+    "originPt": "Tokat",
+    "traditionPt": "Tradição alevi",
+    "originFr": "Tokat",
+    "traditionFr": "Tradition alévie",
+    "originJa": "トカット",
+    "traditionJa": "アレヴィーの伝統"
   },
   "Tasavvuf Geleneği": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Dervishes_dancing.jpg&width=300",
@@ -117,6 +257,16 @@
     "origin": "Anadolu · Orta Asya",
     "tradition": "Tasavvuf",
     "originEn": "Anatolia · Central Asia",
-    "traditionEn": "Sufi Tradition"
+    "traditionEn": "Sufi Tradition",
+    "originDe": "Anatolien · Zentralasien",
+    "traditionDe": "Sufi-Tradition",
+    "originEs": "Anatolia · Asia Central",
+    "traditionEs": "Tradición sufí",
+    "originPt": "Anatólia · Ásia Central",
+    "traditionPt": "Tradição sufi",
+    "originFr": "Anatolie · Asie centrale",
+    "traditionFr": "Tradition soufie",
+    "originJa": "アナトリア・中央アジア",
+    "traditionJa": "スーフィーの伝統"
   }
 }
