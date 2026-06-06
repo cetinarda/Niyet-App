@@ -1,4 +1,4 @@
-export type Lang = 'tr' | 'en';
+export type Lang = 'tr' | 'en' | 'de' | 'es' | 'pt' | 'fr' | 'ja';
 
 export type TranslationKey = keyof typeof TR;
 
