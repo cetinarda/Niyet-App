@@ -110,31 +110,32 @@ export function ReportScreen({ onNavigate }: Props) {
       </View>
 
       <View style={styles.practiceCard}>
-        <Text style={styles.practiceKicker}>BU HAFTANIN PRATİĞİ</Text>
+        <Text style={styles.practiceKicker}>{getLang() === 'en' ? "THIS WEEK'S PRACTICE" : 'BU HAFTANIN PRATİĞİ'}</Text>
         <Text style={styles.practiceBody}>{report.practice}</Text>
       </View>
 
       <Text style={styles.affirmation}>“{report.affirmation}”</Text>
 
       <View style={styles.divider} />
-      <Text style={styles.sectionTitle}>Senin Haritana Özel</Text>
+      <Text style={styles.sectionTitle}>{getLang() === 'en' ? 'Specific to Your Chart' : 'Senin Haritana Özel'}</Text>
       <Text style={styles.sectionDesc}>
-        Aşağıdaki bölümler haftaya değil, doğum haritana bağlıdır. Her hafta aynı kalır;
-        zaman içinde bunlar üzerine derinleşirsin.
+        {getLang() === 'en'
+          ? 'The sections below depend on your birth chart, not the week. They stay the same each week; over time you deepen into them.'
+          : 'Aşağıdaki bölümler haftaya değil, doğum haritana bağlıdır. Her hafta aynı kalır; zaman içinde bunlar üzerine derinleşirsin.'}
       </Text>
 
       {/* Uyumluluk */}
       <View style={styles.bigCard}>
-        <Text style={styles.bigKicker}>🤝 KİMLERLE ANLAŞIRSIN</Text>
+        <Text style={styles.bigKicker}>{getLang() === 'en' ? '🤝 WHO YOU GET ALONG WITH' : '🤝 KİMLERLE ANLAŞIRSIN'}</Text>
         <Text style={styles.bigNote}>{report.compatibility.note}</Text>
 
-        <Text style={styles.subLabel}>Uyumlu enerjiler</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Compatible energies' : 'Uyumlu enerjiler'}</Text>
         {report.compatibility.getsAlong.map((s, i) => (
           <Text key={i} style={styles.bullet}>•  {s}</Text>
         ))}
 
         <Text style={[styles.subLabel, { marginTop: Spacing.md, color: Colors.emberSoft }]}>
-          ⚡ Gerilim yaratan enerjiler
+          {getLang() === 'en' ? '⚡ Energies that create tension' : '⚡ Gerilim yaratan enerjiler'}
         </Text>
         {report.compatibility.tension.map((s, i) => (
           <Text key={i} style={styles.bullet}>•  {s}</Text>
@@ -143,31 +144,32 @@ export function ReportScreen({ onNavigate }: Props) {
 
       {/* Bedeni Dinleme */}
       <View style={styles.bigCard}>
-        <Text style={styles.bigKicker}>🫁 BEDENİNİ NASIL DİNLERSİN</Text>
+        <Text style={styles.bigKicker}>{getLang() === 'en' ? '🫁 HOW YOU LISTEN TO YOUR BODY' : '🫁 BEDENİNİ NASIL DİNLERSİN'}</Text>
         <Text style={styles.bigTitle}>{report.bodyListening.authorityName}</Text>
 
-        <Text style={styles.subLabel}>Hissin nasıl gelir</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'How the feeling arrives' : 'Hissin nasıl gelir'}</Text>
         <Text style={styles.bigBody}>{report.bodyListening.howToFeel}</Text>
 
-        <Text style={styles.subLabel}>Bedenin neresinde</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Where in the body' : 'Bedenin neresinde'}</Text>
         <Text style={styles.bigBody}>{report.bodyListening.whereInBody}</Text>
 
-        <Text style={[styles.subLabel, { color: Colors.emberSoft }]}>Kırmızı bayrak</Text>
+        <Text style={[styles.subLabel, { color: Colors.emberSoft }]}>{getLang() === 'en' ? 'Red flag' : 'Kırmızı bayrak'}</Text>
         <Text style={styles.bigBody}>{report.bodyListening.redFlag}</Text>
 
-        <Text style={[styles.subLabel, { color: Colors.success }]}>Reset</Text>
+        <Text style={[styles.subLabel, { color: Colors.success }]}>{getLang() === 'en' ? 'Reset' : 'Reset'}</Text>
         <Text style={styles.bigBody}>{report.bodyListening.reset}</Text>
       </View>
 
       {/* Uyarı işaretleri */}
       <View style={[styles.bigCard, { borderColor: Colors.emberSoft + '40' }]}>
-        <Text style={[styles.bigKicker, { color: Colors.emberSoft }]}>🚨 UYARI İŞARETLERİ</Text>
+        <Text style={[styles.bigKicker, { color: Colors.emberSoft }]}>{getLang() === 'en' ? '🚨 WARNING SIGNS' : '🚨 UYARI İŞARETLERİ'}</Text>
         <Text style={styles.bigNote}>
-          Yanlış yönde olduğunu gösteren bedensel/duygusal sinyaller. Bunlar düşmanın değil,
-          rehberin.
+          {getLang() === 'en'
+            ? 'Bodily/emotional signals that show you are off course. These are not your enemy — they are your guide.'
+            : 'Yanlış yönde olduğunu gösteren bedensel/duygusal sinyaller. Bunlar düşmanın değil, rehberin.'}
         </Text>
 
-        <Text style={styles.subLabel}>Tipinden gelen işaretler</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Signs from your type' : 'Tipinden gelen işaretler'}</Text>
         {report.warnings.typeSigns.map((s, i) => (
           <Text key={i} style={styles.bullet}>•  {s}</Text>
         ))}
@@ -175,7 +177,7 @@ export function ReportScreen({ onNavigate }: Props) {
         {report.warnings.centerSigns.length > 0 && (
           <>
             <Text style={[styles.subLabel, { marginTop: Spacing.md }]}>
-              Tanımsız merkezlerinden gelen sorular
+              {getLang() === 'en' ? 'Questions from your undefined centers' : 'Tanımsız merkezlerinden gelen sorular'}
             </Text>
             {report.warnings.centerSigns.map((s, i) => (
               <View key={i} style={styles.warningRow}>
@@ -190,9 +192,11 @@ export function ReportScreen({ onNavigate }: Props) {
 
       {/* Söndürme ritüelleri */}
       <View style={[styles.bigCard, { borderColor: Colors.success + '40' }]}>
-        <Text style={[styles.bigKicker, { color: Colors.success }]}>🌿 İKAZ LAMBALARINI SÖNDÜRME</Text>
+        <Text style={[styles.bigKicker, { color: Colors.success }]}>{getLang() === 'en' ? '🌿 PUTTING OUT THE WARNING LIGHTS' : '🌿 İKAZ LAMBALARINI SÖNDÜRME'}</Text>
         <Text style={styles.bigNote}>
-          Uyarı işaretleri yanmaya başladığında uygulanacak somut sıfırlama ritüelleri.
+          {getLang() === 'en'
+            ? 'Concrete reset rituals to apply when the warning signs start lighting up.'
+            : 'Uyarı işaretleri yanmaya başladığında uygulanacak somut sıfırlama ritüelleri.'}
         </Text>
         {report.warnings.resets.map((s, i) => (
           <Text key={i} style={styles.bullet}>•  {s}</Text>
@@ -200,15 +204,16 @@ export function ReportScreen({ onNavigate }: Props) {
       </View>
 
       <Text style={styles.footerNote}>
-        Haftalık tema, dikkat / bırak / sahiplen blokları, kapı ve pratik her hafta değişir.
-        Uyumluluk, beden dinleme ve uyarı işaretleri sabit kalır.
+        {getLang() === 'en'
+          ? 'The weekly theme, the attention / let-go / own-it blocks, the gate and the practice change every week. Compatibility, body listening and warning signs stay fixed.'
+          : 'Haftalık tema, dikkat / bırak / sahiplen blokları, kapı ve pratik her hafta değişir. Uyumluluk, beden dinleme ve uyarı işaretleri sabit kalır.'}
       </Text>
 
       <View style={styles.disclaimerBox}>
         <Text style={styles.disclaimerText}>
-          Sakin Tasarım eğitim ve kişisel keşif amaçlıdır. İçerik tıbbi tanı,
-          psikolojik terapi, finansal danışmanlık veya kehanet niteliği taşımaz.
-          Sağlık, ruh sağlığı ve yaşamsal kararlar için profesyonel destek al.
+          {getLang() === 'en'
+            ? 'Sakin Tasarım is for education and personal exploration. The content is not medical diagnosis, psychological therapy, financial advice or fortune-telling. Seek professional support for health, mental health and major life decisions.'
+            : 'Sakin Tasarım eğitim ve kişisel keşif amaçlıdır. İçerik tıbbi tanı, psikolojik terapi, finansal danışmanlık veya kehanet niteliği taşımaz. Sağlık, ruh sağlığı ve yaşamsal kararlar için profesyonel destek al.'}
         </Text>
       </View>
     </ScrollView>

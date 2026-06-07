@@ -14,6 +14,7 @@ import { longitudeToGate } from '../utils/humanDesign';
 import { elementDistribution } from '../utils/elements';
 import { ElementPie } from '../components/ElementPie';
 import { ElementDetail } from '../components/ElementDetail';
+import { L, getLang } from '../i18n';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
@@ -21,10 +22,11 @@ interface Props {
 
 function greetingByHour(): string {
   const h = new Date().getHours();
-  if (h < 5) return 'İyi geceler';
-  if (h < 12) return 'Günaydın';
-  if (h < 18) return 'İyi günler';
-  return 'İyi akşamlar';
+  const en = getLang() === 'en';
+  if (h < 5) return en ? 'Good night' : 'İyi geceler';
+  if (h < 12) return en ? 'Good morning' : 'Günaydın';
+  if (h < 18) return en ? 'Good day' : 'İyi günler';
+  return en ? 'Good evening' : 'İyi akşamlar';
 }
 
 export function HomeScreen({ onNavigate }: Props) {
@@ -52,9 +54,11 @@ export function HomeScreen({ onNavigate }: Props) {
     return (
       <View style={[styles.empty, { paddingTop: insets.top + 48 }]}>
         <Text style={styles.brand}>SAKİN · TASARIM</Text>
-        <Text style={styles.emptyTitle}>Hoş geldin</Text>
+        <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'Welcome' : 'Hoş geldin'}</Text>
         <Text style={styles.emptyDesc}>
-          Doğum bilgilerinle kendine özel Human Design haritanı oluştur.
+          {getLang() === 'en'
+            ? 'Create your own Human Design chart from your birth details.'
+            : 'Doğum bilgilerinle kendine özel Human Design haritanı oluştur.'}
         </Text>
         <TouchableOpacity
           style={styles.cta}
@@ -62,7 +66,7 @@ export function HomeScreen({ onNavigate }: Props) {
           activeOpacity={0.85}
           accessibilityRole="button"
         >
-          <Text style={styles.ctaText}>Başla</Text>
+          <Text style={styles.ctaText}>{getLang() === 'en' ? 'Start' : 'Başla'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -90,7 +94,7 @@ export function HomeScreen({ onNavigate }: Props) {
           {greetingByHour()},{'\n'}{activeProfile.name}
         </Text>
         <Text style={styles.subtitle}>
-          {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' })}
+          {new Date().toLocaleDateString(getLang() === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', weekday: 'long' })}
         </Text>
       </View>
 
@@ -101,34 +105,34 @@ export function HomeScreen({ onNavigate }: Props) {
           onPress={() => onNavigate('chart')}
           activeOpacity={0.7}
           accessibilityRole="button"
-          accessibilityLabel="Haritana git"
+          accessibilityLabel={getLang() === 'en' ? 'Go to your chart' : 'Haritana git'}
         >
-          <Text style={styles.summaryType}>{chart.type}</Text>
+          <Text style={styles.summaryType}>{L(t, 'name')}</Text>
           <View style={styles.summaryMetaRow}>
-            <Text style={styles.summaryMeta}>{chart.strategy}</Text>
+            <Text style={styles.summaryMeta}>{L(t, 'strategy')}</Text>
             <Text style={styles.summaryMeta}>·</Text>
             <Text style={styles.summaryMeta}>{chart.profile}</Text>
             <Text style={styles.summaryMeta}>·</Text>
-            <Text style={styles.summaryMeta}>{a.name.replace(' Yetki', '')}</Text>
+            <Text style={styles.summaryMeta}>{getLang() === 'en' ? L(a, 'name').replace(' Authority', '') : a.name.replace(' Yetki', '')}</Text>
           </View>
-          <Text style={styles.summaryCTA}>Tam harita →</Text>
+          <Text style={styles.summaryCTA}>{getLang() === 'en' ? 'Full chart →' : 'Tam harita →'}</Text>
         </TouchableOpacity>
       )}
 
       {/* Bugünün transiti — ince satırlar */}
       <View style={styles.section}>
-        <Text style={styles.sectionLabel}>Bugünün Transiti</Text>
+        <Text style={styles.sectionLabel}>{getLang() === 'en' ? "Today's Transit" : 'Bugünün Transiti'}</Text>
 
         <TransitRow
           glyph="☉"
           gate={`${today.sun.gate}.${today.sun.line}`}
-          name={sunInfo.name}
+          name={L(sunInfo, 'name')}
         />
         <View style={styles.hairline} />
         <TransitRow
           glyph="☽"
           gate={`${today.moon.gate}.${today.moon.line}`}
-          name={moonInfo.name}
+          name={L(moonInfo, 'name')}
         />
       </View>
 
@@ -139,14 +143,14 @@ export function HomeScreen({ onNavigate }: Props) {
           onPress={() => setElemDetailOpen(true)}
           activeOpacity={0.75}
           accessibilityRole="button"
-          accessibilityLabel="Element detaylarını gör"
+          accessibilityLabel={getLang() === 'en' ? 'See element details' : 'Element detaylarını gör'}
         >
           <View style={styles.elemHeadRow}>
-            <Text style={styles.sectionLabel}>Element Dağılımı</Text>
-            <Text style={styles.elemDetailHint}>Detay →</Text>
+            <Text style={styles.sectionLabel}>{getLang() === 'en' ? 'Element Distribution' : 'Element Dağılımı'}</Text>
+            <Text style={styles.elemDetailHint}>{getLang() === 'en' ? 'Details →' : 'Detay →'}</Text>
           </View>
           <View style={{ alignItems: 'center', paddingVertical: 8 }}>
-            <ElementPie dist={elemDist} lang="tr" />
+            <ElementPie dist={elemDist} lang={getLang()} />
           </View>
         </TouchableOpacity>
       )}
@@ -158,14 +162,14 @@ export function HomeScreen({ onNavigate }: Props) {
       {/* Alt linkler — minimal satırlar */}
       <View style={styles.section}>
         <NavRow
-          label="Tam haritan"
-          desc="Bodygraph, merkezler, kapılar"
+          label={getLang() === 'en' ? 'Your full chart' : 'Tam haritan'}
+          desc={getLang() === 'en' ? 'Bodygraph, centers, gates' : 'Bodygraph, merkezler, kapılar'}
           onPress={() => onNavigate('chart')}
         />
         <View style={styles.hairline} />
         <NavRow
-          label="Haftalık rapor"
-          desc="Senin için bu hafta"
+          label={getLang() === 'en' ? 'Weekly report' : 'Haftalık rapor'}
+          desc={getLang() === 'en' ? 'This week, just for you' : 'Senin için bu hafta'}
           onPress={() => onNavigate('report')}
         />
       </View>
@@ -179,7 +183,7 @@ function TransitRow({ glyph, gate, name }: { glyph: string; gate: string; name: 
       <Text style={styles.rowGlyph}>{glyph}</Text>
       <View style={styles.rowMid}>
         <Text style={styles.rowTitle}>{name}</Text>
-        <Text style={styles.rowSub}>Kapı {gate}</Text>
+        <Text style={styles.rowSub}>{getLang() === 'en' ? 'Gate' : 'Kapı'} {gate}</Text>
       </View>
     </View>
   );
