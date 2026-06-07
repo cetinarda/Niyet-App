@@ -2,7 +2,7 @@ export const ja = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: '今日',
-    animals: '石',
+    animals: '植物',
     archive: 'アーカイブ',
     profile: 'プロフィール',
   },
@@ -18,9 +18,9 @@ export const ja = {
     defaultUser: '旅人',
     decks: {
       animal: {
-        title: '石',
-        short: '石',
-        subtitle: '今日の石に耳を澄ませて',
+        title: '植物',
+        short: '植物',
+        subtitle: '今日の植物に耳を澄ませて',
       },
       quote: {
         title: 'ルーミー',
@@ -38,9 +38,9 @@ export const ja = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · 石',
+    eyebrow: 'SAKIN · 植物',
     panels: {
-      library: '石',
+      library: '植物',
       finder: '探す',
       guidance: '導き',
     },
@@ -49,8 +49,8 @@ export const ja = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← 戻る',
-    familyTag: 'SAKIN · 石',
-    subtitle: '{count}種類の癒しの石とクリスタル',
+    familyTag: 'SAKIN · 植物',
+    subtitle: '{count}種類の癒しの植物とハーブ',
     searchPlaceholder: '名前・性質・元素で検索...',
     noResults: '結果が見つかりませんでした。',
   },
@@ -58,7 +58,7 @@ export const ja = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← 戻る',
-    familyTag: 'SAKIN · 石',
+    familyTag: 'SAKIN · 植物',
     sections: {
       properties: '性質',
       todayMessage: '今日あなたへのメッセージ',
@@ -78,15 +78,15 @@ export const ja = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'あなたの石を見つける',
+    headerTitle: 'あなたの植物を見つける',
     intro: {
-      title: 'あなたの石を発見しよう',
-      desc: '星座や元素から、あなたと響き合うクリスタルを見つけましょう。',
-      note: 'どの石にも固有の波動があります。呼びかけてくる石を選んでください——あとは直感が導いてくれます。',
-      birthStoneTitle: 'あなたの誕生石',
+      title: 'あなたの植物を発見しよう',
+      desc: '星座や元素から、あなたと響き合う植物を見つけましょう。',
+      note: 'どの植物にも固有の波動があります。呼びかけてくる植物を選んでください——あとは直感が導いてくれます。',
+      birthStoneTitle: 'あなたの誕生植物',
       zodiacLabel: '星座で選ぶ',
       elementLabel: '元素で選ぶ',
-      elementHint: 'どのクリスタルも自然の元素と共鳴します。あなたの元素は星座から決まります——火: 牡羊·獅子·射手 · 地: 牡牛·乙女·山羊 · 風: 双子·天秤·水瓶 · 水: 蟹·蠍·魚。',
+      elementHint: 'どの植物も自然の元素と共鳴します。あなたの元素は星座から決まります——火: 牡羊·獅子·射手 · 地: 牡牛·乙女·山羊 · 風: 双子·天秤·水瓶 · 水: 蟹·蠍·魚。',
     },
     elements: {
       fire: '火',
@@ -95,10 +95,10 @@ export const ja = {
       water: '水',
     },
     result: {
-      zodiacLabel: '{name}の石',
-      elementLabel: '{name}の石',
-      birthLabel: '誕生月の石',
-      empty: 'この選択に合う石は見つかりませんでした。',
+      zodiacLabel: '{name}の植物',
+      elementLabel: '{name}の植物',
+      birthLabel: '誕生月の植物',
+      empty: 'この選択に合う植物は見つかりませんでした。',
       rediscoverBtn: 'もう一度選ぶ ✦',
       closeBtn: '閉じる ✦',
     },
@@ -129,16 +129,16 @@ export const ja = {
     spiritualMap: 'スピリチュアルマップ',
     reportLabels: {
       guide: '導き手',
-      stone: '石',
-      animal: '石',
-      nagual: '石',
+      stone: '植物',
+      animal: '植物',
+      nagual: '植物',
     },
     filters: {
       all: 'すべて',
       quote: 'メッセージ',
-      stone: '石',
-      animal: '石',
-      nagual: '石',
+      stone: '植物',
+      animal: '植物',
+      nagual: '植物',
     },
     empty: {
       title: 'まだリーディングがありません。',
@@ -275,7 +275,7 @@ export const ja = {
     spiritualMap: {
       title: 'スピリチュアルマップ',
       topGuide: '最も多く導いた詩人',
-      topStone: 'あなたの守護石',
+      topStone: 'あなたの守護植物',
       topAnimal: 'あなたのトーテムアニマル',
       topNagual: 'あなたのナワルの導き手',
       companionCount: '{n}回寄り添いました',
@@ -290,7 +290,7 @@ export const ja = {
       masterDesc: '中心の拠点——すべてのアプリへの入口',
       apps: {
         animalGuidance: 'アニマルガイダンス',
-        stoneGuidance: 'クリスタルガイダンス',
+        stoneGuidance: '植物ガイダンス',
         plantGuidance: '植物の知恵',
         myths: '神話とイメージ',
         humanDesign: 'ヒューマンデザイン',
@@ -298,7 +298,7 @@ export const ja = {
       },
       appDescs: {
         animalGuidance: 'このアプリ',
-        stoneGuidance: 'クリスタルの言葉',
+        stoneGuidance: '植物の言葉',
         plantGuidance: 'ハーブの知恵',
         myths: '元型とシンボル',
         humanDesign: 'あなたのデザインを知る',
@@ -314,7 +314,7 @@ export const ja = {
         b001: { title: '旅の始まり', desc: '最初の7回のリーディング' },
         b002: { title: '炎のダルヴィーシュ', desc: '21日連続' },
         b003: { title: 'マスナヴィーの旅人', desc: '30回のリーディング' },
-        b004: { title: '数珠', desc: '33個の石を見た' },
+        b004: { title: '数珠', desc: '33種の植物を見た' },
         b005: { title: '真理の友', desc: '100回のリーディング' },
         b006: { title: '光の旅人', desc: '365回のリーディング' },
       },

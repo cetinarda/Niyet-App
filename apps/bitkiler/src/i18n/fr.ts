@@ -314,7 +314,7 @@ export const fr = {
         b001: { title: 'Premiers pas', desc: '7 premiers tirages' },
         b002: { title: 'Derviche du feu', desc: 'Série de 21 jours' },
         b003: { title: 'Voyageur du Mesnevi', desc: '30 tirages' },
-        b004: { title: 'Chapelet', desc: '33 pierres vues' },
+        b004: { title: 'Chapelet', desc: '33 plantes vues' },
         b005: { title: 'Ami de la vérité', desc: '100 tirages' },
         b006: { title: 'Voyageur de lumière', desc: '365 tirages' },
       },

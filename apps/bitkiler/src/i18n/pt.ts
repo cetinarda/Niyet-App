@@ -2,7 +2,7 @@ export const pt = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Hoje',
-    animals: 'Pedras',
+    animals: 'Plantas',
     archive: 'Arquivo',
     profile: 'Perfil',
   },
