@@ -43,7 +43,7 @@ const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
 // Türkçe yaz" talimatı EN/DE/... seçiliyken bile modeli Türkçe yazmaya zorluyordu
 // (backend dil kilidini eziyordu). Bu helper dili dinamik yapar.
-const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"Spanish (Español)", "pt-BR":"Brazilian Portuguese (Português)", fr:"French (Français)", ja:"Japanese (日本語)" };
+const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"Spanish (Español)", pt:"Brazilian Portuguese (Português)", fr:"French (Français)", ja:"Japanese (日本語)" };
 // AI prompt'ları dile göre TAMAMEN ayrı. Daha önce Türkçe gövde + sadece tek satır
 // "respond in English" emri vardı — model gövdedeki Türkçe + Türkçe alıntı cümleleri
 // kopyalayıp Türkçe cevap veriyordu. Çözüm: lang === "tr" değilse, prompt'u tamamen
@@ -247,9 +247,9 @@ const FREQ_DATA_EN = [
 
 // ── i18n yardımcıları (DE/ES/PT/FR/JA için) ──────────────────────────────
 // Suffix mapping: tr→Tr, en→En, de→De, es→Es, pt-BR→Pt, fr→Fr, ja→Ja
-const LANG_SUFFIX = { tr:"Tr", en:"En", de:"De", es:"Es", "pt-BR":"Pt", fr:"Fr", ja:"Ja" };
+const LANG_SUFFIX = { tr:"Tr", en:"En", de:"De", es:"Es", pt:"Pt", fr:"Fr", ja:"Ja" };
 // Yedek tablo (obj-of-langs): obj.de / obj.es / obj["pt-BR"] / obj.fr / obj.ja
-const LANG_KEY = { tr:"tr", en:"en", de:"de", es:"es", "pt-BR":"pt", fr:"fr", ja:"ja" };
+const LANG_KEY = { tr:"tr", en:"en", de:"de", es:"es", pt:"pt", fr:"fr", ja:"ja" };
 // labelTr/labelEn/labelDe/... gibi alanlardan dile göre okuyan helper.
 // Fallback: EN -> TR (her zaman bir şey döner).
 function pickLabel(item, lang, base = "label") {
@@ -2531,7 +2531,7 @@ const JOURNEY_STEPS = [
 ];
 
 export default function SakinApp() {
-  const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
+  const [lang, setLang] = useState(() => { const v = localStorage.getItem("sakin_lang") || "en"; return v === "pt-BR" ? "pt" : v; });
   const [langOpen, setLangOpen] = useState(false);
   const t = makeTrans(lang);
 
