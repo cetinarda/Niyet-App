@@ -6,13 +6,13 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, YEARLY_PRODUCT_ID, LIFETIME_PRODUCT_ID } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 // Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
 // Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
 import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } from "./cityDb";
-import { showNowPlaying, clearNowPlaying, updateNowPlayingState, onRemoteCommand } from "./nowplaying";
+import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -37,7 +37,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.2.5";
+const APP_VERSION = "1.2.7";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
@@ -74,11 +74,6 @@ Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce düny
   return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence — including quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love.
 At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
-// Geriye dönük uyumluluk için alias (eski kod yerleri varsa)
-const aiLangRule = (lang) => lang === "tr"
-  ? `YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç gibi karakterleri kullan.`
-  : `WRITE ONLY IN ${AI_LANG_NAMES[lang] || "English"}. Do NOT write in Turkish.`;
-
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
   const pb = String(b||"").split(".").map(n => parseInt(n)||0);
@@ -163,7 +158,6 @@ const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozm
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
 const LEVEL_RANGES_TR = { 1:"Çakra 1–7", 2:"Çakra 8–15", 3:"Çakra 16–22" };
 const LEVEL_RANGES_EN = { 1:"Chakra 1–7", 2:"Chakra 8–15", 3:"Chakra 16–22" };
-const TERAPI_TOTAL = 60;
 
 const FREQ_DATA_TR = [
   { hz:174, name:"Toprak Frekansı", color:"#8B6914", pastel:"#d4b896", icon:"🌍",
@@ -415,11 +409,6 @@ function biorhythm(dateStr) {
     duygusal:  Math.round(Math.sin(2*Math.PI*days/28)*100),
     zihinsel:  Math.round(Math.sin(2*Math.PI*days/33)*100),
   };
-}
-function bioritmBar(val) {
-  const positive = val >= 0;
-  const pct = Math.abs(val);
-  return { pct, positive };
 }
 // ─────────────────────────────────────────────────────────────────────────────
 const ZODIAC_ORDER = ["Koç","Boğa","İkizler","Yengeç","Aslan","Başak","Terazi","Akrep","Yay","Oğlak","Kova","Balık"];
@@ -1391,6 +1380,24 @@ const DAILY_REMINDERS_TR = [
   "Bedenini esnet, omuzlarını gevşet",
   "Bugünkü niyetini hatırla",
   "Bir an dur. Sadece ol.",
+  "Çeneni gevşet, dilini damağından indir",
+  "Telefonu bırak, bir dakika sadece var ol",
+  "Pencereyi aç, temiz havayı içine çek",
+  "Omuzlarını kulaklarından uzaklaştır",
+  "Gözlerini kapat, üçe kadar nefes say",
+  "İçinden bile olsa bir 'teşekkür ederim' de",
+  "Yürürken adımlarını hisset, acele etme",
+  "Bugün seni güldüren tek şeyi hatırla",
+  "Karnından nefes al, göğsünden değil",
+  "Bir bitkiye bak, yapraklarını izle",
+  "Kendine nazik bir cümle kur",
+  "Sırtını dikleştir, başını hafifçe yukarı al",
+  "Elini kalbine koy, atışını dinle",
+  "Bir kokuyu fark et — kahve, toprak, yağmur",
+  "Şu an neredeysen, oraya tümüyle gel",
+  "Kasıtlı olarak yavaşla, bir hareketi ağırdan al",
+  "Bugünü bir kelimeyle adlandır, sahiplen",
+  "Avuçlarını birbirine sürt, sıcaklığı yüzüne koy",
 ];
 const DAILY_REMINDERS_EN = [
   "Look in the mirror and smile",
@@ -1403,37 +1410,80 @@ const DAILY_REMINDERS_EN = [
   "Stretch your body, relax your shoulders",
   "Remember today's intention",
   "Pause for a moment. Just be.",
+  "Relax your jaw, drop your tongue from the roof",
+  "Put the phone down, just exist for a minute",
+  "Open the window, draw in the fresh air",
+  "Move your shoulders away from your ears",
+  "Close your eyes, count three breaths",
+  "Say a 'thank you' — even if only inside",
+  "Feel your steps as you walk, don't rush",
+  "Recall the one thing that made you smile today",
+  "Breathe from your belly, not your chest",
+  "Look at a plant, watch its leaves",
+  "Form one kind sentence toward yourself",
+  "Straighten your back, lift your head slightly",
+  "Place your hand on your heart, listen to it beat",
+  "Notice a scent — coffee, earth, rain",
+  "Wherever you are, arrive there fully",
+  "Slow down on purpose, take one motion gently",
+  "Name today in a single word, own it",
+  "Rub your palms together, place the warmth on your face",
+];
+// Sabah pingleri — her gün 7:30, havuz boyunca döner (varyasyon)
+const MORNING_PINGS_TR = [
+  "Günaydın. Bugün nasıl hissetmek istersin?",
+  "Günaydın. İlk nefesini derinden al.",
+  "Yeni bir gün. Niyetini tek cümlede söyle.",
+  "Günaydın. Bugün kendine ne diliyorsun?",
+  "Gözlerini aç, güne üç nefesle başla.",
+  "Günaydın. Acele yok — güne sakin gir.",
+  "Bugün senin. Küçük bir iyilikle başla.",
+];
+const MORNING_PINGS_EN = [
+  "Good morning. How do you want to feel today?",
+  "Good morning. Take your first breath deeply.",
+  "A new day. Say your intention in one sentence.",
+  "Good morning. What do you wish for yourself today?",
+  "Open your eyes, start the day with three breaths.",
+  "Good morning. No rush — enter the day calmly.",
+  "Today is yours. Begin with a small kindness.",
+];
+// Program özelliği davetleri — her gün 21:00, günde 1 tane, havuz boyunca döner
+const FEATURE_PROMOS_TR = [
+  "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
+  "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
+  "432 Hz çalsın, kalp atışın yavaşlasın — frekanslara göz at.",
+  "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
+  "Aynaya 30 saniye bak — Ayna alıştırmasını dene.",
+  "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
+  "Totem hayvanın ne diyor? Sakin Hayvanı keşfet.",
+  "Bir mit, bir sembol — bugünün Sakin Mitleri seni bekliyor.",
+  "Haftalık içsel raporun hazır olabilir — bir bak.",
+  "528 Hz, 'Sevgi Frekansı' — bir dakika dinle, hisset.",
+  "Bir bardak su, üç nefes, bir niyet — Sakin'le küçük bir mola.",
+  "396 Hz kök çakranı topraklar — gözlerini kapat, dinle.",
+];
+const FEATURE_PROMOS_EN = [
+  "Want to calm down in 1 minute with sound frequencies?",
+  "Breathe in, out... it's the perfect time to try Calm Breath.",
+  "Let 432 Hz play, let your heartbeat slow — explore the frequencies.",
+  "Do you know today's chakra? Pause for a moment in the Chakra screen.",
+  "Look in the mirror for 30 seconds — try the Mirror exercise.",
+  "How's the cosmic weather today? Check the Galactic screen.",
+  "What does your totem animal say? Discover Calm Animal.",
+  "A myth, a symbol — today's Calm Myths await you.",
+  "Your weekly inner report might be ready — take a look.",
+  "528 Hz, the 'Love Frequency' — listen for a minute, feel it.",
+  "A glass of water, three breaths, one intention — a small break with Sakin.",
+  "396 Hz grounds your root chakra — close your eyes, listen.",
 ];
 
-// Aynı tarih → aynı 3 mesaj. Cache localStorage'da. Yeniden schedule'larda mesaj sabit kalır.
-function dailyPicks(reminders, dateStr, lang) {
-  const key = `sakin_picks_${lang}_${dateStr}`;
-  try {
-    const cached = localStorage.getItem(key);
-    if (cached) {
-      const arr = JSON.parse(cached);
-      if (Array.isArray(arr) && arr.length === 3) return arr;
-    }
-  } catch(_) {}
-  const shuffled = [...reminders].sort(() => Math.random() - 0.5);
-  const picks = shuffled.slice(0, 3);
-  try { localStorage.setItem(key, JSON.stringify(picks)); } catch(_) {}
-  return picks;
-}
-
-function cleanupOldPicks() {
-  try {
-    const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
-    const toRemove = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      const k = localStorage.key(i);
-      if (!k || !k.startsWith("sakin_picks_")) continue;
-      const dateStr = k.split("_").pop();
-      const t = new Date(dateStr).getTime();
-      if (!isNaN(t) && t < cutoff) toRemove.push(k);
-    }
-    toRemove.forEach(k => localStorage.removeItem(k));
-  } catch(_) {}
+// Bir takvim günü için deterministik gün numarası. Mesaj seçimi bu sayıya göre
+// havuz boyunca eşit aralıklı döndüğü için, aynı gün her zaman aynı mesajı verir
+// (yeniden schedule'da sabit) ve günler arası tekrar havuz uzunluğu kadar gecikir.
+function dayNumber(dateObj) {
+  const midnight = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+  return Math.floor(midnight.getTime() / 86400000);
 }
 
 async function scheduleDailyReminders(lang) {
@@ -1445,39 +1495,40 @@ async function scheduleDailyReminders(lang) {
       return;
     }
     const todayKey = new Date().toISOString().slice(0,10);
+    // Damga = tarih + dil. Aynı gün dili değiştirirsen (TR↔EN) damga değişir,
+    // yeniden planlanır; aşağıdaki cancel eski dildeki kuyruğu temizler.
+    const stamp = todayKey + "_" + lang;
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
-    // Bugün zaten planlandıysa hiçbir şeye dokunma
-    if (lastScheduled === todayKey) return;
-    // Mevcut tüm slotları temizle (9000-9039 + sabah pingleri 9100/9101)
-    await LocalNotifications.cancel({ notifications: [...Array.from({length:40},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
-    cleanupOldPicks();
-    const reminders = lang === "tr" ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const hours = [9, 13, 18];
+    // Aynı gün + aynı dil zaten planlandıysa hiçbir şeye dokunma
+    if (lastScheduled === stamp) return;
+    // Mevcut tüm slotları temizle: hatırlatmalar 9000-9020, sabah 9050-9056,
+    // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
+    await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
+    const isTr = lang === "tr";
+    const reminders = isTr ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
+    const mornings  = isTr ? MORNING_PINGS_TR  : MORNING_PINGS_EN;
+    const promos    = isTr ? FEATURE_PROMOS_TR : FEATURE_PROMOS_EN;
     const now = new Date();
     const notifications = [];
-    // 7 günlük forward schedule — her gün için sabit (cache'li) 3 mesaj, böylece
-    // dünden bugüne firing olmuş bir mesaj bugün tekrar planlanmaz
+    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
+    // 7 günlük forward schedule. Günde 3 bildirim: 07:30 sabah + 13:00 söz + 21:00
+    // özellik. Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj,
+    // yeniden schedule'da sabit). Söz havuzu 28 → 28 günde bir tekrar.
     for (let d = 0; d < 7; d++) {
-      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      const dateStr = dayDate.toISOString().slice(0,10);
-      const picked = dailyPicks(reminders, dateStr, lang);
-      picked.forEach((body, i) => {
-        const at = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, hours[i], Math.floor(Math.random()*30), 0);
-        if (at <= now) return; // geçmiş slot atla
-        notifications.push({ id: 9000 + d*3 + i, title: "Sakin", body, schedule: { at }, smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
-      });
+      const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
+      // 07:30 — sabah pingi
+      const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 7, 30, 0);
+      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, ...icon });
+      // 13:00 — günlük söz (rastgele dakika 0-29)
+      const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
+      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: pick(reminders, dn), schedule: { at: sAt }, ...icon });
+      // 21:00 — program özelliği daveti
+      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: pick(promos, dn), schedule: { at: pAt }, ...icon });
     }
-    // Sabah günaydın pingi — her gün 7:30, app hiç açılmasa da düşer
-    notifications.push({
-      id: 9101,
-      title: "Sakin",
-      body: t("reminder_morning_body"),
-      schedule: { on: { hour: 7, minute: 30 } },
-      smallIcon: "ic_stat_icon_config_sample",
-      iconColor: "#b8a4d8",
-    });
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
-    localStorage.setItem("sakin_notif_scheduled", todayKey);
+    localStorage.setItem("sakin_notif_scheduled", stamp);
     // Diagnostik: gerçekten kuyrukta kaç bildirim var?
     try {
       const pending = await LocalNotifications.getPending();
@@ -2168,65 +2219,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   return null;
 }
 
-const ORNEK_SORULAR_TR = [
-  "Cinsel enerjimi nasıl yaratıma dönüştürebilirim?",
-  "Sindirim sistemimde sorun var!",
-  "Bu hafta dengesiz hissediyorum neden?",
-  "Hangi çakramın enerjiye ihtiyaç duyduğunu nasıl bileceğim?",
-  "Kronik yorgunluk neden hep benimle?",
-];
-const ORNEK_SORULAR_EN = [
-  "How can I channel my sexual energy into creativity?",
-  "I've been having digestive issues!",
-  "Why do I feel so unbalanced this week?",
-  "How do I know which chakra needs energy?",
-  "Why is chronic fatigue always with me?",
-];
-const ORNEK_SORULAR_DE = [
-  "Wie kann ich meine sexuelle Energie in Kreativität wandeln?",
-  "Ich habe Verdauungsprobleme!",
-  "Warum fühle ich mich diese Woche so aus dem Gleichgewicht?",
-  "Wie erkenne ich, welches Chakra Energie braucht?",
-  "Warum begleitet mich chronische Müdigkeit?",
-];
-const ORNEK_SORULAR_ES = [
-  "¿Cómo puedo canalizar mi energía sexual hacia la creatividad?",
-  "¡Tengo problemas digestivos!",
-  "¿Por qué me siento tan desequilibrado esta semana?",
-  "¿Cómo sé qué chakra necesita energía?",
-  "¿Por qué la fatiga crónica siempre me acompaña?",
-];
-const ORNEK_SORULAR_PT = [
-  "Como posso canalizar minha energia sexual para a criatividade?",
-  "Estou tendo problemas digestivos!",
-  "Por que me sinto tão desequilibrado esta semana?",
-  "Como saber qual chakra precisa de energia?",
-  "Por que a fadiga crônica está sempre comigo?",
-];
-const ORNEK_SORULAR_FR = [
-  "Comment canaliser mon énergie sexuelle vers la créativité ?",
-  "J'ai des problèmes digestifs !",
-  "Pourquoi je me sens si déséquilibré cette semaine ?",
-  "Comment savoir quel chakra a besoin d'énergie ?",
-  "Pourquoi la fatigue chronique est-elle toujours avec moi ?",
-];
-const ORNEK_SORULAR_JA = [
-  "性的なエネルギーをどうやって創造性に変えられますか？",
-  "消化器系に問題があります！",
-  "今週、なぜこんなにバランスを失っていると感じるのでしょう？",
-  "どのチャクラがエネルギーを必要としているか、どう分かりますか？",
-  "なぜ慢性的な疲労がいつも私と一緒にいるのですか？",
-];
-const ORNEK_SORULAR_BY_LANG = {
-  tr: ORNEK_SORULAR_TR,
-  en: ORNEK_SORULAR_EN,
-  de: ORNEK_SORULAR_DE,
-  es: ORNEK_SORULAR_ES,
-  "pt-BR": ORNEK_SORULAR_PT,
-  fr: ORNEK_SORULAR_FR,
-  ja: ORNEK_SORULAR_JA,
-};
-
 // Module-level AudioContext singleton — iOS WKWebView her yeni ctx'i gesture context'i
 // kaybedebileceği için reuse ediyoruz. Kullanıcı ilk gesture'ında ctx oluşur, sonra
 // her ses çalmada aynı ctx'i kullanırız; close ASLA çağırmayız.
@@ -2309,94 +2301,6 @@ function FreqText({ text, style, onNav }) {
         return <span key={i}>{part}</span>;
       })}
     </span>
-  );
-}
-
-function AramaPaneli({ baslik, simge, aciklama, renk, value, onChange, analiz, onAra, onSifirla, placeholder, lang = "tr", onNav }) {
-  const t = makeTrans(lang);
-  const [tipAcik, setTipAcik] = useState(false);
-  const tipRef = useRef(null);
-  const ornekler = ORNEK_SORULAR_BY_LANG[lang] || ORNEK_SORULAR_EN;
-
-  useEffect(() => {
-    if (!tipAcik) return;
-    const handler = (e) => { if (tipRef.current && !tipRef.current.contains(e.target)) setTipAcik(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [tipAcik]);
-
-  return (
-    <div style={{ marginBottom:24,background:"linear-gradient(160deg,rgba(0,0,0,0.92),rgba(0,0,0,0.88))",border:`1px solid ${renk}33`,borderRadius:20,padding:"22px 20px",backdropFilter:"blur(20px)",boxShadow:`0 0 40px ${renk}15, inset 0 1px 0 rgba(255,255,255,0.04)` }}>
-      <div style={{ display:"flex",alignItems:"center",gap:10,marginBottom:18 }}>
-        <div style={{ width:36,height:36,borderRadius:"50%",background:`radial-gradient(circle,${renk}30,transparent)`,border:`1px solid ${renk}50`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0 }}>{simge}</div>
-        <div style={{ flex:1 }}>
-          <div style={{ fontSize:13,letterSpacing:3,color:renk,opacity:0.9 }}>{baslik.toUpperCase()}</div>
-          <div style={{ fontSize:13,color:"#666666",marginTop:2,letterSpacing:1 }}>{aciklama}</div>
-        </div>
-      </div>
-      {analiz === "__loading__" ? (
-        <div style={{ textAlign:"center",padding:"24px 0" }}>
-          <div style={{ fontSize:19,marginBottom:10,animation:"pulse 2s ease-in-out infinite" }}>{simge}</div>
-          <div style={{ fontSize:13,letterSpacing:4,color:renk,opacity:0.7,animation:"pulse 1.5s ease-in-out infinite" }}>{t("reading")}</div>
-        </div>
-      ) : analiz ? (
-        <div>
-          <div style={{ fontSize:13,letterSpacing:2.5,color:renk,opacity:0.8,marginBottom:12 }}>{value.toUpperCase()} {t("analysis_suf")}</div>
-          <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:1.9,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",fontWeight:300,letterSpacing:0.3 }}><FreqText text={analiz} onNav={onNav} /></div>
-          <div style={{ display:"flex",gap:8,marginTop:18,flexWrap:"wrap",alignItems:"center" }}>
-            <button onClick={onSifirla}
-              style={{ background:"none",border:`1px solid ${renk}30`,borderRadius:20,color:renk,opacity:0.7,cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"6px 16px" }}>
-              {t("btn_new_search")}
-            </button>
-            <a href="/fiyatlandirma"
-              style={{ display:"inline-block",padding:"6px 16px",background:`linear-gradient(135deg,${renk}22,${renk}11)`,border:`1px solid ${renk}44`,borderRadius:20,color:renk,fontSize:13,letterSpacing:2,textDecoration:"none",cursor:"pointer" }}>
-              {t("premium_unlock_more")}
-            </a>
-          </div>
-        </div>
-      ) : (
-        <div>
-          {/* Soru satırı: etiket + ? butonu */}
-          <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:10 }}>
-            <span style={{ fontSize:13,letterSpacing:2,color:`${renk}bb` }}>
-              {t("ne_hissediyorsun_label")}
-            </span>
-            <div ref={tipRef} style={{ position:"relative" }}>
-              <button
-                onClick={()=>setTipAcik(v=>!v)}
-                aria-label="Örnek sorular"
-                style={{ width:44,height:44,borderRadius:"50%",background:`${renk}22`,border:`1px solid ${renk}44`,color:`${renk}cc`,fontSize:13,fontWeight:700,cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s" }}
-              >?</button>
-              {tipAcik && (
-                <div style={{ position:"absolute",top:"calc(100% + 8px)",right:0,width:262,background:"linear-gradient(160deg,rgba(0,0,0,0.98),rgba(0,0,0,0.96))",border:`1px solid ${renk}40`,borderRadius:14,padding:"14px 14px 10px",boxShadow:`0 8px 32px rgba(0,0,0,0.6),0 0 24px ${renk}18`,zIndex:99 }}>
-                  <div style={{ fontSize:13,letterSpacing:2.5,color:`${renk}99`,marginBottom:10,textAlign:"center" }}>
-                    {t("ornek_sorular")}
-                  </div>
-                  {ornekler.map((s,i)=>(
-                    <button key={i} onClick={()=>{ onChange(s); setTipAcik(false); }}
-                      style={{ display:"block",width:"100%",textAlign:"left",background:"none",border:"none",borderBottom:i<ornekler.length-1?`1px solid ${renk}18`:"none",padding:"8px 4px",color:"#b8a8d0",fontSize:14,fontFamily:"'Inter',sans-serif",cursor:"pointer",lineHeight:1.55,letterSpacing:0.2 }}>
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <textarea
-            value={value}
-            onChange={e=>onChange(e.target.value)}
-            onKeyDown={e=>{ if(e.key==="Enter" && !e.shiftKey && value.trim()) { e.preventDefault(); onAra(); } }}
-            placeholder={placeholder}
-            rows={3}
-            style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:`1px solid ${renk}25`,borderRadius:12,padding:"11px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,letterSpacing:0.5,resize:"none",lineHeight:1.75 }}
-          />
-          <button onClick={onAra} disabled={!value.trim()}
-            style={{ width:"100%",background:value.trim()?`linear-gradient(135deg,${renk}70,${renk}40)`:`linear-gradient(135deg,${renk}25,${renk}15)`,border:`1px solid ${renk}${value.trim()?"50":"20"}`,borderRadius:12,padding:"11px",cursor:value.trim()?"pointer":"default",color:value.trim()?"#ffffff":"#555555",fontSize:14,letterSpacing:2,fontFamily:"'Inter',sans-serif",transition:"all 0.2s" }}>
-            {t("btn_search")}
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -2877,6 +2781,7 @@ export default function SakinApp() {
       mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
       tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
       taslar:  { name: t("ailesi_taslar_name"),  embed: "/embedded/sakintaslar/index.html", color: "#a0d8d8" },
+      bitkiler:{ name: t("ailesi_bitkiler_name"),embed: "/embedded/sakinbitkiler/index.html", color: "#7BA05B" },
     };
     const onMsg = (e) => {
       if (e.origin !== window.location.origin) return;
@@ -3369,7 +3274,8 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
-  useEffect(() => { scheduleDailyReminders(lang); }, []);
+  // lang bağımlılığı: dil değişince bildirimler yeni dilde yeniden planlanır
+  useEffect(() => { scheduleDailyReminders(lang); }, [lang]);
   // Kilit ekranı / Control Center / Dynamic Island uzaktan kumanda olayları.
   // Native Swift plugin (SakinNowPlaying.swift) play/pause/stop'a basıldığında
   // window.dispatchEvent ile bildirir; biz Web Audio durdurma yoluna aktarırız.
@@ -4256,6 +4162,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 desc: t("ailesi_tasarim_desc") },
               { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
                 desc: t("ailesi_taslar_desc") },
+              { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
+                desc: t("ailesi_bitkiler_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
@@ -7492,6 +7400,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 desc:t("ailesi_tasarim_desc") },
               { name:t("ailesi_taslar_name"), icon:"💎", color:"#a0d8d8",
                 desc:t("ailesi_taslar_desc") },
+              { name:t("ailesi_bitkiler_name"), icon:"🌿", color:"#7BA05B",
+                desc:t("ailesi_bitkiler_desc") },
             ].map((app,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 16px",marginBottom:10,display:"flex",alignItems:"center",gap:14 }}>
                 <div style={{ width:42,height:42,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0 }}>{app.icon}</div>
