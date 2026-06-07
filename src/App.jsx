@@ -4314,6 +4314,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             try { haptic(); } catch(_) {}
             pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
             panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
+            // Panik anında "Sakin'i tanı" tanıtım popup'ını gösterme — nefesi bölmesin
+            // ve hak sayacını da yakmasın (checked=true → bu oturumda kontrol atlanır).
+            sakinIntroCheckedRef.current = true;
+            setShowSakinIntro(false);
             setScreen("nefes");
           }}
           aria-label={t("panic_aria")}
@@ -5202,7 +5206,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)" }}>
             <div style={{ fontSize:26,marginBottom:14 }}>✦</div>
             <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8dcff",marginBottom:22,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{t("sakin_intro_title")}</div>
-            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
+            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
               style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer" }}>
               {t("sakin_intro_cta")}
             </button>
