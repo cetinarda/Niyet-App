@@ -50,12 +50,18 @@ export function ChartScreen({ onNavigate }: Props) {
   const dLine = LINES[dSun.line];
   const p = PROFILES[chart.profile as ProfileKey] ?? {
     key: chart.profile,
-    name: `${pLine.name} / ${dLine.name}`,
+    name: `${L(pLine, 'name')} / ${L(dLine, 'name')}`,
+    nameEn: `${L(pLine, 'name')} / ${L(dLine, 'name')}`,
     theme: '',
-    shortDesc: pLine.shortDesc,
-    longDesc:
-      `Bilinçli çizgi ${pSun.line}. ${pLine.name}: ${pLine.shortDesc} ` +
-      `Bilinçsiz çizgi ${dSun.line}. ${dLine.name}: ${dLine.shortDesc}`,
+    themeEn: '',
+    shortDesc: L(pLine, 'shortDesc'),
+    shortDescEn: L(pLine, 'shortDesc'),
+    longDesc: getLang() === 'en'
+      ? `Conscious line ${pSun.line}. ${L(pLine, 'name')}: ${L(pLine, 'shortDesc')} ` +
+        `Unconscious line ${dSun.line}. ${L(dLine, 'name')}: ${L(dLine, 'shortDesc')}`
+      : `Bilinçli çizgi ${pSun.line}. ${pLine.name}: ${pLine.shortDesc} ` +
+        `Bilinçsiz çizgi ${dSun.line}. ${dLine.name}: ${dLine.shortDesc}`,
+    longDescEn: '',
   };
 
   const definedCenters = CENTER_ORDER.filter(k => chart.definedCenters.has(k));
@@ -80,40 +86,62 @@ export function ChartScreen({ onNavigate }: Props) {
       {/* HERO — sol özet, sağ köşede küçük bodygraph */}
       <View style={styles.hero}>
         <View style={styles.heroLeft}>
-          <Text style={styles.heroType}>{chart.type}</Text>
-          <Text style={styles.heroStrategy}>{chart.strategy}</Text>
-          <Text style={styles.heroEssence}>{t.shortDesc}</Text>
+          <Text style={styles.heroType}>{L(t, 'name')}</Text>
+          <Text style={styles.heroStrategy}>{L(t, 'strategy')}</Text>
+          <Text style={styles.heroEssence}>{L(t, 'shortDesc')}</Text>
 
           <View style={styles.heroFacts}>
             <Fact
-              k="Profil"
+              k={getLang() === 'en' ? 'Profile' : 'Profil'}
               v={chart.profile}
-              desc={`${p.name}${p.theme ? ' · ' + p.theme : ''}`}
+              desc={`${L(p, 'name')}${L(p, 'theme') ? ' · ' + L(p, 'theme') : ''}`}
             />
             <Fact
-              k="Yetki"
-              v={a.name.replace(' Yetki', '')}
-              desc={`${a.emoji} ${a.shortDesc.split('.')[0]}`}
+              k={getLang() === 'en' ? 'Authority' : 'Yetki'}
+              v={getLang() === 'en' ? L(a, 'name').replace(' Authority', '') : a.name.replace(' Yetki', '')}
+              desc={`${a.emoji} ${L(a, 'shortDesc').split('.')[0]}`}
             />
             <Fact
-              k="Tanım"
-              v={chart.definition.split(' ')[0]}
+              k={getLang() === 'en' ? 'Definition' : 'Tanım'}
+              v={
+                getLang() === 'en'
+                  ? (chart.definition.startsWith('Tek')
+                      ? 'Single'
+                      : chart.definition.startsWith('Bölünmüş')
+                      ? 'Split'
+                      : chart.definition.startsWith('Üçlü')
+                      ? 'Triple'
+                      : chart.definition.startsWith('Dörtlü')
+                      ? 'Quadruple'
+                      : 'None')
+                  : chart.definition.split(' ')[0]
+              }
               desc={
-                chart.definition.startsWith('Tek')
-                  ? 'Tüm tanımlı merkezler tek küme; akışkan enerji'
-                  : chart.definition.startsWith('Bölünmüş')
-                  ? 'İki ayrı küme; köprü kuran insanlara çekilirsin'
-                  : chart.definition.startsWith('Üçlü')
-                  ? 'Üç ayrı küme; üç farklı bağlantı arayışı'
-                  : chart.definition.startsWith('Dörtlü')
-                  ? 'Dört ayrı küme; nadir, çok yönlü bağ kurma'
-                  : 'Reflektör — örnekleyici doğa'
+                getLang() === 'en'
+                  ? (chart.definition.startsWith('Tek')
+                      ? 'All defined centers in one group; fluid energy'
+                      : chart.definition.startsWith('Bölünmüş')
+                      ? 'Two separate groups; drawn to people who bridge'
+                      : chart.definition.startsWith('Üçlü')
+                      ? 'Three separate groups; seeking three different connections'
+                      : chart.definition.startsWith('Dörtlü')
+                      ? 'Four separate groups; rare, multi-faceted bonding'
+                      : 'Reflector — sampling nature')
+                  : (chart.definition.startsWith('Tek')
+                      ? 'Tüm tanımlı merkezler tek küme; akışkan enerji'
+                      : chart.definition.startsWith('Bölünmüş')
+                      ? 'İki ayrı küme; köprü kuran insanlara çekilirsin'
+                      : chart.definition.startsWith('Üçlü')
+                      ? 'Üç ayrı küme; üç farklı bağlantı arayışı'
+                      : chart.definition.startsWith('Dörtlü')
+                      ? 'Dört ayrı küme; nadir, çok yönlü bağ kurma'
+                      : 'Reflektör — örnekleyici doğa')
               }
             />
             <Fact
-              k="İmza"
-              v={chart.signature}
-              desc={`Yanlış frekans: ${chart.notSelf}`}
+              k={getLang() === 'en' ? 'Signature' : 'İmza'}
+              v={L(t, 'signature')}
+              desc={`${getLang() === 'en' ? 'Not-self frequency' : 'Yanlış frekans'}: ${L(t, 'notSelf')}`}
             />
           </View>
         </View>
@@ -124,89 +152,90 @@ export function ChartScreen({ onNavigate }: Props) {
 
       {/* İkinci sıra — özet rakamlar */}
       <View style={styles.numberRow}>
-        <NumberStat label="Aktif Kapı" value={`${chart.activeGates.size}`} sub="/ 64" />
-        <NumberStat label="Aktif Kanal" value={`${chart.activeChannels.length}`} sub="/ 36" />
-        <NumberStat label="Tanımlı Merkez" value={`${chart.definedCenters.size}`} sub="/ 9" />
+        <NumberStat label={getLang() === 'en' ? 'Active Gate' : 'Aktif Kapı'} value={`${chart.activeGates.size}`} sub="/ 64" />
+        <NumberStat label={getLang() === 'en' ? 'Active Channel' : 'Aktif Kanal'} value={`${chart.activeChannels.length}`} sub="/ 36" />
+        <NumberStat label={getLang() === 'en' ? 'Defined Center' : 'Tanımlı Merkez'} value={`${chart.definedCenters.size}`} sub="/ 9" />
       </View>
 
       {/* === DETAY AKIŞI === */}
-      <Section title="Tipin" kicker="TİP" big>
-        <Text style={styles.body}>{t.longDesc}</Text>
-        <KeyVal k="Strateji" v={t.strategy} />
-        <KeyVal k="Doğru frekans" v={t.signature} />
-        <KeyVal k="Yanlış frekans" v={t.notSelf} />
-        <KeyVal k="Aura" v={t.aura} />
-        <KeyVal k="Rol" v={t.rolePrimary} />
-        <KeyVal k="Oran" v={t.oran} last />
-        <Text style={styles.subLabel}>Pratik notlar</Text>
-        {t.pracicalTips.map((tip, i) => (
+      <Section title={getLang() === 'en' ? 'Your Type' : 'Tipin'} kicker={getLang() === 'en' ? 'TYPE' : 'TİP'} big>
+        <Text style={styles.body}>{L(t, 'longDesc')}</Text>
+        <KeyVal k={getLang() === 'en' ? 'Strategy' : 'Strateji'} v={L(t, 'strategy')} />
+        <KeyVal k={getLang() === 'en' ? 'Signature (right frequency)' : 'Doğru frekans'} v={L(t, 'signature')} />
+        <KeyVal k={getLang() === 'en' ? 'Not-self (wrong frequency)' : 'Yanlış frekans'} v={L(t, 'notSelf')} />
+        <KeyVal k="Aura" v={L(t, 'aura')} />
+        <KeyVal k={getLang() === 'en' ? 'Role' : 'Rol'} v={L(t, 'rolePrimary')} />
+        <KeyVal k={getLang() === 'en' ? 'Population' : 'Oran'} v={L(t, 'oran')} last />
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Practical notes' : 'Pratik notlar'}</Text>
+        {(L(t, 'pracicalTips') as string[]).map((tip, i) => (
           <Text key={i} style={styles.bullet}>·  {tip}</Text>
         ))}
       </Section>
 
-      <Section title="İçsel Yetkin" kicker={a.name.toLocaleUpperCase('tr')}>
-        <Text style={styles.body}>{a.shortDesc}</Text>
-        <Text style={styles.subLabel}>Karar verme adımları</Text>
-        {a.howToDecide.map((tip, i) => (
+      <Section title={getLang() === 'en' ? 'Your Inner Authority' : 'İçsel Yetkin'} kicker={getLang() === 'en' ? L(a, 'name').toUpperCase() : a.name.toLocaleUpperCase('tr')}>
+        <Text style={styles.body}>{L(a, 'shortDesc')}</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Decision-making steps' : 'Karar verme adımları'}</Text>
+        {(L(a, 'howToDecide') as string[]).map((tip, i) => (
           <Text key={i} style={styles.bullet}>·  {tip}</Text>
         ))}
-        {!!a.caution && <Text style={styles.caution}>! {a.caution}</Text>}
+        {!!L(a, 'caution') && <Text style={styles.caution}>! {L(a, 'caution')}</Text>}
       </Section>
 
-      <Section title="Profilin" kicker={`${chart.profile} — ${p.name.toLocaleUpperCase('tr')}`}>
-        <Text style={styles.body}>{p.longDesc}</Text>
-        <Text style={styles.subLabel}>Bilinçli çizgi · Personality Sun {pSun.gate}.{pSun.line}</Text>
+      <Section title={getLang() === 'en' ? 'Your Profile' : 'Profilin'} kicker={`${chart.profile} — ${getLang() === 'en' ? L(p, 'name').toUpperCase() : p.name.toLocaleUpperCase('tr')}`}>
+        <Text style={styles.body}>{L(p, 'longDesc')}</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Conscious line' : 'Bilinçli çizgi'} · Personality Sun {pSun.gate}.{pSun.line}</Text>
         <Text style={styles.body}>
-          <Text style={styles.lineTitle}>{pSun.line}. {pLine.name}</Text>{'\n'}
-          {pLine.shortDesc}{'\n'}
-          <Text style={styles.shadowNote}>Gölge: {pLine.shadow}</Text>
+          <Text style={styles.lineTitle}>{pSun.line}. {L(pLine, 'name')}</Text>{'\n'}
+          {L(pLine, 'shortDesc')}{'\n'}
+          <Text style={styles.shadowNote}>{getLang() === 'en' ? 'Shadow' : 'Gölge'}: {L(pLine, 'shadow')}</Text>
         </Text>
-        <Text style={styles.subLabel}>Bilinçsiz çizgi · Design Sun {dSun.gate}.{dSun.line}</Text>
+        <Text style={styles.subLabel}>{getLang() === 'en' ? 'Unconscious line' : 'Bilinçsiz çizgi'} · Design Sun {dSun.gate}.{dSun.line}</Text>
         <Text style={styles.body}>
-          <Text style={styles.lineTitle}>{dSun.line}. {dLine.name}</Text>{'\n'}
-          {dLine.shortDesc}{'\n'}
-          <Text style={styles.shadowNote}>Gölge: {dLine.shadow}</Text>
+          <Text style={styles.lineTitle}>{dSun.line}. {L(dLine, 'name')}</Text>{'\n'}
+          {L(dLine, 'shortDesc')}{'\n'}
+          <Text style={styles.shadowNote}>{getLang() === 'en' ? 'Shadow' : 'Gölge'}: {L(dLine, 'shadow')}</Text>
         </Text>
       </Section>
 
-      <Section title="Tanım ve İnkarnasyon Haçı" kicker="DEFINITION & CROSS">
-        <KeyVal k="Tanım türü" v={chart.definition} />
-        <KeyVal k="İnkarnasyon Haçı" v={chart.incarnationCross} last />
+      <Section title={getLang() === 'en' ? 'Definition & Incarnation Cross' : 'Tanım ve İnkarnasyon Haçı'} kicker="DEFINITION & CROSS">
+        <KeyVal k={getLang() === 'en' ? 'Definition type' : 'Tanım türü'} v={chart.definition} />
+        <KeyVal k={getLang() === 'en' ? 'Incarnation Cross' : 'İnkarnasyon Haçı'} v={chart.incarnationCross} last />
         <Text style={[styles.body, { marginTop: Spacing.md }]}>
-          Tanım, tanımlı merkezlerinin kaç ayrı küme halinde bağlandığını söyler.
-          Tek tanımlı isen enerjin akışkandır; bölünmüşlerde köprü kuran insan ve
-          durumlara çekilirsin. İnkarnasyon Haçı senin yaşam boyu üzerinde
-          çalıştığın evrensel temadır — Personality Sun/Earth ve Design Sun/Earth
-          aktivasyonlarından örülür.
+          {getLang() === 'en'
+            ? 'Definition tells you how many separate groups your defined centers connect into. If you are single-defined your energy is fluid; in split definitions you are drawn to people and situations that bridge. The Incarnation Cross is the universal theme you work on across your whole life — woven from your Personality Sun/Earth and Design Sun/Earth activations.'
+            : 'Tanım, tanımlı merkezlerinin kaç ayrı küme halinde bağlandığını söyler. Tek tanımlı isen enerjin akışkandır; bölünmüşlerde köprü kuran insan ve durumlara çekilirsin. İnkarnasyon Haçı senin yaşam boyu üzerinde çalıştığın evrensel temadır — Personality Sun/Earth ve Design Sun/Earth aktivasyonlarından örülür.'}
         </Text>
       </Section>
 
       <Section
-        title={`Aktif Kanalların · ${chart.activeChannels.length}`}
-        kicker="KANALLAR"
+        title={`${getLang() === 'en' ? 'Your Active Channels' : 'Aktif Kanalların'} · ${chart.activeChannels.length}`}
+        kicker={getLang() === 'en' ? 'CHANNELS' : 'KANALLAR'}
       >
         {chart.activeChannels.length === 0 ? (
           <Text style={styles.body}>
-            Tanımlı kanalın yok — Reflektör doğası. Çevren senin aynan.
+            {getLang() === 'en'
+              ? 'You have no defined channels — Reflector nature. Your environment is your mirror.'
+              : 'Tanımlı kanalın yok — Reflektör doğası. Çevren senin aynan.'}
           </Text>
         ) : chart.activeChannels.map(c => (
           <View key={c.id} style={styles.channelRow}>
             <Text style={styles.channelId}>{c.id}</Text>
             <View style={{ flex: 1 }}>
-              <Text style={styles.channelName}>{c.name}</Text>
-              <Text style={styles.channelDesc}>{c.shortDesc}</Text>
+              <Text style={styles.channelName}>{L(c, 'name')}</Text>
+              <Text style={styles.channelDesc}>{L(c, 'shortDesc')}</Text>
               <Text style={styles.channelMeta}>
-                {CENTERS[c.centers[0]].name} ↔ {CENTERS[c.centers[1]].name} · {c.circuit} devre
+                {L(CENTERS[c.centers[0]], 'name')} ↔ {L(CENTERS[c.centers[1]], 'name')} · {c.circuit} {getLang() === 'en' ? 'circuit' : 'devre'}
               </Text>
             </View>
           </View>
         ))}
       </Section>
 
-      <Section title={`Tanımlı Merkezlerin · ${definedCenters.length}`} kicker="MERKEZ">
+      <Section title={`${getLang() === 'en' ? 'Your Defined Centers' : 'Tanımlı Merkezlerin'} · ${definedCenters.length}`} kicker={getLang() === 'en' ? 'CENTER' : 'MERKEZ'}>
         <Text style={styles.body}>
-          Tanımlı merkezler senin sabit, güvenilir frekansındır. Hayata bu
-          merkezlerden tutarlı bir enerji yayarsın.
+          {getLang() === 'en'
+            ? 'Your defined centers are your fixed, reliable frequency. You radiate a consistent energy into life from these centers.'
+            : 'Tanımlı merkezler senin sabit, güvenilir frekansındır. Hayata bu merkezlerden tutarlı bir enerji yayarsın.'}
         </Text>
         {definedCenters.map(k => {
           const c = CENTERS[k];
