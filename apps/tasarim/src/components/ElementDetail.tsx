@@ -58,9 +58,9 @@ export function ElementDetail({ dist, visible, onClose }: {
                 {ELEMENT_META[dominant].glyph}
               </Text>
               <View style={{ flex: 1 }}>
-                <Text style={styles.dominantLabel}>Baskın element</Text>
+                <Text style={styles.dominantLabel}>{getLang() === 'en' ? 'Dominant element' : 'Baskın element'}</Text>
                 <Text style={[styles.dominantName, { color: ELEMENT_META[dominant].color }]}>
-                  {ELEMENT_META[dominant].tr} · %{Math.round(dist[dominant] * 100)}
+                  {elemName(dominant)} · {Math.round(dist[dominant] * 100)}%
                 </Text>
                 <Text style={styles.dominantDesc}>{ELEMENT_META[dominant].desc}</Text>
               </View>
@@ -82,7 +82,7 @@ export function ElementDetail({ dist, visible, onClose }: {
                 <View key={ln.key} style={styles.meaningRow}>
                   <Text style={[styles.meaningGlyph, { color: ELEMENT_META[ln.key].color }]}>{ELEMENT_META[ln.key].glyph}</Text>
                   <Text style={styles.meaningTxt}>
-                    <Text style={[styles.meaningName, { color: ELEMENT_META[ln.key].color }]}>{ELEMENT_META[ln.key].tr} (%{ln.pct}) </Text>
+                    <Text style={[styles.meaningName, { color: ELEMENT_META[ln.key].color }]}>{elemName(ln.key)} ({ln.pct}%) </Text>
                     → {ln.text}
                   </Text>
                 </View>
@@ -96,7 +96,7 @@ export function ElementDetail({ dist, visible, onClose }: {
               <Text style={[styles.synthTxt, { marginTop: 8 }]}>{interp.shadowText}</Text>
             </View>
 
-            <Text style={styles.bodiesLabel}>HARİTANDAKİ GÖVDELER</Text>
+            <Text style={styles.bodiesLabel}>{getLang() === 'en' ? 'BODIES IN YOUR CHART' : 'HARİTANDAKİ GÖVDELER'}</Text>
 
             {/* Element başına dağılım + katkı veren gövdeler */}
             {ORDER.map((k) => {
