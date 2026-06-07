@@ -6,6 +6,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
 import { useTasarimStore } from '../store/useStore';
 import { generateWeeklyReport } from '../utils/weeklyReport';
+import { GATES } from '../data/gates';
+import { L, getLang } from '../i18n';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'profile' | 'report') => void;
@@ -24,15 +26,17 @@ export function ReportScreen({ onNavigate }: Props) {
     return (
       <View style={[styles.empty, { paddingTop: insets.top + 60 }]}>
         <Text style={styles.medallion}>✦</Text>
-        <Text style={styles.emptyTitle}>Rapor için harita gerekli</Text>
+        <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'A chart is needed for the report' : 'Rapor için harita gerekli'}</Text>
         <Text style={styles.emptyDesc}>
-          Önce profilini oluştur; raporlar haritandan üretilir.
+          {getLang() === 'en'
+            ? 'Create your profile first; reports are generated from your chart.'
+            : 'Önce profilini oluştur; raporlar haritandan üretilir.'}
         </Text>
         <TouchableOpacity
           style={styles.primaryBtn}
           onPress={() => onNavigate('profile')}
         >
-          <Text style={styles.primaryBtnText}>Profili Oluştur →</Text>
+          <Text style={styles.primaryBtnText}>{getLang() === 'en' ? 'Create Profile →' : 'Profili Oluştur →'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -44,7 +48,7 @@ export function ReportScreen({ onNavigate }: Props) {
       contentContainerStyle={[styles.content, { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xxxl }]}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.kicker}>HAFTALIK RAPOR</Text>
+      <Text style={styles.kicker}>{getLang() === 'en' ? 'WEEKLY REPORT' : 'HAFTALIK RAPOR'}</Text>
       <Text style={styles.h1}>{report.theme}</Text>
       <Text style={styles.weekLine}>{report.weekLabel} · {report.weekDates}</Text>
       <Text style={styles.themeDesc}>{report.themeDesc}</Text>
@@ -52,7 +56,7 @@ export function ReportScreen({ onNavigate }: Props) {
       {/* 3'lü ana blok */}
       <View style={styles.triCard}>
         <Text style={styles.triEmoji}>🎯</Text>
-        <Text style={styles.triKicker}>DİKKAT ET</Text>
+        <Text style={styles.triKicker}>{getLang() === 'en' ? 'PAY ATTENTION' : 'DİKKAT ET'}</Text>
         <Text style={styles.triTitle}>{report.attention.title}</Text>
         <Text style={styles.triBody}>{report.attention.body}</Text>
         {!!report.attention.micro && (
@@ -62,7 +66,7 @@ export function ReportScreen({ onNavigate }: Props) {
 
       <View style={[styles.triCard, { borderLeftColor: Colors.tealSoft }]}>
         <Text style={styles.triEmoji}>🍃</Text>
-        <Text style={[styles.triKicker, { color: Colors.tealSoft }]}>SERBEST BIRAK</Text>
+        <Text style={[styles.triKicker, { color: Colors.tealSoft }]}>{getLang() === 'en' ? 'LET GO' : 'SERBEST BIRAK'}</Text>
         <Text style={styles.triTitle}>{report.release.title}</Text>
         <Text style={styles.triBody}>{report.release.body}</Text>
         {!!report.release.micro && (
@@ -72,7 +76,7 @@ export function ReportScreen({ onNavigate }: Props) {
 
       <View style={[styles.triCard, { borderLeftColor: Colors.purpleSoft }]}>
         <Text style={styles.triEmoji}>👑</Text>
-        <Text style={[styles.triKicker, { color: Colors.purpleSoft }]}>SAHİPLEN</Text>
+        <Text style={[styles.triKicker, { color: Colors.purpleSoft }]}>{getLang() === 'en' ? 'OWN IT' : 'SAHİPLEN'}</Text>
         <Text style={styles.triTitle}>{report.ownership.title}</Text>
         <Text style={styles.triBody}>{report.ownership.body}</Text>
         {!!report.ownership.micro && (
@@ -82,23 +86,25 @@ export function ReportScreen({ onNavigate }: Props) {
 
       {/* Kapı spotlight */}
       <View style={styles.spotCard}>
-        <Text style={styles.spotKicker}>HAFTANIN KAPISI</Text>
+        <Text style={styles.spotKicker}>{getLang() === 'en' ? 'GATE OF THE WEEK' : 'HAFTANIN KAPISI'}</Text>
         <Text style={styles.spotGate}>
           {report.spotlightGate.number}.{report.spotlightGate.line}
         </Text>
-        <Text style={styles.spotName}>{report.spotlightGate.name}</Text>
+        <Text style={styles.spotName}>{L(GATES[report.spotlightGate.number], 'name') ?? report.spotlightGate.name}</Text>
         <Text style={styles.spotSection}>
-          {report.spotlightGate.section === 'personality' ? 'Bilinçli (Personality)' : 'Bilinçsiz (Design)'}
+          {report.spotlightGate.section === 'personality'
+            ? (getLang() === 'en' ? 'Conscious (Personality)' : 'Bilinçli (Personality)')
+            : (getLang() === 'en' ? 'Unconscious (Design)' : 'Bilinçsiz (Design)')}
         </Text>
-        <Text style={styles.spotTheme}>{report.spotlightGate.theme}</Text>
+        <Text style={styles.spotTheme}>{L(GATES[report.spotlightGate.number], 'theme') ?? report.spotlightGate.theme}</Text>
         <View style={styles.row2}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.miniLabel}>HEDİYE</Text>
-            <Text style={styles.miniValue}>{report.spotlightGate.gift}</Text>
+            <Text style={styles.miniLabel}>{getLang() === 'en' ? 'GIFT' : 'HEDİYE'}</Text>
+            <Text style={styles.miniValue}>{L(GATES[report.spotlightGate.number], 'gift') ?? report.spotlightGate.gift}</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={styles.miniLabel}>GÖLGE</Text>
-            <Text style={styles.miniValue}>{report.spotlightGate.shadow}</Text>
+            <Text style={styles.miniLabel}>{getLang() === 'en' ? 'SHADOW' : 'GÖLGE'}</Text>
+            <Text style={styles.miniValue}>{L(GATES[report.spotlightGate.number], 'shadow') ?? report.spotlightGate.shadow}</Text>
           </View>
         </View>
       </View>
