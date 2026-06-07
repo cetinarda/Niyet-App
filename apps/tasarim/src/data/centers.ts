@@ -12,24 +12,34 @@ export type CenterKey =
 export interface CenterInfo {
   key: CenterKey;
   name: string;
+  nameEn?: string;
   emoji: string;
   color: string;
   bio: string;          // biyolojik karşılık
+  bioEn?: string;
   function: string;     // işlev
+  functionEn?: string;
   isMotor: boolean;
   isPressure: boolean;
   isAwareness: boolean;
   gates: number[];      // bu merkezin kapıları
   defined: {
     title: string;
+    titleEn?: string;
     desc: string;
+    descEn?: string;
     gifts: string[];
+    giftsEn?: string[];
   };
   undefined: {
     title: string;
+    titleEn?: string;
     desc: string;
+    descEn?: string;
     notSelfQuestion: string;     // tanımsız merkezdeki "yanlış benlik" sorusu
+    notSelfQuestionEn?: string;
     wisdom: string;              // kazanılan bilgelik
+    wisdomEn?: string;
   };
 }
 
@@ -37,94 +47,148 @@ export const CENTERS: Record<CenterKey, CenterInfo> = {
   head: {
     key: 'head',
     name: 'Kafa Merkezi',
+    nameEn: 'Head Center',
     emoji: '💡',
     color: '#F5D547',
     bio: 'Epifiz bezi',
+    bioEn: 'Pineal gland',
     function: 'İlham basıncı; sorulara, merak ve esin akışına yer açar.',
+    functionEn: 'The pressure of inspiration; makes room for questions, curiosity and the flow of inspiration.',
     isMotor: false,
     isPressure: true,
     isAwareness: false,
     gates: [64, 61, 63],
     defined: {
       title: 'Tanımlı Kafa: Sürekli Sorulara Sahip Zihin',
+      titleEn: 'Defined Head: A Mind With Constant Questions',
       desc:
         'İçinden sürekli yeni sorular ve ilhamlar yükselir. Düşünme baskısı senin doğal frekansındır; başkalarını da düşünmeye yönlendirirsin. Hangi sorularla yaşaman gerektiğini seçmen önemlidir.',
+      descEn:
+        'New questions and inspirations rise within you constantly. The pressure to think is your natural frequency; you also prompt others to think. It matters which questions you choose to live with.',
       gifts: [
         'İlhamı başlatma kapasitesi',
         'Soruları açık tutma cesareti',
         'Başkalarını düşünmeye yönlendirme',
       ],
+      giftsEn: [
+        'The capacity to initiate inspiration',
+        'The courage to keep questions open',
+        'Prompting others to think',
+      ],
     },
     undefined: {
       title: 'Tanımsız Kafa: Başkalarının Sorularını Yüklenir',
+      titleEn: 'Undefined Head: Takes On Others\' Questions',
       desc:
         'Çevreden gelen sorulara hızlıca kapılırsın; kendine ait olmayan meseleleri çözmeye çalışmak yorucudur. Kendi soruna değer hangisinin senin olmadığını ayırt etmektir.',
+      descEn:
+        'You are quickly swept up by questions coming from around you; trying to solve matters that aren\'t yours is tiring. Your own work is to discern which questions are not yours.',
       notSelfQuestion:
         '"Cevaplaman gerekmeyen soruları cevaplamak için baskı hissediyor musun?"',
+      notSelfQuestionEn:
+        '\'Do you feel pressure to answer questions you don\'t need to answer?\'',
       wisdom:
         'Hangi sorunun gerçekten cevaplanmaya değer olduğunu bilmek; gereksiz zihinsel baskıyı bırakmak.',
+      wisdomEn:
+        'Knowing which question is truly worth answering; releasing unnecessary mental pressure.',
     },
   },
   ajna: {
     key: 'ajna',
     name: 'Ajna (Akıl)',
+    nameEn: 'Ajna (Mind)',
     emoji: '🧠',
     color: '#7CC576',
     bio: 'Hipofiz, ön beyin korteksi',
+    bioEn: 'Pituitary, anterior brain cortex',
     function: 'Kavramsallaştırma; bilgiyi işleme, anlam üretme ve düşünme.',
+    functionEn: 'Conceptualization; processing information, producing meaning and thinking.',
     isMotor: false,
     isPressure: false,
     isAwareness: true,
     gates: [47, 24, 4, 17, 43, 11],
     defined: {
       title: 'Tanımlı Ajna: Sabit Düşünme Biçimi',
+      titleEn: 'Defined Ajna: A Fixed Way of Thinking',
       desc:
         'Bilgiyi işleme şeklin sabittir; nasıl düşündüğün belli bir kalıba sahiptir. Bu sayede güvenilir bir akıl yürütme sunarsın ama tek doğru bakış senin değildir.',
+      descEn:
+        'The way you process information is fixed; how you think follows a certain pattern. This lets you offer reliable reasoning, but yours is not the only correct viewpoint.',
       gifts: [
         'Sabit, güvenilir kavramsallaştırma',
         'Bir konu hakkında derin sertifika',
         'Düşüncenin sürekliliği',
       ],
+      giftsEn: [
+        'Fixed, reliable conceptualization',
+        'Deep expertise on a subject',
+        'Continuity of thought',
+      ],
     },
     undefined: {
       title: 'Tanımsız Ajna: Esnek Akıl, Kararsızlık Yanılgısı',
+      titleEn: 'Undefined Ajna: A Flexible Mind, the Illusion of Indecision',
       desc:
         'Düşünme biçimin sürekli değişebilir; her duruma yeni bir bakış getirebilirsin. Yanlış benlik tarafında "kararsızım" duygusu üretir; aslında akıllı bir esnekliğe sahipsin.',
+      descEn:
+        'Your way of thinking can change constantly; you can bring a fresh perspective to every situation. On the not-self side it produces a feeling of \'I\'m indecisive\'; in truth you have an intelligent flexibility.',
       notSelfQuestion:
         '"Aslında emin olmadığın halde emin görünmek zorunda hissediyor musun?"',
+      notSelfQuestionEn:
+        '\'Do you feel you must appear certain even when you really aren\'t?\'',
       wisdom:
         'Bir şey hakkında "emin olmak" zorunda olmadığını bilmek; çoklu bakışı bilgelikle taşımak.',
+      wisdomEn:
+        'Knowing you don\'t have to \'be certain\' about something; carrying multiple perspectives with wisdom.',
     },
   },
   throat: {
     key: 'throat',
     name: 'Boğaz Merkezi',
+    nameEn: 'Throat Center',
     emoji: '🗣️',
     color: '#8B6F47',
     bio: 'Tiroid & paratiroid',
+    bioEn: 'Thyroid & parathyroid',
     function: 'İfade ve manifestasyon; sözden eyleme geçiş kapısı.',
+    functionEn: 'Expression and manifestation; the gateway from word to action.',
     isMotor: false,
     isPressure: false,
     isAwareness: false,
     gates: [62, 23, 56, 35, 12, 45, 33, 8, 31, 20, 16],
     defined: {
       title: 'Tanımlı Boğaz: Tutarlı İfade ve Manifestasyon',
+      titleEn: 'Defined Throat: Consistent Expression and Manifestation',
       desc:
         'Konuştuğun şey tutarlıdır; nasıl ifade ettiğin belli bir kalıba sahiptir. Boğaz tanımının yönü, hangi merkeze bağlı olduğuna göre değişir.',
+      descEn:
+        'What you say is consistent; how you express it follows a certain pattern. The orientation of a defined Throat depends on which center it is connected to.',
       gifts: [
         'Sözü manifestasyona dönüştürmek',
         'Tutarlı bir iletişim sesi',
         'Doğru bağlantıda eylem yaratma',
       ],
+      giftsEn: [
+        'Turning word into manifestation',
+        'A consistent voice of communication',
+        'Creating action through the right connection',
+      ],
     },
     undefined: {
       title: 'Tanımsız Boğaz: Dikkat Çekmeye Baskı',
+      titleEn: 'Undefined Throat: Pressure to Get Attention',
       desc:
         'Söz alma anı uygun olmadığında konuşmak zorunda hissedersin. Doğru sıra ve doğru zamanı bekleme öğrenildiğinde derin bilgi açılır.',
+      descEn:
+        'You feel compelled to speak even when the moment isn\'t right. When you learn to wait for the right turn and the right time, deep knowing opens up.',
       notSelfQuestion:
         '"Dikkat çekmek için lafı uzatıyor ya da uygun olmayan anda konuşuyor musun?"',
+      notSelfQuestionEn:
+        '\'Do you go on talking to get attention, or speak at the wrong moment?\'',
       wisdom:
         'Doğru anın gelmesini bekleme bilgeliği; "söz çağırılır, alınmaz" prensibi.',
+      wisdomEn:
+        'The wisdom of waiting for the right moment; the principle that \'the word is invited, not seized\'.',
     },
   },
   g: {
