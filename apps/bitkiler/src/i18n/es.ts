@@ -129,16 +129,16 @@ export const es = {
     spiritualMap: 'Mapa espiritual',
     reportLabels: {
       guide: 'Guía',
-      stone: 'Piedra',
-      animal: 'Piedra',
-      nagual: 'Piedra',
+      stone: 'Planta',
+      animal: 'Planta',
+      nagual: 'Planta',
     },
     filters: {
       all: 'Todos',
       quote: 'Mensaje',
-      stone: 'Piedra',
-      animal: 'Piedra',
-      nagual: 'Piedra',
+      stone: 'Planta',
+      animal: 'Planta',
+      nagual: 'Planta',
     },
     empty: {
       title: 'Aún no hay lecturas.',
@@ -275,7 +275,7 @@ export const es = {
     spiritualMap: {
       title: 'Mapa espiritual',
       topGuide: 'Poeta guía más frecuente',
-      topStone: 'Tu piedra protectora',
+      topStone: 'Tu planta protectora',
       topAnimal: 'Tu animal tótem',
       topNagual: 'Tu guía nagual',
       companionCount: 'te ha acompañado {n} veces',
@@ -290,7 +290,7 @@ export const es = {
       masterDesc: 'Base central: acceso a todas las apps',
       apps: {
         animalGuidance: 'Guía animal',
-        stoneGuidance: 'Guía de cristales',
+        stoneGuidance: 'Guía de plantas',
         plantGuidance: 'Sabiduría vegetal',
         myths: 'Mitos e imágenes',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const es = {
       },
       appDescs: {
         animalGuidance: 'Esta app',
-        stoneGuidance: 'El lenguaje de los cristales',
+        stoneGuidance: 'El lenguaje de las plantas',
         plantGuidance: 'Sabiduría herbal',
         myths: 'Arquetipos y símbolos',
         humanDesign: 'Conoce tu diseño',
@@ -314,7 +314,7 @@ export const es = {
         b001: { title: 'Primeros pasos', desc: 'Primeras 7 lecturas' },
         b002: { title: 'Derviche de fuego', desc: 'Racha de 21 días' },
         b003: { title: 'Viajero del Mesnevi', desc: '30 lecturas' },
-        b004: { title: 'Rosario', desc: '33 piedras vistas' },
+        b004: { title: 'Rosario', desc: '33 plantas vistas' },
         b005: { title: 'Amigo de la verdad', desc: '100 lecturas' },
         b006: { title: 'Viajero de la luz', desc: '365 lecturas' },
       },

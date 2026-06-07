@@ -2,7 +2,7 @@ export const fr = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: "Aujourd'hui",
-    animals: 'Pierres',
+    animals: 'Plantes',
     archive: 'Archives',
     profile: 'Profil',
   },
@@ -18,9 +18,9 @@ export const fr = {
     defaultUser: 'Voyageur',
     decks: {
       animal: {
-        title: 'Pierre',
-        short: 'PIERRE',
-        subtitle: "Écoute la pierre du jour",
+        title: 'Plante',
+        short: 'PLANTE',
+        subtitle: "Écoute la plante du jour",
       },
       quote: {
         title: 'Rûmî',
@@ -38,9 +38,9 @@ export const fr = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · PIERRE',
+    eyebrow: 'SAKIN · PLANTE',
     panels: {
-      library: 'Pierres',
+      library: 'Plantes',
       finder: 'Trouver',
       guidance: 'Guidance',
     },
@@ -49,8 +49,8 @@ export const fr = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← Retour',
-    familyTag: 'SAKIN · PIERRE',
-    subtitle: '{count} pierres de guérison et cristaux',
+    familyTag: 'SAKIN · PLANTE',
+    subtitle: '{count} plantes médicinales et herbes',
     searchPlaceholder: 'Rechercher par nom, propriété ou élément...',
     noResults: 'Aucun résultat trouvé.',
   },
@@ -58,7 +58,7 @@ export const fr = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← Retour',
-    familyTag: 'SAKIN · PIERRE',
+    familyTag: 'SAKIN · PLANTE',
     sections: {
       properties: 'Propriétés',
       todayMessage: "Ce qu'elle te dit aujourd'hui",
@@ -78,15 +78,15 @@ export const fr = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Trouve ta pierre',
+    headerTitle: 'Trouve ta plante',
     intro: {
-      title: 'Découvre ta pierre',
-      desc: 'Trouve les cristaux alignés avec toi selon ton signe ou ton élément.',
-      note: 'Chaque pierre porte sa propre vibration. Choisis celle qui t\'appelle — ton intuition fera le reste.',
-      birthStoneTitle: 'Ta pierre de naissance',
+      title: 'Découvre ta plante',
+      desc: 'Trouve les plantes alignées avec toi selon ton signe ou ton élément.',
+      note: 'Chaque plante porte sa propre vibration. Choisis celle qui t\'appelle — ton intuition fera le reste.',
+      birthStoneTitle: 'Ta plante de naissance',
       zodiacLabel: 'Par signe',
       elementLabel: 'Par élément',
-      elementHint: "Chaque cristal vibre avec un élément naturel ; le tien vient de ton signe — feu : Bélier·Lion·Sagittaire · terre : Taureau·Vierge·Capricorne · air : Gémeaux·Balance·Verseau · eau : Cancer·Scorpion·Poissons.",
+      elementHint: "Chaque plante vibre avec un élément naturel ; le tien vient de ton signe — feu : Bélier·Lion·Sagittaire · terre : Taureau·Vierge·Capricorne · air : Gémeaux·Balance·Verseau · eau : Cancer·Scorpion·Poissons.",
     },
     elements: {
       fire: 'Feu',
@@ -95,10 +95,10 @@ export const fr = {
       water: 'Eau',
     },
     result: {
-      zodiacLabel: 'Pierres de {name}',
-      elementLabel: 'Pierres de {name}',
-      birthLabel: 'Pierre de ton mois de naissance',
-      empty: 'Aucune pierre trouvée pour cette sélection.',
+      zodiacLabel: 'Plantes de {name}',
+      elementLabel: 'Plantes de {name}',
+      birthLabel: 'Plante de ton mois de naissance',
+      empty: 'Aucune plante trouvée pour cette sélection.',
       rediscoverBtn: 'Choisir à nouveau ✦',
       closeBtn: 'Fermer ✦',
     },
@@ -129,16 +129,16 @@ export const fr = {
     spiritualMap: 'Carte spirituelle',
     reportLabels: {
       guide: 'Guide',
-      stone: 'Pierre',
-      animal: 'Pierre',
-      nagual: 'Pierre',
+      stone: 'Plante',
+      animal: 'Plante',
+      nagual: 'Plante',
     },
     filters: {
       all: 'Tous',
       quote: 'Message',
-      stone: 'Pierre',
-      animal: 'Pierre',
-      nagual: 'Pierre',
+      stone: 'Plante',
+      animal: 'Plante',
+      nagual: 'Plante',
     },
     empty: {
       title: 'Aucun tirage pour le moment.',
@@ -275,7 +275,7 @@ export const fr = {
     spiritualMap: {
       title: 'Carte spirituelle',
       topGuide: 'Poète guide le plus fréquent',
-      topStone: 'Ta pierre protectrice',
+      topStone: 'Ta plante protectrice',
       topAnimal: 'Ton animal totem',
       topNagual: 'Ton guide nagual',
       companionCount: "t'a accompagné {n} fois",
@@ -290,7 +290,7 @@ export const fr = {
       masterDesc: 'Base centrale — accès à toutes les applis',
       apps: {
         animalGuidance: 'Guidance animale',
-        stoneGuidance: 'Guidance des cristaux',
+        stoneGuidance: 'Guidance des plantes',
         plantGuidance: 'Sagesse des plantes',
         myths: 'Mythes et images',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const fr = {
       },
       appDescs: {
         animalGuidance: 'Cette appli',
-        stoneGuidance: 'Le langage des cristaux',
+        stoneGuidance: 'Le langage des plantes',
         plantGuidance: 'Sagesse des herbes',
         myths: 'Archétypes et symboles',
         humanDesign: 'Connais ton design',
