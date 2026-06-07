@@ -18,6 +18,11 @@ import { useI18n } from '../i18n/useI18n';
 type Panel = 'library' | 'finder';
 type FinderView = 'menu' | 'discover' | 'photo';
 
+const PANELS = [
+  { key: 'library' as Panel, labelKey: 'animalsHub.panels.library', symbol: '⊕', color: Colors.tealLight },
+  { key: 'finder'  as Panel, labelKey: 'animalsHub.panels.finder',  symbol: '✦', color: Colors.gold },
+];
+
 // Bu app'in foto-tanı türü (bitkiler kopyasında 'plant').
 const PHOTO_KIND: 'stone' | 'plant' = 'stone';
 
