@@ -16,8 +16,9 @@ import { useI18n } from '../i18n/useI18n';
 type Panel = 'library' | 'finder';
 
 const PANELS = [
+  // Bitkiler v1: yalnız kütüphane. Zodyak "finder" (doğum taşı) bitkiye kavramsal
+  // uymadığı için gizlendi — AnimalFinderScreen kaynakta duruyor ama erişilmiyor.
   { key: 'library' as Panel, labelKey: 'animalsHub.panels.library',  symbol: '⊕', color: Colors.tealLight },
-  { key: 'finder'  as Panel, labelKey: 'animalsHub.panels.finder',   symbol: '✦', color: Colors.gold },
 ];
 
 export function AnimalsHubScreen() {
