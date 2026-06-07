@@ -16,11 +16,13 @@ export interface GlossaryEntry {
   name: string;
   nameEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   aliases: string[];
   aliasesEn?: string[];
   body: string;         // tek paragraf özet
   bodyEn?: string;
   details?: string[];   // opsiyonel ek satırlar (madde madde)
+  detailsEn?: string[];
 }
 
 function tr(s: string) {
@@ -41,6 +43,12 @@ export function fold(s: string): string {
     .trim();
 }
 
+// EN sibling okuyucu — veri nesnesinden `<field>En` döndürür, yoksa TR'ye düşer.
+function en<T extends Record<string, any>>(obj: T, field: string): any {
+  const v = obj[field + 'En'];
+  return v !== undefined && v !== null && v !== '' ? v : obj[field];
+}
+
 function buildEntries(): GlossaryEntry[] {
   const out: GlossaryEntry[] = [];
 
@@ -50,16 +58,27 @@ function buildEntries(): GlossaryEntry[] {
       id: `tip-${t.type}`,
       category: 'tip',
       categoryLabel: 'Tip',
+      categoryLabelEn: 'Type',
       name: t.type,
+      nameEn: en(t, 'name'),
       subtitle: t.rolePrimary,
+      subtitleEn: en(t, 'rolePrimary'),
       aliases: [t.type, ...t.keywords],
       body: t.longDesc,
+      bodyEn: en(t, 'longDesc'),
       details: [
         `Strateji: ${t.strategy}`,
         `Doğru frekans: ${t.signature}`,
         `Yanlış frekans: ${t.notSelf}`,
         `Aura: ${t.aura}`,
         `Oran: ${t.oran}`,
+      ],
+      detailsEn: [
+        `Strategy: ${en(t, 'strategy')}`,
+        `Signature: ${en(t, 'signature')}`,
+        `Not-self: ${en(t, 'notSelf')}`,
+        `Aura: ${en(t, 'aura')}`,
+        `Population: ${en(t, 'oran')}`,
       ],
     });
   }
@@ -71,13 +90,21 @@ function buildEntries(): GlossaryEntry[] {
       id: `yetki-${a.key}`,
       category: 'yetki',
       categoryLabel: 'İçsel Yetki',
+      categoryLabelEn: 'Inner Authority',
       name: a.name,
+      nameEn: en(a, 'name'),
       subtitle: a.emoji,
+      subtitleEn: a.emoji,
       aliases: [a.name, a.name.replace(' Yetki', ''), `${a.name} ne demek`],
       body: a.shortDesc,
+      bodyEn: en(a, 'shortDesc'),
       details: [
         ...a.howToDecide.map(s => `Karar: ${s}`),
         ...(a.caution ? [`Dikkat: ${a.caution}`] : []),
+      ],
+      detailsEn: [
+        ...(en(a, 'howToDecide') as string[]).map(s => `Decision: ${s}`),
+        ...(en(a, 'caution') ? [`Caution: ${en(a, 'caution')}`] : []),
       ],
     });
   }
@@ -88,23 +115,36 @@ function buildEntries(): GlossaryEntry[] {
       id: `merkez-tanimli-${c.key}`,
       category: 'merkez',
       categoryLabel: 'Merkez · Tanımlı',
+      categoryLabelEn: 'Center · Defined',
       name: `Tanımlı ${c.name}`,
+      nameEn: `Defined ${en(c, 'name')}`,
       subtitle: c.bio,
+      subtitleEn: en(c, 'bio'),
       aliases: [c.name, `tanimli ${c.name}`, c.defined.title],
       body: c.defined.desc,
+      bodyEn: en(c.defined, 'desc'),
       details: c.defined.gifts.map(g => `Hediye: ${g}`),
+      detailsEn: (en(c.defined, 'gifts') as string[]).map(g => `Gift: ${g}`),
     });
     out.push({
       id: `merkez-tanimsiz-${c.key}`,
       category: 'merkez',
       categoryLabel: 'Merkez · Tanımsız',
+      categoryLabelEn: 'Center · Undefined',
       name: `Tanımsız ${c.name}`,
+      nameEn: `Undefined ${en(c, 'name')}`,
       subtitle: c.bio,
+      subtitleEn: en(c, 'bio'),
       aliases: [c.name, `tanimsiz ${c.name}`, c.undefined.title],
       body: c.undefined.desc,
+      bodyEn: en(c.undefined, 'desc'),
       details: [
         `Yanlış benlik sorusu: ${c.undefined.notSelfQuestion}`,
         `Bilgelik: ${c.undefined.wisdom}`,
+      ],
+      detailsEn: [
+        `Not-self question: ${en(c.undefined, 'notSelfQuestion')}`,
+        `Wisdom: ${en(c.undefined, 'wisdom')}`,
       ],
     });
   }
@@ -115,10 +155,14 @@ function buildEntries(): GlossaryEntry[] {
       id: `profil-${p.key}`,
       category: 'profil',
       categoryLabel: 'Profil',
+      categoryLabelEn: 'Profile',
       name: `${p.key} — ${p.name}`,
+      nameEn: `${p.key} — ${en(p, 'name')}`,
       subtitle: p.theme,
+      subtitleEn: en(p, 'theme'),
       aliases: [p.key, p.name, `profil ${p.key}`],
       body: p.longDesc,
+      bodyEn: en(p, 'longDesc'),
     });
   }
 
@@ -128,11 +172,16 @@ function buildEntries(): GlossaryEntry[] {
       id: `cizgi-${ln.number}`,
       category: 'cizgi',
       categoryLabel: 'Çizgi',
+      categoryLabelEn: 'Line',
       name: `${ln.number}. ${ln.name}`,
+      nameEn: `${ln.number}. ${en(ln, 'name')}`,
       subtitle: `Profil çizgisi · ${ln.number}`,
+      subtitleEn: `Profile line · ${ln.number}`,
       aliases: [`${ln.number}. cizgi`, ln.name, `cizgi ${ln.number}`],
       body: ln.shortDesc,
+      bodyEn: en(ln, 'shortDesc'),
       details: [`Gölge: ${ln.shadow}`],
+      detailsEn: [`Shadow: ${en(ln, 'shadow')}`],
     });
   }
 
