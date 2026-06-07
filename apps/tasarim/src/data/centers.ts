@@ -194,63 +194,99 @@ export const CENTERS: Record<CenterKey, CenterInfo> = {
   g: {
     key: 'g',
     name: 'G Merkezi (Self)',
+    nameEn: 'G Center (Self)',
     emoji: '✦',
     color: '#E8B547',
     bio: 'Karaciğer & kan',
+    bioEn: 'Liver & blood',
     function: 'Kimlik, sevgi ve yön. Hayatın geometrisi.',
+    functionEn: 'Identity, love and direction. The geometry of life.',
     isMotor: false,
     isPressure: false,
     isAwareness: false,
     gates: [1, 13, 25, 46, 2, 15, 10, 7],
     defined: {
       title: 'Tanımlı G: Sabit Kimlik ve Yön',
+      titleEn: 'Defined G: Fixed Identity and Direction',
       desc:
         'Kim olduğun ve nereye gittiğin sende sabit bir frekans olarak yaşar. Sevgi ve yön içsel bir pusulayla ilerler.',
+      descEn:
+        'Who you are and where you are going live in you as a fixed frequency. Love and direction move by way of an inner compass.',
       gifts: [
         'Sabit kimlik duygusu',
         'Net bir yaşam yönü',
         'Sevgide kararlılık',
       ],
+      giftsEn: [
+        'A stable sense of identity',
+        'A clear direction in life',
+        'Steadfastness in love',
+      ],
     },
     undefined: {
       title: 'Tanımsız G: Doğru Mekan ve Doğru İnsan',
+      titleEn: 'Undefined G: The Right Place and the Right People',
       desc:
         'Kimliğin ortama göre değişebilir; doğru mekan ve doğru insanlar yanında olduğunda kim olduğunu hissedersin. Kimliğini sabitlemek yerine yer ve insanı seçmeyi öğrenmek anahtardır.',
+      descEn:
+        'Your identity can change with the environment; you feel who you are when the right place and the right people are around you. The key is learning to choose place and people rather than fixing your identity.',
       notSelfQuestion:
         '"Kim olduğunu, nereye ait olduğunu sürekli arıyor musun?"',
+      notSelfQuestionEn:
+        '\'Are you constantly searching for who you are and where you belong?\'',
       wisdom:
         'Doğru mekanın sevgiyi açtığını bilmek; sabit kimliğe ihtiyacın olmadığını öğrenmek.',
+      wisdomEn:
+        'Knowing that the right place opens love; learning that you don\'t need a fixed identity.',
     },
   },
   heart: {
     key: 'heart',
     name: 'Kalp / Ego Merkezi',
+    nameEn: 'Heart / Ego Center',
     emoji: '👑',
     color: '#D9534F',
     bio: 'Kalp, mide, safra kesesi, timüs',
+    bioEn: 'Heart, stomach, gallbladder, thymus',
     function: 'İrade, ego, kendini ortaya koyma; "söz verme" gücü.',
+    functionEn: 'Willpower, ego, self-assertion; the power to \'make a promise\'.',
     isMotor: true,
     isPressure: false,
     isAwareness: false,
     gates: [21, 40, 26, 51],
     defined: {
       title: 'Tanımlı Kalp: Sabit İrade ve Söz',
+      titleEn: 'Defined Heart: Fixed Willpower and Promise',
       desc:
         'Kendine söz verebilir, sözünün arkasında durabilirsin. İrade gücün sabittir; ama dinlenmeyi de hak eden bir kasdır.',
+      descEn:
+        'You can make promises to yourself and stand behind your word. Your willpower is fixed; but it is a muscle that also deserves rest.',
       gifts: [
         'Söz verip tutma kapasitesi',
         'Materyal dünyada netlik',
         'Kendine güven',
       ],
+      giftsEn: [
+        'The capacity to make and keep promises',
+        'Clarity in the material world',
+        'Self-confidence',
+      ],
     },
     undefined: {
       title: 'Tanımsız Kalp: Kendini Kanıtlama Baskısı',
+      titleEn: 'Undefined Heart: The Pressure to Prove Oneself',
       desc:
         'Sahip olmadığın iradeyi sürekli kanıtlamaya çalışırsın. Söz verme acelesi ve kendini ispatlama yorgunluğu yanlış benliğin tuzağıdır.',
+      descEn:
+        'You keep trying to prove a willpower you don\'t have. The rush to make promises and the fatigue of proving yourself are the trap of the not-self.',
       notSelfQuestion:
         '"Aslında istemediğin halde söz verip yorgun düşüyor musun?"',
+      notSelfQuestionEn:
+        '\'Do you make promises you don\'t really want to and end up exhausted?\'',
       wisdom:
         'Kendini kanıtlamak zorunda olmadığını bilmek; kalbin gerçekten istediği şeyi anlamak.',
+      wisdomEn:
+        'Knowing you don\'t have to prove yourself; understanding what your heart truly wants.',
     },
   },
   solarPlexus: {
