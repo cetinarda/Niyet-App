@@ -2817,6 +2817,9 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  const [showFotoTani, setShowFotoTani] = useState(false);
+  const [fotoTaniResult, setFotoTaniResult] = useState("");
+  const [fotoTaniLoading, setFotoTaniLoading] = useState(false);
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
   const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
   // App Store Guideline 5.1.1(v) — account deletion. Modal + helper state.
@@ -3001,6 +3004,34 @@ export default function SakinApp() {
   const declineAiConsent = () => {
     setShowAiConsent(false);
     pendingAiAction.current = null;
+  };
+  // Foto-tanıma (Groq vision) — taş/bitki. Premium-gated + günlük AI limiti. Görsel
+  // canvas ile ~1024px'e küçültülüp jpeg base64 olarak gönderilir (küçük payload).
+  const identifyPhoto = async (file, type) => {
+    if (!file) return;
+    if (!isPremium) { setShowFotoTani(false); setScreen("fiyat"); return; }
+    if (!_aiDailyOk()) { setFotoTaniResult(_aiLimitMsg()); return; }
+    setFotoTaniLoading(true); setFotoTaniResult("");
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const max = 1024; let w = img.width, h = img.height;
+          if (w > max || h > max) { const s = max / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+          const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+          cv.getContext("2d").drawImage(img, 0, 0, w, h);
+          resolve(cv.toDataURL("image/jpeg", 0.82));
+        };
+        img.onerror = reject; img.src = URL.createObjectURL(file);
+      });
+      const r = await fetch(API_BASE + "/.netlify/functions/identify", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl, type, lang }),
+      });
+      const d = await r.json();
+      setFotoTaniResult(d.text || pickLang({ tr:"Tanıyamadım — daha net bir fotoğraf dener misin?", en:"I couldn't identify it — try a clearer photo?", de:"Ich konnte es nicht erkennen — versuch ein klareres Foto?", es:"No pude identificarlo — ¿pruebas una foto más clara?", pt:"Não consegui identificar — tentas uma foto mais nítida?", fr:"Je n'ai pas pu l'identifier — un cliché plus net ?", ja:"見分けられませんでした——もっと鮮明な写真で試してみて。" }, lang));
+    } catch { setFotoTaniResult(t("err_connection_full")); }
+    setFotoTaniLoading(false);
   };
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {
@@ -4257,6 +4288,33 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {/* SAKİN AİLESİ PANELİ */}
+      {showFotoTani && (
+        <div onClick={()=>setShowFotoTani(false)} style={{ position:"fixed",inset:0,zIndex:10006,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",background:"linear-gradient(160deg,rgba(28,24,40,0.98),rgba(16,14,26,0.98))",border:"1px solid rgba(160,216,216,0.22)",borderRadius:20,padding:"26px 22px",maxHeight:"85vh",overflowY:"auto" }}>
+            <div style={{ textAlign:"center",fontSize:34,marginBottom:6 }}>📷</div>
+            <div style={{ textAlign:"center",fontSize:17,color:"#e8dcff",fontFamily:"'Jost',sans-serif",letterSpacing:1,marginBottom:6 }}>{pickLang({tr:"Fotoğraftan Tanı",en:"Identify by Photo",de:"Per Foto erkennen",es:"Identificar por foto",pt:"Identificar por foto",fr:"Identifier par photo",ja:"写真で見分ける"}, lang)}</div>
+            <div style={{ textAlign:"center",fontSize:12.5,color:"#9a8fb5",marginBottom:18,lineHeight:1.6 }}>{pickLang({tr:"Net, yakın bir fotoğraf en iyi sonucu verir.",en:"A clear, close photo gives the best result.",de:"Ein klares, nahes Foto liefert das beste Ergebnis.",es:"Una foto clara y cercana da el mejor resultado.",pt:"Uma foto nítida e próxima dá o melhor resultado.",fr:"Une photo nette et rapprochée donne le meilleur résultat.",ja:"鮮明で近い写真が最良の結果に。"}, lang)}</div>
+            {fotoTaniLoading ? (
+              <div style={{ textAlign:"center",padding:"22px 0",color:"#888",letterSpacing:3,animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
+            ) : fotoTaniResult ? (
+              <>
+                <div style={{ fontSize:14,color:"#d8cce8",lineHeight:1.95,whiteSpace:"pre-wrap",marginBottom:16,padding:"14px 16px",background:"rgba(255,255,255,0.03)",borderRadius:12,border:"1px solid rgba(255,255,255,0.07)" }}>{fotoTaniResult}</div>
+                <button onClick={()=>setFotoTaniResult("")} style={{ display:"block",width:"100%",padding:"12px 0",background:"rgba(160,216,216,0.14)",border:"1px solid rgba(160,216,216,0.3)",borderRadius:24,color:"#cfeaea",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>{pickLang({tr:"Yeni fotoğraf",en:"New photo",de:"Neues Foto",es:"Nueva foto",pt:"Nova foto",fr:"Nouvelle photo",ja:"新しい写真"}, lang)}</button>
+              </>
+            ) : (
+              <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
+                {[["stone","💎",{tr:"Taş fotoğrafı",en:"Stone photo",de:"Steinfoto",es:"Foto de piedra",pt:"Foto de pedra",fr:"Photo de pierre",ja:"石の写真"}],["plant","🌿",{tr:"Bitki fotoğrafı",en:"Plant photo",de:"Pflanzenfoto",es:"Foto de planta",pt:"Foto de planta",fr:"Photo de plante",ja:"植物の写真"}]].map(([ty,ic,lbl])=>(
+                  <label key={ty} style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"14px 0",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:14,color:"#e0d8f0",fontSize:14.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                    <span style={{ fontSize:20 }}>{ic}</span>{pickLang(lbl, lang)}
+                    <input type="file" accept="image/*" capture="environment" style={{ display:"none" }} onChange={e=>identifyPhoto(e.target.files && e.target.files[0], ty)} />
+                  </label>
+                ))}
+              </div>
+            )}
+            <button onClick={()=>setShowFotoTani(false)} style={{ display:"block",margin:"16px auto 0",background:"none",border:"none",color:"#777",fontSize:12.5,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>{pickLang({tr:"Kapat",en:"Close",de:"Schließen",es:"Cerrar",pt:"Fechar",fr:"Fermer",ja:"閉じる"}, lang)}</button>
+          </div>
+        </div>
+      )}
       {showAilesi && (
         <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:20 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
@@ -4370,6 +4428,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </button>
               </div>
             ))}
+            {/* Foto-tanıma — taş & bitki (premium, Groq vision) */}
+            <div style={{ background:"rgba(160,216,216,0.05)",border:"1px solid rgba(160,216,216,0.18)",borderRadius:16,padding:"16px 18px" }}>
+              <button onClick={()=>{ setFotoTaniResult(""); setShowFotoTani(true); }}
+                style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
+                <div style={{ width:48,height:48,borderRadius:"50%",background:"radial-gradient(circle,#a0d8d844,#a0d8d811)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>📷</div>
+                <div style={{ flex:1,minWidth:0 }}>
+                  <div style={{ fontSize:15,fontWeight:500,color:"#fff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{pickLang({tr:"Fotoğraftan Tanı",en:"Identify by Photo",de:"Per Foto erkennen",es:"Identificar por foto",pt:"Identificar por foto",fr:"Identifier par photo",ja:"写真で見分ける"}, lang)}</div>
+                  <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{pickLang({tr:"Taşın ya da bitkinin fotoğrafını çek, hangisi olduğunu öğren.",en:"Photograph a stone or plant to learn what it is.",de:"Fotografiere einen Stein oder eine Pflanze.",es:"Fotografía una piedra o planta para saber qué es.",pt:"Fotografa uma pedra ou planta para saber o que é.",fr:"Photographie une pierre ou une plante.",ja:"石や植物を撮って、何かを知ろう。"}, lang)}</div>
+                </div>
+                <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
+              </button>
+            </div>
             {/* Policy mini-linkler — top-nav iOS feature ekranlarında gizli, buradan erişim */}
             <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
               {[
