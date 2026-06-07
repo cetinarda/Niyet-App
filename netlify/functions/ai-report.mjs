@@ -282,7 +282,7 @@ export const handler = async (event) => {
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         max_tokens: MAX_MAX_TOKENS,
-        temperature: 0.2,
+        temperature: 0.85,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
