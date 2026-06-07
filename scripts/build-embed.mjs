@@ -51,6 +51,7 @@ const EMBED_DIR = {
   hayvan: "sakinhayvan",
   tasarim: "humandesign",
   taslar: "sakintaslar",
+  bitkiler: "sakinbitkiler",
 };
 
 // Injected verbatim right before </head> in the exported index.html.
