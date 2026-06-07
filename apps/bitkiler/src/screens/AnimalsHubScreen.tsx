@@ -9,7 +9,6 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { AnimalLibraryScreen } from './AnimalLibraryScreen';
-import { AnimalFinderScreen } from './AnimalFinderScreen';
 import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
 
@@ -76,7 +75,6 @@ export function AnimalsHubScreen() {
       {/* Panel content fills remaining space */}
       <View style={styles.body}>
         {panel === 'library' && <AnimalLibraryScreen onClose={noClose} embedded />}
-        {panel === 'finder'  && <AnimalFinderScreen  onClose={noClose} embedded prefillBirthDate={profile?.birthDate} prefillBirthHour={profile?.birthHour} prefillBirthCity={profile?.birthCity} />}
       </View>
     </View>
   );
