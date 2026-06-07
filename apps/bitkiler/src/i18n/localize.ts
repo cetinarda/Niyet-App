@@ -6,6 +6,7 @@ import animalsData from '../data/animals.json';
 import quotesData from '../data/quotes.json';
 import nagualsData from '../data/naguals.json';
 import stonesData from '../data/stones.json';
+import plantsData from '../data/plants.json';
 import philosophersData from '../data/philosophers.json';
 import { getAnimalLore } from '../data/animalLore';
 
@@ -60,6 +61,11 @@ export function useLocalizedNaguals() {
 export function useLocalizedStones() {
   const lang = useLang();
   return useMemo(() => localizeAll(stonesData as any[], lang), [lang]);
+}
+
+export function useLocalizedPlants() {
+  const lang = useLang();
+  return useMemo(() => localizeAll(plantsData as any[], lang), [lang]);
 }
 
 type Bilingual = { tr: string; en: string };
