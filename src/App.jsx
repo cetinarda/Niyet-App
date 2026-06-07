@@ -1804,7 +1804,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
 
   // Bağlantı tamamlanma akoru: 3 çan eş zamanlı
   const playConnectedChord = () => {
-    [396, 528, 660].forEach((f, i) => setTimeout(() => playChime(f, 0.16, 3.5), i*180));
+    [396, 528, 660].forEach((f, i) => setTimeout(() => playChime(f, 0.11, 3.5), i*180));
   };
 
   useEffect(() => {
@@ -1816,9 +1816,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         const next = e + 1;
         if (next === dur) setShowCloseEyes(true);
         const rem = dur - next;
-        if (rem === 7) playChime(396, 0.14, 2.0);
-        if (rem === 5) playChime(432, 0.16, 2.0);
-        if (rem === 3) playChime(528, 0.18, 2.2);
+        if (rem === 7) playChime(396, 0.10, 2.0);
+        if (rem === 5) playChime(432, 0.11, 2.0);
+        if (rem === 3) playChime(528, 0.12, 2.2);
         if (next === dur) {
           setTPhase("connected");
           const prev = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
@@ -1840,7 +1840,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         utt.lang = "en-US";
         utt.rate = 0.78;
         utt.pitch = 0.9;
-        utt.volume = 0.85;
+        utt.volume = 0.55;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utt);
       }, 1400);
@@ -2104,7 +2104,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       <div style={{ fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.3)",marginBottom:28 }}>{t("terapi_duration")}</div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
-        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); playChime(528, 0.22, 3.5); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
+        <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); playChime(528, 0.15, 3.5); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
       </div>
     </div>
   );
@@ -2670,7 +2670,7 @@ export default function SakinApp() {
       birdAudioRef.current = null;
     }
   };
-  const playBirdSound = (birdKey, vol = 0.3) => {
+  const playBirdSound = (birdKey, vol = 0.22) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
@@ -5989,7 +5989,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const allOscs = [];
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
-            master.gain.linearRampToValueAtTime(0.22, ctx.currentTime + 2);
+            master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 2);
             master.connect(ctx.destination); freqGainRef.current = master;
             const lfo = ctx.createOscillator();
             const lfoGain = ctx.createGain();
@@ -6001,13 +6001,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
-              g.gain.linearRampToValueAtTime(0.22 * amp, ctx.currentTime + 2);
+              g.gain.linearRampToValueAtTime(0.16 * amp, ctx.currentTime + 2);
               o.connect(g); g.connect(master); o.start();
               allOscs.push(o);
               if (ratio === 1) { freqOscRef.current = o; }
             });
             freqOscsRef.current = allOscs;
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.5 : 0.3);
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.38 : 0.22);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
@@ -6504,84 +6504,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </div>
                       )}
                       {!kozmikLoading && kozmikData && (() => {
+                        const moon = kozmikData.moon;
+                        const f = kozmikData.solar_flares_24h;
+                        const w = kozmikData.solar_wind;
                         return (
                         <>
-
-                          <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
-                            <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                              {t("mirror_geo_activity")}
-                            </div>
-                            <div style={{ fontSize:18,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>
-                              Kp = {kozmikData.past_7_days.current_kp} · <span style={{ color:"#a888d0",fontStyle:"italic",textTransform:"capitalize" }}>{pickLang(kozmikData.interpretation.current, lang)}</span>
-                            </div>
+                          {/* Ay evresi — görsel başlık */}
+                          <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
+                            <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
+                            {moon && (
+                              <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
+                                {pickLang(moon.label, lang)} · %{moon.illumination}
+                              </div>
+                            )}
                           </div>
 
-                          <div style={{ marginBottom:14 }}>
-                            <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:8 }}>
-                              {t("mirror_past_7_days")}
-                            </div>
-                            <div style={{ display:"flex",alignItems:"flex-end",justifyContent:"space-between",gap:4,height:80,marginBottom:6 }}>
-                              {kozmikData.past_7_days.daily.map(d=>{
-                                const h = Math.max(8, (d.kp/9)*70);
-                                const color = d.kp<3?"#82d9a3":d.kp<5?"#d9c682":d.kp<6?"#d99a82":"#e06a6a";
-                                return (
-                                  <div key={d.day} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
-                                    <div style={{ fontSize:10,color:"#aaa",fontFamily:"'Jost',sans-serif" }}>{d.kp}</div>
-                                    <div style={{ width:"100%",height:h,background:`linear-gradient(180deg,${color}cc,${color}55)`,borderRadius:"4px 4px 0 0",border:`1px solid ${color}aa` }} />
-                                    <div style={{ fontSize:9,color:"#666",letterSpacing:0.5 }}>{d.day.slice(5).replace("-","/")}</div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            <div style={{ fontSize:12,color:"#999",lineHeight:1.6 }}>
-                              {t("mirror_week_summary").replace("{avg}", String(kozmikData.past_7_days.avg_kp)).replace("{max}", String(kozmikData.past_7_days.max_kp)).replace("{label}", pickLang(kozmikData.interpretation.week_peak, lang))}
-                            </div>
-                          </div>
-
-                          {kozmikData.next_3_days.forecast_max_kp !== null && (
-                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {t("mirror_next_3_days")}
-                              </div>
-                              <div style={{ fontSize:14,color:"#c0a0e8" }}>
-                                {t("mirror_forecast_text").replace("{max}", String(kozmikData.next_3_days.forecast_max_kp)).replace("{label}", pickLang(kozmikData.interpretation.forecast_peak, lang) || "")}
-                              </div>
+                          {/* TEK BİRLEŞİK HAVA DURUMU RAPORU */}
+                          {kozmikData.report && (
+                            <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:16 }}>
+                              {pickLang(kozmikData.report, lang)}
                             </div>
                           )}
 
-                          {/* GÜNEŞ PATLAMALARI (son 24 saat) */}
-                          {kozmikData.solar_flares_24h && (
-                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {t("mirror_solar_flares")}
-                              </div>
-                              {kozmikData.solar_flares_24h.count === 0 ? (
-                                <div style={{ fontSize:14,color:"#82d9a3" }}>{t("mirror_quiet_flares")}</div>
-                              ) : (
-                                <div style={{ fontSize:14,color:"#d0c0f0" }}>
-                                  {kozmikData.solar_flares_24h.count}× · {t("mirror_max_short")} <span style={{ color: kozmikData.solar_flares_24h.max_class?.[0]==="X" ? "#e06a6a" : kozmikData.solar_flares_24h.max_class?.[0]==="M" ? "#d99a82" : "#d9c682", fontWeight:500 }}>{kozmikData.solar_flares_24h.max_class}</span>
-                                  {kozmikData.interpretation.flares && <span style={{ color:"#888",fontStyle:"italic" }}> · {pickLang(kozmikData.interpretation.flares, lang)}</span>}
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {/* GÜNEŞ RÜZGARI (DSCOVR) */}
-                          {kozmikData.solar_wind && kozmikData.solar_wind.speed != null && (
-                            <div style={{ marginBottom:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:6 }}>
-                                {t("mirror_solar_wind")}
-                              </div>
-                              <div style={{ fontSize:14,color:"#d0c0f0" }}>
-                                {kozmikData.solar_wind.speed} km/s
-                                {kozmikData.solar_wind.density != null && <span style={{ color:"#888" }}> · {kozmikData.solar_wind.density} p/cm³</span>}
-                                {kozmikData.interpretation.wind && <span style={{ color:"#888",fontStyle:"italic" }}> · {pickLang(kozmikData.interpretation.wind, lang)}</span>}
-                              </div>
-                            </div>
-                          )}
-
-                          <div style={{ fontSize:11,color:"#777",lineHeight:1.7,paddingTop:10,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                            {t("mirror_noaa_legend")}
+                          {/* Küçük veri satırı — NOAA + hesaplama (meraklı için) */}
+                          <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
+                            <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
+                            <span>☀️ {f && f.count>0 ? f.max_class : "—"}</span>
+                            {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
+                            {moon && <span>{moon.emoji} {moon.illumination}%</span>}
+                            {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
                           </div>
                           <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
                             {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
