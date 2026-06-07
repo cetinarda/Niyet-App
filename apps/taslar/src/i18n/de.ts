@@ -64,6 +64,7 @@ export const de = {
       todayMessage: 'Was er dir heute sagt',
       affirmation: 'AFFIRMATION',
       origin: 'Herkunft',
+      myth: 'Mythos & Legende',
       chakra: 'Chakra',
       plant: 'Begleitpflanze',
       howToUse: 'Anwendung',

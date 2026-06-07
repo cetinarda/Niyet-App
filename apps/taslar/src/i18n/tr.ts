@@ -64,6 +64,7 @@ export const tr = {
       todayMessage: 'Bugün Sana Söylediği',
       affirmation: 'OLUMLAMA',
       origin: 'Kökeni',
+      myth: 'Efsane & Mit',
       chakra: 'Çakra',
       plant: 'Eşlik Eden Bitki',
       howToUse: 'Nasıl Kullanılır',
@@ -86,7 +87,6 @@ export const tr = {
       birthStoneTitle: 'Doğum Taşın',
       zodiacLabel: 'Burcuna Göre',
       elementLabel: 'Unsuruna Göre',
-      elementHint: 'Her kristal bir doğa unsuruyla titreşir; unsurun burcundan gelir — ateş: Koç·Aslan·Yay · toprak: Boğa·Başak·Oğlak · hava: İkizler·Terazi·Kova · su: Yengeç·Akrep·Balık.',
     },
     elements: {
       fire: 'Ateş',

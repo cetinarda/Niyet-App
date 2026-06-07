@@ -108,6 +108,12 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
           </Section>
         )}
 
+        {!!(stone as any).myth && (
+          <Section title={t('animalDetail.sections.myth')} color={Colors.gold}>
+            <Text style={styles.body}>{(stone as any).myth}</Text>
+          </Section>
+        )}
+
         {!!stone.plant && (
           <Section title={t('animalDetail.sections.plant')} color={Colors.sakinMoonstone}>
             <Text style={styles.body}>{stone.plant}</Text>

@@ -196,7 +196,6 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Prop
 
           {/* Element */}
           <Text style={styles.sectionLabel}>{t('animalFinder.intro.elementLabel')}</Text>
-          <Text style={styles.sectionHint}>{t('animalFinder.intro.elementHint')}</Text>
           <View style={styles.elementRow}>
             {ELEMENTS.map(e => (
               <TouchableOpacity
@@ -325,12 +324,6 @@ const styles = StyleSheet.create({
     fontSize: Typography.size.xs, color: Colors.textSecondary,
     letterSpacing: 2, textTransform: 'uppercase',
     marginBottom: Spacing.sm, marginTop: Spacing.xs,
-  },
-  sectionHint: {
-    alignSelf: 'flex-start',
-    fontSize: Typography.size.xs, color: Colors.textMuted,
-    lineHeight: Typography.size.xs * 1.7,
-    opacity: 0.75, marginTop: -Spacing.xs, marginBottom: Spacing.sm,
   },
 
   // Zodiac grid

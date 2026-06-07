@@ -64,6 +64,7 @@ export const ja = {
       todayMessage: '今日あなたへのメッセージ',
       affirmation: 'アファメーション',
       origin: '産地',
+      myth: '神話と伝説',
       chakra: 'チャクラ',
       plant: '寄り添う植物',
       howToUse: '使い方',

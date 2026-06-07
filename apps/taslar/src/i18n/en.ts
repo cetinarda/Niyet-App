@@ -64,6 +64,7 @@ export const en = {
       todayMessage: 'What It Tells You Today',
       affirmation: 'AFFIRMATION',
       origin: 'Origin',
+      myth: 'Myth & Legend',
       chakra: 'Chakra',
       plant: 'Companion Plant',
       howToUse: 'How to Use',
@@ -86,7 +87,6 @@ export const en = {
       birthStoneTitle: 'Your Birthstone',
       zodiacLabel: 'By Zodiac',
       elementLabel: 'By Element',
-      elementHint: 'Each crystal vibrates with a natural element; yours comes from your sign — fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
     },
     elements: {
       fire: 'Fire',
