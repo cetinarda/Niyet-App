@@ -5,8 +5,14 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ElementDistribution, ELEMENT_META, ElementKey, elementInterpretation } from '../utils/elements';
 import { ElementPie } from './ElementPie';
+import { getLang } from '../i18n';
 
 const ORDER: ElementKey[] = ['ates', 'toprak', 'hava', 'su'];
+
+// Element adı — dile göre.
+function elemName(k: ElementKey): string {
+  return getLang() === 'en' ? ELEMENT_META[k].en : ELEMENT_META[k].tr;
+}
 
 export function ElementDetail({ dist, visible, onClose }: {
   dist: ElementDistribution; visible: boolean; onClose: () => void;
@@ -33,17 +39,17 @@ export function ElementDetail({ dist, visible, onClose }: {
         <View style={[styles.sheet, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 16 }]}>
           <View style={styles.handleRow}>
             <View style={styles.handle} />
-            <TouchableOpacity style={styles.closeBtn} onPress={onClose} accessibilityRole="button" accessibilityLabel="Kapat">
+            <TouchableOpacity style={styles.closeBtn} onPress={onClose} accessibilityRole="button" accessibilityLabel={getLang() === 'en' ? 'Close' : 'Kapat'}>
               <Text style={styles.closeTxt}>✕</Text>
             </TouchableOpacity>
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 24 }}>
-            <Text style={styles.kicker}>KOZMİK AĞIRLIK</Text>
-            <Text style={styles.title}>Element Dengen</Text>
+            <Text style={styles.kicker}>{getLang() === 'en' ? 'COSMIC WEIGHT' : 'KOZMİK AĞIRLIK'}</Text>
+            <Text style={styles.title}>{getLang() === 'en' ? 'Your Element Balance' : 'Element Dengen'}</Text>
 
             <View style={{ alignItems: 'center', marginVertical: 18 }}>
-              <ElementPie dist={dist} size={156} lang="tr" />
+              <ElementPie dist={dist} size={156} lang={getLang()} />
             </View>
 
             {/* Baskın element kartı */}

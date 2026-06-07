@@ -7,6 +7,7 @@ import { TYPES } from '../data/types';
 import { AUTHORITIES } from '../data/authorities';
 import { HumanDesignChart } from '../utils/humanDesign';
 import { SavedProfile } from '../store/useStore';
+import { L, getLang } from '../i18n';
 
 // Instagram Story: 1080x1920 (9:16). React Native birimi olarak 540x960
 // kullanıp 2× capture ile 1080x1920 PNG üretiyoruz.
@@ -37,7 +38,7 @@ export function StoryCard({ profile, chart }: Props) {
       {/* Üst marka */}
       <View style={styles.topBlock}>
         <Text style={styles.brand}>SAKİN · TASARIM</Text>
-        <Text style={styles.subBrand}>Human Design Kimliği</Text>
+        <Text style={styles.subBrand}>{getLang() === 'en' ? 'Human Design Identity' : 'Human Design Kimliği'}</Text>
       </View>
 
       {/* Foto halkası */}
@@ -56,9 +57,9 @@ export function StoryCard({ profile, chart }: Props) {
 
       {/* İsim ve tip */}
       <Text style={styles.name} numberOfLines={2}>{profile.name}</Text>
-      <Text style={styles.type}>{chart.type}</Text>
+      <Text style={styles.type}>{L(t, 'name')}</Text>
       <Text style={styles.subMeta}>
-        {chart.profile} · {a.name.replace(' Yetki', '')}
+        {chart.profile} · {getLang() === 'en' ? L(a, 'name').replace(' Authority', '') : a.name.replace(' Yetki', '')}
       </Text>
 
       {/* Bodygraph */}
@@ -68,12 +69,27 @@ export function StoryCard({ profile, chart }: Props) {
 
       {/* Stat grid 2x3 */}
       <View style={styles.statsGrid}>
-        <Stat label="STRATEJİ" value={chart.strategy} />
-        <Stat label="İMZA" value={chart.signature} />
-        <Stat label="YANLIŞ" value={chart.notSelf} />
-        <Stat label="TANIM" value={chart.definition.split(' ')[0]} />
-        <Stat label="KAPI" value={`${chart.activeGates.size} / 64`} />
-        <Stat label="MERKEZ" value={`${chart.definedCenters.size} / 9`} />
+        <Stat label={getLang() === 'en' ? 'STRATEGY' : 'STRATEJİ'} value={L(t, 'strategy')} />
+        <Stat label={getLang() === 'en' ? 'SIGNATURE' : 'İMZA'} value={L(t, 'signature')} />
+        <Stat label={getLang() === 'en' ? 'NOT-SELF' : 'YANLIŞ'} value={L(t, 'notSelf')} />
+        <Stat
+          label={getLang() === 'en' ? 'DEFINITION' : 'TANIM'}
+          value={
+            getLang() === 'en'
+              ? (chart.definition.startsWith('Tek')
+                  ? 'Single'
+                  : chart.definition.startsWith('Bölünmüş')
+                  ? 'Split'
+                  : chart.definition.startsWith('Üçlü')
+                  ? 'Triple'
+                  : chart.definition.startsWith('Dörtlü')
+                  ? 'Quadruple'
+                  : 'None')
+              : chart.definition.split(' ')[0]
+          }
+        />
+        <Stat label={getLang() === 'en' ? 'GATE' : 'KAPI'} value={`${chart.activeGates.size} / 64`} />
+        <Stat label={getLang() === 'en' ? 'CENTER' : 'MERKEZ'} value={`${chart.definedCenters.size} / 9`} />
       </View>
 
       {/* Alt blok */}

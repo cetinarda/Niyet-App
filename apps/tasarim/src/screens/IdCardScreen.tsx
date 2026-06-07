@@ -293,21 +293,24 @@ export function IdCardScreen({ onClose }: Props) {
             onPress={shareCard}
             disabled={sharing !== null}
             accessibilityRole="button"
-            accessibilityLabel="Kartı indir"
+            accessibilityLabel={getLang() === 'en' ? 'Download card' : 'Kartı indir'}
           >
             {sharing === 'card'
               ? <ActivityIndicator color={Colors.gold} />
               : (
                 <Text style={styles.btnText}>
-                  {Platform.OS === 'web' ? 'Kart olarak indir' : 'Kart olarak paylaş'}
+                  {Platform.OS === 'web'
+                    ? (getLang() === 'en' ? 'Download as card' : 'Kart olarak indir')
+                    : (getLang() === 'en' ? 'Share as card' : 'Kart olarak paylaş')}
                 </Text>
               )}
           </TouchableOpacity>
         </View>
 
         <Text style={styles.note}>
-          Instagram Story tam boyut (9:16, 1080×1920). Fotoğrafın yalnızca cihazında
-          saklanır; AI servis çağrısı yapılmaz, sakin paleti lokal olarak uygulanır.
+          {getLang() === 'en'
+            ? 'Instagram Story full size (9:16, 1080×1920). Your photo is stored only on your device; no AI service call is made, the Sakin palette is applied locally.'
+            : 'Instagram Story tam boyut (9:16, 1080×1920). Fotoğrafın yalnızca cihazında saklanır; AI servis çağrısı yapılmaz, sakin paleti lokal olarak uygulanır.'}
         </Text>
 
         {/* OFF-SCREEN StoryCard — capture için render edilir, görünmez */}
