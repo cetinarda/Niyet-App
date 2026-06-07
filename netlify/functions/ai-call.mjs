@@ -9,6 +9,27 @@
 // For production-grade protection use a shared store (Upstash Redis, Netlify Blobs).
 // Documented in the security-hardening pass.
 
+// ---- RAG: kitap bilgi havuzu (lexical retrieval — özgün, kitap-temelli sentez) -
+import BOOK_CHUNKS from "./book-chunks.json";
+const _RAG_STOP = new Set(["ve","ile","bir","bu","için","ama","gibi","daha","çok","her","ben","sen","biz","ya","de","da","ki","olan","the","and","that","this","with","ama","ise","ya"]);
+function _ragTokens(s) {
+  return String(s || "").toLowerCase().replace(/[^a-zçğıöşü0-9\s]/gi, " ").split(/\s+/).filter((w) => w.length >= 4 && !_RAG_STOP.has(w));
+}
+// Sorguyla en alakalı kitap pasajlarını döndür (anahtar-kelime örtüşmesi).
+function retrieveBookPassages(query, k = 5) {
+  const qt = [...new Set(_ragTokens(query))];
+  if (!qt.length) return [];
+  const scored = [];
+  for (const c of BOOK_CHUNKS) {
+    const ct = c.t.toLowerCase();
+    let score = 0;
+    for (const w of qt) if (ct.includes(w)) score++;
+    if (score > 1) scored.push({ score, c });
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, k).map((x) => x.c);
+}
+
 // ---- CORS / origin allowlist -------------------------------------------------
 
 // Production-allowed exact origins.
@@ -249,8 +270,20 @@ export const handler = async (event) => {
 
   // ---- Build upstream payload ---
   const langDirective = buildLanguageDirective(lang);
+  let systemContent = langDirective + (system || "");
+  // RAG: istemci ragQuery gönderdiyse, en alakalı kitap pasajlarını sistem prompt'una harmanla.
+  // Opsiyonel — ragQuery yoksa davranış AYNI (mevcut çağrılar hiç etkilenmez).
+  if (typeof body.ragQuery === "string" && body.ragQuery.trim().length >= 3 && body.ragQuery.length <= 1200) {
+    try {
+      const passages = retrieveBookPassages(body.ragQuery, 5);
+      if (passages.length) {
+        const ragText = passages.map((p) => `(${p.b}) ${p.t}`).join("\n\n");
+        systemContent += `\n\nİLGİLİ KİTAP BİLGELİĞİ (aşağıdaki pasajlardaki özü yorumuna DOĞAL biçimde harmanla; alıntı yapma, kitap/kaynak adı yazma, kopyalama — yalnızca ruhunu sentezle):\n${ragText}`;
+      }
+    } catch (_) { /* RAG başarısızsa sessiz geç — normal akış sürer */ }
+  }
   const groqMessages = [
-    { role: "system", content: langDirective + (system || "") },
+    { role: "system", content: systemContent },
     ...messages.map((m) => ({ role: m.role, content: m.content })),
   ];
 

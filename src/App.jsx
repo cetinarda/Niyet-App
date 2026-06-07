@@ -3609,6 +3609,7 @@ export default function SakinApp() {
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
           system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+          ragQuery: chakraInput,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
 
 İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
@@ -3785,6 +3786,7 @@ BEDEN-ZİHİN BAĞLANTISI:
           model:"llama-3.3-70b-versatile", max_tokens:1200, lang,
           system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+          ragQuery: semptomInput,
           messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
 
 ${REIKI_BILGI}
@@ -3838,6 +3840,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
           system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+          ragQuery: sikayet,
           messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -3888,6 +3891,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           model:"llama-3.3-70b-versatile", max_tokens:1300, lang,
           system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+          ragQuery: hastalik,
           messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
 
 ${REIKI_BILGI}
@@ -4056,6 +4060,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 **Intention for Next Week** — A short, inspiring suggestion${astro ? "\n**Cosmic Note** — A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State** — Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
 
 Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
+          ragQuery: (gunlerText || "").slice(0, 500),
           messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
