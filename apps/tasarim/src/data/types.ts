@@ -18,6 +18,17 @@ export interface TypeInfo {
   longDesc: string;
   pracicalTips: string[];
   keywords: string[];
+  // İngilizce kardeş alanlar (opsiyonel) — L() bunları EN modunda döndürür.
+  nameEn?: string;
+  oranEn?: string;
+  auraEn?: string;
+  signatureEn?: string;
+  notSelfEn?: string;
+  strategyEn?: string;
+  rolePrimaryEn?: string;
+  shortDescEn?: string;
+  longDescEn?: string;
+  pracicalTipsEn?: string[];
 }
 
 export const TYPES: Record<HDType, TypeInfo> = {
@@ -41,6 +52,23 @@ export const TYPES: Record<HDType, TypeInfo> = {
       'Dinlenme döngülerine alan aç; sürekli üretim için tasarlanmadın.',
     ],
     keywords: ['Başlatma', 'Etki', 'Bağımsızlık', 'İmpakt'],
+    nameEn: 'Manifestor',
+    oranEn: '~9%',
+    auraEn: 'Repelling, closed',
+    signatureEn: 'Peace',
+    notSelfEn: 'Anger',
+    strategyEn: 'Inform',
+    rolePrimaryEn: 'Initiator',
+    shortDescEn:
+      'An independent initiator designed to start new cycles. Their aura repels others, which lets their impact carry across a wide field.',
+    longDescEn:
+      'Manifestors are the rare type with the power to initiate without anyone’s permission. Their Sacral center is undefined; they don’t carry sustainable work energy, but their capacity to set things in motion, to begin, and to leave an impact is high. To avoid angering those around them, their strategy is to inform: briefly letting the people who will be affected know before they act softens the aura and keeps them from meeting resistance. When living correctly, they feel peace; when living out of alignment, anger and isolation arise.',
+    pracicalTipsEn: [
+      'Inform those around you before you act — it’s a heads-up, not a request for permission.',
+      'You may have built a protective shell against being controlled in childhood; notice it.',
+      'Keep spaces where you can work alone to protect your energy.',
+      'Make room for rest cycles; you weren’t designed for constant output.',
+    ],
   },
   'Jeneratör': {
     type: 'Jeneratör',
