@@ -2494,6 +2494,95 @@ function LangPicker({ lang, setLang, compact = false }) {
   );
 }
 
+// "Sakin nedir?" — 10 madde (hakkinda > nedir sekmesi). Host dilinde gösterilir,
+// çevirisi olmayan dil en'e, o da yoksa tr'ye düşer.
+const ABOUT_MADDELER = {
+  tr: [
+    "Sakin sana bir şey öğretmez — sadece hatırlatır.",
+    "Meditasyon değil, terapi değil, yapılacaklar listesi değil; bir farkındalık sistemi.",
+    "Her gün seni kendine döndüren küçük bir duraktır.",
+    "Doğum haritan, biyoritmin ve niyetinle kişiye özeldir.",
+    "Nefes, çakra ve günün enerjisiyle bedenini ve zihnini dengeler.",
+    "Yapay zeka değil; seni dinleyen, yargılamayan bir ayna.",
+    "Sakin Ailesi: Hayvan · Mitler · Tasarım · Taşlar · Bitkiler — her biri ayrı bir kapı.",
+    "Panik anında tek dokunuşla seni sakinleştiren nefese götürür.",
+    "Veri toplamaz, seni satmaz; yolculuğun sana aittir.",
+    "Hızlanan dünyada yavaşlamayı hatırlatan sessiz bir dost.",
+  ],
+  en: [
+    "Sakin doesn't teach you anything — it simply reminds you.",
+    "Not meditation, not therapy, not a to-do list; an awareness system.",
+    "A small daily pause that returns you to yourself.",
+    "Personal to you — through your birth chart, biorhythm and intention.",
+    "Balances body and mind with breath, chakra and the day's energy.",
+    "Not an AI; a mirror that listens without judging.",
+    "The Sakin Family: Animal · Myths · Design · Stones · Plants — each a separate door.",
+    "In a moment of panic, one tap takes you to a calming breath.",
+    "It collects no data and never sells you; your journey is your own.",
+    "A quiet companion that reminds you to slow down in a racing world.",
+  ],
+  de: [
+    "Sakin lehrt dich nichts — es erinnert dich nur.",
+    "Keine Meditation, keine Therapie, keine To-do-Liste; ein Bewusstseinssystem.",
+    "Eine kleine tägliche Pause, die dich zu dir selbst zurückbringt.",
+    "Persönlich für dich — durch dein Geburtshoroskop, deinen Biorhythmus und deine Absicht.",
+    "Bringt Körper und Geist mit Atem, Chakra und der Energie des Tages ins Gleichgewicht.",
+    "Keine KI; ein Spiegel, der zuhört, ohne zu urteilen.",
+    "Die Sakin-Familie: Tier · Mythen · Design · Steine · Pflanzen — jede eine eigene Tür.",
+    "In einem Moment der Panik führt dich ein Tippen zu einem beruhigenden Atemzug.",
+    "Es sammelt keine Daten und verkauft dich nie; deine Reise gehört dir.",
+    "Ein stiller Begleiter, der dich erinnert, in einer rasenden Welt langsamer zu werden.",
+  ],
+  es: [
+    "Sakin no te enseña nada: simplemente te recuerda.",
+    "No es meditación, ni terapia, ni una lista de tareas; un sistema de conciencia.",
+    "Una pequeña pausa diaria que te devuelve a ti mismo.",
+    "Personal para ti: a través de tu carta natal, tu biorritmo y tu intención.",
+    "Equilibra cuerpo y mente con la respiración, los chakras y la energía del día.",
+    "No es una IA; un espejo que escucha sin juzgar.",
+    "La Familia Sakin: Animal · Mitos · Diseño · Piedras · Plantas, cada una una puerta.",
+    "En un momento de pánico, un toque te lleva a una respiración calmante.",
+    "No recopila datos ni te vende nunca; tu viaje es tuyo.",
+    "Un compañero silencioso que te recuerda ir más despacio en un mundo acelerado.",
+  ],
+  pt: [
+    "Sakin não te ensina nada — apenas te lembra.",
+    "Não é meditação, nem terapia, nem uma lista de tarefas; um sistema de consciência.",
+    "Uma pequena pausa diária que te devolve a você mesmo.",
+    "Personalizado para você — pelo seu mapa natal, seu biorritmo e sua intenção.",
+    "Equilibra corpo e mente com respiração, chakras e a energia do dia.",
+    "Não é uma IA; um espelho que escuta sem julgar.",
+    "A Família Sakin: Animal · Mitos · Design · Pedras · Plantas — cada uma uma porta.",
+    "Num momento de pânico, um toque te leva a uma respiração calmante.",
+    "Não coleta dados e nunca te vende; sua jornada é sua.",
+    "Um companheiro silencioso que lembra você de desacelerar num mundo acelerado.",
+  ],
+  fr: [
+    "Sakin ne t'enseigne rien — il te rappelle, simplement.",
+    "Ni méditation, ni thérapie, ni liste de tâches ; un système de conscience.",
+    "Une petite pause quotidienne qui te ramène à toi-même.",
+    "Personnel pour toi — par ton thème natal, ton biorythme et ton intention.",
+    "Équilibre le corps et l'esprit par le souffle, les chakras et l'énergie du jour.",
+    "Pas une IA ; un miroir qui écoute sans juger.",
+    "La Famille Sakin : Animal · Mythes · Design · Pierres · Plantes — chacune une porte.",
+    "Dans un moment de panique, une touche te mène à une respiration apaisante.",
+    "Il ne collecte aucune donnée et ne te vend jamais ; ton voyage t'appartient.",
+    "Un compagnon silencieux qui te rappelle de ralentir dans un monde pressé.",
+  ],
+  ja: [
+    "Sakinはあなたに何も教えません——ただ思い出させてくれます。",
+    "瞑想でも、セラピーでも、ToDoリストでもない。気づきのシステムです。",
+    "あなたを自分自身へと連れ戻す、日々の小さな立ち止まり。",
+    "出生図、バイオリズム、そして意図によって、あなただけのもの。",
+    "呼吸・チャクラ・その日のエネルギーで心と体を整えます。",
+    "AIではありません。裁かずに耳を傾ける鏡です。",
+    "Sakinファミリー：動物・神話・デザイン・石・植物——それぞれが別の扉。",
+    "パニックの瞬間、ワンタップで心を鎮める呼吸へ導きます。",
+    "データを集めず、あなたを売りません。あなたの旅はあなたのもの。",
+    "加速する世界で、ゆっくりすることを思い出させる静かな友。",
+  ],
+};
+
 export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
   const [langOpen, setLangOpen] = useState(false);
@@ -4314,6 +4403,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             try { haptic(); } catch(_) {}
             pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
             panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
+            // Panik anında "Sakin'i tanı" tanıtım popup'ını gösterme — nefesi bölmesin
+            // ve hak sayacını da yakmasın (checked=true → bu oturumda kontrol atlanır).
+            sakinIntroCheckedRef.current = true;
+            setShowSakinIntro(false);
             setScreen("nefes");
           }}
           aria-label={t("panic_aria")}
@@ -5202,7 +5295,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)" }}>
             <div style={{ fontSize:26,marginBottom:14 }}>✦</div>
             <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8dcff",marginBottom:22,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{t("sakin_intro_title")}</div>
-            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
+            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
               style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer" }}>
               {t("sakin_intro_cta")}
             </button>
@@ -7368,6 +7461,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {t("about_sakin_not_todo")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_todo")}</span>{lang==="tr"?" değil":""}.<br/><br/>
               {t("about_sakin_is")} <strong style={{ color:"#c084fc" }}>{t("about_sakin_awareness_system")}</strong>.
             </div>
+          </div>
+
+          {/* Sakin nedir? — 10 madde */}
+          <div style={{ marginBottom:32 }}>
+            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
+              {({tr:"10 maddede Sakin",en:"Sakin in 10 points",de:"Sakin in 10 Punkten",es:"Sakin en 10 puntos",pt:"Sakin em 10 pontos",fr:"Sakin en 10 points",ja:"10のポイントで見るSakin"}[lang]) || "Sakin in 10 points"}
+            </div>
+            {(ABOUT_MADDELER[lang] || ABOUT_MADDELER.en || ABOUT_MADDELER.tr).map((m,i)=>(
+              <div key={i} style={{ display:"flex",alignItems:"flex-start",gap:14,marginBottom:14 }}>
+                <div style={{ flexShrink:0,width:26,height:26,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.4)",background:"rgba(184,164,216,0.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#c084fc",fontFamily:"'Jost',sans-serif" }}>{i+1}</div>
+                <div style={{ flex:1,fontSize:14.5,lineHeight:1.7,color:"#ccc",paddingTop:2 }}>{m}</div>
+              </div>
+            ))}
           </div>
 
           <p style={{ fontSize:15, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.3)", paddingLeft:20 }}>
