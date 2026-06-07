@@ -3175,16 +3175,9 @@ export default function SakinApp() {
   // Sayaç, popup görünebildiğinde (splash bitti + onboarding dışı) artar; böylece
   // onboarding/splash sırasındaki açılışlarda 3 hak boşa tükenmez. Ref ile oturumda tek sefer.
   const [showSakinIntro, setShowSakinIntro] = useState(false);
-  const sakinIntroCheckedRef = useRef(false);
-  useEffect(() => {
-    if (sakinIntroCheckedRef.current) return;
-    if (showIntro || screen === "giris") return; // splash sürerken / onboarding'de bekle
-    sakinIntroCheckedRef.current = true;
-    try {
-      const n = parseInt(localStorage.getItem("sakin_intro_opens") || "0", 10);
-      if (n < 3) { localStorage.setItem("sakin_intro_opens", String(n + 1)); setShowSakinIntro(true); }
-    } catch(_) {}
-  });
+  // "Sakin nedir?" otomatik tanıtım popup'ı KALDIRILDI — üst menüde zaten
+  // "SAKİN NEDİR?" butonu var, ilk açılışlarda çıkan bu popup gereksizdi (kullanıcı geri bildirimi).
+  // showSakinIntro artık hiç otomatik açılmaz (popup JSX ölü ama zararsız bırakıldı).
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
