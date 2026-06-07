@@ -6,7 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:mitler": "node scripts/build-embed.mjs mitler",
+    "build:tasarim": "node scripts/build-embed.mjs tasarim",
+    "build:hayvan": "node scripts/build-embed.mjs hayvan",
+    "build:taslar": "node scripts/build-embed.mjs taslar",
+    "build:bitkiler": "node scripts/build-embed.mjs bitkiler",
+    "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan && npm run build:taslar"
   },
   "dependencies": {
     "@capacitor/cli": "^8.3.1",
@@ -16,6 +22,7 @@
     "@capacitor/local-notifications": "^8.0.2",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "astronomy-engine": "^2.1.19",
     "cordova-plugin-purchase": "^13.15.4",
     "puppeteer": "^24.42.0",
     "react": "^18.2.0",
