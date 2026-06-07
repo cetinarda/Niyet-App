@@ -21,44 +21,68 @@ export const LINES: Record<LineNumber, LineInfo> = {
   1: {
     number: 1,
     name: 'Araştırmacı',
+    nameEn: 'The Investigator',
     shortDesc:
       'Sağlam temeller arar; emin olmak için araştırır, okur, derinleşir. Bilgi güvenliğin temelidir.',
+    shortDescEn:
+      'Seeks solid foundations; investigates, reads and goes deep in order to feel secure. Knowledge is the basis of safety.',
     shadow: 'Yetersizlik korkusu, hiç bitmeyen hazırlık dönemi.',
+    shadowEn: 'Fear of inadequacy, a never-ending preparation phase.',
   },
   2: {
     number: 2,
     name: 'Münzevi / Doğal Yetenek',
+    nameEn: 'The Hermit / Natural Talent',
     shortDesc:
       'Yalnızlığa ihtiyacı vardır; kendi alanında hediyesini doğal olarak taşır. Davet edilmeyi bekler.',
+    shortDescEn:
+      'Needs solitude; naturally carries a gift in their own field. Waits to be called out.',
     shadow: 'Çağırılmadan görünmek, kendi sürecini yorumlamak.',
+    shadowEn: 'Showing up before being called, over-interpreting one\'s own process.',
   },
   3: {
     number: 3,
     name: 'Deneyimci / Şehit',
+    nameEn: 'The Experimenter / Martyr',
     shortDesc:
       'Hayatı çarpışarak öğrenir; deneme-yanılma onun bilgeliğidir. Hatalar veridir, suç değil.',
+    shortDescEn:
+      'Learns life by bumping into it; trial and error is their wisdom. Mistakes are data, not faults.',
     shadow: 'Suçluluk, kaçınma, "yine olmadı" duygusu.',
+    shadowEn: 'Guilt, avoidance, the feeling of \'it failed again\'.',
   },
   4: {
     number: 4,
     name: 'Fırsatçı / Ağ İnsanı',
+    nameEn: 'The Opportunist / Networker',
     shortDesc:
       'Hayatı yakın çevresi ve dostlukları üzerinden ilerletir. Bir sonraki adıma elindekini bırakmadan geçer.',
+    shortDescEn:
+      'Advances life through their close circle and friendships. Moves to the next step without first letting go of what they hold.',
     shadow: 'Dostluğa bağımlılık, yenisini hazırlamadan eskiyi bırakma korkusu.',
+    shadowEn: 'Dependence on friendship, fear of letting go of the old before securing the new.',
   },
   5: {
     number: 5,
     name: 'Yansıtıcı / Pratik Çözücü',
+    nameEn: 'The Heretic / Practical Problem-Solver',
     shortDesc:
       'Üzerine yansıyanlarla çağırılır. Pratik çözümler sunar; krizde aranan kişidir. Karizması fonksiyoneldir.',
+    shortDescEn:
+      'Is called out by the projections placed upon them. Offers practical solutions; the person sought in a crisis. Their charisma is functional.',
     shadow: 'Yansıtılan beklentilerin yükü, yanlış anlaşılma korkusu.',
+    shadowEn: 'The burden of projected expectations, fear of being misunderstood.',
   },
   6: {
     number: 6,
     name: 'Rol Modeli / Bilge',
+    nameEn: 'The Role Model / Sage',
     shortDesc:
       'Üç evreli yaşam: 0–30 deneme, 30–50 çatıdan izleme, 50+ rol modelliği. Otantik örnek olur.',
+    shortDescEn:
+      'A life in three phases: 0–30 experimenting, 30–50 observing from the roof, 50+ being a role model. Becomes an authentic example.',
     shadow: 'Çatıdan kopuk hissetme, mükemmellik baskısı.',
+    shadowEn: 'Feeling cut off on the roof, the pressure of perfectionism.',
   },
 };
 
