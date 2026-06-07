@@ -252,32 +252,32 @@ export function ChartScreen({ onNavigate }: Props) {
               >
                 <View style={[styles.centerDot, { backgroundColor: c.color }]} />
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.centerName}>{c.name}</Text>
-                  <Text style={styles.centerBio}>{c.bio}</Text>
+                  <Text style={styles.centerName}>{L(c, 'name')}</Text>
+                  <Text style={styles.centerBio}>{L(c, 'bio')}</Text>
                 </View>
                 <Text style={styles.chev}>{isOpen ? '−' : '+'}</Text>
               </TouchableOpacity>
               {isOpen && (
                 <View style={styles.centerBody}>
-                  <Text style={styles.body}>{c.defined.desc}</Text>
-                  <Text style={styles.subLabel}>Hediyeler</Text>
-                  {c.defined.gifts.map((g, i) => (
+                  <Text style={styles.body}>{L(c.defined, 'desc')}</Text>
+                  <Text style={styles.subLabel}>{getLang() === 'en' ? 'Gifts' : 'Hediyeler'}</Text>
+                  {(L(c.defined, 'gifts') as string[]).map((g, i) => (
                     <Text key={i} style={styles.bullet}>·  {g}</Text>
                   ))}
                   {(acts.personality.length + acts.design.length) > 0 && (
                     <>
-                      <Text style={styles.subLabel}>Bu merkezdeki aktivasyonlar</Text>
+                      <Text style={styles.subLabel}>{getLang() === 'en' ? 'Activations in this center' : 'Bu merkezdeki aktivasyonlar'}</Text>
                       {acts.personality.map(act => (
                         <Text key={'p' + act.planet} style={styles.actLine}>
                           <Text style={{ color: Colors.text }}>● </Text>
-                          {planetLabel(act.planet)} · {GATES[act.gate].name}{' '}
+                          {planetLabel(act.planet)} · {L(GATES[act.gate], 'name')}{' '}
                           <Text style={{ color: Colors.gold }}>{act.gate}.{act.line}</Text>
                         </Text>
                       ))}
                       {acts.design.map(act => (
                         <Text key={'d' + act.planet} style={styles.actLine}>
                           <Text style={{ color: Colors.ember }}>● </Text>
-                          {planetLabel(act.planet)} · {GATES[act.gate].name}{' '}
+                          {planetLabel(act.planet)} · {L(GATES[act.gate], 'name')}{' '}
                           <Text style={{ color: Colors.ember }}>{act.gate}.{act.line}</Text>
                         </Text>
                       ))}
@@ -290,10 +290,11 @@ export function ChartScreen({ onNavigate }: Props) {
         })}
       </Section>
 
-      <Section title={`Tanımsız Merkezlerin · ${undefinedCenters.length}`} kicker="GEÇİRGEN">
+      <Section title={`${getLang() === 'en' ? 'Your Undefined Centers' : 'Tanımsız Merkezlerin'} · ${undefinedCenters.length}`} kicker={getLang() === 'en' ? 'OPEN' : 'GEÇİRGEN'}>
         <Text style={styles.body}>
-          Tanımsız merkezler senin "yanlış benlik" tuzaklarını taşır ama aynı
-          zamanda yaşam boyu kazanacağın bilgeliğin de evidir. Burada öğrenirsin.
+          {getLang() === 'en'
+            ? 'Your undefined centers carry your "not-self" traps, but they are also the home of the wisdom you gain across your life. This is where you learn.'
+            : 'Tanımsız merkezler senin "yanlış benlik" tuzaklarını taşır ama aynı zamanda yaşam boyu kazanacağın bilgeliğin de evidir. Burada öğrenirsin.'}
         </Text>
         {undefinedCenters.map(k => {
           const c = CENTERS[k];
@@ -309,18 +310,18 @@ export function ChartScreen({ onNavigate }: Props) {
               >
                 <View style={[styles.centerDot, styles.centerDotEmpty, { borderColor: c.color }]} />
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.centerName}>{c.name}</Text>
-                  <Text style={styles.centerBio}>{c.bio}</Text>
+                  <Text style={styles.centerName}>{L(c, 'name')}</Text>
+                  <Text style={styles.centerBio}>{L(c, 'bio')}</Text>
                 </View>
                 <Text style={styles.chev}>{isOpen ? '−' : '+'}</Text>
               </TouchableOpacity>
               {isOpen && (
                 <View style={styles.centerBody}>
-                  <Text style={styles.body}>{c.undefined.desc}</Text>
-                  <Text style={styles.subLabel}>Yanlış benlik sorusu</Text>
-                  <Text style={styles.body}>{c.undefined.notSelfQuestion}</Text>
-                  <Text style={styles.subLabel}>Kazanılan bilgelik</Text>
-                  <Text style={styles.body}>{c.undefined.wisdom}</Text>
+                  <Text style={styles.body}>{L(c.undefined, 'desc')}</Text>
+                  <Text style={styles.subLabel}>{getLang() === 'en' ? 'Not-self question' : 'Yanlış benlik sorusu'}</Text>
+                  <Text style={styles.body}>{L(c.undefined, 'notSelfQuestion')}</Text>
+                  <Text style={styles.subLabel}>{getLang() === 'en' ? 'Wisdom gained' : 'Kazanılan bilgelik'}</Text>
+                  <Text style={styles.body}>{L(c.undefined, 'wisdom')}</Text>
                 </View>
               )}
             </View>
@@ -328,11 +329,11 @@ export function ChartScreen({ onNavigate }: Props) {
         })}
       </Section>
 
-      <Section title={`Aktif Kapıların · ${chart.activeGates.size}`} kicker="KAPI">
+      <Section title={`${getLang() === 'en' ? 'Your Active Gates' : 'Aktif Kapıların'} · ${chart.activeGates.size}`} kicker={getLang() === 'en' ? 'GATE' : 'KAPI'}>
         <Text style={styles.body}>
-          Beyaz nokta · sadece bilinçli (Personality){'\n'}
-          Kırmızı nokta · sadece bilinçsiz (Design){'\n'}
-          Altın nokta · her ikisi
+          {getLang() === 'en' ? 'White dot · conscious only (Personality)' : 'Beyaz nokta · sadece bilinçli (Personality)'}{'\n'}
+          {getLang() === 'en' ? 'Red dot · unconscious only (Design)' : 'Kırmızı nokta · sadece bilinçsiz (Design)'}{'\n'}
+          {getLang() === 'en' ? 'Gold dot · both' : 'Altın nokta · her ikisi'}
         </Text>
         {Array.from(chart.activeGates).sort((a, b) => a - b).map(g => {
           const info = GATES[g];
@@ -351,16 +352,16 @@ export function ChartScreen({ onNavigate }: Props) {
                 <View style={[styles.gateDot, { backgroundColor: dot }]} />
                 <Text style={styles.gateNum}>{g}</Text>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.gateName}>{info.name}</Text>
-                  <Text style={styles.gateCenterLabel}>{CENTERS[info.center].name}</Text>
+                  <Text style={styles.gateName}>{L(info, 'name')}</Text>
+                  <Text style={styles.gateCenterLabel}>{L(CENTERS[info.center], 'name')}</Text>
                 </View>
                 <Text style={styles.chev}>{isOpen ? '−' : '+'}</Text>
               </TouchableOpacity>
               {isOpen && (
                 <View style={styles.gateBody}>
-                  <Text style={styles.body}>{info.theme}</Text>
-                  <KeyVal k="Hediye" v={info.gift} />
-                  <KeyVal k="Gölge" v={info.shadow} last />
+                  <Text style={styles.body}>{L(info, 'theme')}</Text>
+                  <KeyVal k={getLang() === 'en' ? 'Gift' : 'Hediye'} v={L(info, 'gift')} />
+                  <KeyVal k={getLang() === 'en' ? 'Shadow' : 'Gölge'} v={L(info, 'shadow')} last />
                 </View>
               )}
             </View>
@@ -368,18 +369,19 @@ export function ChartScreen({ onNavigate }: Props) {
         })}
       </Section>
 
-      <Section title="Gezegen Aktivasyonları" kicker="EFEMERİT">
+      <Section title={getLang() === 'en' ? 'Planetary Activations' : 'Gezegen Aktivasyonları'} kicker={getLang() === 'en' ? 'EPHEMERIS' : 'EFEMERİT'}>
         <Text style={styles.body}>
-          13 gezegenin doğum (bilinçli) ve doğumdan ~88 gün öncesi (bilinçsiz)
-          pozisyonları. Her gezegen bir kapıyı ve çizgiyi aktive eder.
+          {getLang() === 'en'
+            ? 'The positions of 13 planets at birth (conscious) and ~88 days before birth (unconscious). Each planet activates a gate and a line.'
+            : '13 gezegenin doğum (bilinçli) ve doğumdan ~88 gün öncesi (bilinçsiz) pozisyonları. Her gezegen bir kapıyı ve çizgiyi aktive eder.'}
         </Text>
         <View style={styles.planetHead}>
-          <Text style={[styles.planetCell, styles.planetCellHead, { flex: 1.4 }]}>Gezegen</Text>
+          <Text style={[styles.planetCell, styles.planetCellHead, { flex: 1.4 }]}>{getLang() === 'en' ? 'Planet' : 'Gezegen'}</Text>
           <Text style={[styles.planetCell, styles.planetCellHead]}>
-            <Text style={{ color: Colors.text }}>● </Text>Bilinçli
+            <Text style={{ color: Colors.text }}>● </Text>{getLang() === 'en' ? 'Conscious' : 'Bilinçli'}
           </Text>
           <Text style={[styles.planetCell, styles.planetCellHead]}>
-            <Text style={{ color: Colors.ember }}>● </Text>Bilinçsiz
+            <Text style={{ color: Colors.ember }}>● </Text>{getLang() === 'en' ? 'Unconscious' : 'Bilinçsiz'}
           </Text>
         </View>
         {chart.personality.map((act, idx) => {
@@ -391,11 +393,11 @@ export function ChartScreen({ onNavigate }: Props) {
               </Text>
               <Text style={styles.planetCell}>
                 <Text style={{ color: Colors.gold }}>{act.gate}.{act.line}</Text>{'\n'}
-                <Text style={styles.planetGateName}>{GATES[act.gate].name}</Text>
+                <Text style={styles.planetGateName}>{L(GATES[act.gate], 'name')}</Text>
               </Text>
               <Text style={styles.planetCell}>
                 <Text style={{ color: Colors.ember }}>{d.gate}.{d.line}</Text>{'\n'}
-                <Text style={styles.planetGateName}>{GATES[d.gate].name}</Text>
+                <Text style={styles.planetGateName}>{L(GATES[d.gate], 'name')}</Text>
               </Text>
             </View>
           );
