@@ -2,7 +2,7 @@ export const es = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Hoy',
-    animals: 'Piedras',
+    animals: 'Plantas',
     archive: 'Archivo',
     profile: 'Perfil',
   },
@@ -18,9 +18,9 @@ export const es = {
     defaultUser: 'Viajero',
     decks: {
       animal: {
-        title: 'Piedra',
-        short: 'PIEDRA',
-        subtitle: 'Escucha la piedra de hoy',
+        title: 'Planta',
+        short: 'PLANTA',
+        subtitle: 'Escucha la planta de hoy',
       },
       quote: {
         title: 'Rumi',
@@ -38,9 +38,9 @@ export const es = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · PIEDRA',
+    eyebrow: 'SAKIN · PLANTA',
     panels: {
-      library: 'Piedras',
+      library: 'Plantas',
       finder: 'Buscar',
       guidance: 'Guía',
     },
@@ -49,8 +49,8 @@ export const es = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← Atrás',
-    familyTag: 'SAKIN · PIEDRA',
-    subtitle: '{count} piedras curativas y cristales',
+    familyTag: 'SAKIN · PLANTA',
+    subtitle: '{count} plantas curativas y hierbas',
     searchPlaceholder: 'Buscar por nombre, propiedad o elemento...',
     noResults: 'No se encontraron resultados.',
   },
@@ -58,7 +58,7 @@ export const es = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← Atrás',
-    familyTag: 'SAKIN · PIEDRA',
+    familyTag: 'SAKIN · PLANTA',
     sections: {
       properties: 'Propiedades',
       todayMessage: 'Lo que te dice hoy',
@@ -78,15 +78,15 @@ export const es = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Encuentra tu piedra',
+    headerTitle: 'Encuentra tu planta',
     intro: {
-      title: 'Descubre tu piedra',
-      desc: 'Encuentra los cristales que se alinean contigo según tu signo zodiacal o tu elemento.',
-      note: 'Cada piedra tiene su propia vibración. Elige la que te llama: tu intuición hará el resto.',
-      birthStoneTitle: 'Tu piedra natal',
+      title: 'Descubre tu planta',
+      desc: 'Encuentra las plantas que se alinean contigo según tu signo zodiacal o tu elemento.',
+      note: 'Cada planta tiene su propia vibración. Elige la que te llama: tu intuición hará el resto.',
+      birthStoneTitle: 'Tu planta natal',
       zodiacLabel: 'Por signo',
       elementLabel: 'Por elemento',
-      elementHint: 'Cada cristal vibra con un elemento natural; el tuyo proviene de tu signo: fuego: Aries·Leo·Sagitario · tierra: Tauro·Virgo·Capricornio · aire: Géminis·Libra·Acuario · agua: Cáncer·Escorpio·Piscis.',
+      elementHint: 'Cada planta vibra con un elemento natural; el tuyo proviene de tu signo: fuego: Aries·Leo·Sagitario · tierra: Tauro·Virgo·Capricornio · aire: Géminis·Libra·Acuario · agua: Cáncer·Escorpio·Piscis.',
     },
     elements: {
       fire: 'Fuego',
@@ -95,10 +95,10 @@ export const es = {
       water: 'Agua',
     },
     result: {
-      zodiacLabel: 'Piedras de {name}',
-      elementLabel: 'Piedras de {name}',
-      birthLabel: 'Piedra de tu mes de nacimiento',
-      empty: 'No se encontraron piedras para esta selección.',
+      zodiacLabel: 'Plantas de {name}',
+      elementLabel: 'Plantas de {name}',
+      birthLabel: 'Planta de tu mes de nacimiento',
+      empty: 'No se encontraron plantas para esta selección.',
       rediscoverBtn: 'Elegir de nuevo ✦',
       closeBtn: 'Cerrar ✦',
     },

@@ -78,15 +78,15 @@ export const de = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Finde deinen Stein',
+    headerTitle: 'Finde deine Pflanze',
     intro: {
-      title: 'Entdecke deinen Stein',
-      desc: 'Finde die Kristalle, die zu dir passen – nach deinem Sternzeichen oder Element.',
-      note: 'Jeder Stein trägt seine eigene Schwingung. Wähle den, der dich ruft – den Rest sagt dir deine Intuition.',
-      birthStoneTitle: 'Dein Geburtsstein',
+      title: 'Entdecke deine Pflanze',
+      desc: 'Finde die Pflanzen, die zu dir passen – nach deinem Sternzeichen oder Element.',
+      note: 'Jede Pflanze trägt ihre eigene Schwingung. Wähle die, die dich ruft – den Rest sagt dir deine Intuition.',
+      birthStoneTitle: 'Deine Geburtspflanze',
       zodiacLabel: 'Nach Sternzeichen',
       elementLabel: 'Nach Element',
-      elementHint: 'Jeder Kristall schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen – Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
+      elementHint: 'Jede Pflanze schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen – Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
     },
     elements: {
       fire: 'Feuer',
@@ -95,10 +95,10 @@ export const de = {
       water: 'Wasser',
     },
     result: {
-      zodiacLabel: 'Steine von {name}',
-      elementLabel: 'Steine von {name}',
-      birthLabel: 'Stein deines Geburtsmonats',
-      empty: 'Für diese Auswahl wurden keine Steine gefunden.',
+      zodiacLabel: 'Pflanzen von {name}',
+      elementLabel: 'Pflanzen von {name}',
+      birthLabel: 'Pflanze deines Geburtsmonats',
+      empty: 'Für diese Auswahl wurden keine Pflanzen gefunden.',
       rediscoverBtn: 'Erneut wählen ✦',
       closeBtn: 'Schließen ✦',
     },
@@ -129,16 +129,16 @@ export const de = {
     spiritualMap: 'Spirituelle Karte',
     reportLabels: {
       guide: 'Begleiter',
-      stone: 'Stein',
-      animal: 'Stein',
-      nagual: 'Stein',
+      stone: 'Pflanze',
+      animal: 'Pflanze',
+      nagual: 'Pflanze',
     },
     filters: {
       all: 'Alle',
       quote: 'Botschaft',
-      stone: 'Stein',
-      animal: 'Stein',
-      nagual: 'Stein',
+      stone: 'Pflanze',
+      animal: 'Pflanze',
+      nagual: 'Pflanze',
     },
     empty: {
       title: 'Noch keine Lesungen.',
@@ -275,7 +275,7 @@ export const de = {
     spiritualMap: {
       title: 'Spirituelle Karte',
       topGuide: 'Häufigster Führer-Dichter',
-      topStone: 'Dein Schutzstein',
+      topStone: 'Deine Schutzpflanze',
       topAnimal: 'Dein Totemtier',
       topNagual: 'Dein Nagual-Begleiter',
       companionCount: 'hat dich {n}-mal begleitet',
@@ -290,7 +290,7 @@ export const de = {
       masterDesc: 'Zentrale — Zugang zu allen Apps',
       apps: {
         animalGuidance: 'Tierführung',
-        stoneGuidance: 'Kristallführung',
+        stoneGuidance: 'Pflanzenführung',
         plantGuidance: 'Pflanzenweisheit',
         myths: 'Mythen & Bilder',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const de = {
       },
       appDescs: {
         animalGuidance: 'Diese App',
-        stoneGuidance: 'Die Sprache der Kristalle',
+        stoneGuidance: 'Die Sprache der Pflanzen',
         plantGuidance: 'Kräuterweisheit',
         myths: 'Archetypen und Symbole',
         humanDesign: 'Erkenne dein Design',
@@ -314,7 +314,7 @@ export const de = {
         b001: { title: 'Erste Schritte', desc: 'Erste 7 Lesungen' },
         b002: { title: 'Feuer-Derwisch', desc: '21-Tage-Serie' },
         b003: { title: 'Mesnevi-Reisende(r)', desc: '30 Lesungen' },
-        b004: { title: 'Gebetskette', desc: '33 Steine gesehen' },
+        b004: { title: 'Gebetskette', desc: '33 Pflanzen gesehen' },
         b005: { title: 'Freund der Wahrheit', desc: '100 Lesungen' },
         b006: { title: 'Lichtreisende(r)', desc: '365 Lesungen' },
       },
