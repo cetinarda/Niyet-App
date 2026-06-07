@@ -91,7 +91,7 @@ If the image is unclear or not ${subject}, say so kindly and ask for a clearer p
     if (!res.ok) {
       const errTxt = await res.text().catch(() => "");
       console.error("[identify] groq error", res.status, errTxt.slice(0, 200));
-      return json(502, ch, { error: "Vision service error", _debug: errTxt.slice(0, 300), _model: GROQ_VISION_MODEL, _status: res.status });
+      return json(502, ch, { error: "Vision service error" });
     }
     const data = await res.json();
     const text = data?.choices?.[0]?.message?.content?.trim() || "";
