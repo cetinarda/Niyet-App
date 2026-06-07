@@ -5,6 +5,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
 import { Starfield } from '../components/Starfield';
+import { getLang } from '../i18n';
 
 interface Props {
   onAccept: () => void;
@@ -18,6 +19,7 @@ export function OnboardingScreen({ onAccept }: Props) {
   const [step, setStep] = useState<0 | 1 | 2>(0);
   const [adult, setAdult] = useState(false);
   const [accepts, setAccepts] = useState(false);
+  const en = getLang() === 'en';
 
   if (step === 0) {
     return (
@@ -27,18 +29,18 @@ export function OnboardingScreen({ onAccept }: Props) {
           <Text style={styles.medallion}>✦</Text>
         </View>
         <Text style={styles.title}>Sakin Tasarım</Text>
-        <Text style={styles.subtitle}>sakin.life ekosistemine hoş geldin</Text>
+        <Text style={styles.subtitle}>{en ? 'welcome to the sakin.life ecosystem' : 'sakin.life ekosistemine hoş geldin'}</Text>
 
         <Text style={styles.body}>
-          Doğum tarih, saat ve şehrini girdiğinde Human Design haritanı (bodygraph)
-          çıkartırız. Tip, içsel yetki, profil, tanımlı ve tanımsız merkezler
-          üzerinden detaylı bir kişisel rapor sunarız.
+          {en
+            ? 'When you enter your birth date, time and city, we generate your Human Design chart (bodygraph) and offer a detailed personal report covering your type, inner authority, profile, and defined and undefined centers.'
+            : 'Doğum tarih, saat ve şehrini girdiğinde Human Design haritanı (bodygraph) çıkartırız. Tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor sunarız.'}
         </Text>
 
         <View style={styles.featureRow}>
-          <Feature emoji="🔒" title="Gizlilik" desc="Doğum verin sadece cihazında kalır; sunucuya gitmez." />
-          <Feature emoji="🪶" title="Hesap yok" desc="Üyelik yok. Reklam yok. Abonelik yok." />
-          <Feature emoji="📜" title="Eğitim amaçlı" desc="Tıbbi, psikolojik ya da finansal tavsiye değildir." />
+          <Feature emoji="🔒" title={en ? 'Privacy' : 'Gizlilik'} desc={en ? 'Your birth data stays only on your device; it never goes to a server.' : 'Doğum verin sadece cihazında kalır; sunucuya gitmez.'} />
+          <Feature emoji="🪶" title={en ? 'No account' : 'Hesap yok'} desc={en ? 'No sign-up. No ads. No subscription.' : 'Üyelik yok. Reklam yok. Abonelik yok.'} />
+          <Feature emoji="📜" title={en ? 'Educational' : 'Eğitim amaçlı'} desc={en ? 'Not medical, psychological or financial advice.' : 'Tıbbi, psikolojik ya da finansal tavsiye değildir.'} />
         </View>
 
         <TouchableOpacity
@@ -46,9 +48,9 @@ export function OnboardingScreen({ onAccept }: Props) {
           onPress={() => setStep(1)}
           activeOpacity={0.85}
           accessibilityRole="button"
-          accessibilityLabel="Devam et"
+          accessibilityLabel={en ? 'Continue' : 'Devam et'}
         >
-          <Text style={styles.primaryBtnText}>Devam Et →</Text>
+          <Text style={styles.primaryBtnText}>{en ? 'Continue →' : 'Devam Et →'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -60,38 +62,39 @@ export function OnboardingScreen({ onAccept }: Props) {
         style={styles.container}
         contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl }]}
       >
-        <Text style={styles.kicker}>BİLMEN GEREKENLER</Text>
-        <Text style={styles.h2}>Saydam olalım</Text>
+        <Text style={styles.kicker}>{en ? 'WHAT YOU SHOULD KNOW' : 'BİLMEN GEREKENLER'}</Text>
+        <Text style={styles.h2}>{en ? "Let's be transparent" : 'Saydam olalım'}</Text>
 
-        <Block title="Verilerin nerede kalır?">
-          İsim, doğum tarihi, saat ve şehir bilgisini girdiğinde bu veriler yalnızca
-          telefonunun yerel deposunda (AsyncStorage) saklanır. Hiçbir sunucuya
-          gönderilmez. Tüm gezegen pozisyonu hesaplamaları, harita üretimi ve raporlar
-          cihazında, çevrimdışı olarak yapılır.
+        <Block title={en ? 'Where does your data stay?' : 'Verilerin nerede kalır?'}>
+          {en
+            ? 'When you enter your name, birth date, time and city, this data is stored only in your phone\'s local storage (AsyncStorage). It is never sent to any server. All planetary position calculations, chart generation and reports happen on your device, offline.'
+            : 'İsim, doğum tarihi, saat ve şehir bilgisini girdiğinde bu veriler yalnızca telefonunun yerel deposunda (AsyncStorage) saklanır. Hiçbir sunucuya gönderilmez. Tüm gezegen pozisyonu hesaplamaları, harita üretimi ve raporlar cihazında, çevrimdışı olarak yapılır.'}
         </Block>
 
-        <Block title="Topladığımız veri">
-          Yalnızca senin girdiğin bilgi: isim, doğum tarihi, doğum saati, doğum şehri.
-          Üçüncü taraf analiz, çerez, takip yok. İstediğin zaman profilini silebilirsin.
+        <Block title={en ? 'What we collect' : 'Topladığımız veri'}>
+          {en
+            ? 'Only what you enter: name, birth date, birth time, birth city. No third-party analytics, cookies or tracking. You can delete your profile anytime.'
+            : 'Yalnızca senin girdiğin bilgi: isim, doğum tarihi, doğum saati, doğum şehri. Üçüncü taraf analiz, çerez, takip yok. İstediğin zaman profilini silebilirsin.'}
         </Block>
 
-        <Block title="Eğitim ve kişisel keşif amaçlı">
-          Sakin Tasarım, Human Design sistemine giriş için bir referans uygulamasıdır.
-          İçerik tıbbi tanı, psikolojik terapi, finansal danışmanlık veya kehanet
-          değildir. Sağlık, ruh sağlığı veya yaşamsal kararlar için profesyonel destek al.
+        <Block title={en ? 'For education and personal exploration' : 'Eğitim ve kişisel keşif amaçlı'}>
+          {en
+            ? 'Sakin Tasarım is a reference app introducing the Human Design system. The content is not medical diagnosis, psychological therapy, financial advice or fortune-telling. Seek professional support for health, mental health or life decisions.'
+            : 'Sakin Tasarım, Human Design sistemine giriş için bir referans uygulamasıdır. İçerik tıbbi tanı, psikolojik terapi, finansal danışmanlık veya kehanet değildir. Sağlık, ruh sağlığı veya yaşamsal kararlar için profesyonel destek al.'}
         </Block>
 
-        <Block title="Çocuklar için değil">
-          Uygulama 17 yaş ve üzeri için tasarlanmıştır. Ezoterik içerik ve manevi
-          kavramlar içerir.
+        <Block title={en ? 'Not for children' : 'Çocuklar için değil'}>
+          {en
+            ? 'The app is designed for ages 17 and up. It contains esoteric content and spiritual concepts.'
+            : 'Uygulama 17 yaş ve üzeri için tasarlanmıştır. Ezoterik içerik ve manevi kavramlar içerir.'}
         </Block>
 
         <View style={styles.linkRow}>
           <TouchableOpacity onPress={() => Linking.openURL(PRIVACY_URL)} accessibilityRole="link">
-            <Text style={styles.link}>Gizlilik Politikası ↗</Text>
+            <Text style={styles.link}>{en ? 'Privacy Policy ↗' : 'Gizlilik Politikası ↗'}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => Linking.openURL(TERMS_URL)} accessibilityRole="link">
-            <Text style={styles.link}>Kullanım Koşulları ↗</Text>
+            <Text style={styles.link}>{en ? 'Terms of Use ↗' : 'Kullanım Koşulları ↗'}</Text>
           </TouchableOpacity>
         </View>
 
@@ -101,34 +104,36 @@ export function OnboardingScreen({ onAccept }: Props) {
           activeOpacity={0.85}
           accessibilityRole="button"
         >
-          <Text style={styles.primaryBtnText}>Anladım →</Text>
+          <Text style={styles.primaryBtnText}>{en ? 'Understood →' : 'Anladım →'}</Text>
         </TouchableOpacity>
       </ScrollView>
     );
   }
 
-  // step 2 — onam
+  // step 2 — onam / consent
   const canProceed = adult && accepts;
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + Spacing.xl, paddingBottom: insets.bottom + Spacing.xl }]}
     >
-      <Text style={styles.kicker}>SON ADIM</Text>
-      <Text style={styles.h2}>Onam</Text>
+      <Text style={styles.kicker}>{en ? 'LAST STEP' : 'SON ADIM'}</Text>
+      <Text style={styles.h2}>{en ? 'Consent' : 'Onam'}</Text>
       <Text style={styles.body}>
-        Devam etmek için aşağıdaki iki maddeyi onaylaman gerekiyor.
+        {en ? 'To continue, you need to confirm the two items below.' : 'Devam etmek için aşağıdaki iki maddeyi onaylaman gerekiyor.'}
       </Text>
 
       <CheckRow
         checked={adult}
         onToggle={() => setAdult(!adult)}
-        label="17 yaşından büyüğüm."
+        label={en ? 'I am over 17 years old.' : '17 yaşından büyüğüm.'}
       />
       <CheckRow
         checked={accepts}
         onToggle={() => setAccepts(!accepts)}
-        label="Gizlilik Politikası ve Kullanım Koşulları'nı okudum, kabul ediyorum. İçeriğin eğitim/kişisel keşif amaçlı olduğunu, tıbbi ya da profesyonel tavsiye yerine geçmediğini biliyorum."
+        label={en
+          ? "I have read and accept the Privacy Policy and Terms of Use. I understand the content is for educational/personal exploration and does not replace medical or professional advice."
+          : "Gizlilik Politikası ve Kullanım Koşulları'nı okudum, kabul ediyorum. İçeriğin eğitim/kişisel keşif amaçlı olduğunu, tıbbi ya da profesyonel tavsiye yerine geçmediğini biliyorum."}
       />
 
       <TouchableOpacity
@@ -140,12 +145,12 @@ export function OnboardingScreen({ onAccept }: Props) {
         accessibilityState={{ disabled: !canProceed }}
       >
         <Text style={styles.primaryBtnText}>
-          {canProceed ? 'Başla →' : 'İki kutuyu işaretle'}
+          {canProceed ? (en ? 'Begin →' : 'Başla →') : (en ? 'Check both boxes' : 'İki kutuyu işaretle')}
         </Text>
       </TouchableOpacity>
 
       <Text style={styles.footerNote}>
-        Onayını cihazında saklarız. Bu ekranı yalnızca bir kez göreceksin.
+        {en ? 'We store your consent on your device. You will see this screen only once.' : 'Onayını cihazında saklarız. Bu ekranı yalnızca bir kez göreceksin.'}
       </Text>
     </ScrollView>
   );
