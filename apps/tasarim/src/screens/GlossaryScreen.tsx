@@ -5,16 +5,21 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import {
-  GLOSSARY, CATEGORY_LABELS, CATEGORY_ORDER, GlossaryCategory,
+  GLOSSARY, CATEGORY_LABELS, CATEGORY_LABELS_EN, CATEGORY_ORDER, GlossaryCategory,
   searchGlossary, GlossaryEntry,
 } from '../data/glossary';
+import { L, getLang } from '../i18n';
 
 type Filter = 'all' | GlossaryCategory;
 
-const FILTERS: { key: Filter; label: string }[] = [
-  { key: 'all', label: 'Hepsi' },
-  ...CATEGORY_ORDER.map(c => ({ key: c, label: CATEGORY_LABELS[c] })),
-];
+function buildFilters(): { key: Filter; label: string }[] {
+  const en = getLang() === 'en';
+  const labels = en ? CATEGORY_LABELS_EN : CATEGORY_LABELS;
+  return [
+    { key: 'all' as Filter, label: en ? 'All' : 'Hepsi' },
+    ...CATEGORY_ORDER.map(c => ({ key: c as Filter, label: labels[c] })),
+  ];
+}
 
 export function GlossaryScreen() {
   const insets = useSafeAreaInsets();
@@ -27,17 +32,19 @@ export function GlossaryScreen() {
     [q, filter]
   );
 
+  const FILTERS = buildFilters();
+
   const totalLabel = q.trim()
-    ? `${results.length} sonuç`
-    : `${GLOSSARY.length} terim`;
+    ? `${results.length} ${getLang() === 'en' ? 'results' : 'sonuç'}`
+    : `${GLOSSARY.length} ${getLang() === 'en' ? 'terms' : 'terim'}`;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + Spacing.xxl }]}>
       <View style={styles.headerBlock}>
         <Text style={styles.brand}>SAKİN · TASARIM</Text>
-        <Text style={styles.title}>Sözlük</Text>
+        <Text style={styles.title}>{getLang() === 'en' ? 'Glossary' : 'Sözlük'}</Text>
         <Text style={styles.subtitle}>
-          Human Design terimlerini ara · {totalLabel}
+          {getLang() === 'en' ? 'Search Human Design terms' : 'Human Design terimlerini ara'} · {totalLabel}
         </Text>
       </View>
 
@@ -45,19 +52,19 @@ export function GlossaryScreen() {
         <Text style={styles.searchIcon}>✦</Text>
         <TextInput
           style={styles.searchInput}
-          placeholder="örn. Sakral Yetki, Kapı 41, Manifestor..."
+          placeholder={getLang() === 'en' ? 'e.g. Sacral Authority, Gate 41, Manifestor...' : 'örn. Sakral Yetki, Kapı 41, Manifestor...'}
           placeholderTextColor={Colors.textMuted}
           value={q}
           onChangeText={setQ}
           autoCorrect={false}
           autoCapitalize="none"
-          accessibilityLabel="Sözlükte ara"
+          accessibilityLabel={getLang() === 'en' ? 'Search the glossary' : 'Sözlükte ara'}
         />
         {!!q && (
           <TouchableOpacity
             onPress={() => setQ('')}
             accessibilityRole="button"
-            accessibilityLabel="Aramayı temizle"
+            accessibilityLabel={getLang() === 'en' ? 'Clear search' : 'Aramayı temizle'}
           >
             <Text style={styles.searchClear}>×</Text>
           </TouchableOpacity>
@@ -98,10 +105,11 @@ export function GlossaryScreen() {
       >
         {results.length === 0 ? (
           <View style={styles.empty}>
-            <Text style={styles.emptyTitle}>Eşleşme yok</Text>
+            <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'No matches' : 'Eşleşme yok'}</Text>
             <Text style={styles.emptyDesc}>
-              "{q}" için sözlükte sonuç bulunamadı. Filtre değiştir ya da
-              farklı bir terim dene.
+              {getLang() === 'en'
+                ? `No glossary results for "${q}". Change the filter or try a different term.`
+                : `"${q}" için sözlükte sonuç bulunamadı. Filtre değiştir ya da farklı bir terim dene.`}
             </Text>
           </View>
         ) : (
@@ -130,21 +138,21 @@ function Row({
         activeOpacity={0.7}
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
-        accessibilityLabel={entry.name}
+        accessibilityLabel={L(entry, 'name')}
       >
         <View style={{ flex: 1 }}>
-          <Text style={styles.rowCat}>{entry.categoryLabel}</Text>
-          <Text style={styles.rowName}>{entry.name}</Text>
-          {!!entry.subtitle && (
-            <Text style={styles.rowSub}>{entry.subtitle}</Text>
+          <Text style={styles.rowCat}>{L(entry, 'categoryLabel')}</Text>
+          <Text style={styles.rowName}>{L(entry, 'name')}</Text>
+          {!!L(entry, 'subtitle') && (
+            <Text style={styles.rowSub}>{L(entry, 'subtitle')}</Text>
           )}
         </View>
         <Text style={styles.rowChev}>{open ? '−' : '+'}</Text>
       </TouchableOpacity>
       {open && (
         <View style={styles.rowBody}>
-          <Text style={styles.rowBodyText}>{entry.body}</Text>
-          {entry.details?.map((d, i) => (
+          <Text style={styles.rowBodyText}>{L(entry, 'body')}</Text>
+          {(L(entry, 'details') as string[] | undefined)?.map((d, i) => (
             <Text key={i} style={styles.rowDetail}>·  {d}</Text>
           ))}
         </View>

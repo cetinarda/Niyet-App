@@ -191,14 +191,23 @@ function buildEntries(): GlossaryEntry[] {
       id: `kapi-${g.number}`,
       category: 'kapi',
       categoryLabel: 'Kapı',
+      categoryLabelEn: 'Gate',
       name: `Kapı ${g.number} — ${g.name}`,
+      nameEn: `Gate ${g.number} — ${en(g, 'name')}`,
       subtitle: CENTERS[g.center].name,
+      subtitleEn: en(CENTERS[g.center], 'name'),
       aliases: [`kapi ${g.number}`, g.name, `gate ${g.number}`],
       body: g.theme,
+      bodyEn: en(g, 'theme'),
       details: [
         `Hediye: ${g.gift}`,
         `Gölge: ${g.shadow}`,
         `Merkez: ${CENTERS[g.center].name}`,
+      ],
+      detailsEn: [
+        `Gift: ${en(g, 'gift')}`,
+        `Shadow: ${en(g, 'shadow')}`,
+        `Center: ${en(CENTERS[g.center], 'name')}`,
       ],
     });
   }
@@ -209,11 +218,16 @@ function buildEntries(): GlossaryEntry[] {
       id: `kanal-${ch.id}`,
       category: 'kanal',
       categoryLabel: 'Kanal',
+      categoryLabelEn: 'Channel',
       name: `${ch.id} — ${ch.name}`,
+      nameEn: `${ch.id} — ${en(ch, 'name')}`,
       subtitle: `${CENTERS[ch.centers[0]].name} ↔ ${CENTERS[ch.centers[1]].name}`,
+      subtitleEn: `${en(CENTERS[ch.centers[0]], 'name')} ↔ ${en(CENTERS[ch.centers[1]], 'name')}`,
       aliases: [ch.id, ch.name, `kanal ${ch.id}`, `${ch.gates[0]}-${ch.gates[1]}`],
       body: ch.shortDesc,
+      bodyEn: en(ch, 'shortDesc'),
       details: [`Devre: ${ch.circuit}`],
+      detailsEn: [`Circuit: ${ch.circuit}`],
     });
   }
 
@@ -232,6 +246,16 @@ export const CATEGORY_LABELS: Record<GlossaryCategory, string> = {
   kanal: 'Kanallar',
 };
 
+export const CATEGORY_LABELS_EN: Record<GlossaryCategory, string> = {
+  tip: 'Types',
+  yetki: 'Authorities',
+  merkez: 'Centers',
+  profil: 'Profiles',
+  cizgi: 'Lines',
+  kapi: 'Gates',
+  kanal: 'Channels',
+};
+
 export const CATEGORY_ORDER: GlossaryCategory[] = [
   'tip', 'yetki', 'merkez', 'profil', 'cizgi', 'kapi', 'kanal',
 ];
@@ -247,7 +271,9 @@ export function searchGlossary(query: string, category?: GlossaryCategory | 'all
   return pool.filter(entry => {
     const hay = fold(
       entry.name + ' ' + (entry.subtitle || '') + ' ' +
-      entry.aliases.join(' ') + ' ' + entry.body
+      entry.aliases.join(' ') + ' ' + entry.body + ' ' +
+      (entry.nameEn || '') + ' ' + (entry.subtitleEn || '') + ' ' +
+      (entry.bodyEn || '')
     );
     return tokens.every(t => hay.includes(t));
   });

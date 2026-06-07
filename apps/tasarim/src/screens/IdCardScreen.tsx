@@ -14,6 +14,7 @@ import { Starfield } from '../components/Starfield';
 import { StoryCard, STORY_W, STORY_H } from '../components/StoryCard';
 import { TYPES } from '../data/types';
 import { AUTHORITIES } from '../data/authorities';
+import { L, getLang } from '../i18n';
 
 interface Props {
   onClose: () => void;
