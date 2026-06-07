@@ -38,6 +38,13 @@ export function AnimalsHubScreen() {
         <Text style={styles.eyebrow}>{t('animalsHub.eyebrow' as any)}</Text>
         <View style={styles.titleRow}>
           <Text style={styles.title}>{t(active.labelKey as any)}</Text>
+          <TouchableOpacity
+            style={styles.fotoBtn}
+            onPress={() => { try { (window as any).parent?.postMessage({ type: 'sakin-foto-tani', kind: 'plant' }, '*'); } catch (e) {} }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.fotoBtnIcon}>📷</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -106,6 +113,16 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     letterSpacing: 1,
   },
+  fotoBtn: {
+    marginLeft: 'auto',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: 'rgba(255,255,255,0.04)',
+  },
+  fotoBtnIcon: { fontSize: 17 },
 
   // Chip row: fixed row, no ScrollView, chips share space equally
   chipWrap: {

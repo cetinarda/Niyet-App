@@ -2818,6 +2818,7 @@ export default function SakinApp() {
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
   const [showFotoTani, setShowFotoTani] = useState(false);
+  const [fotoTaniType, setFotoTaniType] = useState("stone"); // embed'den gelir: stone | plant
   const [fotoTaniResult, setFotoTaniResult] = useState("");
   const [fotoTaniLoading, setFotoTaniLoading] = useState(false);
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
@@ -2959,6 +2960,11 @@ export default function SakinApp() {
         // Embed içinden "sakin.life" ana merkeze dön — embed'i kapat, Ailesi panelini aç.
         setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
         setShowAilesi(true);
+      } else if (type === "sakin-foto-tani") {
+        // Embed (Taşlar/Bitkiler Bul) "fotoğraftan tanı" istedi → host modalını aç (kamera web tarafında).
+        setFotoTaniType(e?.data?.kind === "plant" ? "plant" : "stone");
+        setFotoTaniResult("");
+        setShowFotoTani(true);
       }
     };
     window.addEventListener("message", onMsg);
@@ -4303,7 +4309,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </>
             ) : (
               <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
-                {[["stone","💎",{tr:"Taş fotoğrafı",en:"Stone photo",de:"Steinfoto",es:"Foto de piedra",pt:"Foto de pedra",fr:"Photo de pierre",ja:"石の写真"}],["plant","🌿",{tr:"Bitki fotoğrafı",en:"Plant photo",de:"Pflanzenfoto",es:"Foto de planta",pt:"Foto de planta",fr:"Photo de plante",ja:"植物の写真"}]].map(([ty,ic,lbl])=>(
+                {[["stone","💎",{tr:"Taş fotoğrafı",en:"Stone photo",de:"Steinfoto",es:"Foto de piedra",pt:"Foto de pedra",fr:"Photo de pierre",ja:"石の写真"}],["plant","🌿",{tr:"Bitki fotoğrafı",en:"Plant photo",de:"Pflanzenfoto",es:"Foto de planta",pt:"Foto de planta",fr:"Photo de plante",ja:"植物の写真"}]].filter(([ty])=>ty===fotoTaniType).map(([ty,ic,lbl])=>(
                   <label key={ty} style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:10,padding:"14px 0",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:14,color:"#e0d8f0",fontSize:14.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
                     <span style={{ fontSize:20 }}>{ic}</span>{pickLang(lbl, lang)}
                     <input type="file" accept="image/*" capture="environment" style={{ display:"none" }} onChange={e=>identifyPhoto(e.target.files && e.target.files[0], ty)} />
@@ -4428,18 +4434,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </button>
               </div>
             ))}
-            {/* Foto-tanıma — taş & bitki (premium, Groq vision) */}
-            <div style={{ background:"rgba(160,216,216,0.05)",border:"1px solid rgba(160,216,216,0.18)",borderRadius:16,padding:"16px 18px" }}>
-              <button onClick={()=>{ setFotoTaniResult(""); setShowFotoTani(true); }}
-                style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
-                <div style={{ width:48,height:48,borderRadius:"50%",background:"radial-gradient(circle,#a0d8d844,#a0d8d811)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>📷</div>
-                <div style={{ flex:1,minWidth:0 }}>
-                  <div style={{ fontSize:15,fontWeight:500,color:"#fff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{pickLang({tr:"Fotoğraftan Tanı",en:"Identify by Photo",de:"Per Foto erkennen",es:"Identificar por foto",pt:"Identificar por foto",fr:"Identifier par photo",ja:"写真で見分ける"}, lang)}</div>
-                  <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{pickLang({tr:"Taşın ya da bitkinin fotoğrafını çek, hangisi olduğunu öğren.",en:"Photograph a stone or plant to learn what it is.",de:"Fotografiere einen Stein oder eine Pflanze.",es:"Fotografía una piedra o planta para saber qué es.",pt:"Fotografa uma pedra ou planta para saber o que é.",fr:"Photographie une pierre ou une plante.",ja:"石や植物を撮って、何かを知ろう。"}, lang)}</div>
-                </div>
-                <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
-              </button>
-            </div>
             {/* Policy mini-linkler — top-nav iOS feature ekranlarında gizli, buradan erişim */}
             <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
               {[
