@@ -2494,94 +2494,41 @@ function LangPicker({ lang, setLang, compact = false }) {
   );
 }
 
-// "Sakin nedir?" — 10 madde (hakkinda > nedir sekmesi). Host dilinde gösterilir,
-// çevirisi olmayan dil en'e, o da yoksa tr'ye düşer.
-const ABOUT_MADDELER = {
-  tr: [
-    "Sakin sana bir şey öğretmez — sadece hatırlatır.",
-    "Meditasyon değil, terapi değil, yapılacaklar listesi değil; bir farkındalık sistemi.",
-    "Her gün seni kendine döndüren küçük bir duraktır.",
-    "Doğum haritan, biyoritmin ve niyetinle kişiye özeldir.",
-    "Nefes, çakra ve günün enerjisiyle bedenini ve zihnini dengeler.",
-    "Yapay zeka değil; seni dinleyen, yargılamayan bir ayna.",
-    "Sakin Ailesi: Hayvan · Mitler · Tasarım · Taşlar · Bitkiler — her biri ayrı bir kapı.",
-    "Panik anında tek dokunuşla seni sakinleştiren nefese götürür.",
-    "Veri toplamaz, seni satmaz; yolculuğun sana aittir.",
-    "Hızlanan dünyada yavaşlamayı hatırlatan sessiz bir dost.",
-  ],
-  en: [
-    "Sakin doesn't teach you anything — it simply reminds you.",
-    "Not meditation, not therapy, not a to-do list; an awareness system.",
-    "A small daily pause that returns you to yourself.",
-    "Personal to you — through your birth chart, biorhythm and intention.",
-    "Balances body and mind with breath, chakra and the day's energy.",
-    "Not an AI; a mirror that listens without judging.",
-    "The Sakin Family: Animal · Myths · Design · Stones · Plants — each a separate door.",
-    "In a moment of panic, one tap takes you to a calming breath.",
-    "It collects no data and never sells you; your journey is your own.",
-    "A quiet companion that reminds you to slow down in a racing world.",
-  ],
-  de: [
-    "Sakin lehrt dich nichts — es erinnert dich nur.",
-    "Keine Meditation, keine Therapie, keine To-do-Liste; ein Bewusstseinssystem.",
-    "Eine kleine tägliche Pause, die dich zu dir selbst zurückbringt.",
-    "Persönlich für dich — durch dein Geburtshoroskop, deinen Biorhythmus und deine Absicht.",
-    "Bringt Körper und Geist mit Atem, Chakra und der Energie des Tages ins Gleichgewicht.",
-    "Keine KI; ein Spiegel, der zuhört, ohne zu urteilen.",
-    "Die Sakin-Familie: Tier · Mythen · Design · Steine · Pflanzen — jede eine eigene Tür.",
-    "In einem Moment der Panik führt dich ein Tippen zu einem beruhigenden Atemzug.",
-    "Es sammelt keine Daten und verkauft dich nie; deine Reise gehört dir.",
-    "Ein stiller Begleiter, der dich erinnert, in einer rasenden Welt langsamer zu werden.",
-  ],
-  es: [
-    "Sakin no te enseña nada: simplemente te recuerda.",
-    "No es meditación, ni terapia, ni una lista de tareas; un sistema de conciencia.",
-    "Una pequeña pausa diaria que te devuelve a ti mismo.",
-    "Personal para ti: a través de tu carta natal, tu biorritmo y tu intención.",
-    "Equilibra cuerpo y mente con la respiración, los chakras y la energía del día.",
-    "No es una IA; un espejo que escucha sin juzgar.",
-    "La Familia Sakin: Animal · Mitos · Diseño · Piedras · Plantas, cada una una puerta.",
-    "En un momento de pánico, un toque te lleva a una respiración calmante.",
-    "No recopila datos ni te vende nunca; tu viaje es tuyo.",
-    "Un compañero silencioso que te recuerda ir más despacio en un mundo acelerado.",
-  ],
-  pt: [
-    "Sakin não te ensina nada — apenas te lembra.",
-    "Não é meditação, nem terapia, nem uma lista de tarefas; um sistema de consciência.",
-    "Uma pequena pausa diária que te devolve a você mesmo.",
-    "Personalizado para você — pelo seu mapa natal, seu biorritmo e sua intenção.",
-    "Equilibra corpo e mente com respiração, chakras e a energia do dia.",
-    "Não é uma IA; um espelho que escuta sem julgar.",
-    "A Família Sakin: Animal · Mitos · Design · Pedras · Plantas — cada uma uma porta.",
-    "Num momento de pânico, um toque te leva a uma respiração calmante.",
-    "Não coleta dados e nunca te vende; sua jornada é sua.",
-    "Um companheiro silencioso que lembra você de desacelerar num mundo acelerado.",
-  ],
-  fr: [
-    "Sakin ne t'enseigne rien — il te rappelle, simplement.",
-    "Ni méditation, ni thérapie, ni liste de tâches ; un système de conscience.",
-    "Une petite pause quotidienne qui te ramène à toi-même.",
-    "Personnel pour toi — par ton thème natal, ton biorythme et ton intention.",
-    "Équilibre le corps et l'esprit par le souffle, les chakras et l'énergie du jour.",
-    "Pas une IA ; un miroir qui écoute sans juger.",
-    "La Famille Sakin : Animal · Mythes · Design · Pierres · Plantes — chacune une porte.",
-    "Dans un moment de panique, une touche te mène à une respiration apaisante.",
-    "Il ne collecte aucune donnée et ne te vend jamais ; ton voyage t'appartient.",
-    "Un compagnon silencieux qui te rappelle de ralentir dans un monde pressé.",
-  ],
-  ja: [
-    "Sakinはあなたに何も教えません——ただ思い出させてくれます。",
-    "瞑想でも、セラピーでも、ToDoリストでもない。気づきのシステムです。",
-    "あなたを自分自身へと連れ戻す、日々の小さな立ち止まり。",
-    "出生図、バイオリズム、そして意図によって、あなただけのもの。",
-    "呼吸・チャクラ・その日のエネルギーで心と体を整えます。",
-    "AIではありません。裁かずに耳を傾ける鏡です。",
-    "Sakinファミリー：動物・神話・デザイン・石・植物——それぞれが別の扉。",
-    "パニックの瞬間、ワンタップで心を鎮める呼吸へ導きます。",
-    "データを集めず、あなたを売りません。あなたの旅はあなたのもの。",
-    "加速する世界で、ゆっくりすることを思い出させる静かな友。",
-  ],
-};
+
+// Yolculuk haritası — 10 adım (hakkinda > yolculuk sekmesi). Host dilinde gösterilir.
+// 7 Ayna Geçidi · 9 Bağlantı · 10 Sakin Ailesi sonradan eklenen adımlardır.
+const JOURNEY_STEPS = [
+  { icon:"🌅", color:"#f0a060",
+    title:{tr:"1 · Sabah Niyeti",en:"1 · Morning Intention",de:"1 · Morgenabsicht",es:"1 · Intención matutina",pt:"1 · Intenção da manhã",fr:"1 · Intention du matin",ja:"1 · 朝の意図"},
+    desc:{tr:"Güne bir niyetle başla. Seçtiğin 3 kelime ve cümlen — günün enerjisini sen belirlersin.",en:"Start the day with an intention. Three words and a sentence — you set the day's energy.",de:"Beginne den Tag mit einer Absicht. Drei Wörter und ein Satz — du bestimmst die Energie des Tages.",es:"Comienza el día con una intención. Tres palabras y una frase: tú defines la energía del día.",pt:"Comece o dia com uma intenção. Três palavras e uma frase — você define a energia do dia.",fr:"Commence la journée avec une intention. Trois mots et une phrase — c'est toi qui fixes l'énergie du jour.",ja:"一日を意図とともに始めよう。3つの言葉と一文——その日のエネルギーはあなたが決める。"} },
+  { icon:"🫧", color:"#60b8e8",
+    title:{tr:"2 · Nefes",en:"2 · Breath",de:"2 · Atem",es:"2 · Respiración",pt:"2 · Respiração",fr:"2 · Respiration",ja:"2 · 呼吸"},
+    desc:{tr:"Bedene dön. Birkaç nefesle zihni yavaşlat, ritmini bul.",en:"Return to the body. Slow the mind with a few breaths, find your rhythm.",de:"Kehre zum Körper zurück. Verlangsame den Geist mit ein paar Atemzügen, finde deinen Rhythmus.",es:"Vuelve al cuerpo. Calma la mente con unas respiraciones, encuentra tu ritmo.",pt:"Volte ao corpo. Acalme a mente com algumas respirações, encontre o seu ritmo.",fr:"Reviens au corps. Ralentis l'esprit en quelques respirations, trouve ton rythme.",ja:"体に戻ろう。数回の呼吸で心を緩め、自分のリズムを見つける。"} },
+  { icon:"🔊", color:"#a07ae0",
+    title:{tr:"3 · Ses Frekansları",en:"3 · Sound Frequencies",de:"3 · Klangfrequenzen",es:"3 · Frecuencias de sonido",pt:"3 · Frequências sonoras",fr:"3 · Fréquences sonores",ja:"3 · 音の周波数"},
+    desc:{tr:"Solfeggio frekanslarıyla kendini akord et. Kuş sesleri eşliğinde içsel diapazon yeniden hizalanır.",en:"Tune yourself with solfeggio frequencies. With birdsong, your inner pitch realigns.",de:"Stimme dich mit Solfeggio-Frequenzen. Mit Vogelgesang richtet sich deine innere Tonlage neu aus.",es:"Afínate con frecuencias solfeggio. Con el canto de los pájaros, tu tono interior se realinea.",pt:"Afine-se com frequências solfeggio. Com o canto dos pássaros, o seu tom interior se realinha.",fr:"Accorde-toi aux fréquences solfeggio. Avec le chant des oiseaux, ton diapason intérieur se réaligne.",ja:"ソルフェジオ周波数で自分を調律する。鳥のさえずりとともに、内なる音程が整い直す。"} },
+  { icon:"💜", color:"#b87adc",
+    title:{tr:"4 · Çakra Şifası",en:"4 · Chakra Healing",de:"4 · Chakra-Heilung",es:"4 · Sanación de chakras",pt:"4 · Cura dos chakras",fr:"4 · Guérison des chakras",ja:"4 · チャクラの癒し"},
+    desc:{tr:"Niyetinle enerjiyi yönlendir. Eli bölgeye değdir, gözleri yum — çakralarına şifa akar.",en:"Direct energy with intention. Place your hand, close your eyes — healing flows into your chakras.",de:"Lenke Energie mit Absicht. Lege die Hand auf, schließe die Augen — Heilung fließt in deine Chakren.",es:"Dirige la energía con intención. Pon la mano, cierra los ojos: la sanación fluye a tus chakras.",pt:"Direcione a energia com intenção. Ponha a mão, feche os olhos — a cura flui para os seus chakras.",fr:"Dirige l'énergie avec intention. Pose la main, ferme les yeux — la guérison coule vers tes chakras.",ja:"意図でエネルギーを導く。手を当て、目を閉じる——癒しがチャクラへと流れ込む。"} },
+  { icon:"☀️", color:"#e8d060",
+    title:{tr:"5 · Gün Hatırlatmaları",en:"5 · Daily Reminders",de:"5 · Tägliche Erinnerungen",es:"5 · Recordatorios diarios",pt:"5 · Lembretes do dia",fr:"5 · Rappels du jour",ja:"5 · 日中のリマインダー"},
+    desc:{tr:"Su iç. Güneşi hisset. Toprağa dokun. Küçük dokunuşlar seni ana bağlar — anda kalırsın.",en:"Drink water. Feel the sun. Touch the earth. Small touches return you to the present.",de:"Trink Wasser. Spüre die Sonne. Berühre die Erde. Kleine Berührungen holen dich in den Augenblick.",es:"Bebe agua. Siente el sol. Toca la tierra. Pequeños gestos te devuelven al presente.",pt:"Beba água. Sinta o sol. Toque a terra. Pequenos gestos trazem você de volta ao presente.",fr:"Bois de l'eau. Sens le soleil. Touche la terre. De petits gestes te ramènent à l'instant.",ja:"水を飲む。陽を感じる。大地に触れる。小さな仕草があなたを「今」に戻す。"} },
+  { icon:"🌙", color:"#7ab0e0",
+    title:{tr:"6 · Akşam Kapanışı",en:"6 · Evening Closure",de:"6 · Abendabschluss",es:"6 · Cierre nocturno",pt:"6 · Encerramento da noite",fr:"6 · Clôture du soir",ja:"6 · 夜の締めくくり"},
+    desc:{tr:"Z raporunu al, zihninin geçici belleğini temizle ve yeni güne hazır ol.",en:"Get your Z-report, clear your mind's working memory and prepare for a new day.",de:"Hol dir deinen Z-Bericht, leere den Arbeitsspeicher deines Geistes und mach dich bereit für einen neuen Tag.",es:"Recibe tu informe Z, vacía la memoria de trabajo de tu mente y prepárate para un nuevo día.",pt:"Receba o seu relatório Z, limpe a memória de trabalho da mente e prepare-se para um novo dia.",fr:"Reçois ton rapport Z, vide la mémoire vive de ton esprit et prépare-toi à un nouveau jour.",ja:"Zレポートを受け取り、心の作業記憶を空にして、新しい一日に備えよう。"} },
+  { icon:"☽", color:"#c8b0e8",
+    title:{tr:"7 · Ayna Geçidi",en:"7 · Mirror Portal",de:"7 · Spiegel-Portal",es:"7 · Portal del espejo",pt:"7 · Portal do espelho",fr:"7 · Portail du miroir",ja:"7 · 鏡の門"},
+    desc:{tr:"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor — bedenin de bir mesaj taşır.",en:"Find the mysterious portal at the right edge. Step in, ask your inner mirror — your body carries a message too.",de:"Finde das geheimnisvolle Portal am rechten Rand. Tritt ein, frage deinen inneren Spiegel — auch dein Körper trägt eine Botschaft.",es:"Encuentra el portal misterioso del borde derecho. Entra, pregunta a tu espejo interior: tu cuerpo también lleva un mensaje.",pt:"Encontre o portal misterioso na borda direita. Entre, pergunte ao seu espelho interior — o seu corpo também traz uma mensagem.",fr:"Trouve le portail mystérieux au bord droit. Entre, interroge ton miroir intérieur — ton corps porte aussi un message.",ja:"右端の神秘の門を見つけよう。中へ入り、内なる鏡に問いかける——体もまたメッセージを運んでいる。"} },
+  { icon:"✦", color:"#82d9a3",
+    title:{tr:"8 · Haftalık Rapor",en:"8 · Weekly Report",de:"8 · Wochenbericht",es:"8 · Informe semanal",pt:"8 · Relatório semanal",fr:"8 · Rapport hebdomadaire",ja:"8 · 週間レポート"},
+    desc:{tr:"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritm. Kendinle bağını derinleştir.",en:"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself.",de:"Deine KI-gestützte wöchentliche innere Karte: Chakra-Muster, Absichtswörter, Biorhythmus. Vertiefe die Bindung zu dir selbst.",es:"Tu mapa interior semanal con IA: patrones de chakras, palabras de intención, biorritmo. Profundiza el vínculo contigo mismo.",pt:"Seu mapa interior semanal com IA: padrões de chakra, palavras de intenção, biorritmo. Aprofunde o vínculo consigo mesmo.",fr:"Ta carte intérieure hebdomadaire assistée par IA : motifs des chakras, mots d'intention, biorythme. Approfondis le lien avec toi-même.",ja:"AIによる週間の内なる地図：チャクラのパターン、意図の言葉、バイオリズム。自分とのつながりを深めよう。"} },
+  { icon:"◎", color:"#b87adc",
+    title:{tr:"9 · Bağlantı",en:"9 · Connection",de:"9 · Verbindung",es:"9 · Conexión",pt:"9 · Conexão",fr:"9 · Connexion",ja:"9 · つながり"},
+    desc:{tr:"Sakin'i kullandıkça gün içinde kaynak enerjisiyle bağlantını güçlendirirsin — her dokunuş seni özüne yaklaştırır.",en:"As you use Sakin through the day, you strengthen your connection to source energy — each touch draws you closer to your essence.",de:"Während du Sakin im Laufe des Tages nutzt, stärkst du deine Verbindung zur Quellenergie — jede Berührung bringt dich deinem Wesen näher.",es:"A medida que usas Sakin durante el día, fortaleces tu conexión con la energía fuente: cada gesto te acerca a tu esencia.",pt:"À medida que usa o Sakin ao longo do dia, fortalece a conexão com a energia fonte — cada toque o aproxima da sua essência.",fr:"À mesure que tu utilises Sakin au fil du jour, tu renforces ta connexion à l'énergie source — chaque contact te rapproche de ton essence.",ja:"一日を通してSakinを使うほど、源のエネルギーとのつながりが強まる——一つひとつの触れ合いが、あなたを本質へと近づける。"} },
+  { icon:"✧", color:"#f0c060",
+    title:{tr:"10 · Sakin Ailesi",en:"10 · Sakin Family",de:"10 · Sakin-Familie",es:"10 · Familia Sakin",pt:"10 · Família Sakin",fr:"10 · Famille Sakin",ja:"10 · Sakinファミリー"},
+    desc:{tr:"Rüyanda ya da gerçekte sana ısrarla görünen rehber hayvan, bitki ve kristallerin sana ne söylediğini; yaşam planında hangi arketip senaryosunun içinde olduğunu; ve tasarımının sırlarını keşfet.",en:"Discover what the guide animals, plants and crystals that keep appearing to you — in dreams or waking life — are telling you; which archetypal scenario you're living in your life plan; and the secrets of your design.",de:"Entdecke, was dir die Tier-, Pflanzen- und Kristallführer sagen, die dir immer wieder erscheinen — im Traum oder im Wachen; in welchem archetypischen Szenario deines Lebensplans du dich befindest; und die Geheimnisse deines Designs.",es:"Descubre qué te dicen los animales, plantas y cristales guía que aparecen una y otra vez —en sueños o despierto—; en qué escenario arquetípico vives dentro de tu plan de vida; y los secretos de tu diseño.",pt:"Descubra o que dizem os animais, plantas e cristais guia que insistem em aparecer — em sonho ou na vida desperta; em qual cenário arquetípico você vive no seu plano de vida; e os segredos do seu design.",fr:"Découvre ce que te disent les animaux, plantes et cristaux guides qui ne cessent de t'apparaître — en rêve ou éveillé ; dans quel scénario archétypal de ton plan de vie tu te trouves ; et les secrets de ton design.",ja:"夢でも現実でも繰り返し現れる導きの動物・植物・クリスタルが何を告げているのか、人生の計画の中でどの元型のシナリオを生きているのか、そしてあなたのデザインの秘密を発見しよう。"} },
+];
 
 export default function SakinApp() {
   const [lang, setLang] = useState(() => localStorage.getItem("sakin_lang") || "en");
@@ -7387,19 +7334,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div style={{ position:"relative",paddingLeft:32 }}>
               <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
 
-              {[
-                { icon:"🌅", color:"#f0a060", title:t("about_step_morning_title"), desc:t("about_step_morning_desc") },
-                { icon:"🫧", color:"#60b8e8", title:t("about_step_breath_title"), desc:t("about_step_breath_desc") },
-                { icon:"🔊", color:"#a07ae0", title:t("about_step_sound_title"), desc:t("about_step_sound_desc") },
-                { icon:"💜", color:"#b87adc", title:t("about_step_chakra_title"), desc:t("about_step_chakra_desc") },
-                { icon:"☀️", color:"#e8d060", title:t("about_step_day_title"), desc:t("about_step_day_desc") },
-                { icon:"🌙", color:"#7ab0e0", title:t("about_step_evening_title"), desc:t("about_step_evening_desc") },
-                { icon:"✦", color:"#82d9a3", title:t("about_step_report_title"), desc:t("about_step_report_desc") },
-              ].map((step,i) => (
-                <div key={i} style={{ position:"relative",marginBottom:i<6?24:0,paddingBottom:i<6?4:0 }}>
+              {JOURNEY_STEPS.map((step,i,arr) => (
+                <div key={i} style={{ position:"relative",marginBottom:i<arr.length-1?24:0,paddingBottom:i<arr.length-1?4:0 }}>
                   <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
-                  <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title}</div>
-                  <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc}</div>
+                  <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title[lang] || step.title.en || step.title.tr}</div>
+                  <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc[lang] || step.desc.en || step.desc.tr}</div>
                 </div>
               ))}
             </div>
@@ -7461,19 +7400,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {t("about_sakin_not_todo")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_todo")}</span>{lang==="tr"?" değil":""}.<br/><br/>
               {t("about_sakin_is")} <strong style={{ color:"#c084fc" }}>{t("about_sakin_awareness_system")}</strong>.
             </div>
-          </div>
-
-          {/* Sakin nedir? — 10 madde */}
-          <div style={{ marginBottom:32 }}>
-            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
-              {({tr:"10 maddede Sakin",en:"Sakin in 10 points",de:"Sakin in 10 Punkten",es:"Sakin en 10 puntos",pt:"Sakin em 10 pontos",fr:"Sakin en 10 points",ja:"10のポイントで見るSakin"}[lang]) || "Sakin in 10 points"}
-            </div>
-            {(ABOUT_MADDELER[lang] || ABOUT_MADDELER.en || ABOUT_MADDELER.tr).map((m,i)=>(
-              <div key={i} style={{ display:"flex",alignItems:"flex-start",gap:14,marginBottom:14 }}>
-                <div style={{ flexShrink:0,width:26,height:26,borderRadius:"50%",border:"1px solid rgba(184,164,216,0.4)",background:"rgba(184,164,216,0.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#c084fc",fontFamily:"'Jost',sans-serif" }}>{i+1}</div>
-                <div style={{ flex:1,fontSize:14.5,lineHeight:1.7,color:"#ccc",paddingTop:2 }}>{m}</div>
-              </div>
-            ))}
           </div>
 
           <p style={{ fontSize:15, lineHeight:2.1, color:"#cccccc", fontStyle:"italic", marginBottom:32, borderLeft:"2px solid rgba(184,164,216,0.3)", paddingLeft:20 }}>
