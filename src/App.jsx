@@ -2971,8 +2971,23 @@ export default function SakinApp() {
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
+  // Günlük AI çağrı limiti (maliyet tavanı) — client-side soft cap; ai-call.mjs'te
+  // ayrıca per-IP 20/10dk server limiti var. Premium daha yüksek hak.
+  const _aiDailyOk = () => {
+    try {
+      const lim = isPremium ? 40 : 10;
+      const today = new Date().toISOString().slice(0, 10);
+      const d = JSON.parse(localStorage.getItem("sakin_ai_daily") || "{}");
+      if (d.day !== today) { d.day = today; d.n = 0; }
+      if (d.n >= lim) return false;
+      d.n++; localStorage.setItem("sakin_ai_daily", JSON.stringify(d));
+      return true;
+    } catch { return true; }
+  };
+  const _aiLimitMsg = () => pickLang({ tr:"Bugünlük AI hakkın doldu. Yarın yine buradayım. 🌙", en:"You've reached today's AI limit. I'll be here again tomorrow. 🌙", de:"Dein KI-Limit für heute ist erreicht. Morgen bin ich wieder da. 🌙", es:"Has alcanzado el límite de IA de hoy. Mañana estaré aquí de nuevo. 🌙", pt:"Atingiste o limite de IA de hoje. Amanhã estarei aqui de novo. 🌙", fr:"Tu as atteint la limite IA du jour. Je serai là demain. 🌙", ja:"今日のAIの上限に達しました。また明日会いましょう。🌙" }, lang);
   const requireAiConsent = (action) => {
     if (!navigator.onLine) { setOfflineMsg(t("ai_offline")); setTimeout(() => setOfflineMsg(""), 3000); return; }
+    if (!_aiDailyOk()) { setOfflineMsg(_aiLimitMsg()); setTimeout(() => setOfflineMsg(""), 4000); return; }
     if (aiConsent) { action(); return; }
     pendingAiAction.current = action;
     setShowAiConsent(true);
