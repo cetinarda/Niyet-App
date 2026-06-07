@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
+import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
 import { getGlossary } from "./glossary";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
@@ -151,8 +152,22 @@ const CHAKRAS_22_EN = [
   { name:"Source",          color:"#e0e0e0", pastel:"#f5f5f5", desc:"Unite with the divine source.",      element:"Platinum Light",emoji:"☀️",level:3, konu:"Complete union with the divine source" },
 ];
 // Chakra verisi sadece TR ve EN'de mevcut; diğer diller (DE/ES/PT/FR/JA) için EN fallback
-const getChakras7 = (lang) => (lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN).filter(c => c.level === 1);
-const getChakras22 = (lang) => lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN;
+// 7-dil çakra: TR/EN tam dizi; de/es/pt/fr/ja EN dizisi + çeviri merge (i18n-data).
+const _CHAKRA_LANGS = ["de","es","pt","fr","ja"];
+const localizeChakras = (lang) => {
+  if (lang === "tr") return CHAKRAS_22_TR;
+  if (lang === "en" || !_CHAKRA_LANGS.includes(lang)) return CHAKRAS_22_EN;
+  return CHAKRAS_22_EN.map((c, i) => {
+    const tr = CHAKRA_TRANS[i] || {};
+    return { ...c,
+      name: tr.name?.[lang] || c.name,
+      desc: tr.desc?.[lang] || c.desc,
+      konu: tr.konu?.[lang] || c.konu,
+      element: tr.element?.[lang] || c.element };
+  });
+};
+const getChakras7 = (lang) => localizeChakras(lang).filter(c => c.level === 1);
+const getChakras22 = (lang) => localizeChakras(lang);
 const CHAKRAS_7 = CHAKRAS_22_TR.filter(c => c.level === 1);
 const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozmik Boyut" };
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
@@ -281,6 +296,30 @@ const AI_ERR_I18N = {
 // Yüzde formatı — TR "%50", diğer diller "50%"
 function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
 
+// Genel dizi yerelleştirme (string VEYA obje dizisi): TR/EN tam dizi, de/es/pt/fr/ja
+// için EN dizisi + çeviri merge. transByLang = { de:[...], es:[...], ... }.
+function _localizeArr(enArr, trArr, transByLang, lang) {
+  if (lang === "tr") return trArr;
+  if (lang === "en" || !transByLang || !transByLang[lang]) return enArr;
+  const t = transByLang[lang];
+  return enArr.map((item, i) => {
+    if (t[i] == null) return item;
+    if (typeof item === "string") return typeof t[i] === "string" ? t[i] : item;
+    if (item && typeof item === "object" && t[i] && typeof t[i] === "object") return { ...item, ...t[i] };
+    return item;
+  });
+}
+
+// İçsel Ayna örnek-soru havuzu: TR/EN dizileri (kategori objeleri) verilir; de/es/pt/fr/ja
+// için EN kategori yapısı korunur (cat etiketi zaten t() ile çevrili), sorular çevrilir.
+// NOTIF_TRANS.SAMPLE_QUESTIONS düz 20 soru (5 kategori × 4) sırasıyla.
+function _locSampleQ(lang, trArr, enArr) {
+  if (lang === "tr") return trArr;
+  const sq = NOTIF_TRANS && NOTIF_TRANS.SAMPLE_QUESTIONS && NOTIF_TRANS.SAMPLE_QUESTIONS[lang];
+  if (lang === "en" || !sq) return enArr;
+  return enArr.map((c, ci) => ({ ...c, sorular: c.sorular.map((q, qi) => sq[ci*4+qi] || q) }));
+}
+
 // Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
 // EN sürümündeki ad temel kabul edildi.
 const FREQ_NAME_I18N = {
@@ -300,7 +339,21 @@ const getFreqName = (hz, lang) => {
   if (!row) return "";
   return pickLang(row, lang);
 };
-const getFreqData = (lang) => lang === "en" ? FREQ_DATA_EN : FREQ_DATA_TR;
+// 7-dil frekans: TR/EN tam dizi; de/es/pt/fr/ja EN + çeviri merge (hz ile eşleşir).
+const _FREQ_TRANS_BY_HZ = Object.fromEntries((FREQ_TRANS || []).map(t => [t.hz, t]));
+const _FREQ_LANGS = ["de","es","pt","fr","ja"];
+const getFreqData = (lang) => {
+  if (lang === "tr") return FREQ_DATA_TR;
+  if (lang === "en" || !_FREQ_LANGS.includes(lang)) return FREQ_DATA_EN;
+  return FREQ_DATA_EN.map(f => {
+    const t = _FREQ_TRANS_BY_HZ[f.hz];
+    if (!t) return f;
+    return { ...f,
+      tema: t.tema?.[lang] || f.tema,
+      aciklama: t.aciklama?.[lang] || f.aciklama,
+      etkiler: t.etkiler?.[lang] || f.etkiler };
+  });
+};
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
@@ -405,7 +458,10 @@ function moonPhase(date = new Date()) {
   ];
   // 8 bölge: 0..3.69 yeni, 3.69..7.38 hilal, ... her biri ~3.69 gün
   const idx = Math.floor(((age + SYNODIC/16) % SYNODIC) / (SYNODIC/8)) % 8;
-  const cur = phases[idx];
+  let cur = phases[idx];
+  // 5-dil faz adı (de/es/pt/fr/ja) — i18n-data'dan, faz sırasıyla eşleşir.
+  const _mp = NOTIF_TRANS && NOTIF_TRANS.MOON_PHASES;
+  if (_mp) cur = { ...cur, de:_mp.de?.[idx]||cur.en, es:_mp.es?.[idx]||cur.en, pt:_mp.pt?.[idx]||cur.en, fr:_mp.fr?.[idx]||cur.en, ja:_mp.ja?.[idx]||cur.en };
   const fullAge = SYNODIC / 2;
   const daysToFull = age <= fullAge ? (fullAge - age) : (SYNODIC + fullAge - age);
   const daysToNew  = SYNODIC - age;
@@ -669,6 +725,17 @@ const DRACONIC_SUN_DETAY = {
   },
 };
 
+// Astroloji/numeroloji 5-dil çevirileri mevcut {tr,en} nesnelerine merge (de/es/pt/fr/ja).
+// Tüketiciler zaten X[lang] || X.en okuyor; bu satırlar de/es/pt/fr/ja anahtarlarını ekler.
+[
+  ["LIFE_PATH_DESC", LIFE_PATH_DESC],
+  ["PERSONAL_YEAR_DESC", PERSONAL_YEAR_DESC],
+  ["EV12_BURCU_ACIKLAMA", EV12_BURCU_ACIKLAMA],
+  ["GEZEGEN_12EV_GUCLERI", GEZEGEN_12EV_GUCLERI],
+  ["DRACONIC_SUN_KISA", DRACONIC_SUN_KISA],
+  ["DRACONIC_SUN_DETAY", DRACONIC_SUN_DETAY],
+].forEach(([k, obj]) => { if (ASTRO_TRANS && ASTRO_TRANS[k]) Object.assign(obj, ASTRO_TRANS[k]); });
+
 const REMINDERS_TR = [
   { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
   { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
@@ -693,7 +760,7 @@ const REMINDERS_EN = [
   { id:"chakra_an", icon:"💜", title:"Chakra moment",                  subtitle:"Pause for a moment in today's chakra.",                   duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Close your eyes. Feel today's chakra. One breath is enough." },
   { id:"sosyal",    icon:"📵", title:"Social media break",             subtitle:"Do you really want to be here right now?",                duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Put the phone down. Just exist for a minute. The screen can wait, the moment can't." },
 ];
-const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
+const getReminders = (lang) => _localizeArr(REMINDERS_EN, REMINDERS_TR, NOTIF_TRANS.REMINDERS, lang);
 
 function AppStoreBadge({ lang = "tr", size = "md" }) {
   const isLg = size === "lg";
@@ -1522,9 +1589,9 @@ async function scheduleDailyReminders(lang) {
     // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
     await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
     const isTr = lang === "tr";
-    const reminders = isTr ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const mornings  = isTr ? MORNING_PINGS_TR  : MORNING_PINGS_EN;
-    const promos    = isTr ? FEATURE_PROMOS_TR : FEATURE_PROMOS_EN;
+    const reminders = _localizeArr(DAILY_REMINDERS_EN, DAILY_REMINDERS_TR, NOTIF_TRANS.DAILY_REMINDERS, lang);
+    const mornings  = _localizeArr(MORNING_PINGS_EN, MORNING_PINGS_TR, NOTIF_TRANS.MORNING_PINGS, lang);
+    const promos    = _localizeArr(FEATURE_PROMOS_EN, FEATURE_PROMOS_TR, NOTIF_TRANS.FEATURE_PROMOS, lang);
     const now = new Date();
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
@@ -4098,7 +4165,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
-  const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
+  const PREMIUM_WORDS = _localizeArr(PREMIUM_WORDS_EN, PREMIUM_WORDS_TR, NOTIF_TRANS.PREMIUM_WORDS, lang);
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
@@ -6372,7 +6439,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:16,padding:"18px 16px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
-                      {(lang==="tr" ? [
+                      {(_locSampleQ(lang, [
                         { cat:t("ask_cat_body"), sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Sindirim sorunum var, ruhsal nedeni nedir?",
@@ -6403,7 +6470,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "Ayrılık sürecindeyim, bedenimde ağırlık hissediyorum.",
                           "Yeni bir başlangıç önümde, ama adım atmak zor geliyor.",
                         ]},
-                      ] : [
+                      ], [
                         { cat:t("ask_cat_body"), sorular:[
                           "Why is chronic fatigue always with me?",
                           "I have digestive issues — what's the spiritual cause?",
@@ -6434,7 +6501,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "I'm going through a separation and feel heaviness in my body.",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
-                      ]).map(({cat,sorular})=>(
+                      ])).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
                           <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
                           {sorular.map(s=>(
@@ -6497,7 +6564,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                             <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
                             <div style={{ flex:1,minWidth:0 }}>
                               <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
-                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr" ? moon.tr : moon.en} · {moon.illumination}%</div>
+                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
                               <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
                                 {(() => {
                                   const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
