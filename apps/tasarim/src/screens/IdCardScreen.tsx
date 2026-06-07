@@ -106,15 +106,18 @@ export function IdCardScreen({ onClose }: Props) {
           await Sharing.shareAsync(uri, {
             mimeType: 'image/png',
             dialogTitle: opts.suffix === 'story'
-              ? 'Instagram Story olarak Paylaş'
-              : 'Kimlik Kartını Paylaş',
+              ? (getLang() === 'en' ? 'Share as Instagram Story' : 'Instagram Story olarak Paylaş')
+              : (getLang() === 'en' ? 'Share Your ID Card' : 'Kimlik Kartını Paylaş'),
           });
         } else {
-          Alert.alert('Paylaş', 'Cihazında paylaşma özelliği aktif değil.');
+          Alert.alert(
+            getLang() === 'en' ? 'Share' : 'Paylaş',
+            getLang() === 'en' ? 'Sharing is not available on your device.' : 'Cihazında paylaşma özelliği aktif değil.'
+          );
         }
       }
     } catch (e: any) {
-      Alert.alert('Hata', e.message || 'Paylaşılamadı');
+      Alert.alert(getLang() === 'en' ? 'Error' : 'Hata', e.message || (getLang() === 'en' ? 'Could not share' : 'Paylaşılamadı'));
     } finally {
       setSharing(null);
     }
@@ -134,10 +137,10 @@ export function IdCardScreen({ onClose }: Props) {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.topBar}>
-        <TouchableOpacity onPress={onClose} accessibilityRole="button" accessibilityLabel="Geri">
-          <Text style={styles.topBarBtn}>← Geri</Text>
+        <TouchableOpacity onPress={onClose} accessibilityRole="button" accessibilityLabel={getLang() === 'en' ? 'Back' : 'Geri'}>
+          <Text style={styles.topBarBtn}>{getLang() === 'en' ? '← Back' : '← Geri'}</Text>
         </TouchableOpacity>
-        <Text style={styles.topBarTitle}>Kimlik Kartı</Text>
+        <Text style={styles.topBarTitle}>{getLang() === 'en' ? 'ID Card' : 'Kimlik Kartı'}</Text>
         <View style={{ width: 60 }} />
       </View>
 
@@ -152,7 +155,7 @@ export function IdCardScreen({ onClose }: Props) {
         >
           <Starfield width={320} height={720} density={0.55} seed={profile.id.charCodeAt(0) + profile.birthDate.length} />
           <Text style={styles.cardBrand}>SAKİN · TASARIM</Text>
-          <Text style={styles.cardSubBrand}>Human Design Kimliği</Text>
+          <Text style={styles.cardSubBrand}>{getLang() === 'en' ? 'Human Design Identity' : 'Human Design Kimliği'}</Text>
 
           <View style={styles.photoRing}>
             {photoUri ? (
@@ -169,9 +172,9 @@ export function IdCardScreen({ onClose }: Props) {
           </View>
 
           <Text style={styles.cardName}>{profile.name}</Text>
-          <Text style={styles.cardType}>{chart.type}</Text>
+          <Text style={styles.cardType}>{L(t, 'name')}</Text>
           <Text style={styles.cardMeta}>
-            {chart.profile} · {a.name.replace(' Yetki', '')}
+            {chart.profile} · {getLang() === 'en' ? L(a, 'name').replace(' Authority', '') : a.name.replace(' Yetki', '')}
           </Text>
 
           <View style={styles.divider} />
@@ -183,16 +186,31 @@ export function IdCardScreen({ onClose }: Props) {
           <View style={styles.divider} />
 
           <View style={styles.statsGrid}>
-            <Stat label="Strateji" value={chart.strategy} />
-            <Stat label="İmza" value={chart.signature} />
-            <Stat label="Yanlış Frekans" value={chart.notSelf} />
-            <Stat label="Tanım" value={chart.definition.split(' ')[0]} />
+            <Stat label={getLang() === 'en' ? 'Strategy' : 'Strateji'} value={L(t, 'strategy')} />
+            <Stat label={getLang() === 'en' ? 'Signature' : 'İmza'} value={L(t, 'signature')} />
+            <Stat label={getLang() === 'en' ? 'Not-self Frequency' : 'Yanlış Frekans'} value={L(t, 'notSelf')} />
             <Stat
-              label="Aktif Kapı"
+              label={getLang() === 'en' ? 'Definition' : 'Tanım'}
+              value={
+                getLang() === 'en'
+                  ? (chart.definition.startsWith('Tek')
+                      ? 'Single'
+                      : chart.definition.startsWith('Bölünmüş')
+                      ? 'Split'
+                      : chart.definition.startsWith('Üçlü')
+                      ? 'Triple'
+                      : chart.definition.startsWith('Dörtlü')
+                      ? 'Quadruple'
+                      : 'None')
+                  : chart.definition.split(' ')[0]
+              }
+            />
+            <Stat
+              label={getLang() === 'en' ? 'Active Gate' : 'Aktif Kapı'}
               value={`${chart.activeGates.size} / 64`}
             />
             <Stat
-              label="Tanımlı Merkez"
+              label={getLang() === 'en' ? 'Defined Center' : 'Tanımlı Merkez'}
               value={`${chart.definedCenters.size} / 9`}
             />
           </View>
@@ -200,7 +218,7 @@ export function IdCardScreen({ onClose }: Props) {
           <View style={styles.divider} />
 
           <View style={styles.birthBlock}>
-            <Text style={styles.birthLabel}>DOĞUM</Text>
+            <Text style={styles.birthLabel}>{getLang() === 'en' ? 'BIRTH' : 'DOĞUM'}</Text>
             <Text style={styles.birthValue}>
               {profile.birthDate} · {profile.birthTime}
             </Text>
@@ -214,7 +232,7 @@ export function IdCardScreen({ onClose }: Props) {
           </Text>
 
           <Text style={styles.cardFooter}>
-            sakin.life · {new Date().toLocaleDateString('tr-TR')}
+            sakin.life · {new Date().toLocaleDateString(getLang() === 'en' ? 'en-US' : 'tr-TR')}
           </Text>
         </ViewShot>
 
@@ -225,17 +243,17 @@ export function IdCardScreen({ onClose }: Props) {
                 style={styles.btn}
                 onPress={pickPhoto}
                 accessibilityRole="button"
-                accessibilityLabel="Fotoğrafı değiştir"
+                accessibilityLabel={getLang() === 'en' ? 'Change photo' : 'Fotoğrafı değiştir'}
               >
-                <Text style={styles.btnText}>Fotoğrafı Değiştir</Text>
+                <Text style={styles.btnText}>{getLang() === 'en' ? 'Change Photo' : 'Fotoğrafı Değiştir'}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.btn, styles.btnGhost]}
                 onPress={removePhoto}
                 accessibilityRole="button"
-                accessibilityLabel="Fotoğrafı kaldır"
+                accessibilityLabel={getLang() === 'en' ? 'Remove photo' : 'Fotoğrafı kaldır'}
               >
-                <Text style={[styles.btnText, { color: Colors.textMuted }]}>Kaldır</Text>
+                <Text style={[styles.btnText, { color: Colors.textMuted }]}>{getLang() === 'en' ? 'Remove' : 'Kaldır'}</Text>
               </TouchableOpacity>
             </>
           ) : (
@@ -243,12 +261,12 @@ export function IdCardScreen({ onClose }: Props) {
               style={styles.btn}
               onPress={pickPhoto}
               accessibilityRole="button"
-              accessibilityLabel="Fotoğraf yükle"
+              accessibilityLabel={getLang() === 'en' ? 'Upload photo' : 'Fotoğraf yükle'}
               disabled={uploading}
             >
               {uploading
                 ? <ActivityIndicator color={Colors.gold} />
-                : <Text style={styles.btnText}>+ Fotoğraf Yükle</Text>}
+                : <Text style={styles.btnText}>{getLang() === 'en' ? '+ Upload Photo' : '+ Fotoğraf Yükle'}</Text>}
             </TouchableOpacity>
           )}
 
@@ -257,13 +275,15 @@ export function IdCardScreen({ onClose }: Props) {
             onPress={shareStory}
             disabled={sharing !== null}
             accessibilityRole="button"
-            accessibilityLabel="Instagram Story olarak indir"
+            accessibilityLabel={getLang() === 'en' ? 'Download as Instagram Story' : 'Instagram Story olarak indir'}
           >
             {sharing === 'story'
               ? <ActivityIndicator color={Colors.background} />
               : (
                 <Text style={[styles.btnText, { color: Colors.background, fontWeight: '700' }]}>
-                  {Platform.OS === 'web' ? 'Instagram Story İndir (1080×1920)' : 'Instagram Story Paylaş'}
+                  {Platform.OS === 'web'
+                    ? (getLang() === 'en' ? 'Download Instagram Story (1080×1920)' : 'Instagram Story İndir (1080×1920)')
+                    : (getLang() === 'en' ? 'Share Instagram Story' : 'Instagram Story Paylaş')}
                 </Text>
               )}
           </TouchableOpacity>
