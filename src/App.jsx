@@ -2875,9 +2875,10 @@ export default function SakinApp() {
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
   const [isPremium, setIsPremium] = useState(() => {
-    // iOS: premium yalnızca kullanıcı bizzat Subscribe/Buy/Restore'a basınca verilir.
-    // Apple ID seviyesinde cache'lenmiş eski receipt'lere güvenme.
-    if (isNative) return false;
+    // İyimser başlat: önceki kullanıcı-eylemiyle (Subscribe/Buy/Restore) yazılan yerel
+    // bayrağa güven → premium uygulama kapanıp açılınca KORUNUR (her açılışta Restore'a
+    // gerek kalmaz). Bu bayrak store.owned değil; sadece kullanıcının bizzat satın aldığını
+    // gösterir. Abonelik gerçekten bittiyse aşağıdaki recheck (ürünler yüklenince) iptal eder.
     return localStorage.getItem("sakin_premium") === "1";
   });
   const [purchaseLoading, setPurchaseLoading] = useState(null);
@@ -2905,6 +2906,7 @@ export default function SakinApp() {
     if (!isNative) return;
     onPurchaseUpdate((purchased) => {
       if (purchased) {
+        try { localStorage.setItem("sakin_premium", "1"); } catch(_){} // kalıcı: relaunch'ta korunsun
         setIsPremium(true);
         setPurchaseLoading(null);
         setPurchaseError("");
@@ -2935,6 +2937,7 @@ export default function SakinApp() {
     if (!isNative) return;
     const recheck = () => {
       if (document.visibilityState !== "visible") return;
+      if (!areProductsLoaded()) return; // mağaza/owned hazır değilken iptal etme (açılış yarışı)
       try {
         const owned = isSubscribed();
         if (!owned) setIsPremium(false); // sadece iptal et, asla grant verme
@@ -2964,7 +2967,11 @@ export default function SakinApp() {
     if (r.error === "products_not_loaded") {
       msg = t("err_products_not_loaded");
     } else if (r.error === "already_owned") {
-      msg = t("err_already_owned");
+      // Bu ürüne zaten sahipsin → Restore gerektirmeden premium ver (reinstall sonrası
+      // "Satın Al"a basınca premium döner). Store sahipliği onayladığı için güvenli.
+      try { localStorage.setItem("sakin_premium", "1"); } catch(_){}
+      setIsPremium(true); haptic(ImpactStyle.Heavy);
+      return;
     } else {
       msg = t("err_purchase_generic");
     }
