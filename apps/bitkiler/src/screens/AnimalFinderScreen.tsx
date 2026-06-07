@@ -10,7 +10,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius, TAB_BAR_HEIGHT } from '../theme/colors';
-import stonesData from '../data/stones.json';
+import stonesData from '../data/plants.json';
 import stoneZodiac from '../data/stoneZodiac.json';
 import { useLocalizedStones } from '../i18n/localize';
 import { useI18n } from '../i18n/useI18n';

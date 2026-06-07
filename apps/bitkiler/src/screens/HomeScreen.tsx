@@ -14,7 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import quotesData from '../data/quotes.json';
-import stonesData from '../data/stones.json';
+import stonesData from '../data/plants.json';
 import animalsData from '../data/animals.json';
 import philosophersData from '../data/philosophers.json';
 import { useSakinHayvanStore } from '../store/useStore';
