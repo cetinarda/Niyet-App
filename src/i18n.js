@@ -1434,7 +1434,7 @@ export const LANGUAGES = [
   { code: "tr",    label: "TR" },
   { code: "de",    label: "DE" },
   { code: "es",    label: "ES" },
-  { code: "pt-BR", label: "PT" },
+  { code: "pt", label: "PT" },
   { code: "fr",    label: "FR" },
   { code: "ja",    label: "JA" },
 ];
