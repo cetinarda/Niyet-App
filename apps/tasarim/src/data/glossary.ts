@@ -12,10 +12,14 @@ export interface GlossaryEntry {
   id: string;
   category: GlossaryCategory;
   categoryLabel: string;
+  categoryLabelEn?: string;
   name: string;
+  nameEn?: string;
   subtitle?: string;
   aliases: string[];
+  aliasesEn?: string[];
   body: string;         // tek paragraf özet
+  bodyEn?: string;
   details?: string[];   // opsiyonel ek satırlar (madde madde)
 }
 

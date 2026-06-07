@@ -10,8 +10,11 @@ export type ProfileKey =
 export interface LineInfo {
   number: LineNumber;
   name: string;
+  nameEn?: string;
   shortDesc: string;
+  shortDescEn?: string;
   shadow: string;
+  shadowEn?: string;
 }
 
 export const LINES: Record<LineNumber, LineInfo> = {
@@ -62,9 +65,13 @@ export const LINES: Record<LineNumber, LineInfo> = {
 export interface ProfileInfo {
   key: ProfileKey;
   name: string;
+  nameEn?: string;
   shortDesc: string;
+  shortDescEn?: string;
   longDesc: string;
+  longDescEn?: string;
   theme: string;          // ana yaşam teması
+  themeEn?: string;
 }
 
 export const PROFILES: Record<ProfileKey, ProfileInfo> = {
