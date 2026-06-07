@@ -1,4 +1,49 @@
+import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition } from "astronomy-engine";
+
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+
+// ── GEZEGEN DİZİLİŞİ (efemeris — astronomy-engine) ──
+const ZODIAC = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+function _eclLon(body, date) {
+  if (body === "Sun") return ((SunPosition(date).elon % 360) + 360) % 360;
+  if (body === "Moon") return ((EclipticGeoMoon(date).lon % 360) + 360) % 360;
+  const ecl = Ecliptic(GeoVector(Body[body], date, true));
+  return ((ecl.elon % 360) + 360) % 360;
+}
+function planetSky(date = new Date()) {
+  const bodies = ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"];
+  const out = [];
+  for (const b of bodies) {
+    let lon, retro = false;
+    try {
+      lon = _eclLon(b, date);
+      if (b !== "Sun" && b !== "Moon") {
+        const lon2 = _eclLon(b, new Date(date.getTime() + 2 * 86400000));
+        let d = lon2 - lon; if (d > 180) d -= 360; if (d < -180) d += 360;
+        retro = d < 0;
+      }
+    } catch { continue; }
+    out.push({ body: b, sign: ZODIAC[Math.floor(lon / 30)], deg: Math.round(lon % 30), retrograde: retro });
+  }
+  return out;
+}
+
+// ── KUYRUKLU YILDIZLAR (notable — perihelion/görünürlük penceresi, en iyi çaba) ──
+// Sporadik olduğu için statik; pencere dışındaysa rapora girmez. Güncellenebilir.
+const COMETS = [
+  { name:"12P/Pons-Brooks",        start:[2024,3,1],  end:[2024,5,10] },
+  { name:"C/2023 A3 (Tsuchinshan-ATLAS)", start:[2024,9,27], end:[2024,10,25] },
+  { name:"C/2024 G3 (ATLAS)",      start:[2025,1,10], end:[2025,1,25] },
+];
+function activeComet(date = new Date()) {
+  const t = date.getTime();
+  for (const c of COMETS) {
+    const s = Date.UTC(c.start[0], c.start[1]-1, c.start[2]);
+    const e = Date.UTC(c.end[0], c.end[1]-1, c.end[2]);
+    if (t >= s && t <= e) return { active: true, name: c.name };
+  }
+  return { active: false };
+}
 
 function getCorsHeaders(event) {
   const origin = event.headers?.origin || "";
@@ -134,16 +179,49 @@ function fillMeteorName(tpl, shower) {
   return out;
 }
 
-// fetch + timeout — Netlify function 10s sınırına takılmasın
-async function fetchWithTimeout(url, ms = 4500) {
+// fetch + timeout — Netlify function sınırına takılmasın
+async function fetchWithTimeout(url, ms = 4500, options = {}) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), ms);
   try {
-    const r = await fetch(url, { signal: ctrl.signal });
+    const r = await fetch(url, { ...options, signal: ctrl.signal });
     return r;
   } finally {
     clearTimeout(timer);
   }
+}
+
+// ── ÖZGÜN KOLEKTİF GÖKYÜZÜ RAPORU (Groq sentezi — tüm gerçek veriyi yorumlar) ──
+const _SKY_LANG_NAMES = { tr:"Turkish", en:"English", de:"German", es:"Spanish", pt:"Portuguese", fr:"French", ja:"Japanese" };
+async function generateSkyReport(data, lang) {
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return null;
+  const name = _SKY_LANG_NAMES[lang] || "English";
+  const planetsStr = (data.planets || []).map(p => `${p.body} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`).join(", ");
+  const sys = `You are Sakin's sky-weather voice — warm, lightly poetic, curiosity-evoking, spiritual yet grounded. Write a COLLECTIVE daily sky report about the shared sky above us all (NOT about any single individual, no personal astrology). Interpret the REAL astronomical data below into one flowing, ORIGINAL report. WRITE ENTIRELY IN ${name}. Avoid clichés, stock phrases and formulaic openings; vary wording each day. 3 to 5 sentences, flowing prose — no bullet points, no headings, no raw data dump. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
+  const usr = `Real sky data for today:
+- Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
+- Sun: ${data.solar_flares_24h?.count || 0} flares (strongest ${data.solar_flares_24h?.max_class || "quiet"}); geomagnetic Kp ${data.past_7_days?.current_kp}; solar wind ${data.solar_wind?.speed || "?"} km/s
+- Planets: ${planetsStr || "?"}
+- Meteor shower: ${data.meteor?.active ? data.meteor.name + " active" : "none active now"}
+- Comet: ${data.comet?.active ? data.comet.name + " in view" : "none notable now"}
+
+Weave these into the collective sky report now (do not list them mechanically; interpret their mood).`;
+  try {
+    const r = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", 9000, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        max_tokens: 500,
+        temperature: 0.9,
+        messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
+      }),
+    });
+    const j = await r.json();
+    const txt = j?.choices?.[0]?.message?.content?.trim();
+    return txt || null;
+  } catch { return null; }
 }
 
 export const handler = async (event) => {
@@ -238,9 +316,12 @@ export const handler = async (event) => {
       } catch { /* sessiz geç */ }
     }
 
-    // ── AY EVRESİ + GÖKTAŞI (hesaplama / takvim) ──
+    // ── AY EVRESİ + GÖKTAŞI + GEZEGEN DİZİLİŞİ + KUYRUKLU YILDIZ ──
     const moon = moonPhase();
     const meteor = activeMeteorShower();
+    let planets = [];
+    try { planets = planetSky(); } catch { /* efemeris hatası — sessiz */ }
+    const comet = activeComet();
 
     // ── HAVA DURUMU TARZI ANLATILAR — seviyeye göre seç ──
     const geoLevel   = maxKp >= 5 ? "storm" : maxKp >= 3 ? "unsettled" : "calm";
@@ -292,6 +373,8 @@ export const handler = async (event) => {
       solar_wind: solarWind,
       moon,
       meteor,
+      planets,
+      comet,
       narratives,
       report,
       interpretation: {
@@ -303,9 +386,18 @@ export const handler = async (event) => {
       },
     };
 
+    // ── ÖZGÜN AI GÖKYÜZÜ RAPORU (kolektif, seçili dilde) — başarısızsa template fallback ──
+    const lang = (() => {
+      const l = event.queryStringParameters?.lang;
+      return _SKY_LANG_NAMES[l] ? l : "en";
+    })();
+    const aiReport = await generateSkyReport(summary, lang);
+    if (aiReport) summary.aiReport = aiReport;
+
     return {
       statusCode: 200,
-      headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "public, max-age=900" },
+      // AI raporu kolektif + günlük → 6 saat cache (Groq çağrısını seyrelt). Dil query'sine göre ayrı cache.
+      headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "public, max-age=21600" },
       body: JSON.stringify(summary),
     };
   } catch (e) {

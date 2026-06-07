@@ -299,6 +299,8 @@ const AI_ERR_I18N = {
 };
 // Yüzde formatı — TR "%50", diğer diller "50%"
 function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
+// Gezegen astrolojik glifleri (Gökyüzü Raporu gezegen dizilişi satırı)
+const PLANET_GLYPH = { Sun:"☉", Moon:"☽", Mercury:"☿", Venus:"♀", Mars:"♂", Jupiter:"♃", Saturn:"♄", Uranus:"♅", Neptune:"♆", Pluto:"♇" };
 
 // Genel dizi yerelleştirme (string VEYA obje dizisi): TR/EN tam dizi, de/es/pt/fr/ja
 // için EN dizisi + çeviri merge. transByLang = { de:[...], es:[...], ... }.
@@ -3177,7 +3179,7 @@ export default function SakinApp() {
     if (kozmikData || kozmikLoading) return;
     setKozmikLoading(true);
     try {
-      const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy");
+      const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
       if (r.ok) setKozmikData(await r.json());
     } catch { /* sessiz */ }
     setKozmikLoading(false);
@@ -3960,7 +3962,7 @@ ANAHTAR SÖZCÜKLER: yalnızlık · iç gözlem · bastırılan duygular · karm
     // Kozmik enerji verisi (NOAA Kp index — 7 gün + 3 gün tahmin)
     let kozmikText = "";
     try {
-      const kRes = await fetch(API_BASE + "/.netlify/functions/cosmic-energy");
+      const kRes = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
       if (kRes.ok) {
         const k = await kRes.json();
         const dailyStr = k.past_7_days.daily.map(d => `${d.day}: Kp=${d.kp} (${d.tr})`).join("; ");
@@ -6607,10 +6609,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                             )}
                           </div>
 
-                          {/* TEK BİRLEŞİK HAVA DURUMU RAPORU */}
-                          {kozmikData.report && (
-                            <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:16 }}>
-                              {pickLang(kozmikData.report, lang)}
+                          {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
+                          {(kozmikData.aiReport || kozmikData.report) && (
+                            <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
+                              {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
+                            </div>
+                          )}
+
+                          {/* Gezegen dizilişi (meraklı için) */}
+                          {kozmikData.planets && kozmikData.planets.length > 0 && (
+                            <div style={{ fontSize:11,lineHeight:2,marginBottom:4,display:"flex",flexWrap:"wrap",gap:"3px 12px" }}>
+                              {kozmikData.planets.map(p => (
+                                <span key={p.body} style={{ color: p.retrograde ? "#e0a0a0" : "#9a8fb5" }}>
+                                  {PLANET_GLYPH[p.body] || p.body} {p.sign.slice(0,3)}{p.retrograde ? " ℞" : ""}
+                                </span>
+                              ))}
                             </div>
                           )}
 

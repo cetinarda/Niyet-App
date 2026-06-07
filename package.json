@@ -22,6 +22,7 @@
     "@capacitor/local-notifications": "^8.0.2",
     "@capacitor/splash-screen": "^8.0.1",
     "@capacitor/status-bar": "^8.0.2",
+    "astronomy-engine": "^2.1.19",
     "cordova-plugin-purchase": "^13.15.4",
     "puppeteer": "^24.42.0",
     "react": "^18.2.0",
