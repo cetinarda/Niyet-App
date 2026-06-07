@@ -107,8 +107,8 @@ export function ElementDetail({ dist, visible, onClose }: {
                 <View key={k} style={styles.elemBlock}>
                   <View style={styles.elemHead}>
                     <View style={[styles.dot, { backgroundColor: meta.color }]} />
-                    <Text style={styles.elemName}>{meta.tr}</Text>
-                    <Text style={[styles.elemPct, { color: meta.color }]}>%{Math.round(dist[k] * 100)}</Text>
+                    <Text style={styles.elemName}>{elemName(k)}</Text>
+                    <Text style={[styles.elemPct, { color: meta.color }]}>{Math.round(dist[k] * 100)}%</Text>
                   </View>
                   {/* ağırlık çubuğu */}
                   <View style={styles.barTrack}>
@@ -134,13 +134,11 @@ export function ElementDetail({ dist, visible, onClose }: {
 
             {/* Yöntem açıklaması */}
             <View style={styles.methodBox}>
-              <Text style={styles.methodTitle}>Hesaplama nasıl yapılıyor?</Text>
+              <Text style={styles.methodTitle}>{getLang() === 'en' ? 'How is this calculated?' : 'Hesaplama nasıl yapılıyor?'}</Text>
               <Text style={styles.methodTxt}>
-                Eşit sayım yerine her gök cismi önemine göre tartılır: Güneş ve Ay en ağır,
-                kişisel gezegenler (Merkür, Venüs, Mars) orta, kuşak gezegenleri (Uranüs,
-                Neptün) çok hafif. Bir gezegen yönettiği burçtaysa (⟡ yönetici) veya yüceldiği
-                burçtaysa (▲ yücelme) gücü artar; aynı burçta toplanan üç+ gezegen (stellium)
-                ekstra vurgu kazanır. Kuzey Ay Düğümü karmik yön olarak hafifçe katılır.
+                {getLang() === 'en'
+                  ? 'Instead of an equal count, each celestial body is weighted by its importance: the Sun and Moon weigh the most, personal planets (Mercury, Venus, Mars) medium, and outer planets (Uranus, Neptune) very little. A planet gains power if it is in the sign it rules (⟡ ruler) or in the sign of its exaltation (▲ exaltation); three or more planets gathered in the same sign (a stellium) get extra emphasis. The North Node is included lightly as a karmic direction.'
+                  : 'Eşit sayım yerine her gök cismi önemine göre tartılır: Güneş ve Ay en ağır, kişisel gezegenler (Merkür, Venüs, Mars) orta, kuşak gezegenleri (Uranüs, Neptün) çok hafif. Bir gezegen yönettiği burçtaysa (⟡ yönetici) veya yüceldiği burçtaysa (▲ yücelme) gücü artar; aynı burçta toplanan üç+ gezegen (stellium) ekstra vurgu kazanır. Kuzey Ay Düğümü karmik yön olarak hafifçe katılır.'}
               </Text>
             </View>
 
@@ -151,12 +149,12 @@ export function ElementDetail({ dist, visible, onClose }: {
                 onPress={openPremium}
                 activeOpacity={0.9}
                 accessibilityRole="button"
-                accessibilityLabel="Premium ile element detaylarını aç"
+                accessibilityLabel={getLang() === 'en' ? 'Unlock element details with Premium' : 'Premium ile element detaylarını aç'}
               >
                 <Text style={styles.lockIcon}>🔒</Text>
-                <Text style={styles.lockTitle}>Element detayları Premium'da</Text>
-                <Text style={styles.lockDesc}>Gezegen katkıları, yüzdeler ve sentez Sakin Premium ile açılır.</Text>
-                <View style={styles.lockBtn}><Text style={styles.lockBtnTxt}>Premium ile aç</Text></View>
+                <Text style={styles.lockTitle}>{getLang() === 'en' ? 'Element details are in Premium' : "Element detayları Premium'da"}</Text>
+                <Text style={styles.lockDesc}>{getLang() === 'en' ? 'Planet contributions, percentages and synthesis unlock with Sakin Premium.' : 'Gezegen katkıları, yüzdeler ve sentez Sakin Premium ile açılır.'}</Text>
+                <View style={styles.lockBtn}><Text style={styles.lockBtnTxt}>{getLang() === 'en' ? 'Unlock with Premium' : 'Premium ile aç'}</Text></View>
               </TouchableOpacity>
             )}
             </View>{/* /position relative */}

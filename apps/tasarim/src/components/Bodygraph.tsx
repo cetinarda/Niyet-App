@@ -5,6 +5,7 @@ import { Colors } from '../theme/colors';
 import { CenterKey, CENTERS } from '../data/centers';
 import { CHANNELS } from '../data/channels';
 import { HumanDesignChart } from '../utils/humanDesign';
+import { L, getLang } from '../i18n';
 
 // Bodygraph topolojisi: 9 merkez koordinatları (300x520 viewport)
 const W = 300;
@@ -133,8 +134,17 @@ export function Bodygraph({ chart, size = 300, showLabels = true }: Props) {
     return 'rgba(255,255,255,0.18)';
   }
 
+  // i18n: bodygraph yalnız kapı numaraları ve renkler gösterir (yerelleştirilecek
+  // metin yok); köprü tutarlılığı için L/getLang import edilir ve erişilebilirlik
+  // etiketi dile göre verilir.
+  void L;
+  const a11yLabel = getLang() === 'en' ? 'Bodygraph chart' : 'Bodygraph haritası';
+
   return (
-    <View style={[styles.wrap, { width: size, height }]}>
+    <View
+      style={[styles.wrap, { width: size, height }]}
+      accessibilityLabel={a11yLabel}
+    >
       <Svg width={size} height={height} viewBox={`0 0 ${W} ${H}`}>
         {/* Channel lines (önce undefined olanlar) */}
         {CHANNELS.map(ch => {
