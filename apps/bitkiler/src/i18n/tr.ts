@@ -2,7 +2,7 @@ export const tr = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Bugün',
-    animals: 'Taşlar',
+    animals: 'Bitkiler',
     archive: 'Arşiv',
     profile: 'Profil',
   },
@@ -18,9 +18,9 @@ export const tr = {
     defaultUser: 'Yolcu',
     decks: {
       animal: {
-        title: 'Taş',
-        short: 'TAŞ',
-        subtitle: 'Bugünün taşını dinle',
+        title: 'Bitki',
+        short: 'BİTKİ',
+        subtitle: 'Bugünün bitkisini dinle',
       },
       quote: {
         title: 'Mevlana',
@@ -38,9 +38,9 @@ export const tr = {
 
   // ─── Animals hub (taş) ───────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKİN · TAŞ',
+    eyebrow: 'SAKİN · BİTKİ',
     panels: {
-      library: 'Taşlar',
+      library: 'Bitkiler',
       finder: 'Bul',
       guidance: 'Rehberlik',
     },
@@ -49,8 +49,8 @@ export const tr = {
   // ─── Animal library (taş kütüphanesi) ─────────────────────────────────────────
   animalLibrary: {
     back: '← Geri',
-    familyTag: 'SAKİN · TAŞ',
-    subtitle: '{count} şifalı taş ve kristal rehberi',
+    familyTag: 'SAKİN · BİTKİ',
+    subtitle: '{count} şifalı bitki ve ot rehberi',
     searchPlaceholder: 'İsim, özellik veya unsur ile ara...',
     noResults: 'Arama sonucu yok.',
   },
@@ -58,7 +58,7 @@ export const tr = {
   // ─── Animal detail (taş detayı) ───────────────────────────────────────────────
   animalDetail: {
     back: '← Geri',
-    familyTag: 'SAKİN · TAŞ',
+    familyTag: 'SAKİN · BİTKİ',
     sections: {
       properties: 'Özellikleri',
       todayMessage: 'Bugün Sana Söylediği',
@@ -78,15 +78,15 @@ export const tr = {
 
   // ─── Animal finder (taş bulucu) ───────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Taşını Bul',
+    headerTitle: 'Bitkini Bul',
     intro: {
-      title: 'Sana Uygun Taşı Keşfet',
-      desc: 'Burcuna ya da unsuruna göre seninle uyumlu kristalleri bul.',
-      note: 'Her taşın kendine has bir titreşimi vardır. Sana çağrılanı seç — gerisini sezgin söyler.',
-      birthStoneTitle: 'Doğum Taşın',
+      title: 'Sana Uygun Bitkiyi Keşfet',
+      desc: 'Burcuna ya da unsuruna göre seninle uyumlu bitkileri bul.',
+      note: 'Her bitkinin kendine has bir titreşimi vardır. Sana çağrılanı seç — gerisini sezgin söyler.',
+      birthStoneTitle: 'Doğum Bitkin',
       zodiacLabel: 'Burcuna Göre',
       elementLabel: 'Unsuruna Göre',
-      elementHint: 'Her kristal bir doğa unsuruyla titreşir; unsurun burcundan gelir — ateş: Koç·Aslan·Yay · toprak: Boğa·Başak·Oğlak · hava: İkizler·Terazi·Kova · su: Yengeç·Akrep·Balık.',
+      elementHint: 'Her bitki bir doğa unsuruyla titreşir; unsurun burcundan gelir — ateş: Koç·Aslan·Yay · toprak: Boğa·Başak·Oğlak · hava: İkizler·Terazi·Kova · su: Yengeç·Akrep·Balık.',
     },
     elements: {
       fire: 'Ateş',
@@ -95,10 +95,10 @@ export const tr = {
       water: 'Su',
     },
     result: {
-      zodiacLabel: '{name} burcunun taşları',
-      elementLabel: '{name} unsurunun taşları',
-      birthLabel: 'Doğum ayının taşı',
-      empty: 'Bu seçim için taş bulunamadı.',
+      zodiacLabel: '{name} burcunun bitkileri',
+      elementLabel: '{name} unsurunun bitkileri',
+      birthLabel: 'Doğum ayının bitkisi',
+      empty: 'Bu seçim için bitki bulunamadı.',
       rediscoverBtn: 'Yeniden Seç ✦',
       closeBtn: 'Kapat ✦',
     },
@@ -129,16 +129,16 @@ export const tr = {
     spiritualMap: 'Ruhsal Harita',
     reportLabels: {
       guide: 'Rehber',
-      stone: 'Taş',
-      animal: 'Taş',
-      nagual: 'Taş',
+      stone: 'Bitki',
+      animal: 'Bitki',
+      nagual: 'Bitki',
     },
     filters: {
       all: 'Tümü',
       quote: 'Mesaj',
-      stone: 'Taş',
-      animal: 'Taş',
-      nagual: 'Taş',
+      stone: 'Bitki',
+      animal: 'Bitki',
+      nagual: 'Bitki',
     },
     empty: {
       title: 'Henüz okuma yok.',
@@ -275,7 +275,7 @@ export const tr = {
     spiritualMap: {
       title: 'Ruhsal Harita',
       topGuide: 'En Çok Rehber Şair',
-      topStone: 'Koruyucu Taşın',
+      topStone: 'Koruyucu Bitkin',
       topAnimal: 'Totem Hayvanın',
       topNagual: 'Nagual Rehberin',
       companionCount: '{n} kez eşlik etti',
@@ -290,7 +290,7 @@ export const tr = {
       masterDesc: 'Ana merkez — tüm uygulamalara giriş',
       apps: {
         animalGuidance: 'Hayvan Rehberliği',
-        stoneGuidance: 'Taş Rehberliği',
+        stoneGuidance: 'Bitki Rehberliği',
         plantGuidance: 'Bitki Rehberliği',
         myths: 'Mitler ve İmgeler',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const tr = {
       },
       appDescs: {
         animalGuidance: 'Bu uygulama',
-        stoneGuidance: 'Kristallerin dili',
+        stoneGuidance: 'Bitkilerin dili',
         plantGuidance: 'Bitkisel bilgelik',
         myths: 'Arketip ve sembol',
         humanDesign: 'Tasarımını tanı',
@@ -314,7 +314,7 @@ export const tr = {
         b001: { title: 'Yol Başlangıcı', desc: 'İlk 7 okuma' },
         b002: { title: 'Ateş Dervişi',   desc: '21 gün silsile' },
         b003: { title: 'Mesnevi Yolcusu', desc: '30 okuma' },
-        b004: { title: 'Tesbih',          desc: '33 taş görüldü' },
+        b004: { title: 'Tesbih',          desc: '33 bitki görüldü' },
         b005: { title: 'Hak Dostu',       desc: '100 okuma' },
         b006: { title: 'ışık Yolcusu',    desc: '365 okuma' },
       },

@@ -2,7 +2,7 @@ export const de = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Heute',
-    animals: 'Steine',
+    animals: 'Pflanzen',
     archive: 'Archiv',
     profile: 'Profil',
   },
@@ -18,9 +18,9 @@ export const de = {
     defaultUser: 'Reisende(r)',
     decks: {
       animal: {
-        title: 'Stein',
-        short: 'STEIN',
-        subtitle: 'Höre auf den Stein des Tages',
+        title: 'Pflanze',
+        short: 'PFLANZE',
+        subtitle: 'Höre auf die Pflanze des Tages',
       },
       quote: {
         title: 'Rumi',
@@ -38,9 +38,9 @@ export const de = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · STEIN',
+    eyebrow: 'SAKIN · PFLANZE',
     panels: {
-      library: 'Steine',
+      library: 'Pflanzen',
       finder: 'Finden',
       guidance: 'Führung',
     },
@@ -49,8 +49,8 @@ export const de = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← Zurück',
-    familyTag: 'SAKIN · STEIN',
-    subtitle: '{count} Heilsteine und Kristalle',
+    familyTag: 'SAKIN · PFLANZE',
+    subtitle: '{count} Heilpflanzen und Kräuter',
     searchPlaceholder: 'Nach Name, Eigenschaft oder Element suchen...',
     noResults: 'Keine Ergebnisse gefunden.',
   },
@@ -58,7 +58,7 @@ export const de = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← Zurück',
-    familyTag: 'SAKIN · STEIN',
+    familyTag: 'SAKIN · PFLANZE',
     sections: {
       properties: 'Eigenschaften',
       todayMessage: 'Was er dir heute sagt',

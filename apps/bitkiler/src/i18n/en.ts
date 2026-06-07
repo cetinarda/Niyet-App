@@ -2,7 +2,7 @@ export const en = {
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Today',
-    animals: 'Stones',
+    animals: 'Plants',
     archive: 'Archive',
     profile: 'Profile',
   },
@@ -38,9 +38,9 @@ export const en = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · STONE',
+    eyebrow: 'SAKIN · PLANT',
     panels: {
-      library: 'Stones',
+      library: 'Plants',
       finder: 'Find',
       guidance: 'Guidance',
     },
@@ -49,8 +49,8 @@ export const en = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← Back',
-    familyTag: 'SAKIN · STONE',
-    subtitle: '{count} healing stones and crystals',
+    familyTag: 'SAKIN · PLANT',
+    subtitle: '{count} healing plants and herbs',
     searchPlaceholder: 'Search by name, property or element...',
     noResults: 'No results found.',
   },
@@ -58,7 +58,7 @@ export const en = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← Back',
-    familyTag: 'SAKIN · STONE',
+    familyTag: 'SAKIN · PLANT',
     sections: {
       properties: 'Properties',
       todayMessage: 'What It Tells You Today',
@@ -78,15 +78,15 @@ export const en = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Find Your Stone',
+    headerTitle: 'Find Your Plant',
     intro: {
-      title: 'Discover Your Stone',
-      desc: 'Find the crystals aligned with you by your zodiac sign or element.',
-      note: 'Every stone carries its own vibration. Choose the one that calls to you — let your intuition do the rest.',
-      birthStoneTitle: 'Your Birthstone',
+      title: 'Discover Your Plant',
+      desc: 'Find the plants aligned with you by your zodiac sign or element.',
+      note: 'Every plant carries its own vibration. Choose the one that calls to you — let your intuition do the rest.',
+      birthStoneTitle: 'Your Birth Plant',
       zodiacLabel: 'By Zodiac',
       elementLabel: 'By Element',
-      elementHint: 'Each crystal vibrates with a natural element; yours comes from your sign — fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
+      elementHint: 'Each plant vibrates with a natural element; yours comes from your sign — fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
     },
     elements: {
       fire: 'Fire',
@@ -95,10 +95,10 @@ export const en = {
       water: 'Water',
     },
     result: {
-      zodiacLabel: 'Stones of {name}',
-      elementLabel: 'Stones of {name}',
-      birthLabel: 'Stone of your birth month',
-      empty: 'No stones found for this selection.',
+      zodiacLabel: 'Plants of {name}',
+      elementLabel: 'Plants of {name}',
+      birthLabel: 'Plant of your birth month',
+      empty: 'No plants found for this selection.',
       rediscoverBtn: 'Choose Again ✦',
       closeBtn: 'Close ✦',
     },
@@ -129,16 +129,16 @@ export const en = {
     spiritualMap: 'Spiritual Map',
     reportLabels: {
       guide: 'Guide',
-      stone: 'Stone',
-      animal: 'Stone',
-      nagual: 'Stone',
+      stone: 'Plant',
+      animal: 'Plant',
+      nagual: 'Plant',
     },
     filters: {
       all: 'All',
       quote: 'Message',
-      stone: 'Stone',
-      animal: 'Stone',
-      nagual: 'Stone',
+      stone: 'Plant',
+      animal: 'Plant',
+      nagual: 'Plant',
     },
     empty: {
       title: 'No readings yet.',
@@ -275,7 +275,7 @@ export const en = {
     spiritualMap: {
       title: 'Spiritual Map',
       topGuide: 'Top Guide Poet',
-      topStone: 'Your Guardian Stone',
+      topStone: 'Your Guardian Plant',
       topAnimal: 'Your Totem Animal',
       topNagual: 'Your Nagual Guide',
       companionCount: 'accompanied you {n} times',
@@ -290,7 +290,7 @@ export const en = {
       masterDesc: 'Home base — entry to all apps',
       apps: {
         animalGuidance: 'Animal Guidance',
-        stoneGuidance: 'Crystal Guidance',
+        stoneGuidance: 'Plant Guidance',
         plantGuidance: 'Plant Wisdom',
         myths: 'Myths & Images',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const en = {
       },
       appDescs: {
         animalGuidance: 'This app',
-        stoneGuidance: 'The language of crystals',
+        stoneGuidance: 'The language of plants',
         plantGuidance: 'Herbal wisdom',
         myths: 'Archetypes and symbols',
         humanDesign: 'Know your design',
@@ -314,7 +314,7 @@ export const en = {
         b001: { title: 'First Steps', desc: 'First 7 readings' },
         b002: { title: 'Fire Dervish', desc: '21-day streak' },
         b003: { title: 'Mesnevi Traveller', desc: '30 readings' },
-        b004: { title: 'Rosary', desc: '33 stones seen' },
+        b004: { title: 'Rosary', desc: '33 plants seen' },
         b005: { title: 'Friend of Truth', desc: '100 readings' },
         b006: { title: 'Light Traveller', desc: '365 readings' },
       },
