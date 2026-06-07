@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
-import { CHAKRA_TRANS, FREQ_TRANS } from "./i18n-data";
+import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
 import { getGlossary } from "./glossary";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
@@ -295,6 +295,20 @@ const AI_ERR_I18N = {
 };
 // Yüzde formatı — TR "%50", diğer diller "50%"
 function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
+
+// Genel dizi yerelleştirme (string VEYA obje dizisi): TR/EN tam dizi, de/es/pt/fr/ja
+// için EN dizisi + çeviri merge. transByLang = { de:[...], es:[...], ... }.
+function _localizeArr(enArr, trArr, transByLang, lang) {
+  if (lang === "tr") return trArr;
+  if (lang === "en" || !transByLang || !transByLang[lang]) return enArr;
+  const t = transByLang[lang];
+  return enArr.map((item, i) => {
+    if (t[i] == null) return item;
+    if (typeof item === "string") return typeof t[i] === "string" ? t[i] : item;
+    if (item && typeof item === "object" && t[i] && typeof t[i] === "object") return { ...item, ...t[i] };
+    return item;
+  });
+}
 
 // Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
 // EN sürümündeki ad temel kabul edildi.
@@ -698,6 +712,17 @@ const DRACONIC_SUN_DETAY = {
   },
 };
 
+// Astroloji/numeroloji 5-dil çevirileri mevcut {tr,en} nesnelerine merge (de/es/pt/fr/ja).
+// Tüketiciler zaten X[lang] || X.en okuyor; bu satırlar de/es/pt/fr/ja anahtarlarını ekler.
+[
+  ["LIFE_PATH_DESC", LIFE_PATH_DESC],
+  ["PERSONAL_YEAR_DESC", PERSONAL_YEAR_DESC],
+  ["EV12_BURCU_ACIKLAMA", EV12_BURCU_ACIKLAMA],
+  ["GEZEGEN_12EV_GUCLERI", GEZEGEN_12EV_GUCLERI],
+  ["DRACONIC_SUN_KISA", DRACONIC_SUN_KISA],
+  ["DRACONIC_SUN_DETAY", DRACONIC_SUN_DETAY],
+].forEach(([k, obj]) => { if (ASTRO_TRANS && ASTRO_TRANS[k]) Object.assign(obj, ASTRO_TRANS[k]); });
+
 const REMINDERS_TR = [
   { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
   { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
@@ -722,7 +747,7 @@ const REMINDERS_EN = [
   { id:"chakra_an", icon:"💜", title:"Chakra moment",                  subtitle:"Pause for a moment in today's chakra.",                   duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Close your eyes. Feel today's chakra. One breath is enough." },
   { id:"sosyal",    icon:"📵", title:"Social media break",             subtitle:"Do you really want to be here right now?",                duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Put the phone down. Just exist for a minute. The screen can wait, the moment can't." },
 ];
-const getReminders = (lang) => lang === "en" ? REMINDERS_EN : REMINDERS_TR;
+const getReminders = (lang) => _localizeArr(REMINDERS_EN, REMINDERS_TR, NOTIF_TRANS.REMINDERS, lang);
 
 function AppStoreBadge({ lang = "tr", size = "md" }) {
   const isLg = size === "lg";
@@ -1551,9 +1576,9 @@ async function scheduleDailyReminders(lang) {
     // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
     await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
     const isTr = lang === "tr";
-    const reminders = isTr ? DAILY_REMINDERS_TR : DAILY_REMINDERS_EN;
-    const mornings  = isTr ? MORNING_PINGS_TR  : MORNING_PINGS_EN;
-    const promos    = isTr ? FEATURE_PROMOS_TR : FEATURE_PROMOS_EN;
+    const reminders = _localizeArr(DAILY_REMINDERS_EN, DAILY_REMINDERS_TR, NOTIF_TRANS.DAILY_REMINDERS, lang);
+    const mornings  = _localizeArr(MORNING_PINGS_EN, MORNING_PINGS_TR, NOTIF_TRANS.MORNING_PINGS, lang);
+    const promos    = _localizeArr(FEATURE_PROMOS_EN, FEATURE_PROMOS_TR, NOTIF_TRANS.FEATURE_PROMOS, lang);
     const now = new Date();
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
@@ -4127,7 +4152,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
-  const PREMIUM_WORDS = lang === "tr" ? PREMIUM_WORDS_TR : PREMIUM_WORDS_EN;
+  const PREMIUM_WORDS = _localizeArr(PREMIUM_WORDS_EN, PREMIUM_WORDS_TR, NOTIF_TRANS.PREMIUM_WORDS, lang);
 
   const isPolicyScreen = ["hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen);
   // iOS'ta ana feature ekranlarında top-nav gizli; policy/giriş ekranlarında görünür.
