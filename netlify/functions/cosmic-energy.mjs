@@ -41,6 +41,99 @@ function windDescription(speed) {
   return            { tr:"fırtına seviyesi",   en:"storm-level",de:"Sturmstärke", es:"nivel tormenta", pt:"nível tempestade",fr:"niveau orageux",ja:"嵐レベル" };
 }
 
+// ── HAVA DURUMU TARZI ANLATILAR (7 dil) — her kategori için seviyeye göre ──
+// Ton: Sakin'in sesi; hava-durumu sunucusu gibi, merak uyandıran, manevi.
+const NARRATIVES = {
+  geo_calm: { tr:"Manyetik alan sakin — zihin berrak, sezgiler net. İçine dönmek için güzel bir zaman.", en:"The magnetic field is calm — the mind clear, intuition sharp. A lovely time to turn inward.", de:"Das Magnetfeld ist ruhig — der Geist klar, die Intuition wach. Eine schöne Zeit, nach innen zu kehren.", es:"El campo magnético está en calma — la mente clara, la intuición nítida. Un buen momento para mirar hacia dentro.", pt:"O campo magnético está calmo — a mente clara, a intuição afiada. Um belo momento para olhar para dentro.", fr:"Le champ magnétique est calme — l'esprit clair, l'intuition limpide. Un beau moment pour se tourner vers l'intérieur.", ja:"磁場は穏やか——心は澄み、直感は冴えている。内側へと向かうのにふさわしいとき。" },
+  geo_unsettled: { tr:"Alan hafif dalgalı — uykun bölünebilir, duygular yüzeye çıkabilir. Kendine nazik ol.", en:"The field is lightly stirred — sleep may break, emotions may rise to the surface. Be gentle with yourself.", de:"Das Feld ist leicht aufgewühlt — der Schlaf kann brechen, Gefühle an die Oberfläche steigen. Sei sanft zu dir.", es:"El campo está algo agitado — el sueño puede interrumpirse, las emociones aflorar. Sé amable contigo.", pt:"O campo está levemente agitado — o sono pode quebrar, as emoções vir à tona. Seja gentil consigo.", fr:"Le champ est légèrement agité — le sommeil peut se rompre, les émotions remonter. Sois doux avec toi-même.", ja:"場はわずかに揺らいでいる——眠りが乱れ、感情が表に浮かぶかもしれない。自分にやさしく。" },
+  geo_storm: { tr:"Jeomanyetik fırtına — bedenin ve sezgilerin tetikte. Bastırdığın şeyler açığa çıkabilir; nefesine tutun.", en:"A geomagnetic storm — your body and intuition are on alert. What you've buried may surface; hold to your breath.", de:"Ein geomagnetischer Sturm — Körper und Intuition sind in Alarmbereitschaft. Verdrängtes kann hochkommen; halte dich an deinen Atem.", es:"Tormenta geomagnética — tu cuerpo y tu intuición están alerta. Lo reprimido puede salir; aférrate a tu respiración.", pt:"Tempestade geomagnética — teu corpo e tua intuição estão em alerta. O que reprimiste pode vir à tona; agarra-te à tua respiração.", fr:"Tempête géomagnétique — ton corps et ton intuition sont en alerte. Ce que tu as enfoui peut remonter ; accroche-toi à ton souffle.", ja:"地磁気の嵐——身体も直感も張りつめている。抑えてきたものが表れるかもしれない。呼吸に身を委ねて。" },
+  flare_quiet: { tr:"Güneş sakin — istikrarlı, dengeli bir akış. Planlarına güven.", en:"The Sun is quiet — a steady, balanced flow. Trust your plans.", de:"Die Sonne ist still — ein stetiger, ausgewogener Fluss. Vertraue deinen Plänen.", es:"El Sol está tranquilo — un flujo estable y equilibrado. Confía en tus planes.", pt:"O Sol está tranquilo — um fluxo estável e equilibrado. Confia nos teus planos.", fr:"Le Soleil est paisible — un flux stable et équilibré. Aie confiance en tes projets.", ja:"太陽は静か——安定し、調和のとれた流れ。あなたの計画を信じて。" },
+  flare_c: { tr:"Küçük parlamalar — enerjide hafif kıpırtı, yaratıcılığın uyanabilir.", en:"Small flares — a slight stir in the energy, your creativity may awaken.", de:"Kleine Eruptionen — ein leichtes Beben in der Energie, deine Kreativität kann erwachen.", es:"Pequeñas llamaradas — un leve cosquilleo en la energía, tu creatividad puede despertar.", pt:"Pequenas erupções — um leve frisson na energia, tua criatividade pode despertar.", fr:"De petites éruptions — un léger frémissement dans l'énergie, ta créativité peut s'éveiller.", ja:"小さなフレア——エネルギーがかすかに揺れ、創造性が目覚めるかもしれない。" },
+  flare_m: { tr:"Orta patlama — elektromanyetik dalgalar artıyor; huzursuzluk ya da ani fikirler gelebilir.", en:"A medium flare — electromagnetic waves are rising; restlessness or sudden ideas may come.", de:"Eine mittlere Eruption — elektromagnetische Wellen nehmen zu; Unruhe oder plötzliche Einfälle können kommen.", es:"Llamarada media — las ondas electromagnéticas aumentan; pueden llegar inquietud o ideas repentinas.", pt:"Erupção média — as ondas eletromagnéticas aumentam; podem surgir inquietação ou ideias repentinas.", fr:"Éruption moyenne — les ondes électromagnétiques montent ; agitation ou idées soudaines peuvent surgir.", ja:"中規模のフレア——電磁波が高まっている。落ち着かなさや、ふいの閃きが訪れるかも。" },
+  flare_x: { tr:"Güneşte büyük bir patlama oldu — elektromanyetik fırtına insanları etkileyebilir ve bastırılmış şeyleri açığa çıkarabilir.", en:"A great flare has erupted on the Sun — the electromagnetic storm can touch people and bring buried things to the surface.", de:"Eine gewaltige Eruption auf der Sonne — der elektromagnetische Sturm kann Menschen berühren und Verdrängtes ans Licht bringen.", es:"Una gran llamarada estalló en el Sol — la tormenta electromagnética puede afectar a las personas y sacar a la luz lo reprimido.", pt:"Uma grande erupção surgiu no Sol — a tempestade eletromagnética pode tocar as pessoas e trazer à tona o que estava reprimido.", fr:"Une éruption majeure a jailli du Soleil — la tempête électromagnétique peut toucher les êtres et faire remonter ce qui était enfoui.", ja:"太陽で大規模な爆発が起きた——電磁の嵐は人々に触れ、抑え込まれていたものを浮かび上がらせるかもしれない。" },
+  wind_calm: { tr:"Güneş rüzgârı yumuşak — akış dengeli, kendinle barışık hissedebilirsin.", en:"The solar wind is gentle — the flow is balanced, you may feel at peace with yourself.", de:"Der Sonnenwind ist sanft — der Fluss ist ausgewogen, du magst mit dir im Reinen sein.", es:"El viento solar es suave — el flujo es equilibrado, puedes sentirte en paz contigo.", pt:"O vento solar está suave — o fluxo é equilibrado, podes sentir-te em paz contigo.", fr:"Le vent solaire est doux — le flux est équilibré, tu peux te sentir en paix avec toi-même.", ja:"太陽風はやわらか——流れは穏やかで、自分と和解しているように感じられるかも。" },
+  wind_fast: { tr:"Güneş rüzgârları hızlanıyor — benliğinde huzursuzluk yaratabilir, ama her şey ilahi planın bir parçası.", en:"The solar winds are quickening — they may stir restlessness within you, yet all is part of the divine plan.", de:"Die Sonnenwinde beschleunigen sich — sie können Unruhe in dir wecken, doch alles ist Teil des göttlichen Plans.", es:"Los vientos solares se aceleran — pueden despertar inquietud en ti, pero todo es parte del plan divino.", pt:"Os ventos solares aceleram — podem despertar inquietação em ti, mas tudo faz parte do plano divino.", fr:"Les vents solaires s'accélèrent — ils peuvent éveiller en toi de l'agitation, mais tout fait partie du plan divin.", ja:"太陽風が速まっている——内なる落ち着かなさを呼び起こすかもしれないが、すべては神聖な計画の一部。" },
+  wind_storm: { tr:"Güneş rüzgârı fırtına seviyesinde — sinirler gergin, sezgiler yüksek. Toprağa bas, sakinleş.", en:"The solar wind has reached storm levels — nerves are taut, intuition heightened. Ground yourself, grow calm.", de:"Der Sonnenwind hat Sturmstärke erreicht — die Nerven sind angespannt, die Intuition hellwach. Erde dich, werde ruhig.", es:"El viento solar alcanza niveles de tormenta — los nervios tensos, la intuición elevada. Echa raíces, serénate.", pt:"O vento solar atingiu níveis de tempestade — nervos tensos, intuição aguçada. Enraíza-te, acalma-te.", fr:"Le vent solaire atteint le niveau de la tempête — les nerfs sont tendus, l'intuition exacerbée. Ancre-toi, apaise-toi.", ja:"太陽風は嵐の域に達した——神経は張りつめ、直感は研ぎ澄まされる。大地に根を下ろし、静まって。" },
+  moon_new: { tr:"Yeni Ay — niyetini tohumla. Karanlık, başlangıçların rahmidir.", en:"New Moon — plant the seed of your intention. The dark is the womb of all beginnings.", de:"Neumond — säe deine Absicht. Die Dunkelheit ist der Schoß aller Anfänge.", es:"Luna Nueva — siembra tu intención. La oscuridad es el vientre de todo comienzo.", pt:"Lua Nova — semeia a tua intenção. A escuridão é o ventre de todos os começos.", fr:"Nouvelle Lune — sème ton intention. L'obscurité est le ventre de tous les commencements.", ja:"新月——意図の種をまくとき。闇は、すべての始まりが宿る母胎。" },
+  moon_waxing_crescent: { tr:"Büyüyen hilal — niyetlerin filizleniyor, küçük ama kararlı adımlar at.", en:"Waxing crescent — your intentions are sprouting; take small but steadfast steps.", de:"Zunehmende Sichel — deine Absichten keimen; gehe kleine, aber entschlossene Schritte.", es:"Luna creciente — tus intenciones brotan; da pasos pequeños pero firmes.", pt:"Lua crescente — as tuas intenções brotam; dá passos pequenos mas firmes.", fr:"Croissant ascendant — tes intentions germent ; avance par petits pas résolus.", ja:"上弦に向かう三日月——意図が芽吹いている。小さくとも確かな一歩を。" },
+  moon_first_quarter: { tr:"İlk dördün — engeller seni sınar; kararlılığını göster.", en:"First quarter — obstacles test you; show your resolve.", de:"Erstes Viertel — Hindernisse stellen dich auf die Probe; zeige deine Entschlossenheit.", es:"Cuarto creciente — los obstáculos te ponen a prueba; muestra tu determinación.", pt:"Quarto crescente — os obstáculos põem-te à prova; mostra a tua determinação.", fr:"Premier quartier — les obstacles te mettent à l'épreuve ; montre ta détermination.", ja:"上弦の月——障害があなたを試す。決意を示すとき。" },
+  moon_waxing_gibbous: { tr:"Şişkinleşen ay — doruğa yaklaşıyorsun, ince ayar zamanı.", en:"Waxing gibbous — you're nearing the peak; it's time for fine-tuning.", de:"Zunehmender Mond — du näherst dich dem Höhepunkt; Zeit für die Feinabstimmung.", es:"Luna gibosa creciente — te acercas a la cima; es hora de los últimos ajustes.", pt:"Lua gibosa crescente — aproximas-te do auge; é hora de afinar os detalhes.", fr:"Lune gibbeuse croissante — tu approches du sommet ; le temps des derniers réglages.", ja:"満ちゆく月——頂へと近づいている。細やかに整えるとき。" },
+  moon_full: { tr:"Dolunay — duygular doruğda, her şey aydınlanır. Bırakmayı öğren.", en:"Full Moon — emotions are at their peak, everything is illuminated. Learn to let go.", de:"Vollmond — die Gefühle auf dem Höhepunkt, alles wird erhellt. Lerne loszulassen.", es:"Luna Llena — las emociones en su cima, todo se ilumina. Aprende a soltar.", pt:"Lua Cheia — as emoções no auge, tudo se ilumina. Aprende a deixar ir.", fr:"Pleine Lune — les émotions à leur apogée, tout s'illumine. Apprends à lâcher prise.", ja:"満月——感情は極まり、すべてが照らされる。手放すことを学んで。" },
+  moon_waning_gibbous: { tr:"Küçülen ay — şükret, öğrendiklerini paylaş.", en:"Waning gibbous — give thanks, share what you've learned.", de:"Abnehmender Mond — sei dankbar, teile, was du gelernt hast.", es:"Luna gibosa menguante — agradece, comparte lo que has aprendido.", pt:"Lua gibosa minguante — agradece, partilha o que aprendeste.", fr:"Lune gibbeuse décroissante — rends grâce, partage ce que tu as appris.", ja:"欠けゆく月——感謝を捧げ、学んだことを分かち合って。" },
+  moon_last_quarter: { tr:"Ay son dördünde — enerjiler durulmaya başlayabilir, sıkışıklıkların altında yatan nedenler görünür olabilir.", en:"Last quarter — the energies may begin to settle, and the roots beneath your blocks may come into view.", de:"Letztes Viertel — die Energien können sich zu beruhigen beginnen, und die Wurzeln unter deinen Blockaden werden sichtbar.", es:"Cuarto menguante — las energías pueden empezar a aquietarse, y las raíces bajo tus bloqueos se vuelven visibles.", pt:"Quarto minguante — as energias podem começar a serenar, e as raízes sob os teus bloqueios tornam-se visíveis.", fr:"Dernier quartier — les énergies peuvent commencer à s'apaiser, et les racines sous tes blocages se révéler.", ja:"下弦の月——エネルギーは静まりはじめ、行き詰まりの奥にある原因が見えてくるかもしれない。" },
+  moon_waning_crescent: { tr:"Balzamik ay — dinlen, bırak, boşluğa güven. Yeni döngü yaklaşıyor.", en:"Balsamic moon — rest, release, trust the emptiness. A new cycle draws near.", de:"Balsamischer Mond — ruhe, lass los, vertraue der Leere. Ein neuer Zyklus naht.", es:"Luna balsámica — descansa, suelta, confía en el vacío. Un nuevo ciclo se acerca.", pt:"Lua balsâmica — descansa, solta, confia no vazio. Um novo ciclo se aproxima.", fr:"Lune balsamique — repose-toi, lâche prise, fais confiance au vide. Un nouveau cycle approche.", ja:"鎮静の月——休み、手放し、空白に身を委ねて。新たな巡りが近づいている。" },
+  meteor_active: { tr:"{name} göktaşı yağmuru aktif — gökten yeni bilgiler iniyor. Radarına dikkat et, antenlerini çalıştır.", en:"The {name} meteor shower is active — new knowledge is descending from the sky. Watch your radar, raise your antennae.", de:"Der {name}-Meteorschauer ist aktiv — neues Wissen steigt vom Himmel herab. Achte auf deinen Radar, richte deine Antennen aus.", es:"La lluvia de meteoros {name} está activa — nuevo conocimiento desciende del cielo. Atiende tu radar, despliega tus antenas.", pt:"A chuva de meteoros {name} está ativa — novos saberes descem do céu. Atenta ao teu radar, ergue as tuas antenas.", fr:"La pluie d'étoiles filantes {name} est active — un savoir nouveau descend du ciel. Veille sur ton radar, déploie tes antennes.", ja:"{name}流星群が活発——空から新たな知らせが降りてくる。レーダーに気を配り、アンテナを立てて。" },
+  meteor_quiet: { tr:"Gökyüzü sakin — bir sonraki yağmur yaklaşıyor. Dileğini şimdiden hazırla.", en:"The sky is quiet — the next shower draws near. Ready your wish even now.", de:"Der Himmel ist still — der nächste Schauer naht. Halte deinen Wunsch schon jetzt bereit.", es:"El cielo está tranquilo — la próxima lluvia se acerca. Prepara tu deseo desde ahora.", pt:"O céu está tranquilo — a próxima chuva se aproxima. Prepara já o teu desejo.", fr:"Le ciel est paisible — la prochaine pluie approche. Prépare ton vœu dès maintenant.", ja:"空は静か——次の流星群が近づいている。今から願いを用意して。" },
+};
+
+// ── AY EVRESİ (hesaplama — API gerekmez) ──
+const MOON_EMOJI = { new:"🌑", waxing_crescent:"🌒", first_quarter:"🌓", waxing_gibbous:"🌔", full:"🌕", waning_gibbous:"🌖", last_quarter:"🌗", waning_crescent:"🌘" };
+const MOON_LABELS = {
+  new:             { tr:"Yeni Ay",        en:"New Moon",        de:"Neumond",            es:"Luna Nueva",        pt:"Lua Nova",          fr:"Nouvelle Lune",     ja:"新月" },
+  waxing_crescent: { tr:"Büyüyen Hilal",  en:"Waxing Crescent", de:"Zunehmende Sichel",  es:"Creciente",         pt:"Crescente",         fr:"Premier Croissant", ja:"三日月" },
+  first_quarter:   { tr:"İlk Dördün",     en:"First Quarter",   de:"Erstes Viertel",     es:"Cuarto Creciente",  pt:"Quarto Crescente",  fr:"Premier Quartier",  ja:"上弦の月" },
+  waxing_gibbous:  { tr:"Büyüyen Ay",     en:"Waxing Gibbous",  de:"Zunehmender Mond",   es:"Gibosa Creciente",  pt:"Gibosa Crescente",  fr:"Gibbeuse Croissante",ja:"十三夜" },
+  full:            { tr:"Dolunay",        en:"Full Moon",       de:"Vollmond",           es:"Luna Llena",        pt:"Lua Cheia",         fr:"Pleine Lune",       ja:"満月" },
+  waning_gibbous:  { tr:"Küçülen Ay",     en:"Waning Gibbous",  de:"Abnehmender Mond",   es:"Gibosa Menguante",  pt:"Gibosa Minguante",  fr:"Gibbeuse Décroissante",ja:"寝待月" },
+  last_quarter:    { tr:"Son Dördün",     en:"Last Quarter",    de:"Letztes Viertel",    es:"Cuarto Menguante",  pt:"Quarto Minguante",  fr:"Dernier Quartier",  ja:"下弦の月" },
+  waning_crescent: { tr:"Balzamik Ay",    en:"Waning Crescent", de:"Abnehmende Sichel",  es:"Menguante",         pt:"Minguante",         fr:"Dernier Croissant", ja:"有明月" },
+};
+
+function moonPhase(date = new Date()) {
+  const synodic = 29.530588853;
+  const knownNew = Date.UTC(2000, 0, 6, 18, 14) / 86400000; // bilinen yeni ay (gün)
+  const now = date.getTime() / 86400000;
+  const age = (((now - knownNew) % synodic) + synodic) % synodic;
+  const illumination = Math.round(((1 - Math.cos((2 * Math.PI * age) / synodic)) / 2) * 100);
+  let phase;
+  if      (age < 1.84566)  phase = "new";
+  else if (age < 5.53699)  phase = "waxing_crescent";
+  else if (age < 9.22831)  phase = "first_quarter";
+  else if (age < 12.91963) phase = "waxing_gibbous";
+  else if (age < 16.61096) phase = "full";
+  else if (age < 20.30228) phase = "waning_gibbous";
+  else if (age < 23.99361) phase = "last_quarter";
+  else if (age < 27.68493) phase = "waning_crescent";
+  else                     phase = "new";
+  return { phase, age: Math.round(age * 10) / 10, illumination, emoji: MOON_EMOJI[phase], label: MOON_LABELS[phase] };
+}
+
+// ── GÖKTAŞI YAĞMURLARI (yıllık takvim — büyük yağmurlar) ──
+const METEOR_SHOWERS = [
+  { name:"Quadrantids",   nameTr:"Kuadrantidler",    start:[12,28], peak:[1,3],   end:[1,12]  },
+  { name:"Lyrids",        nameTr:"Liridler",         start:[4,16],  peak:[4,22],  end:[4,25]  },
+  { name:"Eta Aquariids", nameTr:"Eta Akvariidler",  start:[4,19],  peak:[5,6],   end:[5,28]  },
+  { name:"Perseids",      nameTr:"Perseidler",       start:[7,17],  peak:[8,12],  end:[8,24]  },
+  { name:"Orionids",      nameTr:"Orionidler",       start:[10,2],  peak:[10,21], end:[11,7]  },
+  { name:"Leonids",       nameTr:"Leonidler",        start:[11,6],  peak:[11,17], end:[11,30] },
+  { name:"Geminids",      nameTr:"Geminidler",       start:[12,4],  peak:[12,14], end:[12,17] },
+  { name:"Ursids",        nameTr:"Ursidler",         start:[12,17], peak:[12,22], end:[12,26] },
+];
+
+function activeMeteorShower(date = new Date()) {
+  const cur = (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
+  for (const s of METEOR_SHOWERS) {
+    const start = s.start[0] * 100 + s.start[1];
+    const end = s.end[0] * 100 + s.end[1];
+    const inWindow = start <= end ? (cur >= start && cur <= end) : (cur >= start || cur <= end); // yıl-dönümü sarması (Quadrantids)
+    if (inWindow) {
+      const peak = s.peak[0] * 100 + s.peak[1];
+      return { active: true, name: s.name, nameTr: s.nameTr, peak: s.peak, isPeak: Math.abs(cur - peak) <= 1 };
+    }
+  }
+  return { active: false };
+}
+
+// {name} yer tutucusunu dile göre yağmur adıyla doldur (tr → Türkçe ad)
+function fillMeteorName(tpl, shower) {
+  const out = {};
+  for (const lang of Object.keys(tpl)) {
+    const nm = lang === "tr" ? shower.nameTr : shower.name;
+    out[lang] = tpl[lang].replace("{name}", nm);
+  }
+  return out;
+}
+
 // fetch + timeout — Netlify function 10s sınırına takılmasın
 async function fetchWithTimeout(url, ms = 4500) {
   const ctrl = new AbortController();
@@ -145,6 +238,44 @@ export const handler = async (event) => {
       } catch { /* sessiz geç */ }
     }
 
+    // ── AY EVRESİ + GÖKTAŞI (hesaplama / takvim) ──
+    const moon = moonPhase();
+    const meteor = activeMeteorShower();
+
+    // ── HAVA DURUMU TARZI ANLATILAR — seviyeye göre seç ──
+    const geoLevel   = maxKp >= 5 ? "storm" : maxKp >= 3 ? "unsettled" : "calm";
+    const flareCls   = flares24h.max_class?.[0]?.toUpperCase();
+    const flareLevel = flareCls === "X" ? "x" : flareCls === "M" ? "m" : flareCls === "C" ? "c" : "quiet";
+    const windSpeed  = solarWind.speed;
+    const windLevel  = windSpeed == null ? null : windSpeed >= 700 ? "storm" : windSpeed >= 500 ? "fast" : "calm";
+
+    const narratives = {
+      geo:    NARRATIVES["geo_" + geoLevel],
+      flare:  NARRATIVES["flare_" + flareLevel],
+      wind:   windLevel ? NARRATIVES["wind_" + windLevel] : null,
+      moon:   NARRATIVES["moon_" + moon.phase],
+      meteor: meteor.active ? fillMeteorName(NARRATIVES.meteor_active, meteor) : NARRATIVES.meteor_quiet,
+    };
+
+    // ── TEK BİRLEŞİK HAVA DURUMU RAPORU (kategoriler değil, akıcı tek metin) ──
+    // Önemli olayları öne al, sakin günlerde sade bir gök raporu ver.
+    const LANGS = ["tr", "en", "de", "es", "pt", "fr", "ja"];
+    const report = {};
+    for (const lang of LANGS) {
+      const parts = [];
+      if (flareLevel !== "quiet") parts.push(narratives.flare[lang]);          // önemli güneş patlaması öne
+      parts.push(narratives.moon[lang]);                                       // ay her zaman
+      if (geoLevel !== "calm") parts.push(narratives.geo[lang]);               // jeomanyetik (sakin değilse)
+      if (windLevel && windLevel !== "calm") parts.push(narratives.wind[lang]);// rüzgâr (sakin değilse)
+      if (meteor.active) parts.push(narratives.meteor[lang]);                  // göktaşı (aktifse)
+      // Hiç önemli olay yoksa (sadece ay): sakin güneş + sakin gök ile tamamla
+      if (parts.length === 1) {
+        parts.unshift(narratives.flare[lang]);   // "Güneş sakin…"
+        parts.push(narratives.meteor[lang]);     // "Gökyüzü sakin… dileğini hazırla"
+      }
+      report[lang] = parts.join(" ");
+    }
+
     const summary = {
       generated_at: new Date().toISOString(),
       past_7_days: {
@@ -159,6 +290,10 @@ export const handler = async (event) => {
       },
       solar_flares_24h: flares24h,
       solar_wind: solarWind,
+      moon,
+      meteor,
+      narratives,
+      report,
       interpretation: {
         current: kpDescription(currentKp),
         week_peak: kpDescription(maxKp),
