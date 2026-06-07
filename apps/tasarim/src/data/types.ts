@@ -90,6 +90,23 @@ export const TYPES: Record<HDType, TypeInfo> = {
       'Akşam yatağa girmeden önce bedenini gerçek anlamda yor.',
     ],
     keywords: ['Yanıt', 'Sakral', 'Ustalık', 'Tatmin'],
+    nameEn: 'Generator',
+    oranEn: '~37%',
+    auraEn: 'Open, enveloping',
+    signatureEn: 'Satisfaction',
+    notSelfEn: 'Frustration',
+    strategyEn: 'Wait to respond',
+    rolePrimaryEn: 'Master of life',
+    shortDescEn:
+      'The pure power of the Sacral. An inexhaustible source of energy when devoted to work they love; they find their true life by responding.',
+    longDescEn:
+      'Generators are the building blocks of the world. Thanks to a defined Sacral center, they hold sustainable work and life energy. Their aura is open and enveloping; they respond to everything they meet with an “uh-huh / un-uh” sound from the Sacral. It’s not enough for the mind to say “good idea” — they must check whether the body responds. When living their correct life there is a deep sense of satisfaction; otherwise they experience constant frustration. The path of mastery is to deepen by repeating, again and again, the things they love.',
+    pracicalTipsEn: [
+      'Listen to your body’s response: follow the gut-level “yes” or “no” rising from your chest.',
+      'Ask the people around you to phrase things as yes/no questions.',
+      'Don’t pour energy into work you don’t love; otherwise frustration becomes chronic.',
+      'Truly tire your body out before getting into bed at night.',
+    ],
   },
   'Manifesting Jeneratör': {
     type: 'Manifesting Jeneratör',
@@ -111,6 +128,23 @@ export const TYPES: Record<HDType, TypeInfo> = {
       'Adımları atladığında geri dönüp dolduracağın yerleri not et.',
     ],
     keywords: ['Çoklu yön', 'Hız', 'Atlama', 'Manifestasyon'],
+    nameEn: 'Manifesting Generator',
+    oranEn: '~33%',
+    auraEn: 'Open, enveloping',
+    signatureEn: 'Satisfaction',
+    notSelfEn: 'Frustration & anger',
+    strategyEn: 'Respond, then inform',
+    rolePrimaryEn: 'Multi-layered creator',
+    shortDescEn:
+      'A fast, multi-faceted Generator who skips steps. They can do several things at once and carry the gift of shortcutting the process.',
+    longDescEn:
+      'Manifesting Generators are hybrid types whose defined Sacral connects through a motor (Sacral, Heart, Solar Plexus or Root) to the Throat. This lets them both respond and manifest. They are made to run several interests in parallel rather than being stuck on a single thing. Moving forward by skipping steps is their natural gift; this is why they often say, “I need to go back and do that one step.” Their strategy is to respond first (from the Sacral), then inform the relevant people before they take action.',
+    pracicalTipsEn: [
+      'Running multiple projects in parallel isn’t your mistake — it’s your gift.',
+      'Don’t leap into something you have no Sacral response to; it causes inner tightness.',
+      'Move past those who slow you down by informing them, not by being patient.',
+      'When you skip steps, note the places you’ll need to come back and fill in.',
+    ],
   },
   'Projektör': {
     type: 'Projektör',
@@ -132,6 +166,23 @@ export const TYPES: Record<HDType, TypeInfo> = {
       'Tanınmak istiyorsan önce kendini tanı; içsel yetkinliğin değer kazandıkça davet artar.',
     ],
     keywords: ['Görü', 'Rehberlik', 'Davet', 'Tanınma'],
+    nameEn: 'Projector',
+    oranEn: '~21%',
+    auraEn: 'Focused, penetrating',
+    signatureEn: 'Success',
+    notSelfEn: 'Bitterness',
+    strategyEn: 'Wait for the invitation (life, love, career)',
+    rolePrimaryEn: 'Guide & director',
+    shortDescEn:
+      'A master at reading people and systems. When invited, their deep insight steers others’ energy in the right direction.',
+    longDescEn:
+      'Projectors are the type whose Sacral center is undefined, moving through life by sampling life-force energy from the auras of Generators. Their aura is focused and penetrating; they read the other person deeply. They have a high ability to see innovative systems and how to direct other people’s energy. But these insights only gain value when they are invited. Asserting their energy without an invitation creates bitterness. Lived correctly, it brings success and recognition. They are designed to work less and rest more.',
+    pracicalTipsEn: [
+      'Wait for the invitation in life’s major areas (love, work, relocation).',
+      'Know your aura: when people ask about you, soften your gaze and let yourself see.',
+      'Set aside daily rest; you live on Projector energy, not Sacral energy.',
+      'If you want recognition, first know yourself; as your inner mastery is valued, invitations increase.',
+    ],
   },
   'Reflektör': {
     type: 'Reflektör',
@@ -153,5 +204,22 @@ export const TYPES: Record<HDType, TypeInfo> = {
       'Yorgun ya da boş hissettiğinde yalnız kal; örneklediğin enerjiden arın.',
     ],
     keywords: ['Ayna', 'Örnekleme', 'Ay', 'Topluluk'],
+    nameEn: 'Reflector',
+    oranEn: '~1%',
+    auraEn: 'Sampling, fluid',
+    signatureEn: 'Surprise / wonder',
+    notSelfEn: 'Disappointment',
+    strategyEn: 'Wait a 28-day lunar cycle',
+    rolePrimaryEn: 'Mirror of the community',
+    shortDescEn:
+      'None of the centers are defined. They sample the energy around them and hold up a mirror to the community; they shine in the right one.',
+    longDescEn:
+      'Reflectors are the rarest type, with none of the nine centers defined, making up just one percent of the world. Their aura is sampling and permeable; they take in and reflect the energy of others and their surroundings. This is why the community and place they’re in matter more than anything for them. For big decisions, rather than deciding quickly they are advised to wait a full lunar cycle (about 28 days) and, during that time, to filter the decision inwardly by talking with different people. When living correctly, life fills them with surprise and wonder.',
+    pracicalTipsEn: [
+      'Choose the people and the place in your life carefully; that is everything.',
+      'Wait 28 days for big decisions; spend that time talking it through with different friends.',
+      'Follow the lunar chart; each day you may experience a different center.',
+      'When you feel tired or empty, be alone; clear out the energy you’ve been sampling.',
+    ],
   },
 };

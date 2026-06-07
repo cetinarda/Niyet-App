@@ -12,6 +12,7 @@ import { PROFILES, LINES, ProfileKey } from '../data/profiles';
 import { CENTERS, CenterKey, CENTER_ORDER } from '../data/centers';
 import { GATES } from '../data/gates';
 import { getActivationsByCenter, planetLabel } from '../utils/humanDesign';
+import { L, getLang } from '../i18n';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
@@ -27,15 +28,15 @@ export function ChartScreen({ onNavigate }: Props) {
     return (
       <View style={[styles.empty, { paddingTop: insets.top + 60 }]}>
         <Text style={styles.medallion}>✦</Text>
-        <Text style={styles.emptyTitle}>Henüz harita yok</Text>
-        <Text style={styles.emptyDesc}>Önce profilini oluştur.</Text>
+        <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'No chart yet' : 'Henüz harita yok'}</Text>
+        <Text style={styles.emptyDesc}>{getLang() === 'en' ? 'Create your profile first.' : 'Önce profilini oluştur.'}</Text>
         <TouchableOpacity
           style={styles.cta}
           onPress={() => onNavigate('profile')}
           activeOpacity={0.85}
           accessibilityRole="button"
         >
-          <Text style={styles.ctaText}>Profili Oluştur</Text>
+          <Text style={styles.ctaText}>{getLang() === 'en' ? 'Create Profile' : 'Profili Oluştur'}</Text>
         </TouchableOpacity>
       </View>
     );
