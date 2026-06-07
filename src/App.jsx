@@ -310,6 +310,16 @@ function _localizeArr(enArr, trArr, transByLang, lang) {
   });
 }
 
+// İçsel Ayna örnek-soru havuzu: TR/EN dizileri (kategori objeleri) verilir; de/es/pt/fr/ja
+// için EN kategori yapısı korunur (cat etiketi zaten t() ile çevrili), sorular çevrilir.
+// NOTIF_TRANS.SAMPLE_QUESTIONS düz 20 soru (5 kategori × 4) sırasıyla.
+function _locSampleQ(lang, trArr, enArr) {
+  if (lang === "tr") return trArr;
+  const sq = NOTIF_TRANS && NOTIF_TRANS.SAMPLE_QUESTIONS && NOTIF_TRANS.SAMPLE_QUESTIONS[lang];
+  if (lang === "en" || !sq) return enArr;
+  return enArr.map((c, ci) => ({ ...c, sorular: c.sorular.map((q, qi) => sq[ci*4+qi] || q) }));
+}
+
 // Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
 // EN sürümündeki ad temel kabul edildi.
 const FREQ_NAME_I18N = {
@@ -448,7 +458,10 @@ function moonPhase(date = new Date()) {
   ];
   // 8 bölge: 0..3.69 yeni, 3.69..7.38 hilal, ... her biri ~3.69 gün
   const idx = Math.floor(((age + SYNODIC/16) % SYNODIC) / (SYNODIC/8)) % 8;
-  const cur = phases[idx];
+  let cur = phases[idx];
+  // 5-dil faz adı (de/es/pt/fr/ja) — i18n-data'dan, faz sırasıyla eşleşir.
+  const _mp = NOTIF_TRANS && NOTIF_TRANS.MOON_PHASES;
+  if (_mp) cur = { ...cur, de:_mp.de?.[idx]||cur.en, es:_mp.es?.[idx]||cur.en, pt:_mp.pt?.[idx]||cur.en, fr:_mp.fr?.[idx]||cur.en, ja:_mp.ja?.[idx]||cur.en };
   const fullAge = SYNODIC / 2;
   const daysToFull = age <= fullAge ? (fullAge - age) : (SYNODIC + fullAge - age);
   const daysToNew  = SYNODIC - age;
@@ -6426,7 +6439,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:16,padding:"18px 16px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
-                      {(lang==="tr" ? [
+                      {(_locSampleQ(lang, [
                         { cat:t("ask_cat_body"), sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Sindirim sorunum var, ruhsal nedeni nedir?",
@@ -6457,7 +6470,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "Ayrılık sürecindeyim, bedenimde ağırlık hissediyorum.",
                           "Yeni bir başlangıç önümde, ama adım atmak zor geliyor.",
                         ]},
-                      ] : [
+                      ], [
                         { cat:t("ask_cat_body"), sorular:[
                           "Why is chronic fatigue always with me?",
                           "I have digestive issues — what's the spiritual cause?",
@@ -6488,7 +6501,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "I'm going through a separation and feel heaviness in my body.",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
-                      ]).map(({cat,sorular})=>(
+                      ])).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
                           <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
                           {sorular.map(s=>(
@@ -6551,7 +6564,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                             <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
                             <div style={{ flex:1,minWidth:0 }}>
                               <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
-                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{lang==="tr" ? moon.tr : moon.en} · {moon.illumination}%</div>
+                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
                               <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
                                 {(() => {
                                   const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
