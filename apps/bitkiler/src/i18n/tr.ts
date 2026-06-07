@@ -64,6 +64,7 @@ export const tr = {
       todayMessage: 'Bugün Sana Söylediği',
       affirmation: 'OLUMLAMA',
       origin: 'Kökeni',
+      myth: 'Efsane & Mit',
       chakra: 'Çakra',
       plant: 'Eşlik Eden Bitki',
       howToUse: 'Nasıl Kullanılır',
