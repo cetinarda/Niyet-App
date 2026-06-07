@@ -18,9 +18,9 @@ export const pt = {
     defaultUser: 'Viajante',
     decks: {
       animal: {
-        title: 'Pedra',
-        short: 'PEDRA',
-        subtitle: 'Ouça a pedra de hoje',
+        title: 'Planta',
+        short: 'PLANTA',
+        subtitle: 'Ouça a planta de hoje',
       },
       quote: {
         title: 'Rumi',
@@ -38,9 +38,9 @@ export const pt = {
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
   animalsHub: {
-    eyebrow: 'SAKIN · PEDRA',
+    eyebrow: 'SAKIN · PLANTA',
     panels: {
-      library: 'Pedras',
+      library: 'Plantas',
       finder: 'Encontrar',
       guidance: 'Orientação',
     },
@@ -49,8 +49,8 @@ export const pt = {
   // ─── Animal library (stone library) ───────────────────────────────────────────
   animalLibrary: {
     back: '← Voltar',
-    familyTag: 'SAKIN · PEDRA',
-    subtitle: '{count} pedras curativas e cristais',
+    familyTag: 'SAKIN · PLANTA',
+    subtitle: '{count} plantas curativas e ervas',
     searchPlaceholder: 'Pesquisar por nome, propriedade ou elemento...',
     noResults: 'Nenhum resultado encontrado.',
   },
@@ -58,7 +58,7 @@ export const pt = {
   // ─── Animal detail (stone detail) ─────────────────────────────────────────────
   animalDetail: {
     back: '← Voltar',
-    familyTag: 'SAKIN · PEDRA',
+    familyTag: 'SAKIN · PLANTA',
     sections: {
       properties: 'Propriedades',
       todayMessage: 'O que ela te diz hoje',
@@ -78,15 +78,15 @@ export const pt = {
 
   // ─── Animal finder (stone finder) ─────────────────────────────────────────────
   animalFinder: {
-    headerTitle: 'Encontre sua pedra',
+    headerTitle: 'Encontre sua planta',
     intro: {
-      title: 'Descubra sua pedra',
-      desc: 'Encontre os cristais alinhados com você pelo seu signo ou elemento.',
-      note: 'Cada pedra carrega sua própria vibração. Escolha aquela que te chama — deixe sua intuição fazer o resto.',
-      birthStoneTitle: 'Sua pedra natal',
+      title: 'Descubra sua planta',
+      desc: 'Encontre as plantas alinhadas com você pelo seu signo ou elemento.',
+      note: 'Cada planta carrega sua própria vibração. Escolha aquela que te chama — deixe sua intuição fazer o resto.',
+      birthStoneTitle: 'Sua planta natal',
       zodiacLabel: 'Por signo',
       elementLabel: 'Por elemento',
-      elementHint: 'Cada cristal vibra com um elemento natural; o seu vem do seu signo — fogo: Áries·Leão·Sagitário · terra: Touro·Virgem·Capricórnio · ar: Gêmeos·Libra·Aquário · água: Câncer·Escorpião·Peixes.',
+      elementHint: 'Cada planta vibra com um elemento natural; o seu vem do seu signo — fogo: Áries·Leão·Sagitário · terra: Touro·Virgem·Capricórnio · ar: Gêmeos·Libra·Aquário · água: Câncer·Escorpião·Peixes.',
     },
     elements: {
       fire: 'Fogo',
@@ -95,10 +95,10 @@ export const pt = {
       water: 'Água',
     },
     result: {
-      zodiacLabel: 'Pedras de {name}',
-      elementLabel: 'Pedras de {name}',
-      birthLabel: 'Pedra do seu mês de nascimento',
-      empty: 'Nenhuma pedra encontrada para esta seleção.',
+      zodiacLabel: 'Plantas de {name}',
+      elementLabel: 'Plantas de {name}',
+      birthLabel: 'Planta do seu mês de nascimento',
+      empty: 'Nenhuma planta encontrada para esta seleção.',
       rediscoverBtn: 'Escolher novamente ✦',
       closeBtn: 'Fechar ✦',
     },
@@ -129,16 +129,16 @@ export const pt = {
     spiritualMap: 'Mapa espiritual',
     reportLabels: {
       guide: 'Guia',
-      stone: 'Pedra',
-      animal: 'Pedra',
-      nagual: 'Pedra',
+      stone: 'Planta',
+      animal: 'Planta',
+      nagual: 'Planta',
     },
     filters: {
       all: 'Todos',
       quote: 'Mensagem',
-      stone: 'Pedra',
-      animal: 'Pedra',
-      nagual: 'Pedra',
+      stone: 'Planta',
+      animal: 'Planta',
+      nagual: 'Planta',
     },
     empty: {
       title: 'Ainda não há leituras.',
@@ -275,7 +275,7 @@ export const pt = {
     spiritualMap: {
       title: 'Mapa espiritual',
       topGuide: 'Poeta guia mais frequente',
-      topStone: 'Sua pedra protetora',
+      topStone: 'Sua planta protetora',
       topAnimal: 'Seu animal totem',
       topNagual: 'Seu guia nagual',
       companionCount: 'acompanhou você {n} vezes',
@@ -290,7 +290,7 @@ export const pt = {
       masterDesc: 'Base central — acesso a todos os apps',
       apps: {
         animalGuidance: 'Orientação animal',
-        stoneGuidance: 'Orientação de cristais',
+        stoneGuidance: 'Orientação de plantas',
         plantGuidance: 'Sabedoria das plantas',
         myths: 'Mitos e imagens',
         humanDesign: 'Human Design',
@@ -298,7 +298,7 @@ export const pt = {
       },
       appDescs: {
         animalGuidance: 'Este app',
-        stoneGuidance: 'A linguagem dos cristais',
+        stoneGuidance: 'A linguagem das plantas',
         plantGuidance: 'Sabedoria herbal',
         myths: 'Arquétipos e símbolos',
         humanDesign: 'Conheça seu design',
@@ -314,7 +314,7 @@ export const pt = {
         b001: { title: 'Primeiros passos', desc: 'Primeiras 7 leituras' },
         b002: { title: 'Derviche do fogo', desc: 'Sequência de 21 dias' },
         b003: { title: 'Viajante do Mesnevi', desc: '30 leituras' },
-        b004: { title: 'Terço', desc: '33 pedras vistas' },
+        b004: { title: 'Terço', desc: '33 plantas vistas' },
         b005: { title: 'Amigo da verdade', desc: '100 leituras' },
         b006: { title: 'Viajante da luz', desc: '365 leituras' },
       },
