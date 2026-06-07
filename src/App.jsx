@@ -301,6 +301,12 @@ const AI_ERR_I18N = {
 function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
 // Gezegen astrolojik glifleri (Gökyüzü Raporu gezegen dizilişi satırı)
 const PLANET_GLYPH = { Sun:"☉", Moon:"☽", Mercury:"☿", Venus:"♀", Mars:"♂", Jupiter:"♃", Saturn:"♄", Uranus:"♅", Neptune:"♆", Pluto:"♇" };
+// Haftalık anahtar — haftalık rapor cache'i için (1 hafta boyunca aynı rapor).
+function currentWeekKey(d = new Date()) {
+  const onejan = new Date(d.getFullYear(), 0, 1);
+  const week = Math.ceil(((d - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+  return `${d.getFullYear()}-W${week}`;
+}
 
 // Genel dizi yerelleştirme (string VEYA obje dizisi): TR/EN tam dizi, de/es/pt/fr/ja
 // için EN dizisi + çeviri merge. transByLang = { de:[...], es:[...], ... }.
@@ -2806,7 +2812,7 @@ export default function SakinApp() {
   const [aksamNote,     setAksamNote]     = useState(()=>localStorage.getItem("sakin_aksamnote_"+new Date().toISOString().slice(0,10))||"");
   const [sukur,         setSukur]         = useState(()=>localStorage.getItem("sakin_sukur_"+new Date().toISOString().slice(0,10))||"");
   const [aksamRitualChecks, setAksamRitualChecks] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_ritual_"+new Date().toISOString().slice(0,10)))||[false,false,false]; } catch { return [false,false,false]; } });
-  const [aiRapor,       setAiRapor]       = useState("");
+  const [aiRapor,       setAiRapor]       = useState(() => { try { return localStorage.getItem("sakin_rapor_week") === currentWeekKey() ? (localStorage.getItem("sakin_rapor_text") || "") : ""; } catch { return ""; } });
   const [aiLoading,     setAiLoading]     = useState(false);
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
@@ -3512,7 +3518,8 @@ export default function SakinApp() {
     const filtered = log.filter(g=>g._dateKey!==bugun._dateKey);
     filtered.unshift(bugun);
     localStorage.setItem("sakin_log", JSON.stringify(filtered.slice(0,7)));
-    setAiRapor("");
+    // Rapor haftalık sabit — veride değişiklik olsa da bu haftanın cache'li raporunu KORU/yeniden yükle.
+    try { if (localStorage.getItem("sakin_rapor_week") === currentWeekKey()) { const _c = localStorage.getItem("sakin_rapor_text"); if (_c) setAiRapor(_c); } } catch {}
   },[screen, niyet, selectedWords, chakra.name, breathCount, freqListenSec, aksamNote, sukur]);
 
   const CHAKRA_KEYWORDS = [
@@ -3921,13 +3928,23 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     const gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]");
     if (!gunler.length) return;
 
-    // IP bazlı kontrol
+    const _wk = currentWeekKey();
+    // Bu haftanın raporu zaten üretildiyse → AYNISINI göster (1 hafta sabit, yeniden üretme/çağrı yapma)
+    try {
+      if (localStorage.getItem("sakin_rapor_week") === _wk) {
+        const cached = localStorage.getItem("sakin_rapor_text");
+        if (cached) { setAiRapor(cached); return; }
+      }
+    } catch {}
+
+    // IP bazlı kontrol — HAFTALIK (yeni hafta = yeni rapor hakkı)
     try {
       const ipRes = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipRes.json();
       const kullanim = JSON.parse(localStorage.getItem("sakin_rapor_kullanim")||"{}");
-      if ((kullanim[ip]||0) >= 1) { setRaporKullanildi(true); localStorage.setItem("sakin_rapor_used","1"); return; }
-      kullanim[ip] = (kullanim[ip]||0) + 1;
+      const _ipwk = ip + "_" + _wk;
+      if ((kullanim[_ipwk]||0) >= 1) { setRaporKullanildi(true); return; }
+      kullanim[_ipwk] = 1;
       localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
     } catch { /* ipify ulaşılamazsa devam et */ }
 
@@ -4048,7 +4065,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         localStorage.setItem("sakin_rapor_used", "1");
         setRaporKullanildi(true);
       }
-      setAiRapor(text || data.error?.message || pickLang(AI_ERR_I18N.noReport, lang));
+      const _final = text || data.error?.message || pickLang(AI_ERR_I18N.noReport, lang);
+      setAiRapor(_final);
+      // Haftalık cache — 1 hafta boyunca aynı rapor; kapatıp tekrar açınca geri yüklenir.
+      if (text) { try { localStorage.setItem("sakin_rapor_text", text); localStorage.setItem("sakin_rapor_week", _wk); } catch {} }
     } catch(e) { setAiRapor(t("err_connection_full")); console.error("AiRapor error:", e); }
     finally { setAiLoading(false); }
   };
