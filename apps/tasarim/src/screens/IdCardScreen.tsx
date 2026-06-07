@@ -33,9 +33,9 @@ export function IdCardScreen({ onClose }: Props) {
   if (!profile || !chart) {
     return (
       <View style={[styles.container, { paddingTop: insets.top + 60 }]}>
-        <Text style={styles.empty}>Önce harita oluştur</Text>
+        <Text style={styles.empty}>{getLang() === 'en' ? 'Create a chart first' : 'Önce harita oluştur'}</Text>
         <TouchableOpacity onPress={onClose} style={styles.closeAlone}>
-          <Text style={styles.closeText}>Kapat</Text>
+          <Text style={styles.closeText}>{getLang() === 'en' ? 'Close' : 'Kapat'}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -49,7 +49,10 @@ export function IdCardScreen({ onClose }: Props) {
       setUploading(true);
       const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!perm.granted) {
-        Alert.alert('İzin gerekli', 'Galeriye erişim izni vermelisin.');
+        Alert.alert(
+          getLang() === 'en' ? 'Permission needed' : 'İzin gerekli',
+          getLang() === 'en' ? 'You need to grant access to your photo library.' : 'Galeriye erişim izni vermelisin.'
+        );
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -62,7 +65,7 @@ export function IdCardScreen({ onClose }: Props) {
         await updateProfilePhoto(profile!.id, result.assets[0].uri);
       }
     } catch (e: any) {
-      Alert.alert('Hata', e.message || 'Foto yüklenemedi');
+      Alert.alert(getLang() === 'en' ? 'Error' : 'Hata', e.message || (getLang() === 'en' ? 'Photo could not be uploaded' : 'Foto yüklenemedi'));
     } finally {
       setUploading(false);
     }
