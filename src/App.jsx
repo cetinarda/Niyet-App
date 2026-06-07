@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
+import { CHAKRA_TRANS, FREQ_TRANS } from "./i18n-data";
 import { getGlossary } from "./glossary";
 import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
@@ -151,8 +152,22 @@ const CHAKRAS_22_EN = [
   { name:"Source",          color:"#e0e0e0", pastel:"#f5f5f5", desc:"Unite with the divine source.",      element:"Platinum Light",emoji:"☀️",level:3, konu:"Complete union with the divine source" },
 ];
 // Chakra verisi sadece TR ve EN'de mevcut; diğer diller (DE/ES/PT/FR/JA) için EN fallback
-const getChakras7 = (lang) => (lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN).filter(c => c.level === 1);
-const getChakras22 = (lang) => lang === "tr" ? CHAKRAS_22_TR : CHAKRAS_22_EN;
+// 7-dil çakra: TR/EN tam dizi; de/es/pt/fr/ja EN dizisi + çeviri merge (i18n-data).
+const _CHAKRA_LANGS = ["de","es","pt","fr","ja"];
+const localizeChakras = (lang) => {
+  if (lang === "tr") return CHAKRAS_22_TR;
+  if (lang === "en" || !_CHAKRA_LANGS.includes(lang)) return CHAKRAS_22_EN;
+  return CHAKRAS_22_EN.map((c, i) => {
+    const tr = CHAKRA_TRANS[i] || {};
+    return { ...c,
+      name: tr.name?.[lang] || c.name,
+      desc: tr.desc?.[lang] || c.desc,
+      konu: tr.konu?.[lang] || c.konu,
+      element: tr.element?.[lang] || c.element };
+  });
+};
+const getChakras7 = (lang) => localizeChakras(lang).filter(c => c.level === 1);
+const getChakras22 = (lang) => localizeChakras(lang);
 const CHAKRAS_7 = CHAKRAS_22_TR.filter(c => c.level === 1);
 const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozmik Boyut" };
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
@@ -300,7 +315,21 @@ const getFreqName = (hz, lang) => {
   if (!row) return "";
   return pickLang(row, lang);
 };
-const getFreqData = (lang) => lang === "en" ? FREQ_DATA_EN : FREQ_DATA_TR;
+// 7-dil frekans: TR/EN tam dizi; de/es/pt/fr/ja EN + çeviri merge (hz ile eşleşir).
+const _FREQ_TRANS_BY_HZ = Object.fromEntries((FREQ_TRANS || []).map(t => [t.hz, t]));
+const _FREQ_LANGS = ["de","es","pt","fr","ja"];
+const getFreqData = (lang) => {
+  if (lang === "tr") return FREQ_DATA_TR;
+  if (lang === "en" || !_FREQ_LANGS.includes(lang)) return FREQ_DATA_EN;
+  return FREQ_DATA_EN.map(f => {
+    const t = _FREQ_TRANS_BY_HZ[f.hz];
+    if (!t) return f;
+    return { ...f,
+      tema: t.tema?.[lang] || f.tema,
+      aciklama: t.aciklama?.[lang] || f.aciklama,
+      etkiler: t.etkiler?.[lang] || f.etkiler };
+  });
+};
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
