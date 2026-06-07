@@ -264,6 +264,23 @@ function pickLang(obj, lang) {
   return obj[key] || obj.en || obj.tr || "";
 }
 
+// Element etiketleri + AI hata mesajları — 7 dil (önceden isEn/sabit-TR yüzünden
+// de/es/pt/fr/ja Türkçe görüyordu; dil denetimi düzeltmesi).
+const ELEM_I18N = {
+  ates:   { tr:"Ateş",   en:"Fire",  de:"Feuer",  es:"Fuego",  pt:"Fogo",  fr:"Feu",   ja:"火" },
+  toprak: { tr:"Toprak", en:"Earth", de:"Erde",   es:"Tierra", pt:"Terra", fr:"Terre", ja:"地" },
+  hava:   { tr:"Hava",   en:"Air",   de:"Luft",   es:"Aire",   pt:"Ar",    fr:"Air",   ja:"風" },
+  su:     { tr:"Su",     en:"Water", de:"Wasser", es:"Agua",   pt:"Água",  fr:"Eau",   ja:"水" },
+  title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
+};
+const AI_ERR_I18N = {
+  noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
+  connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
+  noReport:   { tr:"Rapor oluşturulamadı.", en:"Report could not be generated.", de:"Bericht konnte nicht erstellt werden.", es:"No se pudo generar el informe.", pt:"Não foi possível gerar o relatório.", fr:"Le rapport n'a pas pu être généré.", ja:"レポートを生成できませんでした。" },
+};
+// Yüzde formatı — TR "%50", diğer diller "50%"
+function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
+
 // Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
 // EN sürümündeki ad temel kabul edildi.
 const FREQ_NAME_I18N = {
@@ -3539,7 +3556,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       });
       const d = await res.json();
       if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
-      setChakraAnaliz(d?.text || "Analiz alınamadı.");
+      setChakraAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       sorguKaydet("çakra", chakraInput);
     } catch(e) {
       setChakraAnaliz(t("err_connection_prefix") + (e?.message || String(e)));
@@ -3720,10 +3737,10 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       });
       const d = await res.json();
       if (!res.ok || d.error) { setSemptomAnaliz("Hata: " + (d.error || res.status)); return; }
-      setSemptomAnaliz(d?.text || "Analiz alınamadı.");
+      setSemptomAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       sorguKaydet("semptom", semptomInput);
     } catch {
-      setSemptomAnaliz("Bağlantı hatası.");
+      setSemptomAnaliz(pickLang(AI_ERR_I18N.connError, lang));
     }
   };
 
@@ -3772,7 +3789,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       });
       const d = await res.json();
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
-      setSikayetAnaliz(d?.text || "Analiz alınamadı.");
+      setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       sorguKaydet("şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
@@ -3822,7 +3839,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       });
       const d = await res.json();
       if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
-      setHastalikAnaliz(d?.text || "Analiz alınamadı.");
+      setHastalikAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       sorguKaydet("hastalık", hastalik);
     } catch(e) { setHastalikAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
   };
@@ -3958,7 +3975,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         localStorage.setItem("sakin_rapor_used", "1");
         setRaporKullanildi(true);
       }
-      setAiRapor(text || data.error?.message || "Rapor oluşturulamadı.");
+      setAiRapor(text || data.error?.message || pickLang(AI_ERR_I18N.noReport, lang));
     } catch(e) { setAiRapor(t("err_connection_full")); console.error("AiRapor error:", e); }
     finally { setAiLoading(false); }
   };
@@ -6898,12 +6915,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ctx.fillStyle = "#7a7090";
               ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
               ctx.textAlign = "center";
-              ctx.fillText(isEn ? "ELEMENT BALANCE" : "ELEMENT DAĞILIMI", 540, 1250);
+              ctx.fillText(pickLang(ELEM_I18N.title, lang).toUpperCase(), 540, 1250);
               const items = [
-                ["ates","#E0683C","△", isEn?"Fire":"Ateş"],
-                ["toprak","#6FA86F","⊕", isEn?"Earth":"Toprak"],
-                ["hava","#D8C25C","○", isEn?"Air":"Hava"],
-                ["su","#5C9AD8","▽", isEn?"Water":"Su"],
+                ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
+                ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
+                ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
+                ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
               ];
               items.forEach(([k,color,glyph,name], i) => {
                 const col = i % 2, row = Math.floor(i / 2);
@@ -6921,7 +6938,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 const pct = Math.round((ed[k]||0)*100);
                 ctx.fillStyle = color; ctx.textAlign = "right";
                 ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(isEn ? `${pct}%` : `%${pct}`, x + 394, y + 54);
+                ctx.fillText(pctFmt(pct, lang), x + 394, y + 54);
               });
               yAfterElements = 1490;
             }
@@ -7074,20 +7091,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   if (!ed || sum <= 0.5) return null;
                   const isEn = lang === "en";
                   const items = [
-                    ["ates","#E0683C","△", isEn?"Fire":"Ateş"],
-                    ["toprak","#6FA86F","⊕", isEn?"Earth":"Toprak"],
-                    ["hava","#D8C25C","○", isEn?"Air":"Hava"],
-                    ["su","#5C9AD8","▽", isEn?"Water":"Su"],
+                    ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
+                    ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
+                    ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
+                    ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
                   ];
                   return (
                     <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:10 }}>
-                      <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginBottom:8,textAlign:"center" }}>{isEn?"Element Balance":"Element Dağılımı"}</div>
+                      <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginBottom:8,textAlign:"center" }}>{pickLang(ELEM_I18N.title, lang)}</div>
                       <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
                         {items.map(([k,color,glyph,name]) => (
                           <div key={k} style={{ display:"flex",alignItems:"center",gap:7 }}>
                             <span style={{ fontSize:13,color }}>{glyph}</span>
                             <span style={{ fontSize:11,color:"#cfc8e0",flex:1 }}>{name}</span>
-                            <span style={{ fontSize:13,color,fontWeight:600 }}>{isEn?`${Math.round((ed[k]||0)*100)}%`:`%${Math.round((ed[k]||0)*100)}`}</span>
+                            <span style={{ fontSize:13,color,fontWeight:600 }}>{pctFmt(Math.round((ed[k]||0)*100), lang)}</span>
                           </div>
                         ))}
                       </div>
