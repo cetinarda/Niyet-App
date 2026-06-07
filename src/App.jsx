@@ -2639,6 +2639,29 @@ export default function SakinApp() {
       }
     } catch (_) {}
   };
+  // ── Ses watchdog (iOS + web): "bir süre sonra ses kapanıyor" düzeltmesi ──
+  // Uzun seansta iOS WKWebView/Safari AudioContext'i sistem kesintisiyle (başka ses,
+  // güç tasarrufu, kısa interrupt) askıya alabiliyor VE silence.wav keepalive loop'u
+  // durabiliyor — visibilitychange tetiklenmediği için resume listener'ları yetmiyor,
+  // ses geri gelmiyor. Tone çalarken (playingHz set) her 2.5sn:
+  //   1) askıdaki TÜM AudioContext'leri resume et,
+  //   2) durmuş silence keepalive'ı yeniden başlat (AVAudioSession rotası açık kalsın),
+  //   3) durmuş kuş sesini yeniden başlat.
+  // SADECE çalarken aktif (playingHz null olunca interval temizlenir) → kullanıcının
+  // durdurduğu sesi geri açmaz. AppDelegate/AVAudioSession'a DOKUNMAZ — saf web katmanı.
+  useEffect(() => {
+    if (!playingHz) return;
+    const id = setInterval(() => {
+      try {
+        __resumeAllAudio();
+        const s = silenceAudioRef.current;
+        if (s && s.paused) { const p = s.play(); if (p && p.catch) p.catch(() => {}); }
+        const b = birdAudioRef.current;
+        if (b && b.paused) { const p = b.play(); if (p && p.catch) p.catch(() => {}); }
+      } catch (_) {}
+    }, 2500);
+    return () => clearInterval(id);
+  }, [playingHz]);
   const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
   const stopBirdSound = () => {
     if (birdAudioRef.current) {
