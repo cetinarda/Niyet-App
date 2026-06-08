@@ -11,6 +11,18 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { getGlossaryEntry, GLOSSARY } from '../data/glossary';
+import { useLanguage } from '../i18n/useLanguage';
+
+// Sözlük başlığı 7-dil (önceden hardcode 'Terimler Sözlüğü').
+const GTXT: Record<string, { title: string; allTerms: string; intro: string }> = {
+  tr: { title: 'Terimler Sözlüğü', allTerms: '← Tüm Terimler', intro: 'Burada geçen kavramların kısa açıklamaları. Bir terime dokun, detayını oku.' },
+  en: { title: 'Glossary', allTerms: '← All Terms', intro: 'Short explanations of the concepts used here. Tap a term to read its detail.' },
+  de: { title: 'Glossar', allTerms: '← Alle Begriffe', intro: 'Kurze Erklärungen der hier verwendeten Begriffe. Tippe auf einen Begriff, um Details zu lesen.' },
+  es: { title: 'Glosario', allTerms: '← Todos los términos', intro: 'Breves explicaciones de los conceptos usados aquí. Toca un término para leer su detalle.' },
+  fr: { title: 'Glossaire', allTerms: '← Tous les termes', intro: 'Brèves explications des concepts utilisés ici. Touche un terme pour lire son détail.' },
+  ja: { title: '用語集', allTerms: '← すべての用語', intro: 'ここで使われる概念の短い説明です。用語をタップすると詳細が読めます。' },
+  pt: { title: 'Glossário', allTerms: '← Todos os termos', intro: 'Breves explicações dos conceitos usados aqui. Toca num termo para ler o detalhe.' },
+};
 
 interface Props {
   /** Glossary key from src/data/glossary.ts */
@@ -61,6 +73,8 @@ export function GlossaryModal({
   onClose: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const { lang } = useLanguage();
+  const gx = GTXT[lang] || GTXT.tr;
   const [activeKey, setActiveKey] = useState<string | null>(initialKey || null);
 
   React.useEffect(() => {
@@ -87,7 +101,7 @@ export function GlossaryModal({
               <Text style={styles.helpBadgeText}>?</Text>
             </View>
             <Text style={styles.sheetTitle}>
-              {activeEntry ? activeEntry.term : 'Terimler Sözlüğü'}
+              {activeEntry ? activeEntry.term : gx.title}
             </Text>
             <TouchableOpacity onPress={onClose} hitSlop={12}>
               <Text style={styles.closeBtn}>✕</Text>
@@ -107,7 +121,7 @@ export function GlossaryModal({
                 onPress={() => setActiveKey(null)}
                 activeOpacity={0.7}
               >
-                <Text style={styles.allTermsText}>← Tüm Terimler</Text>
+                <Text style={styles.allTermsText}>{gx.allTerms}</Text>
               </TouchableOpacity>
             </ScrollView>
           ) : (
@@ -115,9 +129,7 @@ export function GlossaryModal({
               contentContainerStyle={styles.listScroll}
               showsVerticalScrollIndicator={false}
             >
-              <Text style={styles.intro}>
-                Sakin Mitler'de geçen kavramların kısa açıklamaları. Bir terime tıkla, detayını oku.
-              </Text>
+              <Text style={styles.intro}>{gx.intro}</Text>
               {entries.map(([key, e]) => (
                 <TouchableOpacity
                   key={key}
