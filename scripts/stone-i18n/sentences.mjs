@@ -7,6 +7,7 @@ import { BATCH03 } from './sentences/batch03.mjs';
 import { BATCH04 } from './sentences/batch04.mjs';
 import { BATCH05 } from './sentences/batch05.mjs';
 import { BATCH06 } from './sentences/batch06.mjs';
+import { BATCH07 } from './sentences/batch07.mjs';
 
 export const SENTENCES = {
   ...BATCH01,
@@ -15,4 +16,5 @@ export const SENTENCES = {
   ...BATCH04,
   ...BATCH05,
   ...BATCH06,
+  ...BATCH07,
 };
