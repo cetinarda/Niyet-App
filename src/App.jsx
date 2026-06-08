@@ -38,7 +38,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.2.7";
+const APP_VERSION = "1.2.8";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
@@ -4576,9 +4576,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             try { haptic(); } catch(_) {}
             pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
             panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
-            // Panik anında "Sakin'i tanı" tanıtım popup'ını gösterme — nefesi bölmesin
-            // ve hak sayacını da yakmasın (checked=true → bu oturumda kontrol atlanır).
-            sakinIntroCheckedRef.current = true;
+            // Not: 'Sakin'i tanı' tanıtım popup'ı zaten otomatik açılmıyor (showSakinIntro
+            // hiç tetiklenmez). Eskiden burada silinmiş sakinIntroCheckedRef'e atama vardı →
+            // ReferenceError ile panik butonunu çökertiyordu. Kaldırıldı.
             setShowSakinIntro(false);
             setScreen("nefes");
           }}

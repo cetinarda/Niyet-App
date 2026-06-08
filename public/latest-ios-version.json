@@ -1,7 +1,7 @@
 {
-  "version": "1.2.5",
+  "version": "1.2.8",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Yeni: İçsel Ayna artık uygulamada — sağ kenardaki gizemli geçitten gir.",
-  "release_notes_en": "New: Inner Mirror now in the app — enter through the mysterious portal on the right edge."
+  "release_notes_tr": "Sakin Bitkiler ailede: şifalı bitki rehberin artık Sakin Ailesi'nde. Fotoğrafla tanıma: bir taş ya da bitkinin fotoğrafını çek, ne olduğunu öğren — sonuca dokununca detay sayfası açılır. Taşlar ve bitkiler artık tüm dillerde eksiksiz; ikonik bitkilere (gül, lotus, zeytin...) Anadolu ağırlıklı efsane bölümleri eklendi. Gökyüzü Raporu daha samimi. Bu sürümde önemli düzeltmeler: fotoğrafla tanıma artık çalışıyor ve panik nefes butonu yeniden devrede.",
+  "release_notes_en": "Sakin Plants joins the family: your healing-plant guide is now in the Sakin Family. Identify by photo: snap a stone or plant to learn what it is — tap the result to open its page. Stones and plants are now complete in all languages, with Anatolian-rich lore added to iconic plants (rose, lotus, olive...). A warmer Sky Report. Key fixes in this release: photo identify now works, and the panic breathing button is back in action."
 }
