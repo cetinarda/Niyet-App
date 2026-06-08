@@ -6724,16 +6724,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                             </div>
                           )}
 
-                          {/* Gezegen dizilişi (meraklı için) */}
-                          {kozmikData.planets && kozmikData.planets.length > 0 && (
-                            <div style={{ fontSize:11,lineHeight:2,marginBottom:4,display:"flex",flexWrap:"wrap",gap:"3px 12px" }}>
-                              {kozmikData.planets.map(p => (
-                                <span key={p.body} style={{ color: p.retrograde ? "#e0a0a0" : "#9a8fb5" }}>
-                                  {PLANET_GLYPH[p.body] || p.body} {p.sign.slice(0,3)}{p.retrograde ? " ℞" : ""}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                          {/* Gezegen-burç dizilişi kaldırıldı — kullanıcı için anlamı yok,
+                              kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
 
                           {/* Küçük veri satırı — NOAA + hesaplama (meraklı için) */}
                           <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
