@@ -18,7 +18,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `public/latest-ios-version.json` — `version` ve `build`
-   - Şu an: `1.2.5 / build 1`
+   - **App Store'da CANLI: `1.2.6`** (kullanıcılar bunu kullanıyor). Repodaki bir sonraki gönderim: `1.2.7 / build 1` (4 yerde de hazır). Yeni sürüm verirken 1.2.7'den ilerlet.
 5. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
 6. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
