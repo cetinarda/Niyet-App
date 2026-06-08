@@ -84,7 +84,12 @@
       "proteção",
       "paz",
       "clareza"
-    ]
+    ],
+    "plantDe": "Lavendel",
+    "plantEs": "Lavanda",
+    "plantFr": "Lavande",
+    "plantJa": "ラベンダー",
+    "plantPt": "Lavanda"
   },
   {
     "id": "s002",
@@ -171,7 +176,12 @@
       "transformação",
       "verdade",
       "limpeza"
-    ]
+    ],
+    "plantDe": "Rosmarin",
+    "plantEs": "Romero",
+    "plantFr": "Romarin",
+    "plantJa": "ローズマリー",
+    "plantPt": "Alecrim"
   },
   {
     "id": "s003",
@@ -258,7 +268,12 @@
       "cura",
       "empatia",
       "perdão"
-    ]
+    ],
+    "plantDe": "Rose",
+    "plantEs": "Rosa",
+    "plantFr": "Rose",
+    "plantJa": "ローズ",
+    "plantPt": "Rosa"
   },
   {
     "id": "s004",
@@ -345,7 +360,12 @@
       "intuição",
       "transformação",
       "poder misterioso"
-    ]
+    ],
+    "plantDe": "Wermut",
+    "plantEs": "Ajenjo",
+    "plantFr": "Absinthe",
+    "plantJa": "ニガヨモギ",
+    "plantPt": "Losna"
   },
   {
     "id": "s005",
@@ -432,7 +452,12 @@
       "comunicação",
       "sabedoria",
       "amizade"
-    ]
+    ],
+    "plantDe": "Salbei",
+    "plantEs": "Salvia",
+    "plantFr": "Sauge",
+    "plantJa": "セージ",
+    "plantPt": "Sálvia"
   },
   {
     "id": "s006",
@@ -519,7 +544,12 @@
       "foco",
       "força",
       "determinação"
-    ]
+    ],
+    "plantDe": "Zeder",
+    "plantEs": "Cedro",
+    "plantFr": "Cèdre",
+    "plantJa": "杉",
+    "plantPt": "Cedro"
   },
   {
     "id": "s007",
@@ -606,7 +636,12 @@
       "energia feminina",
       "sensibilidade",
       "novos começos"
-    ]
+    ],
+    "plantDe": "Jasmin",
+    "plantEs": "Jazmín",
+    "plantFr": "Jasmin",
+    "plantJa": "ジャスミン",
+    "plantPt": "Jasmim"
   },
   {
     "id": "s008",
@@ -693,7 +728,12 @@
       "verdade",
       "expressão",
       "discernimento"
-    ]
+    ],
+    "plantDe": "blaue Lotusblume",
+    "plantEs": "loto azul",
+    "plantFr": "lotus bleu",
+    "plantJa": "青い睡蓮",
+    "plantPt": "lótus azul"
   },
   {
     "id": "s009",
@@ -780,7 +820,12 @@
       "foco",
       "clareza",
       "determinação"
-    ]
+    ],
+    "plantDe": "Sonnenblume",
+    "plantEs": "Girasol",
+    "plantFr": "Tournesol",
+    "plantJa": "ひまわり",
+    "plantPt": "Girassol"
   },
   {
     "id": "s010",
@@ -867,7 +912,12 @@
       "alegria",
       "motivação",
       "positividade"
-    ]
+    ],
+    "plantDe": "Kamille",
+    "plantEs": "Manzanilla",
+    "plantFr": "Camomille",
+    "plantJa": "カモミール",
+    "plantPt": "Camomila"
   },
   {
     "id": "s011",
@@ -954,7 +1004,12 @@
       "clareza",
       "paz",
       "alta energia"
-    ]
+    ],
+    "plantDe": "Weißer Salbei",
+    "plantEs": "Salvia Blanca",
+    "plantFr": "Sauge Blanche",
+    "plantJa": "ホワイトセージ",
+    "plantPt": "Sálvia Branca"
   },
   {
     "id": "s012",
@@ -1041,7 +1096,12 @@
       "coragem",
       "aterramento",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Basilikum",
+    "plantEs": "Albahaca",
+    "plantFr": "Basilic",
+    "plantJa": "バジル",
+    "plantPt": "Manjericão"
   },
   {
     "id": "s013",
@@ -1128,7 +1188,12 @@
       "cura",
       "mudança",
       "crescimento"
-    ]
+    ],
+    "plantDe": "Farn",
+    "plantEs": "helecho",
+    "plantFr": "fougère",
+    "plantJa": "シダ",
+    "plantPt": "samambaia"
   },
   {
     "id": "s014",
@@ -1215,7 +1280,12 @@
       "paixão",
       "energia",
       "motivação"
-    ]
+    ],
+    "plantDe": "Ringelblume",
+    "plantEs": "caléndula",
+    "plantFr": "souci",
+    "plantJa": "カレンデュラ",
+    "plantPt": "calêndula"
   },
   {
     "id": "s015",
@@ -1302,7 +1372,12 @@
       "barreira contra energia negativa",
       "aterramento",
       "força"
-    ]
+    ],
+    "plantDe": "Wacholder",
+    "plantEs": "Enebro",
+    "plantFr": "Genévrier",
+    "plantJa": "ジュニパー",
+    "plantPt": "Zimbro"
   },
   {
     "id": "s016",
@@ -1389,7 +1464,12 @@
       "aprendizagem",
       "foco",
       "absorver energia negativa"
-    ]
+    ],
+    "plantDe": "Minze",
+    "plantEs": "Menta",
+    "plantFr": "Menthe",
+    "plantJa": "ミント",
+    "plantPt": "Hortelã"
   },
   {
     "id": "s017",
@@ -1476,7 +1556,12 @@
       "confiança",
       "determinação",
       "motivação"
-    ]
+    ],
+    "plantDe": "Lorbeer",
+    "plantEs": "Laurel",
+    "plantFr": "Laurier",
+    "plantJa": "ローリエ",
+    "plantPt": "Louro"
   },
   {
     "id": "s018",
@@ -1563,7 +1648,12 @@
       "intuição",
       "emoção",
       "inspiração"
-    ]
+    ],
+    "plantDe": "Lotus",
+    "plantEs": "Loto",
+    "plantFr": "Lotus",
+    "plantJa": "蓮",
+    "plantPt": "Lótus"
   },
   {
     "id": "s019",
@@ -1650,7 +1740,12 @@
       "comunicação",
       "honestidade",
       "calma"
-    ]
+    ],
+    "plantDe": "Holunderblüte",
+    "plantEs": "Flor de saúco",
+    "plantFr": "Fleur de sureau",
+    "plantJa": "エルダーフラワー",
+    "plantPt": "Flor de sabugueiro"
   },
   {
     "id": "s020",
@@ -1737,7 +1832,12 @@
       "paciência",
       "segurança",
       "força"
-    ]
+    ],
+    "plantDe": "Eichel",
+    "plantEs": "bellota",
+    "plantFr": "gland",
+    "plantJa": "どんぐり",
+    "plantPt": "bolota"
   },
   {
     "id": "s021",
@@ -1824,7 +1924,12 @@
       "comunicação",
       "transparência",
       "paz"
-    ]
+    ],
+    "plantDe": "Zitronenmelisse",
+    "plantEs": "Melisa",
+    "plantFr": "Mélisse",
+    "plantJa": "レモンバーム",
+    "plantPt": "Erva-cidreira"
   },
   {
     "id": "s022",
@@ -1911,7 +2016,12 @@
       "clareza",
       "cura",
       "fortalecer a energia"
-    ]
+    ],
+    "plantDe": "Minze",
+    "plantEs": "Menta",
+    "plantFr": "Menthe",
+    "plantJa": "ミント",
+    "plantPt": "Hortelã"
   },
   {
     "id": "s023",
@@ -1998,7 +2108,12 @@
       "compaixão",
       "cura emocional",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Schafgarbe",
+    "plantEs": "Milenrama",
+    "plantFr": "Achillée",
+    "plantJa": "ヤロウ",
+    "plantPt": "Mil-folhas"
   },
   {
     "id": "s024",
@@ -2085,7 +2200,12 @@
       "novas oportunidades",
       "jornada",
       "descoberta"
-    ]
+    ],
+    "plantDe": "Löwenzahn",
+    "plantEs": "diente de león",
+    "plantFr": "pissenlit",
+    "plantJa": "タンポポ",
+    "plantPt": "dente-de-leão"
   },
   {
     "id": "s025",
@@ -2172,7 +2292,12 @@
       "motivação",
       "positividade",
       "aprendizagem"
-    ]
+    ],
+    "plantDe": "Zitronengras",
+    "plantEs": "Hierba de limón",
+    "plantFr": "Citronnelle",
+    "plantJa": "レモングラス",
+    "plantPt": "Capim-limão"
   },
   {
     "id": "s026",
@@ -2259,7 +2384,12 @@
       "transmutação de energia negativa",
       "aterramento",
       "clareza"
-    ]
+    ],
+    "plantDe": "Vetiver",
+    "plantEs": "vetiver",
+    "plantFr": "vétiver",
+    "plantJa": "ベチバー",
+    "plantPt": "vetiver"
   },
   {
     "id": "s027",
@@ -2346,7 +2476,12 @@
       "alívio da ansiedade",
       "pressentimento",
       "alegria"
-    ]
+    ],
+    "plantDe": "Kamille",
+    "plantEs": "Manzanilla",
+    "plantFr": "Camomille",
+    "plantJa": "カモミール",
+    "plantPt": "Camomila"
   },
   {
     "id": "s028",
@@ -2433,7 +2568,12 @@
       "comunicação",
       "intuição",
       "harmonia"
-    ]
+    ],
+    "plantDe": "Grüne Minze",
+    "plantEs": "hierbabuena",
+    "plantFr": "menthe verte",
+    "plantJa": "スペアミント",
+    "plantPt": "hortelã-verde"
   },
   {
     "id": "s029",
@@ -2520,7 +2660,12 @@
       "equilíbrio",
       "harmonia",
       "sabedoria"
-    ]
+    ],
+    "plantDe": "Bambus",
+    "plantEs": "bambú",
+    "plantFr": "bambou",
+    "plantJa": "竹",
+    "plantPt": "bambu"
   },
   {
     "id": "s030",
@@ -2607,7 +2752,12 @@
       "intuição",
       "abertura espiritual",
       "compreensão profunda"
-    ]
+    ],
+    "plantDe": "Weihrauch",
+    "plantEs": "incienso",
+    "plantFr": "encens (oliban)",
+    "plantJa": "フランキンセンス",
+    "plantPt": "incenso (olíbano)"
   },
   {
     "id": "s031",
@@ -2694,7 +2844,12 @@
       "compaixão",
       "cura",
       "aceitação incondicional"
-    ]
+    ],
+    "plantDe": "Hibiskus",
+    "plantEs": "Hibisco",
+    "plantFr": "Hibiscus",
+    "plantJa": "ハイビスカス",
+    "plantPt": "Hibisco"
   },
   {
     "id": "s032",
@@ -2781,7 +2936,12 @@
       "comunicação angelical",
       "alta intuição",
       "calma"
-    ]
+    ],
+    "plantDe": "Engelwurz",
+    "plantEs": "angélica",
+    "plantFr": "angélique",
+    "plantJa": "アンジェリカ",
+    "plantPt": "angélica"
   },
   {
     "id": "s033",
@@ -2868,7 +3028,12 @@
       "alegria",
       "alma de criança",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Erdbeerblatt",
+    "plantEs": "hoja de fresa",
+    "plantFr": "feuille de fraisier",
+    "plantJa": "イチゴの葉",
+    "plantPt": "folha de morango"
   },
   {
     "id": "s067",
@@ -2963,7 +3128,12 @@
       "vitalidade",
       "coragem",
       "compromisso"
-    ]
+    ],
+    "plantDe": "Granatapfel",
+    "plantEs": "Granada",
+    "plantFr": "Grenade",
+    "plantJa": "ザクロ",
+    "plantPt": "Romã"
   },
   {
     "id": "s068",
@@ -3055,7 +3225,12 @@
       "clareza",
       "criatividade",
       "harmonia"
-    ]
+    ],
+    "plantDe": "Lavendel",
+    "plantEs": "Lavanda",
+    "plantFr": "Lavande",
+    "plantJa": "ラベンダー",
+    "plantPt": "Lavanda"
   },
   {
     "id": "s069",
@@ -3149,7 +3324,12 @@
       "abundância",
       "gratidão",
       "crescimento"
-    ]
+    ],
+    "plantDe": "Fenchel",
+    "plantEs": "Hinojo",
+    "plantFr": "Fenouil",
+    "plantJa": "フェンネル",
+    "plantPt": "Funcho"
   },
   {
     "id": "s070",
@@ -3243,7 +3423,12 @@
       "abundância",
       "alegria",
       "autoconfiança"
-    ]
+    ],
+    "plantDe": "Johanniskraut",
+    "plantEs": "hipérico",
+    "plantFr": "millepertuis",
+    "plantJa": "セイヨウオトギリソウ",
+    "plantPt": "erva-de-são-joão"
   },
   {
     "id": "s071",
@@ -3337,7 +3522,12 @@
       "clareza",
       "calma",
       "verdade"
-    ]
+    ],
+    "plantDe": "blaue Margerite",
+    "plantEs": "margarita azul",
+    "plantFr": "marguerite bleue",
+    "plantJa": "青いデイジー",
+    "plantPt": "margarida azul"
   },
   {
     "id": "s072",
@@ -3431,7 +3621,12 @@
       "lealdade",
       "sabedoria",
       "fartura"
-    ]
+    ],
+    "plantDe": "Myrte",
+    "plantEs": "Mirto",
+    "plantFr": "Myrte",
+    "plantJa": "ミルテ",
+    "plantPt": "Murta"
   },
   {
     "id": "s073",
@@ -3525,7 +3720,12 @@
       "força vital",
       "coragem",
       "liderança"
-    ]
+    ],
+    "plantDe": "rote Rose",
+    "plantEs": "rosa roja",
+    "plantFr": "rose rouge",
+    "plantJa": "赤いバラ",
+    "plantPt": "rosa vermelha"
   },
   {
     "id": "s074",
@@ -3620,7 +3820,12 @@
       "lealdade",
       "disciplina espiritual",
       "verdade"
-    ]
+    ],
+    "plantDe": "Färberwaid",
+    "plantEs": "hierba pastel",
+    "plantFr": "pastel des teinturiers",
+    "plantJa": "ホソバタイセイ",
+    "plantPt": "pastel-dos-tintureiros"
   },
   {
     "id": "s075",
@@ -3714,7 +3919,12 @@
       "sonho",
       "fluxo",
       "luz"
-    ]
+    ],
+    "plantDe": "Nachtjasmin",
+    "plantEs": "jazmín nocturno",
+    "plantFr": "jasmin de nuit",
+    "plantJa": "夜咲きジャスミン",
+    "plantPt": "jasmim-da-noite"
   },
   {
     "id": "s076",
@@ -3806,7 +4016,12 @@
       "expressão",
       "paz",
       "cura emocional"
-    ]
+    ],
+    "plantDe": "Strandflieder",
+    "plantEs": "lavanda de mar",
+    "plantFr": "lavande de mer",
+    "plantJa": "ハマサジ",
+    "plantPt": "lavanda-do-mar"
   },
   {
     "id": "s077",
@@ -3898,7 +4113,12 @@
       "esperança",
       "equilíbrio",
       "comunicação"
-    ]
+    ],
+    "plantDe": "Zitronenverbene",
+    "plantEs": "hierba luisa",
+    "plantFr": "verveine citronnelle",
+    "plantJa": "レモンバーベナ",
+    "plantPt": "lúcia-lima"
   },
   {
     "id": "s078",
@@ -3990,7 +4210,12 @@
       "inspiração",
       "foco",
       "autodisciplina"
-    ]
+    ],
+    "plantDe": "Rosmarin",
+    "plantEs": "Romero",
+    "plantFr": "Romarin",
+    "plantJa": "ローズマリー",
+    "plantPt": "Alecrim"
   },
   {
     "id": "s079",
@@ -4082,7 +4307,12 @@
       "orientação",
       "visão",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Passionsblume",
+    "plantEs": "Pasiflora",
+    "plantFr": "Passiflore",
+    "plantJa": "パッションフラワー",
+    "plantPt": "Maracujá (flor)"
   },
   {
     "id": "s080",
@@ -4175,7 +4405,12 @@
       "sabedoria",
       "força feminina",
       "paz"
-    ]
+    ],
+    "plantDe": "Salbei",
+    "plantEs": "Salvia",
+    "plantFr": "Sauge",
+    "plantJa": "セージ",
+    "plantPt": "Sálvia"
   },
   {
     "id": "s081",
@@ -4267,7 +4502,12 @@
       "alegria",
       "cura emocional",
       "renovação"
-    ]
+    ],
+    "plantDe": "Apfelblüte",
+    "plantEs": "flor de manzano",
+    "plantFr": "fleur de pommier",
+    "plantJa": "リンゴの花",
+    "plantPt": "flor de macieira"
   },
   {
     "id": "s082",
@@ -4359,7 +4599,12 @@
       "paciência",
       "equilíbrio emocional",
       "crescimento"
-    ]
+    ],
+    "plantDe": "Schwarzkümmel",
+    "plantEs": "Comino negro",
+    "plantFr": "Cumin noir",
+    "plantJa": "ブラッククミン",
+    "plantPt": "Cominho-preto"
   },
   {
     "id": "s083",
@@ -4451,7 +4696,12 @@
       "proteção",
       "aterramento",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Löwenzahnwurzel",
+    "plantEs": "raíz de diente de león",
+    "plantFr": "racine de pissenlit",
+    "plantJa": "タンポポの根",
+    "plantPt": "raiz de dente-de-leão"
   },
   {
     "id": "s084",
@@ -4543,7 +4793,12 @@
       "transição",
       "equilíbrio",
       "paz"
-    ]
+    ],
+    "plantDe": "Zitronenmelisse",
+    "plantEs": "melisa",
+    "plantFr": "mélisse",
+    "plantJa": "レモンバーム",
+    "plantPt": "erva-cidreira"
   },
   {
     "id": "s085",
@@ -4635,7 +4890,12 @@
       "paciência",
       "sono",
       "consciência"
-    ]
+    ],
+    "plantDe": "Kamille",
+    "plantEs": "Manzanilla",
+    "plantFr": "Camomille",
+    "plantJa": "カモミール",
+    "plantPt": "Camomila"
   },
   {
     "id": "s086",
@@ -4729,7 +4989,12 @@
       "fluxo",
       "equilíbrio emocional",
       "clareza"
-    ]
+    ],
+    "plantDe": "Minze",
+    "plantEs": "Menta",
+    "plantFr": "Menthe",
+    "plantJa": "ミント",
+    "plantPt": "Hortelã"
   },
   {
     "id": "s087",
@@ -4823,7 +5088,12 @@
       "vitalidade",
       "resiliência",
       "aterramento"
-    ]
+    ],
+    "plantDe": "Brennnessel",
+    "plantEs": "ortiga",
+    "plantFr": "ortie",
+    "plantJa": "イラクサ",
+    "plantPt": "urtiga"
   },
   {
     "id": "s088",
@@ -4915,7 +5185,12 @@
       "amor",
       "cura",
       "coragem"
-    ]
+    ],
+    "plantDe": "Veilchen",
+    "plantEs": "Violeta",
+    "plantFr": "Violette",
+    "plantJa": "スミレ",
+    "plantPt": "Violeta"
   },
   {
     "id": "s089",
@@ -5007,7 +5282,12 @@
       "coragem",
       "percepção espiritual",
       "soltar o medo"
-    ]
+    ],
+    "plantDe": "Hyazinthe",
+    "plantEs": "jacinto",
+    "plantFr": "jacinthe",
+    "plantJa": "ヒヤシンス",
+    "plantPt": "jacinto"
   },
   {
     "id": "s090",
@@ -5101,7 +5381,12 @@
       "expressão",
       "ascensão espiritual",
       "transformação"
-    ]
+    ],
+    "plantDe": "blaue Hyazinthe",
+    "plantEs": "jacinto azul",
+    "plantFr": "jacinthe bleue",
+    "plantJa": "青いヒヤシンス",
+    "plantPt": "jacinto azul"
   },
   {
     "id": "s091",
@@ -5195,7 +5480,12 @@
       "inspiração",
       "energia",
       "renovação"
-    ]
+    ],
+    "plantDe": "Pfingstrose",
+    "plantEs": "Peonía",
+    "plantFr": "Pivoine",
+    "plantJa": "牡丹",
+    "plantPt": "Peônia"
   },
   {
     "id": "s092",
@@ -5287,7 +5577,12 @@
       "oportunidade",
       "otimismo",
       "paz do coração"
-    ]
+    ],
+    "plantDe": "Klee",
+    "plantEs": "trébol",
+    "plantFr": "trèfle",
+    "plantJa": "クローバー",
+    "plantPt": "trevo"
   },
   {
     "id": "s093",
@@ -5379,7 +5674,12 @@
       "equilíbrio",
       "adaptação à mudança",
       "calor"
-    ]
+    ],
+    "plantDe": "Bougainvillea",
+    "plantEs": "buganvilla",
+    "plantFr": "bougainvillier",
+    "plantJa": "ブーゲンビリア",
+    "plantPt": "buganvília"
   },
   {
     "id": "s094",
@@ -5471,7 +5771,12 @@
       "expressão gentil",
       "paz",
       "comunicação"
-    ]
+    ],
+    "plantDe": "Vergissmeinnicht",
+    "plantEs": "nomeolvides",
+    "plantFr": "myosotis",
+    "plantJa": "ワスレナグサ",
+    "plantPt": "miosótis"
   },
   {
     "id": "s095",
@@ -5564,7 +5869,12 @@
       "vitalidade",
       "liderança",
       "otimismo"
-    ]
+    ],
+    "plantDe": "Sonnenblume",
+    "plantEs": "Girasol",
+    "plantFr": "Tournesol",
+    "plantJa": "ひまわり",
+    "plantPt": "Girassol"
   },
   {
     "id": "s096",
@@ -5656,7 +5966,12 @@
       "coragem",
       "aterramento",
       "força"
-    ]
+    ],
+    "plantDe": "Kornelkirsche",
+    "plantEs": "cornejo macho",
+    "plantFr": "cornouiller mâle",
+    "plantJa": "サンシュユ",
+    "plantPt": "corniso-macho"
   },
   {
     "id": "s097",
@@ -5748,7 +6063,12 @@
       "fluxo",
       "alegria",
       "equilíbrio emocional"
-    ]
+    ],
+    "plantDe": "Queller",
+    "plantEs": "salicornia",
+    "plantFr": "salicorne",
+    "plantJa": "アッケシソウ",
+    "plantPt": "salicórnia"
   },
   {
     "id": "s098",
@@ -5840,7 +6160,12 @@
       "vitalidade",
       "tomada de decisão",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Eukalyptus",
+    "plantEs": "Eucalipto",
+    "plantFr": "Eucalyptus",
+    "plantJa": "ユーカリ",
+    "plantPt": "Eucalipto"
   },
   {
     "id": "s099",
@@ -5932,7 +6257,12 @@
       "ligação com a natureza",
       "perseverança",
       "paz"
-    ]
+    ],
+    "plantDe": "Farn",
+    "plantEs": "Helecho",
+    "plantFr": "Fougère",
+    "plantJa": "シダ",
+    "plantPt": "Samambaia"
   },
   {
     "id": "s100",
@@ -6024,7 +6354,12 @@
       "força",
       "proteção",
       "determinação"
-    ]
+    ],
+    "plantDe": "Zypresse",
+    "plantEs": "ciprés",
+    "plantFr": "cyprès",
+    "plantJa": "糸杉",
+    "plantPt": "cipreste"
   },
   {
     "id": "s101",
@@ -6118,7 +6453,12 @@
       "vontade",
       "proteção",
       "estabilidade"
-    ]
+    ],
+    "plantDe": "Eiche",
+    "plantEs": "Roble",
+    "plantFr": "Chêne",
+    "plantJa": "オーク",
+    "plantPt": "Carvalho"
   },
   {
     "id": "s102",
@@ -6212,7 +6552,12 @@
       "paz",
       "proteção espiritual",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Lavendel",
+    "plantEs": "Lavanda",
+    "plantFr": "Lavande",
+    "plantJa": "ラベンダー",
+    "plantPt": "Lavanda"
   },
   {
     "id": "s103",
@@ -6306,7 +6651,12 @@
       "consolo",
       "cura emocional",
       "paz"
-    ]
+    ],
+    "plantDe": "Heckenrose",
+    "plantEs": "rosa silvestre",
+    "plantFr": "églantine",
+    "plantJa": "野ばら",
+    "plantPt": "rosa-brava"
   },
   {
     "id": "s104",
@@ -6398,7 +6748,12 @@
       "força vital",
       "purificação",
       "proteção"
-    ]
+    ],
+    "plantDe": "Kiefernharz",
+    "plantEs": "resina de pino",
+    "plantFr": "résine de pin",
+    "plantJa": "松脂",
+    "plantPt": "resina de pinho"
   },
   {
     "id": "s105",
@@ -6490,7 +6845,12 @@
       "luto",
       "aterramento",
       "purificação"
-    ]
+    ],
+    "plantDe": "Zypresse",
+    "plantEs": "ciprés",
+    "plantFr": "cyprès",
+    "plantJa": "糸杉",
+    "plantPt": "cipreste"
   },
   {
     "id": "s106",
@@ -6582,7 +6942,12 @@
       "proteção",
       "força interior",
       "transformação"
-    ]
+    ],
+    "plantDe": "Moos",
+    "plantEs": "musgo",
+    "plantFr": "mousse",
+    "plantJa": "苔",
+    "plantPt": "musgo"
   },
   {
     "id": "s107",
@@ -6674,7 +7039,12 @@
       "paz",
       "equilíbrio do coração",
       "renovação"
-    ]
+    ],
+    "plantDe": "Federgras",
+    "plantEs": "hierba de plata",
+    "plantFr": "stipe",
+    "plantJa": "ハネガヤ",
+    "plantPt": "estipa"
   },
   {
     "id": "s108",
@@ -6766,7 +7136,12 @@
       "boa vontade",
       "paz",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "blaue Malve",
+    "plantEs": "malva azul",
+    "plantFr": "mauve bleue",
+    "plantJa": "青いゼニアオイ",
+    "plantPt": "malva azul"
   },
   {
     "id": "s109",
@@ -6858,7 +7233,12 @@
       "otimismo",
       "renovação",
       "crescimento"
-    ]
+    ],
+    "plantDe": "Brokkoliblüte",
+    "plantEs": "flor de brócoli",
+    "plantFr": "fleur de brocoli",
+    "plantJa": "ブロッコリーの花",
+    "plantPt": "flor de brócolis"
   },
   {
     "id": "s110",
@@ -6951,7 +7331,12 @@
       "amor-próprio",
       "paz",
       "abertura do coração"
-    ]
+    ],
+    "plantDe": "rosa Pfingstrose",
+    "plantEs": "peonía rosa",
+    "plantFr": "pivoine rose",
+    "plantJa": "ピンクの芍薬",
+    "plantPt": "peônia rosa"
   },
   {
     "id": "s111",
@@ -7043,7 +7428,12 @@
       "criatividade",
       "libertação do medo",
       "harmonia"
-    ]
+    ],
+    "plantDe": "Salbeiblüte",
+    "plantEs": "flor de salvia",
+    "plantFr": "fleur de sauge",
+    "plantJa": "セージの花",
+    "plantPt": "flor de sálvia"
   },
   {
     "id": "s112",
@@ -7135,7 +7525,12 @@
       "abundância",
       "paz",
       "novo começo"
-    ]
+    ],
+    "plantDe": "Moos",
+    "plantEs": "musgo",
+    "plantFr": "mousse",
+    "plantJa": "苔",
+    "plantPt": "musgo"
   },
   {
     "id": "s113",
@@ -7227,7 +7622,12 @@
       "calma na tempestade",
       "visão",
       "coragem"
-    ]
+    ],
+    "plantDe": "Anemone",
+    "plantEs": "anémona",
+    "plantFr": "anémone",
+    "plantJa": "アネモネ",
+    "plantPt": "anêmona"
   },
   {
     "id": "s081",
@@ -7307,7 +7707,12 @@
       "cura emocional",
       "compaixão",
       "alegria"
-    ]
+    ],
+    "plantDe": "Rose",
+    "plantEs": "Rosa",
+    "plantFr": "Rose",
+    "plantJa": "ローズ",
+    "plantPt": "Rosa"
   },
   {
     "id": "s082",
@@ -7387,7 +7792,12 @@
       "cura do coração",
       "abundância",
       "renovação"
-    ]
+    ],
+    "plantDe": "Salbei",
+    "plantEs": "Salvia",
+    "plantFr": "Sauge",
+    "plantJa": "セージ",
+    "plantPt": "Sálvia"
   },
   {
     "id": "s083",
@@ -7467,7 +7877,12 @@
       "conexão angelical",
       "pureza",
       "alívio"
-    ]
+    ],
+    "plantDe": "weiße Lilie",
+    "plantEs": "lirio blanco",
+    "plantFr": "lys blanc",
+    "plantJa": "白百合",
+    "plantPt": "lírio branco"
   },
   {
     "id": "s084",
@@ -7547,7 +7962,12 @@
       "equilíbrio",
       "sorte",
       "harmonia"
-    ]
+    ],
+    "plantDe": "Lotus",
+    "plantEs": "Loto",
+    "plantFr": "Lotus",
+    "plantJa": "蓮",
+    "plantPt": "Lótus"
   },
   {
     "id": "s085",
@@ -7627,7 +8047,12 @@
       "energia",
       "trabalho dos sonhos",
       "elevação"
-    ]
+    ],
+    "plantDe": "Eukalyptus",
+    "plantEs": "Eucalipto",
+    "plantFr": "Eucalyptus",
+    "plantJa": "ユーカリ",
+    "plantPt": "Eucalipto"
   },
   {
     "id": "s086",
@@ -7707,7 +8132,12 @@
       "inspiração",
       "crescimento",
       "determinação"
-    ]
+    ],
+    "plantDe": "Sonnenblume",
+    "plantEs": "Girasol",
+    "plantFr": "Tournesol",
+    "plantJa": "ひまわり",
+    "plantPt": "Girassol"
   },
   {
     "id": "s087",
@@ -7787,7 +8217,12 @@
       "compaixão",
       "segurança emocional",
       "alegria"
-    ]
+    ],
+    "plantDe": "Pfingstrose",
+    "plantEs": "Peonía",
+    "plantFr": "Pivoine",
+    "plantJa": "牡丹",
+    "plantPt": "Peônia"
   },
   {
     "id": "s088",
@@ -7867,7 +8302,12 @@
       "luz",
       "abertura",
       "intuição"
-    ]
+    ],
+    "plantDe": "Jasmin",
+    "plantEs": "Jazmín",
+    "plantFr": "Jasmin",
+    "plantJa": "ジャスミン",
+    "plantPt": "Jasmim"
   },
   {
     "id": "s089",
@@ -7947,7 +8387,12 @@
       "empatia",
       "equilíbrio emocional",
       "calma"
-    ]
+    ],
+    "plantDe": "Lotus",
+    "plantEs": "Loto",
+    "plantFr": "Lotus",
+    "plantJa": "蓮",
+    "plantPt": "Lótus"
   },
   {
     "id": "s090",
@@ -8027,7 +8472,12 @@
       "esperança",
       "cura emocional",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Kamille",
+    "plantEs": "Manzanilla",
+    "plantFr": "Camomille",
+    "plantJa": "カモミール",
+    "plantPt": "Camomila"
   },
   {
     "id": "s091",
@@ -8107,7 +8557,12 @@
       "desapego",
       "proteção",
       "serenidade"
-    ]
+    ],
+    "plantDe": "Lavendel",
+    "plantEs": "Lavanda",
+    "plantFr": "Lavande",
+    "plantJa": "ラベンダー",
+    "plantPt": "Lavanda"
   },
   {
     "id": "s092",
@@ -8187,7 +8642,12 @@
       "iluminação",
       "energia",
       "abertura"
-    ]
+    ],
+    "plantDe": "Myrrhe",
+    "plantEs": "mirra",
+    "plantFr": "myrrhe",
+    "plantJa": "没薬（ミルラ）",
+    "plantPt": "mirra"
   },
   {
     "id": "s093",
@@ -8267,7 +8727,12 @@
       "disciplina",
       "intuição",
       "paciência"
-    ]
+    ],
+    "plantDe": "Rosmarin",
+    "plantEs": "Romero",
+    "plantFr": "Romarin",
+    "plantJa": "ローズマリー",
+    "plantPt": "Alecrim"
   },
   {
     "id": "s094",
@@ -8347,7 +8812,12 @@
       "relaxamento",
       "amor-próprio",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Zitronenmelisse",
+    "plantEs": "Melisa",
+    "plantFr": "Mélisse",
+    "plantJa": "レモンバーム",
+    "plantPt": "Erva-cidreira"
   },
   {
     "id": "s095",
@@ -8427,7 +8897,12 @@
       "produtividade",
       "determinação",
       "aterramento"
-    ]
+    ],
+    "plantDe": "Ingwer",
+    "plantEs": "Jengibre",
+    "plantFr": "Gingembre",
+    "plantJa": "ジンジャー",
+    "plantPt": "Gengibre"
   },
   {
     "id": "s096",
@@ -8507,7 +8982,12 @@
       "proteção",
       "clareza",
       "transformação"
-    ]
+    ],
+    "plantDe": "Löwenzahn",
+    "plantEs": "diente de león",
+    "plantFr": "pissenlit",
+    "plantJa": "タンポポ",
+    "plantPt": "dente-de-leão"
   },
   {
     "id": "s097",
@@ -8587,7 +9067,12 @@
       "autoconfiança",
       "equilíbrio",
       "proteção"
-    ]
+    ],
+    "plantDe": "Eiche",
+    "plantEs": "Roble",
+    "plantFr": "Chêne",
+    "plantJa": "オーク",
+    "plantPt": "Carvalho"
   },
   {
     "id": "s098",
@@ -8667,7 +9152,12 @@
       "intuição",
       "relaxamento",
       "criatividade"
-    ]
+    ],
+    "plantDe": "Orangenblüte",
+    "plantEs": "flor de azahar",
+    "plantFr": "fleur d’oranger",
+    "plantJa": "オレンジの花",
+    "plantPt": "flor de laranjeira"
   },
   {
     "id": "s099",
@@ -8747,7 +9237,12 @@
       "intuição",
       "verdade",
       "expressão"
-    ]
+    ],
+    "plantDe": "Minze",
+    "plantEs": "Menta",
+    "plantFr": "Menthe",
+    "plantJa": "ミント",
+    "plantPt": "Hortelã"
   },
   {
     "id": "s100",
@@ -8827,7 +9322,12 @@
       "crescimento",
       "vitalidade",
       "compaixão"
-    ]
+    ],
+    "plantDe": "Basilikum",
+    "plantEs": "albahaca",
+    "plantFr": "basilic",
+    "plantJa": "バジル",
+    "plantPt": "manjericão"
   },
   {
     "id": "s101",
@@ -8907,7 +9407,12 @@
       "cura",
       "transformação camada a camada",
       "intenção"
-    ]
+    ],
+    "plantDe": "Farn",
+    "plantEs": "Helecho",
+    "plantFr": "Fougère",
+    "plantJa": "シダ",
+    "plantPt": "Samambaia"
   },
   {
     "id": "s102",
@@ -8987,7 +9492,12 @@
       "cura",
       "conexão",
       "amor"
-    ]
+    ],
+    "plantDe": "Weißer Salbei",
+    "plantEs": "Salvia Blanca",
+    "plantFr": "Sauge Blanche",
+    "plantJa": "ホワイトセージ",
+    "plantPt": "Sálvia Branca"
   },
   {
     "id": "s103",
@@ -9067,7 +9577,12 @@
       "proteção",
       "autodisciplina",
       "sorte"
-    ]
+    ],
+    "plantDe": "Tagetes",
+    "plantEs": "tagetes",
+    "plantFr": "œillet d’Inde",
+    "plantJa": "マリーゴールド",
+    "plantPt": "tagetes"
   },
   {
     "id": "s104",
@@ -9147,7 +9662,12 @@
       "intuição",
       "sorte",
       "autoconfiança"
-    ]
+    ],
+    "plantDe": "Thymian",
+    "plantEs": "Tomillo",
+    "plantFr": "Thym",
+    "plantJa": "タイム",
+    "plantPt": "Tomilho"
   },
   {
     "id": "s105",
@@ -9227,7 +9747,12 @@
       "aterramento",
       "sabedoria",
       "equilíbrio"
-    ]
+    ],
+    "plantDe": "Sandelholz",
+    "plantEs": "Sándalo",
+    "plantFr": "Santal",
+    "plantJa": "サンダルウッド",
+    "plantPt": "Sândalo"
   },
   {
     "id": "s106",
@@ -9307,7 +9832,12 @@
       "vontade",
       "alegria",
       "vitalidade"
-    ]
+    ],
+    "plantDe": "Schafgarbe",
+    "plantEs": "Milenrama",
+    "plantFr": "Achillée",
+    "plantJa": "ヤロウ",
+    "plantPt": "Mil-folhas"
   },
   {
     "id": "s107",
@@ -9387,7 +9917,12 @@
       "pureza",
       "verdade",
       "paz"
-    ]
+    ],
+    "plantDe": "weiße Rose",
+    "plantEs": "rosa blanca",
+    "plantFr": "rose blanche",
+    "plantJa": "白いバラ",
+    "plantPt": "rosa branca"
   },
   {
     "id": "s108",
@@ -9467,7 +10002,12 @@
       "equilíbrio",
       "aprendizagem",
       "aterramento"
-    ]
+    ],
+    "plantDe": "Kiefer",
+    "plantEs": "pino",
+    "plantFr": "pin",
+    "plantJa": "松",
+    "plantPt": "pinheiro"
   },
   {
     "id": "s109",
@@ -9547,7 +10087,12 @@
       "aterramento",
       "resolução de problemas",
       "calma"
-    ]
+    ],
+    "plantDe": "Schachtelhalm",
+    "plantEs": "cola de caballo",
+    "plantFr": "prêle",
+    "plantJa": "スギナ",
+    "plantPt": "cavalinha"
   },
   {
     "id": "s110",
@@ -9627,7 +10172,12 @@
       "transformação",
       "inspiração",
       "potencial"
-    ]
+    ],
+    "plantDe": "Sternanis",
+    "plantEs": "anís estrellado",
+    "plantFr": "anis étoilé",
+    "plantJa": "八角",
+    "plantPt": "anis-estrelado"
   },
   {
     "id": "s111",
@@ -9707,7 +10257,12 @@
       "resolução de problemas",
       "cura",
       "mudança"
-    ]
+    ],
+    "plantDe": "Eibisch",
+    "plantEs": "Malvavisco",
+    "plantFr": "Guimauve",
+    "plantJa": "マシュマロウ",
+    "plantPt": "Malvaísco"
   },
   {
     "id": "s112",
@@ -9787,7 +10342,12 @@
       "clareza",
       "imaginação",
       "intuição"
-    ]
+    ],
+    "plantDe": "Azalee",
+    "plantEs": "azalea",
+    "plantFr": "azalée",
+    "plantJa": "ツツジ",
+    "plantPt": "azaleia"
   },
   {
     "id": "s113",
@@ -9867,7 +10427,12 @@
       "criatividade",
       "vitalidade",
       "coragem"
-    ]
+    ],
+    "plantDe": "Granatapfelblüte",
+    "plantEs": "flor de granado",
+    "plantFr": "fleur de grenadier",
+    "plantJa": "ザクロの花",
+    "plantPt": "flor de romã"
   },
   {
     "id": "s114",
@@ -9947,7 +10512,12 @@
       "compaixão",
       "equilíbrio emocional",
       "gentileza"
-    ]
+    ],
+    "plantDe": "Bergamotte",
+    "plantEs": "bergamota",
+    "plantFr": "bergamote",
+    "plantJa": "ベルガモット",
+    "plantPt": "bergamota"
   },
   {
     "id": "s115",
@@ -10027,7 +10597,12 @@
       "criatividade",
       "equilíbrio emocional",
       "inspiração"
-    ]
+    ],
+    "plantDe": "Zitronengras",
+    "plantEs": "Hierba de limón",
+    "plantFr": "Citronnelle",
+    "plantJa": "レモングラス",
+    "plantPt": "Capim-limão"
   },
   {
     "id": "s116",
@@ -10107,7 +10682,12 @@
       "equilíbrio",
       "compaixão",
       "renovação"
-    ]
+    ],
+    "plantDe": "Zitronenmelisse",
+    "plantEs": "melisa",
+    "plantFr": "mélisse",
+    "plantJa": "レモンバーム",
+    "plantPt": "erva-cidreira"
   },
   {
     "id": "s117",
@@ -10187,7 +10767,12 @@
       "concentração",
       "clareza",
       "discernimento"
-    ]
+    ],
+    "plantDe": "Passionsblume",
+    "plantEs": "Pasiflora",
+    "plantFr": "Passiflore",
+    "plantJa": "パッションフラワー",
+    "plantPt": "Maracujá (flor)"
   },
   {
     "id": "s118",
@@ -10267,7 +10852,12 @@
       "intuição",
       "alegria",
       "expressão"
-    ]
+    ],
+    "plantDe": "blauer Salbei",
+    "plantEs": "salvia azul",
+    "plantFr": "sauge bleue",
+    "plantJa": "ブルーセージ",
+    "plantPt": "sálvia azul"
   },
   {
     "id": "s119",
@@ -10347,6 +10937,11 @@
       "harmonia coração-mente",
       "vitalidade",
       "propósito"
-    ]
+    ],
+    "plantDe": "Hibiskus",
+    "plantEs": "Hibisco",
+    "plantFr": "Hibiscus",
+    "plantJa": "ハイビスカス",
+    "plantPt": "Hibisco"
   }
 ]

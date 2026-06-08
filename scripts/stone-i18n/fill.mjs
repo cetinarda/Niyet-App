@@ -13,7 +13,14 @@ import { SENTENCES } from './sentences.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STONES = path.resolve(__dirname, '../../apps/taslar/src/data/stones.json');
+const PLANTS_JSON = path.resolve(__dirname, '../../apps/bitkiler/src/data/plants.json');
 const check = process.argv.includes('--check');
+
+// Bitki adları için plants.json fallback (PLANT sözlüğünde yoksa oradan al).
+const plantsData = JSON.parse(fs.readFileSync(PLANTS_JSON, 'utf8'));
+const PLANT_FALLBACK = {};
+for (const p of plantsData) PLANT_FALLBACK[p.name] = { de: p.nameDe, es: p.nameEs, fr: p.nameFr, ja: p.nameJa, pt: p.namePt };
+const plantName = (tr, lang) => (PLANT[tr] && PLANT[tr][lang]) || (PLANT_FALLBACK[tr] && PLANT_FALLBACK[tr][lang]) || null;
 
 const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 const arr = JSON.parse(fs.readFileSync(STONES, 'utf8'));
@@ -41,8 +48,8 @@ for (const s of arr) {
       const tr = s.properties.map(p => (PROPERTIES[p] && PROPERTIES[p][lang]) || null);
       if (tr.every(x => x != null)) set(s, 'properties', lang, tr);
     }
-    // plant
-    if (s.plant && PLANT[s.plant]) set(s, 'plant', lang, PLANT[s.plant][lang]);
+    // plant (sözlük → plants.json fallback)
+    if (s.plant) set(s, 'plant', lang, plantName(s.plant, lang));
     // name + sentences (per-stone)
     const sent = SENTENCES[s.id];
     if (sent && sent[lang]) {
