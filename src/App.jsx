@@ -291,6 +291,7 @@ const ELEM_I18N = {
   hava:   { tr:"Hava",   en:"Air",   de:"Luft",   es:"Aire",   pt:"Ar",    fr:"Air",   ja:"風" },
   su:     { tr:"Su",     en:"Water", de:"Wasser", es:"Agua",   pt:"Água",  fr:"Eau",   ja:"水" },
   title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
+  hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun — sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart — then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht — dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta — luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa — depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte — il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
 };
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
@@ -3045,6 +3046,7 @@ export default function SakinApp() {
   }, []);
   const devMode = isOwner && !isNative;
   const [raporKullanildi, setRaporKullanildi] = useState(() => localStorage.getItem("sakin_rapor_used") === "1");
+  const [raporMesaj, setRaporMesaj] = useState(""); // veri yok / haftalık limit → şefkatli bilgilendirme
   const [isPremium, setIsPremium] = useState(() => {
     // İyimser başlat: önceki kullanıcı-eylemiyle (Subscribe/Buy/Restore) yazılan yerel
     // bayrağa güven → premium uygulama kapanıp açılınca KORUNUR (her açılışta Restore'a
@@ -3982,7 +3984,9 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 
   const generateRapor = async () => {
     const gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]");
-    if (!gunler.length) return;
+    // Yeterli iz yoksa sessizce çıkma — kullanıcıyı şefkatle bilgilendir (en az 2 gün).
+    if (gunler.length < 2) { setRaporMesaj(t("report_need_data")); return; }
+    setRaporMesaj("");
 
     const _wk = currentWeekKey();
     // Bu haftanın raporu zaten üretildiyse → AYNISINI göster (1 hafta sabit, yeniden üretme/çağrı yapma)
@@ -3999,7 +4003,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       const { ip } = await ipRes.json();
       const kullanim = JSON.parse(localStorage.getItem("sakin_rapor_kullanim")||"{}");
       const _ipwk = ip + "_" + _wk;
-      if ((kullanim[_ipwk]||0) >= 1) { setRaporKullanildi(true); return; }
+      if ((kullanim[_ipwk]||0) >= 1) { setRaporKullanildi(true); setRaporMesaj(t("report_weekly_done")); return; }
       kullanim[_ipwk] = 1;
       localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
     } catch { /* ipify ulaşılamazsa devam et */ }
@@ -6927,10 +6931,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             ) : !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:14,color:"#888888",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
-                <button className="sakin-btn-primary"
-                  style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",borderColor:"rgba(255,255,255,0.4)",fontSize:14 }}
-                  onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
+                {raporMesaj ? (
+                  <div style={{ fontSize:13.5,color:"#c8b8e0",lineHeight:1.95,padding:"14px 16px",background:"rgba(184,164,216,0.07)",border:"1px solid rgba(184,164,216,0.18)",borderRadius:14,letterSpacing:0.3 }}>
+                    {raporMesaj}
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ fontSize:14,color:"#888888",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+                    <button className="sakin-btn-primary"
+                      style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",borderColor:"rgba(255,255,255,0.4)",fontSize:14 }}
+                      onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
+                  </>
+                )}
               </div>
             ) : aiLoading ? (
               <div style={{ textAlign:"center",padding:"12px 0" }}>
@@ -7276,7 +7288,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   let ed = null;
                   try { ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null"); } catch(_) {}
                   const sum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-                  if (!ed || sum <= 0.5) return null;
+                  // Veri yoksa sessizce gizleme — kullanıcıyı Sakin Tasarım'a nazikçe yönlendir.
+                  if (!ed || sum <= 0.5) return (
+                    <div style={{ padding:"10px 12px",background:"rgba(184,160,216,0.05)",border:"1px solid rgba(184,160,216,0.14)",borderRadius:10,marginBottom:10 }}>
+                      <div style={{ fontSize:8,letterSpacing:2.5,color:"#8878a8",textTransform:"uppercase",marginBottom:6,textAlign:"center" }}>{pickLang(ELEM_I18N.title, lang)}</div>
+                      <div style={{ fontSize:11,color:"#a89cb8",lineHeight:1.6,textAlign:"center" }}>{pickLang(ELEM_I18N.hint, lang)}</div>
+                    </div>
+                  );
                   const isEn = lang === "en";
                   const items = [
                     ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
