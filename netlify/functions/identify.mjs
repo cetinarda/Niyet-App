@@ -4,7 +4,11 @@
 // ayırabilir — gerekirse güncel multimodal model adıyla değiştir.
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
-const GROQ_VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
+// Görü modelleri: önce daha güçlü olanı dene; model adı geçersiz/emekli ise eskiye düş (kırılmasın).
+const GROQ_VISION_MODELS = [
+  "meta-llama/llama-4-maverick-17b-128e-instruct",
+  "meta-llama/llama-4-scout-17b-16e-instruct",
+];
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // ~5MB (base64 öncesi ham tahmini)
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -42,7 +46,7 @@ export const handler = async (event) => {
 
   let body;
   try { body = JSON.parse(event.body || "{}"); } catch { return json(400, ch, { error: "Invalid body" }); }
-  const { image, type, lang: rawLang } = body;
+  const { image, type, lang: rawLang, candidates } = body;
   const lang = LANG_NAMES[rawLang] ? rawLang : "tr";
   const name = LANG_NAMES[lang];
 
@@ -54,46 +58,68 @@ export const handler = async (event) => {
   if (!apiKey) return json(500, ch, { error: "Server not configured" });
 
   const subject = kind === "plant"
-    ? "a plant / herb / flower"
+    ? "a plant, herb or flower"
     : "a crystal, gemstone or healing stone";
-  const prompt = `You are Sakin's gentle identification guide. Look at the photo of ${subject} and identify it.
-Respond ENTIRELY in ${name}, using ONLY ${name} words (no foreign words). Keep the proper noun "Sakin" untranslated.
-Keep it short — three lines:
-1) Most likely: <name> — confidence as a percentage. Put the name clearly so it can be recognized.
+  const features = kind === "plant"
+    ? "leaf shape, leaf arrangement, flowers, color and growth habit"
+    : "color, transparency, luster, crystal form, banding and inclusions";
+
+  // Kapalı küme grounding: uygulamanın bildiği taş/bitki adlarını context ver (zorlama değil, ipucu).
+  const list = Array.isArray(candidates)
+    ? candidates.filter((c) => typeof c === "string" && c.trim()).slice(0, 300).map((c) => c.trim())
+    : [];
+  const listBlock = list.length
+    ? `Sakin currently knows these ${kind}s (name, with English/Latin name in parentheses):\n${list.join("; ")}\n\n`
+    : "";
+
+  const prompt = `You are Sakin's gentle identification guide. Examine the photo of ${subject} closely, paying attention to ${features}.
+
+${listBlock}Identify it ONLY if you are reasonably confident. Do NOT force or guess.
+- If it clearly matches one of the ${kind}s Sakin knows, write THAT item's name on line 1, copied EXACTLY as written above (you may omit the parenthetical English part).
+- If you are confident it is something NOT in that list, you may still name what you actually see.
+- If you are NOT reasonably confident, or the image is blurry, too far, or not ${subject}, reply with EXACTLY this single word and nothing else: UNSURE
+
+When you are confident, respond ENTIRELY in ${name}, using ONLY ${name} words (keep "Sakin" untranslated), in exactly three short lines:
+1) <name> — confidence as a percentage.
 2) Two alternatives it could be.
-3) One short, warm sentence about it (its nature/energy), in Sakin's spiritual-but-grounded tone.
-If the image is unclear or not ${subject}, say so kindly and ask for a clearer photo. Never invent certainty; be honest about confidence. No medical advice.`;
+3) One short, warm sentence about its nature/energy, in Sakin's grounded-spiritual tone.
+No medical advice.`;
 
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 20000);
-    let res;
-    try {
-      res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          model: GROQ_VISION_MODEL,
-          max_tokens: 420,
-          temperature: 0.4,
-          messages: [{
-            role: "user",
-            content: [
-              { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: image } },
-            ],
-          }],
-        }),
-        signal: ctrl.signal,
-      });
-    } finally { clearTimeout(timer); }
+    let data = null, lastStatus = 0;
+    for (const model of GROQ_VISION_MODELS) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 20000);
+      let res;
+      try {
+        res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
+          body: JSON.stringify({
+            model,
+            max_tokens: 480,
+            temperature: 0.2,
+            messages: [{
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
+                { type: "image_url", image_url: { url: image } },
+              ],
+            }],
+          }),
+          signal: ctrl.signal,
+        });
+      } finally { clearTimeout(timer); }
 
-    if (!res.ok) {
+      if (res.ok) { data = await res.json(); break; }
+      lastStatus = res.status;
       const errTxt = await res.text().catch(() => "");
-      console.error("[identify] groq error", res.status, errTxt.slice(0, 200));
-      return json(502, ch, { error: "Vision service error" });
+      console.error("[identify] groq error", model, res.status, errTxt.slice(0, 200));
+      // Model adı geçersiz/emekli (400/404) ise listedeki bir sonrakini dene; diğer hatalarda dur.
+      if (res.status !== 400 && res.status !== 404) break;
     }
-    const data = await res.json();
+
+    if (!data) return json(502, ch, { error: "Vision service error", status: lastStatus });
     const text = data?.choices?.[0]?.message?.content?.trim() || "";
     if (!text) return json(502, ch, { error: "Empty response" });
     return json(200, ch, { text });

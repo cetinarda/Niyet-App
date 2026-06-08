@@ -47,6 +47,8 @@ const TXT = {
   errConn:     { tr:'Bağlantı hatası, tekrar dener misin?', en:'Connection error, please try again.', de:'Verbindungsfehler, bitte erneut.', es:'Error de conexión, inténtalo de nuevo.', pt:'Erro de conexão, tenta de novo.', fr:'Erreur de connexion, réessaie.', ja:'接続エラー。もう一度お試しを。' },
   mostLikely:  { tr:'En olası', en:'Most likely', de:'Am wahrscheinlichsten', es:'Más probable', pt:'Mais provável', fr:'Le plus probable', ja:'最も可能性が高い' },
   openDetail:  { tr:'Sayfasını aç ›', en:'Open its page ›', de:'Seite öffnen ›', es:'Abrir su página ›', pt:'Abrir a página ›', fr:'Ouvrir sa page ›', ja:'ページを開く ›' },
+  needClearer: { tr:'Bunu tam seçemedim — biraz daha yakın ve net bir fotoğraf dener misin?', en:"I couldn't quite make it out — try a closer, clearer photo?", de:'Ich konnte es nicht genau erkennen — versuch ein näheres, klareres Foto?', es:'No lo distinguí bien — ¿pruebas una foto más cercana y nítida?', pt:'Não consegui distinguir bem — tenta uma foto mais próxima e nítida?', fr:"Je ne l'ai pas bien distingué — essaie une photo plus proche et nette ?", ja:'はっきり見分けられませんでした——もっと近くで鮮明な写真を試してみて。' },
+  sorryId:     { tr:'Üzgünüm, bunu henüz tanıyamadım. İyileştirmelerimiz sürüyor — yakında bulabileceğim. ✦', en:"I'm sorry, I couldn't recognize this yet. I'm still improving — I'll be able to find it soon. ✦", de:'Es tut mir leid, das konnte ich noch nicht erkennen. Ich lerne weiter — bald finde ich es. ✦', es:'Lo siento, aún no pude reconocerlo. Sigo mejorando — pronto podré encontrarlo. ✦', pt:'Desculpa, ainda não consegui reconhecê-lo. Continuo a melhorar — em breve vou conseguir. ✦', fr:"Désolé, je n'ai pas encore pu le reconnaître. Je continue de m'améliorer — bientôt je le trouverai. ✦", ja:'ごめんなさい、まだ見分けられませんでした。改善を続けています——近いうちに見つけられます。✦' },
 };
 
 // Netlify fonksiyon tabanı: web'de (https sakin.life) göreceli; iOS'ta (capacitor://)
@@ -66,6 +68,8 @@ export function AnimalsHubScreen() {
   const [photoLoading, setPhotoLoading] = useState(false);
   const [photoResult, setPhotoResult] = useState('');
   const [photoDetail, setPhotoDetail] = useState<any>(null); // tıklanınca açılan DB kaydı
+  const [photoStatus, setPhotoStatus] = useState<'' | 'retry' | 'sorry'>(''); // tanıyamayınca: 1. deneme→retry, 2.→sorry
+  const [failTries, setFailTries] = useState(0);
   const { t } = useI18n();
   const stones = useLocalizedStones();
 
@@ -104,26 +108,38 @@ export function AnimalsHubScreen() {
       input.onchange = async () => {
         const file = input.files && input.files[0];
         if (!file) return;
-        setPhotoLoading(true); setPhotoResult('');
+        setPhotoLoading(true); setPhotoResult(''); setPhotoStatus('');
         try {
           const dataUrl: string = await new Promise((resolve, reject) => {
             const img = new (window as any).Image();
             img.onload = () => {
-              const max = 1024; let w = img.width, h = img.height;
+              const max = 1280; let w = img.width, h = img.height;
               if (w > max || h > max) { const s = max / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
               const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
               (cv.getContext('2d') as any).drawImage(img, 0, 0, w, h);
-              resolve(cv.toDataURL('image/jpeg', 0.82));
+              resolve(cv.toDataURL('image/jpeg', 0.9));
             };
             img.onerror = reject; img.src = URL.createObjectURL(file);
           });
           const lang = (typeof localStorage !== 'undefined' && localStorage.getItem('sakin_lang')) || 'tr';
+          // Kapalı küme: bildiğimiz taş/bitki adlarını (TR + İngilizce) modele context ver.
+          const candidates = (stones as any[]).map((s) => {
+            const en = (s as any).nameEn;
+            return en && _norm(en) !== _norm(s.name) ? `${s.name} (${en})` : s.name;
+          });
           const r = await fetch(SAKIN_API + '/.netlify/functions/identify', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: dataUrl, type: PHOTO_KIND, lang }),
+            body: JSON.stringify({ image: dataUrl, type: PHOTO_KIND, lang, candidates }),
           });
           const d = await r.json();
-          setPhotoResult(d.text || _L(TXT.failId));
+          const raw = (d.text || '').trim();
+          if (!raw || /^UNSURE\b/i.test(raw)) {
+            // Tanıyamadı: 1. denemede daha net foto iste, 2.+ denemede şefkatli özür.
+            const n = failTries + 1; setFailTries(n);
+            setPhotoStatus(n >= 2 ? 'sorry' : 'retry');
+          } else {
+            setFailTries(0); setPhotoStatus(''); setPhotoResult(raw);
+          }
         } catch (e) { setPhotoResult(_L(TXT.errConn)); }
         setPhotoLoading(false);
         try { document.body.removeChild(input); } catch (e) {}
@@ -170,7 +186,7 @@ export function AnimalsHubScreen() {
         {panel === 'library' && <AnimalLibraryScreen onClose={noClose} embedded />}
         {panel === 'finder' && finderView === 'menu' && (
           <View style={styles.menuWrap}>
-            <TouchableOpacity style={styles.menuCard} activeOpacity={0.85} onPress={() => { setPhotoResult(''); setFinderView('photo'); }}>
+            <TouchableOpacity style={styles.menuCard} activeOpacity={0.85} onPress={() => { setPhotoResult(''); setPhotoStatus(''); setFailTries(0); setFinderView('photo'); }}>
               <Text style={styles.menuIcon}>📷</Text>
               <Text style={styles.menuCardText}>{_L(TXT.photoCard)}</Text>
             </TouchableOpacity>
@@ -193,11 +209,21 @@ export function AnimalsHubScreen() {
         )}
         {panel === 'finder' && finderView === 'photo' && !photoDetail && (
           <ScrollView contentContainerStyle={styles.photoWrap} showsVerticalScrollIndicator={false}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); setPhotoStatus(''); setFailTries(0); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
             <Text style={styles.photoTitle}>📷 {_L(isPlant ? TXT.photoTitlePlant : TXT.photoTitleStone)}</Text>
             <Text style={styles.photoHint}>{_L(TXT.hint)}</Text>
             {photoLoading ? (
               <ActivityIndicator color={Colors.gold} style={{ marginTop: 28 }} />
+            ) : photoStatus === 'retry' ? (
+              <>
+                <Text style={styles.photoResult}>{_L(TXT.needClearer)}</Text>
+                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoStatus(''); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
+              </>
+            ) : photoStatus === 'sorry' ? (
+              <>
+                <Text style={styles.photoResult}>{_L(TXT.sorryId)}</Text>
+                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoStatus(''); setFailTries(0); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
+              </>
             ) : photoResult ? (
               <>
                 {/* Eski 3-maddelik bilgi metni (en olası + alternatifler + tek cümle) */}
