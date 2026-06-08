@@ -4003,7 +4003,12 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       const { ip } = await ipRes.json();
       const kullanim = JSON.parse(localStorage.getItem("sakin_rapor_kullanim")||"{}");
       const _ipwk = ip + "_" + _wk;
-      if ((kullanim[_ipwk]||0) >= 1) { setRaporKullanildi(true); setRaporMesaj(t("report_weekly_done")); return; }
+      if ((kullanim[_ipwk]||0) >= 1) {
+        // Bu hafta zaten üretildi → mesaj gösterme, AYNI raporu geri yükle.
+        const cached = (() => { try { return localStorage.getItem("sakin_rapor_text"); } catch { return null; } })();
+        if (cached) { setAiRapor(cached); return; }
+        // Cache yoksa engelleme — üretime devam et (kullanıcı raporsuz kalmasın).
+      }
       kullanim[_ipwk] = 1;
       localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
     } catch { /* ipify ulaşılamazsa devam et */ }
