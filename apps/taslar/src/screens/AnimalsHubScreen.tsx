@@ -61,28 +61,28 @@ export function AnimalsHubScreen() {
   const [finderView, setFinderView] = useState<FinderView>('menu');
   const [photoLoading, setPhotoLoading] = useState(false);
   const [photoResult, setPhotoResult] = useState('');
-  const [photoIsName, setPhotoIsName] = useState(false);   // sonuç geçerli bir isim mi (hata/uyarı değil)
   const [photoDetail, setPhotoDetail] = useState<any>(null); // tıklanınca açılan DB kaydı
   const { t } = useI18n();
   const stones = useLocalizedStones();
 
-  // Foto sonucu DB'de var mı? (isim eşleşmesi → tıklanabilir detay)
+  // Foto sonuç metninde geçen taş DB'de var mı? "En olası" önce yazıldığı için
+  // metinde EN ERKEN geçen ismi seç (alternatifler sonra gelir).
   const photoMatch = useMemo(() => {
-    if (!photoIsName || !photoResult) return null;
+    if (!photoResult) return null;
     const norm = _norm(photoResult);
     if (norm.length < 3) return null;
-    let best: any = null; let bestLen = 0;
+    let best: any = null; let bestIdx = Infinity; let bestLen = 0;
     for (const s of stones as any[]) {
       for (const cand of [s.name, s.nameEn]) {
         const c = _norm(cand);
         if (c.length < 3) continue;
-        if (norm === c || norm.includes(c) || c.includes(norm)) {
-          if (c.length > bestLen) { best = s; bestLen = c.length; }
-        }
+        const idx = norm.indexOf(c);
+        if (idx < 0) continue;
+        if (idx < bestIdx || (idx === bestIdx && c.length > bestLen)) { best = s; bestIdx = idx; bestLen = c.length; }
       }
     }
     return best;
-  }, [photoIsName, photoResult, stones]);
+  }, [photoResult, stones]);
 
   const setPanel = (p: Panel) => { setPanelRaw(p); if (p !== 'finder') setFinderView('menu'); };
   const active = PANELS.find(p => p.key === panel) ?? PANELS[0];
@@ -100,7 +100,7 @@ export function AnimalsHubScreen() {
       input.onchange = async () => {
         const file = input.files && input.files[0];
         if (!file) return;
-        setPhotoLoading(true); setPhotoResult(''); setPhotoIsName(false);
+        setPhotoLoading(true); setPhotoResult('');
         try {
           const dataUrl: string = await new Promise((resolve, reject) => {
             const img = new (window as any).Image();
@@ -119,11 +119,8 @@ export function AnimalsHubScreen() {
             body: JSON.stringify({ image: dataUrl, type: PHOTO_KIND, lang }),
           });
           const d = await r.json();
-          const nm = (d.text || '').trim();
-          const ok = !!nm && nm !== '?' && nm.length <= 60;
-          setPhotoIsName(ok);
-          setPhotoResult(ok ? nm : _L(TXT.failId));
-        } catch (e) { setPhotoIsName(false); setPhotoResult(_L(TXT.errConn)); }
+          setPhotoResult(d.text || _L(TXT.failId));
+        } catch (e) { setPhotoResult(_L(TXT.errConn)); }
         setPhotoLoading(false);
         try { document.body.removeChild(input); } catch (e) {}
       };
@@ -192,27 +189,23 @@ export function AnimalsHubScreen() {
         )}
         {panel === 'finder' && finderView === 'photo' && !photoDetail && (
           <ScrollView contentContainerStyle={styles.photoWrap} showsVerticalScrollIndicator={false}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); setPhotoIsName(false); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
             <Text style={styles.photoTitle}>📷 {_L(isPlant ? TXT.photoTitlePlant : TXT.photoTitleStone)}</Text>
             <Text style={styles.photoHint}>{_L(TXT.hint)}</Text>
             {photoLoading ? (
               <ActivityIndicator color={Colors.gold} style={{ marginTop: 28 }} />
             ) : photoResult ? (
               <>
-                {photoIsName ? (
-                  photoMatch ? (
-                    <TouchableOpacity style={styles.photoMatch} activeOpacity={0.85} onPress={() => setPhotoDetail(photoMatch)}>
-                      <Text style={styles.photoMatchLabel}>{_L(TXT.mostLikely)}</Text>
-                      <Text style={styles.photoMatchName}>{(photoMatch as any).emoji ? (photoMatch as any).emoji + '  ' : ''}{(photoMatch as any).name}</Text>
-                      <Text style={styles.photoMatchHint}>{_L(TXT.openDetail)}</Text>
-                    </TouchableOpacity>
-                  ) : (
-                    <Text style={styles.photoResult}>{_L(TXT.mostLikely)}: {photoResult}</Text>
-                  )
-                ) : (
-                  <Text style={styles.photoResult}>{photoResult}</Text>
+                {/* Eski 3-maddelik bilgi metni (en olası + alternatifler + tek cümle) */}
+                <Text style={styles.photoResult}>{photoResult}</Text>
+                {/* Metinde geçen taş DB'de varsa → tıklanabilir buton, detay sayfasını açar */}
+                {photoMatch && (
+                  <TouchableOpacity style={styles.photoMatch} activeOpacity={0.85} onPress={() => setPhotoDetail(photoMatch)}>
+                    <Text style={styles.photoMatchName}>{(photoMatch as any).emoji ? (photoMatch as any).emoji + '  ' : ''}{(photoMatch as any).name}</Text>
+                    <Text style={styles.photoMatchHint}>{_L(TXT.openDetail)}</Text>
+                  </TouchableOpacity>
                 )}
-                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoResult(''); setPhotoIsName(false); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoResult(''); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
               </>
             ) : (
               <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={pickPhoto}><Text style={styles.photoPickText}>{_L(TXT.pick)}</Text></TouchableOpacity>
