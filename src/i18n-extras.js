@@ -327,9 +327,9 @@ export const EXTRA_LANGS = {
     sakin_intro_skip: "Überspringen",
     add_birth_info: "Geburtsdaten hinzufügen",
 
-    update_new_version: "Neue Version verfügbar",
-    update_default_notes: "Neue Funktionen und Verbesserungen",
-    update_button: "Aktualisieren",
+    update_new_version: "Eine kleine Neuigkeit für dich",
+    update_default_notes: "Schau es dir an, wann immer du möchtest",
+    update_button: "Ansehen",
 
     bnav_morning: "Morgen",
     bnav_breath: "Atem",
@@ -1072,9 +1072,9 @@ export const EXTRA_LANGS = {
     sakin_intro_skip: "Pular",
     add_birth_info: "Adicionar Dados de Nascimento",
 
-    update_new_version: "Nova versão disponível",
-    update_default_notes: "Novos recursos e melhorias",
-    update_button: "Atualizar",
+    update_new_version: "Uma novidade para você",
+    update_default_notes: "Dê uma olhada quando quiser",
+    update_button: "Ver",
 
     bnav_morning: "Manhã",
     bnav_breath: "Respiração",
@@ -1671,9 +1671,9 @@ export const EXTRA_LANGS = {
     sakin_intro_skip: "Saltar",
     add_birth_info: "Agregar Datos de Nacimiento",
 
-    update_new_version: "Nueva versión disponible",
-    update_default_notes: "Nuevas funciones y mejoras",
-    update_button: "Actualizar",
+    update_new_version: "Algo nuevo para ti",
+    update_default_notes: "Échale un vistazo cuando quieras",
+    update_button: "Ver",
 
     bnav_morning: "Mañana",
     bnav_breath: "Respiración",
@@ -2346,9 +2346,9 @@ export const EXTRA_LANGS = {
     sakin_intro_skip: "Passer",
     add_birth_info: "Ajouter les Informations de Naissance",
 
-    update_new_version: "Nouvelle version disponible",
-    update_default_notes: "Nouvelles fonctionnalités et améliorations",
-    update_button: "Mettre à jour",
+    update_new_version: "Une petite nouveauté pour toi",
+    update_default_notes: "Jette un œil quand tu veux",
+    update_button: "Découvrir",
 
     bnav_morning: "Matin",
     bnav_breath: "Respiration",
@@ -3017,9 +3017,9 @@ export const EXTRA_LANGS = {
     sakin_intro_skip: "スキップ",
     add_birth_info: "出生情報を追加",
 
-    update_new_version: "新バージョン利用可能",
-    update_default_notes: "新機能と改善",
-    update_button: "更新",
+    update_new_version: "あなたに小さな新着があります",
+    update_default_notes: "気が向いたときにご覧ください",
+    update_button: "見てみる",
 
     bnav_morning: "朝",
     bnav_breath: "呼吸",
