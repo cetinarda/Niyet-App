@@ -1,4 +1,8 @@
 // Taş-başına benzersiz çeviriler: name + dailyMessage + howToUse + affirmation.
 // Anahtar = stone.id. Batch'ler hâlinde dolar.
 // Şema: { s001: { de:{name,dailyMessage,howToUse,affirmation}, es:{...}, ... } }
-export const SENTENCES = {};
+import { BATCH01 } from './sentences/batch01.mjs';
+
+export const SENTENCES = {
+  ...BATCH01,
+};
