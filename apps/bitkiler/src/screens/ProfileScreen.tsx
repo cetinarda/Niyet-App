@@ -766,14 +766,23 @@ export function ProfileScreen() {
         </TouchableOpacity>
 
         <View style={styles.familyGrid}>
-          {[
-            { name: t('profile.sakinFamily.apps.animalGuidance'), symbol: '⊕', desc: t('profile.sakinFamily.appDescs.animalGuidance'), active: true,  onPress: () => postToHost({ type: 'sakin-open-embed', app: 'hayvan' }, 'https://sakinhayvan.netlify.app/') },
-            { name: t('profile.sakinFamily.apps.myths'),          symbol: '⚡', desc: t('profile.sakinFamily.appDescs.myths'),          active: true,  onPress: () => postToHost({ type: 'sakin-open-embed', app: 'mitler' },  'https://sakinmitler.netlify.app/') },
-            { name: t('profile.sakinFamily.apps.humanDesign'),    symbol: '◉', desc: t('profile.sakinFamily.appDescs.humanDesign'),    active: true,  onPress: () => postToHost({ type: 'sakin-open-embed', app: 'tasarim' }, 'https://sakindesign.netlify.app/') },
-            { name: t('profile.sakinFamily.apps.stoneGuidance'),  symbol: '◈', desc: t('profile.sakinFamily.appDescs.stoneGuidance'),  active: true,  onPress: undefined },
-            { name: t('profile.sakinFamily.apps.plantGuidance'),  symbol: '✿', desc: t('profile.sakinFamily.appDescs.plantGuidance'),  active: false, onPress: undefined },
-            { name: t('profile.sakinFamily.apps.numerology'),     symbol: '◎', desc: t('profile.sakinFamily.appDescs.numerology'),     active: false, onPress: undefined },
-          ].map(app => (
+          {(() => {
+            // Uniform aile menüsü: açık app (aktif, en üstte) → diğerleri sırayla tıklanabilir. Numeroloji yok.
+            const ALL = [
+              { host: 'hayvan',   name: 'Sakin Hayvan',   symbol: '⊕' },
+              { host: 'mitler',   name: 'Sakin Mitler',   symbol: '⚡' },
+              { host: 'tasarim',  name: 'Sakin Tasarım',  symbol: '◉' },
+              { host: 'taslar',   name: 'Sakin Taşlar',   symbol: '◈' },
+              { host: 'bitkiler', name: 'Sakin Bitkiler', symbol: '✿' },
+            ];
+            const CURRENT = 'bitkiler';
+            return ALL.slice()
+              .sort((a, b) => (a.host === CURRENT ? 0 : 1) - (b.host === CURRENT ? 0 : 1))
+              .map(a => ({
+                name: a.name, symbol: a.symbol, desc: '', active: true,
+                onPress: a.host === CURRENT ? undefined : () => postToHost({ type: 'sakin-open-embed', app: a.host }, ''),
+              }));
+          })().map(app => (
             <TouchableOpacity
               key={app.name}
               style={[styles.familyCard, app.active && styles.familyCardActive]}

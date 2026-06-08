@@ -687,60 +687,42 @@ export function ProfileScreen() {
         </TouchableOpacity>
 
         <View style={styles.familyGrid}>
-          {[
-            // Aktif uygulamalar üstte: bu app (Mitler) → Hayvan → Human Design.
-            // Sonra yakında gelecek olanlar. Hayvan ve HD host'a postMessage ile
-            // in-app açılır (eski netlify linki değil) — Hayvan app'indeki davranışın aynısı.
-            { key: 'mitler',      symbol: '⚡', active: true,  current: true,  embed: '',        url: '' },
-            { key: 'hayvan',      symbol: '⊕', active: true,  current: false, embed: 'hayvan',  url: 'https://sakinhayvan.netlify.app/' },
-            { key: 'hd',          symbol: '◉', active: true,  current: false, embed: 'tasarim', url: 'https://sakindesign.netlify.app/' },
-            { key: 'tas',         symbol: '◈', active: false, current: false, embed: '',        url: '' },
-            { key: 'bitki',       symbol: '✿', active: false, current: false, embed: '',        url: '' },
-            { key: 'numeroloji',  symbol: '◎', active: false, current: false, embed: '',        url: '' },
-          ].map(app => {
-            const name = t(`family.app.${app.key}.name` as any);
-            const desc = t(`family.app.${app.key}.desc` as any);
-            const isClickable = app.active && !app.current && !!app.url;
-            const Wrapper: any = isClickable ? TouchableOpacity : View;
-            return (
-              <Wrapper
-                key={app.key}
-                style={[styles.familyCard, app.active && styles.familyCardActive]}
-                {...(isClickable
-                  ? { onPress: () => postToHost({ type: 'sakin-open-embed', app: app.embed || app.key }, app.url), activeOpacity: 0.75 }
-                  : {})}
-              >
-                <Text style={[styles.familySymbol, app.active && { color: Colors.teal }]}>
-                  {app.symbol}
+          {(() => {
+            // Uniform aile menüsü: açık app (aktif, en üstte) → diğerleri sırayla tıklanabilir. Numeroloji yok.
+            const ALL = [
+              { host: 'hayvan',   name: 'Sakin Hayvan',   symbol: '⊕' },
+              { host: 'mitler',   name: 'Sakin Mitler',   symbol: '⚡' },
+              { host: 'tasarim',  name: 'Sakin Tasarım',  symbol: '◉' },
+              { host: 'taslar',   name: 'Sakin Taşlar',   symbol: '◈' },
+              { host: 'bitkiler', name: 'Sakin Bitkiler', symbol: '✿' },
+            ];
+            const CURRENT = 'mitler';
+            return ALL.slice()
+              .sort((a, b) => (a.host === CURRENT ? 0 : 1) - (b.host === CURRENT ? 0 : 1))
+              .map(a => ({
+                name: a.name, symbol: a.symbol, desc: '', active: true,
+                onPress: a.host === CURRENT ? undefined : () => postToHost({ type: 'sakin-open-embed', app: a.host }, ''),
+              }));
+          })().map(app => (
+            <TouchableOpacity
+              key={app.name}
+              style={[styles.familyCard, app.active && styles.familyCardActive]}
+              onPress={app.onPress}
+              activeOpacity={app.onPress ? 0.7 : 1}
+              disabled={!app.onPress && !app.active}
+            >
+              <Text style={[styles.familySymbol, app.active && { color: Colors.teal }]}>{app.symbol}</Text>
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.familyName, app.active && { color: Colors.tealLight }]}>{app.name}</Text>
+                <Text style={styles.familyDesc}>{app.desc}</Text>
+              </View>
+              <View style={[styles.familyBadge, { borderColor: Colors.teal + '60' }]}>
+                <Text style={[styles.familyBadgeText, { color: Colors.teal }]}>
+                  {app.onPress ? '→' : t('family.badge.active')}
                 </Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={[styles.familyName, app.active && { color: Colors.tealLight }]}>
-                    {name}
-                  </Text>
-                  <Text style={styles.familyDesc}>{desc}</Text>
-                </View>
-                {isClickable && (
-                  <View style={[styles.familyBadge, styles.familyBadgeWeb]}>
-                    <Text style={[styles.familyBadgeText, { color: Colors.textMuted }]}>
-                      {t('family.webBadge')}
-                    </Text>
-                  </View>
-                )}
-                {app.active ? (
-                  <View style={[styles.familyBadge, { borderColor: Colors.teal + '60' }]}>
-                    <Text style={[styles.familyBadgeText, { color: Colors.teal }]}>
-                      {t('family.badge.active')}
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.familyBadge}>
-                    <Text style={styles.familyBadgeText}>{t('family.badge.soon')}</Text>
-                  </View>
-                )}
-                {isClickable && <Text style={styles.familyMasterArrow}>→</Text>}
-              </Wrapper>
-            );
-          })}
+              </View>
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
 
