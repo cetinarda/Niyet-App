@@ -49,6 +49,10 @@ const TXT = {
   openDetail:  { tr:'Sayfasını aç ›', en:'Open its page ›', de:'Seite öffnen ›', es:'Abrir su página ›', pt:'Abrir a página ›', fr:'Ouvrir sa page ›', ja:'ページを開く ›' },
 };
 
+// Netlify fonksiyon tabanı: web'de (https sakin.life) göreceli; iOS'ta (capacitor://)
+// yerel sunucu değil sakin.life'a mutlak URL ile git (host App.jsx ile aynı mantık).
+const SAKIN_API = (typeof window !== 'undefined' && /^https?:/.test(window.location.protocol)) ? '' : 'https://sakin.life';
+
 // İsim normalizasyonu (eşleştirme için): küçült, aksan/noktalama temizle.
 function _norm(s: string): string {
   return (s || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9 ]/gi, ' ').replace(/\s+/g, ' ').trim();
@@ -114,7 +118,7 @@ export function AnimalsHubScreen() {
             img.onerror = reject; img.src = URL.createObjectURL(file);
           });
           const lang = (typeof localStorage !== 'undefined' && localStorage.getItem('sakin_lang')) || 'tr';
-          const r = await fetch('/.netlify/functions/identify', {
+          const r = await fetch(SAKIN_API + '/.netlify/functions/identify', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ image: dataUrl, type: PHOTO_KIND, lang }),
           });
