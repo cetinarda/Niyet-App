@@ -5,10 +5,12 @@ import { BATCH01 } from './sentences/batch01.mjs';
 import { BATCH02 } from './sentences/batch02.mjs';
 import { BATCH03 } from './sentences/batch03.mjs';
 import { BATCH04 } from './sentences/batch04.mjs';
+import { BATCH05 } from './sentences/batch05.mjs';
 
 export const SENTENCES = {
   ...BATCH01,
   ...BATCH02,
   ...BATCH03,
   ...BATCH04,
+  ...BATCH05,
 };
