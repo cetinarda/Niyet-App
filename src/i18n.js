@@ -415,9 +415,9 @@ export const TRANS = {
     add_birth_info: "Doğum Bilgisi Ekle",
 
     // ===== Update banner =====
-    update_new_version: "Yeni sürüm hazır",
-    update_default_notes: "Yeni özellikler ve iyileştirmeler",
-    update_button: "Güncelle",
+    update_new_version: "Sana küçük bir yenilik getirdik",
+    update_default_notes: "Hazır olduğunda göz atabilirsin",
+    update_button: "Göz at",
 
     // ===== Bottom nav labels =====
     bnav_morning: "Sabah",
@@ -1123,9 +1123,9 @@ export const TRANS = {
     add_birth_info: "Add Birth Info",
 
     // ===== Update banner =====
-    update_new_version: "New version available",
-    update_default_notes: "New features and improvements",
-    update_button: "Update",
+    update_new_version: "A little something new for you",
+    update_default_notes: "Take a look whenever you're ready",
+    update_button: "Take a look",
 
     // ===== Bottom nav labels =====
     bnav_morning: "Morning",
