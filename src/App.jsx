@@ -7753,7 +7753,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
-                <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
+                <div style={{ fontSize:17,fontWeight:300,letterSpacing:0.3,lineHeight:1.45,marginBottom:10,color:"#ffffff" }}>{t("paid_app_plan")}</div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
                 <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
@@ -7842,7 +7842,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
-                <div style={{ fontSize:19,fontWeight:300,letterSpacing:2,marginBottom:8,color:"#ffffff" }}>{t("paid_app_plan")}</div>
+                <div style={{ fontSize:17,fontWeight:300,letterSpacing:0.3,lineHeight:1.45,marginBottom:10,color:"#ffffff" }}>{t("paid_app_plan")}</div>
                 <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("paid_app_price")}</div>
                 <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:6 }}>{t("paid_app_price_sub")}</div>
                 <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
