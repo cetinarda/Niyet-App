@@ -54,7 +54,37 @@
     "originJa": "ブラジル、ウルグアイ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, Uruguai"
+    "originPt": "Brasil, Uruguai",
+    "propertiesDe": [
+      "Intuition",
+      "Schutz",
+      "Frieden",
+      "Klarheit"
+    ],
+    "propertiesEs": [
+      "intuición",
+      "protección",
+      "paz",
+      "claridad"
+    ],
+    "propertiesFr": [
+      "intuition",
+      "protection",
+      "paix",
+      "clarté"
+    ],
+    "propertiesJa": [
+      "直感",
+      "守護",
+      "平安",
+      "明晰"
+    ],
+    "propertiesPt": [
+      "intuição",
+      "proteção",
+      "paz",
+      "clareza"
+    ]
   },
   {
     "id": "s002",
@@ -111,7 +141,37 @@
     "originJa": "アイスランド、トルコ、メキシコ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Islândia, Turquia, México"
+    "originPt": "Islândia, Turquia, México",
+    "propertiesDe": [
+      "Schutz",
+      "Transformation",
+      "Wahrheit",
+      "Reinigung"
+    ],
+    "propertiesEs": [
+      "protección",
+      "transformación",
+      "verdad",
+      "limpieza"
+    ],
+    "propertiesFr": [
+      "protection",
+      "transformation",
+      "vérité",
+      "purification"
+    ],
+    "propertiesJa": [
+      "守護",
+      "変容",
+      "真実",
+      "清め"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "transformação",
+      "verdade",
+      "limpeza"
+    ]
   },
   {
     "id": "s003",
@@ -168,7 +228,37 @@
     "originJa": "ブラジル、マダガスカル",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Brasil, Madagáscar"
+    "originPt": "Brasil, Madagáscar",
+    "propertiesDe": [
+      "bedingungslose Liebe",
+      "Heilung",
+      "Empathie",
+      "Vergebung"
+    ],
+    "propertiesEs": [
+      "amor incondicional",
+      "sanación",
+      "empatía",
+      "perdón"
+    ],
+    "propertiesFr": [
+      "amour inconditionnel",
+      "guérison",
+      "empathie",
+      "pardon"
+    ],
+    "propertiesJa": [
+      "無条件の愛",
+      "癒し",
+      "共感",
+      "許し"
+    ],
+    "propertiesPt": [
+      "amor incondicional",
+      "cura",
+      "empatia",
+      "perdão"
+    ]
   },
   {
     "id": "s004",
@@ -225,7 +315,37 @@
     "originJa": "カナダ、フィンランド",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho",
-    "originPt": "Canadá, Finlândia"
+    "originPt": "Canadá, Finlândia",
+    "propertiesDe": [
+      "Magie",
+      "Intuition",
+      "Transformation",
+      "geheimnisvolle Kraft"
+    ],
+    "propertiesEs": [
+      "magia",
+      "intuición",
+      "transformación",
+      "poder misterioso"
+    ],
+    "propertiesFr": [
+      "magie",
+      "intuition",
+      "transformation",
+      "pouvoir mystérieux"
+    ],
+    "propertiesJa": [
+      "魔法",
+      "直感",
+      "変容",
+      "神秘的な力"
+    ],
+    "propertiesPt": [
+      "magia",
+      "intuição",
+      "transformação",
+      "poder misterioso"
+    ]
   },
   {
     "id": "s005",
@@ -282,7 +402,37 @@
     "originJa": "トルコ、イラン、アフガニスタン",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Turquia, Irão, Afeganistão"
+    "originPt": "Turquia, Irão, Afeganistão",
+    "propertiesDe": [
+      "Schutz",
+      "Kommunikation",
+      "Weisheit",
+      "Freundschaft"
+    ],
+    "propertiesEs": [
+      "protección",
+      "comunicación",
+      "sabiduría",
+      "amistad"
+    ],
+    "propertiesFr": [
+      "protection",
+      "communication",
+      "sagesse",
+      "amitié"
+    ],
+    "propertiesJa": [
+      "守護",
+      "コミュニケーション",
+      "叡智",
+      "友情"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "comunicação",
+      "sabedoria",
+      "amizade"
+    ]
   },
   {
     "id": "s006",
@@ -339,7 +489,37 @@
     "originJa": "ブラジル、オーストラリア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Brasil, Austrália"
+    "originPt": "Brasil, Austrália",
+    "propertiesDe": [
+      "Erdung",
+      "Fokus",
+      "Kraft",
+      "Entschlossenheit"
+    ],
+    "propertiesEs": [
+      "enraizamiento",
+      "enfoque",
+      "fuerza",
+      "determinación"
+    ],
+    "propertiesFr": [
+      "ancrage",
+      "concentration",
+      "force",
+      "détermination"
+    ],
+    "propertiesJa": [
+      "グラウンディング",
+      "集中",
+      "力",
+      "決意"
+    ],
+    "propertiesPt": [
+      "aterramento",
+      "foco",
+      "força",
+      "determinação"
+    ]
   },
   {
     "id": "s007",
@@ -396,7 +576,37 @@
     "originJa": "インド、スリランカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Índia, Sri Lanka"
+    "originPt": "Índia, Sri Lanka",
+    "propertiesDe": [
+      "Intuition",
+      "weibliche Energie",
+      "Empfindsamkeit",
+      "Neuanfänge"
+    ],
+    "propertiesEs": [
+      "intuición",
+      "energía femenina",
+      "sensibilidad",
+      "nuevos comienzos"
+    ],
+    "propertiesFr": [
+      "intuition",
+      "énergie féminine",
+      "sensibilité",
+      "nouveaux départs"
+    ],
+    "propertiesJa": [
+      "直感",
+      "女性的なエネルギー",
+      "感受性",
+      "新たな始まり"
+    ],
+    "propertiesPt": [
+      "intuição",
+      "energia feminina",
+      "sensibilidade",
+      "novos começos"
+    ]
   },
   {
     "id": "s008",
@@ -453,7 +663,37 @@
     "originJa": "アフガニスタン、チリ",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho",
-    "originPt": "Afeganistão, Chile"
+    "originPt": "Afeganistão, Chile",
+    "propertiesDe": [
+      "Weisheit",
+      "Wahrheit",
+      "Ausdruck",
+      "Einsicht"
+    ],
+    "propertiesEs": [
+      "sabiduría",
+      "verdad",
+      "expresión",
+      "perspicacia"
+    ],
+    "propertiesFr": [
+      "sagesse",
+      "vérité",
+      "expression",
+      "discernement"
+    ],
+    "propertiesJa": [
+      "叡智",
+      "真理",
+      "表現",
+      "洞察力"
+    ],
+    "propertiesPt": [
+      "sabedoria",
+      "verdade",
+      "expressão",
+      "discernimento"
+    ]
   },
   {
     "id": "s009",
@@ -510,7 +750,37 @@
     "originJa": "南アフリカ、インド",
     "elementPt": "Fogo",
     "chakraPt": "Plexo Solar",
-    "originPt": "África do Sul, Índia"
+    "originPt": "África do Sul, Índia",
+    "propertiesDe": [
+      "Mut",
+      "Fokus",
+      "Klarheit",
+      "Entschlossenheit"
+    ],
+    "propertiesEs": [
+      "valor",
+      "enfoque",
+      "claridad",
+      "determinación"
+    ],
+    "propertiesFr": [
+      "courage",
+      "concentration",
+      "clarté",
+      "détermination"
+    ],
+    "propertiesJa": [
+      "勇気",
+      "集中",
+      "明晰さ",
+      "決意"
+    ],
+    "propertiesPt": [
+      "coragem",
+      "foco",
+      "clareza",
+      "determinação"
+    ]
   },
   {
     "id": "s010",
@@ -567,7 +837,37 @@
     "originJa": "ブラジル、マダガスカル",
     "elementPt": "Fogo",
     "chakraPt": "Plexo Solar",
-    "originPt": "Brasil, Madagáscar"
+    "originPt": "Brasil, Madagáscar",
+    "propertiesDe": [
+      "Überfluss",
+      "Freude",
+      "Motivation",
+      "Positivität"
+    ],
+    "propertiesEs": [
+      "abundancia",
+      "alegría",
+      "motivación",
+      "positividad"
+    ],
+    "propertiesFr": [
+      "abondance",
+      "joie",
+      "motivation",
+      "positivité"
+    ],
+    "propertiesJa": [
+      "豊かさ",
+      "喜び",
+      "意欲",
+      "前向きさ"
+    ],
+    "propertiesPt": [
+      "abundância",
+      "alegria",
+      "motivação",
+      "positividade"
+    ]
   },
   {
     "id": "s011",
@@ -624,7 +924,37 @@
     "originJa": "モロッコ、メキシコ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Marrocos, México"
+    "originPt": "Marrocos, México",
+    "propertiesDe": [
+      "Reinigung",
+      "Klarheit",
+      "Frieden",
+      "hohe Energie"
+    ],
+    "propertiesEs": [
+      "limpieza",
+      "claridad",
+      "paz",
+      "alta energía"
+    ],
+    "propertiesFr": [
+      "purification",
+      "clarté",
+      "paix",
+      "haute énergie"
+    ],
+    "propertiesJa": [
+      "清め",
+      "明晰さ",
+      "平安",
+      "高いエネルギー"
+    ],
+    "propertiesPt": [
+      "limpeza",
+      "clareza",
+      "paz",
+      "alta energia"
+    ]
   },
   {
     "id": "s012",
@@ -681,7 +1011,37 @@
     "originJa": "トルコ、ブラジル、インド",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Turquia, Brasil, Índia"
+    "originPt": "Turquia, Brasil, Índia",
+    "propertiesDe": [
+      "Kraft",
+      "Mut",
+      "Erdung",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "fuerza",
+      "valor",
+      "enraizamiento",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "force",
+      "courage",
+      "ancrage",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "力",
+      "勇気",
+      "グラウンディング",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "força",
+      "coragem",
+      "aterramento",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s013",
@@ -738,7 +1098,37 @@
     "originJa": "コンゴ、ナミビア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Congo, Namíbia"
+    "originPt": "Congo, Namíbia",
+    "propertiesDe": [
+      "Transformation",
+      "Heilung",
+      "Wandel",
+      "Wachstum"
+    ],
+    "propertiesEs": [
+      "transformación",
+      "sanación",
+      "cambio",
+      "crecimiento"
+    ],
+    "propertiesFr": [
+      "transformation",
+      "guérison",
+      "changement",
+      "croissance"
+    ],
+    "propertiesJa": [
+      "変容",
+      "癒し",
+      "変化",
+      "成長"
+    ],
+    "propertiesPt": [
+      "transformação",
+      "cura",
+      "mudança",
+      "crescimento"
+    ]
   },
   {
     "id": "s014",
@@ -795,7 +1185,37 @@
     "originJa": "インド、ブラジル",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Sacral",
-    "originPt": "Índia, Brasil"
+    "originPt": "Índia, Brasil",
+    "propertiesDe": [
+      "Kreativität",
+      "Leidenschaft",
+      "Energie",
+      "Motivation"
+    ],
+    "propertiesEs": [
+      "creatividad",
+      "pasión",
+      "energía",
+      "motivación"
+    ],
+    "propertiesFr": [
+      "créativité",
+      "passion",
+      "énergie",
+      "motivation"
+    ],
+    "propertiesJa": [
+      "創造性",
+      "情熱",
+      "エネルギー",
+      "意欲"
+    ],
+    "propertiesPt": [
+      "criatividade",
+      "paixão",
+      "energia",
+      "motivação"
+    ]
   },
   {
     "id": "s015",
@@ -852,7 +1272,37 @@
     "originJa": "ブラジル、アフリカ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Brasil, África"
+    "originPt": "Brasil, África",
+    "propertiesDe": [
+      "Schutz",
+      "Schutz vor negativer Energie",
+      "Erdung",
+      "Kraft"
+    ],
+    "propertiesEs": [
+      "protección",
+      "barrera contra energía negativa",
+      "enraizamiento",
+      "fuerza"
+    ],
+    "propertiesFr": [
+      "protection",
+      "barrière contre l’énergie négative",
+      "ancrage",
+      "force"
+    ],
+    "propertiesJa": [
+      "守護",
+      "負のエネルギーの遮断",
+      "グラウンディング",
+      "力"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "barreira contra energia negativa",
+      "aterramento",
+      "força"
+    ]
   },
   {
     "id": "s016",
@@ -909,7 +1359,37 @@
     "originJa": "中国、メキシコ、イングランド",
     "elementPt": "Ar",
     "chakraPt": "Coração e Terceiro Olho",
-    "originPt": "China, México, Inglaterra"
+    "originPt": "China, México, Inglaterra",
+    "propertiesDe": [
+      "Klarheit",
+      "Lernen",
+      "Fokus",
+      "negative Energie absorbieren"
+    ],
+    "propertiesEs": [
+      "claridad",
+      "aprendizaje",
+      "enfoque",
+      "absorber energía negativa"
+    ],
+    "propertiesFr": [
+      "clarté",
+      "apprentissage",
+      "concentration",
+      "absorber l’énergie négative"
+    ],
+    "propertiesJa": [
+      "明晰",
+      "学び",
+      "集中",
+      "負のエネルギーを吸収"
+    ],
+    "propertiesPt": [
+      "clareza",
+      "aprendizagem",
+      "foco",
+      "absorver energia negativa"
+    ]
   },
   {
     "id": "s017",
@@ -966,7 +1446,37 @@
     "originJa": "スペイン、ペルー",
     "elementPt": "Terra",
     "chakraPt": "Plexo Solar",
-    "originPt": "Espanha, Peru"
+    "originPt": "Espanha, Peru",
+    "propertiesDe": [
+      "Überfluss",
+      "Vertrauen",
+      "Entschlossenheit",
+      "Motivation"
+    ],
+    "propertiesEs": [
+      "abundancia",
+      "confianza",
+      "determinación",
+      "motivación"
+    ],
+    "propertiesFr": [
+      "abondance",
+      "confiance",
+      "détermination",
+      "motivation"
+    ],
+    "propertiesJa": [
+      "豊かさ",
+      "信頼",
+      "決意",
+      "意欲"
+    ],
+    "propertiesPt": [
+      "abundância",
+      "confiança",
+      "determinação",
+      "motivação"
+    ]
   },
   {
     "id": "s018",
@@ -1023,7 +1533,37 @@
     "originJa": "オーストラリア、エチオピア",
     "elementPt": "Água",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Austrália, Etiópia"
+    "originPt": "Austrália, Etiópia",
+    "propertiesDe": [
+      "Kreativität",
+      "Intuition",
+      "Gefühl",
+      "Inspiration"
+    ],
+    "propertiesEs": [
+      "creatividad",
+      "intuición",
+      "emoción",
+      "inspiración"
+    ],
+    "propertiesFr": [
+      "créativité",
+      "intuition",
+      "émotion",
+      "inspiration"
+    ],
+    "propertiesJa": [
+      "創造性",
+      "直感",
+      "感情",
+      "インスピレーション"
+    ],
+    "propertiesPt": [
+      "criatividade",
+      "intuição",
+      "emoção",
+      "inspiração"
+    ]
   },
   {
     "id": "s019",
@@ -1080,7 +1620,37 @@
     "originJa": "ブラジル、カナダ",
     "elementPt": "Ar",
     "chakraPt": "Garganta e Terceiro Olho",
-    "originPt": "Brasil, Canadá"
+    "originPt": "Brasil, Canadá",
+    "propertiesDe": [
+      "Vernunft",
+      "Kommunikation",
+      "Ehrlichkeit",
+      "Ruhe"
+    ],
+    "propertiesEs": [
+      "lógica",
+      "comunicación",
+      "honestidad",
+      "calma"
+    ],
+    "propertiesFr": [
+      "logique",
+      "communication",
+      "honnêteté",
+      "calme"
+    ],
+    "propertiesJa": [
+      "論理",
+      "コミュニケーション",
+      "誠実さ",
+      "落ち着き"
+    ],
+    "propertiesPt": [
+      "lógica",
+      "comunicação",
+      "honestidade",
+      "calma"
+    ]
   },
   {
     "id": "s020",
@@ -1137,7 +1707,37 @@
     "originJa": "世界中",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Em todo o mundo"
+    "originPt": "Em todo o mundo",
+    "propertiesDe": [
+      "Erdung",
+      "Geduld",
+      "Sicherheit",
+      "Kraft"
+    ],
+    "propertiesEs": [
+      "enraizamiento",
+      "paciencia",
+      "seguridad",
+      "fuerza"
+    ],
+    "propertiesFr": [
+      "ancrage",
+      "patience",
+      "sécurité",
+      "force"
+    ],
+    "propertiesJa": [
+      "グラウンディング",
+      "忍耐",
+      "安全",
+      "力"
+    ],
+    "propertiesPt": [
+      "aterramento",
+      "paciência",
+      "segurança",
+      "força"
+    ]
   },
   {
     "id": "s021",
@@ -1194,7 +1794,37 @@
     "originJa": "ブラジル、パキスタン",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Brasil, Paquistão"
+    "originPt": "Brasil, Paquistão",
+    "propertiesDe": [
+      "Mut",
+      "Kommunikation",
+      "Transparenz",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "valor",
+      "comunicación",
+      "transparencia",
+      "paz"
+    ],
+    "propertiesFr": [
+      "courage",
+      "communication",
+      "transparence",
+      "paix"
+    ],
+    "propertiesJa": [
+      "勇気",
+      "コミュニケーション",
+      "透明性",
+      "平安"
+    ],
+    "propertiesPt": [
+      "coragem",
+      "comunicação",
+      "transparência",
+      "paz"
+    ]
   },
   {
     "id": "s022",
@@ -1251,7 +1881,37 @@
     "originJa": "世界中",
     "elementPt": "Todos os elementos",
     "chakraPt": "Todos os Chakras",
-    "originPt": "Em todo o mundo"
+    "originPt": "Em todo o mundo",
+    "propertiesDe": [
+      "Verstärker",
+      "Klarheit",
+      "Heilung",
+      "Energie stärken"
+    ],
+    "propertiesEs": [
+      "amplificador",
+      "claridad",
+      "sanación",
+      "fortalecer la energía"
+    ],
+    "propertiesFr": [
+      "amplificateur",
+      "clarté",
+      "guérison",
+      "renforcer l’énergie"
+    ],
+    "propertiesJa": [
+      "増幅",
+      "明晰",
+      "癒し",
+      "エネルギー強化"
+    ],
+    "propertiesPt": [
+      "amplificador",
+      "clareza",
+      "cura",
+      "fortalecer a energia"
+    ]
   },
   {
     "id": "s023",
@@ -1308,7 +1968,37 @@
     "originJa": "ロシア、スウェーデン",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Rússia, Suécia"
+    "originPt": "Rússia, Suécia",
+    "propertiesDe": [
+      "Vergebung",
+      "Mitgefühl",
+      "emotionale Heilung",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "perdón",
+      "compasión",
+      "sanación emocional",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "pardon",
+      "compassion",
+      "guérison émotionnelle",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "許し",
+      "慈悲",
+      "感情の癒し",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "perdão",
+      "compaixão",
+      "cura emocional",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s024",
@@ -1365,7 +2055,37 @@
     "originJa": "インド、アフリカ",
     "elementPt": "Terra",
     "chakraPt": "Plexo Solar",
-    "originPt": "Índia, África"
+    "originPt": "Índia, África",
+    "propertiesDe": [
+      "Fortschritt",
+      "neue Möglichkeiten",
+      "Reise",
+      "Entdeckung"
+    ],
+    "propertiesEs": [
+      "progreso",
+      "nuevas oportunidades",
+      "viaje",
+      "descubrimiento"
+    ],
+    "propertiesFr": [
+      "progrès",
+      "nouvelles opportunités",
+      "voyage",
+      "découverte"
+    ],
+    "propertiesJa": [
+      "前進",
+      "新たな機会",
+      "旅",
+      "発見"
+    ],
+    "propertiesPt": [
+      "progresso",
+      "novas oportunidades",
+      "jornada",
+      "descoberta"
+    ]
   },
   {
     "id": "s025",
@@ -1422,7 +2142,37 @@
     "originJa": "メキシコ、アイスランド",
     "elementPt": "Fogo",
     "chakraPt": "Plexo Solar",
-    "originPt": "México, Islândia"
+    "originPt": "México, Islândia",
+    "propertiesDe": [
+      "Energie",
+      "Motivation",
+      "Positivität",
+      "Lernen"
+    ],
+    "propertiesEs": [
+      "energía",
+      "motivación",
+      "positividad",
+      "aprendizaje"
+    ],
+    "propertiesFr": [
+      "énergie",
+      "motivation",
+      "positivité",
+      "apprentissage"
+    ],
+    "propertiesJa": [
+      "エネルギー",
+      "意欲",
+      "前向きさ",
+      "学び"
+    ],
+    "propertiesPt": [
+      "energia",
+      "motivação",
+      "positividade",
+      "aprendizagem"
+    ]
   },
   {
     "id": "s026",
@@ -1479,7 +2229,37 @@
     "originJa": "スコットランド、ブラジル",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Escócia, Brasil"
+    "originPt": "Escócia, Brasil",
+    "propertiesDe": [
+      "Stressabbau",
+      "Wandlung negativer Energie",
+      "Erdung",
+      "Klarheit"
+    ],
+    "propertiesEs": [
+      "reducción del estrés",
+      "transmutación de energía negativa",
+      "enraizamiento",
+      "claridad"
+    ],
+    "propertiesFr": [
+      "réduction du stress",
+      "transmutation de l’énergie négative",
+      "ancrage",
+      "clarté"
+    ],
+    "propertiesJa": [
+      "ストレス軽減",
+      "負のエネルギーの変換",
+      "グラウンディング",
+      "明晰"
+    ],
+    "propertiesPt": [
+      "redução do estresse",
+      "transmutação de energia negativa",
+      "aterramento",
+      "clareza"
+    ]
   },
   {
     "id": "s027",
@@ -1536,7 +2316,37 @@
     "originJa": "オーストラリア、南アフリカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Austrália, África do Sul"
+    "originPt": "Austrália, África do Sul",
+    "propertiesDe": [
+      "Frieden",
+      "Angstlinderung",
+      "Vorahnung",
+      "Freude"
+    ],
+    "propertiesEs": [
+      "paz",
+      "alivio de la ansiedad",
+      "presentimiento",
+      "alegría"
+    ],
+    "propertiesFr": [
+      "paix",
+      "apaisement de l’anxiété",
+      "pressentiment",
+      "joie"
+    ],
+    "propertiesJa": [
+      "平安",
+      "不安の緩和",
+      "予感",
+      "喜び"
+    ],
+    "propertiesPt": [
+      "paz",
+      "alívio da ansiedade",
+      "pressentimento",
+      "alegria"
+    ]
   },
   {
     "id": "s028",
@@ -1593,7 +2403,37 @@
     "originJa": "ブラジル、ネパール",
     "elementPt": "Ar",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Brasil, Nepal"
+    "originPt": "Brasil, Nepal",
+    "propertiesDe": [
+      "Gleichgewicht",
+      "Kommunikation",
+      "Intuition",
+      "Harmonie"
+    ],
+    "propertiesEs": [
+      "equilibrio",
+      "comunicación",
+      "intuición",
+      "armonía"
+    ],
+    "propertiesFr": [
+      "équilibre",
+      "communication",
+      "intuition",
+      "harmonie"
+    ],
+    "propertiesJa": [
+      "バランス",
+      "コミュニケーション",
+      "直感",
+      "調和"
+    ],
+    "propertiesPt": [
+      "equilíbrio",
+      "comunicação",
+      "intuição",
+      "harmonia"
+    ]
   },
   {
     "id": "s029",
@@ -1650,7 +2490,37 @@
     "originJa": "中国、ニュージーランド",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "China, Nova Zelândia"
+    "originPt": "China, Nova Zelândia",
+    "propertiesDe": [
+      "Glück",
+      "Gleichgewicht",
+      "Harmonie",
+      "Weisheit"
+    ],
+    "propertiesEs": [
+      "suerte",
+      "equilibrio",
+      "armonía",
+      "sabiduría"
+    ],
+    "propertiesFr": [
+      "chance",
+      "équilibre",
+      "harmonie",
+      "sagesse"
+    ],
+    "propertiesJa": [
+      "幸運",
+      "バランス",
+      "調和",
+      "叡智"
+    ],
+    "propertiesPt": [
+      "sorte",
+      "equilíbrio",
+      "harmonia",
+      "sabedoria"
+    ]
   },
   {
     "id": "s030",
@@ -1707,7 +2577,37 @@
     "originJa": "モロッコ、フランス、中国",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho",
-    "originPt": "Marrocos, França, China"
+    "originPt": "Marrocos, França, China",
+    "propertiesDe": [
+      "Einsicht",
+      "Intuition",
+      "spirituelle Öffnung",
+      "tiefes Verständnis"
+    ],
+    "propertiesEs": [
+      "perspicacia",
+      "intuición",
+      "apertura espiritual",
+      "comprensión profunda"
+    ],
+    "propertiesFr": [
+      "discernement",
+      "intuition",
+      "ouverture spirituelle",
+      "compréhension profonde"
+    ],
+    "propertiesJa": [
+      "洞察力",
+      "直感",
+      "霊的な開花",
+      "深い理解"
+    ],
+    "propertiesPt": [
+      "discernimento",
+      "intuição",
+      "abertura espiritual",
+      "compreensão profunda"
+    ]
   },
   {
     "id": "s031",
@@ -1764,7 +2664,37 @@
     "originJa": "マダガスカル、ブラジル",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Madagáscar, Brasil"
+    "originPt": "Madagáscar, Brasil",
+    "propertiesDe": [
+      "göttliche Liebe",
+      "Mitgefühl",
+      "Heilung",
+      "bedingungslose Annahme"
+    ],
+    "propertiesEs": [
+      "amor divino",
+      "compasión",
+      "sanación",
+      "aceptación incondicional"
+    ],
+    "propertiesFr": [
+      "amour divin",
+      "compassion",
+      "guérison",
+      "acceptation inconditionnelle"
+    ],
+    "propertiesJa": [
+      "神聖な愛",
+      "慈悲",
+      "癒し",
+      "無条件の受容"
+    ],
+    "propertiesPt": [
+      "amor divino",
+      "compaixão",
+      "cura",
+      "aceitação incondicional"
+    ]
   },
   {
     "id": "s032",
@@ -1821,7 +2751,37 @@
     "originJa": "マダガスカル、リビア",
     "elementPt": "Ar",
     "chakraPt": "Garganta e Chakra Coroa",
-    "originPt": "Madagáscar, Líbia"
+    "originPt": "Madagáscar, Líbia",
+    "propertiesDe": [
+      "Frieden",
+      "Engelkommunikation",
+      "hohe Intuition",
+      "Ruhe"
+    ],
+    "propertiesEs": [
+      "paz",
+      "comunicación angelical",
+      "alta intuición",
+      "calma"
+    ],
+    "propertiesFr": [
+      "paix",
+      "communication angélique",
+      "intuition élevée",
+      "calme"
+    ],
+    "propertiesJa": [
+      "平安",
+      "天使との交信",
+      "高い直感",
+      "落ち着き"
+    ],
+    "propertiesPt": [
+      "paz",
+      "comunicação angelical",
+      "alta intuição",
+      "calma"
+    ]
   },
   {
     "id": "s033",
@@ -1878,7 +2838,37 @@
     "originJa": "ブラジル、アフリカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Brasil, África"
+    "originPt": "Brasil, África",
+    "propertiesDe": [
+      "Liebe",
+      "Freude",
+      "kindliche Seele",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "amor",
+      "alegría",
+      "alma de niño",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "amour",
+      "joie",
+      "âme d’enfant",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "愛",
+      "喜び",
+      "子どもの心",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "amor",
+      "alegria",
+      "alma de criança",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s067",
@@ -1943,7 +2933,37 @@
     "originJa": "インド、チェコ、ブラジル",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Índia, Chéquia, Brasil"
+    "originPt": "Índia, Chéquia, Brasil",
+    "propertiesDe": [
+      "Leidenschaft",
+      "Vitalität",
+      "Mut",
+      "Hingabe"
+    ],
+    "propertiesEs": [
+      "pasión",
+      "vitalidad",
+      "valor",
+      "compromiso"
+    ],
+    "propertiesFr": [
+      "passion",
+      "vitalité",
+      "courage",
+      "engagement"
+    ],
+    "propertiesJa": [
+      "情熱",
+      "活力",
+      "勇気",
+      "献身"
+    ],
+    "propertiesPt": [
+      "paixão",
+      "vitalidade",
+      "coragem",
+      "compromisso"
+    ]
   },
   {
     "id": "s068",
@@ -2005,7 +3025,37 @@
     "originJa": "ボリビア",
     "elementPt": "Ar",
     "chakraPt": "Coroa e Plexo Solar",
-    "originPt": "Bolívia"
+    "originPt": "Bolívia",
+    "propertiesDe": [
+      "Gleichgewicht",
+      "Klarheit",
+      "Kreativität",
+      "Harmonie"
+    ],
+    "propertiesEs": [
+      "equilibrio",
+      "claridad",
+      "creatividad",
+      "armonía"
+    ],
+    "propertiesFr": [
+      "équilibre",
+      "clarté",
+      "créativité",
+      "harmonie"
+    ],
+    "propertiesJa": [
+      "バランス",
+      "明晰",
+      "創造性",
+      "調和"
+    ],
+    "propertiesPt": [
+      "equilíbrio",
+      "clareza",
+      "criatividade",
+      "harmonia"
+    ]
   },
   {
     "id": "s069",
@@ -2069,7 +3119,37 @@
     "originJa": "パキスタン、エジプト、アメリカ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Paquistão, Egito, EUA"
+    "originPt": "Paquistão, Egito, EUA",
+    "propertiesDe": [
+      "Erneuerung",
+      "Überfluss",
+      "Dankbarkeit",
+      "Wachstum"
+    ],
+    "propertiesEs": [
+      "renovación",
+      "abundancia",
+      "gratitud",
+      "crecimiento"
+    ],
+    "propertiesFr": [
+      "renouveau",
+      "abondance",
+      "gratitude",
+      "croissance"
+    ],
+    "propertiesJa": [
+      "再生",
+      "豊かさ",
+      "感謝",
+      "成長"
+    ],
+    "propertiesPt": [
+      "renovação",
+      "abundância",
+      "gratidão",
+      "crescimento"
+    ]
   },
   {
     "id": "s070",
@@ -2133,7 +3213,37 @@
     "originJa": "ブラジル、パキスタン、ナイジェリア",
     "elementPt": "Fogo",
     "chakraPt": "Plexo Solar",
-    "originPt": "Brasil, Paquistão, Nigéria"
+    "originPt": "Brasil, Paquistão, Nigéria",
+    "propertiesDe": [
+      "Absicht",
+      "Überfluss",
+      "Freude",
+      "Selbstvertrauen"
+    ],
+    "propertiesEs": [
+      "intención",
+      "abundancia",
+      "alegría",
+      "autoconfianza"
+    ],
+    "propertiesFr": [
+      "intention",
+      "abondance",
+      "joie",
+      "confiance en soi"
+    ],
+    "propertiesJa": [
+      "意図",
+      "豊かさ",
+      "喜び",
+      "自信"
+    ],
+    "propertiesPt": [
+      "intenção",
+      "abundância",
+      "alegria",
+      "autoconfiança"
+    ]
   },
   {
     "id": "s071",
@@ -2197,7 +3307,37 @@
     "originJa": "ブラジル、スリランカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Brasil, Sri Lanka"
+    "originPt": "Brasil, Sri Lanka",
+    "propertiesDe": [
+      "Ausdruck",
+      "Klarheit",
+      "Ruhe",
+      "Wahrheit"
+    ],
+    "propertiesEs": [
+      "expresión",
+      "claridad",
+      "calma",
+      "verdad"
+    ],
+    "propertiesFr": [
+      "expression",
+      "clarté",
+      "calme",
+      "vérité"
+    ],
+    "propertiesJa": [
+      "表現",
+      "明晰さ",
+      "落ち着き",
+      "真理"
+    ],
+    "propertiesPt": [
+      "expressão",
+      "clareza",
+      "calma",
+      "verdade"
+    ]
   },
   {
     "id": "s072",
@@ -2261,7 +3401,37 @@
     "originJa": "コロンビア、ザンビア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Colômbia, Zâmbia"
+    "originPt": "Colômbia, Zâmbia",
+    "propertiesDe": [
+      "Liebe",
+      "Treue",
+      "Weisheit",
+      "Fülle"
+    ],
+    "propertiesEs": [
+      "amor",
+      "lealtad",
+      "sabiduría",
+      "abundancia"
+    ],
+    "propertiesFr": [
+      "amour",
+      "loyauté",
+      "sagesse",
+      "abondance"
+    ],
+    "propertiesJa": [
+      "愛",
+      "忠誠",
+      "叡智",
+      "豊穣"
+    ],
+    "propertiesPt": [
+      "amor",
+      "lealdade",
+      "sabedoria",
+      "fartura"
+    ]
   },
   {
     "id": "s073",
@@ -2325,7 +3495,37 @@
     "originJa": "ミャンマー、スリランカ、タイ",
     "elementPt": "Fogo",
     "chakraPt": "Raiz e Chakra Cardíaco",
-    "originPt": "Mianmar, Sri Lanka, Tailândia"
+    "originPt": "Mianmar, Sri Lanka, Tailândia",
+    "propertiesDe": [
+      "Leidenschaft",
+      "Lebenskraft",
+      "Mut",
+      "Führung"
+    ],
+    "propertiesEs": [
+      "pasión",
+      "fuerza vital",
+      "valor",
+      "liderazgo"
+    ],
+    "propertiesFr": [
+      "passion",
+      "force vitale",
+      "courage",
+      "leadership"
+    ],
+    "propertiesJa": [
+      "情熱",
+      "生命力",
+      "勇気",
+      "リーダーシップ"
+    ],
+    "propertiesPt": [
+      "paixão",
+      "força vital",
+      "coragem",
+      "liderança"
+    ]
   },
   {
     "id": "s074",
@@ -2390,7 +3590,37 @@
     "originJa": "スリランカ、マダガスカル、オーストラリア",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho",
-    "originPt": "Sri Lanka, Madagáscar, Austrália"
+    "originPt": "Sri Lanka, Madagáscar, Austrália",
+    "propertiesDe": [
+      "Weisheit",
+      "Treue",
+      "spirituelle Disziplin",
+      "Wahrheit"
+    ],
+    "propertiesEs": [
+      "sabiduría",
+      "lealtad",
+      "disciplina espiritual",
+      "verdad"
+    ],
+    "propertiesFr": [
+      "sagesse",
+      "loyauté",
+      "discipline spirituelle",
+      "vérité"
+    ],
+    "propertiesJa": [
+      "叡智",
+      "忠誠",
+      "霊的な規律",
+      "真理"
+    ],
+    "propertiesPt": [
+      "sabedoria",
+      "lealdade",
+      "disciplina espiritual",
+      "verdade"
+    ]
   },
   {
     "id": "s075",
@@ -2454,7 +3684,37 @@
     "originJa": "インド、スリランカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Índia, Sri Lanka"
+    "originPt": "Índia, Sri Lanka",
+    "propertiesDe": [
+      "Intuition",
+      "Traum",
+      "Fluss",
+      "Licht"
+    ],
+    "propertiesEs": [
+      "intuición",
+      "sueño",
+      "fluir",
+      "luz"
+    ],
+    "propertiesFr": [
+      "intuition",
+      "rêve",
+      "fluidité",
+      "lumière"
+    ],
+    "propertiesJa": [
+      "直感",
+      "夢",
+      "流れ",
+      "光"
+    ],
+    "propertiesPt": [
+      "intuição",
+      "sonho",
+      "fluxo",
+      "luz"
+    ]
   },
   {
     "id": "s076",
@@ -2516,7 +3776,37 @@
     "originJa": "ドミニカ共和国",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "República Dominicana"
+    "originPt": "República Dominicana",
+    "propertiesDe": [
+      "Gelassenheit",
+      "Ausdruck",
+      "Frieden",
+      "emotionale Heilung"
+    ],
+    "propertiesEs": [
+      "serenidad",
+      "expresión",
+      "paz",
+      "sanación emocional"
+    ],
+    "propertiesFr": [
+      "sérénité",
+      "expression",
+      "paix",
+      "guérison émotionnelle"
+    ],
+    "propertiesJa": [
+      "静けさ",
+      "表現",
+      "平安",
+      "感情の癒し"
+    ],
+    "propertiesPt": [
+      "serenidade",
+      "expressão",
+      "paz",
+      "cura emocional"
+    ]
   },
   {
     "id": "s077",
@@ -2578,7 +3868,37 @@
     "originJa": "ロシア、ブラジル、マダガスカル",
     "elementPt": "Água",
     "chakraPt": "Garganta e Chakra Cardíaco",
-    "originPt": "Rússia, Brasil, Madagáscar"
+    "originPt": "Rússia, Brasil, Madagáscar",
+    "propertiesDe": [
+      "mutige Grenzen",
+      "Hoffnung",
+      "Gleichgewicht",
+      "Kommunikation"
+    ],
+    "propertiesEs": [
+      "límites valientes",
+      "esperanza",
+      "equilibrio",
+      "comunicación"
+    ],
+    "propertiesFr": [
+      "limites courageuses",
+      "espoir",
+      "équilibre",
+      "communication"
+    ],
+    "propertiesJa": [
+      "勇気ある境界",
+      "希望",
+      "バランス",
+      "コミュニケーション"
+    ],
+    "propertiesPt": [
+      "limites corajosos",
+      "esperança",
+      "equilíbrio",
+      "comunicação"
+    ]
   },
   {
     "id": "s078",
@@ -2640,7 +3960,37 @@
     "originJa": "ブラジル、マダガスカル、メキシコ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Brasil, Madagáscar, México"
+    "originPt": "Brasil, Madagáscar, México",
+    "propertiesDe": [
+      "Motivation",
+      "Inspiration",
+      "Fokus",
+      "Selbstdisziplin"
+    ],
+    "propertiesEs": [
+      "motivación",
+      "inspiración",
+      "enfoque",
+      "autodisciplina"
+    ],
+    "propertiesFr": [
+      "motivation",
+      "inspiration",
+      "concentration",
+      "autodiscipline"
+    ],
+    "propertiesJa": [
+      "意欲",
+      "インスピレーション",
+      "集中",
+      "自己規律"
+    ],
+    "propertiesPt": [
+      "motivação",
+      "inspiração",
+      "foco",
+      "autodisciplina"
+    ]
   },
   {
     "id": "s079",
@@ -2702,7 +4052,37 @@
     "originJa": "インド、スリランカ、ブラジル",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho",
-    "originPt": "Índia, Sri Lanka, Brasil"
+    "originPt": "Índia, Sri Lanka, Brasil",
+    "propertiesDe": [
+      "Einsicht",
+      "Orientierung",
+      "Vision",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "introspección",
+      "orientación",
+      "visión",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "introspection",
+      "orientation",
+      "vision",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "洞察",
+      "方向を見出す",
+      "ビジョン",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "introspecção",
+      "orientação",
+      "visão",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s080",
@@ -2765,7 +4145,37 @@
     "originJa": "ペルー、コンゴ、アメリカ",
     "elementPt": "Água",
     "chakraPt": "Garganta e Chakra Cardíaco",
-    "originPt": "Peru, Congo, EUA"
+    "originPt": "Peru, Congo, EUA",
+    "propertiesDe": [
+      "mitfühlender Ausdruck",
+      "Weisheit",
+      "weibliche Kraft",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "expresión compasiva",
+      "sabiduría",
+      "fuerza femenina",
+      "paz"
+    ],
+    "propertiesFr": [
+      "expression compatissante",
+      "sagesse",
+      "force féminine",
+      "paix"
+    ],
+    "propertiesJa": [
+      "慈しみの表現",
+      "叡智",
+      "女性的な力",
+      "平安"
+    ],
+    "propertiesPt": [
+      "expressão compassiva",
+      "sabedoria",
+      "força feminina",
+      "paz"
+    ]
   },
   {
     "id": "s081",
@@ -2827,7 +4237,37 @@
     "originJa": "オーストラリア、ポーランド、ブラジル",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Austrália, Polónia, Brasil"
+    "originPt": "Austrália, Polónia, Brasil",
+    "propertiesDe": [
+      "Hoffnung",
+      "Freude",
+      "emotionale Heilung",
+      "Erneuerung"
+    ],
+    "propertiesEs": [
+      "esperanza",
+      "alegría",
+      "sanación emocional",
+      "renovación"
+    ],
+    "propertiesFr": [
+      "espoir",
+      "joie",
+      "guérison émotionnelle",
+      "renouveau"
+    ],
+    "propertiesJa": [
+      "希望",
+      "喜び",
+      "感情の癒し",
+      "再生"
+    ],
+    "propertiesPt": [
+      "esperança",
+      "alegria",
+      "cura emocional",
+      "renovação"
+    ]
   },
   {
     "id": "s082",
@@ -2889,7 +4329,37 @@
     "originJa": "アメリカ、南アフリカ、中国",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "EUA, África do Sul, China"
+    "originPt": "EUA, África do Sul, China",
+    "propertiesDe": [
+      "Gleichgewicht",
+      "Geduld",
+      "emotionales Gleichgewicht",
+      "Wachstum"
+    ],
+    "propertiesEs": [
+      "equilibrio",
+      "paciencia",
+      "equilibrio emocional",
+      "crecimiento"
+    ],
+    "propertiesFr": [
+      "équilibre",
+      "patience",
+      "équilibre émotionnel",
+      "croissance"
+    ],
+    "propertiesJa": [
+      "バランス",
+      "忍耐",
+      "感情のバランス",
+      "成長"
+    ],
+    "propertiesPt": [
+      "equilíbrio",
+      "paciência",
+      "equilíbrio emocional",
+      "crescimento"
+    ]
   },
   {
     "id": "s083",
@@ -2951,7 +4421,37 @@
     "originJa": "ロシア (カレリア)",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Rússia (Carélia)"
+    "originPt": "Rússia (Carélia)",
+    "propertiesDe": [
+      "Reinigung",
+      "Schutz",
+      "Erdung",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "purificación",
+      "protección",
+      "enraizamiento",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "purification",
+      "protection",
+      "ancrage",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "浄化",
+      "守護",
+      "グラウンディング",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "purificação",
+      "proteção",
+      "aterramento",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s084",
@@ -3013,7 +4513,37 @@
     "originJa": "ブラジル、アメリカ、マダガスカル",
     "elementPt": "Água",
     "chakraPt": "Coroa e Terceiro Olho",
-    "originPt": "Brasil, EUA, Madagáscar"
+    "originPt": "Brasil, EUA, Madagáscar",
+    "propertiesDe": [
+      "Ruhe",
+      "Übergang",
+      "Gleichgewicht",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "calma",
+      "transición",
+      "equilibrio",
+      "paz"
+    ],
+    "propertiesFr": [
+      "calme",
+      "transition",
+      "équilibre",
+      "paix"
+    ],
+    "propertiesJa": [
+      "落ち着き",
+      "移行",
+      "バランス",
+      "平安"
+    ],
+    "propertiesPt": [
+      "calma",
+      "transição",
+      "equilíbrio",
+      "paz"
+    ]
   },
   {
     "id": "s085",
@@ -3075,7 +4605,37 @@
     "originJa": "カナダ、アメリカ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Canadá, EUA"
+    "originPt": "Canadá, EUA",
+    "propertiesDe": [
+      "Ruhe",
+      "Geduld",
+      "Schlaf",
+      "Achtsamkeit"
+    ],
+    "propertiesEs": [
+      "calma",
+      "paciencia",
+      "sueño",
+      "consciencia"
+    ],
+    "propertiesFr": [
+      "calme",
+      "patience",
+      "sommeil",
+      "conscience"
+    ],
+    "propertiesJa": [
+      "落ち着き",
+      "忍耐",
+      "眠り",
+      "気づき"
+    ],
+    "propertiesPt": [
+      "calma",
+      "paciência",
+      "sono",
+      "consciência"
+    ]
   },
   {
     "id": "s086",
@@ -3139,7 +4699,37 @@
     "originJa": "ブラジル、モザンビーク",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Brasil, Moçambique"
+    "originPt": "Brasil, Moçambique",
+    "propertiesDe": [
+      "Mut",
+      "Fluss",
+      "emotionales Gleichgewicht",
+      "Klarheit"
+    ],
+    "propertiesEs": [
+      "valor",
+      "fluir",
+      "equilibrio emocional",
+      "claridad"
+    ],
+    "propertiesFr": [
+      "courage",
+      "fluidité",
+      "équilibre émotionnel",
+      "clarté"
+    ],
+    "propertiesJa": [
+      "勇気",
+      "流れ",
+      "感情のバランス",
+      "明晰さ"
+    ],
+    "propertiesPt": [
+      "coragem",
+      "fluxo",
+      "equilíbrio emocional",
+      "clareza"
+    ]
   },
   {
     "id": "s087",
@@ -3203,7 +4793,37 @@
     "originJa": "インド、ブラジル、オーストラリア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Índia, Brasil, Austrália"
+    "originPt": "Índia, Brasil, Austrália",
+    "propertiesDe": [
+      "Mut",
+      "Vitalität",
+      "Widerstandskraft",
+      "Erdung"
+    ],
+    "propertiesEs": [
+      "valor",
+      "vitalidad",
+      "resiliencia",
+      "enraizamiento"
+    ],
+    "propertiesFr": [
+      "courage",
+      "vitalité",
+      "résilience",
+      "ancrage"
+    ],
+    "propertiesJa": [
+      "勇気",
+      "活力",
+      "忍耐力",
+      "グラウンディング"
+    ],
+    "propertiesPt": [
+      "coragem",
+      "vitalidade",
+      "resiliência",
+      "aterramento"
+    ]
   },
   {
     "id": "s088",
@@ -3265,7 +4885,37 @@
     "originJa": "南アフリカ、日本",
     "elementPt": "Ar",
     "chakraPt": "Coroa e Terceiro Olho",
-    "originPt": "África do Sul, Japão"
+    "originPt": "África do Sul, Japão",
+    "propertiesDe": [
+      "spiritueller Schutz",
+      "Liebe",
+      "Heilung",
+      "Mut"
+    ],
+    "propertiesEs": [
+      "protección espiritual",
+      "amor",
+      "sanación",
+      "valor"
+    ],
+    "propertiesFr": [
+      "protection spirituelle",
+      "amour",
+      "guérison",
+      "courage"
+    ],
+    "propertiesJa": [
+      "霊的な守護",
+      "愛",
+      "癒し",
+      "勇気"
+    ],
+    "propertiesPt": [
+      "proteção espiritual",
+      "amor",
+      "cura",
+      "coragem"
+    ]
   },
   {
     "id": "s089",
@@ -3327,7 +4977,37 @@
     "originJa": "ロシア (シベリア)",
     "elementPt": "Ar",
     "chakraPt": "Coroa e Terceiro Olho",
-    "originPt": "Rússia (Sibéria)"
+    "originPt": "Rússia (Sibéria)",
+    "propertiesDe": [
+      "Transformation",
+      "Mut",
+      "spirituelle Einsicht",
+      "Angst loslassen"
+    ],
+    "propertiesEs": [
+      "transformación",
+      "valor",
+      "percepción espiritual",
+      "soltar el miedo"
+    ],
+    "propertiesFr": [
+      "transformation",
+      "courage",
+      "intuition spirituelle",
+      "lâcher la peur"
+    ],
+    "propertiesJa": [
+      "変容",
+      "勇気",
+      "霊的な洞察",
+      "恐れを手放す"
+    ],
+    "propertiesPt": [
+      "transformação",
+      "coragem",
+      "percepção espiritual",
+      "soltar o medo"
+    ]
   },
   {
     "id": "s090",
@@ -3391,7 +5071,37 @@
     "originJa": "タンザニア",
     "elementPt": "Ar",
     "chakraPt": "Terceiro Olho e Garganta",
-    "originPt": "Tanzânia"
+    "originPt": "Tanzânia",
+    "propertiesDe": [
+      "Intuition",
+      "Ausdruck",
+      "spiritueller Aufstieg",
+      "Transformation"
+    ],
+    "propertiesEs": [
+      "intuición",
+      "expresión",
+      "ascensión espiritual",
+      "transformación"
+    ],
+    "propertiesFr": [
+      "intuition",
+      "expression",
+      "élévation spirituelle",
+      "transformation"
+    ],
+    "propertiesJa": [
+      "直感",
+      "表現",
+      "霊的な上昇",
+      "変容"
+    ],
+    "propertiesPt": [
+      "intuição",
+      "expressão",
+      "ascensão espiritual",
+      "transformação"
+    ]
   },
   {
     "id": "s091",
@@ -3455,7 +5165,37 @@
     "originJa": "ミャンマー、スリランカ、タジキスタン",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Mianmar, Sri Lanka, Tajiquistão"
+    "originPt": "Mianmar, Sri Lanka, Tajiquistão",
+    "propertiesDe": [
+      "Belebung",
+      "Inspiration",
+      "Energie",
+      "Erneuerung"
+    ],
+    "propertiesEs": [
+      "revitalización",
+      "inspiración",
+      "energía",
+      "renovación"
+    ],
+    "propertiesFr": [
+      "revitalisation",
+      "inspiration",
+      "énergie",
+      "renouveau"
+    ],
+    "propertiesJa": [
+      "活性化",
+      "インスピレーション",
+      "エネルギー",
+      "再生"
+    ],
+    "propertiesPt": [
+      "revitalização",
+      "inspiração",
+      "energia",
+      "renovação"
+    ]
   },
   {
     "id": "s092",
@@ -3517,7 +5257,37 @@
     "originJa": "ブラジル、インド、ロシア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Brasil, Índia, Rússia"
+    "originPt": "Brasil, Índia, Rússia",
+    "propertiesDe": [
+      "Glück",
+      "Gelegenheit",
+      "Optimismus",
+      "Herzensfrieden"
+    ],
+    "propertiesEs": [
+      "suerte",
+      "oportunidad",
+      "optimismo",
+      "paz del corazón"
+    ],
+    "propertiesFr": [
+      "chance",
+      "opportunité",
+      "optimisme",
+      "paix du cœur"
+    ],
+    "propertiesJa": [
+      "幸運",
+      "機会",
+      "楽観",
+      "心の平安"
+    ],
+    "propertiesPt": [
+      "sorte",
+      "oportunidade",
+      "otimismo",
+      "paz do coração"
+    ]
   },
   {
     "id": "s093",
@@ -3579,7 +5349,37 @@
     "originJa": "ボツワナ",
     "elementPt": "Terra",
     "chakraPt": "Raiz e Chakra Cardíaco",
-    "originPt": "Botswana"
+    "originPt": "Botswana",
+    "propertiesDe": [
+      "Trost",
+      "Gleichgewicht",
+      "Anpassung an Wandel",
+      "Wärme"
+    ],
+    "propertiesEs": [
+      "consuelo",
+      "equilibrio",
+      "adaptación al cambio",
+      "calidez"
+    ],
+    "propertiesFr": [
+      "réconfort",
+      "équilibre",
+      "adaptation au changement",
+      "chaleur"
+    ],
+    "propertiesJa": [
+      "慰め",
+      "バランス",
+      "変化への適応",
+      "温もり"
+    ],
+    "propertiesPt": [
+      "consolo",
+      "equilíbrio",
+      "adaptação à mudança",
+      "calor"
+    ]
   },
   {
     "id": "s094",
@@ -3641,7 +5441,37 @@
     "originJa": "ナミビア、南アフリカ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Namíbia, África do Sul"
+    "originPt": "Namíbia, África do Sul",
+    "propertiesDe": [
+      "Gelassenheit",
+      "sanfter Ausdruck",
+      "Frieden",
+      "Kommunikation"
+    ],
+    "propertiesEs": [
+      "serenidad",
+      "expresión suave",
+      "paz",
+      "comunicación"
+    ],
+    "propertiesFr": [
+      "sérénité",
+      "expression douce",
+      "paix",
+      "communication"
+    ],
+    "propertiesJa": [
+      "静けさ",
+      "やさしい表現",
+      "平安",
+      "コミュニケーション"
+    ],
+    "propertiesPt": [
+      "serenidade",
+      "expressão gentil",
+      "paz",
+      "comunicação"
+    ]
   },
   {
     "id": "s095",
@@ -3704,7 +5534,37 @@
     "originJa": "インド、ノルウェー、アメリカ",
     "elementPt": "Fogo",
     "chakraPt": "Sacral e Plexo Solar",
-    "originPt": "Índia, Noruega, EUA"
+    "originPt": "Índia, Noruega, EUA",
+    "propertiesDe": [
+      "Freude",
+      "Vitalität",
+      "Führung",
+      "Optimismus"
+    ],
+    "propertiesEs": [
+      "alegría",
+      "vitalidad",
+      "liderazgo",
+      "optimismo"
+    ],
+    "propertiesFr": [
+      "joie",
+      "vitalité",
+      "leadership",
+      "optimisme"
+    ],
+    "propertiesJa": [
+      "喜び",
+      "活力",
+      "リーダーシップ",
+      "楽観"
+    ],
+    "propertiesPt": [
+      "alegria",
+      "vitalidade",
+      "liderança",
+      "otimismo"
+    ]
   },
   {
     "id": "s096",
@@ -3766,7 +5626,37 @@
     "originJa": "インド、アメリカ、ロシア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Índia, EUA, Rússia"
+    "originPt": "Índia, EUA, Rússia",
+    "propertiesDe": [
+      "Widerstandskraft",
+      "Mut",
+      "Erdung",
+      "Kraft"
+    ],
+    "propertiesEs": [
+      "resiliencia",
+      "valor",
+      "enraizamiento",
+      "fuerza"
+    ],
+    "propertiesFr": [
+      "résilience",
+      "courage",
+      "ancrage",
+      "force"
+    ],
+    "propertiesJa": [
+      "忍耐力",
+      "勇気",
+      "グラウンディング",
+      "力"
+    ],
+    "propertiesPt": [
+      "resiliência",
+      "coragem",
+      "aterramento",
+      "força"
+    ]
   },
   {
     "id": "s097",
@@ -3828,7 +5718,37 @@
     "originJa": "マダガスカル",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Madagáscar"
+    "originPt": "Madagáscar",
+    "propertiesDe": [
+      "Frieden",
+      "Fluss",
+      "Freude",
+      "emotionales Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "paz",
+      "fluir",
+      "alegría",
+      "equilibrio emocional"
+    ],
+    "propertiesFr": [
+      "paix",
+      "fluidité",
+      "joie",
+      "équilibre émotionnel"
+    ],
+    "propertiesJa": [
+      "平安",
+      "流れ",
+      "喜び",
+      "感情のバランス"
+    ],
+    "propertiesPt": [
+      "paz",
+      "fluxo",
+      "alegria",
+      "equilíbrio emocional"
+    ]
   },
   {
     "id": "s098",
@@ -3890,7 +5810,37 @@
     "originJa": "オーストラリア",
     "elementPt": "Terra",
     "chakraPt": "Raiz e Chakra Sacral",
-    "originPt": "Austrália"
+    "originPt": "Austrália",
+    "propertiesDe": [
+      "Abenteuerlust",
+      "Vitalität",
+      "Entscheidungskraft",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "espíritu aventurero",
+      "vitalidad",
+      "toma de decisiones",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "esprit d’aventure",
+      "vitalité",
+      "prise de décision",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "冒険心",
+      "活力",
+      "決断",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "espírito aventureiro",
+      "vitalidade",
+      "tomada de decisão",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s099",
@@ -3952,7 +5902,37 @@
     "originJa": "インド、ブラジル、カザフスタン",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Índia, Brasil, Cazaquistão"
+    "originPt": "Índia, Brasil, Cazaquistão",
+    "propertiesDe": [
+      "Überfluss",
+      "Naturverbundenheit",
+      "Beharrlichkeit",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "abundancia",
+      "vínculo con la naturaleza",
+      "perseverancia",
+      "paz"
+    ],
+    "propertiesFr": [
+      "abondance",
+      "lien à la nature",
+      "persévérance",
+      "paix"
+    ],
+    "propertiesJa": [
+      "豊かさ",
+      "自然とのつながり",
+      "粘り強さ",
+      "平安"
+    ],
+    "propertiesPt": [
+      "abundância",
+      "ligação com a natureza",
+      "perseverança",
+      "paz"
+    ]
   },
   {
     "id": "s100",
@@ -4014,7 +5994,37 @@
     "originJa": "ブラジル、インド、ウルグアイ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Brasil, Índia, Uruguai"
+    "originPt": "Brasil, Índia, Uruguai",
+    "propertiesDe": [
+      "Selbstdisziplin",
+      "Kraft",
+      "Schutz",
+      "Entschlossenheit"
+    ],
+    "propertiesEs": [
+      "autodisciplina",
+      "fuerza",
+      "protección",
+      "determinación"
+    ],
+    "propertiesFr": [
+      "autodiscipline",
+      "force",
+      "protection",
+      "détermination"
+    ],
+    "propertiesJa": [
+      "自己規律",
+      "力",
+      "守護",
+      "決意"
+    ],
+    "propertiesPt": [
+      "autodisciplina",
+      "força",
+      "proteção",
+      "determinação"
+    ]
   },
   {
     "id": "s101",
@@ -4078,7 +6088,37 @@
     "originJa": "インド、ブラジル、ドイツ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Índia, Brasil, Alemanha"
+    "originPt": "Índia, Brasil, Alemanha",
+    "propertiesDe": [
+      "Kraft",
+      "Wille",
+      "Schutz",
+      "Stabilität"
+    ],
+    "propertiesEs": [
+      "fuerza",
+      "voluntad",
+      "protección",
+      "estabilidad"
+    ],
+    "propertiesFr": [
+      "force",
+      "volonté",
+      "protection",
+      "stabilité"
+    ],
+    "propertiesJa": [
+      "力",
+      "意志",
+      "守護",
+      "安定"
+    ],
+    "propertiesPt": [
+      "força",
+      "vontade",
+      "proteção",
+      "estabilidade"
+    ]
   },
   {
     "id": "s102",
@@ -4142,7 +6182,37 @@
     "originJa": "ウルグアイ、ブラジル",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Uruguai, Brasil"
+    "originPt": "Uruguai, Brasil",
+    "propertiesDe": [
+      "Reinigung",
+      "Frieden",
+      "spiritueller Schutz",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "purificación",
+      "paz",
+      "protección espiritual",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "purification",
+      "paix",
+      "protection spirituelle",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "浄化",
+      "平安",
+      "霊的な守護",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "purificação",
+      "paz",
+      "proteção espiritual",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s103",
@@ -4206,7 +6276,37 @@
     "originJa": "ペルー、オーストラリア",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Peru, Austrália"
+    "originPt": "Peru, Austrália",
+    "propertiesDe": [
+      "sanfte Liebe",
+      "Trost",
+      "emotionale Heilung",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "amor tierno",
+      "consuelo",
+      "sanación emocional",
+      "paz"
+    ],
+    "propertiesFr": [
+      "amour tendre",
+      "réconfort",
+      "guérison émotionnelle",
+      "paix"
+    ],
+    "propertiesJa": [
+      "やさしい愛",
+      "慰め",
+      "感情の癒し",
+      "平安"
+    ],
+    "propertiesPt": [
+      "amor terno",
+      "consolo",
+      "cura emocional",
+      "paz"
+    ]
   },
   {
     "id": "s104",
@@ -4268,7 +6368,37 @@
     "originJa": "バルト海沿岸、ドミニカ共和国",
     "elementPt": "Fogo",
     "chakraPt": "Plexo Solar",
-    "originPt": "Báltico, República Dominicana"
+    "originPt": "Báltico, República Dominicana",
+    "propertiesDe": [
+      "Wärme",
+      "Lebenskraft",
+      "Reinigung",
+      "Schutz"
+    ],
+    "propertiesEs": [
+      "calidez",
+      "fuerza vital",
+      "purificación",
+      "protección"
+    ],
+    "propertiesFr": [
+      "chaleur",
+      "force vitale",
+      "purification",
+      "protection"
+    ],
+    "propertiesJa": [
+      "温もり",
+      "生命力",
+      "浄化",
+      "守護"
+    ],
+    "propertiesPt": [
+      "calor",
+      "força vital",
+      "purificação",
+      "proteção"
+    ]
   },
   {
     "id": "s105",
@@ -4330,7 +6460,37 @@
     "originJa": "トルコ (Erzurum)、イングランド",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Turquia (Erzurum), Inglaterra"
+    "originPt": "Turquia (Erzurum), Inglaterra",
+    "propertiesDe": [
+      "Schutz",
+      "Trauer",
+      "Erdung",
+      "Reinigung"
+    ],
+    "propertiesEs": [
+      "protección",
+      "duelo",
+      "enraizamiento",
+      "purificación"
+    ],
+    "propertiesFr": [
+      "protection",
+      "deuil",
+      "ancrage",
+      "purification"
+    ],
+    "propertiesJa": [
+      "守護",
+      "喪",
+      "グラウンディング",
+      "浄化"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "luto",
+      "aterramento",
+      "purificação"
+    ]
   },
   {
     "id": "s106",
@@ -4392,7 +6552,37 @@
     "originJa": "グリーンランド",
     "elementPt": "Terra",
     "chakraPt": "Raiz e Terceiro Olho",
-    "originPt": "Gronelândia"
+    "originPt": "Gronelândia",
+    "propertiesDe": [
+      "altes Wissen",
+      "Schutz",
+      "innere Kraft",
+      "Transformation"
+    ],
+    "propertiesEs": [
+      "sabiduría antigua",
+      "protección",
+      "fuerza interior",
+      "transformación"
+    ],
+    "propertiesFr": [
+      "sagesse ancienne",
+      "protection",
+      "force intérieure",
+      "transformation"
+    ],
+    "propertiesJa": [
+      "古代の叡智",
+      "守護",
+      "内なる力",
+      "変容"
+    ],
+    "propertiesPt": [
+      "sabedoria antiga",
+      "proteção",
+      "força interior",
+      "transformação"
+    ]
   },
   {
     "id": "s107",
@@ -4454,7 +6644,37 @@
     "originJa": "ロシア (シベリア)",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Rússia (Sibéria)"
+    "originPt": "Rússia (Sibéria)",
+    "propertiesDe": [
+      "spirituelle Heilung",
+      "Frieden",
+      "Herzgleichgewicht",
+      "Erneuerung"
+    ],
+    "propertiesEs": [
+      "sanación espiritual",
+      "paz",
+      "equilibrio del corazón",
+      "renovación"
+    ],
+    "propertiesFr": [
+      "guérison spirituelle",
+      "paix",
+      "équilibre du cœur",
+      "renouveau"
+    ],
+    "propertiesJa": [
+      "霊的な癒し",
+      "平安",
+      "心のバランス",
+      "再生"
+    ],
+    "propertiesPt": [
+      "cura espiritual",
+      "paz",
+      "equilíbrio do coração",
+      "renovação"
+    ]
   },
   {
     "id": "s108",
@@ -4516,7 +6736,37 @@
     "originJa": "トルコ、アメリカ、ブラジル",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Turquia, EUA, Brasil"
+    "originPt": "Turquia, EUA, Brasil",
+    "propertiesDe": [
+      "sanfte Kommunikation",
+      "guter Wille",
+      "Frieden",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "comunicación suave",
+      "buena voluntad",
+      "paz",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "communication douce",
+      "bienveillance",
+      "paix",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "やさしい対話",
+      "善意",
+      "平安",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "comunicação gentil",
+      "boa vontade",
+      "paz",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s109",
@@ -4578,7 +6828,37 @@
     "originJa": "オーストリア、パキスタン、ノルウェー",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Áustria, Paquistão, Noruega"
+    "originPt": "Áustria, Paquistão, Noruega",
+    "propertiesDe": [
+      "Fülle anziehen",
+      "Optimismus",
+      "Erneuerung",
+      "Wachstum"
+    ],
+    "propertiesEs": [
+      "atraer abundancia",
+      "optimismo",
+      "renovación",
+      "crecimiento"
+    ],
+    "propertiesFr": [
+      "attirer l’abondance",
+      "optimisme",
+      "renouveau",
+      "croissance"
+    ],
+    "propertiesJa": [
+      "豊かさを引き寄せる",
+      "楽観",
+      "再生",
+      "成長"
+    ],
+    "propertiesPt": [
+      "atrair abundância",
+      "otimismo",
+      "renovação",
+      "crescimento"
+    ]
   },
   {
     "id": "s110",
@@ -4641,7 +6921,37 @@
     "originJa": "アフガニスタン、ブラジル、アメリカ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Afeganistão, Brasil, EUA"
+    "originPt": "Afeganistão, Brasil, EUA",
+    "propertiesDe": [
+      "bedingungslose Liebe",
+      "Selbstliebe",
+      "Frieden",
+      "Herzöffnung"
+    ],
+    "propertiesEs": [
+      "amor incondicional",
+      "amor propio",
+      "paz",
+      "apertura del corazón"
+    ],
+    "propertiesFr": [
+      "amour inconditionnel",
+      "amour de soi",
+      "paix",
+      "ouverture du cœur"
+    ],
+    "propertiesJa": [
+      "無条件の愛",
+      "自己愛",
+      "平安",
+      "心を開くこと"
+    ],
+    "propertiesPt": [
+      "amor incondicional",
+      "amor-próprio",
+      "paz",
+      "abertura do coração"
+    ]
   },
   {
     "id": "s111",
@@ -4703,7 +7013,37 @@
     "originJa": "イタリア、カナダ、ロシア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Itália, Canadá, Rússia"
+    "originPt": "Itália, Canadá, Rússia",
+    "propertiesDe": [
+      "Begeisterung",
+      "Kreativität",
+      "Befreiung von Angst",
+      "Harmonie"
+    ],
+    "propertiesEs": [
+      "entusiasmo",
+      "creatividad",
+      "liberación del miedo",
+      "armonía"
+    ],
+    "propertiesFr": [
+      "enthousiasme",
+      "créativité",
+      "libération de la peur",
+      "harmonie"
+    ],
+    "propertiesJa": [
+      "高揚",
+      "創造性",
+      "恐れからの解放",
+      "調和"
+    ],
+    "propertiesPt": [
+      "entusiasmo",
+      "criatividade",
+      "libertação do medo",
+      "harmonia"
+    ]
   },
   {
     "id": "s112",
@@ -4765,7 +7105,37 @@
     "originJa": "インド、アメリカ",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Índia, EUA"
+    "originPt": "Índia, EUA",
+    "propertiesDe": [
+      "Naturverbundenheit",
+      "Überfluss",
+      "Frieden",
+      "Neuanfang"
+    ],
+    "propertiesEs": [
+      "vínculo con la naturaleza",
+      "abundancia",
+      "paz",
+      "nuevo comienzo"
+    ],
+    "propertiesFr": [
+      "lien à la nature",
+      "abondance",
+      "paix",
+      "nouveau départ"
+    ],
+    "propertiesJa": [
+      "自然とのつながり",
+      "豊かさ",
+      "平安",
+      "新たな始まり"
+    ],
+    "propertiesPt": [
+      "ligação com a natureza",
+      "abundância",
+      "paz",
+      "novo começo"
+    ]
   },
   {
     "id": "s113",
@@ -4827,7 +7197,37 @@
     "originJa": "ナミビア、中国",
     "elementPt": "Ar",
     "chakraPt": "Plexo Solar e Terceiro Olho",
-    "originPt": "Namíbia, China"
+    "originPt": "Namíbia, China",
+    "propertiesDe": [
+      "Willenskraft",
+      "Ruhe im Sturm",
+      "Vision",
+      "Mut"
+    ],
+    "propertiesEs": [
+      "fuerza de voluntad",
+      "calma en la tormenta",
+      "visión",
+      "valor"
+    ],
+    "propertiesFr": [
+      "force de volonté",
+      "calme dans la tempête",
+      "vision",
+      "courage"
+    ],
+    "propertiesJa": [
+      "意志力",
+      "嵐の中の静けさ",
+      "ビジョン",
+      "勇気"
+    ],
+    "propertiesPt": [
+      "força de vontade",
+      "calma na tempestade",
+      "visão",
+      "coragem"
+    ]
   },
   {
     "id": "s081",
@@ -4877,7 +7277,37 @@
     "originJa": "アルゼンチン、ペルー",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Argentina, Peru"
+    "originPt": "Argentina, Peru",
+    "propertiesDe": [
+      "Selbstliebe",
+      "emotionale Heilung",
+      "Mitgefühl",
+      "Freude"
+    ],
+    "propertiesEs": [
+      "amor propio",
+      "sanación emocional",
+      "compasión",
+      "alegría"
+    ],
+    "propertiesFr": [
+      "amour de soi",
+      "guérison émotionnelle",
+      "compassion",
+      "joie"
+    ],
+    "propertiesJa": [
+      "自己愛",
+      "感情の癒し",
+      "慈悲",
+      "喜び"
+    ],
+    "propertiesPt": [
+      "amor-próprio",
+      "cura emocional",
+      "compaixão",
+      "alegria"
+    ]
   },
   {
     "id": "s082",
@@ -4927,7 +7357,37 @@
     "originJa": "ナミビア、コンゴ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Namíbia, Congo"
+    "originPt": "Namíbia, Congo",
+    "propertiesDe": [
+      "Vergebung",
+      "Herzheilung",
+      "Überfluss",
+      "Erneuerung"
+    ],
+    "propertiesEs": [
+      "perdón",
+      "sanación del corazón",
+      "abundancia",
+      "renovación"
+    ],
+    "propertiesFr": [
+      "pardon",
+      "guérison du cœur",
+      "abondance",
+      "renouveau"
+    ],
+    "propertiesJa": [
+      "許し",
+      "心の癒し",
+      "豊かさ",
+      "再生"
+    ],
+    "propertiesPt": [
+      "perdão",
+      "cura do coração",
+      "abundância",
+      "renovação"
+    ]
   },
   {
     "id": "s083",
@@ -4977,7 +7437,37 @@
     "originJa": "メキシコ、日本",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "México, Japão"
+    "originPt": "México, Japão",
+    "propertiesDe": [
+      "Frieden",
+      "Engelverbindung",
+      "Reinheit",
+      "Erleichterung"
+    ],
+    "propertiesEs": [
+      "paz",
+      "conexión angelical",
+      "pureza",
+      "alivio"
+    ],
+    "propertiesFr": [
+      "paix",
+      "connexion angélique",
+      "pureté",
+      "apaisement"
+    ],
+    "propertiesJa": [
+      "平安",
+      "天使とのつながり",
+      "純粋さ",
+      "安らぎ"
+    ],
+    "propertiesPt": [
+      "paz",
+      "conexão angelical",
+      "pureza",
+      "alívio"
+    ]
   },
   {
     "id": "s084",
@@ -5027,7 +7517,37 @@
     "originJa": "ロシア、ブラジル",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Rússia, Brasil"
+    "originPt": "Rússia, Brasil",
+    "propertiesDe": [
+      "Transformation",
+      "Gleichgewicht",
+      "Glück",
+      "Harmonie"
+    ],
+    "propertiesEs": [
+      "transformación",
+      "equilibrio",
+      "suerte",
+      "armonía"
+    ],
+    "propertiesFr": [
+      "transformation",
+      "équilibre",
+      "chance",
+      "harmonie"
+    ],
+    "propertiesJa": [
+      "変容",
+      "バランス",
+      "幸運",
+      "調和"
+    ],
+    "propertiesPt": [
+      "transformação",
+      "equilíbrio",
+      "sorte",
+      "harmonia"
+    ]
   },
   {
     "id": "s085",
@@ -5077,7 +7597,37 @@
     "originJa": "アメリカ (New York)",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "EUA (New York)"
+    "originPt": "EUA (New York)",
+    "propertiesDe": [
+      "Klarheit",
+      "Energie",
+      "Traumarbeit",
+      "Erhebung"
+    ],
+    "propertiesEs": [
+      "claridad",
+      "energía",
+      "trabajo con los sueños",
+      "elevación"
+    ],
+    "propertiesFr": [
+      "clarté",
+      "énergie",
+      "travail onirique",
+      "élévation"
+    ],
+    "propertiesJa": [
+      "明晰",
+      "エネルギー",
+      "夢のワーク",
+      "高揚"
+    ],
+    "propertiesPt": [
+      "clareza",
+      "energia",
+      "trabalho dos sonhos",
+      "elevação"
+    ]
   },
   {
     "id": "s086",
@@ -5127,7 +7677,37 @@
     "originJa": "ブラジル、マダガスカル",
     "elementPt": "Fogo",
     "chakraPt": "Chakra do Plexo Solar",
-    "originPt": "Brasil, Madagáscar"
+    "originPt": "Brasil, Madagáscar",
+    "propertiesDe": [
+      "Kraft",
+      "Inspiration",
+      "Wachstum",
+      "Entschlossenheit"
+    ],
+    "propertiesEs": [
+      "fuerza",
+      "inspiración",
+      "crecimiento",
+      "determinación"
+    ],
+    "propertiesFr": [
+      "force",
+      "inspiration",
+      "croissance",
+      "détermination"
+    ],
+    "propertiesJa": [
+      "力",
+      "インスピレーション",
+      "成長",
+      "決意"
+    ],
+    "propertiesPt": [
+      "força",
+      "inspiração",
+      "crescimento",
+      "determinação"
+    ]
   },
   {
     "id": "s087",
@@ -5177,7 +7757,37 @@
     "originJa": "ブラジル、アフガニスタン",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Brasil, Afeganistão"
+    "originPt": "Brasil, Afeganistão",
+    "propertiesDe": [
+      "Liebe",
+      "Mitgefühl",
+      "emotionale Sicherheit",
+      "Freude"
+    ],
+    "propertiesEs": [
+      "amor",
+      "compasión",
+      "seguridad emocional",
+      "alegría"
+    ],
+    "propertiesFr": [
+      "amour",
+      "compassion",
+      "sécurité émotionnelle",
+      "joie"
+    ],
+    "propertiesJa": [
+      "愛",
+      "慈悲",
+      "感情的な安心",
+      "喜び"
+    ],
+    "propertiesPt": [
+      "amor",
+      "compaixão",
+      "segurança emocional",
+      "alegria"
+    ]
   },
   {
     "id": "s088",
@@ -5227,7 +7837,37 @@
     "originJa": "インド",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Índia"
+    "originPt": "Índia",
+    "propertiesDe": [
+      "Erleichterung",
+      "Licht",
+      "Entfaltung",
+      "Intuition"
+    ],
+    "propertiesEs": [
+      "alivio",
+      "luz",
+      "apertura",
+      "intuición"
+    ],
+    "propertiesFr": [
+      "apaisement",
+      "lumière",
+      "ouverture",
+      "intuition"
+    ],
+    "propertiesJa": [
+      "安らぎ",
+      "光",
+      "開花",
+      "直感"
+    ],
+    "propertiesPt": [
+      "alívio",
+      "luz",
+      "abertura",
+      "intuição"
+    ]
   },
   {
     "id": "s089",
@@ -5277,7 +7917,37 @@
     "originJa": "メキシコ、中国",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "México, China"
+    "originPt": "México, China",
+    "propertiesDe": [
+      "Kommunikation",
+      "Empathie",
+      "emotionales Gleichgewicht",
+      "Ruhe"
+    ],
+    "propertiesEs": [
+      "comunicación",
+      "empatía",
+      "equilibrio emocional",
+      "calma"
+    ],
+    "propertiesFr": [
+      "communication",
+      "empathie",
+      "équilibre émotionnel",
+      "calme"
+    ],
+    "propertiesJa": [
+      "コミュニケーション",
+      "共感",
+      "感情のバランス",
+      "落ち着き"
+    ],
+    "propertiesPt": [
+      "comunicação",
+      "empatia",
+      "equilíbrio emocional",
+      "calma"
+    ]
   },
   {
     "id": "s090",
@@ -5327,7 +7997,37 @@
     "originJa": "アメリカ、オーストラリア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "EUA, Austrália"
+    "originPt": "EUA, Austrália",
+    "propertiesDe": [
+      "Stille",
+      "Hoffnung",
+      "emotionale Heilung",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "serenidad",
+      "esperanza",
+      "sanación emocional",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "quiétude",
+      "espoir",
+      "guérison émotionnelle",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "静寂",
+      "希望",
+      "感情の癒し",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "tranquilidade",
+      "esperança",
+      "cura emocional",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s091",
@@ -5377,7 +8077,37 @@
     "originJa": "ブラジル、ナミビア",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, Namíbia"
+    "originPt": "Brasil, Namíbia",
+    "propertiesDe": [
+      "Frieden",
+      "Loslösung",
+      "Schutz",
+      "Gelassenheit"
+    ],
+    "propertiesEs": [
+      "paz",
+      "desapego",
+      "protección",
+      "serenidad"
+    ],
+    "propertiesFr": [
+      "paix",
+      "détachement",
+      "protection",
+      "sérénité"
+    ],
+    "propertiesJa": [
+      "平安",
+      "分離",
+      "守護",
+      "静けさ"
+    ],
+    "propertiesPt": [
+      "paz",
+      "desapego",
+      "proteção",
+      "serenidade"
+    ]
   },
   {
     "id": "s092",
@@ -5427,7 +8157,37 @@
     "originJa": "ブラジル、ロシア",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, Rússia"
+    "originPt": "Brasil, Rússia",
+    "propertiesDe": [
+      "höheres Bewusstsein",
+      "Erleuchtung",
+      "Energie",
+      "Entfaltung"
+    ],
+    "propertiesEs": [
+      "consciencia superior",
+      "iluminación",
+      "energía",
+      "apertura"
+    ],
+    "propertiesFr": [
+      "conscience supérieure",
+      "illumination",
+      "énergie",
+      "ouverture"
+    ],
+    "propertiesJa": [
+      "高次の意識",
+      "悟り",
+      "エネルギー",
+      "開花"
+    ],
+    "propertiesPt": [
+      "consciência superior",
+      "iluminação",
+      "energia",
+      "abertura"
+    ]
   },
   {
     "id": "s093",
@@ -5477,7 +8237,37 @@
     "originJa": "ブラジル、マダガスカル",
     "elementPt": "Ar",
     "chakraPt": "Chakra do Terceiro Olho",
-    "originPt": "Brasil, Madagáscar"
+    "originPt": "Brasil, Madagáscar",
+    "propertiesDe": [
+      "Konzentration",
+      "Disziplin",
+      "Intuition",
+      "Geduld"
+    ],
+    "propertiesEs": [
+      "concentración",
+      "disciplina",
+      "intuición",
+      "paciencia"
+    ],
+    "propertiesFr": [
+      "concentration",
+      "discipline",
+      "intuition",
+      "patience"
+    ],
+    "propertiesJa": [
+      "集中力",
+      "規律",
+      "直感",
+      "忍耐"
+    ],
+    "propertiesPt": [
+      "concentração",
+      "disciplina",
+      "intuição",
+      "paciência"
+    ]
   },
   {
     "id": "s094",
@@ -5527,7 +8317,37 @@
     "originJa": "ブラジル、オーストラリア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, Austrália"
+    "originPt": "Brasil, Austrália",
+    "propertiesDe": [
+      "Ruhe",
+      "Entspannung",
+      "Selbstliebe",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "calma",
+      "relajación",
+      "amor propio",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "calme",
+      "détente",
+      "amour de soi",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "落ち着き",
+      "弛緩",
+      "自己愛",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "calma",
+      "relaxamento",
+      "amor-próprio",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s095",
@@ -5577,7 +8397,37 @@
     "originJa": "モロッコ、メキシコ",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Marrocos, México"
+    "originPt": "Marrocos, México",
+    "propertiesDe": [
+      "Energie",
+      "Produktivität",
+      "Entschlossenheit",
+      "Erdung"
+    ],
+    "propertiesEs": [
+      "energía",
+      "productividad",
+      "determinación",
+      "enraizamiento"
+    ],
+    "propertiesFr": [
+      "énergie",
+      "productivité",
+      "détermination",
+      "ancrage"
+    ],
+    "propertiesJa": [
+      "エネルギー",
+      "生産性",
+      "決意",
+      "グラウンディング"
+    ],
+    "propertiesPt": [
+      "energia",
+      "produtividade",
+      "determinação",
+      "aterramento"
+    ]
   },
   {
     "id": "s096",
@@ -5627,7 +8477,37 @@
     "originJa": "ノルウェー",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Noruega"
+    "originPt": "Noruega",
+    "propertiesDe": [
+      "Erdung",
+      "Schutz",
+      "Klarheit",
+      "Transformation"
+    ],
+    "propertiesEs": [
+      "enraizamiento",
+      "protección",
+      "claridad",
+      "transformación"
+    ],
+    "propertiesFr": [
+      "ancrage",
+      "protection",
+      "clarté",
+      "transformation"
+    ],
+    "propertiesJa": [
+      "グラウンディング",
+      "守護",
+      "明晰",
+      "変容"
+    ],
+    "propertiesPt": [
+      "aterramento",
+      "proteção",
+      "clareza",
+      "transformação"
+    ]
   },
   {
     "id": "s097",
@@ -5677,7 +8557,37 @@
     "originJa": "ブラジル、オーストリア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Brasil, Áustria"
+    "originPt": "Brasil, Áustria",
+    "propertiesDe": [
+      "Erdung",
+      "Selbstsicherheit",
+      "Gleichgewicht",
+      "Schutz"
+    ],
+    "propertiesEs": [
+      "enraizamiento",
+      "seguridad en sí mismo",
+      "equilibrio",
+      "protección"
+    ],
+    "propertiesFr": [
+      "ancrage",
+      "assurance",
+      "équilibre",
+      "protection"
+    ],
+    "propertiesJa": [
+      "グラウンディング",
+      "自信",
+      "バランス",
+      "守護"
+    ],
+    "propertiesPt": [
+      "aterramento",
+      "autoconfiança",
+      "equilíbrio",
+      "proteção"
+    ]
   },
   {
     "id": "s098",
@@ -5727,7 +8637,37 @@
     "originJa": "インド、アイスランド",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Índia, Islândia"
+    "originPt": "Índia, Islândia",
+    "propertiesDe": [
+      "Liebe",
+      "Intuition",
+      "Entspannung",
+      "Kreativität"
+    ],
+    "propertiesEs": [
+      "amor",
+      "intuición",
+      "relajación",
+      "creatividad"
+    ],
+    "propertiesFr": [
+      "amour",
+      "intuition",
+      "détente",
+      "créativité"
+    ],
+    "propertiesJa": [
+      "愛",
+      "直感",
+      "リラックス",
+      "創造性"
+    ],
+    "propertiesPt": [
+      "amor",
+      "intuição",
+      "relaxamento",
+      "criatividade"
+    ]
   },
   {
     "id": "s099",
@@ -5777,7 +8717,37 @@
     "originJa": "アメリカ (Arizona)、コンゴ",
     "elementPt": "Água",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "EUA (Arizona), Congo"
+    "originPt": "EUA (Arizona), Congo",
+    "propertiesDe": [
+      "Kommunikation",
+      "Intuition",
+      "Wahrheit",
+      "Ausdruck"
+    ],
+    "propertiesEs": [
+      "comunicación",
+      "intuición",
+      "verdad",
+      "expresión"
+    ],
+    "propertiesFr": [
+      "communication",
+      "intuition",
+      "vérité",
+      "expression"
+    ],
+    "propertiesJa": [
+      "コミュニケーション",
+      "直感",
+      "真実",
+      "表現"
+    ],
+    "propertiesPt": [
+      "comunicação",
+      "intuição",
+      "verdade",
+      "expressão"
+    ]
   },
   {
     "id": "s100",
@@ -5827,7 +8797,37 @@
     "originJa": "ケニア、タンザニア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Quénia, Tanzânia"
+    "originPt": "Quénia, Tanzânia",
+    "propertiesDe": [
+      "Überfluss",
+      "Wachstum",
+      "Vitalität",
+      "Mitgefühl"
+    ],
+    "propertiesEs": [
+      "abundancia",
+      "crecimiento",
+      "vitalidad",
+      "compasión"
+    ],
+    "propertiesFr": [
+      "abondance",
+      "croissance",
+      "vitalité",
+      "compassion"
+    ],
+    "propertiesJa": [
+      "豊かさ",
+      "成長",
+      "活力",
+      "慈悲"
+    ],
+    "propertiesPt": [
+      "abundância",
+      "crescimento",
+      "vitalidade",
+      "compaixão"
+    ]
   },
   {
     "id": "s101",
@@ -5877,7 +8877,37 @@
     "originJa": "ブラジル、中国",
     "elementPt": "Terra",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, China"
+    "originPt": "Brasil, China",
+    "propertiesDe": [
+      "Wachstum",
+      "Heilung",
+      "Schicht-für-Schicht-Wandlung",
+      "Absicht"
+    ],
+    "propertiesEs": [
+      "crecimiento",
+      "sanación",
+      "transformación capa a capa",
+      "intención"
+    ],
+    "propertiesFr": [
+      "croissance",
+      "guérison",
+      "transformation couche par couche",
+      "intention"
+    ],
+    "propertiesJa": [
+      "成長",
+      "癒し",
+      "層ごとの変容",
+      "意図"
+    ],
+    "propertiesPt": [
+      "crescimento",
+      "cura",
+      "transformação camada a camada",
+      "intenção"
+    ]
   },
   {
     "id": "s102",
@@ -5927,7 +8957,37 @@
     "originJa": "ブラジル",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil"
+    "originPt": "Brasil",
+    "propertiesDe": [
+      "uralte Weisheit",
+      "Heilung",
+      "Verbindung",
+      "Liebe"
+    ],
+    "propertiesEs": [
+      "sabiduría ancestral",
+      "sanación",
+      "conexión",
+      "amor"
+    ],
+    "propertiesFr": [
+      "sagesse ancestrale",
+      "guérison",
+      "connexion",
+      "amour"
+    ],
+    "propertiesJa": [
+      "いにしえの叡智",
+      "癒し",
+      "つながり",
+      "愛"
+    ],
+    "propertiesPt": [
+      "sabedoria ancestral",
+      "cura",
+      "conexão",
+      "amor"
+    ]
   },
   {
     "id": "s103",
@@ -5977,7 +9037,37 @@
     "originJa": "ブラジル、スリランカ",
     "elementPt": "Fogo",
     "chakraPt": "Chakra do Plexo Solar",
-    "originPt": "Brasil, Sri Lanka"
+    "originPt": "Brasil, Sri Lanka",
+    "propertiesDe": [
+      "Kraft",
+      "Schutz",
+      "Selbstdisziplin",
+      "Glück"
+    ],
+    "propertiesEs": [
+      "fuerza",
+      "protección",
+      "autodisciplina",
+      "suerte"
+    ],
+    "propertiesFr": [
+      "force",
+      "protection",
+      "autodiscipline",
+      "chance"
+    ],
+    "propertiesJa": [
+      "力",
+      "守護",
+      "自己規律",
+      "幸運"
+    ],
+    "propertiesPt": [
+      "força",
+      "proteção",
+      "autodisciplina",
+      "sorte"
+    ]
   },
   {
     "id": "s104",
@@ -6027,7 +9117,37 @@
     "originJa": "スリランカ、ブラジル",
     "elementPt": "Terra",
     "chakraPt": "Chakra do Plexo Solar",
-    "originPt": "Sri Lanka, Brasil"
+    "originPt": "Sri Lanka, Brasil",
+    "propertiesDe": [
+      "Schutz",
+      "Intuition",
+      "Glück",
+      "Selbstvertrauen"
+    ],
+    "propertiesEs": [
+      "protección",
+      "intuición",
+      "suerte",
+      "autoconfianza"
+    ],
+    "propertiesFr": [
+      "protection",
+      "intuition",
+      "chance",
+      "confiance en soi"
+    ],
+    "propertiesJa": [
+      "守護",
+      "直感",
+      "幸運",
+      "自信"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "intuição",
+      "sorte",
+      "autoconfiança"
+    ]
   },
   {
     "id": "s105",
@@ -6077,7 +9197,37 @@
     "originJa": "スリランカ、カンボジア",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Sri Lanka, Camboja"
+    "originPt": "Sri Lanka, Camboja",
+    "propertiesDe": [
+      "Klarheit",
+      "Erdung",
+      "Weisheit",
+      "Gleichgewicht"
+    ],
+    "propertiesEs": [
+      "claridad",
+      "enraizamiento",
+      "sabiduría",
+      "equilibrio"
+    ],
+    "propertiesFr": [
+      "clarté",
+      "ancrage",
+      "sagesse",
+      "équilibre"
+    ],
+    "propertiesJa": [
+      "明晰",
+      "グラウンディング",
+      "叡智",
+      "バランス"
+    ],
+    "propertiesPt": [
+      "clareza",
+      "aterramento",
+      "sabedoria",
+      "equilíbrio"
+    ]
   },
   {
     "id": "s106",
@@ -6127,7 +9277,37 @@
     "originJa": "ウクライナ、ブラジル",
     "elementPt": "Fogo",
     "chakraPt": "Chakra do Plexo Solar",
-    "originPt": "Ucrânia, Brasil"
+    "originPt": "Ucrânia, Brasil",
+    "propertiesDe": [
+      "Sonnenenergie",
+      "Wille",
+      "Freude",
+      "Vitalität"
+    ],
+    "propertiesEs": [
+      "energía solar",
+      "voluntad",
+      "alegría",
+      "vitalidad"
+    ],
+    "propertiesFr": [
+      "énergie solaire",
+      "volonté",
+      "joie",
+      "vitalité"
+    ],
+    "propertiesJa": [
+      "太陽のエネルギー",
+      "意志",
+      "喜び",
+      "活力"
+    ],
+    "propertiesPt": [
+      "energia solar",
+      "vontade",
+      "alegria",
+      "vitalidade"
+    ]
   },
   {
     "id": "s107",
@@ -6177,7 +9357,37 @@
     "originJa": "ブラジル、アメリカ",
     "elementPt": "Ar",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Brasil, EUA"
+    "originPt": "Brasil, EUA",
+    "propertiesDe": [
+      "Klarheit",
+      "Reinheit",
+      "Wahrheit",
+      "Frieden"
+    ],
+    "propertiesEs": [
+      "claridad",
+      "pureza",
+      "verdad",
+      "paz"
+    ],
+    "propertiesFr": [
+      "clarté",
+      "pureté",
+      "vérité",
+      "paix"
+    ],
+    "propertiesJa": [
+      "明晰",
+      "純粋さ",
+      "真実",
+      "平安"
+    ],
+    "propertiesPt": [
+      "clareza",
+      "pureza",
+      "verdade",
+      "paz"
+    ]
   },
   {
     "id": "s108",
@@ -6227,7 +9437,37 @@
     "originJa": "ロシア、パキスタン",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Rússia, Paquistão"
+    "originPt": "Rússia, Paquistão",
+    "propertiesDe": [
+      "Mitgefühl",
+      "Gleichgewicht",
+      "Lernen",
+      "Erdung"
+    ],
+    "propertiesEs": [
+      "compasión",
+      "equilibrio",
+      "aprendizaje",
+      "enraizamiento"
+    ],
+    "propertiesFr": [
+      "compassion",
+      "équilibre",
+      "apprentissage",
+      "ancrage"
+    ],
+    "propertiesJa": [
+      "慈悲",
+      "バランス",
+      "学び",
+      "グラウンディング"
+    ],
+    "propertiesPt": [
+      "compaixão",
+      "equilíbrio",
+      "aprendizagem",
+      "aterramento"
+    ]
   },
   {
     "id": "s109",
@@ -6277,7 +9517,37 @@
     "originJa": "カナダ、インド",
     "elementPt": "Terra",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Canadá, Índia"
+    "originPt": "Canadá, Índia",
+    "propertiesDe": [
+      "Schutz",
+      "Erdung",
+      "Problemlösung",
+      "Ruhe"
+    ],
+    "propertiesEs": [
+      "protección",
+      "enraizamiento",
+      "resolución de problemas",
+      "calma"
+    ],
+    "propertiesFr": [
+      "protection",
+      "ancrage",
+      "résolution de problèmes",
+      "calme"
+    ],
+    "propertiesJa": [
+      "守護",
+      "グラウンディング",
+      "問題解決",
+      "落ち着き"
+    ],
+    "propertiesPt": [
+      "proteção",
+      "aterramento",
+      "resolução de problemas",
+      "calma"
+    ]
   },
   {
     "id": "s110",
@@ -6327,7 +9597,37 @@
     "originJa": "ロシア、ノルウェー",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Coroa",
-    "originPt": "Rússia, Noruega"
+    "originPt": "Rússia, Noruega",
+    "propertiesDe": [
+      "Selbstwahrnehmung",
+      "Transformation",
+      "Inspiration",
+      "Potenzial"
+    ],
+    "propertiesEs": [
+      "autoconciencia",
+      "transformación",
+      "inspiración",
+      "potencial"
+    ],
+    "propertiesFr": [
+      "conscience de soi",
+      "transformation",
+      "inspiration",
+      "potentiel"
+    ],
+    "propertiesJa": [
+      "自己認識",
+      "変容",
+      "インスピレーション",
+      "可能性"
+    ],
+    "propertiesPt": [
+      "autoconsciência",
+      "transformação",
+      "inspiração",
+      "potencial"
+    ]
   },
   {
     "id": "s111",
@@ -6377,7 +9677,37 @@
     "originJa": "タンザニア、カナダ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Tanzânia, Canadá"
+    "originPt": "Tanzânia, Canadá",
+    "propertiesDe": [
+      "Selbstdisziplin",
+      "Problemlösung",
+      "Heilung",
+      "Wandel"
+    ],
+    "propertiesEs": [
+      "autodisciplina",
+      "resolución de problemas",
+      "sanación",
+      "cambio"
+    ],
+    "propertiesFr": [
+      "autodiscipline",
+      "résolution de problèmes",
+      "guérison",
+      "changement"
+    ],
+    "propertiesJa": [
+      "自己規律",
+      "問題解決",
+      "癒し",
+      "変化"
+    ],
+    "propertiesPt": [
+      "autodisciplina",
+      "resolução de problemas",
+      "cura",
+      "mudança"
+    ]
   },
   {
     "id": "s112",
@@ -6427,7 +9757,37 @@
     "originJa": "アメリカ、カザフスタン",
     "elementPt": "Ar",
     "chakraPt": "Chakra do Terceiro Olho",
-    "originPt": "EUA, Cazaquistão"
+    "originPt": "EUA, Cazaquistão",
+    "propertiesDe": [
+      "Einsicht",
+      "Klarheit",
+      "Vorstellungskraft",
+      "Intuition"
+    ],
+    "propertiesEs": [
+      "perspicacia",
+      "claridad",
+      "imaginación",
+      "intuición"
+    ],
+    "propertiesFr": [
+      "discernement",
+      "clarté",
+      "imagination",
+      "intuition"
+    ],
+    "propertiesJa": [
+      "洞察力",
+      "明晰",
+      "想像力",
+      "直感"
+    ],
+    "propertiesPt": [
+      "discernimento",
+      "clareza",
+      "imaginação",
+      "intuição"
+    ]
   },
   {
     "id": "s113",
@@ -6477,7 +9837,37 @@
     "originJa": "オーストラリア (タスマニア)、ロシア",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Raiz",
-    "originPt": "Austrália (Tasmânia), Rússia"
+    "originPt": "Austrália (Tasmânia), Rússia",
+    "propertiesDe": [
+      "Leidenschaft",
+      "Kreativität",
+      "Vitalität",
+      "Mut"
+    ],
+    "propertiesEs": [
+      "pasión",
+      "creatividad",
+      "vitalidad",
+      "valor"
+    ],
+    "propertiesFr": [
+      "passion",
+      "créativité",
+      "vitalité",
+      "courage"
+    ],
+    "propertiesJa": [
+      "情熱",
+      "創造性",
+      "活力",
+      "勇気"
+    ],
+    "propertiesPt": [
+      "paixão",
+      "criatividade",
+      "vitalidade",
+      "coragem"
+    ]
   },
   {
     "id": "s114",
@@ -6527,7 +9917,37 @@
     "originJa": "アメリカ、ギリシャ",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "EUA, Grécia"
+    "originPt": "EUA, Grécia",
+    "propertiesDe": [
+      "Ruhe",
+      "Mitgefühl",
+      "emotionales Gleichgewicht",
+      "Güte"
+    ],
+    "propertiesEs": [
+      "calma",
+      "compasión",
+      "equilibrio emocional",
+      "amabilidad"
+    ],
+    "propertiesFr": [
+      "calme",
+      "compassion",
+      "équilibre émotionnel",
+      "gentillesse"
+    ],
+    "propertiesJa": [
+      "落ち着き",
+      "慈悲",
+      "感情のバランス",
+      "やさしさ"
+    ],
+    "propertiesPt": [
+      "calma",
+      "compaixão",
+      "equilíbrio emocional",
+      "gentileza"
+    ]
   },
   {
     "id": "s115",
@@ -6577,7 +9997,37 @@
     "originJa": "メキシコ、ナミビア",
     "elementPt": "Água",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "México, Namíbia"
+    "originPt": "México, Namíbia",
+    "propertiesDe": [
+      "Freude",
+      "Kreativität",
+      "emotionales Gleichgewicht",
+      "Inspiration"
+    ],
+    "propertiesEs": [
+      "alegría",
+      "creatividad",
+      "equilibrio emocional",
+      "inspiración"
+    ],
+    "propertiesFr": [
+      "joie",
+      "créativité",
+      "équilibre émotionnel",
+      "inspiration"
+    ],
+    "propertiesJa": [
+      "喜び",
+      "創造性",
+      "感情のバランス",
+      "インスピレーション"
+    ],
+    "propertiesPt": [
+      "alegria",
+      "criatividade",
+      "equilíbrio emocional",
+      "inspiração"
+    ]
   },
   {
     "id": "s116",
@@ -6627,7 +10077,37 @@
     "originJa": "オーストラリア、タンザニア",
     "elementPt": "Terra",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Austrália, Tanzânia"
+    "originPt": "Austrália, Tanzânia",
+    "propertiesDe": [
+      "Vergebung",
+      "Gleichgewicht",
+      "Mitgefühl",
+      "Erneuerung"
+    ],
+    "propertiesEs": [
+      "perdón",
+      "equilibrio",
+      "compasión",
+      "renovación"
+    ],
+    "propertiesFr": [
+      "pardon",
+      "équilibre",
+      "compassion",
+      "renouveau"
+    ],
+    "propertiesJa": [
+      "許し",
+      "バランス",
+      "慈悲",
+      "再生"
+    ],
+    "propertiesPt": [
+      "perdão",
+      "equilíbrio",
+      "compaixão",
+      "renovação"
+    ]
   },
   {
     "id": "s117",
@@ -6677,7 +10157,37 @@
     "originJa": "オーストリア、ブラジル",
     "elementPt": "Ar",
     "chakraPt": "Chakra do Terceiro Olho",
-    "originPt": "Áustria, Brasil"
+    "originPt": "Áustria, Brasil",
+    "propertiesDe": [
+      "Intuition",
+      "Konzentration",
+      "Klarheit",
+      "Einsicht"
+    ],
+    "propertiesEs": [
+      "intuición",
+      "concentración",
+      "claridad",
+      "perspicacia"
+    ],
+    "propertiesFr": [
+      "intuition",
+      "concentration",
+      "clarté",
+      "discernement"
+    ],
+    "propertiesJa": [
+      "直感",
+      "集中力",
+      "明晰",
+      "洞察力"
+    ],
+    "propertiesPt": [
+      "intuição",
+      "concentração",
+      "clareza",
+      "discernimento"
+    ]
   },
   {
     "id": "s118",
@@ -6727,7 +10237,37 @@
     "originJa": "インド (Pune)",
     "elementPt": "Ar",
     "chakraPt": "Chakra Laríngeo",
-    "originPt": "Índia (Pune)"
+    "originPt": "Índia (Pune)",
+    "propertiesDe": [
+      "Kommunikation",
+      "Intuition",
+      "Freude",
+      "Ausdruck"
+    ],
+    "propertiesEs": [
+      "comunicación",
+      "intuición",
+      "alegría",
+      "expresión"
+    ],
+    "propertiesFr": [
+      "communication",
+      "intuition",
+      "joie",
+      "expression"
+    ],
+    "propertiesJa": [
+      "コミュニケーション",
+      "直感",
+      "喜び",
+      "表現"
+    ],
+    "propertiesPt": [
+      "comunicação",
+      "intuição",
+      "alegria",
+      "expressão"
+    ]
   },
   {
     "id": "s119",
@@ -6777,6 +10317,36 @@
     "originJa": "ロシア、グリーンランド",
     "elementPt": "Fogo",
     "chakraPt": "Chakra Cardíaco",
-    "originPt": "Rússia, Gronelândia"
+    "originPt": "Rússia, Gronelândia",
+    "propertiesDe": [
+      "Selbstliebe",
+      "Herz-Geist-Harmonie",
+      "Vitalität",
+      "Sinn"
+    ],
+    "propertiesEs": [
+      "amor propio",
+      "armonía corazón-mente",
+      "vitalidad",
+      "propósito"
+    ],
+    "propertiesFr": [
+      "amour de soi",
+      "harmonie cœur-esprit",
+      "vitalité",
+      "but"
+    ],
+    "propertiesJa": [
+      "自己愛",
+      "心と頭の調和",
+      "活力",
+      "目的"
+    ],
+    "propertiesPt": [
+      "amor-próprio",
+      "harmonia coração-mente",
+      "vitalidade",
+      "propósito"
+    ]
   }
 ]
