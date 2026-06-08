@@ -210,7 +210,7 @@ export const TRANS = {
     paid_app_plan:     "Sakin'in tamamı, sadeliğiyle seninle",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Bir kez öde, ömür boyu seninle. Abonelik yok.",
-    paid_app_features: ["Günlük niyet, nefes ve akşam kapanışı ritüelleri","22 çakra için ses frekansları ve nazik rehberlik","Yapay zekâ destekli içsel ayna ve haftalık rapor","Doğum haritası, yükselen burç ve numeroloji","Her güne özel Gökyüzü Raporu","Tüm güncellemeler ve yeni eklenenler dahil"],
+    paid_app_features: ["Günlük niyet, nefes ve akşam kapanışı ritüelleri","22 çakra için ses frekansları ve nazik rehberlik","Yapay zekâ destekli içsel ayna ve haftalık rapor","Doğum haritası, yükselen burç ve numeroloji","Her güne özel Gökyüzü Raporu","Fotoğrafla taş ve bitki tanıma"],
     pricing_footer:    "Güvenli ödeme altyapısı ile satın alınır. Sorularınız için:",
     lemon_checkout_url:"https://sakin.lemonsqueezy.com/checkout/buy/0fbd6f22-0ad0-4078-93b7-3f873912e1e2",
 
@@ -916,7 +916,7 @@ export const TRANS = {
     paid_app_plan:     "All of Sakin, in its quiet simplicity",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Pay once, yours forever. No subscription.",
-    paid_app_features: ["Daily intention, breath and evening closing rituals","Sound frequencies and gentle guidance for 22 chakras","AI-supported inner mirror and weekly report","Birth chart, rising sign and numerology","A daily Sky Report for each day","All updates and new additions included"],
+    paid_app_features: ["Daily intention, breath and evening closing rituals","Sound frequencies and gentle guidance for 22 chakras","AI-supported inner mirror and weekly report","Birth chart, rising sign and numerology","A daily Sky Report for each day","Identify stones and plants by photo"],
     pricing_footer:    "Purchased securely via our payment provider. For questions:",
     lemon_checkout_url:"https://sakin.lemonsqueezy.com/checkout/buy/0fbd6f22-0ad0-4078-93b7-3f873912e1e2",
 

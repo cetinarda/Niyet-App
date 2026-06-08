@@ -7770,6 +7770,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
                       <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
                     </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
+                    </div>
                   </div>
                 </div>
 
@@ -7863,6 +7869,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
                       <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                    </div>
+                    <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
                     </div>
                   </div>
                 </div>
