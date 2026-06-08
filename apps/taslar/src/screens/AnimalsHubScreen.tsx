@@ -63,7 +63,10 @@ export function AnimalsHubScreen() {
   const pickPhoto = () => {
     try {
       const input = document.createElement('input');
-      input.type = 'file'; input.accept = 'image/*'; (input as any).capture = 'environment';
+      input.type = 'file'; input.accept = 'image/*';
+      // capture YOK → iOS galeri/kamera seçim menüsü açılır (capture='environment' galeriyi engelliyordu).
+      input.style.position = 'fixed'; input.style.left = '-9999px'; input.style.opacity = '0';
+      document.body.appendChild(input);
       input.onchange = async () => {
         const file = input.files && input.files[0];
         if (!file) return;
@@ -89,6 +92,7 @@ export function AnimalsHubScreen() {
           setPhotoResult(d.text || _L(TXT.failId));
         } catch (e) { setPhotoResult(_L(TXT.errConn)); }
         setPhotoLoading(false);
+        try { document.body.removeChild(input); } catch (e) {}
       };
       input.click();
     } catch (e) { /* sessiz */ }

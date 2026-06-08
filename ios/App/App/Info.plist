@@ -55,5 +55,9 @@
 	<array>
 		<string>audio</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Sakin, çektiğin taş veya bitki fotoğrafını tanımak için kameranı kullanır.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Sakin, seçtiğin taş veya bitki fotoğrafını tanımak için fotoğraf kitaplığına erişir.</string>
 </dict>
 </plist>
