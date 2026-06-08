@@ -56,13 +56,10 @@ export const handler = async (event) => {
   const subject = kind === "plant"
     ? "a plant / herb / flower"
     : "a crystal, gemstone or healing stone";
-  const prompt = `You are Sakin's gentle identification guide. Look at the photo of ${subject}. Identify it.
-Respond ENTIRELY in ${name}, using ONLY ${name} words (no foreign words). Keep the proper noun "Sakin" untranslated.
-Format (warm, short):
-1) Most likely: <name> — confidence as a percentage.
-2) Two alternatives it could be.
-3) One short, warm sentence about it (its nature/energy), in Sakin's spiritual-but-grounded tone.
-If the image is unclear or not ${subject}, say so kindly and ask for a clearer photo. Never invent certainty — be honest about confidence. No medical advice.`;
+  const prompt = `You are Sakin's gentle identification guide. Look at the photo of ${subject} and identify it.
+Reply with ONLY the single most likely common name of the ${subject}, written in ${name}, as a few words at most.
+No description, no alternatives, no confidence, no extra words, no punctuation other than the name itself.
+If the image is unclear or is not ${subject}, reply with exactly: ?`;
 
   try {
     const ctrl = new AbortController();
@@ -74,8 +71,8 @@ If the image is unclear or not ${subject}, say so kindly and ask for a clearer p
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
         body: JSON.stringify({
           model: GROQ_VISION_MODEL,
-          max_tokens: 420,
-          temperature: 0.4,
+          max_tokens: 24,
+          temperature: 0.2,
           messages: [{
             role: "user",
             content: [
