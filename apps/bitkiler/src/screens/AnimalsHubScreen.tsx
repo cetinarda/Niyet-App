@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { AnimalLibraryScreen } from './AnimalLibraryScreen';
 import { AnimalFinderScreen } from './AnimalFinderScreen';
+import { AnimalDetailScreen } from './AnimalDetailScreen';
+import { useLocalizedStones } from '../i18n/localize';
 import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
 
@@ -43,7 +45,14 @@ const TXT = {
   hint:        { tr:'Net, yakın bir fotoğraf en iyi sonucu verir.', en:'A clear, close photo gives the best result.', de:'Ein klares, nahes Foto liefert das beste Ergebnis.', es:'Una foto clara y cercana da el mejor resultado.', pt:'Uma foto nítida e próxima dá o melhor resultado.', fr:'Une photo nette et rapprochée donne le meilleur résultat.', ja:'鮮明で近い写真が最良の結果に。' },
   failId:      { tr:'Tanıyamadım — daha net bir fotoğraf dener misin?', en:"I couldn't identify it — try a clearer photo?", de:'Ich konnte es nicht erkennen — klareres Foto?', es:'No pude identificarlo — ¿una foto más clara?', pt:'Não consegui identificar — uma foto mais nítida?', fr:"Je n'ai pas pu l'identifier — une photo plus nette ?", ja:'見分けられませんでした——もっと鮮明な写真で。' },
   errConn:     { tr:'Bağlantı hatası, tekrar dener misin?', en:'Connection error, please try again.', de:'Verbindungsfehler, bitte erneut.', es:'Error de conexión, inténtalo de nuevo.', pt:'Erro de conexão, tenta de novo.', fr:'Erreur de connexion, réessaie.', ja:'接続エラー。もう一度お試しを。' },
+  mostLikely:  { tr:'En olası', en:'Most likely', de:'Am wahrscheinlichsten', es:'Más probable', pt:'Mais provável', fr:'Le plus probable', ja:'最も可能性が高い' },
+  openDetail:  { tr:'Sayfasını aç ›', en:'Open its page ›', de:'Seite öffnen ›', es:'Abrir su página ›', pt:'Abrir a página ›', fr:'Ouvrir sa page ›', ja:'ページを開く ›' },
 };
+
+// İsim normalizasyonu (eşleştirme için): küçült, aksan/noktalama temizle.
+function _norm(s: string): string {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[^a-z0-9 ]/gi, ' ').replace(/\s+/g, ' ').trim();
+}
 
 export function AnimalsHubScreen() {
   const insets = useSafeAreaInsets();
@@ -52,7 +61,28 @@ export function AnimalsHubScreen() {
   const [finderView, setFinderView] = useState<FinderView>('menu');
   const [photoLoading, setPhotoLoading] = useState(false);
   const [photoResult, setPhotoResult] = useState('');
+  const [photoIsName, setPhotoIsName] = useState(false);   // sonuç geçerli bir isim mi (hata/uyarı değil)
+  const [photoDetail, setPhotoDetail] = useState<any>(null); // tıklanınca açılan DB kaydı
   const { t } = useI18n();
+  const stones = useLocalizedStones();
+
+  // Foto sonucu DB'de var mı? (isim eşleşmesi → tıklanabilir detay)
+  const photoMatch = useMemo(() => {
+    if (!photoIsName || !photoResult) return null;
+    const norm = _norm(photoResult);
+    if (norm.length < 3) return null;
+    let best: any = null; let bestLen = 0;
+    for (const s of stones as any[]) {
+      for (const cand of [s.name, s.nameEn]) {
+        const c = _norm(cand);
+        if (c.length < 3) continue;
+        if (norm === c || norm.includes(c) || c.includes(norm)) {
+          if (c.length > bestLen) { best = s; bestLen = c.length; }
+        }
+      }
+    }
+    return best;
+  }, [photoIsName, photoResult, stones]);
 
   const setPanel = (p: Panel) => { setPanelRaw(p); if (p !== 'finder') setFinderView('menu'); };
   const active = PANELS.find(p => p.key === panel) ?? PANELS[0];
@@ -70,7 +100,7 @@ export function AnimalsHubScreen() {
       input.onchange = async () => {
         const file = input.files && input.files[0];
         if (!file) return;
-        setPhotoLoading(true); setPhotoResult('');
+        setPhotoLoading(true); setPhotoResult(''); setPhotoIsName(false);
         try {
           const dataUrl: string = await new Promise((resolve, reject) => {
             const img = new (window as any).Image();
@@ -89,8 +119,11 @@ export function AnimalsHubScreen() {
             body: JSON.stringify({ image: dataUrl, type: PHOTO_KIND, lang }),
           });
           const d = await r.json();
-          setPhotoResult(d.text || _L(TXT.failId));
-        } catch (e) { setPhotoResult(_L(TXT.errConn)); }
+          const nm = (d.text || '').trim();
+          const ok = !!nm && nm !== '?' && nm.length <= 60;
+          setPhotoIsName(ok);
+          setPhotoResult(ok ? nm : _L(TXT.failId));
+        } catch (e) { setPhotoIsName(false); setPhotoResult(_L(TXT.errConn)); }
         setPhotoLoading(false);
         try { document.body.removeChild(input); } catch (e) {}
       };
@@ -154,17 +187,32 @@ export function AnimalsHubScreen() {
             </View>
           </View>
         )}
-        {panel === 'finder' && finderView === 'photo' && (
+        {panel === 'finder' && finderView === 'photo' && photoDetail && (
+          <AnimalDetailScreen stone={photoDetail} onClose={() => setPhotoDetail(null)} />
+        )}
+        {panel === 'finder' && finderView === 'photo' && !photoDetail && (
           <ScrollView contentContainerStyle={styles.photoWrap} showsVerticalScrollIndicator={false}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.backBtn} onPress={() => { setFinderView('menu'); setPhotoResult(''); setPhotoIsName(false); }}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
             <Text style={styles.photoTitle}>📷 {_L(isPlant ? TXT.photoTitlePlant : TXT.photoTitleStone)}</Text>
             <Text style={styles.photoHint}>{_L(TXT.hint)}</Text>
             {photoLoading ? (
               <ActivityIndicator color={Colors.gold} style={{ marginTop: 28 }} />
             ) : photoResult ? (
               <>
-                <Text style={styles.photoResult}>{photoResult}</Text>
-                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoResult(''); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
+                {photoIsName ? (
+                  photoMatch ? (
+                    <TouchableOpacity style={styles.photoMatch} activeOpacity={0.85} onPress={() => setPhotoDetail(photoMatch)}>
+                      <Text style={styles.photoMatchLabel}>{_L(TXT.mostLikely)}</Text>
+                      <Text style={styles.photoMatchName}>{(photoMatch as any).emoji ? (photoMatch as any).emoji + '  ' : ''}{(photoMatch as any).name}</Text>
+                      <Text style={styles.photoMatchHint}>{_L(TXT.openDetail)}</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <Text style={styles.photoResult}>{_L(TXT.mostLikely)}: {photoResult}</Text>
+                  )
+                ) : (
+                  <Text style={styles.photoResult}>{photoResult}</Text>
+                )}
+                <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={() => { setPhotoResult(''); setPhotoIsName(false); pickPhoto(); }}><Text style={styles.photoPickText}>{_L(TXT.again)}</Text></TouchableOpacity>
               </>
             ) : (
               <TouchableOpacity style={styles.photoPickBtn} activeOpacity={0.85} onPress={pickPhoto}><Text style={styles.photoPickText}>{_L(TXT.pick)}</Text></TouchableOpacity>
@@ -219,6 +267,10 @@ const styles = StyleSheet.create({
   photoResult: { fontSize: Typography.size.sm, color: Colors.textPrimary, lineHeight: 23, marginBottom: Spacing.lg, backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: BorderRadius.md, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', padding: 16, width: '100%' },
   photoPickBtn: { paddingVertical: 15, paddingHorizontal: 30, borderRadius: 26, borderWidth: 1, borderColor: Colors.gold + '66', backgroundColor: Colors.gold + '1a', marginTop: 6 },
   photoPickText: { fontSize: Typography.size.md, color: Colors.gold, letterSpacing: 1, fontWeight: Typography.weight.semibold },
+  photoMatch: { width: '100%', backgroundColor: Colors.gold + '14', borderRadius: BorderRadius.md, borderWidth: 1, borderColor: Colors.gold + '55', paddingVertical: 20, paddingHorizontal: 18, marginBottom: Spacing.lg, alignItems: 'center' },
+  photoMatchLabel: { fontSize: 10, color: Colors.gold, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8 },
+  photoMatchName: { fontSize: Typography.size.lg, color: Colors.textPrimary, fontWeight: Typography.weight.semibold, letterSpacing: 0.5, textAlign: 'center' },
+  photoMatchHint: { fontSize: 11, color: Colors.gold, marginTop: 10, letterSpacing: 0.5 },
 
   // Chip row: fixed row, no ScrollView, chips share space equally
   chipWrap: {
