@@ -12,7 +12,7 @@ import { getAnimalLore } from '../data/animalLore';
 const EN_SUFFIX_FIELDS = [
   'name', 'element', 'symbolism', 'anatolianMeaning', 'dailyMessage', 'guidance',
   'text', 'aspect', 'origin', 'tradition', 'chakra', 'properties', 'plant',
-  'howToUse', 'affirmation', 'category',
+  'howToUse', 'affirmation', 'category', 'myth',
 ] as const;
 
 // Dil → veri alanı suffix'i. Çevrilmiş içerik eklendikçe (ör. nameDe, originEs…)
