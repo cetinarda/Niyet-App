@@ -197,16 +197,21 @@ async function generateSkyReport(data, lang) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
   const name = _SKY_LANG_NAMES[lang] || "English";
-  const planetsStr = (data.planets || []).map(p => `${p.body} in ${p.sign}${p.retrograde ? " (retrograde)" : ""}`).join(", ");
-  const sys = `You are Sakin's sky-weather voice — warm, lightly poetic, curiosity-evoking, spiritual yet grounded. Write a COLLECTIVE daily sky report about the shared sky above us all (NOT about any single individual, no personal astrology). Interpret the REAL astronomical data below into one flowing, ORIGINAL report. WRITE ENTIRELY IN ${name}, using ONLY ${name} words and letters — never mix in English or any other language (no foreign words at all). Avoid clichés, stock phrases and formulaic openings; vary wording each day. 3 to 5 sentences, flowing prose — no bullet points, no headings, no raw data dump. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
-  const usr = `Real sky data for today:
-- Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
-- Sun: ${data.solar_flares_24h?.count || 0} flares (strongest ${data.solar_flares_24h?.max_class || "quiet"}); geomagnetic Kp ${data.past_7_days?.current_kp}; solar wind ${data.solar_wind?.speed || "?"} km/s
-- Planets: ${planetsStr || "?"}
-- Meteor shower: ${data.meteor?.active ? data.meteor.name + " active" : "none active now"}
-- Comet: ${data.comet?.active ? data.comet.name + " in view" : "none notable now"}
+  const kpLevel = data.interpretation?.current?.en || "calm";
+  const sys = `You are Sakin's sky-weather voice — warm, sincere, lightly poetic, never clichéd. Write a COLLECTIVE daily reading of the shared sky and, above all, the ENERGY FIELD the whole Earth is moving through right now. This is NOT personal astrology and NOT about any single person. NEVER mention zodiac signs, houses, or which planet sits in which sign — ordinary people don't relate to that and it bores them; leave all of it out completely.
 
-Weave these into the collective sky report now (do not list them mechanically; interpret their mood).`;
+Your job: from the REAL space-weather data below, let the reader roughly FEEL which energy the world is under today — is the field calm and clear, lightly charged, or stormy and intense? Open with that overall collective mood in broad strokes. Then weave in only the sky developments that genuinely stand out today (a strong solar flare, a geomagnetic storm, fast solar wind, the Moon's phase, an active meteor shower, a visible comet) — and skip the quiet ones. Speak to "we" / "the world" like someone who looked up and is sincerely telling a friend what the sky feels like and how its energy might be touching us all.
+
+WRITE ENTIRELY IN ${name}, using ONLY ${name} words and letters — never mix in English or any foreign words. Vary your wording every day; avoid stock openings and formulaic phrases — nothing memorized-sounding. 3 to 5 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
+  const usr = `Real space-weather data for today (interpret the collective MOOD, don't recite numbers):
+- Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
+- Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
+- Solar wind: ${data.solar_wind?.speed || "?"} km/s
+- Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
+- Meteor shower: ${data.meteor?.active ? data.meteor.name + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
+- Comet: ${data.comet?.active ? data.comet.name + " visible" : "none notable now"}
+
+Now write the collective sky-energy reading: first let us sense which energy the Earth is under today, then mention only what truly stands out.`;
   try {
     const r = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", 9000, {
       method: "POST",
