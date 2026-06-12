@@ -4384,11 +4384,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4, display:"flex", alignItems:"center", gap:6 }}>
-          <button onClick={toggleMatrix} title="Matrix"
-            style={{ background: matrixMode ? "rgba(0,255,90,0.12)" : "transparent", border:`1px solid ${matrixMode ? "rgba(0,255,90,0.5)" : "rgba(255,255,255,0.18)"}`, borderRadius:14, cursor:"pointer", color: matrixMode ? "#33ff88" : "rgba(255,255,255,0.5)", fontSize:11, letterSpacing:1.5, padding:"5px 10px", fontFamily:"'Jost',sans-serif", textTransform:"uppercase", height:28, lineHeight:1 }}>
-            ◐ Matrix
-          </button>
+        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
           <LangPicker lang={lang} setLang={setLang} compact />
         </div>
       </div>
@@ -5489,6 +5485,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </button>
           );
         })}
+        {/* EKRAN MODU (Matrix) — en sağda ikon. Web-only (iOS'ta gizli). */}
+        {!isNative && (
+          <button onClick={toggleMatrix} aria-label="Matrix" title="Matrix"
+            style={{
+              flex:"0 0 auto", width:40, padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
+              borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+              background: matrixMode ? "rgba(0,255,90,0.16)" : "transparent",
+              border: matrixMode ? "1px solid rgba(0,255,90,0.5)" : "1px solid transparent",
+              color: matrixMode ? "#33ff88" : "rgba(120,200,150,0.7)",
+              boxShadow: matrixMode ? "0 0 12px rgba(0,255,90,0.25)" : "none",
+            }}>
+            <span style={{ fontSize:16, lineHeight:1 }}>◐</span>
+          </button>
+        )}
       </div>
 
       {/* APP GÜNCELLE banner — daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse */}
