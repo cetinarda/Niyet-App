@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View, Text, ScrollView, StyleSheet, TouchableOpacity,
+  View, Text, ScrollView, StyleSheet, TouchableOpacity, Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing } from '../theme/colors';
@@ -66,6 +66,8 @@ export function ChartScreen({ onNavigate }: Props) {
 
   const definedCenters = CENTER_ORDER.filter(k => chart.definedCenters.has(k));
   const undefinedCenters = CENTER_ORDER.filter(k => !chart.definedCenters.has(k));
+  // Harita genişliği: ekran - yatay padding, makul üst sınırla.
+  const mapSize = Math.min(300, Dimensions.get('window').width - Spacing.xl * 2);
 
   return (
     <ScrollView
@@ -145,8 +147,20 @@ export function ChartScreen({ onNavigate }: Props) {
             />
           </View>
         </View>
-        <View style={styles.heroRight}>
-          <Bodygraph chart={chart} size={140} showLabels={false} />
+      </View>
+
+      {/* HARİTA — sade, etiketli bodygraph + tanımlı/tanımsız göstergesi */}
+      <View style={styles.mapBlock}>
+        <Bodygraph chart={chart} size={mapSize} showLabels />
+        <View style={styles.legendRow}>
+          <View style={styles.legendItem}>
+            <View style={styles.legendSolid} />
+            <Text style={styles.legendTxt}>{getLang() === 'en' ? 'Defined · steady' : 'Tanımlı · sabit'}</Text>
+          </View>
+          <View style={styles.legendItem}>
+            <View style={styles.legendHollow} />
+            <Text style={styles.legendTxt}>{getLang() === 'en' ? 'Open · learning' : 'Tanımsız · öğrenen'}</Text>
+          </View>
         </View>
       </View>
 
@@ -507,8 +521,34 @@ const styles = StyleSheet.create({
     borderTopWidth: 1, borderBottomWidth: 1,
     borderColor: Colors.divider,
   },
-  heroLeft: { flex: 1, paddingRight: Spacing.md },
+  heroLeft: { flex: 1 },
   heroRight: { width: 140, alignItems: 'center' },
+
+  mapBlock: {
+    alignItems: 'center',
+    paddingTop: Spacing.xl,
+    paddingBottom: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.divider,
+  },
+  legendRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: Spacing.lg,
+    gap: Spacing.xl as any,
+  },
+  legendItem: { flexDirection: 'row', alignItems: 'center' },
+  legendSolid: {
+    width: 12, height: 12, borderRadius: 3,
+    backgroundColor: Colors.gold, marginRight: 7,
+  },
+  legendHollow: {
+    width: 12, height: 12, borderRadius: 3,
+    borderWidth: 1.4, borderColor: 'rgba(255,255,255,0.30)', marginRight: 7,
+  },
+  legendTxt: {
+    fontSize: Typography.size.xs, color: Colors.textMuted, letterSpacing: 0.3,
+  },
   heroType: {
     fontSize: Typography.size.xxl,
     color: Colors.text,

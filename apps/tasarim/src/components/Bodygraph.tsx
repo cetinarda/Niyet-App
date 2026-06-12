@@ -1,5 +1,5 @@
 import React from 'react';
-import Svg, { Polygon, Rect, Path, Line, Circle, Text as SvgText, G } from 'react-native-svg';
+import Svg, { Polygon, Rect, Line, Circle, Text as SvgText, G } from 'react-native-svg';
 import { View, StyleSheet } from 'react-native';
 import { Colors } from '../theme/colors';
 import { CenterKey, CENTERS } from '../data/centers';
@@ -32,159 +32,127 @@ const CENTER_LAYOUT: CenterShape[] = [
   { key: 'root',        x: 150, y: 460, shape: 'square',        size: 76, color: CENTERS.root.color },
 ];
 
-// Her gate için bodygraph üzerinde yaklaşık konum (merkez yüzeyinde)
-// Sadece görselleştirme için yaklaşık yerler.
-const GATE_POSITIONS: Record<number, { x: number; y: number }> = {
-  // Head (3 kapı)
-  64: { x: 130, y: 24 }, 61: { x: 150, y: 18 }, 63: { x: 170, y: 24 },
-  // Ajna (6 kapı)
-  47: { x: 124, y: 92 }, 24: { x: 150, y: 86 }, 4: { x: 176, y: 92 },
-  17: { x: 124, y: 112 }, 43: { x: 150, y: 118 }, 11: { x: 176, y: 112 },
-  // Throat (11 kapı)
-  62: { x: 122, y: 152 }, 23: { x: 142, y: 152 }, 56: { x: 162, y: 152 },
-  35: { x: 182, y: 158 }, 12: { x: 122, y: 168 }, 45: { x: 178, y: 168 },
-  33: { x: 122, y: 184 }, 8: { x: 142, y: 184 }, 31: { x: 162, y: 184 },
-  20: { x: 178, y: 184 }, 16: { x: 142, y: 196 },
-  // G
-  1: { x: 150, y: 224 }, 13: { x: 174, y: 244 }, 25: { x: 150, y: 254 },
-  46: { x: 126, y: 244 }, 2: { x: 138, y: 268 }, 15: { x: 162, y: 268 },
-  10: { x: 130, y: 232 }, 7: { x: 170, y: 232 },
-  // Heart
-  21: { x: 210, y: 240 }, 40: { x: 232, y: 252 }, 26: { x: 218, y: 264 }, 51: { x: 218, y: 232 },
-  // Solar Plexus
-  36: { x: 240, y: 340 }, 22: { x: 252, y: 350 }, 37: { x: 264, y: 360 },
-  6: { x: 246, y: 372 }, 49: { x: 230, y: 376 }, 55: { x: 256, y: 384 }, 30: { x: 232, y: 360 },
-  // Sacral
-  34: { x: 130, y: 348 }, 5: { x: 150, y: 344 }, 14: { x: 170, y: 348 },
-  29: { x: 130, y: 360 }, 59: { x: 150, y: 360 }, 9: { x: 170, y: 360 },
-  3: { x: 130, y: 374 }, 42: { x: 150, y: 374 }, 27: { x: 170, y: 374 },
-  // Spleen
-  48: { x: 76, y: 348 }, 57: { x: 64, y: 360 }, 44: { x: 52, y: 360 },
-  50: { x: 70, y: 376 }, 32: { x: 56, y: 376 }, 28: { x: 84, y: 360 }, 18: { x: 70, y: 348 },
-  // Root
-  58: { x: 116, y: 446 }, 38: { x: 130, y: 446 }, 54: { x: 144, y: 446 },
-  53: { x: 158, y: 446 }, 60: { x: 172, y: 446 }, 52: { x: 186, y: 446 },
-  19: { x: 116, y: 474 }, 39: { x: 150, y: 474 }, 41: { x: 184, y: 474 },
+// Kanal çizimi için merkez bağlantı noktaları (gate noktaları kaldırıldı; kanallar
+// merkez-merkez sade çizgilerle gösterilir). Her merkezin tek temsil noktası.
+const CENTER_POINT: Record<CenterKey, { x: number; y: number }> = Object.fromEntries(
+  CENTER_LAYOUT.map(c => [c.key, { x: c.x, y: c.y }]),
+) as Record<CenterKey, { x: number; y: number }>;
+
+// Merkez kısa etiketleri (sade, büyük harf — referans infografik tarzı, Sakin paleti).
+const SHORT: Record<CenterKey, { tr: string; en: string }> = {
+  head:        { tr: 'KAFA',   en: 'HEAD' },
+  ajna:        { tr: 'AJNA',   en: 'AJNA' },
+  throat:      { tr: 'BOĞAZ',  en: 'THROAT' },
+  g:           { tr: 'BENLİK', en: 'SELF' },
+  heart:       { tr: 'EGO',    en: 'EGO' },
+  solarPlexus: { tr: 'DUYGU',  en: 'EMOTION' },
+  sacral:      { tr: 'SAKRAL', en: 'SACRAL' },
+  spleen:      { tr: 'DALAK',  en: 'SPLEEN' },
+  root:        { tr: 'KÖK',    en: 'ROOT' },
 };
 
 interface Props {
   chart: HumanDesignChart | null;
   size?: number;            // istenen genişlik
-  showLabels?: boolean;
+  showLabels?: boolean;     // true → merkez içinde kısa ad göster
 }
 
 export function Bodygraph({ chart, size = 300, showLabels = true }: Props) {
   const scale = size / W;
   const height = H * scale;
 
-  function renderShape(c: CenterShape, fillStyle: string) {
-    const stroke = Colors.centerStroke;
-    const sw = 1.2;
+  // grow=1 ana şekil; grow>1 → arkadaki yumuşak hâle (tanımlı merkez parıltısı).
+  function shapePoints(c: CenterShape, grow = 1): { kind: 'rect'; x: number; y: number; w: number; h: number } | { kind: 'poly'; points: string } {
+    const sz = c.size * grow;
     if (c.shape === 'square') {
-      const s = c.size;
-      return (
-        <Rect
-          key={`bg-${c.key}`}
-          x={c.x - s / 2} y={c.y - s / 2}
-          width={s} height={s}
-          fill={fillStyle} stroke={stroke} strokeWidth={sw}
-        />
-      );
+      return { kind: 'rect', x: c.x - sz / 2, y: c.y - sz / 2, w: sz, h: sz };
     }
     if (c.shape === 'diamond') {
-      const s = c.size / 2;
-      const points = `${c.x},${c.y - s} ${c.x + s},${c.y} ${c.x},${c.y + s} ${c.x - s},${c.y}`;
-      return (
-        <Polygon key={`bg-${c.key}`} points={points}
-          fill={fillStyle} stroke={stroke} strokeWidth={sw} />
-      );
+      const s = sz / 2;
+      return { kind: 'poly', points: `${c.x},${c.y - s} ${c.x + s},${c.y} ${c.x},${c.y + s} ${c.x - s},${c.y}` };
     }
+    const h = (Math.sqrt(3) / 2) * sz;
     if (c.shape === 'triangle-up') {
-      const s = c.size;
-      const h = (Math.sqrt(3) / 2) * s;
-      const points = `${c.x},${c.y - h / 2} ${c.x + s / 2},${c.y + h / 2} ${c.x - s / 2},${c.y + h / 2}`;
-      return (
-        <Polygon key={`bg-${c.key}`} points={points}
-          fill={fillStyle} stroke={stroke} strokeWidth={sw} />
-      );
+      return { kind: 'poly', points: `${c.x},${c.y - h / 2} ${c.x + sz / 2},${c.y + h / 2} ${c.x - sz / 2},${c.y + h / 2}` };
     }
     // triangle-down
-    const s = c.size;
-    const h = (Math.sqrt(3) / 2) * s;
-    const points = `${c.x},${c.y + h / 2} ${c.x + s / 2},${c.y - h / 2} ${c.x - s / 2},${c.y - h / 2}`;
-    return (
-      <Polygon key={`bg-${c.key}`} points={points}
-        fill={fillStyle} stroke={stroke} strokeWidth={sw} />
-    );
+    return { kind: 'poly', points: `${c.x},${c.y + h / 2} ${c.x + sz / 2},${c.y - h / 2} ${c.x - sz / 2},${c.y - h / 2}` };
+  }
+
+  function drawShape(c: CenterShape, fill: string, stroke: string, sw: number, grow = 1, keySuffix = '') {
+    const p = shapePoints(c, grow);
+    if (p.kind === 'rect') {
+      return <Rect key={`bg-${c.key}${keySuffix}`} x={p.x} y={p.y} width={p.w} height={p.h} rx={6} fill={fill} stroke={stroke} strokeWidth={sw} />;
+    }
+    return <Polygon key={`bg-${c.key}${keySuffix}`} points={p.points} fill={fill} stroke={stroke} strokeWidth={sw} strokeLinejoin="round" />;
   }
 
   const defined = chart?.definedCenters;
   const activeGates = chart?.activeGates || new Set<number>();
-  const personalityGates = chart?.personalityGates || new Set<number>();
-  const designGates = chart?.designGates || new Set<number>();
-  const activeChannels = chart?.activeChannels || [];
+  const lang = getLang();
+  void L;
+  const a11yLabel = lang === 'en' ? 'Bodygraph chart' : 'Bodygraph haritası';
 
-  // Her gate'in iki taraftan biri (Personality / Design / Both) olabilir
-  function gateColor(g: number): string {
-    const inP = personalityGates.has(g);
-    const inD = designGates.has(g);
-    if (inP && inD) return Colors.gold;
-    if (inP) return '#000';
-    if (inD) return Colors.ember;
-    return 'rgba(255,255,255,0.18)';
+  // Bir kanalın iki ucu da aktif mi? (tanımlı kanal → belirgin çizgi)
+  function channelActive(gates: [number, number]): boolean {
+    return activeGates.has(gates[0]) && activeGates.has(gates[1]);
   }
 
-  // i18n: bodygraph yalnız kapı numaraları ve renkler gösterir (yerelleştirilecek
-  // metin yok); köprü tutarlılığı için L/getLang import edilir ve erişilebilirlik
-  // etiketi dile göre verilir.
-  void L;
-  const a11yLabel = getLang() === 'en' ? 'Bodygraph chart' : 'Bodygraph haritası';
-
   return (
-    <View
-      style={[styles.wrap, { width: size, height }]}
-      accessibilityLabel={a11yLabel}
-    >
+    <View style={[styles.wrap, { width: size, height }]} accessibilityLabel={a11yLabel}>
       <Svg width={size} height={height} viewBox={`0 0 ${W} ${H}`}>
-        {/* Channel lines (önce undefined olanlar) */}
+        {/* 1) Kanal iskeleti — çok sönük, yapı ipucu (merkez-merkez) */}
         {CHANNELS.map(ch => {
-          const a = GATE_POSITIONS[ch.gates[0]];
-          const b = GATE_POSITIONS[ch.gates[1]];
-          if (!a || !b) return null;
-          const isActive = activeGates.has(ch.gates[0]) && activeGates.has(ch.gates[1]);
+          const a = CENTER_POINT[ch.centers[0] as CenterKey];
+          const b = CENTER_POINT[ch.centers[1] as CenterKey];
+          if (!a || !b || channelActive(ch.gates as [number, number])) return null;
+          return <Line key={`sk-${ch.id}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={Colors.channelUndefined} strokeWidth={1} />;
+        })}
+
+        {/* 2) Tanımlı kanallar — belirgin altın çizgi (merkezlerin altında) */}
+        {CHANNELS.map(ch => {
+          const a = CENTER_POINT[ch.centers[0] as CenterKey];
+          const b = CENTER_POINT[ch.centers[1] as CenterKey];
+          if (!a || !b || !channelActive(ch.gates as [number, number])) return null;
+          return <Line key={`ac-${ch.id}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={Colors.channelDefined} strokeWidth={2.6} strokeLinecap="round" />;
+        })}
+
+        {/* 3) Merkezler */}
+        {CENTER_LAYOUT.map(c => {
+          const isDef = defined?.has(c.key);
+          if (isDef) {
+            // Tanımlı: dolu renk + arkada yumuşak hâle (parıltı)
+            return (
+              <G key={`grp-${c.key}`}>
+                {drawShape(c, c.color, 'none', 0, 1.22, '-halo')}
+                {drawShape(c, c.color, 'rgba(255,255,255,0.30)', 1.2, 1)}
+              </G>
+            );
+          }
+          // Tanımsız: içi boş, net ince çerçeve → "açık/geçirgen" okunur
           return (
-            <Line
-              key={`ch-${ch.id}`}
-              x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-              stroke={isActive ? Colors.channelDefined : Colors.channelUndefined}
-              strokeWidth={isActive ? 2.4 : 1}
-            />
+            <G key={`grp-${c.key}`}>
+              {drawShape(c, 'transparent', 'rgba(255,255,255,0.24)', 1.4, 1)}
+            </G>
           );
         })}
 
-        {/* Centers — undefined yarı saydam, defined merkez rengi */}
-        {CENTER_LAYOUT.map(c => {
+        {/* 4) Merkez kısa adları (şekil içinde) — tanımlı koyu, tanımsız sönük açık */}
+        {showLabels && CENTER_LAYOUT.map(c => {
           const isDef = defined?.has(c.key);
-          return renderShape(c, isDef ? c.color : Colors.centerUndefined);
-        })}
-
-        {/* Gate noktaları */}
-        {Object.entries(GATE_POSITIONS).map(([gStr, pos]) => {
-          const g = Number(gStr);
-          const isActive = activeGates.has(g);
+          // triangle-up'ta geniş alan altta, triangle-down'da üstte; merkeze yakın tut.
+          const dy = c.shape === 'triangle-up' ? c.size * 0.14 : c.shape === 'triangle-down' ? -c.size * 0.10 : 0;
+          const label = lang === 'en' ? SHORT[c.key].en : SHORT[c.key].tr;
           return (
-            <G key={`g-${g}`}>
-              <Circle cx={pos.x} cy={pos.y} r={isActive ? 5 : 3} fill={gateColor(g)} />
-              {showLabels && (
-                <SvgText
-                  x={pos.x} y={pos.y + 2}
-                  fontSize="6"
-                  fontWeight="700"
-                  fill={isActive ? '#FFF' : 'rgba(255,255,255,0.45)'}
-                  textAnchor="middle"
-                >{g}</SvgText>
-              )}
-            </G>
+            <SvgText
+              key={`lb-${c.key}`}
+              x={c.x} y={c.y + dy + 2.5}
+              fontSize={7.5}
+              fontWeight="700"
+              letterSpacing={0.4}
+              fill={isDef ? 'rgba(13,11,20,0.78)' : 'rgba(255,255,255,0.46)'}
+              textAnchor="middle"
+            >{label}</SvgText>
           );
         })}
       </Svg>
