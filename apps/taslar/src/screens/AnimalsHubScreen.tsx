@@ -133,7 +133,11 @@ export function AnimalsHubScreen() {
           });
           const d = await r.json();
           const raw = (d.text || '').trim();
-          if (!raw || /^UNSURE\b/i.test(raw)) {
+          const lines = raw.split('\n').map((l: string) => l.trim()).filter(Boolean);
+          const malformed = lines.length < 3
+            || lines.some((l: string) => /^\d+[.)]\s*$/.test(l))
+            || /^\d+[.)]?\s*sakin\b/i.test(lines[0] || '');
+          if (!raw || /^UNSURE\b/i.test(raw) || malformed) {
             // Tanıyamadı: 1. denemede daha net foto iste, 2.+ denemede şefkatli özür.
             const n = failTries + 1; setFailTries(n);
             setPhotoStatus(n >= 2 ? 'sorry' : 'retry');

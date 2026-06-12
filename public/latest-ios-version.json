@@ -1,7 +1,7 @@
 {
-  "version": "1.2.8",
+  "version": "1.2.9",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Sakin Bitkiler ailede: şifalı bitki rehberin artık Sakin Ailesi'nde. Fotoğrafla tanıma artık daha isabetli: bir taş ya da bitkinin fotoğrafını çek, ne olduğunu öğren — ailede varsa dokununca detay sayfası açılır, emin olunmazsa nazikçe daha net bir fotoğraf istenir. Taşlar ve bitkiler tüm dillerde eksiksiz; ikonik bitki ve taşlara (gül, lotus, zeytin, firuze...) Anadolu ağırlıklı efsane bölümleri eklendi. Gökyüzü Raporu daha samimi. Önemli düzeltmeler: fotoğrafla tanıma ve panik nefes butonu yeniden devrede.",
-  "release_notes_en": "Sakin Plants joins the family: your healing-plant guide is now in the Sakin Family. Photo identify is now more accurate: snap a stone or plant to learn what it is — if it's in the family, tap to open its page; if uncertain, you're gently asked for a clearer photo. Stones and plants are complete in all languages, with Anatolian-rich lore added to iconic plants and stones (rose, lotus, olive, turquoise...). A warmer Sky Report. Key fixes: photo identify and the panic breathing button are back in action."
+  "release_notes_tr": "Fotoğraf çek/yükle: taş ve bitki tanıma daha isabetli ve tutarlı. 7 dil desteği tamamlandı. Genel iyileştirmeler.",
+  "release_notes_en": "Snap or upload a photo: stone and plant identification is more accurate and consistent. Full support for 7 languages. General improvements."
 }

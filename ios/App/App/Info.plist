@@ -6,6 +6,16 @@
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>tr</string>
+		<string>de</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>pt</string>
+		<string>ja</string>
+	</array>
 	<key>CFBundleDisplayName</key>
         <string>Sakin</string>
 	<key>CFBundleExecutable</key>
