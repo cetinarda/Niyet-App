@@ -1224,7 +1224,7 @@ function MatrixRain() {
       for (let i = 0; i < cols; i++) {
         const ch = GL[(Math.random() * GL.length) | 0];
         const x = i * FS, y = drops[i];
-        ctx.fillStyle = Math.random() > 0.974 ? "#c8ffd4" : "#11c44a";
+        ctx.fillStyle = Math.random() > 0.978 ? "#79b893" : "#0a7c30";
         ctx.fillText(ch, x, y);
         drops[i] = (y > H && Math.random() > 0.972) ? 0 : y + FS;
       }
@@ -1241,7 +1241,7 @@ const GLOBAL_CSS = `
   html, body { background: #000000; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
 
-  /* ── MATRIX MODU (deneysel efekt katmanı) ── */
+  /* ── MATRIX MODU — CRT terminal hissi, göz yormayan kısık yeşil ── */
   .matrix-mode { background: transparent !important; }
   .matrix-mode, .matrix-mode * {
     font-family: 'Courier New', ui-monospace, monospace !important;
@@ -1249,20 +1249,28 @@ const GLOBAL_CSS = `
   }
   .sakin-matrix-rain {
     position: fixed; inset: 0; width: 100vw; height: 100vh;
-    z-index: 0; pointer-events: none; opacity: 0.55;
+    z-index: 0; pointer-events: none; opacity: 0.30;
   }
+  /* 1) Karart — parlak alanların ışığını kıs (multiply) */
+  .sakin-matrix-dim {
+    position: fixed; inset: 0; z-index: 99988; pointer-events: none;
+    background: rgba(0,9,3,0.42); mix-blend-mode: multiply;
+  }
+  /* 2) Yeşile boya — daha sönük ton (color) */
   .sakin-matrix-tint {
     position: fixed; inset: 0; z-index: 99990; pointer-events: none;
-    background: #00c843; mix-blend-mode: color;
+    background: #0a7a2f; mix-blend-mode: color;
   }
-  .sakin-matrix-pop {
-    position: fixed; inset: 0; z-index: 99991; pointer-events: none;
-    background: #00ff66; mix-blend-mode: overlay; opacity: 0.10;
+  /* 3) CRT tarama çizgileri — yumuşatır + film ekranı dokusu */
+  .sakin-matrix-scan {
+    position: fixed; inset: 0; z-index: 99992; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.16) 3px);
+    opacity: 0.9;
   }
-  .sakin-matrix-deepen {
-    position: fixed; inset: 0; z-index: 99989; pointer-events: none;
-    background: radial-gradient(120% 90% at 50% 25%, rgba(0,0,0,0) 35%, rgba(0,10,3,0.6) 100%);
-    mix-blend-mode: multiply;
+  /* 4) Vinyet — kenarları karart, merkeze topla (cam/CRT içinden) */
+  .sakin-matrix-vignette {
+    position: fixed; inset: 0; z-index: 99993; pointer-events: none;
+    background: radial-gradient(125% 95% at 50% 42%, rgba(0,0,0,0) 30%, rgba(0,8,2,0.55) 78%, rgba(0,5,1,0.82) 100%);
   }
 
   /* ── Animations ── */
@@ -4349,13 +4357,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   return (
     <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
-      {/* MATRIX MODU katmanları — Sakin Ailesi paneli + embed app açıkken KAPSAM DIŞI (gizlenir) */}
-      {matrixMode && !showAilesi && !embeddedApp && (
+      {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
+      {matrixMode && (
         <>
           <MatrixRain />
-          <div className="sakin-matrix-deepen" aria-hidden="true" />
+          <div className="sakin-matrix-dim" aria-hidden="true" />
           <div className="sakin-matrix-tint" aria-hidden="true" />
-          <div className="sakin-matrix-pop" aria-hidden="true" />
+          <div className="sakin-matrix-scan" aria-hidden="true" />
+          <div className="sakin-matrix-vignette" aria-hidden="true" />
         </>
       )}
       {/* iOS WKWebView'in AVAudioSession rotasını açık tutan sessiz loop ses. Frekans
