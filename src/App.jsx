@@ -293,6 +293,21 @@ const ELEM_I18N = {
   title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
   hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun — sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart — then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht — dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta — luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa — depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte — il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
 };
+// Burç → element. Doğum haritası noktalarından (güneş, yükselen, 12. ev, draconic güneş)
+// element dağılımını host'ta hesaplar — Sakin Tasarım'a yönlendirmeye gerek kalmaz.
+const SIGN_ELEMENT = {
+  "Koç":"ates","Aslan":"ates","Yay":"ates",
+  "Boğa":"toprak","Başak":"toprak","Oğlak":"toprak",
+  "İkizler":"hava","Terazi":"hava","Kova":"hava",
+  "Yengeç":"su","Akrep":"su","Balık":"su",
+};
+function elementDistFromSigns(signs) {
+  const c = { ates:0, toprak:0, hava:0, su:0 };
+  let n = 0;
+  for (const s of (signs || [])) { const e = SIGN_ELEMENT[s]; if (e) { c[e]++; n++; } }
+  if (!n) return null;
+  return { ates:c.ates/n, toprak:c.toprak/n, hava:c.hava/n, su:c.su/n };
+}
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
@@ -7106,8 +7121,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Eski gün-serisi/en-iyi/kart istatistikleri kaldırıldı; yer buraya açıldı.
           let yAfterElements = 1170;
           try {
-            const ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
-            if (ed && ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) > 0.5) {
+            let ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
+            const edSum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
+            if (!ed || edSum <= 0.5) ed = elementDistFromSigns([astro?.burc, yukselen, ev12Burcu, draconicGunes]);
+            if (ed) {
               const isEn = lang === "en";
               ctx.fillStyle = "#7a7090";
               ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
@@ -7285,13 +7302,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   let ed = null;
                   try { ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null"); } catch(_) {}
                   const sum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-                  // Veri yoksa sessizce gizleme — kullanıcıyı Sakin Tasarım'a nazikçe yönlendir.
-                  if (!ed || sum <= 0.5) return (
-                    <div style={{ padding:"10px 12px",background:"rgba(184,160,216,0.05)",border:"1px solid rgba(184,160,216,0.14)",borderRadius:10,marginBottom:10 }}>
-                      <div style={{ fontSize:8,letterSpacing:2.5,color:"#8878a8",textTransform:"uppercase",marginBottom:6,textAlign:"center" }}>{pickLang(ELEM_I18N.title, lang)}</div>
-                      <div style={{ fontSize:11,color:"#a89cb8",lineHeight:1.6,textAlign:"center" }}>{pickLang(ELEM_I18N.hint, lang)}</div>
-                    </div>
-                  );
+                  // Tasarım'dan zengin veri varsa onu kullan; yoksa doğum bilgilerinden burada hesapla.
+                  if (!ed || sum <= 0.5) ed = elementDistFromSigns([astro?.burc, yukselen, ev12Burcu, draconicGunes]);
+                  // Doğum bilgisi yoksa sessizce gizle — yönlendirme yok.
+                  if (!ed) return null;
                   const isEn = lang === "en";
                   const items = [
                     ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
