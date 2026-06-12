@@ -1224,7 +1224,7 @@ function MatrixRain() {
       for (let i = 0; i < cols; i++) {
         const ch = GL[(Math.random() * GL.length) | 0];
         const x = i * FS, y = drops[i];
-        ctx.fillStyle = Math.random() > 0.978 ? "#79b893" : "#0a7c30";
+        ctx.fillStyle = Math.random() > 0.976 ? "#9ad9ad" : "#0e9c3c";
         ctx.fillText(ch, x, y);
         drops[i] = (y > H && Math.random() > 0.972) ? 0 : y + FS;
       }
@@ -1249,28 +1249,28 @@ const GLOBAL_CSS = `
   }
   .sakin-matrix-rain {
     position: fixed; inset: 0; width: 100vw; height: 100vh;
-    z-index: 0; pointer-events: none; opacity: 0.30;
+    z-index: 0; pointer-events: none; opacity: 0.44;
   }
-  /* 1) Karart — parlak alanların ışığını kıs (multiply) */
+  /* 1) Karart — parlak alanların ışığını kıs (multiply, hafif) */
   .sakin-matrix-dim {
     position: fixed; inset: 0; z-index: 99988; pointer-events: none;
-    background: rgba(0,9,3,0.42); mix-blend-mode: multiply;
+    background: rgba(0,9,3,0.24); mix-blend-mode: multiply;
   }
-  /* 2) Yeşile boya — daha sönük ton (color) */
+  /* 2) Yeşile boya — orta ton (color) */
   .sakin-matrix-tint {
     position: fixed; inset: 0; z-index: 99990; pointer-events: none;
-    background: #0a7a2f; mix-blend-mode: color;
+    background: #079a37; mix-blend-mode: color;
   }
-  /* 3) CRT tarama çizgileri — yumuşatır + film ekranı dokusu */
+  /* 3) CRT tarama çizgileri — hafif film ekranı dokusu */
   .sakin-matrix-scan {
     position: fixed; inset: 0; z-index: 99992; pointer-events: none;
-    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.16) 3px);
-    opacity: 0.9;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0.10) 3px);
+    opacity: 0.85;
   }
-  /* 4) Vinyet — kenarları karart, merkeze topla (cam/CRT içinden) */
+  /* 4) Vinyet — kenarları hafif karart (cam/CRT içinden) */
   .sakin-matrix-vignette {
     position: fixed; inset: 0; z-index: 99993; pointer-events: none;
-    background: radial-gradient(125% 95% at 50% 42%, rgba(0,0,0,0) 30%, rgba(0,8,2,0.55) 78%, rgba(0,5,1,0.82) 100%);
+    background: radial-gradient(125% 95% at 50% 42%, rgba(0,0,0,0) 34%, rgba(0,8,2,0.38) 80%, rgba(0,6,2,0.60) 100%);
   }
 
   /* ── Animations ── */
