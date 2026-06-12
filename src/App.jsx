@@ -1200,11 +1200,70 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
   );
 }
 
+// Matrix kod yağmuru — fixed arka plan canvas'ı (yalnız matrix modda mount edilir).
+function MatrixRain() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const cv = ref.current; if (!cv) return;
+    const ctx = cv.getContext("2d");
+    const FS = 16;
+    const GL = "0123456789∴✦◇△◯ｱｶｻﾀﾅﾊﾏﾔﾗ零一二三サキン";
+    let raf, W, H, cols, drops, last = 0;
+    const resize = () => {
+      W = cv.width = window.innerWidth; H = cv.height = window.innerHeight;
+      cols = Math.ceil(W / FS);
+      drops = Array.from({ length: cols }, () => Math.random() * -H);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+    const frame = (ts) => {
+      raf = requestAnimationFrame(frame);
+      if (ts - last < 55) return; last = ts; // ~18fps — hafif
+      ctx.fillStyle = "rgba(0,6,0,0.16)"; ctx.fillRect(0, 0, W, H);
+      ctx.font = FS + "px 'Courier New', monospace";
+      for (let i = 0; i < cols; i++) {
+        const ch = GL[(Math.random() * GL.length) | 0];
+        const x = i * FS, y = drops[i];
+        ctx.fillStyle = Math.random() > 0.974 ? "#c8ffd4" : "#11c44a";
+        ctx.fillText(ch, x, y);
+        drops[i] = (y > H && Math.random() > 0.972) ? 0 : y + FS;
+      }
+    };
+    raf = requestAnimationFrame(frame);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={ref} className="sakin-matrix-rain" aria-hidden="true" />;
+}
+
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
   * { box-sizing: border-box; }
   html, body { background: #000000; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); }
+
+  /* ── MATRIX MODU (deneysel efekt katmanı) ── */
+  .matrix-mode { background: transparent !important; }
+  .matrix-mode, .matrix-mode * {
+    font-family: 'Courier New', ui-monospace, monospace !important;
+    letter-spacing: 0.2px;
+  }
+  .sakin-matrix-rain {
+    position: fixed; inset: 0; width: 100vw; height: 100vh;
+    z-index: 0; pointer-events: none; opacity: 0.55;
+  }
+  .sakin-matrix-tint {
+    position: fixed; inset: 0; z-index: 99990; pointer-events: none;
+    background: #00c843; mix-blend-mode: color;
+  }
+  .sakin-matrix-pop {
+    position: fixed; inset: 0; z-index: 99991; pointer-events: none;
+    background: #00ff66; mix-blend-mode: overlay; opacity: 0.10;
+  }
+  .sakin-matrix-deepen {
+    position: fixed; inset: 0; z-index: 99989; pointer-events: none;
+    background: radial-gradient(120% 90% at 50% 25%, rgba(0,0,0,0) 35%, rgba(0,10,3,0.6) 100%);
+    mix-blend-mode: multiply;
+  }
 
   /* ── Animations ── */
   @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
@@ -2645,6 +2704,11 @@ const JOURNEY_STEPS = [
 export default function SakinApp() {
   const [lang, setLang] = useState(() => { const v = localStorage.getItem("sakin_lang") || "en"; return v === "pt-BR" ? "pt" : v; });
   const [langOpen, setLangOpen] = useState(false);
+  // ── MATRIX MODU (deneysel) — efekt katmanı: yeşil tint + kod yağmuru + monospace.
+  // Tüm UI'yı tek tek elden geçirmeden uygular. Sakin Ailesi paneli + embed app'ler
+  // kapsam DIŞI (aşağıda overlay onlarda gizlenir).
+  const [matrixMode, setMatrixMode] = useState(() => localStorage.getItem("sakin_matrix") === "1");
+  const toggleMatrix = () => setMatrixMode(m => { const n = !m; try { localStorage.setItem("sakin_matrix", n ? "1" : "0"); } catch {} return n; });
   const t = makeTrans(lang);
 
   // ── iOS Safari ses kurtarma ─────────────────────────────────────────────────
@@ -4283,8 +4347,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
   return (
-    <div onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
+      {/* MATRIX MODU katmanları — Sakin Ailesi paneli + embed app açıkken KAPSAM DIŞI (gizlenir) */}
+      {matrixMode && !showAilesi && !embeddedApp && (
+        <>
+          <MatrixRain />
+          <div className="sakin-matrix-deepen" aria-hidden="true" />
+          <div className="sakin-matrix-tint" aria-hidden="true" />
+          <div className="sakin-matrix-pop" aria-hidden="true" />
+        </>
+      )}
       {/* iOS WKWebView'in AVAudioSession rotasını açık tutan sessiz loop ses. Frekans
           çaldığında play(), durdurduğunda pause(). DOM elementi olarak preload edilir;
           böylece play() ilk kullanıcı jestinde anında çalışır. */}
@@ -4311,7 +4384,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
+        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4, display:"flex", alignItems:"center", gap:6 }}>
+          <button onClick={toggleMatrix} title="Matrix"
+            style={{ background: matrixMode ? "rgba(0,255,90,0.12)" : "transparent", border:`1px solid ${matrixMode ? "rgba(0,255,90,0.5)" : "rgba(255,255,255,0.18)"}`, borderRadius:14, cursor:"pointer", color: matrixMode ? "#33ff88" : "rgba(255,255,255,0.5)", fontSize:11, letterSpacing:1.5, padding:"5px 10px", fontFamily:"'Jost',sans-serif", textTransform:"uppercase", height:28, lineHeight:1 }}>
+            ◐ Matrix
+          </button>
           <LangPicker lang={lang} setLang={setLang} compact />
         </div>
       </div>
