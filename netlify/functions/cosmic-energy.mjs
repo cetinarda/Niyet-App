@@ -219,7 +219,8 @@ Now write the collective sky-energy reading: first let us sense which energy the
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         max_tokens: 500,
-        temperature: 0.9,
+        temperature: 0.72,
+        top_p: 0.9,
         messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
       }),
     });
