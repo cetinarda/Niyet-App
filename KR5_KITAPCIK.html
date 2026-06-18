@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kendi Ritminde 5 — Sosyal Medya Lansman Kitapçığı</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  @page {
+    size: A5;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-center {
+      content: counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #7a8b6f;
+    }
+  }
+  @page :first {
+    margin: 0;
+    @bottom-center { content: none; }
+  }
+
+  :root {
+    --leaf: #7a8b6f;
+    --moss: #5d6e54;
+    --earth: #8c6f4f;
+    --sand: #f5efe6;
+    --cream: #faf6ef;
+    --ink: #2e2540;
+    --terracotta: #c97b5f;
+    --gold: #c9a14a;
+    --line: #d4c9b3;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--cream);
+  }
+
+  .book {
+    max-width: 148mm;
+    margin: 0 auto;
+    background: var(--cream);
+  }
+
+  /* ===== Cover ===== */
+  .cover {
+    page-break-after: always;
+    height: 210mm;
+    background: linear-gradient(135deg, #5d6e54 0%, #7a8b6f 60%, #8c6f4f 100%);
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22mm 18mm;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: "🌿";
+    position: absolute;
+    font-size: 240pt;
+    opacity: 0.06;
+    right: -40pt;
+    bottom: -80pt;
+    transform: rotate(-15deg);
+  }
+  .cover .leaf {
+    font-size: 22pt;
+    opacity: 0.85;
+  }
+  .cover .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 9pt;
+    letter-spacing: 4pt;
+    text-transform: uppercase;
+    opacity: 0.85;
+    margin-top: 8pt;
+  }
+  .cover h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 48pt;
+    line-height: 1.05;
+    margin: 16pt 0 8pt 0;
+    letter-spacing: -0.5pt;
+  }
+  .cover h1 em {
+    font-style: italic;
+    color: #f0d9a8;
+    font-weight: 300;
+  }
+  .cover .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18pt;
+    line-height: 1.3;
+    opacity: 0.95;
+    max-width: 95mm;
+  }
+  .cover .meta {
+    border-top: 0.5pt solid rgba(255,255,255,0.35);
+    padding-top: 12pt;
+    font-size: 9pt;
+    line-height: 1.7;
+    opacity: 0.88;
+  }
+  .cover .meta strong { font-weight: 500; letter-spacing: 0.5pt; }
+  .cover .niyet {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14pt;
+    color: #f0d9a8;
+    margin-top: 6pt;
+  }
+
+  /* ===== Inner Pages ===== */
+  .page {
+    page-break-after: always;
+    padding: 0;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-size: 22pt;
+    line-height: 1.15;
+    color: var(--moss);
+    margin: 0 0 4pt 0;
+    letter-spacing: -0.3pt;
+  }
+  h2 .num {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    font-size: 10pt;
+    color: var(--earth);
+    letter-spacing: 3pt;
+    vertical-align: middle;
+    margin-right: 10pt;
+    border: 0.5pt solid var(--earth);
+    padding: 2pt 8pt;
+    border-radius: 20pt;
+  }
+  h2 + .lede {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 12pt;
+    color: var(--earth);
+    margin: 0 0 14pt 0;
+    padding-bottom: 10pt;
+    border-bottom: 0.5pt solid var(--line);
+  }
+
+  h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 13pt;
+    color: var(--ink);
+    margin: 14pt 0 4pt 0;
+  }
+  h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 1.5pt;
+    color: var(--moss);
+    margin: 12pt 0 4pt 0;
+  }
+
+  p { margin: 0 0 8pt 0; }
+  ul, ol { margin: 0 0 10pt 0; padding-left: 18pt; }
+  ul li, ol li { margin-bottom: 3pt; }
+  ul { list-style: none; padding-left: 0; }
+  ul li { padding-left: 16pt; position: relative; }
+  ul li::before {
+    content: "·";
+    position: absolute;
+    left: 4pt;
+    color: var(--leaf);
+    font-weight: 600;
+    font-size: 14pt;
+    line-height: 1;
+  }
+
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+
+  blockquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13pt;
+    line-height: 1.4;
+    color: var(--moss);
+    border-left: 2pt solid var(--leaf);
+    padding: 4pt 0 4pt 14pt;
+    margin: 12pt 0;
+  }
+
+  .pullquote {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16pt;
+    line-height: 1.3;
+    color: var(--earth);
+    text-align: center;
+    margin: 18pt auto;
+    max-width: 95%;
+    padding: 10pt 0;
+    border-top: 0.5pt solid var(--line);
+    border-bottom: 0.5pt solid var(--line);
+  }
+
+  .callout {
+    background: var(--sand);
+    border-left: 2pt solid var(--terracotta);
+    padding: 10pt 12pt;
+    margin: 10pt 0;
+    font-size: 9.5pt;
+    border-radius: 0 4pt 4pt 0;
+  }
+  .callout strong { color: var(--terracotta); }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8pt;
+    margin: 8pt 0;
+  }
+  .card {
+    background: var(--sand);
+    padding: 8pt 10pt;
+    border-radius: 4pt;
+    font-size: 9pt;
+    line-height: 1.5;
+  }
+  .card h4 {
+    margin-top: 0;
+    color: var(--moss);
+    font-size: 8.5pt;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8pt 0;
+    font-size: 9pt;
+  }
+  th, td {
+    text-align: left;
+    padding: 5pt 6pt;
+    border-bottom: 0.5pt solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    background: var(--sand);
+    color: var(--moss);
+    font-weight: 600;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* TOC */
+  .toc { padding: 8pt 0; }
+  .toc-row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 6pt;
+    font-size: 10pt;
+  }
+  .toc-num {
+    color: var(--earth);
+    font-weight: 500;
+    width: 22pt;
+    flex: none;
+  }
+  .toc-title {
+    flex: 1;
+    color: var(--ink);
+  }
+  .toc-dots {
+    flex: 1;
+    border-bottom: 0.5pt dotted var(--line);
+    margin: 0 6pt;
+    transform: translateY(-3pt);
+  }
+  .toc-page {
+    color: var(--leaf);
+    font-weight: 500;
+  }
+
+  .tag {
+    display: inline-block;
+    background: var(--sand);
+    color: var(--moss);
+    font-size: 8pt;
+    font-weight: 500;
+    padding: 2pt 8pt;
+    border-radius: 12pt;
+    margin: 0 3pt 3pt 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5pt;
+  }
+
+  .closing {
+    text-align: center;
+    padding: 40pt 20pt;
+  }
+  .closing .leaf { font-size: 28pt; color: var(--leaf); }
+  .closing h2 {
+    font-size: 28pt;
+    color: var(--moss);
+    margin: 12pt 0;
+    border: none;
+  }
+  .closing p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13pt;
+    color: var(--earth);
+  }
+
+  .checklist {
+    list-style: none;
+    padding-left: 0;
+  }
+  .checklist li {
+    padding-left: 22pt;
+    position: relative;
+    margin-bottom: 5pt;
+  }
+  .checklist li::before {
+    content: "☐";
+    position: absolute;
+    left: 4pt;
+    top: -1pt;
+    color: var(--leaf);
+    font-size: 11pt;
+  }
+
+  .small { font-size: 8.5pt; color: #6a614f; }
+
+  /* Print fine-tuning */
+  @media print {
+    body { background: white; }
+    .book { background: white; }
+    .no-print { display: none; }
+    h2, h3 { page-break-after: avoid; }
+    table, blockquote, .callout, .pullquote { page-break-inside: avoid; }
+  }
+
+  /* On-screen helper */
+  @media screen {
+    body {
+      padding: 20px 0;
+    }
+    .book {
+      box-shadow: 0 8px 40px rgba(46,37,64,0.15);
+      padding: 0;
+    }
+    .page, .cover {
+      padding: 16mm;
+      min-height: 210mm;
+    }
+    .cover { padding: 22mm 18mm; }
+    .print-hint {
+      position: fixed;
+      top: 12px; right: 12px;
+      background: var(--terracotta);
+      color: white;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 100;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-hint no-print">📖 Yazdır → PDF olarak kaydet (Ctrl/Cmd + P)</div>
+
+<div class="book">
+
+<!-- ============= COVER ============= -->
+<section class="cover">
+  <div>
+    <div class="leaf">🌿</div>
+    <div class="eyebrow">Sosyal Medya Lansman Kitapçığı</div>
+    <h1>Kendi Ritminde<br><em>Beş.</em></h1>
+    <div class="subtitle">Bu yılın niyeti: Neşe.<br>Sebepsizce hafiflemek.</div>
+  </div>
+  <div class="meta">
+    <strong>25 – 29 HAZİRAN</strong><br>
+    Hızır Kamp · Kaz Dağları · Edremit<br>
+    60 kişi · Bir orkestra<br><br>
+    <em>kendiritminde.com · @kendiritminde</em>
+    <div class="niyet">— Olduğum hâliyle gör. —</div>
+  </div>
+</section>
+
+<!-- ============= TOC ============= -->
+<section class="page">
+  <h2><span class="num">İÇİNDEKİLER</span></h2>
+  <p class="lede">Kitapçık, KR5 lansmanını 46 günde sahaya indirmek için yazıldı.</p>
+  <div class="toc">
+    <div class="toc-row"><span class="toc-num">01</span><span class="toc-title">Stratejik Çapa — Manifestodan Süzülen İletişim</span><span class="toc-dots"></span><span class="toc-page">04</span></div>
+    <div class="toc-row"><span class="toc-num">02</span><span class="toc-title">Üç Eşmerkezli Halka — Kitle Stratejisi</span><span class="toc-dots"></span><span class="toc-page">06</span></div>
+    <div class="toc-row"><span class="toc-num">03</span><span class="toc-title">46 Günlük Lansman Yayı</span><span class="toc-dots"></span><span class="toc-page">07</span></div>
+    <div class="toc-row"><span class="toc-num">04</span><span class="toc-title">İki Paket Modeli — Net İletişim</span><span class="toc-dots"></span><span class="toc-page">08</span></div>
+    <div class="toc-row"><span class="toc-num">05</span><span class="toc-title">35 İçerik Formatı Bankası</span><span class="toc-dots"></span><span class="toc-page">10</span></div>
+    <div class="toc-row"><span class="toc-num">06</span><span class="toc-title">Ekip Tanıtım Stratejisi</span><span class="toc-dots"></span><span class="toc-page">13</span></div>
+    <div class="toc-row"><span class="toc-num">07</span><span class="toc-title">Platform Stratejisi</span><span class="toc-dots"></span><span class="toc-page">15</span></div>
+    <div class="toc-row"><span class="toc-num">08</span><span class="toc-title">Görsel & Ses Sistemi</span><span class="toc-dots"></span><span class="toc-page">17</span></div>
+    <div class="toc-row"><span class="toc-num">09</span><span class="toc-title">Metin & Caption Formülleri</span><span class="toc-dots"></span><span class="toc-page">18</span></div>
+    <div class="toc-row"><span class="toc-num">10</span><span class="toc-title">İş Birliği Stratejisi</span><span class="toc-dots"></span><span class="toc-page">19</span></div>
+    <div class="toc-row"><span class="toc-num">11</span><span class="toc-title">Algoritma Taktikleri</span><span class="toc-dots"></span><span class="toc-page">20</span></div>
+    <div class="toc-row"><span class="toc-num">12</span><span class="toc-title">46 Günlük İçerik Takvimi</span><span class="toc-dots"></span><span class="toc-page">21</span></div>
+    <div class="toc-row"><span class="toc-num">13</span><span class="toc-title">KPI ve Dönüşüm Hunisi</span><span class="toc-dots"></span><span class="toc-page">22</span></div>
+    <div class="toc-row"><span class="toc-num">14</span><span class="toc-title">Bütçe Önerisi</span><span class="toc-dots"></span><span class="toc-page">23</span></div>
+    <div class="toc-row"><span class="toc-num">15</span><span class="toc-title">7 Günlük Aksiyon Listesi</span><span class="toc-dots"></span><span class="toc-page">24</span></div>
+    <div class="toc-row"><span class="toc-num">16</span><span class="toc-title">Risk ve Dikkat</span><span class="toc-dots"></span><span class="toc-page">25</span></div>
+  </div>
+  <div class="pullquote">"Bir inziva değildir. Kimse kimseyi dönüştürmeye çalışmaz. Sadece ritminde olman yeterli."</div>
+</section>
+
+<!-- ============= 1. STRATEJİK ÇAPA ============= -->
+<section class="page">
+  <h2><span class="num">01</span>Stratejik Çapa</h2>
+  <p class="lede">Manifestodan süzülen iletişim — iç pusula iç ekibe, dış iletişim sade Türkçeye.</p>
+
+  <p>KR5'in iç manifestosu net bir dönüşüm anlatıyor: önceki versiyonlardan <strong>daha sade, daha az "öğreten", daha çok "alan tutan"</strong>, sanat ve yaratım ağırlıklı, <strong>eril uyanışın</strong> dahil olduğu, "olduğun gibi görül" prensibine dayanan bir versiyon.</p>
+  <p>Bu, sosyal medya iletişimi için altın bir kaynak — ama doğrudan kopyalanmaz. <em>MaestroID, Kozmik Gemi, federasyon, kanal</em> gibi iç dil yeni gelen kitleyi kaçırır.</p>
+
+  <h3>Üç Çapa</h3>
+  <div class="grid-2">
+    <div class="card"><h4>Duygu Vaadi</h4><strong>"Olduğum hâliyle gör."</strong> İletişimin temel duygu vaadi.</div>
+    <div class="card"><h4>Güvence</h4><strong>"Ben başkasının tanımı değilim."</strong> Yeni gelene "kimse seni şekillendirmeyecek" güvencesi.</div>
+  </div>
+  <div class="callout"><strong>Kampanya Başlığı:</strong> Bu yılın niyeti: <em>Neşe</em>. Sebepsizce hafiflik.</div>
+
+  <h3>KR5'i Önceki Yıllardan Ayıran</h3>
+  <table>
+    <tr><th>Önceki KR'ler</th><th>KR5'in Vurgusu</th></tr>
+    <tr><td>Yoğun spiritüel deneyim</td><td><strong>Sade, sanat & yaratım</strong></td></tr>
+    <tr><td>"Kolaylaştırıcı" alan tutucular</td><td>Alan tutucular kendileri de neşeli, yatay</td></tr>
+    <tr><td>Ağırlıklı dişil enerji</td><td><strong>Eril uyanışı</strong> dahil — erkekler için açık davet</td></tr>
+    <tr><td>"Şifa ve dönüşüm"</td><td>"Olduğun hâliyle görülmek"</td></tr>
+    <tr><td>Performans gösterisi riski</td><td>Performans dışı, ego dışı</td></tr>
+  </table>
+
+  <div class="callout"><strong>Dikkat:</strong> "Eril uyanışı" terimi sosyal medyada doğrudan kullanılmaz. Çevirisi: <em>"erkekler de davetlidir"</em>, <em>"bu yıl orkestra daha dengeli"</em>.</div>
+</section>
+
+<!-- ============= 2. ÜÇ HALKA ============= -->
+<section class="page">
+  <h2><span class="num">02</span>Üç Eşmerkezli Halka</h2>
+  <p class="lede">5. yıl olmanın getirdiği topluluk + KR5'in yeni karakteri 3 ayrı kitleyi aynı anda davet ediyor.</p>
+
+  <h3>Halka 1 · Müdavim</h3>
+  <p>Önceki KR'lere katılmış olanlar — <strong>%10 müdavim indirimi</strong>. Aktivasyon kolay, dönüşüm yüksek.</p>
+  <ul>
+    <li><strong>Mesaj:</strong> "5. yıl seninle başlasın. Bu yıl bambaşka bir versiyon."</li>
+    <li><strong>Kanal:</strong> Müdavim WhatsApp grubu, kişisel DM, e-posta listesi.</li>
+  </ul>
+
+  <h3>Halka 2 · Sıcak Çevre</h3>
+  <p>@kendiritminde'i takip eden ama henüz katılmamış olanlar.</p>
+  <ul>
+    <li><strong>Mesaj:</strong> "Kendine bu yıl izin ver. Olduğun hâlinle yeter."</li>
+    <li><strong>Kanal:</strong> Instagram organik içerik, story serileri, YouTube.</li>
+  </ul>
+
+  <h3>Halka 3 · Yeni Kitle</h3>
+  <p>Hiç duymamış 25-40 yaş, sistem yorgunu, "kaçış" arayan kitle.</p>
+  <ul>
+    <li><strong>Mesaj:</strong> "Kaz Dağları'nda 4 gün. Sebepsizce hafiflemek için."</li>
+    <li><strong>Kanal:</strong> TikTok, mikro influencer, basın, Meta/TikTok reklamı.</li>
+  </ul>
+
+  <div class="callout"><strong>Önemli:</strong> Üç halkaya tek tip içerikle ulaşılmaz. Plan üç kanal ayrımına göre hazırlandı.</div>
+</section>
+
+<!-- ============= 3. 46 GÜN ============= -->
+<section class="page">
+  <h2><span class="num">03</span>46 Günlük Lansman Yayı</h2>
+  <p class="lede">10 Mayıs → 25 Haziran arası üç fazlı bir yay.</p>
+
+  <table>
+    <tr><th>Faz</th><th>Tarih</th><th>Doluluk</th></tr>
+    <tr><td><strong>Faz 1</strong><br>Müdavim & Atmosfer</td><td>10 – 24 Mayıs</td><td>%30 (~18 kişi)</td></tr>
+    <tr><td><strong>Faz 2</strong><br>Sıcak Çevre Açılışı</td><td>25 May – 8 Haz</td><td>%70 (~42 kişi)</td></tr>
+    <tr><td><strong>Faz 3</strong><br>Yeni Kitle & Son Çağrı</td><td>9 – 25 Haziran</td><td>%100 (~60 kişi)</td></tr>
+  </table>
+
+  <h3>Faz 1 — Müdavim & Atmosfer</h3>
+  <p>KR4 hatıraları, "Neşe" temasının kurulması, müdavim aktivasyonu, yeni paket yapısının duyurusu. Hızır Kamp'tan ön çekim 15-16 Mayıs ideal.</p>
+
+  <h3>Faz 2 — Sıcak Çevre Açılışı</h3>
+  <p>Ekip tanıtımları (8 reel — Arda, Kamer, Sıla + 5 kanal), SSS reel'leri, mekân detayı, sanat & yaratım vurgusu.</p>
+
+  <h3>Faz 3 — Yeni Kitle & Son Çağrı</h3>
+  <p>Reklam ağırlığı (toplam reklam bütçesinin %50'si bu pencerede), kalan kontenjan iletişimi, Askıda Katılım, son hafta heyecanı.</p>
+
+  <div class="pullquote">"5. yıl. 60 kişi. Bir orkestra."</div>
+</section>
+
+<!-- ============= 4. İKİ PAKET ============= -->
+<section class="page">
+  <h2><span class="num">04</span>İki Paket Modeli</h2>
+  <p class="lede">Manifestoda yeni karar: erişilebilirlik için iki paket. Sosyal medyada dürüst ve net anlatılmalı.</p>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>📦 Buluşma Paketi</h4>
+      <strong>25–28 Haziran</strong> · 3 gece, 4 gün<br>
+      Tüm enerji çalışmaları, müzik, dans, sanat, yaratım. Daha erişilebilir fiyat.
+    </div>
+    <div class="card">
+      <h4>📦 Buluşma + Topraklanma</h4>
+      <strong>25–29 Haziran</strong> · 4 gece, 5 gün<br>
+      Buluşmanın tamamı + 29 Haziran serbest zaman / topraklama. Dolunay sonrası daha derin demlenme.
+    </div>
+  </div>
+
+  <h3>Konaklama Tier'ları</h3>
+  <table>
+    <tr><th>Tier</th><th>Yapı</th><th>Erken Ritim</th></tr>
+    <tr><td>🦉 <strong>Baykuş Konağı</strong><br><span class="small">Gözlem Yuvası</span></td><td>Taş & ahşap, paylaşımlı oda, özel banyo</td><td><strong>34.000 ₺</strong></td></tr>
+    <tr><td>🐦 <strong>Sığırcık Kulesi</strong><br><span class="small">Birlikte güçlü</span></td><td>Otantik ağaç ev, paylaşımlı, ortak duş</td><td><strong>30.500 ₺</strong></td></tr>
+    <tr><td>🏕️ <strong>Kırlangıç Yolu</strong><br><span class="small">Doğayla bir arada</span></td><td>Kendi çadır, ortak duş, 15 kişi kontenjanı</td><td><strong>23.000 ₺</strong><br><span class="small">29.000 ₺'den indirim</span></td></tr>
+  </table>
+
+  <div class="callout"><strong>Carousel önerisi:</strong> İki paket × üç tier = 6 hücreli matris. Tek görselde tüm seçenekler şeffaf, kararsızlık yaratmaz.</div>
+
+  <p class="small">💳 Kredi kartı mümkün (Erken Ritim hariç). 📅 Erken Ritim'de 2 taksitli nakit. 🗓️ Haziran itibariyle ödemenin tamamı alınır. ✉️ Form sonrası ödeme detayları mail ile iletilir.</p>
+</section>
+
+<!-- ============= 5. İÇERİK BANKASI ============= -->
+<section class="page">
+  <h2><span class="num">05</span>İçerik Bankası — 35 Format</h2>
+  <p class="lede">Tek günlük batch çekimle 80-100 ham klip çıkar. Hammadde Haziran sonuna kadar yetiyor.</p>
+
+  <h4>A · Mekân & Atmosfer (8)</h4>
+  <ul>
+    <li>Hızır Kamp tabelası → giriş POV</li>
+    <li>Baykuş Konağı oda turu — taş & ahşap</li>
+    <li>Sığırcık Kulesi ağaç evler</li>
+    <li>Kırlangıç Yolu çadır alanı — sabah ışığı</li>
+    <li>Zeytinli Çayı drone + yüzme</li>
+    <li>Dolunay teaser — 28 Haziran kapanış</li>
+    <li>Kahvaltı sofrası — yerel, sade</li>
+    <li>Yıldızlı gece — Kaz Dağları</li>
+  </ul>
+
+  <h4>B · Yılın Niyeti — Neşe (6)</h4>
+  <ul>
+    <li><em>"Bu yılın niyeti: Neşe."</em> manifesto reel'i</li>
+    <li>Geçmiş KR'lerden gülen yüzler montajı</li>
+    <li>"Sebepsizce gülmek" reel'i</li>
+    <li>Sarılma anları kompilasyonu</li>
+    <li>Su, dans, müzik üç-kelimelik mikro-reel</li>
+    <li>"Neşe spiritüel midir?" carousel</li>
+  </ul>
+</section>
+
+<section class="page">
+  <h4>C · KR5'in Yeni Karakteri (5)</h4>
+  <ul>
+    <li><em>"Olduğum hâliyle gör."</em> — siyah ekran + tek cümle, 15 sn. <strong>KR5 imza içerik.</strong></li>
+    <li><em>"Ben başkasının tanımı değilim."</em> — aynı format</li>
+    <li>"Erkekler için de orada bir oda var" — 30 sn doğrudan davet</li>
+    <li>"Bu yıl bambaşka — sade, sanat odaklı, performans yok"</li>
+    <li>Kaptan Arda monolog: "Neden bu yıl daha sade?" 60-90 sn</li>
+  </ul>
+
+  <h4>D · Sanat & Yaratım (5)</h4>
+  <ul>
+    <li>Ege Altan — görsel sanat direktörü tanıtımı</li>
+    <li>Eser & Bülend — sanatçı misafirler</li>
+    <li>Sıla Pamuk ses şifa atölyesi teaser</li>
+    <li>Merve Şahin su şifa teaser</li>
+    <li>"Bu yıl orada ne yaratacaksın?" davet</li>
+  </ul>
+
+  <h4>E · SSS & Yeni Gelen Güveni (6)</h4>
+  <ul>
+    <li>"Bir inziva DEĞİL — peki ne?"</li>
+    <li>"Tek başına gelmek tuhaf mı?"</li>
+    <li>"Yoga/reiki bilmiyorum, sorun olur mu?"</li>
+    <li>"İki paket — hangisi sana uygun?"</li>
+    <li>"Yanına ne getir, ne getirme?"</li>
+    <li>"Ulaşım nasıl?" — Edremit/Akçay/EDO</li>
+  </ul>
+
+  <h4>F · Topluluk & Sosyal Kanıt (5)</h4>
+  <ul>
+    <li>Müdavim portresi — "ben 4. kez geliyorum, çünkü..."</li>
+    <li>Müdavim → yeni gelen sesli mesajı</li>
+    <li>KR4'ten anonim testimonial reel'i</li>
+    <li>Askıda Katılım — "kalbi çağrıyı duyana ulaşması için"</li>
+    <li>"60 kişi, bir orkestra" kapanış teaser</li>
+  </ul>
+</section>
+
+<!-- ============= 6. EKİP TANIMI ============= -->
+<section class="page">
+  <h2><span class="num">06</span>Ekip Tanıtım Stratejisi</h2>
+  <p class="lede">8 isim, 8 reel. KR5'in en somut farkı — "kim için, kim tarafından" sorusunu net cevaplar.</p>
+
+  <table>
+    <tr><th>#</th><th>Kişi</th><th>Reel Hook</th></tr>
+    <tr><td>1</td><td><strong>Arda Çetin</strong><br><span class="small">Kaptan / kurucu</span></td><td>"Beşinci yıl. Neden hâlâ heyecanlıyım?"</td></tr>
+    <tr><td>2</td><td><strong>Kamer Aslı Albay</strong><br><span class="small">Alan tutucu</span></td><td>"Alan tutmak ne demek? — 60 sn dürüst cevap."</td></tr>
+    <tr><td>3</td><td><strong>Sıla</strong><br><span class="small">Alan tutucu</span></td><td>"Üç alan tutucu, 60 misafir. Nasıl bir orkestra?"</td></tr>
+    <tr><td>4</td><td><strong>Onur Güven</strong><br><span class="small">Simya kanalı</span></td><td>"Simya korkutmasın — basit anlatım."</td></tr>
+    <tr><td>5</td><td><strong>Yasemin</strong><br><span class="small">Astrolog</span></td><td>"Haziran 25-29 gökyüzü ne anlatıyor?"</td></tr>
+    <tr><td>6</td><td><strong>Sıla Pamuk</strong><br><span class="small">Ses şifacısı</span></td><td>"Ses bedeni nasıl gevşetir?"</td></tr>
+    <tr><td>7</td><td><strong>Merve Şahin</strong><br><span class="small">Su şifacısı</span></td><td>"Zeytinli Çayı'nda neden yüzeceğiz?"</td></tr>
+    <tr><td>8</td><td><strong>Eser & Bülend / Ege Altan</strong><br><span class="small">Sanatçı & görsel direktör</span></td><td>"KR5'te sanat alanı — ne yapacağız?"</td></tr>
+  </table>
+
+  <div class="callout"><strong>Yapım kuralı:</strong> Her tanıtım 60-90 sn, kişi kameraya sade konuşur. Stüdyo değil, doğa içinde. Profesyonel jargon yok — "ne yapıyorum, neden yapıyorum, sana ne hissettiririm" formülü.</div>
+</section>
+
+<!-- ============= 7. PLATFORM ============= -->
+<section class="page">
+  <h2><span class="num">07</span>Platform Stratejisi</h2>
+  <p class="lede">Her platforma ayrı dil, ayrı algoritma, ayrı niyet.</p>
+
+  <h3>Instagram · Ana Kanal</h3>
+  <ul>
+    <li><strong>Reels haftada 4</strong> — atmosfer %30, neşe %20, KR5 farkı %20, sanat %15, SSS+ekip %15</li>
+    <li><strong>Story her gün</strong> — backstage, geri sayım, müdavim repost</li>
+    <li><strong>Carousel haftada 1-2</strong> — iki paket × üç tier şeffaflık matrisi</li>
+    <li>4 sabit Highlight: <em>KR5 Program · Konaklama · Ekip · Kayıt</em></li>
+  </ul>
+
+  <h4>Bio</h4>
+  <blockquote>Kendi Ritminde 5 · Bu yılın niyeti: Neşe · 25-29 Haziran · Hızır Kamp · Erken Ritim açık 🔗 kendiritminde.com</blockquote>
+
+  <h3>TikTok · Yeni Kitle Kanalı</h3>
+  <p>2026'da Türkiye'de wellness/buluşma TikTok'ta hızla büyüyor. Halka 3 için en ucuz erişim. Atmosfer içeriklerini dikey, alt yazılı versiyonla yeniden yayınla. Trend ses + Kaz Dağları manzarası — düşük olasılıklı ama büyük kazançlı patlatıcı.</p>
+
+  <h3>WhatsApp · En Yüksek Dönüşüm</h3>
+  <ul>
+    <li>Bio'da WhatsApp linki: +90 534 418 23 12</li>
+    <li>Müdavim WhatsApp grubu — Arda'dan haftalık ses notu, 60 sn</li>
+    <li>Yeni gelen DM yerine WhatsApp tercih ediyor (özellikle 35+ kadın)</li>
+  </ul>
+
+  <h3>E-posta · 3 Diziler</h3>
+  <ol>
+    <li><strong>10 Mayıs:</strong> "Bu yılın niyeti: Neşe."</li>
+    <li><strong>25 Mayıs:</strong> "Ekibimizle tanış."</li>
+    <li><strong>9 Haziran:</strong> "Son hafta + Askıda Katılım."</li>
+  </ol>
+</section>
+
+<!-- ============= 8. GÖRSEL & SES ============= -->
+<section class="page">
+  <h2><span class="num">08</span>Görsel & Ses Sistemi</h2>
+  <p class="lede">Site palette ile tutarlı, doğal, abartısız.</p>
+
+  <h3>Renk</h3>
+  <p><strong>Ana:</strong> orman yeşili, kum, taş grisi, sıcak beyaz, dolunay altın sarısı (kapanış için).</p>
+  <p><strong>Yasak:</strong> Saturasyonu yüksek pembe/mor "spiritüel" gradient. KR5'in farkını siler.</p>
+
+  <h3>Tipografi</h3>
+  <ul>
+    <li>Başlık: yumuşak serif (Cormorant, Fraunces — sitedeki ile tutarlı)</li>
+    <li>Metin: humanist sans (Inter, Plus Jakarta)</li>
+    <li>Tek görselde 2 fonttan fazlası yok</li>
+  </ul>
+
+  <h3>Müzik</h3>
+  <p>Reels'lerde <strong>doğa ambiyans + akustik enstrümantal</strong>. KR5'te canlı müzik var — bandı kayda al, <em>"özgün ses"</em> olarak Instagram'da paylaş; diğer kullanıcılar da kullanır → viral döngü.</p>
+
+  <div class="callout"><strong>Ege Altan'ın gücü:</strong> Görsel sanat direktörü ekipte var. Haftada 1 kez "haftanın görseli" işbirliği — soyut ama tanınır bir <em>KR5 imza estetiği</em> oluşturur.</div>
+
+  <h3>Sabit Watermark</h3>
+  <p>Sol alt köşe ince beyaz: <em>kendiritminde.com</em> · 🌿 emojisi sabit (sitedeki doğa simgesi).</p>
+</section>
+
+<!-- ============= 9. METİN FORMÜLLERİ ============= -->
+<section class="page">
+  <h2><span class="num">09</span>Metin & Caption Formülleri</h2>
+  <p class="lede">Sade, sıcak, abartısız. Manifestasyon klişesinden uzak.</p>
+
+  <h3>İmza Hook'lar</h3>
+  <ul>
+    <li><em>"Bu yılın niyeti: Neşe."</em></li>
+    <li><em>"Olduğum hâliyle gör."</em></li>
+    <li><em>"Ben başkasının tanımı değilim."</em></li>
+    <li><em>"5. yıl. 60 kişi. Bir orkestra."</em></li>
+    <li><em>"Sebepsizce gülmenin son ne zamandı?"</em></li>
+    <li><em>"Bir inziva değil. Kimse seni dönüştürmeye çalışmayacak."</em></li>
+    <li><em>"Bu yıl bambaşka — daha sade, daha sanat dolu."</em></li>
+    <li><em>"Erkekler için de orada bir oda var."</em></li>
+    <li><em>"Performans yok. Beklenti yok. Sadece sen."</em></li>
+    <li><em>"Zeytinli Çayı'nın suyu Haziran'da buz gibi."</em></li>
+    <li><em>"Dolunay 28 Haziran'da. Kaz Dağları'nda."</em></li>
+  </ul>
+
+  <h3>CTA</h3>
+  <ul>
+    <li>Erken Ritim kaydı açık → kendiritminde.com</li>
+    <li>WhatsApp: +90 534 418 23 12 (Arda)</li>
+    <li>İki paket — sana uygun olanı seç</li>
+    <li>Müdavim indirimin için bize yaz</li>
+    <li>Askıda Katılım: kalbi çağrıyı duyana</li>
+  </ul>
+
+  <div class="callout"><strong>Yapılma — KR5 dilini bozar:</strong>
+    <ul>
+      <li>"MaestroID", "Kozmik Gemi", "federasyon", "kanal" — iç dil</li>
+      <li>"Yüksek titreşim", "ışık dolu varlıklar"</li>
+      <li>"Hayatın asla eskisi gibi olmayacak" — site açıkça tersi söylüyor</li>
+      <li>"Sınırlı kontenjan!" üst-üste bağırma — sade "X yer kaldı" yeter</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============= 10. İŞ BİRLİĞİ ============= -->
+<section class="page">
+  <h2><span class="num">10</span>İş Birliği Stratejisi</h2>
+  <p class="lede">5K-50K mikro influencer ile 6-10 iş birliği. Mainstream'e git, niş hesaplara yığılma.</p>
+
+  <h3>Hedef Profiller</h3>
+  <ul>
+    <li>Yaşam blogger'ları (28-40 yaş kadın)</li>
+    <li>Doğa & seyahat içerikçileri</li>
+    <li>Anne / yaşam koçları (mainstream)</li>
+    <li>Sade müzisyen / sanatçılar</li>
+    <li>Yoga hocaları</li>
+    <li><strong>Erkek yaşam içerikçileri</strong> — eril uyanışı vurgusu için (5'te 1 oran ideal)</li>
+  </ul>
+
+  <h3>Teklif Modeli</h3>
+  <ul>
+    <li>1 ücretsiz katılım (Sığırcık tier'ı) + komisyon kodu (%15)</li>
+    <li><strong>Co-creation:</strong> Influencer programın parçası olur — özel sabah dansı, açılış sözü vb.</li>
+    <li>Ücretli partnership 1-2 isimle (15-25K TL bandı)</li>
+  </ul>
+
+  <h3>Yapılma</h3>
+  <p>Mega manifestasyon koçları, "abundance" satıcıları, agresif kişisel gelişim hesapları KR5'in tonunu kalıcı zedeler. Manifesto net: <em>"Öğretilmeye çalışılan her şey spiritüel egodur."</em></p>
+
+  <h3>Geleneksel Basın Pitch'i</h3>
+  <p>Marie Claire dijital, Vogue Türkiye dijital, Bant Mag, Skylife, Yeşil Gazete wellness/seyahat editörlerine: tek paragraf + 5 görsel + tarih + ekip listesi.</p>
+  <p><strong>Pitch açısı:</strong> "5. yılında dönüşen Türkiye'nin sade ve sanat odaklı buluşması."</p>
+</section>
+
+<!-- ============= 11. ALGORİTMA ============= -->
+<section class="page">
+  <h2><span class="num">11</span>Algoritma Taktikleri</h2>
+  <p class="lede">Etik, sürdürülebilir. Bot yok, sahte etkileşim yok. Platformların gerçekten ölçtüğü ama yeni başlayanların ihmal ettiği sinyaller.</p>
+
+  <h3>Instagram</h3>
+  <ul>
+    <li><strong>İlk 60 dakika sıcak başlat:</strong> WhatsApp müdavim grubu + e-posta listesi. Bir soruyla yönlendir → yorum gelir, algoritma terfi ettirir.</li>
+    <li><strong>Story → Reel köprüsü:</strong> Reel yayınlandıktan 30 dk sonra story'de anket formatında reel'e link.</li>
+    <li><strong>Yorumlara 24 saatte cevap</strong> = #1 sıralama yükseltici sinyal.</li>
+    <li><strong>Carousel'in son slaytı bir soru:</strong> "Senin için neşe ne demek?" → yorum patlar.</li>
+    <li><strong>Reels ilk 3 saniye = manzara veya hareket.</strong> Konuşan kafa ile başlama.</li>
+    <li><strong>Geo-tag her postta:</strong> Kaz Dağları, Edremit, Hızır Kamp, Zeytinli Çayı.</li>
+  </ul>
+
+  <h3>TikTok</h3>
+  <ul>
+    <li><strong>Watch time > beğeni.</strong> Videoyu 25 sn altında tut.</li>
+    <li>İlk yorumu kendin at: "Senin niyetin bu yıl ne olur?"</li>
+    <li>Aynı tema 3 videoda peş peşe — algoritma niş otoritesi tanır.</li>
+    <li>Başlık + caption + ilk 3 saniye sözel olarak "Kaz Dağları buluşması" geçir.</li>
+  </ul>
+
+  <div class="callout"><strong>Yapılmama listesi:</strong> Bot/sahte etkileşim (2025+ AI tespiti var). Aynı caption'ı tüm platformlara yapıştırma. TikTok watermark'lı videoyu Reels'a yükleme.</div>
+</section>
+
+<!-- ============= 12. TAKVİM ============= -->
+<section class="page">
+  <h2><span class="num">12</span>46 Günlük İçerik Takvimi</h2>
+  <p class="lede">Haftalık ana akış. Story ayrı günlük üretim.</p>
+
+  <table>
+    <tr><th>Hafta</th><th>Ana içerik</th></tr>
+    <tr><td><strong>1</strong><br>10-16 May</td><td>"Bu yılın niyeti: Neşe" manifesto reel · KR4 anılar · Müdavim story · Hızır Kamp atmosfer · İki paket carousel'i</td></tr>
+    <tr><td><strong>2</strong><br>17-23 May</td><td>3 konaklama tier · Arda video "neden 5. yıl?" · "Olduğum hâliyle gör" imza · Zeytinli Çayı · "Bir inziva değildir"</td></tr>
+    <tr><td><strong>3</strong><br>24-30 May</td><td>Kamer Aslı tanıtım · Sıla tanıtım · "Erkekler için de oda var" · Influencer 1 · Reiki açıklama</td></tr>
+    <tr><td><strong>4</strong><br>31 May - 6 Haz</td><td>Onur Güven · Yasemin · Sıla Pamuk · Influencer 2 · "Sanat ağırlığı arttı"</td></tr>
+    <tr><td><strong>5</strong><br>7-13 Haz</td><td>Merve Şahin + Eser & Bülend · "Konaklama dolan" · Ege Altan + sanat alanı · Influencer 3 · Askıda Katılım başlat</td></tr>
+    <tr><td><strong>6</strong><br>14-20 Haz</td><td>"Son 10 yer" · Final SSS · Askıda son çağrı · Müdavim sesli mesaj · Eşya hazırlık</td></tr>
+    <tr><td><strong>7</strong><br>21-25 Haz</td><td>"Son 5 yer" · Geri sayım · "48 saat" · "24 saat" · 🌿 KR5 BAŞLIYOR</td></tr>
+  </table>
+</section>
+
+<!-- ============= 13. KPI ============= -->
+<section class="page">
+  <h2><span class="num">13</span>KPI ve Dönüşüm Hunisi</h2>
+  <p class="lede">İlk 46 günde takip edilecek 8 metrik. Gerisi gürültü.</p>
+
+  <table>
+    <tr><th>Metrik</th><th>Hedef</th><th>Yorum</th></tr>
+    <tr><td>Profil ziyareti</td><td>25.000+</td><td>5. yıl + yeni içerik</td></tr>
+    <tr><td>Profil → site tıklama</td><td>%5 (1.250+)</td><td>Bio + carousel CTA</td></tr>
+    <tr><td>Site → form görüntüleme</td><td>%35 (440+)</td><td>Site net, fiyat şeffaf</td></tr>
+    <tr><td>Form → kayıt</td><td>%15 (66+)</td><td>Hedef tam dolu</td></tr>
+    <tr><td>WhatsApp DM</td><td>200+</td><td>Yeni gelen yazılı sorar</td></tr>
+    <tr><td>Müdavim dönüş</td><td>%40+</td><td>Topluluk sağlığı</td></tr>
+    <tr><td>Erkek katılım</td><td>%25+</td><td>Eril uyanışı çalıştı mı?</td></tr>
+    <tr><td>Erken Ritim 1. dönem</td><td>%30+</td><td>Lansman gücü</td></tr>
+  </table>
+
+  <h3>Ölçüm Altyapısı</h3>
+  <ul>
+    <li><strong>UTM parametreleri:</strong> her sosyal medya linkinde <code>?utm_source=instagram&utm_medium=reel&utm_campaign=kr5_lansman</code></li>
+    <li><strong>Meta Pixel + TikTok Pixel</strong> kendiritminde.com'a kurulmalı — son 2 hafta retargeting için</li>
+    <li><strong>WhatsApp soru kataloğu:</strong> günlük gelen sorular tek dosyada → SSS reel konuları</li>
+    <li><strong>Haftalık post-mortem:</strong> Cuma 30 dk — en iyi 3, en kötü 3 içerik</li>
+  </ul>
+</section>
+
+<!-- ============= 14. BÜTÇE ============= -->
+<section class="page">
+  <h2><span class="num">14</span>Bütçe Önerisi</h2>
+  <p class="lede">Üç senaryo. Saldırgan ancak doluluk garantili ise; aksi halde Orta bant tavsiye.</p>
+
+  <table>
+    <tr><th>Kalem</th><th>Düşük</th><th>Orta</th><th>Saldırgan</th></tr>
+    <tr><td>Hızır Kamp ön çekim</td><td>8.000</td><td>20.000</td><td>45.000</td></tr>
+    <tr><td>Mikro influencer</td><td>10.000</td><td>30.000</td><td>80.000</td></tr>
+    <tr><td>Meta + TikTok reklam</td><td>8.000</td><td>25.000</td><td>70.000</td></tr>
+    <tr><td>WhatsApp + landing</td><td>0</td><td>5.000</td><td>15.000</td></tr>
+    <tr><td><strong>Toplam (TL)</strong></td><td><strong>26K</strong></td><td><strong>80K</strong></td><td><strong>210K</strong></td></tr>
+  </table>
+
+  <h3>Reklam Zaman Planı</h3>
+  <ul>
+    <li><strong>%20</strong> · 10-25 Mayıs (atmosfer + erken kayıt)</li>
+    <li><strong>%30</strong> · 26 May - 8 Haz (ana kayıt penceresi)</li>
+    <li><strong>%50</strong> · 9-25 Haziran (son hafta retargeting)</li>
+  </ul>
+
+  <div class="callout"><strong>Manifestodan kritik not:</strong> Kaptan KR4 sonrası alma-verme dengesinin bozulduğunu yazmış. KR5 için bütçe disiplini sadece pazarlama değil, alanın enerjisinin de korunması meselesi. Reklam ve satış baskısı KR5'in "ego dışı" karakterine zarar verirse alanı zedeler.</div>
+</section>
+
+<!-- ============= 15. AKSİYON LİSTESİ ============= -->
+<section class="page">
+  <h2><span class="num">15</span>7 Günlük Aksiyon Listesi</h2>
+  <p class="lede">Bugünden başla. İşaretle, ilerlet.</p>
+
+  <h3>Bugün · 10 Mayıs</h3>
+  <ul class="checklist">
+    <li>Bio güncellemesi: KR5 + tarih + Erken Ritim + WhatsApp</li>
+    <li>4 Highlight oluştur: Program · Konaklama · Ekip · Kayıt</li>
+    <li>Müdavim WhatsApp grubuna "5. yıl + iki paket" mesajı</li>
+    <li>E-posta dizisi #1'i 24 saat içinde gönder</li>
+  </ul>
+
+  <h3>11-12 Mayıs</h3>
+  <ul class="checklist">
+    <li>Hızır Kamp ön çekim tarihi kesinleştir (15-16 Mayıs ideal)</li>
+    <li>"Bu yılın niyeti: Neşe" açılış reel'i çek + edit</li>
+    <li>KR4 arşivinden 5 carousel/reel hammaddesi</li>
+    <li>Ege Altan ile görsel iskelet toplantısı</li>
+  </ul>
+
+  <h3>13-14 Mayıs</h3>
+  <ul class="checklist">
+    <li>"Bu yılın niyeti: Neşe" reel YAYINDA</li>
+    <li>30 hedef mikro influencer listesi + ilk 10'una mesaj</li>
+    <li>İki paket × üç tier matris carousel'i hazır</li>
+  </ul>
+
+  <h3>15-16 Mayıs</h3>
+  <ul class="checklist">
+    <li>Hızır Kamp çekim — atmosfer + Arda monolog + 3 mekân + ekip takeleri (80+ ham klip)</li>
+    <li>Kamer Aslı, Sıla, Onur Güven, Yasemin, Sıla Pamuk, Merve Şahin tanıtım kayıtları</li>
+  </ul>
+
+  <h3>17 Mayıs</h3>
+  <ul class="checklist">
+    <li>Hızır Kamp çekiminden ilk reel YAYINDA</li>
+    <li>Faz 1 takvimi tam akışta</li>
+  </ul>
+</section>
+
+<!-- ============= 16. RİSK ============= -->
+<section class="page">
+  <h2><span class="num">16</span>Risk ve Dikkat</h2>
+  <p class="lede">Plan iyi yürüsün diye önceden işaretlenmesi gereken eşikler.</p>
+
+  <ul>
+    <li><strong>5. yıl övünme tonu yapma.</strong> Sayısal duyurulur, kibirli ton olmaz.</li>
+    <li><strong>Müdavim "kapalı kulüp" hissi yaratma.</strong> Her müdavim story'sinde yeni gelen için bir cümle: "Sen de katılabilirsin."</li>
+    <li><strong>MaestroID / iç dil dış kullanım hatası.</strong> Manifesto'nun gücü iç pusulada; dış iletişim sade Türkçe.</li>
+    <li><strong>"Eril uyanışı" doğrudan kullanma.</strong> Çevirisi: "Erkekler için de oda var."</li>
+    <li><strong>Tıbbi/psikolojik sınır.</strong> Reiki ve enerji çalışmaları için "iyileşme" iddiasından kaçın.</li>
+    <li><strong>Hava durumu.</strong> Kaz Dağları Haziran'da yağmur olabilir — story'de "yağmur olursa biz de yağarız 🌧️" yeter.</li>
+    <li><strong>Fotoğraf izni.</strong> Kayıt formunda izin tik kutusu (KANDES TRAVEL ile gözden geçir).</li>
+    <li><strong>Müdavim %10 + Erken Ritim birleşmiyor</strong> kuralı her caption'da net.</li>
+    <li><strong>Askıda Katılım'ı klişe bağış reklamı yapma.</strong> "Kalbi çağrıyı duyana ulaşması için."</li>
+    <li><strong>Manifestonun kaptan notu.</strong> Alma-verme dengesi pazarlamanın da içinde. Reklam ve satış baskısı, KR5'in ego dışı karakterine zarar verirse alanı zedeler. Sade ve dürüst kal.</li>
+  </ul>
+</section>
+
+<!-- ============= CLOSING ============= -->
+<section class="page">
+  <div class="closing">
+    <div class="leaf">🌿</div>
+    <h2>Ayrılık yok.</h2>
+    <p>Bu yılın niyeti: Neşe.<br>Sebepsizce hafiflemek.<br><br>Olduğum hâliyle gör.</p>
+
+    <div style="margin-top: 60pt; font-size: 9pt; color: var(--earth); font-style: normal;">
+      <strong>Kendi Ritminde 5</strong><br>
+      25 – 29 Haziran · Hızır Kamp · Kaz Dağları<br><br>
+      <em>kendiritminde.com</em><br>
+      @kendiritminde · +90 534 418 23 12<br>
+      kendiritmindebulusmalar@gmail.com<br><br>
+      <span class="small">AGENCY KANDES TRAVEL · Lic. 11234</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>
