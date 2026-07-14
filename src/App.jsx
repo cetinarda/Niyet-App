@@ -308,6 +308,20 @@ function elementDistFromSigns(signs) {
   if (!n) return null;
   return { ates:c.ates/n, toprak:c.toprak/n, hava:c.hava/n, su:c.su/n };
 }
+// "Sakin nedir?" pop-up'ı + ikili yol menüsü metinleri (Sprint 1 — basitleştirme).
+const NEDIR_I18N = {
+  title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
+  vaat:    { tr:"Kendini tanı, kendinle bağlantıda kal.", en:"Know yourself, stay connected to yourself.", de:"Erkenne dich, bleib mit dir verbunden.", es:"Conócete y mantente en conexión contigo.", pt:"Conhece-te e mantém-te em ligação contigo.", fr:"Connais-toi, reste relié à toi.", ja:"自分を知り、自分とつながり続ける。" },
+  body:    { tr:"Sakin'de iki yol var: sana dair işaretleri keşfetmek ve günün küçük sakinlik pratiğini yapmak. İkisi de seni aynı yere getirir — kendine.", en:"Sakin has two paths: exploring the signs about you, and a small daily practice of calm. Both lead to the same place — you.", de:"In Sakin gibt es zwei Wege: die Zeichen über dich entdecken und eine kleine tägliche Ruhepraxis. Beide führen zum selben Ort — zu dir.", es:"En Sakin hay dos caminos: descubrir las señales sobre ti y una pequeña práctica diaria de calma. Ambos llevan al mismo lugar: a ti.", pt:"No Sakin há dois caminhos: descobrir os sinais sobre ti e uma pequena prática diária de calma. Ambos levam ao mesmo lugar — a ti.", fr:"Dans Sakin, il y a deux chemins : découvrir les signes qui te concernent, et une petite pratique quotidienne de calme. Les deux mènent au même endroit — à toi.", ja:"Sakinには二つの道があります。あなたにまつわるしるしを探る道と、毎日の小さな穏やかさの習慣。どちらも同じ場所——あなた自身——へ導きます。" },
+  cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
+  off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
+  yolTitle:{ tr:"Bugün hangi yoldan gidelim?", en:"Which path shall we take today?", de:"Welchen Weg nehmen wir heute?", es:"¿Qué camino tomamos hoy?", pt:"Que caminho seguimos hoje?", fr:"Quel chemin prenons-nous aujourd'hui ?", ja:"今日はどちらの道にする？" },
+  kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
+  kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın — sana dair işaretler.", en:"Your sign, your design, your animal, your stone — the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein — Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra — señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra — sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre — des signes qui te concernent.", ja:"星座、デザイン、動物、石——あなたにまつわるしるし。" },
+  baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
+  baglanD: { tr:"Niyet, nefes, ses — günün küçük sakinlik pratiği.", en:"Intention, breath, sound — your small daily practice of calm.", de:"Absicht, Atem, Klang — deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido — tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som — a tua pequena prática diária de calma.", fr:"Intention, souffle, son — ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音——毎日の小さな穏やかさの習慣。" },
+  yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
+};
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
@@ -2718,6 +2732,9 @@ export default function SakinApp() {
   const [matrixMode, setMatrixMode] = useState(() => localStorage.getItem("sakin_matrix") === "1");
   const toggleMatrix = () => setMatrixMode(m => { const n = !m; try { localStorage.setItem("sakin_matrix", n ? "1" : "0"); } catch {} return n; });
   const t = makeTrans(lang);
+  // <html lang> aktif dile eşitlenir — index.html'de sabit lang="tr" kalınca CSS
+  // text-transform:uppercase İngilizce metinde Türkçe İ üretiyordu ("TAKE İT WİTH YOU").
+  useEffect(() => { try { document.documentElement.lang = lang; } catch (_) {} }, [lang]);
 
   // ── iOS Safari ses kurtarma ─────────────────────────────────────────────────
   // Uygulama arka plandan dönünce / kullanıcı tekrar dokununca TÜM kayıtlı
@@ -3408,13 +3425,20 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // F2: "Sakini tanı" tanıtım popup'ı — yalnızca ilk 3 GERÇEKTEN gösterilen açılışta.
-  // Sayaç, popup görünebildiğinde (splash bitti + onboarding dışı) artar; böylece
-  // onboarding/splash sırasındaki açılışlarda 3 hak boşa tükenmez. Ref ile oturumda tek sefer.
-  const [showSakinIntro, setShowSakinIntro] = useState(false);
-  // "Sakin nedir?" otomatik tanıtım popup'ı KALDIRILDI — üst menüde zaten
-  // "SAKİN NEDİR?" butonu var, ilk açılışlarda çıkan bu popup gereksizdi (kullanıcı geri bildirimi).
-  // showSakinIntro artık hiç otomatik açılmaz (popup JSX ölü ama zararsız bırakıldı).
+  // "SAKİN NEDİR?" POP-UP (Sprint 1) — İLK 5 girişte gösterilir (kalıcı sayaç),
+  // kapanınca ikili yol menüsüne (✦ Keşfet / ◎ Bağlan) yönlendirir. "Bir daha
+  // gösterme" susturur. ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
+  const [showNedir, setShowNedir] = useState(() => {
+    try {
+      if (isNative) return false;
+      if (localStorage.getItem("sakin_nedir_off") === "1") return false;
+      const n = parseInt(localStorage.getItem("sakin_nedir_count") || "0", 10) || 0;
+      if (n >= 5) return false;
+      localStorage.setItem("sakin_nedir_count", String(n + 1));
+      return true;
+    } catch { return false; }
+  });
+  const [showYolSec, setShowYolSec] = useState(false); // ikili yol menüsü: ✦ Ailesi / ◎ mandala
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
@@ -5573,19 +5597,44 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* F2: "Sakini tanı" tanıtım popup'ı — ilk 3 açılışta, splash bitince ve onboarding dışında */}
-      {showSakinIntro && !showIntro && screen !== "giris" && (
-        <div onClick={()=>setShowSakinIntro(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)" }}>
-            <div style={{ fontSize:26,marginBottom:14 }}>✦</div>
-            <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8dcff",marginBottom:22,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{t("sakin_intro_title")}</div>
-            <button onClick={()=>{ setShowSakinIntro(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer" }}>
-              {t("sakin_intro_cta")}
+      {/* "SAKİN NEDİR?" POP-UP — ilk 5 girişte (web denemesi). Kapanınca ikili yol menüsü açılır. */}
+      {showNedir && !showIntro && (
+        <div onClick={()=>{ setShowNedir(false); setShowYolSec(true); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
+            <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
+            <div style={{ fontSize:11,letterSpacing:4,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:0.5,color:"#efe8ff",marginBottom:12,fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</div>
+            <div style={{ fontSize:13.5,color:"#b0a4c8",lineHeight:1.68,marginBottom:24,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.body, lang)}</div>
+            <button onClick={()=>{ setShowNedir(false); setShowYolSec(true); }}
+              style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
+              {pickLang(NEDIR_I18N.cta, lang)}
             </button>
-            <button onClick={()=>setShowSakinIntro(false)}
-              style={{ background:"none",border:"none",color:"#9080b0",fontSize:13,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
-              {t("sakin_intro_skip")}
+            <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
+              style={{ background:"none",border:"none",color:"#9080b0",fontSize:12.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
+              {pickLang(NEDIR_I18N.off, lang)}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* İKİLİ YOL MENÜSÜ — ✦ Keşfet (Ailesi) / ◎ Bağlan (mandala) */}
+      {showYolSec && !showIntro && (
+        <div onClick={()=>setShowYolSec(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",textAlign:"center",animation:"fadeUp 0.5s ease-out" }}>
+            <div style={{ fontSize:17,fontWeight:300,letterSpacing:1.5,color:"#e8dcff",fontFamily:"'Jost',sans-serif",marginBottom:22 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            <button onClick={()=>{ setShowYolSec(false); setShowAilesi(true); }}
+              style={{ display:"block",width:"100%",marginBottom:14,padding:"22px 20px",textAlign:"left",background:"linear-gradient(160deg,rgba(60,45,30,0.55),rgba(30,22,14,0.6))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:18,cursor:"pointer",boxShadow:"0 0 18px rgba(240,192,96,0.12)" }}>
+              <div style={{ fontSize:17,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+              <div style={{ fontSize:13,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.kesfetD, lang)}</div>
+            </button>
+            <button onClick={()=>{ setShowYolSec(false); setScreen("mandala"); }}
+              style={{ display:"block",width:"100%",marginBottom:18,padding:"22px 20px",textAlign:"left",background:"linear-gradient(160deg,rgba(40,30,60,0.55),rgba(20,15,32,0.6))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:18,cursor:"pointer",boxShadow:"0 0 18px rgba(184,122,220,0.12)" }}>
+              <div style={{ fontSize:17,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+              <div style={{ fontSize:13,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.baglanD, lang)}</div>
+            </button>
+            <button onClick={()=>setShowYolSec(false)}
+              style={{ background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
+              {pickLang(NEDIR_I18N.yolSkip, lang)}
             </button>
           </div>
         </div>
