@@ -312,7 +312,8 @@ function elementDistFromSigns(signs) {
 const NEDIR_I18N = {
   title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
   vaat:    { tr:"Kendini tanı, kendinle bağlantıda kal.", en:"Know yourself, stay connected to yourself.", de:"Erkenne dich, bleib mit dir verbunden.", es:"Conócete y mantente en conexión contigo.", pt:"Conhece-te e mantém-te em ligação contigo.", fr:"Connais-toi, reste relié à toi.", ja:"自分を知り、自分とつながり続ける。" },
-  body:    { tr:"Sakin'de iki yol var: sana dair işaretleri keşfetmek ve günün küçük sakinlik pratiğini yapmak. İkisi de seni aynı yere getirir — kendine.", en:"Sakin has two paths: exploring the signs about you, and a small daily practice of calm. Both lead to the same place — you.", de:"In Sakin gibt es zwei Wege: die Zeichen über dich entdecken und eine kleine tägliche Ruhepraxis. Beide führen zum selben Ort — zu dir.", es:"En Sakin hay dos caminos: descubrir las señales sobre ti y una pequeña práctica diaria de calma. Ambos llevan al mismo lugar: a ti.", pt:"No Sakin há dois caminhos: descobrir os sinais sobre ti e uma pequena prática diária de calma. Ambos levam ao mesmo lugar — a ti.", fr:"Dans Sakin, il y a deux chemins : découvrir les signes qui te concernent, et une petite pratique quotidienne de calme. Les deux mènent au même endroit — à toi.", ja:"Sakinには二つの道があります。あなたにまつわるしるしを探る道と、毎日の小さな穏やかさの習慣。どちらも同じ場所——あなた自身——へ導きます。" },
+  bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anından çıkarılan enerji haritandır — nasıl karar verdiğini, enerjinin nasıl aktığını gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design is an energy map drawn from your moment of birth — it shows how you decide and how your energy flows.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design ist eine Energiekarte aus deinem Geburtsmoment — sie zeigt, wie du entscheidest und wie deine Energie fließt.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño es un mapa de energía trazado desde tu nacimiento — muestra cómo decides y cómo fluye tu energía.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design é um mapa de energia traçado do momento do teu nascimento — mostra como decides e como a tua energia flui.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design est une carte d'énergie tracée à partir de ta naissance — elle montre comment tu décides et comment ton énergie circule.", ja:"星座、動物、石、そしてあなたのデザイン。デザインとは誕生の瞬間から描かれるエネルギーの地図——決め方とエネルギーの流れを映します。" },
+  bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them — your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les — ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
   off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
   yolTitle:{ tr:"Bugün hangi yoldan gidelim?", en:"Which path shall we take today?", de:"Welchen Weg nehmen wir heute?", es:"¿Qué camino tomamos hoy?", pt:"Que caminho seguimos hoje?", fr:"Quel chemin prenons-nous aujourd'hui ?", ja:"今日はどちらの道にする？" },
@@ -1299,12 +1300,12 @@ const GLOBAL_CSS = `
   /* ── AÇIK TEMA — koyu arayüzü krem/mor/bakır tona çevirir (referans tasarım) ── */
   .sakin-light-invert {
     position: fixed; inset: 0; z-index: 99990; pointer-events: none;
-    -webkit-backdrop-filter: invert(0.94) hue-rotate(180deg) sepia(0.16) saturate(1.12) brightness(1.05);
-    backdrop-filter: invert(0.94) hue-rotate(180deg) sepia(0.16) saturate(1.12) brightness(1.05);
+    -webkit-backdrop-filter: invert(0.89) hue-rotate(180deg) sepia(0.20) saturate(1.08) brightness(0.97);
+    backdrop-filter: invert(0.89) hue-rotate(180deg) sepia(0.20) saturate(1.08) brightness(0.97);
   }
   .sakin-light-veil {
     position: fixed; inset: 0; z-index: 99991; pointer-events: none;
-    background: #f2e2d3; mix-blend-mode: multiply; opacity: 0.42;
+    background: #ecd9c6; mix-blend-mode: multiply; opacity: 0.56;
   }
 
   /* ── Animations ── */
@@ -3480,17 +3481,14 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // "SAKİN NEDİR?" POP-UP (Sprint 1) — İLK 5 girişte gösterilir (kalıcı sayaç),
-  // kapanınca ikili yol menüsüne (✦ Keşfet / ◎ Bağlan) yönlendirir. "Bir daha
-  // gösterme" susturur. ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
+  // "SAKİN NEDİR?" POP-UP — HER açılışta gösterilir, kullanıcı "bir daha gösterme"
+  // diyene kadar (sakin_nedir_off). Kapanınca ikili yol menüsüne (✦ Keşfet / ◎ Bağlan)
+  // yönlendirir. ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
   const [showNedir, setShowNedir] = useState(() => {
     try {
       if (isNative) return false;
-      if (localStorage.getItem("sakin_nedir_off") === "1") return false;
-      const n = parseInt(localStorage.getItem("sakin_nedir_count") || "0", 10) || 0;
-      if (n >= 5) return false;
-      localStorage.setItem("sakin_nedir_count", String(n + 1));
-      return true;
+      localStorage.removeItem("sakin_nedir_count"); // eski 5-giriş sayacı emekli
+      return localStorage.getItem("sakin_nedir_off") !== "1";
     } catch { return false; }
   });
   const [showYolSec, setShowYolSec] = useState(false); // ikili yol menüsü: ✦ Ailesi / ◎ mandala
@@ -4420,8 +4418,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     // da sağ kenardaki floating ☽ gizli geçit ile açılır (App.jsx ~3951).
     // Bu satır web'de üst panelde "🪞 Ayna" yazı linki gösteriyordu — KALDIRILDI.
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
-    {id:"mandala",icon:"◎",  label:t("nav_connection"), color:"#b87adc"},
-    {id:"ailesi", icon:"✦", label:t("nav_family"), color:"#f0c060", glow:true},
+    {id:"mandala",icon:"◎",  label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+    {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = _localizeArr(PREMIUM_WORDS_EN, PREMIUM_WORDS_TR, NOTIF_TRANS.PREMIUM_WORDS, lang);
@@ -5691,8 +5689,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
             <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
             <div style={{ fontSize:11,letterSpacing:4,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
-            <div style={{ fontSize:20,fontWeight:300,letterSpacing:0.5,color:"#efe8ff",marginBottom:12,fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</div>
-            <div style={{ fontSize:13.5,color:"#b0a4c8",lineHeight:1.68,marginBottom:24,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.body, lang)}</div>
+            <div style={{ fontSize:20,fontWeight:300,letterSpacing:0.5,color:"#efe8ff",marginBottom:16,fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</div>
+            <div style={{ textAlign:"left",padding:"12px 14px",background:"rgba(240,192,96,0.06)",border:"1px solid rgba(240,192,96,0.2)",borderRadius:14,marginBottom:10 }}>
+              <div style={{ fontSize:12,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+              <div style={{ fontSize:12.5,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
+            </div>
+            <div style={{ textAlign:"left",padding:"12px 14px",background:"rgba(184,122,220,0.06)",border:"1px solid rgba(184,122,220,0.2)",borderRadius:14,marginBottom:20 }}>
+              <div style={{ fontSize:12,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+              <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
+            </div>
             <button onClick={()=>{ setShowNedir(false); setShowYolSec(true); }}
               style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
               {pickLang(NEDIR_I18N.cta, lang)}
@@ -5787,6 +5792,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {girisPhase === "intro" ? (
               <>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+                {!isNative && (
+                  <div style={{ marginTop:14 }}>
+                    <button onClick={()=>setShowNedir(true)}
+                      style={{ background:"transparent",border:"1px solid rgba(184,164,216,0.3)",borderRadius:24,padding:"9px 26px",color:"#b0a0d0",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                      {pickLang(NEDIR_I18N.title, lang)}
+                    </button>
+                  </div>
+                )}
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
