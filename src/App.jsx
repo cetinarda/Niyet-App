@@ -322,6 +322,15 @@ const NEDIR_I18N = {
   baglanD: { tr:"Niyet, nefes, ses — günün küçük sakinlik pratiği.", en:"Intention, breath, sound — your small daily practice of calm.", de:"Absicht, Atem, Klang — deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido — tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som — a tua pequena prática diária de calma.", fr:"Intention, souffle, son — ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音——毎日の小さな穏やかさの習慣。" },
   yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
 };
+// Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2 — aha anı).
+const REVEAL_I18N = {
+  title:  { tr:"İşte ilk işaretlerin", en:"Here are your first signs", de:"Hier sind deine ersten Zeichen", es:"Aquí están tus primeras señales", pt:"Aqui estão os teus primeiros sinais", fr:"Voici tes premiers signes", ja:"最初のしるしが届きました" },
+  sun:    { tr:"Burcun", en:"Your sun sign", de:"Dein Sternzeichen", es:"Tu signo", pt:"O teu signo", fr:"Ton signe", ja:"星座" },
+  asc:    { tr:"Yükselenin", en:"Your rising", de:"Dein Aszendent", es:"Tu ascendente", pt:"O teu ascendente", fr:"Ton ascendant", ja:"アセンダント" },
+  path:   { tr:"Yaşam Yolun", en:"Your life path", de:"Dein Lebensweg", es:"Tu camino de vida", pt:"O teu caminho de vida", fr:"Ton chemin de vie", ja:"ライフパス" },
+  tasarim:{ tr:"Tasarımını keşfet ✦", en:"Explore your design ✦", de:"Entdecke dein Design ✦", es:"Explora tu diseño ✦", pt:"Explora o teu design ✦", fr:"Explore ton design ✦", ja:"あなたのデザインを見る ✦" },
+  gune:   { tr:"Güne başla ◎", en:"Start your day ◎", de:"Beginne den Tag ◎", es:"Empieza el día ◎", pt:"Começa o dia ◎", fr:"Commence la journée ◎", ja:"一日を始める ◎" },
+};
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
@@ -1287,6 +1296,17 @@ const GLOBAL_CSS = `
     background: radial-gradient(125% 95% at 50% 42%, rgba(0,0,0,0) 34%, rgba(0,8,2,0.38) 80%, rgba(0,6,2,0.60) 100%);
   }
 
+  /* ── AÇIK TEMA — koyu arayüzü krem/mor/bakır tona çevirir (referans tasarım) ── */
+  .sakin-light-invert {
+    position: fixed; inset: 0; z-index: 99990; pointer-events: none;
+    -webkit-backdrop-filter: invert(0.94) hue-rotate(180deg) sepia(0.16) saturate(1.12) brightness(1.05);
+    backdrop-filter: invert(0.94) hue-rotate(180deg) sepia(0.16) saturate(1.12) brightness(1.05);
+  }
+  .sakin-light-veil {
+    position: fixed; inset: 0; z-index: 99991; pointer-events: none;
+    background: #f2e2d3; mix-blend-mode: multiply; opacity: 0.42;
+  }
+
   /* ── Animations ── */
   @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
   @keyframes fadeUp      { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
@@ -1710,15 +1730,15 @@ async function scheduleDailyReminders(lang) {
     // yeniden schedule'da sabit). Söz havuzu 28 → 28 günde bir tekrar.
     for (let d = 0; d < 7; d++) {
       const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
-      // 07:30 — sabah pingi
+      // 07:30 — sabah pingi (tıklanınca → sabah ekranı)
       const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 7, 30, 0);
-      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, ...icon });
-      // 13:00 — günlük söz (rastgele dakika 0-29)
+      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
+      // 13:00 — günlük söz (rastgele dakika 0-29; tıklanınca → gün görevleri)
       const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
-      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: pick(reminders, dn), schedule: { at: sAt }, ...icon });
-      // 21:00 — program özelliği daveti
+      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: pick(reminders, dn), schedule: { at: sAt }, extra: { screen: "gun" }, ...icon });
+      // 21:00 — program özelliği daveti (tıklanınca → bağlantı çarkı)
       const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
-      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: pick(promos, dn), schedule: { at: pAt }, ...icon });
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: pick(promos, dn), schedule: { at: pAt }, extra: { screen: "mandala" }, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", stamp);
@@ -1730,7 +1750,12 @@ async function scheduleDailyReminders(lang) {
   } catch (e) { console.warn("[Notif] error:", e); }
 }
 
-function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
+// Görevden ilgili uygulama aracına köprü (Sprint 2): id → screen. Fiziksel-dünya
+// görevlerinin (su, ağaç, güneş...) köprüsü yok — sadece uygulamada yapılabilenler.
+const REMINDER_GO = { nefes: "nefes", chakra_an: "chakra" };
+const REMINDER_GO_TXT = { tr:"Uygulamada aç", en:"Open in app", de:"In der App öffnen", es:"Abrir en la app", pt:"Abrir na app", fr:"Ouvrir dans l'app", ja:"アプリで開く" };
+
+function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
   const t = makeTrans(lang);
   const REMINDERS = getReminders(lang);
   const _todayKey = new Date().toISOString().slice(0, 10);
@@ -1820,6 +1845,15 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone }) {
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontSize:16, fontWeight:500, color:isDone?"#666666":"#d8d0e8", marginBottom:4 }}>{rem.title}</div>
                 <div style={{ fontSize:13, fontWeight:300, color:"rgba(200,190,220,0.5)", lineHeight:1.5, marginBottom:rem.duration?8:0 }}>{rem.subtitle}</div>
+                {onGo && REMINDER_GO[rem.id] && !isDone && (
+                  <button onClick={()=>onGo(REMINDER_GO[rem.id])} style={{
+                    marginTop:6, background:"transparent", border:`1px solid ${rem.borderColor}`,
+                    borderRadius:100, color:rem.color, cursor:"pointer", fontSize:12,
+                    letterSpacing:1, padding:"4px 12px", fontFamily:"'Jost',sans-serif",
+                  }}>
+                    ↗ {REMINDER_GO_TXT[lang] || REMINDER_GO_TXT.en}
+                  </button>
+                )}
                 {rem.duration && !isDone && (
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
                     <svg width="28" height="28" style={{ flexShrink:0 }}>
@@ -2729,8 +2763,15 @@ export default function SakinApp() {
   // ── MATRIX MODU (deneysel) — efekt katmanı: yeşil tint + kod yağmuru + monospace.
   // Tüm UI'yı tek tek elden geçirmeden uygular. Sakin Ailesi paneli + embed app'ler
   // kapsam DIŞI (aşağıda overlay onlarda gizlenir).
-  const [matrixMode, setMatrixMode] = useState(() => localStorage.getItem("sakin_matrix") === "1");
-  const toggleMatrix = () => setMatrixMode(m => { const n = !m; try { localStorage.setItem("sakin_matrix", n ? "1" : "0"); } catch {} return n; });
+  // Matrix modu ARŞİVDE — ◐ toggle artık AÇIK TEMAYI değiştiriyor (kullanıcı kararı).
+  // Kod (MatrixRain + CSS) durur; istenirse 1.3.0'da 3-yönlü toggle ile geri gelir.
+  const [matrixMode] = useState(false);
+  // AÇIK TEMA (Sprint 2) — ◐ ile koyu ⇄ açık. backdrop-filter invert+hue-rotate:
+  // koyu arayüzü krem/açık tona çevirir, renk tonları korunur (referans: krem+mor+bakır).
+  const [lightMode, setLightMode] = useState(() => {
+    try { localStorage.removeItem("sakin_matrix"); return localStorage.getItem("sakin_theme") === "light"; } catch { return false; }
+  });
+  const toggleTheme = () => setLightMode(v => { const n = !v; try { localStorage.setItem("sakin_theme", n ? "light" : "dark"); } catch {} return n; });
   const t = makeTrans(lang);
   // <html lang> aktif dile eşitlenir — index.html'de sabit lang="tr" kalınca CSS
   // text-transform:uppercase İngilizce metinde Türkçe İ üretiyordu ("TAKE İT WİTH YOU").
@@ -2922,6 +2963,20 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // Bildirim tıklaması → ilgili ekrana yönlendir (Sprint 2). schedule'daki extra.screen
+  // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only — webde no-op.
+  useEffect(() => {
+    if (!isNative) return;
+    let handle = null;
+    try {
+      const p = LocalNotifications.addListener("localNotificationActionPerformed", (a) => {
+        const s = a?.notification?.extra?.screen;
+        if (s) { try { setShowAilesi(false); } catch(_){} setScreen(s); }
+      });
+      if (p && typeof p.then === "function") p.then(h => { handle = h; }); else handle = p;
+    } catch(_) {}
+    return () => { try { handle && handle.remove(); } catch(_) {} };
+  }, []);
   const [showFotoTani, setShowFotoTani] = useState(false);
   const [fotoTaniType, setFotoTaniType] = useState("stone"); // embed'den gelir: stone | plant
   const [fotoTaniResult, setFotoTaniResult] = useState("");
@@ -3439,6 +3494,7 @@ export default function SakinApp() {
     } catch { return false; }
   });
   const [showYolSec, setShowYolSec] = useState(false); // ikili yol menüsü: ✦ Ailesi / ◎ mandala
+  const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
   const [birthTimeInput, setBirthTimeInput] = useState(()=>localStorage.getItem("sakin_birth_time")||"");
@@ -4351,10 +4407,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
   const NAV = [
     {id:"sabah",  icon:"🌅", label:t("nav_morning"),               color:"#f0a060"},
+    {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"nefes",  icon:"🫧", label:t("nav_breath"),                color:"#60b8e8"},
     {id:"ses",    icon:"🔊", label:t("nav_sound"),                 color:"#a07ae0"},
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
-    {id:"gun",    icon:"☀️", label:t("nav_day"),                   color:"#e8d060"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
   const SIDEBAR_ITEMS = [
@@ -4389,6 +4445,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="sakin-matrix-tint" aria-hidden="true" />
           <div className="sakin-matrix-scan" aria-hidden="true" />
           <div className="sakin-matrix-vignette" aria-hidden="true" />
+        </>
+      )}
+      {/* AÇIK TEMA katmanları — tüm ekranları krem/açık tona çevirir */}
+      {lightMode && (
+        <>
+          <div className="sakin-light-invert" aria-hidden="true" />
+          <div className="sakin-light-veil" aria-hidden="true" />
         </>
       )}
       {/* iOS WKWebView'in AVAudioSession rotasını açık tutan sessiz loop ses. Frekans
@@ -4533,6 +4596,31 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </button>
                     )}
                   </div>
+                </div>
+              )}
+
+              {/* Mini profil: doğumdan türeyen kimlik çipleri + Galaktik Kimlik kapısı (Sprint 2) */}
+              {birthDate && astro?.burc && (
+                <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+                  <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:10 }}>
+                    <span style={{ padding:"5px 12px",background:"rgba(240,192,96,0.08)",border:"1px solid rgba(240,192,96,0.25)",borderRadius:100,fontSize:11,color:"#e8cc90",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+                      {pickLang(REVEAL_I18N.sun, lang)}: {zodiacDisplay(astro.burc, lang)}
+                    </span>
+                    {yukselen && (
+                      <span style={{ padding:"5px 12px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:100,fontSize:11,color:"#cbbce4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+                        {pickLang(REVEAL_I18N.asc, lang)}: {zodiacDisplay(yukselen, lang)}
+                      </span>
+                    )}
+                    {astro?.yasam && (
+                      <span style={{ padding:"5px 12px",background:"rgba(122,176,224,0.08)",border:"1px solid rgba(122,176,224,0.25)",borderRadius:100,fontSize:11,color:"#9cc0e4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+                        {pickLang(REVEAL_I18N.path, lang)}: {astro.yasam}
+                      </span>
+                    )}
+                  </div>
+                  <button onClick={()=>{ setShowAilesi(false); setShowIdCard(true); }}
+                    style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    {t("map_create_galactic_id")}
+                  </button>
                 </div>
               )}
             </div>
@@ -5518,16 +5606,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </button>
           );
         })}
-        {/* EKRAN MODU (Matrix) — en sağda ikon. Web-only (iOS'ta gizli). */}
+        {/* EKRAN MODU (koyu ⇄ açık tema) — en sağda ikon. Web-only (iOS 1.3.0'da). */}
         {!isNative && (
-          <button onClick={toggleMatrix} aria-label="Matrix" title="Matrix"
+          <button onClick={toggleTheme} aria-label="Tema" title="Tema"
             style={{
               flex:"0 0 auto", width:40, padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
               borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-              background: matrixMode ? "rgba(0,255,90,0.16)" : "transparent",
-              border: matrixMode ? "1px solid rgba(0,255,90,0.5)" : "1px solid transparent",
-              color: matrixMode ? "#33ff88" : "rgba(120,200,150,0.7)",
-              boxShadow: matrixMode ? "0 0 12px rgba(0,255,90,0.25)" : "none",
+              background: lightMode ? "rgba(240,200,140,0.18)" : "transparent",
+              border: lightMode ? "1px solid rgba(230,170,100,0.55)" : "1px solid transparent",
+              color: lightMode ? "#e8b478" : "rgba(200,190,220,0.6)",
+              boxShadow: lightMode ? "0 0 12px rgba(230,170,100,0.28)" : "none",
             }}>
             <span style={{ fontSize:16, lineHeight:1 }}>◐</span>
           </button>
@@ -5640,6 +5728,44 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
+      {/* KİMLİK ÖNİZLEME — doğum kaydından hemen sonra anında karşılık (aha anı) */}
+      {showKimlikReveal && (
+        <div onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.28)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
+            <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
+            <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:20,fontFamily:"'Jost',sans-serif" }}>{pickLang(REVEAL_I18N.title, lang)}</div>
+            <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:8,marginBottom:24 }}>
+              {astro?.burc && (
+                <div style={{ padding:"10px 16px",background:"rgba(240,192,96,0.08)",border:"1px solid rgba(240,192,96,0.3)",borderRadius:14 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#b09660",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{pickLang(REVEAL_I18N.sun, lang)}</div>
+                  <div style={{ fontSize:15,color:"#f0d8a0",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{zodiacDisplay(astro.burc, lang)}</div>
+                </div>
+              )}
+              {yukselen && (
+                <div style={{ padding:"10px 16px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:14 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#9080b8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{pickLang(REVEAL_I18N.asc, lang)}</div>
+                  <div style={{ fontSize:15,color:"#d8c8f0",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{zodiacDisplay(yukselen, lang)}</div>
+                </div>
+              )}
+              {astro?.yasam && (
+                <div style={{ padding:"10px 16px",background:"rgba(122,176,224,0.08)",border:"1px solid rgba(122,176,224,0.3)",borderRadius:14 }}>
+                  <div style={{ fontSize:9,letterSpacing:2,color:"#7090b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{pickLang(REVEAL_I18N.path, lang)}</div>
+                  <div style={{ fontSize:15,color:"#a8ccf0",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{astro.yasam}</div>
+                </div>
+              )}
+            </div>
+            <button onClick={()=>{ setShowKimlikReveal(false); handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
+              style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
+              {pickLang(REVEAL_I18N.tasarim, lang)}
+            </button>
+            <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }}
+              style={{ display:"block",width:"100%",padding:"11px 0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"transparent",border:"1px solid rgba(255,255,255,0.14)",borderRadius:24,color:"#b0a4c8",cursor:"pointer" }}>
+              {pickLang(REVEAL_I18N.gune, lang)}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* GİRİŞ */}
       {screen==="giris" && (
         <div style={{ maxWidth:360,width:"100%",textAlign:"center",padding:"24px 24px 80px",position:"relative",zIndex:1 }}>
@@ -5723,7 +5849,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     setCityWarn(false);
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                     setShowBirthForm(false);
-                    setScreen("sabah");
+                    // Aha anı: doğum bilgisi girildiyse önce anında karşılık kartı (burç/yükselen +
+                    // Tasarım köprüsü); hiçbir şey girilmediyse eskisi gibi doğrudan sabaha.
+                    if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); }
                   }}>
                   {(birthInput||birthTimeInput||birthCityInput) ? t("birth_save_arrow") : t("birth_skip_arrow")}
                 </button>
@@ -6509,7 +6637,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} onGo={(s)=>setScreen(s)} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
