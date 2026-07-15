@@ -3440,7 +3440,7 @@ export default function SakinApp() {
     });
   };
 
-  const MANDALA_STEPS = ["sabah","nefes","ses","chakra","gun","aksam","harita"];
+  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"]; // sıra = yeni akış zinciri
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   const [gunTasksDone, setGunTasksDone] = useState(() => {
     try {
@@ -6170,7 +6170,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {`${niyet.trim() ? "✓" : "○"} ${t("premium_unlock_word_hint").replace("{n}", String(selectedWords.length))}`}
                 </div>
               ) : (
-                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=new Date().toISOString().slice(0,10); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("nefes"); }}>{t("btn_continue")}</button>
+                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=new Date().toISOString().slice(0,10); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("gun"); }}>{t("btn_continue")}</button>
               )}
             </>
           )}
@@ -6622,14 +6622,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div className="label-sm" style={{ marginBottom:30 }}>{t("chakra_stay")}</div>
             <button className="sakin-btn terapi-pill" style={{ marginBottom:14,padding:"11px 28px" }} onClick={()=>setScreen("terapi")}>{t("btn_therapy")}</button>
             <div>
-              <button className="sakin-btn-primary" style={{ padding:"10px 28px",fontSize:13 }} onClick={()=>{ markStep("chakra"); setScreen("gun"); }}>{t("btn_next")}</button>
+              <button className="sakin-btn-primary" style={{ padding:"10px 28px",fontSize:13 }} onClick={()=>{ markStep("chakra"); setScreen("aksam"); }}>{t("btn_next")}</button>
             </div>
           </div>
         </div>
       )}
 
-      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("gun"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("gun"); setScreen("aksam"); }} lang={lang} onTasksDone={setGunTasksDone} onGo={(s)=>setScreen(s)} />}
+      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("aksam"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("sabah")} onNext={()=>{ markStep("gun"); setScreen("nefes"); }} lang={lang} onTasksDone={setGunTasksDone} onGo={(s)=>setScreen(s)} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
