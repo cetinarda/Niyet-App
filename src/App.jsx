@@ -316,7 +316,7 @@ const NEDIR_I18N = {
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them — your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les — ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
   off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
-  yolTitle:{ tr:"Bugün hangi yoldan gidelim?", en:"Which path shall we take today?", de:"Welchen Weg nehmen wir heute?", es:"¿Qué camino tomamos hoy?", pt:"Que caminho seguimos hoje?", fr:"Quel chemin prenons-nous aujourd'hui ?", ja:"今日はどちらの道にする？" },
+  yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
   kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
   kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın — sana dair işaretler.", en:"Your sign, your design, your animal, your stone — the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein — Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra — señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra — sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre — des signes qui te concernent.", ja:"星座、デザイン、動物、石——あなたにまつわるしるし。" },
   baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
@@ -1300,12 +1300,12 @@ const GLOBAL_CSS = `
   /* ── AÇIK TEMA — koyu arayüzü krem/mor/bakır tona çevirir (referans tasarım) ── */
   .sakin-light-invert {
     position: fixed; inset: 0; z-index: 99990; pointer-events: none;
-    -webkit-backdrop-filter: invert(0.89) hue-rotate(180deg) sepia(0.20) saturate(1.08) brightness(0.97);
-    backdrop-filter: invert(0.89) hue-rotate(180deg) sepia(0.20) saturate(1.08) brightness(0.97);
+    -webkit-backdrop-filter: invert(0.96) hue-rotate(180deg) sepia(0.22) saturate(1.15) contrast(1.04);
+    backdrop-filter: invert(0.96) hue-rotate(180deg) sepia(0.22) saturate(1.15) contrast(1.04);
   }
   .sakin-light-veil {
     position: fixed; inset: 0; z-index: 99991; pointer-events: none;
-    background: #ecd9c6; mix-blend-mode: multiply; opacity: 0.56;
+    background: #f4ddc9; mix-blend-mode: multiply; opacity: 0.45;
   }
 
   /* ── Animations ── */
@@ -3491,7 +3491,6 @@ export default function SakinApp() {
       return localStorage.getItem("sakin_nedir_off") !== "1";
     } catch { return false; }
   });
-  const [showYolSec, setShowYolSec] = useState(false); // ikili yol menüsü: ✦ Ailesi / ◎ mandala
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -5683,52 +5682,40 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* "SAKİN NEDİR?" POP-UP — ilk 5 girişte (web denemesi). Kapanınca ikili yol menüsü açılır. */}
+      {/* "SAKİN NEDİR?" / YOL SEÇİMİ — TEK overlay. Her açılışta ("bir daha gösterme"ye
+          kadar). Kartlar DOĞRUDAN tıklanır: ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?"
+          butonu hakkinda/nedir sekmesine gider. Ara adım (yol menüsü) kaldırıldı. */}
       {showNedir && !showIntro && (
-        <div onClick={()=>{ setShowNedir(false); setShowYolSec(true); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
-            <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
-            <div style={{ fontSize:11,letterSpacing:4,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
-            <div style={{ fontSize:20,fontWeight:300,letterSpacing:0.5,color:"#efe8ff",marginBottom:16,fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</div>
-            <div style={{ textAlign:"left",padding:"12px 14px",background:"rgba(240,192,96,0.06)",border:"1px solid rgba(240,192,96,0.2)",borderRadius:14,marginBottom:10 }}>
-              <div style={{ fontSize:12,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+        <div onClick={()=>setShowNedir(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.87)",backdropFilter:"blur(13px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
+            <div style={{ fontSize:24,marginBottom:8 }}>✦</div>
+            <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:18,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            <button onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:16,marginBottom:10,cursor:"pointer",boxShadow:"0 0 16px rgba(240,192,96,0.1)" }}>
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+                <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
+              </div>
               <div style={{ fontSize:12.5,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
-            </div>
-            <div style={{ textAlign:"left",padding:"12px 14px",background:"rgba(184,122,220,0.06)",border:"1px solid rgba(184,122,220,0.2)",borderRadius:14,marginBottom:20 }}>
-              <div style={{ fontSize:12,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</div>
+            </button>
+            <button onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
+              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+                <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
+              </div>
               <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
+            </button>
+            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
+              style={{ background:"transparent",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"7px 20px",color:"#b0a0d0",fontSize:11.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>
+              {pickLang(NEDIR_I18N.title, lang)}
+            </button>
+            <div>
+              <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
+                style={{ background:"none",border:"none",color:"#9080b0",fontSize:12.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"4px 14px" }}>
+                {pickLang(NEDIR_I18N.off, lang)}
+              </button>
             </div>
-            <button onClick={()=>{ setShowNedir(false); setShowYolSec(true); }}
-              style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
-              {pickLang(NEDIR_I18N.cta, lang)}
-            </button>
-            <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ background:"none",border:"none",color:"#9080b0",fontSize:12.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
-              {pickLang(NEDIR_I18N.off, lang)}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* İKİLİ YOL MENÜSÜ — ✦ Keşfet (Ailesi) / ◎ Bağlan (mandala) */}
-      {showYolSec && !showIntro && (
-        <div onClick={()=>setShowYolSec(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",textAlign:"center",animation:"fadeUp 0.5s ease-out" }}>
-            <div style={{ fontSize:17,fontWeight:300,letterSpacing:1.5,color:"#e8dcff",fontFamily:"'Jost',sans-serif",marginBottom:22 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
-            <button onClick={()=>{ setShowYolSec(false); setShowAilesi(true); }}
-              style={{ display:"block",width:"100%",marginBottom:14,padding:"22px 20px",textAlign:"left",background:"linear-gradient(160deg,rgba(60,45,30,0.55),rgba(30,22,14,0.6))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:18,cursor:"pointer",boxShadow:"0 0 18px rgba(240,192,96,0.12)" }}>
-              <div style={{ fontSize:17,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</div>
-              <div style={{ fontSize:13,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.kesfetD, lang)}</div>
-            </button>
-            <button onClick={()=>{ setShowYolSec(false); setScreen("mandala"); }}
-              style={{ display:"block",width:"100%",marginBottom:18,padding:"22px 20px",textAlign:"left",background:"linear-gradient(160deg,rgba(40,30,60,0.55),rgba(20,15,32,0.6))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:18,cursor:"pointer",boxShadow:"0 0 18px rgba(184,122,220,0.12)" }}>
-              <div style={{ fontSize:17,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</div>
-              <div style={{ fontSize:13,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.baglanD, lang)}</div>
-            </button>
-            <button onClick={()=>setShowYolSec(false)}
-              style={{ background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 14px" }}>
-              {pickLang(NEDIR_I18N.yolSkip, lang)}
-            </button>
           </div>
         </div>
       )}
@@ -5792,14 +5779,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {girisPhase === "intro" ? (
               <>
                 <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
-                {!isNative && (
-                  <div style={{ marginTop:14 }}>
-                    <button onClick={()=>setShowNedir(true)}
-                      style={{ background:"transparent",border:"1px solid rgba(184,164,216,0.3)",borderRadius:24,padding:"9px 26px",color:"#b0a0d0",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                      {pickLang(NEDIR_I18N.title, lang)}
-                    </button>
-                  </div>
-                )}
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
@@ -7848,19 +7827,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* ── SAKİN NEDİR? ── */}
           {hakkindaTab==="nedir" && (
           <>
-          {/* Başlık — Bağlantı metaforu */}
-          <div style={{ textAlign:"center",marginBottom:36 }}>
-            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{t("about_use_and")}</div>
-            <h1 style={{ margin:0,fontSize:22,fontWeight:300,letterSpacing:3,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("about_connect")}</h1>
-            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:4,marginTop:16 }}>
-              {["#c084fc","#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"].map((c,i)=>(
-                <span key={i} style={{ display:"flex",alignItems:"center",gap:4 }}>
-                  <span style={{ width:10,height:10,borderRadius:"50%",background:c,display:"inline-block" }} />
-                  {i<6 && <span style={{ width:16,height:1.5,background:`linear-gradient(90deg,${c},${["#818cf8","#38bdf8","#34d399","#fbbf24","#fb923c","#f472b6"][i]})`,display:"inline-block" }} />}
-                </span>
-              ))}
-            </div>
+          {/* Başlık + iki yol — pop-up ile aynı dil (basitleştirilmiş yapı) */}
+          <div style={{ textAlign:"center",marginBottom:14 }}>
+            <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
+            <h1 style={{ margin:0,fontSize:21,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</h1>
           </div>
+          <button onClick={()=>setShowAilesi(true)}
+            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.35)",borderRadius:16,marginBottom:10,cursor:"pointer" }}>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+              <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+              <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
+            </div>
+            <div style={{ fontSize:13,color:"#c8b89a",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
+          </button>
+          <button onClick={()=>setScreen("mandala")}
+            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.35)",borderRadius:16,marginBottom:32,cursor:"pointer" }}>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+              <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+              <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
+            </div>
+            <div style={{ fontSize:13,color:"#b0a4c8",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
+          </button>
 
           {/* Tanıdık mı? */}
           <div style={{ marginBottom:28 }}>
