@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, TouchableOpacity,
 } from 'react-native';
@@ -6,8 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
 import { useTasarimStore } from '../store/useStore';
 import { generateWeeklyReport } from '../utils/weeklyReport';
+import { chartHash, hangingGates } from '../utils/personalize';
 import { GATES } from '../data/gates';
+import { CENTERS, CenterKey } from '../data/centers';
 import { L, getLang } from '../i18n';
+
+// AI yorum tabanı: web'de same-origin, iOS embed'de (capacitor://) mutlak URL gerekir.
+const AI_BASE = (typeof location !== 'undefined' && location.protocol.indexOf('http') === 0) ? '' : 'https://sakin.life';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'profile' | 'report') => void;
@@ -21,6 +26,55 @@ export function ReportScreen({ onNavigate }: Props) {
     if (!chart) return null;
     return generateWeeklyReport(chart);
   }, [chart]);
+
+  // ── AI KİŞİSEL YORUM (premium) — chart-hash önbellekli, hata durumunda
+  //    yukarıdaki deterministik ritüeller zaten ekranda (fallback doğal).
+  const aiLang = getLang() === 'en' ? 'en' : 'tr';
+  const aiCacheKey = chart ? `hd_ai_v1_${chartHash(chart)}_${aiLang}` : '';
+  const [aiText, setAiText] = useState<string>(() => {
+    try { return (typeof window !== 'undefined' && (window as any).localStorage?.getItem(aiCacheKey)) || ''; } catch { return ''; }
+  });
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiErr, setAiErr] = useState(false);
+  const isPremium = (() => {
+    try { return typeof window !== 'undefined' && (window as any).localStorage?.getItem('sakin_premium') === '1'; }
+    catch { return false; }
+  })();
+  const openPremium = () => {
+    try { (window as any).parent?.postMessage({ type: 'sakin-premium-cta' }, '*'); } catch (_) {}
+  };
+  const fetchAi = async () => {
+    if (!chart || aiBusy) return;
+    setAiBusy(true); setAiErr(false);
+    try {
+      const undef = (Object.keys(CENTERS) as CenterKey[]).filter(k => !chart.definedCenters.has(k));
+      const summary = {
+        type: chart.type, strategy: chart.strategy, authority: chart.authority,
+        profile: chart.profile, definition: chart.definition, cross: chart.incarnationCross,
+        definedCenters: Array.from(chart.definedCenters).map(k => CENTERS[k as CenterKey]?.name || k),
+        undefinedCenters: undef.map(k => ({
+          center: CENTERS[k].name,
+          hangingGates: hangingGates(chart, k).map(g => ({ gate: g, name: (GATES as any)[g]?.name, gift: (GATES as any)[g]?.gift, shadow: (GATES as any)[g]?.shadow })),
+        })),
+        channels: chart.activeChannels.map(c => `${c.id} ${c.name}`),
+      };
+      const system = 'You are Sakin Tasarım\'s Human Design guide: warm, grounded, second-person, no jargon dumps, no medical/financial claims. Use ONLY the chart data provided by the user message — never invent gates, channels or centers that are not listed. Write ONE flowing personal commentary (5-7 sentences): weave together (a) how this person\'s specific hanging gates color their open centers, (b) one concrete daily "reset ritual" tailored to their authority and strongest channel, (c) one gentle strength they can lean on this week. Refer to gates/channels by number and name exactly as given.';
+      const r = await fetch(AI_BASE + '/.netlify/functions/ai-call', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system,
+          messages: [{ role: 'user', content: 'CHART JSON:\n' + JSON.stringify(summary) + '\n\nBu haritaya özel yorumunu yaz.' }],
+          lang: aiLang, max_tokens: 700,
+        }),
+      });
+      const d = await r.json();
+      const txt = (d && d.text || '').trim();
+      if (!txt) throw new Error('empty');
+      setAiText(txt);
+      try { (window as any).localStorage?.setItem(aiCacheKey, txt); } catch (_) {}
+    } catch (_) { setAiErr(true); }
+    setAiBusy(false);
+  };
 
   if (!activeProfile || !chart || !report) {
     return (
@@ -203,10 +257,43 @@ export function ReportScreen({ onNavigate }: Props) {
         ))}
       </View>
 
+      {/* ✦ AI KİŞİSEL YORUM — haritaya özel derin yorum (premium; chart-hash önbellekli) */}
+      <View style={[styles.bigCard, { borderColor: 'rgba(201,168,76,0.4)' }]}>
+        <Text style={[styles.bigKicker, { color: Colors.gold }]}>{getLang() === 'en' ? '✦ PERSONAL AI READING' : '✦ HARİTANA ÖZEL AI YORUMU'}</Text>
+        <Text style={styles.bigNote}>
+          {getLang() === 'en'
+            ? 'A one-of-a-kind commentary woven from your exact gates, channels and authority — no two charts get the same words.'
+            : 'Tam olarak senin kapıların, kanalların ve yetkinden dokunan, eşi olmayan bir yorum — iki harita aynı cümleleri görmez.'}
+        </Text>
+        {!isPremium ? (
+          <TouchableOpacity onPress={openPremium} activeOpacity={0.85}
+            style={{ borderWidth: 1, borderColor: Colors.gold, borderRadius: 999, paddingVertical: 12, alignItems: 'center', marginTop: 6 }}>
+            <Text style={{ color: Colors.gold, letterSpacing: 1 }}>{getLang() === 'en' ? '🔒 Unlock with Premium' : '🔒 Premium ile aç'}</Text>
+          </TouchableOpacity>
+        ) : aiText ? (
+          <>
+            <Text style={[styles.bullet, { lineHeight: 22 }]}>{aiText}</Text>
+            <TouchableOpacity onPress={fetchAi} disabled={aiBusy} activeOpacity={0.7} style={{ marginTop: 10, alignSelf: 'center' }}>
+              <Text style={{ color: Colors.textMuted, fontSize: 12, letterSpacing: 1 }}>{aiBusy ? '…' : (getLang() === 'en' ? '↻ Regenerate' : '↻ Yeniden üret')}</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity onPress={fetchAi} disabled={aiBusy} activeOpacity={0.85}
+            style={{ borderWidth: 1, borderColor: Colors.gold, borderRadius: 999, paddingVertical: 12, alignItems: 'center', marginTop: 6, opacity: aiBusy ? 0.6 : 1 }}>
+            <Text style={{ color: Colors.gold, letterSpacing: 1 }}>{aiBusy ? (getLang() === 'en' ? 'Weaving your reading…' : 'Yorumun dokunuyor…') : (getLang() === 'en' ? '✦ Create my reading' : '✦ Yorumumu oluştur')}</Text>
+          </TouchableOpacity>
+        )}
+        {aiErr && (
+          <Text style={{ color: Colors.textMuted, fontSize: 12, marginTop: 8, textAlign: 'center' }}>
+            {getLang() === 'en' ? 'Could not reach the sky right now — the rituals above are fully yours meanwhile.' : 'Şu an üretilemedi — yukarıdaki ritüeller zaten tamamen sana özel.'}
+          </Text>
+        )}
+      </View>
+
       <Text style={styles.footerNote}>
         {getLang() === 'en'
-          ? 'The weekly theme, the attention / let-go / own-it blocks, the gate and the practice change every week. Compatibility, body listening and warning signs stay fixed.'
-          : 'Haftalık tema, dikkat / bırak / sahiplen blokları, kapı ve pratik her hafta değişir. Uyumluluk, beden dinleme ve uyarı işaretleri sabit kalır.'}
+          ? 'The weekly theme, the attention / let-go / own-it blocks, the gate, the practice AND the warning signs are all woven from your unique chart — they shift with the week and with you.'
+          : 'Haftalık tema, dikkat / bırak / sahiplen blokları, kapı, pratik VE uyarı işaretleri — hepsi senin benzersiz haritandan dokunur; haftayla ve seninle değişir.'}
       </Text>
 
       <View style={styles.disclaimerBox}>

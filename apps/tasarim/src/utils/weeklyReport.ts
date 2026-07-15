@@ -1,4 +1,6 @@
 import { HumanDesignChart } from './humanDesign';
+import { chartHash, hangingGates, personalResets } from './personalize';
+import { getLang } from '../i18n';
 import { CENTERS, CenterKey } from '../data/centers';
 import { GATES } from '../data/gates';
 import { TYPES, HDType } from '../data/types';
@@ -277,7 +279,10 @@ export interface WeeklyReport {
 // Üretici
 // =============================================================
 export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Date()): WeeklyReport {
-  const { year, week, index } = isoWeek(now);
+  const { year, week, index: weekIndex } = isoWeek(now);
+  // KİŞİSELLEŞTİRME: rotasyon seed'ine harita parmak izi karışır — aynı hafta,
+  // farklı haritalar FARKLI tema/dikkat/bırak/pratik görür (eskiden herkese aynıydı).
+  const index = weekIndex + (chartHash(chart) % 997);
 
   const ref = new Date(now);
   const day = (ref.getDay() + 6) % 7;
@@ -450,18 +455,35 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
 
   // ----- UYARI İŞARETLERİ -----
   const tw = TYPE_WARNINGS[chart.type];
-  const centerSigns: ReportItem[] = undefinedList.slice(0, 5).map(k => {
+  // KİŞİSELLEŞTİRME: gösterilecek 5 tanımsız merkez harita-hash'iyle döndürülür
+  // (eskiden hep ilk 5) ve her işaret, o merkezdeki ASILI KAPI ile derinleşir.
+  const rotatedUndef = undefinedList.length > 5
+    ? Array.from({ length: 5 }, (_, i) => undefinedList[(index + i) % undefinedList.length])
+    : undefinedList;
+  const centerSigns: ReportItem[] = rotatedUndef.map(k => {
     const c = CENTERS[k];
+    const hg = hangingGates(chart, k);
+    let micro = `Söndür: ${c.undefined.wisdom}`;
+    if (hg.length > 0) {
+      const g = hg[index % hg.length];
+      const gi: any = (GATES as any)[g];
+      if (gi) micro = `Söndür: ${c.undefined.wisdom} Senin anahtarın ${g}. kapı (${gi.name}): ${gi.gift}`;
+    }
     return {
       title: `Tanımsız ${c.name}`,
       body: c.undefined.notSelfQuestion,
-      micro: `Söndür: ${c.undefined.wisdom}`,
+      micro,
     };
   });
+  // Ritüeller: tip ritüellerinden hash'le seçilen 2 + haritaya özgü 3 (yetki/asılı kapı/kanal).
+  const lang = getLang() === 'en' ? 'en' as const : 'tr' as const;
+  const typeResets = tw.resets.length > 2
+    ? Array.from({ length: 2 }, (_, i) => tw.resets[(index + i) % tw.resets.length])
+    : tw.resets;
   const warnings: WarningsBlock = {
     typeSigns: tw.signs,
     centerSigns,
-    resets: tw.resets,
+    resets: [...typeResets, ...personalResets(chart, lang)],
   };
 
   return {

@@ -12,6 +12,7 @@ import { PROFILES, LINES, ProfileKey } from '../data/profiles';
 import { CENTERS, CenterKey, CENTER_ORDER } from '../data/centers';
 import { GATES } from '../data/gates';
 import { getActivationsByCenter, planetLabel } from '../utils/humanDesign';
+import { undefinedCenterExtras } from '../utils/personalize';
 import { L, getLang } from '../i18n';
 
 interface Props {
@@ -336,6 +337,12 @@ export function ChartScreen({ onNavigate }: Props) {
                   <Text style={styles.body}>{L(c.undefined, 'notSelfQuestion')}</Text>
                   <Text style={styles.subLabel}>{getLang() === 'en' ? 'Wisdom gained' : 'Kazanılan bilgelik'}</Text>
                   <Text style={styles.body}>{L(c.undefined, 'wisdom')}</Text>
+                  {/* KİŞİSEL KATMAN — bu merkezin SENİN haritanda nasıl yaşandığı
+                      (asılı kapı + kanal ortağı çekimi + tip çaprazı) */}
+                  <Text style={[styles.subLabel, { color: Colors.gold }]}>{getLang() === 'en' ? '✦ In your chart' : '✦ Senin haritanda'}</Text>
+                  {undefinedCenterExtras(chart, k, getLang() === 'en' ? 'en' : 'tr').map((line, li) => (
+                    <Text key={li} style={[styles.body, li > 0 && { marginTop: 6 }]}>{line}</Text>
+                  ))}
                 </View>
               )}
             </View>

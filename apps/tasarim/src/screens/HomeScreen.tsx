@@ -11,6 +11,7 @@ import { TYPES } from '../data/types';
 import { AUTHORITIES } from '../data/authorities';
 import { sunLongitude, moonLongitude, julianDay } from '../utils/ephemeris';
 import { longitudeToGate } from '../utils/humanDesign';
+import { todaysHighlight } from '../utils/personalize';
 import { elementDistribution } from '../utils/elements';
 import { ElementPie } from '../components/ElementPie';
 import { ElementDetail } from '../components/ElementDetail';
@@ -135,6 +136,20 @@ export function HomeScreen({ onNavigate }: Props) {
           name={L(moonInfo, 'name')}
         />
       </View>
+
+      {/* BUGÜNÜN VURGUSU — gökyüzü × SENİN haritan kesişimi (kişisel, her gün değişir) */}
+      {(() => {
+        if (!chart) return null;
+        const hl = todaysHighlight(chart, new Date(), getLang() === 'en' ? 'en' : 'tr');
+        if (!hl) return null;
+        return (
+          <View style={[styles.section, { borderColor: 'rgba(201,168,76,0.35)', borderWidth: 1 }]}>
+            <Text style={[styles.sectionLabel, { color: Colors.gold }]}>✦ {getLang() === 'en' ? "Today's Highlight" : 'Bugünün Vurgusu'}</Text>
+            <Text style={{ fontSize: Typography.size.md, color: Colors.text, fontFamily: Typography.font.serif, marginBottom: 6 }}>{hl.title}</Text>
+            <Text style={{ fontSize: Typography.size.sm, color: Colors.textSecondary, lineHeight: Typography.size.sm * 1.65 }}>{hl.body}</Text>
+          </View>
+        );
+      })()}
 
       {/* Element dağılımı — natal gezegenlerin ateş/toprak/hava/su dengesi */}
       {elemDist && (
