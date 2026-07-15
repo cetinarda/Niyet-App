@@ -63,6 +63,11 @@ const SCROLL_OVERRIDE = `    <style>
       html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
+    <script>
+      /* Sakin embed lang override — Expo sabit lang üretir; CSS text-transform:uppercase
+         yanlış dilde İ/I hatası yapar ("DETAİLS", "HIKAYE"). UI diliyle eşitle. */
+      try { var __sl = localStorage.getItem('sakin_lang') || 'tr'; document.documentElement.lang = (__sl === 'pt-BR' ? 'pt' : __sl); } catch (e) {}
+    </script>
   `;
 
 function injectScrollOverride(html) {

@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  ScrollView,
   Animated,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -384,8 +385,10 @@ export function MitlerFinderScreen({
         </View>
       )}
 
-      {/* Intro */}
+      {/* Intro — ScrollView: küçük ekranda içerik taşıp üstteki sekmelerle
+          çakışıyordu + kaydırılamıyordu (web kullanıcı geri bildirimi) */}
       {mode === 'intro' && (
+        <ScrollView contentContainerStyle={styles.introScroll} showsVerticalScrollIndicator={false}>
         <View style={styles.introWrap}>
           <Text style={styles.introEmoji}>✦</Text>
           <Text style={styles.introTitle}>Rehber Mitini Keşfet</Text>
@@ -416,11 +419,12 @@ export function MitlerFinderScreen({
             )}
           </TouchableOpacity>
         </View>
+        </ScrollView>
       )}
 
-      {/* Quiz */}
+      {/* Quiz — ScrollView: seçenekler küçük ekranda katlanıp erişilemiyordu */}
       {mode === 'quiz' && (
-        <>
+        <ScrollView contentContainerStyle={styles.quizScroll} showsVerticalScrollIndicator={false}>
           <View style={styles.progressWrap}>
             <View style={styles.progressTrack}>
               <View style={[styles.progressFill, { width: `${progress * 100}%` as any }]} />
@@ -444,7 +448,7 @@ export function MitlerFinderScreen({
               ))}
             </View>
           </Animated.View>
-        </>
+        </ScrollView>
       )}
 
       {/* Profil'e yönlendirme — doğum bilgileri eksikse */}
@@ -582,8 +586,10 @@ const styles = StyleSheet.create({
   },
 
   // Intro
+  introScroll: { flexGrow: 1, justifyContent: 'center', paddingBottom: Spacing.xl },
+  quizScroll: { flexGrow: 1, paddingBottom: Spacing.xl },
   introWrap: {
-    flex: 1, alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
     paddingHorizontal: Spacing.lg, gap: Spacing.md,
   },
   introEmoji: { fontSize: 56, marginBottom: Spacing.sm, color: Colors.textPrimary },
@@ -607,7 +613,7 @@ const styles = StyleSheet.create({
     borderWidth: 1, padding: Spacing.md,
   },
   modeBtnEmoji: { fontSize: 28, width: 36, textAlign: 'center' },
-  modeBtnText: { flex: 1 },
+  modeBtnText: { flex: 1, minWidth: 0 },
   modeBtnTitle: { fontSize: Typography.size.md, fontWeight: Typography.weight.semibold, marginBottom: 2 },
   modeBtnDesc: { fontSize: Typography.size.xs, color: Colors.textMuted },
 
@@ -648,11 +654,15 @@ const styles = StyleSheet.create({
   },
 
   // Profile-required panel (replaces former inline birth form)
+  // NOT: hint satır İÇİNDE durunca uzun metni başlık sütununu sıfıra sıkıştırıp
+  // dikey harf akışına yol açıyordu (web kullanıcı hatası) → kartın köşesine alındı.
   modeBtnHint: {
+    position: 'absolute',
+    right: 10,
+    top: 8,
     fontSize: 9,
     color: Colors.gold + 'AA',
     letterSpacing: 1.5,
-    marginTop: 4,
     textTransform: 'uppercase',
   },
   needsProfileWrap: {
