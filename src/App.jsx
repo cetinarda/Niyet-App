@@ -3481,15 +3481,12 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // "SAKİN NEDİR?" POP-UP — HER açılışta gösterilir, kullanıcı "bir daha gösterme"
-  // diyene kadar (sakin_nedir_off). Kapanınca ikili yol menüsüne (✦ Keşfet / ◎ Bağlan)
-  // yönlendirir. ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
+  // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta DEĞİL, HAZIRIM'a basınca çıkar
+  // (kullanıcı önce dilini seçebilsin). "Bir daha gösterme" (sakin_nedir_off) susturur.
+  // ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
   const [showNedir, setShowNedir] = useState(() => {
-    try {
-      if (isNative) return false;
-      localStorage.removeItem("sakin_nedir_count"); // eski 5-giriş sayacı emekli
-      return localStorage.getItem("sakin_nedir_off") !== "1";
-    } catch { return false; }
+    try { localStorage.removeItem("sakin_nedir_count"); } catch(_) {} // eski sayaç temizliği
+    return false;
   });
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
@@ -5778,7 +5775,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <button className="sakin-btn-primary" onClick={()=>setGirisPhase("birth")}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(!isNative && localStorage.getItem("sakin_nedir_off")!=="1") setShowNedir(true); } catch(_) {} }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
