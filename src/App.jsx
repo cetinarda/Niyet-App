@@ -3499,17 +3499,16 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — İLK ziyarette HAZIRIM'a basınca çıkar
-  // (kullanıcı önce dilini seçebilsin); dil BİR KEZ seçildiyse (sakin_lang kayıtlı,
-  // dönen kullanıcı) HER ziyarette otomatik çıkar — "bir daha gösterme"ye kadar.
-  // ŞİMDİLİK WEB-ONLY (webde deneme) — iOS 1.3.0'da açılır.
+  // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz. Yalnızca kullanıcı
+  // dilini seçip HAZIRIM'a basınca çıkar (setShowNedir(true) — giriş landing'i, ~satır
+  // 5801). girisPhase her yüklemede "intro"ya döndüğü + giriş varsayılan ekran olduğu
+  // için HER ziyarette HAZIRIM'dan geçilir → "her açılışta göster" böyle korunur.
+  // "bir daha gösterme" (sakin_nedir_off) HAZIRIM tetiklemesini durdurur.
+  // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
+  // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu — geri alındı.
   const [showNedir, setShowNedir] = useState(() => {
-    try {
-      localStorage.removeItem("sakin_nedir_count"); // eski sayaç temizliği
-      if (isNative) return false;
-      if (localStorage.getItem("sakin_nedir_off") === "1") return false;
-      return !!localStorage.getItem("sakin_lang");
-    } catch { return false; }
+    try { localStorage.removeItem("sakin_nedir_count"); } catch (_) {} // eski sayaç temizliği
+    return false;
   });
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
