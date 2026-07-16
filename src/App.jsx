@@ -1449,7 +1449,7 @@ const GLOBAL_CSS = `
   /* ── Chakra cards ── */
   .chakra-card {
     border-radius:12px; border:1px solid rgba(255,255,255,0.05);
-    padding:14px 16px; cursor:pointer; transition:all 0.2s;
+    padding:16px; cursor:pointer; transition:all 0.2s;
     background:rgba(255,255,255,0.02); display:flex; align-items:center; gap:14px;
   }
   .chakra-card:hover { background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.12); }
@@ -1470,7 +1470,7 @@ const GLOBAL_CSS = `
   /* ── Reminder cards ── */
   .rem-card {
     border-radius:18px; border:1px solid rgba(255,255,255,0.06);
-    padding:18px 20px; background:rgba(255,255,255,0.04);
+    padding:18px; background:rgba(255,255,255,0.04);
     transition:all 0.3s; margin-bottom:12px;
     display:flex; align-items:flex-start; gap:16px;
   }
@@ -1562,8 +1562,8 @@ const GLOBAL_CSS = `
     .sakin-btn, .sakin-btn-primary { font-size:13px; padding:12px 26px; }
     .word-chip { font-size:14px; padding:9px 16px; }
     .sakin-input { font-size:16px; }
-    .rem-card { padding:18px 16px; }
-    .chakra-card { padding:16px 18px; }
+    .rem-card { padding:16px; }
+    .chakra-card { padding:16px; }
   }
 `;
 
@@ -3325,6 +3325,16 @@ export default function SakinApp() {
   const [showLicenseModal, setShowLicenseModal] = useState(false);
   const [licenseInput, setLicenseInput] = useState("");
   const [licenseError, setLicenseError] = useState("");
+  // Web satış sayfası "listeye gir" — basit ilgi sayacı (kişisel veri toplamaz,
+  // sadece anonim sinyal loglar). Cihaz başına bir kez sayılır (localStorage).
+  const [waitlistJoined, setWaitlistJoined] = useState(() => { try { return localStorage.getItem("sakin_waitlist_joined") === "1"; } catch { return false; } });
+  const joinWaitlist = () => {
+    setWaitlistJoined(true);
+    try { localStorage.setItem("sakin_waitlist_joined", "1"); } catch (_) {}
+    try {
+      fetch("/.netlify/functions/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lang, source: "pricing", timestamp: new Date().toISOString() }) }).catch(() => {});
+    } catch (_) {}
+  };
   const [licenseLoading, setLicenseLoading] = useState(false);
   const validateLicense = async () => {
     const key = licenseInput.trim();
@@ -8184,12 +8194,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                 </div>
 
-                {/* Web satın alma geçici olarak pasif — satın alma App Store üzerinden yapılıyor.
-                    Buton görsel olarak aynı kalır ama sönük + tıklanamaz; altında App Store yönlendirmesi. */}
-                <div aria-disabled="true"
-                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.35)",opacity:0.4,cursor:"not-allowed",pointerEvents:"none",userSelect:"none" }}>
-                  {t("web_purchase_soon")}
-                </div>
+                {/* Web satın alma henüz aktif değil — "Coming Soon" pasif buton yerine
+                    "Listeye Gir" ilgi-CTA'sı: alıcı niyetini ölçer (anonim sinyal). */}
+                {waitlistJoined ? (
+                  <div style={{ marginTop:20,padding:"16px 18px",textAlign:"center",boxSizing:"border-box",background:"rgba(122,80,150,0.14)",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28 }}>
+                    <div style={{ fontSize:15,letterSpacing:1.5,color:"#d8c8f0",fontFamily:"'Jost',sans-serif" }}>{t("waitlist_joined")}</div>
+                    <div style={{ marginTop:6,fontSize:12.5,color:"#9a8ac0",letterSpacing:0.3,lineHeight:1.55 }}>{t("waitlist_joined_sub")}</div>
+                  </div>
+                ) : (
+                  <button onClick={joinWaitlist}
+                    style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.9),rgba(122,80,150,0.85))",border:"1px solid rgba(184,164,216,0.6)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.4)",cursor:"pointer" }}>
+                    {t("waitlist_cta")}
+                  </button>
+                )}
                 <div style={{ marginTop:13,textAlign:"center",fontSize:13,color:"#9a8ac0",letterSpacing:0.4,lineHeight:1.6 }}>
                   {t("web_purchase_appstore_note")}
                 </div>
