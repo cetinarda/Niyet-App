@@ -1,0 +1,178 @@
+// Zarif, sade paylaşım kartı — söz/içerik kartını 1080×1350 (4:5) görsele çevirir,
+// sonra native paylaşım (Instagram vb.) açar; desteklenmiyorsa indirir. Web-only
+// (embed'ler webview'de çalışır). Sakin koyu estetiği + tek accent renk.
+
+export interface ShareCardSpec {
+  appName: string;    // üst kicker, ör. "SAKİN TAŞLAR"
+  accent: string;     // hex vurgu rengi
+  emoji?: string;     // büyük sembol/emoji
+  title?: string;     // ad (taş/hayvan/bitki) — söz kartında boş
+  meta?: string;      // element · çakra vb.
+  body?: string;      // günün mesajı
+  quote?: string;     // söz metni / rehberlik
+  quoteBy?: string;   // kaynak
+  fileName?: string;
+  shareText?: string;
+}
+
+function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number): string[] {
+  const words = String(text || '').split(/\s+/);
+  const lines: string[] = [];
+  let cur = '';
+  for (const w of words) {
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+    else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+
+// Belirli fontla ölçüp satırlara böler (dikey ortalama ön-hesabı için).
+function wrap0(ctx: CanvasRenderingContext2D, text: string, maxW: number, font: string): string[] {
+  const prev = ctx.font; ctx.font = font;
+  const lines = wrap(ctx, text, maxW);
+  ctx.font = prev;
+  return lines;
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '');
+  return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+}
+
+export function isShareable(): boolean {
+  return typeof document !== 'undefined' && typeof document.createElement === 'function';
+}
+
+export async function shareCard(spec: ShareCardSpec): Promise<void> {
+  if (!isShareable()) return;
+  const W = 1080, H = 1350;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  if (!ctx) return;
+  const [ar, ag, ab] = hexToRgb(spec.accent || '#C9A84C');
+
+  // Arka plan gradyanı
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#0D0B14');
+  bg.addColorStop(0.5, '#160f26');
+  bg.addColorStop(1, '#0A0812');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  // hafif accent parıltısı (üstte)
+  const glow = ctx.createRadialGradient(W / 2, 300, 40, W / 2, 300, 620);
+  glow.addColorStop(0, `rgba(${ar},${ag},${ab},0.13)`);
+  glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  // yıldızlar
+  const stars = [[70, 120, 2.5], [260, 90, 1.6], [900, 140, 2.4], [990, 360, 1.8], [120, 500, 1.6], [960, 640, 2], [90, 900, 1.8], [980, 980, 2.4], [200, 1180, 1.6], [880, 1220, 2]];
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  for (const [x, y, r] of stars) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+  // ince çerçeve
+  ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.28)`;
+  ctx.lineWidth = 2;
+  roundRect(ctx, 48, 48, W - 96, H - 96, 28); ctx.stroke();
+
+  ctx.textAlign = 'center';
+
+  // Üst kicker
+  ctx.fillStyle = `rgba(${ar},${ag},${ab},0.92)`;
+  ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+  ctx.fillText(spaceOut((spec.appName || '').toUpperCase()), W / 2, 150);
+
+  // İçerik bloğunun yüksekliğini önce ölç → kicker (200) ile footer (H-180) arasında ortala.
+  const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
+  const bodyLines = spec.body ? wrap0(ctx, spec.body, W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
+  const quoteLines = spec.quote ? wrap0(ctx, '“' + spec.quote + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
+  let blockH = 0;
+  if (spec.emoji) blockH += 148;
+  if (titleLines.length) blockH += titleLines.length * 74 + 6;
+  if (spec.meta) blockH += 56;
+  if (bodyLines.length) blockH += bodyLines.length * 50 + 18;
+  if (quoteLines.length) blockH += 44 + quoteLines.length * 56 + (spec.quoteBy ? 46 : 0);
+  const zoneTop = 240, zoneBot = H - 210;
+  let y = Math.max(zoneTop + 60, zoneTop + (zoneBot - zoneTop - blockH) / 2 + 60);
+
+  if (spec.emoji) {
+    ctx.font = "120px -apple-system, 'Apple Color Emoji', 'Helvetica Neue', sans-serif";
+    ctx.fillStyle = '#fff';
+    ctx.fillText(spec.emoji, W / 2, y);
+    y += 110;
+  }
+  if (titleLines.length) {
+    ctx.fillStyle = '#F3EEFB';
+    ctx.font = "300 62px 'Georgia', 'Times New Roman', serif";
+    for (const ln of titleLines) { ctx.fillText(ln, W / 2, y); y += 74; }
+    y += 6;
+  }
+  if (spec.meta) {
+    ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
+    ctx.font = "400 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+    ctx.fillText(spaceOut(spec.meta.toUpperCase()), W / 2, y);
+    y += 56;
+  }
+  if (bodyLines.length) {
+    ctx.fillStyle = 'rgba(226,220,240,0.92)';
+    ctx.font = "300 34px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+    for (const ln of bodyLines) { ctx.fillText(ln, W / 2, y); y += 50; }
+    y += 18;
+  }
+  if (quoteLines.length) {
+    ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.5)`;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(W / 2 - 44, y); ctx.lineTo(W / 2 + 44, y); ctx.stroke();
+    y += 44;
+    ctx.fillStyle = '#EFE9DA';
+    ctx.font = "italic 300 38px 'Georgia', 'Times New Roman', serif";
+    for (const ln of quoteLines) { ctx.fillText(ln, W / 2, y); y += 56; }
+    if (spec.quoteBy) {
+      y += 10;
+      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.9)`;
+      ctx.font = "400 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText('— ' + spec.quoteBy, W / 2, y);
+    }
+  }
+
+  // Alt marka
+  ctx.fillStyle = 'rgba(160,150,180,0.7)';
+  ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+  ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
+  ctx.fillStyle = `rgba(${ar},${ag},${ab},0.8)`;
+  ctx.font = '22px serif';
+  ctx.fillText('✦', W / 2, H - 132);
+
+  const fileName = spec.fileName || 'sakin.png';
+  const blob: Blob | null = await new Promise((res) => cv.toBlob(res, 'image/png', 0.95));
+  if (!blob) return;
+  try {
+    const file = new File([blob], fileName, { type: 'image/png' });
+    const nav: any = navigator;
+    if (nav.canShare && nav.canShare({ files: [file] })) {
+      await nav.share({ files: [file], text: spec.shareText || '' });
+      return;
+    }
+  } catch (_) { /* paylaşım iptal/başarısız → indirmeye düş */ }
+  // Fallback: indir
+  try {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = fileName; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch (_) { /* sessiz */ }
+}
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function spaceOut(s: string): string {
+  // hafif harf aralığı hissi (canvas letterSpacing her yerde yok)
+  return s.split('').join(' ');
+}

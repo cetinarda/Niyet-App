@@ -21,6 +21,7 @@ import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers } from '../i18n/localize';
 import { DisclaimerModal } from '../components/DisclaimerModal';
+import { shareCard, isShareable } from '../utils/shareCard';
 
 interface HomeScreenProps {
   onNavigateToProfile?: () => void;
@@ -150,7 +151,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 // ─── Home screen ───────────────────────────────────────────────────────────────
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { profile, dailyReading, generateDailyReading, updateStats } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const quotes = useLocalizedQuotes();
@@ -363,15 +364,34 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                     {step === 0 && animal && <AnimalContent animal={animal} onOpenDetail={() => setShowAnimalDetail(true)} detailBtnLabel={t('home.detailBtn')} />}
                     {step === 1 && quote  && <QuoteContent quote={quote} />}
                   </ScrollView>
-                  <TouchableOpacity
-                    style={[styles.nextBtn, { borderColor: deck.color }]}
-                    onPress={handleNext}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={[styles.nextBtnText, { color: deck.color }]}>
-                      {step < DECKS.length - 1 ? t('home.nextDeck') : t('home.completed')}
-                    </Text>
-                  </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', gap: 8, alignItems: 'stretch' }}>
+                    <TouchableOpacity
+                      style={[styles.nextBtn, { borderColor: deck.color, flex: 1 }]}
+                      onPress={handleNext}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={[styles.nextBtnText, { color: deck.color }]}>
+                        {step < DECKS.length - 1 ? t('home.nextDeck') : t('home.completed')}
+                      </Text>
+                    </TouchableOpacity>
+                    {isShareable() && ((step === 0 && animal) || (step === 1 && quote)) && (
+                      <TouchableOpacity
+                        style={[styles.nextBtn, { borderColor: deck.color, paddingHorizontal: 18, flex: 0 }]}
+                        onPress={() => {
+                          if (step === 0 && animal) {
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: (animal as any).dailyMessage, quote: (animal as any).guidance, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
+                          } else if (step === 1 && quote) {
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
+                          }
+                        }}
+                        activeOpacity={0.8}
+                        accessibilityRole="button"
+                        accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+                      >
+                        <Text style={[styles.nextBtnText, { color: deck.color }]}>⤓</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 </Animated.View>
               </View>
             </View>

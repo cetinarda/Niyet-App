@@ -9,6 +9,7 @@ import tarotData from '../data/tarot.json';
 import runesData from '../data/runes.json';
 import ichingData from '../data/iching.json';
 import { translate, getLanguage } from '../i18n/useLanguage';
+import { shareCard, isShareable } from '../utils/shareCard';
 
 export type Kind = 'archetype' | 'myth' | 'image' | 'tarot' | 'rune' | 'iching';
 
@@ -51,14 +52,24 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
 
   const handleShare = async () => {
     const first = sections[0]?.body ?? '';
+    // Web: zarif görsel kart (indir / native paylaş → Instagram). Native: metin paylaşımı.
+    if (isShareable()) {
+      await shareCard({
+        appName: 'Sakin Mitler',
+        accent,
+        emoji: entry.emoji,
+        title: entry.name,
+        meta: entry.detailMeta,
+        body: first,
+        fileName: `sakin-${entry.name}.png`,
+        shareText: `${entry.name} — sakin.life`,
+      });
+      return;
+    }
     const message = `${entry.name} — ${translate(('detail.kind.' + entry.kind) as any)}\n\n${first}\n\n${translate('common.familyTag')}`;
     try {
-      if (Platform.OS === 'web' && typeof navigator !== 'undefined' && (navigator as any).share) {
-        await (navigator as any).share({ title: entry.name, text: message });
-      } else if (Platform.OS !== 'web') {
+      if (Platform.OS !== 'web') {
         await Share.share({ message, title: entry.name });
-      } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(message);
       }
     } catch {
       // user cancelled or share unavailable — silent
