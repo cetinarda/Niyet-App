@@ -28,6 +28,29 @@ function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number): string
   return lines;
 }
 
+// Metni cümle sınırında özetler (kart "özet gibi" kısa kalsın). maxChars'ı aşarsa
+// en yakın cümle bitişine (. ! ? …) kadar keser; bulamazsa kelime sınırında + "…".
+function summarize(text: string, maxChars: number): string {
+  const t = String(text || '').replace(/\s+/g, ' ').trim();
+  if (t.length <= maxChars) return t;
+  const slice = t.slice(0, maxChars);
+  const m = slice.match(/[\s\S]*[.!?…](\s|$)/);
+  if (m && m[0].trim().length >= maxChars * 0.5) return m[0].trim();
+  const sp = slice.lastIndexOf(' ');
+  return (sp > 0 ? slice.slice(0, sp) : slice).trim() + '…';
+}
+
+// Satır dizisini n satıra indirir; son tutulan satırı "…" ile bitirir.
+function ellipsize(lines: string[], n: number): string[] {
+  if (n >= lines.length) return lines;
+  if (n <= 0) return [];
+  const kept = lines.slice(0, n);
+  let last = kept[n - 1].replace(/[\s.,;:—-]+$/, '');
+  if (!last.endsWith('…')) last += '…';
+  kept[n - 1] = last;
+  return kept;
+}
+
 // Belirli fontla ölçüp satırlara böler (dikey ortalama ön-hesabı için).
 function wrap0(ctx: CanvasRenderingContext2D, text: string, maxW: number, font: string): string[] {
   const prev = ctx.font; ctx.font = font;
@@ -81,17 +104,29 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
   ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
   ctx.fillText(spaceOut((spec.appName || '').toUpperCase()), W / 2, 150);
 
-  // İçerik bloğunun yüksekliğini önce ölç → kicker (200) ile footer (H-180) arasında ortala.
-  const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
-  const bodyLines = spec.body ? wrap0(ctx, spec.body, W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
-  const quoteLines = spec.quote ? wrap0(ctx, '“' + spec.quote + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
-  let blockH = 0;
-  if (spec.emoji) blockH += 148;
-  if (titleLines.length) blockH += titleLines.length * 74 + 6;
-  if (spec.meta) blockH += 56;
-  if (bodyLines.length) blockH += bodyLines.length * 50 + 18;
-  if (quoteLines.length) blockH += 44 + quoteLines.length * 56 + (spec.quoteBy ? 46 : 0);
+  // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt) — kartlar sade,
+  // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
   const zoneTop = 240, zoneBot = H - 210;
+  const BODY_LH = 50, QUOTE_LH = 56, TITLE_LH = 74;
+  const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
+  let bodyLines = spec.body ? wrap0(ctx, summarize(spec.body, 260), W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
+  let quoteLines = spec.quote ? wrap0(ctx, '“' + summarize(spec.quote, 180) + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
+
+  const fixedH = (spec.emoji ? 148 : 0) + (titleLines.length ? titleLines.length * TITLE_LH + 6 : 0) + (spec.meta ? 56 : 0);
+  const quoteFixed = quoteLines.length ? 44 + (spec.quoteBy ? 46 : 0) : 0;
+  const avail = (zoneBot - zoneTop) - fixedH;
+  // Gövde için bütçe (quote'a öncelik: quote genelde kısa/vurucu). Taşarsa gövdeyi kırp.
+  let bodyBudget = avail - (quoteLines.length ? quoteFixed + quoteLines.length * QUOTE_LH : 0) - (bodyLines.length ? 18 : 0);
+  let maxBodyLines = Math.max(0, Math.floor(bodyBudget / BODY_LH));
+  if (bodyLines.length > maxBodyLines) bodyLines = ellipsize(bodyLines, maxBodyLines);
+  // Gövde yoksa/kısaldıysa quote hâlâ taşıyorsa quote'u da kırp.
+  let quoteBudget = avail - (bodyLines.length ? bodyLines.length * BODY_LH + 18 : 0) - quoteFixed;
+  let maxQuoteLines = Math.max(0, Math.floor(quoteBudget / QUOTE_LH));
+  if (quoteLines.length > maxQuoteLines) quoteLines = ellipsize(quoteLines, maxQuoteLines);
+
+  let blockH = fixedH;
+  if (bodyLines.length) blockH += bodyLines.length * BODY_LH + 18;
+  if (quoteLines.length) blockH += quoteFixed + quoteLines.length * QUOTE_LH;
   let y = Math.max(zoneTop + 60, zoneTop + (zoneBot - zoneTop - blockH) / 2 + 60);
 
   if (spec.emoji) {
