@@ -5,7 +5,8 @@
 export interface ShareCardSpec {
   appName: string;    // üst kicker, ör. "SAKİN TAŞLAR"
   accent: string;     // hex vurgu rengi
-  emoji?: string;     // büyük sembol/emoji
+  emoji?: string;     // büyük sembol/emoji (imageUrl yoksa / yüklenemezse yedek)
+  imageUrl?: string;  // gerçek portre foto (taş/hayvan/bitki) — emoji yerine çizilir
   title?: string;     // ad (taş/hayvan/bitki) — söz kartında boş
   meta?: string;      // element · çakra vb.
   body?: string;      // günün mesajı
@@ -13,6 +14,27 @@ export interface ShareCardSpec {
   quoteBy?: string;   // kaynak
   fileName?: string;
   shareText?: string;
+}
+
+// Portre fotoğrafını yükler (CORS anonim → canvas'a çizilebilsin). Başarısızsa null.
+function loadImage(url: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = url;
+    } catch (_) { resolve(null); }
+  });
+}
+
+// Tainted canvas'ta toBlob SecurityError atar → null döndürüp emoji yedeğine düşeriz.
+function toBlobSafe(cv: HTMLCanvasElement): Promise<Blob | null> {
+  return new Promise((resolve) => {
+    try { cv.toBlob((b) => resolve(b), 'image/png', 0.95); }
+    catch (_) { resolve(null); }
+  });
 }
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxW: number): string[] {
@@ -71,114 +93,143 @@ export function isShareable(): boolean {
 export async function shareCard(spec: ShareCardSpec): Promise<void> {
   if (!isShareable()) return;
   const W = 1080, H = 1350;
-  const cv = document.createElement('canvas');
-  cv.width = W; cv.height = H;
-  const ctx = cv.getContext('2d');
-  if (!ctx) return;
   const [ar, ag, ab] = hexToRgb(spec.accent || '#C9A84C');
 
-  // Arka plan gradyanı
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#0D0B14');
-  bg.addColorStop(0.5, '#160f26');
-  bg.addColorStop(1, '#0A0812');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  // hafif accent parıltısı (üstte)
-  const glow = ctx.createRadialGradient(W / 2, 300, 40, W / 2, 300, 620);
-  glow.addColorStop(0, `rgba(${ar},${ag},${ab},0.13)`);
-  glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  // yıldızlar
-  const stars = [[70, 120, 2.5], [260, 90, 1.6], [900, 140, 2.4], [990, 360, 1.8], [120, 500, 1.6], [960, 640, 2], [90, 900, 1.8], [980, 980, 2.4], [200, 1180, 1.6], [880, 1220, 2]];
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  for (const [x, y, r] of stars) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
-  // ince çerçeve
-  ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.28)`;
-  ctx.lineWidth = 2;
-  roundRect(ctx, 48, 48, W - 96, H - 96, 28); ctx.stroke();
+  // Gerçek portre fotoğrafını önden yükle (varsa). Emoji yalnızca yedek.
+  const portrait = spec.imageUrl ? await loadImage(spec.imageUrl) : null;
 
-  ctx.textAlign = 'center';
+  // Kartı çizer. usePortrait=false → foto tainted çıktıysa (CORS) emoji yedeğiyle
+  // tekrar çizmek için. Dönen canvas toBlob'a verilir.
+  const render = (usePortrait: boolean): HTMLCanvasElement | null => {
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    if (!ctx) return null;
+    const useImg = usePortrait && !!portrait;
+    const IMG_D = 232; // portre çapı
 
-  // Üst kicker
-  ctx.fillStyle = `rgba(${ar},${ag},${ab},0.92)`;
-  ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-  ctx.fillText(spaceOut((spec.appName || '').toUpperCase()), W / 2, 150);
+    // Arka plan gradyanı
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0D0B14');
+    bg.addColorStop(0.5, '#160f26');
+    bg.addColorStop(1, '#0A0812');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    // hafif accent parıltısı (üstte)
+    const glow = ctx.createRadialGradient(W / 2, 300, 40, W / 2, 300, 620);
+    glow.addColorStop(0, `rgba(${ar},${ag},${ab},0.13)`);
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+    // yıldızlar
+    const stars = [[70, 120, 2.5], [260, 90, 1.6], [900, 140, 2.4], [990, 360, 1.8], [120, 500, 1.6], [960, 640, 2], [90, 900, 1.8], [980, 980, 2.4], [200, 1180, 1.6], [880, 1220, 2]];
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    for (const [x, y, r] of stars) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+    // ince çerçeve
+    ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.28)`;
+    ctx.lineWidth = 2;
+    roundRect(ctx, 48, 48, W - 96, H - 96, 28); ctx.stroke();
 
-  // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt) — kartlar sade,
-  // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
-  const zoneTop = 240, zoneBot = H - 210;
-  const BODY_LH = 50, QUOTE_LH = 56, TITLE_LH = 74;
-  const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
-  let bodyLines = spec.body ? wrap0(ctx, summarize(spec.body, 260), W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
-  let quoteLines = spec.quote ? wrap0(ctx, '“' + summarize(spec.quote, 180) + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
+    ctx.textAlign = 'center';
 
-  const fixedH = (spec.emoji ? 148 : 0) + (titleLines.length ? titleLines.length * TITLE_LH + 6 : 0) + (spec.meta ? 56 : 0);
-  const quoteFixed = quoteLines.length ? 44 + (spec.quoteBy ? 46 : 0) : 0;
-  const avail = (zoneBot - zoneTop) - fixedH;
-  // Gövde için bütçe (quote'a öncelik: quote genelde kısa/vurucu). Taşarsa gövdeyi kırp.
-  let bodyBudget = avail - (quoteLines.length ? quoteFixed + quoteLines.length * QUOTE_LH : 0) - (bodyLines.length ? 18 : 0);
-  let maxBodyLines = Math.max(0, Math.floor(bodyBudget / BODY_LH));
-  if (bodyLines.length > maxBodyLines) bodyLines = ellipsize(bodyLines, maxBodyLines);
-  // Gövde yoksa/kısaldıysa quote hâlâ taşıyorsa quote'u da kırp.
-  let quoteBudget = avail - (bodyLines.length ? bodyLines.length * BODY_LH + 18 : 0) - quoteFixed;
-  let maxQuoteLines = Math.max(0, Math.floor(quoteBudget / QUOTE_LH));
-  if (quoteLines.length > maxQuoteLines) quoteLines = ellipsize(quoteLines, maxQuoteLines);
+    // Üst kicker
+    ctx.fillStyle = `rgba(${ar},${ag},${ab},0.92)`;
+    ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+    ctx.fillText(spaceOut((spec.appName || '').toUpperCase()), W / 2, 150);
 
-  let blockH = fixedH;
-  if (bodyLines.length) blockH += bodyLines.length * BODY_LH + 18;
-  if (quoteLines.length) blockH += quoteFixed + quoteLines.length * QUOTE_LH;
-  let y = Math.max(zoneTop + 60, zoneTop + (zoneBot - zoneTop - blockH) / 2 + 60);
+    // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt) — kartlar sade,
+    // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
+    const zoneTop = 240, zoneBot = H - 210;
+    const BODY_LH = 50, QUOTE_LH = 56, TITLE_LH = 74;
+    const artH = useImg ? IMG_D + 40 : (spec.emoji ? 148 : 0);
+    const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
+    let bodyLines = spec.body ? wrap0(ctx, summarize(spec.body, 260), W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
+    let quoteLines = spec.quote ? wrap0(ctx, '“' + summarize(spec.quote, 180) + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
 
-  if (spec.emoji) {
-    ctx.font = "120px -apple-system, 'Apple Color Emoji', 'Helvetica Neue', sans-serif";
-    ctx.fillStyle = '#fff';
-    ctx.fillText(spec.emoji, W / 2, y);
-    y += 110;
-  }
-  if (titleLines.length) {
-    ctx.fillStyle = '#F3EEFB';
-    ctx.font = "300 62px 'Georgia', 'Times New Roman', serif";
-    for (const ln of titleLines) { ctx.fillText(ln, W / 2, y); y += 74; }
-    y += 6;
-  }
-  if (spec.meta) {
-    ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
-    ctx.font = "400 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillText(spaceOut(spec.meta.toUpperCase()), W / 2, y);
-    y += 56;
-  }
-  if (bodyLines.length) {
-    ctx.fillStyle = 'rgba(226,220,240,0.92)';
-    ctx.font = "300 34px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-    for (const ln of bodyLines) { ctx.fillText(ln, W / 2, y); y += 50; }
-    y += 18;
-  }
-  if (quoteLines.length) {
-    ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.5)`;
-    ctx.lineWidth = 1.4;
-    ctx.beginPath(); ctx.moveTo(W / 2 - 44, y); ctx.lineTo(W / 2 + 44, y); ctx.stroke();
-    y += 44;
-    ctx.fillStyle = '#EFE9DA';
-    ctx.font = "italic 300 38px 'Georgia', 'Times New Roman', serif";
-    for (const ln of quoteLines) { ctx.fillText(ln, W / 2, y); y += 56; }
-    if (spec.quoteBy) {
-      y += 10;
-      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.9)`;
-      ctx.font = "400 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-      ctx.fillText('— ' + spec.quoteBy, W / 2, y);
+    const fixedH = artH + (titleLines.length ? titleLines.length * TITLE_LH + 6 : 0) + (spec.meta ? 56 : 0);
+    const quoteFixed = quoteLines.length ? 44 + (spec.quoteBy ? 46 : 0) : 0;
+    const avail = (zoneBot - zoneTop) - fixedH;
+    // Gövde için bütçe (quote'a öncelik: quote genelde kısa/vurucu). Taşarsa gövdeyi kırp.
+    const bodyBudget = avail - (quoteLines.length ? quoteFixed + quoteLines.length * QUOTE_LH : 0) - (bodyLines.length ? 18 : 0);
+    const maxBodyLines = Math.max(0, Math.floor(bodyBudget / BODY_LH));
+    if (bodyLines.length > maxBodyLines) bodyLines = ellipsize(bodyLines, maxBodyLines);
+    // Gövde yoksa/kısaldıysa quote hâlâ taşıyorsa quote'u da kırp.
+    const quoteBudget = avail - (bodyLines.length ? bodyLines.length * BODY_LH + 18 : 0) - quoteFixed;
+    const maxQuoteLines = Math.max(0, Math.floor(quoteBudget / QUOTE_LH));
+    if (quoteLines.length > maxQuoteLines) quoteLines = ellipsize(quoteLines, maxQuoteLines);
+
+    let blockH = fixedH;
+    if (bodyLines.length) blockH += bodyLines.length * BODY_LH + 18;
+    if (quoteLines.length) blockH += quoteFixed + quoteLines.length * QUOTE_LH;
+    let y = Math.max(zoneTop + 60, zoneTop + (zoneBot - zoneTop - blockH) / 2 + 60);
+
+    if (useImg && portrait) {
+      // Gerçek portre — daire kırpma + accent halka (emoji yerine).
+      const d = IMG_D, cx = W / 2, cy = y - 20 + d / 2;
+      ctx.save();
+      ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
+      const iw = portrait.width || d, ih = portrait.height || d;
+      const scale = Math.max(d / iw, d / ih); // cover-fit
+      const dw = iw * scale, dh = ih * scale;
+      ctx.drawImage(portrait, cx - dw / 2, cy - dh / 2, dw, dh);
+      ctx.restore();
+      ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.6)`;
+      ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, Math.PI * 2); ctx.stroke();
+      y += d + 4;
+    } else if (spec.emoji) {
+      ctx.font = "120px -apple-system, 'Apple Color Emoji', 'Helvetica Neue', sans-serif";
+      ctx.fillStyle = '#fff';
+      ctx.fillText(spec.emoji, W / 2, y);
+      y += 110;
     }
-  }
+    if (titleLines.length) {
+      ctx.fillStyle = '#F3EEFB';
+      ctx.font = "300 62px 'Georgia', 'Times New Roman', serif";
+      for (const ln of titleLines) { ctx.fillText(ln, W / 2, y); y += 74; }
+      y += 6;
+    }
+    if (spec.meta) {
+      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
+      ctx.font = "400 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText(spaceOut(spec.meta.toUpperCase()), W / 2, y);
+      y += 56;
+    }
+    if (bodyLines.length) {
+      ctx.fillStyle = 'rgba(226,220,240,0.92)';
+      ctx.font = "300 34px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      for (const ln of bodyLines) { ctx.fillText(ln, W / 2, y); y += 50; }
+      y += 18;
+    }
+    if (quoteLines.length) {
+      ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.5)`;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(W / 2 - 44, y); ctx.lineTo(W / 2 + 44, y); ctx.stroke();
+      y += 44;
+      ctx.fillStyle = '#EFE9DA';
+      ctx.font = "italic 300 38px 'Georgia', 'Times New Roman', serif";
+      for (const ln of quoteLines) { ctx.fillText(ln, W / 2, y); y += 56; }
+      if (spec.quoteBy) {
+        y += 10;
+        ctx.fillStyle = `rgba(${ar},${ag},${ab},0.9)`;
+        ctx.font = "400 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+        ctx.fillText('— ' + spec.quoteBy, W / 2, y);
+      }
+    }
 
-  // Alt marka
-  ctx.fillStyle = 'rgba(160,150,180,0.7)';
-  ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-  ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
-  ctx.fillStyle = `rgba(${ar},${ag},${ab},0.8)`;
-  ctx.font = '22px serif';
-  ctx.fillText('✦', W / 2, H - 132);
+    // Alt marka
+    ctx.fillStyle = 'rgba(160,150,180,0.7)';
+    ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+    ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
+    ctx.fillStyle = `rgba(${ar},${ag},${ab},0.8)`;
+    ctx.font = '22px serif';
+    ctx.fillText('✦', W / 2, H - 132);
+    return cv;
+  };
 
   const fileName = spec.fileName || 'sakin.png';
-  const blob: Blob | null = await new Promise((res) => cv.toBlob(res, 'image/png', 0.95));
+  let cv = render(true);
+  let blob = cv ? await toBlobSafe(cv) : null;
+  // Foto CORS yüzünden canvas'ı tainted yaptıysa toBlob null döner → emojiyle tekrar çiz.
+  if (!blob && portrait) { cv = render(false); blob = cv ? await toBlobSafe(cv) : null; }
   if (!blob) return;
   try {
     const file = new File([blob], fileName, { type: 'image/png' });

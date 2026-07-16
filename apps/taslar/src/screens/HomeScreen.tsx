@@ -23,6 +23,7 @@ import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers, useLocalizedStones } from '../i18n/localize';
 import { DisclaimerModal } from '../components/DisclaimerModal';
 import { shareCard, isShareable } from '../utils/shareCard';
+import { buildQuotePool } from '../utils/quotePool';
 
 interface HomeScreenProps {
   onNavigateToProfile?: () => void;
@@ -204,8 +205,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
 
   useEffect(() => {
     if (!reading) {
-      const mevlanaIds = quotesData.filter(q => q.source === 'Mevlana Rumi').map(q => q.id);
-      const qIds = mevlanaIds.length ? mevlanaIds : quotesData.map(q => q.id);
+      const qIds = buildQuotePool(quotesData);
       const sIds = stonesData.map(s => s.id);
       const aIds = animalsData.map(a => a.id);
       generateDailyReading(qIds, sIds, aIds, aIds).then(r => {
@@ -412,7 +412,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                         style={[styles.nextBtn, { borderColor: deck.color, paddingHorizontal: 18, flex: 0 }]}
                         onPress={() => {
                           if (step === 0 && stone) {
-                            shareCard({ appName: 'Sakin Taşlar', accent: deck.color, emoji: (stone as any).emoji, title: stone.name, meta: `${stone.element} · ${stone.chakra}`, body: (stone as any).dailyMessage, fileName: `sakin-${stone.name}.png`, shareText: `${stone.name} — sakin.life` });
+                            shareCard({ appName: 'Sakin Taşlar', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: stone.name, meta: `${stone.element} · ${stone.chakra}`, body: (stone as any).dailyMessage, fileName: `sakin-${stone.name}.png`, shareText: `${stone.name} — sakin.life` });
                           } else if (step === 1 && quote) {
                             shareCard({ appName: 'Sakin Taşlar', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
                           }

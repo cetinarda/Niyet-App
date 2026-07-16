@@ -23,9 +23,9 @@ export const tr = {
         subtitle: 'Bugünün bitkisini dinle',
       },
       quote: {
-        title: 'Mevlana',
-        short: 'MEVLANA',
-        subtitle: "Mevlana'dan bir cevap",
+        title: 'Sözler',
+        short: 'SÖZ',
+        subtitle: 'Anadolu bilgeliğinden',
       },
     },
     tapHint: 'salla · dokun',

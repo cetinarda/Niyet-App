@@ -22,6 +22,7 @@ import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers } from '../i18n/localize';
 import { DisclaimerModal } from '../components/DisclaimerModal';
 import { shareCard, isShareable } from '../utils/shareCard';
+import { buildQuotePool } from '../utils/quotePool';
 
 interface HomeScreenProps {
   onNavigateToProfile?: () => void;
@@ -174,7 +175,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
 
   useEffect(() => {
     if (!reading) {
-      const qIds = quotesData.map(q => q.id);
+      const qIds = buildQuotePool(quotesData);
       const aIds = animalsData.map(a => a.id);
       generateDailyReading(qIds, aIds, aIds, aIds).then(r => {
         const q = quotesData.find(x => x.id === r.quoteId);
@@ -379,7 +380,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                         style={[styles.nextBtn, { borderColor: deck.color, paddingHorizontal: 18, flex: 0 }]}
                         onPress={() => {
                           if (step === 0 && animal) {
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: (animal as any).dailyMessage, quote: (animal as any).guidance, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: (animal as any).dailyMessage, quote: (animal as any).guidance, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
                           } else if (step === 1 && quote) {
                             shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
                           }
