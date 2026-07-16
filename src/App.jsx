@@ -3325,15 +3325,23 @@ export default function SakinApp() {
   const [showLicenseModal, setShowLicenseModal] = useState(false);
   const [licenseInput, setLicenseInput] = useState("");
   const [licenseError, setLicenseError] = useState("");
-  // Web satış sayfası "listeye gir" — basit ilgi sayacı (kişisel veri toplamaz,
-  // sadece anonim sinyal loglar). Cihaz başına bir kez sayılır (localStorage).
+  // Web satış sayfası görünür ilgi sayacı — kaç kişi ilgilendiğini gösterir (kişisel
+  // veri yok, first-party Netlify Blobs sayacı). Cihaz başına bir kez artırılır.
   const [waitlistJoined, setWaitlistJoined] = useState(() => { try { return localStorage.getItem("sakin_waitlist_joined") === "1"; } catch { return false; } });
+  const [waitlistCount, setWaitlistCount] = useState(null);
+  useEffect(() => {
+    if (isNative) return; // web-only sayaç
+    let alive = true;
+    fetch("/.netlify/functions/waitlist").then(r => r.json()).then(d => { if (alive && typeof d.count === "number") setWaitlistCount(d.count); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
   const joinWaitlist = () => {
+    if (waitlistJoined) return;
     setWaitlistJoined(true);
     try { localStorage.setItem("sakin_waitlist_joined", "1"); } catch (_) {}
-    try {
-      fetch("/.netlify/functions/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lang, source: "pricing", timestamp: new Date().toISOString() }) }).catch(() => {});
-    } catch (_) {}
+    setWaitlistCount(c => (typeof c === "number" ? c + 1 : c)); // iyimser artış
+    fetch("/.netlify/functions/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ lang }) })
+      .then(r => r.json()).then(d => { if (typeof d.count === "number") setWaitlistCount(d.count); }).catch(() => {});
   };
   const [licenseLoading, setLicenseLoading] = useState(false);
   const validateLicense = async () => {
@@ -8194,18 +8202,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                 </div>
 
-                {/* Web satın alma henüz aktif değil — "Coming Soon" pasif buton yerine
-                    "Listeye Gir" ilgi-CTA'sı: alıcı niyetini ölçer (anonim sinyal). */}
-                {waitlistJoined ? (
-                  <div style={{ marginTop:20,padding:"16px 18px",textAlign:"center",boxSizing:"border-box",background:"rgba(122,80,150,0.14)",border:"1px solid rgba(184,164,216,0.4)",borderRadius:28 }}>
-                    <div style={{ fontSize:15,letterSpacing:1.5,color:"#d8c8f0",fontFamily:"'Jost',sans-serif" }}>{t("waitlist_joined")}</div>
-                    <div style={{ marginTop:6,fontSize:12.5,color:"#9a8ac0",letterSpacing:0.3,lineHeight:1.55 }}>{t("waitlist_joined_sub")}</div>
+                {/* Web satın alma henüz aktif değil — pasif "Yakında" yerine görünür
+                    ilgi sayacı: her katılımda artar, toplam herkese gösterilir. */}
+                <button onClick={joinWaitlist} disabled={waitlistJoined}
+                  style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:2.5,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:waitlistJoined?"rgba(122,80,150,0.18)":"linear-gradient(135deg,rgba(184,164,216,0.9),rgba(122,80,150,0.85))",border:"1px solid rgba(184,164,216,0.6)",borderRadius:28,color:"#fff",boxShadow:waitlistJoined?"none":"0 4px 24px rgba(122,80,150,0.4)",cursor:waitlistJoined?"default":"pointer" }}>
+                  {waitlistJoined ? t("waitlist_joined") : t("waitlist_cta")}
+                </button>
+                {typeof waitlistCount === "number" && waitlistCount > 0 && (
+                  <div style={{ marginTop:12,textAlign:"center",fontSize:13.5,color:"#b0a2d0",letterSpacing:0.4 }}>
+                    <span style={{ fontWeight:600,color:"#e8ddff",fontSize:16 }}>{waitlistCount.toLocaleString()}</span> {t("waitlist_joined_sub")}
                   </div>
-                ) : (
-                  <button onClick={joinWaitlist}
-                    style={{ display:"block",width:"100%",marginTop:20,marginBottom:0,fontSize:16,letterSpacing:3,padding:"16px 0",textAlign:"center",boxSizing:"border-box",fontFamily:"'Jost',sans-serif",fontWeight:400,background:"linear-gradient(135deg,rgba(184,164,216,0.9),rgba(122,80,150,0.85))",border:"1px solid rgba(184,164,216,0.6)",borderRadius:28,color:"#fff",boxShadow:"0 4px 24px rgba(122,80,150,0.4)",cursor:"pointer" }}>
-                    {t("waitlist_cta")}
-                  </button>
                 )}
                 <div style={{ marginTop:13,textAlign:"center",fontSize:13,color:"#9a8ac0",letterSpacing:0.4,lineHeight:1.6 }}>
                   {t("web_purchase_appstore_note")}
