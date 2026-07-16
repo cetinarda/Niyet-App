@@ -19,7 +19,7 @@ export const TRANS = {
     nav_guide:    "Rehber",
     nav_home:     "Giriş",
     nav_connection:"Bağlantı",
-    nav_family:   "Ailesi",
+    nav_family:   "Keşfet",
     nav_mirror:   "Ayna",
 
     // Giris
@@ -145,7 +145,7 @@ export const TRANS = {
     evening_step2:     "Şükret",
     evening_step2_desc:"İyi gelen 3 şeyi hatırla ve kalbine teşekkür et.",
     evening_step3:     "Teslim ol",
-    evening_step3_desc:"Kontrolü bırak, huzura teslim ol. Nefesinle kal.",
+    evening_step3_desc:"Kontrolü bırak, izin ver. Nefesini hisset.",
     evening_quote:     "Bugün bitti.\nSen varsın, bu yeter.",
     learned_q:         "Bugün sana ne öğretti?",
     gratitude_q:       "Bugün neye şükrediyorsun?",
@@ -208,7 +208,7 @@ export const TRANS = {
     // Fiyatlandırma
     pricing_title:     "Fiyatlandırma",
     pricing_sub:       "SAKIN · ŞEFFAF FİYATLANDIRMA",
-    paid_app_badge:    "TEK ÖDEME",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin'in tamamı, sadeliğiyle seninle",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Bir kez öde, ömür boyu seninle. Abonelik yok.",
@@ -727,7 +727,7 @@ export const TRANS = {
     nav_guide:    "Guide",
     nav_home:     "Home",
     nav_connection:"Connection",
-    nav_family:   "Family",
+    nav_family:   "Explore",
     nav_mirror:   "Mirror",
 
     // Giris
@@ -853,7 +853,7 @@ export const TRANS = {
     evening_step2:     "Be grateful",
     evening_step2_desc:"Remember 3 things that felt good and thank your heart.",
     evening_step3:     "Surrender",
-    evening_step3_desc:"Release control, surrender to peace. Stay with your breath.",
+    evening_step3_desc:"Let go of control, allow it. Feel your breath.",
     evening_quote:     "Today is done.\nYou are here, that is enough.",
     learned_q:         "What did today teach you?",
     gratitude_q:       "What are you grateful for?",
@@ -916,7 +916,7 @@ export const TRANS = {
     // Fiyatlandırma
     pricing_title:     "Pricing",
     pricing_sub:       "SAKIN · TRANSPARENT PRICING",
-    paid_app_badge:    "ONE-TIME",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "All of Sakin, in its quiet simplicity",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Pay once, yours forever. No subscription.",

@@ -24,7 +24,7 @@ export const EXTRA_LANGS = {
     nav_sound:    "Klang",
     nav_home:     "Start",
     nav_connection:"Verbindung",
-    nav_family:   "Familie",
+    nav_family:   "Entdecken",
     nav_mirror:   "Spiegel",
 
     tagline:      "Erinnere dich immer an dich selbst",
@@ -201,7 +201,7 @@ export const EXTRA_LANGS = {
 
     pricing_title:     "Preise",
     pricing_sub:       "SAKIN · TRANSPARENTE PREISE",
-    paid_app_badge:    "EINMALZAHLUNG",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Ganz Sakin, in seiner stillen Schlichtheit",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Einmal bezahlen, für immer dein. Kein Abo.",
@@ -696,7 +696,7 @@ export const EXTRA_LANGS = {
     nav_sound:    "Som",
     nav_home:     "Início",
     nav_connection:"Conexão",
-    nav_family:   "Família",
+    nav_family:   "Explorar",
     nav_mirror:   "Espelho",
 
     tagline:      "Lembre-se sempre de si mesmo",
@@ -873,7 +873,7 @@ export const EXTRA_LANGS = {
 
     pricing_title:     "Preços",
     pricing_sub:       "SAKIN · PREÇOS TRANSPARENTES",
-    paid_app_badge:    "PAGAMENTO ÚNICO",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin por inteiro, na sua serena simplicidade",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Pague uma vez, é seu para sempre. Sem assinatura.",
@@ -1369,7 +1369,7 @@ export const EXTRA_LANGS = {
     nav_sound:    "Sonido",
     nav_home:     "Inicio",
     nav_connection:"Conexión",
-    nav_family:   "Familia",
+    nav_family:   "Explorar",
     nav_mirror:   "Espejo",
 
     tagline:      "Recuérdate siempre a ti mismo",
@@ -1545,7 +1545,7 @@ export const EXTRA_LANGS = {
 
     pricing_title:     "Precios",
     pricing_sub:       "SAKIN · PRECIOS TRANSPARENTES",
-    paid_app_badge:    "PAGO ÚNICO",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin al completo, con su serena sencillez",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Paga una vez, es tuya para siempre. Sin suscripción.",
@@ -2044,7 +2044,7 @@ export const EXTRA_LANGS = {
     nav_sound:    "Son",
     nav_home:     "Accueil",
     nav_connection:"Connexion",
-    nav_family:   "Famille",
+    nav_family:   "Explorer",
     nav_mirror:   "Miroir",
 
     tagline:      "Souviens-toi toujours de toi",
@@ -2220,7 +2220,7 @@ export const EXTRA_LANGS = {
 
     pricing_title:     "Tarifs",
     pricing_sub:       "SAKIN · TARIFS TRANSPARENTS",
-    paid_app_badge:    "PAIEMENT UNIQUE",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Tout Sakin, dans sa douce simplicité",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"Paie une fois, à toi pour toujours. Sans abonnement.",
@@ -2715,7 +2715,7 @@ export const EXTRA_LANGS = {
     nav_sound:    "音",
     nav_home:     "ホーム",
     nav_connection:"つながり",
-    nav_family:   "ファミリー",
+    nav_family:   "見つける",
     nav_mirror:   "鏡",
 
     tagline:      "いつでも自分を思い出す",
@@ -2891,7 +2891,7 @@ export const EXTRA_LANGS = {
 
     pricing_title:     "価格",
     pricing_sub:       "SAKIN · 透明な価格設定",
-    paid_app_badge:    "一回限りの支払い",
+    paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin のすべてを、静かでシンプルなままに",
     paid_app_price:    "$9.99",
     paid_app_price_sub:"一度の支払いで、永遠にあなたのもの。サブスクリプションなし。",
