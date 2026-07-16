@@ -11,7 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind, KIND_COLOR, KIND_LABEL } from './MitlerDetailScreen';
-import { useLanguage } from '../i18n/useLanguage';
+import { useLanguage, translate } from '../i18n/useLanguage';
 
 interface Props {
   onClose: () => void;
@@ -279,7 +279,7 @@ function EntryRow({ entry, onPress }: { entry: MitlerEntry; onPress: () => void 
       <View style={{ flex: 1 }}>
         <Text style={styles.rowName}>{entry.name}</Text>
         <Text style={styles.rowMeta} numberOfLines={1}>
-          <Text style={{ color: accent }}>{KIND_LABEL[entry.kind]}</Text>
+          <Text style={{ color: accent }}>{translate(('detail.kind.' + entry.kind) as any)}</Text>
           {entry.tagline ? ` · ${entry.tagline}` : ''}
         </Text>
       </View>

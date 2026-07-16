@@ -8,6 +8,7 @@ import imagesData from '../data/images.json';
 import tarotData from '../data/tarot.json';
 import runesData from '../data/runes.json';
 import ichingData from '../data/iching.json';
+import { translate, getLanguage } from '../i18n/useLanguage';
 
 export type Kind = 'archetype' | 'myth' | 'image' | 'tarot' | 'rune' | 'iching';
 
@@ -50,7 +51,7 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
 
   const handleShare = async () => {
     const first = sections[0]?.body ?? '';
-    const message = `${entry.name} — ${KIND_LABEL[entry.kind]}\n\n${first}\n\nSakin Mitler`;
+    const message = `${entry.name} — ${translate(('detail.kind.' + entry.kind) as any)}\n\n${first}\n\n${translate('common.familyTag')}`;
     try {
       if (Platform.OS === 'web' && typeof navigator !== 'undefined' && (navigator as any).share) {
         await (navigator as any).share({ title: entry.name, text: message });
@@ -72,16 +73,16 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
       >
         <View style={styles.topBar}>
           <TouchableOpacity onPress={onClose} hitSlop={12}>
-            <Text style={[styles.back, { color: accent }]}>← Geri</Text>
+            <Text style={[styles.back, { color: accent }]}>{translate('common.back')}</Text>
           </TouchableOpacity>
-          <Text style={styles.familyTag}>SAKİN · MİTLER</Text>
+          <Text style={styles.familyTag}>{translate('common.familyTag')}</Text>
           <TouchableOpacity
             onPress={handleShare}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Paylaş"
+            accessibilityLabel={translate('detail.shareA11y')}
           >
-            <Text style={[styles.share, { color: accent }]}>↑ Paylaş</Text>
+            <Text style={[styles.share, { color: accent }]}>{translate('detail.share')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -93,7 +94,7 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
           </View>
           <Text style={styles.heroName}>{entry.name}</Text>
           <Text style={[styles.heroKind, { color: accent }]}>
-            {KIND_LABEL[entry.kind].toUpperCase()}
+            {translate(('detail.kind.' + entry.kind) as any).toLocaleUpperCase(getLanguage())}
           </Text>
           <Text style={styles.heroMeta}>{entry.detailMeta}</Text>
         </View>
@@ -111,8 +112,8 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
         ))}
 
         <View style={styles.footer}>
-          <Text style={styles.disclaimerFooter}>Yansıtma amaçlıdır · tavsiye değildir</Text>
-          <Text style={styles.footerText}>SAKİN AİLESİ ✦</Text>
+          <Text style={styles.disclaimerFooter}>{translate('disclaimer.footer')}</Text>
+          <Text style={styles.footerText}>{translate('common.familyFooter')}</Text>
         </View>
       </ScrollView>
     </View>
@@ -141,60 +142,60 @@ function buildSections(entry: MitlerEntry): SectionData[] {
   if (entry.kind === 'archetype') {
     const a = entry.data as typeof archetypesData[0];
     return [
-      { title: 'Öz',                body: a.essence,                             color: ACCENT },
-      { title: 'Aydınlık Yan',      body: a.lightAspect,                         color: ACCENT },
-      { title: 'Gölge Yan',         body: a.shadowAspect,                        color: Colors.ember },
-      { title: 'Rüyada Görülürse',  body: a.dreamMeaning,                        color: DREAM,  boxed: true },
-      { title: 'Gerçek Hayatta',    body: a.wakingMeaning,                       color: WAKING, boxed: true },
-      { title: 'Bugünkü Pratik',    body: a.advice,                              color: ACCENT },
-      { title: 'Olumlama',          body: a.affirmation,                         color: ACCENT, boxed: true },
+      { title: translate('detail.section.essence'),                body: a.essence,                             color: ACCENT },
+      { title: translate('detail.section.lightAspect'),      body: a.lightAspect,                         color: ACCENT },
+      { title: translate('detail.section.shadowAspect'),         body: a.shadowAspect,                        color: Colors.ember },
+      { title: translate('detail.section.dream'),  body: a.dreamMeaning,                        color: DREAM,  boxed: true },
+      { title: translate('detail.section.waking'),    body: a.wakingMeaning,                       color: WAKING, boxed: true },
+      { title: translate('detail.section.advice'),    body: a.advice,                              color: ACCENT },
+      { title: translate('detail.section.affirmation'),          body: a.affirmation,                         color: ACCENT, boxed: true },
     ];
   }
   if (entry.kind === 'myth') {
     const m = entry.data as typeof mythsData[0];
     return [
-      { title: 'Hikaye',            body: m.summary,                             color: ACCENT },
-      { title: 'Derin Anlamı',      body: m.depthMeaning,                        color: ACCENT },
-      { title: "Jung'un Okuması",   body: m.jungian,                             color: ACCENT },
-      { title: 'Rüyada Görülürse',  body: m.dreamMeaning,                        color: DREAM,  boxed: true },
-      { title: 'Gerçek Hayatta',    body: m.wakingMeaning,                       color: WAKING, boxed: true },
-      { title: 'Ders',              body: m.lesson,                              color: ACCENT, boxed: true },
+      { title: translate('detail.section.story'),            body: m.summary,                             color: ACCENT },
+      { title: translate('detail.section.depth'),      body: m.depthMeaning,                        color: ACCENT },
+      { title: translate('detail.section.jungian'),   body: m.jungian,                             color: ACCENT },
+      { title: translate('detail.section.dream'),  body: m.dreamMeaning,                        color: DREAM,  boxed: true },
+      { title: translate('detail.section.waking'),    body: m.wakingMeaning,                       color: WAKING, boxed: true },
+      { title: translate('detail.section.lesson'),              body: m.lesson,                              color: ACCENT, boxed: true },
     ];
   }
   if (entry.kind === 'image') {
     const im = entry.data as typeof imagesData[0];
     return [
-      { title: 'Öz',                  body: im.essence,                            color: ACCENT },
-      { title: 'Sembolizm',           body: im.symbolism,                          color: ACCENT },
-      { title: 'Rüyada Görülürse',    body: im.dreamMeaning,                       color: DREAM,  boxed: true },
-      { title: 'Gerçek Hayatta',      body: im.wakingMeaning,                      color: WAKING, boxed: true },
-      { title: 'Bugünkü Pratik',      body: im.advice,                             color: ACCENT },
+      { title: translate('detail.section.essence'),                  body: im.essence,                            color: ACCENT },
+      { title: translate('detail.section.symbolism'),           body: im.symbolism,                          color: ACCENT },
+      { title: translate('detail.section.dream'),    body: im.dreamMeaning,                       color: DREAM,  boxed: true },
+      { title: translate('detail.section.waking'),      body: im.wakingMeaning,                      color: WAKING, boxed: true },
+      { title: translate('detail.section.advice'),      body: im.advice,                             color: ACCENT },
     ];
   }
   if (entry.kind === 'tarot') {
     const t = entry.data as typeof tarotData[0];
     return [
-      { title: 'Öz',                  body: t.essence,                             color: ACCENT },
-      { title: 'Düz (Upright)',       body: t.upright,                             color: ACCENT, boxed: true },
-      { title: 'Ters (Reversed)',     body: t.reversed,                            color: Colors.ember, boxed: true },
-      { title: 'Bugünkü Pratik',      body: t.advice,                              color: ACCENT },
+      { title: translate('detail.section.essence'),                  body: t.essence,                             color: ACCENT },
+      { title: translate('detail.section.upright'),       body: t.upright,                             color: ACCENT, boxed: true },
+      { title: translate('detail.section.reversed'),     body: t.reversed,                            color: Colors.ember, boxed: true },
+      { title: translate('detail.section.advice'),      body: t.advice,                              color: ACCENT },
     ];
   }
   if (entry.kind === 'rune') {
     const r = entry.data as typeof runesData[0];
     return [
-      { title: 'Öz',                  body: r.essence,                             color: ACCENT },
-      { title: 'Düz',                 body: r.upright,                             color: ACCENT, boxed: true },
-      { title: 'Ters',                body: r.reversed,                            color: Colors.ember, boxed: true },
-      { title: 'Bugünkü Pratik',      body: r.advice,                              color: ACCENT },
+      { title: translate('detail.section.essence'),                  body: r.essence,                             color: ACCENT },
+      { title: translate('detail.section.upright'),                 body: r.upright,                             color: ACCENT, boxed: true },
+      { title: translate('detail.section.reversed'),                body: r.reversed,                            color: Colors.ember, boxed: true },
+      { title: translate('detail.section.advice'),      body: r.advice,                              color: ACCENT },
     ];
   }
   // iching
   const ic = entry.data as typeof ichingData[0];
   return [
-    { title: 'Öz',                  body: ic.essence,                            color: ACCENT },
-    { title: 'Trigramlar',          body: ic.trigrams,                           color: ACCENT },
-    { title: 'Bugünkü Pratik',      body: ic.advice,                             color: ACCENT, boxed: true },
+    { title: translate('detail.section.essence'),                  body: ic.essence,                            color: ACCENT },
+    { title: translate('detail.section.trigrams'),          body: ic.trigrams,                           color: ACCENT },
+    { title: translate('detail.section.advice'),      body: ic.advice,                             color: ACCENT, boxed: true },
   ];
 }
 

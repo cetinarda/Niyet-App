@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData } from '../data/loader';
 import { useMitlerStore } from '../store/useStore';
-import { useLanguage } from '../i18n/useLanguage';
+import { useLanguage, translate } from '../i18n/useLanguage';
 
 interface HomeScreenProps {
   onNavigateToProfile?: () => void;
@@ -53,26 +53,26 @@ function ArchetypeContent({ item }: { item: typeof archetypesData[0] }) {
       <Text style={cs.meta}>{item.tradition} · {item.category}</Text>
       <View style={[cs.divider, { backgroundColor: Colors.gold }]} />
 
-      <SectionLabel label="Öz" color={Colors.gold} />
+      <SectionLabel label={translate("detail.section.essence")} color={Colors.gold} />
       <Text style={cs.body}>{item.essence}</Text>
 
-      <SectionLabel label="Aydınlık Yan" color={Colors.gold} />
+      <SectionLabel label={translate("detail.section.lightAspect")} color={Colors.gold} />
       <Text style={cs.body}>{item.lightAspect}</Text>
 
-      <SectionLabel label="Gölge Yan" color={Colors.gold} />
+      <SectionLabel label={translate("detail.section.shadowAspect")} color={Colors.gold} />
       <Text style={cs.body}>{item.shadowAspect}</Text>
 
-      <SectionLabel label="🌙 Rüyada Görülürse" color={Colors.purpleLight} />
+      <SectionLabel label={"🌙 " + translate("detail.section.dream")} color={Colors.purpleLight} />
       <View style={[cs.dreamBox, { borderColor: Colors.purple + '40' }]}>
         <Text style={cs.body}>{item.dreamMeaning}</Text>
       </View>
 
-      <SectionLabel label="☀ Gerçek Hayatta" color={Colors.tealLight} />
+      <SectionLabel label={"☀ " + translate("detail.section.waking")} color={Colors.tealLight} />
       <View style={[cs.realBox, { borderColor: Colors.teal + '40' }]}>
         <Text style={cs.body}>{item.wakingMeaning}</Text>
       </View>
 
-      <SectionLabel label="Bugünkü Pratik" color={Colors.gold} />
+      <SectionLabel label={translate("detail.section.advice")} color={Colors.gold} />
       <Text style={cs.body}>{item.advice}</Text>
 
       <View style={[cs.affirmBox, { borderColor: Colors.gold + '35' }]}>
@@ -97,18 +97,18 @@ function MythContent({ item }: { item: typeof mythsData[0] }) {
       <SectionLabel label="Hikaye" color={Colors.purpleLight} />
       <Text style={cs.body}>{item.summary}</Text>
 
-      <SectionLabel label="Derin Anlamı" color={Colors.purpleLight} />
+      <SectionLabel label={translate("detail.section.depth")} color={Colors.purpleLight} />
       <Text style={cs.body}>{item.depthMeaning}</Text>
 
-      <SectionLabel label="Jung'un Okuması" color={Colors.purpleLight} />
+      <SectionLabel label={translate("detail.section.jungian")} color={Colors.purpleLight} />
       <Text style={cs.body}>{item.jungian}</Text>
 
-      <SectionLabel label="🌙 Rüyada Görülürse" color={Colors.purpleLight} />
+      <SectionLabel label={"🌙 " + translate("detail.section.dream")} color={Colors.purpleLight} />
       <View style={[cs.dreamBox, { borderColor: Colors.purple + '40' }]}>
         <Text style={cs.body}>{item.dreamMeaning}</Text>
       </View>
 
-      <SectionLabel label="☀ Gerçek Hayatta Yaşanırsa" color={Colors.tealLight} />
+      <SectionLabel label={"☀ " + translate("detail.section.waking")} color={Colors.tealLight} />
       <View style={[cs.realBox, { borderColor: Colors.teal + '40' }]}>
         <Text style={cs.body}>{item.wakingMeaning}</Text>
       </View>
@@ -132,23 +132,23 @@ function ImageContent({ item }: { item: typeof imagesData[0] }) {
       <Text style={cs.meta}>{item.tradition} · {item.category}</Text>
       <View style={[cs.divider, { backgroundColor: Colors.teal }]} />
 
-      <SectionLabel label="Öz" color={Colors.tealLight} />
+      <SectionLabel label={translate("detail.section.essence")} color={Colors.tealLight} />
       <Text style={cs.body}>{item.essence}</Text>
 
       <SectionLabel label="Sembolizm" color={Colors.tealLight} />
       <Text style={cs.body}>{item.symbolism}</Text>
 
-      <SectionLabel label="🌙 Rüyada Görülürse" color={Colors.purpleLight} />
+      <SectionLabel label={"🌙 " + translate("detail.section.dream")} color={Colors.purpleLight} />
       <View style={[cs.dreamBox, { borderColor: Colors.purple + '40' }]}>
         <Text style={cs.body}>{item.dreamMeaning}</Text>
       </View>
 
-      <SectionLabel label="☀ Gerçek Hayatta" color={Colors.tealLight} />
+      <SectionLabel label={"☀ " + translate("detail.section.waking")} color={Colors.tealLight} />
       <View style={[cs.realBox, { borderColor: Colors.teal + '40' }]}>
         <Text style={cs.body}>{item.wakingMeaning}</Text>
       </View>
 
-      <SectionLabel label="Bugünkü Pratik" color={Colors.tealLight} />
+      <SectionLabel label={translate("detail.section.advice")} color={Colors.tealLight} />
       <Text style={cs.body}>{item.advice}</Text>
     </View>
   );

@@ -11,14 +11,15 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useMitlerStore } from '../store/useStore';
 
 import { useData } from '../data/loader';
+import { translate } from '../i18n/useLanguage';
 
 type FilterType = 'all' | 'archetype' | 'myth' | 'image';
 
-const FILTERS: { key: FilterType; label: string; color: string }[] = [
-  { key: 'all',       label: 'Tümü',      color: Colors.gold },
-  { key: 'archetype', label: 'Arketip',   color: Colors.gold },
-  { key: 'myth',      label: 'Mit',       color: Colors.purple },
-  { key: 'image',     label: 'İmge',      color: Colors.teal },
+const FILTERS: { key: FilterType; labelKey: string; color: string }[] = [
+  { key: 'all',       labelKey: 'archive.filter.all',    color: Colors.gold },
+  { key: 'archetype', labelKey: 'archive.label.archetype', color: Colors.gold },
+  { key: 'myth',      labelKey: 'archive.label.myth',      color: Colors.purple },
+  { key: 'image',     labelKey: 'archive.label.image',     color: Colors.teal },
 ];
 
 export function ArchiveScreen() {
@@ -170,7 +171,7 @@ export function ArchiveScreen() {
             onPress={() => setFilter(f.key)}
           >
             <Text style={[styles.filterLabel, { color: filter === f.key ? f.color : Colors.textMuted }]}>
-              {f.label}
+              {translate(f.labelKey as any)}
             </Text>
           </TouchableOpacity>
         ))}

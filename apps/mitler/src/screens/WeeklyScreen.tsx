@@ -6,6 +6,7 @@ import { useData, Archetype, Myth, ImageItem } from '../data/loader';
 import { useMitlerStore } from '../store/useStore';
 import { calcLifePath } from '../utils/numerology';
 import { MitlerDetailScreen, MitlerEntry } from './MitlerDetailScreen';
+import { useLanguage, translate } from '../i18n/useLanguage';
 
 interface Props { onClose: () => void; embedded?: boolean; }
 
@@ -43,11 +44,12 @@ function getPersonal(birthDate: string, archetypesData: any[]): {
   const seed = (lifePath * 11 + w) % archetypesData.length;
   const archetype = archetypesData[seed];
 
-  const reason = `Hayat Yolu ${lifePath} — bu dönemde içsel ritmine eşlik etmek için seninle.`;
+  const reason = translate('weekly.reason', { lifePath });
   return { archetype, lifePath, reason };
 }
 
 export function WeeklyScreen({ onClose, embedded }: Props) {
+  const { t } = useLanguage();
   const insets = useSafeAreaInsets();
   const { profile } = useMitlerStore();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
@@ -92,20 +94,16 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
       {!embedded && (
         <View style={[styles.topBar, { paddingTop: insets.top + Spacing.sm }]}>
           <TouchableOpacity onPress={onClose} hitSlop={12}>
-            <Text style={styles.back}>← Geri</Text>
+            <Text style={styles.back}>{t('common.back')}</Text>
           </TouchableOpacity>
-          <Text style={styles.familyTag}>SAKİN · MİTLER</Text>
+          <Text style={styles.familyTag}>{t('common.familyTag')}</Text>
         </View>
       )}
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <View style={styles.intro}>
-          <Text style={styles.introTitle}>Hafta — Dönemsel Rehber</Text>
-          <Text style={styles.introText}>
-            Tüm arketiplerin seninle doğar, ömür boyu kalır. Haftalık rehber ise belirli bir
-            dönemine eşlik eden geçici figürdür. Bir sınav, bir geçiş, bir dönüşüm anında yanına
-            gelir. Görevini tamamlayınca yerini başkasına bırakır.
-          </Text>
+          <Text style={styles.introTitle}>{t('weekly.title')}</Text>
+          <Text style={styles.introText}>{t('weekly.desc')}</Text>
         </View>
 
         {/* Universal weekly trio */}
@@ -114,7 +112,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           onPress={() => openArchetype(weekly.archetype)}
           activeOpacity={0.85}
         >
-          <Text style={styles.weekTag}>BU HAFTA · EVRENSEL ARKETİP</Text>
+          <Text style={styles.weekTag}>{t('weekly.tag.archetype')}</Text>
           <Text style={styles.heroEmoji}>{weekly.archetype.emoji}</Text>
           <Text style={styles.heroName}>{weekly.archetype.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.gold }]}>
@@ -123,15 +121,15 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           <View style={[styles.divider, { backgroundColor: Colors.gold }]} />
           <Text style={styles.dailyMsg}>{weekly.archetype.essence}</Text>
           <View style={[styles.guideBox, { borderColor: Colors.gold + '40' }]}>
-            <Text style={[styles.guideLabel, { color: Colors.gold }]}>BU DÖNEMDE</Text>
+            <Text style={[styles.guideLabel, { color: Colors.gold }]}>{t('weekly.label.thisPeriod')}</Text>
             <Text style={styles.guideText}>{weekly.archetype.advice}</Text>
           </View>
           <View style={styles.metaRow}>
             <Text style={styles.metaText}>{weekly.archetype.element?.toUpperCase()}</Text>
             <View style={styles.metaDot} />
-            <Text style={styles.metaText}>{daysLeft} gün kaldı</Text>
+            <Text style={styles.metaText}>{t('weekly.daysLeft', { n: daysLeft })}</Text>
           </View>
-          <Text style={[styles.openHint, { color: Colors.gold }]}>Detayı Aç →</Text>
+          <Text style={[styles.openHint, { color: Colors.gold }]}>{t('common.openDetail')}</Text>
         </TouchableOpacity>
 
         {/* Weekly myth */}
@@ -140,7 +138,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           onPress={() => openMyth(weekly.myth)}
           activeOpacity={0.85}
         >
-          <Text style={[styles.weekTag, { color: Colors.purpleLight }]}>BU HAFTA · MİT</Text>
+          <Text style={[styles.weekTag, { color: Colors.purpleLight }]}>{t('weekly.tag.myth')}</Text>
           <Text style={styles.heroEmoji}>{weekly.myth.emoji}</Text>
           <Text style={styles.heroName}>{weekly.myth.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.purpleLight }]}>
@@ -149,10 +147,10 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           <View style={[styles.divider, { backgroundColor: Colors.purpleLight }]} />
           <Text style={styles.dailyMsg} numberOfLines={5}>{weekly.myth.summary}</Text>
           <View style={[styles.guideBox, { borderColor: Colors.purpleLight + '40' }]}>
-            <Text style={[styles.guideLabel, { color: Colors.purpleLight }]}>DERS</Text>
+            <Text style={[styles.guideLabel, { color: Colors.purpleLight }]}>{t('weekly.label.lesson')}</Text>
             <Text style={styles.guideText}>{weekly.myth.lesson}</Text>
           </View>
-          <Text style={[styles.openHint, { color: Colors.purpleLight }]}>Detayı Aç →</Text>
+          <Text style={[styles.openHint, { color: Colors.purpleLight }]}>{t('common.openDetail')}</Text>
         </TouchableOpacity>
 
         {/* Weekly image */}
@@ -161,7 +159,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           onPress={() => openImage(weekly.image)}
           activeOpacity={0.85}
         >
-          <Text style={[styles.weekTag, { color: Colors.tealLight }]}>BU HAFTA · İMGE</Text>
+          <Text style={[styles.weekTag, { color: Colors.tealLight }]}>{t('weekly.tag.image')}</Text>
           <Text style={styles.heroEmoji}>{weekly.image.emoji}</Text>
           <Text style={styles.heroName}>{weekly.image.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.tealLight }]}>
@@ -173,7 +171,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
             <Text style={[styles.guideLabel, { color: Colors.tealLight }]}>BUGÜN</Text>
             <Text style={styles.guideText}>{weekly.image.advice}</Text>
           </View>
-          <Text style={[styles.openHint, { color: Colors.tealLight }]}>Detayı Aç →</Text>
+          <Text style={[styles.openHint, { color: Colors.tealLight }]}>{t('common.openDetail')}</Text>
         </TouchableOpacity>
 
         {/* Personal weekly */}
@@ -183,7 +181,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
             onPress={() => openArchetype(personal.archetype)}
             activeOpacity={0.85}
           >
-            <Text style={styles.personalTag}>KİŞİSEL REHBERİM</Text>
+            <Text style={styles.personalTag}>{t('weekly.tag.personal')}</Text>
             <Text style={styles.heroEmoji}>{personal.archetype.emoji}</Text>
             <Text style={styles.heroName}>{personal.archetype.name}</Text>
             <Text style={[styles.heroAspect, { color: Colors.sakinLavender }]}>
@@ -192,23 +190,19 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
             <View style={[styles.divider, { backgroundColor: Colors.sakinLavender }]} />
             <Text style={styles.dailyMsg}>{personal.archetype.essence}</Text>
             <View style={[styles.guideBox, { borderColor: Colors.sakinLavender + '40' }]}>
-              <Text style={[styles.guideLabel, { color: Colors.sakinLavender }]}>REHBERLİK</Text>
+              <Text style={[styles.guideLabel, { color: Colors.sakinLavender }]}>{t('weekly.label.guidance')}</Text>
               <Text style={styles.guideText}>{personal.archetype.advice}</Text>
             </View>
             <View style={[styles.reasonBox, { borderColor: Colors.sakinLavender + '25' }]}>
               <Text style={styles.reasonText}>{personal.reason}</Text>
             </View>
-            <Text style={[styles.openHint, { color: Colors.sakinLavender }]}>Detayı Aç →</Text>
+            <Text style={[styles.openHint, { color: Colors.sakinLavender }]}>{t('common.openDetail')}</Text>
           </TouchableOpacity>
         ) : (
           <View style={styles.lockedCard}>
             <Text style={styles.lockedEmoji}>✦</Text>
-            <Text style={styles.lockedTitle}>Kişisel Rehberim</Text>
-            <Text style={styles.lockedText}>
-              Doğum haritana göre sana özel dönemsel bir arketip belirlemek için profil
-              bilgilerini tamamla.{'\n\n'}
-              Profil → Kişisel Harita bölümünden doğum tarihini ekleyebilirsin.
-            </Text>
+            <Text style={styles.lockedTitle}>{t('weekly.locked.title')}</Text>
+            <Text style={styles.lockedText}>{t('weekly.locked.text')}</Text>
           </View>
         )}
 

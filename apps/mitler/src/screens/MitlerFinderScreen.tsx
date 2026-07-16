@@ -13,13 +13,17 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData, Archetype, Myth, ImageItem } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind } from './MitlerDetailScreen';
 import { calcLifePath } from '../utils/numerology';
-import { useLanguage } from '../i18n/useLanguage';
+import { useLanguage, getLanguage } from '../i18n/useLanguage';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Weight { trait: string; value: number }
-interface Option { text: string; weights: Weight[]; element?: string }
-interface Question { q: string; emoji: string; options: Option[] }
+interface Bi { tr: string; en: string }
+interface Option { text: Bi; weights: Weight[]; element?: string }
+interface Question { q: Bi; emoji: string; options: Option[] }
+// Türkçe → tr, diğer tüm diller → en (Sakin Mitler quiz'i iki dilli; içerik verisi
+// zaten çok dilli ama quiz UI'si tr/en yeterli — kullanıcı isteği).
+const qL = (b: Bi) => (getLanguage() === 'tr' ? b.tr : b.en);
 type Mode = 'intro' | 'quiz' | 'needsProfile' | 'result';
 
 interface FinderResult {
@@ -33,100 +37,100 @@ interface FinderResult {
 
 const QUESTIONS: Question[] = [
   {
-    q: 'Doğada hangi ortam seni çağırıyor?',
+    q: { tr: 'Doğada hangi ortam seni çağırıyor?', en: 'Which place in nature calls you?' },
     emoji: '⊕',
     options: [
-      { text: 'Dağlar ve açık gökyüzü', element: 'hava',
+      { text: { tr: 'Dağlar ve açık gökyüzü', en: 'Mountains and open sky' }, element: 'hava',
         weights: [{ trait: 'özgürlük', value: 2 }, { trait: 'vizyon', value: 2 }, { trait: 'yüksek bakış', value: 2 }] },
-      { text: 'Orman ve ıssız toprak', element: 'toprak',
+      { text: { tr: 'Orman ve ıssız toprak', en: 'Forest and quiet earth' }, element: 'toprak',
         weights: [{ trait: 'güç', value: 2 }, { trait: 'istikrar', value: 2 }, { trait: 'kök', value: 2 }] },
-      { text: 'Nehir, deniz, derin sular', element: 'su',
+      { text: { tr: 'Nehir, deniz, derin sular', en: 'River, sea, deep waters' }, element: 'su',
         weights: [{ trait: 'akış', value: 2 }, { trait: 'bilinçdışı', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
-      { text: 'Sıcak alev ve ateş', element: 'ateş',
+      { text: { tr: 'Sıcak alev ve ateş', en: 'Warm flame and fire' }, element: 'ateş',
         weights: [{ trait: 'cesaret', value: 2 }, { trait: 'tutku', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
     ],
   },
   {
-    q: 'Zor bir karar anında tepkin nedir?',
+    q: { tr: 'Zor bir karar anında tepkin nedir?', en: 'In a hard decision, what is your first move?' },
     emoji: '↯',
     options: [
-      { text: 'Dur, gözlemle, anlamlandır',
+      { text: { tr: 'Dur, gözlemle, anlamlandır', en: 'Pause, observe, make sense of it' },
         weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'sezgi', value: 2 }, { trait: 'derinlik', value: 2 }] },
-      { text: 'Cesaretle harekete geç',
+      { text: { tr: 'Cesaretle harekete geç', en: 'Act with courage' },
         weights: [{ trait: 'kahraman', value: 3 }, { trait: 'cesaret', value: 2 }, { trait: 'irade', value: 2 }] },
-      { text: 'Bakım veren olarak başkasını koru',
+      { text: { tr: 'Bakım veren olarak başkasını koru', en: 'Protect someone as a caregiver' },
         weights: [{ trait: 'şefkat', value: 3 }, { trait: 'sevgi', value: 2 }, { trait: 'beslenme', value: 2 }] },
-      { text: 'Kuralı kır, yeni bir yol aç',
+      { text: { tr: 'Kuralı kır, yeni bir yol aç', en: 'Break the rule, open a new path' },
         weights: [{ trait: 'asilik', value: 3 }, { trait: 'mizah', value: 2 }, { trait: 'kuralı kırmak', value: 2 }] },
     ],
   },
   {
-    q: 'Seni en iyi anlatan sözcük hangisi?',
+    q: { tr: 'Seni en iyi anlatan sözcük hangisi?', en: 'Which word describes you best?' },
     emoji: '✺',
     options: [
-      { text: 'Yaratıcı',
+      { text: { tr: 'Yaratıcı', en: 'Creator' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
-      { text: 'Bilge',
+      { text: { tr: 'Bilge', en: 'Sage' },
         weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'içgörü', value: 2 }, { trait: 'mentor', value: 2 }] },
-      { text: 'Aşık',
+      { text: { tr: 'Aşık', en: 'Lover' },
         weights: [{ trait: 'sevgi', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'adanma', value: 2 }] },
-      { text: 'Asi',
+      { text: { tr: 'Asi', en: 'Rebel' },
         weights: [{ trait: 'başkaldırı', value: 3 }, { trait: 'özgürlük', value: 2 }, { trait: 'değişim', value: 2 }] },
     ],
   },
   {
-    q: 'Bir grupta hangi rolü üstlenirsin?',
+    q: { tr: 'Bir grupta hangi rolü üstlenirsin?', en: 'What role do you take in a group?' },
     emoji: '☾',
     options: [
-      { text: 'Lider ve yön gösteren',
+      { text: { tr: 'Lider ve yön gösteren', en: 'Leader who shows the way' },
         weights: [{ trait: 'liderlik', value: 3 }, { trait: 'sorumluluk', value: 2 }, { trait: 'vizyon', value: 2 }] },
-      { text: 'Arabulucu ve dengeleyici',
+      { text: { tr: 'Arabulucu ve dengeleyici', en: 'Mediator and balancer' },
         weights: [{ trait: 'denge', value: 3 }, { trait: 'arabuluculuk', value: 2 }, { trait: 'uyum', value: 2 }] },
-      { text: 'İlham veren yaratıcı',
+      { text: { tr: 'İlham veren yaratıcı', en: 'Inspiring creative' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ilham', value: 2 }, { trait: 'estetik', value: 2 }] },
-      { text: 'Gözlemleyen analizci',
+      { text: { tr: 'Gözlemleyen analizci', en: 'Observing analyst' },
         weights: [{ trait: 'içgörü', value: 3 }, { trait: 'derinlik', value: 2 }, { trait: 'gözlem', value: 2 }] },
     ],
   },
   {
-    q: 'En büyük gücün nedir?',
+    q: { tr: 'En büyük gücün nedir?', en: 'What is your greatest strength?' },
     emoji: '△',
     options: [
-      { text: 'Sezgi ve içgüdü',
+      { text: { tr: 'Sezgi ve içgüdü', en: 'Intuition and instinct' },
         weights: [{ trait: 'sezgi', value: 3 }, { trait: 'bilinçaltı', value: 2 }, { trait: 'derinlik', value: 2 }] },
-      { text: 'Sabır ve dayanıklılık',
+      { text: { tr: 'Sabır ve dayanıklılık', en: 'Patience and endurance' },
         weights: [{ trait: 'sabır', value: 3 }, { trait: 'dayanıklılık', value: 2 }, { trait: 'istikrar', value: 2 }] },
-      { text: 'Zekâ ve esneklik',
+      { text: { tr: 'Zekâ ve esneklik', en: 'Wit and flexibility' },
         weights: [{ trait: 'zekâ', value: 3 }, { trait: 'oyun', value: 2 }, { trait: 'uyum', value: 2 }] },
-      { text: 'Cesaret ve tutku',
+      { text: { tr: 'Cesaret ve tutku', en: 'Courage and passion' },
         weights: [{ trait: 'cesaret', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'irade', value: 2 }] },
     ],
   },
   {
-    q: 'İçinde en çok hangi yara konuşur?',
+    q: { tr: 'İçinde en çok hangi yara konuşur?', en: 'Which wound speaks loudest within you?' },
     emoji: '☀',
     options: [
-      { text: 'Terk edilmişlik, yalnızlık',
+      { text: { tr: 'Terk edilmişlik, yalnızlık', en: 'Abandonment, loneliness' },
         weights: [{ trait: 'yetim', value: 3 }, { trait: 'kayıp', value: 2 }, { trait: 'sürgün', value: 2 }] },
-      { text: 'Yetersizlik, görünmemek',
+      { text: { tr: 'Yetersizlik, görünmemek', en: 'Not-enough-ness, feeling unseen' },
         weights: [{ trait: 'maske', value: 3 }, { trait: 'gölge', value: 2 }, { trait: 'utanç', value: 2 }] },
-      { text: 'Kontrolü kaybetmek',
+      { text: { tr: 'Kontrolü kaybetmek', en: 'Losing control' },
         weights: [{ trait: 'kontrol', value: 3 }, { trait: 'sınır', value: 2 }, { trait: 'disiplin', value: 2 }] },
-      { text: 'Anlamsızlık, derin boşluk',
+      { text: { tr: 'Anlamsızlık, derin boşluk', en: 'Meaninglessness, deep emptiness' },
         weights: [{ trait: 'arayış', value: 3 }, { trait: 'bilgelik', value: 2 }, { trait: 'manevi', value: 2 }] },
     ],
   },
   {
-    q: 'İçinde uyumayan, hep çağıran şey hangisi?',
+    q: { tr: 'İçinde uyumayan, hep çağıran şey hangisi?', en: 'What never sleeps in you, always calling?' },
     emoji: '◈',
     options: [
-      { text: 'Bütünleşme — kayıp parçaları toplamak',
+      { text: { tr: 'Bütünleşme — kayıp parçaları toplamak', en: 'Wholeness — gathering the lost pieces' },
         weights: [{ trait: 'self', value: 3 }, { trait: 'bütünlük', value: 3 }, { trait: 'merkez', value: 2 }] },
-      { text: 'Dönüşüm — eskiyi yakıp yenisini doğurmak',
+      { text: { tr: 'Dönüşüm — eskiyi yakıp yenisini doğurmak', en: 'Transformation — burning the old to birth the new' },
         weights: [{ trait: 'dönüşüm', value: 3 }, { trait: 'yeniden doğuş', value: 3 }, { trait: 'ölüm-doğuş', value: 2 }] },
-      { text: 'İfade — içtekini görünür kılmak',
+      { text: { tr: 'İfade — içtekini görünür kılmak', en: 'Expression — making the inner visible' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
-      { text: 'Hizmet — kendinden büyüğüne adanmak',
+      { text: { tr: 'Hizmet — kendinden büyüğüne adanmak', en: 'Service — devoting to something greater' },
         weights: [{ trait: 'aziz', value: 3 }, { trait: 'adanma', value: 2 }, { trait: 'şifa', value: 2 }] },
     ],
   },
@@ -176,7 +180,7 @@ function findByQuiz(
     archetype: scoreEntry(archetypesData, traits, elements),
     myth:      scoreEntry(mythsData,      traits, elements),
     image:     scoreEntry(imagesData,     traits, elements),
-    reason:    'Cevaplarındaki enerji örüntüsü',
+    reason:    getLanguage() === 'tr' ? 'Cevaplarındaki enerji örüntüsü' : 'The energy pattern in your answers',
   };
 }
 
@@ -239,12 +243,29 @@ function findByBirth(
 
   const SEASON_NAMES: Record<string, string> = { hava:'ilkbahar', ateş:'yaz', toprak:'sonbahar', su:'kış' };
   const seasonName = SEASON_NAMES[seasonEl[month]];
-  const reason = [
+  // İki dilli reason (tr → Türkçe, diğer diller → İngilizce). Mevsim/element/saat çevirileri.
+  const _tr = getLanguage() === 'tr';
+  const SEASON_D: Record<string, string> = _tr
+    ? { ilkbahar:'İlkbahar', yaz:'Yaz', sonbahar:'Sonbahar', kış:'Kış' }
+    : { ilkbahar:'spring', yaz:'summer', sonbahar:'autumn', kış:'winter' };
+  const EL_D: Record<string, string> = _tr
+    ? { hava:'hava', ateş:'ateş', toprak:'toprak', su:'su' }
+    : { hava:'air', ateş:'fire', toprak:'earth', su:'water' };
+  const HOUR_D: Record<string, string> = _tr
+    ? { gece:'gece', sabah:'sabah', öğlen:'öğlen', akşam:'akşam' }
+    : { gece:'night', sabah:'morning', öğlen:'noon', akşam:'evening' };
+  const el = seasonEl[month];
+  const reason = (_tr ? [
     `Hayat Yolu ${lifePath}`,
-    `${seasonName.charAt(0).toUpperCase() + seasonName.slice(1)} doğumundan gelen ${seasonEl[month]} enerjisi`,
-    hourLabel ? `${hourLabel} saati` : '',
+    `${SEASON_D[seasonName]} doğumundan gelen ${EL_D[el]} enerjisi`,
+    hourLabel ? `${HOUR_D[hourLabel]} saati` : '',
     city && city.trim() ? `${city.trim()} izi` : '',
-  ].filter(Boolean).join(' · ');
+  ] : [
+    `Life Path ${lifePath}`,
+    `${EL_D[el]} energy from your ${SEASON_D[seasonName]} birth`,
+    hourLabel ? `${HOUR_D[hourLabel]} hour` : '',
+    city && city.trim() ? `trace of ${city.trim()}` : '',
+  ]).filter(Boolean).join(' · ');
 
   return {
     archetype: scoreEntry(archetypesData, traits, elements),
@@ -380,7 +401,7 @@ export function MitlerFinderScreen({
           >
             <Text style={styles.closeTxt}>{embedded ? '←' : (mode === 'intro' || mode === 'result' ? '✕' : '←')}</Text>
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Rehber Mitini Bul</Text>
+          <Text style={styles.headerTitle}>{t('finder.header')}</Text>
           <View style={{ width: 32 }} />
         </View>
       )}
@@ -391,20 +412,15 @@ export function MitlerFinderScreen({
         <ScrollView contentContainerStyle={styles.introScroll} showsVerticalScrollIndicator={false}>
         <View style={styles.introWrap}>
           <Text style={styles.introEmoji}>✦</Text>
-          <Text style={styles.introTitle}>Rehber Mitini Keşfet</Text>
-          <Text style={styles.introDesc}>
-            Ruhunla uyumlu arketipi bulmak için iki yol var.
-          </Text>
-          <Text style={styles.introNote}>
-            Sakin sana bir ayna tutar — içinde zaten var olanı yansıtır ve olası olanı fısıldar.
-            Onu kalbinde uyandıracak, hissedip özümseyecek olan ise yalnızca sensin.
-          </Text>
+          <Text style={styles.introTitle}>{t('finder.intro.title')}</Text>
+          <Text style={styles.introDesc}>{t('finder.intro.desc')}</Text>
+          <Text style={styles.introNote}>{t('finder.intro.poetic')}</Text>
 
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.teal }]} onPress={() => setMode('quiz')} activeOpacity={0.8}>
             <Text style={styles.modeBtnEmoji}>✦</Text>
             <View style={styles.modeBtnText}>
-              <Text style={[styles.modeBtnTitle, { color: Colors.tealLight }]}>Sorularla Keşfet</Text>
-              <Text style={styles.modeBtnDesc}>7 soru, karakterine göre eşleşir</Text>
+              <Text style={[styles.modeBtnTitle, { color: Colors.tealLight }]}>{t('finder.mode.quiz.title')}</Text>
+              <Text style={styles.modeBtnDesc}>{t('finder.mode.quiz.desc')}</Text>
             </View>
           </TouchableOpacity>
 
@@ -433,7 +449,7 @@ export function MitlerFinderScreen({
           </View>
           <Animated.View style={[styles.qCard, { opacity: cardFade }]}>
             <Text style={styles.qEmoji}>{currentQ.emoji}</Text>
-            <Text style={styles.qText}>{currentQ.q}</Text>
+            <Text style={styles.qText}>{qL(currentQ.q)}</Text>
             <View style={styles.optionsWrap}>
               {currentQ.options.map((opt, i) => (
                 <TouchableOpacity
@@ -443,7 +459,7 @@ export function MitlerFinderScreen({
                   activeOpacity={0.75}
                   disabled={chosen !== null}
                 >
-                  <Text style={[styles.optTxt, chosen === i && { color: Colors.tealLight }]}>{opt.text}</Text>
+                  <Text style={[styles.optTxt, chosen === i && { color: Colors.tealLight }]}>{qL(opt.text)}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -481,7 +497,7 @@ export function MitlerFinderScreen({
 
           <TripleCard
             color={Colors.gold}
-            label="ARKETİP"
+            label={t("finder.result.archetype")}
             emoji={result.archetype.emoji}
             name={result.archetype.name}
             meta={`${result.archetype.tradition} · ${result.archetype.category}`}
@@ -492,7 +508,7 @@ export function MitlerFinderScreen({
 
           <TripleCard
             color={Colors.purpleLight}
-            label="MİT"
+            label={t("finder.result.myth")}
             emoji={result.myth.emoji}
             name={result.myth.name}
             meta={`${result.myth.culture} · ${result.myth.era}`}
@@ -503,7 +519,7 @@ export function MitlerFinderScreen({
 
           <TripleCard
             color={Colors.tealLight}
-            label="İMGE"
+            label={t("finder.result.image")}
             emoji={result.image.emoji}
             name={result.image.name}
             meta={`${result.image.tradition} · ${result.image.category}`}
@@ -517,7 +533,7 @@ export function MitlerFinderScreen({
             onPress={embedded ? reset : onClose}
             activeOpacity={0.8}
           >
-            <Text style={styles.doneBtnTxt}>{embedded ? 'Yeniden Keşfet ✦' : 'Kapat ✦'}</Text>
+            <Text style={styles.doneBtnTxt}>{embedded ? t('finder.again') : t('finder.close')}</Text>
           </TouchableOpacity>
         </Animated.ScrollView>
       )}

@@ -41,7 +41,7 @@ export function DisclaimerOverlay() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.divider} />
-            <Text style={styles.eyebrow}>SAKİN · MİTLER</Text>
+            <Text style={styles.eyebrow}>{t('common.familyTag')}</Text>
 
             <Text style={styles.title}>{t('disclaimer.title')}</Text>
 

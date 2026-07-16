@@ -689,12 +689,13 @@ export function ProfileScreen() {
         <View style={styles.familyGrid}>
           {(() => {
             // Uniform aile menüsü: açık app (aktif, en üstte) → diğerleri sırayla tıklanabilir. Numeroloji yok.
+            const isTr = lang === 'tr';
             const ALL = [
-              { host: 'hayvan',   name: 'Sakin Hayvan',   symbol: '⊕' },
-              { host: 'mitler',   name: 'Sakin Mitler',   symbol: '⚡' },
-              { host: 'tasarim',  name: 'Sakin Tasarım',  symbol: '◉' },
-              { host: 'taslar',   name: 'Sakin Taşlar',   symbol: '◈' },
-              { host: 'bitkiler', name: 'Sakin Bitkiler', symbol: '✿' },
+              { host: 'hayvan',   name: isTr ? 'Sakin Hayvan'   : 'Sakin Animals', symbol: '⊕' },
+              { host: 'mitler',   name: isTr ? 'Sakin Mitler'   : 'Sakin Myths',   symbol: '⚡' },
+              { host: 'tasarim',  name: isTr ? 'Sakin Tasarım'  : 'Sakin Design',  symbol: '◉' },
+              { host: 'taslar',   name: isTr ? 'Sakin Taşlar'   : 'Sakin Stones',  symbol: '◈' },
+              { host: 'bitkiler', name: isTr ? 'Sakin Bitkiler' : 'Sakin Plants',  symbol: '✿' },
             ];
             const CURRENT = 'mitler';
             return ALL.slice()

@@ -13,6 +13,9 @@ export const TR = {
   'common.done': 'Tamamlandı ✦',
   'common.openDetail': 'Detayı Aç →',
   'common.familyTag': 'SAKİN · MİTLER',
+  'common.familyFooter': 'SAKİN AİLESİ ✦',
+  'detail.share': '↑ Paylaş',
+  'detail.shareA11y': 'Paylaş',
 
   // Tabs
   'tab.home': 'Bugün',
@@ -58,6 +61,7 @@ export const TR = {
 
   // Finder
   'finder.title': 'Rehber Mitini Bul',
+  'finder.header': 'Rehber Mitini Bul',
   'finder.intro.title': 'Rehber Mitini Keşfet',
   'finder.intro.desc': 'Ruhunla uyumlu arketipi bulmak için iki yol var.',
   'finder.intro.poetic':
@@ -128,6 +132,7 @@ export const TR = {
   'weekly.label.today': 'BUGÜN',
   'weekly.label.guidance': 'REHBERLİK',
   'weekly.daysLeft': '{n} gün kaldı',
+  'weekly.reason': 'Hayat Yolu {lifePath} — bu dönemde içsel ritmine eşlik etmek için seninle.',
   'weekly.locked.title': 'Kişisel Rehberim',
   'weekly.locked.text':
     'Doğum haritana göre sana özel dönemsel bir arketip belirlemek için profil bilgilerini tamamla.\n\nProfil → Kişisel Harita bölümünden doğum tarihini ekleyebilirsin.',
@@ -138,6 +143,7 @@ export const TR = {
   'archive.map': 'Mit Haritan',
   'archive.empty.title': 'Henüz okuma yok.',
   'archive.empty.sub': 'Ana ekrandan ilk destenı aç.',
+  'archive.filter.all': 'Tümü',
   'archive.label.archetype': 'Arketip',
   'archive.label.myth': 'Mit',
   'archive.label.image': 'İmge',
@@ -300,6 +306,9 @@ export const EN: Record<keyof typeof TR, string> = {
   'common.done': 'Done ✦',
   'common.openDetail': 'Open Detail →',
   'common.familyTag': 'SAKIN · MYTHS',
+  'common.familyFooter': 'SAKIN FAMILY ✦',
+  'detail.share': '↑ Share',
+  'detail.shareA11y': 'Share',
 
   // Tabs
   'tab.home': 'Today',
@@ -345,6 +354,7 @@ export const EN: Record<keyof typeof TR, string> = {
 
   // Finder
   'finder.title': 'Find Your Guide Myth',
+  'finder.header': 'Find Your Guiding Myth',
   'finder.intro.title': 'Discover Your Guide Myth',
   'finder.intro.desc': 'Two paths to find the archetype that resonates with your soul.',
   'finder.intro.poetic':
@@ -415,6 +425,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'TODAY',
   'weekly.label.guidance': 'GUIDANCE',
   'weekly.daysLeft': '{n} days left',
+  'weekly.reason': 'Life Path {lifePath} — here to accompany your inner rhythm this period.',
   'weekly.locked.title': 'My Personal Guide',
   'weekly.locked.text':
     'Complete your profile to receive a periodic archetype based on your birth chart.\n\nProfile → Personal Map section lets you add your birth date.',
@@ -425,6 +436,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'archive.map': 'Your Myth Map',
   'archive.empty.title': 'No readings yet.',
   'archive.empty.sub': 'Open your first deck from the home screen.',
+  'archive.filter.all': 'All',
   'archive.label.archetype': 'Archetype',
   'archive.label.myth': 'Myth',
   'archive.label.image': 'Symbol',
