@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
 
   // Intro
   introScroll: { padding: Spacing.lg, alignItems: 'center' },
-  introEmoji: { fontSize: 48, marginBottom: Spacing.sm },
+  introEmoji: { color: Colors.textPrimary, fontSize: 48, marginBottom: Spacing.sm },
   introTitle: {
     fontSize: Typography.size.xl, fontWeight: Typography.weight.semibold,
     color: Colors.textPrimary, textAlign: 'center', letterSpacing: 0.5,
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundCard, borderRadius: BorderRadius.md,
     borderWidth: 1,
   },
-  elementSymbol: { fontSize: 16 },
+  elementSymbol: { color: Colors.textPrimary, fontSize: 16 },
   elementName: { fontSize: Typography.size.sm, fontWeight: Typography.weight.semibold, letterSpacing: 0.5 },
 
   // Result

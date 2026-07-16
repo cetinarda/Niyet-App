@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.02)',
   },
-  heroEmoji: { fontSize: 48 },
+  heroEmoji: { color: Colors.textPrimary, fontSize: 48 },
   heroName: {
     fontSize: Typography.size.xxxl,
     fontWeight: Typography.weight.light,

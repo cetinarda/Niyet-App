@@ -648,7 +648,7 @@ const cs = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.02)',
   },
-  bigEmoji: { fontSize: 24 },
+  bigEmoji: { color: Colors.textPrimary, fontSize: 24 },
   itemName: {
     fontSize: Typography.size.lg,
     fontWeight: Typography.weight.semibold,

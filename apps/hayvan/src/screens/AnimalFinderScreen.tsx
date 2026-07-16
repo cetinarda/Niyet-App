@@ -369,7 +369,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
           </Text>
 
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.teal }]} onPress={() => setMode('quiz')} activeOpacity={0.8}>
-            <Text style={styles.modeBtnEmoji}>✦</Text>
+            <Text style={[styles.modeBtnEmoji, { color: Colors.tealLight }]}>✦</Text>
             <View style={styles.modeBtnText}>
               <Text style={[styles.modeBtnTitle, { color: Colors.tealLight }]}>{t('animalFinder.intro.quizBtn.title')}</Text>
               <Text style={styles.modeBtnDesc}>{t('animalFinder.intro.quizBtn.desc')}</Text>
@@ -377,7 +377,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.gold }]} onPress={() => { if (birthValid) { handleBirthSubmit(); } else { setMode('birth'); } }} activeOpacity={0.8}>
-            <Text style={styles.modeBtnEmoji}>☀</Text>
+            <Text style={[styles.modeBtnEmoji, { color: Colors.gold }]}>☀</Text>
             <View style={styles.modeBtnText}>
               <Text style={[styles.modeBtnTitle, { color: Colors.gold }]}>{t('animalFinder.intro.birthBtn.title')}</Text>
               <Text style={styles.modeBtnDesc}>{t('animalFinder.intro.birthBtn.desc')}</Text>
@@ -547,7 +547,7 @@ const styles = StyleSheet.create({
     flex: 1, alignItems: 'center', justifyContent: 'center',
     paddingHorizontal: Spacing.lg, gap: Spacing.md,
   },
-  introEmoji: { fontSize: 56, marginBottom: Spacing.sm },
+  introEmoji: { color: Colors.textPrimary, fontSize: 56, marginBottom: Spacing.sm },
   introTitle: {
     fontSize: Typography.size.xl, fontWeight: Typography.weight.semibold,
     color: Colors.textPrimary, textAlign: 'center', letterSpacing: 0.5,
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundCard, borderRadius: BorderRadius.lg,
     borderWidth: 1, padding: Spacing.md,
   },
-  modeBtnEmoji: { fontSize: 28, width: 36, textAlign: 'center' },
+  modeBtnEmoji: { color: Colors.textPrimary, fontSize: 28, width: 36, textAlign: 'center' },
   modeBtnText: { flex: 1 },
   modeBtnTitle: { fontSize: Typography.size.md, fontWeight: Typography.weight.semibold, marginBottom: 2 },
   modeBtnDesc: { fontSize: Typography.size.xs, color: Colors.textMuted },
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.lg, paddingBottom: Spacing.lg,
     alignItems: 'center', justifyContent: 'center', gap: Spacing.lg,
   },
-  qEmoji: { fontSize: 44, marginBottom: Spacing.xs },
+  qEmoji: { color: Colors.textPrimary, fontSize: 44, marginBottom: Spacing.xs },
   qText: {
     fontSize: Typography.size.xl, fontWeight: Typography.weight.semibold,
     color: Colors.textPrimary, textAlign: 'center', lineHeight: Typography.size.xl * 1.5,
@@ -669,7 +669,7 @@ const styles = StyleSheet.create({
     width: 76, height: 76, borderRadius: 38, borderWidth: 1,
     alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(46,158,138,0.06)',
   },
-  resultEmoji: { fontSize: 38 },
+  resultEmoji: { color: Colors.textPrimary, fontSize: 38 },
   resultName: {
     fontSize: Typography.size.xxl, fontWeight: Typography.weight.bold,
     color: Colors.textPrimary, letterSpacing: 1,

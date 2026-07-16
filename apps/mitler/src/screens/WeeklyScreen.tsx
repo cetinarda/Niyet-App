@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   introText: { fontSize: Typography.size.sm, color: Colors.textSecondary, lineHeight: Typography.size.sm * 1.8, fontWeight: Typography.weight.light },
   heroCard: { borderWidth: 1, borderRadius: BorderRadius.lg, padding: Spacing.lg, alignItems: 'center', backgroundColor: Colors.backgroundCard, marginBottom: Spacing.lg },
   weekTag: { fontSize: 9, letterSpacing: 4, color: Colors.gold, marginBottom: Spacing.md },
-  heroEmoji: { fontSize: 56, marginBottom: Spacing.sm },
+  heroEmoji: { color: Colors.textPrimary, fontSize: 56, marginBottom: Spacing.sm },
   heroName: { fontSize: Typography.size.xxl, fontWeight: Typography.weight.light, color: Colors.textPrimary, letterSpacing: 1, textAlign: 'center' },
   heroAspect: { fontSize: Typography.size.xs, letterSpacing: 2, marginTop: 4, textTransform: 'uppercase', textAlign: 'center' },
   divider: { width: 28, height: 1, opacity: 0.3, marginVertical: Spacing.md },

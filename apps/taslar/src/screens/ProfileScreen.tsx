@@ -920,7 +920,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: Colors.divider,
   },
-  onboardingEmoji: { fontSize: 48, textAlign: 'center', marginBottom: 4 },
+  onboardingEmoji: { color: Colors.textPrimary, fontSize: 48, textAlign: 'center', marginBottom: 4 },
   onboardingTitle: {
     fontSize: Typography.size.xl,
     fontWeight: Typography.weight.bold,
@@ -1011,7 +1011,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.gold,
     backgroundColor: Colors.goldGlow,
   },
-  elementEmoji: { fontSize: 28 },
+  elementEmoji: { color: Colors.textPrimary, fontSize: 28 },
   elementName: {
     fontSize: Typography.size.sm,
     fontWeight: Typography.weight.medium,
@@ -1050,7 +1050,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundCard,
     alignItems: 'center', justifyContent: 'center',
   },
-  avatarEmoji: { fontSize: 36 },
+  avatarEmoji: { color: Colors.textPrimary, fontSize: 36 },
   heroName: {
     fontSize: Typography.size.xxl,
     fontWeight: Typography.weight.bold,
@@ -1316,7 +1316,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: Spacing.md,
   },
-  spiritEmoji: { fontSize: 32 },
+  spiritEmoji: { color: Colors.textPrimary, fontSize: 32 },
   spiritInfo: { flex: 1 },
   spiritLabel: {
     fontSize: Typography.size.xs,
@@ -1350,7 +1350,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   badgeLocked: { opacity: 0.5 },
-  badgeEmoji: { fontSize: 24 },
+  badgeEmoji: { color: Colors.textPrimary, fontSize: 24 },
   badgeTitle: {
     fontSize: Typography.size.xs,
     fontWeight: Typography.weight.semibold,

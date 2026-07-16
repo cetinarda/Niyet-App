@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.round,
     backgroundColor: Colors.backgroundCard,
   },
-  chipSymbol: { fontSize: 12 },
+  chipSymbol: { color: Colors.textPrimary, fontSize: 12 },
   chipLabel: {
     fontSize: 11,
     letterSpacing: 0.4,

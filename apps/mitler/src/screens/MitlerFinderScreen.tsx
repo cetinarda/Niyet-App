@@ -417,7 +417,7 @@ export function MitlerFinderScreen({
           <Text style={styles.introNote}>{t('finder.intro.poetic')}</Text>
 
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.teal }]} onPress={() => setMode('quiz')} activeOpacity={0.8}>
-            <Text style={styles.modeBtnEmoji}>✦</Text>
+            <Text style={[styles.modeBtnEmoji, { color: Colors.tealLight }]}>✦</Text>
             <View style={styles.modeBtnText}>
               <Text style={[styles.modeBtnTitle, { color: Colors.tealLight }]}>{t('finder.mode.quiz.title')}</Text>
               <Text style={styles.modeBtnDesc}>{t('finder.mode.quiz.desc')}</Text>
@@ -425,7 +425,7 @@ export function MitlerFinderScreen({
           </TouchableOpacity>
 
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.gold }]} onPress={handleBirthFinder} activeOpacity={0.8}>
-            <Text style={styles.modeBtnEmoji}>☀</Text>
+            <Text style={[styles.modeBtnEmoji, { color: Colors.gold }]}>☀</Text>
             <View style={styles.modeBtnText}>
               <Text style={[styles.modeBtnTitle, { color: Colors.gold }]}>{t('finder.mode.birth.title')}</Text>
               <Text style={styles.modeBtnDesc}>{t('finder.mode.birth.desc')}</Text>
@@ -628,7 +628,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundCard, borderRadius: BorderRadius.lg,
     borderWidth: 1, padding: Spacing.md,
   },
-  modeBtnEmoji: { fontSize: 28, width: 36, textAlign: 'center' },
+  modeBtnEmoji: { color: Colors.textPrimary, fontSize: 28, width: 36, textAlign: 'center' },
   modeBtnText: { flex: 1, minWidth: 0 },
   modeBtnTitle: { fontSize: Typography.size.md, fontWeight: Typography.weight.semibold, marginBottom: 2 },
   modeBtnDesc: { fontSize: Typography.size.xs, color: Colors.textMuted },
@@ -651,7 +651,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.lg, paddingBottom: Spacing.lg,
     alignItems: 'center', justifyContent: 'center', gap: Spacing.lg,
   },
-  qEmoji: { fontSize: 44, marginBottom: Spacing.xs },
+  qEmoji: { color: Colors.textPrimary, fontSize: 44, marginBottom: Spacing.xs },
   qText: {
     fontSize: Typography.size.xl, fontWeight: Typography.weight.semibold,
     color: Colors.textPrimary, textAlign: 'center', lineHeight: Typography.size.xl * 1.5,
@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
     backgroundColor: 'rgba(255,255,255,0.02)',
   },
-  resultEmoji: { fontSize: 32 },
+  resultEmoji: { color: Colors.textPrimary, fontSize: 32 },
   resultName: {
     fontSize: Typography.size.xl, fontWeight: Typography.weight.bold,
     color: Colors.textPrimary, letterSpacing: 0.8, textAlign: 'center',

@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: Colors.backgroundCard,
   },
-  rowEmoji: { fontSize: 22 },
+  rowEmoji: { color: Colors.textPrimary, fontSize: 22 },
   rowName: { fontSize: Typography.size.md, color: Colors.textPrimary, letterSpacing: 0.3 },
   rowMeta: { fontSize: Typography.size.xs, color: Colors.textMuted, marginTop: 2 },
   rowArrow: { fontSize: Typography.size.sm, color: Colors.textMuted },

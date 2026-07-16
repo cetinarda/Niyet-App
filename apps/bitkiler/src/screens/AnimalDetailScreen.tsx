@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   medallion: { width: 120, height: 120, borderRadius: 60, borderWidth: 1, alignItems: 'center', justifyContent: 'center', marginBottom: Spacing.md },
   medallionInner: { width: 96, height: 96, borderRadius: 48, borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden', backgroundColor: 'rgba(255,255,255,0.02)' },
   heroImg: { width: 96, height: 96, borderRadius: 48 },
-  heroEmoji: { fontSize: 48 },
+  heroEmoji: { color: Colors.textPrimary, fontSize: 48 },
   heroName: { fontSize: Typography.size.xxxl, fontWeight: Typography.weight.light, color: Colors.textPrimary, letterSpacing: 1, textAlign: 'center' },
   heroMeta: { fontSize: Typography.size.xs, color: Colors.textMuted, letterSpacing: 2, marginTop: Spacing.xs },
   rarityBadge: { borderWidth: 1, borderRadius: BorderRadius.round, paddingHorizontal: Spacing.md, paddingVertical: 4, marginTop: Spacing.sm },

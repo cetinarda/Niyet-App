@@ -624,7 +624,7 @@ const cs = StyleSheet.create({
     marginBottom: Spacing.sm,
     borderWidth: 1,
   },
-  portraitSymbol: {
+  portraitSymbol: { color: Colors.textPrimary,
     fontSize: 22,
     marginBottom: Spacing.sm,
     opacity: 0.7,
@@ -666,7 +666,7 @@ const cs = StyleSheet.create({
     width: 54, height: 54,
     borderRadius: 27,
   },
-  bigEmoji: { fontSize: 26 },
+  bigEmoji: { color: Colors.textPrimary, fontSize: 26 },
   itemName: {
     fontSize: Typography.size.sm,
     fontWeight: Typography.weight.semibold,

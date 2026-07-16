@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundCard,
   },
   rowImg: { width: 44, height: 44, borderRadius: 22 },
-  rowEmoji: { fontSize: 22 },
+  rowEmoji: { color: Colors.textPrimary, fontSize: 22 },
   rowName: {
     fontSize: Typography.size.md,
     color: Colors.textPrimary,
