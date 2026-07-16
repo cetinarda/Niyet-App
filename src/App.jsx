@@ -5692,21 +5692,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
             <div style={{ fontSize:24,marginBottom:8 }}>✦</div>
             <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:18,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
-            <button onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
-              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:16,marginBottom:10,cursor:"pointer",boxShadow:"0 0 16px rgba(240,192,96,0.1)" }}>
-              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-                <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
-              </div>
-              <div style={{ fontSize:12.5,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
-            </button>
             <button onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
-              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
+              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:10,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
                 <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
                 <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
               </div>
               <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
+            </button>
+            <button onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(240,192,96,0.1)" }}>
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+                <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
+              </div>
+              <div style={{ fontSize:12.5,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
             </button>
             <button onClick={()=>{ setShowNedir(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
               style={{ background:"transparent",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"7px 20px",color:"#b0a0d0",fontSize:11.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>
@@ -7834,21 +7834,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
             <h1 style={{ margin:0,fontSize:21,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</h1>
           </div>
-          <button onClick={()=>setShowAilesi(true)}
-            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.35)",borderRadius:16,marginBottom:10,cursor:"pointer" }}>
-            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-              <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
-              <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
-            </div>
-            <div style={{ fontSize:13,color:"#c8b89a",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
-          </button>
           <button onClick={()=>setScreen("mandala")}
-            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.35)",borderRadius:16,marginBottom:32,cursor:"pointer" }}>
+            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.35)",borderRadius:16,marginBottom:10,cursor:"pointer" }}>
             <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
               <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
               <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
             </div>
             <div style={{ fontSize:13,color:"#b0a4c8",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
+          </button>
+          <button onClick={()=>setShowAilesi(true)}
+            style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.35)",borderRadius:16,marginBottom:32,cursor:"pointer" }}>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
+              <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+              <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
+            </div>
+            <div style={{ fontSize:13,color:"#c8b89a",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
           </button>
 
           {/* Tanıdık mı? */}
@@ -8024,12 +8024,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <h1>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
-          <div style={{ textAlign:"center",margin:"20px 0 28px",padding:"16px 20px",background:"linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:16 }}>
-            <div style={{ fontSize:14,color:"#c8b8e0",lineHeight:2,fontStyle:"italic",letterSpacing:0.5 }}>
-              {t("premium_first100_intro")}
-            </div>
-          </div>
-
           {isPremium ? (
             <div style={{ textAlign:"center",padding:"32px 0" }}>
               <div style={{ width:64,height:64,borderRadius:"50%",background:"rgba(80,200,120,0.15)",border:"1px solid rgba(80,200,120,0.3)",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px" }}>
@@ -8152,11 +8146,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="pricing-card" style={{ background:"linear-gradient(145deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))",border:"1px solid rgba(255,255,255,0.3)" }}>
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
-                <div style={{ fontSize:17,fontWeight:300,letterSpacing:0.3,lineHeight:1.45,marginBottom:10,color:"#ffffff" }}>{t("paid_app_plan")}</div>
-                <div style={{ fontSize:36,color:"#ffffff",letterSpacing:1,marginBottom:4,fontWeight:200 }}>{t("paid_app_price")}</div>
-                <div style={{ fontSize:13,color:"#b8a4d8",letterSpacing:1.5,marginBottom:6 }}>{t("paid_app_price_sub")}</div>
-                <div style={{ display:"inline-block",background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"5px 16px",fontSize:12,letterSpacing:2.5,color:"#c8b8e0",textTransform:"uppercase",marginBottom:18 }}>
-                  {t("premium_first100")}
+                <div style={{ fontSize:17,fontWeight:300,letterSpacing:0.3,lineHeight:1.45,marginBottom:14,color:"#ffffff" }}>{t("paid_app_plan")}</div>
+                {/* İki katman — gerçek modeli yansıtır (web bilgi amaçlı; satın alma App Store'da) */}
+                <div style={{ display:"flex",justifyContent:"center",gap:28,marginBottom:18 }}>
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:28,color:"#ffffff",fontWeight:200,letterSpacing:0.5 }}>$9.99<span style={{ fontSize:13,color:"#b8a4d8" }}>{pickLang({tr:" /yıl",en:" /yr",de:" /Jahr",es:" /año",pt:" /ano",fr:" /an",ja:" /年"}, lang)}</span></div>
+                    <div style={{ fontSize:11,color:"#9a90b5",letterSpacing:1,marginTop:3 }}>{t("premium_yearly_name")}</div>
+                  </div>
+                  <div style={{ width:1,background:"rgba(184,164,216,0.2)" }} />
+                  <div style={{ textAlign:"center" }}>
+                    <div style={{ fontSize:28,color:"#ffffff",fontWeight:200,letterSpacing:0.5 }}>$19.99</div>
+                    <div style={{ fontSize:11,color:"#9a90b5",letterSpacing:1,marginTop:3 }}>{t("premium_lifetime_name")}</div>
+                  </div>
                 </div>
                 <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
 
