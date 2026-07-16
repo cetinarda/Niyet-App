@@ -3499,17 +3499,14 @@ export default function SakinApp() {
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
-  // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz. Yalnızca kullanıcı
-  // dilini seçip HAZIRIM'a basınca çıkar (setShowNedir(true) — giriş landing'i, ~satır
-  // 5801). girisPhase her yüklemede "intro"ya döndüğü + giriş varsayılan ekran olduğu
-  // için HER ziyarette HAZIRIM'dan geçilir → "her açılışta göster" böyle korunur.
-  // "bir daha gösterme" (sakin_nedir_off) HAZIRIM tetiklemesini durdurur.
+  // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz (mount=false).
+  // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
+  // İLK 5 AÇILIŞTA (sakin_nedir_count 0→5). girisPhase her yüklemede "intro"ya döndüğü
+  // + giriş varsayılan ekran olduğu için her açılış = bir HAZIRIM = bir sayım.
+  // "bir daha gösterme" (sakin_nedir_off) 5'ten önce de kalıcı kapatır. iOS + web.
   // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
   // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu — geri alındı.
-  const [showNedir, setShowNedir] = useState(() => {
-    try { localStorage.removeItem("sakin_nedir_count"); } catch (_) {} // eski sayaç temizliği
-    return false;
-  });
+  const [showNedir, setShowNedir] = useState(false);
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -5701,9 +5698,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* "SAKİN NEDİR?" / YOL SEÇİMİ — TEK overlay. Her açılışta ("bir daha gösterme"ye
-          kadar). Kartlar DOĞRUDAN tıklanır: ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?"
-          butonu hakkinda/nedir sekmesine gider. Ara adım (yol menüsü) kaldırıldı. */}
+      {/* "SAKİN NEDİR?" / YOL SEÇİMİ — TEK overlay. HAZIRIM sonrası, İLK 5 AÇILIŞTA
+          (veya "bir daha gösterme"ye kadar). iOS + web. Kartlar DOĞRUDAN tıklanır:
+          ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?" butonu nedir sekmesine gider. */}
       {showNedir && !showIntro && (
         <div onClick={()=>setShowNedir(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.87)",backdropFilter:"blur(13px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
@@ -5797,7 +5794,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(!isNative && localStorage.getItem("sakin_nedir_off")!=="1") setShowNedir(true); } catch(_) {} }}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(localStorage.getItem("sakin_nedir_off")!=="1"){ const c=parseInt(localStorage.getItem("sakin_nedir_count")||"0",10)||0; if(c<5){ setShowNedir(true); localStorage.setItem("sakin_nedir_count",String(c+1)); } } } catch(_) {} }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
