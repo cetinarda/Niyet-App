@@ -49,7 +49,7 @@ function getPersonal(birthDate: string, archetypesData: any[]): {
 }
 
 export function WeeklyScreen({ onClose, embedded }: Props) {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const insets = useSafeAreaInsets();
   const { profile } = useMitlerStore();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
@@ -116,7 +116,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           <Text style={styles.heroEmoji}>{weekly.archetype.emoji}</Text>
           <Text style={styles.heroName}>{weekly.archetype.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.gold }]}>
-            {weekly.archetype.tradition.toUpperCase()} · {weekly.archetype.category.toUpperCase()}
+            {weekly.archetype.tradition.toLocaleUpperCase(lang)} · {weekly.archetype.category.toLocaleUpperCase(lang)}
           </Text>
           <View style={[styles.divider, { backgroundColor: Colors.gold }]} />
           <Text style={styles.dailyMsg}>{weekly.archetype.essence}</Text>
@@ -125,7 +125,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
             <Text style={styles.guideText}>{weekly.archetype.advice}</Text>
           </View>
           <View style={styles.metaRow}>
-            <Text style={styles.metaText}>{weekly.archetype.element?.toUpperCase()}</Text>
+            <Text style={styles.metaText}>{weekly.archetype.element?.toLocaleUpperCase(lang)}</Text>
             <View style={styles.metaDot} />
             <Text style={styles.metaText}>{t('weekly.daysLeft', { n: daysLeft })}</Text>
           </View>
@@ -142,7 +142,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           <Text style={styles.heroEmoji}>{weekly.myth.emoji}</Text>
           <Text style={styles.heroName}>{weekly.myth.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.purpleLight }]}>
-            {weekly.myth.culture.toUpperCase()} · {weekly.myth.era.toUpperCase()}
+            {weekly.myth.culture.toLocaleUpperCase(lang)} · {weekly.myth.era.toLocaleUpperCase(lang)}
           </Text>
           <View style={[styles.divider, { backgroundColor: Colors.purpleLight }]} />
           <Text style={styles.dailyMsg} numberOfLines={5}>{weekly.myth.summary}</Text>
@@ -163,12 +163,12 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
           <Text style={styles.heroEmoji}>{weekly.image.emoji}</Text>
           <Text style={styles.heroName}>{weekly.image.name}</Text>
           <Text style={[styles.heroAspect, { color: Colors.tealLight }]}>
-            {weekly.image.tradition.toUpperCase()} · {weekly.image.category.toUpperCase()}
+            {weekly.image.tradition.toLocaleUpperCase(lang)} · {weekly.image.category.toLocaleUpperCase(lang)}
           </Text>
           <View style={[styles.divider, { backgroundColor: Colors.tealLight }]} />
           <Text style={styles.dailyMsg} numberOfLines={5}>{weekly.image.essence}</Text>
           <View style={[styles.guideBox, { borderColor: Colors.tealLight + '40' }]}>
-            <Text style={[styles.guideLabel, { color: Colors.tealLight }]}>BUGÜN</Text>
+            <Text style={[styles.guideLabel, { color: Colors.tealLight }]}>{t('weekly.label.today')}</Text>
             <Text style={styles.guideText}>{weekly.image.advice}</Text>
           </View>
           <Text style={[styles.openHint, { color: Colors.tealLight }]}>{t('common.openDetail')}</Text>
@@ -185,7 +185,7 @@ export function WeeklyScreen({ onClose, embedded }: Props) {
             <Text style={styles.heroEmoji}>{personal.archetype.emoji}</Text>
             <Text style={styles.heroName}>{personal.archetype.name}</Text>
             <Text style={[styles.heroAspect, { color: Colors.sakinLavender }]}>
-              {personal.archetype.tradition.toUpperCase()}
+              {personal.archetype.tradition.toLocaleUpperCase(lang)}
             </Text>
             <View style={[styles.divider, { backgroundColor: Colors.sakinLavender }]} />
             <Text style={styles.dailyMsg}>{personal.archetype.essence}</Text>

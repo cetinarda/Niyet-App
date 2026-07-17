@@ -566,7 +566,7 @@ function TripleCard({
         </View>
       </View>
       <Text style={styles.resultName}>{name}</Text>
-      <Text style={[styles.resultMeta, { color }]}>{meta.toUpperCase()}</Text>
+      <Text style={[styles.resultMeta, { color }]}>{meta.toLocaleUpperCase(getLanguage())}</Text>
       <View style={[styles.divider, { backgroundColor: color }]} />
       <Text style={styles.resultMsg} numberOfLines={4}>{body}</Text>
       <View style={styles.tagsRow}>

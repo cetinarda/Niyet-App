@@ -29,7 +29,7 @@ interface Props { stone?: Stone; animal?: Stone; onClose: () => void; }
 export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props) {
   const stone = (stoneProp ?? animal) as Stone;
   const insets = useSafeAreaInsets();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [imgErr, setImgErr] = useState(false);
 
   const rarityLabel = stone.rarity
@@ -57,7 +57,7 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
             </View>
           </View>
           <Text style={styles.heroName}>{stone.name}</Text>
-          <Text style={styles.heroMeta}>{stone.element.toUpperCase()}{stone.chakra ? ' · ' + stone.chakra : ''}</Text>
+          <Text style={styles.heroMeta}>{stone.element.toLocaleUpperCase(lang)}{stone.chakra ? ' · ' + stone.chakra : ''}</Text>
           {rarityLabel && (
             <View style={[styles.rarityBadge, { borderColor: Colors.gold + '50' }]}>
               <Text style={styles.rarityText}>{rarityLabel}</Text>

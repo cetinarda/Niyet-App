@@ -230,7 +230,7 @@ function findAnimalByBirth(day: number, month: number, year: number, hour?: numb
   }
 
   const reason = [
-    `${seasonName.charAt(0).toUpperCase() + seasonName.slice(1)} doğumundan gelen ${seasonEl[month]} enerjisi`,
+    `${seasonName.charAt(0).toLocaleUpperCase('tr') + seasonName.slice(1)} doğumundan gelen ${seasonEl[month]} enerjisi`,
     hourLabel ? `${hourLabel} saatinin ${HOUR_RANGES.find(r => hourLabel === r.label)?.traits[0] || ''} gücü` : '',
     city && city.trim() ? `${city.trim()} toprağının izi` : '',
   ].filter(Boolean).join(' · ');

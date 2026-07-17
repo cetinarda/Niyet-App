@@ -297,7 +297,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
         </View>
         <TouchableOpacity onPress={onNavigateToProfile} style={styles.profileBtn}>
           <Text style={styles.profileInitial}>
-            {profile?.name?.charAt(0).toUpperCase() || '☀'}
+            {profile?.name?.charAt(0).toLocaleUpperCase('tr') || '☀'}
           </Text>
         </TouchableOpacity>
       </View>

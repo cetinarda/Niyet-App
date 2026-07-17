@@ -24,7 +24,7 @@ interface Props { animal: Animal; onClose: () => void; }
 
 export function AnimalDetailScreen({ animal, onClose }: Props) {
   const insets = useSafeAreaInsets();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const lore = useLocalizedLore(animal.id);
   const [imgErr, setImgErr] = useState(false);
   const [openMyth, setOpenMyth] = useState<ReturnType<typeof getRelatedMyth>>(null);
@@ -57,7 +57,7 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
             </View>
           </View>
           <Text style={styles.heroName}>{animal.name}</Text>
-          <Text style={styles.heroMeta}>{animal.element.toUpperCase()} · {animal.symbolism.slice(0, 3).join(' · ')}</Text>
+          <Text style={styles.heroMeta}>{animal.element.toLocaleUpperCase(lang)} · {animal.symbolism.slice(0, 3).join(' · ')}</Text>
         </View>
 
         <Section title={t('animalDetail.sections.anatolian')} color={Colors.gold}>
@@ -148,7 +148,7 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
               <View style={{ flex: 1 }}>
                 <Text style={styles.relatedName}>{relatedMyth.name}</Text>
                 <Text style={styles.relatedAspect}>
-                  {(relatedMyth as any).aspect?.toUpperCase()}
+                  {(relatedMyth as any).aspect?.toLocaleUpperCase(lang)}
                 </Text>
                 <Text style={styles.relatedHint}>
                   {t('animalDetail.resonanceHint')}

@@ -146,7 +146,7 @@ export function NagualScreen({ onClose, embedded }: Props) {
             <Text style={styles.heroEmoji}>{personal.animal.emoji}</Text>
             <Text style={styles.heroName}>{personal.animal.name}</Text>
             <Text style={[styles.heroAspect, { color: Colors.tealLight }]}>
-              {personal.animal.symbolism.slice(0, 2).join(' · ').toUpperCase()}
+              {personal.animal.symbolism.slice(0, 2).join(' · ').toLocaleUpperCase(lang)}
             </Text>
             <View style={[styles.divider, { backgroundColor: Colors.teal }]} />
             <Text style={styles.dailyMsg}>{personal.animal.dailyMessage}</Text>

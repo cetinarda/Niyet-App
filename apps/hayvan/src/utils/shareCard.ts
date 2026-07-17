@@ -222,20 +222,20 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
       }
     }
 
-    // Alt marka
-    ctx.fillStyle = 'rgba(160,150,180,0.7)';
-    ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-    if (spec.cta) {
-      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
-      ctx.font = "400 22px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-      ctx.fillText(spec.cta, W / 2, H - 132);
-    }
-    ctx.fillStyle = 'rgba(160,150,180,0.7)';
-    ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
+    // Alt marka: ✦ ayraç + TEK satır. CTA metni zaten "sakin.life" içerir —
+    // ayrıca footer yazılmaz (çift "sakin.life" + yıldızın yazıya binmesi bug'ıydı).
     ctx.fillStyle = `rgba(${ar},${ag},${ab},0.8)`;
     ctx.font = '22px serif';
-    ctx.fillText('✦', W / 2, H - 132);
+    ctx.fillText('✦', W / 2, H - 138);
+    if (spec.cta) {
+      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
+      ctx.font = "400 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText(spec.cta, W / 2, H - 96);
+    } else {
+      ctx.fillStyle = 'rgba(160,150,180,0.7)';
+      ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
+    }
     return cv;
   };
 

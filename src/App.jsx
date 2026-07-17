@@ -7510,7 +7510,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.fillStyle = "#605080";
           ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText("SAKIN.LIFE", 540, 1880);
+          ctx.fillText("SAKİN.LIFE", 540, 1880);
 
           // Export → share sheet (Save to Files, paylaş vs.)
           canvas.toBlob(async (blob) => {

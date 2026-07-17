@@ -114,7 +114,7 @@
   {
     "id": "a005",
     "name": "Hüma Kuşu",
-    "emoji": "🦋",
+    "emoji": "🕊️",
     "element": "ateş",
     "symbolism": [
       "talih",
@@ -142,7 +142,7 @@
   {
     "id": "a006",
     "name": "Anka",
-    "emoji": "🔥",
+    "emoji": "🐦‍🔥",
     "element": "ateş",
     "symbolism": [
       "yeniden doğuş",
@@ -618,7 +618,7 @@
   {
     "id": "a023",
     "name": "Bülbül",
-    "emoji": "🎵",
+    "emoji": "🐦",
     "element": "hava",
     "symbolism": [
       "sevgi",
@@ -702,7 +702,7 @@
   {
     "id": "a026",
     "name": "Çita",
-    "emoji": "🐾",
+    "emoji": "🐆",
     "element": "ateş",
     "symbolism": [
       "hız",
@@ -842,7 +842,7 @@
   {
     "id": "a031",
     "name": "Kartal Baykuşu",
-    "emoji": "🦅",
+    "emoji": "🦉",
     "element": "hava",
     "symbolism": [
       "bilgelik",
@@ -1346,7 +1346,7 @@
   {
     "id": "a049",
     "name": "Vaşak",
-    "emoji": "🐈‍⬛",
+    "emoji": "🐆",
     "element": "toprak",
     "symbolism": [
       "sır saklama",
@@ -1486,7 +1486,7 @@
   {
     "id": "a054",
     "name": "Sinek Kuşu",
-    "emoji": "🌺",
+    "emoji": "🐦",
     "element": "ateş",
     "symbolism": [
       "neşe",
@@ -1570,7 +1570,7 @@
   {
     "id": "a057",
     "name": "Yusufçuk",
-    "emoji": "🫧",
+    "emoji": "🪰",
     "element": "su",
     "symbolism": [
       "illüzyon",
@@ -1822,7 +1822,7 @@
   {
     "id": "a066",
     "name": "Ketsal Kuşu",
-    "emoji": "🦚",
+    "emoji": "🦜",
     "element": "hava",
     "symbolism": [
       "özgürlük",
@@ -2242,7 +2242,7 @@
   {
     "id": "a081",
     "name": "Simurg",
-    "emoji": "✨",
+    "emoji": "🐦‍🔥",
     "element": "hava",
     "symbolism": [
       "kolektif bilgelik",
@@ -2270,7 +2270,7 @@
   {
     "id": "a082",
     "name": "Garuda",
-    "emoji": "🔥",
+    "emoji": "🐦‍🔥",
     "element": "ateş",
     "symbolism": [
       "ilahi araç",
@@ -2466,7 +2466,7 @@
   {
     "id": "a089",
     "name": "Manta Vatoz",
-    "emoji": "🌊",
+    "emoji": "🐟",
     "element": "su",
     "symbolism": [
       "su uçuşu",
@@ -2522,7 +2522,7 @@
   {
     "id": "a091",
     "name": "Ateş Kuşu",
-    "emoji": "🔥",
+    "emoji": "🐦‍🔥",
     "element": "ateş",
     "symbolism": [
       "arzu ateşi",
@@ -2550,7 +2550,7 @@
   {
     "id": "a092",
     "name": "Deve Kuşu",
-    "emoji": "🦚",
+    "emoji": "🦤",
     "element": "toprak",
     "symbolism": [
       "gerçeğe yüzleşme",

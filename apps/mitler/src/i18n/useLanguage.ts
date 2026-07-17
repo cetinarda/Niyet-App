@@ -31,21 +31,30 @@ async function bootstrap() {
   // Host dili öncelikli — varsa onu kullan, embed-içi tercihi okuma.
   const host = readHostLang();
   if (host) {
-    if (host !== currentLang) { currentLang = host; listeners.forEach(l => l(currentLang)); }
+    if (host !== currentLang) { currentLang = host; notify(); }
     return;
   }
   try {
     const stored = await AsyncStorage.getItem(STORAGE_KEY);
     if (stored && (VALID_LANGS as string[]).includes(stored)) {
       currentLang = stored as Lang;
-      listeners.forEach(l => l(currentLang));
+      notify();
     }
   } catch {
     // ignore
   }
 }
 
+// <html lang> dile eşitlenir: Expo export index.html lang="en" gelir; CSS
+// textTransform:'uppercase' o zaman Türkçe i→I (noktasız) üretir. lang="tr"
+// ile tarayıcı i→İ yapar — tüm uppercase stiller kökten düzelir.
+function syncDocLang() {
+  try { if (typeof document !== 'undefined') document.documentElement.lang = currentLang; } catch {}
+}
+syncDocLang();
+
 function notify() {
+  syncDocLang();
   listeners.forEach(l => l(currentLang));
 }
 
