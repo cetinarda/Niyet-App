@@ -212,8 +212,9 @@ const _SKY_ANGLES = [
 // Aksan temizliği: Türkçede aksanlı harf yalnız â/î/û'dur; à è ì ò ù asla olmaz.
 function _sanitizeSky(text, lang) {
   let t = String(text || "").trim();
-  t = t.replace(/à/g, "a").replace(/è/g, "e").replace(/ì/g, "i").replace(/ò/g, "o").replace(/ù/g, "u");
   if (lang === "tr") {
+    // SADECE Türkçe: fr/pt'de à/è/ù meşru harflerdir, onlara dokunma.
+    t = t.replace(/à/g, "a").replace(/è/g, "e").replace(/ì/g, "i").replace(/ò/g, "o").replace(/ù/g, "u");
     t = t.replace(/\bprocent\b/gi, "yüzde").replace(/\bpercent\b/gi, "yüzde").replace(/\bprozent\b/gi, "yüzde");
   }
   return t;

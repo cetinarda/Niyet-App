@@ -14,7 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData } from '../data/loader';
 import { useMitlerStore } from '../store/useStore';
-import { useLanguage, translate } from '../i18n/useLanguage';
+import { useLanguage, translate, getLanguage } from '../i18n/useLanguage';
 import { shareCard, isShareable } from '../utils/shareCard';
 
 interface HomeScreenProps {
