@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Sakin koyu paleti — sistem çubukları ve tema. -->
+    <color name="colorPrimary">#0D0B14</color>
+    <color name="colorPrimaryDark">#080C14</color>
+    <color name="colorAccent">#B299F0</color>
+    <!-- Sistem gezinme + durum çubuğu zemini (uygulamanın koyu arka planı). -->
+    <color name="sakinDark">#080C14</color>
+</resources>

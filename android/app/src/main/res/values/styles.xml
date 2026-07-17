@@ -13,10 +13,25 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Sistem çubukları uygulamanın koyu temasıyla uyumlu olsun (Samsung alt
+             gezinme çubuğu beyaz kalmasın). Eski Android: navigationBarColor doğrudan
+             boyar. Android 15+ edge-to-edge: çubuklar şeffaf → koyu windowBackground
+             arkadan görünür; açık ikonlar (LightNavigationBar=false) okunur kalır. -->
+        <item name="android:windowBackground">@color/sakinDark</item>
+        <item name="android:statusBarColor">@color/sakinDark</item>
+        <item name="android:navigationBarColor">@color/sakinDark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="android:background">@drawable/splash</item>
+        <!-- Splash sırasında da çubuklar koyu; splash sonrası ana temaya geç. -->
+        <item name="android:navigationBarColor">@color/sakinDark</item>
+        <item name="android:statusBarColor">@color/sakinDark</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>
