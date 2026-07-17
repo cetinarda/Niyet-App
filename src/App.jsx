@@ -7418,7 +7418,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           try {
             let ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
             const edSum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-            if (!ed || edSum <= 0.5) ed = elementDistFromSigns([astro?.burc, yukselen, ev12Burcu, draconicGunes]);
+            // SADECE Sakin Tasarım'ın tam-harita (11 gezegen ağırlıklı) verisi kullanılır.
+            // Host'ta gezegen konumları yok → kaba 4-nokta tahmini YANLIŞ değer üretiyordu
+            // (Tasarım'la uyuşmuyordu). Doğru veri yoksa element bölümü gizlenir.
+            if (!ed || edSum <= 0.5) ed = null;
             if (ed) {
               const isEn = lang === "en";
               ctx.fillStyle = "#7a7090";
@@ -7597,10 +7600,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   let ed = null;
                   try { ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null"); } catch(_) {}
                   const sum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-                  // Tasarım'dan zengin veri varsa onu kullan; yoksa doğum bilgilerinden burada hesapla.
-                  if (!ed || sum <= 0.5) ed = elementDistFromSigns([astro?.burc, yukselen, ev12Burcu, draconicGunes]);
-                  // Doğum bilgisi yoksa sessizce gizle — yönlendirme yok.
-                  if (!ed) return null;
+                  // SADECE Sakin Tasarım'ın tam-harita verisi (11 gezegen ağırlıklı).
+                  // Host kaba 4-nokta tahmini Tasarım'la uyuşmuyordu (yanlış). Doğru veri
+                  // yoksa sessizce gizle — Tasarım açılınca same-origin localStorage'a yazılır.
+                  if (!ed || sum <= 0.5) return null;
                   const isEn = lang === "en";
                   const items = [
                     ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
