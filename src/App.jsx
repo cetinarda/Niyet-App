@@ -3176,6 +3176,19 @@ export default function SakinApp() {
         setFotoTaniType(e?.data?.kind === "plant" ? "plant" : "stone");
         setFotoTaniResult("");
         setShowFotoTani(true);
+      } else if (type === "sakin-share-card") {
+        // Embed (Android WebView) kart görselini paylaşmak istiyor — iframe içinde
+        // navigator.share/indirme çalışmaz. Host, dataURL'i blob'a çevirip Capacitor
+        // Share ile paylaşır (shareImageBlob native yolu Android'de devreye girer).
+        (async () => {
+          try {
+            const { dataUrl, fileName } = e.data || {};
+            if (dataUrl) {
+              const blob = await (await fetch(dataUrl)).blob();
+              await shareImageBlob(blob, fileName || "sakin-kart.png");
+            }
+          } catch(_) {}
+        })();
       }
     };
     window.addEventListener("message", onMsg);
@@ -3183,6 +3196,11 @@ export default function SakinApp() {
   }, [t]);
   const [embedLoaded, setEmbedLoaded] = useState(false);
   const [showIdCard, setShowIdCard] = useState(false);
+  // Kimlik kartı açılış zamanı — mobil "tap-through" (açılış dokunuşunun backdrop'a
+  // ulaşıp modalı hemen kapatması) engellemek için. Açılıştan ~450ms sonrasına kadar
+  // backdrop kapatma yok sayılır. "Galaktik kimlik açılınca hemen atıyor" bug'ı.
+  const idCardOpenTs = useRef(0);
+  useEffect(() => { if (showIdCard) idCardOpenTs.current = Date.now(); }, [showIdCard]);
   const [showMindClear, setShowMindClear] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
   const [selectedMoods, setSelectedMoods] = useState([]);
@@ -7599,7 +7617,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
 
         return (
-          <div onClick={()=>{ setShowIdCard(false); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+          <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; setShowIdCard(false); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
               {/* Card preview */}
               <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
