@@ -3,7 +3,7 @@
 // Taş:   Groq vision (llama-4) — minerale uygun uzman ücretsiz API yok, sıkı abstain.
 // Güvenlik: origin allowlist → method → boyut → per-IP rate limit → servis çağrısı.
 
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 // Görü modelleri (taş): önce güçlü olanı dene; model adı geçersiz/emekli ise eskiye düş.
 const GROQ_VISION_MODELS = [
   "meta-llama/llama-4-maverick-17b-128e-instruct",

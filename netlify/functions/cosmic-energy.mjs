@@ -1,6 +1,6 @@
 import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition } from "astronomy-engine";
 
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
 // ── GEZEGEN DİZİLİŞİ (efemeris — astronomy-engine) ──
 const ZODIAC = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];

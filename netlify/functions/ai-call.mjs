@@ -36,8 +36,10 @@ function retrieveBookPassages(query, k = 5) {
 const ALLOWED_EXACT_ORIGINS = new Set([
   "https://sakin.life",
   "https://www.sakin.life",
-  "capacitor://localhost",
+  "capacitor://localhost",  // iOS Capacitor
   "ionic://localhost",
+  "https://localhost",       // Android Capacitor (varsayılan androidScheme=https)
+  "http://localhost",        // Android Capacitor (androidScheme=http kurulumları)
 ]);
 // Suffix matches (Netlify deploy previews / embed proxies).
 const ALLOWED_ORIGIN_SUFFIXES = [".netlify.app"];
