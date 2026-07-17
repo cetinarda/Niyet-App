@@ -181,7 +181,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
       ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.6)`;
       ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, Math.PI * 2); ctx.stroke();
-      y += d + 4;
+      y += d + 34; // portre ile başlık binmesin (62px serif ascender payı)
     } else if (spec.emoji) {
       ctx.font = "120px -apple-system, 'Apple Color Emoji', 'Helvetica Neue', sans-serif";
       ctx.fillStyle = '#fff';

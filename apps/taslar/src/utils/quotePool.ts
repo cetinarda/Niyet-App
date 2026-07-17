@@ -33,8 +33,9 @@ export function buildQuotePool(quotes: { id: string; source: string }[]): string
     others.push(...bySource[s].slice(0, CAP));
   }
 
-  // Yunus'u %33'e getir: yunus / (yunus + other) = 1/3  →  yunus = other / 2
-  const yunusSlots = yunus.length ? Math.round(others.length / 2) : 0;
+  // Yunus'u ~%25'e getir: hâlâ en ağırlıklı tek isim ama havuzu domine etmez
+  // (kullanıcı isteği: az bilinen dervişlere yer açıldı, Yunus biraz azaldı).
+  const yunusSlots = yunus.length ? Math.round(others.length / 3) : 0;
   const yunusPool: string[] = [];
   for (let i = 0; i < yunusSlots; i++) yunusPool.push(yunus[i % yunus.length]);
 

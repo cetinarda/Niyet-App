@@ -6,7 +6,12 @@
     "tradition": "Jung",
     "element": "hava",
     "category": "Ego-Yapısı",
-    "keywords": ["maske", "rol", "kimlik", "toplumsal yüz"],
+    "keywords": [
+      "maske",
+      "rol",
+      "kimlik",
+      "toplumsal yüz"
+    ],
     "essence": "Persona, Latince \"maske\" demektir. Jung'a göre dünyaya gösterdiğin yüzdür: işteki kimliğin, anne/baba rolün, sosyal medyadaki vitrinin. Hayatta kalmak için gerekli ama onunla tamamen özdeşleşirsen kendi içini unutursun.",
     "lightAspect": "Sosyal hayatı kolaylaştırır, doğru ortamda doğru tonu yakalarsın. İyi bir personayla iş yaparsın, sınır kurarsın, kendini koruma kalkanı yaratırsın.",
     "shadowAspect": "Maske yüzüne yapışırsa, gerçek duygularını sen bile tanıyamazsın. Burnout, kimlik krizi, \"ne hissettiğimi bilmiyorum\" hissi büyür.",
@@ -23,7 +28,12 @@
     "tradition": "Jung",
     "element": "karanlık",
     "category": "Bilinçdışı",
-    "keywords": ["reddedilen", "bastırılan", "öteki ben", "karanlık yüz"],
+    "keywords": [
+      "reddedilen",
+      "bastırılan",
+      "öteki ben",
+      "karanlık yüz"
+    ],
     "essence": "Gölge, kendinde kabul etmediğin her şeydir: öfken, kıskançlığın, hırsın, tembelliğin, hatta bazen reddedilen iyiliğin. Jung der ki \"Gölgeni bilmek, aydınlanmadan değil; karanlığını bilinçli görmekten gelir.\"",
     "lightAspect": "Gölgeyle yüzleşen kişi bütünleşir; yaratıcılık, cesaret ve hakiki güç gölgenin entegrasyonundan doğar. Sanatın, mizahın, gerçek dostluğun kaynağıdır.",
     "shadowAspect": "Bastırılan gölge dışarıya yansıtılır: \"Bende olmayan\" özellikleri başkalarında görüp nefret edersin. Toplumsal düşmanlıkların, projeksiyonların, ailelerdeki günah keçisi rollerinin kaynağı budur.",
@@ -40,7 +50,12 @@
     "tradition": "Jung",
     "element": "su",
     "category": "İçsel Karşı-Cins",
-    "keywords": ["içsel kadın", "duygu", "ilham", "ay tarafı"],
+    "keywords": [
+      "içsel kadın",
+      "duygu",
+      "ilham",
+      "ay tarafı"
+    ],
     "essence": "Anima, erkek psikesindeki dişil ruhtur. Sezgi, duygu, ilham, ay enerjisi. Jung der ki erkek dış dünyada bir kadına aşık olduğunda, çoğu zaman kendi animasına aşıktır.",
     "lightAspect": "Bilinçli entegre edilmiş anima sanatın, şefkatin, derin ilişkilerin kaynağıdır. Erkeğe duygularını okumayı, ağlamayı, yaratmayı öğretir.",
     "shadowAspect": "Bastırılmış anima ya kara sevdaya (her kadına aşık olmak, sürekli kurtarıcı aramak) ya da kadın düşmanlığına (\"kadınlar dramatik\") dönüşür. Kapris, alıngan ruh hali, yansıtmalı aşk hep buradan gelir.",
@@ -57,7 +72,12 @@
     "tradition": "Jung",
     "element": "ateş",
     "category": "İçsel Karşı-Cins",
-    "keywords": ["içsel erkek", "logos", "irade", "güneş tarafı"],
+    "keywords": [
+      "içsel erkek",
+      "logos",
+      "irade",
+      "güneş tarafı"
+    ],
     "essence": "Animus, kadın psikesindeki eril ruhtur. Mantık, irade, dünyaya çıkma cesareti, sınır kurma. Jung der ki sağlıklı animus kadına \"hayır\" demeyi ve hayallerini somutlaştırmayı öğretir.",
     "lightAspect": "Olgun animus kadına netlik, kararlılık, bağımsızlık verir. Kendi adına konuşur, sınır çizer, kendi otoritesini sahiplenir.",
     "shadowAspect": "Bastırılmış animus iç sesi gaddar bir eleştirmene dönüştürür: \"Yetersizsin, beceremezsin.\" Ya da kadını otoriter erkeklere bağımlı kılar; kendi gücünü dışarıda arar.",
@@ -74,7 +94,12 @@
     "tradition": "Jung",
     "element": "bütün",
     "category": "Bütünlük",
-    "keywords": ["bütünlük", "merkez", "Tanrı-imgesi", "mandala"],
+    "keywords": [
+      "bütünlük",
+      "merkez",
+      "Tanrı-imgesi",
+      "mandala"
+    ],
     "essence": "Self, bilincin ve bilinçdışının birleşmiş bütünüdür — psikenin merkezi ve toplamı. Jung onu \"içsel Tanrı-imgesi\" olarak tarif etti. Bireyleşme yolculuğunun varış noktasıdır, ego değildir.",
     "lightAspect": "Self ile temas anları \"yerli yerinde olma\" hissi verir; dini deneyim, derin sezgi, mandala görüntüsü, sınırların erimesi. İçsel barış ve anlam bu eksenden gelir.",
     "shadowAspect": "Ego Self'le karıştırılırsa şişer; \"ben aydınlandım, ben rehberim\" söylemiyle narsisizme dönüşür. Manevi bypass, mesih kompleksi buradan beslenir.",
@@ -91,7 +116,12 @@
     "tradition": "Jung / Campbell",
     "element": "ateş",
     "category": "Yolculuk",
-    "keywords": ["yolculuk", "ejderhayı yenmek", "olgunlaşma", "çağrı"],
+    "keywords": [
+      "yolculuk",
+      "ejderhayı yenmek",
+      "olgunlaşma",
+      "çağrı"
+    ],
     "essence": "Kahraman, çağrıyı duyup eşiği geçen kişidir. Campbell'in monomitinde kahraman evden çıkar, sınanır, gölgesiyle yüzleşir, ödülü alır ve dönüp paylaşır. Ergenlikten olgunluğa geçişin haritasıdır.",
     "lightAspect": "Kahraman cesarettir, sorumluluktur, gelişimdir. \"Bunu yapamam\" dediğin şeyi yaparak büyürsün; her engel hediyeye dönüşür.",
     "shadowAspect": "Sahte kahraman kurtarıcı sendromuna girer — herkesi kurtarmaya çalışır, kendi yarasına bakmaz. Ya da yolculuğa çıkmadan kahraman gibi konuşur (\"keyboard warrior\").",
@@ -108,7 +138,12 @@
     "tradition": "Jung",
     "element": "hava",
     "category": "Rehber",
-    "keywords": ["mentor", "bilgelik", "öğretmen", "iç ses"],
+    "keywords": [
+      "mentor",
+      "bilgelik",
+      "öğretmen",
+      "iç ses"
+    ],
     "essence": "Bilge Yaşlı (senex) — Merlin, Gandalf, Hızır, Yoda. Yolculuğun zor anlarında ortaya çıkıp \"yol şuradan\" diyen iç sestir. Jung'a göre kriz anlarında bilinçdışından yükselen bilgeliktir.",
     "lightAspect": "Sezgisel bilgelik, sabır, perspektif. Kararlarında durur, derin nefes alır, doğru zamanı bilirsin.",
     "shadowAspect": "Kuru entelektüel, duygudan kopuk filozof, kendini bilen olarak gösterip kontrol eden manipülatör. \"Ben söyleyeyim, sen yap\" diyen ego.",
@@ -125,7 +160,12 @@
     "tradition": "Jung",
     "element": "toprak",
     "category": "Köken",
-    "keywords": ["beslenme", "rahim", "doğa", "verici"],
+    "keywords": [
+      "beslenme",
+      "rahim",
+      "doğa",
+      "verici"
+    ],
     "essence": "Büyük Ana arketipi sadece biyolojik anne değil; doğa, yer küre, yaratıcı kadın enerjisi, beslenen rahmin kendisi. Demeter, Cybele, Meryem, Toprak Ana — hepsi aynı arketipin yüzleri.",
     "lightAspect": "Koşulsuz sevgi, besleme, koruma, yaratım. Toprağı çapalayan elin, çocuğa sarılan kucağın, bitki büyüten avucun arketipi.",
     "shadowAspect": "Yutucu Anne (devouring mother) — büyüten değil, boğan, kontrol eden. Çocuğunu bırakmayan, asla yetişkin olmasına izin vermeyen anne. İçimizdeki \"asla yeterli değilim\" sesi de buradan gelir.",
@@ -142,7 +182,12 @@
     "tradition": "Jung / Hyde",
     "element": "hava",
     "category": "Sınır-bozucu",
-    "keywords": ["hile", "mizah", "kuralı kırmak", "şaman-soytarı"],
+    "keywords": [
+      "hile",
+      "mizah",
+      "kuralı kırmak",
+      "şaman-soytarı"
+    ],
     "essence": "Trickster — Hermes, Loki, Anansi, Nasreddin Hoca, Keloğlan. Kuralları çiğneyerek aslında bir gerçeği gösterir. Soytarı kraldan daha bilgedir çünkü her şeyi söyleyebilir.",
     "lightAspect": "Mizah, yaratıcılık, statükoyu çatlatma. Sıkışmış bir durumda bir şaka, bir kayıt dışı hareket kapıyı açar. Sanatın ve devrimin kaynağıdır.",
     "shadowAspect": "Hilekâr, manipülatör, sözünü tutmayan, herkesi aldatan, sınır tanımayan. Trickster aşırı uçta sosyopata yakındır.",
@@ -159,7 +204,12 @@
     "tradition": "Jung / Bradshaw",
     "element": "su",
     "category": "Saflık",
-    "keywords": ["saflık", "merak", "oyun", "yara"],
+    "keywords": [
+      "saflık",
+      "merak",
+      "oyun",
+      "yara"
+    ],
     "essence": "İç Çocuk, hâlâ içinde yaşayan ilk halindir. Hem ilahi çocuk (saf neşe, merak, hayret) hem de yaralı çocuk (terk edilmişlik, ihmal, korku) aynı anda taşır.",
     "lightAspect": "İlahi çocuk yaratıcılığın, oyunun, mucize hissinin kaynağıdır. \"Vay be!\" diyebilen, oyuna kapılan, dünyaya hayretle bakan yan.",
     "shadowAspect": "Yaralı çocuk büyüğün bedeninde tantrum atar — kıskançlık nöbetleri, terkedilme paniği, sabotaj. Yetişkinin krizleri çoğu zaman bu çocuğun bakım çığlığıdır.",
@@ -176,7 +226,12 @@
     "tradition": "Jung / Pearson",
     "element": "ateş",
     "category": "Bağ",
-    "keywords": ["tutku", "birleşme", "adanma", "estetik"],
+    "keywords": [
+      "tutku",
+      "birleşme",
+      "adanma",
+      "estetik"
+    ],
     "essence": "Aşık arketipi sadece romantik aşk değil — sanata, fikre, davaya, doğaya, Tanrı'ya aşık olma kapasitesidir. Eros'un tanrısı, Mecnun'un yolu, Mevlana'nın Şems'i.",
     "lightAspect": "Coşku, yaratıcılık, birleşme deneyimi, bağlanma cesareti. Aşık dünyayı renkli görür ve başkalarına bunu hatırlatır.",
     "shadowAspect": "Bağımlılık, takıntı, kayboluş. Diğeri olmadan var olamamak, kendini terk etmek, romantik kurtuluş arayışı. Yetişkin sorumlulukları aşkın gölgesinde çürür.",
@@ -193,7 +248,12 @@
     "tradition": "Jung / Pearson",
     "element": "ateş",
     "category": "İfade",
-    "keywords": ["yaratım", "ilham", "form vermek", "ifade"],
+    "keywords": [
+      "yaratım",
+      "ilham",
+      "form vermek",
+      "ifade"
+    ],
     "essence": "Yaratıcı arketipi — daimon. İçinden gelen ifade etme zorunluluğu. Yazar yazmazsa hastalanır, ressam çizmezse karanlığa düşer. Sanat tercih değil ihtiyaçtır.",
     "lightAspect": "Form vermek, dönüştürmek, anlamlandırmak. Bir kaosun karşısına oturup ondan bir şey çıkarmak. Çocuğun sayfayı boyaması da, mimarın binayı tasarlaması da aynı arketiptir.",
     "shadowAspect": "Mükemmeliyetçilik, blok, kıyaslama. \"Yeterince iyi değilim\" deyip hiç başlamamak. Ya da yaratımı kendiyle özdeşleştirip eleştiriden ölmek.",
@@ -210,7 +270,12 @@
     "tradition": "Pearson",
     "element": "toprak",
     "category": "Düşüş",
-    "keywords": ["kayıp", "hayal kırıklığı", "gerçeklik", "dayanışma"],
+    "keywords": [
+      "kayıp",
+      "hayal kırıklığı",
+      "gerçeklik",
+      "dayanışma"
+    ],
     "essence": "Yetim arketipi cennet kaybedildiğinde doğar. \"Hayat anlattıkları gibi değilmiş\" anı. Kurtarıcının gelmediğini fark eden bilinç. Acı verir ama olgunlaşmanın kapısıdır.",
     "lightAspect": "Empati, dayanışma, gerçekçilik. Aynı acıyı yaşayanlarla buluşmak. Sahte umutları bırakıp gerçek ilişkiler kurmak.",
     "shadowAspect": "Kurban zihniyeti. \"Hep bana oluyor, kimse anlamıyor.\" Yetkiyi kaybetme, sürekli kurtarıcı bekleme, kapris.",
@@ -227,7 +292,12 @@
     "tradition": "Pearson",
     "element": "ateş",
     "category": "Devrim",
-    "keywords": ["başkaldırı", "yıkım", "özgürlük", "değişim"],
+    "keywords": [
+      "başkaldırı",
+      "yıkım",
+      "özgürlük",
+      "değişim"
+    ],
     "essence": "Asi arketipi sistemin haksızlığını hisseden, ona karşı duran enerji. Prometheus ateşi çalar, Spartacus zinciri kırar. \"Bu böyle olmamalı\" diyen iç ses.",
     "lightAspect": "Adalet, özgürlük, dönüşüm. Eskiyen yapıların yıkılması, yeniye yer açılması. Sanat akımları, devrimler, kişisel kabuk değiştirme.",
     "shadowAspect": "Anarşi adına yıkım. Her şeye karşı çıkmak, ama ne istediğini bilmemek. Otoriteyi kişisel düşman görmek. Sürekli sinir, sürekli kavga.",
@@ -244,7 +314,12 @@
     "tradition": "Pearson",
     "element": "hava",
     "category": "Saflık",
-    "keywords": ["güven", "umut", "saflık", "iyimserlik"],
+    "keywords": [
+      "güven",
+      "umut",
+      "saflık",
+      "iyimserlik"
+    ],
     "essence": "Masum arketipi dünyanın iyi olduğuna inanır. Çocuğun ilk güveni, aşığın ilk hayranlığı, müminin ilk imanı. Bu güven olmadan hiçbir şey başlamaz.",
     "lightAspect": "Umut, açıklık, sevgi, yeniden başlayabilme. En karanlık yerden ışık görebilen göz. Şükür ve hayret.",
     "shadowAspect": "Naiflik, inkâr, gerçekleri görmemek. \"Hep iyi olacak\" deyip tehlikeyi reddetmek. Kandırılmaya açık, manipülasyona zemin.",
@@ -261,7 +336,12 @@
     "tradition": "Pearson",
     "element": "hava",
     "category": "Yol",
-    "keywords": ["arayış", "ufuk", "anlam", "yolculuk"],
+    "keywords": [
+      "arayış",
+      "ufuk",
+      "anlam",
+      "yolculuk"
+    ],
     "essence": "Arayıcı arketipi içe sığmaz; ufka koşar. \"Bu kadar mı?\" diye sorar ve daha fazlasını arar. Kaşif, hacı, filozof, gezgin onun yüzleridir.",
     "lightAspect": "Genişleme, ufuk açma, gerçek peşinde olmak. Konfor alanını kırma cesareti. Hayatı bir yolculuk olarak görme.",
     "shadowAspect": "Hiçbir yerde duramayan, sürekli kaçan, bağlanmaktan kaçan. \"Daha iyisi vardır\" deyip elindekini değerlendirememek.",
@@ -278,7 +358,12 @@
     "tradition": "Moore-Gillette / Pearson",
     "element": "ateş",
     "category": "Sorumluluk",
-    "keywords": ["liderlik", "düzen", "sorumluluk", "vizyon"],
+    "keywords": [
+      "liderlik",
+      "düzen",
+      "sorumluluk",
+      "vizyon"
+    ],
     "essence": "Hükümdar arketipi olgun kralın/kraliçenin enerjisidir — kendi krallığını yönetebilen iç olgunluk. Adil, bereketli, sorumlu, alan tutan.",
     "lightAspect": "Sorumluluk almak, başkalarını kollamak, vizyon koymak. Olgun lider kendi egosu için değil, alandaki herkes için karar verir.",
     "shadowAspect": "Tiran (kontrol, zorbalık) ya da zayıf kral (sorumluluğu reddetme, kaçma). İkisi de gerçek otorite değildir.",
@@ -295,7 +380,12 @@
     "tradition": "Pearson / Jung",
     "element": "su",
     "category": "Hizmet",
-    "keywords": ["iyileştirme", "bakım", "yaranın bilgisi", "şefkat"],
+    "keywords": [
+      "iyileştirme",
+      "bakım",
+      "yaranın bilgisi",
+      "şefkat"
+    ],
     "essence": "Şifacı arketipi yaralı şifacıdır (wounded healer). Asclepius'tan Şamana, hekimden terapiste — şifa, çoğunlukla kendi yarasını tanıyandan gelir.",
     "lightAspect": "Yaralarına bakabilen yara yapmaz; başkasının acısında oturabilir. Tedavi sadece teknik değil, varlık meselesidir.",
     "shadowAspect": "Kurtarıcılık — kendi yarasından kaçıp başkalarını kurtarmaya çalışmak. Hastalıktan beslenen, kimseyi gerçekten iyileştiremeyen. Hem hastalanmış hem hasta yaratan.",
@@ -312,7 +402,12 @@
     "tradition": "Pearson / Jung",
     "element": "ateş",
     "category": "Dönüşüm",
-    "keywords": ["dönüşüm", "irade", "bilinç", "sembol"],
+    "keywords": [
+      "dönüşüm",
+      "irade",
+      "bilinç",
+      "sembol"
+    ],
     "essence": "Büyücü arketipi dünyayı bilinç ile dönüştürebilen. Niyet, ritüel, sembol kullanır. Modern büyücü bilim insanı, mühendis, terapist olabilir — özü bilinçli dönüşümdür.",
     "lightAspect": "Niyetin gücüyle iç ve dış gerçekliği değiştirmek. Kuantum, ritüel, terapi — formu fark etmez, ilke aynıdır.",
     "shadowAspect": "Manipülasyon, kara büyü, başkalarını kandırarak güç toplamak. Bir adım ötede aldatıcı reklamcı, demagog, ölü kült lideri.",
@@ -329,7 +424,12 @@
     "tradition": "Pearson / saray geleneği",
     "element": "hava",
     "category": "Hakikat",
-    "keywords": ["mizah", "hakikat", "hafiflik", "ayna"],
+    "keywords": [
+      "mizah",
+      "hakikat",
+      "hafiflik",
+      "ayna"
+    ],
     "essence": "Saray soytarısı krala bile gerçeği söyleyebilen tek kişiydi. Mizah, kralın kabul edemediği gerçekliği taşıdı. Soytarı bilgeliği şakaya yedirir.",
     "lightAspect": "Gerçeği mizahla söylemek, gerilimi yumuşatmak, kendine gülebilmek, hayatın saçmalığını kucaklamak.",
     "shadowAspect": "Sürekli şaka yapan ama hiçbir şeyi ciddiye almayan. Acıyı maske ile örten. Mizahı silah olarak kullanan acımasız.",
@@ -346,7 +446,12 @@
     "tradition": "Mitolojik (Persephone, Artemis)",
     "element": "hava",
     "category": "Bağımsızlık",
-    "keywords": ["bütünlük", "kendine ait olmak", "potansiyel", "saflık"],
+    "keywords": [
+      "bütünlük",
+      "kendine ait olmak",
+      "potansiyel",
+      "saflık"
+    ],
     "essence": "Mitolojik bakire \"cinsel bakire\" değil, \"kendine ait\" kadındır. Artemis kimseye boyun eğmez, Athena kendi yolunu seçer. Erkeği baz almadan tam.",
     "lightAspect": "Bağımsızlık, kendi yolunu seçme, içsel bütünlük. Yalnızken bile dolu olmak. Başkasının onayına ihtiyaç duymama.",
     "shadowAspect": "Bağlanma korkusu, soğuk yalnızlık, intimacy reddi. Bakire arketipinin gölgesinde duygusal duvar kalın.",
@@ -363,7 +468,12 @@
     "tradition": "Mitolojik (Hekate, Baba Yaga)",
     "element": "karanlık",
     "category": "Bilgelik",
-    "keywords": ["içsel güç", "kadim bilgelik", "tabu", "ışık-gölge"],
+    "keywords": [
+      "içsel güç",
+      "kadim bilgelik",
+      "tabu",
+      "ışık-gölge"
+    ],
     "essence": "Cadı arketipi — Hekate, Baba Yaga, Morrigan. Toplumun korktuğu yaşlı, bilge, bağımsız kadın. \"Cadı avları\" tarihte bu bilgeliğe karşı savaştı.",
     "lightAspect": "Doğanın derin bilgisi, sezgisel şifa, ay döngüsü, ölüm-yeniden doğuş döngüsü. Kendinin tam sahibi.",
     "shadowAspect": "Kıskançlık, lanetleme, sosyal yargı. Toplum tarafından dışlanmış olmanın getirdiği acılık.",
@@ -380,7 +490,12 @@
     "tradition": "Moore-Gillette",
     "element": "ateş",
     "category": "İrade",
-    "keywords": ["disiplin", "sınır", "cesaret", "amaç"],
+    "keywords": [
+      "disiplin",
+      "sınır",
+      "cesaret",
+      "amaç"
+    ],
     "essence": "Olgun savaşçı kendi disiplinine sahip, sınırlarını koruyan, amacını bilen. Kılıç dışarıyı kesmez, sadece gerektiğinde; çoğu zaman kendi gevşekliğini keser.",
     "lightAspect": "Disiplin, dayanıklılık, sınır, hedefe odaklanma. Söz verdiğini yapma, bedene zorluk ile yatırım yapma.",
     "shadowAspect": "Saldırgan, militan, her şeyi savaşa çeviren. Veya pasif — kavgadan kaçan, sınır koyamayan. İkisi de olgun değil.",
@@ -397,7 +512,12 @@
     "tradition": "Tasavvuf / Hristiyan",
     "element": "hava",
     "category": "Adanma",
-    "keywords": ["adanmışlık", "tevazu", "iç ışık", "hizmet"],
+    "keywords": [
+      "adanmışlık",
+      "tevazu",
+      "iç ışık",
+      "hizmet"
+    ],
     "essence": "Aziz/Eren arketipi kendini büyük bir gerçeğe adamış kişi. Hallac, Yunus, Aziz Francis. Kendi egosunu \"daha büyük\"ün hizmetine vermiş.",
     "lightAspect": "Adanmışlık, tevazu, hizmet, iç huzur. Küçük olanı kutsal görmek. Şükür.",
     "shadowAspect": "Manevi by-pass, gerçek duyguları reddetmek, sahte alçakgönüllülük, kendinden vazgeçmeyi mazoşizme dönüştürmek.",
@@ -414,7 +534,12 @@
     "tradition": "Şamanik / Jung gölge",
     "element": "ateş",
     "category": "İlkellik",
-    "keywords": ["içgüdü", "hayatta kalma", "açlık", "vahşilik"],
+    "keywords": [
+      "içgüdü",
+      "hayatta kalma",
+      "açlık",
+      "vahşilik"
+    ],
     "essence": "Avcı / yiyici arketipi ilkel beden, açlık, içgüdü. Her zaman \"olumsuz\" değil — hayatta kalmak için açlığa ihtiyaç var. Bastırılırsa patlak verir.",
     "lightAspect": "Doğal iştah, içgüdüsel zekâ, beden bilgeliği, fırsatı görme. Avcı ne avlanacağını ve ne zaman bekleneceğini bilir.",
     "shadowAspect": "Kontrolsüz açlık — yeme bozuklukları, bağımlılıklar, cinsel takıntılar, başkalarını avlama. Bedenden kopuk modern hayat bu arketipi çarpıtır.",
@@ -431,7 +556,12 @@
     "tradition": "Jung / mitoloji",
     "element": "ateş",
     "category": "Köken",
-    "keywords": ["yapı", "kural", "koruma", "miras"],
+    "keywords": [
+      "yapı",
+      "kural",
+      "koruma",
+      "miras"
+    ],
     "essence": "Büyük Baba arketipi — Zeus, gök tanrıları, içsel otorite. Kural koyan, yapı veren, miras bırakan. Büyük Ana'nın eril karşılığı.",
     "lightAspect": "Yön gösterme, çocuğu dünyaya hazırlama, koruma, sınır verme. \"Sen yapabilirsin\" diyen sağlam ses.",
     "shadowAspect": "Otoriter baba — gözdağı veren, sevgisini koşula bağlayan. Veya yok baba — terk eden, ilgisiz. Her iki uç içsel olarak da işler.",
@@ -448,7 +578,12 @@
     "tradition": "Jung (Chiron miti)",
     "element": "su",
     "category": "Paradoks",
-    "keywords": ["yara", "şifa", "bilgi", "hizmet"],
+    "keywords": [
+      "yara",
+      "şifa",
+      "bilgi",
+      "hizmet"
+    ],
     "essence": "Chiron, sentor, ölümsüz olduğu için iyileşmeyen bir yaraya sahiptir — ama tam o yaradan başkalarını iyileştirir. Modern terapist, sağaltıcı, mentor.",
     "lightAspect": "Yarasını kabul edip onu hizmete çeviren. Empati derinden gelir, çünkü kendi acısını tanır. Otantik ve etkili rehberlik.",
     "shadowAspect": "Sürekli kendi yarasından konuşan ama kapanmayan. \"Yardım ederken\" aslında kendi acısını yansıtan. Hem kendine hem başkalarına bakmaktan tükenen.",
@@ -465,7 +600,12 @@
     "tradition": "Persephone miti",
     "element": "su",
     "category": "Geçiş",
-    "keywords": ["geçiş", "yer altına iniş", "olgunlaşma", "kraliçeleşme"],
+    "keywords": [
+      "geçiş",
+      "yer altına iniş",
+      "olgunlaşma",
+      "kraliçeleşme"
+    ],
     "essence": "Persephone (Kore) çocuktur, kaçırılır, yer altına iner, kraliçe olur. Saf kız, derin kadın oluşunu yer altı yolculuğunda kazanır. Geçişin arketipi.",
     "lightAspect": "İnişten dönen yan: derinlik, yaşamı ve ölümü tanıyan, iki dünyada da yaşayabilen kraliçe.",
     "shadowAspect": "Kurban — \"benim haberim olmadan oldu, ben masum\" pozisyonu. Veya tersi: yer altında takılıp kalmak, depresyon, içe gömülmek.",
@@ -482,7 +622,12 @@
     "tradition": "Yerli Amerikan / Yunan",
     "element": "hava",
     "category": "Kaos-yaratıcı",
-    "keywords": ["kaos", "yaratım", "tabu yıkıcı", "haberci"],
+    "keywords": [
+      "kaos",
+      "yaratım",
+      "tabu yıkıcı",
+      "haberci"
+    ],
     "essence": "Coyote, Hermes, Anansi — kaosla yaratan tanrılar. Kuralları çiğneyerek dünyayı kurarlar; düzenden değil oyundan başlarlar.",
     "lightAspect": "Yaratıcı kaos, dönüştürücü mizah, sınırların aşılması, yeni bağlantılar kurulması.",
     "shadowAspect": "Sözünün arkasında durmamak, hırsızlık, yalan, manipülasyon. Hilebaz dengesini bulamazsa yıkım yaratır.",
@@ -499,7 +644,12 @@
     "tradition": "Kadim Akdeniz / Mısır",
     "element": "toprak",
     "category": "Yaratım",
-    "keywords": ["bereket", "yas", "yaratım", "döngü"],
+    "keywords": [
+      "bereket",
+      "yas",
+      "yaratım",
+      "döngü"
+    ],
     "essence": "Demeter, Isis, Kybele — yaratıcı tanrıçalar. Hayat veren, hayat alan, döngüyü taşıyan. Annelikten daha geniş: dünyanın kendisi.",
     "lightAspect": "Bereket, koruma, yaratım, döngünün tanıdığı. Hem doğuran hem yas tutan, hem güç hem teslim.",
     "shadowAspect": "Yas içinde donup kalmak (Demeter kızını ararken dünyayı kurutur). Kontrol etmek, çocuğa/yaratıma sahip olmak.",
@@ -516,7 +666,12 @@
     "tradition": "Alkimi / Jung",
     "element": "bütün",
     "category": "Birleşme",
-    "keywords": ["kutsal birleşme", "iç bütünlük", "evlilik", "denge"],
+    "keywords": [
+      "kutsal birleşme",
+      "iç bütünlük",
+      "evlilik",
+      "denge"
+    ],
     "essence": "Hieros Gamos — kutsal evlilik. Eril ve dişilin, gök ve toprağın, bilinç ve bilinçdışının iç birleşmesi. Alkimi bunu kimyasal düğün olarak tasvir eder.",
     "lightAspect": "İçsel bütünlük, denge, yaratıcı gerilim, derin ilişkiler. Eşitlik üzerine kurulu birleşmeler.",
     "shadowAspect": "Dış birleşmeye fanatik bağlılık, \"yarı portakal\" yanılgısı, içsel bütünlüğü dışarıda aramak.",
@@ -533,7 +688,12 @@
     "tradition": "Mitolojik genel",
     "element": "ateş",
     "category": "Sınama",
-    "keywords": ["test", "engel", "ayna", "yansıtma"],
+    "keywords": [
+      "test",
+      "engel",
+      "ayna",
+      "yansıtma"
+    ],
     "essence": "Her efsanede kahramanı sınayan bir düşman vardır. Aslında dışsal değil — kahramanın gölgesinin dışa düşmüş hâli. Düşman olmadan kahraman gelişmez.",
     "lightAspect": "Hayattaki direnç ve engel, gelişim için zorunlu. Düşmanın varlığı senin neyi savunduğunu gösterir.",
     "shadowAspect": "Sürekli düşman üretmek, paranoya, dışa atan zihinsel yapı. Hayatın her sorununu \"o adam yüzünden\" demek.",
@@ -550,7 +710,12 @@
     "tradition": "Üçlü tanrıça / Moiraller",
     "element": "su",
     "category": "Zaman",
-    "keywords": ["kız-anne-yaşlı", "zaman", "kader", "döngü"],
+    "keywords": [
+      "kız-anne-yaşlı",
+      "zaman",
+      "kader",
+      "döngü"
+    ],
     "essence": "Üçlü tanrıça — kız (potansiyel), anne (yaratım), yaşlı kadın (bilgelik). Moiraller (Klotho-Lakhesis-Atropos) hayatın ipini eğirir, ölçer, keser.",
     "lightAspect": "Yaşamın üç döneminin kabulü, içsel olgunlaşmanın haritası, kader ile iradenin dansı.",
     "shadowAspect": "Bir döneme takılıp kalmak (eternal girl, smother-mother, bitter crone). Yaş almayı reddetmek veya geleceği görmemek.",
@@ -567,7 +732,12 @@
     "tradition": "Hristiyan / Jung",
     "element": "su",
     "category": "Doğum",
-    "keywords": ["yeni başlangıç", "saflık", "umut", "ilahi"],
+    "keywords": [
+      "yeni başlangıç",
+      "saflık",
+      "umut",
+      "ilahi"
+    ],
     "essence": "Kutsal Çocuk arketipi — İsa, Krishna, Mitra. Karanlıkta doğan ışık. Yeni bir döngünün başlangıcı, içte doğan saflık.",
     "lightAspect": "Yenilenme, ilham, mucize hissi, taze başlangıç. Karanlığın içinden ışığın doğması — \"hâlâ umut var\".",
     "shadowAspect": "Sahte mesihçilik, çocukluk romantizmi, sorumluluk almayı reddetme. \"Çok özelim, beklesinler\" tavrı.",
@@ -584,7 +754,12 @@
     "tradition": "Mitolojik (Odysseus, Hagar)",
     "element": "su",
     "category": "Geçiş",
-    "keywords": ["sürgün", "dönüş", "kimlik", "yolculuk"],
+    "keywords": [
+      "sürgün",
+      "dönüş",
+      "kimlik",
+      "yolculuk"
+    ],
     "essence": "Sürgün arketipi — Odysseus, Musa, Hagar. Yurt dışına atılan, yıllarca dönmeyi bekleyen veya dönüşte değişmiş bulan. Yer-evren kayıyor.",
     "lightAspect": "Sürgün, kimliği derinleştirir; ait olmadığında kim olduğunu öğrenirsin. Sonunda dönüş yeniden seçimdir.",
     "shadowAspect": "Sürekli yer değiştirme, hiçbir yere bağlanmama, ev hissini kaybetme. Veya tersi: takıntılı dönüş, eski yer artık olmasa bile.",
@@ -601,7 +776,12 @@
     "tradition": "Mitolojik (Saturn-Kronos)",
     "element": "ateş",
     "category": "Engel",
-    "keywords": ["kıskançlık", "tahtı kaybetme", "yer açma", "kuşak değişimi"],
+    "keywords": [
+      "kıskançlık",
+      "tahtı kaybetme",
+      "yer açma",
+      "kuşak değişimi"
+    ],
     "essence": "Kronos çocuklarını yutar çünkü tahtı kaybetmekten korkar. Eski kral / kıskanç tanrı arketipi yer açmayı reddeden olgunlaşmamış otorite.",
     "lightAspect": "İçsel olarak fark edilirse: \"hangi alanda yer açmıyorum?\" sorusunu açar. Gençleşme ve devretme yolu.",
     "shadowAspect": "Yeni nesle, yeni fikre, eşine yer açmamak. Mikro-yönetim, başkalarının başarısını kıskanma, kendi mevkiine sımsıkı yapışma.",
@@ -618,7 +798,12 @@
     "tradition": "Yunan / Sümer",
     "element": "karanlık",
     "category": "Geçiş",
-    "keywords": ["yer altına iniş", "kayıp", "geri dönüş", "dönüşüm"],
+    "keywords": [
+      "yer altına iniş",
+      "kayıp",
+      "geri dönüş",
+      "dönüşüm"
+    ],
     "essence": "Orpheus, Inanna, Demeter — yer altına bilinçli iner ve dönerler. Modern psikolojinin \"shadow work\"u, eski mitlerin bu yolculuğudur.",
     "lightAspect": "Bilinçli iniş, gölgeyle karşılaşma, kayıp parçayı geri getirme, derinlikten dönen bilgelik.",
     "shadowAspect": "Geri dönmemek (kronik depresyon, manevi by-pass'in tersi), veya hiç inmemek (yüzeysel hayat).",
@@ -635,7 +820,12 @@
     "tradition": "Sibirya / Yerli halklar",
     "element": "bütün",
     "category": "Aracı",
-    "keywords": ["iki dünya", "köprü", "ruh yolculuğu", "topluluk"],
+    "keywords": [
+      "iki dünya",
+      "köprü",
+      "ruh yolculuğu",
+      "topluluk"
+    ],
     "essence": "Şaman görünen ve görünmeyen alemler arasında köprüdür. Hastalanır, ölür, döner — yarasını topluluğa şifa için taşır. Yaralı şifacının kadim halidir.",
     "lightAspect": "Boyutlar arası aracı, rüyaları yorumlayan, topluluğu dengeleyen. Modern karşılığı: derin terapist, yaratıcı sanatçı, manevi rehber.",
     "shadowAspect": "Sahte şaman — bilgisiz \"rehberlik\" satan, başkalarının yarasını kullanan, ego trip.",
@@ -652,7 +842,12 @@
     "tradition": "Osiris / Tammuz / İsa",
     "element": "ateş",
     "category": "Döngü",
-    "keywords": ["ölüm-dirilme", "feda", "kurtuluş", "döngü"],
+    "keywords": [
+      "ölüm-dirilme",
+      "feda",
+      "kurtuluş",
+      "döngü"
+    ],
     "essence": "Ölen ve yeniden doğan tanrı (Osiris, Tammuz, Dionysos, İsa) — yaşamın derin ritmi. Her bitiş, dirilişin tohumudur. Bireysel ölçekte: kabuk değiştirme.",
     "lightAspect": "Eski hâli bırakmayı, yeni doğuşa güvenmeyi öğretir. Mevsimsel/biyolojik/duygusal ölümlerin kabulü.",
     "shadowAspect": "Mesih kompleksi, sürekli \"feda olma\" rolü, başkaları için ölme dramı, yeniden doğmayı reddetme.",
@@ -669,7 +864,12 @@
     "tradition": "Tasavvuf / Jung Self",
     "element": "bütün",
     "category": "Olgunluk",
-    "keywords": ["yetkinlik", "merkez", "rehberlik", "tamlık"],
+    "keywords": [
+      "yetkinlik",
+      "merkez",
+      "rehberlik",
+      "tamlık"
+    ],
     "essence": "Kutup, dünyanın ekseni; tasavvufta zamanın 'kutbu', Jung'da tamamlanmış Self. Tüm arketiplerin bütünleştiği son figür. Sessiz, dolu, varlığıyla yön veren.",
     "lightAspect": "Karşıtları bütünleştirmiş, ego ile Self uzlaşmış, sözcüklere ihtiyaç duymadan iletişim kuran iç olgunluk.",
     "shadowAspect": "Sahte kutup — \"ben kutbum\" diyen ego. Gerçek kutup hiç söylemez; tanınması başkalarınadır.",
@@ -686,7 +886,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "hava",
     "category": "Başlangıç",
-    "keywords": ["saflık", "atılım", "uçurum", "sıfır"],
+    "keywords": [
+      "saflık",
+      "atılım",
+      "uçurum",
+      "sıfır"
+    ],
     "essence": "Tarot'un sıfır kartı — tüm yolculuğun başlangıcı. Aptal, uçurumun kıyısında ama korkmaz; çünkü henüz yargı bilmemiştir. Ruhun saf hâli, yeni doğmuş bilinç.",
     "lightAspect": "Cesaret, açıklık, beklenmedik atılım. Hayatın yeni bir bölümünde sayfayı temiz açabilmek. Hesap yapmadan adım atabilmek.",
     "shadowAspect": "Aptallık, dikkatsizlik, sonuçları görmemek. Aynı uçuruma defalarca yürümek. Olgunlaşmayı reddetmek.",
@@ -703,7 +908,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Sezgi",
-    "keywords": ["sezgi", "iç bilgi", "perde", "ay"],
+    "keywords": [
+      "sezgi",
+      "iç bilgi",
+      "perde",
+      "ay"
+    ],
     "essence": "Yüksek Rahibe iki sütun arasında oturur — bilinen ile bilinmeyen, gece ile gündüz. Elinde Tora, başında ay tacı. İçsel bilgiyi taşıyan dişil ses.",
     "lightAspect": "Sezgi, iç bilme, sessiz bilgelik. Henüz konuşulmamış olanı duyabilmek. Rüyalardan, bedenden, doğadan gelen mesajları okuma yeteneği.",
     "shadowAspect": "Sırrı paylaşmamak, soğuk uzaklık, kendi sezgisine güvenmemek. Bildiğini saklayan kibir.",
@@ -720,7 +930,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "toprak",
     "category": "Bereket",
-    "keywords": ["bereket", "yaratım", "doğa", "annelik"],
+    "keywords": [
+      "bereket",
+      "yaratım",
+      "doğa",
+      "annelik"
+    ],
     "essence": "İmparatoriçe doğanın bereketinin tahtında oturur. Çevresi buğday, suyu akan. Yaratıcı dişil enerjinin somut, dünyada görünür hâli.",
     "lightAspect": "Bereket, yaratım, sevgi, beden zekâsı. Doğa ile uyum. Sanatın, çocuğun, projenin doğmasına alan açmak.",
     "shadowAspect": "Aşırı koruyucu, boğan annelik. Maddiyatın esiri olmak. Bedensel hazzı tek anlam yapmak.",
@@ -737,7 +952,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Yapı",
-    "keywords": ["otorite", "yapı", "düzen", "baba"],
+    "keywords": [
+      "otorite",
+      "yapı",
+      "düzen",
+      "baba"
+    ],
     "essence": "İmparator taşa oyulmuş tahtında oturur. Sertlik, yapı, kural. Olgun eril otorite — yıkılmaz olan sınır ve düzen.",
     "lightAspect": "Sorumluluk, sınır, koruma, yapı kurma. 'Hayır' diyebilen olgunluk. İçten gelen otorite.",
     "shadowAspect": "Tiran, kontrol manyağı, sevgisiz disiplin. Babacan değil zorba. Kuralın esiri.",
@@ -754,7 +974,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "hava",
     "category": "Gelenek",
-    "keywords": ["gelenek", "öğreti", "köprü", "kurum"],
+    "keywords": [
+      "gelenek",
+      "öğreti",
+      "köprü",
+      "kurum"
+    ],
     "essence": "Hierofant kutsal bilgiyi geleneğin diliyle aktaran köprüdür. Şeyh, hoca, papaz, akademisyen — bilgiyi bir nesle taşıyan.",
     "lightAspect": "Geleneğin bilgeliği, sürekliliğin gücü, öğrenme alçakgönüllülüğü. Hocalık, mentorluk, miras taşımak.",
     "shadowAspect": "Dogma, kurumun esiri olmak, sorgulamamak. Bilgiyi kontrol için kullanmak. Yenilikçi sese 'gelenek dışı' demek.",
@@ -771,7 +996,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "İrade",
-    "keywords": ["zafer", "irade", "kontrol", "yön"],
+    "keywords": [
+      "zafer",
+      "irade",
+      "kontrol",
+      "yön"
+    ],
     "essence": "Savaş arabası iki sfenks (ışık-karanlık) tarafından çekilir. Sürücü dizginleri kontrolüyle değil, içsel hizalanmasıyla yönetir. İradenin saf hâli.",
     "lightAspect": "Hedefe odaklanma, iç irade, zaferi taşıma. Karşıt güçleri tek yöne çekmeyi başarmak.",
     "shadowAspect": "Saplantı, aşırı kontrol, kazanma uğruna her şeyi feda etmek. Yön kaybetmek ama sürmeye devam.",
@@ -788,7 +1018,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "İçsel güç",
-    "keywords": ["sabır", "şefkat", "iç güç", "vahşi yan"],
+    "keywords": [
+      "sabır",
+      "şefkat",
+      "iç güç",
+      "vahşi yan"
+    ],
     "essence": "Bir kadın, vahşi bir aslanın çenesini şefkatle kapatır — kuvvetle değil. Gerçek güç, kontrol değil; tanıma ve yumuşaklıkla terbiye etmek.",
     "lightAspect": "Sabır, içsel sakinlik, vahşi yanı bilinçle taşıma. Kuvvetin değil sevginin gücü. Korkuya rağmen nazikçe ilerlemek.",
     "shadowAspect": "Bastırılmış öfke, sahte yumuşaklık. Vahşiyi inkâr edip kendinden kaçmak. Veya tersi — kontrolün esiri olmak.",
@@ -805,7 +1040,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "toprak",
     "category": "İçe çekiliş",
-    "keywords": ["yalnızlık", "iç ışık", "sözsüzlük", "arayış"],
+    "keywords": [
+      "yalnızlık",
+      "iç ışık",
+      "sözsüzlük",
+      "arayış"
+    ],
     "essence": "Münzevi dağda tek başına, elinde fener. Bilgiyi kalabalıktan değil sessizlikten taşır. Yalnızlık olmadan derin bilmek mümkün değildir.",
     "lightAspect": "Bilinçli yalnızlık, içsel arayış, kendi ışığını taşıma. Kalabalıkta bulunmayan bilgelik.",
     "shadowAspect": "Yalnızlığa kaçıp bağı reddetme, sosyal kopukluk, manevi kibir. 'Ben anladım, kimse anlamaz.'",
@@ -822,7 +1062,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "hava",
     "category": "Döngü",
-    "keywords": ["kader", "döngü", "değişim", "şans"],
+    "keywords": [
+      "kader",
+      "döngü",
+      "değişim",
+      "şans"
+    ],
     "essence": "Kader Çarkı sürekli döner. Dünde tepedeydin, bugün dipte; bugün dipteysen yarın yine dönecek. Hayatın temel ritmi: değişim.",
     "lightAspect": "Akışı kabul, anın geçici olduğunu bilme. Hem zafer hem kayıpta sakin olabilmek.",
     "shadowAspect": "Çarkın elinde kalmak, kontrolü tamamen reddetmek. Veya tersi — çarkı durdurmaya çalışıp tükenmek.",
@@ -839,7 +1084,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "hava",
     "category": "Denge",
-    "keywords": ["denge", "sebep-sonuç", "dürüstlük", "karma"],
+    "keywords": [
+      "denge",
+      "sebep-sonuç",
+      "dürüstlük",
+      "karma"
+    ],
     "essence": "Adalet bir elinde kılıç, diğerinde terazi. Gözleri açık — pazarlık yok, tartmak var. Sebep-sonuç yasasının kişileşmiş hâli.",
     "lightAspect": "Dürüstlük, sebep-sonuç bilinci, sorumluluk almak. Söylediğinle yaptığını hizalamak.",
     "shadowAspect": "Yargılayıcılık, intikam, soğuk hesap. Adaleti kişisel öfkeye çevirmek.",
@@ -856,7 +1106,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Teslim",
-    "keywords": ["teslim", "ters bakış", "feda", "duraklama"],
+    "keywords": [
+      "teslim",
+      "ters bakış",
+      "feda",
+      "duraklama"
+    ],
     "essence": "Asılan Adam ayağından asılı, baş aşağı — ama yüzünde sükûnet var. Bilinçli teslim, duraklama, dünyayı tersinden görmek.",
     "lightAspect": "Egonun feda edilmesi, ters açıdan görme, bilinçli bekleyiş. 'Yapmamak'ın gücü.",
     "shadowAspect": "Kurban rolü, mağduriyet, tersine takılıp kalmak. Pasif direniş içinde solmak.",
@@ -873,7 +1128,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Dönüşüm",
-    "keywords": ["bitiş", "dönüşüm", "yenilenme", "bırakış"],
+    "keywords": [
+      "bitiş",
+      "dönüşüm",
+      "yenilenme",
+      "bırakış"
+    ],
     "essence": "Tarot'taki Ölüm fiziksel ölüm değil — bir döneminin sonu. Eskiyi bırakmadan yeni gelmiyor. Korkutucu görünür ama en şifa veren karttır.",
     "lightAspect": "Bitirme cesareti, bırakış, yenilenmeye alan açma. Eskimiş bir yan ölünce gerçek diriliş başlar.",
     "shadowAspect": "Bitişi reddetmek, ölü ilişki/iş/kimliği yapay olarak yaşatmak. Veya tersi — sürekli yıkıp yenisini başlatmak ama hiçbiri kök salmamak.",
@@ -890,7 +1150,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Denge",
-    "keywords": ["sabır", "denge", "karışım", "akış"],
+    "keywords": [
+      "sabır",
+      "denge",
+      "karışım",
+      "akış"
+    ],
     "essence": "Bir melek iki kupa arasında suyu döker — ne fazla ne eksik, sürekli akış. İtidal, zıtların doğru oranda buluşması.",
     "lightAspect": "Sabır, denge, doğru oran. Kim ne kadar — bunu bilebilmek. Aşırılığa kaçmamak.",
     "shadowAspect": "Pasiflik, hiçbir uca varmamak, kararsızlık. 'İtidal' bahanesiyle inisiyatifi vermemek.",
@@ -907,7 +1172,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Bağlılık",
-    "keywords": ["bağımlılık", "esaret", "tutku", "gölge"],
+    "keywords": [
+      "bağımlılık",
+      "esaret",
+      "tutku",
+      "gölge"
+    ],
     "essence": "Şeytan kartında iki insan zincirle bağlı — ama zincir gevşek. Esaret çoğunlukla içeriden gelir. Bağımlılığın, takıntının, esir alıcı tutkunun sembolü.",
     "lightAspect": "Sıkıştığın yeri görme. Zincirinin gevşek olduğunu fark etmek. Şehvete saygı ile yaklaşmak — yargılamadan.",
     "shadowAspect": "Bağımlılık (madde, ilişki, iş, sosyal medya). Karanlığı romantize etmek. 'Yapamam' söylemi.",
@@ -924,7 +1194,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Yıkım",
-    "keywords": ["ani yıkım", "ifşa", "şok", "temizlik"],
+    "keywords": [
+      "ani yıkım",
+      "ifşa",
+      "şok",
+      "temizlik"
+    ],
     "essence": "Kule yıldırımla yıkılır, içindekiler düşer. Bu sahte üzerine kurulan her şeyin ani çöküşüdür. Sarsıcı ama özgürleştirici.",
     "lightAspect": "Sahte yapının düşmesi, gerçeğin görünür olması. 'Bu kadar değildi zaten' rahatlığı.",
     "shadowAspect": "Yıkımı romantize etmek, kendi kuleni bilerek yakmak. Kaos için kaos.",
@@ -941,7 +1216,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "hava",
     "category": "Umut",
-    "keywords": ["umut", "ilham", "yenilenme", "saflık"],
+    "keywords": [
+      "umut",
+      "ilham",
+      "yenilenme",
+      "saflık"
+    ],
     "essence": "Çıplak bir kadın gece gökyüzü altında suyu hem toprağa hem havuza döker. Üstünde 8 yıldız parlar. Krizden sonra gelen sakin umut.",
     "lightAspect": "Yenilenmiş umut, ilham, açıklık. Karanlıktan sonra ışığın geri dönüşü. Sahici şükran.",
     "shadowAspect": "Naif iyimserlik, gerçeklikten kopmak, 'iyi düşünürsen iyi olur' romantizmi.",
@@ -958,7 +1238,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Bilinçaltı",
-    "keywords": ["yanılsama", "bilinçaltı", "rüya", "korku"],
+    "keywords": [
+      "yanılsama",
+      "bilinçaltı",
+      "rüya",
+      "korku"
+    ],
     "essence": "Ayın altında bir kurt ve bir köpek gözle, sudan bir yengeç çıkar. Belirsizlik, rüya, bilinçaltının arazisi. Aydınlık değil ama önemli.",
     "lightAspect": "Sezgisel derinlik, rüya çalışması, bilinçaltına inme. Belirsizliği kabul edebilmek.",
     "shadowAspect": "Yanılsama, paranoya, korkudan karar vermek. Karanlığı gerçeklikle karıştırmak.",
@@ -975,7 +1260,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Sevinç",
-    "keywords": ["sevinç", "berraklık", "çocuksu neşe", "başarı"],
+    "keywords": [
+      "sevinç",
+      "berraklık",
+      "çocuksu neşe",
+      "başarı"
+    ],
     "essence": "Güneş kartında bir çocuk beyaz at üstünde, ayçiçeklerinin önünde, tepedeki güneş parlıyor. Saf neşe, başarı, hayatın sahici güzelliği.",
     "lightAspect": "Sevinç, berraklık, sahici başarı, oyun ruhu. Sevinilecek anı sevinmek.",
     "shadowAspect": "Sahte iyimserlik, gölgesini görmemek, sürekli 'iyi olmak' baskısı.",
@@ -992,7 +1282,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Çağrı",
-    "keywords": ["uyanış", "çağrı", "geçmişle yüzleşme", "yeniden doğuş"],
+    "keywords": [
+      "uyanış",
+      "çağrı",
+      "geçmişle yüzleşme",
+      "yeniden doğuş"
+    ],
     "essence": "Bir melek borusunu çalar, mezarlardan ölüler dirilir. Bir çağrıya uyanma, geçmişle yüzleşme, yeniden doğuş kararı.",
     "lightAspect": "Sahici bir çağrıya kulak verme, geçmişi onurlandırma, yeni hayata uyanma.",
     "shadowAspect": "Geçmişe takılı kalmak, yargılayıcı yaklaşım, sahte 'aydınlanma' söylemi.",
@@ -1009,7 +1304,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "bütün",
     "category": "Tamlık",
-    "keywords": ["tamlık", "döngü kapanışı", "bütünlük", "kutlama"],
+    "keywords": [
+      "tamlık",
+      "döngü kapanışı",
+      "bütünlük",
+      "kutlama"
+    ],
     "essence": "Dünya kartı Tarot yolculuğunun son durağı. Çıplak figür dans eder, dört köşede dört yaratık (insan, kartal, aslan, boğa). Bütünlük tamamlandı.",
     "lightAspect": "Tamamlanma, döngünün kapanışı, bütünlüğü kutlama. Her şey yerli yerinde olma duygusu.",
     "shadowAspect": "'Vardım' sanıp donmak. Bir sonraki döngünün başlangıcını görmemek.",
@@ -1026,7 +1326,12 @@
     "tradition": "Yunan-Roma / Pantheon",
     "element": "hava",
     "category": "Eril otorite",
-    "keywords": ["gök babası", "yıldırım", "düzen", "krallık"],
+    "keywords": [
+      "gök babası",
+      "yıldırım",
+      "düzen",
+      "krallık"
+    ],
     "essence": "Zeus / Jüpiter, gök tanrısı, yıldırımı tutan, Olimpos'un kralı. Eril otoritenin, kuralın, düzenin tepesi. Hem koruyucu hem kaprisli.",
     "lightAspect": "Sorumluluk alma, geniş perspektiften yönetme, ailenin / topluluğun çatısı olma. Karar verebilmek.",
     "shadowAspect": "Patriarkal kibir, tahta yapışma, sevgisini koşula bağlama. Erkek egosunun şişmesi.",
@@ -1043,7 +1348,12 @@
     "tradition": "Yunan-Roma / Norse",
     "element": "hava",
     "category": "Olgun dişil otorite",
-    "keywords": ["evlilik", "sadakat", "kraliçe", "haysiyet"],
+    "keywords": [
+      "evlilik",
+      "sadakat",
+      "kraliçe",
+      "haysiyet"
+    ],
     "essence": "Hera, Zeus'un eşi, evliliğin ve haysiyetin koruyucusu. Frigg ise Norse'da Odin'in eşi, geleceği bilen kraliçe. Olgun dişil otoritenin sembolü.",
     "lightAspect": "Sadakat, haysiyet, evliliğin/bağlılığın kutsallığı, dişil olgunluk.",
     "shadowAspect": "Kıskançlık, intikam, eşin gölgesinde yaşama. Sahip olma duygusunun toksik hâli.",
@@ -1060,7 +1370,12 @@
     "tradition": "Yunan-Roma",
     "element": "hava",
     "category": "Strateji",
-    "keywords": ["strateji", "akıl", "savaş", "zanaat"],
+    "keywords": [
+      "strateji",
+      "akıl",
+      "savaş",
+      "zanaat"
+    ],
     "essence": "Athena Zeus'un başından silahlı doğdu — savaşı stratejiyle yapan, sanatla zanaatla bilgelik kuran tanrıça. Akıl ile cesaretin birleşimi.",
     "lightAspect": "Strateji, akıl ile koordineli cesaret, zanaat sevgisi, kararlı bilgelik.",
     "shadowAspect": "Aşırı kontrol, duyguları küçümseme, soğuk hesap.",
@@ -1077,7 +1392,12 @@
     "tradition": "Yunan-Roma",
     "element": "toprak",
     "category": "Bağımsızlık",
-    "keywords": ["vahşi doğa", "bekâret", "ay", "av"],
+    "keywords": [
+      "vahşi doğa",
+      "bekâret",
+      "ay",
+      "av"
+    ],
     "essence": "Artemis ay tanrıçası, ormanın koruyucusu, evlenmeyen vahşi kız. 'Bakire' kelimesinin antik anlamı — evlilik dışında değil, kendine ait olan kadın.",
     "lightAspect": "Bağımsızlık, doğayla bağ, kendine yetme. Kimseye bağlı olmadan tam olabilme.",
     "shadowAspect": "Bağlantıdan kopukluk, soğukluk, intimacy reddetme. 'Yalnız güçlüyüm' söylemiyle yalnız kalma.",
@@ -1094,7 +1414,12 @@
     "tradition": "Yunan-Roma",
     "element": "su",
     "category": "Aşk-güzellik",
-    "keywords": ["aşk", "güzellik", "şehvet", "yaratım"],
+    "keywords": [
+      "aşk",
+      "güzellik",
+      "şehvet",
+      "yaratım"
+    ],
     "essence": "Aphrodite, denizden köpükten doğan aşk tanrıçası. Sadece romantik değil — estetik, çekim, yaratımın itici gücü.",
     "lightAspect": "Estetik bilinç, çekim, sahici aşk kapasitesi, güzellik yaratma.",
     "shadowAspect": "Manipülatif çekicilik, narsizm, şehveti güç için kullanmak.",
@@ -1111,7 +1436,12 @@
     "tradition": "Yunan-Roma",
     "element": "ateş",
     "category": "Saldırgan eril",
-    "keywords": ["savaş", "öfke", "tutku", "saldırı"],
+    "keywords": [
+      "savaş",
+      "öfke",
+      "tutku",
+      "saldırı"
+    ],
     "essence": "Ares Yunan'da pek sevilmeyen savaş tanrısı. Roma'da Mars hâline gelince yüceltilmiş — bahar getirir, korur. İkisi birlikte ham eril enerjinin iki yüzü.",
     "lightAspect": "Cesaret, mücadele kapasitesi, koruma içgüdüsü, sınır savunma.",
     "shadowAspect": "Saldırgan, kontrolsüz öfke, fiziksel şiddete eğilim, yıkım için yıkım.",
@@ -1128,7 +1458,12 @@
     "tradition": "Yunan-Roma",
     "element": "ateş",
     "category": "Zanaat",
-    "keywords": ["zanaat", "demircilik", "yaratım", "yara"],
+    "keywords": [
+      "zanaat",
+      "demircilik",
+      "yaratım",
+      "yara"
+    ],
     "essence": "Hephaistos topal, çirkin ama ellerinden tanrıların silahları çıkar. Yaralı zanaatçının arketipi — formundan değil yaratımından tanınır.",
     "lightAspect": "Eliyle yaratma sevgisi, zanaat sabrı, görünmez emeği onurlandırma. Yaranın yaratıma dönüşümü.",
     "shadowAspect": "Görünmemeyi normalleştirme, kendine değer vermeme, sürekli başkasının silahını yapan ama kendininkini unutan.",
@@ -1145,7 +1480,12 @@
     "tradition": "Yunan-Roma",
     "element": "su",
     "category": "Ekstaz",
-    "keywords": ["ekstaz", "şarap", "dans", "ego erimesi"],
+    "keywords": [
+      "ekstaz",
+      "şarap",
+      "dans",
+      "ego erimesi"
+    ],
     "essence": "Dionysos şarabın, dansın, kollektif coşkunun tanrısı. Apollon kontrol ise Dionysos teslim. Egonun erimesinin kutsal hâli.",
     "lightAspect": "Coşku, dans, sanatsal vahşilik, ego erimesi yoluyla birleşim. Ritüel kollektif sevinç.",
     "shadowAspect": "Bağımlılık, kontrolsüzlük, şehvete teslim olarak kendini kaybetmek.",
@@ -1162,7 +1502,12 @@
     "tradition": "Yunan-Roma",
     "element": "karanlık",
     "category": "Bilinçaltı",
-    "keywords": ["yer altı", "saklı zenginlik", "ölüm", "derinlik"],
+    "keywords": [
+      "yer altı",
+      "saklı zenginlik",
+      "ölüm",
+      "derinlik"
+    ],
     "essence": "Hades yer altının tanrısı — ölüm değil, ölümü yöneten. Aynı zamanda saklı zenginliklerin (mücevherler, mineraller) sahibi. Bilinçaltının kralı.",
     "lightAspect": "Derinlik, bilinçaltı zenginliklerinin sahipliği, gölge çalışması ustalığı.",
     "shadowAspect": "İçeri kapanma, hayattan kopukluk, depresyon, dünyaya geri dönmemek.",
@@ -1179,7 +1524,12 @@
     "tradition": "Yunan-Roma",
     "element": "toprak",
     "category": "Verici anne",
-    "keywords": ["hasat", "annelik", "yas", "döngü"],
+    "keywords": [
+      "hasat",
+      "annelik",
+      "yas",
+      "döngü"
+    ],
     "essence": "Demeter mevsimleri yöneten ana, kızı Persefon kaybedildiğinde dünyayı kurutur. Hem bereket hem yas — annelik bağının iki ucu.",
     "lightAspect": "Verici annelik, beslenme yetisi, doğayla derin uyum, kayıp anında bile sürdürme gücü.",
     "shadowAspect": "Aşırı yas, kontrol etmek için sevgiyi kullanma, çocuğu (gerçek ya da sembolik) bırakamamak.",
@@ -1196,7 +1546,12 @@
     "tradition": "Hindu",
     "element": "ateş",
     "category": "Kozmik dönüşüm",
-    "keywords": ["yıkım", "dönüşüm", "tantra", "dans"],
+    "keywords": [
+      "yıkım",
+      "dönüşüm",
+      "tantra",
+      "dans"
+    ],
     "essence": "Shiva Hindu üçlüsünün yıkıcı-dönüştürücü tarafı. Nataraja olarak yaratılışın dansını dans eder, yokluğu yaratımın ön şartı yapar.",
     "lightAspect": "Bilinçli yıkım, eskiyi bırakma cesareti, dans halinde yaşama. Yokluğu kabul.",
     "shadowAspect": "Sürekli yıkıp yenisini başlatamamak. Tantrayı şehvete indirgeme.",
@@ -1213,7 +1568,12 @@
     "tradition": "Hindu",
     "element": "su",
     "category": "Sürdürme",
-    "keywords": ["sürdürme", "denge", "avatar", "uyum"],
+    "keywords": [
+      "sürdürme",
+      "denge",
+      "avatar",
+      "uyum"
+    ],
     "essence": "Vishnu kozmik düzeni koruyan tanrı. Adalet bozulduğunda 'avatar' olarak iner — Rama, Krishna, Buddha. Sürekli geri gelen koruyucu.",
     "lightAspect": "Düzen koruma, kriz anında doğru forma bürünme, evrensel sevgi.",
     "shadowAspect": "Statükoyu sahiplenme, gerekli yıkımı engelleme, 'her zaman iyi olmak'a çalışma.",
@@ -1230,7 +1590,12 @@
     "tradition": "Hindu",
     "element": "ateş",
     "category": "Yıkıcı dişil",
-    "keywords": ["yıkıcı dişil", "ego ölümü", "vahşilik", "şefkat"],
+    "keywords": [
+      "yıkıcı dişil",
+      "ego ölümü",
+      "vahşilik",
+      "şefkat"
+    ],
     "essence": "Kali boyu kafataslarından, kana bulanmış, dilini çıkarmış. Görünüşte korkutucu ama gerçekte ego'nun yıkıcısı, en derin annelik.",
     "lightAspect": "Egoyu yıkma cesareti, vahşi şefkat, sahte olanı yutma. 'Sevgiyle korkut' kapasitesi.",
     "shadowAspect": "Yıkım için yıkım, vahşiliği şiddetle karıştırma, sevdiğini parçalama.",
@@ -1247,7 +1612,12 @@
     "tradition": "Hindu",
     "element": "toprak",
     "category": "Engel",
-    "keywords": ["engel", "eşik", "başlangıç", "bilgelik"],
+    "keywords": [
+      "engel",
+      "eşik",
+      "başlangıç",
+      "bilgelik"
+    ],
     "essence": "Ganesha fil başlı tanrı, hem engellerin koyucusu hem kaldırıcısı. Başlangıçların kapısında durur. Bilgeliğin kucağında oyunbaz.",
     "lightAspect": "Engellere bilgelikle bakma, başlangıçları onurlandırma, oyunla ciddiyeti birleştirme.",
     "shadowAspect": "Engelleri kişiselleştirmek, sürekli 'kaldıran' beklemek.",
@@ -1264,7 +1634,12 @@
     "tradition": "İskandinav",
     "element": "hava",
     "category": "Bilgelik bedeli",
-    "keywords": ["bilgelik", "kurban", "kuzgun", "tek göz"],
+    "keywords": [
+      "bilgelik",
+      "kurban",
+      "kuzgun",
+      "tek göz"
+    ],
     "essence": "Odin bilgelik için tek gözünü Mimir kuyusuna bıraktı, dokuz gün dünya ağacında asıldı, runeleri öğrendi. Bilgeliğin bedelinin sembolü.",
     "lightAspect": "Bilgelik için fedakârlık, derin görme, manevi disiplin. 'Bedeli ödüyorum' farkındalığı.",
     "shadowAspect": "Acıyı romantize etmek, gereksiz fedakârlık, kahraman kompleksi.",
@@ -1281,7 +1656,12 @@
     "tradition": "İskandinav",
     "element": "ateş",
     "category": "Koruyucu eril",
-    "keywords": ["güç", "koruma", "gök gürlemesi", "halk"],
+    "keywords": [
+      "güç",
+      "koruma",
+      "gök gürlemesi",
+      "halk"
+    ],
     "essence": "Thor Mjölnir'iyle (çekiç) Asgard'ı korur. Sıradan halkın yanındadır — soylu Odin'in tersine. Koruyucu eril gücün halk versiyonu.",
     "lightAspect": "Koruma, sıradan insanın yanında olma, dürüst güç, yiğitlik.",
     "shadowAspect": "Düşünmeden vurmak, kabalık, basit çözüm aramak.",
@@ -1298,7 +1678,12 @@
     "tradition": "İskandinav",
     "element": "toprak",
     "category": "Bereket",
-    "keywords": ["bereket", "barış", "tarım", "evlilik"],
+    "keywords": [
+      "bereket",
+      "barış",
+      "tarım",
+      "evlilik"
+    ],
     "essence": "Frey Vanir tanrılarından, bereket ve barış tanrısı. Sahip olduğu kılıcı bile sevgisi için verdi. Eril sevgi ve verme arketipi.",
     "lightAspect": "Bereket, paylaşma, sevgisi için verebilme, barış kurma.",
     "shadowAspect": "Aşırı verme, kendini kaybetme, sınırsız hediye sunma.",
@@ -1315,7 +1700,12 @@
     "tradition": "Mısır / Yunan",
     "element": "ateş",
     "category": "Bilinç ışığı",
-    "keywords": ["güneş", "bilinç", "düzen", "ışık"],
+    "keywords": [
+      "güneş",
+      "bilinç",
+      "düzen",
+      "ışık"
+    ],
     "essence": "Ra Mısır'ın güneş tanrısı, Apollo Yunan'ın. Her ikisi de bilinç ışığı, akıl, müzik, kehanet. Solar kral arketipi — günü doğuran.",
     "lightAspect": "Berrak bilinç, akıl, ifadenin gücü, sanat ve müzik.",
     "shadowAspect": "Aşırı rasyonellik, ay tarafını yok sayma, ışığa takılı kalma.",
@@ -1332,7 +1722,12 @@
     "tradition": "Mısır",
     "element": "karanlık",
     "category": "Geçiş",
-    "keywords": ["ölüm", "geçiş", "tartım", "yargı"],
+    "keywords": [
+      "ölüm",
+      "geçiş",
+      "tartım",
+      "yargı"
+    ],
     "essence": "Anubis çakal başlı, ölüleri yer altına götüren rehber. Kalbi tüye karşı tartar — ağırsa ruh ölür, hafifse devam eder.",
     "lightAspect": "Bitişlere rehberlik, eşik koruma, geçiş anlarında yanında olma.",
     "shadowAspect": "Ölü ile aşırı meşgul olmak, yas kompleksi, dirilere dönmemek.",
@@ -1349,7 +1744,12 @@
     "tradition": "Mısır / Hermetik",
     "element": "hava",
     "category": "Bilgi-Söz",
-    "keywords": ["yazı", "büyü", "bilgi", "ay"],
+    "keywords": [
+      "yazı",
+      "büyü",
+      "bilgi",
+      "ay"
+    ],
     "essence": "Thoth ibis başlı, ay'la bağlı, yazıyı, sayıyı, büyüyü insanlığa veren tanrı. Hermetik gelenekte 'üç kez büyük Hermes' ile birleşir.",
     "lightAspect": "Bilgiyi yazıya dökme, sembol kullanımı, dilin gücü, kayıt tutma.",
     "shadowAspect": "Sözle manipülasyon, bilgiyi gizleme, kibirli okumuşluk.",
@@ -1366,7 +1766,12 @@
     "tradition": "Mısır",
     "element": "su",
     "category": "Manevi anne",
-    "keywords": ["sihir", "annelik", "iyileştirme", "bütünleştirme"],
+    "keywords": [
+      "sihir",
+      "annelik",
+      "iyileştirme",
+      "bütünleştirme"
+    ],
     "essence": "Isis kocası Osiris parçalandığında parçalarını topladı, bir araya getirdi. Sihrin, iyileştirmenin, parçaları bütünlemenin tanrıçası.",
     "lightAspect": "Parçaları bütünleştirme, derin annelik, sihirsel iyileştirme. Aşkın gücü.",
     "shadowAspect": "Kontrol için sihir kullanma, başkasını 'düzeltmeye' çalışma.",
@@ -1383,7 +1788,12 @@
     "tradition": "Budist / Mahayana",
     "element": "su",
     "category": "Şefkat",
-    "keywords": ["şefkat", "merhamet", "annelik", "kurtarıcı"],
+    "keywords": [
+      "şefkat",
+      "merhamet",
+      "annelik",
+      "kurtarıcı"
+    ],
     "essence": "Yeşil Tara Budistlikte hızla yardıma koşan dişil bodhisattva. Çince'de Kuan Yin — 'sesleri duyan'. Şefkatin saf hâli.",
     "lightAspect": "Sınırsız şefkat, başkasının acısını taşıma yeteneği, hızlı yardım.",
     "shadowAspect": "Aşırı şefkat — kendini kaybetme, herkesi kurtarmaya çalışma, tükeniş.",
@@ -1396,11 +1806,16 @@
   {
     "id": "ar083",
     "name": "Doğa Şamanı (Pachamama)",
-    "emoji": "🌎",
+    "emoji": "⛰️",
     "tradition": "And dağları / Yerli Amerikalı",
     "element": "toprak",
     "category": "Doğa bütünlüğü",
-    "keywords": ["toprak ana", "doğa", "ritüel", "saygı"],
+    "keywords": [
+      "toprak ana",
+      "doğa",
+      "ritüel",
+      "saygı"
+    ],
     "essence": "Pachamama And halklarının Toprak Anası. Doğa ile ritüel ilişki — vermek, almak, dengelemek. Modern ekoloji bilincinin atası.",
     "lightAspect": "Doğa ile ritüel ilişki, alma-verme dengesi, ekolojik bilinç.",
     "shadowAspect": "Doğa romantizmi, gerçek bağ kurmadan 'doğal yaşam' söylemi.",
@@ -1417,7 +1832,12 @@
     "tradition": "İskandinav",
     "element": "ateş",
     "category": "Kaos getirici",
-    "keywords": ["kaos", "şekilci", "ihanet", "yenilik"],
+    "keywords": [
+      "kaos",
+      "şekilci",
+      "ihanet",
+      "yenilik"
+    ],
     "essence": "Loki Norse panteonunun trickster'ı — şekil değiştirir, kuralları çiğner, hem yardım eder hem ihanet eder. Statükoyu sallayan kaos.",
     "lightAspect": "Kuralı kıran zekâ, beklenmedik çözümler, statüko sallama.",
     "shadowAspect": "İhanet, sözünün arkasında durmama, kaos için kaos.",
@@ -1434,7 +1854,12 @@
     "tradition": "Hindu",
     "element": "hava",
     "category": "İlahi oyun",
-    "keywords": ["lila", "flüt", "aşk", "oyun"],
+    "keywords": [
+      "lila",
+      "flüt",
+      "aşk",
+      "oyun"
+    ],
     "essence": "Krishna mavi tenli, flüt çalan ilahi çocuk. Lila — ilahi oyunun simgesi. Vahşi bir aşkın da öğretmeni.",
     "lightAspect": "Oyun ruhu, sevgi yoluyla bilgelik, müzik gücü, bilgelik içinde hafiflik.",
     "shadowAspect": "Sürekli oyun — sorumluluğu reddetme. Aşkı dağıtmak.",
@@ -1451,7 +1876,12 @@
     "tradition": "Hindu",
     "element": "hava",
     "category": "Sadakat",
-    "keywords": ["adanma", "sadakat", "hizmet", "güç"],
+    "keywords": [
+      "adanma",
+      "sadakat",
+      "hizmet",
+      "güç"
+    ],
     "essence": "Hanuman maymun tanrı, Rama'ya tam adanmış. Adanmışlık aracılığıyla ulaşılan güç — dağları taşıyan, denizleri aşan.",
     "lightAspect": "Sahici adanmışlık, hizmet eden güç, ben merkeziliği aşma.",
     "shadowAspect": "Köleleşme, sınır kaybı, kendini kaybedip başkasına eklenme.",
@@ -1468,7 +1898,12 @@
     "tradition": "Tasavvuf / Anadolu",
     "element": "hava",
     "category": "Manevi olgunluk",
-    "keywords": ["pir", "veli", "olgun insan", "irfan"],
+    "keywords": [
+      "pir",
+      "veli",
+      "olgun insan",
+      "irfan"
+    ],
     "essence": "Pir tasavvufta tarikatın başı, manevi yolun rehberi. Veli ise 'Hakk'a yakın olan'. Olgunlaşmış ruhun sosyal görüntüsü.",
     "lightAspect": "Olgunluk, yol gösterme, tahammül, hizmet hâli.",
     "shadowAspect": "Sahte mehdiyet, müridin egolu sahibi olma, manevi narsizm.",
@@ -1485,7 +1920,12 @@
     "tradition": "Tarihsel-Mitolojik / Roma",
     "element": "ateş",
     "category": "Özgürlük savaşçısı",
-    "keywords": ["isyan", "özgürlük", "köle", "ayaklanma"],
+    "keywords": [
+      "isyan",
+      "özgürlük",
+      "köle",
+      "ayaklanma"
+    ],
     "essence": "Spartaküs Roma'nın gladyatör-köle isyanını başlatan figür. Ezilmişler için ayağa kalkmanın arketipi.",
     "lightAspect": "Adaletsizliğe karşı durma cesareti, kollektif özgürlük arzusu, dayanışma.",
     "shadowAspect": "Sürekli isyan kimliğine yapışmak. Yıkımı çözüm sanmak.",
@@ -1502,7 +1942,12 @@
     "tradition": "Hristiyan",
     "element": "su",
     "category": "Acı taşıyıcı",
-    "keywords": ["yas", "anne acısı", "şefkat", "kabul"],
+    "keywords": [
+      "yas",
+      "anne acısı",
+      "şefkat",
+      "kabul"
+    ],
     "essence": "Meryem Ana, oğlu çarmıhtan indirildiğinde kucağında onu taşıdı. 'Pieta' — saf yas hâli. Kayıbı sevgiyle taşıma kapasitesinin sembolü.",
     "lightAspect": "Yas tutma kapasitesi, kayıba sevgiyle bakma, şefkat içinde acıyı taşıma.",
     "shadowAspect": "Kurban-anne kompleksi, acıyı kimliğe çevirme.",
@@ -1519,7 +1964,12 @@
     "tradition": "Moore-Gillette",
     "element": "ateş",
     "category": "Olgun eril",
-    "keywords": ["sorumluluk", "merkez", "düzen", "bereket"],
+    "keywords": [
+      "sorumluluk",
+      "merkez",
+      "düzen",
+      "bereket"
+    ],
     "essence": "Moore-Gillette'in 'olgun eril' tipolojisinde Kral merkez ve sorumluluk arketipidir. Egodan değil, alandan kararlar alır.",
     "lightAspect": "Sahici otorite, alana sahip çıkma, başkasını yükseltme, vizyon koyma.",
     "shadowAspect": "Tiran (kontrol manyağı) veya Zayıf Kral (sorumluluktan kaçma).",
@@ -1536,7 +1986,12 @@
     "tradition": "Mature Feminine",
     "element": "su",
     "category": "Olgun dişil",
-    "keywords": ["içsel otorite", "duygusal zekâ", "alanı tutma", "incelik"],
+    "keywords": [
+      "içsel otorite",
+      "duygusal zekâ",
+      "alanı tutma",
+      "incelik"
+    ],
     "essence": "Olgun dişilin Kraliçe formu — içsel otorite, duygusal zekâ, alanı tutma yeteneği. Egodan değil bağdan yönetir.",
     "lightAspect": "İçsel otorite, alan tutma, duygusal zekâ, incelikli güç.",
     "shadowAspect": "Manipülatör (incelikle kontrol) veya gücünden korkan kız (otoriteyi reddetme).",
@@ -1553,7 +2008,12 @@
     "tradition": "Budist",
     "element": "hava",
     "category": "Aydınlanma",
-    "keywords": ["uyanış", "anahtarlık", "bilinç", "şefkat"],
+    "keywords": [
+      "uyanış",
+      "anahtarlık",
+      "bilinç",
+      "şefkat"
+    ],
     "essence": "Buddha 'uyanmış olan' demek. Bodhi ağacı altında iç kelepçelerinden kurtuldu. Aydınlanmanın hem hedef hem yol arketipi.",
     "lightAspect": "Tam farkındalık, ego ölümü, evrensel şefkat, anın saflığı.",
     "shadowAspect": "Manevi kibir ('aydınlandım'), pasif bilgelik, dünyaya kayıtsızlık.",
@@ -1566,11 +2026,16 @@
   {
     "id": "ar093",
     "name": "Dünya Ana (Gaia)",
-    "emoji": "🌐",
+    "emoji": "🌍",
     "tradition": "Yunan / Çağdaş Ekoloji",
     "element": "toprak",
     "category": "Bütünsel anne",
-    "keywords": ["dünya", "ekoloji", "anne tanrıça", "bütünlük"],
+    "keywords": [
+      "dünya",
+      "ekoloji",
+      "anne tanrıça",
+      "bütünlük"
+    ],
     "essence": "Gaia Yunan mitolojisinde toprağın ilk tanrıçası. Modern ekoloji teorisi (Lovelock) Dünya'yı tek bir canlı sistem olarak ele alır — Gaia hipotezi.",
     "lightAspect": "Bütünsel düşünme, ekolojik bilinç, gezegensel sorumluluk.",
     "shadowAspect": "Soyut ekolojizm — somut eyleme dökmemek, doğaya 'tanrıça' diye saygı gösterip pratikte yıkmak.",
@@ -1587,7 +2052,12 @@
     "tradition": "Mitolojik / Jungian",
     "element": "hava",
     "category": "Tamamlayıcı",
-    "keywords": ["ikiz", "tamamlayıcı", "kayıp parça", "öteki yan"],
+    "keywords": [
+      "ikiz",
+      "tamamlayıcı",
+      "kayıp parça",
+      "öteki yan"
+    ],
     "essence": "Birçok mitolojide ikiz figürler vardır — biri kaybolan, biri arayan. Kastor ve Polluks, Romulus ve Remus. Tamamlayıcı yanın aranması.",
     "lightAspect": "Tamamlayıcıyı tanıma, içsel diyalog, ben'i bütünleştirme.",
     "shadowAspect": "Dış birinde tamamlanma arayışı, projeksiyon, 'yarı portakalım kim' takıntısı.",
@@ -1604,7 +2074,12 @@
     "tradition": "Jungian / Klein",
     "element": "su",
     "category": "Yutucu anne",
-    "keywords": ["yutucu", "boğan annelik", "kontrol", "öğüt"],
+    "keywords": [
+      "yutucu",
+      "boğan annelik",
+      "kontrol",
+      "öğüt"
+    ],
     "essence": "Jung'un 'devouring mother' arketipi — sevgisi boğan, kontrol eden, çocuğunu bırakmayan annelik. Hem dış annelerde hem iç ses olarak.",
     "lightAspect": "Bu arketip aydınlık değildir — onu tanımak aydınlık.",
     "shadowAspect": "Boğan sevgi, kontrol, suçluluk uyandırma, çocuğun (gerçek/sembolik) bağımsızlığını yememe.",
@@ -1621,7 +2096,12 @@
     "tradition": "Mitolojik / Jungian Shadow",
     "element": "ateş",
     "category": "Karşıt güç",
-    "keywords": ["düşman", "karşıt", "test", "ayna"],
+    "keywords": [
+      "düşman",
+      "karşıt",
+      "test",
+      "ayna"
+    ],
     "essence": "Her mitolojide 'düşman' figürü vardır — Kahraman'ı sınayan, ona zorluğu hatırlatan. İçimizdeki gölgenin dış yüzü.",
     "lightAspect": "Bu arketip dışsal değil içsel olarak yaklaşıldığında değer kazanır — düşmanı tanımak kendini tanımaktır.",
     "shadowAspect": "Dış düşman üreterek kendi gölgesini görmemek, paranoya, kollektif düşmanlık.",
@@ -1638,7 +2118,12 @@
     "tradition": "Jungian / Aile sistemi",
     "element": "su",
     "category": "Görünmeyen yara",
-    "keywords": ["görünmeyen", "ihmal", "iç çocuk", "kabul"],
+    "keywords": [
+      "görünmeyen",
+      "ihmal",
+      "iç çocuk",
+      "kabul"
+    ],
     "essence": "Aile sistem terapisinin 'kayıp çocuk' rolü — sessiz, ihmal edilen, varlığı görünmeyen çocuk. Yetişkin hâlinde 'sıkıntı yaratmama' takıntısı.",
     "lightAspect": "Bağımsızlık, kendi başına eğlenme yeteneği, sessizliğe tahammül.",
     "shadowAspect": "Görünmeme korkusu, ihtiyaçlarını dile getirememe, kronik 'fazla yer kaplamama' baskısı.",
@@ -1655,7 +2140,12 @@
     "tradition": "Çağdaş manevi gelenek",
     "element": "hava",
     "category": "Modern hâl",
-    "keywords": ["sentez", "modern manevi", "çoklu yol", "kişisel din"],
+    "keywords": [
+      "sentez",
+      "modern manevi",
+      "çoklu yol",
+      "kişisel din"
+    ],
     "essence": "Modern mistik tek bir geleneğe ait olmayan, çoklu kaynaklardan kendi yolunu sentezleyen kişi. Yoga + terapi + Jung + meditasyon.",
     "lightAspect": "Sentez kapasitesi, dogmaya direnç, kişisel manevi pratik kurma.",
     "shadowAspect": "Yüzeyel her şey, derinleşmeme, manevi market alışverişi.",
@@ -1672,7 +2162,12 @@
     "tradition": "Üçlü tanrıça / Wicca",
     "element": "toprak",
     "category": "Yaşlı bilge dişil",
-    "keywords": ["bilgelik", "yaşlanma", "bağımsızlık", "kabul"],
+    "keywords": [
+      "bilgelik",
+      "yaşlanma",
+      "bağımsızlık",
+      "kabul"
+    ],
     "essence": "Üçlü tanrıçanın üçüncü hâli (Maiden-Mother-Crone). Crone — yaşı ve bilgeliği taşıyan, artık üretkenlikten değil bilgelikten konuşan kadın.",
     "lightAspect": "Olgun bilgelik, bağımsızlık, kabule alma yeteneği, doğrudan konuşma.",
     "shadowAspect": "Acımasızlık, kapı kapama, yeni nesle yer açmama.",
@@ -1689,7 +2184,12 @@
     "tradition": "Antropolojik / Van Gennep",
     "element": "hava",
     "category": "Eşik",
-    "keywords": ["eşik", "geçiş", "ne biri ne öteki", "askıda"],
+    "keywords": [
+      "eşik",
+      "geçiş",
+      "ne biri ne öteki",
+      "askıda"
+    ],
     "essence": "Antropolog Van Gennep'in 'liminal' kavramı — geçiş ritüellerinde bir kimliği kaybedip yenisini henüz almamış kişi. Eşikteki varlık.",
     "lightAspect": "Geçişe sahip çıkma, belirsizliği kabul, ne'lik yerine ne yapacaksın'a odaklanma.",
     "shadowAspect": "Eşikte sıkışma, hiçbir şey olmama korkusu, eski kimliğe yapışma.",

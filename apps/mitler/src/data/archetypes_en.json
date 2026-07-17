@@ -6,7 +6,12 @@
     "tradition": "Jung",
     "element": "air",
     "category": "Ego Structure",
-    "keywords": ["mask", "role", "identity", "social face"],
+    "keywords": [
+      "mask",
+      "role",
+      "identity",
+      "social face"
+    ],
     "essence": "Persona is Latin for 'mask'. According to Jung, it is the face you show to the world: your role at work, as a parent, your shop-window on social media. Necessary for survival, but if you identify with it fully you forget your inner self.",
     "lightAspect": "It makes social life easier, lets you strike the right tone in the right room. With a healthy persona you can do business, draw boundaries, and create a protective layer.",
     "shadowAspect": "If the mask sticks to your face, you lose touch with your own feelings. Burnout, identity crisis and the feeling of 'I don't know what I feel' all grow from here.",
@@ -23,7 +28,12 @@
     "tradition": "Jung",
     "element": "darkness",
     "category": "Unconscious",
-    "keywords": ["rejected", "repressed", "other self", "dark face"],
+    "keywords": [
+      "rejected",
+      "repressed",
+      "other self",
+      "dark face"
+    ],
     "essence": "The Shadow is everything you do not accept in yourself: your anger, jealousy, ambition, laziness, sometimes even rejected goodness. Jung says: 'To know your shadow is not to become enlightened, but to consciously see your darkness.'",
     "lightAspect": "Whoever meets their shadow becomes whole; creativity, courage and real strength are born from integrating the shadow. It is the source of art, humour and genuine friendship.",
     "shadowAspect": "When the shadow is repressed it gets projected outward: you hate qualities in others that exist in yourself. Group hostilities, projections and family scapegoating all begin here.",
@@ -40,7 +50,12 @@
     "tradition": "Jung",
     "element": "water",
     "category": "Inner Counter-sex",
-    "keywords": ["inner woman", "feeling", "inspiration", "lunar side"],
+    "keywords": [
+      "inner woman",
+      "feeling",
+      "inspiration",
+      "lunar side"
+    ],
     "essence": "Anima is the feminine soul inside the male psyche. Intuition, feeling, inspiration, lunar energy. Jung says: when a man falls in love with a woman in the outer world, most of the time he is in love with his own anima.",
     "lightAspect": "A consciously integrated anima is the source of art, compassion and deep relationships. It teaches a man to read his feelings, to cry, to create.",
     "shadowAspect": "A repressed anima becomes either melodrama (falling in love with every woman, looking for someone to save him) or misogyny ('women are too dramatic'). Sulkiness, touchy moods and projective love all flow from here.",
@@ -57,7 +72,12 @@
     "tradition": "Jung",
     "element": "fire",
     "category": "Inner Counter-sex",
-    "keywords": ["inner man", "logos", "will", "solar side"],
+    "keywords": [
+      "inner man",
+      "logos",
+      "will",
+      "solar side"
+    ],
     "essence": "Animus is the masculine soul inside the female psyche. Logic, will, courage to step into the world, drawing boundaries. Jung says a healthy animus teaches a woman to say 'no' and to materialise her dreams.",
     "lightAspect": "A mature animus gives a woman clarity, resolve and independence. She speaks for herself, draws limits and owns her own authority.",
     "shadowAspect": "A repressed animus turns the inner voice into a cruel critic: 'You are inadequate, you can't do it.' Or it makes the woman dependent on authoritarian men, seeking power outside.",
@@ -74,7 +94,12 @@
     "tradition": "Jung",
     "element": "whole",
     "category": "Wholeness",
-    "keywords": ["wholeness", "centre", "God-image", "mandala"],
+    "keywords": [
+      "wholeness",
+      "centre",
+      "God-image",
+      "mandala"
+    ],
     "essence": "The Self is the unified totality of consciousness and the unconscious — the centre and sum of the psyche. Jung called it the 'inner God-image'. It is the destination of the individuation journey, not the ego.",
     "lightAspect": "Contact with the Self gives the feeling of being 'in the right place'; religious experience, deep intuition, mandala visions, dissolution of boundaries. Inner peace and meaning come from this axis.",
     "shadowAspect": "If the ego is confused with the Self it inflates; it slips into narcissism with phrases like 'I am enlightened, I am the guide'. Spiritual bypass and messiah complex are fed here.",
@@ -91,7 +116,12 @@
     "tradition": "Jung / Campbell",
     "element": "fire",
     "category": "Journey",
-    "keywords": ["journey", "slaying the dragon", "coming of age", "the call"],
+    "keywords": [
+      "journey",
+      "slaying the dragon",
+      "coming of age",
+      "the call"
+    ],
     "essence": "The Hero hears the call and crosses the threshold. In Campbell's monomyth the hero leaves home, is tested, faces the shadow, claims the reward and returns to share it. It is the map from adolescence to maturity.",
     "lightAspect": "The hero is courage, responsibility, growth. By doing the thing you say 'I can't do' you grow; every obstacle becomes a gift.",
     "shadowAspect": "The false hero falls into a rescuer syndrome — trying to save everyone, ignoring his own wound. Or he speaks like a hero without going on the journey ('keyboard warrior').",
@@ -108,7 +138,12 @@
     "tradition": "Jung",
     "element": "air",
     "category": "Guide",
-    "keywords": ["mentor", "wisdom", "teacher", "inner voice"],
+    "keywords": [
+      "mentor",
+      "wisdom",
+      "teacher",
+      "inner voice"
+    ],
     "essence": "The Wise Old (senex) — Merlin, Gandalf, Hızır, Yoda. The inner voice that appears in the hard moments of the journey saying 'the path goes this way'. According to Jung it is the wisdom rising from the unconscious in moments of crisis.",
     "lightAspect": "Intuitive wisdom, patience, perspective. You pause in decisions, take a deep breath, know the right timing.",
     "shadowAspect": "Dry intellectual, the philosopher cut off from feeling, the manipulator who poses as a knower while actually controlling. The ego that says 'I'll speak, you do'.",
@@ -125,7 +160,12 @@
     "tradition": "Jung",
     "element": "earth",
     "category": "Origin",
-    "keywords": ["nourishment", "womb", "nature", "giver"],
+    "keywords": [
+      "nourishment",
+      "womb",
+      "nature",
+      "giver"
+    ],
     "essence": "The Great Mother archetype is not only the biological mother; she is nature, the earth, creative female energy, the nourishing womb itself. Demeter, Cybele, Mary, Mother Earth — all faces of the same archetype.",
     "lightAspect": "Unconditional love, nourishment, protection, creation. The archetype of the hand hoeing the soil, the lap embracing the child, the palm that grows plants.",
     "shadowAspect": "The devouring Mother — not nurturing but suffocating, controlling. The mother who never lets her child grow up. Our inner voice of 'I am never enough' also comes from here.",
@@ -142,7 +182,12 @@
     "tradition": "Jung / Hyde",
     "element": "air",
     "category": "Boundary-breaker",
-    "keywords": ["trickery", "humour", "rule-breaking", "shaman-jester"],
+    "keywords": [
+      "trickery",
+      "humour",
+      "rule-breaking",
+      "shaman-jester"
+    ],
     "essence": "Trickster — Hermes, Loki, Anansi, Nasreddin Hoca, Keloğlan. By breaking the rules, the trickster actually reveals a truth. The jester is wiser than the king because he can say anything.",
     "lightAspect": "Humour, creativity, cracking the status quo. In a stuck situation, a joke or an off-script move opens the door. The source of art and revolution.",
     "shadowAspect": "Cheat, manipulator, the one who breaks his word, deceives everyone, recognises no boundary. The trickster at its extreme is close to a sociopath.",
@@ -159,7 +204,12 @@
     "tradition": "Jung / Bradshaw",
     "element": "water",
     "category": "Innocence",
-    "keywords": ["innocence", "curiosity", "play", "wound"],
+    "keywords": [
+      "innocence",
+      "curiosity",
+      "play",
+      "wound"
+    ],
     "essence": "The Inner Child is your earliest self still living inside you. It carries both the divine child (pure joy, curiosity, wonder) and the wounded child (abandonment, neglect, fear) at once.",
     "lightAspect": "The divine child is the source of creativity, play and a sense of wonder. The side that can say 'wow!', that gets caught up in play, that looks at the world with awe.",
     "shadowAspect": "The wounded child throws tantrums in an adult body — jealousy attacks, abandonment panic, sabotage. The adult's crises are often this child's cries for care.",
@@ -176,7 +226,12 @@
     "tradition": "Jung / Pearson",
     "element": "fire",
     "category": "Bond",
-    "keywords": ["passion", "union", "devotion", "aesthetic"],
+    "keywords": [
+      "passion",
+      "union",
+      "devotion",
+      "aesthetic"
+    ],
     "essence": "The Lover archetype is not only romantic love — it is the capacity to fall in love with art, an idea, a cause, nature, with God. The god Eros, the path of Mecnun, Rumi's Shams.",
     "lightAspect": "Enthusiasm, creativity, the experience of merging, courage to bond. The Lover sees the world in colour and reminds others of it.",
     "shadowAspect": "Addiction, obsession, being lost. Not being able to exist without the other, abandoning yourself, seeking romantic salvation. Adult responsibilities decay in the shadow of love.",
@@ -193,7 +248,12 @@
     "tradition": "Jung / Pearson",
     "element": "fire",
     "category": "Expression",
-    "keywords": ["creation", "inspiration", "giving form", "expression"],
+    "keywords": [
+      "creation",
+      "inspiration",
+      "giving form",
+      "expression"
+    ],
     "essence": "The Creator archetype — daimon. The compulsion to express that comes from within. If a writer doesn't write she gets sick; if a painter doesn't paint, he falls into darkness. Art is not a choice, it is a need.",
     "lightAspect": "Giving form, transforming, making meaning. Sitting opposite a chaos and pulling something out of it. The child colouring a page and the architect designing a building are the same archetype.",
     "shadowAspect": "Perfectionism, blocks, comparison. Saying 'I'm not good enough' and never starting. Or merging with the creation and dying from criticism.",
@@ -210,7 +270,12 @@
     "tradition": "Pearson",
     "element": "earth",
     "category": "Fall",
-    "keywords": ["loss", "disappointment", "reality", "solidarity"],
+    "keywords": [
+      "loss",
+      "disappointment",
+      "reality",
+      "solidarity"
+    ],
     "essence": "The Orphan archetype is born when paradise is lost. The moment of 'life is not what they said'. Consciousness realising the saviour is not coming. It hurts, but it is the gate of maturation.",
     "lightAspect": "Empathy, solidarity, realism. Meeting those who suffer the same. Letting go of false hopes and building real relationships.",
     "shadowAspect": "Victim mentality. 'It always happens to me, nobody understands.' Losing agency, constantly waiting for a saviour, sulkiness.",
@@ -227,7 +292,12 @@
     "tradition": "Pearson",
     "element": "fire",
     "category": "Revolution",
-    "keywords": ["uprising", "destruction", "freedom", "change"],
+    "keywords": [
+      "uprising",
+      "destruction",
+      "freedom",
+      "change"
+    ],
     "essence": "The Rebel archetype is the energy that feels the injustice of the system and stands against it. Prometheus steals fire, Spartacus breaks chains. The inner voice that says 'this shouldn't be this way'.",
     "lightAspect": "Justice, freedom, transformation. The collapse of aging structures, room for the new. Art movements, revolutions, personal moltings.",
     "shadowAspect": "Destruction in the name of anarchy. Being against everything but not knowing what you want. Seeing authority as a personal enemy. Constantly angry, constantly fighting.",
@@ -244,7 +314,12 @@
     "tradition": "Pearson",
     "element": "air",
     "category": "Purity",
-    "keywords": ["trust", "hope", "purity", "optimism"],
+    "keywords": [
+      "trust",
+      "hope",
+      "purity",
+      "optimism"
+    ],
     "essence": "The Innocent archetype believes the world is good. The child's first trust, the lover's first admiration, the believer's first faith. Nothing starts without this trust.",
     "lightAspect": "Hope, openness, love, the ability to begin again. The eye that can see light even in the darkest place. Gratitude and wonder.",
     "shadowAspect": "Naivety, denial, not seeing reality. Saying 'all will be well' and refusing danger. Open to deception, fertile ground for manipulation.",
@@ -261,7 +336,12 @@
     "tradition": "Pearson",
     "element": "air",
     "category": "Path",
-    "keywords": ["quest", "horizon", "meaning", "journey"],
+    "keywords": [
+      "quest",
+      "horizon",
+      "meaning",
+      "journey"
+    ],
     "essence": "The Seeker archetype cannot fit inside; it runs to the horizon. It asks 'is that all?' and looks for more. Explorer, pilgrim, philosopher, wanderer — its faces.",
     "lightAspect": "Expansion, opening horizons, being after truth. Courage to break the comfort zone. Seeing life as a journey.",
     "shadowAspect": "Cannot stay anywhere, constantly running, afraid to commit. 'There's something better' and unable to value what's in hand.",
@@ -278,7 +358,12 @@
     "tradition": "Moore-Gillette / Pearson",
     "element": "fire",
     "category": "Responsibility",
-    "keywords": ["leadership", "order", "responsibility", "vision"],
+    "keywords": [
+      "leadership",
+      "order",
+      "responsibility",
+      "vision"
+    ],
     "essence": "The Ruler archetype is the energy of the mature king/queen — the inner maturity that can govern their own kingdom. Just, fertile, responsible, holding space.",
     "lightAspect": "Taking responsibility, looking after others, setting vision. The mature leader decides not for their own ego but for everyone in the field.",
     "shadowAspect": "Tyrant (control, bullying) or weak king (refusing responsibility, fleeing). Neither is genuine authority.",
@@ -295,7 +380,12 @@
     "tradition": "Pearson / Jung",
     "element": "water",
     "category": "Service",
-    "keywords": ["healing", "care", "knowledge of the wound", "compassion"],
+    "keywords": [
+      "healing",
+      "care",
+      "knowledge of the wound",
+      "compassion"
+    ],
     "essence": "The Healer archetype is the wounded healer. From Asclepius to the Shaman, from physician to therapist — healing usually comes from the one who knows their own wound.",
     "lightAspect": "Whoever can tend their wound does not wound; they can sit in another's pain. Treatment is not just technique, it is a matter of presence.",
     "shadowAspect": "Rescuer behaviour — running from your own wound while trying to save others. Feeding off sickness, unable to truly heal anyone. Both sickened and sickening.",
@@ -312,7 +402,12 @@
     "tradition": "Pearson / Jung",
     "element": "fire",
     "category": "Transformation",
-    "keywords": ["transformation", "will", "consciousness", "symbol"],
+    "keywords": [
+      "transformation",
+      "will",
+      "consciousness",
+      "symbol"
+    ],
     "essence": "The Magician archetype can transform reality with consciousness. Uses intent, ritual, symbol. The modern magician may be a scientist, engineer, therapist — the essence is conscious transformation.",
     "lightAspect": "Changing inner and outer reality through the power of intent. Quantum, ritual, therapy — the form doesn't matter, the principle is the same.",
     "shadowAspect": "Manipulation, black magic, gathering power by deceiving others. One step further is the manipulative advertiser, demagogue, dead cult leader.",
@@ -329,7 +424,12 @@
     "tradition": "Pearson / Court tradition",
     "element": "air",
     "category": "Truth",
-    "keywords": ["humour", "truth", "lightness", "mirror"],
+    "keywords": [
+      "humour",
+      "truth",
+      "lightness",
+      "mirror"
+    ],
     "essence": "The court jester was the only person who could tell the truth even to the king. Humour carried the reality the king could not accept. The fool digests wisdom in jest.",
     "lightAspect": "Telling the truth with humour, easing tension, being able to laugh at yourself, embracing the absurdity of life.",
     "shadowAspect": "Constantly joking and not taking anything seriously. Covering pain with a mask. Using humour as a cruel weapon.",
@@ -346,7 +446,12 @@
     "tradition": "Mythological (Persephone, Artemis)",
     "element": "air",
     "category": "Independence",
-    "keywords": ["wholeness", "belonging to oneself", "potential", "purity"],
+    "keywords": [
+      "wholeness",
+      "belonging to oneself",
+      "potential",
+      "purity"
+    ],
     "essence": "The mythic virgin is not 'sexually virgin' but 'belonging to herself'. Artemis bows to no one, Athena chooses her path. Whole without taking a man as her axis.",
     "lightAspect": "Independence, choosing your path, inner wholeness. Being full even when alone. Not needing another's approval.",
     "shadowAspect": "Fear of bonding, cold loneliness, refusal of intimacy. In the shadow the emotional wall is thick.",
@@ -363,7 +468,12 @@
     "tradition": "Mythological (Hecate, Baba Yaga)",
     "element": "darkness",
     "category": "Wisdom",
-    "keywords": ["inner power", "ancient wisdom", "taboo", "light-shadow"],
+    "keywords": [
+      "inner power",
+      "ancient wisdom",
+      "taboo",
+      "light-shadow"
+    ],
     "essence": "The witch archetype — Hecate, Baba Yaga, Morrigan. The old, wise, independent woman feared by society. 'Witch hunts' fought against this wisdom in history.",
     "lightAspect": "Deep knowledge of nature, intuitive healing, the moon cycle, the death-rebirth cycle. Fully her own.",
     "shadowAspect": "Jealousy, cursing, social judgement. The bitterness of being cast out by society.",
@@ -380,7 +490,12 @@
     "tradition": "Moore-Gillette",
     "element": "fire",
     "category": "Will",
-    "keywords": ["discipline", "boundary", "courage", "purpose"],
+    "keywords": [
+      "discipline",
+      "boundary",
+      "courage",
+      "purpose"
+    ],
     "essence": "The mature warrior has their own discipline, protects their boundaries, knows their purpose. The sword doesn't cut outside, only when required; most of the time it cuts your own slackness.",
     "lightAspect": "Discipline, endurance, boundary, focus. Doing what you promised, investing in the body through difficulty.",
     "shadowAspect": "Aggressive, militant, turning everything into war. Or passive — fleeing fights, unable to set boundaries. Neither is mature.",
@@ -397,7 +512,12 @@
     "tradition": "Sufi / Christian",
     "element": "air",
     "category": "Devotion",
-    "keywords": ["devotion", "humility", "inner light", "service"],
+    "keywords": [
+      "devotion",
+      "humility",
+      "inner light",
+      "service"
+    ],
     "essence": "The Saint / Eren archetype is the person devoted to a great truth. Hallac, Yunus, St Francis. They have given their ego to the service of the 'greater'.",
     "lightAspect": "Devotion, humility, service, inner peace. Seeing the small as sacred. Gratitude.",
     "shadowAspect": "Spiritual bypass, denying real feelings, false humility, turning self-renunciation into masochism.",
@@ -414,7 +534,12 @@
     "tradition": "Shamanic / Jung shadow",
     "element": "fire",
     "category": "Primality",
-    "keywords": ["instinct", "survival", "hunger", "wildness"],
+    "keywords": [
+      "instinct",
+      "survival",
+      "hunger",
+      "wildness"
+    ],
     "essence": "The hunter / eater archetype is the primal body, hunger, instinct. Not always 'negative' — you need hunger to survive. Repressed, it bursts out.",
     "lightAspect": "Natural appetite, instinctual intelligence, body wisdom, seeing opportunity. The hunter knows what to hunt and when to wait.",
     "shadowAspect": "Uncontrolled hunger — eating disorders, addictions, sexual obsessions, hunting others. Modern life disconnected from the body distorts this archetype.",
@@ -431,7 +556,12 @@
     "tradition": "Jung / mythology",
     "element": "fire",
     "category": "Origin",
-    "keywords": ["structure", "rule", "protection", "legacy"],
+    "keywords": [
+      "structure",
+      "rule",
+      "protection",
+      "legacy"
+    ],
     "essence": "The Great Father archetype — Zeus, sky gods, inner authority. The one who sets the rule, gives the structure, leaves the legacy. The masculine counterpart of the Great Mother.",
     "lightAspect": "Giving direction, preparing the child for the world, protecting, setting boundaries. The solid voice that says 'you can do it'.",
     "shadowAspect": "Authoritarian father — intimidating, conditional love. Or absent father — leaving, indifferent. Both extremes operate internally too.",
@@ -448,7 +578,12 @@
     "tradition": "Jung (Chiron myth)",
     "element": "water",
     "category": "Paradox",
-    "keywords": ["wound", "healing", "knowledge", "service"],
+    "keywords": [
+      "wound",
+      "healing",
+      "knowledge",
+      "service"
+    ],
     "essence": "Chiron the centaur, immortal, carries a wound that never heals — yet from that very wound he heals others. The modern therapist, healer, mentor.",
     "lightAspect": "The one who accepts their wound and turns it into service. Empathy comes from deep, because they know their own pain. Authentic and effective guidance.",
     "shadowAspect": "Always talking from their own wound but it never closes. Actually projecting their pain while 'helping'. Exhausted from looking after both themselves and others.",
@@ -465,7 +600,12 @@
     "tradition": "Persephone myth",
     "element": "water",
     "category": "Transition",
-    "keywords": ["transition", "descent", "maturing", "queening"],
+    "keywords": [
+      "transition",
+      "descent",
+      "maturing",
+      "queening"
+    ],
     "essence": "Persephone (Kore) is a girl, abducted, descending to the underworld, becoming queen. The pure maiden earns her deep womanhood through the underworld journey. The archetype of transition.",
     "lightAspect": "The side that returns from descent: depth, knowing both life and death, the queen who can live in two worlds.",
     "shadowAspect": "Victim position — 'it happened without my knowledge, I am innocent'. Or staying stuck in the underworld, depression, going inward.",
@@ -482,7 +622,12 @@
     "tradition": "Native American / Greek",
     "element": "air",
     "category": "Chaos-creator",
-    "keywords": ["chaos", "creation", "taboo-breaker", "messenger"],
+    "keywords": [
+      "chaos",
+      "creation",
+      "taboo-breaker",
+      "messenger"
+    ],
     "essence": "Coyote, Hermes, Anansi — gods who create through chaos. They build the world by breaking rules; they begin not from order but from play.",
     "lightAspect": "Creative chaos, transformative humour, transgressing boundaries, forming new connections.",
     "shadowAspect": "Not standing behind your word, theft, lies, manipulation. Off-balance trickster creates destruction.",
@@ -499,7 +644,12 @@
     "tradition": "Ancient Mediterranean / Egyptian",
     "element": "earth",
     "category": "Creation",
-    "keywords": ["fertility", "mourning", "creation", "cycle"],
+    "keywords": [
+      "fertility",
+      "mourning",
+      "creation",
+      "cycle"
+    ],
     "essence": "Demeter, Isis, Cybele — creative goddesses. Giving life, taking life, carrying the cycle. Larger than motherhood: the world itself.",
     "lightAspect": "Abundance, protection, creation, knowing of the cycle. Both birthing and mourning, both strength and surrender.",
     "shadowAspect": "Frozen in mourning (Demeter dries the world while looking for her daughter). Controlling, owning the child / creation.",
@@ -516,7 +666,12 @@
     "tradition": "Alchemy / Jung",
     "element": "whole",
     "category": "Union",
-    "keywords": ["sacred union", "inner wholeness", "marriage", "balance"],
+    "keywords": [
+      "sacred union",
+      "inner wholeness",
+      "marriage",
+      "balance"
+    ],
     "essence": "Hieros Gamos — the sacred marriage. The inner union of masculine and feminine, sky and earth, consciousness and unconscious. Alchemy describes it as the chemical wedding.",
     "lightAspect": "Inner wholeness, balance, creative tension, deep relationships. Unions built on equality.",
     "shadowAspect": "Fanatical attachment to outer union, the 'half orange' fallacy, looking for inner wholeness outside.",
@@ -533,7 +688,12 @@
     "tradition": "General mythological",
     "element": "fire",
     "category": "Trial",
-    "keywords": ["test", "obstacle", "mirror", "projection"],
+    "keywords": [
+      "test",
+      "obstacle",
+      "mirror",
+      "projection"
+    ],
     "essence": "Every myth has an enemy testing the hero. Actually not external but the hero's shadow externalised. Without an enemy the hero does not develop.",
     "lightAspect": "Resistance and obstacle in life, necessary for growth. The enemy's presence shows you what you defend.",
     "shadowAspect": "Constantly creating enemies, paranoia, externalising mental structure. Saying 'because of that man' for every problem of life.",
@@ -550,7 +710,12 @@
     "tradition": "Triple goddess / Moirai",
     "element": "water",
     "category": "Time",
-    "keywords": ["maiden-mother-crone", "time", "fate", "cycle"],
+    "keywords": [
+      "maiden-mother-crone",
+      "time",
+      "fate",
+      "cycle"
+    ],
     "essence": "The triple goddess — maiden (potential), mother (creation), crone (wisdom). The Moirai (Clotho-Lachesis-Atropos) spin, measure, cut the thread of life.",
     "lightAspect": "Acceptance of three stages of life, map of inner maturing, the dance of fate and will.",
     "shadowAspect": "Getting stuck in one stage (eternal girl, smother-mother, bitter crone). Refusing to age or to see the future.",
@@ -567,7 +732,12 @@
     "tradition": "Christian / Jung",
     "element": "water",
     "category": "Birth",
-    "keywords": ["new beginning", "purity", "hope", "divine"],
+    "keywords": [
+      "new beginning",
+      "purity",
+      "hope",
+      "divine"
+    ],
     "essence": "The Holy Child archetype — Jesus, Krishna, Mithra. Light born in darkness. The start of a new cycle, purity born within.",
     "lightAspect": "Renewal, inspiration, a sense of miracle, fresh start. Light born inside the darkness — 'there is still hope'.",
     "shadowAspect": "False messianism, childhood romanticism, refusing responsibility. 'I am so special, let them wait'.",
@@ -584,7 +754,12 @@
     "tradition": "Mythological (Odysseus, Hagar)",
     "element": "water",
     "category": "Transition",
-    "keywords": ["exile", "return", "identity", "journey"],
+    "keywords": [
+      "exile",
+      "return",
+      "identity",
+      "journey"
+    ],
     "essence": "The exile archetype — Odysseus, Moses, Hagar. Cast away, waiting for years to return, or finding things changed on return. The home-universe shifts.",
     "lightAspect": "Exile deepens identity; when you don't belong you learn who you are. The return is a re-choice.",
     "shadowAspect": "Constantly moving, never bonding, losing the sense of home. Or the opposite: obsessive return, even when the old place is gone.",
@@ -601,7 +776,12 @@
     "tradition": "Mythological (Saturn-Cronus)",
     "element": "fire",
     "category": "Obstacle",
-    "keywords": ["jealousy", "losing the throne", "making room", "generational change"],
+    "keywords": [
+      "jealousy",
+      "losing the throne",
+      "making room",
+      "generational change"
+    ],
     "essence": "Cronus eats his children because he fears losing his throne. The old king / jealous god archetype is immature authority that refuses to make room.",
     "lightAspect": "If recognised internally: 'where am I not making room?' Opening to rejuvenation and handing over.",
     "shadowAspect": "Not making room for the new generation, new idea, partner. Micromanagement, envying others' success, clinging tightly to one's seat.",
@@ -618,7 +798,12 @@
     "tradition": "Greek / Sumerian",
     "element": "darkness",
     "category": "Transition",
-    "keywords": ["descent", "loss", "return", "transformation"],
+    "keywords": [
+      "descent",
+      "loss",
+      "return",
+      "transformation"
+    ],
     "essence": "Orpheus, Inanna, Demeter — descend consciously to the underworld and return. Modern psychology's 'shadow work' is this ancient journey.",
     "lightAspect": "Conscious descent, encountering the shadow, retrieving the lost piece, wisdom returning from the depths.",
     "shadowAspect": "Not returning (chronic depression, the inverse of spiritual bypass), or never descending at all (a surface life).",
@@ -635,7 +820,12 @@
     "tradition": "Siberian / Indigenous",
     "element": "whole",
     "category": "Mediator",
-    "keywords": ["two worlds", "bridge", "spirit journey", "community"],
+    "keywords": [
+      "two worlds",
+      "bridge",
+      "spirit journey",
+      "community"
+    ],
     "essence": "The shaman is a bridge between the visible and invisible realms. They fall ill, die, return — they carry their wound for the community's healing. The ancient form of the wounded healer.",
     "lightAspect": "Inter-dimensional mediator, dream interpreter, community balancer. Modern equivalents: deep therapist, creative artist, spiritual guide.",
     "shadowAspect": "False shaman — selling 'guidance' without knowledge, using others' wounds, ego trip.",
@@ -652,7 +842,12 @@
     "tradition": "Osiris / Tammuz / Jesus",
     "element": "fire",
     "category": "Cycle",
-    "keywords": ["death-rebirth", "sacrifice", "salvation", "cycle"],
+    "keywords": [
+      "death-rebirth",
+      "sacrifice",
+      "salvation",
+      "cycle"
+    ],
     "essence": "The dying-and-returning god (Osiris, Tammuz, Dionysus, Jesus) — the deep rhythm of life. Every ending is the seed of resurrection. On the personal scale: shedding skin.",
     "lightAspect": "Teaches to release the old state, to trust the new birth. Acceptance of seasonal / biological / emotional deaths.",
     "shadowAspect": "Messiah complex, constantly playing the 'sacrifice' role, the drama of dying for others, refusing rebirth.",
@@ -669,7 +864,12 @@
     "tradition": "Sufism / Jung Self",
     "element": "whole",
     "category": "Maturity",
-    "keywords": ["mastery", "centre", "guidance", "fullness"],
+    "keywords": [
+      "mastery",
+      "centre",
+      "guidance",
+      "fullness"
+    ],
     "essence": "The pole, the axis of the world; in Sufism the 'pole of the time', in Jung the completed Self. The final figure where all archetypes integrate. Silent, full, giving direction through presence.",
     "lightAspect": "Integrated opposites, ego and Self reconciled, inner maturity communicating without need of words.",
     "shadowAspect": "False pole — the ego that says 'I am the pole'. The true pole never speaks; recognition belongs to others.",
@@ -686,7 +886,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "air",
     "category": "Beginning",
-    "keywords": ["purity", "leap", "cliff", "zero"],
+    "keywords": [
+      "purity",
+      "leap",
+      "cliff",
+      "zero"
+    ],
     "essence": "Tarot's zero card — the start of the whole journey. The Fool stands at the edge of the cliff but is not afraid; he has not yet learned to judge. The pure state of the soul, freshly born consciousness.",
     "lightAspect": "Courage, openness, unexpected leap. Opening a clean page in a new chapter. Taking a step without calculation.",
     "shadowAspect": "Foolishness, carelessness, not seeing consequences. Walking off the same cliff repeatedly. Refusing to mature.",
@@ -703,7 +908,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Intuition",
-    "keywords": ["intuition", "inner knowing", "veil", "moon"],
+    "keywords": [
+      "intuition",
+      "inner knowing",
+      "veil",
+      "moon"
+    ],
     "essence": "The High Priestess sits between two pillars — known and unknown, night and day. The Torah in her hand, a moon crown on her head. The feminine voice carrying inner knowledge.",
     "lightAspect": "Intuition, inner knowing, silent wisdom. Hearing what hasn't been said. The capacity to read messages from dreams, body and nature.",
     "shadowAspect": "Not sharing the secret, cold distance, distrust of one's own intuition. The pride that hides what it knows.",
@@ -720,7 +930,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "earth",
     "category": "Abundance",
-    "keywords": ["abundance", "creation", "nature", "motherhood"],
+    "keywords": [
+      "abundance",
+      "creation",
+      "nature",
+      "motherhood"
+    ],
     "essence": "The Empress sits on the throne of nature's abundance, surrounded by wheat and running water. The concrete, world-visible form of creative feminine energy.",
     "lightAspect": "Abundance, creation, love, body wisdom. Harmony with nature. Opening space for art, child, project to be born.",
     "shadowAspect": "Overprotective, smothering motherhood. Being a slave to material things. Making only bodily pleasure into meaning.",
@@ -737,7 +952,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Structure",
-    "keywords": ["authority", "structure", "order", "father"],
+    "keywords": [
+      "authority",
+      "structure",
+      "order",
+      "father"
+    ],
     "essence": "The Emperor sits on his stone-carved throne. Firmness, structure, rule. Mature masculine authority — the boundary and order that won't be torn down.",
     "lightAspect": "Responsibility, boundary, protection, building structure. The maturity that can say 'no'. Inner authority.",
     "shadowAspect": "Tyrant, control freak, loveless discipline. Not paternal but oppressive. Slave to the rule.",
@@ -754,7 +974,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "air",
     "category": "Tradition",
-    "keywords": ["tradition", "teaching", "bridge", "institution"],
+    "keywords": [
+      "tradition",
+      "teaching",
+      "bridge",
+      "institution"
+    ],
     "essence": "The Hierophant is the bridge carrying sacred knowledge through tradition. Sheikh, hoja, priest, scholar — one who passes knowledge to a generation.",
     "lightAspect": "Wisdom of tradition, the power of continuity, the humility of learning. Teaching, mentorship, carrying legacy.",
     "shadowAspect": "Dogma, being a slave to the institution, not questioning. Using knowledge for control. Saying 'untraditional' to a new voice.",
@@ -771,7 +996,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Will",
-    "keywords": ["victory", "will", "control", "direction"],
+    "keywords": [
+      "victory",
+      "will",
+      "control",
+      "direction"
+    ],
     "essence": "The Chariot is pulled by two sphinxes (light and dark). The driver steers not by reins but by inner alignment. The pure form of will.",
     "lightAspect": "Focus on a goal, inner will, carrying victory. Succeeding in pulling opposing forces in one direction.",
     "shadowAspect": "Obsession, over-control, sacrificing everything for the win. Losing direction but still driving.",
@@ -788,7 +1018,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Inner Strength",
-    "keywords": ["patience", "compassion", "inner power", "wild side"],
+    "keywords": [
+      "patience",
+      "compassion",
+      "inner power",
+      "wild side"
+    ],
     "essence": "A woman gently closes the jaw of a wild lion — not by force. Real strength is not control, but recognising and taming with gentleness.",
     "lightAspect": "Patience, inner calm, consciously carrying the wild side. Not force but the power of love. Walking gently despite fear.",
     "shadowAspect": "Repressed anger, false softness. Denying the wild and fleeing oneself. Or the opposite — a slave to control.",
@@ -805,7 +1040,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "earth",
     "category": "Withdrawal",
-    "keywords": ["solitude", "inner light", "wordlessness", "quest"],
+    "keywords": [
+      "solitude",
+      "inner light",
+      "wordlessness",
+      "quest"
+    ],
     "essence": "The Hermit is alone on a mountain, lantern in hand. Carries knowledge not from the crowd but from silence. Deep knowing is impossible without solitude.",
     "lightAspect": "Conscious solitude, inner quest, carrying one's own light. Wisdom not found in crowds.",
     "shadowAspect": "Fleeing into loneliness and rejecting bonds, social withdrawal, spiritual pride. 'I understood, no one understands.'",
@@ -822,7 +1062,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "air",
     "category": "Cycle",
-    "keywords": ["fate", "cycle", "change", "chance"],
+    "keywords": [
+      "fate",
+      "cycle",
+      "change",
+      "chance"
+    ],
     "essence": "The Wheel of Fortune spins continuously. Yesterday at the top, today at the bottom; today at the bottom, tomorrow turns again. The fundamental rhythm of life: change.",
     "lightAspect": "Acceptance of flow, knowing the moment is temporary. Being calm in both victory and loss.",
     "shadowAspect": "Staying in the wheel's grip, refusing control entirely. Or the opposite — exhausting yourself trying to stop the wheel.",
@@ -839,7 +1084,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "air",
     "category": "Balance",
-    "keywords": ["balance", "cause-effect", "honesty", "karma"],
+    "keywords": [
+      "balance",
+      "cause-effect",
+      "honesty",
+      "karma"
+    ],
     "essence": "Justice — sword in one hand, scales in the other. Eyes open — no bargaining, only weighing. The personified law of cause and effect.",
     "lightAspect": "Honesty, cause-effect awareness, taking responsibility. Aligning what you say with what you do.",
     "shadowAspect": "Judgement, revenge, cold calculation. Turning justice into personal anger.",
@@ -856,7 +1106,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Surrender",
-    "keywords": ["surrender", "inverted view", "sacrifice", "pause"],
+    "keywords": [
+      "surrender",
+      "inverted view",
+      "sacrifice",
+      "pause"
+    ],
     "essence": "The Hanged Man hangs by his foot, upside down — yet his face is calm. Conscious surrender, pause, seeing the world in reverse.",
     "lightAspect": "Sacrifice of ego, seeing from a reverse angle, conscious waiting. The power of 'not doing'.",
     "shadowAspect": "Victim role, victimhood, getting stuck in the inversion. Wilting in passive resistance.",
@@ -873,7 +1128,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Transformation",
-    "keywords": ["ending", "transformation", "renewal", "release"],
+    "keywords": [
+      "ending",
+      "transformation",
+      "renewal",
+      "release"
+    ],
     "essence": "Death in Tarot is not physical death — it is the end of a chapter. Without letting go of the old, the new does not arrive. It looks scary but it is the most healing card.",
     "lightAspect": "Courage to end, releasing, opening space for renewal. When a worn-out part dies the true rebirth begins.",
     "shadowAspect": "Refusing endings, artificially extending a dead relationship/job/identity. Or the opposite — endlessly destroying and starting over, with nothing rooting.",
@@ -890,7 +1150,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Balance",
-    "keywords": ["patience", "balance", "mixture", "flow"],
+    "keywords": [
+      "patience",
+      "balance",
+      "mixture",
+      "flow"
+    ],
     "essence": "An angel pours water between two cups — neither too much nor too little, continuous flow. Temperance: opposites meeting in the right ratio.",
     "lightAspect": "Patience, balance, the right ratio. Knowing how much of what. Not running to extremes.",
     "shadowAspect": "Passivity, never reaching either extreme, indecision. Surrendering initiative under the excuse of 'temperance'.",
@@ -907,7 +1172,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Attachment",
-    "keywords": ["addiction", "captivity", "passion", "shadow"],
+    "keywords": [
+      "addiction",
+      "captivity",
+      "passion",
+      "shadow"
+    ],
     "essence": "On the Devil card two people are bound with a chain — but the chain is loose. Captivity mostly comes from inside. Symbol of addiction, obsession, captive passion.",
     "lightAspect": "Seeing where you're stuck. Realising the chain is loose. Approaching lust without judgement.",
     "shadowAspect": "Addiction (substance, relationship, work, social media). Romanticising the dark. The 'I can't' narrative.",
@@ -924,7 +1194,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Destruction",
-    "keywords": ["sudden collapse", "exposure", "shock", "cleansing"],
+    "keywords": [
+      "sudden collapse",
+      "exposure",
+      "shock",
+      "cleansing"
+    ],
     "essence": "The Tower is struck by lightning and falls; everything inside drops. The sudden collapse of everything built on falseness. Shaking but freeing.",
     "lightAspect": "Fall of the false structure, the truth becoming visible. The relief of 'it wasn't that much anyway'.",
     "shadowAspect": "Romanticising destruction, deliberately burning your own tower. Chaos for chaos's sake.",
@@ -941,7 +1216,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "air",
     "category": "Hope",
-    "keywords": ["hope", "inspiration", "renewal", "purity"],
+    "keywords": [
+      "hope",
+      "inspiration",
+      "renewal",
+      "purity"
+    ],
     "essence": "A naked woman under the night sky pours water onto both earth and pool, with 8 stars above her. Calm hope arriving after a crisis.",
     "lightAspect": "Renewed hope, inspiration, openness. The return of light after darkness. Real gratitude.",
     "shadowAspect": "Naive optimism, dissociation from reality, the 'think well and it will be well' romance.",
@@ -958,7 +1238,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Unconscious",
-    "keywords": ["illusion", "unconscious", "dream", "fear"],
+    "keywords": [
+      "illusion",
+      "unconscious",
+      "dream",
+      "fear"
+    ],
     "essence": "Under the moon a wolf and a dog look, a crab emerges from water. Uncertainty, dream, the territory of the unconscious. Not bright but important.",
     "lightAspect": "Intuitive depth, dream work, descending to the unconscious. Accepting uncertainty.",
     "shadowAspect": "Illusion, paranoia, deciding from fear. Confusing darkness with reality.",
@@ -975,7 +1260,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Joy",
-    "keywords": ["joy", "clarity", "child-like joy", "success"],
+    "keywords": [
+      "joy",
+      "clarity",
+      "child-like joy",
+      "success"
+    ],
     "essence": "On the Sun card a child rides a white horse in front of sunflowers, sun blazing above. Pure joy, success, the genuine beauty of life.",
     "lightAspect": "Joy, clarity, real success, playful spirit. Rejoicing in what is to be rejoiced.",
     "shadowAspect": "False optimism, not seeing the shadow, the constant pressure to 'be good'.",
@@ -992,7 +1282,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Call",
-    "keywords": ["awakening", "call", "confronting the past", "rebirth"],
+    "keywords": [
+      "awakening",
+      "call",
+      "confronting the past",
+      "rebirth"
+    ],
     "essence": "An angel blows a trumpet, the dead rise from graves. Awakening to a call, facing the past, the decision of rebirth.",
     "lightAspect": "Listening to a genuine call, honouring the past, awakening to a new life.",
     "shadowAspect": "Getting stuck in the past, a judgemental approach, the rhetoric of false 'awakening'.",
@@ -1009,7 +1304,12 @@
     "tradition": "Tarot Major Arcana",
     "element": "whole",
     "category": "Wholeness",
-    "keywords": ["wholeness", "cycle closing", "completion", "celebration"],
+    "keywords": [
+      "wholeness",
+      "cycle closing",
+      "completion",
+      "celebration"
+    ],
     "essence": "The World card is Tarot's final stop. The naked figure dances, four creatures (human, eagle, lion, bull) at four corners. Wholeness complete.",
     "lightAspect": "Completion, closing of a cycle, celebrating wholeness. The feeling of 'everything is in its place'.",
     "shadowAspect": "Thinking 'I arrived' and freezing. Not seeing the start of the next cycle.",
@@ -1026,7 +1326,12 @@
     "tradition": "Greco-Roman / Pantheon",
     "element": "air",
     "category": "Masculine authority",
-    "keywords": ["sky father", "lightning", "order", "kingship"],
+    "keywords": [
+      "sky father",
+      "lightning",
+      "order",
+      "kingship"
+    ],
     "essence": "Zeus / Jupiter, the sky god, holder of lightning, king of Olympus. The peak of masculine authority, rule and order. Both protective and capricious.",
     "lightAspect": "Taking responsibility, governing from a broad perspective, being the roof of family / community. The capacity to decide.",
     "shadowAspect": "Patriarchal pride, clinging to the throne, conditional love. The inflation of the male ego.",
@@ -1043,7 +1348,12 @@
     "tradition": "Greco-Roman / Norse",
     "element": "air",
     "category": "Mature feminine authority",
-    "keywords": ["marriage", "loyalty", "queen", "dignity"],
+    "keywords": [
+      "marriage",
+      "loyalty",
+      "queen",
+      "dignity"
+    ],
     "essence": "Hera, the wife of Zeus, guardian of marriage and dignity. Frigg in Norse, the queen who knows the future, wife of Odin. Symbol of mature feminine authority.",
     "lightAspect": "Loyalty, dignity, the sacredness of marriage / commitment, feminine maturity.",
     "shadowAspect": "Jealousy, revenge, living in the husband's shadow. The toxic form of ownership.",
@@ -1060,7 +1370,12 @@
     "tradition": "Greco-Roman",
     "element": "air",
     "category": "Strategy",
-    "keywords": ["strategy", "mind", "war", "craft"],
+    "keywords": [
+      "strategy",
+      "mind",
+      "war",
+      "craft"
+    ],
     "essence": "Athena was born armed from Zeus's head — the goddess who makes war with strategy and builds wisdom with art and craft. Union of intellect and courage.",
     "lightAspect": "Strategy, courage coordinated with mind, love of craft, resolute wisdom.",
     "shadowAspect": "Over-control, dismissal of feelings, cold calculation.",
@@ -1077,7 +1392,12 @@
     "tradition": "Greco-Roman",
     "element": "earth",
     "category": "Independence",
-    "keywords": ["wild nature", "virginity", "moon", "hunt"],
+    "keywords": [
+      "wild nature",
+      "virginity",
+      "moon",
+      "hunt"
+    ],
     "essence": "Artemis, moon goddess, protector of the forest, the unmarried wild maiden. The ancient meaning of 'virgin' — not 'outside of marriage' but 'belonging to herself'.",
     "lightAspect": "Independence, bond with nature, being enough for yourself. Being complete without being attached to anyone.",
     "shadowAspect": "Disconnection, coldness, refusing intimacy. Staying alone with the line 'I am strong alone'.",
@@ -1094,7 +1414,12 @@
     "tradition": "Greco-Roman",
     "element": "water",
     "category": "Love-beauty",
-    "keywords": ["love", "beauty", "lust", "creation"],
+    "keywords": [
+      "love",
+      "beauty",
+      "lust",
+      "creation"
+    ],
     "essence": "Aphrodite, the goddess of love born of sea foam. Not only romantic — aesthetic, attraction, the driving force of creation.",
     "lightAspect": "Aesthetic awareness, attraction, capacity for genuine love, creating beauty.",
     "shadowAspect": "Manipulative charm, narcissism, using lust for power.",
@@ -1111,7 +1436,12 @@
     "tradition": "Greco-Roman",
     "element": "fire",
     "category": "Aggressive masculine",
-    "keywords": ["war", "anger", "passion", "attack"],
+    "keywords": [
+      "war",
+      "anger",
+      "passion",
+      "attack"
+    ],
     "essence": "Ares — the unloved Greek war god. When he becomes Roman Mars he is elevated — brings spring, protects. Together they are the two faces of raw masculine energy.",
     "lightAspect": "Courage, fighting capacity, instinct to protect, defending boundaries.",
     "shadowAspect": "Aggressive, uncontrolled anger, tendency to physical violence, destruction for destruction's sake.",
@@ -1128,7 +1458,12 @@
     "tradition": "Greco-Roman",
     "element": "fire",
     "category": "Craft",
-    "keywords": ["craft", "smithing", "creation", "wound"],
+    "keywords": [
+      "craft",
+      "smithing",
+      "creation",
+      "wound"
+    ],
     "essence": "Hephaestus is lame, ugly, but the weapons of the gods come from his hands. Archetype of the wounded craftsman — known not by form but by creation.",
     "lightAspect": "Love of making with hands, craft patience, honouring invisible labour. Wound turned into creation.",
     "shadowAspect": "Normalising invisibility, devaluing yourself, always making someone else's weapon but forgetting your own.",
@@ -1145,7 +1480,12 @@
     "tradition": "Greco-Roman",
     "element": "water",
     "category": "Ecstasy",
-    "keywords": ["ecstasy", "wine", "dance", "ego dissolution"],
+    "keywords": [
+      "ecstasy",
+      "wine",
+      "dance",
+      "ego dissolution"
+    ],
     "essence": "Dionysus, god of wine, dance, collective ecstasy. While Apollo is control, Dionysus is surrender. The sacred form of ego dissolution.",
     "lightAspect": "Ecstasy, dance, artistic wildness, union through ego dissolution. Ritual collective joy.",
     "shadowAspect": "Addiction, loss of control, losing oneself by surrendering to lust.",
@@ -1162,7 +1502,12 @@
     "tradition": "Greco-Roman",
     "element": "darkness",
     "category": "Unconscious",
-    "keywords": ["underworld", "hidden wealth", "death", "depth"],
+    "keywords": [
+      "underworld",
+      "hidden wealth",
+      "death",
+      "depth"
+    ],
     "essence": "Hades is the god of the underworld — not of death but its administrator. At the same time the owner of hidden riches (jewels, minerals). The king of the unconscious.",
     "lightAspect": "Depth, ownership of unconscious riches, mastery in shadow work.",
     "shadowAspect": "Closing inward, disconnection from life, depression, not returning to the world.",
@@ -1179,7 +1524,12 @@
     "tradition": "Greco-Roman",
     "element": "earth",
     "category": "Giving mother",
-    "keywords": ["harvest", "motherhood", "mourning", "cycle"],
+    "keywords": [
+      "harvest",
+      "motherhood",
+      "mourning",
+      "cycle"
+    ],
     "essence": "Demeter governs the seasons; when her daughter Persephone is lost she dries the world. Both abundance and mourning — the two ends of the maternal bond.",
     "lightAspect": "Giving motherhood, capacity to nourish, deep harmony with nature, the strength to continue even in loss.",
     "shadowAspect": "Excessive mourning, using love to control, not being able to release a (literal or symbolic) child.",
@@ -1196,7 +1546,12 @@
     "tradition": "Hindu",
     "element": "fire",
     "category": "Cosmic transformation",
-    "keywords": ["destruction", "transformation", "tantra", "dance"],
+    "keywords": [
+      "destruction",
+      "transformation",
+      "tantra",
+      "dance"
+    ],
     "essence": "Shiva is the destroyer-transformer of the Hindu trinity. As Nataraja he dances creation's dance, making absence the precondition of creation.",
     "lightAspect": "Conscious destruction, courage to let the old go, living in dance. Acceptance of emptiness.",
     "shadowAspect": "Constantly burning down without starting the new. Reducing tantra to lust.",
@@ -1213,7 +1568,12 @@
     "tradition": "Hindu",
     "element": "water",
     "category": "Sustaining",
-    "keywords": ["sustaining", "balance", "avatar", "harmony"],
+    "keywords": [
+      "sustaining",
+      "balance",
+      "avatar",
+      "harmony"
+    ],
     "essence": "Vishnu is the god protecting cosmic order. When justice is broken he descends as an 'avatar' — Rama, Krishna, Buddha. The continually returning protector.",
     "lightAspect": "Maintaining order, taking the right form in a crisis moment, universal love.",
     "shadowAspect": "Owning the status quo, blocking necessary destruction, trying to always 'be good'.",
@@ -1230,7 +1590,12 @@
     "tradition": "Hindu",
     "element": "fire",
     "category": "Destructive feminine",
-    "keywords": ["destructive feminine", "ego death", "wildness", "compassion"],
+    "keywords": [
+      "destructive feminine",
+      "ego death",
+      "wildness",
+      "compassion"
+    ],
     "essence": "Kali wears a necklace of skulls, drips with blood, tongue protruding. Appears frightening but is in fact the destroyer of the ego — the deepest motherhood.",
     "lightAspect": "Courage to destroy the ego, wild compassion, swallowing the false. The capacity to 'frighten with love'.",
     "shadowAspect": "Destruction for destruction, mixing wildness with violence, shattering what you love.",
@@ -1247,7 +1612,12 @@
     "tradition": "Hindu",
     "element": "earth",
     "category": "Obstacle",
-    "keywords": ["obstacle", "threshold", "beginning", "wisdom"],
+    "keywords": [
+      "obstacle",
+      "threshold",
+      "beginning",
+      "wisdom"
+    ],
     "essence": "Ganesha is the elephant-headed god, both placer and remover of obstacles. Stands at the door of beginnings. Playful in the lap of wisdom.",
     "lightAspect": "Looking at obstacles with wisdom, honouring beginnings, uniting play and seriousness.",
     "shadowAspect": "Personalising obstacles, constantly waiting for someone to remove them.",
@@ -1264,7 +1634,12 @@
     "tradition": "Norse",
     "element": "air",
     "category": "Cost of wisdom",
-    "keywords": ["wisdom", "sacrifice", "raven", "one eye"],
+    "keywords": [
+      "wisdom",
+      "sacrifice",
+      "raven",
+      "one eye"
+    ],
     "essence": "Odin gave one eye to Mimir's well for wisdom, hung on the world-tree for nine days and learned the runes. Symbol of the price of wisdom.",
     "lightAspect": "Sacrifice for wisdom, deep seeing, spiritual discipline. Awareness 'I am paying the cost'.",
     "shadowAspect": "Romanticising pain, unnecessary sacrifice, hero complex.",
@@ -1281,7 +1656,12 @@
     "tradition": "Norse",
     "element": "fire",
     "category": "Protective masculine",
-    "keywords": ["strength", "protection", "thunder", "common folk"],
+    "keywords": [
+      "strength",
+      "protection",
+      "thunder",
+      "common folk"
+    ],
     "essence": "Thor protects Asgard with Mjölnir (the hammer). Unlike noble Odin, he is on the side of ordinary people. The folk version of the protective masculine.",
     "lightAspect": "Protection, being on the side of ordinary people, honest power, courage.",
     "shadowAspect": "Striking without thinking, coarseness, looking for simple solutions.",
@@ -1298,7 +1678,12 @@
     "tradition": "Norse",
     "element": "earth",
     "category": "Abundance",
-    "keywords": ["abundance", "peace", "agriculture", "marriage"],
+    "keywords": [
+      "abundance",
+      "peace",
+      "agriculture",
+      "marriage"
+    ],
     "essence": "Frey is from the Vanir, god of abundance and peace. He even gave his sword for his love. Archetype of masculine love and giving.",
     "lightAspect": "Abundance, sharing, ability to give for love, peace-making.",
     "shadowAspect": "Over-giving, losing yourself, offering boundless gifts.",
@@ -1315,7 +1700,12 @@
     "tradition": "Egyptian / Greek",
     "element": "fire",
     "category": "Light of consciousness",
-    "keywords": ["sun", "consciousness", "order", "light"],
+    "keywords": [
+      "sun",
+      "consciousness",
+      "order",
+      "light"
+    ],
     "essence": "Ra is Egypt's sun god, Apollo Greece's. Both are light of consciousness, mind, music, prophecy. The solar king archetype — bringing the day.",
     "lightAspect": "Clear consciousness, mind, the power of expression, art and music.",
     "shadowAspect": "Excessive rationality, denying the lunar side, getting stuck in the light.",
@@ -1332,7 +1722,12 @@
     "tradition": "Egyptian",
     "element": "darkness",
     "category": "Transition",
-    "keywords": ["death", "transition", "weighing", "judgement"],
+    "keywords": [
+      "death",
+      "transition",
+      "weighing",
+      "judgement"
+    ],
     "essence": "Anubis is jackal-headed, the guide who takes the dead to the underworld. Weighs the heart against the feather — if heavy the soul dies, if light it continues.",
     "lightAspect": "Guiding through endings, threshold protection, being with you in moments of passage.",
     "shadowAspect": "Becoming overly preoccupied with the dead, grief complex, not returning to the living.",
@@ -1349,7 +1744,12 @@
     "tradition": "Egyptian / Hermetic",
     "element": "air",
     "category": "Knowledge-Word",
-    "keywords": ["writing", "magic", "knowledge", "moon"],
+    "keywords": [
+      "writing",
+      "magic",
+      "knowledge",
+      "moon"
+    ],
     "essence": "Thoth is ibis-headed, lunar-linked, the god who gives writing, number and magic to humanity. In the Hermetic tradition he merges with the 'thrice-great Hermes'.",
     "lightAspect": "Putting knowledge into writing, using symbol, the power of language, keeping records.",
     "shadowAspect": "Manipulating with words, hiding knowledge, arrogant learning.",
@@ -1366,7 +1766,12 @@
     "tradition": "Egyptian",
     "element": "water",
     "category": "Spiritual mother",
-    "keywords": ["magic", "motherhood", "healing", "integrating"],
+    "keywords": [
+      "magic",
+      "motherhood",
+      "healing",
+      "integrating"
+    ],
     "essence": "When her husband Osiris was dismembered, Isis collected the pieces and put them together. Goddess of magic, healing, and re-uniting parts.",
     "lightAspect": "Integrating parts, deep motherhood, magical healing. The power of love beyond.",
     "shadowAspect": "Using magic for control, trying to 'fix' another.",
@@ -1383,7 +1788,12 @@
     "tradition": "Buddhist / Mahayana",
     "element": "water",
     "category": "Compassion",
-    "keywords": ["compassion", "mercy", "motherhood", "rescuer"],
+    "keywords": [
+      "compassion",
+      "mercy",
+      "motherhood",
+      "rescuer"
+    ],
     "essence": "Green Tara in Buddhism is the feminine bodhisattva who runs swiftly to help. In Chinese, Kuan Yin — 'she who hears the cries'. The pure form of compassion.",
     "lightAspect": "Limitless compassion, capacity to carry another's pain, quick help.",
     "shadowAspect": "Overcompassion — losing yourself, trying to save everyone, burnout.",
@@ -1396,11 +1806,16 @@
   {
     "id": "ar083",
     "name": "Nature Shaman (Pachamama)",
-    "emoji": "🌎",
+    "emoji": "⛰️",
     "tradition": "Andes / Indigenous American",
     "element": "earth",
     "category": "Natural wholeness",
-    "keywords": ["earth mother", "nature", "ritual", "respect"],
+    "keywords": [
+      "earth mother",
+      "nature",
+      "ritual",
+      "respect"
+    ],
     "essence": "Pachamama is the Earth Mother of the Andean peoples. A ritual relationship with nature — giving, taking, balancing. The forefather of modern ecological consciousness.",
     "lightAspect": "Ritual relationship with nature, take-give balance, ecological awareness.",
     "shadowAspect": "Nature romance — speaking of 'natural living' without actually bonding.",
@@ -1417,7 +1832,12 @@
     "tradition": "Norse",
     "element": "fire",
     "category": "Chaos bringer",
-    "keywords": ["chaos", "shapeshifter", "betrayal", "newness"],
+    "keywords": [
+      "chaos",
+      "shapeshifter",
+      "betrayal",
+      "newness"
+    ],
     "essence": "Loki is the Norse pantheon's trickster — shape-shifter, rule-breaker, both helper and betrayer. The chaos that rattles the status quo.",
     "lightAspect": "Rule-breaking wit, unexpected solutions, shaking up status quo.",
     "shadowAspect": "Betrayal, not standing behind your word, chaos for chaos.",
@@ -1434,7 +1854,12 @@
     "tradition": "Hindu",
     "element": "air",
     "category": "Divine play",
-    "keywords": ["lila", "flute", "love", "play"],
+    "keywords": [
+      "lila",
+      "flute",
+      "love",
+      "play"
+    ],
     "essence": "Krishna is the blue-skinned divine child playing the flute. Lila — the symbol of divine play. Also a teacher of wild love.",
     "lightAspect": "Spirit of play, wisdom through love, the power of music, lightness within wisdom.",
     "shadowAspect": "Constantly playing — refusing responsibility. Scattering love.",
@@ -1451,7 +1876,12 @@
     "tradition": "Hindu",
     "element": "air",
     "category": "Loyalty",
-    "keywords": ["devotion", "loyalty", "service", "strength"],
+    "keywords": [
+      "devotion",
+      "loyalty",
+      "service",
+      "strength"
+    ],
     "essence": "Hanuman the monkey god, fully devoted to Rama. The strength reached through devotion — carrying mountains, crossing oceans.",
     "lightAspect": "Genuine devotion, serving strength, transcending self-centeredness.",
     "shadowAspect": "Enslavement, loss of boundary, losing yourself by attaching to another.",
@@ -1468,7 +1898,12 @@
     "tradition": "Sufism / Anatolia",
     "element": "air",
     "category": "Spiritual maturity",
-    "keywords": ["pir", "veli", "mature human", "wisdom"],
+    "keywords": [
+      "pir",
+      "veli",
+      "mature human",
+      "wisdom"
+    ],
     "essence": "The Pir in Sufism is the head of the order, the guide of the spiritual path. The Veli is 'one close to God'. The social image of the matured soul.",
     "lightAspect": "Maturity, showing the way, tolerance, the state of service.",
     "shadowAspect": "False messianism, owning the disciple ego-fully, spiritual narcissism.",
@@ -1485,7 +1920,12 @@
     "tradition": "Historical-Mythological / Roman",
     "element": "fire",
     "category": "Freedom warrior",
-    "keywords": ["uprising", "freedom", "slave", "rebellion"],
+    "keywords": [
+      "uprising",
+      "freedom",
+      "slave",
+      "rebellion"
+    ],
     "essence": "Spartacus, the figure who began the Roman gladiator-slave revolt. Archetype of standing for the oppressed.",
     "lightAspect": "Courage to stand against injustice, collective desire for freedom, solidarity.",
     "shadowAspect": "Sticking to the rebel identity. Mistaking destruction for solution.",
@@ -1502,7 +1942,12 @@
     "tradition": "Christian",
     "element": "water",
     "category": "Pain-bearer",
-    "keywords": ["mourning", "mother's pain", "compassion", "acceptance"],
+    "keywords": [
+      "mourning",
+      "mother's pain",
+      "compassion",
+      "acceptance"
+    ],
     "essence": "The Virgin Mary, when her son was taken from the cross, carried him in her lap. 'Pieta' — the pure state of mourning. Symbol of the capacity to carry loss with love.",
     "lightAspect": "Capacity to mourn, looking at loss with love, bearing pain in compassion.",
     "shadowAspect": "Victim-mother complex, turning pain into identity.",
@@ -1519,7 +1964,12 @@
     "tradition": "Moore-Gillette",
     "element": "fire",
     "category": "Mature masculine",
-    "keywords": ["responsibility", "centre", "order", "abundance"],
+    "keywords": [
+      "responsibility",
+      "centre",
+      "order",
+      "abundance"
+    ],
     "essence": "In Moore-Gillette's 'mature masculine' typology the King is the archetype of centre and responsibility. He decides not from ego but from the field.",
     "lightAspect": "Genuine authority, owning the field, lifting others, setting vision.",
     "shadowAspect": "Tyrant (control freak) or Weak King (fleeing responsibility).",
@@ -1536,7 +1986,12 @@
     "tradition": "Mature Feminine",
     "element": "water",
     "category": "Mature feminine",
-    "keywords": ["inner authority", "emotional intelligence", "holding space", "grace"],
+    "keywords": [
+      "inner authority",
+      "emotional intelligence",
+      "holding space",
+      "grace"
+    ],
     "essence": "The Queen form of the mature feminine — inner authority, emotional intelligence, the ability to hold space. She governs from bond, not ego.",
     "lightAspect": "Inner authority, holding space, emotional intelligence, refined power.",
     "shadowAspect": "Manipulator (control with grace) or the girl afraid of her power (refusing authority).",
@@ -1553,7 +2008,12 @@
     "tradition": "Buddhist",
     "element": "air",
     "category": "Awakening",
-    "keywords": ["awakening", "presence", "consciousness", "compassion"],
+    "keywords": [
+      "awakening",
+      "presence",
+      "consciousness",
+      "compassion"
+    ],
     "essence": "Buddha means 'the awakened one'. Under the bodhi tree he liberated himself from his inner chains. Both goal and path archetype of awakening.",
     "lightAspect": "Full awareness, ego death, universal compassion, purity of the moment.",
     "shadowAspect": "Spiritual pride ('I am enlightened'), passive wisdom, indifference to the world.",
@@ -1566,11 +2026,16 @@
   {
     "id": "ar093",
     "name": "World Mother (Gaia)",
-    "emoji": "🌐",
+    "emoji": "🌍",
     "tradition": "Greek / Modern Ecology",
     "element": "earth",
     "category": "Holistic mother",
-    "keywords": ["earth", "ecology", "mother goddess", "wholeness"],
+    "keywords": [
+      "earth",
+      "ecology",
+      "mother goddess",
+      "wholeness"
+    ],
     "essence": "Gaia is the first goddess of the earth in Greek mythology. Modern ecology theory (Lovelock) treats Earth as a single living system — the Gaia hypothesis.",
     "lightAspect": "Holistic thinking, ecological consciousness, planetary responsibility.",
     "shadowAspect": "Abstract ecologism — not turning into concrete action, calling nature 'goddess' while destroying her in practice.",
@@ -1587,7 +2052,12 @@
     "tradition": "Mythological / Jungian",
     "element": "air",
     "category": "Complement",
-    "keywords": ["twin", "complement", "missing piece", "other side"],
+    "keywords": [
+      "twin",
+      "complement",
+      "missing piece",
+      "other side"
+    ],
     "essence": "Many mythologies have twin figures — one lost, one searching. Castor and Pollux, Romulus and Remus. The search for the complementary side.",
     "lightAspect": "Recognising the complement, inner dialogue, integrating the 'me'.",
     "shadowAspect": "Seeking completion in another, projection, the obsession 'who is my half-orange'.",
@@ -1604,7 +2074,12 @@
     "tradition": "Jungian / Klein",
     "element": "water",
     "category": "Devouring mother",
-    "keywords": ["devouring", "smothering motherhood", "control", "guilt"],
+    "keywords": [
+      "devouring",
+      "smothering motherhood",
+      "control",
+      "guilt"
+    ],
     "essence": "Jung's 'devouring mother' archetype — motherhood that strangles with love, controls, won't release the child. As external mothers and as inner voice.",
     "lightAspect": "This archetype is not bright — recognising it is bright.",
     "shadowAspect": "Smothering love, control, evoking guilt, not letting the (real / symbolic) child be independent.",
@@ -1621,7 +2096,12 @@
     "tradition": "Mythological / Jungian Shadow",
     "element": "fire",
     "category": "Counter-force",
-    "keywords": ["enemy", "opposite", "test", "mirror"],
+    "keywords": [
+      "enemy",
+      "opposite",
+      "test",
+      "mirror"
+    ],
     "essence": "Every mythology has an 'enemy' figure — testing the hero, reminding him of difficulty. The outer face of our inner shadow.",
     "lightAspect": "This archetype gains value when approached internally — to know your enemy is to know yourself.",
     "shadowAspect": "Not seeing your own shadow by producing an outer enemy, paranoia, collective enmity.",
@@ -1638,7 +2118,12 @@
     "tradition": "Jungian / Family System",
     "element": "water",
     "category": "Invisible wound",
-    "keywords": ["invisible", "neglect", "inner child", "acceptance"],
+    "keywords": [
+      "invisible",
+      "neglect",
+      "inner child",
+      "acceptance"
+    ],
     "essence": "The 'lost child' role in family-system therapy — the silent, neglected child whose presence isn't seen. As an adult: the obsession 'not to cause trouble'.",
     "lightAspect": "Independence, ability to enjoy alone, tolerance of silence.",
     "shadowAspect": "Fear of being seen, inability to voice needs, chronic 'don't take too much space' pressure.",
@@ -1655,7 +2140,12 @@
     "tradition": "Contemporary spirituality",
     "element": "air",
     "category": "Modern state",
-    "keywords": ["synthesis", "modern spirituality", "multi-path", "personal religion"],
+    "keywords": [
+      "synthesis",
+      "modern spirituality",
+      "multi-path",
+      "personal religion"
+    ],
     "essence": "The modern mystic belongs to no single tradition, synthesising their own way from many sources. Yoga + therapy + Jung + meditation.",
     "lightAspect": "Capacity for synthesis, resistance to dogma, building personal spiritual practice.",
     "shadowAspect": "Skimming everything, lack of depth, spiritual market shopping.",
@@ -1672,7 +2162,12 @@
     "tradition": "Triple goddess / Wicca",
     "element": "earth",
     "category": "Old wise feminine",
-    "keywords": ["wisdom", "ageing", "independence", "acceptance"],
+    "keywords": [
+      "wisdom",
+      "ageing",
+      "independence",
+      "acceptance"
+    ],
     "essence": "The third state of the triple goddess (Maiden-Mother-Crone). The Crone — the woman who carries her age and wisdom, who speaks no longer from fertility but from wisdom.",
     "lightAspect": "Mature wisdom, independence, capacity for acceptance, direct speech.",
     "shadowAspect": "Harshness, closing doors, not making space for the new generation.",
@@ -1689,7 +2184,12 @@
     "tradition": "Anthropological / Van Gennep",
     "element": "air",
     "category": "Threshold",
-    "keywords": ["threshold", "transition", "neither one nor the other", "suspended"],
+    "keywords": [
+      "threshold",
+      "transition",
+      "neither one nor the other",
+      "suspended"
+    ],
     "essence": "Anthropologist Van Gennep's 'liminal' concept — in passage rituals, the one who has lost an identity but not yet acquired the new one. The being at the threshold.",
     "lightAspect": "Embracing transition, acceptance of uncertainty, focusing on 'what will you do' rather than 'who are you'.",
     "shadowAspect": "Getting stuck on the threshold, fear of being nothing, clinging to the old identity.",

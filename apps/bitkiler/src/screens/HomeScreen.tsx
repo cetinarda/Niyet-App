@@ -391,10 +391,11 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                     {isShareable() && ((step === 0 && stone) || (step === 1 && quote)) && (
                       <TouchableOpacity
                         onPress={() => {
+                          const moreCta = ({ tr:'Daha fazlası için sakin.life', en:'More at sakin.life', de:'Mehr auf sakin.life', es:'Más en sakin.life', pt:'Mais em sakin.life', fr:'Plus sur sakin.life', ja:'詳しくは sakin.life' } as any)[lang] || 'sakin.life';
                           if (step === 0 && stone) {
-                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: (stone as any).name, meta: `${(stone as any).element} · ${(stone as any).chakra || ''}`.replace(/ · $/, ''), body: (stone as any).dailyMessage, fileName: `sakin-${(stone as any).name}.png`, shareText: `${(stone as any).name} — sakin.life` });
+                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: (stone as any).name, meta: `${(stone as any).element} · ${(stone as any).chakra || ''}`.replace(/ · $/, ''), body: (stone as any).dailyMessage, cta: moreCta, fileName: `sakin-${(stone as any).name}.png`, shareText: `${(stone as any).name} — sakin.life` });
                           } else if (step === 1 && quote) {
-                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
+                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
                           }
                         }}
                         hitSlop={10}

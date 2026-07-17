@@ -25,6 +25,23 @@ if (typeof document !== "undefined") {
   try { document.documentElement.setAttribute("data-platform", Capacitor.getPlatform()); } catch (_) {}
 }
 
+// ── ZOOM TAMAMEN KAPALI ─────────────────────────────────────────────────────
+// viewport maximum-scale tek başına yetmedi (iOS 1.3.0'da hâlâ zoom'a takılıp
+// geri dönemiyordu). Üç zoom kaynağının üçünü de kökten kes:
+//  1) pinch  → WebKit'in gesturestart/change/end olayları iptal
+//  2) double-tap → dblclick iptal + CSS touch-action: manipulation
+//  3) input odak zoom'u → 16px altı font'lu input kalmasın (CSS, embed'lere de inject)
+// Kayıtlar document seviyesinde ve pasif değil — WKWebView bunlara saygı duyar.
+function installZoomGuard(doc) {
+  try {
+    const stop = (ev) => { try { ev.preventDefault(); } catch (_) {} };
+    ["gesturestart", "gesturechange", "gestureend"].forEach((n) =>
+      doc.addEventListener(n, stop, { passive: false }));
+    doc.addEventListener("dblclick", stop, { passive: false });
+  } catch (_) {}
+}
+if (typeof document !== "undefined") installZoomGuard(document);
+
 // Üretilen kart görselini paylaş/indir — platforma göre en güvenilir yol.
 // ANDROID: WebView `navigator.share(files)` ve blob `<a download>` çalışmaz →
 // Capacitor Filesystem'e yazıp Share eklentisiyle paylaşırız. iOS + web: mevcut
@@ -81,7 +98,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.3.0";
+const APP_VERSION = "1.3.1";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
@@ -1308,10 +1325,12 @@ const GLOBAL_CSS = `
   html, body { background: #000000; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
-     0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok). */
-  /* --nav-gap: alt navigasyon barı ile ekran/sistem-çubuğu arasındaki boşluk.
-     iOS/web 16px; Android'de 0 → app bar sistem çubuğuna sıfır bitişik (kullanıcı isteği). */
-  :root[data-platform="android"] { --android-sab: env(safe-area-inset-bottom); --nav-gap: 0px; }
+     0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
+     --nav-gap her platformda 16px: sıfır-bitişik deneme kullanıcıya dar geldi,
+     eski ferah görünüme dönüldü (bar sistem çubuğunun 16px üstünde durur). */
+  :root[data-platform="android"] { --android-sab: env(safe-area-inset-bottom); }
+  /* ZOOM KAPALI: double-tap zoom'u öldürür (pinch, JS gesture guard'da). */
+  html, body { touch-action: manipulation; }
 
   /* ── MATRIX MODU — CRT terminal hissi, göz yormayan kısık yeşil ── */
   .matrix-mode { background: transparent !important; }
@@ -5037,8 +5056,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   }
                   /* Form satırlarında padding/gap düşür */
                   [style*="grid"] { max-width: 100% !important; }
+                  /* ZOOM KAPALI: iOS 16px altı font'lu input'a odaklanınca sayfayı
+                     zoom'lar ve geri dönemez (Taşlar arama kutusu vb). Embed input'ları
+                     en az 16px olsun + double-tap zoom'u kapat. */
+                  input, textarea, select { font-size: 16px !important; }
+                  html, body { touch-action: manipulation; }
                 `;
                 doc.head.appendChild(style);
+                installZoomGuard(doc); // pinch/double-tap embed içinde de kapalı
 
                 // Embed'lere bilgi köprüsü — ÜÇ KANAL:
                 // (1) postMessage — embed dinliyorsa anında yakalar
@@ -5424,6 +5449,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   [style*="grid"] { max-width: 100% !important; }
                 `;
                 doc.head.appendChild(style);
+                installZoomGuard(doc); // pinch/double-tap embed içinde de kapalı
 
                 // Bilgi köprüsü (postMessage + same-origin localStorage + window flag)
                 const sendBridge = () => {
@@ -8106,7 +8132,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
             ←
           </button>
-          <h1>{t("pricing_title")}</h1>
+          {/* paddingTop: sol üstteki dairesel geri butonu (top:14 + 40px) başlığın
+              üstüne binmesin — buton bandı ~54px'te bitiyor. */}
+          <h1 style={{ paddingTop:40 }}>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
           {isPremium ? (
@@ -8460,7 +8488,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
-            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? "calc(80px + var(--android-sab))" : "calc(24px + var(--android-sab))",
+            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? "calc(90px + var(--android-sab))" : "calc(28px + var(--android-sab))",
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
             background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
             color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",

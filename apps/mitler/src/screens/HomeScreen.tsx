@@ -253,15 +253,17 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   };
 
   const handleShareCard = async () => {
+    const _l = getLanguage();
+    const moreCta = ({ tr:'Daha fazlası için sakin.life', en:'More at sakin.life', de:'Mehr auf sakin.life', es:'Más en sakin.life', pt:'Mais em sakin.life', fr:'Plus sur sakin.life', ja:'詳しくは sakin.life' } as any)[_l] || 'sakin.life';
     if (!isShareable()) return;
     // Destede o an açık olan kartı (arketip / mit / imge) zarif görsel olarak paylaş.
     let spec: Parameters<typeof shareCard>[0] | null = null;
     if (step === 0 && archetype) {
-      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (archetype as any).emoji, title: (archetype as any).name, meta: `${(archetype as any).tradition} · ${(archetype as any).category}`, body: (archetype as any).essence, quote: (archetype as any).affirmation, fileName: `sakin-${(archetype as any).name}.png`, shareText: `${(archetype as any).name} — sakin.life` };
+      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (archetype as any).emoji, title: (archetype as any).name, meta: `${(archetype as any).tradition} · ${(archetype as any).category}`, body: (archetype as any).essence, quote: (archetype as any).affirmation, cta: moreCta, fileName: `sakin-${(archetype as any).name}.png`, shareText: `${(archetype as any).name} — sakin.life` };
     } else if (step === 1 && myth) {
-      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (myth as any).emoji, title: (myth as any).name, meta: `${(myth as any).culture} · ${(myth as any).era}`, body: (myth as any).summary, quote: (myth as any).lesson, fileName: `sakin-${(myth as any).name}.png`, shareText: `${(myth as any).name} — sakin.life` };
+      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (myth as any).emoji, title: (myth as any).name, meta: `${(myth as any).culture} · ${(myth as any).era}`, body: (myth as any).summary, quote: (myth as any).lesson, cta: moreCta, fileName: `sakin-${(myth as any).name}.png`, shareText: `${(myth as any).name} — sakin.life` };
     } else if (step === 2 && image) {
-      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (image as any).emoji, title: (image as any).name, meta: `${(image as any).tradition} · ${(image as any).category}`, body: (image as any).essence, quote: (image as any).advice, fileName: `sakin-${(image as any).name}.png`, shareText: `${(image as any).name} — sakin.life` };
+      spec = { appName: 'Sakin Mitler', accent: deck.color, emoji: (image as any).emoji, title: (image as any).name, meta: `${(image as any).tradition} · ${(image as any).category}`, body: (image as any).essence, quote: (image as any).advice, cta: moreCta, fileName: `sakin-${(image as any).name}.png`, shareText: `${(image as any).name} — sakin.life` };
     }
     if (spec) { try { await shareCard(spec); } catch (_) { /* iptal/başarısız → sessiz */ } }
   };
