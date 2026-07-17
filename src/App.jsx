@@ -8363,7 +8363,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:16,left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
+        <div style={{ position:"fixed",bottom:"calc(16px + var(--sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const sabahHint = n.id==="sabah" && screen==="rehber";
@@ -8394,7 +8394,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
-            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? 80 : 24,
+            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? "calc(80px + var(--sab))" : "calc(24px + var(--sab))",
             right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
             background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
             color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
