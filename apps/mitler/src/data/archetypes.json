@@ -308,7 +308,7 @@
   {
     "id": "ar019",
     "name": "Büyücü",
-    "emoji": "✨",
+    "emoji": "🪄",
     "tradition": "Pearson / Jung",
     "element": "ateş",
     "category": "Dönüşüm",
@@ -342,7 +342,7 @@
   {
     "id": "ar021",
     "name": "Bakire",
-    "emoji": "🌸",
+    "emoji": "👧",
     "tradition": "Mitolojik (Persephone, Artemis)",
     "element": "hava",
     "category": "Bağımsızlık",
@@ -461,7 +461,7 @@
   {
     "id": "ar028",
     "name": "Kız Çocuğu / Kore",
-    "emoji": "🌷",
+    "emoji": "🧒",
     "tradition": "Persephone miti",
     "element": "su",
     "category": "Geçiş",
@@ -512,7 +512,7 @@
   {
     "id": "ar031",
     "name": "Çift / Hieros Gamos",
-    "emoji": "♾️",
+    "emoji": "💑",
     "tradition": "Alkimi / Jung",
     "element": "bütün",
     "category": "Birleşme",
@@ -546,7 +546,7 @@
   {
     "id": "ar033",
     "name": "Kız Kardeş Tanrıçalar (Three Sisters)",
-    "emoji": "🪞🪞🪞",
+    "emoji": "🧵",
     "tradition": "Üçlü tanrıça / Moiraller",
     "element": "su",
     "category": "Zaman",
@@ -733,7 +733,7 @@
   {
     "id": "ar044",
     "name": "İmparator (Tarot IV)",
-    "emoji": "🪖",
+    "emoji": "🤴",
     "tradition": "Tarot Major Arcana",
     "element": "ateş",
     "category": "Yapı",
@@ -852,7 +852,7 @@
   {
     "id": "ar051",
     "name": "Asılan Adam (Tarot XII)",
-    "emoji": "🙃",
+    "emoji": "🦇",
     "tradition": "Tarot Major Arcana",
     "element": "su",
     "category": "Teslim",
@@ -1039,7 +1039,7 @@
   {
     "id": "ar062",
     "name": "Sky Mother (Hera / Frigg)",
-    "emoji": "👰",
+    "emoji": "👸",
     "tradition": "Yunan-Roma / Norse",
     "element": "hava",
     "category": "Olgun dişil otorite",
@@ -1158,7 +1158,7 @@
   {
     "id": "ar069",
     "name": "Yer Altı Kralı (Hades / Plüton)",
-    "emoji": "🏴",
+    "emoji": "🔱",
     "tradition": "Yunan-Roma",
     "element": "karanlık",
     "category": "Bilinçaltı",
@@ -1430,7 +1430,7 @@
   {
     "id": "ar085",
     "name": "İlahi Çocuk-Aşık (Krishna)",
-    "emoji": "🎶",
+    "emoji": "🪈",
     "tradition": "Hindu",
     "element": "hava",
     "category": "İlahi oyun",

@@ -398,7 +398,7 @@
   {
     "id": "ar019",
     "name": "魔術師",
-    "emoji": "✨",
+    "emoji": "🪄",
     "tradition": "ピアソン / ユング",
     "element": "fire",
     "category": "変容",
@@ -442,7 +442,7 @@
   {
     "id": "ar021",
     "name": "処女 / 乙女",
-    "emoji": "🌸",
+    "emoji": "👧",
     "tradition": "神話的（ペルセポネ、アルテミス）",
     "element": "air",
     "category": "自立",
@@ -596,7 +596,7 @@
   {
     "id": "ar028",
     "name": "乙女 / コレー",
-    "emoji": "🌷",
+    "emoji": "🧒",
     "tradition": "ペルセポネ神話",
     "element": "water",
     "category": "移行",
@@ -662,7 +662,7 @@
   {
     "id": "ar031",
     "name": "対なる者 / 聖婚（ヒエロス・ガモス）",
-    "emoji": "♾️",
+    "emoji": "💑",
     "tradition": "錬金術 / ユング",
     "element": "whole",
     "category": "結合",
@@ -706,7 +706,7 @@
   {
     "id": "ar033",
     "name": "姉妹の女神たち（三姉妹）",
-    "emoji": "🪞🪞🪞",
+    "emoji": "🧵",
     "tradition": "三相女神 / モイライ",
     "element": "water",
     "category": "時間",
@@ -948,7 +948,7 @@
   {
     "id": "ar044",
     "name": "皇帝（タロットIV）",
-    "emoji": "🪖",
+    "emoji": "🤴",
     "tradition": "タロット大アルカナ",
     "element": "fire",
     "category": "構造",
@@ -1102,7 +1102,7 @@
   {
     "id": "ar051",
     "name": "吊るされた男（タロットXII）",
-    "emoji": "🙃",
+    "emoji": "🦇",
     "tradition": "タロット大アルカナ",
     "element": "water",
     "category": "明け渡し",
@@ -1344,7 +1344,7 @@
   {
     "id": "ar062",
     "name": "天空の母（ヘラ / フリッグ）",
-    "emoji": "👰",
+    "emoji": "👸",
     "tradition": "ギリシャ・ローマ / 北欧",
     "element": "air",
     "category": "成熟した女性的権威",
@@ -1498,7 +1498,7 @@
   {
     "id": "ar069",
     "name": "冥界の王（ハデス / プルート）",
-    "emoji": "🏴",
+    "emoji": "🔱",
     "tradition": "ギリシャ・ローマ",
     "element": "darkness",
     "category": "無意識",
@@ -1850,7 +1850,7 @@
   {
     "id": "ar085",
     "name": "神聖な子-恋人（クリシュナ）",
-    "emoji": "🎶",
+    "emoji": "🪈",
     "tradition": "ヒンドゥー",
     "element": "air",
     "category": "神の遊び",

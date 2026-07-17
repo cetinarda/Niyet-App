@@ -398,7 +398,7 @@
   {
     "id": "ar019",
     "name": "Mago",
-    "emoji": "✨",
+    "emoji": "🪄",
     "tradition": "Pearson / Jung",
     "element": "fire",
     "category": "Transformación",
@@ -442,7 +442,7 @@
   {
     "id": "ar021",
     "name": "Virgen / Doncella",
-    "emoji": "🌸",
+    "emoji": "👧",
     "tradition": "Mitológico (Perséfone, Artemisa)",
     "element": "air",
     "category": "Independencia",
@@ -596,7 +596,7 @@
   {
     "id": "ar028",
     "name": "Doncella / Kore",
-    "emoji": "🌷",
+    "emoji": "🧒",
     "tradition": "Mito de Perséfone",
     "element": "water",
     "category": "Transición",
@@ -662,7 +662,7 @@
   {
     "id": "ar031",
     "name": "Pareja / Hieros Gamos",
-    "emoji": "♾️",
+    "emoji": "💑",
     "tradition": "Alquimia / Jung",
     "element": "whole",
     "category": "Unión",
@@ -706,7 +706,7 @@
   {
     "id": "ar033",
     "name": "Diosas Hermanas (Tres Hermanas)",
-    "emoji": "🪞🪞🪞",
+    "emoji": "🧵",
     "tradition": "Diosa triple / Moiras",
     "element": "water",
     "category": "Tiempo",
@@ -948,7 +948,7 @@
   {
     "id": "ar044",
     "name": "El Emperador (Tarot IV)",
-    "emoji": "🪖",
+    "emoji": "🤴",
     "tradition": "Arcanos Mayores del Tarot",
     "element": "fire",
     "category": "Estructura",
@@ -1102,7 +1102,7 @@
   {
     "id": "ar051",
     "name": "El Colgado (Tarot XII)",
-    "emoji": "🙃",
+    "emoji": "🦇",
     "tradition": "Arcanos Mayores del Tarot",
     "element": "water",
     "category": "Entrega",
@@ -1344,7 +1344,7 @@
   {
     "id": "ar062",
     "name": "Madre Celeste (Hera / Frigg)",
-    "emoji": "👰",
+    "emoji": "👸",
     "tradition": "Greco-romano / Nórdico",
     "element": "air",
     "category": "Autoridad femenina madura",
@@ -1498,7 +1498,7 @@
   {
     "id": "ar069",
     "name": "Rey del Inframundo (Hades / Plutón)",
-    "emoji": "🏴",
+    "emoji": "🔱",
     "tradition": "Greco-romano",
     "element": "darkness",
     "category": "Inconsciente",
@@ -1850,7 +1850,7 @@
   {
     "id": "ar085",
     "name": "Niño-Amante Divino (Krishna)",
-    "emoji": "🎶",
+    "emoji": "🪈",
     "tradition": "Hindú",
     "element": "air",
     "category": "Juego divino",

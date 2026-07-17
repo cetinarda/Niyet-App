@@ -427,12 +427,12 @@ export function MitlerFinderScreen({
           <TouchableOpacity style={[styles.modeBtn, { borderColor: Colors.gold }]} onPress={handleBirthFinder} activeOpacity={0.8}>
             <Text style={[styles.modeBtnEmoji, { color: Colors.gold }]}>☀</Text>
             <View style={styles.modeBtnText}>
+              {parsedBirth && (
+                <Text style={styles.modeBtnHint}>{t('finder.profile.using')} ✓</Text>
+              )}
               <Text style={[styles.modeBtnTitle, { color: Colors.gold }]}>{t('finder.mode.birth.title')}</Text>
               <Text style={styles.modeBtnDesc}>{t('finder.mode.birth.desc')}</Text>
             </View>
-            {parsedBirth && (
-              <Text style={styles.modeBtnHint}>{t('finder.profile.using')} ✓</Text>
-            )}
           </TouchableOpacity>
         </View>
         </ScrollView>
@@ -673,13 +673,13 @@ const styles = StyleSheet.create({
   // NOT: hint satır İÇİNDE durunca uzun metni başlık sütununu sıfıra sıkıştırıp
   // dikey harf akışına yol açıyordu (web kullanıcı hatası) → kartın köşesine alındı.
   modeBtnHint: {
-    position: 'absolute',
-    right: 10,
-    top: 8,
+    // Önceden position:'absolute' idi → başlığın ("Doğum Bilgilerimle Bul") üstüne
+    // biniyordu (kullanıcı geri bildirimi). Artık başlığın ÜSTÜNDE normal satır.
     fontSize: 9,
     color: Colors.gold + 'AA',
-    letterSpacing: 1.5,
+    letterSpacing: 1.2,
     textTransform: 'uppercase',
+    marginBottom: 4,
   },
   needsProfileWrap: {
     flex: 1,

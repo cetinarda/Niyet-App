@@ -1731,8 +1731,8 @@ async function scheduleDailyReminders(lang) {
     // yeniden schedule'da sabit). Söz havuzu 28 → 28 günde bir tekrar.
     for (let d = 0; d < 7; d++) {
       const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
-      // 07:30 — sabah pingi (tıklanınca → sabah ekranı)
-      const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 7, 30, 0);
+      // 08:00 — sabah pingi (tıklanınca → sabah ekranı)
+      const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
       if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
       // 13:00 — günlük söz (rastgele dakika 0-29; tıklanınca → gün görevleri)
       const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
@@ -2926,10 +2926,12 @@ export default function SakinApp() {
     if (freqGainRef.current && freqCtxRef.current) {
       try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
     }
+    const _gain = freqGainRef.current;
     setTimeout(() => {
-      freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+      freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
       freqOscsRef.current = [];
       try { freqOscRef.current?.stop(); } catch(_) {}
+      try { _gain?.disconnect(); } catch(_) {} // LFO artığı takılı kalmasın
       freqOscRef.current = null; freqGainRef.current = null;
       // freqCtxRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     }, 350);
@@ -4798,10 +4800,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             try { haptic(); } catch(_) {}
             pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
             panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
-            // Not: 'Sakin'i tanı' tanıtım popup'ı zaten otomatik açılmıyor (showSakinIntro
-            // hiç tetiklenmez). Eskiden burada silinmiş sakinIntroCheckedRef'e atama vardı →
-            // ReferenceError ile panik butonunu çökertiyordu. Kaldırıldı.
-            setShowSakinIntro(false);
+            // Not: 'Sakin'i tanı' tanıtım popup'ı zaten otomatik açılmıyor. Burada eskiden
+            // İKİ tanımsız referans kaldı (sakinIntroCheckedRef, sonra setShowSakinIntro) →
+            // ReferenceError ile panik butonu nefesi hiç başlatamıyordu. İkisi de kaldırıldı.
             setScreen("nefes");
           }}
           aria-label={t("panic_aria")}
@@ -6453,10 +6454,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           if (freqGainRef.current && freqCtxRef.current) {
             try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8); } catch(_) {}
           }
+          const _gain = freqGainRef.current;
           setTimeout(() => {
-            freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} });
+            // Tüm osilatörleri durdur VE disconnect et — yoksa LFO master.gain'i modüle
+            // etmeye devam edip "kısılan-artan takılı ses dalgası" bırakıyordu.
+            freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
             freqOscsRef.current = [];
             try { freqOscRef.current?.stop(); } catch(_) {}
+            try { _gain?.disconnect(); } catch(_) {}
             freqOscRef.current = null; freqGainRef.current = null;
           }, 820);
           stopBirdSound();
@@ -6478,10 +6483,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           showNowPlaying({ title: label, artist: "Sakin" });
           // KRİTİK: AudioContext'i gesture handler'ın İLK satırında oluştur ve resume et.
           // setTimeout içinde oluşturulursa iOS gesture context'ini kaybeder ve ses çıkmaz.
-          if (!freqCtxRef.current) {
+          // Sağlam: kapalı/kullanılamaz context'i YENİDEN oluştur; suspended/interrupted'ı
+          // resume et. (Telefon sessizken/AVAudioSession kesintisinden sonra context
+          // suspended kalıp ses çıkmıyordu; unmute sonrası dokunuşta artık toparlanır.)
+          if (!freqCtxRef.current || freqCtxRef.current.state === "closed") {
             try { freqCtxRef.current = __makeAudioCtx(); } catch(_) {}
           }
-          if (freqCtxRef.current?.state === "suspended") { try { freqCtxRef.current.resume(); } catch(_) {} }
+          if (freqCtxRef.current && freqCtxRef.current.state !== "running") {
+            try { freqCtxRef.current.resume(); } catch(_) {}
+          }
           setTimeout(() => {
             const ctx = freqCtxRef.current;
             if (!ctx) return;
@@ -6700,13 +6710,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
                 <textarea className="sakin-input" rows={2} autoComplete="off" autoCorrect="off" placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
               </div>
-              <div style={{ marginBottom:32,display:"flex",gap:8,justifyContent:"center" }}>
-                {["🫶","⚡","🌊","✨","🌿"].map(em=>(
-                  <button key={em} style={{ fontSize:22,background:"transparent",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"50%",width:44,height:44,cursor:"pointer",transition:"all 0.2s" }}
-                    onMouseEnter={ev=>ev.target.style.transform="scale(1.22)"}
-                    onMouseLeave={ev=>ev.target.style.transform="scale(1)"}>{em}</button>
-                ))}
-              </div>
+              {/* (Gereksiz dekoratif emoji sırası kaldırıldı — kullanıcı geri bildirimi) */}
+              <div style={{ marginBottom:6 }} />
               <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
             </>
           )}

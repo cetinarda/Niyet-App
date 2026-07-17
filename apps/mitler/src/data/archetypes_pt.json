@@ -398,7 +398,7 @@
   {
     "id": "ar019",
     "name": "Mago",
-    "emoji": "✨",
+    "emoji": "🪄",
     "tradition": "Pearson / Jung",
     "element": "fire",
     "category": "Transformação",
@@ -442,7 +442,7 @@
   {
     "id": "ar021",
     "name": "Virgem / Donzela",
-    "emoji": "🌸",
+    "emoji": "👧",
     "tradition": "Mitológico (Perséfone, Ártemis)",
     "element": "air",
     "category": "Independência",
@@ -596,7 +596,7 @@
   {
     "id": "ar028",
     "name": "Donzela / Kore",
-    "emoji": "🌷",
+    "emoji": "🧒",
     "tradition": "Mito de Perséfone",
     "element": "water",
     "category": "Transição",
@@ -662,7 +662,7 @@
   {
     "id": "ar031",
     "name": "Casal / Hieros Gamos",
-    "emoji": "♾️",
+    "emoji": "💑",
     "tradition": "Alquimia / Jung",
     "element": "whole",
     "category": "União",
@@ -706,7 +706,7 @@
   {
     "id": "ar033",
     "name": "Deusas Irmãs (Três Irmãs)",
-    "emoji": "🪞🪞🪞",
+    "emoji": "🧵",
     "tradition": "Deusa tríplice / Moiras",
     "element": "water",
     "category": "Tempo",
@@ -948,7 +948,7 @@
   {
     "id": "ar044",
     "name": "O Imperador (Tarô IV)",
-    "emoji": "🪖",
+    "emoji": "🤴",
     "tradition": "Arcanos Maiores do Tarô",
     "element": "fire",
     "category": "Estrutura",
@@ -1102,7 +1102,7 @@
   {
     "id": "ar051",
     "name": "O Enforcado (Tarô XII)",
-    "emoji": "🙃",
+    "emoji": "🦇",
     "tradition": "Arcanos Maiores do Tarô",
     "element": "water",
     "category": "Entrega",
@@ -1344,7 +1344,7 @@
   {
     "id": "ar062",
     "name": "Mãe Celeste (Hera / Frigg)",
-    "emoji": "👰",
+    "emoji": "👸",
     "tradition": "Greco-romano / Nórdico",
     "element": "air",
     "category": "Autoridade feminina madura",
@@ -1498,7 +1498,7 @@
   {
     "id": "ar069",
     "name": "Rei do Submundo (Hades / Plutão)",
-    "emoji": "🏴",
+    "emoji": "🔱",
     "tradition": "Greco-romano",
     "element": "darkness",
     "category": "Inconsciente",
@@ -1850,7 +1850,7 @@
   {
     "id": "ar085",
     "name": "Criança-Amante Divina (Krishna)",
-    "emoji": "🎶",
+    "emoji": "🪈",
     "tradition": "Hindu",
     "element": "air",
     "category": "Brincadeira divina",

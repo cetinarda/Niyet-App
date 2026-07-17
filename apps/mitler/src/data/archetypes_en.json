@@ -308,7 +308,7 @@
   {
     "id": "ar019",
     "name": "Magician",
-    "emoji": "✨",
+    "emoji": "🪄",
     "tradition": "Pearson / Jung",
     "element": "fire",
     "category": "Transformation",
@@ -342,7 +342,7 @@
   {
     "id": "ar021",
     "name": "Virgin / Maiden",
-    "emoji": "🌸",
+    "emoji": "👧",
     "tradition": "Mythological (Persephone, Artemis)",
     "element": "air",
     "category": "Independence",
@@ -461,7 +461,7 @@
   {
     "id": "ar028",
     "name": "Maiden / Kore",
-    "emoji": "🌷",
+    "emoji": "🧒",
     "tradition": "Persephone myth",
     "element": "water",
     "category": "Transition",
@@ -512,7 +512,7 @@
   {
     "id": "ar031",
     "name": "Couple / Hieros Gamos",
-    "emoji": "♾️",
+    "emoji": "💑",
     "tradition": "Alchemy / Jung",
     "element": "whole",
     "category": "Union",
@@ -546,7 +546,7 @@
   {
     "id": "ar033",
     "name": "Sister Goddesses (Three Sisters)",
-    "emoji": "🪞🪞🪞",
+    "emoji": "🧵",
     "tradition": "Triple goddess / Moirai",
     "element": "water",
     "category": "Time",
@@ -733,7 +733,7 @@
   {
     "id": "ar044",
     "name": "Emperor (Tarot IV)",
-    "emoji": "🪖",
+    "emoji": "🤴",
     "tradition": "Tarot Major Arcana",
     "element": "fire",
     "category": "Structure",
@@ -852,7 +852,7 @@
   {
     "id": "ar051",
     "name": "Hanged Man (Tarot XII)",
-    "emoji": "🙃",
+    "emoji": "🦇",
     "tradition": "Tarot Major Arcana",
     "element": "water",
     "category": "Surrender",
@@ -1039,7 +1039,7 @@
   {
     "id": "ar062",
     "name": "Sky Mother (Hera / Frigg)",
-    "emoji": "👰",
+    "emoji": "👸",
     "tradition": "Greco-Roman / Norse",
     "element": "air",
     "category": "Mature feminine authority",
@@ -1158,7 +1158,7 @@
   {
     "id": "ar069",
     "name": "King of the Underworld (Hades / Pluto)",
-    "emoji": "🏴",
+    "emoji": "🔱",
     "tradition": "Greco-Roman",
     "element": "darkness",
     "category": "Unconscious",
@@ -1430,7 +1430,7 @@
   {
     "id": "ar085",
     "name": "Divine Child-Lover (Krishna)",
-    "emoji": "🎶",
+    "emoji": "🪈",
     "tradition": "Hindu",
     "element": "air",
     "category": "Divine play",

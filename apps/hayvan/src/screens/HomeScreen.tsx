@@ -380,7 +380,10 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                         style={[styles.nextBtn, { borderColor: deck.color, paddingHorizontal: 18, flex: 0 }]}
                         onPress={() => {
                           if (step === 0 && animal) {
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: (animal as any).dailyMessage, quote: (animal as any).guidance, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
+                            const moreCta = ({ tr:'Daha fazlası için sakin.life', en:'More at sakin.life', de:'Mehr auf sakin.life', es:'Más en sakin.life', pt:'Mais em sakin.life', fr:'Plus sur sakin.life', ja:'詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                            // Görev listesi rehberliği (guidance) yerine hayvan hakkında DAHA FAZLA bilgi:
+                            // günün mesajı + Anadolu anlamı. Alt CTA sakin.life'a yönlendirir.
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: `${(animal as any).dailyMessage} ${(animal as any).anatolianMeaning || ''}`.trim(), cta: moreCta, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
                           } else if (step === 1 && quote) {
                             shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
                           }

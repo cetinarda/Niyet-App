@@ -12,8 +12,15 @@ export interface ShareCardSpec {
   body?: string;      // günün mesajı
   quote?: string;     // söz metni / rehberlik
   quoteBy?: string;   // kaynak
+  cta?: string;       // alt CTA satırı (ör. "Daha fazlası için sakin.life")
   fileName?: string;
   shareText?: string;
+}
+
+// Türkçe-duyarlı büyük harf — JS toUpperCase 'i'→'I' yapar (yanlış: "SAKIN").
+// Türkçe'de i→İ, ı→I olmalı ("SAKİN HAYVAN").
+function trUpper(s: string): string {
+  return String(s || '').replace(/i/g, 'İ').replace(/ı/g, 'I').toUpperCase();
 }
 
 // Portre fotoğrafını yükler (CORS anonim → canvas'a çizilebilsin). Başarısızsa null.
@@ -133,7 +140,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     // Üst kicker
     ctx.fillStyle = `rgba(${ar},${ag},${ab},0.92)`;
     ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-    ctx.fillText(spaceOut((spec.appName || '').toUpperCase()), W / 2, 150);
+    ctx.fillText(spaceOut(trUpper(spec.appName || '')), W / 2, 150);
 
     // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt) — kartlar sade,
     // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
@@ -141,7 +148,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     const BODY_LH = 50, QUOTE_LH = 56, TITLE_LH = 74;
     const artH = useImg ? IMG_D + 40 : (spec.emoji ? 148 : 0);
     const titleLines = spec.title ? wrap0(ctx, spec.title, W - 260, "300 62px 'Georgia', serif") : [];
-    let bodyLines = spec.body ? wrap0(ctx, summarize(spec.body, 260), W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
+    let bodyLines = spec.body ? wrap0(ctx, summarize(spec.body, spec.quote ? 260 : 460), W - 220, "300 34px -apple-system, Arial, sans-serif") : [];
     let quoteLines = spec.quote ? wrap0(ctx, '“' + summarize(spec.quote, 180) + '”', W - 220, "italic 300 38px 'Georgia', serif") : [];
 
     const fixedH = artH + (titleLines.length ? titleLines.length * TITLE_LH + 6 : 0) + (spec.meta ? 56 : 0);
@@ -190,7 +197,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     if (spec.meta) {
       ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
       ctx.font = "400 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-      ctx.fillText(spaceOut(spec.meta.toUpperCase()), W / 2, y);
+      ctx.fillText(spaceOut(trUpper(spec.meta)), W / 2, y);
       y += 56;
     }
     if (bodyLines.length) {
@@ -216,6 +223,13 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     }
 
     // Alt marka
+    ctx.fillStyle = 'rgba(160,150,180,0.7)';
+    ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+    if (spec.cta) {
+      ctx.fillStyle = `rgba(${ar},${ag},${ab},0.85)`;
+      ctx.font = "400 22px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText(spec.cta, W / 2, H - 132);
+    }
     ctx.fillStyle = 'rgba(160,150,180,0.7)';
     ctx.font = "300 24px -apple-system, 'Helvetica Neue', Arial, sans-serif";
     ctx.fillText(spaceOut('sakin.life'), W / 2, H - 96);
