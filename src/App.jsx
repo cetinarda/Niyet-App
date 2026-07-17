@@ -9,6 +9,8 @@ import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
+import { Share } from "@capacitor/share";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 // Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
 // Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
@@ -21,6 +23,41 @@ const isNative = Capacitor.isNativePlatform();
 // data-platform="android" altında geçerli; iOS ve web bundan HİÇ etkilenmez.
 if (typeof document !== "undefined") {
   try { document.documentElement.setAttribute("data-platform", Capacitor.getPlatform()); } catch (_) {}
+}
+
+// Üretilen kart görselini paylaş/indir — platforma göre en güvenilir yol.
+// ANDROID: WebView `navigator.share(files)` ve blob `<a download>` çalışmaz →
+// Capacitor Filesystem'e yazıp Share eklentisiyle paylaşırız. iOS + web: mevcut
+// çalışan yol (WKWebView/tarayıcı navigator.share; olmazsa indir). iOS'a dokunmuyoruz.
+async function shareImageBlob(blob, filename) {
+  const isAndroid = (() => { try { return Capacitor.getPlatform() === "android"; } catch (_) { return false; } })();
+  if (isAndroid) {
+    try {
+      const base64 = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onloadend = () => resolve(String(r.result).split(",")[1] || "");
+        r.onerror = reject;
+        r.readAsDataURL(blob);
+      });
+      await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
+      const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
+      await Share.share({ url: uri });
+      return;
+    } catch (_) { /* eklenti başarısızsa aşağıdaki web yoluna düş */ }
+  }
+  // iOS + web: dosya paylaşımı (WKWebView destekler); olmazsa indir.
+  try {
+    const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file] });
+      return;
+    }
+  } catch (_) {}
+  try {
+    const dl = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = dl; a.download = filename; a.click();
+    setTimeout(() => URL.revokeObjectURL(dl), 3000);
+  } catch (_) {}
 }
 
 // ── Audio context kayıt defteri ───────────────────────────────────────────────
@@ -7263,8 +7300,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:13,letterSpacing:2 }}>
                     {raporKopyalandi ? t("copied_label") : t("copy_label")}
                   </button>
-                  {navigator.share && (
-                    <button onClick={()=>navigator.share({ title:t("share_title"), text:aiRapor })}
+                  {(navigator.share || Capacitor.getPlatform() === "android") && (
+                    <button onClick={async ()=>{ try {
+                        // Android WebView'da navigator.share yok → Capacitor Share.
+                        if (Capacitor.getPlatform() === "android") await Share.share({ title:t("share_title"), text:aiRapor });
+                        else if (navigator.share) await navigator.share({ title:t("share_title"), text:aiRapor });
+                      } catch(_){} }}
                       style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:13,letterSpacing:2 }}>
                       {t("share_label")}
                     </button>
@@ -7527,16 +7568,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Export → share sheet (Save to Files, paylaş vs.)
           canvas.toBlob(async (blob) => {
             if (!blob) return;
-            const file = new File([blob], "sakin-galaktik-kimlik.jpg", { type: "image/jpeg" });
-            try {
-              if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file] });
-              } else {
-                const dl = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = dl; a.download = "sakin-galaktik-kimlik.jpg"; a.click();
-                setTimeout(() => URL.revokeObjectURL(dl), 3000);
-              }
-            } catch(_) {}
+            // Android WebView'da navigator.share/blob-download çalışmaz → shareImageBlob
+            // native Capacitor Share'e düşer. iOS/web davranışı değişmez.
+            await shareImageBlob(blob, "sakin-galaktik-kimlik.jpg");
           }, "image/jpeg", 0.92);
         };
 
