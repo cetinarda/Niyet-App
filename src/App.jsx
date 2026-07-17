@@ -5447,6 +5447,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     overflow-x: hidden !important;
                   }
                   [style*="grid"] { max-width: 100% !important; }
+                  /* ZOOM KAPALI: 16px altı input odak zoom'unu tetikler (mitler arama
+                     kutusu 13px) — sticky mitler iframe'i de aynı aşıyı alsın. */
+                  input, textarea, select { font-size: 16px !important; }
+                  html, body { touch-action: manipulation; }
                 `;
                 doc.head.appendChild(style);
                 installZoomGuard(doc); // pinch/double-tap embed içinde de kapalı
