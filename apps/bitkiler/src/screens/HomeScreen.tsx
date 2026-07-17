@@ -387,7 +387,23 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                 >
                   <View style={[styles.frontHeader, { borderBottomColor: deck.color + '30' }]}>
                     <Text style={{ fontSize: 10, color: deck.color }}>☀</Text>
-                    <Text style={[styles.frontTitle, { color: deck.color }]}>{deck.title}</Text>
+                    <Text style={[styles.frontTitle, { color: deck.color, flex: 1 }]}>{deck.title}</Text>
+                    {isShareable() && ((step === 0 && stone) || (step === 1 && quote)) && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          if (step === 0 && stone) {
+                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: (stone as any).name, meta: `${(stone as any).element} · ${(stone as any).chakra || ''}`.replace(/ · $/, ''), body: (stone as any).dailyMessage, fileName: `sakin-${(stone as any).name}.png`, shareText: `${(stone as any).name} — sakin.life` });
+                          } else if (step === 1 && quote) {
+                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
+                          }
+                        }}
+                        hitSlop={10}
+                        accessibilityRole="button"
+                        accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+                      >
+                        <Text style={[styles.frontTitle, { color: deck.color }]}>{lang === 'en' ? '↑ Share' : '↑ Paylaş'}</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                   <ScrollView
                     style={styles.scroll}
@@ -407,23 +423,6 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                         {step < DECKS.length - 1 ? t('home.nextDeck') : t('home.completed')}
                       </Text>
                     </TouchableOpacity>
-                    {isShareable() && ((step === 0 && stone) || (step === 1 && quote)) && (
-                      <TouchableOpacity
-                        style={[styles.nextBtn, { borderColor: deck.color, paddingHorizontal: 18, flex: 0 }]}
-                        onPress={() => {
-                          if (step === 0 && stone) {
-                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: (stone as any).name, meta: `${(stone as any).element} · ${(stone as any).chakra || ''}`.replace(/ · $/, ''), body: (stone as any).dailyMessage, fileName: `sakin-${(stone as any).name}.png`, shareText: `${(stone as any).name} — sakin.life` });
-                          } else if (step === 1 && quote) {
-                            shareCard({ appName: 'Sakin Bitkiler', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
-                          }
-                        }}
-                        activeOpacity={0.8}
-                        accessibilityRole="button"
-                        accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
-                      >
-                        <Text style={[styles.nextBtnText, { color: deck.color }]}>⤓</Text>
-                      </TouchableOpacity>
-                    )}
                   </View>
                 </Animated.View>
               </View>

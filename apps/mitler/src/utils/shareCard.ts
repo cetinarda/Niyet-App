@@ -245,6 +245,20 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
   // Foto CORS yüzünden canvas'ı tainted yaptıysa toBlob null döner → emojiyle tekrar çiz.
   if (!blob && portrait) { cv = render(false); blob = cv ? await toBlobSafe(cv) : null; }
   if (!blob) return;
+
+  // Android host (iframe) içinde: WebView navigator.share(files) ve blob indirmeyi
+  // desteklemez → görseli host'a köprüle; host Capacitor Share ile paylaşır. iOS embed
+  // (WKWebView) ve standalone web navigator.share ile devam eder (aşağıda).
+  const inIframe = (() => { try { return !!window.parent && window.parent !== window; } catch { return true; } })();
+  const isAndroid = /android/i.test((typeof navigator !== 'undefined' && navigator.userAgent) || '');
+  if (inIframe && isAndroid && cv) {
+    try {
+      const dataUrl = cv.toDataURL('image/png');
+      window.parent.postMessage({ type: 'sakin-share-card', dataUrl, fileName }, '*');
+      return;
+    } catch (_) { /* köprü başarısız → web yoluna düş */ }
+  }
+
   try {
     const file = new File([blob], fileName, { type: 'image/png' });
     const nav: any = navigator;
