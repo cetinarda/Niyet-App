@@ -37,6 +37,16 @@
     Access-Control-Allow-Methods = "GET, POST, OPTIONS"
     Access-Control-Allow-Headers = "Content-Type"
 
+# Sürüm kontrol dosyası: native uygulama (iOS capacitor://localhost, Android
+# https://localhost) bunu CROSS-ORIGIN çeker. CORS header'ı olmadan WKWebView/
+# WebView fetch'i engelliyor → güncelleme banner'ı HİÇ görünmüyordu. Public,
+# hassas olmayan sürüm bilgisi olduğu için "*" yeterli.
+[[headers]]
+  for = "/latest-ios-version.json"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "no-store"
+
 [[headers]]
   for = "/*"
   [headers.values]
