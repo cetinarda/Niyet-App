@@ -512,25 +512,9 @@ export function ProfileScreen() {
         </Text>
       </View>
 
-      {/* Bildirimler */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('profile.account.remindersLabel')}</Text>
-        <View style={styles.accountCard}>
-          <TouchableOpacity
-            style={styles.accountRow}
-            onPress={() => toggleReminders(!remindersOn)}
-            activeOpacity={0.7}
-          >
-            <View style={{ flex: 1 }}>
-              <Text style={styles.accountLabel}>{t('profile.account.remindersLabel')}</Text>
-              <Text style={styles.accountSub}>{t('profile.account.remindersSub')}</Text>
-            </View>
-            <View style={[styles.toggle, remindersOn && styles.toggleOn]}>
-              <View style={[styles.toggleDot, remindersOn && styles.toggleDotOn]} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {/* Bildirimler kaldırıldı (kullanıcı geri bildirimi): hatırlatmalar host Sakin
+          uygulaması tarafından yönetiliyor (08:00 günlük); embed'de ayrı/çakışan
+          bildirim sistemi gereksizdi. */}
 
       {/* ── Kişisel Harita ── */}
       <View style={styles.section}>

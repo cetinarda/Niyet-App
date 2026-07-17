@@ -113,6 +113,25 @@ export function readSakinBridge(): SakinBridge | null {
   }
 }
 
+// Ters köprü: kullanıcı doğum bilgisini embed'in KENDİ onboarding'ine girdiyse
+// host'un sakin_* anahtarlarına da yaz — SADECE boş olanlara (host gerçek kaynak
+// kalır, asla üzerine yazılmaz). Böylece diğer Sakin aile uygulamaları aynı
+// bilgiyi görür ve bir daha sormaz.
+export function writeSakinBridgeBack(p: { name?: string; fullName?: string; birthDate?: string; birthHour?: number; birthMinute?: number; birthCity?: string }): void {
+  try {
+    if (typeof window === 'undefined' || !(window as any).localStorage) return;
+    const ls = (window as any).localStorage as Storage;
+    const put = (k: string, v?: string) => { if (v && !ls.getItem(k)) ls.setItem(k, v); };
+    put('sakin_name', (p.fullName || p.name || '').trim());
+    put('sakin_birth_date', p.birthDate);
+    if (typeof p.birthHour === 'number') {
+      const mm = typeof p.birthMinute === 'number' ? p.birthMinute : 0;
+      put('sakin_birth_time', String(p.birthHour).padStart(2, '0') + ':' + String(mm).padStart(2, '0'));
+    }
+    put('sakin_birth_city', p.birthCity);
+  } catch { /* sessiz */ }
+}
+
 // Doğum tarihinden (güneş burcu) element türet. Köprüyle profil OTOMATİK kurulurken
 // element sorulmaz; kullanıcı isterse Profil'de değiştirir.
 export function elementFromBirthDate(birthDate?: string): UserProfile['element'] {
@@ -251,6 +270,25 @@ export function useMitlerStore() {
     }
   };
 
+  // Köprü GEÇ dolarsa yakala: embed ilk açıldığında host'ta doğum bilgisi yoktu
+  // ama sonradan girildiyse (Ailesi paneli / kimlik), onboarding görünürken pencere
+  // odağa/görünürlüğe gelince köprüyü yeniden oku — doluysa loadAll otomatik
+  // profili kurar ve onboarding kendiliğinden kapanır.
+  useEffect(() => {
+    if (profile || !isNewUser || typeof window === 'undefined') return;
+    const recheck = () => {
+      const b = readSakinBridge();
+      if (b?.birthDate) { loadAll(); return; }
+      if (b) setBridgePrefill(b);
+    };
+    window.addEventListener('focus', recheck);
+    document.addEventListener('visibilitychange', recheck);
+    return () => {
+      window.removeEventListener('focus', recheck);
+      document.removeEventListener('visibilitychange', recheck);
+    };
+  }, [profile, isNewUser]);
+
   const saveProfile = useCallback(async (p: UserProfile) => {
     setProfile(p);
     await AsyncStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(p));
@@ -273,6 +311,7 @@ export function useMitlerStore() {
       level: 1,
     };
     await saveProfile(p);
+    writeSakinBridgeBack(p); // aile uygulamaları da görsün
     setIsNewUser(false);
     setBridgePrefill(null); // profil kuruldu — köprü pre-fill'i artık gereksiz
   }, [saveProfile]);
