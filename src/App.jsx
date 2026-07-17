@@ -4901,7 +4901,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // mitlerSession sticky: embeddedApp null olsa bile container DOM'da kalır (display:none) →
         // mitler iframe yeniden mount olmaz → "günün 4 miti" sabit kalır. Sadece üst bar/loading/quota
         // UI'ı `embeddedApp` varsa anlam ifade ettiği için ya gizleniyor ya da koşulla render ediliyor.
-        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display: embeddedApp ? "flex" : "none",flexDirection:"column",animation: embeddedApp ? "portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" : "none" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10001,background:"#000",display: embeddedApp ? "flex" : "none",flexDirection:"column",paddingBottom:"var(--android-sab, 0px)",animation: embeddedApp ? "portalIn 1.4s cubic-bezier(0.25,0.1,0.25,1)" : "none" }}>
           {/* ÜST BAR — status bar'ı kaplar (tam ekran kesik fix), embed içeriğini
               kapatmaz (iframe bar'ın ALTINDA başlar). Sol: ← Aile, orta: SAKİN {APP}. */}
           {embeddedApp && <div style={{
