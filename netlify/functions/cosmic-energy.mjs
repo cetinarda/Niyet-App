@@ -193,16 +193,45 @@ async function fetchWithTimeout(url, ms = 4500, options = {}) {
 
 // ── ÖZGÜN KOLEKTİF GÖKYÜZÜ RAPORU (Groq sentezi — tüm gerçek veriyi yorumlar) ──
 const _SKY_LANG_NAMES = { tr:"Turkish", en:"English", de:"German", es:"Spanish", pt:"Portuguese", fr:"French", ja:"Japanese" };
+// Her gün farklı bir açılış perspektifi — "Dünyamız bugün..." kalıbı her açılışta
+// tekrar edip kullanıcıyı soğutuyordu. Gün-of-year ile deterministik döner;
+// model bu perspektifi KENDİ kelimeleriyle işler (kopyalamaz).
+const _SKY_ANGLES = [
+  "start from the body: how this field might feel in the chest, the breath, the pace of thought",
+  "start from the night sky itself: what someone looking up right now would actually see",
+  "start from silence and stillness — describe the quiet before describing anything else",
+  "start from motion: winds, currents, particles travelling from the Sun toward us",
+  "start from the Moon — let its phase set the emotional key of the whole reading",
+  "start with a single short striking sentence (max 6 words), then unfold it",
+  "start from the feeling of a shared morning: everyone waking under the same field",
+  "start from contrast: what is loud in the sky versus what is calm in it",
+  "start from time: what today carries over from yesterday's sky, what it releases",
+  "start from the Earth's perspective, as if the planet itself sensed the field",
+];
+// TR çıktısında model bazen yabancı sızıntı bırakıyor ("procent", "dàn" gibi).
+// Aksan temizliği: Türkçede aksanlı harf yalnız â/î/û'dur; à è ì ò ù asla olmaz.
+function _sanitizeSky(text, lang) {
+  let t = String(text || "").trim();
+  t = t.replace(/à/g, "a").replace(/è/g, "e").replace(/ì/g, "i").replace(/ò/g, "o").replace(/ù/g, "u");
+  if (lang === "tr") {
+    t = t.replace(/\bprocent\b/gi, "yüzde").replace(/\bpercent\b/gi, "yüzde").replace(/\bprozent\b/gi, "yüzde");
+  }
+  return t;
+}
 async function generateSkyReport(data, lang) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
   const name = _SKY_LANG_NAMES[lang] || "English";
   const kpLevel = data.interpretation?.current?.en || "calm";
+  const dayOfYear = Math.floor((Date.now() - Date.UTC(new Date().getUTCFullYear(), 0, 0)) / 86400000);
+  const angle = _SKY_ANGLES[dayOfYear % _SKY_ANGLES.length];
   const sys = `You are Sakin's sky-weather voice — warm, sincere, lightly poetic, never clichéd. Write a COLLECTIVE daily reading of the shared sky and, above all, the ENERGY FIELD the whole Earth is moving through right now. This is NOT personal astrology and NOT about any single person. NEVER mention zodiac signs, houses, or which planet sits in which sign — ordinary people don't relate to that and it bores them; leave all of it out completely.
 
-Your job: from the REAL space-weather data below, let the reader roughly FEEL which energy the world is under today — is the field calm and clear, lightly charged, or stormy and intense? Open with that overall collective mood in broad strokes. Then weave in only the sky developments that genuinely stand out today (a strong solar flare, a geomagnetic storm, fast solar wind, the Moon's phase, an active meteor shower, a visible comet) — and skip the quiet ones. Speak to "we" / "the world" like someone who looked up and is sincerely telling a friend what the sky feels like and how its energy might be touching us all.
+Your job: from the REAL space-weather data below, let the reader roughly FEEL which energy the world is under today — is the field calm and clear, lightly charged, or stormy and intense? Then weave in only the sky developments that genuinely stand out today (a strong solar flare, a geomagnetic storm, fast solar wind, the Moon's phase, an active meteor shower, a visible comet) — and skip the quiet ones. Speak to "we" / "the world" like someone who looked up and is sincerely telling a friend what the sky feels like and how its energy might be touching us all.
 
-WRITE ENTIRELY IN ${name}, using ONLY ${name} words and letters — never mix in English or any foreign words. Vary your wording every day; avoid stock openings and formulaic phrases — nothing memorized-sounding. 3 to 5 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
+LANGUAGE PURITY — ABSOLUTE RULE: write ENTIRELY in ${name}, using ONLY ${name} vocabulary and orthography. Never mix in words or spellings from ANY other language — no English, Dutch, Romanian, French leaks (words like "procent", "dàn", "percent" are FORBIDDEN${lang === "tr" ? '; in Turkish say "yüzde", and the only accented vowels that exist are â, î, û' : ""}). If you are unsure of a word, choose a simpler native one.
+
+NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm — nothing memorized-sounding. 3 to 5 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
   const usr = `Real space-weather data for today (interpret the collective MOOD, don't recite numbers):
 - Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
 - Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
@@ -211,7 +240,9 @@ WRITE ENTIRELY IN ${name}, using ONLY ${name} words and letters — never mix in
 - Meteor shower: ${data.meteor?.active ? data.meteor.name + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
 - Comet: ${data.comet?.active ? data.comet.name + " visible" : "none notable now"}
 
-Now write the collective sky-energy reading: first let us sense which energy the Earth is under today, then mention only what truly stands out.`;
+Today's opening perspective (use it in YOUR OWN words, do not translate it literally): ${angle}
+
+Now write the collective sky-energy reading: let us sense which energy the Earth is under today, then mention only what truly stands out.`;
   try {
     const r = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", 9000, {
       method: "POST",
@@ -219,13 +250,13 @@ Now write the collective sky-energy reading: first let us sense which energy the
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         max_tokens: 500,
-        temperature: 0.72,
-        top_p: 0.9,
+        temperature: 0.85,
+        top_p: 0.92,
         messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
       }),
     });
     const j = await r.json();
-    const txt = j?.choices?.[0]?.message?.content?.trim();
+    const txt = _sanitizeSky(j?.choices?.[0]?.message?.content, lang);
     return txt || null;
   } catch { return null; }
 }
