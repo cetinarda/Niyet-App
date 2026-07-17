@@ -4,7 +4,7 @@ android {
     namespace = "app.sakin.life"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "app.sakin.life"
+        applicationId "com.sakinlife.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
