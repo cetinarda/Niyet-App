@@ -6,7 +6,7 @@
 //   POST → { count }            +1 artırıp yeni toplamı döndürür
 import { getStore } from "@netlify/blobs";
 
-const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost"];
+const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 const KEY = "count";
 
 function getCorsHeaders(event) {
