@@ -38,7 +38,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.2.9";
+const APP_VERSION = "1.3.0";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
@@ -2321,7 +2321,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       </div>
       <div style={{ width:108,height:108,borderRadius:"50%",margin:"0 auto 20px", background:`radial-gradient(circle,${selected.color}cc,${selected.color}33)`, boxShadow:`0 0 40px ${selected.color}66,0 0 80px ${selected.color}22`, animation:"slowPulse 3.8s ease-in-out infinite" }} />
       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:21,fontWeight:300,letterSpacing:1,marginBottom:6 }}>{selected.name} {t("chakra_suf")}</div>
-      <div style={{ fontSize:13,letterSpacing:3,color:selected.pastel,marginBottom:16 }}>{selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:13,letterSpacing:3,color:selected.pastel,marginBottom:16 }}>{selected.element.toLocaleUpperCase(lang)}</div>
       {/* Pozisyon göstergesi */}
       <div style={{ marginBottom:6,opacity:0.8 }}>{positionSvg(selected)}</div>
       <div style={{ fontSize:14,color:"#888888",letterSpacing:1,marginBottom:12,fontStyle:"italic" }}>
@@ -2359,7 +2359,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       <div style={{ width:"100%",display:"flex",justifyContent:"flex-start",marginBottom:8 }}>
         <button onClick={()=>{ if(tPhase==="connected") resetTerapi(); else setShowBackConfirm(true); }} style={{ background:"none",border:"none",color:"#777777",cursor:"pointer",fontSize:19,padding:"10px 12px 10px 4px",marginLeft:-4,letterSpacing:1 }}>←</button>
       </div>
-      <div style={{ fontSize:13,letterSpacing:5,color:"#777777",marginBottom:24 }}>{selected.name.toUpperCase()} · {selected.element.toUpperCase()}</div>
+      <div style={{ fontSize:13,letterSpacing:5,color:"#777777",marginBottom:24 }}>{selected.name.toLocaleUpperCase(lang)} · {selected.element.toLocaleUpperCase(lang)}</div>
       <div style={{ position:"relative",width:230,height:230,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:22 }}>
         {[2.15,1.8,1.5,1.25].map((s,i) => (
           <div key={i} className="ring" style={{ width:230,height:230,transform:`scale(${s})`,animationDelay:`${i*0.55}s`,animationDuration:`${3+i*0.4}s`,borderColor:`${selected.color}${hex(0.13-i*0.025)}` }} />
@@ -6756,7 +6756,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               /* SONUÇ EKRANI */
               <div>
                 <div style={{ fontSize:13,letterSpacing:2.5,color:"#a070d0",opacity:0.8,marginBottom:14,fontFamily:"'Jost',sans-serif" }}>
-                  {sikayet.toUpperCase()} {t("analysis_suf")}
+                  {sikayet.toLocaleUpperCase(lang)} {t("analysis_suf")}
                 </div>
                 <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24 }}>
                   <FreqText text={sikayetAnaliz} onNav={(type, val) => {
@@ -6923,7 +6923,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         ]},
                       ])).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
-                          <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toUpperCase()}</div>
+                          <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toLocaleUpperCase(lang)}</div>
                           {sorular.map(s=>(
                             <button key={s} onClick={()=>{ setSikayet(s); setShowOrnekler(false); }}
                               style={{
@@ -7088,7 +7088,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {label:t("stat_mindful"),value:`${completedStepCount}`,color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                <div style={{ fontSize:14,letterSpacing:2.5,color:"#666666",marginBottom:6 }}>{s.label.toUpperCase()}</div>
+                <div style={{ fontSize:14,letterSpacing:2.5,color:"#666666",marginBottom:6 }}>{s.label.toLocaleUpperCase(lang)}</div>
                 <div style={{ fontSize:15,color:s.color,fontWeight:300 }}>{s.value}</div>
               </div>
             ))}
@@ -7365,12 +7365,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.fillStyle = "#fff";
           ctx.font = "300 56px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(displayName.toUpperCase(), 540, 640);
+          ctx.fillText(displayName.toLocaleUpperCase(lang), 540, 640);
 
           // 6. Burç · Yaşam Yolu
           ctx.fillStyle = "#a890c8";
           ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
-          const subtitle = `${burc !== "—" ? burc.toUpperCase() : ""}${yasamYolu !== "—" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
+          const subtitle = `${burc !== "—" ? burc.toLocaleUpperCase(lang) : ""}${yasamYolu !== "—" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
           if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
 
           // 7. Stat boxes (2x3 grid)
@@ -7415,7 +7415,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ctx.fillStyle = "#7a7090";
               ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
               ctx.textAlign = "center";
-              ctx.fillText(pickLang(ELEM_I18N.title, lang).toUpperCase(), 540, 1250);
+              ctx.fillText(pickLang(ELEM_I18N.title, lang).toLocaleUpperCase(lang), 540, 1250);
               const items = [
                 ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
                 ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
