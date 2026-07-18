@@ -42,39 +42,76 @@ function installZoomGuard(doc) {
 }
 if (typeof document !== "undefined") installZoomGuard(document);
 
+// ZOOM SIFIRLAYICI — asıl suçlu bulundu: iOS paylaşım menüsü (share sheet)
+// kapanınca WKWebView sayfayı büyütülmüş scale'de bırakabiliyor ve kullanıcı
+// geri döndüremiyor. Viewport meta'yı farklı bir içerikle yazıp geri koymak
+// WebKit'i scale'i 1'e çekmeye zorlar (bilinen güvenilir reset tekniği).
+function resetViewportZoom() {
+  try {
+    const vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) return;
+    const orig = vp.getAttribute("content") || "width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no";
+    // Değişiklik algılansın diye minimum-scale eklenmiş farklı bir string yaz…
+    vp.setAttribute("content", "width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no");
+    // …sonra orijinale dön (görsel yan etki yok; scale 1'e oturur).
+    setTimeout(() => { try { vp.setAttribute("content", orig); } catch (_) {} }, 120);
+  } catch (_) {}
+}
+// Watchdog: sayfa HERHANGİ bir sebeple 1'in üstüne zoom'lanırsa (share sheet,
+// odak zoom'u, sistem tuhaflığı) kendiliğinden geri çek. Uygulamada meşru
+// zoom senaryosu yok — scale her zaman 1 olmalı.
+if (typeof window !== "undefined" && window.visualViewport) {
+  let __zoomFixTimer = null;
+  window.visualViewport.addEventListener("resize", () => {
+    try {
+      if (window.visualViewport.scale > 1.02) {
+        clearTimeout(__zoomFixTimer);
+        __zoomFixTimer = setTimeout(resetViewportZoom, 250);
+      }
+    } catch (_) {}
+  });
+}
+
 // Üretilen kart görselini paylaş/indir — platforma göre en güvenilir yol.
 // ANDROID: WebView `navigator.share(files)` ve blob `<a download>` çalışmaz →
 // Capacitor Filesystem'e yazıp Share eklentisiyle paylaşırız. iOS + web: mevcut
 // çalışan yol (WKWebView/tarayıcı navigator.share; olmazsa indir). iOS'a dokunmuyoruz.
 async function shareImageBlob(blob, filename) {
-  const isAndroid = (() => { try { return Capacitor.getPlatform() === "android"; } catch (_) { return false; } })();
-  if (isAndroid) {
-    try {
-      const base64 = await new Promise((resolve, reject) => {
-        const r = new FileReader();
-        r.onloadend = () => resolve(String(r.result).split(",")[1] || "");
-        r.onerror = reject;
-        r.readAsDataURL(blob);
-      });
-      await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
-      const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
-      await Share.share({ url: uri });
-      return;
-    } catch (_) { /* eklenti başarısızsa aşağıdaki web yoluna düş */ }
-  }
-  // iOS + web: dosya paylaşımı (WKWebView destekler); olmazsa indir.
   try {
-    const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file] });
-      return;
+    const isAndroid = (() => { try { return Capacitor.getPlatform() === "android"; } catch (_) { return false; } })();
+    if (isAndroid) {
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onloadend = () => resolve(String(r.result).split(",")[1] || "");
+          r.onerror = reject;
+          r.readAsDataURL(blob);
+        });
+        await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
+        const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
+        await Share.share({ url: uri });
+        return;
+      } catch (_) { /* eklenti başarısızsa aşağıdaki web yoluna düş */ }
     }
-  } catch (_) {}
-  try {
-    const dl = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = dl; a.download = filename; a.click();
-    setTimeout(() => URL.revokeObjectURL(dl), 3000);
-  } catch (_) {}
+    // iOS + web: dosya paylaşımı (WKWebView destekler); olmazsa indir.
+    try {
+      const file = new File([blob], filename, { type: blob.type || "image/jpeg" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file] });
+        return;
+      }
+    } catch (_) {}
+    try {
+      const dl = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = dl; a.download = filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(dl), 3000);
+    } catch (_) {}
+  } finally {
+    // Share sheet kapanınca WKWebView zoom'lu kalabiliyor — her paylaşım
+    // sonunda scale'i garantiye al (menü kapanma animasyonu bitince).
+    setTimeout(resetViewportZoom, 600);
+    setTimeout(resetViewportZoom, 1600); // geç kapanan sheet için ikinci tur
+  }
 }
 
 // ── Audio context kayıt defteri ───────────────────────────────────────────────
