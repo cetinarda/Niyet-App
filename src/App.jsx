@@ -4625,7 +4625,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const breathOutDur = `${tm.out/1000}s`;
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
-  const SWIPE_SCREENS = ["sabah","nefes","ses","chakra","gun","aksam"];
+  // Kullanıcı isteği: sağ/sol kaydırma sırası TAM OLARAK üst nav + sidebar sırasını
+  // izlemeli — sabah→gün→nefes→ses→çakra→akşam→harita→bağlan→keşfet. Eski dizi
+  // ["sabah","nefes","ses","chakra","gun","aksam"] yanlış sıradaydı ("gun" 2. yerine
+  // 5. sıradaydı) — kaydırınca beklenmedik/tutarsız ekranlara "atlıyormuş" gibi
+  // hissettiriyordu (kullanıcı raporu: "sağ sol ile atlamalar var"). "keşfet" bir
+  // `screen` değil, `showAilesi` modalı — zincirin son adımı olarak ayrıca ele alınır.
+  const SWIPE_SCREENS = ["sabah","gun","nefes","ses","chakra","aksam","harita","mandala"];
   const touchStartRef = useRef(null);
   const handleTouchStart = e => { touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() }; };
   const handleTouchEnd = e => {
@@ -4635,9 +4641,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     const dt = Date.now() - touchStartRef.current.t;
     touchStartRef.current = null;
     if (dt > 500 || Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+    if (showAilesi) {
+      // Keşfet zincirin son halkası — sağa kaydırma (geri) "bağlan"a döner.
+      if (dx > 60) { setShowAilesi(false); setScreen("mandala"); }
+      return;
+    }
     const idx = SWIPE_SCREENS.indexOf(screen);
     if (idx === -1) return;
-    if (dx < -60 && idx < SWIPE_SCREENS.length - 1) setScreen(SWIPE_SCREENS[idx + 1]);
+    if (dx < -60) {
+      if (idx < SWIPE_SCREENS.length - 1) setScreen(SWIPE_SCREENS[idx + 1]);
+      else setShowAilesi(true); // "mandala"dan ileri kaydırınca Keşfet açılır
+    }
     if (dx > 60 && idx > 0) setScreen(SWIPE_SCREENS[idx - 1]);
   };
 
