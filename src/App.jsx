@@ -3308,6 +3308,13 @@ export default function SakinApp() {
   // backdrop kapatma yok sayılır. "Galaktik kimlik açılınca hemen atıyor" bug'ı.
   const idCardOpenTs = useRef(0);
   useEffect(() => { if (showIdCard) idCardOpenTs.current = Date.now(); }, [showIdCard]);
+  // Kart nereden açıldı? Keşfet (Ailesi) panelinden açıldıysa kapatınca oraya geri
+  // dönmeli — eskiden kapat deyince kullanıcı ana ekrana düşüyordu (kullanıcı isteği).
+  const idCardFromAilesi = useRef(false);
+  const closeIdCard = () => {
+    setShowIdCard(false);
+    if (idCardFromAilesi.current) { idCardFromAilesi.current = false; setShowAilesi(true); }
+  };
   const [showMindClear, setShowMindClear] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
   const [selectedMoods, setSelectedMoods] = useState([]);
@@ -3955,7 +3962,7 @@ export default function SakinApp() {
       if (embeddedApp) { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); return; }
       if (activeMindMode) { setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); return; }
       if (showMindClear) { setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); return; }
-      if (showIdCard) { setShowIdCard(false); return; }
+      if (showIdCard) { closeIdCard(); return; } // Keşfet'ten açıldıysa oraya döner
       if (showFotoTani) { setShowFotoTani(false); return; }
       if (showLicenseModal) { setShowLicenseModal(false); return; }
       if (showAiConsent) { setShowAiConsent(false); return; }
@@ -4876,7 +4883,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </span>
                     )}
                   </div>
-                  <button onClick={()=>{ setShowAilesi(false); setShowIdCard(true); }}
+                  <button onClick={()=>{ idCardFromAilesi.current = true; setShowAilesi(false); setShowIdCard(true); }}
                     style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                     {t("map_create_galactic_id")}
                   </button>
@@ -7568,7 +7575,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             )}
           </div>
-          <button onClick={()=>setShowIdCard(true)}
+          <button onClick={()=>{ idCardFromAilesi.current = false; setShowIdCard(true); }}
             style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
             {t("map_create_galactic_id")}
           </button>
@@ -7847,7 +7854,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
 
         return (
-          <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; setShowIdCard(false); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+          <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; closeIdCard(); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
               {/* Card preview */}
               <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
@@ -7972,7 +7979,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   style={{ textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(220,140,200,0.3)",background:"linear-gradient(135deg,rgba(240,100,160,0.10),rgba(140,80,200,0.10))",color:"#e0a0c8",fontSize:12,letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   <span style={{ fontSize:14 }}>◐</span> @sakin.app
                 </a>
-                <button onClick={()=>{ setShowIdCard(false); }}
+                <button onClick={()=>{ closeIdCard(); }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   {/* "Kaydet" ayrı bir buton değil — isim/foto zaten anlık kaydediliyor (React
                       state), kapat bunu bozmaz. Bunu netleştirmek için etiket "✓ Kapat" oldu
