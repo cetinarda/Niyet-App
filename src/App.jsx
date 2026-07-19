@@ -4715,7 +4715,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
       {showAilesi && (
-        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 20px calc(20px + var(--android-sab)) 20px" }}>
+        // paddingTop: nav barı Keşfet açıkken üstte tıklanabilir kalsın diye modalın
+        // ÜSTÜNE çıkarıldı (yukarıya bkz.) — modal içeriği o bar'ın altından başlasın
+        // diye üst container'la aynı boşluk formülü kullanılıyor.
+        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding: (topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:8 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
@@ -4820,6 +4823,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <button onClick={()=>{ setShowAilesi(false); setShowIdCard(true); }}
                     style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                     {t("map_create_galactic_id")}
+                  </button>
+                  {/* Keşfet'teki bu özet ile ayrı "Harita" sekmesi arasında doğrudan
+                      bağlantı — kullanıcı isteği: iki 'harita' yüzeyi ilişkisiz duruyordu. */}
+                  <button onClick={()=>{ setShowAilesi(false); setScreen("harita"); }}
+                    style={{ width:"100%",marginTop:8,background:"none",border:"1px dashed rgba(130,217,163,0.3)",borderRadius:100,padding:"8px 14px",color:"#82d9a3",fontSize:11.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    → {t("nav_map")}
                   </button>
                 </div>
               )}
@@ -5790,12 +5799,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {/* AYNA & HARİTA BARI — sabit. iOS feature ekranlarında en üstte (safe area dahil); web/policy/giriş'te topNav'ın altında. */}
-      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,zIndex:9998,minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
+      <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,
+          // Keşfet (Ailesi) tam ekran modal olarak zIndex:10000'de açılıyor — bu bar
+          // normalde 9998'de kalıp modalın ALTINDA kaybolur, kullanıcı diğer sekmelere
+          // (Harita/Bağlan) geçemez, "Kapat"ı bulmak zorunda kalırdı. Keşfet açıkken
+          // bar'ı modalın ÜSTÜNE çıkarıyoruz (SADECE bu durumda — diğer modallerle
+          // (id kartı, foto tanı, zihni boşalt) çakışmasın diye koşullu).
+          zIndex: showAilesi ? 10001 : 9998,
+          minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {SIDEBAR_ITEMS.map(n=>{
           const active = n.id==="ailesi" ? showAilesi : screen===n.id;
           return (
             <button key={n.id}
-              onClick={()=>{ if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; } if(n.id==="rehber") setRehberTab("reiki"); if(n.id==="giris") setGirisPhase("intro"); setScreen(n.id); }}
+              onClick={()=>{
+                if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; }
+                // Keşfet açıkken başka bir sekmeye geçiliyorsa Keşfet'i kapat — yoksa
+                // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
+                if(showAilesi) setShowAilesi(false);
+                if(n.id==="rehber") setRehberTab("reiki");
+                if(n.id==="giris") setGirisPhase("intro");
+                setScreen(n.id);
+              }}
               aria-label={n.iconOnly ? t("nav_home") : undefined}
               style={{
                 flex: n.iconOnly ? "0 0 auto" : "1 1 0", minWidth:0,
