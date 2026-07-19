@@ -3314,6 +3314,12 @@ export default function SakinApp() {
   const [selectedNature, setSelectedNature] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
+  // Kart açıldığında adı doğum bilgilerine girilen isimle senkronla — idCardName
+  // yalnızca uygulama İLK açıldığında localStorage'dan okunuyordu; kullanıcı Ailesi
+  // panelinden adını SONRADAN girdiyse/değiştirdiyse kart bunu hiç görmüyordu.
+  useEffect(() => {
+    if (showIdCard && userName && !idCardName) setIdCardName(userName);
+  }, [showIdCard]);
   const pendingAiAction = useRef(null);
   const [offlineMsg, setOfflineMsg] = useState("");
   // Günlük AI çağrı limiti (maliyet tavanı) — client-side soft cap; ai-call.mjs'te
@@ -3891,6 +3897,28 @@ export default function SakinApp() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
+  // Galaktik kimlik kartındaki "element dağılımı" — KÖK SEBEP: bu veri sadece
+  // Sakin Tasarım (Human Design) embed'i AÇILIP kendi grafiğini hesapladığında
+  // same-origin localStorage'a yazılıyor (apps/tasarim HomeScreen useEffect'i).
+  // Kullanıcı doğum bilgisini girdikten sonra kartı önce açarsa (Tasarım'ı hiç
+  // ziyaret etmeden) bölüm boş kalıyor; Tasarım'a girip döndüğünde "geç" ortaya
+  // çıkıyor gibi görünüyor — kullanıcıyı yanıltan asıl neden bu gecikme.
+  // Çözüm: doğum bilgisi tamamlanır tamamlanmaz Tasarım'ı GÖRÜNMEZ bir iframe'de
+  // arka planda bir kez açıp kendi hesaplamasını yapmasına izin ver, veriyi
+  // localStorage'a erkenden yazsın. Kart ilk açıldığında veri artık hazır olur.
+  const hdPreloadDone = useRef(false);
+  const [hdPreloadSrc, setHdPreloadSrc] = useState(null);
+  useEffect(() => {
+    if (hdPreloadDone.current) return;
+    if (!birthDate || !birthTime || !birthCity) return;
+    if (localStorage.getItem("sakin_element_dist")) { hdPreloadDone.current = true; return; }
+    hdPreloadDone.current = true;
+    setHdPreloadSrc("/embedded/humandesign/index.html?bg=1");
+    // Tasarım'ın AsyncStorage okuma + grafik hesaplama + HomeScreen yazma
+    // zincirini tamamlaması için birkaç saniye arka planda tutup sonra kaldır.
+    const timer = setTimeout(() => setHdPreloadSrc(null), 6000);
+    return () => clearTimeout(timer);
+  }, [birthDate, birthTime, birthCity]);
   // rehber screen is now enabled on iOS via the mirror portal
   useEffect(() => {
     if (!showIntro) return;
@@ -4837,12 +4865,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <button onClick={()=>{ setShowAilesi(false); setShowIdCard(true); }}
                     style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                     {t("map_create_galactic_id")}
-                  </button>
-                  {/* Keşfet'teki bu özet ile ayrı "Harita" sekmesi arasında doğrudan
-                      bağlantı — kullanıcı isteği: iki 'harita' yüzeyi ilişkisiz duruyordu. */}
-                  <button onClick={()=>{ setShowAilesi(false); setScreen("harita"); }}
-                    style={{ width:"100%",marginTop:8,background:"none",border:"1px dashed rgba(130,217,163,0.3)",borderRadius:100,padding:"8px 14px",color:"#82d9a3",fontSize:11.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                    → {t("nav_map")}
                   </button>
                 </div>
               )}
@@ -5822,6 +5844,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* Çıkış butonu artık üst bar'da (yukarıda). Eski absolute buton kaldırıldı. */}
         </div>
       )}
+
+      {/* Görünmez ön-yükleme iframe'i — galaktik kimlik kartındaki element dağılımını
+          kullanıcı Tasarım'ı hiç açmadan da hazır etmek için arka planda bir kez Sakin
+          Tasarım'ı yükler (bkz. hdPreloadSrc effect'i yukarıda). Tasarım kendi same-origin
+          localStorage'ından (sakin_birth_* / sakin_name) doğrudan okuyup grafiğini hesaplar
+          — köprü mesajına ihtiyaç yok. ÖNEMLİ: embeddedApp/mitlerSession'a bağlı bloğun
+          İÇİNDE değil, DIŞINDA olmalı — yoksa kullanıcı bir embed açana kadar hiç render
+          edilmez ve ön-yükleme hiç çalışmaz. */}
+      {hdPreloadSrc && <iframe
+        src={hdPreloadSrc}
+        title="hd-preload"
+        aria-hidden="true"
+        tabIndex={-1}
+        style={{ position:"fixed", left:-9999, top:0, width:390, height:844, opacity:0, pointerEvents:"none" }}
+      />}
 
       {/* AYNA & HARİTA BARI — sabit. iOS feature ekranlarında en üstte (safe area dahil); web/policy/giriş'te topNav'ın altında. */}
       <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,
@@ -7807,19 +7844,36 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ textAlign:"center",position:"relative" }}>
                   <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
                   <div style={{ position:"relative",width:88,height:88,margin:"10px auto 12px" }}>
-                    <div style={{ width:88,height:88,borderRadius:"50%",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
-                      {!idCardPhoto && "✦"}
-                    </div>
-                    {/* Foto ekle — profil dairesinin üstünde küçük kamera ikonu (ayrı buton yerine) */}
-                    <label
-                      aria-label={t("gid_upload_photo")}
-                      title={t("gid_upload_photo")}
-                      style={{ position:"absolute",bottom:-2,right:-2,width:28,height:28,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
-                      📷
-                      <input type="file" accept="image/*" style={{ display:"none" }}
-                        onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
-                    </label>
+                    {/* Fotoğraf yoksa DAİRENİN TAMAMI tıklanabilir "fotoğraf ekle" hedefi —
+                        yıldız (✦) yerine büyük, belirgin bir kamera ikonu + kesikli çerçeve
+                        koyup dokunulabilir olduğunu netleştiriyoruz. Fotoğraf varsa dairenin
+                        kendisi artık fotoğrafı gösterir, değiştirmek için köşede küçük rozet kalır. */}
+                    {idCardPhoto ? (
+                      <div style={{ width:88,height:88,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
+                    ) : (
+                      <label
+                        aria-label={t("gid_upload_photo")}
+                        title={t("gid_upload_photo")}
+                        style={{ width:88,height:88,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                        <span style={{ fontSize:30,lineHeight:1 }}>📷</span>
+                        <input type="file" accept="image/*" style={{ display:"none" }}
+                          onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                      </label>
+                    )}
+                    {idCardPhoto && (
+                      <label
+                        aria-label={t("gid_upload_photo")}
+                        title={t("gid_upload_photo")}
+                        style={{ position:"absolute",bottom:-2,right:-2,width:30,height:30,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                        📷
+                        <input type="file" accept="image/*" style={{ display:"none" }}
+                          onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                      </label>
+                    )}
                   </div>
+                  {!idCardPhoto && (
+                    <div style={{ fontSize:9,letterSpacing:1.5,color:"#a890c8",marginTop:-6,marginBottom:6,textTransform:"uppercase" }}>{t("gid_upload_photo")}</div>
+                  )}
                   <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={t("gid_your_name_ph")} maxLength={24}
                     style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
                   <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "—" ? burc : "—"} · {yasamYolu !== "—" ? `${t("gid_life_path_lower")} ${yasamYolu}` : "—"}</div>
