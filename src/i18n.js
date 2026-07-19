@@ -597,7 +597,7 @@ export const TRANS = {
     gid_yaşam_yolu_lower: "Yaşam Yolu",
     gid_personal_yr_lower: "Kişisel Yıl",
     gid_upload_photo: "📷 Fotoğraf Yükle",
-    gid_download_share: "↓ İndir / Paylaş",
+    gid_download_share: "✓ Kaydet / Paylaş",
     gid_header_short: "✦ Sakin Life · Galaktik Kimlik ✦",
 
     // ===== Mind clear (Zihni boşalt) =====
@@ -1308,7 +1308,7 @@ export const TRANS = {
     gid_yaşam_yolu_lower: "Life Path",
     gid_personal_yr_lower: "Personal Yr",
     gid_upload_photo: "📷 Upload Photo",
-    gid_download_share: "↓ Download / Share",
+    gid_download_share: "✓ Save / Share",
     gid_header_short: "✦ Sakin Life · Galactic ID ✦",
 
     // ===== Mind clear (Empty the Mind) =====

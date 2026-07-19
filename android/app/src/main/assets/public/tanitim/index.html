@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sakin · Farkındalık Sistemi</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#000; color:#fff; font-family:'Inter',sans-serif; line-height:1.8; min-height:100vh; }
+  .container { max-width:640px; margin:0 auto; padding:60px 28px 80px; }
+
+  .hero { text-align:center; margin-bottom:64px; }
+  .hero-label { font-size:11px; letter-spacing:6px; color:#888; text-transform:uppercase; margin-bottom:12px; font-family:'Jost',sans-serif; }
+  .hero-title { font-size:32px; font-weight:200; letter-spacing:4px; color:#d0c0f0; font-family:'Jost',sans-serif; margin-bottom:16px; }
+  .hero-sub { font-size:15px; color:#999; font-style:italic; line-height:2; max-width:480px; margin:0 auto; }
+
+  .quote { border-left:2px solid rgba(184,164,216,0.4); padding:20px 24px; margin:0 0 56px; background:rgba(184,164,216,0.04); border-radius:0 12px 12px 0; }
+  .quote p { font-size:16px; color:#c8b8e0; font-style:italic; line-height:2; }
+
+  .section-title { font-size:11px; letter-spacing:5px; color:#888; text-transform:uppercase; text-align:center; margin-bottom:32px; font-family:'Jost',sans-serif; }
+
+  .timeline { position:relative; padding-left:36px; margin-bottom:56px; }
+  .timeline::before { content:''; position:absolute; left:14px; top:0; bottom:0; width:2px; background:linear-gradient(to bottom,#f0a060,#60b8e8,#a07ae0,#b87adc,#e8d060,#7ab0e0,#82d9a3); border-radius:2px; }
+  .step { position:relative; margin-bottom:28px; }
+  .step:last-child { margin-bottom:0; }
+  .step-dot { position:absolute; left:-30px; top:4px; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; }
+  .step-title { font-size:15px; font-weight:500; letter-spacing:1px; margin-bottom:4px; font-family:'Jost',sans-serif; }
+  .step-desc { font-size:13px; color:#999; line-height:1.9; }
+
+  .features { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:56px; }
+  @media(max-width:480px) { .features { grid-template-columns:1fr; } }
+  .feature-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:18px 16px; }
+  .feature-icon { font-size:22px; margin-bottom:8px; }
+  .feature-title { font-size:13px; letter-spacing:2px; color:#b8a4d8; margin-bottom:6px; font-family:'Jost',sans-serif; }
+  .feature-text { font-size:12px; color:#888; line-height:1.8; }
+
+  .ailesi { margin-bottom:56px; }
+  .ailesi-grid { display:flex; flex-direction:column; gap:14px; }
+  .ailesi-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:18px 20px; display:flex; align-items:center; gap:16px; text-decoration:none; color:inherit; transition:border-color 0.25s; }
+  .ailesi-card:hover { border-color:rgba(255,255,255,0.2); }
+  .ailesi-icon { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+  .ailesi-name { font-size:15px; font-weight:500; color:#fff; letter-spacing:1px; margin-bottom:4px; font-family:'Jost',sans-serif; }
+  .ailesi-desc { font-size:12.5px; color:#999; line-height:1.8; }
+  .ailesi-arrow { color:rgba(255,255,255,0.2); font-size:18px; flex-shrink:0; margin-left:auto; }
+  .ailesi-intro { font-size:14px; color:#888; text-align:center; font-style:italic; margin-bottom:24px; line-height:1.9; }
+
+  .cta { text-align:center; margin:48px 0; padding:32px 24px; background:linear-gradient(135deg,rgba(184,164,216,0.08),rgba(184,164,216,0.03)); border:1px solid rgba(184,164,216,0.15); border-radius:18px; }
+  .cta-text { font-size:15px; color:#c8b8e0; margin-bottom:20px; font-style:italic; }
+  .cta-btn { display:inline-block; padding:14px 36px; border-radius:100px; background:linear-gradient(135deg,rgba(184,164,216,0.6),rgba(120,80,180,0.5)); color:#fff; text-decoration:none; font-family:'Jost',sans-serif; font-size:14px; letter-spacing:2px; border:none; }
+  .cta-btn:hover { opacity:0.85; }
+
+  .footer { text-align:center; margin-top:56px; padding-top:32px; border-top:1px solid rgba(255,255,255,0.06); }
+  .footer p { font-size:13px; color:#666; letter-spacing:1.5px; }
+  .footer .name { font-size:12px; color:#555; letter-spacing:2px; margin-top:4px; }
+
+  .divider { height:1px; background:rgba(255,255,255,0.06); margin:48px 0; }
+
+  .problem-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+  .problem-text { font-size:14px; color:#ccc; }
+  .problem-label { font-size:11px; margin-top:4px; letter-spacing:1px; }
+  .bridge-box { text-align:center; padding:20px 24px; background:rgba(184,164,216,0.06); border:1px solid rgba(184,164,216,0.12); border-radius:16px; margin-bottom:48px; }
+  .bridge-title { font-size:11px; color:#c084fc; letter-spacing:2px; font-family:'Jost',sans-serif; margin-bottom:6px; }
+  .bridge-text { font-size:14px; color:#ccc; line-height:1.9; }
+  .nedir-block { margin-bottom:32px; }
+  .nedir-text { font-size:15px; color:#ccc; line-height:2.2; }
+  .nedir-strike { text-decoration:line-through; color:#666; }
+  .nedir-highlight { color:#c084fc; font-weight:500; }
+  .connection-bar { display:flex; align-items:center; justify-content:center; gap:4px; margin:16px 0; }
+  .conn-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .conn-line { width:16px; height:1.5px; display:inline-block; }
+  .complete-box { text-align:center; padding:20px; background:rgba(52,211,153,0.06); border:1px solid rgba(52,211,153,0.12); border-radius:16px; margin:48px 0; }
+  .complete-text { font-size:12px; color:#34d399; letter-spacing:2px; font-family:'Jost',sans-serif; margin-top:10px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-label">Farkındalık Sistemi</div>
+    <div class="hero-title">Sakin</div>
+    <div class="hero-sub">Bir uygulama değil, bir frekans geçidi.<br>Kullan ve kendinle bağlantı kur.</div>
+  </div>
+
+  <div class="quote">
+    <p>Sakin, sana bir şey öğretmez. Sadece hatırlatır. Günün koşusunda kendini unuttuğun anlarda, seni nazikçe içe çeker.</p>
+  </div>
+
+  <!-- Tanıdık mı? -->
+  <div class="section-title">Tanıdık mı?</div>
+
+  <div class="problem-card">
+    <div class="problem-text">😵‍💫 Sabah gözünü açtığında ilk refleksin telefona uzanmak</div>
+    <div class="problem-label" style="color:#f472b6">bağlantı: kendinle — kesildi ✕</div>
+  </div>
+  <div class="problem-card">
+    <div class="problem-text">🧠 Zihnin durmadan konuşuyor, sen dinliyorsun bile değil</div>
+    <div class="problem-label" style="color:#fb923c">bağlantı: bedeninle — kesildi ✕</div>
+  </div>
+  <div class="problem-card">
+    <div class="problem-text">🌀 "Bir şeyler eksik" hissi ama ne olduğunu bilmiyorsun</div>
+    <div class="problem-label" style="color:#c084fc">bağlantı: ruhunla — kesildi ✕</div>
+  </div>
+  <div class="problem-card" style="margin-bottom:24px">
+    <div class="problem-text">📱 20 uygulama indirdin, hiçbirini 3 günden fazla kullanmadın</div>
+    <div class="problem-label" style="color:#38bdf8">bağlantı: niyetinle — kesildi ✕</div>
+  </div>
+
+  <div class="bridge-box">
+    <div class="bridge-title">GÜZEL HABER</div>
+    <div class="bridge-text">Bu bağlantıları yeniden kurmak düşündüğün kadar zor değil.<br>Sadece bir sistem lazım. Ve biraz niyet.</div>
+  </div>
+
+  <!-- Sakin Nedir? -->
+  <div class="nedir-block">
+    <div class="nedir-text">
+      Sakin bir <span class="nedir-strike">meditasyon uygulaması</span> değil.<br>
+      Sakin bir <span class="nedir-strike">terapi aracı</span> değil.<br>
+      Sakin bir <span class="nedir-strike">to-do listesi</span> değil.<br><br>
+      Sakin bir <span class="nedir-highlight">farkındalık sistemi</span>.
+    </div>
+  </div>
+
+  <div class="connection-bar">
+    <span class="conn-dot" style="background:#c084fc"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#c084fc,#818cf8)"></span>
+    <span class="conn-dot" style="background:#818cf8"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8)"></span>
+    <span class="conn-dot" style="background:#38bdf8"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#38bdf8,#34d399)"></span>
+    <span class="conn-dot" style="background:#34d399"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#34d399,#fbbf24)"></span>
+    <span class="conn-dot" style="background:#fbbf24"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#fbbf24,#fb923c)"></span>
+    <span class="conn-dot" style="background:#fb923c"></span>
+    <span class="conn-line" style="background:linear-gradient(90deg,#fb923c,#f472b6)"></span>
+    <span class="conn-dot" style="background:#f472b6"></span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title">Yolculuğun Haritası</div>
+
+  <div class="timeline">
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#f0a06044,#f0a06011);border:1.5px solid #f0a06055">🌅</div>
+      <div class="step-title" style="color:#f0a060">Sabah Niyeti</div>
+      <div class="step-desc">Güne bir niyetle başla. Seni en çok ifade eden 3 kelimeyi seç — gün boyunca pusulan olsunlar.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#60b8e844,#60b8e811);border:1.5px solid #60b8e855">🫧</div>
+      <div class="step-title" style="color:#60b8e8">Nefes Egzersizi</div>
+      <div class="step-desc">6 farklı modla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu, sakinleştirici.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#a07ae044,#a07ae011);border:1.5px solid #a07ae055">🔊</div>
+      <div class="step-title" style="color:#a07ae0">Ses Dalgaları</div>
+      <div class="step-desc">10 solfeggio frekansını kuş sesleri eşliğinde dinle. Her frekansın kendine ait bir doğa sesi var.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#b87adc44,#b87adc11);border:1.5px solid #b87adc55">💜</div>
+      <div class="step-title" style="color:#b87adc">22 Çakra Yükselişi</div>
+      <div class="step-desc">Enerji merkezlerinle bağlantı kur. Elini bölgende hisset, gözlerini kapat, enerjin aksın.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#e8d06044,#e8d06011);border:1.5px solid #e8d06055">☀️</div>
+      <div class="step-title" style="color:#e8d060">Gün İçi Görevler</div>
+      <div class="step-desc">Aynaya bak. Su iç. Güneşi hisset. Toprağa dokun. Seni ana bağlayan dokunuşlar.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#7ab0e044,#7ab0e011);border:1.5px solid #7ab0e055">🌙</div>
+      <div class="step-title" style="color:#7ab0e0">Akşam Kapanışı</div>
+      <div class="step-desc">Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.</div>
+    </div>
+    <div class="step">
+      <div class="step-dot" style="background:radial-gradient(circle,#82d9a344,#82d9a311);border:1.5px solid #82d9a355">✦</div>
+      <div class="step-title" style="color:#82d9a3">Haftalık İçsel Rapor</div>
+      <div class="step-desc">AI destekli kişisel raporun: çakra örüntüleri, frekans süren, kozmik enerji — derin bir iç ayna.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-title">Neler Var?</div>
+
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">🌬</div>
+      <div class="feature-title">6 Nefes Modu</div>
+      <div class="feature-text">Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici nefes egzersizleri</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎵</div>
+      <div class="feature-title">10 Solfeggio</div>
+      <div class="feature-text">174Hz'den 963Hz'e, kuş sesleri eşliğinde şifalı frekanslar</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💜</div>
+      <div class="feature-title">22 Çakra</div>
+      <div class="feature-text">Fiziksel, ruhsal ve ilahi boyutta enerji merkezi çalışması</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <div class="feature-title">Doğum Haritası</div>
+      <div class="feature-text">Burç, yaşam yolu, 12. ev, draconik harita — kişiselleştirilmiş içerik</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <div class="feature-title">AI Rehber</div>
+      <div class="feature-text">Reiki ve spiritüel psikoloji kaynaklı yapay zeka içsel rehber</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌍</div>
+      <div class="feature-title">Kozmik Enerji</div>
+      <div class="feature-text">NOAA uydu verisiyle haftalık Kp indeksi ve jeomanyetik analiz</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="ailesi">
+    <div class="section-title">Sakin Ailesi</div>
+    <div class="ailesi-intro">Sakin'in frekansını taşıyan kardeş uygulamalar.<br>Her biri farklı bir kapıdan aynı merkeze çeker.</div>
+    <div class="ailesi-grid">
+      <a href="https://sakinhayvan.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#a0d8b466'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#a0d8b444,#a0d8b411)">◈</div>
+        <div>
+          <div class="ailesi-name" style="color:#a0d8b4">Sakin Hayvan</div>
+          <div class="ailesi-desc">Sözler, Taşlar, Nagual — Anadolu bilgeliği ve ruh rehberliği üzerinden günlük üç kart çekimi.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
+      <a href="https://sakinmitler.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#d8b4a066'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#d8b4a044,#d8b4a011)">🏛️</div>
+        <div>
+          <div class="ailesi-name" style="color:#d8b4a0">Sakin Mitler</div>
+          <div class="ailesi-desc">Jung'un izinde günlük arketip, mit ve imge okuması — her gün üç deste açılır.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
+      <a href="https://sakindesign.netlify.app/" target="_blank" class="ailesi-card" onmouseenter="this.style.borderColor='#b4a0d866'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'">
+        <div class="ailesi-icon" style="background:radial-gradient(circle,#b4a0d844,#b4a0d811)">⌖</div>
+        <div>
+          <div class="ailesi-name" style="color:#b4a0d8">Sakin Tasarım</div>
+          <div class="ailesi-desc">Doğum gün, saat ve şehrini girerek Human Design haritan — tip, içsel yetki, profil, merkezler ve kanallar.</div>
+        </div>
+        <div class="ailesi-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="complete-box">
+    <div class="connection-bar">
+      <span class="conn-dot" style="background:#c084fc;box-shadow:0 0 6px #c084fc66"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#c084fc,#818cf8)"></span>
+      <span class="conn-dot" style="background:#818cf8;box-shadow:0 0 6px #818cf866"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#818cf8,#38bdf8)"></span>
+      <span class="conn-dot" style="background:#38bdf8;box-shadow:0 0 6px #38bdf866"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#38bdf8,#34d399)"></span>
+      <span class="conn-dot" style="background:#34d399;box-shadow:0 0 6px #34d39966"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#34d399,#fbbf24)"></span>
+      <span class="conn-dot" style="background:#fbbf24;box-shadow:0 0 6px #fbbf2466"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#fbbf24,#fb923c)"></span>
+      <span class="conn-dot" style="background:#fb923c;box-shadow:0 0 6px #fb923c66"></span>
+      <span class="conn-line" style="background:linear-gradient(90deg,#fb923c,#f472b6)"></span>
+      <span class="conn-dot" style="background:#f472b6;box-shadow:0 0 6px #f472b666"></span>
+    </div>
+    <div class="complete-text">TÜM BAĞLANTILAR TAMAMLANDI ✦</div>
+  </div>
+
+  <div class="cta">
+    <div class="cta-text">Karmaşık değil. Derin.<br>Sadece birkaç sakin anını ver, gerisini hatırlayacaksın.</div>
+    <a href="https://sakin.life" class="cta-btn">Sakin'i Keşfet →</a>
+  </div>
+
+  <div class="footer">
+    <p>Sakin · Farkındalık Sistemi · 2026</p>
+    <p class="name">Arda Çetin</p>
+  </div>
+
+</div>
+</body>
+</html>
