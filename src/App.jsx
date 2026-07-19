@@ -137,6 +137,12 @@ function __resumeAllAudio() {
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
 const APP_VERSION = "1.3.1";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
+// Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
+// (isNative = Capacitor.isNativePlatform(), ikisinde de true). Sabit
+// APP_STORE_URL kullanmak Android kullanıcısını Apple'a gönderirdi — platforma
+// göre doğru mağazayı seç.
+const STORE_URL = (() => { try { return Capacitor.getPlatform() === "android" ? PLAY_STORE_URL : APP_STORE_URL; } catch (_) { return APP_STORE_URL; } })();
 
 // AI system prompt'larındaki dil kuralı — seçili dile göre. Hardcoded "YALNIZCA
 // Türkçe yaz" talimatı EN/DE/... seçiliyken bile modeli Türkçe yazmaya zorluyordu
@@ -5791,7 +5797,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {(lang==="tr" ? updateInfo.notes_tr : updateInfo.notes_en) || t("update_default_notes")}
             </div>
           </div>
-          <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer"
+          <a href={STORE_URL} target="_blank" rel="noopener noreferrer"
             style={{ background:"rgba(255,255,255,0.22)", border:"1px solid rgba(255,255,255,0.4)", borderRadius:18, padding:"7px 14px", color:"#fff", fontSize:12, letterSpacing:1, fontFamily:"'Jost',sans-serif", textDecoration:"none", whiteSpace:"nowrap" }}>
             {t("update_button")}
           </a>
