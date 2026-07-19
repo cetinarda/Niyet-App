@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -10,6 +10,8 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
+import { App as CapacitorApp } from "@capacitor/app";
+import { TextToSpeech } from "@capacitor-community/text-to-speech";
 import { Filesystem, Directory } from "@capacitor/filesystem";
 // Büyük dünya şehri veritabanı — dinamik import() ile yalnızca SmartCityInput
 // kullanıldığında ayrı bir chunk olarak yüklenir. Ana bundle'ı şişirmez.
@@ -112,6 +114,35 @@ async function shareImageBlob(blob, filename) {
     setTimeout(resetViewportZoom, 600);
     setTimeout(resetViewportZoom, 1600); // geç kapanan sheet için ikinci tur
   }
+}
+
+// Sesli talimat (nefes fazları, "Connected" vb.) — platforma göre en güvenilir yol.
+// ANDROID: WebView'ın Web Speech Synthesis API desteği güvenilmez (çoğu cihazda
+// speechSynthesis.speak() sessizce hiçbir şey yapmaz, getVoices() boş döner) →
+// native TextToSpeech eklentisi kullanılır. iOS + web: mevcut çalışan
+// speechSynthesis yolu AYNEN korunur (kullanıcı bunun çalıştığını doğruladı).
+function speakText(text, { lang = "en-US", rate = 1, pitch = 1, volume = 1 } = {}) {
+  if (!text) return;
+  try {
+    if (isNative && Capacitor.getPlatform() === "android") {
+      TextToSpeech.stop().catch(() => {});
+      TextToSpeech.speak({ text, lang, rate, pitch, volume, category: "ambient" }).catch(() => {});
+      return;
+    }
+  } catch (_) {}
+  try {
+    if (!("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const utt = new SpeechSynthesisUtterance(text);
+    utt.lang = lang; utt.rate = rate; utt.pitch = pitch; utt.volume = volume;
+    window.speechSynthesis.speak(utt);
+  } catch (_) {}
+}
+function cancelSpeech() {
+  try {
+    if (isNative && Capacitor.getPlatform() === "android") { TextToSpeech.stop().catch(() => {}); return; }
+  } catch (_) {}
+  try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (_) {}
 }
 
 // ── Audio context kayıt defteri ───────────────────────────────────────────────
@@ -1096,7 +1127,12 @@ function startThunder(ctx, masterGain) {
 }
 
 // Zihni Boşalt — fullscreen kaleidoskop + procedural drone müzik
-function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false, onPremium = () => {} }) {
+// React.memo: üst App bileşeni saat tick'i gibi sık aralıklarla re-render oluyor;
+// memo olmadan bu, canvas/audio effect'i tetiklemese bile ağır JSX subtree'sini
+// gereksiz reconcile ediyordu — periyodik görsel duraksama şikayetinin olası
+// kaynağı. Prop'lar (mode/nature/lang/onClose/isPremium/onPremium) değişmeden
+// yeniden render olmaz artık.
+const KaleidoscopeView = memo(function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false, onPremium = () => {} }) {
   const t = makeTrans(lang);
   const canvasRef = useRef(null);
   const audioRef = useRef(null);
@@ -1119,7 +1155,7 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
           a.natureMaster.gain.linearRampToValueAtTime(0.05, a.aCtx.currentTime + 1.2);
         }
       } catch(_) {}
-    }, 30000);
+    }, 60000);
     return () => clearTimeout(id);
   }, [isPremium, mode]);
 
@@ -1325,7 +1361,7 @@ function KaleidoscopeView({ mode, nature = [], lang, onClose, isPremium = false,
       )}
     </div>
   );
-}
+});
 
 // Matrix kod yağmuru — fixed arka plan canvas'ı (yalnız matrix modda mount edilir).
 function MatrixRain() {
@@ -1365,7 +1401,12 @@ function MatrixRain() {
 const GLOBAL_CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
   * { box-sizing: border-box; }
-  html, body { background: #000000; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+  /* color: eski iOS/WKWebView sürümlerinde color-scheme:dark ipucu geç/tutarsız
+     uygulanabiliyor — ilk boyama UA varsayılanı (siyah) metinle başlayıp CSS tam
+     yüklenince beyaza "kayıyordu". Taban rengi burada sabitlenince ilk boyamadan
+     itibaren doğru — hiçbir platformda görsel değişiklik yaratmaz (zaten her yerde
+     beyaza yakın renkler kullanılıyordu). */
+  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -2172,17 +2213,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     if (tPhase!=="connected" || !selected) return;
     // Bağlantı kuruldu: harmonik akor + konuşma bildirimi
     playConnectedChord();
-    if ("speechSynthesis" in window) {
-      setTimeout(() => {
-        const utt = new SpeechSynthesisUtterance("Connected");
-        utt.lang = "en-US";
-        utt.rate = 0.78;
-        utt.pitch = 0.9;
-        utt.volume = 0.55;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utt);
-      }, 1400);
-    }
+    setTimeout(() => { speakText("Connected", { lang: "en-US", rate: 0.78, pitch: 0.9, volume: 0.55 }); }, 1400);
   }, [tPhase]);
 
   useEffect(() => {
@@ -2256,7 +2287,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
+  const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -3870,6 +3901,37 @@ export default function SakinApp() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  // ANDROID DONANIM GERİ TUŞU: @capacitor/app'in varsayılan davranışı, geri
+  // gidecek WebView geçmişi yoksa uygulamadan doğrudan çıkmak. Modaller (Ailesi,
+  // kimlik kartı, zihni boşalt, embed vb.) plain useState ile açılıyor — history'ye
+  // pushlanmıyor — o yüzden "üstte açık bir modal varken geri tuşuna basınca
+  // uygulama kapanıyor" şikayeti oluyordu. Öncelik sırası: en üstteki modalı kapat
+  // → yoksa ekran geçmişinde geri git → o da yoksa (kök ekran) uygulamadan çık.
+  useEffect(() => {
+    if (!isNative || Capacitor.getPlatform() !== "android") return;
+    const sub = CapacitorApp.addListener("backButton", () => {
+      if (embeddedApp) { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); return; }
+      if (activeMindMode) { setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); return; }
+      if (showMindClear) { setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); return; }
+      if (showIdCard) { setShowIdCard(false); return; }
+      if (showFotoTani) { setShowFotoTani(false); return; }
+      if (showLicenseModal) { setShowLicenseModal(false); return; }
+      if (showAiConsent) { setShowAiConsent(false); return; }
+      if (showDeleteConfirm) { setShowDeleteConfirm(false); return; }
+      // showBackConfirm SakinApp scope'unda değil — TerapiScreen'e özel kendi
+      // state'i, o ekranın kendi geri tuşu/onay akışı ayrı yönetiliyor, buraya dahil edilmez.
+      if (showKilavuz) { setShowKilavuz(false); return; }
+      if (showOrnekler) { setShowOrnekler(false); return; }
+      if (showKozmik) { setShowKozmik(false); return; }
+      if (showKimlikReveal) { setShowKimlikReveal(false); return; }
+      if (showNedir) { setShowNedir(false); return; }
+      if (showAilesi) { setShowAilesi(false); return; }
+      if (screenHistoryRef.current.length > 1) { history.back(); return; }
+      CapacitorApp.exitApp();
+    });
+    return () => { sub.then(s => s.remove()).catch(() => {}); };
+  }, [embeddedApp, activeMindMode, showMindClear, showIdCard, showFotoTani, showLicenseModal, showAiConsent, showDeleteConfirm, showKilavuz, showOrnekler, showKozmik, showKimlikReveal, showNedir, showAilesi]);
+
   useEffect(() => {
     if (screen !== "harita") return;
     const bugun = {
@@ -4468,15 +4530,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   },[screen]);
 
   const speakBreathCue = (phase) => {
-    if (!("speechSynthesis" in window)) return;
     const voiceMap = { inhale: t("breath_voice_inhale"), hold: t("breath_voice_hold"), exhale: t("breath_voice_exhale"), hold2: t("breath_voice_rest") };
     const text = voiceMap[phase];
     if (!text) return;
-    window.speechSynthesis.cancel();
-    const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = t("voice_lang");
-    utt.rate = 0.75; utt.pitch = 0.9; utt.volume = 0.7;
-    window.speechSynthesis.speak(utt);
+    speakText(text, { lang: t("voice_lang"), rate: 0.75, pitch: 0.9, volume: 0.7 });
   };
 
   useEffect(() => {
@@ -4496,7 +4553,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       cycle();
       breathRef.current = setInterval(cycle, tm.total);
     }, 600);
-    return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); if ("speechSynthesis" in window) window.speechSynthesis.cancel(); };
+    return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); cancelSpeech(); };
   },[screen, breathStarted, breathMode]);
 
   // Nefes ekranı bir overlay ile kapandığında (Sakin Ailesi/embed, kimlik kartı,
@@ -4508,7 +4565,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       setBreathStarted(false);
       setBreathPhase("ready");
       clearInterval(breathRef.current);
-      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      cancelSpeech();
     }
   }, [embeddedApp, showIdCard, showMindClear, activeMindMode, mirrorPortalActive, breathStarted]);
 
@@ -4919,7 +4976,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
-      {/* PANİK BUTONU — yalnızca GİRİŞ ekranında sol üst banner (kullanıcı isteğiyle
+      {/* PANİK BUTONU — yalnızca GİRİŞ ekranında sağ alt köşe (kullanıcı isteğiyle
           diğer ekranlarda gizli). Tıklayınca en uygun sakinleştirici nefesi (4-7-8)
           DOĞRUDAN başlatır; teknik premium olsa bile panik istisnası ile çalışır. */}
       {screen === "giris" && !embeddedApp && !mirrorPortalActive && (
@@ -4937,9 +4994,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           title={t("panic_aria")}
           style={{
             position:"fixed",
-            // Nav barının biraz daha ALTINA — üstteki nav/ay ikonuyla çakışmasın.
-            top:"calc(env(safe-area-inset-top, 0px) + 120px)",
-            left:14, zIndex:9997,
+            // Sağ alt köşe — giriş ekranında alt bar/yardım butonu yok, çakışma olmaz.
+            bottom:"calc(24px + var(--android-sab))",
+            right:14, zIndex:9997,
             display:"flex", alignItems:"center", gap:7,
             padding:"8px 14px", borderRadius:100,
             border:"1px solid rgba(224,120,120,0.5)",
@@ -6033,7 +6090,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 90px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Back button */}
             <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
-              style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
+              style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
               ←
             </button>
             {/* Title */}
@@ -7700,8 +7757,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
                   <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
-                  <div style={{ width:88,height:88,borderRadius:"50%",margin:"10px auto 12px",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
-                    {!idCardPhoto && "✦"}
+                  <div style={{ position:"relative",width:88,height:88,margin:"10px auto 12px" }}>
+                    <div style={{ width:88,height:88,borderRadius:"50%",background: idCardPhoto ? `url(${idCardPhoto}) center/cover` : "radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px solid rgba(220,200,255,0.45)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,color:"#fff",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                      {!idCardPhoto && "✦"}
+                    </div>
+                    {/* Foto ekle — profil dairesinin üstünde küçük kamera ikonu (ayrı buton yerine) */}
+                    <label
+                      aria-label={t("gid_upload_photo")}
+                      title={t("gid_upload_photo")}
+                      style={{ position:"absolute",bottom:-2,right:-2,width:28,height:28,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                      📷
+                      <input type="file" accept="image/*" style={{ display:"none" }}
+                        onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                    </label>
                   </div>
                   <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={t("gid_your_name_ph")} maxLength={24}
                     style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
@@ -7779,11 +7847,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
               {/* Actions */}
               <div style={{ display:"flex",flexDirection:"column",gap:8,marginTop:14 }}>
-                <label style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:6,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.3)",background:"rgba(184,164,216,0.08)",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  {t("gid_upload_photo")}
-                  <input type="file" accept="image/*" style={{ display:"none" }}
-                    onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
-                </label>
                 <button onClick={downloadCard}
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
                   {t("gid_download_share")}
@@ -7794,7 +7857,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </a>
                 <button onClick={()=>{ setShowIdCard(false); }}
                   style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  {t("common_close")}
+                  {/* "Kaydet" ayrı bir buton değil — isim/foto zaten anlık kaydediliyor (React
+                      state), kapat bunu bozmaz. Bunu netleştirmek için etiket "✓ Kapat" oldu
+                      (kullanıcı 'kaydet'e basıp kapanmasını bekliyor olabilir şikayeti). */}
+                  ✓ {t("common_close")}
                 </button>
               </div>
             </div>
@@ -8176,7 +8242,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {screen==="fiyat" && (
         <div className="policy-screen">
           <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
-            style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#aaa",fontSize:17,display:"flex",alignItems:"center",justifyContent:"center",zIndex:10 }}>
+            style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
             ←
           </button>
           {/* paddingTop: sol üstteki dairesel geri butonu (top:14 + 40px) başlığın

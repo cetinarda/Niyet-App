@@ -10,6 +10,28 @@ import { BUILD_INFO } from '../buildInfo';
 const PRIVACY_URL = 'https://sakin.life/tasarim/gizlilik';
 const TERMS_URL = 'https://sakin.life/tasarim/kosullar';
 const SUPPORT_EMAIL = 'info@sakin.life';
+
+// Embed → Sakin host köprüsü. Diğer 4 aile uygulamasında (hayvan/mitler/taslar/
+// bitkiler) var, Tasarım'da hiç yoktu — kullanıcı diğer uygulamalara geçmek için
+// host'a manuel dönüp Ailesi panelini aramak zorunda kalıyordu. Native'de (App
+// Store 2.5.6/4.2.6 riski) gizli, sadece web'de gösterilir — diğer 4 embed'le birebir aynı desen.
+function postToHost(payload: object, fallbackUrl?: string) {
+  try {
+    if (Platform.OS === 'web' && typeof window !== 'undefined' && window.parent && window.parent !== window) {
+      window.parent.postMessage(payload, window.location.origin);
+      return;
+    }
+  } catch { /* ignore */ }
+  if (fallbackUrl) Linking.openURL(fallbackUrl).catch(() => {});
+}
+
+const SAKIN_FAMILY_APPS = [
+  { host: 'hayvan',   name: 'Sakin Hayvan',   symbol: '⊕' },
+  { host: 'mitler',   name: 'Sakin Mitler',   symbol: '⚡' },
+  { host: 'tasarim',  name: 'Sakin Tasarım',  symbol: '◉' },
+  { host: 'taslar',   name: 'Sakin Taşlar',   symbol: '◈' },
+  { host: 'bitkiler', name: 'Sakin Bitkiler', symbol: '✿' },
+] as const;
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
 import { useTasarimStore } from '../store/useStore';
@@ -181,6 +203,50 @@ export function ProfileScreen() {
       >
         <Text style={styles.addBtnText}>+ Yeni Profil Ekle</Text>
       </TouchableOpacity>
+
+      {Platform.OS === 'web' && (
+        <View style={styles.familySection}>
+          <Text style={styles.sectionTitle}>Sakin Ailesi</Text>
+          <Text style={styles.familyIntro}>Tek ekosistem. Tek abonelik. Birçok kapı.</Text>
+
+          <TouchableOpacity
+            style={styles.familyMaster}
+            onPress={() => postToHost({ type: 'sakin-close-embed' }, 'https://sakin.life')}
+            activeOpacity={0.75}
+          >
+            <Text style={styles.familyMasterSymbol}>✦</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.familyMasterName}>sakin.life</Text>
+              <Text style={styles.familyMasterDesc}>Ana merkez — tüm uygulamalara giriş</Text>
+            </View>
+            <Text style={styles.familyMasterArrow}>→</Text>
+          </TouchableOpacity>
+
+          {SAKIN_FAMILY_APPS
+            .slice()
+            .sort((a, b) => (a.host === 'tasarim' ? 0 : 1) - (b.host === 'tasarim' ? 0 : 1))
+            .map(app => {
+              const isCurrent = app.host === 'tasarim';
+              return (
+                <TouchableOpacity
+                  key={app.host}
+                  style={[styles.familyCard, isCurrent && styles.familyCardActive]}
+                  onPress={isCurrent ? undefined : () => postToHost({ type: 'sakin-open-embed', app: app.host }, '')}
+                  activeOpacity={isCurrent ? 1 : 0.7}
+                  disabled={isCurrent}
+                >
+                  <Text style={[styles.familySymbol, isCurrent && { color: Colors.purple }]}>{app.symbol}</Text>
+                  <Text style={[styles.familyName, isCurrent && { color: Colors.purple }]}>{app.name}</Text>
+                  <View style={[styles.familyBadge, isCurrent && { borderColor: Colors.purple + '60' }]}>
+                    <Text style={[styles.familyBadgeText, isCurrent && { color: Colors.purple }]}>
+                      {isCurrent ? 'AKTİF' : '→'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+        </View>
+      )}
 
       <View style={styles.legalLinks}>
         <TouchableOpacity
@@ -661,6 +727,38 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
   },
+
+  // Sakin Ailesi (web-only cross-app switcher)
+  familySection: { marginTop: Spacing.xl, marginBottom: Spacing.lg },
+  familyIntro: {
+    fontSize: Typography.size.sm, color: Colors.textMuted,
+    marginTop: -Spacing.xs, marginBottom: Spacing.md,
+  },
+  familyMaster: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.md,
+    backgroundColor: Colors.surface, borderRadius: BorderRadius.lg,
+    borderWidth: 1, borderColor: Colors.gold + '40',
+    padding: Spacing.md, marginBottom: Spacing.sm,
+  },
+  familyMasterSymbol: { fontSize: 20, color: Colors.gold },
+  familyMasterName: { fontSize: Typography.size.md, fontWeight: Typography.weight.bold, color: Colors.text },
+  familyMasterDesc: { fontSize: Typography.size.xs, color: Colors.textMuted, marginTop: 2 },
+  familyMasterArrow: { fontSize: 16, color: Colors.textMuted },
+  familyCard: {
+    flexDirection: 'row', alignItems: 'center', gap: Spacing.sm,
+    backgroundColor: Colors.surface, borderRadius: BorderRadius.md,
+    borderWidth: 1, borderColor: Colors.glassBorder,
+    paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.xs,
+  },
+  familyCardActive: { borderColor: Colors.purple + '60' },
+  familySymbol: { fontSize: 16, color: Colors.textMuted, width: 22 },
+  familyName: { flex: 1, fontSize: Typography.size.sm, color: Colors.text },
+  familyBadge: {
+    borderWidth: 1, borderColor: Colors.glassBorder, borderRadius: BorderRadius.round,
+    paddingHorizontal: 10, paddingVertical: 3,
+  },
+  familyBadgeText: { fontSize: 10, letterSpacing: 1, color: Colors.textMuted },
 
   // Form
   formTitle: {

@@ -15,7 +15,9 @@
     "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan && npm run build:taslar"
   },
   "dependencies": {
+    "@capacitor-community/text-to-speech": "^8.0.2",
     "@capacitor/android": "^8.4.2",
+    "@capacitor/app": "^8.1.1",
     "@capacitor/cli": "^8.3.1",
     "@capacitor/core": "^8.3.1",
     "@capacitor/filesystem": "^8.1.2",

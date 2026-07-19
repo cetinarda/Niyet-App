@@ -100,6 +100,7 @@ const EN = [
     { term: "Zodiac Sign (Sun Sign)", desc: "The sign the Sun was in at your birth. Represents your core personality, ego, and life energy. There are 12 signs: Aries, Taurus, Gemini, Cancer, Leo, Virgo, Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces." },
     { term: "Ascendant (Rising Sign)", desc: "The sign rising on the horizon at your birth moment. Determines how the world sees you, your physical appearance and first impression. Birth time is required for calculation." },
     { term: "12th House & Ruling Planet", desc: "In astrology, the 12th house represents the subconscious, hidden powers, spiritual potential and inner world. Each house has a ruling planet that determines how you experience its themes." },
+    { term: "Draconic Chart", desc: "Your natal chart tells you who you are; the Draconic chart tells you what your soul was before entering this body. Calculated by fixing the North Node at 0° Aries. Systematized by Pamela Crane and Ronald Davison in the 1970s. The Draconic Sun is the soul's true identity; the natal Sun is the mask worn in this life." },
     { term: "Planetary Powers", desc: "Each planet governs different life areas: Sun (self), Moon (emotions), Mercury (communication), Venus (love), Mars (action), Jupiter (expansion), Saturn (discipline), Uranus (originality), Neptune (imagination), Pluto (transformation)." },
   ]},
   { cat: "guide_cat_chakra", items: [
@@ -447,7 +448,7 @@ export const GLOSSARY_BY_LANG = {
   en: EN,
   de: DE,
   es: ES,
-  "pt-BR": PT,
+  pt: PT,
   fr: FR,
   ja: JA,
 };

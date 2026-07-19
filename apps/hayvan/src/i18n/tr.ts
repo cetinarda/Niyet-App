@@ -159,7 +159,7 @@ export const tr = {
           ],
         },
         {
-          q: 'Hayatta neyi özgürlük hissettiriyor?',
+          q: 'Hayatta ne özgür hissettiriyor?',
           options: [
             'Bağımsız karar verebilmek',
             'Sevdiklerimle güvende olmak',

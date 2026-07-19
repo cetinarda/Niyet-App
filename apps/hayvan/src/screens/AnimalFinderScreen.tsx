@@ -104,7 +104,7 @@ const QUESTIONS: Question[] = [
     ],
   },
   {
-    q: 'Hayatta neyi özgürlük hissettiriyor?',
+    q: 'Hayatta ne özgür hissettiriyor?',
     emoji: '☀',
     options: [
       { text: 'Bağımsız karar verebilmek',

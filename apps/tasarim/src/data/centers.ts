@@ -427,7 +427,7 @@ export const CENTERS: Record<CenterKey, CenterInfo> = {
       descEn:
         'You can cling \'out of fear\' to relationships or jobs that aren\'t good for you; the worry that \'something bad will happen if I let go\' is the trap of the not-self.',
       notSelfQuestion:
-        '"Aslında sana iyi gelmeyen şeylere bırakamıyor olmaktan tutunuyor musun?"',
+        '"Aslında sana iyi gelmeyen şeylere bırakma korkusuyla mı tutunuyorsun?"',
       notSelfQuestionEn:
         '\'Do you hold on to things that aren\'t actually good for you simply because you can\'t let go?\'',
       wisdom:

@@ -499,7 +499,7 @@ export const EXTRA_LANGS = {
     gid_yaşam_yolu_lower: "Lebensweg",
     gid_personal_yr_lower: "Pers. Jahr",
     gid_upload_photo: "📷 Foto hochladen",
-    gid_download_share: "↓ Herunterladen / Teilen",
+    gid_download_share: "✓ Speichern / Teilen",
     gid_header_short: "✦ Sakin Life · Galaktische ID ✦",
 
     mind_title: "Den Geist leeren",
@@ -1247,7 +1247,7 @@ export const EXTRA_LANGS = {
     gid_yaşam_yolu_lower: "Caminho de Vida",
     gid_personal_yr_lower: "Ano Pessoal",
     gid_upload_photo: "📷 Enviar Foto",
-    gid_download_share: "↓ Baixar / Compartilhar",
+    gid_download_share: "✓ Guardar / Partilhar",
     gid_header_short: "✦ Sakin Life · ID Galáctica ✦",
 
     mind_title: "Esvaziar a Mente",
@@ -1849,7 +1849,7 @@ export const EXTRA_LANGS = {
     gid_yaşam_yolu_lower: "Camino de Vida",
     gid_personal_yr_lower: "Año Personal",
     gid_upload_photo: "📷 Subir Foto",
-    gid_download_share: "↓ Descargar / Compartir",
+    gid_download_share: "✓ Guardar / Compartir",
     gid_header_short: "✦ Sakin Life · ID Galáctica ✦",
 
     mind_title: "Vaciar la Mente",
@@ -2527,7 +2527,7 @@ export const EXTRA_LANGS = {
     gid_yaşam_yolu_lower: "Chemin de Vie",
     gid_personal_yr_lower: "Année Pers.",
     gid_upload_photo: "📷 Télécharger Photo",
-    gid_download_share: "↓ Télécharger / Partager",
+    gid_download_share: "✓ Enregistrer / Partager",
     gid_header_short: "✦ Sakin Life · ID Galactique ✦",
 
     mind_title: "Vider l'Esprit",
@@ -3201,7 +3201,7 @@ export const EXTRA_LANGS = {
     gid_yaşam_yolu_lower: "ライフパス",
     gid_personal_yr_lower: "パーソナル年",
     gid_upload_photo: "📷 写真をアップロード",
-    gid_download_share: "↓ ダウンロード / 共有",
+    gid_download_share: "✓ 保存 / 共有",
     gid_header_short: "✦ Sakin Life · ギャラクティック ID ✦",
 
     mind_title: "心を空にする",
