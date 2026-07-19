@@ -48,9 +48,13 @@ if (typeof document !== "undefined") installZoomGuard(document);
 // kapanınca WKWebView sayfayı büyütülmüş scale'de bırakabiliyor ve kullanıcı
 // geri döndüremiyor. Viewport meta'yı farklı bir içerikle yazıp geri koymak
 // WebKit'i scale'i 1'e çekmeye zorlar (bilinen güvenilir reset tekniği).
-function resetViewportZoom() {
+// `doc` parametresi: hem host'un kendi document'ı hem bir embed iframe'inin
+// contentDocument'ı için kullanılabilsin diye genelleştirildi (bkz. aşağı).
+function resetViewportZoom(doc) {
+  doc = doc || (typeof document !== "undefined" ? document : null);
+  if (!doc) return;
   try {
-    const vp = document.querySelector('meta[name="viewport"]');
+    const vp = doc.querySelector('meta[name="viewport"]');
     if (!vp) return;
     const orig = vp.getAttribute("content") || "width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover, user-scalable=no";
     // Değişiklik algılansın diye minimum-scale eklenmiş farklı bir string yaz…
@@ -60,19 +64,29 @@ function resetViewportZoom() {
   } catch (_) {}
 }
 // Watchdog: sayfa HERHANGİ bir sebeple 1'in üstüne zoom'lanırsa (share sheet,
-// odak zoom'u, sistem tuhaflığı) kendiliğinden geri çek. Uygulamada meşru
-// zoom senaryosu yok — scale her zaman 1 olmalı.
-if (typeof window !== "undefined" && window.visualViewport) {
-  let __zoomFixTimer = null;
-  window.visualViewport.addEventListener("resize", () => {
-    try {
-      if (window.visualViewport.scale > 1.02) {
-        clearTimeout(__zoomFixTimer);
-        __zoomFixTimer = setTimeout(resetViewportZoom, 250);
-      }
-    } catch (_) {}
-  });
+// odak zoom'u, sistem tuhaflığı) kendiliğinden geri çek. `win`/`doc` verilmezse
+// host'un kendi window/document'ı kullanılır — embed iframe'leri için de
+// çağrılabilir (bkz. onLoad injection'ları), çünkü paylaşım kartları embed'lerin
+// KENDİ iframe'i içinde navigator.share() çağırıyor — host'un watchdog'u oraya
+// erişemez, her iframe kendi watchdog'unu almalı. Uygulamada meşru zoom
+// senaryosu yok — scale her zaman 1 olmalı.
+function installZoomResetWatchdog(win, doc) {
+  win = win || (typeof window !== "undefined" ? window : null);
+  doc = doc || (typeof document !== "undefined" ? document : null);
+  if (!win || !win.visualViewport) return;
+  try {
+    let timer = null;
+    win.visualViewport.addEventListener("resize", () => {
+      try {
+        if (win.visualViewport.scale > 1.02) {
+          clearTimeout(timer);
+          timer = setTimeout(() => resetViewportZoom(doc), 250);
+        }
+      } catch (_) {}
+    });
+  } catch (_) {}
 }
+installZoomResetWatchdog();
 
 // Üretilen kart görselini paylaş/indir — platforma göre en güvenilir yol.
 // ANDROID: WebView `navigator.share(files)` ve blob `<a download>` çalışmaz →
@@ -166,7 +180,7 @@ function __resumeAllAudio() {
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.3.1";
+const APP_VERSION = "1.3.2";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -5004,7 +5018,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           style={{
             position:"fixed",
             // Sağ alt köşe — giriş ekranında alt bar/yardım butonu yok, çakışma olmaz.
-            bottom:"calc(24px + var(--android-sab))",
+            // 24px ekranın en altına çok yakındı (kullanıcı isteği) — ~1cm (≈38px) yukarı çekildi.
+            bottom:"calc(62px + var(--android-sab))",
             right:14, zIndex:9997,
             display:"flex", alignItems:"center", gap:7,
             padding:"8px 14px", borderRadius:100,
@@ -5173,6 +5188,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 `;
                 doc.head.appendChild(style);
                 installZoomGuard(doc); // pinch/double-tap embed içinde de kapalı
+                // Embed kartı KENDİ iframe'inde navigator.share() çağırıyor — host'un
+                // zoom watchdog'u bu iframe'e erişemez, kendi başına kurulmalı. Kök
+                // sebep: paylaşım kartı sonrası zoom takılması host'ta düzeltilmişti
+                // ama embed'lerde (taşlar/bitkiler/hayvan/mitler) hâlâ oluyordu.
+                try { installZoomResetWatchdog(e.target.contentWindow, doc); } catch (_) {}
 
                 // Embed'lere bilgi köprüsü — ÜÇ KANAL:
                 // (1) postMessage — embed dinliyorsa anında yakalar
@@ -5563,6 +5583,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 `;
                 doc.head.appendChild(style);
                 installZoomGuard(doc); // pinch/double-tap embed içinde de kapalı
+                // Embed kartı KENDİ iframe'inde navigator.share() çağırıyor — host'un
+                // zoom watchdog'u bu iframe'e erişemez, kendi başına kurulmalı. Kök
+                // sebep: paylaşım kartı sonrası zoom takılması host'ta düzeltilmişti
+                // ama embed'lerde (taşlar/bitkiler/hayvan/mitler) hâlâ oluyordu.
+                try { installZoomResetWatchdog(e.target.contentWindow, doc); } catch (_) {}
 
                 // Bilgi köprüsü (postMessage + same-origin localStorage + window flag)
                 const sendBridge = () => {
