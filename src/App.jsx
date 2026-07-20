@@ -116,7 +116,36 @@ async function shareImageBlob(blob, filename) {
         await navigator.share({ files: [file] });
         return;
       }
-    } catch (_) {}
+    } catch (e) {
+      // Kullanıcı paylaşım sayfasını "Vazgeç" ile kapattıysa (AbortError) HİÇBİR ŞEY
+      // yapma — aşağıdaki indirme fallback'ine düşmek yanlış: kullanıcı açıkça "hayır"
+      // demişken sessizce blob: URL indirme denemesi (<a download> click) tetiklemek,
+      // WKWebView'de paylaşım sayfası kapanışının hemen ardından İKİNCİ bir native
+      // geçiş/navigasyon denemesi demek — "paylaştan dönünce zoom takılması" hatasının
+      // muhtemel bir bileşeniydi.
+      if (e && e.name === "AbortError") return;
+    }
+    // navigator.share GERÇEKTEN başarısız oldu (iptal değil). Native'de (iOS dahil)
+    // <a download> blob: URL denemesi yerine Capacitor Filesystem+Share kullan —
+    // WKWebView'de blob: navigasyonu WKDownloadDelegate'siz UIApplication.open()
+    // + iptal döngüsüne giriyor (araştırmayla doğrulandı), bu da paylaşım sayfası
+    // kapanışıyla aynı ana denk gelen ikinci bir native geçiş = zoom riski.
+    if (isNative) {
+      try {
+        const base64 = await new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onloadend = () => resolve(String(r.result).split(",")[1] || "");
+          r.onerror = reject;
+          r.readAsDataURL(blob);
+        });
+        await Filesystem.writeFile({ path: filename, data: base64, directory: Directory.Cache });
+        const { uri } = await Filesystem.getUri({ path: filename, directory: Directory.Cache });
+        await Share.share({ url: uri });
+        return;
+      } catch (_) { /* eklenti de başarısızsa sessizce vazgeç — DOM blob indirmesine düşme */ }
+      return;
+    }
+    // Yalnızca gerçek web (native değil): DOM blob indirme fallback'i güvenli.
     try {
       const dl = URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = dl; a.download = filename; a.click();

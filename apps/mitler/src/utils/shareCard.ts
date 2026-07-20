@@ -266,8 +266,18 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
       await nav.share({ files: [file], text: spec.shareText || '' });
       return;
     }
-  } catch (_) { /* paylaşım iptal/başarısız → indirmeye düş */ }
-  // Fallback: indir
+  } catch (e: any) {
+    // Kullanıcı paylaşım sayfasını "Vazgeç" ile kapattıysa (AbortError) HİÇBİR ŞEY
+    // yapma. Eskiden bu durumda da aşağıdaki indirme fallback'ine düşülüyordu —
+    // kullanıcı açıkça "hayır" demişken sessizce bir blob: URL indirme denemesi
+    // (<a download> click) tetiklemek hem yanlış davranış hem de WKWebView'de
+    // paylaşım sayfası kapanışının hemen ardından İKİNCİ bir native geçiş/navigasyon
+    // denemesi anlamına geliyordu — "paylaştan dönünce zoom takılması" hatasının
+    // muhtemel bir bileşeni buydu.
+    if (e && e.name === 'AbortError') return;
+    // gerçek hata (kullanıcı iptal etmedi, paylaşım başka nedenle başarısız oldu)
+  }
+  // Fallback: indir — yalnızca GERÇEK hata durumunda buraya gelinir, iptalde değil.
   try {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
