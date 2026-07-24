@@ -48,6 +48,17 @@ class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
         // scrollViewWillBeginZooming yapıyordu — aşağıda birebir kopyalandı.)
         webView?.scrollView.delegate = self
 
+        // ELASTİK (rubber-band) SCROLL — kullanıcı: "Instagram'daki gibi; aşağı
+        // çekince esnesin, bırakınca yumuşakça yerine dönsün; tüm uygulamada olsun".
+        // WKWebView'de varsayılan açıktır ama garantiye alıyoruz; alwaysBounceVertical
+        // ile içerik ekrana sığsa bile esneme hissi korunur.
+        if let sv = webView?.scrollView {
+            sv.bounces = true
+            sv.alwaysBounceVertical = true
+            sv.alwaysBounceHorizontal = false
+            sv.decelerationRate = .normal
+        }
+
         // SES TUŞU → SESİ DİRİLT (kullanıcı: "ses kapalıysa ses yükseltme tuşuna
         // basınca da ses açılsın; bazen ses kapalıysa çalmıyor, el refleks olarak
         // ses tuşuna gidiyor"). Ses tuşları web'den yakalanamaz; native tarafta

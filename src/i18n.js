@@ -167,7 +167,7 @@ export const TRANS = {
     evening_quote:     "Bugün bitti.\nSen varsın, bu yeter.",
     learned_q:         "Bugün sana ne öğretti?",
     gratitude_q:       "Bugün neye şükrediyorsun?",
-    btn_see_week:      "Haftama bak →",
+    btn_see_week:      "Aynaya bak →",
 
     // Harita
     weekly_label:      "Haftalık",
@@ -896,7 +896,7 @@ export const TRANS = {
     evening_quote:     "Today is done.\nYou are here, that is enough.",
     learned_q:         "What did today teach you?",
     gratitude_q:       "What are you grateful for?",
-    btn_see_week:      "See my week →",
+    btn_see_week:      "Look in the mirror →",
 
     // Harita
     weekly_label:      "WEEKLY",
