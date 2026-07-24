@@ -3150,6 +3150,10 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
+  // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği) — üst bar sade
+  // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
+  const [showTopMenu, setShowTopMenu] = useState(false);
   // Bildirim tıklaması → ilgili ekrana yönlendir (Sprint 2). schedule'daki extra.screen
   // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only — webde no-op.
   useEffect(() => {
@@ -4711,8 +4715,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     // Ayna (rehber) — ÜST NAV'A KOYMUYORUZ (ne iOS ne web). Her iki platformda
     // da sağ kenardaki floating ☽ gizli geçit ile açılır (App.jsx ~3951).
     // Bu satır web'de üst panelde "🪞 Ayna" yazı linki gösteriyordu — KALDIRILDI.
-    {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"mandala",icon:"◎",  label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+    {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
   const MORNING_WORDS = t("morning_words");
@@ -5923,39 +5927,89 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // (id kartı, foto tanı, zihni boşalt) çakışmasın diye koşullu).
           zIndex: showAilesi ? 10001 : 9998,
           minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
-        {SIDEBAR_ITEMS.map(n=>{
-          const active = n.id==="ailesi" ? showAilesi : screen===n.id;
+        {(() => {
+          const handleNavClick = (n) => {
+            if(n.id==="ailesi"){ setShowAilesi(!showAilesi); setShowTopMenu(false); return; }
+            // Keşfet açıkken başka bir sekmeye geçiliyorsa Keşfet'i kapat — yoksa
+            // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
+            if(showAilesi) setShowAilesi(false);
+            if(n.id==="rehber") setRehberTab("reiki");
+            if(n.id==="giris") setGirisPhase("intro");
+            setScreen(n.id);
+            setShowTopMenu(false);
+          };
+          const renderBtn = (n) => {
+            const active = n.id==="ailesi" ? showAilesi : screen===n.id;
+            return (
+              <button key={n.id}
+                onClick={()=>handleNavClick(n)}
+                aria-label={n.iconOnly ? t("nav_home") : undefined}
+                style={{
+                  flex: n.iconOnly ? "0 0 auto" : "1 1 0", minWidth:0,
+                  width: n.iconOnly ? 40 : undefined,
+                  background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
+                  border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
+                  borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                  padding: n.iconOnly ? "5px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
+                  fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 500 : 500,
+                  fontSize:12, letterSpacing:1.2,
+                  color: active ? n.color : n.glow ? n.color : `${n.color}88`,
+                  animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
+                  boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
+                  whiteSpace:"nowrap", overflow:"hidden",
+                }}>
+                <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
+              </button>
+            );
+          };
+          // İlk açılış (giriş ekranı): eskisi gibi hepsi ayrı ayrı görünür.
+          if (screen === "giris") return SIDEBAR_ITEMS.map(renderBtn);
+          // Diğer tüm ekranlar: ⌂ sabit kalır, Bağlan/Harita/Keşfet ☰ menüsüne toplanır.
+          const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
+          const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
           return (
-            <button key={n.id}
-              onClick={()=>{
-                if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; }
-                // Keşfet açıkken başka bir sekmeye geçiliyorsa Keşfet'i kapat — yoksa
-                // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
-                if(showAilesi) setShowAilesi(false);
-                if(n.id==="rehber") setRehberTab("reiki");
-                if(n.id==="giris") setGirisPhase("intro");
-                setScreen(n.id);
-              }}
-              aria-label={n.iconOnly ? t("nav_home") : undefined}
-              style={{
-                flex: n.iconOnly ? "0 0 auto" : "1 1 0", minWidth:0,
-                width: n.iconOnly ? 40 : undefined,
-                background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
-                border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
-                borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                padding: n.iconOnly ? "5px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
-                fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 500 : 500,
-                fontSize:12, letterSpacing:1.2,
-                color: active ? n.color : n.glow ? n.color : `${n.color}88`,
-                animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
-                boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
-                whiteSpace:"nowrap", overflow:"hidden",
-              }}>
-              <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
-              {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
-            </button>
+            <>
+              {homeItem && renderBtn(homeItem)}
+              <div style={{ position:"relative", flex:"0 0 auto" }}>
+                <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
+                  style={{
+                    width:40, height:"100%", padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
+                    borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                    background: showTopMenu ? "rgba(184,164,216,0.15)" : "transparent",
+                    border: showTopMenu ? "1px solid rgba(184,164,216,0.4)" : "1px solid transparent",
+                    color:"rgba(220,210,240,0.85)",
+                  }}>
+                  <span style={{ fontSize:17, lineHeight:1 }}>☰</span>
+                </button>
+                {showTopMenu && (<>
+                  {/* Dışına tıklayınca kapatan tam ekran görünmez katman */}
+                  <div onClick={()=>setShowTopMenu(false)} style={{ position:"fixed", inset:0, zIndex:10010 }} />
+                  <div onClick={e=>e.stopPropagation()}
+                    style={{ position:"absolute", top:"calc(100% + 8px)", right:0, minWidth:180, zIndex:10011,
+                      background:"rgba(12,8,20,0.98)", backdropFilter:"blur(20px)",
+                      border:"1px solid rgba(255,255,255,0.12)", borderRadius:14,
+                      boxShadow:"0 8px 32px rgba(0,0,0,0.6)", padding:6,
+                      display:"flex", flexDirection:"column", gap:2 }}>
+                    {menuItems.map(n => {
+                      const active = n.id==="ailesi" ? showAilesi : screen===n.id;
+                      return (
+                        <button key={n.id} onClick={()=>handleNavClick(n)}
+                          style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                            background: active ? `${n.color}22` : "transparent", border:"none", borderRadius:10,
+                            cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                            color: active ? n.color : n.color, textAlign:"left", width:"100%" }}>
+                          <span style={{ fontSize:15, lineHeight:1 }}>{n.icon}</span>
+                          <span>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>)}
+              </div>
+            </>
           );
-        })}
+        })()}
         {/* EKRAN MODU (koyu ⇄ açık tema) — en sağda ikon. Web-only (iOS 1.3.0'da). */}
         {!isNative && (
           <button onClick={toggleTheme} aria-label="Tema" title="Tema"
