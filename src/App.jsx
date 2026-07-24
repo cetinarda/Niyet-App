@@ -3751,20 +3751,27 @@ export default function SakinApp() {
   const markStep = (stepId) => {
     if (!stepRequirementMet(stepId)) return; // şart sağlanmadı → adım işaretlenmez
     setStepsCompleted(prev => {
+      if (prev[stepId]) return prev;         // zaten işaretli → gereksiz yazma yok
       const next = { ...prev, [stepId]: true };
       localStorage.setItem("sakin_steps_" + todayKey, JSON.stringify(next));
       return next;
     });
   };
+  // AYNA adımı: ekrana GİRMEK yeterli (kullanıcı: "tıklaması yeterli olsun, soru
+  // sormasına gerek yok"). Diğer adımlardan farklı olarak süre/eylem şartı yok.
+  useEffect(() => {
+    if (screen === "rehber") markStep("rehber");
+  }, [screen]);
 
   // BAĞLANTI = 7 adım (kullanıcı kararı: "mantık kurmak için 7 adıma düşürelim").
   // mandala(Bağlan) ve ailesi(Keşfet) ADIM DEĞİL — onlar hedef/genel bakış ekranları
   // ve markStep hiç çağrılmadığı için bağlantı asla aktifleşemiyordu (kullanıcı:
   // "ses terapisini yaptım ama bağlantı sağlanmıyor"). KÖK SEBEP buydu.
-  // BAĞLANTI = 6 ADIM (kullanıcı: "harita adımını iptal et, ilk 6 bölüm yeterli;
-  // alttaki 6 butondaki görevleri yapan bağlantıyı sağlar"). Alt bardaki 6 sekme:
-  // sabah · gün · nefes · ses · çakra · akşam.
-  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
+  // BAĞLANTI = 7 ADIM: alt bardaki 6 sekme (sabah·gün·nefes·ses·çakra·akşam) + AYNA.
+  // (Kullanıcı önce "harita'yı çıkar, 6 yeterli" dedi, sonra "vazgeçtim 7 aşama kalsın
+  // ama harita yerine ayna ekranına tıklamasını ekle; tıklaması yeterli, soru sormasına
+  // gerek yok" dedi.) Ayna = "rehber" ekranı; şart yok, ekrana girmek adımı tamamlar.
+  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","rehber"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
   // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
@@ -6636,8 +6643,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
                 { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
                 { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                // "Harita" kutucuğu KALDIRILDI — bağlantı artık 6 adım (kullanıcı:
-                // "harita adımını iptal et, ilk 6 bölüm yeterli").
+                // AYNA — 7. adım (harita yerine). Tıklamak/ekrana girmek yeterli.
+                { id:"rehber", label:t("mirror_label"),   cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
               ];
               return (
                 <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:320,width:"100%"}}>
@@ -6655,7 +6662,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
                           border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
                           color: ok?"#82d9a3":"#8a8a95"}}>
-                          {ok ? "✓" : `${Math.min(r.cur,r.need)}/${r.need}${r.unit}`} {r.label}
+                          {/* need>1 olanlarda ilerleme (12/120sn gibi) anlamlı; need===1
+                              olanlarda "0/1" gereksiz gürültüydü — kaldırıldı (kullanıcı isteği). */}
+                          {ok ? "✓ " : r.need > 1 ? `${Math.min(r.cur,r.need)}/${r.need}${r.unit} ` : ""}{r.label}
                         </button>
                       );
                     })}
@@ -8486,7 +8495,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   ["ses",    "#a07ae0", t("conn_s_ses")],
                   ["chakra", "#b87adc", t("conn_s_chakra")],
                   ["aksam",  "#7ab0e0", t("conn_s_aksam")],
-                  ["harita", "#82d9a3", t("conn_s_harita")],
+                  // 7. adım artık AYNA (harita değil) — id "rehber", ayna moru.
+                  ["rehber", "#a070d0", t("conn_s_harita")],
                 ].map(([id, color, label], i) => {
                   const done = !!stepsCompleted[id];
                   return (
