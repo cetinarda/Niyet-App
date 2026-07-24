@@ -1554,6 +1554,34 @@ const GLOBAL_CSS = `
   @keyframes electricRise { 0%{stroke-dashoffset:200;opacity:0.3} 50%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.6} }
   @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
+  /* BAĞLANTI AKTİF ışık tüneli (kullanıcı: "tüm renkler bir tünele dönüşsün,
+     içinden enerji geçen ışık tüneli; yukarıdan aşağı beyaz-sarı-mor ışık
+     yeryüzüne bağlansın"). Tüm ekran: aşağı akan beyaz/sarı/mor ışık bantları +
+     radyal maske ile tünel-ağzı derinliği + üstten gelip alta (yeryüzüne) inen
+     akış. allStepsComplete olunca mandala ekranının ARKASINDA (zIndex:0) belirir. */
+  @keyframes sakinTunnelFlow { from { background-position: 0 0; } to { background-position: 0 160px; } }
+  @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
+  .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
+  .sakin-tunnel-bands {
+    position:absolute; inset:-12%;
+    background: repeating-linear-gradient(180deg,
+      rgba(255,255,255,0.10) 0px,
+      rgba(240,214,96,0.13) 42px,
+      rgba(184,120,255,0.13) 84px,
+      rgba(255,255,255,0.10) 126px,
+      rgba(240,214,96,0.13) 160px);
+    background-size: 100% 160px;
+    animation: sakinTunnelFlow 2.4s linear infinite;
+    -webkit-mask: radial-gradient(ellipse 62% 92% at 50% 42%, #000 26%, rgba(0,0,0,0.35) 58%, transparent 78%);
+    mask: radial-gradient(ellipse 62% 92% at 50% 42%, #000 26%, rgba(0,0,0,0.35) 58%, transparent 78%);
+  }
+  /* Alt merkezde "yeryüzüne bağlanan" parlak taban ışığı */
+  .sakin-tunnel-ground {
+    position:absolute; left:50%; bottom:-6%; transform:translateX(-50%);
+    width:70%; height:38%;
+    background: radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255,240,190,0.34), rgba(200,150,255,0.16) 45%, transparent 72%);
+    filter: blur(6px);
+  }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
   @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -6325,6 +6353,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
         return (
+          <>
+          {/* BAĞLANTI AKTİF — tam ekran ışık tüneli (tüm 9 adım tamamlanınca). */}
+          {allStepsComplete && (
+            <div className="sakin-tunnel-wrap" aria-hidden="true">
+              <div className="sakin-tunnel-bands" />
+              <div className="sakin-tunnel-ground" />
+            </div>
+          )}
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 90px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Back button */}
             <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
@@ -6546,6 +6582,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             </div>
           </div>
+          </>
         );
       })()}
 
