@@ -1455,6 +1455,12 @@ const GLOBAL_CSS = `
      overscroll-behavior sabitlenince fixed elemanlar yerinde kalır. Embed'lerde
      zaten inject ediliyordu; host'ta eksikti. */
   html, body { overscroll-behavior: none; }
+  /* Ana uygulama kökü: 100vh iOS WKWebView'da adres-çubuğu/safe-area yüzünden
+     gerçek görünür alandan BÜYÜK hesaplanıp içerik sığsa bile fazladan dikey
+     scroll (ve aşağı çekince üstte boşluk) yaratıyordu. 100dvh (dinamik viewport)
+     gerçek görünür yüksekliği verir; vh fallback eski tarayıcılar için kalır.
+     (Keşfet HARİÇ tüm akış/bağlan ekranları bu kökü kullanır — kullanıcı isteği.) */
+  .sakin-app-root { min-height: 100vh; min-height: 100dvh; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -4749,7 +4755,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
   return (
-    <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
@@ -5961,7 +5967,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
                   whiteSpace:"nowrap", overflow:"hidden",
                 }}>
-                <span style={{ fontSize: n.iconOnly ? 20 : 14, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                {n.iconOnly ? (
+                  // Ana sayfa ikonu: ⌂ glyph çoğu fontta kutu içinde optik ortalı DEĞİL
+                  // (baseline üstünde durur). Inline SVG ev ikonu ile kutunun tam ortasına
+                  // hizalanır (kullanıcı: "kutucuğun içinde hizalı değil, dikkatlice düzelt").
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                    <path d="M3.5 11.3 12 4.2l8.5 7.1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.6 9.7v9.2a.9.9 0 0 0 .9.9h11a.9.9 0 0 0 .9-.9V9.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ) : (
+                  <span style={{ fontSize:14, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                )}
                 {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
               </button>
             );
