@@ -1455,6 +1455,12 @@ const GLOBAL_CSS = `
      overscroll-behavior sabitlenince fixed elemanlar yerinde kalır. Embed'lerde
      zaten inject ediliyordu; host'ta eksikti. */
   html, body { overscroll-behavior: none; }
+  /* Ana uygulama kökü: 100vh iOS WKWebView'da adres-çubuğu/safe-area yüzünden
+     gerçek görünür alandan BÜYÜK hesaplanıp içerik sığsa bile fazladan dikey
+     scroll (ve aşağı çekince üstte boşluk) yaratıyordu. 100dvh (dinamik viewport)
+     gerçek görünür yüksekliği verir; vh fallback eski tarayıcılar için kalır.
+     (Keşfet HARİÇ tüm akış/bağlan ekranları bu kökü kullanır — kullanıcı isteği.) */
+  .sakin-app-root { min-height: 100vh; min-height: 100dvh; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -1548,6 +1554,34 @@ const GLOBAL_CSS = `
   @keyframes electricRise { 0%{stroke-dashoffset:200;opacity:0.3} 50%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.6} }
   @keyframes nodeCharge   { 0%,100%{filter:brightness(1);transform:scale(1)} 50%{filter:brightness(1.6);transform:scale(1.15)} }
   @keyframes spineGlow    { 0%{opacity:0.2} 50%{opacity:0.7} 100%{opacity:0.2} }
+  /* BAĞLANTI AKTİF ışık tüneli (kullanıcı: "tüm renkler bir tünele dönüşsün,
+     içinden enerji geçen ışık tüneli; yukarıdan aşağı beyaz-sarı-mor ışık
+     yeryüzüne bağlansın"). Tüm ekran: aşağı akan beyaz/sarı/mor ışık bantları +
+     radyal maske ile tünel-ağzı derinliği + üstten gelip alta (yeryüzüne) inen
+     akış. allStepsComplete olunca mandala ekranının ARKASINDA (zIndex:0) belirir. */
+  @keyframes sakinTunnelFlow { from { background-position: 0 0; } to { background-position: 0 160px; } }
+  @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
+  .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
+  .sakin-tunnel-bands {
+    position:absolute; inset:-12%;
+    background: repeating-linear-gradient(180deg,
+      rgba(255,255,255,0.10) 0px,
+      rgba(240,214,96,0.13) 42px,
+      rgba(184,120,255,0.13) 84px,
+      rgba(255,255,255,0.10) 126px,
+      rgba(240,214,96,0.13) 160px);
+    background-size: 100% 160px;
+    animation: sakinTunnelFlow 2.4s linear infinite;
+    -webkit-mask: radial-gradient(ellipse 62% 92% at 50% 42%, #000 26%, rgba(0,0,0,0.35) 58%, transparent 78%);
+    mask: radial-gradient(ellipse 62% 92% at 50% 42%, #000 26%, rgba(0,0,0,0.35) 58%, transparent 78%);
+  }
+  /* Alt merkezde "yeryüzüne bağlanan" parlak taban ışığı */
+  .sakin-tunnel-ground {
+    position:absolute; left:50%; bottom:-6%; transform:translateX(-50%);
+    width:70%; height:38%;
+    background: radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255,240,190,0.34), rgba(200,150,255,0.16) 45%, transparent 72%);
+    filter: blur(6px);
+  }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
   @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -4749,7 +4783,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
   return (
-    <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
@@ -5961,7 +5995,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
                   whiteSpace:"nowrap", overflow:"hidden",
                 }}>
-                <span style={{ fontSize: n.iconOnly ? 20 : 14, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                {n.iconOnly ? (
+                  // Ana sayfa ikonu: ⌂ glyph çoğu fontta kutu içinde optik ortalı DEĞİL
+                  // (baseline üstünde durur). Inline SVG ev ikonu ile kutunun tam ortasına
+                  // hizalanır (kullanıcı: "kutucuğun içinde hizalı değil, dikkatlice düzelt").
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                    <path d="M3.5 11.3 12 4.2l8.5 7.1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M5.6 9.7v9.2a.9.9 0 0 0 .9.9h11a.9.9 0 0 0 .9-.9V9.7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ) : (
+                  <span style={{ fontSize:14, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                )}
                 {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
               </button>
             );
@@ -6309,6 +6353,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
         return (
+          <>
+          {/* BAĞLANTI AKTİF — tam ekran ışık tüneli (tüm 9 adım tamamlanınca). */}
+          {allStepsComplete && (
+            <div className="sakin-tunnel-wrap" aria-hidden="true">
+              <div className="sakin-tunnel-bands" />
+              <div className="sakin-tunnel-ground" />
+            </div>
+          )}
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 90px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Back button */}
             <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
@@ -6530,6 +6582,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             </div>
           </div>
+          </>
         );
       })()}
 
