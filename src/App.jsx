@@ -3660,16 +3660,12 @@ export default function SakinApp() {
   // Kullanıcı: "sabahtan keşfete kadar 9 adım var". Sıra swipe/nav ile birebir aynı.
   const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
-  // KÖK SEBEP (adım sayacı hep 0): markStep yalnızca "DEVAM ET/İLERİ" butonlarına
-  // basınca çağrılıyordu — kullanıcı kaydırarak (swipe) veya ☰ menüsünden geçince
-  // adım hiç işaretlenmiyordu. Artık ziyaret edilen HER ekran (ve Keşfet modalı)
-  // otomatik işaretleniyor; sayaç geçiş yöntemi ne olursa olsun doğru artıyor.
-  useEffect(() => {
-    if (MANDALA_STEPS.includes(screen) && !stepsCompleted[screen]) markStep(screen);
-  }, [screen]);
-  useEffect(() => {
-    if (showAilesi && !stepsCompleted["ailesi"]) markStep("ailesi");
-  }, [showAilesi]);
+  // NOT (geri alınan hatalı düzeltme): Adımlar SADECE gerçekten tamamlanınca
+  // (ekranın "DEVAM ET/İLERİ" butonuna basınca) markStep ile işaretlenir. Bir
+  // önceki sürümde "ziyaret edilen her ekranı otomatik işaretle" denemesi vardı;
+  // bu, ekranları sadece kaydırıp geçmeyi "tamamlandı" sayıyordu (sabah kelimeleri
+  // seçili, bağlan tamamlandı görünüyor, sayaç 9/9'a fırlıyordu) — kaldırıldı.
+  // "İlerledikçe artsın": kullanıcı her adımı bitirip ilerledikçe sayaç doğal artar.
   const [gunTasksDone, setGunTasksDone] = useState(() => {
     try {
       const k = "sakin_reminders_done_" + new Date().toISOString().slice(0,10);
@@ -5029,10 +5025,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* AYNA BUTONU (floating) — yalnızca "3'ü üstte" ekranlarında (harita/mandala).
-          Günlük akış ekranlarında (hamburger modu) ayna artık üst barın ORTASINDA
-          duruyor, o yüzden burada gizli. Giriş/rehber/policy'de zaten görünmez. */}
-      {!isPolicyScreen && (screen === "harita" || screen === "mandala") && !embeddedApp && !mirrorPortalActive && (
+      {/* AYNA BUTONU (floating) — KALDIRILDI (kullanıcı: "bağlan ile haritadan ayna
+          butonunu çıkart"). Günlük akış ekranlarında ayna zaten üst barın ORTASINDA
+          duruyor; harita/mandala(bağlan) ekranlarında artık ayna gösterilmiyor. */}
+      {false && (
         <button
           onClick={openMirror}
           aria-label={t("mirror_aria")}
@@ -6015,8 +6011,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
-                    {/* Web açık/koyu tema — menünün EN ALTINDA (kullanıcı isteği). */}
-                    {!isNative && (<>
+                    {/* Açık/koyu tema — menünün EN ALTINDA. Artık mobilde de (iOS/Android) var. */}
+                    {(<>
                       <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
                       <button onClick={()=>{ toggleTheme(); setShowTopMenu(false); }}
                         style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
@@ -6034,8 +6030,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           );
         })()}
         {/* EKRAN MODU (koyu ⇄ açık tema) — SADECE "3'ü üstte" modunda üst bar sağında.
-            Hamburger modunda bu buton ☰ menüsünün içine taşındı (yukarı bak). Web-only. */}
-        {!isNative && (screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi) && (
+            Hamburger modunda bu buton ☰ menüsünün içine taşındı (yukarı bak). Artık mobilde de var. */}
+        {(screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi) && (
           <button onClick={toggleTheme} aria-label="Tema" title="Tema"
             style={{
               flex:"0 0 auto", width:40, padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
