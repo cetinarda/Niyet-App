@@ -1449,17 +1449,12 @@ const GLOBAL_CSS = `
      yüklenince beyaza "kayıyordu". Taban rengi burada sabitlenince ilk boyamadan
      itibaren doğru — hiçbir platformda görsel değişiklik yaratmaz (zaten her yerde
      beyaza yakın renkler kullanılıyordu). */
-  /* ÜST BOŞLUK KÖK ÇÖZÜMÜ (kullanıcı: "aşağı kaydırınca en üstte boşluk oluşuyor,
-     üst menü çakılı sabit kalsın"). SORUN: iOS WKWebView'da body scroll ederken
-     rubber-band (lastik-bant) overscroll, position:fixed üst barı body ile birlikte
-     aşağı kaydırıp status-bar ile üst-bar arasında boşluk açıyordu. overscroll-behavior
-     TEK BAŞINA WKWebView'da yetmedi. KESİN çözüm: body'yi tamamen SABİTLE (position:fixed,
-     scroll etmez) ve gerçek dikey scroll'u iç kök (.sakin-app-root) container'ına ver.
-     Böylece body hiç esnemez → fixed üst/alt barlar viewport'a çakılı kalır; scroll
-     sadece içerikte olur. */
-  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
-  .sakin-app-root { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: none; }
+  /* ÜST BAR / SCROLL YAPISI = 1.3.1 (kullanıcı: "üst bar boşluğu için 1.3.1'e dönelim").
+     1.3.1'de body NORMAL scroll ediyordu (position:fixed / 100dvh / iç-scroll YOK) ve
+     üstte boşluk oluşmuyordu. Sonradan eklediğim scroll "iyileştirmeleri" (100dvh, body
+     position:fixed + iç kök scroll) boşluğu açtı/kötüleştirdi — hepsi geri alındı.
+     color:#fff korunur (ayrı bir metin-flash düzeltmesiydi). */
+  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -3107,7 +3102,10 @@ export default function SakinApp() {
       birdAudioRef.current = null;
     }
   };
-  const playBirdSound = (birdKey, vol = 0.22) => {
+  // Kuş sesi ARKA PLAN eşlikçisidir — asıl olan solfeggio frekansı (kullanıcı:
+  // "kuş seslerini biraz daha kıs, çok baskın; önemli olan solfeggio frekansları").
+  // Varsayılan ses 0.22 → 0.10 (yaklaşık yarısı).
+  const playBirdSound = (birdKey, vol = 0.10) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
@@ -4782,7 +4780,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
   return (
-    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
@@ -6044,13 +6042,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     border: showTopMenu ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
                     color:"rgba(228,218,245,0.9)",
                   }}>
-                  <span style={{ fontSize:20, lineHeight:1 }}>☰</span>
+                  {/* ☰ glyph kutuda optik ortalı değildi → SVG hamburger ile tam ortalı. */}
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
                 </button>
-                {showTopMenu && (<>
-                  {/* Dışına tıklayınca kapatan tam ekran görünmez katman */}
+                {/* Menü + dışına-tıkla katmanı createPortal ile document.body'ye taşınır.
+                    KÖK SEBEP: üst bar div'inde backdrop-filter var; bu, içindeki
+                    position:fixed katmanı üst bar alanına HAPSEDER → "dışına tıkla kapat"
+                    tüm ekranı kaplamaz, sadece üç-çizgiye basınca kapanırdı (kullanıcı:
+                    "pop-up dışındaki her yere tıklandığında kapansın"). Portal ile katman
+                    gerçekten tüm ekranı kaplar. */}
+                {showTopMenu && createPortal(
+                  <>
                   <div onClick={()=>setShowTopMenu(false)} style={{ position:"fixed", inset:0, zIndex:10010 }} />
                   <div onClick={e=>e.stopPropagation()}
-                    style={{ position:"absolute", top:"calc(100% + 8px)", right:0, minWidth:180, zIndex:10011,
+                    style={{ position:"fixed", top: topNavVisible ? "calc(96px + var(--sat))" : "calc(52px + var(--sat))", right:10, minWidth:180, zIndex:10011,
                       background:"rgba(12,8,20,0.98)", backdropFilter:"blur(20px)",
                       border:"1px solid rgba(255,255,255,0.12)", borderRadius:14,
                       boxShadow:"0 8px 32px rgba(0,0,0,0.6)", padding:6,
@@ -6081,7 +6088,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </button>
                     </>)}
                   </div>
-                </>)}
+                  </>,
+                  document.body
+                )}
               </div>
             </>
           );
@@ -6986,7 +6995,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               if (ratio === 1) { freqOscRef.current = o; }
             });
             freqOscsRef.current = allOscs;
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.38 : 0.22);
+            // Kuş sesi arka planda kalsın, solfeggio tonu öne çıksın (kullanıcı isteği):
+            // 0.38/0.22 → 0.16/0.10. (741 Hz kuşu diğerlerinden kısık kaydedildiği için
+            // oransal olarak biraz yüksek tutuluyor.)
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.16 : 0.10);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
