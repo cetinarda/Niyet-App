@@ -488,7 +488,7 @@ function elementDistFromSigns(signs) {
 // "Sakin nedir?" pop-up'ı + ikili yol menüsü metinleri (Sprint 1 — basitleştirme).
 const NEDIR_I18N = {
   title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
-  vaat:    { tr:"Kendini tanı, kendinle bağlantıda kal.", en:"Know yourself, stay connected to yourself.", de:"Erkenne dich, bleib mit dir verbunden.", es:"Conócete y mantente en conexión contigo.", pt:"Conhece-te e mantém-te em ligação contigo.", fr:"Connais-toi, reste relié à toi.", ja:"自分を知り、自分とつながり続ける。" },
+  vaat:    { tr:"İçindeki sesi net duyabilmen için kendinle bağlantını kolaylaştırır.", en:"It eases your connection with yourself, so you can hear the voice within clearly.", de:"Es erleichtert die Verbindung zu dir selbst, damit du deine innere Stimme klar hören kannst.", es:"Facilita tu conexión contigo mismo para que oigas con claridad tu voz interior.", pt:"Facilita a tua ligação contigo mesmo para ouvires com clareza a tua voz interior.", fr:"Il facilite ta connexion avec toi-même pour que tu entendes clairement ta voix intérieure.", ja:"内なる声をはっきりと聞けるよう、自分自身とのつながりをやさしく整えます。" },
   bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anındaki enerji haritanı ve karar alma biçimini gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design shows your energy map at birth and how you make decisions.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design zeigt deine Energiekarte bei der Geburt und wie du Entscheidungen triffst.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño muestra tu mapa de energía al nacer y cómo tomas decisiones.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design mostra o teu mapa de energia ao nascer e como tomas decisões.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design montre ta carte d'énergie à la naissance et comment tu prends tes décisions.", ja:"星座、動物、石、そしてあなたのデザイン。デザインは誕生の瞬間のエネルギー地図と、あなたの決め方を映します。" },
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them — your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les — ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
@@ -3660,6 +3660,18 @@ export default function SakinApp() {
   // Kullanıcı: "sabahtan keşfete kadar 9 adım var". Sıra swipe/nav ile birebir aynı.
   const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+  // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
+  // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
+  // gösterir: giriş=0, sabah=1, gün=2, …, keşfet=9. Böylece kullanıcı ilerledikçe
+  // doğal artar (DEVAM ET'e basmasa, kaydırsa bile). stepsCompleted yalnızca ekran
+  // İÇERİĞİ (sabah kelimeleri seçili vs.) için kullanılmaya devam eder — karışmaz.
+  const currentStepIndex = showAilesi ? 9 : Math.max(0, MANDALA_STEPS.indexOf(screen) + 1);
+  const STEP_NAMES = [
+    (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
+    t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
+    t("nav_chakra"), t("nav_evening"),
+    pickLang(NEDIR_I18N.baglanT, lang), t("nav_map"), pickLang(NEDIR_I18N.kesfetT, lang),
+  ];
   // NOT (geri alınan hatalı düzeltme): Adımlar SADECE gerçekten tamamlanınca
   // (ekranın "DEVAM ET/İLERİ" butonuna basınca) markStep ile işaretlenir. Bir
   // önceki sürümde "ziyaret edilen her ekranı otomatik işaretle" denemesi vardı;
@@ -4820,7 +4832,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // paddingTop: nav barı Keşfet açıkken üstte tıklanabilir kalsın diye modalın
         // ÜSTÜNE çıkarıldı (yukarıya bkz.) — modal içeriği o bar'ın altından başlasın
         // diye üst container'la aynı boşluk formülü kullanılıyor.
-        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"center",justifyContent:"center",padding: (topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
+        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"flex-start",justifyContent:"center",padding: (topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:8 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
@@ -5913,7 +5925,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // bar'ı modalın ÜSTÜNE çıkarıyoruz (SADECE bu durumda — diğer modallerle
           // (id kartı, foto tanı, zihni boşalt) çakışmasın diye koşullu).
           zIndex: showAilesi ? 10001 : 9998,
-          minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
+          // GİRİŞ (HAZIRIM) ekranında üst nav barı GİZLİ (kullanıcı: "açılışta üstteki
+          // tüm menüleri kaldır, eski hali öyleydi"). HAZIRIM'a basıp sabaha geçince görünür.
+          minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display: screen === "giris" ? "none" : "flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {(() => {
           const handleNavClick = (n) => {
             if(n.id==="ailesi"){ setShowAilesi(!showAilesi); setShowTopMenu(false); return; }
@@ -6029,21 +6043,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </>
           );
         })()}
-        {/* EKRAN MODU (koyu ⇄ açık tema) — SADECE "3'ü üstte" modunda üst bar sağında.
-            Hamburger modunda bu buton ☰ menüsünün içine taşındı (yukarı bak). Artık mobilde de var. */}
-        {(screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi) && (
-          <button onClick={toggleTheme} aria-label="Tema" title="Tema"
-            style={{
-              flex:"0 0 auto", width:40, padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
-              borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-              background: lightMode ? "rgba(240,200,140,0.18)" : "transparent",
-              border: lightMode ? "1px solid rgba(230,170,100,0.55)" : "1px solid transparent",
-              color: lightMode ? "#e8b478" : "rgba(200,190,220,0.6)",
-              boxShadow: lightMode ? "0 0 12px rgba(230,170,100,0.28)" : "none",
-            }}>
-            <span style={{ fontSize:16, lineHeight:1 }}>◐</span>
-          </button>
-        )}
+        {/* Tema butonu artık SADECE ☰ menüsünün içinde (kullanıcı: "tema değişikliği
+            sadece üç çizginin içinde olsun, diğer yerlerden kaldır"). 3'ü-üstte
+            moddaki (harita/mandala/keşfet) ayrı ◐ butonu kaldırıldı. */}
       </div>
 
       {/* APP GÜNCELLE banner — daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse */}
@@ -8795,13 +8797,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {["sabah","nefes","ses","chakra","gun","aksam","mandala","harita"].includes(screen) && (
         <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {MANDALA_STEPS.map((s,i) => {
-            const done = !!stepsCompleted[s];
-            const isCurrent = screen === s || (screen === "terapi" && s === "chakra") || (screen === "gun" && s === "gun");
+            // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
+            const done = i < (currentStepIndex - 1);
+            const isCurrent = i === (currentStepIndex - 1);
             const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",ses:"#a07ae0",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",mandala:"#b87adc",harita:"#82d9a3",ailesi:"#f0c060" };
             const c = stepColors[s] || "#888";
             return <div key={s} style={{ width:isCurrent?18:7,height:7,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
           })}
-          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.3)",marginLeft:4 }}>{t("step_label", completedStepCount, MANDALA_STEPS.length)}</span>
+          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.35)",marginLeft:4,whiteSpace:"nowrap" }}>{currentStepIndex} · {(STEP_NAMES[currentStepIndex]||"").toLocaleUpperCase(t("locale_code"))}</span>
         </div>
       )}
 
