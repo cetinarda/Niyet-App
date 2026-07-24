@@ -48,15 +48,18 @@ class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
         // scrollViewWillBeginZooming yapıyordu — aşağıda birebir kopyalandı.)
         webView?.scrollView.delegate = self
 
-        // ELASTİK (rubber-band) SCROLL — kullanıcı: "Instagram'daki gibi; aşağı
-        // çekince esnesin, bırakınca yumuşakça yerine dönsün; tüm uygulamada olsun".
-        // WKWebView'de varsayılan açıktır ama garantiye alıyoruz; alwaysBounceVertical
-        // ile içerik ekrana sığsa bile esneme hissi korunur.
+        // ELASTİK SCROLL — INSTAGRAM DAVRANIŞI (kullanıcı: "Instagram'da üst sütun
+        // hiç aşağı gelmiyor, o güzel bir çözüm").
+        // DIŞ webview scroll'u KAPALI: bounces=false. Çünkü dış scroll esnediğinde
+        // position:fixed üst bar da beraberinde aşağı sürükleniyordu (kullanıcı:
+        // "alt bar geri dönüyor ama üst bar aşağıda kalıyor").
+        // Kaydırma ve elastik esneme artık İÇ kapsayıcıda (.sakin-app-root,
+        // -webkit-overflow-scrolling:touch) → içerik esner, barlar hiç kıpırdamaz.
         if let sv = webView?.scrollView {
-            sv.bounces = true
-            sv.alwaysBounceVertical = true
+            sv.bounces = false
+            sv.alwaysBounceVertical = false
             sv.alwaysBounceHorizontal = false
-            sv.decelerationRate = .normal
+            sv.isScrollEnabled = false
         }
 
         // SES TUŞU → SESİ DİRİLT (kullanıcı: "ses kapalıysa ses yükseltme tuşuna
