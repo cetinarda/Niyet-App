@@ -2239,6 +2239,13 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     if (tPhase==="active") setShowCloseEyes(false);
     const dur = terapiDuration.current;
     timerRef.current = setInterval(() => {
+      // Günlük toplam çakra terapi süresi — "bağlantı" için 2 dk şartında kullanılır.
+      // (Seans bitmese de geçen her saniye sayılır; kullanıcı birden çok kısa seans
+      // yapsa da toplam süre birikir.)
+      try {
+        const _k = "sakin_terapi_sec_" + new Date().toISOString().slice(0,10);
+        localStorage.setItem(_k, String((parseInt(localStorage.getItem(_k)) || 0) + 1));
+      } catch(_) {}
       setElapsed(e => {
         const next = e + 1;
         if (next === dur) setShowCloseEyes(true);
@@ -3133,7 +3140,12 @@ export default function SakinApp() {
     setPlayingHz(null); setActiveFreq(null);
   };
   const [freqListenSec, setFreqListenSec] = useState(() => {
-    try { return parseInt(localStorage.getItem("sakin_freq_sec_" + todayKey)) || 0; } catch { return 0; }
+    // BUG DÜZELTMESİ: burada `todayKey` kullanılıyordu ama o değişken bu satırdan
+    // ~500 satır SONRA tanımlı → initializer render sırasında çalıştığı için TDZ
+    // ReferenceError atıyor, try/catch bunu yutup HER ZAMAN 0 döndürüyordu. Yani
+    // kayıtlı dinleme süresi hiç geri yüklenmiyordu (ekrandan çıkıp dönünce sıfırlanır,
+    // ve "1 dk ses" bağlantı şartı asla sağlanamazdı). Tarih inline hesaplanıyor.
+    try { return parseInt(localStorage.getItem("sakin_freq_sec_" + new Date().toISOString().slice(0,10))) || 0; } catch { return 0; }
   });
   const freqTimerRef = useRef(null);
   useEffect(() => {
@@ -3679,7 +3691,33 @@ export default function SakinApp() {
     } catch { return {}; }
   });
 
+  // ── BAĞLANTI ŞARTLARI (kullanıcı kararı) ────────────────────────────────────
+  // Eskiden (1.3.x öncesi) süre şartları vardı, sonradan kaybolmuş — geri getirildi:
+  //   nefes  : en az 10 nefes
+  //   ses    : en az 1 dk (60 sn) solfeggio dinleme
+  //   chakra : en az 2 dk (120 sn) çakra terapisi
+  //   gun    : gün görevlerinden en az 3'ü
+  //   sabah  : 3 kelime + niyet (buton zaten bunu şart koşuyor)
+  //   aksam  : akşam kapanışı (buton)
+  //   harita : haftalık haritayı görüp yeni güne geçmek (buton)
+  // NAVİGASYON serbesttir — şart sağlanmasa da kullanıcı ileri gidebilir; sadece
+  // ADIM İŞARETLENMEZ (dolayısıyla bağlantı aktifleşmez).
+  const STEP_MIN = { nefes: 10, ses: 60, chakra: 120, gun: 3 };
+  const readTerapiSec = () => { try { return parseInt(localStorage.getItem("sakin_terapi_sec_" + todayKey)) || 0; } catch { return 0; } };
+  // gunTasksDone state'i bu satırdan SONRA tanımlı (TDZ) — doğrudan localStorage'dan oku.
+  const readGunTasks = () => {
+    try { return Object.values(JSON.parse(localStorage.getItem("sakin_reminders_done_" + todayKey)) || {}).filter(Boolean).length; }
+    catch { return 0; }
+  };
+  const stepRequirementMet = (stepId) => {
+    if (stepId === "nefes")  return breathCount     >= STEP_MIN.nefes;
+    if (stepId === "ses")    return freqListenSec   >= STEP_MIN.ses;
+    if (stepId === "chakra") return readTerapiSec() >= STEP_MIN.chakra;
+    if (stepId === "gun")    return readGunTasks()  >= STEP_MIN.gun;
+    return true; // sabah/aksam/harita: ekranın kendi butonu zaten şartı taşıyor
+  };
   const markStep = (stepId) => {
+    if (!stepRequirementMet(stepId)) return; // şart sağlanmadı → adım işaretlenmez
     setStepsCompleted(prev => {
       const next = { ...prev, [stepId]: true };
       localStorage.setItem("sakin_steps_" + todayKey, JSON.stringify(next));
@@ -3687,16 +3725,21 @@ export default function SakinApp() {
     });
   };
 
-  // 9 adım: sabah→gün→nefes→ses→çakra→akşam→bağlan(mandala)→harita→keşfet(ailesi).
-  // Kullanıcı: "sabahtan keşfete kadar 9 adım var". Sıra swipe/nav ile birebir aynı.
-  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
+  // BAĞLANTI = 7 adım (kullanıcı kararı: "mantık kurmak için 7 adıma düşürelim").
+  // mandala(Bağlan) ve ailesi(Keşfet) ADIM DEĞİL — onlar hedef/genel bakış ekranları
+  // ve markStep hiç çağrılmadığı için bağlantı asla aktifleşemiyordu (kullanıcı:
+  // "ses terapisini yaptım ama bağlantı sağlanmıyor"). KÖK SEBEP buydu.
+  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
   // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
   // gösterir: giriş=0, sabah=1, gün=2, …, keşfet=9. Böylece kullanıcı ilerledikçe
   // doğal artar (DEVAM ET'e basmasa, kaydırsa bile). stepsCompleted yalnızca ekran
   // İÇERİĞİ (sabah kelimeleri seçili vs.) için kullanılmaya devam eder — karışmaz.
-  const currentStepIndex = showAilesi ? 9 : Math.max(0, MANDALA_STEPS.indexOf(screen) + 1);
+  // Alt sayaç 9 EKRANI gösterir (giriş=0, sabah=1 … keşfet=9) — bağlantının 7 adımından
+  // AYRI bir şeydir (sayaç = "neredeyim", bağlantı = "bugün ne tamamlandı").
+  const NAV_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
+  const currentStepIndex = showAilesi ? 9 : Math.max(0, NAV_STEPS.indexOf(screen) + 1);
   const STEP_NAMES = [
     (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
     t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
@@ -3717,6 +3760,14 @@ export default function SakinApp() {
     } catch { return 0; }
   });
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
+
+  // ── SEVİYE SİSTEMİ (kullanıcı: "7 gün düzenli kullanırsa sonraki seviyeye geçer
+  //    x2 olur; 21 gün devam ederse tekrar bir sonraki seviyeye geçer x2 olur").
+  //    Seviye 1: 0-6 gün (x1) · Seviye 2: 7-20 gün (x2) · Seviye 3: 21+ gün (x4).
+  //    Çarpan her seviyede ikiye katlanır (x1 → x2 → x4).
+  const streakLevel = streakData.current >= 21 ? 3 : streakData.current >= 7 ? 2 : 1;
+  const streakMultiplier = streakLevel === 3 ? 4 : streakLevel === 2 ? 2 : 1;
+  const nextLevelAt = streakLevel === 1 ? 7 : streakLevel === 2 ? 21 : null;
 
   // Update streak when all steps complete
   useEffect(() => {
@@ -6533,11 +6584,49 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               );
             })()}
 
+            {/* BAĞLANTI ŞARTLARI — kullanıcı neyin eksik olduğunu görsün (yoksa
+                "yaptım ama bağlantı olmuyor" karışıklığı olur). Sağlananlar ✓, eksikler
+                mevcut/hedef sayısıyla gösterilir. */}
+            {!allStepsComplete && (() => {
+              const reqs = [
+                { id:"sabah",  label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
+                { id:"gun",    label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
+                { id:"nefes",  label:t("bnav_breath"),   cur:breathCount,      need:STEP_MIN.nefes, unit:"" },
+                { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
+                { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
+                { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
+                { id:"harita", label:t("bnav_connection"),cur:stepsCompleted["harita"]?1:0,need:1, unit:"" },
+              ];
+              return (
+                <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:300,width:"100%"}}>
+                  <div style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8}}>{t("mandala_steps")}</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
+                    {reqs.map(r => {
+                      const ok = !!stepsCompleted[r.id];
+                      return (
+                        <span key={r.id} style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
+                          padding:"4px 9px",borderRadius:100,
+                          background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
+                          border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
+                          color: ok?"#82d9a3":"#8a8a95"}}>
+                          {ok ? "✓" : `${Math.min(r.cur,r.need)}/${r.need}${r.unit}`} {r.label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* CTA */}
             {allStepsComplete?(
               <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(74,222,128,0.06)",border:"1px solid rgba(74,222,128,0.16)",borderRadius:16,maxWidth:280,width:"100%"}}>
                 <div style={{fontFamily:"'Inter',sans-serif",fontSize:15,color:"#82d9a3",letterSpacing:1}}>
                   🌿 {t("mandala_today_complete")}
+                </div>
+                <div style={{fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.5,color:"#c8b878",marginTop:6}}>
+                  ✦ {t("mandala_streak")} {streakData.current} · L{streakLevel} · x{streakMultiplier}
+                  {nextLevelAt ? ` · →${nextLevelAt}` : ""}
                 </div>
               </div>
             ):nextStep?(
@@ -8350,6 +8439,64 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {t("about_journey_outro")}
               </div>
             </div>
+
+            {/* BAĞLANTI NASIL KURULUR — 7 adım + 3 seviye (kullanıcı: "bu bağlantı
+                şartlarını yolculuk sekmesine yedir; kısa bir üst açıklama yap,
+                adımları yaz 7 + 3'ü açıkla"). */}
+            <div style={{ marginTop:30,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+              <div style={{ textAlign:"center",marginBottom:12 }}>
+                <div style={{ fontSize:15,fontWeight:400,letterSpacing:1.5,color:"#82d9a3",fontFamily:"'Jost',sans-serif",marginBottom:8 }}>
+                  ⚡ {t("conn_how_title")}
+                </div>
+                <div style={{ fontSize:13,color:"#9a94a8",lineHeight:1.8,fontFamily:"'Inter',sans-serif" }}>
+                  {t("conn_how_intro")}
+                </div>
+              </div>
+
+              <div style={{ fontSize:11,letterSpacing:3,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",margin:"20px 0 10px" }}>
+                {t("conn_steps_title")}
+              </div>
+              <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
+                {[
+                  ["sabah", "#f0a060", t("conn_s_sabah")],
+                  ["gun",    "#e8d060", t("conn_s_gun")],
+                  ["nefes",  "#60b8e8", t("conn_s_nefes")],
+                  ["ses",    "#a07ae0", t("conn_s_ses")],
+                  ["chakra", "#b87adc", t("conn_s_chakra")],
+                  ["aksam",  "#7ab0e0", t("conn_s_aksam")],
+                  ["harita", "#82d9a3", t("conn_s_harita")],
+                ].map(([id, color, label], i) => {
+                  const done = !!stepsCompleted[id];
+                  return (
+                    <div key={id} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
+                      background: done ? `${color}12` : "rgba(255,255,255,0.02)",
+                      border:`1px solid ${done ? `${color}38` : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
+                      <span style={{ width:20,height:20,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                        background: done ? `${color}28` : "rgba(255,255,255,0.04)", color: done ? color : "#666",
+                        fontSize:10.5,fontFamily:"'Jost',sans-serif" }}>{done ? "✓" : i+1}</span>
+                      <span style={{ fontSize:12.5,color: done ? "#cfc8dd" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div style={{ fontSize:11,letterSpacing:3,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",margin:"22px 0 10px" }}>
+                {t("conn_levels_title")}
+              </div>
+              <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
+                {[[1,t("conn_lv1")],[2,t("conn_lv2")],[3,t("conn_lv3")]].map(([lv, label]) => {
+                  const active = streakLevel === lv;
+                  return (
+                    <div key={lv} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
+                      background: active ? "rgba(240,200,96,0.10)" : "rgba(255,255,255,0.02)",
+                      border:`1px solid ${active ? "rgba(240,200,96,0.35)" : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
+                      <span style={{ fontSize:13,flexShrink:0 }}>{lv===1?"🌱":lv===2?"🔥":"👑"}</span>
+                      <span style={{ fontSize:12.5,color: active ? "#f0c860" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
           )}
 
@@ -8860,7 +9007,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* PROGRESS STRIP — 9 adım (sabah…keşfet). mandala/harita ekranlarında da görünür. */}
       {["sabah","nefes","ses","chakra","gun","aksam","mandala","harita"].includes(screen) && (
         <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
-          {MANDALA_STEPS.map((s,i) => {
+          {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
             const done = i < (currentStepIndex - 1);
             const isCurrent = i === (currentStepIndex - 1);
