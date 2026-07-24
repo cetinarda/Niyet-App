@@ -6667,24 +6667,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {/* Rozetler — "Günün Bağlantısı" ile "Güne devam et" ARASINDA (kullanıcı isteği).
                 AKTİF KADEME yanar: kullanıcı hangi dilimdeyse (3 / 7 / 21) o rozet ışıklı,
                 geçilenler sönük-dolu, henüz ulaşılmayanlar soluk. */}
-            <div style={{display:"flex",gap:8,marginTop:14,marginBottom:4,flexWrap:"wrap",justifyContent:"center"}}>
+            {/* Küçük ve zarif "hap" (pill) rozetler — uygulamanın sade diline uygun:
+                ikon + sade sayı yan yana, tek satır, ince çerçeve. (kullanıcı:
+                "kutucuklar daha küçük daha zarif appin diline uygun olsun 3-7-21") */}
+            <div style={{display:"flex",gap:7,marginTop:12,marginBottom:16,flexWrap:"wrap",justifyContent:"center"}}>
               {BADGES.map(b=>{
                 const cur = streakData.current || 0;
                 const reached = cur >= b.days;                     // bu kademeye ulaşıldı
-                // Aktif kademe = ulaşılanların EN BÜYÜĞÜ (yoksa ilk kademe hedef olarak yanar)
+                // Aktif kademe = ulaşılanların EN BÜYÜĞÜ
                 const activeTier = BADGES.filter(x=>cur>=x.days).map(x=>x.days).pop() ?? null;
-                const isActive = activeTier===null ? b.days===BADGES[0].days && false : b.days===activeTier;
+                const isActive = activeTier !== null && b.days === activeTier;
                 return(
                   <div key={b.days} style={{
-                    background:isActive?"rgba(255,200,60,0.16)":reached?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.012)",
-                    border:`1px solid ${isActive?"rgba(255,200,60,0.6)":reached?"rgba(255,200,60,0.22)":"rgba(255,255,255,0.04)"}`,
-                    borderRadius:10,padding:"7px 12px",textAlign:"center",
-                    opacity:isActive?1:reached?0.85:0.28,transition:"all 0.3s",
-                    boxShadow:isActive?"0 0 16px rgba(255,200,60,0.30)":"none",
-                    animation:isActive?"slowPulse 2.6s ease-in-out infinite":"none",
+                    display:"flex",alignItems:"center",gap:5,
+                    background:isActive?"rgba(255,200,60,0.10)":"transparent",
+                    border:`1px solid ${isActive?"rgba(255,200,60,0.45)":reached?"rgba(255,200,60,0.16)":"rgba(255,255,255,0.06)"}`,
+                    borderRadius:100,padding:"4px 11px",
+                    opacity:isActive?1:reached?0.7:0.3,transition:"all 0.35s",
+                    boxShadow:isActive?"0 0 12px rgba(255,200,60,0.20)":"none",
                   }}>
-                    <div style={{fontSize:15,marginBottom:2,filter:isActive?"drop-shadow(0 0 6px rgba(255,200,60,0.55))":"none"}}>{b.icon}</div>
-                    <div style={{fontSize:13,letterSpacing:1.5,color:isActive?"#ffd97a":reached?"#f0c860":"#666666",fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{b.label}</div>
+                    <span style={{fontSize:11,lineHeight:1,filter:isActive?"drop-shadow(0 0 4px rgba(255,200,60,0.5))":"none"}}>{b.icon}</span>
+                    <span style={{fontSize:10.5,letterSpacing:1.2,color:isActive?"#ffd97a":reached?"#c8a860":"#5f5f68",fontFamily:"'Jost',sans-serif"}}>{b.days}</span>
                   </div>
                 );
               })}
