@@ -4707,6 +4707,28 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
+  // Ayna (gizli geçit) açılışı — hem üst bardaki orta buton hem eski floating ☽
+  // aynı davranışı kullansın diye tek fonksiyona çıkarıldı.
+  const openMirror = () => {
+    haptic();
+    try {
+      const ctx = __makeAudioCtx();
+      const now = ctx.currentTime;
+      [528, 792].forEach((freq, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.value = freq;
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(0.06 - i*0.025, now + 0.08);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
+        o.connect(g).connect(ctx.destination);
+        o.start(now); o.stop(now + 1.15);
+      });
+      setTimeout(() => { try { ctx.close(); } catch(_) {} }, 1300);
+    } catch(_) {}
+    setMirrorPortalActive(true);
+    setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050);
+  };
+
   const MORNING_WORDS = t("morning_words");
   const PREMIUM_WORDS = _localizeArr(PREMIUM_WORDS_EN, PREMIUM_WORDS_TR, NOTIF_TRANS.PREMIUM_WORDS, lang);
 
@@ -5007,31 +5029,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* AYNA BUTONU — gizli geçit. iOS: sağ üst küçük hilal (dokunma).
-          Web mobil: sağ orta kenarda yarı gizli crescent (yarısı ekran dışı). */}
-      {!isPolicyScreen && screen !== "giris" && screen !== "rehber" && !embeddedApp && !mirrorPortalActive && (
+      {/* AYNA BUTONU (floating) — yalnızca "3'ü üstte" ekranlarında (harita/mandala).
+          Günlük akış ekranlarında (hamburger modu) ayna artık üst barın ORTASINDA
+          duruyor, o yüzden burada gizli. Giriş/rehber/policy'de zaten görünmez. */}
+      {!isPolicyScreen && (screen === "harita" || screen === "mandala") && !embeddedApp && !mirrorPortalActive && (
         <button
-          onClick={()=>{
-            haptic();
-            // Yumuşak ayna chime — Web Audio API, sine wave fade in/out (Sakin Ailesi'nden daha hafif)
-            try {
-              const ctx = __makeAudioCtx();
-              const now = ctx.currentTime;
-              // İki harmonik ton: temel + beşli (perfect fifth) — uhrevi his
-              [528, 792].forEach((freq, i) => {
-                const o = ctx.createOscillator(), g = ctx.createGain();
-                o.type = "sine"; o.frequency.value = freq;
-                g.gain.setValueAtTime(0, now);
-                g.gain.linearRampToValueAtTime(0.06 - i*0.025, now + 0.08);
-                g.gain.exponentialRampToValueAtTime(0.0001, now + 1.1);
-                o.connect(g).connect(ctx.destination);
-                o.start(now); o.stop(now + 1.15);
-              });
-              setTimeout(() => { try { ctx.close(); } catch(_) {} }, 1300);
-            } catch(_) {}
-            setMirrorPortalActive(true);
-            setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050);
-          }}
+          onClick={openMirror}
           aria-label={t("mirror_aria")}
           title={t("mirror_aria")}
           style={ isNative ? {
@@ -5959,12 +5962,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // rehber) üst bar sadeleşir, üçü ☰ menüsüne toplanır.
           const showAllTop = screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi;
           if (showAllTop) return SIDEBAR_ITEMS.map(renderBtn);
-          // Günlük akış ekranları: ⌂ sabit kalır, Bağlan/Harita/Keşfet ☰ menüsüne toplanır.
+          // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
+          // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
           const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
           const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
           return (
             <>
               {homeItem && renderBtn(homeItem)}
+              {/* ORTA: Ayna (gizli geçit) — eskiden sağ kenarda floating ☽ idi. */}
+              <button onClick={openMirror} aria-label={t("mirror_aria")} title={t("mirror_aria")}
+                style={{
+                  flex:"0 0 auto", width:44, minHeight:38, padding:"6px 0",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  borderRadius:20, cursor:"pointer", transition:"all 0.25s",
+                  border:"1px solid rgba(184,164,216,0.35)",
+                  background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.4) 0%, rgba(60,30,90,0.6) 60%, rgba(20,10,35,0.5) 100%)",
+                  color:"rgba(232,218,250,0.92)",
+                  boxShadow:"0 0 12px rgba(160,120,220,0.25), inset 0 0 8px rgba(184,164,216,0.18)",
+                }}>
+                <span style={{ fontSize:17, lineHeight:1, filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+              </button>
               <div style={{ position:"relative", flex:"0 0 auto" }}>
                 <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
                   style={{
@@ -5998,14 +6015,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
+                    {/* Web açık/koyu tema — menünün EN ALTINDA (kullanıcı isteği). */}
+                    {!isNative && (<>
+                      <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
+                      <button onClick={()=>{ toggleTheme(); setShowTopMenu(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background: lightMode ? "rgba(240,200,140,0.16)" : "transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color: lightMode ? "#e8b478" : "rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
+                        <span style={{ fontSize:15, lineHeight:1 }}>◐</span>
+                        <span>{(lightMode ? t("theme_light") : t("theme_dark")).toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    </>)}
                   </div>
                 </>)}
               </div>
             </>
           );
         })()}
-        {/* EKRAN MODU (koyu ⇄ açık tema) — en sağda ikon. Web-only (iOS 1.3.0'da). */}
-        {!isNative && (
+        {/* EKRAN MODU (koyu ⇄ açık tema) — SADECE "3'ü üstte" modunda üst bar sağında.
+            Hamburger modunda bu buton ☰ menüsünün içine taşındı (yukarı bak). Web-only. */}
+        {!isNative && (screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi) && (
           <button onClick={toggleTheme} aria-label="Tema" title="Tema"
             style={{
               flex:"0 0 auto", width:40, padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
