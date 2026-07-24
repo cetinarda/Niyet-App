@@ -2319,7 +2319,10 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 2);
+    // Çakra terapisi tonu %25 kısıldı (kullanıcı: "çakra bölümünde ses frekansı çok
+    // yüksek, %25 azalt"). 0.28 → 0.21. Tek noktadan (master) kısmak tüm harmonikleri
+    // orantılı düşürür, tonun tınısı bozulmaz.
+    master.gain.linearRampToValueAtTime(0.21, ctx.currentTime + 2);
     master.connect(ctx.destination);
     gainRef.current = master;
     const oscs = [];
@@ -6244,7 +6247,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
             </button>
             {/* "Sakin nedir" — dikkat çekici sarı (eskiden Keşfet bu renkteydi). */}
-            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
+            {/* Pop-up'taki "Sakin nedir?" → doğrudan YOLCULUK sekmesi açılır (kullanıcı
+                isteği); bağlantı açıklaması artık o sekmenin en üstünde. */}
+            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
               style={{ background:"linear-gradient(135deg,rgba(240,192,96,0.16),rgba(200,150,60,0.10))",border:"1px solid rgba(240,192,96,0.5)",borderRadius:20,padding:"9px 22px",color:"#f0c060",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12,boxShadow:"0 0 16px rgba(240,192,96,0.14)" }}>
               {pickLang(NEDIR_I18N.title, lang)}
             </button>
@@ -6403,11 +6408,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {id:"harita", label:t("bnav_connection"), icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
         ];
         const N=steps.length;
+        // 40 gün kaldırıldı (kullanıcı isteği). Kalan 3-7-21 rozetleri, "Sakin nedir →
+        // Yolculuk" bölümündeki 3 SEVİYE ikonlarıyla AYNI: 🌱 (L1) · 🔥 (7g → L2) ·
+        // 👑 (21g → L3). Böylece rozet ile seviye görsel olarak eşleşir.
         const BADGES=[
           {days:3, icon:"🌱",label:t("bnav_3day")},
           {days:7, icon:"🔥",label:t("bnav_1week")},
-          {days:21,icon:"⚡",label:t("bnav_21day")},
-          {days:40,icon:"👑",label:t("bnav_40day")},
+          {days:21,icon:"👑",label:t("bnav_21day")},
         ];
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
@@ -6595,22 +6602,28 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
                 { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
                 { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                { id:"harita", label:t("bnav_connection"),cur:stepsCompleted["harita"]?1:0,need:1, unit:"" },
+                // Etiket "Bağlantı" değil "Harita" — bölümün adı zaten "Günün Bağlantısı",
+                // aynı kelimenin kutucukta tekrarı kafa karıştırıyordu.
+                { id:"harita", label:t("nav_map"),        cur:stepsCompleted["harita"]?1:0,need:1, unit:"" },
               ];
               return (
-                <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:300,width:"100%"}}>
-                  <div style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8}}>{t("mandala_steps")}</div>
+                <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:320,width:"100%"}}>
+                  {/* Başlık "ADIM" → "Günün Bağlantısı"; kutucuklar artık TIKLANABİLİR
+                      (ilgili ekrana götürür). Alttaki tekrar eden adım navigasyonu
+                      kaldırıldı — aynı 7 adım iki kez görünüyordu (kullanıcı raporu). */}
+                  <div style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8}}>{t("conn_today_title")}</div>
                   <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
                     {reqs.map(r => {
                       const ok = !!stepsCompleted[r.id];
                       return (
-                        <span key={r.id} style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
-                          padding:"4px 9px",borderRadius:100,
+                        <button key={r.id} onClick={()=>setScreen(r.id)}
+                          style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
+                          padding:"5px 10px",borderRadius:100,cursor:"pointer",
                           background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
                           border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
                           color: ok?"#82d9a3":"#8a8a95"}}>
                           {ok ? "✓" : `${Math.min(r.cur,r.need)}/${r.need}${r.unit}`} {r.label}
-                        </span>
+                        </button>
                       );
                     })}
                   </div>
@@ -6654,30 +6667,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               })}
             </div>
 
-            {/* Harita — adım navigasyonu */}
-            <div style={{width:"100%",marginTop:28,borderTop:"1px solid rgba(255,255,255,0.05)",paddingTop:20}}>
-              <div style={{fontSize:12,letterSpacing:3,color:"#777777",textAlign:"center",marginBottom:14,fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{t("mandala_day_label")}</div>
-              <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap"}}>
-                {steps.map(step=>{
-                  const done=!!stepsCompleted[step.id];
-                  const isNext=nextStep?.id===step.id;
-                  return(
-                    <button key={step.id}
-                      onClick={()=>{ if(step.id==="sabah" && done) return; if(done||isNext) setScreen(step.id); }}
-                      style={{
-                        background: done?`rgba(${step.glow},0.14)`:isNext?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.02)",
-                        border:`1px solid ${done?`rgba(${step.glow},0.4)`:isNext?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.04)"}`,
-                        borderRadius:20,padding:"7px 13px",cursor:done||isNext?"pointer":"default",
-                        display:"flex",alignItems:"center",gap:5,
-                        opacity:done||isNext?1:0.3,transition:"all 0.2s",
-                      }}>
-                      <span style={{fontSize:14}}>{done?"✓":step.icon}</span>
-                      <span style={{fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,textTransform:"uppercase",color:done?step.color:isNext?"rgba(255,255,255,0.5)":"rgba(255,255,255,0.2)"}}>{step.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
+            {/* NOT: Buradaki "GÜN — adım navigasyonu" bölümü KALDIRILDI. Yukarıdaki
+                "Günün Bağlantısı" bölümü aynı 7 adımı zaten gösteriyordu (kullanıcı:
+                "bağlanda 2 kez görsel tekrar var, en alttakini kaldır") ve o bölümün
+                kutucukları artık tıklanabilir. */}
           </div>
           </>
         );
@@ -8417,33 +8410,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* ── YOL HARİTASI ── */}
           {hakkindaTab==="yolculuk" && (
           <div style={{ marginBottom:48 }}>
-            <div style={{ textAlign:"center",marginBottom:28 }}>
-              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{t("about_journey_map")}</div>
-              <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("about_journey_awaits")}</div>
-            </div>
-
-            <div style={{ position:"relative",paddingLeft:32 }}>
-              <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
-
-              {JOURNEY_STEPS.map((step,i,arr) => (
-                <div key={i} style={{ position:"relative",marginBottom:i<arr.length-1?24:0,paddingBottom:i<arr.length-1?4:0 }}>
-                  <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
-                  <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title[lang] || step.title.en || step.title.tr}</div>
-                  <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc[lang] || step.desc.en || step.desc.tr}</div>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ textAlign:"center",marginTop:28,padding:"14px 20px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:14 }}>
-              <div style={{ fontSize:13,color:"#b8a4d8",fontStyle:"italic",lineHeight:1.8 }}>
-                {t("about_journey_outro")}
-              </div>
-            </div>
-
             {/* BAĞLANTI NASIL KURULUR — 7 adım + 3 seviye (kullanıcı: "bu bağlantı
                 şartlarını yolculuk sekmesine yedir; kısa bir üst açıklama yap,
                 adımları yaz 7 + 3'ü açıkla"). */}
-            <div style={{ marginTop:30,paddingTop:24,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ marginBottom:30,paddingBottom:26,borderBottom:"1px solid rgba(255,255,255,0.06)" }}>
               <div style={{ textAlign:"center",marginBottom:12 }}>
                 <div style={{ fontSize:15,fontWeight:400,letterSpacing:1.5,color:"#82d9a3",fontFamily:"'Jost',sans-serif",marginBottom:8 }}>
                   ⚡ {t("conn_how_title")}
@@ -8497,6 +8467,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 })}
               </div>
             </div>
+            <div style={{ textAlign:"center",marginBottom:28 }}>
+              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:8 }}>{t("about_journey_map")}</div>
+              <div style={{ fontSize:20,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("about_journey_awaits")}</div>
+            </div>
+
+            <div style={{ position:"relative",paddingLeft:32 }}>
+              <div style={{ position:"absolute",left:12,top:0,bottom:0,width:2,background:"linear-gradient(to bottom,rgba(240,160,96,0.5),rgba(96,184,232,0.5),rgba(160,122,224,0.5),rgba(184,122,220,0.5),rgba(232,208,96,0.5),rgba(122,176,224,0.5),rgba(130,217,163,0.5))",borderRadius:2 }} />
+
+              {JOURNEY_STEPS.map((step,i,arr) => (
+                <div key={i} style={{ position:"relative",marginBottom:i<arr.length-1?24:0,paddingBottom:i<arr.length-1?4:0 }}>
+                  <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
+                  <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title[lang] || step.title.en || step.title.tr}</div>
+                  <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc[lang] || step.desc.en || step.desc.tr}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ textAlign:"center",marginTop:28,padding:"14px 20px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.12)",borderRadius:14 }}>
+              <div style={{ fontSize:13,color:"#b8a4d8",fontStyle:"italic",lineHeight:1.8 }}>
+                {t("about_journey_outro")}
+              </div>
+            </div>
+
           </div>
           )}
 
