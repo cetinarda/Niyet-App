@@ -1460,7 +1460,19 @@ const GLOBAL_CSS = `
      üstte boşluk oluşmuyordu. Sonradan eklediğim scroll "iyileştirmeleri" (100dvh, body
      position:fixed + iç kök scroll) boşluğu açtı/kötüleştirdi — hepsi geri alındı.
      color:#fff korunur (ayrı bir metin-flash düzeltmesiydi). */
-  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+  /* KAYDIRMA KATMANI ile SABİT KATMAN ayrıldı (kullanıcı: "bounce alt barda
+     çalışıyor ama üst bar aşağıda kalıyor").
+     SORUN: body'nin KENDİSİ kayınca iOS rubber-band'i esnerken position:fixed üst
+     barı da beraberinde aşağı sürüklüyordu (alt bar geri dönüyor, üst bar takılı
+     kalıyordu).
+     ÇÖZÜM: body hiç kaymaz (fixed, overflow:hidden) → fixed barlar viewport'a
+     çakılı, asla sürüklenmez. Gerçek kaydırma ve ELASTİK ESNEME iç kapsayıcıda
+     (.sakin-app-root) olur: -webkit-overflow-scrolling:touch iOS'ta iç kapsayıcıya
+     da rubber-band verir; overscroll-behavior BİLEREK ayarlanmaz ki esneme yaşasın.
+     (Native tarafta da dış webview bounce'u kapatıldı — bkz. SakinViewController.) */
+  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+  .sakin-app-root { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -5061,7 +5073,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
   return (
-    <div className={matrixMode ? "matrix-mode" : undefined} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ minHeight:"100vh",paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
