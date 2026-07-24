@@ -2037,30 +2037,32 @@ async function scheduleDailyReminders(lang) {
     const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
     // 7 günlük forward schedule. GÜNDE 2 BİLDİRİM (kullanıcı sınırı, aşılmaz):
     //   08:00 → sabah pingi (sabah ekranı)
-    //   13:00 → tek birleşik havuz (günlük söz + özellik daveti + nefes + Keşfet/
-    //           Tasarım). Her öğe kendi hedefini taşır; tıklanınca doğrudan açılır.
-    // Eski 21:00 slotu KALDIRILDI (3 → 2). Mesajlar dayNumber'a göre deterministik.
+    //   21:00 → akşam bildirimi, tek birleşik havuz (özellik daveti + günlük söz +
+    //           nefes + Keşfet/Tasarım). Her öğe kendi hedefini taşır; tıklanınca
+    //           doğrudan o ekran/embed açılır.
+    // SABAH ve AKŞAM eskisi gibi korunur; kaldırılan slot 13:00 oldu (3 → 2).
+    // Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj).
     for (let d = 0; d < 7; d++) {
       const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
       // 08:00 — sabah pingi (tıklanınca → sabah ekranı)
       const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
       if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
-      // 13:00 — GÜNÜN 2. (VE SON) BİLDİRİMİ — tek birleşik havuz.
-      // Kullanıcı: "günlük toplam bildirim sayımız 2, ikiyi geçmesin — sadece
-      // havuza ekle". Bu yüzden nefes ve Keşfet/Tasarım metinleri AYRI SLOT açmaz;
-      // mevcut havuza karışır ve gün numarasına göre sırayla döner. Her öğe kendi
-      // hedefini taşır → tıklanınca doğrudan o ekran/embed açılır.
+      // 21:00 — AKŞAM bildirimi (günün 2. ve son bildirimi). Kullanıcı: "günlük
+      // toplam 2, ikiyi geçmesin — sadece havuza ekle" + "sabah ve akşam eskisi
+      // gibi devam etsin". Bu yüzden nefes ve Keşfet/Tasarım metinleri AYRI SLOT
+      // açmaz; akşam havuzuna karışır ve gün numarasına göre sırayla döner.
+      // Her öğe kendi hedefini taşır → tıklanınca doğrudan o ekran/embed açılır.
       const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
       const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
-      const middayPool = [
-        ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
+      const eveningPool = [
         ...promos.map(b     => ({ body: b, extra: { screen: "mandala" } })),
+        ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
         ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
         ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
       ];
-      const midday = pick(middayPool, dn);
-      const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
-      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: midday.body, schedule: { at: sAt }, extra: midday.extra, ...icon });
+      const evening = pick(eveningPool, dn);
+      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", stamp);
