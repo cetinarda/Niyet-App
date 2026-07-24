@@ -1572,6 +1572,9 @@ const GLOBAL_CSS = `
      radyal maske ile tünel-ağzı derinliği + üstten gelip alta (yeryüzüne) inen
      akış. allStepsComplete olunca mandala ekranının ARKASINDA (zIndex:0) belirir. */
   @keyframes sakinTunnelFlow { from { background-position: 0 0; } to { background-position: 0 160px; } }
+  /* Çakra sütunundaki ışık huzmesinin KESİNTİSİZ aşağı akışı (SVG rect üzerinde).
+     Yukarıdan girip yeryüzüne doğru süzülür; tek tek parçacık değil, sürekli akış. */
+  @keyframes sakinTunnelDown { 0% { transform: translateY(-470px); } 100% { transform: translateY(470px); } }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
   .sakin-tunnel-bands {
@@ -6736,6 +6739,23 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <stop offset="100%" stopColor="rgba(255,255,255,0.03)"/>
                       </linearGradient>
                       <filter id="glowF"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                      {/* IŞIK TÜNELİ (tam bağlantı) — gövde: kenarları parlak, ortası
+                          saydam bir koridor hissi; akış: yukarıdan aşağı süzülen huzme. */}
+                      <linearGradient id="tunnelBody" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%"   stopColor="rgba(255,240,190,0.30)"/>
+                        <stop offset="28%"  stopColor="rgba(200,150,255,0.10)"/>
+                        <stop offset="50%"  stopColor="rgba(255,255,255,0.04)"/>
+                        <stop offset="72%"  stopColor="rgba(200,150,255,0.10)"/>
+                        <stop offset="100%" stopColor="rgba(255,240,190,0.30)"/>
+                      </linearGradient>
+                      <linearGradient id="tunnelFlow" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%"   stopColor="rgba(255,255,255,0.00)"/>
+                        <stop offset="18%"  stopColor="rgba(255,255,255,0.55)"/>
+                        <stop offset="34%"  stopColor="rgba(240,214,96,0.45)"/>
+                        <stop offset="52%"  stopColor="rgba(184,120,255,0.40)"/>
+                        <stop offset="70%"  stopColor="rgba(255,255,255,0.28)"/>
+                        <stop offset="100%" stopColor="rgba(255,255,255,0.00)"/>
+                      </linearGradient>
                     </defs>
 
                     {/* Omurga — ana bağlantı çizgisi */}
@@ -6824,12 +6844,41 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <text x="110" y="22" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
                       fontFamily="'Jost',sans-serif">▲ {t("mandala_sky_upper")}</text>
 
-                    {/* Tam bağlantı efekti */}
+                    {/* TAM BAĞLANTI — ÇAKRA SÜTUNU IŞIK TÜNELİNE DÖNÜŞÜR
+                        (kullanıcı: "tüm bağlantılar tamamlanınca onay tikleri yani
+                        çakralar bir tünele dönüşsün ve ordan ışık geçsin, yukarıdan
+                        aşağı doğru bir animasyon").
+                        Katmanlar: (1) tünel gövdesi — çakraları saran dikey koridor,
+                        (2) içinden YUKARIDAN AŞAĞI akan ışık huzmesi, (3) aşağı inen
+                        parlak parçacıklar. "BAĞLANTI AKTİF" yazısı buradan KALDIRILDI
+                        (altta kalıyordu) — artık aşağıdaki kutuda gösteriliyor. */}
                     {allStepsComplete && <>
-                      <line x1="110" y1="500" x2="110" y2="40" stroke="url(#riseGrad)" strokeWidth="4" filter="url(#glowF)" opacity="0.8"
-                        strokeDasharray="6 4" style={{animation:`electricRise 1.8s linear infinite`}} />
-                      <text x="110" y="270" textAnchor="middle" fontSize="9" letterSpacing="3" fill="rgba(130,217,163,0.8)"
-                        fontFamily="'Jost',sans-serif">⚡ {t("mandala_connection_active")} ⚡</text>
+                      {/* (1) Tünel gövdesi: çakra hattını saran koridor */}
+                      <rect x="86" y="34" width="48" height="472" rx="24"
+                        fill="url(#tunnelBody)" stroke="rgba(255,240,190,0.28)" strokeWidth="1" />
+                      {/* (2) TÜNEL HALKALARI — koridor derinliği. Her halka yukarıdan
+                          aşağı süzülür; genişliği yol boyunca değişir (perspektif) ve
+                          uçlarda söner. Ardışık gecikmelerle KESİNTİSİZ akış olur. */}
+                      {[0,1,2,3,4,5].map(i => (
+                        <ellipse key={`tr${i}`} cx="110" rx="21" ry="5"
+                          fill="none" stroke="rgba(255,244,206,0.85)" strokeWidth="1.4">
+                          <animate attributeName="cy" from="38" to="502"
+                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
+                          <animate attributeName="rx" values="9;22;22;9"
+                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
+                          <animate attributeName="opacity" values="0;0.9;0.9;0"
+                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
+                          <animate attributeName="stroke-width" values="0.8;1.6;1.6;0.8"
+                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
+                        </ellipse>
+                      ))}
+                      {/* (3) Kesintisiz ışık akışı — huzme sürekli aşağı kayar
+                          (gradyanın kendisi hareket eder, tek tek parçacık yok). */}
+                      <rect x="88" y="36" width="44" height="468" rx="22"
+                        fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
+                      {/* (4) Tünel ağzı parlaması — üstte giriş, altta yeryüzü çıkışı */}
+                      <ellipse cx="110" cy="40" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
+                      <ellipse cx="110" cy="500" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
                     </>}
                   </svg>
                 </div>
@@ -6906,11 +6955,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               })}
             </div>
 
-            {/* CTA */}
+            {/* CTA — "Bugün tamamlandı" yerine BAĞLANTI AKTİF (kullanıcı isteği);
+                yaprak yerine elektrik ikonu. Bu yazı eskiden SVG'nin içindeydi ve
+                altta kalıyordu, oradan kaldırılıp buraya alındı. */}
             {allStepsComplete?(
-              <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(74,222,128,0.06)",border:"1px solid rgba(74,222,128,0.16)",borderRadius:16,maxWidth:280,width:"100%"}}>
-                <div style={{fontFamily:"'Inter',sans-serif",fontSize:15,color:"#82d9a3",letterSpacing:1}}>
-                  🌿 {t("mandala_today_complete")}
+              <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(255,220,120,0.07)",border:"1px solid rgba(255,220,120,0.25)",borderRadius:16,maxWidth:280,width:"100%",boxShadow:"0 0 18px rgba(255,210,110,0.14)"}}>
+                <div style={{fontFamily:"'Jost',sans-serif",fontSize:14,color:"#ffd97a",letterSpacing:2.5,textTransform:"uppercase"}}>
+                  ⚡ {t("mandala_connection_active")}
                 </div>
                 <div style={{fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.5,color:"#c8b878",marginTop:6}}>
                   ✦ {t("mandala_streak")} {streakData.current} · L{streakLevel} · x{streakMultiplier}
