@@ -1473,6 +1473,11 @@ const GLOBAL_CSS = `
   html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; }
   .sakin-app-root { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+  /* Dikey ortalama AUTO MARGIN ile (align-items:center DEĞİL): içerik sığıyorsa
+     ortalanır, sığmıyorsa yukarıdan başlar ve üst kısım ASLA kesilmez. Bu, flexbox'ın
+     "center + overflow → üst erişilemez" tuzağının standart çözümüdür.
+     position:fixed çocuklar akış dışı olduğu için bu kuraldan etkilenmez. */
+  .sakin-app-root > * { margin-top: auto; margin-bottom: auto; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -5075,8 +5080,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // görünüyordu (#6). Policy linklerine Ailesi panelinden erişiliyor zaten.
   // Web'de topNav her zaman görünür (üst marka/dil/policy çubuğu).
   const topNavVisible = !isNative || isPolicyScreen;
+  // ÜST KESİLME DÜZELTMESİ (kullanıcı: "en üst kısımlar kesiliyor; bağlan'da geri
+  // oku görünmüyor, harita/ses/gün üst kısma ulaşılamıyor").
+  // Klasik flexbox tuzağı: align-items:center ile içerik kapsayıcıdan UZUN olduğunda
+  // üst taraf kaydırılamaz alana taşar ("safe center" bu tarayıcıda tutmadı).
+  // KESİN ÇÖZÜM: hizalama flex-start; dikey ortalama ise çocuklara verilen
+  // margin-top/bottom:auto ile yapılır (CSS'te .sakin-app-root > *). Auto margin
+  // taşma durumunda üstü ASLA kesmez — sığıyorsa ortalar, sığmıyorsa yukarıdan
+  // başlar. position:fixed çocuklar akış dışı olduğu için etkilenmez.
   return (
-    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:isPolicyScreen?"flex-start":"center",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:"flex-start",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
@@ -6802,9 +6815,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       const r = (node.zone==="sub"||node.zone==="supra") ? 8 : 10;
                       return (
                         <g key={i} style={{cursor:node.id?"pointer":"default"}} onClick={()=>{ if(node.id) setScreen(node.id); }}>
-                          {/* Glow hale */}
-                          {(done||lit) && <circle cx="110" cy={node.y} r={r+8} fill={`${node.color}18`}
-                            style={{animation:`nodeCharge ${2+i*0.3}s ease-in-out infinite`,animationDelay:`${i*0.2}s`}} />}
+                          {/* Glow hale — KALDIRILDI (kullanıcı: "yuvarlak dans eden
+                              halkaları kaldır, çakraların etrafındaki daireler").
+                              Bu, her çakranın çevresinde büyüyüp küçülen (nodeCharge)
+                              nabız halesiydi. Düğümlerin kendi rengi/parlaklığı yeterli. */}
                           {/* Düğüm */}
                           <circle cx="110" cy={node.y} r={r}
                             fill={done?`${node.color}cc`:lit?`${node.color}44`:"rgba(255,255,255,0.04)"}
