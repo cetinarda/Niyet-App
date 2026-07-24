@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import WebKit
+import AVFoundation
 
 // AMAÇ: Paylaşım sayfası (share sheet) kapandıktan sonra uygulamanın ZOOM'LU/
 // BÜYÜMÜŞ TAKILI kalması hatasını kökten çözmek.
@@ -38,6 +39,7 @@ import WebKit
 // değil web-içi yerleşimdir (o zaman yanlış ağaçtayız demektir).
 class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
     private var watchdog: Timer?
+    private var volumeObs: NSKeyValueObservation?
 
     override func capacitorDidLoad() {
         super.capacitorDidLoad()
@@ -45,6 +47,22 @@ class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
         // (WKScrollView tek bir dış delegate destekler; Capacitor'ınki yalnızca
         // scrollViewWillBeginZooming yapıyordu — aşağıda birebir kopyalandı.)
         webView?.scrollView.delegate = self
+
+        // SES TUŞU → SESİ DİRİLT (kullanıcı: "ses kapalıysa ses yükseltme tuşuna
+        // basınca da ses açılsın; bazen ses kapalıysa çalmıyor, el refleks olarak
+        // ses tuşuna gidiyor"). Ses tuşları web'den yakalanamaz; native tarafta
+        // AVAudioSession.outputVolume KVO ile izlenir. Değişince: oturumu yeniden
+        // etkinleştir + web tarafındaki askıda (suspended/interrupted) AudioContext'leri
+        // dirilt. Kategori zaten .playback (AppDelegate) — sessiz anahtarı yok sayılır.
+        let session = AVAudioSession.sharedInstance()
+        try? session.setActive(true)
+        volumeObs = session.observe(\.outputVolume, options: [.new]) { [weak self] _, _ in
+            DispatchQueue.main.async {
+                try? AVAudioSession.sharedInstance().setActive(true)
+                self?.webView?.evaluateJavaScript(
+                    "window.__sakinResumeAudio && window.__sakinResumeAudio();", completionHandler: nil)
+            }
+        }
 
         NotificationCenter.default.addObserver(
             self, selector: #selector(scheduleHeal),
@@ -113,6 +131,7 @@ class SakinViewController: CAPBridgeViewController, UIScrollViewDelegate {
 
     deinit {
         watchdog?.invalidate()
+        volumeObs?.invalidate()
         NotificationCenter.default.removeObserver(self)
     }
 }
