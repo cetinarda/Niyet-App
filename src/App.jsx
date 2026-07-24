@@ -2167,9 +2167,13 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const particleRef = useRef(null);
   const chimeCxtRef = useRef(null);
 
+  // Seans süresi kullanıldıkça uzar: 30 sn'den başlar, her tamamlanan seansta +5 sn.
+  // TAVAN 90 → 120 sn (kullanıcı: "tek seansta 120 saniye olabilir"). Bağlantının
+  // çakra şartı 120 sn TOPLAM olduğundan, tavan 90'da kalsaydı tek seansta asla
+  // ulaşılamazdı; artık tek uzun seansla da, birkaç kısa seansla da tamamlanabilir.
   const getChakraDuration = () => {
     const count = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
-    return Math.min(30 + count * 5, 90);
+    return Math.min(30 + count * 5, 120);
   };
   const terapiDuration = useRef(getChakraDuration());
 
@@ -3734,11 +3738,11 @@ export default function SakinApp() {
   //   harita : haftalık haritayı görüp yeni güne geçmek (buton)
   // NAVİGASYON serbesttir — şart sağlanmasa da kullanıcı ileri gidebilir; sadece
   // ADIM İŞARETLENMEZ (dolayısıyla bağlantı aktifleşmez).
-  // chakra: 30 sn — TEK SEANSTA tamamlanabilsin (kullanıcı kararı). Terapi seansı
-  // ilk kullanımda 30 sn, her seansla +5 sn uzayıp 90 sn'de sabitleniyor
-  // (getChakraDuration). 120 sn şartı iki seans gerektiriyordu; 30 sn ile herhangi
-  // bir TAMAMLANAN seans adımı karşılar.
-  const STEP_MIN = { nefes: 10, ses: 60, chakra: 30, gun: 3 };
+  // chakra: 120 sn TOPLAM (kullanıcı: "120 saniye geçerli; tek seansta 120 saniye
+  // olabilir ya da 3 seansta — nasıl yapmak isterse kullanıcı"). Sayaç gün boyunca
+  // BİRİKİR, yani tek uzun seans da birkaç kısa seans da olur. Tek seansın 120 sn'ye
+  // ulaşabilmesi için terapi seans tavanı 90 → 120 sn yükseltildi (getChakraDuration).
+  const STEP_MIN = { nefes: 10, ses: 60, chakra: 120, gun: 3 };
   const readTerapiSec = () => { try { return parseInt(localStorage.getItem("sakin_terapi_sec_" + todayKey)) || 0; } catch { return 0; } };
   // gunTasksDone state'i bu satırdan SONRA tanımlı (TDZ) — doğrudan localStorage'dan oku.
   const readGunTasks = () => {
