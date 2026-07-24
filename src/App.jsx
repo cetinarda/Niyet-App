@@ -489,7 +489,7 @@ function elementDistFromSigns(signs) {
 const NEDIR_I18N = {
   title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
   vaat:    { tr:"Kendini tanı, kendinle bağlantıda kal.", en:"Know yourself, stay connected to yourself.", de:"Erkenne dich, bleib mit dir verbunden.", es:"Conócete y mantente en conexión contigo.", pt:"Conhece-te e mantém-te em ligação contigo.", fr:"Connais-toi, reste relié à toi.", ja:"自分を知り、自分とつながり続ける。" },
-  bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anından çıkarılan enerji haritandır — nasıl karar verdiğini, enerjinin nasıl aktığını gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design is an energy map drawn from your moment of birth — it shows how you decide and how your energy flows.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design ist eine Energiekarte aus deinem Geburtsmoment — sie zeigt, wie du entscheidest und wie deine Energie fließt.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño es un mapa de energía trazado desde tu nacimiento — muestra cómo decides y cómo fluye tu energía.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design é um mapa de energia traçado do momento do teu nascimento — mostra como decides e como a tua energia flui.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design est une carte d'énergie tracée à partir de ta naissance — elle montre comment tu décides et comment ton énergie circule.", ja:"星座、動物、石、そしてあなたのデザイン。デザインとは誕生の瞬間から描かれるエネルギーの地図——決め方とエネルギーの流れを映します。" },
+  bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anındaki enerji haritanı ve karar alma biçimini gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design shows your energy map at birth and how you make decisions.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design zeigt deine Energiekarte bei der Geburt und wie du Entscheidungen triffst.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño muestra tu mapa de energía al nacer y cómo tomas decisiones.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design mostra o teu mapa de energia ao nascer e como tomas decisões.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design montre ta carte d'énergie à la naissance et comment tu prends tes décisions.", ja:"星座、動物、石、そしてあなたのデザイン。デザインは誕生の瞬間のエネルギー地図と、あなたの決め方を映します。" },
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them — your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les — ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
   off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
@@ -1450,6 +1450,11 @@ const GLOBAL_CSS = `
      itibaren doğru — hiçbir platformda görsel değişiklik yaratmaz (zaten her yerde
      beyaza yakın renkler kullanılıyordu). */
   html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+  /* iOS WKWebView lastik-bant (rubber-band) scroll'u kapat — aşağı/yukarı esneme
+     sırasında fixed üst bar "kayıyor" + üstte boşluk oluşuyordu (kullanıcı raporu).
+     overscroll-behavior sabitlenince fixed elemanlar yerinde kalır. Embed'lerde
+     zaten inject ediliyordu; host'ta eksikti. */
+  html, body { overscroll-behavior: none; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
@@ -1994,7 +1999,7 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
   useEffect(() => () => clearInterval(timerRef.current), []);
 
   return (
-    <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 120px", position:"relative", zIndex:1 }}>
+    <div style={{ maxWidth:430, width:"100%", padding:"62px 20px 190px", position:"relative", zIndex:1 }}>
       <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:8 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"#888888", cursor:"pointer", fontSize:19, padding:"10px 12px 10px 4px", marginLeft:-4 }}>←</button>
         <div style={{ flex:1 }}>
@@ -2020,20 +2025,12 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
       <div style={{ paddingRight:2, scrollbarWidth:"none" }}>
         {REMINDERS.map((rem, i) => {
           const isDone   = done[rem.id];
-          const isTiming = timing?.id === rem.id;
-          const elapsed  = isTiming ? timing.elapsed : 0;
-          const pct      = isTiming ? elapsed / timing.total : 0;
-          const remSecs  = isTiming ? timing.total - elapsed : rem.duration;
-          const mm = String(Math.floor((remSecs||0)/60)).padStart(2,"0");
-          const ss = String((remSecs||0)%60).padStart(2,"0");
 
           return (
             <div key={rem.id}
               className={`rem-card slide-in ${isDone?"done":""}`}
               style={{
                 animationDelay:`${i*0.05}s`, opacity:0,
-                borderColor: isTiming ? rem.borderColor : undefined,
-                background: isTiming ? `linear-gradient(135deg,${rem.color}0a,transparent)` : undefined,
               }}
             >
               <div style={{ fontSize:28, flexShrink:0, width:38, textAlign:"center", display:"flex", alignItems:"center", justifyContent:"center" }}>{rem.icon}</div>
@@ -2049,28 +2046,8 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
                     ↗ {REMINDER_GO_TXT[lang] || REMINDER_GO_TXT.en}
                   </button>
                 )}
-                {rem.duration && !isDone && (
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginTop:4 }}>
-                    <svg width="28" height="28" style={{ flexShrink:0 }}>
-                      <circle cx="14" cy="14" r="11" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="2" />
-                      <circle cx="14" cy="14" r="11" fill="none" stroke={rem.color} strokeWidth="2"
-                        strokeDasharray={`${2*Math.PI*11}`}
-                        strokeDashoffset={`${2*Math.PI*11*(1-pct)}`}
-                        strokeLinecap="round"
-                        style={{ transform:"rotate(-90deg)", transformOrigin:"14px 14px", transition:"stroke-dashoffset 1s linear" }} />
-                    </svg>
-                    <button onClick={() => startTimer(rem)} style={{
-                      background:"transparent",
-                      border:`1px solid ${isTiming?rem.borderColor:"rgba(255,255,255,0.1)"}`,
-                      borderRadius:100, color:isTiming?"#ffffff":"#888888",
-                      cursor:"pointer", fontSize:13, letterSpacing:1.5,
-                      padding:"4px 12px", transition:"all 0.22s",
-                      fontFamily:"'Inter',sans-serif",
-                    }}>
-                      {isTiming ? `${mm}:${ss} ■` : `▶ ${mm}:${ss}`}
-                    </button>
-                  </div>
-                )}
+                {/* Geri sayım süreleri kaldırıldı (kullanıcı isteği) — görev artık
+                    yalnızca sağdaki ✓ ile işaretlenir; sabit bir süre beklemeye gerek yok. */}
               </div>
               <button className={`check-btn ${isDone?"checked":""}`} onClick={() => toggleDone(rem.id)} style={{alignSelf:"center"}}>
                 {isDone ? "✓" : ""}
@@ -3679,8 +3656,20 @@ export default function SakinApp() {
     });
   };
 
-  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"]; // sıra = yeni akış zinciri
+  // 9 adım: sabah→gün→nefes→ses→çakra→akşam→bağlan(mandala)→harita→keşfet(ailesi).
+  // Kullanıcı: "sabahtan keşfete kadar 9 adım var". Sıra swipe/nav ile birebir aynı.
+  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+  // KÖK SEBEP (adım sayacı hep 0): markStep yalnızca "DEVAM ET/İLERİ" butonlarına
+  // basınca çağrılıyordu — kullanıcı kaydırarak (swipe) veya ☰ menüsünden geçince
+  // adım hiç işaretlenmiyordu. Artık ziyaret edilen HER ekran (ve Keşfet modalı)
+  // otomatik işaretleniyor; sayaç geçiş yöntemi ne olursa olsun doğru artıyor.
+  useEffect(() => {
+    if (MANDALA_STEPS.includes(screen) && !stepsCompleted[screen]) markStep(screen);
+  }, [screen]);
+  useEffect(() => {
+    if (showAilesi && !stepsCompleted["ailesi"]) markStep("ailesi");
+  }, [showAilesi]);
   const [gunTasksDone, setGunTasksDone] = useState(() => {
     try {
       const k = "sakin_reminders_done_" + new Date().toISOString().slice(0,10);
@@ -4666,12 +4655,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
 
   // Kullanıcı isteği: sağ/sol kaydırma sırası TAM OLARAK üst nav + sidebar sırasını
-  // izlemeli — sabah→gün→nefes→ses→çakra→akşam→harita→bağlan→keşfet. Eski dizi
-  // ["sabah","nefes","ses","chakra","gun","aksam"] yanlış sıradaydı ("gun" 2. yerine
-  // 5. sıradaydı) — kaydırınca beklenmedik/tutarsız ekranlara "atlıyormuş" gibi
-  // hissettiriyordu (kullanıcı raporu: "sağ sol ile atlamalar var"). "keşfet" bir
-  // `screen` değil, `showAilesi` modalı — zincirin son adımı olarak ayrıca ele alınır.
-  const SWIPE_SCREENS = ["sabah","gun","nefes","ses","chakra","aksam","harita","mandala"];
+  // izlemeli — sabah→gün→nefes→ses→çakra→akşam→bağlan→harita→keşfet. Bağlan(mandala)
+  // artık akşamdan HEMEN sonra (harita'dan önce) — kullanıcı: "akşamdan sonra bağlan
+  // gelecek". "keşfet" bir `screen` değil, `showAilesi` modalı — zincirin son adımı
+  // olarak ayrıca ele alınır (harita'dan ileri kaydırınca açılır).
+  const SWIPE_SCREENS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita"];
   const touchStartRef = useRef(null);
   const handleTouchStart = e => { touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() }; };
   const handleTouchEnd = e => {
@@ -4682,15 +4670,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     touchStartRef.current = null;
     if (dt > 500 || Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
     if (showAilesi) {
-      // Keşfet zincirin son halkası — sağa kaydırma (geri) "bağlan"a döner.
-      if (dx > 60) { setShowAilesi(false); setScreen("mandala"); }
+      // Keşfet zincirin son halkası — sağa kaydırma (geri) "harita"ya döner.
+      if (dx > 60) { setShowAilesi(false); setScreen("harita"); }
       return;
     }
     const idx = SWIPE_SCREENS.indexOf(screen);
     if (idx === -1) return;
     if (dx < -60) {
       if (idx < SWIPE_SCREENS.length - 1) setScreen(SWIPE_SCREENS[idx + 1]);
-      else setShowAilesi(true); // "mandala"dan ileri kaydırınca Keşfet açılır
+      else setShowAilesi(true); // "harita"dan ileri kaydırınca Keşfet açılır
     }
     if (dx > 60 && idx > 0) setScreen(SWIPE_SCREENS[idx - 1]);
   };
@@ -5946,26 +5934,32 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 aria-label={n.iconOnly ? t("nav_home") : undefined}
                 style={{
                   flex: n.iconOnly ? "0 0 auto" : "1 1 0", minWidth:0,
-                  width: n.iconOnly ? 40 : undefined,
-                  background: active ? `${n.color}22` : n.glow ? `${n.color}11` : "transparent",
-                  border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : "1px solid transparent",
+                  width: n.iconOnly ? 48 : undefined,
+                  // Ana sayfa (⌂) her zaman çerçeveli + biraz daha büyük — kullanıcı isteği
+                  // ("çok küçük, büyüt/çerçeve ekle").
+                  background: active ? `${n.color}22` : n.glow ? `${n.color}11` : n.iconOnly ? "rgba(255,255,255,0.05)" : "transparent",
+                  border: active ? `1px solid ${n.color}44` : n.glow ? `1px solid ${n.color}33` : n.iconOnly ? "1px solid rgba(255,255,255,0.16)" : "1px solid transparent",
                   borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                  padding: n.iconOnly ? "5px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
+                  padding: n.iconOnly ? "7px 0" : "5px 6px", display:"flex", alignItems:"center", justifyContent:"center", gap:5,
                   fontFamily:"'Jost',sans-serif", fontWeight: n.glow ? 500 : 500,
-                  fontSize:12, letterSpacing:1.2,
+                  fontSize:12.5, letterSpacing:1.2,
                   color: active ? n.color : n.glow ? n.color : `${n.color}88`,
                   animation: n.glow && !active ? "ailesiPulse 2.5s ease-in-out infinite" : "none",
                   boxShadow: n.glow && !active ? `0 0 12px ${n.color}22` : "none",
                   whiteSpace:"nowrap", overflow:"hidden",
                 }}>
-                <span style={{ fontSize: n.iconOnly ? 17 : 13, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
+                <span style={{ fontSize: n.iconOnly ? 20 : 14, lineHeight:1, flexShrink:0 }}>{n.icon}</span>
                 {!n.iconOnly && <span style={{ overflow:"hidden", textOverflow:"ellipsis", minWidth:0 }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>}
               </button>
             );
           };
-          // İlk açılış (giriş ekranı): eskisi gibi hepsi ayrı ayrı görünür.
-          if (screen === "giris") return SIDEBAR_ITEMS.map(renderBtn);
-          // Diğer tüm ekranlar: ⌂ sabit kalır, Bağlan/Harita/Keşfet ☰ menüsüne toplanır.
+          // Giriş ekranında VE "bağlan/harita/keşfet" yüzeylerindeyken üçü de üstte
+          // ayrı ayrı görünür (kullanıcı: "bu menülerdeyken üçü de yukarıda gözüksün").
+          // Sadece günlük akış ekranlarında (sabah/gün/nefes/ses/çakra/akşam + terapi/
+          // rehber) üst bar sadeleşir, üçü ☰ menüsüne toplanır.
+          const showAllTop = screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi;
+          if (showAllTop) return SIDEBAR_ITEMS.map(renderBtn);
+          // Günlük akış ekranları: ⌂ sabit kalır, Bağlan/Harita/Keşfet ☰ menüsüne toplanır.
           const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
           const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
           return (
@@ -5974,13 +5968,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ position:"relative", flex:"0 0 auto" }}>
                 <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
                   style={{
-                    width:40, height:"100%", padding:"5px 0", display:"flex", alignItems:"center", justifyContent:"center",
+                    width:48, minHeight:38, padding:"7px 0", display:"flex", alignItems:"center", justifyContent:"center",
                     borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                    background: showTopMenu ? "rgba(184,164,216,0.15)" : "transparent",
-                    border: showTopMenu ? "1px solid rgba(184,164,216,0.4)" : "1px solid transparent",
-                    color:"rgba(220,210,240,0.85)",
+                    background: showTopMenu ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
+                    border: showTopMenu ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
+                    color:"rgba(228,218,245,0.9)",
                   }}>
-                  <span style={{ fontSize:17, lineHeight:1 }}>☰</span>
+                  <span style={{ fontSize:20, lineHeight:1 }}>☰</span>
                 </button>
                 {showTopMenu && (<>
                   {/* Dışına tıklayınca kapatan tam ekran görünmez katman */}
@@ -6094,9 +6088,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?" butonu nedir sekmesine gider. */}
       {showNedir && !showIntro && (
         <div onClick={()=>setShowNedir(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.87)",backdropFilter:"blur(13px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out",position:"relative" }}>
+            {/* Sağ üst kapat (X) — açılış (HAZIRIM) ekranına döner. */}
+            <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }}
+              aria-label={t("common_close")}
+              style={{ position:"absolute",top:10,right:10,width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.14)",color:"#c0b4d8",fontSize:17,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>✕</button>
             <div style={{ fontSize:24,marginBottom:8 }}>✦</div>
             <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:18,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            {/* Bağlan ve Keşfet AYNI renkte (mor) — kullanıcı isteği; ayrım "Sakin nedir" sarısıyla vurgulanıyor. */}
             <button onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
               style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:10,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
@@ -6106,15 +6105,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
             </button>
             <button onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
-              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(240,192,96,0.1)" }}>
+              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-                <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                <span style={{ color:"rgba(240,192,96,0.6)",fontSize:16 }}>→</span>
+                <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
               </div>
-              <div style={{ fontSize:12.5,color:"#c8b89a",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
+              <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
             </button>
+            {/* "Sakin nedir" — dikkat çekici sarı (eskiden Keşfet bu renkteydi). */}
             <button onClick={()=>{ setShowNedir(false); setHakkindaTab("nedir"); setScreen("hakkinda"); }}
-              style={{ background:"transparent",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"7px 20px",color:"#b0a0d0",fontSize:11.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12 }}>
+              style={{ background:"linear-gradient(135deg,rgba(240,192,96,0.16),rgba(200,150,60,0.10))",border:"1px solid rgba(240,192,96,0.5)",borderRadius:20,padding:"9px 22px",color:"#f0c060",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12,boxShadow:"0 0 16px rgba(240,192,96,0.14)" }}>
               {pickLang(NEDIR_I18N.title, lang)}
             </button>
             <div>
@@ -6185,7 +6185,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(localStorage.getItem("sakin_nedir_off")!=="1"){ const c=parseInt(localStorage.getItem("sakin_nedir_count")||"0",10)||0; if(c<5){ setShowNedir(true); localStorage.setItem("sakin_nedir_count",String(c+1)); } } } catch(_) {} }}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(localStorage.getItem("sakin_nedir_off")!=="1"){ setShowNedir(true); } } catch(_) {} }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
@@ -8765,15 +8765,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* PROGRESS STRIP */}
-      {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:6,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
+      {/* PROGRESS STRIP — 9 adım (sabah…keşfet). mandala/harita ekranlarında da görünür. */}
+      {["sabah","nefes","ses","chakra","gun","aksam","mandala","harita"].includes(screen) && (
+        <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {MANDALA_STEPS.map((s,i) => {
             const done = !!stepsCompleted[s];
             const isCurrent = screen === s || (screen === "terapi" && s === "chakra") || (screen === "gun" && s === "gun");
-            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",ses:"#a07ae0",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",harita:"#82d9a3" };
+            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",ses:"#a07ae0",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",mandala:"#b87adc",harita:"#82d9a3",ailesi:"#f0c060" };
             const c = stepColors[s] || "#888";
-            return <div key={s} style={{ width:isCurrent?20:8,height:8,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
+            return <div key={s} style={{ width:isCurrent?18:7,height:7,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
           })}
           <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.3)",marginLeft:4 }}>{t("step_label", completedStepCount, MANDALA_STEPS.length)}</span>
         </div>
