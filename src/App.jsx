@@ -206,6 +206,12 @@ function __resumeAllAudio() {
     try { if (c && c.state === "suspended") c.resume(); } catch (_) {}
   });
 }
+// NATIVE KÖPRÜ: iOS tarafı (SakinViewController) kullanıcı SES TUŞUNA bastığında
+// bunu çağırır (kullanıcı: "ses kapalıysa ses yükseltme tuşuna basınca da ses
+// açılsın; el refleks olarak ses tuşuna gidiyor"). AVAudioSession kesintiye
+// uğradığında (başka uygulama ses çaldı, sessiz anahtarı, çağrı) AudioContext
+// "suspended"/"interrupted" kalıp ses çıkmıyordu; ses tuşu artık onu diriltir.
+try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAllAudio; } catch (_) {}
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
@@ -3105,12 +3111,26 @@ export default function SakinApp() {
     return () => clearInterval(id);
   }, [playingHz]);
   const BIRD_EXT = { guguk:"mp3", bulbul:"mp3", dove:"mp3", kanarya:"mp3", otlegen:"mp3", baykus:"mp3", kartal:"mp3", yedek:"mp3" };
+  // Kuş sesi geçişleri YUMUŞAK (kullanıcı: "looplar arası sert geçiş var, kuş sesi
+  // aniden kesiliyor"). Eskiden pause() ile anında kesiliyor, tam sesle başlıyordu.
+  // Artık çıkışta ~550ms fade-out, girişte ~900ms fade-in uygulanıyor.
+  const birdFadeRef = useRef(null);
   const stopBirdSound = () => {
-    if (birdAudioRef.current) {
-      birdAudioRef.current.pause();
-      birdAudioRef.current.currentTime = 0;
-      birdAudioRef.current = null;
-    }
+    const a = birdAudioRef.current;
+    birdAudioRef.current = null;
+    if (birdFadeRef.current) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
+    if (!a) return;
+    const steps = 22, dt = 25;
+    const start = a.volume;
+    let i = 0;
+    const iv = setInterval(() => {
+      i++;
+      try { a.volume = Math.max(0, start * (1 - i / steps)); } catch(_) {}
+      if (i >= steps) {
+        clearInterval(iv);
+        try { a.pause(); a.currentTime = 0; } catch(_) {}
+      }
+    }, dt);
   };
   // Kuş sesi ARKA PLAN eşlikçisidir — asıl olan solfeggio frekansı (kullanıcı:
   // "kuş seslerini biraz daha kıs, çok baskın; önemli olan solfeggio frekansları").
@@ -3120,9 +3140,18 @@ export default function SakinApp() {
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
     audio.loop = true;
-    audio.volume = vol;
+    audio.volume = 0;                       // sessizden başla → yumuşak giriş
     audio.play().catch(() => {});
     birdAudioRef.current = audio;
+    if (birdFadeRef.current) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
+    const steps = 30, dt = 30;              // ~900ms fade-in
+    let i = 0;
+    birdFadeRef.current = setInterval(() => {
+      i++;
+      if (birdAudioRef.current !== audio) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; return; }
+      try { audio.volume = Math.min(vol, vol * (i / steps)); } catch(_) {}
+      if (i >= steps) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
+    }, dt);
   };
   const stopFreqToneGlobal = () => {
     if (freqGainRef.current && freqCtxRef.current) {
@@ -3732,7 +3761,10 @@ export default function SakinApp() {
   // mandala(Bağlan) ve ailesi(Keşfet) ADIM DEĞİL — onlar hedef/genel bakış ekranları
   // ve markStep hiç çağrılmadığı için bağlantı asla aktifleşemiyordu (kullanıcı:
   // "ses terapisini yaptım ama bağlantı sağlanmıyor"). KÖK SEBEP buydu.
-  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"];
+  // BAĞLANTI = 6 ADIM (kullanıcı: "harita adımını iptal et, ilk 6 bölüm yeterli;
+  // alttaki 6 butondaki görevleri yapan bağlantıyı sağlar"). Alt bardaki 6 sekme:
+  // sabah · gün · nefes · ses · çakra · akşam.
+  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
   // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
@@ -6407,7 +6439,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {id:"aksam",  label:t("bnav_evening"),  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
           {id:"harita", label:t("bnav_connection"), icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
         ];
-        const N=steps.length;
+        // "x/N ADIM" sayacı BAĞLANTI adım sayısını (6) göstermeli — `steps` dizisi
+        // omurga görselinde harita düğümünü de çizdiği için 7 elemanlı, onu kullanma.
+        const N=MANDALA_STEPS.length;
         // 40 gün kaldırıldı (kullanıcı isteği). Kalan 3-7-21 rozetleri, "Sakin nedir →
         // Yolculuk" bölümündeki 3 SEVİYE ikonlarıyla AYNI: 🌱 (L1) · 🔥 (7g → L2) ·
         // 👑 (21g → L3). Böylece rozet ile seviye görsel olarak eşleşir.
@@ -6602,9 +6636,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
                 { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
                 { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                // Etiket "Bağlantı" değil "Harita" — bölümün adı zaten "Günün Bağlantısı",
-                // aynı kelimenin kutucukta tekrarı kafa karıştırıyordu.
-                { id:"harita", label:t("nav_map"),        cur:stepsCompleted["harita"]?1:0,need:1, unit:"" },
+                // "Harita" kutucuğu KALDIRILDI — bağlantı artık 6 adım (kullanıcı:
+                // "harita adımını iptal et, ilk 6 bölüm yeterli").
               ];
               return (
                 <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:320,width:"100%"}}>
@@ -6631,6 +6664,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               );
             })()}
 
+            {/* Rozetler — "Günün Bağlantısı" ile "Güne devam et" ARASINDA (kullanıcı isteği).
+                AKTİF KADEME yanar: kullanıcı hangi dilimdeyse (3 / 7 / 21) o rozet ışıklı,
+                geçilenler sönük-dolu, henüz ulaşılmayanlar soluk. */}
+            {/* Küçük ve zarif "hap" (pill) rozetler — uygulamanın sade diline uygun:
+                ikon + sade sayı yan yana, tek satır, ince çerçeve. (kullanıcı:
+                "kutucuklar daha küçük daha zarif appin diline uygun olsun 3-7-21") */}
+            <div style={{display:"flex",gap:7,marginTop:12,marginBottom:16,flexWrap:"wrap",justifyContent:"center"}}>
+              {BADGES.map(b=>{
+                const cur = streakData.current || 0;
+                const reached = cur >= b.days;                     // bu kademeye ulaşıldı
+                // Aktif kademe = ulaşılanların EN BÜYÜĞÜ
+                const activeTier = BADGES.filter(x=>cur>=x.days).map(x=>x.days).pop() ?? null;
+                const isActive = activeTier !== null && b.days === activeTier;
+                return(
+                  <div key={b.days} style={{
+                    display:"flex",alignItems:"center",gap:5,
+                    background:isActive?"rgba(255,200,60,0.10)":"transparent",
+                    border:`1px solid ${isActive?"rgba(255,200,60,0.45)":reached?"rgba(255,200,60,0.16)":"rgba(255,255,255,0.06)"}`,
+                    borderRadius:100,padding:"4px 11px",
+                    opacity:isActive?1:reached?0.7:0.3,transition:"all 0.35s",
+                    boxShadow:isActive?"0 0 12px rgba(255,200,60,0.20)":"none",
+                  }}>
+                    <span style={{fontSize:11,lineHeight:1,filter:isActive?"drop-shadow(0 0 4px rgba(255,200,60,0.5))":"none"}}>{b.icon}</span>
+                    <span style={{fontSize:10.5,letterSpacing:1.2,color:isActive?"#ffd97a":reached?"#c8a860":"#5f5f68",fontFamily:"'Jost',sans-serif"}}>{b.days}</span>
+                  </div>
+                );
+              })}
+            </div>
+
             {/* CTA */}
             {allStepsComplete?(
               <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(74,222,128,0.06)",border:"1px solid rgba(74,222,128,0.16)",borderRadius:16,maxWidth:280,width:"100%"}}>
@@ -6649,23 +6711,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             ):null}
 
-            {/* Badges */}
-            <div style={{display:"flex",gap:8,marginTop:18,flexWrap:"wrap",justifyContent:"center"}}>
-              {BADGES.map(b=>{
-                const unlocked=streakData.badges.includes(b.days);
-                return(
-                  <div key={b.days} style={{
-                    background:unlocked?"rgba(255,255,255,0.04)":"rgba(255,255,255,0.012)",
-                    border:`1px solid ${unlocked?"rgba(255,200,60,0.25)":"rgba(255,255,255,0.04)"}`,
-                    borderRadius:10,padding:"7px 12px",textAlign:"center",
-                    opacity:unlocked?1:0.28,transition:"all 0.3s",
-                  }}>
-                    <div style={{fontSize:15,marginBottom:2}}>{b.icon}</div>
-                    <div style={{fontSize:13,letterSpacing:1.5,color:unlocked?"#f0c860":"#666666",fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>{b.label}</div>
-                  </div>
-                );
-              })}
-            </div>
 
             {/* NOT: Buradaki "GÜN — adım navigasyonu" bölümü KALDIRILDI. Yukarıdaki
                 "Günün Bağlantısı" bölümü aynı 7 adımı zaten gösteriyordu (kullanıcı:
@@ -7203,7 +7248,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* ÇAKRA */}
       {screen==="chakra" && (
         <div style={{ textAlign:"center",padding:"62px 30px 170px",position:"relative",zIndex:1,maxWidth:360 }}>
+          {/* Çakra arka plan halesi + ÜST GEÇİŞ YUMUŞATMA (kullanıcı: "üst bar ile alt
+              kısım arası geçiş çok keskin, alt kısım açık renk olunca kötü görünüyor").
+              Üste siyahtan şeffafa inen bir degrade eklendi; üst bar ile içerik arasında
+              yumuşak bir kaynaşma olur, açık tonlu çakralarda keskin çizgi kalmaz. */}
           <div style={{ position:"fixed",inset:0,zIndex:0,pointerEvents:"none",background:`radial-gradient(ellipse at 50% 42%,${chakra.pastel}1a 0%,transparent 58%)` }} />
+          <div style={{ position:"fixed",top:0,left:0,right:0,height:"calc(210px + var(--sat))",zIndex:0,pointerEvents:"none",
+            background:"linear-gradient(180deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 32%, rgba(0,0,0,0.34) 64%, rgba(0,0,0,0) 100%)" }} />
           <div style={{ position:"relative",zIndex:1 }}>
             <div className="label-sm" style={{ marginBottom:34,letterSpacing:4 }}>{t("chakra_subtitle")}</div>
             <div style={{ width:146,height:146,borderRadius:"50%",margin:"0 auto 32px",background:`radial-gradient(circle,${chakra.color}cc,${chakra.pastel}44)`,boxShadow:`0 0 52px ${chakra.color}55,0 0 105px ${chakra.color}22`,animation:"slowPulse 4s ease-in-out infinite" }} />
@@ -7657,6 +7708,74 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             ))}
           </div>
+          {/* HAFTALIK SAKİN RAPORU — 12. Ev kartının ÜSTÜNE alındı (kullanıcı isteği). */}
+          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
+            <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
+            {!isPremium && !aiRapor && !aiLoading ? (
+              <div style={{ textAlign:"center" }}>
+                <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
+                <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:10,letterSpacing:0.5 }}>
+                  {t("map_weekly_ready")}
+                </div>
+                <div style={{ fontSize:13.5,color:"#a89cb8",lineHeight:1.85,marginBottom:8,textAlign:"left" }}>
+                  {t("map_weekly_desc")}
+                </div>
+                <div style={{ fontSize:12.5,color:"#8878a8",lineHeight:1.75,marginBottom:16,padding:"10px 12px",background:"rgba(184,164,216,0.06)",borderRadius:10,border:"1px solid rgba(184,164,216,0.15)" }}>
+                  {t("map_weekly_themes")}
+                </div>
+                <div style={{ fontSize:11.5,color:"#7868a0",marginBottom:14,fontStyle:"italic",letterSpacing:0.3 }}>
+                  {t("map_weekly_premium_note")}
+                </div>
+                <button onClick={() => setScreen("fiyat")}
+                  style={{ display:"inline-block",padding:"11px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",border:"1px solid rgba(220,200,255,0.5)",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
+                  {t("premium_unlock_card")}
+                </button>
+              </div>
+            ) : !aiRapor && !aiLoading ? (
+              <div style={{ textAlign:"center" }}>
+                {raporMesaj ? (
+                  <div style={{ fontSize:13.5,color:"#c8b8e0",lineHeight:1.95,padding:"14px 16px",background:"rgba(184,164,216,0.07)",border:"1px solid rgba(184,164,216,0.18)",borderRadius:14,letterSpacing:0.3 }}>
+                    {raporMesaj}
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ fontSize:14,color:"#888888",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
+                    <button className="sakin-btn-primary"
+                      style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",borderColor:"rgba(255,255,255,0.4)",fontSize:14 }}
+                      onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
+                  </>
+                )}
+              </div>
+            ) : aiLoading ? (
+              <div style={{ textAlign:"center",padding:"12px 0" }}>
+                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}><FreqText text={aiRapor} /></div>
+                <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
+                  <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
+                    style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:13,letterSpacing:2 }}>
+                    {raporKopyalandi ? t("copied_label") : t("copy_label")}
+                  </button>
+                  {(navigator.share || Capacitor.getPlatform() === "android") && (
+                    <button onClick={async ()=>{ try {
+                        // Android WebView'da navigator.share yok → Capacitor Share.
+                        if (Capacitor.getPlatform() === "android") await Share.share({ title:t("share_title"), text:aiRapor });
+                        else if (navigator.share) await navigator.share({ title:t("share_title"), text:aiRapor });
+                      } catch(_){} }}
+                      style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:13,letterSpacing:2 }}>
+                      {t("share_label")}
+                    </button>
+                  )}
+                  <button onClick={()=>setAiRapor("")}
+                    style={{ background:"none",border:"none",color:"#666666",cursor:"pointer",fontSize:13,letterSpacing:2,marginLeft:"auto" }}>
+                    {t("refresh_label")}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
           {/* ── 12. Ev Kartı ── */}
           {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
             <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.22),rgba(255,255,255,0.12))",border:"1px solid rgba(255,255,255,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
@@ -7768,73 +7887,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ))}
             </div>
             <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
-          </div>
-          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-            <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
-            {!isPremium && !aiRapor && !aiLoading ? (
-              <div style={{ textAlign:"center" }}>
-                <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
-                <div style={{ fontSize:14,color:"#c8a0e0",fontWeight:300,marginBottom:10,letterSpacing:0.5 }}>
-                  {t("map_weekly_ready")}
-                </div>
-                <div style={{ fontSize:13.5,color:"#a89cb8",lineHeight:1.85,marginBottom:8,textAlign:"left" }}>
-                  {t("map_weekly_desc")}
-                </div>
-                <div style={{ fontSize:12.5,color:"#8878a8",lineHeight:1.75,marginBottom:16,padding:"10px 12px",background:"rgba(184,164,216,0.06)",borderRadius:10,border:"1px solid rgba(184,164,216,0.15)" }}>
-                  {t("map_weekly_themes")}
-                </div>
-                <div style={{ fontSize:11.5,color:"#7868a0",marginBottom:14,fontStyle:"italic",letterSpacing:0.3 }}>
-                  {t("map_weekly_premium_note")}
-                </div>
-                <button onClick={() => setScreen("fiyat")}
-                  style={{ display:"inline-block",padding:"11px 28px",background:"linear-gradient(135deg,rgba(184,164,216,0.85),rgba(122,80,150,0.7))",border:"1px solid rgba(220,200,255,0.5)",borderRadius:22,color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
-                  {t("premium_unlock_card")}
-                </button>
-              </div>
-            ) : !aiRapor && !aiLoading ? (
-              <div style={{ textAlign:"center" }}>
-                {raporMesaj ? (
-                  <div style={{ fontSize:13.5,color:"#c8b8e0",lineHeight:1.95,padding:"14px 16px",background:"rgba(184,164,216,0.07)",border:"1px solid rgba(184,164,216,0.18)",borderRadius:14,letterSpacing:0.3 }}>
-                    {raporMesaj}
-                  </div>
-                ) : (
-                  <>
-                    <div style={{ fontSize:14,color:"#888888",marginBottom:14,lineHeight:1.7 }}>{t("report_invite").split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}</div>
-                    <button className="sakin-btn-primary"
-                      style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",borderColor:"rgba(255,255,255,0.4)",fontSize:14 }}
-                      onClick={()=>requireAiConsent(generateRapor)}>{t("btn_gen_report")}</button>
-                  </>
-                )}
-              </div>
-            ) : aiLoading ? (
-              <div style={{ textAlign:"center",padding:"12px 0" }}>
-                <div style={{ fontSize:13,letterSpacing:3,color:"#888888",animation:"pulse 1.5s ease-in-out infinite" }}>{t("generating")}</div>
-              </div>
-            ) : (
-              <div>
-                <div style={{ fontSize:13.5,color:"#c8bedd",lineHeight:1.9,whiteSpace:"pre-wrap" }}><FreqText text={aiRapor} /></div>
-                <div style={{ display:"flex",gap:8,marginTop:14,flexWrap:"wrap" }}>
-                  <button onClick={()=>{ navigator.clipboard.writeText(aiRapor).then(()=>{ setRaporKopyalandi(true); setTimeout(()=>setRaporKopyalandi(false),2000); }); }}
-                    style={{ background:raporKopyalandi?"rgba(80,180,120,0.2)":"rgba(255,255,255,0.05)",border:`1px solid ${raporKopyalandi?"rgba(80,180,120,0.4)":"rgba(255,255,255,0.1)"}`,borderRadius:20,padding:"7px 16px",cursor:"pointer",color:raporKopyalandi?"#80e0a0":"#8a9ab0",fontSize:13,letterSpacing:2 }}>
-                    {raporKopyalandi ? t("copied_label") : t("copy_label")}
-                  </button>
-                  {(navigator.share || Capacitor.getPlatform() === "android") && (
-                    <button onClick={async ()=>{ try {
-                        // Android WebView'da navigator.share yok → Capacitor Share.
-                        if (Capacitor.getPlatform() === "android") await Share.share({ title:t("share_title"), text:aiRapor });
-                        else if (navigator.share) await navigator.share({ title:t("share_title"), text:aiRapor });
-                      } catch(_){} }}
-                      style={{ background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:20,padding:"7px 16px",cursor:"pointer",color:"#8a9ab0",fontSize:13,letterSpacing:2 }}>
-                      {t("share_label")}
-                    </button>
-                  )}
-                  <button onClick={()=>setAiRapor("")}
-                    style={{ background:"none",border:"none",color:"#666666",cursor:"pointer",fontSize:13,letterSpacing:2,marginLeft:"auto" }}>
-                    {t("refresh_label")}
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
           <button onClick={()=>{ idCardFromAilesi.current = false; setShowIdCard(true); }}
             style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
