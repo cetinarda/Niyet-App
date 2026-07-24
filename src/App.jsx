@@ -1579,7 +1579,18 @@ const GLOBAL_CSS = `
   @keyframes sakinTunnelFlow { from { background-position: 0 0; } to { background-position: 0 160px; } }
   /* Çakra sütunundaki ışık huzmesinin KESİNTİSİZ aşağı akışı (SVG rect üzerinde).
      Yukarıdan girip yeryüzüne doğru süzülür; tek tek parçacık değil, sürekli akış. */
-  @keyframes sakinTunnelDown { 0% { transform: translateY(-470px); } 100% { transform: translateY(470px); } }
+  @keyframes sakinTunnelDown { 0% { transform: translateY(-505px); } 100% { transform: translateY(505px); } }
+  /* BAĞLANTI AKTİF — ayna ikonu tünel renklerinde yavaşça döner (kullanıcı:
+     "bağlantı sağlanınca ayna ikonu her yerde sürekli renk değiştirsin, slow sakin
+     bir renk değişimi; bağlantının aktif olduğunu sembolik hissettirir"). */
+  @keyframes sakinMirrorCycle {
+    0%   { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
+    25%  { color:#f0d660; filter: drop-shadow(0 0 8px rgba(240,214,96,0.80)); }
+    50%  { color:#8a4fd0; filter: drop-shadow(0 0 9px rgba(120,60,190,0.85)); }
+    75%  { color:#ff6a6a; filter: drop-shadow(0 0 8px rgba(255,90,90,0.75)); }
+    100% { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
+  }
+  .sakin-mirror-live { animation: sakinMirrorCycle 9s ease-in-out infinite; }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
   .sakin-tunnel-bands {
@@ -5410,7 +5421,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             padding:0, cursor:"pointer",
           }}
         >
-          <span style={{ display:"block", lineHeight:1, transform:"translateY(-0.5px)", filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+          <span className={allStepsComplete ? "sakin-mirror-live" : undefined} style={{ display:"block", lineHeight:1, transform:"translateY(-0.5px)", filter: allStepsComplete ? undefined : "drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
         </button>
       )}
 
@@ -6342,7 +6353,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   color:"rgba(232,218,250,0.92)",
                   boxShadow:"0 0 12px rgba(160,120,220,0.25), inset 0 0 8px rgba(184,164,216,0.18)",
                 }}>
-                <span style={{ fontSize:17, lineHeight:1, filter:"drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
+                <span className={allStepsComplete ? "sakin-mirror-live" : undefined} style={{ fontSize:17, lineHeight:1, filter: allStepsComplete ? undefined : "drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
               </button>
               <div style={{ position:"relative", flex:"0 0 auto" }}>
                 <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
@@ -6756,16 +6767,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           saydam bir koridor hissi; akış: yukarıdan aşağı süzülen huzme. */}
                       <linearGradient id="tunnelBody" x1="0" y1="0" x2="1" y2="0">
                         <stop offset="0%"   stopColor="rgba(255,240,190,0.30)"/>
-                        <stop offset="28%"  stopColor="rgba(200,150,255,0.10)"/>
+                        <stop offset="28%"  stopColor="rgba(110,55,180,0.16)"/>
                         <stop offset="50%"  stopColor="rgba(255,255,255,0.04)"/>
-                        <stop offset="72%"  stopColor="rgba(200,150,255,0.10)"/>
+                        <stop offset="72%"  stopColor="rgba(110,55,180,0.16)"/>
                         <stop offset="100%" stopColor="rgba(255,240,190,0.30)"/>
                       </linearGradient>
                       <linearGradient id="tunnelFlow" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%"   stopColor="rgba(255,255,255,0.00)"/>
                         <stop offset="18%"  stopColor="rgba(255,255,255,0.55)"/>
                         <stop offset="34%"  stopColor="rgba(240,214,96,0.45)"/>
-                        <stop offset="52%"  stopColor="rgba(184,120,255,0.40)"/>
+                        <stop offset="52%"  stopColor="rgba(96,40,168,0.62)"/>
                         <stop offset="70%"  stopColor="rgba(255,255,255,0.28)"/>
                         <stop offset="100%" stopColor="rgba(255,255,255,0.00)"/>
                       </linearGradient>
@@ -6784,7 +6795,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
                     {/* Elektrik akımı partikülleri — yükselen ışık üzerinde */}
                     {pct > 0 && [0,1,2].map(i => (
-                      <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,255,200,0.8)"
+                      <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,70,70,0.95)"
                         style={{animation:`electricRise ${2+i*0.7}s linear infinite`,animationDelay:`${i*0.6}s`}}>
                         <animateMotion dur={`${2.5+i*0.5}s`} repeatCount="indefinite" begin={`${i*0.4}s`}>
                           <mpath href="#spinePath" />
@@ -6868,18 +6879,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         (altta kalıyordu) — artık aşağıdaki kutuda gösteriliyor. */}
                     {allStepsComplete && <>
                       {/* (1) Tünel gövdesi: çakra hattını saran koridor */}
-                      <rect x="86" y="34" width="48" height="472" rx="24"
+                      <rect x="86" y="22" width="48" height="508" rx="24"
                         fill="url(#tunnelBody)" stroke="rgba(255,240,190,0.28)" strokeWidth="1" />
                       {/* (2) Kesintisiz ışık akışı — huzme sürekli aşağı kayar
                           (gradyanın kendisi hareket eder, tek tek parçacık yok).
                           NOT: Çakraların etrafında aşağı süzülen "dans eden halkalar"
                           KALDIRILDI (kullanıcı isteği) — akış artık sadece bu düz,
                           sakin huzmeden ibaret. */}
-                      <rect x="88" y="36" width="44" height="468" rx="22"
+                      <rect x="88" y="24" width="44" height="504" rx="22"
                         fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
                       {/* (4) Tünel ağzı parlaması — üstte giriş, altta yeryüzü çıkışı */}
-                      <ellipse cx="110" cy="40" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
-                      <ellipse cx="110" cy="500" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
+                      <ellipse cx="110" cy="22" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
+                      <ellipse cx="110" cy="528" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
                     </>}
                   </svg>
                 </div>
@@ -6968,6 +6979,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   ✦ {t("mandala_streak")} {streakData.current} · L{streakLevel} · x{streakMultiplier}
                   {nextLevelAt ? ` · →${nextLevelAt}` : ""}
                 </div>
+                {/* Bağlantı tamamlandıktan sonra uygulamayı kapatıp dönünce kullanıcı
+                    bu ekranda kalıyordu ve ilerleyecek buton yoktu (kullanıcı isteği:
+                    "oraya güne devam et butonu ekle, bir şeyin altında kalmasın"). */}
+                <button className="sakin-btn-primary" style={{marginTop:12,fontSize:13,letterSpacing:2,width:"100%"}}
+                  onClick={()=>setScreen("sabah")}>
+                  {t("mandala_continue_today")}
+                </button>
               </div>
             ):nextStep?(
               <button className="sakin-btn-primary" style={{marginTop:4,fontSize:13,letterSpacing:2}}
