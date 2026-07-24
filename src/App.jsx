@@ -6856,24 +6856,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {/* (1) Tünel gövdesi: çakra hattını saran koridor */}
                       <rect x="86" y="34" width="48" height="472" rx="24"
                         fill="url(#tunnelBody)" stroke="rgba(255,240,190,0.28)" strokeWidth="1" />
-                      {/* (2) TÜNEL HALKALARI — koridor derinliği. Her halka yukarıdan
-                          aşağı süzülür; genişliği yol boyunca değişir (perspektif) ve
-                          uçlarda söner. Ardışık gecikmelerle KESİNTİSİZ akış olur. */}
-                      {[0,1,2,3,4,5].map(i => (
-                        <ellipse key={`tr${i}`} cx="110" rx="21" ry="5"
-                          fill="none" stroke="rgba(255,244,206,0.85)" strokeWidth="1.4">
-                          <animate attributeName="cy" from="38" to="502"
-                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
-                          <animate attributeName="rx" values="9;22;22;9"
-                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
-                          <animate attributeName="opacity" values="0;0.9;0.9;0"
-                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
-                          <animate attributeName="stroke-width" values="0.8;1.6;1.6;0.8"
-                            dur="2.4s" begin={`${i*0.4}s`} repeatCount="indefinite" />
-                        </ellipse>
-                      ))}
-                      {/* (3) Kesintisiz ışık akışı — huzme sürekli aşağı kayar
-                          (gradyanın kendisi hareket eder, tek tek parçacık yok). */}
+                      {/* (2) Kesintisiz ışık akışı — huzme sürekli aşağı kayar
+                          (gradyanın kendisi hareket eder, tek tek parçacık yok).
+                          NOT: Çakraların etrafında aşağı süzülen "dans eden halkalar"
+                          KALDIRILDI (kullanıcı isteği) — akış artık sadece bu düz,
+                          sakin huzmeden ibaret. */}
                       <rect x="88" y="36" width="44" height="468" rx="22"
                         fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
                       {/* (4) Tünel ağzı parlaması — üstte giriş, altta yeryüzü çıkışı */}
