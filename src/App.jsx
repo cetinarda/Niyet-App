@@ -2037,7 +2037,7 @@ async function scheduleDailyReminders(lang) {
     const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
     // 7 günlük forward schedule. GÜNDE 2 BİLDİRİM (kullanıcı sınırı, aşılmaz):
     //   08:00 → sabah pingi (sabah ekranı)
-    //   21:00 → akşam bildirimi, tek birleşik havuz (özellik daveti + günlük söz +
+    //   18:00 → akşam bildirimi, tek birleşik havuz (özellik daveti + günlük söz +
     //           nefes + Keşfet/Tasarım). Her öğe kendi hedefini taşır; tıklanınca
     //           doğrudan o ekran/embed açılır.
     // SABAH ve AKŞAM eskisi gibi korunur; kaldırılan slot 13:00 oldu (3 → 2).
@@ -2047,7 +2047,7 @@ async function scheduleDailyReminders(lang) {
       // 08:00 — sabah pingi (tıklanınca → sabah ekranı)
       const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
       if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
-      // 21:00 — AKŞAM bildirimi (günün 2. ve son bildirimi). Kullanıcı: "günlük
+      // 18:00 — AKŞAM bildirimi (günün 2. ve son bildirimi). Kullanıcı: "günlük
       // toplam 2, ikiyi geçmesin — sadece havuza ekle" + "sabah ve akşam eskisi
       // gibi devam etsin". Bu yüzden nefes ve Keşfet/Tasarım metinleri AYRI SLOT
       // açmaz; akşam havuzuna karışır ve gün numarasına göre sırayla döner.
@@ -2061,7 +2061,9 @@ async function scheduleDailyReminders(lang) {
         ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
       ];
       const evening = pick(eveningPool, dn);
-      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
+      // Saat 21:00 → 18:00 (kullanıcı tercihi). 1.3.1'de kodda 21:00'di; kullanıcı
+      // akşamüstünü tercih etti.
+      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
       if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
