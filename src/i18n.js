@@ -16,6 +16,7 @@ export const TRANS = {
     nav_day:      "Gün",
     nav_evening:  "Akşam",
     nav_map:      "Harita",
+    nav_menu:     "Menü",
     nav_guide:    "Rehber",
     nav_home:     "Giriş",
     nav_connection:"Bağlantı",
@@ -23,7 +24,7 @@ export const TRANS = {
     nav_mirror:   "Ayna",
 
     // Giris
-    tagline:      "Kendini hep hatırla",
+    tagline:      "İçindeki sesi dinle",
     intro_text1:  "Bu uygulama sana bir şey öğretmez.",
     intro_text2:  "Sadece hatırlatır.",
     btn_ready:    "Hazırım",
@@ -130,7 +131,7 @@ export const TRANS = {
     // Hatırlatıcılar
     day_label:         "Bugün",
     reminders_title:   "Bugün bunları kendin için yaptın mı?",
-    all_done_msg:      "Bugün kendine güzelce dokundun. 🌿",
+    all_done_msg:      "Bugün kendine güzelce dokundun.",
     btn_reminders_next:"Devam Et →",
     terapi_duration:   "60 saniyede bağlantı",
     btn_done_next:     "Tamamlandı → Sonraki Adım",
@@ -727,6 +728,7 @@ export const TRANS = {
     nav_day:      "Day",
     nav_evening:  "Evening",
     nav_map:      "Map",
+    nav_menu:     "Menu",
     nav_guide:    "Guide",
     nav_home:     "Home",
     nav_connection:"Connection",
@@ -734,7 +736,7 @@ export const TRANS = {
     nav_mirror:   "Mirror",
 
     // Giris
-    tagline:      "Always remember yourself",
+    tagline:      "Listen to the voice within",
     intro_text1:  "This app teaches you nothing.",
     intro_text2:  "It only reminds.",
     btn_ready:    "I'M READY",
