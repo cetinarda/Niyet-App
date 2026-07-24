@@ -34,10 +34,13 @@ function isRateLimited(ip) {
   return false;
 }
 
-function cors(event) {
-  const origin = event.headers?.origin || "";
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
-  return { "Access-Control-Allow-Origin": allowed, "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" };
+// Güvenlik notu: origin artık gerçekten reddediliyor (önceden sadece CORS header'ı
+// için yumuşak bir düşüşle ALLOWED_ORIGINS[0]'a kayıyordu — istek yine işleniyordu).
+function isAllowedOrigin(origin) {
+  return !!origin && ALLOWED_ORIGINS.includes(origin);
+}
+function cors(origin) {
+  return { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" };
 }
 function json(status, headers, obj) {
   return { statusCode: status, headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify(obj) };
@@ -173,8 +176,14 @@ No medical advice.`;
 }
 
 export const handler = async (event) => {
-  const ch = cors(event);
-  if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: ch, body: "" };
+  const origin = event.headers?.origin || "";
+  const originOk = isAllowedOrigin(origin);
+  const ch = originOk ? cors(origin) : {};
+  if (event.httpMethod === "OPTIONS") {
+    if (!originOk) return { statusCode: 403, body: "" };
+    return { statusCode: 204, headers: ch, body: "" };
+  }
+  if (!originOk) return json(403, {}, { error: "Origin not allowed" });
   if (event.httpMethod !== "POST") return json(405, ch, { error: "Method not allowed" });
 
   const ip = (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "0").toString();
