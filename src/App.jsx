@@ -3734,7 +3734,11 @@ export default function SakinApp() {
   //   harita : haftalık haritayı görüp yeni güne geçmek (buton)
   // NAVİGASYON serbesttir — şart sağlanmasa da kullanıcı ileri gidebilir; sadece
   // ADIM İŞARETLENMEZ (dolayısıyla bağlantı aktifleşmez).
-  const STEP_MIN = { nefes: 10, ses: 60, chakra: 120, gun: 3 };
+  // chakra: 30 sn — TEK SEANSTA tamamlanabilsin (kullanıcı kararı). Terapi seansı
+  // ilk kullanımda 30 sn, her seansla +5 sn uzayıp 90 sn'de sabitleniyor
+  // (getChakraDuration). 120 sn şartı iki seans gerektiriyordu; 30 sn ile herhangi
+  // bir TAMAMLANAN seans adımı karşılar.
+  const STEP_MIN = { nefes: 10, ses: 60, chakra: 30, gun: 3 };
   const readTerapiSec = () => { try { return parseInt(localStorage.getItem("sakin_terapi_sec_" + todayKey)) || 0; } catch { return 0; } };
   // gunTasksDone state'i bu satırdan SONRA tanımlı (TDZ) — doğrudan localStorage'dan oku.
   const readGunTasks = () => {
