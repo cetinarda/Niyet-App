@@ -1449,18 +1449,17 @@ const GLOBAL_CSS = `
      yüklenince beyaza "kayıyordu". Taban rengi burada sabitlenince ilk boyamadan
      itibaren doğru — hiçbir platformda görsel değişiklik yaratmaz (zaten her yerde
      beyaza yakın renkler kullanılıyordu). */
-  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; min-height: 100%; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
-  /* iOS WKWebView lastik-bant (rubber-band) scroll'u kapat — aşağı/yukarı esneme
-     sırasında fixed üst bar "kayıyor" + üstte boşluk oluşuyordu (kullanıcı raporu).
-     overscroll-behavior sabitlenince fixed elemanlar yerinde kalır. Embed'lerde
-     zaten inject ediliyordu; host'ta eksikti. */
-  html, body { overscroll-behavior: none; }
-  /* Ana uygulama kökü: 100vh iOS WKWebView'da adres-çubuğu/safe-area yüzünden
-     gerçek görünür alandan BÜYÜK hesaplanıp içerik sığsa bile fazladan dikey
-     scroll (ve aşağı çekince üstte boşluk) yaratıyordu. 100dvh (dinamik viewport)
-     gerçek görünür yüksekliği verir; vh fallback eski tarayıcılar için kalır.
-     (Keşfet HARİÇ tüm akış/bağlan ekranları bu kökü kullanır — kullanıcı isteği.) */
-  .sakin-app-root { min-height: 100vh; min-height: 100dvh; }
+  /* ÜST BOŞLUK KÖK ÇÖZÜMÜ (kullanıcı: "aşağı kaydırınca en üstte boşluk oluşuyor,
+     üst menü çakılı sabit kalsın"). SORUN: iOS WKWebView'da body scroll ederken
+     rubber-band (lastik-bant) overscroll, position:fixed üst barı body ile birlikte
+     aşağı kaydırıp status-bar ile üst-bar arasında boşluk açıyordu. overscroll-behavior
+     TEK BAŞINA WKWebView'da yetmedi. KESİN çözüm: body'yi tamamen SABİTLE (position:fixed,
+     scroll etmez) ve gerçek dikey scroll'u iç kök (.sakin-app-root) container'ına ver.
+     Böylece body hiç esnemez → fixed üst/alt barlar viewport'a çakılı kalır; scroll
+     sadece içerikte olur. */
+  html, body { background: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
+  .sakin-app-root { height: 100vh; height: 100dvh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior: none; }
   :root { --sat: env(safe-area-inset-top); --sab: env(safe-area-inset-bottom); --android-sab: 0px; --nav-gap: 16px; }
   /* Android edge-to-edge alt sistem çubuğu boşluğu — SADECE Android. iOS/web'de
      0px kalır (WKWebView contentInset zaten hallediyor; web'de gerek yok).
