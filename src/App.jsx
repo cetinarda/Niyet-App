@@ -1896,6 +1896,82 @@ const MORNING_PINGS_EN = [
   "Today is yours. Begin with a small kindness.",
 ];
 // Program özelliği davetleri — her gün 21:00, günde 1 tane, havuz boyunca döner
+// Yeni bildirim havuzları (kullanıcı isteği): nefes hatırlatması ve Keşfet/Tasarım
+// daveti. Tıklanınca doğrudan ilgili ekrana/embed'e gider (extra.screen / extra.embed).
+const NOTIF_NEFES = {
+  "tr": [
+    "Bir dakikan var mı? Üç derin nefes, sadece bu.",
+    "Omuzların düştü mü? Nefesine dön.",
+    "Nefes al. Ver. Buradasın."
+  ],
+  "en": [
+    "Got a minute? Three deep breaths, that's all.",
+    "Shoulders dropped? Come back to your breath.",
+    "Breathe in. Out. You are here."
+  ],
+  "de": [
+    "Hast du eine Minute? Drei tiefe Atemzüge, mehr nicht.",
+    "Schultern gesunken? Kehr zu deinem Atem zurück.",
+    "Einatmen. Ausatmen. Du bist hier."
+  ],
+  "pt": [
+    "Tens um minuto? Três respirações profundas, só isso.",
+    "Ombros caídos? Volta à tua respiração.",
+    "Inspira. Expira. Estás aqui."
+  ],
+  "es": [
+    "¿Tienes un minuto? Tres respiraciones profundas, nada más.",
+    "¿Hombros caídos? Vuelve a tu respiración.",
+    "Inhala. Exhala. Estás aquí."
+  ],
+  "fr": [
+    "Tu as une minute ? Trois respirations profondes, c'est tout.",
+    "Épaules tombées ? Reviens à ton souffle.",
+    "Inspire. Expire. Tu es là."
+  ],
+  "ja": [
+    "1分ありますか？深呼吸を三度、それだけ。",
+    "肩が落ちていませんか？呼吸に戻って。",
+    "吸って。吐いて。あなたはここにいる。"
+  ]
+};
+const NOTIF_KESFET = {
+  "tr": [
+    "Tasarımını keşfet — bugünün enerjisi sana ne söylüyor?",
+    "Burcun, taşın, hayvanın; bugün seni ne bekliyor?",
+    "Sakin Ailesi'nde bugün yeni bir işaret var."
+  ],
+  "en": [
+    "Explore your design — what is today's energy telling you?",
+    "Your sign, your stone, your animal; what awaits you today?",
+    "There's a new sign in the Sakin Family today."
+  ],
+  "de": [
+    "Entdecke dein Design — was sagt dir die Energie von heute?",
+    "Dein Zeichen, dein Stein, dein Tier; was erwartet dich heute?",
+    "Heute gibt es ein neues Zeichen in der Sakin-Familie."
+  ],
+  "pt": [
+    "Explora o teu design — o que te diz a energia de hoje?",
+    "O teu signo, a tua pedra, o teu animal; o que te espera hoje?",
+    "Há um novo sinal na Família Sakin hoje."
+  ],
+  "es": [
+    "Explora tu diseño — ¿qué te dice la energía de hoy?",
+    "Tu signo, tu piedra, tu animal; ¿qué te espera hoy?",
+    "Hoy hay una nueva señal en la Familia Sakin."
+  ],
+  "fr": [
+    "Explore ton design — que te dit l'énergie du jour ?",
+    "Ton signe, ta pierre, ton animal ; qu'est-ce qui t'attend aujourd'hui ?",
+    "Il y a un nouveau signe dans la Famille Sakin aujourd'hui."
+  ],
+  "ja": [
+    "あなたのデザインを見て——今日のエネルギーは何を告げている？",
+    "星座、石、動物。今日は何が待っている？",
+    "今日、サキン・ファミリーに新しいしるしがあります。"
+  ]
+};
 const FEATURE_PROMOS_TR = [
   "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
   "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
@@ -1959,20 +2035,36 @@ async function scheduleDailyReminders(lang) {
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
     const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
-    // 7 günlük forward schedule. Günde 3 bildirim: 07:30 sabah + 13:00 söz + 21:00
-    // özellik. Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj,
-    // yeniden schedule'da sabit). Söz havuzu 28 → 28 günde bir tekrar.
+    // 7 günlük forward schedule. GÜNDE 2 BİLDİRİM (kullanıcı sınırı, aşılmaz):
+    //   08:00 → sabah pingi (sabah ekranı)
+    //   18:00 → akşam bildirimi, tek birleşik havuz (özellik daveti + günlük söz +
+    //           nefes + Keşfet/Tasarım). Her öğe kendi hedefini taşır; tıklanınca
+    //           doğrudan o ekran/embed açılır.
+    // SABAH ve AKŞAM eskisi gibi korunur; kaldırılan slot 13:00 oldu (3 → 2).
+    // Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj).
     for (let d = 0; d < 7; d++) {
       const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
       // 08:00 — sabah pingi (tıklanınca → sabah ekranı)
       const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
       if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
-      // 13:00 — günlük söz (rastgele dakika 0-29; tıklanınca → gün görevleri)
-      const sAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, Math.floor(Math.random()*30), 0);
-      if (sAt > now) notifications.push({ id: 9000 + d, title: "Sakin", body: pick(reminders, dn), schedule: { at: sAt }, extra: { screen: "gun" }, ...icon });
-      // 21:00 — program özelliği daveti (tıklanınca → bağlantı çarkı)
-      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 21, 0, 0);
-      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: pick(promos, dn), schedule: { at: pAt }, extra: { screen: "mandala" }, ...icon });
+      // 18:00 — AKŞAM bildirimi (günün 2. ve son bildirimi). Kullanıcı: "günlük
+      // toplam 2, ikiyi geçmesin — sadece havuza ekle" + "sabah ve akşam eskisi
+      // gibi devam etsin". Bu yüzden nefes ve Keşfet/Tasarım metinleri AYRI SLOT
+      // açmaz; akşam havuzuna karışır ve gün numarasına göre sırayla döner.
+      // Her öğe kendi hedefini taşır → tıklanınca doğrudan o ekran/embed açılır.
+      const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
+      const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
+      const eveningPool = [
+        ...promos.map(b     => ({ body: b, extra: { screen: "mandala" } })),
+        ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
+        ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
+        ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
+      ];
+      const evening = pick(eveningPool, dn);
+      // Saat 21:00 → 18:00 (kullanıcı tercihi). 1.3.1'de kodda 21:00'di; kullanıcı
+      // akşamüstünü tercih etti.
+      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", stamp);
@@ -3119,22 +3211,28 @@ export default function SakinApp() {
   // aniden kesiliyor"). Eskiden pause() ile anında kesiliyor, tam sesle başlıyordu.
   // Artık çıkışta ~550ms fade-out, girişte ~900ms fade-in uygulanıyor.
   const birdFadeRef = useRef(null);
+  const birdLoopRef = useRef(null);   // gapless loop zamanlayıcısı
+  const birdPairRef = useRef([]);     // çapraz geçiş için ikinci ses elemanı
   const stopBirdSound = () => {
     const a = birdAudioRef.current;
     birdAudioRef.current = null;
     if (birdFadeRef.current) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
-    if (!a) return;
-    const steps = 22, dt = 25;
-    const start = a.volume;
-    let i = 0;
-    const iv = setInterval(() => {
-      i++;
-      try { a.volume = Math.max(0, start * (1 - i / steps)); } catch(_) {}
-      if (i >= steps) {
-        clearInterval(iv);
-        try { a.pause(); a.currentTime = 0; } catch(_) {}
-      }
-    }, dt);
+    if (birdLoopRef.current) { clearInterval(birdLoopRef.current); birdLoopRef.current = null; }
+    // Çapraz geçişte kullanılan diğer eleman(lar) da yumuşakça sussun
+    const others = birdPairRef.current.filter(x => x && x !== a);
+    birdPairRef.current = [];
+    const fadeOut = (el) => {
+      if (!el) return;
+      const start = el.volume, steps = 22, dt = 25;
+      let i = 0;
+      const iv = setInterval(() => {
+        i++;
+        try { el.volume = Math.max(0, start * (1 - i / steps)); } catch(_) {}
+        if (i >= steps) { clearInterval(iv); try { el.pause(); el.currentTime = 0; } catch(_) {} }
+      }, dt);
+    };
+    fadeOut(a);
+    others.forEach(fadeOut);
   };
   // Kuş sesi ARKA PLAN eşlikçisidir — asıl olan solfeggio frekansı (kullanıcı:
   // "kuş seslerini biraz daha kıs, çok baskın; önemli olan solfeggio frekansları").
@@ -3142,20 +3240,57 @@ export default function SakinApp() {
   const playBirdSound = (birdKey, vol = 0.10) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
-    const audio = new Audio(`/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`);
-    audio.loop = true;
-    audio.volume = 0;                       // sessizden başla → yumuşak giriş
-    audio.play().catch(() => {});
-    birdAudioRef.current = audio;
+    const src = `/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`;
+    // GAPLESS LOOP: audio.loop=true kullanılırsa dosya başa sararken duyulur bir
+    // "tık"/kopukluk oluyordu (kullanıcı: "kuş sesleri aniden kesiliyor, tık sesi
+    // var; örn. toprak frekansı"). Çözüm: İKİ ses elemanı arasında çapraz geçiş —
+    // biri bitmeden ~1.2 sn önce diğeri sessizden başlar, ilki söner. Dikiş duyulmaz.
+    const XF = 1.2;                          // çapraz geçiş süresi (sn)
+    const mk = () => { const el = new Audio(src); el.loop = false; el.volume = 0; el.preload = "auto"; return el; };
+    const a1 = mk();
+    birdAudioRef.current = a1;
+    birdPairRef.current = [a1];
+    a1.play().catch(() => {});
+    // Giriş fade-in (~900ms)
     if (birdFadeRef.current) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
-    const steps = 30, dt = 30;              // ~900ms fade-in
+    const steps = 30, dt = 30;
     let i = 0;
     birdFadeRef.current = setInterval(() => {
       i++;
-      if (birdAudioRef.current !== audio) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; return; }
-      try { audio.volume = Math.min(vol, vol * (i / steps)); } catch(_) {}
+      if (birdAudioRef.current !== a1) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; return; }
+      try { a1.volume = Math.min(vol, vol * (i / steps)); } catch(_) {}
       if (i >= steps) { clearInterval(birdFadeRef.current); birdFadeRef.current = null; }
     }, dt);
+    // Çapraz geçişli döngü: aktif elemanın bitimine XF kalınca yenisini başlat.
+    let active = a1, swapping = false;
+    if (birdLoopRef.current) { clearInterval(birdLoopRef.current); }
+    birdLoopRef.current = setInterval(() => {
+      if (!birdAudioRef.current) { clearInterval(birdLoopRef.current); birdLoopRef.current = null; return; }
+      const d = active.duration;
+      if (!isFinite(d) || d <= 0 || swapping) return;
+      if (active.currentTime < d - XF) return;
+      swapping = true;
+      const next = mk();
+      birdPairRef.current = [active, next];
+      next.play().catch(() => {});
+      const st = 24, sdt = (XF * 1000) / st;
+      let k = 0;
+      const prev = active;
+      const xf = setInterval(() => {
+        k++;
+        const r = Math.min(1, k / st);
+        try { next.volume = vol * r; } catch(_) {}
+        try { prev.volume = vol * (1 - r); } catch(_) {}
+        if (r >= 1) {
+          clearInterval(xf);
+          try { prev.pause(); prev.currentTime = 0; } catch(_) {}
+          active = next;
+          birdAudioRef.current = next;      // keepalive/duraklama kontrolleri yenisini görsün
+          birdPairRef.current = [next];
+          swapping = false;
+        }
+      }, sdt);
+    }, 200);
   };
   const stopFreqToneGlobal = () => {
     if (freqGainRef.current && freqCtxRef.current) {
@@ -3217,8 +3352,30 @@ export default function SakinApp() {
     let handle = null;
     try {
       const p = LocalNotifications.addListener("localNotificationActionPerformed", (a) => {
-        const s = a?.notification?.extra?.screen;
-        if (s) { try { setShowAilesi(false); } catch(_){} setScreen(s); }
+        const x = a?.notification?.extra || {};
+        // extra.embed → doğrudan ilgili aile uygulamasını aç (ör. "tasarim").
+        // NOT: aşağıdaki harita burada YEREL tanımlı — postMessage köprüsündeki
+        // EMBED_BY_KEY başka bir useEffect kapsamında olduğu için buradan erişilemez.
+        const EMBEDS = {
+          hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
+          mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
+          tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
+          taslar:  { name: t("ailesi_taslar_name"),  embed: "/embedded/sakintaslar/index.html", color: "#a0d8d8" },
+          bitkiler:{ name: t("ailesi_bitkiler_name"),embed: "/embedded/sakinbitkiler/index.html", color: "#7BA05B" },
+        };
+        if (x.embed) {
+          const target = EMBEDS[x.embed];
+          if (target && handleOpenEmbedRef.current) {
+            try { setShowAilesi(false); } catch(_){}
+            setEmbedLoaded(false);
+            handleOpenEmbedRef.current(target);
+            return;
+          }
+          // Embed bulunamazsa en azından Keşfet panelini aç
+          try { setShowAilesi(true); } catch(_){}
+          return;
+        }
+        if (x.screen) { try { setShowAilesi(false); } catch(_){} setScreen(x.screen); }
       });
       if (p && typeof p.then === "function") p.then(h => { handle = h; }); else handle = p;
     } catch(_) {}
@@ -3771,6 +3928,26 @@ export default function SakinApp() {
     if (screen === "rehber") markStep("rehber");
   }, [screen]);
 
+  // ── ŞART DOLUNCA ANINDA İŞARETLE ────────────────────────────────────────────
+  // KÖK SEBEP (kullanıcı: "60 saniye dinledim ama buton açılmadı / 120 sn çakra
+  // yaptım 120/120 ama ışık yanmadı"): adım YALNIZCA o ekranın "İleri/Sonraki"
+  // butonuna basılınca işaretleniyordu. Şart dolsa bile kullanıcı kaydırarak veya
+  // alt menüden çıkarsa adım hiç işaretlenmiyordu. Artık eşik geçildiği ANDA
+  // işaretlenir (bu, daha önce geri aldığım "ziyaret edince işaretle" hatasından
+  // FARKLI: burada gerçekten şart tamamlanmış oluyor).
+  useEffect(() => { if (breathCount   >= STEP_MIN.nefes) markStep("nefes"); }, [breathCount]);
+  useEffect(() => { if (freqListenSec >= STEP_MIN.ses)   markStep("ses");   }, [freqListenSec]);
+  // (gün görevleri efekti gunTasksDone tanımından SONRA — TDZ'den kaçınmak için)
+  // Çakra terapi süresi localStorage'da tutuluyor (TerapiScreen ayrı bileşen) —
+  // terapi ekranındayken saniyede bir bakıp eşiği geçince işaretle.
+  useEffect(() => {
+    if (screen !== "terapi") return;
+    const id = setInterval(() => {
+      if (readTerapiSec() >= STEP_MIN.chakra) markStep("chakra");
+    }, 1000);
+    return () => clearInterval(id);
+  }, [screen]);
+
   // BAĞLANTI = 7 adım (kullanıcı kararı: "mantık kurmak için 7 adıma düşürelim").
   // mandala(Bağlan) ve ailesi(Keşfet) ADIM DEĞİL — onlar hedef/genel bakış ekranları
   // ve markStep hiç çağrılmadığı için bağlantı asla aktifleşemiyordu (kullanıcı:
@@ -3809,6 +3986,9 @@ export default function SakinApp() {
       return Object.values(s).filter(Boolean).length;
     } catch { return 0; }
   });
+  // Gün görevleri eşiği dolunca adımı anında işaretle (bkz. yukarıdaki "şart dolunca
+  // anında işaretle" bloğu; burada olmasının sebebi gunTasksDone'ın TDZ sırası).
+  useEffect(() => { if (gunTasksDone >= STEP_MIN.gun) markStep("gun"); }, [gunTasksDone]);
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
 
   // ── SEVİYE SİSTEMİ (kullanıcı: "7 gün düzenli kullanırsa sonraki seviyeye geçer
@@ -6112,7 +6292,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // ayrı ayrı görünür (kullanıcı: "bu menülerdeyken üçü de yukarıda gözüksün").
           // Sadece günlük akış ekranlarında (sabah/gün/nefes/ses/çakra/akşam + terapi/
           // rehber) üst bar sadeleşir, üçü ☰ menüsüne toplanır.
-          const showAllTop = screen === "giris" || screen === "harita" || screen === "mandala" || showAilesi;
+          // BAĞLAN (mandala) çıkarıldı: kullanıcı "bağlan ekranında en üstteki
+          // menüleri kaldır" dedi → orada da hamburger düzeni (⌂ · ☽ · ☰) geçerli.
+          const showAllTop = screen === "giris" || screen === "harita" || showAilesi;
           if (showAllTop) return SIDEBAR_ITEMS.map(renderBtn);
           // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
           // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
@@ -6476,7 +6658,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="sakin-tunnel-ground" />
             </div>
           )}
-          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 90px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+          {/* Alt boşluk 90 → 150px: "Güne devam et" butonu alttaki adım göstergesi
+              (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
+          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 150px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Back button */}
             <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
               style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
@@ -7344,7 +7528,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
               {/* (Gereksiz dekoratif emoji sırası kaldırıldı — kullanıcı geri bildirimi) */}
               <div style={{ marginBottom:6 }} />
-              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); setScreen("harita"); }}>{t("btn_see_week")}</button>
+              {/* Akşam kapanışı sonrası artık HARİTA değil AYNA'ya yönlendirir
+                  (kullanıcı: "haftama bak yerine 'aynaya bak' yazsın ve içsel ayna
+                  ekranına yönlendir"). openMirror portal geçişini de oynatır. */}
+              <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ markStep("aksam"); openMirror(); }}>{t("btn_see_week")}</button>
             </>
           )}
         </div>

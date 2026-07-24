@@ -164,7 +164,7 @@ export const EXTRA_LANGS = {
     evening_quote:     "Heute ist vorbei.\nDu bist hier, das ist genug.",
     learned_q:         "Was hat dir der heutige Tag gelehrt?",
     gratitude_q:       "Wofür bist du heute dankbar?",
-    btn_see_week:      "Meine Woche sehen →",
+    btn_see_week:      "Schau in den Spiegel →",
 
     weekly_label:      "WÖCHENTLICH",
     inner_map:         "Innere Karte",
@@ -857,7 +857,7 @@ export const EXTRA_LANGS = {
     evening_quote:     "Hoje acabou.\nVocê está aqui, isso basta.",
     learned_q:         "O que hoje te ensinou?",
     gratitude_q:       "Pelo que você agradece hoje?",
-    btn_see_week:      "Ver minha semana →",
+    btn_see_week:      "Olha no espelho →",
 
     weekly_label:      "SEMANAL",
     inner_map:         "Mapa Interior",
@@ -1550,7 +1550,7 @@ export const EXTRA_LANGS = {
     evening_quote:     "Hoy terminó.\nEstás aquí, eso es suficiente.",
     learned_q:         "¿Qué te enseñó hoy?",
     gratitude_q:       "¿Por qué das gracias hoy?",
-    btn_see_week:      "Ver mi semana →",
+    btn_see_week:      "Mírate en el espejo →",
 
     weekly_label:      "SEMANAL",
     inner_map:         "Mapa Interior",
@@ -2246,7 +2246,7 @@ export const EXTRA_LANGS = {
     evening_quote:     "La journée est finie.\nTu es là, cela suffit.",
     learned_q:         "Que t'a appris cette journée ?",
     gratitude_q:       "De quoi es-tu reconnaissant·e aujourd'hui ?",
-    btn_see_week:      "Voir ma semaine →",
+    btn_see_week:      "Regarde dans le miroir →",
 
     weekly_label:      "HEBDOMADAIRE",
     inner_map:         "Carte Intérieure",
@@ -2938,7 +2938,7 @@ export const EXTRA_LANGS = {
     evening_quote:     "今日は終わりました。\nあなたはここにいる、それで十分です。",
     learned_q:         "今日は何を教えてくれましたか？",
     gratitude_q:       "今日何に感謝していますか？",
-    btn_see_week:      "今週を見る →",
+    btn_see_week:      "鏡を見る →",
 
     weekly_label:      "週間",
     inner_map:         "内なるマップ",
