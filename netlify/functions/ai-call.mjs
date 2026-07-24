@@ -94,11 +94,11 @@ function isRateLimited(ip) {
   return false;
 }
 
+// Netlify'ın platform-set, SAHTELENEMEZ header'ı kullanılıyor — client-supplied
+// `x-forwarded-for`'a güvenmek, isteğin kendi header'ını sahteleyerek bu rate
+// limit'i (ücretli Groq çağrılarını sınırsız tekrarlamak için) bypass etmesine izin veriyordu.
 function getClientIP(event) {
-  return event.headers["x-forwarded-for"]?.split(",")[0]?.trim()
-    || event.headers["client-ip"]
-    || event.headers["x-real-ip"]
-    || "unknown";
+  return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
 }
 
 // ---- Output sanitizer (preserved from original) -----------------------------

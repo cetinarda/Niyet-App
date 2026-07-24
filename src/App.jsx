@@ -5287,7 +5287,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       name: userName || "",
                       premium: !!isPremium,
                     };
-                    target.postMessage(payload, "*");
+                    // Hedef her zaman same-origin embed iframe'i ("*" yerine — savunma katmanı,
+                    // embed src'leri hep same-origin /embedded/... olsa da veri sızıntısına kapı kapatır).
+                    target.postMessage(payload, window.location.origin);
                     // localStorage: yaygın anahtarları aynı veriyle doldur
                     try {
                       const ls = target.localStorage;
@@ -5559,7 +5561,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     cta.className = "sakin-premium-cta-bar";
                     cta.textContent = t("mirror_premium_cta");
                     cta.addEventListener("click", () => {
-                      try { window.parent.postMessage({ type: "sakin-premium-cta" }, "*"); } catch(_) {}
+                      try { window.parent.postMessage({ type: "sakin-premium-cta" }, window.location.origin); } catch(_) {}
                     });
                     doc.body.appendChild(cta);
                   };
@@ -5673,7 +5675,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       name: userName || "",
                       premium: !!isPremium,
                     };
-                    target.postMessage(payload, "*");
+                    // Hedef her zaman same-origin embed iframe'i ("*" yerine — savunma katmanı,
+                    // embed src'leri hep same-origin /embedded/... olsa da veri sızıntısına kapı kapatır).
+                    target.postMessage(payload, window.location.origin);
                     try {
                       const ls = target.localStorage;
                       if (ls) {

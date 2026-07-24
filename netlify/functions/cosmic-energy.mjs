@@ -2,6 +2,33 @@ import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition } from "astrono
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
+// Güvenlik notu: bu fonksiyon hiç origin reddi ve rate-limit YAPMIYORDU — sadece
+// CDN cache'ine güveniyordu ("Cache-Control: public, max-age=21600"), ama cache
+// anahtarı tam URL olduğu için query-string'e rastgele bir parametre eklemek
+// (ör. ?lang=en&x=rastgele) her seferinde cache miss yaratıp alttaki ücretli Groq
+// LLM çağrısını + 4 NOAA isteğini sınırsızca tetikleyebiliyordu. Şimdi diğer
+// fonksiyonlarla aynı desen: gerçek origin reddi + IP başına rate-limit (IP,
+// Netlify'ın sahtelenemez `x-nf-client-connection-ip` header'ından okunuyor).
+function isAllowedOrigin(origin) {
+  return !!origin && ALLOWED_ORIGINS.includes(origin);
+}
+const _rateMap = new Map();
+const _RATE_WINDOW_MS = 10 * 60 * 1000;
+const _RATE_MAX = 15;
+function _isRateLimited(ip) {
+  const now = Date.now();
+  const fresh = (_rateMap.get(ip) || []).filter((t) => now - t < _RATE_WINDOW_MS);
+  if (fresh.length >= _RATE_MAX) { _rateMap.set(ip, fresh); return true; }
+  fresh.push(now); _rateMap.set(ip, fresh);
+  if (_rateMap.size > 3000 && Math.random() < 0.02) {
+    for (const [k, v] of _rateMap) if (!v.length || now - v[v.length - 1] > _RATE_WINDOW_MS) _rateMap.delete(k);
+  }
+  return false;
+}
+function _getClientIP(event) {
+  return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "0").toString();
+}
+
 // ── GEZEGEN DİZİLİŞİ (efemeris — astronomy-engine) ──
 const ZODIAC = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
 function _eclLon(body, date) {
@@ -45,11 +72,9 @@ function activeComet(date = new Date()) {
   return { active: false };
 }
 
-function getCorsHeaders(event) {
-  const origin = event.headers?.origin || "";
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+function getCorsHeaders(origin) {
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
@@ -263,10 +288,20 @@ Now write the collective sky-energy reading: let us sense which energy the Earth
 }
 
 export const handler = async (event) => {
-  const cors = getCorsHeaders(event);
+  const origin = event.headers?.origin || "";
+  const originOk = isAllowedOrigin(origin);
+  const cors = originOk ? getCorsHeaders(origin) : {};
 
   if (event.httpMethod === "OPTIONS") {
+    if (!originOk) return { statusCode: 403, body: "" };
     return { statusCode: 204, headers: cors, body: "" };
+  }
+  if (!originOk) {
+    return { statusCode: 403, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ error: "Origin not allowed" }) };
+  }
+  const _ip = _getClientIP(event);
+  if (_isRateLimited(_ip)) {
+    return { statusCode: 429, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Too many requests" }) };
   }
 
   // 4 endpoint paralel — biri çökerse diğerleri gelir

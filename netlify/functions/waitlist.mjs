@@ -9,11 +9,16 @@ import { getStore } from "@netlify/blobs";
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 const KEY = "count";
 
-function getCorsHeaders(event) {
-  const origin = event.headers?.origin || "";
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+// Güvenlik notu: origin artık gerçekten reddediliyor; IP, Netlify'ın sahtelenemez
+// platform header'ından (`x-nf-client-connection-ip`) okunuyor — eski
+// `x-forwarded-for` istemci tarafından sahtelenip sayaç suistimalinin rate-limit'ini
+// bypass edebiliyordu.
+function isAllowedOrigin(origin) {
+  return !!origin && ALLOWED_ORIGINS.includes(origin);
+}
+function getCorsHeaders(origin) {
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
@@ -31,8 +36,7 @@ function isRateLimited(ip) {
   return e.count > RATE_MAX;
 }
 function getClientIP(event) {
-  return event.headers["x-forwarded-for"]?.split(",")[0]?.trim()
-    || event.headers["client-ip"] || event.headers["x-real-ip"] || "unknown";
+  return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
 }
 
 function json(cors, code, obj) {
@@ -40,8 +44,14 @@ function json(cors, code, obj) {
 }
 
 export const handler = async (event) => {
-  const cors = getCorsHeaders(event);
-  if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers: cors, body: "" };
+  const origin = event.headers?.origin || "";
+  const originOk = isAllowedOrigin(origin);
+  const cors = originOk ? getCorsHeaders(origin) : {};
+  if (event.httpMethod === "OPTIONS") {
+    if (!originOk) return { statusCode: 403, body: "" };
+    return { statusCode: 204, headers: cors, body: "" };
+  }
+  if (!originOk) return json(cors, 403, { error: "Origin not allowed" });
 
   let store;
   try { store = getStore("sakin-waitlist"); }
