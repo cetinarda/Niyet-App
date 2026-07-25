@@ -20,6 +20,44 @@ import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } fr
 import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
 
 const isNative = Capacitor.isNativePlatform();
+
+// ── GÜN ANAHTARI (YEREL TARİH) ──────────────────────────────────────────────
+// KÖK SEBEP (kullanıcı: "tünel sıfırlandı ama nefes 11'den devam etti"):
+// Tüm günlük anahtarlar `sakinDayKey()` ile üretiliyordu.
+// toISOString() **UTC** verir. Türkiye UTC+3 olduğu için uygulamanın "günü"
+// gece yarısında değil **saat 03:00'te** dönüyordu. Gece 00:00–03:00 arasında
+// yapılan her şey bir ÖNCEKİ güne yazılıyor, 03:00'te de kullanıcı hiçbir şey
+// yapmadan gün değişip bağlantı sıfırlanıyordu.
+// Çözüm: gün anahtarı artık YEREL tarihten üretilir (gece yarısı = gün dönümü).
+function sakinDayKey(d = new Date()) {
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+// TEK SEFERLİK TAŞIMA: UTC anahtarından yerel anahtara. Güncellemenin geldiği an
+// kullanıcı gece 00:00–03:00 aralığındaysa o günün verisi UTC anahtarında (dünün
+// tarihinde) duruyor olabilir; yerel anahtar boşsa oradan kopyalanır ki kullanıcı
+// o akşamki ilerlemesini kaybetmesin. Yalnızca bir kez çalışır.
+if (typeof localStorage !== "undefined") {
+  try {
+    if (!localStorage.getItem("sakin_daykey_local_v1")) {
+      const utcKey = new Date().toISOString().slice(0, 10);
+      const locKey = sakinDayKey();
+      if (utcKey !== locKey) {
+        for (const pre of ["sakin_niyet_", "sakin_words_", "sakin_breath_", "sakin_freq_sec_",
+                           "sakin_aksamnote_", "sakin_sukur_", "sakin_ritual_", "sakin_steps_",
+                           "sakin_terapi_sec_", "sakin_reminders_done_"]) {
+          const from = localStorage.getItem(pre + utcKey);
+          if (from !== null && localStorage.getItem(pre + locKey) === null) {
+            localStorage.setItem(pre + locKey, from);
+          }
+        }
+      }
+      localStorage.setItem("sakin_daykey_local_v1", "1");
+    }
+  } catch (_) {}
+}
+
 // Platform'u kök öğeye yaz (ios / android / web) → platforma özel CSS izole
 // edilebilir. Android'e özel düzeltmeler (edge-to-edge safe-area) yalnızca
 // data-platform="android" altında geçerli; iOS ve web bundan HİÇ etkilenmez.
@@ -2052,7 +2090,7 @@ async function scheduleDailyReminders(lang) {
       console.warn("[Notif] permission not granted:", perm.display);
       return;
     }
-    const todayKey = new Date().toISOString().slice(0,10);
+    const todayKey = sakinDayKey();
     // Damga = tarih + dil. Aynı gün dili değiştirirsen (TR↔EN) damga değişir,
     // yeniden planlanır; aşağıdaki cancel eski dildeki kuyruğu temizler.
     const stamp = todayKey + "_" + lang;
@@ -2119,7 +2157,7 @@ const REMINDER_GO_TXT = { tr:"Uygulamada aç", en:"Open in app", de:"In der App 
 function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
   const t = makeTrans(lang);
   const REMINDERS = getReminders(lang);
-  const _todayKey = new Date().toISOString().slice(0, 10);
+  const _todayKey = sakinDayKey();
   const _storageKey = "sakin_reminders_done_" + _todayKey;
   const [done,   setDone]   = useState(() => { try { return JSON.parse(localStorage.getItem(_storageKey)) || {}; } catch { return {}; } });
   const [timing, setTiming] = useState(null);
@@ -2380,7 +2418,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       // (Seans bitmese de geçen her saniye sayılır; kullanıcı birden çok kısa seans
       // yapsa da toplam süre birikir.)
       try {
-        const _k = "sakin_terapi_sec_" + new Date().toISOString().slice(0,10);
+        const _k = "sakin_terapi_sec_" + sakinDayKey();
         localStorage.setItem(_k, String((parseInt(localStorage.getItem(_k)) || 0) + 1));
       } catch(_) {}
       setElapsed(e => {
@@ -3166,10 +3204,10 @@ export default function SakinApp() {
     }
     isPopRef.current = false;
   };
-  const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+new Date().toISOString().slice(0,10))||"");
-  const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+new Date().toISOString().slice(0,10)))||[]; } catch { return []; } });
+  const [niyet,         setNiyet]         = useState(()=>localStorage.getItem("sakin_niyet_"+sakinDayKey())||"");
+  const [selectedWords, setSelectedWords] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_words_"+sakinDayKey()))||[]; } catch { return []; } });
   const [breathPhase,   setBreathPhase]   = useState("ready");
-  const [breathCount,   setBreathCount]   = useState(()=>{ try { return parseInt(localStorage.getItem("sakin_breath_"+new Date().toISOString().slice(0,10)))||0; } catch { return 0; } });
+  const [breathCount,   setBreathCount]   = useState(()=>{ try { return parseInt(localStorage.getItem("sakin_breath_"+sakinDayKey()))||0; } catch { return 0; } });
   const [breathStarted, setBreathStarted] = useState(false);
   const [breathMode,    setBreathMode]    = useState("standart");
   const [chakraIndex]                      = useState(() => new Date().toDateString().split("").reduce((a,c) => a + c.charCodeAt(0), 0) % 7);
@@ -3351,7 +3389,7 @@ export default function SakinApp() {
     // ReferenceError atıyor, try/catch bunu yutup HER ZAMAN 0 döndürüyordu. Yani
     // kayıtlı dinleme süresi hiç geri yüklenmiyordu (ekrandan çıkıp dönünce sıfırlanır,
     // ve "1 dk ses" bağlantı şartı asla sağlanamazdı). Tarih inline hesaplanıyor.
-    try { return parseInt(localStorage.getItem("sakin_freq_sec_" + new Date().toISOString().slice(0,10))) || 0; } catch { return 0; }
+    try { return parseInt(localStorage.getItem("sakin_freq_sec_" + sakinDayKey())) || 0; } catch { return 0; }
   });
   const freqTimerRef = useRef(null);
   useEffect(() => {
@@ -3359,7 +3397,9 @@ export default function SakinApp() {
       freqTimerRef.current = setInterval(() => {
         setFreqListenSec(prev => {
           const next = prev + 1;
-          localStorage.setItem("sakin_freq_sec_" + todayKey, String(next));
+          // Gün anahtarı ANLIK hesaplanır: dinleme gece yarısını geçerse sayaç
+          // eski güne değil, doğru güne yazılır (todayKey closure'ı bayat kalırdı).
+          localStorage.setItem("sakin_freq_sec_" + sakinDayKey(), String(next));
           return next;
         });
       }, 1000);
@@ -3368,9 +3408,9 @@ export default function SakinApp() {
     }
     return () => clearInterval(freqTimerRef.current);
   }, [playingHz]);
-  const [aksamNote,     setAksamNote]     = useState(()=>localStorage.getItem("sakin_aksamnote_"+new Date().toISOString().slice(0,10))||"");
-  const [sukur,         setSukur]         = useState(()=>localStorage.getItem("sakin_sukur_"+new Date().toISOString().slice(0,10))||"");
-  const [aksamRitualChecks, setAksamRitualChecks] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_ritual_"+new Date().toISOString().slice(0,10)))||[false,false,false]; } catch { return [false,false,false]; } });
+  const [aksamNote,     setAksamNote]     = useState(()=>localStorage.getItem("sakin_aksamnote_"+sakinDayKey())||"");
+  const [sukur,         setSukur]         = useState(()=>localStorage.getItem("sakin_sukur_"+sakinDayKey())||"");
+  const [aksamRitualChecks, setAksamRitualChecks] = useState(()=>{ try { return JSON.parse(localStorage.getItem("sakin_ritual_"+sakinDayKey()))||[false,false,false]; } catch { return [false,false,false]; } });
   const [aiRapor,       setAiRapor]       = useState(() => { try { return localStorage.getItem("sakin_rapor_week") === currentWeekKey() ? (localStorage.getItem("sakin_rapor_text") || "") : ""; } catch { return ""; } });
   const [aiLoading,     setAiLoading]     = useState(false);
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
@@ -3445,7 +3485,7 @@ export default function SakinApp() {
     // tut (kapatma sırasında false'a çekildi; sticky iframe RAM'de hâlâ olduğu için onLoad
     // bir daha tetiklenmez). Yeni gün veya ilk açılış → loading layer normal akış.
     const isMitlerEmbed = (app.embed || "").indexOf("sakinmitler") !== -1;
-    const today = new Date().toISOString().slice(0, 10);
+    const today = sakinDayKey();
     const isMitlerStickyHit = isMitlerEmbed && mitlerLoadedOnceRef.current && mitlerSession && mitlerSession.day === today;
     if (isMitlerStickyHit) {
       setEmbedLoaded(true);
@@ -3458,7 +3498,7 @@ export default function SakinApp() {
     let exceeded = false;
     if (!isPremium && !isHD) {
       // GÜNLÜK kota: anahtara tarih eklenir → her gün 3 ücretsiz açılış sıfırdan başlar.
-      const todayKey = new Date().toISOString().slice(0, 10);
+      const todayKey = sakinDayKey();
       const storageKey = "sakin_ailesi_opens_" + appKey + "_" + todayKey;
       const prev = parseInt(localStorage.getItem(storageKey) || "0", 10) || 0;
       const next = prev + 1;
@@ -3615,7 +3655,7 @@ export default function SakinApp() {
   const _aiDailyOk = () => {
     try {
       const lim = isPremium ? 40 : 10;
-      const today = new Date().toISOString().slice(0, 10);
+      const today = sakinDayKey();
       const d = JSON.parse(localStorage.getItem("sakin_ai_daily") || "{}");
       if (d.day !== today) { d.day = today; d.n = 0; }
       if (d.n >= lim) return false;
@@ -3898,13 +3938,49 @@ export default function SakinApp() {
   });
 
   // ── Streak & Step Tracking ──
-  const todayKey = new Date().toISOString().slice(0,10);
+  // todayKey artık STATE. Eskiden her render'da `new Date()`'ten hesaplanıyordu;
+  // saniyede bir tikleyen saat (setTime) yüzünden gün dönümünde ANINDA değişiyordu.
+  // O anda aşağıdaki persist efektleri ESKİ günün bellekteki değerlerini (nefes 11,
+  // akşam notu, şükür, ritüel) YENİ günün anahtarına yazıyordu → veri yeni güne
+  // sızıyordu. stepsCompleted ise sadece markStep içinde yazıldığı için sızmıyordu.
+  // Sonuç tam olarak kullanıcının gördüğü tablo: tünel sıfır, nefes 11'den devam.
+  const [todayKey, setTodayKey] = useState(() => sakinDayKey());
+  useEffect(() => {
+    const check = () => setTodayKey(prev => { const k = sakinDayKey(); return prev === k ? prev : k; });
+    const id = setInterval(check, 30000);
+    document.addEventListener("visibilitychange", check);
+    return () => { clearInterval(id); document.removeEventListener("visibilitychange", check); };
+  }, []);
+
+  // GÜN DÖNÜMÜ: bellekteki günlük state yeni güne taşınmaz, yeni günün deposundan
+  // (yani boştan) yeniden kurulur. hydratedDayRef, state'in HANGİ güne ait olduğunu
+  // tutar; eşleşmediği sürece persist efektleri yazmaz → sızıntı imkânsız.
+  const hydratedDayRef = useRef(todayKey);
+  const dayInSync = hydratedDayRef.current === todayKey;
+  useEffect(() => {
+    if (dayInSync) return;
+    const num = (k) => { try { return parseInt(localStorage.getItem(k + todayKey)) || 0; } catch { return 0; } };
+    const str = (k) => { try { return localStorage.getItem(k + todayKey) || ""; } catch { return ""; } };
+    const obj = (k, f) => { try { return JSON.parse(localStorage.getItem(k + todayKey)) || f; } catch { return f; } };
+    setNiyet(str("sakin_niyet_"));
+    setSelectedWords(obj("sakin_words_", []));
+    setBreathCount(num("sakin_breath_"));
+    setBreathStarted(false);
+    setBreathPhase("ready");
+    setFreqListenSec(num("sakin_freq_sec_"));
+    setAksamNote(str("sakin_aksamnote_"));
+    setSukur(str("sakin_sukur_"));
+    setAksamRitualChecks(obj("sakin_ritual_", [false, false, false]));
+    setStepsCompleted(obj("sakin_steps_", {}));
+    setGunTasksDone(Object.values(obj("sakin_reminders_done_", {})).filter(Boolean).length);
+    hydratedDayRef.current = todayKey;
+  }, [dayInSync, todayKey]);
 
   // Günlük state'leri localStorage'a persist et (Safari kapatıp açınca kaybolmasın)
-  useEffect(()=>{ localStorage.setItem("sakin_breath_"+todayKey, String(breathCount)); }, [breathCount, todayKey]);
-  useEffect(()=>{ localStorage.setItem("sakin_aksamnote_"+todayKey, aksamNote); }, [aksamNote, todayKey]);
-  useEffect(()=>{ localStorage.setItem("sakin_sukur_"+todayKey, sukur); }, [sukur, todayKey]);
-  useEffect(()=>{ localStorage.setItem("sakin_ritual_"+todayKey, JSON.stringify(aksamRitualChecks)); }, [aksamRitualChecks, todayKey]);
+  useEffect(()=>{ if (!dayInSync) return; localStorage.setItem("sakin_breath_"+todayKey, String(breathCount)); }, [breathCount, todayKey, dayInSync]);
+  useEffect(()=>{ if (!dayInSync) return; localStorage.setItem("sakin_aksamnote_"+todayKey, aksamNote); }, [aksamNote, todayKey, dayInSync]);
+  useEffect(()=>{ if (!dayInSync) return; localStorage.setItem("sakin_sukur_"+todayKey, sukur); }, [sukur, todayKey, dayInSync]);
+  useEffect(()=>{ if (!dayInSync) return; localStorage.setItem("sakin_ritual_"+todayKey, JSON.stringify(aksamRitualChecks)); }, [aksamRitualChecks, todayKey, dayInSync]);
 
   const [streakData, setStreakData] = useState(() => {
     try {
@@ -4016,7 +4092,7 @@ export default function SakinApp() {
   // "İlerledikçe artsın": kullanıcı her adımı bitirip ilerledikçe sayaç doğal artar.
   const [gunTasksDone, setGunTasksDone] = useState(() => {
     try {
-      const k = "sakin_reminders_done_" + new Date().toISOString().slice(0,10);
+      const k = "sakin_reminders_done_" + sakinDayKey();
       const s = JSON.parse(localStorage.getItem(k)) || {};
       return Object.values(s).filter(Boolean).length;
     } catch { return 0; }
@@ -4035,11 +4111,15 @@ export default function SakinApp() {
   const nextLevelAt = streakLevel === 1 ? 7 : streakLevel === 2 ? 21 : null;
 
   // Update streak when all steps complete
+  // dayInSync ŞARTI ŞART: gün dönümünde todayKey değişip stepsCompleted henüz yeni
+  // günün deposundan kurulmadan bu efekt tetiklenirse, allStepsComplete hâlâ DÜNÜN
+  // true değeridir → kullanıcı hiçbir şey yapmadan seri +1 artıyordu (ölçüldü:
+  // gün dönümünde 1 → 2). Bellekteki state yeni güne ait olana kadar bekle.
   useEffect(() => {
-    if (!allStepsComplete) return;
+    if (!allStepsComplete || !dayInSync) return;
     setStreakData(prev => {
       if (prev.lastDate === todayKey) return prev;
-      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      const yesterday = sakinDayKey(new Date(Date.now() - 86400000));
       const isConsecutive = prev.lastDate === yesterday;
       const newCurrent = isConsecutive ? prev.current + 1 : 1;
       const newBest = Math.max(prev.best, newCurrent);
@@ -4049,7 +4129,7 @@ export default function SakinApp() {
       localStorage.setItem("sakin_streak", JSON.stringify(next));
       return next;
     });
-  }, [allStepsComplete, todayKey]);
+  }, [allStepsComplete, todayKey, dayInSync]);
 
   useEffect(() => {
     if (isOwner && !isNative) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
@@ -7096,7 +7176,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {`${niyet.trim() ? "✓" : "○"} ${t("premium_unlock_word_hint").replace("{n}", String(selectedWords.length))}`}
                 </div>
               ) : (
-                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=new Date().toISOString().slice(0,10); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("gun"); }}>{t("btn_continue")}</button>
+                <button className="sakin-btn-primary" style={{ width:"100%" }} onClick={()=>{ const dk=sakinDayKey(); localStorage.setItem("sakin_niyet_"+dk,niyet); localStorage.setItem("sakin_words_"+dk,JSON.stringify(selectedWords)); markStep("sabah"); setScreen("gun"); }}>{t("btn_continue")}</button>
               )}
             </>
           )}
