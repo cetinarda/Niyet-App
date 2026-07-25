@@ -253,7 +253,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.3.2";
+const APP_VERSION = "1.3.3";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -6411,13 +6411,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             );
           };
-          // Giriş ekranında VE "bağlan/harita/keşfet" yüzeylerindeyken üçü de üstte
-          // ayrı ayrı görünür (kullanıcı: "bu menülerdeyken üçü de yukarıda gözüksün").
-          // Sadece günlük akış ekranlarında (sabah/gün/nefes/ses/çakra/akşam + terapi/
-          // rehber) üst bar sadeleşir, üçü ☰ menüsüne toplanır.
-          // BAĞLAN (mandala) çıkarıldı: kullanıcı "bağlan ekranında en üstteki
-          // menüleri kaldır" dedi → orada da hamburger düzeni (⌂ · ☽ · ☰) geçerli.
-          const showAllTop = screen === "giris" || screen === "harita" || showAilesi;
+          // Üçlü menü (BAĞLAN·HARİTA·KEŞFET) artık YALNIZCA giriş ekranında üstte
+          // ayrı ayrı görünür. Diğer tüm yüzeylerde sade hamburger düzeni geçerli:
+          // ⌂ (sol) · ☽ Ayna (orta) · ☰ (sağ).
+          // Kullanıcı sırasıyla: "bağlan ekranında en üstteki menüleri kaldır" →
+          // sonra "harita ve keşfet ekranlarında da üst barı kaldır, bağlandaki gibi".
+          const showAllTop = screen === "giris";
           if (showAllTop) return SIDEBAR_ITEMS.map(renderBtn);
           // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
           // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
