@@ -3416,6 +3416,21 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // KEŞFET AÇIKKEN ARKA PLAN KİLİTLİ (kullanıcı: "keşfet ilk açıldığında eskiden
+  // kalan bir pencere arka planda scroll oluyor").
+  // KÖK SEBEP: Keşfet paneli position:fixed olsa da DOM'da .sakin-app-root'un
+  // İÇİNDE duruyor. Panelde kaydırma yapınca, iç kart sınırına geldiğinde scroll
+  // zincirlenip arkadaki ekranı (sabah/gün/...) oynatıyordu; üstelik panel
+  // açıldığında arka plan bıraktığı yerde (ör. scrollTop 157) donmuş duruyordu —
+  // yarı saydam katmanın ardından "eski pencere kayıyor" görüntüsü buradan geliyor.
+  // Panel açıkken kök kapsayıcının kaydırması kapatılır, kapanınca geri verilir.
+  useEffect(() => {
+    const root = document.querySelector(".sakin-app-root");
+    if (!root) return;
+    if (showAilesi) root.style.overflowY = "hidden";
+    else root.style.overflowY = "";
+    return () => { root.style.overflowY = ""; };
+  }, [showAilesi]);
   // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği) — üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
@@ -5267,8 +5282,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // paddingTop: nav barı Keşfet açıkken üstte tıklanabilir kalsın diye modalın
         // ÜSTÜNE çıkarıldı (yukarıya bkz.) — modal içeriği o bar'ın altından başlasın
         // diye üst container'la aynı boşluk formülü kullanılıyor.
-        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"flex-start",justifyContent:"center",padding: (topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
+        // +26px NEFES PAYI: formül tam olarak bar'ın yüksekliği kadardı, yani
+        // "SAKİN AİLESİ" yazısı bar'a 6px kalıyordu (ölçüldü: barBottom 88, titleTop
+        // 94). Kullanıcı: "sakin ailesi yazısı ile üst bar çok bitişik".
+        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"flex-start",justifyContent:"center",padding: (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
+          {/* overscrollBehaviorY:contain → kart sonuna gelince kaydırma arkadaki
+              .sakin-app-root'a ZİNCİRLENMEZ (arka plan oynamaz). */}
+          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",overscrollBehaviorY:"contain",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:8 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
               <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
