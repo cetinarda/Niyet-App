@@ -1579,7 +1579,11 @@ const GLOBAL_CSS = `
   @keyframes sakinTunnelFlow { from { background-position: 0 0; } to { background-position: 0 160px; } }
   /* Çakra sütunundaki ışık huzmesinin KESİNTİSİZ aşağı akışı (SVG rect üzerinde).
      Yukarıdan girip yeryüzüne doğru süzülür; tek tek parçacık değil, sürekli akış. */
-  @keyframes sakinTunnelDown { 0% { transform: translateY(-505px); } 100% { transform: translateY(505px); } }
+  /* Huzme, gradyanın TEKRAR PERİYODU kadar (280px) kayar ve başa döner. Gradyan
+     spreadMethod="repeat" olduğu için bir periyot sonra desen birebir aynı yere
+     oturur → sıçrama/kesinti görünmez, akış sonsuz ve kesintisizdir.
+     (Eski hâli ±505px kayıyordu; huzme tünelin dışına, ekranın altına taşıyordu.) */
+  @keyframes sakinTunnelDown { 0% { transform: translateY(0); } 100% { transform: translateY(280px); } }
   /* BAĞLANTI AKTİF — ayna ikonu tünel renklerinde yavaşça döner (kullanıcı:
      "bağlantı sağlanınca ayna ikonu her yerde sürekli renk değiştirsin, slow sakin
      bir renk değişimi; bağlantının aktif olduğunu sembolik hissettirir"). */
@@ -1590,7 +1594,7 @@ const GLOBAL_CSS = `
     75%  { color:#ff6a6a; filter: drop-shadow(0 0 8px rgba(255,90,90,0.75)); }
     100% { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
   }
-  .sakin-mirror-live { animation: sakinMirrorCycle 9s ease-in-out infinite; }
+  .sakin-mirror-live { animation: sakinMirrorCycle 4.5s ease-in-out infinite; }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
   .sakin-tunnel-bands {
@@ -6772,7 +6776,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <stop offset="72%"  stopColor="rgba(110,55,180,0.16)"/>
                         <stop offset="100%" stopColor="rgba(255,240,190,0.30)"/>
                       </linearGradient>
-                      <linearGradient id="tunnelFlow" x1="0" y1="0" x2="0" y2="1">
+                      {/* Akış gradyanı: userSpaceOnUse + spreadMethod="repeat" →
+                          280 birimlik desen dikey olarak sonsuz tekrar eder. İki uç da
+                          saydam beyaz (aynı renk) olduğu için tekrar dikişi görünmez;
+                          huzme kesik kesik değil, sürekli akar. */}
+                      <linearGradient id="tunnelFlow" gradientUnits="userSpaceOnUse"
+                        x1="0" y1="0" x2="0" y2="280" spreadMethod="repeat">
                         <stop offset="0%"   stopColor="rgba(255,255,255,0.00)"/>
                         <stop offset="18%"  stopColor="rgba(255,255,255,0.55)"/>
                         <stop offset="34%"  stopColor="rgba(240,214,96,0.45)"/>
@@ -6780,6 +6789,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <stop offset="70%"  stopColor="rgba(255,255,255,0.28)"/>
                         <stop offset="100%" stopColor="rgba(255,255,255,0.00)"/>
                       </linearGradient>
+                      {/* Tünelin iç boşluğu — huzme BUNUN DIŞINA taşamaz. Böylece ışık
+                          gökten girer, YER hizasında tünelin içinde biter (kullanıcı:
+                          "ekranın en altına gidiyor, onu yerde bitir"). */}
+                      <clipPath id="tunnelClip">
+                        <rect x="88" y="24" width="44" height="504" rx="22" />
+                      </clipPath>
                     </defs>
 
                     {/* Omurga — ana bağlantı çizgisi */}
@@ -6886,8 +6901,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           NOT: Çakraların etrafında aşağı süzülen "dans eden halkalar"
                           KALDIRILDI (kullanıcı isteği) — akış artık sadece bu düz,
                           sakin huzmeden ibaret. */}
-                      <rect x="88" y="24" width="44" height="504" rx="22"
-                        fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
+                      <g clipPath="url(#tunnelClip)">
+                        {/* Dikdörtgen tünelden bir periyot (280) DAHA UZUN: kayarken
+                            üstte boşluk kalmaz. Kırpma sayesinde sadece tünelin içi
+                            görünür — huzme GÖK'ten girer, YER'de tünelin içinde biter. */}
+                        <rect x="88" y="-256" width="44" height="800"
+                          fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
+                      </g>
                       {/* (4) Tünel ağzı parlaması — üstte giriş, altta yeryüzü çıkışı */}
                       <ellipse cx="110" cy="22" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
                       <ellipse cx="110" cy="528" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
