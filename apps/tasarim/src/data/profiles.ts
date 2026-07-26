@@ -185,7 +185,7 @@ export const PROFILES: Record<ProfileKey, ProfileInfo> = {
     shortDescEn:
       'A life in three phases: the first 30 years of experience, then observing from the roof, and finally becoming a role model.',
     longDesc:
-      'Bu profil, dışsal olarak yaşar. İlk yarısı denemelerle, ilişki başlangıçları ve bitişleriyle, kendini deniyerek geçer. 30 sonrası çatıdan izlemeye geçer; mesafe alır. 50 sonrası bilgeliği rol modeli olarak hayatın merkezine geri döner.',
+      'Bu profil, dışsal olarak yaşar. İlk yarısı denemelerle, ilişki başlangıçları ve bitişleriyle, kendini deneyerek geçer. 30 sonrası çatıdan izlemeye geçer; mesafe alır. 50 sonrası bilgeliği rol modeli olarak hayatın merkezine geri döner.',
     longDescEn:
       'This profile lives externally. Its first half passes in experiments, in the beginnings and endings of relationships, testing itself. After 30 it shifts to observing from the roof; it takes distance. After 50 its wisdom returns to the center of life as a role model.',
   },
@@ -215,7 +215,7 @@ export const PROFILES: Record<ProfileKey, ProfileInfo> = {
     shortDescEn:
       'Close bonds built on fixed foundations. A more stable, more steadfast and focused structure that changes less.',
     longDesc:
-      'Bu nadir bir "kalıcı" profilidir. Hem içsel hem dışsal yaşar; ama her iki çizgi de "sabit" niteliklidir. Kolayca dönüşmez; köklendiği zemin ve ağ üzerinden sağlam, uzun vadeli işler kurar.',
+      'Bu, nadir bir "kalıcı" profildir. Hem içsel hem dışsal yaşar; ama her iki çizgi de "sabit" niteliklidir. Kolayca dönüşmez; köklendiği zemin ve ağ üzerinden sağlam, uzun vadeli işler kurar.',
     longDescEn:
       'This is a rare \'fixed\' profile. It lives both internally and externally, yet both lines are \'fixed\' in nature. It does not transform easily; it builds solid, long-term ventures through the ground and network it is rooted in.',
   },
@@ -245,7 +245,7 @@ export const PROFILES: Record<ProfileKey, ProfileInfo> = {
     shortDescEn:
       'A rescuer on the outside, someone who needs solitude on the inside. Comes out when called, invisible when not.',
     longDesc:
-      'Bu profil, dışsal olarak yaşar ama yalnız doğal yeteneği vardır. Kalabalığa çıkmak yorar; ama çağrıldığında pratik çözüm sunar. Yalnız kalmaya hakkı kendi enerjisinin temelidir.',
+      'Bu profil, dışsal olarak yaşar ama yalnız doğal yeteneği vardır. Kalabalığa çıkmak yorar; ama çağrıldığında pratik çözüm sunar. Yalnız kalma hakkı kendi enerjisinin temelidir.',
     longDescEn:
       'This profile lives externally but has a solitary natural talent. Going out into crowds tires it, yet when called it offers practical solutions. Its right to be alone is the foundation of its own energy.',
   },

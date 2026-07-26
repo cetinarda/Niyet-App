@@ -158,7 +158,7 @@ export const TYPES: Record<HDType, TypeInfo> = {
     shortDesc:
       'İnsanları ve sistemleri okuma uzmanı. Davet edildiğinde derin görüleriyle başkalarının enerjisini doğru yöne yönlendirir.',
     longDesc:
-      'Projektörler, sakral merkezi tanımsız olan ve yaşam enerjisini Jeneratörlerin aurasından örnekleyerek hareket eden tiplerdir. Aurası odaklı ve nüfuz edicidir; karşılarındaki kişiyi derinlemesine okurlar. Yenilikçi sistemler, başkalarının enerjisini nasıl yönlendireceğini görme yetenekleri yüksektir. Ancak bu görüleri ancak davet edildiklerinde değer kazanır. Davet edilmeden enerjilerini öne sürmeleri acılık (bitterness) yaratır. Doğru yaşandığında başarı (success) ve tanınma gelir. Daha az çalışıp daha çok dinlenmek için tasarlanmışlardır.',
+      'Projektörler, sakral merkezi tanımsız olan ve yaşam enerjisini Jeneratörlerin aurasından örnekleyerek hareket eden tiplerdir. Aurası odaklı ve nüfuz edicidir; karşılarındaki kişiyi derinlemesine okurlar. Yenilikçi sistemleri ve başkalarının enerjisini nasıl yönlendireceklerini görme yetenekleri yüksektir. Ama bu görüleri ancak davet edildiklerinde değer kazanır. Davet edilmeden enerjilerini öne sürmeleri acılık (bitterness) yaratır. Doğru yaşandığında başarı (success) ve tanınma gelir. Daha az çalışıp daha çok dinlenmek için tasarlanmışlardır.',
     pracicalTips: [
       'Hayatın büyük alanlarında (sevgi, iş, taşınma) davet bekle.',
       'Aurayı tanı: insanlar seni sorduğunda gözlerini kıs ve görmeye izin ver.',

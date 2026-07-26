@@ -116,7 +116,7 @@ export const CENTERS: Record<CenterKey, CenterInfo> = {
         'The way you process information is fixed; how you think follows a certain pattern. This lets you offer reliable reasoning, but yours is not the only correct viewpoint.',
       gifts: [
         'Sabit, güvenilir kavramsallaştırma',
-        'Bir konu hakkında derin sertifika',
+        'Bir konu hakkında derin uzmanlık',
         'Düşüncenin sürekliliği',
       ],
       giftsEn: [
@@ -480,7 +480,7 @@ export const CENTERS: Record<CenterKey, CenterInfo> = {
       notSelfQuestionEn:
         '\'Do you rush through work just to be rid of the pressure, and then regret it?\'',
       wisdom:
-        'Baskı altında bile sakin kalmayı öğrenmek; baskının kendi adrenalin değil, çevreden geldiğini görmek.',
+        'Baskı altında bile sakin kalmayı öğrenmek; baskının kendi adrenalinin değil, çevreden geldiğini görmek.',
       wisdomEn:
         'Learning to stay calm even under pressure; seeing that the pressure isn\'t your own adrenaline but comes from the environment.',
     },

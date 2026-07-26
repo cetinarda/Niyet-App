@@ -34,7 +34,7 @@ export function OnboardingScreen({ onAccept }: Props) {
         <Text style={styles.body}>
           {en
             ? 'When you enter your birth date, time and city, we generate your Human Design chart (bodygraph) and offer a detailed personal report covering your type, inner authority, profile, and defined and undefined centers.'
-            : 'Doğum tarih, saat ve şehrini girdiğinde Human Design haritanı (bodygraph) çıkartırız. Tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor sunarız.'}
+            : 'Doğum tarihini, saatini ve şehrini girdiğinde Human Design haritanı (bodygraph) çıkartırız. Tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor sunarız.'}
         </Text>
 
         <View style={styles.featureRow}>

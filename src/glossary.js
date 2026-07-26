@@ -54,10 +54,10 @@ const TR = [
     { term: "22 Çakra Sistemi", desc: "7 ana çakranın ötesinde 15 ek enerji merkezi daha bulunur. Bunlar arasında Yeryüzü Yıldızı, Ruh, Thymus, Orion, Soul Star gibi daha ileri düzey enerji merkezleri yer alır. Reiki terapisinde bu genişletilmiş sistem kullanılır." },
   ]},
   { cat: "guide_cat_biorhythm", items: [
-    { term: "Biyoritm Nedir?", desc: "Doğum tarihinden itibaren başlayan üç döngüsel biyolojik ritimdir. Her döngü sinüs dalgası şeklinde pozitif ve negatif arasında salınır. Değerler -100 ile +100 arasında değişir." },
-    { term: "Fiziksel Biyoritm (23 gün)", desc: "Fiziksel enerji, güç, dayanıklılık ve koordinasyonu yansıtır. Pozitif dönemde enerjin yüksek, negatif dönemde dinlenme ihtiyacın artar. Kritik günlerde (0 geçişi) dikkatli ol." },
-    { term: "Duygusal Biyoritm (28 gün)", desc: "Duygusal denge, ruh hali, yaratıcılık ve sezgiyi yansıtır. Pozitif dönemde iyimser ve empatiğin, negatif dönemde hassas ve içe dönüksün." },
-    { term: "Zihinsel Biyoritm (33 gün)", desc: "Zihinsel keskinlik, konsantrasyon, hafıza ve analitik düşünme kapasitesini yansıtır. Pozitif dönemde zihnen aktif ve öğrenmeye açıksın, negatif dönemde odaklanma zorlaşır." },
+    { term: "Biyoritim Nedir?", desc: "Doğum tarihinden itibaren başlayan üç döngüsel biyolojik ritimdir. Her döngü sinüs dalgası şeklinde pozitif ve negatif arasında salınır. Değerler -100 ile +100 arasında değişir." },
+    { term: "Fiziksel Biyoritim (23 gün)", desc: "Fiziksel enerji, güç, dayanıklılık ve koordinasyonu yansıtır. Pozitif dönemde enerjin yüksek, negatif dönemde dinlenme ihtiyacın artar. Kritik günlerde (0 geçişi) dikkatli ol." },
+    { term: "Duygusal Biyoritim (28 gün)", desc: "Duygusal denge, ruh hali, yaratıcılık ve sezgiyi yansıtır. Pozitif dönemde iyimser ve empatiksin, negatif dönemde hassas ve içe dönüksün." },
+    { term: "Zihinsel Biyoritim (33 gün)", desc: "Zihinsel keskinlik, konsantrasyon, hafıza ve analitik düşünme kapasitesini yansıtır. Pozitif dönemde zihnen aktif ve öğrenmeye açıksın, negatif dönemde odaklanma zorlaşır." },
   ]},
   { cat: "guide_cat_reiki", items: [
     { term: "Reiki Nedir?", desc: "Japonca \"evrensel yaşam enerjisi\" anlamına gelen bir farkındalık pratiğidir. Ellerin enerji merkezlerine (çakralara) yerleştirilmesiyle kişisel farkındalık ve rahatlama deneyimi sunar. Tıbbi bir tedavi veya teşhis yöntemi değildir; profesyonel sağlık hizmetinin yerine geçmez." },
@@ -73,7 +73,7 @@ const TR = [
     { term: "Gün İçi Hatırlatıcılar", desc: "Gün boyunca farkındalığınızı korumanız için tasarlanmış 10 mikro pratiktir: aynaya bakmak, su içmek, nefes farkındalığı, beden egzersizi, güneşi hissetmek, ağaca sarılmak, toprağa dokunmak, gökyüzüne bakmak, çakra anı ve sosyal medya molası." },
     { term: "Akşam Kapanışı", desc: "Günü bilinçli bir şekilde kapatma ritüelidir. \"Bugün ne öğrendin?\" ve \"Şükür?\" sorularıyla günün farkındalık özetini çıkarırsınız." },
     { term: "Haftalık İç Harita", desc: "Haftanın istatistiklerini gösteren özet ekrandır: en aktif çakra, toplam nefes sayısı, niyet kelimeleri ve bilinçli an sayısı. AI raporu bu verilerden haftalık bir içgörü sentezi oluşturur." },
-    { term: "Doğum Profili", desc: "Doğum tarihiniz ve saatinizden hesaplanan kişisel enerji haritanızdır: burç, yaşam yolu sayısı, kişisel yıl sayısı, yükselen burç, 12. ev analizi ve haftalık biyoritm grafiği." },
+    { term: "Doğum Profili", desc: "Doğum tarihiniz ve saatinizden hesaplanan kişisel enerji haritanızdır: burç, yaşam yolu sayısı, kişisel yıl sayısı, yükselen burç, 12. ev analizi ve haftalık biyoritim grafiği." },
   ]},
 ];
 

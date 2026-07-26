@@ -235,8 +235,23 @@ const _SKY_ANGLES = [
 ];
 // TR çıktısında model bazen yabancı sızıntı bırakıyor ("procent", "dàn" gibi).
 // Aksan temizliği: Türkçede aksanlı harf yalnız â/î/û'dur; à è ì ò ù asla olmaz.
+//
+// CJK/KİRİL SIZINTISI (kullanıcı raporu): TR raporunda "Herkes aynı anda uyanırken,
+// 世界 aynı enerji alanında birleşiyor." çıktı. Model, çok dilli ağırlıklarından
+// rastgele bir Çince/Japonca/Kiril parçası bırakabiliyor. Prompt'taki "LANGUAGE
+// PURITY" kuralı bunu AZALTIYOR ama GARANTİ ETMİYOR — o yüzden çıktı tarafında
+// sert bir süzgeç: Latin-dışı yazı sistemi karakteri görülürse (ja hariç) o rapor
+// KULLANILMAZ, null döner ve çağıran taraf hazır şablon metne düşer. Kısmi silme
+// yapmıyoruz; cümlenin ortasından kelime çıkarmak daha bozuk bir metin üretir.
+const _NON_LATIN_RE = /[\u3000-\u303F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uAC00-\uD7AF\u0400-\u04FF\u0600-\u06FF\u0590-\u05FF]/;
 function _sanitizeSky(text, lang) {
   let t = String(text || "").trim();
+  if (!t) return t;
+  // Japonca zaten CJK kullanır — onu bu süzgeçten muaf tut.
+  if (lang !== "ja" && _NON_LATIN_RE.test(t)) {
+    console.warn("[sky] latin-disi karakter sizintisi, rapor reddedildi:", lang, t.slice(0, 120));
+    return null;   // → şablon metne düş
+  }
   if (lang === "tr") {
     // SADECE Türkçe: fr/pt'de à/è/ù meşru harflerdir, onlara dokunma.
     t = t.replace(/à/g, "a").replace(/è/g, "e").replace(/ì/g, "i").replace(/ò/g, "o").replace(/ù/g, "u");

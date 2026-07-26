@@ -90,7 +90,7 @@ const AURA_COMPATIBILITY: Record<HDType, { gets: string[]; tension: string[]; no
     gets: [
       'Sağlıklı, kendi merkezinde duran insanlar — onlar sende parlar',
       'Seni karar için sıkıştırmayan, 28 günü beklemene izin veren sevdikler',
-      'Çeşitli aurelara sahip dengeli topluluklar — tek bir enerjiye yapışıp kalmayan',
+      'Çeşitli auralara sahip dengeli topluluklar — tek bir enerjiye yapışıp kalmayan',
     ],
     tension: [
       'Yoğun, baskıcı aurada olan bir tek kişiyle uzun temas — örnekler ve aşar',
@@ -106,7 +106,7 @@ const AURA_COMPATIBILITY: Record<HDType, { gets: string[]; tension: string[]; no
 // =============================================================
 const BODY_LISTENING: Record<AuthorityKey, { howToFeel: string; whereInBody: string; redFlag: string; reset: string }> = {
   emotional: {
-    howToFeel: 'Karar karşısında anında "evet" / "hayır" deme; bir kaç gün boyunca aynı kararı farklı duygu durumlarında hisset.',
+    howToFeel: 'Karar karşısında anında "evet" / "hayır" deme; birkaç gün boyunca aynı kararı farklı duygu durumlarında hisset.',
     whereInBody: 'Karın boşluğu, göğüs ortası — duygu dalgasının yükseldiği ve indiği yerler. Solar plexus bölgesinde ağırlık ya da hafifleme.',
     redFlag: 'Heyecanın doruğunda "evet" dediğin ya da çöküntünün dibinde "asla" dediğin anlar.',
     reset: 'Yatakta uyu, dalga durulur. Sabah aynı karara bak — duygun aynıysa o doğru karardır.',
@@ -124,7 +124,7 @@ const BODY_LISTENING: Record<AuthorityKey, { howToFeel: string; whereInBody: str
     reset: 'Sessiz mekana çık. Tek bir karara odaklan. İlk içsel sinyal geldiğinde derhal harekete geç — ertelersen kaybolur.',
   },
   ego: {
-    howToFeel: 'Kararı duyarken kalbinden ne çıkıyor: "ben istiyorum mu?" sorusuna sesli yanıt ver, ağzından çıkana kulak ver.',
+    howToFeel: 'Kararı duyarken kalbinden ne çıkıyor: "ben istiyor muyum?" sorusuna sesli yanıt ver, ağzından çıkana kulak ver.',
     whereInBody: 'Göğüs orta — kalp ve timus bölgesi. İstemediğinde göğüste daralma; istediğinde genişleme.',
     redFlag: 'Başkasını mutlu etmek için söz vermek; sonra kalbinde "ah keşke" yorgunluğu.',
     reset: 'Sözünü tutmamayı bir kez göze al. Kalp kası dinlenmek de ister.',
@@ -187,7 +187,7 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
       'Çevrenden "neden bana söylemedin?" şikayetleri: bildirim atladın',
     ],
     resets: [
-      'Çok yönlülüğünü hatan değil, hediyem diye yeniden kabul et',
+      'Çok yönlülüğünü hatan değil, hediyen diye yeniden kabul et',
       'Atladığın adımlara şimdi geri dön ve hızlıca tamamla',
       'Bir projeyi bırakmanın "doğru bırakmak" olabileceğini hatırla',
     ],
@@ -196,7 +196,7 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
     signs: [
       'Acılık hissi: davet edilmeden enerjini öne sürdün ya da çalıştın',
       'Tükenmişlik / yorgunluk: Jeneratör enerjisine fazla kapıldın, kendini onun gibi sandın',
-      'Çağrılmadan tavsiye vermeye dürtü: aurana karşı görünmezlik hissi',
+      'Çağrılmadan tavsiye verme dürtüsü: aurana karşı görünmezlik hissi',
       'Tanınmama hissi: yanlış kalabalıkta bulunuyorsun',
     ],
     resets: [
@@ -325,7 +325,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     },
     {
       headline: 'Aktif Kanal Spotlight',
-      desc: 'Kanalların senin sabit yaşam frekansı. Bu hafta birinin enerjisi belirgin olacak.',
+      desc: 'Kanalların senin sabit yaşam frekansındır. Bu hafta birinin enerjisi belirgin olacak.',
     },
   ];
   const theme = pick(themes, index);
@@ -339,7 +339,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     },
     {
       title: `${personalitySun.line}. çizgi gölgesi (bilinçli)`,
-      body: `Personality ${personalitySun.line}. çizgi: ${personalityLine.shadow}. Bu çizgi açıkta yaşandığı için seninde fark edilmesi kolaydır.`,
+      body: `Personality ${personalitySun.line}. çizgi: ${personalityLine.shadow}. Bu çizgi açıkta yaşandığı için sende de fark edilmesi kolaydır.`,
       micro: 'Bir karar verirken kendine sor: "yeterince hazır mıyım, yoksa kaçıyor muyum?"',
     },
     {
@@ -366,7 +366,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   } else {
     const c = CENTERS[pick(undefinedList, index)];
     release = {
-      title: `Tanımsız ${c.name}'in tuzağı`,
+      title: `Tanımsız ${c.name} tuzağı`,
       body: c.undefined.notSelfQuestion + ' ' + c.undefined.desc,
       micro: `Bilgelik: ${c.undefined.wisdom}`,
     };
@@ -385,14 +385,14 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   } else if (definedList.length > 0) {
     const c = CENTERS[pick(definedList, index)];
     ownership = {
-      title: `Tanımlı ${c.name}'in hediyesi`,
+      title: `Tanımlı ${c.name} hediyesi`,
       body: c.defined.desc,
       micro: `Bu hafta sahiplen: ${pick(c.defined.gifts, index)}.`,
     };
   } else {
     ownership = {
       title: 'Çevreni sahiplen',
-      body: 'Tanımlı merkezin yok; bu hafta "neredeyim, kimlerle birlikteyim" sorusu üstüne dur. Doğru mekan ve doğru insanlar tek sabit kaynağın.',
+      body: 'Tanımlı merkezin yok; bu hafta "neredeyim, kimlerle birlikteyim" sorusu üstünde dur. Doğru mekan ve doğru insanlar tek sabit kaynağın.',
     };
   }
 
@@ -428,7 +428,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     `${t.signature} doğru yoldasın demektir; ${t.notSelf} dur, "${t.strategy.toLocaleLowerCase('tr')}" demektir.`,
     `Yetkin ${a.name.toLocaleLowerCase('tr')} — kararın hızına değil doğasına güven.`,
     'Tanımlı olan sende sabit, tanımsız olan dünyaya açık. İkisinin de yeri kutsal.',
-    `Sen ${t.type === 'Reflektör' ? 'topluluğun aynasısın' : t.type === 'Projektör' ? 'davet edildiğinde parlarsın' : t.type === 'Manifestor' ? 'başlatma gücüdür özün' : 'yaşamın motoru sensin'}.`,
+    `Sen ${t.type === 'Reflektör' ? 'topluluğun aynasısın' : t.type === 'Projektör' ? 'davet edildiğinde parlarsın' : t.type === 'Manifestor' ? 'başlatma gücüsün' : 'yaşamın motorusun'}.`,
     `Profil ${chart.profile}: ne acelesi var, hayat 6 çizgide oynanır.`,
     'Herkes gibi değilsin; herkes gibi olmak için tasarlanmadın.',
     `${chart.activeChannels.length} kanalın seni sana getirir; gerisi misafir.`,

@@ -263,7 +263,7 @@ export function ReportScreen({ onNavigate }: Props) {
         <Text style={styles.bigNote}>
           {getLang() === 'en'
             ? 'A one-of-a-kind commentary woven from your exact gates, channels and authority — no two charts get the same words.'
-            : 'Tam olarak senin kapıların, kanalların ve yetkinden dokunan, eşi olmayan bir yorum — iki harita aynı cümleleri görmez.'}
+            : 'Tam olarak senin kapılarından, kanallarından ve yetkinden dokunan, eşi olmayan bir yorum — iki harita aynı cümleleri görmez.'}
         </Text>
         {!isPremium ? (
           <TouchableOpacity onPress={openPremium} activeOpacity={0.85}

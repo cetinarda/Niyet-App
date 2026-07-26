@@ -253,7 +253,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
-const APP_VERSION = "1.3.3";
+const APP_VERSION = "1.3.4";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -773,7 +773,7 @@ const EV12_BURCU_ACIKLAMA = {
     "Yengeç":  { tema:"Bastırılmış Şefkat & Aile", yorum:"12. evinde Yengeç varsa duygusal güvenlik, bakım verme ve ev kavramı bilinçdışında güçlü bir yer tutar. Başkasına sığınma ihtiyacını ya da kendi çocukluk yaranı gizleme eğilimin bu evin gölgesidir. Karmik dersin: kendinle anne gibi ilgilenmek. Gizli gücün: derin empati ve sezgisel anlama." },
     "Aslan":   { tema:"Bastırılmış Yaratıcılık & İfade", yorum:"12. evinde Aslan varsa yaratıcı potansiyel ve kalpten liderlik etme gücü sessizce derinleşir. Görünmek istememe, alkış almaktan kaçma ya da kendi parlaklığından utanma bu evin gölgesidir. Karmik dersin: özgün ifadene izin vermek. Gizli gücün: ışığını içten dışa taşıma kapasitesi." },
     "Başak":   { tema:"Bastırılmış Mükemmeliyetçilik & Hizmet", yorum:"12. evinde Başak varsa analitik zihin ve hizmet etme arzusu bilinçdışında çalışır. Kendini ya da başkalarını eleştirme, kusur arama ya da bedeni aşırı kontrol etme bu evin gölgesidir. Karmik dersin: şefkatli bir öz-analiz. Gizli gücün: detaylı anlama ve şifalı hizmet." },
-    "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinizden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
+    "Terazi":  { tema:"Bastırılmış Denge & İlişki", yorum:"12. evinde Terazi varsa uyum kurma, adalet arama ve ilişkilerdeki denge ihtiyacı derinlerde işler. Çatışmadan kaçmak ya da başkasını mutlu etmek için kendinden vazgeçmek bu evin gölgesidir. Karmik dersin: kendi ihtiyaçlarınla barışmak. Gizli gücün: sezgisel diplomasi." },
     "Akrep":   { tema:"Bastırılmış Dönüşüm & Derinlik", yorum:"12. evinde Akrep varsa yoğun duygular, sırlar ve psikolojik dönüşüm gücü bilinçdışında toplanır. Güvensizlik, kontrol ihtiyacı ya da kaybetme korkusu bu evin gölgesidir. Karmik dersin: derinlere inmek ve yeniden doğmak. Gizli gücün: radikal psikolojik anlayış ve şifa kapasitesi." },
     "Yay":     { tema:"Bastırılmış Özgürlük & Anlam", yorum:"12. evinde Yay varsa felsefi bilgelik, anlam arayışı ve spiritüel özgürlük sessizce büyür. İnançlarını ya da yolculuk etme arzunu bastırmak bu evin gölgesidir. Karmik dersin: kendi hakikatine güvenmek ve ilerlemek. Gizli gücün: felsefi kavrayış ve geniş perspektif." },
     "Oğlak":  { tema:"Bastırılmış Disiplin & Otorite", yorum:"12. evinde Oğlak varsa sorumluluk alma kapasitesi ve iç disiplin bilinçdışında güçlenir. Yetersizlik hissi, başaramamaktan korkma ya da otorite figürlerine duyulan gizli öfke bu evin gölgesidir. Karmik dersin: öz-otoritenle barışmak. Gizli gücün: sessiz, kararlı öz-güç." },
@@ -797,7 +797,7 @@ const EV12_BURCU_ACIKLAMA = {
 };
 const GEZEGEN_12EV_GUCLERI = {
   tr: {
-    "Güneş":  "İçsel zenginliğe güven, kendinizi canlandırma ve konsantrasyon, liderlik potansiyeli",
+    "Güneş":  "İçsel zenginliğe güven, kendini canlandırma ve konsantrasyon, liderlik potansiyeli",
     "Ay":     "Duygusal kendine yeterlilik, kendini besleme ve bakma becerisi, ihtiyaç duyan insanlara derin hassasiyet",
     "Merkür": "Olağanüstü açık iç iletişim kurma yeteneği, içsel gelişim için yazma ve düşünmeyi araç olarak kullanma",
     "Venüs":  "Kendine sevgi ve nezaket, yalnız olmaktan alınan haz, ideallere derin bağlılık, iç huzur",
@@ -806,7 +806,7 @@ const GEZEGEN_12EV_GUCLERI = {
     "Satürn": "Öz disiplin, yalnızlıkla baş edebilme, sorumluluk üstlenme ve tek başına kararlılıkla çalışma",
     "Uranüs": "Psikolojik özgürlük ve açık fikirlilik, kökleşmiş sezgiler, orijinallik ve beklenmedik durumlarla baş etme",
     "Neptün": "Sonsuz inanç ve şefkat, esin kaynağının yüksek seviyelerine uyum, ideallere adanma ve özverili sevgi",
-    "Pluto":  "Derin psikolojik anlayış, boyun eğmeyen irade, gerilime dayanabilmek ve kendinizi canlandıracak müthiş güç",
+    "Pluto":  "Derin psikolojik anlayış, boyun eğmeyen irade, gerilime dayanabilmek ve kendini canlandıracak müthiş güç",
   },
   en: {
     "Güneş":  "Trust in inner richness, self-renewal and concentration, leadership potential",
@@ -2052,7 +2052,7 @@ const FEATURE_PROMOS_TR = [
   "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
   "Aynaya 30 saniye bak — Ayna alıştırmasını dene.",
   "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
-  "Totem hayvanın ne diyor? Sakin Hayvanı keşfet.",
+  "Totem hayvanın ne diyor? Sakin Hayvan'ı keşfet.",
   "Bir mit, bir sembol — bugünün Sakin Mitleri seni bekliyor.",
   "Haftalık içsel raporun hazır olabilir — bir bak.",
   "528 Hz, 'Sevgi Frekansı' — bir dakika dinle, hisset.",
@@ -2147,6 +2147,25 @@ async function scheduleDailyReminders(lang) {
       console.log("[Notif] scheduled, pending count:", pending?.notifications?.length);
     } catch(_) {}
   } catch (e) { console.warn("[Notif] error:", e); }
+}
+
+// ── BİLDİRİM AKSİYONU: SOĞUK AÇILIŞ TAMPONU ────────────────────────────────
+// KÖK SEBEP (kullanıcı: "bildirimler ilgili bölüme gitmiyor, güne başla ekranında
+// takılıyor"): dinleyici bir useEffect içinde, yani React mount'undan SONRA
+// kuruluyordu. Uygulama KAPALIYKEN bildirime dokunulduğunda (soğuk açılış) native
+// taraf aksiyonu, JS bundle'ı ayrışıp React bağlanmadan ÖNCE yayınlıyor →
+// olay hiç yakalanmıyor, uygulama varsayılan "giris" ekranında açılıyor.
+// Çözüm: dinleyiciyi MODÜL YÜKLENİRKEN kur (React'ten önce çalışır) ve aksiyonu
+// tamponla; bileşen bağlanınca tamponu boşalt.
+let __pendingNotifAction = null;
+let __notifActionHandler = null;
+if (isNative) {
+  try {
+    LocalNotifications.addListener("localNotificationActionPerformed", (a) => {
+      if (__notifActionHandler) __notifActionHandler(a);
+      else __pendingNotifAction = a;   // React henüz hazır değil → beklet
+    });
+  } catch (_) {}
 }
 
 // Görevden ilgili uygulama aracına köprü (Sprint 2): id → screen. Fiziksel-dünya
@@ -3108,10 +3127,10 @@ const JOURNEY_STEPS = [
     desc:{tr:"Bedene dön. Birkaç nefesle zihni yavaşlat, ritmini bul.",en:"Return to the body. Slow the mind with a few breaths, find your rhythm.",de:"Kehre zum Körper zurück. Verlangsame den Geist mit ein paar Atemzügen, finde deinen Rhythmus.",es:"Vuelve al cuerpo. Calma la mente con unas respiraciones, encuentra tu ritmo.",pt:"Volte ao corpo. Acalme a mente com algumas respirações, encontre o seu ritmo.",fr:"Reviens au corps. Ralentis l'esprit en quelques respirations, trouve ton rythme.",ja:"体に戻ろう。数回の呼吸で心を緩め、自分のリズムを見つける。"} },
   { icon:"🔊", color:"#a07ae0",
     title:{tr:"3 · Ses Frekansları",en:"3 · Sound Frequencies",de:"3 · Klangfrequenzen",es:"3 · Frecuencias de sonido",pt:"3 · Frequências sonoras",fr:"3 · Fréquences sonores",ja:"3 · 音の周波数"},
-    desc:{tr:"Solfeggio frekanslarıyla kendini akord et. Kuş sesleri eşliğinde içsel diapazon yeniden hizalanır.",en:"Tune yourself with solfeggio frequencies. With birdsong, your inner pitch realigns.",de:"Stimme dich mit Solfeggio-Frequenzen. Mit Vogelgesang richtet sich deine innere Tonlage neu aus.",es:"Afínate con frecuencias solfeggio. Con el canto de los pájaros, tu tono interior se realinea.",pt:"Afine-se com frequências solfeggio. Com o canto dos pássaros, o seu tom interior se realinha.",fr:"Accorde-toi aux fréquences solfeggio. Avec le chant des oiseaux, ton diapason intérieur se réaligne.",ja:"ソルフェジオ周波数で自分を調律する。鳥のさえずりとともに、内なる音程が整い直す。"} },
+    desc:{tr:"Solfeggio frekanslarıyla kendini akort et. Kuş sesleri eşliğinde içsel diyapazon yeniden hizalanır.",en:"Tune yourself with solfeggio frequencies. With birdsong, your inner pitch realigns.",de:"Stimme dich mit Solfeggio-Frequenzen. Mit Vogelgesang richtet sich deine innere Tonlage neu aus.",es:"Afínate con frecuencias solfeggio. Con el canto de los pájaros, tu tono interior se realinea.",pt:"Afine-se com frequências solfeggio. Com o canto dos pássaros, o seu tom interior se realinha.",fr:"Accorde-toi aux fréquences solfeggio. Avec le chant des oiseaux, ton diapason intérieur se réaligne.",ja:"ソルフェジオ周波数で自分を調律する。鳥のさえずりとともに、内なる音程が整い直す。"} },
   { icon:"💜", color:"#b87adc",
     title:{tr:"4 · Çakra Şifası",en:"4 · Chakra Healing",de:"4 · Chakra-Heilung",es:"4 · Sanación de chakras",pt:"4 · Cura dos chakras",fr:"4 · Guérison des chakras",ja:"4 · チャクラの癒し"},
-    desc:{tr:"Niyetinle enerjiyi yönlendir. Eli bölgeye değdir, gözleri yum — çakralarına şifa akar.",en:"Direct energy with intention. Place your hand, close your eyes — healing flows into your chakras.",de:"Lenke Energie mit Absicht. Lege die Hand auf, schließe die Augen — Heilung fließt in deine Chakren.",es:"Dirige la energía con intención. Pon la mano, cierra los ojos: la sanación fluye a tus chakras.",pt:"Direcione a energia com intenção. Ponha a mão, feche os olhos — a cura flui para os seus chakras.",fr:"Dirige l'énergie avec intention. Pose la main, ferme les yeux — la guérison coule vers tes chakras.",ja:"意図でエネルギーを導く。手を当て、目を閉じる——癒しがチャクラへと流れ込む。"} },
+    desc:{tr:"Niyetinle enerjiyi yönlendir. Elini bölgeye değdir, gözlerini yum — çakralarına şifa akar.",en:"Direct energy with intention. Place your hand, close your eyes — healing flows into your chakras.",de:"Lenke Energie mit Absicht. Lege die Hand auf, schließe die Augen — Heilung fließt in deine Chakren.",es:"Dirige la energía con intención. Pon la mano, cierra los ojos: la sanación fluye a tus chakras.",pt:"Direcione a energia com intenção. Ponha a mão, feche os olhos — a cura flui para os seus chakras.",fr:"Dirige l'énergie avec intention. Pose la main, ferme les yeux — la guérison coule vers tes chakras.",ja:"意図でエネルギーを導く。手を当て、目を閉じる——癒しがチャクラへと流れ込む。"} },
   { icon:"☀️", color:"#e8d060",
     title:{tr:"5 · Gün Hatırlatmaları",en:"5 · Daily Reminders",de:"5 · Tägliche Erinnerungen",es:"5 · Recordatorios diarios",pt:"5 · Lembretes do dia",fr:"5 · Rappels du jour",ja:"5 · 日中のリマインダー"},
     desc:{tr:"Su iç. Güneşi hisset. Toprağa dokun. Küçük dokunuşlar seni ana bağlar — anda kalırsın.",en:"Drink water. Feel the sun. Touch the earth. Small touches return you to the present.",de:"Trink Wasser. Spüre die Sonne. Berühre die Erde. Kleine Berührungen holen dich in den Augenblick.",es:"Bebe agua. Siente el sol. Toca la tierra. Pequeños gestos te devuelven al presente.",pt:"Beba água. Sinta o sol. Toque a terra. Pequenos gestos trazem você de volta ao presente.",fr:"Bois de l'eau. Sens le soleil. Touche la terre. De petits gestes te ramènent à l'instant.",ja:"水を飲む。陽を感じる。大地に触れる。小さな仕草があなたを「今」に戻す。"} },
@@ -3123,7 +3142,7 @@ const JOURNEY_STEPS = [
     desc:{tr:"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor — bedenin de bir mesaj taşır.",en:"Find the mysterious portal at the right edge. Step in, ask your inner mirror — your body carries a message too.",de:"Finde das geheimnisvolle Portal am rechten Rand. Tritt ein, frage deinen inneren Spiegel — auch dein Körper trägt eine Botschaft.",es:"Encuentra el portal misterioso del borde derecho. Entra, pregunta a tu espejo interior: tu cuerpo también lleva un mensaje.",pt:"Encontre o portal misterioso na borda direita. Entre, pergunte ao seu espelho interior — o seu corpo também traz uma mensagem.",fr:"Trouve le portail mystérieux au bord droit. Entre, interroge ton miroir intérieur — ton corps porte aussi un message.",ja:"右端の神秘の門を見つけよう。中へ入り、内なる鏡に問いかける——体もまたメッセージを運んでいる。"} },
   { icon:"✦", color:"#82d9a3",
     title:{tr:"8 · Haftalık Rapor",en:"8 · Weekly Report",de:"8 · Wochenbericht",es:"8 · Informe semanal",pt:"8 · Relatório semanal",fr:"8 · Rapport hebdomadaire",ja:"8 · 週間レポート"},
-    desc:{tr:"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritm. Kendinle bağını derinleştir.",en:"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself.",de:"Deine KI-gestützte wöchentliche innere Karte: Chakra-Muster, Absichtswörter, Biorhythmus. Vertiefe die Bindung zu dir selbst.",es:"Tu mapa interior semanal con IA: patrones de chakras, palabras de intención, biorritmo. Profundiza el vínculo contigo mismo.",pt:"Seu mapa interior semanal com IA: padrões de chakra, palavras de intenção, biorritmo. Aprofunde o vínculo consigo mesmo.",fr:"Ta carte intérieure hebdomadaire assistée par IA : motifs des chakras, mots d'intention, biorythme. Approfondis le lien avec toi-même.",ja:"AIによる週間の内なる地図：チャクラのパターン、意図の言葉、バイオリズム。自分とのつながりを深めよう。"} },
+    desc:{tr:"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritim. Kendinle bağını derinleştir.",en:"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself.",de:"Deine KI-gestützte wöchentliche innere Karte: Chakra-Muster, Absichtswörter, Biorhythmus. Vertiefe die Bindung zu dir selbst.",es:"Tu mapa interior semanal con IA: patrones de chakras, palabras de intención, biorritmo. Profundiza el vínculo contigo mismo.",pt:"Seu mapa interior semanal com IA: padrões de chakra, palavras de intenção, biorritmo. Aprofunde o vínculo consigo mesmo.",fr:"Ta carte intérieure hebdomadaire assistée par IA : motifs des chakras, mots d'intention, biorythme. Approfondis le lien avec toi-même.",ja:"AIによる週間の内なる地図：チャクラのパターン、意図の言葉、バイオリズム。自分とのつながりを深めよう。"} },
   { icon:"◎", color:"#b87adc",
     title:{tr:"9 · Bağlantı",en:"9 · Connection",de:"9 · Verbindung",es:"9 · Conexión",pt:"9 · Conexão",fr:"9 · Connexion",ja:"9 · つながり"},
     desc:{tr:"Sakin'i kullandıkça gün içinde kaynak enerjisiyle bağlantını güçlendirirsin — her dokunuş seni özüne yaklaştırır.",en:"As you use Sakin through the day, you strengthen your connection to source energy — each touch draws you closer to your essence.",de:"Während du Sakin im Laufe des Tages nutzt, stärkst du deine Verbindung zur Quellenergie — jede Berührung bringt dich deinem Wesen näher.",es:"A medida que usas Sakin durante el día, fortaleces tu conexión con la energía fuente: cada gesto te acerca a tu esencia.",pt:"À medida que usa o Sakin ao longo do dia, fortalece a conexão com a energia fonte — cada toque o aproxima da sua essência.",fr:"À mesure que tu utilises Sakin au fil du jour, tu renforces ta connexion à l'énergie source — chaque contact te rapproche de ton essence.",ja:"一日を通してSakinを使うほど、源のエネルギーとのつながりが強まる——一つひとつの触れ合いが、あなたを本質へと近づける。"} },
@@ -3439,37 +3458,51 @@ export default function SakinApp() {
   // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only — webde no-op.
   useEffect(() => {
     if (!isNative) return;
-    let handle = null;
-    try {
-      const p = LocalNotifications.addListener("localNotificationActionPerformed", (a) => {
-        const x = a?.notification?.extra || {};
-        // extra.embed → doğrudan ilgili aile uygulamasını aç (ör. "tasarim").
-        // NOT: aşağıdaki harita burada YEREL tanımlı — postMessage köprüsündeki
-        // EMBED_BY_KEY başka bir useEffect kapsamında olduğu için buradan erişilemez.
-        const EMBEDS = {
-          hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
-          mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
-          tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
-          taslar:  { name: t("ailesi_taslar_name"),  embed: "/embedded/sakintaslar/index.html", color: "#a0d8d8" },
-          bitkiler:{ name: t("ailesi_bitkiler_name"),embed: "/embedded/sakinbitkiler/index.html", color: "#7BA05B" },
-        };
-        if (x.embed) {
-          const target = EMBEDS[x.embed];
-          if (target && handleOpenEmbedRef.current) {
-            try { setShowAilesi(false); } catch(_){}
-            setEmbedLoaded(false);
-            handleOpenEmbedRef.current(target);
-            return;
-          }
-          // Embed bulunamazsa en azından Keşfet panelini aç
-          try { setShowAilesi(true); } catch(_){}
+    // AÇILIŞ KATMANLARINI KAPAT: bildirimden gelen kullanıcı hedefe DOĞRUDAN
+    // düşmeli. Bunlar kapatılmazsa splash/HAZIRIM/"yol seçimi" pop-up'ı üstte
+    // kalıyor ve kullanıcı "güne başla" ekranında takılı görüyor.
+    const clearEntryLayers = () => {
+      try { setShowIntro(false); sessionStorage.setItem("sakin_intro_seen","1"); } catch(_){}
+      try { setShowNedir(false); } catch(_){}
+      try { setGirisPhase("birth"); } catch(_){}
+    };
+    const handler = (a) => {
+      const x = a?.notification?.extra || {};
+      // extra.embed → doğrudan ilgili aile uygulamasını aç (ör. "tasarim").
+      // NOT: aşağıdaki harita burada YEREL tanımlı — postMessage köprüsündeki
+      // EMBED_BY_KEY başka bir useEffect kapsamında olduğu için buradan erişilemez.
+      const EMBEDS = {
+        hayvan:  { name: t("ailesi_hayvan_name"),  embed: "/embedded/sakinhayvan/index.html", color: "#a0d8b4" },
+        mitler:  { name: t("ailesi_mitler_name"),  embed: "/embedded/sakinmitler/index.html", color: "#d8b4a0" },
+        tasarim: { name: t("ailesi_tasarim_name"), embed: "/embedded/humandesign/index.html", color: "#b4a0d8" },
+        taslar:  { name: t("ailesi_taslar_name"),  embed: "/embedded/sakintaslar/index.html", color: "#a0d8d8" },
+        bitkiler:{ name: t("ailesi_bitkiler_name"),embed: "/embedded/sakinbitkiler/index.html", color: "#7BA05B" },
+      };
+      clearEntryLayers();
+      if (x.embed) {
+        const target = EMBEDS[x.embed];
+        if (target && handleOpenEmbedRef.current) {
+          try { setShowAilesi(false); } catch(_){}
+          setEmbedLoaded(false);
+          handleOpenEmbedRef.current(target);
           return;
         }
-        if (x.screen) { try { setShowAilesi(false); } catch(_){} setScreen(x.screen); }
-      });
-      if (p && typeof p.then === "function") p.then(h => { handle = h; }); else handle = p;
-    } catch(_) {}
-    return () => { try { handle && handle.remove(); } catch(_) {} };
+        // Embed bulunamazsa en azından Keşfet panelini aç
+        try { setShowAilesi(true); } catch(_){}
+        return;
+      }
+      if (x.screen) { try { setShowAilesi(false); } catch(_){} setScreen(x.screen); }
+    };
+    __notifActionHandler = handler;
+    // Soğuk açılışta modül seviyesinde tamponlanan aksiyonu şimdi işle. Splash
+    // (showIntro) 2.4 sn sürüyor; hedefe geçişi onun bitişine yakın uygula ki
+    // splash'in kendi zamanlayıcısı üstüne yazmasın.
+    if (__pendingNotifAction) {
+      const pending = __pendingNotifAction;
+      __pendingNotifAction = null;
+      setTimeout(() => handler(pending), 60);
+    }
+    return () => { __notifActionHandler = null; };
   }, []);
   const [showFotoTani, setShowFotoTani] = useState(false);
   const [fotoTaniType, setFotoTaniType] = useState("stone"); // embed'den gelir: stone | plant
@@ -4117,6 +4150,24 @@ export default function SakinApp() {
   useEffect(() => { if (gunTasksDone >= STEP_MIN.gun) markStep("gun"); }, [gunTasksDone]);
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
 
+  // ── GÜNÜN SAATİNE GÖRE GİRİŞ EKRANI ─────────────────────────────────────────
+  // Kullanıcı: "appe akşam girdim bağlanmak istedim ama 'bugünü nasıl geçirmek
+  // istersin' diye sorup sabahtan başlatıyor... direkt akşama alsın ve bana bir
+  // şey yaptırsın isterdim."
+  // Eskiden "Devam Et →" her koşulda "sabah" ekranına gidiyordu. Artık saate ve
+  // tamamlanan adımlara bakılır; kullanıcı her zaman YAPACAK bir şeyin üstüne düşer.
+  //   04:00-11:59 → sabah niyeti (yapılmadıysa)
+  //   12:00-17:59 → ilk eksik adım (gün akışına devam)
+  //   18:00-03:59 → akşam kapanışı (yapılmadıysa)
+  // Hepsi tamamsa bağlantı ekranı (mandala) açılır — tünel/seri orada görünür.
+  const nextIncompleteScreen = () => MANDALA_STEPS.find(id => !stepsCompleted[id]) || "mandala";
+  const timeAwareEntryScreen = () => {
+    const h = new Date().getHours();
+    if (h >= 18 || h < 4) return !stepsCompleted["aksam"] ? "aksam" : nextIncompleteScreen();
+    if (h < 12)           return !stepsCompleted["sabah"] ? "sabah" : nextIncompleteScreen();
+    return nextIncompleteScreen();
+  };
+
   // ── SEVİYE SİSTEMİ (kullanıcı: "7 gün düzenli kullanırsa sonraki seviyeye geçer
   //    x2 olur; 21 gün devam ederse tekrar bir sonraki seviyeye geçer x2 olur").
   //    Seviye 1: 0-6 gün (x1) · Seviye 2: 7-20 gün (x2) · Seviye 3: 21+ gün (x4).
@@ -4610,7 +4661,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     { organ:"Akciğerler",     neden:"Hayatı tam almayı reddetme, üzüntü" },
     { organ:"Karaciğer",      neden:"Kronik öfke, eleştiri, akıl yürütme" },
     { organ:"Böbrekler",      neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
-    { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihnin durduramama" },
+    { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihni durduramama" },
     { organ:"Tansiyon",       neden:"Uzun süreli çözümsüz duygusal sorunlar, aşırı kontrol ihtiyacı" },
     { organ:"Yorgunluk",      neden:"Direnç, sıkılmışlık, sevgisiz yaşama" },
     { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
@@ -6395,7 +6446,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             setShowTopMenu(false);
           };
           const renderBtn = (n) => {
-            const active = n.id==="ailesi" ? showAilesi : screen===n.id;
+            // AKTİF = SADECE İÇİNDE OLUNAN MENÜ (kullanıcı: "keşfet ekranındayken
+            // bağlan butonu da yanıyor; hangi menüdeysek sadece o yansın").
+            // KÖK SEBEP: Keşfet bir `screen` değil, `showAilesi` overlay'i — açıkken
+            // altta `screen` hâlâ "mandala" olduğu için BAĞLAN da yanıyordu.
+            const active = n.id==="ailesi" ? showAilesi : (!showAilesi && screen===n.id);
             return (
               <button key={n.id}
                 onClick={()=>handleNavClick(n)}
@@ -6488,7 +6543,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       boxShadow:"0 8px 32px rgba(0,0,0,0.6)", padding:6,
                       display:"flex", flexDirection:"column", gap:2 }}>
                     {menuItems.map(n => {
-                      const active = n.id==="ailesi" ? showAilesi : screen===n.id;
+                      // Aktif = sadece içinde olunan menü (renderBtn ile aynı kural).
+                      const active = n.id==="ailesi" ? showAilesi : (!showAilesi && screen===n.id);
                       return (
                         <button key={n.id} onClick={()=>handleNavClick(n)}
                           style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
@@ -6500,6 +6556,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
+                    {/* SAKİN NEDİR? — koyu tema butonunun HEMEN ÜSTÜNDE (kullanıcı isteği).
+                        Yolculuk sekmesini açar; bağlantı açıklaması orada en üstte. */}
+                    <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
+                    <button onClick={()=>{ setShowTopMenu(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
+                      style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                        background: screen==="hakkinda" ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
+                        cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                        color:"#f0c060", textAlign:"left", width:"100%" }}>
+                      <span style={{ fontSize:15, lineHeight:1 }}>✦</span>
+                      <span>{pickLang(NEDIR_I18N.title, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                    </button>
                     {/* Açık/koyu tema — menünün EN ALTINDA. Artık mobilde de (iOS/Android) var. */}
                     {(<>
                       <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
@@ -6720,7 +6787,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {t("birth_edit_info")}
                 </button>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
-                  onClick={()=>{ setScreen("sabah"); }}>
+                  onClick={()=>{ setScreen(timeAwareEntryScreen()); }}>
                   {t("common_continue")}
                 </button>
               </div>
@@ -8935,7 +9002,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
               {JOURNEY_STEPS.map((step,i,arr) => (
                 <div key={i} style={{ position:"relative",marginBottom:i<arr.length-1?24:0,paddingBottom:i<arr.length-1?4:0 }}>
-                  <div style={{ position:"absolute",left:-27,top:2,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13 }}>{step.icon}</div>
+                  {/* İkon dikey çizginin TAM ORTASINDA olmalı. Kapsayıcı paddingLeft:32,
+                      çizgi left:12 + width:2 → çizgi ekseni x=13. Adım div'i x=32'den
+                      başladığı için daire ekseni left:-27'de x=18'e düşüyordu (5px sağa
+                      kaçık — kullanıcı: "ikonlar hizalı değil"). left:-32 → eksen x=13.
+                      top:-4 ile daire, başlık satırının dikey ortasına oturur. */}
+                  <div style={{ position:"absolute",left:-32,top:-4,width:26,height:26,borderRadius:"50%",background:`radial-gradient(circle,${step.color}44,${step.color}11)`,border:`1.5px solid ${step.color}55`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,lineHeight:1 }}>{step.icon}</div>
                   <div style={{ fontSize:14,fontWeight:500,color:step.color,letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{step.title[lang] || step.title.en || step.title.tr}</div>
                   <div style={{ fontSize:13,color:"#999",lineHeight:1.8 }}>{step.desc[lang] || step.desc.en || step.desc.tr}</div>
                 </div>

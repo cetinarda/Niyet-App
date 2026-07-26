@@ -100,7 +100,7 @@ export const AUTHORITIES: Record<AuthorityKey, AuthorityInfo> = {
     nameEn: 'Heart / Ego Authority',
     emoji: '👑',
     shortDesc:
-      'Heart merkezi tanımlı, Solar Plexus, Sakral ve Spleen tanımsız. Kararı kalbin/iradenin sesi verir: "ben istiyorum mu?".',
+      'Heart merkezi tanımlı, Solar Plexus, Sakral ve Spleen tanımsız. Kararı kalbin/iradenin sesi verir: "ben istiyor muyum?".',
     shortDescEn:
       'Heart center defined, Solar Plexus, Sacral and Spleen undefined. The decision is given by the voice of the heart/willpower: \'do I want this?\'.',
     howToDecide: [
@@ -155,7 +155,7 @@ export const AUTHORITIES: Record<AuthorityKey, AuthorityInfo> = {
       'Birden fazla güvendiğin kişiyle konuş.',
       'Doğru fiziksel mekan ve doğru insanlar netliğe götürür.',
       'Karara tek başına oturma; geçirgen merkezler aldatabilir.',
-      'Sözcükler dökerken hangi ortamın seni desteklediğini fark et.',
+      'Sözcüklere dökerken hangi ortamın seni desteklediğini fark et.',
     ],
     howToDecideEn: [
       'Talk it through with more than one person you trust.',

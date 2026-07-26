@@ -59,7 +59,7 @@ const PLANET_TR: Record<string, { tr: string; glyph: string }> = {
   saturn:    { tr: 'Satürn',  glyph: '♄' },
   uranus:    { tr: 'Uranüs',  glyph: '♅' },
   neptune:   { tr: 'Neptün',  glyph: '♆' },
-  pluto:     { tr: 'Plüto',   glyph: '♇' },
+  pluto:     { tr: 'Plüton',   glyph: '♇' },
   northNode: { tr: 'K. Ay Düğümü', glyph: '☊' },
 };
 

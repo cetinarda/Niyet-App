@@ -65,6 +65,22 @@
 	<array>
 		<string>audio</string>
 	</array>
+	<!-- SKAdNetwork: Meta (Instagram/Facebook) "Şimdi Yükle" reklamlarının yüklemeye
+	     dönüşümünü ölçebilmesi için gerekli. Sadece reklam ağı kimliği bildirir;
+	     hiçbir izleme SDK'sı eklenmez, IDFA/ATT izni İSTENMEZ, kullanıcı verisi
+	     toplanmaz. Dönüşüm ölçümü Apple'ın gizlilik korumalı SKAdNetwork
+	     altyapısı üzerinden, kimliksizleştirilmiş olarak yapılır. -->
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>v9wttpbfk9.skadnetwork</string>
+		</dict>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>n38lu8286q.skadnetwork</string>
+		</dict>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Sakin, çektiğin taş veya bitki fotoğrafını tanımak için kameranı kullanır.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
