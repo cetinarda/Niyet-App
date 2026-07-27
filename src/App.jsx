@@ -253,6 +253,13 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 
 // Bu sabit her App Store release'inde elle bumplanır (build script gerek YOK).
 // Server'daki latest-ios-version.json bundan büyük ise app içinde güncelleme banner'ı çıkar.
+//
+// ⚠️ public/latest-ios-version.json BU SABİTLE BİRLİKTE BUMPLANMAZ. O dosya
+// "App Store'da CANLI olan sürüm"ü bildirir. İkisi aynı anda yükseltilirse,
+// mağazada henüz olmayan bir sürüm için TÜM kullanıcılara sahte güncelleme
+// bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
+//   1) burada + pbxproj + build.gradle bump  → gönder
+//   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
 const APP_VERSION = "1.3.4";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";

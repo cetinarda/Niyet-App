@@ -14,13 +14,23 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    cd ~/Desktop/Niyet-App && git pull origin claude/check-sakin-life-update-CIpM8 && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
    ```
-4. **Sürüm 4 yerde aynı olmalı:**
+4. **⚠️ `public/latest-ios-version.json` SÜRÜM BUMP'IYLA BİRLİKTE GÜNCELLENMEZ.**
+   Bu dosya "App Store'da CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
+   Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse kullanıcıya
+   "yeni sürüm var" bildirimi gösterip mağazaya yönlendirir. Sürüm bump'ıyla
+   birlikte yükseltilirse mağazada OLMAYAN bir sürüm için tüm kullanıcılara
+   sahte bildirim gider (1.3.4'te yaşandı). Doğru sıra:
+   1. `APP_VERSION` + `pbxproj` + `build.gradle` bump → App Store'a gönder
+   2. Sürüm App Store'da **yayınlandıktan sonra** → `latest-ios-version.json` bump
+   Canlı sürümü doğrulama: `curl -s "https://itunes.apple.com/lookup?id=6765619382" | python3 -c "import sys,json;print(json.load(sys.stdin)['results'][0]['version'])"`
+
+5. **Sürüm 3 yerde aynı olmalı (bump anında):**
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
-   - `public/latest-ios-version.json` — `version` ve `build`
-   - **App Store'da CANLI: `1.2.7`** (kullanıcılar bunu kullanıyor). Repodaki bir sonraki gönderim: `1.2.8 / build 1` (4 yerde de hazır). Yeni sürüm verirken 1.2.7'den ilerlet.
-5. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
-6. **App Store onayını riske atan değişiklikler için onay al:**
+   - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
+   - **App Store'da CANLI: `1.3.3`** (25 Tem 2026'da yayınlandı). Repoda hazırlanan: `1.3.4 / build 1`, Android `versionCode 5`.
+6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
+7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
 

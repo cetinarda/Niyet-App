@@ -1,7 +1,8 @@
 {
-  "version": "1.3.4",
+  "_comment_TR": "DİKKAT: Bu dosya, APP STORE'DA CANLI OLAN sürümü bildirir — repodaki sürümü DEĞİL. Uygulama bunu okur ve kendi APP_VERSION'ından büyükse kullanıcıya 'yeni sürüm var' bildirimi gösterip mağazaya yönlendirir. Sürüm bump'ıyla BİRLİKTE güncellenmemelidir; yalnızca yeni sürüm App Store'da GERÇEKTEN YAYINLANDIKTAN SONRA güncellenir. Aksi halde kullanıcılar olmayan bir güncelleme için uyarılır.",
+  "version": "1.3.3",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "İçsel bağlantını kurman kolaylaştı. Uygulama artık günün saatine göre karşılıyor: akşam girdiğinde doğrudan akşam kapanışına götürüyor. Bildirime dokununca ilgili bölüm açılıyor. Üst menü sadeleşti, yazım ve hizalama düzeltmeleri yapıldı.",
-  "release_notes_en": "Building your inner connection is simpler now. The app greets you based on the time of day — open it in the evening and it takes you straight to the evening closing. Tapping a notification now opens the right section. Simplified top menu, plus wording and alignment fixes."
+  "release_notes_tr": "Bağlantı tamamlanınca çakra sütunu ışık tüneline dönüşüyor: ışık gökten girip yerde sönüyor, kesintisiz akıyor. Bağlantı aktifken ayna simgesi renk değiştiriyor. Gün dönümü hatası giderildi: gün artık gece yarısında yenileniyor. Harita ve Keşfet ekranlarında üst menü sadeleşti.",
+  "release_notes_en": "When the daily connection completes, the chakra column becomes a light tunnel: light enters from the sky and fades into the earth in one continuous flow. The mirror icon shifts colors while the connection is active. Fixed the day-rollover bug: the day now resets at local midnight. Simplified the top bar on the Map and Explore screens."
 }
