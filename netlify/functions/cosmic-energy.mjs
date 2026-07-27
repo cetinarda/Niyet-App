@@ -367,6 +367,18 @@ function _sanitizeSky(text, lang) {
     return null;   // → şablon metne düş
   }
   if (lang === "tr") {
+    // LATİN HARFLİ YABANCI KELİME SIZINTISI. Canlıda görüldü:
+    // "...sanki world'in enerji alanını..." — Latin-dışı süzgeç bunu yakalamaz.
+    // KESİN KURAL: Türk alfabesinde q, w, x HARFLERİ YOKTUR. Küçük harfle
+    // başlayan bir kelimede bunlardan biri geçiyorsa kelime Türkçe DEĞİLDİR.
+    // Büyük harfle başlayanlar muaf — özel adlar meşru olabilir (ör. ocak
+    // ayında prompt'a giren "Quadrantid" göktaşı yağmuru).
+    const foreign = t.match(/\b\p{Ll}[\p{L}'’]*\b/gu) || [];
+    const bad = foreign.find(w => /[qwx]/i.test(w));
+    if (bad) {
+      console.warn("[sky] latin-harfli yabanci kelime, rapor reddedildi:", bad, "|", t.slice(0, 100));
+      return null;   // → şablon metne düş
+    }
     // SADECE Türkçe: fr/pt'de à/è/ù meşru harflerdir, onlara dokunma.
     t = t.replace(/à/g, "a").replace(/è/g, "e").replace(/ì/g, "i").replace(/ò/g, "o").replace(/ù/g, "u");
     t = t.replace(/\bprocent\b/gi, "yüzde").replace(/\bpercent\b/gi, "yüzde").replace(/\bprozent\b/gi, "yüzde");
