@@ -1,11 +1,12 @@
 import { HumanDesignChart } from './humanDesign';
 import { chartHash, hangingGates, personalResets } from './personalize';
-import { getLang } from '../i18n';
+import { getLang, L } from '../i18n';
 import { CENTERS, CenterKey } from '../data/centers';
 import { GATES } from '../data/gates';
 import { TYPES, HDType } from '../data/types';
 import { AUTHORITIES, AuthorityKey } from '../data/authorities';
 import { LINES, PROFILES } from '../data/profiles';
+import { circuitLabel } from '../data/channels';
 
 // =============================================================
 // ISO hafta — haftalık deterministik rotasyon
@@ -221,6 +222,199 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
 };
 
 // =============================================================
+// İNGİLİZCE KARŞILIKLAR
+// Rapor sekmesinin GÖVDESİ İngilizce modda da Türkçe basıyordu: ekran
+// etiketleri çevriliydi ama içerik generateWeeklyReport()'tan ham TR geliyordu.
+// Tablolar aynı anahtarlarla paralel tutuluyor; T() seçici ile dile göre okunur.
+// =============================================================
+const AURA_COMPATIBILITY_EN: Record<HDType, { gets: string[]; tension: string[]; note: string }> = {
+  'Manifestor': {
+    gets: [
+      'Generators and Manifesting Generators — their enveloping aura makes room for your spark of initiation',
+      'Projectors — their deep seeing confirms your direction (if you invite them)',
+      'Grown-ups who respect your boundary and can receive an announcement without asking "why?"',
+    ],
+    tension: [
+      'Another Manifestor — two repelling auras; a fight over space is inevitable',
+      'People who try to control you or make you ask permission',
+      'A Reflector who gets triggered quickly by being confined — the push in your aura reflects back',
+    ],
+    note: 'Your aura repels; informing others softens it.',
+  },
+  'Jeneratör': {
+    gets: [
+      'Other Generators / MGs — parallel engines; two sacrals on one task produce enormous output',
+      'Projectors — they read your sacral response and ask the right question',
+      'People who keep their word and can ask "what do you actually want?"',
+    ],
+    tension: [
+      'People who ask you open-ended questions and leave no room for a yes/no',
+      'Friends with weak boundaries who push you into work you do not love',
+      'People who "get swept up in your ideas" — they connect to your head, not your sacral, and trigger frustration',
+    ],
+    note: 'Your aura is enveloping; it draws people in — not to satisfy them, but to respond.',
+  },
+  'Manifesting Jeneratör': {
+    gets: [
+      'Generators — a parallel rhythm',
+      'A Projector who accepts your speed — they make the right call to you',
+      'People who see your many-sidedness as lightness',
+    ],
+    tension: [
+      'Single-focus people who say "finish this first" — they do not see the gift of skipping',
+      'People close to you asking "why didn\'t you tell me?" because they were not informed — do not skip informing',
+      'People who tell you that you need to slow down',
+    ],
+    note: 'An enveloping aura plus manifesting energy; informing softens the aura.',
+  },
+  'Projektör': {
+    gets: [
+      'Generators and Manifesting Generators — you naturally feed on their aura; you fill up near them',
+      'People who invite your insight instead of asking you what to do',
+      'Grown-ups who respect your energetic limits and want to protect you from crowds',
+    ],
+    tension: [
+      'Another Projector — two guides, and the tension of "who invites whom?"',
+      'Manifestors — their repelling aura puts you in the tension of "should I ask now?"',
+      'People who come for advice without inviting you — a bitterness trigger',
+    ],
+    note: 'Your aura is focused and penetrating; it reads the other person deeply. That seeing only gains value when invited.',
+  },
+  'Reflektör': {
+    gets: [
+      'Healthy people who stand in their own centre — they shine in you',
+      'Loved ones who do not press you for a decision and let you wait the 28 days',
+      'Balanced communities with varied auras — ones you do not get stuck to',
+    ],
+    tension: [
+      'Long contact with a single person of intense, overbearing aura — you sample it and it takes over',
+      'People who try to hurry your decision and say "tell me now"',
+      'An unhealthy environment (place, room, home) — place comes before everything',
+    ],
+    note: 'Your aura is sampling and permeable; it takes in the energy around you and mirrors it back.',
+  },
+};
+
+const BODY_LISTENING_EN: Record<AuthorityKey, { howToFeel: string; whereInBody: string; redFlag: string; reset: string }> = {
+  emotional: {
+    howToFeel: 'Do not say an instant "yes" or "no" to a decision; feel the same decision over several days in different emotional states.',
+    whereInBody: 'The belly and the middle of the chest — where the emotional wave rises and falls. Heaviness or lightening around the solar plexus.',
+    redFlag: 'The moments you say "yes" at the peak of excitement, or "never" at the bottom of a low.',
+    reset: 'Sleep on it; the wave settles. Look at the same decision in the morning — if the feeling is the same, it is the right one.',
+  },
+  sacral: {
+    howToFeel: 'Your immediate body response to what is in front of you: an "uh-huh" (rising, opening) or "un-uh" (falling, closing) sound from the chest.',
+    whereInBody: 'Deep in the belly and the lower chest — it is heard in the sacral sound, and it even comes out loud.',
+    redFlag: 'When your mind\'s reasoning replaces the sacral response, exhaustion follows.',
+    reset: 'Truly tire your body; let the sacral empty before bed. When no response comes, "no decision right now" is a legitimate answer.',
+  },
+  splenic: {
+    howToFeel: 'An instant, quiet intuition that does not repeat. Catch the first whisper; there is no second one.',
+    whereInBody: 'A slight tension or release in the spleen (under the left ribs), a shiver in the armpit/lymph area, a faint ringing in the ear, a sudden hint of smell — the concrete bodily signals of intuition.',
+    redFlag: 'Noise, crowds and stacking many decisions together drown out the splenic voice. The late regret of "I actually knew".',
+    reset: 'Get to a quiet place. Focus on one decision. When the first inner signal comes, act at once — if you delay, it is gone.',
+  },
+  ego: {
+    howToFeel: 'Listen to what comes from your heart as you hear the decision: answer "do I want this?" out loud and listen to what leaves your mouth.',
+    whereInBody: 'Mid-chest — the heart and thymus area. Tightening in the chest when you do not want it; widening when you do.',
+    redFlag: 'Promising in order to make someone else happy; then the "I wish I hadn\'t" fatigue in your heart.',
+    reset: 'Risk breaking a promise once. The heart muscle also wants rest.',
+  },
+  'self-projected': {
+    howToFeel: 'Speak out loud with a friend you trust. As you speak, watch the shifts in your tone, your pace and the rhythm of your breath.',
+    whereInBody: 'The throat and vocal cords — tightening when you speak in the wrong direction; ease and widening in the right one.',
+    redFlag: 'Settling for talking inside your head; deciding without a sound leaving you.',
+    reset: 'Call a friend. Ask them to listen rather than advise. Your voice is the authority.',
+  },
+  mental: {
+    howToFeel: 'Do not decide alone; your clarity opens in the right combination of the right people and the right place.',
+    whereInBody: 'There is no fixed bodily signal — which is why you will learn to read the environment rather than the body.',
+    redFlag: 'If you sit alone and your mind spins for hours, the decision will not come from there.',
+    reset: 'Talk the same subject through, again and again, with more than one voice you trust. Change the place — take the decision to a bench, a park, the shore.',
+  },
+  lunar: {
+    howToFeel: 'Review the decision across a full 28-day lunar cycle, with different people, on different days, in different moods.',
+    whereInBody: 'Each day the whole body becomes more sensitive to one centre. See every day of the lunar cycle as the laboratory of a different centre.',
+    redFlag: 'A hasty decision — a "yes" given before the cycle creates deep fatigue.',
+    reset: 'Wait the 28 days with the right people, in the right place. A feeling of surprise and wonder points the right way.',
+  },
+  none: { howToFeel: '', whereInBody: '', redFlag: '', reset: '' },
+};
+
+const TYPE_WARNINGS_EN: Record<HDType, { signs: string[]; resets: string[] }> = {
+  'Manifestor': {
+    signs: [
+      'If resistance or questioning keeps coming from those around you: you skipped informing',
+      'If an explosion sits ready inside you whenever you are controlled: the childhood shell is open',
+      'If solitude tastes far too sweet: you have cut away from people entirely',
+    ],
+    resets: [
+      'Before making a decision, briefly inform three people — not permission, just news',
+      '30 minutes of physical movement alone: running, dancing, walking',
+      'Manifestors do not know how to rest; one hour a day of doing nothing',
+    ],
+  },
+  'Jeneratör': {
+    signs: [
+      'If you do not want to go to bed in the morning: you gave wrong yeses all day',
+      'If frustration has become chronic: you are giving energy to work you do not love',
+      'If body aches are increasing: your sacral is being spent in a draining way',
+    ],
+    resets: [
+      '30 minutes of physical release in the evening — sleep tired but full',
+      'Tomorrow, answer a decision with sound rather than words: "uh-huh" / "un-uh"',
+      'Drop a task you do not love for one week; what happens?',
+    ],
+  },
+  'Manifesting Jeneratör': {
+    signs: [
+      'Frustration and anger together: you committed to too many wrong yeses',
+      'If leaving a project unfinished bothers you: you never actually wanted it',
+      'Complaints of "why didn\'t you tell me?" around you: you skipped informing',
+    ],
+    resets: [
+      'Accept your many-sidedness again as your gift, not your fault',
+      'Go back now to the steps you skipped and finish them quickly',
+      'Remember that dropping a project can be the right kind of dropping',
+    ],
+  },
+  'Projektör': {
+    signs: [
+      'A feeling of bitterness: you offered your energy or worked without being invited',
+      'Burnout / fatigue: you got swept into Generator energy and mistook yourself for one',
+      'The urge to advise without being called: a sense of invisibility toward your aura',
+      'Feeling unrecognised: you are in the wrong crowd',
+    ],
+    resets: [
+      '30 minutes of solo decompression a day — no phone, no sound',
+      'Go to bed early; empty your aura as the day ends',
+      'Tomorrow, do not give your view on something you were not called to — just watch',
+      'Turn toward the places the invitation comes from; withdraw kindly from the ones it does not',
+    ],
+  },
+  'Reflektör': {
+    signs: [
+      'Constant fatigue: you stayed too close to a place or a person',
+      'Frustration: you are sampling in the wrong community or the wrong place',
+      'Overwhelm under decision pressure: you want to skip the 28 days',
+    ],
+    resets: [
+      '24 hours alone in your own place — clear the energy you have been sampling',
+      'Nature, water, open space; when the ground shakes, nature steadies it',
+      'Put your lunar cycle on a calendar; mark which centre you are sensitive to each day',
+    ],
+  },
+};
+
+// Dile göre tablo seçici.
+const isEn = () => getLang() === 'en';
+const T_AURA = () => (isEn() ? AURA_COMPATIBILITY_EN : AURA_COMPATIBILITY);
+const T_BODY = () => (isEn() ? BODY_LISTENING_EN : BODY_LISTENING);
+const T_WARN = () => (isEn() ? TYPE_WARNINGS_EN : TYPE_WARNINGS);
+// Kısa iki dilli yardımcı — gövde içindeki serbest cümleler için.
+const B = (tr: string, en: string) => (isEn() ? en : tr);
+
+// =============================================================
 // WeeklyReport tipi
 // =============================================================
 export interface ReportItem {
@@ -290,12 +484,17 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   mon.setDate(ref.getDate() - day);
   const sun = new Date(mon);
   sun.setDate(mon.getDate() + 6);
+  // Tarih biçimi 'tr-TR'ye sabitlenmişti → İngilizce modda "12 Oca – 18 Oca".
   const fmt = (d: Date) =>
-    d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+    d.toLocaleDateString(isEn() ? 'en-GB' : 'tr-TR', { day: 'numeric', month: 'short' });
   const weekDates = `${fmt(mon)} – ${fmt(sun)}`;
 
   const t = TYPES[chart.type];
   const a = AUTHORITIES[chart.authority];
+  // Veri tablolarındaki alanlar dile göre okunur (L = nameEn/descEn varsa onu verir).
+  const tName = L(t, 'name'), tStrategy = L(t, 'strategy'), tSignature = L(t, 'signature'), tNotSelf = L(t, 'notSelf');
+  const aName = L(a, 'name'), aShort = L(a, 'shortDesc'), aCaution = L(a, 'caution');
+  const lcName = (x: string) => (isEn() ? String(x).toLowerCase() : String(x).toLocaleLowerCase('tr'));
   const personalitySun = chart.personality.find(p => p.planet === 'sun')!;
   const designSun = chart.design.find(p => p.planet === 'sun')!;
   const personalityLine = LINES[personalitySun.line];
@@ -304,28 +503,33 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   // ----- TEMA -----
   const themes: Array<{ headline: string; desc: string }> = [
     {
-      headline: 'Stratejine Dönüş',
-      desc: `Bu hafta "${t.strategy}" ilkesine dönmek için fırsat haftası. ${t.signature} hissini yakaladığın anlar doğru hatta olduğunu söyler.`,
+      headline: B('Stratejine Dönüş', 'Back to Your Strategy'),
+      desc: B(`Bu hafta "${tStrategy}" ilkesine dönmek için fırsat haftası. ${tSignature} hissini yakaladığın anlar doğru hatta olduğunu söyler.`,
+              `This is a week to return to the principle of "${tStrategy}". The moments you catch the feeling of ${lcName(tSignature)} tell you that you are on the right line.`),
     },
     {
-      headline: 'Yetkini Dinlemek',
-      desc: `${a.name} bu hafta öne çıkacak. ${a.shortDesc}`,
+      headline: B('Yetkini Dinlemek', 'Listening to Your Authority'),
+      desc: B(`${aName} bu hafta öne çıkacak. ${aShort}`, `${aName} comes to the fore this week. ${aShort}`),
     },
     {
-      headline: 'Tanımsız Merkez Bilgeliği',
-      desc: 'Tanımsız merkezlerin "yanlış benlik" tuzakları taşır ama aynı zamanda yaşam boyu kazanacağın bilgeliğin de evi burası. Bu hafta birinden ders al.',
+      headline: B('Tanımsız Merkez Bilgeliği', 'The Wisdom of Undefined Centres'),
+      desc: B('Tanımsız merkezlerin "yanlış benlik" tuzakları taşır ama aynı zamanda yaşam boyu kazanacağın bilgeliğin de evi burası. Bu hafta birinden ders al.',
+              'Your undefined centres carry "not-self" traps, yet they are also the home of the wisdom you gather across a lifetime. Take a lesson from one of them this week.'),
     },
     {
-      headline: 'Tanımlı Merkez Hediyeleri',
-      desc: 'Sabit, güvenilir frekansların var. Bu hafta bir tanesini bilinçle dünyaya verme zamanı.',
+      headline: B('Tanımlı Merkez Hediyeleri', 'The Gifts of Your Defined Centres'),
+      desc: B('Sabit, güvenilir frekansların var. Bu hafta bir tanesini bilinçle dünyaya verme zamanı.',
+              'You carry steady, reliable frequencies. This week it is time to give one of them to the world consciously.'),
     },
     {
-      headline: 'Profil Çizgisi',
-      desc: `${chart.profile} — ${personalitySun.line}. ${personalityLine.name} + ${designSun.line}. ${designLine.name}. Bu hafta birinin doğal akışına yer aç.`,
+      headline: B('Profil Çizgisi', 'Profile Line'),
+      desc: B(`${chart.profile} — ${personalitySun.line}. ${L(personalityLine,'name')} + ${designSun.line}. ${L(designLine,'name')}. Bu hafta birinin doğal akışına yer aç.`,
+              `${chart.profile} — line ${personalitySun.line} ${L(personalityLine,'name')} + line ${designSun.line} ${L(designLine,'name')}. Make room this week for the natural flow of one of them.`),
     },
     {
-      headline: 'Aktif Kanal Spotlight',
-      desc: 'Kanalların senin sabit yaşam frekansındır. Bu hafta birinin enerjisi belirgin olacak.',
+      headline: B('Aktif Kanal Spotlight', 'Active Channel Spotlight'),
+      desc: B('Kanalların senin sabit yaşam frekansındır. Bu hafta birinin enerjisi belirgin olacak.',
+              'Your channels are your fixed life frequency. This week the energy of one of them will stand out.'),
     },
   ];
   const theme = pick(themes, index);
@@ -333,24 +537,32 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   // ----- 🎯 DİKKAT ET -----
   const attentionPool: ReportItem[] = [
     {
-      title: 'Yanlış frekans uyarısı',
-      body: `${t.notSelf} hissi seni uyandırırsa, bil ki bir yerde stratejini atladın. ${t.strategy} — bu kadar basit.`,
-      micro: 'Yarın sabah uyandığında bir dakika dur: dün hangi an doğru, hangi an yanlış hissettim?',
+      title: B('Yanlış frekans uyarısı', 'Wrong-frequency warning'),
+      body: B(`${tNotSelf} hissi seni uyandırırsa, bil ki bir yerde stratejini atladın. ${tStrategy} — bu kadar basit.`,
+              `If the feeling of ${lcName(tNotSelf)} wakes you, know that you skipped your strategy somewhere. ${tStrategy} — it is that simple.`),
+      micro: B('Yarın sabah uyandığında bir dakika dur: dün hangi an doğru, hangi an yanlış hissettim?',
+               'When you wake tomorrow, pause for a minute: which moment yesterday felt right, and which felt wrong?'),
     },
     {
-      title: `${personalitySun.line}. çizgi gölgesi (bilinçli)`,
-      body: `Personality ${personalitySun.line}. çizgi: ${personalityLine.shadow}. Bu çizgi açıkta yaşandığı için sende de fark edilmesi kolaydır.`,
-      micro: 'Bir karar verirken kendine sor: "yeterince hazır mıyım, yoksa kaçıyor muyum?"',
+      title: B(`${personalitySun.line}. çizgi gölgesi (bilinçli)`, `Shadow of line ${personalitySun.line} (conscious)`),
+      body: B(`Personality ${personalitySun.line}. çizgi: ${L(personalityLine,'shadow')}. Bu çizgi açıkta yaşandığı için sende de fark edilmesi kolaydır.`,
+              `Personality line ${personalitySun.line}: ${L(personalityLine,'shadow')}. Because this line is lived out in the open, it is easy to notice in you.`),
+      micro: B('Bir karar verirken kendine sor: "yeterince hazır mıyım, yoksa kaçıyor muyum?"',
+               'When making a decision, ask yourself: "am I ready enough, or am I running away?"'),
     },
     {
-      title: `${designSun.line}. çizgi gölgesi (bilinçsiz)`,
-      body: `Design ${designSun.line}. çizgi: ${designLine.shadow}. Bu çizgi senin haberin olmadan oynar; yakınların gözler.`,
-      micro: 'Bu hafta sevdiğine "bende fark ettiğin bir şey var mı?" diye sor.',
+      title: B(`${designSun.line}. çizgi gölgesi (bilinçsiz)`, `Shadow of line ${designSun.line} (unconscious)`),
+      body: B(`Design ${designSun.line}. çizgi: ${L(designLine,'shadow')}. Bu çizgi senin haberin olmadan oynar; yakınların gözler.`,
+              `Design line ${designSun.line}: ${L(designLine,'shadow')}. This line plays out without your knowing; the people close to you see it.`),
+      micro: B('Bu hafta sevdiğine "bende fark ettiğin bir şey var mı?" diye sor.',
+               'This week ask someone you love: "is there something you notice in me?"'),
     },
     {
-      title: 'Yetki dışına çıkma',
-      body: `${a.caution || 'Yetkin dışında karar verdiğinde pişmanlık kaçınılmazdır.'} Bir karar baskısı geldiğinde duracak ve ${a.name.toLocaleLowerCase('tr')} sesini bekleyecek misin?`,
-      micro: 'Telefonuna "yetkine sor" hatırlatması koy — günde bir kez.',
+      title: B('Yetki dışına çıkma', 'Stepping outside your authority'),
+      body: B(`${aCaution || 'Yetkin dışında karar verdiğinde pişmanlık kaçınılmazdır.'} Bir karar baskısı geldiğinde duracak ve ${lcName(aName)} sesini bekleyecek misin?`,
+              `${aCaution || 'When you decide outside your authority, regret is inevitable.'} When decision pressure comes, will you stop and wait for the voice of your ${lcName(aName)}?`),
+      micro: B('Telefonuna "yetkine sor" hatırlatması koy — günde bir kez.',
+               'Set a reminder on your phone that says "ask your authority" — once a day.'),
     },
   ];
   const attention = pick(attentionPool, index);
@@ -360,15 +572,16 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   let release: ReportItem;
   if (undefinedList.length === 0) {
     release = {
-      title: 'Bu hafta bırakman gereken: Hiçbir merkez tanımsız değil',
-      body: 'Reflektör değilsen bu nadir. Tüm merkezlerin sabit olduğu için "ben her şeyi biliyorum" yanılsamasını bu hafta bırak.',
+      title: B('Bu hafta bırakman gereken: Hiçbir merkez tanımsız değil', 'To release this week: no centre is undefined'),
+      body: B('Reflektör değilsen bu nadir. Tüm merkezlerin sabit olduğu için "ben her şeyi biliyorum" yanılsamasını bu hafta bırak.',
+              'Unless you are a Reflector, this is rare. Because all your centres are fixed, release the illusion of "I know everything" this week.'),
     };
   } else {
     const c = CENTERS[pick(undefinedList, index)];
     release = {
-      title: `Tanımsız ${c.name} tuzağı`,
-      body: c.undefined.notSelfQuestion + ' ' + c.undefined.desc,
-      micro: `Bilgelik: ${c.undefined.wisdom}`,
+      title: B(`Tanımsız ${c.name} tuzağı`, `The trap of an undefined ${L(c,'name')}`),
+      body: L(c.undefined, 'notSelfQuestion') + ' ' + L(c.undefined, 'desc'),
+      micro: B(`Bilgelik: ${c.undefined.wisdom}`, `Wisdom: ${L(c.undefined, 'wisdom')}`),
     };
   }
 
@@ -378,21 +591,23 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   if (chart.activeChannels.length > 0 && index % 2 === 0) {
     const ch = pick(chart.activeChannels, Math.floor(index / 2));
     ownership = {
-      title: `${ch.id} ${ch.name}`,
-      body: `${ch.shortDesc} ${CENTERS[ch.centers[0]].name} ile ${CENTERS[ch.centers[1]].name} arasındaki bu kanal senin sabit frekansın. Bu hafta enerjisini gizleme; ona alan aç.`,
-      micro: `Devre: ${ch.circuit}.`,
+      title: `${ch.id} ${L(ch,'name')}`,
+      body: B(`${ch.shortDesc} ${CENTERS[ch.centers[0]].name} ile ${CENTERS[ch.centers[1]].name} arasındaki bu kanal senin sabit frekansın. Bu hafta enerjisini gizleme; ona alan aç.`,
+              `${L(ch,'shortDesc')} This channel between ${L(CENTERS[ch.centers[0]],'name')} and ${L(CENTERS[ch.centers[1]],'name')} is your fixed frequency. Do not hide its energy this week; make room for it.`),
+      micro: B(`Devre: ${ch.circuit}.`, `Circuit: ${circuitLabel(ch.circuit, 'en')}.`),
     };
   } else if (definedList.length > 0) {
     const c = CENTERS[pick(definedList, index)];
     ownership = {
-      title: `Tanımlı ${c.name} hediyesi`,
-      body: c.defined.desc,
-      micro: `Bu hafta sahiplen: ${pick(c.defined.gifts, index)}.`,
+      title: B(`Tanımlı ${c.name} hediyesi`, `The gift of a defined ${L(c,'name')}`),
+      body: L(c.defined, 'desc'),
+      micro: B(`Bu hafta sahiplen: ${pick(c.defined.gifts, index)}.`, `Own this week: ${pick(L(c.defined,'gifts') as string[], index)}.`),
     };
   } else {
     ownership = {
-      title: 'Çevreni sahiplen',
-      body: 'Tanımlı merkezin yok; bu hafta "neredeyim, kimlerle birlikteyim" sorusu üstünde dur. Doğru mekan ve doğru insanlar tek sabit kaynağın.',
+      title: B('Çevreni sahiplen', 'Own your environment'),
+      body: B('Tanımlı merkezin yok; bu hafta "neredeyim, kimlerle birlikteyim" sorusu üstünde dur. Doğru mekan ve doğru insanlar tek sabit kaynağın.',
+              'You have no defined centre; this week dwell on the question "where am I, and who am I with?" The right place and the right people are your only steady source.'),
     };
   }
 
@@ -413,7 +628,15 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   };
 
   // ----- PRATİK & HATIRLATMA -----
-  const practices = [
+  const practices = isEn() ? [
+    'One night this week, sit quietly for five minutes before bed. Notice what your body is telling you.',
+    'Tomorrow, wait 24 hours before saying "yes" to a decision.',
+    'Walk for a whole day without holding your phone; watch yourself sampling the energy around you.',
+    'Ask someone you love "how are you feeling right now?" and just listen.',
+    'Say a truth this week that you have never said — kindly, but say it.',
+    'Stand outside for three minutes each morning and look at the sky. Doing nothing else.',
+    'For one day, test the question "do I want this?" in place of "I should".',
+  ] : [
     'Bu hafta bir gece, yatmadan önce 5 dakika sessizce otur. Bedeninin sana ne söylediğini fark et.',
     'Yarın bir karar karşısında "evet" demeden önce 24 saat bekle.',
     'Bir gün boyunca cep telefonunu tutmadan yürü; çevrenin enerjisini örneklemeni gözle.',
@@ -424,7 +647,15 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   ];
   const practice = pick(practices, index);
 
-  const affirmations = [
+  const affirmations = isEn() ? [
+    `${tSignature} means you are on the right path; ${lcName(tNotSelf)} means stop and "${lcName(tStrategy)}".`,
+    `Your authority is ${lcName(aName)} — trust the nature of your decision, not its speed.`,
+    'What is defined in you is fixed; what is undefined is open to the world. Both places are sacred.',
+    `You are ${t.type === 'Reflektör' ? "the community's mirror" : t.type === 'Projektör' ? 'the one who shines when invited' : t.type === 'Manifestor' ? 'the power that initiates' : "life's engine"}.`,
+    `Profile ${chart.profile}: there is no hurry — life is played across six lines.`,
+    'You are not like everyone else; you were not designed to be.',
+    `Your ${chart.activeChannels.length} channels bring you back to yourself; the rest are guests.`,
+  ] : [
     `${t.signature} doğru yoldasın demektir; ${t.notSelf} dur, "${t.strategy.toLocaleLowerCase('tr')}" demektir.`,
     `Yetkin ${a.name.toLocaleLowerCase('tr')} — kararın hızına değil doğasına güven.`,
     'Tanımlı olan sende sabit, tanımsız olan dünyaya açık. İkisinin de yeri kutsal.',
@@ -436,7 +667,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   const affirmation = pick(affirmations, index);
 
   // ----- UYUMLULUK -----
-  const compat = AURA_COMPATIBILITY[chart.type];
+  const compat = T_AURA()[chart.type];
   const compatibility: CompatibilityBlock = {
     note: compat.note,
     getsAlong: compat.gets,
@@ -444,9 +675,9 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   };
 
   // ----- BEDENİ DİNLEME -----
-  const bl = BODY_LISTENING[chart.authority];
+  const bl = T_BODY()[chart.authority];
   const bodyListening: BodyListeningBlock = {
-    authorityName: a.name,
+    authorityName: aName,
     howToFeel: bl.howToFeel,
     whereInBody: bl.whereInBody,
     redFlag: bl.redFlag,
@@ -454,7 +685,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   };
 
   // ----- UYARI İŞARETLERİ -----
-  const tw = TYPE_WARNINGS[chart.type];
+  const tw = T_WARN()[chart.type];
   // KİŞİSELLEŞTİRME: gösterilecek 5 tanımsız merkez harita-hash'iyle döndürülür
   // (eskiden hep ilk 5) ve her işaret, o merkezdeki ASILI KAPI ile derinleşir.
   const rotatedUndef = undefinedList.length > 5
@@ -463,15 +694,16 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   const centerSigns: ReportItem[] = rotatedUndef.map(k => {
     const c = CENTERS[k];
     const hg = hangingGates(chart, k);
-    let micro = `Söndür: ${c.undefined.wisdom}`;
+    let micro = B(`Söndür: ${c.undefined.wisdom}`, `Let it go: ${L(c.undefined,'wisdom')}`);
     if (hg.length > 0) {
       const g = hg[index % hg.length];
       const gi: any = (GATES as any)[g];
-      if (gi) micro = `Söndür: ${c.undefined.wisdom} Senin anahtarın ${g}. kapı (${gi.name}): ${gi.gift}`;
+      if (gi) micro = B(`Söndür: ${c.undefined.wisdom} Senin anahtarın ${g}. kapı (${gi.name}): ${gi.gift}`,
+                        `Let it go: ${L(c.undefined,'wisdom')} Your key is gate ${g} (${L(gi,'name')}): ${L(gi,'gift')}`);
     }
     return {
-      title: `Tanımsız ${c.name}`,
-      body: c.undefined.notSelfQuestion,
+      title: B(`Tanımsız ${c.name}`, `Undefined ${L(c,'name')}`),
+      body: L(c.undefined, 'notSelfQuestion'),
       micro,
     };
   });
@@ -487,7 +719,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   };
 
   return {
-    weekLabel: `${year} — Hafta ${week}`,
+    weekLabel: B(`${year} — Hafta ${week}`, `${year} — Week ${week}`),
     weekDates,
     theme: theme.headline,
     themeDesc: theme.desc,

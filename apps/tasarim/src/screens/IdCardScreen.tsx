@@ -15,6 +15,8 @@ import { StoryCard, STORY_W, STORY_H } from '../components/StoryCard';
 import { TYPES } from '../data/types';
 import { AUTHORITIES } from '../data/authorities';
 import { L, getLang } from '../i18n';
+import { crossLabel } from '../utils/humanDesign';
+import { cityLabel } from '../data/cities';
 
 interface Props {
   onClose: () => void;
@@ -154,7 +156,7 @@ export function IdCardScreen({ onClose }: Props) {
           style={styles.card}
         >
           <Starfield width={320} height={720} density={0.55} seed={profile.id.charCodeAt(0) + profile.birthDate.length} />
-          <Text style={styles.cardBrand}>SAKİN · TASARIM</Text>
+          <Text style={styles.cardBrand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
           <Text style={styles.cardSubBrand}>{getLang() === 'en' ? 'Human Design Identity' : 'Human Design Kimliği'}</Text>
 
           <View style={styles.photoRing}>
@@ -223,12 +225,12 @@ export function IdCardScreen({ onClose }: Props) {
               {profile.birthDate} · {profile.birthTime}
             </Text>
             <Text style={styles.birthValue}>
-              {profile.city.name.split(',')[0]}
+              {cityLabel(profile.city).split(',')[0]}
             </Text>
           </View>
 
           <Text style={styles.cardCross}>
-            {chart.incarnationCross}
+            {crossLabel(chart.incarnationCross)}
           </Text>
 
           <Text style={styles.cardFooter}>

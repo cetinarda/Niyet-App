@@ -8,6 +8,7 @@ import { AUTHORITIES } from '../data/authorities';
 import { HumanDesignChart } from '../utils/humanDesign';
 import { SavedProfile } from '../store/useStore';
 import { L, getLang } from '../i18n';
+import { crossLabel } from '../utils/humanDesign';
 
 // Instagram Story: 1080x1920 (9:16). React Native birimi olarak 540x960
 // kullanıp 2× capture ile 1080x1920 PNG üretiyoruz.
@@ -37,7 +38,7 @@ export function StoryCard({ profile, chart }: Props) {
 
       {/* Üst marka */}
       <View style={styles.topBlock}>
-        <Text style={styles.brand}>SAKİN · TASARIM</Text>
+        <Text style={styles.brand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
         <Text style={styles.subBrand}>{getLang() === 'en' ? 'Human Design Identity' : 'Human Design Kimliği'}</Text>
       </View>
 
@@ -95,7 +96,7 @@ export function StoryCard({ profile, chart }: Props) {
       {/* Alt blok */}
       <View style={styles.bottomBlock}>
         <Text style={styles.cross} numberOfLines={2}>
-          {chart.incarnationCross}
+          {crossLabel(chart.incarnationCross)}
         </Text>
         <Text style={styles.footer}>sakin.life</Text>
       </View>

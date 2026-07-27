@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useContext, createContext, Rea
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { City, CITIES, searchCities } from '../data/cities';
 import { computeChart, HumanDesignChart } from '../utils/humanDesign';
+import { getLang } from '../i18n';
 
 export interface SavedProfile {
   id: string;
@@ -97,7 +98,7 @@ function readSakinBridge(): SakinBridge | null {
     const tz  = parseFloat(get('sakin_birth_tz'));
     if (Number.isFinite(lat) && Number.isFinite(lon)) {
       city = {
-        name: cityRaw || 'Doğum yeri',
+        name: cityRaw || (getLang() === 'en' ? 'Birthplace' : 'Doğum yeri'),
         lat, lng: lon,
         tz: Number.isFinite(tz) ? tz : 0,
         country: '', dst: 'none',
@@ -337,7 +338,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     profiles.find(p => p.id === activeId) || null;
 
   const getLevelTitle = useCallback((level: number) => {
-    const t = ['Acemi', 'Gözlemci', 'Tanık', 'Çırak', 'Usta', 'Bilge', 'Pir'];
+    // Seviye başlıkları İngilizce modda da Türkçe basıyordu (Profil ekranı istatistiği).
+    const t = getLang() === 'en'
+      ? ['Novice', 'Observer', 'Witness', 'Apprentice', 'Adept', 'Sage', 'Elder']
+      : ['Acemi', 'Gözlemci', 'Tanık', 'Çırak', 'Usta', 'Bilge', 'Pir'];
     return t[Math.min(level - 1, t.length - 1)];
   }, []);
 

@@ -41,7 +41,7 @@ export function GlossaryScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top + Spacing.xxl }]}>
       <View style={styles.headerBlock}>
-        <Text style={styles.brand}>SAKİN · TASARIM</Text>
+        <Text style={styles.brand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
         <Text style={styles.title}>{getLang() === 'en' ? 'Glossary' : 'Sözlük'}</Text>
         <Text style={styles.subtitle}>
           {getLang() === 'en' ? 'Search Human Design terms' : 'Human Design terimlerini ara'} · {totalLabel}

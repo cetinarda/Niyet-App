@@ -57,3 +57,14 @@ export function findChannel(g1: number, g2: number): ChannelInfo | undefined {
       (c.gates[0] === g2 && c.gates[1] === g1)
   );
 }
+
+// Devre adı İngilizce modda da Türkçe basılıyordu ("Bireysel circuit",
+// "Circuit: Kabilesel"). Union tipi TR kalır (veri uyumu), gösterimde çevrilir.
+const CIRCUIT_EN: Record<string, string> = {
+  'Bireysel': 'Individual',
+  'Kabilesel': 'Tribal',
+  'Kolektif': 'Collective',
+};
+export function circuitLabel(c: string, lang: 'tr' | 'en'): string {
+  return lang === 'en' ? (CIRCUIT_EN[c] || c) : c;
+}

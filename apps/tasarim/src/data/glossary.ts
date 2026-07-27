@@ -4,6 +4,7 @@ import { CENTERS } from '../data/centers';
 import { PROFILES, LINES } from '../data/profiles';
 import { GATES } from '../data/gates';
 import { CHANNELS } from '../data/channels';
+import { circuitLabel } from './channels';
 
 export type GlossaryCategory =
   | 'tip' | 'yetki' | 'merkez' | 'profil' | 'cizgi' | 'kapi' | 'kanal';
@@ -227,7 +228,7 @@ function buildEntries(): GlossaryEntry[] {
       body: ch.shortDesc,
       bodyEn: en(ch, 'shortDesc'),
       details: [`Devre: ${ch.circuit}`],
-      detailsEn: [`Circuit: ${ch.circuit}`],
+      detailsEn: [`Circuit: ${circuitLabel(ch.circuit, 'en')}`],
     });
   }
 

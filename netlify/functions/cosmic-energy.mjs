@@ -50,9 +50,123 @@ function planetSky(date = new Date()) {
         retro = d < 0;
       }
     } catch { continue; }
-    out.push({ body: b, sign: ZODIAC[Math.floor(lon / 30)], deg: Math.round(lon % 30), retrograde: retro });
+    // lon: açı hesabı için ham ekliptik boylam (transitNote kullanır).
+    out.push({ body: b, sign: ZODIAC[Math.floor(lon / 30)], deg: Math.round(lon % 30), retrograde: retro, lon: Math.round(lon * 100) / 100 });
   }
   return out;
+}
+
+// ── KOLEKTİF GEÇİŞ NOTU (gökyüzü raporunun alt başlığı) ────────────────────
+// Kullanıcı: "gökyüzü raporuna alt başlık şeklinde hangi geçişte olduğumuzu yaz
+// ... ya da şu an retrodayız şunlara dikkat et gibi." + "sadece genel kolektif
+// bilgiler vermen yeterli" → KİŞİYE ÖZEL DEĞİL, herkes için aynı gökyüzü.
+// İki bileşen: (1) o an retro olan gezegenler, (2) dar orb'lu tek bir dikkat
+// çekici açı. İkisi de yoksa Güneş/Ay burcu ile sade bir bağlam cümlesi verilir.
+const _PL_I18N = {
+  Sun:{tr:"Güneş",en:"Sun",de:"Sonne",es:"Sol",pt:"Sol",fr:"Soleil",ja:"太陽"},
+  Moon:{tr:"Ay",en:"Moon",de:"Mond",es:"Luna",pt:"Lua",fr:"Lune",ja:"月"},
+  Mercury:{tr:"Merkür",en:"Mercury",de:"Merkur",es:"Mercurio",pt:"Mercúrio",fr:"Mercure",ja:"水星"},
+  Venus:{tr:"Venüs",en:"Venus",de:"Venus",es:"Venus",pt:"Vênus",fr:"Vénus",ja:"金星"},
+  Mars:{tr:"Mars",en:"Mars",de:"Mars",es:"Marte",pt:"Marte",fr:"Mars",ja:"火星"},
+  Jupiter:{tr:"Jüpiter",en:"Jupiter",de:"Jupiter",es:"Júpiter",pt:"Júpiter",fr:"Jupiter",ja:"木星"},
+  Saturn:{tr:"Satürn",en:"Saturn",de:"Saturn",es:"Saturno",pt:"Saturno",fr:"Saturne",ja:"土星"},
+  Uranus:{tr:"Uranüs",en:"Uranus",de:"Uranus",es:"Urano",pt:"Urano",fr:"Uranus",ja:"天王星"},
+  Neptune:{tr:"Neptün",en:"Neptune",de:"Neptun",es:"Neptuno",pt:"Netuno",fr:"Neptune",ja:"海王星"},
+  Pluto:{tr:"Plüton",en:"Pluto",de:"Pluto",es:"Plutón",pt:"Plutão",fr:"Pluton",ja:"冥王星"},
+};
+const _SIGN_I18N = {
+  Aries:{tr:"Koç",en:"Aries",de:"Widder",es:"Aries",pt:"Áries",fr:"Bélier",ja:"牡羊座"},
+  Taurus:{tr:"Boğa",en:"Taurus",de:"Stier",es:"Tauro",pt:"Touro",fr:"Taureau",ja:"牡牛座"},
+  Gemini:{tr:"İkizler",en:"Gemini",de:"Zwillinge",es:"Géminis",pt:"Gêmeos",fr:"Gémeaux",ja:"双子座"},
+  Cancer:{tr:"Yengeç",en:"Cancer",de:"Krebs",es:"Cáncer",pt:"Câncer",fr:"Cancer",ja:"蟹座"},
+  Leo:{tr:"Aslan",en:"Leo",de:"Löwe",es:"Leo",pt:"Leão",fr:"Lion",ja:"獅子座"},
+  Virgo:{tr:"Başak",en:"Virgo",de:"Jungfrau",es:"Virgo",pt:"Virgem",fr:"Vierge",ja:"乙女座"},
+  Libra:{tr:"Terazi",en:"Libra",de:"Waage",es:"Libra",pt:"Libra",fr:"Balance",ja:"天秤座"},
+  Scorpio:{tr:"Akrep",en:"Scorpio",de:"Skorpion",es:"Escorpio",pt:"Escorpião",fr:"Scorpion",ja:"蠍座"},
+  Sagittarius:{tr:"Yay",en:"Sagittarius",de:"Schütze",es:"Sagitario",pt:"Sagitário",fr:"Sagittaire",ja:"射手座"},
+  Capricorn:{tr:"Oğlak",en:"Capricorn",de:"Steinbock",es:"Capricornio",pt:"Capricórnio",fr:"Capricorne",ja:"山羊座"},
+  Aquarius:{tr:"Kova",en:"Aquarius",de:"Wassermann",es:"Acuario",pt:"Aquário",fr:"Verseau",ja:"水瓶座"},
+  Pisces:{tr:"Balık",en:"Pisces",de:"Fische",es:"Peixes",pt:"Peixes",fr:"Poissons",ja:"魚座"},
+};
+// Açı adı + kolektif etkisinin TEK cümlelik karşılığı.
+const _ASPECTS = [
+  { angle:0,   key:"conj", name:{tr:"kavuşumu",en:"conjunction",de:"Konjunktion",es:"conjunción",pt:"conjunção",fr:"conjonction",ja:"合"},
+    hint:{tr:"iki enerji tek noktada birleşiyor; başlangıçlar keskin hissedilir.",en:"two forces merge at one point; beginnings feel sharp.",de:"zwei Kräfte verschmelzen; Anfänge fühlen sich scharf an.",es:"dos fuerzas se funden; los comienzos se sienten intensos.",pt:"duas forças se fundem; os começos são intensos.",fr:"deux forces fusionnent ; les débuts sont vifs.",ja:"二つの力がひとつに重なり、始まりが際立つ。"} },
+  { angle:180, key:"opp",  name:{tr:"karşıtlığı",en:"opposition",de:"Opposition",es:"oposición",pt:"oposição",fr:"opposition",ja:"衝"},
+    hint:{tr:"iki uç arasında denge aranıyor; acele karar verme.",en:"a balance is sought between two poles; avoid rushed choices.",de:"zwischen zwei Polen wird Balance gesucht; keine eiligen Entscheidungen.",es:"se busca equilibrio entre dos polos; evita decidir con prisa.",pt:"busca-se equilíbrio entre dois polos; evita decidir às pressas.",fr:"un équilibre se cherche entre deux pôles ; évite les décisions hâtives.",ja:"二極のあいだで均衡が探られる。急いで決めないこと。"} },
+  { angle:90,  key:"sq",   name:{tr:"karesi",en:"square",de:"Quadrat",es:"cuadratura",pt:"quadratura",fr:"carré",ja:"スクエア"},
+    hint:{tr:"sürtünme var ama hareket getirir; gerilimi yakıt yap.",en:"there is friction, but it moves things; use the tension as fuel.",de:"es gibt Reibung, doch sie bewegt; nutze die Spannung als Treibstoff.",es:"hay fricción, pero mueve; usa la tensión como combustible.",pt:"há atrito, mas move; usa a tensão como combustível.",fr:"il y a des frictions, mais elles font avancer ; fais de la tension un carburant.",ja:"摩擦はあるが物事を動かす。緊張を燃料に。"} },
+  { angle:120, key:"tri",  name:{tr:"üçgeni",en:"trine",de:"Trigon",es:"trígono",pt:"trígono",fr:"trigone",ja:"トライン"},
+    hint:{tr:"akış kolay; başlamak için iyi bir aralık.",en:"the flow is easy; a good window to begin.",de:"der Fluss ist leicht; ein gutes Fenster zum Beginnen.",es:"el flujo es fácil; buena ventana para empezar.",pt:"o fluxo é fácil; boa janela para começar.",fr:"le flux est fluide ; une bonne fenêtre pour commencer.",ja:"流れは軽やか。始めるのに良い時。"} },
+];
+const _RETRO_TXT = {
+  tr:(l)=>`Şu an ${l} retroda — geri dönüp gözden geçirme, tamamlama ve yeniden karar zamanı; yeni sözleşmelerde acele etme.`,
+  en:(l)=>`${l} ${l.includes(" ") ? "are" : "is"} retrograde right now — a time to revisit, finish and rethink; don't rush new commitments.`,
+  de:(l)=>`Aktuell ist ${l} rückläufig — Zeit zum Überprüfen, Abschließen und Neuentscheiden; überstürze keine neuen Zusagen.`,
+  es:(l)=>`Ahora ${l} está retrógrado — tiempo de revisar, cerrar y repensar; no te apresures con nuevos compromisos.`,
+  pt:(l)=>`Agora ${l} está retrógrado — tempo de rever, concluir e repensar; não te apresses em novos compromissos.`,
+  fr:(l)=>`En ce moment ${l} est rétrograde — un temps pour revoir, terminer et repenser ; ne précipite pas de nouveaux engagements.`,
+  ja:(l)=>`いま${l}が逆行中——見直し、やり残しを終え、考え直す時期。新しい約束を急がないこと。`,
+};
+const _CTX_TXT = {
+  tr:(sun,moon)=>`Güneş ${sun} burcunda, Ay ${moon} burcunda — gökyüzü bugün sakin, akışa güvenebilirsin.`,
+  en:(sun,moon)=>`The Sun is in ${sun} and the Moon in ${moon} — the sky is quiet today; you can trust the flow.`,
+  de:(sun,moon)=>`Die Sonne steht in ${sun}, der Mond in ${moon} — der Himmel ist heute ruhig; vertraue dem Fluss.`,
+  es:(sun,moon)=>`El Sol está en ${sun} y la Luna en ${moon} — el cielo está tranquilo hoy; puedes confiar en el flujo.`,
+  pt:(sun,moon)=>`O Sol está em ${sun} e a Lua em ${moon} — o céu está calmo hoje; podes confiar no fluxo.`,
+  fr:(sun,moon)=>`Le Soleil est en ${sun} et la Lune en ${moon} — le ciel est calme aujourd'hui ; fais confiance au flux.`,
+  ja:(sun,moon)=>`太陽は${sun}、月は${moon}に——今日の空は静か。流れに委ねて。`,
+};
+const _AND = { tr:"ve", en:"and", de:"und", es:"y", pt:"e", fr:"et", ja:"と" };
+
+// Kolektif geçiş notunu 7 dilde üretir. `planets` = planetSky() çıktısı.
+function transitNote(planets, date = new Date()) {
+  if (!planets || !planets.length) return null;
+  const LANGS = ["tr","en","de","es","pt","fr","ja"];
+  const byBody = Object.fromEntries(planets.map(p => [p.body, p]));
+
+  // (1) Retro gezegenler. Uranüs/Neptün/Plüton yılın yarısı retro olduğu için
+  //     kolektif "dikkat" mesajı taşımaz — sadece kişisel/sosyal gezegenler.
+  const retro = ["Mercury","Venus","Mars","Jupiter","Saturn"].filter(b => byBody[b]?.retrograde);
+
+  // (2) En dar orb'lu tek açı. Ay hariç (2.5 günde burç değiştirir, gürültü yapar).
+  let best = null;
+  const BODIES = ["Sun","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"];
+  for (let i = 0; i < BODIES.length; i++) {
+    for (let j = i + 1; j < BODIES.length; j++) {
+      const a = byBody[BODIES[i]], b = byBody[BODIES[j]];
+      if (!a || !b) continue;
+      const la = a.lon, lb = b.lon;
+      if (la == null || lb == null) continue;
+      let diff = Math.abs(la - lb); if (diff > 180) diff = 360 - diff;
+      for (const asp of _ASPECTS) {
+        const orb = Math.abs(diff - asp.angle);
+        if (orb <= 2.5 && (!best || orb < best.orb)) best = { orb, asp, a: BODIES[i], b: BODIES[j] };
+      }
+    }
+  }
+
+  const out = {};
+  for (const lang of LANGS) {
+    const parts = [];
+    if (retro.length) {
+      const names = retro.map(b => _PL_I18N[b][lang]);
+      const list = names.length === 1 ? names[0]
+        : names.slice(0, -1).join(", ") + " " + _AND[lang] + " " + names[names.length - 1];
+      parts.push(_RETRO_TXT[lang](list));
+    }
+    if (best) {
+      const an = _PL_I18N[best.a][lang], bn = _PL_I18N[best.b][lang];
+      parts.push(`${an}–${bn} ${best.asp.name[lang]}: ${best.asp.hint[lang]}`);
+    }
+    if (!parts.length) {
+      const sun = byBody.Sun && _SIGN_I18N[byBody.Sun.sign]?.[lang];
+      const moon = byBody.Moon && _SIGN_I18N[byBody.Moon.sign]?.[lang];
+      if (sun && moon) parts.push(_CTX_TXT[lang](sun, moon));
+    }
+    out[lang] = parts.join(" ");
+  }
+  return out.tr ? out : null;
 }
 
 // ── KUYRUKLU YILDIZLAR (notable — perihelion/görünürlük penceresi, en iyi çaba) ──
@@ -409,6 +523,9 @@ export const handler = async (event) => {
     const meteor = activeMeteorShower();
     let planets = [];
     try { planets = planetSky(); } catch { /* efemeris hatası — sessiz */ }
+    // Kolektif geçiş notu (gökyüzü raporunun alt başlığı). Efemeris yoksa null.
+    let transit = null;
+    try { transit = transitNote(planets); } catch { /* sessiz */ }
     const comet = activeComet();
 
     // ── HAVA DURUMU TARZI ANLATILAR — seviyeye göre seç ──
@@ -462,6 +579,7 @@ export const handler = async (event) => {
       moon,
       meteor,
       planets,
+      transit,
       comet,
       narratives,
       report,

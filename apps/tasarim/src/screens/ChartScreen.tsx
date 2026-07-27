@@ -14,6 +14,9 @@ import { GATES } from '../data/gates';
 import { getActivationsByCenter, planetLabel } from '../utils/humanDesign';
 import { undefinedCenterExtras } from '../utils/personalize';
 import { L, getLang } from '../i18n';
+import { circuitLabel } from '../data/channels';
+import { definitionLabel, crossLabel } from '../utils/humanDesign';
+import { cityLabel } from '../data/cities';
 
 interface Props {
   onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
@@ -80,10 +83,10 @@ export function ChartScreen({ onNavigate }: Props) {
       showsVerticalScrollIndicator={false}
     >
       {/* Üst başlık */}
-      <Text style={styles.brand}>SAKİN · TASARIM</Text>
+      <Text style={styles.brand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
       <Text style={styles.name}>{activeProfile.name}</Text>
       <Text style={styles.meta}>
-        {activeProfile.birthDate} · {activeProfile.birthTime} · {activeProfile.city.name.split(',')[0]}
+        {activeProfile.birthDate} · {activeProfile.birthTime} · {cityLabel(activeProfile.city).split(',')[0]}
       </Text>
 
       {/* HERO — sol özet, sağ köşede küçük bodygraph */}
@@ -213,8 +216,8 @@ export function ChartScreen({ onNavigate }: Props) {
       </Section>
 
       <Section title={getLang() === 'en' ? 'Definition & Incarnation Cross' : 'Tanım ve İnkarnasyon Haçı'} kicker="DEFINITION & CROSS">
-        <KeyVal k={getLang() === 'en' ? 'Definition type' : 'Tanım türü'} v={chart.definition} />
-        <KeyVal k={getLang() === 'en' ? 'Incarnation Cross' : 'İnkarnasyon Haçı'} v={chart.incarnationCross} last />
+        <KeyVal k={getLang() === 'en' ? 'Definition type' : 'Tanım türü'} v={definitionLabel(chart.definition)} />
+        <KeyVal k={getLang() === 'en' ? 'Incarnation Cross' : 'İnkarnasyon Haçı'} v={crossLabel(chart.incarnationCross)} last />
         <Text style={[styles.body, { marginTop: Spacing.md }]}>
           {getLang() === 'en'
             ? 'Definition tells you how many separate groups your defined centers connect into. If you are single-defined your energy is fluid; in split definitions you are drawn to people and situations that bridge. The Incarnation Cross is the universal theme you work on across your whole life — woven from your Personality Sun/Earth and Design Sun/Earth activations.'
@@ -239,7 +242,7 @@ export function ChartScreen({ onNavigate }: Props) {
               <Text style={styles.channelName}>{L(c, 'name')}</Text>
               <Text style={styles.channelDesc}>{L(c, 'shortDesc')}</Text>
               <Text style={styles.channelMeta}>
-                {L(CENTERS[c.centers[0]], 'name')} ↔ {L(CENTERS[c.centers[1]], 'name')} · {c.circuit} {getLang() === 'en' ? 'circuit' : 'devre'}
+                {L(CENTERS[c.centers[0]], 'name')} ↔ {L(CENTERS[c.centers[1]], 'name')} · {circuitLabel(c.circuit, getLang())} {getLang() === 'en' ? 'circuit' : 'devre'}
               </Text>
             </View>
           </View>

@@ -26,17 +26,28 @@ function postToHost(payload: object, fallbackUrl?: string) {
 }
 
 const SAKIN_FAMILY_APPS = [
-  { host: 'hayvan',   name: 'Sakin Hayvan',   symbol: '⊕' },
-  { host: 'mitler',   name: 'Sakin Mitler',   symbol: '⚡' },
-  { host: 'tasarim',  name: 'Sakin Tasarım',  symbol: '◉' },
-  { host: 'taslar',   name: 'Sakin Taşlar',   symbol: '◈' },
-  { host: 'bitkiler', name: 'Sakin Bitkiler', symbol: '✿' },
+  // Kardeş uygulama adları host'un i18n'iyle birebir aynı olmalı
+  // (host EN'de "Sakin Animals / Myths / Design / Stones / Plants" diyor).
+  { host: 'hayvan',   name: 'Sakin Hayvan',   nameEn: 'Sakin Animals', symbol: '⊕' },
+  { host: 'mitler',   name: 'Sakin Mitler',   nameEn: 'Sakin Myths',   symbol: '⚡' },
+  { host: 'tasarim',  name: 'Sakin Tasarım',  nameEn: 'Sakin Design',  symbol: '◉' },
+  { host: 'taslar',   name: 'Sakin Taşlar',   nameEn: 'Sakin Stones',  symbol: '◈' },
+  { host: 'bitkiler', name: 'Sakin Bitkiler', nameEn: 'Sakin Plants',  symbol: '✿' },
 ] as const;
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius, Shadows } from '../theme/colors';
 import { useTasarimStore } from '../store/useStore';
 import { CITIES, City, searchCities } from '../data/cities';
 import { TYPES } from '../data/types';
+import { AUTHORITIES } from '../data/authorities';
+import { getLang, L } from '../i18n';
+import { cityLabel } from '../data/cities';
+import { definitionLabel } from '../utils/humanDesign';
+
+// Profil ekranı hiç i18n kullanmıyordu: tüm etiketler, form alanları, hata
+// mesajları ve uyarılar her dilde Türkçe basıyordu (kullanıcı: "eng modda
+// türkçe sızıyor"). B() ile iki dilli hale getirildi.
+const B = (tr: string, en: string) => (getLang() === 'en' ? en : tr);
 
 export function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -56,7 +67,7 @@ export function ProfileScreen() {
     return (
       <View style={[styles.empty, { paddingTop: insets.top + 60 }]}>
         <Text style={styles.medallion}>✦</Text>
-        <Text style={styles.emptyTitle}>Profilini oluştur</Text>
+        <Text style={styles.emptyTitle}>{B('Profilini oluştur', 'Create your profile')}</Text>
         <Text style={styles.emptyDesc}>
           Adın, doğum günün, doğum saatin ve doğum şehrin Human Design haritan için
           gereklidir. Bilgiler cihazında tutulur, dışarı gönderilmez.
@@ -66,7 +77,7 @@ export function ProfileScreen() {
           onPress={() => setShowForm(true)}
           activeOpacity={0.85}
         >
-          <Text style={styles.primaryBtnText}>Başla →</Text>
+          <Text style={styles.primaryBtnText}>{B('Başla →', 'Start →')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -100,12 +111,7 @@ export function ProfileScreen() {
         <Text style={styles.name}>{activeProfile!.name}</Text>
         {chart && (
           <Text style={styles.subtitle}>
-            {chart.type} · {chart.profile} · {chart.authority === 'lunar' ? 'Lunar' :
-              chart.authority === 'emotional' ? 'Duygusal' :
-              chart.authority === 'sacral' ? 'Sakral' :
-              chart.authority === 'splenic' ? 'Splenik' :
-              chart.authority === 'ego' ? 'Kalp/Ego' :
-              chart.authority === 'self-projected' ? 'Self' : 'Mental'}
+            {L(TYPES[chart.type], 'name')} · {chart.profile} · {L(AUTHORITIES[chart.authority], 'name')}
           </Text>
         )}
       </View>
@@ -115,15 +121,15 @@ export function ProfileScreen() {
         onPress={() => setShowIdCard(true)}
         activeOpacity={0.85}
         accessibilityRole="button"
-        accessibilityLabel="Kimlik Kartı'nı aç"
+        accessibilityLabel={B("Kimlik Kartı'nı aç", 'Open ID card')}
       >
         <View style={{ flex: 1 }}>
-          <Text style={styles.idCardCtaLabel}>KİMLİK KARTI</Text>
+          <Text style={styles.idCardCtaLabel}>{B('KİMLİK KARTI', 'ID CARD')}</Text>
           <Text style={styles.idCardCtaTitle}>
-            Haritanı kart olarak indir ya da paylaş
+            {B("Haritanı kart olarak indir ya da paylaş", "Download or share your chart as a card")}
           </Text>
           <Text style={styles.idCardCtaSub}>
-            Fotoğraf · tip · profil · kanallar tek görselde
+            {B("Fotoğraf · tip · profil · kanallar tek görselde", "Photo · type · profile · channels in one image")}
           </Text>
         </View>
         <Text style={styles.idCardCtaArrow}>→</Text>
@@ -132,11 +138,11 @@ export function ProfileScreen() {
       <View style={styles.statsRow}>
         <View style={styles.statBox}>
           <Text style={styles.statValue}>{stats.totalOpens}</Text>
-          <Text style={styles.statLabel}>Toplam Açılış</Text>
+          <Text style={styles.statLabel}>{B('Toplam Açılış', 'Total Opens')}</Text>
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statValue}>{stats.streak}🔥</Text>
-          <Text style={styles.statLabel}>Süreklilik</Text>
+          <Text style={styles.statLabel}>{B('Süreklilik', 'Streak')}</Text>
         </View>
         <View style={styles.statBox}>
           <Text style={styles.statValue}>{getLevelTitle(stats.level)}</Text>
@@ -145,31 +151,31 @@ export function ProfileScreen() {
       </View>
 
       <View style={styles.infoCard}>
-        <Text style={styles.cardKicker}>DOĞUM BİLGİLERİ</Text>
-        <InfoRow k="Tarih" v={activeProfile!.birthDate} />
-        <InfoRow k="Saat" v={activeProfile!.birthTime} />
-        <InfoRow k="Şehir" v={activeProfile!.city.name} />
-        <InfoRow k="Enlem / Boylam"
+        <Text style={styles.cardKicker}>{B('DOĞUM BİLGİLERİ', 'BIRTH DETAILS')}</Text>
+        <InfoRow k={B('Tarih', 'Date')} v={activeProfile!.birthDate} />
+        <InfoRow k={B('Saat', 'Time')} v={activeProfile!.birthTime} />
+        <InfoRow k={B('Şehir', 'City')} v={cityLabel(activeProfile!.city)} />
+        <InfoRow k={B('Enlem / Boylam', 'Latitude / Longitude')}
           v={`${activeProfile!.city.lat.toFixed(2)}° / ${activeProfile!.city.lng.toFixed(2)}°`} />
-        <InfoRow k="UTC Ofset" v={`UTC${activeProfile!.city.tz >= 0 ? '+' : ''}${activeProfile!.city.tz}`} />
+        <InfoRow k={B('UTC Ofset', 'UTC offset')} v={`UTC${activeProfile!.city.tz >= 0 ? '+' : ''}${activeProfile!.city.tz}`} />
       </View>
 
       {chart && (
         <View style={styles.infoCard}>
-          <Text style={styles.cardKicker}>HARİTA ÖZETİ</Text>
-          <InfoRow k="Tip" v={chart.type} />
-          <InfoRow k="Strateji" v={chart.strategy} />
-          <InfoRow k="Doğru Frekans" v={chart.signature} />
-          <InfoRow k="Yanlış Frekans" v={chart.notSelf} />
-          <InfoRow k="Profil" v={chart.profile} />
-          <InfoRow k="Tanım" v={chart.definition} />
-          <InfoRow k="Aktif Kapı" v={`${chart.activeGates.size} / 64`} />
-          <InfoRow k="Aktif Kanal" v={`${chart.activeChannels.length}`} />
-          <InfoRow k="Tanımlı Merkez" v={`${chart.definedCenters.size} / 9`} />
+          <Text style={styles.cardKicker}>{B('HARİTA ÖZETİ', 'CHART SUMMARY')}</Text>
+          <InfoRow k={B('Tip', 'Type')} v={chart.type} />
+          <InfoRow k={B('Strateji', 'Strategy')} v={L(TYPES[chart.type], 'strategy')} />
+          <InfoRow k={B('Doğru Frekans', 'Signature')} v={L(TYPES[chart.type], 'signature')} />
+          <InfoRow k={B('Yanlış Frekans', 'Not-Self')} v={L(TYPES[chart.type], 'notSelf')} />
+          <InfoRow k={B('Profil', 'Profile')} v={chart.profile} />
+          <InfoRow k={B('Tanım', 'Definition')} v={definitionLabel(chart.definition)} />
+          <InfoRow k={B('Aktif Kapı', 'Active Gates')} v={`${chart.activeGates.size} / 64`} />
+          <InfoRow k={B('Aktif Kanal', 'Active Channels')} v={`${chart.activeChannels.length}`} />
+          <InfoRow k={B('Tanımlı Merkez', 'Defined Centres')} v={`${chart.definedCenters.size} / 9`} />
         </View>
       )}
 
-      <Text style={styles.sectionTitle}>Kayıtlı Profiller ({profiles.length})</Text>
+      <Text style={styles.sectionTitle}>{B('Kayıtlı Profiller', 'Saved Profiles')} ({profiles.length})</Text>
       {profiles.map(p => {
         const isActive = p.id === activeProfile!.id;
         return (
@@ -179,19 +185,19 @@ export function ProfileScreen() {
             activeOpacity={0.85}
             onPress={() => selectProfile(p.id)}
             onLongPress={() => {
-              Alert.alert('Profili sil', `${p.name} silinsin mi?`, [
-                { text: 'Vazgeç', style: 'cancel' },
-                { text: 'Sil', style: 'destructive', onPress: () => deleteProfile(p.id) },
+              Alert.alert(B('Profili sil', 'Delete profile'), `${p.name} silinsin mi?`, [
+                { text: B('Vazgeç', 'Cancel'), style: 'cancel' },
+                { text: B('Sil', 'Delete'), style: 'destructive', onPress: () => deleteProfile(p.id) },
               ]);
             }}
           >
             <View style={{ flex: 1 }}>
               <Text style={styles.profileName}>{p.name}</Text>
               <Text style={styles.profileMeta}>
-                {p.birthDate} · {p.birthTime} · {p.city.name}
+                {p.birthDate} · {p.birthTime} · {cityLabel(p.city)}
               </Text>
             </View>
-            {isActive && <Text style={styles.activeChip}>AKTİF</Text>}
+            {isActive && <Text style={styles.activeChip}>{B('AKTİF', 'ACTIVE')}</Text>}
           </TouchableOpacity>
         );
       })}
@@ -201,13 +207,13 @@ export function ProfileScreen() {
         onPress={() => setShowForm(true)}
         activeOpacity={0.85}
       >
-        <Text style={styles.addBtnText}>+ Yeni Profil Ekle</Text>
+        <Text style={styles.addBtnText}>{B('+ Yeni Profil Ekle', '+ Add New Profile')}</Text>
       </TouchableOpacity>
 
       {Platform.OS === 'web' && (
         <View style={styles.familySection}>
-          <Text style={styles.sectionTitle}>Sakin Ailesi</Text>
-          <Text style={styles.familyIntro}>Tek ekosistem. Tek abonelik. Birçok kapı.</Text>
+          <Text style={styles.sectionTitle}>{B('Sakin Ailesi', 'Sakin Family')}</Text>
+          <Text style={styles.familyIntro}>{B('Tek ekosistem. Tek abonelik. Birçok kapı.', 'One ecosystem. One subscription. Many doors.')}</Text>
 
           <TouchableOpacity
             style={styles.familyMaster}
@@ -217,7 +223,7 @@ export function ProfileScreen() {
             <Text style={styles.familyMasterSymbol}>✦</Text>
             <View style={{ flex: 1 }}>
               <Text style={styles.familyMasterName}>sakin.life</Text>
-              <Text style={styles.familyMasterDesc}>Ana merkez — tüm uygulamalara giriş</Text>
+              <Text style={styles.familyMasterDesc}>{B('Ana merkez — tüm uygulamalara giriş', 'The hub — entry to every app')}</Text>
             </View>
             <Text style={styles.familyMasterArrow}>→</Text>
           </TouchableOpacity>
@@ -236,10 +242,10 @@ export function ProfileScreen() {
                   disabled={isCurrent}
                 >
                   <Text style={[styles.familySymbol, isCurrent && { color: Colors.purple }]}>{app.symbol}</Text>
-                  <Text style={[styles.familyName, isCurrent && { color: Colors.purple }]}>{app.name}</Text>
+                  <Text style={[styles.familyName, isCurrent && { color: Colors.purple }]}>{L(app, "name")}</Text>
                   <View style={[styles.familyBadge, isCurrent && { borderColor: Colors.purple + '60' }]}>
                     <Text style={[styles.familyBadgeText, isCurrent && { color: Colors.purple }]}>
-                      {isCurrent ? 'AKTİF' : '→'}
+                      {isCurrent ? B('AKTİF', 'ACTIVE') : '→'}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -254,7 +260,7 @@ export function ProfileScreen() {
           accessibilityRole="link"
           accessibilityLabel="Gizlilik politikası"
         >
-          <Text style={styles.legalLink}>Gizlilik Politikası</Text>
+          <Text style={styles.legalLink}>{B('Gizlilik Politikası', 'Privacy Policy')}</Text>
         </TouchableOpacity>
         <Text style={styles.legalSep}>·</Text>
         <TouchableOpacity
@@ -262,7 +268,7 @@ export function ProfileScreen() {
           accessibilityRole="link"
           accessibilityLabel="Kullanım koşulları"
         >
-          <Text style={styles.legalLink}>Koşullar</Text>
+          <Text style={styles.legalLink}>{B('Koşullar', 'Terms')}</Text>
         </TouchableOpacity>
         <Text style={styles.legalSep}>·</Text>
         <TouchableOpacity
@@ -270,14 +276,12 @@ export function ProfileScreen() {
           accessibilityRole="link"
           accessibilityLabel="Destek e-postası"
         >
-          <Text style={styles.legalLink}>Destek</Text>
+          <Text style={styles.legalLink}>{B('Destek', 'Support')}</Text>
         </TouchableOpacity>
       </View>
 
       <Text style={styles.footerNote}>
-        Bilgilerin yalnızca cihazında saklanır. Hesaplamalar lokal yapılır;
-        doğum verin sunucuya gönderilmez. Sakin Tasarım eğitim ve kişisel keşif
-        amaçlıdır; tıbbi, psikolojik veya finansal tavsiye değildir.
+        {B('Bilgilerin yalnızca cihazında saklanır. Hesaplamalar lokal yapılır; doğum verin sunucuya gönderilmez. Sakin Tasarım eğitim ve kişisel keşif amaçlıdır; tıbbi, psikolojik veya finansal tavsiye değildir.', 'Your details are stored only on your device. Calculations run locally; your birth data is never sent to a server. Sakin Design is for education and personal exploration; it is not medical, psychological or financial advice.')}
       </Text>
       <Text style={styles.buildStamp}>
         v{BUILD_INFO.version} · {BUILD_INFO.commit} · {BUILD_INFO.builtAt.slice(0, 16).replace('T', ' ')}
@@ -366,23 +370,23 @@ function NewProfileForm({
   }
 
   function validate(): string | null {
-    if (!name.trim()) return 'Lütfen adını gir.';
+    if (!name.trim()) return B('Lütfen adını gir.', 'Please enter your name.');
     let d: string, t: string;
     if (isWeb) {
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return 'Tarihi YYYY-AA-GG formatında gir.';
-      if (!/^\d{2}:\d{2}$/.test(timeStr)) return 'Saati SS:DD formatında gir.';
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return B('Tarihi YYYY-AA-GG formatında gir.', 'Enter the date as YYYY-MM-DD.');
+      if (!/^\d{2}:\d{2}$/.test(timeStr)) return B('Saati SS:DD formatında gir.', 'Enter the time as HH:MM.');
       d = dateStr; t = timeStr;
       const [y, mo, day] = d.split('-').map(Number);
-      if (y < 1900 || y > new Date().getFullYear()) return 'Geçerli bir yıl gir.';
-      if (mo < 1 || mo > 12) return 'Ay 1-12 arasında olmalı.';
-      if (day < 1 || day > 31) return 'Gün 1-31 arasında olmalı.';
+      if (y < 1900 || y > new Date().getFullYear()) return B('Geçerli bir yıl gir.', 'Enter a valid year.');
+      if (mo < 1 || mo > 12) return B('Ay 1-12 arasında olmalı.', 'Month must be between 1 and 12.');
+      if (day < 1 || day > 31) return B('Gün 1-31 arasında olmalı.', 'Day must be between 1 and 31.');
       const [h, mi] = t.split(':').map(Number);
-      if (h < 0 || h > 23) return 'Saat 0-23 arasında olmalı.';
-      if (mi < 0 || mi > 59) return 'Dakika 0-59 arasında olmalı.';
+      if (h < 0 || h > 23) return B('Saat 0-23 arasında olmalı.', 'Hour must be between 0 and 23.');
+      if (mi < 0 || mi > 59) return B('Dakika 0-59 arasında olmalı.', 'Minute must be between 0 and 59.');
     } else {
-      if (!birth) return 'Lütfen doğum tarihi ve saatini seç.';
+      if (!birth) return B('Lütfen doğum tarihi ve saatini seç.', 'Please pick a birth date and time.');
     }
-    if (!city) return 'Lütfen bir doğum şehri seç.';
+    if (!city) return B('Lütfen bir doğum şehri seç.', 'Please pick a birth city.');
     return null;
   }
 
@@ -413,13 +417,13 @@ function NewProfileForm({
       contentContainerStyle={[styles.content, { paddingTop: insets.top + Spacing.lg, paddingBottom: Spacing.xxl }]}
       keyboardShouldPersistTaps="handled"
     >
-      <Text style={styles.formTitle}>Yeni Profil</Text>
+      <Text style={styles.formTitle}>{B('Yeni Profil', 'New Profile')}</Text>
       <Text style={styles.formSub}>
         Doğum saatin ne kadar net olursa profil ve içsel yetkin o kadar doğru hesaplanır.
         Saatten emin değilsen yaklaşık bir tahmin yine de değerlidir.
       </Text>
 
-      <Text style={styles.label}>İsim</Text>
+      <Text style={styles.label}>{B('İsim', 'Name')}</Text>
       <TextInput
         style={styles.input}
         placeholder="Adın"
@@ -428,7 +432,7 @@ function NewProfileForm({
         onChangeText={setName}
       />
 
-      <Text style={styles.label}>Doğum Tarihi</Text>
+      <Text style={styles.label}>{B('Doğum Tarihi', 'Birth Date')}</Text>
       {isWeb ? (
         <TextInput
           style={styles.input}
@@ -446,13 +450,13 @@ function NewProfileForm({
           accessibilityLabel="Doğum tarihi seç"
         >
           <Text style={[styles.pickerText, !birth && styles.pickerPlaceholder]}>
-            {birth ? fmtDate(birth) : 'Tarih seç'}
+            {birth ? fmtDate(birth) : B('Tarih seç', 'Pick date')}
           </Text>
           <Text style={styles.pickerChev}>›</Text>
         </TouchableOpacity>
       )}
 
-      <Text style={styles.label}>Doğum Saati</Text>
+      <Text style={styles.label}>{B('Doğum Saati', 'Birth Time')}</Text>
       {isWeb ? (
         <TextInput
           style={styles.input}
@@ -470,7 +474,7 @@ function NewProfileForm({
           accessibilityLabel="Doğum saati seç"
         >
           <Text style={[styles.pickerText, !birth && styles.pickerPlaceholder]}>
-            {birth ? fmtTime(birth) : 'Saat seç'}
+            {birth ? fmtTime(birth) : B('Saat seç', 'Pick time')}
           </Text>
           <Text style={styles.pickerChev}>›</Text>
         </TouchableOpacity>
@@ -498,12 +502,12 @@ function NewProfileForm({
         />
       )}
 
-      <Text style={styles.label}>Doğum Şehri</Text>
+      <Text style={styles.label}>{B('Doğum Şehri', 'Birth City')}</Text>
       <TextInput
         style={styles.input}
         placeholder="Şehir ara: ör. İstanbul"
         placeholderTextColor={Colors.textMuted}
-        value={city ? city.name : cityQuery}
+        value={city ? cityLabel(city) : cityQuery}
         onChangeText={t => { setCity(null); setCityQuery(t); }}
       />
       {suggestions.length > 0 && (
@@ -514,7 +518,7 @@ function NewProfileForm({
               style={styles.suggestRow}
               onPress={() => { setCity(c); setCityQuery(c.name); }}
             >
-              <Text style={styles.suggestText}>{c.name}</Text>
+              <Text style={styles.suggestText}>{cityLabel(c)}</Text>
               <Text style={styles.suggestMeta}>UTC{c.tz >= 0 ? '+' : ''}{c.tz}</Text>
             </TouchableOpacity>
           ))}
@@ -522,9 +526,9 @@ function NewProfileForm({
       )}
       {city && (
         <Text style={styles.hint}>
-          ✓ {city.name} · UTC{city.tz >= 0 ? '+' : ''}{city.tz}
-          {city.dst === 'eu' ? ' (AB yaz saati uygulanır)' :
-           city.dst === 'us' ? ' (ABD yaz saati uygulanır)' : ''}
+          ✓ {cityLabel(city)} · UTC{city.tz >= 0 ? '+' : ''}{city.tz}
+          {city.dst === 'eu' ? B(' (AB yaz saati uygulanır)', ' (EU daylight saving applies)') :
+           city.dst === 'us' ? B(' (ABD yaz saati uygulanır)', ' (US daylight saving applies)') : ''}
         </Text>
       )}
 
@@ -540,7 +544,7 @@ function NewProfileForm({
           disabled={submitting}
         >
           <Text style={styles.primaryBtnText}>
-            {submitting ? 'Hesaplanıyor…' : 'Haritamı Çıkar'}
+            {submitting ? B('Hesaplanıyor…', 'Calculating…') : B('Haritamı Çıkar', 'Generate My Chart')}
           </Text>
         </TouchableOpacity>
       </View>

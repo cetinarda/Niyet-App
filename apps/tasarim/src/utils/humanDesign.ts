@@ -6,6 +6,7 @@ import { TYPES, HDType } from '../data/types';
 import { AUTHORITIES, AuthorityKey } from '../data/authorities';
 import { PROFILES, ProfileKey, LINES, LineNumber } from '../data/profiles';
 import { allPositions, designJD, julianDay, PlanetPositions } from './ephemeris';
+import { getLang } from '../i18n';
 
 // ---------------------------------------------------------------------------
 // HD Çark sırası — Gate 41 → 2°00' Aquarius (ekliptik 302°) noktasından başlar
@@ -93,8 +94,53 @@ const PLANET_ORDER: PlanetName[] = [
   'uranus', 'neptune', 'pluto',
 ];
 
+const PLANET_LABELS_EN: Record<PlanetName, string> = {
+  sun: 'Sun ☉',
+  earth: 'Earth ⊕',
+  moon: 'Moon ☽',
+  northNode: 'North Node ☊',
+  southNode: 'South Node ☋',
+  mercury: 'Mercury ☿',
+  venus: 'Venus ♀',
+  mars: 'Mars ♂',
+  jupiter: 'Jupiter ♃',
+  saturn: 'Saturn ♄',
+  uranus: 'Uranus ♅',
+  neptune: 'Neptune ♆',
+  pluto: 'Pluto ♇',
+};
+
+// Gezegen adları İngilizce modda da Türkçe basılıyordu (Harita ekranındaki
+// 13 satırlık aktivasyon tablosu + tanımlı merkez detayları).
 export function planetLabel(p: PlanetName): string {
-  return PLANET_LABELS_TR[p];
+  return getLang() === 'en' ? PLANET_LABELS_EN[p] : PLANET_LABELS_TR[p];
+}
+
+// Tanım tipi ve enkarnasyon haçı, hesaplanırken Türkçe string olarak
+// "dondurulduğu" için İngilizce modda da Türkçe basılıyordu. Değerler TR
+// kalır (kayıtlı profillerle uyum bozulmasın), gösterimde çevrilir.
+const DEFINITION_EN: Record<string, string> = {
+  'Tek (Single)': 'Single',
+  'Bölünmüş (Split)': 'Split',
+  'Üçlü Bölünmüş (Triple Split)': 'Triple Split',
+  'Dörtlü Bölünmüş (Quadruple Split)': 'Quadruple Split',
+  'Tanımsız (No Definition)': 'No Definition',
+};
+export function definitionLabel(d: string): string {
+  if (getLang() !== 'en') return d;
+  return DEFINITION_EN[d] || d;
+}
+
+const CROSS_ANGLE_EN: Record<string, string> = {
+  'Sağ Açı': 'Right Angle',
+  'Sol Açı': 'Left Angle',
+  'Yan Yana (Juxtaposition)': 'Juxtaposition',
+};
+export function crossLabel(cross: string): string {
+  if (getLang() !== 'en' || !cross) return cross;
+  let out = cross;
+  for (const [tr, en] of Object.entries(CROSS_ANGLE_EN)) out = out.replace(tr, en);
+  return out.replace(' Haç — ', ' Cross — ');
 }
 
 function activationsFromPositions(pos: PlanetPositions): PlanetActivation[] {

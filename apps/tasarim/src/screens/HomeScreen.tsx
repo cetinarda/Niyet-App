@@ -54,7 +54,7 @@ export function HomeScreen({ onNavigate }: Props) {
   if (!activeProfile) {
     return (
       <View style={[styles.empty, { paddingTop: insets.top + 48 }]}>
-        <Text style={styles.brand}>SAKİN · TASARIM</Text>
+        <Text style={styles.brand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
         <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'Welcome' : 'Hoş geldin'}</Text>
         <Text style={styles.emptyDesc}>
           {getLang() === 'en'
