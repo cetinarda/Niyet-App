@@ -14,15 +14,19 @@ import { GlossaryScreen } from '../screens/GlossaryScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { useTasarimStore } from '../store/useStore';
+import { getLang } from '../i18n';
 
 export type Tab = 'home' | 'chart' | 'report' | 'glossary' | 'profile';
 
-const TABS: { key: Tab; label: string; emoji: string; activeColor: string }[] = [
-  { key: 'home', label: 'Bugün', emoji: '🌙', activeColor: Colors.gold },
-  { key: 'chart', label: 'Harita', emoji: '✦', activeColor: Colors.purple },
-  { key: 'report', label: 'Rapor', emoji: '📜', activeColor: Colors.tealSoft },
-  { key: 'glossary', label: 'Sözlük', emoji: '✦', activeColor: Colors.gold },
-  { key: 'profile', label: 'Profil', emoji: '👤', activeColor: Colors.teal },
+// Alt menü etiketleri İngilizce modda da Türkçe basılıyordu (kullanıcı: "eng modda
+// türkçe sızıyor"). Bu, her ekranda görünen kalıcı çerçeve olduğu için en görünür
+// sızıntıydı. label/labelEn ikilisi + getLang() ile çözüldü.
+const TABS: { key: Tab; label: string; labelEn: string; emoji: string; activeColor: string }[] = [
+  { key: 'home', label: 'Bugün', labelEn: 'Today', emoji: '🌙', activeColor: Colors.gold },
+  { key: 'chart', label: 'Harita', labelEn: 'Chart', emoji: '✦', activeColor: Colors.purple },
+  { key: 'report', label: 'Rapor', labelEn: 'Report', emoji: '📜', activeColor: Colors.tealSoft },
+  { key: 'glossary', label: 'Sözlük', labelEn: 'Glossary', emoji: '✦', activeColor: Colors.gold },
+  { key: 'profile', label: 'Profil', labelEn: 'Profile', emoji: '👤', activeColor: Colors.teal },
 ];
 
 export function TabNavigator() {
@@ -79,13 +83,13 @@ export function TabNavigator() {
                 activeOpacity={0.7}
                 accessibilityRole="tab"
                 accessibilityState={{ selected: isActive }}
-                accessibilityLabel={`${tab.label} sekmesi`}
+                accessibilityLabel={getLang() === 'en' ? `${tab.labelEn} tab` : `${tab.label} sekmesi`}
               >
                 <Text style={[
                   styles.tabLabel,
                   isActive ? styles.tabLabelActive : null,
                 ]}>
-                  {tab.label}
+                  {getLang() === 'en' ? tab.labelEn : tab.label}
                 </Text>
                 {isActive && <View style={styles.tabDot} />}
               </TouchableOpacity>

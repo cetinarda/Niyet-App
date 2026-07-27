@@ -3,7 +3,7 @@ import {
   Modal, View, Text, ScrollView, TouchableOpacity, StyleSheet,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ElementDistribution, ELEMENT_META, ElementKey, elementInterpretation } from '../utils/elements';
+import { ElementDistribution, ELEMENT_META, ElementKey, elementInterpretation, elementDesc, elementName } from '../utils/elements';
 import { ElementPie } from './ElementPie';
 import { getLang } from '../i18n';
 
@@ -11,7 +11,7 @@ const ORDER: ElementKey[] = ['ates', 'toprak', 'hava', 'su'];
 
 // Element adı — dile göre.
 function elemName(k: ElementKey): string {
-  return getLang() === 'en' ? ELEMENT_META[k].en : ELEMENT_META[k].tr;
+  return elementName(k);
 }
 
 export function ElementDetail({ dist, visible, onClose }: {
@@ -62,7 +62,7 @@ export function ElementDetail({ dist, visible, onClose }: {
                 <Text style={[styles.dominantName, { color: ELEMENT_META[dominant].color }]}>
                   {elemName(dominant)} · {Math.round(dist[dominant] * 100)}%
                 </Text>
-                <Text style={styles.dominantDesc}>{ELEMENT_META[dominant].desc}</Text>
+                <Text style={styles.dominantDesc}>{elementDesc(dominant)}</Text>
               </View>
             </View>
 
@@ -122,7 +122,7 @@ export function ElementDetail({ dist, visible, onClose }: {
                         <View key={p.key} style={styles.planetChip}>
                           <Text style={styles.planetGlyph}>{p.glyph}</Text>
                           <Text style={styles.planetTxt}>
-                            {p.tr} · {p.signTr}
+                            {getLang() === 'en' ? p.en : p.tr} · {getLang() === 'en' ? p.signEn : p.signTr}
                             {p.dignity === 'yonetici' ? ' ⟡' : p.dignity === 'yucelme' ? ' ▲' : ''}
                           </Text>
                         </View>

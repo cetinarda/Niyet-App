@@ -12,15 +12,18 @@
 //
 // Burç sırası ateş→toprak→hava→su döngüsüdür: element = floor(longitude/30) % 4.
 import { allPositions } from './ephemeris';
+import { getLang } from '../i18n';
 
 export type ElementKey = 'ates' | 'toprak' | 'hava' | 'su';
 
 export interface PlanetContribution {
   key: string;       // 'sun' ...
   tr: string;        // 'Güneş'
+  en: string;        // 'Sun'
   glyph: string;     // '☉'
   sign: number;      // 0..11
   signTr: string;    // 'Koç'
+  signEn: string;    // 'Aries'
   element: ElementKey;
   weight: number;    // nihai ağırlık (onurlanma+stellium uygulanmış)
   dignity?: 'yonetici' | 'yucelme'; // varsa rozet
@@ -40,27 +43,38 @@ export interface ElementDistribution {
 
 const ORDER: ElementKey[] = ['ates', 'toprak', 'hava', 'su'];
 
-export const ELEMENT_META: Record<ElementKey, { tr: string; en: string; color: string; glyph: string; desc: string }> = {
-  ates:   { tr: 'Ateş',   en: 'Fire',  color: '#E0683C', glyph: '△', desc: 'İtki, cesaret, ilham. Harekete geçiren, ısıtan, başlatan enerji.' },
-  toprak: { tr: 'Toprak', en: 'Earth', color: '#6FA86F', glyph: '⊕', desc: 'Beden, güven, somutluk. İnşa eden, sabırla kök salan enerji.' },
-  hava:   { tr: 'Hava',   en: 'Air',   color: '#D8C25C', glyph: '○', desc: 'Zihin, iletişim, ilişki. Bağ kuran, fikir taşıyan, esen enerji.' },
-  su:     { tr: 'Su',     en: 'Water', color: '#5C9AD8', glyph: '▽', desc: 'Duygu, sezgi, derinlik. Hisseden, akan, bağ kuran enerji.' },
+export const ELEMENT_META: Record<ElementKey, { tr: string; en: string; color: string; glyph: string; desc: string; descEn: string }> = {
+  ates:   { tr: 'Ateş',   en: 'Fire',  color: '#E0683C', glyph: '△', desc: 'İtki, cesaret, ilham. Harekete geçiren, ısıtan, başlatan enerji.', descEn: 'Drive, courage, inspiration. The energy that moves, warms and begins.' },
+  toprak: { tr: 'Toprak', en: 'Earth', color: '#6FA86F', glyph: '⊕', desc: 'Beden, güven, somutluk. İnşa eden, sabırla kök salan enerji.', descEn: 'Body, safety, substance. The energy that builds and patiently takes root.' },
+  hava:   { tr: 'Hava',   en: 'Air',   color: '#D8C25C', glyph: '○', desc: 'Zihin, iletişim, ilişki. Bağ kuran, fikir taşıyan, esen enerji.', descEn: 'Mind, communication, connection. The energy that links, carries ideas and moves like a breeze.' },
+  su:     { tr: 'Su',     en: 'Water', color: '#5C9AD8', glyph: '▽', desc: 'Duygu, sezgi, derinlik. Hisseden, akan, bağ kuran enerji.', descEn: 'Emotion, intuition, depth. The energy that feels, flows and bonds.' },
 };
 
-const SIGNS_TR = ['Koç', 'Boğa', 'İkizler', 'Yengeç', 'Aslan', 'Başak', 'Terazi', 'Akrep', 'Yay', 'Oğlak', 'Kova', 'Balık'];
+// Element açıklaması — dile göre.
+export function elementDesc(k: ElementKey): string {
+  return getLang() === 'en' ? ELEMENT_META[k].descEn : ELEMENT_META[k].desc;
+}
 
-const PLANET_TR: Record<string, { tr: string; glyph: string }> = {
-  sun:       { tr: 'Güneş',   glyph: '☉' },
-  moon:      { tr: 'Ay',      glyph: '☽' },
-  mercury:   { tr: 'Merkür',  glyph: '☿' },
-  venus:     { tr: 'Venüs',   glyph: '♀' },
-  mars:      { tr: 'Mars',    glyph: '♂' },
-  jupiter:   { tr: 'Jüpiter', glyph: '♃' },
-  saturn:    { tr: 'Satürn',  glyph: '♄' },
-  uranus:    { tr: 'Uranüs',  glyph: '♅' },
-  neptune:   { tr: 'Neptün',  glyph: '♆' },
-  pluto:     { tr: 'Plüton',   glyph: '♇' },
-  northNode: { tr: 'K. Ay Düğümü', glyph: '☊' },
+// Element adı — dile göre.
+export function elementName(k: ElementKey): string {
+  return getLang() === 'en' ? ELEMENT_META[k].en : ELEMENT_META[k].tr;
+}
+
+const SIGNS_TR = ['Koç', 'Boğa', 'İkizler', 'Yengeç', 'Aslan', 'Başak', 'Terazi', 'Akrep', 'Yay', 'Oğlak', 'Kova', 'Balık'];
+const SIGNS_EN = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+
+const PLANET_TR: Record<string, { tr: string; en: string; glyph: string }> = {
+  sun:       { tr: 'Güneş',   en: 'Sun',     glyph: '☉' },
+  moon:      { tr: 'Ay',      en: 'Moon',    glyph: '☽' },
+  mercury:   { tr: 'Merkür',  en: 'Mercury', glyph: '☿' },
+  venus:     { tr: 'Venüs',   en: 'Venus',   glyph: '♀' },
+  mars:      { tr: 'Mars',    en: 'Mars',    glyph: '♂' },
+  jupiter:   { tr: 'Jüpiter', en: 'Jupiter', glyph: '♃' },
+  saturn:    { tr: 'Satürn',  en: 'Saturn',  glyph: '♄' },
+  uranus:    { tr: 'Uranüs',  en: 'Uranus',  glyph: '♅' },
+  neptune:   { tr: 'Neptün',  en: 'Neptune', glyph: '♆' },
+  pluto:     { tr: 'Plüton',  en: 'Pluto',   glyph: '♇' },
+  northNode: { tr: 'K. Ay Düğümü', en: 'N. Node', glyph: '☊' },
 };
 
 // Temel önem ağırlıkları
@@ -98,6 +112,13 @@ const ELEM_CORE: Record<ElementKey, string> = {
   su:     'duygusal hassasiyet, sezgi, derinlik ve bağ kurma',
 };
 
+const ELEM_CORE_EN: Record<ElementKey, string> = {
+  ates:   'life force, inspiration, the urge to act, initiative and inner passion',
+  toprak: 'practicality, the body, stability and patiently building what is tangible',
+  hava:   'ideas, learning, communication and the ability to see different perspectives',
+  su:     'emotional sensitivity, intuition, depth and forming bonds',
+};
+
 // Baskın ikilinin (ilk iki element) bileşik enerji teması
 const PAIR_THEME: Record<string, string> = {
   'ates+hava':   'ilham almak, keşfetmek, öğretmek, üretmek ve anlam aramak',
@@ -108,6 +129,15 @@ const PAIR_THEME: Record<string, string> = {
   'hava+su':     'duyguyu kelimelerle anlamlandırmak, empati ve derin iletişim',
 };
 
+const PAIR_THEME_EN: Record<string, string> = {
+  'ates+hava':   'being inspired, exploring, teaching, creating and searching for meaning',
+  'ates+toprak': 'turning vision into tangible work, taking action and building things that last',
+  'ates+su':     'combining passion with intuition, feeling your way through inspiration and creative expression',
+  'hava+toprak': 'putting ideas into practice, planning and building systems that work',
+  'su+toprak':   'building with care, trust and tenderness, and deep-rooted emotional stability',
+  'hava+su':     'making sense of emotion through words, empathy and deep communication',
+};
+
 // En düşük elementin gölge/eğilim notu
 const SHADOW_NOTE: Record<ElementKey, string> = {
   ates:   'İçsel ateşin düşük olması, kendini başlatmakta ya da enerjiyi sürekli tutmakta zaman zaman zorluk olarak çalışabilir.',
@@ -115,6 +145,18 @@ const SHADOW_NOTE: Record<ElementKey, string> = {
   hava:   'Havanın düşük olması, içsel deneyimi dışarıya anlatmakta veya mesafe alıp objektif bakmakta zorluk olarak çalışabilir.',
   su:     'Suyun düşük olması, yoğun duygusal süreçleri zihinselleştirme veya anlamlandırma eğilimi olarak çalışabilir.',
 };
+
+const SHADOW_NOTE_EN: Record<ElementKey, string> = {
+  ates:   'A low Fire can show up as occasional difficulty getting yourself started, or keeping your energy going once you have.',
+  toprak: 'A low Earth can show up as difficulty grounding and sustaining your enthusiasm and ideas in daily life.',
+  hava:   'A low Air can show up as difficulty putting your inner experience into words, or stepping back to look at it objectively.',
+  su:     'A low Water can show up as a tendency to mentalise or rationalise intense emotional processes.',
+};
+
+// "a Fire-dominant" / "an Earth-dominant"
+function article(word: string): string {
+  return 'AEIOU'.includes(word.charAt(0).toUpperCase()) ? 'an' : 'a';
+}
 
 export interface ElementLine { key: ElementKey; pct: number; text: string; }
 export interface ElementInterpretation {
@@ -126,6 +168,7 @@ export interface ElementInterpretation {
 }
 
 export function elementInterpretation(dist: ElementDistribution): ElementInterpretation {
+  const en = getLang() === 'en';
   const ranked = (['ates', 'toprak', 'hava', 'su'] as ElementKey[])
     .map((k) => ({ k, v: dist[k] }))
     .sort((a, b) => b.v - a.v);
@@ -133,24 +176,43 @@ export function elementInterpretation(dist: ElementDistribution): ElementInterpr
   const lines: ElementLine[] = ranked.map((r, i) => {
     const pct = Math.round(r.v * 100);
     let role: string;
-    if (i === 0) role = 'baskın.';
-    else if (i === 1) role = 'destekleyici.';
-    else if (i === 2) role = 'mevcut ama temel motivasyonun değil.';
-    else role = 'var, ancak karar mekanizmanın merkezinde değil.';
-    return { key: r.k, pct, text: `${ELEM_CORE[r.k]} — ${role}` };
+    if (en) {
+      if (i === 0) role = 'dominant.';
+      else if (i === 1) role = 'supporting.';
+      else if (i === 2) role = 'present, but not your core motivation.';
+      else role = 'present, but not at the centre of how you decide.';
+    } else {
+      if (i === 0) role = 'baskın.';
+      else if (i === 1) role = 'destekleyici.';
+      else if (i === 2) role = 'mevcut ama temel motivasyonun değil.';
+      else role = 'var, ancak karar mekanizmanın merkezinde değil.';
+    }
+    const core = en ? ELEM_CORE_EN[r.k] : ELEM_CORE[r.k];
+    return { key: r.k, pct, text: `${core} — ${role}` };
   });
 
   const a = ranked[0].k, b = ranked[1].k;
   const pairPct = Math.round((ranked[0].v + ranked[1].v) * 100);
   const pairKey = [a, b].sort().join('+');
-  const theme = PAIR_THEME[pairKey] || 'kendine özgü bir denge';
-  const pairTitle = `${ELEMENT_META[a].tr} + ${ELEMENT_META[b].tr} ≈ %${pairPct}`;
-  const pairText = `Yaşam enerjin daha çok ${theme} üzerinden akıyor.`;
+  const theme = en
+    ? (PAIR_THEME_EN[pairKey] || 'a balance all your own')
+    : (PAIR_THEME[pairKey] || 'kendine özgü bir denge');
+  const pairTitle = en
+    ? `${ELEMENT_META[a].en} + ${ELEMENT_META[b].en} ≈ ${pairPct}%`
+    : `${ELEMENT_META[a].tr} + ${ELEMENT_META[b].tr} ≈ %${pairPct}`;
+  const pairText = en
+    ? `Your life energy flows mostly through ${theme}.`
+    : `Yaşam enerjin daha çok ${theme} üzerinden akıyor.`;
 
   const lowest = ranked[ranked.length - 1].k;
-  const headline = `${ELEMENT_META[ranked[0].k].tr} baskın bir tasarımsın; ${ELEMENT_META[a].tr.toLocaleLowerCase('tr')} ve ${ELEMENT_META[b].tr.toLocaleLowerCase('tr')} birlikte enerjinin omurgasını kuruyor.`;
+  const top = ELEMENT_META[ranked[0].k];
+  const headline = en
+    ? `You are ${article(top.en)} ${top.en}-dominant design; ${ELEMENT_META[a].en.toLowerCase()} and ${ELEMENT_META[b].en.toLowerCase()} together form the backbone of your energy.`
+    : `${top.tr} baskın bir tasarımsın; ${ELEMENT_META[a].tr.toLocaleLowerCase('tr')} ve ${ELEMENT_META[b].tr.toLocaleLowerCase('tr')} birlikte enerjinin omurgasını kuruyor.`;
 
-  return { lines, pairTitle, pairText, shadowText: SHADOW_NOTE[lowest], headline };
+  const shadowText = en ? SHADOW_NOTE_EN[lowest] : SHADOW_NOTE[lowest];
+
+  return { lines, pairTitle, pairText, shadowText, headline };
 }
 
 export function elementDistribution(personalityJD: number): ElementDistribution {
@@ -192,8 +254,8 @@ export function elementDistribution(personalityJD: number): ElementDistribution 
     weights[el] += w;
     const meta = PLANET_TR[b.key];
     contributions.push({
-      key: b.key, tr: meta.tr, glyph: meta.glyph,
-      sign: s, signTr: SIGNS_TR[s], element: el,
+      key: b.key, tr: meta.tr, en: meta.en, glyph: meta.glyph,
+      sign: s, signTr: SIGNS_TR[s], signEn: SIGNS_EN[s], element: el,
       weight: Math.round(w * 100) / 100, dignity,
     });
   });

@@ -2149,6 +2149,40 @@ async function scheduleDailyReminders(lang) {
   } catch (e) { console.warn("[Notif] error:", e); }
 }
 
+// ── EKRANI AÇIK TUT (Screen Wake Lock) ─────────────────────────────────────
+// Kullanıcı: "nefes aldığım sayfa hiç bir yere dokunmadığımda kararıyor; gözümü
+// kapatıp nefese odaklanmışken telefona tekrar dokunmam gerekiyor."
+// Standart Screen Wake Lock API kullanılıyor — YENİ NATIVE EKLENTİ YOK
+// (iOS 16.4+ WKWebView ve Android WebView destekler; desteklemeyen sürümde
+// sessizce devre dışı kalır, hiçbir şey bozulmaz).
+// Kilit yalnızca `active` iken tutulur; ekran/oturum bitince BIRAKILIR ki pil
+// boşuna tükenmesin. Sistem kilidi kendi kaldırırsa (arka plana alma, telefonun
+// kilitlenmesi) sekmeye dönüldüğünde yeniden alınır.
+function useScreenWakeLock(active) {
+  useEffect(() => {
+    if (!active) return;
+    let lock = null, cancelled = false;
+    const acquire = async () => {
+      try {
+        if (!("wakeLock" in navigator)) return;
+        const l = await navigator.wakeLock.request("screen");
+        if (cancelled) { try { l.release(); } catch(_) {} return; }
+        lock = l;
+        try { l.addEventListener("release", () => { lock = null; }); } catch(_) {}
+      } catch (_) { /* izin yok / desteklenmiyor → sessiz geç */ }
+    };
+    const onVisible = () => { if (!cancelled && document.visibilityState === "visible" && !lock) acquire(); };
+    acquire();
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", onVisible);
+      try { lock && lock.release(); } catch(_) {}
+      lock = null;
+    };
+  }, [active]);
+}
+
 // ── BİLDİRİM AKSİYONU: SOĞUK AÇILIŞ TAMPONU ────────────────────────────────
 // KÖK SEBEP (kullanıcı: "bildirimler ilgili bölüme gitmiyor, güne başla ekranında
 // takılıyor"): dinleyici bir useEffect içinde, yani React mount'undan SONRA
@@ -4160,12 +4194,28 @@ export default function SakinApp() {
   //   12:00-17:59 → ilk eksik adım (gün akışına devam)
   //   18:00-03:59 → akşam kapanışı (yapılmadıysa)
   // Hepsi tamamsa bağlantı ekranı (mandala) açılır — tünel/seri orada görünür.
-  const nextIncompleteScreen = () => MANDALA_STEPS.find(id => !stepsCompleted[id]) || "mandala";
+  // İlk eksik adım; belirtilen adımlar hesaba katılmaz.
+  const nextIncompleteScreen = (exclude = []) =>
+    MANDALA_STEPS.find(id => !exclude.includes(id) && !stepsCompleted[id]) || null;
+  // Hepsi tamamsa pratiğe dön: ses -> çakra -> nefes sırayla döner (kullanıcı:
+  // "sırayla ses-çakra-nefes arasında dönsün"). Sıra localStorage'da tutulur.
+  const ROTATE_PRACTICE = ["ses", "chakra", "nefes"];
+  const rotatePractice = () => {
+    let i = 0;
+    try { i = (parseInt(localStorage.getItem("sakin_rotate_idx")) || 0) % ROTATE_PRACTICE.length; } catch(_) {}
+    try { localStorage.setItem("sakin_rotate_idx", String(i + 1)); } catch(_) {}
+    return ROTATE_PRACTICE[i];
+  };
+  // Saat pencereleri (kullanıcı kararı):
+  //   00:00-11:59 → sabah niyeti (yapılmadıysa)
+  //   12:00-21:59 → SABAH ARTIK AÇILMAZ ("12:00'den sonra sabah tekrar açılmasın");
+  //                 akşam da erken açılmaz → kaldığı yer, yoksa pratik döngüsü
+  //   22:00-23:59 → akşam kapanışı ("akşam kapanışı 22:00-00:00 arası olsun")
   const timeAwareEntryScreen = () => {
     const h = new Date().getHours();
-    if (h >= 18 || h < 4) return !stepsCompleted["aksam"] ? "aksam" : nextIncompleteScreen();
-    if (h < 12)           return !stepsCompleted["sabah"] ? "sabah" : nextIncompleteScreen();
-    return nextIncompleteScreen();
+    if (h >= 22)  return !stepsCompleted["aksam"] ? "aksam" : (nextIncompleteScreen(["sabah"]) || rotatePractice());
+    if (h < 12)   return !stepsCompleted["sabah"] ? "sabah" : (nextIncompleteScreen(["aksam"]) || rotatePractice());
+    return nextIncompleteScreen(["sabah", "aksam"]) || rotatePractice();
   };
 
   // ── SEVİYE SİSTEMİ (kullanıcı: "7 gün düzenli kullanırsa sonraki seviyeye geçer
@@ -5127,6 +5177,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     }, 600);
     return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); cancelSpeech(); };
   },[screen, breathStarted, breathMode]);
+  // Nefes seansı sürerken ekran kararmasın (kullanıcı gözü kapalı, dokunamıyor).
+  useScreenWakeLock(screen === "nefes" && breathStarted);
 
   // Nefes ekranı bir overlay ile kapandığında (Sakin Ailesi/embed, kimlik kartı,
   // zihni boşalt, ayna geçidi) nefesi TAMAMEN durdur: "nefes al/ver" sesi ve sayaç
@@ -7288,8 +7340,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
           {breathStarted && breathMode==="diyafram" && (
             <div style={{ display:"flex",flexDirection:"column",alignItems:"center",margin:"0 auto 18px" }}>
-              <div style={{ position:"relative",width:180,height:260 }}>
-              <svg width="180" height="260" viewBox="0 0 180 260" style={{ overflow:"visible" }}>
+              {/* Diyagram %30 büyütüldü (kullanıcı: "buradaki mod biraz büyüyebilir").
+                  viewBox sabit → tüm koordinatlar ve etiketler birlikte ölçeklenir,
+                  tek tek koordinat düzeltmesi gerekmez. */}
+              <div style={{ position:"relative",width:234,height:338 }}>
+              <svg width="234" height="338" viewBox="0 0 180 260" style={{ overflow:"visible" }}>
                 {/* Side profile body silhouette */}
                 <path d="M 90 12 C 102 12 110 22 110 35 C 110 48 102 56 90 58 C 78 56 70 48 70 35 C 70 22 78 12 90 12" fill="none" stroke="rgba(80,200,180,0.25)" strokeWidth="1.2"/>
                 {/* Neck */}
@@ -7432,6 +7487,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {breathMode==="478"         && "4 · 7 · 8"}
               {breathMode==="kutu"        && "4 · 4 · 4 · 4"}
               {breathMode==="sakinletici" && "4 · 2 · 8"}
+            </div>
+          )}
+
+          {/* Modun NE YAPTIĞI seans sırasında da yazsın. Bu açıklama şimdiye kadar
+              yalnızca başlamadan önce görünüyordu; kullanıcı seansın içindeyken
+              "tam olarak anlatmıyor derdini" dedi. Metin zaten 7 dilde mevcut
+              (breath_desc_*) — yeni metin yazılmadı, var olan yeniden kullanıldı. */}
+          {breathStarted && (
+            <div style={{ maxWidth:300,margin:"0 auto 14px",fontSize:12.5,fontWeight:300,color:"rgba(200,190,220,0.5)",lineHeight:1.55,textAlign:"center",fontFamily:"'Inter',sans-serif" }}>
+              {t(`breath_desc_${breathMode}`)}
             </div>
           )}
 
