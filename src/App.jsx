@@ -8175,6 +8175,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                             )}
                           </div>
 
+                          {/* KOLEKTİF GEÇİŞ NOTU — raporun ALT BAŞLIĞI (kullanıcı isteği:
+                              "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
+                              Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
+                              gerçek efemerisle hesaplanır (retro gezegenler + en dar
+                              orb'lu açı); veri yoksa satır hiç çıkmaz. */}
+                          {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
+                            <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
+                              ✦ {pickLang(kozmikData.transit, lang)}
+                            </div>
+                          )}
+
                           {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
                           {(kozmikData.aiReport || kozmikData.report) && (
                             <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
