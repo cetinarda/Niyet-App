@@ -7134,17 +7134,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
                     {/* İnsan silueti */}
                     {/* Kafa */}
-                    <circle cx="110" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.2" />
+                    {/* İNSAN SİLUETİ — opaklıklar 0.06-0.10 arasındaydı, telefonda (özellikle
+                        düşük parlaklıkta) neredeyse görünmüyordu. Kullanıcı: "bu ekran
+                        telefonda bazen zor görülüyor, biraz daha belirgin yap, abartma."
+                        Yaklaşık iki katına çıkarıldı; hâlâ arka plan öğesi, çakra
+                        düğümlerinin ve ışık tünelinin önüne geçmiyor. */}
+                    <circle cx="110" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="1.4" />
                     {/* Boyun */}
                     <line x1="110" y1="122" x2="110" y2="140" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
                     {/* Gövde */}
-                    <path d="M80 140 Q110 136 140 140 L136 330 Q110 336 84 330Z" fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+                    <path d="M80 140 Q110 136 140 140 L136 330 Q110 336 84 330Z" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="1.2" />
                     {/* Kollar */}
-                    <path d="M80 150 Q60 180 50 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
-                    <path d="M140 150 Q160 180 170 240" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    <path d="M80 150 Q60 180 50 240" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M140 150 Q160 180 170 240" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
                     {/* Bacaklar */}
-                    <path d="M94 330 Q90 390 85 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
-                    <path d="M126 330 Q130 390 135 470" stroke="rgba(255,255,255,0.06)" strokeWidth="1" fill="none" strokeLinecap="round"/>
+                    <path d="M94 330 Q90 390 85 470" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M126 330 Q130 390 135 470" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
 
                     {/* Çakra düğümleri */}
                     {chakraNodes.map((node,i) => {
