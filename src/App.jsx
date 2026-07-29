@@ -5214,11 +5214,36 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     }
   },[screen]);
 
-  const speakBreathCue = (phase) => {
-    const voiceMap = { inhale: t("breath_voice_inhale"), hold: t("breath_voice_hold"), exhale: t("breath_voice_exhale"), hold2: t("breath_voice_rest") };
-    const text = voiceMap[phase];
-    if (!text) return;
-    speakText(text, { lang: t("voice_lang"), rate: 0.75, pitch: 0.9, volume: 0.7 });
+  // ── NEFES İŞARETİ: KONUŞMA YERİNE YUMUŞAK TON ─────────────────────────────
+  // Kullanıcı: "inhale/hold/exhale ses çok robotik, sakin huzurlu bir ses daha
+  // iyi olur" → "konuşmayı kaldırıp yumuşak ton deneyelim".
+  // Cihazın TTS motoru kullanıldığı için ses her telefonda farklı ve sentetik
+  // duyuluyordu. Artık konuşma YOK: nefes al = yumuşakça YÜKSELEN, nefes ver =
+  // ALÇALAN sine tonu. Faz adı zaten ekranda yazdığı için bilgi kaybı olmuyor.
+  // Tutuş/dinlenme fazları SESSİZ — en sakin seçenek.
+  // Sine dalga + uzun attack/release: tık ve sertlik olmaz.
+  const breathToneCtxRef = useRef(null);
+  const playBreathTone = (phase) => {
+    if (phase !== "inhale" && phase !== "exhale") return;   // hold/hold2 sessiz
+    try {
+      if (!breathToneCtxRef.current) breathToneCtxRef.current = __makeAudioCtx();
+      const ctx = breathToneCtxRef.current;
+      if (!ctx) return;
+      if (ctx.state === "suspended") { try { ctx.resume(); } catch (_) {} }
+      const t0 = ctx.currentTime;
+      const [f0, f1] = phase === "inhale" ? [196, 294] : [294, 196];  // sol3 ↔ re4
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine";
+      o.frequency.setValueAtTime(f0, t0);
+      o.frequency.linearRampToValueAtTime(f1, t0 + 0.95);   // nefesin kendisi gibi kayan perde
+      // Yumuşak giriş/çıkış — 0'dan başlayıp 0'a inince tık sesi olmaz.
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.linearRampToValueAtTime(0.085, t0 + 0.30);
+      g.gain.linearRampToValueAtTime(0.060, t0 + 0.80);
+      g.gain.exponentialRampToValueAtTime(0.0005, t0 + 1.35);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(t0); o.stop(t0 + 1.4);
+    } catch (_) {}
   };
 
   useEffect(() => {
@@ -5226,11 +5251,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
     const toIds = [];
     const cycle = () => {
-      setBreathPhase("inhale"); speakBreathCue("inhale");
+      setBreathPhase("inhale"); playBreathTone("inhale");
       let t = tm.in;
-      if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); speakBreathCue("hold"); },  t)); t += tm.hold;  }
-      toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); speakBreathCue("exhale"); }, t)); t += tm.out;
-      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); speakBreathCue("hold2"); }, t)); }
+      if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); playBreathTone("hold"); },  t)); t += tm.hold;  }
+      toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); playBreathTone("exhale"); }, t)); t += tm.out;
+      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); playBreathTone("hold2"); }, t)); }
       toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
     };
     setBreathPhase("ready");
