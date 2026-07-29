@@ -3424,8 +3424,14 @@ export default function SakinApp() {
   };
   // Kuş sesi ARKA PLAN eşlikçisidir — asıl olan solfeggio frekansı (kullanıcı:
   // "kuş seslerini biraz daha kıs, çok baskın; önemli olan solfeggio frekansları").
-  // Varsayılan ses 0.22 → 0.10 (yaklaşık yarısı).
-  const playBirdSound = (birdKey, vol = 0.10) => {
+  // Varsayılan ses 0.22 → 0.10 (yaklaşık yarısı) → 0.06.
+  // CIZIRTI ARA ÇÖZÜMÜ: kaynak dosyalar 22 kHz / 64 kbps mono MP3; kuş cıvıltısı
+  // geniş bantlı olduğu için bu bitrate'te bandın İÇİNE gömülü kodlama artefaktı
+  // üretiyor. Ölçüldü: 9 kHz üstü enerji zaten -65..-70 dB, yani yüksek frekans
+  // tıslaması DEĞİL — filtreyle temizlenemiyor (denoise denendi, telafi kazancı
+  // artefaktı geri yükseltti). Kalıcı çözüm kayıtları yüksek kalitede yeniden
+  // temin etmek; o gelene kadar seviye düşürülerek artefakt maskeleniyor.
+  const playBirdSound = (birdKey, vol = 0.06) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
     const src = `/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`;
@@ -7784,7 +7790,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             // Kuş sesi arka planda kalsın, solfeggio tonu öne çıksın (kullanıcı isteği):
             // 0.38/0.22 → 0.16/0.10. (741 Hz kuşu diğerlerinden kısık kaydedildiği için
             // oransal olarak biraz yüksek tutuluyor.)
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.16 : 0.10);
+            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.10 : 0.06);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
@@ -9691,6 +9697,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
           <h2>{t("privacy_s10")}</h2>
           <p>{t("privacy_s10p")} <a href="mailto:destek@sakin.app" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.app</a></p>
+
+          {/* KVKK AYDINLATMA METNİ — Apple'ın gizlilik şartları ile KVKK AYRI
+              rejimlerdir; Apple'ı karşılamak KVKK'yı karşılamaz. Metin
+              uygulamanın GERÇEK davranışına göre yazıldı: veriler cihazda kalır,
+              AI'ya yalnızca kimlikle ilişkilendirilemeyen özet iletilir. */}
+          <h2>{t("privacy_kvkk")}</h2>
+          <p>{t("privacy_kvkk_intro")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h1")}</h3>
+          <p>{t("privacy_kvkk_p1")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h2")}</h3>
+          <p>{t("privacy_kvkk_p2")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h3")}</h3>
+          <p>{t("privacy_kvkk_p3")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h4")}</h3>
+          <p>{t("privacy_kvkk_p4")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h5")}</h3>
+          <p>{t("privacy_kvkk_p5")}</p>
+          <h3 style={{ fontSize:15,color:"#a898c8",marginTop:18,marginBottom:4,fontWeight:400 }}>{t("privacy_kvkk_h6")}</h3>
+          <ul>{(t("privacy_kvkk_l6") || []).map((x,i)=><li key={i}>{x}</li>)}</ul>
+          <p>{t("privacy_kvkk_p7")}</p>
+
           <p style={{ fontSize:14,color:"#777777" }}>{t("privacy_app_name")}</p>
         </div>
       )}
