@@ -2913,7 +2913,10 @@ function playFreqTone(hz, dur = 3.5) {
 
 function FreqText({ text, style, onNav }) {
   if (!text) return null;
-  const parts = text.split(/(\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
+  // MARKDOWN KALIN: model çıktısı "**Senin için**" gibi işaretler içeriyordu ve
+  // bunlar ekrana YILDIZLARLA basılıyordu (kullanıcı görselinde görüldü). Artık
+  // ayrıştırılıp gerçekten kalın olarak çiziliyor, yıldızlar gösterilmiyor.
+  const parts = text.split(/(\*\*[^*\n]+\*\*|\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
   const NEFES_IDS = {
     "Akciğer":"akciger","Sakinleştirici":"sakinletici",
     "Diyafram":"diyafram","Kutu":"kutu","4-7-8":"478","Standart":"standart"
@@ -2925,6 +2928,8 @@ function FreqText({ text, style, onNav }) {
   return (
     <span style={style}>
       {parts.map((part, i) => {
+        const boldM = part.match(/^\*\*([^*\n]+)\*\*$/);
+        if (boldM) return <strong key={i} style={{ fontWeight:600, color:"#e6dcf5" }}>{boldM[1]}</strong>;
         const hzM = part.match(/^(\d+)\s*Hz$/i);
         if (hzM) {
           const hz = parseInt(hzM[1]);
