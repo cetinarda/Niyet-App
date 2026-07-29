@@ -4165,13 +4165,14 @@ export default function SakinApp() {
   // İÇERİĞİ (sabah kelimeleri seçili vs.) için kullanılmaya devam eder — karışmaz.
   // Alt sayaç 9 EKRANI gösterir (giriş=0, sabah=1 … keşfet=9) — bağlantının 7 adımından
   // AYRI bir şeydir (sayaç = "neredeyim", bağlantı = "bugün ne tamamlandı").
-  const NAV_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita","ailesi"];
-  const currentStepIndex = showAilesi ? 9 : Math.max(0, NAV_STEPS.indexOf(screen) + 1);
+  // Alt sayaç artık kaydırma zinciriyle BİREBİR aynı: giriş=0, sabah=1 … harita=7.
+  // bağlan ve keşfet zincirden çıkarıldığı için sayaçtan da çıkarıldı.
+  const NAV_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"];
+  const currentStepIndex = Math.max(0, NAV_STEPS.indexOf(screen) + 1);
   const STEP_NAMES = [
     (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
     t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
-    t("nav_chakra"), t("nav_evening"),
-    pickLang(NEDIR_I18N.baglanT, lang), t("nav_map"), pickLang(NEDIR_I18N.kesfetT, lang),
+    t("nav_chakra"), t("nav_evening"), t("nav_map"),
   ];
   // NOT (geri alınan hatalı düzeltme): Adımlar SADECE gerçekten tamamlanınca
   // (ekranın "DEVAM ET/İLERİ" butonuna basınca) markStep ile işaretlenir. Bir
@@ -5187,6 +5188,44 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Nefes seansı sürerken ekran kararmasın (kullanıcı gözü kapalı, dokunamıyor).
   useScreenWakeLock(screen === "nefes" && breathStarted);
 
+  // ── GÜN GÖREVLERİ: UYGULAMA İÇİNDE YAPILANI OTOMATİK İŞARETLE ──────────────
+  // Kullanıcı: "Nefes farkındalığını uygulamada açınca 1 dk sonra bu kutunun
+  // otomatik checked olmasını ve gün listeme dönebilmeyi istedim... bu mantığı
+  // app içine yönlendirdiğimiz diğer maddelere de uygula."
+  // "Uygulamada aç" ile yönlendirilen görevler (REMINDER_GO) artık kullanıcı
+  // işi GERÇEKTEN yapınca kendiliğinden tamamlanır; geri dönünce kutu dolu olur.
+  // ReminderScreen her mount'ta localStorage'dan okuduğu için ekstra köprü gerekmez.
+  const markReminderDone = (id) => {
+    try {
+      const k = "sakin_reminders_done_" + todayKey;
+      const cur = JSON.parse(localStorage.getItem(k) || "{}");
+      if (cur[id]) return;                       // zaten işaretli → gereksiz yazma yok
+      cur[id] = true;
+      localStorage.setItem(k, JSON.stringify(cur));
+      setGunTasksDone(Object.values(cur).filter(Boolean).length);
+    } catch (_) {}
+  };
+  // "Nefes farkındalığı" = 1 dakika. Nefes ekranında seans sürerken sayılır;
+  // ekrandan çıkılıp dönülürse sayaç kaldığı yerden devam eder (ref'te tutulur).
+  const reminderBreathSecRef = useRef(0);
+  useEffect(() => {
+    if (screen !== "nefes" || !breathStarted) return;
+    const id = setInterval(() => {
+      reminderBreathSecRef.current += 1;
+      if (reminderBreathSecRef.current >= 60) markReminderDone("nefes");
+    }, 1000);
+    return () => clearInterval(id);
+  }, [screen, breathStarted, todayKey]);
+  // "Çakra anı" görevinin süre şartı yok (duration:null) — çakra terapisinde
+  // bir an durmak yeterli. Terapi ekranında 30 sn geçirmek bunu karşılar.
+  useEffect(() => {
+    if (screen !== "terapi") return;
+    const id = setInterval(() => {
+      if (readTerapiSec() >= 30) markReminderDone("chakra_an");
+    }, 1000);
+    return () => clearInterval(id);
+  }, [screen, todayKey]);
+
   // Nefes ekranı bir overlay ile kapandığında (Sakin Ailesi/embed, kimlik kartı,
   // zihni boşalt, ayna geçidi) nefesi TAMAMEN durdur: "nefes al/ver" sesi ve sayaç
   // arka planda sürmesin. Panik akışından girip başka menüye geçince de geçerli.
@@ -5219,7 +5258,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // artık akşamdan HEMEN sonra (harita'dan önce) — kullanıcı: "akşamdan sonra bağlan
   // gelecek". "keşfet" bir `screen` değil, `showAilesi` modalı — zincirin son adımı
   // olarak ayrıca ele alınır (harita'dan ileri kaydırınca açılır).
-  const SWIPE_SCREENS = ["sabah","gun","nefes","ses","chakra","aksam","mandala","harita"];
+  // KAYDIRMA ZİNCİRİ: sabah → … → akşam → İÇSEL HARİTA (son).
+  // "bağlan" ÇIKARILDI (kullanıcı: "bağlan 1. ve 7. adımda geliyor, tekrara
+  // düşüyor; kaydırmadan ve 7'den çıkart, içsel harita ile bitsin — isteyen
+  // hamburgerden ulaşır"). Keşfet de zincirin sonundan kaldırıldı; böylece
+  // kaydırma net bir başlangıç ve bitiş gösteriyor.
+  const SWIPE_SCREENS = ["sabah","gun","nefes","ses","chakra","aksam","harita"];
   const touchStartRef = useRef(null);
   const handleTouchStart = e => { touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: Date.now() }; };
   const handleTouchEnd = e => {
@@ -5238,7 +5282,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     if (idx === -1) return;
     if (dx < -60) {
       if (idx < SWIPE_SCREENS.length - 1) setScreen(SWIPE_SCREENS[idx + 1]);
-      else setShowAilesi(true); // "harita"dan ileri kaydırınca Keşfet açılır
+      // "harita" zincirin SONU — ileri kaydırma bir şey açmaz (eskiden Keşfet açılırdı).
     }
     if (dx > 60 && idx > 0) setScreen(SWIPE_SCREENS[idx - 1]);
   };
@@ -6615,17 +6659,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
-                    {/* SAKİN NEDİR? — koyu tema butonunun HEMEN ÜSTÜNDE (kullanıcı isteği).
-                        Yolculuk sekmesini açar; bağlantı açıklaması orada en üstte. */}
-                    <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
-                    <button onClick={()=>{ setShowTopMenu(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-                      style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                        background: screen==="hakkinda" ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
-                        cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                        color:"#f0c060", textAlign:"left", width:"100%" }}>
-                      <span style={{ fontSize:15, lineHeight:1 }}>✦</span>
-                      <span>{pickLang(NEDIR_I18N.title, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                    </button>
                     {/* Açık/koyu tema — menünün EN ALTINDA. Artık mobilde de (iOS/Android) var. */}
                     {(<>
                       <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
@@ -9611,7 +9644,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {/* PROGRESS STRIP — 9 adım (sabah…keşfet). mandala/harita ekranlarında da görünür. */}
-      {["sabah","nefes","ses","chakra","gun","aksam","mandala","harita"].includes(screen) && (
+      {/* Adım noktaları + alt gezinme: yalnızca KAYDIRMA ZİNCİRİNDEKİ ekranlarda.
+          "mandala" (bağlan) zincirden çıkarıldığı için buradan da çıkarıldı —
+          yoksa zincir dışı bir ekranda "N · ADIM" göstergesi kafa karıştırırdı. */}
+      {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
         <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
