@@ -1129,6 +1129,14 @@ const MIND_MODES = [
                     colors:["#4080a0","#60a8c8","#80c0e0","#a0d8e8","#5090b0"], frequencies:[196, 294, 392, 588],  lfo:0.10, glow:"rgba(120,180,220,0.18)" },
 ];
 
+// İki hex rengi yumuşakça karıştır (kaleidoskop renk geçişi için).
+function _mixHex(a, b, k) {
+  const p = (h) => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+  const [r1,g1,b1] = p(a), [r2,g2,b2] = p(b);
+  const m = (x,y) => Math.round(x + (y - x) * k);
+  return `rgb(${m(r1,r2)},${m(g1,g2)},${m(b1,b2)})`;
+}
+
 // Procedural noise + doğa sesi yardımcıları
 function makeNoiseBuffer(ctx, durationSec, type) {
   const length = Math.floor(ctx.sampleRate * durationSec);
@@ -1320,9 +1328,15 @@ const KaleidoscopeView = memo(function KaleidoscopeView({ mode, nature = [], lan
       });
     }
 
-    let t = 0;
+    // t artık KARE değil GERÇEK ZAMAN tabanlı. Eskiden her karede sabit 0.012
+    // ekleniyordu; 120Hz ProMotion ekranda animasyon iki kat hızlı akıyordu.
+    // 60fps'teki eski hıza denk gelmesi için saniyede 0.72 (= 0.012 x 60) artar.
+    let t = 0, _last = performance.now();
     const draw = () => {
-      t += 0.012;
+      const _now = performance.now();
+      // Sekme arka plandayken oluşan büyük sıçramayı kırp (0.05 sn tavan).
+      t += Math.min((_now - _last) / 1000, 0.05) * 0.72;
+      _last = _now;
       const w = window.innerWidth, h = window.innerHeight;
       const cx = w / 2, cy = h / 2;
       const sides = 8;
@@ -1345,7 +1359,14 @@ const KaleidoscopeView = memo(function KaleidoscopeView({ mode, nature = [], lan
           const x = Math.cos(p.a) * r;
           const y = Math.sin(p.a) * r;
           const sz = p.size + Math.sin(t * 1.6 + i * 0.25) * 3;
-          const color = mode.colors[(p.colorIdx + Math.floor(t * 0.25)) % mode.colors.length];
+          // KÖK SEBEP (kullanıcı: "loop yapıyor ama geçiş smooth değil"):
+          // renk indeksi Math.floor ile BASAMAKLI seçiliyordu → 36 parçacık
+          // aynı anda sert bir sıçramayla renk atlıyordu. Artık iki komşu renk
+          // arasında kesirli oranla karıştırılıyor; geçiş sürekli.
+          const _cf = t * 0.25 + p.colorIdx;
+          const _i0 = Math.floor(_cf) % mode.colors.length;
+          const _i1 = (_i0 + 1) % mode.colors.length;
+          const color = _mixHex(mode.colors[_i0], mode.colors[_i1], _cf - Math.floor(_cf));
           ctx.globalAlpha = 0.42;
           ctx.fillStyle = color;
           ctx.beginPath();
@@ -2581,6 +2602,23 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   };
 
   const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
+  // SIRADAKİ ÇAKRAYA GEÇ (kullanıcı: "bir çakradan diğerine geçerken ekran
+  // kaydırma iyi olur, geri dönüp sıradakini seçmek yerine"). Listeye dönmeden
+  // aynı sekmedeki (temel/yüksek) bir sonraki çakranın hazırlık ekranını açar;
+  // sonda başa sarar. Seans durumu (ses, sayaç, parçacıklar) temizlenir.
+  const NEXT_CHAKRA_TXT = { tr:"Sıradaki çakra →", en:"Next chakra →", de:"Nächstes Chakra →",
+    es:"Siguiente chakra →", pt:"Próximo chakra →", fr:"Chakra suivant →", ja:"次のチャクラ →" };
+  const goNextChakra = () => {
+    const list = CHAKRAS_22.filter(c => chakraTab === "temel" ? c.level === 1 : c.level > 1);
+    const i = list.findIndex(c => c.name === selected?.name);
+    if (i === -1 || list.length < 2) { resetTerapi(); return; }
+    const next = list[(i + 1) % list.length];
+    stopTone(); cancelSpeech();
+    clearInterval(timerRef.current); clearInterval(particleRef.current);
+    setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false);
+    setSelected(next);
+    setTPhase("intro");
+  };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
@@ -2715,14 +2753,23 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       );
     }
 
-    // Fiziksel boyut — eller ilgili bölgeye uzanır
+    // Fiziksel boyut — eller ilgili bölgeye uzanır.
+    // KÖK SEBEP DÜZELTMESİ (kullanıcı: "'ellerini taç çakrana koy' diyor ama
+    // çöp adamın elleri göğsünde"): bu harita TÜRKÇE ADLARLA anahtarlanmıştı.
+    // Çakra adları dile göre değiştiği için (Kök→Root, Taç→Crown …) İngilizce
+    // ve diğer dillerde arama BAŞARISIZ oluyor, her çakrada varsayılan
+    // {hy:57} yani KALP/GÖĞÜS pozisyonu çiziliyordu. Artık dilden bağımsız
+    // olan solfeggio frekansı (hz) anahtar — 7 klasik çakrada benzersiz.
     const HP = {
-      "Kök":{hy:83,lx:57,rx:91},"Sakral":{hy:77,lx:59,rx:89},
-      "Solar Pleksus":{hy:68,lx:60,rx:88},"Kalp":{hy:57,lx:61,rx:87},
-      "Boğaz":{hy:37,lx:68,rx:80},"Üçüncü Göz":{hy:17,lx:66,rx:82},
-      "Taç":{hy:10,lx:67,rx:81},
+      396:{hy:83,lx:57,rx:91},  // Kök / Root
+      417:{hy:77,lx:59,rx:89},  // Sakral / Sacral
+      528:{hy:68,lx:60,rx:88},  // Solar Pleksus / Solar Plexus
+      639:{hy:57,lx:61,rx:87},  // Kalp / Heart
+      741:{hy:37,lx:68,rx:80},  // Boğaz / Throat
+      852:{hy:17,lx:66,rx:82},  // Üçüncü Göz / Third Eye
+      963:{hy:10,lx:67,rx:81},  // Taç / Crown
     };
-    const {hy=57,lx=61,rx=87}=HP[c.name]||{};
+    const {hy=57,lx=61,rx=87}=HP[c.hz]||{};
     const up=hy<49; const my=(49+hy)/2;
     const lArm=up?`M53 49 Q55 ${my} ${lx} ${hy}`:`M53 49 Q37 ${my} ${lx} ${hy}`;
     const rArm=up?`M95 49 Q93 ${my} ${rx} ${hy}`:`M95 49 Q111 ${my} ${rx} ${hy}`;
@@ -2870,6 +2917,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       </div>
       <div style={{ display:"flex",flexDirection:"column",gap:10,alignItems:"center" }}>
         {onNext && <button className="sakin-btn-primary" style={{ width:"100%",maxWidth:260 }} onClick={() => { resetTerapi(); onNext(); }}>{t("btn_done_next")}</button>}
+        <button className="sakin-btn" style={{ width:"100%",maxWidth:260 }} onClick={goNextChakra}>
+          {pickLang(NEXT_CHAKRA_TXT, lang)}
+        </button>
         <div style={{ display:"flex",gap:10 }}>
           <button className="sakin-btn" onClick={resetTerapi}>{t("other_chakra")}</button>
           <button className="sakin-btn" onClick={onBack}>{t("main_screen")}</button>
