@@ -2961,12 +2961,88 @@ function playFreqTone(hz, dur = 3.5) {
   } catch(_) {}
 }
 
+// ── YOGA POZ SÖZLÜĞÜ + ÇİZGİ FİGÜRLERİ ─────────────────────────────────────
+// Kullanıcı: "içsel ayna önerilerde verdiğimiz yoga pozlarının altı çizili olsa
+// ve pozları kapanabilir bir pop-up'ta açsa, hareketleri ikon şeklinde ekran
+// değişmeden görmüş olur."
+// AI çıktısı poz adlarını TIRNAK İÇİNDE yazıyor (ör. Yoga "Kobra" pozu). FreqText
+// tırnaklı terimleri yakalar; sözlükte varsa altı çizili + tıklanabilir yapar.
+// Figürler uygulamanın mevcut çizgi dilinde (nefes diyaframı, çakra el pozisyonu
+// da aynı tarzda) — yan profil, tek renk, ince kontur.
+const YOGA_POSES = {
+  // Her poz: head [cx,cy,r] + limbs (tek path). Zemin çizgisi y=92.
+  // Çizgi-figür tarzı bilinçli: uygulamada nefes diyaframı ve çakra el pozisyonu
+  // da aynı dilde. Geometri sade tutuldu ki poz ilk bakışta okunsun.
+  kobra: {
+    ad:{tr:"Kobra",en:"Cobra"},
+    aciklama:{tr:"Yüzükoyun yat, avuçlarını omuz altına al, göğsü nazikçe yukarı aç. Kalçalar yerde kalsın.",
+              en:"Lie face down, palms under shoulders, gently lift the chest. Keep hips on the floor."},
+    head:[100,38,8],
+    limbs:"M8 92 L120 92 M18 89 L62 87 M62 87 C 78 85 90 70 94 48 M92 52 C 86 64 82 78 82 90",
+  },
+  cocuk: {
+    ad:{tr:"Çocuk",en:"Child's Pose"},
+    aciklama:{tr:"Dizlerin üstüne otur, alnını yere bırak, kolları öne uzat. Nefesi sırtında hisset.",
+              en:"Kneel, rest your forehead down, stretch arms forward. Feel the breath in your back."},
+    head:[36,80,8],
+    limbs:"M8 92 L120 92 M96 64 C 88 76 68 85 44 84 M96 64 L102 90 M44 86 L14 90",
+  },
+  agac: {
+    ad:{tr:"Ağaç",en:"Tree Pose"},
+    aciklama:{tr:"Tek ayak üzerinde dur, diğer ayağı iç bacağa koy, elleri baş üstünde birleştir.",
+              en:"Stand on one leg, place the other foot on the inner thigh, join hands overhead."},
+    head:[64,36,7],
+    limbs:"M20 92 L108 92 M64 43 L64 62 M64 62 L61 92 M64 62 L44 76 L58 67 M64 29 L52 13 M64 29 L76 13 M52 13 L64 6 L76 13",
+  },
+  savasci: {
+    ad:{tr:"Savaşçı",en:"Warrior"},
+    aciklama:{tr:"Bir bacağı öne büküp diğerini geriye uzat, kolları iki yana aç, bakış öne.",
+              en:"Bend one leg forward, extend the other back, open arms wide, gaze ahead."},
+    head:[64,26,8],
+    limbs:"M8 92 L120 92 M64 34 L64 58 M64 58 L96 74 L96 92 M64 58 L30 92 M22 48 L106 48",
+  },
+  kopru: {
+    ad:{tr:"Köprü",en:"Bridge"},
+    aciklama:{tr:"Sırtüstü yat, ayaklar yerde, kalçayı yukarı kaldır. Omuzlar ve ayaklar destek olsun.",
+              en:"Lie on your back, feet on the floor, lift the hips. Shoulders and feet support you."},
+    head:[22,82,8],
+    limbs:"M8 92 L120 92 M31 86 C 48 64 72 58 90 68 M90 68 L97 88 M97 88 L106 90 M31 86 L18 90",
+  },
+  dag: {
+    ad:{tr:"Dağ",en:"Mountain"},
+    aciklama:{tr:"Ayaklar bitişik, omurga uzun, omuzlar gevşek, kollar yanda. Yere kök sal.",
+              en:"Feet together, spine long, shoulders soft, arms at your sides. Root down."},
+    head:[64,26,8],
+    limbs:"M28 92 L100 92 M64 34 L64 60 M64 60 L59 92 M64 60 L69 92 M64 40 L52 66 M64 40 L76 66",
+  },
+};
+// Geçerli dili oku (FreqText'e prop eklemeden). Host dili localStorage'da.
+const _curLang = () => { try { return localStorage.getItem("sakin_lang") || "tr"; } catch { return "tr"; } };
+// AI çıktısındaki serbest yazımı sözlük anahtarına indir (büyük/küçük, ekler).
+const _yogaKey = (raw) => {
+  let k = String(raw || "").toLocaleLowerCase("tr")
+    .replace(/[^a-zçğıöşü]/g, "");
+  if (!k) return null;
+  // "Child's Pose", "Kobra pozu", "Tree Pose" gibi ekleri at → çekirdek ada in.
+  k = k.replace(/(pose|poses|pozu|pozlari|pozları|poz|duruşu|durusu|asana|asanasi|asanası)$/, "");
+  if (!k) return null;
+  const map = { kobra:"kobra", cobra:"kobra",
+    çocuk:"cocuk", cocuk:"cocuk", child:"cocuk", childs:"cocuk",
+    ağaç:"agac", agac:"agac", tree:"agac",
+    savaşçı:"savasci", savasci:"savasci", warrior:"savasci",
+    köprü:"kopru", kopru:"kopru", bridge:"kopru",
+    dağ:"dag", dag:"dag", mountain:"dag" };
+  return map[k] || null;
+};
+
 function FreqText({ text, style, onNav }) {
+  const [pose, setPose] = useState(null);   // açık poz pop-up'ı
   if (!text) return null;
   // MARKDOWN KALIN: model çıktısı "**Senin için**" gibi işaretler içeriyordu ve
   // bunlar ekrana YILDIZLARLA basılıyordu (kullanıcı görselinde görüldü). Artık
   // ayrıştırılıp gerçekten kalın olarak çiziliyor, yıldızlar gösterilmiyor.
-  const parts = text.split(/(\*\*[^*\n]+\*\*|\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
+  // Tırnaklı terimler de ayrıştırılır: sözlükte olan yoga pozları tıklanabilir olur.
+  const parts = text.split(/(\*\*[^*\n]+\*\*|"[^"\n]{2,28}"|\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
   const NEFES_IDS = {
     "Akciğer":"akciger","Sakinleştirici":"sakinletici",
     "Diyafram":"diyafram","Kutu":"kutu","4-7-8":"478","Standart":"standart"
@@ -2978,6 +3054,19 @@ function FreqText({ text, style, onNav }) {
   return (
     <span style={style}>
       {parts.map((part, i) => {
+        const qM = part.match(/^"([^"\n]{2,28})"$/);
+        if (qM) {
+          const key = _yogaKey(qM[1]);
+          if (!key) return <span key={i}>{part}</span>;   // sözlükte yok → düz metin
+          const pz = YOGA_POSES[key];
+          return (
+            <span key={i} onClick={() => setPose(key)}
+              onMouseEnter={() => setPose(key)}
+              title={pickLang(pz.ad, _curLang())}
+              style={{ color:"#8fd6b4", cursor:"pointer", borderBottom:"1px dashed rgba(143,214,180,0.6)", fontWeight:500 }}
+            >{qM[1]} ⌾</span>
+          );
+        }
         const boldM = part.match(/^\*\*([^*\n]+)\*\*$/);
         if (boldM) return <strong key={i} style={{ fontWeight:600, color:"#e6dcf5" }}>{boldM[1]}</strong>;
         const hzM = part.match(/^(\d+)\s*Hz$/i);
@@ -3017,6 +3106,28 @@ function FreqText({ text, style, onNav }) {
         }
         return <span key={i}>{part}</span>;
       })}
+      {/* POZ POP-UP'I — ekran değişmeden, üstte açılır. Dışına tıkla/× ile kapanır.
+          Masaüstünde poz adının üstüne gelmek de açar (onMouseEnter). */}
+      {pose && YOGA_POSES[pose] && (() => {
+        const pz = YOGA_POSES[pose], lg = _curLang();
+        return (
+          <span onClick={()=>setPose(null)} style={{ position:"fixed",inset:0,zIndex:100020,background:"rgba(0,0,0,0.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",justifyContent:"center",padding:22 }}>
+            <span onClick={e=>e.stopPropagation()} style={{ display:"block",maxWidth:320,width:"100%",background:"linear-gradient(160deg,rgba(24,32,30,0.98),rgba(14,20,19,0.98))",border:"1px solid rgba(143,214,180,0.3)",borderRadius:18,padding:"20px 20px 16px",textAlign:"center",boxShadow:"0 18px 50px rgba(0,0,0,0.6)" }}>
+              <span onClick={()=>setPose(null)} style={{ position:"absolute" }} />
+              <span style={{ display:"block",fontSize:11,letterSpacing:4,color:"#6f9e88",textTransform:"uppercase",marginBottom:10,fontFamily:"'Jost',sans-serif" }}>YOGA</span>
+              <svg viewBox="0 0 128 112" width="200" height="175" fill="none" style={{ display:"block",margin:"0 auto 12px" }} aria-hidden="true">
+                <circle cx={pz.head[0]} cy={pz.head[1]} r={pz.head[2]} stroke="rgba(143,214,180,0.85)" strokeWidth="2" />
+                <path d={pz.limbs} stroke="rgba(143,214,180,0.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <span style={{ display:"block",fontSize:17,fontWeight:300,letterSpacing:1,color:"#dff0e8",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{pickLang(pz.ad, lg)}</span>
+              <span style={{ display:"block",fontSize:13,color:"#a8c4b8",lineHeight:1.75,marginBottom:14 }}>{pickLang(pz.aciklama, lg)}</span>
+              <button onClick={()=>setPose(null)} style={{ background:"rgba(143,214,180,0.14)",border:"1px solid rgba(143,214,180,0.35)",borderRadius:20,color:"#bfe6d2",fontSize:12.5,letterSpacing:2,padding:"8px 22px",cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+                {lg === "tr" ? "KAPAT" : "CLOSE"}
+              </button>
+            </span>
+          </span>
+        );
+      })()}
     </span>
   );
 }
@@ -3431,9 +3542,20 @@ export default function SakinApp() {
   // tıslaması DEĞİL — filtreyle temizlenemiyor (denoise denendi, telafi kazancı
   // artefaktı geri yükseltti). Kalıcı çözüm kayıtları yüksek kalitede yeniden
   // temin etmek; o gelene kadar seviye düşürülerek artefakt maskeleniyor.
+  // KUŞ BAŞINA KISMA (kullanıcı: "cızırtı belirgin ses dosyasının sesini alçalt").
+  // Dosyalar 22 kHz / 64 kbps MP3; bazılarında gürültü tabanı sinyale çok yakın,
+  // yüksek çalınca kodlama artefaktı ("cızırtı") duyuluyor. Ölçülen ortalama/tepe
+  // seviyeye göre en sorunlular kısılıyor — SES DOSYALARINA DOKUNULMADI, yalnızca
+  // çalma seviyesi düştü. Kalıcı çözüm daha yüksek kaliteli kayıt (ayrı iş).
+  //   yedek   : ort -43.2 / tepe -22.0 dB — ölçümdeki en gürültülü dosya
+  //   otlegen : ort -55.9 / tepe -24.0 dB
+  //   guguk   : ort -41.3 / tepe -22.3 dB
+  //   kartal  : ort -39.2 / tepe  -7.7 dB
+  const BIRD_TRIM = { yedek: 0.55, otlegen: 0.6, guguk: 0.7, kartal: 0.85 };
   const playBirdSound = (birdKey, vol = 0.06) => {
     stopBirdSound();
     if (!birdKey || !BIRD_EXT[birdKey]) return;
+    vol = vol * (BIRD_TRIM[birdKey] ?? 1);
     const src = `/sounds/birds/${birdKey}.${BIRD_EXT[birdKey]}`;
     // GAPLESS LOOP: audio.loop=true kullanılırsa dosya başa sararken duyulur bir
     // "tık"/kopukluk oluyordu (kullanıcı: "kuş sesleri aniden kesiliyor, tık sesi
@@ -7790,7 +7912,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             // Kuş sesi arka planda kalsın, solfeggio tonu öne çıksın (kullanıcı isteği):
             // 0.38/0.22 → 0.16/0.10. (741 Hz kuşu diğerlerinden kısık kaydedildiği için
             // oransal olarak biraz yüksek tutuluyor.)
-            if (freqData?.bird) playBirdSound(freqData.bird, hz === 741 ? 0.10 : 0.06);
+            // 741 Hz eskiden 0.10 ile çalıyordu; o frekansın kuşu "yedek" ve
+            // ölçümde en gürültülü dosya — yani en cızırtılısı en yüksek sesle
+            // çalıyordu. Artık hepsi 0.06 temel seviyede, üstüne BIRD_TRIM.
+            if (freqData?.bird) playBirdSound(freqData.bird, 0.06);
             setPlayingHz(hz);
           }, playingHz ? 850 : 0);
         };
