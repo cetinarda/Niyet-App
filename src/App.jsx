@@ -4396,6 +4396,12 @@ export default function SakinApp() {
   const [showKozmik, setShowKozmik] = useState(false);
   // Haftalık Sakin Rapor da gökyüzü raporu gibi kapalı başlar, tıklanınca açılır.
   const [showRapor, setShowRapor] = useState(false);
+  // Görev paneli de kapalı başlar (kullanıcı: "her seferinde buton açık olmasın").
+  const [showGorev, setShowGorev] = useState(false);
+  // 12. Ev ve Draconik Harita kartları da kapalı başlar (kullanıcı isteği) —
+  // haritadaki dört panel de artık aynı davranışta: başlık butonu + açılır gövde.
+  const [show12Ev, setShow12Ev] = useState(false);
+  const [showDraconic, setShowDraconic] = useState(false);
   const [kozmikData, setKozmikData] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
   const fetchKozmik = async () => {
@@ -8728,7 +8734,30 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       İlahi kanaldan tek bir deneyim/görev. İlk görev serbest;
                       sonrakiler için TÜNEL AÇIK olmalı (günün 7 adımı bitmiş,
                       yer-gök ışığı başlamış). Günde bir görev — değeri korunsun. */}
-                  <div style={{ marginBottom:20,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
+                  {/* Panel artık KAPALI başlıyor ve tıklanınca açılıyor
+                      (kullanıcı: "her seferinde buton açık olmasın").
+                      Üstünde marginTop:12 var — "Ne sorabilirim?" butonuna
+                      bitişik duruyordu. Gökyüzü/haftalık rapor ile aynı desen. */}
+                  <div style={{ marginTop:12,marginBottom:20,position:"relative" }}>
+                    <button onClick={()=>setShowGorev(v=>!v)}
+                      style={{
+                        width:"100%",
+                        background:"rgba(160,112,208,0.06)",
+                        border:"1px solid rgba(160,112,208,0.25)",
+                        borderRadius:14,padding:"12px 18px",
+                        color:"#a070d0",cursor:"pointer",
+                        display:"flex",alignItems:"center",justifyContent:"space-between",
+                        fontFamily:"'Jost',sans-serif",fontWeight:300,
+                        transition:"all 0.2s",
+                      }}
+                      onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.5)"; e.currentTarget.style.color="#c8a8f0"; }}
+                      onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(160,112,208,0.25)"; e.currentTarget.style.color="#a070d0"; }}>
+                      <span style={{ fontSize:13,letterSpacing:2 }}>✧ {pickLang(GOREV_TXT.label, lang)}</span>
+                      <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showGorev?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+                    </button>
+
+                    {showGorev && (
+                    <div style={{ marginTop:8,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
                     {gorevLoading ? (
                       <div style={{ textAlign:"center",padding:"10px 0" }}>
                         <div style={{ fontSize:26,marginBottom:8,animation:"slowPulse 1.8s ease-in-out infinite" }}>✧</div>
@@ -8779,6 +8808,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           </div>
                         )}
                       </div>
+                    )}
+                    </div>
                     )}
                   </div>
                 </div>
@@ -9040,6 +9071,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           </div>
           {/* ── 12. Ev Kartı ── */}
           {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setshow12Ev(v=>!v)}
+              style={{
+                width:"100%",background:"rgba(144,112,192,0.08)",
+                border:"1px solid rgba(144,112,192,0.28)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#a890e0",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("map_12h_title")}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:show12Ev?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {show12Ev && (
+            <div style={{ marginTop:8 }}>
             <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.22),rgba(255,255,255,0.12))",border:"1px solid rgba(255,255,255,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:-20,right:-20,width:100,height:100,borderRadius:"50%",background:"radial-gradient(circle,rgba(120,80,220,0.15),transparent)",pointerEvents:"none" }} />
               <div style={{ fontSize:13,letterSpacing:3.5,color:"#9070c0",marginBottom:6,textAlign:"center" }}>
@@ -9078,9 +9123,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {t("add_birth_info")}
               </button>
             </div>
+            </div>
+            )}
+          </div>
           ) : null}
           {/* ── Draconic Harita Kartı (ruh kökeni) ── */}
           {birthDate && draconicGunes ? (
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setshowDraconic(v=>!v)}
+              style={{
+                width:"100%",background:"rgba(140,120,220,0.08)",
+                border:"1px solid rgba(140,120,220,0.28)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#a890e0",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("map_draconic_title")}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showDraconic?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showDraconic && (
+            <div style={{ marginTop:8 }}>
             <div style={{ background:"linear-gradient(135deg,rgba(40,20,80,0.45),rgba(20,40,80,0.30))",border:"1px solid rgba(140,120,220,0.35)",borderRadius:17,padding:"20px 20px",marginBottom:24,position:"relative",overflow:"hidden" }}>
               <div style={{ position:"absolute",top:-30,left:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(100,140,220,0.18),transparent)",pointerEvents:"none" }} />
               <div style={{ position:"absolute",bottom:-30,right:-30,width:140,height:140,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,120,220,0.14),transparent)",pointerEvents:"none" }} />
@@ -9130,6 +9192,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {t("map_draconic_credit")}
               </div>
             </div>
+            </div>
+            )}
+          </div>
           ) : null}
           {birthDate && (
             <div style={{ textAlign:"center",marginBottom:16 }}>
