@@ -835,6 +835,259 @@ const GEZEGEN_12EV_GUCLERI = {
 };
 // approxAscendant kaldırıldı — preciseAscendant tamamen ikame etti, çağrılmıyordu.
 
+// ── GÖREV İSTE — BİLİNÇ RPG'Sİ ─────────────────────────────────────────────
+const GOREV_CATEGORIES = [
+  { id:"sevgi",     icon:"❤️", color:"#e74c3c", glow:"231,76,60" },
+  { id:"cesaret",   icon:"🌱", color:"#27ae60", glow:"39,174,96" },
+  { id:"teslimiyet",icon:"🌀", color:"#3498db", glow:"52,152,219" },
+  { id:"hizmet",    icon:"🌍", color:"#f39c12", glow:"243,156,18" },
+  { id:"durustluk", icon:"🔥", color:"#e67e22", glow:"230,126,34" },
+  { id:"sessizlik", icon:"🌙", color:"#8e44ad", glow:"142,68,173" },
+  { id:"affetme",   icon:"🕊", color:"#1abc9c", glow:"26,188,156" },
+  { id:"sezgi",     icon:"⚡", color:"#9b59b6", glow:"155,89,182" },
+];
+const GOREV_POOL = {
+  tr: {
+    sevgi: [
+      // düşük bağlantı (0–30)
+      { t:"Bugün bir sevdiğine 'seni seviyorum' de.", e:10, s:1, tier:0 },
+      { t:"Aynaya bak ve kendine gülümse.", e:8, s:1, tier:0 },
+      { t:"Birini düşün ve ona içinden iyi dilekler gönder.", e:8, s:1, tier:0 },
+      // orta (31–60)
+      { t:"Bugün tanımadığın birine samimi bir iltifat et.", e:15, s:2, tier:1 },
+      { t:"Annenle ya da en yakınınla konuş — sadece dinle.", e:18, s:2, tier:1 },
+      { t:"Kendine bir mektup yaz: seni neyin güzel kıldığını anlat.", e:15, s:2, tier:1 },
+      // yüksek (61–85)
+      { t:"Bugün seni en çok kıran kişiye içinden teşekkür et.", e:22, s:3, tier:2 },
+      { t:"Hiç beklemediğin birine mesaj at: 'Seni düşündüm.'", e:20, s:3, tier:2 },
+      // çok yüksek (86–100)
+      { t:"Bugün koşulsuz sev. Hiçbir beklenti olmadan birini kucakla.", e:28, s:4, tier:3 },
+    ],
+    cesaret: [
+      { t:"Bugün korktuğun bir şeyi küçük bir adımla yap.", e:12, s:1, tier:0 },
+      { t:"Telefonunu 15 dakika bırak ve sessizliğe teslim ol.", e:10, s:1, tier:0 },
+      { t:"Bugün 'hayır' demen gereken yerde 'hayır' de.", e:10, s:1, tier:0 },
+      { t:"Bugün plansız 20 dakika yürü.", e:15, s:2, tier:1 },
+      { t:"İçinden geçeni — çekinmeden — birine söyle.", e:18, s:2, tier:1 },
+      { t:"Bugün alışkanlığını kır: farklı bir yoldan git.", e:15, s:2, tier:1 },
+      { t:"Seni geren ilk durumda cevap vermeden 3 derin nefes al.", e:22, s:3, tier:2 },
+      { t:"Bugün hiç plan yapmadan yürüyüşe çık. İlk hissettiğin sokağa gir.", e:28, s:4, tier:3 },
+    ],
+    teslimiyet: [
+      { t:"Bugün kontrolü bırak — bir şeyin kendi akışına izin ver.", e:10, s:1, tier:0 },
+      { t:"5 dakika hiçbir şey yapma. Sadece ol.", e:8, s:1, tier:0 },
+      { t:"Bugün bir planını iptal et ve ne olacağını izle.", e:12, s:1, tier:0 },
+      { t:"Birinden yardım iste — tek başına yapabilsen bile.", e:15, s:2, tier:1 },
+      { t:"Bugün 'bilmiyorum' demekten korkma.", e:15, s:2, tier:1 },
+      { t:"Sabah uyandığında ilk düşünceni yargılamadan izle.", e:18, s:2, tier:1 },
+      { t:"Bugün her şeyin yolunda olduğuna güven — kanıt arama.", e:22, s:3, tier:2 },
+      { t:"Bugün evrene bir soru sor ve ilk gelen işareti takip et.", e:28, s:4, tier:3 },
+    ],
+    hizmet: [
+      { t:"Bir sokak kedisini besle.", e:12, s:1, tier:0 },
+      { t:"Bugün birine kapıyı tut veya yolunu göster.", e:8, s:1, tier:0 },
+      { t:"Çevrendeki birine beklenmedik bir iyilik yap.", e:10, s:1, tier:0 },
+      { t:"Yaşlı birine yardım et — alışverişte, yolda, nerede olursa.", e:18, s:2, tier:1 },
+      { t:"Bugün hiç beklentin olmadan bir yabancıya yardım et.", e:20, s:2, tier:1 },
+      { t:"Kullanmadığın bir eşyanı ihtiyacı olan birine ver.", e:15, s:2, tier:1 },
+      { t:"Bugün gördüğün ilk ihtiyaç sahibine dur ve yardım et.", e:22, s:3, tier:2 },
+      { t:"Bugün sessizce hizmet et — kimsenin bilmediği bir iyilik yap.", e:28, s:4, tier:3 },
+    ],
+    durustluk: [
+      { t:"Bugün kendine bir yalan söylediğini fark et ve düzelt.", e:10, s:1, tier:0 },
+      { t:"Birinden özür dile — küçük de olsa.", e:12, s:1, tier:0 },
+      { t:"Bugün içinden geçen tek cümleyi çekinmeden söyle.", e:10, s:1, tier:0 },
+      { t:"Bugün kaçındığın bir konuşmayı başlat.", e:18, s:2, tier:1 },
+      { t:"Kendine sor: 'Şu an ne hissediyorum?' ve dürüstçe yanıtla.", e:15, s:2, tier:1 },
+      { t:"Hoşuna gitmeyen bir durumda nazikçe sınırını koy.", e:15, s:2, tier:1 },
+      { t:"Bugün en zor gerçeğini bir kağıda yaz.", e:22, s:3, tier:2 },
+      { t:"Bugün iç sesinle çelişen tek kararı bul ve düzelt.", e:28, s:4, tier:3 },
+    ],
+    sessizlik: [
+      { t:"10 dakika sessizce otur. Hiçbir şey yapma.", e:10, s:1, tier:0 },
+      { t:"Bugün bir öğünü sessizce ye — telefonsuz, konuşmadan.", e:8, s:1, tier:0 },
+      { t:"Gözlerini kapat ve 3 dakika sadece nefesini dinle.", e:8, s:1, tier:0 },
+      { t:"Bugün 30 dakika telefonsuz vakit geçir.", e:15, s:2, tier:1 },
+      { t:"Doğada 15 dakika sessizce yürü.", e:18, s:2, tier:1 },
+      { t:"Bugün bir saat boyunca kimseyle konuşma.", e:15, s:2, tier:1 },
+      { t:"Bugün hiçbir uyarıcı olmadan (müzik, ekran) 1 saat geçir.", e:22, s:3, tier:2 },
+      { t:"Bugün içsel sessizliğe gir ve ilk gelen mesajı yaz.", e:28, s:4, tier:3 },
+    ],
+    affetme: [
+      { t:"Bugün kendini affet — küçük bir hata için bile.", e:10, s:1, tier:0 },
+      { t:"Seni kıran bir anıyı hatırla ve 'bırakıyorum' de.", e:12, s:1, tier:0 },
+      { t:"Birini yargıladığını fark et ve o yargıyı bırak.", e:8, s:1, tier:0 },
+      { t:"Bugün eski bir kırgınlığı düşün — onu bırakmaya hazır mısın?", e:18, s:2, tier:1 },
+      { t:"Seni inciten birine zihninde 'seni anlıyorum' de.", e:15, s:2, tier:1 },
+      { t:"Geçmişte yaptığın bir hatayı kabullen ve kendine şefkat göster.", e:15, s:2, tier:1 },
+      { t:"Bugün affetmenin seni özgürleştirdiğini hisset.", e:22, s:3, tier:2 },
+      { t:"En derin yaranı düşün. Ona 'teşekkür ederim, öğretmen' de.", e:28, s:4, tier:3 },
+    ],
+    sezgi: [
+      { t:"Bugün ilk içgüdünle hareket et — düşünmeden.", e:10, s:1, tier:0 },
+      { t:"Bir karardan önce dur ve kalbine sor: 'Ne hissediyorsun?'", e:12, s:1, tier:0 },
+      { t:"Bugün bir rüyanı hatırlamaya çalış.", e:8, s:1, tier:0 },
+      { t:"Bugün içinden gelen ilk kişiyi ara.", e:18, s:2, tier:1 },
+      { t:"Kalbinin sıkıştığı seçeneği değil, ferahlatan seçeneği seç.", e:20, s:2, tier:1 },
+      { t:"Bugün bir 'tesadüf' gör ve anlamını sor.", e:15, s:2, tier:1 },
+      { t:"Bugün zihnini sustur ve iç sesinin ne dediğini yaz.", e:22, s:3, tier:2 },
+      { t:"Bugün evrenden bir işaret iste ve ilk gördüğünü kaydet.", e:28, s:4, tier:3 },
+    ],
+  },
+  en: {
+    sevgi: [
+      { t:"Tell someone you love them today.", e:10, s:1, tier:0 },
+      { t:"Look in the mirror and smile at yourself.", e:8, s:1, tier:0 },
+      { t:"Think of someone and send them good wishes from your heart.", e:8, s:1, tier:0 },
+      { t:"Give a genuine compliment to a stranger today.", e:15, s:2, tier:1 },
+      { t:"Call your mother or closest person — just listen.", e:18, s:2, tier:1 },
+      { t:"Write yourself a letter about what makes you beautiful.", e:15, s:2, tier:1 },
+      { t:"Thank the person who hurt you most — in your heart.", e:22, s:3, tier:2 },
+      { t:"Message someone unexpected: 'I was thinking of you.'", e:20, s:3, tier:2 },
+      { t:"Love unconditionally today. Embrace someone with zero expectations.", e:28, s:4, tier:3 },
+    ],
+    cesaret: [
+      { t:"Take a small step toward something you fear today.", e:12, s:1, tier:0 },
+      { t:"Put your phone down for 15 minutes and surrender to silence.", e:10, s:1, tier:0 },
+      { t:"Say 'no' where you need to say 'no' today.", e:10, s:1, tier:0 },
+      { t:"Walk for 20 minutes with no plan.", e:15, s:2, tier:1 },
+      { t:"Say what you truly feel — without holding back.", e:18, s:2, tier:1 },
+      { t:"Break your routine: take a different path today.", e:15, s:2, tier:1 },
+      { t:"In the first stressful moment, take 3 deep breaths before reacting.", e:22, s:3, tier:2 },
+      { t:"Go for a walk with no plan. Turn into the first street that calls you.", e:28, s:4, tier:3 },
+    ],
+    teslimiyet: [
+      { t:"Let go of control today — allow something to unfold on its own.", e:10, s:1, tier:0 },
+      { t:"Do nothing for 5 minutes. Just be.", e:8, s:1, tier:0 },
+      { t:"Cancel a plan today and watch what happens.", e:12, s:1, tier:0 },
+      { t:"Ask someone for help — even if you could do it alone.", e:15, s:2, tier:1 },
+      { t:"Don't be afraid to say 'I don't know' today.", e:15, s:2, tier:1 },
+      { t:"Watch your first thought when you wake up — without judging it.", e:18, s:2, tier:1 },
+      { t:"Trust today that everything is in order — don't look for proof.", e:22, s:3, tier:2 },
+      { t:"Ask the universe a question and follow the first sign.", e:28, s:4, tier:3 },
+    ],
+    hizmet: [
+      { t:"Feed a stray cat.", e:12, s:1, tier:0 },
+      { t:"Hold a door or help someone find their way.", e:8, s:1, tier:0 },
+      { t:"Do an unexpected kindness for someone nearby.", e:10, s:1, tier:0 },
+      { t:"Help an elderly person — at the store, on the street, anywhere.", e:18, s:2, tier:1 },
+      { t:"Help a stranger today with zero expectations.", e:20, s:2, tier:1 },
+      { t:"Give something you don't use to someone who needs it.", e:15, s:2, tier:1 },
+      { t:"Stop for the first person in need you see today and help.", e:22, s:3, tier:2 },
+      { t:"Serve silently today — do a good deed nobody knows about.", e:28, s:4, tier:3 },
+    ],
+    durustluk: [
+      { t:"Notice a lie you tell yourself today — and correct it.", e:10, s:1, tier:0 },
+      { t:"Apologize to someone — even for something small.", e:12, s:1, tier:0 },
+      { t:"Say the one sentence on your mind — without hesitation.", e:10, s:1, tier:0 },
+      { t:"Start a conversation you've been avoiding.", e:18, s:2, tier:1 },
+      { t:"Ask yourself: 'What am I feeling right now?' Answer honestly.", e:15, s:2, tier:1 },
+      { t:"Gently set a boundary where something doesn't feel right.", e:15, s:2, tier:1 },
+      { t:"Write your hardest truth on paper today.", e:22, s:3, tier:2 },
+      { t:"Find the one decision that contradicts your inner voice — and fix it.", e:28, s:4, tier:3 },
+    ],
+    sessizlik: [
+      { t:"Sit in silence for 10 minutes. Do nothing.", e:10, s:1, tier:0 },
+      { t:"Eat a meal in silence — no phone, no talking.", e:8, s:1, tier:0 },
+      { t:"Close your eyes and listen to your breath for 3 minutes.", e:8, s:1, tier:0 },
+      { t:"Spend 30 minutes without your phone.", e:15, s:2, tier:1 },
+      { t:"Walk in nature silently for 15 minutes.", e:18, s:2, tier:1 },
+      { t:"Don't speak to anyone for one hour today.", e:15, s:2, tier:1 },
+      { t:"Spend 1 hour without any stimulation (music, screen).", e:22, s:3, tier:2 },
+      { t:"Enter inner silence today and write the first message that comes.", e:28, s:4, tier:3 },
+    ],
+    affetme: [
+      { t:"Forgive yourself today — even for something small.", e:10, s:1, tier:0 },
+      { t:"Remember a hurtful moment and say 'I let it go.'", e:12, s:1, tier:0 },
+      { t:"Notice when you judge someone — and release that judgment.", e:8, s:1, tier:0 },
+      { t:"Think of an old grudge — are you ready to let it go?", e:18, s:2, tier:1 },
+      { t:"Say 'I understand you' in your mind to someone who hurt you.", e:15, s:2, tier:1 },
+      { t:"Accept a past mistake and show yourself compassion.", e:15, s:2, tier:1 },
+      { t:"Feel how forgiveness sets you free today.", e:22, s:3, tier:2 },
+      { t:"Think of your deepest wound. Say to it: 'Thank you, teacher.'", e:28, s:4, tier:3 },
+    ],
+    sezgi: [
+      { t:"Act on your first instinct today — without overthinking.", e:10, s:1, tier:0 },
+      { t:"Before a decision, pause and ask your heart: 'What do you feel?'", e:12, s:1, tier:0 },
+      { t:"Try to remember a dream today.", e:8, s:1, tier:0 },
+      { t:"Call the first person that comes to mind today.", e:18, s:2, tier:1 },
+      { t:"Choose the option that frees your heart, not the one that tightens it.", e:20, s:2, tier:1 },
+      { t:"See a 'coincidence' today and ask what it means.", e:15, s:2, tier:1 },
+      { t:"Silence your mind and write what your inner voice says.", e:22, s:3, tier:2 },
+      { t:"Ask the universe for a sign and record the first thing you see.", e:28, s:4, tier:3 },
+    ],
+  },
+};
+const GOREV_LEVELS = [
+  { min:0,   name:{tr:"Uyanan",en:"Awakening"},       unlock:{tr:"İç Ses",en:"Inner Voice"} },
+  { min:100, name:{tr:"Dinleyen",en:"Listening"},      unlock:{tr:"Rüya Günlüğü",en:"Dream Journal"} },
+  { min:300, name:{tr:"Arayan",en:"Seeking"},          unlock:{tr:"Senkronisite Kaydı",en:"Synchronicity Log"} },
+  { min:600, name:{tr:"Gören",en:"Seeing"},            unlock:{tr:"Sessizlik Görevleri",en:"Silence Quests"} },
+  { min:1000,name:{tr:"Bağlı",en:"Connected"},         unlock:{tr:"Kanal Görevleri",en:"Channel Quests"} },
+];
+const GOREV_I18N = {
+  tab:          { tr:"Görev",       en:"Quest",        de:"Aufgabe",      es:"Misión",        pt:"Missão",        fr:"Quête",         ja:"クエスト" },
+  title:        { tr:"İçsel Yolculuk", en:"Inner Journey", de:"Innere Reise", es:"Viaje Interior", pt:"Jornada Interior", fr:"Voyage Intérieur", ja:"内なる旅" },
+  subtitle:     { tr:"Hayat, ruhunun karakterini geliştirdiğin bir oyundur.", en:"Life is a game where you level up your soul.", de:"Das Leben ist ein Spiel, in dem du deine Seele weiterentwickelst.", es:"La vida es un juego donde evolucionas tu alma.", pt:"A vida é um jogo onde evoluis a tua alma.", fr:"La vie est un jeu où tu fais évoluer ton âme.", ja:"人生は、魂を成長させるゲームです。" },
+  connection:   { tr:"Bağlantı",    en:"Connection",   de:"Verbindung",   es:"Conexión",      pt:"Conexão",       fr:"Connexion",     ja:"つながり" },
+  btn_ask:      { tr:"Görev İste",  en:"Request Quest", de:"Aufgabe anfordern", es:"Pedir Misión", pt:"Pedir Missão", fr:"Demander une Quête", ja:"クエストを求める" },
+  connecting:   { tr:"Yüksek Benlik ile bağlantı kuruluyor", en:"Connecting with Higher Self", de:"Verbindung zum Höheren Selbst", es:"Conectando con el Yo Superior", pt:"A conectar com o Eu Superior", fr:"Connexion avec le Soi Supérieur", ja:"ハイヤーセルフと接続中" },
+  today_quest:  { tr:"Bugünkü Görev", en:"Today's Quest", de:"Heutige Aufgabe", es:"Misión de Hoy", pt:"Missão de Hoje", fr:"Quête du Jour", ja:"今日のクエスト" },
+  reward:       { tr:"Ödül",        en:"Reward",       de:"Belohnung",    es:"Recompensa",    pt:"Recompensa",    fr:"Récompense",    ja:"報酬" },
+  energy:       { tr:"Enerji",      en:"Energy",       de:"Energie",      es:"Energía",       pt:"Energia",       fr:"Énergie",       ja:"エネルギー" },
+  intuition:    { tr:"Sezgi",       en:"Intuition",    de:"Intuition",    es:"Intuición",     pt:"Intuição",      fr:"Intuition",     ja:"直感" },
+  btn_start:    { tr:"Görevi Başlat", en:"Start Quest", de:"Aufgabe starten", es:"Empezar Misión", pt:"Começar Missão", fr:"Commencer la Quête", ja:"クエスト開始" },
+  btn_complete: { tr:"Tamamladım",  en:"Completed",    de:"Erledigt",     es:"Completado",    pt:"Concluído",     fr:"Terminé",       ja:"完了" },
+  btn_photo:    { tr:"Fotoğraf Ekle", en:"Add Photo",  de:"Foto hinzufügen", es:"Añadir Foto", pt:"Adicionar Foto", fr:"Ajouter une Photo", ja:"写真を追加" },
+  completed:    { tr:"Görev tamamlandı.", en:"Quest completed.", de:"Aufgabe erledigt.", es:"Misión completada.", pt:"Missão concluída.", fr:"Quête terminée.", ja:"クエスト完了。" },
+  journal_q:    { tr:"Bu deneyimde en çok ne hissettin?", en:"What did you feel most in this experience?", de:"Was hast du bei dieser Erfahrung am meisten gefühlt?", es:"¿Qué sentiste más en esta experiencia?", pt:"O que mais sentiste nesta experiência?", fr:"Qu'as-tu le plus ressenti dans cette expérience ?", ja:"この体験で最も何を感じましたか？" },
+  journal_ph:   { tr:"İki satır yaz...", en:"Write a few lines...", de:"Schreib ein paar Zeilen...", es:"Escribe unas líneas...", pt:"Escreve umas linhas...", fr:"Écris quelques lignes...", ja:"数行書いてください..." },
+  btn_save:     { tr:"Kaydet",      en:"Save",         de:"Speichern",    es:"Guardar",       pt:"Guardar",       fr:"Enregistrer",   ja:"保存" },
+  level:        { tr:"Seviye",      en:"Level",        de:"Stufe",        es:"Nivel",         pt:"Nível",         fr:"Niveau",        ja:"レベル" },
+  total_energy: { tr:"Toplam Enerji", en:"Total Energy", de:"Gesamtenergie", es:"Energía Total", pt:"Energia Total", fr:"Énergie Totale", ja:"総エネルギー" },
+  path:         { tr:"Yol",         en:"Path",         de:"Pfad",         es:"Camino",        pt:"Caminho",       fr:"Chemin",        ja:"道" },
+  new_quest:    { tr:"Başka görev",  en:"Another quest", de:"Andere Aufgabe", es:"Otra misión", pt:"Outra missão", fr:"Autre quête",   ja:"別のクエスト" },
+  need_birth:   { tr:"Görevleri kişiselleştirmek için doğum bilgini gir.", en:"Enter your birth info to personalize quests.", de:"Gib deine Geburtsdaten ein, um Aufgaben zu personalisieren.", es:"Ingresa tu fecha de nacimiento para personalizar misiones.", pt:"Insere a tua data de nascimento para personalizar missões.", fr:"Entre ta date de naissance pour personnaliser les quêtes.", ja:"クエストをパーソナライズするために生年月日を入力してください。" },
+  btn_enter_birth:{ tr:"Doğum Bilgisi Gir", en:"Enter Birth Info", de:"Geburtsdaten eingeben", es:"Ingresar Datos", pt:"Inserir Dados", fr:"Entrer les données", ja:"生年月日を入力" },
+  streak:       { tr:"gün",         en:"days",         de:"Tage",         es:"días",          pt:"dias",          fr:"jours",         ja:"日" },
+  cat_sevgi:    { tr:"Sevgi",       en:"Love",         de:"Liebe",        es:"Amor",          pt:"Amor",          fr:"Amour",         ja:"愛" },
+  cat_cesaret:  { tr:"Cesaret",     en:"Courage",      de:"Mut",          es:"Valentía",      pt:"Coragem",       fr:"Courage",       ja:"勇気" },
+  cat_teslimiyet:{ tr:"Teslimiyet", en:"Surrender",    de:"Hingabe",      es:"Entrega",       pt:"Entrega",       fr:"Abandon",       ja:"委ねる" },
+  cat_hizmet:   { tr:"Hizmet",      en:"Service",      de:"Dienst",       es:"Servicio",      pt:"Serviço",       fr:"Service",       ja:"奉仕" },
+  cat_durustluk:{ tr:"Dürüstlük",   en:"Honesty",      de:"Ehrlichkeit",  es:"Honestidad",    pt:"Honestidade",   fr:"Honnêteté",     ja:"誠実" },
+  cat_sessizlik:{ tr:"Sessizlik",   en:"Silence",      de:"Stille",       es:"Silencio",      pt:"Silêncio",      fr:"Silence",       ja:"静寂" },
+  cat_affetme:  { tr:"Affetme",     en:"Forgiveness",  de:"Vergebung",    es:"Perdón",        pt:"Perdão",        fr:"Pardon",        ja:"赦し" },
+  cat_sezgi:    { tr:"Sezgi",       en:"Intuition",    de:"Intuition",    es:"Intuición",     pt:"Intuição",      fr:"Intuition",     ja:"直感" },
+};
+// Burç → kişisel görev teması eşleştirmesi
+const SIGN_QUEST_THEME = {
+  "Koç":     ["cesaret","durustluk"],
+  "Boğa":    ["teslimiyet","sessizlik"],
+  "İkizler": ["sezgi","durustluk"],
+  "Yengeç":  ["sevgi","affetme"],
+  "Aslan":   ["cesaret","sevgi"],
+  "Başak":   ["hizmet","sessizlik"],
+  "Terazi":  ["affetme","sevgi"],
+  "Akrep":   ["durustluk","teslimiyet"],
+  "Yay":     ["cesaret","sezgi"],
+  "Oğlak":   ["hizmet","durustluk"],
+  "Kova":    ["sezgi","hizmet"],
+  "Balık":   ["sezgi","affetme"],
+};
+function pickGorev(lang, connectionPct, birthSign) {
+  const pool = GOREV_POOL[lang] || GOREV_POOL.en;
+  const tier = connectionPct > 85 ? 3 : connectionPct > 60 ? 2 : connectionPct > 30 ? 1 : 0;
+  const themes = birthSign && SIGN_QUEST_THEME[birthSign]
+    ? SIGN_QUEST_THEME[birthSign]
+    : GOREV_CATEGORIES.map(c => c.id);
+  const catId = themes[Math.floor(Math.random() * themes.length)];
+  const catPool = pool[catId] || pool.sevgi;
+  const eligible = catPool.filter(q => q.tier <= tier);
+  const picked = eligible[Math.floor(Math.random() * eligible.length)] || catPool[0];
+  const cat = GOREV_CATEGORIES.find(c => c.id === catId) || GOREV_CATEGORIES[0];
+  return { ...picked, catId, catIcon: cat.icon, catColor: cat.color, catGlow: cat.glow };
+}
+
 // Doğum şehri → koordinat + saat dilimi. Türkiye 81 il + büyük dünya şehirleri.
 // [enlem, boylam, UTC offset]. Türkiye için offset 3 (DST geçmişi yaklaşık).
 const CITY_DB = {
@@ -5254,6 +5507,74 @@ ${kisiselProfil()}`,
     return `\nKullanıcının önceki paylaşımları:\n${konular}\n${tonYonlendirmesi}\n`;
   }
 
+  // ── GÖREV İSTE — BİLİNÇ RPG STATE ──────────────────────────────────────────
+  const gL = (lang === "tr" || lang === "en") ? lang : "en";
+  const gt = (key) => pickLang(GOREV_I18N[key], lang);
+  const [gorevIstePhase, setGorevIstePhase] = useState("idle"); // idle | connecting | card | started | completed | journal
+  const [gorevIsteQuest, setGorevIsteQuest] = useState(() => {
+    try { const q = JSON.parse(localStorage.getItem("sakin_rpg_quest_" + sakinDayKey())); return q; } catch { return null; }
+  });
+  const [gorevIsteJournal, setGorevIsteJournal] = useState("");
+  const rpgData = (() => {
+    try { return JSON.parse(localStorage.getItem("sakin_rpg_data")) || { energy:0, streak:0, lastDay:null, completedCount:0 }; }
+    catch { return { energy:0, streak:0, lastDay:null, completedCount:0 }; }
+  })();
+  const rpgConnectionPct = Math.min(100, Math.round(rpgData.energy / 10));
+  const rpgLevel = GOREV_LEVELS.reduce((lv, l, i) => rpgData.energy >= l.min ? i : lv, 0);
+  const rpgQuestCompleted = gorevIsteQuest?.done === true;
+  const rpgQuestStarted = gorevIsteQuest?.started === true;
+  const rpgRequestQuest = () => {
+    setGorevIstePhase("connecting");
+    haptic();
+    setTimeout(() => {
+      const q = pickGorev(gL, rpgConnectionPct, astro?.burc);
+      const quest = { ...q, day: sakinDayKey(), done: false, started: false };
+      localStorage.setItem("sakin_rpg_quest_" + sakinDayKey(), JSON.stringify(quest));
+      setGorevIsteQuest(quest);
+      setGorevIstePhase("card");
+      haptic();
+    }, 2800);
+  };
+  const rpgStartQuest = () => {
+    if (!gorevIsteQuest) return;
+    const q = { ...gorevIsteQuest, started: true };
+    localStorage.setItem("sakin_rpg_quest_" + sakinDayKey(), JSON.stringify(q));
+    setGorevIsteQuest(q);
+    setGorevIstePhase("started");
+    haptic();
+  };
+  const rpgCompleteQuest = () => {
+    if (!gorevIsteQuest) return;
+    const q = { ...gorevIsteQuest, done: true };
+    localStorage.setItem("sakin_rpg_quest_" + sakinDayKey(), JSON.stringify(q));
+    setGorevIsteQuest(q);
+    const today = sakinDayKey();
+    const isConsecutive = rpgData.lastDay === (() => { const d = new Date(); d.setDate(d.getDate()-1); return sakinDayKey(d); })();
+    const newData = {
+      energy: rpgData.energy + (q.e || 10),
+      streak: isConsecutive ? rpgData.streak + 1 : 1,
+      lastDay: today,
+      completedCount: rpgData.completedCount + 1,
+    };
+    localStorage.setItem("sakin_rpg_data", JSON.stringify(newData));
+    setGorevIstePhase("completed");
+    haptic(ImpactStyle.Heavy);
+  };
+  const rpgSaveJournal = () => {
+    if (!gorevIsteJournal.trim()) return;
+    try {
+      const logs = JSON.parse(localStorage.getItem("sakin_rpg_journal") || "[]");
+      logs.push({ day: sakinDayKey(), text: gorevIsteJournal.trim(), quest: gorevIsteQuest?.t || "" });
+      if (logs.length > 100) logs.splice(0, logs.length - 100);
+      localStorage.setItem("sakin_rpg_journal", JSON.stringify(logs));
+    } catch (_) {}
+    setGorevIsteJournal("");
+    setGorevIstePhase("idle");
+    haptic();
+  };
+  const [rpgPhotoUri, setRpgPhotoUri] = useState(null);
+  const rpgFileInputRef = useRef(null);
+
   function sorguKaydet(tur, konu) {
     setSorguGecmisi(prev => {
       const yeni = [...prev, { tur, konu, zaman: new Date().toISOString() }].slice(-10);
@@ -5976,6 +6297,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     // da sağ kenardaki floating ☽ gizli geçit ile açılır (App.jsx ~3951).
     // Bu satır web'de üst panelde "🪞 Ayna" yazı linki gösteriyordu — KALDIRILDI.
     {id:"mandala",icon:"◎",  label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+    {id:"goreviste",icon:"⚡",label:gt("tab"), color:"#9b59b6"},
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
@@ -7958,6 +8280,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 "Günün Bağlantısı" bölümü aynı 7 adımı zaten gösteriyordu (kullanıcı:
                 "bağlanda 2 kez görsel tekrar var, en alttakini kaldır") ve o bölümün
                 kutucukları artık tıklanabilir. */}
+
+            {/* GÖREV İSTE — kısayol */}
+            <button onClick={()=>setScreen("goreviste")}
+              style={{width:"100%",maxWidth:300,margin:"18px auto 0",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"13px 24px",borderRadius:24,border:"1px solid rgba(155,89,182,0.3)",background:"linear-gradient(135deg,rgba(155,89,182,0.10),rgba(52,152,219,0.06))",color:"#c8b0e8",fontSize:12,letterSpacing:3,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 20px rgba(155,89,182,0.08)"}}>
+              ⚡ {gt("btn_ask")}
+            </button>
           </div>
           </>
         );
@@ -9375,6 +9703,254 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
+      {/* ── GÖREV İSTE — BİLİNÇ RPG EKRANI ─────────────────────────── */}
+      {screen==="goreviste" && (() => {
+        const freshRpg = (() => { try { return JSON.parse(localStorage.getItem("sakin_rpg_data")) || { energy:0, streak:0, lastDay:null, completedCount:0 }; } catch { return { energy:0, streak:0, lastDay:null, completedCount:0 }; } })();
+        const connPct = Math.min(100, Math.round(freshRpg.energy / 10));
+        const lvl = GOREV_LEVELS.reduce((lv, l, i) => freshRpg.energy >= l.min ? i : lv, 0);
+        const lvlData = GOREV_LEVELS[lvl];
+        const showJourney = gorevIstePhase === "idle" && !gorevIsteQuest;
+
+        return (
+          <div style={{maxWidth:420,width:"100%",padding:"54px 22px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+
+            {/* BACK */}
+            <button onClick={()=>goBack("mandala")}
+              style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
+              ←
+            </button>
+
+            {/* HEADER */}
+            <div style={{textAlign:"center",marginBottom:6}}>
+              <div style={{fontSize:11,letterSpacing:6,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4}}>{gt("title")}</div>
+              <div style={{fontSize:13,fontWeight:300,color:"#888",fontFamily:"'Inter',sans-serif",maxWidth:280,margin:"0 auto"}}>{gt("subtitle")}</div>
+            </div>
+
+            {/* CONNECTION METER — Google-kadar sade ortada */}
+            <div style={{margin:"28px 0 20px",textAlign:"center",position:"relative"}}>
+              <svg width="180" height="180" style={{transform:"rotate(-90deg)"}}>
+                <circle cx="90" cy="90" r="72" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="8"/>
+                <circle cx="90" cy="90" r="72" fill="none" stroke="url(#rpgGrad)" strokeWidth="8"
+                  strokeDasharray={`${2*Math.PI*72}`} strokeDashoffset={`${2*Math.PI*72*(1-connPct/100)}`} strokeLinecap="round"
+                  style={{transition:"stroke-dashoffset 1.2s ease"}}/>
+                <defs>
+                  <linearGradient id="rpgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#9b59b6"/><stop offset="50%" stopColor="#3498db"/><stop offset="100%" stopColor="#1abc9c"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
+                <div style={{fontSize:36,fontWeight:200,letterSpacing:2,color:"#e0d0f0",lineHeight:1}}>{connPct}<span style={{fontSize:16,color:"#888"}}>%</span></div>
+                <div style={{fontSize:11,letterSpacing:4,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginTop:4}}>{gt("connection")}</div>
+              </div>
+            </div>
+
+            {/* LEVEL + STREAK ROW */}
+            <div style={{display:"flex",gap:20,marginBottom:24,alignItems:"center",justifyContent:"center"}}>
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:14,color:"#b8a4d8",fontWeight:300}}>{pickLang(lvlData.name, lang)}</div>
+                <div style={{fontSize:10,letterSpacing:2,color:"#555",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{gt("level")} {lvl+1}</div>
+              </div>
+              {freshRpg.streak > 0 && (
+                <div style={{textAlign:"center"}}>
+                  <div style={{fontSize:20,fontWeight:200,color:"#f0a040"}}>{freshRpg.streak}</div>
+                  <div style={{fontSize:10,letterSpacing:2,color:"#555",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{gt("streak")}</div>
+                </div>
+              )}
+              <div style={{textAlign:"center"}}>
+                <div style={{fontSize:14,color:"#82d9a3",fontWeight:300}}>+{freshRpg.energy}</div>
+                <div style={{fontSize:10,letterSpacing:2,color:"#555",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{gt("energy")}</div>
+              </div>
+            </div>
+
+            {/* DOĞUM BİLGİSİ YOKSA */}
+            {!birthDate && (
+              <div style={{textAlign:"center",marginBottom:20,padding:"16px 20px",borderRadius:14,background:"rgba(155,89,182,0.08)",border:"1px solid rgba(155,89,182,0.2)"}}>
+                <div style={{fontSize:13,color:"#b8a4d8",marginBottom:10,fontFamily:"'Inter',sans-serif"}}>{gt("need_birth")}</div>
+                <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
+                  style={{background:"linear-gradient(135deg,rgba(155,89,182,0.25),rgba(52,152,219,0.20))",border:"1px solid rgba(155,89,182,0.4)",borderRadius:24,padding:"10px 24px",color:"#d8c8f0",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif"}}>
+                  {gt("btn_enter_birth")}
+                </button>
+              </div>
+            )}
+
+            {/* ── PHASE: IDLE — GÖREV İSTE BUTONU ── */}
+            {gorevIstePhase === "idle" && !gorevIsteQuest && (
+              <button onClick={rpgRequestQuest}
+                style={{width:"100%",maxWidth:300,padding:"18px 32px",borderRadius:50,border:"1px solid rgba(155,89,182,0.5)",background:"linear-gradient(135deg,rgba(155,89,182,0.18),rgba(52,152,219,0.12))",color:"#e0d0f0",fontSize:16,letterSpacing:4,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 40px rgba(155,89,182,0.15), 0 0 80px rgba(52,152,219,0.08)",transition:"all 0.4s",animation:"slowPulse 4s ease-in-out infinite"}}>
+                {gt("btn_ask")}
+              </button>
+            )}
+
+            {/* IDLE ama bugün zaten görev var → görev kartını göster */}
+            {gorevIstePhase === "idle" && gorevIsteQuest && !rpgQuestCompleted && (
+              <div style={{width:"100%",animation:"fadeUp 0.6s ease"}}>
+                <div style={{background:"linear-gradient(135deg,rgba(155,89,182,0.10),rgba(52,152,219,0.06))",border:`1px solid ${gorevIsteQuest.catColor || "rgba(155,89,182,0.3)"}44`,borderRadius:20,padding:"28px 22px",textAlign:"center",position:"relative"}}>
+                  <div style={{fontSize:28,marginBottom:8}}>{gorevIsteQuest.catIcon}</div>
+                  <div style={{fontSize:10,letterSpacing:4,color:"#888",textTransform:"uppercase",marginBottom:12,fontFamily:"'Jost',sans-serif"}}>{gt("today_quest")}</div>
+                  <div style={{fontSize:17,fontWeight:300,lineHeight:1.7,color:"#ddd",marginBottom:18,fontFamily:"'Inter',sans-serif"}}>{gorevIsteQuest.t}</div>
+                  <div style={{fontSize:11,color:"#777",marginBottom:16}}>
+                    <span style={{color:gorevIsteQuest.catColor||"#9b59b6"}}>+{gorevIsteQuest.e} {gt("energy")}</span>
+                    <span style={{margin:"0 8px",opacity:0.3}}>·</span>
+                    <span style={{color:"#82d9a3"}}>+{gorevIsteQuest.s} {gt("intuition")}</span>
+                  </div>
+                  {!rpgQuestStarted ? (
+                    <button onClick={rpgStartQuest}
+                      style={{padding:"12px 36px",borderRadius:30,border:"1px solid rgba(155,89,182,0.4)",background:"linear-gradient(135deg,rgba(155,89,182,0.22),rgba(52,152,219,0.15))",color:"#e0d0f0",fontSize:13,letterSpacing:3,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase"}}>
+                      {gt("btn_start")}
+                    </button>
+                  ) : (
+                    <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+                      <button onClick={rpgCompleteQuest}
+                        style={{padding:"12px 28px",borderRadius:30,border:"1px solid rgba(26,188,156,0.4)",background:"linear-gradient(135deg,rgba(26,188,156,0.22),rgba(39,174,96,0.15))",color:"#82d9a3",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif"}}>
+                        ✓ {gt("btn_complete")}
+                      </button>
+                      <button onClick={()=>rpgFileInputRef.current?.click()}
+                        style={{padding:"12px 20px",borderRadius:30,border:"1px solid rgba(155,89,182,0.25)",background:"rgba(155,89,182,0.08)",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif"}}>
+                        📷 {gt("btn_photo")}
+                      </button>
+                      <input ref={rpgFileInputRef} type="file" accept="image/*" capture="environment" style={{display:"none"}}
+                        onChange={e => { const f = e.target.files?.[0]; if (f) { setRpgPhotoUri(URL.createObjectURL(f)); haptic(); } }} />
+                    </div>
+                  )}
+                  {rpgPhotoUri && (
+                    <div style={{marginTop:14}}>
+                      <img src={rpgPhotoUri} alt="" style={{width:120,height:120,objectFit:"cover",borderRadius:14,border:"1px solid rgba(155,89,182,0.3)"}} />
+                    </div>
+                  )}
+                </div>
+                {/* Başka görev iste */}
+                <button onClick={()=>{ setGorevIsteQuest(null); setGorevIstePhase("idle"); setRpgPhotoUri(null); }}
+                  style={{display:"block",margin:"14px auto 0",background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3}}>
+                  {gt("new_quest")}
+                </button>
+              </div>
+            )}
+
+            {/* TAMAMLANMIŞ GÖREV — idle'a dönmüş ama done */}
+            {gorevIstePhase === "idle" && gorevIsteQuest?.done && (
+              <div style={{width:"100%",textAlign:"center",animation:"fadeUp 0.6s ease"}}>
+                <div style={{background:"linear-gradient(135deg,rgba(26,188,156,0.12),rgba(39,174,96,0.06))",border:"1px solid rgba(26,188,156,0.25)",borderRadius:20,padding:"28px 22px"}}>
+                  <div style={{fontSize:24,marginBottom:6}}>✓</div>
+                  <div style={{fontSize:15,color:"#82d9a3",fontWeight:300,marginBottom:4}}>{gt("completed")}</div>
+                  <div style={{fontSize:13,color:"#888",fontFamily:"'Inter',sans-serif"}}>{gorevIsteQuest.t}</div>
+                  <div style={{fontSize:12,color:"#666",marginTop:8}}>+{gorevIsteQuest.e} {gt("energy")}</div>
+                </div>
+              </div>
+            )}
+
+            {/* ── PHASE: CONNECTING ── */}
+            {gorevIstePhase === "connecting" && (
+              <div style={{textAlign:"center",animation:"fadeIn 0.5s ease",padding:"40px 0"}}>
+                <div style={{fontSize:13,letterSpacing:4,color:"#888",fontFamily:"'Jost',sans-serif",marginBottom:24}}>{gt("connecting")}</div>
+                <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:16}}>
+                  {[0,1,2].map(i => (
+                    <div key={i} style={{width:8,height:8,borderRadius:"50%",background:"#9b59b6",animation:`pulse 1.4s ease-in-out infinite`,animationDelay:`${i*0.3}s`,opacity:0.5}} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── PHASE: CARD (yeni görev geldi) ── */}
+            {gorevIstePhase === "card" && gorevIsteQuest && (
+              <div style={{width:"100%",animation:"fadeUp 0.8s ease"}}>
+                <div style={{background:"linear-gradient(135deg,rgba(155,89,182,0.10),rgba(52,152,219,0.06))",border:`1px solid ${gorevIsteQuest.catColor || "rgba(155,89,182,0.3)"}44`,borderRadius:20,padding:"32px 22px",textAlign:"center"}}>
+                  <div style={{fontSize:32,marginBottom:10}}>{gorevIsteQuest.catIcon}</div>
+                  <div style={{fontSize:10,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:14,fontFamily:"'Jost',sans-serif"}}>{gt("today_quest")}</div>
+                  <div style={{fontSize:18,fontWeight:300,lineHeight:1.8,color:"#ddd",marginBottom:20,fontFamily:"'Inter',sans-serif"}}>{gorevIsteQuest.t}</div>
+                  <div style={{fontSize:11,color:"#777",marginBottom:20}}>
+                    {gt("reward")}: <span style={{color:gorevIsteQuest.catColor||"#9b59b6"}}>+{gorevIsteQuest.e} {gt("energy")}</span>
+                    <span style={{margin:"0 8px",opacity:0.3}}>·</span>
+                    <span style={{color:"#82d9a3"}}>+{gorevIsteQuest.s} {gt("intuition")}</span>
+                  </div>
+                  <button onClick={()=>{ rpgStartQuest(); setGorevIstePhase("idle"); }}
+                    style={{padding:"14px 40px",borderRadius:30,border:"1px solid rgba(155,89,182,0.5)",background:"linear-gradient(135deg,rgba(155,89,182,0.22),rgba(52,152,219,0.15))",color:"#e0d0f0",fontSize:14,letterSpacing:4,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 30px rgba(155,89,182,0.12)"}}>
+                    {gt("btn_start")}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── PHASE: COMPLETED — enerji artışı ── */}
+            {gorevIstePhase === "completed" && (
+              <div style={{width:"100%",textAlign:"center",animation:"fadeUp 0.6s ease"}}>
+                <div style={{background:"linear-gradient(135deg,rgba(26,188,156,0.15),rgba(39,174,96,0.08))",border:"1px solid rgba(26,188,156,0.3)",borderRadius:20,padding:"36px 22px"}}>
+                  <div style={{fontSize:40,marginBottom:8,animation:"heartbeat 1.2s ease-in-out"}}>✦</div>
+                  <div style={{fontSize:16,color:"#82d9a3",fontWeight:300,letterSpacing:2,marginBottom:8}}>{gt("completed")}</div>
+                  <div style={{fontSize:24,fontWeight:200,color:"#f0a040",marginBottom:4,animation:"fadeUp 0.8s ease 0.3s both"}}>+{gorevIsteQuest?.e || 10} {gt("energy")}</div>
+                  <div style={{fontSize:13,color:"#777",marginBottom:24}}>+{gorevIsteQuest?.s || 1} {gt("intuition")}</div>
+
+                  {/* GÜNLÜK — deneyim sorusu */}
+                  <div style={{borderTop:"1px solid rgba(255,255,255,0.06)",paddingTop:20,marginTop:8}}>
+                    <div style={{fontSize:13,color:"#b8a4d8",marginBottom:10,fontFamily:"'Inter',sans-serif"}}>{gt("journal_q")}</div>
+                    <textarea value={gorevIsteJournal} onChange={e=>setGorevIsteJournal(e.target.value)} placeholder={gt("journal_ph")}
+                      style={{width:"100%",minHeight:70,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(155,89,182,0.2)",borderRadius:12,padding:"10px 14px",color:"#ccc",fontSize:14,fontFamily:"'Inter',sans-serif",resize:"vertical",outline:"none"}} />
+                    <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:12}}>
+                      <button onClick={rpgSaveJournal}
+                        style={{padding:"10px 28px",borderRadius:24,border:"1px solid rgba(26,188,156,0.4)",background:"rgba(26,188,156,0.12)",color:"#82d9a3",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif"}}>
+                        {gt("btn_save")}
+                      </button>
+                      <button onClick={()=>setGorevIstePhase("idle")}
+                        style={{padding:"10px 20px",borderRadius:24,border:"1px solid rgba(255,255,255,0.08)",background:"transparent",color:"#666",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif"}}>
+                        →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── YOLCULUK HARİTASI (dikey yol) ── */}
+            <div style={{width:"100%",marginTop:32}}>
+              <div style={{fontSize:10,letterSpacing:5,color:"#555",textTransform:"uppercase",textAlign:"center",marginBottom:16,fontFamily:"'Jost',sans-serif"}}>{gt("path")}</div>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:0}}>
+                {GOREV_LEVELS.map((lv, i) => {
+                  const reached = freshRpg.energy >= lv.min;
+                  const isCurrent = i === lvl;
+                  return (
+                    <div key={i}>
+                      <div style={{display:"flex",alignItems:"center",gap:14}}>
+                        <div style={{
+                          width: isCurrent ? 22 : 14, height: isCurrent ? 22 : 14, borderRadius:"50%",
+                          background: reached ? "linear-gradient(135deg,#9b59b6,#3498db)" : "rgba(255,255,255,0.06)",
+                          border: isCurrent ? "2px solid rgba(155,89,182,0.6)" : reached ? "1px solid rgba(155,89,182,0.3)" : "1px solid rgba(255,255,255,0.08)",
+                          boxShadow: isCurrent ? "0 0 20px rgba(155,89,182,0.3)" : "none",
+                          transition:"all 0.5s",
+                        }} />
+                        <div>
+                          <div style={{fontSize:13,color: reached ? "#d8c8f0" : "#555",fontWeight: isCurrent ? 400 : 300,fontFamily:"'Jost',sans-serif",letterSpacing:1}}>
+                            {pickLang(lv.name, lang)}
+                          </div>
+                          <div style={{fontSize:10,color: reached ? "#888" : "#444",letterSpacing:1,fontFamily:"'Inter',sans-serif"}}>
+                            {pickLang(lv.unlock, lang)} · {lv.min}+ {gt("energy").toLowerCase()}
+                          </div>
+                        </div>
+                      </div>
+                      {i < GOREV_LEVELS.length - 1 && (
+                        <div style={{width:2,height:28,background: reached ? "rgba(155,89,182,0.3)" : "rgba(255,255,255,0.04)",margin:"0 auto",marginLeft: isCurrent ? 10 : 6}} />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* KATEGORİ GRİDİ */}
+            <div style={{width:"100%",marginTop:28}}>
+              <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:8}}>
+                {GOREV_CATEGORIES.map(c => (
+                  <div key={c.id} style={{textAlign:"center",padding:"10px 4px",borderRadius:12,background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.05)"}}>
+                    <div style={{fontSize:18,marginBottom:2}}>{c.icon}</div>
+                    <div style={{fontSize:9,letterSpacing:1,color:"#666",fontFamily:"'Jost',sans-serif"}}>{gt("cat_"+c.id)}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        );
+      })()}
+
       {/* GALAKTİK KİMLİK KARTI */}
       {showIdCard && (() => {
         // Read embed apps' usage from same-origin localStorage (no medical claims, just factual counts)
@@ -10574,7 +11150,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {/* BOTTOM NAV */}
-      {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","mandala","goreviste","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
