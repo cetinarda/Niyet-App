@@ -3293,10 +3293,12 @@ function FreqText({ text, style, onNav }) {
         const pz = YOGA_POSES[pose], lg = _curLang();
         return (
           <span onClick={()=>setPose(null)} style={{ position:"fixed",inset:0,zIndex:100020,background:"rgba(0,0,0,0.72)",backdropFilter:"blur(6px)",display:"flex",alignItems:"center",justifyContent:"center",padding:22 }}>
-            <span onClick={e=>e.stopPropagation()} style={{ display:"block",maxWidth:320,width:"100%",background:"linear-gradient(160deg,rgba(24,32,30,0.98),rgba(14,20,19,0.98))",border:"1px solid rgba(143,214,180,0.3)",borderRadius:18,padding:"20px 20px 16px",textAlign:"center",boxShadow:"0 18px 50px rgba(0,0,0,0.6)" }}>
+            {/* Pop-up küçültüldü (kullanıcı: "çok büyüktü"): genişlik 320→250,
+                figür 210→132, iç boşluk ve yazı ölçüleri orantılı düştü. */}
+            <span onClick={e=>e.stopPropagation()} style={{ display:"block",maxWidth:250,width:"100%",background:"linear-gradient(160deg,rgba(24,32,30,0.98),rgba(14,20,19,0.98))",border:"1px solid rgba(143,214,180,0.3)",borderRadius:16,padding:"14px 16px 12px",textAlign:"center",boxShadow:"0 14px 40px rgba(0,0,0,0.6)" }}>
               <span onClick={()=>setPose(null)} style={{ position:"absolute" }} />
-              <span style={{ display:"block",fontSize:11,letterSpacing:4,color:"#6f9e88",textTransform:"uppercase",marginBottom:10,fontFamily:"'Jost',sans-serif" }}>YOGA</span>
-              <svg viewBox="0 0 128 112" width="210" height="184" fill="none" style={{ display:"block",margin:"0 auto 12px" }} aria-hidden="true">
+              <span style={{ display:"block",fontSize:9.5,letterSpacing:3.5,color:"#6f9e88",textTransform:"uppercase",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>YOGA</span>
+              <svg viewBox="0 0 128 112" width="132" height="116" fill="none" style={{ display:"block",margin:"0 auto 8px" }} aria-hidden="true">
                 {/* Zemin — figürün nereye yaslandığını gösterir, pozu okunur kılar */}
                 <path d="M6 94 L122 94" stroke="rgba(143,214,180,0.28)" strokeWidth="1.4" strokeLinecap="round" />
                 {/* Duvar — yalnızca "bacaklar duvarda" pozunda */}
@@ -3308,9 +3310,9 @@ function FreqText({ text, style, onNav }) {
                 <circle cx={pz.head[0]} cy={pz.head[1]} r={pz.head[2]}
                   stroke="rgba(143,214,180,0.9)" strokeWidth="2.4" fill="rgba(10,20,16,0.9)" />
               </svg>
-              <span style={{ display:"block",fontSize:17,fontWeight:300,letterSpacing:1,color:"#dff0e8",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{pickLang(pz.ad, lg)}</span>
-              <span style={{ display:"block",fontSize:13,color:"#a8c4b8",lineHeight:1.75,marginBottom:14 }}>{pickLang(pz.aciklama, lg)}</span>
-              <button onClick={()=>setPose(null)} style={{ background:"rgba(143,214,180,0.14)",border:"1px solid rgba(143,214,180,0.35)",borderRadius:20,color:"#bfe6d2",fontSize:12.5,letterSpacing:2,padding:"8px 22px",cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+              <span style={{ display:"block",fontSize:14.5,fontWeight:300,letterSpacing:0.8,color:"#dff0e8",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{pickLang(pz.ad, lg)}</span>
+              <span style={{ display:"block",fontSize:11.5,color:"#a8c4b8",lineHeight:1.65,marginBottom:10 }}>{pickLang(pz.aciklama, lg)}</span>
+              <button onClick={()=>setPose(null)} style={{ background:"rgba(143,214,180,0.14)",border:"1px solid rgba(143,214,180,0.35)",borderRadius:18,color:"#bfe6d2",fontSize:11,letterSpacing:1.8,padding:"6px 18px",cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
                 {lg === "tr" ? "KAPAT" : "CLOSE"}
               </button>
             </span>
