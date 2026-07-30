@@ -41,6 +41,10 @@ const TR = [
     { term: "12. Ev & Yönetici Gezegen", desc: "Astrolojide 12. ev bilinçaltını, gizli güçleri, spiritüel potansiyeli ve içsel dünyayı temsil eder. Her evin bir yönetici gezegeni vardır ve bu gezegen o evin temalarını nasıl deneyimlediğinizi belirler." },
     { term: "Draconik Harita", desc: "Natal harita kim olduğunu söyler, Draconik harita ruhunun bu bedene girmeden önce ne olduğunu söyler. Kuzey Ay Düğümü 0° Koç'a sabitlenerek hesaplanır ve tüm gezegenlerin ruhsal eksen sıfırlandığında nerede durduğunu gösterir. Pamela Crane ve Ronald Davison tarafından 1970'lerde sistemleştirilmiştir. Draconik Güneş ruhun gerçek kimliği, natal Güneş bu hayatta giydiği maskedir; ikisi farklı burçtaysa kişi sürekli rol yapıyor gibi hissedebilir." },
     { term: "Gezegen Güçleri", desc: "Her gezegen farklı bir yaşam alanını ve enerjiyi yönetir: Güneş (benlik), Ay (duygular), Merkür (iletişim), Venüs (sevgi), Mars (aksiyon), Jüpiter (genişleme), Satürn (disiplin), Uranüs (özgünlük), Neptün (hayal gücü), Pluto (dönüşüm)." },
+    { term: "Kuzey Düğüm & Güney Düğüm", desc: "Ay'ın yörüngesinin ekliptiği kestiği iki noktadır; gökte fiziksel bir cisim değil, matematiksel bir kesişimdir. Güney Düğüm geçmişten getirdiğin, rahat ama seni büyütmeyen kalıpları; Kuzey Düğüm ise bu yaşamda yönelmen gereken, başta zorlayıcı gelen yönü temsil eder." },
+    { term: "Retro (Retrograde)", desc: "Bir gezegenin Dünya'dan bakıldığında geriye gidiyormuş gibi görünmesidir. Gerçekte geri gitmez; iki gezegenin hız farkından doğan görsel bir yanılsamadır. Astrolojide bu dönemler yeniden gözden geçirme, tamamlama ve içe dönme zamanı olarak okunur." },
+    { term: "Geçiş (Transit)", desc: "Gökyüzündeki gezegenlerin o anki konumlarının, doğum haritandaki noktalarla kurduğu açısal ilişkidir. Sakin'in gökyüzü raporundaki geçiş notu KİŞİSEL değil KOLEKTİFTİR: o gün herkes için aynı gökyüzünü anlatır." },
+    { term: "Ay Evresi", desc: "Ay'ın Güneş'e göre konumundan doğan aydınlanma döngüsüdür; yaklaşık 29,5 günde tamamlanır. Yeni Ay niyet tohumlamaya, Dolunay ise görünür kılmaya ve bırakmaya bağlanır." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "Çakra Nedir?", desc: "Sanskrit dilinde \"tekerlek\" anlamına gelir. Vücuttaki enerji merkezleridir. 7 ana çakra omurga boyunca sıralanır. Her biri farklı fiziksel, duygusal ve spiritüel alanları yönetir." },
@@ -74,6 +78,13 @@ const TR = [
     { term: "Akşam Kapanışı", desc: "Günü bilinçli bir şekilde kapatma ritüelidir. \"Bugün ne öğrendin?\" ve \"Şükür?\" sorularıyla günün farkındalık özetini çıkarırsınız." },
     { term: "Haftalık İç Harita", desc: "Haftanın istatistiklerini gösteren özet ekrandır: en aktif çakra, toplam nefes sayısı, niyet kelimeleri ve bilinçli an sayısı. AI raporu bu verilerden haftalık bir içgörü sentezi oluşturur." },
     { term: "Doğum Profili", desc: "Doğum tarihiniz ve saatinizden hesaplanan kişisel enerji haritanızdır: burç, yaşam yolu sayısı, kişisel yıl sayısı, yükselen burç, 12. ev analizi ve haftalık biyoritim grafiği." },
+    { term: "Solfeggio Frekansları", desc: "Sakin'de kullanılan altı temel ton (396, 417, 528, 639, 741, 852 Hz) ve taç çakra için 963 Hz. Her frekans bir çakraya eşlenir. Bunlar bir tedavi yöntemi değil, dikkati bedene toplamaya yardımcı olan işitsel bir demirdir." },
+    { term: "Bağlantı & Gün Serisi", desc: "Günün 7 adımını (sabah, gün görevleri, nefes, ses, çakra, akşam, ayna) tamamladığında bağlantı aktifleşir ve çakra sütunu ışık tüneline dönüşür. Art arda tamamlanan günler seriyi büyütür: 7 günde 2. seviye (x2), 21 günde 3. seviye (x4)." },
+    { term: "Gökyüzü Raporu", desc: "Ay evresi, güneş patlamaları, jeomanyetik hareketlilik (Kp indeksi), güneş rüzgârı ve göktaşı yağmurlarını birleştiren günlük kolektif özet. Veriler NOAA'nın açık uzay hava durumu servisinden gelir; yorum herkes için aynıdır." },
+    { term: "Galaktik Kimlik", desc: "Doğum bilgilerinden üretilen, paylaşılabilir kişisel kart. Burç, yükselen, yaşam yolu sayısı ve element dağılımını tek görselde toplar." },
+    { term: "Element Dağılımı", desc: "Doğum haritandaki gezegenlerin ateş, toprak, hava ve su elementlerine dağılımıdır. Güneş ve Ay daha ağır tartılır. Baskın element doğal eğilimini, en zayıf element ise bilinçle beslemen gereken alanı gösterir." },
+    { term: "Zihni Boşalt (Kaleidoskop)", desc: "Dört mod (sükûnet, berraklık, teslimiyet, genişlik) sunan tam ekran görsel-işitsel bir dinlenme alanı. Desenler ve tonlar o anda üretilir; kayıt değildir, her seferinde farklı akar." },
+    { term: "Panik Butonu", desc: "Ani kaygı anlarında hızlı erişim için tasarlanmıştır. Doğrudan 4-7-8 nefes moduna götürür — bu ritim nefes vermeyi uzatarak parasempatik sinir sistemini destekler. Tıbbi bir müdahale değildir; acil durumda 112'yi arayın." },
   ]},
 ];
 
@@ -102,6 +113,10 @@ const EN = [
     { term: "12th House & Ruling Planet", desc: "In astrology, the 12th house represents the subconscious, hidden powers, spiritual potential and inner world. Each house has a ruling planet that determines how you experience its themes." },
     { term: "Draconic Chart", desc: "Your natal chart tells you who you are; the Draconic chart tells you what your soul was before entering this body. Calculated by fixing the North Node at 0° Aries. Systematized by Pamela Crane and Ronald Davison in the 1970s. The Draconic Sun is the soul's true identity; the natal Sun is the mask worn in this life." },
     { term: "Planetary Powers", desc: "Each planet governs different life areas: Sun (self), Moon (emotions), Mercury (communication), Venus (love), Mars (action), Jupiter (expansion), Saturn (discipline), Uranus (originality), Neptune (imagination), Pluto (transformation)." },
+    { term: "North Node & South Node", desc: "The two points where the Moon's orbit crosses the ecliptic — not physical bodies, but mathematical intersections. The South Node represents patterns you carry from the past: comfortable, but no longer growing you. The North Node points to the direction you are meant to grow toward in this life, which often feels unfamiliar at first." },
+    { term: "Retrograde", desc: "When a planet appears to move backwards as seen from Earth. It never truly reverses; it is an optical effect created by the difference in orbital speeds. In astrology these periods are read as time to revisit, finish and turn inward." },
+    { term: "Transit", desc: "The angular relationship between planets' current positions and the points in your birth chart. The transit note in Sakin's sky report is COLLECTIVE, not personal: it describes the same sky for everyone that day." },
+    { term: "Moon Phase", desc: "The illumination cycle created by the Moon's position relative to the Sun, completing in about 29.5 days. The New Moon is associated with seeding intentions, the Full Moon with making things visible and letting go." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "What is a Chakra?", desc: "Means \"wheel\" in Sanskrit. Energy centers in the body. 7 main chakras align along the spine, each governing different physical, emotional and spiritual areas." },
@@ -135,6 +150,13 @@ const EN = [
     { term: "Evening Close", desc: "A ritual to consciously close the day. Extract your awareness summary with \"What did you learn today?\" and \"Gratitude?\" questions." },
     { term: "Weekly Inner Map", desc: "Summary screen showing the week's stats: most active chakra, total breaths, intention words and mindful moments. AI report creates a weekly insight synthesis." },
     { term: "Birth Profile", desc: "Your personal energy map calculated from your birth date and time: zodiac sign, life path number, personal year, ascendant, 12th house analysis and weekly biorhythm graph." },
+    { term: "Solfeggio Frequencies", desc: "The six core tones used in Sakin (396, 417, 528, 639, 741, 852 Hz) plus 963 Hz for the crown chakra. Each frequency maps to a chakra. These are not a treatment — they are an auditory anchor that helps gather attention into the body." },
+    { term: "Connection & Day Streak", desc: "When you complete the seven steps of the day (morning, day tasks, breath, sound, chakra, evening, mirror), the connection activates and the chakra column becomes a tunnel of light. Consecutive completed days grow your streak: level 2 at 7 days (x2), level 3 at 21 days (x4)." },
+    { term: "Sky Report", desc: "A daily collective summary combining the moon phase, solar flares, geomagnetic activity (Kp index), solar wind and meteor showers. Data comes from NOAA's open space-weather service; the reading is the same for everyone." },
+    { term: "Galactic Identity", desc: "A shareable personal card generated from your birth details. It gathers your sun sign, ascendant, life path number and element balance into a single image." },
+    { term: "Element Balance", desc: "How the planets in your birth chart distribute across fire, earth, air and water. The Sun and Moon carry more weight. Your dominant element shows your natural leaning; the weakest one shows what you may need to nourish consciously." },
+    { term: "Clear the Mind (Kaleidoscope)", desc: "A full-screen visual and sonic resting space with four modes (stillness, clarity, surrender, spaciousness). The patterns and tones are generated live rather than played back, so each session flows differently." },
+    { term: "Panic Button", desc: "Designed for quick access in moments of sudden anxiety. It takes you straight to the 4-7-8 breath mode — a rhythm that lengthens the exhale and supports the parasympathetic nervous system. It is not a medical intervention; in an emergency call your local emergency number." },
   ]},
 ];
 

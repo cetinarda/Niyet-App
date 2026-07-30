@@ -4282,6 +4282,9 @@ export default function SakinApp() {
     setKozmikLoading(false);
   };
   const [showKilavuz, setShowKilavuz] = useState(false);
+  // Sözlük araması (kullanıcı: "soru işaretine tıklar, tüm terimler gözükür ama
+  // en üstte ara kutucuğu vardır" — Sakin Tasarım'daki arama ekranı gibi).
+  const [kilavuzQ, setKilavuzQ] = useState("");
   // Kişiselleştirme: kullanıcının önceki sorgu geçmişini takip et
   const [sorguGecmisi, setSorguGecmisi] = useState(() => {
     try { return JSON.parse(localStorage.getItem("sakin_sorgu_gecmisi")||"[]"); } catch { return []; }
@@ -7916,7 +7919,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* ── Buttons ── */}
           {!breathStarted ? (
             <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>setScreen("sabah")}>{t("back")}</button>
+              {/* Geri = geldiğin yer (kullanıcı: "aynadan gidilen bölümlere geri
+                  tıklanınca aynaya dönsün"). Eskiden sabit "sabah"a gidiyordu. */}
+              <button className="sakin-btn" onClick={()=>goBack("sabah")}>{t("back")}</button>
               <button className="sakin-btn-primary" onClick={()=>{ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); }}>{t("btn_start")}</button>
             </div>
           ) : (
@@ -8118,7 +8123,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
 
             <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center" }}>
-              <button className="sakin-btn" onClick={()=>{ stopFreqTone(); setScreen("nefes"); }}>{t("back")}</button>
+              {/* Geri = geldiğin yer; eskiden sabit "nefes"e gidiyordu. Ton önce durur. */}
+              <button className="sakin-btn" onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>{t("back")}</button>
               <button className="sakin-btn-primary" onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
             </div>
           </div>
@@ -10037,7 +10043,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* GLOSSARY / HELP GUIDE MODAL */}
       {showKilavuz && (() => {
-        const glossary = getGlossary(lang).map(c => ({ ...c, cat: t(c.cat) }));
+        // Arama: terim VE açıklama içinde geçer; Türkçe İ/ı sorunları için
+        // toLocaleLowerCase("tr") kullanılır (standart lowercase İ↔i eşlemez).
+        const _n = (x) => String(x || "").toLocaleLowerCase("tr");
+        const q = _n(kilavuzQ).trim();
+        const all = getGlossary(lang).map(c => ({ ...c, cat: t(c.cat) }));
+        const glossary = q
+          ? all.map(c => ({ ...c, items: c.items.filter(it => _n(it.term).includes(q) || _n(it.desc).includes(q)) }))
+               .filter(c => c.items.length)
+          : all;
+        const hitCount = glossary.reduce((a, c) => a + c.items.length, 0);
+        const totalCount = all.reduce((a, c) => a + c.items.length, 0);
 
         return (
           <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:99999,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(30px)",overflowY:"auto",animation:"fadeIn 0.3s ease" }}>
@@ -10048,12 +10064,41 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:300,letterSpacing:4,color:"#777777",textTransform:"uppercase",marginBottom:4 }}>{t("guide_help_sub")}</div>
                   <div style={{ fontFamily:"'Inter',sans-serif",fontSize:22,fontWeight:300,color:"#ffffff",letterSpacing:2 }}>{t("guide_help_title")}</div>
                 </div>
-                <button onClick={() => setShowKilavuz(false)} style={{ background:"rgba(192,57,43,0.15)",border:"1px solid rgba(192,57,43,0.3)",borderRadius:100,padding:"8px 20px",cursor:"pointer",color:"#e8a0a0",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:2,textTransform:"uppercase",transition:"all 0.2s" }}
+                <button onClick={() => { setShowKilavuz(false); setKilavuzQ(""); }} style={{ background:"rgba(192,57,43,0.15)",border:"1px solid rgba(192,57,43,0.3)",borderRadius:100,padding:"8px 20px",cursor:"pointer",color:"#e8a0a0",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:2,textTransform:"uppercase",transition:"all 0.2s" }}
                   onMouseEnter={e=>{ e.currentTarget.style.background="rgba(192,57,43,0.3)"; }}
                   onMouseLeave={e=>{ e.currentTarget.style.background="rgba(192,57,43,0.15)"; }}
                 >{t("guide_close")}</button>
               </div>
-              <div style={{ height:1,background:"linear-gradient(90deg,transparent,rgba(192,57,43,0.3),transparent)",margin:"18px 0 28px" }} />
+              <div style={{ height:1,background:"linear-gradient(90deg,transparent,rgba(192,57,43,0.3),transparent)",margin:"18px 0 18px" }} />
+
+              {/* ARAMA — listenin EN ÜSTÜNDE (kullanıcı isteği) */}
+              <div style={{ position:"relative", marginBottom:10 }}>
+                <input
+                  value={kilavuzQ}
+                  onChange={e => setKilavuzQ(e.target.value)}
+                  placeholder={lang === "tr" ? "Terim ara…" : "Search terms…"}
+                  aria-label={lang === "tr" ? "Terim ara" : "Search terms"}
+                  style={{ width:"100%", boxSizing:"border-box", padding:"12px 38px 12px 16px",
+                    background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.14)",
+                    borderRadius:14, color:"#eee", fontSize:15, fontFamily:"'Inter',sans-serif",
+                    outline:"none" }} />
+                {kilavuzQ && (
+                  <button onClick={() => setKilavuzQ("")} aria-label={lang === "tr" ? "Temizle" : "Clear"}
+                    style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)",
+                      background:"none", border:"none", color:"#888", fontSize:18, cursor:"pointer",
+                      padding:"4px 8px", lineHeight:1 }}>✕</button>
+                )}
+              </div>
+              <div style={{ fontSize:12, color:"#777", letterSpacing:1, marginBottom:22, fontFamily:"'Jost',sans-serif" }}>
+                {q ? `${hitCount} / ${totalCount}` : `${totalCount} ${lang === "tr" ? "terim" : "terms"}`}
+              </div>
+
+              {/* Sonuç yoksa */}
+              {q && hitCount === 0 && (
+                <div style={{ textAlign:"center", color:"#888", fontSize:14, padding:"30px 0", lineHeight:1.8 }}>
+                  {lang === "tr" ? "Bu terim bulunamadı." : "No matching term."}
+                </div>
+              )}
 
               {/* Categories */}
               {glossary.map((cat, ci) => (
@@ -10082,7 +10127,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ))}
 
               <div style={{ textAlign:"center",padding:"20px 0" }}>
-                <button onClick={() => setShowKilavuz(false)} style={{ background:"linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))",border:"1px solid rgba(192,57,43,0.35)",borderRadius:100,padding:"12px 36px",cursor:"pointer",color:"#cccccc",fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:2.5,textTransform:"uppercase",transition:"all 0.2s" }}
+                <button onClick={() => { setShowKilavuz(false); setKilavuzQ(""); }} style={{ background:"linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))",border:"1px solid rgba(192,57,43,0.35)",borderRadius:100,padding:"12px 36px",cursor:"pointer",color:"#cccccc",fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:2.5,textTransform:"uppercase",transition:"all 0.2s" }}
                   onMouseEnter={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.6),rgba(192,57,43,0.4))"; }}
                   onMouseLeave={e=>{ e.currentTarget.style.background="linear-gradient(135deg,rgba(192,57,43,0.4),rgba(192,57,43,0.25))"; }}
                 >{t("guide_close")}</button>
