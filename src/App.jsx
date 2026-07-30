@@ -8492,7 +8492,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         )}
                       </div>
                       <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
-                        {isLocked ? "🔒" : isPremium && PREMIUM_FREQ_HZ.includes(f.hz) ? (isPlaying ? "⏹" : "🔓") : isPlaying ? "⏹" : "▶"}
+                        {isLocked ? "🔓" : isPlaying ? "⏹" : "▶"}
                       </div>
                     </div>
 
