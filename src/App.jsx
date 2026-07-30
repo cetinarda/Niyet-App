@@ -5868,6 +5868,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       });
       setTimeout(() => { try { ctx.close(); } catch(_) {} }, 1300);
     } catch(_) {}
+    // KEŞFET/EMBED AÇIKKEN AYNA ÇALIŞMIYORDU (kullanıcı bildirdi).
+    // KÖK SEBEP: bu iki katman position:fixed + inset:0 ve üst bardan DAHA ALTTA
+    // ama ekranı tamamen kaplıyor. setScreen("rehber") arkada çalışıyor, ekran
+    // gerçekten değişiyor — ama üstteki panel kapanmadığı için kullanıcı hiçbir
+    // şey olmamış gibi görüyor. Ayna açılmadan önce kapatılmaları gerekir.
+    try { setShowAilesi(false); } catch(_) {}
+    try { if (embeddedApp) { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } } catch(_) {}
     setMirrorPortalActive(true);
     setTimeout(()=>{ setRehberTab("reiki"); setScreen("rehber"); setMirrorPortalActive(false); }, 1050);
   };
@@ -8768,119 +8775,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   )}
                 </div>
 
-                {/* Haftanın Kozmik Enerji Durumu */}
-                <div style={{ marginTop:10,position:"relative" }}>
-                  <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
-                    style={{
-                      width:"100%",
-                      background:"rgba(184,164,216,0.06)",
-                      border:"1px solid rgba(184,164,216,0.25)",
-                      borderRadius:14,padding:"12px 18px",
-                      color:"#a888d0",cursor:"pointer",
-                      display:"flex",alignItems:"center",justifyContent:"space-between",
-                      fontFamily:"'Jost',sans-serif",fontWeight:300,
-                      transition:"all 0.2s",
-                    }}
-                    onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
-                    onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-                    <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
-                    <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
-                  </button>
-
-                  {showKozmik && (
-                    <div style={{
-                      marginTop:8,
-                      background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
-                      border:"1px solid rgba(184,164,216,0.25)",
-                      borderRadius:16,padding:"16px 18px",
-                      boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
-                    }}>
-                      {(() => {
-                        const moon = moonPhase();
-                        return (
-                        <>
-                          {/* AY EVRESİ — saf matematik, NOAA olmadan da görünür */}
-                          <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
-                            <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
-                            <div style={{ flex:1,minWidth:0 }}>
-                              <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
-                              <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
-                              <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
-                                {(() => {
-                                  const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
-                                  const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
-                                  return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
-                                })()}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                        );
-                      })()}
-                      {kozmikLoading && (
-                        <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
-                          {t("mirror_noaa_loading")}
-                        </div>
-                      )}
-                      {!kozmikLoading && !kozmikData && (
-                        <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
-                          {t("mirror_noaa_unavail")}
-                        </div>
-                      )}
-                      {!kozmikLoading && kozmikData && (() => {
-                        const moon = kozmikData.moon;
-                        const f = kozmikData.solar_flares_24h;
-                        const w = kozmikData.solar_wind;
-                        return (
-                        <>
-                          {/* Ay evresi — görsel başlık */}
-                          <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
-                            <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
-                            {moon && (
-                              <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
-                                {pickLang(moon.label, lang)} · %{moon.illumination}
-                              </div>
-                            )}
-                          </div>
-
-                          {/* KOLEKTİF GEÇİŞ NOTU — raporun ALT BAŞLIĞI (kullanıcı isteği:
-                              "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
-                              Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
-                              gerçek efemerisle hesaplanır (retro gezegenler + en dar
-                              orb'lu açı); veri yoksa satır hiç çıkmaz. */}
-                          {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
-                            <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
-                              ✦ {pickLang(kozmikData.transit, lang)}
-                            </div>
-                          )}
-
-                          {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
-                          {(kozmikData.aiReport || kozmikData.report) && (
-                            <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
-                              {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
-                            </div>
-                          )}
-
-                          {/* Gezegen-burç dizilişi kaldırıldı — kullanıcı için anlamı yok,
-                              kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
-
-                          {/* Küçük veri satırı — NOAA + hesaplama (meraklı için) */}
-                          <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
-                            <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
-                            <span>☀️ {f && f.count>0 ? f.max_class : "—"}</span>
-                            {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
-                            {moon && <span>{moon.emoji} {moon.illumination}%</span>}
-                            {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
-                          </div>
-                          <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
-                            {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
-                          </div>
-                        </>
-                        );
-                      })()}
-                    </div>
-                  )}
-                </div>
 
               </div>
             )}
@@ -8923,6 +8817,124 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ fontSize:15,color:s.color,fontWeight:300 }}>{s.value}</div>
               </div>
             ))}
+          </div>
+          {/* GÖKYÜZÜ RAPORU — İçsel Ayna'dan BURAYA taşındı (kullanıcı:
+              "gökyüzü raporunu harita kısmında haftalık raporun üstüne koy").
+              Kolektif gökyüzü ile kişisel haftalık rapor yan yana daha anlamlı;
+              Ayna ekranı da sadeleşiyor. Panel açılınca fetchKozmik() çağrılır,
+              veri 6 saat CDN'de önbelleklenir. */}
+          {/* Haftanın Kozmik Enerji Durumu */}
+          <div style={{ marginTop:10,position:"relative" }}>
+            <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
+              style={{
+                width:"100%",
+                background:"rgba(184,164,216,0.06)",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:14,padding:"12px 18px",
+                color:"#a888d0",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+
+            {showKozmik && (
+              <div style={{
+                marginTop:8,
+                background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:16,padding:"16px 18px",
+                boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
+              }}>
+                {(() => {
+                  const moon = moonPhase();
+                  return (
+                  <>
+                    {/* AY EVRESİ — saf matematik, NOAA olmadan da görünür */}
+                    <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
+                      <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
+                      <div style={{ flex:1,minWidth:0 }}>
+                        <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
+                        <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
+                        <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
+                          {(() => {
+                            const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
+                            const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
+                            return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                  );
+                })()}
+                {kozmikLoading && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
+                    {t("mirror_noaa_loading")}
+                  </div>
+                )}
+                {!kozmikLoading && !kozmikData && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
+                    {t("mirror_noaa_unavail")}
+                  </div>
+                )}
+                {!kozmikLoading && kozmikData && (() => {
+                  const moon = kozmikData.moon;
+                  const f = kozmikData.solar_flares_24h;
+                  const w = kozmikData.solar_wind;
+                  return (
+                  <>
+                    {/* Ay evresi — görsel başlık */}
+                    <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
+                      <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
+                      {moon && (
+                        <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(moon.label, lang)} · %{moon.illumination}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* KOLEKTİF GEÇİŞ NOTU — raporun ALT BAŞLIĞI (kullanıcı isteği:
+                        "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
+                        Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
+                        gerçek efemerisle hesaplanır (retro gezegenler + en dar
+                        orb'lu açı); veri yoksa satır hiç çıkmaz. */}
+                    {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
+                      <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
+                        ✦ {pickLang(kozmikData.transit, lang)}
+                      </div>
+                    )}
+
+                    {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
+                    {(kozmikData.aiReport || kozmikData.report) && (
+                      <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
+                        {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
+                      </div>
+                    )}
+
+                    {/* Gezegen-burç dizilişi kaldırıldı — kullanıcı için anlamı yok,
+                        kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
+
+                    {/* Küçük veri satırı — NOAA + hesaplama (meraklı için) */}
+                    <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
+                      <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
+                      <span>☀️ {f && f.count>0 ? f.max_class : "—"}</span>
+                      {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
+                      {moon && <span>{moon.emoji} {moon.illumination}%</span>}
+                      {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                    </div>
+                    <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
+                      {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
+                    </div>
+                  </>
+                  );
+                })()}
+              </div>
+            )}
           </div>
           {/* HAFTALIK SAKİN RAPORU — 12. Ev kartının ÜSTÜNE alındı (kullanıcı isteği). */}
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
