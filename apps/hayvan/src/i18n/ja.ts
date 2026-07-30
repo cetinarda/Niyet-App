@@ -61,6 +61,7 @@ export const ja = {
     familyTag: 'SAKIN · 動物',
     sections: {
       anatolian: 'アナトリアでは',
+      world: '世界では',
       todayMessage: '今日あなたへのメッセージ',
       guidance: '導き',
       jung: 'ユングの言葉で',

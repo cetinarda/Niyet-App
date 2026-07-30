@@ -10,7 +10,7 @@ import philosophersData from '../data/philosophers.json';
 import { getAnimalLore } from '../data/animalLore';
 
 const EN_SUFFIX_FIELDS = [
-  'name', 'element', 'symbolism', 'anatolianMeaning', 'dailyMessage', 'guidance',
+  'name', 'element', 'symbolism', 'anatolianMeaning', 'worldMeaning', 'dailyMessage', 'guidance',
   'text', 'aspect', 'origin', 'tradition', 'chakra', 'properties', 'plant',
   'howToUse', 'affirmation', 'category',
 ] as const;

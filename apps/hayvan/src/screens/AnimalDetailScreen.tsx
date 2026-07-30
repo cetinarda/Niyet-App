@@ -80,9 +80,17 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
           <Text style={styles.heroMeta}>{animal.element.toLocaleUpperCase(lang)} · {animal.symbolism.slice(0, 3).join(' · ')}</Text>
         </View>
 
-        <Section title={t('animalDetail.sections.anatolian')} color={Colors.gold}>
-          <Text style={styles.body}>{animal.anatolianMeaning}</Text>
-        </Section>
+        {animal.anatolianMeaning ? (
+          <Section title={t('animalDetail.sections.anatolian')} color={Colors.gold}>
+            <Text style={styles.body}>{animal.anatolianMeaning}</Text>
+          </Section>
+        ) : null}
+
+        {animal.worldMeaning ? (
+          <Section title={t('animalDetail.sections.world')} color={Colors.sakinMint}>
+            <Text style={styles.body}>{animal.worldMeaning}</Text>
+          </Section>
+        ) : null}
 
         <Section title={t('animalDetail.sections.todayMessage')} color={Colors.tealLight}>
           <Text style={styles.body}>{animal.dailyMessage}</Text>

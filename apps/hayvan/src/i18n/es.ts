@@ -61,6 +61,7 @@ export const es = {
     familyTag: 'SAKIN · ANIMAL',
     sections: {
       anatolian: 'En Anatolia',
+      world: 'En el Mundo',
       todayMessage: 'Lo que te dice hoy',
       guidance: 'GUÍA',
       jung: 'En palabras de Jung',

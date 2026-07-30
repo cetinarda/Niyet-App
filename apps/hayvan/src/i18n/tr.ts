@@ -61,6 +61,7 @@ export const tr = {
     familyTag: 'SAKİN · HAYVAN',
     sections: {
       anatolian: "Anadolu'da",
+      world: "Dünya'da",
       todayMessage: 'Bugün Sana Söylediği',
       guidance: 'REHBERLİK',
       jung: 'Jung Diliyle',
