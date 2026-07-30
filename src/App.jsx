@@ -126,6 +126,26 @@ function installZoomResetWatchdog(win, doc) {
 }
 installZoomResetWatchdog();
 
+// Klavye açık/kapalı algılama — visualViewport.height ile pencere yüksekliği
+// arasındaki farka bakarak soft keyboard'ı tespit ederiz. Açıkken
+// data-kb-open attribute'u DOM'a eklenir, CSS ile alt bar gizlenir.
+(function installKeyboardWatcher() {
+  if (typeof window === "undefined" || !window.visualViewport) return;
+  const vv = window.visualViewport;
+  let lastKb = false;
+  function check() {
+    const gap = window.innerHeight - vv.height;
+    const open = gap > 120;
+    if (open !== lastKb) {
+      lastKb = open;
+      if (open) document.documentElement.setAttribute("data-kb-open", "");
+      else document.documentElement.removeAttribute("data-kb-open");
+    }
+  }
+  vv.addEventListener("resize", check);
+  vv.addEventListener("scroll", check);
+})();
+
 // Üretilen kart görselini paylaş/indir — platforma göre en güvenilir yol.
 // ANDROID: WebView `navigator.share(files)` ve blob `<a download>` çalışmaz →
 // Capacitor Filesystem'e yazıp Share eklentisiyle paylaşırız. iOS + web: mevcut
@@ -1555,6 +1575,9 @@ const GLOBAL_CSS = `
      --nav-gap her platformda 16px: sıfır-bitişik deneme kullanıcıya dar geldi,
      eski ferah görünüme dönüldü (bar sistem çubuğunun 16px üstünde durur). */
   :root[data-platform="android"] { --android-sab: env(safe-area-inset-bottom); }
+  /* Klavye açıkken alt navigasyon + ilerleme şeridi gizlenir, yazı alanı görünür kalır */
+  :root[data-kb-open] .sakin-bottom-nav,
+  :root[data-kb-open] .sakin-progress-strip { opacity:0; pointer-events:none; transition:opacity 0.15s; }
   /* ZOOM KAPALI: double-tap zoom'u öldürür (pinch, JS gesture guard'da). */
   html, body { touch-action: manipulation; }
 
@@ -8469,7 +8492,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         )}
                       </div>
                       <div style={{ fontSize:20,color:isPlaying?f.color:"rgba(255,255,255,0.15)",transition:"color 0.3s",flexShrink:0 }}>
-                        {isLocked ? "🔒" : isPlaying ? "⏹" : "▶"}
+                        {isLocked ? "🔒" : isPremium && PREMIUM_FREQ_HZ.includes(f.hz) ? (isPlaying ? "⏹" : "🔓") : isPlaying ? "⏹" : "▶"}
                       </div>
                     </div>
 
@@ -10560,7 +10583,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           "mandala" (bağlan) zincirden çıkarıldığı için buradan da çıkarıldı —
           yoksa zincir dışı bir ekranda "N · ADIM" göstergesi kafa karıştırırdı. */}
       {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
+        <div className="sakin-progress-strip" style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
             const done = i < (currentStepIndex - 1);
@@ -10575,7 +10598,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
+        <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
             const sabahHint = n.id==="sabah" && screen==="rehber";

@@ -5,7 +5,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { getRelatedMyth, getElementPractice } from '../utils/animalRelations';
 import { MythDetail } from './MythsScreen';
 import { useI18n } from '../i18n/useI18n';
-import { useLocalizedLore } from '../i18n/localize';
+import { useLocalizedLore, localize } from '../i18n/localize';
 import { shareCard, isShareable } from '../utils/shareCard';
 
 type Animal = {
@@ -30,8 +30,9 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
   const [imgErr, setImgErr] = useState(false);
   const [openMyth, setOpenMyth] = useState<ReturnType<typeof getRelatedMyth>>(null);
 
-  const relatedMyth = getRelatedMyth(animal.id, animal.element);
-  const practice = getElementPractice(animal.element);
+  const rawMyth = getRelatedMyth(animal.id, animal.element);
+  const relatedMyth = rawMyth ? localize(rawMyth as any, lang) : null;
+  const practice = getElementPractice(animal.element, lang);
 
   if (openMyth) {
     return <MythDetail myth={openMyth} onClose={() => setOpenMyth(null)} />;
