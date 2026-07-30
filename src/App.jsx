@@ -5004,6 +5004,91 @@ export default function SakinApp() {
   }
 
   // Önceki sorgulara göre kişiselleştirme bağlamı oluştur
+  // ── GÖREV İSTE (İçsel Ayna) ────────────────────────────────────────────────
+  // Kullanıcı: "ilahi kanaldan bir hatırlatma, bir görev verilir. Doğum
+  // verilerine göre öğrenmeye/aşmaya çalıştığı şeyle ilgili bir deneyim
+  // önerilir. Çok boyutlu düşün, oyun gibi: karakterini geliştiren bir oyuncu."
+  //
+  // OYUN MANTIĞI: her görev bir "deneyim". Tamamlanan görevler sayılır ve
+  // kullanıcının yolculuk seviyesiyle birlikte derinleşir. Görev İSTEMEK
+  // ucuz değil: ilkinden sonra YENİ görev için TÜNELİN AÇIK olması gerekir
+  // (günün 7 adımı tamamlanıp yer-gök arasındaki ışık başlamış olmalı).
+  // Böylece görev bir ödül olur, sonsuz yenilenebilen bir buton değil.
+  const [gorev, setGorev] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("sakin_gorev") || "null"); } catch { return null; }
+  });
+  const [gorevLoading, setGorevLoading] = useState(false);
+  const gorevSayisi = (() => { try { return parseInt(localStorage.getItem("sakin_gorev_n")) || 0; } catch { return 0; } })();
+  // İlk görev serbest; sonrakiler için tünel açık olmalı VE o günün görevi
+  // henüz alınmamış olmalı (günde bir görev — değeri korunsun).
+  const gorevBugunAlindi = !!gorev && gorev.gun === todayKey;
+  const gorevIstenebilir = !gorevLoading && !gorevBugunAlindi && (gorevSayisi === 0 || allStepsComplete);
+
+  const GOREV_TXT = {
+    btn:      {tr:"GÖREV İSTE",en:"REQUEST A MISSION",de:"AUFGABE ANFORDERN",es:"PEDIR MISIÓN",pt:"PEDIR MISSÃO",fr:"DEMANDER UNE MISSION",ja:"任務を受け取る"},
+    connecting:{tr:"Yüksek benlik ile bağlantı kuruluyor…",en:"Connecting with your higher self…",de:"Verbindung zum höheren Selbst…",es:"Conectando con tu yo superior…",pt:"A ligar ao teu eu superior…",fr:"Connexion au moi supérieur…",ja:"ハイヤーセルフと接続中…"},
+    locked:   {tr:"Yeni görev için bağlantıyı tamamla — günün 7 adımı bitince ışık yerden göğe açılır ve kanal yeniden kurulur.",en:"Complete today's connection to receive a new mission — when the seven steps are done, the light opens from earth to sky and the channel reopens.",de:"Vollende die heutige Verbindung für eine neue Aufgabe — sind die sieben Schritte getan, öffnet sich das Licht von der Erde zum Himmel.",es:"Completa la conexión de hoy para una nueva misión — al terminar los siete pasos, la luz se abre de la tierra al cielo.",pt:"Completa a ligação de hoje para uma nova missão — terminados os sete passos, a luz abre-se da terra ao céu.",fr:"Termine la connexion du jour pour une nouvelle mission — les sept étapes faites, la lumière s'ouvre de la terre au ciel.",ja:"新しい任務には今日の接続を完了させて——七つの歩みを終えると、光が地から天へ開きます。"},
+    today:    {tr:"Bugünün görevi alındı. Yarın kanal yeniden açılır.",en:"Today's mission has been received. The channel reopens tomorrow.",de:"Die heutige Aufgabe ist erhalten. Morgen öffnet sich der Kanal wieder.",es:"La misión de hoy ha sido recibida. El canal se reabre mañana.",pt:"A missão de hoje foi recebida. O canal reabre amanhã.",fr:"La mission du jour est reçue. Le canal rouvrira demain.",ja:"今日の任務は受け取りました。明日また開きます。"},
+    label:    {tr:"GÖREV",en:"MISSION",de:"AUFGABE",es:"MISIÓN",pt:"MISSÃO",fr:"MISSION",ja:"任務"},
+    done:     {tr:"TAMAMLADIM",en:"COMPLETED",de:"ERLEDIGT",es:"COMPLETADA",pt:"CONCLUÍDA",fr:"TERMINÉE",ja:"完了"},
+    count:    {tr:"deneyim",en:"experiences",de:"Erfahrungen",es:"experiencias",pt:"experiências",fr:"expériences",ja:"の経験"},
+  };
+
+  const gorevIste = async () => {
+    if (!gorevIstenebilir) return;
+    if (!_aiDailyOk()) { setGorev({ gun: todayKey, metin: _aiLimitMsg(), n: gorevSayisi }); return; }
+    setGorevLoading(true);
+    try {
+      const seviye = streakData?.current >= 21 ? 3 : streakData?.current >= 7 ? 2 : 1;
+      const res = await fetch(AI_CALL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile", max_tokens: 420, lang,
+          system: `${buildMirrorSystemPrompt(lang)}
+
+Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
+geliştiren tek bir deneyimdir — bir oyunda verilen görev gibi somut, yapılabilir
+ve o kişiye özel. Kuralları:
+- SADECE BİR görev ver. Liste yapma.
+- Görev BUGÜN yapılabilir olmalı; 5-30 dakika sürsün. Para gerektirmesin.
+- Kişinin doğum verilerinden okunan ÖĞRENME ALANIYLA ilgili olsun (12. ev,
+  yaşam yolu, yükselen, karmik kalıp). Bu bağlantıyı bir cümleyle açıkla.
+- Fiziksel dünyada bir EYLEM içersin (yazmak, konuşmak, yürümek, susmak,
+  birine ulaşmak, bir şeyi bırakmak gibi) — sadece düşünmek yeterli değil.
+- Tıbbi, finansal, hukuki tavsiye verme. Tehlikeli ya da başkasına zarar
+  verebilecek bir şey isteme.
+- Biçim: önce 3-6 kelimelik bir GÖREV BAŞLIĞI, sonra boş satır, sonra 2-4
+  cümlelik anlatım, sonra boş satır, son satırda "Neden sen:" ile başlayan
+  tek cümlelik kişisel gerekçe.
+- Yıldız, madde imi, markdown KULLANMA. Sade düz metin yaz.
+${kisiselProfil()}`,
+          messages: [{ role: "user", content: `Yolculuk seviyem: ${seviye}. Bugüne kadar aldığım görev sayısı: ${gorevSayisi}. Bana bugün için bir görev ver.` }],
+        }),
+      });
+      const j = await res.json();
+      const metin = (j?.text || j?.content || "").trim();
+      if (!metin) throw new Error("bos");
+      const yeni = { gun: todayKey, metin, n: gorevSayisi + 1 };
+      setGorev(yeni);
+      try {
+        localStorage.setItem("sakin_gorev", JSON.stringify(yeni));
+        localStorage.setItem("sakin_gorev_n", String(gorevSayisi + 1));
+      } catch (_) {}
+    } catch (_) {
+      // Hata metni i18n'de ayrı bir anahtar gerektirmesin — 7 dilde inline.
+      setGorev({ gun: todayKey, metin: pickLang({
+        tr:"Kanal şu an açılmadı. Biraz sonra tekrar dene.",
+        en:"The channel did not open just now. Try again in a little while.",
+        de:"Der Kanal hat sich gerade nicht geöffnet. Versuch es gleich noch einmal.",
+        es:"El canal no se abrió ahora. Inténtalo de nuevo en un rato.",
+        pt:"O canal não abriu agora. Tenta novamente daqui a pouco.",
+        fr:"Le canal ne s'est pas ouvert. Réessaie dans un moment.",
+        ja:"いま通路は開きませんでした。少ししてからもう一度。" }, lang), n: gorevSayisi });
+    }
+    setGorevLoading(false);
+  };
+
   const kisiselProfil = () => {
     const parts = [];
     if (birthDate) parts.push(`Doğum: ${birthDate}`);
@@ -8418,6 +8503,51 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ) : (
               /* ARAMA KUTUSU */
               <div>
+                {/* ── GÖREV İSTE ─────────────────────────────────────────────
+                    İlahi kanaldan tek bir deneyim/görev. İlk görev serbest;
+                    sonrakiler için TÜNEL AÇIK olmalı (günün 7 adımı bitmiş,
+                    yer-gök ışığı başlamış). Günde bir görev — değeri korunsun. */}
+                <div style={{ marginBottom:20,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
+                  {gorevLoading ? (
+                    <div style={{ textAlign:"center",padding:"10px 0" }}>
+                      <div style={{ fontSize:26,marginBottom:8,animation:"slowPulse 1.8s ease-in-out infinite" }}>✧</div>
+                      <div style={{ fontSize:13,color:"#c8a8f0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",animation:"pulse 1.6s ease-in-out infinite" }}>
+                        {pickLang(GOREV_TXT.connecting, lang)}
+                      </div>
+                    </div>
+                  ) : gorevBugunAlindi && gorev?.metin ? (
+                    <div>
+                      <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
+                        <span style={{ fontSize:11,letterSpacing:3,color:"#a070d0",fontFamily:"'Jost',sans-serif" }}>✧ {pickLang(GOREV_TXT.label, lang)}</span>
+                        <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
+                      </div>
+                      <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
+                      <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.6 }}>{pickLang(GOREV_TXT.today, lang)}</div>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign:"center" }}>
+                      <button onClick={gorevIste} disabled={!gorevIstenebilir}
+                        style={{ background: gorevIstenebilir ? "linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))" : "rgba(255,255,255,0.05)",
+                          border:`1px solid ${gorevIstenebilir ? "rgba(160,112,208,0.5)" : "rgba(255,255,255,0.12)"}`,
+                          borderRadius:24,color: gorevIstenebilir ? "#d8bcff" : "#6a6a7a",
+                          cursor: gorevIstenebilir ? "pointer" : "not-allowed",
+                          fontSize:13,letterSpacing:2.5,padding:"10px 26px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                        ✧ {pickLang(GOREV_TXT.btn, lang)}
+                      </button>
+                      {!gorevIstenebilir && (
+                        <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.65 }}>
+                          {pickLang(gorevBugunAlindi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
+                        </div>
+                      )}
+                      {gorevSayisi > 0 && (
+                        <div style={{ fontSize:11,color:"#5f5578",marginTop:8,letterSpacing:1,fontFamily:"'Jost',sans-serif" }}>
+                          {gorevSayisi} {pickLang(GOREV_TXT.count, lang)}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <div style={{ position:"relative",marginBottom:14 }}>
                   <textarea
                     value={sikayet}
