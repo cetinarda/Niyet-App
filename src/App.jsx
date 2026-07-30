@@ -8788,8 +8788,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showGorev?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
                     </button>
 
+                    {/* overflow:hidden + minWidth:0 — kullanıcı: "yazılar hala taşıyor".
+                        pre-wrap yalnızca BOŞLUKLARDA satır kırar; AI'ın ürettiği
+                        BOŞLUKSUZ uzun bir dizi (ör. daha önce görülen "tutututu…"
+                        tekrar bozukluğu, ya da normal metinde tireleme bekleyen
+                        uzun birleşik kelime) hiç kırılmadan kapsayıcıyı yatay
+                        taşırıyordu. Bu, temizleGorev() reddetse bile CSS
+                        seviyesinde bağımsız bir güvenlik katmanı. */}
                     {showGorev && (
-                    <div style={{ marginTop:8,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
+                    <div style={{ marginTop:8,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16,overflow:"hidden",minWidth:0 }}>
                     {gorevLoading ? (
                       <div style={{ textAlign:"center",padding:"10px 0" }}>
                         <div style={{ fontSize:26,marginBottom:8,animation:"slowPulse 1.8s ease-in-out infinite" }}>✧</div>
@@ -8805,7 +8812,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                               "iki kere görev yazmasına gerek yok"). Sayaç kaldı. */}
                           <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
                         </div>
-                        <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
+                        <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",overflowWrap:"anywhere",wordBreak:"break-word",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
                         {/* Bugünün görevi alınmış olsa BİLE kapı yeni göreve izin
                             veriyorsa (ilk görev tünel kapalıyken alındı, sonra
                             kullanıcı 7 adımı tamamladı) butonu göster. Aksi halde
