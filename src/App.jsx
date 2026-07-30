@@ -4394,6 +4394,8 @@ export default function SakinApp() {
   const [raporKopyalandi, setRaporKopyalandi] = useState(false);
   const [showOrnekler, setShowOrnekler] = useState(false);
   const [showKozmik, setShowKozmik] = useState(false);
+  // Haftalık Sakin Rapor da gökyüzü raporu gibi kapalı başlar, tıklanınca açılır.
+  const [showRapor, setShowRapor] = useState(false);
   const [kozmikData, setKozmikData] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
   const fetchKozmik = async () => {
@@ -8543,63 +8545,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ) : (
               /* ARAMA KUTUSU */
               <div>
-                {/* ── GÖREV İSTE ─────────────────────────────────────────────
-                    İlahi kanaldan tek bir deneyim/görev. İlk görev serbest;
-                    sonrakiler için TÜNEL AÇIK olmalı (günün 7 adımı bitmiş,
-                    yer-gök ışığı başlamış). Günde bir görev — değeri korunsun. */}
-                <div style={{ marginBottom:20,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
-                  {gorevLoading ? (
-                    <div style={{ textAlign:"center",padding:"10px 0" }}>
-                      <div style={{ fontSize:26,marginBottom:8,animation:"slowPulse 1.8s ease-in-out infinite" }}>✧</div>
-                      <div style={{ fontSize:13,color:"#c8a8f0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",animation:"pulse 1.6s ease-in-out infinite" }}>
-                        {pickLang(GOREV_TXT.connecting, lang)}
-                      </div>
-                    </div>
-                  ) : gorevBugunAlindi && gorev?.metin ? (
-                    <div>
-                      <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
-                        <span style={{ fontSize:11,letterSpacing:3,color:"#a070d0",fontFamily:"'Jost',sans-serif" }}>✧ {pickLang(GOREV_TXT.label, lang)}</span>
-                        <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
-                      </div>
-                      <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
-                      {/* Bugünün görevi alınmış olsa BİLE kapı yeni göreve izin
-                          veriyorsa (ilk görev tünel kapalıyken alındı, sonra
-                          kullanıcı 7 adımı tamamladı) butonu göster. Aksi halde
-                          neden kapalı olduğunu anlatan metni yaz. */}
-                      {gorevIstenebilir ? (
-                        <button onClick={gorevIste}
-                          style={{ display:"block",margin:"12px auto 0",background:"linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))",border:"1px solid rgba(160,112,208,0.5)",borderRadius:24,color:"#d8bcff",cursor:"pointer",fontSize:12.5,letterSpacing:2,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                          ✧ {pickLang(GOREV_TXT.btn, lang)}
-                        </button>
-                      ) : (
-                        <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.6 }}>
-                          {pickLang(gorevTunelBugunKullanildi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    <div style={{ textAlign:"center" }}>
-                      <button onClick={gorevIste} disabled={!gorevIstenebilir}
-                        style={{ background: gorevIstenebilir ? "linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))" : "rgba(255,255,255,0.05)",
-                          border:`1px solid ${gorevIstenebilir ? "rgba(160,112,208,0.5)" : "rgba(255,255,255,0.12)"}`,
-                          borderRadius:24,color: gorevIstenebilir ? "#d8bcff" : "#6a6a7a",
-                          cursor: gorevIstenebilir ? "pointer" : "not-allowed",
-                          fontSize:13,letterSpacing:2.5,padding:"10px 26px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                        ✧ {pickLang(GOREV_TXT.btn, lang)}
-                      </button>
-                      {!gorevIstenebilir && (
-                        <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.65 }}>
-                          {pickLang(gorevBugunAlindi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
-                        </div>
-                      )}
-                      {gorevSayisi > 0 && (
-                        <div style={{ fontSize:11,color:"#5f5578",marginTop:8,letterSpacing:1,fontFamily:"'Jost',sans-serif" }}>
-                          {gorevSayisi} {pickLang(GOREV_TXT.count, lang)}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
 
                 <div style={{ position:"relative",marginBottom:14 }}>
                   <textarea
@@ -8775,6 +8720,67 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       ))}
                     </div>
                   )}
+
+                  {/* GÖREV İSTE — "Ne sorabilirim?"in ALTINA alındı (kullanıcı
+                      isteği). Önce arama kutusunun üstündeydi; soru sorma akışı
+                      bölünüyordu. Artık ayna önce soruyu, sonra görevi sunuyor. */}
+                  {/* ── GÖREV İSTE ─────────────────────────────────────────────
+                      İlahi kanaldan tek bir deneyim/görev. İlk görev serbest;
+                      sonrakiler için TÜNEL AÇIK olmalı (günün 7 adımı bitmiş,
+                      yer-gök ışığı başlamış). Günde bir görev — değeri korunsun. */}
+                  <div style={{ marginBottom:20,padding:"14px 16px",background:"rgba(160,112,208,0.06)",border:"1px solid rgba(160,112,208,0.22)",borderRadius:16 }}>
+                    {gorevLoading ? (
+                      <div style={{ textAlign:"center",padding:"10px 0" }}>
+                        <div style={{ fontSize:26,marginBottom:8,animation:"slowPulse 1.8s ease-in-out infinite" }}>✧</div>
+                        <div style={{ fontSize:13,color:"#c8a8f0",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",animation:"pulse 1.6s ease-in-out infinite" }}>
+                          {pickLang(GOREV_TXT.connecting, lang)}
+                        </div>
+                      </div>
+                    ) : gorevBugunAlindi && gorev?.metin ? (
+                      <div>
+                        <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
+                          <span style={{ fontSize:11,letterSpacing:3,color:"#a070d0",fontFamily:"'Jost',sans-serif" }}>✧ {pickLang(GOREV_TXT.label, lang)}</span>
+                          <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
+                        </div>
+                        <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
+                        {/* Bugünün görevi alınmış olsa BİLE kapı yeni göreve izin
+                            veriyorsa (ilk görev tünel kapalıyken alındı, sonra
+                            kullanıcı 7 adımı tamamladı) butonu göster. Aksi halde
+                            neden kapalı olduğunu anlatan metni yaz. */}
+                        {gorevIstenebilir ? (
+                          <button onClick={gorevIste}
+                            style={{ display:"block",margin:"12px auto 0",background:"linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))",border:"1px solid rgba(160,112,208,0.5)",borderRadius:24,color:"#d8bcff",cursor:"pointer",fontSize:12.5,letterSpacing:2,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                            ✧ {pickLang(GOREV_TXT.btn, lang)}
+                          </button>
+                        ) : (
+                          <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.6 }}>
+                            {pickLang(gorevTunelBugunKullanildi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ textAlign:"center" }}>
+                        <button onClick={gorevIste} disabled={!gorevIstenebilir}
+                          style={{ background: gorevIstenebilir ? "linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))" : "rgba(255,255,255,0.05)",
+                            border:`1px solid ${gorevIstenebilir ? "rgba(160,112,208,0.5)" : "rgba(255,255,255,0.12)"}`,
+                            borderRadius:24,color: gorevIstenebilir ? "#d8bcff" : "#6a6a7a",
+                            cursor: gorevIstenebilir ? "pointer" : "not-allowed",
+                            fontSize:13,letterSpacing:2.5,padding:"10px 26px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                          ✧ {pickLang(GOREV_TXT.btn, lang)}
+                        </button>
+                        {!gorevIstenebilir && (
+                          <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.65 }}>
+                            {pickLang(gorevBugunAlindi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
+                          </div>
+                        )}
+                        {gorevSayisi > 0 && (
+                          <div style={{ fontSize:11,color:"#5f5578",marginTop:8,letterSpacing:1,fontFamily:"'Jost',sans-serif" }}>
+                            {gorevSayisi} {pickLang(GOREV_TXT.count, lang)}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
 
@@ -8807,7 +8813,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:14,letterSpacing:3,color:"#666666" }}>{t("day_pct")}</div>
             </div>
           </div>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:32 }}>
+          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:24 }}>
             {[
               {label:t("stat_chakra"),value:chakra.name,color:chakra.pastel},
               {label:t("stat_breath"),value:`${breathCount}`,color:"#82d9a3"},
@@ -8826,7 +8832,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               Ayna ekranı da sadeleşiyor. Panel açılınca fetchKozmik() çağrılır,
               veri 6 saat CDN'de önbelleklenir. */}
           {/* Haftanın Kozmik Enerji Durumu */}
-          <div style={{ marginTop:10,position:"relative" }}>
+          {/* Boşluk dengesi (kullanıcı: "altındakiyle bitişik, eşit boşluklar
+              olsun"): üstünde 42px (grid 32 + marginTop 10), altında 0 vardı.
+              Artık haritanın bölüm ritmi olan 24px hem üstte hem altta. */}
+          <div style={{ marginBottom:24,position:"relative" }}>
             <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
               style={{
                 width:"100%",
@@ -8938,9 +8947,30 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             )}
           </div>
-          {/* HAFTALIK SAKİN RAPORU — 12. Ev kartının ÜSTÜNE alındı (kullanıcı isteği). */}
-          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px",marginBottom:24 }}>
-            <div style={{ fontSize:13,letterSpacing:3.5,color:"#9a6ab0",marginBottom:12,textAlign:"center" }}>{t("ai_report_label")}</div>
+          {/* HAFTALIK SAKİN RAPOR — gökyüzü raporu gibi AÇILIR-KAPANIR
+              (kullanıcı: "buton olsun, açık olmasın, tıklanınca açılsın").
+              Kapalı başlar; harita ekranı açılır açılmaz uzun bir AI metniyle
+              karşılamaz, kullanıcı isterse açar. İki rapor da aynı davranışta. */}
+          <div style={{ marginBottom:24,position:"relative" }}>
+            <button onClick={()=>setShowRapor(v=>!v)}
+              style={{
+                width:"100%",
+                background:"rgba(154,106,176,0.06)",
+                border:"1px solid rgba(154,106,176,0.25)",
+                borderRadius:14,padding:"12px 18px",
+                color:"#9a6ab0",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(154,106,176,0.5)"; e.currentTarget.style.color="#c08ad8"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(154,106,176,0.25)"; e.currentTarget.style.color="#9a6ab0"; }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("ai_report_label").toLocaleUpperCase(lang)}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showRapor?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+
+            {showRapor && (
+            <div style={{ marginTop:8,background:"linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.07))",border:"1px solid rgba(255,255,255,0.22)",borderRadius:17,padding:"18px 20px" }}>
             {!isPremium && !aiRapor && !aiLoading ? (
               <div style={{ textAlign:"center" }}>
                 <div style={{ fontSize:23,marginBottom:10 }}>✨</div>
@@ -9004,6 +9034,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </button>
                 </div>
               </div>
+            )}
+            </div>
             )}
           </div>
           {/* ── 12. Ev Kartı ── */}
