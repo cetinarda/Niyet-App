@@ -3090,6 +3090,28 @@ const _yogaKey = (raw) => {
   return map[k] || (stripped ? map[stripped] : null) || null;
 };
 
+// ── METİNDEKİ SÖZLÜK TERİMLERİ ─────────────────────────────────────────────
+// Kullanıcı: "draconic vb özel kelimelere tıklanabilir bir info ekranı aç."
+// AI metninde geçen bu terimler altı çizili ve tıklanabilir olur; dokununca
+// sözlük o terimde filtreli açılır. SEÇİCİ tutuldu: "çakra", "nefes" gibi çok
+// sık geçen kelimeler DIŞARIDA — yoksa metnin yarısı link olur, okunmaz.
+// Sıra ÖNEMLİ: uzun terimler önce denenmeli ("kuzey düğüm" < "düğüm" olmasın).
+const GLOSSARY_HINTS = [
+  "draconik harita", "draconic chart", "draconik", "draconic",
+  "solfeggio", "galaktik kimlik", "galactic identity",
+  "element dağılımı", "element balance",
+  "kuzey düğüm", "güney düğüm", "north node", "south node",
+  "yükselen burç", "ascendant", "yaşam yolu sayısı", "life path",
+  "kişisel yıl", "personal year", "biyoritim", "biorhythm",
+  "gökyüzü raporu", "sky report", "ay evresi", "moon phase",
+  "retrograde", "retro", "gün serisi", "day streak",
+  "reiki", "louise hay", "12. ev", "12th house",
+];
+// Regex için kaçış + uzundan kısaya sırala
+const _GLOSSARY_RE = new RegExp(
+  "(" + GLOSSARY_HINTS.slice().sort((a, b) => b.length - a.length)
+    .map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")", "gi");
+
 function FreqText({ text, style, onNav }) {
   const [pose, setPose] = useState(null);   // açık poz pop-up'ı
   if (!text) return null;
@@ -3097,7 +3119,9 @@ function FreqText({ text, style, onNav }) {
   // bunlar ekrana YILDIZLARLA basılıyordu (kullanıcı görselinde görüldü). Artık
   // ayrıştırılıp gerçekten kalın olarak çiziliyor, yıldızlar gösterilmiyor.
   // Tırnaklı terimler de ayrıştırılır: sözlükte olan yoga pozları tıklanabilir olur.
-  const parts = text.split(/(\*\*[^*\n]+\*\*|"[^"\n]{2,28}"|\[\[NEFES:[^\]]+\]\]|\[\[EKRAN:[^\]]+\]\]|\d+\s*Hz)/gi);
+  const parts = text.split(new RegExp(
+    "(\\*\\*[^*\\n]+\\*\\*|\"[^\"\\n]{2,28}\"|\\[\\[NEFES:[^\\]]+\\]\\]|\\[\\[EKRAN:[^\\]]+\\]\\]|\\d+\\s*Hz|"
+    + _GLOSSARY_RE.source.slice(1, -1) + ")", "gi"));
   const NEFES_IDS = {
     "Akciğer":"akciger","Sakinleştirici":"sakinletici",
     "Diyafram":"diyafram","Kutu":"kutu","4-7-8":"478","Standart":"standart"
@@ -3124,6 +3148,14 @@ function FreqText({ text, style, onNav }) {
         }
         const boldM = part.match(/^\*\*([^*\n]+)\*\*$/);
         if (boldM) return <strong key={i} style={{ fontWeight:600, color:"#e6dcf5" }}>{boldM[1]}</strong>;
+        // Sözlük terimi mi? (tam eşleşme; Hz/yoga/ekran jetonlarından sonra bakılır)
+        if (part && onNav && GLOSSARY_HINTS.some(w => w.toLocaleLowerCase("tr") === part.toLocaleLowerCase("tr"))) {
+          return (
+            <span key={i} onClick={() => onNav("glossary", part)} title={part}
+              style={{ color:"#e2b877", cursor:"pointer", borderBottom:"1px dotted rgba(226,184,119,0.55)" }}
+            >{part}</span>
+          );
+        }
         const hzM = part.match(/^(\d+)\s*Hz$/i);
         if (hzM) {
           const hz = parseInt(hzM[1]);
@@ -8264,7 +8296,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24 }}>
                   <FreqText text={sikayetAnaliz} onNav={(type, val) => {
-                    if (type === "freq")   { pendingFreqRef.current = val; setScreen("ses"); }
+                    if (type === "glossary") { setKilavuzQ(val); setShowKilavuz(true); }
+                    else if (type === "freq")   { pendingFreqRef.current = val; setScreen("ses"); }
                     else if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
                     else if (type === "screen") { setScreen(val); }
                   }} />
