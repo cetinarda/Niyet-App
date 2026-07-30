@@ -336,6 +336,7 @@ export const es = {
     },
     // Animal Guidance section
     animalGuidance: {
+      birthAnimalTitle: 'Tu Animal de Nacimiento',
       sectionTitle: '¿Qué es la guía animal?',
       totemTitle: '⊕ Animal tótem',
       totemText:
@@ -386,13 +387,14 @@ export const es = {
     // Badges
     badges: {
       title: 'Insignias',
+      subtitle: 'Aunque lo abras varias veces en un día, solo cuenta 1 por día — 7/30/100/365 significa esa cantidad de días DISTINTOS.',
       list: {
-        b001: { title: 'Primeros pasos', desc: 'Primeras 7 lecturas' },
+        b001: { title: 'Primeros pasos', desc: 'Primeros 7 días' },
         b002: { title: 'Derviche del fuego', desc: '21 días seguidos' },
-        b003: { title: 'Viajero del Mesnevi', desc: '30 lecturas' },
+        b003: { title: 'Viajero del Mesnevi', desc: '30 días' },
         b004: { title: 'Rosario', desc: '33 piedras vistas' },
-        b005: { title: 'Amigo de la verdad', desc: '100 lecturas' },
-        b006: { title: 'Viajero de la luz', desc: '365 lecturas' },
+        b005: { title: 'Amigo de la verdad', desc: '100 días' },
+        b006: { title: 'Viajero de la luz', desc: '365 días' },
       },
     },
     // Premium teaser

@@ -6,6 +6,7 @@ import { getRelatedMyth, getElementPractice } from '../utils/animalRelations';
 import { MythDetail } from './MythsScreen';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedLore } from '../i18n/localize';
+import { shareCard, isShareable } from '../utils/shareCard';
 
 type Animal = {
   id: string;
@@ -44,6 +45,24 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
             <Text style={styles.back}>{t('animalDetail.back')}</Text>
           </TouchableOpacity>
           <Text style={styles.familyTag}>{t('animalDetail.familyTag')}</Text>
+          {isShareable() && (
+            <TouchableOpacity
+              onPress={() => {
+                const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                shareCard({
+                  appName: 'Sakin Hayvan', accent: Colors.teal, emoji: animal.emoji, imageUrl: animal.imageUrl,
+                  title: animal.name, meta: `${animal.element} · ${animal.symbolism?.[0] || ''}`.replace(/ · $/, ''),
+                  body: `${animal.dailyMessage} ${animal.anatolianMeaning || ''}`.trim(), cta: moreCta,
+                  fileName: `sakin-${animal.name}.png`, shareText: `${animal.name} — sakin.life`,
+                });
+              }}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+            >
+              <Text style={[styles.back, { color: Colors.teal }]}>{lang === 'en' ? 'Share' : 'Paylaş'}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={styles.hero}>

@@ -261,6 +261,7 @@ export const fr = {
     },
     // Animal Guidance section
     animalGuidance: {
+      birthStoneTitle: 'Tes Plantes de Naissance',
       sectionTitle: "Qu'est-ce que la guidance animale ?",
       totemTitle: '⊕ Animal totem',
       totemText:
@@ -311,13 +312,14 @@ export const fr = {
     // Badges
     badges: {
       title: 'Badges',
+      subtitle: 'Même si tu l\'ouvres plusieurs fois le même jour, un seul compte par jour — 7/30/100/365 signifie autant de jours DIFFÉRENTS.',
       list: {
-        b001: { title: 'Premiers pas', desc: '7 premiers tirages' },
+        b001: { title: 'Premiers pas', desc: '7 premiers jours' },
         b002: { title: 'Derviche du feu', desc: 'Série de 21 jours' },
-        b003: { title: 'Voyageur du Mesnevi', desc: '30 tirages' },
+        b003: { title: 'Voyageur du Mesnevi', desc: '30 jours' },
         b004: { title: 'Chapelet', desc: '33 plantes vues' },
-        b005: { title: 'Ami de la vérité', desc: '100 tirages' },
-        b006: { title: 'Voyageur de lumière', desc: '365 tirages' },
+        b005: { title: 'Ami de la vérité', desc: '100 jours' },
+        b006: { title: 'Voyageur de lumière', desc: '365 jours' },
       },
     },
     // Premium teaser

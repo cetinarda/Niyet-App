@@ -336,6 +336,7 @@ export const de = {
     },
     // Animal Guidance section
     animalGuidance: {
+      birthAnimalTitle: 'Dein Geburtstier',
       sectionTitle: 'Was ist Tierführung?',
       totemTitle: '⊕ Totemtier',
       totemText:
@@ -386,13 +387,14 @@ export const de = {
     // Badges
     badges: {
       title: 'Abzeichen',
+      subtitle: 'Auch wenn du es mehrmals am selben Tag öffnest, zählt nur 1 pro Tag — 7/30/100/365 bedeutet so viele VERSCHIEDENE Tage.',
       list: {
-        b001: { title: 'Erste Schritte', desc: 'Erste 7 Lesungen' },
+        b001: { title: 'Erste Schritte', desc: 'Erste 7 Tage' },
         b002: { title: 'Feuerderwisch', desc: '21 Tage in Folge' },
-        b003: { title: 'Mesnevi-Reisender', desc: '30 Lesungen' },
+        b003: { title: 'Mesnevi-Reisender', desc: '30 Tage' },
         b004: { title: 'Gebetskette', desc: '33 Steine gesehen' },
-        b005: { title: 'Freund der Wahrheit', desc: '100 Lesungen' },
-        b006: { title: 'Lichtreisender', desc: '365 Lesungen' },
+        b005: { title: 'Freund der Wahrheit', desc: '100 Tage' },
+        b006: { title: 'Lichtreisender', desc: '365 Tage' },
       },
     },
     // Premium teaser

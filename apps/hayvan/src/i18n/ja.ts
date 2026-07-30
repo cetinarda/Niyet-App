@@ -336,6 +336,7 @@ export const ja = {
     },
     // Animal Guidance section
     animalGuidance: {
+      birthAnimalTitle: 'あなたの誕生動物',
       sectionTitle: '動物の導きとは？',
       totemTitle: '⊕ トーテムアニマル',
       totemText:
@@ -386,13 +387,14 @@ export const ja = {
     // Badges
     badges: {
       title: 'バッジ',
+      subtitle: '同じ日に何度開いても1日につき1回のみカウントされます — 7/30/100/365は、それぞれ異なる日数を意味します。',
       list: {
-        b001: { title: '旅の始まり', desc: '最初の7回のリーディング' },
+        b001: { title: '旅の始まり', desc: '最初の7日間' },
         b002: { title: '炎のデルヴィーシュ', desc: '21日連続' },
-        b003: { title: 'メスネヴィの旅人', desc: '30回のリーディング' },
+        b003: { title: 'メスネヴィの旅人', desc: '30日間' },
         b004: { title: '数珠', desc: '33個の石を見た' },
-        b005: { title: '真理の友', desc: '100回のリーディング' },
-        b006: { title: '光の旅人', desc: '365回のリーディング' },
+        b005: { title: '真理の友', desc: '100日間' },
+        b006: { title: '光の旅人', desc: '365日間' },
       },
     },
     // Premium teaser

@@ -3,6 +3,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useI18n } from '../i18n/useI18n';
+import { shareCard, isShareable } from '../utils/shareCard';
 
 type Stone = {
   id: string;
@@ -44,6 +45,24 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
             <Text style={styles.back}>{t('animalDetail.back')}</Text>
           </TouchableOpacity>
           <Text style={styles.familyTag}>{t('animalDetail.familyTag')}</Text>
+          {isShareable() && (
+            <TouchableOpacity
+              onPress={() => {
+                const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                shareCard({
+                  appName: 'Sakin Bitkiler', accent: Colors.teal, emoji: stone.emoji, imageUrl: stone.imageUrl,
+                  title: stone.name, meta: `${stone.element}${stone.chakra ? ' · ' + stone.chakra : ''}`,
+                  body: stone.dailyMessage, cta: moreCta,
+                  fileName: `sakin-${stone.name}.png`, shareText: `${stone.name} — sakin.life`,
+                });
+              }}
+              hitSlop={12}
+              accessibilityRole="button"
+              accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+            >
+              <Text style={[styles.back, { color: Colors.teal }]}>{lang === 'en' ? 'Share' : 'Paylaş'}</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={styles.hero}>

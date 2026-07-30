@@ -185,29 +185,81 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     }
   }, []);
 
-  // Shake detection
+  // Shake detection — native Accelerometer (expo-sensors) embed webview'de
+  // HER ZAMAN require patlıyor (web build'de modül yok); catch bloğu önceden
+  // sessizce hiçbir şey yapmıyordu — "salla · dokun" yazıyordu ama salla asla
+  // çalışmadı. Gerçek web fallback: DeviceMotion API. iOS 13+ Safari bu API
+  // için bir KULLANICI JESTİ içinde senkron requestPermission() ister — bu
+  // yüzden izin burada değil, aşağıdaki dokunuş handler'ında isteniyor
+  // (requestMotionPermission). Aynı origin'de bir kez verilirse kalıcıdır.
   useEffect(() => {
     let sub: { remove: () => void } | null = null;
+    let removeWeb: (() => void) | null = null;
     let lx = 0, ly = 0, lz = 0, cool = false;
-    const setup = async () => {
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const { Accelerometer } = require('expo-sensors');
-        Accelerometer.setUpdateInterval(100);
-        sub = Accelerometer.addListener(({ x, y, z }: { x: number; y: number; z: number }) => {
-          const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
-          lx = x; ly = y; lz = z;
-          if (d > 2.4 && !revealedRef.current && !cool) {
-            cool = true;
-            setTimeout(() => { cool = false; }, 800);
-            triggerReveal();
-          }
-        });
-      } catch { /* web fallback */ }
+    const onShake = () => {
+      if (revealedRef.current || cool) return;
+      cool = true;
+      setTimeout(() => { cool = false; }, 800);
+      triggerReveal();
     };
-    setup();
-    return () => { sub?.remove(); };
+    const attachWeb = () => {
+      const handler = (e: any) => {
+        const a = e.accelerationIncludingGravity || e.acceleration;
+        if (!a) return;
+        const x = a.x || 0, y = a.y || 0, z = a.z || 0;
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 24) onShake();
+      };
+      window.addEventListener('devicemotion', handler);
+      removeWeb = () => window.removeEventListener('devicemotion', handler);
+    };
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { Accelerometer } = require('expo-sensors');
+      Accelerometer.setUpdateInterval(100);
+      sub = Accelerometer.addListener(({ x, y, z }: { x: number; y: number; z: number }) => {
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 2.4) onShake();
+      });
+    } catch {
+      // Android/masaüstü Chrome: izinsiz direkt dinler. iOS Safari'de
+      // requestPermission fonksiyonu varsa burada DENEMİYORUZ (jest gerekir) —
+      // dokunuş handler'ı üstlenir.
+      if (typeof window !== 'undefined' && typeof (window as any).DeviceMotionEvent !== 'undefined') {
+        const DME: any = (window as any).DeviceMotionEvent;
+        if (typeof DME.requestPermission !== 'function') attachWeb();
+      }
+    }
+    return () => { sub?.remove(); removeWeb?.(); };
   }, []);
+
+  // iOS 13+ Safari: DeviceMotionEvent izni SADECE bir kullanıcı jesti (dokunuş)
+  // içinde senkron çağrılırsa istenebilir. Reveal dokunuşunun içine gömülü —
+  // verilirse aynı origin'de kalıcıdır, sonraki günlerde salla baştan çalışır.
+  const requestMotionPermission = () => {
+    if (typeof window === 'undefined') return;
+    const DME: any = (window as any).DeviceMotionEvent;
+    if (!DME || typeof DME.requestPermission !== 'function') return;
+    DME.requestPermission().then((res: string) => {
+      if (res !== 'granted') return;
+      let lx = 0, ly = 0, lz = 0, cool = false;
+      const handler = (e: any) => {
+        const a = e.accelerationIncludingGravity || e.acceleration;
+        if (!a) return;
+        const x = a.x || 0, y = a.y || 0, z = a.z || 0;
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 24 && !revealedRef.current && !cool) {
+          cool = true;
+          setTimeout(() => { cool = false; }, 800);
+          triggerReveal();
+        }
+      };
+      window.addEventListener('devicemotion', handler);
+    }).catch(() => {});
+  };
 
   const quote  = reading ? quotes.find(q => q.id === reading.quoteId)  : null;
   const animal = reading ? animals.find(a => a.id === reading.animalId) : null;
@@ -312,7 +364,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                 >
                   <TouchableOpacity
                     style={styles.backInner}
-                    onPress={triggerReveal}
+                    onPress={() => { requestMotionPermission(); triggerReveal(); }}
                     activeOpacity={0.85}
                   >
                     <View style={styles.bandRow}>

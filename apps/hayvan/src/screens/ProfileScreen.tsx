@@ -10,6 +10,7 @@ import {
   Platform,
   Linking,
   Alert,
+  Image,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
@@ -21,9 +22,11 @@ import { useLocalizedAnimals, useLocalizedStones, useLocalizedNaguals } from '..
 import { calcNumerology, LIFE_PATH_MEANINGS } from '../utils/numerology';
 import { getHDProfile, GATE_NAMES } from '../utils/humanDesign';
 import { getWeeklyReading } from '../utils/weeklyReading';
-import { AnimalFinderScreen } from './AnimalFinderScreen';
+import { AnimalFinderScreen, findAnimalByBirth } from './AnimalFinderScreen';
+import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { MythsScreen } from './MythsScreen';
 import { PaywallScreen } from './PaywallScreen';
+import { shareCard, isShareable } from '../utils/shareCard';
 import { usePremium, devClearPremiumCache, devSetMockPremium } from '../lib/premium';
 import { redeemLicenseKey } from '../lib/entitlement';
 import { HelpButton } from '../components/HelpButton';
@@ -125,6 +128,7 @@ export function ProfileScreen() {
   // inline birth data edit (when already profiled but no birth data)
   const [showBirthForm, setShowBirthForm] = useState(false);
   const [showAnimalFinder, setShowAnimalFinder] = useState(false);
+  const [detailAnimal, setDetailAnimal] = useState<typeof animalsData[0] | null>(null);
   const [showMythsScreen, setShowMythsScreen] = useState(false);
   const [showAnimalInfo, setShowAnimalInfo]   = useState(false);
   const [showHDPicker, setShowHDPicker] = useState(false);
@@ -148,6 +152,20 @@ export function ProfileScreen() {
   const topStone  = topStoneId  ? localStones.find(s => s.id === topStoneId)  : null;
   const topAnimal = topAnimalId ? localAnimals.find(a => a.id === topAnimalId) : null;
   const topNagual = topNagualId ? localNaguals.find(n => n.id === topNagualId) : null;
+
+  // Doğum hayvanı — "en çok çıkan" (topAnimal) ile KARIŞTIRILMASIN: bu, doğum
+  // tarihi/saatinden hesaplanan SABİT rehber hayvan (kullanıcı: "kişinin
+  // doğum hayvanı profilde gözüksün"). Profildeki mevcut doğum bilgisiyle
+  // anında hesaplanır — "Hayvanını Bul" akışına GİRMEYE gerek yok.
+  const birthAnimal = useMemo(() => {
+    if (!profile?.birthDate) return null;
+    const p = profile.birthDate.split('-');
+    const y = parseInt(p[0]), m = parseInt(p[1]), d = parseInt(p[2]);
+    if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= new Date().getFullYear())) return null;
+    const h = typeof profile.birthHour === 'number' ? profile.birthHour : undefined;
+    const r = findAnimalByBirth(d, m, y, h, profile.birthCity, lang);
+    return (localAnimals.find((a: any) => a.id === r.animal.id) as typeof animalsData[0] | undefined) || r.animal;
+  }, [profile?.birthDate, profile?.birthHour, profile?.birthCity, lang, localAnimals]);
 
   const totalReadings = profile?.totalReadings || 0;
   const streak        = profile?.streak || 0;
@@ -423,6 +441,10 @@ export function ProfileScreen() {
   }
 
   if (!profile) return null;
+
+  if (detailAnimal) {
+    return <AnimalDetailScreen animal={detailAnimal} onClose={() => setDetailAnimal(null)} />;
+  }
 
   if (showAnimalFinder) {
     return (
@@ -751,22 +773,61 @@ export function ProfileScreen() {
           </View>
         )}
 
-        <TouchableOpacity
-          style={styles.finderBtn}
-          onPress={() => premium.isPremium ? setShowAnimalFinder(true) : setShowPaywall(true)}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.finderBtnEmoji}>✦</Text>
-          <View style={styles.finderBtnText}>
-            <Text style={styles.finderBtnTitle}>{t('profile.animalGuidance.finderTitle')}</Text>
-            <Text style={styles.finderBtnDesc}>
-              {premium.isPremium ? t('profile.animalGuidance.finderDescPremium') : t('profile.animalGuidance.finderDescFree')}
+        {premium.isPremium && birthAnimal ? (
+          <TouchableOpacity
+            style={[styles.finderBtn, { borderColor: Colors.teal + '50' }]}
+            onPress={() => setDetailAnimal(birthAnimal)}
+            activeOpacity={0.85}
+          >
+            {birthAnimal.imageUrl ? (
+              <Image source={{ uri: birthAnimal.imageUrl }} style={{ width: 40, height: 40, borderRadius: 20, marginRight: 4 }} />
+            ) : (
+              <Text style={styles.finderBtnEmoji}>{birthAnimal.emoji}</Text>
+            )}
+            <View style={styles.finderBtnText}>
+              <Text style={styles.finderBtnTitle}>{t('profile.animalGuidance.birthAnimalTitle' as any)}</Text>
+              <Text style={[styles.finderBtnDesc, { color: Colors.tealLight }]}>{birthAnimal.name}</Text>
+            </View>
+            {isShareable() && (
+              <TouchableOpacity
+                onPress={(e: any) => {
+                  e.stopPropagation?.();
+                  const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                  shareCard({
+                    appName: 'Sakin Hayvan', accent: Colors.teal, emoji: (birthAnimal as any).emoji, imageUrl: (birthAnimal as any).imageUrl,
+                    title: birthAnimal.name, meta: `${(birthAnimal as any).element} · ${(birthAnimal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''),
+                    body: `${(birthAnimal as any).dailyMessage} ${(birthAnimal as any).anatolianMeaning || ''}`.trim(), cta: moreCta,
+                    fileName: `sakin-${birthAnimal.name}.png`, shareText: `${birthAnimal.name} — sakin.life`,
+                  });
+                }}
+                hitSlop={10}
+                accessibilityRole="button"
+                accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+                style={{ paddingHorizontal: 6 }}
+              >
+                <Text style={{ fontSize: Typography.size.xs, color: Colors.teal }}>{lang === 'en' ? 'Share' : 'Paylaş'}</Text>
+              </TouchableOpacity>
+            )}
+            <Text style={[styles.infoToggleArrow, { color: Colors.tealLight }]}>→</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.finderBtn}
+            onPress={() => premium.isPremium ? setShowAnimalFinder(true) : setShowPaywall(true)}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.finderBtnEmoji}>✦</Text>
+            <View style={styles.finderBtnText}>
+              <Text style={styles.finderBtnTitle}>{t('profile.animalGuidance.finderTitle')}</Text>
+              <Text style={styles.finderBtnDesc}>
+                {premium.isPremium ? t('profile.animalGuidance.finderDescPremium') : t('profile.animalGuidance.finderDescFree')}
+              </Text>
+            </View>
+            <Text style={[styles.infoToggleArrow, { color: Colors.tealLight }]}>
+              {premium.isPremium ? '→' : '✦'}
             </Text>
-          </View>
-          <Text style={[styles.infoToggleArrow, { color: Colors.tealLight }]}>
-            {premium.isPremium ? '→' : '✦'}
-          </Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        )}
       </View>
 
       {/* Ruhsal Harita */}
@@ -794,14 +855,19 @@ export function ProfileScreen() {
           </View>
         )}
         {topAnimal && (
-          <View style={[styles.spiritCard, { borderColor: Colors.teal }]}>
+          <TouchableOpacity
+            style={[styles.spiritCard, { borderColor: Colors.teal }]}
+            onPress={() => setDetailAnimal(topAnimal as typeof animalsData[0])}
+            activeOpacity={0.8}
+          >
             <Text style={styles.spiritEmoji}>{topAnimal.emoji}</Text>
             <View style={styles.spiritInfo}>
               <Text style={styles.spiritLabel}>{t('profile.spiritualMap.topAnimal')}</Text>
               <Text style={[styles.spiritValue, { color: Colors.tealLight }]}>{topAnimal.name}</Text>
               <Text style={styles.spiritCount}>{t('profile.spiritualMap.companionCount').replace('{n}', String(stats.animalCounts[topAnimal.id] || 0))}</Text>
             </View>
-          </View>
+            <Text style={[styles.infoToggleArrow, { color: Colors.tealLight }]}>→</Text>
+          </TouchableOpacity>
         )}
         {topNagual && (
           <View style={[styles.spiritCard, { borderColor: Colors.ember }]}>
@@ -891,6 +957,7 @@ export function ProfileScreen() {
       {/* Rozetler */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('profile.badges.title')}</Text>
+        <Text style={{ fontSize: 11, color: Colors.textMuted, marginTop: -2, marginBottom: Spacing.sm, lineHeight: 15, fontStyle: 'italic' }}>{t('profile.badges.subtitle')}</Text>
         <View style={styles.badgesGrid}>
           {BADGES.map(badge => {
             const earned = totalReadings >= badge.required || streak >= badge.required;

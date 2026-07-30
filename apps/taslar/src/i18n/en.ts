@@ -260,6 +260,7 @@ export const en = {
     },
     // Animal Guidance section
     animalGuidance: {
+      birthStoneTitle: 'Your Birthstones',
       sectionTitle: 'What is Animal Guidance?',
       totemTitle: '⊕ Totem Animal',
       totemText:
@@ -310,13 +311,14 @@ export const en = {
     // Badges
     badges: {
       title: 'Badges',
+      subtitle: 'Even if you open it several times in one day, only 1 counts per day — 7/30/100/365 means that many DIFFERENT days.',
       list: {
-        b001: { title: 'First Steps', desc: 'First 7 readings' },
+        b001: { title: 'First Steps', desc: 'First 7 days' },
         b002: { title: 'Fire Dervish', desc: '21-day streak' },
-        b003: { title: 'Mesnevi Traveller', desc: '30 readings' },
+        b003: { title: 'Mesnevi Traveller', desc: '30 days' },
         b004: { title: 'Rosary', desc: '33 stones seen' },
-        b005: { title: 'Friend of Truth', desc: '100 readings' },
-        b006: { title: 'Light Traveller', desc: '365 readings' },
+        b005: { title: 'Friend of Truth', desc: '100 days' },
+        b006: { title: 'Light Traveller', desc: '365 days' },
       },
     },
     // Premium teaser

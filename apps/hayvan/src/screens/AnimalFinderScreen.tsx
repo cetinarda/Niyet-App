@@ -25,7 +25,7 @@ interface Option { text: string; weights: Weight[]; element?: string }
 interface Question { q: string; emoji: string; options: Option[] }
 type Mode = 'intro' | 'quiz' | 'birth' | 'result';
 
-interface AnimalResult {
+export interface AnimalResult {
   animal: typeof animalsData[0];
   reason: string;
 }
@@ -159,7 +159,7 @@ function findAnimalByQuiz(picks: Option[], lang: 'tr' | 'en' = 'tr'): AnimalResu
   };
 }
 
-function findAnimalByBirth(day: number, month: number, year: number, hour?: number, city?: string, lang: 'tr' | 'en' = 'tr'): AnimalResult {
+export function findAnimalByBirth(day: number, month: number, year: number, hour?: number, city?: string, lang: 'tr' | 'en' = 'tr'): AnimalResult {
   const traits: Record<string, number> = {};
   const elements: Record<string, number> = {};
 
@@ -252,11 +252,27 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
   const localAnimals = useLocalizedAnimals();
-  const [mode, setMode]         = useState<Mode>('intro');
+
+  // Doğum bilgisi zaten host köprüsünden geldiyse (neredeyse her zaman) "bul"
+  // akışını (intro → mod seç → sonuç) hiç göstermeden DOĞRUDAN sonuca atla —
+  // kullanıcı: "hayvan rehberini bul butonu yerine doğrudan hayvanı gözüksün".
+  // Kullanıcı isterse sonuç ekranındaki "tekrar dene" ile intro/quiz'e dönebilir.
+  const initialBirthResult = React.useMemo<AnimalResult | null>(() => {
+    if (!prefillBirthDate) return null;
+    const p = prefillBirthDate.split('-');
+    const y = parseInt(p[0]), m = parseInt(p[1]), d = parseInt(p[2]);
+    const valid = d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= new Date().getFullYear();
+    if (!valid) return null;
+    const h = typeof prefillBirthHour === 'number' ? prefillBirthHour : undefined;
+    return findAnimalByBirth(d, m, y, h, prefillBirthCity, lang);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [mode, setMode]         = useState<Mode>(initialBirthResult ? 'result' : 'intro');
   const [qIndex, setQIndex]     = useState(0);
   const [picks, setPicks]       = useState<Option[]>([]);
   const [chosen, setChosen]     = useState<number | null>(null);
-  const [result, setResult]     = useState<AnimalResult | null>(null);
+  const [result, setResult]     = useState<AnimalResult | null>(initialBirthResult);
 
   const displayAnimal: typeof animalsData[0] | null = result
     ? ((localAnimals.find((a: any) => a.id === result.animal.id) as typeof animalsData[0] | undefined) || result.animal)
@@ -283,7 +299,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   }, [prefillBirthDate, prefillBirthHour, prefillBirthCity]);
 
   const cardFade   = useRef(new Animated.Value(1)).current;
-  const resultFade = useRef(new Animated.Value(0)).current;
+  const resultFade = useRef(new Animated.Value(initialBirthResult ? 1 : 0)).current;
 
   const birthValid = parseInt(bDay) >= 1 && parseInt(bDay) <= 31 &&
     parseInt(bMonth) >= 1 && parseInt(bMonth) <= 12 &&

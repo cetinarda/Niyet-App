@@ -15,6 +15,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useSakinHayvanStore } from '../store/useStore';
 import { useLocalizedStones } from '../i18n/localize';
+import stonesData from '../data/stones.json';
+import stoneZodiac from '../data/stoneZodiac.json';
+import { AnimalDetailScreen } from './AnimalDetailScreen';
+import { shareCard, isShareable } from '../utils/shareCard';
 import { calcNumerology, LIFE_PATH_MEANINGS } from '../utils/numerology';
 import { getHDProfile } from '../utils/humanDesign';
 import { getWeeklyReading } from '../utils/weeklyReading';
@@ -129,6 +133,22 @@ export function ProfileScreen() {
   const [editCity, setEditCity] = useState('');
 
   const localStones = useLocalizedStones();
+
+  const [detailStone, setDetailStone] = useState<typeof stonesData[0] | null>(null);
+
+  // Doğum taşı/bitkisi — ay bazlı zodyak eşlemesinden (aynı mantık
+  // AnimalFinderScreen'de kullanılıyor). "en çok çıkan" (topStone) ile
+  // KARIŞTIRILMASIN: bu, doğum ayından SABİT hesaplanan rehber (kullanıcı:
+  // "kişinin doğum taşı/bitkisi profilde gözüksün").
+  const birthStones = useMemo(() => {
+    if (!profile?.birthDate) return [] as typeof stonesData;
+    const parts = profile.birthDate.split('-');
+    const m = parseInt(parts[1]);
+    if (!(m >= 1 && m <= 12)) return [] as typeof stonesData;
+    const ids = (stoneZodiac.monthStones as Record<string, string[]>)[String(m)] || [];
+    const byId = new Map((localStones as typeof stonesData).map(s => [s.id, s]));
+    return ids.map(id => byId.get(id)).filter(Boolean) as typeof stonesData;
+  }, [profile?.birthDate, localStones]);
 
   const topStoneId  = getTopStat(stats.stoneCounts);
   const topSource   = getTopStat(stats.sourceCounts);
@@ -409,6 +429,10 @@ export function ProfileScreen() {
   }
 
   if (!profile) return null;
+
+  if (detailStone) {
+    return <AnimalDetailScreen stone={detailStone} onClose={() => setDetailStone(null)} />;
+  }
 
   if (showPaywall) {
     return (
@@ -697,6 +721,30 @@ export function ProfileScreen() {
         ) : null}
       </View>
 
+      {/* Doğum Taşın/Bitkin */}
+      {birthStones.length > 0 && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('profile.animalGuidance.birthStoneTitle' as any)}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+            {birthStones.map(s => (
+              <TouchableOpacity
+                key={s.id}
+                style={{
+                  flexDirection: 'row', alignItems: 'center', gap: 8,
+                  backgroundColor: 'rgba(255,255,255,0.06)', borderWidth: 1, borderColor: Colors.purple + '40',
+                  borderRadius: BorderRadius.lg, paddingVertical: 8, paddingHorizontal: 12,
+                }}
+                onPress={() => setDetailStone(s)}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 18 }}>{s.emoji}</Text>
+                <Text style={{ fontSize: Typography.size.sm, color: Colors.textPrimary }}>{s.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
+
       {/* Ruhsal Harita */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('profile.spiritualMap.title')}</Text>
@@ -712,14 +760,19 @@ export function ProfileScreen() {
           </View>
         )}
         {topStone && (
-          <View style={[styles.spiritCard, { borderColor: Colors.purple }]}>
+          <TouchableOpacity
+            style={[styles.spiritCard, { borderColor: Colors.purple }]}
+            onPress={() => setDetailStone(topStone as typeof stonesData[0])}
+            activeOpacity={0.8}
+          >
             <Text style={styles.spiritEmoji}>{topStone.emoji}</Text>
             <View style={styles.spiritInfo}>
               <Text style={styles.spiritLabel}>{t('profile.spiritualMap.topStone')}</Text>
               <Text style={[styles.spiritValue, { color: Colors.purpleLight }]}>{topStone.name}</Text>
               <Text style={styles.spiritCount}>{t('profile.spiritualMap.stoneCount').replace('{n}', String(stats.stoneCounts[topStone.id] || 0)).replace('{chakra}', topStone.chakra)}</Text>
             </View>
-          </View>
+            <Text style={{ fontSize: 14, color: Colors.purpleLight }}>→</Text>
+          </TouchableOpacity>
         )}
         {totalReadings === 0 && (
           <Text style={styles.emptyHint}>{t('profile.spiritualMap.emptyHint')}</Text>
@@ -799,6 +852,7 @@ export function ProfileScreen() {
       {/* Rozetler */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('profile.badges.title')}</Text>
+        <Text style={{ fontSize: 11, color: Colors.textMuted, marginTop: -2, marginBottom: Spacing.sm, lineHeight: 15, fontStyle: 'italic' }}>{t('profile.badges.subtitle')}</Text>
         <View style={styles.badgesGrid}>
           {BADGES.map(badge => {
             const earned = totalReadings >= badge.required || streak >= badge.required;

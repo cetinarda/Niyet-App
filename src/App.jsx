@@ -6467,6 +6467,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {embeddedApp && !((embeddedApp.path||"").indexOf("sakinmitler") !== -1) && <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
+            allow="accelerometer; gyroscope"
             onLoad={(e)=>{
               setTimeout(()=>setEmbedLoaded(true), 1100);
               // Embed'lere ortak CSS override inject — form taşmalarını engelle
