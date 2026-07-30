@@ -2970,69 +2970,124 @@ function playFreqTone(hz, dur = 3.5) {
 // Figürler uygulamanın mevcut çizgi dilinde (nefes diyaframı, çakra el pozisyonu
 // da aynı tarzda) — yan profil, tek renk, ince kontur.
 const YOGA_POSES = {
-  // Her poz: head [cx,cy,r] + limbs (tek path). Zemin çizgisi y=92.
-  // Çizgi-figür tarzı bilinçli: uygulamada nefes diyaframı ve çakra el pozisyonu
-  // da aynı dilde. Geometri sade tutuldu ki poz ilk bakışta okunsun.
-  kobra: {
-    ad:{tr:"Kobra",en:"Cobra"},
-    aciklama:{tr:"Yüzükoyun yat, avuçlarını omuz altına al, göğsü nazikçe yukarı aç. Kalçalar yerde kalsın.",
-              en:"Lie face down, palms under shoulders, gently lift the chest. Keep hips on the floor."},
-    head:[100,38,8],
-    limbs:"M8 92 L120 92 M18 89 L62 87 M62 87 C 78 85 90 70 94 48 M92 52 C 86 64 82 78 82 90",
-  },
-  cocuk: {
-    ad:{tr:"Çocuk",en:"Child's Pose"},
-    aciklama:{tr:"Dizlerin üstüne otur, alnını yere bırak, kolları öne uzat. Nefesi sırtında hisset.",
-              en:"Kneel, rest your forehead down, stretch arms forward. Feel the breath in your back."},
-    head:[36,80,8],
-    limbs:"M8 92 L120 92 M96 64 C 88 76 68 85 44 84 M96 64 L102 90 M44 86 L14 90",
-  },
-  agac: {
-    ad:{tr:"Ağaç",en:"Tree Pose"},
-    aciklama:{tr:"Tek ayak üzerinde dur, diğer ayağı iç bacağa koy, elleri baş üstünde birleştir.",
-              en:"Stand on one leg, place the other foot on the inner thigh, join hands overhead."},
-    head:[64,36,7],
-    limbs:"M20 92 L108 92 M64 43 L64 62 M64 62 L61 92 M64 62 L44 76 L58 67 M64 29 L52 13 M64 29 L76 13 M52 13 L64 6 L76 13",
-  },
-  savasci: {
-    ad:{tr:"Savaşçı",en:"Warrior"},
-    aciklama:{tr:"Bir bacağı öne büküp diğerini geriye uzat, kolları iki yana aç, bakış öne.",
-              en:"Bend one leg forward, extend the other back, open arms wide, gaze ahead."},
-    head:[64,26,8],
-    limbs:"M8 92 L120 92 M64 34 L64 58 M64 58 L96 74 L96 92 M64 58 L30 92 M22 48 L106 48",
-  },
-  kopru: {
-    ad:{tr:"Köprü",en:"Bridge"},
-    aciklama:{tr:"Sırtüstü yat, ayaklar yerde, kalçayı yukarı kaldır. Omuzlar ve ayaklar destek olsun.",
-              en:"Lie on your back, feet on the floor, lift the hips. Shoulders and feet support you."},
-    head:[22,82,8],
-    limbs:"M8 92 L120 92 M31 86 C 48 64 72 58 90 68 M90 68 L97 88 M97 88 L106 90 M31 86 L18 90",
-  },
+  // ── YOGA POZLARI — ÇİZGİ FİGÜR ────────────────────────────────────────────
+  // Kullanıcı: "pop-up'lar çok kötü, anlaşılmıyor; yüklediğim ikondaki gibi net
+  // olsun" + eksik pozlar (çocuk, aşağı bakan köpek, bacaklar duvarda).
+  // ÖNCEKİ SORUN: her poz TEK bir path'e sıkıştırılmıştı, gövde/kol/bacak
+  // ayrımı yoktu → figür okunmuyordu. Artık her poz ayrı parçalardan kuruluyor
+  // (gövde, kollar, bacaklar) ve hepsi ortak bir zemin çizgisine oturuyor;
+  // referans görseldeki gibi yandan profil, sürekli akan çizgiler.
+  // viewBox 0 0 128 112 · zemin y=94 · duvar gerekiyorsa wall:true
   dag: {
     ad:{tr:"Dağ",en:"Mountain"},
     aciklama:{tr:"Ayaklar bitişik, omurga uzun, omuzlar gevşek, kollar yanda. Yere kök sal.",
               en:"Feet together, spine long, shoulders soft, arms at your sides. Root down."},
-    head:[64,26,8],
-    limbs:"M28 92 L100 92 M64 34 L64 60 M64 60 L59 92 M64 60 L69 92 M64 40 L52 66 M64 40 L76 66",
+    head:[64,20,8],
+    paths:["M64 28 L64 62","M64 34 L50 64","M64 34 L78 64","M64 62 L57 94","M64 62 L71 94"],
+  },
+  agac: {
+    ad:{tr:"Ağaç",en:"Tree"},
+    aciklama:{tr:"Bir ayağın üstünde dur, diğer ayağını iç bacağına yasla, elleri başının üstünde birleştir.",
+              en:"Stand on one foot, rest the other on your inner thigh, join your hands overhead."},
+    head:[64,24,8],
+    paths:["M64 32 L64 66","M64 40 L55 8","M64 40 L73 8",
+           "M64 66 L64 94","M64 68 L42 79","M42 79 L61 62"],
+  },
+  savasci: {
+    ad:{tr:"Savaşçı",en:"Warrior"},
+    aciklama:{tr:"Bacakları geniş aç, ön dizi bük, kolları yere paralel uzat. Bakışın ön ele.",
+              en:"Step your feet wide, bend the front knee, extend your arms parallel to the floor. Gaze past the front hand."},
+    head:[64,22,8],
+    paths:["M64 30 L64 58","M64 38 L16 42","M64 38 L112 42",
+           "M64 58 L98 74 L102 94","M64 58 L26 94"],
+  },
+  kobra: {
+    ad:{tr:"Kobra",en:"Cobra"},
+    aciklama:{tr:"Yüzükoyun yat, avuçlarını omuz altına al, göğsü nazikçe yukarı aç. Kalçalar yerde kalsın.",
+              en:"Lie face down, palms under your shoulders, gently lift the chest. Keep your hips on the floor."},
+    head:[26,28,8],
+    paths:["M33 36 C 44 54 62 72 84 83","M40 45 L45 92","M84 83 L118 90","M84 86 L118 94"],
+  },
+  cocuk: {
+    ad:{tr:"Çocuk",en:"Child's Pose"},
+    aciklama:{tr:"Dizlerinin üstüne otur, alnını yere bırak, kollarını öne uzat. Nefesini sırtında hisset.",
+              en:"Sit back on your heels, rest your forehead down, stretch your arms forward. Feel the breath in your back."},
+    head:[30,80,7],
+    paths:["M38 77 C 58 70 80 64 95 55","M95 55 L100 81","M100 81 L78 91","M42 83 L12 91"],
+  },
+  asagi_kopek: {
+    ad:{tr:"Aşağı Bakan Köpek",en:"Downward-Facing Dog"},
+    aciklama:{tr:"Eller ve ayaklar yerde, kalçanı yukarı it, gövdeni ters V yap. Topukları yere doğru indir.",
+              en:"Hands and feet down, lift your hips high into an inverted V. Reach your heels toward the floor."},
+    head:[38,58,7],
+    paths:["M64 22 L20 90","M64 22 L112 90","M45 54 L34 45"],
+  },
+  duvar_bacak: {
+    ad:{tr:"Bacaklar Duvarda",en:"Legs Up the Wall"},
+    aciklama:{tr:"Sırtüstü uzan, kalçanı duvara yaklaştır, bacaklarını duvara yasla. Kollar yanda, gözler kapalı.",
+              en:"Lie on your back, bring your hips near the wall, rest your legs up the wall. Arms at your sides, eyes closed."},
+    head:[22,84,7],
+    wall:true,
+    paths:["M30 88 L96 89","M96 89 C 104 78 106 52 105 18","M40 90 L62 92"],
+  },
+  kopru: {
+    ad:{tr:"Köprü",en:"Bridge"},
+    aciklama:{tr:"Sırtüstü yat, dizlerini bük, kalçanı yavaşça yukarı kaldır. Omuzlar yerde kalsın.",
+              en:"Lie on your back, bend your knees, slowly lift your hips. Keep your shoulders grounded."},
+    head:[20,86,7],
+    paths:["M30 90 C 46 89 64 74 76 54","M76 54 L98 68","M98 68 L101 93","M34 92 L62 94"],
+  },
+  kelebek: {
+    ad:{tr:"Kelebek",en:"Butterfly"},
+    aciklama:{tr:"Otur, ayak tabanlarını birleştir, dizleri yana bırak. Omurgayı uzat, öne yumuşakça eğil.",
+              en:"Sit, bring the soles of your feet together, let the knees fall open. Lengthen the spine and fold gently."},
+    head:[64,30,8],
+    paths:["M64 38 L64 66","M64 66 L34 89 L64 79 L94 89 Z","M64 46 L40 85","M64 46 L88 85"],
+  },
+  kedi_inek: {
+    ad:{tr:"Kedi-İnek",en:"Cat-Cow"},
+    aciklama:{tr:"Eller ve dizler üstünde dur. Nefes alırken sırtı çukurlaştır, verirken yuvarla.",
+              en:"Come onto hands and knees. Inhale and arch the back, exhale and round it."},
+    head:[26,56,7],
+    paths:["M34 53 C 54 39 78 41 96 54","M34 57 L28 92","M96 54 L102 92","M96 54 L78 70"],
+  },
+  savasana: {
+    ad:{tr:"Şavasana",en:"Savasana"},
+    aciklama:{tr:"Sırtüstü uzan, kollar yanda avuçlar yukarı, bacaklar gevşek. Hiçbir şey yapma.",
+              en:"Lie on your back, arms at your sides with palms up, legs relaxed. Do nothing at all."},
+    head:[22,84,7],
+    paths:["M30 88 L104 88","M104 88 L118 81","M104 89 L118 94","M46 89 L60 94"],
   },
 };
 // Geçerli dili oku (FreqText'e prop eklemeden). Host dili localStorage'da.
 const _curLang = () => { try { return localStorage.getItem("sakin_lang") || "tr"; } catch { return "tr"; } };
 // AI çıktısındaki serbest yazımı sözlük anahtarına indir (büyük/küçük, ekler).
 const _yogaKey = (raw) => {
-  let k = String(raw || "").toLocaleLowerCase("tr")
-    .replace(/[^a-zçğıöşü]/g, "");
-  if (!k) return null;
+  const raw0 = String(raw || "").toLocaleLowerCase("tr").replace(/[^a-zçğıöşü]/g, "");
+  if (!raw0) return null;
   // "Child's Pose", "Kobra pozu", "Tree Pose" gibi ekleri at → çekirdek ada in.
-  k = k.replace(/(pose|poses|pozu|pozlari|pozları|poz|duruşu|durusu|asana|asanasi|asanası)$/, "");
-  if (!k) return null;
-  const map = { kobra:"kobra", cobra:"kobra",
-    çocuk:"cocuk", cocuk:"cocuk", child:"cocuk", childs:"cocuk",
-    ağaç:"agac", agac:"agac", tree:"agac",
-    savaşçı:"savasci", savasci:"savasci", warrior:"savasci",
-    köprü:"kopru", kopru:"kopru", bridge:"kopru",
-    dağ:"dag", dag:"dag", mountain:"dag" };
-  return map[k] || null;
+  // ÖNEMLİ: önce HAM ad denenir. Yoksa Sanskritçe adlar ("Savasana", "Balasana",
+  // "Adho Mukha Svanasana") "asana" eki soyulunca tanınmaz hale geliyordu.
+  const stripped = raw0.replace(/(pose|poses|pozu|pozlari|pozları|poz|duruşu|durusu|asana|asanasi|asanası)$/, "");
+  const k = raw0;
+  const map = {
+    kobra:"kobra", cobra:"kobra", bhujangasana:"kobra",
+    çocuk:"cocuk", cocuk:"cocuk", child:"cocuk", childs:"cocuk", balasana:"cocuk",
+    ağaç:"agac", agac:"agac", tree:"agac", vrksasana:"agac",
+    savaşçı:"savasci", savasci:"savasci", warrior:"savasci", virabhadrasana:"savasci",
+    köprü:"kopru", kopru:"kopru", bridge:"kopru", setubandha:"kopru",
+    dağ:"dag", dag:"dag", mountain:"dag", tadasana:"dag",
+    // Yeni pozlar (kullanıcı istedi): aşağı bakan köpek, bacaklar duvarda
+    aşağıbakanköpek:"asagi_kopek", asagibakankopek:"asagi_kopek",
+    downwardfacingdog:"asagi_kopek", downwarddog:"asagi_kopek", downdog:"asagi_kopek",
+    köpek:"asagi_kopek", kopek:"asagi_kopek", adhomukhasvanasana:"asagi_kopek",
+    bacaklarduvarda:"duvar_bacak", duvardabacak:"duvar_bacak",
+    legsupthewall:"duvar_bacak", legsupwall:"duvar_bacak", viparitakarani:"duvar_bacak",
+    kelebek:"kelebek", butterfly:"kelebek", baddhakonasana:"kelebek",
+    kediinek:"kedi_inek", kedi:"kedi_inek", catcow:"kedi_inek", cat:"kedi_inek", cow:"kedi_inek",
+    şavasana:"savasana", savasana:"savasana", corpse:"savasana", ceset:"savasana",
+  };
+  return map[k] || (stripped ? map[stripped] : null) || null;
 };
 
 function FreqText({ text, style, onNav }) {
@@ -3073,7 +3128,11 @@ function FreqText({ text, style, onNav }) {
         if (hzM) {
           const hz = parseInt(hzM[1]);
           return (
-            <span key={i} onClick={() => playFreqTone(hz)} title={`${hz} Hz — dokunarak çal`}
+            /* Kullanıcı: "frekanslara tıklanınca ilgili ses frekansları bölümüne
+               gitsin, kısa ses iptal." Eskiden yerinde 2 sn'lik bir ton çalıyordu;
+               artık Ses ekranına gidip o frekansı açıyor. onNav yoksa (ör. haftalık
+               rapor bağlamı) hiçbir şey yapmaz — yanlışlıkla ses çalmaz. */
+            <span key={i} onClick={() => onNav && onNav("freq", hz)} title={`${hz} Hz`}
               style={{ color:"#c090f0", cursor:"pointer", borderBottom:"1px dotted rgba(192,144,240,0.6)", fontWeight:500, transition:"opacity 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.75"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
@@ -3115,9 +3174,17 @@ function FreqText({ text, style, onNav }) {
             <span onClick={e=>e.stopPropagation()} style={{ display:"block",maxWidth:320,width:"100%",background:"linear-gradient(160deg,rgba(24,32,30,0.98),rgba(14,20,19,0.98))",border:"1px solid rgba(143,214,180,0.3)",borderRadius:18,padding:"20px 20px 16px",textAlign:"center",boxShadow:"0 18px 50px rgba(0,0,0,0.6)" }}>
               <span onClick={()=>setPose(null)} style={{ position:"absolute" }} />
               <span style={{ display:"block",fontSize:11,letterSpacing:4,color:"#6f9e88",textTransform:"uppercase",marginBottom:10,fontFamily:"'Jost',sans-serif" }}>YOGA</span>
-              <svg viewBox="0 0 128 112" width="200" height="175" fill="none" style={{ display:"block",margin:"0 auto 12px" }} aria-hidden="true">
-                <circle cx={pz.head[0]} cy={pz.head[1]} r={pz.head[2]} stroke="rgba(143,214,180,0.85)" strokeWidth="2" />
-                <path d={pz.limbs} stroke="rgba(143,214,180,0.85)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <svg viewBox="0 0 128 112" width="210" height="184" fill="none" style={{ display:"block",margin:"0 auto 12px" }} aria-hidden="true">
+                {/* Zemin — figürün nereye yaslandığını gösterir, pozu okunur kılar */}
+                <path d="M6 94 L122 94" stroke="rgba(143,214,180,0.28)" strokeWidth="1.4" strokeLinecap="round" />
+                {/* Duvar — yalnızca "bacaklar duvarda" pozunda */}
+                {pz.wall && <path d="M112 12 L112 94" stroke="rgba(143,214,180,0.28)" strokeWidth="1.4" strokeLinecap="round" />}
+                {(pz.paths || []).map((d, k) => (
+                  <path key={k} d={d} stroke="rgba(143,214,180,0.9)" strokeWidth="2.4"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                ))}
+                <circle cx={pz.head[0]} cy={pz.head[1]} r={pz.head[2]}
+                  stroke="rgba(143,214,180,0.9)" strokeWidth="2.4" fill="rgba(10,20,16,0.9)" />
               </svg>
               <span style={{ display:"block",fontSize:17,fontWeight:300,letterSpacing:1,color:"#dff0e8",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{pickLang(pz.ad, lg)}</span>
               <span style={{ display:"block",fontSize:13,color:"#a8c4b8",lineHeight:1.75,marginBottom:14 }}>{pickLang(pz.aciklama, lg)}</span>
@@ -3421,6 +3488,17 @@ export default function SakinApp() {
   const [screen,        setScreenRaw]     = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
   const screenHistoryRef = useRef([URL_TO_SCREEN[window.location.pathname] || "giris"]);
   const isPopRef = useRef(false);
+  // ── TEK GERİ MANTIĞI ───────────────────────────────────────────────────────
+  // Kullanıcı: "geri tuşu her zaman geldiğin yere dönsün; örn. Ayna → Çakra →
+  // geri = Ayna. Tüm program için bu mantığı uygula, web sitesi gibi olsun."
+  // KÖK SEBEP: geri butonları SABİT hedefe gidiyordu (terapi → hep "chakra",
+  // gün → hep "sabah"). Ekran geçişleri zaten history'ye pushlanıyor; artık
+  // geri butonu geçmişte BİR ÖNCEKİ ekrana döner. Geçmiş yoksa (uygulamaya
+  // doğrudan o ekrandan girilmişse) fallback kullanılır.
+  const goBack = (fallback = "sabah") => {
+    if (screenHistoryRef.current.length > 1) { history.back(); return; }
+    setScreen(fallback);
+  };
   const setScreen = (s) => {
     setScreenRaw(s);
     if (!isPopRef.current) {
@@ -4469,6 +4547,18 @@ export default function SakinApp() {
   const [dateWarn,       setDateWarn]       = useState(false);
   const breathRef        = useRef(null);
   const pendingBreathRef = useRef(null);
+  // Ayna metnindeki "528 Hz" gibi bir frekansa tıklanınca Ses ekranı o frekansla açılır.
+  const pendingFreqRef = useRef(null);
+  // Ayna'dan gelen frekansı Ses ekranı açılınca uygula: kartı aç + tonu başlat.
+  // Ekran gerçekten "ses" olduğunda çalışır; ref tek kullanımlıktır.
+  useEffect(() => {
+    if (screen !== "ses") return;
+    const hz = pendingFreqRef.current;
+    if (!hz) return;
+    pendingFreqRef.current = null;
+    const id = setTimeout(() => { try { setActiveFreq(hz); } catch (_) {} }, 250);
+    return () => clearTimeout(id);
+  }, [screen]);
   const panicAutoStartRef = useRef(false); // panik butonu: nefesi doğrudan başlat (premium istisnası)
   const breathChimeRef = useRef(null);
 
@@ -7171,7 +7261,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 150px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* Back button */}
-            <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
+            <button onClick={()=>goBack("sabah")}
               style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
               ←
             </button>
@@ -8059,8 +8149,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {screen==="terapi" && <TerapiScreen onBack={()=>setScreen("chakra")} onNext={()=>{ markStep("chakra"); setScreen("aksam"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
-      {screen==="gun"    && <ReminderScreen onBack={()=>setScreen("sabah")} onNext={()=>{ markStep("gun"); setScreen("nefes"); }} lang={lang} onTasksDone={setGunTasksDone} onGo={(s)=>setScreen(s)} />}
+      {screen==="terapi" && <TerapiScreen onBack={()=>goBack("chakra")} onNext={()=>{ markStep("chakra"); setScreen("aksam"); }} lang={lang} isPremium={isPremium} onPaywall={()=>setScreen("fiyat")} />}
+      {screen==="gun"    && <ReminderScreen onBack={()=>goBack("sabah")} onNext={()=>{ markStep("gun"); setScreen("nefes"); }} lang={lang} onTasksDone={setGunTasksDone} onGo={(s)=>setScreen(s)} />}
 
       {/* AKŞAM */}
       {screen==="aksam" && (
@@ -8168,7 +8258,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <div style={{ fontSize:14,color:"#ccc0e0",lineHeight:2.1,whiteSpace:"pre-wrap",fontFamily:"'Inter',sans-serif",marginBottom:24 }}>
                   <FreqText text={sikayetAnaliz} onNav={(type, val) => {
-                    if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
+                    if (type === "freq")   { pendingFreqRef.current = val; setScreen("ses"); }
+                    else if (type === "breath") { pendingBreathRef.current = val; setScreen("nefes"); }
                     else if (type === "screen") { setScreen(val); }
                   }} />
                 </div>
@@ -9546,7 +9637,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
-          <button onClick={()=>{ if (screenHistoryRef.current.length > 1) { history.back(); } else { setScreen("sabah"); } }}
+          <button onClick={()=>goBack("sabah")}
             style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
             ←
           </button>
