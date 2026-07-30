@@ -277,13 +277,16 @@ const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"S
 // "respond in English" emri vardı — model gövdedeki Türkçe + Türkçe alıntı cümleleri
 // kopyalayıp Türkçe cevap veriyordu. Çözüm: lang === "tr" değilse, prompt'u tamamen
 // İngilizce yaz (çıktı dilini hedef dile yönlendiren ultra-net emirle).
-function buildMirrorSystemPrompt(lang) {
+// onsoz=false → "Bu yanıt sana özeldir…" cümlesini ekleme talimatı ÇIKARILIR.
+// Görev akışı bunu kullanır: görev bir sohbet yanıtı değil, tek bir deneyimdir;
+// o önsöz kartın başında gereksiz yer kaplıyordu (kullanıcı: "çıkart, gerek yok").
+function buildMirrorSystemPrompt(lang, onsoz = true) {
   if (lang === "tr") {
     return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN — "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
+${onsoz ? `Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."` : ""}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
   return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence — including disclaimers, opening lines, and any quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
@@ -5051,6 +5054,35 @@ export default function SakinApp() {
     count:    {tr:"deneyim",en:"experiences",de:"Erfahrungen",es:"experiencias",pt:"experiências",fr:"expériences",ja:"の経験"},
   };
 
+  // ── GÖREV ÇIKTISINI TEMİZLE VE DOĞRULA ────────────────────────────────────
+  // Modelden gelen metin üç şekilde bozulabiliyordu (kullanıcı görselinde
+  // üçü de görüldü):
+  //   1) Ayna önsözü ("Bu yanıt sana özeldir…") göreve de ekleniyordu.
+  //   2) "Görev Başlığı:" etiketi düz metne yazılıyordu (ben başlık İSTEMİŞTİM,
+  //      model bunu etiket sandı).
+  //   3) Model tekrar döngüsüne giriyordu ("tutututututu…") ve Türkçe metne
+  //      İngilizce kelime yapıştırıyordu ("experiencesini", "datasındaki").
+  // Bozuk çıktı KABUL EDİLMEZ: null döner, sayaç artmaz, kapı harcanmaz —
+  // kullanıcı tekrar deneyebilir.
+  const GOREV_YABANCI = /\b(data|thing|experience|feeling|energy|balance|focus|journey|growth|freedom|mind|body|shadow)[a-zçğıöşü]*/i;
+  const temizleGorev = (ham) => {
+    let t = String(ham || "").trim();
+    if (!t) return null;
+    // Ayna önsözü (modelin yine de eklediği durumlar için emniyet kemeri)
+    t = t.replace(/^\s*"?Bu yanıt sana özeldir\.[^\n]*\n?/i, "").trim();
+    t = t.replace(/^\s*"?This (?:answer|response) is (?:for|yours)[^\n]*\n?/i, "").trim();
+    // "Görev Başlığı:" / "Mission Title:" etiketleri
+    t = t.replace(/^\s*(?:Görev\s*Başlığı|Mission\s*Title)\s*:\s*/gim, "");
+    // Markdown kalıntısı
+    t = t.replace(/\*\*/g, "").trim();
+    if (t.length < 40) return null;
+    // TEKRAR DÖNGÜSÜ: 2-6 harflik bir parça arka arkaya 6+ kez tekrarlıyorsa bozuk
+    if (/([a-zçğıöşüA-ZÇĞİÖŞÜ]{2,6}?)\1{5,}/.test(t)) return null;
+    // Türkçe metinde İngilizce kelime sızıntısı
+    if (lang === "tr" && GOREV_YABANCI.test(t)) return null;
+    return t;
+  };
+
   const gorevIste = async () => {
     if (!gorevIstenebilir) return;
     if (!_aiDailyOk()) { setGorev({ gun: todayKey, metin: _aiLimitMsg(), n: gorevSayisi }); return; }
@@ -5067,7 +5099,7 @@ export default function SakinApp() {
           // gövdeye tek satır "write in English" eklemek YETMİYOR, model gövdedeki
           // Türkçeyi kopyalayıp karışık metin üretiyor. Bu yüzden tr / diğer
           // dillerde iki AYRI gövde var ve kullanıcı mesajı da dile uyuyor.
-          system: `${buildMirrorSystemPrompt(lang)}
+          system: `${buildMirrorSystemPrompt(lang, false)}
 
 ${lang === "tr" ? `Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
 geliştiren tek bir deneyimdir — bir oyunda verilen görev gibi somut, yapılabilir
@@ -5105,8 +5137,8 @@ ${kisiselProfil()}`,
         }),
       });
       const j = await res.json();
-      const metin = (j?.text || j?.content || "").trim();
-      if (!metin) throw new Error("bos");
+      const metin = temizleGorev(j?.text || j?.content);
+      if (!metin) throw new Error("bozuk");   // sayaç artmaz, kapı harcanmaz
       // tunelGunu: bu görev TÜNEL AÇIKKEN alındıysa o günü işaretle; aynı gün
       // ikinci kez tünelden görev alınamasın.
       const yeni = { gun: todayKey, metin, n: gorevSayisi + 1,
@@ -8767,8 +8799,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </div>
                     ) : gorevBugunAlindi && gorev?.metin ? (
                       <div>
-                        <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
-                          <span style={{ fontSize:11,letterSpacing:3,color:"#a070d0",fontFamily:"'Jost',sans-serif" }}>✧ {pickLang(GOREV_TXT.label, lang)}</span>
+                        <div style={{ display:"flex",alignItems:"center",justifyContent:"flex-end",marginBottom:8 }}>
+                          {/* "✧ GÖREV" etiketi panel BAŞLIĞINDA zaten var —
+                              kartın içinde tekrar yazmaya gerek yok (kullanıcı:
+                              "iki kere görev yazmasına gerek yok"). Sayaç kaldı. */}
                           <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
                         </div>
                         <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
@@ -9072,7 +9106,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* ── 12. Ev Kartı ── */}
           {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
           <div style={{ marginBottom:20,position:"relative" }}>
-            <button onClick={()=>setshow12Ev(v=>!v)}
+            <button onClick={()=>setShow12Ev(v=>!v)}
               style={{
                 width:"100%",background:"rgba(144,112,192,0.08)",
                 border:"1px solid rgba(144,112,192,0.28)",
@@ -9130,7 +9164,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* ── Draconic Harita Kartı (ruh kökeni) ── */}
           {birthDate && draconicGunes ? (
           <div style={{ marginBottom:20,position:"relative" }}>
-            <button onClick={()=>setshowDraconic(v=>!v)}
+            <button onClick={()=>setShowDraconic(v=>!v)}
               style={{
                 width:"100%",background:"rgba(140,120,220,0.08)",
                 border:"1px solid rgba(140,120,220,0.28)",
