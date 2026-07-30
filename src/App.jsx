@@ -3090,6 +3090,96 @@ const _yogaKey = (raw) => {
   return map[k] || (stripped ? map[stripped] : null) || null;
 };
 
+// ── İÇSEL AYNA HİKÂYE KARTI (1080x1920) ────────────────────────────────────
+// Kullanıcı: "içsel rehberi Instagram story'de paylaşabilsin, kartlardaki gibi
+// bir paylaş menüsü ekle." Galaktik kimlik kartıyla AYNI teknik: saf canvas 2D
+// (SVG-to-Image iOS WKWebView'da font render etmiyor).
+// Metin uzun olabildiği için sarmalanır ve kart yüksekliğine SIĞMIYORSA
+// kırpılıp "…" konur — taşan yazı basmaktansa kısaltmak daha temiz.
+function buildMirrorStoryCard(baslik, govde, altYazi) {
+  const W = 1080, H = 1920;
+  const canvas = document.createElement("canvas");
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext("2d");
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#0a0612");
+  bg.addColorStop(0.5, "#1a1230");
+  bg.addColorStop(1, "#0a0612");
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // Yıldızlar — galaktik kimlik kartıyla aynı sabit desen (rastgelelik yok,
+  // aynı içerik her seferinde aynı kartı üretsin).
+  const stars = [[60,80,3],[260,140,2],[140,220,1.5],[500,180,2.5],[820,140,3],[940,440,2],
+    [180,500,1.5],[760,640,2],[120,760,1.5],[880,820,2.5],[420,900,1.5],[640,990,1.8],
+    [280,1080,1.5],[820,1140,2],[160,1240,1.5],[560,1320,2],[940,1430,1.5],[120,1520,2],
+    [700,1610,1.8],[400,1730,1.5]];
+  ctx.fillStyle = "rgba(255,255,255,0.75)";
+  for (const [x, y, r] of stars) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+
+  // Ay simgesi
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(200,170,240,0.9)";
+  ctx.font = "300 96px -apple-system, 'Jost', sans-serif";
+  ctx.fillText("☽", W / 2, 300);
+
+  // Üst başlık
+  ctx.fillStyle = "#9080c0";
+  ctx.font = "300 34px -apple-system, 'Jost', sans-serif";
+  ctx.fillText(String(baslik || "").toLocaleUpperCase("tr"), W / 2, 400);
+
+  // Ayraç
+  const line = ctx.createLinearGradient(240, 0, 840, 0);
+  line.addColorStop(0, "rgba(160,112,208,0)");
+  line.addColorStop(0.5, "rgba(160,112,208,0.65)");
+  line.addColorStop(1, "rgba(160,112,208,0)");
+  ctx.fillStyle = line;
+  ctx.fillRect(240, 440, 600, 2);
+
+  // Gövde — sarmalanmış metin
+  ctx.fillStyle = "#d8cce8";
+  ctx.font = "300 40px -apple-system, 'Inter', sans-serif";
+  const maxW = 820, lh = 68, top = 540, bottom = 1620;
+  const maxLines = Math.floor((bottom - top) / lh);
+  // Markdown kalın işaretlerini ve yönlendirme jetonlarını karttan temizle
+  const clean = String(govde || "")
+    .replace(/\*\*/g, "")
+    // Yönlendirme jetonları okunur etikete çevrilir. EKRAN jetonu ham ekran
+    // kimliği taşıyor ("terapi"), kartta bunun yerine görünen ad yazılmalı.
+    .replace(/\[\[EKRAN:([^\]]+)\]\]/g, (_m, id) => ({
+      terapi:"Çakra Terapisi", nefes:"Nefes", rehber:"Ayna",
+      sabah:"Sabah Niyeti", aksam:"Akşam Kapanışı", ses:"Ses Dalgaları",
+    }[String(id).trim()] || id))
+    .replace(/\[\[NEFES:([^\]]+)\]\]/g, "$1 nefesi")
+    .replace(/[ \t]+/g, " ")
+    .trim();
+  const lines = [];
+  for (const para of clean.split("\n")) {
+    if (!para.trim()) { if (lines.length) lines.push(""); continue; }
+    let cur = "";
+    for (const w of para.split(" ")) {
+      const test = cur ? cur + " " + w : w;
+      if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+      else cur = test;
+    }
+    if (cur) lines.push(cur);
+  }
+  const shown = lines.slice(0, maxLines);
+  if (lines.length > maxLines && shown.length) shown[shown.length - 1] = shown[shown.length - 1].replace(/[.,;:]?$/, "…");
+  shown.forEach((l, i) => ctx.fillText(l, W / 2, top + i * lh));
+
+  // Alt imza
+  ctx.fillStyle = "rgba(160,112,208,0.85)";
+  ctx.font = "300 34px -apple-system, 'Jost', sans-serif";
+  ctx.fillText(altYazi || "SAKIN", W / 2, 1760);
+  ctx.fillStyle = "rgba(255,255,255,0.32)";
+  ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+  ctx.fillText("sakin.life", W / 2, 1818);
+
+  return canvas;
+}
+
 // ── METİNDEKİ SÖZLÜK TERİMLERİ ─────────────────────────────────────────────
 // Kullanıcı: "draconic vb özel kelimelere tıklanabilir bir info ekranı aç."
 // AI metninde geçen bu terimler altı çizili ve tıklanabilir olur; dokununca
@@ -8302,10 +8392,28 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     else if (type === "screen") { setScreen(val); }
                   }} />
                 </div>
-                <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
-                  style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                  {t("mirror_new_search")}
-                </button>
+                {/* PAYLAŞ — Instagram hikâyesi ölçüsünde (1080x1920) kart üretir.
+                    Kullanıcı: "içsel rehberi story'de paylaşabilsin, kartlardaki
+                    gibi bir paylaş menüsü ekle." shareImageBlob native/web farkını
+                    kendi hallediyor (Android WebView'da blob indirme çalışmıyor). */}
+                <div style={{ display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap" }}>
+                  <button onClick={async ()=>{
+                      try {
+                        const cv = buildMirrorStoryCard(
+                          `${sikayet} ${t("analysis_suf")}`, sikayetAnaliz,
+                          pickLang({tr:"İÇSEL AYNA",en:"INNER MIRROR",de:"INNERER SPIEGEL",es:"ESPEJO INTERIOR",pt:"ESPELHO INTERIOR",fr:"MIROIR INTÉRIEUR",ja:"内なる鏡"}, lang));
+                        const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+                        if (blob) await shareImageBlob(blob, "sakin-ayna.png");
+                      } catch (_) {}
+                    }}
+                    style={{ background:"rgba(160,112,208,0.18)",border:"1px solid rgba(160,112,208,0.45)",borderRadius:24,color:"#c8a8f0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                    {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
+                  </button>
+                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
+                    style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                    {t("mirror_new_search")}
+                  </button>
+                </div>
               </div>
             ) : (
               /* ARAMA KUTUSU */
