@@ -5019,16 +5019,23 @@ export default function SakinApp() {
   });
   const [gorevLoading, setGorevLoading] = useState(false);
   const gorevSayisi = (() => { try { return parseInt(localStorage.getItem("sakin_gorev_n")) || 0; } catch { return 0; } })();
-  // İlk görev serbest; sonrakiler için tünel açık olmalı VE o günün görevi
-  // henüz alınmamış olmalı (günde bir görev — değeri korunsun).
+  // KAPI: ilk görev serbest. Sonraki görev için TÜNEL AÇIK olmalı (günün 7 adımı
+  // tamamlanıp yer-gök ışığı başlamış). Tünel bugün bir kez kullanılınca yarına
+  // kadar kapanır — yoksa aynı gün sınırsız görev alınırdı.
+  // Böylece kullanıcının iki yolu olur: BUGÜN bağlantıyı tamamla, ya da YARIN.
   const gorevBugunAlindi = !!gorev && gorev.gun === todayKey;
-  const gorevIstenebilir = !gorevLoading && !gorevBugunAlindi && (gorevSayisi === 0 || allStepsComplete);
+  const gorevTunelBugunKullanildi = !!gorev && gorev.tunelGunu === todayKey;
+  const gorevIstenebilir = !gorevLoading &&
+    (gorevSayisi === 0 || (allStepsComplete && !gorevTunelBugunKullanildi));
 
   const GOREV_TXT = {
     btn:      {tr:"GÖREV İSTE",en:"REQUEST A MISSION",de:"AUFGABE ANFORDERN",es:"PEDIR MISIÓN",pt:"PEDIR MISSÃO",fr:"DEMANDER UNE MISSION",ja:"任務を受け取る"},
     connecting:{tr:"Yüksek benlik ile bağlantı kuruluyor…",en:"Connecting with your higher self…",de:"Verbindung zum höheren Selbst…",es:"Conectando con tu yo superior…",pt:"A ligar ao teu eu superior…",fr:"Connexion au moi supérieur…",ja:"ハイヤーセルフと接続中…"},
-    locked:   {tr:"Yeni görev için bağlantıyı tamamla — günün 7 adımı bitince ışık yerden göğe açılır ve kanal yeniden kurulur.",en:"Complete today's connection to receive a new mission — when the seven steps are done, the light opens from earth to sky and the channel reopens.",de:"Vollende die heutige Verbindung für eine neue Aufgabe — sind die sieben Schritte getan, öffnet sich das Licht von der Erde zum Himmel.",es:"Completa la conexión de hoy para una nueva misión — al terminar los siete pasos, la luz se abre de la tierra al cielo.",pt:"Completa a ligação de hoje para uma nova missão — terminados os sete passos, a luz abre-se da terra ao céu.",fr:"Termine la connexion du jour pour une nouvelle mission — les sept étapes faites, la lumière s'ouvre de la terre au ciel.",ja:"新しい任務には今日の接続を完了させて——七つの歩みを終えると、光が地から天へ開きます。"},
-    today:    {tr:"Bugünün görevi alındı. Yarın kanal yeniden açılır.",en:"Today's mission has been received. The channel reopens tomorrow.",de:"Die heutige Aufgabe ist erhalten. Morgen öffnet sich der Kanal wieder.",es:"La misión de hoy ha sido recibida. El canal se reabre mañana.",pt:"A missão de hoje foi recebida. O canal reabre amanhã.",fr:"La mission du jour est reçue. Le canal rouvrira demain.",ja:"今日の任務は受け取りました。明日また開きます。"},
+    // Kullanıcı: "yeni görev isteyebilmek için ne yapması gerektiği bilgisi yok."
+    // İKİ YOL da açıkça yazılır: bugün Bağlan'daki 7 adımı tamamla, ya da yarın.
+    locked:   {tr:"Yeni görev için iki yol var: Bağlan bölümündeki günün 7 adımını tamamla — ışık yerden göğe açılınca kanal yeniden kurulur. Ya da yarın yeni bir görev iste.",en:"Two ways to a new mission: complete the seven steps of the day in Connect — when the light opens from earth to sky, the channel reopens. Or ask again tomorrow.",de:"Zwei Wege zu einer neuen Aufgabe: Vollende die sieben Schritte des Tages unter Verbinden — öffnet sich das Licht von der Erde zum Himmel, öffnet sich der Kanal. Oder frag morgen erneut.",es:"Dos caminos hacia una nueva misión: completa los siete pasos del día en Conectar — cuando la luz se abre de la tierra al cielo, el canal se reabre. O pide otra mañana.",pt:"Dois caminhos para uma nova missão: completa os sete passos do dia em Ligar — quando a luz se abre da terra ao céu, o canal reabre. Ou pede outra amanhã.",fr:"Deux chemins vers une nouvelle mission : termine les sept étapes du jour dans Connexion — quand la lumière s'ouvre de la terre au ciel, le canal rouvre. Ou redemande demain.",ja:"新しい任務への道は二つ。「つながる」で今日の七つの歩みを終えると、光が地から天へ開き通路が戻ります。または明日また求めてください。"},
+    // Tünel bugün zaten kullanıldı → tek kalan yol yarın.
+    today:    {tr:"Bugünkü kanal kullanıldı. Yarın yeniden açılır.",en:"Today's channel has been used. It reopens tomorrow.",de:"Der heutige Kanal wurde genutzt. Morgen öffnet er sich wieder.",es:"El canal de hoy ya se usó. Se reabre mañana.",pt:"O canal de hoje foi usado. Reabre amanhã.",fr:"Le canal du jour a été utilisé. Il rouvrira demain.",ja:"今日の通路は使われました。明日また開きます。"},
     label:    {tr:"GÖREV",en:"MISSION",de:"AUFGABE",es:"MISIÓN",pt:"MISSÃO",fr:"MISSION",ja:"任務"},
     done:     {tr:"TAMAMLADIM",en:"COMPLETED",de:"ERLEDIGT",es:"COMPLETADA",pt:"CONCLUÍDA",fr:"TERMINÉE",ja:"完了"},
     count:    {tr:"deneyim",en:"experiences",de:"Erfahrungen",es:"experiencias",pt:"experiências",fr:"expériences",ja:"の経験"},
@@ -5045,9 +5052,14 @@ export default function SakinApp() {
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile", max_tokens: 420, lang,
+          // DİL: prompt gövdesi TAMAMEN seçili dilde olmalı. Kod tabanında zaten
+          // belgeli tuzak (bkz. buildMirrorSystemPrompt üstündeki not): Türkçe
+          // gövdeye tek satır "write in English" eklemek YETMİYOR, model gövdedeki
+          // Türkçeyi kopyalayıp karışık metin üretiyor. Bu yüzden tr / diğer
+          // dillerde iki AYRI gövde var ve kullanıcı mesajı da dile uyuyor.
           system: `${buildMirrorSystemPrompt(lang)}
 
-Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
+${lang === "tr" ? `Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
 geliştiren tek bir deneyimdir — bir oyunda verilen görev gibi somut, yapılabilir
 ve o kişiye özel. Kuralları:
 - SADECE BİR görev ver. Liste yapma.
@@ -5062,14 +5074,33 @@ ve o kişiye özel. Kuralları:
   cümlelik anlatım, sonra boş satır, son satırda "Neden sen:" ile başlayan
   tek cümlelik kişisel gerekçe.
 - Yıldız, madde imi, markdown KULLANMA. Sade düz metin yaz.
+- Tek kelime bile başka dilde yazma; tamamı Türkçe olsun.` : `You are now GIVING A MISSION: a single lived experience that develops the
+user's character on their inner journey — concrete, doable and personal, like
+a quest in a game. Rules:
+- Give exactly ONE mission. No lists.
+- It must be doable TODAY, take 5-30 minutes, and cost nothing.
+- Tie it to the LEARNING EDGE read from their birth data (12th house, life
+  path, ascendant, karmic pattern). Name that link in one sentence.
+- It must involve an ACTION in the physical world (writing, speaking, walking,
+  staying silent, reaching out, letting something go) — thinking is not enough.
+- No medical, financial or legal advice. Nothing dangerous or harmful to others.
+- Format: a 3-6 word MISSION TITLE, blank line, 2-4 sentences of description,
+  blank line, a final single sentence starting with "Why you:".
+- Do NOT use asterisks, bullets or markdown. Plain text only.
+- Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`}
 ${kisiselProfil()}`,
-          messages: [{ role: "user", content: `Yolculuk seviyem: ${seviye}. Bugüne kadar aldığım görev sayısı: ${gorevSayisi}. Bana bugün için bir görev ver.` }],
+          messages: [{ role: "user", content: lang === "tr"
+            ? `Yolculuk seviyem: ${seviye}. Bugüne kadar aldığım görev sayısı: ${gorevSayisi}. Bana bugün için bir görev ver.`
+            : `My journey level: ${seviye}. Missions received so far: ${gorevSayisi}. Give me a mission for today.` }],
         }),
       });
       const j = await res.json();
       const metin = (j?.text || j?.content || "").trim();
       if (!metin) throw new Error("bos");
-      const yeni = { gun: todayKey, metin, n: gorevSayisi + 1 };
+      // tunelGunu: bu görev TÜNEL AÇIKKEN alındıysa o günü işaretle; aynı gün
+      // ikinci kez tünelden görev alınamasın.
+      const yeni = { gun: todayKey, metin, n: gorevSayisi + 1,
+                     tunelGunu: allStepsComplete ? todayKey : (gorev?.tunelGunu || null) };
       setGorev(yeni);
       try {
         localStorage.setItem("sakin_gorev", JSON.stringify(yeni));
@@ -8522,7 +8553,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <span style={{ fontSize:11,letterSpacing:1,color:"#7a6a95",fontFamily:"'Jost',sans-serif" }}>{gorev.n} {pickLang(GOREV_TXT.count, lang)}</span>
                       </div>
                       <div style={{ fontSize:13.5,color:"#d8cce8",lineHeight:1.9,whiteSpace:"pre-wrap",textAlign:"left",fontFamily:"'Inter',sans-serif" }}>{gorev.metin}</div>
-                      <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.6 }}>{pickLang(GOREV_TXT.today, lang)}</div>
+                      {/* Bugünün görevi alınmış olsa BİLE kapı yeni göreve izin
+                          veriyorsa (ilk görev tünel kapalıyken alındı, sonra
+                          kullanıcı 7 adımı tamamladı) butonu göster. Aksi halde
+                          neden kapalı olduğunu anlatan metni yaz. */}
+                      {gorevIstenebilir ? (
+                        <button onClick={gorevIste}
+                          style={{ display:"block",margin:"12px auto 0",background:"linear-gradient(135deg,rgba(160,112,208,0.30),rgba(160,112,208,0.16))",border:"1px solid rgba(160,112,208,0.5)",borderRadius:24,color:"#d8bcff",cursor:"pointer",fontSize:12.5,letterSpacing:2,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                          ✧ {pickLang(GOREV_TXT.btn, lang)}
+                        </button>
+                      ) : (
+                        <div style={{ fontSize:11.5,color:"#7a6a95",marginTop:10,lineHeight:1.6 }}>
+                          {pickLang(gorevTunelBugunKullanildi ? GOREV_TXT.today : GOREV_TXT.locked, lang)}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div style={{ textAlign:"center" }}>
