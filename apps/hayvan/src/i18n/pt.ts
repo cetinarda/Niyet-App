@@ -387,14 +387,13 @@ export const pt = {
     // Badges
     badges: {
       title: 'Distintivos',
-      subtitle: 'Mesmo que abra várias vezes no mesmo dia, conta só 1 por dia — 7/30/100/365 significa esse número de dias DIFERENTES.',
       list: {
-        b001: { title: 'Primeiros passos', desc: 'Primeiros 7 dias' },
+        b001: { title: 'Primeiros passos', desc: 'Primeiras 7 leituras' },
         b002: { title: 'Dervixe do fogo', desc: '21 dias seguidos' },
-        b003: { title: 'Viajante do Mesnevi', desc: '30 dias' },
+        b003: { title: 'Viajante do Mesnevi', desc: '30 leituras' },
         b004: { title: 'Rosário', desc: '33 pedras vistas' },
-        b005: { title: 'Amigo da verdade', desc: '100 dias' },
-        b006: { title: 'Viajante da luz', desc: '365 dias' },
+        b005: { title: 'Amigo da verdade', desc: '100 leituras' },
+        b006: { title: 'Viajante da luz', desc: '365 leituras' },
       },
     },
     // Premium teaser

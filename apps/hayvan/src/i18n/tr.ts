@@ -387,14 +387,13 @@ export const tr = {
     // Badges
     badges: {
       title: 'Rozetler',
-      subtitle: 'Bir günde birden fazla açsan da gün başına 1 sayılır — 7/30/100/365 FARKLI GÜN anlamına gelir.',
       list: {
-        b001: { title: 'Yol Başlangıcı', desc: 'İlk 7 gün' },
+        b001: { title: 'Yol Başlangıcı', desc: 'İlk 7 okuma' },
         b002: { title: 'Ateş Dervişi',   desc: '21 gün silsile' },
-        b003: { title: 'Mesnevi Yolcusu', desc: '30 gün' },
+        b003: { title: 'Mesnevi Yolcusu', desc: '30 okuma' },
         b004: { title: 'Tesbih',          desc: '33 taş görüldü' },
-        b005: { title: 'Hak Dostu',       desc: '100 gün' },
-        b006: { title: 'ışık Yolcusu',    desc: '365 gün' },
+        b005: { title: 'Hak Dostu',       desc: '100 okuma' },
+        b006: { title: 'ışık Yolcusu',    desc: '365 okuma' },
       },
     },
     // Premium teaser

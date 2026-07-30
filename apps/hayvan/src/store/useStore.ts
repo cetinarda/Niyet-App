@@ -426,8 +426,6 @@ export function useSakinHayvanStore() {
         ...profile,
         streak: newStreak,
         lastOpenDate: today,
-        totalReadings: profile.totalReadings + 1,
-        level: Math.floor((profile.totalReadings + 1) / 7) + 1,
       };
       await saveProfile(updated);
     }
@@ -459,6 +457,16 @@ export function useSakinHayvanStore() {
     return entries.reduce((a, b) => a[1] > b[1] ? a : b)[0];
   }, []);
 
+  // Her GERÇEK okuma anında (salla/dokun ile kart açılışı) çağrılır — güne
+  // bağlı DEĞİL, aynı gün tekrar açılsa da sayılır (kullanıcı: "gün sayacını
+  // kaldır, ilk 7 okuma doğru, birden fazla gün ya da aynı gün fark etmez").
+  // streak/lastOpenDate (gün silsilesi rozeti) buna dokunmaz, ayrı kalır.
+  const recordReading = useCallback(async () => {
+    if (!profile) return;
+    const total = profile.totalReadings + 1;
+    await saveProfile({ ...profile, totalReadings: total, level: Math.floor(total / 7) + 1 });
+  }, [profile, saveProfile]);
+
   const getLevelTitle = useCallback((level: number): string => {
     const titles = ['Talip', 'Mürit', 'Derviş', 'Eren', 'Veli', 'Pir', 'Kutup'];
     return titles[Math.min(level - 1, titles.length - 1)];
@@ -483,6 +491,7 @@ export function useSakinHayvanStore() {
     saveProfile,
     updateBirthData,
     generateDailyReading,
+    recordReading,
     updateStats,
     getTopStat,
     getLevelTitle,

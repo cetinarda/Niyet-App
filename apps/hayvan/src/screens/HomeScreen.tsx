@@ -153,7 +153,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
-  const { profile, dailyReading, generateDailyReading, updateStats } = useSakinHayvanStore();
+  const { profile, dailyReading, generateDailyReading, recordReading, updateStats } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const quotes = useLocalizedQuotes();
   const philosophers = useLocalizedPhilosophers();
@@ -270,6 +270,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (revealedRef.current) return;
     revealedRef.current = true;
     setRevealed(true);
+    recordReading();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Animated.parallel([
       Animated.timing(backFade,  { toValue: 0, duration: 280, useNativeDriver: true }),

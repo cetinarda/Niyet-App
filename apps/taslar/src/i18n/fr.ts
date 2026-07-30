@@ -312,14 +312,13 @@ export const fr = {
     // Badges
     badges: {
       title: 'Badges',
-      subtitle: 'Même si tu l\'ouvres plusieurs fois le même jour, un seul compte par jour — 7/30/100/365 signifie autant de jours DIFFÉRENTS.',
       list: {
-        b001: { title: 'Premiers pas', desc: '7 premiers jours' },
+        b001: { title: 'Premiers pas', desc: '7 premières lectures' },
         b002: { title: 'Derviche du feu', desc: 'Série de 21 jours' },
-        b003: { title: 'Voyageur du Mesnevi', desc: '30 jours' },
+        b003: { title: 'Voyageur du Mesnevi', desc: '30 lectures' },
         b004: { title: 'Chapelet', desc: '33 pierres vues' },
-        b005: { title: 'Ami de la vérité', desc: '100 jours' },
-        b006: { title: 'Voyageur de lumière', desc: '365 jours' },
+        b005: { title: 'Ami de la vérité', desc: '100 lectures' },
+        b006: { title: 'Voyageur de lumière', desc: '365 lectures' },
       },
     },
     // Premium teaser

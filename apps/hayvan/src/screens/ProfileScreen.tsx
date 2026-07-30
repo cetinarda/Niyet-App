@@ -957,7 +957,6 @@ export function ProfileScreen() {
       {/* Rozetler */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('profile.badges.title')}</Text>
-        <Text style={{ fontSize: 11, color: Colors.textMuted, marginTop: -2, marginBottom: Spacing.sm, lineHeight: 15, fontStyle: 'italic' }}>{t('profile.badges.subtitle')}</Text>
         <View style={styles.badgesGrid}>
           {BADGES.map(badge => {
             const earned = totalReadings >= badge.required || streak >= badge.required;
