@@ -283,6 +283,7 @@ const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"S
 function buildMirrorSystemPrompt(lang, onsoz = true) {
   if (lang === "tr") {
     return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla — doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN — "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
@@ -290,6 +291,7 @@ ${onsoz ? `Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir.
   }
   const name = AI_LANG_NAMES[lang] || "English";
   return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence — including disclaimers, opening lines, and any quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
+OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run.
 Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
 ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings — never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
 Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
@@ -3099,6 +3101,25 @@ const _yogaKey = (raw) => {
 // (SVG-to-Image iOS WKWebView'da font render etmiyor).
 // Metin uzun olabildiği için sarmalanır ve kart yüksekliğine SIĞMIYORSA
 // kırpılıp "…" konur — taşan yazı basmaktansa kısaltmak daha temiz.
+// Ham metinden ** ve yönlendirme jetonlarını temizler, tek satır boşluğa indirger.
+function _cardCleanText(raw) {
+  return String(raw || "")
+    .replace(/\*\*/g, "")
+    .replace(/\[\[EKRAN:([^\]]+)\]\]/g, (_m, id) => ({
+      terapi:"Çakra Terapisi", nefes:"Nefes", rehber:"Ayna",
+      sabah:"Sabah Niyeti", aksam:"Akşam Kapanışı", ses:"Ses Dalgaları",
+    }[String(id).trim()] || id))
+    .replace(/\[\[NEFES:([^\]]+)\]\]/g, "$1 nefesi")
+    .replace(/[ \t]+/g, " ")
+    .trim();
+}
+// İlk N cümleyi al — kart üstündeki tespit özetini kısa tutmak için.
+function _cardFirstSentences(text, n) {
+  const parts = String(text || "").split(/(?<=[.!?])\s+/).filter(Boolean);
+  const picked = parts.slice(0, n).join(" ").trim();
+  return picked || text;
+}
+
 function buildMirrorStoryCard(baslik, govde, altYazi) {
   const W = 1080, H = 1920;
   const canvas = document.createElement("canvas");
@@ -3140,37 +3161,73 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
   ctx.fillStyle = line;
   ctx.fillRect(240, 440, 600, 2);
 
-  // Gövde — sarmalanmış metin
-  ctx.fillStyle = "#d8cce8";
-  ctx.font = "300 40px -apple-system, 'Inter', sans-serif";
-  const maxW = 820, lh = 68, top = 540, bottom = 1620;
-  const maxLines = Math.floor((bottom - top) / lh);
-  // Markdown kalın işaretlerini ve yönlendirme jetonlarını karttan temizle
-  const clean = String(govde || "")
-    .replace(/\*\*/g, "")
-    // Yönlendirme jetonları okunur etikete çevrilir. EKRAN jetonu ham ekran
-    // kimliği taşıyor ("terapi"), kartta bunun yerine görünen ad yazılmalı.
-    .replace(/\[\[EKRAN:([^\]]+)\]\]/g, (_m, id) => ({
-      terapi:"Çakra Terapisi", nefes:"Nefes", rehber:"Ayna",
-      sabah:"Sabah Niyeti", aksam:"Akşam Kapanışı", ses:"Ses Dalgaları",
-    }[String(id).trim()] || id))
-    .replace(/\[\[NEFES:([^\]]+)\]\]/g, "$1 nefesi")
-    .replace(/[ \t]+/g, " ")
-    .trim();
-  const lines = [];
-  for (const para of clean.split("\n")) {
-    if (!para.trim()) { if (lines.length) lines.push(""); continue; }
-    let cur = "";
-    for (const w of para.split(" ")) {
-      const test = cur ? cur + " " + w : w;
-      if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
-      else cur = test;
+  const maxW = 820, top = 540, bottom = 1620;
+
+  // ── İÇERİĞİ TESPİT / ÇÖZÜM OLARAK AYIR ──────────────────────────────────
+  // Kullanıcı: "bu yanıt sana özeldir kısmını kaldır ve tespitleri özetle,
+  // daha çok çözümler ağırlıkta olsun." Ayna yanıtı "**Ayna**" (tespit) ve
+  // "**Senin için**" (Beslenme/Hareket/Nefes/Uygulama — çözüm) bölümlerinden
+  // oluşur. Eskiden kart, metni baştan itibaren OLDUĞU GİBİ basıyordu; 6-7
+  // cümlelik tespit paragrafı kartın neredeyse tamamını dolduruyor, çözüm
+  // kısmı ya çok az yer buluyor ya da hiç görünmüyordu. Artık tespit 2 cümleye
+  // özetlenip üstte küçük/soluk yer alıyor, çözüm bölümü kartın asıl gövdesi.
+  // Bu ayrıştırma yalnızca "**Ayna**"/"**Senin için**" başlıkları taşıyan
+  // metinlerde (ayna cevapları) işler; başka bir çağıran (ör. gökyüzü raporu)
+  // için başlıklar bulunamazsa eski davranışa (tüm metni tek gövde olarak
+  // basmak) sorunsuzca döner.
+  const raw = String(govde || "").replace(/^\s*"?Bu yanıt sana özeldir\.[^\n]*\n?/i, "");
+  const tespitM = raw.match(/\*\*Ayna\*\*\s*([\s\S]*?)(?=\*\*Senin için\*\*|\*\*Reiki|$)/i);
+  const cozumM  = raw.match(/\*\*Senin için\*\*\s*([\s\S]*?)(?=\*\*Reiki|$)/i);
+
+  let tespitLines = [], cozumLines = [];
+  const wrapInto = (text, font, maxWidth) => {
+    ctx.font = font;
+    const out = [];
+    for (const para of text.split("\n")) {
+      if (!para.trim()) { if (out.length) out.push(""); continue; }
+      let cur = "";
+      for (const w of para.split(" ")) {
+        const test = cur ? cur + " " + w : w;
+        if (ctx.measureText(test).width > maxWidth && cur) { out.push(cur); cur = w; }
+        else cur = test;
+      }
+      if (cur) out.push(cur);
     }
-    if (cur) lines.push(cur);
+    return out;
+  };
+
+  if (tespitM && cozumM) {
+    const tespitOzet = _cardFirstSentences(_cardCleanText(tespitM[1]), 2);
+    tespitLines = wrapInto(tespitOzet, "300 30px -apple-system, 'Inter', sans-serif", maxW);
+    cozumLines  = wrapInto(_cardCleanText(cozumM[1]), "300 38px -apple-system, 'Inter', sans-serif", maxW);
+  } else {
+    // Ayna yapısı yok (ör. gökyüzü raporu) — eski davranış: tüm metin tek gövde.
+    cozumLines = wrapInto(_cardCleanText(raw), "300 40px -apple-system, 'Inter', sans-serif", maxW);
   }
-  const shown = lines.slice(0, maxLines);
-  if (lines.length > maxLines && shown.length) shown[shown.length - 1] = shown[shown.length - 1].replace(/[.,;:]?$/, "…");
-  shown.forEach((l, i) => ctx.fillText(l, W / 2, top + i * lh));
+
+  let y = top;
+  if (tespitLines.length) {
+    ctx.fillStyle = "rgba(216,204,232,0.62)";
+    ctx.font = "300 30px -apple-system, 'Inter', sans-serif";
+    const tLh = 46;
+    const tMax = Math.min(tespitLines.length, 4);   // tespit en fazla 4 satır
+    for (let i = 0; i < tMax; i++) ctx.fillText(tespitLines[i], W / 2, y + i * tLh);
+    y += tMax * tLh + 26;
+
+    // "ÇÖZÜM" etiketi — tespit ile çözüm arasında görsel ayrım
+    ctx.fillStyle = "#e8b04a";
+    ctx.font = "600 26px -apple-system, 'Jost', sans-serif";
+    ctx.fillText("✦ ÇÖZÜM", W / 2, y);
+    y += 56;
+  }
+
+  ctx.fillStyle = "#d8cce8";
+  const cLh = tespitLines.length ? 58 : 68;
+  ctx.font = tespitLines.length ? "300 38px -apple-system, 'Inter', sans-serif" : "300 40px -apple-system, 'Inter', sans-serif";
+  const cMax = Math.max(1, Math.floor((bottom - y) / cLh));
+  const cShown = cozumLines.slice(0, cMax);
+  if (cozumLines.length > cMax && cShown.length) cShown[cShown.length - 1] = cShown[cShown.length - 1].replace(/[.,;:]?$/, "…");
+  cShown.forEach((l, i) => ctx.fillText(l, W / 2, y + i * cLh));
 
   // Alt imza
   ctx.fillStyle = "rgba(160,112,208,0.85)";
@@ -5239,7 +5296,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu çakra ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5421,7 +5478,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu semptom ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5474,7 +5531,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5525,7 +5582,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu hastalık ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz, yoga pozu veya beden pratiği)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5724,26 +5781,56 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // Tutuş/dinlenme fazları SESSİZ — en sakin seçenek.
   // Sine dalga + uzun attack/release: tık ve sertlik olmaz.
   const breathToneCtxRef = useRef(null);
-  const playBreathTone = (phase) => {
-    if (phase !== "inhale" && phase !== "exhale") return;   // hold/hold2 sessiz
+  // "TUT" VURGUSU (kullanıcı: "nefes seslerinde tut vurgusu yok, bir tonla
+  // tut-ver yapılabilir mi?"). Eskiden hold/hold2 fazları tamamen sessizdi —
+  // kullanıcı ne zaman tutacağını, ne zaman bırakacağını duyamıyordu. Artık
+  // tutuş boyunca SABİT bir perde çalıyor (inhale/exhale'in AKSİNE hareket
+  // yok — bu "durgunluk"u kulakla ayırt ettiriyor), fazın gerçek süresi kadar
+  // sürüyor ve bir sonraki faz başlayınca söner. `dur` parametresi bu yüzden
+  // gerekli: hold/hold2 modlara göre 1.5-8 sn arası değişiyor.
+  const playBreathTone = (phase, durationMs) => {
     try {
       if (!breathToneCtxRef.current) breathToneCtxRef.current = __makeAudioCtx();
       const ctx = breathToneCtxRef.current;
       if (!ctx) return;
       if (ctx.state === "suspended") { try { ctx.resume(); } catch (_) {} }
       const t0 = ctx.currentTime;
-      const [f0, f1] = phase === "inhale" ? [196, 294] : [294, 196];  // sol3 ↔ re4
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "sine";
-      o.frequency.setValueAtTime(f0, t0);
-      o.frequency.linearRampToValueAtTime(f1, t0 + 0.95);   // nefesin kendisi gibi kayan perde
-      // Yumuşak giriş/çıkış — 0'dan başlayıp 0'a inince tık sesi olmaz.
-      g.gain.setValueAtTime(0.0001, t0);
-      g.gain.linearRampToValueAtTime(0.085, t0 + 0.30);
-      g.gain.linearRampToValueAtTime(0.060, t0 + 0.80);
-      g.gain.exponentialRampToValueAtTime(0.0005, t0 + 1.35);
-      o.connect(g); g.connect(ctx.destination);
-      o.start(t0); o.stop(t0 + 1.4);
+      if (phase === "inhale" || phase === "exhale") {
+        const [f0, f1] = phase === "inhale" ? [196, 294] : [294, 196];  // sol3 ↔ re4
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f0, t0);
+        o.frequency.linearRampToValueAtTime(f1, t0 + 0.95);   // nefesin kendisi gibi kayan perde
+        // Yumuşak giriş/çıkış — 0'dan başlayıp 0'a inince tık sesi olmaz.
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.linearRampToValueAtTime(0.085, t0 + 0.30);
+        g.gain.linearRampToValueAtTime(0.060, t0 + 0.80);
+        g.gain.exponentialRampToValueAtTime(0.0005, t0 + 1.35);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); o.stop(t0 + 1.4);
+        return;
+      }
+      if (phase === "hold" || phase === "hold2") {
+        // "tut" = inhale'in vardığı tepe perde (294); "dinlen" (kutu nefesinde
+        // exhale sonrası) = düşük perde (196) — ikisi kulakla ayrışsın.
+        const pitch = phase === "hold" ? 294 : 196;
+        const dur = Math.max(0.6, Math.min((durationMs || 1500) / 1000, 8));
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine"; o.frequency.setValueAtTime(pitch, t0);
+        // Yavaş bir nabız (LFO) — dümdüz bir ton "ölü" durur, bu hafifçe nefes
+        // alıyormuş gibi soluklaşıp koyulaşır.
+        const lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
+        lfo.type = "sine"; lfo.frequency.value = 0.35;
+        lfoGain.gain.value = 0.018;
+        lfo.connect(lfoGain); lfoGain.connect(g.gain);
+        g.gain.setValueAtTime(0.0001, t0);
+        g.gain.linearRampToValueAtTime(0.05, t0 + 0.25);
+        g.gain.setValueAtTime(0.05, t0 + Math.max(0.25, dur - 0.35));
+        g.gain.exponentialRampToValueAtTime(0.0005, t0 + dur);
+        o.connect(g); g.connect(ctx.destination);
+        o.start(t0); lfo.start(t0);
+        o.stop(t0 + dur + 0.05); lfo.stop(t0 + dur + 0.05);
+      }
     } catch (_) {}
   };
 
@@ -5754,9 +5841,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     const cycle = () => {
       setBreathPhase("inhale"); playBreathTone("inhale");
       let t = tm.in;
-      if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); playBreathTone("hold"); },  t)); t += tm.hold;  }
+      if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); playBreathTone("hold", tm.hold); },  t)); t += tm.hold;  }
       toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); playBreathTone("exhale"); }, t)); t += tm.out;
-      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); playBreathTone("hold2"); }, t)); }
+      if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); playBreathTone("hold2", tm.hold2); }, t)); }
       toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
     };
     setBreathPhase("ready");
@@ -9013,6 +9100,30 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
                       {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
                     </div>
+
+                    {/* PAYLAŞ — Ayna cevabıyla AYNI kart üreticisini kullanır.
+                        Bu metinde Ayna/Senin-için başlıkları yok, o yüzden
+                        buildMirrorStoryCard otomatik olarak eski (tek gövde)
+                        düzene döner — kolektif geçiş notu + rapor tek parça
+                        basılır. Kullanıcı isteği: gökyüzü raporuna da paylaş
+                        özelliği eklemek. */}
+                    <button onClick={async ()=>{
+                        try {
+                          const govde = [
+                            kozmikData.transit && pickLang(kozmikData.transit, lang),
+                            kozmikData.aiReport || pickLang(kozmikData.report, lang),
+                          ].filter(Boolean).join("\n\n");
+                          const cv = buildMirrorStoryCard(
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang),
+                            govde,
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang));
+                          const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+                          if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
+                        } catch (_) {}
+                      }}
+                      style={{ display:"block",margin:"14px auto 0",background:"rgba(160,112,208,0.14)",border:"1px solid rgba(160,112,208,0.4)",borderRadius:22,color:"#c8a8f0",cursor:"pointer",fontSize:12,letterSpacing:2,padding:"8px 20px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                      {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
+                    </button>
                   </>
                   );
                 })()}
@@ -9111,6 +9222,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             )}
           </div>
           {/* ── 12. Ev Kartı ── */}
+          {/* Doğum bilgisi eksikse (tarih ve/veya saat) panel HİÇ render
+              edilmiyor (kullanıcı: "doğum bilgileri eklenmediyse harita
+              kısmında hata kutusu çıkıyor, kaldır"). Eskiden eksik bilgi
+              durumunda "doğum bilgini ekle" uyarı kutusu gösteriliyordu; o
+              dal, panelleri açılır-kapanır yaparken yanlışlıkla show12Ev
+              koşulunun İÇİNE gömülüp ölü koda dönüşmüştü (hiçbir zaman
+              render edilmiyordu ama kaynakta kafa karıştırıcı duruyordu).
+              Artık Draconik Harita kartıyla TUTARLI: veri yoksa kart
+              tamamen gizli, hiçbir uyarı/hata görünümü yok. */}
           {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
           <div style={{ marginBottom:20,position:"relative" }}>
             <button onClick={()=>setShow12Ev(v=>!v)}
@@ -9153,16 +9273,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ fontSize:13,letterSpacing:2,color:"#7060a0",marginBottom:4 }}>{t("map_hidden_power")}</div>
                 <div style={{ fontSize:14,color:"#c0b0e0",fontStyle:"italic" }}>{GEZEGEN_12EV_GUCLERI[lang]?.[ev12Gezegen] || GEZEGEN_12EV_GUCLERI.tr[ev12Gezegen]}</div>
               </div>
-            </div>
-          ) : (birthDate && !birthTime) || !birthDate ? (
-            <div style={{ background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:17,padding:"14px 18px",marginBottom:24,textAlign:"center" }}>
-              <div style={{ fontSize:13,color:"#7060a0",lineHeight:1.7,marginBottom:10 }}>
-                {birthDate ? t("map_12h_need_time") : t("map_12h_need_birth")}
-              </div>
-              <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
-                style={{ padding:"8px 20px",borderRadius:20,border:"1px solid rgba(112,96,160,0.4)",background:"rgba(112,96,160,0.15)",color:"#b8a4d8",fontSize:13,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                {t("add_birth_info")}
-              </button>
             </div>
             </div>
             )}
