@@ -462,10 +462,12 @@ export function useSakinHayvanStore() {
   // kaldır, ilk 7 okuma doğru, birden fazla gün ya da aynı gün fark etmez").
   // streak/lastOpenDate (gün silsilesi rozeti) buna dokunmaz, ayrı kalır.
   const recordReading = useCallback(async () => {
-    if (!profile) return;
-    const total = profile.totalReadings + 1;
-    await saveProfile({ ...profile, totalReadings: total, level: Math.floor(total / 7) + 1 });
-  }, [profile, saveProfile]);
+    const raw = await AsyncStorage.getItem(STORAGE_KEYS.PROFILE);
+    if (!raw) return;
+    const current: UserProfile = JSON.parse(raw);
+    const total = (current.totalReadings || 0) + 1;
+    await saveProfile({ ...current, totalReadings: total, level: Math.floor(total / 7) + 1 });
+  }, [saveProfile]);
 
   const getLevelTitle = useCallback((level: number): string => {
     const titles = ['Talip', 'Mürit', 'Derviş', 'Eren', 'Veli', 'Pir', 'Kutup'];

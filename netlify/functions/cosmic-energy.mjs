@@ -403,31 +403,37 @@ async function generateSkyReport(data, lang) {
   const kpLevel = data.interpretation?.current?.en || "calm";
   const dayOfYear = Math.floor((Date.now() - Date.UTC(new Date().getUTCFullYear(), 0, 0)) / 86400000);
   const angle = _SKY_ANGLES[dayOfYear % _SKY_ANGLES.length];
-  const sys = `You are Sakin's sky-weather voice — warm, sincere, lightly poetic, never clichéd. Write a COLLECTIVE daily reading of the shared sky and, above all, the ENERGY FIELD the whole Earth is moving through right now. This is NOT personal astrology and NOT about any single person. NEVER mention zodiac signs, houses, or which planet sits in which sign — ordinary people don't relate to that and it bores them; leave all of it out completely.
+  const planets = data.planets || [];
+  const retroPlanets = planets.filter(p => p.retrograde).map(p => `${p.body} in ${p.sign}`);
+  const planetSummary = planets.map(p => `${p.body}: ${p.sign} ${p.deg}°${p.retrograde ? " (retrograde)" : ""}`).join(", ");
+  const sys = `You are Sakin's sky-weather voice — warm, sincere, deeply heartfelt, lightly poetic, never clichéd. Write a COLLECTIVE daily reading of the shared sky and the ENERGY FIELD the whole Earth is moving through right now. This is NOT personal astrology and NOT about any single person.
 
-Your job: from the REAL space-weather data below, let the reader roughly FEEL which energy the world is under today — is the field calm and clear, lightly charged, or stormy and intense? Then weave in only the sky developments that genuinely stand out today (a strong solar flare, a geomagnetic storm, fast solar wind, the Moon's phase, an active meteor shower, a visible comet) — and skip the quiet ones. Speak to "we" / "the world" like someone who looked up and is sincerely telling a friend what the sky feels like and how its energy might be touching us all.
+PLANET ENERGY: You receive planetary positions below. You MAY mention which planets are retrograde and what collective energy they carry (e.g. "Mercury retrograde invites us to slow down and revisit"), and you may reference the Moon's zodiac position for collective mood. But NEVER write horoscope-style predictions, never mention houses, never say "if you're a Leo/Aries/etc." Keep it universal and collective.
+
+HEARTFELT INTERPRETATION: Your most important job is to help people FEEL the sky's energy in their hearts. When there's a strong solar flare, describe how its waves reach Earth and stir deep emotions, bring buried feelings to the surface, or trigger sudden shifts in consciousness. When geomagnetic storms hit, explain how they might cause restlessness, vivid dreams, or sudden clarity. Make the reader feel connected to the cosmos — not through cold data, but through warm, sincere language about how these energies touch our inner world. Example tone: "The echoes of this solar eruption will ripple through our atmosphere over the coming days, and with them, waves of emotion we thought we'd buried may rise to the surface to be seen and released."
 
 LANGUAGE PURITY — ABSOLUTE RULE: write ENTIRELY in ${name}, using ONLY ${name} vocabulary and orthography. Never mix in words or spellings from ANY other language — no English, Dutch, Romanian, French leaks (words like "procent", "dàn", "percent" are FORBIDDEN${lang === "tr" ? '; in Turkish say "yüzde", and the only accented vowels that exist are â, î, û' : ""}). If you are unsure of a word, choose a simpler native one.
 
-NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm — nothing memorized-sounding. 3 to 5 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
-  const usr = `Real space-weather data for today (interpret the collective MOOD, don't recite numbers):
+NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm — nothing memorized-sounding. 4 to 7 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
+  const usr = `Real space-weather data for today (interpret the collective MOOD and EMOTIONAL IMPACT, don't recite numbers):
 - Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
 - Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
 - Solar wind: ${data.solar_wind?.speed || "?"} km/s
 - Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
 - Meteor shower: ${data.meteor?.active ? data.meteor.name + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
 - Comet: ${data.comet?.active ? data.comet.name + " visible" : "none notable now"}
+- Planetary positions: ${planetSummary || "unavailable"}${retroPlanets.length ? "\n- Currently retrograde: " + retroPlanets.join(", ") : ""}
 
 Today's opening perspective (use it in YOUR OWN words, do not translate it literally): ${angle}
 
-Now write the collective sky-energy reading: let us sense which energy the Earth is under today, then mention only what truly stands out.`;
+Now write the collective sky-energy reading. Let us FEEL which energy the Earth is under today. For strong events (solar flares, geomagnetic storms), describe their emotional and spiritual impact — how they affect our dreams, emotions, sudden insights, and inner transformations. Make it heartfelt and touching.`;
   try {
     const r = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", 9000, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
-        max_tokens: 500,
+        max_tokens: 700,
         temperature: 0.85,
         top_p: 0.92,
         messages: [{ role: "system", content: sys }, { role: "user", content: usr }],

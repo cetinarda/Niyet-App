@@ -3186,23 +3186,12 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
 
   const maxW = 820, top = 540, bottom = 1620;
 
-  // ── İÇERİĞİ TESPİT / ÇÖZÜM OLARAK AYIR ──────────────────────────────────
-  // Kullanıcı: "bu yanıt sana özeldir kısmını kaldır ve tespitleri özetle,
-  // daha çok çözümler ağırlıkta olsun." Ayna yanıtı "**Ayna**" (tespit) ve
-  // "**Senin için**" (Beslenme/Hareket/Nefes/Uygulama — çözüm) bölümlerinden
-  // oluşur. Eskiden kart, metni baştan itibaren OLDUĞU GİBİ basıyordu; 6-7
-  // cümlelik tespit paragrafı kartın neredeyse tamamını dolduruyor, çözüm
-  // kısmı ya çok az yer buluyor ya da hiç görünmüyordu. Artık tespit 2 cümleye
-  // özetlenip üstte küçük/soluk yer alıyor, çözüm bölümü kartın asıl gövdesi.
-  // Bu ayrıştırma yalnızca "**Ayna**"/"**Senin için**" başlıkları taşıyan
-  // metinlerde (ayna cevapları) işler; başka bir çağıran (ör. gökyüzü raporu)
-  // için başlıklar bulunamazsa eski davranışa (tüm metni tek gövde olarak
-  // basmak) sorunsuzca döner.
+  // ── AYNA İÇGÖRÜSÜ ANA GÖVDE, PRATİK ÖZETİ ALTTA ──────────────────────
   const raw = String(govde || "").replace(/^\s*"?Bu yanıt sana özeldir\.[^\n]*\n?/i, "");
-  const tespitM = raw.match(/\*\*Ayna\*\*\s*([\s\S]*?)(?=\*\*Senin için\*\*|\*\*Reiki|$)/i);
-  const cozumM  = raw.match(/\*\*Senin için\*\*\s*([\s\S]*?)(?=\*\*Reiki|$)/i);
+  const aynaM  = raw.match(/\*\*Ayna\*\*\s*([\s\S]*?)(?=\*\*Senin için\*\*|\*\*Reiki|$)/i);
+  const pratikM = raw.match(/\*\*Senin için\*\*\s*([\s\S]*?)(?=\*\*Reiki|$)/i);
 
-  let tespitLines = [], cozumLines = [];
+  let aynaLines = [], pratikLines = [];
   const wrapInto = (text, font, maxWidth) => {
     ctx.font = font;
     const out = [];
@@ -3219,38 +3208,50 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
     return out;
   };
 
-  if (tespitM && cozumM) {
-    const tespitOzet = _cardFirstSentences(_cardCleanText(tespitM[1]), 2);
-    tespitLines = wrapInto(tespitOzet, "300 30px -apple-system, 'Inter', sans-serif", maxW);
-    cozumLines  = wrapInto(_cardCleanText(cozumM[1]), "300 38px -apple-system, 'Inter', sans-serif", maxW);
+  if (aynaM) {
+    aynaLines = wrapInto(_cardCleanText(aynaM[1]), "300 38px -apple-system, 'Inter', sans-serif", maxW);
+    if (pratikM) {
+      const pratikOzet = _cardFirstSentences(_cardCleanText(pratikM[1]), 2);
+      pratikLines = wrapInto(pratikOzet, "300 28px -apple-system, 'Inter', sans-serif", maxW);
+    }
   } else {
-    // Ayna yapısı yok (ör. gökyüzü raporu) — eski davranış: tüm metin tek gövde.
-    cozumLines = wrapInto(_cardCleanText(raw), "300 40px -apple-system, 'Inter', sans-serif", maxW);
+    aynaLines = wrapInto(_cardCleanText(raw), "300 40px -apple-system, 'Inter', sans-serif", maxW);
   }
 
   let y = top;
-  if (tespitLines.length) {
-    ctx.fillStyle = "rgba(216,204,232,0.62)";
-    ctx.font = "300 30px -apple-system, 'Inter', sans-serif";
-    const tLh = 46;
-    const tMax = Math.min(tespitLines.length, 4);   // tespit en fazla 4 satır
-    for (let i = 0; i < tMax; i++) ctx.fillText(tespitLines[i], W / 2, y + i * tLh);
-    y += tMax * tLh + 26;
 
-    // "ÇÖZÜM" etiketi — tespit ile çözüm arasında görsel ayrım
-    ctx.fillStyle = "#e8b04a";
-    ctx.font = "600 26px -apple-system, 'Jost', sans-serif";
-    ctx.fillText("✦ ÇÖZÜM", W / 2, y);
-    y += 56;
-  }
+  // "Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
+  ctx.fillStyle = "rgba(200,170,240,0.55)";
+  ctx.font = "italic 300 26px -apple-system, 'Inter', sans-serif";
+  ctx.fillText("Kalbinin süzgecinden geçir, seni ısıtan kısmını al.", W / 2, y);
+  y += 60;
 
+  // Ayna içgörüsü — ana gövde
   ctx.fillStyle = "#d8cce8";
-  const cLh = tespitLines.length ? 58 : 68;
-  ctx.font = tespitLines.length ? "300 38px -apple-system, 'Inter', sans-serif" : "300 40px -apple-system, 'Inter', sans-serif";
-  const cMax = Math.max(1, Math.floor((bottom - y) / cLh));
-  const cShown = cozumLines.slice(0, cMax);
-  if (cozumLines.length > cMax && cShown.length) cShown[cShown.length - 1] = cShown[cShown.length - 1].replace(/[.,;:]?$/, "…");
-  cShown.forEach((l, i) => ctx.fillText(l, W / 2, y + i * cLh));
+  const aLh = 58;
+  ctx.font = "300 38px -apple-system, 'Inter', sans-serif";
+  const pratikReserve = pratikLines.length ? 140 : 0;
+  const aMax = Math.max(1, Math.floor((bottom - y - pratikReserve) / aLh));
+  const aShown = aynaLines.slice(0, aMax);
+  if (aynaLines.length > aMax && aShown.length) aShown[aShown.length - 1] = aShown[aShown.length - 1].replace(/[.,;:]?$/, "…");
+  aShown.forEach((l, i) => ctx.fillText(l, W / 2, y + i * aLh));
+  y += aShown.length * aLh;
+
+  // Pratik özet — altta küçük/soluk
+  if (pratikLines.length) {
+    y += 30;
+    const pLine = ctx.createLinearGradient(300, 0, 780, 0);
+    pLine.addColorStop(0, "rgba(160,112,208,0)");
+    pLine.addColorStop(0.5, "rgba(160,112,208,0.4)");
+    pLine.addColorStop(1, "rgba(160,112,208,0)");
+    ctx.fillStyle = pLine;
+    ctx.fillRect(300, y - 16, 480, 1);
+    ctx.fillStyle = "rgba(216,204,232,0.55)";
+    ctx.font = "300 28px -apple-system, 'Inter', sans-serif";
+    const pLh = 42;
+    const pMax = Math.min(pratikLines.length, 3);
+    for (let i = 0; i < pMax; i++) ctx.fillText(pratikLines[i], W / 2, y + i * pLh);
+  }
 
   // Alt imza
   ctx.fillStyle = "rgba(160,112,208,0.85)";
@@ -5319,7 +5320,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu çakra ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5501,7 +5502,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu semptom ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5554,7 +5555,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -5605,7 +5606,7 @@ Yanıtını şu formatta ver:
 
 **Senin için**
 Beslenme: (bu hastalık ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI kullan — bunlar uygulamada tıklanabilir: Kobra, Çocuk, Ağaç, Savaşçı, Köprü, Aşağı Bakan Köpek, Bacaklar Duvarda, Kelebek, Kedi-İnek, Şavasana, Dağ. "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla söyle.)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
@@ -6490,7 +6491,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {embeddedApp && !((embeddedApp.path||"").indexOf("sakinmitler") !== -1) && <iframe
             src={embeddedApp.path}
             title={embeddedApp.name}
-            allow="accelerometer; gyroscope"
             onLoad={(e)=>{
               setTimeout(()=>setEmbedLoaded(true), 1100);
               // Embed'lere ortak CSS override inject — form taşmalarını engelle
