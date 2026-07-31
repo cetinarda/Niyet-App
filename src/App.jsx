@@ -1078,6 +1078,33 @@ function AppStoreBadge({ lang = "tr", size = "md" }) {
   );
 }
 
+// Google Play rozeti — HENÜZ YAYINDA DEĞİL. Tıklanamaz (link yok), soluk gösterilir
+// ve küçük yazıyla "Çok yakında" bilgisi verir. Apple rozetinin yanına konur.
+const PLAY_SOON = { tr:"Çok yakında", en:"Coming soon", de:"Demnächst", es:"Muy pronto", pt:"Em breve", fr:"Bientôt disponible", ja:"近日公開" };
+function PlayStoreBadge({ lang = "tr", size = "md" }) {
+  const isLg = size === "lg";
+  const soon = PLAY_SOON[lang] || PLAY_SOON.en;
+  return (
+    <div title={soon} aria-label={"Google Play — " + soon}
+      style={{
+        display:"inline-flex",alignItems:"center",gap: isLg?12:9,
+        padding: isLg?"12px 24px":"8px 16px",
+        background:"#000",border:"1.5px solid rgba(255,255,255,0.35)",
+        borderRadius: isLg?14:10,color:"#fff",
+        cursor:"default",opacity:0.6,userSelect:"none"
+      }}>
+      {/* Google Play üçgeni (sade, tek renk) */}
+      <svg width={isLg?24:20} height={isLg?26:22} viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+        <path d="M4 3.2c0-.5.5-.8 1-.6l14.2 8.1c.5.3.5 1 0 1.3L5 20.4c-.5.3-1 0-1-.6V3.2z" />
+      </svg>
+      <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
+        <span style={{ fontSize: isLg?11:9.5,opacity:0.9,letterSpacing:0.3 }}>{soon}</span>
+        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>Google Play</span>
+      </div>
+    </div>
+  );
+}
+
 const BREATH_MODES_CONFIG = {
   standart:    { in: 4000, hold: 1500, out: 4000,  hold2: 0,    total: 10000 },
   diyafram:    { in: 4000, hold: 0,    out: 6000,  hold2: 0,    total: 10000 },
@@ -7470,7 +7497,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
                       {lang==="tr" ? "Telefonunda yanında taşı" : "Take it with you"}
                     </div>
-                    <AppStoreBadge lang={lang} size="lg" />
+                    <div style={{ display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",justifyContent:"center" }}>
+                      <AppStoreBadge lang={lang} size="md" />
+                      <PlayStoreBadge lang={lang} size="md" />
+                    </div>
                   </div>
                 )}
               </>
@@ -10337,8 +10367,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ marginTop:13,textAlign:"center",fontSize:13,color:"#9a8ac0",letterSpacing:0.4,lineHeight:1.6 }}>
                   {t("web_purchase_appstore_note")}
                 </div>
-                <div style={{ marginTop:14,display:"flex",justifyContent:"center" }}>
-                  <AppStoreBadge lang={lang} size="lg" />
+                <div style={{ marginTop:14,display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",alignItems:"center" }}>
+                  <AppStoreBadge lang={lang} size="md" />
+                  <PlayStoreBadge lang={lang} size="md" />
                 </div>
               </div>
 
