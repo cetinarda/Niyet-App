@@ -4556,13 +4556,15 @@ export default function SakinApp() {
   const [show12Ev, setShow12Ev] = useState(false);
   const [showDraconic, setShowDraconic] = useState(false);
   const [kozmikData, setKozmikData] = useState(null);
+  const [kozmikDay, setKozmikDay] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
   const fetchKozmik = async () => {
-    if (kozmikData || kozmikLoading) return;
+    if (kozmikLoading) return;
+    if (kozmikData && kozmikDay === todayKey) return;
     setKozmikLoading(true);
     try {
       const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
-      if (r.ok) setKozmikData(await r.json());
+      if (r.ok) { setKozmikData(await r.json()); setKozmikDay(todayKey); }
     } catch { /* sessiz */ }
     setKozmikLoading(false);
   };
