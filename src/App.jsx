@@ -7840,9 +7840,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {BADGES.map(b=>{
                 const cur = streakData.current || 0;
                 const reached = cur >= b.days;                     // bu kademeye ulaşıldı
-                // Aktif kademe = ulaşılanların EN BÜYÜĞÜ
-                const activeTier = BADGES.filter(x=>cur>=x.days).map(x=>x.days).pop() ?? null;
-                const isActive = activeTier !== null && b.days === activeTier;
+                // Kullanıcı isteği: "3-7-21 gün açılınca bu butonlar aktifleşsin" —
+                // ULAŞILAN HER kademe aktif/parlak olsun (eskiden sadece en büyük
+                // kademe parlak, alttaki ulaşılanlar soluk kalıyordu).
+                const isActive = reached;
                 return(
                   <div key={b.days} style={{
                     display:"flex",alignItems:"center",gap:5,
