@@ -855,6 +855,10 @@ export function ProfileScreen() {
         <View style={styles.badgesGrid}>
           {BADGES.map(badge => {
             const earned = totalReadings >= badge.required || streak >= badge.required;
+            // İlerleme = sayaçların hedefe en yakını. Kilitli rozette "X/hedef" + ince
+            // çubuk → uzun vadeli rozet (100/365) umutsuz görünmez, kullanıcı ilerlediğini görür.
+            const progress = Math.min(Math.max(totalReadings, streak), badge.required);
+            const pct = Math.round((progress / badge.required) * 100);
             return (
               <View
                 key={badge.id}
@@ -870,6 +874,14 @@ export function ProfileScreen() {
                   {t(('profile.badges.list.' + badge.id + '.title') as any)}
                 </Text>
                 <Text style={styles.badgeDesc}>{t(('profile.badges.list.' + badge.id + '.desc') as any)}</Text>
+                {!earned && (
+                  <>
+                    <View style={styles.badgeProgressTrack}>
+                      <View style={[styles.badgeProgressFill, { width: `${pct}%` }]} />
+                    </View>
+                    <Text style={styles.badgeProgressText}>{progress}/{badge.required}</Text>
+                  </>
+                )}
               </View>
             );
           })}
@@ -1386,7 +1398,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.divider,
     gap: 4,
   },
-  badgeLocked: { opacity: 0.5 },
+  badgeLocked: { opacity: 0.72 },
   badgeEmoji: { color: Colors.textPrimary, fontSize: 24 },
   badgeTitle: {
     fontSize: Typography.size.xs,
@@ -1394,6 +1406,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   badgeDesc: { fontSize: 10, color: Colors.textMuted, textAlign: 'center' },
+  badgeProgressTrack: {
+    width: '100%', height: 3, borderRadius: 2, marginTop: 4,
+    backgroundColor: 'rgba(255,255,255,0.10)', overflow: 'hidden',
+  },
+  badgeProgressFill: { height: '100%', borderRadius: 2, backgroundColor: Colors.gold },
+  badgeProgressText: { fontSize: 9, color: Colors.textMuted, textAlign: 'center', marginTop: 1 },
 
   accountCard: {
     backgroundColor: Colors.backgroundCard,
