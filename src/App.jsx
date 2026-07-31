@@ -1927,6 +1927,11 @@ const GLOBAL_CSS = `
     .rem-card { padding:16px; }
     .chakra-card { padding:16px; }
   }
+  :root[data-platform="android"] .sakin-btn { padding:9px 20px; font-size:12px; }
+  :root[data-platform="android"] .sakin-btn-primary { padding:10px 28px; font-size:12px; }
+  :root[data-platform="android"] .sakin-bottom-nav button { padding:6px 10px; min-width:42px; }
+  :root[data-platform="android"] .notif-btn { min-height:40px; }
+  :root[data-platform="android"] .check-btn { width:40px; height:40px; }
 `;
 
 async function sendNotif(title, body) {
@@ -4270,7 +4275,11 @@ export default function SakinApp() {
           cv.getContext("2d").drawImage(img, 0, 0, w, h);
           resolve(cv.toDataURL("image/jpeg", 0.82));
         };
-        img.onerror = reject; img.src = URL.createObjectURL(file);
+        img.onerror = reject;
+        const objUrl = URL.createObjectURL(file);
+        const _origLoad = img.onload;
+        img.onload = function() { URL.revokeObjectURL(objUrl); _origLoad.call(this); };
+        img.src = objUrl;
       });
       const r = await fetch(API_BASE + "/.netlify/functions/identify", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -5076,7 +5085,7 @@ export default function SakinApp() {
       niyet, kelimeler: selectedWords, chakra: chakra.name,
       nefes: breathCount, freqSaniye: freqListenSec, ogrendim: aksamNote, sukur
     };
-    const log = JSON.parse(localStorage.getItem("sakin_log")||"[]");
+    let log; try { log = JSON.parse(localStorage.getItem("sakin_log")||"[]"); } catch { log = []; }
     const filtered = log.filter(g=>g._dateKey!==bugun._dateKey);
     filtered.unshift(bugun);
     localStorage.setItem("sakin_log", JSON.stringify(filtered.slice(0,7)));
@@ -5636,7 +5645,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
   };
 
   const generateRapor = async () => {
-    const gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]");
+    let gunler; try { gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]"); } catch { gunler = []; }
     // Yeterli iz yoksa sessizce çıkma — kullanıcıyı şefkatle bilgilendir (en az 2 gün).
     if (gunler.length < 2) { setRaporMesaj(t("report_need_data")); return; }
     setRaporMesaj("");
