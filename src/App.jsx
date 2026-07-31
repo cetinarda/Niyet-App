@@ -546,21 +546,6 @@ const ELEM_I18N = {
   title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
   hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun — sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart — then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht — dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta — luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa — depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte — il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
 };
-// Burç → element. Doğum haritası noktalarından (güneş, yükselen, 12. ev, draconic güneş)
-// element dağılımını host'ta hesaplar — Sakin Tasarım'a yönlendirmeye gerek kalmaz.
-const SIGN_ELEMENT = {
-  "Koç":"ates","Aslan":"ates","Yay":"ates",
-  "Boğa":"toprak","Başak":"toprak","Oğlak":"toprak",
-  "İkizler":"hava","Terazi":"hava","Kova":"hava",
-  "Yengeç":"su","Akrep":"su","Balık":"su",
-};
-function elementDistFromSigns(signs) {
-  const c = { ates:0, toprak:0, hava:0, su:0 };
-  let n = 0;
-  for (const s of (signs || [])) { const e = SIGN_ELEMENT[s]; if (e) { c[e]++; n++; } }
-  if (!n) return null;
-  return { ates:c.ates/n, toprak:c.toprak/n, hava:c.hava/n, su:c.su/n };
-}
 // "Sakin nedir?" pop-up'ı + ikili yol menüsü metinleri (Sprint 1 — basitleştirme).
 const NEDIR_I18N = {
   title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
@@ -592,8 +577,6 @@ const AI_ERR_I18N = {
 };
 // Yüzde formatı — TR "%50", diğer diller "50%"
 function pctFmt(pct, lang) { return lang === "tr" ? `%${pct}` : `${pct}%`; }
-// Gezegen astrolojik glifleri (Gökyüzü Raporu gezegen dizilişi satırı)
-const PLANET_GLYPH = { Sun:"☉", Moon:"☽", Mercury:"☿", Venus:"♀", Mars:"♂", Jupiter:"♃", Saturn:"♄", Uranus:"♅", Neptune:"♆", Pluto:"♇" };
 // Haftalık anahtar — haftalık rapor cache'i için (1 hafta boyunca aynı rapor).
 function currentWeekKey(d = new Date()) {
   const onejan = new Date(d.getFullYear(), 0, 1);
@@ -2143,6 +2126,53 @@ function dayNumber(dateObj) {
   return Math.floor(midnight.getTime() / 86400000);
 }
 
+// ── KIDEME GÖRE BİLDİRİM YOĞUNLUĞU (kullanıcı isteği 1.3.4) ─────────────────
+// Yeni kullanıcı çok bildirim ister, eski kullanıcı yorulur. Kıdem = ilk açılıştan
+// beri geçen gün. Kıdem `sakin_first_seen` (epoch-gün) ile bir kez yazılır; sonraki
+// tüm açılışlarda okunur. `sakin_log` en fazla 7 kayıt tuttuğu için kıdem ölçümüne
+// uygun değil — bu yüzden ayrı anahtar.
+//   yeni  (ilk 7 gün)  → günde 2 bildirim
+//   orta  (8–30 gün)   → gün aşırı: bir gün 2, ertesi gün 1
+//   eski  (30+ gün)    → günde 1 bildirim
+function _notifFirstSeenDay() {
+  try {
+    const raw = localStorage.getItem("sakin_first_seen");
+    if (raw) { const n = parseInt(raw, 10); if (Number.isFinite(n)) return n; }
+  } catch (_) {}
+  const today = dayNumber(new Date());
+  // İlk yazım: 1.3.4'e güncelleyen ESKİ kullanıcıyı "yeni" sayıp bir hafta 2/gün
+  // bildirimle boğma. Geçmişi varsa (isim/log/streak) kıdemini "orta" kabul et.
+  let seed = today;
+  try {
+    let logLen = 0; try { logLen = (JSON.parse(localStorage.getItem("sakin_log") || "[]") || []).length; } catch (_) {}
+    const streak = parseInt(localStorage.getItem("sakin_streak") || "0", 10) || 0;
+    const veteran = !!localStorage.getItem("sakin_name") || logLen > 0 || streak > 1;
+    if (veteran) seed = today - 15; // → orta tier (8–30 gün)
+  } catch (_) {}
+  try { localStorage.setItem("sakin_first_seen", String(seed)); } catch (_) {}
+  return seed;
+}
+function _notifTier() {
+  const days = dayNumber(new Date()) - _notifFirstSeenDay();
+  if (days <= 7) return "new";
+  if (days <= 30) return "mid";
+  return "old";
+}
+// Bir takvim günü için ikinci bildirimin slotu (akşam 18:00 zaten her gün var —
+// çekirdek bildirim). İkinci bildirim tier'a göre eklenir; SABAH HER GÜN ÇALIŞMAZ:
+// gerektiğinde gün paritesine göre ya sabah (08:00) ya öğleden sonra (13:00) düşer,
+// böylece "sabah bildirimini her zaman verme" karşılanır.
+function _notifSecondSlot(tier, dn) {
+  const even = (((dn % 2) + 2) % 2) === 0;
+  let wantSecond;
+  if (tier === "new") wantSecond = true;       // her gün 2
+  else if (tier === "mid") wantSecond = even;  // gün aşırı 2 / 1
+  else wantSecond = false;                      // eski: sadece akşam
+  if (!wantSecond) return null;
+  // İkinci bildirimi her zaman sabaha koyma — çift günlerde sabah, tek günlerde öğle.
+  return even ? "morning" : "afternoon";
+}
+
 async function scheduleDailyReminders(lang) {
   if (!isNative) return;
   try {
@@ -2154,7 +2184,8 @@ async function scheduleDailyReminders(lang) {
     const todayKey = sakinDayKey();
     // Damga = tarih + dil. Aynı gün dili değiştirirsen (TR↔EN) damga değişir,
     // yeniden planlanır; aşağıdaki cancel eski dildeki kuyruğu temizler.
-    const stamp = todayKey + "_" + lang;
+    const tier = _notifTier();
+    const stamp = todayKey + "_" + lang + "_" + tier;
     const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
     // Aynı gün + aynı dil zaten planlandıysa hiçbir şeye dokunma
     if (lastScheduled === stamp) return;
@@ -2169,23 +2200,16 @@ async function scheduleDailyReminders(lang) {
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
     const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
-    // 7 günlük forward schedule. GÜNDE 2 BİLDİRİM (kullanıcı sınırı, aşılmaz):
-    //   08:00 → sabah pingi (sabah ekranı)
-    //   18:00 → akşam bildirimi, tek birleşik havuz (özellik daveti + günlük söz +
-    //           nefes + Keşfet/Tasarım). Her öğe kendi hedefini taşır; tıklanınca
-    //           doğrudan o ekran/embed açılır.
-    // SABAH ve AKŞAM eskisi gibi korunur; kaldırılan slot 13:00 oldu (3 → 2).
+    // 7 günlük forward schedule. Bildirim yoğunluğu KIDEME göre değişir (yukarı bak):
+    //   AKŞAM 18:00 → çekirdek bildirim, her tier'da HER GÜN. Tek birleşik havuz
+    //     (özellik daveti + günlük söz + nefes + Keşfet/Tasarım). Her öğe kendi
+    //     hedefini taşır; tıklanınca doğrudan o ekran/embed açılır.
+    //   İKİNCİ bildirim → tier'a göre (yeni: her gün, orta: gün aşırı, eski: yok).
+    //     Sabah her gün çalışmaz: çift günlerde 08:00 (sabah pingi), tek günlerde
+    //     13:00 (öğle nudge'ı, akşam havuzundan farklı offset ile seçilir).
     // Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj).
     for (let d = 0; d < 7; d++) {
       const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
-      // 08:00 — sabah pingi (tıklanınca → sabah ekranı)
-      const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
-      if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
-      // 18:00 — AKŞAM bildirimi (günün 2. ve son bildirimi). Kullanıcı: "günlük
-      // toplam 2, ikiyi geçmesin — sadece havuza ekle" + "sabah ve akşam eskisi
-      // gibi devam etsin". Bu yüzden nefes ve Keşfet/Tasarım metinleri AYRI SLOT
-      // açmaz; akşam havuzuna karışır ve gün numarasına göre sırayla döner.
-      // Her öğe kendi hedefini taşır → tıklanınca doğrudan o ekran/embed açılır.
       const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
       const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
       const eveningPool = [
@@ -2194,11 +2218,20 @@ async function scheduleDailyReminders(lang) {
         ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
         ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
       ];
+      // AKŞAM 18:00 — çekirdek günlük bildirim (1.3.1'de 21:00'di; kullanıcı akşamüstünü tercih etti).
       const evening = pick(eveningPool, dn);
-      // Saat 21:00 → 18:00 (kullanıcı tercihi). 1.3.1'de kodda 21:00'di; kullanıcı
-      // akşamüstünü tercih etti.
       const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
       if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
+      // İKİNCİ bildirim — tier + gün paritesine göre (sabah HER GÜN değil).
+      const slot = _notifSecondSlot(tier, dn);
+      if (slot === "morning") {
+        const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
+        if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
+      } else if (slot === "afternoon") {
+        const aAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, 0, 0);
+        const alt = pick(eveningPool, dn + 3);
+        if (aAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: alt.body, schedule: { at: aAt }, extra: alt.extra, ...icon });
+      }
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
     localStorage.setItem("sakin_notif_scheduled", stamp);
@@ -2288,25 +2321,6 @@ function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
       localStorage.setItem(_storageKey, JSON.stringify(next));
       return next;
     });
-  };
-
-  const startTimer = (rem) => {
-    if (!rem.duration) return;
-    if (timing?.id === rem.id) { clearInterval(timerRef.current); setTiming(null); return; }
-    if (timing) clearInterval(timerRef.current);
-    setTiming({ id: rem.id, elapsed: 0, total: rem.duration });
-    timerRef.current = setInterval(() => {
-      setTiming(t => {
-        if (!t) return null;
-        const next = t.elapsed + 1;
-        if (next >= t.total) {
-          clearInterval(timerRef.current);
-          setDone(p => { const n={...p,[rem.id]:true}; localStorage.setItem(_storageKey,JSON.stringify(n)); return n; });
-          return null;
-        }
-        return { ...t, elapsed: next };
-      });
-    }, 1000);
   };
 
   useEffect(() => () => clearInterval(timerRef.current), []);
@@ -2962,36 +2976,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   );
 
   return null;
-}
-
-// Module-level AudioContext singleton — iOS WKWebView her yeni ctx'i gesture context'i
-// kaybedebileceği için reuse ediyoruz. Kullanıcı ilk gesture'ında ctx oluşur, sonra
-// her ses çalmada aynı ctx'i kullanırız; close ASLA çağırmayız.
-let __freqToneCtx = null;
-function playFreqTone(hz, dur = 3.5) {
-  try {
-    if (!__freqToneCtx) {
-      __freqToneCtx = __makeAudioCtx();
-    }
-    const ctx = __freqToneCtx;
-    if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
-    const master = ctx.createGain();
-    master.gain.setValueAtTime(0, ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0.30, ctx.currentTime + 0.4);
-    master.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-    master.connect(ctx.destination);
-    [[1, 1, "sine"], [0.5, 0.2, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.type = type;
-      o.frequency.value = hz * ratio;
-      g.gain.setValueAtTime(0, ctx.currentTime);
-      g.gain.linearRampToValueAtTime(0.30 * amp, ctx.currentTime + 0.4);
-      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-      o.connect(g); g.connect(master);
-      o.start(); o.stop(ctx.currentTime + dur);
-    });
-  } catch(_) {}
 }
 
 // ── YOGA POZ SÖZLÜĞÜ + ÇİZGİ FİGÜRLERİ ─────────────────────────────────────
@@ -3651,7 +3635,6 @@ const JOURNEY_STEPS = [
 
 export default function SakinApp() {
   const [lang, setLang] = useState(() => { const v = localStorage.getItem("sakin_lang") || "en"; return v === "pt-BR" ? "pt" : v; });
-  const [langOpen, setLangOpen] = useState(false);
   // ── MATRIX MODU (deneysel) — efekt katmanı: yeşil tint + kod yağmuru + monospace.
   // Tüm UI'yı tek tek elden geçirmeden uygular. Sakin Ailesi paneli + embed app'ler
   // kapsam DIŞI (aşağıda overlay onlarda gizlenir).
@@ -4486,9 +4469,6 @@ export default function SakinApp() {
   const [mirrorPortalActive, setMirrorPortalActive] = useState(false);
   const [chakraInput, setChakraInput] = useState("");
   const [chakraAnaliz, setChakraAnaliz] = useState("");
-  const [semptomInput, setSemptomInput] = useState("");
-  const [semptomAnaliz, setSemptomAnaliz] = useState("");
-  const [semptomAcik, setSemptomAcik] = useState(false);
   const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("sakin_reiki_used") === "1");
   const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("sakin_zihinsel_used") === "1");
   // İki ayrı arama ekranı
@@ -4769,7 +4749,6 @@ export default function SakinApp() {
   const [showBirthForm,  setShowBirthForm]  = useState(false);
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
-  const [introPhase, setIntroPhase] = useState(0);
   const [introExiting, setIntroExiting] = useState(false);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz (mount=false).
   // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
@@ -4842,7 +4821,6 @@ export default function SakinApp() {
     setStreakData({ current: 0, best: 0, lastDate: null, badges: [] });
     setStepsCompleted({});
     setChakraInput(""); setChakraAnaliz("");
-    setSemptomInput(""); setSemptomAnaliz("");
     setSikayet(""); setSikayetHis(""); setSikayetAnaliz("");
     setHastalik(""); setHastalikHis(""); setHastalikAnaliz("");
     setAiRapor("");
@@ -5092,33 +5070,6 @@ export default function SakinApp() {
     // Rapor haftalık sabit — veride değişiklik olsa da bu haftanın cache'li raporunu KORU/yeniden yükle.
     try { if (localStorage.getItem("sakin_rapor_week") === currentWeekKey()) { const _c = localStorage.getItem("sakin_rapor_text"); if (_c) setAiRapor(_c); } } catch {}
   },[screen, niyet, selectedWords, chakra.name, breathCount, freqListenSec, aksamNote, sukur]);
-
-  const CHAKRA_KEYWORDS = [
-    { idx:0, keywords:["güvensiz","korkuyorum","korku","para","maddi","güvende değil","temel","ev","aile","toprak","istikrar","aidiyetsiz","destek yok","hayatta kalamıyorum","köksüz"] },
-    { idx:1, keywords:["yaratıcı","ilişki","duygu","akış","zevk","suçluluk","utanç","hissed","cinsel","sevinç","neşe","coşku","kendimi bırakamıyorum"] },
-    { idx:2, keywords:["güç","kontrol","özgüven","kimlik","irade","sinir","öfke","küçüm","yetersiz","ego","cesaret","güçsüz","başaramıyorum","kendinle","kendime güvenemiyorum"] },
-    { idx:3, keywords:["sevgi","sevemiyorum","sevilemiyorum","kayıp","üzüntü","acı","af","şefkat","yalnız","kalp","bağlantı","merhamet","sevilmiyorum","sevilmek"] },
-    { idx:4, keywords:["ifade","söyleyemiyorum","anlatamıyorum","iletişim","ses","dürüstlük","konuşamıyorum","dinlenilmiyorum","anlaşılamıyorum","söz"] },
-    { idx:5, keywords:["sezgi","karar veremiyorum","netlik","yön","hayal","anlam","amaç","kafam karışık","göremiyorum","içgüdü","belirsiz","yol bulamıyorum"] },
-    { idx:6, keywords:["anlamsız","bağlantısız","spiritüel","ruh","bütünlük","evren","tanrı","amaç yok","boşluk","varoluş","neden yaşıyorum"] },
-  ];
-  const CHAKRA_ZIHINSEL = [
-    "Sırt (alt), Böbrekler — Para ve maddi destek korkusu; eleştiri ve başarısızlık korkusu",
-    "Bağırsaklar, Mide — Eski düşünceleri bırakamama; yeniliklere direnç",
-    "Mide, Karaciğer — Korku, yeni fikirlere direnç; kronik öfke ve eleştiri",
-    "Kalp, Sırt (üst), Akciğerler — Sevgi ve neşeyi reddetmek; duygusal destek eksikliği; üzüntü",
-    "Boğaz, Kulaklar — Kendini ifade edememe, öfkeyi yutmak; duymak istemediğin şeyler",
-    "Gözler, Baş Ağrısı — Geçmişi ya da geleceği görmek istememe; özeleştiri ve korku",
-    "Boyun, Omuzlar — Esneklik eksikliği; aşırı sorumluluk yükü",
-  ];
-
-  function chakraEsle(input) {
-    const t = (input||"").toLowerCase();
-    for (const { idx, keywords } of CHAKRA_KEYWORDS) {
-      if (keywords.some(k => t.includes(k))) return idx;
-    }
-    return 4; // default: Boğaz
-  }
 
   // Önceki sorgulara göre kişiselleştirme bağlamı oluştur
   // ── GÖREV İSTE (İçsel Ayna) ────────────────────────────────────────────────
@@ -5392,8 +5343,6 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 • Yaşam Çiçeği (Drunvalo): Kutsal geometri evrenin dilidir; her çakra, her nefes, her hücre ilahi bir örüntü taşır. Merkaba ışık bedenini aktive eder.
 • Bir'in Yasası (Ra Materyali): Her şey tek bir bilinçtir. Sevgi evrenin birleştirici gücüdür. Başkasına hizmet kendi evrimine katkıdır. Sen hem öğreten hem öğrenilensin.`;
 
-  const PREMIUM_YONLENDIRME = `\n\n_(Daha derin analiz, kişisel terapi önerileri ve detaylı çakra haritası için Premium'u keşfet.)_`;
-
   const NEFES_REHBERI = `UYGULAMADAKI NEFES MODLARI (en uygununu öner):
 • Standart (4-1.5-4): Genel denge, farkındalık, her durum için başlangıç
 • Diyafram (4-0-6): Stres, mide/karın gerginliği, duygusal boşalma
@@ -5488,60 +5437,6 @@ BEDEN-ZİHİN BAĞLANTISI:
 3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
 4. Kendini sevmeyi öğren — bu tüm şifanın temelidir`;
 
-  const generateSemptomAnaliz = async () => {
-    if (!semptomInput.trim()) return;
-    setSemptomAnaliz("__loading__");
-    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroText3 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
-    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
-    try {
-      const res = await fetch(AI_CALL_URL, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain"},
-        body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1200, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          ragQuery: semptomInput,
-          messages:[{ role:"user", content:`Kullanıcının semptomu: "${sanitizeInput(semptomInput)}"
-
-${REIKI_BILGI}
-
-${LOUISE_HAY_REHBER}
-
-Zihinsel nedenler:
-${zihinselListeText}
-
-${astroText3}
-
-${NEFES_REHBERI}
-
-${UYGULAMA_BOLUMLER}
-
-Yanıtını şu formatta ver:
-
-**Ayna**
-(Semptomu, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
-
-**Senin için**
-Beslenme: (bu semptom ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
-Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
-Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
-
-**Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans müziği, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok || d.error) { setSemptomAnaliz("Hata: " + (d.error || res.status)); return; }
-      setSemptomAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
-      sorguKaydet("semptom", semptomInput);
-    } catch {
-      setSemptomAnaliz(pickLang(AI_ERR_I18N.connError, lang));
-    }
-  };
-
   const generateSikayetAnaliz = async () => {
     if (!sikayet.trim()) return;
     setSikayetAnaliz("__loading__");
@@ -5591,57 +5486,6 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       sorguKaydet("şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
-  };
-
-  const generateHastalikAnaliz = async () => {
-    if (!hastalik.trim()) return;
-    setHastalikAnaliz("__loading__");
-    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
-    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
-    try {
-      const res = await fetch(AI_CALL_URL, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain"},
-        body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1300, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          ragQuery: hastalik,
-          messages:[{ role:"user", content:`Hastalık: "${sanitizeInput(hastalik)}"${hastalikHis ? `\nNasıl hissediyorum: "${sanitizeInput(hastalikHis)}"` : ""}
-
-${REIKI_BILGI}
-
-${LOUISE_HAY_REHBER}
-
-Zihinsel nedenler:
-${zihinselListeText}
-${astroTxt}
-
-${NEFES_REHBERI}
-
-${UYGULAMA_BOLUMLER}
-
-Yanıtını şu formatta ver:
-
-**Ayna**
-(Hastalığı, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
-
-**Senin için**
-Beslenme: (bu hastalık ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
-Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
-Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
-
-**Reiki ile Enerji Aktarımı**
-(El pozisyonu, frekans, niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok || d.error) { setHastalikAnaliz("Hata: " + (d.error || res.status)); return; }
-      setHastalikAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
-      sorguKaydet("hastalık", hastalik);
-    } catch(e) { setHastalikAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("HastalikAnaliz error:", e); }
   };
 
   const generateRapor = async () => {
@@ -7821,7 +7665,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     {/* Çakra düğümleri */}
                     {chakraNodes.map((node,i) => {
                       const done = node.id ? !!stepsCompleted[node.id] : (node.zone==="sub" ? pct>0 : pct>=1);
-                      const isNext = node.id && nextStep?.id===node.id;
                       const lit = node.y >= lightY;
                       const r = (node.zone==="sub"||node.zone==="supra") ? 8 : 10;
                       return (
@@ -9925,7 +9768,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   const freqs = Array.from(new Set(picks.flatMap(p => p.frequencies))).slice(0, 6);
                   // Renkleri harmanla
                   const colors = Array.from(new Set(picks.flatMap(p => p.colors)));
-                  const labels = picks.map(p => pickLabel(p, lang));
                   const customMode = {
                     id: "kendi",
                     labelTr: picks.map(p=>p.labelTr).join(" · "),
