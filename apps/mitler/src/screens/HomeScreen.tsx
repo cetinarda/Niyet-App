@@ -213,25 +213,72 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
 
   useEffect(() => {
     let sub: { remove: () => void } | null = null;
+    let removeWeb: (() => void) | null = null;
     let lx = 0, ly = 0, lz = 0, cool = false;
-    const setup = async () => {
-      try {
-        const { Accelerometer } = require('expo-sensors');
-        Accelerometer.setUpdateInterval(100);
-        sub = Accelerometer.addListener(({ x, y, z }: { x: number; y: number; z: number }) => {
-          const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
-          lx = x; ly = y; lz = z;
-          if (d > 2.4 && !revealedRef.current && !cool) {
-            cool = true;
-            setTimeout(() => { cool = false; }, 800);
-            triggerReveal();
-          }
-        });
-      } catch { /* web fallback */ }
+    const onShake = () => {
+      if (revealedRef.current || cool) return;
+      cool = true;
+      setTimeout(() => { cool = false; }, 800);
+      triggerReveal();
     };
-    setup();
-    return () => { sub?.remove(); };
+    const attachWeb = () => {
+      const handler = (e: any) => {
+        const a = e.accelerationIncludingGravity || e.acceleration;
+        if (!a) return;
+        const x = a.x || 0, y = a.y || 0, z = a.z || 0;
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 24) onShake();
+      };
+      window.addEventListener('devicemotion', handler);
+      removeWeb = () => window.removeEventListener('devicemotion', handler);
+    };
+    try {
+      const { Accelerometer } = require('expo-sensors');
+      Accelerometer.setUpdateInterval(100);
+      sub = Accelerometer.addListener(({ x, y, z }: { x: number; y: number; z: number }) => {
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 2.4) onShake();
+      });
+    } catch {
+      // expo-sensors embed webview'de patlar → web DeviceMotion fallback. Mitler'de
+      // bu fallback HİÇ yoktu, o yüzden salla hiç çalışmıyordu. attachWeb'i her zaman
+      // bağla: iOS'ta izin bir kez verilince (kalıcı, origin bazlı) sonraki oturumlarda
+      // mit kartında da salla çalışır. İzin yoksa dinleyici sessiz kalır; ilk dokunuş
+      // requestMotionPermission ile izni ister (iOS jest şartı).
+      if (typeof window !== 'undefined' && typeof (window as any).DeviceMotionEvent !== 'undefined') {
+        attachWeb();
+      }
+    }
+    return () => { sub?.remove(); removeWeb?.(); };
   }, []);
+
+  // iOS 13+ Safari/WKWebView: DeviceMotion izni yalnızca bir kullanıcı jesti içinde
+  // senkron istenebilir. Reveal dokunuşuna gömülü; verilirse origin'de kalıcıdır ve
+  // sonraki günlerde salla baştan çalışır.
+  const requestMotionPermission = () => {
+    if (typeof window === 'undefined') return;
+    const DME: any = (window as any).DeviceMotionEvent;
+    if (!DME || typeof DME.requestPermission !== 'function') return;
+    DME.requestPermission().then((res: string) => {
+      if (res !== 'granted') return;
+      let lx = 0, ly = 0, lz = 0, cool = false;
+      const handler = (e: any) => {
+        const a = e.accelerationIncludingGravity || e.acceleration;
+        if (!a) return;
+        const x = a.x || 0, y = a.y || 0, z = a.z || 0;
+        const d = Math.abs(x - lx) + Math.abs(y - ly) + Math.abs(z - lz);
+        lx = x; ly = y; lz = z;
+        if (d > 24 && !revealedRef.current && !cool) {
+          cool = true;
+          setTimeout(() => { cool = false; }, 800);
+          triggerReveal();
+        }
+      };
+      window.addEventListener('devicemotion', handler);
+    }).catch(() => {});
+  };
 
   const archetype = reading ? archetypesData.find(a => a.id === reading.archetypeId) : null;
   const myth      = reading ? mythsData.find(m => m.id === reading.mythId)         : null;
@@ -341,7 +388,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                 >
                   <TouchableOpacity
                     style={styles.backInner}
-                    onPress={triggerReveal}
+                    onPress={() => { requestMotionPermission(); triggerReveal(); }}
                     activeOpacity={0.85}
                   >
                     <View style={styles.bandRow}>

@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useI18n } from '../i18n/useI18n';
 import { shareCard, isShareable } from '../utils/shareCard';
+import { useSakinHayvanStore } from '../store/useStore';
 
 type Stone = {
   id: string;
@@ -31,7 +32,11 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
   const stone = (stoneProp ?? animal) as Stone;
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
+  const { recordCardView } = useSakinHayvanStore();
   const [imgErr, setImgErr] = useState(false);
+
+  // Keşfet'te bu kartı açmak "okuma" sayılır (rozet için); aynı kart günde 1 kez.
+  useEffect(() => { recordCardView(stone.id); }, [stone.id]);
 
   const rarityLabel = stone.rarity
     ? t(('animalDetail.rarityLabels.' + stone.rarity) as any)

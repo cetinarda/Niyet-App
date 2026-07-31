@@ -57,6 +57,7 @@ const STORAGE_KEYS = {
   ARCHIVE: '@sakinhayvan_archive',
   STATS: '@sakinhayvan_stats',
   LANGUAGE: '@sakinhayvan_language',
+  VIEWED: '@sakinhayvan_viewed_today',
 };
 
 const todayStr = () => new Date().toISOString().split('T')[0];
@@ -469,6 +470,32 @@ export function useSakinHayvanStore() {
     await saveProfile({ ...current, totalReadings: total, level: Math.floor(total / 7) + 1 });
   }, [saveProfile]);
 
+  // Keşfet'te bir kart (hayvan/taş/nagual detay) AÇILINCA okuma say (kullanıcı isteği:
+  // "7 hayvana bakınca Yol Başlangıcı rozeti yansın"). AYNI KART GÜNDE 1 KEZ sayılır
+  // (aynı hayvanı tekrar açmak şişirmez). Farklı 7 kart açınca totalReadings 7'ye
+  // ulaşır ve rozet yanar. AsyncStorage'dan okuyup yazar (paylaşılan store olmadığı
+  // için Home/Detay/Profil ekranları ayrı kopyalar tutar — kaynak her zaman disk).
+  const recordCardView = useCallback(async (cardId: string) => {
+    if (!cardId) return;
+    try {
+      const today = todayStr();
+      let seen: { day: string; ids: string[] } = { day: today, ids: [] };
+      try {
+        const vraw = await AsyncStorage.getItem(STORAGE_KEYS.VIEWED);
+        const p = vraw ? JSON.parse(vraw) : null;
+        if (p && p.day === today && Array.isArray(p.ids)) seen = p;
+      } catch {}
+      if (seen.ids.includes(cardId)) return;   // bugün zaten sayıldı
+      seen.ids.push(cardId);
+      await AsyncStorage.setItem(STORAGE_KEYS.VIEWED, JSON.stringify(seen));
+      const praw = await AsyncStorage.getItem(STORAGE_KEYS.PROFILE);
+      if (!praw) return;
+      const current: UserProfile = JSON.parse(praw);
+      const total = (current.totalReadings || 0) + 1;
+      await saveProfile({ ...current, totalReadings: total, level: Math.floor(total / 7) + 1 });
+    } catch {}
+  }, [saveProfile]);
+
   const getLevelTitle = useCallback((level: number): string => {
     const titles = ['Talip', 'Mürit', 'Derviş', 'Eren', 'Veli', 'Pir', 'Kutup'];
     return titles[Math.min(level - 1, titles.length - 1)];
@@ -494,6 +521,7 @@ export function useSakinHayvanStore() {
     updateBirthData,
     generateDailyReading,
     recordReading,
+    recordCardView,
     updateStats,
     getTopStat,
     getLevelTitle,

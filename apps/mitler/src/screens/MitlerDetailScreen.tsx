@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Share, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
+import { useMitlerStore } from '../store/useStore';
 import archetypesData from '../data/archetypes.json';
 import mythsData from '../data/myths.json';
 import imagesData from '../data/images.json';
@@ -47,6 +48,10 @@ export const KIND_COLOR: Record<Kind, string> = {
 export function MitlerDetailScreen({ entry, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const accent = KIND_COLOR[entry.kind];
+  const { recordCardView } = useMitlerStore();
+  // Keşfet'te bu kartı açmak "okuma" sayılır (rozet için); aynı kart günde 1 kez.
+  // kind:id → arketip ve mit aynı id'yi paylaşsa bile ayrı sayılır.
+  useEffect(() => { recordCardView(entry.kind + ':' + entry.id); }, [entry.id, entry.kind]);
 
   const sections = buildSections(entry);
 

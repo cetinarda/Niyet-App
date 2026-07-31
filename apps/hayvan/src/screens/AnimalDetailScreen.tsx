@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { getRelatedMyth, getElementPractice } from '../utils/animalRelations';
 import { MythDetail } from './MythsScreen';
+import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedLore, localize } from '../i18n/localize';
 import { shareCard, isShareable } from '../utils/shareCard';
@@ -26,8 +27,11 @@ interface Props { animal: Animal; onClose: () => void; }
 export function AnimalDetailScreen({ animal, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
+  const { recordCardView } = useSakinHayvanStore();
   const lore = useLocalizedLore(animal.id);
   const [imgErr, setImgErr] = useState(false);
+  // Keşfet'te bu kartı açmak "okuma" sayılır (rozet için); aynı kart günde 1 kez.
+  useEffect(() => { recordCardView(animal.id); }, [animal.id]);
   const [openMyth, setOpenMyth] = useState<ReturnType<typeof getRelatedMyth>>(null);
 
   const rawMyth = getRelatedMyth(animal.id, animal.element);

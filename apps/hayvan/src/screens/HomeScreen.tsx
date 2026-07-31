@@ -230,12 +230,15 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
         if (d > 2.4) onShake();
       });
     } catch {
-      // Android/masaüstü Chrome: izinsiz direkt dinler. iOS Safari'de
-      // requestPermission fonksiyonu varsa burada DENEMİYORUZ (jest gerekir) —
-      // dokunuş handler'ı üstlenir.
+      // expo-sensors embed'de yok → web DeviceMotion fallback. attachWeb'i HER ZAMAN
+      // bağla: iOS'ta izin bir kez verilince (kalıcı, origin bazlı) mount'taki bu
+      // dinleyici SONRAKİ oturumlarda İLK kartta da (hayvan/taş/bitki) salla'yı
+      // çalıştırır. Önceden yalnızca requestPermission YOKSA bağlanıyordu → iOS'ta
+      // ilk kart hep dokunuş istiyordu, salla sadece 2. karttan (söz) sonra çalışıyordu.
+      // İzin henüz yoksa dinleyici sessiz kalır; ilk dokunuş requestMotionPermission
+      // ile izni ister (iOS jest şartı).
       if (typeof window !== 'undefined' && typeof (window as any).DeviceMotionEvent !== 'undefined') {
-        const DME: any = (window as any).DeviceMotionEvent;
-        if (typeof DME.requestPermission !== 'function') attachWeb();
+        attachWeb();
       }
     }
     return () => { sub?.remove(); removeWeb?.(); };

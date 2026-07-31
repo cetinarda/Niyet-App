@@ -5058,6 +5058,11 @@ export default function SakinApp() {
       if (hist.length > 1) hist.pop();
       const prev = hist[hist.length - 1] || "giris";
       setScreenRaw(prev);
+      // KRİTİK: bayrağı BURADA sıfırla. onPop setScreenRaw kullanır (setScreen değil),
+      // yani isPopRef tüketilmez; sıfırlanmazsa geri hareketinden SONRAKİ ilk setScreen
+      // kendini "pop" sanıp history'ye push ETMEZ → o navigasyon kaydolmaz, bir sonraki
+      // geri bir seviye fazla atlar ("aynadan terapiye gidip geri → aynayı atlıyordu").
+      isPopRef.current = false;
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
