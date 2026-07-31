@@ -2126,6 +2126,13 @@ function dayNumber(dateObj) {
   return Math.floor(midnight.getTime() / 86400000);
 }
 
+// Bundle ilk eval anı = uygulama soğuk açılış anı. Premium revoke recheck'inde
+// "açılış grace'i" için kullanılır: initStore ~8sn makbuz doğrulama penceresi
+// geçmeden revoke edilmez (ödeme yapan kullanıcının premium'u soğuk açılış
+// yarışında anlık düşmesin). Warm foreground'da (context zaten canlı) fark büyük
+// olduğu için grace legitimate revoke'u engellemez.
+const __appStartMs = Date.now();
+
 // ── KIDEME GÖRE BİLDİRİM YOĞUNLUĞU (kullanıcı isteği 1.3.4) ─────────────────
 // Yeni kullanıcı çok bildirim ister, eski kullanıcı yorulur. Kıdem = ilk açılıştan
 // beri geçen gün. Kıdem `sakin_first_seen` (epoch-gün) ile bir kez yazılır; sonraki
@@ -4356,18 +4363,33 @@ export default function SakinApp() {
   // yeni premium yalnızca .verified callback'i ile (userInitiatedAction=true iken) verilir.
   // Bu Apple 2.1 expired-sub testini geçer, ama cached receipt'lerden bedavaya
   // premium grant'ini engeller.
+  // YUMUŞATMA (kullanıcı onaylı): ödeme yapan kullanıcı yanlışlıkla revoke edilmesin
+  // diye iki guard eklendi. Ters durumda "Geri Yükle" + otomatik .verified callback'i
+  // zaten kurtarır; bu guard'lar flicker/anlık yanlış-düşme penceresini daraltır.
   useEffect(() => {
     if (!isNative) return;
+    let confirmTimer = null;
     const recheck = () => {
       if (document.visibilityState !== "visible") return;
       if (!areProductsLoaded()) return; // mağaza/owned hazır değilken iptal etme (açılış yarışı)
+      // GUARD 1 — açılış grace'i: soğuk açılışta makbuz doğrulama döngüsü (approved→
+      // verified, .owned'ı asıl set eden) henüz bitmemiş olabilir. initStore 8sn ürün
+      // yükleme penceresini kapsayacak şekilde ilk 10sn revoke etme.
+      if (Date.now() - __appStartMs < 10000) return;
       try {
-        const owned = isSubscribed();
-        if (!owned) setIsPremium(false); // sadece iptal et, asla grant verme
+        if (isSubscribed()) { if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; } return; }
+        // GUARD 2 — çift doğrulama: tek bir false anlık/geçici olabilir (plugin state
+        // yenilenirken). Hemen revoke etme; ~2.5sn sonra BİR KEZ DAHA doğrula, hâlâ
+        // false ise iptal et. owned=true asla grant vermez, sadece revoke'u iptal eder.
+        if (confirmTimer) return;
+        confirmTimer = setTimeout(() => {
+          confirmTimer = null;
+          try { if (!isSubscribed()) setIsPremium(false); } catch(_) {}
+        }, 2500);
       } catch(_) {}
     };
     document.addEventListener("visibilitychange", recheck);
-    return () => document.removeEventListener("visibilitychange", recheck);
+    return () => { document.removeEventListener("visibilitychange", recheck); if (confirmTimer) clearTimeout(confirmTimer); };
   }, []);
 
   const handlePurchase = async (fn, id) => {
