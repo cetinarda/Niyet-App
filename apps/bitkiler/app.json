@@ -14,7 +14,7 @@
       "backgroundColor": "#0D0B14"
     },
     "ios": {
-      "bundleIdentifier": "life.sakin.stones",
+      "bundleIdentifier": "life.sakin.plants",
       "buildNumber": "1",
       "supportsTablet": true,
       "minimumOsVersion": "15.1",
@@ -22,7 +22,7 @@
         "usesNonExemptEncryption": false
       },
       "infoPlist": {
-        "NSMotionUsageDescription": "Sakin Taşlar uses motion data to detect when you shake your phone to draw the day's stone card.",
+        "NSMotionUsageDescription": "Sakin Bitkiler uses motion data to detect when you shake your phone to draw the day's plant card.",
         "ITSAppUsesNonExemptEncryption": false,
         "UIRequiresFullScreen": false
       },
@@ -50,7 +50,7 @@
       }
     },
     "android": {
-      "package": "life.sakin.stones",
+      "package": "life.sakin.plants",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
