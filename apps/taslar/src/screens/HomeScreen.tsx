@@ -12,6 +12,12 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+
+const _bridgeHaptic = (style: 'light' | 'medium' | 'heavy' = 'medium') => {
+  try { Haptics.impactAsync(style === 'heavy' ? Haptics.ImpactFeedbackStyle.Heavy : style === 'medium' ? Haptics.ImpactFeedbackStyle.Medium : Haptics.ImpactFeedbackStyle.Light); } catch {}
+  try { window.parent.postMessage({ type: 'sakin-haptic', style }, window.location.origin); } catch {}
+  try { navigator.vibrate?.(style === 'heavy' ? 80 : style === 'medium' ? 40 : 20); } catch {}
+};
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import quotesData from '../data/quotes.json';
 import stonesData from '../data/stones.json';
@@ -303,7 +309,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     revealedRef.current = true;
     setRevealed(true);
     recordReading();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    _bridgeHaptic('medium');
     Animated.parallel([
       Animated.timing(backFade,  { toValue: 0, duration: 280, useNativeDriver: true }),
       Animated.timing(frontFade, { toValue: 1, duration: 380, useNativeDriver: true }),
@@ -311,7 +317,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   };
 
   const handleNext = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    _bridgeHaptic('light');
     if (step < DECKS.length - 1) {
       Animated.timing(frontFade, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
         setStep(s => s + 1);

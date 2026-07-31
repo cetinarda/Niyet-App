@@ -3136,11 +3136,22 @@ function _cardCleanText(raw) {
     .replace(/[ \t]+/g, " ")
     .trim();
 }
-// İlk N cümleyi al — kart üstündeki tespit özetini kısa tutmak için.
+// İlk N cümleyi al.
 function _cardFirstSentences(text, n) {
   const parts = String(text || "").split(/(?<=[.!?])\s+/).filter(Boolean);
   const picked = parts.slice(0, n).join(" ").trim();
   return picked || text;
+}
+// "Senin için" bölümünden kartın alt özetini çıkar: beslenme/hareket detayını atla,
+// enerji/çakra/nefes önerisini al. Kullanıcı: "beslenme nefes vs den ziyade
+// zihinsel sebeblerini belirt ... solar pleksus çakrana enerji aktarman, nefes
+// egzersizleri yapman iyi bir başlangıç olur gibi bir şey çıksın kartta."
+function _cardPratikOzet(text) {
+  const lines = String(text || "").split("\n").map(l => l.trim()).filter(Boolean);
+  const skip = /^(Beslenme|Hareket|Nutrition|Movement|Ernährung|Bewegung|Alimentación|Movimiento):/i;
+  const keep = lines.filter(l => !skip.test(l));
+  if (keep.length) return keep.slice(0, 2).join(" ").replace(/\s+/g, " ").trim();
+  return _cardFirstSentences(text, 2);
 }
 
 function buildMirrorStoryCard(baslik, govde, altYazi) {
@@ -3211,7 +3222,7 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
   if (aynaM) {
     aynaLines = wrapInto(_cardCleanText(aynaM[1]), "300 38px -apple-system, 'Inter', sans-serif", maxW);
     if (pratikM) {
-      const pratikOzet = _cardFirstSentences(_cardCleanText(pratikM[1]), 2);
+      const pratikOzet = _cardPratikOzet(_cardCleanText(pratikM[1]));
       pratikLines = wrapInto(pratikOzet, "300 28px -apple-system, 'Inter', sans-serif", maxW);
     }
   } else {
@@ -4162,6 +4173,9 @@ export default function SakinApp() {
         setFotoTaniType(e?.data?.kind === "plant" ? "plant" : "stone");
         setFotoTaniResult("");
         setShowFotoTani(true);
+      } else if (type === "sakin-haptic") {
+        const style = e?.data?.style === "medium" ? ImpactStyle.Medium : e?.data?.style === "heavy" ? ImpactStyle.Heavy : ImpactStyle.Light;
+        haptic(style);
       } else if (type === "sakin-share-card") {
         // Embed (Android WebView) kart görselini paylaşmak istiyor — iframe içinde
         // navigator.share/indirme çalışmaz. Host, dataURL'i blob'a çevirip Capacitor
