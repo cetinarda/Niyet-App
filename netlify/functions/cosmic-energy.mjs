@@ -1,4 +1,4 @@
-import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition } from "astronomy-engine";
+import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition, SearchGlobalSolarEclipse, SearchLunarEclipse } from "astronomy-engine";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
@@ -212,66 +212,83 @@ function transitNote(planets, date = new Date()) {
   return out.tr ? out : null;
 }
 
-// ── ÖNEMLI GÖK OLAYLARI TAKVİMİ (tutulmalar, dikkat çekici kuyruklu yıldızlar) ──
-// Göktaşı yağmurları METEOR_SHOWERS'da ayrı tutulmaktadır. Burası sporadik/aperiodik olaylar.
-// Yeni olay eklemek için: { type, start, peak, end, name:{tr,en,...}, desc:{tr,en,...} }
-const NOTABLE_SKY_EVENTS = [
-  // ── GÜNEŞ TUTULMALARI ──
-  { type:"solar_eclipse", start:[2026,8,11], peak:[2026,8,12], end:[2026,8,13],
-    name:{ tr:"Tam Güneş Tutulması", en:"Total Solar Eclipse", de:"Totale Sonnenfinsternis",
-           es:"Eclipse Solar Total", pt:"Eclipse Solar Total", fr:"Éclipse Solaire Totale", ja:"皆既日食" },
-    desc:{ tr:"Ay, Güneş'i tam olarak örtüyor. Totality yolu: İzlanda, İspanya, Cezayir, Tunus. Tam karanlık birkaç dakika sürecek.",
-           en:"The Moon fully covers the Sun. Totality path: Iceland, Spain, Algeria, Tunisia. Total darkness for several minutes.",
-           de:"Der Mond bedeckt die Sonne vollständig. Totalitätspfad: Island, Spanien, Algerien, Tunesien.",
-           es:"La Luna cubre completamente al Sol. Camino: Islandia, España, Argelia, Túnez.",
-           pt:"A Lua cobre completamente o Sol. Caminho: Islândia, Espanha, Argélia, Tunísia.",
-           fr:"La Lune couvre entièrement le Soleil. Bande de totalité : Islande, Espagne, Algérie, Tunisie.",
-           ja:"月が太陽を完全に覆う。皆既帯：アイスランド、スペイン、アルジェリア、チュニジア。" } },
-  { type:"solar_eclipse", start:[2027,8,1], peak:[2027,8,2], end:[2027,8,3],
-    name:{ tr:"Tam Güneş Tutulması", en:"Total Solar Eclipse", de:"Totale Sonnenfinsternis",
-           es:"Eclipse Solar Total", pt:"Eclipse Solar Total", fr:"Éclipse Solaire Totale", ja:"皆既日食" },
-    desc:{ tr:"Yüzyılın en uzun tam Güneş tutulmalarından biri (~6 dakika). Yol: Cebelitarık, Kuzey Afrika, Orta Doğu.",
-           en:"One of the century's longest total solar eclipses (~6 min). Path: Gibraltar, North Africa, Middle East.",
-           de:"Eine der längsten Sonnenfinsternisse des Jahrhunderts (~6 Min.). Pfad: Gibraltar, Nordafrika, Naher Osten.",
-           es:"Uno de los eclipses solares totales más largos del siglo (~6 min). Camino: Gibraltar, Norte de África, Oriente Medio.",
-           pt:"Um dos eclipses solares totais mais longos do século (~6 min). Caminho: Gibraltar, Norte de África, Médio Oriente.",
-           fr:"L'une des plus longues éclipses solaires du siècle (~6 min). Bande : Gibraltar, Afrique du Nord, Moyen-Orient.",
-           ja:"今世紀最長クラスの皆既日食（約6分）。経路：ジブラルタル、北アフリカ、中東。" } },
-  // ── AY TUTULMALARI ──
-  { type:"lunar_eclipse", start:[2026,3,2], peak:[2026,3,3], end:[2026,3,4],
-    name:{ tr:"Tam Ay Tutulması", en:"Total Lunar Eclipse", de:"Totale Mondfinsternis",
-           es:"Eclipse Lunar Total", pt:"Eclipse Lunar Total", fr:"Éclipse Lunaire Totale", ja:"皆既月食" },
-    desc:{ tr:"Ay, Dünya'nın tam gölgesine giriyor — derin kırmızı 'kan ayı' rengi, tüm dünyadan izlenebilir.",
-           en:"The Moon enters Earth's full shadow — deep red 'blood moon', visible worldwide.",
-           de:"Der Mond tritt in den Kernschatten der Erde — tiefrote Blutmond-Farbe, weltweit sichtbar.",
-           es:"La Luna entra en la sombra total de la Tierra — luna de sangre roja, visible en todo el mundo.",
-           pt:"A Lua entra na sombra total da Terra — lua de sangue vermelha, visível em todo o mundo.",
-           fr:"La Lune entre dans l'ombre totale de la Terre — lune de sang rouge, visible partout dans le monde.",
-           ja:"月が地球の完全な影に入る——深紅の「血の月」が世界中から見える。" } },
-  // ── DİKKAT ÇEKİCİ KUYRUKLU YILDIZLAR ──
-  { type:"comet", start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30],
+// ── KUYRUKLU YILDIZLAR (statik — keşif gerektirdiği için elle güncellenir) ──
+// Tutulmalar buraya GİRMEZ — astronomy-engine ile dinamik hesaplanıyor (tüm yıllar otomatik).
+// Yeni kuyruklu yıldız: { start, peak, end:[yıl,ay,gün], name:{tr,en,...}, desc:{tr,en,...} }
+const STATIC_COMETS = [
+  { start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30],
     name:{ tr:"10P/Tempel 2 Kuyruklu Yıldızı", en:"Comet 10P/Tempel 2", de:"Komet 10P/Tempel 2",
            es:"Cometa 10P/Tempel 2", pt:"Cometa 10P/Tempel 2", fr:"Comète 10P/Tempel 2", ja:"テンペル第2彗星 10P" },
-    desc:{ tr:"Periyodik Tempel 2 perihelionuna yaklaşıyor — binoküler ya da çıplak gözle görülebilir parlaklık bekleniyor. Güneş'e en yakın olduğu anlarda gözlem için ideal.",
-           en:"Periodic comet Tempel 2 near perihelion — binoculars or possibly naked-eye brightness expected at its closest approach to the Sun.",
-           de:"Periodischer Komet Tempel 2 nahe Perihel — Fernglas, ggf. bloßes Auge. Beste Sichtbarkeit um den sonnennächsten Punkt.",
-           es:"Cometa periódico Tempel 2 cerca del perihelio — visible con binoculares, quizás a simple vista en su máximo acercamiento al Sol.",
-           pt:"Cometa periódico Tempel 2 perto do periélio — visível com binóculos, possivelmente a olho nu na máxima aproximação ao Sol.",
-           fr:"La comète périodique Tempel 2 approche du périhélie — visible aux jumelles, peut-être à l'œil nu au plus proche du Soleil.",
-           ja:"周期彗星テンペル第2が近日点に接近中。太陽最接近時は双眼鏡、あるいは肉眼でも見える明るさが期待される。" } },
+    desc:{ tr:"Periyodik Tempel 2 perihelionuna yaklaşıyor — binoküler ya da çıplak gözle görülebilir parlaklık bekleniyor.",
+           en:"Periodic comet Tempel 2 near perihelion — binoculars or possibly naked-eye brightness expected.",
+           de:"Periodischer Komet Tempel 2 nahe Perihel — mit Fernglas, ggf. bloßem Auge sichtbar.",
+           es:"Cometa periódico Tempel 2 cerca del perihelio — visible con binoculares, quizás a simple vista.",
+           pt:"Cometa periódico Tempel 2 perto do periélio — visível com binóculos, possivelmente a olho nu.",
+           fr:"La comète périodique Tempel 2 proche du périhélie — visible aux jumelles, peut-être à l'œil nu.",
+           ja:"周期彗星テンペル第2が近日点に接近中。双眼鏡、あるいは肉眼でも見える明るさが期待される。" } },
 ];
 
-function activeNotableSkyEvents(date = new Date()) {
+function activeComets(date = new Date()) {
   const t = date.getTime();
-  return NOTABLE_SKY_EVENTS.filter(ev => {
-    const s = Date.UTC(ev.start[0], ev.start[1]-1, ev.start[2]);
-    const e = Date.UTC(ev.end[0],   ev.end[1]-1,   ev.end[2]);
+  return STATIC_COMETS.filter(c => {
+    const s = Date.UTC(c.start[0], c.start[1]-1, c.start[2]);
+    const e = Date.UTC(c.end[0],   c.end[1]-1,   c.end[2]);
     return t >= s && t <= e;
-  }).map(ev => {
-    const p   = Date.UTC(ev.peak[0], ev.peak[1]-1, ev.peak[2]);
+  }).map(c => {
+    const p   = Date.UTC(c.peak[0], c.peak[1]-1, c.peak[2]);
     const dFP = Math.round((t - p) / 86400000);
-    return { type: ev.type, name: ev.name, desc: ev.desc, isPeak: Math.abs(dFP) <= 1, daysFromPeak: dFP };
+    return { type:"comet", name:c.name, desc:c.desc, isPeak: Math.abs(dFP)<=1, daysFromPeak:dFP };
   });
+}
+
+// ── TUTULMALAR — DİNAMİK HESAP (astronomy-engine) — tüm yıllar otomatik ──────
+// Güneş: total + annular (kısmi atlanır). Ay: total + obscuration≥0.5 partial (penumbral atlanır).
+// ±7 günlük pencere: yaklaşan ve yeni geçen tutulmalar dahil edilir.
+const _EN = {
+  solar_total:   { tr:"Tam Güneş Tutulması",    en:"Total Solar Eclipse",   de:"Totale Sonnenfinsternis",      es:"Eclipse Solar Total",   pt:"Eclipse Solar Total",   fr:"Éclipse Solaire Totale",   ja:"皆既日食"  },
+  solar_annular: { tr:"Halkalı Güneş Tutulması", en:"Annular Solar Eclipse", de:"Ringförmige Sonnenfinsternis", es:"Eclipse Solar Anular",  pt:"Eclipse Solar Anular",  fr:"Éclipse Solaire Annulaire",ja:"金環日食"  },
+  lunar_total:   { tr:"Tam Ay Tutulması",        en:"Total Lunar Eclipse",   de:"Totale Mondfinsternis",        es:"Eclipse Lunar Total",   pt:"Eclipse Lunar Total",   fr:"Éclipse Lunaire Totale",   ja:"皆既月食"  },
+  lunar_partial: { tr:"Kısmi Ay Tutulması",      en:"Partial Lunar Eclipse", de:"Partielle Mondfinsternis",     es:"Eclipse Lunar Parcial", pt:"Eclipse Lunar Parcial", fr:"Éclipse Lunaire Partielle",ja:"部分月食"  },
+};
+const _ED = {
+  solar_total:   { tr:"Ay, Güneş'i tam olarak örtüyor — gün ortasında kısa bir gece iniyor. Bu geçiş zamanı durdurur.", en:"The Moon fully covers the Sun — a brief night descends at midday. This crossing stops time.", de:"Der Mond bedeckt die Sonne vollständig — kurze Nacht mitten am Tag. Dieser Moment hält die Zeit an.", es:"La Luna cubre el Sol por completo — una breve noche desciende al mediodía. Este cruce detiene el tiempo.", pt:"A Lua cobre completamente o Sol — uma breve noite ao meio-dia. Esta travessia detém o tempo.", fr:"La Lune couvre entièrement le Soleil — une brève nuit au milieu du jour. Ce passage arrête le temps.", ja:"月が太陽を完全に覆う——真昼に短い夜が訪れる。この瞬間は時を止める。" },
+  solar_annular: { tr:"Ay, Güneş'in tam karşısında ama biraz uzakta — güneş 'ateş çemberi' olarak çerçeveleniyor. Dramatik ve güçlü.", en:"The Moon aligns before the Sun but sits a touch too far — sunlight frames it as a ring of fire. Dramatic and powerful.", de:"Der Mond vor der Sonne, etwas zu fern — Sonnenlicht als Feuerring. Dramatisch und kraftvoll.", es:"La Luna ante el Sol pero algo lejos — anillo de fuego. Dramático y poderoso.", pt:"A Lua ante o Sol mas um pouco longe — anel de fogo. Dramático e poderoso.", fr:"La Lune devant le Soleil, un peu trop loin — anneau de feu. Dramatique et puissant.", ja:"月が太陽の正面に来るが少し遠い——「火の輪」が浮かぶ。劇的で強いエネルギー。" },
+  lunar_total:   { tr:"Ay, Dünya'nın tam gölgesine giriyor — tüm gün batımlarının kızıl ışığı Ay'ı boyuyor. 'Kan ayı' tüm dünyadan görünür.", en:"The Moon enters Earth's full shadow — the crimson of every sunset paints the Moon. The 'blood moon' is visible worldwide.", de:"Der Mond im Kernschatten — alle Sonnenuntergänge der Erde färben ihn rot. Blutmond weltweit sichtbar.", es:"La Luna en la sombra total — el rojo de cada atardecer tiñe la Luna. Luna de sangre visible mundialmente.", pt:"A Lua na sombra total — o carmesim de cada pôr do sol pinta a Lua. Visível em todo o mundo.", fr:"La Lune dans l'ombre totale — le cramoisi de chaque coucher de soleil peint la Lune. Visible partout.", ja:"月が地球の完全な影に入る——すべての夕日の深紅が月を染める。世界中から見える。" },
+  lunar_partial: { tr:"Ay, Dünya'nın gölgesine kısmen giriyor — Ay'ın bir bölümü kararırken öbürü parlamaya devam ediyor.", en:"The Moon partially enters Earth's shadow — part darkens while the rest continues to shine.", de:"Teilweise im Erdschatten — ein Teil verdunkelt sich, der andere bleibt hell.", es:"La Luna entra parcialmente en la sombra — parte se oscurece mientras el resto brilla.", pt:"A Lua entra parcialmente na sombra — parte escurece, o resto brilha.", fr:"La Lune entre partiellement dans l'ombre — une partie s'assombrit, l'autre brille encore.", ja:"月が地球の影に部分的に入る——一部は暗くなり、残りは輝き続ける。" },
+};
+
+function dynamicEclipseEvents(date = new Date()) {
+  const WINDOW = 7;
+  const events = [];
+  const searchFrom = new Date(date.getTime() - 10 * 86400000);
+
+  try {
+    let se = SearchGlobalSolarEclipse(searchFrom);
+    for (let i = 0; i < 5; i++) {
+      const dFP = Math.round((date.getTime() - se.peak.date.getTime()) / 86400000);
+      if (dFP < -WINDOW) break;
+      if (Math.abs(dFP) <= WINDOW && (se.kind === "total" || se.kind === "annular")) {
+        const k = "solar_" + se.kind;
+        events.push({ type:"solar_eclipse", name:_EN[k], desc:_ED[k], isPeak:Math.abs(dFP)<=1, daysFromPeak:dFP });
+      }
+      se = SearchGlobalSolarEclipse(new Date(se.peak.date.getTime() + 10 * 86400000));
+    }
+  } catch { /* sessiz */ }
+
+  try {
+    let le = SearchLunarEclipse(searchFrom);
+    for (let i = 0; i < 5; i++) {
+      const dFP = Math.round((date.getTime() - le.peak.date.getTime()) / 86400000);
+      if (dFP < -WINDOW) break;
+      if (Math.abs(dFP) <= WINDOW && le.kind !== "penumbral" && (le.kind === "total" || (le.obscuration||0) >= 0.5)) {
+        const k = "lunar_" + (le.kind === "total" ? "total" : "partial");
+        events.push({ type:"lunar_eclipse", name:_EN[k], desc:_ED[k], isPeak:Math.abs(dFP)<=1, daysFromPeak:dFP });
+      }
+      le = SearchLunarEclipse(new Date(le.peak.date.getTime() + 10 * 86400000));
+    }
+  } catch { /* sessiz */ }
+
+  return events;
 }
 
 function getCorsHeaders(origin) {
@@ -635,7 +652,7 @@ export const handler = async (event) => {
     // Kolektif geçiş notu (gökyüzü raporunun alt başlığı). Efemeris yoksa null.
     let transit = null;
     try { transit = transitNote(planets); } catch { /* sessiz */ }
-    const notableEvents  = activeNotableSkyEvents();
+    const notableEvents  = [...dynamicEclipseEvents(), ...activeComets()];
     const planetGrouping = notablePlanetGrouping(planets);
     // Geriye dönük uyumluluk: eski 'comet' alanı (App.jsx henüz bunu okumuyordu; korunur)
     const _legacyComet = notableEvents.find(ev => ev.type === "comet");
