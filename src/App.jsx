@@ -9074,7 +9074,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {moon && <span>{moon.emoji} {moon.illumination}%</span>}
                       {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
                       {kozmikData.notableEvents?.map((ev,i) => {
-                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":"☄️";
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
                         return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
                       })}
                       {kozmikData.planetGrouping && (
