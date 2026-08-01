@@ -9063,6 +9063,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
                       {moon && <span>{moon.emoji} {moon.illumination}%</span>}
                       {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                      {kozmikData.notableEvents?.map((ev,i) => {
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":"☄️";
+                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
+                      })}
+                      {kozmikData.planetGrouping && (
+                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
+                      )}
                     </div>
                     <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
                       {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}

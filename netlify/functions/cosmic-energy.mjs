@@ -67,6 +67,38 @@ function planetSky(date = new Date()) {
   return out;
 }
 
+// ── GEZEGEN DİZİLİŞİ / PARADE TESPİTİ ──────────────────────────────────────
+// Çıplak gözle görülebilen 5 gezegen (Merkür–Satürn) aynı gök bölgesinde mi?
+// 3+ gezegen ≤30°: dikkat çekici conjunction parade (alignment).
+// 4+ gezegen ≤50°: gezegen geçidi (planet parade).
+// Min-kuşatan yay = 360° − ardışık ekliptik boylam boşluklarının en büyüğü.
+function notablePlanetGrouping(planets) {
+  const NAKED_EYE = ["Mercury","Venus","Mars","Jupiter","Saturn"];
+  const vis = planets.filter(p => NAKED_EYE.includes(p.body) && p.lon != null);
+  if (vis.length < 3) return null;
+  const arcOf = (grp) => {
+    if (grp.length < 2) return 0;
+    const s = grp.slice().sort((a,b) => a.lon - b.lon);
+    let maxGap = (s[0].lon + 360) - s[s.length-1].lon;
+    for (let i = 0; i < s.length-1; i++) maxGap = Math.max(maxGap, s[i+1].lon - s[i].lon);
+    return Math.round(360 - maxGap);
+  };
+  // Tüm 3+ boyutlu kombinasyonları dene, en sıkı grubu bul
+  let best = null;
+  const tryCombo = (start, cur, minSz) => {
+    if (cur.length >= minSz) {
+      const arc = arcOf(cur);
+      const thr = cur.length >= 4 ? 50 : 30;
+      if (arc <= thr && (!best || cur.length > best.bodies.length || (cur.length === best.bodies.length && arc < best.arcDeg))) {
+        best = { type: cur.length >= 4 ? "parade" : "alignment", bodies: cur.map(p=>p.body), arcDeg: arc };
+      }
+    }
+    if (cur.length < vis.length) for (let i = start; i < vis.length; i++) tryCombo(i+1, [...cur, vis[i]], minSz);
+  };
+  tryCombo(0, [], 3);
+  return best;
+}
+
 // ── KOLEKTİF GEÇİŞ NOTU (gökyüzü raporunun alt başlığı) ────────────────────
 // Kullanıcı: "gökyüzü raporuna alt başlık şeklinde hangi geçişte olduğumuzu yaz
 // ... ya da şu an retrodayız şunlara dikkat et gibi." + "sadece genel kolektif
@@ -180,21 +212,66 @@ function transitNote(planets, date = new Date()) {
   return out.tr ? out : null;
 }
 
-// ── KUYRUKLU YILDIZLAR (notable — perihelion/görünürlük penceresi, en iyi çaba) ──
-// Sporadik olduğu için statik; pencere dışındaysa rapora girmez. Güncellenebilir.
-const COMETS = [
-  { name:"12P/Pons-Brooks",        start:[2024,3,1],  end:[2024,5,10] },
-  { name:"C/2023 A3 (Tsuchinshan-ATLAS)", start:[2024,9,27], end:[2024,10,25] },
-  { name:"C/2024 G3 (ATLAS)",      start:[2025,1,10], end:[2025,1,25] },
+// ── ÖNEMLI GÖK OLAYLARI TAKVİMİ (tutulmalar, dikkat çekici kuyruklu yıldızlar) ──
+// Göktaşı yağmurları METEOR_SHOWERS'da ayrı tutulmaktadır. Burası sporadik/aperiodik olaylar.
+// Yeni olay eklemek için: { type, start, peak, end, name:{tr,en,...}, desc:{tr,en,...} }
+const NOTABLE_SKY_EVENTS = [
+  // ── GÜNEŞ TUTULMALARI ──
+  { type:"solar_eclipse", start:[2026,8,11], peak:[2026,8,12], end:[2026,8,13],
+    name:{ tr:"Tam Güneş Tutulması", en:"Total Solar Eclipse", de:"Totale Sonnenfinsternis",
+           es:"Eclipse Solar Total", pt:"Eclipse Solar Total", fr:"Éclipse Solaire Totale", ja:"皆既日食" },
+    desc:{ tr:"Ay, Güneş'i tam olarak örtüyor. Totality yolu: İzlanda, İspanya, Cezayir, Tunus. Tam karanlık birkaç dakika sürecek.",
+           en:"The Moon fully covers the Sun. Totality path: Iceland, Spain, Algeria, Tunisia. Total darkness for several minutes.",
+           de:"Der Mond bedeckt die Sonne vollständig. Totalitätspfad: Island, Spanien, Algerien, Tunesien.",
+           es:"La Luna cubre completamente al Sol. Camino: Islandia, España, Argelia, Túnez.",
+           pt:"A Lua cobre completamente o Sol. Caminho: Islândia, Espanha, Argélia, Tunísia.",
+           fr:"La Lune couvre entièrement le Soleil. Bande de totalité : Islande, Espagne, Algérie, Tunisie.",
+           ja:"月が太陽を完全に覆う。皆既帯：アイスランド、スペイン、アルジェリア、チュニジア。" } },
+  { type:"solar_eclipse", start:[2027,8,1], peak:[2027,8,2], end:[2027,8,3],
+    name:{ tr:"Tam Güneş Tutulması", en:"Total Solar Eclipse", de:"Totale Sonnenfinsternis",
+           es:"Eclipse Solar Total", pt:"Eclipse Solar Total", fr:"Éclipse Solaire Totale", ja:"皆既日食" },
+    desc:{ tr:"Yüzyılın en uzun tam Güneş tutulmalarından biri (~6 dakika). Yol: Cebelitarık, Kuzey Afrika, Orta Doğu.",
+           en:"One of the century's longest total solar eclipses (~6 min). Path: Gibraltar, North Africa, Middle East.",
+           de:"Eine der längsten Sonnenfinsternisse des Jahrhunderts (~6 Min.). Pfad: Gibraltar, Nordafrika, Naher Osten.",
+           es:"Uno de los eclipses solares totales más largos del siglo (~6 min). Camino: Gibraltar, Norte de África, Oriente Medio.",
+           pt:"Um dos eclipses solares totais mais longos do século (~6 min). Caminho: Gibraltar, Norte de África, Médio Oriente.",
+           fr:"L'une des plus longues éclipses solaires du siècle (~6 min). Bande : Gibraltar, Afrique du Nord, Moyen-Orient.",
+           ja:"今世紀最長クラスの皆既日食（約6分）。経路：ジブラルタル、北アフリカ、中東。" } },
+  // ── AY TUTULMALARI ──
+  { type:"lunar_eclipse", start:[2026,3,2], peak:[2026,3,3], end:[2026,3,4],
+    name:{ tr:"Tam Ay Tutulması", en:"Total Lunar Eclipse", de:"Totale Mondfinsternis",
+           es:"Eclipse Lunar Total", pt:"Eclipse Lunar Total", fr:"Éclipse Lunaire Totale", ja:"皆既月食" },
+    desc:{ tr:"Ay, Dünya'nın tam gölgesine giriyor — derin kırmızı 'kan ayı' rengi, tüm dünyadan izlenebilir.",
+           en:"The Moon enters Earth's full shadow — deep red 'blood moon', visible worldwide.",
+           de:"Der Mond tritt in den Kernschatten der Erde — tiefrote Blutmond-Farbe, weltweit sichtbar.",
+           es:"La Luna entra en la sombra total de la Tierra — luna de sangre roja, visible en todo el mundo.",
+           pt:"A Lua entra na sombra total da Terra — lua de sangue vermelha, visível em todo o mundo.",
+           fr:"La Lune entre dans l'ombre totale de la Terre — lune de sang rouge, visible partout dans le monde.",
+           ja:"月が地球の完全な影に入る——深紅の「血の月」が世界中から見える。" } },
+  // ── DİKKAT ÇEKİCİ KUYRUKLU YILDIZLAR ──
+  { type:"comet", start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30],
+    name:{ tr:"10P/Tempel 2 Kuyruklu Yıldızı", en:"Comet 10P/Tempel 2", de:"Komet 10P/Tempel 2",
+           es:"Cometa 10P/Tempel 2", pt:"Cometa 10P/Tempel 2", fr:"Comète 10P/Tempel 2", ja:"テンペル第2彗星 10P" },
+    desc:{ tr:"Periyodik Tempel 2 perihelionuna yaklaşıyor — binoküler ya da çıplak gözle görülebilir parlaklık bekleniyor. Güneş'e en yakın olduğu anlarda gözlem için ideal.",
+           en:"Periodic comet Tempel 2 near perihelion — binoculars or possibly naked-eye brightness expected at its closest approach to the Sun.",
+           de:"Periodischer Komet Tempel 2 nahe Perihel — Fernglas, ggf. bloßes Auge. Beste Sichtbarkeit um den sonnennächsten Punkt.",
+           es:"Cometa periódico Tempel 2 cerca del perihelio — visible con binoculares, quizás a simple vista en su máximo acercamiento al Sol.",
+           pt:"Cometa periódico Tempel 2 perto do periélio — visível com binóculos, possivelmente a olho nu na máxima aproximação ao Sol.",
+           fr:"La comète périodique Tempel 2 approche du périhélie — visible aux jumelles, peut-être à l'œil nu au plus proche du Soleil.",
+           ja:"周期彗星テンペル第2が近日点に接近中。太陽最接近時は双眼鏡、あるいは肉眼でも見える明るさが期待される。" } },
 ];
-function activeComet(date = new Date()) {
+
+function activeNotableSkyEvents(date = new Date()) {
   const t = date.getTime();
-  for (const c of COMETS) {
-    const s = Date.UTC(c.start[0], c.start[1]-1, c.start[2]);
-    const e = Date.UTC(c.end[0], c.end[1]-1, c.end[2]);
-    if (t >= s && t <= e) return { active: true, name: c.name };
-  }
-  return { active: false };
+  return NOTABLE_SKY_EVENTS.filter(ev => {
+    const s = Date.UTC(ev.start[0], ev.start[1]-1, ev.start[2]);
+    const e = Date.UTC(ev.end[0],   ev.end[1]-1,   ev.end[2]);
+    return t >= s && t <= e;
+  }).map(ev => {
+    const p   = Date.UTC(ev.peak[0], ev.peak[1]-1, ev.peak[2]);
+    const dFP = Math.round((t - p) / 86400000);
+    return { type: ev.type, name: ev.name, desc: ev.desc, isPeak: Math.abs(dFP) <= 1, daysFromPeak: dFP };
+  });
 }
 
 function getCorsHeaders(origin) {
@@ -414,6 +491,8 @@ HEARTFELT INTERPRETATION: Your most important job is to help people FEEL the sky
 
 LANGUAGE PURITY — ABSOLUTE RULE: write ENTIRELY in ${name}, using ONLY ${name} vocabulary and orthography. Never mix in words or spellings from ANY other language — no English, Dutch, Romanian, French leaks (words like "procent", "dàn", "percent" are FORBIDDEN${lang === "tr" ? '; in Turkish say "yüzde", and the only accented vowels that exist are â, î, û' : ""}). If you are unsure of a word, choose a simpler native one.
 
+NOTABLE SKY EVENTS — HIGHEST PRIORITY: If the data lists any notable sky events (solar eclipse, lunar eclipse, comet, planet parade or alignment), you MUST weave them in naturally and prominently — at least 1–2 heartfelt sentences. A solar or lunar eclipse is a rare, powerful cosmic crossing; treat it with reverence. A bright comet is a visitor from the outer reaches, a cosmic messenger; acknowledge what it stirs collectively. A planet parade or tight alignment means energies are gathering in one direction; name the key planets. Never omit these if they appear — they are the most powerful collective sky experiences. When an eclipse or rare event is only days away, convey the sense of anticipation.
+
 NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm — nothing memorized-sounding. 4 to 7 flowing sentences, prose only — no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.`;
   const usr = `Real space-weather data for today (interpret the collective MOOD and EMOTIONAL IMPACT, don't recite numbers):
 - Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
@@ -421,7 +500,8 @@ NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyü
 - Solar wind: ${data.solar_wind?.speed || "?"} km/s
 - Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
 - Meteor shower: ${data.meteor?.active ? data.meteor.name + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
-- Comet: ${data.comet?.active ? data.comet.name + " visible" : "none notable now"}
+- Notable sky events (HIGHEST PRIORITY — must mention if any): ${data.notableEvents?.length ? data.notableEvents.map(ev => `[${ev.type}] ${ev.name.en}${ev.isPeak ? " — TODAY IS PEAK" : ev.daysFromPeak < 0 ? ` (${-ev.daysFromPeak} days until peak)` : ` (${ev.daysFromPeak} days past peak)`}: ${ev.desc.en}`).join(" | ") : "none today"}
+- Planet alignment/parade: ${data.planetGrouping ? `${data.planetGrouping.bodies.join(", ")} clustered within ${data.planetGrouping.arcDeg}° — ${data.planetGrouping.type}` : "no notable grouping today"}
 - Planetary positions: ${planetSummary || "unavailable"}${retroPlanets.length ? "\n- Currently retrograde: " + retroPlanets.join(", ") : ""}
 
 Today's opening perspective (use it in YOUR OWN words, do not translate it literally): ${angle}
@@ -547,7 +627,7 @@ export const handler = async (event) => {
       } catch { /* sessiz geç */ }
     }
 
-    // ── AY EVRESİ + GÖKTAŞI + GEZEGEN DİZİLİŞİ + KUYRUKLU YILDIZ ──
+    // ── AY EVRESİ + GÖKTAŞI + GEZEGEN DİZİLİŞİ + ÖNEMLİ GÖK OLAYLARI ──
     const moon = moonPhase();
     const meteor = activeMeteorShower();
     let planets = [];
@@ -555,7 +635,11 @@ export const handler = async (event) => {
     // Kolektif geçiş notu (gökyüzü raporunun alt başlığı). Efemeris yoksa null.
     let transit = null;
     try { transit = transitNote(planets); } catch { /* sessiz */ }
-    const comet = activeComet();
+    const notableEvents  = activeNotableSkyEvents();
+    const planetGrouping = notablePlanetGrouping(planets);
+    // Geriye dönük uyumluluk: eski 'comet' alanı (App.jsx henüz bunu okumuyordu; korunur)
+    const _legacyComet = notableEvents.find(ev => ev.type === "comet");
+    const comet = _legacyComet ? { active: true, name: _legacyComet.name.en } : { active: false };
 
     // ── HAVA DURUMU TARZI ANLATILAR — seviyeye göre seç ──
     const geoLevel   = maxKp >= 5 ? "storm" : maxKp >= 3 ? "unsettled" : "calm";
@@ -589,6 +673,11 @@ export const handler = async (event) => {
         parts.push(narratives.meteor[lang]);     // "Gökyüzü sakin… dileğini hazırla"
       }
       report[lang] = parts.join(" ");
+      // Template fallback'te de önemli gök olayları öne çıkar
+      if (notableEvents.length) {
+        const evNames = notableEvents.map(ev => ev.name[lang] || ev.name.en).join(" · ");
+        report[lang] = evNames + " — " + report[lang];
+      }
     }
 
     const summary = {
@@ -609,6 +698,8 @@ export const handler = async (event) => {
       meteor,
       planets,
       transit,
+      notableEvents,
+      planetGrouping,
       comet,
       narratives,
       report,
