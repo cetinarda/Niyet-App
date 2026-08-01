@@ -4072,6 +4072,16 @@ export default function SakinApp() {
   const AILESI_FREE_OPENS = 3;
   const handleOpenEmbed = (app) => {
     playPortalSound(); haptic();
+    // iOS 13+: DeviceMotionEvent izni SADECE top-level frame'den (user gesture içinde)
+    // istenebilir. İframe embed'den istemek sessizce 'denied' döner. Burada parent
+    // frame'de senkron isteriz → origin'e kalıcı izin → embed'in attachWeb() dinleyicisi
+    // gerçek ivme değerleri alır → salla ilk kartta da çalışır (her oturumda).
+    try {
+      const DME = window.DeviceMotionEvent;
+      if (DME && typeof DME.requestPermission === 'function') {
+        DME.requestPermission().catch(() => {});
+      }
+    } catch (_) {}
     // Mitler sticky davranışı: aynı gün + iframe daha önce yüklü → embedLoaded'ı direkt true
     // tut (kapatma sırasında false'a çekildi; sticky iframe RAM'de hâlâ olduğu için onLoad
     // bir daha tetiklenmez). Yeni gün veya ilk açılış → loading layer normal akış.
@@ -9064,7 +9074,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {moon && <span>{moon.emoji} {moon.illumination}%</span>}
                       {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
                       {kozmikData.notableEvents?.map((ev,i) => {
-                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":"☄️";
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
                         return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
                       })}
                       {kozmikData.planetGrouping && (
