@@ -28,7 +28,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
-   - **App Store'da CANLI: `1.3.3`** (25 Tem 2026'da yayınlandı). Repoda hazırlanan: `1.3.4 / build 1`, Android `versionCode 5`.
+   - **App Store'da CANLI: `1.3.4`** (Ağu 2026'da yayınlandı). Repoda hazırlanan: `1.3.5 / build 1`, Android `versionCode 6`.
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
 7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
