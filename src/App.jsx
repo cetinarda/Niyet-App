@@ -280,7 +280,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.4";
+const APP_VERSION = "1.3.5";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -4556,13 +4556,15 @@ export default function SakinApp() {
   const [show12Ev, setShow12Ev] = useState(false);
   const [showDraconic, setShowDraconic] = useState(false);
   const [kozmikData, setKozmikData] = useState(null);
+  const [kozmikDay, setKozmikDay] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
   const fetchKozmik = async () => {
-    if (kozmikData || kozmikLoading) return;
+    if (kozmikLoading) return;
+    if (kozmikData && kozmikDay === todayKey) return;
     setKozmikLoading(true);
     try {
       const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
-      if (r.ok) setKozmikData(await r.json());
+      if (r.ok) { setKozmikData(await r.json()); setKozmikDay(todayKey); }
     } catch { /* sessiz */ }
     setKozmikLoading(false);
   };
@@ -9061,6 +9063,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
                       {moon && <span>{moon.emoji} {moon.illumination}%</span>}
                       {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                      {kozmikData.notableEvents?.map((ev,i) => {
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":"☄️";
+                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
+                      })}
+                      {kozmikData.planetGrouping && (
+                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
+                      )}
                     </div>
                     <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
                       {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}

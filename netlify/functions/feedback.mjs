@@ -81,16 +81,21 @@ ${message}
 ─────────────────────────────────`.trim();
 
     if (RESEND_KEY) {
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${RESEND_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "Sakin Feedback <feedback@sakin.life>",
-          to,
-          subject: `[Sakin Feedback] ${category}`,
-          text: feedbackText,
-        }),
-      });
+      try {
+        const emailRes = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${RESEND_KEY}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            from: "Sakin Feedback <feedback@sakin.life>",
+            to,
+            subject: `[Sakin Feedback] ${category}`,
+            text: feedbackText,
+          }),
+        });
+        if (!emailRes.ok) console.warn("[feedback] Resend API error:", emailRes.status);
+      } catch (e) {
+        console.warn("[feedback] Resend fetch failed:", e.message);
+      }
     }
 
     const LOG_URL = process.env.FEEDBACK_WEBHOOK_URL;
