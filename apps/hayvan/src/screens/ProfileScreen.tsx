@@ -958,11 +958,10 @@ export function ProfileScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t('profile.badges.title')}</Text>
         <View style={styles.badgesGrid}>
-          {BADGES.map(badge => {
+          {(() => {
+            const nextBadgeId = BADGES.find(b => totalReadings < b.required && streak < b.required)?.id;
+            return BADGES.map(badge => {
             const earned = totalReadings >= badge.required || streak >= badge.required;
-            // İlerleme = sayaçların hedefe en yakını (okuma ya da seri). Kilitli
-            // rozette "X/hedef" + ince çubuk gösterilir → uzun vadeli rozet (100/365)
-            // umutsuz görünmez, kullanıcı ilerlediğini görür (hayal kırıklığı yok).
             const progress = Math.min(Math.max(totalReadings, streak), badge.required);
             const pct = Math.round((progress / badge.required) * 100);
             return (
@@ -980,7 +979,7 @@ export function ProfileScreen() {
                   {t(('profile.badges.list.' + badge.id + '.title') as any)}
                 </Text>
                 <Text style={styles.badgeDesc}>{t(('profile.badges.list.' + badge.id + '.desc') as any)}</Text>
-                {!earned && (
+                {!earned && badge.id === nextBadgeId && (
                   <>
                     <View style={styles.badgeProgressTrack}>
                       <View style={[styles.badgeProgressFill, { width: `${pct}%` }]} />
@@ -990,7 +989,8 @@ export function ProfileScreen() {
                 )}
               </View>
             );
-          })}
+            });
+          })()}
         </View>
       </View>
 
