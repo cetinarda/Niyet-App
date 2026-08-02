@@ -563,16 +563,34 @@ function _sanitizeSky(text, lang) {
     return null;   // → şablon metne düş
   }
   if (lang === "tr") {
-    // LATİN HARFLİ YABANCI KELİME SIZINTISI. Canlıda görüldü:
-    // "...sanki world'in enerji alanını..." — Latin-dışı süzgeç bunu yakalamaz.
-    // KESİN KURAL: Türk alfabesinde q, w, x HARFLERİ YOKTUR. Küçük harfle
-    // başlayan bir kelimede bunlardan biri geçiyorsa kelime Türkçe DEĞİLDİR.
-    // Büyük harfle başlayanlar muaf — özel adlar meşru olabilir (ör. ocak
-    // ayında prompt'a giren "Quadrantid" göktaşı yağmuru).
-    const foreign = t.match(/\b\p{Ll}[\p{L}'’]*\b/gu) || [];
-    const bad = foreign.find(w => /[qwx]/i.test(w));
-    if (bad) {
-      console.warn("[sky] latin-harfli yabanci kelime, rapor reddedildi:", bad, "|", t.slice(0, 100));
+    // LATİN HARFLİ YABANCI KELİME SIZINTISI. Canlıda görüldü: "world'in", "Woche",
+    // "transformationsımızda", "gibous", "arrivalini", "oportunite", "Lion's Gate"...
+    // İki katmanlı süzgeç:
+    // (1) Türk alfabesinde q/w/x YOK — geçen kelime kesinlikle yabancı.
+    //     Küçük harfli VE büyük harflilerin ikisini de yakala (Almanca "Woche"
+    //     büyük W ile başlar, önceden kaçıyordu).
+    // (2) Yaygın İngilizce/Almanca/Fransızca kök karalistesi — q/w/x içermeyen
+    //     sızıntılar için (transformation, gibbous, arrival, opportunity/oportunite,
+    //     corridor, comet, welt, tag, morgen...). AI bu kelimelerin Türkçe
+    //     karşılıklarını bilmiyorsa şablon metne düşmek daha temiz.
+    // Muaf: yalnızca özellikle işaretli özel adlar (Sirius, Sakin, gezegen adları).
+    const words = t.match(/\b[\p{L}][\p{L}'’]*\b/gu) || [];
+    // Meşru özel adlar/kelimeler — bunlar q/w/x taşımıyor zaten ama karaliste
+    // eşleşmelerinden muaf tutmak istediklerimiz burada.
+    const allow = new Set(["Sakin","Sirius"]);
+    const badQWX = words.find(w => !allow.has(w) && /[qwxQWX]/.test(w));
+    if (badQWX) {
+      console.warn("[sky] TR: q/w/x içeren yabancı kelime, rapor reddedildi:", badQWX, "|", t.slice(0, 100));
+      return null;   // → şablon metne düş
+    }
+    // Karaliste: q/w/x içermeyen ama Türkçe olmadığı KESİN köklü kelimeler.
+    // Türkçe morfemleri de kapsar: "transformation" + "ımızda", "arrival" + "ini" vs.
+    // Not: "portal" burada YOK — TR'de meşru kelime ("Portalı", "portalları"). "corridor"
+    // da benzer ama TR karşılığı "koridor" ile başlar (regex "corr..." → eşleşmez).
+    const _TR_BLOCKLIST = /(?:transformation|transformations|gibbous|gibous|arrival|opportunit|oportunit|corridor|couloir|puerta|löwentor|comet|comète|cometa|corredor|lions|gate|portail|zenith|zenit|morgen|nacht|gestern|heute|jetzt|welt|erde|sonne|stern|licht|dunkelheit|geist|solstice|equinox|equinocc|äquinok|solstic)\p{L}*/giu;
+    const badKW = t.match(_TR_BLOCKLIST);
+    if (badKW && badKW.length) {
+      console.warn("[sky] TR: yabancı kök sızıntısı, rapor reddedildi:", badKW.join(","), "|", t.slice(0, 100));
       return null;   // → şablon metne düş
     }
     // SADECE Türkçe: fr/pt'de à/è/ù meşru harflerdir, onlara dokunma.
@@ -581,6 +599,36 @@ function _sanitizeSky(text, lang) {
   }
   return t;
 }
+// Gezegen + zodyak lokalize sözlükler — TR raporunda İngilizce sızıntısını (Comet, Saturn in Pisces vb.)
+// önlemek için AI'ya doğrudan hedef dildeki isimleri ver.
+const _PLANET_L = {
+  Sun:{tr:"Güneş",en:"Sun",de:"Sonne",es:"Sol",pt:"Sol",fr:"Soleil",ja:"太陽"},
+  Moon:{tr:"Ay",en:"Moon",de:"Mond",es:"Luna",pt:"Lua",fr:"Lune",ja:"月"},
+  Mercury:{tr:"Merkür",en:"Mercury",de:"Merkur",es:"Mercurio",pt:"Mercúrio",fr:"Mercure",ja:"水星"},
+  Venus:{tr:"Venüs",en:"Venus",de:"Venus",es:"Venus",pt:"Vénus",fr:"Vénus",ja:"金星"},
+  Mars:{tr:"Mars",en:"Mars",de:"Mars",es:"Marte",pt:"Marte",fr:"Mars",ja:"火星"},
+  Jupiter:{tr:"Jüpiter",en:"Jupiter",de:"Jupiter",es:"Júpiter",pt:"Júpiter",fr:"Jupiter",ja:"木星"},
+  Saturn:{tr:"Satürn",en:"Saturn",de:"Saturn",es:"Saturno",pt:"Saturno",fr:"Saturne",ja:"土星"},
+  Uranus:{tr:"Uranüs",en:"Uranus",de:"Uranus",es:"Urano",pt:"Urano",fr:"Uranus",ja:"天王星"},
+  Neptune:{tr:"Neptün",en:"Neptune",de:"Neptun",es:"Neptuno",pt:"Netuno",fr:"Neptune",ja:"海王星"},
+  Pluto:{tr:"Plüton",en:"Pluto",de:"Pluto",es:"Plutón",pt:"Plutão",fr:"Pluton",ja:"冥王星"},
+};
+const _ZODIAC_L = {
+  Aries:{tr:"Koç",en:"Aries",de:"Widder",es:"Aries",pt:"Carneiro",fr:"Bélier",ja:"牡羊座"},
+  Taurus:{tr:"Boğa",en:"Taurus",de:"Stier",es:"Tauro",pt:"Touro",fr:"Taureau",ja:"牡牛座"},
+  Gemini:{tr:"İkizler",en:"Gemini",de:"Zwillinge",es:"Géminis",pt:"Gémeos",fr:"Gémeaux",ja:"双子座"},
+  Cancer:{tr:"Yengeç",en:"Cancer",de:"Krebs",es:"Cáncer",pt:"Caranguejo",fr:"Cancer",ja:"蟹座"},
+  Leo:{tr:"Aslan",en:"Leo",de:"Löwe",es:"Leo",pt:"Leão",fr:"Lion",ja:"獅子座"},
+  Virgo:{tr:"Başak",en:"Virgo",de:"Jungfrau",es:"Virgo",pt:"Virgem",fr:"Vierge",ja:"乙女座"},
+  Libra:{tr:"Terazi",en:"Libra",de:"Waage",es:"Libra",pt:"Balança",fr:"Balance",ja:"天秤座"},
+  Scorpio:{tr:"Akrep",en:"Scorpio",de:"Skorpion",es:"Escorpio",pt:"Escorpião",fr:"Scorpion",ja:"蠍座"},
+  Sagittarius:{tr:"Yay",en:"Sagittarius",de:"Schütze",es:"Sagitario",pt:"Sagitário",fr:"Sagittaire",ja:"射手座"},
+  Capricorn:{tr:"Oğlak",en:"Capricorn",de:"Steinbock",es:"Capricornio",pt:"Capricórnio",fr:"Capricorne",ja:"山羊座"},
+  Aquarius:{tr:"Kova",en:"Aquarius",de:"Wassermann",es:"Acuario",pt:"Aquário",fr:"Verseau",ja:"水瓶座"},
+  Pisces:{tr:"Balık",en:"Pisces",de:"Fische",es:"Piscis",pt:"Peixes",fr:"Poissons",ja:"魚座"},
+};
+const _RETRO_L = { tr:"retro", en:"retrograde", de:"rückläufig", es:"retrógrado", pt:"retrógrado", fr:"rétrograde", ja:"逆行" };
+
 async function generateSkyReport(data, lang) {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
@@ -589,8 +637,11 @@ async function generateSkyReport(data, lang) {
   const dayOfYear = Math.floor((Date.now() - Date.UTC(new Date().getUTCFullYear(), 0, 0)) / 86400000);
   const angle = _SKY_ANGLES[dayOfYear % _SKY_ANGLES.length];
   const planets = data.planets || [];
-  const retroPlanets = planets.filter(p => p.retrograde).map(p => `${p.body} in ${p.sign}`);
-  const planetSummary = planets.map(p => `${p.body}: ${p.sign} ${p.deg}°${p.retrograde ? " (retrograde)" : ""}`).join(", ");
+  const _pn = (b) => _PLANET_L[b]?.[lang] || b;
+  const _zn = (s) => _ZODIAC_L[s]?.[lang] || s;
+  const _rn = _RETRO_L[lang] || "retrograde";
+  const retroPlanets = planets.filter(p => p.retrograde).map(p => `${_pn(p.body)} (${_zn(p.sign)})`);
+  const planetSummary = planets.map(p => `${_pn(p.body)}: ${_zn(p.sign)} ${p.deg}°${p.retrograde ? ` (${_rn})` : ""}`).join(", ");
   const sys = `You are Sakin's sky-weather voice — warm, sincere, deeply heartfelt, lightly poetic, never clichéd. Write a COLLECTIVE daily reading of the shared sky and the ENERGY FIELD the whole Earth is moving through right now. This is NOT personal astrology and NOT about any single person.
 
 PLANET ENERGY: You receive planetary positions below. You MAY mention which planets are retrograde and what collective energy they carry (e.g. "Mercury retrograde invites us to slow down and revisit"), and you may reference the Moon's zodiac position for collective mood. But NEVER write horoscope-style predictions, never mention houses, never say "if you're a Leo/Aries/etc." Keep it universal and collective.
@@ -606,10 +657,10 @@ NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyü
 - Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
 - Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
 - Solar wind: ${data.solar_wind?.speed || "?"} km/s
-- Moon: ${data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
-- Meteor shower: ${data.meteor?.active ? data.meteor.name + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
-- Notable sky events & energy portals (HIGHEST PRIORITY — must mention if any): ${data.notableEvents?.length ? data.notableEvents.map(ev => `[${ev.type}${ev.subtype ? "/"+ev.subtype : ""}] ${ev.name.en}${ev.isPeak ? " — TODAY IS PEAK" : ev.daysFromPeak < 0 ? ` (${-ev.daysFromPeak} days until peak)` : ` (${ev.daysFromPeak} days past peak)`}: ${ev.desc.en}`).join(" | ") : "none today"}
-- Planet alignment/parade: ${data.planetGrouping ? `${data.planetGrouping.bodies.join(", ")} clustered within ${data.planetGrouping.arcDeg}° — ${data.planetGrouping.type}` : "no notable grouping today"}
+- Moon: ${data.moon?.label?.[lang] || data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
+- Meteor shower: ${data.meteor?.active ? (lang === "tr" && data.meteor.nameTr ? data.meteor.nameTr : data.meteor.name) + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
+- Notable sky events & energy portals (HIGHEST PRIORITY — must mention if any, and MUST use the EXACT ${name} names/descriptions given here — do NOT translate them yourself and do NOT keep English names): ${data.notableEvents?.length ? data.notableEvents.map(ev => `[${ev.type}${ev.subtype ? "/"+ev.subtype : ""}] "${ev.name[lang] || ev.name.en}"${ev.isPeak ? " — TODAY IS PEAK" : ev.daysFromPeak < 0 ? ` (${-ev.daysFromPeak} days until peak)` : ` (${ev.daysFromPeak} days past peak)`}: ${ev.desc[lang] || ev.desc.en}`).join(" | ") : "none today"}
+- Planet alignment/parade: ${data.planetGrouping ? `${data.planetGrouping.bodies.map(_pn).join(", ")} clustered within ${data.planetGrouping.arcDeg}° — ${data.planetGrouping.type}` : "no notable grouping today"}
 - Planetary positions: ${planetSummary || "unavailable"}${retroPlanets.length ? "\n- Currently retrograde: " + retroPlanets.join(", ") : ""}
 
 Today's opening perspective (use it in YOUR OWN words, do not translate it literally): ${angle}
