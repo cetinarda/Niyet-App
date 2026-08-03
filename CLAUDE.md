@@ -54,7 +54,10 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
   - Stil davranışı için (taşınmamışlarda) host'tan CSS injection ile müdahale: App.jsx'deki iframe `onLoad` içine bak.
 - **Embedded ↔ host köprüsü:** `postMessage` ile (`sakin-premium-cta` mesajı vs). `storage` event köprüsü web-only, iOS'ta çalışmaz.
 - **Şehir veritabanı:** `CITY_DB` + `SmartCityInput` bileşeni. `<datalist>` iOS WKWebView'da çalışmaz — özel dropdown kullanılıyor.
-- **Astroloji:** `preciseAscendant` (App.jsx:441) lat/lon + standart UTC offset kullanır. DST uygulanmıyor (kasıtlı sadelik). Doğum şehri zorunlu yükselen burç için.
+- **Astroloji:** `preciseAscendant` lat/lon + `effectiveUtcOffset()` kullanır. Doğum şehri zorunlu yükselen burç için.
+  - **`effectiveUtcOffset` = Türkiye'nin TARİHSEL saat dilimi** (tz database Europe/Istanbul ile birebir). `CITY_DB` tüm TR illerini +3 saklar ama Türkiye 8 Eyl 2016'ya kadar kışın +2'ydi. Dönemler: 2016+ kalıcı +3 · 1996–2016 DST Mart→**Ekim** son Pazar · 1986–1995 DST Mart→**EYLÜL** son Pazar (1994 başlangıcı 20 Mart) · 29 Haz 1978 – 1 Kas 1984 **standart +3** (1983'te DST ile +4) · 1973–1978 düzensiz tarihler tabloda.
+  - ⚠️ **1 saatlik offset hatası yükseleni 1 burç kaydırır.** Eski kod DST bitişini her yıl "Ekim son Pazar" sanıyordu → 1986–1995 Ekim başı doğumları yanlış çıkıyordu (19.10.1992 19:45 İstanbul → Boğa 29° yerine doğrusu İkizler 16°). Bu fonksiyona dokunurken tz-db'ye karşı doğrula.
+  - Geçişler gün hassasiyetinde: geçiş **gününde** 00:00–04:00 doğumlar 1 saat şaşabilir (yılda 2 gün, bilinen sınır).
 
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
