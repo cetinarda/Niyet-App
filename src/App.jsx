@@ -7,7 +7,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, LIFETIME_PRODUCT_ID } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -4439,6 +4439,10 @@ export default function SakinApp() {
       // verified, .owned'ı asıl set eden) henüz bitmemiş olabilir. initStore 8sn ürün
       // yükleme penceresini kapsayacak şekilde ilk 10sn revoke etme.
       if (Date.now() - __appStartMs < 10000) return;
+      // GUARD 3 — mağaza "konuşmadıysa" owned=false BİLGİ DEĞİL, BİLGİSİZLİKTİR.
+      // Çevrimdışıyken veya plugin state tazelenmemişken asla revoke etme (kullanıcı
+      // raporu: "internet çekmeyen yerde premium gözükmüyor" / "açıp kapatınca düşüyor").
+      if (!isEntitlementKnown()) return;
       try {
         if (isSubscribed()) { if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; } return; }
         // GUARD 2 — çift doğrulama: tek bir false anlık/geçici olabilir (plugin state
@@ -4447,7 +4451,12 @@ export default function SakinApp() {
         if (confirmTimer) return;
         confirmTimer = setTimeout(() => {
           confirmTimer = null;
-          try { if (!isSubscribed()) setIsPremium(false); } catch(_) {}
+          try {
+            // 2.5sn içinde bağlantı/state değişmiş olabilir — kesinliği YENİDEN doğrula.
+            if (!isEntitlementKnown()) return;
+            // Kalıcı bayrağın silindiği TEK yer burası: kesin + çift doğrulanmış olumsuz.
+            if (!isSubscribed()) { revokeLocalPremium(); setIsPremium(false); }
+          } catch(_) {}
         }, 2500);
       } catch(_) {}
     };

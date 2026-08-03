@@ -149,24 +149,44 @@ export async function initStore() {
   }
 }
 
+// Mağaza gerçekten "konuştu" mu? owned=false YALNIZCA bu true iken "sahibi değil"
+// anlamına gelir. Aksi halde owned=false "HENÜZ BİLİNMİYOR" demektir: çevrimdışı,
+// soğuk açılış, ürünler yüklenmemiş, arka plandan dönüşte plugin state tazelenmemiş.
+// Bu ayrım olmadan ödeme yapan kullanıcı premium'unu kaybediyordu.
+export function isEntitlementKnown() {
+  if (!isNative) return true;
+  return !!(storeReady && productsLoaded && window.CdvPurchase);
+}
+
+// SAF OKUMA — yan etkisi YOKTUR (owned=true iken bayrağı tazelemek dışında).
+// ESKİ BUG: burada `localStorage.removeItem("sakin_premium")` vardı. owned=false
+// "bilinmiyor" durumlarında da tetiklendiği için:
+//   · çevrimdışı "Geri Yükle" → bayrak siliniyor, premium kalıcı kayboluyordu
+//   · arka plandan dönüşte tek bir geçici false → bayrak siliniyordu (çift doğrulama
+//     UI'ı kurtarsa bile bayrak gitmiş oluyordu) → sonraki açılışta premium düşüyordu
+// Artık silme işlemi TEK ve KESİN noktada: revokeLocalPremium() (bkz. App.jsx recheck).
 export function isSubscribed() {
   if (!isNative || !window.CdvPurchase) {
     // Web: localStorage tek otorite
     return localStorage.getItem("sakin_premium") === "1";
   }
-  // iOS/Android: SADECE store.owned otoritedir. localStorage'a güvenme — eski test/dev değerleri
-  // ya da bug'dan kalma "1" değerleri sahte premium üretebilir.
+  // iOS/Android: store.owned otoritedir — ama yalnızca isEntitlementKnown() true iken
+  // OLUMSUZ sonucu bağlayıcıdır. Olumlu sonuç her zaman bağlayıcıdır.
   const store = window.CdvPurchase.store;
   const yearly = store.get(YEARLY_ID);
   const lifetime = store.get(LIFETIME_ID);
   const owned = (yearly && yearly.owned) || (lifetime && lifetime.owned);
   if (owned) {
-    localStorage.setItem("sakin_premium", "1");
+    try { localStorage.setItem("sakin_premium", "1"); } catch(_) {}
     return true;
   }
-  // Native + ürün owned değil → eski localStorage değerini temizle, premium yok
-  localStorage.removeItem("sakin_premium");
   return false;
+}
+
+// KESİN olumsuz sonuç — yalnızca isEntitlementKnown() true iken ve çift doğrulamadan
+// SONRA çağrılmalı. Süresi dolmuş aboneliği iptal eden tek yer burasıdır (Apple 2.1).
+export function revokeLocalPremium() {
+  try { localStorage.removeItem("sakin_premium"); } catch(_) {}
 }
 
 function isCancelError(err) {
