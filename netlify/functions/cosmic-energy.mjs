@@ -710,12 +710,15 @@ export const handler = async (event) => {
   ]);
 
   try {
-    // Past 7 days Kp index (3-hourly values) — bu ana veri, fail olursa 502
-    if (kpResult.status !== "fulfilled") {
-      throw new Error("Kp data unavailable: " + (kpResult.reason?.message || "unknown"));
-    }
-    const kpRaw = kpResult.value;
-    const rows = kpRaw.slice(1);
+    // Past 7 days Kp index (3-hourly values). NOAA Kp servisi down olsa bile
+    // FONKSİYON 502 DÖNMEZ — ay evresi, gezegenler, portallar ve meteorlar NOAA'ya
+    // DEĞİL astronomy-engine'e dayanır. Kp yoksa jeomanyetik kısım "sakin" (Kp 0)
+    // varsayılır, rapor yine üretilir. (Eski davranış: Kp fail → throw → 502 →
+    // client'ta "Güneş verisi alınamadı" ekranı. NOAA SWPC sık sık kısa süreli
+    // kesintiye girdiği için bu, kullanıcıya gereksiz hata gösteriyordu.)
+    const rows = (kpResult.status === "fulfilled" && Array.isArray(kpResult.value))
+      ? kpResult.value.slice(1)
+      : [];
     const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
     const kpRecent = rows
       .filter(r => new Date(r[0]).getTime() >= sevenDaysAgo)
