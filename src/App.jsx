@@ -891,16 +891,42 @@ function lookupCity(input){
 // Doğum tarihine göre doğru offset'i döndürür — yükselen/ev hesabı için kritik:
 // sınıra yakın doğumlarda 1 saatlik hata yükselen burcu 1 burç kaydırabiliyordu.
 // (lat/lon kutusu Türkiye'yi izole eder; Moskova/Tahran/Kıbrıs/dünya şehirleri etkilenmez.)
+// Kurallar tz database (Europe/Istanbul) ile birebir. ÖNCEKİ SÜRÜMÜN HATASI:
+// yaz saati bitişini HER YIL "Ekim son Pazar" varsayıyordu; oysa 1986–1995 arası
+// yaz saati EYLÜL son Pazar biterdi. O 10 yılın Ekim başı doğumları 1 saat ileri
+// hesaplanıyor, yükselen 1 burç kayabiliyordu (ör. 19.10.1992 19:45 İstanbul →
+// Boğa 29° çıkıyordu, doğrusu İkizler 16°).
+// Ayrıca 29 Haz 1978 – 1 Kas 1984 arası Türkiye'nin STANDART saati +3'tü (+2 değil).
+// SINIR NOTU: geçişler gün hassasiyetinde uygulanır; geçiş GÜNÜNDE gece 00:00–04:00
+// arası doğumlar 1 saat şaşabilir (yılda 2 gün, dar pencere).
 function effectiveUtcOffset(lat, lon, tz, Y, Mo, Da) {
   const isTurkey = tz === 3 && lat >= 35.5 && lat <= 42.5 && lon >= 25 && lon <= 45;
   if (!isTurkey) return tz;
   const ymd = Y*10000 + Mo*100 + Da;
   if (ymd >= 20160908) return 3; // kalıcı +3 dönemi (8 Eylül 2016'dan beri)
-  // 2016 öncesi: kış +2, yaz (DST) +3 — yaklaşık son-Pazar Mart → son-Pazar Ekim
+
+  const mk = (yr, mo, da) => yr*10000 + mo*100 + da;
   const lastSun = (yr, mo) => { const d = new Date(Date.UTC(yr, mo, 0)); return d.getUTCDate() - d.getUTCDay(); };
-  const dstStart = Y*10000 + 300 + lastSun(Y, 3);
-  const dstEnd   = Y*10000 + 1000 + lastSun(Y, 10);
-  return (ymd >= dstStart && ymd < dstEnd) ? 3 : 2;
+
+  // Standart (kış) offset — 29 Haz 1978 – 1 Kas 1984 arası +3, diğer tüm dönemler +2.
+  const std = (ymd >= 19780629 && ymd < 19841101) ? 3 : 2;
+
+  // Yaz saati penceresi [başlangıç, bitiş) — dönem dönem farklı kurallar.
+  let s = null, e = null;
+  if      (Y >= 1996)  { s = mk(Y,3,lastSun(Y,3)); e = mk(Y,10,lastSun(Y,10)); } // Mart→Ekim son Pazar (AB)
+  else if (Y >= 1986)  { s = (Y === 1994) ? mk(1994,3,20) : mk(Y,3,lastSun(Y,3));
+                         e = mk(Y,9,lastSun(Y,9)); }                             // Mart→EYLÜL son Pazar
+  else if (Y === 1985) { s = mk(1985,4,20);  e = mk(1985,9,28); }
+  else if (Y === 1983) { s = mk(1983,7,31);  e = mk(1983,10,2); }                // std +3 → DST +4
+  else if (Y === 1978) { s = mk(1978,4,2);   e = mk(1978,6,29); }                // 29 Haz'da standart +3 oldu
+  else if (Y === 1977) { s = mk(1977,4,3);   e = mk(1977,10,16); }
+  else if (Y === 1976) { s = mk(1976,3,21);  e = mk(1976,10,31); }
+  else if (Y === 1975) { s = mk(1975,3,22);  e = mk(1975,11,2); }
+  else if (Y === 1974) { s = mk(1974,3,31);  e = mk(1974,11,3); }
+  else if (Y === 1973) { s = mk(1973,6,3);   e = mk(1973,11,4); }
+  // 1979–1982 ve 1984: yaz saati uygulanmadı (standart zaten +3). 1972 ve öncesi: düzenli DST yok.
+
+  return (s && ymd >= s && ymd < e) ? std + 1 : std;
 }
 
 function preciseAscendant(dateStr, timeStr, cityInput) {
