@@ -5781,65 +5781,40 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     }
   },[screen]);
 
-  // ── NEFES İŞARETİ: KONUŞMA YERİNE YUMUŞAK TON ─────────────────────────────
-  // Kullanıcı: "inhale/hold/exhale ses çok robotik, sakin huzurlu bir ses daha
-  // iyi olur" → "konuşmayı kaldırıp yumuşak ton deneyelim".
-  // Cihazın TTS motoru kullanıldığı için ses her telefonda farklı ve sentetik
-  // duyuluyordu. Artık konuşma YOK: nefes al = yumuşakça YÜKSELEN, nefes ver =
-  // ALÇALAN sine tonu. Faz adı zaten ekranda yazdığı için bilgi kaybı olmuyor.
-  // Tutuş/dinlenme fazları SESSİZ — en sakin seçenek.
-  // Sine dalga + uzun attack/release: tık ve sertlik olmaz.
-  const breathToneCtxRef = useRef(null);
-  // "TUT" VURGUSU (kullanıcı: "nefes seslerinde tut vurgusu yok, bir tonla
-  // tut-ver yapılabilir mi?"). Eskiden hold/hold2 fazları tamamen sessizdi —
-  // kullanıcı ne zaman tutacağını, ne zaman bırakacağını duyamıyordu. Artık
-  // tutuş boyunca SABİT bir perde çalıyor (inhale/exhale'in AKSİNE hareket
-  // yok — bu "durgunluk"u kulakla ayırt ettiriyor), fazın gerçek süresi kadar
-  // sürüyor ve bir sonraki faz başlayınca söner. `dur` parametresi bu yüzden
-  // gerekli: hold/hold2 modlara göre 1.5-8 sn arası değişiyor.
-  const playBreathTone = (phase, durationMs) => {
+  // ── NEFES İŞARETİ: SESLENDİRME ─────────────────────────────────────────────
+  // Eskiden cihazın TTS motoru kullanılıyordu, telefonlar arası ses tutarsız/
+  // robotik duyuluyordu → önce sentetik tona geçilmişti. Artık gerçek insan
+  // seslendirmesi (statik .wav, cihazdan bağımsız aynı ses) kullanılıyor:
+  // her faz başında ilgili kelime bir kez çalar (nefes al/tut/ver/dinlen).
+  // Sadece TR ve EN kaydı var; diğer diller EN'e düşer.
+  const BREATH_VOICE_FILE = { inhale: "inhale", hold: "hold", exhale: "exhale", hold2: "rest" };
+  const breathVoiceCacheRef = useRef({});
+  const getBreathVoice = (phase) => {
+    const vlang = lang === "tr" ? "tr" : "en";
+    const file = BREATH_VOICE_FILE[phase];
+    if (!file) return null;
+    if (!breathVoiceCacheRef.current[vlang]) breathVoiceCacheRef.current[vlang] = {};
+    let el = breathVoiceCacheRef.current[vlang][file];
+    if (!el) {
+      el = new Audio(`/sounds/breath/${vlang}/${file}.wav`);
+      el.preload = "auto";
+      el.volume = 0.85;
+      breathVoiceCacheRef.current[vlang][file] = el;
+    }
+    return el;
+  };
+  // Nefes ekranına girince o dilin 4 dosyasını önceden yükle — ilk faz
+  // gecikmesiz çalsın (ilk play() network+decode beklemesin).
+  useEffect(() => {
+    if (screen !== "nefes") return;
+    ["inhale", "hold", "exhale", "hold2"].forEach(getBreathVoice);
+  }, [screen, lang]);
+  const playBreathTone = (phase) => {
     try {
-      if (!breathToneCtxRef.current) breathToneCtxRef.current = __makeAudioCtx();
-      const ctx = breathToneCtxRef.current;
-      if (!ctx) return;
-      if (ctx.state === "suspended") { try { ctx.resume(); } catch (_) {} }
-      const t0 = ctx.currentTime;
-      if (phase === "inhale" || phase === "exhale") {
-        const [f0, f1] = phase === "inhale" ? [196, 294] : [294, 196];  // sol3 ↔ re4
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "sine";
-        o.frequency.setValueAtTime(f0, t0);
-        o.frequency.linearRampToValueAtTime(f1, t0 + 0.95);   // nefesin kendisi gibi kayan perde
-        // Yumuşak giriş/çıkış — 0'dan başlayıp 0'a inince tık sesi olmaz.
-        g.gain.setValueAtTime(0.0001, t0);
-        g.gain.linearRampToValueAtTime(0.085, t0 + 0.30);
-        g.gain.linearRampToValueAtTime(0.060, t0 + 0.80);
-        g.gain.exponentialRampToValueAtTime(0.0005, t0 + 1.35);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(t0); o.stop(t0 + 1.4);
-        return;
-      }
-      if (phase === "hold" || phase === "hold2") {
-        // "tut" = inhale'in vardığı tepe perde (294); "dinlen" (kutu nefesinde
-        // exhale sonrası) = düşük perde (196) — ikisi kulakla ayrışsın.
-        const pitch = phase === "hold" ? 294 : 196;
-        const dur = Math.max(0.6, Math.min((durationMs || 1500) / 1000, 8));
-        const o = ctx.createOscillator(), g = ctx.createGain();
-        o.type = "sine"; o.frequency.setValueAtTime(pitch, t0);
-        // Yavaş bir nabız (LFO) — dümdüz bir ton "ölü" durur, bu hafifçe nefes
-        // alıyormuş gibi soluklaşıp koyulaşır.
-        const lfo = ctx.createOscillator(), lfoGain = ctx.createGain();
-        lfo.type = "sine"; lfo.frequency.value = 0.35;
-        lfoGain.gain.value = 0.018;
-        lfo.connect(lfoGain); lfoGain.connect(g.gain);
-        g.gain.setValueAtTime(0.0001, t0);
-        g.gain.linearRampToValueAtTime(0.05, t0 + 0.25);
-        g.gain.setValueAtTime(0.05, t0 + Math.max(0.25, dur - 0.35));
-        g.gain.exponentialRampToValueAtTime(0.0005, t0 + dur);
-        o.connect(g); g.connect(ctx.destination);
-        o.start(t0); lfo.start(t0);
-        o.stop(t0 + dur + 0.05); lfo.stop(t0 + dur + 0.05);
-      }
+      const el = getBreathVoice(phase);
+      if (!el) return;
+      el.currentTime = 0;
+      el.play().catch(() => {});
     } catch (_) {}
   };
 
