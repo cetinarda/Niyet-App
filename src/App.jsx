@@ -7,7 +7,7 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, LIFETIME_PRODUCT_ID } from "./purchases";
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -1104,30 +1104,30 @@ function AppStoreBadge({ lang = "tr", size = "md" }) {
   );
 }
 
-// Google Play rozeti — HENÜZ YAYINDA DEĞİL. Tıklanamaz (link yok), soluk gösterilir
-// ve küçük yazıyla "Çok yakında" bilgisi verir. Apple rozetinin yanına konur.
-const PLAY_SOON = { tr:"Çok yakında", en:"Coming soon", de:"Demnächst", es:"Muy pronto", pt:"Em breve", fr:"Bientôt disponible", ja:"近日公開" };
+// Google Play rozeti — YAYINDA. Apple rozetinin yanına konur.
 function PlayStoreBadge({ lang = "tr", size = "md" }) {
   const isLg = size === "lg";
-  const soon = PLAY_SOON[lang] || PLAY_SOON.en;
   return (
-    <div title={soon} aria-label={"Google Play — " + soon}
+    <a href={PLAY_STORE_URL} target="_blank" rel="noopener noreferrer"
       style={{
         display:"inline-flex",alignItems:"center",gap: isLg?12:9,
         padding: isLg?"12px 24px":"8px 16px",
-        background:"#000",border:"1.5px solid rgba(255,255,255,0.35)",
-        borderRadius: isLg?14:10,color:"#fff",
-        cursor:"default",opacity:0.6,userSelect:"none"
-      }}>
+        background:"#000",border:"1.5px solid rgba(255,255,255,0.85)",
+        borderRadius: isLg?14:10,color:"#fff",textDecoration:"none",
+        transition:"all 0.25s",cursor:"pointer",
+        boxShadow:"0 0 0 rgba(255,255,255,0)"
+      }}
+      onMouseEnter={e => { e.currentTarget.style.background="#0a0a0a"; e.currentTarget.style.boxShadow="0 0 28px rgba(255,255,255,0.18)"; e.currentTarget.style.transform="translateY(-1px)"; }}
+      onMouseLeave={e => { e.currentTarget.style.background="#000"; e.currentTarget.style.boxShadow="0 0 0 rgba(255,255,255,0)"; e.currentTarget.style.transform="translateY(0)"; }}>
       {/* Google Play üçgeni (sade, tek renk) */}
       <svg width={isLg?24:20} height={isLg?26:22} viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
         <path d="M4 3.2c0-.5.5-.8 1-.6l14.2 8.1c.5.3.5 1 0 1.3L5 20.4c-.5.3-1 0-1-.6V3.2z" />
       </svg>
       <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
-        <span style={{ fontSize: isLg?11:9.5,opacity:0.9,letterSpacing:0.3 }}>{soon}</span>
-        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>Google Play</span>
+        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{lang==="tr" ? "Google Play'den" : "GET IT ON"}</span>
+        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{lang==="tr" ? "İndir" : "Google Play"}</span>
       </div>
-    </div>
+    </a>
   );
 }
 
@@ -4439,6 +4439,10 @@ export default function SakinApp() {
       // verified, .owned'ı asıl set eden) henüz bitmemiş olabilir. initStore 8sn ürün
       // yükleme penceresini kapsayacak şekilde ilk 10sn revoke etme.
       if (Date.now() - __appStartMs < 10000) return;
+      // GUARD 3 — mağaza "konuşmadıysa" owned=false BİLGİ DEĞİL, BİLGİSİZLİKTİR.
+      // Çevrimdışıyken veya plugin state tazelenmemişken asla revoke etme (kullanıcı
+      // raporu: "internet çekmeyen yerde premium gözükmüyor" / "açıp kapatınca düşüyor").
+      if (!isEntitlementKnown()) return;
       try {
         if (isSubscribed()) { if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; } return; }
         // GUARD 2 — çift doğrulama: tek bir false anlık/geçici olabilir (plugin state
@@ -4447,7 +4451,12 @@ export default function SakinApp() {
         if (confirmTimer) return;
         confirmTimer = setTimeout(() => {
           confirmTimer = null;
-          try { if (!isSubscribed()) setIsPremium(false); } catch(_) {}
+          try {
+            // 2.5sn içinde bağlantı/state değişmiş olabilir — kesinliği YENİDEN doğrula.
+            if (!isEntitlementKnown()) return;
+            // Kalıcı bayrağın silindiği TEK yer burası: kesin + çift doğrulanmış olumsuz.
+            if (!isSubscribed()) { revokeLocalPremium(); setIsPremium(false); }
+          } catch(_) {}
         }, 2500);
       } catch(_) {}
     };
