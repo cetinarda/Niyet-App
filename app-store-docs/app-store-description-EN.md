@@ -7,7 +7,7 @@ Sakin
 Always remember yourself.
 
 ## Promotional Text (max 170 characters)
-Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing.
+A small breathing pause in a noisy world. Calm your mind with daily practices and make space to hear your inner voice more clearly.
 
 ---
 

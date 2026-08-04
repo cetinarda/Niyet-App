@@ -80,7 +80,7 @@
 
 | Alan | Değer |
 |---|---|
-| **Promotional Text** | Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı. |
+| **Promotional Text** | Gürültülü dünyada küçük bir nefes molası. Günlük pratiklerle zihnini sakinleştir, içindeki sesi daha net duymana alan aç. |
 | **Description** | `app-store-description-TR.md` dosyasındaki tam metin |
 | **Keywords** | `sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rahatlama` |
 | **Support URL** | https://sakin.app |
@@ -91,7 +91,7 @@
 
 | Alan | Değer |
 |---|---|
-| **Promotional Text** | Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing. |
+| **Promotional Text** | A small breathing pause in a noisy world. Calm your mind with daily practices and make space to hear your inner voice more clearly. |
 | **Description** | `app-store-description-EN.md` dosyasındaki tam metin |
 | **Keywords** | `calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation` |
 | **Support URL** | https://sakin.app |

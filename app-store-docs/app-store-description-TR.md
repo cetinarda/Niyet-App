@@ -7,7 +7,7 @@ Sakin
 Kendini hep hatırla.
 
 ## Kısa Açıklama (Promotional Text — max 170 karakter)
-Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı.
+Gürültülü dünyada küçük bir nefes molası. Günlük pratiklerle zihnini sakinleştir, içindeki sesi daha net duymana alan aç.
 
 ---
 
