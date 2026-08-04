@@ -24,3 +24,20 @@ Une petite pause respiration dans un monde bruyant. Apaise ton esprit avec des p
 
 ## 日本語
 騒がしい世界の中の、小さな呼吸の休息。日々の実践で心を落ち着かせ、内なる声をより明確に聞くための余白をつくりましょう。
+
+---
+
+# Başlık + Altyazı — 7 Dil
+
+App Store/Play Store başlık alanı (Title) + altyazı (Subtitle) çifti.
+"Sakin" marka adı tüm dillerde sabit tutulur.
+
+| Dil | Başlık | Altyazı |
+|---|---|---|
+| Türkçe | Sakin - Nefes & Meditasyon | Kalbinle bağlantı kur. |
+| English | Sakin - Breathing & Meditation | Connect with your heart. |
+| Deutsch | Sakin - Atmung & Meditation | Verbinde dich mit deinem Herzen. |
+| Español | Sakin - Respiración y Meditación | Conecta con tu corazón. |
+| Português (Brasil) | Sakin - Respiração e Meditação | Conecte-se com seu coração. |
+| Français | Sakin - Respiration & Méditation | Connecte-toi à ton cœur. |
+| 日本語 | Sakin - 呼吸と瞑想 | 心とつながる。 |
