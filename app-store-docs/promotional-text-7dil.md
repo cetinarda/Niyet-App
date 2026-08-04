@@ -45,3 +45,19 @@ için doğal/yaygın kısa terim). EN ve PT tam sınırda (30/30), payları yok.
 | Português (Brasil) | Sakin - Respiração e Meditação (30) | Conecte-se com seu coração. (27) |
 | Français | Sakin - Souffle & Méditation (28) | Connecte-toi à ton cœur. (24) |
 | 日本語 | Sakin - 呼吸と瞑想 (13) | 心とつながる。 (7) |
+
+### Kısa başlık (30 karakteri geçen/riskli olanlar için yedek)
+
+Sadece marka + tek kelime — "& Meditasyon/Meditation" kısmı yok. Hepsi
+geniş payla (8-13 karakter) sınırın altında, EN/PT'nin tam sınırda (30/30)
+kaldığı durumda güvenli alternatif olarak kullanılabilir.
+
+| Dil | Kısa Başlık (karakter) |
+|---|---|
+| Türkçe | Sakin-Nefes (11) |
+| English | Sakin-Breath (12) |
+| Deutsch | Sakin-Atem (10) |
+| Español | Sakin-Respiro (13) |
+| Português (Brasil) | Sakin-Respiro (13) |
+| Français | Sakin-Souffle (13) |
+| 日本語 | Sakin-呼吸 (8) |
