@@ -29,15 +29,19 @@ Une petite pause respiration dans un monde bruyant. Apaise ton esprit avec des p
 
 # Başlık + Altyazı — 7 Dil
 
-App Store/Play Store başlık alanı (Title) + altyazı (Subtitle) çifti.
-"Sakin" marka adı tüm dillerde sabit tutulur.
+App Store/Play Store başlık alanı (Title, max 30 karakter) + altyazı
+(Subtitle, max 30 karakter) çifti. "Sakin" marka adı tüm dillerde sabit
+tutulur. Karakter sayıları parantez içinde — ES ve FR başlıkları orijinal
+çeviride 32 karakterdi (sınırı aşıyordu), anlam korunarak kısaltıldı
+("Respiración"→"Respiro", "Respiration"→"Souffle" — ikisi de "nefes"
+için doğal/yaygın kısa terim). EN ve PT tam sınırda (30/30), payları yok.
 
-| Dil | Başlık | Altyazı |
+| Dil | Başlık (karakter) | Altyazı (karakter) |
 |---|---|---|
-| Türkçe | Sakin - Nefes & Meditasyon | Kalbinle bağlantı kur. |
-| English | Sakin - Breathing & Meditation | Connect with your heart. |
-| Deutsch | Sakin - Atmung & Meditation | Verbunden mit deinem Herzen. |
-| Español | Sakin - Respiración y Meditación | Conecta con tu corazón. |
-| Português (Brasil) | Sakin - Respiração e Meditação | Conecte-se com seu coração. |
-| Français | Sakin - Respiration & Méditation | Connecte-toi à ton cœur. |
-| 日本語 | Sakin - 呼吸と瞑想 | 心とつながる。 |
+| Türkçe | Sakin - Nefes & Meditasyon (26) | Kalbinle bağlantı kur. (22) |
+| English | Sakin - Breathing & Meditation (30) | Connect with your heart. (24) |
+| Deutsch | Sakin - Atmung & Meditation (27) | Verbunden mit deinem Herzen. (28) |
+| Español | Sakin - Respiro y Meditación (28) | Conecta con tu corazón. (23) |
+| Português (Brasil) | Sakin - Respiração e Meditação (30) | Conecte-se com seu coração. (27) |
+| Français | Sakin - Souffle & Méditation (28) | Connecte-toi à ton cœur. (24) |
+| 日本語 | Sakin - 呼吸と瞑想 (13) | 心とつながる。 (7) |
