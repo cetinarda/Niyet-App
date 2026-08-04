@@ -280,7 +280,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.5";
+const APP_VERSION = "1.3.6";
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
