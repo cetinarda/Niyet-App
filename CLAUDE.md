@@ -9,11 +9,16 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
-3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu:
+3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı ONAYLADI, BAŞARILI — DEĞİŞTİRME):
    ```
-   cd ~/Desktop/Niyet-App && git pull origin claude/check-sakin-life-update-CIpM8 && \
+   cd ~/Desktop/Niyet-App && git checkout -- ios/App/App.xcodeproj/project.pbxproj && \
+   git pull origin claude/check-sakin-life-update-CIpM8 && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
    ```
+   `git checkout -- project.pbxproj` ŞART: Xcode dosyayı yerel imzalama ayarlarıyla
+   (signing team vb.) kirletiyor, commit edilmemiş bu değişiklikler `git pull`'u
+   "local changes would be overwritten" hatasıyla durduruyor. Bu satır olmadan
+   komut kullanıcıda 5 kez art arda başarısız oldu — bir daha kaldırma.
 4. **⚠️ `public/latest-ios-version.json` SÜRÜM BUMP'IYLA BİRLİKTE GÜNCELLENMEZ.**
    Bu dosya "App Store'da CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
    Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse kullanıcıya
