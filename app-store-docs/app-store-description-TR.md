@@ -13,44 +13,31 @@ Gürültülü dünyada küçük bir nefes molası. Günlük pratiklerle zihnini 
 
 ## Tam Açıklama (max 4000 karakter)
 
-Sakin, sana bir şey öğretmez.
-Sadece hatırlatır.
+Gürültülü dünyada küçük bir nefes molası. Günlük pratiklerle zihnini sakinleştir, içindeki sesi daha net duymana alan aç.
 
-Günün koşusunda kendini unuttuğun anlarda, Sakin seni nazikçe içe çeker. Karmaşık programlar yok, görev listeleri yok, baskı yok. Sadece sen ve bugünkü niyetin.
+Yavaşlamaya ihtiyaç duyduğunda dönebileceğin, sade ve içten araçlar.
 
-**Sabah Rutini**
-Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: huzur, cesaret, akış, sevgi... Gün boyu bu kelimeler sana yol gösterir.
+Fiziksel işlemciler bilinçli kodlar aracılığıyla çok boyutlu deneyime dönüşüyor.
 
-**Nefes Egzersizi**
-6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici — hangisi sana iyi geliyorsa.
+• Nefes al — rehberli nefes (zor anlar için tek dokunuşla sakinleştiren nefes dahil)
+• Niyetini kur ve gün boyu yanında taşı
+• Yükselen burcunu ve doğum içgörülerini keşfet
+• Her gün içten bir Gökyüzü Raporu — günün ortak hâli, yalın bir dille
+• Bir taşı ya da bitkiyi fotoğrafıyla tanı ve hakkında bilgi al
+Sakin Ailesi ile tanış — her biri kendi küçük dünyası olan nazik rehberler:
+• Sakin Hayvan — ruh hayvanı yoldaşın
+• Sakin Taşlar — şifa taşları ve efsaneleri
+• Sakin Bitkiler — şifalı bitkiler ve Anadolu hikâyeleri
+• Sakin Mitler — üzerine düşünmek için kısa mitler
+• Tasarım — iç haritana sakin bir bakış
 
-**Ses Dalgaları & Kuş Sesleri**
-10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Rahatlama ve farkındalık deneyimi sunar.
+Kendine biraz daha şefkatle bakmak için sessiz bir köşe.
+Sakin; düşünmek ve sakinleşmek için bir alandır, tıbbi ya da psikolojik tavsiye değildir.
 
-**22 Çakra Farkındalığı**
-Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle tanış. 60 saniyede farkındalık pratiği yap. Elini bölgende hisset, gözlerini kapat, nefesine odaklan.
+Bazı özellikler Sakin Premium (abonelik) kapsamındadır. Sakin'in temel özelliklerini özgürce kullanabilirsin.
 
-**İçsel Ayna — AI Destekli Yansıtma**
-Aklındaki soruyu yaz, yapay zeka sana kişisel bir farkındalık yansıtması sunsun. Duygusal farkındalık perspektifinden kişiselleştirilmiş içgörüler.
+Sakin, karmaşık değil. Derin. Sadece ona biraz sakin anını vermeni istiyor.
 
-**Gün İçi Hatırlatıcılar**
-Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
-
-**Akşam Kapanışı**
-Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
-
-**Bağlantı & İlerleme**
-Gün serisi, frekans dinleme süresi ve tamamlanan adımlarla kendini takip et.
-
-**Haftalık İçsel Rapor**
-Haftanın sonunda AI destekli kişisel rapor: frekans dinleme süren, ruh halin ve kişisel farkındalık yansıtması.
-
----
-
-Sakin, karmaşık değil. Derin.
-Sade tasarımı, yumuşak renkleri ve sessiz ritmiyle her gün yanında olmak için yapıldı.
-
-Bu uygulama tıbbi teşhis veya tedavi amacı taşımaz. Kişisel farkındalık ve rahatlama deneyimi sunar. Sağlık sorunları için mutlaka bir uzmana danışınız.
-
-Kendine dönmek için bir dakikan var.
+Hizmet Şartları (EULA): https://sakin.life/terms/
+Gizlilik Politikası: https://sakin.life/privacy/
 

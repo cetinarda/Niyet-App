@@ -13,44 +13,31 @@ A small breathing pause in a noisy world. Calm your mind with daily practices an
 
 ## Full Description (max 4000 characters)
 
-Sakin doesn't teach you anything.
-It just reminds you.
+A small breathing pause in a noisy world. Calm your mind with daily practices and make space to hear your inner voice more clearly.
 
-When you lose yourself in the rush of the day, Sakin gently brings you back inward. No complex programs, no to-do lists, no pressure. Just you and today's intention.
+Simple, heartfelt tools to return to whenever you need to slow down.
 
-**Morning Ritual**
-Start your day by setting an intention. Choose 3 words that resonate with you most: peace, courage, flow, love... These words will guide you throughout the day.
+Physical processes transform into a multidimensional experience through conscious codes.
 
-**Breathing Exercise**
-Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming — whichever feels right for you.
+• Breathe — guided breathing (including a one-tap calming breath for hard moments)
+• Set your intention and carry it with you throughout the day
+• Discover your rising sign and birth chart insights
+• A heartfelt Sky Report every day — the day's shared mood, in plain language
+• Identify a stone or plant by photo and learn about it
+Meet the Sakin Family — gentle guides, each with its own little world:
+• Sakin Animal — your spirit animal companion
+• Sakin Stones — healing stones and their legends
+• Sakin Plants — healing plants and Anatolian folk stories
+• Sakin Myths — short myths to reflect on
+• Sakin Design — a calm look at your inner blueprint
 
-**Sound Waves & Bird Sounds**
-Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. A relaxation and awareness experience.
+A quiet corner to look at yourself with a little more compassion.
+Sakin is a space for reflection and calm — not medical or psychological advice.
 
-**22 Chakra Awareness**
-Explore 22 energy centers across physical, spiritual, and divine dimensions. Practice a 60-second awareness exercise. Place your hand on the area, close your eyes, and focus on your breath.
+Some features are part of Sakin Premium (subscription). You can freely use Sakin's core features.
 
-**Inner Mirror — AI-Powered Reflection**
-Write your question, and AI offers a personalized awareness reflection. Emotional awareness insights from a personal growth perspective.
+Sakin isn't complicated. It's deep. It only asks for a small, calm moment of your time.
 
-**Daily Reminders**
-Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
-
-**Evening Closing**
-What did you learn today? What are you grateful for? A few sentences are enough. The day closes, and you feel whole.
-
-**Connection & Progress**
-Track your day streak, frequency listening time, and completed steps.
-
-**Weekly Inner Report**
-At the end of the week, an AI-powered personal report: frequency listening duration, mood, and personal awareness reflection.
-
----
-
-Sakin is not complex. It is deep.
-With its minimal design, soft colors, and quiet rhythm — it is built to be by your side every day.
-
-This app does not provide medical diagnosis or treatment. It offers a personal awareness and relaxation experience. Always consult a healthcare professional for health concerns.
-
-You have one minute to return to yourself.
+Terms of Service (EULA): https://sakin.life/terms/
+Privacy Policy: https://sakin.life/privacy/
 
