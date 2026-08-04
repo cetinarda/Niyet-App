@@ -8,6 +8,7 @@ import { useSakinHayvanStore } from './src/store/useStore';
 import { Colors } from './src/theme/colors';
 import { isSupabaseConfigured } from './src/lib/supabase';
 import { LanguageProvider } from './src/i18n/LanguageContext';
+import { installHostBackBridge } from './src/utils/backStack';
 
 function Root() {
   const { authReady, isAuthenticated } = useSakinHayvanStore();
@@ -28,6 +29,8 @@ function Root() {
 
   return <TabNavigator />;
 }
+
+installHostBackBridge();
 
 export default function App() {
   return (

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import animalsData from '../data/animals.json';
 import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals } from '../i18n/localize';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 interface Props {
   onClose: () => void;
@@ -54,6 +55,12 @@ export function AnimalLibraryScreen({ onClose, embedded }: Props) {
     }
     return Array.from(map.entries());
   }, [filtered, lang]);
+
+  // Android donanım geri: açık kart → kapat (embed'i kapatma).
+  useEffect(() => pushBackHandler(BACK_PRIORITY.detail, () => {
+    if (selected) { setSelected(null); return true; }
+    return false;
+  }), [selected]);
 
   if (selected) {
     return <AnimalDetailScreen animal={selected as any} onClose={() => setSelected(null)} />;

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import stoneZodiac from '../data/stoneZodiac.json';
 import { useLocalizedStones } from '../i18n/localize';
 import { useI18n } from '../i18n/useI18n';
 import { AnimalDetailScreen } from './AnimalDetailScreen';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 type Stone = typeof stonesData[0];
 
@@ -60,9 +61,12 @@ interface Props {
   prefillBirthHour?: number;
   prefillBirthCity?: string;
   embedded?: boolean;
+  /** Embed'de başlangıç ekranından bir üste (Bul menüsü) dönüş. Verilmezse
+   *  başlangıçta geri butonu gösterilmez (üstte gidilecek yer yok demektir). */
+  onBack?: () => void;
 }
 
-export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Props) {
+export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded, onBack }: Props) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
   const localStones = useLocalizedStones();
@@ -114,6 +118,16 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Prop
     setMode('intro');
   };
 
+  // Android donanım geri: açık detay kartı → kapat; sonuç listesi → başlangıç.
+  useEffect(() => pushBackHandler(BACK_PRIORITY.detail, () => {
+    if (detail) { setDetail(null); return true; }
+    return false;
+  }), [detail]);
+  useEffect(() => pushBackHandler(BACK_PRIORITY.screen, () => {
+    if (mode === 'result') { reset(); return true; }
+    return false;
+  }), [mode]);
+
   const resultLabel = () => {
     if (!selection) return '';
     if (selection.type === 'zodiac') {
@@ -132,14 +146,19 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded }: Prop
   return (
     <View style={[styles.root, { paddingTop: embedded ? 0 : insets.top }]}>
       {/* Header */}
-      {(!embedded || mode !== 'intro') && (
+      {/* TEK geri butonu, HER ZAMAN bir önceki ekrana döner:
+          sonuç listesi → başlangıç, başlangıç → (embed'de) Bul menüsü.
+          Eskiden AnimalsHubScreen ayrıca kendi mor "‹ Geri"sini çiziyordu; o
+          buton detay kartı açıkken de görünüp doğrudan menüye atıyordu → iki
+          geri butonu + bir adımdan fazla geri gitme şikayeti. Kaldırıldı. */}
+      {(!embedded || mode !== 'intro' || !!onBack) && (
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={mode === 'intro' ? (embedded ? () => {} : onClose) : reset}
+            onPress={mode === 'intro' ? (embedded ? (onBack || (() => {})) : onClose) : reset}
             style={styles.closeBtn}
             activeOpacity={0.7}
           >
-            <Text style={styles.closeTxt}>{mode === 'intro' ? (embedded ? '←' : '✕') : '←'}</Text>
+            <Text style={styles.closeTxt}>{mode === 'intro' && !embedded ? '✕' : '←'}</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{t('animalFinder.headerTitle')}</Text>
           <View style={{ width: 32 }} />

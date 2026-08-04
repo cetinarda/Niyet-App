@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useLocalizedStones } from '../i18n/localize';
 import { useSakinHayvanStore } from '../store/useStore';
 import { useI18n } from '../i18n/useI18n';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 type Panel = 'library' | 'finder';
 type FinderView = 'menu' | 'discover' | 'photo';
@@ -91,6 +92,19 @@ export function AnimalsHubScreen() {
     }
     return best;
   }, [photoResult, stones]);
+
+  // Android donanım geri: foto-tanı detayı → kapat; foto/keşfet görünümü → Bul menüsü.
+  useEffect(() => pushBackHandler(BACK_PRIORITY.detail, () => {
+    if (photoDetail) { setPhotoDetail(null); return true; }
+    return false;
+  }), [photoDetail]);
+  useEffect(() => pushBackHandler(BACK_PRIORITY.hub, () => {
+    if (panel === 'finder' && finderView !== 'menu') {
+      setFinderView('menu'); setPhotoResult(''); setPhotoStatus(''); setFailTries(0);
+      return true;
+    }
+    return false;
+  }), [panel, finderView]);
 
   const setPanel = (p: Panel) => { setPanelRaw(p); if (p !== 'finder') setFinderView('menu'); };
   const active = PANELS.find(p => p.key === panel) ?? PANELS[0];
@@ -202,10 +216,7 @@ export function AnimalsHubScreen() {
         )}
         {panel === 'finder' && finderView === 'discover' && (
           <View style={{ flex: 1 }}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => setFinderView('menu')}><Text style={styles.backTxt}>‹ {_L(TXT.back)}</Text></TouchableOpacity>
-            <View style={{ flex: 1 }}>
-              <AnimalFinderScreen onClose={noClose} embedded prefillBirthDate={profile?.birthDate} prefillBirthHour={profile?.birthHour} prefillBirthCity={profile?.birthCity} />
-            </View>
+            <AnimalFinderScreen onClose={noClose} embedded onBack={() => setFinderView('menu')} prefillBirthDate={profile?.birthDate} prefillBirthHour={profile?.birthHour} prefillBirthCity={profile?.birthCity} />
           </View>
         )}
         {panel === 'finder' && finderView === 'photo' && photoDetail && (

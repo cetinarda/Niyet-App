@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { useData, Archetype, Myth, ImageItem } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind } from './MitlerDetailScreen';
 import { calcLifePath } from '../utils/numerology';
 import { useLanguage, getLanguage } from '../i18n/useLanguage';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -308,6 +309,17 @@ export function MitlerFinderScreen({
   const [chosen, setChosen] = useState<number | null>(null);
   const [result, setResult] = useState<FinderResult | null>(null);
   const [openDetail, setOpenDetail] = useState<MitlerEntry | null>(null);
+
+  // Android donanım geri: açık kart → kapat; quiz/sonuç → başlangıç.
+  useEffect(() => pushBackHandler(BACK_PRIORITY.detail, () => {
+    if (openDetail) { setOpenDetail(null); return true; }
+    return false;
+  }), [openDetail]);
+  useEffect(() => pushBackHandler(BACK_PRIORITY.screen, () => {
+    if (mode === 'intro') return false;
+    setMode('intro'); setPicks([]); setChosen(null); setResult(null);
+    return true;
+  }), [mode]);
 
   const cardFade   = useRef(new Animated.Value(1)).current;
   const resultFade = useRef(new Animated.Value(0)).current;

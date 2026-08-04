@@ -4093,6 +4093,7 @@ export default function SakinApp() {
   // mitlerSession bir kez set olunca uygulama kapatılana kadar kalır (sticky).
   const [mitlerSession, setMitlerSession] = useState(null); // null | { day: "YYYY-MM-DD" }
   const mitlerIframeRef = useRef(null);
+  const embedIframeRef = useRef(null);
   const mitlerLoadedOnceRef = useRef(false);
   // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
   const AILESI_FREE_OPENS = 3;
@@ -5148,10 +5149,39 @@ export default function SakinApp() {
   // pushlanmıyor — o yüzden "üstte açık bir modal varken geri tuşuna basınca
   // uygulama kapanıyor" şikayeti oluyordu. Öncelik sırası: en üstteki modalı kapat
   // → yoksa ekran geçmişinde geri git → o da yoksa (kök ekran) uygulamadan çık.
+  // Embed açıkken Android geri tuşu ESKİDEN embed'i doğrudan kapatıyordu: kullanıcı
+  // "Bul"da bir taşın/bitkinin detayındayken geri'ye basınca tek adım geri değil,
+  // Keşfet'e kadar fırlıyordu ("açılış sayfasına kadar geri atıyor" şikayeti).
+  // Artık önce embed'e soruyoruz: içeride kapatılacak bir katman (detay kartı,
+  // sonuç listesi, alt menü) varsa embed onu kapatıp "handled" der, biz kapatmayız.
+  // Köprüsü olmayan/eski bundle cevap veremez → 260ms sonra eski davranış (kapat).
+  const closeEmbedNow = () => { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); };
+  const askEmbedBackThenClose = () => {
+    const path = embeddedApp?.path || "";
+    const frame = path.indexOf("sakinmitler") !== -1 ? mitlerIframeRef.current : embedIframeRef.current;
+    const win = frame && frame.contentWindow;
+    if (!win) { closeEmbedNow(); return; }
+    let done = false;
+    const finish = (handled) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      window.removeEventListener("message", onMsg);
+      if (!handled) closeEmbedNow();
+    };
+    const onMsg = (ev) => {
+      if (!ev.data || ev.data.type !== "sakin-back-result") return;
+      finish(!!ev.data.handled);
+    };
+    window.addEventListener("message", onMsg);
+    const timer = setTimeout(() => finish(false), 260);
+    try { win.postMessage({ type: "sakin-back" }, "*"); } catch (_) { finish(false); }
+  };
+
   useEffect(() => {
     if (!isNative || Capacitor.getPlatform() !== "android") return;
     const sub = CapacitorApp.addListener("backButton", () => {
-      if (embeddedApp) { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); return; }
+      if (embeddedApp) { askEmbedBackThenClose(); return; }
       if (activeMindMode) { setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); return; }
       if (showMindClear) { setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); return; }
       if (showIdCard) { closeIdCard(); return; } // Keşfet'ten açıldıysa oraya döner
@@ -6449,6 +6479,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               güncel kalır. embeddedApp null olduğunda mitler kapalı demektir — handler ne path
               ne color okumaya çalışmaz (üst seviye guard yok, ama mitler için isMitlerEmbed=true). */}
           {embeddedApp && !((embeddedApp.path||"").indexOf("sakinmitler") !== -1) && <iframe
+            ref={embedIframeRef}
             src={embeddedApp.path}
             title={embeddedApp.name}
             onLoad={(e)=>{

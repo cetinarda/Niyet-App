@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind, KIND_COLOR, KIND_LABEL } from './MitlerDetailScreen';
 import { useLanguage, translate } from '../i18n/useLanguage';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 interface Props {
   onClose: () => void;
@@ -149,6 +150,12 @@ export function MitlerLibraryScreen({ onClose, embedded }: Props) {
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [selected, setSelected] = useState<MitlerEntry | null>(null);
+
+  // Android donanım geri: açık mit kartı → kapat (embed'i kapatma).
+  useEffect(() => pushBackHandler(BACK_PRIORITY.detail, () => {
+    if (selected) { setSelected(null); return true; }
+    return false;
+  }), [selected]);
 
   const all = useMemo(() => buildEntries(data), [data]);
 

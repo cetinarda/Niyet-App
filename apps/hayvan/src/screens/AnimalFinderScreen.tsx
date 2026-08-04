@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import animalsData from '../data/animals.json';
 import { useLocalizedAnimals } from '../i18n/localize';
 import { useI18n } from '../i18n/useI18n';
 import { en } from '../i18n/en';
+import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -273,6 +274,14 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   const [picks, setPicks]       = useState<Option[]>([]);
   const [chosen, setChosen]     = useState<number | null>(null);
   const [result, setResult]     = useState<AnimalResult | null>(initialBirthResult);
+
+  // Android donanım geri: quiz/doğum formu/sonuç ekranındayken embed'i kapatma,
+  // başlangıca dön.
+  useEffect(() => pushBackHandler(BACK_PRIORITY.screen, () => {
+    if (mode === 'intro') return false;
+    setMode('intro'); setQIndex(0); setPicks([]); setChosen(null); setResult(null);
+    return true;
+  }), [mode]);
 
   const displayAnimal: typeof animalsData[0] | null = result
     ? ((localAnimals.find((a: any) => a.id === result.animal.id) as typeof animalsData[0] | undefined) || result.animal)
