@@ -36,7 +36,7 @@ App Store/Play Store başlık alanı (Title) + altyazı (Subtitle) çifti.
 |---|---|---|
 | Türkçe | Sakin - Nefes & Meditasyon | Kalbinle bağlantı kur. |
 | English | Sakin - Breathing & Meditation | Connect with your heart. |
-| Deutsch | Sakin - Atmung & Meditation | Verbinde dich mit deinem Herzen. |
+| Deutsch | Sakin - Atmung & Meditation | Verbunden mit deinem Herzen. |
 | Español | Sakin - Respiración y Meditación | Conecta con tu corazón. |
 | Português (Brasil) | Sakin - Respiração e Meditação | Conecte-se com seu coração. |
 | Français | Sakin - Respiration & Méditation | Connecte-toi à ton cœur. |
