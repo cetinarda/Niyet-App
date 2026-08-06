@@ -5262,6 +5262,16 @@ export default function SakinApp() {
     again:     { tr:"Yeniden yorumla", en:"Interpret again", de:"Erneut deuten",
                  es:"Interpretar de nuevo", pt:"Interpretar de novo",
                  fr:"Interpréter à nouveau", ja:"もう一度読む" },
+    guidePre:  { tr:"Haritandaki kavramların tanımlarını öğrenmek istersen",
+                 en:"To learn what the terms in your chart mean, visit the",
+                 de:"Was die Begriffe in deiner Karte bedeuten, findest du im",
+                 es:"Para saber qué significan los términos de tu carta, visita la",
+                 pt:"Para saberes o que significam os termos do teu mapa, visita o",
+                 fr:"Pour comprendre les termes de ta carte, consulte le",
+                 ja:"チャートの用語の意味を知りたいときは" },
+    guideLink: { tr:"Kullanım Kılavuzu'nu ziyaret et", en:"User Guide",
+                 de:"Handbuch", es:"Guía de uso", pt:"Guia de utilização",
+                 fr:"Guide d'utilisation", ja:"使い方ガイドへ" },
   };
   // Doğum bilgisi girilmeden gösterilemeyen alanlar için ortak metin + buton
   // etiketi. Kullanıcı: "12. Ev, draconik vs 'doğum bilgilerini girmeden
@@ -10444,8 +10454,25 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div style={{ fontSize:10,letterSpacing:2.5,color:"#8fb8dc",textTransform:"uppercase",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
                       {pickLang(GID_TXT.title, lang)}
                     </div>
+                    {/* FreqText ile render → sözlükte geçen terimler (draconic,
+                        12. ev, ay düğümü…) kendiliğinden tıklanabilir olur ve
+                        kılavuzda o terime gider. Düz metin yazsaydık bu kaybolurdu. */}
                     <div style={{ fontSize:13,color:"#d8e4f0",lineHeight:1.9,whiteSpace:"pre-wrap" }}>
-                      {gidYorum.replace(/\*\*/g, "")}
+                      <FreqText text={gidYorum} onNav={(type, val) => {
+                        if (type === "glossary") { closeIdCard(); setKilavuzQ(val); setShowKilavuz(true); }
+                        else if (type === "screen") { closeIdCard(); setScreen(val); }
+                      }} />
+                    </div>
+                    {/* Kılavuz daveti SABİT bir UI satırı — AI'nın bu cümleyi her
+                        seferinde doğru yazmasına bel bağlamak kırılgan olurdu
+                        (bazen atlar, bazen linki bozar). Böylece her zaman var
+                        ve her zaman doğru yere gidiyor. */}
+                    <div style={{ marginTop:12,paddingTop:10,borderTop:"1px solid rgba(160,200,240,0.18)",fontSize:11.5,color:"#93a8c0",lineHeight:1.6 }}>
+                      {pickLang(GID_TXT.guidePre, lang)}{" "}
+                      <span onClick={()=>{ closeIdCard(); setKilavuzQ(""); setShowKilavuz(true); }}
+                        style={{ color:"#e2b877",cursor:"pointer",borderBottom:"1px dotted rgba(226,184,119,0.6)" }}>
+                        {pickLang(GID_TXT.guideLink, lang)}
+                      </span>
                     </div>
                   </div>
                 )}
