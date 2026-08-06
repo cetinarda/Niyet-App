@@ -5290,7 +5290,38 @@ export default function SakinApp() {
     enter: { tr:"Doğum bilgilerini gir", en:"Enter birth info", de:"Geburtsdaten eingeben",
              es:"Introducir datos de nacimiento", pt:"Introduzir dados de nascimento",
              fr:"Saisir les infos de naissance", ja:"出生情報を入力" },
+    // Kullanıcı: "bütün butonlar olsun ama tıklandığında doğum bilgisi girilmediyse
+    // 'doğum bilgileri olmadan bakılamaz' yazsın NAZİKÇE." Suçlayıcı değil, davet eden dil.
+    gentle: { tr:"Bu bölüm senin doğum haritanı okur. Tarih, saat ve şehri girdiğinde burası sana açılır.",
+              en:"This section reads your birth chart. Once you add your date, time and city, it opens up for you.",
+              de:"Dieser Bereich liest dein Geburtshoroskop. Sobald du Datum, Zeit und Ort einträgst, öffnet er sich.",
+              es:"Esta sección lee tu carta natal. Cuando añadas fecha, hora y ciudad, se abrirá para ti.",
+              pt:"Esta secção lê o teu mapa natal. Quando adicionares data, hora e cidade, abre-se para ti.",
+              fr:"Cette section lit ton thème natal. Dès que tu ajoutes date, heure et ville, elle s'ouvre à toi.",
+              ja:"このセクションはあなたの出生図を読みます。日付・時刻・都市を入力すると開きます。" },
+    // Görev/soru için ayrı metin — orada mesele "okunamıyor" değil, "seni tanımıyoruz".
+    needKnow: { tr:"Sana özel bir şey söyleyebilmem için önce seni tanımam gerek. Doğum bilgilerini girer misin?",
+                en:"To say something meant for you, I need to know you first. Would you add your birth info?",
+                de:"Um dir etwas Persönliches zu sagen, muss ich dich erst kennen. Trägst du deine Geburtsdaten ein?",
+                es:"Para decirte algo tuyo, primero necesito conocerte. ¿Añades tus datos de nacimiento?",
+                pt:"Para te dizer algo teu, preciso de te conhecer primeiro. Adicionas os teus dados de nascimento?",
+                fr:"Pour te dire quelque chose qui t'appartient, je dois d'abord te connaître. Ajoutes-tu tes infos de naissance ?",
+                ja:"あなたに向けた言葉を届けるには、まずあなたを知る必要があります。出生情報を入力しますか？" },
   };
+  // Doğum bilgisi eksikken kart/bölüm yerine gösterilen nazik blok.
+  // Butonlar GİZLENMİYOR (kullanıcı isteği) — açıldığında sebebini söylüyor ve
+  // tek dokunuşla forma götürüyor.
+  const BirthLocked = ({ msg }) => (
+    <div style={{ marginTop:8,padding:"14px 16px",background:"rgba(184,164,216,0.06)",border:"1px solid rgba(184,164,216,0.22)",borderRadius:14 }}>
+      <div style={{ fontSize:12.5,color:"#c0b4d8",lineHeight:1.75,marginBottom:10 }}>
+        {msg || pickLang(BIRTH_TXT.gentle, lang)}
+      </div>
+      <button onClick={()=>{ birthReturnRef.current = screen; setGirisPhase("birth"); setShowBirthForm(true); setScreen("giris"); }}
+        style={{ background:"rgba(184,164,216,0.18)",border:"1px solid rgba(184,164,216,0.45)",borderRadius:100,padding:"7px 16px",color:"#e0d4f8",fontSize:11.5,letterSpacing:1.2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+        {pickLang(BIRTH_TXT.enter, lang)}
+      </button>
+    </div>
+  );
   const maybeShowNedir = () => {
     try { if (localStorage.getItem("sakin_nedir_off") !== "1") setShowNedir(true); } catch(_) {}
   };
@@ -5529,6 +5560,21 @@ export default function SakinApp() {
   // localStorage'a erkenden yazsın. Kart ilk açıldığında veri artık hazır olur.
   const hdPreloadDone = useRef(false);
   const [hdPreloadSrc, setHdPreloadSrc] = useState(null);
+  // BAYAT ELEMENT VERİSİ HATASI: doğum bilgisi DEĞİŞTİĞİNDE sakin_element_dist
+  // temizlenmiyordu. Eski haritaya göre hesaplanmış dağılım yerinde kalıyor,
+  // aşağıdaki "veri varsa hiç hesaplama" kontrolü de yeniden üretimi engelliyordu
+  // → kullanıcı doğum bilgisini düzeltse bile YANLIŞ element dağılımı görüyordu
+  // ("element dağılımı yanlış çıkıyor"). Artık bilgi değişince veri sıfırlanıp
+  // yeniden hesaplanıyor.
+  const hdLastBirthRef = useRef(null);
+  useEffect(() => {
+    const key = `${birthDate}|${birthTime}|${birthCity}`;
+    if (hdLastBirthRef.current === null) { hdLastBirthRef.current = key; return; }
+    if (hdLastBirthRef.current === key) return;
+    hdLastBirthRef.current = key;
+    try { localStorage.removeItem("sakin_element_dist"); } catch(_) {}
+    hdPreloadDone.current = false;   // yeniden hesaplansın
+  }, [birthDate, birthTime, birthCity]);
   useEffect(() => {
     if (hdPreloadDone.current) return;
     if (!birthDate || !birthTime || !birthCity) return;
@@ -5741,6 +5787,11 @@ export default function SakinApp() {
 
   const gorevIste = async () => {
     if (!gorevIstenebilir) return;
+    // Doğum bilgisi yoksa görev verme (kullanıcı: "doğum bilgisi girmeyi
+    // atlarsa görev verme, soru soramamalı çünkü onu tanımıyoruz").
+    // Görev doğum haritasına göre üretiliyor; bilgi yokken üretilen şey
+    // kişiye özel olmaz, genel geçer bir cümle olur.
+    if (!birthDate) { setGorev({ gun: todayKey, metin: pickLang(BIRTH_TXT.needKnow, lang), n: gorevSayisi, needBirth: true }); return; }
     if (!_aiDailyOk()) { setGorev({ gun: todayKey, metin: _aiLimitMsg(), n: gorevSayisi }); return; }
     setGorevLoading(true);
     try {
@@ -6117,6 +6168,10 @@ ${facts}
 
   const generateSikayetAnaliz = async () => {
     if (!sikayet.trim()) return;
+    // Doğum bilgisi yoksa soru cevaplanmaz (kullanıcı: "soru soramamalı çünkü
+    // onu tanımıyoruz"). Ayna yanıtı doğum haritasını kullanıyor; bilgi yokken
+    // verilen cevap kişiye özel olmaz. Nazikçe forma yönlendiriyoruz.
+    if (!birthDate) { setSikayetAnaliz("__needbirth__"); return; }
     setSikayetAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     // Harita verisi TAM gönderilir — kullanıcı artık "ateş elementim düşük ne
@@ -9290,7 +9345,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
           {/* Ana arama kutusu veya sonuç */}
           <div style={{ width:"100%",zIndex:1 }}>
-            {sikayetAnaliz === "__loading__" ? (
+            {sikayetAnaliz === "__needbirth__" ? (
+              /* Doğum bilgisi yokken soru sorulduğunda — hata değil, davet. */
+              <div style={{ padding:"8px 0" }}>
+                <BirthLocked msg={pickLang(BIRTH_TXT.needKnow, lang)} />
+                <button onClick={()=>{ setSikayetAnaliz(""); }}
+                  style={{ marginTop:10,background:"none",border:"none",color:"#8868b0",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
+                  {t("back")}
+                </button>
+              </div>
+            ) : sikayetAnaliz === "__loading__" ? (
               <div style={{ textAlign:"center",padding:"48px 0" }}>
                 <div style={{ fontSize:26,marginBottom:14,animation:"pulse 2s ease-in-out infinite" }}>🪞</div>
                 <div style={{ fontSize:13,letterSpacing:4,color:"#a070d0",animation:"pulse 1.5s ease-in-out infinite",fontFamily:"'Jost',sans-serif" }}>
@@ -9875,17 +9939,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
-          {/* ── 12. Ev Kartı ── */}
-          {/* Doğum bilgisi eksikse (tarih ve/veya saat) panel HİÇ render
-              edilmiyor (kullanıcı: "doğum bilgileri eklenmediyse harita
-              kısmında hata kutusu çıkıyor, kaldır"). Eskiden eksik bilgi
-              durumunda "doğum bilgini ekle" uyarı kutusu gösteriliyordu; o
-              dal, panelleri açılır-kapanır yaparken yanlışlıkla show12Ev
-              koşulunun İÇİNE gömülüp ölü koda dönüşmüştü (hiçbir zaman
-              render edilmiyordu ama kaynakta kafa karıştırıcı duruyordu).
-              Artık Draconik Harita kartıyla TUTARLI: veri yoksa kart
-              tamamen gizli, hiçbir uyarı/hata görünümü yok. */}
-          {ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu]) ? (
+          {/* ── 12. Ev Kartı ──
+              GÜNCELLEME (kullanıcı isteği): kart artık veri yokken de GÖRÜNÜYOR.
+              Eskiden tamamen gizleniyordu; kullanıcı haritaya girip "menü
+              açılmıyor" diyordu. Şimdi buton duruyor, açılınca nazikçe neden
+              bakılamadığını söylüyor ve doğum formuna götürüyor.
+              (Eski "hata kutusu" şikayeti hâlâ geçerli — bu bir HATA kutusu
+              değil, davet eden bir açıklama.) */}
+          {!(ev12Burcu && ev12Gezegen && (EV12_BURCU_ACIKLAMA[lang]?.[ev12Burcu] || EV12_BURCU_ACIKLAMA.tr[ev12Burcu])) ? (
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setShow12Ev(v=>!v)}
+              style={{
+                width:"100%",background:"rgba(144,112,192,0.05)",
+                border:"1px solid rgba(144,112,192,0.18)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#8878a8",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("map_12h_title")}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:show12Ev?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {show12Ev && <BirthLocked />}
+          </div>
+          ) : (
           <div style={{ marginBottom:20,position:"relative" }}>
             <button onClick={()=>setShow12Ev(v=>!v)}
               style={{
@@ -9931,9 +10007,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
-          ) : null}
-          {/* ── Draconic Harita Kartı (ruh kökeni) ── */}
-          {birthDate && draconicGunes ? (
+          )}
+          {/* ── Draconic Harita Kartı (ruh kökeni) ──
+              Doğum bilgisi yoksa kart GİZLENMİYOR (kullanıcı: "bütün butonlar
+              olsun"), açılınca nazik açıklama + forma götüren buton çıkıyor. */}
+          {!(birthDate && draconicGunes) ? (
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setShowDraconic(v=>!v)}
+              style={{
+                width:"100%",background:"rgba(140,120,220,0.05)",
+                border:"1px solid rgba(140,120,220,0.18)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#8878a8",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("map_draconic_title")}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showDraconic?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showDraconic && <BirthLocked />}
+          </div>
+          ) : (
           <div style={{ marginBottom:20,position:"relative" }}>
             <button onClick={()=>setShowDraconic(v=>!v)}
               style={{
@@ -10000,14 +10093,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
-          ) : null}
-          {birthDate && (
-            <div style={{ textAlign:"center",marginBottom:16 }}>
-              <button onClick={()=>{ setGirisPhase("birth"); setScreen("giris"); }}
-                style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
-                {t("birth_change_lower")}
-              </button>
-            </div>
+          )}
+          {/* Doğum bilgisi bağlantısı HER ZAMAN görünür — etiketi duruma göre
+              değişir: bilgi varsa "değiştir", yoksa "gir" (kullanıcı isteği). */}
+          <div style={{ textAlign:"center",marginBottom:16 }}>
+            <button onClick={()=>{ birthReturnRef.current = "harita"; setGirisPhase("birth"); setShowBirthForm(!birthDate); setScreen("giris"); }}
+              style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
+              {birthDate ? t("birth_change_lower") : pickLang(BIRTH_TXT.enter, lang)}
+            </button>
+          </div>
           )}
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"40px 20px 16px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
             {/* COMING SOON badge — üstte ortalı, kendi satırında; uzun dillerde (EN) label'a binmez */}
@@ -10307,6 +10401,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         return (
           <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; closeIdCard(); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
+              {/* SOL ÜST ✕ — alttaki "Kapat"ın yerini aldı. Kart uzun olduğu için
+                  alttaki düğmeye ulaşmak kaydırma gerektiriyordu; bu her zaman
+                  görünür. Kartın DIŞINDA, üstünde duruyor ki kart görselini
+                  (indirilen/paylaşılan çıktıyı) kirletmesin. */}
+              <button onClick={closeIdCard} aria-label={t("common_close")}
+                style={{ position:"absolute",top:-6,left:-2,zIndex:5,width:34,height:34,borderRadius:"50%",
+                  background:"rgba(0,0,0,0.55)",backdropFilter:"blur(12px)",
+                  border:"1px solid rgba(255,255,255,0.18)",color:"rgba(255,255,255,0.8)",
+                  fontSize:16,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>
+                ✕
+              </button>
               {/* Card preview */}
               <div style={{ background:"linear-gradient(160deg,#0a0612 0%,#1a1230 50%,#0a0612 100%)",border:"1px solid rgba(184,164,216,0.35)",borderRadius:22,padding:"22px 18px",boxShadow:"0 8px 40px rgba(122,80,150,0.25)",position:"relative",overflow:"hidden" }}>
                 {/* Stars */}
@@ -10484,13 +10589,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   style={{ textDecoration:"none",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"10px 16px",borderRadius:22,border:"1px solid rgba(220,140,200,0.3)",background:"linear-gradient(135deg,rgba(240,100,160,0.10),rgba(140,80,200,0.10))",color:"#e0a0c8",fontSize:12,letterSpacing:2,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                   <span style={{ fontSize:14 }}>◐</span> @sakin.app
                 </a>
-                <button onClick={()=>{ closeIdCard(); }}
-                  style={{ padding:"9px 16px",borderRadius:22,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  {/* "Kaydet" ayrı bir buton değil — isim/foto zaten anlık kaydediliyor (React
-                      state), kapat bunu bozmaz. Bunu netleştirmek için etiket "✓ Kapat" oldu
-                      (kullanıcı 'kaydet'e basıp kapanmasını bekliyor olabilir şikayeti). */}
-                  ✓ {t("common_close")}
-                </button>
+                {/* Alttaki "✓ Kapat" KALDIRILDI — kart uzun olduğu için düğme
+                    kaydırmadan görünmüyordu (kullanıcı: "kapat aşağıda kalıyor").
+                    Yerini sol üstteki ✕ aldı; her zaman görünür yerde.
+                    Not: "Kaydet" zaten ayrı bir düğme değildi — isim/foto anlık
+                    kaydediliyor, kapatmak hiçbir şeyi kaybettirmez. */}
               </div>
             </div>
           </div>
