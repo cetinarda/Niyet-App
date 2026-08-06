@@ -2530,7 +2530,26 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   };
   const terapiDuration = useRef(getChakraDuration());
 
-  const progress     = Math.min(elapsed/terapiDuration.current,1);
+  // ── SEANS SÜRESİ SEÇİMİ + OTOMATİK AKIŞ (ek özellik, varsayılan DEĞİŞMEDİ) ──
+  // Kullanıcı: "varsayılan aynı kalsın bu ek özellik olsun · süreyi kendi ayarlasın
+  // 1-2-5 dk · dileyen manuel istediği kadar kalabilir, bazen bi çakrada 15 dakika
+  // kalmak isteyebilir · sadece 7 temel çakraya uygula".
+  //   null    → VARSAYILAN: yukarıdaki kademeli süre (30→120sn), otomatik geçiş YOK
+  //   60/120/300 → sabit süre; dolunca sıradaki temel çakraya kendiliğinden geçer
+  //   "free"  → serbest: sayaç durmadan işler, otomatik tamamlanma/geçiş YOK
+  // Otomatik akış SADECE "temel" sekmesinde (7 klasik çakra) çalışır; yüksek
+  // çakralarda sabit süre seçilse bile geçiş yapılmaz (kullanıcı isteği).
+  const [customDur, setCustomDur] = useState(null);
+  const isFreeDur  = customDur === "free";
+  const autoFlow   = !!customDur && !isFreeDur && chakraTab === "temel";
+  // Serbest modda hedef yok; görsellerin (halka/parçacık/metin) yine de açılması
+  // için 120sn'lik nominal bir eğri kullanılır — sayaç bundan bağımsız işlemeye devam eder.
+  const effDur     = customDur && !isFreeDur ? customDur : terapiDuration.current;
+  const visualDur  = isFreeDur ? 120 : effDur;
+  const freeCountedRef = useRef(false);   // serbest modda seans 1 kez sayılsın
+  const autoNextRef    = useRef(null);    // otomatik geçiş zamanlayıcısı
+
+  const progress     = Math.min(elapsed/visualDur,1);
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
   const displaySecs  = String(elapsed%60).padStart(2,"0");
 
@@ -2600,7 +2619,8 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   useEffect(() => {
     if (tPhase!=="active" && tPhase!=="connected") return;
     if (tPhase==="active") setShowCloseEyes(false);
-    const dur = terapiDuration.current;
+    const dur = effDur;
+    const free = isFreeDur;
     timerRef.current = setInterval(() => {
       // Günlük toplam çakra terapi süresi — "bağlantı" için 2 dk şartında kullanılır.
       // (Seans bitmese de geçen her saniye sayılır; kullanıcı birden çok kısa seans
@@ -2611,6 +2631,21 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       } catch(_) {}
       setElapsed(e => {
         const next = e + 1;
+        if (free) {
+          // SERBEST MOD: bitiş yok — geri sayım çanı çalmaz, faz "connected"a geçmez.
+          // Kullanıcı dilediği kadar kalır (15 dk, 1 saat…), çıkınca seans biter.
+          // Seans sayacı nominal süreye (120sn) ulaşınca BİR KEZ artar; yoksa
+          // kademeli süre sistemi serbest modda hiç ilerlemezdi.
+          if (next === visualDur) {
+            setShowCloseEyes(true);
+            if (!freeCountedRef.current) {
+              freeCountedRef.current = true;
+              const prev = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
+              localStorage.setItem("sakin_chakra_sessions", String(prev + 1));
+            }
+          }
+          return next;
+        }
         if (next === dur) setShowCloseEyes(true);
         const rem = dur - next;
         if (rem === 7) playChime(396, 0.10, 2.0);
@@ -2632,6 +2667,18 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     // Bağlantı kuruldu: harmonik akor + konuşma bildirimi
     playConnectedChord();
     setTimeout(() => { speakText("Connected", { lang: "en-US", rate: 0.78, pitch: 0.9, volume: 0.55 }); }, 1400);
+    // OTOMATİK AKIŞ: sabit süre seçilmişse ve 7 temel çakradaysak sıradakine geç.
+    // SON çakrada DURUR — yoksa baştan sarıp sonsuz döngüye girerdi. Bekleme,
+    // "bağlantı kuruldu" akorunun + yazısının görülmesi için (4sn).
+    if (!autoFlow) return;
+    const list = CHAKRAS_22.filter(c => c.level === 1);
+    const i = list.findIndex(c => c.name === selected.name);
+    if (i === -1 || i === list.length - 1) return;   // son çakra → akış biter
+    autoNextRef.current = setTimeout(() => {
+      autoNextRef.current = null;
+      goNextChakra({ keepTone: true, autoStart: true });
+    }, 4000);
+    return () => { if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; } };
   }, [tPhase]);
 
   useEffect(() => {
@@ -2671,14 +2718,15 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     setToneOn(false);
   };
 
-  const toggleTone = (hz) => {
-    if (toneOn) { stopTone(); return; }
+  // Ton üretimi tek yerde (toggleTone + crossfadeTone ortak kullanır).
+  // Ref'lere YAZMAZ — çağıran taraf eski/yeni seti kendi yönetir (çapraz geçiş için şart).
+  const buildTone = (hz) => {
     // ctx'i gesture handler'ın İLK satırında oluştur/resume et — iOS WKWebView için kritik.
     if (!audioCtxRef.current) {
       try { audioCtxRef.current = __makeAudioCtx(); } catch(_) {}
     }
     const ctx = audioCtxRef.current;
-    if (!ctx) return;
+    if (!ctx) return null;
     if (ctx.state === "suspended") { try { ctx.resume(); } catch(_) {} }
     const master = ctx.createGain();
     master.gain.setValueAtTime(0, ctx.currentTime);
@@ -2687,7 +2735,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     // orantılı düşürür, tonun tınısı bozulmaz.
     master.gain.linearRampToValueAtTime(0.21, ctx.currentTime + 2);
     master.connect(ctx.destination);
-    gainRef.current = master;
     const oscs = [];
     const lfo = ctx.createOscillator();
     const lfoGain = ctx.createGain();
@@ -2704,27 +2751,92 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       o.connect(g); g.connect(master); o.start();
       oscs.push(o); // her harmonik durdurulacaklar listesinde
     });
-    oscsRef.current = oscs;
+    return { master, oscs };
+  };
+
+  const toggleTone = (hz) => {
+    if (toneOn) { stopTone(); return; }
+    const built = buildTone(hz);
+    if (!built) return;
+    gainRef.current = built.master;
+    oscsRef.current = built.oscs;
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
+  // ÇAPRAZ GEÇİŞ: otomatik akışta çakra değişirken frekans da değişir. stopTone()+
+  // toggleTone() ardışık çağrılsaydı arada ~0.8sn sessizlik olurdu — gözü kapalı
+  // kullanıcı için rahatsız edici. Burada yeni ton ESKİSİ SÖNERKEN başlar, dikiş duyulmaz.
+  const crossfadeTone = (hz) => {
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
+    const oldOscs = oscsRef.current || [];
+    const oldGain = gainRef.current;
+    const built = buildTone(hz);
+    if (!built) return;
+    gainRef.current = built.master;
+    oscsRef.current = built.oscs;
+    if (oldGain) {
+      try { oldGain.gain.cancelScheduledValues(ctx.currentTime); } catch(_) {}
+      try { oldGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.8); } catch(_) {}
+    }
+    setTimeout(() => {
+      oldOscs.forEach(o => { try { o.stop(); } catch(_) {} });
+      try { oldGain?.disconnect(); } catch(_) {}
+    }, 1900);
+    setToneOn(true);
+  };
+
+  const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; } freeCountedRef.current = false; /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
   // SIRADAKİ ÇAKRAYA GEÇ (kullanıcı: "bir çakradan diğerine geçerken ekran
   // kaydırma iyi olur, geri dönüp sıradakini seçmek yerine"). Listeye dönmeden
   // aynı sekmedeki (temel/yüksek) bir sonraki çakranın hazırlık ekranını açar;
   // sonda başa sarar. Seans durumu (ses, sayaç, parçacıklar) temizlenir.
   const NEXT_CHAKRA_TXT = { tr:"Sıradaki çakra →", en:"Next chakra →", de:"Nächstes Chakra →",
     es:"Siguiente chakra →", pt:"Próximo chakra →", fr:"Chakra suivant →", ja:"次のチャクラ →" };
-  const goNextChakra = () => {
+  // Süre seçici metinleri — 7 dil, i18n dosyalarına dokunmadan (NEXT_CHAKRA_TXT ile aynı desen).
+  const DUR_TXT = {
+    label:   { tr:"Seans süresi", en:"Session length", de:"Sitzungsdauer", es:"Duración", pt:"Duração", fr:"Durée", ja:"セッション時間" },
+    auto:    { tr:"Varsayılan", en:"Default", de:"Standard", es:"Predet.", pt:"Padrão", fr:"Défaut", ja:"標準" },
+    free:    { tr:"Serbest", en:"Open", de:"Offen", es:"Libre", pt:"Livre", fr:"Libre", ja:"自由" },
+    min:     { tr:"dk", en:"min", de:"Min", es:"min", pt:"min", fr:"min", ja:"分" },
+    flowNote:{ tr:"Süre dolunca sıradaki çakraya geçer, frekans da değişir.",
+               en:"When time is up, it moves to the next chakra and the frequency changes.",
+               de:"Nach Ablauf geht es zum nächsten Chakra, die Frequenz wechselt mit.",
+               es:"Al terminar pasa al siguiente chakra y la frecuencia cambia.",
+               pt:"Ao terminar passa para o próximo chakra e a frequência muda.",
+               fr:"À la fin, passage au chakra suivant et la fréquence change.",
+               ja:"時間が来ると次のチャクラへ進み、周波数も変わります。" },
+    freeNote:{ tr:"Sayaç serbest işler — dilediğin kadar kal.",
+               en:"The timer runs freely — stay as long as you like.",
+               de:"Der Zähler läuft frei — bleib so lange du magst.",
+               es:"El contador corre libre — quédate lo que quieras.",
+               pt:"O contador corre livre — fica o tempo que quiseres.",
+               fr:"Le compteur tourne librement — reste autant que tu veux.",
+               ja:"タイマーは自由に進みます——好きなだけどうぞ。" },
+  };
+  const DUR_OPTS = [
+    { v: null,  label: () => pickLang(DUR_TXT.auto, lang) },
+    { v: 60,    label: () => `1 ${pickLang(DUR_TXT.min, lang)}` },
+    { v: 120,   label: () => `2 ${pickLang(DUR_TXT.min, lang)}` },
+    { v: 300,   label: () => `5 ${pickLang(DUR_TXT.min, lang)}` },
+    { v: "free",label: () => pickLang(DUR_TXT.free, lang) },
+  ];
+  // opts.keepTone : ton açıksa yeni çakranın Hz'ine ÇAPRAZ geç (sessizlik olmasın)
+  // opts.autoStart: hazırlık ekranını atlayıp doğrudan seansa başla (otomatik akış)
+  const goNextChakra = (opts = {}) => {
     const list = CHAKRAS_22.filter(c => chakraTab === "temel" ? c.level === 1 : c.level > 1);
     const i = list.findIndex(c => c.name === selected?.name);
     if (i === -1 || list.length < 2) { resetTerapi(); return; }
     const next = list[(i + 1) % list.length];
-    stopTone(); cancelSpeech();
+    if (opts.keepTone && toneOn && next.hz) crossfadeTone(next.hz);
+    else stopTone();
+    cancelSpeech();
     clearInterval(timerRef.current); clearInterval(particleRef.current);
+    if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; }
+    freeCountedRef.current = false;
     setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false);
     setSelected(next);
-    setTPhase("intro");
+    setTPhase(opts.autoStart ? "active" : "intro");
   };
   const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
@@ -2917,7 +3029,31 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
           ? t("chakra_join_hands")
           : t("intro_place_hand", selected.name)}
       </div>
-      <div style={{ fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.3)",marginBottom:28 }}>{t("terapi_duration")}</div>
+      {/* SÜRE SEÇİCİ (ek özellik). Varsayılan seçili gelir → eski davranış birebir korunur.
+          Klavye yerine dokunmatik seçenek: iOS'ta klavye ekranın yarısını kaplıyor,
+          doğrulama gerekiyor ve sakinleşmeye gelen kullanıcıya rakam yazdırmak akışı bozuyor. */}
+      <div style={{ marginBottom:22 }}>
+        <div style={{ fontSize:11,letterSpacing:3,color:"rgba(255,255,255,0.3)",textTransform:"uppercase",marginBottom:10,fontFamily:"'Jost',sans-serif" }}>{pickLang(DUR_TXT.label, lang)}</div>
+        <div style={{ display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center" }}>
+          {DUR_OPTS.map(o => {
+            const on = customDur === o.v;
+            return (
+              <button key={String(o.v)} onClick={() => setCustomDur(o.v)} style={{
+                background: on ? `${selected.color}33` : "transparent",
+                border: `1px solid ${selected.color}${on ? "99" : "33"}`,
+                borderRadius:16, padding:"5px 13px", cursor:"pointer",
+                color: on ? selected.pastel : "#777777",
+                fontSize:12, letterSpacing:1.5, fontFamily:"'Jost',sans-serif", transition:"all 0.25s",
+              }}>{o.label()}</button>
+            );
+          })}
+        </div>
+        {(autoFlow || isFreeDur) && (
+          <div style={{ fontSize:11.5,color:"rgba(255,255,255,0.34)",letterSpacing:0.3,lineHeight:1.65,marginTop:10,maxWidth:260,marginLeft:"auto",marginRight:"auto",fontStyle:"italic" }}>
+            {pickLang(autoFlow ? DUR_TXT.flowNote : DUR_TXT.freeNote, lang)}
+          </div>
+        )}
+      </div>
       <div style={{ display:"flex",gap:10,justifyContent:"center" }}>
         <button className="sakin-btn" onClick={() => { stopTone(); setTPhase("list"); }}>{t("back")}</button>
         <button className="sakin-btn-primary" style={{ background:`linear-gradient(135deg,${selected.color}88,${selected.color}44)`,borderColor:`${selected.color}44` }} onClick={() => { unlockChimeCtx(); playChime(528, 0.15, 3.5); if ("speechSynthesis" in window) { const u = new SpeechSynthesisUtterance(""); window.speechSynthesis.speak(u); } setTPhase("active"); }}>{t("btn_start")}</button>
@@ -2963,16 +3099,20 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
       </div>
-      {/* Kutucuk progress bar + yüzde — 1 dk dolunca kaybolur */}
-      {progress < 1 && (
+      {/* Kutucuk progress bar + yüzde — süre dolunca kaybolur.
+          SERBEST modda hedef yok: bar/yüzde gizlenir ama SAYAÇ görünür kalır
+          (yoksa 2 dk sonra kullanıcı ne kadar kaldığını göremezdi). */}
+      {(progress < 1 || isFreeDur) && (
         <div className="fade-up" style={{ width:"80%",maxWidth:240,marginBottom:16 }}>
-          <div style={{ display:"flex",justifyContent:"space-between",marginBottom:6 }}>
+          <div style={{ display:"flex",justifyContent:isFreeDur?"center":"space-between",marginBottom:6 }}>
             <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#666666" }}>{displayMins}:{displaySecs}</span>
-            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>
+            {!isFreeDur && <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>}
           </div>
-          <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
-            <div style={{ width:`${progress*100}%`,height:"100%",background:selected.pastel,borderRadius:2,transition:"width 1s linear",boxShadow:`0 0 8px ${selected.color}66` }} />
-          </div>
+          {!isFreeDur && (
+            <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
+              <div style={{ width:`${progress*100}%`,height:"100%",background:selected.pastel,borderRadius:2,transition:"width 1s linear",boxShadow:`0 0 8px ${selected.color}66` }} />
+            </div>
+          )}
         </div>
       )}
       {tPhase==="connected" && (
@@ -3024,7 +3164,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       </div>
       <div style={{ display:"flex",flexDirection:"column",gap:10,alignItems:"center" }}>
         {onNext && <button className="sakin-btn-primary" style={{ width:"100%",maxWidth:260 }} onClick={() => { resetTerapi(); onNext(); }}>{t("btn_done_next")}</button>}
-        <button className="sakin-btn" style={{ width:"100%",maxWidth:260 }} onClick={goNextChakra}>
+        <button className="sakin-btn" style={{ width:"100%",maxWidth:260 }} onClick={() => goNextChakra()}>
           {pickLang(NEXT_CHAKRA_TXT, lang)}
         </button>
         <div style={{ display:"flex",gap:10 }}>
