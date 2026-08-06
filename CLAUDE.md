@@ -4,6 +4,19 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
 
 ## ⚠️ ALTIN KURALLAR
 
+0. **🔔 YENİ BUILD ÇIKARKEN HATIRLAT — Meta SDK Xcode adımı (BİR KERELİK, HENÜZ YAPILMADI).**
+   Meta App Events kodu hazır (Info.plist + AppDelegate.swift, commit `3966e48`) ama
+   iOS'ta Facebook SDK paketi **App target'a eklenmedi** → bu adım yapılmadan
+   Xcode build'i `import FacebookCore` satırında HATA verir.
+   `CapApp-SPM/Package.swift`'e yazılamaz: Capacitor CLI o dosyayı her
+   `npx cap sync ios`'ta sıfırdan üretir, elle eklenen bağımlılık silinir.
+   Xcode'da bir kere yapılacak (sonra `cap sync`'ten etkilenmez):
+   1. File → Add Package Dependencies
+   2. `https://github.com/facebook/facebook-ios-sdk`
+   3. Up to Next Major Version, `17.0.0`+
+   4. **App** target'ı seç → ürün olarak **FacebookCore**'u işaretle
+   Yapıldıktan sonra bu maddeyi sil.
+
 1. **iOS build branch = `main`.** `claude/check-sakin-life-update-CIpM8` build branch'in eski adı; main ile birebir eşit tutuluyor (fast-forward). Kullanıcının Mac komutu hâlâ CIpM8'i çekiyor olabilir — değişiklik push'larken her iki branch'i de aynı SHA'da tut.
 2. **Web Netlify branch = `claude/fix-text-overlap-spacing-gdkpd`** (apartılmış: apps/ kaynak YOK, sadece `src/` + `public/embedded/` bundle + `netlify/`). Web'i etkileyen değişiklikleri buraya **main'den getirerek** işle (asla doğrudan özellik ekleme): `git checkout origin/main -- src/ public/embedded/...` (netlify/ + embed-patches/ KORUNUR), build-gate, push.
    - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
