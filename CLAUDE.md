@@ -4,18 +4,17 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
 
 ## ⚠️ ALTIN KURALLAR
 
-0. **🔔 YENİ BUILD ÇIKARKEN HATIRLAT — Meta SDK Xcode adımı (BİR KERELİK, HENÜZ YAPILMADI).**
-   Meta App Events kodu hazır (Info.plist + AppDelegate.swift, commit `3966e48`) ama
-   iOS'ta Facebook SDK paketi **App target'a eklenmedi** → bu adım yapılmadan
-   Xcode build'i `import FacebookCore` satırında HATA verir.
-   `CapApp-SPM/Package.swift`'e yazılamaz: Capacitor CLI o dosyayı her
-   `npx cap sync ios`'ta sıfırdan üretir, elle eklenen bağımlılık silinir.
-   Xcode'da bir kere yapılacak (sonra `cap sync`'ten etkilenmez):
-   1. File → Add Package Dependencies
-   2. `https://github.com/facebook/facebook-ios-sdk`
-   3. Up to Next Major Version, `17.0.0`+
-   4. **App** target'ı seç → ürün olarak **FacebookCore**'u işaretle
-   Yapıldıktan sonra bu maddeyi sil.
+0. **Meta SDK (FacebookCore) ARTIK REPODA — Xcode'da elle ekleme YAPMA.**
+   Paket referansı `ios/App/App.xcodeproj/project.pbxproj`'a kalıcı işlendi
+   (XCRemoteSwiftPackageReference + product dependency + Frameworks fazı).
+   **Neden gerekti:** kullanıcı Xcode'dan elle ekliyordu ama build komutundaki
+   `git checkout -- project.pbxproj` satırı (Xcode'un imzalama kirliliğini
+   temizlemek için ŞART) o referansı her seferinde siliyordu → her build'de
+   `Unable to resolve module dependency: 'FacebookCore'` hatası dönüyordu.
+   Ayrıca `AppDelegate.swift` `#if canImport(FacebookCore)` ile sarıldı: SDK
+   bir şekilde bağlı değilse build KIRILMAZ, Meta olayları sessizce kapanır.
+   `npx cap sync ios` pbxproj'a dokunmuyor (yalnızca CapApp-SPM/Package.swift'i
+   üretiyor), o yüzden referans kalıcı.
 
 1. **iOS build branch = `main`.** `claude/check-sakin-life-update-CIpM8` build branch'in eski adı; main ile birebir eşit tutuluyor (fast-forward). Kullanıcının Mac komutu hâlâ CIpM8'i çekiyor olabilir — değişiklik push'larken her iki branch'i de aynı SHA'da tut.
 2. **Web Netlify branch = `claude/fix-text-overlap-spacing-gdkpd`** (apartılmış: apps/ kaynak YOK, sadece `src/` + `public/embedded/` bundle + `netlify/`). Web'i etkileyen değişiklikleri buraya **main'den getirerek** işle (asla doğrudan özellik ekleme): `git checkout origin/main -- src/ public/embedded/...` (netlify/ + embed-patches/ KORUNUR), build-gate, push.

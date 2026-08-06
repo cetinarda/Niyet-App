@@ -1,7 +1,14 @@
 import UIKit
 import Capacitor
 import AVFoundation
+// Facebook SDK KOŞULLU import. SDK App target'a bağlı değilse build KIRILMAZ,
+// Meta App Events sessizce devre dışı kalır. Bu koruma şart: paket referansı
+// project.pbxproj'da tutuluyor ve build komutundaki
+// `git checkout -- project.pbxproj` (Xcode'un imzalama kirliliğini temizlemek
+// için gerekli) onu silebiliyor. Kod artık her iki durumda da derlenir.
+#if canImport(FacebookCore)
 import FacebookCore
+#endif
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -19,7 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("AVAudioSession setup failed: \(error)")
         }
         // Meta App Events (Facebook SDK) — App ID/Client Token Info.plist'ten okunur.
+        #if canImport(FacebookCore)
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
+        #endif
         return true
     }
 
@@ -40,7 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         // Meta App Events: app install/launch/session tracking (Meta Ads Manager).
+        #if canImport(FacebookCore)
         AppEvents.shared.activateApp()
+        #endif
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -52,7 +63,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // but if you want the App API to support tracking app url opens, make sure to keep this call
         let capacitorHandled = ApplicationDelegateProxy.shared.application(app, open: url, options: options)
         // Meta App Events (Facebook SDK): fb<AppID> ile açılan URL'leri de işlesin.
+        #if canImport(FacebookCore)
         let facebookHandled = ApplicationDelegate.shared.application(app, open: url, options: options)
+        #else
+        let facebookHandled = false
+        #endif
         return capacitorHandled || facebookHandled
     }
 
