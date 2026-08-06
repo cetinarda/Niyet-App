@@ -2695,6 +2695,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const [showBackConfirm, setShowBackConfirm] = useState(false);
   const [showCloseEyes,  setShowCloseEyes]  = useState(false);
   const [toneOn, setToneOn] = useState(false);
+  // toneOn'un ref ikizi. Otomatik geçişin 4sn'lik bekleme penceresinde kullanıcı
+  // ses butonuna basabiliyor; goNextChakra o pencerede kurulmuş closure'dan
+  // çağrıldığı için state'i ESKİ değeriyle görürdü (kapatılan ton geri açılır,
+  // ya da açılan ton söndürülürdü). Gecikmeli callback'ler bu ref'ten okur.
+  const toneOnRef = useRef(false);
   const audioCtxRef = useRef(null);
   const oscsRef     = useRef([]);   // TÜM osilatörler: LFO + 4 harmonik (hepsi durdurulmalı)
   const gainRef     = useRef(null);
@@ -2702,19 +2707,29 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const stopTone = () => {
     // ctx'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     const ctx = audioCtxRef.current;
-    if (gainRef.current && ctx) {
-      try { gainRef.current.gain.cancelScheduledValues(ctx.currentTime); } catch(_) {}
-      try { gainRef.current.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8); } catch(_) {}
+    // ⚠️ Osilatör/gain'i ÇAĞRI ANINDA yakala. Eskiden timeout'un İÇİNDE
+    // oscsRef.current okunuyordu: otomatik akışta seans anında başladığı için
+    // kullanıcı 820ms dolmadan ▶'a basabiliyor, bekleyen bu timeout da YENİ
+    // osilatörleri durdurup ref'leri null'lıyordu → buton "çalıyor" gösterir
+    // ama ses gelmez, sesi geri getirmek için iki kez basmak gerekirdi.
+    const oscs = oscsRef.current || [];
+    const g = gainRef.current;
+    if (g && ctx) {
+      try { g.gain.cancelScheduledValues(ctx.currentTime); } catch(_) {}
+      try { g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.8); } catch(_) {}
     }
     setTimeout(() => {
       // LFO + tüm harmonikleri durdur — yoksa LFO master.gain'i modüle edip
       // ses tam susmaz (alçalıp yükselir) ve harmonikler çalmaya devam eder.
-      (oscsRef.current || []).forEach(o => { try { o.stop(); } catch(_) {} });
-      oscsRef.current = [];
-      try { gainRef.current?.disconnect(); } catch(_) {}
-      gainRef.current = null;
+      oscs.forEach(o => { try { o.stop(); } catch(_) {} });
+      try { g?.disconnect(); } catch(_) {}
+      // Ref'leri SADECE hâlâ bu sete işaret ediyorlarsa temizle — araya yeni bir
+      // ton girdiyse (toggleTone/crossfadeTone) ona dokunma.
+      if (oscsRef.current === oscs) oscsRef.current = [];
+      if (gainRef.current === g)    gainRef.current = null;
       // audioCtxRef'i close etmiyoruz; toggleTone tekrar açtığında reuse edilecek.
     }, 820);
+    toneOnRef.current = false;
     setToneOn(false);
   };
 
@@ -2755,11 +2770,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   };
 
   const toggleTone = (hz) => {
-    if (toneOn) { stopTone(); return; }
+    if (toneOnRef.current) { stopTone(); return; }
     const built = buildTone(hz);
     if (!built) return;
     gainRef.current = built.master;
     oscsRef.current = built.oscs;
+    toneOnRef.current = true;
     setToneOn(true);
   };
 
@@ -2783,6 +2799,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       oldOscs.forEach(o => { try { o.stop(); } catch(_) {} });
       try { oldGain?.disconnect(); } catch(_) {}
     }, 1900);
+    toneOnRef.current = true;
     setToneOn(true);
   };
 
@@ -2828,7 +2845,9 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     const i = list.findIndex(c => c.name === selected?.name);
     if (i === -1 || list.length < 2) { resetTerapi(); return; }
     const next = list[(i + 1) % list.length];
-    if (opts.keepTone && toneOn && next.hz) crossfadeTone(next.hz);
+    // toneOn DEĞİL toneOnRef — otomatik geçiş 4sn gecikmeli çağrıldığı için
+    // state'in o closure'daki kopyası bayat olabilir (bkz. toneOnRef yorumu).
+    if (opts.keepTone && toneOnRef.current && next.hz) crossfadeTone(next.hz);
     else stopTone();
     cancelSpeech();
     clearInterval(timerRef.current); clearInterval(particleRef.current);
@@ -4409,6 +4428,14 @@ export default function SakinApp() {
   };
   const [showMindClear, setShowMindClear] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
+  // ÇİFT SES ENGELİ: "Zihni Boşalt" ses ekranının İÇİNDEN modal olarak açılıyor,
+  // yani `screen` "ses" olarak kalıyor → "screen !== 'ses' ise durdur" kuralı
+  // tetiklenmiyordu ve solfeggio frekansı, kaleydoskopun kendi drone'uyla AYNI
+  // ANDA çalıyordu (kullanıcı: "şu an aynı anda iki tane çalabiliyor").
+  // Kaleydoskop modu açılır açılmaz önceki menünün sesini kapat.
+  useEffect(() => {
+    if (activeMindMode) stopFreqToneGlobal();
+  }, [activeMindMode]);
   const [selectedMoods, setSelectedMoods] = useState([]);
   const [selectedNature, setSelectedNature] = useState([]);
   const [idCardPhoto, setIdCardPhoto] = useState(null);
@@ -5012,6 +5039,14 @@ export default function SakinApp() {
   // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
   // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu — geri alındı.
   const [showNedir, setShowNedir] = useState(false);
+  // Pop-up ARTIK doğum adımı BİTİNCE açılır (HAZIRIM'da değil). Eskiden HAZIRIM
+  // doğum formunu açarken pop-up'ı da açıyordu; pop-up formun üstünü kapattığı
+  // için kullanıcı menüden bir yere gidince doğum bilgisi hiç girilmemiş oluyor,
+  // kimlik kartı boş kalıyordu (12. ev / draconic çıkmıyordu). Doğum adımının
+  // üç çıkışında da (kaydet→kimlik kartı, atla, "devam") bu çağrılır.
+  const maybeShowNedir = () => {
+    try { if (localStorage.getItem("sakin_nedir_off") !== "1") setShowNedir(true); } catch(_) {}
+  };
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -5358,6 +5393,18 @@ export default function SakinApp() {
     // Rapor haftalık sabit — veride değişiklik olsa da bu haftanın cache'li raporunu KORU/yeniden yükle.
     try { if (localStorage.getItem("sakin_rapor_week") === currentWeekKey()) { const _c = localStorage.getItem("sakin_rapor_text"); if (_c) setAiRapor(_c); } } catch {}
   },[screen, niyet, selectedWords, chakra.name, breathCount, freqListenSec, aksamNote, sukur]);
+
+  // HARİTA KORUMASI: Bağlantı ekranı kimlik kartını (burç/yükselen/12. ev/draconic)
+  // gösteriyor; doğum bilgisi yoksa kart boş çıkıyor ve kullanıcı nereden
+  // dolduracağını bulamıyor. Doğum bilgisi eksikken haritaya girilirse önce
+  // doğum ekranına al. (Onboarding'de pop-up formu kapattığı için bu durum
+  // sık oluşuyordu — kök sebep de düzeltildi, bu ikinci güvenlik ağı.)
+  useEffect(() => {
+    if (screen !== "harita" || birthDate) return;
+    setGirisPhase("birth");
+    setShowBirthForm(true);
+    setScreen("giris");
+  }, [screen, birthDate]);
 
   // Önceki sorgulara göre kişiselleştirme bağlamı oluştur
   // ── GÖREV İSTE (İçsel Ayna) ────────────────────────────────────────────────
@@ -5941,6 +5988,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     else { setBreathMode("standart"); }
     clearInterval(breathRef.current);
     if (screen !== "ses") stopFreqToneGlobal();
+
     // PANİK BUTONU: en uygun sakinleştirici tekniği (4-7-8) doğrudan başlat —
     // premium kilidi olsa bile (panik istisnası), kullanıcıya sormadan.
     if (screen === "nefes" && panicAutoStartRef.current) {
@@ -7625,7 +7673,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* KİMLİK ÖNİZLEME — doğum kaydından hemen sonra anında karşılık (aha anı) */}
       {showKimlikReveal && (
-        <div onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+        <div onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); maybeShowNedir(); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.28)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
             <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
             <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:20,fontFamily:"'Jost',sans-serif" }}>{pickLang(REVEAL_I18N.title, lang)}</div>
@@ -7653,7 +7701,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
               {pickLang(REVEAL_I18N.tasarim, lang)}
             </button>
-            <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }}
+            <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); maybeShowNedir(); }}
               style={{ display:"block",width:"100%",padding:"11px 0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"transparent",border:"1px solid rgba(255,255,255,0.14)",borderRadius:24,color:"#b0a4c8",cursor:"pointer" }}>
               {pickLang(REVEAL_I18N.gune, lang)}
             </button>
@@ -7681,7 +7729,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); try { if(localStorage.getItem("sakin_nedir_off")!=="1"){ setShowNedir(true); } } catch(_) {} }}>{t("btn_ready")}</button>
+                {/* "Nedir" (Bağlan/Keşfet) pop-up'ı ARTIK BURADA AÇILMIYOR.
+                    Eskiden doğum formuyla AYNI ANDA açılıyordu: pop-up formun üstünü
+                    kapatıyor, kullanıcı menüden bir yere gidince doğum bilgisi hiç
+                    girilmemiş oluyordu → kimlik kartı boş, 12. ev ve draconic çıkmıyordu.
+                    Pop-up artık doğum adımı BİTİNCE gösteriliyor (bkz. kimlik reveal
+                    kapanışı + "atla" dalı). */}
+                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
@@ -7712,7 +7766,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {t("birth_edit_info")}
                 </button>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
-                  onClick={()=>{ setScreen(timeAwareEntryScreen()); }}>
+                  onClick={()=>{ setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>
                   {t("common_continue")}
                 </button>
               </div>
@@ -7749,7 +7803,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     setShowBirthForm(false);
                     // Aha anı: doğum bilgisi girildiyse önce anında karşılık kartı (burç/yükselen +
                     // Tasarım köprüsü); hiçbir şey girilmediyse eskisi gibi doğrudan sabaha.
-                    if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); }
+                    if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); maybeShowNedir(); }
                   }}>
                   {(birthInput||birthTimeInput||birthCityInput) ? t("birth_save_arrow") : t("birth_skip_arrow")}
                 </button>
@@ -10799,7 +10853,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
         return (
           <div style={{ position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:99999,background:"rgba(0,0,0,0.97)",backdropFilter:"blur(30px)",overflowY:"auto",animation:"fadeIn 0.3s ease" }}>
-            <div style={{ maxWidth:540,margin:"0 auto",padding:"24px 20px 60px" }}>
+            {/* Üst boşluk: safe-area (çentik/durum çubuğu) + 30px. Eskiden sabit 24px'ti
+                ve --sat yok sayılıyordu → kapat butonu ekranın en tepesine yapışıyor,
+                çentikli cihazlarda durum çubuğuna giriyordu (kullanıcı: "kapat çok
+                yukarda kalıyor"). Diğer overlay'ler zaten bu deseni kullanıyor. */}
+            <div style={{ maxWidth:540,margin:"0 auto",padding:"calc(30px + var(--sat)) 20px calc(60px + var(--sab))" }}>
               {/* Header */}
               <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8 }}>
                 <div>
