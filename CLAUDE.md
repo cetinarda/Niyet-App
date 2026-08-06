@@ -53,7 +53,8 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Ağu 2026): App Store `1.3.6` · Play Store `1.3.6`.** Repoda: `1.3.6 / build 1`, Android `versionCode 8`.
+   - **CANLI (Ağu 2026): App Store `1.3.6` · Play Store `1.3.6`.** Repoda hazırlanan: `1.3.7 / build 1`, Android `versionCode 9`.
+   - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli** — eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - Canlı sürümü sorgulamak için: `node scripts/check-store-versions.mjs --check` (iki mağazayı da okur).
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
    - **PREMIUM KARARI SUNUCUDA (istemci tahmin yürütmez).** İstemcinin
