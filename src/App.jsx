@@ -7,7 +7,10 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
+// NOT: revokeLocalPremium ARTIK İMPORT EDİLMİYOR — otomatik premium iptali
+// kapatıldı (bkz. "OTOMATİK PREMIUM İPTALİ KAPALI" bloğu). Fonksiyon
+// purchases.js'te duruyor; sunucu taraflı doğrulama gelince yeniden bağlanacak.
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -4549,15 +4552,24 @@ export default function SakinApp() {
   const [updateInfo, setUpdateInfo] = useState(null); // { version, notes_tr, notes_en } — daha yeni sürüm varsa
   const [updateDismissed, setUpdateDismissed] = useState(() => localStorage.getItem("sakin_update_dismissed_v") || "");
 
-  // App açılınca latest-ios-version.json'u kontrol et — daha yeni varsa banner göster
+  // App açılınca latest-ios-version.json'u kontrol et — daha yeni varsa banner göster.
+  // PLATFORM BAZLI: App Store ve Play Store aynı anda aynı sürümde olmayabilir
+  // (biri incelemede takılır). Tek ortak sürüm numarası kullanılırsa, henüz
+  // yayınlanmamış platformun kullanıcısı mağazada BULUNMAYAN bir sürüm için
+  // uyarılıp boş yere yönlendiriliyordu. Artık her platform kendi alanını okur;
+  // alan yoksa (eski JSON) üst seviyedeki `version`a düşer.
   useEffect(() => {
     if (!isNative) return;
     fetch("https://sakin.life/latest-ios-version.json", { cache: "no-store" })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (!data || !data.version) return;
-        if (compareVer(APP_VERSION, data.version) < 0) {
-          setUpdateInfo({ version: data.version, notes_tr: data.release_notes_tr || "", notes_en: data.release_notes_en || "" });
+        if (!data) return;
+        let plat = null;
+        try { plat = Capacitor.getPlatform() === "android" ? data.android : data.ios; } catch (_) {}
+        const src = (plat && plat.version) ? plat : data;
+        if (!src.version) return;
+        if (compareVer(APP_VERSION, src.version) < 0) {
+          setUpdateInfo({ version: src.version, notes_tr: src.release_notes_tr || "", notes_en: src.release_notes_en || "" });
         }
       })
       .catch(() => {});
@@ -4588,49 +4600,30 @@ export default function SakinApp() {
     });
   }, []);
 
-  // Foreground recheck — REVOKE-ONLY. store.owned stale/replayed receipt'lerden
-  // FALSE pozitif verebilir (992ab50 fix'i bunu yasakladı). Bu yüzden burada SADECE
-  // revoke yaparız: owned=false → premium iptal et. owned=true → DOKUNMA, çünkü
-  // yeni premium yalnızca .verified callback'i ile (userInitiatedAction=true iken) verilir.
-  // Bu Apple 2.1 expired-sub testini geçer, ama cached receipt'lerden bedavaya
-  // premium grant'ini engeller.
-  // YUMUŞATMA (kullanıcı onaylı): ödeme yapan kullanıcı yanlışlıkla revoke edilmesin
-  // diye iki guard eklendi. Ters durumda "Geri Yükle" + otomatik .verified callback'i
-  // zaten kurtarır; bu guard'lar flicker/anlık yanlış-düşme penceresini daraltır.
-  useEffect(() => {
-    if (!isNative) return;
-    let confirmTimer = null;
-    const recheck = () => {
-      if (document.visibilityState !== "visible") return;
-      if (!areProductsLoaded()) return; // mağaza/owned hazır değilken iptal etme (açılış yarışı)
-      // GUARD 1 — açılış grace'i: soğuk açılışta makbuz doğrulama döngüsü (approved→
-      // verified, .owned'ı asıl set eden) henüz bitmemiş olabilir. initStore 8sn ürün
-      // yükleme penceresini kapsayacak şekilde ilk 10sn revoke etme.
-      if (Date.now() - __appStartMs < 10000) return;
-      // GUARD 3 — mağaza "konuşmadıysa" owned=false BİLGİ DEĞİL, BİLGİSİZLİKTİR.
-      // Çevrimdışıyken veya plugin state tazelenmemişken asla revoke etme (kullanıcı
-      // raporu: "internet çekmeyen yerde premium gözükmüyor" / "açıp kapatınca düşüyor").
-      if (!isEntitlementKnown()) return;
-      try {
-        if (isSubscribed()) { if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; } return; }
-        // GUARD 2 — çift doğrulama: tek bir false anlık/geçici olabilir (plugin state
-        // yenilenirken). Hemen revoke etme; ~2.5sn sonra BİR KEZ DAHA doğrula, hâlâ
-        // false ise iptal et. owned=true asla grant vermez, sadece revoke'u iptal eder.
-        if (confirmTimer) return;
-        confirmTimer = setTimeout(() => {
-          confirmTimer = null;
-          try {
-            // 2.5sn içinde bağlantı/state değişmiş olabilir — kesinliği YENİDEN doğrula.
-            if (!isEntitlementKnown()) return;
-            // Kalıcı bayrağın silindiği TEK yer burası: kesin + çift doğrulanmış olumsuz.
-            if (!isSubscribed()) { revokeLocalPremium(); setIsPremium(false); }
-          } catch(_) {}
-        }, 2500);
-      } catch(_) {}
-    };
-    document.addEventListener("visibilitychange", recheck);
-    return () => { document.removeEventListener("visibilitychange", recheck); if (confirmTimer) clearTimeout(confirmTimer); };
-  }, []);
+  // ── OTOMATİK PREMIUM İPTALİ KAPALI (kullanıcı kararı) ─────────────────────
+  // Burada eskiden "foreground recheck" vardı: uygulama öne gelince store.owned
+  // false ise premium'u iptal ediyordu. Üç guard'a rağmen ödeme yapan kullanıcıyı
+  // düşürmeye devam etti (gerçek kullanıcı raporu: "üyeliğim olduğu halde deneme
+  // sürümü açılıyor, uygulamayı silmedim").
+  //
+  // KÖK SEBEP — istemci TAHMİN yürütüyordu:
+  //   isEntitlementKnown() yalnızca "ürün META VERİSİ yüklendi mi"ye bakıyor
+  //   (purchases.js:156 → productsLoaded, canPurchase'tan set edilir). Oysa
+  //   `owned` bayrağını asıl set eden approved→verified makbuz zinciri AYRI ve
+  //   daha yavaş; ağ dalgalanmasında hiç tamamlanmayabiliyor. Yani meta veri
+  //   gelmiş ama makbuz gelmemişken owned=false okunuyor ve bu "sahibi değil"
+  //   sanılıyordu. Sunucu taraflı makbuz doğrulaması olmadan istemcinin bunu
+  //   kesin bilmesi MÜMKÜN DEĞİL.
+  //
+  // KARAR: kesin bilgi yoksa dokunma. Ödeme yapmış kullanıcının premium'unu
+  // kaybetmesi, süresi dolmuş bir aboneliğin bir süre daha açık kalmasından
+  // çok daha maliyetli. Premium artık YALNIZCA kullanıcı eylemiyle değişir
+  // (satın alma / Geri Yükle) ve yerel bayrak kalıcıdır.
+  //
+  // ⚠️ ERTELENEN İŞ (Apple 2.1 / Layer-2 TODO): süresi dolan aboneliğin gerçekten
+  // kapanması için SUNUCU TARAFLI MAKBUZ DOĞRULAMASI gerekiyor. O gelince iptal
+  // yeniden açılabilir — ama tahminle değil, sunucunun kesin cevabıyla.
+  // revokeLocalPremium() purchases.js'te duruyor (kaldırılmadı), çağıran yok.
 
   const handlePurchase = async (fn, id) => {
     setPurchaseLoading(id);
