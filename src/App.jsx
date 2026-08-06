@@ -7,10 +7,10 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-// NOT: revokeLocalPremium ARTIK İMPORT EDİLMİYOR — otomatik premium iptali
-// kapatıldı (bkz. "OTOMATİK PREMIUM İPTALİ KAPALI" bloğu). Fonksiyon
-// purchases.js'te duruyor; sunucu taraflı doğrulama gelince yeniden bağlanacak.
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, LIFETIME_PRODUCT_ID } from "./purchases";
+// revokeLocalPremium ARTIK YALNIZCA sunucu doğrulaması "not_entitled" derse
+// çağrılır (bkz. "PREMIUM DOĞRULAMA: SUNUCUYA SOR" bloğu). İstemcinin store.owned
+// tahminiyle iptal etmesi kaldırıldı — ödeme yapan kullanıcıyı düşürüyordu.
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -4600,30 +4600,90 @@ export default function SakinApp() {
     });
   }, []);
 
-  // ── OTOMATİK PREMIUM İPTALİ KAPALI (kullanıcı kararı) ─────────────────────
-  // Burada eskiden "foreground recheck" vardı: uygulama öne gelince store.owned
-  // false ise premium'u iptal ediyordu. Üç guard'a rağmen ödeme yapan kullanıcıyı
-  // düşürmeye devam etti (gerçek kullanıcı raporu: "üyeliğim olduğu halde deneme
-  // sürümü açılıyor, uygulamayı silmedim").
+  // ── PREMIUM DOĞRULAMA: SUNUCUYA SOR, TAHMİN YÜRÜTME ───────────────────────
+  // TARİHÇE: burada eskiden "foreground recheck" vardı — uygulama öne gelince
+  // store.owned false ise premium iptal ediliyordu. Üç guard'a rağmen ödeme yapan
+  // kullanıcıyı düşürmeye devam etti ("üyeliğim olduğu halde deneme sürümü
+  // açılıyor"). Kök sebep: isEntitlementKnown() yalnızca ürün META VERİSİNİN
+  // yüklendiğine bakıyor; `owned`'ı set eden makbuz zinciri AYRI ve daha yavaş,
+  // ağ dalgalanmasında hiç tamamlanmayabiliyor. Yani meta veri gelmiş / makbuz
+  // gelmemişken owned=false "sahibi değil" sanılıyordu. İstemci bunu KESİN bilemez.
   //
-  // KÖK SEBEP — istemci TAHMİN yürütüyordu:
-  //   isEntitlementKnown() yalnızca "ürün META VERİSİ yüklendi mi"ye bakıyor
-  //   (purchases.js:156 → productsLoaded, canPurchase'tan set edilir). Oysa
-  //   `owned` bayrağını asıl set eden approved→verified makbuz zinciri AYRI ve
-  //   daha yavaş; ağ dalgalanmasında hiç tamamlanmayabiliyor. Yani meta veri
-  //   gelmiş ama makbuz gelmemişken owned=false okunuyor ve bu "sahibi değil"
-  //   sanılıyordu. Sunucu taraflı makbuz doğrulaması olmadan istemcinin bunu
-  //   kesin bilmesi MÜMKÜN DEĞİL.
-  //
-  // KARAR: kesin bilgi yoksa dokunma. Ödeme yapmış kullanıcının premium'unu
-  // kaybetmesi, süresi dolmuş bir aboneliğin bir süre daha açık kalmasından
-  // çok daha maliyetli. Premium artık YALNIZCA kullanıcı eylemiyle değişir
-  // (satın alma / Geri Yükle) ve yerel bayrak kalıcıdır.
-  //
-  // ⚠️ ERTELENEN İŞ (Apple 2.1 / Layer-2 TODO): süresi dolan aboneliğin gerçekten
-  // kapanması için SUNUCU TARAFLI MAKBUZ DOĞRULAMASI gerekiyor. O gelince iptal
-  // yeniden açılabilir — ama tahminle değil, sunucunun kesin cevabıyla.
-  // revokeLocalPremium() purchases.js'te duruyor (kaldırılmadı), çağıran yok.
+  // ÇÖZÜM: kararı istemci değil SUNUCU verir. Cihaz yalnızca işlem kimliğini
+  // yollar; Netlify fonksiyonu Apple/Google'a sorup kesin cevabı döner.
+  //   entitled     → premium sürüyor (dokunma)
+  //   not_entitled → mağaza AÇIKÇA "süresi doldu / iade edildi" dedi → iptal et
+  //   unknown      → kimlik yok / ağ hatası / yapılandırma eksik → HİÇBİR ŞEY YAPMA
+  // Fonksiyon fail-safe: emin olmadığı her durumda "unknown" döner, asla
+  // "not_entitled" uydurmaz. Bu yüzden yanlışlıkla düşürme riski yok.
+  const entVerifyRef = useRef(false);
+  useEffect(() => {
+    if (!isNative) return;
+    // Premium bayrağı yoksa doğrulanacak bir şey de yok.
+    if (localStorage.getItem("sakin_premium") !== "1") return;
+
+    // Mağaza işlem kimliğini çıkar. Plugin sürümleri arası alan adları değiştiği
+    // için birkaç şekil denenir; bulunamazsa sessizce vazgeçilir (iptal YOK).
+    const findIds = () => {
+      try {
+        const store = window.CdvPurchase?.store;
+        if (!store) return null;
+        const txs = [
+          ...(store.localTransactions || []),
+          ...(store.localReceipts || []).flatMap(r => r?.transactions || []),
+        ];
+        const android = Capacitor.getPlatform() === "android";
+        // Ömür boyu önce: süresi dolmayan hak, aboneliğe göre önceliklidir.
+        const pick = (id) => txs.find(t => (t?.products || []).some(p => p?.id === id));
+        const t = pick(LIFETIME_PRODUCT_ID) || txs[txs.length - 1];
+        if (!t) return null;
+        const productId = (t.products || [])[0]?.id;
+        if (android) {
+          const purchaseToken = t.purchaseToken || t.nativePurchase?.purchaseToken || t.transactionId;
+          return purchaseToken ? { platform: "android", purchaseToken, productId } : null;
+        }
+        const transactionId = t.transactionId || t.nativePurchase?.transactionId;
+        return transactionId ? { platform: "ios", transactionId, productId } : null;
+      } catch { return null; }
+    };
+
+    const verify = async () => {
+      if (document.visibilityState !== "visible") return;
+      if (entVerifyRef.current) return;                       // aynı anda tek istek
+      if (localStorage.getItem("sakin_premium") !== "1") return;
+      // Sık sorgulama yok: 6 saatte bir yeter (abonelik durumu saatlik değişmez).
+      const last = parseInt(localStorage.getItem("sakin_ent_checked_at") || "0");
+      if (last && Date.now() - last < 6 * 60 * 60 * 1000) return;
+      const ids = findIds();
+      if (!ids) return;                                       // kimlik yok → dokunma
+      entVerifyRef.current = true;
+      try {
+        const r = await fetch(API_BASE + "/.netlify/functions/verify-entitlement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ids),
+        });
+        if (!r.ok) return;                                    // HTTP hatası → dokunma
+        const d = await r.json();
+        localStorage.setItem("sakin_ent_checked_at", String(Date.now()));
+        // SADECE kesin olumsuzda iptal. "unknown" hiçbir şey yapmaz.
+        if (d?.status === "not_entitled") {
+          revokeLocalPremium();
+          setIsPremium(false);
+        }
+      } catch (_) {
+        /* ağ hatası → premium'a DOKUNMA */
+      } finally {
+        entVerifyRef.current = false;
+      }
+    };
+
+    // Açılışta mağaza/makbuz katmanının oturması için bekle, sonra öne her
+    // gelişte tekrar dene (6 saatlik throttle zaten sınırlıyor).
+    const t0 = setTimeout(verify, 12000);
+    document.addEventListener("visibilitychange", verify);
+    return () => { clearTimeout(t0); document.removeEventListener("visibilitychange", verify); };
+  }, []);
 
   const handlePurchase = async (fn, id) => {
     setPurchaseLoading(id);

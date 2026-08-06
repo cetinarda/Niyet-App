@@ -57,17 +57,21 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **CANLI (Ağu 2026): App Store `1.3.6` · Play Store `1.3.6`.** Repoda: `1.3.6 / build 1`, Android `versionCode 8`.
    - Canlı sürümü sorgulamak için: `node scripts/check-store-versions.mjs --check` (iki mağazayı da okur).
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
-   - **OTOMATİK PREMIUM İPTALİ KAPALI (kullanıcı kararı).** Foreground recheck üç
-     guard'a rağmen ödeme yapan kullanıcıyı düşürmeye devam etti (gerçek rapor:
-     "üyeliğim olduğu halde deneme sürümü açılıyor"). Kök sebep: `isEntitlementKnown()`
-     yalnızca ürün META VERİSİNE bakıyor, `owned`'ı set eden makbuz zinciri AYRI ve
-     daha yavaş → meta veri gelmiş ama makbuz gelmemişken owned=false "sahibi değil"
-     sanılıyordu. Sunucu doğrulaması olmadan istemci bunu KESİN bilemez.
-     Karar: **tahmin yürütme.** Premium yalnızca kullanıcı eylemiyle değişir
-     (satın alma / Geri Yükle); yerel bayrak kalıcı. `revokeLocalPremium()`
-     purchases.js'te duruyor ama çağıran YOK.
-   - ⚠️ **Ertelenen iş:** süresi dolan aboneliğin gerçekten kapanması (Apple 2.1)
-     için sunucu taraflı makbuz doğrulaması şart. O gelince iptal yeniden bağlanır.
+   - **PREMIUM KARARI SUNUCUDA (istemci tahmin yürütmez).** İstemcinin
+     `store.owned` ile iptal etmesi kaldırıldı — ödeme yapan kullanıcıyı
+     düşürüyordu ("üyeliğim olduğu halde deneme sürümü açılıyor"). Kök sebep:
+     `isEntitlementKnown()` yalnızca ürün META VERİSİNE bakıyor, `owned`'ı set
+     eden makbuz zinciri AYRI ve daha yavaş.
+     Artık: `netlify/functions/verify-entitlement.mjs` Apple App Store Server API
+     + Google Play Developer API'ye sorar, kesin cevabı döner.
+     `entitled` → dokunma · `not_entitled` → iptal · `unknown` → HİÇBİR ŞEY YAPMA.
+     **Fonksiyon FAIL-SAFE:** kimlik yok / ağ hatası / env eksik / beklenmeyen
+     yanıt → hepsi `unknown`. Asla `not_entitled` uydurmaz. İstemci de yalnızca
+     `not_entitled`'da `revokeLocalPremium()` çağırır (App.jsx, 6 saat throttle).
+     Env yoksa sistem sessizce devre dışı kalır → mevcut davranış (hiç iptal yok).
+   - **Gerekli env (Netlify → Environment variables):**
+     `APPLE_KEY_ID` `APPLE_ISSUER_ID` `APPLE_PRIVATE_KEY` (.p8 içeriği) `APPLE_BUNDLE_ID`
+     `GOOGLE_SA_EMAIL` `GOOGLE_SA_KEY` `ANDROID_PACKAGE`
 7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
