@@ -623,6 +623,18 @@ const NEDIR_I18N = {
   baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
   baglanD: { tr:"Niyet, nefes, ses — günün küçük sakinlik pratiği.", en:"Intention, breath, sound — your small daily practice of calm.", de:"Absicht, Atem, Klang — deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido — tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som — a tua pequena prática diária de calma.", fr:"Intention, souffle, son — ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音——毎日の小さな穏やかさの習慣。" },
   yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
+  // Köken/imza satırı. Yeri bilinçli: vaat cümlesinin HEMEN ALTINDA — okuyucu
+  // "Sakin ne yapar"ı yeni anlamışken, o vaadin nereden geldiğini görüyor.
+  // Sonda dursa imza olurdu; burada dayanak oluyor. Sessiz ve küçük tutuldu:
+  // diploma gibi değil, bir not gibi okunsun.
+  // "Usui Shiki Ryoho" özel ad — hiçbir dilde çevrilmiyor.
+  koken:   { tr:"Bu uygulama bir Usui Shiki Ryoho Reiki Master tarafından hazırlanmıştır.",
+             en:"This app was created by a Usui Shiki Ryoho Reiki Master.",
+             de:"Diese App wurde von einem Usui Shiki Ryoho Reiki Master erstellt.",
+             es:"Esta aplicación fue creada por un Maestro de Reiki Usui Shiki Ryoho.",
+             pt:"Esta aplicação foi criada por um Mestre de Reiki Usui Shiki Ryoho.",
+             fr:"Cette application a été créée par un Maître Reiki Usui Shiki Ryoho.",
+             ja:"このアプリは臼井式霊気療法（Usui Shiki Ryoho）のレイキマスターによって作られました。" },
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2 — aha anı).
 const REVEAL_I18N = {
@@ -10994,6 +11006,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div style={{ textAlign:"center",marginBottom:14 }}>
             <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>{pickLang(NEDIR_I18N.title, lang)}</div>
             <h1 style={{ margin:0,fontSize:21,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",lineHeight:1.45 }}>{pickLang(NEDIR_I18N.vaat, lang)}</h1>
+            {/* Köken satırı — vaadin hemen altında, ona dayanak olsun diye.
+                Sessiz tutuldu: ince ayraç + soluk renk, iddia değil not. */}
+            <div style={{ marginTop:14,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.07)",
+                          fontSize:11.5,color:"#8c8299",lineHeight:1.7,letterSpacing:0.2,
+                          fontFamily:"'Inter',sans-serif",fontStyle:"italic",maxWidth:300,marginLeft:"auto",marginRight:"auto" }}>
+              {pickLang(NEDIR_I18N.koken, lang)}
+            </div>
           </div>
           <button onClick={()=>setScreen("mandala")}
             style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.35)",borderRadius:16,marginBottom:10,cursor:"pointer" }}>

@@ -561,7 +561,14 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: Colors.surface, alignItems: 'center', justifyContent: 'center',
   },
-  closeTxt: { fontSize: 14, color: Colors.textMuted },
+  // Ok glifi (←/✕) kutunun içinde ortalanmıyordu (Android WebView'da görüldü):
+  // alignItems/justifyContent Text KUTUSUNU ortalıyor ama glifin kendi yan/üst
+  // boşlukları asimetrik olduğu için optik olarak sola-aşağı kayıyordu.
+  // lineHeight = buton yüksekliği + width + textAlign ile iki eksende de garanti.
+  closeTxt: {
+    fontSize: 15, color: Colors.textMuted,
+    lineHeight: 32, width: 32, textAlign: 'center',
+  },
   headerTitle: {
     fontSize: Typography.size.xs, fontWeight: Typography.weight.semibold,
     color: Colors.tealLight, letterSpacing: 1.5, textTransform: 'uppercase',
