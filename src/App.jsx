@@ -6046,15 +6046,23 @@ BEDEN-ZİHİN BAĞLANTISI:
     if (guneyDugum)  L.push(`Güney Ay Düğümü: ${guneyDugum}`);
     if (astro?.yasam) L.push(`Yaşam Yolu: ${astro.yasam}`);
     if (astro?.kisiselYil) L.push(`Kişisel Yıl: ${astro.kisiselYil}`);
-    if (ed && typeof ed === "object") {
-      const parts = ["ates","toprak","hava","su"].filter(k => ed[k] != null)
-        .map(k => `${pickLang(ELEM_I18N[k], "tr")} ${ed[k]}`);
-      if (parts.length) L.push(`Element dağılımı: ${parts.join(", ")}`);
+    // Element dağılımı — kartın kendisiyle AYNI geçerlilik kuralı: yalnızca Sakin
+    // Tasarım'ın tam-harita verisi kullanılır. Toplam ~0 ise veri yok demektir
+    // (kullanıcı Tasarım'ı hiç açmamış); kaba tahmin göndermek yanlış yorum üretir.
+    const edSum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
+    if (ed && edSum > 0.5) {
+      const keys = ["ates","toprak","hava","su"];
+      const parts = keys.map(k => `${pickLang(ELEM_I18N[k], "tr")} ${Math.round((ed[k]||0))}`);
+      const enDusuk = keys.reduce((a,b) => (ed[a]||0) <= (ed[b]||0) ? a : b);
+      const enYuksek = keys.reduce((a,b) => (ed[a]||0) >= (ed[b]||0) ? a : b);
+      L.push(`Element dağılımı: ${parts.join(", ")} (en baskın: ${pickLang(ELEM_I18N[enYuksek],"tr")}, en zayıf: ${pickLang(ELEM_I18N[enDusuk],"tr")})`);
     }
     return L.join("\n");
   };
   const generateGidYorum = async () => {
     if (gidYorum === "__loading__") return;
+    // PREMIUM (kullanıcı isteği). Kimlik kartı ücretsiz kalıyor; yorum premium.
+    if (!isPremium) { closeIdCard(); setScreen("fiyat"); return; }
     if (!_aiDailyOk()) { setGidYorum(_aiLimitMsg()); return; }
     const facts = chartFacts();
     if (!facts) return;
@@ -6065,7 +6073,11 @@ BEDEN-ZİHİN BAĞLANTISI:
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
           model:"llama-3.3-70b-versatile", max_tokens:700, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
+          // onsoz=false → "Bu yanıt sana özeldir…" ÖNSÖZÜ EKLENMEZ.
+          // Kullanıcı: "burada buna gerek yok, net bilgiler çünkü; ayna sorgusunda
+          // kalsın." Harita yorumu somut veriye dayanıyor, ayna sorgusu ise kişisel
+          // yansıtma — önsöz orada anlamlı, burada gereksiz.
+          system:`${buildMirrorSystemPrompt(lang, false)}
 Bu bir DOĞUM HARİTASI ÖZETİ yorumudur. Kısa ve NET ol — kullanıcı uzun rapor değil, "bunlar ne anlama geliyor" sorusunun anlaşılır cevabını istiyor. Kehanet yapma, kesin hüküm verme; eğilim ve davet dilini kullan. Tıbbi/finansal tavsiye verme.`,
           messages:[{ role:"user", content:`Kullanıcının doğum haritası verileri:
 ${facts}
@@ -6074,6 +6086,9 @@ ${facts}
 
 **Özet**
 (Bu haritanın ana teması — 2-3 cümle. Parçaları birbirine bağla: yükselen ile güneş nasıl konuşuyor, ay düğümleri hangi yönü gösteriyor. Sade dil, jargon yok.)
+
+**Element dengen**
+(Element dağılımı verilmişse: en baskın ve en zayıf elementin ne anlama geldiğini 2-3 cümlede söyle — zayıf element bir eksiklik değil, beslenmeye açık bir alan; baskın element ise doğal gücün. Veri verilmemişse bu başlığı HİÇ YAZMA, atla.)
 
 **Öne çıkanlar**
 (3 madde. Her madde tek cümle: haritadaki EN belirgin üç şey ve ne anlama geldiği. Madde başına "•" koy.)
@@ -10420,7 +10435,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(160,200,240,0.45)",background:"linear-gradient(135deg,rgba(120,170,220,0.55),rgba(70,110,160,0.45))",color:"#fff",fontSize:13,letterSpacing:2,cursor: gidYorum==="__loading__"?"default":"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",opacity: gidYorum==="__loading__"?0.7:1 }}>
                     {gidYorum === "__loading__"
                       ? pickLang(GID_TXT.loading, lang)
-                      : (gidYorum ? pickLang(GID_TXT.again, lang) : "✦ " + pickLang(GID_TXT.interpret, lang))}
+                      : (gidYorum ? pickLang(GID_TXT.again, lang)
+                        : (isPremium ? "✦ " : "🔒 ") + pickLang(GID_TXT.interpret, lang))}
                   </button>
                 )}
                 {gidYorum && gidYorum !== "__loading__" && (
