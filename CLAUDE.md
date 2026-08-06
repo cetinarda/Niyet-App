@@ -32,22 +32,42 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    (signing team vb.) kirletiyor, commit edilmemiş bu değişiklikler `git pull`'u
    "local changes would be overwritten" hatasıyla durduruyor. Bu satır olmadan
    komut kullanıcıda 5 kez art arda başarısız oldu — bir daha kaldırma.
-4. **⚠️ `public/latest-ios-version.json` SÜRÜM BUMP'IYLA BİRLİKTE GÜNCELLENMEZ.**
-   Bu dosya "App Store'da CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
-   Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse kullanıcıya
-   "yeni sürüm var" bildirimi gösterip mağazaya yönlendirir. Sürüm bump'ıyla
-   birlikte yükseltilirse mağazada OLMAYAN bir sürüm için tüm kullanıcılara
-   sahte bildirim gider (1.3.4'te yaşandı). Doğru sıra:
-   1. `APP_VERSION` + `pbxproj` + `build.gradle` bump → App Store'a gönder
-   2. Sürüm App Store'da **yayınlandıktan sonra** → `latest-ios-version.json` bump
-   Canlı sürümü doğrulama: `curl -s "https://itunes.apple.com/lookup?id=6765619382" | python3 -c "import sys,json;print(json.load(sys.stdin)['results'][0]['version'])"`
+4. **`public/latest-ios-version.json` ARTIK OTOMATİK — elle bump etme.**
+   Bu dosya "mağazalarda CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
+   Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse "yeni sürüm var"
+   banner'ı gösterir. **Elle bump edilmesi gerekiyordu ve UNUTULDU: 1.3.5 ve
+   1.3.6 yayınlandığı hâlde dosya 1.3.4'te kaldı, kullanıcıların güncellemeden
+   haberi olmadı.** Bu yüzden otomatikleştirildi:
+   - `scripts/check-store-versions.mjs` — App Store + Play Store'u sorgular,
+     sadece MAĞAZADA GÖRÜNEN sürümü yazar (repodaki sürümü asla referans almaz).
+   - `.github/workflows/store-version-watch.yml` — her gün 09:00 UTC çalışır,
+     değişiklik varsa main'e commit'ler ve **gdkpd'ye taşır** (banner sakin.life'tan
+     okunduğu için web dalına gitmezse canlıya çıkmaz).
+   - Elle çalıştırma: `node scripts/check-store-versions.mjs` · sadece rapor: `--check`
+   - **Platform bazlı:** `ios` / `android` alanları ayrı (mağazalar farklı sürümde
+     olabilir). Üst seviyedeki `version` = ikisinin KÜÇÜĞÜ, 1.3.6 ve öncesi
+     istemciler için geriye uyumluluk — silme.
+   - Elle SADECE sürüm notu yazmak için dokun (otomatik bump notları boşaltır,
+     uygulama genel metne düşer).
 
 5. **Sürüm 3 yerde aynı olmalı (bump anında):**
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
-   - **App Store'da CANLI: `1.3.4`** (Ağu 2026'da yayınlandı). Repoda hazırlanan: `1.3.5 / build 1`, Android `versionCode 6`.
+   - **CANLI (Ağu 2026): App Store `1.3.6` · Play Store `1.3.6`.** Repoda: `1.3.6 / build 1`, Android `versionCode 8`.
+   - Canlı sürümü sorgulamak için: `node scripts/check-store-versions.mjs --check` (iki mağazayı da okur).
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
+   - **OTOMATİK PREMIUM İPTALİ KAPALI (kullanıcı kararı).** Foreground recheck üç
+     guard'a rağmen ödeme yapan kullanıcıyı düşürmeye devam etti (gerçek rapor:
+     "üyeliğim olduğu halde deneme sürümü açılıyor"). Kök sebep: `isEntitlementKnown()`
+     yalnızca ürün META VERİSİNE bakıyor, `owned`'ı set eden makbuz zinciri AYRI ve
+     daha yavaş → meta veri gelmiş ama makbuz gelmemişken owned=false "sahibi değil"
+     sanılıyordu. Sunucu doğrulaması olmadan istemci bunu KESİN bilemez.
+     Karar: **tahmin yürütme.** Premium yalnızca kullanıcı eylemiyle değişir
+     (satın alma / Geri Yükle); yerel bayrak kalıcı. `revokeLocalPremium()`
+     purchases.js'te duruyor ama çağıran YOK.
+   - ⚠️ **Ertelenen iş:** süresi dolan aboneliğin gerçekten kapanması (Apple 2.1)
+     için sunucu taraflı makbuz doğrulaması şart. O gelince iptal yeniden bağlanır.
 7. **App Store onayını riske atan değişiklikler için onay al:**
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
