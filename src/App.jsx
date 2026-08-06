@@ -5334,9 +5334,6 @@ export default function SakinApp() {
   // etiketi. Kullanıcı: "12. Ev, draconik vs 'doğum bilgilerini girmeden
   // gösterilemez' yazsın" ve "buton: bilgi varsa DEĞİŞTİR, yoksa GİR".
   const BIRTH_TXT = {
-    need: { tr:"Doğum bilgisi gerekli", en:"Birth info needed", de:"Geburtsdaten nötig",
-            es:"Faltan datos de nacimiento", pt:"Faltam dados de nascimento",
-            fr:"Infos de naissance requises", ja:"出生情報が必要" },
     needLong: { tr:"Doğum bilgilerini girmeden gösterilemez.",
                 en:"Can't be shown without your birth info.",
                 de:"Ohne Geburtsdaten nicht darstellbar.",
@@ -10299,15 +10296,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const yasamYolu = astro?.yasam || "—";
         const kisiselYil = astro?.kisiselYil || "—";
         const needCity = !!(birthDate && birthTime && !yukselen);
-        // Doğum bilgisi HİÇ girilmediyse "—" yerine sebebini yaz — kullanıcı boş
-        // kartın neden boş olduğunu anlamıyordu ("kimlik boş, 12. ev ve draconik yok").
+        // Doğum bilgisi yoksa satırlar SADECE "—" gösterir.
+        // Eskiden her satıra "Doğum bilgisi gerekli" yazılıyordu; 5-6 satırda
+        // tekrarlayınca kart gürültülü ve amatör duruyordu (kullanıcı bildirdi).
+        // Sebep zaten kartın altındaki tek açıklama kutusunda yazıyor + oradan
+        // forma gidiliyor; her satırda tekrar etmesine gerek yok.
         const needBirth = !birthDate;
-        const _miss = (v) => v || (needBirth ? pickLang(BIRTH_TXT.need, lang) : (needCity ? t("gid_need_city") : "—"));
+        const _miss = (v) => v || (!needBirth && needCity ? t("gid_need_city") : "—");
         const yuk = _miss(zodiacDisplay(yukselen, lang));
         const ev12 = _miss(zodiacDisplay(ev12Burcu, lang));
-        const dra = zodiacDisplay(draconicGunes, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
-        const kuzD = zodiacDisplay(kuzeyDugum, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
-        const guyD = zodiacDisplay(guneyDugum, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
+        const dra = _miss(zodiacDisplay(draconicGunes, lang));
+        const kuzD = _miss(zodiacDisplay(kuzeyDugum, lang));
+        const guyD = _miss(zodiacDisplay(guneyDugum, lang));
         const days = streakData?.current ?? 0;
         const best = streakData?.best ?? 0;
 
