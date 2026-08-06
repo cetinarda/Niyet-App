@@ -1209,9 +1209,50 @@ const BREATH_MODES_CONFIG = {
   "478":       { in: 4000, hold: 7000, out: 8000,  hold2: 0,    total: 19000 },
   kutu:        { in: 4000, hold: 4000, out: 4000,  hold2: 4000, total: 16000 },
   sakinletici: { in: 4000, hold: 2000, out: 8000,  hold2: 0,    total: 14000 },
+  // ── Üçüncü grup: sayaçlı modlar ────────────────────────────────────────
+  // Bu üçünde faz içi geri sayım GÖSTERİLİR (BREATH_COUNTDOWN). Diğer modlarda
+  // bilinçli olarak yok: rakam kullanıcıyı saymaya iter, bırakmaya değil.
+  //
+  // Ritimler yerleşik nefes pratiklerinden seçildi; tıbbi iddia YOK:
+  // · uyku (4-0-8-4): 1:2 uzun veriş + VERİŞ SONRASI DURAKLAMA. Uzun veriş
+  //   vagal tonu artırır (kalp atışı yavaşlar); veriş sonundaki doğal duraklama
+  //   uykuya geçişteki solunum örüntüsüdür. 3.75 nefes/dk.
+  //   4-7-8 zaten var; orada TUTUŞ uzun, burada VERİŞ ve DURAKLAMA uzun — ayrı deneyim.
+  // · merkez (5-0-5): "koherent/rezonans" nefesi, 6 nefes/dk. Kalp ritmi
+  //   değişkenliğinin en düzenli olduğu tempo; merkeze çekilme hissinin
+  //   karşılığı. TEK tutuşsuz mod — kutu (4-4-4-4) tutuşlu, çakışmıyor.
+  // · yenilen (6-2-4): ALIŞ baskın. Hızlı/zorlamalı teknikler (kapalabhati,
+  //   bhastrika) baş dönmesi riski taşıdığı için BİLEREK kullanılmadı;
+  //   bu tempo hiperventilasyona yol açmadan uyandırır. 5 nefes/dk.
+  uyku:        { in: 4000, hold: 0,    out: 8000, hold2: 4000, total: 16000 },
+  merkez:      { in: 5000, hold: 0,    out: 5000, hold2: 0,    total: 10000 },
+  yenilen:     { in: 6000, hold: 2000, out: 4000, hold2: 0,    total: 12000 },
 };
 
-const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici"];
+// Bu modlarda faz içi geri sayım rakamı gösterilir (kullanıcı isteği).
+const BREATH_COUNTDOWN = ["uyku", "merkez", "yenilen"];
+
+// ── MOD KARTLARI: TEK KAYNAK ───────────────────────────────────────────────
+// Kartlar 3 ayrı yerde elle tekrarlanıyordu (ücretsiz / premium-kilitli önizleme /
+// premium-açık) → 9 mod olunca sürdürülemez, biri güncellenip diğeri unutuluyordu.
+// Artık tek dizi; render tek bileşenden geçiyor.
+// GÖRSEL DİL: emoji yerine geometrik işaretler. Uygulamanın geri kalanı
+// (element △⊕○▽, çakra ✦◈⊕, kimlik kartı) hep geometrik glif kullanıyor;
+// emoji cihazdan cihaza değişiyor ve bu koyu/sakin estetikte yabancı duruyordu.
+const BREATH_MODES = [
+  { id:"standart",    glyph:"○",  rgb:"80,130,200",  rhythm:"4·1.5·4",  group:"temel" },
+  { id:"diyafram",    glyph:"◡",  rgb:"80,200,180",  rhythm:"4·6",      group:"temel" },
+  { id:"akciger",     glyph:"◍",  rgb:"100,160,220", rhythm:"5·2·7",    group:"temel" },
+  { id:"478",         glyph:"✦",  rgb:"120,150,230", rhythm:"4·7·8",    group:"sakin" },
+  { id:"kutu",        glyph:"□",  rgb:"140,100,220", rhythm:"4·4·4·4",  group:"sakin" },
+  { id:"sakinletici", glyph:"≈",  rgb:"80,200,160",  rhythm:"4·2·8",    group:"sakin" },
+  { id:"uyku",        glyph:"☾",  rgb:"90,110,190",  rhythm:"4·8·4",    group:"derin" },
+  { id:"merkez",      glyph:"⊙",  rgb:"170,140,210", rhythm:"5·5",      group:"derin" },
+  { id:"yenilen",     glyph:"✧",  rgb:"220,160,90",  rhythm:"6·2·4",    group:"derin" },
+];
+const breathModesOf = (g) => BREATH_MODES.filter(m => m.group === g);
+
+const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici", "uyku", "merkez", "yenilen"];
 const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
 const PREMIUM_WORDS_TR = ["berraklık", "güç", "özgürlük", "neşe", "şükür", "güven"];
 
@@ -5334,6 +5375,7 @@ export default function SakinApp() {
   const [cityWarn,       setCityWarn]       = useState(false);
   const [dateWarn,       setDateWarn]       = useState(false);
   const breathRef        = useRef(null);
+  const cycleStartRef    = useRef(null); // döngü başlangıcı — yay/nokta/sayaç bundan hesaplanır
   const pendingBreathRef = useRef(null);
   // Ayna metnindeki "528 Hz" gibi bir frekansa tıklanınca Ses ekranı o frekansla açılır.
   const pendingFreqRef = useRef(null);
@@ -6453,11 +6495,37 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     };
     setBreathPhase("ready");
     const startDelay = setTimeout(() => {
+      cycleStartRef.current = Date.now();      // yay/nokta bu ana göre ilerler
       cycle();
-      breathRef.current = setInterval(cycle, tm.total);
+      breathRef.current = setInterval(() => { cycleStartRef.current = Date.now(); cycle(); }, tm.total);
     }, 600);
-    return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); cancelSpeech(); };
+    return () => { clearInterval(breathRef.current); clearTimeout(startDelay); toIds.forEach(clearTimeout); cancelSpeech(); cycleStartRef.current = null; };
   },[screen, breathStarted, breathMode]);
+
+  // ── DÖNGÜ İLERLEMESİ (yay + yörünge noktası + geri sayım) ────────────────
+  // Faz geçişleri setTimeout ile yapılıyor; faz İÇİNDE "ne kadar ilerledi"
+  // bilgisi yoktu. Burada döngü başlangıcından bu yana geçen süre ölçülüp
+  // 0..1 arası tek bir ilerleme değerine çevriliyor. Zamanlamaya DOKUNULMUYOR —
+  // ses ve faz geçişleri hâlâ mevcut setTimeout zincirinden geliyor, bu sadece
+  // okuma. rAF kullanılıyor: setInterval'de kare atlamaları titreme yapıyordu.
+  const [cycleT, setCycleT] = useState(0);   // 0..1 — döngü içindeki konum
+  useEffect(() => {
+    if (screen !== "nefes" || !breathStarted) { setCycleT(0); return; }
+    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
+    let raf, last = 0;
+    // ~20 fps yeterli: nokta 360°'yi 10-19 saniyede dönüyor, kare başına hareket
+    // zaten çok küçük. 60 fps'te tüm nefes ekranı saniyede 60 kez yeniden
+    // render oluyordu — düşük donanımlı telefonda gereksiz yük.
+    const tick = (now) => {
+      raf = requestAnimationFrame(tick);
+      if (now - last < 50) return;
+      last = now;
+      const s = cycleStartRef.current;
+      if (s) setCycleT(Math.min(1, ((Date.now() - s) % tm.total) / tm.total));
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [screen, breathStarted, breathMode]);
   // Nefes seansı sürerken ekran kararmasın (kullanıcı gözü kapalı, dokunamıyor).
   useScreenWakeLock(screen === "nefes" && breathStarted);
 
@@ -6519,6 +6587,60 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
   };
   const breathLabel = breathStarted ? ({ready:"",inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
+
+  // ── FAZ HALKASI: orantılı yaylar + yörünge noktası ────────────────────────
+  // Kutu modunun sevilen yanı "döngünün neresindeyim"i tek bakışta göstermesiydi
+  // (yanan kenar). Bu onun dairesel karşılığı: çember, faz SÜRELERİYLE ORANTILI
+  // yaylara bölünür — 4-7-8'de veriş yayı alış yayının iki katı uzunlukta olur,
+  // yani ritmi gözle öğrenirsin. Aktif yay parlar, kenardaki nokta o yayın
+  // içinde nerede olduğunu gösterir.
+  // Kutu modu kendi kare formunu KORUYOR (ona özel kimlik veriyor).
+  const BreathRing = ({ rgb, size = 205 }) => {
+    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
+    const segs = [
+      { key:"inhale", ms: tm.in },
+      { key:"hold",   ms: tm.hold },
+      { key:"exhale", ms: tm.out },
+      { key:"hold2",  ms: tm.hold2 },
+    ].filter(s => s.ms > 0);
+    const R = size/2 - 6, C = size/2, TAU = Math.PI*2;
+    const GAP = 0.035;                       // yaylar arası nefes payı (radyan)
+    const pol = (a, r=R) => [C + r*Math.cos(a - Math.PI/2), C + r*Math.sin(a - Math.PI/2)];
+    let acc = 0;
+    const arcs = segs.map(s => {
+      const frac = s.ms / tm.total;
+      const a0 = acc*TAU + GAP/2, a1 = (acc+frac)*TAU - GAP/2;
+      acc += frac;
+      const [x0,y0] = pol(a0), [x1,y1] = pol(a1);
+      return { ...s, d:`M ${x0} ${y0} A ${R} ${R} 0 ${a1-a0 > Math.PI ? 1 : 0} 1 ${x1} ${y1}` };
+    });
+    const [dx,dy] = pol(cycleT*TAU);
+    return (
+      <svg width={size} height={size} style={{ position:"absolute",inset:0,pointerEvents:"none" }} aria-hidden="true">
+        {arcs.map(a => (
+          <path key={a.key} d={a.d} fill="none" strokeLinecap="round"
+            stroke={`rgba(${rgb},${breathPhase===a.key ? 0.9 : 0.16})`}
+            strokeWidth={breathPhase===a.key ? 3 : 1.5}
+            style={{ transition:"stroke 0.5s ease, stroke-width 0.5s ease" }} />
+        ))}
+        {breathStarted && (
+          <circle cx={dx} cy={dy} r="5" fill={`rgba(${rgb},0.95)`}
+            style={{ filter:`drop-shadow(0 0 8px rgba(${rgb},0.85))` }} />
+        )}
+      </svg>
+    );
+  };
+
+  // Faz içi kalan saniye — YALNIZCA BREATH_COUNTDOWN modlarında gösterilir.
+  // Diğerlerinde bilinçli olarak yok: rakam saymaya iter, bırakmaya değil.
+  const phaseRemain = (() => {
+    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
+    const off = { inhale:0, hold:tm.in, exhale:tm.in+tm.hold, hold2:tm.in+tm.hold+tm.out }[breathPhase];
+    const len = { inhale:tm.in, hold:tm.hold, exhale:tm.out, hold2:tm.hold2 }[breathPhase];
+    if (off == null || !len) return null;
+    const el = cycleT*tm.total - off;
+    return Math.max(1, Math.ceil((len - el)/1000));
+  })();
   const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2"||breathPhase==="ready" ? 1 : 1.6) : 1;
   const breathIsActive = breathPhase==="inhale"||breathPhase==="hold";
   const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
@@ -8734,6 +8856,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {[1.72,1.45,1.2].map((s,i)=>(
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
               ))}
+              <BreathRing rgb="80,130,200" />
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(255,255,255,0.24))",transition:breathPhase==="ready"?"none":`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
                 <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
               </div>
@@ -8860,19 +8983,28 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
           )}
 
-          {breathStarted && (breathMode==="478"||breathMode==="sakinletici") && (
+          {breathStarted && ["478","sakinletici","uyku","merkez","yenilen"].includes(breathMode) && (
             <div style={{ position:"relative",width:205,height:205,margin:"0 auto 32px" }}>
               {(() => {
-                const modeColors = { "478":"80,160,220", sakinletici:"80,200,160" };
-                const c = modeColors[breathMode]||"80,130,200";
+                // Renkler BREATH_MODES ile aynı kaynaktan — kart rengi ile
+                // seans görseli aynı olsun (kullanıcı hangi moddayım'ı renkten de anlar).
+                const c = (BREATH_MODES.find(x=>x.id===breathMode)||{}).rgb || "80,130,200";
+                const showCount = BREATH_COUNTDOWN.includes(breathMode);
                 const s = breathScale;
                 return (
                   <>
                     {[1.72,1.45,1.2].map((sc,i)=>(
                       <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
                     ))}
-                    <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                    <BreathRing rgb={c} />
+                    <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2 }}>
                       <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
+                      {/* Geri sayım YALNIZCA bu üç modda (uyku/merkez/yenilen).
+                          Diğerlerinde rakam yok — saymaya değil bırakmaya davet. */}
+                      {showCount && phaseRemain != null && (
+                        <div style={{ fontFamily:"'Jost',sans-serif",fontSize:26,fontWeight:200,letterSpacing:1,
+                          color:"rgba(255,255,255,0.9)",lineHeight:1,marginTop:2 }}>{phaseRemain}</div>
+                      )}
                     </div>
                   </>
                 );
@@ -8883,12 +9015,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* Timing hint when active */}
           {breathStarted && (
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,color:"rgba(255,255,255,0.2)",marginBottom:4 }}>
-              {breathMode==="standart"    && "4 · 1.5 · 3.5"}
-              {breathMode==="diyafram"    && "4 · 6"}
-              {breathMode==="akciger"     && "5 · 2 · 7"}
-              {breathMode==="478"         && "4 · 7 · 8"}
-              {breathMode==="kutu"        && "4 · 4 · 4 · 4"}
-              {breathMode==="sakinletici" && "4 · 2 · 8"}
+              {/* Ritim BREATH_MODES'tan okunuyor — 6 mod elle yazılıydı, 9 modda
+                  biri unutulup boş kalıyordu. Tek kaynak, tek yer. */}
+              {((BREATH_MODES.find(m=>m.id===breathMode)||{}).rhythm||"").split("·").join(" · ")}
             </div>
           )}
 
@@ -8914,61 +9043,74 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {t(`breath_desc_${breathMode}`)}
                 </div>
               </div>
-              {/* Main breathing modes */}
-              <div className="label-sm" style={{ marginBottom:14,letterSpacing:4 }}>{t("breath_choose")}</div>
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:16 }}>
-                {[
-                  { id:"standart", icon:"🫧", color:"rgba(80,130,200,0.18)", border:"rgba(80,130,200,0.35)", rhythm:"4·1.5·3.5" },
-                  { id:"diyafram", icon:"🌬", color:"rgba(80,200,180,0.18)", border:"rgba(80,200,180,0.35)", rhythm:"4·6" },
-                  { id:"akciger",  icon:"🫁", color:"rgba(100,160,220,0.18)",border:"rgba(100,160,220,0.35)",rhythm:"5·2·7" },
-                ].map(m=>(
-                  <button key={m.id} onClick={()=>{ if(breathMode===m.id){ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease" }}>
-                    <span style={{ fontSize:20 }}>{m.icon}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
-                  </button>
-                ))}
-              </div>
-              {/* Calming breathing modes */}
-              <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t("breath_calming")}</div>
-              {!isPremium ? (
-                <div style={{ position:"relative" }}>
-                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,opacity:0.3,pointerEvents:"none" }}>
-                    {[
-                      { id:"478", icon:"✦", rhythm:"4·7·8" },
-                      { id:"kutu", icon:"⬜", rhythm:"4·4·4·4" },
-                      { id:"sakinletici", icon:"🌿", rhythm:"4·2·8" },
-                    ].map(m=>(
-                      <div key={m.id} style={{ background:"rgba(255,255,255,0.04)",border:"1.5px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"10px 6px",display:"flex",flexDirection:"column",alignItems:"center",gap:5 }}>
-                        <span style={{ fontSize:18 }}>{m.icon}</span>
-                        <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:"rgba(255,255,255,0.4)",textTransform:"uppercase" }}>{t(`breath_mode_${m.id}`)}</span>
-                        <span style={{ fontSize:14,color:"rgba(255,255,255,0.2)" }}>{m.rhythm}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <button onClick={()=>setScreen("fiyat")} style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.4)",borderRadius:14,border:"1px solid rgba(184,164,216,0.2)",cursor:"pointer",color:"#b8a4d8",fontSize:13,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
-                    {t("premium_unlock_breath")}
-                  </button>
-                </div>
-              ) : (
-              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8 }}>
-                {[
-                  { id:"478",        icon:"✦",  color:"rgba(80,160,220,0.18)", border:"rgba(80,160,220,0.35)", rhythm:"4·7·8" },
-                  { id:"kutu",       icon:"⬜",  color:"rgba(140,100,220,0.18)",border:"rgba(140,100,220,0.35)",rhythm:"4·4·4·4" },
-                  { id:"sakinletici",icon:"🌿",  color:"rgba(80,200,160,0.18)", border:"rgba(80,200,160,0.35)", rhythm:"4·2·8" },
-                ].map(m=>{
+              {/* ── MOD KARTLARI ────────────────────────────────────────────
+                  Tek bileşen, üç grup. Eskiden aynı kart üç yerde elle
+                  tekrarlanıyordu (ücretsiz / kilitli önizleme / açık) — 9 modda
+                  sürdürülemezdi. Görsel dil uygulamanın geri kalanına uyduruldu:
+                  emoji yerine geometrik glif, mod rengiyle boyanmış ve seçiliyken
+                  hafif ışıyan; kart yüzeyi de o rengin çok soluk bir tonu.
+                  Üst açıklama kutuları (nefes anlatımları) DEĞİŞTİRİLMEDİ. */}
+              {(() => {
+                const Card = ({ m }) => {
                   const locked = !isPremium && PREMIUM_BREATH_MODES.includes(m.id);
+                  const on = breathMode === m.id;
                   return (
-                  <button key={m.id} onClick={()=>{ if(locked){ setScreen("fiyat"); return; } if(breathMode===m.id){ haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); } else { setBreathMode(m.id); } }} style={{ background: breathMode===m.id ? m.color.replace("0.18","0.35") : m.color, border:`1.5px solid ${breathMode===m.id ? m.border.replace("0.35","0.75") : m.border}`, borderRadius:14, padding:"10px 6px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"center", gap:5, transition:"all 0.2s ease", opacity:locked?0.5:1, position:"relative" }}>
-                    {locked && <span style={{ position:"absolute",top:6,right:8,fontSize:11 }}>🔒</span>}
-                    <span style={{ fontSize:18 }}>{m.icon}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1.5,color:breathMode===m.id?"rgba(255,255,255,0.9)":"rgba(255,255,255,0.5)",textTransform:"uppercase",lineHeight:1.3,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
-                    <span style={{ fontFamily:"'Jost',sans-serif",fontSize:14,letterSpacing:1,color:"rgba(255,255,255,0.25)" }}>{m.rhythm}</span>
-                  </button>
+                    <button key={m.id}
+                      onClick={()=>{
+                        if (locked) { setScreen("fiyat"); return; }
+                        if (on) { haptic(); playStartChime(); setBreathPhase("ready"); setBreathStarted(true); }
+                        else setBreathMode(m.id);
+                      }}
+                      style={{
+                        position:"relative", borderRadius:16, padding:"12px 6px 10px",
+                        cursor:"pointer", display:"flex", flexDirection:"column",
+                        alignItems:"center", gap:6, transition:"all 0.25s ease",
+                        background: on ? `rgba(${m.rgb},0.20)` : `rgba(${m.rgb},0.055)`,
+                        border: `1px solid rgba(${m.rgb},${on ? 0.75 : 0.22})`,
+                        boxShadow: on ? `0 0 22px rgba(${m.rgb},0.22)` : "none",
+                        opacity: locked ? 0.45 : 1,
+                      }}>
+                      {locked && <span style={{ position:"absolute",top:7,right:9,fontSize:10,opacity:0.8 }}>🔒</span>}
+                      <span style={{ fontSize:22, lineHeight:1, color:`rgba(${m.rgb},${on?1:0.75})`,
+                        textShadow: on ? `0 0 14px rgba(${m.rgb},0.7)` : "none", transition:"all 0.25s" }}>{m.glyph}</span>
+                      <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.2,
+                        color: on ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.55)",
+                        textTransform:"uppercase",lineHeight:1.35,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
+                      <span style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:1.5,
+                        color:`rgba(${m.rgb},${on?0.85:0.45})` }}>{m.rhythm}</span>
+                    </button>
                   );
-                })}
-              </div>
-              )}
+                };
+                const Grid = ({ items }) => (
+                  <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8 }}>
+                    {items.map(m => <Card key={m.id} m={m} />)}
+                  </div>
+                );
+                const Section = ({ labelKey, items, premium }) => (
+                  <div style={{ marginBottom:18 }}>
+                    <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t(labelKey)}</div>
+                    {premium && !isPremium ? (
+                      <div style={{ position:"relative" }}>
+                        <div style={{ pointerEvents:"none" }}><Grid items={items} /></div>
+                        <button onClick={()=>setScreen("fiyat")}
+                          style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",
+                            background:"rgba(6,4,14,0.55)",backdropFilter:"blur(2px)",borderRadius:16,
+                            border:"1px solid rgba(184,164,216,0.22)",cursor:"pointer",color:"#c4b0e4",
+                            fontSize:12.5,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
+                          {t("premium_unlock_breath")}
+                        </button>
+                      </div>
+                    ) : <Grid items={items} />}
+                  </div>
+                );
+                return (
+                  <>
+                    <Section labelKey="breath_choose"  items={breathModesOf("temel")} />
+                    <Section labelKey="breath_calming" items={breathModesOf("sakin")} premium />
+                    <Section labelKey="breath_deep"    items={breathModesOf("derin")} premium />
+                  </>
+                );
+              })()}
             </div>
           )}
 
