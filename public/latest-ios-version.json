@@ -1,8 +1,8 @@
 {
   "_comment_TR": "DİKKAT: Bu dosya, APP STORE'DA CANLI OLAN sürümü bildirir — repodaki sürümü DEĞİL. Uygulama bunu okur ve kendi APP_VERSION'ından büyükse kullanıcıya 'yeni sürüm var' bildirimi gösterip mağazaya yönlendirir. Sürüm bump'ıyla BİRLİKTE güncellenmemelidir; yalnızca yeni sürüm App Store'da GERÇEKTEN YAYINLANDIKTAN SONRA güncellenir. Aksi halde kullanıcılar olmayan bir güncelleme için uyarılır.",
-  "version": "1.3.4",
+  "version": "1.3.6",
   "build": 1,
   "min_supported": "1.2.0",
-  "release_notes_tr": "Rozetlerde ilerleme çubuğu eklendi: hedefe ne kadar kaldığını artık görüyorsun. Tünel 3/7/21 gün adımları tamamlanınca rozet aktifleşiyor. Salla özelliği tüm Keşfet bölümlerinde çalışıyor. Geri tuşu navigasyonu düzeltildi. Android'de gökyüzü raporu artık her gün yenileniyor.",
-  "release_notes_en": "Badge progress bars added: see how close you are to each milestone. Tunnel 3/7/21-day steps now light up when reached. Shake works in all Explore sections. Back navigation fixed. Android sky report now refreshes every day."
+  "release_notes_tr": "Nefes bölümüne gerçek insan sesi rehberliği eklendi: nefes al, tut, ver ve dinlen adımlarını artık duyarak takip edebilir, gözlerin kapalıyken ekrana bakmadan pratiğini sürdürebilirsin.",
+  "release_notes_en": "Real human voice guidance added to the breathing exercise: hear each step — inhale, hold, exhale, rest — and keep your practice going with your eyes closed, without looking at the screen."
 }
