@@ -23,7 +23,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
 3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı ONAYLADI, BAŞARILI — DEĞİŞTİRME):
    ```
-   cd ~/Desktop/Niyet-App && git checkout -- ios/App/App.xcodeproj/project.pbxproj && \
+   cd ~/Desktop/Niyet-App && git checkout -- ios/App/App.xcodeproj/project.pbxproj ios/App/App/Info.plist && \
    git pull origin claude/check-sakin-life-update-CIpM8 && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
    ```
@@ -31,6 +31,11 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    (signing team vb.) kirletiyor, commit edilmemiş bu değişiklikler `git pull`'u
    "local changes would be overwritten" hatasıyla durduruyor. Bu satır olmadan
    komut kullanıcıda 5 kez art arda başarısız oldu — bir daha kaldırma.
+   **`Info.plist` AYNI SEBEPTEN eklendi (2. tekrar, bu sefer bu dosyada):**
+   Xcode'un "Info" sekmesi/capabilities paneli dosyayı kendi plist editörüyle
+   yeniden yazıyor — sıra değişiyor, elle eklenen XML yorumları (`<!-- ... -->`)
+   silinebiliyor. Sonuç aynı hata. Kural: Xcode'da **açılan/değişebilen HER
+   proje dosyası** bu satıra eklenmeli, tek tek keşfedip düzeltmek yerine.
 4. **`public/latest-ios-version.json` ARTIK OTOMATİK — elle bump etme.**
    Bu dosya "mağazalarda CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
    Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse "yeni sürüm var"
