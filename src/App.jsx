@@ -284,6 +284,66 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
 const APP_VERSION = "1.3.6";
+
+// ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
+// Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
+// bildirimini görmez (zaten güncel) — onun yerine ilk açılışta NE DEĞİŞTİĞİNİ
+// görsün diye bu kart çıkar.
+// ⚠️ Notlar SUNUCUDAN değil UYGULAMANIN İÇİNDEN gelir: çalıştığın sürümün notu
+// o sürümle birlikte gelmeli. Çevrimdışı da çalışır ve otomatik sürüm bekçisi
+// (scripts/check-store-versions.mjs) sunucudaki notları temizlediği için oradan
+// okumak boş metin riski taşır.
+// YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
+const WHATS_NEW = {
+  version: "1.3.6",
+  headline: {
+    tr:"Nefes bölümüne gerçek insan sesi eklendi",
+    en:"Real human voice added to breathing",
+    de:"Echte Stimme in der Atemübung",
+    es:"Voz humana real en la respiración",
+    pt:"Voz humana real na respiração",
+    fr:"Vraie voix humaine dans la respiration",
+    ja:"呼吸に人の声のガイドを追加",
+  },
+  items: {
+    tr:["Nefes al, tut, ver ve dinlen adımları artık sesli — gözlerin kapalıyken de takip edebilirsin",
+        "Çakra seansında süre seçebilir, sıradaki çakraya kendiliğinden geçebilirsin",
+        "Keşfet'te gezinme ve geri tuşu sadeleşti",
+        "Gökyüzü raporu artık çok daha sık uzun hâliyle geliyor",
+        "Üyelik durumu daha güvenilir korunuyor"],
+    en:["Inhale, hold, exhale and rest are now spoken — follow along with your eyes closed",
+        "Choose your chakra session length and let it flow to the next chakra on its own",
+        "Simpler navigation and back button in Explore",
+        "The Sky Report now arrives in its full form far more often",
+        "Your membership state is kept more reliably"],
+    de:["Einatmen, Halten, Ausatmen und Ruhen werden jetzt gesprochen — folge mit geschlossenen Augen",
+        "Wähle die Dauer deiner Chakra-Sitzung; sie geht von selbst zum nächsten Chakra",
+        "Einfachere Navigation und Zurück-Taste in Entdecken",
+        "Der Himmelsbericht kommt jetzt viel öfter in voller Länge",
+        "Dein Mitgliedsstatus wird zuverlässiger bewahrt"],
+    es:["Inhala, retén, exhala y descansa ahora se escuchan — sigue con los ojos cerrados",
+        "Elige la duración de tu sesión de chakras y deja que pase al siguiente solo",
+        "Navegación y botón atrás más simples en Descubrir",
+        "El Informe del Cielo llega mucho más a menudo en su versión completa",
+        "Tu estado de membresía se conserva de forma más fiable"],
+    pt:["Inspira, segura, expira e descansa agora são falados — segue de olhos fechados",
+        "Escolhe a duração da tua sessão de chakras e deixa passar sozinho ao seguinte",
+        "Navegação e botão voltar mais simples em Descobrir",
+        "O Relatório do Céu chega muito mais vezes na versão completa",
+        "O teu estado de membro é preservado de forma mais fiável"],
+    fr:["Inspire, retiens, expire et repose sont maintenant énoncés — suis les yeux fermés",
+        "Choisis la durée de ta séance de chakras et laisse-la passer au suivant",
+        "Navigation et bouton retour simplifiés dans Explorer",
+        "Le Rapport du Ciel arrive bien plus souvent dans sa version longue",
+        "Ton statut d'abonnement est conservé de façon plus fiable"],
+    ja:["吸う・止める・吐く・休むが音声に——目を閉じたままでも追えます",
+        "チャクラのセッション時間を選ぶと、次のチャクラへ自動で進みます",
+        "「見つける」の操作と戻るボタンをシンプルに",
+        "空のレポートが完全版で届く頻度が大幅に増えました",
+        "会員状態がより確実に保持されます"],
+  },
+};
+
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -4528,6 +4588,42 @@ export default function SakinApp() {
   const [updateInfo, setUpdateInfo] = useState(null); // { version, notes_tr, notes_en } — daha yeni sürüm varsa
   const [updateDismissed, setUpdateDismissed] = useState(() => localStorage.getItem("sakin_update_dismissed_v") || "");
 
+  // ── "NE YENİ" KARTI ────────────────────────────────────────────────────────
+  // Telefon uygulamayı otomatik güncellediğinde kullanıcı "yeni sürüm var"
+  // bildirimi görmez (zaten güncel). Onun yerine ilk açılışta ne değiştiğini
+  // görsün. Güncelleme banner'ıyla aynı görsel dili kullanır — kullanıcı o şekli
+  // zaten tanıyor, yeni bir kalıp öğrenmesi gerekmiyor.
+  const [whatsNew, setWhatsNew] = useState(false);
+  const [whatsNewOpen, setWhatsNewOpen] = useState(false);
+  useEffect(() => {
+    let seen = null;
+    try { seen = localStorage.getItem("sakin_last_seen_version"); } catch(_) { return; }
+    const stamp = () => { try { localStorage.setItem("sakin_last_seen_version", APP_VERSION); } catch(_) {} };
+    if (seen === APP_VERSION) return;                       // bu sürüm zaten görüldü
+    if (WHATS_NEW.version !== APP_VERSION) { stamp(); return; }  // notlar bayat → gösterme
+    if (!seen) {
+      // Damga yok: ya İLK KURULUM ya da bu özellikten önceki bir sürümden geliyor.
+      // İlk kurulan kullanıcıya "ne değişti" demek anlamsız — "öncesi" yok.
+      // Ayrım: cihazda başka sakin_ verisi var mı? (dil seçimi tek başına sayılmaz,
+      // giriş ekranında dokunulmadan da yazılabiliyor.)
+      let existing = false;
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("sakin_") && k !== "sakin_lang" && k !== "sakin_last_seen_version") { existing = true; break; }
+        }
+      } catch(_) {}
+      if (!existing) { stamp(); return; }                   // yeni kullanıcı → sessizce damgala
+    } else if (compareVer(seen, APP_VERSION) >= 0) {
+      stamp(); return;                                      // geri sürüm düşüşü → gösterme
+    }
+    setWhatsNew(true);
+  }, []);
+  const dismissWhatsNew = () => {
+    setWhatsNew(false); setWhatsNewOpen(false);
+    try { localStorage.setItem("sakin_last_seen_version", APP_VERSION); } catch(_) {}
+  };
+
   // App açılınca latest-ios-version.json'u kontrol et — daha yeni varsa banner göster.
   // PLATFORM BAZLI: App Store ve Play Store aynı anda aynı sürümde olmayabilir
   // (biri incelemede takılır). Tek ortak sürüm numarası kullanılırsa, henüz
@@ -7647,6 +7743,60 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             sadece üç çizginin içinde olsun, diğer yerlerden kaldır"). 3'ü-üstte
             moddaki (harita/mandala/keşfet) ayrı ◐ butonu kaldırıldı. */}
       </div>
+
+      {/* "NE YENİ" kartı — telefon otomatik güncellediyse ilk açılışta ne değiştiğini
+          gösterir. Güncelleme banner'ıyla AYNI slot ve görsel dil; ikisi birlikte
+          çıkmaz zaten (güncelsen "yeni sürüm var" bildirimi almazsın).
+          Kapalıyken tek satır başlık, dokununca maddeler açılır. Engelleyici değil —
+          kullanıcı görmezden gelip devam edebilir. */}
+      {whatsNew && !updateInfo && !showIntro && (
+        <div style={{
+          position:"fixed", top:"calc(44px + var(--sat) + 8px)", left:10, right:10, zIndex:10005,
+          background:"linear-gradient(135deg,rgba(140,190,170,0.92),rgba(70,120,110,0.88))",
+          backdropFilter:"blur(18px)",
+          border:"1px solid rgba(200,235,220,0.3)", borderRadius:14,
+          padding:"10px 12px 10px 14px",
+          boxShadow:"0 6px 24px rgba(0,0,0,0.45)",
+          fontFamily:"'Inter',sans-serif",
+          animation:"fadeUp 0.5s ease-out",
+        }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ fontSize:18, lineHeight:1 }}>✦</div>
+            <div onClick={()=>setWhatsNewOpen(v=>!v)} style={{ flex:1, minWidth:0, cursor:"pointer" }}>
+              <div style={{ fontSize:13, fontWeight:500, color:"#fff", letterSpacing:0.3, marginBottom:2 }}>
+                {pickLang({tr:"Yenilikler",en:"What's new",de:"Neu",es:"Novedades",pt:"Novidades",fr:"Nouveautés",ja:"新着"}, lang)} · {APP_VERSION}
+              </div>
+              <div style={{ fontSize:11.5, color:"rgba(255,255,255,0.85)", lineHeight:1.4,
+                            ...(whatsNewOpen ? {} : { overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }) }}>
+                {pickLang(WHATS_NEW.headline, lang)}
+              </div>
+            </div>
+            <button onClick={()=>setWhatsNewOpen(v=>!v)}
+              aria-label={whatsNewOpen ? "Kapat" : "Detaylar"}
+              style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.85)", fontSize:13, cursor:"pointer", padding:"0 2px", lineHeight:1, transform: whatsNewOpen ? "rotate(180deg)" : "none", transition:"transform 0.25s" }}>
+              ▾
+            </button>
+            <button onClick={dismissWhatsNew} aria-label="Dismiss"
+              style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.7)", fontSize:18, cursor:"pointer", padding:"0 4px", lineHeight:1 }}>
+              ✕
+            </button>
+          </div>
+          {whatsNewOpen && (
+            <div style={{ marginTop:10, paddingTop:10, borderTop:"1px solid rgba(255,255,255,0.22)", display:"flex", flexDirection:"column", gap:7 }}>
+              {(WHATS_NEW.items[lang] || WHATS_NEW.items.en).map((it,i) => (
+                <div key={i} style={{ display:"flex", gap:8, alignItems:"flex-start" }}>
+                  <span style={{ color:"rgba(255,255,255,0.6)", fontSize:11, lineHeight:1.6 }}>•</span>
+                  <span style={{ fontSize:12, color:"rgba(255,255,255,0.92)", lineHeight:1.6 }}>{it}</span>
+                </div>
+              ))}
+              <button onClick={dismissWhatsNew}
+                style={{ alignSelf:"flex-start", marginTop:4, background:"rgba(255,255,255,0.18)", border:"1px solid rgba(255,255,255,0.35)", borderRadius:18, padding:"6px 16px", color:"#fff", fontSize:11.5, letterSpacing:1, fontFamily:"'Jost',sans-serif", cursor:"pointer", textTransform:"uppercase" }}>
+                {pickLang({tr:"Anladım",en:"Got it",de:"Alles klar",es:"Entendido",pt:"Entendi",fr:"Compris",ja:"了解"}, lang)}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* APP GÜNCELLE banner — daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse */}
       {isNative && updateInfo && updateDismissed !== updateInfo.version && (
