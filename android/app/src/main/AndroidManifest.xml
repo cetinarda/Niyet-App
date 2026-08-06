@@ -19,9 +19,13 @@
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
             android:value="true" />
+        <!-- iOS ile TUTARLI: reklam kimliği (GAID) toplanmıyor. Android'de ATT
+             karşılığı yok ama Play Data Safety beyanını basit tutmak ve iki
+             platformda aynı gizlilik hikâyesini anlatmak için kapalı.
+             App Events ve SKAdNetwork/Play install atfı etkilenmez. -->
         <meta-data
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
-            android:value="true" />
+            android:value="false" />
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"

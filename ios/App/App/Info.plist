@@ -94,8 +94,16 @@
 	<string>Sakin</string>
 	<key>FacebookAutoLogAppEventsEnabled</key>
 	<true/>
+	<!-- IDFA TOPLANMIYOR (bilinçli). true olsaydı iOS 14.5+ için ATT izin ekranı
+	     ZORUNLU olurdu ve App Store sayfasında "Seni İzleyen Veriler" etiketi
+	     çıkardı; App Privacy beyanı da "Identifiers toplanmıyor" dediği için
+	     uyuşmazlık/red riski doğuyordu.
+	     Kurulum atıfı (install attribution) bundan ETKİLENMEZ — SKAdNetwork
+	     üzerinden yürüyor, Meta'nın ağ kimlikleri yukarıda tanımlı.
+	     App Events (kurulum/açılış/oturum) de normal çalışmaya devam eder;
+	     IDFA yalnızca EK bir tanımlayıcıydı, bağlantı App ID + Client Token ile. -->
 	<key>FacebookAdvertiserIDCollectionEnabled</key>
-	<true/>
+	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
