@@ -283,7 +283,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.6";
+const APP_VERSION = "1.3.7";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -295,55 +295,61 @@ const APP_VERSION = "1.3.6";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.3.6",
+  version: "1.3.7",
   headline: {
-    tr:"Nefes bölümüne gerçek insan sesi eklendi",
-    en:"Real human voice added to breathing",
-    de:"Echte Stimme in der Atemübung",
-    es:"Voz humana real en la respiración",
-    pt:"Voz humana real na respiração",
-    fr:"Vraie voix humaine dans la respiration",
-    ja:"呼吸に人の声のガイドを追加",
+    tr:"Nefese üç yeni mod ve ritmi gösteren halka",
+    en:"Three new breathing modes and a ring that shows the rhythm",
+    de:"Drei neue Atemmodi und ein Ring, der den Rhythmus zeigt",
+    es:"Tres nuevos modos de respiración y un anillo que muestra el ritmo",
+    pt:"Três novos modos de respiração e um anel que mostra o ritmo",
+    fr:"Trois nouveaux modes de respiration et un anneau qui montre le rythme",
+    ja:"3つの新しい呼吸モードと、リズムを示すリング",
   },
   items: {
-    tr:["Nefes al, tut, ver ve dinlen adımları artık sesli — gözlerin kapalıyken de takip edebilirsin",
-        "Çakra seansında süre seçebilir, sıradaki çakraya kendiliğinden geçebilirsin",
-        "Keşfet'te gezinme ve geri tuşu sadeleşti",
-        "Gökyüzü raporu artık çok daha sık uzun hâliyle geliyor",
-        "Üyelik durumu daha güvenilir korunuyor"],
-    en:["Inhale, hold, exhale and rest are now spoken — follow along with your eyes closed",
-        "Choose your chakra session length and let it flow to the next chakra on its own",
-        "Simpler navigation and back button in Explore",
-        "The Sky Report now arrives in its full form far more often",
-        "Your membership state is kept more reliably"],
-    de:["Einatmen, Halten, Ausatmen und Ruhen werden jetzt gesprochen — folge mit geschlossenen Augen",
-        "Wähle die Dauer deiner Chakra-Sitzung; sie geht von selbst zum nächsten Chakra",
-        "Einfachere Navigation und Zurück-Taste in Entdecken",
-        "Der Himmelsbericht kommt jetzt viel öfter in voller Länge",
-        "Dein Mitgliedsstatus wird zuverlässiger bewahrt"],
-    es:["Inhala, retén, exhala y descansa ahora se escuchan — sigue con los ojos cerrados",
-        "Elige la duración de tu sesión de chakras y deja que pase al siguiente solo",
-        "Navegación y botón atrás más simples en Descubrir",
-        "El Informe del Cielo llega mucho más a menudo en su versión completa",
-        "Tu estado de membresía se conserva de forma más fiable"],
-    pt:["Inspira, segura, expira e descansa agora são falados — segue de olhos fechados",
-        "Escolhe a duração da tua sessão de chakras e deixa passar sozinho ao seguinte",
-        "Navegação e botão voltar mais simples em Descobrir",
-        "O Relatório do Céu chega muito mais vezes na versão completa",
-        "O teu estado de membro é preservado de forma mais fiável"],
-    fr:["Inspire, retiens, expire et repose sont maintenant énoncés — suis les yeux fermés",
-        "Choisis la durée de ta séance de chakras et laisse-la passer au suivant",
-        "Navigation et bouton retour simplifiés dans Explorer",
-        "Le Rapport du Ciel arrive bien plus souvent dans sa version longue",
-        "Ton statut d'abonnement est conservé de façon plus fiable"],
-    ja:["吸う・止める・吐く・休むが音声に——目を閉じたままでも追えます",
-        "チャクラのセッション時間を選ぶと、次のチャクラへ自動で進みます",
-        "「見つける」の操作と戻るボタンをシンプルに",
-        "空のレポートが完全版で届く頻度が大幅に増えました",
-        "会員状態がより確実に保持されます"],
+    tr:["Nefes halkası: yaylar faz sürelerine göre bölünüyor, ritmi gözünle takip ediyorsun",
+        "Üç yeni mod — Uykuya Dal, Merkezine Çekil, Yenilen (geri sayımlı)",
+        "Frekans seslerindeki cızırtı giderildi, kuş sesleri yumuşatıldı",
+        "Galaktik kimliğe ay düğümleri eklendi; haritanı yorumlatabiliyorsun",
+        "Aynaya haritana dair sorular eklendi (element, draconic, 12. ev)",
+        "Gökyüzü raporu artık çok daha sık tam hâliyle geliyor"],
+    en:["Breath ring: arcs split by phase length — follow the rhythm with your eyes",
+        "Three new modes — Drift to Sleep, Draw Inward, Renew (with countdown)",
+        "Crackling in the frequency tones fixed; bird sounds softened",
+        "Lunar nodes added to your galactic ID; you can now have your chart interpreted",
+        "Chart questions added to the Mirror (element, draconic, 12th house)",
+        "The Sky Report now arrives in full form far more often"],
+    de:["Atemring: Bögen nach Phasenlänge geteilt — folge dem Rhythmus mit den Augen",
+        "Drei neue Modi — In den Schlaf, Nach Innen, Erneuern (mit Countdown)",
+        "Knistern in den Frequenztönen behoben; Vogelstimmen weicher",
+        "Mondknoten in deiner galaktischen ID; deine Karte kann gedeutet werden",
+        "Kartenfragen im Spiegel ergänzt (Element, draconisch, 12. Haus)",
+        "Der Himmelsbericht kommt jetzt viel öfter in voller Länge"],
+    es:["Anillo de respiración: arcos según la duración de cada fase — sigue el ritmo con la vista",
+        "Tres modos nuevos — Hacia el Sueño, Hacia Dentro, Renovar (con cuenta atrás)",
+        "Corregido el chisporroteo en los tonos; sonidos de aves suavizados",
+        "Nodos lunares en tu identidad galáctica; ya puedes interpretar tu carta",
+        "Preguntas sobre tu carta en el Espejo (elemento, dracónica, casa 12)",
+        "El Informe del Cielo llega mucho más a menudo completo"],
+    pt:["Anel de respiração: arcos conforme a duração de cada fase — segue o ritmo com os olhos",
+        "Três novos modos — Rumo ao Sono, Para Dentro, Renovar (com contagem)",
+        "Corrigido o chiado nos tons; sons de aves suavizados",
+        "Nodos lunares na tua identidade galáctica; já podes interpretar o teu mapa",
+        "Perguntas sobre o teu mapa no Espelho (elemento, dracónico, casa 12)",
+        "O Relatório do Céu chega muito mais vezes completo"],
+    fr:["Anneau de respiration : arcs selon la durée de chaque phase — suis le rythme des yeux",
+        "Trois nouveaux modes — Vers le Sommeil, Vers l'Intérieur, Renouveler (avec compte à rebours)",
+        "Grésillement des fréquences corrigé ; chants d'oiseaux adoucis",
+        "Nœuds lunaires dans ton identité galactique ; ta carte peut être interprétée",
+        "Questions sur ta carte dans le Miroir (élément, draconique, maison 12)",
+        "Le Rapport du Ciel arrive bien plus souvent en version complète"],
+    ja:["呼吸リング：各フェーズの長さで弧が分かれ、リズムを目で追えます",
+        "新しい3つのモード——眠りへ、内へ、よみがえる（カウントダウン付き）",
+        "周波数音のノイズを修正、鳥の声をやわらげました",
+        "銀河のIDに月のノードを追加。チャートを読み解けるようになりました",
+        "ミラーにチャートの質問を追加（エレメント・ドラコニック・12ハウス）",
+        "空のレポートが完全版で届く頻度が大幅に増えました"],
   },
 };
-
 const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
@@ -4968,6 +4974,7 @@ export default function SakinApp() {
   const [sikayetHis, setSikayetHis] = useState("");
   const [sikayetAnaliz, setSikayetAnaliz] = useState("");
   const [gidYorum, setGidYorum] = useState(""); // galaktik kimlik AI yorumu
+  const [gidYorumAcik, setGidYorumAcik] = useState(true); // yorum paneli açık mı (kapatmak yorumu SİLMEZ)
   const [hastalik, setHastalik] = useState("");
   const [hastalikHis, setHastalikHis] = useState("");
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
@@ -6212,6 +6219,7 @@ ${facts}
       const d = await res.json();
       if (!res.ok || d.error) { setGidYorum(pickLang(AI_ERR_I18N.noAnalysis, lang)); return; }
       setGidYorum(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
+      setGidYorumAcik(true);
     } catch(e) {
       setGidYorum(t("err_connection_prefix") + (e?.message || String(e)));
     }
@@ -10703,19 +10711,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {/* HARİTAMI YORUMLA — karttaki tüm veriler tek AI çağrısıyla
                     yorumlanır. Doğum bilgisi yoksa gösterilmez (yorumlanacak
                     veri olmaz); zaten üstte "Doğum bilgilerini gir" çıkıyor. */}
-                {/* Yorum GELDİKTEN sonra buton gizlenir (kullanıcı: "yeniden
-                    yorumlaya gerek yok yorum gelince"). Yorum zaten hemen altta
-                    duruyor; aynı veriden tekrar üretmek yeni bir şey söylemez,
-                    sadece AI limitini harcar. */}
-                {!needBirth && !(gidYorum && gidYorum !== "__loading__") && (
-                  <button onClick={generateGidYorum} disabled={gidYorum === "__loading__"}
-                    style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(160,200,240,0.45)",background:"linear-gradient(135deg,rgba(120,170,220,0.55),rgba(70,110,160,0.45))",color:"#fff",fontSize:13,letterSpacing:2,cursor: gidYorum==="__loading__"?"default":"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",opacity: gidYorum==="__loading__"?0.7:1 }}>
+                {/* Buton AÇ/KAPA (kullanıcı: "tekrar tıklayıp kapatabilsin,
+                    tekrar açtığında aynı yorum çıkar yeni bi çağrı yapılmaz").
+                    Yorum `gidYorum` state'inde duruyor; kapatmak onu SİLMİYOR,
+                    yalnızca gizliyor (gidYorumAcik). Böylece yeniden açmak
+                    ne AI çağrısı yapıyor ne de günlük limitten düşüyor. */}
+                {!needBirth && (
+                  <button
+                    onClick={()=>{
+                      if (gidYorum === "__loading__") return;
+                      if (gidYorum) { setGidYorumAcik(v=>!v); return; }  // zaten var → sadece göster/gizle
+                      generateGidYorum();
+                    }}
+                    disabled={gidYorum === "__loading__"}
+                    style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(160,200,240,0.45)",background:"linear-gradient(135deg,rgba(120,170,220,0.55),rgba(70,110,160,0.45))",color:"#fff",fontSize:13,letterSpacing:2,cursor: gidYorum==="__loading__"?"default":"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",opacity: gidYorum==="__loading__"?0.7:1,display:"flex",alignItems:"center",justifyContent:"center",gap:8 }}>
                     {gidYorum === "__loading__"
                       ? pickLang(GID_TXT.loading, lang)
-                      : (isPremium ? "✦ " : "🔒 ") + pickLang(GID_TXT.interpret, lang)}
+                      : (<>
+                          <span>{(isPremium ? "✦ " : "🔒 ") + pickLang(GID_TXT.interpret, lang)}</span>
+                          {gidYorum && <span style={{ fontSize:11,transition:"transform 0.25s",display:"inline-block",transform: gidYorumAcik ? "rotate(180deg)" : "none" }}>⌄</span>}
+                        </>)}
                   </button>
                 )}
-                {gidYorum && gidYorum !== "__loading__" && (
+                {gidYorum && gidYorum !== "__loading__" && gidYorumAcik && (
                   <div style={{ background:"rgba(120,170,220,0.08)",border:"1px solid rgba(160,200,240,0.28)",borderRadius:14,padding:"14px 16px",marginBottom:2 }}>
                     <div style={{ fontSize:10,letterSpacing:2.5,color:"#8fb8dc",textTransform:"uppercase",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
                       {pickLang(GID_TXT.title, lang)}
