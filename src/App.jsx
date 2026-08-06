@@ -5312,9 +5312,6 @@ export default function SakinApp() {
     title:     { tr:"Haritanın söyledikleri", en:"What your chart says", de:"Was deine Karte sagt",
                  es:"Lo que dice tu carta", pt:"O que o teu mapa diz",
                  fr:"Ce que dit ta carte", ja:"チャートが語ること" },
-    again:     { tr:"Yeniden yorumla", en:"Interpret again", de:"Erneut deuten",
-                 es:"Interpretar de nuevo", pt:"Interpretar de novo",
-                 fr:"Interpréter à nouveau", ja:"もう一度読む" },
     guidePre:  { tr:"Haritandaki kavramların tanımlarını öğrenmek istersen",
                  en:"To learn what the terms in your chart mean, visit the",
                  de:"Was die Begriffe in deiner Karte bedeuten, findest du im",
@@ -10248,15 +10245,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             )}
           </div>
           )}
-          {/* Doğum bilgisi bağlantısı HER ZAMAN görünür — etiketi duruma göre
-              değişir: bilgi varsa "değiştir", yoksa "gir" (kullanıcı isteği). */}
-          <div style={{ textAlign:"center",marginBottom:16 }}>
-            <button onClick={()=>{ birthReturnRef.current = "harita"; setGirisPhase("birth"); setShowBirthForm(!birthDate); setScreen("giris"); }}
-              style={{ background:"none",border:"none",color:"#666",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
-              {birthDate ? t("birth_change_lower") : pickLang(BIRTH_TXT.enter, lang)}
-            </button>
-          </div>
-          )}
+          {/* Buradaki açıktaki "doğum bilgilerini gir/değiştir" bağlantısı KALDIRILDI
+              (kullanıcı: "mantık olarak gerek kalmadı"). Artık gereken yerde
+              gereken anda soruluyor: kilitli kartların içindeki buton, kimlik
+              kartındaki uyarı ve görev/soru akışları. Ekranın ortasında sürekli
+              duran bir bağlantıya ihtiyaç yok.
+              NOT: eskiden bu blok `{birthDate && (…)}` içindeydi; sarmalayıcı
+              kaldırılırken kapanış `)}` kalmış ve JSX bunu DÜZ METİN olarak
+              basıyordu — ekranda görünen "iki parantez" oydu. */}
           <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"40px 20px 16px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
             {/* COMING SOON badge — üstte ortalı, kendi satırında; uzun dillerde (EN) label'a binmez */}
             <div style={{ position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",fontSize:9,letterSpacing:1.5,padding:"3px 10px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{t("map_coming_soon")}</div>
@@ -10699,13 +10695,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {/* HARİTAMI YORUMLA — karttaki tüm veriler tek AI çağrısıyla
                     yorumlanır. Doğum bilgisi yoksa gösterilmez (yorumlanacak
                     veri olmaz); zaten üstte "Doğum bilgilerini gir" çıkıyor. */}
-                {!needBirth && (
+                {/* Yorum GELDİKTEN sonra buton gizlenir (kullanıcı: "yeniden
+                    yorumlaya gerek yok yorum gelince"). Yorum zaten hemen altta
+                    duruyor; aynı veriden tekrar üretmek yeni bir şey söylemez,
+                    sadece AI limitini harcar. */}
+                {!needBirth && !(gidYorum && gidYorum !== "__loading__") && (
                   <button onClick={generateGidYorum} disabled={gidYorum === "__loading__"}
                     style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(160,200,240,0.45)",background:"linear-gradient(135deg,rgba(120,170,220,0.55),rgba(70,110,160,0.45))",color:"#fff",fontSize:13,letterSpacing:2,cursor: gidYorum==="__loading__"?"default":"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",opacity: gidYorum==="__loading__"?0.7:1 }}>
                     {gidYorum === "__loading__"
                       ? pickLang(GID_TXT.loading, lang)
-                      : (gidYorum ? pickLang(GID_TXT.again, lang)
-                        : (isPremium ? "✦ " : "🔒 ") + pickLang(GID_TXT.interpret, lang))}
+                      : (isPremium ? "✦ " : "🔒 ") + pickLang(GID_TXT.interpret, lang)}
                   </button>
                 )}
                 {gidYorum && gidYorum !== "__loading__" && (
