@@ -44,6 +44,22 @@ const cors = (origin) => ({
 const b64url = (buf) =>
   Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
+// Rate limit — bu uç nokta bizim Apple/Google kimlik bilgilerimizle dış API çağırıyor;
+// sınırsız istek Apple kotasına takılmaya ve fonksiyon maliyetine yol açar
+// (validate-license.mjs'deki aynı desen). Aşımda 429 döner; istemci !r.ok görüp DOKUNMAZ.
+const rateMap = new Map();
+const RATE_WINDOW = 60_000;
+const RATE_MAX = 8;
+function isRateLimited(ip) {
+  const now = Date.now();
+  const e = rateMap.get(ip);
+  if (!e || now - e.start > RATE_WINDOW) { rateMap.set(ip, { start: now, count: 1 }); return false; }
+  e.count++;
+  return e.count > RATE_MAX;
+}
+const clientIP = (event) =>
+  (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
+
 // Netlify env değişkenleri çok satırlı PEM'i genelde "\n" kaçışlarıyla saklar.
 const pem = (s) => String(s || "").replace(/\\n/g, "\n").trim();
 
@@ -71,8 +87,10 @@ function decodeJws(jws) {
   } catch { return null; }
 }
 
+// Netlify fonksiyon varsayılan sınırı 10sn; Apple yolunda 2 host × 2 çağrı olabildiği
+// için tek istek timeout'u kısa tutulur, üstüne genel bir deadline konur (handler'da).
 const jsonFetch = async (url, opts = {}) => {
-  const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(12000) });
+  const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(4500) });
   const text = await r.text();
   let body = null;
   try { body = JSON.parse(text); } catch { /* JSON değil */ }
@@ -95,50 +113,85 @@ function appleToken() {
   );
 }
 
+const APPLE_HOSTS = [
+  "https://api.storekit.itunes.apple.com",
+  "https://api.storekit-sandbox.itunes.apple.com",
+];
+
+// Apple abonelik durum kodları (Get All Subscription Statuses):
+//   1 Aktif · 2 Süresi doldu · 3 Ödeme yeniden deneniyor · 4 Ödeme EK SÜRESİ · 5 İptal/iade
+// ⚠️ 4 (grace period) KRİTİK: kartı geçici olarak reddedilen kullanıcıya Apple
+// 6-16 gün ek süre verir ve erişimin SÜRDÜRÜLMESİNİ ister. Bu durumda YENİ bir
+// işlem oluşmaz, son işlemin expiresDate'i GEÇMİŞTE kalır. Eskiden burada
+// v2/history'deki expiresDate'e bakılıyordu ve bu kullanıcılar "süresi dolmuş"
+// sayılıp premium'ları iptal ediliyordu — ödeme yapan kullanıcıyı düşüren tam da
+// bu yoldu. Grace period'u YALNIZCA bu uç nokta bildirir, o yüzden karar buradan verilir.
+// 3 (ödeme yeniden deneniyor) BELİRSİZ kabul edilir → iptal edilmez.
+const APPLE_ENTITLED = new Set([1, 4]);
+const APPLE_DENIED   = new Set([2, 5]);
+
+// Ömür boyu (tek seferlik) ürün abonelik uç noktasında görünmez — geçmişten okunur.
+async function appleLifetime(host, token, transactionId) {
+  try {
+    const r = await jsonFetch(
+      `${host}/inApps/v2/history/${encodeURIComponent(transactionId)}?sort=DESCENDING`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (!r.ok) return "error";
+    const txs = (r.body?.signedTransactions || []).map(decodeJws).filter(Boolean);
+    return txs.some(t => t.productId === LIFETIME_ID && !t.revocationDate) ? "entitled" : "none";
+  } catch { return "error"; }
+}
+
 /**
- * transactionId ile TÜM satın alma geçmişini çeker (v2/history) ve hak durumunu çıkarır.
- * Prod önce denenir; Apple "bulunamadı" derse sandbox'a düşülür (TestFlight/sandbox cihazlar).
+ * Hak durumunu Apple'ın ABONELİK DURUMU uç noktasından okur (grace period dahil).
+ * Prod önce denenir; Apple "bulunamadı" derse sandbox'a düşülür (TestFlight/sandbox).
  */
-async function appleEntitlement(transactionId) {
+async function appleEntitlement(transactionId, deadline) {
   const token = appleToken();
   if (!token || !transactionId) return { status: "unknown", reason: "apple_not_configured" };
 
-  const hosts = [
-    "https://api.storekit.itunes.apple.com",
-    "https://api.storekit-sandbox.itunes.apple.com",
-  ];
-
-  for (const host of hosts) {
-    let r;
+  for (const host of APPLE_HOSTS) {
+    if (Date.now() > deadline) return { status: "unknown", reason: "apple_deadline" };
+    let sub;
     try {
-      r = await jsonFetch(`${host}/inApps/v2/history/${encodeURIComponent(transactionId)}?sort=DESCENDING`, {
+      sub = await jsonFetch(`${host}/inApps/v1/subscriptions/${encodeURIComponent(transactionId)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-    } catch (e) {
+    } catch {
       return { status: "unknown", reason: "apple_network" };   // ağ hatası → ASLA iptal
     }
     // Bu ortamda yok → diğer ortamı dene
-    if (r.status === 404 || (r.body && String(r.body.errorCode) === "4040010")) continue;
-    if (r.status === 401 || r.status === 403) return { status: "unknown", reason: "apple_auth" };
-    if (!r.ok) return { status: "unknown", reason: `apple_http_${r.status}` };
+    if (sub.status === 404 || (sub.body && String(sub.body.errorCode) === "4040010")) continue;
+    if (sub.status === 401 || sub.status === 403) return { status: "unknown", reason: "apple_auth" };
+    if (!sub.ok) return { status: "unknown", reason: `apple_http_${sub.status}` };
 
-    const txs = (r.body?.signedTransactions || []).map(decodeJws).filter(Boolean);
-    if (!txs.length) continue;
-
-    const now = Date.now();
-    // Ömür boyu: iade/iptal edilmemişse süresiz hak.
-    const lifetime = txs.find(t => t.productId === LIFETIME_ID && !t.revocationDate);
-    if (lifetime) return { status: "entitled", kind: "lifetime", source: host.includes("sandbox") ? "sandbox" : "production" };
-
-    // Abonelik: en ileri tarihli expiresDate hâlâ gelecekteyse hak sürüyor.
-    const subs = txs.filter(t => t.productId === YEARLY_ID && !t.revocationDate && t.expiresDate);
-    if (subs.length) {
-      const latest = Math.max(...subs.map(t => Number(t.expiresDate) || 0));
-      if (latest > now) return { status: "entitled", kind: "subscription", expiresAt: latest };
-      return { status: "not_entitled", reason: "expired", expiresAt: latest };
+    const statuses = [];
+    for (const group of sub.body?.data || []) {
+      for (const lt of group?.lastTransactions || []) {
+        const info = decodeJws(lt?.signedTransactionInfo);
+        // Ürünü okuyabiliyorsak yalnızca BİZİM aboneliğimizi dikkate al.
+        if (info?.productId && info.productId !== YEARLY_ID) continue;
+        if (typeof lt?.status === "number") statuses.push(lt.status);
+      }
     }
-    // Kayıt var ama tanıdığımız ürün yok → karar verme.
-    return { status: "unknown", reason: "apple_no_known_product" };
+
+    if (statuses.some(s => APPLE_ENTITLED.has(s))) {
+      return { status: "entitled", kind: "subscription" };
+    }
+
+    // Abonelik hakkı görünmüyor → ömür boyu ürünü olabilir, ONA bak.
+    if (Date.now() <= deadline) {
+      const life = await appleLifetime(host, token, transactionId);
+      if (life === "entitled") return { status: "entitled", kind: "lifetime" };
+      if (life === "error")    return { status: "unknown", reason: "apple_history" };
+    }
+
+    // Ancak TÜM durumlar kesin olumsuzsa (2/5) iptal edilir. 3 varsa belirsiz sayılır.
+    if (statuses.length && statuses.every(s => APPLE_DENIED.has(s))) {
+      return { status: "not_entitled", reason: "expired_or_revoked" };
+    }
+    return { status: "unknown", reason: statuses.length ? "apple_ambiguous" : "apple_no_status" };
   }
   return { status: "unknown", reason: "apple_tx_not_found" };
 }
@@ -244,15 +297,21 @@ export const handler = async (event) => {
     return { statusCode: 405, headers, body: JSON.stringify({ status: "unknown", reason: "method" }) };
   }
 
+  if (isRateLimited(clientIP(event))) {
+    return { statusCode: 429, headers, body: JSON.stringify({ status: "unknown", reason: "rate_limited" }) };
+  }
+
   let req = {};
   try { req = JSON.parse(event.body || "{}"); } catch { /* boş bırak */ }
   const platform = req.platform === "android" ? "android" : "ios";
+  // Genel bütçe: platformun fonksiyonu kesmesinden önce kendimiz "unknown" dönelim.
+  const deadline = Date.now() + 8000;
 
   // ⚠️ Buradan sonra HİÇBİR hata "not_entitled"a dönüşmemeli.
   try {
     const out = platform === "android"
       ? await googleEntitlement(req.purchaseToken, req.productId)
-      : await appleEntitlement(req.transactionId);
+      : await appleEntitlement(req.transactionId, deadline);
     return { statusCode: 200, headers: { ...headers, "Cache-Control": "no-store" }, body: JSON.stringify(out) };
   } catch (e) {
     return {

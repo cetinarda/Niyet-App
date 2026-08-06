@@ -4628,22 +4628,34 @@ export default function SakinApp() {
       try {
         const store = window.CdvPurchase?.store;
         if (!store) return null;
-        const txs = [
-          ...(store.localTransactions || []),
-          ...(store.localReceipts || []).flatMap(r => r?.transactions || []),
-        ];
+        // localTransactions zaten localReceipts'in düzleştirilmişi — ikisini
+        // birleştirmek her işlemi iki kez listeliyordu. Tek kaynak yeterli.
+        const all = store.localTransactions?.length
+          ? store.localTransactions
+          : (store.localReceipts || []).flatMap(r => r?.transactions || []);
+        // SAHTE İŞLEMLERİ ELE: plugin, "devam eden satın alma" için pseudoReceipt
+        // üretiyor ve içindeki kimlikler `virtual.<ürün>` / `appstore.application`
+        // gibi uydurma değerler taşıyor. Bunlar mağazaya gönderilirse 404 alınır
+        // ve doğrulama sessizce hiç çalışmaz.
+        const real = (id) => id && !/^virtual\./.test(id) && id !== "appstore.application";
         const android = Capacitor.getPlatform() === "android";
+        const idOf = (t) => android
+          // ⚠️ Plugin'in GooglePlay.Transaction'ında `purchaseToken` alanı YOK:
+          // purchaseToken `purchaseId`'de tutulur, `transactionId` ise orderId'dir
+          // (GPA.xxxx) — Play API'sine orderId göndermek 400/404 verirdi.
+          ? (t?.purchaseId || t?.nativePurchase?.purchaseToken)
+          : (t?.transactionId || t?.nativePurchase?.transactionId);
+        const txs = (all || []).filter(t => real(idOf(t)));
+        if (!txs.length) return null;
         // Ömür boyu önce: süresi dolmayan hak, aboneliğe göre önceliklidir.
-        const pick = (id) => txs.find(t => (t?.products || []).some(p => p?.id === id));
-        const t = pick(LIFETIME_PRODUCT_ID) || txs[txs.length - 1];
-        if (!t) return null;
+        const t = txs.find(x => (x?.products || []).some(p => p?.id === LIFETIME_PRODUCT_ID))
+               || txs[txs.length - 1];
         const productId = (t.products || [])[0]?.id;
-        if (android) {
-          const purchaseToken = t.purchaseToken || t.nativePurchase?.purchaseToken || t.transactionId;
-          return purchaseToken ? { platform: "android", purchaseToken, productId } : null;
-        }
-        const transactionId = t.transactionId || t.nativePurchase?.transactionId;
-        return transactionId ? { platform: "ios", transactionId, productId } : null;
+        const id = idOf(t);
+        if (!id) return null;
+        return android
+          ? { platform: "android", purchaseToken: id, productId }
+          : { platform: "ios", transactionId: id, productId };
       } catch { return null; }
     };
 
@@ -4658,10 +4670,13 @@ export default function SakinApp() {
       if (!ids) return;                                       // kimlik yok → dokunma
       entVerifyRef.current = true;
       try {
+        // Timeout ŞART: askıda kalan bir istek entVerifyRef'i kalıcı true bırakır
+        // ve doğrulama o oturumda bir daha hiç çalışmazdı.
         const r = await fetch(API_BASE + "/.netlify/functions/verify-entitlement", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(ids),
+          signal: AbortSignal.timeout(15000),
         });
         if (!r.ok) return;                                    // HTTP hatası → dokunma
         const d = await r.json();

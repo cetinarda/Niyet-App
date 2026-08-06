@@ -15,6 +15,11 @@
 [functions."ai-report"]
   timeout = 26
 
+# Apple/Google'a 2 ayrı çağrı yapabiliyor; varsayılan 10sn yetmeyebilir.
+# Kesilirse istemci !r.ok görüp premium'a dokunmaz (fail-safe) ama doğrulama çalışmaz.
+[functions."verify-entitlement"]
+  timeout = 26
+
 [[headers]]
   for = "/privacy/*"
   [headers.values]
