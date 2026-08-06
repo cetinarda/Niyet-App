@@ -9077,13 +9077,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         background: on ? `rgba(${m.rgb},0.20)` : `rgba(${m.rgb},0.055)`,
                         border: `1px solid rgba(${m.rgb},${on ? 0.75 : 0.22})`,
                         boxShadow: on ? `0 0 22px rgba(${m.rgb},0.22)` : "none",
-                        opacity: locked ? 0.45 : 1,
+                        opacity: locked ? 0.78 : 1,   // isim okunur kalsın (merak ettir)
                       }}>
                       {locked && <span style={{ position:"absolute",top:7,right:9,fontSize:10,opacity:0.8 }}>🔒</span>}
                       <span style={{ fontSize:22, lineHeight:1, color:`rgba(${m.rgb},${on?1:0.75})`,
                         textShadow: on ? `0 0 14px rgba(${m.rgb},0.7)` : "none", transition:"all 0.25s" }}>{m.glyph}</span>
+                      {/* Kilitliyken isim DAHA PARLAK: kart 0.78 opaklıkta olduğu için
+                          0.55 çarpınca ~0.43'e düşüyor ve okunmuyordu. Amaç tam tersi —
+                          adı görünsün, merak ettirsin. */}
                       <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.2,
-                        color: on ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.55)",
+                        color: on ? "rgba(255,255,255,0.92)" : `rgba(255,255,255,${locked ? 0.88 : 0.55})`,
                         textTransform:"uppercase",lineHeight:1.35,textAlign:"center" }}>{t(`breath_mode_${m.id}`)}</span>
                       <span style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:1.5,
                         color:`rgba(${m.rgb},${on?0.85:0.45})` }}>{m.rhythm}</span>
@@ -9095,21 +9098,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     {items.map(m => <Card key={m.id} m={m} />)}
                   </div>
                 );
+                // Kilitli grupta kartlar ARTIK ÖRTÜLMÜYOR (kullanıcı: "tamamen flu
+                // gözükmesin, adlarını gösterip merak ettir"). Eskiden üstlerine
+                // karartma + blur'lu bir katman biniyordu, isimler okunmuyordu.
+                // Şimdi: isim/ritim net okunur, kart hafif soluk + 🔒 rozetli,
+                // dokunuş kartın kendi locked dalından paywall'a gider.
+                // Altta TEK SATIR premium daveti.
                 const Section = ({ labelKey, items, premium }) => (
                   <div style={{ marginBottom:18 }}>
                     <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t(labelKey)}</div>
-                    {premium && !isPremium ? (
-                      <div style={{ position:"relative" }}>
-                        <div style={{ pointerEvents:"none" }}><Grid items={items} /></div>
-                        <button onClick={()=>setScreen("fiyat")}
-                          style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",
-                            background:"rgba(6,4,14,0.55)",backdropFilter:"blur(2px)",borderRadius:16,
-                            border:"1px solid rgba(184,164,216,0.22)",cursor:"pointer",color:"#c4b0e4",
-                            fontSize:12.5,letterSpacing:2,fontFamily:"'Jost',sans-serif" }}>
-                          {t("premium_unlock_breath")}
-                        </button>
-                      </div>
-                    ) : <Grid items={items} />}
+                    <Grid items={items} />
+                    {premium && !isPremium && (
+                      <button onClick={()=>setScreen("fiyat")}
+                        style={{ marginTop:8,width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                          padding:"9px 12px",borderRadius:100,
+                          background:"linear-gradient(135deg,rgba(184,164,216,0.14),rgba(122,80,150,0.10))",
+                          border:"1px solid rgba(184,164,216,0.32)",cursor:"pointer",color:"#c8b4e8",
+                          fontSize:11.5,letterSpacing:1.6,fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap" }}>
+                        <span style={{ fontSize:10 }}>🔒</span>{t("premium_unlock_breath")}
+                      </button>
+                    )}
                   </div>
                 );
                 return (
