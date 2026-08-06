@@ -597,7 +597,7 @@ function _sanitizeSky(text, lang) {
     //   zenit (TR'de zenit), stern/erde/welt/licht/geist (TR kelimelerin içinde
     //   alt-dize olarak geçiyordu), gate/lions ("Aslan Kapısı" TR'ye çevrilmiş
     //   hâliyle zaten geliyor; alt-dize riski faydasından büyük).
-    const _TR_BLOCKLIST = /\b(?:transformation|transformations|gibbous|gibous|arrival|opportunit|oportunit|corridor|couloir|puerta|löwentor|comet|comète|cometa|corredor|portail|zenith|morgen|nacht|gestern|heute|jetzt|sonne|dunkelheit|solstice|equinox|equinocc|äquinok|solstic)\p{L}*/giu;
+    const _TR_BLOCKLIST = /\b(?:transformation|transformations|gibbous|gibous|arrival|opportunit|oportunit|corridor|couloir|puerta|löwentor|comet|comète|cometa|corredor|portail|zenith|morgen|nacht|gestern|heute|jetzt|sonne|dunkelheit|solstice|equinox|equinocc|äquinok|solstic|depth|surface|journey|shadow|wisdom|healing|awareness|silence|feeling|inner|deep|breath|soul|heart|mind)\p{L}*/giu;
     const badKW = t.match(_TR_BLOCKLIST);
     if (badKW && badKW.length) {
       console.warn("[sky] TR: yabancı kök sızıntısı, rapor reddedildi:", badKW.join(","), "|", t.slice(0, 100));
