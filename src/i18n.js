@@ -99,9 +99,12 @@ export const TRANS = {
     breath_desc_standart:    "Temel nefes ritmi. Nefes alıp vermeye odaklan, zihni yavaşlat.",
     breath_desc_diyafram:    "Karın bölgesini şişirerek nefes al. Göğüs değil, karın hareket eder. Derin gevşeme sağlar.",
     breath_desc_akciger:     "Akciğerleri tam kapasiteyle doldur. Göğüs kafesi genişler, enerji artar.",
-    breath_desc_478:         "4 sn nefes al, 7 sn tut, 8 sn ver. Sinir sistemini sakinleştirir, uykuya hazırlar.",
+    breath_desc_478:         "4 sn al, 7 sn tut, 8 sn ver. Uzun tutuş ve veriş, tutulanı bırakmaya alan açar.",
     breath_desc_kutu:        "Eşit sürelerle al, tut, ver, bekle. Odaklanma ve zihinsel netlik sağlar.",
     breath_desc_sakinletici: "Uzun verişle parasempatik sistemi aktive eder. Stres ve kaygıyı azaltır.",
+    breath_desc_uyku:        "4 sn al, 8 sn ver, 4 sn bekle. Verişten sonraki duraklama gevşemeyi derinleştirir.",
+    breath_desc_merkez:      "5 sn al, 5 sn ver. Eşit ve tutuşsuz ritim; dikkatini içeri toplar.",
+    breath_desc_yenilen:     "6 sn al, 2 sn tut, 4 sn ver. Alışın uzun olduğu tempo; tazelik bırakır.",
 
     // Ses Dalgaları
     nav_sound:         "Ses",
@@ -852,9 +855,12 @@ export const TRANS = {
     breath_desc_standart:    "Basic breathing rhythm. Focus on inhale and exhale, slow the mind.",
     breath_desc_diyafram:    "Breathe by expanding your belly, not your chest. Brings deep relaxation.",
     breath_desc_akciger:     "Fill your lungs to full capacity. Chest expands, energy increases.",
-    breath_desc_478:         "Inhale 4s, hold 7s, exhale 8s. Calms the nervous system, prepares for sleep.",
+    breath_desc_478:         "Inhale 4s, hold 7s, exhale 8s. The long hold and release open room to let go.",
     breath_desc_kutu:        "Equal timing: inhale, hold, exhale, hold. Builds focus and mental clarity.",
     breath_desc_sakinletici: "Long exhale activates parasympathetic system. Reduces stress and anxiety.",
+    breath_desc_uyku:        "Inhale 4s, exhale 8s, pause 4s. The pause after the exhale deepens the softening.",
+    breath_desc_merkez:      "Inhale 5s, exhale 5s. Even, hold-free rhythm; gathers your attention inward.",
+    breath_desc_yenilen:     "Inhale 6s, hold 2s, exhale 4s. Inhale-led tempo; leaves a sense of freshness.",
 
     // Sound Waves
     nav_sound:         "Sound",
