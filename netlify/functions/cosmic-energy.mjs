@@ -587,7 +587,17 @@ function _sanitizeSky(text, lang) {
     // Türkçe morfemleri de kapsar: "transformation" + "ımızda", "arrival" + "ini" vs.
     // Not: "portal" burada YOK — TR'de meşru kelime ("Portalı", "portalları"). "corridor"
     // da benzer ama TR karşılığı "koridor" ile başlar (regex "corr..." → eşleşmez).
-    const _TR_BLOCKLIST = /(?:transformation|transformations|gibbous|gibous|arrival|opportunit|oportunit|corridor|couloir|puerta|löwentor|comet|comète|cometa|corredor|lions|gate|portail|zenith|zenit|morgen|nacht|gestern|heute|jetzt|welt|erde|sonne|stern|licht|dunkelheit|geist|solstice|equinox|equinocc|äquinok|solstic)\p{L}*/giu;
+    // ⚠️ KELİME SINIRI (\b) ŞART — yoksa ALT-DİZE eşleşiyordu ve meşru Türkçe
+    // kelimeler yüzünden raporun TAMAMI reddedilip kısa şablon metne düşülüyordu.
+    // Canlıda ölçüldü: "y-ERDE" ("ayaklarını yerde hisset"), "p-ERDE", "s-ERDE"
+    // hepsi Almanca "erde" sanılıyordu — "yerde" gündelik Türkçenin en sık
+    // kelimelerinden, bu yüzden raporların ÇOĞU düşüyordu ("neden hep kısa mesaj
+    // geliyor?" şikayetinin kök sebebi buydu).
+    // Ayrıca Türkçede MEŞRU olan girdiler listeden çıkarıldı:
+    //   zenit (TR'de zenit), stern/erde/welt/licht/geist (TR kelimelerin içinde
+    //   alt-dize olarak geçiyordu), gate/lions ("Aslan Kapısı" TR'ye çevrilmiş
+    //   hâliyle zaten geliyor; alt-dize riski faydasından büyük).
+    const _TR_BLOCKLIST = /\b(?:transformation|transformations|gibbous|gibous|arrival|opportunit|oportunit|corridor|couloir|puerta|löwentor|comet|comète|cometa|corredor|portail|zenith|morgen|nacht|gestern|heute|jetzt|sonne|dunkelheit|solstice|equinox|equinocc|äquinok|solstic)\p{L}*/giu;
     const badKW = t.match(_TR_BLOCKLIST);
     if (badKW && badKW.length) {
       console.warn("[sky] TR: yabancı kök sızıntısı, rapor reddedildi:", badKW.join(","), "|", t.slice(0, 100));
@@ -682,6 +692,15 @@ Now write the collective sky-energy reading. Let us FEEL which energy the Earth 
     const txt = _sanitizeSky(j?.choices?.[0]?.message?.content, lang);
     return txt || null;
   } catch { return null; }
+}
+
+// Süzgeç bir raporu reddederse HEMEN kısa şablon metne düşme — bir kez daha sor.
+// Sızıntı rastgele (modelin o seferki kelime seçimi); ikinci deneme genelde temiz
+// geliyor. Böylece kullanıcı uzun raporu çok daha sık görür.
+async function generateSkyReportWithRetry(data, lang) {
+  const first = await generateSkyReport(data, lang);
+  if (first) return first;
+  return await generateSkyReport(data, lang);
 }
 
 export const handler = async (event) => {
@@ -879,7 +898,7 @@ export const handler = async (event) => {
       const l = event.queryStringParameters?.lang;
       return _SKY_LANG_NAMES[l] ? l : "en";
     })();
-    const aiReport = await generateSkyReport(summary, lang);
+    const aiReport = await generateSkyReportWithRetry(summary, lang);
     if (aiReport) summary.aiReport = aiReport;
 
     return {

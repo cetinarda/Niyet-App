@@ -7,10 +7,10 @@ import { Capacitor } from "@capacitor/core";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { Haptics, ImpactStyle } from "@capacitor/haptics";
 import { StatusBar, Style } from "@capacitor/status-bar";
-// NOT: revokeLocalPremium ARTIK İMPORT EDİLMİYOR — otomatik premium iptali
-// kapatıldı (bkz. "OTOMATİK PREMIUM İPTALİ KAPALI" bloğu). Fonksiyon
-// purchases.js'te duruyor; sunucu taraflı doğrulama gelince yeniden bağlanacak.
-import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, isEntitlementKnown, LIFETIME_PRODUCT_ID } from "./purchases";
+// revokeLocalPremium ARTIK YALNIZCA sunucu doğrulaması "not_entitled" derse
+// çağrılır (bkz. "PREMIUM DOĞRULAMA: SUNUCUYA SOR" bloğu). İstemcinin store.owned
+// tahminiyle iptal etmesi kaldırıldı — ödeme yapan kullanıcıyı düşürüyordu.
+import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -2533,24 +2533,23 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   };
   const terapiDuration = useRef(getChakraDuration());
 
-  // ── SEANS SÜRESİ SEÇİMİ + OTOMATİK AKIŞ (ek özellik, varsayılan DEĞİŞMEDİ) ──
-  // Kullanıcı: "varsayılan aynı kalsın bu ek özellik olsun · süreyi kendi ayarlasın
-  // 1-2-5 dk · dileyen manuel istediği kadar kalabilir, bazen bi çakrada 15 dakika
-  // kalmak isteyebilir · sadece 7 temel çakraya uygula".
-  //   null    → VARSAYILAN: yukarıdaki kademeli süre (30→120sn), otomatik geçiş YOK
+  // ── SEANS SÜRESİ SEÇİMİ + OTOMATİK AKIŞ ────────────────────────────────────
+  //   "free"     → SERBEST (ön seçili): kademeli bağlantı kuralı işler
+  //                (30sn'den başlar, her tamamlanan seansta +5sn, tavan 120sn),
+  //                otomatik geçiş YOK — kullanıcı dilediği kadar kalır.
   //   60/120/300 → sabit süre; dolunca sıradaki temel çakraya kendiliğinden geçer
-  //   "free"  → serbest: sayaç durmadan işler, otomatik tamamlanma/geçiş YOK
-  // Otomatik akış SADECE "temel" sekmesinde (7 klasik çakra) çalışır; yüksek
-  // çakralarda sabit süre seçilse bile geçiş yapılmaz (kullanıcı isteği).
-  const [customDur, setCustomDur] = useState(null);
+  //
+  // NOT: Eskiden ayrıca bir "Varsayılan" seçeneği vardı ama kullanıcı haklı olarak
+  // "varsayılan ve serbest aynı şey değil mi, kafa karıştırıcı" dedi — ikisi de
+  // otomatik geçiş yapmıyordu. Tek seçenekte birleştirildi: SERBEST artık eski
+  // varsayılanın kademeli bağlantı kuralını aynen kullanır.
+  // Otomatik akış SADECE "temel" sekmesinde (7 klasik çakra) çalışır.
+  const [customDur, setCustomDur] = useState("free");
   const isFreeDur  = customDur === "free";
-  const autoFlow   = !!customDur && !isFreeDur && chakraTab === "temel";
-  // Serbest modda hedef yok; görsellerin (halka/parçacık/metin) yine de açılması
-  // için 120sn'lik nominal bir eğri kullanılır — sayaç bundan bağımsız işlemeye devam eder.
-  const effDur     = customDur && !isFreeDur ? customDur : terapiDuration.current;
-  const visualDur  = isFreeDur ? 120 : effDur;
-  const freeCountedRef = useRef(false);   // serbest modda seans 1 kez sayılsın
-  const autoNextRef    = useRef(null);    // otomatik geçiş zamanlayıcısı
+  const autoFlow   = !isFreeDur && chakraTab === "temel";
+  const effDur     = isFreeDur ? terapiDuration.current : customDur;
+  const visualDur  = effDur;
+  const autoNextRef = useRef(null);       // otomatik geçiş zamanlayıcısı
 
   const progress     = Math.min(elapsed/visualDur,1);
   const displayMins  = String(Math.floor(elapsed/60)).padStart(2,"0");
@@ -2623,7 +2622,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     if (tPhase!=="active" && tPhase!=="connected") return;
     if (tPhase==="active") setShowCloseEyes(false);
     const dur = effDur;
-    const free = isFreeDur;
     timerRef.current = setInterval(() => {
       // Günlük toplam çakra terapi süresi — "bağlantı" için 2 dk şartında kullanılır.
       // (Seans bitmese de geçen her saniye sayılır; kullanıcı birden çok kısa seans
@@ -2634,21 +2632,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       } catch(_) {}
       setElapsed(e => {
         const next = e + 1;
-        if (free) {
-          // SERBEST MOD: bitiş yok — geri sayım çanı çalmaz, faz "connected"a geçmez.
-          // Kullanıcı dilediği kadar kalır (15 dk, 1 saat…), çıkınca seans biter.
-          // Seans sayacı nominal süreye (120sn) ulaşınca BİR KEZ artar; yoksa
-          // kademeli süre sistemi serbest modda hiç ilerlemezdi.
-          if (next === visualDur) {
-            setShowCloseEyes(true);
-            if (!freeCountedRef.current) {
-              freeCountedRef.current = true;
-              const prev = parseInt(localStorage.getItem("sakin_chakra_sessions") || "0");
-              localStorage.setItem("sakin_chakra_sessions", String(prev + 1));
-            }
-          }
-          return next;
-        }
         if (next === dur) setShowCloseEyes(true);
         const rem = dur - next;
         if (rem === 7) playChime(396, 0.10, 2.0);
@@ -2806,7 +2789,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     setToneOn(true);
   };
 
-  const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; } freeCountedRef.current = false; /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
+  const resetTerapi = () => { stopTone(); cancelSpeech(); setTPhase("list"); setSelected(null); setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false); clearInterval(timerRef.current); clearInterval(particleRef.current); if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; } /* chimeCxtRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez, terapiye dönünce sessiz kalır. */ };
   // SIRADAKİ ÇAKRAYA GEÇ (kullanıcı: "bir çakradan diğerine geçerken ekran
   // kaydırma iyi olur, geri dönüp sıradakini seçmek yerine"). Listeye dönmeden
   // aynı sekmedeki (temel/yüksek) bir sonraki çakranın hazırlık ekranını açar;
@@ -2816,7 +2799,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   // Süre seçici metinleri — 7 dil, i18n dosyalarına dokunmadan (NEXT_CHAKRA_TXT ile aynı desen).
   const DUR_TXT = {
     label:   { tr:"Seans süresi", en:"Session length", de:"Sitzungsdauer", es:"Duración", pt:"Duração", fr:"Durée", ja:"セッション時間" },
-    auto:    { tr:"Varsayılan", en:"Default", de:"Standard", es:"Predet.", pt:"Padrão", fr:"Défaut", ja:"標準" },
     free:    { tr:"Serbest", en:"Open", de:"Offen", es:"Libre", pt:"Livre", fr:"Libre", ja:"自由" },
     min:     { tr:"dk", en:"min", de:"Min", es:"min", pt:"min", fr:"min", ja:"分" },
     flowNote:{ tr:"Süre dolunca sıradaki çakraya geçer, frekans da değişir.",
@@ -2826,20 +2808,19 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
                pt:"Ao terminar passa para o próximo chakra e a frequência muda.",
                fr:"À la fin, passage au chakra suivant et la fréquence change.",
                ja:"時間が来ると次のチャクラへ進み、周波数も変わります。" },
-    freeNote:{ tr:"Sayaç serbest işler — dilediğin kadar kal.",
-               en:"The timer runs freely — stay as long as you like.",
-               de:"Der Zähler läuft frei — bleib so lange du magst.",
-               es:"El contador corre libre — quédate lo que quieras.",
-               pt:"O contador corre livre — fica o tempo que quiseres.",
-               fr:"Le compteur tourne librement — reste autant que tu veux.",
-               ja:"タイマーは自由に進みます——好きなだけどうぞ。" },
+    freeNote:{ tr:"Bağlantı kurulunca sende kalır — dilediğin kadar kal.",
+               en:"Once connected it stays with you — remain as long as you like.",
+               de:"Ist die Verbindung da, bleibt sie — bleib so lange du magst.",
+               es:"Una vez conectado permanece — quédate lo que quieras.",
+               pt:"Depois de conectado permanece — fica o tempo que quiseres.",
+               fr:"Une fois connecté, cela reste — reste autant que tu veux.",
+               ja:"つながればそのまま——好きなだけどうぞ。" },
   };
   const DUR_OPTS = [
-    { v: null,  label: () => pickLang(DUR_TXT.auto, lang) },
+    { v: "free",label: () => pickLang(DUR_TXT.free, lang) },
     { v: 60,    label: () => `1 ${pickLang(DUR_TXT.min, lang)}` },
     { v: 120,   label: () => `2 ${pickLang(DUR_TXT.min, lang)}` },
     { v: 300,   label: () => `5 ${pickLang(DUR_TXT.min, lang)}` },
-    { v: "free",label: () => pickLang(DUR_TXT.free, lang) },
   ];
   // opts.keepTone : ton açıksa yeni çakranın Hz'ine ÇAPRAZ geç (sessizlik olmasın)
   // opts.autoStart: hazırlık ekranını atlayıp doğrudan seansa başla (otomatik akış)
@@ -2855,7 +2836,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     cancelSpeech();
     clearInterval(timerRef.current); clearInterval(particleRef.current);
     if (autoNextRef.current) { clearTimeout(autoNextRef.current); autoNextRef.current = null; }
-    freeCountedRef.current = false;
     setElapsed(0); setParticles([]); setShowBackConfirm(false); setShowCloseEyes(false);
     setSelected(next);
     setTPhase(opts.autoStart ? "active" : "intro");
@@ -3121,20 +3101,16 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
           <div key={p.id} className="particle" style={{ left:`${p.x}%`,top:`${p.y}%`,width:p.size,height:p.size,"--dx":`${p.dx}px`,"--dy":`${p.dy}px`,"--dur":`${p.dur}s`,background:`radial-gradient(circle,${selected.pastel},${selected.color}88)` }} />
         ))}
       </div>
-      {/* Kutucuk progress bar + yüzde — süre dolunca kaybolur.
-          SERBEST modda hedef yok: bar/yüzde gizlenir ama SAYAÇ görünür kalır
-          (yoksa 2 dk sonra kullanıcı ne kadar kaldığını göremezdi). */}
-      {(progress < 1 || isFreeDur) && (
+      {/* Kutucuk progress bar + yüzde — bağlantı kurulunca kaybolur. */}
+      {progress < 1 && (
         <div className="fade-up" style={{ width:"80%",maxWidth:240,marginBottom:16 }}>
-          <div style={{ display:"flex",justifyContent:isFreeDur?"center":"space-between",marginBottom:6 }}>
+          <div style={{ display:"flex",justifyContent:"space-between",marginBottom:6 }}>
             <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#666666" }}>{displayMins}:{displaySecs}</span>
-            {!isFreeDur && <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>}
+            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>
           </div>
-          {!isFreeDur && (
-            <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
-              <div style={{ width:`${progress*100}%`,height:"100%",background:selected.pastel,borderRadius:2,transition:"width 1s linear",boxShadow:`0 0 8px ${selected.color}66` }} />
-            </div>
-          )}
+          <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
+            <div style={{ width:`${progress*100}%`,height:"100%",background:selected.pastel,borderRadius:2,transition:"width 1s linear",boxShadow:`0 0 8px ${selected.color}66` }} />
+          </div>
         </div>
       )}
       {tPhase==="connected" && (
@@ -4600,30 +4576,105 @@ export default function SakinApp() {
     });
   }, []);
 
-  // ── OTOMATİK PREMIUM İPTALİ KAPALI (kullanıcı kararı) ─────────────────────
-  // Burada eskiden "foreground recheck" vardı: uygulama öne gelince store.owned
-  // false ise premium'u iptal ediyordu. Üç guard'a rağmen ödeme yapan kullanıcıyı
-  // düşürmeye devam etti (gerçek kullanıcı raporu: "üyeliğim olduğu halde deneme
-  // sürümü açılıyor, uygulamayı silmedim").
+  // ── PREMIUM DOĞRULAMA: SUNUCUYA SOR, TAHMİN YÜRÜTME ───────────────────────
+  // TARİHÇE: burada eskiden "foreground recheck" vardı — uygulama öne gelince
+  // store.owned false ise premium iptal ediliyordu. Üç guard'a rağmen ödeme yapan
+  // kullanıcıyı düşürmeye devam etti ("üyeliğim olduğu halde deneme sürümü
+  // açılıyor"). Kök sebep: isEntitlementKnown() yalnızca ürün META VERİSİNİN
+  // yüklendiğine bakıyor; `owned`'ı set eden makbuz zinciri AYRI ve daha yavaş,
+  // ağ dalgalanmasında hiç tamamlanmayabiliyor. Yani meta veri gelmiş / makbuz
+  // gelmemişken owned=false "sahibi değil" sanılıyordu. İstemci bunu KESİN bilemez.
   //
-  // KÖK SEBEP — istemci TAHMİN yürütüyordu:
-  //   isEntitlementKnown() yalnızca "ürün META VERİSİ yüklendi mi"ye bakıyor
-  //   (purchases.js:156 → productsLoaded, canPurchase'tan set edilir). Oysa
-  //   `owned` bayrağını asıl set eden approved→verified makbuz zinciri AYRI ve
-  //   daha yavaş; ağ dalgalanmasında hiç tamamlanmayabiliyor. Yani meta veri
-  //   gelmiş ama makbuz gelmemişken owned=false okunuyor ve bu "sahibi değil"
-  //   sanılıyordu. Sunucu taraflı makbuz doğrulaması olmadan istemcinin bunu
-  //   kesin bilmesi MÜMKÜN DEĞİL.
-  //
-  // KARAR: kesin bilgi yoksa dokunma. Ödeme yapmış kullanıcının premium'unu
-  // kaybetmesi, süresi dolmuş bir aboneliğin bir süre daha açık kalmasından
-  // çok daha maliyetli. Premium artık YALNIZCA kullanıcı eylemiyle değişir
-  // (satın alma / Geri Yükle) ve yerel bayrak kalıcıdır.
-  //
-  // ⚠️ ERTELENEN İŞ (Apple 2.1 / Layer-2 TODO): süresi dolan aboneliğin gerçekten
-  // kapanması için SUNUCU TARAFLI MAKBUZ DOĞRULAMASI gerekiyor. O gelince iptal
-  // yeniden açılabilir — ama tahminle değil, sunucunun kesin cevabıyla.
-  // revokeLocalPremium() purchases.js'te duruyor (kaldırılmadı), çağıran yok.
+  // ÇÖZÜM: kararı istemci değil SUNUCU verir. Cihaz yalnızca işlem kimliğini
+  // yollar; Netlify fonksiyonu Apple/Google'a sorup kesin cevabı döner.
+  //   entitled     → premium sürüyor (dokunma)
+  //   not_entitled → mağaza AÇIKÇA "süresi doldu / iade edildi" dedi → iptal et
+  //   unknown      → kimlik yok / ağ hatası / yapılandırma eksik → HİÇBİR ŞEY YAPMA
+  // Fonksiyon fail-safe: emin olmadığı her durumda "unknown" döner, asla
+  // "not_entitled" uydurmaz. Bu yüzden yanlışlıkla düşürme riski yok.
+  const entVerifyRef = useRef(false);
+  useEffect(() => {
+    if (!isNative) return;
+    // Premium bayrağı yoksa doğrulanacak bir şey de yok.
+    if (localStorage.getItem("sakin_premium") !== "1") return;
+
+    // Mağaza işlem kimliğini çıkar. Plugin sürümleri arası alan adları değiştiği
+    // için birkaç şekil denenir; bulunamazsa sessizce vazgeçilir (iptal YOK).
+    const findIds = () => {
+      try {
+        const store = window.CdvPurchase?.store;
+        if (!store) return null;
+        // localTransactions zaten localReceipts'in düzleştirilmişi — ikisini
+        // birleştirmek her işlemi iki kez listeliyordu. Tek kaynak yeterli.
+        const all = store.localTransactions?.length
+          ? store.localTransactions
+          : (store.localReceipts || []).flatMap(r => r?.transactions || []);
+        // SAHTE İŞLEMLERİ ELE: plugin, "devam eden satın alma" için pseudoReceipt
+        // üretiyor ve içindeki kimlikler `virtual.<ürün>` / `appstore.application`
+        // gibi uydurma değerler taşıyor. Bunlar mağazaya gönderilirse 404 alınır
+        // ve doğrulama sessizce hiç çalışmaz.
+        const real = (id) => id && !/^virtual\./.test(id) && id !== "appstore.application";
+        const android = Capacitor.getPlatform() === "android";
+        const idOf = (t) => android
+          // ⚠️ Plugin'in GooglePlay.Transaction'ında `purchaseToken` alanı YOK:
+          // purchaseToken `purchaseId`'de tutulur, `transactionId` ise orderId'dir
+          // (GPA.xxxx) — Play API'sine orderId göndermek 400/404 verirdi.
+          ? (t?.purchaseId || t?.nativePurchase?.purchaseToken)
+          : (t?.transactionId || t?.nativePurchase?.transactionId);
+        const txs = (all || []).filter(t => real(idOf(t)));
+        if (!txs.length) return null;
+        // Ömür boyu önce: süresi dolmayan hak, aboneliğe göre önceliklidir.
+        const t = txs.find(x => (x?.products || []).some(p => p?.id === LIFETIME_PRODUCT_ID))
+               || txs[txs.length - 1];
+        const productId = (t.products || [])[0]?.id;
+        const id = idOf(t);
+        if (!id) return null;
+        return android
+          ? { platform: "android", purchaseToken: id, productId }
+          : { platform: "ios", transactionId: id, productId };
+      } catch { return null; }
+    };
+
+    const verify = async () => {
+      if (document.visibilityState !== "visible") return;
+      if (entVerifyRef.current) return;                       // aynı anda tek istek
+      if (localStorage.getItem("sakin_premium") !== "1") return;
+      // Sık sorgulama yok: 6 saatte bir yeter (abonelik durumu saatlik değişmez).
+      const last = parseInt(localStorage.getItem("sakin_ent_checked_at") || "0");
+      if (last && Date.now() - last < 6 * 60 * 60 * 1000) return;
+      const ids = findIds();
+      if (!ids) return;                                       // kimlik yok → dokunma
+      entVerifyRef.current = true;
+      try {
+        // Timeout ŞART: askıda kalan bir istek entVerifyRef'i kalıcı true bırakır
+        // ve doğrulama o oturumda bir daha hiç çalışmazdı.
+        const r = await fetch(API_BASE + "/.netlify/functions/verify-entitlement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ids),
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!r.ok) return;                                    // HTTP hatası → dokunma
+        const d = await r.json();
+        localStorage.setItem("sakin_ent_checked_at", String(Date.now()));
+        // SADECE kesin olumsuzda iptal. "unknown" hiçbir şey yapmaz.
+        if (d?.status === "not_entitled") {
+          revokeLocalPremium();
+          setIsPremium(false);
+        }
+      } catch (_) {
+        /* ağ hatası → premium'a DOKUNMA */
+      } finally {
+        entVerifyRef.current = false;
+      }
+    };
+
+    // Açılışta mağaza/makbuz katmanının oturması için bekle, sonra öne her
+    // gelişte tekrar dene (6 saatlik throttle zaten sınırlıyor).
+    const t0 = setTimeout(verify, 12000);
+    document.addEventListener("visibilitychange", verify);
+    return () => { clearTimeout(t0); document.removeEventListener("visibilitychange", verify); };
+  }, []);
 
   const handlePurchase = async (fn, id) => {
     setPurchaseLoading(id);
@@ -5032,11 +5083,29 @@ export default function SakinApp() {
   // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
   // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu — geri alındı.
   const [showNedir, setShowNedir] = useState(false);
-  // Pop-up ARTIK doğum adımı BİTİNCE açılır (HAZIRIM'da değil). Eskiden HAZIRIM
-  // doğum formunu açarken pop-up'ı da açıyordu; pop-up formun üstünü kapattığı
-  // için kullanıcı menüden bir yere gidince doğum bilgisi hiç girilmemiş oluyor,
-  // kimlik kartı boş kalıyordu (12. ev / draconic çıkmıyordu). Doğum adımının
-  // üç çıkışında da (kaydet→kimlik kartı, atla, "devam") bu çağrılır.
+  // KURAL: pop-up YALNIZCA açılışta, HAZIRIM'a basıldığında çıkar. Başka hiçbir
+  // yerde açılmaz — doğum bilgisi ihtiyaç anında (harita/İçsel Ayna) istendiğinde
+  // form kapanınca kullanıcı geldiği ekrana döner, pop-up görmez.
+  // (Eskiden HAZIRIM doğum formuyla pop-up'ı AYNI ANDA açıyordu; pop-up formun
+  // üstünü kapatıyor, doğum bilgisi hiç girilmemiş oluyordu.)
+  // Doğum bilgisi girilmeden gösterilemeyen alanlar için ortak metin + buton
+  // etiketi. Kullanıcı: "12. Ev, draconik vs 'doğum bilgilerini girmeden
+  // gösterilemez' yazsın" ve "buton: bilgi varsa DEĞİŞTİR, yoksa GİR".
+  const BIRTH_TXT = {
+    need: { tr:"Doğum bilgisi gerekli", en:"Birth info needed", de:"Geburtsdaten nötig",
+            es:"Faltan datos de nacimiento", pt:"Faltam dados de nascimento",
+            fr:"Infos de naissance requises", ja:"出生情報が必要" },
+    needLong: { tr:"Doğum bilgilerini girmeden gösterilemez.",
+                en:"Can't be shown without your birth info.",
+                de:"Ohne Geburtsdaten nicht darstellbar.",
+                es:"No se puede mostrar sin tus datos de nacimiento.",
+                pt:"Não pode ser mostrado sem os teus dados de nascimento.",
+                fr:"Impossible à afficher sans tes infos de naissance.",
+                ja:"出生情報がないと表示できません。" },
+    enter: { tr:"Doğum bilgilerini gir", en:"Enter birth info", de:"Geburtsdaten eingeben",
+             es:"Introducir datos de nacimiento", pt:"Introduzir dados de nascimento",
+             fr:"Saisir les infos de naissance", ja:"出生情報を入力" },
+  };
   const maybeShowNedir = () => {
     try { if (localStorage.getItem("sakin_nedir_off") !== "1") setShowNedir(true); } catch(_) {}
   };
@@ -5387,13 +5456,28 @@ export default function SakinApp() {
     try { if (localStorage.getItem("sakin_rapor_week") === currentWeekKey()) { const _c = localStorage.getItem("sakin_rapor_text"); if (_c) setAiRapor(_c); } } catch {}
   },[screen, niyet, selectedWords, chakra.name, breathCount, freqListenSec, aksamNote, sukur]);
 
-  // HARİTA KORUMASI: Bağlantı ekranı kimlik kartını (burç/yükselen/12. ev/draconic)
-  // gösteriyor; doğum bilgisi yoksa kart boş çıkıyor ve kullanıcı nereden
-  // dolduracağını bulamıyor. Doğum bilgisi eksikken haritaya girilirse önce
-  // doğum ekranına al. (Onboarding'de pop-up formu kapattığı için bu durum
-  // sık oluşuyordu — kök sebep de düzeltildi, bu ikinci güvenlik ağı.)
+  // ── DOĞUM BİLGİSİ: AÇILIŞTA DEĞİL, İHTİYAÇ ANINDA ─────────────────────────
+  // Kullanıcı: "açılışta hazırım sonrası doğum bilgilerini sorma; haritaya ya da
+  // aynaya gelene kadar ona ihtiyacımız yok, kullanıcı yorulmamış olur."
+  // Doğum bilgisi gerçekten GEREKEN iki ekran: harita (kimlik kartı —
+  // yükselen/12. ev/draconic) ve rehber/İçsel Ayna (AI çağrısı doğum haritasını
+  // kullanıyor). Bu ekranlara doğum bilgisi olmadan girilirse önce form açılır.
+  //
+  // birthReturnRef: formdan sonra NEREYE dönüleceğini tutar. Eskiden "Atla"
+  // kullanıcıyı girişe/pop-up'a atıyordu (kullanıcı şikayeti) — artık geldiği
+  // ekrana döner ve orada "Doğum bilgilerini gir" butonunu görür.
+  const birthReturnRef = useRef(null);
+  // ⚠️ SONSUZ DÖNGÜ KORUMASI: "Atla" kullanıcıyı geldiği ekrana (harita) geri
+  // gönderiyor; koruma orada yeniden tetiklenirse form → harita → form... diye
+  // döner ve uygulama kilitlenir. Bir ekran için BİR KEZ sorulur; kullanıcı
+  // reddederse o ekrana serbestçe girer ve bilgiyi oradaki butondan girebilir.
+  const birthAskedRef = useRef(new Set());
   useEffect(() => {
-    if (screen !== "harita" || birthDate) return;
+    if (birthDate) return;
+    if (screen !== "harita" && screen !== "rehber") return;
+    if (birthAskedRef.current.has(screen)) return;   // bu ekran için zaten sorduk
+    birthAskedRef.current.add(screen);
+    birthReturnRef.current = screen;
     setGirisPhase("birth");
     setShowBirthForm(true);
     setScreen("giris");
@@ -6313,9 +6397,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* overscrollBehaviorY:contain → kart sonuna gelince kaydırma arkadaki
               .sakin-app-root'a ZİNCİRLENMEZ (arka plan oynamaz). */}
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",overscrollBehaviorY:"contain",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
-            <div style={{ textAlign:"center",marginBottom:8 }}>
-              <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
-              <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
+            {/* Başlık satırı: SOL ÜSTTE geri oku (kullanıcı: "keşfet alttaki kapat
+                butonu yerine üst sola geri butonu koyalım"). Panel uzun olduğu için
+                alttaki "Kapat"a ulaşmak kaydırma gerektiriyordu; geri her zaman
+                görünür yerde. Başlık ortada kalsın diye sağda eşit genişlikte boşluk. */}
+            <div style={{ display:"flex",alignItems:"center",marginBottom:8 }}>
+              <button onClick={()=>setShowAilesi(false)} aria-label={t("back")}
+                style={{ width:40,flex:"0 0 40px",background:"none",border:"none",color:"#b0a8c8",fontSize:20,cursor:"pointer",padding:"6px 0",textAlign:"left",lineHeight:1 }}>←</button>
+              <div style={{ flex:1,textAlign:"center" }}>
+                <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
+                <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
+              </div>
+              <div style={{ width:40,flex:"0 0 40px" }} />
             </div>
 
             {/* SENİN BİLGİLERİN — ad/soyad input + Sakin girişten gelen doğum bilgisi özeti (kapalı) */}
@@ -6345,7 +6438,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   )}
                 </>
               ) : (
-                /* Sakin girişinde hiç doğum bilgisi girilmediyse hemen formu aç */
+                /* Hiç doğum bilgisi yoksa form aşağıda zaten AÇIK gelir; burada
+                   sadece sebebini söylüyoruz. Buton etiketi koşullu: bilgi varsa
+                   "değiştir" (yukarıdaki dal), yoksa "gir". */
                 <div style={{ fontSize:12,color:"#888",fontStyle:"italic" }}>
                   {t("ailesi_no_birth")}
                 </div>
@@ -6471,9 +6566,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {t("delete_account_link")}
               </button>
             </div>
-            <button onClick={()=>setShowAilesi(false)} style={{ marginTop:6,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-              {t("common_close")}
-            </button>
+            {/* Alttaki "Kapat" kaldırıldı — yerini üst soldaki geri oku aldı. */}
           </div>
         </div>
       )}
@@ -7666,7 +7759,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* KİMLİK ÖNİZLEME — doğum kaydından hemen sonra anında karşılık (aha anı) */}
       {showKimlikReveal && (
-        <div onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); maybeShowNedir(); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+        <div onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.28)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
             <div style={{ fontSize:26,marginBottom:10 }}>✦</div>
             <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:20,fontFamily:"'Jost',sans-serif" }}>{pickLang(REVEAL_I18N.title, lang)}</div>
@@ -7694,7 +7787,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               style={{ display:"block",width:"100%",marginBottom:10,padding:"13px 0",fontSize:14,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"linear-gradient(135deg,rgba(184,164,216,0.8),rgba(122,80,150,0.7))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:24,color:"#fff",cursor:"pointer",boxShadow:"0 4px 18px rgba(122,80,150,0.35)" }}>
               {pickLang(REVEAL_I18N.tasarim, lang)}
             </button>
-            <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); maybeShowNedir(); }}
+            <button onClick={()=>{ setShowKimlikReveal(false); setScreen("sabah"); }}
               style={{ display:"block",width:"100%",padding:"11px 0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"transparent",border:"1px solid rgba(255,255,255,0.14)",borderRadius:24,color:"#b0a4c8",cursor:"pointer" }}>
               {pickLang(REVEAL_I18N.gune, lang)}
             </button>
@@ -7722,13 +7815,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div className="fade-up" style={{ animationDelay:"0.55s",opacity:0 }}>
             {girisPhase === "intro" ? (
               <>
-                {/* "Nedir" (Bağlan/Keşfet) pop-up'ı ARTIK BURADA AÇILMIYOR.
-                    Eskiden doğum formuyla AYNI ANDA açılıyordu: pop-up formun üstünü
-                    kapatıyor, kullanıcı menüden bir yere gidince doğum bilgisi hiç
-                    girilmemiş oluyordu → kimlik kartı boş, 12. ev ve draconic çıkmıyordu.
-                    Pop-up artık doğum adımı BİTİNCE gösteriliyor (bkz. kimlik reveal
-                    kapanışı + "atla" dalı). */}
-                <button className="sakin-btn-primary" onClick={()=>{ setGirisPhase("birth"); }}>{t("btn_ready")}</button>
+                {/* HAZIRIM → doğrudan uygulamaya + "Nedir" (Bağlan/Keşfet) pop-up'ı.
+                    Doğum bilgisi BURADA SORULMUYOR (kullanıcı: "açılışta hazırım
+                    sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
+                    Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
+                    KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
+                <button className="sakin-btn-primary" onClick={()=>{ setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
@@ -7759,7 +7851,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {t("birth_edit_info")}
                 </button>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
-                  onClick={()=>{ setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>
+                  onClick={()=>{ const back = birthReturnRef.current; birthReturnRef.current = null; setScreen(back || timeAwareEntryScreen()); }}>
                   {t("common_continue")}
                 </button>
               </div>
@@ -7794,9 +7886,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     setCityWarn(false);
                     if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
                     setShowBirthForm(false);
-                    // Aha anı: doğum bilgisi girildiyse önce anında karşılık kartı (burç/yükselen +
-                    // Tasarım köprüsü); hiçbir şey girilmediyse eskisi gibi doğrudan sabaha.
-                    if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); maybeShowNedir(); }
+                    // Form bir ekrandan (harita / İçsel Ayna) istendiyse ORAYA dön —
+                    // "Atla" dendiğinde kullanıcıyı girişe/pop-up'a atmak şikayet konusuydu.
+                    // Bu yolda pop-up ASLA açılmaz (kural: pop-up yalnızca açılışta).
+                    const back = birthReturnRef.current;
+                    birthReturnRef.current = null;
+                    if (back) { setScreen(back); return; }
+                    // Açılış akışı: doğum bilgisi girildiyse aha anı kartı, yoksa sabaha.
+                    if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); }
                   }}>
                   {(birthInput||birthTimeInput||birthCityInput) ? t("birth_save_arrow") : t("birth_skip_arrow")}
                 </button>
@@ -9597,9 +9694,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const yasamYolu = astro?.yasam || "—";
         const kisiselYil = astro?.kisiselYil || "—";
         const needCity = !!(birthDate && birthTime && !yukselen);
-        const yuk = zodiacDisplay(yukselen, lang) || (needCity ? t("gid_need_city") : "—");
-        const ev12 = zodiacDisplay(ev12Burcu, lang) || (needCity ? t("gid_need_city") : "—");
-        const dra = zodiacDisplay(draconicGunes, lang) || "—";
+        // Doğum bilgisi HİÇ girilmediyse "—" yerine sebebini yaz — kullanıcı boş
+        // kartın neden boş olduğunu anlamıyordu ("kimlik boş, 12. ev ve draconik yok").
+        const needBirth = !birthDate;
+        const _miss = (v) => v || (needBirth ? pickLang(BIRTH_TXT.need, lang) : (needCity ? t("gid_need_city") : "—"));
+        const yuk = _miss(zodiacDisplay(yukselen, lang));
+        const ev12 = _miss(zodiacDisplay(ev12Burcu, lang));
+        const dra = zodiacDisplay(draconicGunes, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
         const days = streakData?.current ?? 0;
         const best = streakData?.best ?? 0;
 
@@ -9910,6 +10011,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <StatRow label={t("gid_yaşam_yolu_lower")} value={yasamYolu}/>
                   <StatRow label={t("gid_personal_yr_lower")} value={kisiselYil}/>
                 </div>
+                {/* Doğum bilgisi yoksa: neden boş olduğunu söyle + tek dokunuşla forma götür.
+                    Kullanıcı formu "Atla" ile geçtiyse kart yine açılıyor, buradan girebilir. */}
+                {needBirth && (
+                  <div style={{ padding:"10px 12px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:10,marginBottom:8,textAlign:"center" }}>
+                    <div style={{ fontSize:11.5,color:"#c8bce0",lineHeight:1.6,marginBottom:8 }}>{pickLang(BIRTH_TXT.needLong, lang)}</div>
+                    <button onClick={()=>{ closeIdCard(); birthReturnRef.current = "harita"; setGirisPhase("birth"); setShowBirthForm(true); setScreen("giris"); }}
+                      style={{ background:"rgba(184,164,216,0.18)",border:"1px solid rgba(184,164,216,0.45)",borderRadius:100,padding:"7px 16px",color:"#e0d4f8",fontSize:11.5,letterSpacing:1.2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                      {pickLang(BIRTH_TXT.enter, lang)}
+                    </button>
+                  </div>
+                )}
                 {hdProfile && (hdProfile.type || hdProfile.profile) && (
                   <div style={{ padding:"8px 12px",background:"rgba(180,160,216,0.08)",border:"1px solid rgba(180,160,216,0.18)",borderRadius:10,marginBottom:8,textAlign:"center" }}>
                     <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:3 }}>Human Design</div>
