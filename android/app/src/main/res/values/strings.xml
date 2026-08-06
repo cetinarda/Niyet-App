@@ -4,4 +4,8 @@
     <string name="title_activity_main">Sakin</string>
     <string name="package_name">com.sakin.app</string>
     <string name="custom_url_scheme">app.sakin.life</string>
+
+    <!-- Meta App Events (Facebook SDK) -->
+    <string name="facebook_app_id">1578454790553495</string>
+    <string name="facebook_client_token">cafc7eb7b3e78d92d4a5ae79325bc572</string>
 </resources>

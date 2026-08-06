@@ -85,5 +85,32 @@
 	<string>Sakin, çektiğin taş veya bitki fotoğrafını tanımak için kameranı kullanır.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Sakin, seçtiğin taş veya bitki fotoğrafını tanımak için fotoğraf kitaplığına erişir.</string>
+	<!-- Meta App Events (Facebook SDK) — App ID/Client Token developers.facebook.com'dan. -->
+	<key>FacebookAppID</key>
+	<string>1578454790553495</string>
+	<key>FacebookClientToken</key>
+	<string>cafc7eb7b3e78d92d4a5ae79325bc572</string>
+	<key>FacebookDisplayName</key>
+	<string>Sakin</string>
+	<key>FacebookAutoLogAppEventsEnabled</key>
+	<true/>
+	<key>FacebookAdvertiserIDCollectionEnabled</key>
+	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1578454790553495</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

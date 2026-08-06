@@ -4,6 +4,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import com.getcapacitor.BridgeActivity;
+import com.facebook.appevents.AppEventsLogger;
 
 public class MainActivity extends BridgeActivity {
     @Override
@@ -23,6 +24,15 @@ public class MainActivity extends BridgeActivity {
             }
         } catch (Exception e) {
             // sessiz — çubuk rengi kritik değil, uygulama açılışını engelleme
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Meta App Events: app install/launch/session tracking (Meta Ads Manager).
+        try { AppEventsLogger.activateApp(getApplication()); } catch (Exception e) {
+            // sessiz — SDK init sorunlu olsa da uygulama akışı bozulmasın
         }
     }
 }

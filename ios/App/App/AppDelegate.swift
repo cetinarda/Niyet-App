@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import AVFoundation
+import FacebookCore
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
             print("AVAudioSession setup failed: \(error)")
         }
+        // Meta App Events (Facebook SDK) — App ID/Client Token Info.plist'ten okunur.
+        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         return true
     }
 
@@ -36,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        // Meta App Events: app install/launch/session tracking (Meta Ads Manager).
+        AppEvents.shared.activateApp()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -45,7 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         // Called when the app was launched with a url. Feel free to add additional processing here,
         // but if you want the App API to support tracking app url opens, make sure to keep this call
-        return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+        let capacitorHandled = ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+        // Meta App Events (Facebook SDK): fb<AppID> ile açılan URL'leri de işlesin.
+        let facebookHandled = ApplicationDelegate.shared.application(app, open: url, options: options)
+        return capacitorHandled || facebookHandled
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
