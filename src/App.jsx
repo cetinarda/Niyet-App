@@ -3987,6 +3987,11 @@ export default function SakinApp() {
   const freqOscRef = useRef(null);
   const freqOscsRef = useRef([]);
   const freqGainRef = useRef(null);
+  // Planlanmış başlatmayı iptal etmek için jeton. Kullanıcı bir frekans çalarken
+  // hızlıca başkasına dokunursa eskisinin 850ms'lik gecikmeli başlatması hâlâ
+  // kuyruktaydı ve İKİ set birden çalmaya başlıyordu. Her dokunuş jetonu artırır;
+  // gecikmeli başlatma jetonu değişmişse hiç osilatör yaratmaz.
+  const freqStartTokenRef = useRef(0);
   const birdAudioRef = useRef(null);
   // Sessizlik keepalive — iOS WKWebView Web Audio'yu (oscillator) arka planda askıya alır.
   // Çalan bir HTMLAudioElement varsa AVAudioSession.playback rotası açık kalır,
@@ -4152,16 +4157,23 @@ export default function SakinApp() {
     }, 200);
   };
   const stopFreqToneGlobal = () => {
-    if (freqGainRef.current && freqCtxRef.current) {
-      try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
-    }
+    // Set ÇAĞRI ANINDA yakalanır — timeout içinde ref okumak, araya yeni bir
+    // frekans girdiğinde eski seti öksüz bırakıyordu (bkz. stopFreqTone yorumu).
+    const oscs = freqOscsRef.current || [];
     const _gain = freqGainRef.current;
+    const _osc  = freqOscRef.current;
+    if (_gain && freqCtxRef.current) {
+      try { _gain.gain.cancelScheduledValues(freqCtxRef.current.currentTime); } catch(_) {}
+      try { _gain.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.3); } catch(_) {}
+    }
+    freqStartTokenRef.current++;   // planlanmış ama henüz başlamamış sesi iptal et
     setTimeout(() => {
-      freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
-      freqOscsRef.current = [];
-      try { freqOscRef.current?.stop(); } catch(_) {}
+      oscs.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
+      try { _osc?.stop(); } catch(_) {}
       try { _gain?.disconnect(); } catch(_) {} // LFO artığı takılı kalmasın
-      freqOscRef.current = null; freqGainRef.current = null;
+      if (freqOscsRef.current === oscs) freqOscsRef.current = [];
+      if (freqOscRef.current === _osc)  freqOscRef.current = null;
+      if (freqGainRef.current === _gain) freqGainRef.current = null;
       // freqCtxRef'i close etmiyoruz — iOS WKWebView yeniden açmaya izin vermez.
     }, 350);
     stopBirdSound();
@@ -8765,18 +8777,31 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const stopFreqTone = () => {
           // ctx'i ASLA close etme — iOS WKWebView gesture context'i kaybedince yeni ctx açılamaz.
           // Sadece osc'leri durdur ve gain'i sıfırla; ctx singleton olarak yeniden kullanılır.
-          if (freqGainRef.current && freqCtxRef.current) {
-            try { freqGainRef.current.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8); } catch(_) {}
-          }
+          //
+          // ⚠️ CIZIRTININ KÖK SEBEBİ BURADAYDI: osilatörler timeout'un İÇİNDE
+          // `freqOscsRef.current` okunarak durduruluyordu. Hızlı frekans
+          // değişiminde (A→B→C) ref, temizlik zamanlayıcısı çalışmadan ÖNCE yeni
+          // setle eziliyor; eski set HİÇ DURDURULMUYOR ve sonsuza dek çalmaya
+          // devam ediyordu. Her hızlı geçiş bir set daha öksüz bırakıyor, genlik
+          // toplana toplana sinyali kırpıyor → "bir süre sonra cızırtı".
+          // Çözüm: seti ÇAĞRI ANINDA yakala; ref'i yalnızca hâlâ aynı sete
+          // işaret ediyorsa temizle.
+          const oscs = freqOscsRef.current || [];
           const _gain = freqGainRef.current;
+          const _osc  = freqOscRef.current;
+          if (_gain && freqCtxRef.current) {
+            try { _gain.gain.cancelScheduledValues(freqCtxRef.current.currentTime); } catch(_) {}
+            try { _gain.gain.linearRampToValueAtTime(0, freqCtxRef.current.currentTime + 0.8); } catch(_) {}
+          }
           setTimeout(() => {
             // Tüm osilatörleri durdur VE disconnect et — yoksa LFO master.gain'i modüle
             // etmeye devam edip "kısılan-artan takılı ses dalgası" bırakıyordu.
-            freqOscsRef.current.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
-            freqOscsRef.current = [];
-            try { freqOscRef.current?.stop(); } catch(_) {}
+            oscs.forEach(o => { try { o.stop(); } catch(_) {} try { o.disconnect(); } catch(_) {} });
+            try { _osc?.stop(); } catch(_) {}
             try { _gain?.disconnect(); } catch(_) {}
-            freqOscRef.current = null; freqGainRef.current = null;
+            if (freqOscsRef.current === oscs) freqOscsRef.current = [];
+            if (freqOscRef.current === _osc)  freqOscRef.current = null;
+            if (freqGainRef.current === _gain) freqGainRef.current = null;
           }, 820);
           stopBirdSound();
           stopSilenceKeepAlive();
@@ -8806,21 +8831,47 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           if (freqCtxRef.current && freqCtxRef.current.state !== "running") {
             try { freqCtxRef.current.resume(); } catch(_) {}
           }
+          const myToken = ++freqStartTokenRef.current;
           setTimeout(() => {
+            // Bu başlatma eskidi mi? (kullanıcı bu arada başka frekansa dokundu)
+            if (freqStartTokenRef.current !== myToken) return;
             const ctx = freqCtxRef.current;
             if (!ctx) return;
             const allOscs = [];
             const master = ctx.createGain();
             master.gain.setValueAtTime(0, ctx.currentTime);
             master.gain.linearRampToValueAtTime(0.16, ctx.currentTime + 2);
-            master.connect(ctx.destination); freqGainRef.current = master;
+
+            // ── YUMUŞATMA + KIRPILMA KORUMASI (kullanıcı: "cızırtı geliyor") ──
+            // 1) Alçak geçiren süzgeç: üstteki sert harmonikleri (özellikle 2.76 ve
+            //    5.4 katlarındaki inharmonik/tiz bileşenler) yumuşatır. Kesim
+            //    frekansı temel notaya göre ölçeklenir ki ton karakteri bozulmasın —
+            //    963 Hz'de de 174 Hz'de de aynı "yumuşaklık" hissi olsun.
+            // 2) Limiter: birikme/örtüşme olsa bile sinyal 0 dB'yi aşamaz. Cızırtının
+            //    asıl sebebi öksüz osilatörlerdi (yukarıda düzeltildi); bu ikinci bir
+            //    güvenlik ağı — ileride bir şey kaçarsa kulakta cızırtıya dönüşmesin.
+            const lp = ctx.createBiquadFilter();
+            lp.type = "lowpass";
+            lp.frequency.value = Math.min(9000, Math.max(2600, hz * 4.2));
+            lp.Q.value = 0.5;                       // rezonanssız, sadece yumuşak eğim
+            const limiter = ctx.createDynamicsCompressor();
+            limiter.threshold.value = -8;
+            limiter.knee.value = 6;
+            limiter.ratio.value = 12;
+            limiter.attack.value = 0.004;
+            limiter.release.value = 0.25;
+            master.connect(lp); lp.connect(limiter); limiter.connect(ctx.destination);
+            freqGainRef.current = master;
+
             const lfo = ctx.createOscillator();
             const lfoGain = ctx.createGain();
             lfo.type = "sine"; lfo.frequency.value = 0.12;
             lfoGain.gain.value = 0.04;
             lfo.connect(lfoGain); lfoGain.connect(master.gain);
             lfo.start(); allOscs.push(lfo);
-            [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.22, "sine"], [5.4, 0.07, "triangle"]].forEach(([ratio, amp, type]) => {
+            // 2.76 (çan bileşeni) 0.22 → 0.16 ve 5.4 triangle → sine: ikisi de tizde
+            // sertlik yaratan bileşenlerdi. Ton karakteri korunur, kulak yorulmaz.
+            [[1, 1, "sine"], [0.5, 0.18, "sine"], [1.498, 0.1, "sine"], [2.76, 0.16, "sine"], [5.4, 0.05, "sine"]].forEach(([ratio, amp, type]) => {
               const o = ctx.createOscillator(); const g = ctx.createGain();
               o.type = type; o.frequency.value = hz * ratio;
               g.gain.setValueAtTime(0, ctx.currentTime);
@@ -8829,6 +8880,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               allOscs.push(o);
               if (ratio === 1) { freqOscRef.current = o; }
             });
+            allOscs.push({ stop(){}, disconnect(){ try{ lp.disconnect(); limiter.disconnect(); }catch(_){} } });
             freqOscsRef.current = allOscs;
             // Kuş sesi arka planda kalsın, solfeggio tonu öne çıksın (kullanıcı isteği):
             // 0.38/0.22 → 0.16/0.10. (741 Hz kuşu diğerlerinden kısık kaydedildiği için
