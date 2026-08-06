@@ -80,8 +80,12 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
 
 1. **Ek istek/soru geldiğinde işi BIRAKMA — sıraya al.** Önce o an üzerinde çalıştığın işlemi bitir, sonra yeni isteği/soruyu ele al. İş ortasında dosya/branch yarım bırakma.
 2. **Soru sormak ≠ "dur".** Kullanıcı iş ortasında soru sorarsa: soruyu sıraya al, mevcut işi tamamla, **sonra** yanıtla. Sadece kullanıcı açıkça **"dur"** derse durdur.
-3. **Bariz kapsam kararlarını sorma, ver.** (ör. "taşlar uygulamasında tabii ki taş olacak.") Gerçekten belirsizse veya geri-dönüşü zorsa sor; aksi halde mantıklı varsayımla ilerle ve ne yaptığını kısaca söyle.
-4. **Hassas alanlar (IAP/`purchases.js`, Info.plist, AppDelegate): önce öner + diff göster, onay ve sandbox testi olmadan deploy etme.** (Altın kural #5–#6 ile aynı çizgi.)
+3. **Sürüm notları KISA olsun — 1-2 cümle, sadece en öne çıkanlar.** Hem mağaza
+   notları hem uygulama içi "Ne yeni" kartı. Madde madde uzun liste İSTEMİYOR;
+   kullanıcı okumadan geçiyor. Değişen her şeyi saymak yerine o sürümün
+   "başlığı" ne ise onu söyle.
+4. **Bariz kapsam kararlarını sorma, ver.** (ör. "taşlar uygulamasında tabii ki taş olacak.") Gerçekten belirsizse veya geri-dönüşü zorsa sor; aksi halde mantıklı varsayımla ilerle ve ne yaptığını kısaca söyle.
+5. **Hassas alanlar (IAP/`purchases.js`, Info.plist, AppDelegate): önce öner + diff göster, onay ve sandbox testi olmadan deploy etme.** (Altın kural #5–#6 ile aynı çizgi.)
 
 ## Mimari
 
