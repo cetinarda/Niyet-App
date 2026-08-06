@@ -664,11 +664,19 @@ function _localizeArr(enArr, trArr, transByLang, lang) {
 // İçsel Ayna örnek-soru havuzu: TR/EN dizileri (kategori objeleri) verilir; de/es/pt/fr/ja
 // için EN kategori yapısı korunur (cat etiketi zaten t() ile çevrili), sorular çevrilir.
 // NOTIF_TRANS.SAMPLE_QUESTIONS düz 20 soru (5 kategori × 4) sırasıyla.
+// NOT: Liste kısaltıldı (kullanıcı: "bazı örnek soruları kısalt, önemli olanlar
+// kalsın") ama i18n-data.js'teki 20 elemanlı düz çeviri dizisi OLDUĞU GİBİ duruyor.
+// Bu yüzden her kategori artık hangi ORİJİNAL indeksleri tuttuğunu `idx` ile
+// bildiriyor; çeviri o indeksten okunuyor. Böylece 5 dilin çevirileri yeniden
+// üretilmeden kısaltma yapılabildi. `idx` yoksa eski ci*4+qi davranışına düşer.
 function _locSampleQ(lang, trArr, enArr) {
   if (lang === "tr") return trArr;
   const sq = NOTIF_TRANS && NOTIF_TRANS.SAMPLE_QUESTIONS && NOTIF_TRANS.SAMPLE_QUESTIONS[lang];
   if (lang === "en" || !sq) return enArr;
-  return enArr.map((c, ci) => ({ ...c, sorular: c.sorular.map((q, qi) => sq[ci*4+qi] || q) }));
+  return enArr.map((c, ci) => ({
+    ...c,
+    sorular: c.sorular.map((q, qi) => sq[c.idx ? c.idx[qi] : ci*4+qi] || q),
+  }));
 }
 
 // Frekans isimlerinin diğer dillerde karşılığı (Now Playing widget için).
@@ -4906,6 +4914,7 @@ export default function SakinApp() {
   const [sikayet, setSikayet] = useState("");
   const [sikayetHis, setSikayetHis] = useState("");
   const [sikayetAnaliz, setSikayetAnaliz] = useState("");
+  const [gidYorum, setGidYorum] = useState(""); // galaktik kimlik AI yorumu
   const [hastalik, setHastalik] = useState("");
   const [hastalikHis, setHastalikHis] = useState("");
   const [hastalikAnaliz, setHastalikAnaliz] = useState("");
@@ -5196,6 +5205,64 @@ export default function SakinApp() {
   // form kapanınca kullanıcı geldiği ekrana döner, pop-up görmez.
   // (Eskiden HAZIRIM doğum formuyla pop-up'ı AYNI ANDA açıyordu; pop-up formun
   // üstünü kapatıyor, doğum bilgisi hiç girilmemiş oluyordu.)
+  // ── ÖRNEK SORULAR: "HARİTAN" KATEGORİSİ ───────────────────────────────────
+  // Kullanıcı isteği. Bu sorular ancak AI kişinin GERÇEK harita verisini
+  // görürse anlamlı cevaplanır — generateSikayetAnaliz içindeki astroTxt artık
+  // chartFacts() ile tam veriyi (element dağılımı, draconic, ay düğümleri,
+  // 12. ev) gönderiyor ve "onun haritasından konuş" talimatı veriyor.
+  const CHART_Q = [{
+    cat: pickLang({ tr:"Haritan", en:"Your chart", de:"Deine Karte", es:"Tu carta",
+                    pt:"O teu mapa", fr:"Ta carte", ja:"あなたのチャート" }, lang),
+    sorular: [
+      pickLang({ tr:"Ateş elementim düşük, bu ne anlama geliyor?",
+                 en:"My fire element is low — what does that mean?",
+                 de:"Mein Feuerelement ist niedrig — was bedeutet das?",
+                 es:"Mi elemento fuego está bajo, ¿qué significa?",
+                 pt:"O meu elemento fogo está baixo — o que significa?",
+                 fr:"Mon élément feu est faible — qu'est-ce que cela signifie ?",
+                 ja:"火のエレメントが低いのはどういう意味？" }, lang),
+      pickLang({ tr:"Draconic haritamın bana söylediği mesaj ne?",
+                 en:"What message does my draconic chart hold for me?",
+                 de:"Welche Botschaft hat meine draconische Karte für mich?",
+                 es:"¿Qué mensaje tiene mi carta dracónica para mí?",
+                 pt:"Que mensagem tem o meu mapa dracónico para mim?",
+                 fr:"Quel message ma carte draconique a-t-elle pour moi ?",
+                 ja:"ドラコニックチャートは私に何を伝えている？" }, lang),
+      pickLang({ tr:"12. ev neden önemli, benimki ne söylüyor?",
+                 en:"Why does the 12th house matter — what does mine say?",
+                 de:"Warum ist das 12. Haus wichtig — was sagt meines?",
+                 es:"¿Por qué importa la casa 12 y qué dice la mía?",
+                 pt:"Porque importa a casa 12 — o que diz a minha?",
+                 fr:"Pourquoi la maison 12 compte-t-elle — que dit la mienne ?",
+                 ja:"12ハウスはなぜ大切？私のは何を示している？" }, lang),
+      pickLang({ tr:"Ay düğümlerim hangi yönü gösteriyor?",
+                 en:"Which direction do my lunar nodes point to?",
+                 de:"In welche Richtung zeigen meine Mondknoten?",
+                 es:"¿Hacia dónde apuntan mis nodos lunares?",
+                 pt:"Para onde apontam os meus nodos lunares?",
+                 fr:"Vers quoi pointent mes nœuds lunaires ?",
+                 ja:"月のノードはどの方向を示している？" }, lang),
+    ],
+  }];
+
+  // Ay düğümleri + kimlik yorumu metinleri (7 dil, i18n dosyalarına dokunmadan).
+  const NODE_TXT = {
+    north: { tr:"kuzey düğüm", en:"north node", de:"nordknoten", es:"nodo norte", pt:"nodo norte", fr:"nœud nord", ja:"ドラゴンヘッド" },
+    south: { tr:"güney düğüm", en:"south node", de:"südknoten", es:"nodo sur", pt:"nodo sul", fr:"nœud sud", ja:"ドラゴンテイル" },
+  };
+  const GID_TXT = {
+    interpret: { tr:"Haritamı yorumla", en:"Interpret my chart", de:"Meine Karte deuten",
+                 es:"Interpretar mi carta", pt:"Interpretar o meu mapa",
+                 fr:"Interpréter ma carte", ja:"チャートを読み解く" },
+    loading:   { tr:"Haritan okunuyor…", en:"Reading your chart…", de:"Deine Karte wird gelesen…",
+                 es:"Leyendo tu carta…", pt:"A ler o teu mapa…", fr:"Lecture de ta carte…", ja:"チャートを読んでいます…" },
+    title:     { tr:"Haritanın söyledikleri", en:"What your chart says", de:"Was deine Karte sagt",
+                 es:"Lo que dice tu carta", pt:"O que o teu mapa diz",
+                 fr:"Ce que dit ta carte", ja:"チャートが語ること" },
+    again:     { tr:"Yeniden yorumla", en:"Interpret again", de:"Erneut deuten",
+                 es:"Interpretar de nuevo", pt:"Interpretar de novo",
+                 fr:"Interpréter à nouveau", ja:"もう一度読む" },
+  };
   // Doğum bilgisi girilmeden gösterilemeyen alanlar için ortak metin + buton
   // etiketi. Kullanıcı: "12. Ev, draconik vs 'doğum bilgilerini girmeden
   // gösterilemez' yazsın" ve "buton: bilgi varsa DEĞİŞTİR, yoksa GİR".
@@ -5380,6 +5447,10 @@ export default function SakinApp() {
   const ev12Burcu  = yukselen ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(yukselen) - 1 + 12) % 12] : null;
   const ev12Gezegen= ev12Burcu ? EV_GEZEGEN[ev12Burcu] : null;
   const kuzeyDugum = birthDate ? approxNorthNode(birthDate) : null;
+  // Güney Düğüm HER ZAMAN Kuzey Düğüm'ün tam karşısındadır (180°) — ayrı hesap
+  // gerekmez, altı burç ötesi. Geçmişten getirilen alışkanlıkları/yetenekleri,
+  // Kuzey Düğüm ise bu yaşamdaki büyüme yönünü temsil eder.
+  const guneyDugum = kuzeyDugum ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(kuzeyDugum) + 6) % 12] : null;
   const draconicGunes = astro && kuzeyDugum ? draconicSun(astro.burc, kuzeyDugum) : null;
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
@@ -5957,11 +6028,78 @@ BEDEN-ZİHİN BAĞLANTISI:
 3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
 4. Kendini sevmeyi öğren — bu tüm şifanın temelidir`;
 
+  // ── GALAKTİK KİMLİK YORUMU ────────────────────────────────────────────────
+  // Kimlik kartındaki TÜM veriler (güneş, yükselen, 12. ev, draconic, ay
+  // düğümleri, element dağılımı, yaşam yolu, kişisel yıl) tek bir AI çağrısına
+  // gider. Kullanıcı: "net olduğu anlatılır kısaca, küçük ipuçları verilir."
+  // Uzun rapor DEĞİL — kartın kendisi zaten veriyi gösteriyor; buradaki iş
+  // parçaları birbirine bağlayıp "bu ne demek" sorusunu yanıtlamak.
+  const chartFacts = () => {
+    let ed = null;
+    try { ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null"); } catch(_) {}
+    const L = [];
+    if (astro?.burc) L.push(`Güneş: ${astro.burc}`);
+    if (yukselen)    L.push(`Yükselen: ${yukselen}`);
+    if (ev12Burcu)   L.push(`12. Ev: ${ev12Burcu}${ev12Gezegen ? ` (yöneticisi ${ev12Gezegen})` : ""}`);
+    if (draconicGunes) L.push(`Draconic Güneş: ${draconicGunes}`);
+    if (kuzeyDugum)  L.push(`Kuzey Ay Düğümü: ${kuzeyDugum}`);
+    if (guneyDugum)  L.push(`Güney Ay Düğümü: ${guneyDugum}`);
+    if (astro?.yasam) L.push(`Yaşam Yolu: ${astro.yasam}`);
+    if (astro?.kisiselYil) L.push(`Kişisel Yıl: ${astro.kisiselYil}`);
+    if (ed && typeof ed === "object") {
+      const parts = ["ates","toprak","hava","su"].filter(k => ed[k] != null)
+        .map(k => `${pickLang(ELEM_I18N[k], "tr")} ${ed[k]}`);
+      if (parts.length) L.push(`Element dağılımı: ${parts.join(", ")}`);
+    }
+    return L.join("\n");
+  };
+  const generateGidYorum = async () => {
+    if (gidYorum === "__loading__") return;
+    if (!_aiDailyOk()) { setGidYorum(_aiLimitMsg()); return; }
+    const facts = chartFacts();
+    if (!facts) return;
+    setGidYorum("__loading__");
+    try {
+      const res = await fetch(AI_CALL_URL, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain"},
+        body: JSON.stringify({
+          model:"llama-3.3-70b-versatile", max_tokens:700, lang,
+          system:`${buildMirrorSystemPrompt(lang)}
+Bu bir DOĞUM HARİTASI ÖZETİ yorumudur. Kısa ve NET ol — kullanıcı uzun rapor değil, "bunlar ne anlama geliyor" sorusunun anlaşılır cevabını istiyor. Kehanet yapma, kesin hüküm verme; eğilim ve davet dilini kullan. Tıbbi/finansal tavsiye verme.`,
+          messages:[{ role:"user", content:`Kullanıcının doğum haritası verileri:
+${facts}
+
+Şu formatta yanıt ver:
+
+**Özet**
+(Bu haritanın ana teması — 2-3 cümle. Parçaları birbirine bağla: yükselen ile güneş nasıl konuşuyor, ay düğümleri hangi yönü gösteriyor. Sade dil, jargon yok.)
+
+**Öne çıkanlar**
+(3 madde. Her madde tek cümle: haritadaki EN belirgin üç şey ve ne anlama geldiği. Madde başına "•" koy.)
+
+**Küçük ipuçları**
+(3 madde, her biri tek cümle, somut ve bugün uygulanabilir. Haritayla bağlantısını kısaca belirt. Madde başına "•" koy.)` }],
+        }),
+      });
+      const d = await res.json();
+      if (!res.ok || d.error) { setGidYorum(pickLang(AI_ERR_I18N.noAnalysis, lang)); return; }
+      setGidYorum(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
+    } catch(e) {
+      setGidYorum(t("err_connection_prefix") + (e?.message || String(e)));
+    }
+  };
+
   const generateSikayetAnaliz = async () => {
     if (!sikayet.trim()) return;
     setSikayetAnaliz("__loading__");
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
-    const astroTxt = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
+    // Harita verisi TAM gönderilir — kullanıcı artık "ateş elementim düşük ne
+    // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
+    // haritaya dair sorular sorabiliyor (örnek sorular listesine eklendi).
+    // Eksik veriler chartFacts() içinde zaten atlanıyor.
+    const astroTxt = astro ? `Kullanıcının doğum haritası:\n${chartFacts()}${birthTime ? `\nDoğum Saati: ${birthTime}` : ""}
+Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen) bu verileri kullanarak SOMUT yanıtla — genel geçer astroloji anlatma, ONUN haritasından konuş.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
@@ -9262,69 +9400,49 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:16,padding:"18px 16px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
-                      {(_locSampleQ(lang, [
-                        { cat:t("ask_cat_body"), sorular:[
+                      {([...CHART_Q, ..._locSampleQ(lang, [
+                        { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Kronik yorgunluk neden hep benimle?",
-                          "Sindirim sorunum var, ruhsal nedeni nedir?",
-                          "Baş ağrım sürekli geliyor, çakra bağlantısı var mı?",
                           "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
                         ]},
-                        { cat:t("ask_cat_emotions"), sorular:[
-                          "Bu hafta neden bu kadar dengesiz hissediyorum?",
+                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
                           "Sürekli endişeliyim, hangi çakram kapalı?",
                           "Öfkemi nasıl dönüştürebilirim?",
-                          "Yalnızlık hissi içimde büyüyor, ne yapmalıyım?",
                         ]},
-                        { cat:t("ask_cat_chakra"), sorular:[
+                        { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
                           "Hangi çakramın enerjiye ihtiyacı var?",
-                          "Cinsel enerjimi yaratıma nasıl dönüştürürüm?",
-                          "Aura temizliği için ne önerirsin?",
                           "Kök çakramı nasıl güçlendirebilirim?",
                         ]},
-                        { cat:t("ask_cat_spiritual"), sorular:[
+                        { cat:t("ask_cat_spiritual"), idx:[12,13], sorular:[
                           "Hayatımda neden aynı döngüler tekrar ediyor?",
                           "Misyonum nedir, nasıl anlayabilirim?",
-                          "İçsel sesimi nasıl daha net duyabilirim?",
-                          "Karanlık gecelerde kendimi nasıl tutabilirim?",
                         ]},
-                        { cat:t("ask_cat_transitions"), sorular:[
-                          "Taşınma dönemindeyim, sırt ağrım başladı — bağlantısı var mı?",
+                        { cat:t("ask_cat_transitions"), idx:[17,19], sorular:[
                           "İş değiştiriyorum ve içimde büyük bir kaygı var, nedeni ne olabilir?",
-                          "Ayrılık sürecindeyim, bedenimde ağırlık hissediyorum.",
                           "Yeni bir başlangıç önümde, ama adım atmak zor geliyor.",
                         ]},
                       ], [
-                        { cat:t("ask_cat_body"), sorular:[
+                        { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Why is chronic fatigue always with me?",
-                          "I have digestive issues — what's the spiritual cause?",
-                          "Constant headaches — is there a chakra link?",
                           "I can't sleep — what's the energetic reason?",
                         ]},
-                        { cat:t("ask_cat_emotions"), sorular:[
-                          "Why do I feel so unbalanced this week?",
+                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
                           "I'm constantly anxious — which chakra is blocked?",
                           "How can I transform my anger?",
-                          "Loneliness is growing inside me — what should I do?",
                         ]},
-                        { cat:t("ask_cat_chakra"), sorular:[
+                        { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
                           "Which of my chakras needs energy right now?",
-                          "How do I channel sexual energy into creativity?",
-                          "What do you recommend for aura cleansing?",
                           "How can I strengthen my root chakra?",
                         ]},
-                        { cat:t("ask_cat_spiritual"), sorular:[
+                        { cat:t("ask_cat_spiritual"), idx:[12,13], sorular:[
                           "Why do the same cycles keep repeating in my life?",
                           "What is my mission and how can I understand it?",
-                          "How can I hear my inner voice more clearly?",
-                          "How do I hold myself together in dark nights?",
                         ]},
-                        { cat:t("ask_cat_transitions"), sorular:[
-                          "I'm moving homes and my back pain started — is there a connection?",
+                        { cat:t("ask_cat_transitions"), idx:[17,19], sorular:[
                           "I'm changing jobs and feel deep anxiety — what might be the cause?",
-                          "I'm going through a separation and feel heaviness in my body.",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
-                      ])).map(({cat,sorular})=>(
+                      ])]).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
                           <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toLocaleUpperCase(lang)}</div>
                           {sorular.map(s=>(
@@ -9903,6 +10021,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const yuk = _miss(zodiacDisplay(yukselen, lang));
         const ev12 = _miss(zodiacDisplay(ev12Burcu, lang));
         const dra = zodiacDisplay(draconicGunes, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
+        const kuzD = zodiacDisplay(kuzeyDugum, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
+        const guyD = zodiacDisplay(guneyDugum, lang) || (needBirth ? pickLang(BIRTH_TXT.need, lang) : "—");
         const days = streakData?.current ?? 0;
         const best = streakData?.best ?? 0;
 
@@ -10210,6 +10330,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <StatRow label={t("gid_asc_lower")} value={yuk} color="#a0d8b4"/>
                   <StatRow label={t("gid_12th_lower")} value={ev12} color="#c8b0e8"/>
                   <StatRow label={t("gid_draconic_lower")} value={dra} color="#d8c8f0"/>
+                  {/* Ay düğümleri — draconic'in hemen altında, çünkü draconic zaten
+                      Kuzey Düğüm üzerinden hesaplanıyor; üçü birlikte okunur. */}
+                  <StatRow label={pickLang(NODE_TXT.north, lang)} value={kuzD} color="#a8c8f0"/>
+                  <StatRow label={pickLang(NODE_TXT.south, lang)} value={guyD} color="#c0b0a0"/>
                   <StatRow label={t("gid_yaşam_yolu_lower")} value={yasamYolu}/>
                   <StatRow label={t("gid_personal_yr_lower")} value={kisiselYil}/>
                 </div>
@@ -10288,6 +10412,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
               {/* Actions */}
               <div style={{ display:"flex",flexDirection:"column",gap:8,marginTop:14 }}>
+                {/* HARİTAMI YORUMLA — karttaki tüm veriler tek AI çağrısıyla
+                    yorumlanır. Doğum bilgisi yoksa gösterilmez (yorumlanacak
+                    veri olmaz); zaten üstte "Doğum bilgilerini gir" çıkıyor. */}
+                {!needBirth && (
+                  <button onClick={generateGidYorum} disabled={gidYorum === "__loading__"}
+                    style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(160,200,240,0.45)",background:"linear-gradient(135deg,rgba(120,170,220,0.55),rgba(70,110,160,0.45))",color:"#fff",fontSize:13,letterSpacing:2,cursor: gidYorum==="__loading__"?"default":"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",opacity: gidYorum==="__loading__"?0.7:1 }}>
+                    {gidYorum === "__loading__"
+                      ? pickLang(GID_TXT.loading, lang)
+                      : (gidYorum ? pickLang(GID_TXT.again, lang) : "✦ " + pickLang(GID_TXT.interpret, lang))}
+                  </button>
+                )}
+                {gidYorum && gidYorum !== "__loading__" && (
+                  <div style={{ background:"rgba(120,170,220,0.08)",border:"1px solid rgba(160,200,240,0.28)",borderRadius:14,padding:"14px 16px",marginBottom:2 }}>
+                    <div style={{ fontSize:10,letterSpacing:2.5,color:"#8fb8dc",textTransform:"uppercase",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>
+                      {pickLang(GID_TXT.title, lang)}
+                    </div>
+                    <div style={{ fontSize:13,color:"#d8e4f0",lineHeight:1.9,whiteSpace:"pre-wrap" }}>
+                      {gidYorum.replace(/\*\*/g, "")}
+                    </div>
+                  </div>
+                )}
                 <button onClick={downloadCard}
                   style={{ padding:"12px 16px",borderRadius:22,border:"1px solid rgba(184,164,216,0.5)",background:"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.55))",color:"#fff",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 4px 18px rgba(122,80,150,0.3)" }}>
                   {t("gid_download_share")}
