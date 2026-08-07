@@ -492,7 +492,7 @@ Web Browsing, Device/IDs
 
 | Alan | Değer |
 |---|---|
-| **Email** | destek@sakin.app |
+| **Email** | destek@sakin.life |
 | **Website** | https://sakin.app |
 | **Privacy Policy URL** | https://sakin.app/privacy |
 
@@ -715,4 +715,4 @@ App.addListener("backButton", ({ canGoBack }) => {
 
 **Son güncelleme:** Mayıs 2026
 **Bundle ID:** app.sakin.life
-**Geliştirici:** Arda Cetin — destek@sakin.app
+**Geliştirici:** Arda Cetin — destek@sakin.life

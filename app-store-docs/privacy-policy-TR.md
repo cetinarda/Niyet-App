@@ -107,5 +107,5 @@ Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uy
 
 Gizlilik politikasına ilişkin sorularınız için:
 
-**E-posta:** destek@sakin.app
+**E-posta:** destek@sakin.life
 **Uygulama Adı:** Sakin

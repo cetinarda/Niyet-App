@@ -100,4 +100,4 @@ The client-side code references `model:"claude-opus-4-6"` in API requests, but t
 For questions during the review process:
 
 **Developer:** Arda Cetin
-**Email:** destek@sakin.app
+**Email:** destek@sakin.life

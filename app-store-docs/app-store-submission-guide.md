@@ -122,7 +122,7 @@
 |---|---|
 | **Contact First Name** | Arda |
 | **Contact Last Name** | Cetin |
-| **Contact Email** | destek@sakin.app |
+| **Contact Email** | destek@sakin.life |
 | **Contact Phone** | (telefon numaranı gir) |
 | **Demo Account** | Not required |
 | **Notes** | `app-review-notes.md` dosyasındaki tam metni yapıştır |
@@ -364,7 +364,7 @@ Aşağıdakileri içermeli:
 
 ### 8.3 — Support (sakin.app)
 - SSS bölümü
-- İletişim e-postası: destek@sakin.app
+- İletişim e-postası: destek@sakin.life
 
 ---
 
