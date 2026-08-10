@@ -2330,18 +2330,20 @@ function _notifTier() {
   return "old";
 }
 // Bir takvim günü için ikinci bildirimin slotu (akşam 18:00 zaten her gün var —
-// çekirdek bildirim). İkinci bildirim tier'a göre eklenir; SABAH HER GÜN ÇALIŞMAZ:
-// gerektiğinde gün paritesine göre ya sabah (08:00) ya öğleden sonra (13:00) düşer,
-// böylece "sabah bildirimini her zaman verme" karşılanır.
-function _notifSecondSlot(tier, dn) {
+// çekirdek bildirim). İkinci bildirim tier'a göre eklenir.
+// SABAH (7 mesajlık küçük havuz) sadece haftanın 2 günü (Salı & Cuma) kullanılır —
+// önceden gün paritesiyle (~yarı gün) veriliyordu, kullanıcı 1 ay kullanımdan
+// sonra bu küçük havuzu ezberlediğini bildirdi. Diğer günlerde ikinci bildirim
+// öğlene (13:00), çok daha geniş/çeşitli akşam havuzundan düşer.
+const MORNING_DAYS = [2, 5]; // Date.getDay(): 0=Paz..6=Cmt → Salı, Cuma
+function _notifSecondSlot(tier, dn, dateObj) {
   const even = (((dn % 2) + 2) % 2) === 0;
   let wantSecond;
   if (tier === "new") wantSecond = true;       // her gün 2
   else if (tier === "mid") wantSecond = even;  // gün aşırı 2 / 1
   else wantSecond = false;                      // eski: sadece akşam
   if (!wantSecond) return null;
-  // İkinci bildirimi her zaman sabaha koyma — çift günlerde sabah, tek günlerde öğle.
-  return even ? "morning" : "afternoon";
+  return MORNING_DAYS.includes(dateObj.getDay()) ? "morning" : "afternoon";
 }
 
 async function scheduleDailyReminders(lang) {
@@ -2376,11 +2378,12 @@ async function scheduleDailyReminders(lang) {
     //     (özellik daveti + günlük söz + nefes + Keşfet/Tasarım). Her öğe kendi
     //     hedefini taşır; tıklanınca doğrudan o ekran/embed açılır.
     //   İKİNCİ bildirim → tier'a göre (yeni: her gün, orta: gün aşırı, eski: yok).
-    //     Sabah her gün çalışmaz: çift günlerde 08:00 (sabah pingi), tek günlerde
-    //     13:00 (öğle nudge'ı, akşam havuzundan farklı offset ile seçilir).
+    //     Sabah artık HER GÜN/GÜN AŞIRI değil, sadece Salı & Cuma (bkz. _notifSecondSlot) —
+    //     diğer uygun günlerde 13:00 öğle nudge'ı, akşam havuzundan yarım-tur offsetle seçilir.
     // Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj).
     for (let d = 0; d < 7; d++) {
-      const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
+      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+      const dn = dayNumber(dayDate);
       const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
       const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
       const eveningPool = [
@@ -2393,14 +2396,15 @@ async function scheduleDailyReminders(lang) {
       const evening = pick(eveningPool, dn);
       const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
       if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
-      // İKİNCİ bildirim — tier + gün paritesine göre (sabah HER GÜN değil).
-      const slot = _notifSecondSlot(tier, dn);
+      // İKİNCİ bildirim — tier'a göre; sabah artık sadece Salı/Cuma (_notifSecondSlot).
+      const slot = _notifSecondSlot(tier, dn, dayDate);
       if (slot === "morning") {
         const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
         if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
       } else if (slot === "afternoon") {
         const aAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, 0, 0);
-        const alt = pick(eveningPool, dn + 3);
+        // Yarım-tur offset (akşamla aynı güne denk gelirse bile farklı mesaj garantisi).
+        const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2));
         if (aAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: alt.body, schedule: { at: aAt }, extra: alt.extra, ...icon });
       }
     }
