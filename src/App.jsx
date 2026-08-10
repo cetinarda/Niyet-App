@@ -6798,9 +6798,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* ÜST NAV — iOS feature ekranlarında gizli (Ailesi'nde mini link var) */}
       {topNavVisible && (
       <div className="top-nav">
-        {/* Anasayfa butonu — sol */}
+        {/* Sol üst "← Sakin": WEB'de siteyi (sakin.life tanıtım sayfası) açar.
+            Alt menüdeki ⌂ zaten uygulamanın kendi giriş ekranına gidiyor; ikisi
+            aynı yere gitmesin diye bu ok siteden çıkışa ayrıldı (kullanıcı isteği).
+            NATIVE'de tanıtım sayfası yok, eski davranış korunuyor. */}
         <button
-          onClick={()=>{ setGirisPhase("intro"); setScreen("giris"); }}
+          onClick={()=>{
+            if (!isNative) { window.location.href = "/"; return; }
+            setGirisPhase("intro"); setScreen("giris");
+          }}
           style={{ background:"transparent",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:5,padding:"0 10px 0 6px",height:44,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.06)" }}
         >
           <svg width="12" height="12" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
