@@ -92,6 +92,14 @@
   }
 
   .hero h1 { margin-bottom:20px; }
+  /* Fon görseli kendi SAKİN logosunu taşıdığı için sayfadaki yazı görsel olarak
+     gizlenir; DOM'da kalır ki h1 SEO ve ekran okuyucu için okunabilsin. */
+  .hero.has-bg h1 {
+    position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
+  }
+  /* Yazı gitti, halka ile metin arası boşluk yeniden dengelendi. */
+  .hero.has-bg .breath { margin-bottom:30px; }
   .hero h1 .mark {
     display:block; font-size:clamp(40px,9vw,76px); letter-spacing:16px;
     color:var(--title); font-weight:200; text-indent:16px;
