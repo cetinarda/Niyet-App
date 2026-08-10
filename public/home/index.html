@@ -117,7 +117,10 @@
     background:var(--surface); transition:border-color .3s, background .3s;
   }
   .tile:hover { border-color:var(--ring); background:var(--surface-2); }
-  .tile .ic { font-size:22px; margin-bottom:12px; }
+  /* İkonlar artık emoji değil, uygulamadaki akşam ekranıyla aynı dilde ince
+     çizgi SVG. Renk currentColor ile temadan gelir. */
+  .tile svg.ic { width:30px; height:30px; color:var(--accent); margin-bottom:14px; display:block; }
+  .tile:hover svg.ic { color:var(--head); }
   .tile h3 { font-size:15px; letter-spacing:2px; color:var(--accent); margin-bottom:8px; }
   .tile p { font-size:13.5px; color:var(--muted); line-height:1.85; }
 
@@ -126,7 +129,7 @@
     border:1px solid var(--line); border-radius:16px; padding:20px 18px; text-align:center;
     background:var(--surface);
   }
-  .fam .ic { font-size:24px; margin-bottom:10px; }
+  .fam svg.ic { width:32px; height:32px; color:var(--accent); margin:0 auto 12px; display:block; }
   .fam h3 { font-size:14px; letter-spacing:2px; color:var(--head); margin-bottom:6px; }
   .fam p { font-size:12.5px; color:var(--muted-2); line-height:1.8; }
 
@@ -157,7 +160,7 @@
     </a>
     <div class="nav-links">
       <a href="#nedir" class="hide-sm" data-t="navNedir">Sakin Nedir</a>
-      <a href="/blog/" data-t="navBlog">Blog</a>
+      <a href="/blog/" data-blog-link="" data-t="navBlog">Blog</a>
       <button type="button" class="icon-btn" data-theme-toggle aria-label="Tema">☀</button>
       <div class="lang-wrap">
         <button type="button" data-lang-toggle aria-haspopup="true"><span data-lang-label>TR</span></button>
@@ -245,14 +248,14 @@
     </div>
 
     <div class="grid">
-      <div class="tile"><div class="ic">🌬</div><h3 data-t="f1t">9 Nefes Modu</h3><p data-t="f1d"></p></div>
-      <div class="tile"><div class="ic">🎵</div><h3 data-t="f2t">10 Solfeggio Frekansı</h3><p data-t="f2d"></p></div>
-      <div class="tile"><div class="ic">💜</div><h3 data-t="f3t">22 Çakra</h3><p data-t="f3d"></p></div>
-      <div class="tile"><div class="ic">🗺️</div><h3 data-t="f4t">Doğum Haritası</h3><p data-t="f4d"></p></div>
-      <div class="tile"><div class="ic">🪞</div><h3 data-t="f5t">İçsel Ayna</h3><p data-t="f5d"></p></div>
-      <div class="tile"><div class="ic">🌌</div><h3 data-t="f6t">Gökyüzü Raporu</h3><p data-t="f6d"></p></div>
-      <div class="tile"><div class="ic">🌅</div><h3 data-t="f7t">Niyet ve Kapanış</h3><p data-t="f7d"></p></div>
-      <div class="tile"><div class="ic">📷</div><h3 data-t="f8t">Taş ve Bitki Tanıma</h3><p data-t="f8d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="16" r="4.5"/><circle cx="16" cy="16" r="9" opacity=".62"/><circle cx="16" cy="16" r="13.2" opacity=".32"/></svg><h3 data-t="f1t">9 Nefes Modu</h3><p data-t="f1d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 16h2.5"/><path d="M8.5 11.5v9"/><path d="M13 7v18"/><path d="M17.5 10v12"/><path d="M22 13v6"/><path d="M26.5 15.2v1.6"/><path d="M29 16h.01"/></svg><h3 data-t="f2t">10 Solfeggio Frekansı</h3><p data-t="f2d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 4v24" opacity=".38"/><circle cx="16" cy="5.6" r="2.3"/><circle cx="16" cy="12.4" r="2.9"/><circle cx="16" cy="19.6" r="2.9"/><circle cx="16" cy="26.4" r="2.3"/></svg><h3 data-t="f3t">22 Çakra</h3><p data-t="f3d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="16" cy="16" r="12.5"/><circle cx="16" cy="16" r="5.2" opacity=".5"/><path d="M16 3.5v4M16 24.5v4M3.5 16h4M24.5 16h4" opacity=".7"/><path d="M7.2 7.2l2.8 2.8M22 22l2.8 2.8M24.8 7.2L22 10M10 22l-2.8 2.8" opacity=".4"/></svg><h3 data-t="f4t">Doğum Haritası</h3><p data-t="f4d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="16" cy="13" rx="7.8" ry="9.8"/><path d="M11.6 8.8c-1.2 1.4-1.9 3.1-1.9 4.8" opacity=".55"/><path d="M16 22.8v4" opacity=".75"/><path d="M11.5 27.5h9" opacity=".75"/></svg><h3 data-t="f5t">İçsel Ayna</h3><p data-t="f5d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 19.8A9 9 0 0 1 11 8.2a9.6 9.6 0 1 0 10.5 11.6z"/><path d="M24 7.5v3M22.5 9h3" opacity=".6"/><path d="M27 14v2M26 15h2" opacity=".45"/></svg><h3 data-t="f6t">Gökyüzü Raporu</h3><p data-t="f6d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 24h25"/><path d="M9.5 24a6.5 6.5 0 0 1 13 0"/><path d="M16 8v3.5M7.8 11.4l2 2M24.2 11.4l-2 2M3.5 19h3M25.5 19h3" opacity=".6"/></svg><h3 data-t="f7t">Niyet ve Kapanış</h3><p data-t="f7d"></p></div>
+      <div class="tile"><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.5h5l2-3h10l2 3h5v14a1.5 1.5 0 0 1-1.5 1.5h-21A1.5 1.5 0 0 1 4 24.5z"/><path d="M19.5 15.5c0 3-2.4 5.2-5.2 5.2 0-3 2.3-5.2 5.2-5.2z"/><path d="M14.3 20.7c1.2-1.5 3.1-3.6 5.2-5.2" opacity=".5"/></svg><h3 data-t="f8t">Taş ve Bitki Tanıma</h3><p data-t="f8d"></p></div>
     </div>
   </div>
 </section>
@@ -265,11 +268,11 @@
       <p data-t="famSub">Her biri kendi küçük dünyası olan nazik rehberler, hepsi Sakin'in içinde.</p>
     </div>
     <div class="fam">
-      <div><div class="ic">🐺</div><h3 data-t="fam1t">Sakin Hayvan</h3><p data-t="fam1d"></p></div>
-      <div><div class="ic">💎</div><h3 data-t="fam2t">Sakin Taşlar</h3><p data-t="fam2d"></p></div>
-      <div><div class="ic">🌿</div><h3 data-t="fam3t">Sakin Bitkiler</h3><p data-t="fam3d"></p></div>
-      <div><div class="ic">🏛️</div><h3 data-t="fam4t">Sakin Mitler</h3><p data-t="fam4d"></p></div>
-      <div><div class="ic">◈</div><h3 data-t="fam5t">Tasarım</h3><p data-t="fam5d"></p></div>
+      <div><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5 8.5 5l4.5 4h6l4.5-4 2.5 7.5"/><path d="M6 12.5c0 7 4.5 12.5 10 12.5S26 19.5 26 12.5"/><path d="M12.5 15h.01M19.5 15h.01" stroke-width="2"/><path d="M16 19.5v1.5" opacity=".6"/></svg><h3 data-t="fam1t">Sakin Hayvan</h3><p data-t="fam1d"></p></div>
+      <div><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 5h12l6 8-12 14L4 13z"/><path d="M4 13h24" opacity=".6"/><path d="M10 5 8 13l8 14 8-14-2-8" opacity=".45"/></svg><h3 data-t="fam2t">Sakin Taşlar</h3><p data-t="fam2d"></p></div>
+      <div><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 28V13"/><path d="M16 15c0-5 3.5-9 9-9 0 5-3.6 9-9 9z"/><path d="M16 21c0-4-3-7-7-7 0 4 3 7 7 7z" opacity=".65"/></svg><h3 data-t="fam3t">Sakin Bitkiler</h3><p data-t="fam3d"></p></div>
+      <div><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 16 5l12 7"/><path d="M5.5 27h21"/><path d="M8.5 12.5V25M14 12.5V25M18 12.5V25M23.5 12.5V25"/></svg><h3 data-t="fam4t">Sakin Mitler</h3><p data-t="fam4d"></p></div>
+      <div><svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3.5 27 16 16 28.5 5 16z"/><path d="M16 9.5 22 16l-6 6.5L10 16z" opacity=".6"/><circle cx="16" cy="16" r="1.6" opacity=".8"/></svg><h3 data-t="fam5t">Tasarım</h3><p data-t="fam5d"></p></div>
     </div>
   </div>
 </section>
@@ -282,7 +285,7 @@
       <p data-t="blogSub">Okundukça değil, durdukça anlaşılan kısa metinler.</p>
     </div>
     <div class="cards">
-      <a class="card" href="/blog/sevgiyi-genisletmek.html">
+      <a class="card" href="/blog/sevgiyi-genisletmek.html" data-blog-link="sevgiyi-genisletmek.html">
         <div class="card-img"><img src="/blog/img/blog-sevgi.png" alt="" loading="lazy" width="1200" height="630"></div>
         <div class="card-body">
           <span class="kicker" data-t="p1k"></span>
@@ -291,7 +294,7 @@
           <div class="more" data-t="readMore">Oku →</div>
         </div>
       </a>
-      <a class="card" href="/blog/icindeki-sesi-duymak.html">
+      <a class="card" href="/blog/icindeki-sesi-duymak.html" data-blog-link="icindeki-sesi-duymak.html">
         <div class="card-img"><img src="/blog/img/blog-sessizlik.png" alt="" loading="lazy" width="1200" height="630"></div>
         <div class="card-body">
           <span class="kicker" data-t="p2k"></span>
@@ -300,7 +303,7 @@
           <div class="more" data-t="readMore">Oku →</div>
         </div>
       </a>
-      <a class="card" href="/blog/nefes-en-kisa-yol.html">
+      <a class="card" href="/blog/nefes-en-kisa-yol.html" data-blog-link="nefes-en-kisa-yol.html">
         <div class="card-img"><img src="/blog/img/blog-nefes.png" alt="" loading="lazy" width="1200" height="630"></div>
         <div class="card-body">
           <span class="kicker" data-t="p3k"></span>
@@ -346,7 +349,7 @@
     </div>
     <div class="foot-links">
       <a href="#nedir" data-t="navNedir">Sakin Nedir</a>
-      <a href="/blog/" data-t="navBlog">Blog</a>
+      <a href="/blog/" data-blog-link="" data-t="navBlog">Blog</a>
       <a href="/app" data-t="footApp">Uygulama</a>
       <a href="/privacy/" data-t="footPrivacy">Gizlilik</a>
       <a href="/terms/" data-t="footTerms">Hizmet Şartları</a>
