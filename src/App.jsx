@@ -4002,8 +4002,17 @@ export default function SakinApp() {
   const CHAKRAS_7 = getChakras7(lang);
   const URL_TO_SCREEN = { "/hakkinda":"hakkinda", "/fiyatlandirma":"fiyat", "/hizmet-sartlari":"sartlar", "/gizlilik":"gizlilik", "/iade-politikasi":"iade" };
   const SCREEN_TO_URL = { hakkinda:"/hakkinda", fiyat:"/fiyatlandirma", sartlar:"/hizmet-sartlari", gizlilik:"/gizlilik", iade:"/iade-politikasi" };
-  const [screen,        setScreenRaw]     = useState(()=> URL_TO_SCREEN[window.location.pathname] || "giris");
-  const screenHistoryRef = useRef([URL_TO_SCREEN[window.location.pathname] || "giris"]);
+  // Kullanıcı isteği: HAZIRIM ekranı sadece o günün İLK açılışında çıksın. Aynı
+  // gün içinde uygulama tekrar (soğuk) açılırsa doğrudan Bağlan'a düşsün —
+  // HAZIRIM'a basıldığında `sakin_hazirim_today` o günün anahtarıyla yazılır
+  // (aşağıda), yeni takvim gününde anahtar eşleşmediği için tekrar giriş açılır.
+  const _initialScreen = () => {
+    if (URL_TO_SCREEN[window.location.pathname]) return URL_TO_SCREEN[window.location.pathname];
+    try { if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey()) return "mandala"; } catch(_) {}
+    return "giris";
+  };
+  const [screen,        setScreenRaw]     = useState(_initialScreen);
+  const screenHistoryRef = useRef([_initialScreen()]);
   const isPopRef = useRef(false);
   // ── TEK GERİ MANTIĞI ───────────────────────────────────────────────────────
   // Kullanıcı: "geri tuşu her zaman geldiğin yere dönsün; örn. Ayna → Çakra →
@@ -8321,7 +8330,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
                     Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
-                <button className="sakin-btn-primary" onClick={()=>{ setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
