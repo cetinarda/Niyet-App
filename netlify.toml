@@ -82,6 +82,37 @@
   status = 200
   force = false
 
+# ── KÖK ARTIK TANITIM SAYFASI ────────────────────────────────────────────────
+# sakin.life kökü uygulamayı değil, karşılama/tanıtım sayfasını gösterir
+# (public/home/index.html). force = true ŞART: Vite kökte gerçek bir
+# dist/index.html üretiyor ve Netlify statik dosyayı zorlanmamış redirect'ten
+# ÖNCE servis eder — force olmadan bu kural hiç çalışmazdı.
+# Not: SPA'nın kendi meta'ları var (index.html), ama link önizlemesi (WhatsApp vb.)
+# kökten okunduğu için asıl OG etiketleri home/index.html'de.
+[[redirects]]
+  from = "/"
+  to = "/home/index.html"
+  status = 200
+  force = true
+
+# Uygulamanın yeni adresi. Kökte gerçek bir dosya olmadığı için force gerekmiyor.
+# src/App.jsx içindeki setScreen(), URL karşılığı olmayan ekranlarda web'de
+# "/app" yazar (bkz. oradaki not) — yenilemede tanıtıma düşmesin diye.
+[[redirects]]
+  from = "/app"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/app/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+# SPA yedeği: /gizlilik, /fiyatlandirma gibi uygulama içi rotalar buradan döner.
+# /blog/*, /site.css, /og-sakin.png gerçek statik dosya oldukları için bu kurala
+# hiç ulaşmadan servis edilir.
 [[redirects]]
   from = "/*"
   to = "/index.html"
