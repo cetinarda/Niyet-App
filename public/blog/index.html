@@ -3,24 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — Sakin</title>
+<title>Blog · Sakin</title>
 <meta name="description" content="Yavaşlatan yazılar. Nefes, sessizlik, sevgi ve içsel keşif üzerine kısa metinler.">
 <link rel="canonical" href="https://sakin.life/blog/">
 <meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark light">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Sakin">
 <meta property="og:locale" content="tr_TR">
 <meta property="og:url" content="https://sakin.life/blog/">
-<meta property="og:title" content="Sakin Blog — Yavaşlatan yazılar">
+<meta property="og:title" content="Sakin Blog · Yavaşlatan yazılar">
 <meta property="og:description" content="Nefes, sessizlik, sevgi ve içsel keşif üzerine kısa metinler. Okundukça değil, durdukça anlaşılan.">
 <meta property="og:image" content="https://sakin.life/og-sakin.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Sakin Blog — Yavaşlatan yazılar">
+<meta name="twitter:title" content="Sakin Blog · Yavaşlatan yazılar">
 <meta name="twitter:description" content="Nefes, sessizlik, sevgi ve içsel keşif üzerine kısa metinler.">
 <meta name="twitter:image" content="https://sakin.life/og-sakin.png">
 
@@ -38,9 +38,14 @@
       <span class="brand-name">SAKİN</span>
     </a>
     <div class="nav-links">
-      <a href="/#nedir" class="hide-sm">Sakin Nedir</a>
-      <a href="/blog/">Blog</a>
-      <a href="/app" class="nav-cta">Sakin'i Dene</a>
+      <a href="/#nedir" class="hide-sm" data-t="navNedir">Sakin Nedir</a>
+      <a href="/blog/" data-t="navBlog">Blog</a>
+      <button type="button" class="icon-btn" data-theme-toggle aria-label="Tema">☀</button>
+      <div class="lang-wrap">
+        <button type="button" data-lang-toggle aria-haspopup="true"><span data-lang-label>TR</span></button>
+        <div class="lang-menu"></div>
+      </div>
+      <a href="/app" class="nav-cta" data-t="navTry">Sakin'i Dene</a>
     </div>
   </div>
 </nav>
@@ -48,33 +53,34 @@
 <section class="sec" style="padding-top:60px">
   <div class="wrap">
     <div class="sec-head">
-      <span class="kicker">Blog</span>
-      <h2>Yavaşlatan yazılar</h2>
-      <p>Okundukça değil, durdukça anlaşılan kısa metinler.</p>
+      <span class="kicker" data-t="blogKicker">Blog</span>
+      <h2 data-t="blogTitle">Yavaşlatan yazılar</h2>
+      <p data-t="blogSub">Okundukça değil, durdukça anlaşılan kısa metinler.</p>
     </div>
 
     <div class="cards">
       <a class="card" href="/blog/sevgiyi-genisletmek.html">
-        <span class="kicker">Paylaştıkça çoğalsın</span>
-        <h3>Sevgiyi genişletmek ister misin?</h3>
-        <p>Budizm'de sevgi, herkesin mutlu olmasını dilemek ve mümkünse buna aracı olmaktır. Tarafsız, evrensel bir sevgi mümkün mü?</p>
-        <div class="more">Oku →</div>
+        <span class="kicker" data-t="p1k"></span>
+        <h3 data-t="p1t"></h3>
+        <p data-t="p1d"></p>
+        <div class="more" data-t="readMore">Oku →</div>
       </a>
 
       <a class="card" href="/blog/icindeki-sesi-duymak.html">
-        <span class="kicker">Sessizlik</span>
-        <h3>İçindeki sesi duymak</h3>
-        <p>O ses hiç susmadı; sadece diğer her şey ondan yüksek sesle konuşuyordu. Sessizlik bir boşluk değil, bir duyma biçimi.</p>
-        <div class="more">Oku →</div>
+        <span class="kicker" data-t="p2k"></span>
+        <h3 data-t="p2t"></h3>
+        <p data-t="p2d"></p>
+        <div class="more" data-t="readMore">Oku →</div>
       </a>
 
       <a class="card" href="/blog/nefes-en-kisa-yol.html">
-        <span class="kicker">Beden</span>
-        <h3>Nefes neden en kısa yol?</h3>
-        <p>Sinir sisteminde iradenle dokunabildiğin tek düğme nefes. Zihin dinlemediğinde beden dinler.</p>
-        <div class="more">Oku →</div>
+        <span class="kicker" data-t="p3k"></span>
+        <h3 data-t="p3t"></h3>
+        <p data-t="p3d"></p>
+        <div class="more" data-t="readMore">Oku →</div>
       </a>
     </div>
+    <p class="blog-note" data-t="blogLangNote" style="text-align:center;margin-top:20px;font-size:12.5px;color:var(--muted-2)"></p>
   </div>
 </section>
 
@@ -85,21 +91,21 @@
         <span class="brand-mark"><i></i></span>
         <span class="brand-name">SAKİN</span>
       </div>
-      <p class="foot-note">
-        Sakin; düşünmek ve sakinleşmek için bir alandır, tıbbi ya da psikolojik
-        tavsiye değildir.
-      </p>
+      <p class="foot-note" data-t="footNote"></p>
     </div>
     <div class="foot-links">
-      <a href="/#nedir">Sakin Nedir</a>
-      <a href="/blog/">Blog</a>
-      <a href="/app">Uygulama</a>
-      <a href="/privacy/">Gizlilik</a>
-      <a href="/terms/">Hizmet Şartları</a>
+      <a href="/#nedir" data-t="navNedir">Sakin Nedir</a>
+      <a href="/blog/" data-t="navBlog">Blog</a>
+      <a href="/app" data-t="footApp">Uygulama</a>
+      <a href="/privacy/" data-t="footPrivacy">Gizlilik</a>
+      <a href="/terms/" data-t="footTerms">Hizmet Şartları</a>
       <a href="mailto:destek@sakin.life">destek@sakin.life</a>
     </div>
   </div>
 </footer>
+
+<script src="/site-i18n.js"></script>
+<script src="/site.js"></script>
 
 </body>
 </html>
