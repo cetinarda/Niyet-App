@@ -34,7 +34,7 @@
       var v = localStorage.getItem("sakin_site_theme");
       if (v === "light" || v === "dark") return v;
     } catch (e) {}
-    return "dark"; // marka varsayılanı: uygulama da koyu
+    return "light"; // varsayılan açık tema (kullanıcı tercihi)
   }
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
