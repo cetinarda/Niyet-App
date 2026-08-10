@@ -51,7 +51,27 @@
      Nefes halkası: uygulamanın nefes ekranındaki ritmi web'e taşıyan tek
      görsel öge. 11 saniyelik yavaş döngü, sayfaya girer girmez kullanıcının
      nefesini istemsizce yavaşlatsın diye. */
-  .hero { position:relative; text-align:center; padding:76px 26px 70px; }
+  .hero { position:relative; text-align:center; padding:76px 26px 70px; overflow:hidden; }
+
+  /* Hero fonu: görsel nefes halkasının ALTINA yedirilir. Maske ile her yönden
+     sayfaya karışır, kenar çizgisi görünmez. Görsel yoksa (dosya eklenmemişse)
+     bu katman görünmez kalır ve tasarım bozulmaz. */
+  .hero-bg {
+    position:absolute; left:50%; top:0; transform:translateX(-50%);
+    width:min(1500px, 155%); height:100%;
+    background:var(--hero-img) center 42% / cover no-repeat;
+    opacity:var(--hero-op);
+    pointer-events:none; z-index:0;
+    -webkit-mask-image:
+      radial-gradient(ellipse 52% 58% at 50% 40%, #000 32%, transparent 78%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 62%, transparent 96%);
+    mask-image:
+      radial-gradient(ellipse 52% 58% at 50% 40%, #000 32%, transparent 78%),
+      linear-gradient(to bottom, transparent 0%, #000 14%, #000 62%, transparent 96%);
+    -webkit-mask-composite:source-in; mask-composite:intersect;
+  }
+  .hero > *:not(.hero-bg) { position:relative; z-index:1; }
+
   .breath { position:relative; width:210px; height:210px; margin:0 auto 40px; }
   .ring {
     position:absolute; inset:0; border-radius:50%;
@@ -175,6 +195,8 @@
 </nav>
 
 <header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+
   <div class="breath up" style="animation-delay:.05s">
     <span class="ring"></span><span class="ring"></span><span class="ring"></span>
     <span class="core"></span>
