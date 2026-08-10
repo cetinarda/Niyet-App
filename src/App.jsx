@@ -4029,7 +4029,12 @@ export default function SakinApp() {
     setScreenRaw(s);
     if (!isPopRef.current) {
       screenHistoryRef.current.push(s);
-      const url = SCREEN_TO_URL[s] || "/";
+      // URL karşılığı olmayan ekranlarda web'de "/app" yazılır, "/" DEĞİL:
+      // sakin.life kökü artık tanıtım sayfası (public/home/index.html). "/" yazsaydık
+      // kullanıcı uygulamanın içindeyken sayfayı yenilediğinde tanıtım sayfasına
+      // düşerdi. Native'de "/" kalır — Capacitor WKWebView'da olmayan bir yola
+      // pushState edip beklenmedik bir yeniden yükleme olursa boş sayfa riski var.
+      const url = SCREEN_TO_URL[s] || (isNative ? "/" : "/app");
       history.pushState({ screen: s }, "", url);
     }
     isPopRef.current = false;
