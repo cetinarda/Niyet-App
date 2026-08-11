@@ -11428,7 +11428,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
               <div style={{ textAlign:"center",marginTop:8,marginBottom:24,padding:"18px 20px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:16 }}>
                 <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:10 }}>
-                  <span style={{ fontSize:16 }}>🔒</span>
+                  <span style={{ fontSize:16 }}>🌐</span>
                   <span style={{ fontSize:13,letterSpacing:2,color:"#888",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                     {t("premium_secure_payment")}
                   </span>
@@ -11436,10 +11436,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ fontSize:13,color:"#666",lineHeight:1.8,letterSpacing:0.3 }}>
                   {t("premium_secure_desc")}
                 </div>
-                <a href="https://www.lemonsqueezy.com" target="_blank" rel="noopener noreferrer"
-                  style={{ display:"inline-block",marginTop:10,fontSize:12,letterSpacing:1.5,color:"#b8a4d8",textDecoration:"none",borderBottom:"1px solid rgba(184,164,216,0.3)",paddingBottom:2 }}>
-                  lemonsqueezy.com →
-                </a>
               </div>
             </>
           )}
