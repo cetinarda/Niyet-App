@@ -11441,7 +11441,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           )}
 
           <hr className="divider" />
-          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t("pricing_footer")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
+          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t(isNative ? "pricing_footer" : "pricing_footer_web")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
         </div>
       )}
 
