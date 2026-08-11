@@ -52,7 +52,7 @@
 
   /* ── Açılış işareti ────────────────────────────────────────────────
      Eş merkezli üç ince halka ve ortada ışıyan mor küre. Halkalar sırayla,
-     yavaşça genişleyip daralıyor (10 sn); ritim uygulamanın giriş ekranındaki
+     genişleyip daralıyor (6 sn); ritim uygulamanın giriş ekranındaki
      gibi sakin ve sürekli, zıplama yok. Küre uygulamanın işaretindeki
      parıltıyı taşır. Tüm ölçüler --s'den türetilir; boyut değişince oranlar
      kendiliğinden korunur, tek sayı düzenlemek yeterli. */
@@ -63,7 +63,7 @@
   .breath span { position:absolute; border-radius:50%; }
   .breath .r1, .breath .r2, .breath .r3 {
     border:1.25px solid var(--mark-1);
-    animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
+    animation:markBreathe 6s cubic-bezier(.42,0,.58,1) infinite;
   }
   .breath .r1 { inset:0; box-shadow:var(--mark-sh-1); }
   .breath .r2 { inset:calc(var(--s) * .14);  border-color:var(--mark-2); animation-delay:.5s; }
@@ -75,7 +75,7 @@
     width:calc(var(--s) * .237); height:calc(var(--s) * .237);
     margin:calc(var(--s) * -.1185) 0 0 calc(var(--s) * -.1185);
     background:var(--mark-dot); box-shadow:var(--mark-dot-sh);
-    animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
+    animation:markBreathe 6s cubic-bezier(.42,0,.58,1) infinite;
   }
   @keyframes markBreathe {
     0%, 100% { transform:scale(0.965); }
