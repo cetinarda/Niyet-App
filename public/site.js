@@ -134,6 +134,48 @@
     applyLang(code);
   }
 
+  /* ── Ambient derinlik ───────────────────────────────────────────────── */
+  // Uygulamanın giriş ekranındaki fare-takipli ışık + yıldızlar efektinin
+  // site için soluklaştırılmış hali (bkz. site.css .ambient*). Sayfa arka
+  // planı boş durmasın diye eklendi; abartılı olmaması için sabit, az
+  // sayıda yıldız ve çok düşük opasiteli tek bir ışık kullanılıyor.
+  function buildAmbient() {
+    if (document.querySelector(".ambient")) return;
+    var wrap = document.createElement("div");
+    wrap.className = "ambient";
+    wrap.setAttribute("aria-hidden", "true");
+
+    var glow = document.createElement("div");
+    glow.className = "ambient-glow";
+    wrap.appendChild(glow);
+
+    var STAR_COUNT = 22;
+    for (var i = 0; i < STAR_COUNT; i++) {
+      var star = document.createElement("div");
+      star.className = "ambient-star";
+      var size = i % 7 === 0 ? 2.4 : i % 4 === 0 ? 1.6 : 1;
+      star.style.left = ((i * 41 + 7) % 100) + "%";
+      star.style.top = ((i * 29 + 13) % 100) + "%";
+      star.style.width = size + "px";
+      star.style.height = size + "px";
+      star.style.animationDuration = (3.5 + (i % 5)) + "s";
+      star.style.animationDelay = ((i * 0.37) % 5) + "s";
+      wrap.appendChild(star);
+    }
+
+    document.body.insertBefore(wrap, document.body.firstChild);
+
+    var raf = null;
+    window.addEventListener("mousemove", function (e) {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        glow.style.setProperty("--mx", ((e.clientX / window.innerWidth) * 100) + "%");
+        glow.style.setProperty("--my", ((e.clientY / window.innerHeight) * 100) + "%");
+        raf = null;
+      });
+    }, { passive: true });
+  }
+
   /* ── Menüyü kur ─────────────────────────────────────────────────────── */
   function buildLangMenu() {
     var wrap = document.querySelector(".lang-menu");
@@ -152,6 +194,7 @@
 
   function init() {
     applyTheme(readTheme());
+    buildAmbient();
     buildLangMenu();
     applyLang(readLang());
 
