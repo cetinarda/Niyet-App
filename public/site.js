@@ -149,6 +149,10 @@
     glow.className = "ambient-glow";
     wrap.appendChild(glow);
 
+    var cursor = document.createElement("div");
+    cursor.className = "ambient-cursor";
+    wrap.appendChild(cursor);
+
     var STAR_COUNT = 22;
     for (var i = 0; i < STAR_COUNT; i++) {
       var star = document.createElement("div");
@@ -169,8 +173,9 @@
     window.addEventListener("mousemove", function (e) {
       if (raf) return;
       raf = requestAnimationFrame(function () {
-        glow.style.setProperty("--mx", ((e.clientX / window.innerWidth) * 100) + "%");
-        glow.style.setProperty("--my", ((e.clientY / window.innerHeight) * 100) + "%");
+        wrap.style.setProperty("--mx", ((e.clientX / window.innerWidth) * 100) + "%");
+        wrap.style.setProperty("--my", ((e.clientY / window.innerHeight) * 100) + "%");
+        cursor.classList.add("active");
         raf = null;
       });
     }, { passive: true });
