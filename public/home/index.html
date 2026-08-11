@@ -59,7 +59,10 @@
   .hero-bg {
     position:absolute; left:50%; top:0; transform:translateX(-50%);
     width:min(1500px, 155%); height:100%;
-    background:var(--hero-img) center 42% / cover no-repeat;
+    /* cover DEĞİL: görsel 1.14:1, katman ~1.8:1 olduğu için cover yatayda
+       ölçekleyip kemeri ve oturan figürü kırpıyordu. 'auto 100%' görselin
+       TAMAMINI yükseklikte sığdırır; yanlarda kalan boşluğu zaten maske yutar. */
+    background:var(--hero-img) center center / auto 100% no-repeat;
     opacity:var(--hero-op);
     pointer-events:none; z-index:0;
     -webkit-mask-image:
@@ -69,6 +72,15 @@
       radial-gradient(ellipse 52% 58% at 50% 40%, #000 32%, transparent 78%),
       linear-gradient(to bottom, transparent 0%, #000 14%, #000 62%, transparent 96%);
     -webkit-mask-composite:source-in; mask-composite:intersect;
+  }
+  /* Okunabilirlik perdesi: metinler görselin parlak güneş bandının üstüne
+     denk gelip okunmuyordu. Üst kısım (nefes halkası) açıkta kalır, aşağı
+     doğru sayfa zeminine yaklaşır. Renk temadan gelir. */
+  .hero.has-bg::after {
+    content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:linear-gradient(to bottom,
+      transparent 0%, transparent 26%,
+      var(--hero-scrim) 58%, var(--hero-scrim) 100%);
   }
   .hero > *:not(.hero-bg) { position:relative; z-index:1; }
 
@@ -202,7 +214,7 @@
   </div>
 </nav>
 
-<header class="hero">
+<header class="hero has-bg">
   <div class="hero-bg" aria-hidden="true"></div>
 
   <div class="breath up" style="animation-delay:.05s">
