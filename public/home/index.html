@@ -47,71 +47,46 @@
 </script>
 
 <style>
-  /* ── Hero ─────────────────────────────────────────────────────────────
-     Nefes halkası: uygulamanın nefes ekranındaki ritmi web'e taşıyan tek
-     görsel öge. 11 saniyelik yavaş döngü, sayfaya girer girmez kullanıcının
-     nefesini istemsizce yavaşlatsın diye. */
-  .hero { position:relative; text-align:center; padding:76px 26px 70px; overflow:hidden; }
+  /* ── Hero ──────────────────────────────────────────────────────────── */
+  .hero { position:relative; text-align:center; padding:76px 26px 70px; }
 
-  /* Hero fonu: görsel nefes halkasının ALTINA yedirilir. Maske ile her yönden
-     sayfaya karışır, kenar çizgisi görünmez. Görsel yoksa (dosya eklenmemişse)
-     bu katman görünmez kalır ve tasarım bozulmaz. */
-  .hero-bg {
-    position:absolute; left:50%; top:0; transform:translateX(-50%);
-    width:min(1500px, 155%); height:100%;
-    /* cover DEĞİL: görsel 1.14:1, katman ~1.8:1 olduğu için cover yatayda
-       ölçekleyip kemeri ve oturan figürü kırpıyordu. 'auto 100%' görselin
-       TAMAMINI yükseklikte sığdırır; yanlarda kalan boşluğu zaten maske yutar. */
-    background:var(--hero-img) center center / auto 100% no-repeat;
-    opacity:var(--hero-op);
-    pointer-events:none; z-index:0;
-    -webkit-mask-image:
-      radial-gradient(ellipse 52% 58% at 50% 40%, #000 32%, transparent 78%),
-      linear-gradient(to bottom, transparent 0%, #000 14%, #000 62%, transparent 96%);
-    mask-image:
-      radial-gradient(ellipse 52% 58% at 50% 40%, #000 32%, transparent 78%),
-      linear-gradient(to bottom, transparent 0%, #000 14%, #000 62%, transparent 96%);
-    -webkit-mask-composite:source-in; mask-composite:intersect;
+  /* ── Açılış işareti ────────────────────────────────────────────────
+     Eş merkezli üç ince halka ve ortada ışıyan mor küre. Halkalar sırayla,
+     yavaşça genişleyip daralıyor (10 sn); ritim uygulamanın giriş ekranındaki
+     gibi sakin ve sürekli, zıplama yok. Küre uygulamanın işaretindeki
+     parıltıyı taşır. Ölçüler eşit adımlı: 186 / 134 / 86. */
+  .breath { position:relative; width:186px; height:186px; margin:0 auto 40px; }
+  .breath span { position:absolute; border-radius:50%; }
+  .breath .r1, .breath .r2, .breath .r3 {
+    border:1.25px solid var(--mark-1);
+    animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
   }
-  /* Okunabilirlik perdesi: metinler görselin parlak güneş bandının üstüne
-     denk gelip okunmuyordu. Üst kısım (nefes halkası) açıkta kalır, aşağı
-     doğru sayfa zeminine yaklaşır. Renk temadan gelir. */
-  .hero.has-bg::after {
-    content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
-    background:linear-gradient(to bottom,
-      transparent 0%, transparent 26%,
-      var(--hero-scrim) 58%, var(--hero-scrim) 100%);
+  .breath .r1 { inset:0;    box-shadow:var(--mark-sh-1); }
+  .breath .r2 { inset:26px; border-color:var(--mark-2); animation-delay:.5s; }
+  .breath .r3 { inset:50px; border-color:var(--mark-2); opacity:.6; animation-delay:1s; }
+  .breath .dot {
+    left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px;
+    background:var(--mark-dot); box-shadow:var(--mark-dot-sh);
+    animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
   }
-  .hero > *:not(.hero-bg) { position:relative; z-index:1; }
-
-  .breath { position:relative; width:210px; height:210px; margin:0 auto 40px; }
-  .ring {
-    position:absolute; inset:0; border-radius:50%;
-    border:1px solid var(--ring);
-    animation:breathe 11s ease-in-out infinite;
+  @keyframes markBreathe {
+    0%, 100% { transform:scale(0.965); }
+    50%      { transform:scale(1.035); }
   }
-  .ring:nth-child(2) { inset:24px; opacity:.72; animation-delay:.45s; }
-  .ring:nth-child(3) { inset:48px; opacity:.46; animation-delay:.9s; }
-  .core {
-    position:absolute; inset:80px; border-radius:50%;
-    background:var(--core); box-shadow:var(--core-glow);
-    animation:breathe 11s ease-in-out infinite;
-  }
-  @keyframes breathe {
-    0%,100% { transform:scale(0.94); opacity:.72; }
-    45%     { transform:scale(1.07); opacity:1; }
-    60%     { transform:scale(1.07); opacity:1; }
+  /* Hareket azaltma tercihinde işaret sabit durur, hiçbir şey kaybolmaz. */
+  @media (prefers-reduced-motion: reduce) {
+    .breath .r1, .breath .r2, .breath .r3, .breath .dot { animation:none; }
   }
 
   .hero h1 { margin-bottom:20px; }
-  /* Fon görseli kendi SAKİN logosunu taşıdığı için sayfadaki yazı görsel olarak
-     gizlenir; DOM'da kalır ki h1 SEO ve ekran okuyucu için okunabilsin. */
-  .hero.has-bg h1 {
+  /* Büyük SAKİN yazısı görsel olarak gizli (kullanıcı: font marka ile uyumsuz).
+     DOM'da kalır ki h1 SEO ve ekran okuyucular için okunabilsin. Marka üst
+     çubukta zaten sürekli görünüyor. */
+  .hero.no-mark h1 {
     position:absolute; width:1px; height:1px; margin:-1px; padding:0;
     overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
   }
-  /* Yazı gitti, halka ile metin arası boşluk yeniden dengelendi. */
-  .hero.has-bg .breath { margin-bottom:30px; }
+  .hero.no-mark .breath { margin-bottom:34px; }
   .hero h1 .mark {
     display:block; font-size:clamp(40px,9vw,76px); letter-spacing:16px;
     color:var(--title); font-weight:200; text-indent:16px;
@@ -214,12 +189,9 @@
   </div>
 </nav>
 
-<header class="hero has-bg">
-  <div class="hero-bg" aria-hidden="true"></div>
-
-  <div class="breath up" style="animation-delay:.05s">
-    <span class="ring"></span><span class="ring"></span><span class="ring"></span>
-    <span class="core"></span>
+<header class="hero no-mark">
+  <div class="breath up" style="animation-delay:.05s" aria-hidden="true">
+    <span class="r1"></span><span class="r2"></span><span class="r3"></span><span class="dot"></span>
   </div>
 
   <h1 class="up" style="animation-delay:.2s"><span class="mark">SAKİN</span></h1>
