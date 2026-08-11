@@ -54,18 +54,26 @@
      Eş merkezli üç ince halka ve ortada ışıyan mor küre. Halkalar sırayla,
      yavaşça genişleyip daralıyor (10 sn); ritim uygulamanın giriş ekranındaki
      gibi sakin ve sürekli, zıplama yok. Küre uygulamanın işaretindeki
-     parıltıyı taşır. Ölçüler eşit adımlı: 186 / 134 / 86. */
-  .breath { position:relative; width:186px; height:186px; margin:0 auto 40px; }
+     parıltıyı taşır. Tüm ölçüler --s'den türetilir; boyut değişince oranlar
+     kendiliğinden korunur, tek sayı düzenlemek yeterli. */
+  .breath {
+    --s: 128px;
+    position:relative; width:var(--s); height:var(--s); margin:0 auto 34px;
+  }
   .breath span { position:absolute; border-radius:50%; }
   .breath .r1, .breath .r2, .breath .r3 {
     border:1.25px solid var(--mark-1);
     animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
   }
-  .breath .r1 { inset:0;    box-shadow:var(--mark-sh-1); }
-  .breath .r2 { inset:26px; border-color:var(--mark-2); animation-delay:.5s; }
-  .breath .r3 { inset:50px; border-color:var(--mark-2); opacity:.6; animation-delay:1s; }
+  .breath .r1 { inset:0; box-shadow:var(--mark-sh-1); }
+  .breath .r2 { inset:calc(var(--s) * .14);  border-color:var(--mark-2); animation-delay:.5s; }
+  .breath .r3 { inset:calc(var(--s) * .269); border-color:var(--mark-2); opacity:.6; animation-delay:1s; }
+  /* Ortalamada transform DEĞİL negatif margin: transform'u animasyon (scale)
+     kullanıyor, ikisi aynı özellikte çakışırdı. */
   .breath .dot {
-    left:50%; top:50%; width:44px; height:44px; margin:-22px 0 0 -22px;
+    left:50%; top:50%;
+    width:calc(var(--s) * .237); height:calc(var(--s) * .237);
+    margin:calc(var(--s) * -.1185) 0 0 calc(var(--s) * -.1185);
     background:var(--mark-dot); box-shadow:var(--mark-dot-sh);
     animation:markBreathe 10s cubic-bezier(.42,0,.58,1) infinite;
   }
@@ -86,7 +94,6 @@
     position:absolute; width:1px; height:1px; margin:-1px; padding:0;
     overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;
   }
-  .hero.no-mark .breath { margin-bottom:34px; }
   .hero h1 .mark {
     display:block; font-size:clamp(40px,9vw,76px); letter-spacing:16px;
     color:var(--title); font-weight:200; text-indent:16px;
