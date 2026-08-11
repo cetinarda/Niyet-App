@@ -232,6 +232,7 @@ export const EXTRA_LANGS = {
     paid_app_price_sub:"Einmal bezahlen, für immer dein. Kein Abo.",
     paid_app_features: ["Tägliche Rituale für Absicht, Atem und Abendabschluss","Klangfrequenzen und sanfte Begleitung für 22 Chakren","KI-gestützter innerer Spiegel und Wochenbericht","Geburtshoroskop, Aszendent und Numerologie","Täglicher Himmelsbericht für jeden Tag","Steine und Pflanzen per Foto erkennen"],
     pricing_footer:    "Sicher gekauft über unseren Zahlungsanbieter. Bei Fragen:",
+    pricing_footer_web: "Bei Fragen:",
 
     zodiac_Oglakar: "Steinbock", zodiac_Kova: "Wassermann", zodiac_Balik: "Fische",
     zodiac_Koc: "Widder", zodiac_Boga: "Stier", zodiac_Ikizler: "Zwillinge",
@@ -932,6 +933,7 @@ export const EXTRA_LANGS = {
     paid_app_price_sub:"Pague uma vez, é seu para sempre. Sem assinatura.",
     paid_app_features: ["Rituais diários de intenção, respiração e encerramento","Frequências sonoras e orientação suave para 22 chakras","Espelho interior com IA e relatório semanal","Mapa astral, ascendente e numerologia","Relatório do Céu para cada dia","Identifique pedras e plantas por foto"],
     pricing_footer:    "Compra segura via nosso provedor de pagamentos. Dúvidas:",
+    pricing_footer_web: "Dúvidas:",
     lemon_checkout_url:"https://sakin.lemonsqueezy.com/checkout/buy/0fbd6f22-0ad0-4078-93b7-3f873912e1e2",
 
     // Termos de Serviço
@@ -1632,6 +1634,7 @@ export const EXTRA_LANGS = {
     paid_app_price_sub:"Paga una vez, es tuya para siempre. Sin suscripción.",
     paid_app_features: ["Rituales diarios de intención, respiración y cierre","Frecuencias sonoras y guía suave para 22 chakras","Espejo interior con IA e informe semanal","Carta natal, ascendente y numerología","Informe del Cielo para cada día","Identifica piedras y plantas por foto"],
     pricing_footer:    "Comprado de forma segura a través de nuestro proveedor de pagos. Preguntas:",
+    pricing_footer_web: "Preguntas:",
 
     zodiac_Oglakar: "Capricornio", zodiac_Kova: "Acuario", zodiac_Balik: "Piscis",
     zodiac_Koc: "Aries", zodiac_Boga: "Tauro", zodiac_Ikizler: "Géminis",
@@ -2335,6 +2338,7 @@ export const EXTRA_LANGS = {
     paid_app_price_sub:"Paie une fois, à toi pour toujours. Sans abonnement.",
     paid_app_features: ["Rituels quotidiens d'intention, de souffle et de clôture","Fréquences sonores et accompagnement doux pour 22 chakras","Miroir intérieur par IA et rapport hebdomadaire","Thème natal, ascendant et numérologie","Rapport du Ciel pour chaque jour","Identifier pierres et plantes par photo"],
     pricing_footer:    "Achat sécurisé via notre prestataire de paiement. Questions :",
+    pricing_footer_web: "Questions :",
 
     zodiac_Oglakar: "Capricorne", zodiac_Kova: "Verseau", zodiac_Balik: "Poissons",
     zodiac_Koc: "Bélier", zodiac_Boga: "Taureau", zodiac_Ikizler: "Gémeaux",
@@ -3034,6 +3038,7 @@ export const EXTRA_LANGS = {
     paid_app_price_sub:"一度の支払いで、永遠にあなたのもの。サブスクリプションなし。",
     paid_app_features: ["意図・呼吸・夜の締めくくりの毎日のリチュアル","22のチャクラのための音の周波数と穏やかな導き","AIによる内なる鏡と週次レポート","出生図・上昇星座・数秘術","毎日のための「空のレポート」","写真で石や植物を識別"],
     pricing_footer:    "決済プロバイダーを通じて安全に購入。ご質問は:",
+    pricing_footer_web: "ご質問は:",
 
     zodiac_Oglakar: "山羊座", zodiac_Kova: "水瓶座", zodiac_Balik: "魚座",
     zodiac_Koc: "牡羊座", zodiac_Boga: "牡牛座", zodiac_Ikizler: "双子座",

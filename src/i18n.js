@@ -239,6 +239,7 @@ export const TRANS = {
     paid_app_price_sub:"Bir kez öde, ömür boyu seninle. Abonelik yok.",
     paid_app_features: ["Günlük niyet, nefes ve akşam kapanışı ritüelleri","22 çakra için ses frekansları ve nazik rehberlik","Yapay zekâ destekli içsel ayna ve haftalık rapor","Doğum haritası, yükselen burç ve numeroloji","Her güne özel Gökyüzü Raporu","Fotoğrafla taş ve bitki tanıma"],
     pricing_footer:    "Güvenli ödeme altyapısı ile satın alınır. Sorularınız için:",
+    pricing_footer_web: "Sorularınız için:",
     lemon_checkout_url:"https://sakin.lemonsqueezy.com/checkout/buy/0fbd6f22-0ad0-4078-93b7-3f873912e1e2",
 
     // Hizmet Şartları
@@ -995,6 +996,7 @@ export const TRANS = {
     paid_app_price_sub:"Pay once, yours forever. No subscription.",
     paid_app_features: ["Daily intention, breath and evening closing rituals","Sound frequencies and gentle guidance for 22 chakras","AI-supported inner mirror and weekly report","Birth chart, rising sign and numerology","A daily Sky Report for each day","Identify stones and plants by photo"],
     pricing_footer:    "Purchased securely via our payment provider. For questions:",
+    pricing_footer_web: "For questions:",
     lemon_checkout_url:"https://sakin.lemonsqueezy.com/checkout/buy/0fbd6f22-0ad0-4078-93b7-3f873912e1e2",
 
     // Terms of Service
