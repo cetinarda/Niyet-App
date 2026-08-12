@@ -101,7 +101,7 @@ async function identifyPlant(imageDataUrl, lang) {
     .filter(Boolean);
 
   // Sci adı L1'e de koy: host DB eşleşmesi (name/nameEn) substring ile çalışsın.
-  const l1 = `${primary}${sci && primary !== sci ? ` (${sci})` : ""} — ${pctStr}`;
+  const l1 = `${primary}${sci && primary !== sci ? ` (${sci})` : ""}: ${pctStr}`;
   const out = [l1];
   if (alts.length) out.push(`${L(PLANT_TXT.alt, lang)}: ${alts.join(", ")}`);
   if (family) out.push(`${L(PLANT_TXT.fam, lang)}: ${family}`);
@@ -126,18 +126,18 @@ async function identifyWithLLM(imageDataUrl, kind, lang, name, candidates) {
     ? `Sakin currently knows these ${kind}s (name, with English/Latin name in parentheses):\n${list.join("; ")}\n\n`
     : "";
 
-  const prompt = `You are "Sakin" (a wellness app's) gentle identification guide. "Sakin" is only the app's name — never use it as the identified ${kind}'s name. Examine the photo of ${subject} closely, paying attention to ${features}.
+  const prompt = `You are "Sakin" (a wellness app's) gentle identification guide. "Sakin" is only the app's name; never use it as the identified ${kind}'s name. Examine the photo of ${subject} closely, paying attention to ${features}.
 
 ${listBlock}Identify it ONLY if you are reasonably confident. Do NOT force or guess.
 - If it clearly matches one of the ${kind}s Sakin knows, write THAT item's name on line 1, copied EXACTLY as written above (you may omit the parenthetical English part).
 - If you are confident it is something NOT in that list, you may still name what you actually see.
 - If you are NOT reasonably confident, the image is blurry or too far away, it is not ${subject}, or you cannot fill in all three lines below with real content, reply with EXACTLY this single word and nothing else: UNSURE
 
-When — and only when — you are confident, respond ENTIRELY in ${name}, using ONLY ${name} words, in exactly three short non-empty lines, each with real content (never just a number, never the word "Sakin" as a name):
-1) <name of the ${kind}> — confidence as a percentage.
+When (and only when) you are confident, respond ENTIRELY in ${name}, using ONLY ${name} words, in exactly three short non-empty lines, each with real content (never just a number, never the word "Sakin" as a name):
+1) <name of the ${kind}>: confidence as a percentage.
 2) Two alternatives it could be.
 3) One short, warm sentence about its nature/energy, in a grounded-spiritual tone.
-No medical advice.`;
+No medical advice. Do NOT use an em dash (—) anywhere in your reply; connect clauses with a comma, period, or colon instead.`;
 
   let data = null, lastStatus = 0;
   for (const model of GROQ_VISION_MODELS) {

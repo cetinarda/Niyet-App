@@ -352,18 +352,18 @@ const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"S
 // o önsöz kartın başında gereksiz yer kaplıyordu (kullanıcı: "çıkart, gerek yok").
 function buildMirrorSystemPrompt(lang, onsoz = true) {
   if (lang === "tr") {
-    return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla — doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama.
+    return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla; doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN — "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
+ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN; "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${onsoz ? `Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."` : ""}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
-  return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence — including disclaimers, opening lines, and any quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
-OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run.
+  return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence, including disclaimers, opening lines, and any quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
+OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run. Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
-ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings — never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
+ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings; never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
 Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
 At the very BEGINNING of your response, add this sentence translated naturally into ${name}: "This answer is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
@@ -373,12 +373,12 @@ At the very BEGINNING of your response, add this sentence translated naturally i
 // burası gövdedeki Türkçe sızıntısını engeller).
 function buildReportSystemPrompt(lang) {
   if (lang === "tr") {
-    return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
+    return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
 ÖZGÜNLÜK (çok önemli): Bu rapor biricik olsun. Kalıp cümlelerden, klişelerden, şablon açılışlardan KAÇIN. Kişinin SOMUT verisine (o haftaki niyetleri, kelimeleri, doğum profili, sayısal/burç enerjisi) doğrudan dayan; herkese uyan genel laflar etme. Yapıyı, açılışı ve imgeleri her raporda değiştir; aynı cümleleri tekrarlama.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
-  return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence — including quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love.
+  return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence, including quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love. Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 ORIGINALITY (very important): Make this report one of a kind. Avoid stock phrases, clichés, and template openings. Ground it in the person's SPECIFIC data (this week's intentions, their words, birth profile, numerology/zodiac energy); do not use generic one-size-fits-all language. Vary the structure, opening and imagery in every report; never repeat the same sentences.
 At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
@@ -594,21 +594,21 @@ const ELEM_I18N = {
   hava:   { tr:"Hava",   en:"Air",   de:"Luft",   es:"Aire",   pt:"Ar",    fr:"Air",   ja:"風" },
   su:     { tr:"Su",     en:"Water", de:"Wasser", es:"Agua",   pt:"Água",  fr:"Eau",   ja:"水" },
   title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
-  hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun — sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart — then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht — dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta — luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa — depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte — il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
+  hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun, sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart, then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht, dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta, luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa, depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte, il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
 };
 // "Sakin nedir?" pop-up'ı + ikili yol menüsü metinleri (Sprint 1 — basitleştirme).
 const NEDIR_I18N = {
   title:   { tr:"Sakin nedir?", en:"What is Sakin?", de:"Was ist Sakin?", es:"¿Qué es Sakin?", pt:"O que é o Sakin?", fr:"C'est quoi, Sakin ?", ja:"Sakinとは？" },
   vaat:    { tr:"İçindeki sesi net duyabilmen için kendinle bağlantını kolaylaştırır.", en:"It eases your connection with yourself, so you can hear the voice within clearly.", de:"Es erleichtert die Verbindung zu dir selbst, damit du deine innere Stimme klar hören kannst.", es:"Facilita tu conexión contigo mismo para que oigas con claridad tu voz interior.", pt:"Facilita a tua ligação contigo mesmo para ouvires com clareza a tua voz interior.", fr:"Il facilite ta connexion avec toi-même pour que tu entendes clairement ta voix intérieure.", ja:"内なる声をはっきりと聞けるよう、自分自身とのつながりをやさしく整えます。" },
   bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anındaki enerji haritanı ve karar alma biçimini gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design shows your energy map at birth and how you make decisions.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design zeigt deine Energiekarte bei der Geburt und wie du Entscheidungen triffst.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño muestra tu mapa de energía al nacer y cómo tomas decisiones.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design mostra o teu mapa de energia ao nascer e como tomas decisões.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design montre ta carte d'énergie à la naissance et comment tu prends tes décisions.", ja:"星座、動物、石、そしてあなたのデザイン。デザインは誕生の瞬間のエネルギー地図と、あなたの決め方を映します。" },
-  bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them — your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les — ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
+  bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them: your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les : ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
   off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
   yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
   kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
-  kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın — sana dair işaretler.", en:"Your sign, your design, your animal, your stone — the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein — Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra — señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra — sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre — des signes qui te concernent.", ja:"星座、デザイン、動物、石——あなたにまつわるしるし。" },
+  kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın: sana dair işaretler.", en:"Your sign, your design, your animal, your stone: the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein: Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra: señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra: sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre : des signes qui te concernent.", ja:"星座、デザイン、動物、石、あなたにまつわるしるし。" },
   baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
-  baglanD: { tr:"Niyet, nefes, ses — günün küçük sakinlik pratiği.", en:"Intention, breath, sound — your small daily practice of calm.", de:"Absicht, Atem, Klang — deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido — tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som — a tua pequena prática diária de calma.", fr:"Intention, souffle, son — ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音——毎日の小さな穏やかさの習慣。" },
+  baglanD: { tr:"Niyet, nefes, ses: günün küçük sakinlik pratiği.", en:"Intention, breath, sound: your small daily practice of calm.", de:"Absicht, Atem, Klang: deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido: tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som: a tua pequena prática diária de calma.", fr:"Intention, souffle, son : ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音、毎日の小さな穏やかさの習慣。" },
   yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
   // Köken/imza satırı. Yeri bilinçli: vaat cümlesinin HEMEN ALTINDA — okuyucu
   // "Sakin ne yapar"ı yeni anlamışken, o vaadin nereden geldiğini görüyor.
@@ -761,7 +761,7 @@ const LIFE_PATH_DESC = {
     2:"Diplomat, intuitive. Bridge-builder, seeker of balance and peace.",
     3:"Creative voice. Touches the world through expression, art, joy.",
     4:"Builder. Lays solid foundations with patience and discipline.",
-    5:"Free spirit. Change, movement, variety — that's the breath.",
+    5:"Free spirit. Change, movement, variety: that's the breath.",
     6:"Love & responsibility. Serves family and community.",
     7:"Wise seeker. Turns inward; mystical and analytical at once.",
     8:"Power & balance. Mastery across material and spiritual worlds.",
@@ -869,7 +869,7 @@ const EV12_BURCU_ACIKLAMA = {
     "Koç":     { tema:"Suppressed Courage & Anger", yorum:"With Aries in your 12th, a daring, pioneering energy rests in your unconscious. Your power to begin, your independent will and the courage to express anger are held back here. Your karmic lesson: recognise your own will and stop fearing action. Your hidden strength: the resolve to push through obstacles." },
     "Boğa":    { tema:"Suppressed Security & Worth", yorum:"With Taurus in your 12th, your need for rooting, contact with nature and material safety deepens unconsciously. Difficulty valuing yourself or neglecting the body is this house's shadow. Your karmic lesson: carry your worth from the bodily into the soulful. Your hidden strength: patience and unshakeable resolve." },
     "İkizler": { tema:"Suppressed Curiosity & Communication", yorum:"With Gemini in your 12th, you hold a deep capacity for inner dialogue, written understanding and wordless communication. Struggling to express your thoughts or hoarding knowledge inside is this house's shadow. Your karmic lesson: carry the inner voice outward. Your hidden strength: writing and deep reflection." },
-    "Yengeç":  { tema:"Suppressed Tenderness & Family", yorum:"With Cancer in your 12th, emotional security, caretaking and the idea of home hold strong space in your unconscious. The tendency to hide your need to lean on someone — or to hide your childhood wound — is this house's shadow. Your karmic lesson: mother yourself. Your hidden strength: deep empathy and intuitive understanding." },
+    "Yengeç":  { tema:"Suppressed Tenderness & Family", yorum:"With Cancer in your 12th, emotional security, caretaking and the idea of home hold strong space in your unconscious. The tendency to hide your need to lean on someone, or to hide your childhood wound, is this house's shadow. Your karmic lesson: mother yourself. Your hidden strength: deep empathy and intuitive understanding." },
     "Aslan":   { tema:"Suppressed Creativity & Expression", yorum:"With Leo in your 12th, creative potential and heart-led leadership quietly deepen. Not wanting to be seen, avoiding applause or feeling shame about your own brilliance is this house's shadow. Your karmic lesson: allow your authentic expression. Your hidden strength: the capacity to carry your light from within to without." },
     "Başak":   { tema:"Suppressed Perfectionism & Service", yorum:"With Virgo in your 12th, an analytical mind and the desire to serve work in your unconscious. Criticising yourself or others, hunting for flaws, or over-controlling the body is this house's shadow. Your karmic lesson: a compassionate self-analysis. Your hidden strength: precise understanding and healing service." },
     "Terazi":  { tema:"Suppressed Balance & Relationship", yorum:"With Libra in your 12th, the longing for harmony, the search for justice and the need for balance in relationships work in the depths. Avoiding conflict or giving up yourself to make another happy is this house's shadow. Your karmic lesson: make peace with your own needs. Your hidden strength: intuitive diplomacy." },
@@ -1050,62 +1050,62 @@ function draconicSun(natalSunSign, northNodeSign) {
 // Ruhun bu bedene girmeden önceki kökeni / kimliği
 const DRACONIC_SUN_KISA = {
   tr: {
-    "Koç":     "Ruhun savaşçı kökenli — cesaret, başlatma gücü ve öncülük enerjisi getirdin.",
-    "Boğa":    "Ruhun bahçıvan kökenli — sabır, beden bilgeliği ve içsel huzur enerjisi getirdin.",
-    "İkizler": "Ruhun haberci kökenli — merak, bilgi köprüleme ve bağlantı kurma yeteneği getirdin.",
-    "Yengeç":  "Ruhun şifacı kökenli — derin şefkat, duygusal hafıza ve koruma içgüdüsü getirdin.",
-    "Aslan":   "Ruhun ışık taşıyıcı kökenli — yaratıcı kıvılcım, kalp gücü ve özgün ifade getirdin.",
-    "Başak":   "Ruhun zanaatkâr kökenli — hizmet, detay disiplini ve iyileştirme becerisi getirdin.",
-    "Terazi":  "Ruhun arabulucu kökenli — uyum arzusu, adalet duygusu ve estetik hassasiyet getirdin.",
-    "Akrep":   "Ruhun dönüştürücü kökenli — derinlik, psikolojik içgörü ve dönüşüm gücü getirdin.",
-    "Yay":     "Ruhun gezgin filozof kökenli — hakikat arayışı, özgürlük ve geniş ufuk getirdin.",
-    "Oğlak":   "Ruhun usta-inşacı kökenli — disiplin, hedef bilinci ve uzun vadeli kararlılık getirdin.",
-    "Kova":    "Ruhun vizyoner-devrimci kökenli — bağımsız zihin, kolektif vizyon ve özgünlük getirdin.",
-    "Balık":   "Ruhun mistik kökenli — evrensel sevgi, sezgisel bilgi ve teslimiyet kapasitesi getirdin.",
+    "Koç":     "Ruhun savaşçı kökenli: cesaret, başlatma gücü ve öncülük enerjisi getirdin.",
+    "Boğa":    "Ruhun bahçıvan kökenli: sabır, beden bilgeliği ve içsel huzur enerjisi getirdin.",
+    "İkizler": "Ruhun haberci kökenli: merak, bilgi köprüleme ve bağlantı kurma yeteneği getirdin.",
+    "Yengeç":  "Ruhun şifacı kökenli: derin şefkat, duygusal hafıza ve koruma içgüdüsü getirdin.",
+    "Aslan":   "Ruhun ışık taşıyıcı kökenli: yaratıcı kıvılcım, kalp gücü ve özgün ifade getirdin.",
+    "Başak":   "Ruhun zanaatkâr kökenli: hizmet, detay disiplini ve iyileştirme becerisi getirdin.",
+    "Terazi":  "Ruhun arabulucu kökenli: uyum arzusu, adalet duygusu ve estetik hassasiyet getirdin.",
+    "Akrep":   "Ruhun dönüştürücü kökenli: derinlik, psikolojik içgörü ve dönüşüm gücü getirdin.",
+    "Yay":     "Ruhun gezgin filozof kökenli: hakikat arayışı, özgürlük ve geniş ufuk getirdin.",
+    "Oğlak":   "Ruhun usta-inşacı kökenli: disiplin, hedef bilinci ve uzun vadeli kararlılık getirdin.",
+    "Kova":    "Ruhun vizyoner-devrimci kökenli: bağımsız zihin, kolektif vizyon ve özgünlük getirdin.",
+    "Balık":   "Ruhun mistik kökenli: evrensel sevgi, sezgisel bilgi ve teslimiyet kapasitesi getirdin.",
   },
   en: {
-    "Koç":     "Your soul is of warrior origin — you brought courage, initiating force and pioneering energy.",
-    "Boğa":    "Your soul is of gardener origin — you brought patience, body wisdom and inner peace.",
-    "İkizler": "Your soul is of messenger origin — you brought curiosity, bridge-building and connective intelligence.",
-    "Yengeç":  "Your soul is of healer origin — you brought deep compassion, emotional memory and protective instinct.",
-    "Aslan":   "Your soul is of light-bearer origin — you brought creative spark, heart-power and authentic expression.",
-    "Başak":   "Your soul is of craftsperson origin — you brought devotion to service, precision and healing attention.",
-    "Terazi":  "Your soul is of mediator origin — you brought longing for harmony, sense of justice and aesthetic refinement.",
-    "Akrep":   "Your soul is of transformer origin — you brought depth, psychological insight and alchemical power.",
-    "Yay":     "Your soul is of wandering philosopher origin — you brought truth-seeking, freedom and wide horizons.",
-    "Oğlak":   "Your soul is of master-builder origin — you brought discipline, focus and long-term resolve.",
-    "Kova":    "Your soul is of visionary-rebel origin — you brought independent mind, collective vision and originality.",
-    "Balık":   "Your soul is of mystic origin — you brought universal love, intuitive knowing and capacity for surrender.",
+    "Koç":     "Your soul is of warrior origin: you brought courage, initiating force and pioneering energy.",
+    "Boğa":    "Your soul is of gardener origin: you brought patience, body wisdom and inner peace.",
+    "İkizler": "Your soul is of messenger origin: you brought curiosity, bridge-building and connective intelligence.",
+    "Yengeç":  "Your soul is of healer origin: you brought deep compassion, emotional memory and protective instinct.",
+    "Aslan":   "Your soul is of light-bearer origin: you brought creative spark, heart-power and authentic expression.",
+    "Başak":   "Your soul is of craftsperson origin: you brought devotion to service, precision and healing attention.",
+    "Terazi":  "Your soul is of mediator origin: you brought longing for harmony, sense of justice and aesthetic refinement.",
+    "Akrep":   "Your soul is of transformer origin: you brought depth, psychological insight and alchemical power.",
+    "Yay":     "Your soul is of wandering philosopher origin: you brought truth-seeking, freedom and wide horizons.",
+    "Oğlak":   "Your soul is of master-builder origin: you brought discipline, focus and long-term resolve.",
+    "Kova":    "Your soul is of visionary-rebel origin: you brought independent mind, collective vision and originality.",
+    "Balık":   "Your soul is of mystic origin: you brought universal love, intuitive knowing and capacity for surrender.",
   },
 };
 const DRACONIC_SUN_DETAY = {
   tr: {
-    "Koç":     "Ruhsal kökeninde sen bir öncüsün. Bu bedene girmeden önce yeni alanlar açma, ilk adımı atma ve yalın iradeyle hareket etme tecrübesi taşıyordun. Eğer natal Güneşin pasif veya uyumlu bir burçtaysa hayatın boyunca 'sakin görünmeye zorlandığını' ama içinde durmayan bir savaşçı yaşadığını hissedersin. Misyonun: kendi iradenin meşru olduğunu hatırlamak, başkalarının onayını beklemeden başlamak. Gölgen: bastırılmış öfke ve aceleyle hareket. Şifan: cesaretle teslimiyeti dengelemek — kılıcı doğru anda çekmek.",
+    "Koç":     "Ruhsal kökeninde sen bir öncüsün. Bu bedene girmeden önce yeni alanlar açma, ilk adımı atma ve yalın iradeyle hareket etme tecrübesi taşıyordun. Eğer natal Güneşin pasif veya uyumlu bir burçtaysa hayatın boyunca 'sakin görünmeye zorlandığını' ama içinde durmayan bir savaşçı yaşadığını hissedersin. Misyonun: kendi iradenin meşru olduğunu hatırlamak, başkalarının onayını beklemeden başlamak. Gölgen: bastırılmış öfke ve aceleyle hareket. Şifan: cesaretle teslimiyeti dengelemek, kılıcı doğru anda çekmek.",
     "Boğa":    "Ruhsal kökeninde sen bir bahçıvan, bir köklendiricisin. Bu bedene girmeden önce maddeyi kutsamayı, beden bilgeliğini ve yavaş güzelliği öğrenmiştin. Natal Güneşin hızlı bir burçtaysa hayatın boyunca 'koşturmaya zorlandığını' ama ruhunun durmak, dokunmak, beslemek istediğini hissedersin. Misyonun: ruhu maddeye indirip kutsallık katmak, beden ve doğa üzerinden iyileşmek. Gölgen: aşırı tutunma ve hareketsizlik. Şifan: değer hissini dış sahipliklerden değil, kendi varlığından almak.",
-    "İkizler": "Ruhsal kökeninde sen bir habercisin — köprü kuran, çeviren, yayan bir varlık. Bu bedene girmeden önce bilgiyi taşımak ve dünyaları birbirine bağlamak deneyimini biriktirmiştin. Natal Güneşin sessiz veya derin bir burçtaysa içindeki seslerin çokluğunu kimseye anlatamadığını hissedersin. Misyonun: gördüğünü, duyduğunu, sezdiğini sade dile çevirmek. Gölgen: dağınıklık ve yüzeyselliğe kaçma. Şifan: zihnini bir hizmet aracı olarak kullanmak — laf değil, ışık taşımak.",
+    "İkizler": "Ruhsal kökeninde sen bir habercisin, köprü kuran, çeviren, yayan bir varlık. Bu bedene girmeden önce bilgiyi taşımak ve dünyaları birbirine bağlamak deneyimini biriktirmiştin. Natal Güneşin sessiz veya derin bir burçtaysa içindeki seslerin çokluğunu kimseye anlatamadığını hissedersin. Misyonun: gördüğünü, duyduğunu, sezdiğini sade dile çevirmek. Gölgen: dağınıklık ve yüzeyselliğe kaçma. Şifan: zihnini bir hizmet aracı olarak kullanmak, laf değil, ışık taşımak.",
     "Yengeç":  "Ruhsal kökeninde sen bir şifacı, bir bakıcı, bir anasın. Bu bedene girmeden önce duygusal hafızanın derinliklerinde yüzmüş, başkalarının yaralarını taşımayı öğrenmiştin. Natal Güneşin soğuk veya analitik bir burçtaysa hayatın boyunca 'sert görünmek zorunda kaldığını' ama içinde okyanus taşıdığını hissedersin. Misyonun: duygusal güvenlik alanı yaratmak, kendine ve başkalarına ana şefkati sunmak. Gölgen: aşırı korumacılık ve duygusal tutsaklık. Şifan: önce kendi iç çocuğuna anne olmak.",
-    "Aslan":   "Ruhsal kökeninde sen bir ışık taşıyıcısın — kalpten yaratan, alkışlanmadan da parlayan bir varlık. Bu bedene girmeden önce sahnenin kutsallığını, yaratıcılığın tanrısal olduğunu biliyordun. Natal Güneşin alçakgönüllü bir burçtaysa hayatın boyunca 'küçülmeye, fark edilmemeye' çalıştığını ama içindeki kralın/kraliçenin huzursuzlandığını hissedersin. Misyonun: ışığını saklamadan, gösteriş yapmadan ortaya koymak. Gölgen: onaya ihtiyaç ve kibir. Şifan: parlamayı bir hizmet olarak görmek — ışığın başkasının yolunu aydınlatır.",
-    "Başak":   "Ruhsal kökeninde sen bir zanaatkâr ve şifacısın — detayda kutsalı görme yeteneği taşıyordun. Bu bedene girmeden önce hizmet etmenin alçakgönüllü bir tanrısallık olduğunu öğrenmiştin. Natal Güneşin geniş ve dağınık bir burçtaysa kendini sürekli 'düzeltmek, sistematize etmek zorunda' hissedersin. Misyonun: kusurlu olanı yargılamak değil, ona itinayla bakım vermek. Gölgen: aşırı eleştiri ve mükemmellik takıntısı. Şifan: şefkatli analiz — önce kendine.",
-    "Terazi":  "Ruhsal kökeninde sen bir arabulucu, bir estet, bir denge ustasısın. Bu bedene girmeden önce ilişkilerin ve uyumun kutsallığını öğrenmiştin. Natal Güneşin bağımsız ya da çatışmacı bir burçtaysa hayatın boyunca 'tek başına savaşmak zorunda kalmaktan' yorgun hissedersin. Misyonun: ortaklıklar üzerinden büyümek, adaleti ince bir sezgiyle taşımak. Gölgen: karar verememe ve onay ihtiyacı. Şifan: kendine evet demeyi öğrenmek — ancak o zaman gerçek dengeyi kurarsın.",
-    "Akrep":   "Ruhsal kökeninde sen bir simyacı, bir dönüştürücüsün — yaşamın altında ölümün ve ölümün altında yeniden doğuşun olduğunu biliyordun. Bu bedene girmeden önce yoğun duyguların ve psikolojik derinliğin kutsallığını öğrenmiştin. Natal Güneşin hafif veya neşeli bir burçtaysa hayatın boyunca 'fazla derin, fazla yoğun' olarak yargılandığını hissedersin. Misyonun: kendinin ve başkalarının gölgesine korkmadan inmek, dönüştürmek. Gölgen: kontrol ve güvensizlik. Şifan: derinliğini bir şifa hediyesi olarak kullanmak.",
-    "Yay":     "Ruhsal kökeninde sen bir gezgin filozof, bir hakikat avcısısın. Bu bedene girmeden önce farklı kültürlerin, inançların ve ufukların bilgisini biriktirmiştin. Natal Güneşin yerleşik veya gelenekselci bir burçtaysa hayatın boyunca 'bir yere ait olmaya zorlandığını' ama ruhunun sınırsız bir özgürlük istediğini hissedersin. Misyonun: hakikati yaşamak ve paylaşmak — kürsüden değil, yoldan. Gölgen: dogmatiklik ve sürekli kaçış. Şifan: aradığın bilgeliğin başlangıç noktasının kendi içinde olduğunu fark etmek.",
-    "Oğlak":   "Ruhsal kökeninde sen bir usta-inşacı, bir bilge yaşlısın. Bu bedene girmeden önce zamanın, sorumluluğun ve maddi tezahürün disiplinini öğrenmiştin. Natal Güneşin oyunlu veya pasif bir burçtaysa hayatın boyunca 'fazla ciddi, fazla yetişkin' olduğunu hissedersin. Misyonun: kendi otoriteni dış otoritelerden bağımsız inşa etmek, kalıcı bir şey kurmak. Gölgen: katılık ve duygusal mesafe. Şifan: başarının sevgiyle dengelenmesi — inşa ettiğinin içinde yumuşaklığa yer açmak.",
-    "Kova":    "Ruhsal kökeninde sen bir vizyoner, bir devrimcisin — geleceği şimdide görme yeteneği getirmiştin. Bu bedene girmeden önce kolektifin evrimine bağlanmış, kalıpların dışında düşünmeyi öğrenmiştin. Natal Güneşin geleneksel veya bağımlı bir burçtaysa hayatın boyunca 'kalıplara sıkışmaktan' boğulduğunu hissedersin. Misyonun: özgün vizyonunu insanlığa armağan etmek, eski yapıları kibarca dönüştürmek. Gölgen: kopukluk ve duygusal mesafe. Şifan: bağımsızlığı yalnızlık değil, hizmet olarak yaşamak.",
-    "Balık":   "Ruhsal kökeninde sen bir mistik, bir okyanussun — sınırların ötesinden geldin. Bu bedene girmeden önce evrensel sevginin, teslimiyetin ve birleşmenin bilgisini taşıyordun. Natal Güneşin keskin veya sınırları net bir burçtaysa hayatın boyunca 'fazla yumuşak, fazla erimiş' olarak yargılandığını hissedersin. Misyonun: şefkati ve sezgiyi günlük hayata yerleştirmek — sınırını koruyarak sevmek. Gölgen: kaçış ve kendini kurban etme. Şifan: ilahi olanla bağını korurken ayaklarını yere basmak.",
+    "Aslan":   "Ruhsal kökeninde sen bir ışık taşıyıcısın, kalpten yaratan, alkışlanmadan da parlayan bir varlık. Bu bedene girmeden önce sahnenin kutsallığını, yaratıcılığın tanrısal olduğunu biliyordun. Natal Güneşin alçakgönüllü bir burçtaysa hayatın boyunca 'küçülmeye, fark edilmemeye' çalıştığını ama içindeki kralın/kraliçenin huzursuzlandığını hissedersin. Misyonun: ışığını saklamadan, gösteriş yapmadan ortaya koymak. Gölgen: onaya ihtiyaç ve kibir. Şifan: parlamayı bir hizmet olarak görmek. Işığın başkasının yolunu aydınlatır.",
+    "Başak":   "Ruhsal kökeninde sen bir zanaatkâr ve şifacısın. Detayda kutsalı görme yeteneği taşıyordun. Bu bedene girmeden önce hizmet etmenin alçakgönüllü bir tanrısallık olduğunu öğrenmiştin. Natal Güneşin geniş ve dağınık bir burçtaysa kendini sürekli 'düzeltmek, sistematize etmek zorunda' hissedersin. Misyonun: kusurlu olanı yargılamak değil, ona itinayla bakım vermek. Gölgen: aşırı eleştiri ve mükemmellik takıntısı. Şifan: şefkatli analiz, önce kendine.",
+    "Terazi":  "Ruhsal kökeninde sen bir arabulucu, bir estet, bir denge ustasısın. Bu bedene girmeden önce ilişkilerin ve uyumun kutsallığını öğrenmiştin. Natal Güneşin bağımsız ya da çatışmacı bir burçtaysa hayatın boyunca 'tek başına savaşmak zorunda kalmaktan' yorgun hissedersin. Misyonun: ortaklıklar üzerinden büyümek, adaleti ince bir sezgiyle taşımak. Gölgen: karar verememe ve onay ihtiyacı. Şifan: kendine evet demeyi öğrenmek. Ancak o zaman gerçek dengeyi kurarsın.",
+    "Akrep":   "Ruhsal kökeninde sen bir simyacı, bir dönüştürücüsün. Yaşamın altında ölümün ve ölümün altında yeniden doğuşun olduğunu biliyordun. Bu bedene girmeden önce yoğun duyguların ve psikolojik derinliğin kutsallığını öğrenmiştin. Natal Güneşin hafif veya neşeli bir burçtaysa hayatın boyunca 'fazla derin, fazla yoğun' olarak yargılandığını hissedersin. Misyonun: kendinin ve başkalarının gölgesine korkmadan inmek, dönüştürmek. Gölgen: kontrol ve güvensizlik. Şifan: derinliğini bir şifa hediyesi olarak kullanmak.",
+    "Yay":     "Ruhsal kökeninde sen bir gezgin filozof, bir hakikat avcısısın. Bu bedene girmeden önce farklı kültürlerin, inançların ve ufukların bilgisini biriktirmiştin. Natal Güneşin yerleşik veya gelenekselci bir burçtaysa hayatın boyunca 'bir yere ait olmaya zorlandığını' ama ruhunun sınırsız bir özgürlük istediğini hissedersin. Misyonun: hakikati yaşamak ve paylaşmak, kürsüden değil, yoldan. Gölgen: dogmatiklik ve sürekli kaçış. Şifan: aradığın bilgeliğin başlangıç noktasının kendi içinde olduğunu fark etmek.",
+    "Oğlak":   "Ruhsal kökeninde sen bir usta-inşacı, bir bilge yaşlısın. Bu bedene girmeden önce zamanın, sorumluluğun ve maddi tezahürün disiplinini öğrenmiştin. Natal Güneşin oyunlu veya pasif bir burçtaysa hayatın boyunca 'fazla ciddi, fazla yetişkin' olduğunu hissedersin. Misyonun: kendi otoriteni dış otoritelerden bağımsız inşa etmek, kalıcı bir şey kurmak. Gölgen: katılık ve duygusal mesafe. Şifan: başarının sevgiyle dengelenmesi, inşa ettiğinin içinde yumuşaklığa yer açmak.",
+    "Kova":    "Ruhsal kökeninde sen bir vizyoner, bir devrimcisin. Geleceği şimdide görme yeteneği getirmiştin. Bu bedene girmeden önce kolektifin evrimine bağlanmış, kalıpların dışında düşünmeyi öğrenmiştin. Natal Güneşin geleneksel veya bağımlı bir burçtaysa hayatın boyunca 'kalıplara sıkışmaktan' boğulduğunu hissedersin. Misyonun: özgün vizyonunu insanlığa armağan etmek, eski yapıları kibarca dönüştürmek. Gölgen: kopukluk ve duygusal mesafe. Şifan: bağımsızlığı yalnızlık değil, hizmet olarak yaşamak.",
+    "Balık":   "Ruhsal kökeninde sen bir mistik, bir okyanussun. Sınırların ötesinden geldin. Bu bedene girmeden önce evrensel sevginin, teslimiyetin ve birleşmenin bilgisini taşıyordun. Natal Güneşin keskin veya sınırları net bir burçtaysa hayatın boyunca 'fazla yumuşak, fazla erimiş' olarak yargılandığını hissedersin. Misyonun: şefkati ve sezgiyi günlük hayata yerleştirmek, sınırını koruyarak sevmek. Gölgen: kaçış ve kendini kurban etme. Şifan: ilahi olanla bağını korurken ayaklarını yere basmak.",
   },
   en: {
-    "Koç":     "At your soul's origin you are a pioneer. Before entering this body you carried the experience of opening new ground, taking the first step and moving by pure will. If your natal Sun is in a passive or harmonious sign you may feel pressed your whole life to 'appear calm' while a restless warrior lives inside you. Your mission: remember that your own will is valid and begin without waiting for anyone's approval. Your shadow: suppressed anger and impulsive action. Your healing: balancing courage with surrender — drawing the sword only at the right moment.",
+    "Koç":     "At your soul's origin you are a pioneer. Before entering this body you carried the experience of opening new ground, taking the first step and moving by pure will. If your natal Sun is in a passive or harmonious sign you may feel pressed your whole life to 'appear calm' while a restless warrior lives inside you. Your mission: remember that your own will is valid and begin without waiting for anyone's approval. Your shadow: suppressed anger and impulsive action. Your healing: balancing courage with surrender, drawing the sword only at the right moment.",
     "Boğa":    "At your soul's origin you are a gardener, a rooter. Before entering this body you learned to bless matter, hold body wisdom and the beauty of slowness. If your natal Sun is in a fast sign you may feel pressed your whole life to 'keep running' while your soul wants to stop, touch and nourish. Your mission: bring spirit into matter and infuse the sacred; heal through body and nature. Your shadow: over-clinging and inertia. Your healing: drawing your sense of worth from your own being rather than outer possessions.",
-    "İkizler": "At your soul's origin you are a messenger — a bridge-builder, translator and transmitter. Before entering this body you gathered the experience of carrying knowledge and connecting worlds. If your natal Sun is in a quiet or deep sign you may feel that you cannot tell anyone how many voices live inside you. Your mission: translate what you see, hear and sense into plain language. Your shadow: scatter and slipping into the superficial. Your healing: using your mind as an instrument of service — carrying light, not chatter.",
+    "İkizler": "At your soul's origin you are a messenger, a bridge-builder, translator and transmitter. Before entering this body you gathered the experience of carrying knowledge and connecting worlds. If your natal Sun is in a quiet or deep sign you may feel that you cannot tell anyone how many voices live inside you. Your mission: translate what you see, hear and sense into plain language. Your shadow: scatter and slipping into the superficial. Your healing: using your mind as an instrument of service, carrying light, not chatter.",
     "Yengeç":  "At your soul's origin you are a healer, a caretaker, a mother. Before entering this body you swam in the depths of emotional memory and learned to carry others' wounds. If your natal Sun is in a cold or analytical sign you may feel pressed your whole life to 'appear tough' while you carry an ocean inside. Your mission: create emotional safety, offer maternal compassion to yourself and others. Your shadow: over-protection and emotional captivity. Your healing: mothering your own inner child first.",
-    "Aslan":   "At your soul's origin you are a light-bearer — a being who creates from the heart and shines without applause. Before entering this body you knew the sacredness of the stage and that creativity is divine. If your natal Sun is in a humble sign you may have spent your life 'trying to shrink, to go unseen' while the king/queen inside grew restless. Your mission: bring your light forward without hiding and without spectacle. Your shadow: need for approval and pride. Your healing: seeing your shining as service — your light lights another's path.",
-    "Başak":   "At your soul's origin you are a craftsperson and a healer — you carried the ability to see the sacred in the detail. Before entering this body you learned that service is a humble form of divinity. If your natal Sun is in a wide and scattered sign you may feel constantly 'forced to fix and systematise' yourself. Your mission: not to judge what is flawed but to tend it with care. Your shadow: harsh critique and obsession with perfection. Your healing: compassionate analysis — toward yourself first.",
-    "Terazi":  "At your soul's origin you are a mediator, an aesthete, a master of balance. Before entering this body you learned the sacredness of relationship and harmony. If your natal Sun is in an independent or combative sign you may feel exhausted by 'having to fight alone'. Your mission: grow through partnerships and carry justice with a delicate intuition. Your shadow: indecision and need for approval. Your healing: learning to say yes to yourself — only then do you find true balance.",
-    "Akrep":   "At your soul's origin you are an alchemist, a transformer — you knew that beneath life lies death and beneath death lies rebirth. Before entering this body you learned the sacredness of intense feeling and psychological depth. If your natal Sun is in a light or cheerful sign you may have felt judged your whole life as 'too deep, too intense'. Your mission: descend without fear into your own and others' shadow and transform it. Your shadow: control and insecurity. Your healing: using your depth as a gift of healing.",
-    "Yay":     "At your soul's origin you are a wandering philosopher, a truth-hunter. Before entering this body you gathered the knowledge of different cultures, beliefs and horizons. If your natal Sun is in a settled or traditional sign you may feel pressed your whole life to 'belong somewhere' while your soul longs for boundless freedom. Your mission: live the truth and share it — not from a pulpit, but from the road. Your shadow: dogmatism and constant escape. Your healing: noticing that the starting point of the wisdom you seek is inside you.",
-    "Oğlak":   "At your soul's origin you are a master-builder, a wise elder. Before entering this body you learned the discipline of time, responsibility and material manifestation. If your natal Sun is in a playful or passive sign you may feel 'too serious, too adult' your whole life. Your mission: build your own authority independent of outer ones and create something lasting. Your shadow: rigidity and emotional distance. Your healing: balancing achievement with love — making room for softness inside what you build.",
-    "Kova":    "At your soul's origin you are a visionary, a revolutionary — you brought the ability to see the future in the present. Before entering this body you tied yourself to the evolution of the collective and learned to think outside patterns. If your natal Sun is in a traditional or dependent sign you may feel suffocated your whole life by 'being stuck in the mould'. Your mission: gift your original vision to humanity and gently transform old structures. Your shadow: disconnection and emotional distance. Your healing: living independence as service, not as loneliness.",
-    "Balık":   "At your soul's origin you are a mystic, an ocean — you came from beyond boundaries. Before entering this body you carried the knowledge of universal love, surrender and union. If your natal Sun is in a sharp or sharply bounded sign you may have felt judged your whole life as 'too soft, too dissolved'. Your mission: bring compassion and intuition into daily life — loving while keeping your boundary. Your shadow: escape and self-sacrifice. Your healing: keeping your bond with the divine while standing firmly on the ground.",
+    "Aslan":   "At your soul's origin you are a light-bearer, a being who creates from the heart and shines without applause. Before entering this body you knew the sacredness of the stage and that creativity is divine. If your natal Sun is in a humble sign you may have spent your life 'trying to shrink, to go unseen' while the king/queen inside grew restless. Your mission: bring your light forward without hiding and without spectacle. Your shadow: need for approval and pride. Your healing: seeing your shining as service. Your light lights another's path.",
+    "Başak":   "At your soul's origin you are a craftsperson and a healer. You carried the ability to see the sacred in the detail. Before entering this body you learned that service is a humble form of divinity. If your natal Sun is in a wide and scattered sign you may feel constantly 'forced to fix and systematise' yourself. Your mission: not to judge what is flawed but to tend it with care. Your shadow: harsh critique and obsession with perfection. Your healing: compassionate analysis, toward yourself first.",
+    "Terazi":  "At your soul's origin you are a mediator, an aesthete, a master of balance. Before entering this body you learned the sacredness of relationship and harmony. If your natal Sun is in an independent or combative sign you may feel exhausted by 'having to fight alone'. Your mission: grow through partnerships and carry justice with a delicate intuition. Your shadow: indecision and need for approval. Your healing: learning to say yes to yourself. Only then do you find true balance.",
+    "Akrep":   "At your soul's origin you are an alchemist, a transformer. You knew that beneath life lies death and beneath death lies rebirth. Before entering this body you learned the sacredness of intense feeling and psychological depth. If your natal Sun is in a light or cheerful sign you may have felt judged your whole life as 'too deep, too intense'. Your mission: descend without fear into your own and others' shadow and transform it. Your shadow: control and insecurity. Your healing: using your depth as a gift of healing.",
+    "Yay":     "At your soul's origin you are a wandering philosopher, a truth-hunter. Before entering this body you gathered the knowledge of different cultures, beliefs and horizons. If your natal Sun is in a settled or traditional sign you may feel pressed your whole life to 'belong somewhere' while your soul longs for boundless freedom. Your mission: live the truth and share it, not from a pulpit, but from the road. Your shadow: dogmatism and constant escape. Your healing: noticing that the starting point of the wisdom you seek is inside you.",
+    "Oğlak":   "At your soul's origin you are a master-builder, a wise elder. Before entering this body you learned the discipline of time, responsibility and material manifestation. If your natal Sun is in a playful or passive sign you may feel 'too serious, too adult' your whole life. Your mission: build your own authority independent of outer ones and create something lasting. Your shadow: rigidity and emotional distance. Your healing: balancing achievement with love, making room for softness inside what you build.",
+    "Kova":    "At your soul's origin you are a visionary, a revolutionary. You brought the ability to see the future in the present. Before entering this body you tied yourself to the evolution of the collective and learned to think outside patterns. If your natal Sun is in a traditional or dependent sign you may feel suffocated your whole life by 'being stuck in the mould'. Your mission: gift your original vision to humanity and gently transform old structures. Your shadow: disconnection and emotional distance. Your healing: living independence as service, not as loneliness.",
+    "Balık":   "At your soul's origin you are a mystic, an ocean. You came from beyond boundaries. Before entering this body you carried the knowledge of universal love, surrender and union. If your natal Sun is in a sharp or sharply bounded sign you may have felt judged your whole life as 'too soft, too dissolved'. Your mission: bring compassion and intuition into daily life, loving while keeping your boundary. Your shadow: escape and self-sacrifice. Your healing: keeping your bond with the divine while standing firmly on the ground.",
   },
 };
 
@@ -1121,24 +1121,24 @@ const DRACONIC_SUN_DETAY = {
 ].forEach(([k, obj]) => { if (ASTRO_TRANS && ASTRO_TRANS[k]) Object.assign(obj, ASTRO_TRANS[k]); });
 
 const REMINDERS_TR = [
-  { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
-  { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
-  { id:"nefes",     icon:"🌬", title:"Nefes farkındalığı",         subtitle:"1 dakika — sadece nefesini izle.",                        duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın." },
+  { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye, gözlerinin içine bak. Sadece ol.",             duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
+  { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset: serin, temiz, hayat." },
+  { id:"nefes",     icon:"🌬", title:"Nefes farkındalığı",         subtitle:"1 dakika, sadece nefesini izle.",                         duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın." },
   { id:"beden",     icon:"🧍", title:"Beden egzersizi",            subtitle:"Omuz çevir · Boyun esnet · Gözleri dinlendir",            duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Omuzlarını çevir, boynunu esnet, gözlerini kapat. 2 dakika beden zamanı." },
   { id:"gunes",     icon:"☀️", title:"Güneşi yüzünde hisset",     subtitle:"Dışarı çık. Yüzünü güneşe dön.",                         duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"Güneş seni bekliyor. Yüzünü kaldır, gözlerini yum, hisset." },
-  { id:"agac",      icon:"🌳", title:"Ağaca sarıl",                subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",            duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona — o da seni tutacak." },
+  { id:"agac",      icon:"🌳", title:"Ağaca sarıl",                subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",            duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona, o da seni tutacak." },
   { id:"toprak",    icon:"🌍", title:"Toprağa dokun",              subtitle:"Çıplak ayak ya da avucunla toprağa değdir.",              duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Ayakkabını çıkar. Toprağa bas. Yerin enerjisini hisset." },
   { id:"gok",       icon:"☁️", title:"Gökyüzüne bak",             subtitle:"Başını kaldır. Gökyüzüne bak. Sadece bak.",              duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Başını kaldır. Gökyüzüne bak. Sadece bak." },
   { id:"chakra_an", icon:"💜", title:"Çakra anı",                  subtitle:"Bugünkü çakranda bir an dur.",                           duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Gözlerini yum. Bugünkü çakranı hisset. Bir nefes yeter." },
   { id:"sosyal",    icon:"📵", title:"Sosyal medya molası",        subtitle:"Gerçekten şimdi burada olmak istiyor musun?",             duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Telefonu koy. Bir dakika sadece var ol. Ekran bekler, an geçer." },
 ];
 const REMINDERS_EN = [
-  { id:"ayna",      icon:"🪞", title:"Look at yourself in the mirror", subtitle:"30 seconds — look into your eyes. Just be.",              duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Go to the mirror. For 30 seconds, just look at yourself." },
-  { id:"su",        icon:"💧", title:"Drink water",                    subtitle:"Drink a glass of water and feel it.",                      duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Drink a glass of water. Feel it — cool, clean, life." },
-  { id:"nefes",     icon:"🌬", title:"Breath awareness",               subtitle:"1 minute — just observe your breath.",                     duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Stop. For one minute, just observe your breath. You are here." },
+  { id:"ayna",      icon:"🪞", title:"Look at yourself in the mirror", subtitle:"30 seconds, look into your eyes. Just be.",               duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Go to the mirror. For 30 seconds, just look at yourself." },
+  { id:"su",        icon:"💧", title:"Drink water",                    subtitle:"Drink a glass of water and feel it.",                      duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Drink a glass of water. Feel it: cool, clean, life." },
+  { id:"nefes",     icon:"🌬", title:"Breath awareness",               subtitle:"1 minute, just observe your breath.",                      duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Stop. For one minute, just observe your breath. You are here." },
   { id:"beden",     icon:"🧍", title:"Body exercise",                  subtitle:"Roll shoulders · Stretch neck · Rest eyes",               duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Roll your shoulders, stretch your neck, close your eyes. 2 minutes for your body." },
   { id:"gunes",     icon:"☀️", title:"Feel the sun on your face",      subtitle:"Go outside. Turn your face to the sun.",                  duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"The sun is waiting for you. Lift your face, close your eyes, feel." },
-  { id:"agac",      icon:"🌳", title:"Hug a tree",                     subtitle:"Find a tree. Open your arms. Touch your heart.",          duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Go outside. Find a tree. Hug it — it will hold you too." },
+  { id:"agac",      icon:"🌳", title:"Hug a tree",                     subtitle:"Find a tree. Open your arms. Touch your heart.",          duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Go outside. Find a tree. Hug it, it will hold you too." },
   { id:"toprak",    icon:"🌍", title:"Touch the earth",                subtitle:"Touch the ground with bare feet or your palm.",           duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Take off your shoes. Stand on the earth. Feel the energy of the ground." },
   { id:"gok",       icon:"☁️", title:"Look at the sky",               subtitle:"Lift your head. Look at the sky. Just look.",             duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Lift your head. Look at the sky. Just look." },
   { id:"chakra_an", icon:"💜", title:"Chakra moment",                  subtitle:"Pause for a moment in today's chakra.",                   duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Close your eyes. Feel today's chakra. One breath is enough." },
@@ -2121,7 +2121,7 @@ const DAILY_REMINDERS_TR = [
   "Kendine nazik bir cümle kur",
   "Sırtını dikleştir, başını hafifçe yukarı al",
   "Elini kalbine koy, atışını dinle",
-  "Bir kokuyu fark et — kahve, toprak, yağmur",
+  "Bir kokuyu fark et: kahve, toprak, yağmur",
   "Şu an neredeysen, oraya tümüyle gel",
   "Kasıtlı olarak yavaşla, bir hareketi ağırdan al",
   "Bugünü bir kelimeyle adlandır, sahiplen",
@@ -2143,7 +2143,7 @@ const DAILY_REMINDERS_EN = [
   "Open the window, draw in the fresh air",
   "Move your shoulders away from your ears",
   "Close your eyes, count three breaths",
-  "Say a 'thank you' — even if only inside",
+  "Say a 'thank you', even if only inside",
   "Feel your steps as you walk, don't rush",
   "Recall the one thing that made you smile today",
   "Breathe from your belly, not your chest",
@@ -2151,7 +2151,7 @@ const DAILY_REMINDERS_EN = [
   "Form one kind sentence toward yourself",
   "Straighten your back, lift your head slightly",
   "Place your hand on your heart, listen to it beat",
-  "Notice a scent — coffee, earth, rain",
+  "Notice a scent: coffee, earth, rain",
   "Wherever you are, arrive there fully",
   "Slow down on purpose, take one motion gently",
   "Name today in a single word, own it",
@@ -2164,7 +2164,7 @@ const MORNING_PINGS_TR = [
   "Yeni bir gün. Niyetini tek cümlede söyle.",
   "Günaydın. Bugün kendine ne diliyorsun?",
   "Gözlerini aç, güne üç nefesle başla.",
-  "Günaydın. Acele yok — güne sakin gir.",
+  "Günaydın. Acele yok, güne sakin gir.",
   "Bugün senin. Küçük bir iyilikle başla.",
 ];
 const MORNING_PINGS_EN = [
@@ -2173,7 +2173,7 @@ const MORNING_PINGS_EN = [
   "A new day. Say your intention in one sentence.",
   "Good morning. What do you wish for yourself today?",
   "Open your eyes, start the day with three breaths.",
-  "Good morning. No rush — enter the day calmly.",
+  "Good morning. No rush, enter the day calmly.",
   "Today is yours. Begin with a small kindness.",
 ];
 // Program özelliği davetleri — her gün 21:00, günde 1 tane, havuz boyunca döner
@@ -2218,37 +2218,37 @@ const NOTIF_NEFES = {
 };
 const NOTIF_KESFET = {
   "tr": [
-    "Tasarımını keşfet — bugünün enerjisi sana ne söylüyor?",
+    "Tasarımını keşfet: bugünün enerjisi sana ne söylüyor?",
     "Burcun, taşın, hayvanın; bugün seni ne bekliyor?",
     "Sakin Ailesi'nde bugün yeni bir işaret var."
   ],
   "en": [
-    "Explore your design — what is today's energy telling you?",
+    "Explore your design: what is today's energy telling you?",
     "Your sign, your stone, your animal; what awaits you today?",
     "There's a new sign in the Sakin Family today."
   ],
   "de": [
-    "Entdecke dein Design — was sagt dir die Energie von heute?",
+    "Entdecke dein Design: was sagt dir die Energie von heute?",
     "Dein Zeichen, dein Stein, dein Tier; was erwartet dich heute?",
     "Heute gibt es ein neues Zeichen in der Sakin-Familie."
   ],
   "pt": [
-    "Explora o teu design — o que te diz a energia de hoje?",
+    "Explora o teu design: o que te diz a energia de hoje?",
     "O teu signo, a tua pedra, o teu animal; o que te espera hoje?",
     "Há um novo sinal na Família Sakin hoje."
   ],
   "es": [
-    "Explora tu diseño — ¿qué te dice la energía de hoy?",
+    "Explora tu diseño: ¿qué te dice la energía de hoy?",
     "Tu signo, tu piedra, tu animal; ¿qué te espera hoy?",
     "Hoy hay una nueva señal en la Familia Sakin."
   ],
   "fr": [
-    "Explore ton design — que te dit l'énergie du jour ?",
+    "Explore ton design : que te dit l'énergie du jour ?",
     "Ton signe, ta pierre, ton animal ; qu'est-ce qui t'attend aujourd'hui ?",
     "Il y a un nouveau signe dans la Famille Sakin aujourd'hui."
   ],
   "ja": [
-    "あなたのデザインを見て——今日のエネルギーは何を告げている？",
+    "あなたのデザインを見て、今日のエネルギーは何を告げている？",
     "星座、石、動物。今日は何が待っている？",
     "今日、サキン・ファミリーに新しいしるしがあります。"
   ]
@@ -2256,30 +2256,30 @@ const NOTIF_KESFET = {
 const FEATURE_PROMOS_TR = [
   "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
   "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
-  "432 Hz çalsın, kalp atışın yavaşlasın — frekanslara göz at.",
+  "432 Hz çalsın, kalp atışın yavaşlasın. Frekanslara göz at.",
   "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
-  "Aynaya 30 saniye bak — Ayna alıştırmasını dene.",
+  "Aynaya 30 saniye bak. Ayna alıştırmasını dene.",
   "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
   "Totem hayvanın ne diyor? Sakin Hayvan'ı keşfet.",
-  "Bir mit, bir sembol — bugünün Sakin Mitleri seni bekliyor.",
-  "Haftalık içsel raporun hazır olabilir — bir bak.",
-  "528 Hz, 'Sevgi Frekansı' — bir dakika dinle, hisset.",
-  "Bir bardak su, üç nefes, bir niyet — Sakin'le küçük bir mola.",
-  "396 Hz kök çakranı topraklar — gözlerini kapat, dinle.",
+  "Bir mit, bir sembol: bugünün Sakin Mitleri seni bekliyor.",
+  "Haftalık içsel raporun hazır olabilir, bir bak.",
+  "528 Hz, 'Sevgi Frekansı': bir dakika dinle, hisset.",
+  "Bir bardak su, üç nefes, bir niyet: Sakin'le küçük bir mola.",
+  "396 Hz kök çakranı topraklar. Gözlerini kapat, dinle.",
 ];
 const FEATURE_PROMOS_EN = [
   "Want to calm down in 1 minute with sound frequencies?",
   "Breathe in, out... it's the perfect time to try Calm Breath.",
-  "Let 432 Hz play, let your heartbeat slow — explore the frequencies.",
+  "Let 432 Hz play, let your heartbeat slow. Explore the frequencies.",
   "Do you know today's chakra? Pause for a moment in the Chakra screen.",
-  "Look in the mirror for 30 seconds — try the Mirror exercise.",
+  "Look in the mirror for 30 seconds. Try the Mirror exercise.",
   "How's the cosmic weather today? Check the Galactic screen.",
   "What does your totem animal say? Discover Calm Animal.",
-  "A myth, a symbol — today's Calm Myths await you.",
-  "Your weekly inner report might be ready — take a look.",
-  "528 Hz, the 'Love Frequency' — listen for a minute, feel it.",
-  "A glass of water, three breaths, one intention — a small break with Sakin.",
-  "396 Hz grounds your root chakra — close your eyes, listen.",
+  "A myth, a symbol: today's Calm Myths await you.",
+  "Your weekly inner report might be ready, take a look.",
+  "528 Hz, the 'Love Frequency': listen for a minute, feel it.",
+  "A glass of water, three breaths, one intention: a small break with Sakin.",
+  "396 Hz grounds your root chakra. Close your eyes, listen.",
 ];
 
 // Bir takvim günü için deterministik gün numarası. Mesaj seçimi bu sayıya göre
@@ -2920,13 +2920,13 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
                pt:"Ao terminar passa para o próximo chakra e a frequência muda.",
                fr:"À la fin, passage au chakra suivant et la fréquence change.",
                ja:"時間が来ると次のチャクラへ進み、周波数も変わります。" },
-    freeNote:{ tr:"Bağlantı kurulunca sende kalır — dilediğin kadar kal.",
-               en:"Once connected it stays with you — remain as long as you like.",
-               de:"Ist die Verbindung da, bleibt sie — bleib so lange du magst.",
-               es:"Una vez conectado permanece — quédate lo que quieras.",
-               pt:"Depois de conectado permanece — fica o tempo que quiseres.",
-               fr:"Une fois connecté, cela reste — reste autant que tu veux.",
-               ja:"つながればそのまま——好きなだけどうぞ。" },
+    freeNote:{ tr:"Bağlantı kurulunca sende kalır, dilediğin kadar kal.",
+               en:"Once connected it stays with you. Remain as long as you like.",
+               de:"Ist die Verbindung da, bleibt sie. Bleib so lange du magst.",
+               es:"Una vez conectado permanece. Quédate lo que quieras.",
+               pt:"Depois de conectado permanece. Fica o tempo que quiseres.",
+               fr:"Une fois connecté, cela reste. Reste autant que tu veux.",
+               ja:"つながればそのまま、好きなだけどうぞ。" },
   };
   const DUR_OPTS = [
     { v: "free",label: () => pickLang(DUR_TXT.free, lang) },
@@ -3913,7 +3913,7 @@ function LangPicker({ lang, setLang, compact = false }) {
 const JOURNEY_STEPS = [
   { icon:"🌅", color:"#f0a060",
     title:{tr:"1 · Sabah Niyeti",en:"1 · Morning Intention",de:"1 · Morgenabsicht",es:"1 · Intención matutina",pt:"1 · Intenção da manhã",fr:"1 · Intention du matin",ja:"1 · 朝の意図"},
-    desc:{tr:"Güne bir niyetle başla. Seçtiğin 3 kelime ve cümlen — günün enerjisini sen belirlersin.",en:"Start the day with an intention. Three words and a sentence — you set the day's energy.",de:"Beginne den Tag mit einer Absicht. Drei Wörter und ein Satz — du bestimmst die Energie des Tages.",es:"Comienza el día con una intención. Tres palabras y una frase: tú defines la energía del día.",pt:"Comece o dia com uma intenção. Três palavras e uma frase — você define a energia do dia.",fr:"Commence la journée avec une intention. Trois mots et une phrase — c'est toi qui fixes l'énergie du jour.",ja:"一日を意図とともに始めよう。3つの言葉と一文——その日のエネルギーはあなたが決める。"} },
+    desc:{tr:"Güne bir niyetle başla. Seçtiğin 3 kelime ve cümlen: günün enerjisini sen belirlersin.",en:"Start the day with an intention. Three words and a sentence: you set the day's energy.",de:"Beginne den Tag mit einer Absicht. Drei Wörter und ein Satz: du bestimmst die Energie des Tages.",es:"Comienza el día con una intención. Tres palabras y una frase: tú defines la energía del día.",pt:"Comece o dia com uma intenção. Três palavras e uma frase: você define a energia do dia.",fr:"Commence la journée avec une intention. Trois mots et une phrase : c'est toi qui fixes l'énergie du jour.",ja:"一日を意図とともに始めよう。3つの言葉と一文、その日のエネルギーはあなたが決める。"} },
   { icon:"🫧", color:"#60b8e8",
     title:{tr:"2 · Nefes",en:"2 · Breath",de:"2 · Atem",es:"2 · Respiración",pt:"2 · Respiração",fr:"2 · Respiration",ja:"2 · 呼吸"},
     desc:{tr:"Bedene dön. Birkaç nefesle zihni yavaşlat, ritmini bul.",en:"Return to the body. Slow the mind with a few breaths, find your rhythm.",de:"Kehre zum Körper zurück. Verlangsame den Geist mit ein paar Atemzügen, finde deinen Rhythmus.",es:"Vuelve al cuerpo. Calma la mente con unas respiraciones, encuentra tu ritmo.",pt:"Volte ao corpo. Acalme a mente com algumas respirações, encontre o seu ritmo.",fr:"Reviens au corps. Ralentis l'esprit en quelques respirations, trouve ton rythme.",ja:"体に戻ろう。数回の呼吸で心を緩め、自分のリズムを見つける。"} },
@@ -3922,25 +3922,25 @@ const JOURNEY_STEPS = [
     desc:{tr:"Solfeggio frekanslarıyla kendini akort et. Kuş sesleri eşliğinde içsel diyapazon yeniden hizalanır.",en:"Tune yourself with solfeggio frequencies. With birdsong, your inner pitch realigns.",de:"Stimme dich mit Solfeggio-Frequenzen. Mit Vogelgesang richtet sich deine innere Tonlage neu aus.",es:"Afínate con frecuencias solfeggio. Con el canto de los pájaros, tu tono interior se realinea.",pt:"Afine-se com frequências solfeggio. Com o canto dos pássaros, o seu tom interior se realinha.",fr:"Accorde-toi aux fréquences solfeggio. Avec le chant des oiseaux, ton diapason intérieur se réaligne.",ja:"ソルフェジオ周波数で自分を調律する。鳥のさえずりとともに、内なる音程が整い直す。"} },
   { icon:"💜", color:"#b87adc",
     title:{tr:"4 · Çakra Şifası",en:"4 · Chakra Healing",de:"4 · Chakra-Heilung",es:"4 · Sanación de chakras",pt:"4 · Cura dos chakras",fr:"4 · Guérison des chakras",ja:"4 · チャクラの癒し"},
-    desc:{tr:"Niyetinle enerjiyi yönlendir. Elini bölgeye değdir, gözlerini yum — çakralarına şifa akar.",en:"Direct energy with intention. Place your hand, close your eyes — healing flows into your chakras.",de:"Lenke Energie mit Absicht. Lege die Hand auf, schließe die Augen — Heilung fließt in deine Chakren.",es:"Dirige la energía con intención. Pon la mano, cierra los ojos: la sanación fluye a tus chakras.",pt:"Direcione a energia com intenção. Ponha a mão, feche os olhos — a cura flui para os seus chakras.",fr:"Dirige l'énergie avec intention. Pose la main, ferme les yeux — la guérison coule vers tes chakras.",ja:"意図でエネルギーを導く。手を当て、目を閉じる——癒しがチャクラへと流れ込む。"} },
+    desc:{tr:"Niyetinle enerjiyi yönlendir. Elini bölgeye değdir, gözlerini yum: çakralarına şifa akar.",en:"Direct energy with intention. Place your hand, close your eyes: healing flows into your chakras.",de:"Lenke Energie mit Absicht. Lege die Hand auf, schließe die Augen: Heilung fließt in deine Chakren.",es:"Dirige la energía con intención. Pon la mano, cierra los ojos: la sanación fluye a tus chakras.",pt:"Direcione a energia com intenção. Ponha a mão, feche os olhos: a cura flui para os seus chakras.",fr:"Dirige l'énergie avec intention. Pose la main, ferme les yeux : la guérison coule vers tes chakras.",ja:"意図でエネルギーを導く。手を当て、目を閉じる、癒しがチャクラへと流れ込む。"} },
   { icon:"☀️", color:"#e8d060",
     title:{tr:"5 · Gün Hatırlatmaları",en:"5 · Daily Reminders",de:"5 · Tägliche Erinnerungen",es:"5 · Recordatorios diarios",pt:"5 · Lembretes do dia",fr:"5 · Rappels du jour",ja:"5 · 日中のリマインダー"},
-    desc:{tr:"Su iç. Güneşi hisset. Toprağa dokun. Küçük dokunuşlar seni ana bağlar — anda kalırsın.",en:"Drink water. Feel the sun. Touch the earth. Small touches return you to the present.",de:"Trink Wasser. Spüre die Sonne. Berühre die Erde. Kleine Berührungen holen dich in den Augenblick.",es:"Bebe agua. Siente el sol. Toca la tierra. Pequeños gestos te devuelven al presente.",pt:"Beba água. Sinta o sol. Toque a terra. Pequenos gestos trazem você de volta ao presente.",fr:"Bois de l'eau. Sens le soleil. Touche la terre. De petits gestes te ramènent à l'instant.",ja:"水を飲む。陽を感じる。大地に触れる。小さな仕草があなたを「今」に戻す。"} },
+    desc:{tr:"Su iç. Güneşi hisset. Toprağa dokun. Küçük dokunuşlar seni ana bağlar, anda kalırsın.",en:"Drink water. Feel the sun. Touch the earth. Small touches return you to the present.",de:"Trink Wasser. Spüre die Sonne. Berühre die Erde. Kleine Berührungen holen dich in den Augenblick.",es:"Bebe agua. Siente el sol. Toca la tierra. Pequeños gestos te devuelven al presente.",pt:"Beba água. Sinta o sol. Toque a terra. Pequenos gestos trazem você de volta ao presente.",fr:"Bois de l'eau. Sens le soleil. Touche la terre. De petits gestes te ramènent à l'instant.",ja:"水を飲む。陽を感じる。大地に触れる。小さな仕草があなたを「今」に戻す。"} },
   { icon:"🌙", color:"#7ab0e0",
     title:{tr:"6 · Akşam Kapanışı",en:"6 · Evening Closure",de:"6 · Abendabschluss",es:"6 · Cierre nocturno",pt:"6 · Encerramento da noite",fr:"6 · Clôture du soir",ja:"6 · 夜の締めくくり"},
     desc:{tr:"Z raporunu al, zihninin geçici belleğini temizle ve yeni güne hazır ol.",en:"Get your Z-report, clear your mind's working memory and prepare for a new day.",de:"Hol dir deinen Z-Bericht, leere den Arbeitsspeicher deines Geistes und mach dich bereit für einen neuen Tag.",es:"Recibe tu informe Z, vacía la memoria de trabajo de tu mente y prepárate para un nuevo día.",pt:"Receba o seu relatório Z, limpe a memória de trabalho da mente e prepare-se para um novo dia.",fr:"Reçois ton rapport Z, vide la mémoire vive de ton esprit et prépare-toi à un nouveau jour.",ja:"Zレポートを受け取り、心の作業記憶を空にして、新しい一日に備えよう。"} },
   { icon:"☽", color:"#c8b0e8",
     title:{tr:"7 · Ayna Geçidi",en:"7 · Mirror Portal",de:"7 · Spiegel-Portal",es:"7 · Portal del espejo",pt:"7 · Portal do espelho",fr:"7 · Portail du miroir",ja:"7 · 鏡の門"},
-    desc:{tr:"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor — bedenin de bir mesaj taşır.",en:"Find the mysterious portal at the right edge. Step in, ask your inner mirror — your body carries a message too.",de:"Finde das geheimnisvolle Portal am rechten Rand. Tritt ein, frage deinen inneren Spiegel — auch dein Körper trägt eine Botschaft.",es:"Encuentra el portal misterioso del borde derecho. Entra, pregunta a tu espejo interior: tu cuerpo también lleva un mensaje.",pt:"Encontre o portal misterioso na borda direita. Entre, pergunte ao seu espelho interior — o seu corpo também traz uma mensagem.",fr:"Trouve le portail mystérieux au bord droit. Entre, interroge ton miroir intérieur — ton corps porte aussi un message.",ja:"右端の神秘の門を見つけよう。中へ入り、内なる鏡に問いかける——体もまたメッセージを運んでいる。"} },
+    desc:{tr:"Sağ kenardaki gizemli geçidi bul. İçeri gir, içsel aynana sorular sor: bedenin de bir mesaj taşır.",en:"Find the mysterious portal at the right edge. Step in, ask your inner mirror: your body carries a message too.",de:"Finde das geheimnisvolle Portal am rechten Rand. Tritt ein, frage deinen inneren Spiegel: auch dein Körper trägt eine Botschaft.",es:"Encuentra el portal misterioso del borde derecho. Entra, pregunta a tu espejo interior: tu cuerpo también lleva un mensaje.",pt:"Encontre o portal misterioso na borda direita. Entre, pergunte ao seu espelho interior: o seu corpo também traz uma mensagem.",fr:"Trouve le portail mystérieux au bord droit. Entre, interroge ton miroir intérieur : ton corps porte aussi un message.",ja:"右端の神秘の門を見つけよう。中へ入り、内なる鏡に問いかける、体もまたメッセージを運んでいる。"} },
   { icon:"✦", color:"#82d9a3",
     title:{tr:"8 · Haftalık Rapor",en:"8 · Weekly Report",de:"8 · Wochenbericht",es:"8 · Informe semanal",pt:"8 · Relatório semanal",fr:"8 · Rapport hebdomadaire",ja:"8 · 週間レポート"},
     desc:{tr:"AI destekli haftalık iç haritan: çakra örüntüleri, niyet kelimeleri, biyoritim. Kendinle bağını derinleştir.",en:"Your AI-powered weekly inner map: chakra patterns, intention words, biorhythm. Deepen the bond with yourself.",de:"Deine KI-gestützte wöchentliche innere Karte: Chakra-Muster, Absichtswörter, Biorhythmus. Vertiefe die Bindung zu dir selbst.",es:"Tu mapa interior semanal con IA: patrones de chakras, palabras de intención, biorritmo. Profundiza el vínculo contigo mismo.",pt:"Seu mapa interior semanal com IA: padrões de chakra, palavras de intenção, biorritmo. Aprofunde o vínculo consigo mesmo.",fr:"Ta carte intérieure hebdomadaire assistée par IA : motifs des chakras, mots d'intention, biorythme. Approfondis le lien avec toi-même.",ja:"AIによる週間の内なる地図：チャクラのパターン、意図の言葉、バイオリズム。自分とのつながりを深めよう。"} },
   { icon:"◎", color:"#b87adc",
     title:{tr:"9 · Bağlantı",en:"9 · Connection",de:"9 · Verbindung",es:"9 · Conexión",pt:"9 · Conexão",fr:"9 · Connexion",ja:"9 · つながり"},
-    desc:{tr:"Sakin'i kullandıkça gün içinde kaynak enerjisiyle bağlantını güçlendirirsin — her dokunuş seni özüne yaklaştırır.",en:"As you use Sakin through the day, you strengthen your connection to source energy — each touch draws you closer to your essence.",de:"Während du Sakin im Laufe des Tages nutzt, stärkst du deine Verbindung zur Quellenergie — jede Berührung bringt dich deinem Wesen näher.",es:"A medida que usas Sakin durante el día, fortaleces tu conexión con la energía fuente: cada gesto te acerca a tu esencia.",pt:"À medida que usa o Sakin ao longo do dia, fortalece a conexão com a energia fonte — cada toque o aproxima da sua essência.",fr:"À mesure que tu utilises Sakin au fil du jour, tu renforces ta connexion à l'énergie source — chaque contact te rapproche de ton essence.",ja:"一日を通してSakinを使うほど、源のエネルギーとのつながりが強まる——一つひとつの触れ合いが、あなたを本質へと近づける。"} },
+    desc:{tr:"Sakin'i kullandıkça gün içinde kaynak enerjisiyle bağlantını güçlendirirsin: her dokunuş seni özüne yaklaştırır.",en:"As you use Sakin through the day, you strengthen your connection to source energy: each touch draws you closer to your essence.",de:"Während du Sakin im Laufe des Tages nutzt, stärkst du deine Verbindung zur Quellenergie: jede Berührung bringt dich deinem Wesen näher.",es:"A medida que usas Sakin durante el día, fortaleces tu conexión con la energía fuente: cada gesto te acerca a tu esencia.",pt:"À medida que usa o Sakin ao longo do dia, fortalece a conexão com a energia fonte: cada toque o aproxima da sua essência.",fr:"À mesure que tu utilises Sakin au fil du jour, tu renforces ta connexion à l'énergie source : chaque contact te rapproche de ton essence.",ja:"一日を通してSakinを使うほど、源のエネルギーとのつながりが強まる、一つひとつの触れ合いが、あなたを本質へと近づける。"} },
   { icon:"✧", color:"#f0c060",
     title:{tr:"10 · Sakin Ailesi",en:"10 · Sakin Family",de:"10 · Sakin-Familie",es:"10 · Familia Sakin",pt:"10 · Família Sakin",fr:"10 · Famille Sakin",ja:"10 · Sakinファミリー"},
-    desc:{tr:"Rüyanda ya da gerçekte sana ısrarla görünen rehber hayvan, bitki ve kristallerin sana ne söylediğini; yaşam planında hangi arketip senaryosunun içinde olduğunu; ve tasarımının sırlarını keşfet.",en:"Discover what the guide animals, plants and crystals that keep appearing to you — in dreams or waking life — are telling you; which archetypal scenario you're living in your life plan; and the secrets of your design.",de:"Entdecke, was dir die Tier-, Pflanzen- und Kristallführer sagen, die dir immer wieder erscheinen — im Traum oder im Wachen; in welchem archetypischen Szenario deines Lebensplans du dich befindest; und die Geheimnisse deines Designs.",es:"Descubre qué te dicen los animales, plantas y cristales guía que aparecen una y otra vez —en sueños o despierto—; en qué escenario arquetípico vives dentro de tu plan de vida; y los secretos de tu diseño.",pt:"Descubra o que dizem os animais, plantas e cristais guia que insistem em aparecer — em sonho ou na vida desperta; em qual cenário arquetípico você vive no seu plano de vida; e os segredos do seu design.",fr:"Découvre ce que te disent les animaux, plantes et cristaux guides qui ne cessent de t'apparaître — en rêve ou éveillé ; dans quel scénario archétypal de ton plan de vie tu te trouves ; et les secrets de ton design.",ja:"夢でも現実でも繰り返し現れる導きの動物・植物・クリスタルが何を告げているのか、人生の計画の中でどの元型のシナリオを生きているのか、そしてあなたのデザインの秘密を発見しよう。"} },
+    desc:{tr:"Rüyanda ya da gerçekte sana ısrarla görünen rehber hayvan, bitki ve kristallerin sana ne söylediğini; yaşam planında hangi arketip senaryosunun içinde olduğunu; ve tasarımının sırlarını keşfet.",en:"Discover what the guide animals, plants and crystals that keep appearing to you (in dreams or waking life) are telling you; which archetypal scenario you're living in your life plan; and the secrets of your design.",de:"Entdecke, was dir die Tier-, Pflanzen- und Kristallführer sagen, die dir immer wieder erscheinen, im Traum oder im Wachen; in welchem archetypischen Szenario deines Lebensplans du dich befindest; und die Geheimnisse deines Designs.",es:"Descubre qué te dicen los animales, plantas y cristales guía que aparecen una y otra vez (en sueños o despierto); en qué escenario arquetípico vives dentro de tu plan de vida; y los secretos de tu diseño.",pt:"Descubra o que dizem os animais, plantas e cristais guia que insistem em aparecer, em sonho ou na vida desperta; em qual cenário arquetípico você vive no seu plano de vida; e os segredos do seu design.",fr:"Découvre ce que te disent les animaux, plantes et cristaux guides qui ne cessent de t'apparaître, en rêve ou éveillé ; dans quel scénario archétypal de ton plan de vie tu te trouves ; et les secrets de ton design.",ja:"夢でも現実でも繰り返し現れる導きの動物・植物・クリスタルが何を告げているのか、人生の計画の中でどの元型のシナリオを生きているのか、そしてあなたのデザインの秘密を発見しよう。"} },
 ];
 
 export default function SakinApp() {
@@ -4641,7 +4641,7 @@ export default function SakinApp() {
         body: JSON.stringify({ image: dataUrl, type, lang }),
       });
       const d = await r.json();
-      setFotoTaniResult(d.text || pickLang({ tr:"Tanıyamadım — daha net bir fotoğraf dener misin?", en:"I couldn't identify it — try a clearer photo?", de:"Ich konnte es nicht erkennen — versuch ein klareres Foto?", es:"No pude identificarlo — ¿pruebas una foto más clara?", pt:"Não consegui identificar — tentas uma foto mais nítida?", fr:"Je n'ai pas pu l'identifier — un cliché plus net ?", ja:"見分けられませんでした——もっと鮮明な写真で試してみて。" }, lang));
+      setFotoTaniResult(d.text || pickLang({ tr:"Tanıyamadım, daha net bir fotoğraf dener misin?", en:"I couldn't identify it, try a clearer photo?", de:"Ich konnte es nicht erkennen, versuch ein klareres Foto?", es:"No pude identificarlo, ¿pruebas una foto más clara?", pt:"Não consegui identificar, tentas uma foto mais nítida?", fr:"Je n'ai pas pu l'identifier, un cliché plus net ?", ja:"見分けられませんでした、もっと鮮明な写真で試してみて。" }, lang));
     } catch { setFotoTaniResult(t("err_connection_full")); }
     setFotoTaniLoading(false);
   };
@@ -5274,11 +5274,11 @@ export default function SakinApp() {
                     pt:"O teu mapa", fr:"Ta carte", ja:"あなたのチャート" }, lang),
     sorular: [
       pickLang({ tr:"Ateş elementim düşük, bu ne anlama geliyor?",
-                 en:"My fire element is low — what does that mean?",
-                 de:"Mein Feuerelement ist niedrig — was bedeutet das?",
+                 en:"My fire element is low, what does that mean?",
+                 de:"Mein Feuerelement ist niedrig, was bedeutet das?",
                  es:"Mi elemento fuego está bajo, ¿qué significa?",
-                 pt:"O meu elemento fogo está baixo — o que significa?",
-                 fr:"Mon élément feu est faible — qu'est-ce que cela signifie ?",
+                 pt:"O meu elemento fogo está baixo, o que significa?",
+                 fr:"Mon élément feu est faible, qu'est-ce que cela signifie ?",
                  ja:"火のエレメントが低いのはどういう意味？" }, lang),
       pickLang({ tr:"Draconic haritamın bana söylediği mesaj ne?",
                  en:"What message does my draconic chart hold for me?",
@@ -5288,11 +5288,11 @@ export default function SakinApp() {
                  fr:"Quel message ma carte draconique a-t-elle pour moi ?",
                  ja:"ドラコニックチャートは私に何を伝えている？" }, lang),
       pickLang({ tr:"12. ev neden önemli, benimki ne söylüyor?",
-                 en:"Why does the 12th house matter — what does mine say?",
-                 de:"Warum ist das 12. Haus wichtig — was sagt meines?",
+                 en:"Why does the 12th house matter, what does mine say?",
+                 de:"Warum ist das 12. Haus wichtig, was sagt meines?",
                  es:"¿Por qué importa la casa 12 y qué dice la mía?",
-                 pt:"Porque importa a casa 12 — o que diz a minha?",
-                 fr:"Pourquoi la maison 12 compte-t-elle — que dit la mienne ?",
+                 pt:"Porque importa a casa 12, o que diz a minha?",
+                 fr:"Pourquoi la maison 12 compte-t-elle, que dit la mienne ?",
                  ja:"12ハウスはなぜ大切？私のは何を示している？" }, lang),
       pickLang({ tr:"Ay düğümlerim hangi yönü gösteriyor?",
                  en:"Which direction do my lunar nodes point to?",
@@ -5802,7 +5802,7 @@ export default function SakinApp() {
     connecting:{tr:"Yüksek benlik ile bağlantı kuruluyor…",en:"Connecting with your higher self…",de:"Verbindung zum höheren Selbst…",es:"Conectando con tu yo superior…",pt:"A ligar ao teu eu superior…",fr:"Connexion au moi supérieur…",ja:"ハイヤーセルフと接続中…"},
     // Kullanıcı: "yeni görev isteyebilmek için ne yapması gerektiği bilgisi yok."
     // İKİ YOL da açıkça yazılır: bugün Bağlan'daki 7 adımı tamamla, ya da yarın.
-    locked:   {tr:"Yeni görev için iki yol var: Bağlan bölümündeki günün 7 adımını tamamla — ışık yerden göğe açılınca kanal yeniden kurulur. Ya da yarın yeni bir görev iste.",en:"Two ways to a new mission: complete the seven steps of the day in Connect — when the light opens from earth to sky, the channel reopens. Or ask again tomorrow.",de:"Zwei Wege zu einer neuen Aufgabe: Vollende die sieben Schritte des Tages unter Verbinden — öffnet sich das Licht von der Erde zum Himmel, öffnet sich der Kanal. Oder frag morgen erneut.",es:"Dos caminos hacia una nueva misión: completa los siete pasos del día en Conectar — cuando la luz se abre de la tierra al cielo, el canal se reabre. O pide otra mañana.",pt:"Dois caminhos para uma nova missão: completa os sete passos do dia em Ligar — quando a luz se abre da terra ao céu, o canal reabre. Ou pede outra amanhã.",fr:"Deux chemins vers une nouvelle mission : termine les sept étapes du jour dans Connexion — quand la lumière s'ouvre de la terre au ciel, le canal rouvre. Ou redemande demain.",ja:"新しい任務への道は二つ。「つながる」で今日の七つの歩みを終えると、光が地から天へ開き通路が戻ります。または明日また求めてください。"},
+    locked:   {tr:"Yeni görev için iki yol var: Bağlan bölümündeki günün 7 adımını tamamla. Işık yerden göğe açılınca kanal yeniden kurulur. Ya da yarın yeni bir görev iste.",en:"Two ways to a new mission: complete the seven steps of the day in Connect. When the light opens from earth to sky, the channel reopens. Or ask again tomorrow.",de:"Zwei Wege zu einer neuen Aufgabe: Vollende die sieben Schritte des Tages unter Verbinden. Öffnet sich das Licht von der Erde zum Himmel, öffnet sich der Kanal. Oder frag morgen erneut.",es:"Dos caminos hacia una nueva misión: completa los siete pasos del día en Conectar. Cuando la luz se abre de la tierra al cielo, el canal se reabre. O pide otra mañana.",pt:"Dois caminhos para uma nova missão: completa os sete passos do dia em Ligar. Quando a luz se abre da terra ao céu, o canal reabre. Ou pede outra amanhã.",fr:"Deux chemins vers une nouvelle mission : termine les sept étapes du jour dans Connexion. Quand la lumière s'ouvre de la terre au ciel, le canal rouvre. Ou redemande demain.",ja:"新しい任務への道は二つ。「つながる」で今日の七つの歩みを終えると、光が地から天へ開き通路が戻ります。または明日また求めてください。"},
     // Tünel bugün zaten kullanıldı → tek kalan yol yarın.
     today:    {tr:"Bugünkü kanal kullanıldı. Yarın yeniden açılır.",en:"Today's channel has been used. It reopens tomorrow.",de:"Der heutige Kanal wurde genutzt. Morgen öffnet er sich wieder.",es:"El canal de hoy ya se usó. Se reabre mañana.",pt:"O canal de hoje foi usado. Reabre amanhã.",fr:"Le canal du jour a été utilisé. Il rouvrira demain.",ja:"今日の通路は使われました。明日また開きます。"},
     label:    {tr:"GÖREV",en:"MISSION",de:"AUFGABE",es:"MISIÓN",pt:"MISSÃO",fr:"MISSION",ja:"任務"},
@@ -5863,33 +5863,35 @@ export default function SakinApp() {
           system: `${buildMirrorSystemPrompt(lang, false)}
 
 ${lang === "tr" ? `Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
-geliştiren tek bir deneyimdir — bir oyunda verilen görev gibi somut, yapılabilir
+geliştiren tek bir deneyimdir; bir oyunda verilen görev gibi somut, yapılabilir
 ve o kişiye özel. Kuralları:
 - SADECE BİR görev ver. Liste yapma.
 - Görev BUGÜN yapılabilir olmalı; 5-30 dakika sürsün. Para gerektirmesin.
 - Kişinin doğum verilerinden okunan ÖĞRENME ALANIYLA ilgili olsun (12. ev,
   yaşam yolu, yükselen, karmik kalıp). Bu bağlantıyı bir cümleyle açıkla.
 - Fiziksel dünyada bir EYLEM içersin (yazmak, konuşmak, yürümek, susmak,
-  birine ulaşmak, bir şeyi bırakmak gibi) — sadece düşünmek yeterli değil.
+  birine ulaşmak, bir şeyi bırakmak gibi); sadece düşünmek yeterli değil.
 - Tıbbi, finansal, hukuki tavsiye verme. Tehlikeli ya da başkasına zarar
   verebilecek bir şey isteme.
 - Biçim: önce 3-6 kelimelik bir GÖREV BAŞLIĞI, sonra boş satır, sonra 2-4
   cümlelik anlatım, sonra boş satır, son satırda "Neden sen:" ile başlayan
   tek cümlelik kişisel gerekçe.
 - Yıldız, madde imi, markdown KULLANMA. Sade düz metin yaz.
+- Uzun tire (—) kullanma; virgül veya nokta ile bağla.
 - Tek kelime bile başka dilde yazma; tamamı Türkçe olsun.` : `You are now GIVING A MISSION: a single lived experience that develops the
-user's character on their inner journey — concrete, doable and personal, like
+user's character on their inner journey, concrete, doable and personal, like
 a quest in a game. Rules:
 - Give exactly ONE mission. No lists.
 - It must be doable TODAY, take 5-30 minutes, and cost nothing.
 - Tie it to the LEARNING EDGE read from their birth data (12th house, life
   path, ascendant, karmic pattern). Name that link in one sentence.
 - It must involve an ACTION in the physical world (writing, speaking, walking,
-  staying silent, reaching out, letting something go) — thinking is not enough.
+  staying silent, reaching out, letting something go); thinking is not enough.
 - No medical, financial or legal advice. Nothing dangerous or harmful to others.
 - Format: a 3-6 word MISSION TITLE, blank line, 2-4 sentences of description,
   blank line, a final single sentence starting with "Why you:".
 - Do NOT use asterisks, bullets or markdown. Plain text only.
+- Do not use an em dash (—); connect clauses with a comma or period instead.
 - Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`}
 ${kisiselProfil()}`,
           messages: [{ role: "user", content: lang === "tr"
@@ -5942,7 +5944,7 @@ ${kisiselProfil()}`,
     if (streakData?.current > 0) parts.push(`Seri: ${streakData.current} gün`);
     const seed = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     parts.push(`Oturum: ${seed}`);
-    return parts.length > 0 ? `\nKişisel profil:\n${parts.join(" | ")}\nBu bilgileri yanıtına derinlemesine yansıt — her kişi için farklı, özgün ve kişiye özel yanıt üret. Aynı kalıpları tekrarlama, her yanıt benzersiz olsun.\n` : "";
+    return parts.length > 0 ? `\nKişisel profil:\n${parts.join(" | ")}\nBu bilgileri yanıtına derinlemesine yansıt; her kişi için farklı, özgün ve kişiye özel yanıt üret. Aynı kalıpları tekrarlama, her yanıt benzersiz olsun.\n` : "";
   };
 
   function kisiselBaglamOlustur(mevcutGecmis) {
@@ -5996,16 +5998,16 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut. Şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı: 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu çakra ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
+Beslenme: (bu çakra ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
 **Reiki ile Enerji Aktarımı**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+(Hangi el pozisyonu, hangi frekans, nasıl bir niyet: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
         }),
       });
       const d = await res.json();
@@ -6028,7 +6030,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     { organ:"Mide",           neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
     { organ:"Bağırsaklar",    neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
     { organ:"Kabız",          neden:"Eski düşünceleri ve alışkanlıkları bırakamama, geçmişe tutunma, korku" },
-    { organ:"Diz",            neden:"Ego, gurur, inat — eğilmemek" },
+    { organ:"Diz",            neden:"Ego, gurur, inat, eğilmemek" },
     { organ:"Deri",           neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
     { organ:"Boğaz",          neden:"Kendini ifade edememe, öfkeyi yutmak" },
     { organ:"Gözler",         neden:"Geçmişi ya da geleceği görmek istememe" },
@@ -6039,13 +6041,13 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihni durduramama" },
     { organ:"Tansiyon",       neden:"Uzun süreli çözümsüz duygusal sorunlar, aşırı kontrol ihtiyacı" },
     { organ:"Yorgunluk",      neden:"Direnç, sıkılmışlık, sevgisiz yaşama" },
-    { organ:"Ağrı",           neden:"Suçluluk duygusu — ceza ihtiyacı" },
+    { organ:"Ağrı",           neden:"Suçluluk duygusu, ceza ihtiyacı" },
     { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
   ];
   const KITAP_BILGELIGI = `KİTAPLARDAN ÖZET BİLGELİK:
-• Jung (Kırmızı Kitap): Gölge bütünleşme — dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki altın madeni bulmak.
+• Jung (Kırmızı Kitap): Gölge bütünleşme: dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki altın madeni bulmak.
 • Kryon (DNA'nın 12 Tabakası): DNA bilinçle rezonans kurar; niyet, minnet ve frekans yükseltmeyle uyku halindeki potansiyel aktive olur. Sen tanrısal bir varlıksın, bunu hatırlamak için buradasın.
-• Tao Te Ching: Wu wei — zorlama değil akış. En derin güç direnmeden akan sudur. Basitlik ve boşluk sonsuz potansiyel taşır. Yanıt zorlamada değil sessizlikte gizlidir.
+• Tao Te Ching: Wu wei: zorlama değil akış. En derin güç direnmeden akan sudur. Basitlik ve boşluk sonsuz potansiyel taşır. Yanıt zorlamada değil sessizlikte gizlidir.
 • Yaşam Çiçeği (Drunvalo): Kutsal geometri evrenin dilidir; her çakra, her nefes, her hücre ilahi bir örüntü taşır. Merkaba ışık bedenini aktive eder.
 • Bir'in Yasası (Ra Materyali): Her şey tek bir bilinçtir. Sevgi evrenin birleştirici gücüdür. Başkasına hizmet kendi evrimine katkıdır. Sen hem öğreten hem öğrenilensin.`;
 
@@ -6064,7 +6066,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 • Sabah Niyeti (🌅): Güne niyet ve enerji belirlemek için
 • Akşam Kapanışı (🌙): Günü tamamlamak, şükür ve öğrenim için`;
 
-  const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın — Usui Işık Çemberi Ekolü)
+  const REIKI_BILGI = `REİKİ KAPSAMLI REHBER (Kaynak: Reiki 1-2-3 Eğitim Notları, L.Öznur Açıkalın, Usui Işık Çemberi Ekolü)
 
 5 TEMEL PRENSİP (Dr. Mikao Usui):
 Bugün bana verilen tüm nimetler için minnettarım.
@@ -6074,13 +6076,13 @@ Bugün dürüstüm.
 Bugün tüm varlıklara karşı nazik ve saygılıyım.
 
 ÇAKRALAR VE ENERJİ MERKEZLERİ:
-• Kök Çakra (Kırmızı, 396Hz) — güvenlik, maddi destek, hayatta kalma, topraklanma; böbrekler, omurilik, siyatik siniri. Depresyon ve korku bu çakrayı kapatır.
-• Sakral Çakra (Turuncu, 417Hz) — yaratıcılık, duygular, cinsellik, ilişkiler; üreme organları, mesane, bel. Boğaz çakrasıyla koordineli çalışır.
-• Solar Pleksus (Sarı, 528Hz) — kişisel güç, irade, özgüven, karmik bağ; sindirim sistemi, dalak, karaciğer, pankreas. En güçlü çakralardan biri; duygusal bedene açılan kapıdır.
-• Kalp Çakra (Yeşil, 639Hz) — sevgi, şefkat, bağışlama, bağlantı; kalp, akciğerler, dolaşım sistemi.
-• Boğaz Çakra (Mavi, 741Hz) — ifade, dürüstlük, iletişim; boğaz, tiroit, kulaklar. Sakral çakrasıyla koordineli çalışır.
-• Üçüncü Göz (İndigo, 852Hz) — sezgi, netlik, içgüdü, görüş; alın, sinirler, göz. Kök çakrasıyla koordineli çalışır.
-• Taç Çakra (Mor/Beyaz, 963Hz) — ruhsal bağlantı, bilinç, bütünlük, ilahi enerji.
+• Kök Çakra (Kırmızı, 396Hz): güvenlik, maddi destek, hayatta kalma, topraklanma; böbrekler, omurilik, siyatik siniri. Depresyon ve korku bu çakrayı kapatır.
+• Sakral Çakra (Turuncu, 417Hz): yaratıcılık, duygular, cinsellik, ilişkiler; üreme organları, mesane, bel. Boğaz çakrasıyla koordineli çalışır.
+• Solar Pleksus (Sarı, 528Hz): kişisel güç, irade, özgüven, karmik bağ; sindirim sistemi, dalak, karaciğer, pankreas. En güçlü çakralardan biri; duygusal bedene açılan kapıdır.
+• Kalp Çakra (Yeşil, 639Hz): sevgi, şefkat, bağışlama, bağlantı; kalp, akciğerler, dolaşım sistemi.
+• Boğaz Çakra (Mavi, 741Hz): ifade, dürüstlük, iletişim; boğaz, tiroit, kulaklar. Sakral çakrasıyla koordineli çalışır.
+• Üçüncü Göz (İndigo, 852Hz): sezgi, netlik, içgüdü, görüş; alın, sinirler, göz. Kök çakrasıyla koordineli çalışır.
+• Taç Çakra (Mor/Beyaz, 963Hz): ruhsal bağlantı, bilinç, bütünlük, ilahi enerji.
 
 HASTALIKLARA ÇAKRA & EL POZİSYONU YAKLAŞIMI:
 • Baş ağrısı, göz, sinüs: Üçüncü Göz + Taç çakra, başın arkası
@@ -6096,18 +6098,18 @@ HASTALIKLARA ÇAKRA & EL POZİSYONU YAKLAŞIMI:
 • Yorgunluk, bağışıklık: Dalak + Solar Pleksus + tüm vücut
 
 REİKİ SEMBOLLERİ:
-• Cho Ku Rei (CKR): Güç sembolü — enerjiyi yoğunlaştırır, koruma ve temizleme
-• Sei He Ki (SHK): Zihinsel-duygusal sembol — bilinçaltı kodlama, alışkanlıkları dönüştürme
-• Hon Sha Ze Sho Nen (HSZN): Uzaktan Reiki — geçmişe/geleceğe enerji gönderme
-• Dai Ko Myo (DKM): Master sembolü — ruhsal şifa, en yüksek frekans, kalp çakrasından kalbe
+• Cho Ku Rei (CKR): Güç sembolü, enerjiyi yoğunlaştırır, koruma ve temizleme
+• Sei He Ki (SHK): Zihinsel-duygusal sembol, bilinçaltı kodlama, alışkanlıkları dönüştürme
+• Hon Sha Ze Sho Nen (HSZN): Uzaktan Reiki, geçmişe/geleceğe enerji gönderme
+• Dai Ko Myo (DKM): Master sembolü, ruhsal şifa, en yüksek frekans, kalp çakrasından kalbe
 
 TEMEL ANLAYIŞ:
-Hastalıklar zihinsel ve duygusal kalıpların fiziksel bedende görünmesidir. Şifa çok boyutludur: fiziksel, duygusal, zihinsel ve ruhsal boyutları birlikte kapsar. Kişi hastalığın nedenini anlayıp içselleştiremediği sürece hastalık tekrar eder. Koşulsuz sevgi her şeyin şifasıdır — kişi kendini koşulsuz sevip kabul edebildiğinde gerçek şifa başlar.`;
+Hastalıklar zihinsel ve duygusal kalıpların fiziksel bedende görünmesidir. Şifa çok boyutludur: fiziksel, duygusal, zihinsel ve ruhsal boyutları birlikte kapsar. Kişi hastalığın nedenini anlayıp içselleştiremediği sürece hastalık tekrar eder. Koşulsuz sevgi her şeyin şifasıdır. Kişi kendini koşulsuz sevip kabul edebildiğinde gerçek şifa başlar.`;
 
-  const LOUISE_HAY_REHBER = `LOUISE L. HAY — DÜŞÜNCE GÜCÜYLE TEDAVİ (Kaynak: Kitap)
+  const LOUISE_HAY_REHBER = `LOUISE L. HAY: DÜŞÜNCE GÜCÜYLE TEDAVİ (Kaynak: Kitap)
 
 TEMEL FELSEFE:
-Yaşamımızdaki her şey zihinsel düşünce kalıplarının sonucudur. Hastalıklar, içimizde bastırılmış olumsuz düşünce kalıplarının bedende ifade bulmasıdır. Zihinsel kalıbı değiştirince beden de değişir. Tüm şifanın temeli özsevgidir — kendini sevmek ve onaylamak her şeyi değiştirir. Geçmişi bağışlamak ise özgürleşmenin kapısıdır.
+Yaşamımızdaki her şey zihinsel düşünce kalıplarının sonucudur. Hastalıklar, içimizde bastırılmış olumsuz düşünce kalıplarının bedende ifade bulmasıdır. Zihinsel kalıbı değiştirince beden de değişir. Tüm şifanın temeli özsevgidir. Kendini sevmek ve onaylamak her şeyi değiştirir. Geçmişi bağışlamak ise özgürleşmenin kapısıdır.
 
 BEDEN-ZİHİN BAĞLANTISI:
 • Akciğer sorunları: Yaşamdan korkmak, yaşamı dolu dolu almayı reddetmek, derin üzüntü, kendini değersiz bulmak
@@ -6124,7 +6126,7 @@ BEDEN-ZİHİN BAĞLANTISI:
 • Cilt sorunları: Kimlik ve sınır kaybı, başkalarının tehdit hissettirmesi
 • Göz sorunları: Geçmişi ya da geleceği görmek istememe, çevreden duyulan korku
 • Kulak sorunları: Duymak istemediğin şeyler, öfke, duymayı reddetmek
-• Diz sorunları: Ego, gurur, inat — eğilmemek, esneyememek
+• Diz sorunları: Ego, gurur, inat, eğilmemek, esneyememek
 • Uyku sorunları: Korku, güvensizlik, zihnin duramaması, hayattan kaçma isteği
 • Kilo sorunları: Korku, korunma ihtiyacı, duyguları bastırma, sevilmemekten korkma
 • Yorgunluk: Direnç, sıkılmışlık, sevgisiz yaşama, anlam yoksunluğu
@@ -6139,9 +6141,9 @@ BEDEN-ZİHİN BAĞLANTISI:
 
 ŞİFA YAKLAŞIMI:
 1. Hastalığın zihinsel nedenini fark et ve kabul et
-2. Kendini ve geçmişini bağışla — suçlamak enerji çalar
+2. Kendini ve geçmişini bağışla, suçlamak enerji çalar
 3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
-4. Kendini sevmeyi öğren — bu tüm şifanın temelidir`;
+4. Kendini sevmeyi öğren, bu tüm şifanın temelidir`;
 
   // ── GALAKTİK KİMLİK YORUMU ────────────────────────────────────────────────
   // Kimlik kartındaki TÜM veriler (güneş, yükselen, 12. ev, draconic, ay
@@ -6193,17 +6195,17 @@ BEDEN-ZİHİN BAĞLANTISI:
           // kalsın." Harita yorumu somut veriye dayanıyor, ayna sorgusu ise kişisel
           // yansıtma — önsöz orada anlamlı, burada gereksiz.
           system:`${buildMirrorSystemPrompt(lang, false)}
-Bu bir DOĞUM HARİTASI ÖZETİ yorumudur. Kısa ve NET ol — kullanıcı uzun rapor değil, "bunlar ne anlama geliyor" sorusunun anlaşılır cevabını istiyor. Kehanet yapma, kesin hüküm verme; eğilim ve davet dilini kullan. Tıbbi/finansal tavsiye verme.`,
+Bu bir DOĞUM HARİTASI ÖZETİ yorumudur. Kısa ve NET ol: kullanıcı uzun rapor değil, "bunlar ne anlama geliyor" sorusunun anlaşılır cevabını istiyor. Kehanet yapma, kesin hüküm verme; eğilim ve davet dilini kullan. Tıbbi/finansal tavsiye verme.`,
           messages:[{ role:"user", content:`Kullanıcının doğum haritası verileri:
 ${facts}
 
 Şu formatta yanıt ver:
 
 **Özet**
-(Bu haritanın ana teması — 2-3 cümle. Parçaları birbirine bağla: yükselen ile güneş nasıl konuşuyor, ay düğümleri hangi yönü gösteriyor. Sade dil, jargon yok.)
+(Bu haritanın ana teması: 2-3 cümle. Parçaları birbirine bağla: yükselen ile güneş nasıl konuşuyor, ay düğümleri hangi yönü gösteriyor. Sade dil, jargon yok.)
 
 **Element dengen**
-(Element dağılımı verilmişse: en baskın ve en zayıf elementin ne anlama geldiğini 2-3 cümlede söyle — zayıf element bir eksiklik değil, beslenmeye açık bir alan; baskın element ise doğal gücün. Veri verilmemişse bu başlığı HİÇ YAZMA, atla.)
+(Element dağılımı verilmişse: en baskın ve en zayıf elementin ne anlama geldiğini 2-3 cümlede söyle. Zayıf element bir eksiklik değil, beslenmeye açık bir alan; baskın element ise doğal gücün. Veri verilmemişse bu başlığı HİÇ YAZMA, atla.)
 
 **Öne çıkanlar**
 (3 madde. Her madde tek cümle: haritadaki EN belirgin üç şey ve ne anlama geldiği. Madde başına "•" koy.)
@@ -6234,7 +6236,7 @@ ${facts}
     // haritaya dair sorular sorabiliyor (örnek sorular listesine eklendi).
     // Eksik veriler chartFacts() içinde zaten atlanıyor.
     const astroTxt = astro ? `Kullanıcının doğum haritası:\n${chartFacts()}${birthTime ? `\nDoğum Saati: ${birthTime}` : ""}
-Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen) bu verileri kullanarak SOMUT yanıtla — genel geçer astroloji anlatma, ONUN haritasından konuş.` : "";
+Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen) bu verileri kullanarak SOMUT yanıtla. Genel geçer astroloji anlatma, ONUN haritasından konuş.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
       const res = await fetch(AI_CALL_URL, {
@@ -6262,16 +6264,16 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut — şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı — 6-7 cümle)
+(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut. Şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı: 6-7 cümle)
 
 **Senin için**
-Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı — kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz — tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA — hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
+Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
+Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği — somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa — Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
         }),
       });
       const d = await res.json();
@@ -6314,12 +6316,12 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 
     setAiLoading(true); setAiRapor("");
 
-    const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi — Gizli Benlik Rehberi (Tracy Marks, "Gizli Benliğiniz"):
+    const GIZLI_BENLIK_REHBER = `Astrolojinin 12. Evi: Gizli Benlik Rehberi (Tracy Marks, "Gizli Benliğiniz"):
 12. ev bilinçdışının evi, gizli benliğin ve karmik belleğin yurdudur. Güneş her gün bu evden geçer; taşıdığı ışıltılı ve iyileştirici enerjiyi tüm diğer evlere yayar.
 
 TEMEL KAVRAMLAR:
 • Gölge Benlik (Jung): "Dışarıdaki dünyada ne için savaşıyorsak, iç benliğimizde de bu mücadele vardır." Bastırılan enerji bilinçdışında büyür; başkalarına yansıtılarak dışarıda görülür. İnkar ettiğimiz özellikler en güçlü yansımalarımız olur.
-• Ya Hep Ya Hiç Modelleri: Bastırma ne kadar derinse, patlama o kadar sert olur. Bir gün küçük ve zayıf, ertesi gün taşan enerji — 12. ev dinamiğidir. Reddedilen her enerji, bilinçsizce büyüyüp şekil değiştirir.
+• Ya Hep Ya Hiç Modelleri: Bastırma ne kadar derinse, patlama o kadar sert olur. Bir gün küçük ve zayıf, ertesi gün taşan enerji: 12. ev dinamiğidir. Reddedilen her enerji, bilinçsizce büyüyüp şekil değiştirir.
 • Karmik Deneyimler: Tekrar eden kelimeler, niyetler ve örüntüler çözülmemiş geçmiş deneyimlerin izlerini taşır. 12. evdeki burç, geçmiş yaşamdaki Yükselen Burcu'nu gösterir.
 • Hassasiyet ve Hizmet: 12. ev enerjileri aşırı güvensizlik ve bağımlılık riskini taşıdığı gibi derin empati, şifacılık ve insanlığa hizmet potansiyelini de barındırır. Başkalarının duygularını kendinizinkiymiş gibi duyumsayabilirsiniz.
 • Tinsellik ve İnsanüstü Deneyimler: Bu ev kozmik birliğe ulaşmanın, tanrısal enerjiyi doğrudan deneyimlemenin evidir. Rüyalar, meditasyon, sezgiler ve müzik/şiir buranın armağanlarıdır.
@@ -6356,7 +6358,7 @@ ANAHTAR SÖZCÜKLER: yalnızlık · iç gözlem · bastırılan duygular · karm
 - Günlük max: ${dailyStr}
 - ${fcStr}
 
-NOT: Kp index Dünya'nın jeomanyetik aktivitesini ölçer. Yüksek değerler (5+) güneş fırtınası, sinir sistemi hassasiyeti, uyku bozukluğu, baş dönmesi, yoğun rüyalar ve duygusal dalgalanmalarla ilişkilidir. Düşük değerler (0-2) sakin, denge dönemleridir. Bu hafta yaşadıkların kozmik enerjiyle de ilişkili olabilir — raporda bu boyutu yansıt.`;
+NOT: Kp index Dünya'nın jeomanyetik aktivitesini ölçer. Yüksek değerler (5+) güneş fırtınası, sinir sistemi hassasiyeti, uyku bozukluğu, baş dönmesi, yoğun rüyalar ve duygusal dalgalanmalarla ilişkilidir. Düşük değerler (0-2) sakin, denge dönemleridir. Bu hafta yaşadıkların kozmik enerjiyle de ilişkili olabilir. Raporda bu boyutu yansıt.`;
       }
     } catch { /* opsiyonel */ }
 
@@ -6397,27 +6399,27 @@ ${KITAP_BILGELIGI}
 
 ${lang === "tr"
   ? `Rapor şu başlıkları içermeli:
-**Haftanın Yansıması** — Genel ruh hali, enerji ve burç/sayı etkisi — net ve doğrudan yansıt (2-3 cümle)
-**Öne Çıkan Temalar** — Tekrar eden kelimeler ve çakra örüntüleri — kaynağa doğrudan işaret et
-**İçsel Büyüme** — Öğrenilen şeylerden çıkarılan anlam — kişinin kendi içinde gördüklerini yansıt
-**Gizli Benlik & Gölge** — Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
-**Frekans & Ses Yolculuğu** — Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
-**Şükran Kalbi** — Şükür yazılarından bir sentez
-**Sana Bir Davet** — Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin — eleştiri değil, davet (2-3 madde)
-**Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
-**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu** — Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
+**Haftanın Yansıması**: Genel ruh hali, enerji ve burç/sayı etkisi, net ve doğrudan yansıt (2-3 cümle)
+**Öne Çıkan Temalar**: Tekrar eden kelimeler ve çakra örüntüleri, kaynağa doğrudan işaret et
+**İçsel Büyüme**: Öğrenilen şeylerden çıkarılan anlam, kişinin kendi içinde gördüklerini yansıt
+**Gizli Benlik & Gölge**: Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
+**Frekans & Ses Yolculuğu**: Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
+**Şükran Kalbi**: Şükür yazılarından bir sentez
+**Sana Bir Davet**: Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin, eleştiri değil, davet (2-3 madde)
+**Hatırla**: Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
+**Gelecek Haftaya Niyet**: Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not**: Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu**: Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`
   : `The report MUST include the following sections (translate each section heading naturally into ${AI_LANG_NAMES[lang] || "English"}; keep the **bold** markdown around each heading):
-**Reflection of the Week** — Overall mood, energy and zodiac/number influence — clear and direct (2-3 sentences)
-**Recurring Themes** — Repeating words and chakra patterns — point directly at the source
-**Inner Growth** — Meaning extracted from what was learned — reflect what the person saw inside themselves
-**Hidden Self & Shadow** — Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
-**Frequency & Sound Journey** — Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
-**Heart of Gratitude** — A synthesis of the gratitude entries
-**An Invitation** — How can you offer yourself love this week, where can you look — invitation, not criticism (2-3 bullets)
-**Remember** — The 2-3 most important things to remind yourself this week (short, concise)
-**Intention for Next Week** — A short, inspiring suggestion${astro ? "\n**Cosmic Note** — A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State** — Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
+**Reflection of the Week**: Overall mood, energy and zodiac/number influence, clear and direct (2-3 sentences)
+**Recurring Themes**: Repeating words and chakra patterns, point directly at the source
+**Inner Growth**: Meaning extracted from what was learned, reflect what the person saw inside themselves
+**Hidden Self & Shadow**: Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
+**Frequency & Sound Journey**: Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
+**Heart of Gratitude**: A synthesis of the gratitude entries
+**An Invitation**: How can you offer yourself love this week, where can you look, invitation, not criticism (2-3 bullets)
+**Remember**: The 2-3 most important things to remind yourself this week (short, concise)
+**Intention for Next Week**: A short, inspiring suggestion${astro ? "\n**Cosmic Note**: A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State**: Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
 
 Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
           ragQuery: (gunlerText || "").slice(0, 500),
@@ -9682,10 +9684,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       ], [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Why is chronic fatigue always with me?",
-                          "I can't sleep — what's the energetic reason?",
+                          "I can't sleep. What's the energetic reason?",
                         ]},
                         { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "I'm constantly anxious — which chakra is blocked?",
+                          "I'm constantly anxious. Which chakra is blocked?",
                           "How can I transform my anger?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -9697,7 +9699,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "What is my mission and how can I understand it?",
                         ]},
                         { cat:t("ask_cat_transitions"), idx:[17,19], sorular:[
-                          "I'm changing jobs and feel deep anxiety — what might be the cause?",
+                          "I'm changing jobs and feel deep anxiety. What might be the cause?",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
                       ])]).map(({cat,sorular})=>(
@@ -11272,19 +11274,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong>: {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong>: {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong>: {t("ailesi_tasarim_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong>: {t("ailesi_taslar_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong>: {t("ailesi_bitkiler_short")}
                     </div>
                   </div>
                 </div>
@@ -11312,10 +11314,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     {t("premium_subscription_info")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:5 }}>
-                    <strong style={{ color:"#ccc" }}>{t("premium_yearly_name")}</strong> — {t("premium_yearly_terms")}
+                    <strong style={{ color:"#ccc" }}>{t("premium_yearly_name")}</strong>: {t("premium_yearly_terms")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:8 }}>
-                    <strong style={{ color:"#ccc" }}>{t("premium_lifetime_name")}</strong> — {t("premium_lifetime_terms")}
+                    <strong style={{ color:"#ccc" }}>{t("premium_lifetime_name")}</strong>: {t("premium_lifetime_terms")}
                   </div>
                   <div style={{ fontSize:11,color:"#777",lineHeight:1.65,marginBottom:14 }}>
                     {t("premium_renewal_text")}
@@ -11379,19 +11381,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong>: {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong>: {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong>: {t("ailesi_tasarim_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong>: {t("ailesi_taslar_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong>: {t("ailesi_bitkiler_short")}
                     </div>
                   </div>
                 </div>

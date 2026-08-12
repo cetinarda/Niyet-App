@@ -152,10 +152,11 @@ function normalizeLang(raw) {
 // English meta-instruction is intentional: LLMs follow English directives most reliably.
 function buildLanguageDirective(lang) {
   const meta = LANG_META[lang];
-  return `LANGUAGE LOCK — HIGHEST PRIORITY:
+  return `LANGUAGE LOCK, HIGHEST PRIORITY:
 You MUST write the ENTIRE response in ${meta.name} (${meta.native}), regardless of the language of the user's input, the language of the context/system text, or any examples shown. Do NOT translate the user's input; only the OUTPUT must be in ${meta.name}.
 Do not switch languages mid-response. Do not add parenthetical translations. ${meta.sample}
 Do not use Chinese, Arabic, Korean, Devanagari, or any script that is not part of ${meta.name}${lang === "ja" ? "" : " (Japanese scripts only allowed when the output language is Japanese)"}.
+Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 
 `;
 }
@@ -280,7 +281,7 @@ export const handler = async (event) => {
       const passages = retrieveBookPassages(body.ragQuery, 5);
       if (passages.length) {
         const ragText = passages.map((p) => `(${p.b}) ${p.t}`).join("\n\n");
-        systemContent += `\n\nİLGİLİ KİTAP BİLGELİĞİ (aşağıdaki pasajlardaki özü yorumuna DOĞAL biçimde harmanla; alıntı yapma, kitap/kaynak adı yazma, kopyalama — yalnızca ruhunu sentezle):\n${ragText}`;
+        systemContent += `\n\nİLGİLİ KİTAP BİLGELİĞİ (aşağıdaki pasajlardaki özü yorumuna DOĞAL biçimde harmanla; alıntı yapma, kitap/kaynak adı yazma, kopyalama; yalnızca ruhunu sentezle):\n${ragText}`;
       }
     } catch (_) { /* RAG başarısızsa sessiz geç — normal akış sürer */ }
   }

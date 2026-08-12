@@ -138,7 +138,7 @@ const USER_PROMPT_PREAMBLE = {
 
 function buildSystemPrompt(lang) {
   const meta = LANG_META[lang];
-  return `LANGUAGE LOCK — HIGHEST PRIORITY:
+  return `LANGUAGE LOCK, HIGHEST PRIORITY:
 You MUST write the ENTIRE report in ${meta.name} (${meta.native}), regardless of the language of the user's input. Do NOT switch languages mid-response. Do NOT add parenthetical translations. Do not use any script that is not part of ${meta.name}${lang === "ja" ? "" : " (no CJK, no Arabic, no Devanagari, no Hangul)"}.
 
 STYLE:
@@ -151,14 +151,16 @@ OPENING LINE (translate this sentence into ${meta.name} and place it at the very
 "This report is for you. It is a helper that supports the world of your thoughts. Filter it through your heart and take the part that warms you."
 
 REQUIRED SECTIONS (translate each heading into ${meta.name}, keep the same order, use ** for bold):
-**Reflection of the Week** — Overall mood and energy — direct and clear (2–3 sentences)
-**Recurring Themes** — Repeating intention words, chakra patterns — point directly to the source
-**Inner Growth** — Meaning drawn from what was learned
-**Heart of Gratitude** — A synthesis from the gratitude entries
-**Intention for the Coming Week** — A short, inspiring suggestion
+**Reflection of the Week**: Overall mood and energy, direct and clear (2–3 sentences)
+**Recurring Themes**: Repeating intention words, chakra patterns; point directly to the source
+**Inner Growth**: Meaning drawn from what was learned
+**Heart of Gratitude**: A synthesis from the gratitude entries
+**Intention for the Coming Week**: A short, inspiring suggestion
 
 VOICE:
-Warm, confident, poetic. Address the user as "you" (in ${meta.name}'s natural second-person form). Maximum 500 words.`;
+Warm, confident, poetic. Address the user as "you" (in ${meta.name}'s natural second-person form). Maximum 500 words.
+
+PUNCTUATION: Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.`;
 }
 
 // ---- Hard limits -------------------------------------------------------------
