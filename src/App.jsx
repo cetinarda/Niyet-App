@@ -6403,23 +6403,23 @@ ${lang === "tr"
 **Öne Çıkan Temalar**: Tekrar eden kelimeler ve çakra örüntüleri, kaynağa doğrudan işaret et
 **İçsel Büyüme**: Öğrenilen şeylerden çıkarılan anlam, kişinin kendi içinde gördüklerini yansıt
 **Gizli Benlik & Gölge**: Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
-**Frekans & Ses Yolculuğu** — Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
-**Şükran Kalbi** — Şükür yazılarından bir sentez
-**Sana Bir Davet** — Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin — eleştiri değil, davet (2-3 madde)
-**Hatırla** — Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
-**Gelecek Haftaya Niyet** — Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not** — Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu** — Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
+**Frekans & Ses Yolculuğu**: Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
+**Şükran Kalbi**: Şükür yazılarından bir sentez
+**Sana Bir Davet**: Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin, eleştiri değil, davet (2-3 madde)
+**Hatırla**: Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
+**Gelecek Haftaya Niyet**: Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not**: Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu**: Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`
   : `The report MUST include the following sections (translate each section heading naturally into ${AI_LANG_NAMES[lang] || "English"}; keep the **bold** markdown around each heading):
-**Reflection of the Week** — Overall mood, energy and zodiac/number influence — clear and direct (2-3 sentences)
-**Recurring Themes** — Repeating words and chakra patterns — point directly at the source
-**Inner Growth** — Meaning extracted from what was learned — reflect what the person saw inside themselves
-**Hidden Self & Shadow** — Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
-**Frequency & Sound Journey** — Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
-**Heart of Gratitude** — A synthesis of the gratitude entries
-**An Invitation** — How can you offer yourself love this week, where can you look — invitation, not criticism (2-3 bullets)
-**Remember** — The 2-3 most important things to remind yourself this week (short, concise)
-**Intention for Next Week** — A short, inspiring suggestion${astro ? "\n**Cosmic Note** — A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State** — Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
+**Reflection of the Week**: Overall mood, energy and zodiac/number influence, clear and direct (2-3 sentences)
+**Recurring Themes**: Repeating words and chakra patterns, point directly at the source
+**Inner Growth**: Meaning extracted from what was learned, reflect what the person saw inside themselves
+**Hidden Self & Shadow**: Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
+**Frequency & Sound Journey**: Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
+**Heart of Gratitude**: A synthesis of the gratitude entries
+**An Invitation**: How can you offer yourself love this week, where can you look, invitation, not criticism (2-3 bullets)
+**Remember**: The 2-3 most important things to remind yourself this week (short, concise)
+**Intention for Next Week**: A short, inspiring suggestion${astro ? "\n**Cosmic Note**: A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State**: Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
 
 Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
           ragQuery: (gunlerText || "").slice(0, 500),
