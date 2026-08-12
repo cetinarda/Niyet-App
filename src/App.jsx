@@ -4972,6 +4972,25 @@ export default function SakinApp() {
   const [sikayet, setSikayet] = useState("");
   const [sikayetHis, setSikayetHis] = useState("");
   const [sikayetAnaliz, setSikayetAnaliz] = useState("");
+  // İçsel Ayna geçmişi: soru-cevap çiftleri kalıcı saklanır (kullanıcı isteği:
+  // "1 haftalık yerine lifetime arşiv"). Süre sınırı yok, sadece elle temizleme.
+  const [aynaArsiv, setAynaArsiv] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("sakin_ayna_arsiv") || "[]"); } catch (_) { return []; }
+  });
+  const [showAynaGecmis, setShowAynaGecmis] = useState(false);
+  const [aynaGecmisTemizleOnay, setAynaGecmisTemizleOnay] = useState(false);
+  const aynaGecmisiKaydet = (soru, cevap) => {
+    setAynaArsiv(prev => {
+      const yeni = [{ soru, cevap, zaman: new Date().toISOString() }, ...prev];
+      try { localStorage.setItem("sakin_ayna_arsiv", JSON.stringify(yeni)); } catch (_) {}
+      return yeni;
+    });
+  };
+  const aynaGecmisiTemizle = () => {
+    setAynaArsiv([]);
+    setAynaGecmisTemizleOnay(false);
+    try { localStorage.removeItem("sakin_ayna_arsiv"); } catch (_) {}
+  };
   const [gidYorum, setGidYorum] = useState(""); // galaktik kimlik AI yorumu
   const [gidYorumAcik, setGidYorumAcik] = useState(true); // yorum paneli açık mı (kapatmak yorumu SİLMEZ)
   const [hastalik, setHastalik] = useState("");
@@ -6279,6 +6298,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
       const d = await res.json();
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
+      if (d?.text) aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet("şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
@@ -9824,6 +9844,88 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                 </div>
 
+                {/* GEÇMİŞ — kalıcı arşiv (kullanıcı isteği: süre sınırlı arşiv
+                    yerine lifetime; kontrol elle "geçmişi temizle" ile
+                    kullanıcıda kalır). Sadece en az bir kayıt varsa görünür. */}
+                {aynaArsiv.length > 0 && (
+                  <div style={{ marginTop:12,marginBottom:20,position:"relative" }}>
+                    <button onClick={()=>{ setShowAynaGecmis(v=>!v); setAynaGecmisTemizleOnay(false); }}
+                      style={{
+                        width:"100%",
+                        background:"rgba(255,255,255,0.06)",
+                        border:"1px solid rgba(255,255,255,0.2)",
+                        borderRadius:14,padding:"12px 18px",
+                        color:"#8868b0",
+                        cursor:"pointer",
+                        display:"flex",alignItems:"center",justifyContent:"space-between",
+                        fontFamily:"'Jost',sans-serif",fontWeight:300,
+                        transition:"all 0.2s",
+                      }}
+                      onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(255,255,255,0.4)"; e.currentTarget.style.color="#b090d8"; }}
+                      onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(255,255,255,0.2)"; e.currentTarget.style.color="#8868b0"; }}>
+                      <span style={{ fontSize:13,letterSpacing:2 }}>
+                        {pickLang({tr:"GEÇMİŞ",en:"HISTORY",de:"VERLAUF",es:"HISTORIAL",pt:"HISTÓRICO",fr:"HISTORIQUE",ja:"履歴"}, lang)} ({aynaArsiv.length})
+                      </span>
+                      <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showAynaGecmis?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+                    </button>
+
+                    {showAynaGecmis && (
+                      <div style={{
+                        marginTop:8,
+                        background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(8,4,22,0.95))",
+                        border:"1px solid rgba(255,255,255,0.2)",
+                        borderRadius:16,padding:"18px 16px",
+                        boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
+                        overflow:"hidden",minWidth:0,
+                      }}>
+                        {aynaArsiv.map((item,i)=>(
+                          <button key={item.zaman+i} onClick={()=>{ setSikayet(item.soru); setSikayetAnaliz(item.cevap); setShowAynaGecmis(false); }}
+                            style={{
+                              display:"block",width:"100%",textAlign:"left",
+                              background:"none",border:"none",
+                              borderBottom: i<aynaArsiv.length-1 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                              padding:"10px 4px",
+                              cursor:"pointer",overflow:"hidden",minWidth:0,
+                              transition:"opacity 0.15s",
+                            }}
+                            onMouseEnter={e=>{ e.currentTarget.style.opacity=0.75; }}
+                            onMouseLeave={e=>{ e.currentTarget.style.opacity=1; }}>
+                            <div style={{ fontSize:10.5,letterSpacing:1,color:"#5f5578",marginBottom:3,fontFamily:"'Jost',sans-serif" }}>
+                              {new Date(item.zaman).toLocaleDateString(
+                                lang==="tr"?"tr-TR":lang==="de"?"de-DE":lang==="es"?"es-ES":lang==="pt"?"pt-PT":lang==="fr"?"fr-FR":lang==="ja"?"ja-JP":"en-US",
+                                { day:"numeric", month:"short" }
+                              )}
+                            </div>
+                            <div style={{ fontSize:13,color:"#b0a0cc",lineHeight:1.5,letterSpacing:0.3,fontFamily:"'Inter',sans-serif",overflowWrap:"anywhere",wordBreak:"break-word" }}>
+                              {item.soru.length>90 ? item.soru.slice(0,90)+"…" : item.soru}
+                            </div>
+                          </button>
+                        ))}
+
+                        <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.08)",textAlign:"center" }}>
+                          {aynaGecmisTemizleOnay ? (
+                            <div style={{ display:"flex",gap:8,justifyContent:"center",alignItems:"center",flexWrap:"wrap" }}>
+                              <span style={{ fontSize:11.5,color:"#a08ac0" }}>{pickLang({tr:"Emin misin?",en:"Are you sure?",de:"Bist du sicher?",es:"¿Estás seguro?",pt:"Tens a certeza?",fr:"Tu es sûr(e) ?",ja:"本当に消去しますか？"}, lang)}</span>
+                              <button onClick={aynaGecmisiTemizle}
+                                style={{ background:"rgba(200,80,80,0.18)",border:"1px solid rgba(200,80,80,0.4)",borderRadius:100,color:"#e0a0a0",cursor:"pointer",fontSize:11.5,letterSpacing:0.5,padding:"5px 14px",fontFamily:"'Jost',sans-serif" }}>
+                                {pickLang({tr:"Evet, temizle",en:"Yes, clear",de:"Ja, löschen",es:"Sí, borrar",pt:"Sim, limpar",fr:"Oui, effacer",ja:"はい、消去"}, lang)}
+                              </button>
+                              <button onClick={()=>setAynaGecmisTemizleOnay(false)}
+                                style={{ background:"none",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,color:"#8868b0",cursor:"pointer",fontSize:11.5,letterSpacing:0.5,padding:"5px 14px",fontFamily:"'Jost',sans-serif" }}>
+                                {pickLang({tr:"Vazgeç",en:"Cancel",de:"Abbrechen",es:"Cancelar",pt:"Cancelar",fr:"Annuler",ja:"キャンセル"}, lang)}
+                              </button>
+                            </div>
+                          ) : (
+                            <button onClick={()=>setAynaGecmisTemizleOnay(true)}
+                              style={{ background:"none",border:"none",color:"#6a5a85",cursor:"pointer",fontSize:11.5,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",textDecoration:"underline",textUnderlineOffset:3 }}>
+                              {pickLang({tr:"Geçmişi temizle",en:"Clear history",de:"Verlauf löschen",es:"Borrar historial",pt:"Limpar histórico",fr:"Effacer l'historique",ja:"履歴を消去"}, lang)}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
               </div>
             )}
