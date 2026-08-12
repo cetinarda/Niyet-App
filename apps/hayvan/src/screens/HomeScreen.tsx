@@ -22,7 +22,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import quotesData from '../data/quotes.json';
 import animalsData from '../data/animals.json';
 import philosophersData from '../data/philosophers.json';
-import { useSakinHayvanStore } from '../store/useStore';
+import { useSakinHayvanStore, type DailyReading } from '../store/useStore';
 import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useI18n } from '../i18n/useI18n';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers } from '../i18n/localize';
@@ -159,7 +159,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
-  const { profile, dailyReading, generateDailyReading, recordReading, updateStats } = useSakinHayvanStore();
+  const { profile, dailyReading, isLoading, generateDailyReading, recordReading, updateStats } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const quotes = useLocalizedQuotes();
   const philosophers = useLocalizedPhilosophers();
@@ -169,7 +169,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     { title: t('home.decks.quote.title'),  short: t('home.decks.quote.short'),  subtitle: t('home.decks.quote.subtitle'),  color: Colors.gold, motif: '✦' },
   ];
 
-  const [reading, setReading] = useState(dailyReading);
+  const [reading, setReading] = useState<DailyReading | null>(null);
   const [step, setStep]       = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [done, setDone]       = useState(false);
@@ -179,17 +179,25 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(0)).current;
   const revealedRef = useRef(false);
 
+  // Depo (useSakinHayvanStore) AsyncStorage'dan yüklemesini isLoading ile
+  // bildirir. Önceki kod bunu beklemeden — dailyReading henüz null iken —
+  // hemen YENİ rastgele bir okuma üretiyordu (generateDailyReading). Bu hem
+  // her sekme dönüşünde günün hayvanını/sözünü rastgele değiştiriyordu hem de
+  // generateDailyReading'in o anki (henüz yüklenmemiş, boş) archive kapanışını
+  // kullanması yüzünden kayıtlı arşivi tek satıra sıfırlıyordu. Artık isLoading
+  // bitmeden karar verilmiyor; depoda bugünün okuması varsa o kullanılır.
   useEffect(() => {
-    if (!reading) {
-      const qIds = buildQuotePool(quotesData);
-      const aIds = animalsData.map(a => a.id);
-      generateDailyReading(qIds, aIds, aIds, aIds).then(r => {
-        const q = quotesData.find(x => x.id === r.quoteId);
-        if (q) updateStats(q.id, q.source, r.animalId, r.animalId, r.nagualId);
-        setReading(r);
-      });
-    }
-  }, []);
+    if (isLoading) return;
+    if (dailyReading) { setReading(dailyReading); return; }
+    if (reading) return;
+    const qIds = buildQuotePool(quotesData);
+    const aIds = animalsData.map(a => a.id);
+    generateDailyReading(qIds, aIds, aIds, aIds).then(r => {
+      const q = quotesData.find(x => x.id === r.quoteId);
+      if (q) updateStats(q.id, q.source, r.animalId, r.animalId, r.nagualId);
+      setReading(r);
+    });
+  }, [isLoading, dailyReading]);
 
   // Shake detection — native Accelerometer (expo-sensors) embed webview'de
   // HER ZAMAN require patlıyor (web build'de modül yok); catch bloğu önceden
