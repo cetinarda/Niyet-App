@@ -6393,6 +6393,22 @@ NOT: Kp index Dünya'nın jeomanyetik aktivitesini ölçer. Yüksek değerler (5
 - Şükür: ${g.sukur||"—"}`).join("\n\n");
     const freqOzet = toplamFreqSn > 0 ? `\nBu hafta toplam frekans dinleme süresi: ${Math.floor(toplamFreqSn/60)} dakika ${toplamFreqSn%60} saniye.` : "";
 
+    // İçsel Ayna'ya bu hafta sorulan sorular — kalıcı arşivden (aynaArsiv) son 7
+    // güne filtrelenir. Rapor artık sadece günlük niyet/kelime/şükür değil,
+    // kullanıcının Ayna'ya ne sorduğunu da "Öne Çıkan Temalar"a dahil edebiliyor.
+    const HAFTA_MS = 7 * 24 * 60 * 60 * 1000;
+    const aynaSonHafta = (aynaArsiv || [])
+      .filter(a => Date.now() - new Date(a.zaman).getTime() < HAFTA_MS)
+      .slice(0, 8);
+    const aynaText = aynaSonHafta.length
+      ? `\nBu hafta İçsel Ayna'ya sorulan sorular:\n${aynaSonHafta.map(a => `- ${a.soru}`).join("\n")}\n`
+      : "";
+
+    // Seri (streak) verisi — kullanıcının ne kadar düzenli geldiğini yansıtır.
+    const streakText = streakData?.current > 0
+      ? `\nGüncel gün serisi: ${streakData.current} gün (en iyi seri: ${streakData.best} gün).`
+      : "";
+
     const astroText = astro ? `
 Kullanıcının Doğum Profili:
 - Güneş Burcu: ${astro.burc}
@@ -6419,8 +6435,8 @@ ${KITAP_BILGELIGI}
 
 ${lang === "tr"
   ? `Rapor şu başlıkları içermeli:
-**Haftanın Yansıması**: Genel ruh hali, enerji ve burç/sayı etkisi, net ve doğrudan yansıt (2-3 cümle)
-**Öne Çıkan Temalar**: Tekrar eden kelimeler ve çakra örüntüleri, kaynağa doğrudan işaret et
+**Haftanın Yansıması**: Genel ruh hali, enerji, burç/sayı etkisi ve bu haftaki geliş ritmi (seri/streak verisi varsa), net ve doğrudan yansıt (2-3 cümle)
+**Öne Çıkan Temalar**: Tekrar eden kelimeler, çakra örüntüleri ve İçsel Ayna'ya sorulan sorulardaki ortak temalar, kaynağa doğrudan işaret et
 **İçsel Büyüme**: Öğrenilen şeylerden çıkarılan anlam, kişinin kendi içinde gördüklerini yansıt
 **Gizli Benlik & Gölge**: Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
 **Frekans & Ses Yolculuğu**: Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
@@ -6431,8 +6447,8 @@ ${lang === "tr"
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`
   : `The report MUST include the following sections (translate each section heading naturally into ${AI_LANG_NAMES[lang] || "English"}; keep the **bold** markdown around each heading):
-**Reflection of the Week**: Overall mood, energy and zodiac/number influence, clear and direct (2-3 sentences)
-**Recurring Themes**: Repeating words and chakra patterns, point directly at the source
+**Reflection of the Week**: Overall mood, energy, zodiac/number influence and this week's rhythm of showing up (streak data if present), clear and direct (2-3 sentences)
+**Recurring Themes**: Repeating words, chakra patterns and common threads across the questions asked to the Inner Mirror, point directly at the source
 **Inner Growth**: Meaning extracted from what was learned, reflect what the person saw inside themselves
 **Hidden Self & Shadow**: Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
 **Frequency & Sound Journey**: Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
@@ -6443,7 +6459,7 @@ Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 
 
 Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
           ragQuery: (gunlerText || "").slice(0, 500),
-          messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}\n\nLütfen haftalık içsel raporumu oluştur.`}]
+          messages:[{role:"user",content:`Bu haftaki günlük verilerim:\n\n${gunlerText}${freqOzet}${aynaText}${streakText}\n\nLütfen haftalık içsel raporumu oluştur.`}]
         })
       });
       const data = await res.json();
