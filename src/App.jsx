@@ -352,18 +352,18 @@ const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"S
 // o önsöz kartın başında gereksiz yer kaplıyordu (kullanıcı: "çıkart, gerek yok").
 function buildMirrorSystemPrompt(lang, onsoz = true) {
   if (lang === "tr") {
-    return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
-ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla — doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama.
+    return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
+ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla; doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN — "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
+ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN; "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
 ${onsoz ? `Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."` : ""}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
-  return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence — including disclaimers, opening lines, and any quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
-OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run.
+  return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence, including disclaimers, opening lines, and any quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
+OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run. Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
-ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings — never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
+ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings; never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
 Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
 At the very BEGINNING of your response, add this sentence translated naturally into ${name}: "This answer is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
@@ -373,12 +373,12 @@ At the very BEGINNING of your response, add this sentence translated naturally i
 // burası gövdedeki Türkçe sızıntısını engeller).
 function buildReportSystemPrompt(lang) {
   if (lang === "tr") {
-    return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma — sadece Türkçe sözcükler. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat.
+    return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
 ÖZGÜNLÜK (çok önemli): Bu rapor biricik olsun. Kalıp cümlelerden, klişelerden, şablon açılışlardan KAÇIN. Kişinin SOMUT verisine (o haftaki niyetleri, kelimeleri, doğum profili, sayısal/burç enerjisi) doğrudan dayan; herkese uyan genel laflar etme. Yapıyı, açılışı ve imgeleri her raporda değiştir; aynı cümleleri tekrarlama.
 Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
-  return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence — including quoted phrases — MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love.
+  return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence, including quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love. Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 ORIGINALITY (very important): Make this report one of a kind. Avoid stock phrases, clichés, and template openings. Ground it in the person's SPECIFIC data (this week's intentions, their words, birth profile, numerology/zodiac energy); do not use generic one-size-fits-all language. Vary the structure, opening and imagery in every report; never repeat the same sentences.
 At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
 }
@@ -1121,24 +1121,24 @@ const DRACONIC_SUN_DETAY = {
 ].forEach(([k, obj]) => { if (ASTRO_TRANS && ASTRO_TRANS[k]) Object.assign(obj, ASTRO_TRANS[k]); });
 
 const REMINDERS_TR = [
-  { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",            duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
-  { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat." },
-  { id:"nefes",     icon:"🌬", title:"Nefes farkındalığı",         subtitle:"1 dakika — sadece nefesini izle.",                        duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın." },
+  { id:"ayna",      icon:"🪞", title:"Aynada kendine bak",        subtitle:"30 saniye, gözlerinin içine bak. Sadece ol.",             duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak." },
+  { id:"su",        icon:"💧", title:"Su iç",                      subtitle:"Bir bardak su iç ve hisset.",                             duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Bir bardak su iç. İçerken hisset: serin, temiz, hayat." },
+  { id:"nefes",     icon:"🌬", title:"Nefes farkındalığı",         subtitle:"1 dakika, sadece nefesini izle.",                         duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın." },
   { id:"beden",     icon:"🧍", title:"Beden egzersizi",            subtitle:"Omuz çevir · Boyun esnet · Gözleri dinlendir",            duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Omuzlarını çevir, boynunu esnet, gözlerini kapat. 2 dakika beden zamanı." },
   { id:"gunes",     icon:"☀️", title:"Güneşi yüzünde hisset",     subtitle:"Dışarı çık. Yüzünü güneşe dön.",                         duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"Güneş seni bekliyor. Yüzünü kaldır, gözlerini yum, hisset." },
-  { id:"agac",      icon:"🌳", title:"Ağaca sarıl",                subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",            duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona — o da seni tutacak." },
+  { id:"agac",      icon:"🌳", title:"Ağaca sarıl",                subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",            duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona, o da seni tutacak." },
   { id:"toprak",    icon:"🌍", title:"Toprağa dokun",              subtitle:"Çıplak ayak ya da avucunla toprağa değdir.",              duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Ayakkabını çıkar. Toprağa bas. Yerin enerjisini hisset." },
   { id:"gok",       icon:"☁️", title:"Gökyüzüne bak",             subtitle:"Başını kaldır. Gökyüzüne bak. Sadece bak.",              duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Başını kaldır. Gökyüzüne bak. Sadece bak." },
   { id:"chakra_an", icon:"💜", title:"Çakra anı",                  subtitle:"Bugünkü çakranda bir an dur.",                           duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Gözlerini yum. Bugünkü çakranı hisset. Bir nefes yeter." },
   { id:"sosyal",    icon:"📵", title:"Sosyal medya molası",        subtitle:"Gerçekten şimdi burada olmak istiyor musun?",             duration:null,color:"rgba(200,80,80,0.7)",   borderColor:"rgba(200,80,80,0.25)",   notifBody:"Telefonu koy. Bir dakika sadece var ol. Ekran bekler, an geçer." },
 ];
 const REMINDERS_EN = [
-  { id:"ayna",      icon:"🪞", title:"Look at yourself in the mirror", subtitle:"30 seconds — look into your eyes. Just be.",              duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Go to the mirror. For 30 seconds, just look at yourself." },
-  { id:"su",        icon:"💧", title:"Drink water",                    subtitle:"Drink a glass of water and feel it.",                      duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Drink a glass of water. Feel it — cool, clean, life." },
-  { id:"nefes",     icon:"🌬", title:"Breath awareness",               subtitle:"1 minute — just observe your breath.",                     duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Stop. For one minute, just observe your breath. You are here." },
+  { id:"ayna",      icon:"🪞", title:"Look at yourself in the mirror", subtitle:"30 seconds, look into your eyes. Just be.",               duration:30,  color:"rgba(180,160,220,0.7)", borderColor:"rgba(180,160,220,0.25)", notifBody:"Go to the mirror. For 30 seconds, just look at yourself." },
+  { id:"su",        icon:"💧", title:"Drink water",                    subtitle:"Drink a glass of water and feel it.",                      duration:null,color:"rgba(72,130,200,0.7)",  borderColor:"rgba(72,130,200,0.25)",  notifBody:"Drink a glass of water. Feel it: cool, clean, life." },
+  { id:"nefes",     icon:"🌬", title:"Breath awareness",               subtitle:"1 minute, just observe your breath.",                      duration:60,  color:"rgba(100,160,210,0.7)", borderColor:"rgba(100,160,210,0.25)", notifBody:"Stop. For one minute, just observe your breath. You are here." },
   { id:"beden",     icon:"🧍", title:"Body exercise",                  subtitle:"Roll shoulders · Stretch neck · Rest eyes",               duration:120, color:"rgba(100,180,130,0.7)", borderColor:"rgba(100,180,130,0.25)", notifBody:"Roll your shoulders, stretch your neck, close your eyes. 2 minutes for your body." },
   { id:"gunes",     icon:"☀️", title:"Feel the sun on your face",      subtitle:"Go outside. Turn your face to the sun.",                  duration:null,color:"rgba(240,180,60,0.7)",  borderColor:"rgba(240,180,60,0.25)",  notifBody:"The sun is waiting for you. Lift your face, close your eyes, feel." },
-  { id:"agac",      icon:"🌳", title:"Hug a tree",                     subtitle:"Find a tree. Open your arms. Touch your heart.",          duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Go outside. Find a tree. Hug it — it will hold you too." },
+  { id:"agac",      icon:"🌳", title:"Hug a tree",                     subtitle:"Find a tree. Open your arms. Touch your heart.",          duration:30,  color:"rgba(45,120,65,0.7)",   borderColor:"rgba(45,120,65,0.25)",   notifBody:"Go outside. Find a tree. Hug it, it will hold you too." },
   { id:"toprak",    icon:"🌍", title:"Touch the earth",                subtitle:"Touch the ground with bare feet or your palm.",           duration:30,  color:"rgba(100,70,40,0.7)",   borderColor:"rgba(100,70,40,0.25)",   notifBody:"Take off your shoes. Stand on the earth. Feel the energy of the ground." },
   { id:"gok",       icon:"☁️", title:"Look at the sky",               subtitle:"Lift your head. Look at the sky. Just look.",             duration:null,color:"rgba(80,140,200,0.7)",  borderColor:"rgba(80,140,200,0.25)",  notifBody:"Lift your head. Look at the sky. Just look." },
   { id:"chakra_an", icon:"💜", title:"Chakra moment",                  subtitle:"Pause for a moment in today's chakra.",                   duration:null,color:"rgba(255,255,255,0.7)", borderColor:"rgba(255,255,255,0.25)",  notifBody:"Close your eyes. Feel today's chakra. One breath is enough." },
@@ -2121,7 +2121,7 @@ const DAILY_REMINDERS_TR = [
   "Kendine nazik bir cümle kur",
   "Sırtını dikleştir, başını hafifçe yukarı al",
   "Elini kalbine koy, atışını dinle",
-  "Bir kokuyu fark et — kahve, toprak, yağmur",
+  "Bir kokuyu fark et: kahve, toprak, yağmur",
   "Şu an neredeysen, oraya tümüyle gel",
   "Kasıtlı olarak yavaşla, bir hareketi ağırdan al",
   "Bugünü bir kelimeyle adlandır, sahiplen",
@@ -2143,7 +2143,7 @@ const DAILY_REMINDERS_EN = [
   "Open the window, draw in the fresh air",
   "Move your shoulders away from your ears",
   "Close your eyes, count three breaths",
-  "Say a 'thank you' — even if only inside",
+  "Say a 'thank you', even if only inside",
   "Feel your steps as you walk, don't rush",
   "Recall the one thing that made you smile today",
   "Breathe from your belly, not your chest",
@@ -2151,7 +2151,7 @@ const DAILY_REMINDERS_EN = [
   "Form one kind sentence toward yourself",
   "Straighten your back, lift your head slightly",
   "Place your hand on your heart, listen to it beat",
-  "Notice a scent — coffee, earth, rain",
+  "Notice a scent: coffee, earth, rain",
   "Wherever you are, arrive there fully",
   "Slow down on purpose, take one motion gently",
   "Name today in a single word, own it",
@@ -2164,7 +2164,7 @@ const MORNING_PINGS_TR = [
   "Yeni bir gün. Niyetini tek cümlede söyle.",
   "Günaydın. Bugün kendine ne diliyorsun?",
   "Gözlerini aç, güne üç nefesle başla.",
-  "Günaydın. Acele yok — güne sakin gir.",
+  "Günaydın. Acele yok, güne sakin gir.",
   "Bugün senin. Küçük bir iyilikle başla.",
 ];
 const MORNING_PINGS_EN = [
@@ -2173,7 +2173,7 @@ const MORNING_PINGS_EN = [
   "A new day. Say your intention in one sentence.",
   "Good morning. What do you wish for yourself today?",
   "Open your eyes, start the day with three breaths.",
-  "Good morning. No rush — enter the day calmly.",
+  "Good morning. No rush, enter the day calmly.",
   "Today is yours. Begin with a small kindness.",
 ];
 // Program özelliği davetleri — her gün 21:00, günde 1 tane, havuz boyunca döner
@@ -2218,37 +2218,37 @@ const NOTIF_NEFES = {
 };
 const NOTIF_KESFET = {
   "tr": [
-    "Tasarımını keşfet — bugünün enerjisi sana ne söylüyor?",
+    "Tasarımını keşfet: bugünün enerjisi sana ne söylüyor?",
     "Burcun, taşın, hayvanın; bugün seni ne bekliyor?",
     "Sakin Ailesi'nde bugün yeni bir işaret var."
   ],
   "en": [
-    "Explore your design — what is today's energy telling you?",
+    "Explore your design: what is today's energy telling you?",
     "Your sign, your stone, your animal; what awaits you today?",
     "There's a new sign in the Sakin Family today."
   ],
   "de": [
-    "Entdecke dein Design — was sagt dir die Energie von heute?",
+    "Entdecke dein Design: was sagt dir die Energie von heute?",
     "Dein Zeichen, dein Stein, dein Tier; was erwartet dich heute?",
     "Heute gibt es ein neues Zeichen in der Sakin-Familie."
   ],
   "pt": [
-    "Explora o teu design — o que te diz a energia de hoje?",
+    "Explora o teu design: o que te diz a energia de hoje?",
     "O teu signo, a tua pedra, o teu animal; o que te espera hoje?",
     "Há um novo sinal na Família Sakin hoje."
   ],
   "es": [
-    "Explora tu diseño — ¿qué te dice la energía de hoy?",
+    "Explora tu diseño: ¿qué te dice la energía de hoy?",
     "Tu signo, tu piedra, tu animal; ¿qué te espera hoy?",
     "Hoy hay una nueva señal en la Familia Sakin."
   ],
   "fr": [
-    "Explore ton design — que te dit l'énergie du jour ?",
+    "Explore ton design : que te dit l'énergie du jour ?",
     "Ton signe, ta pierre, ton animal ; qu'est-ce qui t'attend aujourd'hui ?",
     "Il y a un nouveau signe dans la Famille Sakin aujourd'hui."
   ],
   "ja": [
-    "あなたのデザインを見て——今日のエネルギーは何を告げている？",
+    "あなたのデザインを見て、今日のエネルギーは何を告げている？",
     "星座、石、動物。今日は何が待っている？",
     "今日、サキン・ファミリーに新しいしるしがあります。"
   ]
@@ -2256,30 +2256,30 @@ const NOTIF_KESFET = {
 const FEATURE_PROMOS_TR = [
   "Ses frekanslarıyla 1 dakikada sakinleşmek ister misin?",
   "Nefes al, ver... şimdi Sakin Nefesi denemenin tam sırası.",
-  "432 Hz çalsın, kalp atışın yavaşlasın — frekanslara göz at.",
+  "432 Hz çalsın, kalp atışın yavaşlasın. Frekanslara göz at.",
   "Bugünkü çakranı biliyor musun? Çakra ekranında bir an dur.",
-  "Aynaya 30 saniye bak — Ayna alıştırmasını dene.",
+  "Aynaya 30 saniye bak. Ayna alıştırmasını dene.",
   "Kozmik hava bugün nasıl? Galaktik ekrana göz at.",
   "Totem hayvanın ne diyor? Sakin Hayvan'ı keşfet.",
-  "Bir mit, bir sembol — bugünün Sakin Mitleri seni bekliyor.",
-  "Haftalık içsel raporun hazır olabilir — bir bak.",
-  "528 Hz, 'Sevgi Frekansı' — bir dakika dinle, hisset.",
-  "Bir bardak su, üç nefes, bir niyet — Sakin'le küçük bir mola.",
-  "396 Hz kök çakranı topraklar — gözlerini kapat, dinle.",
+  "Bir mit, bir sembol: bugünün Sakin Mitleri seni bekliyor.",
+  "Haftalık içsel raporun hazır olabilir, bir bak.",
+  "528 Hz, 'Sevgi Frekansı': bir dakika dinle, hisset.",
+  "Bir bardak su, üç nefes, bir niyet: Sakin'le küçük bir mola.",
+  "396 Hz kök çakranı topraklar. Gözlerini kapat, dinle.",
 ];
 const FEATURE_PROMOS_EN = [
   "Want to calm down in 1 minute with sound frequencies?",
   "Breathe in, out... it's the perfect time to try Calm Breath.",
-  "Let 432 Hz play, let your heartbeat slow — explore the frequencies.",
+  "Let 432 Hz play, let your heartbeat slow. Explore the frequencies.",
   "Do you know today's chakra? Pause for a moment in the Chakra screen.",
-  "Look in the mirror for 30 seconds — try the Mirror exercise.",
+  "Look in the mirror for 30 seconds. Try the Mirror exercise.",
   "How's the cosmic weather today? Check the Galactic screen.",
   "What does your totem animal say? Discover Calm Animal.",
-  "A myth, a symbol — today's Calm Myths await you.",
-  "Your weekly inner report might be ready — take a look.",
-  "528 Hz, the 'Love Frequency' — listen for a minute, feel it.",
-  "A glass of water, three breaths, one intention — a small break with Sakin.",
-  "396 Hz grounds your root chakra — close your eyes, listen.",
+  "A myth, a symbol: today's Calm Myths await you.",
+  "Your weekly inner report might be ready, take a look.",
+  "528 Hz, the 'Love Frequency': listen for a minute, feel it.",
+  "A glass of water, three breaths, one intention: a small break with Sakin.",
+  "396 Hz grounds your root chakra. Close your eyes, listen.",
 ];
 
 // Bir takvim günü için deterministik gün numarası. Mesaj seçimi bu sayıya göre
@@ -5863,33 +5863,35 @@ export default function SakinApp() {
           system: `${buildMirrorSystemPrompt(lang, false)}
 
 ${lang === "tr" ? `Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
-geliştiren tek bir deneyimdir — bir oyunda verilen görev gibi somut, yapılabilir
+geliştiren tek bir deneyimdir; bir oyunda verilen görev gibi somut, yapılabilir
 ve o kişiye özel. Kuralları:
 - SADECE BİR görev ver. Liste yapma.
 - Görev BUGÜN yapılabilir olmalı; 5-30 dakika sürsün. Para gerektirmesin.
 - Kişinin doğum verilerinden okunan ÖĞRENME ALANIYLA ilgili olsun (12. ev,
   yaşam yolu, yükselen, karmik kalıp). Bu bağlantıyı bir cümleyle açıkla.
 - Fiziksel dünyada bir EYLEM içersin (yazmak, konuşmak, yürümek, susmak,
-  birine ulaşmak, bir şeyi bırakmak gibi) — sadece düşünmek yeterli değil.
+  birine ulaşmak, bir şeyi bırakmak gibi); sadece düşünmek yeterli değil.
 - Tıbbi, finansal, hukuki tavsiye verme. Tehlikeli ya da başkasına zarar
   verebilecek bir şey isteme.
 - Biçim: önce 3-6 kelimelik bir GÖREV BAŞLIĞI, sonra boş satır, sonra 2-4
   cümlelik anlatım, sonra boş satır, son satırda "Neden sen:" ile başlayan
   tek cümlelik kişisel gerekçe.
 - Yıldız, madde imi, markdown KULLANMA. Sade düz metin yaz.
+- Uzun tire (—) kullanma; virgül veya nokta ile bağla.
 - Tek kelime bile başka dilde yazma; tamamı Türkçe olsun.` : `You are now GIVING A MISSION: a single lived experience that develops the
-user's character on their inner journey — concrete, doable and personal, like
+user's character on their inner journey, concrete, doable and personal, like
 a quest in a game. Rules:
 - Give exactly ONE mission. No lists.
 - It must be doable TODAY, take 5-30 minutes, and cost nothing.
 - Tie it to the LEARNING EDGE read from their birth data (12th house, life
   path, ascendant, karmic pattern). Name that link in one sentence.
 - It must involve an ACTION in the physical world (writing, speaking, walking,
-  staying silent, reaching out, letting something go) — thinking is not enough.
+  staying silent, reaching out, letting something go); thinking is not enough.
 - No medical, financial or legal advice. Nothing dangerous or harmful to others.
 - Format: a 3-6 word MISSION TITLE, blank line, 2-4 sentences of description,
   blank line, a final single sentence starting with "Why you:".
 - Do NOT use asterisks, bullets or markdown. Plain text only.
+- Do not use an em dash (—); connect clauses with a comma or period instead.
 - Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`}
 ${kisiselProfil()}`,
           messages: [{ role: "user", content: lang === "tr"
@@ -5942,7 +5944,7 @@ ${kisiselProfil()}`,
     if (streakData?.current > 0) parts.push(`Seri: ${streakData.current} gün`);
     const seed = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     parts.push(`Oturum: ${seed}`);
-    return parts.length > 0 ? `\nKişisel profil:\n${parts.join(" | ")}\nBu bilgileri yanıtına derinlemesine yansıt — her kişi için farklı, özgün ve kişiye özel yanıt üret. Aynı kalıpları tekrarlama, her yanıt benzersiz olsun.\n` : "";
+    return parts.length > 0 ? `\nKişisel profil:\n${parts.join(" | ")}\nBu bilgileri yanıtına derinlemesine yansıt; her kişi için farklı, özgün ve kişiye özel yanıt üret. Aynı kalıpları tekrarlama, her yanıt benzersiz olsun.\n` : "";
   };
 
   function kisiselBaglamOlustur(mevcutGecmis) {
