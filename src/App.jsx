@@ -9684,10 +9684,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       ], [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Why is chronic fatigue always with me?",
-                          "I can't sleep — what's the energetic reason?",
+                          "I can't sleep. What's the energetic reason?",
                         ]},
                         { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "I'm constantly anxious — which chakra is blocked?",
+                          "I'm constantly anxious. Which chakra is blocked?",
                           "How can I transform my anger?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -9699,7 +9699,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "What is my mission and how can I understand it?",
                         ]},
                         { cat:t("ask_cat_transitions"), idx:[17,19], sorular:[
-                          "I'm changing jobs and feel deep anxiety — what might be the cause?",
+                          "I'm changing jobs and feel deep anxiety. What might be the cause?",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
                       ])]).map(({cat,sorular})=>(
@@ -11274,19 +11274,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong>: {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong>: {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong>: {t("ailesi_tasarim_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong>: {t("ailesi_taslar_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong>: {t("ailesi_bitkiler_short")}
                     </div>
                   </div>
                 </div>
@@ -11314,10 +11314,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     {t("premium_subscription_info")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:5 }}>
-                    <strong style={{ color:"#ccc" }}>{t("premium_yearly_name")}</strong> — {t("premium_yearly_terms")}
+                    <strong style={{ color:"#ccc" }}>{t("premium_yearly_name")}</strong>: {t("premium_yearly_terms")}
                   </div>
                   <div style={{ fontSize:12.5,color:"#999",lineHeight:1.7,marginBottom:8 }}>
-                    <strong style={{ color:"#ccc" }}>{t("premium_lifetime_name")}</strong> — {t("premium_lifetime_terms")}
+                    <strong style={{ color:"#ccc" }}>{t("premium_lifetime_name")}</strong>: {t("premium_lifetime_terms")}
                   </div>
                   <div style={{ fontSize:11,color:"#777",lineHeight:1.65,marginBottom:14 }}>
                     {t("premium_renewal_text")}
@@ -11381,19 +11381,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   </div>
                   <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong> — {t("ailesi_hayvan_short")}
+                      <strong style={{ color:"#a0d8b4",fontWeight:500 }}>◈ {t("ailesi_hayvan_name")}</strong>: {t("ailesi_hayvan_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong> — {t("ailesi_mitler_short")}
+                      <strong style={{ color:"#d8b4a0",fontWeight:500 }}>🏛 {t("ailesi_mitler_name")}</strong>: {t("ailesi_mitler_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong> — {t("ailesi_tasarim_short")}
+                      <strong style={{ color:"#b4a0d8",fontWeight:500 }}>⌖ {t("ailesi_tasarim_name")}</strong>: {t("ailesi_tasarim_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong> — {t("ailesi_taslar_short")}
+                      <strong style={{ color:"#c8b4d8",fontWeight:500 }}>◇ {t("ailesi_taslar_name")}</strong>: {t("ailesi_taslar_short")}
                     </div>
                     <div style={{ fontSize:13,color:"#cccccc",lineHeight:1.55 }}>
-                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong> — {t("ailesi_bitkiler_short")}
+                      <strong style={{ color:"#a8d8a0",fontWeight:500 }}>✿ {t("ailesi_bitkiler_name")}</strong>: {t("ailesi_bitkiler_short")}
                     </div>
                   </div>
                 </div>
