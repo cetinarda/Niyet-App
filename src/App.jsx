@@ -4972,6 +4972,10 @@ export default function SakinApp() {
   const [sikayet, setSikayet] = useState("");
   const [sikayetHis, setSikayetHis] = useState("");
   const [sikayetAnaliz, setSikayetAnaliz] = useState("");
+  // Rüya analizi modu: "Rüyanı yaz" örnek sorusuna tıklanınca açılır, sonraki
+  // gönderim Jung/Freud/Gestalt + şamanik okuma formatını kullanır, ardından
+  // kapanır (bir sonraki soru genel akışa döner).
+  const [aynaRuyaModu, setAynaRuyaModu] = useState(false);
   // İçsel Ayna geçmişi: soru-cevap çiftleri kalıcı saklanır (kullanıcı isteği:
   // "1 haftalık yerine lifetime arşiv"). Süre sınırı yok, sadece elle temizleme.
   const [aynaArsiv, setAynaArsiv] = useState(() => {
@@ -5323,6 +5327,46 @@ export default function SakinApp() {
     ],
   }];
 
+  // ── ÖRNEK SORU: "RÜYA" KATEGORİSİ ──────────────────────────────────────────
+  // Kullanıcı isteği: tıklanınca DOĞRUDAN analiz yapılamaz (henüz rüya yok),
+  // önce "rüyanı yaz" davetini gösterip rüya moduna (aynaRuyaModu) geçer;
+  // kullanıcı rüyasını yazıp gönderdiğinde generateSikayetAnaliz Jung/Freud/
+  // Gestalt + şamanik okuma formatını kullanır (bkz. ruyaModu dalı).
+  const RUYA_SORU_LABEL = pickLang({
+    tr:"Rüyanı Jung, Freud ve Gestalt ile analiz edip şamanik okumayla yansıtayım",
+    en:"Let me analyze your dream through Jung, Freud and Gestalt, reflected with a shamanic reading",
+    de:"Lass mich deinen Traum mit Jung, Freud und Gestalt analysieren und schamanisch spiegeln",
+    es:"Deja que analice tu sueño con Jung, Freud y Gestalt, reflejado con una lectura chamánica",
+    pt:"Deixa-me analisar o teu sonho com Jung, Freud e Gestalt, refletido numa leitura xamânica",
+    fr:"Laisse-moi analyser ton rêve avec Jung, Freud et la Gestalt, reflété par une lecture chamanique",
+    ja:"あなたの夢をユング、フロイト、ゲシュタルトの視点で分析し、シャーマニックに映し出します",
+  }, lang);
+  const RUYA_YAZ_TEXT = pickLang({
+    tr:"Rüyanı yaz.",
+    en:"Write your dream.",
+    de:"Schreib deinen Traum.",
+    es:"Escribe tu sueño.",
+    pt:"Escreve o teu sonho.",
+    fr:"Écris ton rêve.",
+    ja:"あなたの夢を書いてください。",
+  }, lang);
+  const RUYA_DEVAM_TEXT = pickLang({
+    tr:"Devam", en:"Continue", de:"Weiter", es:"Continuar", pt:"Continuar", fr:"Continuer", ja:"続ける",
+  }, lang);
+  const RUYA_PLACEHOLDER = pickLang({
+    tr:"Rüyanı buraya yaz…",
+    en:"Write your dream here…",
+    de:"Schreib deinen Traum hier…",
+    es:"Escribe tu sueño aquí…",
+    pt:"Escreve o teu sonho aqui…",
+    fr:"Écris ton rêve ici…",
+    ja:"ここに夢を書いてください…",
+  }, lang);
+  const RUYA_Q = [{
+    cat: pickLang({ tr:"Rüya", en:"Dream", de:"Traum", es:"Sueño", pt:"Sonho", fr:"Rêve", ja:"夢" }, lang),
+    sorular: [RUYA_SORU_LABEL],
+  }];
+
   // Ay düğümleri + kimlik yorumu metinleri (7 dil, i18n dosyalarına dokunmadan).
   const NODE_TXT = {
     north: { tr:"kuzey düğüm", en:"north node", de:"nordknoten", es:"nodo norte", pt:"nodo norte", fr:"nœud nord", ja:"ドラゴンヘッド" },
@@ -5461,7 +5505,7 @@ export default function SakinApp() {
     setStreakData({ current: 0, best: 0, lastDate: null, badges: [] });
     setStepsCompleted({});
     setChakraInput(""); setChakraAnaliz("");
-    setSikayet(""); setSikayetHis(""); setSikayetAnaliz("");
+    setSikayet(""); setSikayetHis(""); setSikayetAnaliz(""); setAynaRuyaModu(false);
     setHastalik(""); setHastalikHis(""); setHastalikAnaliz("");
     setAiRapor("");
     setAiConsent(false);
@@ -6249,6 +6293,10 @@ ${facts}
     // verilen cevap kişiye özel olmaz. Nazikçe forma yönlendiriyoruz.
     if (!birthDate) { setSikayetAnaliz("__needbirth__"); return; }
     setSikayetAnaliz("__loading__");
+    // Rüya modu bir kerelik: bu gönderim tüketir, mod kapanır (bir sonraki
+    // soru genel şikayet/soru akışına döner).
+    const ruyaModu = aynaRuyaModu;
+    if (ruyaModu) setAynaRuyaModu(false);
     const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     // Harita verisi TAM gönderilir — kullanıcı artık "ateş elementim düşük ne
     // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
@@ -6257,16 +6305,32 @@ ${facts}
     const astroTxt = astro ? `Kullanıcının doğum haritası:\n${chartFacts()}${birthTime ? `\nDoğum Saati: ${birthTime}` : ""}
 Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen) bu verileri kullanarak SOMUT yanıtla. Genel geçer astroloji anlatma, ONUN haritasından konuş.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
-    try {
-      const res = await fetch(AI_CALL_URL, {
-        method:"POST",
-        headers:{"Content-Type":"text/plain"},
-        body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          ragQuery: sikayet,
-          messages:[{ role:"user", content:`Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
+    // Rüya modu: farklı bir yorum çerçevesi (Jung/Freud/Gestalt + şamanik
+    // yansıma), besin/hareket/Reiki gibi fiziksel-şikayet odaklı bölümler
+    // rüya için anlamsız olduğundan ayrı bir format kullanılır.
+    const userContent = ruyaModu ? `Kullanıcı bir rüya paylaştı: "${sanitizeInput(sikayet)}"
+${astroTxt}
+
+${NEFES_REHBERI}
+
+${UYGULAMA_BOLUMLER}
+
+Bu rüyayı üç mercekten harmanlayarak tek, bütünlüklü bir yanıtta yorumla:
+- Jung: arketipler, kolektif bilinçdışı, gölge/anima-animus sembolleri
+- Freud: bastırılmış arzular, iç çatışmalar, örtük anlam
+- Gestalt: rüyadaki her figür/nesne kişinin kendi bir parçasını temsil eder ("bu rüyadaki X sensin" yaklaşımı)
+
+Yanıtını şu formatta ver:
+
+**Rüyanın Aynası**
+(Üç bakışı harmanla, rüyadaki somut imgelere doğrudan değin, şefkatli ve net ol: 6-8 cümle)
+
+**Şamanik Yansıma**
+(Sembolleri ruhsal işaret olarak oku, doğa/hayvan/element imgeleriyle konuş, kısa ve şiirsel bir rehberlik cümlesiyle kapat: 3-4 cümle)
+
+**Bugün İçin**
+Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
+Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.` : `Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 
 ${REIKI_BILGI}
 
@@ -6292,14 +6356,24 @@ Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEF
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
+(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)`;
+    try {
+      const res = await fetch(AI_CALL_URL, {
+        method:"POST",
+        headers:{"Content-Type":"text/plain"},
+        body: JSON.stringify({
+          model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
+          system:`${buildMirrorSystemPrompt(lang)}
+${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+          ragQuery: sikayet,
+          messages:[{ role:"user", content: userContent }],
         }),
       });
       const d = await res.json();
       if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
       setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       if (d?.text) aynaGecmisiKaydet(sikayet, d.text);
-      sorguKaydet("şikayet", sikayet);
+      sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
 
@@ -9561,6 +9635,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {t("back")}
                 </button>
               </div>
+            ) : sikayetAnaliz === "__ruya__" ? (
+              /* Rüya moduna davet — henüz rüya yok, doğrudan analiz yapılmaz. */
+              <div style={{ padding:"8px 0" }}>
+                <div style={{ fontSize:15,color:"#ccc0e0",lineHeight:1.9,fontFamily:"'Inter',sans-serif",marginBottom:16 }}>
+                  {RUYA_YAZ_TEXT}
+                </div>
+                <button onClick={()=>{ setSikayetAnaliz(""); }}
+                  style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                  {RUYA_DEVAM_TEXT}
+                </button>
+              </div>
             ) : sikayetAnaliz === "__loading__" ? (
               <div style={{ textAlign:"center",padding:"48px 0" }}>
                 <div style={{ fontSize:26,marginBottom:14,animation:"pulse 2s ease-in-out infinite" }}>🪞</div>
@@ -9599,7 +9684,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     style={{ background:"rgba(160,112,208,0.18)",border:"1px solid rgba(160,112,208,0.45)",borderRadius:24,color:"#c8a8f0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
                   </button>
-                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); }}
+                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); }}
                     style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {t("mirror_new_search")}
                   </button>
@@ -9614,7 +9699,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     value={sikayet}
                     onChange={e=>setSikayet(e.target.value)}
                     onKeyDown={e=>{ if(e.key==="Enter"&&!e.shiftKey&&sikayet.trim()){e.preventDefault();requireAiConsent(generateSikayetAnaliz);} }}
-                    placeholder={t("mirror_input_ph")}
+                    placeholder={aynaRuyaModu ? RUYA_PLACEHOLDER : t("mirror_input_ph")}
                     rows={3}
                     autoComplete="off" autoCorrect="off"
                     autoFocus
@@ -9696,7 +9781,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:16,padding:"18px 16px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
-                      {([...CHART_Q, ..._locSampleQ(lang, [
+                      {([...CHART_Q, ...RUYA_Q, ..._locSampleQ(lang, [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
@@ -9742,7 +9827,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <div key={cat} style={{ marginBottom:14 }}>
                           <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toLocaleUpperCase(lang)}</div>
                           {sorular.map(s=>(
-                            <button key={s} onClick={()=>{ setSikayet(s); setShowOrnekler(false); }}
+                            <button key={s} onClick={()=>{
+                                if (s === RUYA_SORU_LABEL) {
+                                  // Rüya modu: henüz rüya yok, doğrudan analiz edilemez —
+                                  // önce "rüyanı yaz" davetini göster, sonraki gönderim
+                                  // Jung/Freud/Gestalt + şamanik formatı kullanacak.
+                                  setSikayet(""); setSikayetHis("");
+                                  setAynaRuyaModu(true);
+                                  setSikayetAnaliz("__ruya__");
+                                } else {
+                                  setSikayet(s);
+                                }
+                                setShowOrnekler(false);
+                              }}
                               style={{
                                 display:"block",width:"100%",textAlign:"left",
                                 background:"none",border:"none",
