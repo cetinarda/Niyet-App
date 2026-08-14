@@ -331,7 +331,10 @@ const WHATS_NEW = {
         "銀河のIDに月のノードとチャート解読を追加"],
   },
 };
-const APP_STORE_URL = "https://apps.apple.com/app/id6765619382";
+// Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
+// 301 yönlendirme yapıyor, Instagram gibi uygulama-içi tarayıcılar bu
+// yönlendirmeyi takip edemeyip boş ekran gösterebiliyor (kullanıcı bildirdi).
+const APP_STORE_URL = "https://apps.apple.com/tr/app/sakin-breathing-awareness/id6765619382";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.sakin.app";
 // Uygulama içi güncelleme banner'ı iOS + Android'in İKİSİNDE de tetiklenir
 // (isNative = Capacitor.isNativePlatform(), ikisinde de true). Sabit
