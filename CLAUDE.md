@@ -81,7 +81,13 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App/Info.plist` (özellikle `UIBackgroundModes`)
    - `ios/App/App/AppDelegate.swift` (AVAudioSession vb.)
 
-## 🧭 Çalışma tarzı (kullanıcı tercihleri — uy)
+8. **UZUN ÇİZGİ (em dash) ASLA KULLANMA. Her yerde: sohbet, kod, commit,
+   mağaza notları, kullanıcıya hazırlanan metinler (WhatsApp, sosyal medya,
+   e-posta), dosyalar.** Yasak karakterler: `—` (em dash U+2014), `–` (en dash
+   U+2013), `―` (yatay çizgi U+2015). Sebep: kullanıcı isteği, metnin AI
+   ürünü olduğu belli olmasın. Yerine düz kısa çizgi `-`, iki nokta, virgül,
+   parantez veya ayrı cümle kullan. Bu kural mevcut kod tabanındaki temizlikten
+   (bkz. Tasks #1-12) DAHA GENEL: sadece i18n değil, ürettiğin HER metin.
 
 1. **Ek istek/soru geldiğinde işi BIRAKMA — sıraya al.** Önce o an üzerinde çalıştığın işlemi bitir, sonra yeni isteği/soruyu ele al. İş ortasında dosya/branch yarım bırakma.
 2. **Soru sormak ≠ "dur".** Kullanıcı iş ortasında soru sorarsa: soruyu sıraya al, mevcut işi tamamla, **sonra** yanıtla. Sadece kullanıcı açıkça **"dur"** derse durdur.
