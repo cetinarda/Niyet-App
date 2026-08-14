@@ -623,6 +623,62 @@ const NEDIR_I18N = {
              fr:"Cette application a été créée par un Maître Reiki Usui Shiki Ryoho.",
              ja:"このアプリは臼井式霊気療法（Usui Shiki Ryoho）のレイキマスターによって作られました。" },
 };
+// İLK AÇILIŞ TANITIMI — 5 ana bölümü kısa, animasyonlu bir tur ile tanıtır.
+// Kullanıcı "Devam" ile ilerler, son adımda "Başla" ile bitirir; localStorage
+// `sakin_tutorial_done` ile ömür boyu bir kez gösterilir. Her adım uygulamadaki
+// gerçek menü ikonuyla eşleşir (◎ Bağlan · ✦ Keşfet · 🌌 Galaktik · 🪞 Ayna · ☁️ Gökyüzü).
+const TUTORIAL_I18N = {
+  next:  { tr:"Devam", en:"Continue", de:"Weiter", es:"Continuar", pt:"Continuar", fr:"Continuer", ja:"続ける" },
+  start: { tr:"Başla", en:"Begin", de:"Los geht's", es:"Empezar", pt:"Começar", fr:"Commencer", ja:"はじめる" },
+  skip:  { tr:"Geç", en:"Skip", de:"Überspringen", es:"Saltar", pt:"Saltar", fr:"Passer", ja:"スキップ" },
+  slides: [
+    { // 1 — Bağlan (◎)
+      title: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
+      body:  { tr:"Günün küçük görevlerini yap, kendinle bağını güçlendir.",
+               en:"Do the day's small tasks and strengthen the bond with yourself.",
+               de:"Erledige die kleinen Aufgaben des Tages und stärke die Verbindung zu dir selbst.",
+               es:"Haz las pequeñas tareas del día y fortalece el vínculo contigo mismo.",
+               pt:"Faz as pequenas tarefas do dia e fortalece a ligação contigo mesmo.",
+               fr:"Fais les petites tâches du jour et renforce le lien avec toi-même.",
+               ja:"一日の小さなタスクをこなし、自分自身とのつながりを深めましょう。" } },
+    { // 2 — Keşfet (✦)
+      title: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
+      body:  { tr:"Varoluşunun sana söylediklerini dinle: burcun, tasarımın, hayvanın, taşın.",
+               en:"Listen to what your existence tells you: your sign, design, animal and stone.",
+               de:"Höre, was dein Dasein dir sagt: dein Zeichen, dein Design, dein Tier und dein Stein.",
+               es:"Escucha lo que tu existencia te dice: tu signo, tu diseño, tu animal y tu piedra.",
+               pt:"Ouve o que a tua existência te diz: o teu signo, design, animal e pedra.",
+               fr:"Écoute ce que ton existence te dit : ton signe, ton design, ton animal et ta pierre.",
+               ja:"あなたの存在が語ることに耳を傾けましょう。星座、デザイン、動物、石。" } },
+    { // 3 — Galaktik Kimlik (🌌)
+      title: { tr:"Galaktik Kimlik", en:"Galactic Identity", de:"Galaktische Identität", es:"Identidad Galáctica", pt:"Identidade Galáctica", fr:"Identité Galactique", ja:"ギャラクティック・アイデンティティ" },
+      body:  { tr:"Galaktik kimliğine bak, doğum haritanı analiz et.",
+               en:"Look at your galactic identity and analyze your birth chart.",
+               de:"Betrachte deine galaktische Identität und analysiere dein Geburtshoroskop.",
+               es:"Mira tu identidad galáctica y analiza tu carta natal.",
+               pt:"Vê a tua identidade galáctica e analisa o teu mapa natal.",
+               fr:"Regarde ton identité galactique et analyse ton thème natal.",
+               ja:"ギャラクティックな自分を見つめ、出生図を読み解きましょう。" } },
+    { // 4 — İçsel Ayna (🪞)
+      title: { tr:"İçsel Ayna", en:"Inner Mirror", de:"Innerer Spiegel", es:"Espejo Interior", pt:"Espelho Interior", fr:"Miroir Intérieur", ja:"内なる鏡" },
+      body:  { tr:"Rüyalarını ve içinden gelenleri sor; ayna sana yansıtsın.",
+               en:"Ask about your dreams and inner stirrings; let the mirror reflect them back.",
+               de:"Frage nach deinen Träumen und inneren Regungen; der Spiegel wirft sie dir zurück.",
+               es:"Pregunta por tus sueños y lo que sientes dentro; deja que el espejo te lo refleje.",
+               pt:"Pergunta sobre os teus sonhos e o que sentes por dentro; deixa o espelho refleti-los.",
+               fr:"Interroge tes rêves et ce qui monte en toi ; laisse le miroir te le refléter.",
+               ja:"夢や心の声を尋ねれば、鏡がそれを映し返します。" } },
+    { // 5 — Gökyüzü Raporu (☁️)
+      title: { tr:"Gökyüzü Raporu", en:"Sky Report", de:"Himmelsbericht", es:"Informe del Cielo", pt:"Relatório do Céu", fr:"Rapport du Ciel", ja:"空のレポート" },
+      body:  { tr:"Günlük gökyüzü raporuyla dünyanın elektromanyetik alanının sana etkisini takip et.",
+               en:"With the daily sky report, follow how Earth's electromagnetic field affects you.",
+               de:"Verfolge mit dem täglichen Himmelsbericht, wie das elektromagnetische Feld der Erde auf dich wirkt.",
+               es:"Con el informe diario del cielo, sigue cómo te afecta el campo electromagnético de la Tierra.",
+               pt:"Com o relatório diário do céu, acompanha como o campo eletromagnético da Terra te afeta.",
+               fr:"Avec le rapport quotidien du ciel, suis l'effet du champ électromagnétique de la Terre sur toi.",
+               ja:"毎日の空のレポートで、地球の電磁場があなたに与える影響を追いましょう。" } },
+  ],
+};
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2 — aha anı).
 const REVEAL_I18N = {
   title:  { tr:"İşte ilk işaretlerin", en:"Here are your first signs", de:"Hier sind deine ersten Zeichen", es:"Aquí están tus primeras señales", pt:"Aqui estão os teus primeiros sinais", fr:"Voici tes premiers signes", ja:"最初のしるしが届きました" },
@@ -5274,6 +5330,12 @@ export default function SakinApp() {
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introExiting, setIntroExiting] = useState(false);
+  // İLK AÇILIŞ TANITIMI — 5 ana bölümü tanıtan kısa animasyonlu tur. Ömür boyu
+  // BİR kez (localStorage `sakin_tutorial_done`). Splash (showIntro) bitince açılır.
+  const [showTutorial, setShowTutorial] = useState(() => {
+    try { return !localStorage.getItem("sakin_tutorial_done"); } catch (_) { return false; }
+  });
+  const [tutorialStep, setTutorialStep] = useState(0);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz (mount=false).
   // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
   // İLK 5 AÇILIŞTA (sakin_nedir_count 0→5). girisPhase her yüklemede "intro"ya döndüğü
@@ -8343,6 +8405,64 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           </div>
         </div>
       )}
+
+      {/* İLK AÇILIŞ TANITIMI — 5 bölümü kısa animasyonlu bir turla tanıtır.
+          Splash (showIntro) bittikten sonra açılır; localStorage ile bir kez. */}
+      {showTutorial && !showIntro && (() => {
+        const TUT_ICONS = ["◎", "✦", "🌌", "🪞", "☁️"];
+        const TUT_COLORS = ["#b87adc", "#f0c060", "#82d9a3", "#c8a8f0", "#7ab0e0"];
+        const slides = TUTORIAL_I18N.slides;
+        const step = Math.min(tutorialStep, slides.length - 1);
+        const s = slides[step];
+        const c = TUT_COLORS[step];
+        const last = step === slides.length - 1;
+        const finish = () => {
+          try { localStorage.setItem("sakin_tutorial_done", "1"); } catch (_) {}
+          setShowTutorial(false); setTutorialStep(0);
+        };
+        const rgba = (hex, a) => {
+          const n = parseInt(hex.slice(1), 16);
+          return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+        };
+        return (
+          <div style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px" }}>
+            {/* Geç (skip) — sağ üst */}
+            <button onClick={finish}
+              style={{ position:"absolute",top:16,right:16,background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 12px" }}>
+              {pickLang(TUTORIAL_I18N.skip, lang)}
+            </button>
+
+            {/* Animasyonlu içerik — key ile her adımda yeniden oynar */}
+            <div key={step} style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+              {/* Dönen kare çerçeve içinde bölüm ikonu (adım rengine boyalı) */}
+              <div style={{ position:"relative",width:104,height:104,margin:"0 auto 30px" }}>
+                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.55)}`,borderRadius:11,animation:"diamondSpin 12s linear infinite",boxShadow:`0 0 16px ${rgba(c,0.32)},inset 0 0 12px ${rgba(c,0.10)}` }} />
+                <div style={{ position:"absolute",inset:22,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.3)}`,borderRadius:7,animation:"diamondSpin 8s linear infinite reverse" }} />
+                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",fontSize:34,lineHeight:1,filter:`drop-shadow(0 0 14px ${rgba(c,0.6)})`,color:c }}>{TUT_ICONS[step]}</div>
+              </div>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:2.5,color:"#f0e8ff",marginBottom:14 }}>
+                {pickLang(s.title, lang)}
+              </div>
+              <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14.5,fontWeight:300,lineHeight:1.75,color:"#b8acd0",minHeight:66 }}>
+                {pickLang(s.body, lang)}
+              </div>
+            </div>
+
+            {/* İlerleme noktaları */}
+            <div style={{ display:"flex",gap:9,margin:"34px 0 26px" }}>
+              {slides.map((_, i) => (
+                <div key={i} style={{ width:i===step?22:7,height:7,borderRadius:6,background:i===step?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
+              ))}
+            </div>
+
+            {/* Devam / Başla */}
+            <button onClick={last ? finish : () => setTutorialStep(v => v + 1)}
+              style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:`1px solid ${rgba(c,0.5)}`,background:`linear-gradient(135deg,${rgba(c,0.28)},${rgba(c,0.14)})`,color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:`0 4px 20px ${rgba(c,0.22)}` }}>
+              {pickLang(last ? TUTORIAL_I18N.start : TUTORIAL_I18N.next, lang)}
+            </button>
+          </div>
+        );
+      })()}
 
       {/* "SAKİN NEDİR?" / YOL SEÇİMİ — TEK overlay. HAZIRIM sonrası, İLK 5 AÇILIŞTA
           (veya "bir daha gösterme"ye kadar). iOS + web. Kartlar DOĞRUDAN tıklanır:
