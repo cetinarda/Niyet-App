@@ -283,7 +283,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.7";
+const APP_VERSION = "1.3.8";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -295,40 +295,40 @@ const APP_VERSION = "1.3.7";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.3.7",
+  version: "1.3.8",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Nefes bölümü yenilendi",
-    en:"The breathing section, renewed",
-    de:"Der Atembereich, erneuert",
-    es:"La sección de respiración, renovada",
-    pt:"A secção de respiração, renovada",
-    fr:"La section respiration, renouvelée",
-    ja:"呼吸セクションを刷新",
+    tr:"Rüyalarını İçsel Ayna yorumlasın",
+    en:"Let the Inner Mirror read your dreams",
+    de:"Der Innere Spiegel deutet deine Träume",
+    es:"Que el Espejo Interior interprete tus sueños",
+    pt:"Deixa o Espelho Interior ler os teus sonhos",
+    fr:"Laisse le Miroir Intérieur lire tes rêves",
+    ja:"夢を内なる鏡が読み解く",
   },
   items: {
-    tr:["Ritmi gösteren nefes halkası ve üç yeni mod: Uykuya Dal, Merkezine Çekil, Yenilen",
-        "Frekans seslerindeki cızırtı giderildi",
-        "Galaktik kimliğine ay düğümleri ve harita yorumu eklendi"],
-    en:["A breath ring that shows the rhythm, plus three new modes: Drift to Sleep, Draw Inward, Renew",
-        "Fixed the crackling in the frequency tones",
-        "Lunar nodes and chart interpretation added to your galactic ID"],
-    de:["Ein Atemring, der den Rhythmus zeigt, plus drei neue Modi: In den Schlaf, Nach Innen, Erneuern",
-        "Knistern in den Frequenztönen behoben",
-        "Mondknoten und Kartendeutung in deiner galaktischen ID"],
-    es:["Un anillo que muestra el ritmo y tres modos nuevos: Hacia el Sueño, Hacia Dentro, Renovar",
-        "Corregido el chisporroteo en los tonos de frecuencia",
-        "Nodos lunares e interpretación de carta en tu identidad galáctica"],
-    pt:["Um anel que mostra o ritmo e três novos modos: Rumo ao Sono, Para Dentro, Renovar",
-        "Corrigido o chiado nos tons de frequência",
-        "Nodos lunares e interpretação do mapa na tua identidade galáctica"],
-    fr:["Un anneau qui montre le rythme et trois nouveaux modes : Vers le Sommeil, Vers l'Intérieur, Renouveler",
-        "Grésillement des fréquences corrigé",
-        "Nœuds lunaires et interprétation de carte dans ton identité galactique"],
-    ja:["リズムを示す呼吸リングと、3つの新モード：眠りへ、内へ、よみがえる",
-        "周波数音のノイズを修正しました",
-        "銀河のIDに月のノードとチャート解読を追加"],
+    tr:["İçsel Ayna'ya rüyanı anlat: Jung, Freud ve Gestalt yorumu, şamanik bir okumayla",
+        "İlk açılışta uygulamayı tanıtan kısa bir tur",
+        "Android'de bildirimler artık zamanında ve tek tek geliyor"],
+    en:["Tell your dream to the Inner Mirror: a Jung, Freud and Gestalt reading with a shamanic touch",
+        "A short guided tour on first open",
+        "On Android, reminders now arrive on time, one by one"],
+    de:["Erzähl dem Inneren Spiegel deinen Traum: eine Deutung nach Jung, Freud und Gestalt mit schamanischem Blick",
+        "Eine kurze Einführung beim ersten Öffnen",
+        "Auf Android kommen Erinnerungen jetzt pünktlich, einzeln"],
+    es:["Cuéntale tu sueño al Espejo Interior: una lectura de Jung, Freud y Gestalt con un toque chamánico",
+        "Un breve recorrido guiado al abrir por primera vez",
+        "En Android, los recordatorios ahora llegan a tiempo, uno a uno"],
+    pt:["Conta o teu sonho ao Espelho Interior: uma leitura de Jung, Freud e Gestalt com um toque xamânico",
+        "Uma breve visita guiada ao abrir pela primeira vez",
+        "No Android, os lembretes chegam agora a horas, um a um"],
+    fr:["Raconte ton rêve au Miroir Intérieur : une lecture de Jung, Freud et Gestalt avec une touche chamanique",
+        "Une courte visite guidée à la première ouverture",
+        "Sur Android, les rappels arrivent désormais à l'heure, un par un"],
+    ja:["夢を内なる鏡へ：ユング、フロイト、ゲシュタルトの解釈をシャーマニックに",
+        "初回起動時の短い案内ツアー",
+        "Androidで通知が時間どおり、1つずつ届くように"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
