@@ -58,7 +58,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Ağu 2026): App Store `1.3.6` · Play Store `1.3.6`.** Repoda hazırlanan: `1.3.7 / build 1`, Android `versionCode 9`.
+   - **CANLI (Ağu 2026): App Store `1.3.7` (itunes lookup ile doğrulandı) · Play Store `1.3.7` (varsayılan, teyit et).** Repoda hazırlanan: `1.3.8 / build 1`, Android `versionCode 10`. `latest-ios-version.json` hâlâ `1.3.6` (mağaza yayını sonrası bump edilecek).
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli** — eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - Canlı sürümü sorgulamak için: `node scripts/check-store-versions.mjs --check` (iki mağazayı da okur).
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
@@ -96,7 +96,15 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    kullanıcı okumadan geçiyor. Değişen her şeyi saymak yerine o sürümün
    "başlığı" ne ise onu söyle.
 4. **Bariz kapsam kararlarını sorma, ver.** (ör. "taşlar uygulamasında tabii ki taş olacak.") Gerçekten belirsizse veya geri-dönüşü zorsa sor; aksi halde mantıklı varsayımla ilerle ve ne yaptığını kısaca söyle.
-5. **Hassas alanlar (IAP/`purchases.js`, Info.plist, AppDelegate): önce öner + diff göster, onay ve sandbox testi olmadan deploy etme.** (Altın kural #5–#6 ile aynı çizgi.)
+5. **Hassas alanlar (IAP/`purchases.js`, Info.plist, AppDelegate): önce öner + diff göster, onay ve sandbox testi olmadan deploy etme.** (Altın kural #5-#6 ile aynı çizgi.)
+6. **SÜRÜM YAYINI OTOMASYONU (kullanıcı isteği).** Kullanıcı yeni sürüm istediğinde
+   (bump yapıldıktan sonra) OTOMATİK olarak şu üçünü ver, sormadan:
+   a) **App Store Connect notu** (İngilizce, "What's New" alanına, kısa).
+   b) **Kullanıcı için en kısa/basit yenilikler notu, 7 dilde** (tr/en/de/es/pt/fr/ja),
+      genelde `WHATS_NEW` içeriğinin özü. Mağaza notu bu, uzun liste değil.
+   c) **iOS + Android terminal build/indirme komutları** (Mac yol: `~/Desktop/Niyet-App`;
+      iOS için CLAUDE.md altın kural #3'teki komut, Android için `npx cap sync android`).
+   Kural #3 (kısa tut) burada da geçerli.
 
 ## Mimari
 
