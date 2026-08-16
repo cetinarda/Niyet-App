@@ -58,8 +58,16 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj` — `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx` — `APP_VERSION` (~satır 14)
    - `android/app/build.gradle` — `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Ağu 2026): App Store `1.3.7` (itunes lookup ile doğrulandı) · Play Store `1.3.7` (varsayılan, teyit et).** Repoda hazırlanan: `1.3.8 / build 1`, Android `versionCode 10`. `latest-ios-version.json` hâlâ `1.3.6` (mağaza yayını sonrası bump edilecek).
+   - **CANLI (Ağu 2026): App Store `1.3.7` (itunes lookup ile doğrulandı) · Play Store `1.3.7` (varsayılan, teyit et).** Repoda hazırlanan: `1.3.8 / build 1`, Android `versionCode 11`. `latest-ios-version.json` hâlâ `1.3.6` (mağaza yayını sonrası bump edilecek).
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli** — eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
+   - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar** — reddedilse,
+     silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
+     hatası, 1.3.8'de yaşandı: versionCode 10 Play Console'a yüklendi, exact-alarm izni
+     yüzünden hata aldı, manifest düzeltildi ama versionCode ARTIRILMADI → tekrar 10 ile
+     yüklenmeye çalışıldı, reddedildi). **Kural: kullanıcı "Play Console'a yükledim/hata
+     aldım" derse, bir sonraki düzeltmede versionCode'u SOR-MADAN otomatik +1 artır**
+     (versionName aynı kalabilir, henüz yayınlanmadıysa — versionCode dahili sayaç,
+     kullanıcı görmüyor). Bedelsiz bir önlem; artırmamanın bedeli tekrar red.
    - Canlı sürümü sorgulamak için: `node scripts/check-store-versions.mjs --check` (iki mağazayı da okur).
 6. **`src/purchases.js`'e DOKUNMA.** IAP/para mantığı, Apple receipt validation. `992ab50` fix'inden sonra çok hassas. Bug bulursan _öner_, _push etme_.
    - **PREMIUM KARARI SUNUCUDA (istemci tahmin yürütmez).** İstemcinin
