@@ -109,7 +109,7 @@
 
   /* ── Nefes şiiri ──────────────────────────────────────────────────── */
   .mantra { padding:70px 26px; text-align:center; }
-  .mantra ul { list-style:none; display:inline-flex; flex-direction:column; gap:14px; }
+  .mantra ul { list-style:none; display:inline-flex; flex-direction:column; gap:8px; }
   /* Açık zeminde Jost 200 çok zayıf kalıyordu: ağırlık 300'e, taban opaklık
      .72'ye çıkarıldı. Böylece JS/gözlemci çalışmasa da okunur kalıyor. */
   .mantra li {
@@ -118,6 +118,12 @@
     opacity:.72; transition:opacity 1.1s ease;
   }
   .mantra li.on { opacity:1; }
+  /* Satırlar arasında akışı gösteren ince ok (kullanıcı: "oklarla göster"). */
+  .mantra li:not(:last-child)::after {
+    content:"↓"; display:block; margin-top:8px;
+    font-family:var(--font-ui); font-size:14px; font-weight:400; letter-spacing:0;
+    color:var(--faint); opacity:.5;
+  }
 
   /* ── Bölümler ─────────────────────────────────────────────────────── */
   .sec { padding:70px 0; }
@@ -191,20 +197,6 @@
   .rating .stars { color:#f0b429; font-size:15px; letter-spacing:2px; line-height:1; }
   .rating .rlabel { font-size:13px; color:var(--muted); }
   .rating .rlabel b { color:var(--text); font-weight:700; }
-
-  /* ── Nasıl çalışır (3 adım) ──────────────────────────────────────────── */
-  .how { padding:14px 26px 64px; text-align:center; }
-  .how-kicker { display:block; margin-bottom:26px; }
-  .how-row { display:flex; justify-content:center; align-items:flex-start; gap:0; flex-wrap:wrap; max-width:640px; margin:0 auto; }
-  .how-step { flex:1 1 150px; min-width:130px; max-width:200px; display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 6px; }
-  .how-num {
-    width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
-    border:1px solid var(--ring); color:var(--accent);
-    font-family:var(--font-display); font-weight:300; font-size:17px; background:var(--surface-2);
-  }
-  .how-step span { font-size:14.5px; color:var(--head); font-weight:500; letter-spacing:.2px; }
-  .how-arrow { align-self:center; color:var(--faint); font-size:16px; padding:0 4px; margin-top:12px; }
-  @media (max-width:560px) { .how-arrow { display:none; } .how-row { gap:22px; } .how-step { flex-basis:40%; } }
 
   /* ── Kullanıcı yorumları ─────────────────────────────────────────────── */
   .reviews { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
@@ -308,18 +300,7 @@
     <li data-t="m4">Kendine dön.</li>
     <li data-t="m5">Ve serbest bırak.</li>
   </ul>
-</section>
-
-<section class="how">
-  <span class="kicker how-kicker" data-t="howKicker">Nasıl çalışır</span>
-  <div class="how-row">
-    <div class="how-step"><span class="how-num">1</span><span data-t="how1">Aç ve yavaşla</span></div>
-    <span class="how-arrow" aria-hidden="true">→</span>
-    <div class="how-step"><span class="how-num">2</span><span data-t="how2">Nefes al, dinle</span></div>
-    <span class="how-arrow" aria-hidden="true">→</span>
-    <div class="how-step"><span class="how-num">3</span><span data-t="how3">Kendini keşfet</span></div>
-  </div>
-  <hr class="rule-soft" style="margin-top:56px">
+  <hr class="rule-soft" style="margin-top:46px">
 </section>
 
 <section class="sec band" id="nedir" style="--tint:rgba(160,122,224,0.10)">
@@ -334,6 +315,7 @@
       <div data-t="isnot1">Sakin bir meditasyon uygulaması değil.</div>
       <div data-t="isnot2">Sakin bir terapi aracı değil.</div>
       <div data-t="isnot3">Sakin bir yapılacaklar listesi değil.</div>
+      <div data-t="isnot4">Sakin bir yapay zeka robotu değil.</div>
     </div>
     <div class="is"><p data-t="isYes">Sakin bir farkındalık sistemi.</p></div>
 
@@ -432,22 +414,38 @@
       <h2 data-t="revTitle">Sessizce dönenler</h2>
       <p data-t="revSub">App Store'da 5 yıldız. İşte içeriden birkaç ses.</p>
     </div>
-    <!-- Gerçek App Store yorumları (tr, mostHelpful). Orijinal dilinde bırakıldı. -->
+    <!-- Gerçek App Store yorumları (tr, mostHelpful). Metin 7 dile çevrildi (i18n);
+         isim + App Store etiketi veri olarak kalır. -->
     <div class="reviews">
       <figure class="review">
         <div class="rstars" aria-hidden="true">★★★★★</div>
-        <blockquote>Kendimizle temas için güzel bir eşlikçi. İsmi gibi sakin sakin 🙏🏼 Emeklerinize sağlık! ✨</blockquote>
+        <blockquote data-t="rev1">Kendimizle temas için güzel bir eşlikçi. İsmi gibi sakin sakin. Emeklerinize sağlık!</blockquote>
         <figcaption><b>Duru</b> · App Store</figcaption>
       </figure>
       <figure class="review">
         <div class="rstars" aria-hidden="true">★★★★★</div>
-        <blockquote>Günlük yaşam koşuşturmasının içinde kaybolduğumda merkezime dönebilmemi sağlıyor.</blockquote>
+        <blockquote data-t="rev2">Günlük koşuşturmanın içinde kaybolduğumda merkezime dönebilmemi sağlıyor.</blockquote>
         <figcaption><b>Burcucumcum</b> · App Store</figcaption>
       </figure>
       <figure class="review">
         <div class="rstars" aria-hidden="true">★★★★★</div>
-        <blockquote>Her gün alışkanlık haline getirmeye başladım. Çok başarılı bir uygulama olmuş.</blockquote>
+        <blockquote data-t="rev3">Her gün alışkanlık haline getirdim. Çok başarılı bir uygulama olmuş.</blockquote>
         <figcaption><b>KnupMusic</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote data-t="rev4">Aradığım bilgiler çeşit çeşit, daha önce duymadığım analizler de var. En sevdiğim kısım galaktik kimliğim.</blockquote>
+        <figcaption><b>dilsanhead</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote data-t="rev5">Detaylı ve özenli. Özü hatırlatan güzel bildirimlerle güne harmoni getiriyor.</blockquote>
+        <figcaption><b>Belizn</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote data-t="rev6">Yolculuğa keyifli bir kılavuz; bilgiler doğru ve derin. Gönül rahatlığıyla tavsiye ederim.</blockquote>
+        <figcaption><b>CosmicLampofdaLambs</b> · App Store</figcaption>
       </figure>
     </div>
   </div>
