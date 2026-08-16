@@ -138,23 +138,31 @@
 
   .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(238px,1fr)); gap:14px; }
   .tile {
+    display:flex; flex-direction:column;
     border:1px solid var(--line); border-radius:18px; padding:24px 22px;
-    background:var(--surface); transition:border-color .3s, background .3s;
+    background:var(--surface);
+    transition:border-color .3s, background .3s, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
   }
-  .tile:hover { border-color:var(--ring); background:var(--surface-2); }
+  .tile:hover { border-color:var(--ring); background:var(--surface-2); transform:translateY(-3px); box-shadow:var(--shadow); }
   /* İkonlar artık emoji değil, uygulamadaki akşam ekranıyla aynı dilde ince
      çizgi SVG. Renk currentColor ile temadan gelir. */
-  .tile svg.ic { width:30px; height:30px; color:var(--accent); margin-bottom:14px; display:block; }
-  .tile:hover svg.ic { color:var(--head); }
-  .tile h3 { font-size:15px; letter-spacing:2px; color:var(--accent); margin-bottom:8px; }
+  .tile svg.ic { width:30px; height:30px; color:var(--accent); margin-bottom:14px; display:block; transition:color .3s, transform .35s cubic-bezier(.2,.7,.2,1); }
+  .tile:hover svg.ic { color:var(--head); transform:scale(1.09); }
+  /* HİZALAMA: başlıklar 1-2 satır arası değişiyordu, açıklamalar farklı yükseklikte
+     başlıyordu. min-height ile başlık alanı sabit → açıklamalar aynı hizada. */
+  .tile h3 { font-size:15px; letter-spacing:2px; color:var(--accent); margin-bottom:8px; min-height:2.8em; }
   .tile p { font-size:13.5px; color:var(--muted); line-height:1.85; }
 
   .fam { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; }
   .fam div {
+    display:flex; flex-direction:column;
     border:1px solid var(--line); border-radius:16px; padding:20px 18px; text-align:center;
     background:var(--surface);
+    transition:border-color .3s, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
   }
-  .fam svg.ic { width:32px; height:32px; color:var(--accent); margin:0 auto 12px; display:block; }
+  .fam div:hover { border-color:var(--ring); transform:translateY(-3px); box-shadow:var(--shadow); }
+  .fam svg.ic { width:32px; height:32px; color:var(--accent); margin:0 auto 12px; display:block; transition:transform .35s cubic-bezier(.2,.7,.2,1); }
+  .fam div:hover svg.ic { transform:scale(1.09); }
   .fam h3 { font-size:14px; letter-spacing:2px; color:var(--head); margin-bottom:6px; }
   .fam p { font-size:12.5px; color:var(--muted-2); line-height:1.8; }
 
@@ -171,8 +179,68 @@
      çalışmazsa hero tamamen boş kalırdı. */
   @media (prefers-reduced-motion: no-preference) {
     .up { opacity:0; transform:translateY(18px); animation:up .95s ease forwards; }
+    /* Kaydırınca yumuşak beliriş. `reveal` sınıfını site.js EKLER (JS çalışmazsa
+       hiç eklenmez → her şey görünür kalır). `.in` gözlemci ile eklenir. */
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .7s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+    .reveal.in { opacity:1; transform:none; }
   }
   @keyframes up { to { opacity:1; transform:none; } }
+
+  /* ── App Store puanı (sosyal kanıt) ─────────────────────────────────── */
+  .rating { display:inline-flex; align-items:center; gap:9px; margin-top:2px; }
+  .rating .stars { color:#f0b429; font-size:15px; letter-spacing:2px; line-height:1; }
+  .rating .rlabel { font-size:13px; color:var(--muted); }
+  .rating .rlabel b { color:var(--text); font-weight:700; }
+
+  /* ── Nasıl çalışır (3 adım) ──────────────────────────────────────────── */
+  .how { padding:14px 26px 64px; text-align:center; }
+  .how-kicker { display:block; margin-bottom:26px; }
+  .how-row { display:flex; justify-content:center; align-items:flex-start; gap:0; flex-wrap:wrap; max-width:640px; margin:0 auto; }
+  .how-step { flex:1 1 150px; min-width:130px; max-width:200px; display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 6px; }
+  .how-num {
+    width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+    border:1px solid var(--ring); color:var(--accent);
+    font-family:var(--font-display); font-weight:300; font-size:17px; background:var(--surface-2);
+  }
+  .how-step span { font-size:14.5px; color:var(--head); font-weight:500; letter-spacing:.2px; }
+  .how-arrow { align-self:center; color:var(--faint); font-size:16px; padding:0 4px; margin-top:12px; }
+  @media (max-width:560px) { .how-arrow { display:none; } .how-row { gap:22px; } .how-step { flex-basis:40%; } }
+
+  /* ── Kullanıcı yorumları ─────────────────────────────────────────────── */
+  .reviews { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .review {
+    display:flex; flex-direction:column; gap:12px; margin:0;
+    border:1px solid var(--line); border-radius:18px; padding:24px 24px 22px;
+    background:var(--surface);
+    transition:border-color .3s, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
+  }
+  .review:hover { border-color:var(--ring); transform:translateY(-3px); box-shadow:var(--shadow); }
+  .review .rstars { color:#f0b429; font-size:14px; letter-spacing:2px; line-height:1; }
+  .review blockquote { margin:0; font-size:15.5px; line-height:1.7; color:var(--body); flex:1; }
+  .review figcaption { font-size:13px; color:var(--muted-2); font-weight:600; }
+  .review figcaption b { color:var(--accent); font-weight:600; }
+
+  /* ── Çakra ayraç (sessiz motif) ──────────────────────────────────────── */
+  .rule-soft {
+    height:1px; border:0; width:min(220px,44vw); margin:0 auto;
+    background:linear-gradient(90deg,transparent,#f0a060,#60b8e8,#a07ae0,#b87adc,#e8d060,#7ab0e0,#82d9a3,transparent);
+    opacity:.28;
+  }
+
+  /* ── Sabit alt indirme çubuğu ────────────────────────────────────────── */
+  .dockbar {
+    position:fixed; left:50%; bottom:16px; transform:translate(-50%,140%);
+    z-index:90; display:flex; align-items:center; gap:14px;
+    max-width:calc(100vw - 28px);
+    background:var(--nav-bg); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--line); border-radius:100px; padding:8px 8px 8px 22px;
+    box-shadow:var(--shadow); opacity:0; transition:transform .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
+  }
+  .dockbar.show { transform:translate(-50%,0); opacity:1; }
+  .dockbar span { font-size:14px; color:var(--head); font-weight:500; white-space:nowrap; }
+  .dockbar .btn { padding:11px 22px; font-size:14.5px; }
+  @media (max-width:520px) { .dockbar span { display:none; } .dockbar { padding:8px; bottom:14px; } }
+  @media (prefers-reduced-motion: reduce) { .dockbar { transition:opacity .3s ease; } }
 </style>
 </head>
 <body>
@@ -218,12 +286,16 @@
     <div class="stores">
       <a class="store" href="/ios/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M17.05 12.54c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.58 2.17-1.53 2.65-.39 6.57 1.1 8.72.73 1.05 1.6 2.23 2.74 2.19 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.47zM14.9 5.6c.6-.74 1.01-1.75.9-2.76-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.96-.5 2.58-1.23z"/></svg>
-        <span><span data-t="storeGet">İndir</span><b>App Store</b></span>
+        <span class="store-txt"><span data-t="storeGet">İndir</span><b>App Store</b></span>
       </a>
       <a class="store" href="https://play.google.com/store/apps/details?id=com.sakin.app" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M3.6 2.3c-.3.3-.5.8-.5 1.4v16.6c0 .6.2 1.1.5 1.4l.1.1 9.3-9.3v-.2L3.7 2.2l-.1.1zm12.5 6.2L13.3 11l2.8 2.8 3.4-1.9c1-.6 1-1.5 0-2.1l-3.4-1.9v.6zM13.3 11L4 20.3c.3.4.9.4 1.5.1l10.6-6-2.8-3.4zM5.5 3.6c-.6-.3-1.2-.3-1.5.1L13.3 13l2.8-2.8L5.5 3.6z"/></svg>
-        <span><span data-t="storeGet">İndir</span><b>Google Play</b></span>
+        <span class="store-txt"><span data-t="storeGet">İndir</span><b>Google Play</b></span>
       </a>
+    </div>
+    <div class="rating" aria-label="App Store 5.0">
+      <span class="stars" aria-hidden="true">★★★★★</span>
+      <span class="rlabel"><b>5.0</b> · App Store</span>
     </div>
   </div>
 </header>
@@ -236,6 +308,18 @@
     <li data-t="m4">Kendine dön.</li>
     <li data-t="m5">Ve serbest bırak.</li>
   </ul>
+</section>
+
+<section class="how">
+  <span class="kicker how-kicker" data-t="howKicker">Nasıl çalışır</span>
+  <div class="how-row">
+    <div class="how-step"><span class="how-num">1</span><span data-t="how1">Aç ve yavaşla</span></div>
+    <span class="how-arrow" aria-hidden="true">→</span>
+    <div class="how-step"><span class="how-num">2</span><span data-t="how2">Nefes al, dinle</span></div>
+    <span class="how-arrow" aria-hidden="true">→</span>
+    <div class="how-step"><span class="how-num">3</span><span data-t="how3">Kendini keşfet</span></div>
+  </div>
+  <hr class="rule-soft" style="margin-top:56px">
 </section>
 
 <section class="sec band" id="nedir" style="--tint:rgba(160,122,224,0.10)">
@@ -341,6 +425,34 @@
   </div>
 </section>
 
+<section class="sec" style="--tint:rgba(184,164,216,0.10)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker" data-t="revKicker">Sözler</span>
+      <h2 data-t="revTitle">Sessizce dönenler</h2>
+      <p data-t="revSub">App Store'da 5 yıldız. İşte içeriden birkaç ses.</p>
+    </div>
+    <!-- Gerçek App Store yorumları (tr, mostHelpful). Orijinal dilinde bırakıldı. -->
+    <div class="reviews">
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Kendimizle temas için güzel bir eşlikçi. İsmi gibi sakin sakin 🙏🏼 Emeklerinize sağlık! ✨</blockquote>
+        <figcaption><b>Duru</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Günlük yaşam koşuşturmasının içinde kaybolduğumda merkezime dönebilmemi sağlıyor.</blockquote>
+        <figcaption><b>Burcucumcum</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Her gün alışkanlık haline getirmeye başladım. Çok başarılı bir uygulama olmuş.</blockquote>
+        <figcaption><b>KnupMusic</b> · App Store</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <section class="close" style="--tint:rgba(184,164,216,0.12)">
   <h2 data-t="closeTitle">Sakin şimdi iOS ve Android'de 🤍</h2>
   <p data-t="closeText">Ücretsiz indir, kayıt olmadan kullanmaya başla. Temel özellikleri özgürce kullanabilirsin.</p>
@@ -352,11 +464,11 @@
     <div class="stores">
       <a class="store" href="/ios/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M17.05 12.54c-.02-2.2 1.8-3.26 1.88-3.31-1.02-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.58 2.17-1.53 2.65-.39 6.57 1.1 8.72.73 1.05 1.6 2.23 2.74 2.19 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.47zM14.9 5.6c.6-.74 1.01-1.75.9-2.76-.87.04-1.93.58-2.56 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.96-.5 2.58-1.23z"/></svg>
-        <span><span data-t="storeGet">İndir</span><b>App Store</b></span>
+        <span class="store-txt"><span data-t="storeGet">İndir</span><b>App Store</b></span>
       </a>
       <a class="store" href="https://play.google.com/store/apps/details?id=com.sakin.app" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24"><path d="M3.6 2.3c-.3.3-.5.8-.5 1.4v16.6c0 .6.2 1.1.5 1.4l.1.1 9.3-9.3v-.2L3.7 2.2l-.1.1zm12.5 6.2L13.3 11l2.8 2.8 3.4-1.9c1-.6 1-1.5 0-2.1l-3.4-1.9v.6zM13.3 11L4 20.3c.3.4.9.4 1.5.1l10.6-6-2.8-3.4zM5.5 3.6c-.6-.3-1.2-.3-1.5.1L13.3 13l2.8-2.8L5.5 3.6z"/></svg>
-        <span><span data-t="storeGet">İndir</span><b>Google Play</b></span>
+        <span class="store-txt"><span data-t="storeGet">İndir</span><b>Google Play</b></span>
       </a>
     </div>
   </div>
@@ -381,6 +493,12 @@
     </div>
   </div>
 </footer>
+
+<!-- Sabit alt indirme çubuğu: hero geçilince belirir (site.js), footer'a gelince gizlenir. -->
+<div class="dockbar" id="dockbar" aria-hidden="true">
+  <span data-t="dockText">Sakin'i ücretsiz indir</span>
+  <a href="/app" class="btn btn-primary" data-t="navTry">Sakin'i Dene</a>
+</div>
 
 <script src="/site-i18n.js"></script>
 <script src="/site.js"></script>
