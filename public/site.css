@@ -134,7 +134,7 @@ body::before {
 /* Fare ucunda gezen, daha küçük ve biraz daha belirgin masalsı ışık. */
 .ambient-cursor {
   position:absolute; inset:-10%; opacity:0;
-  background:radial-gradient(240px at var(--mx,50%) var(--my,16%), var(--amb-cursor), transparent 76%);
+  background:radial-gradient(140px at var(--mx,50%) var(--my,16%), var(--amb-cursor), transparent 72%);
   transition:background .5s ease-out, opacity .6s ease;
 }
 .ambient-cursor.active { opacity:1; }
