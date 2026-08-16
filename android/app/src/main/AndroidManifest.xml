@@ -63,13 +63,18 @@
          birden düşüyordu). Kök sebep: exact-alarm izni olmadan Android 12+
          alarmları "yaklaşık" kuruyor, Doze + OEM pil optimizasyonu bunları
          biriktirip toplu teslim ediyor.
-         A) Kesin alarm: bildirim tam saatinde, biriktirilmeden gelir.
-         B) POST_NOTIFICATIONS (Android 13+ çalışma-zamanı izni) + boot sonrası
-            yeniden planlama (reboot'ta bildirimler kaybolmasın). -->
+         SCHEDULE_EXACT_ALARM/USE_EXACT_ALARM BİLEREK EKLENMEDİ (geri alındı):
+         Play Console'un "Tam Alarmlar" beyanı bu izni SADECE "Çalar saat" veya
+         "Takvim" temel işlevli uygulamalara izin veriyor — Sakin ikisi de değil.
+         Yanlış kategori seçip yayınlamak politika ihlali/askıya alınma riski
+         taşır. @capacitor/local-notifications (TimedNotificationPublisher.java)
+         izin yoksa zaten GRACEFUL DEĞRADE ediyor: canScheduleExactAlarms()
+         false ise alarmManager.set() (yaklaşık) kullanıyor, crash olmuyor —
+         sadece "tam saatinde" garantisi zayıflıyor. POST_NOTIFICATIONS (Android
+         13+ çalışma-zamanı izni) + boot sonrası yeniden planlama (reboot'ta
+         bildirimler kaybolmasın) yeterli ve politika-güvenli. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <!-- REKLAM KİMLİĞİ (AD_ID) BİLEREK KALDIRILDI. Facebook SDK'nın kendi kütüphane
          manifesti bu izni OTOMATİK ekliyor — AdvertiserIDCollectionEnabled=false
