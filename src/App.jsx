@@ -309,26 +309,19 @@ const WHATS_NEW = {
   },
   items: {
     tr:["İçsel Ayna'ya rüyanı anlat: Jung, Freud ve Gestalt yorumu, şamanik bir okumayla",
-        "İlk açılışta uygulamayı tanıtan kısa bir tur",
-        "Android'de bildirimler artık zamanında ve tek tek geliyor"],
+        "İlk açılışta uygulamayı tanıtan kısa bir tur"],
     en:["Tell your dream to the Inner Mirror: a Jung, Freud and Gestalt reading with a shamanic touch",
-        "A short guided tour on first open",
-        "On Android, reminders now arrive on time, one by one"],
+        "A short guided tour on first open"],
     de:["Erzähl dem Inneren Spiegel deinen Traum: eine Deutung nach Jung, Freud und Gestalt mit schamanischem Blick",
-        "Eine kurze Einführung beim ersten Öffnen",
-        "Auf Android kommen Erinnerungen jetzt pünktlich, einzeln"],
+        "Eine kurze Einführung beim ersten Öffnen"],
     es:["Cuéntale tu sueño al Espejo Interior: una lectura de Jung, Freud y Gestalt con un toque chamánico",
-        "Un breve recorrido guiado al abrir por primera vez",
-        "En Android, los recordatorios ahora llegan a tiempo, uno a uno"],
+        "Un breve recorrido guiado al abrir por primera vez"],
     pt:["Conta o teu sonho ao Espelho Interior: uma leitura de Jung, Freud e Gestalt com um toque xamânico",
-        "Uma breve visita guiada ao abrir pela primeira vez",
-        "No Android, os lembretes chegam agora a horas, um a um"],
+        "Uma breve visita guiada ao abrir pela primeira vez"],
     fr:["Raconte ton rêve au Miroir Intérieur : une lecture de Jung, Freud et Gestalt avec une touche chamanique",
-        "Une courte visite guidée à la première ouverture",
-        "Sur Android, les rappels arrivent désormais à l'heure, un par un"],
+        "Une courte visite guidée à la première ouverture"],
     ja:["夢を内なる鏡へ：ユング、フロイト、ゲシュタルトの解釈をシャーマニックに",
-        "初回起動時の短い案内ツアー",
-        "Androidで通知が時間どおり、1つずつ届くように"],
+        "初回起動時の短い案内ツアー"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
@@ -5339,6 +5332,8 @@ export default function SakinApp() {
     try { return !localStorage.getItem("sakin_tutorial_done"); } catch (_) { return false; }
   });
   const [tutorialStep, setTutorialStep] = useState(0);
+  // Tanıtım turunda parmakla kaydırma için dokunuş başlangıç X'i (sola=ileri, sağa=geri).
+  const tutTouchX = useRef(null);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz (mount=false).
   // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
   // İLK 5 AÇILIŞTA (sakin_nedir_count 0→5). girisPhase her yüklemede "intro"ya döndüğü
@@ -6380,15 +6375,17 @@ ${NEFES_REHBERI}
 
 ${UYGULAMA_BOLUMLER}
 
-Bu rüyayı üç mercekten harmanlayarak tek, bütünlüklü bir yanıtta yorumla:
-- Jung: arketipler, kolektif bilinçdışı, gölge/anima-animus sembolleri
-- Freud: bastırılmış arzular, iç çatışmalar, örtük anlam
-- Gestalt: rüyadaki her figür/nesne kişinin kendi bir parçasını temsil eder ("bu rüyadaki X sensin" yaklaşımı)
+Bu rüyayı ÜÇ EKOLÜN gözünden AYRI AYRI yorumla. Her birinde o düşünürün ADINI an ve rüyadaki SOMUT imgelere (kişiler, nesneler, mekân, renk, duygu) doğrudan değin. Genel geçer laf etme, sadece BU rüyaya özel konuş. Üç bakışı birbirine karıştırıp tek cümleye indirgeme, her ekol kendi paragrafını alsın.
 
-Yanıtını şu formatta ver:
+Yanıtını TAM olarak şu formatta ver:
 
 **Rüyanın Aynası**
-(Üç bakışı harmanla, rüyadaki somut imgelere doğrudan değin, şefkatli ve net ol: 6-8 cümle)
+
+Jung: (Arketipler, gölge, anima/animus ve kolektif bilinçdışı açısından bu rüya ne söylüyor, rüyadaki imgeye bağla: 2-3 cümle)
+
+Freud: (Bastırılmış arzular, iç çatışmalar ve örtük istekler açısından, rüyadaki imgeye bağla: 2-3 cümle)
+
+Gestalt: (Rüyadaki her figür kişinin bir parçasıdır; "bu rüyadaki X aslında sensin" yaklaşımıyla en çarpıcı imgeyi ele al: 2-3 cümle)
 
 **Şamanik Yansıma**
 (Sembolleri ruhsal işaret olarak oku, doğa/hayvan/element imgeleriyle konuş, kısa ve şiirsel bir rehberlik cümlesiyle kapat: 3-4 cümle)
@@ -8423,12 +8420,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           try { localStorage.setItem("sakin_tutorial_done", "1"); } catch (_) {}
           setShowTutorial(false); setTutorialStep(0);
         };
+        const goNext = () => { if (step < slides.length - 1) setTutorialStep(v => v + 1); else finish(); };
+        const goPrev = () => setTutorialStep(v => Math.max(0, v - 1));
         const rgba = (hex, a) => {
           const n = parseInt(hex.slice(1), 16);
           return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
         };
         return (
-          <div style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px" }}>
+          // Parmakla kaydırma: sola çek = ileri, sağa çek = geri (kullanıcı isteği).
+          <div
+            onTouchStart={e => { tutTouchX.current = e.touches[0].clientX; }}
+            onTouchEnd={e => {
+              if (tutTouchX.current == null) return;
+              const dx = e.changedTouches[0].clientX - tutTouchX.current;
+              tutTouchX.current = null;
+              if (dx <= -45) goNext();
+              else if (dx >= 45) goPrev();
+            }}
+            style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px",touchAction:"pan-y" }}>
+            {/* Geri (‹) — sol üst, sadece ilk adımdan sonra */}
+            {step > 0 && (
+              <button onClick={goPrev} aria-label={pickLang({tr:"Geri",en:"Back",de:"Zurück",es:"Atrás",pt:"Voltar",fr:"Retour",ja:"戻る"}, lang)}
+                style={{ position:"absolute",top:14,left:14,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.14)",color:"#c0b4d8",fontSize:20,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Jost',sans-serif" }}>‹</button>
+            )}
             {/* Geç (skip) — sağ üst */}
             <button onClick={finish}
               style={{ position:"absolute",top:16,right:16,background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 12px" }}>
