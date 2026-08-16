@@ -8551,7 +8551,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const cardW = (W - padSide * 2 - gap) / 2;
         const leftCX = padSide + cardW / 2;          // sol kart merkez X
         const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
-        const cardTopPx = Math.round(0.85 * H) - cardH;   // kart tepesi (px, üstten)
+        const cardTopPx = Math.round(0.81 * H) - cardH;   // kart tepesi (biraz yukarı; çizgi kısalır)
         const pathEndY = cardTopPx + 3;               // çizgi kart tepesine DEĞER (bağlantılı)
         const sunCY = Math.round(0.25 * H);           // güneş merkezi (başlıkla birlikte aşağıda)
         const sunBottomY = sunCY + 36;
@@ -8570,17 +8570,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none" style={{ position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none" }}>
               <defs>
                 <linearGradient id="ynBaglan" x1={leftCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#b87adc" stopOpacity="0.85"/><stop offset="0.5" stopColor="#b87adc" stopOpacity="0.7"/><stop offset="1" stopColor="#f0d090" stopOpacity="0.85"/>
+                  <stop offset="0" stopColor="#c58ae8" stopOpacity="1"/><stop offset="0.5" stopColor="#b87adc" stopOpacity="0.92"/><stop offset="1" stopColor="#f3d59a" stopOpacity="1"/>
                 </linearGradient>
                 <linearGradient id="ynKesfet" x1={rightCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#f0c060" stopOpacity="0.85"/><stop offset="0.5" stopColor="#f0c060" stopOpacity="0.7"/><stop offset="1" stopColor="#f5dca0" stopOpacity="0.85"/>
+                  <stop offset="0" stopColor="#f5cc6a" stopOpacity="1"/><stop offset="0.5" stopColor="#f0c060" stopOpacity="0.92"/><stop offset="1" stopColor="#f8e2ad" stopOpacity="1"/>
                 </linearGradient>
-                <filter id="ynGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <filter id="ynGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
               </defs>
-              <path d={dPath(Lp)} stroke="url(#ynBaglan)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <path d={dPath(Rp)} stroke="url(#ynKesfet)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <circle cx={Ld1[0]} cy={Ld1[1]} r="2.4" fill="#c49bee" opacity="0.95"/><circle cx={Ld2[0]} cy={Ld2[1]} r="2.4" fill="#d3aeee" opacity="0.95"/>
-              <circle cx={Rd1[0]} cy={Rd1[1]} r="2.4" fill="#f0cc76" opacity="0.95"/><circle cx={Rd2[0]} cy={Rd2[1]} r="2.4" fill="#f3d896" opacity="0.95"/>
+              <path d={dPath(Lp)} stroke="url(#ynBaglan)" strokeWidth="1.9" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <path d={dPath(Rp)} stroke="url(#ynKesfet)" strokeWidth="1.9" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <circle cx={Ld1[0]} cy={Ld1[1]} r="2.6" fill="#d3aeee" opacity="1"/><circle cx={Ld2[0]} cy={Ld2[1]} r="2.6" fill="#d3aeee" opacity="1"/>
+              <circle cx={Rd1[0]} cy={Rd1[1]} r="2.6" fill="#f3d896" opacity="1"/><circle cx={Rd2[0]} cy={Rd2[1]} r="2.6" fill="#f3d896" opacity="1"/>
             </svg>
 
             {/* Kapat X — açılış (HAZIRIM) ekranına döner (safe-area altında) */}
@@ -8589,7 +8589,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Başlık — güneşin HEMEN üstünde (bir nefes boşluğu). max() ile küçük
                 ekranlarda sensör altına düşmesi garanti (var(--sat) tabanı). */}
-            <div style={{ position:"absolute",top:`calc(max(${sunCY - 88}px, var(--sat, 0px) + 24px))`,left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            <div style={{ position:"absolute",top:`calc(max(${sunCY - 92}px, var(--sat, 0px) + 24px))`,left:0,right:0,textAlign:"center",fontSize:13,letterSpacing:4,textTransform:"uppercase",color:"#c6b596",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.92 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
 
             {/* Güneş — birleşme noktası, yavaş nefes alır (px konum) */}
             <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:sunCY,margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
@@ -8613,15 +8613,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             </div>
 
-            {/* Sakin nedir? → Yolculuk sekmesi */}
+            {/* Sakin nedir? → Yolculuk sekmesi. Kartların ALTINA sabit (px), böylece
+                home-indicator'lı cihazlarda bile kartları KESMEZ (eski bug). Ortalı. */}
             <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ position:"absolute",left:"50%",bottom:"calc(env(safe-area-inset-bottom, 0px) + 8.5%)",transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              style={{ position:"absolute",left:"50%",top:cardTopPx + cardH + 20,transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,whiteSpace:"nowrap" }}>
               {pickLang(NEDIR_I18N.title, lang)}
             </button>
 
-            {/* Bir daha gösterme */}
+            {/* Bir daha gösterme — nedir'in altına sabit, ortalı */}
             <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ position:"absolute",left:0,right:0,bottom:"calc(env(safe-area-inset-bottom, 0px) + 3.5%)",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,textAlign:"center" }}>
+              style={{ position:"absolute",left:0,right:0,top:cardTopPx + cardH + 62,background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,textAlign:"center" }}>
               {pickLang(NEDIR_I18N.off, lang)}
             </button>
           </div>
