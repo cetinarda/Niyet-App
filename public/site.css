@@ -272,7 +272,18 @@ h3 { font-size:19px; font-weight:600; line-height:1.4; letter-spacing:-.1px; col
 }
 .btn:hover { transform:translateY(-2px); }
 .btn-primary { background:var(--btn-bg); color:var(--btn-fg); box-shadow:var(--btn-glow); }
+.btn-primary:hover { box-shadow:0 10px 30px rgba(85,58,131,0.42), 0 0 0 3px var(--surface-2); }
+:root[data-theme="dark"] .btn-primary:hover { box-shadow:0 0 44px rgba(184,164,216,0.4), 0 0 0 3px rgba(184,164,216,0.12); }
 .btn-ghost { border:1px solid var(--ring); color:var(--head); }
+
+/* Nav + footer bağlantılarında yumuşak alt-çizgi belirişi (zarif cila). */
+.foot-links a { position:relative; }
+.foot-links a::after {
+  content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
+  background:var(--accent); transform:scaleX(0); transform-origin:left;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1);
+}
+.foot-links a:hover::after { transform:scaleX(1); }
 
 .free-badge {
   display:inline-flex; align-items:center; gap:8px;
@@ -351,8 +362,9 @@ h3 { font-size:19px; font-weight:600; line-height:1.4; letter-spacing:-.1px; col
 }
 .card:hover { border-color:var(--ring); transform:translateY(-4px); box-shadow:var(--shadow); }
 .card-img { aspect-ratio:16/9; overflow:hidden; background:var(--band); }
-.card-img img { width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
-.card:hover .card-img img { transform:scale(1.04); }
+/* Yavaş ken-burns: hover'da hafif yaklaşma + kayma (transform-origin ile). */
+.card-img img { width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.2,.7,.2,1); transform-origin:58% 42%; }
+.card:hover .card-img img { transform:scale(1.06); }
 /* card-body flex kolon + flex:1 → "Oku →" (.more) margin-top:auto ile HER kartta
    aynı alt hizada durur (başlıklar farklı uzunlukta olsa da). */
 .card-body { padding:22px 24px 26px; display:flex; flex-direction:column; flex:1; }

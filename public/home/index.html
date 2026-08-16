@@ -185,6 +185,62 @@
     .reveal.in { opacity:1; transform:none; }
   }
   @keyframes up { to { opacity:1; transform:none; } }
+
+  /* ── App Store puanı (sosyal kanıt) ─────────────────────────────────── */
+  .rating { display:inline-flex; align-items:center; gap:9px; margin-top:2px; }
+  .rating .stars { color:#f0b429; font-size:15px; letter-spacing:2px; line-height:1; }
+  .rating .rlabel { font-size:13px; color:var(--muted); }
+  .rating .rlabel b { color:var(--text); font-weight:700; }
+
+  /* ── Nasıl çalışır (3 adım) ──────────────────────────────────────────── */
+  .how { padding:14px 26px 64px; text-align:center; }
+  .how-kicker { display:block; margin-bottom:26px; }
+  .how-row { display:flex; justify-content:center; align-items:flex-start; gap:0; flex-wrap:wrap; max-width:640px; margin:0 auto; }
+  .how-step { flex:1 1 150px; min-width:130px; max-width:200px; display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 6px; }
+  .how-num {
+    width:38px; height:38px; border-radius:50%; display:grid; place-items:center;
+    border:1px solid var(--ring); color:var(--accent);
+    font-family:var(--font-display); font-weight:300; font-size:17px; background:var(--surface-2);
+  }
+  .how-step span { font-size:14.5px; color:var(--head); font-weight:500; letter-spacing:.2px; }
+  .how-arrow { align-self:center; color:var(--faint); font-size:16px; padding:0 4px; margin-top:12px; }
+  @media (max-width:560px) { .how-arrow { display:none; } .how-row { gap:22px; } .how-step { flex-basis:40%; } }
+
+  /* ── Kullanıcı yorumları ─────────────────────────────────────────────── */
+  .reviews { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .review {
+    display:flex; flex-direction:column; gap:12px; margin:0;
+    border:1px solid var(--line); border-radius:18px; padding:24px 24px 22px;
+    background:var(--surface);
+    transition:border-color .3s, transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
+  }
+  .review:hover { border-color:var(--ring); transform:translateY(-3px); box-shadow:var(--shadow); }
+  .review .rstars { color:#f0b429; font-size:14px; letter-spacing:2px; line-height:1; }
+  .review blockquote { margin:0; font-size:15.5px; line-height:1.7; color:var(--body); flex:1; }
+  .review figcaption { font-size:13px; color:var(--muted-2); font-weight:600; }
+  .review figcaption b { color:var(--accent); font-weight:600; }
+
+  /* ── Çakra ayraç (sessiz motif) ──────────────────────────────────────── */
+  .rule-soft {
+    height:1px; border:0; width:min(220px,44vw); margin:0 auto;
+    background:linear-gradient(90deg,transparent,#f0a060,#60b8e8,#a07ae0,#b87adc,#e8d060,#7ab0e0,#82d9a3,transparent);
+    opacity:.28;
+  }
+
+  /* ── Sabit alt indirme çubuğu ────────────────────────────────────────── */
+  .dockbar {
+    position:fixed; left:50%; bottom:16px; transform:translate(-50%,140%);
+    z-index:90; display:flex; align-items:center; gap:14px;
+    max-width:calc(100vw - 28px);
+    background:var(--nav-bg); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--line); border-radius:100px; padding:8px 8px 8px 22px;
+    box-shadow:var(--shadow); opacity:0; transition:transform .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
+  }
+  .dockbar.show { transform:translate(-50%,0); opacity:1; }
+  .dockbar span { font-size:14px; color:var(--head); font-weight:500; white-space:nowrap; }
+  .dockbar .btn { padding:11px 22px; font-size:14.5px; }
+  @media (max-width:520px) { .dockbar span { display:none; } .dockbar { padding:8px; bottom:14px; } }
+  @media (prefers-reduced-motion: reduce) { .dockbar { transition:opacity .3s ease; } }
 </style>
 </head>
 <body>
@@ -237,6 +293,10 @@
         <span class="store-txt"><span data-t="storeGet">İndir</span><b>Google Play</b></span>
       </a>
     </div>
+    <div class="rating" aria-label="App Store 5.0">
+      <span class="stars" aria-hidden="true">★★★★★</span>
+      <span class="rlabel"><b>5.0</b> · App Store</span>
+    </div>
   </div>
 </header>
 
@@ -248,6 +308,18 @@
     <li data-t="m4">Kendine dön.</li>
     <li data-t="m5">Ve serbest bırak.</li>
   </ul>
+</section>
+
+<section class="how">
+  <span class="kicker how-kicker" data-t="howKicker">Nasıl çalışır</span>
+  <div class="how-row">
+    <div class="how-step"><span class="how-num">1</span><span data-t="how1">Aç ve yavaşla</span></div>
+    <span class="how-arrow" aria-hidden="true">→</span>
+    <div class="how-step"><span class="how-num">2</span><span data-t="how2">Nefes al, dinle</span></div>
+    <span class="how-arrow" aria-hidden="true">→</span>
+    <div class="how-step"><span class="how-num">3</span><span data-t="how3">Kendini keşfet</span></div>
+  </div>
+  <hr class="rule-soft" style="margin-top:56px">
 </section>
 
 <section class="sec band" id="nedir" style="--tint:rgba(160,122,224,0.10)">
@@ -353,6 +425,34 @@
   </div>
 </section>
 
+<section class="sec" style="--tint:rgba(184,164,216,0.10)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker" data-t="revKicker">Sözler</span>
+      <h2 data-t="revTitle">Sessizce dönenler</h2>
+      <p data-t="revSub">App Store'da 5 yıldız. İşte içeriden birkaç ses.</p>
+    </div>
+    <!-- Gerçek App Store yorumları (tr, mostHelpful). Orijinal dilinde bırakıldı. -->
+    <div class="reviews">
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Kendimizle temas için güzel bir eşlikçi. İsmi gibi sakin sakin 🙏🏼 Emeklerinize sağlık! ✨</blockquote>
+        <figcaption><b>Duru</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Günlük yaşam koşuşturmasının içinde kaybolduğumda merkezime dönebilmemi sağlıyor.</blockquote>
+        <figcaption><b>Burcucumcum</b> · App Store</figcaption>
+      </figure>
+      <figure class="review">
+        <div class="rstars" aria-hidden="true">★★★★★</div>
+        <blockquote>Her gün alışkanlık haline getirmeye başladım. Çok başarılı bir uygulama olmuş.</blockquote>
+        <figcaption><b>KnupMusic</b> · App Store</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <section class="close" style="--tint:rgba(184,164,216,0.12)">
   <h2 data-t="closeTitle">Sakin şimdi iOS ve Android'de 🤍</h2>
   <p data-t="closeText">Ücretsiz indir, kayıt olmadan kullanmaya başla. Temel özellikleri özgürce kullanabilirsin.</p>
@@ -393,6 +493,12 @@
     </div>
   </div>
 </footer>
+
+<!-- Sabit alt indirme çubuğu: hero geçilince belirir (site.js), footer'a gelince gizlenir. -->
+<div class="dockbar" id="dockbar" aria-hidden="true">
+  <span data-t="dockText">Sakin'i ücretsiz indir</span>
+  <a href="/app" class="btn btn-primary" data-t="navTry">Sakin'i Dene</a>
+</div>
 
 <script src="/site-i18n.js"></script>
 <script src="/site.js"></script>

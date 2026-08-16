@@ -225,12 +225,49 @@
     } catch (_) {}
   }
 
+  /* Sabit alt indirme çubuğu: hero geçilince belirir, sayfa sonuna (footer)
+     gelince gizlenir ki footer bağlantılarını örtmesin. rAF ile throttled. */
+  function buildDock() {
+    var dock = document.getElementById("dockbar");
+    if (!dock) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var y = window.scrollY || window.pageYOffset;
+      var docH = document.documentElement.scrollHeight;
+      var nearBottom = (y + window.innerHeight) > (docH - 220);
+      if (y > 520 && !nearBottom) dock.classList.add("show");
+      else dock.classList.remove("show");
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /* Hero nefes işareti fareyi çok hafif takip eder (canlı, masalsı his). Ölçü
+     küçük (max ~10px); reduced-motion veya dokunmatik ana girişte kapalı. */
+  function buildBreathFollow() {
+    var mark = document.querySelector(".hero .breath");
+    if (!mark) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia && window.matchMedia("(hover: none)").matches) return;
+    mark.style.transition = "transform .6s cubic-bezier(.2,.7,.2,1)";
+    window.addEventListener("mousemove", function (e) {
+      var dx = (e.clientX / window.innerWidth - 0.5) * 20;   // -10..10
+      var dy = (e.clientY / window.innerHeight - 0.5) * 14;  // -7..7
+      mark.style.transform = "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px)";
+    }, { passive: true });
+  }
+
   function init() {
     applyTheme(readTheme());
     buildAmbient();
     buildLangMenu();
     applyLang(readLang());
     buildReveal();
+    buildDock();
+    buildBreathFollow();
 
     document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
       b.addEventListener("click", toggleTheme);
