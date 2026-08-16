@@ -8518,12 +8518,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // Sol mor yol = Bağlan (mandala), sağ altın yol = Keşfet (Ailesi paneli),
         // yukarıda güneşte birleşir. Kart kenarlarında ayna renkli tünel ışığı
         // senkron döner. Davranışlar eski pop-up ile birebir aynı.
-        const cardBase = { flex:1, borderRadius:18, padding:"15px 12px", position:"relative", cursor:"pointer",
+        // iOS WKWebView'da <button> native görünümü şişirip içeriği kaydırıyordu:
+        // appearance:none ŞART. Ayrıca flex-column + center ile ikon/yazı dikey
+        // ortalı ve iki kart (align-items:stretch satır varsayılanı) eşit yükseklik.
+        const cardBase = { flex:1, boxSizing:"border-box", margin:0, appearance:"none", WebkitAppearance:"none",
+          borderRadius:18, padding:"16px 10px", position:"relative", cursor:"pointer",
+          display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:7,
           textAlign:"center", background:"linear-gradient(165deg,rgba(34,25,52,0.64),rgba(16,11,28,0.64))",
-          backgroundClip:"padding-box", border:"1.4px solid transparent", WebkitBackgroundClip:"padding-box",
+          backgroundClip:"padding-box", WebkitBackgroundClip:"padding-box", border:"1.4px solid transparent",
           fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
-        const nameSt = { fontSize:12.5, letterSpacing:3, fontWeight:300, textTransform:"uppercase", marginBottom:5, fontFamily:"'Jost',sans-serif" };
-        const descSt = { fontFamily:"'Inter',sans-serif", fontSize:10.5, lineHeight:1.5, color:"#9c8fb8", letterSpacing:0.2 };
+        const nameSt = { fontSize:12.5, letterSpacing:3, fontWeight:300, textTransform:"uppercase", fontFamily:"'Jost',sans-serif", margin:0 };
+        const descSt = { fontFamily:"'Inter',sans-serif", fontSize:10.5, lineHeight:1.45, color:"#9c8fb8", letterSpacing:0.2, margin:0 };
+        // Kısa, iki kartta DENGELİ açıklama (eşit satır sayısı → hizalı, kompakt).
+        const baglanMini = pickLang({ tr:"Niyet, nefes, ses", en:"Intention, breath, sound", de:"Absicht, Atem, Klang", es:"Intención, respiración, sonido", pt:"Intenção, respiração, som", fr:"Intention, souffle, son", ja:"意図・呼吸・音" }, lang);
+        const kesfetMini = pickLang({ tr:"Burç, tasarım, hayvan", en:"Sign, design, animal", de:"Zeichen, Design, Tier", es:"Signo, diseño, animal", pt:"Signo, design, animal", fr:"Signe, design, animal", ja:"星座・デザイン・動物" }, lang);
         return (
         <div style={{ position:"fixed",inset:0,zIndex:99998,overflow:"hidden",
           background:"radial-gradient(110% 60% at 50% 13%, rgba(240,205,130,0.11), rgba(120,70,140,0.04) 32%, transparent 52%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
@@ -8562,15 +8570,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div style={{ position:"absolute",left:0,right:0,bottom:"17.5%",display:"flex",gap:13,padding:"0 30px",boxSizing:"border-box" }}>
               <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
-                <div style={{ fontSize:22,lineHeight:1,marginBottom:9,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
+                <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e0d0f4" }}>{pickLang(NEDIR_I18N.baglanT, lang)}</div>
-                <div style={descSt}>{pickLang(NEDIR_I18N.baglanD, lang)}</div>
+                <div style={descSt}>{baglanMini}</div>
               </button>
               <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
-                <div style={{ fontSize:22,lineHeight:1,marginBottom:9,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
+                <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f3e4bd" }}>{pickLang(NEDIR_I18N.kesfetT, lang)}</div>
-                <div style={descSt}>{pickLang(NEDIR_I18N.kesfetD, lang)}</div>
+                <div style={descSt}>{kesfetMini}</div>
               </button>
             </div>
 

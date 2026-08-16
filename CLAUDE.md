@@ -105,6 +105,22 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    c) **iOS + Android terminal build/indirme komutları** (Mac yol: `~/Desktop/Niyet-App`;
       iOS için CLAUDE.md altın kural #3'teki komut, Android için `npx cap sync android`).
    Kural #3 (kısa tut) burada da geçerli.
+7. **BUTON/KART BOYUT + HİZALAMA (kullanıcı isteği: "her zaman dikkat et").**
+   Butonlarda ve kartlarda HER ZAMAN kontrol et: boyut abartılı büyük olmasın,
+   içindeki ikon + yazı hem yatay hem dikey ORTALI ve birbiriyle hizalı olsun.
+   - **iOS WKWebView tuzağı:** `<button>` elemanı `appearance:none` +
+     `WebkitAppearance:none` OLMADAN native buton görünümü çizer → şişer,
+     içerik kayar. Chromium'da düzgün görünür ama iOS'ta bozuk. Tıklanabilir
+     kart/buton yapıyorsan bu ikisini MUTLAKA ekle.
+   - **Hizalama:** çok elemanlı kart için `display:flex; flex-direction:column;
+     align-items:center; justify-content:center; gap:...` kullan (tek tek
+     `marginBottom` yerine). Yan yana kartlarda satıra `align-items:stretch`
+     (varsayılan) + kartlara flex-column-center → eşit yükseklik + dikey ortalı.
+   - **Boyut:** açıklama metinleri kısa ve iki kartta DENGELİ (eşit satır) olsun;
+     uzun/asimetrik metin kartları büyütüp hizayı bozar.
+   - **Doğrulama:** yeni buton/kart eklediğinde gerçek boyutta (390x844 ve dar
+     bir ekran) Puppeteer screenshot ile GÖRSEL kontrol et, sadece build yeşil
+     yeterli değil.
 
 ## Mimari
 
