@@ -8553,7 +8553,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
         const cardTopPx = Math.round(0.85 * H) - cardH;   // kart tepesi (px, üstten)
         const pathEndY = cardTopPx + 3;               // çizgi kart tepesine DEĞER (bağlantılı)
-        const sunCY = Math.round(0.21 * H);           // güneş merkezi (aşağıda, başlıkla nefes payı)
+        const sunCY = Math.round(0.25 * H);           // güneş merkezi (başlıkla birlikte aşağıda)
         const sunBottomY = sunCY + 36;
         const dy = pathEndY - sunBottomY;
         // Her iki uçta DİKEY (tünel gibi güneşe ve karta düz açılır)
@@ -8587,8 +8587,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
               style={{ position:"absolute",top:"calc(var(--sat, 0px) + 14px)",right:14,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:14,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
 
-            {/* Başlık — sensör/notch altına indirildi (var(--sat) + pay), güneşle nefes boşluğu */}
-            <div style={{ position:"absolute",top:"calc(var(--sat, 0px) + 40px)",left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            {/* Başlık — güneşin HEMEN üstünde (bir nefes boşluğu). max() ile küçük
+                ekranlarda sensör altına düşmesi garanti (var(--sat) tabanı). */}
+            <div style={{ position:"absolute",top:`calc(max(${sunCY - 74}px, var(--sat, 0px) + 26px))`,left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
 
             {/* Güneş — birleşme noktası, yavaş nefes alır (px konum) */}
             <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:sunCY,margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
