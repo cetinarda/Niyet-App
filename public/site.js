@@ -197,11 +197,40 @@
     });
   }
 
+  /* Kaydırınca yumuşak, kademeli beliriş. `reveal` sınıfı BURADA eklenir
+     (JS çalışmazsa hiç eklenmez → içerik görünür kalır, SEO/erişilebilirlik güvenli).
+     Aynı grup içinde ufak gecikme kademesi (stagger) zarif bir ritim verir. */
+  function buildReveal() {
+    try {
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      if (!("IntersectionObserver" in window)) return;
+      var groups = [".tile", ".fam > div", ".card", ".sec-head", ".isnot > div", ".is"];
+      var els = [];
+      document.querySelectorAll(groups.join(",")).forEach(function (el) { els.push(el); });
+      if (!els.length) return;
+      // Grup içi index'e göre kademeli gecikme (yalnızca aynı ebeveyndekiler).
+      var seen = new Map();
+      els.forEach(function (el) {
+        var key = el.parentElement;
+        var i = seen.get(key) || 0; seen.set(key, i + 1);
+        el.classList.add("reveal");
+        el.style.transitionDelay = Math.min(i * 70, 420) + "ms";
+      });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      els.forEach(function (el) { io.observe(el); });
+    } catch (_) {}
+  }
+
   function init() {
     applyTheme(readTheme());
     buildAmbient();
     buildLangMenu();
     applyLang(readLang());
+    buildReveal();
 
     document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
       b.addEventListener("click", toggleTheme);
