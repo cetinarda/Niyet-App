@@ -606,6 +606,7 @@ const NEDIR_I18N = {
   baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
   baglanD: { tr:"Niyet, nefes, ses: günün küçük sakinlik pratiği.", en:"Intention, breath, sound: your small daily practice of calm.", de:"Absicht, Atem, Klang: deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido: tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som: a tua pequena prática diária de calma.", fr:"Intention, souffle, son : ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音、毎日の小さな穏やかさの習慣。" },
   yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
+  birlesir:{ tr:"iki yol ileride birleşir", en:"the two paths merge ahead", de:"die zwei Wege vereinen sich", es:"los dos caminos se unen", pt:"os dois caminhos unem-se", fr:"les deux chemins se rejoignent", ja:"二つの道はやがて交わる" },
   // Köken/imza satırı. Yeri bilinçli: vaat cümlesinin HEMEN ALTINDA — okuyucu
   // "Sakin ne yapar"ı yeni anlamışken, o vaadin nereden geldiğini görüyor.
   // Sonda dursa imza olurdu; burada dayanak oluyor. Sessiz ve küçük tutuldu:
@@ -1888,6 +1889,34 @@ const GLOBAL_CSS = `
     100% { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
   }
   .sakin-mirror-live { animation: sakinMirrorCycle 4.5s ease-in-out infinite; }
+  /* YOL SEÇİMİ ekranı — güneş nefes alır, kart kenarlarında tünel ışığı döner.
+     Renk/hız ayna ikonu (sakinMirrorCycle) referans alınarak seçildi. */
+  @property --sakinBeam { syntax:'<angle>'; inherits:false; initial-value:0deg; }
+  @keyframes sakinYolBeam { to { --sakinBeam: 360deg; } }
+  @keyframes sakinYolSun {
+    0%,100% { transform:scale(0.93); filter:brightness(0.94);
+      box-shadow:0 0 28px 7px rgba(243,199,120,0.22), 0 0 56px 16px rgba(220,150,80,0.09); }
+    50%     { transform:scale(1.08); filter:brightness(1.12);
+      box-shadow:0 0 44px 13px rgba(248,206,128,0.4), 0 0 88px 30px rgba(228,158,86,0.17); }
+  }
+  .sakin-yol-sun { animation: sakinYolSun 5.5s ease-in-out infinite; }
+  .sakin-yol-sun::after { content:""; position:absolute; inset:-11px; border-radius:50%; border:1px solid rgba(255,225,150,0.16); }
+  .sakin-yol-card::before {
+    content:""; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
+    background:conic-gradient(from var(--sakinBeam),
+      rgba(255,246,216,0.16), #f0d660, #8a4fd0, #ff6a6a, rgba(255,246,216,0.16));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite:exclude;
+    pointer-events:none;
+    animation:sakinYolBeam 4.5s linear infinite;
+    filter:drop-shadow(0 0 4px rgba(200,150,220,0.4));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
+    .sakin-yol-card::before { animation:none; }
+  }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
   .sakin-tunnel-bands {
@@ -8484,48 +8513,82 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* "SAKİN NEDİR?" / YOL SEÇİMİ — TEK overlay. HAZIRIM sonrası, İLK 5 AÇILIŞTA
           (veya "bir daha gösterme"ye kadar). iOS + web. Kartlar DOĞRUDAN tıklanır:
           ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?" butonu nedir sekmesine gider. */}
-      {showNedir && !showIntro && (
-        <div onClick={()=>setShowNedir(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.87)",backdropFilter:"blur(13px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
-          <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(30,22,45,0.98),rgba(18,12,28,0.98))",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"28px 24px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out",position:"relative" }}>
-            {/* Sağ üst kapat (X) — açılış (HAZIRIM) ekranına döner. */}
-            <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }}
-              aria-label={t("common_close")}
-              style={{ position:"absolute",top:10,right:10,width:34,height:34,borderRadius:"50%",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.14)",color:"#c0b4d8",fontSize:17,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>✕</button>
-            <div style={{ fontSize:24,marginBottom:8 }}>✦</div>
-            <div style={{ fontSize:18,fontWeight:300,letterSpacing:1,color:"#efe8ff",marginBottom:18,fontFamily:"'Jost',sans-serif",lineHeight:1.4 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
-            {/* Bağlan ve Keşfet AYNI renkte (mor) — kullanıcı isteği; ayrım "Sakin nedir" sarısıyla vurgulanıyor. */}
-            <button onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
-              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:10,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
-              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-                <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
-              </div>
-              <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
-            </button>
-            <button onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
-              style={{ display:"block",width:"100%",textAlign:"left",padding:"14px 16px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.4)",borderRadius:16,marginBottom:14,cursor:"pointer",boxShadow:"0 0 16px rgba(184,122,220,0.1)" }}>
-              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
-                <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                <span style={{ color:"rgba(184,122,220,0.6)",fontSize:16 }}>→</span>
-              </div>
-              <div style={{ fontSize:12.5,color:"#b0a4c8",lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyKesfet, lang)}</div>
-            </button>
-            {/* "Sakin nedir" — dikkat çekici sarı (eskiden Keşfet bu renkteydi). */}
-            {/* Pop-up'taki "Sakin nedir?" → doğrudan YOLCULUK sekmesi açılır (kullanıcı
-                isteği); bağlantı açıklaması artık o sekmenin en üstünde. */}
-            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ background:"linear-gradient(135deg,rgba(240,192,96,0.16),rgba(200,150,60,0.10))",border:"1px solid rgba(240,192,96,0.5)",borderRadius:20,padding:"9px 22px",color:"#f0c060",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",marginBottom:12,boxShadow:"0 0 16px rgba(240,192,96,0.14)" }}>
-              {pickLang(NEDIR_I18N.title, lang)}
-            </button>
-            <div>
-              <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-                style={{ background:"none",border:"none",color:"#9080b0",fontSize:12.5,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"4px 14px" }}>
-                {pickLang(NEDIR_I18N.off, lang)}
+      {showNedir && !showIntro && (() => {
+        // YOL SEÇİMİ — "iki yol güneşte birleşir" (kullanıcı onaylı tasarım).
+        // Sol mor yol = Bağlan (mandala), sağ altın yol = Keşfet (Ailesi paneli),
+        // yukarıda güneşte birleşir. Kart kenarlarında ayna renkli tünel ışığı
+        // senkron döner. Davranışlar eski pop-up ile birebir aynı.
+        const cardBase = { flex:1, borderRadius:18, padding:"15px 12px", position:"relative", cursor:"pointer",
+          textAlign:"center", background:"linear-gradient(165deg,rgba(34,25,52,0.64),rgba(16,11,28,0.64))",
+          backgroundClip:"padding-box", border:"1.4px solid transparent", WebkitBackgroundClip:"padding-box",
+          fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
+        const nameSt = { fontSize:12.5, letterSpacing:3, fontWeight:300, textTransform:"uppercase", marginBottom:5, fontFamily:"'Jost',sans-serif" };
+        const descSt = { fontFamily:"'Inter',sans-serif", fontSize:10.5, lineHeight:1.5, color:"#9c8fb8", letterSpacing:0.2 };
+        return (
+        <div style={{ position:"fixed",inset:0,zIndex:99998,overflow:"hidden",
+          background:"radial-gradient(110% 60% at 50% 13%, rgba(240,205,130,0.11), rgba(120,70,140,0.04) 32%, transparent 52%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
+          <div style={{ position:"absolute",inset:0,maxWidth:430,margin:"0 auto" }}>
+            {/* İki yol — güneşte birleşir (preserveAspectRatio none: ekrana uyar) */}
+            <svg viewBox="0 0 390 844" preserveAspectRatio="none" fill="none" style={{ position:"absolute",inset:0,width:"100%",height:"100%" }}>
+              <defs>
+                <linearGradient id="ynBaglan" x1="96" y1="560" x2="195" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#b87adc" stopOpacity="0.12"/><stop offset="0.55" stopColor="#b87adc" stopOpacity="0.7"/><stop offset="1" stopColor="#f0d090" stopOpacity="0.85"/>
+                </linearGradient>
+                <linearGradient id="ynKesfet" x1="294" y1="560" x2="195" y2="160" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#f0c060" stopOpacity="0.12"/><stop offset="0.55" stopColor="#f0c060" stopOpacity="0.7"/><stop offset="1" stopColor="#f5dca0" stopOpacity="0.85"/>
+                </linearGradient>
+                <filter id="ynGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              </defs>
+              <path d="M 96 566 C 96 430, 158 340, 195 158" stroke="url(#ynBaglan)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <path d="M 294 566 C 294 430, 232 340, 195 158" stroke="url(#ynKesfet)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <circle cx="115" cy="434" r="2.4" fill="#c49bee" opacity="0.95"/><circle cx="151" cy="321" r="2.4" fill="#d3aeee" opacity="0.95"/>
+              <circle cx="275" cy="434" r="2.4" fill="#f0cc76" opacity="0.95"/><circle cx="239" cy="321" r="2.4" fill="#f3d896" opacity="0.95"/>
+            </svg>
+
+            {/* Kapat X — açılış (HAZIRIM) ekranına döner */}
+            <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
+              style={{ position:"absolute",top:14,right:14,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:14,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
+
+            {/* Başlık */}
+            <div style={{ position:"absolute",top:"4.5%",left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+
+            {/* Güneş — birleşme noktası, yavaş nefes alır */}
+            <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:"14%",margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
+
+            {/* "iki yol birleşir" — küçük sönük hap, kutucukların üstünde */}
+            <div style={{ position:"absolute",left:"50%",bottom:"37%",transform:"translateX(-50%)",padding:"5px 13px",borderRadius:14,whiteSpace:"nowrap",background:"linear-gradient(135deg,rgba(240,192,96,0.05),rgba(184,122,220,0.05))",border:"1px solid rgba(210,185,150,0.22)",fontSize:9.5,letterSpacing:1.2,color:"#d3c09e",opacity:0.86,fontFamily:"'Jost',sans-serif" }}>{pickLang(NEDIR_I18N.birlesir, lang)}</div>
+
+            {/* Kartlar — kenarlarda senkron tünel ışığı döner */}
+            <div style={{ position:"absolute",left:0,right:0,bottom:"17.5%",display:"flex",gap:13,padding:"0 30px",boxSizing:"border-box" }}>
+              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
+                style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
+                <div style={{ fontSize:22,lineHeight:1,marginBottom:9,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
+                <div style={{ ...nameSt,color:"#e0d0f4" }}>{pickLang(NEDIR_I18N.baglanT, lang)}</div>
+                <div style={descSt}>{pickLang(NEDIR_I18N.baglanD, lang)}</div>
+              </button>
+              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+                style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
+                <div style={{ fontSize:22,lineHeight:1,marginBottom:9,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
+                <div style={{ ...nameSt,color:"#f3e4bd" }}>{pickLang(NEDIR_I18N.kesfetT, lang)}</div>
+                <div style={descSt}>{pickLang(NEDIR_I18N.kesfetD, lang)}</div>
               </button>
             </div>
+
+            {/* Sakin nedir? → Yolculuk sekmesi */}
+            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
+              style={{ position:"absolute",left:"50%",bottom:"9.5%",transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              {pickLang(NEDIR_I18N.title, lang)}
+            </button>
+
+            {/* Bir daha gösterme */}
+            <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
+              style={{ position:"absolute",left:0,right:0,bottom:"4.5%",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              {pickLang(NEDIR_I18N.off, lang)}
+            </button>
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* KİMLİK ÖNİZLEME — doğum kaydından hemen sonra anında karşılık (aha anı) */}
       {showKimlikReveal && (
