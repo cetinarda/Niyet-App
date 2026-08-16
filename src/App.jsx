@@ -5371,6 +5371,11 @@ export default function SakinApp() {
   // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
   // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu — geri alındı.
   const [showNedir, setShowNedir] = useState(false);
+  // Yol seçimi ekranı: çizgileri kart tepelerine TAM bağlamak için sarmalayıcının
+  // gerçek ölçüsü lazım (ekran yüksekliği cihaza göre değişir). Ölçüp px koordinat
+  // hesaplıyoruz → SVG 1:1, çizgiler kartlara değer, sabit viewBox tahmini bitiyor.
+  const nedirWrapRef = useRef(null);
+  const [nedirDims, setNedirDims] = useState(null);
   // KURAL: pop-up YALNIZCA açılışta, HAZIRIM'a basıldığında çıkar. Başka hiçbir
   // yerde açılmaz — doğum bilgisi ihtiyaç anında (harita/İçsel Ayna) istendiğinde
   // form kapanınca kullanıcı geldiği ekrana döner, pop-up görmez.
@@ -5793,6 +5798,14 @@ export default function SakinApp() {
     return () => clearTimeout(timer);
   }, [birthDate, birthTime, birthCity]);
   // rehber screen is now enabled on iOS via the mirror portal
+  // Yol seçimi ekranı açılınca sarmalayıcıyı ölç (çizgi-kart bağlantısı için).
+  useEffect(() => {
+    if (!showNedir) return;
+    const measure = () => { const el = nedirWrapRef.current; if (el) { const r = el.getBoundingClientRect(); setNedirDims({ w: r.width, h: r.height }); } };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [showNedir]);
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
@@ -8532,42 +8545,59 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // Kısa, iki kartta DENGELİ açıklama (eşit satır sayısı → hizalı, kompakt).
         const baglanMini = pickLang({ tr:"Niyet, nefes, ses", en:"Intention, breath, sound", de:"Absicht, Atem, Klang", es:"Intención, respiración, sonido", pt:"Intenção, respiração, som", fr:"Intention, souffle, son", ja:"意図・呼吸・音" }, lang);
         const kesfetMini = pickLang({ tr:"Burç, tasarım, hayvan", en:"Sign, design, animal", de:"Zeichen, Design, Tier", es:"Signo, diseño, animal", pt:"Signo, design, animal", fr:"Signe, design, animal", ja:"星座・デザイン・動物" }, lang);
+        // ── Ölçülen boyuttan px geometri: çizgiler kart tepelerine BAĞLANIR ──
+        const W = nedirDims?.w || 390, H = nedirDims?.h || 844;
+        const padSide = 30, gap = 13, cardH = 106;
+        const cardW = (W - padSide * 2 - gap) / 2;
+        const leftCX = padSide + cardW / 2;          // sol kart merkez X
+        const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
+        const cardTopPx = Math.round(0.85 * H) - cardH;   // kart tepesi (px, üstten)
+        const pathEndY = cardTopPx - 16;              // tünel ağzı: karttan küçük boşluk
+        const sunCY = Math.round(0.19 * H);           // güneş merkezi (aşağı indirildi)
+        const sunBottomY = sunCY + 36;
+        const dy = pathEndY - sunBottomY;
+        // Her iki uçta DİKEY (tünel gibi güneşe ve karta düz açılır)
+        const Lp = [[W/2,sunBottomY],[W/2,sunBottomY+dy*0.42],[leftCX,pathEndY-dy*0.42],[leftCX,pathEndY]];
+        const Rp = [[W/2,sunBottomY],[W/2,sunBottomY+dy*0.42],[rightCX,pathEndY-dy*0.42],[rightCX,pathEndY]];
+        const dPath = p => `M ${p[0][0]} ${p[0][1]} C ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}`;
+        const cub = (p,t) => { const u=1-t,a=u*u*u,b=3*u*u*t,c=3*u*t*t,d=t*t*t; return [a*p[0][0]+b*p[1][0]+c*p[2][0]+d*p[3][0], a*p[0][1]+b*p[1][1]+c*p[2][1]+d*p[3][1]]; };
+        const Ld1=cub(Lp,0.42), Ld2=cub(Lp,0.74), Rd1=cub(Rp,0.42), Rd2=cub(Rp,0.74);
         return (
         <div style={{ position:"fixed",inset:0,zIndex:99998,overflow:"hidden",
-          background:"radial-gradient(110% 60% at 50% 13%, rgba(240,205,130,0.11), rgba(120,70,140,0.04) 32%, transparent 52%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
-          <div style={{ position:"absolute",inset:0,maxWidth:430,margin:"0 auto" }}>
-            {/* İki yol — güneşte birleşir (preserveAspectRatio none: ekrana uyar) */}
-            <svg viewBox="0 0 390 844" preserveAspectRatio="none" fill="none" style={{ position:"absolute",inset:0,width:"100%",height:"100%" }}>
+          background:"radial-gradient(110% 55% at 50% 22%, rgba(240,205,130,0.11), rgba(120,70,140,0.04) 34%, transparent 56%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
+          <div ref={nedirWrapRef} style={{ position:"absolute",inset:0,maxWidth:430,margin:"0 auto" }}>
+            {/* İki yol — güneşten iner, kart tepelerine bağlanır (1:1 viewBox) */}
+            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none" style={{ position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none" }}>
               <defs>
-                <linearGradient id="ynBaglan" x1="96" y1="560" x2="195" y2="160" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#b87adc" stopOpacity="0.12"/><stop offset="0.55" stopColor="#b87adc" stopOpacity="0.7"/><stop offset="1" stopColor="#f0d090" stopOpacity="0.85"/>
+                <linearGradient id="ynBaglan" x1={leftCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#b87adc" stopOpacity="0.85"/><stop offset="0.5" stopColor="#b87adc" stopOpacity="0.7"/><stop offset="1" stopColor="#f0d090" stopOpacity="0.85"/>
                 </linearGradient>
-                <linearGradient id="ynKesfet" x1="294" y1="560" x2="195" y2="160" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#f0c060" stopOpacity="0.12"/><stop offset="0.55" stopColor="#f0c060" stopOpacity="0.7"/><stop offset="1" stopColor="#f5dca0" stopOpacity="0.85"/>
+                <linearGradient id="ynKesfet" x1={rightCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stopColor="#f0c060" stopOpacity="0.85"/><stop offset="0.5" stopColor="#f0c060" stopOpacity="0.7"/><stop offset="1" stopColor="#f5dca0" stopOpacity="0.85"/>
                 </linearGradient>
                 <filter id="ynGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
               </defs>
-              <path d="M 96 566 C 96 430, 158 340, 195 158" stroke="url(#ynBaglan)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <path d="M 294 566 C 294 430, 232 340, 195 158" stroke="url(#ynKesfet)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <circle cx="115" cy="434" r="2.4" fill="#c49bee" opacity="0.95"/><circle cx="151" cy="321" r="2.4" fill="#d3aeee" opacity="0.95"/>
-              <circle cx="275" cy="434" r="2.4" fill="#f0cc76" opacity="0.95"/><circle cx="239" cy="321" r="2.4" fill="#f3d896" opacity="0.95"/>
+              <path d={dPath(Lp)} stroke="url(#ynBaglan)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <path d={dPath(Rp)} stroke="url(#ynKesfet)" strokeWidth="1.5" strokeLinecap="round" filter="url(#ynGlow)"/>
+              <circle cx={Ld1[0]} cy={Ld1[1]} r="2.4" fill="#c49bee" opacity="0.95"/><circle cx={Ld2[0]} cy={Ld2[1]} r="2.4" fill="#d3aeee" opacity="0.95"/>
+              <circle cx={Rd1[0]} cy={Rd1[1]} r="2.4" fill="#f0cc76" opacity="0.95"/><circle cx={Rd2[0]} cy={Rd2[1]} r="2.4" fill="#f3d896" opacity="0.95"/>
             </svg>
 
-            {/* Kapat X — açılış (HAZIRIM) ekranına döner */}
+            {/* Kapat X — açılış (HAZIRIM) ekranına döner (safe-area altında) */}
             <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
-              style={{ position:"absolute",top:14,right:14,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:14,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
+              style={{ position:"absolute",top:"calc(env(safe-area-inset-top, 0px) + 12px)",right:14,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:14,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
 
-            {/* Başlık */}
-            <div style={{ position:"absolute",top:"4.5%",left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            {/* Başlık — safe-area ile korunur (notch altında kesilmez) */}
+            <div style={{ position:"absolute",top:"calc(env(safe-area-inset-top, 0px) + 22px)",left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
 
-            {/* Güneş — birleşme noktası, yavaş nefes alır */}
-            <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:"14%",margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
+            {/* Güneş — birleşme noktası, yavaş nefes alır (px konum) */}
+            <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:sunCY,margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
 
-            {/* "iki yol birleşir" — küçük sönük hap, kutucukların üstünde */}
-            <div style={{ position:"absolute",left:"50%",bottom:"37%",transform:"translateX(-50%)",padding:"5px 13px",borderRadius:14,whiteSpace:"nowrap",background:"linear-gradient(135deg,rgba(240,192,96,0.05),rgba(184,122,220,0.05))",border:"1px solid rgba(210,185,150,0.22)",fontSize:9.5,letterSpacing:1.2,color:"#d3c09e",opacity:0.86,fontFamily:"'Jost',sans-serif" }}>{pickLang(NEDIR_I18N.birlesir, lang)}</div>
+            {/* "iki yol birleşir" — küçük sönük hap, tünel ağzının hemen üstünde ortada */}
+            <div style={{ position:"absolute",left:"50%",top:pathEndY-40,transform:"translate(-50%,-50%)",padding:"5px 13px",borderRadius:14,whiteSpace:"nowrap",background:"linear-gradient(135deg,rgba(240,192,96,0.06),rgba(184,122,220,0.06))",border:"1px solid rgba(210,185,150,0.22)",fontSize:9.5,letterSpacing:1.2,color:"#d3c09e",opacity:0.9,fontFamily:"'Jost',sans-serif" }}>{pickLang(NEDIR_I18N.birlesir, lang)}</div>
 
-            {/* Kartlar — kenarlarda senkron tünel ışığı döner */}
-            <div style={{ position:"absolute",left:0,right:0,bottom:"17.5%",display:"flex",gap:13,padding:"0 30px",boxSizing:"border-box" }}>
+            {/* Kartlar — kart tepesi çizgilere TAM denk gelir (px konum) */}
+            <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
               <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
@@ -8584,13 +8614,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Sakin nedir? → Yolculuk sekmesi */}
             <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ position:"absolute",left:"50%",bottom:"9.5%",transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              style={{ position:"absolute",left:"50%",bottom:"calc(env(safe-area-inset-bottom, 0px) + 8.5%)",transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
               {pickLang(NEDIR_I18N.title, lang)}
             </button>
 
             {/* Bir daha gösterme */}
             <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ position:"absolute",left:0,right:0,bottom:"4.5%",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              style={{ position:"absolute",left:0,right:0,bottom:"calc(env(safe-area-inset-bottom, 0px) + 3.5%)",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
               {pickLang(NEDIR_I18N.off, lang)}
             </button>
           </div>
