@@ -8589,7 +8589,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Başlık — güneşin HEMEN üstünde (bir nefes boşluğu). max() ile küçük
                 ekranlarda sensör altına düşmesi garanti (var(--sat) tabanı). */}
-            <div style={{ position:"absolute",top:`calc(max(${sunCY - 74}px, var(--sat, 0px) + 26px))`,left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
+            <div style={{ position:"absolute",top:`calc(max(${sunCY - 88}px, var(--sat, 0px) + 24px))`,left:0,right:0,textAlign:"center",fontSize:10.5,letterSpacing:4.5,textTransform:"uppercase",color:"#bfae95",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.9 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
 
             {/* Güneş — birleşme noktası, yavaş nefes alır (px konum) */}
             <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:sunCY,margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
@@ -8621,7 +8621,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Bir daha gösterme */}
             <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ position:"absolute",left:0,right:0,bottom:"calc(env(safe-area-inset-bottom, 0px) + 3.5%)",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+              style={{ position:"absolute",left:0,right:0,bottom:"calc(env(safe-area-inset-bottom, 0px) + 3.5%)",background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,textAlign:"center" }}>
               {pickLang(NEDIR_I18N.off, lang)}
             </button>
           </div>
