@@ -324,7 +324,7 @@ h3 { font-size:19px; font-weight:600; line-height:1.4; letter-spacing:-.1px; col
 .post-cover {
   max-width:960px; margin:0 auto 40px; padding:0 26px;
 }
-.post-cover img { width:100%; border-radius:20px; border:1px solid var(--line); }
+.post-cover img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; border-radius:20px; border:1px solid var(--line); }
 .post-head { text-align:center; margin-bottom:44px; }
 .post-head .kicker { display:block; margin-bottom:14px; }
 .post-title { font-size:clamp(30px,5vw,46px); font-weight:700; line-height:1.16; letter-spacing:-.6px; color:var(--title); margin-bottom:16px; }
