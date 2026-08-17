@@ -21,6 +21,9 @@ import { Filesystem, Directory } from "@capacitor/filesystem";
 // Veri kaynağı: GeoNames (CC BY 4.0). Bkz. scripts/build-cities.mjs.
 import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } from "./cityDb";
 import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
+// Birinci-taraf ANONIM kullanim olcumu (funnel / drop-off). Kisisel veri yok,
+// reklam kimligi yok. Kullanici sakin_analytics_off ile kapatabilir.
+import { initAnalytics, track } from "./analytics";
 
 const isNative = Capacitor.isNativePlatform();
 
@@ -4108,6 +4111,7 @@ export default function SakinApp() {
   };
   const setScreen = (s) => {
     setScreenRaw(s);
+    try { track("screen", { s }); } catch (_) {}
     if (!isPopRef.current) {
       screenHistoryRef.current.push(s);
       // URL karşılığı olmayan ekranlarda web'de "/app" yazılır, "/" DEĞİL:
@@ -4811,6 +4815,7 @@ export default function SakinApp() {
     onPurchaseUpdate((purchased) => {
       if (purchased) {
         try { localStorage.setItem("sakin_premium", "1"); } catch(_){} // kalıcı: relaunch'ta korunsun
+        try { track("purchase"); } catch(_){}
         setIsPremium(true);
         setPurchaseLoading(null);
         setPurchaseError("");
@@ -5361,6 +5366,20 @@ export default function SakinApp() {
     try { return !localStorage.getItem("sakin_tutorial_done"); } catch (_) { return false; }
   });
   const [tutorialStep, setTutorialStep] = useState(0);
+  // ── ANONIM KULLANIM OLCUMU (funnel / drop-off) ──────────────────────────
+  // Acilista bir kez baslat + "app_open" olayi. Kisisel veri gonderilmez.
+  useEffect(() => {
+    try {
+      initAnalytics({ platform: isNative ? "ios" : "web", ver: APP_VERSION, base: API_BASE });
+      track("app_open");
+      // Ilk acilis ekrani "giris" ise onboarding funnel'inin ilk adimini isaretle.
+      if (_initialScreen() === "giris") track("screen", { s: "giris" });
+    } catch (_) {}
+  }, []);
+  // Dogum/isim formuna ulasma (funnel adimi) - drop-off'un en kritik noktasi.
+  useEffect(() => {
+    if (girisPhase === "birth") { try { track("birth_view"); } catch (_) {} }
+  }, [girisPhase]);
   // Tanıtım turunda parmakla kaydırma için dokunuş başlangıç X'i (sola=ileri, sağa=geri).
   const tutTouchX = useRef(null);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i — açılışta ASLA çıkmaz (mount=false).
@@ -6720,7 +6739,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); playBreathTone("hold", tm.hold); },  t)); t += tm.hold;  }
       toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); playBreathTone("exhale"); }, t)); t += tm.out;
       if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); playBreathTone("hold2", tm.hold2); }, t)); }
-      toIds.push(setTimeout(()=>setBreathCount(c=>c+1), tm.total - 200));
+      toIds.push(setTimeout(()=>{ setBreathCount(c=>c+1); try { track("nefes"); } catch(_){} }, tm.total - 200));
     };
     setBreathPhase("ready");
     const startDelay = setTimeout(() => {
@@ -8693,7 +8712,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
                     Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
-                <button className="sakin-btn-primary" onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                <button className="sakin-btn-primary" onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
                   <LangPicker lang={lang} setLang={setLang} />
                 </div>
