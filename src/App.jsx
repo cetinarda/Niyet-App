@@ -4365,6 +4365,15 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // ANONIM KULLANIM OLCUMU opt-out toggle'i (App Store gizlilik kontrolu). ACIK
+  // (varsayilan) = veri paylasilir; kapatilinca sakin_analytics_off=1 yazilir ve
+  // src/analytics.js her gonderiden once bunu okuyup susar.
+  const [analyticsOn, setAnalyticsOn] = useState(() => { try { return localStorage.getItem("sakin_analytics_off") !== "1"; } catch(_) { return true; } });
+  const toggleAnalytics = () => setAnalyticsOn(v => {
+    const n = !v;
+    try { if (n) localStorage.removeItem("sakin_analytics_off"); else localStorage.setItem("sakin_analytics_off", "1"); } catch(_){}
+    return n;
+  });
   // KEŞFET AÇIKKEN ARKA PLAN KİLİTLİ (kullanıcı: "keşfet ilk açıldığında eskiden
   // kalan bir pencere arka planda scroll oluyor").
   // KÖK SEBEP: Keşfet paneli position:fixed olsa da DOM'da .sakin-app-root'un
@@ -7260,9 +7269,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </button>
               ))}
             </div>
+            {/* ANONIM KULLANIM VERISI opt-out toggle'i. Politika linkleriyle ayni
+                muted alanda; kullaniciya net kontrol (App Store gizlilik uyumu).
+                iOS WKWebView tuzagi: <button> icin appearance:none SART. */}
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginTop:16,padding:"0 10px" }}>
+              <span style={{ color:"#8a8494",fontSize:11,letterSpacing:0.3,fontFamily:"'Inter',sans-serif",lineHeight:1.4,textAlign:"right",maxWidth:210 }}>
+                {t("analytics_toggle_label")}
+              </span>
+              <button role="switch" aria-checked={analyticsOn} onClick={toggleAnalytics} aria-label={t("analytics_toggle_label")}
+                style={{ flexShrink:0,width:40,height:23,borderRadius:100,border:"none",cursor:"pointer",padding:0,position:"relative",
+                  WebkitAppearance:"none",appearance:"none",
+                  background: analyticsOn ? "rgba(130,190,150,0.65)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
+                <span style={{ position:"absolute",top:2.5,left: analyticsOn ? 19.5 : 2.5,width:18,height:18,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+              </button>
+            </div>
+            <div style={{ textAlign:"center",marginTop:6,padding:"0 18px" }}>
+              <span style={{ color:"#5f5a68",fontSize:10,letterSpacing:0.2,fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>{t("analytics_toggle_note")}</span>
+            </div>
             {/* App Store Guideline 5.1.1(v) — Hesap/veri silme. Politika linkleriyle aynı
                 muted dil, hafifçe daha düşük opaklıkta. Promote etmiyoruz; erişilebilir. */}
-            <div style={{ display:"flex",justifyContent:"center",marginTop:2 }}>
+            <div style={{ display:"flex",justifyContent:"center",marginTop:18 }}>
               <button onClick={()=>setShowDeleteConfirm(true)}
                 style={{ background:"none",border:"none",padding:"4px 2px",color:"#666",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                 {t("delete_account_link")}
