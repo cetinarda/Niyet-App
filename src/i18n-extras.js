@@ -319,6 +319,8 @@ export const EXTRA_LANGS = {
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Mein Konto und meine Daten löschen",
+    analytics_toggle_label:        "Anonyme Nutzungsdaten teilen",
+    analytics_toggle_note:         "Nicht mit deiner Identität verknüpft. Hilft uns, die App zu verbessern.",
     delete_confirm_title:          "Konto löschen",
     delete_confirm_body:           "Alle deine Daten (Name, Geburtsdaten, Intentionen, Verlauf, Abonnementinformationen) werden dauerhaft von diesem Gerät gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.",
     delete_confirm_subscription_note: "Hinweis: Falls du ein aktives App-Store-Abonnement hast, musst du es zusätzlich in iPhone-Einstellungen → Apple-ID → Abonnements kündigen.",
@@ -1093,6 +1095,8 @@ export const EXTRA_LANGS = {
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Excluir minha conta e meus dados",
+    analytics_toggle_label:        "Compartilhar dados de uso anônimos",
+    analytics_toggle_note:         "Não vinculado à sua identidade. Ajuda a melhorar o app.",
     delete_confirm_title:          "Excluir sua conta",
     delete_confirm_body:           "Todos os seus dados (nome, dados de nascimento, intenções, histórico, informações da assinatura) serão permanentemente excluídos deste dispositivo. Esta ação não pode ser desfeita.",
     delete_confirm_subscription_note: "Observação: se você tiver uma assinatura ativa na App Store, também será necessário cancelá-la separadamente em Ajustes do iPhone → ID Apple → Assinaturas.",
@@ -1721,6 +1725,8 @@ export const EXTRA_LANGS = {
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Eliminar mi cuenta y mis datos",
+    analytics_toggle_label:        "Compartir datos de uso anónimos",
+    analytics_toggle_note:         "No vinculado a tu identidad. Nos ayuda a mejorar la app.",
     delete_confirm_title:          "Eliminar tu cuenta",
     delete_confirm_body:           "Todos tus datos (nombre, datos de nacimiento, intenciones, historial, información de suscripción) se eliminarán de forma permanente de este dispositivo. Esta acción no se puede deshacer.",
     delete_confirm_subscription_note: "Nota: si tienes una suscripción activa en la App Store, también deberás cancelarla por separado en Ajustes del iPhone → ID de Apple → Suscripciones.",
@@ -2425,6 +2431,8 @@ export const EXTRA_LANGS = {
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Supprimer mon compte et mes données",
+    analytics_toggle_label:        "Partager des données d'usage anonymes",
+    analytics_toggle_note:         "Non lié à ton identité. Nous aide à améliorer l'app.",
     delete_confirm_title:          "Supprimer ton compte",
     delete_confirm_body:           "Toutes tes données (nom, informations de naissance, intentions, historique, informations d'abonnement) seront supprimées définitivement de cet appareil. Cette action est irréversible.",
     delete_confirm_subscription_note: "Remarque : si tu as un abonnement App Store actif, tu dois également l'annuler séparément dans Réglages iPhone → Identifiant Apple → Abonnements.",
@@ -3125,6 +3133,8 @@ export const EXTRA_LANGS = {
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "アカウントとデータを削除",
+    analytics_toggle_label:        "匿名の利用データを共有",
+    analytics_toggle_note:         "個人を特定しません。アプリの改善に役立ちます。",
     delete_confirm_title:          "アカウントを削除",
     delete_confirm_body:           "すべてのデータ(名前、出生情報、意図、履歴、サブスクリプション情報)がこのデバイスから完全に削除されます。この操作は取り消せません。",
     delete_confirm_subscription_note: "ご注意:App Storeで有効なサブスクリプションがある場合は、iPhone「設定」→「Apple ID」→「サブスクリプション」から別途キャンセルしてください。",
