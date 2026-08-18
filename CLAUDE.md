@@ -148,6 +148,12 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
   - ⚠️ **1 saatlik offset hatası yükseleni 1 burç kaydırır.** Eski kod DST bitişini her yıl "Ekim son Pazar" sanıyordu → 1986–1995 Ekim başı doğumları yanlış çıkıyordu (19.10.1992 19:45 İstanbul → Boğa 29° yerine doğrusu İkizler 16°). Bu fonksiyona dokunurken tz-db'ye karşı doğrula.
   - Geçişler gün hassasiyetinde: geçiş **gününde** 00:00–04:00 doğumlar 1 saat şaşabilir (yılda 2 gün, bilinen sınır).
 
+## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
+
+Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:
+1. **Netlify env `REPORT_TOKEN`** ekli mi? Yoksa rapor kapalı. Ekli ise rapor: `https://sakin.life/.netlify/functions/report?token=...&html=1`
+2. **App Store gizlilik etiketi:** bir sonraki iOS gönderiminde "Kullanım Verileri (kimliğe bağlı değil)" olarak işaretlenmeli. Görünür opt-out toggle Ailesi panelinde mevcut (analytics_toggle_label).
+
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
 - **"Build çalışmıyor / hata yine var"** → Önce kullanıcının çektiği branch'i SOR. Yanlış branch'ten derliyor olabilir. (Bir kere main fix'lerim CIpM8'e gitmedi, ortalık karıştı.)
