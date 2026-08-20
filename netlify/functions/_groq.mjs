@@ -1,0 +1,105 @@
+// Groq model secimi + OTOMATIK FALLBACK.
+// ------------------------------------------------------------------------
+// Amac: bir model Groq tarafindan emekli edilince (or. 16 Agu 2026'da
+// llama-3.3-70b-versatile kapandi) uygulama COKMESIN. Kod push'suz, kendisi
+// siradaki EN IYI MEVCUT modele gecsin.
+//
+// Nasil calisir:
+//   1) Groq `/models` listesini cekip o an GERCEKTEN yayinda olan model
+//      ID'lerini ogrenir (cold-start basina ~10 dk cache). Emekli model bu
+//      listeden dusunce otomatik elenir.
+//   2) Tercih listesi (en iyi -> yedek) ile kesisim alinir, ilk MEVCUT model
+//      secilir. Yeni/daha iyi model cikinca listenin BASINA tek satir eklemek
+//      yeterli (istenirse env ile push'suz da yapilir).
+//   3) Env override: GROQ_TEXT_MODEL / GROQ_VISION_MODEL tanimliysa ve mevcutsa
+//      once o denenir (Netlify panelinden aninda model degistirme).
+//   4) Cagri sirasinda model 400/404 donerse (gecersiz/emekli) siradaki adaya
+//      gecer; 429/500 gibi gecici hatalarda durur (modelleri bosa yakmaz).
+//
+// Yeni model eklemek: asagidaki PREF listelerinin BASINA gercek Groq ID'sini yaz.
+
+const GROQ_BASE = "https://api.groq.com/openai/v1";
+
+// Tercih sirasi: EN IYI once. Hepsi gercek Groq model ID'leri (Agu 2026).
+const PREF = {
+  text: ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.6-27b"],
+  vision: ["qwen/qwen3.6-27b", "meta-llama/llama-4-maverick-17b-128e-instruct", "meta-llama/llama-4-scout-17b-16e-instruct"],
+};
+const ENV_OVERRIDE = { text: "GROQ_TEXT_MODEL", vision: "GROQ_VISION_MODEL" };
+
+// Yayindaki model ID'leri (in-memory cache).
+let _cache = { at: 0, ids: null };
+const TTL_MS = 10 * 60 * 1000;
+
+async function availableIds(apiKey) {
+  const now = Date.now();
+  if (_cache.ids && now - _cache.at < TTL_MS) return _cache.ids;
+  try {
+    const r = await fetch(`${GROQ_BASE}/models`, { headers: { Authorization: `Bearer ${apiKey}` } });
+    if (r.ok) {
+      const j = await r.json();
+      const ids = new Set((j?.data || []).map((m) => m && m.id).filter(Boolean));
+      if (ids.size) { _cache = { at: now, ids }; return ids; }
+    }
+  } catch (_) { /* ag hatasi -> statik listeye guven */ }
+  return null;
+}
+
+// Denenecek modeller, en iyi -> yedek sirasiyla. Asla bos donmez.
+export async function groqModelCandidates(apiKey, kind) {
+  const pref = PREF[kind] || PREF.text;
+  const override = (process.env[ENV_OVERRIDE[kind]] || "").trim();
+  const wanted = override ? [override, ...pref.filter((m) => m !== override)] : pref.slice();
+  const ids = await availableIds(apiKey);
+  if (!ids) return wanted;                       // liste alinamadi -> hepsini dene
+  const avail = wanted.filter((m) => ids.has(m));
+  return avail.length ? avail : wanted;          // hicbiri listede yoksa yine dene (liste bayat olabilir)
+}
+
+function isModelError(status) { return status === 400 || status === 404; }
+
+// gpt-oss reasoning modeli: dar token butcesinde reasoning yaniti kirpmasin diye
+// reasoning_effort:low. Diger modellerde bu parametre gonderilmez (uyumsuzluk 400 vermesin).
+function extraFor(model) {
+  return model.startsWith("openai/gpt-oss") ? { reasoning_effort: "low" } : {};
+}
+
+// Qwen "thinking" modu <think>...</think> sizabilir; temizle.
+export function stripThink(s) {
+  return typeof s === "string" ? s.replace(/<think>[\s\S]*?<\/think>/gi, "").trim() : s;
+}
+
+// Sohbet/gorsel cagrisi + otomatik model fallback.
+// body: { max_tokens, temperature, top_p, messages, ... } (model DISINDA her sey).
+// Doner: { ok:true, model, data } | { ok:false, status }
+export async function groqChat(apiKey, kind, body, opts = {}) {
+  const timeoutMs = opts.timeoutMs || 25000;
+  const candidates = await groqModelCandidates(apiKey, kind);
+  let lastStatus = 0;
+  for (const model of candidates) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    let res, data;
+    try {
+      res = await fetch(`${GROQ_BASE}/chat/completions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({ model, ...extraFor(model), ...body }),
+        signal: ctrl.signal,
+      });
+      data = await res.json();
+    } catch (e) {
+      clearTimeout(timer);
+      console.error("[groq] fetch failed", model, e && e.message);
+      lastStatus = 0;
+      continue; // ag/timeout -> siradaki modeli dene
+    }
+    clearTimeout(timer);
+    if (res.ok && data && !data.error) return { ok: true, model, data };
+    lastStatus = res.status;
+    console.error("[groq] upstream", model, res.status, (data && data.error && data.error.message) || "");
+    if (isModelError(res.status)) continue;      // emekli/gecersiz -> siradaki
+    return { ok: false, status: res.status };    // 429/500 -> dur
+  }
+  return { ok: false, status: lastStatus || 502 };
+}

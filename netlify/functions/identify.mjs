@@ -3,12 +3,9 @@
 // Taş:   Groq vision (llama-4) — minerale uygun uzman ücretsiz API yok, sıkı abstain.
 // Güvenlik: origin allowlist → method → boyut → per-IP rate limit → servis çağrısı.
 
+import { groqChat, stripThink } from "./_groq.mjs";
+
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
-// Görü modelleri (taş): önce güçlü olanı dene; model adı geçersiz/emekli ise eskiye düş.
-const GROQ_VISION_MODELS = [
-  "meta-llama/llama-4-maverick-17b-128e-instruct",
-  "meta-llama/llama-4-scout-17b-16e-instruct",
-];
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // ~5MB (base64 öncesi ham tahmini)
 
 // Pl@ntNet: common-name dilini güvenli kümeyle sınırla (desteklenmeyen dil 400 döndürmesin).
@@ -139,38 +136,17 @@ When (and only when) you are confident, respond ENTIRELY in ${name}, using ONLY 
 3) One short, warm sentence about its nature/energy, in a grounded-spiritual tone.
 No medical advice. Do NOT use an em dash (—) anywhere in your reply; connect clauses with a comma, period, or colon instead.`;
 
-  let data = null, lastStatus = 0;
-  for (const model of GROQ_VISION_MODELS) {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 20000);
-    let res;
-    try {
-      res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-        body: JSON.stringify({
-          model, max_tokens: 480, temperature: 0.2,
-          messages: [{ role: "user", content: [
-            { type: "text", text: prompt },
-            { type: "image_url", image_url: { url: imageDataUrl } },
-          ] }],
-        }),
-        signal: ctrl.signal,
-      });
-    } catch (e) {
-      console.error("[identify] groq fetch", model, e?.message);
-      lastStatus = 0; continue;
-    } finally { clearTimeout(timer); }
+  // Groq vision + otomatik model fallback (bir model emekli olursa siradakine gecer).
+  const out = await groqChat(apiKey, "vision", {
+    max_tokens: 480, temperature: 0.2,
+    messages: [{ role: "user", content: [
+      { type: "text", text: prompt },
+      { type: "image_url", image_url: { url: imageDataUrl } },
+    ] }],
+  }, { timeoutMs: 20000 });
 
-    if (res.ok) { data = await res.json(); break; }
-    lastStatus = res.status;
-    const errTxt = await res.text().catch(() => "");
-    console.error("[identify] groq error", model, res.status, errTxt.slice(0, 200));
-    if (res.status !== 400 && res.status !== 404) break;
-  }
-
-  if (!data) return { error: 502, body: { error: "Vision service error", status: lastStatus } };
-  const text = data?.choices?.[0]?.message?.content?.trim() || "";
+  if (!out.ok) return { error: 502, body: { error: "Vision service error", status: out.status } };
+  const text = stripThink(out.data?.choices?.[0]?.message?.content?.trim() || "");
   if (!text) return { error: 502, body: { error: "Empty response" } };
   return { text };
 }
