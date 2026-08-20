@@ -284,7 +284,8 @@ export const handler = async (event) => {
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
+        reasoning_effort: "low",
         max_tokens: MAX_MAX_TOKENS,
         temperature: 0.72,
         top_p: 0.9,
