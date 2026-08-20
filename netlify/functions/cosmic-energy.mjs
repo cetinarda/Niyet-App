@@ -683,7 +683,8 @@ Now write the collective sky-energy reading. Let us FEEL which energy the Earth 
       method: "POST",
       headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "openai/gpt-oss-120b",
+        reasoning_effort: "low",
         max_tokens: 700,
         temperature: 0.85,
         top_p: 0.92,
