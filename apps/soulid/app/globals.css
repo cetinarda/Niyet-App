@@ -1,0 +1,447 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   THEME — Dark (default) and Light, semantic color tokens
+   data-theme="dark" / "light" on <html>
+   ============================================================ */
+
+:root,
+[data-theme='dark'] {
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Surface hierarchy (dark — galaktik gece) */
+  --bg: #07091a;
+  --bg-elev-1: #0f1230;
+  --bg-elev-2: #161a3d;
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-elev: rgba(255, 255, 255, 0.06);
+  --panel-border: rgba(255, 255, 255, 0.07);
+  --panel-border-strong: rgba(255, 255, 255, 0.14);
+
+  /* Ink hierarchy */
+  --ink: #f4f1ff;
+  --muted: rgba(244, 241, 255, 0.68);
+  --faint: rgba(244, 241, 255, 0.4);
+
+  /* Accent */
+  --gold: #f5d061;
+  --gold-soft: #d4a94a;
+  --cosmic: #7c5cff;
+  --cosmic-deep: #4d2ed1;
+  --nebula: #ff7ad9;
+  --starlight: #9dd9ff;
+  --success: #5bd9a0;
+  --danger: #ff6b6b;
+
+  /* Twilight Vellum 5-katman */
+  --vellum-chemistry: #e8c28a;
+  --vellum-lesson: #9caf88;
+  --vellum-rhythm: #c9a0a6;
+  --vellum-fate: #8fa3c2;
+  --vellum-compass: #c7b8e8;
+
+  /* Scene */
+  --scene-overlay: rgba(7, 9, 26, 0.55);
+}
+
+[data-theme='light'] {
+  /* Surface — sıcak günbatımı / aurora pembesi, gözü yormaz */
+  --bg: #faf6ee;
+  --bg-elev-1: #f5efe2;
+  --bg-elev-2: #ede5d3;
+  --panel: rgba(120, 95, 175, 0.05);
+  --panel-elev: rgba(120, 95, 175, 0.09);
+  --panel-border: rgba(60, 40, 100, 0.14);
+  --panel-border-strong: rgba(60, 40, 100, 0.24);
+
+  /* Ink — WCAG AA için kontrast yükseltildi */
+  --ink: #1c1733;
+  --muted: rgba(28, 23, 51, 0.78);
+  --faint: rgba(28, 23, 51, 0.58);
+
+  /* Accent — gün ışığında daha doygun + AA kontrast */
+  --gold: #9a7218;
+  --gold-soft: #c89527;
+  --cosmic: #4a30b3;
+  --cosmic-deep: #2e1880;
+  --nebula: #b83a8e;
+  --starlight: #2e6da6;
+  --success: #1f7a52;
+  --danger: #a82828;
+
+  /* Vellum — light için biraz daha doygun */
+  --vellum-chemistry: #b8862f;
+  --vellum-lesson: #5f7c4c;
+  --vellum-rhythm: #a86d77;
+  --vellum-fate: #4d6588;
+  --vellum-compass: #7a5fb8;
+
+  --scene-overlay: rgba(250, 246, 238, 0.55);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 400ms ease-out, color 400ms ease-out;
+}
+
+body {
+  font-feature-settings: 'cv11', 'ss01';
+  font-size: 16px;
+  line-height: 1.65;
+  letter-spacing: 0.005em;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Cormorant display başlıkları daha "havada" */
+.font-display {
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+/* Uzun paragraflar otomatik prose width */
+main p {
+  max-width: 64ch;
+}
+
+main h1, main h2, main h3, main h4,
+main .font-display {
+  max-width: none;
+}
+
+/* Tüm transition'lar standart breath-rhythm */
+button, a {
+  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 200ms ease-out,
+              background-color 250ms ease-out,
+              border-color 250ms ease-out,
+              box-shadow 300ms ease-out;
+}
+
+/* ============================================================
+   SAYFA ZEMİNİ — nebula vignette
+   Dark: derin uzay nebulası
+   Light: gün ışığı + sıcak parıltı
+   ============================================================ */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  transition: opacity 400ms ease-out, background 400ms ease-out;
+}
+
+[data-theme='dark'] body::before {
+  background:
+    radial-gradient(80% 55% at 22% 18%, rgba(108, 81, 198, 0.22), transparent 65%),
+    radial-gradient(70% 60% at 82% 78%, rgba(64, 128, 196, 0.18), transparent 70%),
+    radial-gradient(55% 45% at 50% 50%, rgba(20, 24, 50, 0.65), transparent 80%),
+    #07091a;
+}
+
+[data-theme='light'] body::before {
+  background:
+    radial-gradient(80% 55% at 22% 18%, rgba(245, 200, 130, 0.22), transparent 65%),
+    radial-gradient(70% 60% at 82% 78%, rgba(192, 165, 220, 0.2), transparent 70%),
+    radial-gradient(55% 45% at 50% 50%, rgba(250, 246, 238, 0.5), transparent 80%),
+    #faf6ee;
+}
+
+/* Yıldız drift — yalnız dark mode'da */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(0.8px 0.8px at 12% 20%, rgba(255, 255, 255, 0.5), transparent 50%),
+    radial-gradient(1px 1px at 38% 70%, rgba(255, 255, 255, 0.4), transparent 50%),
+    radial-gradient(0.6px 0.6px at 64% 32%, rgba(255, 255, 255, 0.55), transparent 50%),
+    radial-gradient(1.2px 1.2px at 88% 88%, rgba(255, 255, 255, 0.45), transparent 50%),
+    radial-gradient(0.7px 0.7px at 22% 92%, rgba(255, 255, 255, 0.4), transparent 50%),
+    radial-gradient(0.9px 0.9px at 76% 14%, rgba(255, 255, 255, 0.5), transparent 50%),
+    radial-gradient(0.6px 0.6px at 8% 56%, rgba(255, 255, 255, 0.35), transparent 50%);
+  animation: starDrift 120s linear infinite;
+  opacity: 0.55;
+  transition: opacity 600ms ease-out;
+}
+
+[data-theme='light'] body::after {
+  opacity: 0; /* light modda gece yıldızı görünmez */
+}
+
+@keyframes starDrift {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-12px, -16px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Sayfa içeriği yumuşak fade-in */
+main {
+  animation: spaceFadeIn 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes spaceFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after { animation: none; }
+  main { animation: none; }
+  html { scroll-behavior: auto; }
+  html, body { transition: none; }
+}
+
+/* Kullanıcının manuel hareket azaltma tercihi — Andy Bell tarzı global kill switch */
+[data-motion='reduced'] *,
+[data-motion='reduced'] *::before,
+[data-motion='reduced'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ============================================================
+   ScoreRing — stagger giriş animasyonu (Crouton pattern)
+   ============================================================ */
+@keyframes ringDraw {
+  from { stroke-dasharray: 0 var(--ring-circ); }
+  to   { stroke-dasharray: var(--ring-dash) var(--ring-circ); }
+}
+
+.ring-draw {
+  animation: ringDraw 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-draw { animation: none; stroke-dasharray: var(--ring-dash) var(--ring-circ); }
+}
+
+/* Eski .starfield class'ı — opacity hangi temada nasıl */
+.starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, white 50%, transparent 100%),
+    radial-gradient(1px 1px at 70% 50%, white 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 80%, white 50%, transparent 100%),
+    radial-gradient(1px 1px at 85% 20%, white 50%, transparent 100%),
+    radial-gradient(1px 1px at 10% 70%, white 50%, transparent 100%),
+    radial-gradient(2px 2px at 55% 15%, white 50%, transparent 100%),
+    radial-gradient(1px 1px at 90% 75%, white 50%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 30% 60%, white 50%, transparent 100%),
+    radial-gradient(1px 1px at 65% 95%, white 50%, transparent 100%);
+  background-repeat: repeat;
+  background-size: 600px 600px;
+  opacity: 0.32;
+}
+
+[data-theme='light'] .starfield {
+  opacity: 0; /* light modda kart üstü yıldızlar görünmez */
+}
+
+.nebula-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(50% 35% at 50% 18%, rgba(124, 92, 255, 0.22), transparent 70%);
+}
+
+[data-theme='light'] .nebula-glow::before {
+  background: radial-gradient(50% 35% at 50% 18%, rgba(245, 200, 130, 0.18), transparent 70%);
+}
+
+.card-glow {
+  box-shadow:
+    0 0 0 1px rgba(245, 208, 97, 0.15),
+    0 30px 80px -30px rgba(64, 80, 160, 0.5);
+}
+
+[data-theme='light'] .card-glow {
+  box-shadow:
+    0 0 0 1px rgba(184, 139, 31, 0.2),
+    0 30px 80px -30px rgba(192, 165, 220, 0.5);
+}
+
+/* ============================================================
+   CARD SURFACES — Liquid Glass disiplini (Apple 2024+)
+   İçerik kartları OPAK. Blur sadece nav + transient overlay'de.
+   Okunabilirlik > efekt.
+   ============================================================ */
+
+.card-surface {
+  background-color: var(--bg-elev-1);
+}
+
+.card-surface-elev {
+  background-color: var(--bg-elev-2);
+}
+
+.card-surface-soft {
+  background-color: var(--bg-elev-1);
+}
+
+[data-theme='light'] .card-surface-soft {
+  background-color: rgba(255, 255, 255, 0.55);
+}
+
+.input-surface {
+  background-color: var(--bg-elev-1);
+  transition:
+    background-color 200ms ease-out,
+    border-color 200ms ease-out,
+    box-shadow 200ms ease-out;
+}
+
+/* ============================================================
+   FORM INPUT — iOS WKWebView normalize (TEK kaynak: lib/ui.ts FORM_INPUT)
+   Native date/time inputları container'ı taşırmasın + tutarlı yükseklik.
+   ============================================================ */
+.form-input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-width: 0;          /* grid/flex hücresinde küçülebilsin → yatay taşma yok */
+  max-width: 100%;
+  box-sizing: border-box;
+  height: 56px;          /* SABİT yükseklik — date/time native kontrolü BÜYÜYEMEZ */
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 16px;       /* iOS focus zoom + reflow engeli */
+  line-height: 1.2;
+  overflow: hidden;      /* içerik kutudan taşamaz */
+}
+/* iOS date/time: native genişlik/yükseklik dayatmasını kır */
+input[type='date'].form-input,
+input[type='time'].form-input {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  height: 56px;
+  white-space: nowrap;
+}
+.form-input::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
+  min-height: 1.2em;     /* iOS'ta değer alanı kutuyu şişirmesin */
+  white-space: nowrap;
+}
+.form-input::-webkit-datetime-edit {
+  padding: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.form-input::-webkit-calendar-picker-indicator {
+  margin-left: auto;     /* takvim ikonu sağa sabit */
+}
+.form-input::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  filter: invert(0.65);
+  cursor: pointer;
+}
+[data-theme='light'] .form-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.2);
+}
+.form-input:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.input-surface:focus,
+.input-surface:focus-visible {
+  background-color: var(--bg-elev-2);
+  box-shadow: 0 0 0 4px rgba(245, 208, 97, 0.14);
+}
+
+[data-theme='light'] .input-surface:focus,
+[data-theme='light'] .input-surface:focus-visible {
+  box-shadow: 0 0 0 4px rgba(184, 139, 31, 0.14);
+}
+
+/* Welcome / hero card gradient backgrounds — theme-aware */
+.surface-warm-grad {
+  background: linear-gradient(to bottom right, #15043a, #1a0a40, #2a0a5a);
+}
+
+.surface-cool-grad {
+  background: linear-gradient(to bottom right, #0b0524, #1e1a6e, rgba(157, 60, 177, 0.3));
+}
+
+[data-theme='light'] .surface-warm-grad {
+  background: linear-gradient(to bottom right, #f9efd6, #f4e1c1, #efc9b4);
+}
+
+[data-theme='light'] .surface-cool-grad {
+  background: linear-gradient(to bottom right, #ece4fa, #d8c8f1, rgba(218, 184, 232, 0.55));
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+.prose-calm p {
+  max-width: 64ch;
+  line-height: 1.75;
+}
+
+*:focus-visible {
+  outline: 2px solid rgba(245, 208, 97, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+[data-theme='light'] *:focus-visible {
+  outline-color: rgba(184, 139, 31, 0.7);
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 15.5px;
+    line-height: 1.7;
+  }
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 208, 97, 0.15);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 208, 97, 0.3);
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: rgba(184, 139, 31, 0.25);
+}
+
+/* Scrollbar gizli — yatay tab nav için */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
