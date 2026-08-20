@@ -1,6 +1,7 @@
 // Hardened Groq proxy for the weekly inner-report generation.
 // Mirrors the security layers in ai-call.mjs. See that file's top comment
 // for the in-memory rate-limit caveat (Netlify warm-vs-cold containers).
+import { groqChat, stripThink } from "./_groq.mjs";
 
 // ---- CORS / origin allowlist -------------------------------------------------
 
@@ -274,39 +275,22 @@ export const handler = async (event) => {
   const systemPrompt = buildSystemPrompt(lang);
   const userPrompt = USER_PROMPT_PREAMBLE[lang](gunlerText);
 
-  // ---- Upstream call. Generic error to client; full detail only to server log. ---
-  let res, data;
-  try {
-    res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-oss-120b",
-        reasoning_effort: "low",
-        max_tokens: MAX_MAX_TOKENS,
-        temperature: 0.72,
-        top_p: 0.9,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
-    data = await res.json();
-  } catch (e) {
-    console.error("[ai-report] upstream fetch failed:", e?.message || e);
-    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
-  }
-
-  if (!res.ok || data?.error) {
-    console.error("[ai-report] upstream error:", res.status, data?.error?.message || data?.error || "(no body)");
+  // ---- Upstream call with automatic model fallback (see _groq.mjs). ---
+  const out = await groqChat(apiKey, "text", {
+    max_tokens: MAX_MAX_TOKENS,
+    temperature: 0.72,
+    top_p: 0.9,
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  });
+  if (!out.ok) {
+    console.error("[ai-report] upstream failed, status:", out.status);
     return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
   }
 
   const sanitize = buildSanitizer(lang);
-  const rapor = sanitize(data.choices?.[0]?.message?.content || "");
+  const rapor = sanitize(stripThink(out.data.choices?.[0]?.message?.content || ""));
   return jsonResponse(200, cors, { rapor });
 };

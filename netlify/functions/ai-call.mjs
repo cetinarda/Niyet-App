@@ -11,6 +11,7 @@
 
 // ---- RAG: kitap bilgi havuzu (lexical retrieval — özgün, kitap-temelli sentez) -
 import BOOK_CHUNKS from "./book-chunks.json";
+import { groqChat, stripThink } from "./_groq.mjs";
 const _RAG_STOP = new Set(["ve","ile","bir","bu","için","ama","gibi","daha","çok","her","ben","sen","biz","ya","de","da","ki","olan","the","and","that","this","with","ama","ise","ya"]);
 function _ragTokens(s) {
   return String(s || "").toLowerCase().replace(/[^a-zçğıöşü0-9\s]/gi, " ").split(/\s+/).filter((w) => w.length >= 4 && !_RAG_STOP.has(w));
@@ -290,38 +291,20 @@ export const handler = async (event) => {
     ...messages.map((m) => ({ role: m.role, content: m.content })),
   ];
 
-  // ---- Upstream call. Any failure → generic error to client; details only to server log. ---
-  let res, data;
-  try {
-    res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "openai/gpt-oss-120b",
-        reasoning_effort: "low",
-        max_tokens: safeMaxTokens,
-        temperature: 0.7,
-        top_p: 0.9,
-        messages: groqMessages,
-      }),
-    });
-    data = await res.json();
-  } catch (e) {
-    // Server-side log only; never include exception message or stack in client response.
-    console.error("[ai-call] upstream fetch failed:", e?.message || e);
+  // ---- Upstream call with automatic model fallback (see _groq.mjs). ---
+  const out = await groqChat(apiKey, "text", {
+    max_tokens: safeMaxTokens,
+    temperature: 0.7,
+    top_p: 0.9,
+    messages: groqMessages,
+  });
+  if (!out.ok) {
+    // Server-side log only; never include detail in client response.
+    console.error("[ai-call] upstream failed, status:", out.status);
     return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
   }
 
-  if (!res.ok || data?.error) {
-    // Log full upstream error server-side for debugging — NEVER echo to client.
-    console.error("[ai-call] upstream error:", res.status, data?.error?.message || data?.error || "(no body)");
-    return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });
-  }
-
-  const raw = data.choices?.[0]?.message?.content || "";
+  const raw = stripThink(out.data.choices?.[0]?.message?.content || "");
   const sanitize = buildSanitizer(lang);
   const text = sanitize(raw);
   return jsonResponse(200, cors, { text });

@@ -1,4 +1,5 @@
 import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition, SearchGlobalSolarEclipse, SearchLunarEclipse, Seasons } from "astronomy-engine";
+import { groqChat, stripThink } from "./_groq.mjs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
@@ -678,23 +679,15 @@ PUNCTUATION: Do NOT use an em dash (—) anywhere; connect clauses with a comma,
 Today's opening perspective (use it in YOUR OWN words, do not translate it literally): ${angle}
 
 Now write the collective sky-energy reading. Let us FEEL which energy the Earth is under today. For strong events (solar flares, geomagnetic storms), describe their emotional and spiritual impact: how they affect our dreams, emotions, sudden insights, and inner transformations. Make it heartfelt and touching.`;
-  try {
-    const r = await fetchWithTimeout("https://api.groq.com/openai/v1/chat/completions", 9000, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "openai/gpt-oss-120b",
-        reasoning_effort: "low",
-        max_tokens: 700,
-        temperature: 0.85,
-        top_p: 0.92,
-        messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
-      }),
-    });
-    const j = await r.json();
-    const txt = _sanitizeSky(j?.choices?.[0]?.message?.content, lang);
-    return txt || null;
-  } catch { return null; }
+  const out = await groqChat(apiKey, "text", {
+    max_tokens: 700,
+    temperature: 0.85,
+    top_p: 0.92,
+    messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
+  }, { timeoutMs: 9000 });
+  if (!out.ok) return null;
+  const txt = _sanitizeSky(stripThink(out.data?.choices?.[0]?.message?.content), lang);
+  return txt || null;
 }
 
 // Süzgeç bir raporu reddederse HEMEN kısa şablon metne düşme — bir kez daha sor.
