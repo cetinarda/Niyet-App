@@ -12099,11 +12099,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* BOTTOM NAV */}
       {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
-          {NAV.map(n=>{
+          {NAV.map((n,i)=>{
             const active = screen===n.id;
             const sabahHint = n.id==="sabah" && screen==="rehber";
             return (
-              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
+              <button key={n.id} onClick={()=>{ setScreen(n.id); }} aria-label={n.label}
                 style={{
                   background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
                   border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
@@ -12117,7 +12117,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
                 }}>
                 <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:600,fontSize:11,letterSpacing:0.4,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1 }}>{i+1}</span>
               </button>
             );
           })}
