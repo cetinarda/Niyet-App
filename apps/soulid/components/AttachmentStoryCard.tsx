@@ -130,7 +130,7 @@ export function AttachmentStoryCard({ style, styleName, emoji, locale, innerRef 
               letterSpacing: 0.2,
             }}
           >
-            soulprofile.life/attachment
+            sakin.life/baglanma
           </div>
         </div>
       </div>

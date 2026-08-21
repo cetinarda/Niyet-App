@@ -36,9 +36,11 @@ import { captureNode, shareDataUrl } from '@/lib/share';
 import { AttachmentStoryCard } from '@/components/AttachmentStoryCard';
 import { saveAttachment, readAttachment, readAnswers, clearAttachment } from '@/lib/attachment/storage';
 
-// Paylaşılan adres. Kendi başına çalışan siteye işaret eder ki hikâyeyi gören
-// kişi (Sakin kurulu olmasa da) testi açabilsin.
-const TEST_URL = 'https://soulprofile.life/attachment';
+// Paylaşılan adres — TEK MERKEZ sakin.life (kullanıcı kararı: ayrı SoulProfile
+// reposu/sitesi peşinden koşmak yerine her şey Niyet-App'te toplansın; iki yerin
+// ayrışması riski böylece hiç doğmuyor).
+// netlify.toml bu kısa adresi /embedded/soulid/attachment/ adresine 301'liyor.
+const TEST_URL = 'https://sakin.life/baglanma';
 
 type Phase = 'intro' | 'quiz' | 'result';
 
