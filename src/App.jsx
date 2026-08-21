@@ -27,6 +27,12 @@ import { initAnalytics, track } from "./analytics";
 
 const isNative = Capacitor.isNativePlatform();
 
+// SoulID (Keşfet) giriş kapısı. Kullanıcı isteğiyle tanıtım döneminde KAPALI:
+// herkes ücretsiz girer, kartta "Yeni" rozeti çıkar. Premium'a döndürmek için
+// tek yapılacak: bunu true yap. Kart rozeti ve paywall yönlendirmesi otomatik
+// olarak geri gelir (bkz. handleOpenEmbed + Ailesi kart render'ı).
+const SOULID_PREMIUM_GATE = false;
+
 // ── GÜN ANAHTARI (YEREL TARİH) ──────────────────────────────────────────────
 // KÖK SEBEP (kullanıcı: "tünel sıfırlandı ama nefes 11'den devam etti"):
 // Tüm günlük anahtarlar `sakinDayKey()` ile üretiliyordu.
@@ -7232,7 +7238,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               )}
             </div>
             {[
-              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a", premium:true,
+              // SoulID giriş kapısı GEÇİCİ OLARAK AÇIK (kullanıcı isteği): tanıtım
+              // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
+              // görünsün. Tekrar premium yapmak için: premium:SOULID_PREMIUM_GATE
+              // yerine premium:true yaz (tek satır, gerisi kendiliğinden döner).
+              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
+                premium: SOULID_PREMIUM_GATE, isNew: true,
                 eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
               { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
                 desc: t("ailesi_hayvan_desc") },
@@ -7263,6 +7274,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       {app.premium && !isPremium && (
                         <span style={{ display:"inline-flex",alignItems:"center",gap:4,fontSize:9,letterSpacing:1.2,color:"#0d0a12",background:"linear-gradient(135deg,#f0d29a,#e0b878)",padding:"3px 8px",borderRadius:100,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",fontWeight:600 }}>
                           🔒 {t("premium_label")}
+                        </span>
+                      )}
+                      {app.isNew && !app.premium && (
+                        <span style={{ display:"inline-flex",alignItems:"center",fontSize:9,letterSpacing:1.2,color:"#0d0a12",background:"linear-gradient(135deg,#f0d29a,#e0b878)",padding:"3px 8px",borderRadius:100,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",fontWeight:600 }}>
+                          {t("badge_new")}
                         </span>
                       )}
                     </div>
