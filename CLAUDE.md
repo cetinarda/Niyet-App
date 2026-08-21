@@ -104,6 +104,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    kullanıcı okumadan geçiyor. Değişen her şeyi saymak yerine o sürümün
    "başlığı" ne ise onu söyle.
 4. **Bariz kapsam kararlarını sorma, ver.** (ör. "taşlar uygulamasında tabii ki taş olacak.") Gerçekten belirsizse veya geri-dönüşü zorsa sor; aksi halde mantıklı varsayımla ilerle ve ne yaptığını kısaca söyle.
+4b. **Mantıksız/hatalı bulduğun bir istek gelirse sessizce uygulama — itiraz et.** Kullanıcı bir değişiklik isterse ve bu teknik olarak yanlış, riskli (App Store reddi, veri kaybı, güvenlik) ya da ürün açısından anlamsız görünüyorsa, önce neden sorun gördüğünü kısaca söyle ve alternatif öner. Kullanıcı ısrar ederse (açıkça "yine de yap" derse) uygula. Körü körüne "tamam" deyip yapmak yanlış davranış.
 5. **Hassas alanlar (IAP/`purchases.js`, Info.plist, AppDelegate): önce öner + diff göster, onay ve sandbox testi olmadan deploy etme.** (Altın kural #5-#6 ile aynı çizgi.)
 6. **SÜRÜM YAYINI OTOMASYONU (kullanıcı isteği).** Kullanıcı yeni sürüm istediğinde
    (bump yapıldıktan sonra) OTOMATİK olarak şu üçünü ver, sormadan:
