@@ -56,7 +56,16 @@ export default function AttachmentPage() {
   const [shared, setShared] = useState(false);
   const [storyBusy, setStoryBusy] = useState(false);
   const [storyHint, setStoryHint] = useState<'shared' | 'downloaded' | 'failed' | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
   const storyRef = useRef<HTMLDivElement>(null);
+
+  async function copyLink() {
+    const ok = await copyToClipboard(TEST_URL);
+    if (ok) {
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2500);
+    }
+  }
 
   // ── Sosyal paylaşım ──────────────────────────────────────────────────────
   // Instagram hikâyesinde LİNK, programatik olarak eklenemez (contentURL
@@ -517,6 +526,27 @@ export default function AttachmentPage() {
                     : 'Image ready and the link is copied. After adding it to your story, drop a "Link" sticker and paste, so viewers can open the test in one tap.'}
               </p>
             )}
+
+            {/* Açık adres + kopyala: paylaşım sayfası her yerde aynı davranmaz
+                (bio, DM, story çıkartması, e-posta...). Linki görünür kılıp tek
+                dokunuşla kopyalatmak en evrensel yol. */}
+            <div className="mt-5 border-t border-panelBorder pt-4">
+              <p className="text-[11px] uppercase tracking-[0.25em] text-faint">
+                {tr ? 'TESTİN BAĞLANTISI' : 'LINK TO THE TEST'}
+              </p>
+              {/* Adres TAM görünmeli (kesilmemeli) — kullanıcı gördüğü şeyi
+                  kopyaladığına güvensin. Bu yüzden alt alta dizildi. */}
+              <code className="mt-2.5 block w-full rounded-xl border border-panelBorder bg-bg/50 px-3.5 py-3 text-center text-[13.5px] tracking-tight text-ink">
+                {TEST_URL.replace(/^https?:\/\//, '')}
+              </code>
+              <button
+                type="button"
+                onClick={copyLink}
+                className="mt-2 w-full rounded-xl border border-gold/45 py-3 text-[13.5px] font-bold text-gold transition-colors hover:bg-gold/10"
+              >
+                {linkCopied ? (tr ? 'Kopyalandı ✓' : 'Copied ✓') : tr ? 'Bağlantıyı kopyala' : 'Copy the link'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
