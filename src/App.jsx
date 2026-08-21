@@ -2558,7 +2558,7 @@ if (isNative) {
 // Görevden ilgili uygulama aracına köprü (Sprint 2): id → screen. Fiziksel-dünya
 // görevlerinin (su, ağaç, güneş...) köprüsü yok — sadece uygulamada yapılabilenler.
 const REMINDER_GO = { nefes: "nefes", chakra_an: "chakra" };
-const REMINDER_GO_TXT = { tr:"Uygulamada aç", en:"Open in app", de:"In der App öffnen", es:"Abrir en la app", pt:"Abrir na app", fr:"Ouvrir dans l'app", ja:"アプリで開く" };
+const REMINDER_GO_TXT = { tr:"Aç", en:"Open", de:"Öffnen", es:"Abrir", pt:"Abrir", fr:"Ouvrir", ja:"開く" };
 
 function ReminderScreen({ onBack, onNext, lang = "tr", onTasksDone, onGo }) {
   const t = makeTrans(lang);
