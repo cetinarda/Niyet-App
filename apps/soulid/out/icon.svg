@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="42%">
+      <stop offset="0%" stop-color="#f5d061" stop-opacity="0.12"/>
+      <stop offset="60%" stop-color="#f5d061" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#f5d061" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Deep navy background. iOS auto-rounds corners (Apple guideline 9.3). -->
+  <rect width="1024" height="1024" fill="#07091a"/>
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <g transform="translate(512 512)">
+    <!-- Centered square frame -->
+    <rect x="-228" y="-228" width="456" height="456"
+          rx="6" ry="6"
+          fill="none"
+          stroke="#f5d061"
+          stroke-width="7"
+          opacity="0.95"/>
+
+    <!-- Two souls — horizontal dots inside the frame -->
+    <circle cx="-86" cy="0" r="38" fill="#f5d061"/>
+    <circle cx="86"  cy="0" r="38" fill="#f5d061"/>
+  </g>
+</svg>

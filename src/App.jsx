@@ -4468,6 +4468,11 @@ export default function SakinApp() {
   // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
   const AILESI_FREE_OPENS = 3;
   const handleOpenEmbed = (app) => {
+    // Premium-kilitli embed'ler (SoulID): Sakin Premium olmayan kullanıcı
+    // içeri hiç girmez, dogrudan paywall'a gider. İçeri giren herkes zaten
+    // premium olduğu için embed kendi ayrı satın alma ekranını göstermez
+    // (bkz. apps/soulid FREE_MODE build-time bayrağı).
+    if (app.premium && !isPremium) { setShowAilesi(false); setScreen("fiyat"); return; }
     playPortalSound(); haptic();
     // iOS 13+: DeviceMotionEvent izni SADECE top-level frame'den (user gesture içinde)
     // istenebilir. İframe embed'den istemek sessizce 'denied' döner. Burada parent
@@ -7233,21 +7238,34 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
+              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a", premium:true,
+                eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
               { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
                 desc: t("ailesi_taslar_desc") },
               { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
                 desc: t("ailesi_bitkiler_desc") },
             ].map(app=>(
               <div key={app.name}
-                style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
+                style={{ background: app.premium ? "linear-gradient(180deg,rgba(232,192,122,0.06),rgba(255,255,255,0.02))" : "rgba(255,255,255,0.03)",
+                  border: app.premium ? "1px solid rgba(232,192,122,0.5)" : "1px solid rgba(255,255,255,0.08)",
+                  boxShadow: app.premium ? "0 0 0 1px rgba(232,192,122,0.14), 0 10px 34px rgba(232,192,122,0.07)" : "none",
+                  borderRadius:16,padding:"16px 18px",display:"flex",flexDirection:"column",gap:8,transition:"border-color 0.2s" }}
                 onMouseEnter={e=>e.currentTarget.style.borderColor=app.color+"66"}
-                onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(255,255,255,0.08)"}>
+                onMouseLeave={e=>e.currentTarget.style.borderColor=app.premium?"rgba(232,192,122,0.5)":"rgba(255,255,255,0.08)"}>
                 <button
                   onClick={()=>handleOpenEmbed(app)}
                   style={{ background:"none",border:"none",padding:0,cursor:"pointer",display:"flex",alignItems:"center",gap:14,textAlign:"left",color:"inherit",width:"100%" }}>
                   <div style={{ width:48,height:48,borderRadius:"50%",background:`radial-gradient(circle,${app.color}44,${app.color}11)`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0 }}>{app.icon}</div>
                   <div style={{ flex:1,minWidth:0 }}>
-                    <div style={{ fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif" }}>{app.name}</div>
+                    {app.eyebrow && <div style={{ fontSize:10,letterSpacing:1.5,color:"#e8c07a",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{app.eyebrow}</div>}
+                    <div style={{ fontSize:15,fontWeight:500,color:"#ffffff",letterSpacing:1,marginBottom:4,fontFamily:"'Jost',sans-serif",display:"flex",alignItems:"center",gap:8 }}>
+                      {app.name}
+                      {app.premium && !isPremium && (
+                        <span style={{ display:"inline-flex",alignItems:"center",gap:4,fontSize:9,letterSpacing:1.2,color:"#0d0a12",background:"linear-gradient(135deg,#f0d29a,#e0b878)",padding:"3px 8px",borderRadius:100,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",fontWeight:600 }}>
+                          🔒 {t("premium_label")}
+                        </span>
+                      )}
+                    </div>
                     <div style={{ fontSize:13,color:"#999",lineHeight:1.6 }}>{app.desc}</div>
                   </div>
                   <div style={{ color:"rgba(255,255,255,0.2)",fontSize:18,flexShrink:0 }}>→</div>
