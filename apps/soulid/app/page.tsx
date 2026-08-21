@@ -93,6 +93,33 @@ export default function Welcome() {
             {t('home.subtitle')}
           </p>
 
+          {/* YENİ ÖZELLİK — bağlanma stili. Hero'nun hemen altında, ana vaadin
+              devamı olarak: "iki ruh nasıl yansır" sorusunun kişisel yarısı. */}
+          {(IS_CAPACITOR || WEB_APP_OPEN) && (
+            <Link
+              href="/attachment"
+              className="group mx-auto mt-9 flex max-w-xl items-start gap-4 rounded-3xl border border-gold/30 bg-gold/[0.05] px-5 py-4 text-left transition-colors hover:border-gold/60 hover:bg-gold/[0.09]"
+            >
+              <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gold/15 text-xl text-gold">
+                ♡
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-gold">
+                    {t('home.attach.badge')}
+                  </span>
+                </span>
+                <span className="mt-1 block font-display text-lg leading-snug text-ink">
+                  {t('home.attach.title')}
+                </span>
+                <span className="mt-1 block text-[13px] leading-relaxed text-muted">
+                  {t('home.attach.desc')}
+                </span>
+              </span>
+              <span className="mt-3 shrink-0 text-gold transition-transform group-hover:translate-x-0.5">→</span>
+            </Link>
+          )}
+
           {IS_CAPACITOR || WEB_APP_OPEN ? (
             <>
               <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">

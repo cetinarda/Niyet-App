@@ -19,9 +19,14 @@ const tr: Dict = {
   // Footer
   'footer.disclaimer':
     'Eğlence ve farkındalık amaçlıdır. Tıbbi, psikolojik veya finansal tavsiye yerine geçmez. Verin sende kalır, istediğin zaman silebilirsin.',
+  'footer.family':
+    'SoulID, Sakin ailesinin bir ferdidir. Nefes, çakra, sembol ve rüya çalışmalarının yanında burası ilişkilerin aynası.',
 
   // Home
   'home.kicker': 'SOULPROFILE · İKİLİ KOZMİK UYUM',
+  'home.attach.badge': 'YENİ',
+  'home.attach.title': 'Bağlanma profilini çöz',
+  'home.attach.desc': 'Uyum iki kişilik bir dans, ama yarısı sende başlıyor. 16 soru, 3 dakika.',
   'home.title1': 'İki ruh nasıl',
   'home.title2': 'birbirini yansıtır?',
   'home.subtitle':
@@ -188,9 +193,14 @@ const en: Dict = {
   // Footer
   'footer.disclaimer':
     'For entertainment and self-awareness only. Not a substitute for medical, psychological, or financial advice. Your data stays with you and can be deleted anytime.',
+  'footer.family':
+    'SoulID is part of the Sakin family. Alongside the breath, chakra, symbol and dream work, this is the mirror for relationships.',
 
   // Home
   'home.kicker': 'SOULPROFILE · DUAL COSMIC COMPATIBILITY',
+  'home.attach.badge': 'NEW',
+  'home.attach.title': 'Decode your attachment profile',
+  'home.attach.desc': 'Compatibility is a dance for two, but half of it starts in you. 16 questions, 3 minutes.',
   'home.title1': 'How do two souls',
   'home.title2': 'mirror each other?',
   'home.subtitle':

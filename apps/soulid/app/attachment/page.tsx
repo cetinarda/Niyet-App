@@ -31,6 +31,7 @@ import {
   type AttachmentResult,
 } from '@/lib/attachment';
 import { buildChartLens } from '@/lib/attachment/chart-lens';
+import { shareInvite } from '@/lib/native/share';
 import { saveAttachment, readAttachment, readAnswers, clearAttachment } from '@/lib/attachment/storage';
 
 type Phase = 'intro' | 'quiz' | 'result';
@@ -46,6 +47,25 @@ export default function AttachmentPage() {
   const [idx, setIdx] = useState(0);
   const [result, setResult] = useState<AttachmentResult | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [shared, setShared] = useState(false);
+
+  // Davet paylaşımı: kendi sonucunu DEĞİL, testin kendisini gönderir.
+  // Karşı taraf kendi yanıtlarıyla kendi stilini bulmalı; başkasının sonucunu
+  // görmek hem yanıltıcı olur hem de kişisel veri paylaşımı olurdu.
+  async function share() {
+    const url = 'https://soulprofile.life/attachment';
+    const res = await shareInvite({
+      title: tr ? 'Bağlanma Stili' : 'Attachment Style',
+      text: tr
+        ? `İlişkilerinde tekrar eden örüntüyü 16 soruda gösteriyor. Seninkine de bakalım mı? ${url}`
+        : `Sixteen questions that reveal the pattern repeating in your relationships. Shall we look at yours too? ${url}`,
+      url,
+    });
+    if (res === 'clipboard') {
+      setShared(true);
+      setTimeout(() => setShared(false), 2500);
+    }
+  }
 
   // Kayıtlı sonuç varsa doğrudan onu göster; karneyi de arka planda yükle
   // (harita merceği için gerekli ama zorunlu değil).
@@ -398,6 +418,34 @@ export default function AttachmentPage() {
           >
             {tr ? 'Testi yeniden çöz' : 'Retake the test'}
           </button>
+
+          {/* Davet: bağlanma stili KARŞILIKLI bir konu — asıl fayda, yakınının da
+              kendi örüntüsünü görüp ikinizin dinamiğini konuşabilmesi. */}
+          <div className="mt-5 rounded-3xl border border-panelBorder bg-panel p-6 text-center">
+            <p className="text-[15px] leading-relaxed text-ink">
+              {tr
+                ? 'Bu örüntü tek başına değil, ikili yaşanır.'
+                : 'This pattern is not lived alone; it plays out between two people.'}
+            </p>
+            <p className="mt-2 text-[13px] leading-relaxed text-muted">
+              {tr
+                ? 'Yakınındaki kişi de kendi stilini görürse, aranızdaki döngüyü suçlamadan konuşabilirsiniz.'
+                : 'If someone close to you sees their own style too, you can talk about the loop between you without blame.'}
+            </p>
+            <button
+              type="button"
+              onClick={share}
+              className="mt-5 w-full rounded-full bg-gold py-4 text-[15px] font-bold tracking-wide text-[#1a0a40] shadow-glow transition-transform hover:scale-[1.01]"
+            >
+              {shared
+                ? tr
+                  ? 'Bağlantı kopyalandı ✓'
+                  : 'Link copied ✓'
+                : tr
+                  ? 'Sevdiğine gönder'
+                  : 'Send it to someone you love'}
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -36,7 +36,13 @@ export function Footer() {
             ))}
           </nav>
         </div>
-        <p className="mt-5 text-[11px] leading-relaxed text-faint">
+        {/* Aile bağı: SoulID Sakin'den kopuk bir uygulama gibi durmasın.
+            Embed içinde de bağımsız sitede de aynı cümle görünür. */}
+        <p className="mt-5 text-[12px] leading-relaxed text-muted">
+          <span className="text-gold">✦</span>{' '}
+          {t('footer.family')}
+        </p>
+        <p className="mt-3 text-[11px] leading-relaxed text-faint">
           {t('footer.disclaimer')} © {year ?? ''} SoulProfile.
         </p>
         <DevToggle />
