@@ -20,9 +20,19 @@ import { useRouter } from 'next/navigation';
 
 export const IS_CAPACITOR = process.env.NEXT_PUBLIC_BUILD_TARGET === 'capacitor';
 
+/**
+ * Alt klasör öneki (Sakin embed'i: "/embedded/soulid"). Kendi başına çalışan
+ * SoulID'de boş. next.config.mjs `basePath` ile varlıkları çözer ama BURADAKİ
+ * navigasyon Next router'ını atlayıp doğrudan window.location kullandığı için
+ * öneki elle eklemek ŞART — yoksa embed içinde her tık kök dizine gider ve
+ * Sakin'in kendi sayfasına düşer.
+ */
+const EMBED_BASE = (process.env.NEXT_PUBLIC_EMBED_BASE || '').replace(/\/+$/, '');
+
 /** İç path'i Capacitor'ın doğru servis edeceği .html URL'ine çevirir. */
 export function capacitorHref(path: string): string {
   if (!path.startsWith('/')) return path; // dış link / scheme
+  if (EMBED_BASE && path.startsWith(EMBED_BASE + '/')) path = path.slice(EMBED_BASE.length) || '/';
   const hashIdx = path.indexOf('#');
   const hash = hashIdx >= 0 ? path.slice(hashIdx) : '';
   const noHash = hashIdx >= 0 ? path.slice(0, hashIdx) : path;
@@ -30,10 +40,10 @@ export function capacitorHref(path: string): string {
   const query = qIdx >= 0 ? noHash.slice(qIdx) : '';
   let p = qIdx >= 0 ? noHash.slice(0, qIdx) : noHash;
 
-  if (p === '/' || p === '') return `/index.html${query}${hash}`;
+  if (p === '/' || p === '') return `${EMBED_BASE}/index.html${query}${hash}`;
   p = p.replace(/\/+$/, ''); // trailing slash temizle
-  if (/\.[a-z0-9]+$/i.test(p)) return `${p}${query}${hash}`; // zaten dosya
-  return `${p}/index.html${query}${hash}`;
+  if (/\.[a-z0-9]+$/i.test(p)) return `${EMBED_BASE}${p}${query}${hash}`; // zaten dosya
+  return `${EMBED_BASE}${p}/index.html${query}${hash}`;
 }
 
 /** Web'de ise relative path; Capacitor'da .html (gerektiğinde). */

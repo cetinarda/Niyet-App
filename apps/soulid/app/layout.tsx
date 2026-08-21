@@ -19,6 +19,11 @@ const cormorant = Cormorant_Garamond({
   display: 'swap',
 });
 
+// Next, `basePath`i metadata ikonlarına ve manifest yoluna OTOMATİK eklemez;
+// embed alt klasörden servis edildiğinde /icon.svg kökten istenip 404 olur.
+// Öneki burada elle veriyoruz (kendi başına çalışan build'de boş string).
+const A = process.env.NEXT_PUBLIC_EMBED_BASE || '';
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://soulprofile.life'),
   title: {
@@ -34,7 +39,7 @@ export const metadata: Metadata = {
     'nakshatra', 'tzolkin', 'doğum runu', 'tarot doğum kartı',
   ],
   applicationName: 'SoulProfile',
-  manifest: '/manifest.json',
+  manifest: `${A}/manifest.json`,
   appleWebApp: {
     capable: true,
     title: 'SoulProfile',
@@ -42,11 +47,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico' },
+      { url: `${A}/icon.svg`, type: 'image/svg+xml' },
+      { url: `${A}/favicon.ico` },
     ],
-    apple: '/apple-touch-icon.png',
-    shortcut: '/icon.svg',
+    apple: `${A}/apple-touch-icon.png`,
+    shortcut: `${A}/icon.svg`,
   },
   openGraph: {
     title: 'Doğduğunda yıldızlar sana ne söylüyordu?',

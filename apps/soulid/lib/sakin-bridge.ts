@@ -49,6 +49,23 @@ export async function tryAutoConnectFromSakin(): Promise<BridgeResult> {
 
   if (!fullName || !birthDate || !birthCityRaw) return { ok: false };
 
+  // SERT ZAMAN AŞIMI: köprü ne olursa olsun kullanıcıyı yükleme ekranında
+  // asılı bırakmamalı. Geocoding ağı yavaş/engelliyse (uçak modu, review ağı,
+  // WKWebView içinde takılan istek) 8 saniyede pes edip normal karşılama
+  // ekranına düşeriz. Kullanıcı formu elle doldurabilir; kilitlenme YOK.
+  return Promise.race([
+    runBridge(fullName, birthDate, birthTime, birthCityRaw, locale),
+    new Promise<BridgeResult>((resolve) => setTimeout(() => resolve({ ok: false }), 8000)),
+  ]);
+}
+
+async function runBridge(
+  fullName: string,
+  birthDate: string,
+  birthTime: string,
+  birthCityRaw: string,
+  locale: Locale,
+): Promise<BridgeResult> {
   try {
     const hits = await geocodePlace(birthCityRaw, locale);
     const hit = hits[0];
