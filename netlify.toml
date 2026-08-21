@@ -82,6 +82,28 @@
   status = 200
   force = false
 
+# ── BAĞLANMA TESTİ: paylaşılabilir kısa adres ────────────────────────────────
+# Test SoulID embed'inin içinde yaşıyor (/embedded/soulid/attachment/) ama
+# sosyal medyada paylaşılan adres kısa olmalı: sakin.life/baglanma
+#
+# NEDEN 301 (rewrite=200 DEĞİL): embed bundle'ı `basePath=/embedded/soulid`
+# ile derleniyor. 200 rewrite yapsaydık tarayıcıdaki yol /baglanma kalırdı,
+# Next'in istemci router'ı ise basePath bekliyor → yol eşleşmez, hydration ve
+# gezinme bozulabilirdi. 301'de tarayıcı gerçekten embed adresine geçer,
+# her şey kendi zemininde çalışır. Paylaşılan link yine kısa.
+# TR ve EN iki giriş de aynı yere düşer (sayfa dili kendi tespit ediyor).
+[[redirects]]
+  from = "/baglanma"
+  to = "/embedded/soulid/attachment/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/attachment"
+  to = "/embedded/soulid/attachment/"
+  status = 301
+  force = false
+
 # ── KÖK ARTIK TANITIM SAYFASI ────────────────────────────────────────────────
 # sakin.life kökü uygulamayı değil, karşılama/tanıtım sayfasını gösterir
 # (public/home/index.html). force = true ŞART: Vite kökte gerçek bir
