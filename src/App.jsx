@@ -7232,14 +7232,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               )}
             </div>
             {[
+              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a", premium:true,
+                eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
               { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
                 desc: t("ailesi_hayvan_desc") },
               { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
                 desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
-              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a", premium:true,
-                eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
               { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
                 desc: t("ailesi_taslar_desc") },
               { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
