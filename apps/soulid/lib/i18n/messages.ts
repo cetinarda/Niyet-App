@@ -19,6 +19,8 @@ const tr: Dict = {
   // Footer
   'footer.disclaimer':
     'Eğlence ve farkındalık amaçlıdır. Tıbbi, psikolojik veya finansal tavsiye yerine geçmez. Verin sende kalır, istediğin zaman silebilirsin.',
+  'topbar.family': 'Sakin ailesinin bir ferdi',
+  'topbar.backToSakin': "Sakin'e dön",
   'footer.family':
     'SoulID, Sakin ailesinin bir ferdidir. Nefes, çakra, sembol ve rüya çalışmalarının yanında burası ilişkilerin aynası.',
 
@@ -193,6 +195,8 @@ const en: Dict = {
   // Footer
   'footer.disclaimer':
     'For entertainment and self-awareness only. Not a substitute for medical, psychological, or financial advice. Your data stays with you and can be deleted anytime.',
+  'topbar.family': 'Part of the Sakin family',
+  'topbar.backToSakin': 'Back to Sakin',
   'footer.family':
     'SoulID is part of the Sakin family. Alongside the breath, chakra, symbol and dream work, this is the mirror for relationships.',
 

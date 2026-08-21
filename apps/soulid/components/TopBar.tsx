@@ -14,8 +14,19 @@ export function TopBar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [premium, setPremium] = useState(true); // SSR'da gizle, mount'ta karar ver
-  const { locale } = useT();
+  const { t, locale } = useT();
   const tr = locale === 'tr';
+
+  // iframe içinde miyiz? Cross-origin durumunda erişim hata fırlatır; o hâlde
+  // gömülü kabul edip şeridi göstermeyiz (güvenli varsayılan).
+  const [standalone, setStandalone] = useState(false);
+  useEffect(() => {
+    try {
+      setStandalone(window.self === window.top);
+    } catch {
+      setStandalone(false);
+    }
+  }, []);
 
   useEffect(() => {
     setPremium(hasPremium());
@@ -35,6 +46,28 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-panelBorder/60 bg-bg/55 backdrop-blur-xl">
+      {/* SAKİN BAĞI — yalnızca SoulID doğrudan açıldığında (sakin.life/baglanma
+          gibi) görünür. Sakin uygulamasının içinde iframe olarak açıldığında
+          host'un kendi "← Keşfet" butonu zaten var, ikinci bir geri yolu
+          koymak kafa karıştırır. Ayrım runtime'da: iframe içinde miyiz?
+          Bu şerit iki işi birden yapıyor: (1) SoulID'nin Sakin'den kopuk
+          durmasını engelliyor, (2) geri dönüş yolu veriyor (kullanıcı:
+          "sakin.life/baglanma girince keşfete dönüş yok"). */}
+      {standalone && (
+        <div className="border-b border-panelBorder/40 bg-gold/[0.05]">
+          <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-2">
+            <span className="min-w-0 truncate text-[11px] tracking-wide text-muted">
+              <span className="text-gold">✦</span> {t('topbar.family')}
+            </span>
+            <a
+              href="https://sakin.life"
+              className="shrink-0 whitespace-nowrap text-[11px] font-bold text-gold transition-opacity hover:opacity-80"
+            >
+              {t('topbar.backToSakin')} →
+            </a>
+          </div>
+        </div>
+      )}
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-4">
         <Link href="/" className="flex items-center gap-2.5" onClick={() => setOpen(false)}>
           <BrandMark size={20} className="text-gold" />
