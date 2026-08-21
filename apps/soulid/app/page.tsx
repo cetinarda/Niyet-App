@@ -1,15 +1,46 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Link } from '@/components/Link';
 import { CosmicBackground } from '@/components/CosmicBackground';
+import { CosmicLoader } from '@/components/CosmicLoader';
 import { NowSkyChip } from '@/components/NowSkyChip';
 import { StoreBadges } from '@/components/StoreBadges';
-import { IS_CAPACITOR } from '@/lib/nav';
+import { IS_CAPACITOR, useNav } from '@/lib/nav';
 import { WEB_APP_OPEN } from '@/lib/feature-flags';
+import { tryAutoConnectFromSakin, sakinBridgeAttempted, markSakinBridgeSkipped } from '@/lib/sakin-bridge';
 import { useT } from '@/lib/i18n';
 
 export default function Welcome() {
   const { t, locale } = useT();
+  const nav = useNav();
+  // Sakin köprüsü: embed açılışında Sakin'in doğum verisi varsa karneyi
+  // otomatik üret ve doğrudan /report'a geç — kullanıcı formu tekrar
+  // doldurmaz. Sadece embed'de (aynı origin) anlamlı; bağımsız sitede
+  // sakin_* anahtarları hiç yazılmadığı için no-op'tur. Oturum başına bir kez.
+  const [connecting, setConnecting] = useState(() => IS_CAPACITOR && !sakinBridgeAttempted());
+
+  useEffect(() => {
+    if (!connecting) return;
+    let cancelled = false;
+    tryAutoConnectFromSakin().then((res) => {
+      if (cancelled) return;
+      if (res.ok) { nav.push('/report'); return; }
+      markSakinBridgeSkipped();
+      setConnecting(false);
+    });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connecting]);
+
+  if (connecting) {
+    return (
+      <div className="relative">
+        <CosmicBackground variant="galaxy" />
+        <CosmicLoader />
+      </div>
+    );
+  }
 
   const steps = [
     { n: '01', icon: '📅', title: t('home.step1.title'), desc: t('home.step1.desc') },
