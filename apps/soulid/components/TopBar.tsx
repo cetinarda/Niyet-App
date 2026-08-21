@@ -29,6 +29,7 @@ export function TopBar() {
     { href: '/profil', label: tr ? 'Profilin' : 'Your Profile' },
     { href: '/report', label: tr ? 'Detaylı Karnen' : 'Your Full Report' },
     { href: '/compatibility', label: tr ? 'İkili Uyum' : 'Compatibility' },
+    { href: '/attachment', label: tr ? 'Bağlanma Stilin' : 'Your Attachment Style' },
     { href: '/history', label: tr ? 'Geçmişin' : 'Your History' },
   ];
 
