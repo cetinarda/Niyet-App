@@ -4,7 +4,7 @@
 // Stil YALNIZCA yanıtlardan çıkar; doğum haritası sadece önerileri
 // kişiselleştirir (bkz. lib/attachment/chart-lens.ts başındaki not).
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { AttachmentMap } from '@/components/AttachmentMap';
 import { useSoulStore } from '@/lib/store';
@@ -31,8 +31,14 @@ import {
   type AttachmentResult,
 } from '@/lib/attachment';
 import { buildChartLens } from '@/lib/attachment/chart-lens';
-import { shareInvite } from '@/lib/native/share';
+import { shareInvite, copyToClipboard } from '@/lib/native/share';
+import { captureNode, shareDataUrl } from '@/lib/share';
+import { AttachmentStoryCard } from '@/components/AttachmentStoryCard';
 import { saveAttachment, readAttachment, readAnswers, clearAttachment } from '@/lib/attachment/storage';
+
+// Paylaşılan adres. Kendi başına çalışan siteye işaret eder ki hikâyeyi gören
+// kişi (Sakin kurulu olmasa da) testi açabilsin.
+const TEST_URL = 'https://soulprofile.life/attachment';
 
 type Phase = 'intro' | 'quiz' | 'result';
 
@@ -48,12 +54,41 @@ export default function AttachmentPage() {
   const [result, setResult] = useState<AttachmentResult | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [shared, setShared] = useState(false);
+  const [storyBusy, setStoryBusy] = useState(false);
+  const [storyHint, setStoryHint] = useState<'shared' | 'downloaded' | 'failed' | null>(null);
+  const storyRef = useRef<HTMLDivElement>(null);
+
+  // ── Sosyal paylaşım ──────────────────────────────────────────────────────
+  // Instagram hikâyesinde LİNK, programatik olarak eklenemez (contentURL
+  // parametresi yalnızca ayrıcalıklı hesaplarda çalışır). Gerçekte tıklanabilir
+  // tek yol kullanıcının Bağlantı çıkartmasını kendi eklemesi. Bu yüzden:
+  //   1) 9:16 görsel üretiyoruz (adres görselin üstünde büyük yazıyor),
+  //   2) linki AYNI ANDA panoya kopyalıyoruz ki çıkartmaya yapıştırmak tek
+  //      dokunuş olsun, 3) kullanıcıya bunu tek cümleyle söylüyoruz.
+  async function shareStory() {
+    if (storyBusy) return;
+    setStoryBusy(true);
+    try {
+      await copyToClipboard(TEST_URL); // link çıkartmasına yapıştırmak için hazır
+      const node = storyRef.current;
+      if (!node) return;
+      const dataUrl = await captureNode(node);
+      const ok = await shareDataUrl(dataUrl, 'soulid-baglanma.png');
+      setStoryHint(ok ? 'shared' : 'downloaded');
+      setTimeout(() => setStoryHint(null), 6000);
+    } catch {
+      setStoryHint('failed');
+      setTimeout(() => setStoryHint(null), 4000);
+    } finally {
+      setStoryBusy(false);
+    }
+  }
 
   // Davet paylaşımı: kendi sonucunu DEĞİL, testin kendisini gönderir.
   // Karşı taraf kendi yanıtlarıyla kendi stilini bulmalı; başkasının sonucunu
   // görmek hem yanıltıcı olur hem de kişisel veri paylaşımı olurdu.
   async function share() {
-    const url = 'https://soulprofile.life/attachment';
+    const url = TEST_URL;
     const res = await shareInvite({
       title: tr ? 'Bağlanma Stili' : 'Attachment Style',
       text: tr
@@ -266,6 +301,14 @@ export default function AttachmentPage() {
     return (
       <div className="relative py-20 md:py-28">
         <CosmicBackground variant="aurora" />
+        {/* Ekran dışında duran 9:16 paylaşım görseli (yakalanmak için DOM'da olmalı) */}
+        <AttachmentStoryCard
+          style={result.style}
+          styleName={pick(s.name, locale)}
+          emoji={s.emoji}
+          locale={locale}
+          innerRef={storyRef}
+        />
         <div className="mx-auto max-w-2xl px-5 md:px-6">
           <p className="text-[11px] font-bold uppercase tracking-[0.5em] text-gold">
             {tr ? 'SONUCUN' : 'YOUR RESULT'}
@@ -445,6 +488,35 @@ export default function AttachmentPage() {
                   ? 'Sevdiğine gönder'
                   : 'Send it to someone you love'}
             </button>
+
+            {/* Hikâye paylaşımı */}
+            <button
+              type="button"
+              onClick={shareStory}
+              disabled={storyBusy}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-gold/40 py-4 text-[15px] font-bold text-ink transition-colors hover:border-gold/70 hover:bg-gold/[0.06] disabled:opacity-60"
+            >
+              <span className="text-gold">◙</span>
+              {storyBusy
+                ? tr
+                  ? 'Görsel hazırlanıyor...'
+                  : 'Preparing image...'
+                : tr
+                  ? 'Hikâye görseli oluştur'
+                  : 'Create a story image'}
+            </button>
+
+            {storyHint && (
+              <p className="mt-3 text-[12.5px] leading-relaxed text-muted">
+                {storyHint === 'failed'
+                  ? tr
+                    ? 'Görsel oluşturulamadı, tekrar dener misin?'
+                    : 'Could not create the image. Try again?'
+                  : tr
+                    ? 'Görsel hazır, bağlantı da panoya kopyalandı. Instagram hikâyene ekledikten sonra "Bağlantı" çıkartmasını koyup yapıştırman yeterli, böylece izleyenler tek dokunuşla testi açar.'
+                    : 'Image ready and the link is copied. After adding it to your story, drop a "Link" sticker and paste, so viewers can open the test in one tap.'}
+              </p>
+            )}
           </div>
         </div>
       </div>
