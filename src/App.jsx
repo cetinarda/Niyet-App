@@ -4454,10 +4454,10 @@ export default function SakinApp() {
   const [fotoTaniResult, setFotoTaniResult] = useState("");
   const [fotoTaniLoading, setFotoTaniLoading] = useState(false);
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
-  // Web sitesindeki "Sakin Nedir" üst menü linki artık kendi sayfasında
-  // (#nedir'e) kaydırmıyor, doğrudan uygulama içindeki bu sekmeye
-  // yönlendiriyor: /hakkinda?tab=nedir. Native'de query hiç olmadığı için
-  // varsayılan "yolculuk" değişmiyor.
+  // Web sitesindeki üst menü linkleri artık sayfa içinde kaydırmıyor,
+  // doğrudan uygulama içindeki bu sekmelere yönlendiriyor:
+  // "Sakin Nedir" -> /hakkinda?tab=nedir, "Yolculuk" -> /hakkinda?tab=yolculuk.
+  // Native'de query hiç olmadığı için varsayılan "yolculuk" değişmiyor.
   const [hakkindaTab, setHakkindaTab] = useState(() => {
     try { return new URLSearchParams(window.location.search).get("tab") === "nedir" ? "nedir" : "yolculuk"; }
     catch (_) { return "yolculuk"; }
