@@ -8,7 +8,7 @@ window.SAKIN_I18N = {
 
 tr: {
   pageTitle: "Sakin · İçindeki sesi dinle",
-  navNedir: "Sakin Nedir", navBlog: "Blog", navTry: "Sakin'i Dene",
+  navYolculuk: "Yolculuk", navNedir: "Sakin Nedir", navBlog: "Blog", navTry: "Sakin'i Dene",
   heroLede: "Sakinleş ve içindeki sesi dinle. 🌿",
   heroSub: "Gürültülü dünyanın içinde kendine küçük bir alan aç.<br>Nefesini, enerjini, sembollerini, rüyalarını ve iç dünyanı keşfet.",
   freeBadge: "Ücretsiz",
@@ -70,7 +70,7 @@ tr: {
 
 en: {
   pageTitle: "Sakin · Listen to the voice within",
-  navNedir: "What Is Sakin", navBlog: "Blog", navTry: "Try Sakin",
+  navYolculuk: "Journey", navNedir: "What Is Sakin", navBlog: "Blog", navTry: "Try Sakin",
   heroLede: "Calm down and listen to the voice within. 🌿",
   heroSub: "Open a small space for yourself inside a noisy world.<br>Explore your breath, your energy, your symbols, your dreams and your inner world.",
   freeBadge: "Free",
@@ -132,7 +132,7 @@ en: {
 
 de: {
   pageTitle: "Sakin · Höre die Stimme in dir",
-  navNedir: "Was ist Sakin", navBlog: "Blog", navTry: "Sakin testen",
+  navYolculuk: "Reise", navNedir: "Was ist Sakin", navBlog: "Blog", navTry: "Sakin testen",
   heroLede: "Werde ruhig und höre die Stimme in dir. 🌿",
   heroSub: "Öffne dir einen kleinen Raum inmitten einer lauten Welt.<br>Erkunde deinen Atem, deine Energie, deine Symbole, deine Träume und deine innere Welt.",
   freeBadge: "Kostenlos",
@@ -194,7 +194,7 @@ de: {
 
 es: {
   pageTitle: "Sakin · Escucha la voz que llevas dentro",
-  navNedir: "Qué es Sakin", navBlog: "Blog", navTry: "Prueba Sakin",
+  navYolculuk: "Viaje", navNedir: "Qué es Sakin", navBlog: "Blog", navTry: "Prueba Sakin",
   heroLede: "Serénate y escucha la voz que llevas dentro. 🌿",
   heroSub: "Ábrete un pequeño espacio dentro de un mundo ruidoso.<br>Explora tu respiración, tu energía, tus símbolos, tus sueños y tu mundo interior.",
   freeBadge: "Gratis",
@@ -256,7 +256,7 @@ es: {
 
 pt: {
   pageTitle: "Sakin · Escuta a voz dentro de ti",
-  navNedir: "O que é Sakin", navBlog: "Blog", navTry: "Experimenta Sakin",
+  navYolculuk: "Jornada", navNedir: "O que é Sakin", navBlog: "Blog", navTry: "Experimenta Sakin",
   heroLede: "Acalma-te e escuta a voz dentro de ti. 🌿",
   heroSub: "Abre um pequeno espaço para ti dentro de um mundo barulhento.<br>Explora a tua respiração, a tua energia, os teus símbolos, os teus sonhos e o teu mundo interior.",
   freeBadge: "Grátis",
@@ -318,7 +318,7 @@ pt: {
 
 fr: {
   pageTitle: "Sakin · Écoute la voix en toi",
-  navNedir: "Qu'est-ce que Sakin", navBlog: "Blog", navTry: "Essayer Sakin",
+  navYolculuk: "Voyage", navNedir: "Qu'est-ce que Sakin", navBlog: "Blog", navTry: "Essayer Sakin",
   heroLede: "Apaise-toi et écoute la voix en toi. 🌿",
   heroSub: "Ouvre-toi un petit espace au cœur d'un monde bruyant.<br>Explore ton souffle, ton énergie, tes symboles, tes rêves et ton monde intérieur.",
   freeBadge: "Gratuit",
@@ -380,7 +380,7 @@ fr: {
 
 ja: {
   pageTitle: "Sakin · 内なる声に耳をすます",
-  navNedir: "Sakinとは", navBlog: "ブログ", navTry: "Sakinを試す",
+  navYolculuk: "旅", navNedir: "Sakinとは", navBlog: "ブログ", navTry: "Sakinを試す",
   heroLede: "静まり、内なる声に耳をすませて。🌿",
   heroSub: "騒がしい世界の中に、小さな余白をつくりましょう。<br>呼吸、エネルギー、象徴、夢、そして内なる世界を探ってみて。",
   freeBadge: "無料",

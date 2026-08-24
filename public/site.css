@@ -201,6 +201,15 @@ img { max-width:100%; height:auto; display:block; }
 }
 .nav-cta:hover { opacity:.9; }
 
+/* "Yolculuk" — diğer nav linkleri gibi düz metin değil, belirgin bir KUTU
+   (kullanıcı isteği). Uygulama içindeki "Sakin Nedir → Yolculuk" sekmesine
+   götürür. */
+.nav-box {
+  border:1px solid var(--ring) !important; border-radius:10px !important;
+  color:var(--accent) !important; font-weight:600 !important;
+}
+.nav-box:hover { background:var(--surface-2) !important; border-color:var(--accent) !important; }
+
 .icon-btn { font-size:16px !important; padding:0 10px !important; }
 .lang-wrap { position:relative; }
 .lang-menu {
