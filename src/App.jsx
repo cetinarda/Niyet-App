@@ -4454,7 +4454,14 @@ export default function SakinApp() {
   const [fotoTaniResult, setFotoTaniResult] = useState("");
   const [fotoTaniLoading, setFotoTaniLoading] = useState(false);
   const [ailesiEditBirth, setAilesiEditBirth] = useState(false);
-  const [hakkindaTab, setHakkindaTab] = useState("yolculuk");
+  // Web sitesindeki "Sakin Nedir" üst menü linki artık kendi sayfasında
+  // (#nedir'e) kaydırmıyor, doğrudan uygulama içindeki bu sekmeye
+  // yönlendiriyor: /hakkinda?tab=nedir. Native'de query hiç olmadığı için
+  // varsayılan "yolculuk" değişmiyor.
+  const [hakkindaTab, setHakkindaTab] = useState(() => {
+    try { return new URLSearchParams(window.location.search).get("tab") === "nedir" ? "nedir" : "yolculuk"; }
+    catch (_) { return "yolculuk"; }
+  });
   // App Store Guideline 5.1.1(v) — account deletion. Modal + helper state.
   // NOT: src/purchases.js'e DOKUNULMAZ. Apple'ın silme şartı KULLANICI verileri içindir;
   // abonelik iptali kullanıcının App Store ayarlarından kendi yaptığı ayrı bir işlemdir
