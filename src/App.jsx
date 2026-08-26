@@ -8423,6 +8423,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
             if(showAilesi) setShowAilesi(false);
             if(n.id==="rehber") setRehberTab("reiki");
+            // ⌂ ANA SAYFA: web'de artık EN BAŞA (giriş/HAZIRIM) değil, dörtlü
+            // menünün göründüğü ekrana döner (kullanıcı: "en başa değil dörtlü
+            // ekrana dönsün"). mandala = günün bağı: ilerleme omurgası, seri ve
+            // rozetler — bir "ana sayfa" için doğru içerik. Bu aynı zamanda adım
+            // akışından TEK çıkış yolu, çünkü ☰ menüsü sadeleştirildi.
+            // Native'de davranış değişmedi (giriş ekranına döner).
+            if(n.id==="giris" && !isNative) { setScreen("mandala"); setShowTopMenu(false); return; }
             if(n.id==="giris") setGirisPhase("intro");
             setScreen(n.id);
             setShowTopMenu(false);
@@ -8478,11 +8485,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
           // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
           const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
-          // Bağlan/Harita/Keşfet ☰ içinde KALIR (web'de de). Bir ara bunları
-          // "alt barda zaten var" diye web'den çıkarmıştım; ama tek-menü kuralıyla
-          // günün adım ekranlarında dörtlü bar GİZLENİYOR — o ekranlarda ☰ tek
-          // çıkış yolu. Çıkarılırsa kullanıcı adım akışında kilitli kalır.
-          const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
+          // WEB: ☰ menüsünde SADECE Terimler + tema kalır (kullanıcı isteği).
+          // Bağlan/Harita/Keşfet zaten dörtlü alt barda; adım ekranlarında o bar
+          // gizlense de ⌂ ana sayfa ikonu artık dörtlü ekrana döndürüyor, yani
+          // kullanıcı akışta kilitli kalmıyor (bu ikisi birlikte çalışır).
+          const menuItems = SIDEBAR_ITEMS.filter(n =>
+            n.id !== "giris" && (isNative || !["mandala","harita","ailesi"].includes(n.id)));
           return (
             <>
               {homeItem && renderBtn(homeItem)}
@@ -8788,14 +8796,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           textAlign:"center", background:"linear-gradient(165deg,rgba(34,25,52,0.64),rgba(16,11,28,0.64))",
           backgroundClip:"padding-box", WebkitBackgroundClip:"padding-box", border:"1.4px solid transparent",
           fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
-        const nameSt = { fontSize:12.5, letterSpacing:3, fontWeight:300, textTransform:"uppercase", fontFamily:"'Jost',sans-serif", margin:0 };
-        const descSt = { fontFamily:"'Inter',sans-serif", fontSize:10.5, lineHeight:1.45, color:"#9c8fb8", letterSpacing:0.2, margin:0 };
-        // Kısa, iki kartta DENGELİ açıklama (eşit satır sayısı → hizalı, kompakt).
-        const baglanMini = pickLang({ tr:"Niyet, nefes, ses", en:"Intention, breath, sound", de:"Absicht, Atem, Klang", es:"Intención, respiración, sonido", pt:"Intenção, respiração, som", fr:"Intention, souffle, son", ja:"意図・呼吸・音" }, lang);
-        const kesfetMini = pickLang({ tr:"Burç, tasarım, hayvan", en:"Sign, design, animal", de:"Zeichen, Design, Tier", es:"Signo, diseño, animal", pt:"Signo, design, animal", fr:"Signe, design, animal", ja:"星座・デザイン・動物" }, lang);
+        // KART METİNLERİ (kullanıcı referans tasarımı). Soyut etiket ("Bağlan" /
+        // "Keşfet") yerine NİYET cümlesi: kullanıcı ne yapmak istediğini seçiyor,
+        // uygulamanın iç adlandırmasını çözmek zorunda kalmıyor. Alt açıklama
+        // satırları ("Niyet, nefes, ses" / "Burç, tasarım, hayvan") KALDIRILDI
+        // (kullanıcı: "alt açıklamaları kaldır"); yerine tek bir süre ipucu var,
+        // çünkü seçimi asıl kolaylaştıran şey ne kadar süreceği.
+        const nameSt = { fontSize:15, letterSpacing:0.2, fontWeight:300, lineHeight:1.32, color:"#efe8ff", fontFamily:"'Jost',sans-serif", margin:0 };
+        // textTransform YOK: "lowercase" Almanca'da "1 Minute"i "1 minute" yapıyordu
+        // (Almanca'da isimler büyük harfle başlar). Metin dilin kendi yazımında kalsın.
+        const timeSt = { fontFamily:"'Jost',sans-serif", fontSize:10.5, letterSpacing:2, color:"#8d81a8", fontWeight:300, margin:0 };
+        const baglanName = pickLang({ tr:"Şimdi sakinleşmek istiyorum", en:"I want to calm down now", de:"Ich möchte jetzt zur Ruhe kommen", es:"Quiero calmarme ahora", pt:"Quero acalmar-me agora", fr:"Je veux me calmer maintenant", ja:"いま落ち着きたい" }, lang);
+        const kesfetName = pickLang({ tr:"Kendimi tanımak istiyorum", en:"I want to know myself", de:"Ich möchte mich kennenlernen", es:"Quiero conocerme", pt:"Quero conhecer-me", fr:"Je veux me connaître", ja:"自分を知りたい" }, lang);
+        const baglanTime = pickLang({ tr:"1 dakika", en:"1 minute", de:"1 Minute", es:"1 minuto", pt:"1 minuto", fr:"1 minute", ja:"1分" }, lang);
+        const kesfetTime = pickLang({ tr:"2 dakika", en:"2 minutes", de:"2 Minuten", es:"2 minutos", pt:"2 minutos", fr:"2 minutes", ja:"2分" }, lang);
         // ── Ölçülen boyuttan px geometri: çizgiler kart tepelerine BAĞLANIR ──
         const W = nedirDims?.w || 390, H = nedirDims?.h || 844;
-        const padSide = 30, gap = 13, cardH = 106;
+        // cardH 106 -> 142: niyet cümlesi 2-3 satıra sarıyor (eski tek kelimelik
+        // "BAĞLAN"/"KEŞFET" etiketleri tek satırdı). Alçak bırakılırsa yazı kartı
+        // taşırıyor. Yükseklik SABİT: iki kart eşit kalsın ve alttaki "Sakin
+        // nedir?" / "bir daha gösterme" konumları (cardTopPx + cardH) kaymasın.
+        const padSide = 30, gap = 13, cardH = 142;
         const cardW = (W - padSide * 2 - gap) / 2;
         const leftCX = padSide + cardW / 2;          // sol kart merkez X
         const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
@@ -8850,14 +8871,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
-                <div style={{ ...nameSt,color:"#e0d0f4" }}>{pickLang(NEDIR_I18N.baglanT, lang)}</div>
-                <div style={descSt}>{baglanMini}</div>
+                <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
+                <div style={timeSt}>{baglanTime}</div>
               </button>
               <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
-                <div style={{ ...nameSt,color:"#f3e4bd" }}>{pickLang(NEDIR_I18N.kesfetT, lang)}</div>
-                <div style={descSt}>{kesfetMini}</div>
+                <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
+                <div style={timeSt}>{kesfetTime}</div>
               </button>
             </div>
 
