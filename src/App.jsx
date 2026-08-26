@@ -7262,7 +7262,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // +26px NEFES PAYI: formül tam olarak bar'ın yüksekliği kadardı, yani
         // "SAKİN AİLESİ" yazısı bar'a 6px kalıyordu (ölçüldü: barBottom 88, titleTop
         // 94). Kullanıcı: "sakin ailesi yazısı ile üst bar çok bitişik".
-        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"flex-start",justifyContent:"center",padding: (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
+        <div onClick={isNative ? ()=>setShowAilesi(false) : undefined}
+          /* WEB: Keşfet artık "modal" değil, Ben/Bağlan gibi TAM EKRAN yüzey.
+             • zIndex 10000 -> 9990: alt bar (9999) artık panelin ÜSTÜNDE kalır,
+               yani Keşfet'teyken de sabit ve tıklanabilir (modal'ken altında
+               kalıyordu).
+             • Yarı saydam koyu backdrop + blur yerine düz #000 (uygulama zemini):
+               arkadaki ekran görünmesin ama "yüzen kutu" hissi de olmasın.
+             • Yanlardaki pencere payı azaldı, alt boşluk sabit barı açacak kadar
+               (96px) büyüdü ki son kart barın altında kalmasın.
+             • Dışına tıklayınca kapanma kalktı: artık bir ekran, kazara
+               kapanmamalı; çıkış üst soldaki geri oku ve alt bar.
+             Native'de eski modal davranışı aynen korunuyor. */
+          style={{ position:"fixed",inset:0,
+            zIndex: isNative ? 10000 : 9990,
+            background: isNative ? "rgba(0,0,0,0.85)" : "#000000",
+            backdropFilter: isNative ? "blur(12px)" : undefined,
+            display:"flex",alignItems:"flex-start",justifyContent:"center",
+            padding: isNative
+              ? (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px"
+              : (topNavVisible ? "calc(104px + var(--sat))" : "calc(60px + var(--sat))") + " 14px calc(96px + var(--android-sab)) 14px" }}>
           {/* overscrollBehaviorY:contain → kart sonuna gelince kaydırma arkadaki
               .sakin-app-root'a ZİNCİRLENMEZ (arka plan oynamaz). */}
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",overscrollBehaviorY:"contain",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
