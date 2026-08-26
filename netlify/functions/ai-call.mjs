@@ -124,6 +124,15 @@ function buildSanitizer(lang) {
     for (const { re, keepFor } of Object.values(ranges)) {
       if (!keepFor.includes(lang)) out = out.replace(re, "");
     }
+    // UZUN CIZGI TEMIZLIGI (projenin altin kurali: hicbir yerde em/en dash yok).
+    // Prompt'ta zaten "em dash kullanma" yaziyor ama TALIMAT OLASILIKSAL: model
+    // em dash'i (U+2014) atlayip en dash (U+2013) kullanabiliyor. Gercek ornek:
+    // "5. Bekleyis (Xu) – Bu heksagram..." (I Ching bolumu testinde yakalandi).
+    // Burada deterministik olarak temizleniyor, yani model ne yaparsa yapsin
+    // cikti kurala uyuyor.
+    // Cizgi CUMLE BAGLACI olarak kullanildiginda (bosluk-cizgi-bosluk) iki nokta
+    // uygun dusuyor; kelime icinde/bitisikse (ornek: "1900-2000") duz kisa cizgi.
+    out = out.replace(/ [—–―] /g, ": ").replace(/[—–―]/g, "-");
     return out.trim();
   };
 }
@@ -157,7 +166,7 @@ function buildLanguageDirective(lang) {
 You MUST write the ENTIRE response in ${meta.name} (${meta.native}), regardless of the language of the user's input, the language of the context/system text, or any examples shown. Do NOT translate the user's input; only the OUTPUT must be in ${meta.name}.
 Do not switch languages mid-response. Do not add parenthetical translations. ${meta.sample}
 Do not use Chinese, Arabic, Korean, Devanagari, or any script that is not part of ${meta.name}${lang === "ja" ? "" : " (Japanese scripts only allowed when the output language is Japanese)"}.
-Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
+Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 
 `;
 }
