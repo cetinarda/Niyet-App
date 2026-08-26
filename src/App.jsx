@@ -694,6 +694,23 @@ const REVEAL_I18N = {
   tasarim:{ tr:"Tasarımını keşfet ✦", en:"Explore your design ✦", de:"Entdecke dein Design ✦", es:"Explora tu diseño ✦", pt:"Explora o teu design ✦", fr:"Explore ton design ✦", ja:"あなたのデザインを見る ✦" },
   gune:   { tr:"Güne başla ◎", en:"Start your day ◎", de:"Beginne den Tag ◎", es:"Empieza el día ◎", pt:"Começa o dia ◎", fr:"Commence la journée ◎", ja:"一日を始める ◎" },
 };
+// Giriş ekranındaki panik butonunun metni. Sağ alt köşedeki sabit rozet
+// "PANİK BUTONU" yazıyordu; kullanıcı bunu HAZIRIM'ın altına alıp "Nefes al"
+// olarak yumuşatmak istedi (giriş ekranında "panik" kelimesi sert duruyor,
+// çağrı yine aynı: doğrudan 4-7-8 sakinleştirici nefes).
+// Yeni alt navigasyon (SADECE WEB) etiketleri — 7 dil, i18n dosyalarına
+// dokunmadan (NEXT_CHAKRA_TXT ile aynı desen).
+const TAB_TXT = {
+  bugun:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
+  ben:      { tr:"Ben", en:"Me", de:"Ich", es:"Yo", pt:"Eu", fr:"Moi", ja:"わたし" },
+  ayna:     { tr:"Ayna", en:"Mirror", de:"Spiegel", es:"Espejo", pt:"Espelho", fr:"Miroir", ja:"鏡" },
+  bag:      { tr:"Bağ", en:"Bond", de:"Band", es:"Vínculo", pt:"Vínculo", fr:"Lien", ja:"絆" },
+  terimler: { tr:"Terimler", en:"Glossary", de:"Begriffe", es:"Glosario", pt:"Glossário", fr:"Lexique", ja:"用語集" },
+};
+const PANIC_ENTRY_TXT = {
+  tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
+  pt:"Respira", fr:"Respire", ja:"深呼吸する",
+};
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
@@ -4012,6 +4029,65 @@ function LangPicker({ lang, setLang, compact = false }) {
 }
 
 
+// ── ALT NAVİGASYON İKONLARI (web) ──────────────────────────────────────────
+// EMOJİ DEĞİL (kullanıcı: "emoji değil appe uygun zarif ve uyumlu iconlar").
+// Neden SVG: emoji her platformda BAŞKA çizilir (iOS/Android/Windows farklı
+// tasarım), rengi değiştirilemez ve uygulamanın ince çizgi diline (Jost 200-300,
+// ◎ ✦ ⌖ ☽ geometrik glifler) uymaz. Bu setin tamamı tek kalınlıkta (1.5) çizgi,
+// currentColor ile aktif/pasif rengini nav'dan alır, her ekranda birebir aynıdır.
+function TabIcon({ id, size = 21 }) {
+  const s = { fill:"none", stroke:"currentColor", strokeWidth:1.5, strokeLinecap:"round", strokeLinejoin:"round" };
+  const svg = (children) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden="true" style={{ display:"block" }}>{children}</svg>
+  );
+  switch (id) {
+    // ── Ana sekmeler ──
+    case "bugun":  // güneş: günün kendisi
+      return svg(<><circle cx="12" cy="12" r="4.2" {...s} />
+        <path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5l1.5 1.5M17 17l1.5 1.5M18.5 5.5L17 7M7 17l-1.5 1.5" {...s} /></>);
+    case "kesfet": // dört uçlu parıltı (uygulamadaki ✦ ile aynı dil)
+      return svg(<path d="M12 2.6c.7 5.2 2.5 7 7.7 7.7-5.2.7-7 2.5-7.7 7.7-.7-5.2-2.5-7-7.7-7.7 5.2-.7 7-2.5 7.7-7.7Z" {...s} />);
+    case "ben":    // kişi: baş + omuz
+      return svg(<><circle cx="12" cy="8.1" r="3.5" {...s} />
+        <path d="M5.3 19.8c0-3.7 3-6.3 6.7-6.3s6.7 2.6 6.7 6.3" {...s} /></>);
+    case "baglan": // eşmerkezli halkalar (uygulamadaki ◎ ile aynı dil)
+      return svg(<><circle cx="12" cy="12" r="2.1" fill="currentColor" stroke="none" />
+        <circle cx="12" cy="12" r="6" {...s} /><circle cx="12" cy="12" r="9.7" {...s} /></>);
+    // ── Bugün alt adımları ──
+    case "sabah":  // ufuktan doğan güneş
+      return svg(<><path d="M3.2 18.6h17.6" {...s} /><path d="M6.6 18.6a5.4 5.4 0 0 1 10.8 0" {...s} />
+        <path d="M12 3.4v2.2M4.6 8.4 6.2 10M19.4 8.4 17.8 10" {...s} /></>);
+    case "gun":    // günün görevleri: onay listesi
+      return svg(<><path d="M4 7.4l1.8 1.8L9.2 5.8M4 16.4l1.8 1.8 3.4-3.4" {...s} />
+        <path d="M12.4 7.6h7.4M12.4 16.6h7.4" {...s} /></>);
+    case "nefes":  // genişleyen nefes halkası (merkez + iki yay)
+      return svg(<><circle cx="12" cy="12" r="3.2" {...s} />
+        <path d="M6.9 7.3a7 7 0 0 0 0 9.4" {...s} /><path d="M17.1 7.3a7 7 0 0 1 0 9.4" {...s} /></>);
+    case "ses":    // ses dalgaları
+      return svg(<><path d="M4.6 9.6v4.8" {...s} /><path d="M8.6 6.6v10.8" {...s} />
+        <path d="M12.6 9v6" {...s} /><path d="M16.6 5.4v13.2" {...s} /><path d="M20.4 10.2v3.6" {...s} /></>);
+    case "chakra": // elmas + merkez (uygulamanın logo dili)
+      return svg(<><path d="M12 3.2 20.4 12 12 20.8 3.6 12Z" {...s} />
+        <circle cx="12" cy="12" r="2.2" {...s} /></>);
+    case "aksam":  // hilal
+      return svg(<path d="M19.4 14.6A8 8 0 0 1 9.2 4.5a8 8 0 1 0 10.2 10.1Z" {...s} />);
+    // ── Bağlan alt öğeleri ──
+    case "ayna":   // yansıma: bir biçim ve aynadaki soluk ikizi
+      // İlk deneme oval çerçeveydi ama 16px'te ampule benziyordu (screenshot ile
+      // yakalandı). Yansıma metaforu bu boyutta çok daha okunaklı.
+      // Üçgen ikizler 16px'te kalabalıktı; daire daha temiz okunuyor.
+      return svg(<><circle cx="12" cy="7.6" r="3.6" {...s} />
+        <path d="M3.4 12.4h17.2" {...s} />
+        <circle cx="12" cy="17.2" r="3.6" {...s} strokeDasharray="2 2.3" /></>);
+    case "terimler": // açık kitap (sözlük)
+      return svg(<><path d="M12 6.4v13" {...s} />
+        <path d="M12 6.4C10.3 5.2 8.2 4.6 5.4 4.6a1 1 0 0 0-1 1v11.8a1 1 0 0 0 1 1c2.8 0 4.9.6 6.6 1.8" {...s} />
+        <path d="M12 6.4c1.7-1.2 3.8-1.8 6.6-1.8a1 1 0 0 1 1 1v11.8a1 1 0 0 1-1 1c-2.8 0-4.9.6-6.6 1.8" {...s} /></>);
+    default:
+      return svg(<circle cx="12" cy="12" r="7" {...s} />);
+  }
+}
+
 // Yolculuk haritası — 10 adım (hakkinda > yolculuk sekmesi). Host dilinde gösterilir.
 // 7 Ayna Geçidi · 9 Bağlantı · 10 Sakin Ailesi sonradan eklenen adımlardır.
 const JOURNEY_STEPS = [
@@ -6985,6 +7061,57 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
+  // ── YENİ ALT NAVİGASYON (SADECE WEB) ──────────────────────────────────────
+  // Kullanıcı isteği: 6 günlük adımı yan yana dizen alt bar yerine 4 ana sekme;
+  // her sekme kendi araçlarını hemen üstündeki şeritte açsın.
+  //   Bugün  → günün akışı (sabah · gün · nefes · ses · çakra · akşam)
+  //   Keşfet → Sakin Ailesi araçları (mevcut tam ekran modal)
+  //   Ben    → harita ekranı (galaktik kimlik, doğum haritası, gökyüzü + haftalık rapor)
+  //   Bağlan → Bağ (mandala: seri/rozetler) · Ayna (içsel ayna)
+  // BAĞLAN İÇERİĞİ BİR ÖNERİ (kullanıcı: "bu yeni menüde ne olabilir uygun bi
+  // deneme yap"): "bağlanma" fiilinin iki yönü bir arada — günlük pratiğinle
+  // bağın (mandala) ve iç sesinle bağın (ayna). Ayna şu an yalnızca gizli ☽
+  // geçidinden bulunabiliyordu; buraya alınınca keşfedilebilir oluyor.
+  const TAB_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
+  const MAIN_TABS = [
+    {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a"},
+    {id:"kesfet", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060"},
+    {id:"ben",    label:pickLang(TAB_TXT.ben, lang),        color:"#82d9a3"},
+    {id:"baglan", label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+  ];
+  // Aktif sekme: Keşfet bir `screen` değil `showAilesi` overlay'i olduğu için
+  // önce o kontrol edilir (üst bardaki aynı tuzak, bkz. renderBtn yorumu).
+  const activeTab = showAilesi ? "kesfet"
+    : screen === "harita" ? "ben"
+    : ["mandala","rehber"].includes(screen) ? "baglan"
+    : TAB_STEPS.includes(screen) ? "bugun"
+    : null;
+  const TAB_SUBS = {
+    bugun: TAB_STEPS.map(id => {
+      const n = NAV.find(x => x.id === id);
+      return { id, label: n?.label || id, color: n?.color || "#888888" };
+    }),
+    baglan: [
+      {id:"mandala", icon:"baglan", label:pickLang(TAB_TXT.bag, lang),  color:"#b87adc"},
+      {id:"ayna",    icon:"ayna",   label:pickLang(TAB_TXT.ayna, lang), color:"#c8a8e8"},
+    ],
+  };
+  const goTab = (id) => {
+    try { haptic(); } catch(_) {}
+    if (id === "kesfet") { setShowAilesi(true); return; }
+    setShowAilesi(false);
+    // Bugün → tamamlanmamış ilk adım (kullanıcıyı kaldığı yerden devam ettirir).
+    if (id === "bugun")  { setScreen(TAB_STEPS.find(s => !stepsCompleted[s]) || "sabah"); return; }
+    if (id === "ben")    { setScreen("harita"); return; }
+    if (id === "baglan") { setScreen("mandala"); return; }
+  };
+  const goSub = (id) => {
+    setShowAilesi(false);
+    // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
+    if (id === "ayna") { openMirror(); return; }
+    setScreen(id);
+  };
+
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
     {id:"giris",  icon:"⌂", label:"", color:"#c0a8e0", iconOnly:true},
@@ -6995,6 +7122,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
+  // PANİK → sakinleştirici nefes. Eskiden yalnızca giriş ekranının sağ alt
+  // köşesindeki sabit rozetin içindeydi; buton HAZIRIM'ın altına taşınınca
+  // davranış tek fonksiyona çıkarıldı (iki yerde kopyalanmasın).
+  const goPanicBreath = () => {
+    try { haptic(); } catch(_) {}
+    pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
+    panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
+    setScreen("nefes");
+  };
   // Ayna (gizli geçit) açılışı — hem üst bardaki orta buton hem eski floating ☽
   // aynı davranışı kullansın diye tek fonksiyona çıkarıldı.
   const openMirror = () => {
@@ -7429,20 +7565,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
-      {/* PANİK BUTONU — yalnızca GİRİŞ ekranında sağ alt köşe (kullanıcı isteğiyle
-          diğer ekranlarda gizli). Tıklayınca en uygun sakinleştirici nefesi (4-7-8)
-          DOĞRUDAN başlatır; teknik premium olsa bile panik istisnası ile çalışır. */}
-      {screen === "giris" && !embeddedApp && !mirrorPortalActive && (
+      {/* PANİK BUTONU (NATIVE) — yalnızca GİRİŞ ekranında sağ alt köşe. WEB'de bu
+          buton HAZIRIM'ın altına taşındı (kullanıcı: yeni yerleşim sadece web),
+          o yüzden burası artık isNative ile sınırlı. Tıklayınca en uygun
+          sakinleştirici nefesi (4-7-8) DOĞRUDAN başlatır; teknik premium olsa bile
+          panik istisnası ile çalışır. */}
+      {isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
         <button
-          onClick={()=>{
-            try { haptic(); } catch(_) {}
-            pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
-            panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
-            // Not: 'Sakin'i tanı' tanıtım popup'ı zaten otomatik açılmıyor. Burada eskiden
-            // İKİ tanımsız referans kaldı (sakinIntroCheckedRef, sonra setShowSakinIntro) →
-            // ReferenceError ile panik butonu nefesi hiç başlatamıyordu. İkisi de kaldırıldı.
-            setScreen("nefes");
-          }}
+          onClick={goPanicBreath}
           aria-label={t("panic_aria")}
           title={t("panic_aria")}
           style={{
@@ -7464,6 +7594,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         >
           <span>{t("panic_button")}</span>
         </button>
+      )}
+
+      {/* DİL SEÇİCİ — WEB giriş ekranında SAĞ ÜST (kullanıcı: "açılıştaki dil
+          çubuğunu sağ üste al" + referans tasarım). Eskiden HAZIRIM'ın altındaydı
+          ve o alanı kalabalıklaştırıyordu. Native'de eski yerinde kaldı.
+          Giriş ekranında üst nav barı zaten gizli, burası boş; çakışma yok. */}
+      {!isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
+        <div style={{ position:"fixed",
+            // Web'de üstte 44px'lik marka/politika nav barı var; 10px'e koyunca dil
+            // seçici onun ALTINDA kalıp yarısı görünmüyordu (screenshot ile yakalandı).
+            top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
+            right:14, zIndex:9997 }}>
+          <LangPicker lang={lang} setLang={setLang} compact />
+        </div>
       )}
 
       {/* AYNA GEÇİDİ — Sakin Ailesi girişiyle aynı stargate portal geçişi */}
@@ -8346,7 +8490,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
           // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
           const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
-          const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
+          // WEB: Bağlan/Harita/Keşfet artık alt bardaki ana sekmeler — aynı üç
+          // öğeyi ☰ menüsünde de göstermek tekrar olurdu. Web'de menü yalnızca
+          // "ekstralar" kalıyor (Terimler + tema). Native'de alt bar eski 6'lı
+          // düzende olduğu için bu üçü menüde kalmalı.
+          const menuItems = SIDEBAR_ITEMS.filter(n =>
+            n.id !== "giris" && (isNative || !["mandala","harita","ailesi"].includes(n.id)));
           return (
             <>
               {homeItem && renderBtn(homeItem)}
@@ -8406,6 +8555,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
+                    {/* TERİMLER (sözlük) — web'de eski kırmızı "?" balonunun yerini alır.
+                        Native'de o balon hâlâ duruyor, bu satır tekrar olmasın diye web'e özel. */}
+                    {!isNative && (
+                      <button onClick={()=>{ setShowKilavuz(true); setShowTopMenu(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background: showKilavuz ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
+                        <span style={{ display:"flex", width:15, justifyContent:"center" }}><TabIcon id="terimler" size={15} /></span>
+                        <span>{pickLang(TAB_TXT.terimler, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    )}
                     {/* Açık/koyu tema — menünün EN ALTINDA. Artık mobilde de (iOS/Android) var. */}
                     {(<>
                       <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
@@ -8793,10 +8954,34 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
                     Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
-                <button className="sakin-btn-primary" onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
-                <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
-                  <LangPicker lang={lang} setLang={setLang} />
-                </div>
+                {/* ⚠️ YENİ GİRİŞ YERLEŞİMİ = SADECE WEB (kullanıcı: "bu istekleri
+                    sadece webe uygula"). Native (iOS/Android) mağazadaki düzeni
+                    birebir korur; web'de yeni tasarım denenir. Değişen TEK şey
+                    konumlandırma: elmas dönmesi, "Sakin" yazısı ve tagline aynı.
+                    Web: HAZIRIM tam genişlik + altında "Nefes al" + dil sağ üstte.
+                    Native: HAZIRIM eski genişliği + altında dil + sağ altta panik. */}
+                <button className="sakin-btn-primary"
+                  style={isNative ? undefined : { width:"100%",display:"block",boxSizing:"border-box" }}
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                {/* WEB: panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
+                    Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır. */}
+                {!isNative && (
+                  <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
+                    style={{ marginTop:16,padding:"12px 34px",borderRadius:100,
+                      border:"1px solid rgba(224,168,96,0.55)",background:"transparent",
+                      WebkitAppearance:"none",appearance:"none",
+                      color:"rgba(240,200,150,0.92)",fontSize:13,letterSpacing:2.5,
+                      fontFamily:"'Jost',sans-serif",fontWeight:300,textTransform:"uppercase",
+                      cursor:"pointer",whiteSpace:"nowrap",minHeight:44 }}>
+                    {pickLang(PANIC_ENTRY_TXT, lang)}
+                  </button>
+                )}
+                {/* NATIVE: dil seçici eski yerinde (HAZIRIM'ın altı) kalır. */}
+                {isNative && (
+                  <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
+                    <LangPicker lang={lang} setLang={setLang} />
+                  </div>
+                )}
                 {!isNative && (
                   <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
                     <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
@@ -12119,7 +12304,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* Adım noktaları + alt gezinme: yalnızca KAYDIRMA ZİNCİRİNDEKİ ekranlarda.
           "mandala" (bağlan) zincirden çıkarıldığı için buradan da çıkarıldı —
           yoksa zincir dışı bir ekranda "N · ADIM" göstergesi kafa karıştırırdı. */}
-      {["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
+      {/* SADECE NATIVE: web'de bu şeridin işini yeni "araç şeridi" görüyor (hangi
+          adımdasın + hangileri bitti), üst üste iki şerit çıkmasın diye. */}
+      {isNative && ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
         <div className="sakin-progress-strip" style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
@@ -12133,8 +12320,68 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* BOTTOM NAV */}
-      {!["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {/* ── ALT NAVİGASYON · WEB ── 4 ana sekme + aktif sekmenin araç şeridi.
+          Native (iOS/Android) mağaza düzenini korur, aşağıdaki eski 6'lı barı
+          kullanır (kullanıcı: "bu istekleri sadece webe uygula"). */}
+      {!isNative && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+        <>
+          {/* ARAÇ ŞERİDİ — aktif sekmenin alt öğeleri. Web'de adım noktalarının
+              (progress strip) yerini alır: hangi adımdasın (dolu pill) ve hangi
+              adımlar bitti (✓) bilgisini aynı anda taşır. */}
+          {activeTab && TAB_SUBS[activeTab] && (
+            <div style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab) + 64px)",left:"50%",transform:"translateX(-50%)",zIndex:9998,
+              display:"flex",gap:2,alignItems:"center",background:"rgba(0,0,0,0.86)",backdropFilter:"blur(18px)",
+              border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"4px 6px",
+              maxWidth:"calc(100vw - 16px)",overflowX:"auto",scrollbarWidth:"none" }}>
+              {TAB_SUBS[activeTab].map(sub => {
+                const on = screen === sub.id;
+                const done = !!stepsCompleted[sub.id];
+                return (
+                  <button key={sub.id} onClick={()=>goSub(sub.id)} title={sub.label}
+                    style={{ WebkitAppearance:"none",appearance:"none",
+                      background: on ? `${sub.color}22` : "transparent",
+                      border: on ? `1px solid ${sub.color}44` : "1px solid transparent",
+                      borderRadius:100,cursor:"pointer",transition:"background .3s, border .3s",
+                      padding: on ? "6px 12px" : "6px 9px",
+                      display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexShrink:0,
+                      color: on ? sub.color : done ? `${sub.color}aa` : `${sub.color}7a` }}>
+                    <TabIcon id={sub.icon || sub.id} size={16} />
+                    {on && <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:1,lineHeight:1,whiteSpace:"nowrap" }}>
+                      {(sub.label||"").toLocaleUpperCase(t("locale_code"))}
+                    </span>}
+                    {!on && done && <span style={{ fontSize:9,lineHeight:1 }}>✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {/* 4 ANA SEKME */}
+          <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
+            display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
+            border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
+            {MAIN_TABS.map(tb => {
+              const on = activeTab === tb.id;
+              return (
+                <button key={tb.id} onClick={()=>goTab(tb.id)}
+                  style={{ WebkitAppearance:"none",appearance:"none",
+                    background: on ? `${tb.color}22` : "transparent",
+                    border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
+                    borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
+                    padding:"7px 14px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
+                    minWidth:62,color: on ? tb.color : `${tb.color}7a` }}>
+                  <TabIcon id={tb.id} size={on ? 21 : 19} />
+                  <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
+                    {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* BOTTOM NAV — NATIVE (mağaza düzeni, değişmedi) */}
+      {isNative && !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
@@ -12161,8 +12408,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* FLOATING HELP BUTTON */}
-      {!["giris"].includes(screen) && !showKilavuz && (
+      {/* FLOATING HELP BUTTON — SADECE NATIVE. Web'de bu kırmızı "?" balonu
+          kaldırıldı; terimler sözlüğü ☰ menüsüne "TERİMLER" adıyla taşındı
+          (kullanıcı: "soru işaretini ... uygun isimle hamburger ekranına taşı").
+          Sebep: parlak kırmızı daire uygulamanın sakin diline aykırıydı ve
+          içeriğinin ne olduğunu ("?" ile) anlatmıyordu. */}
+      {isNative && !["giris"].includes(screen) && !showKilavuz && (
         <button
           onClick={() => setShowKilavuz(true)}
           style={{
