@@ -7067,11 +7067,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   //   Bugün  → günün akışı (sabah · gün · nefes · ses · çakra · akşam)
   //   Keşfet → Sakin Ailesi araçları (mevcut tam ekran modal)
   //   Ben    → harita ekranı (galaktik kimlik, doğum haritası, gökyüzü + haftalık rapor)
-  //   Bağlan → Bağ (mandala: seri/rozetler) · Ayna (içsel ayna)
-  // BAĞLAN İÇERİĞİ BİR ÖNERİ (kullanıcı: "bu yeni menüde ne olabilir uygun bi
-  // deneme yap"): "bağlanma" fiilinin iki yönü bir arada — günlük pratiğinle
-  // bağın (mandala) ve iç sesinle bağın (ayna). Ayna şu an yalnızca gizli ☽
-  // geçidinden bulunabiliyordu; buraya alınınca keşfedilebilir oluyor.
+  //   Bağlan → mandala (seri/rozetler)
+  //
+  // TEK MENÜ KURALI (kullanıcı düzeltmesi: "karışıklığı önlemek için"):
+  // İKİ BAR AYNI ANDA GÖRÜNMEZ. İlk denemede dörtlü barın üstüne bir "araç
+  // şeridi" koymuştum; kullanıcı bunu üst üste iki menü olarak gördü. Artık:
+  //   • Günün adım ekranlarında (sabah…akşam) SADECE eski 6'lı bar + adım
+  //     göstergesi görünür (mağazadaki tasarımın aynısı), dörtlü bar KAYBOLUR.
+  //   • Diğer ekranlarda SADECE dörtlü bar görünür.
+  // Adım akışından çıkış yolu ☰ menüsüdür (eski tasarımdaki gibi) — bu yüzden
+  // Bağlan/Harita/Keşfet web'de de ☰ içinde KALIR.
   const TAB_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
   const MAIN_TABS = [
     {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a"},
@@ -7086,16 +7091,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : ["mandala","rehber"].includes(screen) ? "baglan"
     : TAB_STEPS.includes(screen) ? "bugun"
     : null;
-  const TAB_SUBS = {
-    bugun: TAB_STEPS.map(id => {
-      const n = NAV.find(x => x.id === id);
-      return { id, label: n?.label || id, color: n?.color || "#888888" };
-    }),
-    baglan: [
-      {id:"mandala", icon:"baglan", label:pickLang(TAB_TXT.bag, lang),  color:"#b87adc"},
-      {id:"ayna",    icon:"ayna",   label:pickLang(TAB_TXT.ayna, lang), color:"#c8a8e8"},
-    ],
-  };
   const goTab = (id) => {
     try { haptic(); } catch(_) {}
     if (id === "kesfet") { setShowAilesi(true); return; }
@@ -7105,13 +7100,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     if (id === "ben")    { setScreen("harita"); return; }
     if (id === "baglan") { setScreen("mandala"); return; }
   };
-  const goSub = (id) => {
-    setShowAilesi(false);
-    // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
-    if (id === "ayna") { openMirror(); return; }
-    setScreen(id);
-  };
-
   const SIDEBAR_ITEMS = [
     // Giriş: sadece ev ikonu (yazı yok) — üst barda kompakt buton
     {id:"giris",  icon:"⌂", label:"", color:"#c0a8e0", iconOnly:true},
@@ -8490,12 +8478,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Günlük akış ekranları: ⌂ (sol) · ☽ Ayna (ORTA) · ☰ (SAĞ). Web açık/koyu
           // tema butonu ☰ menüsünün EN ALTINDA (kullanıcı isteği).
           const homeItem = SIDEBAR_ITEMS.find(n => n.id === "giris");
-          // WEB: Bağlan/Harita/Keşfet artık alt bardaki ana sekmeler — aynı üç
-          // öğeyi ☰ menüsünde de göstermek tekrar olurdu. Web'de menü yalnızca
-          // "ekstralar" kalıyor (Terimler + tema). Native'de alt bar eski 6'lı
-          // düzende olduğu için bu üçü menüde kalmalı.
-          const menuItems = SIDEBAR_ITEMS.filter(n =>
-            n.id !== "giris" && (isNative || !["mandala","harita","ailesi"].includes(n.id)));
+          // Bağlan/Harita/Keşfet ☰ içinde KALIR (web'de de). Bir ara bunları
+          // "alt barda zaten var" diye web'den çıkarmıştım; ama tek-menü kuralıyla
+          // günün adım ekranlarında dörtlü bar GİZLENİYOR — o ekranlarda ☰ tek
+          // çıkış yolu. Çıkarılırsa kullanıcı adım akışında kilitli kalır.
+          const menuItems = SIDEBAR_ITEMS.filter(n => n.id !== "giris");
           return (
             <>
               {homeItem && renderBtn(homeItem)}
@@ -12304,9 +12291,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* Adım noktaları + alt gezinme: yalnızca KAYDIRMA ZİNCİRİNDEKİ ekranlarda.
           "mandala" (bağlan) zincirden çıkarıldığı için buradan da çıkarıldı —
           yoksa zincir dışı bir ekranda "N · ADIM" göstergesi kafa karıştırırdı. */}
-      {/* SADECE NATIVE: web'de bu şeridin işini yeni "araç şeridi" görüyor (hangi
-          adımdasın + hangileri bitti), üst üste iki şerit çıkmasın diye. */}
-      {isNative && ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
+      {/* Adım göstergesi eski 6'lı barla BİRLİKTE gelir (ekteki referans düzen).
+          Native: eskisi gibi. Web: yalnızca günün adım ekranlarında — "harita"
+          web'de artık "Ben" sekmesi ve orada dörtlü menü var, göstergeye gerek yok. */}
+      {(isNative
+          ? ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen)
+          : (!showAilesi && TAB_STEPS.includes(screen))) && (
         <div className="sakin-progress-strip" style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
@@ -12320,68 +12310,42 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* ── ALT NAVİGASYON · WEB ── 4 ana sekme + aktif sekmenin araç şeridi.
-          Native (iOS/Android) mağaza düzenini korur, aşağıdaki eski 6'lı barı
-          kullanır (kullanıcı: "bu istekleri sadece webe uygula"). */}
-      {!isNative && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <>
-          {/* ARAÇ ŞERİDİ — aktif sekmenin alt öğeleri. Web'de adım noktalarının
-              (progress strip) yerini alır: hangi adımdasın (dolu pill) ve hangi
-              adımlar bitti (✓) bilgisini aynı anda taşır. */}
-          {activeTab && TAB_SUBS[activeTab] && (
-            <div style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab) + 64px)",left:"50%",transform:"translateX(-50%)",zIndex:9998,
-              display:"flex",gap:2,alignItems:"center",background:"rgba(0,0,0,0.86)",backdropFilter:"blur(18px)",
-              border:"1px solid rgba(255,255,255,0.06)",borderRadius:100,padding:"4px 6px",
-              maxWidth:"calc(100vw - 16px)",overflowX:"auto",scrollbarWidth:"none" }}>
-              {TAB_SUBS[activeTab].map(sub => {
-                const on = screen === sub.id;
-                const done = !!stepsCompleted[sub.id];
-                return (
-                  <button key={sub.id} onClick={()=>goSub(sub.id)} title={sub.label}
-                    style={{ WebkitAppearance:"none",appearance:"none",
-                      background: on ? `${sub.color}22` : "transparent",
-                      border: on ? `1px solid ${sub.color}44` : "1px solid transparent",
-                      borderRadius:100,cursor:"pointer",transition:"background .3s, border .3s",
-                      padding: on ? "6px 12px" : "6px 9px",
-                      display:"flex",alignItems:"center",justifyContent:"center",gap:6,flexShrink:0,
-                      color: on ? sub.color : done ? `${sub.color}aa` : `${sub.color}7a` }}>
-                    <TabIcon id={sub.icon || sub.id} size={16} />
-                    {on && <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:1,lineHeight:1,whiteSpace:"nowrap" }}>
-                      {(sub.label||"").toLocaleUpperCase(t("locale_code"))}
-                    </span>}
-                    {!on && done && <span style={{ fontSize:9,lineHeight:1 }}>✓</span>}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-          {/* 4 ANA SEKME */}
-          <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
-            display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
-            border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
-            {MAIN_TABS.map(tb => {
-              const on = activeTab === tb.id;
-              return (
-                <button key={tb.id} onClick={()=>goTab(tb.id)}
-                  style={{ WebkitAppearance:"none",appearance:"none",
-                    background: on ? `${tb.color}22` : "transparent",
-                    border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
-                    borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
-                    padding:"7px 14px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
-                    minWidth:62,color: on ? tb.color : `${tb.color}7a` }}>
-                  <TabIcon id={tb.id} size={on ? 21 : 19} />
-                  <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
-                    {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </>
+      {/* ── DÖRTLÜ ANA MENÜ · WEB ── Günün adım ekranlarında GÖRÜNMEZ; orada
+          eski 6'lı bar devralır (tek menü kuralı, yukarıdaki nota bak).
+          Keşfet modalı bir adım ekranının ÜSTÜNDE açılabildiği için showAilesi
+          durumunda bar yine gösterilir, yoksa Keşfet'teyken bar kaybolurdu. */}
+      {!isNative && (showAilesi || !TAB_STEPS.includes(screen))
+        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+        <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
+          display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
+          border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
+          {MAIN_TABS.map(tb => {
+            const on = activeTab === tb.id;
+            return (
+              <button key={tb.id} onClick={()=>goTab(tb.id)}
+                style={{ WebkitAppearance:"none",appearance:"none",
+                  background: on ? `${tb.color}22` : "transparent",
+                  border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
+                  borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
+                  padding:"7px 14px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
+                  minWidth:62,color: on ? tb.color : `${tb.color}7a` }}>
+                <TabIcon id={tb.id} size={on ? 21 : 19} />
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
+                  {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       )}
 
-      {/* BOTTOM NAV — NATIVE (mağaza düzeni, değişmedi) */}
-      {isNative && !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {/* BOTTOM NAV — ESKİ 6'LI BAR (mağaza tasarımı, değişmedi).
+          Native: her zamanki gibi tüm akış ekranlarında.
+          Web: SADECE günün adım ekranlarında — "Bugün"e girilince dörtlü menü
+          kaybolur ve buradaki eski menü aynen devralır (kullanıcı isteği). */}
+      {(isNative
+          ? !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen)
+          : (!showAilesi && TAB_STEPS.includes(screen))) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
