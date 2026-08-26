@@ -706,6 +706,8 @@ const TAB_TXT = {
   ayna:     { tr:"Ayna", en:"Mirror", de:"Spiegel", es:"Espejo", pt:"Espelho", fr:"Miroir", ja:"鏡" },
   bag:      { tr:"Bağ", en:"Bond", de:"Band", es:"Vínculo", pt:"Vínculo", fr:"Lien", ja:"絆" },
   terimler: { tr:"Terimler", en:"Glossary", de:"Begriffe", es:"Glosario", pt:"Glossário", fr:"Lexique", ja:"用語集" },
+  ayarlar:  { tr:"Ayarlar", en:"Settings", de:"Einstellungen", es:"Ajustes", pt:"Definições", fr:"Réglages", ja:"設定" },
+  renkModu: { tr:"Renk modu", en:"Color mode", de:"Farbmodus", es:"Modo de color", pt:"Modo de cor", fr:"Mode couleur", ja:"カラーモード" },
 };
 const PANIC_ENTRY_TXT = {
   tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
@@ -7260,7 +7262,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // +26px NEFES PAYI: formül tam olarak bar'ın yüksekliği kadardı, yani
         // "SAKİN AİLESİ" yazısı bar'a 6px kalıyordu (ölçüldü: barBottom 88, titleTop
         // 94). Kullanıcı: "sakin ailesi yazısı ile üst bar çok bitişik".
-        <div onClick={()=>setShowAilesi(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(12px)",display:"flex",alignItems:"flex-start",justifyContent:"center",padding: (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px" }}>
+        <div onClick={isNative ? ()=>setShowAilesi(false) : undefined}
+          /* WEB: Keşfet artık "modal" değil, Ben/Bağlan gibi TAM EKRAN yüzey.
+             • zIndex 10000 -> 9990: alt bar (9999) artık panelin ÜSTÜNDE kalır,
+               yani Keşfet'teyken de sabit ve tıklanabilir (modal'ken altında
+               kalıyordu).
+             • Yarı saydam koyu backdrop + blur yerine düz #000 (uygulama zemini):
+               arkadaki ekran görünmesin ama "yüzen kutu" hissi de olmasın.
+             • Yanlardaki pencere payı azaldı, alt boşluk sabit barı açacak kadar
+               (96px) büyüdü ki son kart barın altında kalmasın.
+             • Dışına tıklayınca kapanma kalktı: artık bir ekran, kazara
+               kapanmamalı; çıkış üst soldaki geri oku ve alt bar.
+             Native'de eski modal davranışı aynen korunuyor. */
+          style={{ position:"fixed",inset:0,
+            zIndex: isNative ? 10000 : 9990,
+            background: isNative ? "rgba(0,0,0,0.85)" : "#000000",
+            backdropFilter: isNative ? "blur(12px)" : undefined,
+            display:"flex",alignItems:"flex-start",justifyContent:"center",
+            padding: isNative
+              ? (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px"
+              : (topNavVisible ? "calc(104px + var(--sat))" : "calc(60px + var(--sat))") + " 14px calc(96px + var(--android-sab)) 14px" }}>
           {/* overscrollBehaviorY:contain → kart sonuna gelince kaydırma arkadaki
               .sakin-app-root'a ZİNCİRLENMEZ (arka plan oynamaz). */}
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",overscrollBehaviorY:"contain",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
@@ -7433,6 +7454,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </button>
               </div>
             ))}
+            {/* ⚠️ KEŞFET'İN ALTINDAKİ HER ŞEY WEB'DE GİZLİ (kullanıcı: "keşfet
+                ekranının altındaki her şeyi kaldır"). Bu blok NATIVE'DE KALMALI:
+                politika linkleri + hesap silme App Store 5.1.1(v) ve Play
+                gereksinimidir, iOS'ta üst nav bu ekranlarda gizli olduğu için
+                oradaki TEK erişim yolu burasıdır. Web'de ise:
+                  • politika linkleri zaten üstteki marka nav'ında var,
+                  • analitik toggle + hesap silme yeni "Ayarlar" sayfasına taşındı.
+                Yani web'de hiçbir zorunluluk kaybolmuyor, sadece yeri değişti. */}
+            {isNative && (<>
             {/* Policy mini-linkler — top-nav iOS feature ekranlarında gizli, buradan erişim */}
             <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
               {[
@@ -7473,6 +7503,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {t("delete_account_link")}
               </button>
             </div>
+            </>)}
             {/* Alttaki "Kapat" kaldırıldı — yerini üst soldaki geri oku aldı. */}
           </div>
         </div>
@@ -8562,8 +8593,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <span>{pickLang(TAB_TXT.terimler, lang).toLocaleUpperCase(t("locale_code"))}</span>
                       </button>
                     )}
-                    {/* Açık/koyu tema — menünün EN ALTINDA. Artık mobilde de (iOS/Android) var. */}
-                    {(<>
+                    {/* SAKİN NEDİR? — web'de ☰ menüsüne taşındı (kullanıcı isteği).
+                        Politika sekmeleri (fiyat/şartlar/gizlilik/iade) buraya
+                        KONMADI: "sakin nedir"e girince zaten üstteki marka nav'ında
+                        hepsi görünüyor, ikinci kez listelemek gereksiz. */}
+                    {!isNative && (
+                      <button onClick={()=>{ setHakkindaTab("nedir"); setScreen("hakkinda"); setShowAilesi(false); setShowTopMenu(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background: screen==="hakkinda" ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(232,204,150,0.9)", textAlign:"left", width:"100%" }}>
+                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>✦</span>
+                        <span>{pickLang(NEDIR_I18N.title, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    )}
+                    {/* AYARLAR — ayrı bir sayfa açar (analitik izni · hesap silme ·
+                        renk modu). Tema butonu buraya taşındığı için menüden çıktı. */}
+                    {!isNative && (
+                      <button onClick={()=>{ setScreen("ayarlar"); setShowAilesi(false); setShowTopMenu(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background: screen==="ayarlar" ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
+                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>⚙</span>
+                        <span>{pickLang(TAB_TXT.ayarlar, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    )}
+                    {/* Açık/koyu tema — NATIVE'de menünün EN ALTINDA kalır.
+                        Web'de Ayarlar sayfasına taşındı (kullanıcı: "renk modu"). */}
+                    {isNative && (<>
                       <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
                       <button onClick={()=>{ toggleTheme(); setShowTopMenu(false); }}
                         style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
@@ -12276,6 +12334,61 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       )}
 
       {/* İADE POLİTİKASI */}
+      {/* ── AYARLAR (WEB) ── ☰ menüsünden açılan ayrı sayfa. İçerik Keşfet
+          panelinin altından buraya taşındı: anonim kullanım verisi izni,
+          hesap/veri silme, renk modu. Native'de bu sayfa YOK; orada aynı
+          kontroller eski yerlerinde (Keşfet paneli + ☰ tema) duruyor. */}
+      {screen==="ayarlar" && (
+        <div style={{ maxWidth:520,width:"100%",padding:"40px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
+          <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:4,color:"#e8e0f4",marginBottom:28,textAlign:"center" }}>
+            {pickLang(TAB_TXT.ayarlar, lang)}
+          </div>
+
+          {/* Anonim kullanım verisi */}
+          <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"18px 18px",marginBottom:14 }}>
+            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
+              <span style={{ color:"#d8d2e4",fontSize:14,fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
+                {t("analytics_toggle_label")}
+              </span>
+              <button role="switch" aria-checked={analyticsOn} onClick={toggleAnalytics} aria-label={t("analytics_toggle_label")}
+                style={{ flexShrink:0,width:46,height:27,borderRadius:100,border:"none",cursor:"pointer",padding:0,position:"relative",
+                  WebkitAppearance:"none",appearance:"none",
+                  background: analyticsOn ? "rgba(130,190,150,0.65)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
+                <span style={{ position:"absolute",top:3,left: analyticsOn ? 22 : 3,width:21,height:21,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+              </button>
+            </div>
+            <div style={{ color:"#8a8494",fontSize:12,fontFamily:"'Inter',sans-serif",lineHeight:1.5,marginTop:8,paddingRight:60 }}>
+              {t("analytics_toggle_note")}
+            </div>
+          </div>
+
+          {/* Renk modu */}
+          <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"18px 18px",marginBottom:14,
+            display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
+            <span style={{ color:"#d8d2e4",fontSize:14,fontFamily:"'Inter',sans-serif" }}>
+              {pickLang(TAB_TXT.renkModu, lang)}
+            </span>
+            <button onClick={toggleTheme}
+              style={{ WebkitAppearance:"none",appearance:"none",flexShrink:0,display:"flex",alignItems:"center",gap:8,
+                background: lightMode ? "rgba(240,200,140,0.16)" : "rgba(255,255,255,0.06)",
+                border:"1px solid rgba(255,255,255,0.16)",borderRadius:100,padding:"9px 18px",cursor:"pointer",minHeight:44,
+                color: lightMode ? "#e8b478" : "rgba(210,200,230,0.9)",fontSize:12.5,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              <span style={{ fontSize:14,lineHeight:1 }}>◐</span>
+              <span>{lightMode ? t("theme_light") : t("theme_dark")}</span>
+            </button>
+          </div>
+
+          {/* Hesap / veri silme — App Store 5.1.1(v). Destruktif, en altta, sessiz. */}
+          <div style={{ display:"flex",justifyContent:"center",marginTop:26 }}>
+            <button onClick={()=>setShowDeleteConfirm(true)}
+              style={{ WebkitAppearance:"none",appearance:"none",background:"none",border:"1px solid rgba(200,90,90,0.3)",borderRadius:100,
+                padding:"11px 24px",color:"#c07070",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",minHeight:44 }}>
+              {t("delete_account_link")}
+            </button>
+          </div>
+        </div>
+      )}
+
       {screen==="iade" && (
         <div className="policy-screen">
           <h1>{t("refund_title")}</h1>
@@ -12336,7 +12449,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           Keşfet modalı bir adım ekranının ÜSTÜNDE açılabildiği için showAilesi
           durumunda bar yine gösterilir, yoksa Keşfet'teyken bar kaybolurdu. */}
       {!isNative && (showAilesi || !TAB_STEPS.includes(screen))
-        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade","ayarlar"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
           border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
