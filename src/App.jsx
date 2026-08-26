@@ -2463,6 +2463,20 @@ async function scheduleDailyReminders(lang) {
     const notifications = [];
     const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
     const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
+    // ANDROID TOPLU DÜŞME FIX (kullanıcı: "yine aynı anda düştü bildirimler", Samsung).
+    // Kök sebep, plugin kaynağında (LocalNotificationManager.setExactIfPossible):
+    // Android 12+ ve exact-alarm izni YOKKEN (bkz. AndroidManifest.xml — Play
+    // politikası yüzünden o izni bilerek almıyoruz) plugin şu dala düşüyor:
+    //     allowWhileIdle ? setAndAllowWhileIdle(RTC_WAKEUP) : set(RTC)
+    // allowWhileIdle varsayılanı FALSE olduğundan alarmlar `set(AlarmManager.RTC)`
+    // ile kuruluyordu: cihazı UYANDIRMAYAN + Doze'un biriktirdiği alarm. Telefon
+    // (özellikle Samsung'un agresif uyutması) uyanana kadar hiçbiri düşmüyor,
+    // uyanınca günlerce birikmiş 5-8 tanesi AYNI DAKİKADA boşalıyordu.
+    // allowWhileIdle:true → setAndAllowWhileIdle(RTC_WAKEUP): Doze'dan muaf,
+    // cihazı uyandırır ve EK İZİN GEREKTİRMEZ (exact-alarm değil) — yani Play
+    // "Tam Alarmlar" beyanı riski doğurmaz. Sistem bunu uygulama başına ~9 dk'da
+    // bire kısıtlar; bizim bildirimler saatler arayla olduğu için etkilenmez.
+    const SCHED = { allowWhileIdle: true };
     // 7 günlük forward schedule. Bildirim yoğunluğu KIDEME göre değişir (yukarı bak):
     //   AKŞAM 18:00 → çekirdek bildirim, her tier'da HER GÜN. Tek birleşik havuz
     //     (özellik daveti + günlük söz + nefes + Keşfet/Tasarım). Her öğe kendi
@@ -2485,17 +2499,17 @@ async function scheduleDailyReminders(lang) {
       // AKŞAM 18:00 — çekirdek günlük bildirim (1.3.1'de 21:00'di; kullanıcı akşamüstünü tercih etti).
       const evening = pick(eveningPool, dn);
       const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
-      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt }, extra: evening.extra, ...icon });
+      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt, ...SCHED }, extra: evening.extra, ...icon });
       // İKİNCİ bildirim — tier'a göre; sabah artık sadece Salı/Cuma (_notifSecondSlot).
       const slot = _notifSecondSlot(tier, dn, dayDate);
       if (slot === "morning") {
         const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
-        if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt }, extra: { screen: "sabah" }, ...icon });
+        if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt, ...SCHED }, extra: { screen: "sabah" }, ...icon });
       } else if (slot === "afternoon") {
         const aAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, 0, 0);
         // Yarım-tur offset (akşamla aynı güne denk gelirse bile farklı mesaj garantisi).
         const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2));
-        if (aAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: alt.body, schedule: { at: aAt }, extra: alt.extra, ...icon });
+        if (aAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: alt.body, schedule: { at: aAt, ...SCHED }, extra: alt.extra, ...icon });
       }
     }
     if (notifications.length > 0) await LocalNotifications.schedule({ notifications });

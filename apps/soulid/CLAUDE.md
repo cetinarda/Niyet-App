@@ -17,7 +17,10 @@
 - **three.js + @react-three/fiber + @react-three/drei** (3D solar sistem)
 - **html-to-image** (karne PNG export)
 - **Supabase** (auth + Postgres + RLS — opsiyonel, localStorage'a fallback var)
-- **Groq** (ÜCRETSİZ) `llama-3.3-70b-versatile` — anlatım metinlerinde birincil sağlayıcı
+- **Groq** (ÜCRETSİZ) — anlatım metinlerinde birincil sağlayıcı. Model SABİT DEĞİL:
+  `app/api/ai/_shared.ts` Groq `/models` listesini okuyup tercih sırasından
+  (`openai/gpt-oss-120b` → `gpt-oss-20b` → `qwen/qwen3.6-27b`) o an yayında olan
+  ilkini seçer, emekli olanı otomatik eler. `GROQ_MODEL` env ile push'suz ezilir.
 - **Anthropic Claude API** model: `claude-sonnet-4-6` — yedek + premium derin analiz
 - **Stripe Checkout** (web ödeme, Edge runtime API route)
 - **Capacitor 6** (iOS wrap için yapılandırma hazır, paketler henüz yüklenmedi)
@@ -153,6 +156,11 @@ Footer + karne alt köşesi + ToS — 3 yerde tekrar.
   `validate` callback'i çıktıyı doğrular; Llama katı bölüm formatına uymazsa
   o çıktı REDDEDİLİR ve sıradaki sağlayıcı denenir (sessiz bozuk metin yerine).
 - Env: `GROQ_API_KEY` (ücretsiz, kredi kartsız), opsiyonel `GROQ_MODEL` ile model ez.
+- **Model adını KOD İÇİNE SABİTLEME.** Groq modelleri düzenli emekli oluyor
+  (llama-3.3-70b-versatile: 16 Ağu 2026, Compound Mini: 21 Eyl 2026). `callGroq`
+  artık aday listesi üzerinden döner: yayında olmayanı eler, çağrıda 400/404
+  gelirse sıradakine geçer, 429/500'de durur (modelleri boşa yakmaz).
+  Yeni model eklemek: `GROQ_PREF` listesinin BAŞINA gerçek Groq ID'sini yaz.
 - **Groq görsel ÜRETMEZ** — sadece metin/vision-input/STT/TTS. Portre için ayrı
   görsel modeli gerekir (`OPENAI_API_KEY` → gpt-image-1, `/api/ai/portrait`).
 - Route'larda prompt üretimi de `try` İÇİNDE olmalı — dışarıda kalırsa bozuk veri

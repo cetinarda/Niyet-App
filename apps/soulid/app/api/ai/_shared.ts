@@ -91,40 +91,98 @@ export async function hasPremium(userId: string): Promise<boolean> {
 
 export type TextProvider = 'groq' | 'anthropic';
 
-const GROQ_ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_DEFAULT_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_BASE = 'https://api.groq.com/openai/v1';
+const GROQ_ENDPOINT = `${GROQ_BASE}/chat/completions`;
 const ANTHROPIC_MODEL = 'claude-sonnet-4-6';
+
+// GROQ MODEL SECIMI + OTOMATIK FALLBACK.
+// Sakin tarafindaki netlify/functions/_groq.mjs ile ayni desen. Amac: bir model
+// Groq tarafindan emekli edilince (or. llama-3.3-70b-versatile 16 Agu 2026'da
+// kapandi, Compound Mini 21 Eyl 2026'da kapaniyor) uygulama COKMESIN; kod
+// push'suz kendisi siradaki mevcut modele gecsin.
+// Yeni/daha iyi model cikinca: asagidaki listenin BASINA gercek Groq ID'sini
+// yaz, ya da push'suz cozum icin GROQ_MODEL env degiskenini ayarla.
+const GROQ_PREF = ['openai/gpt-oss-120b', 'openai/gpt-oss-20b', 'qwen/qwen3.6-27b'];
+
+// Yayindaki model ID'leri (in-memory cache, cold-start basina 10 dk).
+let _modelCache: { at: number; ids: Set<string> | null } = { at: 0, ids: null };
+const MODEL_TTL_MS = 10 * 60 * 1000;
+
+async function availableGroqIds(key: string): Promise<Set<string> | null> {
+  const now = Date.now();
+  if (_modelCache.ids && now - _modelCache.at < MODEL_TTL_MS) return _modelCache.ids;
+  try {
+    const r = await fetch(`${GROQ_BASE}/models`, { headers: { Authorization: `Bearer ${key}` } });
+    if (r.ok) {
+      const j = (await r.json()) as { data?: Array<{ id?: string }> };
+      const ids = new Set((j?.data || []).map((m) => m && m.id).filter(Boolean) as string[]);
+      if (ids.size) { _modelCache = { at: now, ids }; return ids; }
+    }
+  } catch { /* ag hatasi -> statik listeye guven */ }
+  return null;
+}
+
+/** Denenecek modeller, en iyi -> yedek sirasiyla. Asla bos donmez. */
+async function groqCandidates(key: string): Promise<string[]> {
+  const override = (process.env.GROQ_MODEL || '').trim();
+  const wanted = override ? [override, ...GROQ_PREF.filter((m) => m !== override)] : GROQ_PREF.slice();
+  const ids = await availableGroqIds(key);
+  if (!ids) return wanted;                       // liste alinamadi -> hepsini dene
+  const avail = wanted.filter((m) => ids.has(m));
+  return avail.length ? avail : wanted;          // liste bayat olabilir -> yine dene
+}
+
+// gpt-oss reasoning modeli: dar token butcesinde reasoning yaniti kirpmasin diye
+// reasoning_effort:low. Diger modellerde gonderilmez (uyumsuzluk 400 vermesin).
+function groqExtraFor(model: string): Record<string, unknown> {
+  return model.startsWith('openai/gpt-oss') ? { reasoning_effort: 'low' } : {};
+}
+
+/** Qwen "thinking" modu <think>...</think> sizabilir; temizle. */
+function stripThink(s: string): string {
+  return s.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+}
 
 async function callGroq(system: string, user: string, maxTokens: number): Promise<string | null> {
   const key = process.env.GROQ_API_KEY;
   if (!key) return null;
-  try {
-    const res = await fetch(GROQ_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || GROQ_DEFAULT_MODEL,
-        // Groq'ta max_tokens deprecated — max_completion_tokens kullanılır.
-        max_completion_tokens: maxTokens,
-        temperature: 0.8,
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
-      }),
-    });
-    if (!res.ok) {
-      console.warn('[ai] groq error', res.status, (await res.text()).slice(0, 300));
+  const candidates = await groqCandidates(key);
+  for (const model of candidates) {
+    try {
+      const res = await fetch(GROQ_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+        body: JSON.stringify({
+          model,
+          ...groqExtraFor(model),
+          // Groq'ta max_tokens deprecated — max_completion_tokens kullanılır.
+          max_completion_tokens: maxTokens,
+          temperature: 0.8,
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: user },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        console.warn('[ai] groq error', model, res.status, (await res.text()).slice(0, 300));
+        // 400/404 = gecersiz/emekli model -> siradakini dene.
+        // 429/500 = gecici hata -> modelleri bosa yakma, cik.
+        if (res.status === 400 || res.status === 404) continue;
+        return null;
+      }
+      const data = (await res.json()) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
+      const text = data.choices?.[0]?.message?.content?.trim();
+      if (text) return stripThink(text) || null;
       return null;
+    } catch (e) {
+      console.warn('[ai] groq fetch failed', model, e);
+      continue; // ag/timeout -> siradaki modeli dene
     }
-    const data = (await res.json()) as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    return data.choices?.[0]?.message?.content?.trim() || null;
-  } catch (e) {
-    console.warn('[ai] groq fetch failed', e);
-    return null;
   }
+  return null;
 }
 
 async function callAnthropic(
