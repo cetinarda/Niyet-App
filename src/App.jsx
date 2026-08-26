@@ -694,6 +694,14 @@ const REVEAL_I18N = {
   tasarim:{ tr:"Tasarımını keşfet ✦", en:"Explore your design ✦", de:"Entdecke dein Design ✦", es:"Explora tu diseño ✦", pt:"Explora o teu design ✦", fr:"Explore ton design ✦", ja:"あなたのデザインを見る ✦" },
   gune:   { tr:"Güne başla ◎", en:"Start your day ◎", de:"Beginne den Tag ◎", es:"Empieza el día ◎", pt:"Começa o dia ◎", fr:"Commence la journée ◎", ja:"一日を始める ◎" },
 };
+// Giriş ekranındaki panik butonunun metni. Sağ alt köşedeki sabit rozet
+// "PANİK BUTONU" yazıyordu; kullanıcı bunu HAZIRIM'ın altına alıp "Nefes al"
+// olarak yumuşatmak istedi (giriş ekranında "panik" kelimesi sert duruyor,
+// çağrı yine aynı: doğrudan 4-7-8 sakinleştirici nefes).
+const PANIC_ENTRY_TXT = {
+  tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
+  pt:"Respira", fr:"Respire", ja:"深呼吸する",
+};
 const AI_ERR_I18N = {
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
@@ -6995,6 +7003,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
+  // PANİK → sakinleştirici nefes. Eskiden yalnızca giriş ekranının sağ alt
+  // köşesindeki sabit rozetin içindeydi; buton HAZIRIM'ın altına taşınınca
+  // davranış tek fonksiyona çıkarıldı (iki yerde kopyalanmasın).
+  const goPanicBreath = () => {
+    try { haptic(); } catch(_) {}
+    pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
+    panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
+    setScreen("nefes");
+  };
   // Ayna (gizli geçit) açılışı — hem üst bardaki orta buton hem eski floating ☽
   // aynı davranışı kullansın diye tek fonksiyona çıkarıldı.
   const openMirror = () => {
@@ -7429,20 +7446,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
-      {/* PANİK BUTONU — yalnızca GİRİŞ ekranında sağ alt köşe (kullanıcı isteğiyle
-          diğer ekranlarda gizli). Tıklayınca en uygun sakinleştirici nefesi (4-7-8)
-          DOĞRUDAN başlatır; teknik premium olsa bile panik istisnası ile çalışır. */}
-      {screen === "giris" && !embeddedApp && !mirrorPortalActive && (
+      {/* PANİK BUTONU (NATIVE) — yalnızca GİRİŞ ekranında sağ alt köşe. WEB'de bu
+          buton HAZIRIM'ın altına taşındı (kullanıcı: yeni yerleşim sadece web),
+          o yüzden burası artık isNative ile sınırlı. Tıklayınca en uygun
+          sakinleştirici nefesi (4-7-8) DOĞRUDAN başlatır; teknik premium olsa bile
+          panik istisnası ile çalışır. */}
+      {isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
         <button
-          onClick={()=>{
-            try { haptic(); } catch(_) {}
-            pendingBreathRef.current = "478";       // panik için en uygun: 4-7-8
-            panicAutoStartRef.current = true;       // doğrudan başlat (premium istisnası)
-            // Not: 'Sakin'i tanı' tanıtım popup'ı zaten otomatik açılmıyor. Burada eskiden
-            // İKİ tanımsız referans kaldı (sakinIntroCheckedRef, sonra setShowSakinIntro) →
-            // ReferenceError ile panik butonu nefesi hiç başlatamıyordu. İkisi de kaldırıldı.
-            setScreen("nefes");
-          }}
+          onClick={goPanicBreath}
           aria-label={t("panic_aria")}
           title={t("panic_aria")}
           style={{
@@ -7464,6 +7475,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         >
           <span>{t("panic_button")}</span>
         </button>
+      )}
+
+      {/* DİL SEÇİCİ — WEB giriş ekranında SAĞ ÜST (kullanıcı: "açılıştaki dil
+          çubuğunu sağ üste al" + referans tasarım). Eskiden HAZIRIM'ın altındaydı
+          ve o alanı kalabalıklaştırıyordu. Native'de eski yerinde kaldı.
+          Giriş ekranında üst nav barı zaten gizli, burası boş; çakışma yok. */}
+      {!isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
+        <div style={{ position:"fixed",
+            // Web'de üstte 44px'lik marka/politika nav barı var; 10px'e koyunca dil
+            // seçici onun ALTINDA kalıp yarısı görünmüyordu (screenshot ile yakalandı).
+            top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
+            right:14, zIndex:9997 }}>
+          <LangPicker lang={lang} setLang={setLang} compact />
+        </div>
       )}
 
       {/* AYNA GEÇİDİ — Sakin Ailesi girişiyle aynı stargate portal geçişi */}
@@ -8793,10 +8818,34 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
                     Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
-                <button className="sakin-btn-primary" onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
-                <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
-                  <LangPicker lang={lang} setLang={setLang} />
-                </div>
+                {/* ⚠️ YENİ GİRİŞ YERLEŞİMİ = SADECE WEB (kullanıcı: "bu istekleri
+                    sadece webe uygula"). Native (iOS/Android) mağazadaki düzeni
+                    birebir korur; web'de yeni tasarım denenir. Değişen TEK şey
+                    konumlandırma: elmas dönmesi, "Sakin" yazısı ve tagline aynı.
+                    Web: HAZIRIM tam genişlik + altında "Nefes al" + dil sağ üstte.
+                    Native: HAZIRIM eski genişliği + altında dil + sağ altta panik. */}
+                <button className="sakin-btn-primary"
+                  style={isNative ? undefined : { width:"100%",display:"block",boxSizing:"border-box" }}
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                {/* WEB: panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
+                    Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır. */}
+                {!isNative && (
+                  <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
+                    style={{ marginTop:16,padding:"12px 34px",borderRadius:100,
+                      border:"1px solid rgba(224,168,96,0.55)",background:"transparent",
+                      WebkitAppearance:"none",appearance:"none",
+                      color:"rgba(240,200,150,0.92)",fontSize:13,letterSpacing:2.5,
+                      fontFamily:"'Jost',sans-serif",fontWeight:300,textTransform:"uppercase",
+                      cursor:"pointer",whiteSpace:"nowrap",minHeight:44 }}>
+                    {pickLang(PANIC_ENTRY_TXT, lang)}
+                  </button>
+                )}
+                {/* NATIVE: dil seçici eski yerinde (HAZIRIM'ın altı) kalır. */}
+                {isNative && (
+                  <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
+                    <LangPicker lang={lang} setLang={setLang} />
+                  </div>
+                )}
                 {!isNative && (
                   <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
                     <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
