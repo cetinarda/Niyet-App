@@ -135,7 +135,7 @@ function AnimalContent({ animal, onOpenDetail, detailBtnLabel }: { animal: typeo
   );
 }
 
-function StoneContent({ stone }: { stone: typeof stonesData[0] }) {
+function StoneContent({ stone, onOpenDetail, detailBtnLabel }: { stone: typeof stonesData[0]; onOpenDetail: () => void; detailBtnLabel: string }) {
   return (
     <View style={cs.container}>
       <View style={[cs.medallion, { borderColor: Colors.teal + '50' }]}>
@@ -147,7 +147,14 @@ function StoneContent({ stone }: { stone: typeof stonesData[0] }) {
           />
         </View>
       </View>
-      <Text style={[cs.itemName, { color: Colors.tealLight }]}>{stone.name}</Text>
+      {/* Ad tiklanabilir: acilan kartin DETAY sayfasina gider. Onceden bu giris
+          yalnizca (hic render edilmeyen) AnimalContent'te vardi, bu ekranda
+          kartin detayina hicbir yol yoktu. */}
+      <TouchableOpacity onPress={onOpenDetail} activeOpacity={0.7}>
+        <Text style={[cs.itemName, { color: Colors.tealLight }]}>
+          {stone.name}  <Text style={cs.openHint}>→</Text>
+        </Text>
+      </TouchableOpacity>
       <Text style={cs.meta}>{stone.element} · {stone.chakra}</Text>
       <View style={[cs.divider, { backgroundColor: Colors.teal }]} />
       <Text style={cs.body}>{stone.dailyMessage}</Text>
@@ -159,6 +166,11 @@ function StoneContent({ stone }: { stone: typeof stonesData[0] }) {
       <View style={[cs.affirmBox, { borderColor: Colors.teal + '35' }]}>
         <Text style={[cs.affirmText, { color: Colors.tealLight }]}>{(stone as any).affirmation}</Text>
       </View>
+      <TouchableOpacity onPress={onOpenDetail} style={cs.detailBtn} activeOpacity={0.8}>
+        <Text style={[cs.detailBtnText, { color: Colors.tealLight }]}>
+          {stone.name}{detailBtnLabel}
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -188,7 +200,7 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
-  const { profile, dailyReading, generateDailyReading, recordReading, updateStats } = useSakinHayvanStore();
+  const { profile, dailyReading, generateDailyReading, recordReading, updateStats, isLoading } = useSakinHayvanStore();
   const animals = useLocalizedAnimals();
   const stones = useLocalizedStones();
   const quotes = useLocalizedQuotes();
@@ -209,39 +221,52 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(0)).current;
   const revealedRef = useRef(false);
 
-  // HOST KÖPRÜSÜ — "kartını aç" ikinci kez tıklandığında kart açılışını TEKRAR
-  // oynatma, doğrudan O KARTIN sayfasını aç (kullanıcı: "kaplan çıktıysa kaplan
-  // sayfasına gitmeli"). Sakin'in "Bugün" ekranı, kart o gün ZATEN çekilmişse
-  // açmadan önce `sakin_open_card` bırakır. Aynı origin olduğu için buradan
-  // okunabiliyor; postMessage köprüsüne gerek yok.
-  // Anahtar BİR KEZ okunup siliniyor: yoksa kullanıcı uygulama içinde geri
-  // dönse bile detay ekranı tekrar tekrar açılırdı.
+  // HOST KOPRUSU — "kartini ac" ikinci kez tiklandiginda kart ACILIS
+  // ANIMASYONUNU tekrar oynatma; o gun cekilmis olan TAM KARTI dogrudan acik
+  // goster. Kullanici oradan karta dokununca DETAY sayfasi acilir.
+  // (Kullanici: "tam kart acilmali ve hangi bitki tas vs. ciktiysa kartta
+  // tekrar tiklaninca o kartin detayli sayfasi cikmali".)
+  // Onceki surum dogrudan detay sayfasini aciyordu; gunun karti ve mesaji hic
+  // gorunmuyordu. Simdi sira: tam kart -> (dokunus) -> detay.
+  // Sakin'in "Bugun" ekrani, kart o gun ZATEN cekilmisse acmadan once
+  // `sakin_open_card` birakir. Ayni origin oldugu icin buradan okunabiliyor;
+  // postMessage koprusune gerek yok. Anahtar BIR KEZ okunup siliniyor.
   useEffect(() => {
     try {
       const ls = typeof window !== 'undefined' ? window.localStorage : null;
       const raw = ls?.getItem('sakin_open_card');
       if (!raw) return;
       const req = JSON.parse(raw);
-      if (req?.kind !== 'stone') return;   // başka uygulamaya ait istek, dokunma
+      if (req?.kind !== 'stone') return;   // baska uygulamaya ait istek, dokunma
       ls?.removeItem('sakin_open_card');
-      revealedRef.current = true;           // açılış animasyonunu atla
+      revealedRef.current = true;           // acilis animasyonunu atla
       setRevealed(true);
-      setShowAnimalDetail(true);
-    } catch { /* bozuk kayıt: yok say, normal akış */ }
+      // Animasyon degerleri baslangicta arka yuz (1) / on yuz (0). Animasyonu
+      // atladigimiz icin bunlari ELLE cevirmek sart, yoksa kart bos gorunur.
+      backFade.setValue(0);
+      frontFade.setValue(1);
+    } catch { /* bozuk kayit: yok say, normal akis */ }
   }, []);
 
+  // GUNDE TEK KART. Depo (store) AsyncStorage'dan yuklemesini `isLoading` ile
+  // bildirir. Onceki kod bunu BEKLEMEDEN, `dailyReading` henuz null iken hemen
+  // YENI rastgele bir okuma uretiyordu -> her acilista gunun karti degisiyordu
+  // ve "Bugun" ekraninda gorunen kart ile uygulamadaki kart tutmuyordu.
+  // Artik yukleme bitmeden karar verilmiyor: depoda BUGUNUN okumasi varsa o
+  // kullanilir, yoksa bir kez cekilir ve gun bitene kadar sabit kalir.
   useEffect(() => {
-    if (!reading) {
-      const qIds = buildQuotePool(quotesData);
-      const sIds = stonesData.map(s => s.id);
-      const aIds = animalsData.map(a => a.id);
-      generateDailyReading(qIds, sIds, aIds, aIds).then(r => {
-        const q = quotesData.find(x => x.id === r.quoteId);
-        if (q) updateStats(q.id, q.source, r.animalId, r.animalId, r.nagualId);
-        setReading(r);
-      });
-    }
-  }, []);
+    if (isLoading) return;
+    if (dailyReading) { setReading(dailyReading); return; }
+    if (reading) return;
+    const qIds = buildQuotePool(quotesData);
+    const sIds = stonesData.map(s => s.id);
+    const aIds = animalsData.map(a => a.id);
+    generateDailyReading(qIds, sIds, aIds, aIds).then(r => {
+      const q = quotesData.find(x => x.id === r.quoteId);
+      if (q) updateStats(q.id, q.source, r.animalId, r.animalId, r.nagualId);
+      setReading(r);
+    });
+  }, [isLoading, dailyReading]);
 
   // Shake detection — native Accelerometer (expo-sensors) embed webview'de
   // HER ZAMAN require patlıyor (web build'de modül yok); catch bloğu önceden
@@ -363,8 +388,13 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     return t('home.greeting.evening');
   };
 
-  if (showAnimalDetail && animal) {
-    return <AnimalDetailScreen animal={animal as any} onClose={() => setShowAnimalDetail(false)} />;
+  // ⚠️ DETAY = `stone` (reading.stoneId), `animal` DEGIL.
+  // Bu ekranda gosterilen gunun karti StoneContent'tir ve `reading.stoneId`den
+  // gelir; `reading.animalId` bu uygulamada hayvan sablonundan kalma, EKRANDA
+  // HIC KULLANILMAYAN bir alan. Onceden burada `animal` veriliyordu, sonuc:
+  // "rehber bitki cikiyor ama yeniden acilinca hayvan karti aciliyor".
+  if (showAnimalDetail && stone) {
+    return <AnimalDetailScreen stone={stone as any} onClose={() => setShowAnimalDetail(false)} />;
   }
 
   return (
@@ -494,7 +524,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                     contentContainerStyle={styles.scrollPad}
                     showsVerticalScrollIndicator={false}
                   >
-                    {step === 0 && stone && <StoneContent stone={stone} />}
+                    {step === 0 && stone && <StoneContent stone={stone} onOpenDetail={() => setShowAnimalDetail(true)} detailBtnLabel={t('home.detailBtn')} />}
                     {step === 1 && quote && <QuoteContent quote={quote} />}
                   </ScrollView>
                   <View style={{ flexDirection: 'row', gap: 8, alignItems: 'stretch' }}>

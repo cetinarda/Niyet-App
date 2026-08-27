@@ -390,6 +390,22 @@ export function useSakinHayvanStore() {
     nagualIds: string[]
   ) => {
     const today = todayStr();
+    // GUNDE TEK CEKILIS (kirmizi cizgi). Bugun icin bir okuma zaten
+    // kaydedilmisse YENISI URETILMEZ, kayitli olan dondurulur. Boylece hangi
+    // ekran/cagri gelirse gelsin gun icinde ayni kart gorunur (Sakin'in "Bugun"
+    // ekrani ile uygulama icindeki kart artik cakismaz).
+    // Depodaki kopya bos olabilir (soguk acilis), o yuzden ASIL kaynak
+    // AsyncStorage'daki kayit.
+    try {
+      const existingRaw = await AsyncStorage.getItem(STORAGE_KEYS.DAILY);
+      if (existingRaw) {
+        const existing: DailyReading = JSON.parse(existingRaw);
+        if (existing && existing.date === today) {
+          setDailyReading(existing);
+          return existing;
+        }
+      }
+    } catch { /* bozuk kayit: yok say, asagida yenisi cekilir */ }
     const reading: DailyReading = {
       date: today,
       quoteId: pickRandom(quoteIds),

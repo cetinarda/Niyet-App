@@ -185,7 +185,7 @@ function MiniDeck({ deck, label, state }: { deck: typeof DECK_CONFIG[0]; label: 
 
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
-  const { profile, dailyReading, generateDailyReading, updateStats } = useMitlerStore();
+  const { profile, dailyReading, generateDailyReading, updateStats, isLoading } = useMitlerStore();
   const { t } = useLanguage();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
 
@@ -198,18 +198,25 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(0)).current;
   const revealedRef = useRef(false);
 
+  // GUNDE TEK KART. Depo (store) AsyncStorage'dan yuklemesini `isLoading` ile
+  // bildirir. Onceki kod bunu BEKLEMEDEN, `dailyReading` henuz null iken hemen
+  // YENI rastgele bir okuma uretiyordu -> her acilista gunun karti degisiyordu
+  // ve "Bugun" ekraninda gorunen kart ile uygulamadaki kart tutmuyordu.
+  // Artik yukleme bitmeden karar verilmiyor: depoda BUGUNUN okumasi varsa o
+  // kullanilir, yoksa bir kez cekilir ve gun bitene kadar sabit kalir.
   useEffect(() => {
-    if (!reading) {
-      const aIds = archetypesData.map(a => a.id);
-      const mIds = mythsData.map(m => m.id);
-      const iIds = imagesData.map(i => i.id);
-      generateDailyReading(aIds, mIds, iIds).then(r => {
-        const myth = mythsData.find(m => m.id === r.mythId)!;
-        updateStats(r.archetypeId, r.mythId, r.imageId, myth.culture);
-        setReading(r);
-      });
-    }
-  }, []);
+    if (isLoading) return;
+    if (dailyReading) { setReading(dailyReading); return; }
+    if (reading) return;
+    const aIds = archetypesData.map(a => a.id);
+    const mIds = mythsData.map(m => m.id);
+    const iIds = imagesData.map(i => i.id);
+    generateDailyReading(aIds, mIds, iIds).then(r => {
+      const myth = mythsData.find(m => m.id === r.mythId)!;
+      updateStats(r.archetypeId, r.mythId, r.imageId, myth.culture);
+      setReading(r);
+    });
+  }, [isLoading, dailyReading]);
 
   useEffect(() => {
     let sub: { remove: () => void } | null = null;

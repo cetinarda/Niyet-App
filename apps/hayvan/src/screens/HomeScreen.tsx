@@ -179,25 +179,31 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(0)).current;
   const revealedRef = useRef(false);
 
-  // HOST KÖPRÜSÜ — "kartını aç" ikinci kez tıklandığında kart açılışını TEKRAR
-  // oynatma, doğrudan O KARTIN sayfasını aç (kullanıcı: "kaplan çıktıysa kaplan
-  // sayfasına gitmeli"). Sakin'in "Bugün" ekranı, kart o gün ZATEN çekilmişse
-  // açmadan önce `sakin_open_card` bırakır. Aynı origin olduğu için buradan
-  // okunabiliyor; postMessage köprüsüne gerek yok.
-  // Anahtar BİR KEZ okunup siliniyor: yoksa kullanıcı uygulama içinde geri
-  // dönse bile detay ekranı tekrar tekrar açılırdı.
+  // HOST KOPRUSU — "kartini ac" ikinci kez tiklandiginda kart ACILIS
+  // ANIMASYONUNU tekrar oynatma; o gun cekilmis olan TAM KARTI dogrudan acik
+  // goster. Kullanici oradan karta dokununca DETAY sayfasi acilir.
+  // (Kullanici: "tam kart acilmali ve hangi bitki tas vs. ciktiysa kartta
+  // tekrar tiklaninca o kartin detayli sayfasi cikmali".)
+  // Onceki surum dogrudan detay sayfasini aciyordu; gunun karti ve mesaji hic
+  // gorunmuyordu. Simdi sira: tam kart -> (dokunus) -> detay.
+  // Sakin'in "Bugun" ekrani, kart o gun ZATEN cekilmisse acmadan once
+  // `sakin_open_card` birakir. Ayni origin oldugu icin buradan okunabiliyor;
+  // postMessage koprusune gerek yok. Anahtar BIR KEZ okunup siliniyor.
   useEffect(() => {
     try {
       const ls = typeof window !== 'undefined' ? window.localStorage : null;
       const raw = ls?.getItem('sakin_open_card');
       if (!raw) return;
       const req = JSON.parse(raw);
-      if (req?.kind !== 'animal') return;   // başka uygulamaya ait istek, dokunma
+      if (req?.kind !== 'animal') return;   // baska uygulamaya ait istek, dokunma
       ls?.removeItem('sakin_open_card');
-      revealedRef.current = true;           // açılış animasyonunu atla
+      revealedRef.current = true;           // acilis animasyonunu atla
       setRevealed(true);
-      setShowAnimalDetail(true);
-    } catch { /* bozuk kayıt: yok say, normal akış */ }
+      // Animasyon degerleri baslangicta arka yuz (1) / on yuz (0). Animasyonu
+      // atladigimiz icin bunlari ELLE cevirmek sart, yoksa kart bos gorunur.
+      backFade.setValue(0);
+      frontFade.setValue(1);
+    } catch { /* bozuk kayit: yok say, normal akis */ }
   }, []);
 
   // Depo (useSakinHayvanStore) AsyncStorage'dan yüklemesini isLoading ile

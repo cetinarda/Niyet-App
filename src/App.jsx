@@ -416,6 +416,50 @@ const AI_CALL_URL = API_BASE + "/.netlify/functions/ai-call";
 const MAX_INPUT_LEN = 500;
 const sanitizeInput = (str) => (str || "").slice(0, MAX_INPUT_LEN).replace(/[<>{}]/g, "");
 
+/**
+ * TEK AI ÇAĞRI KAPISI (5 ekran da buradan geçer) + GEÇİCİ RED İÇİN TEK YENİDEN DENEME.
+ *
+ * NEDEN: Groq'un dakikalık token bütçesi (TPM) MODEL BAŞINA ayrı tutuluyor ve
+ * İçsel Ayna istemi tek başına o bütçenin büyük kısmını yiyor. CANLI ÖLÇÜM
+ * (27 Ağu 2026, sakin.life): aynı istem arka arkaya gönderildiğinde 1. çağrı
+ * 200, 2. ve 3. çağrı 0,2 saniyede 502 dönüyordu. Yani hata "girdi çok uzun"
+ * değil, "bu dakikanın bütçesi doldu" idi; kullanıcı da bunu "ayna çağrıları
+ * çalışmıyor" diye görüyordu.
+ *
+ * Bütçe sürekli dolduğu için kısa bir bekleme çoğu reddi kurtarıyor. Sunucu
+ * tarafında beklenemez (Netlify eşzamanlı fonksiyon süresi dar), o yüzden
+ * bekleme İSTEMCİDE. Yalnızca GEÇİCİ durumlarda denenir (502/429/503 ve ağ
+ * hatası); 400/413 gibi kalıcı hatalarda tekrar denemek anlamsız.
+ *
+ * Sunucu tarafındaki tamamlayıcı düzeltme: netlify/functions/_groq.mjs artık
+ * 429/413'te bir sonraki modele geçiyor (her modelin bütçesi ayrı).
+ */
+// Bekleme kademeli: bütçe 60 saniyelik pencerede sürekli dolduğu için ikinci
+// deneme biraz daha uzun bekler. Toplam en kötü ihtimalle ~14 sn ek bekleme.
+const AI_RETRY_STATUSES = new Set([429, 500, 502, 503, 504]);
+const AI_RETRY_WAITS_MS = [5000, 9000];
+async function aiFetch(init, { retries = AI_RETRY_WAITS_MS.length } = {}) {
+  let last = null;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) {
+      const waitMs = AI_RETRY_WAITS_MS[attempt - 1] || AI_RETRY_WAITS_MS[AI_RETRY_WAITS_MS.length - 1];
+      await new Promise((r) => setTimeout(r, waitMs));
+    }
+    try {
+      const res = await fetch(AI_CALL_URL, init);
+      if (res.ok || !AI_RETRY_STATUSES.has(res.status)) return res;
+      last = res;
+    } catch (e) {
+      last = null;
+      if (attempt === retries) throw e;
+    }
+  }
+  // Son deneme de geçici hatayla döndüyse onu ver; çağıran ekran kendi
+  // yerelleştirilmiş "analiz alınamadı" metnini gösterir.
+  if (last) return last;
+  throw new Error("ai_unavailable");
+}
+
 const CHAKRAS_22_TR = [
   { name:"Kök",            color:"#c0392b", pastel:"#e8a09a", desc:"Bugün yere bas. Güvende hisset.",  element:"Toprak", emoji:"🟥", hz:396, level:1, konu:"Hayatta kalma ve güvenlik" },
   { name:"Sakral",         color:"#e67e22", pastel:"#f0c27f", desc:"Bugün hisset. Akmana izin ver.",   element:"Su",     emoji:"🟧", hz:417, level:1, konu:"Yaratıcılık ve duygusal denge" },
@@ -6239,7 +6283,7 @@ export default function SakinApp() {
     setGorevLoading(true);
     try {
       const seviye = streakData?.current >= 21 ? 3 : streakData?.current >= 7 ? 2 : 1;
-      const res = await fetch(AI_CALL_URL, {
+      const res = await aiFetch({
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
@@ -6366,7 +6410,7 @@ ${kisiselProfil()}`,
     const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     try {
-      const res = await fetch(AI_CALL_URL, {
+      const res = await aiFetch({
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
@@ -6409,30 +6453,10 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
     }
   };
 
-  const ZIHINSEL_LISTE = [
-    { organ:"Baş Ağrısı",    neden:"Kendini küçümseme, özeleştiri, korku" },
-    { organ:"Boyun",          neden:"Esneklik eksikliği, inatçılık, başkalarının bakış açısını görmek istememek" },
-    { organ:"Omuzlar",        neden:"Aşırı sorumluluk yükü, yaşamın yük gibi hissettirmesi" },
-    { organ:"Kalp",           neden:"Sevgi ve neşeyi reddetmek, sertleşen kalp" },
-    { organ:"Sırt (üst)",     neden:"Duygusal destek eksikliği, sevilmediği hissi" },
-    { organ:"Sırt (alt)",     neden:"Para ve maddi destek korkusu" },
-    { organ:"Mide",           neden:"Yenilikleri sindirememe, korku, yeni fikirlere direnç" },
-    { organ:"Bağırsaklar",    neden:"Eski düşünceleri bırakamama, geçmişe takılma" },
-    { organ:"Kabız",          neden:"Eski düşünceleri ve alışkanlıkları bırakamama, geçmişe tutunma, korku" },
-    { organ:"Diz",            neden:"Ego, gurur, inat, eğilmemek" },
-    { organ:"Deri",           neden:"Kimlik ve sınır kaybı, başkalarının tehdit olarak hissedilmesi" },
-    { organ:"Boğaz",          neden:"Kendini ifade edememe, öfkeyi yutmak" },
-    { organ:"Gözler",         neden:"Geçmişi ya da geleceği görmek istememe" },
-    { organ:"Kulaklar",       neden:"Duymak istemediğin şeyler, öfke" },
-    { organ:"Akciğerler",     neden:"Hayatı tam almayı reddetme, üzüntü" },
-    { organ:"Karaciğer",      neden:"Kronik öfke, eleştiri, akıl yürütme" },
-    { organ:"Böbrekler",      neden:"Eleştiri, hayal kırıklığı, başarısızlık korkusu" },
-    { organ:"Uyku",           neden:"Hayattan uzaklaşma isteği, güvensizlik, zihni durduramama" },
-    { organ:"Tansiyon",       neden:"Uzun süreli çözümsüz duygusal sorunlar, aşırı kontrol ihtiyacı" },
-    { organ:"Yorgunluk",      neden:"Direnç, sıkılmışlık, sevgisiz yaşama" },
-    { organ:"Ağrı",           neden:"Suçluluk duygusu, ceza ihtiyacı" },
-    { organ:"Kilo",           neden:"Korku, korunma ihtiyacı, duyguları bastırma" },
-  ];
+  // NOT: eski `ZIHINSEL_LISTE` buradan kaldirildi. Ayni beden-zihin
+  // eslesmelerini LOUISE_HAY_REHBER zaten (daha genis biçimde) tasiyordu;
+  // Ayna istemine ikisi birden gidiyordu. ~1950 karakterlik bu tekrar,
+  // istemi Groq TPM tavanina itiyordu ve tek bir bilgi bile eklemiyordu.
   const KITAP_BILGELIGI = `KİTAPLARDAN ÖZET BİLGELİK:
 • Jung (Kırmızı Kitap): Gölge bütünleşme: dışarıda rahatsız edici bulduğun her şey içinde tanımadığın bir parçandır. Bastırılan enerji yansıma olarak geri döner. Bütünleşme = içindeki altın madeni bulmak.
 • Kryon (DNA'nın 12 Tabakası): DNA bilinçle rezonans kurar; niyet, minnet ve frekans yükseltmeyle uyku halindeki potansiyel aktive olur. Sen tanrısal bir varlıksın, bunu hatırlamak için buradasın.
@@ -6546,20 +6570,15 @@ BEDEN-ZİHİN BAĞLANTISI:
   // satır öz) ki her istekte gönderilen bağlam şişmesin.
   // Çeviriler ÖZGÜN: Wilhelm/Baynes gibi telifli çeviriler kopyalanmadı,
   // heksagram adları ve sıralaması ise klasik metnin kendisine ait.
+  // ⚠️ BU BLOK HER AYNA ÇAĞRISINDA İSTEMİN İÇİNDE GİDİYOR: kısa tut.
+  // Groq'un dakikalık token bütçesi (TPM) model başına ayrı ve Ayna istemi
+  // tek başına o bütçeyi doldurabiliyor (ölçüldü: ~8,5k karakterin üstünde
+  // istek anında reddediliyordu). Felsefe/trigram girişi modelin ZATEN bildiği
+  // genel bilgiydi, bu yüzden iki satıra indirildi. 64 heksagramın Türkçe
+  // adı + pinyin + özü KALIYOR: seçimin bizim sözlüğümüzden yapılması,
+  // yanıtın uygulamayla tutarlı olmasını sağlayan asıl şey o.
   const I_CHING_REHBER = `I CHING / YİJİNG: DEĞİŞİMLER KİTABI (Kaynak: klasik metin ve yorum geleneği)
-
-TEMEL FELSEFE:
-Her durum sabit değil, bir evrede duruyor ve kendi karşıtına doğru akıyor. Yin (alıcı, yumuşayan, bekleyen) ve yang (yaratıcı, hareket eden, ileri süren) birbirini doğurur. I Ching gelecek söylemez; içinde bulunulan anın niteliğini ve o anda hangi tutumun doğal olduğunu gösterir. Asıl soru "ne olacak" değil, "buradayken nasıl durmalıyım" sorusudur. Zamanlama içeriğin kendisi kadar önemlidir: doğru davranış yanlış anda yanlış sonuç verir.
-
-SEKİZ TRİGRAM (heksagramların yapı taşı):
-☰ Gök (Qian): yaratıcı güç, inisiyatif, ileri atılım
-☷ Yer (Kun): alıcılık, taşıma, teslim olma, besleme
-☳ Yıldırım (Zhen): ani hareket, sarsıntı, uyanış
-☵ Su (Kan): derinlik, tehlike, akmayı öğrenme
-☶ Dağ (Gen): duruş, sessizlik, sınır
-☴ Rüzgâr (Xun): yumuşak ve sürekli nüfuz, sabırla işleme
-☲ Ateş (Li): berraklık, görme, bağlanma, ışık
-☱ Göl (Dui): neşe, açıklık, ifade, paylaşım
+Her durum sabit değil, bir evrede duruyor ve karşıtına doğru akıyor; yin ile yang birbirini doğurur. I Ching gelecek söylemez, içinde bulunulan anın niteliğini ve o anda hangi tutumun doğal olduğunu gösterir. Soru "ne olacak" değil, "buradayken nasıl durmalıyım" sorusudur.
 
 64 HEKSAGRAM (numara, ad, öz):
 1 Yaratıcı (Qian): saf inisiyatif, güçlü başlangıç, kendi gücüne güven
@@ -6674,7 +6693,7 @@ NASIL KULLANILIR:
     if (!facts) return;
     setGidYorum("__loading__");
     try {
-      const res = await fetch(AI_CALL_URL, {
+      const res = await aiFetch({
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
@@ -6723,7 +6742,6 @@ ${facts}
     // soru genel şikayet/soru akışına döner).
     const ruyaModu = aynaRuyaModu;
     if (ruyaModu) setAynaRuyaModu(false);
-    const zihinselListeText = ZIHINSEL_LISTE.map(z=>`${z.organ}: ${z.neden}`).join("\n");
     // Harita verisi TAM gönderilir — kullanıcı artık "ateş elementim düşük ne
     // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
     // haritaya dair sorular sorabiliyor (örnek sorular listesine eklendi).
@@ -6770,9 +6788,6 @@ ${REIKI_BILGI}
 ${LOUISE_HAY_REHBER}
 
 ${I_CHING_REHBER}
-
-Zihinsel nedenler:
-${zihinselListeText}
 ${astroTxt}
 
 ${NEFES_REHBERI}
@@ -6796,7 +6811,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 **Reiki ile Enerji Aktarımı**
 (El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)`;
     try {
-      const res = await fetch(AI_CALL_URL, {
+      const res = await aiFetch({
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
@@ -6950,7 +6965,7 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
 ` : "";
 
     try {
-      const res = await fetch(AI_CALL_URL, {
+      const res = await aiFetch({
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
@@ -7313,6 +7328,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // kayması gerekiyor, o yüzden bu bayrak üç yerde birden kullanılıyor:
   // barın kendisi, adım şeridinin top'u, app-root'un paddingTop'u.
   const topControlsVisible = isNative || activeTab === "ben";
+  // EMBED GERİ BUTONUNUN ETİKETİ. Buton hep "Keşfet" yazıyordu, oysa Bugün
+  // ekranından açılan bir kart kapanınca Bugün'e dönüyor (bkz. embedReturn):
+  // etiket gideceği yeri yanlış söylüyordu (kullanıcı: "bugün geri butonu
+  // olmalı"). Kaynak, dönüş hedefinin TA KENDİSİ, böylece ikisi ayrışamaz.
+  // `embedReturn` bir ref ama okunduğu anda güncel: handleOpenEmbed önce ref'i
+  // yazıyor, sonra setEmbeddedApp ile bu bar'ı render ettiriyor.
+  const embedBackTarget = embeddedApp ? embedReturn.current : null;
+  const embedBackLabel =
+    embedBackTarget && embedBackTarget.screen === "bugun" ? pickLang(TAB_TXT.bugun, lang)
+    : embedBackTarget && embedBackTarget.screen === "harita" ? pickLang(TAB_TXT.ben, lang)
+    : embedBackTarget && embedBackTarget.screen === "rehber" ? pickLang(TAB_TXT.ayna, lang)
+    : t("nav_family");   // Keşfet'ten gelindiyse ya da bağlam bilinmiyorsa
   // ── BUGÜN EKRANI VERİSİ ───────────────────────────────────────────────────
   // Kartlar embed'lerin localStorage'ından okunuyor (aynı origin, köprü yok);
   // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
@@ -7974,8 +8001,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
               onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
               onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
-              title={"Sakin " + t("nav_family")}
-              aria-label={"Sakin " + t("nav_family")}
+              title={embedBackLabel}
+              aria-label={embedBackLabel}
               style={{
                 marginLeft:8, padding:"7px 13px 7px 10px", borderRadius:100,
                 background:"rgba(184,164,216,0.12)", border:"1px solid rgba(184,164,216,0.4)",
@@ -7984,7 +8011,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 fontFamily:"'Jost',sans-serif", transition:"transform 0.15s ease", flexShrink:0,
               }}>
               <span style={{ fontSize:15 }}>←</span>
-              {t("nav_family")}
+              {embedBackLabel}
             </button>
             {/* Orta başlık: SAKİN {APP} */}
             <div style={{
