@@ -718,6 +718,8 @@ const SET_TXT = {
   gOdeme:   { tr:"Ödemeler", en:"Payments", de:"Zahlungen", es:"Pagos", pt:"Pagamentos", fr:"Paiements", ja:"お支払い" },
   gGizli:   { tr:"Gizlilik", en:"Privacy", de:"Datenschutz", es:"Privacidad", pt:"Privacidade", fr:"Confidentialité", ja:"プライバシー" },
   gYasal:   { tr:"Yasal", en:"Legal", de:"Rechtliches", es:"Legal", pt:"Legal", fr:"Mentions légales", ja:"法的事項" },
+  // Kimlik zaten oluşturulmuşken "Oluştur" demek yanlış; sadece adı gösterilir.
+  gidVar:   { tr:"✦ Galaktik Kimlik", en:"✦ Galactic Identity", de:"✦ Galaktische Identität", es:"✦ Identidad Galáctica", pt:"✦ Identidade Galáctica", fr:"✦ Identité Galactique", ja:"✦ ギャラクティック・アイデンティティ" },
   gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
   dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
   destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
@@ -730,6 +732,15 @@ const PANIC_ENTRY_TXT = {
   pt:"Respira", fr:"Respire", ja:"深呼吸する",
 };
 const AI_ERR_I18N = {
+  // 413: soru + rehber metinleri sunucu sınırını aştı. Kullanıcının yapabileceği
+  // tek şey soruyu kısaltmak, o yüzden doğrudan onu söylüyoruz.
+  tooLong: { tr:"Sorun biraz uzun geldi. Daha kısa yazıp tekrar dener misin?",
+             en:"That was a bit long. Could you write it shorter and try again?",
+             de:"Das war etwas lang. Schreibe es kürzer und versuche es erneut.",
+             es:"Ha quedado un poco largo. ¿Puedes escribirlo más corto e intentarlo de nuevo?",
+             pt:"Ficou um pouco longo. Podes escrever mais curto e tentar de novo?",
+             fr:"C'était un peu long. Peux-tu l'écrire plus court et réessayer ?",
+             ja:"少し長すぎたようです。短くしてもう一度お試しください。" },
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
   noReport:   { tr:"Rapor oluşturulamadı.", en:"Report could not be generated.", de:"Bericht konnte nicht erstellt werden.", es:"No se pudo generar el informe.", pt:"Não foi possível gerar o relatório.", fr:"Le rapport n'a pas pu être généré.", ja:"レポートを生成できませんでした。" },
@@ -4508,6 +4519,12 @@ export default function SakinApp() {
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği) — üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
   const [showTopMenu, setShowTopMenu] = useState(false);
+  // Ayarlar'dan bir alt sayfaya (şartlar/gizlilik/iade/premium/nedir) girildiğinde
+  // true olur ve o sayfada "← Ayarlar" dönüş butonu gösterilir. Bu sayfalar
+  // politika ekranı oldukları için alt bar orada gizli; bayrak olmasa kullanıcı
+  // Ayarlar'a dönemiyordu (kullanıcı bildirdi). Alt bardan başka bir sekmeye
+  // geçildiğinde temizlenir, yoksa alakasız bir ekranda dönüş butonu kalırdı.
+  const [fromSettings, setFromSettings] = useState(false);
   // Bildirim tıklaması → ilgili ekrana yönlendir (Sprint 2). schedule'daki extra.screen
   // okunur; yoksa eski davranış (sadece uygulama açılır). iOS-only — webde no-op.
   useEffect(() => {
@@ -4760,6 +4777,19 @@ export default function SakinApp() {
   // Kart nereden açıldı? Keşfet (Ailesi) panelinden açıldıysa kapatınca oraya geri
   // dönmeli — eskiden kapat deyince kullanıcı ana ekrana düşüyordu (kullanıcı isteği).
   const idCardFromAilesi = useRef(false);
+  // Galaktik kimlik bir kez oluşturulduysa buton "Oluştur" demez, sadece
+  // "Galaktik Kimlik" der (kullanıcı: "zaten oluşturulduysa oluştur yazmasın").
+  // Kalıcı: kart deterministik olarak doğum verisinden üretiliyor, yani bir kez
+  // görüldükten sonra hep var; her açılışta yeniden "oluşturuluyor" değil.
+  const [gidCreated, setGidCreated] = useState(() => {
+    try { return localStorage.getItem("sakin_gid_created") === "1"; } catch { return false; }
+  });
+  const openIdCard = (fromAilesi = false) => {
+    idCardFromAilesi.current = fromAilesi;
+    try { localStorage.setItem("sakin_gid_created", "1"); } catch(_) {}
+    setGidCreated(true);
+    setShowIdCard(true);
+  };
   const closeIdCard = () => {
     setShowIdCard(false);
     if (idCardFromAilesi.current) { idCardFromAilesi.current = false; setShowAilesi(true); }
@@ -6745,7 +6775,16 @@ ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
+      if (!res.ok || d.error) {
+        // HAM SUNUCU HATASINI EKRANA BASMA. Kullanıcı "Hata: Input too long"
+        // gördü; bu geliştirici dili, kişi ne yapacağını anlamıyor. Teknik
+        // ayrıntı konsola, ekrana anlaşılır ve eyleme dönük bir cümle.
+        console.warn("[Ayna] ai-call hata:", res.status, d?.error);
+        const tooLong = res.status === 413 || /too long/i.test(String(d?.error || ""));
+        setSikayetAnaliz(tooLong ? pickLang(AI_ERR_I18N.tooLong, lang)
+                                 : pickLang(AI_ERR_I18N.noAnalysis, lang));
+        return;
+      }
       setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       if (d?.text) aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
@@ -7238,6 +7277,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     && (screen === "mandala" || TAB_STEPS.includes(screen));
   const goTab = (id) => {
     try { haptic(); } catch(_) {}
+    // Alt bardan başka bir sekmeye geçildi: artık Ayarlar akışında değiliz,
+    // "← Ayarlar" butonu alakasız bir ekranda asılı kalmasın.
+    setFromSettings(false);
     if (id === "kesfet") { setShowAilesi(true); return; }
     setShowAilesi(false);
     // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
@@ -7553,9 +7595,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </span>
                     )}
                   </div>
-                  <button onClick={()=>{ idCardFromAilesi.current = true; setShowAilesi(false); setShowIdCard(true); }}
+                  <button onClick={()=>{ setShowAilesi(false); openIdCard(true); }}
                     style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                    {t("map_create_galactic_id")}
+                    {gidCreated ? pickLang(SET_TXT.gidVar, lang) : t("map_create_galactic_id")}
                   </button>
                 </div>
               )}
@@ -8812,9 +8854,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           left:0, right:0, zIndex:9997,
           background:"rgba(0,0,0,0.92)", backdropFilter:"blur(20px)",
           borderBottom:"1px solid rgba(255,255,255,0.06)",
-          display:"flex", gap:7, alignItems:"center",
           overflowX:"auto", scrollbarWidth:"none", msOverflowStyle:"none",
-          padding:"8px 12px", WebkitOverflowScrolling:"touch" }}>
+          WebkitOverflowScrolling:"touch" }}>
+          {/* ORTALAMA: dış kutuya justify-content:center VERİLEMEZ. overflow'lu bir
+              flex kapsayıcıda merkezleme, içerik taşınca soldaki öğeleri erişilmez
+              kılar (kaydırma sola gidemez, bilinen tarayıcı davranışı).
+              Çözüm: iç sarmalayıcı width:max-content + margin:0 auto. Geniş
+              ekranda boşluk auto marjlara paylaştırılır ve şerit ortalanır; dar
+              ekranda boşluk kalmaz, marjlar 0'a düşer ve kaydırma soldan başlar. */}
+          <div style={{ display:"flex", gap:7, alignItems:"center",
+            width:"max-content", margin:"0 auto", padding:"8px 12px" }}>
           {TAB_STEPS.map(id => {
             const n = NAV.find(x => x.id === id) || {};
             const color = n.color || "#888888";
@@ -8847,6 +8896,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             );
           })}
+          </div>
         </div>
       )}
 
@@ -11298,11 +11348,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
           </div>
-          <button onClick={()=>{ idCardFromAilesi.current = false; setShowIdCard(true); }}
+          <button onClick={()=>openIdCard(false)}
             style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
-            {t("map_create_galactic_id")}
+            {gidCreated ? pickLang(SET_TXT.gidVar, lang) : t("map_create_galactic_id")}
           </button>
-          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>{t("btn_new_day")}</button>
+          {/* Güne zaten bağlanıldıysa "yeni güne başla" yanlış olur (kullanıcı
+              bildirdi): mandala ekranındaki ile AYNI kural uygulanıyor. */}
+          <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>
+            {completedStepCount>0 ? t("mandala_continue_today") : t("btn_new_day")}
+          </button>
         </div>
       )}
 
@@ -12546,6 +12600,25 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           panelinin altından buraya taşındı: anonim kullanım verisi izni,
           hesap/veri silme, renk modu. Native'de bu sayfa YOK; orada aynı
           kontroller eski yerlerinde (Keşfet paneli + ☰ tema) duruyor. */}
+      {/* "← AYARLAR" DÖNÜŞ BUTONU — Ayarlar'dan açılan alt sayfalarda.
+          Bu sayfalar (şartlar/gizlilik/iade/premium/nedir) politika ekranı
+          oldukları için alt bar orada gizli; kullanıcı Ayarlar'a dönemiyordu.
+          Sabit konumda, üst marka nav'ının hemen altında. */}
+      {!isNative && fromSettings && ["sartlar","gizlilik","iade","fiyat","hakkinda"].includes(screen) && (
+        <button onClick={()=>{ try{haptic();}catch(_){} setFromSettings(false); setScreen("ayarlar"); }}
+          style={{ WebkitAppearance:"none",appearance:"none",position:"fixed",
+            top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
+            left:12, zIndex:9996, display:"flex",alignItems:"center",gap:8,
+            background:"rgba(0,0,0,0.85)",backdropFilter:"blur(14px)",
+            border:"1px solid rgba(255,255,255,0.16)",borderRadius:100,
+            padding:"9px 16px",cursor:"pointer",minHeight:40,
+            color:"rgba(215,208,232,0.92)",fontFamily:"'Jost',sans-serif",
+            fontSize:12,letterSpacing:1.4,textTransform:"uppercase",whiteSpace:"nowrap" }}>
+          <span style={{ fontSize:14,lineHeight:1 }}>←</span>
+          <span>{pickLang(TAB_TXT.ayarlar, lang)}</span>
+        </button>
+      )}
+
       {screen==="ayarlar" && (
         <div style={{ maxWidth:520,width:"100%",padding:"40px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
           {/* GERİ BUTONU — kullanıcı: "ayarlardan geri dönüş çıkış yok".
@@ -12585,23 +12658,33 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {right !== undefined ? right : <span style={{ color:"rgba(255,255,255,0.25)",fontSize:16,flexShrink:0 }}>›</span>}
               </button>
             );
-            const go = (sc) => () => { try{haptic();}catch(_){} setScreen(sc); };
+            // Ayarlar'dan açılan her alt sayfa `fromSettings` bayrağını kaldırır;
+            // o sayfada "← Ayarlar" dönüş butonu belirir.
+            const go = (sc) => () => { try{haptic();}catch(_){} setFromSettings(true); setScreen(sc); };
             return (
               <>
                 {/* ── GENEL ── */}
                 <div style={grpSt}>{pickLang(SET_TXT.gGenel, lang)}</div>
                 <div style={cardSt}>
                   <Row icon="✦" label={pickLang(NEDIR_I18N.title, lang)}
-                    onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("nedir"); setScreen("hakkinda"); }} />
+                    onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("nedir"); setFromSettings(true); setScreen("hakkinda"); }} />
                   <Row icon="◫" label={pickLang(TAB_TXT.terimler, lang)}
                     onClick={()=>{ try{haptic();}catch(_){} setShowKilavuz(true); }} />
                   {/* App Review Guideline 1.5: calisan bir destek iletisimi bulunmali. */}
                   <Row icon="✉" label={pickLang(SET_TXT.destek, lang)} note="destek@sakin.life"
                     onClick={()=>{ try { window.location.href = "mailto:destek@sakin.life"; } catch(_) {} }} />
+                  {/* Renk modu: sağdaki metin tıklanabilir görünmüyordu (kullanıcı
+                      bildirdi), anonim veri satırıyla AYNI sürgüye çevrildi.
+                      Sürgü açık = açık tema. Mevcut durum alt notta yazılı ki
+                      sürgünün hangi yöne ne anlama geldiği tahmin edilmesin. */}
                   <Row icon="◐" label={pickLang(TAB_TXT.renkModu, lang)} onClick={toggleTheme} last
-                    right={<span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,
-                      color: lightMode ? "#e8b478" : "rgba(200,192,220,0.75)",textTransform:"uppercase" }}>
-                      {lightMode ? t("theme_light") : t("theme_dark")}</span>} />
+                    note={lightMode ? t("theme_light") : t("theme_dark")}
+                    right={<span role="switch" aria-checked={lightMode} aria-label={pickLang(TAB_TXT.renkModu, lang)}
+                      style={{ flexShrink:0,width:46,height:27,borderRadius:100,position:"relative",display:"block",
+                        background: lightMode ? "rgba(232,180,120,0.7)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
+                      <span style={{ position:"absolute",top:3,left: lightMode ? 22 : 3,width:21,height:21,borderRadius:"50%",
+                        background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+                    </span>} />
                 </div>
                 {/* Dil: LangPicker kendi dropdown'unu acar, satir kalibina girmiyor. */}
                 <div style={{ ...cardSt, marginTop:10, padding:"12px 16px", display:"flex",

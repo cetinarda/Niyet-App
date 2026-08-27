@@ -173,11 +173,17 @@ Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; con
 
 // ---- Hard limits -------------------------------------------------------------
 const MAX_BODY_BYTES = 64 * 1024;          // 64KB body size cap
-const MAX_USER_CONTENT_CHARS = 16000;      // total chars across messages[].content. Restored to the
-                                           // pre-security-rewrite per-message value (16000): these prompts
-                                           // legitimately carry large static guides (Reiki/Louise Hay,
-                                           // breath/section refs) inside the user turn. 4000 silently broke
-                                           // all 5 ai-call screens in prod with HTTP 413 "Input too long".
+const MAX_USER_CONTENT_CHARS = 20000;      // total chars across messages[].content. These prompts
+                                           // legitimately carry large static guides (Reiki/Louise Hay/
+                                           // I Ching, breath/section refs) inside the user turn.
+                                           // Gecmis: 4000 sessizce 5 ai-call ekranini da kirdi (HTTP 413
+                                           // "Input too long"), 16000'e cikarildi. I Ching rehberi (6275
+                                           // karakter, 64 heksagram) eklenince AYNI HATA tekrarladi.
+                                           // OLCUM (Icsel Ayna, 60 karakterlik soru): user 16173 karakter.
+                                           // Soru 500 karaktere kadar cikabildigi (MAX_INPUT_LEN) ve harita
+                                           // alanlari kisiye gore uzayabildigi icin tavan 20000 secildi:
+                                           // ~3000 karakter gercek pay birakir. Govde siniri 64KB ve olculen
+                                           // istek 22KB, yani bu artis govde tarafinda sorun yaratmiyor.
 const MAX_SYSTEM_CHARS = 12000;            // system prompt cap (client-supplied; trusted but bounded)
 const MAX_TOKENS_CEIL = 2000;              // server-side clamp regardless of client value
 const MAX_TOKENS_FLOOR = 100;
