@@ -745,6 +745,16 @@ const REVEAL_I18N = {
 // çağrı yine aynı: doğrudan 4-7-8 sakinleştirici nefes).
 // Yeni alt navigasyon (SADECE WEB) etiketleri — 7 dil, i18n dosyalarına
 // dokunmadan (NEXT_CHAKRA_TXT ile aynı desen).
+// "Ben" ekranındaki Human Design özetinin etiketleri. Tip/otorite/profil
+// ADLARI Tasarım kaynağından geliyor (tr + en); Sakin'in diğer beş dili
+// İngilizceye düşer, hd-transit.js ile aynı kural.
+const HD_TXT = {
+  strategy:  { tr:"Strateji", en:"Strategy", de:"Strategie", es:"Estrategia", pt:"Estratégia", fr:"Stratégie", ja:"戦略" },
+  authority: { tr:"Otorite", en:"Authority", de:"Autorität", es:"Autoridad", pt:"Autoridade", fr:"Autorité", ja:"権威" },
+  profile:   { tr:"Profil", en:"Profile", de:"Profil", es:"Perfil", pt:"Perfil", fr:"Profil", ja:"プロファイル" },
+  signature: { tr:"Doğru frekans", en:"Signature", de:"Signatur", es:"Firma", pt:"Assinatura", fr:"Signature", ja:"シグネチャー" },
+  notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
+};
 const TAB_TXT = {
   bugun:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
   ben:      { tr:"Ben", en:"Me", de:"Ich", es:"Yo", pt:"Eu", fr:"Moi", ja:"わたし" },
@@ -4687,12 +4697,23 @@ export default function SakinApp() {
   // zaman önceki menüye dönsün"). Artık embed açılırken o anki bağlam
   // saklanıyor ve kapanışta oraya dönülüyor.
   const embedReturn = useRef(null);
+  // DOĞUM BİLGİSİ KAPISI. Keşfet'teki bölümlerin hepsi doğum bilgisini köprüyle
+  // okuyor; bilgi yokken açılınca kullanıcı uygulamanın KENDİ onboarding'ine
+  // düşüyor, aynı soruları ikinci kez cevaplıyor ve Sakin'deki haritasıyla
+  // bağı kopuyor. Kullanıcı: "doğum bilgilerini girmeden tıklarsa yönlendir".
+  // ÇÖZÜM KESMİYOR, YÖNLENDİRİYOR: tek bir kart çıkar, "gir" der ve formdan
+  // sonra KULLANICININ AÇMAK İSTEDİĞİ bölüm kendiliğinden açılır
+  // (pendingEmbed). İsteyen "yine de aç" ile geçebilir; kapı tuzak değil.
+  // Bilgi bir kez girildiğinde bu kart bir daha hiç görünmez.
+  const [birthGateApp, setBirthGateApp] = useState(null);
+  const pendingEmbedRef = useRef(null);
   const handleOpenEmbed = (app) => {
     // Premium-kilitli embed'ler (SoulID): Sakin Premium olmayan kullanıcı
     // içeri hiç girmez, dogrudan paywall'a gider. İçeri giren herkes zaten
     // premium olduğu için embed kendi ayrı satın alma ekranını göstermez
     // (bkz. apps/soulid FREE_MODE build-time bayrağı).
     if (app.premium && !isPremium) { setShowAilesi(false); setScreen("fiyat"); return; }
+    if (!birthDate && !app.skipBirthGate) { setBirthGateApp(app); return; }
     // Nereden geldik? Keşfet paneli açıksa oraya, değilse o anki ekrana dönülecek.
     embedReturn.current = showAilesi ? { ailesi: true } : { screen };
     playPortalSound(); haptic();
@@ -5785,6 +5806,21 @@ export default function SakinApp() {
                 pt:"Para te dizer algo teu, preciso de te conhecer primeiro. Adicionas os teus dados de nascimento?",
                 fr:"Pour te dire quelque chose qui t'appartient, je dois d'abord te connaître. Ajoutes-tu tes infos de naissance ?",
                 ja:"あなたに向けた言葉を届けるには、まずあなたを知る必要があります。出生情報を入力しますか？" },
+    // Keşfet'teki bir bölüm doğum bilgisi olmadan açılmak istendiğinde.
+    gateTitle: { tr:"Önce seni tanıyalım", en:"Let's get to know you first",
+                 de:"Lernen wir dich zuerst kennen", es:"Primero conozcámonos",
+                 pt:"Vamos conhecer-te primeiro", fr:"Faisons d'abord connaissance",
+                 ja:"まずはあなたのことを" },
+    gateBody: { tr:"Bu bölüm doğum bilgini kullanıyor. Girersen buradaki her şey senin haritana göre açılır; girmezsen uygulama sana aynı soruları baştan sorar.",
+                en:"This section uses your birth info. Add it and everything here opens to your own chart; skip it and the app will ask you the same questions again.",
+                de:"Dieser Bereich nutzt deine Geburtsdaten. Trägst du sie ein, richtet sich alles nach deinem Horoskop; sonst fragt die App dich alles erneut.",
+                es:"Esta sección usa tus datos de nacimiento. Si los añades, todo se abre según tu carta; si no, la app te preguntará lo mismo de nuevo.",
+                pt:"Esta secção usa os teus dados de nascimento. Se os adicionares, tudo se abre segundo o teu mapa; se não, a app volta a fazer-te as mesmas perguntas.",
+                fr:"Cette section utilise tes infos de naissance. Si tu les ajoutes, tout s'ouvre selon ton thème; sinon l'application te reposera les mêmes questions.",
+                ja:"このセクションは出生情報を使います。入力すればすべてがあなたの図に沿って開き、しなければアプリが同じ質問を繰り返します。" },
+    gateSkip: { tr:"Yine de aç", en:"Open anyway", de:"Trotzdem öffnen",
+                es:"Abrir de todos modos", pt:"Abrir mesmo assim",
+                fr:"Ouvrir quand même", ja:"このまま開く" },
   };
   // Doğum bilgisi eksikken kart/bölüm yerine gösterilen nazik blok.
   // Butonlar GİZLENMİYOR (kullanıcı isteği) — açıldığında sebebini söylüyor ve
@@ -7340,6 +7376,119 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : embedBackTarget && embedBackTarget.screen === "harita" ? pickLang(TAB_TXT.ben, lang)
     : embedBackTarget && embedBackTarget.screen === "rehber" ? pickLang(TAB_TXT.ayna, lang)
     : t("nav_family");   // Keşfet'ten gelindiyse ya da bağlam bilinmiyorsa
+  // SENİN BİLGİLERİN / GALAKTİK KİMLİK KARTI.
+  // Keşfet panelinden "Ben" ekranının EN ÜSTÜNE taşındı (kullanıcı isteği).
+  // Tek tanım, tek yerde render ediliyor; Keşfet artık yalnızca uygulama
+  // vitrini. Kimlik kartı kapanınca Keşfet'e değil bulunduğu ekrana döner,
+  // o yüzden openIdCard(false).
+  const kimlikKarti = (
+    <>
+    {/* SENİN BİLGİLERİN — ad/soyad input + Sakin girişten gelen doğum bilgisi özeti (kapalı) */}
+    <div style={{ background:"rgba(184,164,216,0.04)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:14,padding:"14px 16px",display:"flex",flexDirection:"column",gap:10 }}>
+      <div style={{ fontSize:10,letterSpacing:3,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_your_info")}</div>
+      <input type="text"
+        value={userName}
+        onChange={e=>{
+          const v = e.target.value;
+          setUserName(v); setNameInput(v);
+          try { localStorage.setItem("sakin_name", v); } catch(_){}
+        }}
+        placeholder={t("ailesi_name_ph")}
+        autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
+        style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
+
+      {birthDate ? (
+        <>
+          <div style={{ fontSize:12,color:"#b0a8c8",lineHeight:1.7,letterSpacing:0.3 }}>
+            {birthDate}{birthTime ? ` · ${birthTime}` : ""}{birthCity ? ` · ${birthCity}` : ""}
+          </div>
+          {!ailesiEditBirth && (
+            <button onClick={()=>setAilesiEditBirth(true)}
+              style={{ alignSelf:"flex-start",background:"none",border:"1px dashed rgba(184,164,216,0.3)",borderRadius:100,padding:"6px 14px",color:"#9080b0",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {t("ailesi_edit_birth")}
+            </button>
+          )}
+        </>
+      ) : (
+        /* Hiç doğum bilgisi yoksa form aşağıda zaten AÇIK gelir; burada
+           sadece sebebini söylüyoruz. Buton etiketi koşullu: bilgi varsa
+           "değiştir" (yukarıdaki dal), yoksa "gir". */
+        <div style={{ fontSize:12,color:"#888",fontStyle:"italic" }}>
+          {t("ailesi_no_birth")}
+        </div>
+      )}
+
+      {(ailesiEditBirth || !birthDate) && (
+        <div style={{ display:"flex",flexDirection:"column",gap:8,paddingTop:6,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+          <div>
+            <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
+            <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
+            {dateWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("birth_date_required")}</div>}
+          </div>
+          <div>
+            <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_label2")}</div>
+            <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
+          </div>
+          <div>
+            <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_label")}</div>
+            <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
+            {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
+          </div>
+          <div style={{ display:"flex",gap:8,marginTop:4 }}>
+            <button onClick={()=>{
+                // Doğum tarihi/saati HER ZAMAN kaydedilsin (kaybolmasın). Şehir
+                // tanınmıyorsa: yanlış yükselen üretmemek için o şehri kaydetme +
+                // uyarı göster + formu açık tut (kullanıcı düzeltebilsin). Save artık
+                // hiçbir durumda "hiçbir şey yapmadan" takılmaz.
+                if(!birthInput){ setDateWarn(true); setAilesiEditBirth(true); return; } // geçerli tarih şart — sessiz başarısızlık yok
+                setDateWarn(false);
+                localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth");
+                if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
+                if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); setAilesiEditBirth(true); return; }
+                setCityWarn(false);
+                if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
+                setAilesiEditBirth(false);
+              }}
+              style={{ flex:1,background:"linear-gradient(135deg,rgba(184,164,216,0.35),rgba(122,80,150,0.3))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:100,padding:"9px 14px",color:"#fff",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {t("common_save")}
+            </button>
+            {birthDate && (
+              <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setBirthCityInput(birthCity); setAilesiEditBirth(false); }}
+                style={{ background:"none",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,padding:"9px 14px",color:"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {t("common_cancel")}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Mini profil: doğumdan türeyen kimlik çipleri + Galaktik Kimlik kapısı (Sprint 2) */}
+      {birthDate && astro?.burc && (
+        <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+          <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:10 }}>
+            <span style={{ padding:"5px 12px",background:"rgba(240,192,96,0.08)",border:"1px solid rgba(240,192,96,0.25)",borderRadius:100,fontSize:11,color:"#e8cc90",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+              {pickLang(REVEAL_I18N.sun, lang)}: {zodiacDisplay(astro.burc, lang)}
+            </span>
+            {yukselen && (
+              <span style={{ padding:"5px 12px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:100,fontSize:11,color:"#cbbce4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+                {pickLang(REVEAL_I18N.asc, lang)}: {zodiacDisplay(yukselen, lang)}
+              </span>
+            )}
+            {astro?.yasam && (
+              <span style={{ padding:"5px 12px",background:"rgba(122,176,224,0.08)",border:"1px solid rgba(122,176,224,0.25)",borderRadius:100,fontSize:11,color:"#9cc0e4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
+                {pickLang(REVEAL_I18N.path, lang)}: {astro.yasam}
+              </span>
+            )}
+          </div>
+          <button onClick={()=>openIdCard(false)}
+            style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+            {gidCreated ? pickLang(SET_TXT.gidVar, lang) : t("map_create_galactic_id")}
+          </button>
+        </div>
+      )}
+    </div>
+    </>
+  );
   // ── BUGÜN EKRANI VERİSİ ───────────────────────────────────────────────────
   // Kartlar embed'lerin localStorage'ından okunuyor (aynı origin, köprü yok);
   // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
@@ -7365,6 +7514,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
     return () => { alive = false; };
   }, [screen, lang]);
+  // ── BEN EKRANI: TEMEL HUMAN DESIGN ────────────────────────────────────────
+  // Tip · strateji · otorite · profil. Hesap host'ta (src/hd-natal.js), kural
+  // ve etiketler Tasarım uygulamasının kaynağından üretiliyor, yani iki ekran
+  // aynı şeyi söyler (üç doğum tarihiyle canlı bundle'a karşı doğrulandı).
+  // Doğum SAATİ ve tanınan bir ŞEHİR şart: saat olmadan Ay birkaç kapı şaşar,
+  // tip yanlış çıkar. Eksikse kart hiç gösterilmez, uydurulmaz.
+  const [natalHD, setNatalHD] = useState(null);
+  useEffect(() => {
+    if (screen !== "harita") return;
+    if (!birthDate || !birthTime || !birthCity) { setNatalHD(null); return; }
+    const loc = lookupCity(birthCity);
+    if (!loc) { setNatalHD(null); return; }
+    let alive = true;
+    const [Y, Mo, Da] = birthDate.split("-").map(Number);
+    const off = effectiveUtcOffset(loc[0], loc[1], loc[2], Y, Mo, Da);
+    import("./hd-natal")
+      .then(m => m.computeNatalHD(birthDate, birthTime, off, lang))
+      .then(r => { if (alive) setNatalHD(r); })
+      .catch(e => { console.warn("[ben] HD hesaplanamadi:", e); });
+    return () => { alive = false; };
+  }, [screen, lang, birthDate, birthTime, birthCity]);
   useEffect(() => {
     if (screen !== "bugun") return;
     let alive = true;
@@ -7405,8 +7575,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     setFromSettings(false);
     if (id === "kesfet") { setShowAilesi(true); return; }
     setShowAilesi(false);
-    // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
-    if (id === "ayna")   { openMirror(); return; }
+    // Ayna sekmesi: diğer sekmeler gibi ANINDA açılır (portal geçişi yok).
+    if (id === "ayna")   { openMirror({ instant: true }); return; }
     if (id === "bugun")  { setScreen("bugun"); return; }
     if (id === "ben")    { setScreen("harita"); return; }
     // Bağlan → günün bağı (mandala): ilerleme omurgası, seri, rozetler.
@@ -7434,8 +7604,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   };
   // Ayna (gizli geçit) açılışı — hem üst bardaki orta buton hem eski floating ☽
   // aynı davranışı kullansın diye tek fonksiyona çıkarıldı.
-  const openMirror = () => {
+  // `instant`: portal (dönen elmas) animasyonunu ve açılış sesini ATLA, ekranı
+  // hemen aç. Alt bardaki AYNA sekmesi bunu kullanır: kullanıcı bir SEKMEYE
+  // basıyor, diğer dört sekme anında açılırken burada 1 saniye beklemek
+  // sekmeyi bozuk gibi gösteriyordu ("dönen elmas olmasın, diğerleri gibi
+  // doğrudan açılsın"). Portal, akşam akışındaki "haftanı gör" gibi TÖRENSEL
+  // girişlerde duruyor: orada geçiş bilinçli bir duraklama.
+  const openMirror = ({ instant = false } = {}) => {
     haptic();
+    if (instant) {
+      try { setShowAilesi(false); } catch(_) {}
+      try { if (embeddedApp) { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } } catch(_) {}
+      setRehberTab("reiki"); setScreen("rehber");
+      return;
+    }
     try {
       const ctx = __makeAudioCtx();
       const now = ctx.currentTime;
@@ -7622,110 +7804,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ width:40,flex:"0 0 40px" }} />
             </div>
 
-            {/* SENİN BİLGİLERİN — ad/soyad input + Sakin girişten gelen doğum bilgisi özeti (kapalı) */}
-            <div style={{ background:"rgba(184,164,216,0.04)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:14,padding:"14px 16px",display:"flex",flexDirection:"column",gap:10 }}>
-              <div style={{ fontSize:10,letterSpacing:3,color:"#9080b0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_your_info")}</div>
-              <input type="text"
-                value={userName}
-                onChange={e=>{
-                  const v = e.target.value;
-                  setUserName(v); setNameInput(v);
-                  try { localStorage.setItem("sakin_name", v); } catch(_){}
-                }}
-                placeholder={t("ailesi_name_ph")}
-                autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
-                style={{ background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:10,padding:"10px 12px",color:"#fff",fontSize:14,fontFamily:"'Inter',sans-serif",outline:"none",width:"100%",boxSizing:"border-box" }} />
-
-              {birthDate ? (
-                <>
-                  <div style={{ fontSize:12,color:"#b0a8c8",lineHeight:1.7,letterSpacing:0.3 }}>
-                    {birthDate}{birthTime ? ` · ${birthTime}` : ""}{birthCity ? ` · ${birthCity}` : ""}
-                  </div>
-                  {!ailesiEditBirth && (
-                    <button onClick={()=>setAilesiEditBirth(true)}
-                      style={{ alignSelf:"flex-start",background:"none",border:"1px dashed rgba(184,164,216,0.3)",borderRadius:100,padding:"6px 14px",color:"#9080b0",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                      {t("ailesi_edit_birth")}
-                    </button>
-                  )}
-                </>
-              ) : (
-                /* Hiç doğum bilgisi yoksa form aşağıda zaten AÇIK gelir; burada
-                   sadece sebebini söylüyoruz. Buton etiketi koşullu: bilgi varsa
-                   "değiştir" (yukarıdaki dal), yoksa "gir". */
-                <div style={{ fontSize:12,color:"#888",fontStyle:"italic" }}>
-                  {t("ailesi_no_birth")}
-                </div>
-              )}
-
-              {(ailesiEditBirth || !birthDate) && (
-                <div style={{ display:"flex",flexDirection:"column",gap:8,paddingTop:6,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
-                  <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
-                    <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
-                    {dateWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("birth_date_required")}</div>}
-                  </div>
-                  <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_label2")}</div>
-                    <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize:10,letterSpacing:2,color:"#888",marginBottom:3,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_label")}</div>
-                    <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
-                    {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
-                  </div>
-                  <div style={{ display:"flex",gap:8,marginTop:4 }}>
-                    <button onClick={()=>{
-                        // Doğum tarihi/saati HER ZAMAN kaydedilsin (kaybolmasın). Şehir
-                        // tanınmıyorsa: yanlış yükselen üretmemek için o şehri kaydetme +
-                        // uyarı göster + formu açık tut (kullanıcı düzeltebilsin). Save artık
-                        // hiçbir durumda "hiçbir şey yapmadan" takılmaz.
-                        if(!birthInput){ setDateWarn(true); setAilesiEditBirth(true); return; } // geçerli tarih şart — sessiz başarısızlık yok
-                        setDateWarn(false);
-                        localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth");
-                        if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                        if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); setAilesiEditBirth(true); return; }
-                        setCityWarn(false);
-                        if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
-                        setAilesiEditBirth(false);
-                      }}
-                      style={{ flex:1,background:"linear-gradient(135deg,rgba(184,164,216,0.35),rgba(122,80,150,0.3))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:100,padding:"9px 14px",color:"#fff",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                      {t("common_save")}
-                    </button>
-                    {birthDate && (
-                      <button onClick={()=>{ setBirthInput(birthDate); setBirthTimeInput(birthTime); setBirthCityInput(birthCity); setAilesiEditBirth(false); }}
-                        style={{ background:"none",border:"1px solid rgba(255,255,255,0.15)",borderRadius:100,padding:"9px 14px",color:"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                        {t("common_cancel")}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Mini profil: doğumdan türeyen kimlik çipleri + Galaktik Kimlik kapısı (Sprint 2) */}
-              {birthDate && astro?.burc && (
-                <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
-                  <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:10 }}>
-                    <span style={{ padding:"5px 12px",background:"rgba(240,192,96,0.08)",border:"1px solid rgba(240,192,96,0.25)",borderRadius:100,fontSize:11,color:"#e8cc90",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
-                      {pickLang(REVEAL_I18N.sun, lang)}: {zodiacDisplay(astro.burc, lang)}
-                    </span>
-                    {yukselen && (
-                      <span style={{ padding:"5px 12px",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.25)",borderRadius:100,fontSize:11,color:"#cbbce4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
-                        {pickLang(REVEAL_I18N.asc, lang)}: {zodiacDisplay(yukselen, lang)}
-                      </span>
-                    )}
-                    {astro?.yasam && (
-                      <span style={{ padding:"5px 12px",background:"rgba(122,176,224,0.08)",border:"1px solid rgba(122,176,224,0.25)",borderRadius:100,fontSize:11,color:"#9cc0e4",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>
-                        {pickLang(REVEAL_I18N.path, lang)}: {astro.yasam}
-                      </span>
-                    )}
-                  </div>
-                  <button onClick={()=>{ setShowAilesi(false); openIdCard(true); }}
-                    style={{ width:"100%",background:"rgba(184,164,216,0.08)",border:"1px solid rgba(184,164,216,0.3)",borderRadius:100,padding:"9px 14px",color:"#c8b4e8",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                    {gidCreated ? pickLang(SET_TXT.gidVar, lang) : t("map_create_galactic_id")}
-                  </button>
-                </div>
-              )}
-            </div>
+            {/* SENİN BİLGİLERİN kartı BURADAN KALDIRILDI: kullanıcı isteğiyle
+                "Ben" ekranının EN ÜSTÜNE taşındı (kimlik bilgisi kişisel bir
+                alan; Keşfet uygulama vitrini olarak kaldı). Blok tek yerde
+                duruyor: `kimlikKarti` (bkz. return öncesi tanım). */}
             {[
               // SoulID giriş kapısı GEÇİCİ OLARAK AÇIK (kullanıcı isteği): tanıtım
               // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
@@ -7974,6 +8056,52 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           </div>
         );
       })()}
+
+      {/* DOĞUM BİLGİSİ KAPISI — Keşfet'teki bir bölüm doğum bilgisi olmadan
+          açılmak istendiğinde çıkan tek kart. Engel değil yönlendirme:
+          "gir" formu açar ve KAYITTAN SONRA istenen bölüm kendiliğinden
+          açılır; "yine de aç" akışı olduğu gibi sürdürür. */}
+      {birthGateApp && (
+        <div onClick={()=>setBirthGateApp(null)}
+          style={{ position:"fixed",inset:0,zIndex:10030,background:"rgba(0,0,0,0.72)",backdropFilter:"blur(6px)",
+            display:"flex",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+          <div onClick={e=>e.stopPropagation()}
+            style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(20,14,32,0.99),rgba(12,8,22,0.99))",
+              border:"1px solid rgba(184,164,216,0.28)",borderRadius:20,padding:"22px 22px 18px",
+              boxShadow:"0 18px 60px rgba(0,0,0,0.7)" }}>
+            <div style={{ fontSize:10,letterSpacing:3,color: birthGateApp.color || "#9080b0",textTransform:"uppercase",
+              fontFamily:"'Jost',sans-serif",marginBottom:8 }}>{birthGateApp.name}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8e0f4",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
+              {pickLang(BIRTH_TXT.gateTitle, lang)}
+            </div>
+            <div style={{ fontSize:13,lineHeight:1.8,color:"#b8aed0",fontFamily:"'Inter',sans-serif",marginBottom:18 }}>
+              {pickLang(BIRTH_TXT.gateBody, lang)}
+            </div>
+            <button onClick={()=>{
+                const app = birthGateApp;
+                setBirthGateApp(null);
+                pendingEmbedRef.current = app;      // kayıttan sonra buraya dönülecek
+                birthReturnRef.current = "harita";  // bilgi ekranı artık "Ben"
+                setShowAilesi(false);
+                setGirisPhase("birth"); setShowBirthForm(true); setScreen("giris");
+              }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"12px 16px",borderRadius:100,
+                border:"1px solid rgba(184,164,216,0.5)",
+                background:"linear-gradient(135deg,rgba(184,164,216,0.32),rgba(122,80,150,0.26))",
+                color:"#fff",fontSize:12.5,letterSpacing:1.6,cursor:"pointer",fontFamily:"'Jost',sans-serif",
+                textTransform:"uppercase",marginBottom:9 }}>
+              {pickLang(BIRTH_TXT.enter, lang)}
+            </button>
+            <button onClick={()=>{ const app = birthGateApp; setBirthGateApp(null);
+                handleOpenEmbed({ ...app, skipBirthGate: true }); }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"10px 16px",borderRadius:100,
+                border:"1px solid rgba(255,255,255,0.12)",background:"none",color:"#8a8299",fontSize:12,
+                letterSpacing:1.4,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+              {pickLang(BIRTH_TXT.gateSkip, lang)}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* EMBEDDED APP — fullscreen iframe overlay with stargate portal transition */}
       {(embeddedApp || mitlerSession) && (
@@ -9500,6 +9628,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     // Bu yolda pop-up ASLA açılmaz (kural: pop-up yalnızca açılışta).
                     const back = birthReturnRef.current;
                     birthReturnRef.current = null;
+                    // Kullanıcı bir Keşfet bölümünü açmaya çalışırken forma
+                    // yönlendirildiyse, kaydın ardından O BÖLÜM açılır: yolun
+                    // ortasında bırakılmaz, istediği yere varır.
+                    // Tarih girilmeden "atla" denmişse kapı yine devrede olur,
+                    // o yüzden istek sadece tarih varsa sürdürülür.
+                    const pend = pendingEmbedRef.current;
+                    pendingEmbedRef.current = null;
+                    if (pend && birthInput) {
+                      setScreen(back || "harita");
+                      handleOpenEmbed({ ...pend, skipBirthGate: true });
+                      return;
+                    }
                     if (back) { setScreen(back); return; }
                     // Açılış akışı: doğum bilgisi girildiyse aha anı kartı, yoksa sabaha.
                     if(birthInput){ setShowKimlikReveal(true); } else { setScreen("sabah"); }
@@ -11028,6 +11168,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* HARİTA */}
       {screen==="harita" && (
         <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 170px",position:"relative",zIndex:1 }}>
+          {/* EN ÜSTTE: kimlik kartı (ad, doğum bilgisi, burç/yükselen/yaşam yolu
+              kısayolları, Galaktik Kimlik). Keşfet'ten buraya taşındı; ekranın
+              en altındaki ikinci galaktik kimlik butonu da kaldırıldı, tek
+              giriş bu kartın içindeki buton. */}
+          <div style={{ marginBottom:28 }}>{kimlikKarti}</div>
           <div style={{ textAlign:"center",marginBottom:40 }}>
             <div style={{ fontSize:13,letterSpacing:5,color:"#666666",marginBottom:9 }}>{t("weekly_label")}</div>
             <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
@@ -11156,6 +11301,57 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
+          {/* ── TEMEL HUMAN DESIGN ── (kullanıcı: "12. ev gizli benlik üstüne
+              human design bilgilerini de gir temel düzeyde")
+              Tip · strateji · otorite · profil. Tam bodygraph, kanallar ve kapı
+              yorumları için kart Tasarım uygulamasına açılıyor; burası özet.
+              Hesap host'ta ama kurallar ve etiketler Tasarım kaynağından
+              üretiliyor, yani iki ekran çelişmez (bkz. src/hd-natal.js). */}
+          {natalHD && (
+            <button onClick={()=>{ try{haptic();}catch(_){}
+                handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
+                marginBottom:20,padding:"16px 18px",borderRadius:17,
+                background:"linear-gradient(160deg,rgba(184,164,216,0.10),rgba(255,255,255,0.02))",
+                border:"1px solid rgba(184,164,216,0.28)" }}>
+              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:9 }}>
+                {/* ⚠️ textTransform:"uppercase" YOK ve metin ELLE büyük harf:
+                    sayfanın dili Türkçe olduğunda CSS büyütmesi "Design"
+                    kelimesini "DESİGN" yapıyor (noktalı İ). Özel ad, harfi
+                    harfine yazılmalı. */}
+                <span style={{ fontSize:10,letterSpacing:2.5,color:"#b4a0d8",fontFamily:"'Jost',sans-serif" }}>
+                  HUMAN DESIGN
+                </span>
+                <span style={{ fontSize:11,color:"rgba(255,255,255,0.28)" }}>›</span>
+              </div>
+              <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:8 }}>
+                {natalHD.emoji && <span style={{ fontSize:20,lineHeight:1,flexShrink:0 }}>{natalHD.emoji}</span>}
+                <span style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
+                  {natalHD.type}
+                </span>
+              </div>
+              {/* Üç satır tek satıra sığmaz (uzun dillerde taşar), sarılabilir
+                  çip dizisi olarak veriliyor; her çip kendi başına okunuyor. */}
+              <div style={{ display:"flex",flexWrap:"wrap",gap:6 }}>
+                {[
+                  natalHD.strategy && [pickLang(HD_TXT.strategy, lang), natalHD.strategy, "#a0d8b4"],
+                  natalHD.authority && [pickLang(HD_TXT.authority, lang), natalHD.authority, "#9cc0e4"],
+                  [pickLang(HD_TXT.profile, lang), natalHD.profileName ? `${natalHD.profile} ${natalHD.profileName}` : natalHD.profile, "#e8c07a"],
+                ].filter(Boolean).map(([lbl, val, c]) => (
+                  <span key={lbl} style={{ display:"inline-flex",alignItems:"center",gap:6,
+                    background:`${c}12`,border:`1px solid ${c}33`,borderRadius:100,padding:"5px 12px" }}>
+                    <span style={{ fontSize:9.5,letterSpacing:1.4,color:`${c}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{lbl}</span>
+                    <span style={{ fontSize:12,color:"#e6e0f2",fontFamily:"'Inter',sans-serif" }}>{val}</span>
+                  </span>
+                ))}
+              </div>
+              {natalHD.signature && (
+                <div style={{ fontSize:11.5,color:"#8f899e",marginTop:9,fontFamily:"'Inter',sans-serif",lineHeight:1.6 }}>
+                  {pickLang(HD_TXT.signature, lang)}: {natalHD.signature} · {pickLang(HD_TXT.notSelf, lang)}: {natalHD.notSelf}
+                </div>
+              )}
+            </button>
+          )}
           {/* ── 12. Ev Kartı ──
               GÜNCELLEME (kullanıcı isteği): kart artık veri yokken de GÖRÜNÜYOR.
               Eskiden tamamen gizleniyordu; kullanıcı haritaya girip "menü
@@ -11330,10 +11526,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
           </div>
-          <button onClick={()=>openIdCard(false)}
-            style={{ width:"100%",marginBottom:12,padding:"13px 16px",borderRadius:24,border:"1px solid rgba(184,164,216,0.4)",background:"linear-gradient(135deg,rgba(184,164,216,0.18),rgba(122,80,150,0.10))",color:"#d8c8f0",fontSize:13,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",boxShadow:"0 0 18px rgba(184,164,216,0.12)" }}>
-            {gidCreated ? pickLang(SET_TXT.gidVar, lang) : t("map_create_galactic_id")}
-          </button>
+          {/* Ekranın altındaki GALAKTİK KİMLİK butonu KALDIRILDI (kullanıcı
+              isteği): kimlik kartı artık bu ekranın en üstünde ve kendi
+              butonunu taşıyor, aynı giriş iki kez görünmesin. */}
           {/* Güne zaten bağlanıldıysa "yeni güne başla" yanlış olur (kullanıcı
               bildirdi): mandala ekranındaki ile AYNI kural uygulanıyor. */}
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>
@@ -11347,7 +11542,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // Read embed apps' usage from same-origin localStorage (no medical claims, just factual counts)
         const animalCount = (() => { try { const a = JSON.parse(localStorage.getItem("@tura_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
         const mythCount = (() => { try { const a = JSON.parse(localStorage.getItem("@mitler_archive") || "[]"); return Array.isArray(a) ? a.length : 0; } catch { return 0; } })();
-        const hdProfile = (() => { try { const a = JSON.parse(localStorage.getItem("@tasarim_profiles") || "[]"); return Array.isArray(a) && a.length ? a[0] : null; } catch { return null; } })();
+        // GALAKTİK KİMLİKTEKİ HD SATIRI. Eskiden yalnızca `@tasarim_profiles`
+        // okunuyordu ama o kayıt ad/doğum/şehir tutuyor; `type` ve `profile`
+        // alanları HİÇ YOK, Tasarım bunları her açılışta yeniden hesaplıyor.
+        // Yani bu satır ve paylaşım kartındaki HD bloğu HİÇBİR ZAMAN
+        // görünmüyordu. Artık host'un kendi hesabı (natalHD) kullanılıyor;
+        // embed kaydı ileride bu alanları taşırsa o öncelikli kalır.
+        const hdSaved = (() => { try { const a = JSON.parse(localStorage.getItem("@tasarim_profiles") || "[]"); return Array.isArray(a) && a.length ? a[0] : null; } catch { return null; } })();
+        const hdProfile = (hdSaved && hdSaved.type) ? hdSaved
+          : (natalHD ? { type: natalHD.type, profile: natalHD.profile } : hdSaved);
         const displayName = (idCardName || t("gid_default_name")).slice(0, 24);
         const burc = zodiacDisplay(astro?.burc, lang) || "—";
         const yasamYolu = astro?.yasam || "—";
@@ -11703,7 +11906,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 )}
                 {hdProfile && (hdProfile.type || hdProfile.profile) && (
                   <div style={{ padding:"8px 12px",background:"rgba(180,160,216,0.08)",border:"1px solid rgba(180,160,216,0.18)",borderRadius:10,marginBottom:8,textAlign:"center" }}>
-                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",textTransform:"uppercase",marginBottom:3 }}>Human Design</div>
+                    {/* uppercase YOK: Türkçe sayfada CSS "Design" -> "DESİGN" yapıyor */}
+                    <div style={{ fontSize:9,letterSpacing:2.5,color:"#9080b8",marginBottom:3 }}>HUMAN DESIGN</div>
                     <div style={{ fontSize:12,color:"#d0c8e8",letterSpacing:0.5 }}>{hdProfile.type || ""}{hdProfile.profile ? ` · ${hdProfile.profile}` : ""}</div>
                   </div>
                 )}
