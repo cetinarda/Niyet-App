@@ -4637,12 +4637,20 @@ export default function SakinApp() {
   const mitlerLoadedOnceRef = useRef(false);
   // Aile uygulaması açılışında kullanılır: 3 ücretsiz açılış sonrası frost. HD bunun dışında (kendi detay blur'u var).
   const AILESI_FREE_OPENS = 3;
+  // EMBED'DEN GERİ DÖNÜŞ HEDEFİ. Kapatma butonu eskiden KOŞULSUZ Keşfet'i
+  // açıyordu; Bugün ekranından bir kart açıp kapatınca kullanıcı Keşfet'e
+  // düşüyordu (kullanıcı bildirdi: "geri dönüşler keşfete dönüyor ... app her
+  // zaman önceki menüye dönsün"). Artık embed açılırken o anki bağlam
+  // saklanıyor ve kapanışta oraya dönülüyor.
+  const embedReturn = useRef(null);
   const handleOpenEmbed = (app) => {
     // Premium-kilitli embed'ler (SoulID): Sakin Premium olmayan kullanıcı
     // içeri hiç girmez, dogrudan paywall'a gider. İçeri giren herkes zaten
     // premium olduğu için embed kendi ayrı satın alma ekranını göstermez
     // (bkz. apps/soulid FREE_MODE build-time bayrağı).
     if (app.premium && !isPremium) { setShowAilesi(false); setScreen("fiyat"); return; }
+    // Nereden geldik? Keşfet paneli açıksa oraya, değilse o anki ekrana dönülecek.
+    embedReturn.current = showAilesi ? { ailesi: true } : { screen };
     playPortalSound(); haptic();
     // iOS 13+: DeviceMotionEvent izni SADECE top-level frame'den (user gesture içinde)
     // istenebilir. İframe embed'den istemek sessizce 'denied' döner. Burada parent
@@ -7313,7 +7321,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js) — ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
-  const [moonPhase, setMoonPhase] = useState(null);
+  const [moonNow, setMoonNow] = useState(null);
   useEffect(() => {
     if (screen !== "bugun") return;
     let alive = true;
@@ -7324,7 +7332,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           m.computeMoonPhase(new Date(), lang),
         ]);
         if (!alive) return;
-        setTransit(tr); setMoonPhase(mn);
+        setTransit(tr); setMoonNow(mn);
       })
       // Hesap düşerse ekran transitsiz açılır; kart bölümü etkilenmez.
       .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
@@ -7956,7 +7964,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             display:"flex", alignItems:"center", position:"relative",
           }}>
             <button
-              onClick={()=>{ try { haptic(); } catch(_) {} setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); setShowAilesi(true); }}
+              onClick={()=>{ try { haptic(); } catch(_) {}
+                setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
+                // GELDİĞİN YERE DÖN (eskiden koşulsuz Keşfet açılıyordu).
+                const r = embedReturn.current; embedReturn.current = null;
+                if (r && r.screen) { setShowAilesi(false); setScreen(r.screen); }
+                else setShowAilesi(true);   // Keşfet'ten gelindiyse ya da bilgi yoksa
+              }}
               onMouseDown={e=>e.currentTarget.style.transform="scale(0.92)"}
               onMouseUp={e=>e.currentTarget.style.transform="scale(1)"}
               onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
@@ -12573,8 +12587,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const SYS_LABEL = { archetype:"sysArchetype", myth:"sysMyth", image:"sysImage",
                             tarot:"sysTarot", rune:"sysRune", iching:"sysIching" };
         // Tek kart kutusu. `card` varsa içerik, yoksa "aç" daveti.
+        // KART ZATEN ÇEKİLMİŞSE, uygulamayı açarken "şu kartın sayfasını aç"
+        // ipucunu bırak (kullanıcı: "ikinci kez kartı aç dediğinde kaplan
+        // çıktıysa kaplan sayfasına gitmeli"). Aynı origin olduğu için embed
+        // bunu localStorage'dan okuyup açılış animasyonunu atlıyor ve doğrudan
+        // detay sayfasını açıyor. Kart YOKSA ipucu bırakılmaz; uygulama normal
+        // kart çekme akışıyla açılır.
+        // Mitler'de detay sayfası olmadığı için ipucu gönderilmiyor (kart
+        // içeriği zaten o ekranda satır içi gösteriliyor).
+        const HINT_KIND = { animal:"animal", plant:"plant", stone:"stone" };
         const Card = ({ eyebrow, card, color, appKey }) => (
           <button onClick={()=>{ try{haptic();}catch(_){}
+              try {
+                if (card && HINT_KIND[appKey]) {
+                  localStorage.setItem("sakin_open_card", JSON.stringify({ kind: HINT_KIND[appKey], date: dk }));
+                } else {
+                  localStorage.removeItem("sakin_open_card");
+                }
+              } catch(_) {}
               handleOpenEmbed({ name: eyebrow, embed: CARD_APP[appKey], color }); }}
             style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
               background: card ? `linear-gradient(160deg, ${color}14, rgba(255,255,255,0.02))` : "rgba(255,255,255,0.03)",
@@ -12698,13 +12728,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
                   ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
               <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
-                {moonPhase && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonPhase.glyph}</span>}
+                {moonNow && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonNow.glyph}</span>}
                 <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
                   <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
-                  {moonPhase && (
+                  {moonNow && (
                     <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
-                      {moonPhase.name}
-                      {moonPhase.fraction != null && ` · %${Math.round(moonPhase.fraction * 100)}`}
+                      {moonNow.name}
+                      {moonNow.fraction != null && ` · %${Math.round(moonNow.fraction * 100)}`}
                     </span>
                   )}
                 </span>
@@ -13085,9 +13115,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
-          border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)",
-          // Orta sekme barın üstüne taşıyor; visible olmazsa daire kırpılır.
-          overflow:"visible" }}>
+          border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 6px",
+          // 5 eşit sekme: bar sabit genişlikte, içindekiler flex:1 ile eşit
+          // paylaşıyor. Yükseltilmiş orta sekme kalktığı için overflow'a da
+          // gerek kalmadı (taşan bir öğe yok).
+          width:"calc(100vw - 20px)",maxWidth:400,boxSizing:"border-box" }}>
           {MAIN_TABS.map(tb => {
             const on = activeTab === tb.id;
             // AYNA hilali üst bardan buraya taşındı; oradaki karakteri korunuyor
@@ -13098,40 +13130,38 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const aynaGlow = isAyna
               ? `drop-shadow(0 0 ${on ? (lightMode ? 3 : 7) : (lightMode ? 2 : 4)}px rgba(160,120,220,${lightMode ? 0.35 : (on ? 0.75 : 0.45)}))`
               : undefined;
-            // ORTA SEKME (Bugün): yukarı taşar, dolgulu daire içinde. Zarif
-            // tutuldu: 46px daire, ince kenar, yumuşak parıltı. Barın kendisi
-            // overflow:visible olmalı yoksa taşan kısım kırpılır.
-            if (tb.center) return (
-              <button key={tb.id} onClick={()=>goTab(tb.id)}
-                style={{ WebkitAppearance:"none",appearance:"none",background:"none",border:"none",padding:0,
-                  cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:4,
-                  minWidth:62,marginTop:-20,color: on ? tb.color : `${tb.color}9a` }}>
-                <span style={{ width:46,height:46,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-                  background: on
-                    ? `radial-gradient(circle at 40% 35%, ${tb.color}4d, rgba(24,18,10,0.96))`
-                    : "radial-gradient(circle at 40% 35%, rgba(232,192,122,0.20), rgba(18,14,10,0.96))",
-                  border:`1px solid ${tb.color}${on ? "88" : "4d"}`,
-                  boxShadow: on ? `0 0 18px ${tb.color}55, 0 6px 16px rgba(0,0,0,0.5)` : "0 6px 16px rgba(0,0,0,0.45)",
-                  transition:"background .4s, border .4s, box-shadow .4s" }}>
-                  <TabIcon id={tb.id} size={22} />
-                </span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
-                  {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
-                </span>
-              </button>
-            );
+            // ORTA SEKME AYRICALIĞI KALDIRILDI (kullanıcı: "büyüklükten vazgeçtim,
+            // eşit ölçüde olsun hepsi, ortalı hizalı"). Yükseltilmiş daire
+            // hizayı bozuyordu: ikon 22px + daire 46px iken diğerleri 19-21px
+            // ikondu, yani ikon merkezleri farklı yüksekliklere düşüyordu.
+            // Artık BEŞ SEKME DE AYNI kalıptan geçiyor: aynı ikon boyu, aynı
+            // dolgu, aynı minWidth. Bugün yalnızca RENGİYLE öne çıkıyor.
             return (
               <button key={tb.id} onClick={()=>goTab(tb.id)}
                 style={{ WebkitAppearance:"none",appearance:"none",
                   background: on ? `${tb.color}22` : "transparent",
                   border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
                   borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
-                  padding:"7px 11px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
-                  minWidth:56,color: on ? aynaColor : `${aynaColor}7a` }}>
-                <span style={{ display:"flex", filter: aynaGlow }}>
-                  <TabIcon id={tb.id} size={on ? 21 : 19} />
+                  padding:"7px 6px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:5,
+                  // 5 sekme 390px'e sığmalı: sabit genişlik + flex:1 ile hepsi
+                  // BİREBİR eşit paya düşüyor, yani etiketler farklı uzunlukta
+                  // olsa bile ikonlar eşit aralıklı ve ortalı kalıyor.
+                  flex:"1 1 0",minWidth:0,color: on ? aynaColor : `${aynaColor}7a` }}>
+                {/* İKON KUTUSU SABİT 22px: boyut aktif/pasif DEĞİŞMİYOR (eskiden
+                    21/19 idi ve aktif sekmenin ikonu diğerlerinden aşağı/yukarı
+                    kayıyordu). Vurgu yalnızca renk + arka planla veriliyor. */}
+                <span style={{ display:"flex",alignItems:"center",justifyContent:"center",
+                  width:22,height:22,flexShrink:0, filter: aynaGlow }}>
+                  <TabIcon id={tb.id} size={20} />
                 </span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
+                {/* lineHeight 1 + overflow:hidden Ğ/Ü'nün üst işaretlerini
+                    KIRPIYORDU (4x yakınlaştırmada yakalandı: DOM'da "BAĞLAN"
+                    yazarken ekranda "BAGLAN" görünüyordu, Ş sorunsuzdu çünkü
+                    işareti taban çizgisinin altında).
+                    lineHeight 1.3 diyakritiklere yer açıyor; ellipsis'e gerek
+                    yok, en uzun etiket 70px'lik sekmeye rahat sığıyor. */}
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10,letterSpacing:0.4,
+                  lineHeight:1.3,whiteSpace:"nowrap" }}>
                   {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
                 </span>
               </button>
