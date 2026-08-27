@@ -12837,20 +12837,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ŞİMDİ: buton HER ZAMAN gösteriliyor. Ayarlar'dan gelindiyse eski
           davranış (etiketli "← Ayarlar", oraya döner); değilse gerçek
           gezinme geçmişini kullanan goBack() ile GELİNEN YERE dönülür. */}
+      {/* BİÇİM: yuvarlak, yalnızca ok. Eskiden "← AYARLAR" / "← GERİ" yazılı
+          hap biçimindeydi; kullanıcı: "tüm açılır sekmelerde ayarlar + geri
+          ikonu var, geri oku yeterli; app'de genel bütünlüğü koru, aynı dil
+          olmalı". Uygulamanın geri kalanında (fiyat/mandala/ayarlar ekranları)
+          zaten bu yuvarlak ok kullanılıyordu, artık burası da onunla aynı. */}
       {!isNative && ["sartlar","gizlilik","iade","fiyat","hakkinda"].includes(screen) && (
         <button onClick={()=>{ try{haptic();}catch(_){}
             if (fromSettings) { setFromSettings(false); setScreen("ayarlar"); }
             else goBack("harita"); }}
+          aria-label={fromSettings ? pickLang(TAB_TXT.ayarlar, lang) : t("back").replace(/^←\s*/,"")}
           style={{ WebkitAppearance:"none",appearance:"none",position:"fixed",
             top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
-            left:12, zIndex:9996, display:"flex",alignItems:"center",gap:8,
-            background:"rgba(0,0,0,0.85)",backdropFilter:"blur(14px)",
-            border:"1px solid rgba(255,255,255,0.16)",borderRadius:100,
-            padding:"9px 16px",cursor:"pointer",minHeight:40,
-            color:"rgba(215,208,232,0.92)",fontFamily:"'Jost',sans-serif",
-            fontSize:12,letterSpacing:1.4,textTransform:"uppercase",whiteSpace:"nowrap" }}>
-          <span style={{ fontSize:14,lineHeight:1 }}>←</span>
-          <span>{fromSettings ? pickLang(TAB_TXT.ayarlar, lang) : t("back").replace(/^←\s*/,"")}</span>
+            left:14, zIndex:9996, width:40,height:40,borderRadius:"50%",
+            background:"rgba(255,255,255,0.05)",backdropFilter:"blur(14px)",
+            border:"1px solid rgba(255,255,255,0.12)",cursor:"pointer",
+            color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,
+            display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2 }}>
+          ←
         </button>
       )}
 
