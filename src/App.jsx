@@ -7313,12 +7313,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js) — ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
+  const [moonPhase, setMoonPhase] = useState(null);
   useEffect(() => {
     if (screen !== "bugun") return;
     let alive = true;
     import("./hd-transit")
-      .then(m => m.computeTransit(new Date(), lang))
-      .then(r => { if (alive) setTransit(r); })
+      .then(async m => {
+        const [tr, mn] = await Promise.all([
+          m.computeTransit(new Date(), lang),
+          m.computeMoonPhase(new Date(), lang),
+        ]);
+        if (!alive) return;
+        setTransit(tr); setMoonPhase(mn);
+      })
       // Hesap düşerse ekran transitsiz açılır; kart bölümü etkilenmez.
       .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
     return () => { alive = false; };
@@ -12619,7 +12626,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ marginBottom:22 }}>
                 <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
                   textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.transit, lang)}</div>
-                <div style={{ background:"linear-gradient(160deg, rgba(184,164,216,0.10), rgba(255,255,255,0.02))",
+                {/* KUTUNUN TAMAMI TIKLANABİLİR -> Tasarım (Human Design) uygulaması
+                    (kullanıcı: "günün geçişi kutusuna tıklandığında HD'ye gitsin").
+                    Burada özet var, tam harita ve kapı detayı orada. */}
+                <button onClick={()=>{ try{haptic();}catch(_){}
+                    handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
+                  style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
+                  background:"linear-gradient(160deg, rgba(184,164,216,0.10), rgba(255,255,255,0.02))",
                   border:"1px solid rgba(184,164,216,0.28)",borderRadius:16,padding:"16px 18px" }}>
                   <div style={{ display:"flex",gap:10,flexWrap:"wrap",marginBottom:12 }}>
                     {[[TODAY_TXT.gunes, transit.sun, "#e8c07a"], [TODAY_TXT.ay, transit.moon, "#9cc0e4"]]
@@ -12658,7 +12671,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       </div>
                     </div>
                   </>)}
-                </div>
+                </button>
               </div>
             )}
 
@@ -12681,8 +12694,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               }}
               onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
               onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-              <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
-              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+              {/* AY EVRESİ BAŞLIKTA (kullanıcı: "ayın evresini ayı göster, detay
+                  metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
+                  ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
+              <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
+                {moonPhase && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonPhase.glyph}</span>}
+                <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
+                  <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
+                  {moonPhase && (
+                    <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
+                      {moonPhase.name}
+                      {moonPhase.fraction != null && ` · %${Math.round(moonPhase.fraction * 100)}`}
+                    </span>
+                  )}
+                </span>
+              </span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",flexShrink:0,transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
             </button>
 
             {showKozmik && (
