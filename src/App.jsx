@@ -349,44 +349,95 @@ const STORE_URL = (() => { try { return Capacitor.getPlatform() === "android" ? 
 // Türkçe yaz" talimatı EN/DE/... seçiliyken bile modeli Türkçe yazmaya zorluyordu
 // (backend dil kilidini eziyordu). Bu helper dili dinamik yapar.
 const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"Spanish (Español)", pt:"Brazilian Portuguese (Português)", fr:"French (Français)", ja:"Japanese (日本語)" };
+// ── ÇEŞİTLİLİK MOTORU (özgünlük talimatı YETMİYORDU) ──────────────────────
+// Kullanıcı: "aynı kullanıcı farklı çağrılarında aynı kalıpları görmesin."
+// KÖK SEBEP: sistem promptu zaten "her yanıt biricik olsun, klişelerden
+// kaçın" diyordu ama bu SOYUT bir emirdi; modeller somut kısıtlarla çok
+// daha güvenilir çeşitlenir. Daha da kötüsü, prompt AYRICA "yanıtının en
+// başına ŞU CÜMLEYİ ekle" diyerek HER SEFERİNDE BİREBİR AYNI açılış
+// cümlesini ZORUNLU kılıyordu (kendi özgünlük talimatıyla çelişiyordu) —
+// bu cümle paylaşım kartı üreticisinde zaten AYRICA ve SABİT olarak
+// çiziliyor (bkz. buildMirrorStoryCard, "Kalbinin süzgecinden geçir…"),
+// yani modelin bunu yazması hiçbir yerde gerekmiyordu, sadece ekrandaki
+// her yanıtı aynı cümleyle başlatıyordu. Kaldırıldı.
+// ÇÖZÜM: her çağrıda somut bir "imge alanı" (su, dağ, ateş, kök, gece
+// göğü…) rastgele seçilip modele "açılışını ve ana metaforunu buradan
+// besle" diye veriliyor. AYNI KULLANICI için son 3 seçim hafızada tutulup
+// (localStorage) tekrar seçilmiyor — yani art arda gelen çağrılarda GERÇEK
+// bir tekrar önleme var, sadece "şansa" bırakılmıyor.
+const AYNA_IMGE_ALANLARI = {
+  tr: [
+    "akan su ve nehir yatağı", "dağ ve kayalık zirve", "ateş ve kor",
+    "rüzgâr ve nefes", "mevsim geçişleri", "kök ve toprak",
+    "gece göğü ve yıldızlar", "kuş uçuşu ve göç", "bahçe ve filizlenen tohum",
+    "deniz ve dalga", "iplik, dokuma, örgü", "eşik ve kapı",
+    "şafak ve alacakaranlık", "orman ve gölge oyunu", "taş işçiliği ve yontma",
+    "hasat ve olgunlaşma", "yağmur sonrası toprak kokusu", "mumun alevi",
+  ],
+  en: [
+    "flowing water and riverbeds", "mountains and rocky peaks", "fire and embers",
+    "wind and breath", "seasonal transitions", "roots and soil",
+    "night sky and stars", "birds in flight, migration", "gardens and sprouting seeds",
+    "the sea and its waves", "thread, weaving, knots", "thresholds and doorways",
+    "dawn and dusk", "forests and shifting shadow", "stone carving and craftsmanship",
+    "harvest and ripening", "petrichor after rain", "a candle flame",
+  ],
+};
+// Aynı kullanıcı icin son 3 secimi hatirlar, onlari havuzdan cikarir. Tum
+// liste yakin zamanda tuketildiyse (18 cagriyi asan bir seri, nadir) yine
+// de bir sey donmesi icin tum havuza geri doner.
+function nextCreativeDomain(lang) {
+  const list = AYNA_IMGE_ALANLARI[lang] || AYNA_IMGE_ALANLARI.en;
+  const key = "sakin_ai_domain_recent";
+  let recent = [];
+  try { recent = JSON.parse(localStorage.getItem(key) || "[]"); } catch (_) {}
+  let pool = list.filter((_, i) => !recent.includes(i));
+  if (!pool.length) pool = list;
+  const idx = list.indexOf(pool[Math.floor(Math.random() * pool.length)]);
+  try { localStorage.setItem(key, JSON.stringify([idx, ...recent].slice(0, 3))); } catch (_) {}
+  return list[idx];
+}
+function domainDirective(lang, domain) {
+  if (!domain) return "";
+  return lang === "tr"
+    ? `\nBu yanıtın açılışını ve ana imgesini şuradan besle: "${domain}". Bu alanın adını doğrudan yazma, sadece atmosferini ve metaforunu doğal biçimde kullan; zorlama benzetme yapma.`
+    : `\nDraw this response's opening and central image from: "${domain}". Do not name this domain directly; let its atmosphere and metaphor flow naturally, without forcing the comparison.`;
+}
+
 // AI prompt'ları dile göre TAMAMEN ayrı. Daha önce Türkçe gövde + sadece tek satır
 // "respond in English" emri vardı — model gövdedeki Türkçe + Türkçe alıntı cümleleri
 // kopyalayıp Türkçe cevap veriyordu. Çözüm: lang === "tr" değilse, prompt'u tamamen
 // İngilizce yaz (çıktı dilini hedef dile yönlendiren ultra-net emirle).
-// onsoz=false → "Bu yanıt sana özeldir…" cümlesini ekleme talimatı ÇIKARILIR.
-// Görev akışı bunu kullanır: görev bir sohbet yanıtı değil, tek bir deneyimdir;
-// o önsöz kartın başında gereksiz yer kaplıyordu (kullanıcı: "çıkart, gerek yok").
-function buildMirrorSystemPrompt(lang, onsoz = true) {
+// `domain` verilirse nextCreativeDomain()'den gelen imge alanı eklenir; galaktik
+// harita özeti gibi KISA VE NET olması gereken çağrılar bunu boş bırakır — şiirsel
+// bir metafor zorlamak "net ol" talimatıyla çelişirdi.
+function buildMirrorSystemPrompt(lang, domain = "") {
   if (lang === "tr") {
     return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla; doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
 Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
 ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN; "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
-Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.
-${onsoz ? `Yanıtının en başına şu cümleyi ekle: "Bu yanıt sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."` : ""}`;
+Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.${domainDirective("tr", domain)}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
   return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence, including disclaimers, opening lines, and any quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
 OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run. Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
 ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings; never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
-Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.
-At the very BEGINNING of your response, add this sentence translated naturally into ${name}: "This answer is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
+Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.${domainDirective(lang, domain)}`;
 }
 // Haftalık rapor (generateRapor) için dil-farkındalıklı sistem prompt'u.
 // Mirror prompt'una analoji: lang === "tr" Türkçe kalıbı, diğerleri tamamen İngilizce
 // kalıba dönüşür ve modeli hedef dile kilitler (LANGUAGE LOCK backend'de prepend edilir,
 // burası gövdedeki Türkçe sızıntısını engeller).
-function buildReportSystemPrompt(lang) {
+function buildReportSystemPrompt(lang, domain = "") {
   if (lang === "tr") {
     return `Sen derin bir ayna ve içsel farkındalık rehberisin. Kullanıcının haftalık verilerini, doğum profilini ve 12. ev (gizli benlik) bilgeliğini sentezleyerek Türkçe, şiirsel ve içten bir rapor yazıyorsun. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. Net ve kendinden emin yaz. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "muhtemelen". Sorunun kaynağına doğrudan işaret et. Nereye bakabileceğini göster; kendine sevgi sunmayı hatırlat. UZUN TİRE (—) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
-ÖZGÜNLÜK (çok önemli): Bu rapor biricik olsun. Kalıp cümlelerden, klişelerden, şablon açılışlardan KAÇIN. Kişinin SOMUT verisine (o haftaki niyetleri, kelimeleri, doğum profili, sayısal/burç enerjisi) doğrudan dayan; herkese uyan genel laflar etme. Yapıyı, açılışı ve imgeleri her raporda değiştir; aynı cümleleri tekrarlama.
-Raporun en başına şu cümleyi ekle: "Bu rapor sana özeldir. Düşünce dünyanda sana destek olan bir yardımcıdır. Kalbinin süzgecinden geçir, seni ısıtan kısmını al."`;
+ÖZGÜNLÜK (çok önemli): Bu rapor biricik olsun. Kalıp cümlelerden, klişelerden, şablon açılışlardan KAÇIN. Kişinin SOMUT verisine (o haftaki niyetleri, kelimeleri, doğum profili, sayısal/burç enerjisi) doğrudan dayan; herkese uyan genel laflar etme. Yapıyı, açılışı ve imgeleri her raporda değiştir; aynı cümleleri tekrarlama.${domainDirective("tr", domain)}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
   return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence, including quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love. Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
-ORIGINALITY (very important): Make this report one of a kind. Avoid stock phrases, clichés, and template openings. Ground it in the person's SPECIFIC data (this week's intentions, their words, birth profile, numerology/zodiac energy); do not use generic one-size-fits-all language. Vary the structure, opening and imagery in every report; never repeat the same sentences.
-At the very BEGINNING of the report, add this sentence translated naturally into ${name}: "This report is just for you. It is a helper supporting you in your inner world. Filter it through your heart and keep what warms you."`;
+ORIGINALITY (very important): Make this report one of a kind. Avoid stock phrases, clichés, and template openings. Ground it in the person's SPECIFIC data (this week's intentions, their words, birth profile, numerology/zodiac energy); do not use generic one-size-fits-all language. Vary the structure, opening and imagery in every report; never repeat the same sentences.${domainDirective(lang, domain)}`;
 }
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
@@ -6340,13 +6391,13 @@ export default function SakinApp() {
         method: "POST",
         headers: { "Content-Type": "text/plain" },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile", max_tokens: 420, lang,
+          max_tokens: 420, lang,
           // DİL: prompt gövdesi TAMAMEN seçili dilde olmalı. Kod tabanında zaten
           // belgeli tuzak (bkz. buildMirrorSystemPrompt üstündeki not): Türkçe
           // gövdeye tek satır "write in English" eklemek YETMİYOR, model gövdedeki
           // Türkçeyi kopyalayıp karışık metin üretiyor. Bu yüzden tr / diğer
           // dillerde iki AYRI gövde var ve kullanıcı mesajı da dile uyuyor.
-          system: `${buildMirrorSystemPrompt(lang, false)}
+          system: `${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
 
 ${lang === "tr" ? `Şimdi bir GÖREV VERİYORSUN. Bu, kullanıcının ruhsal yolculuğunda karakterini
 geliştiren tek bir deneyimdir; bir oyunda verilen görev gibi somut, yapılabilir
@@ -6467,8 +6518,8 @@ ${kisiselProfil()}`,
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1100, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
+          max_tokens:1100, lang,
+          system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           ragQuery: chakraInput,
           messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
@@ -6679,12 +6730,11 @@ BEDEN-ZİHİN BAĞLANTISI:
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:700, lang,
-          // onsoz=false → "Bu yanıt sana özeldir…" ÖNSÖZÜ EKLENMEZ.
-          // Kullanıcı: "burada buna gerek yok, net bilgiler çünkü; ayna sorgusunda
-          // kalsın." Harita yorumu somut veriye dayanıyor, ayna sorgusu ise kişisel
-          // yansıtma — önsöz orada anlamlı, burada gereksiz.
-          system:`${buildMirrorSystemPrompt(lang, false)}
+          max_tokens:700, lang,
+          // domain YOK: harita yorumu KISA VE NET olmalı, şiirsel bir imge
+          // alanı zorlamak "net ol" talimatıyla çelişir (kullanıcı: "burada
+          // buna gerek yok, net bilgiler çünkü; ayna sorgusunda kalsın").
+          system:`${buildMirrorSystemPrompt(lang)}
 Bu bir DOĞUM HARİTASI ÖZETİ yorumudur. Kısa ve NET ol: kullanıcı uzun rapor değil, "bunlar ne anlama geliyor" sorusunun anlaşılır cevabını istiyor. Kehanet yapma, kesin hüküm verme; eğilim ve davet dilini kullan. Tıbbi/finansal tavsiye verme.`,
           messages:[{ role:"user", content:`Kullanıcının doğum haritası verileri:
 ${facts}
@@ -6795,7 +6845,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // kullanıyor. Buradaki değer "llama-3.3-70b-versatile" idi ve o model
           // 16 Ağu 2026'da emekli oldu; kalması yanıltıcı ölü koddu.
           max_tokens:1100, lang,
-          system:`${buildMirrorSystemPrompt(lang)}
+          system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
@@ -6942,8 +6992,8 @@ Bu bilgileri haftalık yorum yaparken dikkate al. Burç enerjisini, yaşam yolu 
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          model:"llama-3.3-70b-versatile", max_tokens:1700, lang,
-          system:`${buildReportSystemPrompt(lang)}
+          max_tokens:1700, lang,
+          system:`${buildReportSystemPrompt(lang, nextCreativeDomain(lang))}
 ${kisiselProfil()}${astroText}${kozmikText}
 ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
