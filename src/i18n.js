@@ -456,7 +456,7 @@ export const TRANS = {
     date_ph_year: "YYYY",
     time_ph_hour: "SS",
     time_ph_min: "DD",
-    city_ph: "ör. Kayseri, İstanbul, Londra",
+    city_ph: "ör. İstanbul, Londra, New York",
     city_not_in_list: "Listede yok, yükselen için en yakın ili seç",
     birth_date_required: "Geçerli bir doğum tarihi gir (gün / ay / yıl)",
     sakin_intro_title: "Sakin'i tanımak ister misin?",

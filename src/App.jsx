@@ -807,17 +807,18 @@ const HD_TXT = {
   notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
   fullChart: { tr:"Tam harita", en:"Full chart", de:"Vollständige Karte", es:"Carta completa", pt:"Mapa completo", fr:"Carte complète", ja:"全体チャート" },
 };
-// "Bağlan" ekranının üst özeti. {n} kalan adım sayısıyla değiştirilir.
-// TEKİL AYRI TUTULUYOR: Türkçe ve Japoncada sayıdan sonra çoğul eki gelmez,
-// ama "1 steps left" / "quedan 1 pasos" yanlış olur. Kalan 1'e düştüğünde
-// `leftOne` kullanılıyor.
-const BAGLAN_TXT = {
-  left:    { tr:"{n} adım kaldı", en:"{n} steps left", de:"noch {n} Schritte",
-             es:"quedan {n} pasos", pt:"faltam {n} passos", fr:"il reste {n} étapes",
-             ja:"あと{n}ステップ" },
-  leftOne: { tr:"1 adım kaldı", en:"1 step left", de:"noch 1 Schritt",
-             es:"queda 1 paso", pt:"falta 1 passo", fr:"il reste 1 étape",
-             ja:"あと1ステップ" },
+// "Ne sorabilirim?" açılır listesinin üstündeki nazik açıklama (kullanıcı
+// isteği: "bunlar örnek sorular, istediğini sorabilirsin ibaresi koy").
+// Liste bir MENÜ değil, ilham için birkaç örnek; kullanıcı serbest metin de
+// yazabiliyor, bunu açıkça söylemek gerekiyordu.
+const ASK_INTRO_TXT = {
+  tr:"Bunlar örnek sorular, istediğini sorabilirsin.",
+  en:"These are example questions, you can ask anything you'd like.",
+  de:"Das sind Beispielfragen, du kannst alles fragen, was du möchtest.",
+  es:"Estas son preguntas de ejemplo, puedes preguntar lo que quieras.",
+  pt:"Estas são perguntas de exemplo, podes perguntar o que quiseres.",
+  fr:"Ce sont des exemples de questions, tu peux poser ce que tu veux.",
+  ja:"これらは質問の一例です。何でも自由に聞いてください。",
 };
 const TAB_TXT = {
   bugun:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
@@ -839,6 +840,17 @@ const SET_TXT = {
   gYasal:   { tr:"Yasal", en:"Legal", de:"Rechtliches", es:"Legal", pt:"Legal", fr:"Mentions légales", ja:"法的事項" },
   // Kimlik zaten oluşturulmuşken "Oluştur" demek yanlış; sadece adı gösterilir.
   gidVar:   { tr:"✦ Galaktik Kimlik", en:"✦ Galactic Identity", de:"✦ Galaktische Identität", es:"✦ Identidad Galáctica", pt:"✦ Identidade Galáctica", fr:"✦ Identité Galactique", ja:"✦ ギャラクティック・アイデンティティ" },
+  // ⚠️ Bu 6 anahtar YANLIŞLIKLA TODAY_TXT içinde tanımlıydı ("Ayarlar bozulmuş,
+  // yazılar görünmüyor" — kullanıcı bildirdi). Ayarlar ekranındaki TÜM
+  // kullanım yerleri SET_TXT.xxx okuyor; TODAY_TXT.xxx hiçbir yerde
+  // okunmuyordu, yani Dil/Premium/Aboneliği Yönet/Destek/Hesap
+  // başlığı/Sürüm satırları sessizce boş (`undefined`) basılıyordu.
+  gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
+  dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
+  destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
+  premium:  { tr:"Premium", en:"Premium", de:"Premium", es:"Premium", pt:"Premium", fr:"Premium", ja:"プレミアム" },
+  abonelik: { tr:"Aboneliği yönet", en:"Manage subscription", de:"Abo verwalten", es:"Gestionar suscripción", pt:"Gerir subscrição", fr:"Gérer l'abonnement", ja:"サブスクリプションの管理" },
+  surum:    { tr:"Sürüm", en:"Version", de:"Version", es:"Versión", pt:"Versão", fr:"Version", ja:"バージョン" },
 };
 // "Bugün" ekranı metinleri (7 dil, i18n dosyalarına dokunmadan).
 const TODAY_TXT = {
@@ -869,12 +881,6 @@ const TODAY_TXT = {
               ja:"今日、星はあなたに何を告げている？" },
   soulidGo: { tr:"SoulID'de bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
               pt:"Ver no SoulID", fr:"Voir dans SoulID", ja:"SoulIDで見る" },
-  gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
-  dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
-  destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
-  premium:  { tr:"Premium", en:"Premium", de:"Premium", es:"Premium", pt:"Premium", fr:"Premium", ja:"プレミアム" },
-  abonelik: { tr:"Aboneliği yönet", en:"Manage subscription", de:"Abo verwalten", es:"Gestionar suscripción", pt:"Gerir subscrição", fr:"Gérer l'abonnement", ja:"サブスクリプションの管理" },
-  surum:    { tr:"Sürüm", en:"Version", de:"Version", es:"Versión", pt:"Versão", fr:"Version", ja:"バージョン" },
 };
 const PANIC_ENTRY_TXT = {
   tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
@@ -5879,16 +5885,16 @@ export default function SakinApp() {
                  de:"Lernen wir dich zuerst kennen", es:"Primero conozcámonos",
                  pt:"Vamos conhecer-te primeiro", fr:"Faisons d'abord connaissance",
                  ja:"まずはあなたのことを" },
-    gateBody: { tr:"Bu bölüm doğum bilgini kullanıyor. Girersen buradaki her şey senin haritana göre açılır; girmezsen uygulama sana aynı soruları baştan sorar.",
-                en:"This section uses your birth info. Add it and everything here opens to your own chart; skip it and the app will ask you the same questions again.",
-                de:"Dieser Bereich nutzt deine Geburtsdaten. Trägst du sie ein, richtet sich alles nach deinem Horoskop; sonst fragt die App dich alles erneut.",
-                es:"Esta sección usa tus datos de nacimiento. Si los añades, todo se abre según tu carta; si no, la app te preguntará lo mismo de nuevo.",
-                pt:"Esta secção usa os teus dados de nascimento. Se os adicionares, tudo se abre segundo o teu mapa; se não, a app volta a fazer-te as mesmas perguntas.",
-                fr:"Cette section utilise tes infos de naissance. Si tu les ajoutes, tout s'ouvre selon ton thème; sinon l'application te reposera les mêmes questions.",
-                ja:"このセクションは出生情報を使います。入力すればすべてがあなたの図に沿って開き、しなければアプリが同じ質問を繰り返します。" },
-    gateSkip: { tr:"Yine de aç", en:"Open anyway", de:"Trotzdem öffnen",
-                es:"Abrir de todos modos", pt:"Abrir mesmo assim",
-                fr:"Ouvrir quand même", ja:"このまま開く" },
+    // "girmezsen uygulama sana aynı soruları baştan sorar" cümlesi KALDIRILDI
+    // (kullanıcı isteği): giriş artık zorunlu, "girmezsen" diye bir dal yok,
+    // o yüzden açıklamada da geçmesin. Yalnızca nazik, olumlu davet kaldı.
+    gateBody: { tr:"Bu bölüm doğum bilgini kullanıyor. Girdiğinde buradaki her şey senin haritana göre açılır.",
+                en:"This section uses your birth info. Add it and everything here opens to your own chart.",
+                de:"Dieser Bereich nutzt deine Geburtsdaten. Trägst du sie ein, richtet sich alles nach deinem Horoskop.",
+                es:"Esta sección usa tus datos de nacimiento. Añádelos y todo se abre según tu carta.",
+                pt:"Esta secção usa os teus dados de nascimento. Adiciona-os e tudo se abre segundo o teu mapa.",
+                fr:"Cette section utilise tes infos de naissance. Ajoute-les et tout s'ouvre selon ton thème.",
+                ja:"このセクションは出生情報を使います。入力するとすべてがあなたの図に沿って開きます。" },
   };
   // Doğum bilgisi eksikken kart/bölüm yerine gösterilen nazik blok.
   // Butonlar GİZLENMİYOR (kullanıcı isteği) — açıldığında sebebini söylüyor ve
@@ -8079,13 +8085,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 textTransform:"uppercase",marginBottom:9 }}>
               {pickLang(BIRTH_TXT.enter, lang)}
             </button>
-            <button onClick={()=>{ const app = birthGateApp; setBirthGateApp(null);
-                handleOpenEmbed({ ...app, skipBirthGate: true }); }}
-              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"10px 16px",borderRadius:100,
-                border:"1px solid rgba(255,255,255,0.12)",background:"none",color:"#8a8299",fontSize:12,
-                letterSpacing:1.4,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-              {pickLang(BIRTH_TXT.gateSkip, lang)}
-            </button>
+            {/* "Yine de aç" (atla) butonu KALDIRILDI (kullanıcı isteği: "keşfette
+                ekranlara girmek için doğum bilgisini zorunlu yap"). Giriş artık
+                nazikçe ama kesin bir gereklilik; kapatma yolu yalnızca modalın
+                dışına dokunmak (vazgeçmek), bölümü doğum bilgisiz açan bir
+                arka kapı yok. */}
           </div>
         </div>
       )}
@@ -9029,6 +9033,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <span>{pickLang(TAB_TXT.terimler, lang).toLocaleUpperCase(t("locale_code"))}</span>
                       </button>
                     )}
+                    {/* YOLCULUK — "hakkinda" ekranının Yolculuk sekmesine DOĞRUDAN
+                        götürür (kullanıcı isteği: "hamburger ekranına yolculuk
+                        sekmesi de koy"). Eskiden yalnızca "Sakin Nedir?" ekranına
+                        girip oradaki iki sekmeden birini seçerek ulaşılabiliyordu. */}
+                    {!isNative && (
+                      <button onClick={()=>{ setHakkindaTab("yolculuk"); setScreen("hakkinda"); setShowAilesi(false); setShowTopMenu(false); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background: (screen==="hakkinda" && hakkindaTab==="yolculuk") ? "rgba(130,217,163,0.16)" : "transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(160,220,190,0.9)", textAlign:"left", width:"100%" }}>
+                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>⚡</span>
+                        <span>{t("about_tab_journey").toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    )}
                     {/* SAKİN NEDİR? — web'de ☰ menüsüne taşındı (kullanıcı isteği).
                         Politika sekmeleri (fiyat/şartlar/gizlilik/iade) buraya
                         KONMADI: "sakin nedir"e girince zaten üstteki marka nav'ında
@@ -9036,7 +9054,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     {!isNative && (
                       <button onClick={()=>{ setHakkindaTab("nedir"); setScreen("hakkinda"); setShowAilesi(false); setShowTopMenu(false); }}
                         style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: screen==="hakkinda" ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
+                          background: (screen==="hakkinda" && hakkindaTab==="nedir") ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
                           cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
                           color:"rgba(232,204,150,0.9)", textAlign:"left", width:"100%" }}>
                         <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>✦</span>
@@ -9711,13 +9729,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     ? "linear-gradient(90deg,#82d9a3,#a0e8c0)"
                     : "linear-gradient(90deg,#f1a24a,#8b5aa0,#2a6fb8)" }} />
               </div>
-              <div style={{fontSize:11,letterSpacing:1.4,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
-                {allStepsComplete
-                  ? t("mandala_complete")
-                  : (N - completedStepCount) === 1
-                    ? pickLang(BAGLAN_TXT.leftOne, lang)
-                    : pickLang(BAGLAN_TXT.left, lang).replace("{n}", String(N - completedStepCount))}
-              </div>
+              {/* "N adım kaldı" satırı KALDIRILDI (kullanıcı isteği). Tamamlandı
+                  mesajı kaldı, o "adım kaldı" değil ayrı bir kutlama cümlesi. */}
+              {allStepsComplete && (
+                <div style={{fontSize:11,letterSpacing:1.4,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
+                  {t("mandala_complete")}
+                </div>
+              )}
             </div>
 
             {/* İnsan İskeleti Çakra Bağlantı Sistemi */}
@@ -10896,6 +10914,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:16,padding:"18px 16px",
                       boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(255,255,255,0.08)",
                     }}>
+                      <div style={{ fontSize:12.5,lineHeight:1.6,color:"#8a8299",fontFamily:"'Inter',sans-serif",marginBottom:14 }}>
+                        {pickLang(ASK_INTRO_TXT, lang)}
+                      </div>
                       {([...CHART_Q, ...RUYA_Q, ..._locSampleQ(lang, [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Kronik yorgunluk neden hep benimle?",
@@ -11867,13 +11888,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
               {/* SOL ÜST ✕ — alttaki "Kapat"ın yerini aldı. Kart uzun olduğu için
                   alttaki düğmeye ulaşmak kaydırma gerektiriyordu; bu her zaman
-                  görünür. Kartın DIŞINDA, üstünde duruyor ki kart görselini
-                  (indirilen/paylaşılan çıktıyı) kirletmesin. */}
+                  görünür OLMASI GEREKİYORDU ama İKİ SEBEPTEN kayboluyordu
+                  (kullanıcı: "nerden kapatılacağı anlaşılmıyor kayboluyor"):
+                  1) position:"absolute" idi, yani KARTLA BİRLİKTE KAYIYORDU —
+                     kart uzun olduğunda ve dış katman scroll olduğunda X
+                     ekranın dışına çıkıyordu. Artık position:"fixed": ekranda
+                     SABİT, scroll'dan etkilenmiyor.
+                  2) Koyu arka plan üstünde koyu buton (rgba(0,0,0,0.55) +
+                     %18 kenarlık) az kontrastlıydı. Daha büyük, daha opak,
+                     daha belirgin kenarlıklı hale getirildi. */}
               <button onClick={closeIdCard} aria-label={t("common_close")}
-                style={{ position:"absolute",top:-6,left:-2,zIndex:5,width:34,height:34,borderRadius:"50%",
-                  background:"rgba(0,0,0,0.55)",backdropFilter:"blur(12px)",
-                  border:"1px solid rgba(255,255,255,0.18)",color:"rgba(255,255,255,0.8)",
-                  fontSize:16,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>
+                style={{ position:"fixed",top:"calc(16px + var(--sat))",left:16,zIndex:10001,width:42,height:42,borderRadius:"50%",
+                  background:"rgba(20,14,32,0.92)",backdropFilter:"blur(12px)",
+                  border:"1.5px solid rgba(255,255,255,0.4)",color:"#fff",
+                  boxShadow:"0 4px 16px rgba(0,0,0,0.5)",
+                  fontSize:19,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center" }}>
                 ✕
               </button>
               {/* Card preview */}
@@ -12521,12 +12550,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* FİYATLANDIRMA */}
       {screen==="fiyat" && (
         <div className="policy-screen">
-          <button onClick={()=>goBack("sabah")}
-            style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
-            ←
-          </button>
-          {/* paddingTop: sol üstteki dairesel geri butonu (top:14 + 40px) başlığın
-              üstüne binmesin — buton bandı ~54px'te bitiyor. */}
+          {/* Kendi dairesel geri butonu buradan KALDIRILDI: artık diğer 4
+              politika ekranıyla (sartlar/gizlilik/iade/hakkinda) AYNI paylaşılan
+              geri butonunu kullanıyor (aşağıda, tüm ekranlar için tek yerde
+              render ediliyor) — iki buton üst üste biniyordu. */}
           <h1 style={{ paddingTop:40 }}>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
 
@@ -12824,12 +12851,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           panelinin altından buraya taşındı: anonim kullanım verisi izni,
           hesap/veri silme, renk modu. Native'de bu sayfa YOK; orada aynı
           kontroller eski yerlerinde (Keşfet paneli + ☰ tema) duruyor. */}
-      {/* "← AYARLAR" DÖNÜŞ BUTONU — Ayarlar'dan açılan alt sayfalarda.
-          Bu sayfalar (şartlar/gizlilik/iade/premium/nedir) politika ekranı
-          oldukları için alt bar orada gizli; kullanıcı Ayarlar'a dönemiyordu.
-          Sabit konumda, üst marka nav'ının hemen altında. */}
-      {!isNative && fromSettings && ["sartlar","gizlilik","iade","fiyat","hakkinda"].includes(screen) && (
-        <button onClick={()=>{ try{haptic();}catch(_){} setFromSettings(false); setScreen("ayarlar"); }}
+      {/* GERİ DÖNÜŞ BUTONU — politika ekranlarında (şartlar/gizlilik/iade/
+          fiyat/hakkinda). Bu ekranlarda alt bar YOK (bkz. aşağıdaki dörtlü
+          menü koşulu), yani buton olmazsa ekran çıkışsız kalıyor.
+          ESKİDEN yalnızca `fromSettings` iken görünüyordu — Ayarlar
+          DIŞINDAN girilince (üst nav'daki "Sakin nedir?"/"Fiyatlandırma"
+          linkleri, Keşfet panelindeki premium kilitleri, vb. — ki bunlar
+          asıl giriş yollarının çoğu) buton HİÇ yoktu. Tek çıkış "← Sakin"
+          logosuydu ve o WEB'de UYGULAMADAN TAMAMEN ÇIKIP tanıtım sitesine
+          gidiyordu (kullanıcı: "sakin nedire girildiğinde geri dönüş yok").
+          ŞİMDİ: buton HER ZAMAN gösteriliyor. Ayarlar'dan gelindiyse eski
+          davranış (etiketli "← Ayarlar", oraya döner); değilse gerçek
+          gezinme geçmişini kullanan goBack() ile GELİNEN YERE dönülür. */}
+      {!isNative && ["sartlar","gizlilik","iade","fiyat","hakkinda"].includes(screen) && (
+        <button onClick={()=>{ try{haptic();}catch(_){}
+            if (fromSettings) { setFromSettings(false); setScreen("ayarlar"); }
+            else goBack("harita"); }}
           style={{ WebkitAppearance:"none",appearance:"none",position:"fixed",
             top: topNavVisible ? "calc(52px + var(--sat))" : "calc(10px + var(--sat))",
             left:12, zIndex:9996, display:"flex",alignItems:"center",gap:8,
@@ -12839,7 +12876,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             color:"rgba(215,208,232,0.92)",fontFamily:"'Jost',sans-serif",
             fontSize:12,letterSpacing:1.4,textTransform:"uppercase",whiteSpace:"nowrap" }}>
           <span style={{ fontSize:14,lineHeight:1 }}>←</span>
-          <span>{pickLang(TAB_TXT.ayarlar, lang)}</span>
+          <span>{fromSettings ? pickLang(TAB_TXT.ayarlar, lang) : t("back").replace(/^←\s*/,"")}</span>
         </button>
       )}
 
