@@ -4074,13 +4074,14 @@ function TabIcon({ id, size = 21 }) {
     case "aksam":  // hilal
       return svg(<path d="M19.4 14.6A8 8 0 0 1 9.2 4.5a8 8 0 1 0 10.2 10.1Z" {...s} />);
     // ── Bağlan alt öğeleri ──
-    case "ayna":   // yansıma: bir biçim ve aynadaki soluk ikizi
-      // İlk deneme oval çerçeveydi ama 16px'te ampule benziyordu (screenshot ile
-      // yakalandı). Yansıma metaforu bu boyutta çok daha okunaklı.
-      // Üçgen ikizler 16px'te kalabalıktı; daire daha temiz okunuyor.
-      return svg(<><circle cx="12" cy="7.6" r="3.6" {...s} />
-        <path d="M3.4 12.4h17.2" {...s} />
-        <circle cx="12" cy="17.2" r="3.6" {...s} strokeDasharray="2 2.3" /></>);
+    case "ayna":   // HİLAL (☽) — uygulamanın ayna simgesi
+      // Önce yansıma metaforu (daire + çizgi + kesikli daire) denendi, ama
+      // kullanıcı üst bardaki hilalin alt bara taşınmasını istedi: hilal
+      // Sakin'de aynanın yerleşik simgesi, tanınırlığı yüksek.
+      // DOLU çizim (kontur değil): üst bardaki ☽ glifiyle aynı ağırlıkta dursun
+      // ve alt bardaki diğer ince çizgi ikonlardan ayrışsın. Akşam adımının
+      // hilali ise KONTUR ve mavi, yani ikisi yan yana gelse bile karışmaz.
+      return svg(<path d="M19.6 14.9A8.2 8.2 0 0 1 9.1 4.4a8.2 8.2 0 1 0 10.5 10.5Z" fill="currentColor" stroke="none" />);
     case "terimler": // açık kitap (sözlük)
       return svg(<><path d="M12 6.4v13" {...s} />
         <path d="M12 6.4C10.3 5.2 8.2 4.6 5.4 4.6a1 1 0 0 0-1 1v11.8a1 1 0 0 0 1 1c2.8 0 4.9.6 6.6 1.8" {...s} />
@@ -7205,6 +7206,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : screen === "rehber" ? "ayna"
     : (screen === "mandala" || TAB_STEPS.includes(screen)) ? "baglan"
     : null;
+  // ⌂ + ☰ barı görünür mü? WEB'de yalnızca "Ben" sekmesinde (kullanıcı isteği).
+  // Diğer ekranlarda bar TAMAMEN gizlenir; boş bırakılsaydı 44px'lik siyah bir
+  // şerit olarak dururdu. Gizlenince şeridin ve içeriğin üst konumu da yukarı
+  // kayması gerekiyor, o yüzden bu bayrak üç yerde birden kullanılıyor:
+  // barın kendisi, adım şeridinin top'u, app-root'un paddingTop'u.
+  const topControlsVisible = isNative || activeTab === "ben";
   // Adım şeridi görünür mü? Hem şeridin kendisi hem app-root'un üst boşluğu
   // aynı koşulu kullansın diye tek yerde tutuluyor (ikisi ayrışırsa içerik
   // ya şeridin altında kalır ya da boşluk fazla olur).
@@ -7290,10 +7297,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // başlar. position:fixed çocuklar akış dışı olduğu için etkilenmez.
   return (
     <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{
-      // Adım şeridi (web, Bağlan sekmesi) üst barın ALTINA sabitleniyor; görünürken
-      // içerik onun altında kalmasın diye +54px ekleniyor.
-      paddingTop: (topNavVisible ? "calc(94px + var(--sat)" : "calc(50px + var(--sat)")
-        + (stepStripVisible ? " + 54px)" : ")"),
+      // Üst boşluk = görünen sabit katmanların toplamı:
+      //   marka nav (web, 44) + ⌂/☰ barı (44, yalnız Ben'de) + adım şeridi (54).
+      // Üçü de koşullu olduğu için tek tek toplanıyor; sabit bir sayı yazılsaydı
+      // bar gizlendiğinde içerik gereksiz aşağıda başlardı.
+      paddingTop: `calc(var(--sat) + ${(topNavVisible ? 44 : 0) + (topControlsVisible ? 44 : 0) + (stepStripVisible ? 54 : 0) + 6}px)`,
       background:"#000000",display:"flex",alignItems:"flex-start",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
@@ -8570,7 +8578,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           zIndex: showAilesi ? 10001 : 9998,
           // GİRİŞ (HAZIRIM) ekranında üst nav barı GİZLİ (kullanıcı: "açılışta üstteki
           // tüm menüleri kaldır, eski hali öyleydi"). HAZIRIM'a basıp sabaha geçince görünür.
-          minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display: screen === "giris" ? "none" : "flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
+          minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display: (screen === "giris" || !topControlsVisible) ? "none" : "flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {(() => {
           const handleNavClick = (n) => {
             if(n.id==="ailesi"){ setShowAilesi(!showAilesi); setShowTopMenu(false); return; }
@@ -8644,23 +8652,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // kullanıcı akışta kilitli kalmıyor (bu ikisi birlikte çalışır).
           const menuItems = SIDEBAR_ITEMS.filter(n =>
             n.id !== "giris" && (isNative || !["mandala","harita","ailesi"].includes(n.id)));
+          // WEB: ⌂ ve ☰ SADECE "Ben" sekmesinde (kullanıcı isteği). Diğer
+          // ekranlarda üst bar tamamen boşalıyor; gezinme zaten alt bardaki 4
+          // sekme ve Bağlan'daki üst adım şeridiyle yapılıyor, üstte ikinci bir
+          // gezinme katmanı tutmak gereksiz gürültüydü.
+          // ÜSTTEKİ ☽ AYNA BUTONU TAMAMEN KALDIRILDI: ayna artık alt barda ana
+          // sekme, hilal simgesi de oraya taşındı (bkz. TabIcon "ayna").
+          if (!topControlsVisible) return null;
           return (
             <>
               {homeItem && renderBtn(homeItem)}
-              {/* ORTA: Ayna (gizli geçit) — eskiden sağ kenarda floating ☽ idi. */}
-              <button onClick={openMirror} aria-label={t("mirror_aria")} title={t("mirror_aria")}
-                style={{
-                  flex:"0 0 auto", width:44, minHeight:38, padding:"6px 0",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                  border:"1px solid rgba(184,164,216,0.35)",
-                  background:"radial-gradient(circle at 35% 35%, rgba(160,112,208,0.4) 0%, rgba(60,30,90,0.6) 60%, rgba(20,10,35,0.5) 100%)",
-                  color:"rgba(232,218,250,0.92)",
-                  boxShadow:"0 0 12px rgba(160,120,220,0.25), inset 0 0 8px rgba(184,164,216,0.18)",
-                }}>
-                <span className={allStepsComplete ? "sakin-mirror-live" : undefined} style={{ fontSize:17, lineHeight:1, filter: allStepsComplete ? undefined : "drop-shadow(0 0 4px rgba(232,218,250,0.55))" }}>☽</span>
-              </button>
-              <div style={{ position:"relative", flex:"0 0 auto" }}>
+              <div style={{ position:"relative", flex:"0 0 auto", marginLeft:"auto" }}>
                 <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
                   style={{
                     width:48, minHeight:38, padding:"7px 0", display:"flex", alignItems:"center", justifyContent:"center",
@@ -8777,7 +8779,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           overflowX:auto + scrollbar gizli: iOS/Android'de parmakla kaydırma
           doğal çalışır, masaüstünde çirkin kaydırma çubuğu görünmez. */}
       {stepStripVisible && (
-        <div style={{ position:"fixed", top: topNavVisible ? "calc(88px + var(--sat))" : "calc(44px + var(--sat))",
+        <div style={{ position:"fixed",
+          // ⌂/☰ barı gizliyse (Ben dışındaki web ekranları) şerit onun yerine geçer.
+          top: topNavVisible
+            ? (topControlsVisible ? "calc(88px + var(--sat))" : "calc(44px + var(--sat))")
+            : (topControlsVisible ? "calc(44px + var(--sat))" : "var(--sat)"),
           left:0, right:0, zIndex:9997,
           background:"rgba(0,0,0,0.92)", backdropFilter:"blur(20px)",
           borderBottom:"1px solid rgba(255,255,255,0.06)",
@@ -12617,6 +12623,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
           {MAIN_TABS.map(tb => {
             const on = activeTab === tb.id;
+            // AYNA hilali üst bardan buraya taşındı; oradaki karakteri korunuyor
+            // (kullanıcı: "açık renkte mor, koyu renkte daha vurgulu"):
+            // açık temada mor daha koyu/okunur, koyu temada parıltı güçlenir.
+            const isAyna = tb.id === "ayna";
+            const aynaColor = isAyna ? (lightMode ? "#7a4fb0" : tb.color) : tb.color;
+            const aynaGlow = isAyna
+              ? `drop-shadow(0 0 ${on ? (lightMode ? 3 : 7) : (lightMode ? 2 : 4)}px rgba(160,120,220,${lightMode ? 0.35 : (on ? 0.75 : 0.45)}))`
+              : undefined;
             return (
               <button key={tb.id} onClick={()=>goTab(tb.id)}
                 style={{ WebkitAppearance:"none",appearance:"none",
@@ -12624,8 +12638,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
                   borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
                   padding:"7px 14px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
-                  minWidth:62,color: on ? tb.color : `${tb.color}7a` }}>
-                <TabIcon id={tb.id} size={on ? 21 : 19} />
+                  minWidth:62,color: on ? aynaColor : `${aynaColor}7a` }}>
+                <span style={{ display:"flex", filter: aynaGlow }}>
+                  <TabIcon id={tb.id} size={on ? 21 : 19} />
+                </span>
                 <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
                   {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
                 </span>
