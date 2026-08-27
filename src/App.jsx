@@ -9645,7 +9645,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="label-sm" style={{letterSpacing:5,marginBottom:10}}>{t("mandala_today_label")}</div>
               <div style={{fontSize:38,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
-                %{Math.round((completedStepCount / N) * 100)}
+                {/* % işareti sayıdan küçük (kullanıcı isteği): büyük sayı asıl
+                    vurgu, işaret onun önünde ufak bir etiket gibi duruyor. */}
+                <span style={{fontSize:"0.5em",verticalAlign:"0.28em",marginRight:1}}>%</span>
+                {Math.round((completedStepCount / N) * 100)}
               </div>
               {/* İnce ilerleme çubuğu: yüzde tek başına soyut kalıyor, çubuk
                   aynı bilgiyi bir bakışta veriyor. */}
