@@ -709,6 +709,22 @@ const TAB_TXT = {
   ayarlar:  { tr:"Ayarlar", en:"Settings", de:"Einstellungen", es:"Ajustes", pt:"Definições", fr:"Réglages", ja:"設定" },
   renkModu: { tr:"Renk modu", en:"Color mode", de:"Farbmodus", es:"Modo de color", pt:"Modo de cor", fr:"Mode couleur", ja:"カラーモード" },
 };
+// AYARLAR sayfası bölüm başlıkları ve App Store'un beklediği satırlar.
+// (Apple App Review Guidelines: 3.1.1 satın alımların geri yüklenmesi,
+//  3.1.2 abonelik yönetimi + şartlar + gizlilik, 5.1.1(v) hesap silme,
+//  1.5 çalışan destek iletişimi.)
+const SET_TXT = {
+  gGenel:   { tr:"Genel", en:"General", de:"Allgemein", es:"General", pt:"Geral", fr:"Général", ja:"一般" },
+  gOdeme:   { tr:"Ödemeler", en:"Payments", de:"Zahlungen", es:"Pagos", pt:"Pagamentos", fr:"Paiements", ja:"お支払い" },
+  gGizli:   { tr:"Gizlilik", en:"Privacy", de:"Datenschutz", es:"Privacidad", pt:"Privacidade", fr:"Confidentialité", ja:"プライバシー" },
+  gYasal:   { tr:"Yasal", en:"Legal", de:"Rechtliches", es:"Legal", pt:"Legal", fr:"Mentions légales", ja:"法的事項" },
+  gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
+  dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
+  destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
+  premium:  { tr:"Premium", en:"Premium", de:"Premium", es:"Premium", pt:"Premium", fr:"Premium", ja:"プレミアム" },
+  abonelik: { tr:"Aboneliği yönet", en:"Manage subscription", de:"Abo verwalten", es:"Gestionar suscripción", pt:"Gerir subscrição", fr:"Gérer l'abonnement", ja:"サブスクリプションの管理" },
+  surum:    { tr:"Sürüm", en:"Version", de:"Version", es:"Versión", pt:"Versão", fr:"Version", ja:"バージョン" },
+};
 const PANIC_ENTRY_TXT = {
   tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
   pt:"Respira", fr:"Respire", ja:"深呼吸する",
@@ -7424,9 +7440,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 butonu yerine üst sola geri butonu koyalım"). Panel uzun olduğu için
                 alttaki "Kapat"a ulaşmak kaydırma gerektiriyordu; geri her zaman
                 görünür yerde. Başlık ortada kalsın diye sağda eşit genişlikte boşluk. */}
+            {/* WEB'de geri oku YOK (kullanıcı: "keşfetteki ve bağlan ekranındaki
+                geri oklarına gerek kalmadı"): alt bardaki 4 sekme her ekranda
+                sabit duruyor, çıkış zaten orada. Native'de bar farklı olduğu
+                için ok korunuyor. */}
             <div style={{ display:"flex",alignItems:"center",marginBottom:8 }}>
-              <button onClick={()=>setShowAilesi(false)} aria-label={t("back")}
-                style={{ width:40,flex:"0 0 40px",background:"none",border:"none",color:"#b0a8c8",fontSize:20,cursor:"pointer",padding:"6px 0",textAlign:"left",lineHeight:1 }}>←</button>
+              {isNative ? (
+                <button onClick={()=>setShowAilesi(false)} aria-label={t("back")}
+                  style={{ width:40,flex:"0 0 40px",background:"none",border:"none",color:"#b0a8c8",fontSize:20,cursor:"pointer",padding:"6px 0",textAlign:"left",lineHeight:1 }}>←</button>
+              ) : <div style={{ width:40,flex:"0 0 40px" }} />}
               <div style={{ flex:1,textAlign:"center" }}>
                 <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
                 <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
@@ -9346,11 +9368,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* Alt boşluk 90 → 150px: "Güne devam et" butonu alttaki adım göstergesi
               (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 150px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
-            {/* Back button */}
-            <button onClick={()=>goBack("sabah")}
-              style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
-              ←
-            </button>
+            {/* Back button — WEB'de YOK (kullanıcı isteği): Bağlan artık alt
+                bardaki ilk sekme, üstünde de adım şeridi var; ok gereksiz. */}
+            {isNative && (
+              <button onClick={()=>goBack("sabah")}
+                style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
+                ←
+              </button>
+            )}
             {/* Title */}
             <div style={{textAlign:"center",marginBottom:8}}>
               <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{t("mandala_today_label")}</div>
@@ -12538,49 +12563,113 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:4,color:"#e8e0f4",marginBottom:28,textAlign:"center" }}>
             {pickLang(TAB_TXT.ayarlar, lang)}
           </div>
-
-          {/* Anonim kullanım verisi */}
-          <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"18px 18px",marginBottom:14 }}>
-            <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
-              <span style={{ color:"#d8d2e4",fontSize:14,fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
-                {t("analytics_toggle_label")}
-              </span>
-              <button role="switch" aria-checked={analyticsOn} onClick={toggleAnalytics} aria-label={t("analytics_toggle_label")}
-                style={{ flexShrink:0,width:46,height:27,borderRadius:100,border:"none",cursor:"pointer",padding:0,position:"relative",
-                  WebkitAppearance:"none",appearance:"none",
-                  background: analyticsOn ? "rgba(130,190,150,0.65)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
-                <span style={{ position:"absolute",top:3,left: analyticsOn ? 22 : 3,width:21,height:21,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+          {(() => {
+            // Gruplu liste (referans tasarımın yapısı, Sakin'in dili).
+            // Satır tipleri: nav (ok ile ekran açar) · switch (toggle) · action.
+            const grpSt = { fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
+              textTransform:"uppercase",margin:"22px 4px 8px" };
+            const cardSt = { background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",
+              borderRadius:16,overflow:"hidden" };
+            const rowSt = { WebkitAppearance:"none",appearance:"none",width:"100%",background:"none",border:"none",
+              borderBottom:"1px solid rgba(255,255,255,0.06)",padding:"15px 16px",cursor:"pointer",
+              display:"flex",alignItems:"center",gap:13,textAlign:"left",minHeight:52,color:"#ddd8e8" };
+            const labSt = { flex:1,minWidth:0,fontFamily:"'Inter',sans-serif",fontSize:14.5,lineHeight:1.35 };
+            const Row = ({ icon, label, onClick, danger, last, right, note }) => (
+              <button onClick={onClick} style={{ ...rowSt, borderBottom: last ? "none" : rowSt.borderBottom,
+                color: danger ? "#c07070" : rowSt.color, cursor: onClick ? "pointer" : "default" }}>
+                <span style={{ width:20,flexShrink:0,display:"flex",justifyContent:"center",opacity:danger?0.9:0.72,fontSize:15,lineHeight:1 }}>{icon}</span>
+                <span style={labSt}>
+                  {label}
+                  {note && <span style={{ display:"block",fontSize:11.5,color:"#8a8494",marginTop:3,lineHeight:1.45 }}>{note}</span>}
+                </span>
+                {right !== undefined ? right : <span style={{ color:"rgba(255,255,255,0.25)",fontSize:16,flexShrink:0 }}>›</span>}
               </button>
-            </div>
-            <div style={{ color:"#8a8494",fontSize:12,fontFamily:"'Inter',sans-serif",lineHeight:1.5,marginTop:8,paddingRight:60 }}>
-              {t("analytics_toggle_note")}
-            </div>
-          </div>
+            );
+            const go = (sc) => () => { try{haptic();}catch(_){} setScreen(sc); };
+            return (
+              <>
+                {/* ── GENEL ── */}
+                <div style={grpSt}>{pickLang(SET_TXT.gGenel, lang)}</div>
+                <div style={cardSt}>
+                  <Row icon="✦" label={pickLang(NEDIR_I18N.title, lang)}
+                    onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("nedir"); setScreen("hakkinda"); }} />
+                  <Row icon="◫" label={pickLang(TAB_TXT.terimler, lang)}
+                    onClick={()=>{ try{haptic();}catch(_){} setShowKilavuz(true); }} />
+                  {/* App Review Guideline 1.5: calisan bir destek iletisimi bulunmali. */}
+                  <Row icon="✉" label={pickLang(SET_TXT.destek, lang)} note="destek@sakin.life"
+                    onClick={()=>{ try { window.location.href = "mailto:destek@sakin.life"; } catch(_) {} }} />
+                  <Row icon="◐" label={pickLang(TAB_TXT.renkModu, lang)} onClick={toggleTheme} last
+                    right={<span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,
+                      color: lightMode ? "#e8b478" : "rgba(200,192,220,0.75)",textTransform:"uppercase" }}>
+                      {lightMode ? t("theme_light") : t("theme_dark")}</span>} />
+                </div>
+                {/* Dil: LangPicker kendi dropdown'unu acar, satir kalibina girmiyor. */}
+                <div style={{ ...cardSt, marginTop:10, padding:"12px 16px", display:"flex",
+                  alignItems:"center", justifyContent:"space-between", gap:12 }}>
+                  <span style={{ ...labSt, color:"#ddd8e8" }}>{pickLang(SET_TXT.dil, lang)}</span>
+                  <LangPicker lang={lang} setLang={setLang} compact />
+                </div>
 
-          {/* Renk modu */}
-          <div style={{ background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"18px 18px",marginBottom:14,
-            display:"flex",alignItems:"center",justifyContent:"space-between",gap:14 }}>
-            <span style={{ color:"#d8d2e4",fontSize:14,fontFamily:"'Inter',sans-serif" }}>
-              {pickLang(TAB_TXT.renkModu, lang)}
-            </span>
-            <button onClick={toggleTheme}
-              style={{ WebkitAppearance:"none",appearance:"none",flexShrink:0,display:"flex",alignItems:"center",gap:8,
-                background: lightMode ? "rgba(240,200,140,0.16)" : "rgba(255,255,255,0.06)",
-                border:"1px solid rgba(255,255,255,0.16)",borderRadius:100,padding:"9px 18px",cursor:"pointer",minHeight:44,
-                color: lightMode ? "#e8b478" : "rgba(210,200,230,0.9)",fontSize:12.5,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-              <span style={{ fontSize:14,lineHeight:1 }}>◐</span>
-              <span>{lightMode ? t("theme_light") : t("theme_dark")}</span>
-            </button>
-          </div>
+                {/* ── ÖDEMELER ── Apple 3.1.1: "Restore Purchases" ZORUNLU (yeni
+                    cihaza gecen/yeniden kuran kullanici satin alimina erisebilmeli).
+                    3.1.2: abonelik yonetimi kolayca bulunabilmeli. */}
+                <div style={grpSt}>{pickLang(SET_TXT.gOdeme, lang)}</div>
+                <div style={cardSt}>
+                  <Row icon="✧" label={pickLang(SET_TXT.premium, lang)} onClick={go("fiyat")} />
+                  <Row icon="⟳" label={t("premium_restore")}
+                    onClick={()=>{ try{haptic();}catch(_){} handleRestore(); }}
+                    right={purchaseLoading === "restore"
+                      ? <span style={{ color:"#8a8494",fontSize:13 }}>...</span> : undefined} />
+                  {/* Abonelik yonetimi: iOS ve Android'de sistem ekranina, web'de
+                      Apple'in hesap sayfasina gider. Uygulama ici iptal ekrani
+                      YAPILMIYOR - magazalar bunu kendi yuzeyinde tutar. */}
+                  <Row icon="▤" label={pickLang(SET_TXT.abonelik, lang)} last
+                    onClick={()=>{
+                      let android = false;
+                      try { android = Capacitor.getPlatform() === "android"; } catch(_) {}
+                      const url = android
+                        ? "https://play.google.com/store/account/subscriptions"
+                        : "https://apps.apple.com/account/subscriptions";
+                      try { window.open(url, "_blank", "noopener"); } catch(_) {}
+                    }} />
+                </div>
 
-          {/* Hesap / veri silme — App Store 5.1.1(v). Destruktif, en altta, sessiz. */}
-          <div style={{ display:"flex",justifyContent:"center",marginTop:26 }}>
-            <button onClick={()=>setShowDeleteConfirm(true)}
-              style={{ WebkitAppearance:"none",appearance:"none",background:"none",border:"1px solid rgba(200,90,90,0.3)",borderRadius:100,
-                padding:"11px 24px",color:"#c07070",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",minHeight:44 }}>
-              {t("delete_account_link")}
-            </button>
-          </div>
+                {/* ── GİZLİLİK ── */}
+                <div style={grpSt}>{pickLang(SET_TXT.gGizli, lang)}</div>
+                <div style={cardSt}>
+                  <Row icon="◎" label={t("analytics_toggle_label")} note={t("analytics_toggle_note")}
+                    onClick={toggleAnalytics} last
+                    right={<span role="switch" aria-checked={analyticsOn} aria-label={t("analytics_toggle_label")}
+                      style={{ flexShrink:0,width:46,height:27,borderRadius:100,position:"relative",display:"block",
+                        background: analyticsOn ? "rgba(130,190,150,0.65)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
+                      <span style={{ position:"absolute",top:3,left: analyticsOn ? 22 : 3,width:21,height:21,borderRadius:"50%",
+                        background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+                    </span>} />
+                </div>
+
+                {/* ── YASAL ── Apple 3.1.2 + 5.1.1: sartlar ve gizlilik politikasi
+                    uygulama ICINDEN erisilebilir olmali. */}
+                <div style={grpSt}>{pickLang(SET_TXT.gYasal, lang)}</div>
+                <div style={cardSt}>
+                  <Row icon="▤" label={t("ailesi_policy_terms")}   onClick={go("sartlar")} />
+                  <Row icon="⛉" label={t("ailesi_policy_privacy")} onClick={go("gizlilik")} />
+                  <Row icon="↩" label={t("ailesi_policy_refund")}  onClick={go("iade")} last />
+                </div>
+
+                {/* ── HESAP ── Apple 5.1.1(v): hesap/veri silme uygulama icinde. */}
+                <div style={grpSt}>{pickLang(SET_TXT.gHesap, lang)}</div>
+                <div style={cardSt}>
+                  <Row icon="⊘" label={t("delete_account_link")} danger last
+                    onClick={()=>setShowDeleteConfirm(true)} />
+                </div>
+
+                <div style={{ textAlign:"center",marginTop:24,fontFamily:"'Jost',sans-serif",
+                  fontSize:11,letterSpacing:2,color:"#5f5a68" }}>
+                  {pickLang(SET_TXT.surum, lang)} {APP_VERSION}
+                </div>
+              </>
+            );
+          })()}
         </div>
       )}
 
