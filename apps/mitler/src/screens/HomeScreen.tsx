@@ -183,33 +183,74 @@ function MiniDeck({ deck, label, state }: { deck: typeof DECK_CONFIG[0]; label: 
   );
 }
 
+
+// ── ACILMIS KART GUN BOYU ACIK KALIR ─────────────────────────────────────
+// Kullanici: "gunluk kart acilimlari acik kalsin, bir gunde bir kez
+// acabiliyor, tekrar salla dokun demesine gerek yok."
+// `revealed` sadece bilesen state'iydi; ekrandan cikip donunce sifirlaniyor
+// ve zaten cekilmis kart yine kapali yuzuyle "SALLA · DOKUN" diyordu.
+// Artik hangi destelerin BUGUN acildigi localStorage'da tutuluyor.
+// localStorage (AsyncStorage degil) bilerek: SENKRON okunuyor, boylece ilk
+// render'da kart dogru yuzuyle geliyor, kapali kartin bir an gorunup sonra
+// acilmasi (flash) yasanmiyor. Embed her zaman WebView'de calisiyor.
+const REVEAL_KEY = '@mitler_revealed';
+const _revealDay = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+function readRevealedSteps(): number[] {
+  try {
+    const raw = typeof window !== 'undefined' ? window.localStorage.getItem(REVEAL_KEY) : null;
+    if (!raw) return [];
+    const o = JSON.parse(raw);
+    return (o && o.date === _revealDay() && Array.isArray(o.steps)) ? o.steps : [];
+  } catch { return []; }
+}
+function markRevealedStep(step: number) {
+  try {
+    const cur = readRevealedSteps();
+    if (cur.includes(step)) return;
+    window.localStorage.setItem(REVEAL_KEY, JSON.stringify({ date: _revealDay(), steps: [...cur, step] }));
+  } catch { /* kota/gizli mod: kalicilik kaybolur, akis bozulmaz */ }
+}
+
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
-  const { profile, dailyReading, generateDailyReading, updateStats } = useMitlerStore();
+  const { profile, dailyReading, generateDailyReading, updateStats, isLoading } = useMitlerStore();
   const { t } = useLanguage();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
 
   const [reading, setReading] = useState(dailyReading);
   const [step, setStep]       = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(() => readRevealedSteps().includes(0));
   const [done, setDone]       = useState(false);
 
-  const backFade  = useRef(new Animated.Value(1)).current;
-  const frontFade = useRef(new Animated.Value(0)).current;
-  const revealedRef = useRef(false);
+  // Acilis degerleri: kart BUGUN zaten acildiysa dogrudan on yuz (flash yok).
+  const _reveal0 = readRevealedSteps().includes(0);
+  const backFade  = useRef(new Animated.Value(_reveal0 ? 0 : 1)).current;
+  const frontFade = useRef(new Animated.Value(_reveal0 ? 1 : 0)).current;
+  const revealedRef = useRef(readRevealedSteps().includes(0));
 
+  // GUNDE TEK KART. Depo (store) AsyncStorage'dan yuklemesini `isLoading` ile
+  // bildirir. Onceki kod bunu BEKLEMEDEN, `dailyReading` henuz null iken hemen
+  // YENI rastgele bir okuma uretiyordu -> her acilista gunun karti degisiyordu
+  // ve "Bugun" ekraninda gorunen kart ile uygulamadaki kart tutmuyordu.
+  // Artik yukleme bitmeden karar verilmiyor: depoda BUGUNUN okumasi varsa o
+  // kullanilir, yoksa bir kez cekilir ve gun bitene kadar sabit kalir.
   useEffect(() => {
-    if (!reading) {
-      const aIds = archetypesData.map(a => a.id);
-      const mIds = mythsData.map(m => m.id);
-      const iIds = imagesData.map(i => i.id);
-      generateDailyReading(aIds, mIds, iIds).then(r => {
-        const myth = mythsData.find(m => m.id === r.mythId)!;
-        updateStats(r.archetypeId, r.mythId, r.imageId, myth.culture);
-        setReading(r);
-      });
-    }
-  }, []);
+    if (isLoading) return;
+    if (dailyReading) { setReading(dailyReading); return; }
+    if (reading) return;
+    const aIds = archetypesData.map(a => a.id);
+    const mIds = mythsData.map(m => m.id);
+    const iIds = imagesData.map(i => i.id);
+    generateDailyReading(aIds, mIds, iIds).then(r => {
+      const myth = mythsData.find(m => m.id === r.mythId)!;
+      updateStats(r.archetypeId, r.mythId, r.imageId, myth.culture);
+      setReading(r);
+    });
+  }, [isLoading, dailyReading]);
 
   useEffect(() => {
     let sub: { remove: () => void } | null = null;
@@ -292,6 +333,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (revealedRef.current) return;
     revealedRef.current = true;
     setRevealed(true);
+    markRevealedStep(step);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     Animated.parallel([
       Animated.timing(backFade,  { toValue: 0, duration: 280, useNativeDriver: true }),
@@ -319,11 +361,14 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     if (step < DECK_CONFIG.length - 1) {
       Animated.timing(frontFade, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
-        setStep(s => s + 1);
-        setRevealed(false);
-        revealedRef.current = false;
-        backFade.setValue(1);
-        frontFade.setValue(0);
+        const next = step + 1;
+        // Sonraki deste BUGUN zaten acildiysa acik gelsin, tekrar "salla" deme.
+        const already = readRevealedSteps().includes(next);
+        setStep(next);
+        setRevealed(already);
+        revealedRef.current = already;
+        backFade.setValue(already ? 0 : 1);
+        frontFade.setValue(already ? 1 : 0);
       });
     } else {
       setDone(true);

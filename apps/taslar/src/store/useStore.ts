@@ -60,7 +60,19 @@ const STORAGE_KEYS = {
   VIEWED: '@sakintaslar_viewed_today',
 };
 
-const todayStr = () => new Date().toISOString().split('T')[0];
+// GUN ANAHTARI YEREL SAATE GORE (host ile AYNI kural).
+// KOK SEBEP (kullanici: "kecı cikti ama Bugun'e dondugumde gorunmuyor"):
+// burasi toISOString() ile UTC tarihi yaziyordu, Sakin host'u ise
+// sakinDayKey() ile YEREL tarihi okuyor. Turkiye UTC+3 oldugu icin gece
+// 00:00-03:00 arasinda embed DUNUN tarihini yaziyor, host BUGUNU soruyor ->
+// `d.date === dayKey` tutmuyor ve cekilmis kart "Bugun" ekraninda hic
+// gorunmuyordu. Ayni tuzak host tarafinda daha once duzeltilmisti
+// (bkz. kok CLAUDE.md), embed'lerde kalmis.
+const todayStr = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
 
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -390,6 +402,22 @@ export function useSakinHayvanStore() {
     nagualIds: string[]
   ) => {
     const today = todayStr();
+    // GUNDE TEK CEKILIS (kirmizi cizgi). Bugun icin bir okuma zaten
+    // kaydedilmisse YENISI URETILMEZ, kayitli olan dondurulur. Boylece hangi
+    // ekran/cagri gelirse gelsin gun icinde ayni kart gorunur (Sakin'in "Bugun"
+    // ekrani ile uygulama icindeki kart artik cakismaz).
+    // Depodaki kopya bos olabilir (soguk acilis), o yuzden ASIL kaynak
+    // AsyncStorage'daki kayit.
+    try {
+      const existingRaw = await AsyncStorage.getItem(STORAGE_KEYS.DAILY);
+      if (existingRaw) {
+        const existing: DailyReading = JSON.parse(existingRaw);
+        if (existing && existing.date === today) {
+          setDailyReading(existing);
+          return existing;
+        }
+      }
+    } catch { /* bozuk kayit: yok say, asagida yenisi cekilir */ }
     const reading: DailyReading = {
       date: today,
       quoteId: pickRandom(quoteIds),

@@ -156,6 +156,38 @@ function MiniDeck({ deck, state }: { deck: DeckItem; state: 'done' | 'active' | 
 }
 
 // ─── Home screen ───────────────────────────────────────────────────────────────
+
+// ── ACILMIS KART GUN BOYU ACIK KALIR ─────────────────────────────────────
+// Kullanici: "gunluk kart acilimlari acik kalsin, bir gunde bir kez
+// acabiliyor, tekrar salla dokun demesine gerek yok."
+// `revealed` sadece bilesen state'iydi; ekrandan cikip donunce sifirlaniyor
+// ve zaten cekilmis kart yine kapali yuzuyle "SALLA · DOKUN" diyordu.
+// Artik hangi destelerin BUGUN acildigi localStorage'da tutuluyor.
+// localStorage (AsyncStorage degil) bilerek: SENKRON okunuyor, boylece ilk
+// render'da kart dogru yuzuyle geliyor, kapali kartin bir an gorunup sonra
+// acilmasi (flash) yasanmiyor. Embed her zaman WebView'de calisiyor.
+const REVEAL_KEY = '@sakinhayvan_revealed';
+const _revealDay = () => {
+  const d = new Date();
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+};
+function readRevealedSteps(): number[] {
+  try {
+    const raw = typeof window !== 'undefined' ? window.localStorage.getItem(REVEAL_KEY) : null;
+    if (!raw) return [];
+    const o = JSON.parse(raw);
+    return (o && o.date === _revealDay() && Array.isArray(o.steps)) ? o.steps : [];
+  } catch { return []; }
+}
+function markRevealedStep(step: number) {
+  try {
+    const cur = readRevealedSteps();
+    if (cur.includes(step)) return;
+    window.localStorage.setItem(REVEAL_KEY, JSON.stringify({ date: _revealDay(), steps: [...cur, step] }));
+  } catch { /* kota/gizli mod: kalicilik kaybolur, akis bozulmaz */ }
+}
+
 export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
@@ -171,13 +203,43 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
 
   const [reading, setReading] = useState<DailyReading | null>(null);
   const [step, setStep]       = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [revealed, setRevealed] = useState(() => readRevealedSteps().includes(0));
   const [done, setDone]       = useState(false);
   const [showAnimalDetail, setShowAnimalDetail] = useState(false);
 
-  const backFade  = useRef(new Animated.Value(1)).current;
-  const frontFade = useRef(new Animated.Value(0)).current;
-  const revealedRef = useRef(false);
+  // Acilis degerleri: kart BUGUN zaten acildiysa dogrudan on yuz (flash yok).
+  const _reveal0 = readRevealedSteps().includes(0);
+  const backFade  = useRef(new Animated.Value(_reveal0 ? 0 : 1)).current;
+  const frontFade = useRef(new Animated.Value(_reveal0 ? 1 : 0)).current;
+  const revealedRef = useRef(readRevealedSteps().includes(0));
+
+  // HOST KOPRUSU — "kartini ac" ikinci kez tiklandiginda kart ACILIS
+  // ANIMASYONUNU tekrar oynatma; o gun cekilmis olan TAM KARTI dogrudan acik
+  // goster. Kullanici oradan karta dokununca DETAY sayfasi acilir.
+  // (Kullanici: "tam kart acilmali ve hangi bitki tas vs. ciktiysa kartta
+  // tekrar tiklaninca o kartin detayli sayfasi cikmali".)
+  // Onceki surum dogrudan detay sayfasini aciyordu; gunun karti ve mesaji hic
+  // gorunmuyordu. Simdi sira: tam kart -> (dokunus) -> detay.
+  // Sakin'in "Bugun" ekrani, kart o gun ZATEN cekilmisse acmadan once
+  // `sakin_open_card` birakir. Ayni origin oldugu icin buradan okunabiliyor;
+  // postMessage koprusune gerek yok. Anahtar BIR KEZ okunup siliniyor.
+  useEffect(() => {
+    try {
+      const ls = typeof window !== 'undefined' ? window.localStorage : null;
+      const raw = ls?.getItem('sakin_open_card');
+      if (!raw) return;
+      const req = JSON.parse(raw);
+      if (req?.kind !== 'animal') return;   // baska uygulamaya ait istek, dokunma
+      ls?.removeItem('sakin_open_card');
+      revealedRef.current = true;           // acilis animasyonunu atla
+      setRevealed(true);
+      markRevealedStep(0);                  // gun boyu acik kalsin
+      // Animasyon degerleri baslangicta arka yuz (1) / on yuz (0). Animasyonu
+      // atladigimiz icin bunlari ELLE cevirmek sart, yoksa kart bos gorunur.
+      backFade.setValue(0);
+      frontFade.setValue(1);
+    } catch { /* bozuk kayit: yok say, normal akis */ }
+  }, []);
 
   // Depo (useSakinHayvanStore) AsyncStorage'dan yüklemesini isLoading ile
   // bildirir. Önceki kod bunu beklemeden — dailyReading henüz null iken —
@@ -287,6 +349,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     if (revealedRef.current) return;
     revealedRef.current = true;
     setRevealed(true);
+    markRevealedStep(step);
     recordReading();
     _bridgeHaptic('medium');
     Animated.parallel([
@@ -299,11 +362,14 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     _bridgeHaptic('light');
     if (step < DECKS.length - 1) {
       Animated.timing(frontFade, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
-        setStep(s => s + 1);
-        setRevealed(false);
-        revealedRef.current = false;
-        backFade.setValue(1);
-        frontFade.setValue(0);
+        const next = step + 1;
+        // Sonraki deste BUGUN zaten acildiysa acik gelsin, tekrar "salla" deme.
+        const already = readRevealedSteps().includes(next);
+        setStep(next);
+        setRevealed(already);
+        revealedRef.current = already;
+        backFade.setValue(already ? 0 : 1);
+        frontFade.setValue(already ? 1 : 0);
       });
     } else {
       setDone(true);
