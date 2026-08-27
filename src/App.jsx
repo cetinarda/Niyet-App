@@ -7179,43 +7179,46 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     {id:"chakra", icon:"💜", label:t("nav_chakra"),                color:"#c07ae0"},
     {id:"aksam",  icon:"🌙", label:t("nav_evening"),               color:"#7ab0e0"},
   ];
-  // ── YENİ ALT NAVİGASYON (SADECE WEB) ──────────────────────────────────────
-  // Kullanıcı isteği: 6 günlük adımı yan yana dizen alt bar yerine 4 ana sekme;
-  // her sekme kendi araçlarını hemen üstündeki şeritte açsın.
-  //   Bugün  → günün akışı (sabah · gün · nefes · ses · çakra · akşam)
-  //   Keşfet → Sakin Ailesi araçları (mevcut tam ekran modal)
-  //   Ben    → harita ekranı (galaktik kimlik, doğum haritası, gökyüzü + haftalık rapor)
-  //   Bağlan → mandala (seri/rozetler)
+  // ── ALT NAVİGASYON (SADECE WEB) ───────────────────────────────────────────
+  // Sıra kullanıcı tarafından belirlendi:
+  //   1 Bağlan → günün akışı. Adımlar (sabah…akşam) ARTIK ALT BARDA DEĞİL,
+  //     ekranın ÜSTÜNDE yatay kaydırılabilir sekme şeridinde (bkz. adım şeridi).
+  //   2 Keşfet → Sakin Ailesi araçları (tam ekran)
+  //   3 Ayna   → İçsel Ayna. Gizli ☽ geçidinden çıkıp ana sekme oldu.
+  //   4 Ben    → harita (galaktik kimlik, doğum haritası, gökyüzü + haftalık rapor)
   //
-  // TEK MENÜ KURALI (kullanıcı düzeltmesi: "karışıklığı önlemek için"):
-  // İKİ BAR AYNI ANDA GÖRÜNMEZ. İlk denemede dörtlü barın üstüne bir "araç
-  // şeridi" koymuştum; kullanıcı bunu üst üste iki menü olarak gördü. Artık:
-  //   • Günün adım ekranlarında (sabah…akşam) SADECE eski 6'lı bar + adım
-  //     göstergesi görünür (mağazadaki tasarımın aynısı), dörtlü bar KAYBOLUR.
-  //   • Diğer ekranlarda SADECE dörtlü bar görünür.
-  // Adım akışından çıkış yolu ☰ menüsüdür (eski tasarımdaki gibi) — bu yüzden
-  // Bağlan/Harita/Keşfet web'de de ☰ içinde KALIR.
+  // TEK MENÜ KURALI KORUNUYOR: alt bar her ekranda AYNI kalıyor (4 sekme).
+  // Günün adımları arasında geçiş üstteki şeritten yapılıyor, yani alt bar hiç
+  // değişmiyor ve kullanıcı nerede olduğunu kaybetmiyor. Önceki denemede adımlar
+  // alt barı devralıyordu; bu, "hangi menüdeyim" karışıklığını doğuruyordu.
   const TAB_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
   const MAIN_TABS = [
-    {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a"},
-    {id:"kesfet", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060"},
-    {id:"ben",    label:pickLang(TAB_TXT.ben, lang),        color:"#82d9a3"},
     {id:"baglan", label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+    {id:"kesfet", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060"},
+    {id:"ayna",   label:pickLang(TAB_TXT.ayna, lang),       color:"#c8a8e8"},
+    {id:"ben",    label:pickLang(TAB_TXT.ben, lang),        color:"#82d9a3"},
   ];
   // Aktif sekme: Keşfet bir `screen` değil `showAilesi` overlay'i olduğu için
   // önce o kontrol edilir (üst bardaki aynı tuzak, bkz. renderBtn yorumu).
   const activeTab = showAilesi ? "kesfet"
     : screen === "harita" ? "ben"
-    : ["mandala","rehber"].includes(screen) ? "baglan"
-    : TAB_STEPS.includes(screen) ? "bugun"
+    : screen === "rehber" ? "ayna"
+    : (screen === "mandala" || TAB_STEPS.includes(screen)) ? "baglan"
     : null;
+  // Adım şeridi görünür mü? Hem şeridin kendisi hem app-root'un üst boşluğu
+  // aynı koşulu kullansın diye tek yerde tutuluyor (ikisi ayrışırsa içerik
+  // ya şeridin altında kalır ya da boşluk fazla olur).
+  const stepStripVisible = !isNative && !showAilesi
+    && (screen === "mandala" || TAB_STEPS.includes(screen));
   const goTab = (id) => {
     try { haptic(); } catch(_) {}
     if (id === "kesfet") { setShowAilesi(true); return; }
     setShowAilesi(false);
-    // Bugün → tamamlanmamış ilk adım (kullanıcıyı kaldığı yerden devam ettirir).
-    if (id === "bugun")  { setScreen(TAB_STEPS.find(s => !stepsCompleted[s]) || "sabah"); return; }
+    // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
+    if (id === "ayna")   { openMirror(); return; }
     if (id === "ben")    { setScreen("harita"); return; }
+    // Bağlan → günün bağı (mandala): ilerleme omurgası, seri, rozetler.
+    // Adımlara üstteki şeritten tek dokunuşla geçilir.
     if (id === "baglan") { setScreen("mandala"); return; }
   };
   const SIDEBAR_ITEMS = [
@@ -7286,7 +7289,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // taşma durumunda üstü ASLA kesmez — sığıyorsa ortalar, sığmıyorsa yukarıdan
   // başlar. position:fixed çocuklar akış dışı olduğu için etkilenmez.
   return (
-    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{ paddingTop: topNavVisible ? "calc(94px + var(--sat))" : "calc(50px + var(--sat))",background:"#000000",display:"flex",alignItems:"flex-start",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
+    <div className={"sakin-app-root" + (matrixMode ? " matrix-mode" : "")} onMouseMove={handleMouseMove} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} style={{
+      // Adım şeridi (web, Bağlan sekmesi) üst barın ALTINA sabitleniyor; görünürken
+      // içerik onun altında kalmasın diye +54px ekleniyor.
+      paddingTop: (topNavVisible ? "calc(94px + var(--sat)" : "calc(50px + var(--sat)")
+        + (stepStripVisible ? " + 54px)" : ")"),
+      background:"#000000",display:"flex",alignItems:"flex-start",justifyContent:"center",fontFamily:"'Inter',sans-serif",color:"#ffffff",position:"relative" }}>
       <style>{GLOBAL_CSS}</style>
       {/* MATRIX MODU katmanları — TÜM ekranları kapsar (Sakin paneli + embed app'ler dâhil) */}
       {matrixMode && (
@@ -8570,13 +8578,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
             if(showAilesi) setShowAilesi(false);
             if(n.id==="rehber") setRehberTab("reiki");
-            // ⌂ ANA SAYFA: web'de artık EN BAŞA (giriş/HAZIRIM) değil, dörtlü
-            // menünün göründüğü ekrana döner (kullanıcı: "en başa değil dörtlü
-            // ekrana dönsün"). mandala = günün bağı: ilerleme omurgası, seri ve
-            // rozetler — bir "ana sayfa" için doğru içerik. Bu aynı zamanda adım
-            // akışından TEK çıkış yolu, çünkü ☰ menüsü sadeleştirildi.
-            // Native'de davranış değişmedi (giriş ekranına döner).
-            if(n.id==="giris" && !isNative) { setScreen("mandala"); setShowTopMenu(false); return; }
+            // ⌂ ANA SAYFA → giriş ekranı (dil seçiminin bulunduğu açılış).
+            // Bir ara web'de mandala'ya yönlendirmiştim; kullanıcı "ana sayfa
+            // ikonuna tıklandığında dil seçim ekranına dönsün" diyerek geri aldı.
+            // Adım akışında kilitlenme riski yok: alt bardaki 4 sekme artık her
+            // ekranda sabit duruyor, çıkış her zaman elinin altında.
             if(n.id==="giris") setGirisPhase("intro");
             setScreen(n.id);
             setShowTopMenu(false);
@@ -8760,6 +8766,48 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             sadece üç çizginin içinde olsun, diğer yerlerden kaldır"). 3'ü-üstte
             moddaki (harita/mandala/keşfet) ayrı ◐ butonu kaldırıldı. */}
       </div>
+
+      {/* ── GÜNÜN ADIM ŞERİDİ (SADECE WEB) ──────────────────────────────────
+          Adımlar (sabah…akşam) alt bardan ÜSTE taşındı: Bağlan sekmesindeyken
+          burada yatay kaydırılabilir sekmeler olarak duruyor. Parmakla kaydırılır
+          VE tıklanır. Alt bar böylece her ekranda sabit 4 sekme kalıyor.
+          Bizim dilimiz korundu: Jost, uppercase, ince çizgi SVG ikon, adımın
+          kendi rengi; hazır bileşen/kütüphane görünümü yok.
+          Tamamlanan adım ✓ ile işaretli, bulunulan adım dolu pill.
+          overflowX:auto + scrollbar gizli: iOS/Android'de parmakla kaydırma
+          doğal çalışır, masaüstünde çirkin kaydırma çubuğu görünmez. */}
+      {stepStripVisible && (
+        <div style={{ position:"fixed", top: topNavVisible ? "calc(88px + var(--sat))" : "calc(44px + var(--sat))",
+          left:0, right:0, zIndex:9997,
+          background:"rgba(0,0,0,0.92)", backdropFilter:"blur(20px)",
+          borderBottom:"1px solid rgba(255,255,255,0.06)",
+          display:"flex", gap:7, alignItems:"center",
+          overflowX:"auto", scrollbarWidth:"none", msOverflowStyle:"none",
+          padding:"8px 12px", WebkitOverflowScrolling:"touch" }}>
+          {TAB_STEPS.map(id => {
+            const n = NAV.find(x => x.id === id) || {};
+            const color = n.color || "#888888";
+            const on = screen === id;
+            const done = !!stepsCompleted[id];
+            return (
+              <button key={id} onClick={()=>{ try{haptic();}catch(_){} setScreen(id); }}
+                style={{ WebkitAppearance:"none", appearance:"none", flexShrink:0,
+                  display:"flex", alignItems:"center", gap:7,
+                  background: on ? `${color}22` : "rgba(255,255,255,0.03)",
+                  border: on ? `1px solid ${color}55` : "1px solid rgba(255,255,255,0.08)",
+                  borderRadius:100, padding:"8px 15px", cursor:"pointer", minHeight:38,
+                  transition:"background .3s, border .3s, color .3s",
+                  color: on ? color : done ? `${color}aa` : "rgba(255,255,255,0.42)",
+                  fontFamily:"'Jost',sans-serif", fontWeight:500, fontSize:11.5,
+                  letterSpacing:1.2, textTransform:"uppercase", whiteSpace:"nowrap" }}>
+                <TabIcon id={id} size={15} />
+                <span>{(n.label||id).toLocaleUpperCase(t("locale_code"))}</span>
+                {done && !on && <span style={{ fontSize:9, lineHeight:1 }}>✓</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* "NE YENİ" kartı — telefon otomatik güncellediyse ilk açılışta ne değiştiğini
           gösterir. Güncelleme banner'ıyla AYNI slot ve görsel dil; ikisi birlikte
@@ -12544,9 +12592,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* Adım göstergesi eski 6'lı barla BİRLİKTE gelir (ekteki referans düzen).
           Native: eskisi gibi. Web: yalnızca günün adım ekranlarında — "harita"
           web'de artık "Ben" sekmesi ve orada dörtlü menü var, göstergeye gerek yok. */}
-      {(isNative
-          ? ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen)
-          : (!showAilesi && TAB_STEPS.includes(screen))) && (
+      {isNative && ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
         <div className="sakin-progress-strip" style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
           {NAV_STEPS.map((s,i) => {
             // Geçilen adımlar dolu, bulunulan adım geniş — navigasyon ilerlemesine göre.
@@ -12560,11 +12606,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* ── DÖRTLÜ ANA MENÜ · WEB ── Günün adım ekranlarında GÖRÜNMEZ; orada
-          eski 6'lı bar devralır (tek menü kuralı, yukarıdaki nota bak).
-          Keşfet modalı bir adım ekranının ÜSTÜNDE açılabildiği için showAilesi
-          durumunda bar yine gösterilir, yoksa Keşfet'teyken bar kaybolurdu. */}
-      {!isNative && (showAilesi || !TAB_STEPS.includes(screen))
+      {/* ── DÖRTLÜ ANA MENÜ · WEB ── Artık HER ekranda aynı (adım ekranları
+          dahil): adımlar üstteki şeride taşındığı için alt bar hiç değişmiyor.
+          Böylece "hangi menüdeyim" karışıklığı ortadan kalkıyor ve kullanıcı
+          günün akışındayken de Keşfet/Ayna/Ben'e tek dokunuşla geçebiliyor. */}
+      {!isNative
         && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade","ayarlar"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
@@ -12593,9 +12639,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           Native: her zamanki gibi tüm akış ekranlarında.
           Web: SADECE günün adım ekranlarında — "Bugün"e girilince dörtlü menü
           kaybolur ve buradaki eski menü aynen devralır (kullanıcı isteği). */}
-      {(isNative
-          ? !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen)
-          : (!showAilesi && TAB_STEPS.includes(screen))) && (
+      {isNative
+          && !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
           {NAV.map(n=>{
             const active = screen===n.id;
