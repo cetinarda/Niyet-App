@@ -1,5 +1,5 @@
 import { Body, GeoVector, Ecliptic, EclipticGeoMoon, SunPosition, SearchGlobalSolarEclipse, SearchLunarEclipse, Seasons } from "astronomy-engine";
-import { groqChat, stripThink } from "./_groq.mjs";
+import { groqChat, stripThink, langConformanceOk } from "./_groq.mjs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
@@ -684,7 +684,7 @@ Now write the collective sky-energy reading. Let us FEEL which energy the Earth 
     temperature: 0.85,
     top_p: 0.92,
     messages: [{ role: "system", content: sys }, { role: "user", content: usr }],
-  }, { timeoutMs: 9000 });
+  }, { timeoutMs: 9000, validate: (text) => langConformanceOk(text, lang) });
   if (!out.ok) return null;
   const txt = _sanitizeSky(stripThink(out.data?.choices?.[0]?.message?.content), lang);
   return txt || null;
