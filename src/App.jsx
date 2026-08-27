@@ -7212,6 +7212,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // kayması gerekiyor, o yüzden bu bayrak üç yerde birden kullanılıyor:
   // barın kendisi, adım şeridinin top'u, app-root'un paddingTop'u.
   const topControlsVisible = isNative || activeTab === "ben";
+  // Sıradaki görev: tamamlanmamış İLK adım. Üstteki şeritte bu sekme yanıp söner.
+  // Hepsi bitmişse null döner ve hiçbir şey yanmaz (gün tamamlanmış demektir).
+  const nextStepId = TAB_STEPS.find(s => !stepsCompleted[s]) || null;
   // Adım şeridi görünür mü? Hem şeridin kendisi hem app-root'un üst boşluğu
   // aynı koşulu kullansın diye tek yerde tutuluyor (ikisi ayrışırsa içerik
   // ya şeridin altında kalır ya da boşluk fazla olur).
@@ -8795,15 +8798,25 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const color = n.color || "#888888";
             const on = screen === id;
             const done = !!stepsCompleted[id];
+            // SIRADAKİ GÖREV YANIP SÖNER (kullanıcı: "yukardaki menünün anlaşılması
+            // için ilk görev yanıp sönsün ... kullanıcı tekrar döndüğünde kaldığı
+            // menü yanıp sönsün"). Yanan adım = tamamlanmamış İLK adım; sabah
+            // bitmişse gün, o da bitmişse nefes... Böylece "nereden devam edeceğim"
+            // sorusu kendiliğinden cevaplanıyor ve üstteki şeridin ne işe yaradığı
+            // ilk bakışta anlaşılıyor.
+            // Zaten O ADIMDAYSA yanmaz: üstünde durduğun şeyi işaret etmek gereksiz
+            // (aktif pill'i zaten renkli), sürekli yanıp sönme rahatsız ederdi.
+            const hint = id === nextStepId && !on;
             return (
               <button key={id} onClick={()=>{ try{haptic();}catch(_){} setScreen(id); }}
                 style={{ WebkitAppearance:"none", appearance:"none", flexShrink:0,
                   display:"flex", alignItems:"center", gap:7,
-                  background: on ? `${color}22` : "rgba(255,255,255,0.03)",
-                  border: on ? `1px solid ${color}55` : "1px solid rgba(255,255,255,0.08)",
+                  background: on ? `${color}22` : hint ? `${color}14` : "rgba(255,255,255,0.03)",
+                  border: on ? `1px solid ${color}55` : hint ? `1px solid ${color}44` : "1px solid rgba(255,255,255,0.08)",
                   borderRadius:100, padding:"8px 15px", cursor:"pointer", minHeight:38,
                   transition:"background .3s, border .3s, color .3s",
-                  color: on ? color : done ? `${color}aa` : "rgba(255,255,255,0.42)",
+                  animation: hint ? "navSoftPulse 2.2s ease-in-out infinite" : "none",
+                  color: on ? color : hint ? color : done ? `${color}aa` : "rgba(255,255,255,0.42)",
                   fontFamily:"'Jost',sans-serif", fontWeight:500, fontSize:11.5,
                   letterSpacing:1.2, textTransform:"uppercase", whiteSpace:"nowrap" }}>
                 <TabIcon id={id} size={15} />
@@ -12510,6 +12523,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           kontroller eski yerlerinde (Keşfet paneli + ☰ tema) duruyor. */}
       {screen==="ayarlar" && (
         <div style={{ maxWidth:520,width:"100%",padding:"40px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
+          {/* GERİ BUTONU — kullanıcı: "ayarlardan geri dönüş çıkış yok".
+              Ayarlar ☰ menüsünden açılıyor, ☰ ise yalnızca "Ben" sekmesinde var;
+              üstteki ⌂/☰ barı burada gizli olduğu için sayfa çıkışsız kalmıştı.
+              Ayrıca alt bar da bu sayfada gösteriliyor (aşağıdaki nota bak), yani
+              artık iki çıkış yolu var: bu ok ve alt bardaki sekmeler. */}
+          <button onClick={()=>{ try{haptic();}catch(_){} setScreen("harita"); }} aria-label={t("back")}
+            style={{ WebkitAppearance:"none",appearance:"none",position:"absolute",top:32,left:14,
+              width:40,height:40,borderRadius:"50%",background:"rgba(255,255,255,0.05)",
+              border:"1px solid rgba(255,255,255,0.12)",color:"#ddd",fontSize:18,cursor:"pointer",
+              display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1,paddingRight:2 }}>
+            ←
+          </button>
           <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:4,color:"#e8e0f4",marginBottom:28,textAlign:"center" }}>
             {pickLang(TAB_TXT.ayarlar, lang)}
           </div>
@@ -12616,8 +12641,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           dahil): adımlar üstteki şeride taşındığı için alt bar hiç değişmiyor.
           Böylece "hangi menüdeyim" karışıklığı ortadan kalkıyor ve kullanıcı
           günün akışındayken de Keşfet/Ayna/Ben'e tek dokunuşla geçebiliyor. */}
+      {/* "ayarlar" LİSTEDEN ÇIKARILDI: alt bar orada da görünsün. Ayarlar ☰'den
+          açılıyor ve ☰ yalnızca Ben'de olduğu için sayfa çıkışsız kalıyordu
+          (kullanıcı bildirdi). Politika sayfalarında bar hâlâ gizli, onların
+          çıkışı üstteki marka nav'ındaki "← SAKİN". */}
       {!isNative
-        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade","ayarlar"].includes(screen) && (
+        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
           border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
