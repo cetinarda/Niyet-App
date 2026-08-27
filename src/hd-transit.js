@@ -53,6 +53,42 @@ async function engine() {
   return _engine;
 }
 
+// Ay evresi. Gökyüzü Raporu başlığında kapalıyken bile görünsün diye ayrı
+// fonksiyon: kullanıcı paneli açmadan da ayın nerede olduğunu görüyor.
+// 8 evre, SoulID'nin kullandığı sınırlarla aynı mantık (0..360 açı / 45).
+const PHASE_NAMES = [
+  { tr:"Yeni Ay",        en:"New Moon" },
+  { tr:"Hilal",          en:"Waxing Crescent" },
+  { tr:"İlk Dördün",     en:"First Quarter" },
+  { tr:"Şişkin Ay",      en:"Waxing Gibbous" },
+  { tr:"Dolunay",        en:"Full Moon" },
+  { tr:"Solan Şişkin",   en:"Waning Gibbous" },
+  { tr:"Son Dördün",     en:"Last Quarter" },
+  { tr:"Solan Hilal",    en:"Waning Crescent" },
+];
+// Evreye göre ay diski görseli (emoji değil, tipografik daire dolgusu ile
+// çizilemediği için Unicode ay sembolleri kullanıldı; her platformda var).
+const PHASE_GLYPH = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"];
+
+export async function computeMoonPhase(date = new Date(), lang = "tr") {
+  let A;
+  try { A = await engine(); } catch { return null; }
+  try {
+    // MoonPhase: Güneş-Ay ekliptik boylam farkı (0=yeni, 180=dolunay).
+    const angle = A.MoonPhase(date);
+    const idx = Math.round(angle / 45) % 8;
+    const illum = A.Illumination(A.Body.Moon, date);
+    return {
+      angle,
+      index: idx,
+      glyph: PHASE_GLYPH[idx],
+      name: lang === "tr" ? PHASE_NAMES[idx].tr : PHASE_NAMES[idx].en,
+      // Aydınlanma oranı: "ne kadar dolu" bilgisi, yüzde olarak gösterilebilir.
+      fraction: illum && typeof illum.phase_fraction === "number" ? illum.phase_fraction : null,
+    };
+  } catch { return null; }
+}
+
 /**
  * Bugünün transit kapıları.
  * @param {Date} date
