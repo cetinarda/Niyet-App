@@ -17,15 +17,19 @@ import { useLanguage } from '../i18n/useLanguage';
 
 type Tab = 'home' | 'mitler' | 'archive' | 'profile';
 
+// KART SEKMESİ İLK SIRADA (Sakin host isteği): uygulama açılınca doğrudan
+// GÜNÜN KARTI gelsin. Host'un "Bugün" ekranındaki "kartını aç" daveti bu
+// uygulamayı açıyor; liste ekranıyla karşılamak kullanıcıyı bir tık uzağa
+// atıyordu. Sıra değişti + varsayılan sekme 'home' yapıldı.
 const TAB_CONFIG: { key: Tab; tKey: 'tab.home' | 'tab.mitler' | 'tab.archive' | 'tab.profile'; symbol: string; activeColor: string }[] = [
-  { key: 'mitler',  tKey: 'tab.mitler',  symbol: '⊕',  activeColor: Colors.tealLight },
   { key: 'home',    tKey: 'tab.home',    symbol: '✦',  activeColor: Colors.gold },
+  { key: 'mitler',  tKey: 'tab.mitler',  symbol: '⊕',  activeColor: Colors.tealLight },
   { key: 'archive', tKey: 'tab.archive', symbol: '◈',  activeColor: Colors.purple },
   { key: 'profile', tKey: 'tab.profile', symbol: '⊙',  activeColor: Colors.sakinLavender },
 ];
 
 export function TabNavigator() {
-  const [activeTab, setActiveTab] = useState<Tab>('mitler');
+  const [activeTab, setActiveTab] = useState<Tab>('home');
   const insets = useSafeAreaInsets();
   const { t } = useLanguage();
 
