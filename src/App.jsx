@@ -738,6 +738,13 @@ const TODAY_TXT = {
   sysTarot:    { tr:"Tarot", en:"Tarot", de:"Tarot", es:"Tarot", pt:"Tarot", fr:"Tarot", ja:"タロット" },
   sysRune:     { tr:"Rün", en:"Rune", de:"Rune", es:"Runa", pt:"Runa", fr:"Rune", ja:"ルーン" },
   sysIching:   { tr:"I Ching", en:"I Ching", de:"I Ging", es:"I Ching", pt:"I Ching", fr:"Yi King", ja:"易経" },
+  // Human Design günlük transit
+  transit:  { tr:"Günün geçişi", en:"Today's transit", de:"Transit des Tages", es:"Tránsito de hoy", pt:"Trânsito de hoje", fr:"Transit du jour", ja:"今日のトランジット" },
+  vurgu:    { tr:"Günün vurgusu", en:"Today's emphasis", de:"Schwerpunkt heute", es:"Énfasis de hoy", pt:"Ênfase de hoje", fr:"L'accent du jour", ja:"今日の焦点" },
+  dikkat:   { tr:"Nelere dikkat", en:"What to watch", de:"Worauf achten", es:"A qué prestar atención", pt:"A que prestar atenção", fr:"À quoi faire attention", ja:"気をつけること" },
+  gunes:    { tr:"Güneş", en:"Sun", de:"Sonne", es:"Sol", pt:"Sol", fr:"Soleil", ja:"太陽" },
+  ay:       { tr:"Ay", en:"Moon", de:"Mond", es:"Luna", pt:"Lua", fr:"Lune", ja:"月" },
+  kapi:     { tr:"Kapı", en:"Gate", de:"Tor", es:"Puerta", pt:"Portão", fr:"Porte", ja:"ゲート" },
   gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
   dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
   destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
@@ -7297,6 +7304,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
   const [dailyIndex, setDailyIndex] = useState(null);
   const [dailyIds, setDailyIds] = useState(null);
+  // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
+  // (bkz. src/hd-transit.js) — ana bundle büyümesin, yalnızca bu ekranda insin.
+  const [transit, setTransit] = useState(null);
+  useEffect(() => {
+    if (screen !== "bugun") return;
+    let alive = true;
+    import("./hd-transit")
+      .then(m => m.computeTransit(new Date(), lang))
+      .then(r => { if (alive) setTransit(r); })
+      // Hesap düşerse ekran transitsiz açılır; kart bölümü etkilenmez.
+      .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
+    return () => { alive = false; };
+  }, [screen, lang]);
   useEffect(() => {
     if (screen !== "bugun") return;
     let alive = true;
@@ -12732,6 +12752,58 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {dk}
               </div>
             </div>
+            {/* ── HUMAN DESIGN GÜNÜN GEÇİŞİ ──
+                Güneş kapısı günün ana temasını, Ay kapısı gün içindeki duygusal
+                rengi taşır. "Vurgu" kapının hediyesi, "dikkat" gölgesi.
+                Hesap host'ta (src/hd-transit.js), Tasarım uygulamasıyla AYNI
+                çark ve AYNI kütüphane, yani iki yerde aynı kapı görünür. */}
+            {transit && (
+              <div style={{ marginBottom:22 }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
+                  textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.transit, lang)}</div>
+                <div style={{ background:"linear-gradient(160deg, rgba(184,164,216,0.10), rgba(255,255,255,0.02))",
+                  border:"1px solid rgba(184,164,216,0.28)",borderRadius:16,padding:"16px 18px" }}>
+                  <div style={{ display:"flex",gap:10,flexWrap:"wrap",marginBottom:12 }}>
+                    {[[TODAY_TXT.gunes, transit.sun, "#e8c07a"], [TODAY_TXT.ay, transit.moon, "#9cc0e4"]]
+                      .filter(([,g]) => g).map(([lbl,g,c]) => (
+                      <span key={g.body} style={{ display:"inline-flex",alignItems:"center",gap:7,
+                        background:`${c}14`,border:`1px solid ${c}3d`,borderRadius:100,padding:"6px 13px" }}>
+                        <span style={{ fontSize:10,letterSpacing:1.5,color:`${c}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(lbl, lang)}
+                        </span>
+                        <span style={{ fontSize:12.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(TODAY_TXT.kapi, lang)} {g.gate}.{g.line} · {g.name}
+                        </span>
+                      </span>
+                    ))}
+                  </div>
+                  {transit.sun && (<>
+                    <div style={{ fontSize:14,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.55,marginBottom:12 }}>
+                      {transit.sun.theme}
+                    </div>
+                    <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+                      <div>
+                        <span style={{ fontSize:10,letterSpacing:1.8,color:"#8fbf9f",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(TODAY_TXT.vurgu, lang)}
+                        </span>
+                        <div style={{ fontSize:13.5,color:"#cfe6d6",fontFamily:"'Inter',sans-serif",lineHeight:1.5,marginTop:2 }}>
+                          {transit.sun.gift}
+                        </div>
+                      </div>
+                      <div>
+                        <span style={{ fontSize:10,letterSpacing:1.8,color:"#c79a9a",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(TODAY_TXT.dikkat, lang)}
+                        </span>
+                        <div style={{ fontSize:13.5,color:"#e2cccc",fontFamily:"'Inter',sans-serif",lineHeight:1.5,marginTop:2 }}>
+                          {transit.sun.shadow}
+                        </div>
+                      </div>
+                    </div>
+                  </>)}
+                </div>
+              </div>
+            )}
+
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
               textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.rehber, lang)}</div>
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
