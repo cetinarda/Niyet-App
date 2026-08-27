@@ -732,6 +732,15 @@ const PANIC_ENTRY_TXT = {
   pt:"Respira", fr:"Respire", ja:"深呼吸する",
 };
 const AI_ERR_I18N = {
+  // 413: soru + rehber metinleri sunucu sınırını aştı. Kullanıcının yapabileceği
+  // tek şey soruyu kısaltmak, o yüzden doğrudan onu söylüyoruz.
+  tooLong: { tr:"Sorun biraz uzun geldi. Daha kısa yazıp tekrar dener misin?",
+             en:"That was a bit long. Could you write it shorter and try again?",
+             de:"Das war etwas lang. Schreibe es kürzer und versuche es erneut.",
+             es:"Ha quedado un poco largo. ¿Puedes escribirlo más corto e intentarlo de nuevo?",
+             pt:"Ficou um pouco longo. Podes escrever mais curto e tentar de novo?",
+             fr:"C'était un peu long. Peux-tu l'écrire plus court et réessayer ?",
+             ja:"少し長すぎたようです。短くしてもう一度お試しください。" },
   noAnalysis: { tr:"Analiz alınamadı.", en:"Analysis unavailable.", de:"Analyse nicht verfügbar.", es:"Análisis no disponible.", pt:"Análise indisponível.", fr:"Analyse indisponible.", ja:"分析を取得できませんでした。" },
   connError:  { tr:"Bağlantı hatası.",  en:"Connection error.",     de:"Verbindungsfehler.",      es:"Error de conexión.",     pt:"Erro de conexão.",      fr:"Erreur de connexion.",    ja:"接続エラー。" },
   noReport:   { tr:"Rapor oluşturulamadı.", en:"Report could not be generated.", de:"Bericht konnte nicht erstellt werden.", es:"No se pudo generar el informe.", pt:"Não foi possível gerar o relatório.", fr:"Le rapport n'a pas pu être généré.", ja:"レポートを生成できませんでした。" },
@@ -6766,7 +6775,16 @@ ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
         }),
       });
       const d = await res.json();
-      if (!res.ok || d.error) { setSikayetAnaliz("Hata: " + (d.error || res.status)); return; }
+      if (!res.ok || d.error) {
+        // HAM SUNUCU HATASINI EKRANA BASMA. Kullanıcı "Hata: Input too long"
+        // gördü; bu geliştirici dili, kişi ne yapacağını anlamıyor. Teknik
+        // ayrıntı konsola, ekrana anlaşılır ve eyleme dönük bir cümle.
+        console.warn("[Ayna] ai-call hata:", res.status, d?.error);
+        const tooLong = res.status === 413 || /too long/i.test(String(d?.error || ""));
+        setSikayetAnaliz(tooLong ? pickLang(AI_ERR_I18N.tooLong, lang)
+                                 : pickLang(AI_ERR_I18N.noAnalysis, lang));
+        return;
+      }
       setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
       if (d?.text) aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
