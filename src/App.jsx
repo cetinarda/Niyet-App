@@ -12587,8 +12587,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const SYS_LABEL = { archetype:"sysArchetype", myth:"sysMyth", image:"sysImage",
                             tarot:"sysTarot", rune:"sysRune", iching:"sysIching" };
         // Tek kart kutusu. `card` varsa içerik, yoksa "aç" daveti.
+        // KART ZATEN ÇEKİLMİŞSE, uygulamayı açarken "şu kartın sayfasını aç"
+        // ipucunu bırak (kullanıcı: "ikinci kez kartı aç dediğinde kaplan
+        // çıktıysa kaplan sayfasına gitmeli"). Aynı origin olduğu için embed
+        // bunu localStorage'dan okuyup açılış animasyonunu atlıyor ve doğrudan
+        // detay sayfasını açıyor. Kart YOKSA ipucu bırakılmaz; uygulama normal
+        // kart çekme akışıyla açılır.
+        // Mitler'de detay sayfası olmadığı için ipucu gönderilmiyor (kart
+        // içeriği zaten o ekranda satır içi gösteriliyor).
+        const HINT_KIND = { animal:"animal", plant:"plant", stone:"stone" };
         const Card = ({ eyebrow, card, color, appKey }) => (
           <button onClick={()=>{ try{haptic();}catch(_){}
+              try {
+                if (card && HINT_KIND[appKey]) {
+                  localStorage.setItem("sakin_open_card", JSON.stringify({ kind: HINT_KIND[appKey], date: dk }));
+                } else {
+                  localStorage.removeItem("sakin_open_card");
+                }
+              } catch(_) {}
               handleOpenEmbed({ name: eyebrow, embed: CARD_APP[appKey], color }); }}
             style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
               background: card ? `linear-gradient(160deg, ${color}14, rgba(255,255,255,0.02))` : "rgba(255,255,255,0.03)",

@@ -179,6 +179,27 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(0)).current;
   const revealedRef = useRef(false);
 
+  // HOST KÖPRÜSÜ — "kartını aç" ikinci kez tıklandığında kart açılışını TEKRAR
+  // oynatma, doğrudan O KARTIN sayfasını aç (kullanıcı: "kaplan çıktıysa kaplan
+  // sayfasına gitmeli"). Sakin'in "Bugün" ekranı, kart o gün ZATEN çekilmişse
+  // açmadan önce `sakin_open_card` bırakır. Aynı origin olduğu için buradan
+  // okunabiliyor; postMessage köprüsüne gerek yok.
+  // Anahtar BİR KEZ okunup siliniyor: yoksa kullanıcı uygulama içinde geri
+  // dönse bile detay ekranı tekrar tekrar açılırdı.
+  useEffect(() => {
+    try {
+      const ls = typeof window !== 'undefined' ? window.localStorage : null;
+      const raw = ls?.getItem('sakin_open_card');
+      if (!raw) return;
+      const req = JSON.parse(raw);
+      if (req?.kind !== 'animal') return;   // başka uygulamaya ait istek, dokunma
+      ls?.removeItem('sakin_open_card');
+      revealedRef.current = true;           // açılış animasyonunu atla
+      setRevealed(true);
+      setShowAnimalDetail(true);
+    } catch { /* bozuk kayıt: yok say, normal akış */ }
+  }, []);
+
   // Depo (useSakinHayvanStore) AsyncStorage'dan yüklemesini isLoading ile
   // bildirir. Önceki kod bunu beklemeden — dailyReading henüz null iken —
   // hemen YENİ rastgele bir okuma üretiyordu (generateDailyReading). Bu hem
