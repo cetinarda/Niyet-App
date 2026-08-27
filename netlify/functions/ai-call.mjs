@@ -11,7 +11,7 @@
 
 // ---- RAG: kitap bilgi havuzu (lexical retrieval — özgün, kitap-temelli sentez) -
 import BOOK_CHUNKS from "./book-chunks.json";
-import { groqChat, stripThink } from "./_groq.mjs";
+import { groqChat, stripThink, langConformanceOk } from "./_groq.mjs";
 const _RAG_STOP = new Set(["ve","ile","bir","bu","için","ama","gibi","daha","çok","her","ben","sen","biz","ya","de","da","ki","olan","the","and","that","this","with","ama","ise","ya"]);
 function _ragTokens(s) {
   return String(s || "").toLowerCase().replace(/[^a-zçğıöşü0-9\s]/gi, " ").split(/\s+/).filter((w) => w.length >= 4 && !_RAG_STOP.has(w));
@@ -307,12 +307,14 @@ export const handler = async (event) => {
   ];
 
   // ---- Upstream call with automatic model fallback (see _groq.mjs). ---
+  // validate: bir "son care" modeli yanlis dilde yanit uretirse (canli
+  // yakalandi: tr istenmisken Ingilizce) bu aday elenir, siradaki denenir.
   const out = await groqChat(apiKey, "text", {
     max_tokens: safeMaxTokens,
     temperature: 0.7,
     top_p: 0.9,
     messages: groqMessages,
-  });
+  }, { validate: (text) => langConformanceOk(text, lang) });
   if (!out.ok) {
     // Server-side log only; never include detail in client response.
     console.error("[ai-call] upstream failed, status:", out.status);

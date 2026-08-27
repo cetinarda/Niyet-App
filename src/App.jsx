@@ -9641,25 +9641,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 adım durumu da bu ekranın altındaki şeritte zaten duruyor.
                 Yerine tek bir şey kaldı: bugünün bağlantısının yüzdesi ve
                 kaç adım kaldığı. */}
-            <div style={{textAlign:"center",marginBottom:20,width:"100%",maxWidth:260}}>
-              <div className="label-sm" style={{letterSpacing:5,marginBottom:10}}>{t("mandala_today_label")}</div>
-              <div style={{fontSize:38,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
+            {/* Blok kullanıcı isteğiyle küçültüldü: sayı 38px->24px, çubuk
+                genişliği 260px->170px (kısa ve kompakt), boşluklar sıkıştı. */}
+            <div style={{textAlign:"center",marginBottom:16,width:"100%",maxWidth:170}}>
+              <div className="label-sm" style={{letterSpacing:1.6,marginBottom:7,fontSize:10,whiteSpace:"nowrap"}}>{t("mandala_today_label")}</div>
+              <div style={{fontSize:24,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
-                {/* % işareti sayıdan küçük (kullanıcı isteği): büyük sayı asıl
-                    vurgu, işaret onun önünde ufak bir etiket gibi duruyor. */}
+                {/* % işareti sayıdan küçük: büyük sayı asıl vurgu, işaret
+                    onun önünde ufak bir etiket gibi duruyor. */}
                 <span style={{fontSize:"0.5em",verticalAlign:"0.28em",marginRight:1}}>%</span>
                 {Math.round((completedStepCount / N) * 100)}
               </div>
               {/* İnce ilerleme çubuğu: yüzde tek başına soyut kalıyor, çubuk
                   aynı bilgiyi bir bakışta veriyor. */}
-              <div style={{height:3,borderRadius:100,background:"rgba(255,255,255,0.07)",margin:"12px 0 9px",overflow:"hidden"}}>
+              <div style={{height:3,borderRadius:100,background:"rgba(255,255,255,0.07)",margin:"8px 0 7px",overflow:"hidden"}}>
                 <div style={{height:"100%",borderRadius:100,transition:"width 0.4s ease",
                   width:`${Math.round((completedStepCount / N) * 100)}%`,
                   background: allStepsComplete
                     ? "linear-gradient(90deg,#82d9a3,#a0e8c0)"
                     : "linear-gradient(90deg,#f1a24a,#8b5aa0,#2a6fb8)" }} />
               </div>
-              <div style={{fontSize:12,letterSpacing:1.6,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
+              <div style={{fontSize:11,letterSpacing:1.4,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
                 {allStepsComplete
                   ? t("mandala_complete")
                   : (N - completedStepCount) === 1

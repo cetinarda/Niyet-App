@@ -1,7 +1,7 @@
 // Hardened Groq proxy for the weekly inner-report generation.
 // Mirrors the security layers in ai-call.mjs. See that file's top comment
 // for the in-memory rate-limit caveat (Netlify warm-vs-cold containers).
-import { groqChat, stripThink } from "./_groq.mjs";
+import { groqChat, stripThink, langConformanceOk } from "./_groq.mjs";
 
 // ---- CORS / origin allowlist -------------------------------------------------
 
@@ -284,7 +284,7 @@ export const handler = async (event) => {
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
     ],
-  });
+  }, { validate: (text) => langConformanceOk(text, lang) });
   if (!out.ok) {
     console.error("[ai-report] upstream failed, status:", out.status);
     return jsonResponse(502, cors, { error: GENERIC_AI_ERROR });

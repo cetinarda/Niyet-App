@@ -57,6 +57,16 @@ async function availableIds(apiKey) {
 // uretmeyen aileler (ses, koruma, gomme, goruntu) ad uzerinden eleniyor;
 // gozden kacan olursa zaten 400 doner ve siradakine gecilir.
 const NON_TEXT = /whisper|tts|guard|embed|rerank|vision|moderation|safety|audio|speech/i;
+// AYRICA elenen: "dusunen" (reasoning/chain-of-thought) model aileleri. Bunlar
+// tercih listesindeki gpt-oss'tan FARKLI olarak reasoning_effort ile
+// kisitlanmiyor, kapali kapida uzun bir <think> bloguyla dusunuyor ve dar
+// max_tokens butcesini o blok icinde tuketebiliyor. CANLI YAKALANDI (27 Agu
+// 2026): rastgele secilen bir "extra" model kapanmamis bir <think> blogunu
+// ve INGILIZCE muhakemesini oldugu gibi kullaniciya dondurdu (Turkce istendi
+// halde). stripThink kapanan etiketleri temizler ama YARIM KESILENI temizleyemez
+// (asagida ayrica sertlestirildi); en guvenlisi bu aileleri "son care"
+// havuzuna hic almamak.
+const REASONING_RISK = /think|reasoning|-r1|r1-|distill|cot-/i;
 
 // Denenecek modeller, en iyi -> yedek sirasiyla. Asla bos donmez.
 export async function groqModelCandidates(apiKey, kind) {
@@ -68,7 +78,7 @@ export async function groqModelCandidates(apiKey, kind) {
   const avail = wanted.filter((m) => ids.has(m));
   const primary = avail.length ? avail : wanted; // hicbiri listede yoksa yine dene (liste bayat olabilir)
   if (kind !== "text") return primary;           // gorsel modelinde rastgele yedek ise yaramaz
-  const extra = [...ids].filter((m) => !primary.includes(m) && !NON_TEXT.test(m)).sort();
+  const extra = [...ids].filter((m) => !primary.includes(m) && !NON_TEXT.test(m) && !REASONING_RISK.test(m)).sort();
   return [...primary, ...extra];
 }
 
@@ -92,14 +102,65 @@ function extraFor(model) {
   return model.startsWith("openai/gpt-oss") ? { reasoning_effort: "low" } : {};
 }
 
-// Qwen "thinking" modu <think>...</think> sizabilir; temizle.
+// Qwen/DeepSeek "thinking" modu <think>...</think> sizabilir; temizle.
+// SERTLESTIRME (canli hatadan): bir reasoning modeli max_tokens dolmadan
+// </think> etiketini KAPATAMAZSA eski regex hicbir sey silmiyordu ve ham
+// muhakeme metni (cogu zaman Ingilizce) oldugu gibi kullaniciya gidiyordu.
+// Simdi: once kapanan bloklari sil, sonra YARIM KALAN bir <think> varsa
+// ordan itibaren HER SEYI sil (kapanmamis muhakeme, gecerli bir yanit
+// olamaz). Sonuc bos kalirsa cagiran taraf (asagidaki validate) bunu
+// "bu model basarisiz" olarak yorumlayip siradaki adaya gecer.
 export function stripThink(s) {
-  return typeof s === "string" ? s.replace(/<think>[\s\S]*?<\/think>/gi, "").trim() : s;
+  if (typeof s !== "string") return s;
+  let out = s.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  const dangling = out.indexOf("<think");
+  if (dangling !== -1) out = out.slice(0, dangling);
+  return out.trim();
+}
+
+// Basit kalite kapisi: reasoning sizintisi kacan bir on-isaret ya da bos
+// yanit varsa bu adayi ELE (siradaki modele gecilsin). `validateExtra`
+// verilirse (ornek: dil uygunlugu) ek olarak calisir. Cagiran tarafa TEK
+// gercek: dogrulama basarisiz -> bu model 400/404 gibi "siradakine gec"
+// muamelesi gorur, kullaniciya asla yarim/bozuk metin gitmez.
+function defaultQualityOk(text) {
+  if (!text || text.length < 8) return false;
+  if (/<\/?think/i.test(text)) return false;   // temizleyici kacirmis olabilir, son savunma
+  return true;
+}
+
+// DIL UYGUNLUGU KONTROLU (paylasilan validate yardimcisi). Canli yakalanan
+// hatada model lang:"tr" istenmisken Ingilizce yanit uretmisti; upstream 200
+// dedigi ve icerik bos olmadigi icin eski kod bunu gecerli sanip kullaniciya
+// gonderiyordu. Her dilin kendine ozgu harfi/alfabesi varliginia bakiyor —
+// tam bir dil tespiti degil ama "tamamen yanlis dilde" durumunu ucuza yakalar.
+// KISA METINLERDE ATLANIR: "Merhaba, iyi günler." gibi gercek Turkce bir
+// yanit bile diyakritik icermeyebilir; yanlis pozitif riski kisa metinde
+// faydadan yuksek. `en` icin kontrol YOK (Ingilizce zaten "sizinti" dili,
+// "Ingilizce icerir mi" testi anlamsiz).
+const CONFORMANCE_RE = {
+  tr: /[çğıöşüÇĞİÖŞÜ]/,
+  de: /[äöüßÄÖÜ]/,
+  es: /[áéíóúñ¿¡ÁÉÍÓÚÑ]/,
+  fr: /[éèêàçîôûÉÈÊÀÇÎÔÛ]/,
+  "pt-BR": /[ãõáéíóúçÃÕÁÉÍÓÚÇ]/,
+  ja: /[぀-ゟ゠-ヿ一-鿿]/,
+};
+export function langConformanceOk(text, lang) {
+  const re = CONFORMANCE_RE[lang];
+  if (!re) return true;
+  if (!text || text.length < 150) return true;
+  return re.test(text);
 }
 
 // Sohbet/gorsel cagrisi + otomatik model fallback.
 // body: { max_tokens, temperature, top_p, messages, ... } (model DISINDA her sey).
+// opts.validate(strippedText): true/false — ONAY vermezse bu aday ELENIR ve
+// siradaki modele gecilir (ornek: dil uygunlugu kontrolu, bkz. ai-call.mjs).
 // Doner: { ok:true, model, data } | { ok:false, status }
+// NOT: basarili donen `data.choices[0].message.content` BURADA ZATEN
+// stripThink'ten gecirilmis olarak doner (cagiran taraf yine kendi
+// stripThink'ini cagirabilir, ikinci cagri no-op'tur — geriye donuk uyumlu).
 export async function groqChat(apiKey, kind, body, opts = {}) {
   const timeoutMs = opts.timeoutMs || 25000;
   // TOPLAM SURE TAVANI. Aday listesi artik yayindaki tum metin modellerini
@@ -130,7 +191,24 @@ export async function groqChat(apiKey, kind, body, opts = {}) {
       continue; // ag/timeout -> siradaki modeli dene
     }
     clearTimeout(timer);
-    if (res.ok && data && !data.error) return { ok: true, model, data };
+    if (res.ok && data && !data.error) {
+      // KALITE KAPISI. Canli yakalanan hata: rastgele secilen bir "son care"
+      // modeli kapanmamis <think> muhakemesini (Ingilizce) oldugu gibi
+      // donduruyordu, upstream 200 dedigi icin eskiden bu aynen kullaniciya
+      // gidiyordu. Simdi icerik burada denetleniyor; gecmezse bu YANIT
+      // ATILIR ve siradaki adaya gecilir — kullanici hicbir zaman yarim ya
+      // da yanlis dilde bir metin gormez.
+      const rawText = data.choices?.[0]?.message?.content || "";
+      const stripped = stripThink(rawText);
+      const qualityOk = defaultQualityOk(stripped) && (!opts.validate || opts.validate(stripped));
+      if (qualityOk) {
+        if (data.choices?.[0]?.message) data.choices[0].message.content = stripped;
+        return { ok: true, model, data };
+      }
+      console.error("[groq] kalite kapisi reddetti", model, `(${stripped.length} kar)`);
+      lastStatus = res.status;
+      continue; // dusuk kaliteli/bos/yanlis dilde yanit -> siradaki modeli dene
+    }
     lastStatus = res.status;
     console.error("[groq] upstream", model, res.status, (data && data.error && data.error.message) || "");
     if (isModelError(res.status)) continue;      // emekli/gecersiz/dolu -> siradaki
