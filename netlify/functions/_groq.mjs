@@ -45,6 +45,19 @@ async function availableIds(apiKey) {
   return null;
 }
 
+// SON CARE MODELLERI. Groq'ta dakikalik token butcesi (TPM) MODEL BASINA
+// tutuluyor, yani her ek model = yeni bir butce. Tercih listesindeki uc model
+// tukendiginde yayinda olan DIGER metin modelleri de deneniyor.
+// Neden gerekli: Icsel Ayna istemi ~6k token; tek cagri bir modelin dakikalik
+// butcesinin buyuk kismini yiyor ve butce TUM KULLANICILAR arasinda paylasimli.
+// Olculdu (canli, 27 Agu 2026): ayni istem arka arkaya gonderildiginde 3 model
+// ile 3/4 cagri gecti, 4'unculer reddedildi. Model havuzu genisleyince tavan
+// da yukseliyor.
+// ID TAHMIN EDILMIYOR: adaylar Groq'un /models cevabindan geliyor. Metin
+// uretmeyen aileler (ses, koruma, gomme, goruntu) ad uzerinden eleniyor;
+// gozden kacan olursa zaten 400 doner ve siradakine gecilir.
+const NON_TEXT = /whisper|tts|guard|embed|rerank|vision|moderation|safety|audio|speech/i;
+
 // Denenecek modeller, en iyi -> yedek sirasiyla. Asla bos donmez.
 export async function groqModelCandidates(apiKey, kind) {
   const pref = PREF[kind] || PREF.text;
@@ -53,7 +66,10 @@ export async function groqModelCandidates(apiKey, kind) {
   const ids = await availableIds(apiKey);
   if (!ids) return wanted;                       // liste alinamadi -> hepsini dene
   const avail = wanted.filter((m) => ids.has(m));
-  return avail.length ? avail : wanted;          // hicbiri listede yoksa yine dene (liste bayat olabilir)
+  const primary = avail.length ? avail : wanted; // hicbiri listede yoksa yine dene (liste bayat olabilir)
+  if (kind !== "text") return primary;           // gorsel modelinde rastgele yedek ise yaramaz
+  const extra = [...ids].filter((m) => !primary.includes(m) && !NON_TEXT.test(m)).sort();
+  return [...primary, ...extra];
 }
 
 // Siradaki modele GECILMESI gereken durumlar.
@@ -86,11 +102,18 @@ export function stripThink(s) {
 // Doner: { ok:true, model, data } | { ok:false, status }
 export async function groqChat(apiKey, kind, body, opts = {}) {
   const timeoutMs = opts.timeoutMs || 25000;
+  // TOPLAM SURE TAVANI. Aday listesi artik yayindaki tum metin modellerini
+  // kapsayabiliyor; hepsi tek tek 25 sn beklerse Netlify fonksiyonu kendisi
+  // dusar ve kullanici hicbir sey goremez. Reddedilen model 0,2 sn'de donuyor,
+  // yani normal fallback bu tavana hic yaklasmiyor; tavan yalnizca TAKILAN
+  // modellerin zinciri kilitlemesini engelliyor.
+  const deadline = Date.now() + (opts.totalMs || 40000);
   const candidates = await groqModelCandidates(apiKey, kind);
   let lastStatus = 0;
   for (const model of candidates) {
+    if (Date.now() >= deadline) { console.error("[groq] toplam sure asildi, kalan modeller atlandi"); break; }
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    const timer = setTimeout(() => ctrl.abort(), Math.min(timeoutMs, Math.max(1000, deadline - Date.now())));
     let res, data;
     try {
       res = await fetch(`${GROQ_BASE}/chat/completions`, {
