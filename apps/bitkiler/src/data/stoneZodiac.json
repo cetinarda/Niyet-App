@@ -1,0 +1,114 @@
+{
+  "zodiacStones": {
+    "Koç": [
+      "plant-003",
+      "plant-014",
+      "plant-051",
+      "plant-052"
+    ],
+    "Aslan": [
+      "plant-075",
+      "plant-122",
+      "plant-121",
+      "plant-022"
+    ],
+    "Yay": [
+      "plant-104",
+      "plant-013",
+      "plant-017",
+      "plant-008"
+    ],
+    "Boğa": [
+      "plant-130",
+      "plant-102",
+      "plant-087",
+      "plant-095"
+    ],
+    "Başak": [
+      "plant-047",
+      "plant-018",
+      "plant-040",
+      "plant-097"
+    ],
+    "Oğlak": [
+      "plant-114",
+      "plant-123",
+      "plant-025",
+      "plant-089"
+    ],
+    "İkizler": [
+      "plant-016",
+      "plant-005",
+      "plant-072",
+      "plant-043"
+    ],
+    "Terazi": [
+      "plant-125",
+      "plant-074",
+      "plant-064",
+      "plant-001"
+    ],
+    "Kova": [
+      "plant-046",
+      "plant-031",
+      "plant-109",
+      "plant-118"
+    ],
+    "Yengeç": [
+      "plant-028",
+      "plant-010",
+      "plant-009",
+      "plant-004"
+    ],
+    "Akrep": [
+      "plant-029",
+      "plant-116",
+      "plant-021",
+      "plant-066"
+    ],
+    "Balık": [
+      "plant-117",
+      "plant-069",
+      "plant-113",
+      "plant-129"
+    ]
+  },
+  "monthStones": {
+    "1": [
+      "plant-071"
+    ],
+    "2": [
+      "plant-114"
+    ],
+    "3": [
+      "plant-088"
+    ],
+    "4": [
+      "plant-074"
+    ],
+    "5": [
+      "plant-010"
+    ],
+    "6": [
+      "plant-028"
+    ],
+    "7": [
+      "plant-075"
+    ],
+    "8": [
+      "plant-001"
+    ],
+    "9": [
+      "plant-122"
+    ],
+    "10": [
+      "plant-116"
+    ],
+    "11": [
+      "plant-085"
+    ],
+    "12": [
+      "plant-130"
+    ]
+  }
+}

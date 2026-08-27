@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Sakin Tasarım",
+    "slug": "sakin-tasarim",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "primaryColor": "#C9A84C",
+    "description": "Doğum verinden Human Design haritanı çıkar; tip, içsel yetki, profil, tanımlı ve tanımsız merkezler üzerinden detaylı bir kişisel rapor al. Tüm hesaplama cihazında, sunucusuz.",
+    "githubUrl": "https://github.com/cetinarda/humandesign",
+    "platforms": ["ios", "android", "web"],
+    "locales": {
+      "tr": "./assets/locales/tr.json"
+    },
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0D0B14"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "life.sakin.tasarim",
+      "buildNumber": "1",
+      "deploymentTarget": "15.1",
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSHumanReadableCopyright": "© 2026 sakin.life",
+        "CFBundleLocalizations": ["tr", "en"],
+        "CFBundleDevelopmentRegion": "tr"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0D0B14"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "life.sakin.tasarim",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "name": "Sakin Tasarım",
+      "shortName": "Tasarım",
+      "description": "Human Design bodygraph ve haftalık kişisel rapor.",
+      "themeColor": "#0D0B14",
+      "backgroundColor": "#0D0B14",
+      "lang": "tr",
+      "display": "standalone"
+    },
+    "experiments": {
+      "baseUrl": "/embedded/humandesign"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "tasarim",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "stamp": "node scripts/stamp-build.mjs",
+    "build:web": "node scripts/stamp-build.mjs && expo export --platform web",
+    "prebuild": "expo prebuild --platform ios",
+    "prebuild:clean": "expo prebuild --platform ios --clean",
+    "pods": "cd ios && pod install --repo-update && cd ..",
+    "xcode": "open ios/SakinTasarim.xcworkspace",
+    "build:ios": "eas build --platform ios --profile production",
+    "build:ios:preview": "eas build --platform ios --profile preview",
+    "submit:ios": "eas submit --platform ios --latest",
+    "bump:patch": "npm version patch --no-git-tag-version",
+    "bump:minor": "npm version minor --no-git-tag-version",
+    "bump:major": "npm version major --no-git-tag-version"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-community/datetimepicker": "^8.6.0",
+    "astronomy-engine": "^2.1.19",
+    "expo": "~54.0.33",
+    "expo-file-system": "^55.0.20",
+    "expo-image-picker": "^55.0.20",
+    "expo-sharing": "^55.0.19",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-gesture-handler": "~2.28.0",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-svg": "15.12.1",
+    "react-native-view-shot": "^5.1.0",
+    "react-native-web": "^0.21.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.1.0",
+    "typescript": "~5.9.2"
+  },
+  "private": true
+}

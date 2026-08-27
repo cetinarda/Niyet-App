@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2732" height="2732" viewBox="0 0 2732 2732">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#0f1230" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#07091a" stop-opacity="1"/>
+    </radialGradient>
+    <radialGradient id="goldGlow" cx="50%" cy="50%" r="22%">
+      <stop offset="0%" stop-color="#f5d061" stop-opacity="0.16"/>
+      <stop offset="60%" stop-color="#f5d061" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#f5d061" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="2732" height="2732" fill="url(#bgGlow)"/>
+  <rect width="2732" height="2732" fill="url(#goldGlow)"/>
+
+  <!-- Logo centered — küçük ve zarif (splash center-crop safe area) -->
+  <g transform="translate(1366 1366)">
+    <rect x="-150" y="-150" width="300" height="300"
+          rx="5" ry="5"
+          fill="none"
+          stroke="#f5d061"
+          stroke-width="5"
+          opacity="0.92"/>
+    <circle cx="-56" cy="0" r="25" fill="#f5d061"/>
+    <circle cx="56"  cy="0" r="25" fill="#f5d061"/>
+  </g>
+</svg>

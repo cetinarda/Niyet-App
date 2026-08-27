@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1.00001, viewport-fit=cover"
+    />
+    <title>Sakin Hayvan Rehberi</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+        overflow: hidden;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        background-color: #0a0911;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: touch;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      #root {
+        flex: 1;
+        display: flex;
+        height: 100%;
+        overflow: hidden;
+        max-width: 480px;
+        margin: 0 auto;
+        width: 100%;
+        position: relative;
+      }
+
+      @media (min-width: 481px) {
+        body {
+          justify-content: center;
+        }
+        #root {
+          box-shadow: 0 0 60px rgba(218, 175, 92, 0.08);
+          border-left: 1px solid rgba(218, 175, 92, 0.06);
+          border-right: 1px solid rgba(218, 175, 92, 0.06);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <p style="color:#fff;padding:20px;">JavaScript gereklidir.</p>
+    </noscript>
+    <div id="root"></div>
+  </body>
+</html>

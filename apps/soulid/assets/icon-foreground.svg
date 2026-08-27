@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <g transform="translate(512 512)">
+    <rect x="-228" y="-228" width="456" height="456"
+          rx="6" ry="6"
+          fill="none"
+          stroke="#f5d061"
+          stroke-width="7"
+          opacity="0.95"/>
+    <circle cx="-86" cy="0" r="38" fill="#f5d061"/>
+    <circle cx="86"  cy="0" r="38" fill="#f5d061"/>
+  </g>
+</svg>

@@ -1,0 +1,370 @@
+import React, { useMemo } from 'react';
+import {
+  View, Text, ScrollView, StyleSheet, TouchableOpacity,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Colors, Typography, Spacing } from '../theme/colors';
+import { useTasarimStore } from '../store/useStore';
+import { Starfield } from '../components/Starfield';
+import { GATES } from '../data/gates';
+import { TYPES } from '../data/types';
+import { AUTHORITIES } from '../data/authorities';
+import { sunLongitude, moonLongitude, julianDay } from '../utils/ephemeris';
+import { longitudeToGate } from '../utils/humanDesign';
+import { todaysHighlight } from '../utils/personalize';
+import { elementDistribution } from '../utils/elements';
+import { ElementPie } from '../components/ElementPie';
+import { ElementDetail } from '../components/ElementDetail';
+import { L, getLang } from '../i18n';
+
+interface Props {
+  onNavigate: (t: 'home' | 'chart' | 'report' | 'profile') => void;
+}
+
+function greetingByHour(): string {
+  const h = new Date().getHours();
+  const en = getLang() === 'en';
+  if (h < 5) return en ? 'Good night' : 'İyi geceler';
+  if (h < 12) return en ? 'Good morning' : 'Günaydın';
+  if (h < 18) return en ? 'Good day' : 'İyi günler';
+  return en ? 'Good evening' : 'İyi akşamlar';
+}
+
+export function HomeScreen({ onNavigate }: Props) {
+  const insets = useSafeAreaInsets();
+  const { activeProfile, chart } = useTasarimStore();
+  const [elemDetailOpen, setElemDetailOpen] = React.useState(false);
+
+  const today = useMemo(() => {
+    const jd = julianDay(new Date());
+    const sun = longitudeToGate(sunLongitude(jd));
+    const moon = longitudeToGate(moonLongitude(jd));
+    return { sun, moon };
+  }, []);
+
+  // Astrolojik element dağılımı (natal 10 gezegen). Host galaktik kimlik kartı da
+  // okuyabilsin diye same-origin localStorage'a yazılır.
+  const elemDist = useMemo(() => (chart ? elementDistribution(chart.personalityJD) : null), [chart]);
+  React.useEffect(() => {
+    if (elemDist && typeof window !== 'undefined' && (window as any).localStorage) {
+      try { (window as any).localStorage.setItem('sakin_element_dist', JSON.stringify(elemDist)); } catch (_) {}
+    }
+  }, [elemDist]);
+
+  if (!activeProfile) {
+    return (
+      <View style={[styles.empty, { paddingTop: insets.top + 48 }]}>
+        <Text style={styles.brand}>{getLang() === 'en' ? 'SAKİN · DESIGN' : 'SAKİN · TASARIM'}</Text>
+        <Text style={styles.emptyTitle}>{getLang() === 'en' ? 'Welcome' : 'Hoş geldin'}</Text>
+        <Text style={styles.emptyDesc}>
+          {getLang() === 'en'
+            ? 'Create your own Human Design chart from your birth details.'
+            : 'Doğum bilgilerinle kendine özel Human Design haritanı oluştur.'}
+        </Text>
+        <TouchableOpacity
+          style={styles.cta}
+          onPress={() => onNavigate('profile')}
+          activeOpacity={0.85}
+          accessibilityRole="button"
+        >
+          <Text style={styles.ctaText}>{getLang() === 'en' ? 'Start' : 'Başla'}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  const t = chart ? TYPES[chart.type] : null;
+  const a = chart ? AUTHORITIES[chart.authority] : null;
+  const sunInfo = GATES[today.sun.gate];
+  const moonInfo = GATES[today.moon.gate];
+
+  return (
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        { paddingTop: insets.top + Spacing.sm, paddingBottom: Spacing.xxl },
+      ]}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.headerBlock}>
+        <Starfield width={520} height={180} density={0.45} seed={5} />
+        {/* Marka yazısı kaldırıldı — host zaten 'Sakin Tasarım' başlığını gösteriyor
+            (selamlama üstünde ikinci kez tekrar etmesin). */}
+        <Text style={styles.greeting}>
+          {greetingByHour()},{'\n'}{activeProfile.name}
+        </Text>
+        <Text style={styles.subtitle}>
+          {new Date().toLocaleDateString(getLang() === 'en' ? 'en-US' : 'tr-TR', { day: 'numeric', month: 'long', weekday: 'long' })}
+        </Text>
+      </View>
+
+      {/* Tek özet — kart değil, satırlar */}
+      {chart && t && a && (
+        <TouchableOpacity
+          style={styles.summary}
+          onPress={() => onNavigate('chart')}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={getLang() === 'en' ? 'Go to your chart' : 'Haritana git'}
+        >
+          <Text style={styles.summaryType}>{L(t, 'name')}</Text>
+          <View style={styles.summaryMetaRow}>
+            <Text style={styles.summaryMeta}>{L(t, 'strategy')}</Text>
+            <Text style={styles.summaryMeta}>·</Text>
+            <Text style={styles.summaryMeta}>{chart.profile}</Text>
+            <Text style={styles.summaryMeta}>·</Text>
+            <Text style={styles.summaryMeta}>{getLang() === 'en' ? L(a, 'name').replace(' Authority', '') : a.name.replace(' Yetki', '')}</Text>
+          </View>
+          <Text style={styles.summaryCTA}>{getLang() === 'en' ? 'Full chart →' : 'Tam harita →'}</Text>
+        </TouchableOpacity>
+      )}
+
+      {/* Bugünün transiti — ince satırlar */}
+      <View style={styles.section}>
+        <Text style={styles.sectionLabel}>{getLang() === 'en' ? "Today's Transit" : 'Bugünün Transiti'}</Text>
+
+        <TransitRow
+          glyph="☉"
+          gate={`${today.sun.gate}.${today.sun.line}`}
+          name={L(sunInfo, 'name')}
+        />
+        <View style={styles.hairline} />
+        <TransitRow
+          glyph="☽"
+          gate={`${today.moon.gate}.${today.moon.line}`}
+          name={L(moonInfo, 'name')}
+        />
+      </View>
+
+      {/* BUGÜNÜN VURGUSU — gökyüzü × SENİN haritan kesişimi (kişisel, her gün değişir) */}
+      {(() => {
+        if (!chart) return null;
+        const hl = todaysHighlight(chart, new Date(), getLang() === 'en' ? 'en' : 'tr');
+        if (!hl) return null;
+        return (
+          <View style={[styles.section, { borderColor: 'rgba(201,168,76,0.35)', borderWidth: 1 }]}>
+            <Text style={[styles.sectionLabel, { color: Colors.gold }]}>✦ {getLang() === 'en' ? "Today's Highlight" : 'Bugünün Vurgusu'}</Text>
+            <Text style={{ fontSize: Typography.size.md, color: Colors.text, fontFamily: Typography.font.serif, marginBottom: 6 }}>{hl.title}</Text>
+            <Text style={{ fontSize: Typography.size.sm, color: Colors.textSecondary, lineHeight: Typography.size.sm * 1.65 }}>{hl.body}</Text>
+          </View>
+        );
+      })()}
+
+      {/* Element dağılımı — natal gezegenlerin ateş/toprak/hava/su dengesi */}
+      {elemDist && (
+        <TouchableOpacity
+          style={styles.section}
+          onPress={() => setElemDetailOpen(true)}
+          activeOpacity={0.75}
+          accessibilityRole="button"
+          accessibilityLabel={getLang() === 'en' ? 'See element details' : 'Element detaylarını gör'}
+        >
+          <View style={styles.elemHeadRow}>
+            <Text style={styles.sectionLabel}>{getLang() === 'en' ? 'Element Distribution' : 'Element Dağılımı'}</Text>
+            <Text style={styles.elemDetailHint}>{getLang() === 'en' ? 'Details →' : 'Detay →'}</Text>
+          </View>
+          <View style={{ alignItems: 'center', paddingVertical: 8 }}>
+            <ElementPie dist={elemDist} lang={getLang()} />
+          </View>
+        </TouchableOpacity>
+      )}
+
+      {elemDist && (
+        <ElementDetail dist={elemDist} visible={elemDetailOpen} onClose={() => setElemDetailOpen(false)} />
+      )}
+
+      {/* Alt linkler — minimal satırlar */}
+      <View style={styles.section}>
+        <NavRow
+          label={getLang() === 'en' ? 'Your full chart' : 'Tam haritan'}
+          desc={getLang() === 'en' ? 'Bodygraph, centers, gates' : 'Bodygraph, merkezler, kapılar'}
+          onPress={() => onNavigate('chart')}
+        />
+        <View style={styles.hairline} />
+        <NavRow
+          label={getLang() === 'en' ? 'Weekly report' : 'Haftalık rapor'}
+          desc={getLang() === 'en' ? 'This week, just for you' : 'Senin için bu hafta'}
+          onPress={() => onNavigate('report')}
+        />
+      </View>
+    </ScrollView>
+  );
+}
+
+function TransitRow({ glyph, gate, name }: { glyph: string; gate: string; name: string }) {
+  return (
+    <View style={styles.row}>
+      <Text style={styles.rowGlyph}>{glyph}</Text>
+      <View style={styles.rowMid}>
+        <Text style={styles.rowTitle}>{name}</Text>
+        <Text style={styles.rowSub}>{getLang() === 'en' ? 'Gate' : 'Kapı'} {gate}</Text>
+      </View>
+    </View>
+  );
+}
+
+function NavRow({ label, desc, onPress }: { label: string; desc: string; onPress: () => void }) {
+  return (
+    <TouchableOpacity
+      style={styles.row}
+      onPress={onPress}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <View style={styles.rowMid}>
+        <Text style={styles.rowTitle}>{label}</Text>
+        <Text style={styles.rowSub}>{desc}</Text>
+      </View>
+      <Text style={styles.rowArrow}>→</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: Colors.background },
+  content: { paddingHorizontal: Spacing.xl },
+
+  empty: {
+    flex: 1, alignItems: 'center', paddingHorizontal: Spacing.xl,
+    backgroundColor: Colors.background,
+  },
+  emptyTitle: {
+    fontSize: Typography.size.xxxl,
+    color: Colors.text,
+    fontFamily: Typography.font.serif,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.md,
+    textAlign: 'center',
+  },
+  emptyDesc: {
+    fontSize: Typography.size.md, color: Colors.textSecondary,
+    textAlign: 'center', lineHeight: Typography.size.md * 1.6,
+    marginBottom: Spacing.xxl,
+    maxWidth: 360,
+  },
+  cta: {
+    paddingHorizontal: Spacing.xxl, paddingVertical: Spacing.md,
+    borderRadius: 999,
+    borderWidth: 1, borderColor: Colors.gold,
+  },
+  ctaText: {
+    color: Colors.gold,
+    fontSize: Typography.size.md,
+    letterSpacing: 0.5,
+  },
+
+  brand: {
+    fontSize: 11,
+    letterSpacing: 3,
+    color: Colors.textMuted,
+    fontWeight: Typography.weight.medium,
+  },
+
+  headerBlock: {
+    marginBottom: Spacing.xxl,
+    position: 'relative',
+    overflow: 'hidden',
+    marginHorizontal: -Spacing.xl,
+    paddingHorizontal: Spacing.xl,
+    paddingBottom: Spacing.xl,
+  },
+  greeting: {
+    fontSize: Typography.size.xxxl,
+    color: Colors.text,
+    fontFamily: Typography.font.serif,
+    lineHeight: Typography.size.xxxl * 1.15,
+    marginTop: Spacing.md,
+  },
+  subtitle: {
+    fontSize: Typography.size.sm,
+    color: Colors.textMuted,
+    marginTop: Spacing.sm,
+    letterSpacing: 0.4,
+  },
+
+  summary: {
+    paddingVertical: Spacing.xl,
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: Colors.divider,
+    marginBottom: Spacing.xxl,
+  },
+  summaryType: {
+    fontSize: Typography.size.xxl,
+    color: Colors.text,
+    fontFamily: Typography.font.serif,
+  },
+  summaryMetaRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: Spacing.sm,
+    gap: 6,
+  },
+  summaryMeta: {
+    fontSize: Typography.size.sm,
+    color: Colors.textMuted,
+    letterSpacing: 0.3,
+  },
+  summaryCTA: {
+    marginTop: Spacing.lg,
+    fontSize: Typography.size.sm,
+    color: Colors.gold,
+    letterSpacing: 0.4,
+  },
+
+  section: {
+    marginBottom: Spacing.xxl,
+  },
+  sectionLabel: {
+    fontSize: 11,
+    letterSpacing: 2,
+    color: Colors.textMuted,
+    marginBottom: Spacing.md,
+  },
+  elemHeadRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  elemDetailHint: {
+    fontSize: 12,
+    color: Colors.gold,
+    letterSpacing: 0.3,
+    marginBottom: Spacing.md,
+  },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md + 2,
+  },
+  rowGlyph: {
+    fontSize: 24,
+    color: Colors.textSecondary,
+    width: 40,
+  },
+  rowMid: { flex: 1 },
+  rowTitle: {
+    fontSize: Typography.size.md,
+    color: Colors.text,
+    fontWeight: Typography.weight.regular,
+  },
+  rowSub: {
+    fontSize: Typography.size.sm,
+    color: Colors.textMuted,
+    marginTop: 2,
+  },
+  rowArrow: {
+    fontSize: 18,
+    color: Colors.textMuted,
+    marginLeft: Spacing.md,
+  },
+  hairline: {
+    height: 1,
+    backgroundColor: Colors.divider,
+  },
+});

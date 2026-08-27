@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000010"/>
+      <stop offset="50%" stop-color="#15043a"/>
+      <stop offset="100%" stop-color="#3b0d6b"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7c5cff" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#7c5cff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="900" cy="315" r="280" fill="url(#halo)"/>
+
+  <g fill="white">
+    <circle cx="100" cy="100" r="2" opacity="0.6"/>
+    <circle cx="180" cy="450" r="1.5" opacity="0.5"/>
+    <circle cx="280" cy="180" r="2.5" opacity="0.7"/>
+    <circle cx="420" cy="520" r="1.5" opacity="0.4"/>
+    <circle cx="1100" cy="120" r="2" opacity="0.55"/>
+    <circle cx="1050" cy="540" r="1.5" opacity="0.4"/>
+    <circle cx="80" cy="540" r="2" opacity="0.5"/>
+    <circle cx="240" cy="380" r="1" opacity="0.35"/>
+    <circle cx="650" cy="100" r="2.5" opacity="0.7"/>
+    <circle cx="720" cy="540" r="1.5" opacity="0.45"/>
+  </g>
+
+  <!-- Star sigil -->
+  <g transform="translate(900 315)">
+    <circle r="240" fill="none" stroke="#f5d061" stroke-width="1" opacity="0.25"/>
+    <circle r="180" fill="none" stroke="#f5d061" stroke-width="1" opacity="0.3"/>
+    <path d="M 0 -150 L 20 -20 L 150 0 L 20 20 L 0 150 L -20 20 L -150 0 L -20 -20 Z" fill="#f5d061" opacity="0.9"/>
+    <circle r="30" fill="#fff5d6"/>
+  </g>
+
+  <!-- Brand text -->
+  <text x="80" y="160" font-family="Inter, sans-serif" font-size="20" font-weight="700" letter-spacing="8" fill="#f5d061">SOULPROFILE</text>
+
+  <text x="80" y="290" font-family="Cormorant Garamond, serif" font-size="76" font-weight="600" fill="#f4f1ff">Doğduğunda</text>
+  <text x="80" y="370" font-family="Cormorant Garamond, serif" font-size="76" font-weight="600" fill="#f4f1ff">yıldızlar sana</text>
+  <text x="80" y="450" font-family="Cormorant Garamond, serif" font-size="76" font-weight="600" fill="#f5d061">ne söylüyordu?</text>
+
+  <text x="80" y="510" font-family="Inter, sans-serif" font-size="18" fill="#dadcff" opacity="0.7">Batı + Vedik + Çin + Maya + Human Design + Numeroloji</text>
+  <text x="80" y="540" font-family="Inter, sans-serif" font-size="16" fill="#f5d061">soulprofile.life</text>
+</svg>

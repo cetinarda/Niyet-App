@@ -1,0 +1,19 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.DS_Store
+*.log
+.env
+.env.local
+.netlify/
+ios/
+android/
+# yukarıdakiler "expo prebuild" çıktısıdır; her sürümde yeniden üretilir
+# tüm klasörü dışlamak yerine sadece pod/build dışlamak istersen,
+# ios/ ve android/ satırlarını kaldırıp aşağıdakileri aç:
+# ios/Pods/
+# ios/build/
+# android/.gradle/
+# android/build/
+# android/app/build/
