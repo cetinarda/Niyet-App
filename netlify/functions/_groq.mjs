@@ -56,7 +56,19 @@ export async function groqModelCandidates(apiKey, kind) {
   return avail.length ? avail : wanted;          // hicbiri listede yoksa yine dene (liste bayat olabilir)
 }
 
-function isModelError(status) { return status === 400 || status === 404; }
+// Siradaki modele GECILMESI gereken durumlar.
+//   400/404 : model gecersiz ya da emekli.
+//   413/429 : istek bu model icin fazla buyuk ya da o modelin dakikalik token
+//             butcesi (TPM) dolmus. Groq'ta TPM butcesi MODEL BAZLI tutulur,
+//             yani 120b dolduysa 20b'nin butcesi hala bos olabilir.
+// ONCEDEN 429'da DURULUYORDU ("modelleri bosa yakma") ve bu Icsel Ayna'yi
+// kiriyordu: Ayna istemi ~6,5k token, tek cagri 120b'nin dakikalik butcesini
+// bitiriyor, Groq 0,2 sn'de reddediyor, kod hic yedege bakmadan 502 donuyordu.
+// Olculdu (canli): 8,5k karakterlik istem gecti, ayni istem az sonra reddedildi
+// -> kayan butce davranisi, kalici bir istek siniri degil.
+function isModelError(status) {
+  return status === 400 || status === 404 || status === 413 || status === 429;
+}
 
 // gpt-oss reasoning modeli: dar token butcesinde reasoning yaniti kirpmasin diye
 // reasoning_effort:low. Diger modellerde bu parametre gonderilmez (uyumsuzluk 400 vermesin).
@@ -98,8 +110,8 @@ export async function groqChat(apiKey, kind, body, opts = {}) {
     if (res.ok && data && !data.error) return { ok: true, model, data };
     lastStatus = res.status;
     console.error("[groq] upstream", model, res.status, (data && data.error && data.error.message) || "");
-    if (isModelError(res.status)) continue;      // emekli/gecersiz -> siradaki
-    return { ok: false, status: res.status };    // 429/500 -> dur
+    if (isModelError(res.status)) continue;      // emekli/gecersiz/dolu -> siradaki
+    return { ok: false, status: res.status };    // 500/503 -> dur (saglayici arizasi)
   }
   return { ok: false, status: lastStatus || 502 };
 }
