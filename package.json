@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "build:mitler": "node scripts/build-embed.mjs mitler",
+    "build:daily-index": "node scripts/build-daily-index.mjs",
     "build:tasarim": "node scripts/build-embed.mjs tasarim",
     "build:hayvan": "node scripts/build-embed.mjs hayvan",
     "build:taslar": "node scripts/build-embed.mjs taslar",
