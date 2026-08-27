@@ -11,6 +11,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 // çağrılır (bkz. "PREMIUM DOĞRULAMA: SUNUCUYA SOR" bloğu). İstemcinin store.owned
 // tahminiyle iptal etmesi kaldırıldı — ödeme yapan kullanıcıyı düşürüyordu.
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
+import { readDailyIds, loadDailyIndex, pickMythOfDay, CARD_APP } from "./daily-cards";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -720,6 +721,23 @@ const SET_TXT = {
   gYasal:   { tr:"Yasal", en:"Legal", de:"Rechtliches", es:"Legal", pt:"Legal", fr:"Mentions légales", ja:"法的事項" },
   // Kimlik zaten oluşturulmuşken "Oluştur" demek yanlış; sadece adı gösterilir.
   gidVar:   { tr:"✦ Galaktik Kimlik", en:"✦ Galactic Identity", de:"✦ Galaktische Identität", es:"✦ Identidad Galáctica", pt:"✦ Identidade Galáctica", fr:"✦ Identité Galactique", ja:"✦ ギャラクティック・アイデンティティ" },
+};
+// "Bugün" ekranı metinleri (7 dil, i18n dosyalarına dokunmadan).
+const TODAY_TXT = {
+  title:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
+  rehber:   { tr:"Günün rehberleri", en:"Today's guides", de:"Deine Begleiter heute", es:"Guías de hoy", pt:"Guias de hoje", fr:"Tes guides du jour", ja:"今日の導き" },
+  hayvan:   { tr:"Rehber hayvan", en:"Guide animal", de:"Krafttier", es:"Animal guía", pt:"Animal guia", fr:"Animal guide", ja:"導きの動物" },
+  bitki:    { tr:"Rehber bitki", en:"Guide plant", de:"Pflanzenbegleiter", es:"Planta guía", pt:"Planta guia", fr:"Plante guide", ja:"導きの植物" },
+  tas:      { tr:"Rehber taş", en:"Guide stone", de:"Steinbegleiter", es:"Piedra guía", pt:"Pedra guia", fr:"Pierre guide", ja:"導きの石" },
+  ac:       { tr:"Kartını aç", en:"Open your card", de:"Karte öffnen", es:"Abre tu carta", pt:"Abre a tua carta", fr:"Ouvre ta carte", ja:"カードを開く" },
+  bos:      { tr:"Bugün henüz açılmadı", en:"Not opened yet today", de:"Heute noch nicht geöffnet", es:"Aún no abierta hoy", pt:"Ainda não aberta hoje", fr:"Pas encore ouverte", ja:"今日はまだ開いていません" },
+  // Mitler tarafındaki 6 sistemin adları.
+  sysArchetype:{ tr:"Arketip", en:"Archetype", de:"Archetyp", es:"Arquetipo", pt:"Arquétipo", fr:"Archétype", ja:"アーキタイプ" },
+  sysMyth:     { tr:"Mit", en:"Myth", de:"Mythos", es:"Mito", pt:"Mito", fr:"Mythe", ja:"神話" },
+  sysImage:    { tr:"İmge", en:"Image", de:"Bild", es:"Imagen", pt:"Imagem", fr:"Image", ja:"イメージ" },
+  sysTarot:    { tr:"Tarot", en:"Tarot", de:"Tarot", es:"Tarot", pt:"Tarot", fr:"Tarot", ja:"タロット" },
+  sysRune:     { tr:"Rün", en:"Rune", de:"Rune", es:"Runa", pt:"Runa", fr:"Rune", ja:"ルーン" },
+  sysIching:   { tr:"I Ching", en:"I Ching", de:"I Ging", es:"I Ching", pt:"I Ching", fr:"Yi King", ja:"易経" },
   gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
   dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
   destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
@@ -7248,15 +7266,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // değişmiyor ve kullanıcı nerede olduğunu kaybetmiyor. Önceki denemede adımlar
   // alt barı devralıyordu; bu, "hangi menüdeyim" karışıklığını doğuruyordu.
   const TAB_STEPS = ["sabah","gun","nefes","ses","chakra","aksam"];
+  // "Bugün" TAM ORTADA ve hafifçe önde (kullanıcı: "tam ortada ve daha önde
+  // olsun, örnektekli gibi abartılı değil zarif bi şekilde"). 5 sekme olduğu
+  // için orta indeks 2; `center:true` olan sekme yukarı taşıyor ve dolgulu
+  // dairede duruyor. Referanstaki dev logo dairesi taklit EDİLMEDİ, ölçü
+  // uygulamanın diline uyacak kadar tutuldu.
   const MAIN_TABS = [
     {id:"baglan", label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
     {id:"kesfet", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060"},
+    {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a", center:true},
     {id:"ayna",   label:pickLang(TAB_TXT.ayna, lang),       color:"#c8a8e8"},
     {id:"ben",    label:pickLang(TAB_TXT.ben, lang),        color:"#82d9a3"},
   ];
   // Aktif sekme: Keşfet bir `screen` değil `showAilesi` overlay'i olduğu için
   // önce o kontrol edilir (üst bardaki aynı tuzak, bkz. renderBtn yorumu).
   const activeTab = showAilesi ? "kesfet"
+    : screen === "bugun" ? "bugun"
     : screen === "harita" ? "ben"
     : screen === "rehber" ? "ayna"
     : (screen === "mandala" || TAB_STEPS.includes(screen)) ? "baglan"
@@ -7267,6 +7292,36 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // kayması gerekiyor, o yüzden bu bayrak üç yerde birden kullanılıyor:
   // barın kendisi, adım şeridinin top'u, app-root'un paddingTop'u.
   const topControlsVisible = isNative || activeTab === "ben";
+  // ── BUGÜN EKRANI VERİSİ ───────────────────────────────────────────────────
+  // Kartlar embed'lerin localStorage'ından okunuyor (aynı origin, köprü yok);
+  // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
+  const [dailyIndex, setDailyIndex] = useState(null);
+  const [dailyIds, setDailyIds] = useState(null);
+  useEffect(() => {
+    if (screen !== "bugun") return;
+    let alive = true;
+    const refresh = () => { if (alive) setDailyIds(readDailyIds(sakinDayKey())); };
+    refresh();
+    loadDailyIndex(lang).then(j => { if (alive) setDailyIndex(j); });
+    // CANLI TAZELEME. Kullanıcının asıl akışı: Bugün -> "kartını aç" -> kartı
+    // çek -> Bugün'e dön. Bu akışta `screen` HEP "bugun" kalıyor, yani sadece
+    // screen'e bağlı bir effect BİR DAHA ÇALIŞMAZ ve kart çekilmiş olmasına
+    // rağmen "henüz açılmadı" yazar (testte bire bir yaşandı).
+    // İki tetikleyici:
+    //   • embeddedApp/showAilesi bağımlılığı: embed kapanınca yeniden okur.
+    //   • storage olayı: embed AYRI bir pencere (iframe) olduğu için üst
+    //     pencere gerçekten `storage` olayı alır; kart çekilir çekilmez,
+    //     kullanıcı geri dönmeden önce bile güncellenir.
+    window.addEventListener("storage", refresh);
+    // Sekmeye/uygulamaya geri dönüş de tazeleme fırsatı (gün değişmiş olabilir).
+    const onVis = () => { if (document.visibilityState === "visible") refresh(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      alive = false;
+      window.removeEventListener("storage", refresh);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [screen, lang, embeddedApp, showAilesi]);
   // Sıradaki görev: tamamlanmamış İLK adım. Üstteki şeritte bu sekme yanıp söner.
   // Hepsi bitmişse null döner ve hiçbir şey yanmaz (gün tamamlanmış demektir).
   const nextStepId = TAB_STEPS.find(s => !stepsCompleted[s]) || null;
@@ -7284,6 +7339,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     setShowAilesi(false);
     // Ayna bir ekran değil, portal animasyonlu geçiş (openMirror içinde rehber'e gider).
     if (id === "ayna")   { openMirror(); return; }
+    if (id === "bugun")  { setScreen("bugun"); return; }
     if (id === "ben")    { setScreen("harita"); return; }
     // Bağlan → günün bağı (mandala): ilerleme omurgası, seri, rozetler.
     // Adımlara üstteki şeritten tek dokunuşla geçilir.
@@ -12619,6 +12675,82 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
+      {/* ── BUGÜN ── Günün rehber kartları tek ekranda. Kartlar embed'lerin
+          localStorage'ından okunuyor (aynı origin; köprü/postMessage YOK,
+          bkz. src/daily-cards.js). Kart o gün açılmamışsa boş kutu yerine
+          "kartını aç" daveti gösterilir ve doğrudan ilgili uygulamaya gider. */}
+      {screen==="bugun" && (() => {
+        const dk = sakinDayKey();
+        const ids = dailyIds || { animal:null, plant:null, stone:null, archetype:null, myth:null, image:null };
+        const idx = dailyIndex;
+        const seed = `${birthDate || ""}|${birthTime || ""}`;
+        const mith = idx ? pickMythOfDay(idx, ids, seed, dk) : null;
+        const SYS_LABEL = { archetype:"sysArchetype", myth:"sysMyth", image:"sysImage",
+                            tarot:"sysTarot", rune:"sysRune", iching:"sysIching" };
+        // Tek kart kutusu. `card` varsa içerik, yoksa "aç" daveti.
+        const Card = ({ eyebrow, card, color, appKey }) => (
+          <button onClick={()=>{ try{haptic();}catch(_){}
+              handleOpenEmbed({ name: eyebrow, embed: CARD_APP[appKey], color }); }}
+            style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
+              background: card ? `linear-gradient(160deg, ${color}14, rgba(255,255,255,0.02))` : "rgba(255,255,255,0.03)",
+              border:`1px solid ${card ? color+"3d" : "rgba(255,255,255,0.08)"}`,
+              borderRadius:16,padding:"14px 16px",display:"flex",alignItems:"center",gap:14,minHeight:76 }}>
+            <span style={{ width:46,height:46,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+              fontSize:card ? 24 : 18,
+              background:`radial-gradient(circle, ${color}33, ${color}0d)`,
+              opacity: card ? 1 : 0.5 }}>{card ? (card.e || "✦") : "✦"}</span>
+            <span style={{ flex:1,minWidth:0 }}>
+              <span style={{ display:"block",fontSize:10,letterSpacing:2,color:`${color}cc`,textTransform:"uppercase",
+                fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{eyebrow}</span>
+              {card ? (<>
+                <span style={{ display:"block",fontSize:16,color:"#efe9f8",fontFamily:"'Jost',sans-serif",fontWeight:400,letterSpacing:0.4 }}>{card.n}</span>
+                {(card.k || card.el) && (
+                  <span style={{ display:"block",fontSize:11.5,color:"#8f899e",marginTop:3,fontFamily:"'Inter',sans-serif",
+                    overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>
+                    {[card.el, ...(card.k || [])].filter(Boolean).slice(0,3).join(" · ")}
+                  </span>
+                )}
+              </>) : (
+                <span style={{ display:"block",fontSize:13.5,color:"#8f899e",fontFamily:"'Inter',sans-serif" }}>
+                  {pickLang(TODAY_TXT.bos, lang)}
+                </span>
+              )}
+            </span>
+            <span style={{ flexShrink:0,fontSize:11,letterSpacing:1.2,fontFamily:"'Jost',sans-serif",
+              color: card ? "rgba(255,255,255,0.22)" : `${color}cc`,textTransform:"uppercase",whiteSpace:"nowrap" }}>
+              {card ? "›" : pickLang(TODAY_TXT.ac, lang)}
+            </span>
+          </button>
+        );
+        return (
+          <div style={{ maxWidth:520,width:"100%",padding:"34px 18px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
+            <div style={{ textAlign:"center",marginBottom:26 }}>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:5,color:"#e8e0f4" }}>
+                {pickLang(TODAY_TXT.title, lang)}
+              </div>
+              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:3,color:"#6f6a80",marginTop:6,textTransform:"uppercase" }}>
+                {dk}
+              </div>
+            </div>
+            <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
+              textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.rehber, lang)}</div>
+            <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+              <Card eyebrow={pickLang(TODAY_TXT.hayvan, lang)} appKey="animal" color="#a0d8b4"
+                card={idx && ids.animal ? idx.animal?.[ids.animal] : null} />
+              <Card eyebrow={pickLang(TODAY_TXT.bitki, lang)} appKey="plant" color="#7BA05B"
+                card={idx && ids.plant ? idx.plant?.[ids.plant] : null} />
+              <Card eyebrow={pickLang(TODAY_TXT.tas, lang)} appKey="stone" color="#a0d8d8"
+                card={idx && ids.stone ? idx.stone?.[ids.stone] : null} />
+              {/* Mitler: 6 sistemden BİRİ, doğum verisi + güne göre deterministik
+                  seçiliyor (bkz. pickMythOfDay). Uygulama o gün o sistemi çektiyse
+                  AYNI kart gösterilir, yani host ile uygulama çelişmez. */}
+              <Card eyebrow={mith ? pickLang(TODAY_TXT[SYS_LABEL[mith.system]], lang) : pickLang(TODAY_TXT.sysMyth, lang)}
+                appKey="myth" color="#d8b4a0" card={mith ? mith.card : null} />
+            </div>
+          </div>
+        );
+      })()}
+
       {screen==="ayarlar" && (
         <div style={{ maxWidth:520,width:"100%",padding:"40px 22px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
           {/* GERİ BUTONU — kullanıcı: "ayarlardan geri dönüş çıkış yok".
@@ -12821,7 +12953,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
-          border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)" }}>
+          border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 16px)",
+          // Orta sekme barın üstüne taşıyor; visible olmazsa daire kırpılır.
+          overflow:"visible" }}>
           {MAIN_TABS.map(tb => {
             const on = activeTab === tb.id;
             // AYNA hilali üst bardan buraya taşındı; oradaki karakteri korunuyor
@@ -12832,14 +12966,36 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const aynaGlow = isAyna
               ? `drop-shadow(0 0 ${on ? (lightMode ? 3 : 7) : (lightMode ? 2 : 4)}px rgba(160,120,220,${lightMode ? 0.35 : (on ? 0.75 : 0.45)}))`
               : undefined;
+            // ORTA SEKME (Bugün): yukarı taşar, dolgulu daire içinde. Zarif
+            // tutuldu: 46px daire, ince kenar, yumuşak parıltı. Barın kendisi
+            // overflow:visible olmalı yoksa taşan kısım kırpılır.
+            if (tb.center) return (
+              <button key={tb.id} onClick={()=>goTab(tb.id)}
+                style={{ WebkitAppearance:"none",appearance:"none",background:"none",border:"none",padding:0,
+                  cursor:"pointer",display:"flex",flexDirection:"column",alignItems:"center",gap:4,
+                  minWidth:62,marginTop:-20,color: on ? tb.color : `${tb.color}9a` }}>
+                <span style={{ width:46,height:46,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                  background: on
+                    ? `radial-gradient(circle at 40% 35%, ${tb.color}4d, rgba(24,18,10,0.96))`
+                    : "radial-gradient(circle at 40% 35%, rgba(232,192,122,0.20), rgba(18,14,10,0.96))",
+                  border:`1px solid ${tb.color}${on ? "88" : "4d"}`,
+                  boxShadow: on ? `0 0 18px ${tb.color}55, 0 6px 16px rgba(0,0,0,0.5)` : "0 6px 16px rgba(0,0,0,0.45)",
+                  transition:"background .4s, border .4s, box-shadow .4s" }}>
+                  <TabIcon id={tb.id} size={22} />
+                </span>
+                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:10.5,letterSpacing:0.8,lineHeight:1,whiteSpace:"nowrap" }}>
+                  {(tb.label||"").toLocaleUpperCase(t("locale_code"))}
+                </span>
+              </button>
+            );
             return (
               <button key={tb.id} onClick={()=>goTab(tb.id)}
                 style={{ WebkitAppearance:"none",appearance:"none",
                   background: on ? `${tb.color}22` : "transparent",
                   border: on ? `1px solid ${tb.color}44` : "1px solid transparent",
                   borderRadius:22,cursor:"pointer",transition:"background .4s, border .4s, color .4s",
-                  padding:"7px 14px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
-                  minWidth:62,color: on ? aynaColor : `${aynaColor}7a` }}>
+                  padding:"7px 11px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,
+                  minWidth:56,color: on ? aynaColor : `${aynaColor}7a` }}>
                 <span style={{ display:"flex", filter: aynaGlow }}>
                   <TabIcon id={tb.id} size={on ? 21 : 19} />
                 </span>
