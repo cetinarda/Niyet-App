@@ -756,6 +756,18 @@ const HD_TXT = {
   notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
   fullChart: { tr:"Tam harita", en:"Full chart", de:"Vollständige Karte", es:"Carta completa", pt:"Mapa completo", fr:"Carte complète", ja:"全体チャート" },
 };
+// "Bağlan" ekranının üst özeti. {n} kalan adım sayısıyla değiştirilir.
+// TEKİL AYRI TUTULUYOR: Türkçe ve Japoncada sayıdan sonra çoğul eki gelmez,
+// ama "1 steps left" / "quedan 1 pasos" yanlış olur. Kalan 1'e düştüğünde
+// `leftOne` kullanılıyor.
+const BAGLAN_TXT = {
+  left:    { tr:"{n} adım kaldı", en:"{n} steps left", de:"noch {n} Schritte",
+             es:"quedan {n} pasos", pt:"faltam {n} passos", fr:"il reste {n} étapes",
+             ja:"あと{n}ステップ" },
+  leftOne: { tr:"1 adım kaldı", en:"1 step left", de:"noch 1 Schritt",
+             es:"queda 1 paso", pt:"falta 1 passo", fr:"il reste 1 étape",
+             ja:"あと1ステップ" },
+};
 const TAB_TXT = {
   bugun:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
   ben:      { tr:"Ben", en:"Me", de:"Ich", es:"Yo", pt:"Eu", fr:"Moi", ja:"わたし" },
@@ -9621,31 +9633,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 ←
               </button>
             )}
-            {/* Title */}
-            <div style={{textAlign:"center",marginBottom:8}}>
-              <div className="label-sm" style={{letterSpacing:5,marginBottom:5}}>{t("mandala_today_label")}</div>
-            </div>
-
-            {/* Streak row */}
-            <div style={{display:"flex",gap:18,marginBottom:18,alignItems:"center"}}>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:26,fontWeight:200,color:"#f0a040",lineHeight:1,animation:streakData.current>=3?"streakFire 2s ease-in-out infinite":"none"}}>{streakData.current}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_streak")}</div>
+            {/* Title + ILERLEME YUZDESI.
+                ESKİDEN BURADA 4'LÜ SAYAÇ VARDI (gün serisi · en iyi · adım ·
+                frekans). Kullanıcı: "gün serisi, en iyi, adım, frekans
+                yazılarını kaldır, zaten içsel haritada ve alt kısımda var."
+                Gerçekten de: seri ve sayaçlar "Ben > İçsel Harita" bölümünde,
+                adım durumu da bu ekranın altındaki şeritte zaten duruyor.
+                Yerine tek bir şey kaldı: bugünün bağlantısının yüzdesi ve
+                kaç adım kaldığı. */}
+            <div style={{textAlign:"center",marginBottom:20,width:"100%",maxWidth:260}}>
+              <div className="label-sm" style={{letterSpacing:5,marginBottom:10}}>{t("mandala_today_label")}</div>
+              <div style={{fontSize:38,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
+                color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
+                %{Math.round((completedStepCount / N) * 100)}
               </div>
-              <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:26,fontWeight:200,color:"#888888",lineHeight:1}}>{streakData.best}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_best")}</div>
+              {/* İnce ilerleme çubuğu: yüzde tek başına soyut kalıyor, çubuk
+                  aynı bilgiyi bir bakışta veriyor. */}
+              <div style={{height:3,borderRadius:100,background:"rgba(255,255,255,0.07)",margin:"12px 0 9px",overflow:"hidden"}}>
+                <div style={{height:"100%",borderRadius:100,transition:"width 0.4s ease",
+                  width:`${Math.round((completedStepCount / N) * 100)}%`,
+                  background: allStepsComplete
+                    ? "linear-gradient(90deg,#82d9a3,#a0e8c0)"
+                    : "linear-gradient(90deg,#f1a24a,#8b5aa0,#2a6fb8)" }} />
               </div>
-              <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:26,fontWeight:200,color:allStepsComplete?"#82d9a3":"#aaaaaa",lineHeight:1}}>{completedStepCount}<span style={{fontSize:14,color:"#777777"}}>/{N}</span></div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_steps")}</div>
-              </div>
-              <div style={{width:1,height:36,background:"rgba(255,255,255,0.07)"}}/>
-              <div style={{textAlign:"center"}}>
-                <div style={{fontSize:26,fontWeight:200,color:freqListenSec>0?"#a07ae0":"#888888",lineHeight:1}}>{freqListenSec>=60?`${Math.floor(freqListenSec/60)}m`:freqListenSec>0?`${freqListenSec}s`:"—"}</div>
-                <div style={{fontSize:12,letterSpacing:2.5,color:"#777777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>{t("mandala_freq")}</div>
+              <div style={{fontSize:12,letterSpacing:1.6,color:"#7c7590",fontFamily:"'Jost',sans-serif"}}>
+                {allStepsComplete
+                  ? t("mandala_complete")
+                  : (N - completedStepCount) === 1
+                    ? pickLang(BAGLAN_TXT.leftOne, lang)
+                    : pickLang(BAGLAN_TXT.left, lang).replace("{n}", String(N - completedStepCount))}
               </div>
             </div>
 
