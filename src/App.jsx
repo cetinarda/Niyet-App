@@ -8979,18 +8979,38 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <>
               {homeItem && renderBtn(homeItem)}
               <div style={{ position:"relative", flex:"0 0 auto", marginLeft:"auto" }}>
-                <button onClick={()=>setShowTopMenu(v=>!v)} aria-label={t("nav_menu")}
+                {/* WEB: ☰ (üç çizgi + açılır menü) tamamen kaldırıldı. Menüdeki
+                    dört madde (Terimler/Yolculuk/Sakin Nedir/Ayarlar) zaten
+                    Ayarlar'ın içinde duruyordu, yani menü sadece Ayarlar'a giden
+                    dolambaçlı bir yoldu (kullanıcı: "hamburger açılmaz, ayarlar
+                    butonuna tıklanır doğrudan ayarlar açılır"). İkon da o yüzden
+                    ⚙'e döndü, artık ne açtığını gösteriyor.
+                    NATIVE: eski ☰ + açılır menü davranışı DOKUNULMADAN duruyor
+                    (Bağlan/Ben/Keşfet kısayolları + tema anahtarı hâlâ orada;
+                    Ayarlar web'e özel ayrı bir sayfa, native'de yok). */}
+                <button
+                  onClick={()=>{ if (isNative) { setShowTopMenu(v=>!v); return; }
+                    try{haptic();}catch(_){} setShowAilesi(false); setScreen("ayarlar"); }}
+                  aria-label={isNative ? t("nav_menu") : pickLang(TAB_TXT.ayarlar, lang)}
                   style={{
                     width:48, minHeight:38, padding:"7px 0", display:"flex", alignItems:"center", justifyContent:"center",
                     borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                    background: showTopMenu ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
-                    border: showTopMenu ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
+                    background: (isNative ? showTopMenu : screen==="ayarlar") ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
+                    border: (isNative ? showTopMenu : screen==="ayarlar") ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
                     color:"rgba(228,218,245,0.9)",
                   }}>
-                  {/* ☰ glyph kutuda optik ortalı değildi → SVG hamburger ile tam ortalı. */}
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
-                    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                  </svg>
+                  {isNative ? (
+                    // ☰ glyph kutuda optik ortalı değildi → SVG hamburger ile tam ortalı.
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                    </svg>
+                  ) : (
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  )}
                 </button>
                 {/* Menü + dışına-tıkla katmanı createPortal ile document.body'ye taşınır.
                     KÖK SEBEP: üst bar div'inde backdrop-filter var; bu, içindeki
@@ -9021,58 +9041,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </button>
                       );
                     })}
-                    {/* TERİMLER (sözlük) — web'de eski kırmızı "?" balonunun yerini alır.
-                        Native'de o balon hâlâ duruyor, bu satır tekrar olmasın diye web'e özel. */}
-                    {!isNative && (
-                      <button onClick={()=>{ setShowKilavuz(true); setShowTopMenu(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: showKilavuz ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
-                        <span style={{ display:"flex", width:15, justifyContent:"center" }}><TabIcon id="terimler" size={15} /></span>
-                        <span>{pickLang(TAB_TXT.terimler, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    )}
-                    {/* YOLCULUK — "hakkinda" ekranının Yolculuk sekmesine DOĞRUDAN
-                        götürür (kullanıcı isteği: "hamburger ekranına yolculuk
-                        sekmesi de koy"). Eskiden yalnızca "Sakin Nedir?" ekranına
-                        girip oradaki iki sekmeden birini seçerek ulaşılabiliyordu. */}
-                    {!isNative && (
-                      <button onClick={()=>{ setHakkindaTab("yolculuk"); setScreen("hakkinda"); setShowAilesi(false); setShowTopMenu(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: (screen==="hakkinda" && hakkindaTab==="yolculuk") ? "rgba(130,217,163,0.16)" : "transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(160,220,190,0.9)", textAlign:"left", width:"100%" }}>
-                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>⚡</span>
-                        <span>{t("about_tab_journey").toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    )}
-                    {/* SAKİN NEDİR? — web'de ☰ menüsüne taşındı (kullanıcı isteği).
-                        Politika sekmeleri (fiyat/şartlar/gizlilik/iade) buraya
-                        KONMADI: "sakin nedir"e girince zaten üstteki marka nav'ında
-                        hepsi görünüyor, ikinci kez listelemek gereksiz. */}
-                    {!isNative && (
-                      <button onClick={()=>{ setHakkindaTab("nedir"); setScreen("hakkinda"); setShowAilesi(false); setShowTopMenu(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: (screen==="hakkinda" && hakkindaTab==="nedir") ? "rgba(240,192,96,0.16)" : "transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(232,204,150,0.9)", textAlign:"left", width:"100%" }}>
-                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>✦</span>
-                        <span>{pickLang(NEDIR_I18N.title, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    )}
-                    {/* AYARLAR — ayrı bir sayfa açar (analitik izni · hesap silme ·
-                        renk modu). Tema butonu buraya taşındığı için menüden çıktı. */}
-                    {!isNative && (
-                      <button onClick={()=>{ setScreen("ayarlar"); setShowAilesi(false); setShowTopMenu(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: screen==="ayarlar" ? "rgba(184,164,216,0.18)" : "transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
-                        <span style={{ display:"flex", width:15, justifyContent:"center", fontSize:14, lineHeight:1 }}>⚙</span>
-                        <span>{pickLang(TAB_TXT.ayarlar, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    )}
+                    {/* TERİMLER / YOLCULUK / SAKİN NEDİR? / AYARLAR — hamburger
+                        dropdown'undan KALDIRILDI (kullanıcı: "zaten ayarlarda
+                        hepsi varsa hamburgerde gerek yok"). Web'de ☰ butonunun
+                        kendisi artık doğrudan Ayarlar'a gidiyor (aşağıdaki
+                        buton), bu yüzden bu dropdown web'de hiç açılmıyor;
+                        dört buton da Ayarlar'ın GENEL grubunda duruyor. */}
                     {/* Açık/koyu tema — NATIVE'de menünün EN ALTINDA kalır.
                         Web'de Ayarlar sayfasına taşındı (kullanıcı: "renk modu"). */}
                     {isNative && (<>
@@ -13266,6 +13240,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {/* ── GENEL ── */}
                 <div style={grpSt}>{pickLang(SET_TXT.gGenel, lang)}</div>
                 <div style={cardSt}>
+                  {/* YOLCULUK — hamburger menüsünden buraya taşındı (kullanıcı:
+                      "zaten ayarlarda hepsi varsa hamburgerde gerek yok"). */}
+                  <Row icon="⚡" label={t("about_tab_journey")}
+                    onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("yolculuk"); setFromSettings(true); setScreen("hakkinda"); }} />
                   <Row icon="✦" label={pickLang(NEDIR_I18N.title, lang)}
                     onClick={()=>{ try{haptic();}catch(_){} setHakkindaTab("nedir"); setFromSettings(true); setScreen("hakkinda"); }} />
                   <Row icon="◫" label={pickLang(TAB_TXT.terimler, lang)}
