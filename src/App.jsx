@@ -6611,88 +6611,17 @@ BEDEN-ZİHİN BAĞLANTISI:
   // satır öz) ki her istekte gönderilen bağlam şişmesin.
   // Çeviriler ÖZGÜN: Wilhelm/Baynes gibi telifli çeviriler kopyalanmadı,
   // heksagram adları ve sıralaması ise klasik metnin kendisine ait.
-  // ⚠️ BU BLOK HER AYNA ÇAĞRISINDA İSTEMİN İÇİNDE GİDİYOR: kısa tut.
-  // Groq'un dakikalık token bütçesi (TPM) model başına ayrı ve Ayna istemi
-  // tek başına o bütçeyi doldurabiliyor (ölçüldü: ~8,5k karakterin üstünde
-  // istek anında reddediliyordu). Felsefe/trigram girişi modelin ZATEN bildiği
-  // genel bilgiydi, bu yüzden iki satıra indirildi. 64 heksagramın Türkçe
-  // adı + pinyin + özü KALIYOR: seçimin bizim sözlüğümüzden yapılması,
-  // yanıtın uygulamayla tutarlı olmasını sağlayan asıl şey o.
-  const I_CHING_REHBER = `I CHING / YİJİNG: DEĞİŞİMLER KİTABI (Kaynak: klasik metin ve yorum geleneği)
-Her durum sabit değil, bir evrede duruyor ve karşıtına doğru akıyor; yin ile yang birbirini doğurur. I Ching gelecek söylemez, içinde bulunulan anın niteliğini ve o anda hangi tutumun doğal olduğunu gösterir. Soru "ne olacak" değil, "buradayken nasıl durmalıyım" sorusudur.
-
-64 HEKSAGRAM (numara, ad, öz):
-1 Yaratıcı (Qian): saf inisiyatif, güçlü başlangıç, kendi gücüne güven
-2 Alıcı (Kun): taşımak, kabul etmek, önden gitmek yerine izlemek
-3 Başlangıç Zorluğu (Zhun): filizlenme sancısı, karmaşa içinde ilk düzen
-4 Acemilik (Meng): öğrenme çağı, bilmediğini kabul etmek, rehber aramak
-5 Bekleyiş (Xu): koşullar olgunlaşmadan hamle yapmamak, sabırla beslenmek
-6 Çatışma (Song): karşıtlık, davayı sonuna kadar götürmenin bedeli, uzlaşma
-7 Ordu (Shi): disiplin, düzen, birlikte hareket, sorumluluk üstlenmek
-8 Birlik (Bi): bağ kurmak, doğru topluluğa yaklaşmak, karşılıklı destek
-9 Küçük Biriktirme (Xiao Xu): küçük engeller, biriktirme zamanı, hafif frenleme
-10 Yürüyüş (Lü): tehlikeli zeminde dikkatli adım, saygıyla ilerlemek
-11 Barış (Tai): uyum, gök ve yerin buluşması, akışın açık olduğu dönem
-12 Tıkanma (Pi): iletişimin kesilmesi, geri çekilip beklemek, zorlamamak
-13 Yoldaşlık (Tong Ren): ortak amaçta buluşmak, açıklık, dışa dönük iş birliği
-14 Büyük Varlık (Da You): bolluk, sahip olmanın getirdiği sorumluluk, cömertlik
-15 Alçakgönüllülük (Qian): dengeleyici erdem, kendini yükseltmeden var olmak
-16 Coşku (Yu): hazırlık ve ilham, harekete geçiren sevinç, sürüklenme riski
-17 İzleme (Sui): uyum sağlamak, uygun olana katılmak, esneklik
-18 Bozulmuşu Onarmak (Gu): ihmal edilenin çürümesi, geçmişin işini bitirmek
-19 Yaklaşma (Lin): açılan dönem, iyi zamanın yaklaşması, sorumlulukla karşılamak
-20 Seyir (Guan): geri çekilip bakmak, gözlemlemek, örnek olmak
-21 Isırıp Geçmek (Shi He): araya giren engeli kararlılıkla kaldırmak, netlik
-22 Zarafet (Bi): biçim ve güzellik, görünüşün özü gölgelememesi
-23 Dağılma (Bo): çözülme, eskiyi bırakmak, direnmek yerine çekilmek
-24 Dönüş (Fu): dönüm noktası, ışığın geri gelişi, yeniden başlamak
-25 Masumiyet (Wu Wang): hesapsız doğallık, iç sesle uyum, zorlamasız eylem
-26 Büyük Biriktirme (Da Xu): gücü toplamak, birikimi beslemek, sabırlı hazırlık
-27 Beslenme (Yi): neyle beslendiğine dikkat, sözler ve düşünceler de gıdadır
-28 Büyük Aşırılık (Da Guo): taşıyabileceğinden fazlası, kırılma noktası, sadeleşme
-29 Uçurum, Su (Kan): tekrarlanan tehlike, korkuya rağmen akmak, derinlik
-30 Tutunan Ateş (Li): berraklık, neye tutunduğunu görmek, aydınlanma ve bağımlılık
-31 Etkileşim (Xian): karşılıklı çekim, duygusal temas, açık kalpli yaklaşma
-32 Süreklilik (Heng): kalıcı olan, sabır, uzun soluklu bağ ve alışkanlık
-33 Geri Çekilme (Dun): zamanında uzaklaşmak, kaçış değil stratejik geri adım
-34 Büyük Güç (Da Zhuang): güçlü an, gücü ölçüyle kullanmak, kaba kuvvet riski
-35 İlerleme (Jin): görünür olmak, açılan yol, güneşin yükselişi
-36 Işığın Kararması (Ming Yi): zor dönemde ışığı içeride korumak, sessiz kalmak
-37 Aile (Jia Ren): yakın çevre, roller, düzen içeriden başlar
-38 Karşıtlık (Kui): yanlış anlaşılma, ayrışma, farkın içinde ortak nokta bulmak
-39 Engel (Jian): önündeki dağ, geri dönüp yol değiştirmek, yardım istemek
-40 Çözülme (Xie): düğümün açılması, rahatlama, gerginlik sonrası affediş
-41 Azalma (Sun): eksiltmek, sadeleşmek, fedakârlığın kazandırdığı
-42 Artma (Yi): bereket, verirken çoğalmak, fırsat dönemi
-43 Kararlı Kopuş (Guai): açıkça söylemek, artık taşımayanı bırakmak
-44 Karşılaşma (Gou): beklenmedik temas, baştan çıkarıcı olan, uyanık kalmak
-45 Toplanma (Cui): bir araya gelmek, ortak merkez, birlikte güç
-46 Yükselme (Sheng): adım adım büyümek, topraktan filizlenen, sabırlı tırmanış
-47 Sıkışma (Kun): tükenmişlik, daralma, içeriden güç bulmak
-48 Kuyu (Jing): değişmeyen kaynak, derindeki besleyici öz, onu temiz tutmak
-49 Deri Değiştirme (Ge): köklü dönüşüm, eskiyi bırakma zamanının gelmesi
-50 Kazan (Ding): dönüştürücü kap, ham olanı pişirmek, besleyen düzen
-51 Gök Gürültüsü (Zhen): sarsıntı, şok, uyandıran korku, dengeyi korumak
-52 Dağ, Durgunluk (Gen): durmak, zihni dinlendirmek, hareketsizliğin bilgeliği
-53 Kademeli Gelişim (Jian): yavaş ve sağlam ilerleyiş, acele etmemek
-54 Gelin Giden Kız (Gui Mei): yerini bilmeden girilen ilişki, uygun olmayan konum
-55 Bolluk (Feng): doruk an, ışığın en parlak hali, geçiciliğini bilmek
-56 Gezgin (Lü): yabancı topraklarda olmak, geçicilik, hafif ve saygılı durmak
-57 Yumuşak Rüzgâr (Xun): ısrarlı ama nazik etki, yavaş yavaş içine işlemek
-58 Neşe, Göl (Dui): sevinç, açık iletişim, paylaşarak çoğalan mutluluk
-59 Dağılma, Çözülme (Huan): katılığın erimesi, ayrılıkların giderilmesi, engelleri çözmek
-60 Sınır (Jie): ölçü koymak, sınırın özgürleştirdiği, aşırıya kaçmamak
-61 İçsel Doğruluk (Zhong Fu): kalpten gelen samimiyet, güven, içi dışı bir olmak
-62 Küçük Aşırılık (Xiao Guo): küçük şeylerde titizlik, büyük hamle zamanı değil
-63 Tamamlandıktan Sonra (Ji Ji): düzen kuruldu ama korunmalı, gevşememek
-64 Tamamlanmadan Önce (Wei Ji): eşikte olmak, son adım, dikkatle geçmek
-
-NASIL KULLANILIR:
-1. Kişinin sorusunun ANLATTIĞI DURUMA gerçekten uyan heksagramı seç. Rastgele seçme, zorlama, uymuyorsa başkasını seç.
-2. Heksagramı numarası ve adıyla an. Uydurma heksagram adı ya da numarası ASLA kullanma; yalnızca yukarıdaki 64 taneden biri.
-3. Heksagramı kişinin SOMUT durumuna bağla. Genel geçer I Ching bilgisi anlatma.
-4. Kehanet dili KULLANMA. "Şu olacak", "kaderinde var" deme. Bu bir kader okuması değil, an okumasıdır: durumun hangi evrede olduğu ve hangi tutumun uygun düştüğü.
-5. Kişiyi kendi seçimine geri ver. I Ching yol gösterir, karar kişinindir.`;
+  // NOT: I CHING REHBERİ BURADAN KALDIRILDI (kullanıcı: "ayna hala çalışmıyor,
+  // I Ching öncesi çalışan versiyona dön").
+  // NEDEN: 64 heksagramın tamamı + felsefe girişi her Ayna çağrısında istemin
+  // İÇİNDE gidiyordu (~5,2k karakter, ~1,8k token). Groq'un dakikalık token
+  // bütçesi model başına tutuluyor ve TÜM KULLANICILAR arasında paylaşımlı;
+  // bu blok tek başına istemin üçte birini yiyor, bütçeyi doldurup çağrının
+  // yedek modeller arasında dolaşmasına ve yanıtın 19 saniyeye kadar
+  // gecikmesine yol açıyordu (canlı ölçüldü).
+  // Geri eklenecekse: tam liste yerine küçük bir alt küme, ya da ayrı ve
+  // isteğe bağlı bir çağrı olarak düşünülmeli. Metnin kendisi git geçmişinde
+  // (commit 86ed616).
 
   // ── GALAKTİK KİMLİK YORUMU ────────────────────────────────────────────────
   // Kimlik kartındaki TÜM veriler (güneş, yükselen, 12. ev, draconic, ay
@@ -6796,8 +6725,6 @@ Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğüml
     const userContent = ruyaModu ? `Kullanıcı bir rüya paylaştı: "${sanitizeInput(sikayet)}"
 ${astroTxt}
 
-${I_CHING_REHBER}
-
 ${NEFES_REHBERI}
 
 ${UYGULAMA_BOLUMLER}
@@ -6817,9 +6744,6 @@ Gestalt: (Rüyadaki her figür kişinin bir parçasıdır; "bu rüyadaki X aslı
 **Şamanik Yansıma**
 (Sembolleri ruhsal işaret olarak oku, doğa/hayvan/element imgeleriyle konuş, kısa ve şiirsel bir rehberlik cümlesiyle kapat: 3-4 cümle)
 
-**Değişimin İşareti**
-(I Ching okuması. Rüyanın taşıdığı DURUMA uyan heksagramı seç ve "N. Ad (Pinyin)" biçiminde an, örnek: "24. Dönüş (Fu)". Rüyanın imgesiyle heksagramı birbirine bağla: uyanık hayatında hangi evrede olduğunu ve hangi tutumun doğal düştüğünü söyle. Kehanet dili kullanma. 2-3 cümle)
-
 **Bugün İçin**
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.` : `Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
@@ -6827,8 +6751,6 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 ${REIKI_BILGI}
 
 ${LOUISE_HAY_REHBER}
-
-${I_CHING_REHBER}
 ${astroTxt}
 
 ${NEFES_REHBERI}
@@ -6839,9 +6761,6 @@ Yanıtını şu formatta ver:
 
 **Ayna**
 (Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut. Şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı: 6-7 cümle)
-
-**Değişimin İşareti**
-(I Ching okuması. Kişinin ANLATTIĞI duruma gerçekten uyan heksagramı seç ve "N. Ad (Pinyin)" biçiminde an, örnek: "5. Bekleyiş (Xu)". Sonra o heksagramın ne dediğini kişinin SOMUT durumuna bağla: durum hangi evrede, bu evrede hangi tutum doğal düşüyor. Kehanet dili kullanma, "şu olacak" deme; kararı kişiye bırak. 3-4 cümle)
 
 **Senin için**
 Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
@@ -6856,13 +6775,14 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
         method:"POST",
         headers:{"Content-Type":"text/plain"},
         body: JSON.stringify({
-          // max_tokens 1100 -> 1400: yanıta "Değişimin İşareti" (I Ching) bölümü
-          // eklendi, eski bütçe son bölümü kırpabilirdi.
+          // max_tokens 1100'e GERİ ÇEKİLDİ: 1400'e "Değişimin İşareti" (I Ching)
+          // bölümü için çıkılmıştı, o bölüm kaldırıldı. Groq'ta ayrılan çıktı
+          // bütçesi de dakikalık token hesabına giriyor, gereksiz pay tutmasın.
           // `model` alanı KALDIRILDI: sunucu (ai-call.mjs) istemcinin model
           // seçimini zaten okumuyor, _groq.mjs'deki otomatik fallback listesini
           // kullanıyor. Buradaki değer "llama-3.3-70b-versatile" idi ve o model
           // 16 Ağu 2026'da emekli oldu; kalması yanıltıcı ölü koddu.
-          max_tokens:1400, lang,
+          max_tokens:1100, lang,
           system:`${buildMirrorSystemPrompt(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
