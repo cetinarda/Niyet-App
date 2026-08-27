@@ -754,6 +754,7 @@ const HD_TXT = {
   profile:   { tr:"Profil", en:"Profile", de:"Profil", es:"Perfil", pt:"Perfil", fr:"Profil", ja:"プロファイル" },
   signature: { tr:"Doğru frekans", en:"Signature", de:"Signatur", es:"Firma", pt:"Assinatura", fr:"Signature", ja:"シグネチャー" },
   notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
+  fullChart: { tr:"Tam harita", en:"Full chart", de:"Vollständige Karte", es:"Carta completa", pt:"Mapa completo", fr:"Carte complète", ja:"全体チャート" },
 };
 const TAB_TXT = {
   bugun:    { tr:"Bugün", en:"Today", de:"Heute", es:"Hoy", pt:"Hoje", fr:"Aujourd'hui", ja:"今日" },
@@ -5367,6 +5368,10 @@ export default function SakinApp() {
   // haritadaki dört panel de artık aynı davranışta: başlık butonu + açılır gövde.
   const [show12Ev, setShow12Ev] = useState(false);
   const [showDraconic, setShowDraconic] = useState(false);
+  // "Ben" ekranındaki iki bölüm de KAPALI başlar (kullanıcı isteği): ekran
+  // artık başlık listesi gibi açılıyor, hiçbir bölüm kendiliğinden dolu gelmiyor.
+  const [showHarita, setShowHarita] = useState(false);
+  const [showHD, setShowHD] = useState(false);
   const [kozmikData, setKozmikData] = useState(null);
   const [kozmikDay, setKozmikDay] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
@@ -11173,38 +11178,60 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               en altındaki ikinci galaktik kimlik butonu da kaldırıldı, tek
               giriş bu kartın içindeki buton. */}
           <div style={{ marginBottom:28 }}>{kimlikKarti}</div>
-          <div style={{ textAlign:"center",marginBottom:40 }}>
-            <div style={{ fontSize:13,letterSpacing:5,color:"#666666",marginBottom:9 }}>{t("weekly_label")}</div>
-            <div style={{ fontSize:22,fontWeight:300,letterSpacing:2 }}>{t("inner_map")}</div>
-          </div>
-          <div style={{ position:"relative",width:186,height:186,margin:"0 auto 34px" }}>
-            <svg width="186" height="186" style={{ transform:"rotate(-90deg)" }}>
-              <circle cx="93" cy="93" r="74" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="9" />
-              <circle cx="93" cy="93" r="74" fill="none" stroke="url(#dayGrad)" strokeWidth="9"
-                strokeDasharray={`${2*Math.PI*74}`} strokeDashoffset={`${2*Math.PI*74*(1-dayPct/100)}`} strokeLinecap="round" />
-              <defs>
-                <linearGradient id="dayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#f1a24a" /><stop offset="50%" stopColor="#8b5aa0" /><stop offset="100%" stopColor="#2a6fb8" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
-              <div style={{ fontSize:22,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-              <div style={{ fontSize:14,letterSpacing:3,color:"#666666" }}>{t("day_pct")}</div>
-            </div>
-          </div>
-          <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9,marginBottom:24 }}>
-            {[
-              {label:t("stat_chakra"),value:chakra.name,color:chakra.pastel},
-              {label:t("stat_breath"),value:`${breathCount}`,color:"#82d9a3"},
-              {label:t("stat_word"),value:selectedWords[0]||"—",color:"#f0c27f"},
-              {label:t("stat_mindful"),value:`${completedStepCount}`,color:"#85c1e9"},
-            ].map((s,i)=>(
-              <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                <div style={{ fontSize:14,letterSpacing:2.5,color:"#666666",marginBottom:6 }}>{s.label.toLocaleUpperCase(lang)}</div>
-                <div style={{ fontSize:15,color:s.color,fontWeight:300 }}>{s.value}</div>
+          {/* İÇSEL HARİTA — artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
+              isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,
+              draconik) aynı davranış: Ben ekranı büyük bir halka ve dört
+              sayaçla karşılamak yerine düzenli bir başlık listesi olarak
+              açılıyor, kullanıcı ne isterse onu açıyor. */}
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setShowHarita(v=>!v)}
+              style={{
+                WebkitAppearance:"none",appearance:"none",
+                width:"100%",background:"rgba(130,217,163,0.06)",
+                border:"1px solid rgba(130,217,163,0.22)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#82d9a3",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{t("inner_map").toLocaleUpperCase(lang)}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showHarita?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showHarita && (
+            <div style={{ marginTop:8 }}>
+              <div style={{ textAlign:"center",marginBottom:24 }}>
+                <div style={{ fontSize:13,letterSpacing:5,color:"#666666" }}>{t("weekly_label")}</div>
               </div>
-            ))}
+              <div style={{ position:"relative",width:186,height:186,margin:"0 auto 26px" }}>
+                <svg width="186" height="186" style={{ transform:"rotate(-90deg)" }}>
+                  <circle cx="93" cy="93" r="74" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="9" />
+                  <circle cx="93" cy="93" r="74" fill="none" stroke="url(#dayGrad)" strokeWidth="9"
+                    strokeDasharray={`${2*Math.PI*74}`} strokeDashoffset={`${2*Math.PI*74*(1-dayPct/100)}`} strokeLinecap="round" />
+                  <defs>
+                    <linearGradient id="dayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#f1a24a" /><stop offset="50%" stopColor="#8b5aa0" /><stop offset="100%" stopColor="#2a6fb8" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
+                  <div style={{ fontSize:22,fontWeight:300 }}>{Math.round(dayPct)}%</div>
+                  <div style={{ fontSize:14,letterSpacing:3,color:"#666666" }}>{t("day_pct")}</div>
+                </div>
+              </div>
+              <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9 }}>
+                {[
+                  {label:t("stat_chakra"),value:chakra.name,color:chakra.pastel},
+                  {label:t("stat_breath"),value:`${breathCount}`,color:"#82d9a3"},
+                  {label:t("stat_word"),value:selectedWords[0]||"—",color:"#f0c27f"},
+                  {label:t("stat_mindful"),value:`${completedStepCount}`,color:"#85c1e9"},
+                ].map((s,i)=>(
+                  <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
+                    <div style={{ fontSize:14,letterSpacing:2.5,color:"#666666",marginBottom:6 }}>{s.label.toLocaleUpperCase(lang)}</div>
+                    <div style={{ fontSize:15,color:s.color,fontWeight:300 }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            )}
           </div>
           {/* GÖKYÜZÜ RAPORU buradan KALDIRILDI: kullanıcı isteğiyle
               "Bugün" ekranına taşındı (günün kolektif gökyüzü bilgisi
@@ -11308,23 +11335,28 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               Hesap host'ta ama kurallar ve etiketler Tasarım kaynağından
               üretiliyor, yani iki ekran çelişmez (bkz. src/hd-natal.js). */}
           {natalHD && (
-            <button onClick={()=>{ try{haptic();}catch(_){}
-                handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
-              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
-                marginBottom:20,padding:"16px 18px",borderRadius:17,
-                background:"linear-gradient(160deg,rgba(184,164,216,0.10),rgba(255,255,255,0.02))",
-                border:"1px solid rgba(184,164,216,0.28)" }}>
-              <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginBottom:9 }}>
-                {/* ⚠️ textTransform:"uppercase" YOK ve metin ELLE büyük harf:
-                    sayfanın dili Türkçe olduğunda CSS büyütmesi "Design"
-                    kelimesini "DESİGN" yapıyor (noktalı İ). Özel ad, harfi
-                    harfine yazılmalı. */}
-                <span style={{ fontSize:10,letterSpacing:2.5,color:"#b4a0d8",fontFamily:"'Jost',sans-serif" }}>
-                  HUMAN DESIGN
-                </span>
-                <span style={{ fontSize:11,color:"rgba(255,255,255,0.28)" }}>›</span>
-              </div>
-              <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:8 }}>
+          <div style={{ marginBottom:20,position:"relative" }}>
+            {/* ⚠️ Başlıkta textTransform:"uppercase" YOK ve metin ELLE büyük
+                harf: sayfanın dili Türkçe olduğunda CSS büyütmesi "Design"
+                kelimesini "DESİGN" yapıyor (noktalı İ). Özel ad, harfi harfine
+                yazılmalı. */}
+            <button onClick={()=>setShowHD(v=>!v)}
+              style={{
+                WebkitAppearance:"none",appearance:"none",
+                width:"100%",background:"rgba(184,164,216,0.07)",
+                border:"1px solid rgba(184,164,216,0.26)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#b4a0d8",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>HUMAN DESIGN</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showHD?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showHD && (
+            <div style={{ marginTop:8,padding:"16px 18px",borderRadius:17,
+              background:"linear-gradient(160deg,rgba(184,164,216,0.10),rgba(255,255,255,0.02))",
+              border:"1px solid rgba(184,164,216,0.22)" }}>
+              <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:10 }}>
                 {natalHD.emoji && <span style={{ fontSize:20,lineHeight:1,flexShrink:0 }}>{natalHD.emoji}</span>}
                 <span style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
                   {natalHD.type}
@@ -11350,7 +11382,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {pickLang(HD_TXT.signature, lang)}: {natalHD.signature} · {pickLang(HD_TXT.notSelf, lang)}: {natalHD.notSelf}
                 </div>
               )}
-            </button>
+              {/* Tam harita girişi: kutu artık açılır-kapanır olduğu için
+                  "kutunun tamamı tıklanabilir" davranışı kalktı, Tasarım'a
+                  gidiş kendi satırında duruyor. */}
+              <button onClick={()=>{ try{haptic();}catch(_){}
+                  handleOpenEmbed({ name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", color:"#b4a0d8" }); }}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:12,
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  background:"rgba(184,164,216,0.12)",border:"1px solid rgba(184,164,216,0.3)",
+                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#c8b4e8",
+                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {pickLang(HD_TXT.fullChart, lang)}
+                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
+              </button>
+            </div>
+            )}
+          </div>
           )}
           {/* ── 12. Ev Kartı ──
               GÜNCELLEME (kullanıcı isteği): kart artık veri yokken de GÖRÜNÜYOR.
