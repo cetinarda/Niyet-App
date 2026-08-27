@@ -164,6 +164,40 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
   - ⚠️ **1 saatlik offset hatası yükseleni 1 burç kaydırır.** Eski kod DST bitişini her yıl "Ekim son Pazar" sanıyordu → 1986–1995 Ekim başı doğumları yanlış çıkıyordu (19.10.1992 19:45 İstanbul → Boğa 29° yerine doğrusu İkizler 16°). Bu fonksiyona dokunurken tz-db'ye karşı doğrula.
   - Geçişler gün hassasiyetinde: geçiş **gününde** 00:00–04:00 doğumlar 1 saat şaşabilir (yılda 2 gün, bilinen sınır).
 
+## 📱 WEB → NATIVE TAŞIMA LİSTESİ (kullanıcı: "hazır olduğumuzda taşıyacağız")
+
+Aşağıdaki UX yeniden yapılandırması ŞU AN SADECE WEB'de (`!isNative` ile
+kapılı). Native (iOS/Android) mağazadaki düzeni birebir koruyor. Kullanıcı
+"hazır olduğumuzda tüm değişiklikleri iOS ve Android'e taşıyacağız" dedi.
+Taşıma günü bu listeyi sırayla uygula ve HER MADDEYİ CİHAZDA TEST ET.
+
+**Taşınacaklar (hepsi `src/App.jsx`, `isNative` koşullarını kaldır/çevir):**
+1. **Giriş ekranı:** dil seçici sağ üst · HAZIRIM tam genişlik · panik butonu
+   HAZIRIM altında ve "Nefes al" metniyle (native'de hâlâ sağ altta rozet).
+2. **Alt bar:** Bağlan · Keşfet · Ayna · Ben (4 sekme, her ekranda sabit).
+   Native'de hâlâ eski 6'lı adım barı var.
+3. **Üst adım şeridi:** sabah…akşam yatay kaydırılabilir sekmeler; tamamlanmamış
+   ilk adım `navSoftPulse` ile yanıp söner. Native'de yerine progress strip var.
+4. **Üst bar:** ⌂ ve ☰ yalnızca "Ben" sekmesinde, diğer ekranlarda bar tamamen
+   gizli. Üstteki ☽ ayna butonu kaldırıldı (hilal alt bardaki AYNA sekmesinde).
+5. **Keşfet:** modal değil tam ekran (zIndex 9990, alt bar üstte kalır).
+6. **Ayarlar sayfası** (`screen==="ayarlar"`): ekran platform bağımsız yazıldı,
+   sadece ☰ girişi web'e kapılı. Native'de açmak için o kapıyı kaldırmak yeter.
+7. **Yol seçimi kartları:** niyet cümlesi + süre ("Şimdi sakinleşmek istiyorum"
+   / 1 dakika). Alt açıklama satırları kaldırıldı.
+8. **Keşfet/Bağlan geri okları** web'de kaldırıldı, native'de duruyor.
+
+**⚠️ NATIVE'DE ŞU AN EKSİK OLAN VE MAĞAZA İÇİN ÖNEMLİ OLAN İKİ ŞEY**
+(web Ayarlar'ında var, native'de yok, bir sonraki gönderimden ÖNCE ele al):
+- **"Satın Alımları Geri Yükle"** (App Review 3.1.1, ZORUNLU): `handleRestore`
+  var ama yalnızca fiyat ekranında. Yeni cihaza geçen kullanıcı Ayarlar'da
+  arıyor, bulamıyor. Reddedilme riski en yüksek eksik.
+- **"Aboneliği yönet"** (3.1.2): native'de HİÇ YOK. Sistem abonelik sayfasına
+  link (iOS `apps.apple.com/account/subscriptions`, Android Play karşılığı).
+Native'de politika linkleri + hesap silme HÂLÂ Keşfet panelinde duruyor
+(5.1.1(v) uyumu bozulmasın diye oradan bilerek kaldırılmadı). Ayarlar native'e
+açılırsa o blok tekrar olur, o zaman Keşfet'ten çıkarılabilir.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:
