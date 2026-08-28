@@ -8,13 +8,7 @@ import { MoonDisc } from '@/components/MoonDisc';
 import { SIGN_GLYPHS, SIGN_NAMES_TR } from '@/lib/content/astrology-content';
 import { useT } from '@/lib/i18n';
 
-const HD_TR: Record<string, string> = {
-  Generator: 'Generator',
-  ManifestingGenerator: 'Manifesting Generator',
-  Manifestor: 'Manifestör',
-  Projector: 'Projektör',
-  Reflector: 'Reflektör',
-};
+// HD_TR kaldirildi: Human Design kutucugu Sakin Tasarim'a birakildi.
 
 function fmtDate(iso: string, tr: boolean): string {
   const [y, m, d] = iso.split('-');
@@ -37,8 +31,11 @@ function SignPill({ label, sign, tr }: { label: string; sign: ZodiacSign; tr: bo
 /**
  * "Profilim": karnenin en üstündeki kişisel merkez:
  *  1) Doğum bilgilerin (düzenlenebilir, yanlış tarih burada görünür/düzeltilir)
- *  2) Temel bilgiler (Güneş / Ay / Yükselen / HD / Yaşam Yolu, ayrı blok)
- *  3) Günün Pusulası (Ay evresi + HD günlük transiti + söz + odak + haftaya bakış)
+ *  2) Temel bilgiler (Güneş / Ay / Yükselen / Yıldız Kökeni / Yaşam Yolu)
+ *  3) Günün Pusulası (Ay evresi + geliş sebebi + söz + odak + haftaya bakış)
+ *
+ * Human Design ögeleri BİLEREK YOK: Sakin Tasarım uygulamasının asıl konusu,
+ * burada tekrarlanması iki uygulamayı birbirinin kopyası gösteriyordu.
  */
 export function ProfileCard({ report }: { report: GalacticReport }) {
   const { locale } = useT();
@@ -98,13 +95,19 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
             {sun ? <SignPill label={tr ? 'Güneş' : 'Sun'} sign={sun.sign} tr={tr} /> : null}
             {moon ? <SignPill label={tr ? 'Ay' : 'Moon'} sign={moon.sign} tr={tr} /> : null}
             <SignPill label={tr ? 'Yükselen' : 'Rising'} sign={report.chart.ascendantSign} tr={tr} />
+            {/* HUMAN DESIGN KUTUCUĞU KALDIRILDI (kullanıcı: "soulid'de human
+                design unsurlarını çıkart, sakin tasarımda zaten olanları
+                çıkart"). Tip/strateji/otorite/profil ve bodygraph Sakin
+                Tasarım'ın ASIL konusu; burada tekrar etmesi hem yer kaplıyordu
+                hem de iki uygulamayı birbirinin kopyası gösteriyordu.
+                Yerine SoulID'ye ÖZGÜ olan yıldız kökeni öne çıkarıldı. */}
             <div className="flex items-center gap-2.5 rounded-2xl border border-panelBorder bg-bg/30 px-3.5 py-2.5">
-              <span className="text-2xl text-cosmic">◇</span>
+              <span className="text-2xl text-cosmic">{report.origin.emoji}</span>
               <div className="leading-tight">
-                <span className="block text-[10px] uppercase tracking-[0.2em] text-faint">Human Design</span>
-                <span className="block text-sm font-bold text-ink">
-                  {HD_TR[report.humanDesign.type] ?? report.humanDesign.type}
+                <span className="block text-[10px] uppercase tracking-[0.2em] text-faint">
+                  {tr ? 'Yıldız Kökeni' : 'Star Origin'}
                 </span>
+                <span className="block text-sm font-bold text-ink">{report.origin.race}</span>
               </div>
             </div>
             <div className="flex items-center gap-2.5 rounded-2xl border border-panelBorder bg-bg/30 px-3.5 py-2.5 sm:col-span-2">
@@ -120,7 +123,7 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
         </div>
       </div>
 
-      {/* 3) GÜNÜN PUSULASI: HD transit + söz + odak + hafta */}
+      {/* 3) GÜNÜN PUSULASI: geliş sebebi + söz + odak + hafta */}
       {daily ? (
         <div className="mt-4 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0f1230] via-[#161a3d] to-[#0b0524] p-6 md:p-7">
           <div className="flex items-start gap-4">
@@ -139,21 +142,20 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
           </div>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            {/* HD günlük transiti */}
+            {/* HD GÜNLÜK TRANSİT KARTI KALDIRILDI: aynı bilgi Sakin Tasarım'da
+                ve Sakin'in "Ben" ekranındaki "Human Design günün geçişi"
+                bloğunda zaten var, yani ÜÇ yerde tekrarlanıyordu.
+                Yerine SoulID'ye özgü "geliş sebebi" (görevlerin ilki) kondu. */}
             <div className="rounded-2xl border border-cosmic/30 bg-cosmic/[0.06] p-4">
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic">
-                {tr ? 'HD GÜNLÜK TRANSİT' : 'HD DAILY TRANSIT'}
+                {tr ? 'GELİŞ SEBEBİN' : 'WHY YOU CAME'}
               </p>
               <p className="mt-1.5 text-[13px] leading-snug text-ink">
-                {tr
-                  ? `Güneş bugün Kapı ${daily.hd.gate}.${daily.hd.line}: ${daily.hd.theme.tr}.`
-                  : `Sun in Gate ${daily.hd.gate}.${daily.hd.line} today: ${daily.hd.theme.en}.`}
+                {report.missions?.[0]?.title || report.origin.archetype}
               </p>
-              {daily.hd.personal ? (
-                <p className="mt-1.5 text-[11px] font-bold text-cosmic">
-                  {tr ? '✦ Senin tanımlı kapına dokunuyor' : '✦ Touches one of your defined gates'}
-                </p>
-              ) : null}
+              <p className="mt-1.5 text-[11px] text-faint">
+                {report.origin.starSystem}
+              </p>
             </div>
 
             {/* Bakılacak yer */}

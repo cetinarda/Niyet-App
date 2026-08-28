@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, useMemo, memo } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -833,6 +833,31 @@ const HD_TXT = {
   signature: { tr:"Doğru frekans", en:"Signature", de:"Signatur", es:"Firma", pt:"Assinatura", fr:"Signature", ja:"シグネチャー" },
   notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
   fullChart: { tr:"Tam harita", en:"Full chart", de:"Vollständige Karte", es:"Carta completa", pt:"Mapa completo", fr:"Carte complète", ja:"全体チャート" },
+};
+// ── RUH PROFİLİ KUTUSU (Ben ekranı, Human Design kutusunun ÜSTÜNDE) ────────
+// Kullanıcı isteği: "ben ekranında Human Design gibi Ruh Profili butonu koy,
+// hd'nin üstüne. Temel bilgileri ekle, Tam profil butonu ekle."
+// Veri SoulID'nin kendi hesabından geliyor (apps/soulid/lib/sakin-summary.ts
+// `sakin_soul_summary` anahtarına yazıyor). Host BURADA HESAP YAPMIYOR:
+// gezegen konumları host'ta yok, kaba tahmin SoulID ile ÇELİŞEN değer üretir
+// (element dağılımında bu hata bir kez yaşandı, bkz. CLAUDE.md).
+const SOUL_TXT = {
+  title:      { tr:"RUH PROFİLİ", en:"SOUL PROFILE", de:"SEELENPROFIL", es:"PERFIL DEL ALMA", pt:"PERFIL DA ALMA", fr:"PROFIL DE L'ÂME", ja:"ソウルプロフィール" },
+  family:     { tr:"Sayı Ailesi", en:"Number Family", de:"Zahlenfamilie", es:"Familia numérica", pt:"Família numérica", fr:"Famille de nombres", ja:"数字の家族" },
+  galaxy:     { tr:"Geldiği galaksi", en:"Home galaxy", de:"Heimatgalaxie", es:"Galaxia de origen", pt:"Galáxia de origem", fr:"Galaxie d'origine", ja:"出身の銀河" },
+  past:       { tr:"Önceki yaşam arketipi", en:"Past-life archetype", de:"Archetyp früherer Leben", es:"Arquetipo de vidas pasadas", pt:"Arquétipo de vidas passadas", fr:"Archétype des vies passées", ja:"過去世の元型" },
+  purpose:    { tr:"Geliş sebebi", en:"Why you came", de:"Warum du kamst", es:"Por qué viniste", pt:"Porque vieste", fr:"Pourquoi tu es venu", ja:"来た理由" },
+  strength:   { tr:"Güçlü yönü", en:"Strongest trait", de:"Stärkste Seite", es:"Mayor fortaleza", pt:"Maior força", fr:"Force principale", ja:"最も強い面" },
+  full:       { tr:"Tam profil", en:"Full profile", de:"Vollständiges Profil", es:"Perfil completo", pt:"Perfil completo", fr:"Profil complet", ja:"詳細プロフィール" },
+  // Kullanıcı SoulID'yi hiç açmadıysa özet yazılmamış olur. Boş kutu yerine
+  // ne yapması gerektiğini söyleyen tek satırlık davet gösterilir.
+  empty:      { tr:"Ruh Profili'ni bir kez aç, özetin buraya gelsin.",
+                en:"Open Soul Profile once and your summary will appear here.",
+                de:"Öffne das Seelenprofil einmal, dann erscheint deine Zusammenfassung hier.",
+                es:"Abre el Perfil del Alma una vez y tu resumen aparecerá aquí.",
+                pt:"Abre o Perfil da Alma uma vez e o teu resumo aparecerá aqui.",
+                fr:"Ouvre le Profil de l'Âme une fois et ton résumé apparaîtra ici.",
+                ja:"ソウルプロフィールを一度開くと、ここに要約が表示されます。" },
 };
 // "Ne sorabilirim?" açılır listesinin üstündeki nazik açıklama (kullanıcı
 // isteği: "bunlar örnek sorular, istediğini sorabilirsin ibaresi koy").
@@ -5540,6 +5565,25 @@ export default function SakinApp() {
   // artık başlık listesi gibi açılıyor, hiçbir bölüm kendiliğinden dolu gelmiyor.
   const [showHarita, setShowHarita] = useState(false);
   const [showHD, setShowHD] = useState(false);
+  // RUH PROFİLİ ÖZETİ: SoulID embed'i (aynı origin) `sakin_soul_summary`
+  // anahtarına yazıyor. Kullanıcı SoulID'yi kapatıp Ben'e döndüğünde taze
+  // veriyi görsün diye embed her kapandığında yeniden okunuyor (soulReloadKey).
+  const [showSoul, setShowSoul] = useState(false);
+  const [soulReloadKey, setSoulReloadKey] = useState(0);
+  const soulSummary = useMemo(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("sakin_soul_summary") || "null");
+      return raw && raw.v === 1 ? raw : null;
+    } catch (_) { return null; }
+  }, [soulReloadKey]);
+  // Herhangi bir embed KAPANDIĞINDA özeti bir kez yeniden oku. Tek tek kapanış
+  // yollarını (Escape, geri, X, paywall, donanım geri tuşu) ayrı ayrı yamamak
+  // yerine tek yerden dinleniyor: yeni bir kapanış yolu eklense de çalışır.
+  const prevEmbedRef = useRef(null);
+  useEffect(() => {
+    if (prevEmbedRef.current && !embeddedApp) setSoulReloadKey(k => k + 1);
+    prevEmbedRef.current = embeddedApp;
+  }, [embeddedApp]);
   const [kozmikData, setKozmikData] = useState(null);
   const [kozmikDay, setKozmikDay] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
@@ -11317,6 +11361,71 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
               </div>
             )}
+            </div>
+            )}
+          </div>
+          {/* ── RUH PROFİLİ ── (kullanıcı: "Human Design gibi Ruh Profili
+              butonu koy, HD'nin üstüne; temel bilgileri ve Tam profil butonunu
+              ekle"). HD kutusuyla BİREBİR aynı kalıp: açılır kapanır başlık +
+              içerik + alt satırda tam uygulamaya giden düğme.
+              Veri SoulID'den geliyor, host hesaplamıyor (bkz. SOUL_TXT notu).
+              Özet henüz yoksa kutu YİNE görünür: boş bırakmak yerine "bir kez
+              aç" daveti gösterip aynı düğmeyle oraya götürüyor. */}
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setShowSoul(v=>!v)}
+              style={{
+                WebkitAppearance:"none",appearance:"none",
+                width:"100%",background:"rgba(232,192,122,0.07)",
+                border:"1px solid rgba(232,192,122,0.26)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#e8c07a",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{pickLang(SOUL_TXT.title, lang)}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showSoul?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showSoul && (
+            <div style={{ marginTop:8,padding:"16px 18px",borderRadius:17,
+              background:"linear-gradient(160deg,rgba(232,192,122,0.10),rgba(255,255,255,0.02))",
+              border:"1px solid rgba(232,192,122,0.22)" }}>
+              {soulSummary ? (<>
+                <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:12 }}>
+                  {soulSummary.emoji && <span style={{ fontSize:20,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
+                  <span style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
+                    {soulSummary.race}
+                  </span>
+                </div>
+                {/* Etiket + değer satırları. Değerler uzun olabildiği için
+                    yan yana değil ALT ALTA: dar ekranda kırpılmasın. */}
+                <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+                  {[
+                    [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+                    [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+                    [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
+                    [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+                    [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
+                  ].filter(([, v]) => !!v).map(([lbl, val]) => (
+                    <div key={lbl}>
+                      <div style={{ fontSize:9.5,letterSpacing:1.4,color:"rgba(232,192,122,0.8)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:2 }}>{lbl}</div>
+                      <div style={{ fontSize:13,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </>) : (
+                <div style={{ fontSize:12.5,color:"#8f899e",fontFamily:"'Inter',sans-serif",lineHeight:1.7 }}>
+                  {pickLang(SOUL_TXT.empty, lang)}
+                </div>
+              )}
+              <button onClick={()=>{ try{haptic();}catch(_){}
+                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:14,
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  background:"rgba(232,192,122,0.12)",border:"1px solid rgba(232,192,122,0.3)",
+                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#f0d29a",
+                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {pickLang(SOUL_TXT.full, lang)}
+                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
+              </button>
             </div>
             )}
           </div>

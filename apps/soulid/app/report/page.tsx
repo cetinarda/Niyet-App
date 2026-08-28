@@ -23,6 +23,7 @@ import { premiumOpen } from '@/lib/feature-flags';
 import { buildConceptDecks } from '@/lib/concepts';
 import { useT } from '@/lib/i18n';
 import { tap } from '@/lib/haptics';
+import { writeSakinSummary } from '@/lib/sakin-summary';
 
 export default function ReportPage() {
   const nav = useNav();
@@ -63,6 +64,13 @@ export default function ReportPage() {
       cancelled = true;
     };
   }, [report, setReport]);
+
+  // Sakin'in "Ben" ekranındaki Ruh Profili kutusu için özet yaz. Karne her
+  // görüntülendiğinde tazelenir; hesap TEK YERDE (burada) yapılır, host yalnızca
+  // okur. Bkz. lib/sakin-summary.ts.
+  useEffect(() => {
+    if (report) writeSakinSummary(report);
+  }, [report]);
 
   const concepts = useMemo(() => (report ? buildConceptDecks(report) : []), [report]);
 
@@ -240,16 +248,19 @@ export default function ReportPage() {
           {showDeeper ? (
             <div className="mt-6 space-y-6">
               {/* AI'nın derin parçaları: PREMIUM (sis altında) */}
-              {(report.sections.astrology || report.sections.humanDesign || report.sections.callToAction) ? (
+              {(report.sections.astrology || report.sections.callToAction) ? (
                   <article className="card-surface rounded-3xl border border-panelBorder p-6 md:p-8">
                     <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold">{t('report.narrative')}</p>
                     <div className="mt-4 space-y-4">
                       {report.sections.astrology ? (
                         <p className="text-[15px] leading-relaxed text-ink">{report.sections.astrology}</p>
                       ) : null}
-                      {report.sections.humanDesign ? (
-                        <p className="text-[15px] leading-relaxed text-ink">{report.sections.humanDesign}</p>
-                      ) : null}
+                      {/* HUMAN DESIGN ANLATIM BOLUMU CIKARILDI (kullanici:
+                          "sakin tasarimda zaten olanlari cikart"): tip/strateji/
+                          otorite/profil yorumu Sakin Tasarim'in asil konusu.
+                          Bolum uretilmeye devam ediyor (sections.humanDesign),
+                          yalnizca burada GOSTERILMIYOR: eski karnelerde veri
+                          duruyor ve ileride geri acilmak istenirse hazir. */}
                       {report.sections.callToAction ? (
                         <p className="text-[15px] leading-relaxed text-ink">{report.sections.callToAction}</p>
                       ) : null}
