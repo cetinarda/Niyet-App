@@ -215,9 +215,22 @@ function transitNote(planets, date = new Date()) {
 
 // ── KUYRUKLU YILDIZLAR (statik, keşif gerektirdiği için elle güncellenir) ──
 // Tutulmalar buraya GİRMEZ: astronomy-engine ile dinamik hesaplanıyor (tüm yıllar otomatik).
-// Yeni kuyruklu yıldız: { start, peak, end:[yıl,ay,gün], name:{tr,en,...}, desc:{tr,en,...} }
+// Yeni kuyruklu yıldız:
+//   { start, peak, end:[yıl,ay,gün], window:gün, name:{tr,en,...}, desc:{tr,en,...} }
+//
+// ⚠️ `window` ZORUNLU GİBİ DÜŞÜN (yoksa COMET_WINDOW_DEFAULT uygulanır).
+// KULLANICI ŞİKÂYETİ (Ağu 2026): "tempel 2 kuyruklu yıldızı her gün gösteriliyor,
+// yanlış... etkisi azalınca artık görünmesin, rapor kendini tekrar etmesin."
+// Sebep: eskiden yalnızca start-end aralığına bakılıyordu, Tempel 2 için bu
+// aralık 1 Tem - 30 Eyl, yani DOKSAN İKİ GÜN. Rapor üç ay boyunca her gün aynı
+// kuyruklu yıldızı manşete taşıyordu. Oysa görünürlük aralığı ile HABER DEĞERİ
+// aynı şey değil: cisim yalnızca perihelion çevresinde gerçekten dikkat çeker.
+// Artık iki koşul BİRDEN aranıyor: (1) görünürlük aralığının içinde ol,
+// (2) zirveye `window` günden yakın ol. Diğer olay türleri zaten böyle
+// çalışıyordu (tutulma ±7, mevsimsel kapı ±4, portallar kendi penceresi).
+const COMET_WINDOW_DEFAULT = 10;
 const STATIC_COMETS = [
-  { start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30],
+  { start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30], window:10,
     name:{ tr:"10P/Tempel 2 Kuyruklu Yıldızı", en:"Comet 10P/Tempel 2", de:"Komet 10P/Tempel 2",
            es:"Cometa 10P/Tempel 2", pt:"Cometa 10P/Tempel 2", fr:"Comète 10P/Tempel 2", ja:"テンペル第2彗星 10P" },
     desc:{ tr:"Periyodik Tempel 2 perihelionuna yaklaşıyor; binoküler ya da çıplak gözle görülebilir parlaklık bekleniyor.",
@@ -231,15 +244,17 @@ const STATIC_COMETS = [
 
 function activeComets(date = new Date()) {
   const t = date.getTime();
-  return STATIC_COMETS.filter(c => {
-    const s = Date.UTC(c.start[0], c.start[1]-1, c.start[2]);
-    const e = Date.UTC(c.end[0],   c.end[1]-1,   c.end[2]);
-    return t >= s && t <= e;
-  }).map(c => {
-    const p   = Date.UTC(c.peak[0], c.peak[1]-1, c.peak[2]);
+  return STATIC_COMETS.map(c => {
+    const s   = Date.UTC(c.start[0], c.start[1]-1, c.start[2]);
+    const e   = Date.UTC(c.end[0],   c.end[1]-1,   c.end[2]);
+    const p   = Date.UTC(c.peak[0],  c.peak[1]-1,  c.peak[2]);
     const dFP = Math.round((t - p) / 86400000);
+    const win = c.window ?? COMET_WINDOW_DEFAULT;
+    // İKİ koşul birden: görünürlük aralığında OL ve zirveye yakın OL.
+    // Sadece aralık yeterli değildi, bkz. STATIC_COMETS üstündeki not.
+    if (t < s || t > e || Math.abs(dFP) > win) return null;
     return { type:"comet", name:c.name, desc:c.desc, isPeak: Math.abs(dFP)<=1, daysFromPeak:dFP };
-  });
+  }).filter(Boolean);
 }
 
 // ── TUTULMALAR: DİNAMİK HESAP (astronomy-engine): tüm yıllar otomatik ──────
@@ -491,6 +506,28 @@ const METEOR_SHOWERS = [
   { name:"Ursids",        nameTr:"Ursidler",         start:[12,17], peak:[12,22], end:[12,26] },
 ];
 
+// Zirveye kaç gün var/geçti? MMDD çıkarması ay sınırında YANLIŞ sonuç veriyordu
+// (31 Tem = 731, 1 Ağu = 801, fark 70 gün gibi görünüyor). Gerçek tarih farkı
+// alınır ve yıl sarması için en yakın yıl seçilir (Kuadrantidler Aralık'ta
+// başlayıp Ocak'ta zirve yapıyor).
+function _daysFromPeakMD(date, peakMD) {
+  const y = date.getUTCFullYear();
+  let best = null;
+  for (const yy of [y - 1, y, y + 1]) {
+    const d = Math.round((date.getTime() - Date.UTC(yy, peakMD[0] - 1, peakMD[1])) / 86400000);
+    if (best === null || Math.abs(d) < Math.abs(best)) best = d;
+  }
+  return best;
+}
+
+// KULLANICI İSTEĞİ: "önemli gelişmeler o gün yer alsın ama etkisi azalınca artık
+// görünmesin, rapor kendini tekrar etmesin." Meteor yağmurlarının GERÇEK etkinlik
+// aralığı haftalar sürüyor (Perseidler 17 Tem - 24 Ağu, 38 gün). `active` bilgisi
+// astronomik olarak doğru olduğu için korunuyor, ama artık ayrıca `featured` var:
+// yalnızca zirveye ±3 gün kalınca true. Rapor manşeti buna bakıyor, böylece aynı
+// yağmur beş hafta boyunca her gün baş haber olmuyor.
+const METEOR_FEATURE_WINDOW = 3;
+
 function activeMeteorShower(date = new Date()) {
   const cur = (date.getUTCMonth() + 1) * 100 + date.getUTCDate();
   for (const s of METEOR_SHOWERS) {
@@ -498,8 +535,13 @@ function activeMeteorShower(date = new Date()) {
     const end = s.end[0] * 100 + s.end[1];
     const inWindow = start <= end ? (cur >= start && cur <= end) : (cur >= start || cur <= end); // yıl-dönümü sarması (Quadrantids)
     if (inWindow) {
-      const peak = s.peak[0] * 100 + s.peak[1];
-      return { active: true, name: s.name, nameTr: s.nameTr, peak: s.peak, isPeak: Math.abs(cur - peak) <= 1 };
+      const dFP = _daysFromPeakMD(date, s.peak);
+      return {
+        active: true, name: s.name, nameTr: s.nameTr, peak: s.peak,
+        daysFromPeak: dFP,
+        isPeak: Math.abs(dFP) <= 1,
+        featured: Math.abs(dFP) <= METEOR_FEATURE_WINDOW,
+      };
     }
   }
   return { active: false };
@@ -663,6 +705,8 @@ LANGUAGE PURITY (ABSOLUTE RULE): write ENTIRELY in ${name}, using ONLY ${name} v
 
 NOTABLE SKY EVENTS (HIGHEST PRIORITY): If the data lists any notable sky events (solar eclipse, lunar eclipse, comet, planet parade or alignment, energy portal or corridor), you MUST weave them in naturally and prominently: at least 1-2 heartfelt sentences. A solar or lunar eclipse is a rare, powerful cosmic crossing; treat it with reverence. A bright comet is a cosmic messenger from the outer reaches; acknowledge what it stirs collectively. A planet parade or tight alignment means energies are gathering in one direction; name the key planets. An energy portal or corridor (like the Lion's Gate, 11:11, solstices, equinoxes) marks a collective threshold where the subtle field is especially receptive; describe how this opening feels in the body and in collective consciousness, what it invites or releases. Never omit these if they appear. When any such event is only days away, convey the sense of anticipation.
 
+FRESHNESS (the reading must not repeat itself day after day): lead with what is CHANGING today, not with whatever has been in the sky for weeks. Each event carries how far it is from its peak. An event at or within a day or two of peak is the headline. An event many days past its peak is fading: give it at most a passing clause, or leave it out entirely and let today's geomagnetic field, solar wind, Moon phase or planetary shift carry the reading instead. Never describe a fading event with the same weight as a peaking one, and never present something as news when its moment has passed.
+
 NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm; nothing memorized-sounding. 4 to 7 flowing sentences, prose only, no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.
 
 PUNCTUATION: Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, colon, or semicolon instead. Do not use the "not just X, but Y" construction.`;
@@ -671,7 +715,12 @@ PUNCTUATION: Do NOT use an em dash (—) anywhere; connect clauses with a comma,
 - Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
 - Solar wind: ${data.solar_wind?.speed || "?"} km/s
 - Moon: ${data.moon?.label?.[lang] || data.moon?.label?.en || "?"} phase, ${data.moon?.illumination}% lit
-- Meteor shower: ${data.meteor?.active ? (lang === "tr" && data.meteor.nameTr ? data.meteor.nameTr : data.meteor.name) + (data.meteor.isPeak ? " peaking now" : " active") : "none active now"}
+- Meteor shower: ${data.meteor?.active
+    ? (lang === "tr" && data.meteor.nameTr ? data.meteor.nameTr : data.meteor.name)
+      + (data.meteor.isPeak ? " PEAKING TODAY (headline-worthy)"
+         : data.meteor.featured ? ` near peak, ${Math.abs(data.meteor.daysFromPeak)} day(s) ${data.meteor.daysFromPeak < 0 ? "before" : "after"} (worth mentioning)`
+         : " active but far from peak (background only, do NOT headline)")
+    : "none active now"}
 - Notable sky events & energy portals (HIGHEST PRIORITY: must mention if any, and MUST use the EXACT ${name} names/descriptions given here; do NOT translate them yourself and do NOT keep English names): ${data.notableEvents?.length ? data.notableEvents.map(ev => `[${ev.type}${ev.subtype ? "/"+ev.subtype : ""}] "${ev.name[lang] || ev.name.en}"${ev.isPeak ? " (TODAY IS PEAK)" : ev.daysFromPeak < 0 ? ` (${-ev.daysFromPeak} days until peak)` : ` (${ev.daysFromPeak} days past peak)`}: ${ev.desc[lang] || ev.desc.en}`).join(" | ") : "none today"}
 - Planet alignment/parade: ${data.planetGrouping ? `${data.planetGrouping.bodies.map(_pn).join(", ")} clustered within ${data.planetGrouping.arcDeg}°: ${data.planetGrouping.type}` : "no notable grouping today"}
 - Planetary positions: ${planetSummary || "unavailable"}${retroPlanets.length ? "\n- Currently retrograde: " + retroPlanets.join(", ") : ""}
