@@ -21,21 +21,39 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
-3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı ONAYLADI, BAŞARILI, DEĞİŞTİRME):
+3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı "terminal komutu ver"
+   dediğinde SORMADAN bunu ver, iOS + Android birlikte):
    ```
-   cd ~/Desktop/Niyet-App && git checkout -- ios/App/App.xcodeproj/project.pbxproj ios/App/App/Info.plist && \
-   git pull origin claude/check-sakin-life-update-CIpM8 && \
+   # iOS
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
+
+   # Android (yalnızca son iki adım farklı)
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
+   npm run build && npx cap sync android && npx cap open android
    ```
-   `git checkout -- project.pbxproj` ŞART: Xcode dosyayı yerel imzalama ayarlarıyla
-   (signing team vb.) kirletiyor, commit edilmemiş bu değişiklikler `git pull`'u
-   "local changes would be overwritten" hatasıyla durduruyor. Bu satır olmadan
-   komut kullanıcıda 5 kez art arda başarısız oldu, bir daha kaldırma.
-   **`Info.plist` AYNI SEBEPTEN eklendi (2. tekrar, bu sefer bu dosyada):**
-   Xcode'un "Info" sekmesi/capabilities paneli dosyayı kendi plist editörüyle
-   yeniden yazıyor: sıra değişiyor, elle eklenen XML yorumları (`<!-- ... -->`)
-   silinebiliyor. Sonuç aynı hata. Kural: Xcode'da **açılan/değişebilen HER
-   proje dosyası** bu satıra eklenmeli, tek tek keşfedip düzeltmek yerine.
+   **`fetch` + `reset --hard` NEDEN (İKİ ayrı hata, ikisi de yaşandı):**
+   - **(1) "local changes would be overwritten":** Xcode `project.pbxproj`'u yerel
+     imzalama ayarlarıyla (signing team vb.), `Info.plist`'i de kendi plist
+     editörüyle (sıra değişir, elle yazılan `<!-- ... -->` yorumları silinir)
+     kirletiyor. Commit edilmemiş bu değişiklikler `git pull`'u durduruyordu.
+     Eski çözüm `git checkout -- <dosya>` idi ama **Xcode'da açılabilen HER dosya
+     için tek tek keşfetmek gerekiyordu** (2 kez tekrarlandı: önce pbxproj, sonra
+     Info.plist). `reset --hard` hepsini birden halleder, liste tutmaya gerek yok.
+   - **(2) "Iraksak dallarınız var / divergent branches" (Ağu 2026):** Mac'teki
+     yerel branch'te origin'de olmayan commit kalınca `git pull` hangi stratejiyle
+     (merge/rebase/ff-only) birleştireceğini bilemeyip DURUYOR. `git checkout --`
+     bu hatayı ÇÖZMEZ, farklı bir hata. `reset --hard` iraksamayı da bitirir.
+   - **Güvenli:** Mac bir DERLEME makinesi, kaynak GitHub'da. `reset --hard`
+     untracked dosyalara dokunmaz (`node_modules`, `dist` durur). Yine de kullanıcı
+     Mac'te elle bir şey yazdıysa önce şunu çalıştırsın, boş çıkmalı:
+     `git fetch origin <branch> && git log --oneline HEAD ^FETCH_HEAD`
+   - **`git pull` KULLANMA**, `fetch` + `reset --hard FETCH_HEAD` kullan: pull
+     yukarıdaki iki hatanın ikisine de açık.
 4. **`public/latest-ios-version.json` ARTIK OTOMATİK: elle bump etme.**
    Bu dosya "mağazalarda CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
    Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse "yeni sürüm var"
