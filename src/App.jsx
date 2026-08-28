@@ -2176,6 +2176,38 @@ const GLOBAL_CSS = `
     background: radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255,240,190,0.34), rgba(200,150,255,0.16) 45%, transparent 72%);
     filter: blur(6px);
   }
+  /* TÜNEL AÇILIŞ IŞIĞI (kullanıcı: "tünel açılırsa hafif bi ışık çıksın,
+     eskiden ayna ikonundaki gibi; abartılı olmasın zarif olsun").
+     Adımlar tamamlanıp tünel açıldığı AN bir kez çakar, sonra kendini kapatır.
+     Renkler ayna ikonunun döngüsünden alındı (sakinMirrorCycle): sıcak beyaz →
+     altın → mor. Merkez 50%/42%, tünel maskesinin ağzıyla aynı nokta.
+     ⚠️ BU CSS BLOĞU BİR TEMPLATE LITERAL: İÇİNE TERS TIRNAK YAZMA.
+     Bu yorumda sınıf adı ters tırnak içindeydi; string orada kapanıp kalan
+     metin JS olarak yorumlandı ("X.sakin - tunnel - wrap") ve uygulama
+     TAMAMEN beyaz ekrana düştü. Build YEŞİL geçiyor, hata yalnızca çalışma
+     anında çıkıyor: bu yüzden ancak tarayıcı testinde yakalandı.
+     Işık, sakin-tunnel-wrap katmanının DIŞINDA duruyor: o katman
+     sakinTunnelBreath ile opaklığını 0.55-0.9 arasında salıyor, ışık onun
+     içinde olsaydı sönükleşirdi.
+     Tepe opaklık bilerek 0.5'te tutuldu, parlama değil "nefes" hissi versin. */
+  @keyframes sakinTunnelBloom {
+    0%   { opacity:0;   transform:translate(-50%,-50%) scale(0.82); }
+    30%  { opacity:0.5; }
+    100% { opacity:0;   transform:translate(-50%,-50%) scale(1.25); }
+  }
+  .sakin-tunnel-bloom {
+    position:fixed; left:50%; top:42%; width:118vw; height:118vw;
+    transform:translate(-50%,-50%);
+    border-radius:50%; pointer-events:none; z-index:0;
+    background: radial-gradient(circle at 50% 50%,
+      rgba(255,246,216,0.55) 0%,
+      rgba(240,214,96,0.28) 26%,
+      rgba(138,79,208,0.18) 48%,
+      transparent 70%);
+    filter: blur(14px);
+    animation: sakinTunnelBloom 2.6s ease-out forwards;
+  }
+  @media (prefers-reduced-motion: reduce) { .sakin-tunnel-bloom { animation:none; opacity:0; } }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
   @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
@@ -5760,6 +5792,24 @@ export default function SakinApp() {
     });
   }, [allStepsComplete, todayKey, dayInSync]);
 
+  // TÜNEL AÇILIŞ IŞIĞI: yalnızca adımlar O ANDA tamamlandığında bir kez çakar.
+  // `prevAllDone` ilk çalışmada MEVCUT değere kurulur ve o tur atlanır; yoksa
+  // günü zaten tamamlamışken uygulamayı açan kullanıcıda her açılışta (ve
+  // Bağlan'a her dönüşünde) yeniden çakardı, kutlama anlamını yitirirdi.
+  // `dayInSync` şartı seri efektiyle aynı sebeple: gün dönümünde state henüz
+  // yeni güne kurulmamışken DÜNÜN true'su ile tetiklenmesin.
+  const [tunnelBloom, setTunnelBloom] = useState(false);
+  const prevAllDone = useRef(null);
+  useEffect(() => {
+    if (!dayInSync) return;
+    const was = prevAllDone.current;
+    prevAllDone.current = allStepsComplete;
+    if (was === null || !allStepsComplete || was) return;
+    setTunnelBloom(true);
+    const id = setTimeout(() => setTunnelBloom(false), 2800);
+    return () => clearTimeout(id);
+  }, [allStepsComplete, dayInSync]);
+
   useEffect(() => {
     if (isOwner && !isNative) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
   }, [isOwner]);
@@ -5821,13 +5871,22 @@ export default function SakinApp() {
     cat: pickLang({ tr:"Haritan", en:"Your chart", de:"Deine Karte", es:"Tu carta",
                     pt:"O teu mapa", fr:"Ta carte", ja:"あなたのチャート" }, lang),
     sorular: [
-      pickLang({ tr:"Ateş elementim düşük, bu ne anlama geliyor?",
-                 en:"My fire element is low, what does that mean?",
-                 de:"Mein Feuerelement ist niedrig, was bedeutet das?",
-                 es:"Mi elemento fuego está bajo, ¿qué significa?",
-                 pt:"O meu elemento fogo está baixo, o que significa?",
-                 fr:"Mon élément feu est faible, qu'est-ce que cela signifie ?",
-                 ja:"火のエレメントが低いのはどういう意味？" }, lang),
+      // ⚠️ ÖRNEK SORULARDA KULLANICININ VERİSİ HAKKINDA İDDİA KURMA.
+      // Eski hali: "Ateş elementim DÜŞÜK, bu ne anlama geliyor?" Soru cümlenin
+      // içinde bir OLGU bildiriyordu; kullanıcının ateşi %49 bile olsa AI o
+      // iddiayı doğru kabul edip "düşük ateş" üzerine yorum yazıyordu
+      // (kullanıcı bildirdi). Soru artık DEĞERİ SORUYOR, dayatmıyor: AI
+      // haritadaki gerçek dağılımı okuyup ona göre konuşuyor.
+      // Kural: örnek sorular ya nötr olacak ya da kullanıcının KENDİ
+      // bildiği bir şeyi (yorgunluk, kaygı, uykusuzluk) anlatacak; uygulamanın
+      // hesapladığı bir değeri asla peşinen "yüksek/düşük" diye yazmayacak.
+      pickLang({ tr:"Element dağılımım bana ne anlatıyor?",
+                 en:"What does my element distribution tell me?",
+                 de:"Was sagt mir meine Elementverteilung?",
+                 es:"¿Qué me dice mi distribución de elementos?",
+                 pt:"O que me diz a minha distribuição de elementos?",
+                 fr:"Que me dit ma répartition des éléments ?",
+                 ja:"エレメントの配分は私に何を伝えている？" }, lang),
       pickLang({ tr:"Draconic haritamın bana söylediği mesaj ne?",
                  en:"What message does my draconic chart hold for me?",
                  de:"Welche Botschaft hat meine draconische Karte für mich?",
@@ -10829,13 +10888,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <div style={{ fontSize:12.5,lineHeight:1.6,color:"#8a8299",fontFamily:"'Inter',sans-serif",marginBottom:14 }}>
                         {pickLang(ASK_INTRO_TXT, lang)}
                       </div>
-                      {([...CHART_Q, ...RUYA_Q, ..._locSampleQ(lang, [
+                      {/* RÜYA EN ÜSTTE (kullanıcı isteği): en çok kullanılan
+                          giriş, listenin altında kalınca kaydırmadan
+                          görünmüyordu. Sıra: Rüya · Haritan · diğer kategoriler. */}
+                      {([...RUYA_Q, ...CHART_Q, ..._locSampleQ(lang, [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
                         ]},
-                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "Sürekli endişeliyim, hangi çakram kapalı?",
+                        // idx 5 ("...hangi çakram KAPALI?") idx 4 ile değiştirildi:
+                        // eski soru bir çakranın kapalı OLDUĞUNU peşinen kabul
+                        // ediyor, AI'ı kapalı çakra uydurmaya itiyordu. idx 4
+                        // aynı duyguyu iddiasız soruyor. `idx` çeviri dizisinin
+                        // indeksi olduğu için 5 dilin çevirisi kendiliğinden
+                        // doğru satıra kayıyor, i18n-data.js'e dokunmak gerekmedi.
+                        { cat:t("ask_cat_emotions"), idx:[4,6], sorular:[
+                          "Bu hafta neden bu kadar dengesiz hissediyorum?",
                           "Öfkemi nasıl dönüştürebilirim?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -10855,8 +10923,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "Why is chronic fatigue always with me?",
                           "I can't sleep. What's the energetic reason?",
                         ]},
-                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "I'm constantly anxious. Which chakra is blocked?",
+                        { cat:t("ask_cat_emotions"), idx:[4,6], sorular:[
+                          "Why do I feel so out of balance this week?",
                           "How can I transform my anger?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -13374,6 +13442,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           açılıyor ve ☰ yalnızca Ben'de olduğu için sayfa çıkışsız kalıyordu
           (kullanıcı bildirdi). Politika sayfalarında bar hâlâ gizli, onların
           çıkışı üstteki marka nav'ındaki "← SAKİN". */}
+      {/* TÜNEL AÇILIŞ IŞIĞI: bilerek EN ÜST SEVİYEDE, ekrandan bağımsız.
+          Önce mandala ekranının içine konmuştu ama son adım çoğunlukla ADIM
+          ekranında (Ayna/akşam vb.) tamamlanıyor; ışık orada hiç çizilmiyor,
+          kullanıcı mandalaya döndüğünde 2.8 sn çoktan bitmiş oluyordu, yani
+          kutlama pratikte HİÇ görünmüyordu (tarayıcı testinde yakalandı).
+          Artık kullanıcı akışın neresindeyse orada çakıyor. position:fixed +
+          pointer-events:none olduğu için hiçbir ekranın düzenine karışmaz. */}
+      {tunnelBloom && <div className="sakin-tunnel-bloom" aria-hidden="true" />}
       {!["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
