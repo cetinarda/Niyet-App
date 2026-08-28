@@ -12,6 +12,7 @@ import { buildGalacticReport, birthKey } from '@/lib/report';
 import { compareReports, type CompatibilityResult } from '@/lib/compatibility';
 import { canViewCompat, recordCompatView, compatId, hasPremium } from '@/lib/entitlements';
 import { readSakinAvatar } from '@/lib/sakin-bridge';
+import { setActiveCompatId } from '@/lib/active-compat';
 import type { GalacticReport } from '@/lib/types';
 import { useNav } from '@/lib/nav';
 import { useT } from '@/lib/i18n';
@@ -112,6 +113,7 @@ export default function PairAddPage() {
   const [gated, setGated] = useState(false);
   const [result, setResult] = useState<CompatibilityResult | null>(null);
   const [other, setOther] = useState<GalacticReport | null>(null);
+  const [compatIdVal, setCompatIdVal] = useState<string | null>(null);
   const [premium, setPremium] = useState(false);
 
   useEffect(() => {
@@ -187,6 +189,7 @@ export default function PairAddPage() {
       }).catch(() => {});
       setOther(rep);
       setResult(res);
+      setCompatIdVal(cid);
     } catch (e) {
       console.error(e);
       setNova(false);
@@ -203,17 +206,19 @@ export default function PairAddPage() {
   // ── Süpernova → sonuç ───────────────────────────────────────────────────
   if (nova) {
     return (
-      <div className="relative min-h-[86vh]">
+      <div className="relative min-h-[100dvh]">
         <CosmicBackground variant="galaxy" />
-        <div className="mx-auto flex min-h-[86vh] max-w-xl flex-col justify-center px-6 font-brand">
+        <div className="mx-auto flex min-h-[100dvh] max-w-xl flex-col justify-center px-6 font-brand">
           {result ? (
             <PairResult
               me={me!}
               other={other!}
               result={result}
               photo={photo}
-              premium={premium}
-              onUnlock={() => setGated(true)}
+              onDetails={() => {
+                if (compatIdVal) setActiveCompatId(compatIdVal);
+                nav.push('/pair/result');
+              }}
               onClose={() => nav.push('/menu')}
             />
           ) : (
@@ -231,9 +236,9 @@ export default function PairAddPage() {
 
   // ── Adım adım form ──────────────────────────────────────────────────────
   return (
-    <div className="relative min-h-[86vh]">
+    <div className="relative min-h-[100dvh]">
       <CosmicBackground variant="aurora" />
-      <div className="mx-auto flex min-h-[86vh] max-w-xl flex-col px-6 pb-8 pt-6 font-brand">
+      <div className="mx-auto flex min-h-[100dvh] max-w-xl flex-col px-6 pb-8 pt-6 font-brand">
         <div className="flex items-center gap-4">
           <button
             type="button"
@@ -367,16 +372,19 @@ export default function PairAddPage() {
   );
 }
 
-/** Kısa sonuç: birkaç net bilgi, gerisi premium. Altta kapatma yolu. */
+/** Kısa sonuç: birkaç net bilgi. Altta "Detaylara Git" (tam ikili uyum
+ *  ekranına, /pair/result) ve "Kapat" (bölüm listesine). Derin uyum analizi
+ *  premium'un ARKASINDA DEĞİL (bkz. lib/entitlements.ts: canViewCompat yalnızca
+ *  YENİ bir çifti HESAPLAMAYI sınırlar; bir kez hesaplanan uyumun tam detayı
+ *  her zaman açık), o yüzden burada ayrı bir kilit ekranı yok. */
 function PairResult({
-  me, other, result, photo, premium, onUnlock, onClose,
+  me, other, result, photo, onDetails, onClose,
 }: {
   me: GalacticReport;
   other: GalacticReport;
   result: CompatibilityResult;
   photo: string | null;
-  premium: boolean;
-  onUnlock: () => void;
+  onDetails: () => void;
   onClose: () => void;
 }) {
   const { t } = useT();
@@ -405,7 +413,7 @@ function PairResult({
           <div className="h-full bg-gold" style={{ width: `${result.scoreOverall}%` }} />
         </div>
 
-        {/* Kısa ve net: dört katman, tek satır başlık. Derinlik premium tarafında. */}
+        {/* Kısa ve net: dört katman, tek satır başlık. Tam detay "Detaylara Git" ile. */}
         <div className="mt-7 space-y-3.5">
           {[
             [t('pair.dim.astro'), result.scoreAstro],
@@ -430,16 +438,14 @@ function PairResult({
         )}
       </div>
 
-      {!premium && (
-        <button
-          type="button"
-          onClick={onUnlock}
-          className="mt-6 w-full rounded-full border border-gold/50 bg-gold/[0.07] py-4 text-[12px] uppercase tracking-[0.3em] text-gold"
-          style={{ WebkitAppearance: 'none', appearance: 'none' }}
-        >
-          {t('pair.result.unlock')}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onDetails}
+        className="mt-6 w-full rounded-full border border-gold/50 bg-gold/[0.07] py-4 text-[12px] uppercase tracking-[0.3em] text-gold"
+        style={{ WebkitAppearance: 'none', appearance: 'none' }}
+      >
+        {t('pair.result.details')}
+      </button>
 
       <button
         type="button"

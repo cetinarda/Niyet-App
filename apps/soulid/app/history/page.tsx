@@ -4,6 +4,7 @@ import { Link } from '@/components/Link';
 import { useEffect, useState } from 'react';
 import { useNav } from '@/lib/nav';
 import { setActiveReportId } from '@/lib/active-report';
+import { setActiveCompatId } from '@/lib/active-compat';
 import { PageLayout, Section } from '@/components/PageLayout';
 import { listReports, listCompat, type StoredCompat } from '@/lib/supabase/reports';
 import { useSoulStore } from '@/lib/store';
@@ -90,9 +91,12 @@ export default function HistoryPage() {
           </p>
           <div className="mt-4 grid gap-4">
             {compats.map((c, i) => (
-              <div
+              <button
                 key={c.id}
-                className="card-surface rounded-3xl border border-cosmic/40 p-6 md:p-7"
+                type="button"
+                onClick={() => { setActiveCompatId(c.id); nav.push('/pair/result'); }}
+                className="card-surface w-full rounded-3xl border border-cosmic/40 p-6 text-left hover:border-cosmic/70 hover:bg-white/[0.03] md:p-7"
+                style={{ WebkitAppearance: 'none', appearance: 'none' }}
               >
                 <div className="flex items-baseline justify-between gap-3">
                   <h3 className="font-display text-xl text-ink">
@@ -117,7 +121,7 @@ export default function HistoryPage() {
                     En yüksek rezonansın
                   </p>
                 ) : null}
-              </div>
+              </button>
             ))}
           </div>
         </div>

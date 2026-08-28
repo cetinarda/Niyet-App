@@ -46,9 +46,9 @@ export default function PairPage() {
   const firstName = (me?.birth.fullName || '').trim().split(/\s+/)[0];
 
   return (
-    <div className="relative min-h-[86vh]">
+    <div className="relative min-h-[100dvh]">
       <CosmicBackground variant="aurora" />
-      <div className="mx-auto flex min-h-[86vh] max-w-xl flex-col px-6 pb-10 pt-14 font-brand">
+      <div className="mx-auto flex min-h-[100dvh] max-w-xl flex-col px-6 pb-10 pt-14 font-brand">
         <div className="text-center">
           <p className="text-[10px] uppercase tracking-[0.45em] text-gold">{t('pair.kicker')}</p>
           <h1 className="mt-4 text-[26px] font-medium leading-tight text-ink">{t('pair.title')}</h1>

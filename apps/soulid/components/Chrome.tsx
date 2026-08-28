@@ -11,13 +11,12 @@ import { PromoBanner } from '@/components/PromoBanner';
  * kadar üst bar hiç görünmesin").
  *
  * SoulProfile logolu TopBar, tanıtım şeridi (PromoBanner) ve Footer AKIŞ ve
- * PARTNER BİLGİ GİRİŞİ boyunca gizlenir: eşleşme (/pair), partner formu
- * (/pair/add), bölüm listesi (/menu). Bu ekranlar Sakin'in bir sekmesi gibi
- * tam ekran açılır. Üst bar İLK KEZ kullanıcı "Ana Sayfa"yı (/) veya bir
- * içerik sayfasını (karne, profil, geçmiş...) açtığında görünür; oralarda
- * kendi navigasyonu gerekir. /birth de tam ekran: kullanıcının kendi doğum
- * bilgisini girdiği ekran da bilgi girişidir (kullanıcı: "bilgileri girerken
- * tam ekran her zaman").
+ * BİLGİ GİRİŞİ boyunca gizlenir: /pair altındaki HER SAYFA (eşleşme, partner
+ * formu /pair/add, tam uyum detayı /pair/result), bölüm listesi (/menu) ve
+ * kendi doğum formu (/birth). Bu ekranlar Sakin'in bir sekmesi gibi tam ekran
+ * açılır ve kendi geri/kapat kontrollerini taşır. Üst bar İLK KEZ kullanıcı
+ * "Ana Sayfa"yı (/) veya bir içerik sayfasını (karne, profil, Geçmişin listesi)
+ * açtığında görünür; oralarda kendi navigasyonu gerekir.
  */
 // DİKKAT: Capacitor/embed statik export'ta usePathname() ham dosya yolunu
 // döndürür (örn. "/embedded/soulid/pair/index.html"), Next'in temiz route'unu

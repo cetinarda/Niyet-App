@@ -133,7 +133,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             kaldırıyor ama statik export prerender'ında TopBar HTML'e gömülü;
             JS yavaş yüklenirse bir an görünürdü. Bu script React'ten önce çalışıp
             eşleşme/menü yolunda html'e data-bare koyar, aşağıdaki stil gizler. */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var p=location.pathname||'';if(/(^|\/)(pair|menu|birth)(\/|\.html|$)/.test(p))document.documentElement.setAttribute('data-bare','1');}catch(e){}})();` }} />
+        {/* DİKKAT: bu template literal TS KAYNAK KODUNDA yazılıyor, yani
+            dış derleyici `\/` ve `\.` kaçışlarını ÇÖZER (backslash düşer,
+            regex bozulur: "/(^|/)..." gibi). Regex'in içine gerçek backslash
+            koymak için burada ÇİFT kaçış (\\/ ve \\.) şart. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var p=location.pathname||'';if(/(^|\\/)(pair|menu|birth)(\\/|\\.html|$)/.test(p))document.documentElement.setAttribute('data-bare','1');}catch(e){}})();` }} />
         <style dangerouslySetInnerHTML={{ __html: `html[data-bare] header,html[data-bare] [data-promo]{display:none!important}` }} />
       </head>
       <body className="bg-bg text-ink min-h-screen flex flex-col">

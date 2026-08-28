@@ -209,13 +209,14 @@ const tr: Dict = {
   'pair.err.place': 'Doğum yerini bulamadık. Şehir adını yazıp listeden seç.',
   'pair.err.generic': 'Karşılaştırma yapılamadı. Tekrar dene.',
   'pair.result.kicker': 'GENEL REZONANS',
-  'pair.result.unlock': 'Tamamını oku',
   'pair.result.close': 'Kapat',
   'pair.dim.astro': 'Kimya',
   'pair.dim.hd': 'Ders',
   'pair.dim.num': 'Ritim',
   'pair.dim.fate': 'Kader',
 
+  'pair.result.details': 'Detaylara Git',
+  'pair.result.notFound': 'Bu uyum kaydı bulunamadı.',
   // Bölüm listesi (Atla ve sonuç kapatma hedefi)
   'menu.kicker': 'SOULID',
   'menu.title': 'Nereye bakmak istersin?',
@@ -429,13 +430,14 @@ const en: Dict = {
   'pair.err.place': 'We could not find that birthplace. Type a city and pick from the list.',
   'pair.err.generic': 'The comparison failed. Please try again.',
   'pair.result.kicker': 'OVERALL RESONANCE',
-  'pair.result.unlock': 'Read the whole thing',
   'pair.result.close': 'Close',
   'pair.dim.astro': 'Chemistry',
   'pair.dim.hd': 'Lesson',
   'pair.dim.num': 'Rhythm',
   'pair.dim.fate': 'Fate',
 
+  'pair.result.details': 'View Full Details',
+  'pair.result.notFound': 'This match could not be found.',
   // Section list (target of Skip and of closing a result)
   'menu.kicker': 'SOULID',
   'menu.title': 'Where would you like to look?',

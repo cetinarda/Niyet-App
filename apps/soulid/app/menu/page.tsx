@@ -35,7 +35,7 @@ export default function MenuPage() {
   ];
 
   return (
-    <div className="relative min-h-[86vh]">
+    <div className="relative min-h-[100dvh]">
       <CosmicBackground variant="aurora" />
       <div className="mx-auto max-w-xl px-6 pb-14 pt-14 font-brand">
         <p className="text-[10px] uppercase tracking-[0.45em] text-gold">{t('menu.kicker')}</p>
