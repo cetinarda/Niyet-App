@@ -164,42 +164,63 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
   - ⚠️ **1 saatlik offset hatası yükseleni 1 burç kaydırır.** Eski kod DST bitişini her yıl "Ekim son Pazar" sanıyordu → 1986-1995 Ekim başı doğumları yanlış çıkıyordu (19.10.1992 19:45 İstanbul → Boğa 29° yerine doğrusu İkizler 16°). Bu fonksiyona dokunurken tz-db'ye karşı doğrula.
   - Geçişler gün hassasiyetinde: geçiş **gününde** 00:00-04:00 doğumlar 1 saat şaşabilir (yılda 2 gün, bilinen sınır).
 
-## 📱 WEB → NATIVE TAŞIMA LİSTESİ (kullanıcı: "hazır olduğumuzda taşıyacağız")
+## 📱 WEB → NATIVE TAŞIMA LİSTESİ — ✅ TAMAMLANDI (kullanıcı: "1- yap")
 
-Aşağıdaki UX yeniden yapılandırması ŞU AN SADECE WEB'de (`!isNative` ile
-kapılı). Native (iOS/Android) mağazadaki düzeni birebir koruyor. Kullanıcı
-"hazır olduğumuzda tüm değişiklikleri iOS ve Android'e taşıyacağız" dedi.
-Taşıma günü bu listeyi sırayla uygula ve HER MADDEYİ CİHAZDA TEST ET.
+UX yeniden yapılandırması eskiden SADECE WEB'deydi (`!isNative` ile kapılı),
+native (iOS/Android) mağazadaki eski düzeni koruyordu. Kullanıcı "1- yap" dedi,
+8 madde de `src/App.jsx`'te uygulandı: `isNative` koşulları kaldırıldı/çevrildi,
+her platformda TEK bir davranış kaldı.
 
-**Taşınacaklar (hepsi `src/App.jsx`, `isNative` koşullarını kaldır/çevir):**
-1. **Giriş ekranı:** dil seçici sağ üst · HAZIRIM tam genişlik · panik butonu
-   HAZIRIM altında ve "Nefes al" metniyle (native'de hâlâ sağ altta rozet).
-2. **Alt bar:** Bağlan · Keşfet · Ayna · Ben (4 sekme, her ekranda sabit).
-   Native'de hâlâ eski 6'lı adım barı var.
-3. **Üst adım şeridi:** sabah…akşam yatay kaydırılabilir sekmeler; tamamlanmamış
-   ilk adım `navSoftPulse` ile yanıp söner. Native'de yerine progress strip var.
-4. **Üst bar:** ⌂ ve ☰ yalnızca "Ben" sekmesinde, diğer ekranlarda bar tamamen
-   gizli. Üstteki ☽ ayna butonu kaldırıldı (hilal alt bardaki AYNA sekmesinde).
-5. **Keşfet:** modal değil tam ekran (zIndex 9990, alt bar üstte kalır).
-6. **Ayarlar sayfası** (`screen==="ayarlar"`): ekran platform bağımsız yazıldı,
-   sadece ☰ girişi web'e kapılı. Native'de açmak için o kapıyı kaldırmak yeter.
-7. **Yol seçimi kartları:** niyet cümlesi + süre ("Şimdi sakinleşmek istiyorum"
-   / 1 dakika). Alt açıklama satırları kaldırıldı.
-8. **Keşfet/Bağlan geri okları** web'de kaldırıldı, native'de duruyor.
+**⚠️ BU OTURUMUN SINIRI: GERÇEK CİHAZDA TEST EDİLEMEDİ.** Uzaktan/headless
+ortamda çalışıldığı için doğrulama `window.webkit.messageHandlers.bridge`
+enjekte edip `Capacitor.getPlatform()`'u "ios" döndürmeye zorlayan bir
+Puppeteer sahte-native testiyle yapıldı (8 maddenin 7'si doğrudan gözlendi,
+madde 7 zaten koşulsuzdu). Sonuç hepsinde doğruydu ama bu GERÇEK CİHAZ TESTİNİN
+YERİNE GEÇMEZ: dokunma/haptic hissi, gerçek çentik/safe-area ölçüleri,
+gerçek Capacitor plugin davranışı (StatusBar/SplashScreen/Haptics burada
+"plugin not implemented" uyarısı verdi, sahte köprüde gerçek native yok)
+denenmedi. **Bir sonraki iOS/Android build'inde bu 8 maddeyi cihazda gözden
+geçir**, özellikle: alt bar dokunma hedefleri, üst adım şeridinin parmakla
+kaydırılması, Keşfet'in tam ekran hissi.
 
-**✅ ÇÖZÜLDÜ (1.3.9): mağaza için eksik olan iki madde native'e eklendi.**
-Ayarlar sayfası hâlâ web'e özel; onu beklemeden ☰ menüsüne (App.jsx, `isNative`
-bloğu, tema anahtarının hemen üstünde) iki satır kondu:
-- **"Satın Alımları Geri Yükle"** (App Review 3.1.1, ZORUNLU): önceden yalnızca
-  fiyat ekranındaydı, oraya da ancak premium OLMAYAN biri giriyordu. Yeni cihaza
-  geçen abone bulamıyordu.
-- **"Aboneliği yönet"** (3.1.2): sistem abonelik sayfasına gider
-  (iOS `apps.apple.com/account/subscriptions`, Android Play karşılığı).
-Ayarlar native'e açıldığında bu blok kaldırılabilir: aynı ikisi Ayarlar'ın
-GENEL > ÖDEME grubunda da var, tekrar olur.
-Native'de politika linkleri + hesap silme HÂLÂ Keşfet panelinde duruyor
-(5.1.1(v) uyumu bozulmasın diye oradan bilerek kaldırılmadı). Ayarlar native'e
-açılırsa o blok tekrar olur, o zaman Keşfet'ten çıkarılabilir.
+1. ✅ **Giriş ekranı:** dil seçici sağ üst · HAZIRIM tam genişlik · panik
+   butonu HAZIRIM altında "Nefes al" olarak. Eski sağ-alt rozet silindi.
+2. ✅ **Alt bar:** Bağlan · Keşfet · Bugün · Ayna · Ben (5 sekme, her ekranda
+   sabit). Eski 6'lı adım barı (`NAV`/`NAV_STEPS` ile beslenen blok) silindi.
+3. ✅ **Üst adım şeridi:** her platformda `stepStripVisible`. Eski nokta
+   göstergesi (progress-strip) silindi, onu besleyen `NAV_STEPS`/
+   `currentStepIndex` de öksüz kaldığı için kaldırıldı.
+4. ✅ **Üst bar:** `topControlsVisible = activeTab === "ben"`, koşulsuz.
+5. ✅ **Keşfet:** her platformda tam ekran (zIndex 9990, düz #000 zemin,
+   dışına tıklayınca kapanmaz), alt bar üstte kalır.
+6. ✅ **Ayarlar sayfası:** ☰/⚙ butonu artık HER PLATFORMDA doğrudan
+   `setScreen("ayarlar")`. Eski native-only açılır menü (`showTopMenu` state'i
+   + `createPortal` bloğu + `menuItems`) TAMAMEN SİLİNDİ: Ayarlar sayfası zaten
+   Restore/Manage Subscription/tema/Terimler/Yolculuk hepsini içeriyordu.
+7. ✅ Zaten koşulsuzdu, değişiklik gerekmedi.
+8. ✅ **Keşfet/Bağlan geri okları** her platformda kaldırıldı.
+
+**BİLEREK DOKUNULMAYAN, taşıma listesinde OLMAYAN `isNative` dallar** (yanlışlıkla
+atlanmadı, açıkça kapsam dışı):
+- Keşfet panelinin altındaki politika linkleri + analitik + hesap silme bloğu
+  (App Store 5.1.1(v)). Artık Ayarlar'da BİREBİR aynısı var (GENEL/GİZLİLİK/
+  YASAL/HESAP grupları, doğrulandı) ve teknik olarak fazlalık, ama yasal açıdan
+  hassas kodu cihaz testi olmadan tek geçişte silmek riskliydi. Kaldırmak
+  istenirse: `showAilesi` panelinin altındaki `{isNative && (<>...` bloğu.
+- `topNavVisible` (marka "← Sakin" + dil + politika linkleri üst şeridi):
+  web'de HER ekranda görünür, native'de hâlâ yalnızca policy/giriş ekranlarında.
+  8 maddenin hiçbiri bunu istemedi, dokunulmadı.
+- Floating kırmızı "?" yardım balonu: hâlâ SADECE NATIVE (ayrı, önceki bir
+  karardı — web'de Terimler ☰'e taşınmıştı). 8 maddede yoktu, dokunulmadı.
+- IAP/pricing ekranındaki native-web ayrımları, `AVAudioSession`/silence-loop,
+  StatusBar/SplashScreen/Haptics/TTS, analytics platform etiketi, "Telefonunda
+  yanında taşı" App/Play Store rozetleri (native'de zaten kurulu, anlamsız
+  olurdu): hepsi platform YETENEĞİ, UX tercihi değil, dokunulmadı.
+
+**✅ ÇÖZÜLDÜ (1.3.9, madde 6'dan önce eklenmişti): mağaza için eksik olan iki
+madde.** "Satın Alımları Geri Yükle" (3.1.1) ve "Aboneliği yönet" (3.1.2)
+önce ☰ açılır menüsüne kondu, madde 6 ile o menü tamamen kalktığı için artık
+YALNIZCA Ayarlar'ın GENEL > ÖDEME grubunda duruyorlar (tekrar yok).
 
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 

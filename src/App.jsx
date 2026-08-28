@@ -4700,7 +4700,10 @@ export default function SakinApp() {
   // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği), üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
-  const [showTopMenu, setShowTopMenu] = useState(false);
+  // ESKİDEN native'de bu state ☰ açılır menüsünü (Bağlan/Ben/Keşfet kısayolları
+  // + tema anahtarı) sürüyordu. Native→web taşıma listesi madde 6: ☰ artık her
+  // platformda DOĞRUDAN Ayarlar'a gider, açılır menü kaldırıldı (madde aşağıda,
+  // ☰ butonunun onClick'inde).
   // Ayarlar'dan bir alt sayfaya (şartlar/gizlilik/iade/premium/nedir) girildiğinde
   // true olur ve o sayfada "← Ayarlar" dönüş butonu gösterilir. Bu sayfalar
   // politika ekranı oldukları için alt bar orada gizli; bayrak olmasa kullanıcı
@@ -5668,8 +5671,9 @@ export default function SakinApp() {
   // AYRI bir şeydir (sayaç = "neredeyim", bağlantı = "bugün ne tamamlandı").
   // Alt sayaç artık kaydırma zinciriyle BİREBİR aynı: giriş=0, sabah=1 … harita=7.
   // bağlan ve keşfet zincirden çıkarıldığı için sayaçtan da çıkarıldı.
-  const NAV_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","harita"];
-  const currentStepIndex = Math.max(0, NAV_STEPS.indexOf(screen) + 1);
+  // NAV_STEPS + currentStepIndex NATIVE→WEB TAŞIMA MADDE 3 ile öksüz kaldı:
+  // yalnızca eski (kaldırılan) native progress-strip'in nokta göstergesini
+  // besliyorlardı, başka hiçbir yerde kullanılmıyorlardı.
   const STEP_NAMES = [
     (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
     t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
@@ -7420,12 +7424,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : screen === "rehber" ? "ayna"
     : (screen === "mandala" || TAB_STEPS.includes(screen)) ? "baglan"
     : null;
-  // ⌂ + ☰ barı görünür mü? WEB'de yalnızca "Ben" sekmesinde (kullanıcı isteği).
+  // ⌂ + ☰ barı görünür mü? YALNIZCA "Ben" sekmesinde (kullanıcı isteği,
+  // native→web taşıma madde 4: eskiden native'de her zaman görünürdü).
   // Diğer ekranlarda bar TAMAMEN gizlenir; boş bırakılsaydı 44px'lik siyah bir
   // şerit olarak dururdu. Gizlenince şeridin ve içeriğin üst konumu da yukarı
   // kayması gerekiyor, o yüzden bu bayrak üç yerde birden kullanılıyor:
   // barın kendisi, adım şeridinin top'u, app-root'un paddingTop'u.
-  const topControlsVisible = isNative || activeTab === "ben";
+  const topControlsVisible = activeTab === "ben";
   // EMBED GERİ BUTONUNUN ETİKETİ. Buton hep "Keşfet" yazıyordu, oysa Bugün
   // ekranından açılan bir kart kapanınca Bugün'e dönüyor (bkz. embedReturn):
   // etiket gideceği yeri yanlış söylüyordu (kullanıcı: "bugün geri butonu
@@ -7627,8 +7632,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const nextStepId = TAB_STEPS.find(s => !stepsCompleted[s]) || null;
   // Adım şeridi görünür mü? Hem şeridin kendisi hem app-root'un üst boşluğu
   // aynı koşulu kullansın diye tek yerde tutuluyor (ikisi ayrışırsa içerik
-  // ya şeridin altında kalır ya da boşluk fazla olur).
-  const stepStripVisible = !isNative && !showAilesi
+  // ya şeridin altında kalır ya da boşluk fazla olur). Native→web taşıma
+  // madde 3: eskiden yalnızca web'de görünürdü, native'de yerine alttaki
+  // eski progress-strip (nokta göstergesi) vardı, o kaldırıldı.
+  const stepStripVisible = !showAilesi
     && (screen === "mandala" || TAB_STEPS.includes(screen));
   const goTab = (id) => {
     try { haptic(); } catch(_) {}
@@ -7823,8 +7830,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // +26px NEFES PAYI: formül tam olarak bar'ın yüksekliği kadardı, yani
         // "SAKİN AİLESİ" yazısı bar'a 6px kalıyordu (ölçüldü: barBottom 88, titleTop
         // 94). Kullanıcı: "sakin ailesi yazısı ile üst bar çok bitişik".
-        <div onClick={isNative ? ()=>setShowAilesi(false) : undefined}
-          /* WEB: Keşfet artık "modal" değil, Ben/Bağlan gibi TAM EKRAN yüzey.
+        <div onClick={undefined}
+          /* NATIVE→WEB TAŞIMA MADDE 5: Keşfet artık her platformda "modal" değil,
+             Ben/Bağlan gibi TAM EKRAN yüzey (eskiden yalnızca web'de böyleydi).
              • zIndex 10000 -> 9990: alt bar (9999) artık panelin ÜSTÜNDE kalır,
                yani Keşfet'teyken de sabit ve tıklanabilir (modal'ken altında
                kalıyordu).
@@ -7833,16 +7841,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
              • Yanlardaki pencere payı azaldı, alt boşluk sabit barı açacak kadar
                (96px) büyüdü ki son kart barın altında kalmasın.
              • Dışına tıklayınca kapanma kalktı: artık bir ekran, kazara
-               kapanmamalı; çıkış üst soldaki geri oku ve alt bar.
-             Native'de eski modal davranışı aynen korunuyor. */
+               kapanmamalı; çıkış alt bar (bkz. madde 8: geri oku kaldırıldı). */
           style={{ position:"fixed",inset:0,
-            zIndex: isNative ? 10000 : 9990,
-            background: isNative ? "rgba(0,0,0,0.85)" : "#000000",
-            backdropFilter: isNative ? "blur(12px)" : undefined,
+            zIndex: 9990,
+            background: "#000000",
+            backdropFilter: undefined,
             display:"flex",alignItems:"flex-start",justifyContent:"center",
-            padding: isNative
-              ? (topNavVisible ? "calc(120px + var(--sat))" : "calc(76px + var(--sat))") + " 20px calc(20px + var(--android-sab)) 20px"
-              : (topNavVisible ? "calc(104px + var(--sat))" : "calc(60px + var(--sat))") + " 14px calc(96px + var(--android-sab)) 14px" }}>
+            padding: (topNavVisible ? "calc(104px + var(--sat))" : "calc(60px + var(--sat))") + " 14px calc(96px + var(--android-sab)) 14px" }}>
           {/* overscrollBehaviorY:contain → kart sonuna gelince kaydırma arkadaki
               .sakin-app-root'a ZİNCİRLENMEZ (arka plan oynamaz). */}
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:420,width:"100%",maxHeight:"100%",overflowY:"auto",overscrollBehaviorY:"contain",WebkitOverflowScrolling:"touch",display:"flex",flexDirection:"column",gap:14 }}>
@@ -7850,15 +7855,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 butonu yerine üst sola geri butonu koyalım"). Panel uzun olduğu için
                 alttaki "Kapat"a ulaşmak kaydırma gerektiriyordu; geri her zaman
                 görünür yerde. Başlık ortada kalsın diye sağda eşit genişlikte boşluk. */}
-            {/* WEB'de geri oku YOK (kullanıcı: "keşfetteki ve bağlan ekranındaki
-                geri oklarına gerek kalmadı"): alt bardaki 4 sekme her ekranda
-                sabit duruyor, çıkış zaten orada. Native'de bar farklı olduğu
-                için ok korunuyor. */}
+            {/* NATIVE→WEB TAŞIMA MADDE 8: geri oku her platformda kaldırıldı
+                (kullanıcı: "keşfetteki ve bağlan ekranındaki geri oklarına gerek
+                kalmadı"): alt bardaki 4 sekme artık her ekranda (native dahil)
+                sabit duruyor, çıkış zaten orada. */}
             <div style={{ display:"flex",alignItems:"center",marginBottom:8 }}>
-              {isNative ? (
-                <button onClick={()=>setShowAilesi(false)} aria-label={t("back")}
-                  style={{ width:40,flex:"0 0 40px",background:"none",border:"none",color:"#b0a8c8",fontSize:20,cursor:"pointer",padding:"6px 0",textAlign:"left",lineHeight:1 }}>←</button>
-              ) : <div style={{ width:40,flex:"0 0 40px" }} />}
+              <div style={{ width:40,flex:"0 0 40px" }} />
               <div style={{ flex:1,textAlign:"center" }}>
                 <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
                 <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
@@ -8051,42 +8053,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </button>
       )}
 
-      {/* PANİK BUTONU (NATIVE): yalnızca GİRİŞ ekranında sağ alt köşe. WEB'de bu
-          buton HAZIRIM'ın altına taşındı (kullanıcı: yeni yerleşim sadece web),
-          o yüzden burası artık isNative ile sınırlı. Tıklayınca en uygun
-          sakinleştirici nefesi (4-7-8) DOĞRUDAN başlatır; teknik premium olsa bile
-          panik istisnası ile çalışır. */}
-      {isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
-        <button
-          onClick={goPanicBreath}
-          aria-label={t("panic_aria")}
-          title={t("panic_aria")}
-          style={{
-            position:"fixed",
-            // Sağ alt köşe: giriş ekranında alt bar/yardım butonu yok, çakışma olmaz.
-            // 24px ekranın en altına çok yakındı (kullanıcı isteği), ~1cm (≈38px) yukarı çekildi.
-            bottom:"calc(62px + var(--android-sab))",
-            right:14, zIndex:9997,
-            display:"flex", alignItems:"center", gap:7,
-            padding:"8px 14px", borderRadius:100,
-            border:"1px solid rgba(224,120,120,0.5)",
-            background:"linear-gradient(135deg, rgba(224,110,110,0.42) 0%, rgba(120,40,40,0.72) 100%)",
-            backdropFilter:"blur(10px)",
-            color:"rgba(255,235,235,0.95)", fontSize:11.5, letterSpacing:1.5, lineHeight:1,
-            fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500,
-            animation:"panicPulse 2.5s ease-in-out infinite",
-            cursor:"pointer", whiteSpace:"nowrap",
-          }}
-        >
-          <span>{t("panic_button")}</span>
-        </button>
-      )}
+      {/* NATIVE→WEB TAŞIMA MADDE 1: eski sağ-alt panik rozeti KALDIRILDI, her
+          platformda artık HAZIRIM'ın altındaki "Nefes al" butonu kullanılıyor
+          (aşağıda, girisPhase==="intro" bloğunda, koşulsuz render edilir). */}
 
-      {/* DİL SEÇİCİ: WEB giriş ekranında SAĞ ÜST (kullanıcı: "açılıştaki dil
-          çubuğunu sağ üste al" + referans tasarım). Eskiden HAZIRIM'ın altındaydı
-          ve o alanı kalabalıklaştırıyordu. Native'de eski yerinde kaldı.
+      {/* DİL SEÇİCİ: giriş ekranında SAĞ ÜST (kullanıcı: "açılıştaki dil
+          çubuğunu sağ üste al" + referans tasarım, artık her platformda).
           Giriş ekranında üst nav barı zaten gizli, burası boş; çakışma yok. */}
-      {!isNative && screen === "giris" && !embeddedApp && !mirrorPortalActive && (
+      {screen === "giris" && !embeddedApp && !mirrorPortalActive && (
         <div style={{ position:"fixed",
             // Web'de üstte 44px'lik marka/politika nav barı var; 10px'e koyunca dil
             // seçici onun ALTINDA kalıp yarısı görünmüyordu (screenshot ile yakalandı).
@@ -9035,8 +9009,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Bağlan/Harita/Keşfet zaten dörtlü alt barda; adım ekranlarında o bar
           // gizlense de ⌂ ana sayfa ikonu artık dörtlü ekrana döndürüyor, yani
           // kullanıcı akışta kilitli kalmıyor (bu ikisi birlikte çalışır).
-          const menuItems = SIDEBAR_ITEMS.filter(n =>
-            n.id !== "giris" && (isNative || !["mandala","harita","ailesi"].includes(n.id)));
           // WEB: ⌂ ve ☰ SADECE "Ben" sekmesinde (kullanıcı isteği). Diğer
           // ekranlarda üst bar tamamen boşalıyor; gezinme zaten alt bardaki 4
           // sekme ve Bağlan'daki üst adım şeridiyle yapılıyor, üstte ikinci bir
@@ -9048,130 +9020,31 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             <>
               {homeItem && renderBtn(homeItem)}
               <div style={{ position:"relative", flex:"0 0 auto", marginLeft:"auto" }}>
-                {/* WEB: ☰ (üç çizgi + açılır menü) tamamen kaldırıldı. Menüdeki
-                    dört madde (Terimler/Yolculuk/Sakin Nedir/Ayarlar) zaten
-                    Ayarlar'ın içinde duruyordu, yani menü sadece Ayarlar'a giden
-                    dolambaçlı bir yoldu (kullanıcı: "hamburger açılmaz, ayarlar
-                    butonuna tıklanır doğrudan ayarlar açılır"). İkon da o yüzden
-                    ⚙'e döndü, artık ne açtığını gösteriyor.
-                    NATIVE: eski ☰ + açılır menü davranışı DOKUNULMADAN duruyor
-                    (Bağlan/Ben/Keşfet kısayolları + tema anahtarı hâlâ orada;
-                    Ayarlar web'e özel ayrı bir sayfa, native'de yok). */}
+                {/* NATIVE→WEB TAŞIMA MADDE 6: ☰ (üç çizgi + açılır menü) her
+                    platformda kaldırıldı, DOĞRUDAN Ayarlar'a gider. Menüdeki
+                    maddeler (Terimler/Yolculuk/Sakin Nedir/tema/Satın Alımları
+                    Geri Yükle/Aboneliği Yönet) zaten Ayarlar'ın içinde duruyor
+                    (kullanıcı: "hamburger açılmaz, ayarlar butonuna tıklanır
+                    doğrudan ayarlar açılır"). İkon o yüzden ⚙'e döndü, artık ne
+                    açtığını gösteriyor. Eskiden native burada AYRI bir açılır
+                    menü tutuyordu (showTopMenu + createPortal); Ayarlar artık
+                    her platformda aynı yoldan açıldığı için o menü kaldırıldı. */}
                 <button
-                  onClick={()=>{ if (isNative) { setShowTopMenu(v=>!v); return; }
-                    try{haptic();}catch(_){} setShowAilesi(false); setScreen("ayarlar"); }}
-                  aria-label={isNative ? t("nav_menu") : pickLang(TAB_TXT.ayarlar, lang)}
+                  onClick={()=>{ try{haptic();}catch(_){} setShowAilesi(false); setScreen("ayarlar"); }}
+                  aria-label={pickLang(TAB_TXT.ayarlar, lang)}
                   style={{
                     width:48, minHeight:38, padding:"7px 0", display:"flex", alignItems:"center", justifyContent:"center",
                     borderRadius:20, cursor:"pointer", transition:"all 0.25s",
-                    background: (isNative ? showTopMenu : screen==="ayarlar") ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
-                    border: (isNative ? showTopMenu : screen==="ayarlar") ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
+                    background: screen==="ayarlar" ? "rgba(184,164,216,0.18)" : "rgba(255,255,255,0.05)",
+                    border: screen==="ayarlar" ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
                     color:"rgba(228,218,245,0.9)",
                   }}>
-                  {isNative ? (
-                    // ☰ glyph kutuda optik ortalı değildi → SVG hamburger ile tam ortalı.
-                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
-                      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-                    </svg>
-                  ) : (
-                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
-                      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
-                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-                        stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  )}
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                      stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </button>
-                {/* Menü + dışına-tıkla katmanı createPortal ile document.body'ye taşınır.
-                    KÖK SEBEP: üst bar div'inde backdrop-filter var; bu, içindeki
-                    position:fixed katmanı üst bar alanına HAPSEDER → "dışına tıkla kapat"
-                    tüm ekranı kaplamaz, sadece üç-çizgiye basınca kapanırdı (kullanıcı:
-                    "pop-up dışındaki her yere tıklandığında kapansın"). Portal ile katman
-                    gerçekten tüm ekranı kaplar. */}
-                {showTopMenu && createPortal(
-                  <>
-                  <div onClick={()=>setShowTopMenu(false)} style={{ position:"fixed", inset:0, zIndex:10010 }} />
-                  <div onClick={e=>e.stopPropagation()}
-                    style={{ position:"fixed", top: topNavVisible ? "calc(96px + var(--sat))" : "calc(52px + var(--sat))", right:10, minWidth:180, zIndex:10011,
-                      background:"rgba(12,8,20,0.98)", backdropFilter:"blur(20px)",
-                      border:"1px solid rgba(255,255,255,0.12)", borderRadius:14,
-                      boxShadow:"0 8px 32px rgba(0,0,0,0.6)", padding:6,
-                      display:"flex", flexDirection:"column", gap:2 }}>
-                    {menuItems.map(n => {
-                      // Aktif = sadece içinde olunan menü (renderBtn ile aynı kural).
-                      const active = n.id==="ailesi" ? showAilesi : (!showAilesi && screen===n.id);
-                      return (
-                        <button key={n.id} onClick={()=>handleNavClick(n)}
-                          style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                            background: active ? `${n.color}22` : "transparent", border:"none", borderRadius:10,
-                            cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                            color: active ? n.color : n.color, textAlign:"left", width:"100%" }}>
-                          <span style={{ fontSize:15, lineHeight:1 }}>{n.icon}</span>
-                          <span>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>
-                        </button>
-                      );
-                    })}
-                    {/* TERİMLER / YOLCULUK / SAKİN NEDİR? / AYARLAR: hamburger
-                        dropdown'undan KALDIRILDI (kullanıcı: "zaten ayarlarda
-                        hepsi varsa hamburgerde gerek yok"). Web'de ☰ butonunun
-                        kendisi artık doğrudan Ayarlar'a gidiyor (aşağıdaki
-                        buton), bu yüzden bu dropdown web'de hiç açılmıyor;
-                        dört buton da Ayarlar'ın GENEL grubunda duruyor. */}
-                    {/* ── APP STORE ZORUNLULARI (NATIVE) ────────────────────
-                        Ayarlar sayfası şimdilik web'e özel (taşıma listesi
-                        CLAUDE.md'de). Ama iki madde mağaza kuralı:
-                          3.1.1  "Satın Alımları Geri Yükle" bulunabilir olmalı.
-                                 Yeni cihaza geçen abone bunu arıyor, native'de
-                                 yalnızca fiyat ekranında vardı, oraya da ancak
-                                 premium olmayan biri giriyor.
-                          3.1.2  Abonelik yönetimi kolay ulaşılabilir olmalı.
-                                 Native'de HİÇ yoktu.
-                        Ayarlar native'e açıldığında bu blok kaldırılabilir,
-                        aynı ikisi orada da var (GENEL > ÖDEME grubunda). */}
-                    {isNative && (<>
-                      <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
-                      <button onClick={()=>{ try{haptic();}catch(_){} setShowTopMenu(false); handleRestore(); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background:"transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
-                        <span style={{ fontSize:15, lineHeight:1 }}>⟳</span>
-                        <span>{t("premium_restore").toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                      <button onClick={()=>{
-                          try{haptic();}catch(_){}
-                          setShowTopMenu(false);
-                          let android = false;
-                          try { android = Capacitor.getPlatform() === "android"; } catch(_) {}
-                          const url = android
-                            ? "https://play.google.com/store/account/subscriptions"
-                            : "https://apps.apple.com/account/subscriptions";
-                          try { window.open(url, "_blank", "noopener"); } catch(_) {}
-                        }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background:"transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
-                        <span style={{ fontSize:15, lineHeight:1 }}>▤</span>
-                        <span>{pickLang(SET_TXT.abonelik, lang).toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    </>)}
-                    {/* Açık/koyu tema: NATIVE'de menünün EN ALTINDA kalır.
-                        Web'de Ayarlar sayfasına taşındı (kullanıcı: "renk modu"). */}
-                    {isNative && (<>
-                      <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
-                      <button onClick={()=>{ toggleTheme(); setShowTopMenu(false); }}
-                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
-                          background: lightMode ? "rgba(240,200,140,0.16)" : "transparent", border:"none", borderRadius:10,
-                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
-                          color: lightMode ? "#e8b478" : "rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
-                        <span style={{ fontSize:15, lineHeight:1 }}>◐</span>
-                        <span>{(lightMode ? t("theme_light") : t("theme_dark")).toLocaleUpperCase(t("locale_code"))}</span>
-                      </button>
-                    </>)}
-                  </div>
-                  </>,
-                  document.body
-                )}
               </div>
             </>
           );
@@ -9620,34 +9493,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     sonrası doğum bilgilerini sorma, kullanıcı yorulmamış olur").
                     Bilgi, gerçekten gerektiği anda isteniyor: harita ve İçsel Ayna.
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
-                {/* ⚠️ YENİ GİRİŞ YERLEŞİMİ = SADECE WEB (kullanıcı: "bu istekleri
-                    sadece webe uygula"). Native (iOS/Android) mağazadaki düzeni
-                    birebir korur; web'de yeni tasarım denenir. Değişen TEK şey
-                    konumlandırma: elmas dönmesi, "Sakin" yazısı ve tagline aynı.
-                    Web: HAZIRIM tam genişlik + altında "Nefes al" + dil sağ üstte.
-                    Native: HAZIRIM eski genişliği + altında dil + sağ altta panik. */}
+                {/* NATIVE→WEB TAŞIMA MADDE 1: yeni giriş yerleşimi artık HER
+                    PLATFORMDA. Elmas dönmesi, "Sakin" yazısı ve tagline hiç
+                    değişmedi; değişen konumlandırma: HAZIRIM tam genişlik +
+                    altında "Nefes al" + dil sağ üstte (üstteki dil seçici bloğu). */}
                 <button className="sakin-btn-primary"
-                  style={isNative ? undefined : { width:"100%",display:"block",boxSizing:"border-box" }}
+                  style={{ width:"100%",display:"block",boxSizing:"border-box" }}
                   onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
-                {/* WEB: panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
+                {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
                     Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır. */}
-                {!isNative && (
-                  <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
-                    style={{ marginTop:16,padding:"12px 34px",borderRadius:100,
-                      border:"1px solid rgba(224,168,96,0.55)",background:"transparent",
-                      WebkitAppearance:"none",appearance:"none",
-                      color:"rgba(240,200,150,0.92)",fontSize:13,letterSpacing:2.5,
-                      fontFamily:"'Jost',sans-serif",fontWeight:300,textTransform:"uppercase",
-                      cursor:"pointer",whiteSpace:"nowrap",minHeight:44 }}>
-                    {pickLang(PANIC_ENTRY_TXT, lang)}
-                  </button>
-                )}
-                {/* NATIVE: dil seçici eski yerinde (HAZIRIM'ın altı) kalır. */}
-                {isNative && (
-                  <div style={{ marginTop:24,display:"flex",justifyContent:"center",gap:12 }}>
-                    <LangPicker lang={lang} setLang={setLang} />
-                  </div>
-                )}
+                <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
+                  style={{ marginTop:16,padding:"12px 34px",borderRadius:100,
+                    border:"1px solid rgba(224,168,96,0.55)",background:"transparent",
+                    WebkitAppearance:"none",appearance:"none",
+                    color:"rgba(240,200,150,0.92)",fontSize:13,letterSpacing:2.5,
+                    fontFamily:"'Jost',sans-serif",fontWeight:300,textTransform:"uppercase",
+                    cursor:"pointer",whiteSpace:"nowrap",minHeight:44 }}>
+                  {pickLang(PANIC_ENTRY_TXT, lang)}
+                </button>
                 {!isNative && (
                   <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
                     <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
@@ -9775,14 +9638,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           {/* Alt boşluk 90 → 150px: "Güne devam et" butonu alttaki adım göstergesi
               (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
           <div style={{maxWidth:400,width:"100%",padding:"54px 20px 150px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
-            {/* Back button: WEB'de YOK (kullanıcı isteği): Bağlan artık alt
-                bardaki ilk sekme, üstünde de adım şeridi var; ok gereksiz. */}
-            {isNative && (
-              <button onClick={()=>goBack("sabah")}
-                style={{ position:"absolute",top:14,left:14,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",borderRadius:"50%",width:40,height:40,cursor:"pointer",color:"#ddd",fontSize:18,fontWeight:700,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",paddingRight:2,zIndex:10 }}>
-                ←
-              </button>
-            )}
+            {/* NATIVE→WEB TAŞIMA MADDE 8: Back button her platformda KALDIRILDI
+                (kullanıcı isteği): Bağlan artık alt bardaki ilk sekme, üstünde
+                de adım şeridi var; ok gereksiz. */}
             {/* Title + ILERLEME YUZDESI.
                 ESKİDEN BURADA 4'LÜ SAYAÇ VARDI (gün serisi · en iyi · adım ·
                 frekans). Kullanıcı: "gün serisi, en iyi, adım, frekans
@@ -13478,37 +13336,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* PROGRESS STRIP: 9 adım (sabah…keşfet). mandala/harita ekranlarında da görünür. */}
-      {/* Adım noktaları + alt gezinme: yalnızca KAYDIRMA ZİNCİRİNDEKİ ekranlarda.
-          "mandala" (bağlan) zincirden çıkarıldığı için buradan da çıkarıldı, 
-          yoksa zincir dışı bir ekranda "N · ADIM" göstergesi kafa karıştırırdı. */}
-      {/* Adım göstergesi eski 6'lı barla BİRLİKTE gelir (ekteki referans düzen).
-          Native: eskisi gibi. Web: yalnızca günün adım ekranlarında: "harita"
-          web'de artık "Ben" sekmesi ve orada dörtlü menü var, göstergeye gerek yok. */}
-      {isNative && ["sabah","nefes","ses","chakra","gun","aksam","harita"].includes(screen) && (
-        <div className="sakin-progress-strip" style={{ position:"fixed",bottom:"calc(76px + var(--sab))",left:"50%",transform:"translateX(-50%)",zIndex:9998,display:"flex",alignItems:"center",gap:5,background:"rgba(0,0,0,0.85)",backdropFilter:"blur(16px)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"5px 14px" }}>
-          {NAV_STEPS.map((s,i) => {
-            // Geçilen adımlar dolu, bulunulan adım geniş, navigasyon ilerlemesine göre.
-            const done = i < (currentStepIndex - 1);
-            const isCurrent = i === (currentStepIndex - 1);
-            const stepColors = { sabah:"#f0a060",nefes:"#60b8e8",ses:"#a07ae0",chakra:"#b87adc",gun:"#e8d060",aksam:"#7ab0e0",mandala:"#b87adc",harita:"#82d9a3",ailesi:"#f0c060" };
-            const c = stepColors[s] || "#888";
-            return <div key={s} style={{ width:isCurrent?18:7,height:7,borderRadius:4,background:done?c:isCurrent?`${c}88`:"rgba(255,255,255,0.08)",transition:"all 0.3s",border:isCurrent?`1px solid ${c}66`:"none" }} />;
-          })}
-          <span style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2,color:"rgba(255,255,255,0.35)",marginLeft:4,whiteSpace:"nowrap" }}>{currentStepIndex}</span>
-        </div>
-      )}
+      {/* Eski 9-noktalı "progress strip" (native-only nokta göstergesi) native→web
+          taşıma madde 3 kapsamında KALDIRILDI. Yerine artık her platformda üstteki
+          yatay kaydırılabilir adım şeridi var (bkz. stepStripVisible). */}
 
-      {/* ── DÖRTLÜ ANA MENÜ · WEB ── Artık HER ekranda aynı (adım ekranları
-          dahil): adımlar üstteki şeride taşındığı için alt bar hiç değişmiyor.
-          Böylece "hangi menüdeyim" karışıklığı ortadan kalkıyor ve kullanıcı
-          günün akışındayken de Keşfet/Ayna/Ben'e tek dokunuşla geçebiliyor. */}
+      {/* ── DÖRTLÜ ANA MENÜ ── Artık HER platformda ve HER ekranda aynı (adım
+          ekranları dahil): adımlar üstteki şeride taşındığı için alt bar hiç
+          değişmiyor. Böylece "hangi menüdeyim" karışıklığı ortadan kalkıyor ve
+          kullanıcı günün akışındayken de Keşfet/Ayna/Ben'e tek dokunuşla
+          geçebiliyor (native→web taşıma madde 2: eskiden native'de bunun yerine
+          aşağıdaki eski 6'lı bar vardı, o kaldırıldı). */}
       {/* "ayarlar" LİSTEDEN ÇIKARILDI: alt bar orada da görünsün. Ayarlar ☰'den
           açılıyor ve ☰ yalnızca Ben'de olduğu için sayfa çıkışsız kalıyordu
           (kullanıcı bildirdi). Politika sayfalarında bar hâlâ gizli, onların
           çıkışı üstteki marka nav'ındaki "← SAKİN". */}
-      {!isNative
-        && !["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
+      {!["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
           border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 6px",
@@ -13566,37 +13408,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* BOTTOM NAV: ESKİ 6'LI BAR (mağaza tasarımı, değişmedi).
-          Native: her zamanki gibi tüm akış ekranlarında.
-          Web: SADECE günün adım ekranlarında: "Bugün"e girilince dörtlü menü
-          kaybolur ve buradaki eski menü aynen devralır (kullanıcı isteği). */}
-      {isNative
-          && !["giris","mandala","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
-        <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:100,padding:"6px 8px",maxWidth:"calc(100vw - 24px)" }}>
-          {NAV.map(n=>{
-            const active = screen===n.id;
-            const sabahHint = n.id==="sabah" && screen==="rehber";
-            return (
-              <button key={n.id} onClick={()=>{ setScreen(n.id); }}
-                style={{
-                  background: active ? `${n.color}22` : sabahHint ? `${n.color}12` : "transparent",
-                  border: active ? `1px solid ${n.color}44` : sabahHint ? `1px solid ${n.color}33` : "1px solid transparent",
-                  borderRadius:22,
-                  cursor: n.id==="sabah" && stepsCompleted["sabah"] ? "not-allowed" : "pointer",
-                  transition:"background 0.5s ease, border 0.5s ease",
-                  padding:"8px 12px",
-                  display:"flex",flexDirection:"column",alignItems:"center",gap:3,
-                  minWidth:48,
-                  opacity: n.id==="sabah" && stepsCompleted["sabah"] ? 0.32 : 1,
-                  animation: sabahHint ? "navSoftPulse 2.5s ease-in-out infinite" : "none",
-                }}>
-                <span style={{ fontSize:active?18:15, color: active ? n.color : sabahHint ? n.color : `${n.color}55`, transition:"color 0.5s ease", lineHeight:1 }}>{n.icon}</span>
-                <span style={{ fontFamily:"'Jost',sans-serif",fontWeight:500,fontSize:11,letterSpacing:0.8,color:active?n.color:sabahHint?n.color:`${n.color}55`,transition:"color 0.5s ease",lineHeight:1,whiteSpace:"nowrap" }}>{(n.label||"").toLocaleUpperCase(t("locale_code"))}</span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {/* Eski 6'lı alt bar (mağaza tasarımı) native→web taşıma madde 2 kapsamında
+          KALDIRILDI. Yerine artık her platformda yukarıdaki dörtlü menü var. */}
 
       {/* FLOATING HELP BUTTON: SADECE NATIVE. Web'de bu kırmızı "?" balonu
           kaldırıldı; terimler sözlüğü ☰ menüsüne "TERİMLER" adıyla taşındı
