@@ -1,6 +1,11 @@
-// Günün sözü havuzu — Anadolu derviş geleneği, Yunus Emre AĞIRLIKTA (~%33).
-// Kaynak-dengeli: her kaynak en fazla CAP söz katkısı verir (böylece hiçbir isim —
-// özellikle Mevlana — baskın olmaz), Yunus ise havuzun ~1/3'ünü doldurur.
+// Günün sözü havuzu: iki damar bir arada.
+//   1) Anadolu damarı: Mevlana, Yunus, Şems, Hacı Bektaş, Aşık Veysel, Tasavvuf
+//      geleneği (tanınmayan ozanlar kullanıcı isteğiyle havuzdan çıkarıldı).
+//   2) Ev metaforu damarı: Stoacılık temel, Budizm duvarlar, Taoizm pencereler,
+//      Schopenhauer yatak odası, Jung bodrum (gölge), Gestalt eşik (şimdi).
+//      Bu kayıtların `room` alanı hangi odaya ait olduklarını söyler.
+// Kaynak-dengeli: her kaynak en fazla CAP söz katkısı verir (böylece hiçbir isim,
+// özellikle Mevlana, baskın olmaz), Yunus ise havuzun ~1/4'ünü doldurur.
 //
 // İçerik tonu: "din ve Allah" vaaz eden / akaid-zühd sözler yerine ŞİİRSEL ve
 // HAYATA dair derviş sözleri öne çıksın (kullanıcı isteği). Aşağıdaki BLOCKLIST
@@ -33,8 +38,8 @@ export function buildQuotePool(quotes: { id: string; source: string }[]): string
     others.push(...bySource[s].slice(0, CAP));
   }
 
-  // Yunus'u ~%25'e getir: hâlâ en ağırlıklı tek isim ama havuzu domine etmez
-  // (kullanıcı isteği: az bilinen dervişlere yer açıldı, Yunus biraz azaldı).
+  // Yunus'u ~%25'e getir: hâlâ en ağırlıklı tek isim ama havuzu domine etmez.
+  // Kalanın yaklaşık üçte biri ev metaforu odalarından gelir.
   const yunusSlots = yunus.length ? Math.round(others.length / 3) : 0;
   const yunusPool: string[] = [];
   for (let i = 0; i < yunusSlots; i++) yunusPool.push(yunus[i % yunus.length]);

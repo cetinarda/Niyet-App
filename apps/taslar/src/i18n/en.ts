@@ -25,7 +25,7 @@ export const en = {
       quote: {
         title: 'Words',
         short: 'WORD',
-        subtitle: 'From Anatolian wisdom',
+        subtitle: 'From the wisdom traditions',
       },
     },
     tapHint: 'shake · tap',

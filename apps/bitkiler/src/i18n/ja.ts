@@ -25,7 +25,7 @@ export const ja = {
       quote: {
         title: 'ルーミー',
         short: 'ルーミー',
-        subtitle: 'ルーミーからの答え',
+        subtitle: '叡智の伝統より',
       },
     },
     tapHint: '振る · タップ',

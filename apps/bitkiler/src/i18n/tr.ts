@@ -25,7 +25,7 @@ export const tr = {
       quote: {
         title: 'Sözler',
         short: 'SÖZ',
-        subtitle: 'Anadolu bilgeliğinden',
+        subtitle: 'Bilgelik geleneklerinden',
       },
     },
     tapHint: 'salla · dokun',
