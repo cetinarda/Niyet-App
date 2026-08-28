@@ -319,19 +319,26 @@ const WHATS_NEW = {
   },
   items: {
     tr:["Kartı bir kez açtın mı gün bitene kadar açık kalıyor, tekrar sallaman gerekmiyor",
-        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında"],
+        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında",
+        "Arayüzde düzenlemeler: bölümlere erişim daha zarif"],
     en:["Once you open a card it stays open until the day ends, no need to shake again",
-        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus"],
+        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus",
+        "Interface refinements: reaching each section feels more elegant"],
     de:["Einmal geöffnet, bleibt die Karte bis zum Tagesende offen, kein erneutes Schütteln nötig",
-        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus"],
+        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus",
+        "Feinschliff an der Oberfläche: der Weg zu den Bereichen ist eleganter"],
     es:["Una vez abierta, la carta queda abierta hasta el final del día, sin volver a agitar",
-        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus"],
+        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus",
+        "Ajustes en la interfaz: llegar a cada sección resulta más elegante"],
     pt:["Depois de aberta, a carta fica aberta até ao fim do dia, sem precisares de agitar outra vez",
-        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus"],
+        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus",
+        "Ajustes na interface: chegar a cada secção ficou mais elegante"],
     fr:["Une fois ouverte, la carte reste ouverte jusqu'à la fin de la journée, sans avoir à secouer de nouveau",
-        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus"],
+        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus",
+        "Retouches d'interface : accéder à chaque section est plus élégant"],
     ja:["一度開いたカードはその日が終わるまで開いたまま、もう振らなくて大丈夫",
-        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に"],
+        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に",
+        "画面まわりの調整：各セクションへの導線がより上品に"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
@@ -365,29 +372,49 @@ const AI_LANG_NAMES = { en:"English", tr:"Turkish", de:"German (Deutsch)", es:"S
 // besle" diye veriliyor. AYNI KULLANICI için son 3 seçim hafızada tutulup
 // (localStorage) tekrar seçilmiyor, yani art arda gelen çağrılarda GERÇEK
 // bir tekrar önleme var, sadece "şansa" bırakılmıyor.
-const AYNA_IMGE_ALANLARI = {
+// DEĞİŞTİ (kullanıcı: "özgünleştir ama şiirsel olması özgün anlamına gelmiyor,
+// dürüst samimi doğrudan cevaplar versin"). Burası eskiden bir DOĞA İMGESİ
+// havuzuydu ("akan su", "gece göğü"…) ve modele "açılışını ve ana metaforunu
+// buradan besle" deniyordu. Sonuç: soru ne olursa olsun her yanıt bir nehir ya
+// da mum alevi benzetmesiyle açılıyordu. Tekrarı önlüyordu ama yanıtı da
+// süslüyordu, oysa istenen dürüst ve doğrudan cevap.
+// Artık havuz YAKLAŞIM AÇISI döndürüyor: yanıtın nereden başlayacağını
+// değiştiriyor, nasıl SÜSLENECEĞİNİ değil. Tekrar önleme aynen sürüyor.
+const AYNA_YAKLASIMLAR = {
   tr: [
-    "akan su ve nehir yatağı", "dağ ve kayalık zirve", "ateş ve kor",
-    "rüzgâr ve nefes", "mevsim geçişleri", "kök ve toprak",
-    "gece göğü ve yıldızlar", "kuş uçuşu ve göç", "bahçe ve filizlenen tohum",
-    "deniz ve dalga", "iplik, dokuma, örgü", "eşik ve kapı",
-    "şafak ve alacakaranlık", "orman ve gölge oyunu", "taş işçiliği ve yontma",
-    "hasat ve olgunlaşma", "yağmur sonrası toprak kokusu", "mumun alevi",
+    "kişinin kendi kelimelerinden birini alıp oradan başla",
+    "sorunun altındaki asıl soruyu isimlendirerek başla",
+    "kaçındığı şeye nazikçe ama doğrudan işaret ederek başla",
+    "bedende nerede hissedildiğinden başla",
+    "en pratik, bugün yapılabilir olandan başla",
+    "kişiye geri sorulacak tek bir soruyla başla",
+    "durumu sadeleştirip tek cümlede özetleyerek başla",
+    "onu haklı çıkaran yanı önce teslim ederek başla",
+    "yaygın bir yanlış anlamayı düzelterek başla",
+    "ne zaman başladığına, zamanlamaya bakarak başla",
+    "burada neyin kişinin elinde olduğunu ayırarak başla",
+    "söylenmemiş olanı adlandırarak başla",
   ],
   en: [
-    "flowing water and riverbeds", "mountains and rocky peaks", "fire and embers",
-    "wind and breath", "seasonal transitions", "roots and soil",
-    "night sky and stars", "birds in flight, migration", "gardens and sprouting seeds",
-    "the sea and its waves", "thread, weaving, knots", "thresholds and doorways",
-    "dawn and dusk", "forests and shifting shadow", "stone carving and craftsmanship",
-    "harvest and ripening", "petrichor after rain", "a candle flame",
+    "start from one of the person's own words",
+    "start by naming the real question under the question",
+    "start by pointing gently but directly at what they are avoiding",
+    "start from where it is felt in the body",
+    "start from the most practical thing they can do today",
+    "start with a single question back to them",
+    "start by reducing the situation to one clear sentence",
+    "start by granting the part where they are right",
+    "start by correcting a common misunderstanding",
+    "start from the timing, from when this began",
+    "start by separating what is actually in their hands",
+    "start by naming what has gone unsaid",
   ],
 };
 // Aynı kullanıcı icin son 3 secimi hatirlar, onlari havuzdan cikarir. Tum
 // liste yakin zamanda tuketildiyse (18 cagriyi asan bir seri, nadir) yine
 // de bir sey donmesi icin tum havuza geri doner.
 function nextCreativeDomain(lang) {
-  const list = AYNA_IMGE_ALANLARI[lang] || AYNA_IMGE_ALANLARI.en;
+  const list = AYNA_YAKLASIMLAR[lang] || AYNA_YAKLASIMLAR.en;
   const key = "sakin_ai_domain_recent";
   let recent = [];
   try { recent = JSON.parse(localStorage.getItem(key) || "[]"); } catch (_) {}
@@ -400,8 +427,8 @@ function nextCreativeDomain(lang) {
 function domainDirective(lang, domain) {
   if (!domain) return "";
   return lang === "tr"
-    ? `\nBu yanıtın açılışını ve ana imgesini şuradan besle: "${domain}". Bu alanın adını doğrudan yazma, sadece atmosferini ve metaforunu doğal biçimde kullan; zorlama benzetme yapma.`
-    : `\nDraw this response's opening and central image from: "${domain}". Do not name this domain directly; let its atmosphere and metaphor flow naturally, without forcing the comparison.`;
+    ? `\nBu yanıta şöyle gir: ${domain}. Bunu bir talimat gibi yazma, sadece açılışın yerini belirlesin. Süslü benzetme, doğa metaforu veya şiirsel giriş ARAMA.`
+    : `\nEnter this response this way: ${domain}. Do not state this as an instruction; let it only decide where the opening lands. Do NOT reach for ornate similes, nature metaphors or a poetic lead-in.`;
 }
 
 // AI prompt'ları dile göre TAMAMEN ayrı. Daha önce Türkçe gövde + sadece tek satır
@@ -415,15 +442,15 @@ function buildMirrorSystemPrompt(lang, domain = "") {
   if (lang === "tr") {
     return `Sen derin bir ayna ve enerji rehberisin. YALNIZCA Türkçe yaz; ş, ğ, ı, ü, ö, ç, Ş, Ğ, İ, Ü, Ö, Ç gibi Türkçe karakterleri eksiksiz ve doğru kullan. Arapça, Japonca, Çince veya başka alfabe kullanma. YABANCI KELİME YASAK: İngilizce dahil hiçbir yabancı dilden tek kelime bile kullanma, sadece Türkçe sözcükler. "Sen" diye hitap et. Asla tıbbi tavsiye verme, teşhis koyma, tedavi önerme. Yanıtının sonuna mutlaka şunu ekle: "Bu içerik bilgilendirme amaçlıdır, tıbbi tavsiye değildir. Sağlık sorunlarında bir uzmana danışın."
 ÇIKTI TEMİZLİĞİ (kesinlikle uy): Sayarken son öğeden önce virgül KULLANMA, sadece "ve" ile bağla; doğrusu "nar, greyfurt ve zencefil", YANLIŞI "nar, greyfurt, ve zencefil". Var olmayan, uydurma veya bozuk kelime/marka adı üretme (ör. bir besin veya bitki adından emin değilsen yaygın bilinen, gerçek bir örnek kullan). Hiçbir kelimeye nokta ile kısaltma veya alan adı gibi bir ek ekleme (ör. ".ai", ".com"). Aynı harf veya heceyi art arda tekrarlama. UZUN TİRE (-) KULLANMA; cümleleri virgül, nokta veya iki nokta üst üste ile bağla. "Sadece X değil, aynı zamanda Y" kalıbını kullanma.
-Dil tonu: Kendinden emin, net, şiirsel ve şefkatli. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
-ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN; "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
+Dil tonu: DÜRÜST, SAMİMİ, DOĞRUDAN. Şiir yazmıyorsun, cevap veriyorsun. Soruyu ne gerekiyorsa onunla karşıla: gereken kısaysa kısa, uzun açıklama gerekiyorsa uzun. Uzatma, dolgu cümle kurma, aynı şeyi başka kelimelerle tekrar etme. Süslü benzetme ve doğa metaforu arama; bir imge ancak anlamı GERÇEKTEN netleştiriyorsa girsin. Şefkatli ol ama yumuşatmak için gerçeği eğip bükme. Bilgiyi doğrudan ver. Şu kalıpları kesinlikle kullanma: "olası ki", "olabilir", "belki", "belki de", "acaba", "düşünülebilir", "söylenebilir", "diyebiliriz", "ihtimal", "muhtemelen". Cümleler kararlı ve içten olsun.
+ÖZGÜNLÜK (çok önemli): Her yanıt biricik olsun. Özgünlük ŞİİRSELLİK DEMEK DEĞİL: farklı imge aramak değil, o kişinin gerçek durumuna farklı ve doğru açıdan bakmak demek. Kalıp cümlelerden, klişelerden, hazır açılışlardan KAÇIN; "Sevgili ruh", "Değerli yolcu" gibi şablon hitaplar kullanma. Kişinin SOMUT verisine (gerçek sorusu, kelimeleri, doğum bilgisi, o anki durumu) doğrudan atıf yap; genel-geçer, herkese uyan laflar etme. Açılışı, yapıyı, ritmi ve imgeleri her seferinde değiştir; aynı cümleleri asla tekrarlama. Bu kişiye ve bu ana özel yaz.
 Kişinin sorusunun kaynağına nokta atışı işaret et. Nereye bakabileceğini ve kendine nasıl sevgi sunabileceğini hatırlat.${domainDirective("tr", domain)}`;
   }
   const name = AI_LANG_NAMES[lang] || "English";
   return `You are a deep mirror and energy guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE RESPONSE ONLY IN ${name}. Every single sentence, including disclaimers, opening lines, and any quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's question. Use ONLY ${name} words and letters; insert no words from English or any other language. Address the reader using the equivalent of informal "you" in ${name}. Never give medical advice, never diagnose, never prescribe treatment. At the very END of your response, add this exact sentence translated naturally into ${name}: "This content is for informational purposes only, not medical advice. Consult a professional for health issues."
 OUTPUT HYGIENE: never invent a garbled or fake word/brand name (if unsure of a specific food or herb, use a common, real example instead). Never attach a dotted suffix to a word as if it were a domain or file extension (e.g. ".ai", ".com"). Never repeat the same letter or syllable in a run. Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
-Tone: confident, clear, poetic, compassionate. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
-ORIGINALITY (very important): Make every response one of a kind. Avoid stock phrases, clichés, and canned openings; never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
+Tone: HONEST, SINCERE, DIRECT. You are answering, not writing poetry. Meet the question with exactly what it needs: short when short is enough, longer when a real explanation is needed. Do not pad, do not restate the same point in new words. Do not reach for ornate similes or nature metaphors; let an image in only when it genuinely sharpens the meaning. Be compassionate without bending the truth to soften it. Deliver insight directly. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Sentences should be firm and warm.
+ORIGINALITY (very important): Make every response one of a kind. Originality is NOT poetry: it means looking at this person's real situation from a different and accurate angle, not hunting for fresh imagery. Avoid stock phrases, clichés, and canned openings; never use template salutations like "Dear soul" or "Beloved traveler". Refer directly to the person's SPECIFIC data (their actual question, their words, birth details, current situation); do not speak in generic, one-size-fits-all terms. Vary your opening, structure, rhythm and imagery every time; never repeat the same sentences. Write for this person, this moment.
 Pinpoint the source of the person's question. Remind them where to look inward and how to offer themselves love.${domainDirective(lang, domain)}`;
 }
 // Haftalık rapor (generateRapor) için dil-farkındalıklı sistem prompt'u.
@@ -6785,7 +6812,9 @@ ${facts}
     // haritaya dair sorular sorabiliyor (örnek sorular listesine eklendi).
     // Eksik veriler chartFacts() içinde zaten atlanıyor.
     const astroTxt = astro ? `Kullanıcının doğum haritası:\n${chartFacts()}${birthTime ? `\nDoğum Saati: ${birthTime}` : ""}
-Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen) bu verileri kullanarak SOMUT yanıtla. Genel geçer astroloji anlatma, ONUN haritasından konuş.` : "";
+HARİTAYI NE ZAMAN KULLANACAĞIN (kullanıcı isteği: "her seferinde burç yorumu ve element dağılımını anlatmasına gerek yok, sıkıyor"):
+Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen, burçlar) bu verileri kullanarak SOMUT yanıtla; genel geçer astroloji anlatma, ONUN haritasından konuş.
+Soru haritayla ilgili DEĞİLSE haritadan HİÇ bahsetme. Burcunu, elementini, yükselenini, hayat yolu sayısını sırf elinde var diye yanıta sokuşturma. Bağlantı zorlama, doğrudan cevap ver. Harita yalnızca yanıta gerçekten bir şey KATIYORSA girer, o zaman da tek cümleyle ve gerekçesiyle.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
     // Rüya modu: farklı bir yorum çerçevesi (Jung/Freud/Gestalt + şamanik
     // yansıma), besin/hareket/Reiki gibi fiziksel-şikayet odaklı bölümler
@@ -6828,7 +6857,10 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Soruyu/şikayeti, ilgili çakrayı, kaynak bilgeliğini ve doğum haritasını bir arada tut. Şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı: 6-7 cümle)
+(Soruya DOĞRUDAN cevap ver. Sorunun kaynağına net biçimde işaret et, kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat.
+Çakra, kaynak bilgeliği ve doğum haritası ZORUNLU DEĞİL: yalnızca bu soruya gerçekten bir şey katıyorlarsa gir, katmıyorsa hiç anma. Üçünü birden tıkıştırma.
+Uzunluk soruya göre değişsin: net bir soruysa 3-4 cümle yeter, karmaşık bir durumsa 7-8 cümleye kadar çıkabilirsin. Sabit bir uzunluk tutturmaya çalışma, dolgu cümle ekleme.
+Şiir yazma, dürüst ve doğrudan konuş.)
 
 **Senin için**
 Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
@@ -6837,7 +6869,7 @@ Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEF
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)`;
+(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından sade ve içten bir kapanış: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; içinde bir açılma doğarsa Cho Ku Rei ile onu mühürlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle. Süslemeden, kararlı bir tonla bitir.)`;
     try {
       const res = await aiFetch({
         method:"POST",

@@ -243,14 +243,13 @@ Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisi
   foreground doğrulaması sunucuya soruyor ve YALNIZCA `not_entitled`'da
   `revokeLocalPremium()` çağırıyor, yani revoke-only (App.jsx ~5262).
   Premium sadece iki yoldan verilir: kullanıcının Satın Al'ı veya Geri Yükle'si.
-- `H3`: `UIBackgroundModes=audio` **AÇIK, ama asıl sorun red riski değil:**
+- ~~`H3`: `UIBackgroundModes=audio`~~ **KAPANDI, KULLANICI KARARI.**
   `AppDelegate.swift` açılışta `AVAudioSession.setCategory(.playback)` + `setActive(true)`
-  yapıyor. `.playback` karışmayan (non-mixing) bir kategori; oturum AÇILIŞTA aktif
-  edilince Sakin hiç ses çalmasa bile kullanıcının müziğini SUSTURUYOR. Önerilen
-  düzeltme: `setActive(true)` çalmaya başlarken, `setActive(false, .notifyOthersOnDeactivation)`
-  bitince. Arka plan modu kalsın (solfej/çakra seansları ekran kapalıyken sürüyor,
-  meşru kullanım), App Review notuna gerekçe yazılsın.
-  Dosya altın kural #7 kapsamında: onay + cihazda test olmadan değiştirme.
+  yapıyor; `.playback` karışmayan bir kategori olduğu için Sakin açılınca kullanıcının
+  müziği susuyor. Bu bir hata DEĞİL, TASARIM: "sakinleşmek için diğer seslerin
+  kapanması iyi" (kullanıcı, Ağu 2026). Apple da sorun etmiyor. Değiştirme.
+  Arka plan modu solfej/çakra seansları ekran kapalıyken sürsün diye gerekli;
+  `silence.wav` keep-alive'ı da bu zincirin parçası (App.jsx `startSilenceKeepAlive`).
 - Web/iOS branch tek noktada birleştirme (deploy branch'i main'e migrate).
   Kod tarafı hazır: `main` web-deploy-able ve gdkpd artık main'in aynısı.
   Kalan adım KULLANICIDA: Netlify production branch'ini `main` yapmak.
