@@ -87,7 +87,6 @@ export const de = {
       birthStoneTitle: 'Deine Geburtspflanze',
       zodiacLabel: 'Nach Sternzeichen',
       elementLabel: 'Nach Element',
-      elementHint: 'Jede Pflanze schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen - Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
     },
     elements: {
       fire: 'Feuer',

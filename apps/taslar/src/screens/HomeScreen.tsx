@@ -26,6 +26,7 @@ import philosophersData from '../data/philosophers.json';
 import { useSakinHayvanStore } from '../store/useStore';
 import { AnimalDetailScreen } from './AnimalDetailScreen';
 import { useI18n } from '../i18n/useI18n';
+import { trPossessive } from '../i18n/possessive';
 import { useLocalizedAnimals, useLocalizedQuotes, useLocalizedPhilosophers, useLocalizedStones } from '../i18n/localize';
 import { DisclaimerModal } from '../components/DisclaimerModal';
 import { shareCard, isShareable } from '../utils/shareCard';
@@ -569,7 +570,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                     contentContainerStyle={styles.scrollPad}
                     showsVerticalScrollIndicator={false}
                   >
-                    {step === 0 && stone && <StoneContent stone={stone} onOpenDetail={() => setShowAnimalDetail(true)} detailBtnLabel={t('home.detailBtn')} />}
+                    {step === 0 && stone && <StoneContent stone={stone} onOpenDetail={() => setShowAnimalDetail(true)} detailBtnLabel={(lang === 'tr' ? trPossessive(stone.name) : '') + t('home.detailBtn')} />}
                     {step === 1 && quote && <QuoteContent quote={quote} />}
                   </ScrollView>
                   <View style={{ flexDirection: 'row', gap: 8, alignItems: 'stretch' }}>
