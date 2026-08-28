@@ -177,7 +177,7 @@ function PlanetWithFallback({
   onClick: () => void;
   isSelected: boolean;
 }) {
-  // Suspense fallback için her gezegeni ayrı sar — biri başarısız olursa diğerleri görünür
+  // Suspense fallback için her gezegeni ayrı sar, biri başarısız olursa diğerleri görünür
   return (
     <Suspense
       fallback={
@@ -258,7 +258,7 @@ export default function Scene({ chart, onSelect, selected }: Props) {
         p.distance > 0 ? <OrbitRing key={`o-${p.key}`} distance={p.distance} /> : null,
       )}
 
-      {/* Sen — Dünya */}
+      {/* Sen: Dünya */}
       <Suspense fallback={<FallbackEarth />}>
         <EarthMesh />
       </Suspense>

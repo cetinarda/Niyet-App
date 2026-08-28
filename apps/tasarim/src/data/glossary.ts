@@ -30,7 +30,7 @@ function tr(s: string) {
   return s.toLocaleLowerCase('tr');
 }
 
-// Türkçe karakter normalize — arama için
+// Türkçe karakter normalize: arama için
 export function fold(s: string): string {
   return tr(s)
     .replace(/ı/g, 'i')
@@ -44,7 +44,7 @@ export function fold(s: string): string {
     .trim();
 }
 
-// EN sibling okuyucu — veri nesnesinden `<field>En` döndürür, yoksa TR'ye düşer.
+// EN sibling okuyucu: veri nesnesinden `<field>En` döndürür, yoksa TR'ye düşer.
 function en<T extends Record<string, any>>(obj: T, field: string): any {
   const v = obj[field + 'En'];
   return v !== undefined && v !== null && v !== '' ? v : obj[field];
@@ -157,8 +157,8 @@ function buildEntries(): GlossaryEntry[] {
       category: 'profil',
       categoryLabel: 'Profil',
       categoryLabelEn: 'Profile',
-      name: `${p.key} — ${p.name}`,
-      nameEn: `${p.key} — ${en(p, 'name')}`,
+      name: `${p.key}: ${p.name}`,
+      nameEn: `${p.key}: ${en(p, 'name')}`,
       subtitle: p.theme,
       subtitleEn: en(p, 'theme'),
       aliases: [p.key, p.name, `profil ${p.key}`],
@@ -193,8 +193,8 @@ function buildEntries(): GlossaryEntry[] {
       category: 'kapi',
       categoryLabel: 'Kapı',
       categoryLabelEn: 'Gate',
-      name: `Kapı ${g.number} — ${g.name}`,
-      nameEn: `Gate ${g.number} — ${en(g, 'name')}`,
+      name: `Kapı ${g.number}: ${g.name}`,
+      nameEn: `Gate ${g.number}: ${en(g, 'name')}`,
       subtitle: CENTERS[g.center].name,
       subtitleEn: en(CENTERS[g.center], 'name'),
       aliases: [`kapi ${g.number}`, g.name, `gate ${g.number}`],
@@ -220,8 +220,8 @@ function buildEntries(): GlossaryEntry[] {
       category: 'kanal',
       categoryLabel: 'Kanal',
       categoryLabelEn: 'Channel',
-      name: `${ch.id} — ${ch.name}`,
-      nameEn: `${ch.id} — ${en(ch, 'name')}`,
+      name: `${ch.id}: ${ch.name}`,
+      nameEn: `${ch.id}: ${en(ch, 'name')}`,
       subtitle: `${CENTERS[ch.centers[0]].name} ↔ ${CENTERS[ch.centers[1]].name}`,
       subtitleEn: `${en(CENTERS[ch.centers[0]], 'name')} ↔ ${en(CENTERS[ch.centers[1]], 'name')}`,
       aliases: [ch.id, ch.name, `kanal ${ch.id}`, `${ch.gates[0]}-${ch.gates[1]}`],

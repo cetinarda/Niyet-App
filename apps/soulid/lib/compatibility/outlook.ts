@@ -1,12 +1,12 @@
-// Karne "Uyum Ufku" — bu kişinin kimlerle anlaşacağının deterministik haritası.
+// Karne "Uyum Ufku": bu kişinin kimlerle anlaşacağının deterministik haritası.
 // Klasik astroloji geometrisi + Human Design tip dinamikleri + numeroloji
-// üçlüleri. AI yok, tekrar yok — kişinin GERÇEK haritasından türetilir.
+// üçlüleri. AI yok, tekrar yok, kişinin GERÇEK haritasından türetilir.
 //
 //  - AYNA EŞ: Yükselen'in karşısı (Descendant = 7. ev girişi, klasik "partner
 //    noktası"). Saat bilinmiyorsa Güneş'in karşısı.
-//  - KUTSAL BİRLEŞİM ADAYLARI: Güneş + Ay üçgenleri (aynı element — 120°,
+//  - KUTSAL BİRLEŞİM ADAYLARI: Güneş + Ay üçgenleri (aynı element, 120°,
 //    en akışkan rezonans).
-//  - DERS ORTAKLARI: Güneş karesi (90° — sürtünmeyle büyüten bağlar).
+//  - DERS ORTAKLARI: Güneş karesi (90°: sürtünmeyle büyüten bağlar).
 
 import type { GalacticReport, ZodiacSign } from '../types';
 
@@ -25,12 +25,12 @@ export type HDType = GalacticReport['humanDesign']['type'];
 export type OutlookAlly = { type: HDType; why: { tr: string; en: string } };
 
 export type CompatibilityOutlook = {
-  /** Descendant (partner noktası) — tek burç */
+  /** Descendant (partner noktası): tek burç */
   mirror: ZodiacSign;
   mirrorSource: 'ascendant' | 'sun';
-  /** Güneş+Ay üçgenleri (aynı element) — 2-4 burç */
+  /** Güneş+Ay üçgenleri (aynı element), 2-4 burç */
   sacred: ZodiacSign[];
-  /** Güneş kareleri — 2 burç */
+  /** Güneş kareleri: 2 burç */
   lesson: ZodiacSign[];
   /** HD tipine enerji müttefikleri */
   hdAllies: OutlookAlly[];
@@ -88,7 +88,7 @@ export function buildOutlook(report: GalacticReport): CompatibilityOutlook {
     shift(moon, 4), shift(moon, 8),
   ]);
   sacredSet.delete(sun); // kendi burcunu önermeyelim
-  sacredSet.delete(mirror); // ayna ile çakışmasın — ayna zaten ayrı kart
+  sacredSet.delete(mirror); // ayna ile çakışmasın: ayna zaten ayrı kart
 
   return {
     mirror,

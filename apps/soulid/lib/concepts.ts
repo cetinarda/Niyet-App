@@ -34,15 +34,15 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
       short: `Doğum anında Güneş ${SIGN_NAMES_TR[sun.sign]} burcunda ${sun.degreeInSign.toFixed(1)}°, Ay ${SIGN_NAMES_TR[moon.sign]} burcunda ${moon.degreeInSign.toFixed(1)}°. Yükselen burcun ${SIGN_NAMES_TR[report.chart.ascendantSign]}.`,
       details: [
         {
-          heading: 'GÜNEŞ — Öz benlik',
+          heading: 'GÜNEŞ: Öz benlik',
           body: `${PLANET_DOMAINS.Sun} ${SIGN_NAMES_TR[sun.sign]}: ${SIGN_KEYWORDS[sun.sign]}. ${sun.house}. ev bu enerjinin hangi yaşam alanında parladığını gösterir.`,
         },
         {
-          heading: 'AY — İçsel iklim',
+          heading: 'AY: İçsel iklim',
           body: `${PLANET_DOMAINS.Moon} ${SIGN_NAMES_TR[moon.sign]} Ay'ı duygularını ${SIGN_KEYWORDS[moon.sign].toLowerCase()} renginde yaşar; ${moon.house}. evde beslenir.`,
         },
         {
-          heading: 'YÜKSELEN — Dış kapı',
+          heading: 'YÜKSELEN: Dış kapı',
           body: `${SIGN_NAMES_TR[report.chart.ascendantSign]} yükselen, dünyaya açılan ilk maskendir. Karşılaştığın insanlar önce bu yüzü görür: ${SIGN_KEYWORDS[report.chart.ascendantSign]}.`,
         },
       ],
@@ -50,7 +50,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
     },
     {
       kicker: 'KUZEY AY DÜĞÜMÜ',
-      title: `${SIGN_NAMES_TR[nn.sign]} — Bu Yaşamın Görevi`,
+      title: `${SIGN_NAMES_TR[nn.sign]}: Bu Yaşamın Görevi`,
       highlight: `${nn.house}. ev · Rahu`,
       short: `Kuzey Düğüm, ruhsal evrimin yönüdür. ${SIGN_NAMES_TR[nn.sign]} burcunda ve ${nn.house}. evde bu yaşamda hangi temaları kucaklamaya geldiğini söyler.`,
       details: [
@@ -64,14 +64,14 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
         },
         {
           heading: 'KÜLTÜREL ARKAPLAN',
-          body: 'Vedik gelenekte Kuzey Düğüm "Rahu" — açlık dolu kâşif, ruhun bu yaşamda ulaşmayı seçtiği zirvedir. Zorlukla beraber gelir ama gerçek dönüşüm hep bu yönden çıkar.',
+          body: 'Vedik gelenekte Kuzey Düğüm "Rahu": açlık dolu kâşif, ruhun bu yaşamda ulaşmayı seçtiği zirvedir. Zorlukla beraber gelir ama gerçek dönüşüm hep bu yönden çıkar.',
         },
       ],
       accent: '#5bd9a0',
     },
     {
       kicker: 'GÜNEY AY DÜĞÜMÜ',
-      title: `${SIGN_NAMES_TR[sn.sign]} — Bırakılacak Konfor`,
+      title: `${SIGN_NAMES_TR[sn.sign]}: Bırakılacak Konfor`,
       highlight: `${sn.house}. ev · Ketu`,
       short: `Güney Düğüm, geçmiş yaşamlardan getirilen alışkanlıkların yatağıdır. Aşırı kullanıldığında konfor bölgesi, yetersiz kaldığında düşülecek tek nokta.`,
       details: [
@@ -81,7 +81,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
         },
         {
           heading: 'KÜLTÜREL ARKAPLAN',
-          body: 'Vedik gelenekte Güney Düğüm "Ketu" — ego sınırlarını eritir. Buradaki yeteneklere güvenebilirsin, ama büyüme buradan değil ileriden gelir.',
+          body: 'Vedik gelenekte Güney Düğüm "Ketu": ego sınırlarını eritir. Buradaki yeteneklere güvenebilirsin, ama büyüme buradan değil ileriden gelir.',
         },
       ],
       accent: '#c79dff',
@@ -113,7 +113,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
     },
     {
       kicker: 'NUMEROLOJİ',
-      title: `Yaşam Yolu ${report.numerology.lifePath} — ${lp?.title ?? ''}`,
+      title: `Yaşam Yolu ${report.numerology.lifePath}: ${lp?.title ?? ''}`,
       highlight: `Kişisel Yıl ${report.numerology.personalYear}`,
       short: lp?.summary ?? '',
       details: [
@@ -140,15 +140,15 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
       kicker: 'MAYA TZOLKİN',
       title: `Kin ${s.maya.kin} · ${s.maya.daySign.tr}`,
       highlight: s.maya.tone.tr,
-      short: `Maya kutsal takviminde ${s.maya.tone.tr} ${s.maya.daySign.tr} — Kin numaran ${s.maya.kin}.`,
+      short: `Maya kutsal takviminde ${s.maya.tone.tr} ${s.maya.daySign.tr}: Kin numaran ${s.maya.kin}.`,
       details: [
         {
           heading: 'GÜN MÜHRÜ',
-          body: `${s.maya.daySign.tr} — ${s.maya.daySign.power}. Element: ${s.maya.daySign.element}.`,
+          body: `${s.maya.daySign.tr}: ${s.maya.daySign.power}. Element: ${s.maya.daySign.element}.`,
         },
         {
           heading: 'GALAKTİK TON',
-          body: `${s.maya.tone.tr} — ${s.maya.tone.power}.`,
+          body: `${s.maya.tone.tr}: ${s.maya.tone.power}.`,
         },
         {
           heading: 'KİN',
@@ -173,7 +173,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
         },
         {
           heading: 'YÖNETEN TANRI',
-          body: `${s.vedic.nakshatra.deity} — bu nakshatranın koruyucu enerjisi. Pada ${s.vedic.pada} kişiliğin alt yapısını detaylandırır.`,
+          body: `${s.vedic.nakshatra.deity}: bu nakshatranın koruyucu enerjisi. Pada ${s.vedic.pada} kişiliğin alt yapısını detaylandırır.`,
         },
         {
           heading: 'EKLİPTİK ARALIK',
@@ -253,7 +253,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
         },
         {
           heading: 'KÖKEN SİSTEMİ',
-          body: `${report.origin.starSystem} — galaktik haritada referans noktası.`,
+          body: `${report.origin.starSystem}: galaktik haritada referans noktası.`,
         },
       ],
       accent: '#f5d061',

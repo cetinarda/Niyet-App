@@ -3,7 +3,7 @@
 import { useT } from '@/lib/i18n';
 
 /**
- * App Store + Google Play rozetleri. Yayın öncesi "Yakında" durumunda —
+ * App Store + Google Play rozetleri. Yayın öncesi "Yakında" durumunda, 
  * tıklanamaz, sadece bilgilendirme. Yayınlanınca href eklenip aktif olur.
  */
 

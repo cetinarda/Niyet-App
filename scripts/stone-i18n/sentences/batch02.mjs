@@ -1,4 +1,4 @@
-// Batch 02 — s013..s024
+// Batch 02: s013..s024
 export const BATCH02 = {
   s013: {
     de: { name:'Malachit', dailyMessage:'Lass heute Wandel zu. Malachit ist einer der kraftvollsten Heilsteine für tiefe emotionale Wunden.', howToUse:'Lege ihn auf dein Herz. Trage ihn in wichtigen Zeiten des Wandels.', affirmation:'Jeder Wandel macht mich stärker und ganzer.' },

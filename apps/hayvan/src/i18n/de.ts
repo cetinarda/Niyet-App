@@ -33,7 +33,7 @@ export const de = {
     completed: 'Abgeschlossen ✦',
     doneTitle: 'Tägliche Führung\nabgeschlossen',
     doneSub: 'Morgen beginnt eine neue Reise',
-    detailBtn: ' – tiefe Führung →',
+    detailBtn: ' - tiefe Führung →',
   },
 
   // ─── Animals hub ─────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export const de = {
     intro: {
       title: 'Entdecke dein Krafttier',
       desc: 'Es gibt zwei Wege, das Totemtier zu finden, das mit deiner Seele im Einklang steht.',
-      note: 'Sakin hält dir einen Spiegel vor — er spiegelt, was bereits in dir ist, und flüstert, was möglich ist.\nNur du kannst es in deinem Herzen erwecken, es fühlen und dir zu eigen machen.',
+      note: 'Sakin hält dir einen Spiegel vor, er spiegelt, was bereits in dir ist, und flüstert, was möglich ist.\nNur du kannst es in deinem Herzen erwecken, es fühlen und dir zu eigen machen.',
       quizBtn: {
         title: 'Mit Fragen entdecken',
         desc: '7 Fragen, abgestimmt auf deinen Charakter',
@@ -108,8 +108,8 @@ export const de = {
       cityHint: 'Die Energie deines Geburtsortes verleiht der Lesung Tiefe.',
       hourLabel: 'Geburtszeit',
       hourOptional: '(optional)',
-      hourPlaceholder: 'Stunde (0–23)',
-      hourHint: 'Wenn du die Uhrzeit nicht kennst, lass es frei — es wird trotzdem eine starke Übereinstimmung gefunden.',
+      hourPlaceholder: 'Stunde (0-23)',
+      hourHint: 'Wenn du die Uhrzeit nicht kennst, lass es frei, es wird trotzdem eine starke Übereinstimmung gefunden.',
       submitBtn: 'Meinen Führer finden ✦',
     },
     result: {
@@ -185,7 +185,7 @@ export const de = {
   nagual: {
     back: '← Zurück',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Periodischer Führer',
+    introTitle: 'Nagual: Periodischer Führer',
     introText:
       'Dein Totemtier wird mit dir geboren und bleibt ein Leben lang. Der Nagual ist ein vorübergehender Führer,\nder dich während einer bestimmten Phase begleitet. Er kommt in Zeiten der Prüfung,\nder Wandlung oder der Krise. Wenn seine Aufgabe erfüllt ist, überlässt er seinen Platz\neinem anderen Führer.',
     weekTag: 'DIESE WOCHE · UNIVERSELL',
@@ -302,7 +302,7 @@ export const de = {
       estimated: '(geschätzt)',
       hdTypeSelectHint: 'Wähle deinen Typ:',
       hdDisclaimer:
-        '⚠ Die Berechnung ist eine Schätzung — genaues HD erfordert Geburtszeit und Ephemeriden.\nWenn du deinen Typ kennst, wähle ihn oben aus.',
+        '⚠ Die Berechnung ist eine Schätzung, genaues HD erfordert Geburtszeit und Ephemeriden.\nWenn du deinen Typ kennst, wähle ihn oben aus.',
       sunGates: 'Sonnentore',
       consciousSun: 'Bewusste Sonne',
       designSun: 'Design-Sonne',
@@ -326,7 +326,7 @@ export const de = {
         yearPlaceholder: 'Jahr',
         hourLabel: 'Geburtszeit',
         hourOptional: '(wichtig für HD)',
-        hourPlaceholder: 'Stunde (0–23)',
+        hourPlaceholder: 'Stunde (0-23)',
         minutePlaceholder: 'Minute',
         cityLabel: 'Geburtsstadt',
         cityOptional: '(für die Zeitzone)',
@@ -341,8 +341,8 @@ export const de = {
       sectionTitle: 'Was ist Tierführung?',
       totemTitle: '⊕ Totemtier',
       totemText:
-        'Jeder Mensch trägt den Geist eines Tieres in seiner Natur. Dieses Totemtier repräsentiert dich; deine Energie, deine Stärken und der Weg, den du gehst, tragen seine Spuren. Das Totem ändert sich nie — es wird mit dir geboren und wächst mit dir.',
-      nagualTitle: '◎ Nagual — Periodischer Führer',
+        'Jeder Mensch trägt den Geist eines Tieres in seiner Natur. Dieses Totemtier repräsentiert dich; deine Energie, deine Stärken und der Weg, den du gehst, tragen seine Spuren. Das Totem ändert sich nie, es wird mit dir geboren und wächst mit dir.',
+      nagualTitle: '◎ Nagual: Periodischer Führer',
       nagualText:
         'Der Nagual ist ein vorübergehender Führer, der für eine bestimmte Phase zu dir kommt. Er wird in Zeiten der Prüfung, Wandlung oder Krise gerufen. Wenn seine Aufgabe erfüllt ist, überlässt er seinen Platz einem anderen Führer. Das Tier, das in deiner täglichen Lesung erscheint, trägt die Stimme des heutigen Naguals.',
       finderTitle: 'Finde deinen Tierführer',
@@ -365,7 +365,7 @@ export const de = {
     sakinFamily: {
       title: 'Sakin Familie',
       intro: 'Ein Ökosystem. Ein Abonnement. Viele Türen.',
-      masterDesc: 'Zentrale — Zugang zu allen Apps',
+      masterDesc: 'Zentrale: Zugang zu allen Apps',
       apps: {
         animalGuidance: 'Tierführung',
         stoneGuidance: 'Kristallführung',
@@ -506,11 +506,11 @@ export const de = {
     },
     mit: {
       term: 'Mythos',
-      short: 'Eine symbolische Kraft, der die Seele begegnet — Schatten, Schwelle, Blitz...',
+      short: 'Eine symbolische Kraft, der die Seele begegnet, Schatten, Schwelle, Blitz...',
     },
     hayatYolu: {
       term: 'Lebenswegzahl',
-      short: 'Die numerologische Zusammenfassung deines Geburtsdatums — zeigt deine Kernenergie.',
+      short: 'Die numerologische Zusammenfassung deines Geburtsdatums, zeigt deine Kernenergie.',
     },
     numeroloji: {
       term: 'Numerologie',
@@ -518,15 +518,15 @@ export const de = {
     },
     ifade: {
       term: 'Ausdruckszahl',
-      short: 'Abgeleitet aus den Buchstaben deines Namens — deine natürlichen Talente und dein Potenzial.',
+      short: 'Abgeleitet aus den Buchstaben deines Namens, deine natürlichen Talente und dein Potenzial.',
     },
     ruhIstegi: {
       term: 'Seelendrangzahl',
-      short: 'Aus den Vokalen deines Namens — deine innere Motivation.',
+      short: 'Aus den Vokalen deines Namens, deine innere Motivation.',
     },
     kisilik: {
       term: 'Persönlichkeitszahl',
-      short: 'Aus den Konsonanten deines Namens — das Gesicht, das du der Welt zeigst.',
+      short: 'Aus den Konsonanten deines Namens, das Gesicht, das du der Welt zeigst.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -570,7 +570,7 @@ export const de = {
     },
     kisiselYil: {
       term: 'Persönliches Jahr',
-      short: 'Das Thema deines numerologischen Jahres — auf welchem Schritt des 9-Jahres-Zyklus du dich befindest.',
+      short: 'Das Thema deines numerologischen Jahres, auf welchem Schritt des 9-Jahres-Zyklus du dich befindest.',
     },
     rehber: {
       term: 'Krafttier',

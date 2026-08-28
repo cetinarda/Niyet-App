@@ -49,7 +49,7 @@ const R_CENTER = SIZE * 0.06;
 
 // Astrolojide ASC sol uçtadır (saat 9 yönü = 180°). Boylamı görsel açıya çevir.
 function lonToAngle(longitude: number, ascLongitude: number): number {
-  // Yıldız ekliptiği ters yönde dönüyor (saat yönünde) çizimde — ASC'yi 180°'ye sabitle.
+  // Yıldız ekliptiği ters yönde dönüyor (saat yönünde) çizimde, ASC'yi 180°'ye sabitle.
   return ((180 - (longitude - ascLongitude)) * Math.PI) / 180;
 }
 
@@ -89,7 +89,7 @@ export function BirthChartWheel({ chart, size = SIZE }: Props) {
     return { i, startAng, endAng, mid, glyph: Object.values(SIGN_GLYPHS)[i]! };
   });
 
-  // 12 ev çizgisi (equal house — ASC = ev 1 başı)
+  // 12 ev çizgisi (equal house, ASC = ev 1 başı)
   const houseLines = Array.from({ length: 12 }).map((_, i) => {
     const a = lonToAngle(i * 30 + 0, asc); // her ev 30° (equal)
     const outer = polar(a, R_HOUSES);

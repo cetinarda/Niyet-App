@@ -1,4 +1,4 @@
-// Batch 06 — s094..s105
+// Batch 06: s094..s105
 export const BATCH06 = {
   s094: {
     de: { name:'Blauer Spitzenachat', dailyMessage:'Sprich heute sanft. Blauer Spitzenachat löst Anspannung und verleiht deinen Worten die Leichtigkeit einer Feder.', howToUse:'Trage ihn um den Hals. Berühre damit deine Kehle vor nervösen Gesprächen.', affirmation:'Meine Worte sind sanft und friedlich. Ich drücke mich ruhig aus.' },

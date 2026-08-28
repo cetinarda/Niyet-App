@@ -1,10 +1,10 @@
 /**
- * Human Design — Jean Meeus "Astronomical Algorithms" Ch. 25 tabanlı
+ * Human Design: Jean Meeus "Astronomical Algorithms" Ch. 25 tabanlı
  * Güneş boylamı hesabı (~0.01° doğruluk, HD kapı çözünürlüğü 5.625°).
  *
  * SINIR: Tam HD tipi için doğum anında VE 88.736 gün öncesinde
  * tüm 9 gezegenin konumu gerekir. Burada sadece Güneş + Yeryüzü
- * hesaplanıyor (4 kapı aktif) — bu gerçek, doğru veri ama tip
+ * hesaplanıyor (4 kapı aktif), bu gerçek, doğru veri ama tip
  * belirlemek için yetersiz olabilir. Kullanıcıya açıkça söylenir.
  */
 
@@ -32,7 +32,7 @@ export interface HDGates {
   designSunLine: number;
 }
 
-// Standart Jovian Archive gate dizisi — 0° Koç'tan başlayarak her 5.625°
+// Standart Jovian Archive gate dizisi, 0° Koç'tan başlayarak her 5.625°
 const GATE_SEQUENCE = [
   41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42,  3,
   27, 24,  2, 23,  8, 20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56,
@@ -132,7 +132,7 @@ function inferType(gates: HDGates): { type: HDType; confident: boolean } {
     return { type: 'Jeneratör', confident: true };
   if (MOTOR_THROAT_CHANNELS.some(([x, y]) => a.has(x) && a.has(y)))
     return { type: 'Manifestor', confident: true };
-  // 4 kapı yeterli değil — kesin belirlenemiyor
+  // 4 kapı yeterli değil, kesin belirlenemiyor
   return { type: 'Jeneratör', confident: false };
 }
 

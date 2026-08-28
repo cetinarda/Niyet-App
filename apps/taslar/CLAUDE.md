@@ -1,4 +1,4 @@
-# Sakin Hayvan — embed source (monorepo)
+# Sakin Hayvan: embed source (monorepo)
 
 Bu, **Sakin Hayvan Rehberi** uygulamasının kaynağıdır. Niyet-App monorepo'sunun
 parçası: `apps/hayvan/`. Buradan derlenen web bundle `public/embedded/sakinhayvan/`
@@ -27,7 +27,7 @@ npm run build:hayvan -- --force   # yeni bundle'ı bilerek gönder
 
 ## İçerik
 
-- `src/data/animals.json` — hayvan rehberlikleri (TR+EN)
-- `src/data/stones.json`, `naguals.json`, `quotes.json` — taş/nagual/söz içerikleri
+- `src/data/animals.json`: hayvan rehberlikleri (TR+EN)
+- `src/data/stones.json`, `naguals.json`, `quotes.json`: taş/nagual/söz içerikleri
 - Ekranlar: Home (Bugün), AnimalsHub, Nagual, Archive, Myths, Profile, Paywall, Auth
-- `src/utils/` — numerology, humanDesign, weeklyReading
+- `src/utils/`: numerology, humanDesign, weeklyReading

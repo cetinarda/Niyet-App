@@ -1,14 +1,14 @@
-# SoulProfile — Uluslararası Pazar Giriş Stratejisi
+# SoulProfile: Uluslararası Pazar Giriş Stratejisi
 
 ## Konum
 
 > **The Pattern** astrolojiyi günlük insanın eline verdi.
-> **Co–Star** sosyal/comedy tonuyla viral oldu.
+> **Co-Star** sosyal/comedy tonuyla viral oldu.
 >
 > **SoulProfile** = Yıldız kökenin + astrolojin + Human Design'in + numerolojin
 > + Vedik nakshatran + Maya Kin'in + Norse runun + Tarot doğum kartların +
 > bu yaşamdaki görevlerin TEK bir **paylaşılabilir karne**de buluştuğu uygulama.
-> "Sen sadece insan değilsin — galaktik bir karnen var."
+> "Sen sadece insan değilsin: galaktik bir karnen var."
 
 ## Hedef pazarlar (faz faz)
 
@@ -22,7 +22,7 @@
 
 ## Differentiator (rekabet farkı)
 
-- **Galaktik Kimlik:** Hangi yıldız ırkındansın? (Pleiadyalı, Siryan, Arkturian, Andromedan, Lyran...) Bu tek başına **ultra paylaşılabilir** — Co-Star bunu yapmıyor.
+- **Galaktik Kimlik:** Hangi yıldız ırkındansın? (Pleiadyalı, Siryan, Arkturian, Andromedan, Lyran...) Bu tek başına **ultra paylaşılabilir**, Co-Star bunu yapmıyor.
 - **Tek Bir Karne Görseli:** Doğum verisi + fotoğraf üzerine basılı, Instagram story formatında, **paylaşılınca uygulamaya organik geri akış**.
 - **Human Design + Astroloji + Numeroloji Aynı Anda:** Rakipler tek dikeyde çalışıyor; biz birleştiriyoruz.
 - **Kuzey/Güney Düğüm Vurgusu:** "Bu yaşamdaki görevin" → ruhsal arama yapan kullanıcılar için yüksek anlam yoğunluğu.
@@ -48,12 +48,12 @@ Karne paylaşımı = built-in büyüme motoru.
 
 ## Influencer hedef listesi (US/UK)
 
-- @astrologybay — IG 1.2M
-- @cosmiccare — TikTok 800K
-- @humandesignhq — IG 400K
-- @numerologywithjane — TikTok 500K
-- Aliza Kelly — YouTube 200K + IG 350K
-- Jessica Lanyadoo — Podcast Ghost of a Podcast
+- @astrologybay: IG 1.2M
+- @cosmiccare: TikTok 800K
+- @humandesignhq: IG 400K
+- @numerologywithjane: TikTok 500K
+- Aliza Kelly: YouTube 200K + IG 350K
+- Jessica Lanyadoo: Podcast Ghost of a Podcast
 
 Türkiye:
 - Dincer Güner, Hande Kazanova fanbase

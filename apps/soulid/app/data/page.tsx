@@ -1,12 +1,12 @@
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
 
-export const metadata = { title: 'Veri Hakların — SoulProfile' };
+export const metadata = { title: 'Veri Hakların: SoulProfile' };
 
 export default function DataRights() {
   return (
     <PageLayout
       kicker="VERİ HAKLARIN"
-      title="Verin sana ait — KVKK & GDPR"
+      title="Verin sana ait: KVKK & GDPR"
       intro="Her kullanıcı kendi verisinin sahibidir. SoulProfile, KVKK (6698 sayılı Kanun) ve GDPR çerçevesinde aşağıdaki hakları teminat altına alır."
     >
       <Section heading="Haklarınız">

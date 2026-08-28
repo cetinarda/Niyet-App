@@ -1,4 +1,4 @@
-# Gizlilik Politikası — Sakin Mitler
+# Gizlilik Politikası: Sakin Mitler
 
 Bu metni `sakin.life/privacy` adresinde TR + EN olarak yayınla. App Store Connect "Privacy Policy URL" alanına bu URL'i koy.
 
@@ -10,7 +10,7 @@ Sakin Mitler ("uygulama"), Cetinarda tarafından geliştirilmiş ve yayınlanmı
 
 İletişim: hello@sakin.life *(veya kullandığın adres)*
 
-## 2. Toplanan Veriler — KISA CEVAP: HİÇBİRİ
+## 2. Toplanan Veriler: KISA CEVAP: HİÇBİRİ
 
 Sakin Mitler **hiçbir kişisel veriyi sunucularımıza göndermez veya saklamaz**. Aşağıdaki bilgiler **yalnızca cihazında** saklanır:
 

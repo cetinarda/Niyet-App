@@ -110,7 +110,7 @@ export function OnboardingScreen({ onAccept }: Props) {
     );
   }
 
-  // step 2 — onam / consent
+  // step 2: onam / consent
   const canProceed = adult && accepts;
   return (
     <ScrollView

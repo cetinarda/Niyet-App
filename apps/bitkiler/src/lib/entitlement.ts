@@ -7,7 +7,7 @@
  *   3. This module: redeemed license key
  *
  * Apple compliance note: we never link to an external purchase page
- * from within the app. The license-key field is neutral — it just
+ * from within the app. The license-key field is neutral, it just
  * accepts a code the user may have obtained anywhere.
  */
 

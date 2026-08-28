@@ -21,7 +21,7 @@ const version = JSON.parse(readFileSync('package.json', 'utf8')).version;
 const builtAt = new Date().toISOString();
 
 const content =
-  `// AUTO-GENERATED — scripts/stamp-build.mjs tarafından her build öncesi yenilenir.\n` +
+  `// AUTO-GENERATED: scripts/stamp-build.mjs tarafından her build öncesi yenilenir.\n` +
   `export const BUILD_INFO = {\n` +
   `  version: ${JSON.stringify(version)},\n` +
   `  commit: ${JSON.stringify(commit)},\n` +

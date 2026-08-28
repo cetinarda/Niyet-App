@@ -132,7 +132,7 @@ function defaultQualityOk(text) {
 // DIL UYGUNLUGU KONTROLU (paylasilan validate yardimcisi). Canli yakalanan
 // hatada model lang:"tr" istenmisken Ingilizce yanit uretmisti; upstream 200
 // dedigi ve icerik bos olmadigi icin eski kod bunu gecerli sanip kullaniciya
-// gonderiyordu. Her dilin kendine ozgu harfi/alfabesi varliginia bakiyor —
+// gonderiyordu. Her dilin kendine ozgu harfi/alfabesi varliginia bakiyor, 
 // tam bir dil tespiti degil ama "tamamen yanlis dilde" durumunu ucuza yakalar.
 // KISA METINLERDE ATLANIR: "Merhaba, iyi günler." gibi gercek Turkce bir
 // yanit bile diyakritik icermeyebilir; yanlis pozitif riski kisa metinde
@@ -155,12 +155,12 @@ export function langConformanceOk(text, lang) {
 
 // Sohbet/gorsel cagrisi + otomatik model fallback.
 // body: { max_tokens, temperature, top_p, messages, ... } (model DISINDA her sey).
-// opts.validate(strippedText): true/false — ONAY vermezse bu aday ELENIR ve
+// opts.validate(strippedText): true/false: ONAY vermezse bu aday ELENIR ve
 // siradaki modele gecilir (ornek: dil uygunlugu kontrolu, bkz. ai-call.mjs).
 // Doner: { ok:true, model, data } | { ok:false, status }
 // NOT: basarili donen `data.choices[0].message.content` BURADA ZATEN
 // stripThink'ten gecirilmis olarak doner (cagiran taraf yine kendi
-// stripThink'ini cagirabilir, ikinci cagri no-op'tur — geriye donuk uyumlu).
+// stripThink'ini cagirabilir, ikinci cagri no-op'tur: geriye donuk uyumlu).
 export async function groqChat(apiKey, kind, body, opts = {}) {
   const timeoutMs = opts.timeoutMs || 25000;
   // TOPLAM SURE TAVANI. Aday listesi artik yayindaki tum metin modellerini
@@ -196,7 +196,7 @@ export async function groqChat(apiKey, kind, body, opts = {}) {
       // modeli kapanmamis <think> muhakemesini (Ingilizce) oldugu gibi
       // donduruyordu, upstream 200 dedigi icin eskiden bu aynen kullaniciya
       // gidiyordu. Simdi icerik burada denetleniyor; gecmezse bu YANIT
-      // ATILIR ve siradaki adaya gecilir — kullanici hicbir zaman yarim ya
+      // ATILIR ve siradaki adaya gecilir, kullanici hicbir zaman yarim ya
       // da yanlis dilde bir metin gormez.
       const rawText = data.choices?.[0]?.message?.content || "";
       const stripped = stripThink(rawText);

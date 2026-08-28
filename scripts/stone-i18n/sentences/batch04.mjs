@@ -1,4 +1,4 @@
-// Batch 04 — s070..s081
+// Batch 04: s070..s081
 export const BATCH04 = {
   s070: {
     de: { name:'Topas', dailyMessage:'Lass heute deine Absicht leuchten. Topas wärmt deine Wünsche wie die Sonne und lässt dein inneres Vertrauen wachsen.', howToUse:'Schreibe deine Absicht auf und lege den Stein auf das Blatt. Halte ihn jeden Morgen in der Handfläche.', affirmation:'Meine Absicht ist stark, meine Zukunft ist hell. Die Sonne in mir geht nie unter.' },

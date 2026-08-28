@@ -57,14 +57,14 @@ export function TabNavigator() {
     <View style={styles.webRoot}>
       <View style={[styles.container, Platform.OS === 'web' && { height: winH }]}>
 
-        {/* Screen area — fills space above tab bar */}
+        {/* Screen area: fills space above tab bar */}
         <View style={styles.screen}>
           {renderScreen()}
         </View>
 
         <GlossaryFAB />
 
-        {/* Tab bar — always at bottom, never scrolls */}
+        {/* Tab bar: always at bottom, never scrolls */}
         <View style={[styles.tabBar, { paddingBottom: insets.bottom + 4 }]}>
           {TABS.map(tab => {
             const isActive = activeTab === tab.key;

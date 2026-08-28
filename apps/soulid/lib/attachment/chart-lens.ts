@@ -1,4 +1,4 @@
-// Doğum haritası MERCEĞİ — bağlanma sonucunun kişiselleştirme katmanı.
+// Doğum haritası MERCEĞİ: bağlanma sonucunun kişiselleştirme katmanı.
 // ---------------------------------------------------------------------------
 // ⚠️ KIRMIZI ÇİZGİ: Buradaki hiçbir şey bağlanma STİLİNİ belirlemez.
 // Stil yalnızca soru yanıtlarından çıkar (bkz. ./index.ts scoreAttachment).
@@ -126,7 +126,7 @@ function authorityAdvice(authority: string): L | null {
 
 /**
  * Ölçülen stile göre, kişinin haritasından türeyen 3 kişiselleştirme satırı.
- * Harita yoksa boş dizi döner (özellik yine çalışır — harita zorunlu değil).
+ * Harita yoksa boş dizi döner (özellik yine çalışır, harita zorunlu değil).
  */
 export function buildChartLens(
   report: GalacticReport | null,

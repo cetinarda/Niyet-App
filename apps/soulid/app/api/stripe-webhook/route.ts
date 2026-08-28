@@ -1,4 +1,4 @@
-// Stripe webhook — checkout.session.completed event'ini doğrular ve
+// Stripe webhook: checkout.session.completed event'ini doğrular ve
 // entitlements tablosuna kanonik kayıt yazar.
 // STRIPE_WEBHOOK_SECRET ile signature verify zorunlu (Stripe Best Practice).
 // Service role gerekir: SUPABASE_SERVICE_ROLE_KEY env'de.
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
 
   const userId = session.metadata?.user_id ?? session.client_reference_id;
   if (!userId) {
-    // Auth'suz checkout — entitlement yazılamaz, fakat e-posta loglanır.
+    // Auth'suz checkout: entitlement yazılamaz, fakat e-posta loglanır.
     return NextResponse.json({ received: true, skipped: 'no user_id' });
   }
 

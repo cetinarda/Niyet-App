@@ -1,6 +1,6 @@
 'use client';
 
-// "Hesaplanan veri" paneli — anlatı metninin ARKASINDAKİ deterministik motor
+// "Hesaplanan veri" paneli: anlatı metninin ARKASINDAKİ deterministik motor
 // çıktısını ham/etiketli olarak gösterir. Amaç: uygulamanın bir horoscope
 // içerik akışı değil, bir HESAPLAYICI/araç olduğunu görünür kılmak (App Store
 // 4.3(b) savunması). Aynı doğum verisi her zaman aynı değerleri üretir.
@@ -49,8 +49,8 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
   const deg = (lon: number) => `${(((lon % 30) + 30) % 30).toFixed(2)}°`;
 
   const astro: Row[] = [
-    { label: tr ? 'Güneş' : 'Sun', value: sun ? `${signName(sun.sign, tr)} ${sun.degreeInSign.toFixed(2)}°` : '—' },
-    { label: tr ? 'Ay' : 'Moon', value: moon ? `${signName(moon.sign, tr)} ${moon.degreeInSign.toFixed(2)}°` : '—' },
+    { label: tr ? 'Güneş' : 'Sun', value: sun ? `${signName(sun.sign, tr)} ${sun.degreeInSign.toFixed(2)}°` : '-' },
+    { label: tr ? 'Ay' : 'Moon', value: moon ? `${signName(moon.sign, tr)} ${moon.degreeInSign.toFixed(2)}°` : '-' },
     { label: tr ? 'Yükselen (ASC)' : 'Ascendant', value: `${signName(chart.ascendantSign, tr)} ${deg(asc)}` },
     { label: tr ? 'Tepe Noktası (MC)' : 'Midheaven (MC)', value: deg(mc) },
     { label: tr ? 'Ev sistemi' : 'Houses', value: `${chart.houses.length} · ${tr ? 'eşit/plasidus' : 'cusps'}` },
@@ -62,7 +62,7 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
     { label: tr ? 'Profil' : 'Profile', value: hd.profile },
     { label: tr ? 'Tanımlı merkez' : 'Defined centers', value: `${hd.definedCenters.length}/9` },
     { label: tr ? 'Aktif kapı' : 'Active gates', value: `${hd.gates.length}/64` },
-    { label: tr ? 'Kanallar' : 'Channels', value: hd.channels.length ? hd.channels.join(', ') : '—' },
+    { label: tr ? 'Kanallar' : 'Channels', value: hd.channels.length ? hd.channels.join(', ') : '-' },
   ];
 
   const vedicRows: Row[] = [
@@ -93,8 +93,8 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
           </span>
           <span className="mt-1 block text-[12px] text-muted">
             {tr
-              ? 'Anlatının arkasındaki ham motor çıktısı — aynı doğum verisi her zaman aynı sonucu verir.'
-              : 'The raw engine output behind the narrative — same birth data always yields the same result.'}
+              ? 'Anlatının arkasındaki ham motor çıktısı, aynı doğum verisi her zaman aynı sonucu verir.'
+              : 'The raw engine output behind the narrative, same birth data always yields the same result.'}
           </span>
         </span>
         <span className="shrink-0 text-gold transition-transform group-open:rotate-180">▾</span>
@@ -111,7 +111,7 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
       <p className="mt-4 text-[11px] leading-relaxed text-faint">
         {tr
           ? 'Tüm değerler cihazda astronomy-engine (efemeris) ve takvim matematiğiyle hesaplanır; önceden yazılmış içerik değildir.'
-          : 'All values are computed on-device from astronomy-engine (ephemeris) and calendar math — not pre-written content.'}
+          : 'All values are computed on-device from astronomy-engine (ephemeris) and calendar math, not pre-written content.'}
       </p>
     </details>
   );

@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 const buildTarget = process.env.BUILD_TARGET ?? 'web';
 const isCapacitor = buildTarget === 'capacitor';
 
-// Build damgası — cihazda hangi kodun çalıştığını görsel doğrulamak için.
+// Build damgası: cihazda hangi kodun çalıştığını görsel doğrulamak için.
 let buildId = 'dev';
 try {
   buildId = execSync('git rev-parse --short HEAD').toString().trim();
@@ -27,7 +27,7 @@ const nextConfig = {
     NEXT_PUBLIC_BUILD_ID: buildId,
     NEXT_PUBLIC_EMBED_BASE: embedBase,
   },
-  // Capacitor iOS için statik export — Apple guideline 4.0 wrapper rejection riskini
+  // Capacitor iOS için statik export, Apple guideline 4.0 wrapper rejection riskini
   // azaltmak için tüm sayfalar gemiyle birlikte gelir; runtime fetch yok.
   ...(isCapacitor && {
     output: 'export',

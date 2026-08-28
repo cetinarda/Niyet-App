@@ -43,7 +43,7 @@ export default function ReportPage() {
       return;
     }
     // Kendi karnesi HER ZAMAN açılabilir: activeReportId varsa onu,
-    // yoksa EN SON kaydedilen karneyi yükle. (id artık temizlenmiyor —
+    // yoksa EN SON kaydedilen karneyi yükle. (id artık temizlenmiyor, 
     // menüden /report'a her girişte son karne gelir.)
     const id = readActiveReportId();
     let cancelled = false;
@@ -124,7 +124,7 @@ export default function ReportPage() {
       <div className="mx-auto max-w-4xl px-4 md:px-6">
         <p className="text-center text-xs tracking-[0.3em] text-gold">{report.summary}</p>
 
-        {/* AHA — paylaşılabilir kimlik kartı en üstte */}
+        {/* AHA: paylaşılabilir kimlik kartı en üstte */}
         <div className="mt-6 flex justify-center">
           <ReportCard ref={cardRef} report={report} />
         </div>
@@ -148,13 +148,13 @@ export default function ReportPage() {
           </button>
         </div>
 
-        {/* Uyum Ufku — ayna eş / kutsal birleşim / ders ortağı (en üstte, vurgulu) */}
+        {/* Uyum Ufku: ayna eş / kutsal birleşim / ders ortağı (en üstte, vurgulu) */}
         <CompatibilityOutlook report={report} />
 
-        {/* Bugünün Gökyüzü — günlük transit motoru (geri gelme sebebi) */}
+        {/* Bugünün Gökyüzü: günlük transit motoru (geri gelme sebebi) */}
         <TodaySky report={report} />
 
-        {/* Birini davet et — viral motor (Aha tabakası) */}
+        {/* Birini davet et: viral motor (Aha tabakası) */}
         <section className="mt-14">
           <InviteShare birth={report.birth} />
         </section>
@@ -162,7 +162,7 @@ export default function ReportPage() {
         {/* ───────── KEŞFET tabakası ───────── */}
         <LayerDivider label={t('report.layerExplore')} />
 
-        {/* Duygusal başlangıç — opening + soulStory (en sıcak iki paragraf) */}
+        {/* Duygusal başlangıç: opening + soulStory (en sıcak iki paragraf) */}
         {(report.sections.opening || report.sections.soulStory) ? (
           <article className="card-surface mt-8 rounded-3xl border border-panelBorder p-6 md:p-8">
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold">{t('report.discoverKicker')}</p>
@@ -181,10 +181,10 @@ export default function ReportPage() {
           </article>
         ) : null}
 
-        {/* Kahraman Kartı — indirilebilir RPG kartı (stat'lar oyun gibi) */}
+        {/* Kahraman Kartı: indirilebilir RPG kartı (stat'lar oyun gibi) */}
         <HeroCardShare report={report} />
 
-        {/* Karakter Stat Kartı — stat açıklamaları (detay) */}
+        {/* Karakter Stat Kartı: stat açıklamaları (detay) */}
         <section className="mt-10">
           <CharacterStats
             chart={report.chart}
@@ -193,7 +193,7 @@ export default function ReportPage() {
           />
         </section>
 
-        {/* Detaylı sistem kartları — tıklanabilir */}
+        {/* Detaylı sistem kartları: tıklanabilir */}
         <section className="mt-12">
           <h2 className="mb-4 text-center font-display text-2xl text-ink">
             {t('report.concepts')}
@@ -213,7 +213,7 @@ export default function ReportPage() {
           </div>
         </section>
 
-        {/* ───────── DERİNLEŞ tabakası — tek toggle ───────── */}
+        {/* ───────── DERİNLEŞ tabakası: tek toggle ───────── */}
         <LayerDivider label={t('report.layerDeeper')} />
 
         <section className="mt-8">
@@ -239,7 +239,7 @@ export default function ReportPage() {
 
           {showDeeper ? (
             <div className="mt-6 space-y-6">
-              {/* AI'nın derin parçaları — PREMIUM (sis altında) */}
+              {/* AI'nın derin parçaları: PREMIUM (sis altında) */}
               {(report.sections.astrology || report.sections.humanDesign || report.sections.callToAction) ? (
                   <article className="card-surface rounded-3xl border border-panelBorder p-6 md:p-8">
                     <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-gold">{t('report.narrative')}</p>
@@ -257,7 +257,7 @@ export default function ReportPage() {
                   </article>
               ) : null}
 
-              {/* Bilgelik + Gölge — ücretsiz (kendi karne) */}
+              {/* Bilgelik + Gölge: ücretsiz (kendi karne) */}
               {(report.sections.wisdoms.length > 0 || report.sections.shadows.length > 0) ? (
                   <div className="space-y-6">
                     {report.sections.wisdoms.length > 0 ? (
@@ -290,7 +290,7 @@ export default function ReportPage() {
                   </div>
               ) : null}
 
-              {/* İnteraktif gökyüzü — ilk karnede ücretsiz (tam) */}
+              {/* İnteraktif gökyüzü: ilk karnede ücretsiz (tam) */}
               <div className="space-y-6">
                   <div className="card-surface rounded-3xl border border-gold/30 p-4 md:p-6">
                     <p className="mb-3 text-center text-[10px] font-bold uppercase tracking-[0.4em] text-gold">
@@ -318,7 +318,7 @@ export default function ReportPage() {
           ) : null}
         </section>
 
-        {/* İkili uyum CTA — büyük, görsel */}
+        {/* İkili uyum CTA: büyük, görsel */}
         <section className="mt-14 overflow-hidden rounded-3xl border border-cosmic/50 bg-gradient-to-br from-[#0b0524] via-[#1e1a6e] to-[#9d3cb1]/40 p-7 md:p-9">
           <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
             <div>
@@ -346,7 +346,7 @@ export default function ReportPage() {
           </div>
         </section>
 
-        {/* Premium showcase — yıldız konum/hareketi (sadece premium yoksa) */}
+        {/* Premium showcase: yıldız konum/hareketi (sadece premium yoksa) */}
         {!isPremium ? (
           <section className="mt-14 rounded-2xl border border-gold/40 bg-gold/[0.06] p-6">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
@@ -357,8 +357,8 @@ export default function ReportPage() {
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               {locale === 'tr'
-                ? 'İlk karnen ve ilk uyumun ücretsiz. Farklı kişilere bakmak ve tüm özelliklere sınırsız erişim için premium — tek seferlik $19.99 ya da aylık $4.99.'
-                : 'Your first profile and compatibility are free. For other people and unlimited access to all features, go premium — $19.99 one-time or $4.99/mo.'}
+                ? 'İlk karnen ve ilk uyumun ücretsiz. Farklı kişilere bakmak ve tüm özelliklere sınırsız erişim için premium, tek seferlik $19.99 ya da aylık $4.99.'
+                : 'Your first profile and compatibility are free. For other people and unlimited access to all features, go premium, $19.99 one-time or $4.99/mo.'}
             </p>
             <Link
               href="/premium"

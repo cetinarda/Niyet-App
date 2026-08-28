@@ -1,4 +1,4 @@
-// Davet token'ı — HMAC-SHA256 imza + 30 gün expiry.
+// Davet token'ı: HMAC-SHA256 imza + 30 gün expiry.
 // PII (ad/koordinat) hâlâ URL'de ama tamper edilemez ve süresi dolar.
 // Sürekli tek-kişi paylaşımı için en uygun trade-off; bir sonraki adım
 // opaque ID + sunucu-side storage olur.
@@ -20,7 +20,7 @@ type InvitePayload = {
 
 const SCHEMA = 2;
 const TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 gün
-// App-level integrity salt — secret değil; clientside bundle'da. Amacı:
+// App-level integrity salt: secret değil; clientside bundle'da. Amacı:
 // rastgele tampering'i durdurmak ve API uyumluluğu sağlamak. Hassas
 // confidentiality için server-side opaque-ID gerekir (sonraki sprint).
 const SALT = 'soulprofile.invite.v2';
@@ -85,7 +85,7 @@ async function hmac(data: string): Promise<string> {
       ? globalThis.crypto
       : null;
   if (!c) {
-    // Node fallback yok — synchronous bağlamda kullanma; runtime'da window var
+    // Node fallback yok: synchronous bağlamda kullanma; runtime'da window var
     return '';
   }
   const key = await c.subtle.importKey(
@@ -126,7 +126,7 @@ export async function decodeInvite(token: string): Promise<BirthInput | null> {
 export async function inviteUrl(birth: BirthInput, origin?: string): Promise<string> {
   const base = origin ?? (typeof window !== 'undefined' ? window.location.origin : 'https://soulprofile.life');
   const token = await encodeInvite(birth);
-  // URL fragment'a koymak server log'larda PII bırakmaz — fakat sosyal medya
+  // URL fragment'a koymak server log'larda PII bırakmaz: fakat sosyal medya
   // paylaşımlarında fragment bazı platformlarda korunmuyor. Compromise: query.
   return `${base}/match?i=${encodeURIComponent(token)}`;
 }

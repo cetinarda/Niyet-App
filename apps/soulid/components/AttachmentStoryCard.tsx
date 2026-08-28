@@ -33,7 +33,7 @@ export function AttachmentStoryCard({ style, styleName, emoji, locale, innerRef 
   const c = COLORS[style];
 
   return (
-    // Ekran dışına konumlandırılır (display:none OLMAZ — html-to-image
+    // Ekran dışına konumlandırılır (display:none OLMAZ: html-to-image
     // görünmeyen düğümü boş yakalar).
     <div style={{ position: 'fixed', left: -9999, top: 0, pointerEvents: 'none' }} aria-hidden>
       <div

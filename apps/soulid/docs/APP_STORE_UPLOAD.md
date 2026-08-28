@@ -1,18 +1,18 @@
-# App Store Connect Upload — Adım Adım
+# App Store Connect Upload, Adım Adım
 
 > Bu doküman SoulProfile'ı App Store Connect'e yükleyene kadar takip etmen
 > gereken **tüm terminal komutlarını ve UI adımlarını sırayla** içerir.
 > Mac + Xcode 15+ + Apple Developer Program üyeliği ($99/yıl) gereklidir.
 
 İlgili referans dokümanlar (önce oku):
-- `docs/APP_STORE_LESSONS.md` — 4.3 spam reddinden kaçınmak için zorunlu
-- `docs/APP_STORE_SUBMISSION.md` — metadata + screenshot + age rating
-- `docs/PAYMENT_INTEGRATION.md` — Stripe + RevenueCat tam mimarisi
-- `docs/IOS_WRAPPER.md` — Capacitor iOS gotcha'ları
+- `docs/APP_STORE_LESSONS.md`: 4.3 spam reddinden kaçınmak için zorunlu
+- `docs/APP_STORE_SUBMISSION.md`: metadata + screenshot + age rating
+- `docs/PAYMENT_INTEGRATION.md`: Stripe + RevenueCat tam mimarisi
+- `docs/IOS_WRAPPER.md`: Capacitor iOS gotcha'ları
 
 ---
 
-## FAZ 0 — Apple Developer + RevenueCat hesapları (1 günlük süreç)
+## FAZ 0: Apple Developer + RevenueCat hesapları (1 günlük süreç)
 
 ### 0.1 Apple Developer Program
 
@@ -33,7 +33,7 @@
 
 ---
 
-## FAZ 1 — Lokal hazırlık (Mac, 30 dk)
+## FAZ 1: Lokal hazırlık (Mac, 30 dk)
 
 ```bash
 # 1.1 Repo'yu klonla ve branş'a geç
@@ -56,7 +56,7 @@ BUILD_TARGET=capacitor npm run build
 
 ---
 
-## FAZ 2 — Capacitor iOS projesi (10 dk)
+## FAZ 2: Capacitor iOS projesi (10 dk)
 
 ```bash
 # 2.1 İlk seferse iOS projesi ekle
@@ -90,7 +90,7 @@ cp resources/PrivacyInfo.xcprivacy ios/App/App/PrivacyInfo.xcprivacy
 
 ---
 
-## FAZ 3 — Xcode konfigürasyonu (15 dk)
+## FAZ 3: Xcode konfigürasyonu (15 dk)
 
 ```bash
 # 3.1 Xcode'da aç
@@ -112,8 +112,8 @@ Xcode UI'da yapılacaklar:
 
 ### 3.2 Info.plist kontrolü
 Aşağıdaki anahtarların varlığını doğrula (`ios/App/App/Info.plist`):
-- `NSCameraUsageDescription` — "Profil fotoğrafı çekmek için"
-- `NSPhotoLibraryUsageDescription` — "Profil fotoğrafı seçmek için"
+- `NSCameraUsageDescription`: "Profil fotoğrafı çekmek için"
+- `NSPhotoLibraryUsageDescription`: "Profil fotoğrafı seçmek için"
 - `ITSAppUsesNonExemptEncryption` = `NO` (Boolean)
 - `CFBundleShortVersionString` = `1.0.0`
 - `CFBundleVersion` = `1`
@@ -129,7 +129,7 @@ Aşağıdaki anahtarların varlığını doğrula (`ios/App/App/Info.plist`):
 
 ---
 
-## FAZ 4 — App Store Connect setup (60 dk)
+## FAZ 4: App Store Connect setup (60 dk)
 
 ### 4.1 Bundle ID kaydı
 1. https://developer.apple.com/account/resources/identifiers/list
@@ -157,8 +157,8 @@ Aşağıdaki anahtarların varlığını doğrula (`ios/App/App/Info.plist`):
 5. **Price:** Tier 5 (~$4.99)
 6. **Display Name (TR):** SoulProfile Tam Erişim
 7. **Display Name (EN):** SoulProfile Full Access
-8. **Description (TR):** Galaktik karne, ikili uyum karşılaştırması ve tam derinlik analizine sınırsız erişim. Tek seferlik ödeme — abonelik yok.
-9. **Description (EN):** Unlimited access to your cosmic profile, dual compatibility analysis and full depth reading. One-time purchase — no subscription.
+8. **Description (TR):** Galaktik karne, ikili uyum karşılaştırması ve tam derinlik analizine sınırsız erişim. Tek seferlik ödeme: abonelik yok.
+9. **Description (EN):** Unlimited access to your cosmic profile, dual compatibility analysis and full depth reading. One-time purchase: no subscription.
 10. **App Store Review Screenshot:** ekran görüntüsü yükle (premium kart)
 11. Save → **Submit for Review** (build ile birlikte review'a girer)
 
@@ -179,7 +179,7 @@ Aşağıdaki anahtarların varlığını doğrula (`ios/App/App/Info.plist`):
 
 ---
 
-## FAZ 5 — Build ve TestFlight'a yükle (30 dk)
+## FAZ 5: Build ve TestFlight'a yükle (30 dk)
 
 ```bash
 # 5.1 Statik export'u güncel tut
@@ -208,7 +208,7 @@ Xcode UI:
 
 ---
 
-## FAZ 6 — TestFlight ile iç test (Sandbox satın alma testi)
+## FAZ 6: TestFlight ile iç test (Sandbox satın alma testi)
 
 1. App Store Connect → App → **TestFlight**
 2. Yüklenen build "Processing" → "Ready to Submit"
@@ -221,7 +221,7 @@ Xcode UI:
 
 ---
 
-## FAZ 7 — Submission (Yayın için)
+## FAZ 7: Submission (Yayın için)
 
 ### 7.1 App Store Connect → App Information
 - **Subtitle (30 char):** Doğum verisi · uyum analizi
@@ -245,7 +245,7 @@ Privacy Manifest ile uyumlu olarak:
 
 ### 7.4 Version Information (1.0.0)
 - **Screenshots:** 10 adet 6.9" + 6.5" iPhone + iPad 13" (`docs/APP_STORE_SUBMISSION.md` template'i)
-- **Promotional Text (170 char):** Doğum verinden 5 katmanlı uyum analizi. Astroloji synastry, Human Design, numeroloji, Vedik Ashtakuta, tarot pusulası — bir karnede.
+- **Promotional Text (170 char):** Doğum verinden 5 katmanlı uyum analizi. Astroloji synastry, Human Design, numeroloji, Vedik Ashtakuta, tarot pusulası, bir karnede.
 - **Description (4000 char):** `docs/APP_STORE_SUBMISSION.md` taslak metni
 - **Keywords (100 char):** doğum haritası,human design,numeroloji,sinastri,vedik,nakshatra,uyum,iki kişi,karne
 - **Support URL:** https://soulprofile.life/support
@@ -296,7 +296,7 @@ Doğrudan sakin.life kayıtları kamuya açık değil; pazarda gözlemlenebilen 
 
 ---
 
-## Hızlı referans — sık kullanılan komutlar
+## Hızlı referans: sık kullanılan komutlar
 
 ```bash
 # Web ↔ iOS senkron
@@ -351,12 +351,12 @@ npx cap open ios
 
 ---
 
-## RED DÜZELTMELERİ — 2026-07-21 (Submission c6ee482f)
+## RED DÜZELTMELERİ: 2026-07-21 (Submission c6ee482f)
 
 Apple v1.0 (1) build'ini iki maddeden reddetti. Her ikisi de **kod değil, config/süreç**.
 Resubmit'ten önce bu iki bloğu bitir.
 
-### ❌ Guideline 2.1(a) — "Take Photo → Crash"
+### ❌ Guideline 2.1(a): "Take Photo → Crash"
 
 **Kök sebep:** Build'in `ios/App/App/Info.plist`'inde `NSCameraUsageDescription` yoktu.
 iOS, purpose string olmayan kameraya erişimi denerken uygulamayı **native crash** ile öldürür.
@@ -375,7 +375,7 @@ iOS, purpose string olmayan kameraya erişimi denerken uygulamayı **native cras
 3. Gerçek cihaza build al → Profil → Fotoğraf → **Take Photo** → crash YOK, izin popup'ı çıkmalı
 4. Product → Archive → Distribute → Upload
 
-### ❌ Guideline 2.1(b) — IAP review'a gönderilmemiş
+### ❌ Guideline 2.1(b): IAP review'a gönderilmemiş
 
 **Kök sebep:** IAP ürünü oluşturulmuş ama (a) **App Review Screenshot** yüklenmemiş,
 (b) ürün version'a bağlanıp binary ile birlikte submit edilmemiş.
@@ -401,12 +401,12 @@ aşağıda **"App Review Information"** bölümü → **App Review Screenshot** 
 
 ---
 
-## RED DÜZELTMELERİ — Satın alma "receipt error 8" (INVALID_RECEIPT)
+## RED DÜZELTMELERİ: Satın alma "receipt error 8" (INVALID_RECEIPT)
 
 **Belirti:** Premium ekranında satın al'a basınca ödeme akışı başlıyor ama
-RevenueCat **error 8** (`INVALID_RECEIPT` — "Error validating receipt") ile
+RevenueCat **error 8** (`INVALID_RECEIPT`: "Error validating receipt") ile
 düşüyor. Hem sandbox testinde hem App Review'da görülebilir. **Bu bir kod bug'ı
-DEĞİL** — uygulama tarafındaki hata mesajı zaten lokalize (`iapErrorText` → ham
+DEĞİL**: uygulama tarafındaki hata mesajı zaten lokalize (`iapErrorText` → ham
 "8" kullanıcıya gösterilmez, `app/premium/page.tsx`). Sorun StoreKit/RevenueCat/
 App Store Connect **config**'inde. Sebepler olasılık sırasına göre:
 

@@ -83,9 +83,9 @@ function pickRandom<T>(arr: T[]): T {
 // Embed, Sakin host'u ile AYNI origin'de bir iframe içinde açılır; host kullanıcının
 // ad/doğum bilgisini `sakin_*` localStorage anahtarlarına yazar. Burada onları
 // SENKRON okuyup onboarding'i ön-doldururuz. Eski preemptive-write (profile-key)
-// hack'ine gerek yok — bu okuma ilk render'da hazırdır, yarış koşulu olmaz.
+// hack'ine gerek yok: bu okuma ilk render'da hazırdır, yarış koşulu olmaz.
 //
-// KRİTİK: Profil 'element' alanını kullanır (ateş/su/toprak/hava) — bu kullanıcı
+// KRİTİK: Profil 'element' alanını kullanır (ateş/su/toprak/hava), bu kullanıcı
 // seçimidir, doğumdan TÜRETİLEMEZ. Köprü asla element üretmez, tek başına profil
 // kurmaz; sadece ad + doğum alanlarını forma akıtır.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,7 +133,7 @@ export function readSakinBridge(): SakinBridge | null {
 }
 
 // Ters köprü: kullanıcı doğum bilgisini embed'in KENDİ onboarding'ine girdiyse
-// host'un sakin_* anahtarlarına da yaz — SADECE boş olanlara (host gerçek kaynak
+// host'un sakin_* anahtarlarına da yaz, SADECE boş olanlara (host gerçek kaynak
 // kalır, asla üzerine yazılmaz). Böylece diğer Sakin aile uygulamaları aynı
 // bilgiyi görür ve bir daha sormaz.
 export function writeSakinBridgeBack(p: { name?: string; fullName?: string; birthDate?: string; birthHour?: number; birthMinute?: number; birthCity?: string }): void {
@@ -183,7 +183,7 @@ export function useSakinHayvanStore() {
   const [isNewUser, setIsNewUser] = useState(false);
   // Host'tan gelen, onboarding'i ön-doldurmak için saklanan veri. SENKRON okunur
   // (lazy initializer) ki ProfileScreen ilk render'da köprüyü görsün; profil zaten
-  // varsa loadAll bunu null'a çeker. Element içermez — kullanıcı yine seçer.
+  // varsa loadAll bunu null'a çeker. Element içermez: kullanıcı yine seçer.
   const [bridgePrefill, setBridgePrefill] = useState<SakinBridge | null>(() => readSakinBridge());
   const [session, setSession] = useState<Session | null>(null);
   const [authReady, setAuthReady] = useState(!isSupabaseConfigured);
@@ -209,7 +209,7 @@ export function useSakinHayvanStore() {
   }, []);
 
   /**
-   * Account deletion — Apple Guideline 5.1.1(v) compliance.
+   * Account deletion: Apple Guideline 5.1.1(v) compliance.
    * Calls the `delete_user` Supabase RPC (must be implemented server-side
    * with the service-role key), wipes local storage, and signs out.
    * Falls back to local wipe + signOut if Supabase is not configured or
@@ -250,7 +250,7 @@ export function useSakinHayvanStore() {
       ]);
 
       if (!profileRaw) {
-        // KÖPRÜ — OTOMATİK PROFİL (HD gibi): host doğum tarihi verdiyse profili
+        // KÖPRÜ: OTOMATİK PROFİL (HD gibi): host doğum tarihi verdiyse profili
         // sessizce kur, onboarding'i HİÇ gösterme; doğrudan rehberliğe geç. Element
         // burçtan türetilir (kullanıcı isterse Profil'de değiştirir). Birth yoksa
         // (nadir) eski akış: formu ön-doldur.
@@ -327,7 +327,7 @@ export function useSakinHayvanStore() {
 
   // Köprü GEÇ dolarsa yakala: embed ilk açıldığında host'ta doğum bilgisi yoktu
   // ama sonradan girildiyse (Ailesi paneli / kimlik), onboarding görünürken pencere
-  // odağa/görünürlüğe gelince köprüyü yeniden oku — doluysa loadAll otomatik
+  // odağa/görünürlüğe gelince köprüyü yeniden oku, doluysa loadAll otomatik
   // profili kurar ve onboarding kendiliğinden kapanır.
   useEffect(() => {
     if (profile || !isNewUser || typeof window === 'undefined') return;
@@ -374,7 +374,7 @@ export function useSakinHayvanStore() {
     await saveProfile(p);
     writeSakinBridgeBack(p); // aile uygulamaları da görsün
     setIsNewUser(false);
-    setBridgePrefill(null); // profil kuruldu — köprü ön-doldurması artık gereksiz
+    setBridgePrefill(null); // profil kuruldu: köprü ön-doldurması artık gereksiz
   }, [saveProfile]);
 
   const updateBirthData = useCallback(async (
@@ -486,7 +486,7 @@ export function useSakinHayvanStore() {
     return entries.reduce((a, b) => a[1] > b[1] ? a : b)[0];
   }, []);
 
-  // Her GERÇEK okuma anında (salla/dokun ile kart açılışı) çağrılır — güne
+  // Her GERÇEK okuma anında (salla/dokun ile kart açılışı) çağrılır, güne
   // bağlı DEĞİL, aynı gün tekrar açılsa da sayılır (kullanıcı: "gün sayacını
   // kaldır, ilk 7 okuma doğru, birden fazla gün ya da aynı gün fark etmez").
   // streak/lastOpenDate (gün silsilesi rozeti) buna dokunmaz, ayrı kalır.
@@ -502,7 +502,7 @@ export function useSakinHayvanStore() {
   // "7 hayvana bakınca Yol Başlangıcı rozeti yansın"). AYNI KART GÜNDE 1 KEZ sayılır
   // (aynı hayvanı tekrar açmak şişirmez). Farklı 7 kart açınca totalReadings 7'ye
   // ulaşır ve rozet yanar. AsyncStorage'dan okuyup yazar (paylaşılan store olmadığı
-  // için Home/Detay/Profil ekranları ayrı kopyalar tutar — kaynak her zaman disk).
+  // için Home/Detay/Profil ekranları ayrı kopyalar tutar, kaynak her zaman disk).
   const recordCardView = useCallback(async (cardId: string) => {
     if (!cardId) return;
     try {

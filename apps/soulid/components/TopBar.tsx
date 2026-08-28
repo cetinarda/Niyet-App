@@ -35,7 +35,7 @@ export function TopBar() {
     return () => window.clearInterval(id);
   }, []);
 
-  // Tek menü (üç çizgi) — 5 net bölüm, birbirine karışmaz.
+  // Tek menü (üç çizgi), 5 net bölüm, birbirine karışmaz.
   const menu = [
     { href: '/profil', label: tr ? 'Profilin' : 'Your Profile' },
     { href: '/report', label: tr ? 'Detaylı Karnen' : 'Your Full Report' },
@@ -46,7 +46,7 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-panelBorder/60 bg-bg/55 backdrop-blur-xl">
-      {/* SAKİN BAĞI — yalnızca SoulID doğrudan açıldığında (sakin.life/baglanma
+      {/* SAKİN BAĞI: yalnızca SoulID doğrudan açıldığında (sakin.life/baglanma
           gibi) görünür. Sakin uygulamasının içinde iframe olarak açıldığında
           host'un kendi "← Keşfet" butonu zaten var, ikinci bir geri yolu
           koymak kafa karıştırır. Ayrım runtime'da: iframe içinde miyiz?

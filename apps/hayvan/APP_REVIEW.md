@@ -1,4 +1,4 @@
-# App Store Review — Sakin Hayvan Rehberi
+# App Store Review: Sakin Hayvan Rehberi
 
 Notes for the App Review team.
 
@@ -16,8 +16,8 @@ A free Turkish-language spiritual-reflection app focused on animal symbolism. Th
 
 ## Permissions requested
 
-- **Motion (NSMotionUsageDescription)** — used only to detect a shake gesture for drawing the day's card. The user can also tap a button instead; permission is not required to use the app.
-- **Notifications (local only)** — optional opt-in for a daily reminder. Local notifications only; no remote push.
+- **Motion (NSMotionUsageDescription)**, used only to detect a shake gesture for drawing the day's card. The user can also tap a button instead; permission is not required to use the app.
+- **Notifications (local only)**: optional opt-in for a daily reminder. Local notifications only; no remote push.
 
 The app does NOT access camera, microphone, contacts, location, photos, calendar, or HealthKit.
 
@@ -29,7 +29,7 @@ The four APIs declared in the privacy manifest (FileTimestamp, UserDefaults, Sys
 
 ## Content disclaimer
 
-A disclaimer modal is shown on first launch (and accessible from Profile) stating that the content is **for personal reflection and educational purposes only — not medical, psychological, or spiritual advice.**
+A disclaimer modal is shown on first launch (and accessible from Profile) stating that the content is **for personal reflection and educational purposes only, not medical, psychological, or spiritual advice.**
 
 ## Account deletion
 

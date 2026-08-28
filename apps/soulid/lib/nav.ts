@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 /**
  * Capacitor iOS statik export navigasyon çözümü.
  *
- * KÖK NEDEN: Capacitor'ın CapacitorRouter.route(for:) — uzantısız HER path'i
+ * KÖK NEDEN: Capacitor'ın CapacitorRouter.route(for:): uzantısız HER path'i
  * (örn. "/compatibility/") ROOT "/index.html" olarak servis eder (SPA varsayımı).
  * Next.js static export ise her route için ayrı "compatibility/index.html"
  * üretir. Bu yüzden uzantısız link → hep ana sayfa açılıyordu.
@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation';
  * ("/compatibility/index.html"). Uzantılı path → router `basePath + path`
  * döner → doğru dosya servis edilir.
  *
- * Build-time flag (NEXT_PUBLIC_BUILD_TARGET) — runtime detection değil, böylece
+ * Build-time flag (NEXT_PUBLIC_BUILD_TARGET), runtime detection değil, böylece
  * statik HTML'deki href baştan doğru, hydration mismatch yok.
  */
 
@@ -24,7 +24,7 @@ export const IS_CAPACITOR = process.env.NEXT_PUBLIC_BUILD_TARGET === 'capacitor'
  * Alt klasör öneki (Sakin embed'i: "/embedded/soulid"). Kendi başına çalışan
  * SoulID'de boş. next.config.mjs `basePath` ile varlıkları çözer ama BURADAKİ
  * navigasyon Next router'ını atlayıp doğrudan window.location kullandığı için
- * öneki elle eklemek ŞART — yoksa embed içinde her tık kök dizine gider ve
+ * öneki elle eklemek ŞART, yoksa embed içinde her tık kök dizine gider ve
  * Sakin'in kendi sayfasına düşer.
  */
 const EMBED_BASE = (process.env.NEXT_PUBLIC_EMBED_BASE || '').replace(/\/+$/, '');

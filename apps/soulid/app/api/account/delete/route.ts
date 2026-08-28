@@ -1,4 +1,4 @@
-// Hesap silme — Apple 5.1.1(v) + GDPR Art.17.
+// Hesap silme: Apple 5.1.1(v) + GDPR Art.17.
 // 1. Auth Bearer JWT → user_id
 // 2. JWT'yi Supabase'e verify ettir (anon key ile getUser)
 // 3. service_role ile auth.users delete (RLS cascade tüm tabloları siler)
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Giriş gerekli' }, { status: 401 });
   }
 
-  // JWT'yi Supabase'e doğrula — sub bizim okuduğumuzla eşleşmeli
+  // JWT'yi Supabase'e doğrula: sub bizim okuduğumuzla eşleşmeli
   const verifyRes = await fetch(`${supaUrl}/auth/v1/user`, {
     headers: {
       apikey: supaAnon,
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     }
   }
 
-  // auth.users delete — cascade: profiles, reports, entitlements,
+  // auth.users delete: cascade: profiles, reports, entitlements,
   // subscriptions, stripe_customers (FK on delete cascade).
   const delRes = await fetch(`${supaUrl}/auth/v1/admin/users/${caller.userId}`, {
     method: 'DELETE',

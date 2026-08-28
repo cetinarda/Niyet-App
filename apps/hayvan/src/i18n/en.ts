@@ -85,7 +85,7 @@ export const en = {
     intro: {
       title: 'Discover Your Spirit Animal',
       desc: 'There are two paths to find the totem animal aligned with your soul.',
-      note: 'Sakin holds up a mirror — reflecting what is already within you and whispering what is possible.\nOnly you can awaken it in your heart, feel it, and make it your own.',
+      note: 'Sakin holds up a mirror, reflecting what is already within you and whispering what is possible.\nOnly you can awaken it in your heart, feel it, and make it your own.',
       quizBtn: {
         title: 'Explore with Questions',
         desc: '7 questions, matched to your character',
@@ -108,8 +108,8 @@ export const en = {
       cityHint: 'The energy of your birthplace adds depth to the reading.',
       hourLabel: 'Birth Time',
       hourOptional: '(optional)',
-      hourPlaceholder: 'Hour (0–23)',
-      hourHint: "If you don't know the time, leave it blank — a strong match will still be found.",
+      hourPlaceholder: 'Hour (0-23)',
+      hourHint: "If you don't know the time, leave it blank, a strong match will still be found.",
       submitBtn: 'Find My Guide ✦',
     },
     result: {
@@ -185,7 +185,7 @@ export const en = {
   nagual: {
     back: '← Back',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Periodic Guide',
+    introTitle: 'Nagual: Periodic Guide',
     introText:
       'Your totem animal is born with you and stays for life. The nagual is a temporary guide\nthat accompanies you during a specific period. It arrives in times of trial,\ntransformation, or crisis. Once its purpose is fulfilled, it yields its place\nto another guide.',
     weekTag: 'THIS WEEK · UNIVERSAL',
@@ -302,7 +302,7 @@ export const en = {
       estimated: '(estimated)',
       hdTypeSelectHint: 'Select your type:',
       hdDisclaimer:
-        '⚠ Calculation is an estimate — accurate HD requires birth time and ephemeris.\nIf you know your type, select it above.',
+        '⚠ Calculation is an estimate, accurate HD requires birth time and ephemeris.\nIf you know your type, select it above.',
       sunGates: 'Sun Gates',
       consciousSun: 'Conscious Sun',
       designSun: 'Design Sun',
@@ -326,7 +326,7 @@ export const en = {
         yearPlaceholder: 'Year',
         hourLabel: 'Birth Time',
         hourOptional: '(important for HD)',
-        hourPlaceholder: 'Hour (0–23)',
+        hourPlaceholder: 'Hour (0-23)',
         minutePlaceholder: 'Minute',
         cityLabel: 'Birth City',
         cityOptional: '(for time zone)',
@@ -341,8 +341,8 @@ export const en = {
       sectionTitle: 'What is Animal Guidance?',
       totemTitle: '⊕ Totem Animal',
       totemText:
-        'Every person carries the spirit of an animal within their nature. This totem animal represents you; your energy, your strengths, and the path you walk carry its traces. The totem never changes — it is born with you and grows with you.',
-      nagualTitle: '◎ Nagual — Periodic Guide',
+        'Every person carries the spirit of an animal within their nature. This totem animal represents you; your energy, your strengths, and the path you walk carry its traces. The totem never changes: it is born with you and grows with you.',
+      nagualTitle: '◎ Nagual: Periodic Guide',
       nagualText:
         "The nagual is a temporary guide that comes to you for a specific period. It is called in times of trial, transformation, or crisis. Once its purpose is fulfilled, it yields its place to another guide. The animal drawn in your daily reading carries the voice of today's nagual.",
       finderTitle: 'Find Your Animal Guide',
@@ -365,7 +365,7 @@ export const en = {
     sakinFamily: {
       title: 'Sakin Family',
       intro: 'One ecosystem. One subscription. Many doors.',
-      masterDesc: 'Home base — entry to all apps',
+      masterDesc: 'Home base: entry to all apps',
       apps: {
         animalGuidance: 'Animal Guidance',
         stoneGuidance: 'Crystal Guidance',
@@ -506,11 +506,11 @@ export const en = {
     },
     mit: {
       term: 'Myth',
-      short: 'A symbolic power the soul encounters — Shadow, Threshold, Lightning...',
+      short: 'A symbolic power the soul encounters, Shadow, Threshold, Lightning...',
     },
     hayatYolu: {
       term: 'Life Path Number',
-      short: 'The numerological summary of your birth date — shows your core energy.',
+      short: 'The numerological summary of your birth date, shows your core energy.',
     },
     numeroloji: {
       term: 'Numerology',
@@ -518,15 +518,15 @@ export const en = {
     },
     ifade: {
       term: 'Expression Number',
-      short: 'Derived from the letters of your name — your natural talents and potential.',
+      short: 'Derived from the letters of your name, your natural talents and potential.',
     },
     ruhIstegi: {
       term: 'Soul Urge Number',
-      short: 'From the vowels of your name — your inner motivation.',
+      short: 'From the vowels of your name, your inner motivation.',
     },
     kisilik: {
       term: 'Personality Number',
-      short: 'From the consonants of your name — the face you show the world.',
+      short: 'From the consonants of your name, the face you show the world.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -570,7 +570,7 @@ export const en = {
     },
     kisiselYil: {
       term: 'Personal Year',
-      short: 'The theme specific to your numerological year — which step of the 9-year cycle you are on.',
+      short: 'The theme specific to your numerological year, which step of the 9-year cycle you are on.',
     },
     rehber: {
       term: 'Spirit Animal',

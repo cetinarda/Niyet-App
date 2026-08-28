@@ -33,7 +33,7 @@ export const GLOSSARY: GlossaryEntry[] = [
     category: 'numerology',
     term: 'Ruh Arzusu Sayısı',
     description:
-      'Adının sadece sesli harflerinden hesaplanır. Derinde ne istediğin, hangi koşulda gerçekten doyduğun — ruhsal motivasyonun parmak izi.',
+      'Adının sadece sesli harflerinden hesaplanır. Derinde ne istediğin, hangi koşulda gerçekten doyduğun, ruhsal motivasyonun parmak izi.',
   },
   {
     id: 'reduce',

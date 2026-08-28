@@ -1,4 +1,4 @@
-# App Store Yeniden Yükleme Kılavuzu — Sakin v1.1
+# App Store Yeniden Yükleme Kılavuzu, Sakin v1.1
 
 > Bu kılavuz, Apple'ın 1.4.1 (Safety: Physical Harm) ve 2.3.8 (Accurate Metadata) ret gerekçelerini çözmek için hazırlanmıştır.
 
@@ -6,7 +6,7 @@
 
 ## BÖLÜM 1: Apple Ret Gerekçeleri ve Çözümler
 
-### 1.4.1 — Safety: Physical Harm (ÇÖZÜLDÜ)
+### 1.4.1: Safety: Physical Harm (ÇÖZÜLDÜ)
 **Sorun:** Uygulama içinde tıbbi teşhis, tedavi ve şifa iddiaları vardı.
 
 **Yapılan düzeltmeler:**
@@ -22,7 +22,7 @@
 - ✅ Nefes açıklamalarında "parasempatik sistemi aktive eder" kaldırıldı
 - ✅ Tıbbi uyarı metni tüm AI yanıtlarına eklendi
 
-### 2.3.8 — Accurate Metadata (ÇÖZÜLDÜ)
+### 2.3.8: Accurate Metadata (ÇÖZÜLDÜ)
 **Sorun:** Metadata uygulama içeriğiyle uyuşmuyordu, harici ödeme mekanizması vardı.
 
 **Yapılan düzeltmeler:**
@@ -37,7 +37,7 @@
 
 ## BÖLÜM 2: App Store Connect'e Girilecek Bilgiler
 
-### 2.1 — App Information
+### 2.1: App Information
 
 | Alan | Değer |
 |---|---|
@@ -49,17 +49,17 @@
 | **Content Rights** | Does not contain third-party content |
 | **Age Rating** | 4+ (no objectionable content) |
 
-### 2.2 — Pricing and Availability
+### 2.2: Pricing and Availability
 
 | Alan | Değer |
 |---|---|
 | **App Price** | Free (Ücretsiz) |
 | **Availability** | All territories |
 | **Pre-Order** | Hayır |
-| **In-App Purchases** | Evet — Ömür Boyu Lisans $19.99 (Non-Consumable) |
-| **Subscriptions** | Evet — Yıllık $4.99 (Auto-Renewable) |
+| **In-App Purchases** | Evet, Ömür Boyu Lisans $19.99 (Non-Consumable) |
+| **Subscriptions** | Evet: Yıllık $4.99 (Auto-Renewable) |
 
-#### App Store Connect — In-App Purchases Kurulumu
+#### App Store Connect: In-App Purchases Kurulumu
 
 1. **Subscription Group** oluştur: "Sakin Premium"
 2. Subscription ekle:
@@ -67,38 +67,38 @@
    - **Product ID:** `app.sakin.life.yearly`
    - **Duration:** 1 Year
    - **Price:** $4.99 (Tier 5)
-   - **Localization (TR):** Yıllık Premium — Tüm özellikler
-   - **Localization (EN):** Yearly Premium — All features
+   - **Localization (TR):** Yıllık Premium: Tüm özellikler
+   - **Localization (EN):** Yearly Premium: All features
 3. Non-Consumable IAP ekle:
    - **Reference Name:** Lifetime License
    - **Product ID:** `app.sakin.life.lifetime`
    - **Price:** $19.99 (Tier 30)
-   - **Localization (TR):** Ömür Boyu Lisans — Tek seferlik, tüm özellikler
-   - **Localization (EN):** Lifetime License — One-time, all features
+   - **Localization (TR):** Ömür Boyu Lisans: Tek seferlik, tüm özellikler
+   - **Localization (EN):** Lifetime License: One-time, all features
 
-### 2.4 — Version Information (TR)
+### 2.4: Version Information (TR)
 
 | Alan | Değer |
 |---|---|
-| **Promotional Text** | Kuş sesleri eşliğinde frekanslarla hizalan. Sabah niyetinden akşam kapanışına, gün boyu kendine dönmeni sağlayan sade bir yol arkadaşı. |
+| **Promotional Text** | Gürültülü dünyada küçük bir nefes molası. Günlük pratiklerle zihnini sakinleştir, içindeki sesi daha net duymana alan aç. |
 | **Description** | `app-store-description-TR.md` dosyasındaki tam metin |
 | **Keywords** | `sakin,farkındalık,meditasyon,nefes,çakra,frekans,kuş sesi,günlük,niyet,rahatlama` |
 | **Support URL** | https://sakin.app |
 | **Marketing URL** | https://sakin.app |
 | **Privacy Policy URL** | https://sakin.app/privacy |
 
-### 2.5 — Version Information (EN)
+### 2.5: Version Information (EN)
 
 | Alan | Değer |
 |---|---|
-| **Promotional Text** | Align with frequencies accompanied by bird sounds. A calm daily companion that brings you back to yourself, from morning intention to evening closing. |
+| **Promotional Text** | A small breathing pause in a noisy world. Calm your mind with daily practices and make space to hear your inner voice more clearly. |
 | **Description** | `app-store-description-EN.md` dosyasındaki tam metin |
 | **Keywords** | `calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,daily,relaxation` |
 | **Support URL** | https://sakin.app |
 | **Marketing URL** | https://sakin.app |
 | **Privacy Policy URL** | https://sakin.app/privacy |
 
-### 2.6 — What's New (v1.1)
+### 2.6: What's New (v1.1)
 
 **Türkçe:**
 ```
@@ -116,18 +116,18 @@
 • Performance improvements
 ```
 
-### 2.7 — App Review Information
+### 2.7: App Review Information
 
 | Alan | Değer |
 |---|---|
 | **Contact First Name** | Arda |
 | **Contact Last Name** | Cetin |
-| **Contact Email** | destek@sakin.app |
+| **Contact Email** | destek@sakin.life |
 | **Contact Phone** | (telefon numaranı gir) |
 | **Demo Account** | Not required |
 | **Notes** | `app-review-notes.md` dosyasındaki tam metni yapıştır |
 
-### 2.8 — App Privacy (Data Types)
+### 2.8: App Privacy (Data Types)
 
 **App Store Connect > App Privacy** bölümünden:
 
@@ -146,7 +146,7 @@ Seçilecek kategori:
 
 ## BÖLÜM 3: Screenshot Planı
 
-### 3.1 — Gerekli Boyutlar
+### 3.1: Gerekli Boyutlar
 
 | Cihaz | Boyut | Zorunlu |
 |---|---|---|
@@ -155,14 +155,14 @@ Seçilecek kategori:
 | iPhone 5.5" (8 Plus, SE) | 1242 x 2208 px | ✅ Evet |
 | iPad Pro 12.9" (6th gen) | 2048 x 2732 px | ✅ iPad desteği varsa |
 
-> **Not:** 6.7" ve 6.5" için aynı görseli kullanabilirsin — Apple otomatik ölçekler. Minimum 3, maksimum 10 screenshot.
+> **Not:** 6.7" ve 6.5" için aynı görseli kullanabilirsin: Apple otomatik ölçekler. Minimum 3, maksimum 10 screenshot.
 
-### 3.2 — Screenshot Sırası ve İçerik (7 Screenshot)
+### 3.2: Screenshot Sırası ve İçerik (7 Screenshot)
 
 Her screenshot'ta üstte kısa bir başlık metni, altta uygulama ekranı gösterilecek.
 
 #### Screenshot 1: Karşılama
-- **Ekran:** Giriş sayfası — "Sakin" logosu, arka plan görseli
+- **Ekran:** Giriş sayfası: "Sakin" logosu, arka plan görseli
 - **Başlık (TR):** "Kendini hep hatırla"
 - **Başlık (EN):** "Always remember yourself"
 - **Tasarım notu:** Koyu mor/lacivert arka plan, minimal tasarım. Logo ve tagline ortada.
@@ -203,15 +203,15 @@ Her screenshot'ta üstte kısa bir başlık metni, altta uygulama ekranı göste
 - **Başlık (EN):** "Track your daily progress"
 - **Tasarım notu:** Streak sayısı ve tamamlanmış adımlar görünsün
 
-### 3.3 — Screenshot Tasarım Kuralları
+### 3.3: Screenshot Tasarım Kuralları
 
-1. **Arka plan:** Koyu gradient (#0a0e1a → #1a1040) — uygulamanın temasıyla uyumlu
+1. **Arka plan:** Koyu gradient (#0a0e1a → #1a1040), uygulamanın temasıyla uyumlu
 2. **Başlık fontu:** SF Pro Display Bold veya benzeri, beyaz renk, üst 1/4'te
-3. **Cihaz çerçevesi:** Opsiyonel — Apple artık çerçevesiz screenshot'ları tercih ediyor
+3. **Cihaz çerçevesi:** Opsiyonel: Apple artık çerçevesiz screenshot'ları tercih ediyor
 4. **Metin dili:** TR ve EN ayrı lokalizasyon olarak yüklenir
 5. **Yasak içerik:** Screenshot'larda "şifa", "tedavi", "onarım" kelimeleri OLMAMALI
 
-### 3.4 — Screenshot Üretim Araçları
+### 3.4: Screenshot Üretim Araçları
 
 | Araç | Kullanım | Fiyat |
 |---|---|---|
@@ -220,7 +220,7 @@ Her screenshot'ta üstte kısa bir başlık metni, altta uygulama ekranı göste
 | **Screenshots Pro** | Otomatik App Store formatı | Ücretli |
 | **LaunchMatic** | AI destekli screenshot üretimi | Ücretli |
 
-### 3.5 — Screenshot Alma Adımları
+### 3.5: Screenshot Alma Adımları
 
 1. Xcode'da simulator aç (iPhone 15 Pro Max)
 2. Uygulamayı çalıştır
@@ -240,14 +240,14 @@ Her screenshot'ta üstte kısa bir başlık metni, altta uygulama ekranı göste
 |---|---|
 | **Boyut** | 1024 x 1024 px |
 | **Format** | PNG, şeffaf arka plan YOK |
-| **Köşe yuvarlama** | Apple otomatik uygular — kare olarak yükle |
+| **Köşe yuvarlama** | Apple otomatik uygular, kare olarak yükle |
 | **Tasarım** | Mevcut Sakin ikonu |
 
 ---
 
 ## BÖLÜM 5: Build Yükleme Adımları
 
-### 5.1 — Kod Hazırlığı
+### 5.1: Kod Hazırlığı
 
 ```bash
 # 1. Son kodu çek
@@ -263,7 +263,7 @@ npx cap sync ios
 npx cap open ios
 ```
 
-### 5.2 — Xcode Ayarları
+### 5.2: Xcode Ayarları
 
 | Alan | Değer |
 |---|---|
@@ -274,7 +274,7 @@ npx cap open ios
 | **Signing** | Automatic (Apple Developer Account) |
 | **Capabilities** | Push Notifications (local only) |
 
-### 5.3 — Archive ve Yükleme
+### 5.3: Archive ve Yükleme
 
 > **Not:** `cordova-plugin-purchase` kullanılır. Ücretsiz indirme + StoreKit IAP ile $4.99/yıl veya $19.99 ömür boyu.
 
@@ -288,7 +288,7 @@ npx cap open ios
 7. App Store Connect'te build'in işlenmesini bekle (5-15 dk)
 ```
 
-### 5.5 — Yükleme Sonrası Kontrol
+### 5.5: Yükleme Sonrası Kontrol
 
 - [ ] Build, App Store Connect'te "Ready to Submit" olarak görünüyor
 - [ ] Version bilgisi doğru (1.1, Build 2)
@@ -348,10 +348,10 @@ npx cap open ios
 
 Aşağıdaki sayfaların `sakin.app` domain'inde yayında olması gerekir:
 
-### 8.1 — Privacy Policy (sakin.app/privacy)
+### 8.1: Privacy Policy (sakin.app/privacy)
 `privacy-policy-TR.md` dosyasını web sayfası olarak yayınla. İngilizce versiyonu da olmalı.
 
-### 8.2 — Terms of Use (sakin.app/terms)
+### 8.2: Terms of Use (sakin.app/terms)
 Aşağıdakileri içermeli:
 - Hizmet tanımı
 - Kullanım koşulları
@@ -360,11 +360,11 @@ Aşağıdakileri içermeli:
 - Sorumluluk reddi (tıbbi amaç taşımaz)
 - İletişim bilgisi
 
-> ✅ `public/terms.html` dosyası oluşturuldu — sakin.app/terms adresinde yayınlanacak.
+> ✅ `public/terms.html` dosyası oluşturuldu: sakin.app/terms adresinde yayınlanacak.
 
-### 8.3 — Support (sakin.app)
+### 8.3: Support (sakin.app)
 - SSS bölümü
-- İletişim e-postası: destek@sakin.app
+- İletişim e-postası: destek@sakin.life
 
 ---
 

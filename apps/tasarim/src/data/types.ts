@@ -18,7 +18,7 @@ export interface TypeInfo {
   longDesc: string;
   pracicalTips: string[];
   keywords: string[];
-  // İngilizce kardeş alanlar (opsiyonel) — L() bunları EN modunda döndürür.
+  // İngilizce kardeş alanlar (opsiyonel), L() bunları EN modunda döndürür.
   nameEn?: string;
   oranEn?: string;
   auraEn?: string;
@@ -64,7 +64,7 @@ export const TYPES: Record<HDType, TypeInfo> = {
     longDescEn:
       'Manifestors are the rare type with the power to initiate without anyone’s permission. Their Sacral center is undefined; they don’t carry sustainable work energy, but their capacity to set things in motion, to begin, and to leave an impact is high. To avoid angering those around them, their strategy is to inform: briefly letting the people who will be affected know before they act softens the aura and keeps them from meeting resistance. When living correctly, they feel peace; when living out of alignment, anger and isolation arise.',
     pracicalTipsEn: [
-      'Inform those around you before you act — it’s a heads-up, not a request for permission.',
+      'Inform those around you before you act, it’s a heads-up, not a request for permission.',
       'You may have built a protective shell against being controlled in childhood; notice it.',
       'Keep spaces where you can work alone to protect your energy.',
       'Make room for rest cycles; you weren’t designed for constant output.',
@@ -100,7 +100,7 @@ export const TYPES: Record<HDType, TypeInfo> = {
     shortDescEn:
       'The pure power of the Sacral. An inexhaustible source of energy when devoted to work they love; they find their true life by responding.',
     longDescEn:
-      'Generators are the building blocks of the world. Thanks to a defined Sacral center, they hold sustainable work and life energy. Their aura is open and enveloping; they respond to everything they meet with an “uh-huh / un-uh” sound from the Sacral. It’s not enough for the mind to say “good idea” — they must check whether the body responds. When living their correct life there is a deep sense of satisfaction; otherwise they experience constant frustration. The path of mastery is to deepen by repeating, again and again, the things they love.',
+      'Generators are the building blocks of the world. Thanks to a defined Sacral center, they hold sustainable work and life energy. Their aura is open and enveloping; they respond to everything they meet with an “uh-huh / un-uh” sound from the Sacral. It’s not enough for the mind to say “good idea”, they must check whether the body responds. When living their correct life there is a deep sense of satisfaction; otherwise they experience constant frustration. The path of mastery is to deepen by repeating, again and again, the things they love.',
     pracicalTipsEn: [
       'Listen to your body’s response: follow the gut-level “yes” or “no” rising from your chest.',
       'Ask the people around you to phrase things as yes/no questions.',
@@ -140,7 +140,7 @@ export const TYPES: Record<HDType, TypeInfo> = {
     longDescEn:
       'Manifesting Generators are hybrid types whose defined Sacral connects through a motor (Sacral, Heart, Solar Plexus or Root) to the Throat. This lets them both respond and manifest. They are made to run several interests in parallel rather than being stuck on a single thing. Moving forward by skipping steps is their natural gift; this is why they often say, “I need to go back and do that one step.” Their strategy is to respond first (from the Sacral), then inform the relevant people before they take action.',
     pracicalTipsEn: [
-      'Running multiple projects in parallel isn’t your mistake — it’s your gift.',
+      'Running multiple projects in parallel isn’t your mistake, it’s your gift.',
       'Don’t leap into something you have no Sacral response to; it causes inner tightness.',
       'Move past those who slow you down by informing them, not by being patient.',
       'When you skip steps, note the places you’ll need to come back and fill in.',

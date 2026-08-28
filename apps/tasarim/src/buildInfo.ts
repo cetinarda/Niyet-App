@@ -1,4 +1,4 @@
-// AUTO-GENERATED — scripts/stamp-build.mjs tarafından her build öncesi yenilenir.
+// AUTO-GENERATED: scripts/stamp-build.mjs tarafından her build öncesi yenilenir.
 export const BUILD_INFO = {
   version: "1.0.0",
   commit: "651df29",

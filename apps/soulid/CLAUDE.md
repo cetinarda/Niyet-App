@@ -1,11 +1,11 @@
-# SoulProfile — Çalışma Notları
+# SoulProfile: Çalışma Notları
 
 > Bu dosya bu repoda gelecek tüm Claude oturumları için referanstır.
 > Önce buraya bak.
 
 ## Vizyon
 
-**"Doğduğunda yıldızlar sana ne söylüyordu?"** — 9 farklı sistemin sentezinden
+**"Doğduğunda yıldızlar sana ne söylüyordu?"**: 9 farklı sistemin sentezinden
 çıkan tek bir kozmik kimlik. Web ve iOS (Capacitor wrap).
 
 ## Yığın (mevcut, çalışıyor)
@@ -16,12 +16,12 @@
 - **astronomy-engine** (saf JS, native binding YOK)
 - **three.js + @react-three/fiber + @react-three/drei** (3D solar sistem)
 - **html-to-image** (karne PNG export)
-- **Supabase** (auth + Postgres + RLS — opsiyonel, localStorage'a fallback var)
-- **Groq** (ÜCRETSİZ) — anlatım metinlerinde birincil sağlayıcı. Model SABİT DEĞİL:
+- **Supabase** (auth + Postgres + RLS, opsiyonel, localStorage'a fallback var)
+- **Groq** (ÜCRETSİZ): anlatım metinlerinde birincil sağlayıcı. Model SABİT DEĞİL:
   `app/api/ai/_shared.ts` Groq `/models` listesini okuyup tercih sırasından
   (`openai/gpt-oss-120b` → `gpt-oss-20b` → `qwen/qwen3.6-27b`) o an yayında olan
   ilkini seçer, emekli olanı otomatik eler. `GROQ_MODEL` env ile push'suz ezilir.
-- **Anthropic Claude API** model: `claude-sonnet-4-6` — yedek + premium derin analiz
+- **Anthropic Claude API** model: `claude-sonnet-4-6`: yedek + premium derin analiz
 - **Stripe Checkout** (web ödeme, Edge runtime API route)
 - **Capacitor 6** (iOS wrap için yapılandırma hazır, paketler henüz yüklenmedi)
 - **Zustand** state
@@ -101,14 +101,14 @@ docs/
 
 ## Bilinen kritik bug çözümleri
 
-### ASC (Yükselen) 180° flip bug — DÜZELTİLDİ
+### ASC (Yükselen) 180° flip bug, DÜZELTİLDİ
 `atan2(-cos, sin*cos+tan*sin)` formülü tutarlı şekilde DSC veriyordu.
 Doğru formül (flatlib/Swiss Ephemeris):
 ```ts
 atan2(cos(ramc), -(sin(ramc) * cos(eps) + tan(phi) * sin(eps)))
 ```
 Doğrulama: 07.04.1988 23:05 Kayseri → Yay ✓ (eski: İkizler, 180° off).
-Test: `node scripts/debug-asc.mjs` — 3 reference case (Kayseri/İstanbul/NYC).
+Test: `node scripts/debug-asc.mjs`: 3 reference case (Kayseri/İstanbul/NYC).
 
 ## Yeni bir uygulama açtığımızda KAÇIRMA
 
@@ -133,7 +133,7 @@ Her tüketici uygulaması için BAŞTAN kur:
 Spiritüel/sağlık/finans: MUTLAKA
 > "Eğlence ve farkındalık amaçlıdır. Tıbbi/psikolojik/finansal tavsiye yerine geçmez."
 
-Footer + karne alt köşesi + ToS — 3 yerde tekrar.
+Footer + karne alt köşesi + ToS, 3 yerde tekrar.
 
 ### 5. Hassas veri ele alımı
 - Doğum tarihi/saati/yeri = hassas
@@ -151,7 +151,7 @@ Footer + karne alt köşesi + ToS — 3 yerde tekrar.
 - Fallback narrative her zaman olsun (yapılandırılmış 7 bölüm şeması).
 - **Sağlayıcı zinciri** `app/api/ai/_shared.ts` → `generateText()`:
   varsayılan **Groq (ücretsiz) → Anthropic (ücretli) → statik fallback**.
-  `preferQuality: true` sırayı ters çevirir (premium `deep-analysis` bunu kullanır —
+  `preferQuality: true` sırayı ters çevirir (premium `deep-analysis` bunu kullanır, 
   parası ödenmiş özellikte kalite önce).
   `validate` callback'i çıktıyı doğrular; Llama katı bölüm formatına uymazsa
   o çıktı REDDEDİLİR ve sıradaki sağlayıcı denenir (sessiz bozuk metin yerine).
@@ -161,9 +161,9 @@ Footer + karne alt köşesi + ToS — 3 yerde tekrar.
   artık aday listesi üzerinden döner: yayında olmayanı eler, çağrıda 400/404
   gelirse sıradakine geçer, 429/500'de durur (modelleri boşa yakmaz).
   Yeni model eklemek: `GROQ_PREF` listesinin BAŞINA gerçek Groq ID'sini yaz.
-- **Groq görsel ÜRETMEZ** — sadece metin/vision-input/STT/TTS. Portre için ayrı
+- **Groq görsel ÜRETMEZ**: sadece metin/vision-input/STT/TTS. Portre için ayrı
   görsel modeli gerekir (`OPENAI_API_KEY` → gpt-image-1, `/api/ai/portrait`).
-- Route'larda prompt üretimi de `try` İÇİNDE olmalı — dışarıda kalırsa bozuk veri
+- Route'larda prompt üretimi de `try` İÇİNDE olmalı: dışarıda kalırsa bozuk veri
   502+`useFallback` yerine 500 HTML döndürür ve istemci fallback sinyalini kaybeder.
 - Model: `claude-sonnet-4-6`. Ucuz için `claude-haiku-4-5-20251001`.
 
@@ -178,7 +178,7 @@ Footer + karne alt köşesi + ToS — 3 yerde tekrar.
 - Capacitor wrap için `docs/IOS_WRAPPER.md` adımlarını izle
 - IAP için `docs/PAYMENT_INTEGRATION.md` + RevenueCat
 - Submission için `docs/APP_STORE_SUBMISSION.md` checklist (30 madde)
-- iOS'ta Stripe BUTONUNU GİZLE — `lib/platform.ts` ile (`isCapacitorNative()`)
+- iOS'ta Stripe BUTONUNU GİZLE: `lib/platform.ts` ile (`isCapacitorNative()`)
 
 ### 9. Marketing dokümanları
 Her tüketici uygulaması için `marketing/` altına:
@@ -208,7 +208,7 @@ Her tüketici uygulaması için `marketing/` altına:
 | ASC 180° yanlış (DSC veriyor) | flatlib formülü: `atan2(cos, -(sin*cos+tan*sin))` |
 | Capacitor config tsc hatası | tsconfig.json `exclude`'a ekle |
 | three.js Suspense crash | Her gezegeni ayrı `<Suspense>` ile sar |
-| iOS "Take Photo → crash" (App Store 2.1a) | `Info.plist`'te `NSCameraUsageDescription` eksik. `npm run ios:plist` (cap:sync/cap:ios otomatik çağırır) — `scripts/ios-plist-patch.mjs` zorunlu usage string'leri idempotent ekler |
+| iOS "Take Photo → crash" (App Store 2.1a) | `Info.plist`'te `NSCameraUsageDescription` eksik. `npm run ios:plist` (cap:sync/cap:ios otomatik çağırır): `scripts/ios-plist-patch.mjs` zorunlu usage string'leri idempotent ekler |
 | IAP "not submitted for review" (2.1b) | App Store Connect'te her IAP'ye **App Review Screenshot** yükle + ürünü version'a bağla → binary ile birlikte submit. Detay: `docs/APP_STORE_UPLOAD.md` "RED DÜZELTMELERİ" |
 | IAP akışında hata mesajı (2.1b red) | `NEXT_PUBLIC_*` BUILD ANINDA gömülür. `NEXT_PUBLIC_REVENUECAT_IOS_KEY` build'de yoksa `initIAP()` sessizce çıkar → `buyOnNative()` `IAP_NOT_READY` → reviewer ekranda hata görür. `scripts/build-capacitor.mjs` artık anahtar yoksa build'i DURDURUR (`ALLOW_MISSING_IAP=1` ile bypass, o binary submit EDİLEMEZ) |
 | İzin diyalogları uygulama diliyle aynı değil (Guideline 4 red) | Uygulama tr+en lokalize ama `Info.plist` taban metinleri Türkçe'ydi → İngilizce cihazda İngilizce UI + Türkçe izin diyaloğu. `npm run ios:plist` artık taban metni **İngilizce**'ye sabitler + `en.lproj`/`tr.lproj/InfoPlist.strings` üretir + `CFBundleLocalizations` ekler. **Xcode'da .lproj klasörlerini proje ağacına eklemeyi UNUTMA** (Target Membership → App), yoksa binary'ye girmez |

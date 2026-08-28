@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* ============================================================
-   THEME — Dark (default) and Light, semantic color tokens
+   THEME: Dark (default) and Light, semantic color tokens
    data-theme="dark" / "light" on <html>
    ============================================================ */
 
@@ -12,7 +12,7 @@
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Surface hierarchy (dark — galaktik gece) */
+  /* Surface hierarchy (dark: galaktik gece) */
   --bg: #07091a;
   --bg-elev-1: #0f1230;
   --bg-elev-2: #161a3d;
@@ -48,7 +48,7 @@
 }
 
 [data-theme='light'] {
-  /* Surface — sıcak günbatımı / aurora pembesi, gözü yormaz */
+  /* Surface: sıcak günbatımı / aurora pembesi, gözü yormaz */
   --bg: #faf6ee;
   --bg-elev-1: #f5efe2;
   --bg-elev-2: #ede5d3;
@@ -57,12 +57,12 @@
   --panel-border: rgba(60, 40, 100, 0.14);
   --panel-border-strong: rgba(60, 40, 100, 0.24);
 
-  /* Ink — WCAG AA için kontrast yükseltildi */
+  /* Ink: WCAG AA için kontrast yükseltildi */
   --ink: #1c1733;
   --muted: rgba(28, 23, 51, 0.78);
   --faint: rgba(28, 23, 51, 0.58);
 
-  /* Accent — gün ışığında daha doygun + AA kontrast */
+  /* Accent: gün ışığında daha doygun + AA kontrast */
   --gold: #9a7218;
   --gold-soft: #c89527;
   --cosmic: #4a30b3;
@@ -72,7 +72,7 @@
   --success: #1f7a52;
   --danger: #a82828;
 
-  /* Vellum — light için biraz daha doygun */
+  /* Vellum: light için biraz daha doygun */
   --vellum-chemistry: #b8862f;
   --vellum-lesson: #5f7c4c;
   --vellum-rhythm: #a86d77;
@@ -132,7 +132,7 @@ button, a {
 }
 
 /* ============================================================
-   SAYFA ZEMİNİ — nebula vignette
+   SAYFA ZEMİNİ: nebula vignette
    Dark: derin uzay nebulası
    Light: gün ışığı + sıcak parıltı
    ============================================================ */
@@ -162,7 +162,7 @@ body::before {
     #faf6ee;
 }
 
-/* Yıldız drift — yalnız dark mode'da */
+/* Yıldız drift: yalnız dark mode'da */
 body::after {
   content: '';
   position: fixed;
@@ -215,7 +215,7 @@ main {
   html, body { transition: none; }
 }
 
-/* Kullanıcının manuel hareket azaltma tercihi — Andy Bell tarzı global kill switch */
+/* Kullanıcının manuel hareket azaltma tercihi, Andy Bell tarzı global kill switch */
 [data-motion='reduced'] *,
 [data-motion='reduced'] *::before,
 [data-motion='reduced'] *::after {
@@ -226,7 +226,7 @@ main {
 }
 
 /* ============================================================
-   ScoreRing — stagger giriş animasyonu (Crouton pattern)
+   ScoreRing: stagger giriş animasyonu (Crouton pattern)
    ============================================================ */
 @keyframes ringDraw {
   from { stroke-dasharray: 0 var(--ring-circ); }
@@ -241,7 +241,7 @@ main {
   .ring-draw { animation: none; stroke-dasharray: var(--ring-dash) var(--ring-circ); }
 }
 
-/* Eski .starfield class'ı — opacity hangi temada nasıl */
+/* Eski .starfield class'ı: opacity hangi temada nasıl */
 .starfield {
   position: absolute;
   inset: 0;
@@ -290,7 +290,7 @@ main {
 }
 
 /* ============================================================
-   CARD SURFACES — Liquid Glass disiplini (Apple 2024+)
+   CARD SURFACES: Liquid Glass disiplini (Apple 2024+)
    İçerik kartları OPAK. Blur sadece nav + transient overlay'de.
    Okunabilirlik > efekt.
    ============================================================ */
@@ -320,7 +320,7 @@ main {
 }
 
 /* ============================================================
-   FORM INPUT — iOS WKWebView normalize (TEK kaynak: lib/ui.ts FORM_INPUT)
+   FORM INPUT: iOS WKWebView normalize (TEK kaynak: lib/ui.ts FORM_INPUT)
    Native date/time inputları container'ı taşırmasın + tutarlı yükseklik.
    ============================================================ */
 .form-input {
@@ -330,7 +330,7 @@ main {
   min-width: 0;          /* grid/flex hücresinde küçülebilsin → yatay taşma yok */
   max-width: 100%;
   box-sizing: border-box;
-  height: 56px;          /* SABİT yükseklik — date/time native kontrolü BÜYÜYEMEZ */
+  height: 56px;          /* SABİT yükseklik: date/time native kontrolü BÜYÜYEMEZ */
   padding-top: 0;
   padding-bottom: 0;
   font-size: 16px;       /* iOS focus zoom + reflow engeli */
@@ -385,7 +385,7 @@ input[type='time'].form-input {
   box-shadow: 0 0 0 4px rgba(184, 139, 31, 0.14);
 }
 
-/* Welcome / hero card gradient backgrounds — theme-aware */
+/* Welcome / hero card gradient backgrounds, theme-aware */
 .surface-warm-grad {
   background: linear-gradient(to bottom right, #15043a, #1a0a40, #2a0a5a);
 }
@@ -442,6 +442,6 @@ input, textarea {
   background: rgba(184, 139, 31, 0.25);
 }
 
-/* Scrollbar gizli — yatay tab nav için */
+/* Scrollbar gizli: yatay tab nav için */
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-hide::-webkit-scrollbar { display: none; }

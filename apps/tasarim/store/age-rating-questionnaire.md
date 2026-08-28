@@ -5,7 +5,7 @@ language: en
 slug: age-rating-questionnaire
 ---
 
-# App Store Connect — Age Rating Questionnaire
+# App Store Connect: Age Rating Questionnaire
 
 A field-by-field answer guide for the Age Rating questionnaire in App Store Connect
 (App Information → Age Rating → Edit).
@@ -122,7 +122,7 @@ The conservative choice is 17+. Reasons:
 1. Human Design discusses adult psychological themes (shadow patterns, relational dynamics,
    ego/will, surrender) that may not be appropriate for younger users without context.
 2. A 17+ rating reduces the risk that a reviewer flags the app as "unsuitable for children
-   exposed to esoteric belief systems" — a documented edge case in App Review.
+   exposed to esoteric belief systems": a documented edge case in App Review.
 3. The app is positioned for personal-development adults; setting 17+ aligns the audience.
 
 ## Where to paste this

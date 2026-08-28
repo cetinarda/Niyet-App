@@ -26,7 +26,7 @@ function SignChip({ sign, locale, accent }: { sign: ZodiacSign; locale: string; 
 }
 
 /**
- * Karne "Uyum Ufku" — bu haritanın kimlerle rezonansa girdiğinin
+ * Karne "Uyum Ufku": bu haritanın kimlerle rezonansa girdiğinin
  * deterministik önizlemesi. Ayna Eş / Kutsal Birleşim / Ders Ortağı
  * arketipleri ana sayfadaki üçlemeyle bire bir aynı dil.
  */
@@ -47,7 +47,7 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        {/* AYNA EŞ — Descendant */}
+        {/* AYNA EŞ: Descendant */}
         <div className="card-surface rounded-3xl border p-6" style={{ borderColor: '#C9A0A655' }}>
           <div className="text-3xl">🪞</div>
           <h3 className="mt-3 font-display text-2xl text-ink">{tr ? 'Ayna Eşin' : 'Your Mirror Match'}</h3>
@@ -57,7 +57,7 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
               <p className="text-lg font-bold text-ink">{tr ? SIGN_NAMES_TR[o.mirror] : o.mirror}</p>
               <p className="text-[11px] text-faint">
                 {o.mirrorSource === 'ascendant'
-                  ? (tr ? '7. evinin girişi — partner noktan' : 'Your 7th-house cusp — the partner point')
+                  ? (tr ? '7. evinin girişi: partner noktan' : 'Your 7th-house cusp: the partner point')
                   : (tr ? 'Güneşinin tam karşısı' : 'Directly opposite your Sun')}
               </p>
             </div>
@@ -69,7 +69,7 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
           </p>
         </div>
 
-        {/* KUTSAL BİRLEŞİM — üçgenler */}
+        {/* KUTSAL BİRLEŞİM: üçgenler */}
         <div className="card-surface rounded-3xl border p-6" style={{ borderColor: '#C7B8E855' }}>
           <div className="text-3xl">✦</div>
           <h3 className="mt-3 font-display text-2xl text-ink">
@@ -82,12 +82,12 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
           </div>
           <p className="mt-3 text-[13px] leading-relaxed text-muted">
             {tr
-              ? 'Güneş ve Ay üçgenlerin — aynı elementin zahmetsiz akışı.'
-              : 'Your Sun and Moon trines — the effortless flow of shared element.'}
+              ? 'Güneş ve Ay üçgenlerin: aynı elementin zahmetsiz akışı.'
+              : 'Your Sun and Moon trines, the effortless flow of shared element.'}
           </p>
         </div>
 
-        {/* DERS ORTAĞI — kareler */}
+        {/* DERS ORTAĞI: kareler */}
         <div className="card-surface rounded-3xl border p-6" style={{ borderColor: '#9CAF8855' }}>
           <div className="text-3xl">🌿</div>
           <h3 className="mt-3 font-display text-2xl text-ink">{tr ? 'Ders Ortakların' : 'Your Lesson Partners'}</h3>
@@ -98,8 +98,8 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
           </div>
           <p className="mt-3 text-[13px] leading-relaxed text-muted">
             {tr
-              ? 'Güneş karelerin — sürtünmesi seni büyüten bağlar.'
-              : 'Your Sun squares — friction that grows you.'}
+              ? 'Güneş karelerin: sürtünmesi seni büyüten bağlar.'
+              : 'Your Sun squares: friction that grows you.'}
           </p>
         </div>
       </div>
@@ -114,7 +114,7 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
             {o.hdAllies.map((a) => (
               <li key={a.type} className="flex items-baseline gap-2 text-sm">
                 <span className="font-bold text-ink">{tr ? HD_TR[a.type] : a.type}</span>
-                <span className="text-[13px] text-muted">— {tr ? a.why.tr : a.why.en}</span>
+                <span className="text-[13px] text-muted">, {tr ? a.why.tr : a.why.en}</span>
               </li>
             ))}
           </ul>
@@ -144,7 +144,7 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
       <p className="mt-4 text-center text-[11px] text-faint">
         {tr
           ? 'Sembolik gözlemlerdir; kişiyi etiketlemez, kader tayin etmez.'
-          : 'Symbolic observations — they label no one and decide no fate.'}
+          : 'Symbolic observations: they label no one and decide no fate.'}
       </p>
     </section>
   );

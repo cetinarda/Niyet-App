@@ -60,7 +60,7 @@ const HD_REASONS_EN: Record<string, string> = {
 const ELEMENT_TR_TO_EN: Record<string, string> = {
   'ateş': 'fire', 'su': 'water', 'toprak': 'earth', 'hava': 'air',
 };
-// HD tip adı İngilizce görünüm — dahili değer TR ('Jeneratör') kalır ama İngilizce
+// HD tip adı İngilizce görünüm, dahili değer TR ('Jeneratör') kalır ama İngilizce
 // modda "Generator" gösterilir ("Jeneratör" ≠ İngilizce Generator; elektrik jeneratörü değil).
 const HD_TYPE_EN: Record<string, string> = {
   'Jeneratör': 'Generator',
@@ -75,11 +75,11 @@ function buildReason(lang: 'tr' | 'en', element: string, lifePath: number, hdTyp
     const hdReason = HD_REASONS_EN[hdType] || 'your inner strength';
     const typeEn = HD_TYPE_EN[hdType] || hdType;
     const cap = elEn.charAt(0).toUpperCase() + elEn.slice(1);
-    return `${cap} element · Life path ${lifePath} · ${typeEn} type — here to support ${hdReason} in this period.`;
+    return `${cap} element · Life path ${lifePath} · ${typeEn} type: here to support ${hdReason} in this period.`;
   }
   const hdReason = HD_REASONS_TR[hdType] || 'içsel gücünü';
   const cap = element.charAt(0).toUpperCase() + element.slice(1);
-  return `${cap} unsuru · Yaşam yolu ${lifePath} · ${hdType} tipi — bu dönemde ${hdReason} desteklemek için seninle.`;
+  return `${cap} unsuru · Yaşam yolu ${lifePath} · ${hdType} tipi: bu dönemde ${hdReason} desteklemek için seninle.`;
 }
 
 export function NagualScreen({ onClose, embedded }: Props) {

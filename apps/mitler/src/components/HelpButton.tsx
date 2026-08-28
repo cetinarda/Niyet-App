@@ -62,7 +62,7 @@ export function HelpButton({ termKey, size = 'sm' }: Props) {
   );
 }
 
-/** Standalone glossary modal — can be shown without a specific term. */
+/** Standalone glossary modal: can be shown without a specific term. */
 export function GlossaryModal({
   visible,
   initialKey,
@@ -152,7 +152,7 @@ export function GlossaryModal({
   );
 }
 
-/** Floating glossary entry button — full glossary, no specific term. */
+/** Floating glossary entry button, full glossary, no specific term. */
 export function GlossaryFAB() {
   const [open, setOpen] = useState(false);
   return (

@@ -89,7 +89,7 @@ export default function Settings() {
         <p>
           Hesabını sildiğinde: bu cihazdaki tüm SoulProfile verisi, sunucudaki karne kayıtların,
           ödeme yetki kayıtların ve yüklediğin fotoğraflar kalıcı olarak silinir. Bu işlem geri
-          alınamaz (KVKK / GDPR Art.17 — unutulma hakkı).
+          alınamaz (KVKK / GDPR Art.17: unutulma hakkı).
         </p>
         {deleteError ? (
           <p className="mt-2 rounded-lg border border-danger/40 bg-danger/10 p-2.5 text-[12px] text-danger">

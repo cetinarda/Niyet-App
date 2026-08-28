@@ -15,7 +15,7 @@ export default function Welcome() {
   const { t, locale } = useT();
   const nav = useNav();
   // Sakin köprüsü: embed açılışında Sakin'in doğum verisi varsa karneyi
-  // otomatik üret ve doğrudan /report'a geç — kullanıcı formu tekrar
+  // otomatik üret ve doğrudan /report'a geç: kullanıcı formu tekrar
   // doldurmaz. Sadece embed'de (aynı origin) anlamlı; bağımsız sitede
   // sakin_* anahtarları hiç yazılmadığı için no-op'tur. Oturum başına bir kez.
   const [connecting, setConnecting] = useState(() => IS_CAPACITOR && !sakinBridgeAttempted());
@@ -77,7 +77,7 @@ export default function Welcome() {
     <div className="relative">
       <CosmicBackground variant="galaxy" />
 
-      {/* HERO — uzayda asılı sakin alan */}
+      {/* HERO: uzayda asılı sakin alan */}
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-20 md:pt-32">
         <div className="text-center">
           <div className="mb-7 flex justify-center">
@@ -93,7 +93,7 @@ export default function Welcome() {
             {t('home.subtitle')}
           </p>
 
-          {/* YENİ ÖZELLİK — bağlanma stili. Hero'nun hemen altında, ana vaadin
+          {/* YENİ ÖZELLİK: bağlanma stili. Hero'nun hemen altında, ana vaadin
               devamı olarak: "iki ruh nasıl yansır" sorusunun kişisel yarısı. */}
           {(IS_CAPACITOR || WEB_APP_OPEN) && (
             <Link
@@ -234,7 +234,7 @@ export default function Welcome() {
         </div>
       </section>
 
-      {/* 3 SEMBOLİK ARKETİP — twin flame yerine */}
+      {/* 3 SEMBOLİK ARKETİP: twin flame yerine */}
       <section className="mx-auto max-w-5xl px-6 py-20">
         <div className="mb-8 text-center">
           <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-gold">{t('home.archetypes.kicker')}</p>

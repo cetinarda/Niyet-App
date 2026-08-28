@@ -1,6 +1,6 @@
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
 
-export const metadata = { title: 'Destek — SoulProfile' };
+export const metadata = { title: 'Destek: SoulProfile' };
 
 export default function Support() {
   return (

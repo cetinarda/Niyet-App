@@ -9,7 +9,7 @@ import { getLang } from '../i18n';
 
 const ORDER: ElementKey[] = ['ates', 'toprak', 'hava', 'su'];
 
-// Element adı — dile göre.
+// Element adı: dile göre.
 function elemName(k: ElementKey): string {
   return elementName(k);
 }
@@ -66,17 +66,17 @@ export function ElementDetail({ dist, visible, onClose }: {
               </View>
             </View>
 
-            {/* Tek satır özet — HER ZAMAN açık (teaser) */}
+            {/* Tek satır özet: HER ZAMAN açık (teaser) */}
             <Text style={styles.headline}>{interp.headline}</Text>
 
-            {/* Detaylar — premium değilse blur'lu; dokununca host paywall açılır */}
+            {/* Detaylar: premium değilse blur'lu; dokununca host paywall açılır */}
             <View style={{ position: 'relative' }}>
             <View
               style={!isPremium ? [styles.blurWrap, { filter: 'blur(7px)' } as any] : undefined}
               pointerEvents={isPremium ? 'auto' : 'none'}
             >
 
-            {/* Element başına anlam — yüzde + rol cümlesi (yorum) */}
+            {/* Element başına anlam: yüzde + rol cümlesi (yorum) */}
             <View style={styles.meaningBox}>
               {interp.lines.map((ln) => (
                 <View key={ln.key} style={styles.meaningRow}>
@@ -89,7 +89,7 @@ export function ElementDetail({ dist, visible, onClose }: {
               ))}
             </View>
 
-            {/* Sentez — baskın ikili + bileşik enerji */}
+            {/* Sentez: baskın ikili + bileşik enerji */}
             <View style={styles.synthBox}>
               <Text style={styles.synthTitle}>{interp.pairTitle}</Text>
               <Text style={styles.synthTxt}>{interp.pairText}</Text>

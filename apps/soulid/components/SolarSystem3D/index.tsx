@@ -90,7 +90,7 @@ export function SolarSystem3D({ chart }: Props) {
                   GÖKSEL EV
                 </p>
                 <p className="mt-1 text-ink">
-                  {selectedChartData.house ?? '—'}. ev — bu enerjinin yaşam alanı
+                  {selectedChartData.house ?? '-'}. ev: bu enerjinin yaşam alanı
                 </p>
               </div>
               <div className="rounded-xl border border-panelBorder bg-panel p-3">

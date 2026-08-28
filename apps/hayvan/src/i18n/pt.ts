@@ -85,7 +85,7 @@ export const pt = {
     intro: {
       title: 'Descubra o seu animal espiritual',
       desc: 'Há dois caminhos para encontrar o animal totem alinhado com a sua alma.',
-      note: 'Sakin segura um espelho — reflete o que já está dentro de você e sussurra o que é possível.\nSó você pode despertá-lo no seu coração, senti-lo e torná-lo seu.',
+      note: 'Sakin segura um espelho: reflete o que já está dentro de você e sussurra o que é possível.\nSó você pode despertá-lo no seu coração, senti-lo e torná-lo seu.',
       quizBtn: {
         title: 'Descubra com perguntas',
         desc: '7 perguntas, de acordo com o seu caráter',
@@ -108,8 +108,8 @@ export const pt = {
       cityHint: 'A energia do seu local de nascimento acrescenta profundidade à leitura.',
       hourLabel: 'Hora de nascimento',
       hourOptional: '(opcional)',
-      hourPlaceholder: 'Hora (0–23)',
-      hourHint: 'Se não souber a hora, deixe em branco — ainda assim será encontrada uma forte correspondência.',
+      hourPlaceholder: 'Hora (0-23)',
+      hourHint: 'Se não souber a hora, deixe em branco, ainda assim será encontrada uma forte correspondência.',
       submitBtn: 'Encontrar o meu guia ✦',
     },
     result: {
@@ -185,7 +185,7 @@ export const pt = {
   nagual: {
     back: '← Voltar',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Guia periódico',
+    introTitle: 'Nagual: Guia periódico',
     introText:
       'O seu animal totem nasce com você e permanece por toda a vida. O nagual é um guia temporário\nque o acompanha durante um período específico. Ele chega em momentos de provação,\ntransformação ou crise. Cumprido o seu propósito, cede o lugar\na outro guia.',
     weekTag: 'ESTA SEMANA · UNIVERSAL',
@@ -302,7 +302,7 @@ export const pt = {
       estimated: '(estimado)',
       hdTypeSelectHint: 'Selecione o seu tipo:',
       hdDisclaimer:
-        '⚠ O cálculo é uma estimativa — um HD preciso requer hora de nascimento e efemérides.\nSe você conhece o seu tipo, selecione-o acima.',
+        '⚠ O cálculo é uma estimativa, um HD preciso requer hora de nascimento e efemérides.\nSe você conhece o seu tipo, selecione-o acima.',
       sunGates: 'Portões solares',
       consciousSun: 'Sol consciente',
       designSun: 'Sol do design',
@@ -326,7 +326,7 @@ export const pt = {
         yearPlaceholder: 'Ano',
         hourLabel: 'Hora de nascimento',
         hourOptional: '(importante para HD)',
-        hourPlaceholder: 'Hora (0–23)',
+        hourPlaceholder: 'Hora (0-23)',
         minutePlaceholder: 'Minuto',
         cityLabel: 'Cidade de nascimento',
         cityOptional: '(para o fuso horário)',
@@ -341,8 +341,8 @@ export const pt = {
       sectionTitle: 'O que é a orientação animal?',
       totemTitle: '⊕ Animal totem',
       totemText:
-        'Toda pessoa carrega o espírito de um animal em sua natureza. Esse animal totem representa você; a sua energia, os seus pontos fortes e o caminho que você percorre carregam os seus rastros. O totem nunca muda — nasce com você e cresce com você.',
-      nagualTitle: '◎ Nagual — Guia periódico',
+        'Toda pessoa carrega o espírito de um animal em sua natureza. Esse animal totem representa você; a sua energia, os seus pontos fortes e o caminho que você percorre carregam os seus rastros. O totem nunca muda: nasce com você e cresce com você.',
+      nagualTitle: '◎ Nagual: Guia periódico',
       nagualText:
         'O nagual é um guia temporário que vem até você por um período específico. Ele é chamado em momentos de provação, transformação ou crise. Cumprido o seu propósito, cede o lugar a outro guia. O animal sorteado na sua leitura diária carrega a voz do nagual de hoje.',
       finderTitle: 'Encontre o seu guia animal',
@@ -365,7 +365,7 @@ export const pt = {
     sakinFamily: {
       title: 'Família Sakin',
       intro: 'Um ecossistema. Uma assinatura. Muitas portas.',
-      masterDesc: 'Central — acesso a todos os apps',
+      masterDesc: 'Central: acesso a todos os apps',
       apps: {
         animalGuidance: 'Orientação animal',
         stoneGuidance: 'Orientação de cristais',
@@ -506,11 +506,11 @@ export const pt = {
     },
     mit: {
       term: 'Mito',
-      short: 'Uma força simbólica que a alma encontra — Sombra, Limiar, Relâmpago...',
+      short: 'Uma força simbólica que a alma encontra, Sombra, Limiar, Relâmpago...',
     },
     hayatYolu: {
       term: 'Número do caminho de vida',
-      short: 'O resumo numerológico da sua data de nascimento — mostra a sua energia central.',
+      short: 'O resumo numerológico da sua data de nascimento, mostra a sua energia central.',
     },
     numeroloji: {
       term: 'Numerologia',
@@ -518,15 +518,15 @@ export const pt = {
     },
     ifade: {
       term: 'Número da expressão',
-      short: 'Derivado das letras do seu nome — os seus talentos naturais e o seu potencial.',
+      short: 'Derivado das letras do seu nome, os seus talentos naturais e o seu potencial.',
     },
     ruhIstegi: {
       term: 'Número do desejo da alma',
-      short: 'Das vogais do seu nome — a sua motivação interior.',
+      short: 'Das vogais do seu nome, a sua motivação interior.',
     },
     kisilik: {
       term: 'Número da personalidade',
-      short: 'Das consoantes do seu nome — o rosto que você mostra ao mundo.',
+      short: 'Das consoantes do seu nome, o rosto que você mostra ao mundo.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -570,7 +570,7 @@ export const pt = {
     },
     kisiselYil: {
       term: 'Ano pessoal',
-      short: 'O tema específico do seu ano numerológico — em qual passo do ciclo de 9 anos você está.',
+      short: 'O tema específico do seu ano numerológico, em qual passo do ciclo de 9 anos você está.',
     },
     rehber: {
       term: 'Animal espiritual',

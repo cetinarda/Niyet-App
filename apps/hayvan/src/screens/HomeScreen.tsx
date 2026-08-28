@@ -213,7 +213,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   const frontFade = useRef(new Animated.Value(_reveal0 ? 1 : 0)).current;
   const revealedRef = useRef(readRevealedSteps().includes(0));
 
-  // HOST KOPRUSU — "kartini ac" ikinci kez tiklandiginda kart ACILIS
+  // HOST KOPRUSU: "kartini ac" ikinci kez tiklandiginda kart ACILIS
   // ANIMASYONUNU tekrar oynatma; o gun cekilmis olan TAM KARTI dogrudan acik
   // goster. Kullanici oradan karta dokununca DETAY sayfasi acilir.
   // (Kullanici: "tam kart acilmali ve hangi bitki tas vs. ciktiysa kartta
@@ -242,7 +242,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   }, []);
 
   // Depo (useSakinHayvanStore) AsyncStorage'dan yüklemesini isLoading ile
-  // bildirir. Önceki kod bunu beklemeden — dailyReading henüz null iken —
+  // bildirir. Önceki kod bunu beklemeden: dailyReading henüz null iken, 
   // hemen YENİ rastgele bir okuma üretiyordu (generateDailyReading). Bu hem
   // her sekme dönüşünde günün hayvanını/sözünü rastgele değiştiriyordu hem de
   // generateDailyReading'in o anki (henüz yüklenmemiş, boş) archive kapanışını
@@ -261,11 +261,11 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     });
   }, [isLoading, dailyReading]);
 
-  // Shake detection — native Accelerometer (expo-sensors) embed webview'de
+  // Shake detection: native Accelerometer (expo-sensors) embed webview'de
   // HER ZAMAN require patlıyor (web build'de modül yok); catch bloğu önceden
-  // sessizce hiçbir şey yapmıyordu — "salla · dokun" yazıyordu ama salla asla
+  // sessizce hiçbir şey yapmıyordu, "salla · dokun" yazıyordu ama salla asla
   // çalışmadı. Gerçek web fallback: DeviceMotion API. iOS 13+ Safari bu API
-  // için bir KULLANICI JESTİ içinde senkron requestPermission() ister — bu
+  // için bir KULLANICI JESTİ içinde senkron requestPermission() ister, bu
   // yüzden izin burada değil, aşağıdaki dokunuş handler'ında isteniyor
   // (requestMotionPermission). Aynı origin'de bir kez verilirse kalıcıdır.
   useEffect(() => {
@@ -315,7 +315,7 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
   }, []);
 
   // iOS 13+ Safari: DeviceMotionEvent izni SADECE bir kullanıcı jesti (dokunuş)
-  // içinde senkron çağrılırsa istenebilir. Reveal dokunuşunun içine gömülü —
+  // içinde senkron çağrılırsa istenebilir. Reveal dokunuşunun içine gömülü, 
   // verilirse aynı origin'de kalıcıdır, sonraki günlerde salla baştan çalışır.
   const requestMotionPermission = () => {
     if (typeof window === 'undefined') return;
@@ -505,9 +505,9 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                           if (step === 0 && animal) {
                             // Görev listesi rehberliği (guidance) yerine hayvan hakkında DAHA FAZLA bilgi:
                             // günün mesajı + Anadolu anlamı. Alt CTA sakin.life'a yönlendirir.
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: `${(animal as any).dailyMessage} ${(animal as any).anatolianMeaning || ''}`.trim(), cta: moreCta, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name} — sakin.life` });
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: `${(animal as any).dailyMessage} ${(animal as any).anatolianMeaning || ''}`.trim(), cta: moreCta, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name}: sakin.life` });
                           } else if (step === 1 && quote) {
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}” — ${(quote as any).source} · sakin.life` });
+                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}”: ${(quote as any).source} · sakin.life` });
                           }
                         }}
                         hitSlop={10}

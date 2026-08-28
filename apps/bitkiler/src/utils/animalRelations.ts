@@ -19,11 +19,11 @@ export function getRelatedMyth(animalId: string, animalElement: string): Myth | 
 }
 
 const ELEMENT_PRACTICES: Record<string, string> = {
-  ateş: 'Bu hafta bir mum yak ve niyetini söyle. Ateşin önünde 3 dakika otur — kararlılığını hisset.',
-  su:   'Bu hafta sabah duşunda gözünü kapat. Suyun sesini dinle — bırakman gerekeni akıt.',
-  toprak: 'Bu hafta yalın ayak toprağa bas. 5 dakika dur — köklerini hisset, taşıyanı an.',
-  hava: 'Bu hafta açık bir pencere bul. Üç derin nefes al — vermek istediğin şeyi nefes ver, almak istediğini nefes al.',
-  karanlık: 'Bu hafta gün batımında 10 dakika ışık yakmadan otur. Karanlığa alış — gölgenle tanış.',
+  ateş: 'Bu hafta bir mum yak ve niyetini söyle. Ateşin önünde 3 dakika otur, kararlılığını hisset.',
+  su:   'Bu hafta sabah duşunda gözünü kapat. Suyun sesini dinle: bırakman gerekeni akıt.',
+  toprak: 'Bu hafta yalın ayak toprağa bas. 5 dakika dur: köklerini hisset, taşıyanı an.',
+  hava: 'Bu hafta açık bir pencere bul. Üç derin nefes al: vermek istediğin şeyi nefes ver, almak istediğini nefes al.',
+  karanlık: 'Bu hafta gün batımında 10 dakika ışık yakmadan otur. Karanlığa alış: gölgenle tanış.',
 };
 
 export function getElementPractice(element: string): string {

@@ -5,13 +5,13 @@ import { useT } from '@/lib/i18n';
 
 // Tüm formlarda TEK etiketli-alan bileşeni. Etiket stili tek yerde.
 const LABEL = 'mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-faint';
-// Manuel sayı girişi — iOS'ta wheel/scroll picker YERİNE elle yazma (sakin.life
+// Manuel sayı girişi: iOS'ta wheel/scroll picker YERİNE elle yazma (sakin.life
 // tarzı). text-base=16px iOS zoom'unu önler; center hizalı, sade.
 const NUM_INPUT =
   'input-surface h-[56px] w-full rounded-2xl border border-panelBorder px-2 text-center text-base text-ink placeholder:text-faint/70 focus:border-gold/70 focus:outline-none';
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
-// Üst sınır — statik export'ta dinamik Date istemiyoruz; makul bir tavan yeter.
+// Üst sınır: statik export'ta dinamik Date istemiyoruz; makul bir tavan yeter.
 const MAX_YEAR = 2100;
 
 export function LabeledField({ label, children }: { label: string; children: ReactNode }) {
@@ -24,7 +24,7 @@ export function LabeledField({ label, children }: { label: string; children: Rea
 }
 
 /**
- * Tarih — ELLE giriş (Gün / Ay / Yıl). Native wheel picker'da tarih kolayca
+ * Tarih: ELLE giriş (Gün / Ay / Yıl). Native wheel picker'da tarih kolayca
  * kayıyordu (yanlış Ay burcu şikâyetinin kök sebebi). Üç ayrı numara alanı
  * hem net hem locale-bağımsız. Alan dolunca imleç OTOMATİK sonraki kutuya geçer.
  * Değer 'yyyy-mm-dd' olarak emit edilir.
@@ -105,7 +105,7 @@ export function DateField({
 }
 
 /**
- * Saat — ELLE giriş (Saat : Dakika) + "biliniyor" onayı. Saat dolunca imleç
+ * Saat: ELLE giriş (Saat : Dakika) + "biliniyor" onayı. Saat dolunca imleç
  * otomatik dakikaya geçer. Değer 'HH:MM' olarak emit edilir.
  */
 export function TimeKnownField({

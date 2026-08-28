@@ -1,6 +1,6 @@
-// Foto-tanıma proxy — taş & bitki tanıma.
+// Foto-tanıma proxy: taş & bitki tanıma.
 // Bitki: Pl@ntNet API (uzman botanik motoru, ücretsiz 500/gün) → güven skoruyla.
-// Taş:   Groq vision (llama-4) — minerale uygun uzman ücretsiz API yok, sıkı abstain.
+// Taş:   Groq vision (llama-4): minerale uygun uzman ücretsiz API yok, sıkı abstain.
 // Güvenlik: origin allowlist → method → boyut → per-IP rate limit → servis çağrısı.
 
 import { groqChat, stripThink } from "./_groq.mjs";
@@ -9,7 +9,7 @@ const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capaci
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // ~5MB (base64 öncesi ham tahmini)
 
 // Pl@ntNet: common-name dilini güvenli kümeyle sınırla (desteklenmeyen dil 400 döndürmesin).
-// tr/ja için İngilizce common name istenir — DB eşleşmesi zaten nameEn üzerinden olduğu için daha isabetli.
+// tr/ja için İngilizce common name istenir, DB eşleşmesi zaten nameEn üzerinden olduğu için daha isabetli.
 const PLANTNET_LANGS = ["en", "fr", "de", "es", "pt", "it"];
 const PLANT_TXT = {
   alt:  { tr:"Olabilecekler", en:"Could also be", de:"Könnte auch sein", es:"También podría ser", fr:"Pourrait aussi être", pt:"Também pode ser", ja:"他の可能性" },
@@ -32,7 +32,7 @@ function isRateLimited(ip) {
 }
 
 // Güvenlik notu: origin artık gerçekten reddediliyor (önceden sadece CORS header'ı
-// için yumuşak bir düşüşle ALLOWED_ORIGINS[0]'a kayıyordu — istek yine işleniyordu).
+// için yumuşak bir düşüşle ALLOWED_ORIGINS[0]'a kayıyordu: istek yine işleniyordu).
 function isAllowedOrigin(origin) {
   return !!origin && ALLOWED_ORIGINS.includes(origin);
 }

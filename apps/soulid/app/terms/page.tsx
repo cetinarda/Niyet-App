@@ -1,6 +1,6 @@
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
 
-export const metadata = { title: 'Kullanım Koşulları — SoulProfile' };
+export const metadata = { title: 'Kullanım Koşulları: SoulProfile' };
 
 export default function Terms() {
   return (

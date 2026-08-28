@@ -6,12 +6,12 @@
  * public/latest-ios-version.json'u günceller. Bu dosya uygulama içi
  * "yeni sürüm var" banner'ını besler (bkz. src/App.jsx → updateInfo).
  *
- * NEDEN VAR: bu bump elle yapılıyordu ve UNUTULUYORDU — 1.3.5 ve 1.3.6
+ * NEDEN VAR: bu bump elle yapılıyordu ve UNUTULUYORDU, 1.3.5 ve 1.3.6
  * yayınlandığı hâlde dosya 1.3.4'te kaldığı için kullanıcıların aylarca
  * güncellemeden haberi olmadı. Artık günlük cron ile kendiliğinden işler.
  *
  * KIRMIZI ÇİZGİ: bir sürüm ancak MAĞAZADA GERÇEKTEN GÖRÜNDÜĞÜNDE yazılır.
- * Repodaki sürüm asla referans alınmaz — aksi hâlde mağazada olmayan bir
+ * Repodaki sürüm asla referans alınmaz, aksi hâlde mağazada olmayan bir
  * sürüm için herkese sahte bildirim gider (1.3.4'te yaşandı, Altın Kural #4).
  *
  * Kullanım:
@@ -83,7 +83,7 @@ const [ios, android] = await Promise.all([
 ]);
 
 if (!ios.ok && !android.ok) {
-  console.error("✖ İki mağaza da okunamadı — dosyaya DOKUNULMADI.");
+  console.error("✖ İki mağaza da okunamadı, dosyaya DOKUNULMADI.");
   process.exit(1);
 }
 
@@ -103,12 +103,12 @@ for (const [key, res] of [["ios", ios], ["android", android]]) {
     data[key].version = res.v;
     // Notları TEMİZLE: otomatik bump'ta doğru notu bilemeyiz ve eski sürümün
     // notunu göstermek yanlış olur. Uygulama boş notta genel metne düşer
-    // ("Hazır olduğunda göz atabilirsin" — i18n update_default_notes).
+    // ("Hazır olduğunda göz atabilirsin": i18n update_default_notes).
     data[key].release_notes_tr = "";
     data[key].release_notes_en = "";
     changed = true;
   } else if (cmp > 0) {
-    // Dosya mağazadan İLERİDE — sahte bildirim riski. Geri çekiyoruz.
+    // Dosya mağazadan İLERİDE: sahte bildirim riski. Geri çekiyoruz.
     console.log(`↓ ${key}: ${cur} → ${res.v} (dosya mağazadan ileriydi, düzeltildi)`);
     data[key].version = res.v;
     changed = true;
@@ -130,7 +130,7 @@ if (data.version !== legacy) {
   changed = true;
 }
 
-if (!changed) { console.log("✓ Güncel — yazmaya gerek yok."); process.exit(0); }
+if (!changed) { console.log("✓ Güncel: yazmaya gerek yok."); process.exit(0); }
 if (CHECK_ONLY) { console.log("--check: değişiklik GEREKİYOR ama yazılmadı."); process.exit(2); }
 if (JSON.stringify(data) === before) process.exit(0);
 

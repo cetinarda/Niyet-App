@@ -6,12 +6,12 @@ import NextLink from 'next/link';
 import { IS_CAPACITOR, capacitorHref } from '@/lib/nav';
 
 /**
- * NextLink drop-in — Capacitor iOS statik export uyumlu.
+ * NextLink drop-in: Capacitor iOS statik export uyumlu.
  *
  * Capacitor build'inde: düz <a>, href GERÇEK .html dosyasına
  * ("/compatibility/index.html"). Capacitor router uzantısız path'leri
  * ROOT index.html olarak servis ettiği için (SPA varsayımı), .html
- * uzantısı ŞART — yoksa her tık ana sayfayı açar.
+ * uzantısı ŞART: yoksa her tık ana sayfayı açar.
  *
  * Web build'inde: düz <a> + onClick router.push → hızlı SPA, prefetch yok
  * (".txt RSC payload" hataları olmaz).

@@ -1,6 +1,6 @@
 'use client';
 
-// Bağlanma Stili — soru seti + sonuç + öneriler.
+// Bağlanma Stili: soru seti + sonuç + öneriler.
 // Stil YALNIZCA yanıtlardan çıkar; doğum haritası sadece önerileri
 // kişiselleştirir (bkz. lib/attachment/chart-lens.ts başındaki not).
 
@@ -36,7 +36,7 @@ import { captureNode, shareDataUrl } from '@/lib/share';
 import { AttachmentStoryCard } from '@/components/AttachmentStoryCard';
 import { saveAttachment, readAttachment, readAnswers, clearAttachment } from '@/lib/attachment/storage';
 
-// Paylaşılan adres — TEK MERKEZ sakin.life (kullanıcı kararı: ayrı SoulProfile
+// Paylaşılan adres: TEK MERKEZ sakin.life (kullanıcı kararı: ayrı SoulProfile
 // reposu/sitesi peşinden koşmak yerine her şey Niyet-App'te toplansın; iki yerin
 // ayrışması riski böylece hiç doğmuyor).
 // netlify.toml bu kısa adresi /embedded/soulid/attachment/ adresine 301'liyor.
@@ -473,7 +473,7 @@ export default function AttachmentPage() {
             {tr ? 'Testi yeniden çöz' : 'Retake the test'}
           </button>
 
-          {/* Davet: bağlanma stili KARŞILIKLI bir konu — asıl fayda, yakınının da
+          {/* Davet: bağlanma stili KARŞILIKLI bir konu, asıl fayda, yakınının da
               kendi örüntüsünü görüp ikinizin dinamiğini konuşabilmesi. */}
           <div className="mt-5 rounded-3xl border border-panelBorder bg-panel p-6 text-center">
             <p className="text-[15px] leading-relaxed text-ink">
@@ -536,7 +536,7 @@ export default function AttachmentPage() {
               <p className="text-[11px] uppercase tracking-[0.25em] text-faint">
                 {tr ? 'TESTİN BAĞLANTISI' : 'LINK TO THE TEST'}
               </p>
-              {/* Adres TAM görünmeli (kesilmemeli) — kullanıcı gördüğü şeyi
+              {/* Adres TAM görünmeli (kesilmemeli), kullanıcı gördüğü şeyi
                   kopyaladığına güvensin. Bu yüzden alt alta dizildi. */}
               <code className="mt-2.5 block w-full rounded-xl border border-panelBorder bg-bg/50 px-3.5 py-3 text-center text-[13.5px] tracking-tight text-ink">
                 {TEST_URL.replace(/^https?:\/\//, '')}

@@ -83,7 +83,7 @@ export const tr = {
     intro: {
       title: 'Sana Uygun Taşı Keşfet',
       desc: 'Burcuna ya da unsuruna göre seninle uyumlu kristalleri bul.',
-      note: 'Her taşın kendine has bir titreşimi vardır. Sana çağrılanı seç — gerisini sezgin söyler.',
+      note: 'Her taşın kendine has bir titreşimi vardır. Sana çağrılanı seç: gerisini sezgin söyler.',
       birthStoneTitle: 'Doğum Taşın',
       zodiacLabel: 'Burcuna Göre',
       elementLabel: 'Unsuruna Göre',
@@ -108,7 +108,7 @@ export const tr = {
   nagual: {
     back: '← Geri',
     familyTag: 'SAKİN · NAGUAL',
-    introTitle: 'Nagual — Dönemsel Rehber',
+    introTitle: 'Nagual: Dönemsel Rehber',
     introText:
       'Totem hayvanın seninle doğar, ömür boyu kalır. Nagual ise belirli bir\ndöneminde sana eşlik eden geçici rehberdir. Bir sınav, bir dönüşüm,\nbir kriz anında yanına gelir. Görevini tamamlayınca yerini başka bir\nrehbere bırakır.',
     weekTag: 'BU HAFTA · EVRENSEL',
@@ -225,7 +225,7 @@ export const tr = {
       estimated: '(tahmini)',
       hdTypeSelectHint: 'Tipini seç:',
       hdDisclaimer:
-        '⚠ Hesaplama tahminidir — gerçek HD doğum saati ve efemeris gerektirir.\nTipini biliyorsan yukarıdan seçebilirsin.',
+        '⚠ Hesaplama tahminidir: gerçek HD doğum saati ve efemeris gerektirir.\nTipini biliyorsan yukarıdan seçebilirsin.',
       sunGates: 'Güneş Kapıları',
       consciousSun: 'Bilinçli Güneş',
       designSun: 'Tasarım Güneşi',
@@ -264,8 +264,8 @@ export const tr = {
       sectionTitle: 'Hayvan Rehberliği Nedir?',
       totemTitle: '⊕ Totem Hayvan',
       totemText:
-        'Her insan, doğasında bir hayvanın ruhunu taşır. Bu totem hayvan seni temsil eder; enerjin, güçlü yanların ve yürüdüğün yol onun izlerini taşır. Totem değişmez — seninle doğar, seninle gelişir.',
-      nagualTitle: '◎ Nagual — Dönemsel Rehber',
+        'Her insan, doğasında bir hayvanın ruhunu taşır. Bu totem hayvan seni temsil eder; enerjin, güçlü yanların ve yürüdüğün yol onun izlerini taşır. Totem değişmez: seninle doğar, seninle gelişir.',
+      nagualTitle: '◎ Nagual: Dönemsel Rehber',
       nagualText:
         'Nagual ise belirli bir dönem için yanına gelen geçici rehberdir. Bir sınav, bir dönüşüm, bir kriz anında çağrılır. Görevini tamamlayınca yerini başka bir rehbere bırakır. Günlük çekilişinde gelen hayvan, bugünkü naguelin sesini taşır.',
       finderTitle: 'Hayvan Rehberini Bul',
@@ -288,7 +288,7 @@ export const tr = {
     sakinFamily: {
       title: 'Sakin Ailesi',
       intro: 'Tek ekosistem. Tek abonelik. Birçok kapı.',
-      masterDesc: 'Ana merkez — tüm uygulamalara giriş',
+      masterDesc: 'Ana merkez: tüm uygulamalara giriş',
       apps: {
         animalGuidance: 'Hayvan Rehberliği',
         stoneGuidance: 'Taş Rehberliği',
@@ -429,11 +429,11 @@ export const tr = {
     },
     mit: {
       term: 'Mit',
-      short: 'Ruhun karşılaştığı sembolik bir güç — Gölge, Eşik, Şimşek...',
+      short: 'Ruhun karşılaştığı sembolik bir güç, Gölge, Eşik, Şimşek...',
     },
     hayatYolu: {
       term: 'Hayat Yolu Sayısı',
-      short: 'Doğum tarihinin numerolojik özetidir — ana enerjini gösterir.',
+      short: 'Doğum tarihinin numerolojik özetidir, ana enerjini gösterir.',
     },
     numeroloji: {
       term: 'Numeroloji',
@@ -441,15 +441,15 @@ export const tr = {
     },
     ifade: {
       term: 'İfade Sayısı',
-      short: 'İsminin harflerinden gelen — doğal yeteneklerin ve potansiyelin.',
+      short: 'İsminin harflerinden gelen: doğal yeteneklerin ve potansiyelin.',
     },
     ruhIstegi: {
       term: 'Ruh İsteği Sayısı',
-      short: 'İsmindeki sesli harflerden — içsel motivasyonun.',
+      short: 'İsmindeki sesli harflerden: içsel motivasyonun.',
     },
     kisilik: {
       term: 'Kişilik Sayısı',
-      short: 'İsmindeki sessiz harflerden — dünyaya gösterdiğin yüz.',
+      short: 'İsmindeki sessiz harflerden: dünyaya gösterdiğin yüz.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -493,7 +493,7 @@ export const tr = {
     },
     kisiselYil: {
       term: 'Kişisel Yıl',
-      short: 'Numerolojik yılına özgü tema — 9 yıllık döngünün hangi adımında olduğun.',
+      short: 'Numerolojik yılına özgü tema: 9 yıllık döngünün hangi adımında olduğun.',
     },
     rehber: {
       term: 'Rehber Hayvan',

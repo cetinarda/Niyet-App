@@ -51,7 +51,7 @@ export function buildMissions(
       description: NORTH_NODE_GUIDE[nn.sign],
     },
     {
-      title: `Yaşam Yolu ${numerology.lifePath} — ${lp?.title}`,
+      title: `Yaşam Yolu ${numerology.lifePath}: ${lp?.title}`,
       description: lp?.summary ?? '',
     },
     hdMission,

@@ -1,6 +1,6 @@
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
 
-export const metadata = { title: 'Gizlilik Politikası — SoulProfile' };
+export const metadata = { title: 'Gizlilik Politikası: SoulProfile' };
 
 export default function Privacy() {
   return (

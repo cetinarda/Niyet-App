@@ -1,29 +1,29 @@
 export const Colors = {
-  // Ana renkler — Tasavvuf estetiği: koyu gece, altın, duman
+  // Ana renkler: Tasavvuf estetiği: koyu gece, altın, duman
   background: '#0D0B14',
   backgroundSecondary: '#13111E',
   backgroundCard: '#1A1630',
   surface: '#221E38',
   surfaceElevated: '#2A2545',
 
-  // Altın — manevi ışık
+  // Altın: manevi ışık
   gold: '#C9A84C',
   goldLight: '#E8C96A',
   goldDark: '#8A6B28',
   goldGlow: 'rgba(201,168,76,0.15)',
 
-  // Mor — dönüşüm ve ruhsallık
+  // Mor: dönüşüm ve ruhsallık
   purple: '#7B4FA6',
   purpleLight: '#9D68CC',
   purpleDark: '#4A2870',
   purpleGlow: 'rgba(123,79,166,0.2)',
 
-  // Turkuaz — bilgelik ve arınma
+  // Turkuaz: bilgelik ve arınma
   teal: '#2E9E8A',
   tealLight: '#3DBFA8',
   tealDark: '#1A6B5E',
 
-  // Ateş — tutku ve cesaret
+  // Ateş: tutku ve cesaret
   ember: '#C0472A',
   emberLight: '#E05A36',
   emberDark: '#7A2B18',

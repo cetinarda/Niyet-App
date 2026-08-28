@@ -1,11 +1,11 @@
-// Sakin köprüsü — Sakin ana uygulamasında doğum bilgisi girilmişse, SoulID
+// Sakin köprüsü: Sakin ana uygulamasında doğum bilgisi girilmişse, SoulID
 // açılışta AYNI localStorage'ı (aynı origin, embed statik bundle olarak
 // /embedded/soulid/ altından servis edilir) senkron okuyup karneyi otomatik
 // üretir. Kullanıcı SoulID içinde doğum formunu TEKRAR doldurmaz.
 //
 // Yalnızca Sakin'den açılan embed'de anlamlıdır: bağımsız soulprofile.life
 // sitesinde bu anahtarlar hiç yazılmaz (farklı origin), fonksiyon sessizce
-// no-op döner — ekstra bir "Sakin embed mi?" bayrağına gerek yok.
+// no-op döner: ekstra bir "Sakin embed mi?" bayrağına gerek yok.
 //
 // KİŞİSEL VERİ: isim/doğum tarihi-saati/şehir zaten Sakin tarafında var;
 // burada başka hiçbir yere gönderilmez, yalnızca yerel karne hesaplanır.
@@ -36,8 +36,8 @@ export type BridgeResult = { ok: true; reportId: string } | { ok: false };
 /**
  * Sakin'in doğum verisini okuyup tam bir SoulID karnesi üretir + kaydeder.
  * Başarılıysa aktif karne ID'si yazılır (report sayfası bunu okur) ve
- * `{ok:true}` döner — çağıran taraf /report'a yönlendirmeli.
- * Sakin verisi eksik/geocoding başarısızsa `{ok:false}` döner — normal
+ * `{ok:true}` döner: çağıran taraf /report'a yönlendirmeli.
+ * Sakin verisi eksik/geocoding başarısızsa `{ok:false}` döner: normal
  * karşılama/doğum formu akışına devam edilmeli.
  */
 export async function tryAutoConnectFromSakin(): Promise<BridgeResult> {
@@ -108,7 +108,7 @@ export function sakinBridgeAttempted(): boolean {
   }
 }
 
-/** Denendi ama veri yoktu/başarısızdı — bir daha denemesin (formu boşuna bloklama). */
+/** Denendi ama veri yoktu/başarısızdı, bir daha denemesin (formu boşuna bloklama). */
 export function markSakinBridgeSkipped(): void {
   try { sessionStorage.setItem(DONE_KEY, '1'); } catch { /* ignore */ }
 }

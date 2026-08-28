@@ -42,7 +42,7 @@ export default function PremiumPage() {
         });
     }
     setOwned(hasPremium());
-    // iOS: RevenueCat configure + entitlement senkronu — bitince premium'u
+    // iOS: RevenueCat configure + entitlement senkronu, bitince premium'u
     // yeniden oku (satın alım sonrası "yeniden satın al" sormasın).
     initIAP()
       .then(() => syncEntitlement())
@@ -103,8 +103,8 @@ export default function PremiumPage() {
         owned
           ? (locale === 'tr' ? 'Tam erişimin açık. Yıldızlar artık hiçbir şey saklamıyor.' : 'Your full access is unlocked. The stars hold nothing back now.')
           : (locale === 'tr'
-              ? 'İlk karnen ve ilk uyumun ücretsiz — tam özellikli. Farklı kişilere bakmak ve tüm özelliklere sınırsız erişim için premium.'
-              : 'Your first profile and first compatibility are free — fully featured. Go premium for other people and unlimited access to all features.')
+              ? 'İlk karnen ve ilk uyumun ücretsiz, tam özellikli. Farklı kişilere bakmak ve tüm özelliklere sınırsız erişim için premium.'
+              : 'Your first profile and first compatibility are free, fully featured. Go premium for other people and unlimited access to all features.')
       }
     >
       {error ? (
@@ -167,7 +167,7 @@ export default function PremiumPage() {
           </p>
         ) : null}
 
-        {/* Restore Purchases — Apple guideline 3.1.1 zorunluluğu */}
+        {/* Restore Purchases: Apple guideline 3.1.1 zorunluluğu */}
         <button
           type="button"
           onClick={onRestore}

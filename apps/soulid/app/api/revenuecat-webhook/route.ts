@@ -1,4 +1,4 @@
-// RevenueCat webhook — INITIAL_PURCHASE / RENEWAL / CANCELLATION event'lerini
+// RevenueCat webhook: INITIAL_PURCHASE / RENEWAL / CANCELLATION event'lerini
 // alır ve entitlements tablosuna kanonik kayıt yazar.
 // Authorization header'ı sabit secret ile karşılaştırılır (RevenueCat dashboard'da
 // "Authorization Header" alanına aynı secret yazılmalı).

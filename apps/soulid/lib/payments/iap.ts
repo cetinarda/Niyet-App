@@ -1,6 +1,6 @@
 // Apple StoreKit 2 + Google Play Billing v6 üzerine RevenueCat soyutlaması.
 // Web'de Purchases.configure no-op (Capacitor pluginleri web stub); iOS/Android'de
-// native SDK çağrılır. STATİK import — eski dinamik import bundle'da resolve
+// native SDK çağrılır. STATİK import: eski dinamik import bundle'da resolve
 // edilmediği için iOS'ta hiç yüklenmiyordu.
 
 import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
@@ -24,11 +24,11 @@ export async function initIAP(): Promise<void> {
       ? process.env.NEXT_PUBLIC_REVENUECAT_IOS_KEY
       : process.env.NEXT_PUBLIC_REVENUECAT_ANDROID_KEY;
   if (!apiKey) {
-    console.warn('[iap] RevenueCat API key missing — premium satın alma kapalı');
+    console.warn('[iap] RevenueCat API key missing, premium satın alma kapalı');
     return;
   }
 
-  // Supabase appUserID lookup'ı KENDİ try/catch'inde — burada patlarsa (network,
+  // Supabase appUserID lookup'ı KENDİ try/catch'inde: burada patlarsa (network,
   // yapılandırılmamış istemci vb.) configure()'a hiç ulaşılamıyordu, IAP tamamen
   // kilitleniyordu. appUserID sadece opsiyonel bir bağlama, olmazsa da configure
   // apiKey-only ile devam edebilmeli.
@@ -53,7 +53,7 @@ export async function initIAP(): Promise<void> {
   }
 }
 
-/** Capacitor native rejection'ları düz Error değil — .message her zaman enumerable olmayabilir. */
+/** Capacitor native rejection'ları düz Error değil: .message her zaman enumerable olmayabilir. */
 function errText(e: unknown): string {
   if (e instanceof Error) return e.message;
   if (e && typeof e === 'object') {
@@ -66,7 +66,7 @@ function errText(e: unknown): string {
 export async function syncEntitlement(): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return hasPremium();
   // initIAP() sessizce başarısız olursa (configure edilemedi) dışarıdaki
-  // initIAP().then(() => syncEntitlement()) zinciri YİNE DE çalışıyordu —
+  // initIAP().then(() => syncEntitlement()) zinciri YİNE DE çalışıyordu, 
   // configure edilmemiş SDK'ya getCustomerInfo() çağrısı native tarafta
   // "Purchases must be configured before calling this function" fırlatıyordu.
   if (!initialized) return hasPremium();

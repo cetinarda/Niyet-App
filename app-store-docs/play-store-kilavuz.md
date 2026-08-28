@@ -1,4 +1,4 @@
-# Google Play Store Yükleme Kılavuzu — Sakin
+# Google Play Store Yükleme Kılavuzu, Sakin
 
 > Bu kılavuz Sakin uygulamasının Google Play Store'a yüklenmesi için tüm adımları içerir.
 
@@ -6,7 +6,7 @@
 
 ## BÖLÜM 1: Ön Hazırlık
 
-### 1.1 — Google Play Developer Hesabı
+### 1.1: Google Play Developer Hesabı
 
 | Alan | Detay |
 |---|---|
@@ -15,7 +15,7 @@
 | **Gerekli** | Google hesabı, kimlik doğrulama, ödeme bilgisi |
 | **Süre** | Hesap onayı 2-7 gün sürebilir |
 
-### 1.2 — Gerekli Araçlar
+### 1.2: Gerekli Araçlar
 
 | Araç | Minimum Versiyon |
 |---|---|
@@ -29,7 +29,7 @@
 
 ## BÖLÜM 2: Android Platform Kurulumu
 
-### 2.1 — Capacitor Android Ekleme
+### 2.1: Capacitor Android Ekleme
 
 ```bash
 # 1. Proje klasörüne git
@@ -51,7 +51,7 @@ npx cap sync android
 npx cap open android
 ```
 
-### 2.2 — capacitor.config.json — Android Eklentisi
+### 2.2: capacitor.config.json: Android Eklentisi
 
 Mevcut config'e Android ayarları ekle:
 
@@ -67,7 +67,7 @@ Mevcut config'e Android ayarları ekle:
 }
 ```
 
-### 2.3 — Android Minimum Ayarlar
+### 2.3: Android Minimum Ayarlar
 
 `android/app/build.gradle` dosyasında kontrol et:
 
@@ -88,7 +88,7 @@ android {
 
 ## BÖLÜM 3: Uygulama İmzalama (Signing)
 
-### 3.1 — Upload Key Oluşturma
+### 3.1: Upload Key Oluşturma
 
 ```bash
 keytool -genkey -v -keystore sakin-upload-key.jks \
@@ -102,7 +102,7 @@ Sorulacak bilgiler:
 - **Organization:** Sakin
 - **City / State / Country:** TR
 
-### 3.2 — Signing Config (build.gradle)
+### 3.2: Signing Config (build.gradle)
 
 `android/app/build.gradle`:
 
@@ -128,7 +128,7 @@ android {
 
 > **KRİTİK:** `sakin-upload-key.jks` dosyasını ve şifreyi güvenli bir yerde sakla. Kaybedersen uygulamayı güncelleyemezsin! Google Play App Signing kullan (önerilir).
 
-### 3.3 — Google Play App Signing (Önerilen)
+### 3.3: Google Play App Signing (Önerilen)
 
 Play Console'da "App Signing" etkinleştir. Google kendi imza anahtarını yönetir, sen sadece upload key kullanırsın. Daha güvenli.
 
@@ -136,7 +136,7 @@ Play Console'da "App Signing" etkinleştir. Google kendi imza anahtarını yöne
 
 ## BÖLÜM 4: AAB (Android App Bundle) Oluşturma
 
-### 4.1 — Build Adımları
+### 4.1: Build Adımları
 
 ```bash
 # 1. Güncel kodu çek
@@ -152,7 +152,7 @@ npx cap sync android
 npx cap open android
 ```
 
-### 4.2 — Android Studio'da AAB Oluşturma
+### 4.2: Android Studio'da AAB Oluşturma
 
 1. **Build > Generate Signed Bundle / APK**
 2. **Android App Bundle** seç → Next
@@ -161,7 +161,7 @@ npx cap open android
 5. **release** seç → Create
 6. AAB dosyası: `android/app/build/outputs/bundle/release/app-release.aab`
 
-### 4.3 — Terminal ile AAB Oluşturma (Alternatif)
+### 4.3: Terminal ile AAB Oluşturma (Alternatif)
 
 ```bash
 cd android
@@ -172,9 +172,9 @@ cd android
 
 ---
 
-## BÖLÜM 5: Google Play Console — Uygulama Oluşturma
+## BÖLÜM 5: Google Play Console: Uygulama Oluşturma
 
-### 5.1 — Yeni Uygulama
+### 5.1: Yeni Uygulama
 
 1. https://play.google.com/console → **Create app**
 2. Bilgileri gir:
@@ -182,13 +182,13 @@ cd android
 | Alan | Değer |
 |---|---|
 | **App name** | Sakin |
-| **Default language** | Turkish — tr |
+| **Default language** | Turkish, tr |
 | **App or Game** | App |
 | **Free or Paid** | Free |
 
 3. Declarations'ları kabul et → **Create app**
 
-### 5.2 — Store Listing (Ana Sayfa Bilgileri)
+### 5.2: Store Listing (Ana Sayfa Bilgileri)
 
 **Play Console > Store Presence > Main store listing**
 
@@ -210,9 +210,9 @@ cd android
 
 ---
 
-## BÖLÜM 6: Açıklamalar — Tam Metin
+## BÖLÜM 6: Açıklamalar: Tam Metin
 
-### 6.1 — Türkçe Full Description
+### 6.1: Türkçe Full Description
 
 ```
 Sakin, sana bir şey öğretmez.
@@ -224,19 +224,19 @@ Günün koşusunda kendini unuttuğun anlarda, Sakin seni nazikçe içe çeker. 
 Günün başında bir niyet belirle. Seni en çok ifade eden 3 kelimeyi seç: huzur, cesaret, akış, sevgi... Gün boyu bu kelimeler sana yol gösterir.
 
 🫧 Nefes Egzersizi
-6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici — hangisi sana iyi geliyorsa.
+6 farklı nefes moduyla bedenine dön. Standart, diyafram, akciğer, 4-7-8, kutu ve sakinleştirici, hangisi sana iyi geliyorsa.
 
 🎵 Ses Dalgaları & Kuş Sesleri
-10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa — her frekansın kendine ait bir doğa sesi var. Rahatlama ve farkındalık deneyimi sunar.
+10 solfeggio frekansını kuş sesleri eşliğinde dinle. Guguk kuşundan kartala, bülbülden baykuşa, her frekansın kendine ait bir doğa sesi var. Rahatlama ve farkındalık deneyimi sunar.
 
 💜 22 Çakra Farkındalığı
 Fiziksel, ruhsal ve ilahi boyutta 22 enerji merkeziyle tanış. 60 saniyede farkındalık pratiği yap. Elini bölgende hisset, gözlerini kapat, nefesine odaklan.
 
-🪞 İçsel Ayna — AI Destekli Yansıtma
+🪞 İçsel Ayna: AI Destekli Yansıtma
 Aklındaki soruyu yaz, yapay zeka sana kişisel bir farkındalık yansıtması sunsun. Duygusal farkındalık perspektifinden kişiselleştirilmiş içgörüler.
 
 🔔 Gün İçi Hatırlatıcılar
-Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil — seni bedene ve ana bağlayan dokunuşlar.
+Aynada kendine bak. Su iç. Güneşi hisset. Toprağa dokun. Bunlar görev değil: seni bedene ve ana bağlayan dokunuşlar.
 
 🌙 Akşam Kapanışı
 Bugün ne öğrendin? Neye şükrediyorsun? Birkaç cümle yeter. Gün kapanır, sen bütün hissedersin.
@@ -257,7 +257,7 @@ Bu uygulama tıbbi teşhis veya tedavi amacı taşımaz. Kişisel farkındalık 
 Kendine dönmek için bir dakikan var.
 ```
 
-### 6.2 — English Full Description
+### 6.2: English Full Description
 
 ```
 Sakin doesn't teach you anything.
@@ -269,19 +269,19 @@ When you lose yourself in the rush of the day, Sakin gently brings you back inwa
 Start your day by setting an intention. Choose 3 words that resonate with you most: peace, courage, flow, love... These words will guide you throughout the day.
 
 🫧 Breathing Exercise
-Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming — whichever feels right for you.
+Return to your body with 6 breathing modes. Standard, diaphragm, lung expansion, 4-7-8, box breathing, and calming, whichever feels right for you.
 
 🎵 Sound Waves & Bird Sounds
-Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl — each frequency has its own nature sound. A relaxation and awareness experience.
+Listen to 10 solfeggio frequencies accompanied by bird sounds. From cuckoo to eagle, nightingale to owl, each frequency has its own nature sound. A relaxation and awareness experience.
 
 💜 22 Chakra Awareness
 Explore 22 energy centers across physical, spiritual, and divine dimensions. Practice a 60-second awareness exercise. Place your hand on the area, close your eyes, and focus on your breath.
 
-🪞 Inner Mirror — AI-Powered Reflection
+🪞 Inner Mirror: AI-Powered Reflection
 Write your question, and AI offers a personalized awareness reflection. Emotional awareness insights from a personal growth perspective.
 
 🔔 Daily Reminders
-Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks — they are gentle touches that connect you to your body and the present moment.
+Look at yourself in the mirror. Drink water. Feel the sun. Touch the earth. These are not tasks: they are gentle touches that connect you to your body and the present moment.
 
 🌙 Evening Closing
 What did you learn today? What are you grateful for? A few sentences are enough. The day closes, and you feel whole.
@@ -295,7 +295,7 @@ At the end of the week, an AI-powered personal report: frequency listening durat
 ---
 
 Sakin is not complex. It is deep.
-With its minimal design, soft colors, and quiet rhythm — it is built to be by your side every day.
+With its minimal design, soft colors, and quiet rhythm, it is built to be by your side every day.
 
 This app does not provide medical diagnosis or treatment. It offers a personal awareness and relaxation experience. Always consult a healthcare professional for health concerns.
 
@@ -306,14 +306,14 @@ You have one minute to return to yourself.
 
 ## BÖLÜM 7: Fiyatlandırma & Ödeme (Google Play Billing)
 
-### 7.1 — Fiyat Modeli
+### 7.1: Fiyat Modeli
 
 | Alan | Değer |
 |---|---|
 | **App Price** | Free (Ücretsiz) |
 | **In-App Purchases** | Evet |
 
-### 7.2 — Google Play Billing Entegrasyonu
+### 7.2: Google Play Billing Entegrasyonu
 
 `cordova-plugin-purchase` zaten Google Play Billing'i destekler. `purchases.js`'e Android platformu eklenecek:
 
@@ -328,7 +328,7 @@ store.register([
 await store.initialize([Platform.GOOGLE_PLAY]);
 ```
 
-### 7.3 — Play Console'da Ürün Tanımlama
+### 7.3: Play Console'da Ürün Tanımlama
 
 **Play Console > Monetize > Products > Subscriptions**
 
@@ -357,7 +357,7 @@ await store.initialize([Platform.GOOGLE_PLAY]);
 
 ## BÖLÜM 8: Görseller (Graphics Assets)
 
-### 8.1 — Zorunlu Görseller
+### 8.1: Zorunlu Görseller
 
 | Görsel | Boyut | Format | Not |
 |---|---|---|---|
@@ -366,7 +366,7 @@ await store.initialize([Platform.GOOGLE_PLAY]);
 | **Screenshots (Phone)** | Min 320px, Max 3840px | PNG veya JPG | Min 2 adet, max 8 adet |
 | **Screenshots (Tablet)** | Min 320px, Max 3840px | PNG veya JPG | 7" ve 10" tablet (opsiyonel ama önerilir) |
 
-### 8.2 — App Icon (512x512)
+### 8.2: App Icon (512x512)
 
 Mevcut 1024x1024 ikonu 512x512'ye küçült:
 
@@ -378,7 +378,7 @@ sips -z 512 512 AppIcon-512@2x.png --out play-store-icon-512.png
 convert AppIcon-512@2x.png -resize 512x512 play-store-icon-512.png
 ```
 
-### 8.3 — Feature Graphic (1024x500)
+### 8.3: Feature Graphic (1024x500)
 
 Üst banner tasarımı:
 - Koyu gradient arka plan (#0a0e1a → #1a1040)
@@ -386,7 +386,7 @@ convert AppIcon-512@2x.png -resize 512x512 play-store-icon-512.png
 - Altında "Kendini hep hatırla" tagline
 - Minimal, temiz tasarım
 
-### 8.4 — Screenshot Boyutları (Önerilen)
+### 8.4: Screenshot Boyutları (Önerilen)
 
 | Cihaz | Boyut | Not |
 |---|---|---|
@@ -396,7 +396,7 @@ convert AppIcon-512@2x.png -resize 512x512 play-store-icon-512.png
 
 > **Not:** Apple için hazırlanan screenshot'ları boyut ayarlayarak kullanabilirsin.
 
-### 8.5 — Screenshot Planı (Aynı 7 ekran)
+### 8.5: Screenshot Planı (Aynı 7 ekran)
 
 | # | Ekran | Başlık (TR) | Başlık (EN) |
 |---|---|---|---|
@@ -435,7 +435,7 @@ IARC anketini doldur:
 
 **Play Console > Policy and programs > App content > Data safety**
 
-### 10.1 — Toplanan Veriler
+### 10.1: Toplanan Veriler
 
 | Soru | Yanıt |
 |---|---|
@@ -443,13 +443,13 @@ IARC anketini doldur:
 | **Is all collected data encrypted in transit?** | Yes (HTTPS) |
 | **Do you provide a way for users to request data deletion?** | Yes (uygulama verisi cihazda, sıfırla ile silinir) |
 
-### 10.2 — Veri Türleri
+### 10.2: Veri Türleri
 
 | Veri Türü | Collected | Shared | Purpose |
 |---|---|---|---|
 | **Other User Content** | Yes | No | App Functionality (AI analizi için) |
 
-### 10.3 — Toplanmayan Veriler
+### 10.3: Toplanmayan Veriler
 
 Location, Personal Info, Financial Info, Health & Fitness, Messages,
 Photos/Videos, Audio, Files, Calendar, Contacts, App Activity,
@@ -457,42 +457,42 @@ Web Browsing, Device/IDs
 
 ---
 
-## BÖLÜM 11: Play Console — Diğer Gerekli Bilgiler
+## BÖLÜM 11: Play Console: Diğer Gerekli Bilgiler
 
-### 11.1 — App Access
+### 11.1: App Access
 
 | Alan | Değer |
 |---|---|
 | **All functionality available without special access** | Yes |
 | **Login required** | No |
 
-### 11.2 — Ads
+### 11.2: Ads
 
 | Alan | Değer |
 |---|---|
 | **Contains ads** | No |
 
-### 11.3 — Target Audience
+### 11.3: Target Audience
 
 | Alan | Değer |
 |---|---|
 | **Target age group** | 18+ (çocuklara yönelik değil) |
 | **Appeals to children** | No |
 
-> **ÖNEMLİ:** Google Play'de yaş hedefi Apple'dan farklı. "4+" yerine "18+" veya "Everyone" seç. Çocuklara yönelik olmadığını belirt — COPPA riski önlenir.
+> **ÖNEMLİ:** Google Play'de yaş hedefi Apple'dan farklı. "4+" yerine "18+" veya "Everyone" seç. Çocuklara yönelik olmadığını belirt, COPPA riski önlenir.
 
-### 11.4 — Category & Tags
+### 11.4: Category & Tags
 
 | Alan | Değer |
 |---|---|
 | **App Category** | Lifestyle |
 | **Tags** | Meditation, Relaxation, Mindfulness, Breathing |
 
-### 11.5 — Contact Details
+### 11.5: Contact Details
 
 | Alan | Değer |
 |---|---|
-| **Email** | destek@sakin.app |
+| **Email** | destek@sakin.life |
 | **Website** | https://sakin.app |
 | **Privacy Policy URL** | https://sakin.app/privacy |
 
@@ -500,7 +500,7 @@ Web Browsing, Device/IDs
 
 ## BÖLÜM 12: AAB Yükleme ve Yayınlama
 
-### 12.1 — Internal Testing (İlk Adım — Önerilir)
+### 12.1: Internal Testing (İlk Adım: Önerilir)
 
 1. **Play Console > Testing > Internal testing > Create new release**
 2. AAB dosyasını sürükle/yükle (`app-release.aab`)
@@ -508,13 +508,13 @@ Web Browsing, Device/IDs
 4. Release notes gir (TR + EN)
 5. **Save** → **Review release** → **Start rollout**
 
-### 12.2 — Closed Testing (Beta)
+### 12.2: Closed Testing (Beta)
 
 1. **Play Console > Testing > Closed testing > Create track**
 2. Tester email listesi ekle
 3. AAB yükle → Release notes gir → Start rollout
 
-### 12.3 — Production Release
+### 12.3: Production Release
 
 1. **Play Console > Production > Create new release**
 2. AAB dosyasını yükle
@@ -542,7 +542,7 @@ Web Browsing, Device/IDs
 
 4. **Review release** → **Start rollout to Production**
 
-### 12.4 — İnceleme Süresi
+### 12.4: İnceleme Süresi
 
 | Platform | Süre |
 |---|---|
@@ -555,7 +555,7 @@ Web Browsing, Device/IDs
 
 ## BÖLÜM 13: Android'e Özel Kod Değişiklikleri
 
-### 13.1 — purchases.js Güncelleme
+### 13.1: purchases.js Güncelleme
 
 ```javascript
 import { Capacitor } from "@capacitor/core";
@@ -591,7 +591,7 @@ export async function initStore() {
 }
 ```
 
-### 13.2 — StatusBar / NavigationBar
+### 13.2: StatusBar / NavigationBar
 
 ```javascript
 // Android navigation bar rengini ayarla
@@ -601,7 +601,7 @@ if (platform === "android") {
 }
 ```
 
-### 13.3 — Back Button Handler (Android)
+### 13.3: Back Button Handler (Android)
 
 ```javascript
 import { App } from "@capacitor/app";
@@ -663,8 +663,8 @@ App.addListener("backButton", ({ canGoBack }) => {
 - [ ] Contact details girildi
 
 ### Ödeme Kontrolleri
-- [ ] Subscription oluşturuldu: `app.sakin.life.yearly` — $4.99/yıl
-- [ ] In-app product oluşturuldu: `app.sakin.life.lifetime` — $19.99
+- [ ] Subscription oluşturuldu: `app.sakin.life.yearly`: $4.99/yıl
+- [ ] In-app product oluşturuldu: `app.sakin.life.lifetime`: $19.99
 - [ ] purchases.js'te Google Play platformu eklendi
 - [ ] Test satın almaları çalışıyor (internal testing)
 
@@ -715,4 +715,4 @@ App.addListener("backButton", ({ canGoBack }) => {
 
 **Son güncelleme:** Mayıs 2026
 **Bundle ID:** app.sakin.life
-**Geliştirici:** Arda Cetin — destek@sakin.app
+**Geliştirici:** Arda Cetin: destek@sakin.life

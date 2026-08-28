@@ -1,4 +1,4 @@
-// Batch 01 — s001..s012: name + dailyMessage + howToUse + affirmation (de/es/fr/ja/pt)
+// Batch 01: s001..s012: name + dailyMessage + howToUse + affirmation (de/es/fr/ja/pt)
 export const BATCH01 = {
   s001: {
     de: { name:'Amethyst', dailyMessage:'Vertraue heute deiner Intuition. Amethyst befreit dich vom geistigen Lärm und lässt deine innere Stimme klar erklingen.', howToUse:'Halte ihn in der linken Handfläche oder lege ihn unter dein Kissen. Lege ihn während der Meditation auf deine Stirn.', affirmation:'Mein Geist ist klar, meine Intuition ist wahr, mein Weg ist licht.' },

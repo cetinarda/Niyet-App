@@ -5,7 +5,7 @@ import { checkSupabaseEntitlement } from './entitlement';
 
 const PREMIUM_CACHE_KEY = '@sakinhayvan_premium_cache';
 
-// App is currently free — all features unlocked for all users.
+// App is currently free, all features unlocked for all users.
 const APP_IS_FREE = true;
 
 export type PremiumTier = 'free' | 'monthly' | 'yearly';
@@ -43,7 +43,7 @@ async function writeCache(state: PremiumState): Promise<void> {
 export async function getPremiumState(): Promise<PremiumState> {
   if (APP_IS_FREE) return { tier: 'yearly', willRenew: false };
 
-  // 1. Native IAP (RevenueCat / StoreKit) — highest priority
+  // 1. Native IAP (RevenueCat / StoreKit), highest priority
   if (isIapAvailable()) {
     const ent = await fetchEntitlement();
     if (ent.active) {
@@ -65,7 +65,7 @@ export async function getPremiumState(): Promise<PremiumState> {
     return state;
   }
 
-  // 3. Cached state (offline fallback — last known good)
+  // 3. Cached state (offline fallback: last known good)
   return readCache();
 }
 

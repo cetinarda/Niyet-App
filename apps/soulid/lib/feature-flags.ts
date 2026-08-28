@@ -1,4 +1,4 @@
-// Lansman öncesi bayrakları — mağazalarda yayınlanana kadar geçerli.
+// Lansman öncesi bayrakları: mağazalarda yayınlanana kadar geçerli.
 //
 //  - FREE_MODE: her şey ÜCRETSİZ. Premium gate'ler kapalı, satın alma denenmez,
 //    upsell kartları gizli, deep-analysis açık. hasPremium() bu modda daima true.

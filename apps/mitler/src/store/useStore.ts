@@ -77,7 +77,7 @@ function pickRandom<T>(arr: T[]): T {
 // kullanıcının ad/doğum bilgisini localStorage'a yazar. Burada onu okuyup
 // onboarding formunu ÖN-DOLDURMAK için kullanırız.
 //
-// KRİTİK: Bu app'in profili 'element' alanını kullanır — element kullanıcının
+// KRİTİK: Bu app'in profili 'element' alanını kullanır: element kullanıcının
 // kişilik testi/seçimiyle belirlenir (ateş/su/toprak/hava), doğum verisinden
 // TÜRETİLEMEZ. Köprü asla element üretmez ve TEK BAŞINA profil oluşturmaz;
 // sadece ad + doğum alanlarını forma akıtır. Element'siz profil mythos
@@ -127,7 +127,7 @@ export function readSakinBridge(): SakinBridge | null {
 }
 
 // Ters köprü: kullanıcı doğum bilgisini embed'in KENDİ onboarding'ine girdiyse
-// host'un sakin_* anahtarlarına da yaz — SADECE boş olanlara (host gerçek kaynak
+// host'un sakin_* anahtarlarına da yaz, SADECE boş olanlara (host gerçek kaynak
 // kalır, asla üzerine yazılmaz). Böylece diğer Sakin aile uygulamaları aynı
 // bilgiyi görür ve bir daha sormaz.
 export function writeSakinBridgeBack(p: { name?: string; fullName?: string; birthDate?: string; birthHour?: number; birthMinute?: number; birthCity?: string }): void {
@@ -174,11 +174,11 @@ export function useMitlerStore() {
   const [isLoading, setIsLoading] = useState(true);
   const [isNewUser, setIsNewUser] = useState(false);
   // Sakin host'undan gelen, onboarding formuna pre-fill için saklanan veri.
-  // Profil zaten varsa null. Element üretmez — sadece ad + doğum alanları.
+  // Profil zaten varsa null. Element üretmez: sadece ad + doğum alanları.
   //
   // SENKRON OKUMA: localStorage (web) eşzamanlıdır. Köprüyü İLK render'da hazır
   // olması için lazy initializer ile senkron okuruz. Böylece ProfileScreen,
-  // bridge varlığını AsyncStorage Promise'i çözülmeden önce — ilk render'da —
+  // bridge varlığını AsyncStorage Promise'i çözülmeden önce: ilk render'da, 
   // görür ve element adımına doğrudan başlar (ad/doğum ekranları hiç açılmaz).
   // Profil zaten varsa loadAll() bunu null'a çeker (aşağıda).
   const [bridgePrefill, setBridgePrefill] = useState<SakinBridge | null>(() => readSakinBridge());
@@ -201,7 +201,7 @@ export function useMitlerStore() {
       if (disclaimerRaw === 'accepted') setDisclaimerAccepted(true);
 
       if (!profileRaw) {
-        // KÖPRÜ — OTOMATİK PROFİL (HD gibi): host doğum tarihi verdiyse profili
+        // KÖPRÜ: OTOMATİK PROFİL (HD gibi): host doğum tarihi verdiyse profili
         // sessizce kur, onboarding'i HİÇ gösterme; doğrudan rehberliğe geç. Element
         // burçtan türetilir (kullanıcı isterse Profil'de değiştirir). Birth yoksa
         // (nadir) eski akış: formu ön-doldur (element adımı).
@@ -285,7 +285,7 @@ export function useMitlerStore() {
 
   // Köprü GEÇ dolarsa yakala: embed ilk açıldığında host'ta doğum bilgisi yoktu
   // ama sonradan girildiyse (Ailesi paneli / kimlik), onboarding görünürken pencere
-  // odağa/görünürlüğe gelince köprüyü yeniden oku — doluysa loadAll otomatik
+  // odağa/görünürlüğe gelince köprüyü yeniden oku, doluysa loadAll otomatik
   // profili kurar ve onboarding kendiliğinden kapanır.
   useEffect(() => {
     if (profile || !isNewUser || typeof window === 'undefined') return;
@@ -351,7 +351,7 @@ export function useMitlerStore() {
     await saveProfile(p);
     writeSakinBridgeBack(p); // aile uygulamaları da görsün
     setIsNewUser(false);
-    setBridgePrefill(null); // profil kuruldu — köprü pre-fill'i artık gereksiz
+    setBridgePrefill(null); // profil kuruldu: köprü pre-fill'i artık gereksiz
   }, [saveProfile]);
 
   const updateBirthData = useCallback(async (
@@ -487,7 +487,7 @@ export function useMitlerStore() {
     const idx = Math.min(Math.max(level, 1), 7);
     return `profile.level.${idx}`;
   }, []);
-  // Backwards-compat shim — returns Turkish label by default.
+  // Backwards-compat shim: returns Turkish label by default.
   const getLevelTitle = useCallback((level: number): string => {
     const titles = ['Yolcu', 'Çırak', 'Arayıcı', 'Yorumcu', 'Mit Bilgesi', 'Arketip Ustası', 'Sembol Pîri'];
     return titles[Math.min(level - 1, titles.length - 1)];

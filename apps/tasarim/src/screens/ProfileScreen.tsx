@@ -12,9 +12,9 @@ const TERMS_URL = 'https://sakin.life/tasarim/kosullar';
 const SUPPORT_EMAIL = 'info@sakin.life';
 
 // Embed → Sakin host köprüsü. Diğer 4 aile uygulamasında (hayvan/mitler/taslar/
-// bitkiler) var, Tasarım'da hiç yoktu — kullanıcı diğer uygulamalara geçmek için
+// bitkiler) var, Tasarım'da hiç yoktu: kullanıcı diğer uygulamalara geçmek için
 // host'a manuel dönüp Ailesi panelini aramak zorunda kalıyordu. Native'de (App
-// Store 2.5.6/4.2.6 riski) gizli, sadece web'de gösterilir — diğer 4 embed'le birebir aynı desen.
+// Store 2.5.6/4.2.6 riski) gizli, sadece web'de gösterilir: diğer 4 embed'le birebir aynı desen.
 function postToHost(payload: object, fallbackUrl?: string) {
   try {
     if (Platform.OS === 'web' && typeof window !== 'undefined' && window.parent && window.parent !== window) {
@@ -223,7 +223,7 @@ export function ProfileScreen() {
             <Text style={styles.familyMasterSymbol}>✦</Text>
             <View style={{ flex: 1 }}>
               <Text style={styles.familyMasterName}>sakin.life</Text>
-              <Text style={styles.familyMasterDesc}>{B('Ana merkez — tüm uygulamalara giriş', 'The hub — entry to every app')}</Text>
+              <Text style={styles.familyMasterDesc}>{B('Ana merkez: tüm uygulamalara giriş', 'The hub: entry to every app')}</Text>
             </View>
             <Text style={styles.familyMasterArrow}>→</Text>
           </TouchableOpacity>
@@ -460,7 +460,7 @@ function NewProfileForm({
       {isWeb ? (
         <TextInput
           style={styles.input}
-          placeholder="SS:DD (24 saat) — ör. 14:30"
+          placeholder="SS:DD (24 saat): ör. 14:30"
           placeholderTextColor={Colors.textMuted}
           value={timeStr}
           onChangeText={setTimeStr}

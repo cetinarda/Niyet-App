@@ -5,7 +5,7 @@ language: en
 slug: privacy-nutrition-label
 ---
 
-# App Store Connect — Privacy Nutrition Label
+# App Store Connect: Privacy Nutrition Label
 
 A short guide for the **App Privacy** section in App Store Connect
 (App Information → App Privacy → Edit).

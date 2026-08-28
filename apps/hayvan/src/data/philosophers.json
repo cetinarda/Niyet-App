@@ -1,7 +1,7 @@
 {
   "Mevlana Rumi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Jalal_ad-Din_Muhammad_Rumi.jpg&width=300",
-    "era": "1207–1273",
+    "era": "1207-1273",
     "origin": "Belh · Konya",
     "tradition": "Mevlevilik",
     "originEn": "Balkh · Konya",
@@ -19,7 +19,7 @@
   },
   "Şems-i Tebrizi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Shams-e_Tabrizi.jpg&width=300",
-    "era": "1185–1248",
+    "era": "1185-1248",
     "origin": "Tebriz",
     "tradition": "Sûfizm",
     "originEn": "Tabriz",
@@ -37,7 +37,7 @@
   },
   "Yunus Emre": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Yunus_Emre.jpg&width=300",
-    "era": "1238–1320",
+    "era": "1238-1320",
     "origin": "Anadolu",
     "tradition": "Halk Tasavvufu",
     "originEn": "Anatolia",
@@ -55,7 +55,7 @@
   },
   "Hacı Bektaş Veli": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Haci_Bektas_Veli.jpg&width=300",
-    "era": "1209–1271",
+    "era": "1209-1271",
     "origin": "Nişabur · Hacıbektaş",
     "tradition": "Bektaşilik",
     "originEn": "Nishapur · Hacıbektaş",
@@ -91,7 +91,7 @@
   },
   "Ahmed Yesevi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Khoja_Ahmed_Yasawi.jpg&width=300",
-    "era": "1093–1166",
+    "era": "1093-1166",
     "origin": "Sayram · Yesi (Türkistan)",
     "tradition": "Yesevilik",
     "originEn": "Sayram · Yasi (Turkestan)",
@@ -109,7 +109,7 @@
   },
   "Nesimi": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Imadaddin_Nasimi.jpg&width=300",
-    "era": "1369–1417",
+    "era": "1369-1417",
     "origin": "Şirvan",
     "tradition": "Hurûfilik",
     "originEn": "Shirvan",
@@ -127,7 +127,7 @@
   },
   "Kaygusuz Abdal": {
     "imageUrl": "",
-    "era": "14–15. yüzyıl",
+    "era": "14-15. yüzyıl",
     "origin": "Alanya",
     "tradition": "Bektaşilik",
     "originEn": "Alanya",
@@ -145,7 +145,7 @@
   },
   "Niyazi Mısri": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Niyazi_Misri.jpg&width=300",
-    "era": "1618–1694",
+    "era": "1618-1694",
     "origin": "Soğanlı · Bursa",
     "tradition": "Halvetilik",
     "originEn": "Soğanlı · Bursa",
@@ -163,7 +163,7 @@
   },
   "Aşık Veysel": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Asik_Veysel.jpg&width=300",
-    "era": "1894–1973",
+    "era": "1894-1973",
     "origin": "Şarkışla, Sivas",
     "tradition": "Halk Ozanı",
     "originEn": "Şarkışla, Sivas",
@@ -217,7 +217,7 @@
   },
   "Karacaoğlan": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Karacaoglan.jpg&width=300",
-    "era": "1606–1689",
+    "era": "1606-1689",
     "origin": "Toroslar",
     "tradition": "Halk Ozanı",
     "originEn": "Taurus Mountains",
@@ -253,7 +253,7 @@
   },
   "Tasavvuf Geleneği": {
     "imageUrl": "https://commons.wikimedia.org/w/index.php?title=Special:FilePath/Dervishes_dancing.jpg&width=300",
-    "era": "8–20. yüzyıl",
+    "era": "8-20. yüzyıl",
     "origin": "Anadolu · Orta Asya",
     "tradition": "Tasavvuf",
     "originEn": "Anatolia · Central Asia",

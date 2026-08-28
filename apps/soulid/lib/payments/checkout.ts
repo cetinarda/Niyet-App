@@ -2,7 +2,7 @@ import { getSupabase } from '../supabase';
 import type { PlanKey } from './skus';
 
 export async function startCheckout(planKey: PlanKey = 'lifetime', email?: string): Promise<void> {
-  // Auth'lu kullanıcı varsa user_id metadata'sına ekle —
+  // Auth'lu kullanıcı varsa user_id metadata'sına ekle, 
   // webhook bu ID'ye entitlement yazabilsin.
   let userId: string | undefined;
   const sb = getSupabase();

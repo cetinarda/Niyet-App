@@ -35,9 +35,9 @@ function SignPill({ label, sign, tr }: { label: string; sign: ZodiacSign; tr: bo
 }
 
 /**
- * "Profilim" — karnenin en üstündeki kişisel merkez:
- *  1) Doğum bilgilerin (düzenlenebilir — yanlış tarih burada görünür/düzeltilir)
- *  2) Temel bilgiler (Güneş / Ay / Yükselen / HD / Yaşam Yolu — ayrı blok)
+ * "Profilim": karnenin en üstündeki kişisel merkez:
+ *  1) Doğum bilgilerin (düzenlenebilir, yanlış tarih burada görünür/düzeltilir)
+ *  2) Temel bilgiler (Güneş / Ay / Yükselen / HD / Yaşam Yolu, ayrı blok)
  *  3) Günün Pusulası (Ay evresi + HD günlük transiti + söz + odak + haftaya bakış)
  */
 export function ProfileCard({ report }: { report: GalacticReport }) {
@@ -63,7 +63,7 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
       </p>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
-        {/* 1) DOĞUM BİLGİLERİN — düzenlenebilir */}
+        {/* 1) DOĞUM BİLGİLERİN: düzenlenebilir */}
         <div className="card-surface rounded-3xl border border-panelBorder p-6">
           <div className="flex items-center justify-between">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-faint">
@@ -80,16 +80,16 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
           <dl className="mt-3 space-y-1.5 text-[13px]">
             <Row k={tr ? 'Tarih' : 'Date'} v={fmtDate(b.birthDate, tr)} />
             <Row k={tr ? 'Saat' : 'Time'} v={timeText} />
-            <Row k={tr ? 'Yer' : 'Place'} v={b.birthPlace || '—'} />
+            <Row k={tr ? 'Yer' : 'Place'} v={b.birthPlace || '-'} />
           </dl>
           <p className="mt-3 text-[11px] leading-relaxed text-faint">
             {tr
-              ? 'Ay/Yükselen yanlışsa çoğunlukla tarih ya da saat hatalıdır — Düzenle ile elle düzelt.'
-              : 'If your Moon/Rising looks wrong, the date or time is usually off — fix it manually via Edit.'}
+              ? 'Ay/Yükselen yanlışsa çoğunlukla tarih ya da saat hatalıdır, Düzenle ile elle düzelt.'
+              : 'If your Moon/Rising looks wrong, the date or time is usually off, fix it manually via Edit.'}
           </p>
         </div>
 
-        {/* 2) TEMEL BİLGİLER — ayrı blok */}
+        {/* 2) TEMEL BİLGİLER: ayrı blok */}
         <div className="card-surface rounded-3xl border border-panelBorder p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-faint">
             {tr ? 'Temel bilgiler' : 'Core essentials'}
@@ -120,7 +120,7 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
         </div>
       </div>
 
-      {/* 3) GÜNÜN PUSULASI — HD transit + söz + odak + hafta */}
+      {/* 3) GÜNÜN PUSULASI: HD transit + söz + odak + hafta */}
       {daily ? (
         <div className="mt-4 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0f1230] via-[#161a3d] to-[#0b0524] p-6 md:p-7">
           <div className="flex items-start gap-4">
@@ -146,8 +146,8 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
               </p>
               <p className="mt-1.5 text-[13px] leading-snug text-ink">
                 {tr
-                  ? `Güneş bugün Kapı ${daily.hd.gate}.${daily.hd.line} — ${daily.hd.theme.tr}.`
-                  : `Sun in Gate ${daily.hd.gate}.${daily.hd.line} today — ${daily.hd.theme.en}.`}
+                  ? `Güneş bugün Kapı ${daily.hd.gate}.${daily.hd.line}: ${daily.hd.theme.tr}.`
+                  : `Sun in Gate ${daily.hd.gate}.${daily.hd.line} today: ${daily.hd.theme.en}.`}
               </p>
               {daily.hd.personal ? (
                 <p className="mt-1.5 text-[11px] font-bold text-cosmic">

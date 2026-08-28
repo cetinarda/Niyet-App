@@ -10,10 +10,10 @@ import { tap } from '@/lib/haptics';
 
 // "Twilight Vellum" 5-katman pastel paleti
 const LAYER = [
-  { key: 'kimya', tr: 'Kimya', en: 'Chemistry', color: '#E8C28A', hint: { tr: 'Astroloji synastry — neden çekiyorsunuz', en: 'Astrology synastry — why you attract' } },
-  { key: 'ders',  tr: 'Ders',  en: 'Lesson',    color: '#9CAF88', hint: { tr: 'Human Design — birbirinize ne öğretiyorsunuz', en: 'Human Design — what you teach each other' } },
-  { key: 'ritim', tr: 'Ritim', en: 'Rhythm',    color: '#C9A0A6', hint: { tr: 'Numeroloji — hangi tempo ile akıyorsunuz', en: 'Numerology — what tempo you flow with' } },
-  { key: 'kader', tr: 'Kader', en: 'Fate',      color: '#8FA3C2', hint: { tr: 'Vedik Ashtakuta — kozmik eşleşme dokusu', en: 'Vedic Ashtakuta — cosmic match weave' } },
+  { key: 'kimya', tr: 'Kimya', en: 'Chemistry', color: '#E8C28A', hint: { tr: 'Astroloji synastry: neden çekiyorsunuz', en: 'Astrology synastry: why you attract' } },
+  { key: 'ders',  tr: 'Ders',  en: 'Lesson',    color: '#9CAF88', hint: { tr: 'Human Design: birbirinize ne öğretiyorsunuz', en: 'Human Design: what you teach each other' } },
+  { key: 'ritim', tr: 'Ritim', en: 'Rhythm',    color: '#C9A0A6', hint: { tr: 'Numeroloji: hangi tempo ile akıyorsunuz', en: 'Numerology: what tempo you flow with' } },
+  { key: 'kader', tr: 'Kader', en: 'Fate',      color: '#8FA3C2', hint: { tr: 'Vedik Ashtakuta: kozmik eşleşme dokusu', en: 'Vedic Ashtakuta: cosmic match weave' } },
 ] as const;
 
 function ScoreRing({
@@ -152,7 +152,7 @@ export function CompatibilityView({
     [result.nameA, result.nameB, result.numerology.aLifePath, result.numerology.bLifePath],
   );
 
-  // "Aynalar" — defined→open merkezlerinden öz cümleler
+  // "Aynalar": defined→open merkezlerinden öz cümleler
   const mirrors = useMemo(() => {
     const aConditions = result.hdCenters.filter((c) => c.status === 'a-conditions-b').slice(0, 2);
     const bConditions = result.hdCenters.filter((c) => c.status === 'b-conditions-a').slice(0, 2);
@@ -162,7 +162,7 @@ export function CompatibilityView({
 
   return (
     <div className="space-y-6">
-      {/* Sade üst başlık — toplam skor halkası YOK */}
+      {/* Sade üst başlık: toplam skor halkası YOK */}
       <header className="text-center">
         <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">{t('cv.kicker')}</p>
         <h2 className="mt-2 font-display text-3xl text-ink md:text-4xl">{result.headline}</h2>
@@ -173,7 +173,7 @@ export function CompatibilityView({
         </p>
       </header>
 
-      {/* Tab navigasyonu — shared-element pill (Crouton pattern), mobile yatay scroll */}
+      {/* Tab navigasyonu: shared-element pill (Crouton pattern), mobile yatay scroll */}
       <nav
         ref={navRef}
         role="tablist"
@@ -214,7 +214,7 @@ export function CompatibilityView({
         ))}
       </nav>
 
-      {/* TAB 0 — İki Yıldız: kim kim, hızlı tanışma */}
+      {/* TAB 0: İki Yıldız: kim kim, hızlı tanışma */}
       {tab === 0 ? (
         <section className="grid gap-4 md:grid-cols-2">
           <PersonCard
@@ -234,7 +234,7 @@ export function CompatibilityView({
         </section>
       ) : null}
 
-      {/* TAB 1 — Beş Pencere: 4 katman skoru + tek pusula */}
+      {/* TAB 1: Beş Pencere: 4 katman skoru + tek pusula */}
       {tab === 1 ? (
         <section className="space-y-5">
           <div className="card-surface grid grid-cols-2 gap-y-8 gap-x-4 rounded-3xl border border-panelBorder p-8 md:grid-cols-4 md:p-10">
@@ -272,7 +272,7 @@ export function CompatibilityView({
         </section>
       ) : null}
 
-      {/* TAB 2 — Aynalar: birbirine ne yansıttıklarınız */}
+      {/* TAB 2: Aynalar: birbirine ne yansıttıklarınız */}
       {tab === 2 ? (
         <section className="space-y-6">
           <div className="card-surface rounded-3xl border border-panelBorder p-6 md:p-7">
@@ -290,8 +290,8 @@ export function CompatibilityView({
             {mirrors.length === 0 ? (
               <p className="card-surface rounded-2xl border border-panelBorder p-6 text-sm leading-[1.75] text-muted">
                 {locale === 'tr'
-                  ? 'Belirgin bir koşullama yok — ikiniz de bağımsız enerji alanlarında dans ediyorsunuz.'
-                  : 'No prominent conditioning — you both dance in independent energy fields.'}
+                  ? 'Belirgin bir koşullama yok: ikiniz de bağımsız enerji alanlarında dans ediyorsunuz.'
+                  : 'No prominent conditioning: you both dance in independent energy fields.'}
               </p>
             ) : (
               mirrors.map((m, i) => (
@@ -315,7 +315,7 @@ export function CompatibilityView({
         </section>
       ) : null}
 
-      {/* TAB 3 — Pusula: birlikte ne yapmalılar */}
+      {/* TAB 3: Pusula: birlikte ne yapmalılar */}
       {tab === 3 ? (
         <section className="space-y-6">
           {/* 3-kart deterministik tarot çekimi */}
@@ -325,8 +325,8 @@ export function CompatibilityView({
             </p>
             <p className="mt-3 text-[13px] leading-[1.75] text-muted">
               {locale === 'tr'
-                ? 'İsimlerinizden ve sayılarınızdan üretilmiş sabit bir çekim — her seferinde aynı kartları görürsünüz.'
-                : 'A fixed pull generated from your names and numbers — the same cards every time.'}
+                ? 'İsimlerinizden ve sayılarınızdan üretilmiş sabit bir çekim, her seferinde aynı kartları görürsünüz.'
+                : 'A fixed pull generated from your names and numbers, the same cards every time.'}
             </p>
             <div className="mt-6 grid gap-5 md:grid-cols-3">
               {compass.cards.map((c) => (
@@ -391,10 +391,10 @@ export function CompatibilityView({
         </section>
       ) : null}
 
-      {/* Derinleş — opsiyonel detay */}
+      {/* Derinleş: opsiyonel detay */}
       <details className="card-surface rounded-2xl border border-panelBorder px-4 py-3 [&_summary::-webkit-details-marker]:hidden">
         <summary className="flex cursor-pointer items-center justify-between text-[12px] font-bold text-muted">
-          <span>{locale === 'tr' ? 'Derinleş — tam motor çıktısı' : 'Go deeper — full engine output'}</span>
+          <span>{locale === 'tr' ? 'Derinleş: tam motor çıktısı' : 'Go deeper: full engine output'}</span>
           <span className="text-gold">↓</span>
         </summary>
         <div className="mt-4 space-y-4 text-[13px]">
@@ -416,7 +416,7 @@ export function CompatibilityView({
               <ul className="mt-2 space-y-1.5">
                 {result.astroAspects.slice(0, 6).map((x, i) => (
                   <li key={i} className="text-muted">
-                    <span className="text-ink">{x.a} — {x.b}</span> · {x.aspect}
+                    <span className="text-ink">{x.a}: {x.b}</span> · {x.aspect}
                   </li>
                 ))}
               </ul>
@@ -427,10 +427,10 @@ export function CompatibilityView({
               {locale === 'tr' ? 'Vedik Ashtakuta detayı' : 'Vedic Ashtakuta detail'}
             </p>
             <ul className="mt-2 space-y-1.5 text-muted">
-              <li>Nadi · {result.ashtakuta.raw.nadi}/8 — {result.ashtakuta.notes.nadi[locale]}</li>
-              <li>Bhakuta · {result.ashtakuta.raw.bhakuta}/7 — {result.ashtakuta.notes.bhakuta[locale]}</li>
-              <li>Gana · {result.ashtakuta.raw.gana}/6 — {result.ashtakuta.notes.gana[locale]}</li>
-              <li>Yoni · {result.ashtakuta.raw.yoni}/4 — {result.ashtakuta.notes.yoni[locale]}</li>
+              <li>Nadi · {result.ashtakuta.raw.nadi}/8: {result.ashtakuta.notes.nadi[locale]}</li>
+              <li>Bhakuta · {result.ashtakuta.raw.bhakuta}/7: {result.ashtakuta.notes.bhakuta[locale]}</li>
+              <li>Gana · {result.ashtakuta.raw.gana}/6: {result.ashtakuta.notes.gana[locale]}</li>
+              <li>Yoni · {result.ashtakuta.raw.yoni}/4: {result.ashtakuta.notes.yoni[locale]}</li>
             </ul>
           </div>
         </div>

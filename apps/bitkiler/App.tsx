@@ -37,7 +37,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <LanguageProvider>
-          {/* WebFooter removed — host (sakin.life) provides its own policy footer. */}
+          {/* WebFooter removed: host (sakin.life) provides its own policy footer. */}
           <Root />
         </LanguageProvider>
       </SafeAreaProvider>

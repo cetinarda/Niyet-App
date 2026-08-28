@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     androidScheme: 'https',
-    // iOS local content scheme — Capacitor default 'capacitor://localhost'.
+    // iOS local content scheme, Capacitor default 'capacitor://localhost'.
     // Custom scheme (soulprofile) secure-context DEĞİL → crypto.subtle +
     // clipboard kapanır + directory-index routing (/birth/ → index.html)
     // kırılır → butonlar/Link çalışmaz. Default scheme en uyumlu.
@@ -17,7 +17,7 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'always',
     backgroundColor: '#07091a',
-    // App-Bound Domains'i kapatıyoruz — Info.plist'te WKAppBoundDomains
+    // App-Bound Domains'i kapatıyoruz: Info.plist'te WKAppBoundDomains
     // tam yapılandırıldıktan sonra true'ya çekilir. Yanlış kombinasyon
     // WebView navigation'ı tamamen bloke ediyor (Link/onClick çalışmaz).
     limitsNavigationsToAppBoundDomains: false,

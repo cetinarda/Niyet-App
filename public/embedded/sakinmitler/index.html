@@ -24,14 +24,14 @@
       }
     </style>
   <link rel="icon" href="/embedded/sakinmitler/favicon.ico" />    <style>
-      /* Sakin embed scroll override — keep an explicit height chain so React Native Web
+      /* Sakin embed scroll override, keep an explicit height chain so React Native Web
          ScrollViews can scroll internally. Previous override set html/body/#root height to
          auto which collapsed the flex chain and broke per-screen scrolling on detail views. */
       html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
     <script>
-      /* Sakin embed lang override — Expo sabit lang üretir; CSS text-transform:uppercase
+      /* Sakin embed lang override, Expo sabit lang üretir; CSS text-transform:uppercase
          yanlış dilde İ/I hatası yapar ("DETAİLS", "HIKAYE"). UI diliyle eşitle. */
       try { var __sl = localStorage.getItem('sakin_lang') || 'tr'; document.documentElement.lang = (__sl === 'pt-BR' ? 'pt' : __sl); } catch (e) {}
     </script>
@@ -44,6 +44,6 @@
     </noscript>
     <!-- The root element for your Expo app. -->
     <div id="root"></div>
-  <script src="/embedded/sakinmitler/_expo/static/js/web/index-ce77075dce0b02ca99881c13e8a13ba7.js" defer></script>
+  <script src="/embedded/sakinmitler/_expo/static/js/web/index-071c2ea8e401341bd548e4ec70eddf51.js" defer></script>
 </body>
 </html>

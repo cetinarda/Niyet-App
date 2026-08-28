@@ -36,7 +36,7 @@ Sürüm çıkarma kontrol listesi: [`RELEASE.md`](./RELEASE.md)
 - Bilinçli (Personality) ve bilinçsiz (Design) gezegen aktivasyonları
 - Tanımlı / tanımsız merkez ayrımı, yanlış benlik soruları ve kazanılan bilgelik
 - Inkarnasyon Haçı, Tanım türü (Single/Split/Triple/Quadruple)
-- Çoklu profil desteği — sevdiklerini de ekleyebilirsin
+- Çoklu profil desteği: sevdiklerini de ekleyebilirsin
 - Günlük transit: bugünün Güneş ve Ay kapısı
 
 ## Veri & Hesaplama
@@ -48,7 +48,7 @@ Sürüm çıkarma kontrol listesi: [`RELEASE.md`](./RELEASE.md)
 ## Submission
 
 `store/` klasörü App Store / Google Play / web yayını için hazır metinleri içerir.
-Hepsi tek başına kullanılabilecek şekilde yazıldı — düzenlemeden kopyala-yapıştır
+Hepsi tek başına kullanılabilecek şekilde yazıldı, düzenlemeden kopyala-yapıştır
 yapabilirsin.
 
 ### Dosya haritası

@@ -1,4 +1,4 @@
-// Web ödeme (ikincil) — Stripe Checkout. iOS ana kanal App Store IAP.
+// Web ödeme (ikincil): Stripe Checkout. iOS ana kanal App Store IAP.
 // iOS Capacitor build'inde bu rota mevcut değil (statik export); orada Apple paid app modeli geçerli.
 
 import { NextResponse } from 'next/server';
@@ -8,7 +8,7 @@ import { rateLimit, rateKey } from '../ai/_shared';
 export const runtime = 'edge';
 
 export async function POST(request: Request) {
-  // Rate limit — IP-bazlı, 5 checkout/dakika. Anonim session açma DoS koruması.
+  // Rate limit: IP-bazlı, 5 checkout/dakika. Anonim session açma DoS koruması.
   const limit = rateLimit(rateKey(request, 'checkout'), 5);
   if (!limit.ok) {
     return NextResponse.json(
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   params.append('line_items[0][price]', priceId);
   params.append('line_items[0][quantity]', '1');
   if (body?.userEmail) params.set('customer_email', body.userEmail);
-  // user_id metadata — webhook entitlement insert için zorunlu
+  // user_id metadata: webhook entitlement insert için zorunlu
   if (body?.userId && /^[a-zA-Z0-9-]{8,}$/.test(body.userId)) {
     params.set('client_reference_id', body.userId);
     params.set('metadata[user_id]', body.userId);

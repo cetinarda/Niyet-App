@@ -1,4 +1,4 @@
-// Batch 10 — s228..s232, s114..s119 (son)
+// Batch 10: s228..s232, s114..s119 (son)
 export const BATCH10 = {
   s228: {
     de: { name:'Hypersthen', dailyMessage:'Stehe heute fest vor Herausforderungen. Hypersthen verleiht deinem Geist eine ruhige Kraft zum Lösen.', howToUse:'Halte ihn in angespannten Momenten in der Handfläche und wurzle dich in die Erde.', affirmation:'Ich bin ruhig und stark und finde in jedem Problem eine Lösung.' },

@@ -1,4 +1,4 @@
-// stones.json'a 5-dil alanları ekler (idempotent — varsa dokunmaz).
+// stones.json'a 5-dil alanları ekler (idempotent, varsa dokunmaz).
 // Bu pass: element, chakra, origin (sözlükten). properties/plant/name/sentences
 // ayrı dosyalar yüklendikçe eklenir.
 // Çalıştır: node scripts/stone-i18n/fill.mjs        (yazar)

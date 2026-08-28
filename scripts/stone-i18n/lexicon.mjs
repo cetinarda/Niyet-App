@@ -15,7 +15,7 @@ export const ELEMENT = {
   'tüm unsurlar': { de:'Alle Elemente', es:'Todos los elementos', fr:'Tous les éléments', ja:'すべての元素', pt:'Todos os elementos' },
 };
 
-// ── ÇAKRA (22 kombinasyon — doğrudan) ──
+// ── ÇAKRA (22 kombinasyon, doğrudan) ──
 export const CHAKRA = {
   'Taç Çakra':        { de:'Kronenchakra', es:'Chakra Corona', fr:'Chakra Couronne', ja:'クラウンチャクラ', pt:'Chakra Coroa' },
   'Kök Çakra':        { de:'Wurzelchakra', es:'Chakra Raíz', fr:'Chakra Racine', ja:'ルートチャクラ', pt:'Chakra Raiz' },
@@ -106,7 +106,7 @@ export const COUNTRY = {
   'Dünya genelinde': { de:'Weltweit', es:'En todo el mundo', fr:'Partout dans le monde', ja:'世界中', pt:'Em todo o mundo' },
 };
 
-// Parantez içi bölge adları (ör. "ABD (Arizona)") — çevrilenler; yoksa olduğu gibi kalır.
+// Parantez içi bölge adları (ör. "ABD (Arizona)"): çevrilenler; yoksa olduğu gibi kalır.
 export const REGION = {
   'Tasmanya': { de:'Tasmanien', es:'Tasmania', fr:'Tasmanie', ja:'タスマニア', pt:'Tasmânia' },
   'Sibirya':  { de:'Sibirien', es:'Siberia', fr:'Sibérie', ja:'シベリア', pt:'Sibéria' },

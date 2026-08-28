@@ -40,7 +40,7 @@ export function revokePremium() {
 }
 
 /**
- * Canonical entitlement check — Supabase'ten okur, localStorage'ı senkronlar.
+ * Canonical entitlement check: Supabase'ten okur, localStorage'ı senkronlar.
  * Boot'ta + premium-gated aksiyon öncesi çağrılmalı.
  */
 export async function refreshEntitlement(): Promise<boolean> {
@@ -89,7 +89,7 @@ export function togglePremium(): boolean {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Gate API'si — id-tabanlı (deterministik karne/uyum kimliği):
+// Gate API'si: id-tabanlı (deterministik karne/uyum kimliği):
 //  - ÜCRETSİZ: 1 karne (kişi) + 1 uyum (çift), TAM özellikli.
 //  - Aynı kişiyi/çifti tekrar görmek yeni sayılmaz (id eşleşir).
 //  - Farklı kişi/çift → premium ($19.99 tek seferlik / $4.99 ay) = sınırsız.

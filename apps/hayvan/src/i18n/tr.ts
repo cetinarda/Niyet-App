@@ -85,7 +85,7 @@ export const tr = {
     intro: {
       title: 'Rehber Hayvanını Keşfet',
       desc: 'Ruhunla uyumlu totem hayvanını bulmak için iki yol var.',
-      note: 'Sakin sana bir ayna tutar — içinde zaten var olanı yansıtır ve olası olanı fısıldar.\nOnu kalbinde uyandıracak, hissedip özümseyecek olan ise yalnızca sensin.',
+      note: 'Sakin sana bir ayna tutar, içinde zaten var olanı yansıtır ve olası olanı fısıldar.\nOnu kalbinde uyandıracak, hissedip özümseyecek olan ise yalnızca sensin.',
       quizBtn: {
         title: 'Sorularla Keşfet',
         desc: '7 soru, karakterine göre eşleşir',
@@ -97,7 +97,7 @@ export const tr = {
     },
     birth: {
       title: 'Doğum Bilgilerini Gir',
-      desc: 'Doğum anının mevsimi, yılı ve saati — hepsi senin totem hayvanını şekillendiriyor.',
+      desc: 'Doğum anının mevsimi, yılı ve saati, hepsi senin totem hayvanını şekillendiriyor.',
       dateLabel: 'Doğum Tarihi',
       dayPlaceholder: 'Gün',
       monthPlaceholder: 'Ay',
@@ -108,8 +108,8 @@ export const tr = {
       cityHint: 'Doğduğun yerin enerjisi yorumuna derinlik katar.',
       hourLabel: 'Doğum Saati',
       hourOptional: '(isteğe bağlı)',
-      hourPlaceholder: 'Saat (0–23)',
-      hourHint: 'Saat bilmiyorsan boş bırak — yine de güçlü bir eşleşme yapılır.',
+      hourPlaceholder: 'Saat (0-23)',
+      hourHint: 'Saat bilmiyorsan boş bırak: yine de güçlü bir eşleşme yapılır.',
       submitBtn: 'Rehberimi Bul ✦',
     },
     result: {
@@ -185,7 +185,7 @@ export const tr = {
   nagual: {
     back: '← Geri',
     familyTag: 'SAKİN · NAGUAL',
-    introTitle: 'Nagual — Dönemsel Rehber',
+    introTitle: 'Nagual: Dönemsel Rehber',
     introText:
       'Totem hayvanın seninle doğar, ömür boyu kalır. Nagual ise belirli bir\ndöneminde sana eşlik eden geçici rehberdir. Bir sınav, bir dönüşüm,\nbir kriz anında yanına gelir. Görevini tamamlayınca yerini başka bir\nrehbere bırakır.',
     weekTag: 'BU HAFTA · EVRENSEL',
@@ -302,7 +302,7 @@ export const tr = {
       estimated: '(tahmini)',
       hdTypeSelectHint: 'Tipini seç:',
       hdDisclaimer:
-        '⚠ Hesaplama tahminidir — gerçek HD doğum saati ve efemeris gerektirir.\nTipini biliyorsan yukarıdan seçebilirsin.',
+        '⚠ Hesaplama tahminidir: gerçek HD doğum saati ve efemeris gerektirir.\nTipini biliyorsan yukarıdan seçebilirsin.',
       sunGates: 'Güneş Kapıları',
       consciousSun: 'Bilinçli Güneş',
       designSun: 'Tasarım Güneşi',
@@ -341,8 +341,8 @@ export const tr = {
       sectionTitle: 'Hayvan Rehberliği Nedir?',
       totemTitle: '⊕ Totem Hayvan',
       totemText:
-        'Her insan, doğasında bir hayvanın ruhunu taşır. Bu totem hayvan seni temsil eder; enerjin, güçlü yanların ve yürüdüğün yol onun izlerini taşır. Totem değişmez — seninle doğar, seninle gelişir.',
-      nagualTitle: '◎ Nagual — Dönemsel Rehber',
+        'Her insan, doğasında bir hayvanın ruhunu taşır. Bu totem hayvan seni temsil eder; enerjin, güçlü yanların ve yürüdüğün yol onun izlerini taşır. Totem değişmez: seninle doğar, seninle gelişir.',
+      nagualTitle: '◎ Nagual: Dönemsel Rehber',
       nagualText:
         'Nagual ise belirli bir dönem için yanına gelen geçici rehberdir. Bir sınav, bir dönüşüm, bir kriz anında çağrılır. Görevini tamamlayınca yerini başka bir rehbere bırakır. Günlük çekilişinde gelen hayvan, bugünkü naguelin sesini taşır.',
       finderTitle: 'Hayvan Rehberini Bul',
@@ -365,7 +365,7 @@ export const tr = {
     sakinFamily: {
       title: 'Sakin Ailesi',
       intro: 'Tek ekosistem. Tek abonelik. Birçok kapı.',
-      masterDesc: 'Ana merkez — tüm uygulamalara giriş',
+      masterDesc: 'Ana merkez: tüm uygulamalara giriş',
       apps: {
         animalGuidance: 'Hayvan Rehberliği',
         stoneGuidance: 'Taş Rehberliği',
@@ -506,11 +506,11 @@ export const tr = {
     },
     mit: {
       term: 'Mit',
-      short: 'Ruhun karşılaştığı sembolik bir güç — Gölge, Eşik, Şimşek...',
+      short: 'Ruhun karşılaştığı sembolik bir güç, Gölge, Eşik, Şimşek...',
     },
     hayatYolu: {
       term: 'Hayat Yolu Sayısı',
-      short: 'Doğum tarihinin numerolojik özetidir — ana enerjini gösterir.',
+      short: 'Doğum tarihinin numerolojik özetidir, ana enerjini gösterir.',
     },
     numeroloji: {
       term: 'Numeroloji',
@@ -518,15 +518,15 @@ export const tr = {
     },
     ifade: {
       term: 'İfade Sayısı',
-      short: 'İsminin harflerinden gelen — doğal yeteneklerin ve potansiyelin.',
+      short: 'İsminin harflerinden gelen: doğal yeteneklerin ve potansiyelin.',
     },
     ruhIstegi: {
       term: 'Ruh İsteği Sayısı',
-      short: 'İsmindeki sesli harflerden — içsel motivasyonun.',
+      short: 'İsmindeki sesli harflerden: içsel motivasyonun.',
     },
     kisilik: {
       term: 'Kişilik Sayısı',
-      short: 'İsmindeki sessiz harflerden — dünyaya gösterdiğin yüz.',
+      short: 'İsmindeki sessiz harflerden: dünyaya gösterdiğin yüz.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -570,7 +570,7 @@ export const tr = {
     },
     kisiselYil: {
       term: 'Kişisel Yıl',
-      short: 'Numerolojik yılına özgü tema — 9 yıllık döngünün hangi adımında olduğun.',
+      short: 'Numerolojik yılına özgü tema: 9 yıllık döngünün hangi adımında olduğun.',
     },
     rehber: {
       term: 'Rehber Hayvan',

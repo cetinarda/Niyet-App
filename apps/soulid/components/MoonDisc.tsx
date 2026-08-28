@@ -1,5 +1,5 @@
 /**
- * Ay evresi diski — sakin, gerçek geometri. Aydınlık yarım-daire + terminatör
+ * Ay evresi diski: sakin, gerçek geometri. Aydınlık yarım-daire + terminatör
  * elipsi (hilalde gölge oyar, şişkinde ışık ekler; dördünde düz). Tüm evrelerde
  * doğru: yeni → hilal → dördün → şişkin → dolunay. 8 evrede görsel doğrulandı.
  */

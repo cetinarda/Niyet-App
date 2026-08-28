@@ -155,13 +155,13 @@
     "emoji": "≈",
     "element": "ateş",
     "aspect": "Geçicilik",
-    "dailyMessage": "Her şey geçer. Acın da, sevincin de. Duman gibi — şekil alır, kaybolur.",
+    "dailyMessage": "Her şey geçer. Acın da, sevincin de. Duman gibi: şekil alır, kaybolur.",
     "guidance": "Şu an taşıdığın duyguya isim ver. Onu geçici olarak gör.",
     "rarity": "common",
     "nameEn": "Smoke",
     "elementEn": "fire",
     "aspectEn": "Impermanence",
-    "dailyMessageEn": "Everything passes. Your pain, your joy. Like smoke — it takes shape, then vanishes.",
+    "dailyMessageEn": "Everything passes. Your pain, your joy. Like smoke: it takes shape, then vanishes.",
     "guidanceEn": "Name the feeling you are carrying right now. See it as temporary."
   },
   {
@@ -200,13 +200,13 @@
     "emoji": "✧",
     "element": "hava",
     "aspect": "Yaratım",
-    "dailyMessage": "Doluyken hiçbir şey giremez içine. Boşluğunu koru — oradan yaratırsın.",
+    "dailyMessage": "Doluyken hiçbir şey giremez içine. Boşluğunu koru: oradan yaratırsın.",
     "guidance": "Bugün programını boşalt. Boş zamanı boşa harcama gibi görme.",
     "rarity": "uncommon",
     "nameEn": "The Void",
     "elementEn": "air",
     "aspectEn": "Creation",
-    "dailyMessageEn": "When you are full, nothing else can enter. Guard your emptiness — from there you create.",
+    "dailyMessageEn": "When you are full, nothing else can enter. Guard your emptiness: from there you create.",
     "guidanceEn": "Empty your schedule today. Do not see empty time as wasted time."
   },
   {
@@ -425,13 +425,13 @@
     "emoji": "⊕",
     "element": "toprak",
     "aspect": "Köken",
-    "dailyMessage": "Sen topraktan geldin, toprağa döneceksin. Bu arada toprak seni besler — bedavadan, sessizce.",
+    "dailyMessage": "Sen topraktan geldin, toprağa döneceksin. Bu arada toprak seni besler, bedavadan, sessizce.",
     "guidance": "Bugün ayakkabısız toprağa bas. Beş dakika yeter. Annenle konuşmuş gibi olursun.",
     "rarity": "common",
     "nameEn": "Mother Earth",
     "elementEn": "earth",
     "aspectEn": "Origin",
-    "dailyMessageEn": "You came from earth, and to earth you return. In between, the earth feeds you — freely, quietly.",
+    "dailyMessageEn": "You came from earth, and to earth you return. In between, the earth feeds you, freely, quietly.",
     "guidanceEn": "Walk barefoot on the earth today. Five minutes is enough. It is like speaking with your mother."
   },
   {
@@ -440,13 +440,13 @@
     "emoji": "☁",
     "element": "su",
     "aspect": "İçsel Mesaj",
-    "dailyMessage": "Rüyalar uydurma değil — bilinçaltının mektuplarıdır. Açmazsan yine de gönderilir.",
+    "dailyMessage": "Rüyalar uydurma değil: bilinçaltının mektuplarıdır. Açmazsan yine de gönderilir.",
     "guidance": "Bu sabah hatırladığın rüyayı bir kağıda yaz. Anlamı zamanla açılır.",
     "rarity": "uncommon",
     "nameEn": "Dream",
     "elementEn": "water",
     "aspectEn": "Inner Message",
-    "dailyMessageEn": "Dreams are not invented — they are letters from the unconscious. They are sent whether you open them or not.",
+    "dailyMessageEn": "Dreams are not invented: they are letters from the unconscious. They are sent whether you open them or not.",
     "guidanceEn": "Write down the dream you remember this morning. Its meaning unfolds in time."
   },
   {
@@ -456,13 +456,13 @@
     "element": "hava",
     "aspect": "Akış",
     "dailyMessage": "İlham seni seçer, sen onu değil. Ama hazır olmazsan bir başkasına gider.",
-    "guidance": "Bugün küçük bir yaratım yap. Yazı, çizim, ses — fark etmez. Açık kal.",
+    "guidance": "Bugün küçük bir yaratım yap. Yazı, çizim, ses, fark etmez. Açık kal.",
     "rarity": "uncommon",
     "nameEn": "Inspiration",
     "elementEn": "air",
     "aspectEn": "Flow",
     "dailyMessageEn": "Inspiration chooses you, not the other way around. But if you are not ready, it goes to another.",
-    "guidanceEn": "Make something small today. Writing, drawing, sound — it doesn't matter. Stay open."
+    "guidanceEn": "Make something small today. Writing, drawing, sound, it doesn't matter. Stay open."
   },
   {
     "id": "ng032",
@@ -470,13 +470,13 @@
     "emoji": "✶",
     "element": "hava",
     "aspect": "Bağlantı",
-    "dailyMessage": "Dua, isteme değil — hizalanma sanatıdır. Sesini eviren biri seni dinler.",
+    "dailyMessage": "Dua, isteme değil, hizalanma sanatıdır. Sesini eviren biri seni dinler.",
     "guidance": "Bugün isteyerek değil, teşekkür ederek dua et. Fark hisset.",
     "rarity": "common",
     "nameEn": "Prayer",
     "elementEn": "air",
     "aspectEn": "Connection",
-    "dailyMessageEn": "Prayer is not asking — it is the art of alignment. Someone who turns their voice is heard.",
+    "dailyMessageEn": "Prayer is not asking: it is the art of alignment. Someone who turns their voice is heard.",
     "guidanceEn": "Today, pray not by asking but by giving thanks. Feel the difference."
   },
   {
@@ -486,13 +486,13 @@
     "element": "su",
     "aspect": "Geri Dönüş",
     "dailyMessage": "Yanlış yolda hızlı gitmenin bir anlamı yok. Geri dönmek zayıflık değil, bilgeliktir.",
-    "guidance": "Bugün bir yanlışı kabul et. İçten bir özür — başkasına ya da kendine.",
+    "guidance": "Bugün bir yanlışı kabul et. İçten bir özür: başkasına ya da kendine.",
     "rarity": "uncommon",
     "nameEn": "Return",
     "elementEn": "water",
     "aspectEn": "Turning Back",
-    "dailyMessageEn": "Going fast in the wrong direction is meaningless. Turning back is not weakness — it is wisdom.",
-    "guidanceEn": "Admit one wrong today. A sincere apology — to another, or to yourself."
+    "dailyMessageEn": "Going fast in the wrong direction is meaningless. Turning back is not weakness, it is wisdom.",
+    "guidanceEn": "Admit one wrong today. A sincere apology: to another, or to yourself."
   },
   {
     "id": "ng034",
@@ -521,7 +521,7 @@
     "nameEn": "Farewell",
     "elementEn": "air",
     "aspectEn": "Release",
-    "dailyMessageEn": "Every farewell is a small death — but seen rightly, it is a new birth.",
+    "dailyMessageEn": "Every farewell is a small death, but seen rightly, it is a new birth.",
     "guidanceEn": "Is there someone or something to whom your heart has not yet said goodbye? Say it today."
   },
   {
@@ -531,13 +531,13 @@
     "element": "ateş",
     "aspect": "Yıkıcı Arınma",
     "dailyMessage": "Bazen tutuştuğun şey, içinde uzun zamandır seni yakan şeydi. Yangın geçer, sen kalırsın.",
-    "guidance": "Bugün öfkene kızma — onun ne istediğini sor. Mesajını dinle.",
+    "guidance": "Bugün öfkene kızma: onun ne istediğini sor. Mesajını dinle.",
     "rarity": "rare",
     "nameEn": "Wildfire",
     "elementEn": "fire",
     "aspectEn": "Destructive Purification",
     "dailyMessageEn": "Sometimes what catches fire is the thing that had been burning you all along. The fire passes; you remain.",
-    "guidanceEn": "Do not be angry with your anger today — ask what it wants. Listen to its message."
+    "guidanceEn": "Do not be angry with your anger today, ask what it wants. Listen to its message."
   },
   {
     "id": "ng037",
@@ -545,14 +545,14 @@
     "emoji": "⌣",
     "element": "su",
     "aspect": "Sınır",
-    "dailyMessage": "Kıyı, iki dünyanın buluştuğu yerdir — kara ve deniz. İçinde de böyle eşikler var.",
-    "guidance": "Bugün hangi sınırda duruyorsun? Atlamak ya da kalmak — bilinçli seç.",
+    "dailyMessage": "Kıyı, iki dünyanın buluştuğu yerdir, kara ve deniz. İçinde de böyle eşikler var.",
+    "guidance": "Bugün hangi sınırda duruyorsun? Atlamak ya da kalmak: bilinçli seç.",
     "rarity": "uncommon",
     "nameEn": "Shore",
     "elementEn": "water",
     "aspectEn": "Boundary",
-    "dailyMessageEn": "The shore is where two worlds meet — land and sea. Such thresholds live in you too.",
-    "guidanceEn": "On which boundary do you stand today? Choose consciously — to step over, or to stay."
+    "dailyMessageEn": "The shore is where two worlds meet, land and sea. Such thresholds live in you too.",
+    "guidanceEn": "On which boundary do you stand today? Choose consciously: to step over, or to stay."
   },
   {
     "id": "ng038",
@@ -560,13 +560,13 @@
     "emoji": "△",
     "element": "toprak",
     "aspect": "Sabır",
-    "dailyMessage": "Dağ aceleyle yapılmaz, aceleyle yıkılmaz. O sadece olur — milyonlarca yılda.",
+    "dailyMessage": "Dağ aceleyle yapılmaz, aceleyle yıkılmaz. O sadece olur: milyonlarca yılda.",
     "guidance": "Acelen var mı? Bugün bir işi yarım hızda yap. Sonucu değil sürecini gör.",
     "rarity": "common",
     "nameEn": "Mountain",
     "elementEn": "earth",
     "aspectEn": "Patience",
-    "dailyMessageEn": "A mountain is not built in haste, nor brought down in haste. It simply becomes — over millions of years.",
+    "dailyMessageEn": "A mountain is not built in haste, nor brought down in haste. It simply becomes: over millions of years.",
     "guidanceEn": "Are you rushing? Today, do one task at half speed. See the process, not the result."
   },
   {
@@ -575,13 +575,13 @@
     "emoji": "◖",
     "element": "su",
     "aspect": "Yalnızlık",
-    "dailyMessage": "Bazen ada olmak — etrafı suyla çevrili, kendi başına — bir lanet değil hediyedir.",
+    "dailyMessage": "Bazen ada olmak: etrafı suyla çevrili, kendi başına, bir lanet değil hediyedir.",
     "guidance": "Bugün yarım saat yalnız kal. Telefon kapalı, içe dönük. Kendine yetmenin gücünü tat.",
     "rarity": "uncommon",
     "nameEn": "Island",
     "elementEn": "water",
     "aspectEn": "Solitude",
-    "dailyMessageEn": "Sometimes to be an island — surrounded by water, on your own — is not a curse but a gift.",
+    "dailyMessageEn": "Sometimes to be an island, surrounded by water, on your own, is not a curse but a gift.",
     "guidanceEn": "Spend half an hour alone today. Phone off, turned inward. Taste the strength of being enough for yourself."
   },
   {
@@ -605,13 +605,13 @@
     "emoji": "◓",
     "element": "hava",
     "aspect": "Uyanış",
-    "dailyMessage": "Bir çıngırak çalar — sen duymazlıktan gelirsen yine çalar, daha yüksek.",
+    "dailyMessage": "Bir çıngırak çalar: sen duymazlıktan gelirsen yine çalar, daha yüksek.",
     "guidance": "Hayatında tekrar tekrar gelen aynı mesaj var mı? Bugün ona bak.",
     "rarity": "uncommon",
     "nameEn": "The Bell",
     "elementEn": "air",
     "aspectEn": "Awakening",
-    "dailyMessageEn": "A bell rings — and if you pretend not to hear, it rings again, louder.",
+    "dailyMessageEn": "A bell rings: and if you pretend not to hear, it rings again, louder.",
     "guidanceEn": "Is there a message that keeps returning in your life? Look at it today."
   },
   {
@@ -620,13 +620,13 @@
     "emoji": "⌽",
     "element": "su",
     "aspect": "Derinlik",
-    "dailyMessage": "İçinde bir kuyu var — derin, karanlık, ama dibinde berrak su. Onun korkutucu olduğu yerden geç.",
+    "dailyMessage": "İçinde bir kuyu var: derin, karanlık, ama dibinde berrak su. Onun korkutucu olduğu yerden geç.",
     "guidance": "Bugün hiç kimseye söylemediğin bir şeyi kendine yaz. Mektup gibi.",
     "rarity": "rare",
     "nameEn": "The Well",
     "elementEn": "water",
     "aspectEn": "Depth",
-    "dailyMessageEn": "There is a well within you — deep, dark, but with clear water at its bottom. Pass through the place where it frightens you.",
+    "dailyMessageEn": "There is a well within you, deep, dark, but with clear water at its bottom. Pass through the place where it frightens you.",
     "guidanceEn": "Write to yourself today the thing you've told no one. Like a letter."
   },
   {
@@ -636,13 +636,13 @@
     "element": "toprak",
     "aspect": "Bağ",
     "dailyMessage": "Her insan, görünmez ipliklerle başkalarına bağlıdır. Bazıları besler, bazıları çeker.",
-    "guidance": "Bugün seni geriye çeken bir bağı tanı. Kesmek değil — gevşetmek yeter olabilir.",
+    "guidance": "Bugün seni geriye çeken bir bağı tanı. Kesmek değil: gevşetmek yeter olabilir.",
     "rarity": "uncommon",
     "nameEn": "Thread",
     "elementEn": "earth",
     "aspectEn": "Bond",
     "dailyMessageEn": "Every person is bound to others by unseen threads. Some nourish, some pull.",
-    "guidanceEn": "Notice a bond that pulls you backward today. Not cutting — loosening may be enough."
+    "guidanceEn": "Notice a bond that pulls you backward today. Not cutting: loosening may be enough."
   },
   {
     "id": "ng044",
@@ -650,13 +650,13 @@
     "emoji": "❋",
     "element": "toprak",
     "aspect": "Kontrolsüz Büyüme",
-    "dailyMessage": "Her şey düzenli olmak zorunda değil. Vahşi bahçe — bakımsız ama canlı — kendine has bir güzelliktir.",
+    "dailyMessage": "Her şey düzenli olmak zorunda değil. Vahşi bahçe: bakımsız ama canlı: kendine has bir güzelliktir.",
     "guidance": "Bugün bir alanı 'mükemmel' yapmaya çalışma. Olduğu gibi bırak.",
     "rarity": "uncommon",
     "nameEn": "Wild Garden",
     "elementEn": "earth",
     "aspectEn": "Untamed Growth",
-    "dailyMessageEn": "Not everything has to be orderly. A wild garden — untended but alive — has a beauty of its own.",
+    "dailyMessageEn": "Not everything has to be orderly. A wild garden: untended but alive: has a beauty of its own.",
     "guidanceEn": "Today, do not try to make something 'perfect.' Leave it as it is."
   },
   {
@@ -680,13 +680,13 @@
     "emoji": "✻",
     "element": "su",
     "aspect": "Sessizlik",
-    "dailyMessage": "Kar her şeyi örter — sesi, hızı, hataları. Beyaz örtü altında her şey yeniden başlar.",
+    "dailyMessage": "Kar her şeyi örter: sesi, hızı, hataları. Beyaz örtü altında her şey yeniden başlar.",
     "guidance": "Bugün bir saat kimseyle konuşma. Sessizliğin dolduğu yere bak.",
     "rarity": "uncommon",
     "nameEn": "Snow",
     "elementEn": "water",
     "aspectEn": "Stillness",
-    "dailyMessageEn": "Snow covers everything — sound, speed, mistakes. Beneath the white blanket, all begins again.",
+    "dailyMessageEn": "Snow covers everything: sound, speed, mistakes. Beneath the white blanket, all begins again.",
     "guidanceEn": "Speak to no one for an hour today. Look at the place the silence fills."
   },
   {
@@ -711,13 +711,13 @@
     "element": "hava",
     "aspect": "Doluluk",
     "dailyMessage": "Şükür, sahip olduğunu görme sanatıdır. Görmediğin şeye sahip olamazsın.",
-    "guidance": "Bugün uyumadan önce üç şey için minnet duy. Küçük olsun — kalbi açar.",
+    "guidance": "Bugün uyumadan önce üç şey için minnet duy. Küçük olsun: kalbi açar.",
     "rarity": "common",
     "nameEn": "Gratitude",
     "elementEn": "air",
     "aspectEn": "Fullness",
     "dailyMessageEn": "Gratitude is the art of seeing what you have. You cannot possess what you do not see.",
-    "guidanceEn": "Before sleep tonight, feel thanks for three things. Let them be small — it opens the heart."
+    "guidanceEn": "Before sleep tonight, feel thanks for three things. Let them be small: it opens the heart."
   },
   {
     "id": "ng049",
@@ -726,13 +726,13 @@
     "element": "hava",
     "aspect": "Geçiş Anı",
     "dailyMessage": "Eşikte duranlar ne içeride ne dışarıdadır. Bu belirsizlik, dönüşümün doğum sancısıdır.",
-    "guidance": "Bir karar arifesindesin mi? Eşikte uzun süre kalma — adım at, geri gel ama hareket et.",
+    "guidance": "Bir karar arifesindesin mi? Eşikte uzun süre kalma: adım at, geri gel ama hareket et.",
     "rarity": "rare",
     "nameEn": "Threshold",
     "elementEn": "transition",
     "aspectEn": "Moment of Passage",
     "dailyMessageEn": "Those who stand at the threshold belong neither inside nor out. This in-between is the birth-pain of transformation.",
-    "guidanceEn": "Are you on the eve of a decision? Do not linger on the threshold — step forward, even if you return. Just move."
+    "guidanceEn": "Are you on the eve of a decision? Do not linger on the threshold, step forward, even if you return. Just move."
   },
   {
     "id": "ng050",
@@ -740,13 +740,13 @@
     "emoji": "◬",
     "element": "toprak",
     "aspect": "Kintsugi",
-    "dailyMessage": "Kırılan şey değersizleşmez. Japonlar kırıkları altınla doldurur — kırık yer en güzel olur.",
+    "dailyMessage": "Kırılan şey değersizleşmez. Japonlar kırıkları altınla doldurur, kırık yer en güzel olur.",
     "guidance": "Bir hatanın, bir kırıklığın utancını bugün bırak. O yarıktan ışık geçiyor.",
     "rarity": "rare",
     "nameEn": "Broken Vase",
     "elementEn": "earth",
     "aspectEn": "Kintsugi",
-    "dailyMessageEn": "What breaks does not lose its worth. The Japanese fill the cracks with gold — the broken place becomes the most beautiful.",
+    "dailyMessageEn": "What breaks does not lose its worth. The Japanese fill the cracks with gold, the broken place becomes the most beautiful.",
     "guidanceEn": "Today, release the shame of a mistake, of a breaking. Light is passing through that crack."
   }
 ]

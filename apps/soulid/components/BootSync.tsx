@@ -7,7 +7,7 @@ import { initIAP } from '@/lib/payments/iap';
 import { isCapacitorNative } from '@/lib/platform';
 
 /**
- * App boot — entitlement Supabase'ten senkron + iOS deep link handler.
+ * App boot: entitlement Supabase'ten senkron + iOS deep link handler.
  * Görsel render'a engel olmamak için fire-and-forget.
  */
 export function BootSync() {

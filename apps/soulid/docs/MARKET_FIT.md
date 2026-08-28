@@ -1,4 +1,4 @@
-# SoulProfile — Market Fit Raporu (Sadeleştir / Ekle / Büyü)
+# SoulProfile: Market Fit Raporu (Sadeleştir / Ekle / Büyü)
 
 > Hazırlanma tarihi: 2026-05-31
 > Kapsam: Pazarda traction için ne kesilmeli, ne eklenmeli, nasıl büyür, nasıl
@@ -25,7 +25,7 @@ Roadmap'in vaat ettiği değil, repoda **şu an** olan:
 - **Günlük geri dönüş kancası YOK.** Transit yok, push yok, horoscope yok.
   Karne tek seferlik üretilir, kullanıcının ertesi gün dönmesi için sebep yok.
 - **Viral döngü zayıf:** Karne PNG paylaşılabiliyor ama davet/arkadaş eşleştirme
-  loop'u yok. Compatibility ikinci kişinin verisini **kullanıcı kendi giriyor** —
+  loop'u yok. Compatibility ikinci kişinin verisini **kullanıcı kendi giriyor**, 
   davet linki yok, yani yeni kullanıcı acquisition kanalı değil.
 - **Monetizasyon:** Tek seferlik $4.99. Free limit = 1 karne + 1 uyum. iOS'ta
   peşin paid app (IAP yok).
@@ -38,7 +38,7 @@ Bu, "demo olarak etkileyici, retention/growth motoru olarak boş" bir üründür
 ## 1. Tek cümlelik teşhis
 
 **SoulProfile bir "tek seferlik kimlik raporu"ndan bir "her gün dönülen kozmik
-alışkanlık"a dönüşmeli — yani kesilmesi gereken tek şey "tek seferlik" zihniyeti:
+alışkanlık"a dönüşmeli: yani kesilmesi gereken tek şey "tek seferlik" zihniyeti:
 hesap + günlük kanca + arkadaş daveti olmadan bu kategoride hiçbir uygulama
 hayatta kalmaz, çünkü kategorinin tüm parası retention ve sosyal döngüden gelir.**
 
@@ -52,7 +52,7 @@ yüzünden ulaştı.
 
 ## 2. SADELEŞTİRİLECEKLER (kes / azalt)
 
-### 2.1 Rapor sayfasını tek dev scroll olmaktan çıkar — "aha" anını öne al
+### 2.1 Rapor sayfasını tek dev scroll olmaktan çıkar, "aha" anını öne al
 **Ne:** `/report` şu an tek sayfada 3D + 2D wheel + Star Tree + Stats + karne +
 AI anlatım + 11 kavram kartı + 2 CTA bloğu sırayla render ediyor.
 **Neden:** Üç-adımlı onboarding tour'lar %72 tamamlanır, yedi-adımlılar %16.
@@ -66,7 +66,7 @@ aha < 10sn olur; 5 dakika içinde aha veren ürünler 30 günlük retention'da %
 ([appcues.com](https://www.appcues.com/blog/aha-moment-guide),
 [guidejar.com](https://www.guidejar.com/blog/7-user-onboarding-best-practices-that-actually-work-in-2025))
 
-### 2.2 Aynı anda 2D wheel + 3D solar sistemi tutma — birini seç
+### 2.2 Aynı anda 2D wheel + 3D solar sistemi tutma, birini seç
 **Ne:** `BirthChartWheel` (2D) ve `SolarSystem3D` (three.js + r3f + drei) ikisi de
 aynı veriyi gösteriyor.
 **Neden:** 3D sahne mobilde en ağır yük (WebGL, texture, Suspense). İki ayrı
@@ -79,7 +79,7 @@ oranı düşer. CLAUDE.md'deki "three.js Suspense crash" notu da bunu doğruluyo
 ### 2.3 Yıldız Yaşam Ağacı 14sn animasyonunu kısalt veya opsiyonel yap
 **Ne:** `StarTreeOfLife` 14 saniyelik ease animasyon, replay butonlu.
 **Neden:** 14sn pasif bekleme, mobilde dikkat eşiğinin çok üstünde. Güzel ama
-"aha" değil — kullanıcı ne gördüğünü çoğu zaman anlamıyor.
+"aha" değil: kullanıcı ne gördüğünü çoğu zaman anlamıyor.
 **Etki (med):** 3-4sn'ye indir, ya da rapor sayfasından çıkarıp ayrı bir "yolculuğun"
 deneyimine taşı. Ana akışı yavaşlatmasın.
 
@@ -99,7 +99,7 @@ Onboarding'in ilk adımı duygusal kanca olmalı (ad + tarih), foto değil.
 Sun/Moon/Rising üçlüsü. 9 sistem bir **derinlik vaadi** olmalı, ön kapı değil.
 **Etki (med):** Hero'da tek vaat: "Doğduğun an gökyüzü senin için ne diyordu?" +
 3 ana çıktı (yıldız kökenin + bir kelimelik arketip + bugünkü enerjin). 9 sistem
-"motor altında" — raporda derinleşme olarak açılır.
+"motor altında": raporda derinleşme olarak açılır.
 
 ### 2.6 İki rakip CTA'yı (kendi karnem vs. uyum) ana sayfada eşit ağırlıkta sunma
 **Ne:** Hero altında "Kendi karnen" ve "İkili uyum" yan yana iki büyük yol.
@@ -110,9 +110,9 @@ yollar). İki eşit CTA = karar felci.
 sonra** (en güçlü viral an) gösterilir.
 
 ### 2.7 "Tek seferlik, kimliğin sabittir" anlatısını gözden geçir
-**Ne:** `/premium` ve README "Kimliğin sabittir — bir kez doğdun, bir kez
+**Ne:** `/premium` ve README "Kimliğin sabittir: bir kez doğdun, bir kez
 sentezlenir, tek fiyat" diyor.
-**Neden:** Bu cümle ürünü **tek seferlik tüketim** olarak konumlandırıyor — yani
+**Neden:** Bu cümle ürünü **tek seferlik tüketim** olarak konumlandırıyor, yani
 retention'ı kavramsal olarak öldürüyor. Pazarın tüm parası tekrar gelen değerden
 (günlük transit, ay döngüleri) geliyor. (Bkz. Bölüm 6.)
 **Etki (high):** Konumlandırmayı "kimliğin sabit ama **gökyüzü her gün değişiyor;
@@ -138,23 +138,23 @@ P2 = 60-90 gün (monetizasyon derinliği).**
 |---|---|---|---|---|---|---|
 | 1 | **P0** | **Hesap + cross-device sync** (Apple/Google/email; Supabase zaten kurulu) | Retention'ın ön koşulu. Hesap yoksa cihaz değişimi = %100 churn. Tüm aşağıdaki kancalar buna bağlı. | M | High | Hepsi (Co-Star, The Pattern, CHANI) |
 | 2 | **P0** | **Günlük Cosmic Weather kartı + push** (Ay fazı + günün en güçlü kişisel transiti + 1 cümle) | Kategorinin #1 retention motoru. Co-Star'ın günlük push'u kültürel olay oldu, alışkanlık kurdu. Günlük dönüş sebebi = D7/D30'un tek kaynağı. `lib/astrology` + `lib/biorhythm` zaten var. | M | High | Co-Star ★, CHANI ★, Sanctuary, Nebula |
-| 3 | **P0** | **Davetli arkadaş eşleştirme** (`/match/[invite]` linki; ikinci kişi KENDİ verisini girer, ikisi de sonuç + hesap alır) | Tek en güçlü viral loop. Mevcut compatibility "ben senin verini giriyorum" — yeni kullanıcı getirmiyor. Davet linki onu acquisition kanalına çevirir. The Pattern "Bond", Co-Star friend chart böyle büyüdü. | M | High | The Pattern (Bond) ★, Co-Star ★ |
+| 3 | **P0** | **Davetli arkadaş eşleştirme** (`/match/[invite]` linki; ikinci kişi KENDİ verisini girer, ikisi de sonuç + hesap alır) | Tek en güçlü viral loop. Mevcut compatibility "ben senin verini giriyorum": yeni kullanıcı getirmiyor. Davet linki onu acquisition kanalına çevirir. The Pattern "Bond", Co-Star friend chart böyle büyüdü. | M | High | The Pattern (Bond) ★, Co-Star ★ |
 | 4 | **P0** | **Tek cümlelik "soul headline" + paylaş-öncelikli kart** (karnenin en üstünde, scroll gerektirmeden) | Aha anını öne çeker, paylaşımı kolaylaştırır. "%72 Pleiadyalı Heart-Healer, Generator, Yaşam Yolu 7" gibi tek satır = ekran görüntüsü alınabilir kimlik. | S | High | Co-Star (Sun/Moon/Rising shorthand) |
-| 5 | **P1** | **AI Soul Chat (yazılı)** — kendi haritasıyla sohbet (Claude, edge function arkasında) | 2025-26'nın en güçlü trendi: hyper-kişisel AI rehber. "Generic/cookie-cutter" şikayetinin panzehiri. Session süresi + premium dönüşüm sürücüsü. Anthropic SDK zaten var. | M | High | Nebula, Sanctuary, "AI astrologer" dalgası |
+| 5 | **P1** | **AI Soul Chat (yazılı)**, kendi haritasıyla sohbet (Claude, edge function arkasında) | 2025-26'nın en güçlü trendi: hyper-kişisel AI rehber. "Generic/cookie-cutter" şikayetinin panzehiri. Session süresi + premium dönüşüm sürücüsü. Anthropic SDK zaten var. | M | High | Nebula, Sanctuary, "AI astrologer" dalgası |
 | 6 | **P1** | **Sesli karne / TTS özeti** (90sn günlük sesli okuma) | Voice, 2025 trend listesinin tepesinde. Ekransız tüketim = sabah rutini alışkanlığı + yüksek duygusal yoğunluk (paylaşılabilir reaction içeriği). | M | Med | CHANI (meditasyon/ses), Sanctuary |
 | 7 | **P1** | **Referral programı** (3 davet → 1 ay premium / kalıcı indirim; karne PNG'sinde QR + ref kodu) | K-factor'ü doğrudan artırır; paylaşılan her kart ölçülebilir acquisition. Mevcut share var ama attribution/ödül yok. | S | Med | Çoğu büyüme-odaklı app |
-| 8 | **P0** | **Streak / günlük check-in** (Duolingo mantığı: her gün açılış streak'i + ay fazına göre mikro içgörü) | Streak bozulma korkusu = en güçlü günlük açılış tetikleyicisi. Gamification astroloji applerinde retention'ı +%47 artırdı. | S | High | (Boşluk! Hiçbir büyük rakipte güçlü değil — fırsat) |
-| 9 | **P2** | **Şeffaf, kolay yönetilen abonelik + tek-tık iptal** | Kategorinin #1 şikayeti faturalama/iptal/refund. Baştan dürüst paywall + görünür iptal = review puanı koruması. | S | Med | (Rakipler bunu kötü yapıyor — diferansiyel) |
+| 8 | **P0** | **Streak / günlük check-in** (Duolingo mantığı: her gün açılış streak'i + ay fazına göre mikro içgörü) | Streak bozulma korkusu = en güçlü günlük açılış tetikleyicisi. Gamification astroloji applerinde retention'ı +%47 artırdı. | S | High | (Boşluk! Hiçbir büyük rakipte güçlü değil, fırsat) |
+| 9 | **P2** | **Şeffaf, kolay yönetilen abonelik + tek-tık iptal** | Kategorinin #1 şikayeti faturalama/iptal/refund. Baştan dürüst paywall + görünür iptal = review puanı koruması. | S | Med | (Rakipler bunu kötü yapıyor, diferansiyel) |
 | 10 | **P2** | **Aylık/yıllık döngü dashboard** (Personal Year + Solar Return temaları) | Tekrar eden değer = abonelik gerekçesi. Doğum günü/yeni yıl etrafında yüksek niyet anları. | M | Med | CHANI, Sanctuary |
-| 11 | **P2** | **"Soul Year Wrapped"** (Spotify Wrapped tarzı yıllık özet, paylaşılabilir) | Yılda bir devasa organik paylaşım dalgası. Aralık/doğum günü etrafında patlama. | M | Med | (Astrolojide kimse iyi yapmıyor — fırsat) |
+| 11 | **P2** | **"Soul Year Wrapped"** (Spotify Wrapped tarzı yıllık özet, paylaşılabilir) | Yılda bir devasa organik paylaşım dalgası. Aralık/doğum günü etrafında patlama. | M | Med | (Astrolojide kimse iyi yapmıyor, fırsat) |
 | 12 | **P1** | **App Store değerlendirme tetikleyici** (karne paylaşımı/streak milestone sonrası "5 yıldız ver") | ASO sıralaması review hacmine bağlı. Pozitif anda iste. | S | Med | Standart pratik |
 
 **Not:** AI çağrılarını client'tan Supabase edge function'a taşımak (CLAUDE.md
-"prod öncesi" notu) bu listenin altyapı önkoşuludur — P0 teknik borç.
+"prod öncesi" notu) bu listenin altyapı önkoşuludur, P0 teknik borç.
 
 ---
 
-## 4. VİRAL MEKANİK — organik büyüme tasarımı
+## 4. VİRAL MEKANİK: organik büyüme tasarımı
 
 SoulProfile'ın doğal viral varlığı **paylaşılabilir karne**. Ama bugün karne
 paylaşılıyor, döngü kapanmıyor (link tıklayan kişiyi geri ölçemiyoruz, davet yok).
@@ -171,11 +171,11 @@ paylaşılıyor, döngü kapanmıyor (link tıklayan kişiyi geri ölçemiyoruz,
 1. **Davetli Soul Match (P0):** Kullanıcı arkadaşına `/match/INVITE` linki yollar.
    Arkadaş kendi doğum verisini girer → ikisi de eşleşme kartı + hesap alır. Her
    match ≈ 0.8 marjinal yeni kullanıcı. (The Pattern Bond + Co-Star friend chart
-   bu mekanikle büyüdü —
+   bu mekanikle büyüdü, 
    [fashionweekdaily.com](https://fashionweekdaily.com/soulmates-or-challenging-scarily-accurate-astrology-app-the-pattern-now-has-a-dating-feature/))
 2. **"Yıldız ırkını tahmin et" challenge (P1):** Uygulamadan otomatik 9:16 reveal
    görseli/15sn video export → Instagram poll / TikTok formatı. Arkadaşlar tahmin
-   eder → app açılır. 9 sistemin tek gerçek viral kancası "starseed/yıldız ırkı" —
+   eder → app açılır. 9 sistemin tek gerçek viral kancası "starseed/yıldız ırkı", 
    Co-Star'da YOK, bizim sahip olduğumuz açık.
 3. **Streak/milestone share-out (P1):** 7/30 günlük streak veya doğum günü Solar
    Return anında otomatik paylaşım önerisi (Strava modeli). Gurur + FOMO paylaşımı.
@@ -219,7 +219,7 @@ kayar, aha öne gelir, hesap + D1 push girer.
   ([jploft.com](https://www.jploft.com/blog/how-astrology-apps-make-money),
   [marketgrowthreports.com](https://www.marketgrowthreports.com/market-reports/horoscope-and-astrology-apps-market-118691))
 - ABD'nin **en çok kazanan** astroloji uygulaması CHANI; modeli **cömert free
-  içerik + ~$11.99/ay veya ~$108/yıl abonelik** — tek seferlik değil.
+  içerik + ~$11.99/ay veya ~$108/yıl abonelik**: tek seferlik değil.
   Co-Star da cömert free + premium. (
   [statista](https://www.statista.com/statistics/1451664/top-horoscope-apps-us-market-revenue/),
   [chaninicholas.zendesk.com](https://chaninicholas.zendesk.com/hc/en-us/articles/1500001732281-App-Pricing))
@@ -230,11 +230,11 @@ kayar, aha öne gelir, hesap + D1 push girer.
 **Önerilen yapı:**
 - **Free (cömert):** 1 tam karne + günlük Cosmic Weather + temel uyum + paylaşım.
   (Co-Star/CHANI'nin acquisition motoru bu cömertlik.)
-- **SoulProfile Plus — abonelik:** ~$6.99/ay veya ~$39.99/yıl (yıllık %40+ tasarruf,
+- **SoulProfile Plus: abonelik:** ~$6.99/ay veya ~$39.99/yıl (yıllık %40+ tasarruf,
   bu kategoride yıllık tercih ediliyor). İçerik: AI Soul Chat + sesli karne +
   sınırsız uyum + aylık döngü dashboard + derin shadows/soulStory bölümleri.
 - **Tek seferlik IAP (consumable) tut:** Hediye karnesi / Solar Return / arkadaşa
-  reading — "send a reading" hem acquisition hem ek gelir.
+  reading: "send a reading" hem acquisition hem ek gelir.
 - **7 gün ücretsiz trial** → yıllık plana yönlendir.
 
 **Uyarı (tuzak):** Faturalama/iptal/refund kategorinin #1 şikayeti
@@ -252,7 +252,7 @@ Mevcut "peşin paid app" modeli iOS'ta abonelikle değişmeli.
 
 ## 7. 30-60-90 GÜN PLANI
 
-**Gün 0-30 — Retention temeli (P0):** Bu olmadan reklam harcaması para yakar.
+**Gün 0-30: Retention temeli (P0):** Bu olmadan reklam harcaması para yakar.
 1. AI çağrılarını edge function arkasına taşı (güvenlik + ön koşul).
 2. Hesap + cross-device sync (Apple/Google/email).
 3. Onboarding'i 3 adıma indir, foto'yu sona/opsiyonele al, aha'yı (soul headline +
@@ -263,8 +263,8 @@ Mevcut "peşin paid app" modeli iOS'ta abonelikle değişmeli.
 6. Streak / günlük check-in v1.
 7. Analitik kur: D1/D7 retention, onboarding funnel drop-off, paylaşım oranı.
 
-**Gün 30-60 — Viral döngü (P1):**
-8. Davetli Soul Match (`/match/[invite]`) — döngüyü kapat.
+**Gün 30-60: Viral döngü (P1):**
+8. Davetli Soul Match (`/match/[invite]`): döngüyü kapat.
 9. Referral programı + karne QR/ref attribution.
 10. "Yıldız ırkını tahmin et" otomatik reveal export.
 11. AI Soul Chat (yazılı) beta.
@@ -272,7 +272,7 @@ Mevcut "peşin paid app" modeli iOS'ta abonelikle değişmeli.
 13. TR soft launch + 3-5 mid-tier TR astroloji/HD influencer (mevcut
     `INFLUENCER_OUTREACH.md` listesi).
 
-**Gün 60-90 — Monetizasyon + derinlik (P2):**
+**Gün 60-90: Monetizasyon + derinlik (P2):**
 14. Freemium + abonelik geçişi (Plus $6.99/ay · $39.99/yıl + 7 gün trial).
     Tek seferlik $4.99'u kapat; consumable "hediye reading" tut.
 15. Soft paywall + transit-triggered paywall.
@@ -301,7 +301,7 @@ Mevcut "peşin paid app" modeli iOS'ta abonelikle değişmeli.
    ([auraeastrology.com](https://www.auraeastrology.com/blog/co-star-app-review-2026-an-astrologers-honest-opinion)).
    9 sistem sentezi ancak gerçekten **kişiye özgü hissettirirse** değer; AI çıktısı
    anti-hallucination guard + kullanıcının gerçek verisine sıkı bağ olmadan jenerik
-   üretirse fark yok. AI psikoz/etik kaygıları da yükseliyor — sorumlu ton şart.
+   üretirse fark yok. AI psikoz/etik kaygıları da yükseliyor, sorumlu ton şart.
 
 4. **Çok fazla bildirim göndermek.** "Sürekli bildirim, insight'tan çok engagement'a
    öncelik veriyor" en sık UX şikayetlerinden. Co-Star kazandı çünkü cadence

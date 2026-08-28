@@ -1,7 +1,7 @@
-// Görünür ilgi sayacı ("kaç kişi ilgileniyor") — web satış sayfasında alıcı
+// Görünür ilgi sayacı ("kaç kişi ilgileniyor"): web satış sayfasında alıcı
 // niyetini ölçer ve kullanıcıya toplam sayıyı gösterir. Kişisel veri TOPLAMAZ
 // (e-posta yok → bildirim vaadi de yok). Sayı, Netlify Blobs'ta first-party ve
-// kalıcı tutulur (üçüncü-parti analytics yok — gizlilik politikasıyla uyumlu).
+// kalıcı tutulur (üçüncü-parti analytics yok, gizlilik politikasıyla uyumlu).
 //   GET  → { count }            mevcut toplam
 //   POST → { count }            +1 artırıp yeni toplamı döndürür
 import { getStore } from "@netlify/blobs";
@@ -10,7 +10,7 @@ const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capaci
 const KEY = "count";
 
 // Güvenlik notu: origin artık gerçekten reddediliyor; IP, Netlify'ın sahtelenemez
-// platform header'ından (`x-nf-client-connection-ip`) okunuyor — eski
+// platform header'ından (`x-nf-client-connection-ip`) okunuyor: eski
 // `x-forwarded-for` istemci tarafından sahtelenip sayaç suistimalinin rate-limit'ini
 // bypass edebiliyordu.
 // SAME-ORIGIN GET DÜZELTMESİ (canlıda 403 hatası):
@@ -20,7 +20,7 @@ const KEY = "count";
 // katı kontrol kendi sitemizi 403'lüyordu ("Güneş verisi şu an alınamadı").
 // Native'de sorun yoktu: Capacitor `capacitor://localhost` origin'i gönderir.
 // Yeni kural: Origin VARSA beyaz listede olmak zorunda (katılık korunur). Origin
-// YOKSA istek kabul edilir — çünkü tarayıcı cross-site isteğinde Origin'i her
+// YOKSA istek kabul edilir, çünkü tarayıcı cross-site isteğinde Origin'i her
 // zaman gönderir, yani boş origin cross-site bir tarayıcı isteği OLAMAZ.
 // Kötüye kullanım koruması zaten IP başına rate-limit + CDN cache ile sağlanıyor.
 function isAllowedOrigin(origin) {

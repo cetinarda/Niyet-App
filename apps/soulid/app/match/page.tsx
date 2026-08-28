@@ -42,7 +42,7 @@ function MatchPage() {
   const [inviterBirth, setInviterBirth] = useState<BirthInput | null>(null);
   const [inviteValid, setInviteValid] = useState<boolean | null>(null);
 
-  // 2. kişi (sen) — formu
+  // 2. kişi (sen): formu
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('12:00');
@@ -111,7 +111,7 @@ function MatchPage() {
       return;
     }
 
-    // Yer çözümü — kullanıcı öneriden seçtiyse hazır. Seçmeden yazıp direkt
+    // Yer çözümü: kullanıcı öneriden seçtiyse hazır. Seçmeden yazıp direkt
     // gönderdiyse burada bir kez daha geocode dene (ağ boşsa offline gazetteer
     // devreye girer). Böylece "listeden seçmedim → buton çalışmıyor" kırılır.
     let resolved = place;
@@ -195,7 +195,7 @@ function MatchPage() {
     );
   }
 
-  // Yükleniyor — davet doğrulanıyor
+  // Yükleniyor: davet doğrulanıyor
   if (inviteValid === null) {
     return (
       <div className="relative min-h-[70vh]">
@@ -225,7 +225,7 @@ function MatchPage() {
         <p className="mt-3 text-base leading-relaxed text-muted">
           {locale === 'tr'
             ? 'Doğum bilgini gir, iki ruhun nasıl birbirini yansıttığını birlikte görelim. Verin sende kalır.'
-            : 'Enter your birth info — let\'s see how two souls mirror each other. Your data stays with you.'}
+            : 'Enter your birth info: let\'s see how two souls mirror each other. Your data stays with you.'}
         </p>
 
         {/* Davet eden */}

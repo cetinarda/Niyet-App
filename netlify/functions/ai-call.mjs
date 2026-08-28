@@ -9,7 +9,7 @@
 // For production-grade protection use a shared store (Upstash Redis, Netlify Blobs).
 // Documented in the security-hardening pass.
 
-// ---- RAG: kitap bilgi havuzu (lexical retrieval — özgün, kitap-temelli sentez) -
+// ---- RAG: kitap bilgi havuzu (lexical retrieval, özgün, kitap-temelli sentez) -
 import BOOK_CHUNKS from "./book-chunks.json";
 import { groqChat, stripThink, langConformanceOk } from "./_groq.mjs";
 const _RAG_STOP = new Set(["ve","ile","bir","bu","için","ama","gibi","daha","çok","her","ben","sen","biz","ya","de","da","ki","olan","the","and","that","this","with","ama","ise","ya"]);
@@ -69,7 +69,7 @@ function buildCorsHeaders(origin) {
 
 // ---- Rate limit (per-IP sliding window) -------------------------------------
 // Max 20 requests per 10 minutes per IP. timestamps[] eviction.
-// In-memory only — see CAVEAT at top of file.
+// In-memory only: see CAVEAT at top of file.
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 20;
@@ -95,7 +95,7 @@ function isRateLimited(ip) {
   return false;
 }
 
-// Netlify'ın platform-set, SAHTELENEMEZ header'ı kullanılıyor — client-supplied
+// Netlify'ın platform-set, SAHTELENEMEZ header'ı kullanılıyor: client-supplied
 // `x-forwarded-for`'a güvenmek, isteğin kendi header'ını sahteleyerek bu rate
 // limit'i (ücretli Groq çağrılarını sınırsız tekrarlamak için) bypass etmesine izin veriyordu.
 function getClientIP(event) {
@@ -268,7 +268,7 @@ export const handler = async (event) => {
   }
 
   // ---- Total user-content length cap (cost control) ---
-  // Sum the bytes of all messages[].content — this is the user-influenced surface.
+  // Sum the bytes of all messages[].content: this is the user-influenced surface.
   let totalUserChars = 0;
   for (const m of messages) {
     if (!m || typeof m.content !== "string") {
@@ -291,7 +291,7 @@ export const handler = async (event) => {
   const langDirective = buildLanguageDirective(lang);
   let systemContent = langDirective + (system || "");
   // RAG: istemci ragQuery gönderdiyse, en alakalı kitap pasajlarını sistem prompt'una harmanla.
-  // Opsiyonel — ragQuery yoksa davranış AYNI (mevcut çağrılar hiç etkilenmez).
+  // Opsiyonel: ragQuery yoksa davranış AYNI (mevcut çağrılar hiç etkilenmez).
   if (typeof body.ragQuery === "string" && body.ragQuery.trim().length >= 3 && body.ragQuery.length <= 1200) {
     try {
       const passages = retrieveBookPassages(body.ragQuery, 5);
@@ -299,7 +299,7 @@ export const handler = async (event) => {
         const ragText = passages.map((p) => `(${p.b}) ${p.t}`).join("\n\n");
         systemContent += `\n\nİLGİLİ KİTAP BİLGELİĞİ (aşağıdaki pasajlardaki özü yorumuna DOĞAL biçimde harmanla; alıntı yapma, kitap/kaynak adı yazma, kopyalama; yalnızca ruhunu sentezle):\n${ragText}`;
       }
-    } catch (_) { /* RAG başarısızsa sessiz geç — normal akış sürer */ }
+    } catch (_) { /* RAG başarısızsa sessiz geç, normal akış sürer */ }
   }
   const groqMessages = [
     { role: "system", content: systemContent },

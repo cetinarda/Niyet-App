@@ -9,7 +9,7 @@ import { allPositions, designJD, julianDay, PlanetPositions } from './ephemeris'
 import { getLang } from '../i18n';
 
 // ---------------------------------------------------------------------------
-// HD Çark sırası — Gate 41 → 2°00' Aquarius (ekliptik 302°) noktasından başlar
+// HD Çark sırası: Gate 41 → 2°00' Aquarius (ekliptik 302°) noktasından başlar
 // ve I-Ching Wen sırasına göre 64 gate ekliptik üzerinde 5.625°lik dilimlere
 // yerleşir.
 // ---------------------------------------------------------------------------
@@ -140,7 +140,7 @@ export function crossLabel(cross: string): string {
   if (getLang() !== 'en' || !cross) return cross;
   let out = cross;
   for (const [tr, en] of Object.entries(CROSS_ANGLE_EN)) out = out.replace(tr, en);
-  return out.replace(' Haç — ', ' Cross — ');
+  return out.replace(' Haç: ', ' Cross: ');
 }
 
 function activationsFromPositions(pos: PlanetPositions): PlanetActivation[] {
@@ -331,7 +331,7 @@ function computeAuthority(defined: Set<CenterKey>, type: HDType, channels: Chann
 function computeProfile(personality: PlanetActivation[], design: PlanetActivation[]): ProfileKey {
   const p = personality.find(a => a.planet === 'sun')!;
   const d = design.find(a => a.planet === 'sun')!;
-  // Her zaman gerçek line/line döndür — PROFILES tablosunda olmayanlar
+  // Her zaman gerçek line/line döndür, PROFILES tablosunda olmayanlar
   // için consumer uygun fallback yapmalı.
   return `${p.line}/${d.line}` as ProfileKey;
 }
@@ -349,7 +349,7 @@ function computeIncarnationCross(personality: PlanetActivation[], design: Planet
   let angle = 'Sağ Açı';
   if (profile === '4/1') angle = 'Yan Yana (Juxtaposition)';
   else if (['5/1', '5/2', '6/2', '6/3'].includes(profile)) angle = 'Sol Açı';
-  return `${angle} Haç — ${pSun.gate}/${pEarth.gate} | ${dSun.gate}/${dEarth.gate}`;
+  return `${angle} Haç: ${pSun.gate}/${pEarth.gate} | ${dSun.gate}/${dEarth.gate}`;
 }
 
 export function computeChart(

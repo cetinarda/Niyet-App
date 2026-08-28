@@ -10,7 +10,7 @@ slug: terms-of-use
 **Yürürlük tarihi:** 16 Mayıs 2026
 **Uygulama:** Sakin Tasarım (`life.sakin.tasarim`)
 
-Sakin Tasarım'ı (bundan sonra "Uygulama") indirip kullanarak aşağıdaki koşulları kabul etmiş olursun. Lütfen kısaca oku — uzun yazmadık.
+Sakin Tasarım'ı (bundan sonra "Uygulama") indirip kullanarak aşağıdaki koşulları kabul etmiş olursun. Lütfen kısaca oku: uzun yazmadık.
 
 ## 1. Uygulama Ne Sunar
 
@@ -62,7 +62,7 @@ Uygulamayı geliştirmeye, özellik eklemeye veya çıkarmaya, sürdürmeyi durd
 
 Uygulama "olduğu gibi" sunulur. Sakin.life:
 
-- Hesaplama doğruluğu konusunda makul çaba gösterir; ancak Meeus tabanlı orta hassasiyetli efemerit kullanılır — astronomik olarak yüksek hassasiyet iddiası yoktur.
+- Hesaplama doğruluğu konusunda makul çaba gösterir; ancak Meeus tabanlı orta hassasiyetli efemerit kullanılır, astronomik olarak yüksek hassasiyet iddiası yoktur.
 - Uygulamanın kullanılmasından doğan dolaylı zararlardan (manevi rahatsızlık, kaçırılan fırsat, hatalı karar vb.) sorumlu tutulamaz.
 - Kullanıcının uygulamadaki bilgiye dayanarak verdiği yaşam, sağlık, ilişki veya para kararlarından sorumlu değildir.
 

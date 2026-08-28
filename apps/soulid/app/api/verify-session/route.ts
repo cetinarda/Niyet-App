@@ -1,4 +1,4 @@
-// Stripe Checkout session doğrulama — premium grant öncesi server-side teyit.
+// Stripe Checkout session doğrulama, premium grant öncesi server-side teyit.
 // Client'ın gönderdiği session_id Stripe'a sorulur; payment_status === 'paid' ise OK.
 // Bu olmadan /premium?success=1 URL yazılarak premium açılabiliyordu.
 

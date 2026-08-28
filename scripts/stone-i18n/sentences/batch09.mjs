@@ -1,4 +1,4 @@
-// Batch 09 — s216..s227
+// Batch 09: s216..s227
 export const BATCH09 = {
   s216: {
     de: { name:'Bronzit', dailyMessage:'Halte heute dein Gleichgewicht. Bronzit verleiht deinen Entscheidungen eine ruhige Sicherheit.', howToUse:'Trage ihn in deiner Tasche und beabsichtige, den ganzen Tag im Gleichgewicht zu bleiben.', affirmation:'Ich vertraue mir selbst und stehe in beständigem Gleichgewicht.' },

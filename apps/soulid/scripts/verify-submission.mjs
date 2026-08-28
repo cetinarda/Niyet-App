@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Pre-submission verifikasyon — TestFlight upload öncesi çalıştır:
+// Pre-submission verifikasyon: TestFlight upload öncesi çalıştır:
 //   node scripts/verify-submission.mjs
 // Hatalı olan her satır exit code 1 ile gelir.
 
@@ -35,18 +35,18 @@ if (!iap.includes(PRODUCT_ID)) {
 // 2. DevToggle production safety
 const devToggle = read('components/DevToggle.tsx') ?? '';
 if (!devToggle.includes('NEXT_PUBLIC_SHOW_DEV_TOGGLE') || !devToggle.includes('NODE_ENV')) {
-  errors.push("DevToggle env-gate kayıp — production'da gizlenemeyebilir.");
+  errors.push("DevToggle env-gate kayıp: production'da gizlenemeyebilir.");
 }
 
 // 3. Privacy manifest
 if (!existsSync(join(root, 'resources/PrivacyInfo.xcprivacy'))) {
-  errors.push('resources/PrivacyInfo.xcprivacy yok — submission engellenir.');
+  errors.push('resources/PrivacyInfo.xcprivacy yok: submission engellenir.');
 }
 
 // 4. Restore Purchases butonu
 const premiumPage = read('app/premium/page.tsx') ?? '';
 if (!premiumPage.includes('restorePurchases') || !/restore previous purchase|önceki satın alımı geri yükle/i.test(premiumPage)) {
-  errors.push('Premium sayfasında Restore Purchases yok — Apple 3.1.1 reddine sebep olur.');
+  errors.push('Premium sayfasında Restore Purchases yok, Apple 3.1.1 reddine sebep olur.');
 }
 
 // 5. Disclaimer 3 yerde
@@ -66,7 +66,7 @@ const FORBIDDEN = ['horoscope', 'fortune teller', 'psychic', 'twin flame', 'prop
 for (const w of FORBIDDEN) {
   const matches = i18nMsgs.match(new RegExp(`\\b${w}\\b`, 'i'));
   if (matches) {
-    warnings.push(`i18n mesajlarda yasak kelime: "${w}" — App Store metinleri ile karıştırma.`);
+    warnings.push(`i18n mesajlarda yasak kelime: "${w}": App Store metinleri ile karıştırma.`);
   }
 }
 
@@ -86,7 +86,7 @@ const grepDir = (dir) => {
 // 6c. dangerouslyAllowBrowser kullanımı (client-side Anthropic SDK regression)
 const envExample = read('.env.example') ?? '';
 if (/^NEXT_PUBLIC_ANTHROPIC_API_KEY/m.test(envExample)) {
-  errors.push('.env.example NEXT_PUBLIC_ANTHROPIC_API_KEY içeriyor — server-only ANTHROPIC_API_KEY olmalı.');
+  errors.push('.env.example NEXT_PUBLIC_ANTHROPIC_API_KEY içeriyor, server-only ANTHROPIC_API_KEY olmalı.');
 }
 
 // 7. ITS encryption flag bahsi (info.plist doc'unda)
@@ -99,7 +99,7 @@ if (!uploadDoc.includes('ITSAppUsesNonExemptEncryption')) {
 const pkg = JSON.parse(read('package.json') ?? '{}');
 const haptics = pkg.optionalDependencies?.['@capacitor/haptics'];
 if (!haptics) {
-  warnings.push('@capacitor/haptics optionalDependencies\'de yok — iOS\'ta sessiz fallback olur ama önerilir.');
+  warnings.push('@capacitor/haptics optionalDependencies\'de yok: iOS\'ta sessiz fallback olur ama önerilir.');
 }
 
 // Çıktı

@@ -1,4 +1,4 @@
-# SoulProfile — Kurulum & Çalıştırma
+# SoulProfile: Kurulum & Çalıştırma
 
 ## Hızlı başlangıç (Mac, lokalde)
 
@@ -18,7 +18,7 @@ npm run ios        # Xcode + iOS Simulator
 - `icon.png`, `splash.png`, `adaptive-icon.png`, `favicon.png`
 - `fonts/Inter-Regular.ttf`, `fonts/Inter-Bold.ttf`, `fonts/CormorantGaramond-SemiBold.ttf`
 
-## iOS — Xcode'da test
+## iOS: Xcode'da test
 
 ```bash
 npm install
@@ -36,7 +36,7 @@ TestFlight için:
 2. EAS Build kullan: `npx eas build --platform ios --profile production`
 3. `eas submit --platform ios`
 
-## Web — statik dağıtım
+## Web: statik dağıtım
 
 ```bash
 npm run build:web
@@ -70,7 +70,7 @@ npx vercel deploy dist --prod
 
 - **Ascendant / MC:** Standart Meeus formülleri ile hesaplanır (`lib/astrology/index.ts`).
 - **Ev sistemi:** MVP'de Equal House. Placidus için ileride yerel hesap eklenecek.
-- **Kuzey/Güney Düğüm:** Mean Node (ortalama düğüm) — Meeus tablo formülü.
+- **Kuzey/Güney Düğüm:** Mean Node (ortalama düğüm), Meeus tablo formülü.
 - **Human Design:** 64 kapı + 36 kanal + 9 merkez. Tasarım Güneş'i ortalama 88° geriden
   hesaplanır. Tam Swiss Ephemeris doğruluğu için ileride backend hesabına taşınabilir.
 

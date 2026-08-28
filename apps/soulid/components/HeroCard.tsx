@@ -26,7 +26,7 @@ const STAT_EN: Record<StatKey, string> = {
   'Karizma': 'Charisma',
 };
 
-/** Köşe elması — ornate çerçeve süsü (RPG kart hissi). */
+/** Köşe elması: ornate çerçeve süsü (RPG kart hissi). */
 function Corner({ style }: { style: React.CSSProperties }) {
   return (
     <span
@@ -44,7 +44,7 @@ function Corner({ style }: { style: React.CSSProperties }) {
 }
 
 /**
- * "Kahraman Kartı" — indirilebilir RPG stil karne kartı.
+ * "Kahraman Kartı": indirilebilir RPG stil karne kartı.
  * Kullanıcının profil fotoğrafı otomatik gelir (yoksa yıldız ırkı emojisi),
  * 10 stat oyun karakteri gibi küçük yazılarla sergilenir. En yüksek 3 stat
  * altın vurgulu. html-to-image ile PNG'ye çevrilir (photoUri data-URL → CORS yok).
@@ -193,7 +193,7 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
 
             <Divider />
 
-            {/* STATLAR — 2 sütun, oyun karakteri gibi */}
+            {/* STATLAR: 2 sütun, oyun karakteri gibi */}
             <div
               style={{
                 display: 'grid',
@@ -273,12 +273,12 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
               <SignCell
                 label={tr ? 'Güneş' : 'Sun'}
                 glyph={sun ? SIGN_GLYPHS[sun.sign] : '☉'}
-                value={sun ? sign(sun.sign) : '—'}
+                value={sun ? sign(sun.sign) : '-'}
               />
               <SignCell
                 label={tr ? 'Ay' : 'Moon'}
                 glyph={moon ? SIGN_GLYPHS[moon.sign] : '☽'}
-                value={moon ? sign(moon.sign) : '—'}
+                value={moon ? sign(moon.sign) : '-'}
               />
               <SignCell
                 label={tr ? 'Yükselen' : 'Rising'}
@@ -361,7 +361,7 @@ export function HeroCardShare({ report }: { report: GalacticReport }) {
   const [aiBusy, setAiBusy] = useState(false);
   const [aiNote, setAiNote] = useState<string | null>(null);
 
-  // Önce önbellekteki AI portresi (varsa) — yoksa cihaz-üstü boyama efekti.
+  // Önce önbellekteki AI portresi (varsa), yoksa cihaz-üstü boyama efekti.
   // AI dönüşümü ASLA otomatik çalışmaz: fotoğraf ancak kullanıcı butona
   // bastığında üçüncü taraf sağlayıcıya gider.
   useEffect(() => {
@@ -398,8 +398,8 @@ export function HeroCardShare({ report }: { report: GalacticReport }) {
       setAiNote(
         res.fallback
           ? tr
-            ? 'AI portre şu an kullanılamıyor — boyanmış portre gösteriliyor.'
-            : 'AI portrait unavailable right now — showing the painted portrait.'
+            ? 'AI portre şu an kullanılamıyor, boyanmış portre gösteriliyor.'
+            : 'AI portrait unavailable right now, showing the painted portrait.'
           : res.error,
       );
     }
@@ -435,7 +435,7 @@ export function HeroCardShare({ report }: { report: GalacticReport }) {
         <HeroCard ref={cardRef} report={report} portrait={portrait} />
       </div>
 
-      {/* AI karakter dönüşümü — yalnız kullanıcı isteğiyle */}
+      {/* AI karakter dönüşümü: yalnız kullanıcı isteğiyle */}
       {photo ? (
         <div className="mx-auto mt-5 max-w-md text-center">
           {!isAi ? (

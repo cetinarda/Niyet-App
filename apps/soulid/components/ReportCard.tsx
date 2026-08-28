@@ -85,7 +85,7 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
         <SystemRow
           kicker="VEDİK NAKSHATRA"
           title={`${s.vedic.nakshatra.name} · Pada ${s.vedic.pada}`}
-          sub={`${s.vedic.nakshatra.deity} — ${s.vedic.nakshatra.power}`}
+          sub={`${s.vedic.nakshatra.deity}: ${s.vedic.nakshatra.power}`}
         />
 
         <SystemRow
@@ -97,13 +97,13 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
         <SystemRow
           kicker="NORSE RUNE"
           title={`${s.norse.rune.glyph} ${s.norse.rune.name}`}
-          sub={`${s.norse.rune.meaning} — ${s.norse.rune.power}`}
+          sub={`${s.norse.rune.meaning}: ${s.norse.rune.power}`}
         />
 
         <SystemRow
           kicker="TAROT DOĞUM KARTI"
           title={`${s.tarot.personality.glyph} ${s.tarot.personality.name}`}
-          sub={`Ruh: ${s.tarot.soul.name} — ${s.tarot.soul.power}`}
+          sub={`Ruh: ${s.tarot.soul.name}: ${s.tarot.soul.power}`}
         />
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">

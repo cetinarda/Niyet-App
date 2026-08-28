@@ -1,4 +1,4 @@
-// Taş özellik kelimeleri sözlüğü (TR → de/es/fr/ja/pt) — manevi/duygusal kavramlar.
+// Taş özellik kelimeleri sözlüğü (TR → de/es/fr/ja/pt), manevi/duygusal kavramlar.
 // Yazım varyantları (şiya=şifa, sabir=sabır, keşfif=keşif) doğru anlamla çevrildi.
 export const PROPERTIES = {
   'affetme':        { de:'Vergebung', es:'perdón', fr:'pardon', ja:'許し', pt:'perdão' },

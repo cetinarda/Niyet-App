@@ -1,4 +1,4 @@
-// AI kahraman portresi — istemci tarafı.
+// AI kahraman portresi: istemci tarafı.
 // Fotoğrafı /api/ai/portrait Edge route'una gönderir (anahtar server-side).
 // Sonuç ÖNBELLEĞE alınır: her görüntülemede yeniden üretmek pahalıdır ve
 // karakterin her seferinde değişmesi "otantik" hissi bozar.
@@ -26,14 +26,14 @@ async function cachePortrait(reportId: string, dataUrl: string): Promise<void> {
   try {
     await secureSet(CACHE_PREFIX + reportId, dataUrl);
   } catch {
-    /* kota dolu / private mode — önbelleksiz devam */
+    /* kota dolu / private mode, önbelleksiz devam */
   }
 }
 
 /**
  * Fotoğrafı AI ile RPG karakter portresine çevirir.
  * ÖNEMLİ: Bu çağrı kullanıcının fotoğrafını üçüncü taraf görsel sağlayıcısına
- * gönderir — yalnız kullanıcının açık eylemiyle (butona basma) çağrılmalıdır.
+ * gönderir: yalnız kullanıcının açık eylemiyle (butona basma) çağrılmalıdır.
  */
 export async function generateAiPortrait(report: GalacticReport): Promise<AiPortraitResult> {
   const photo = report.birth.photoUri;

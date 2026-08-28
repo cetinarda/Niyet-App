@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * iOS Info.plist yamacı — `npx cap sync` SONRASI çalışır (npm scriptlerine bağlı).
+ * iOS Info.plist yamacı: `npx cap sync` SONRASI çalışır (npm scriptlerine bağlı).
  *
  * NEDEN VAR:
  *   `npx cap add ios` temiz bir Info.plist üretir; Apple'ın zorunlu privacy
@@ -25,7 +25,7 @@ const PLIST = `${APP_DIR}/Info.plist`;
 // Uygulama tr + en olarak lokalize. Info.plist'teki TABAN metinler geliştirme
 // dili (en) olmalı; her dilin karşılığı .lproj/InfoPlist.strings'ten gelir.
 //
-// NEDEN: Guideline 4 reddi — "permissions requests are not written in the same
+// NEDEN: Guideline 4 reddi: "permissions requests are not written in the same
 // language as the app's localization". İngilizce cihazda uygulama İngilizce
 // açılıyor ama izin diyalogları Türkçe çıkıyordu. İzin metinleri de UI ile
 // AYNI dilde olmak zorunda.
@@ -53,10 +53,10 @@ const USAGE_TEXT = {
 // Taban (fallback) dil = en. Cihaz dili tr ise tr.lproj devreye girer.
 const STRING_KEYS = USAGE_KEYS.map((k) => [k, USAGE_TEXT.en[k]]);
 
-// Export compliance — her build'de manuel "encryption var mı" sorusunu keser
+// Export compliance: her build'de manuel "encryption var mı" sorusunu keser
 const BOOL_KEYS = [['ITSAppUsesNonExemptEncryption', false]];
 
-// Apple'a hangi dilleri desteklediğimizi bildir — App Store dil listesi + izin
+// Apple'a hangi dilleri desteklediğimizi bildir, App Store dil listesi + izin
 // diyaloglarının doğru .lproj'den okunması için gerekli.
 const ARRAY_KEYS = [['CFBundleLocalizations', ['en', 'tr']]];
 
@@ -92,14 +92,14 @@ function replaceStringValue(xml, name, value) {
   return { xml: next, changed };
 }
 
-/** .lproj/InfoPlist.strings — dil başına izin metinleri. */
+/** .lproj/InfoPlist.strings: dil başına izin metinleri. */
 function writeLprojStrings() {
   const written = [];
   for (const [lang, map] of Object.entries(USAGE_TEXT)) {
     const dir = join(APP_DIR, `${lang}.lproj`);
     mkdirSync(dir, { recursive: true });
     const body =
-      `/* SoulProfile — izin metinleri (${lang}). scripts/ios-plist-patch.mjs üretir. */\n` +
+      `/* SoulProfile: izin metinleri (${lang}). scripts/ios-plist-patch.mjs üretir. */\n` +
       USAGE_KEYS.map((k) => `"${k}" = "${map[k].replace(/"/g, '\\"')}";`).join('\n') +
       '\n';
     const file = join(dir, 'InfoPlist.strings');
@@ -140,7 +140,7 @@ function main() {
     added.push(name);
   }
 
-  // Taban metinleri İngilizce'ye SABİTLE — eski Türkçe taban metinler burada
+  // Taban metinleri İngilizce'ye SABİTLE: eski Türkçe taban metinler burada
   // düzeltilir (Guideline 4 reddinin kaynağı).
   const updated = [];
   for (const [name, value] of STRING_KEYS) {
@@ -152,17 +152,17 @@ function main() {
   const localized = writeLprojStrings();
 
   if (added.length === 0 && updated.length === 0 && localized.length === 0) {
-    console.log('✓ Info.plist + lokalizasyonlar güncel — değişiklik yok.');
+    console.log('✓ Info.plist + lokalizasyonlar güncel: değişiklik yok.');
     return;
   }
 
   writeFileSync(PLIST, xml, 'utf8');
   if (added.length) {
-    console.log('✓ Info.plist — eklenen anahtarlar:');
+    console.log('✓ Info.plist: eklenen anahtarlar:');
     for (const k of added) console.log(`    • ${k}`);
   }
   if (updated.length) {
-    console.log('✓ Info.plist — taban metin İngilizce\'ye çekildi (Guideline 4):');
+    console.log('✓ Info.plist: taban metin İngilizce\'ye çekildi (Guideline 4):');
     for (const k of updated) console.log(`    • ${k}`);
   }
   if (localized.length) {

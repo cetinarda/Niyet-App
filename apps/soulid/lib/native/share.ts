@@ -61,7 +61,7 @@ export async function copyToClipboard(text: string): Promise<boolean> {
       /* try exec command */
     }
   }
-  // Legacy fallback — execCommand
+  // Legacy fallback: execCommand
   if (typeof document !== 'undefined') {
     try {
       const ta = document.createElement('textarea');

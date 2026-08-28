@@ -1,10 +1,10 @@
 'use client';
 
-// localStorage encrypted wrapper — AES-GCM 256-bit, WebCrypto.
+// localStorage encrypted wrapper: AES-GCM 256-bit, WebCrypto.
 //
 // Threat model: tarayıcı DevTools'da plain PII görünmesin, dosya
 // sistemine kazınan store'da plaintext kalmasın. Aynı origin'de XSS
-// veya açık DevTools'lu motivated attacker'a karşı koruma vermez —
+// veya açık DevTools'lu motivated attacker'a karşı koruma vermez, 
 // key client bundle'da. "Defense in depth" katmanı.
 //
 // Key derivation: app salt + tarayıcı-spesifik random salt (ilk seferde
@@ -83,7 +83,7 @@ export async function secureGet<T>(key: string): Promise<T | null> {
   if (typeof localStorage === 'undefined') return null;
   const raw = localStorage.getItem(key);
   if (raw == null) return null;
-  // Legacy plaintext data — geriye dönük uyumluluk
+  // Legacy plaintext data: geriye dönük uyumluluk
   if (!raw.startsWith(ENC_PREFIX)) {
     try {
       return JSON.parse(raw) as T;
@@ -100,7 +100,7 @@ export async function secureGet<T>(key: string): Promise<T | null> {
     const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, k, ct);
     return JSON.parse(new TextDecoder().decode(pt)) as T;
   } catch {
-    // Key değişmişse veya bozulmuşsa — sessiz null dön
+    // Key değişmişse veya bozulmuşsa, sessiz null dön
     return null;
   }
 }

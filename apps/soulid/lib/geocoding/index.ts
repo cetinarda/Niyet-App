@@ -1,4 +1,4 @@
-// Open-Meteo geocoding — anahtarsız.
+// Open-Meteo geocoding: anahtarsız.
 // https://open-meteo.com/en/docs/geocoding-api
 //
 // iOS Capacitor (capacitor://localhost origin) altında Open-Meteo CORS başlığı
@@ -107,8 +107,8 @@ export async function geocodePlace(query: string, language: string = 'tr'): Prom
     timezone: r.timezone,
   }));
 
-  // Ağ sonuç döndürdüyse onu kullan (daha kapsamlı). Boş/başarısızsa —
-  // review ağında Open-Meteo yavaş/engelli olabilir — offline gazetteer'a düş
+  // Ağ sonuç döndürdüyse onu kullan (daha kapsamlı). Boş/başarısızsa, 
+  // review ağında Open-Meteo yavaş/engelli olabilir, offline gazetteer'a düş
   // ki büyük şehirler her koşulda çözülsün ve profil oluşturulabilsin.
   if (hits.length > 0) return hits;
   return searchLocalCities(query);

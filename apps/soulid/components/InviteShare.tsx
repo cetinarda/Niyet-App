@@ -37,8 +37,8 @@ export function InviteShare({ birth }: { birth: BirthInput }) {
         title: locale === 'tr' ? 'İkili Kozmik Uyum' : 'Dual Cosmic Compatibility',
         text:
           locale === 'tr'
-            ? `Senin ile uyumumu görelim — ${url}`
-            : `Let's see our compatibility — ${url}`,
+            ? `Senin ile uyumumu görelim: ${url}`
+            : `Let's see our compatibility: ${url}`,
         url,
       });
       if (result === 'clipboard') {
@@ -63,12 +63,12 @@ export function InviteShare({ birth }: { birth: BirthInput }) {
           <h3 className="mt-1 font-display text-2xl text-ink">
             {locale === 'tr'
               ? 'Bu linki birine gönder, uyumunuzu görsün'
-              : 'Send this link — they\'ll see your match'}
+              : 'Send this link: they\'ll see your match'}
           </h3>
           <p className="mt-2 text-sm leading-relaxed text-muted">
             {locale === 'tr'
               ? 'Doğum verin link içine şifrelenmiş gider, sunucumuza kayıt OLMAZ. Karşı taraf kendi bilgisini girer ve ikili uyumunuzu açar.'
-              : 'Your birth data is encoded inside the link — we DO NOT save it on our servers. The other side enters their info and unlocks your match.'}
+              : 'Your birth data is encoded inside the link, we DO NOT save it on our servers. The other side enters their info and unlocks your match.'}
           </p>
         </div>
       </div>

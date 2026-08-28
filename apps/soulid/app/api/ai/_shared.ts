@@ -1,4 +1,4 @@
-// Ortak Edge helper — Anthropic istemcisi, CORS, basit auth gate.
+// Ortak Edge helper: Anthropic istemcisi, CORS, basit auth gate.
 // Tüm /api/ai/* route'ları buradan tüketir.
 
 import Anthropic from '@anthropic-ai/sdk';
@@ -26,12 +26,12 @@ export function corsPreflight(): Response {
 export function getAnthropic(): Anthropic | null {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) return null;
-  // Edge runtime'da çalışır — dangerouslyAllowBrowser yok, gerek yok.
+  // Edge runtime'da çalışır: dangerouslyAllowBrowser yok, gerek yok.
   return new Anthropic({ apiKey: key });
 }
 
 /**
- * Çağrı kaynağını teşhis et — entitlement kontrolü için kullanılır.
+ * Çağrı kaynağını teşhis et, entitlement kontrolü için kullanılır.
  * Authorization: Bearer <jwt> formatında supabase access token bekler.
  */
 export type CallerIdentity = {
@@ -43,7 +43,7 @@ export function readCaller(request: Request): CallerIdentity {
   const auth = request.headers.get('authorization');
   if (!auth?.startsWith('Bearer ')) return { userId: null, jwt: null };
   const jwt = auth.slice(7);
-  // JWT payload (middle segment) base64url decode — supabase ID
+  // JWT payload (middle segment) base64url decode, supabase ID
   try {
     const parts = jwt.split('.');
     if (parts.length !== 3) return { userId: null, jwt };
@@ -155,7 +155,7 @@ async function callGroq(system: string, user: string, maxTokens: number): Promis
         body: JSON.stringify({
           model,
           ...groqExtraFor(model),
-          // Groq'ta max_tokens deprecated — max_completion_tokens kullanılır.
+          // Groq'ta max_tokens deprecated: max_completion_tokens kullanılır.
           max_completion_tokens: maxTokens,
           temperature: 0.8,
           messages: [
@@ -213,7 +213,7 @@ async function callAnthropic(
 
 /**
  * Metni üret. Varsayılan sıra Groq (ücretsiz) → Anthropic (ücretli).
- * `preferQuality` ile sıra ters çevrilir — premium akışlar için.
+ * `preferQuality` ile sıra ters çevrilir: premium akışlar için.
  * `validate` verilirse, doğrulamayı geçmeyen çıktı reddedilip sıradaki
  * sağlayıcı denenir. Hepsi düşerse null döner (route statik fallback'e geçer).
  */
@@ -235,7 +235,7 @@ export async function generateText(opts: {
         : await callAnthropic(opts.system, opts.user, opts.maxTokens);
     if (!text) continue;
     if (opts.validate && !opts.validate(text)) {
-      console.warn(`[ai] ${provider} çıktısı doğrulamayı geçemedi — sıradaki sağlayıcı`);
+      console.warn(`[ai] ${provider} çıktısı doğrulamayı geçemedi, sıradaki sağlayıcı`);
       continue;
     }
     return { text, provider };

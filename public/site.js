@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────────────────────────────────
-   Sakin · sakin.life tanıtım sitesi — tema ve dil
+   Sakin · sakin.life tanıtım sitesi: tema ve dil
    Tanıtım sayfası ve blog sayfaları bu dosyayı paylaşır.
 
    DİL: uygulamayla AYNI localStorage anahtarını kullanır (sakin_lang).

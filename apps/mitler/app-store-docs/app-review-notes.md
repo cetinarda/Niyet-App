@@ -1,4 +1,4 @@
-# App Review Notes — Sakin Mitler
+# App Review Notes: Sakin Mitler
 
 App Store Connect → **App Information → Notes** alanına yapıştırılacak metin + reddedilirse Resolution Center yanıt şablonları.
 
@@ -9,7 +9,7 @@ Sakin is a Jungian self-reflection and journaling companion presented
 as a symbol-card experience. It is not a fortune-telling product and
 makes no predictive, medical or therapeutic claims.
 
-The app is a collection of original educational symbol decks — Jungian
+The app is a collection of original educational symbol decks, Jungian
 archetypes, world myths, universal images, plus classic symbol systems
 (Tarot, Rune, I-Ching, Numerology) treated as historical / cultural
 study materials. Each entry frames content through Jung (essence,
@@ -21,7 +21,7 @@ The experience is intentionally game-like: a user shakes or taps to
 draw one card from each of three daily decks, builds a personal
 "myth map" from accumulated draws, completes a 7-question quiz to
 match an archetype/myth/image, and unlocks badges and streaks over
-time. None of these states predict the user's future — they are
+time. None of these states predict the user's future: they are
 journaling outputs.
 
 A clear entertainment / well-being disclaimer is shown on first
@@ -46,11 +46,11 @@ No demo account is required (no login).
 
 ## Demo Account
 
-Gerekmez — login akışı yok. Yukarıdaki review notes'a "No demo account required (no login)." cümlesi zaten dahil.
+Gerekmez: login akışı yok. Yukarıdaki review notes'a "No demo account required (no login)." cümlesi zaten dahil.
 
-## Apple'ın muhtemel red sebepleri — hazır cevaplar
+## Apple'ın muhtemel red sebepleri: hazır cevaplar
 
-### 4.3 — "Spam: app falls within a saturated category (fortune-telling)"
+### 4.3: "Spam: app falls within a saturated category (fortune-telling)"
 
 **Resolution Center'a yapıştır:**
 
@@ -63,7 +63,7 @@ Each card provides educational context (origin, mythology, Jungian reading,
 shadow vs. light aspect) plus a journaling prompt. No predictive claims
 are made anywhere in the app. An entertainment / well-being disclaimer is
 presented on first launch (acknowledged by the user) and appears as a
-footer on every detail card — please see attached screenshots showing:
+footer on every detail card, please see attached screenshots showing:
 
 - Screen 1: First-launch disclaimer modal ("Yansıtma Rehberi") with the
   explicit text: "İçerik psikolojik, medikal veya kehanet tavsiyesi
@@ -87,7 +87,7 @@ We respectfully request reconsideration as a unique high-quality
 journaling experience.
 ```
 
-### 4.2 — "Minimum Functionality"
+### 4.2: "Minimum Functionality"
 
 ```
 Sakin uses platform-native iOS capabilities beyond a generic web view:
@@ -100,11 +100,11 @@ Sakin uses platform-native iOS capabilities beyond a generic web view:
 
 The included screen recording shows the shake → flip → share flow.
 The content is original (~400 entries authored for this app). We are
-not a website wrapper — the iOS build is a native React Native bundle
+not a website wrapper: the iOS build is a native React Native bundle
 with native gestures, haptics, share sheet and local persistence.
 ```
 
-### 5.1.1 — "Account / Data Deletion"
+### 5.1.1: "Account / Data Deletion"
 
 ```
 The app does not create remote accounts and stores no data off-device.
@@ -116,7 +116,7 @@ stored data and returning the user to the first-launch flow.
 A 5-second screen recording of the deletion flow is attached.
 ```
 
-### 1.4.1 — "Safety: Medical / Wellness claims"
+### 1.4.1: "Safety: Medical / Wellness claims"
 
 ```
 Sakin makes no medical, psychological or therapeutic claims. The content
@@ -130,12 +130,12 @@ The "Human Design" feature is clearly labeled as approximate
 prompt, not a personality diagnosis.
 ```
 
-### 2.3.8 — "Metadata / Keyword spam"
+### 2.3.8: "Metadata / Keyword spam"
 
 ```
 Keywords have been revised: the field now lists archetype, shadow work,
 dream, mythology, symbol, jungian, journal, reflection, mindfulness,
-archetype, shadow work — all directly reflected in app content. We
+archetype, shadow work, all directly reflected in app content. We
 removed ambiguous health-adjacent terms (no "wellness", "healing",
 "reiki", "cure", "therapy") and chose Lifestyle + Entertainment
 categories (not Health & Fitness).
@@ -147,4 +147,4 @@ categories (not Health & Fitness).
 
 ## Plan B
 
-Reddedilirsen aynı bundle ile **3 büyük değişiklik** yapmadan re-submit etme — Apple "minor change" sayar ve otomatik tekrar reddeder. Resolution Center'da yazışmayı tercih et.
+Reddedilirsen aynı bundle ile **3 büyük değişiklik** yapmadan re-submit etme, Apple "minor change" sayar ve otomatik tekrar reddeder. Resolution Center'da yazışmayı tercih et.

@@ -1,4 +1,4 @@
-// Sakin Now Playing — thin JS wrapper around the native SakinNowPlaying Capacitor plugin.
+// Sakin Now Playing: thin JS wrapper around the native SakinNowPlaying Capacitor plugin.
 //
 // Purpose: keep `src/App.jsx` blissfully ignorant of native specifics. On non-iOS
 // (web preview, Android, simulator-without-plugin), every function silently no-ops
@@ -58,10 +58,10 @@ export function clearNowPlaying() {
  * Returns an unsubscribe function.
  *
  * Events fired by the native side:
- *   "sakin-nowplaying-play"   — user tapped play on the lock screen
- *   "sakin-nowplaying-pause"  — user tapped pause
- *   "sakin-nowplaying-stop"   — user tapped stop
- *   "sakin-nowplaying-toggle" — user tapped play/pause toggle (e.g. AirPods)
+ *   "sakin-nowplaying-play": user tapped play on the lock screen
+ *   "sakin-nowplaying-pause": user tapped pause
+ *   "sakin-nowplaying-stop": user tapped stop
+ *   "sakin-nowplaying-toggle": user tapped play/pause toggle (e.g. AirPods)
  */
 export function onRemoteCommand(handlers = {}) {
   const map = [

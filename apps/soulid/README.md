@@ -14,7 +14,7 @@ chmod +x scripts/prepare-ios.sh
 ./scripts/prepare-ios.sh
 ```
 
-Detay: [docs/APP_STORE_LESSONS.md](docs/APP_STORE_LESSONS.md) (KRITIK — 4.3 spam
+Detay: [docs/APP_STORE_LESSONS.md](docs/APP_STORE_LESSONS.md) (KRITIK: 4.3 spam
 reddedilmesinden nasıl kaçılır) + [docs/APP_STORE_SUBMISSION.md](docs/APP_STORE_SUBMISSION.md).
 
 ## Özellikler
@@ -29,7 +29,7 @@ reddedilmesinden nasıl kaçılır) + [docs/APP_STORE_SUBMISSION.md](docs/APP_ST
 
 ## Yığın
 
-- **Next.js 14** App Router (static export'lu — Netlify dostu)
+- **Next.js 14** App Router (static export'lu: Netlify dostu)
 - **React 18 + TypeScript**
 - **Tailwind CSS v3** (özel galaktik renk paleti + starfield CSS)
 - **astronomy-engine** (saf JS, gezegen efemerisi)

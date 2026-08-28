@@ -1,7 +1,7 @@
-// Bağlanma Stili — iki boyutlu ölçüm + 4 stil.
+// Bağlanma Stili: iki boyutlu ölçüm + 4 stil.
 // ---------------------------------------------------------------------------
 // YÖNTEM (bilerek böyle): Stil YALNIZCA kullanıcının soru yanıtlarından çıkar.
-// Doğum haritası stili BELİRLEMEZ — sadece sonuçtaki ÖNERİLERİ kişiselleştirir
+// Doğum haritası stili BELİRLEMEZ, sadece sonuçtaki ÖNERİLERİ kişiselleştirir
 // (bkz. ./chart-lens.ts). Sebep: bağlanma stili erken ilişki deneyimiyle oluşan
 // psikolojik bir örüntüdür; doğum tarihinden türetmek hem yanlış olurdu hem de
 // aynı gün doğan herkese aynı stili verirdi. Ayrıca gerçek bir bağlanma yarasını
@@ -183,7 +183,7 @@ export type AttachmentResult = {
   /** 0-100 */
   avoidance: number;
   style: AttachmentStyle;
-  /** İkinci en yakın stil — çeyrek sınırına yakınsa anlamlı. */
+  /** İkinci en yakın stil, çeyrek sınırına yakınsa anlamlı. */
   secondary: AttachmentStyle | null;
   /** Sınıra ne kadar yakın (0-1). Yüksekse "karma" bir örüntü. */
   blend: number;
@@ -349,7 +349,7 @@ export const STYLES: Record<AttachmentStyle, StyleContent> = {
     ],
     needs: [
       { tr: 'Öngörülebilirlik: ne zaman, nasıl bağlanacağınızın belli olması', en: 'Predictability: knowing when and how you will connect' },
-      { tr: 'Sözle teyit — "buradayım" cümlesinin duyulması', en: 'Verbal reassurance: hearing "I am here"' },
+      { tr: 'Sözle teyit: "buradayım" cümlesinin duyulması', en: 'Verbal reassurance: hearing "I am here"' },
       { tr: 'Ara verilse bile geri dönüleceğinin bilinmesi', en: 'Knowing that a pause still ends in return' },
     ],
     inConflict: {
@@ -409,7 +409,7 @@ export const STYLES: Record<AttachmentStyle, StyleContent> = {
       { tr: 'Yetersiz bulunmak', en: 'Being told you are not enough' },
     ],
     needs: [
-      { tr: 'Baskısız alan — döneceğine güvenilmesi', en: 'Space without pressure, trusted to return' },
+      { tr: 'Baskısız alan: döneceğine güvenilmesi', en: 'Space without pressure, trusted to return' },
       { tr: 'Duyguyu işlemek için zaman', en: 'Time to process feeling' },
       { tr: 'Takdir: yaptıklarının görülmesi', en: 'Appreciation: your doing being seen' },
     ],
@@ -468,7 +468,7 @@ export const STYLES: Record<AttachmentStyle, StyleContent> = {
       { tr: 'Güvenin sarsıldığı anlar', en: 'Moments when trust is shaken' },
     ],
     needs: [
-      { tr: 'Yavaşlık — acele etmeyen, istikrarlı bir tempo', en: 'Slowness: a steady pace that does not rush' },
+      { tr: 'Yavaşlık: acele etmeyen, istikrarlı bir tempo', en: 'Slowness: a steady pace that does not rush' },
       { tr: 'Tutarlılık: söylenenle yapılanın örtüşmesi', en: 'Consistency: words matching actions' },
       { tr: 'Güvenli bir zemin (çoğu zaman profesyonel destek dahil)', en: 'A safe base, often including professional support' },
     ],
@@ -490,7 +490,7 @@ export const STYLES: Record<AttachmentStyle, StyleContent> = {
         en: 'Grounding: 5 things you see, 4 you hear, 3 you touch. In the storm, call the body back to now.',
       },
       {
-        tr: 'Bu örüntü çoğu zaman eski bir yaranın izidir ve tek başına çözülmesi zordur. Bir uzmanla çalışmak burada gerçekten fark yaratır — zayıflık değil, doğru araç.',
+        tr: 'Bu örüntü çoğu zaman eski bir yaranın izidir ve tek başına çözülmesi zordur. Bir uzmanla çalışmak burada gerçekten fark yaratır, zayıflık değil, doğru araç.',
         en: 'This pattern often traces an old wound and is hard to untangle alone. Working with a professional genuinely helps here. Not weakness, just the right tool.',
       },
     ],
@@ -653,7 +653,7 @@ export function strategyFor(style: AttachmentStyle): StrategyKind | null {
   return null;
 }
 
-/** Bağımlılık paradoksu — güvenli bağ bağımlı yapmaz, özerkliği ARTIRIR. */
+/** Bağımlılık paradoksu: güvenli bağ bağımlı yapmaz, özerkliği ARTIRIR. */
 export const DEPENDENCY_PARADOX: { title: L; body: L } = {
   title: { tr: 'Bağımlılık paradoksu', en: 'The dependency paradox' },
   body: {
@@ -662,7 +662,7 @@ export const DEPENDENCY_PARADOX: { title: L; body: L } = {
   },
 };
 
-/** Etkili iletişimin üç kuralı — her stil için geçerli, sonuç ekranında gösterilir. */
+/** Etkili iletişimin üç kuralı, her stil için geçerli, sonuç ekranında gösterilir. */
 export const COMMUNICATION_RULES: { title: L; body: L }[] = [
   {
     title: { tr: 'Doğrudan söyle', en: 'Say it directly' },
