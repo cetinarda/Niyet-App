@@ -29,8 +29,7 @@ function Section({ title, children, accent }: { title: string; children: React.R
 
 export function DeepAnalysisBox({ a, b, result }: Props) {
   const { t, locale } = useT();
-  // Derin uyum analizi ÜCRETSİZ (ikili uyum tamamen açık).
-  const premium = true;
+  // Derin uyum analizi ÜCRETSİZ (ikili uyum tamamen açık, kilit yok).
   const [loading, setLoading] = useState(false);
   const [analysis, setAnalysis] = useState<DeepAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +73,7 @@ export function DeepAnalysisBox({ a, b, result }: Props) {
     return (
       <section className="rounded-3xl border border-gold/40 bg-gold/[0.06] p-6 md:p-8">
         <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">
-          {locale === 'tr' ? 'PREMIUM · TAM DERİNLİK ANALİZİ' : 'PREMIUM · FULL DEPTH ANALYSIS'}
+          {locale === 'tr' ? 'TAM DERİNLİK ANALİZİ' : 'FULL DEPTH ANALYSIS'}
         </p>
         <h3 className="mt-2 font-display text-2xl text-ink">
           {locale === 'tr' ? 'Hazırsın. 10 bölümlük derin okumayı üret.' : 'You\'re ready. Generate the 10-section deep reading.'}
@@ -116,7 +115,7 @@ export function DeepAnalysisBox({ a, b, result }: Props) {
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gold">
-            {L === 'tr' ? 'PREMIUM · TAM DERİNLİK ANALİZİ' : 'PREMIUM · FULL DEPTH ANALYSIS'}
+            {L === 'tr' ? 'TAM DERİNLİK ANALİZİ' : 'FULL DEPTH ANALYSIS'}
           </p>
           <h3 className="mt-2 font-display text-3xl text-ink">
             {result.nameA} ↔ {result.nameB}
