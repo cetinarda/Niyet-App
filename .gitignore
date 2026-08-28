@@ -20,3 +20,13 @@ ios/App/DerivedData
 
 # Background agent çıktıları — geçici raporlar, kullanıcıya gönderilir, repo'da yer tutmaz
 agent_logs/
+
+# DERLEME CIKTILARI (uretilir, commit edilmez)
+# gdkpd dalinda bunlar bir donem izlenmisti: 409 dosya, 223 MB. Kaynak
+# degisince yeniden uretiliyorlar, repoda tutmanin faydasi yok.
+# npx cap sync android ciktisi
+android/app/src/main/assets/public/
+# next build ara ciktisi
+apps/soulid/.next/
+# next static export
+apps/soulid/out/

@@ -87,7 +87,6 @@ export const en = {
       birthStoneTitle: 'Your Birth Plant',
       zodiacLabel: 'By Zodiac',
       elementLabel: 'By Element',
-      elementHint: 'Each plant vibrates with a natural element; yours comes from your sign, fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
     },
     elements: {
       fire: 'Fire',

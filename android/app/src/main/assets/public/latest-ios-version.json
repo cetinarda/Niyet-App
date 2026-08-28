@@ -1,7 +1,0 @@
-{
-  "version": "1.3.0",
-  "build": 1,
-  "min_supported": "1.2.0",
-  "release_notes_tr": "Nefes ve panik butonu düzeltildi, ses frekansları iyileştirildi. Açılış akışı ve bildirimler sadeleştirildi (08:00 hatırlatma). Paylaşım kartları ve arketip/imge görselleri yenilendi. Genel iyileştirmeler.",
-  "release_notes_en": "Fixed the breath and panic buttons, improved sound frequencies. Simplified onboarding and reminders (8:00 AM). Refreshed share cards and archetype/image visuals. General improvements."
-}

@@ -33,7 +33,10 @@ export const tr = {
     completed: 'Tamamlandı ✦',
     doneTitle: 'Günlük rehberlik\ntamamlandı',
     doneSub: 'Yarın yeni bir yolculuk başlar',
-    detailBtn: "'ın derin rehberliği →",
+    // ILGI EKI BURADA YAZILMAZ: ad her seferinde farkli ek aliyor
+    // (Kartal'IN, Kurt'UN, Turna'NIN). Ek trPossessive() ile hesaplanip
+    // adin arkasina eklenir; burada yalnizca kuyruk metni durur.
+    detailBtn: " derin rehberliği →",
   },
 
   // ─── Animals hub (taş) ───────────────────────────────────────────────────────
@@ -87,7 +90,6 @@ export const tr = {
       birthStoneTitle: 'Doğum Bitkin',
       zodiacLabel: 'Burcuna Göre',
       elementLabel: 'Unsuruna Göre',
-      elementHint: 'Her bitki bir doğa unsuruyla titreşir; unsurun burcundan gelir: ateş: Koç·Aslan·Yay · toprak: Boğa·Başak·Oğlak · hava: İkizler·Terazi·Kova · su: Yengeç·Akrep·Balık.',
     },
     elements: {
       fire: 'Ateş',

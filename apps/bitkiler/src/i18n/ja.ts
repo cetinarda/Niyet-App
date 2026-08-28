@@ -87,7 +87,6 @@ export const ja = {
       birthStoneTitle: 'あなたの誕生植物',
       zodiacLabel: '星座で選ぶ',
       elementLabel: '元素で選ぶ',
-      elementHint: 'どの植物も自然の元素と共鳴します。あなたの元素は星座から決まります、火: 牡羊·獅子·射手 · 地: 牡牛·乙女·山羊 · 風: 双子·天秤·水瓶 · 水: 蟹·蠍·魚。',
     },
     elements: {
       fire: '火',

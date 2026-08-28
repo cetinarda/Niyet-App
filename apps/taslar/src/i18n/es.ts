@@ -87,7 +87,6 @@ export const es = {
       birthStoneTitle: 'Tu piedra natal',
       zodiacLabel: 'Por signo',
       elementLabel: 'Por elemento',
-      elementHint: 'Cada cristal vibra con un elemento natural; el tuyo proviene de tu signo: fuego: Aries·Leo·Sagitario · tierra: Tauro·Virgo·Capricornio · aire: Géminis·Libra·Acuario · agua: Cáncer·Escorpio·Piscis.',
     },
     elements: {
       fire: 'Fuego',

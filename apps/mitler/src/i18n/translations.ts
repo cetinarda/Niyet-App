@@ -873,6 +873,16 @@ export const DE: Record<keyof typeof TR, string> = {
   'family.app.numeroloji.desc': 'Das Du hinter den Zahlen',
   'family.badge.active': 'AKTIV',
   'family.badge.soon': 'BALD',
+
+  // Sakin host ile ayni yazim (bkz. src/i18n*.js ailesi_title).
+  // Bu alti anahtar eksikti; translate() Turkce'ye dusuyordu, yani
+  // bu dildeki kullanici SAKIN AILESI / Paylas gibi Turkce metin goruyordu.
+  'common.familyFooter': 'SAKIN FAMILIE ✦',
+  'detail.share': '↑ Teilen',
+  'detail.shareA11y': 'Teilen',
+  'finder.header': 'Finde deinen Leitmythos',
+  'weekly.reason': 'Lebenszahl {lifePath}: hier, um deinen inneren Rhythmus in dieser Zeit zu begleiten.',
+  'archive.filter.all': 'Alle',
 };
 
 export const ES: Record<keyof typeof TR, string> = {
@@ -1160,6 +1170,16 @@ export const ES: Record<keyof typeof TR, string> = {
   'family.app.numeroloji.desc': 'El tú detrás de los números',
   'family.badge.active': 'ACTIVO',
   'family.badge.soon': 'PRÓXIMAMENTE',
+
+  // Sakin host ile ayni yazim (bkz. src/i18n*.js ailesi_title).
+  // Bu alti anahtar eksikti; translate() Turkce'ye dusuyordu, yani
+  // bu dildeki kullanici SAKIN AILESI / Paylas gibi Turkce metin goruyordu.
+  'common.familyFooter': 'FAMILIA SAKIN ✦',
+  'detail.share': '↑ Compartir',
+  'detail.shareA11y': 'Compartir',
+  'finder.header': 'Encuentra tu mito guía',
+  'weekly.reason': 'Camino de Vida {lifePath}: aquí para acompañar tu ritmo interior en este período.',
+  'archive.filter.all': 'Todos',
 };
 
 export const PT: Record<keyof typeof TR, string> = {
@@ -1447,6 +1467,16 @@ export const PT: Record<keyof typeof TR, string> = {
   'family.app.numeroloji.desc': 'O você por trás dos números',
   'family.badge.active': 'ATIVO',
   'family.badge.soon': 'EM BREVE',
+
+  // Sakin host ile ayni yazim (bkz. src/i18n*.js ailesi_title).
+  // Bu alti anahtar eksikti; translate() Turkce'ye dusuyordu, yani
+  // bu dildeki kullanici SAKIN AILESI / Paylas gibi Turkce metin goruyordu.
+  'common.familyFooter': 'FAMÍLIA SAKIN ✦',
+  'detail.share': '↑ Partilhar',
+  'detail.shareA11y': 'Partilhar',
+  'finder.header': 'Encontra o teu mito guia',
+  'weekly.reason': 'Caminho de Vida {lifePath}: aqui para acompanhar o teu ritmo interior neste período.',
+  'archive.filter.all': 'Todos',
 };
 
 export const FR: Record<keyof typeof TR, string> = {
@@ -1734,6 +1764,16 @@ export const FR: Record<keyof typeof TR, string> = {
   'family.app.numeroloji.desc': 'Le toi derrière les nombres',
   'family.badge.active': 'ACTIF',
   'family.badge.soon': 'BIENTÔT',
+
+  // Sakin host ile ayni yazim (bkz. src/i18n*.js ailesi_title).
+  // Bu alti anahtar eksikti; translate() Turkce'ye dusuyordu, yani
+  // bu dildeki kullanici SAKIN AILESI / Paylas gibi Turkce metin goruyordu.
+  'common.familyFooter': 'FAMILLE SAKIN ✦',
+  'detail.share': '↑ Partager',
+  'detail.shareA11y': 'Partager',
+  'finder.header': 'Trouve ton mythe guide',
+  'weekly.reason': 'Chemin de Vie {lifePath} : ici pour accompagner ton rythme intérieur en cette période.',
+  'archive.filter.all': 'Tous',
 };
 
 export const JA: Record<keyof typeof TR, string> = {
@@ -2021,6 +2061,16 @@ export const JA: Record<keyof typeof TR, string> = {
   'family.app.numeroloji.desc': '数字の背後にいるあなた',
   'family.badge.active': '稼働中',
   'family.badge.soon': '近日公開',
+
+  // Sakin host ile ayni yazim (bkz. src/i18n*.js ailesi_title).
+  // Bu alti anahtar eksikti; translate() Turkce'ye dusuyordu, yani
+  // bu dildeki kullanici SAKIN AILESI / Paylas gibi Turkce metin goruyordu.
+  'common.familyFooter': 'SAKIN ファミリー ✦',
+  'detail.share': '↑ シェア',
+  'detail.shareA11y': 'シェア',
+  'finder.header': '導きの神話を見つける',
+  'weekly.reason': 'ライフパス {lifePath}：この時期のあなたの内なるリズムに寄り添います。',
+  'archive.filter.all': 'すべて',
 };
 
 export const DICTIONARY: Record<Lang, Record<string, string>> = {

@@ -87,7 +87,6 @@ export const de = {
       birthStoneTitle: 'Dein Geburtsstein',
       zodiacLabel: 'Nach Sternzeichen',
       elementLabel: 'Nach Element',
-      elementHint: 'Jeder Kristall schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen - Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
     },
     elements: {
       fire: 'Feuer',
