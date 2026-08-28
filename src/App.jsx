@@ -7923,56 +7923,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </button>
               </div>
             ))}
-            {/* ⚠️ KEŞFET'İN ALTINDAKİ HER ŞEY WEB'DE GİZLİ (kullanıcı: "keşfet
-                ekranının altındaki her şeyi kaldır"). Bu blok NATIVE'DE KALMALI:
-                politika linkleri + hesap silme App Store 5.1.1(v) ve Play
-                gereksinimidir, iOS'ta üst nav bu ekranlarda gizli olduğu için
-                oradaki TEK erişim yolu burasıdır. Web'de ise:
-                  • politika linkleri zaten üstteki marka nav'ında var,
-                  • analitik toggle + hesap silme yeni "Ayarlar" sayfasına taşındı.
-                Yani web'de hiçbir zorunluluk kaybolmuyor, sadece yeri değişti. */}
-            {isNative && (<>
-            {/* Policy mini-linkler: top-nav iOS feature ekranlarında gizli, buradan erişim */}
-            <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:"4px 14px",marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
-              {[
-                ["hakkinda", t("ailesi_policy_about")],
-                ["fiyat",    t("ailesi_policy_pricing")],
-                ["sartlar",  t("ailesi_policy_terms")],
-                ["gizlilik", t("ailesi_policy_privacy")],
-                ["iade",     t("ailesi_policy_refund")],
-              ].map(([sc,lbl])=>(
-                <button key={sc} onClick={()=>{ setShowAilesi(false); setScreen(sc); }}
-                  style={{ background:"none",border:"none",padding:"4px 2px",color:"#777",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                  {lbl}
-                </button>
-              ))}
-            </div>
-            {/* ANONIM KULLANIM VERISI opt-out toggle'i. Politika linkleriyle ayni
-                muted alanda; kullaniciya net kontrol (App Store gizlilik uyumu).
-                iOS WKWebView tuzagi: <button> icin appearance:none SART. */}
-            <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginTop:16,padding:"0 10px" }}>
-              <span style={{ color:"#8a8494",fontSize:11,letterSpacing:0.3,fontFamily:"'Inter',sans-serif",lineHeight:1.4,textAlign:"right",maxWidth:210 }}>
-                {t("analytics_toggle_label")}
-              </span>
-              <button role="switch" aria-checked={analyticsOn} onClick={toggleAnalytics} aria-label={t("analytics_toggle_label")}
-                style={{ flexShrink:0,width:40,height:23,borderRadius:100,border:"none",cursor:"pointer",padding:0,position:"relative",
-                  WebkitAppearance:"none",appearance:"none",
-                  background: analyticsOn ? "rgba(130,190,150,0.65)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
-                <span style={{ position:"absolute",top:2.5,left: analyticsOn ? 19.5 : 2.5,width:18,height:18,borderRadius:"50%",background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
-              </button>
-            </div>
-            <div style={{ textAlign:"center",marginTop:6,padding:"0 18px" }}>
-              <span style={{ color:"#5f5a68",fontSize:10,letterSpacing:0.2,fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>{t("analytics_toggle_note")}</span>
-            </div>
-            {/* App Store Guideline 5.1.1(v): Hesap/veri silme. Politika linkleriyle aynı
-                muted dil, hafifçe daha düşük opaklıkta. Promote etmiyoruz; erişilebilir. */}
-            <div style={{ display:"flex",justifyContent:"center",marginTop:18 }}>
-              <button onClick={()=>setShowDeleteConfirm(true)}
-                style={{ background:"none",border:"none",padding:"4px 2px",color:"#666",fontSize:10,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                {t("delete_account_link")}
-              </button>
-            </div>
-            </>)}
+            {/* KEŞFET'İN ALTINDAKİ POLİTİKA/ANALİTİK/HESAP-SİLME BLOĞU KALDIRILDI
+                (kullanıcı: "ayarlara taşı zaten orda var ... her şey web
+                versiyonundaki gibi olsun"). Eskiden yalnızca native'de burada
+                duruyordu; artık her platformda ⚙ → Ayarlar üzerinden erişiliyor
+                ve App Store 5.1.1(v) zorunluları orada birebir mevcut:
+                  • GİZLİLİK grubu → anonim veri toggle,
+                  • YASAL grubu → şartlar / gizlilik / iade,
+                  • HESAP grubu → hesap/veri silme,
+                  • GENEL grubu → Yolculuk / Sakin nedir (hakkında içeriği).
+                Böylece web ile native TAM aynı: Keşfet sade bir uygulama vitrini. */}
             {/* Alttaki "Kapat" kaldırıldı: yerini üst soldaki geri oku aldı. */}
           </div>
         </div>
@@ -9495,20 +9455,23 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     KURAL: pop-up yalnızca açılışta, HAZIRIM'dan sonra çıkar. */}
                 {/* NATIVE→WEB TAŞIMA MADDE 1: yeni giriş yerleşimi artık HER
                     PLATFORMDA. Elmas dönmesi, "Sakin" yazısı ve tagline hiç
-                    değişmedi; değişen konumlandırma: HAZIRIM tam genişlik +
-                    altında "Nefes al" + dil sağ üstte (üstteki dil seçici bloğu). */}
+                    değişmedi; değişen konumlandırma: HAZIRIM biraz daraltılmış
+                    (tam genişlik değil, 86% max) + altında küçük "Nefes al" +
+                    dil sağ üstte (kullanıcı: "hazırımı biraz daralt, nefes al'ı
+                    küçült"). Ortalı kalsın diye margin:auto. */}
                 <button className="sakin-btn-primary"
-                  style={{ width:"100%",display:"block",boxSizing:"border-box" }}
+                  style={{ width:"86%",maxWidth:300,display:"block",boxSizing:"border-box",margin:"0 auto" }}
                   onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
-                    Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır. */}
+                    Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır.
+                    Küçültüldü: padding 12/34 → 9/24, font 13 → 11.5, minHeight 44 → 38. */}
                 <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
-                  style={{ marginTop:16,padding:"12px 34px",borderRadius:100,
-                    border:"1px solid rgba(224,168,96,0.55)",background:"transparent",
+                  style={{ marginTop:14,padding:"9px 24px",borderRadius:100,
+                    border:"1px solid rgba(224,168,96,0.5)",background:"transparent",
                     WebkitAppearance:"none",appearance:"none",
-                    color:"rgba(240,200,150,0.92)",fontSize:13,letterSpacing:2.5,
+                    color:"rgba(240,200,150,0.9)",fontSize:11.5,letterSpacing:2,
                     fontFamily:"'Jost',sans-serif",fontWeight:300,textTransform:"uppercase",
-                    cursor:"pointer",whiteSpace:"nowrap",minHeight:44 }}>
+                    cursor:"pointer",whiteSpace:"nowrap",minHeight:38 }}>
                   {pickLang(PANIC_ENTRY_TXT, lang)}
                 </button>
                 {!isNative && (
@@ -13411,27 +13374,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* Eski 6'lı alt bar (mağaza tasarımı) native→web taşıma madde 2 kapsamında
           KALDIRILDI. Yerine artık her platformda yukarıdaki dörtlü menü var. */}
 
-      {/* FLOATING HELP BUTTON: SADECE NATIVE. Web'de bu kırmızı "?" balonu
-          kaldırıldı; terimler sözlüğü ☰ menüsüne "TERİMLER" adıyla taşındı
-          (kullanıcı: "soru işaretini ... uygun isimle hamburger ekranına taşı").
-          Sebep: parlak kırmızı daire uygulamanın sakin diline aykırıydı ve
-          içeriğinin ne olduğunu ("?" ile) anlatmıyordu. */}
-      {isNative && !["giris"].includes(screen) && !showKilavuz && (
-        <button
-          onClick={() => setShowKilavuz(true)}
-          style={{
-            position:"fixed", bottom: !["terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) ? "calc(90px + var(--android-sab))" : "calc(28px + var(--android-sab))",
-            right:18, zIndex:10000, width:48, height:48, borderRadius:"50%",
-            background:"linear-gradient(135deg,#c0392b,#e74c3c)", border:"2px solid rgba(255,255,255,0.2)",
-            color:"#fff", fontSize:22, fontWeight:"bold", cursor:"pointer",
-            boxShadow:"0 4px 20px rgba(192,57,43,0.5), 0 0 30px rgba(231,76,60,0.3)",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            transition:"all 0.25s", animation:"slowPulse 3s ease-in-out infinite",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 6px 28px rgba(192,57,43,0.7), 0 0 40px rgba(231,76,60,0.4)"; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(192,57,43,0.5), 0 0 30px rgba(231,76,60,0.3)"; }}
-        >?</button>
-      )}
+      {/* FLOATING HELP BUTTON tamamen KALDIRILDI (kullanıcı: "her şey web
+          versiyonundaki gibi olsun"). Web'de bu kırmızı "?" balonu zaten yoktu;
+          native'de duruyordu ama terimler sözlüğü artık Ayarlar > GENEL >
+          Terimler'den erişiliyor (setShowKilavuz orada çağrılıyor), o yüzden
+          native'de de gereksiz. Parlak kırmızı daire uygulamanın sakin diline
+          aykırıydı, iyi oldu. showKilavuz modalı aşağıda duruyor (Ayarlar açıyor). */}
 
       {/* GLOSSARY / HELP GUIDE MODAL */}
       {showKilavuz && (() => {
