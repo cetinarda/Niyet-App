@@ -224,7 +224,7 @@ export function calculateChart(
     retrograde: false,
   });
 
-  // Vertex — synastry "kader buluşması" noktası
+  // Vertex: synastry "kader buluşması" noktası
   const vertexDeg = vertex(date, latitude, longitude);
   planets.push({
     name: 'Vertex',

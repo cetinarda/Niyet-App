@@ -53,7 +53,7 @@ function longitudeToXY(longitude: number, age: number, totalYears: number): { x:
 export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
   const { locale } = useT();
   const tr = locale === 'tr';
-  // progress ∈ [0,1] — hem otomatik reveal animasyonunu hem manuel kaydırıcıyı sürer.
+  // progress ∈ [0,1], hem otomatik reveal animasyonunu hem manuel kaydırıcıyı sürer.
   const [progress, setProgress] = useState(0);
   const [scrubbing, setScrubbing] = useState(false);
   const [playKey, setPlayKey] = useState(0);
@@ -103,7 +103,7 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
   }, [birthISO]);
 
   const snapCount = Math.max(snapshots.length, 1);
-  // Aktif an — kaydırıcı/animasyon konumundaki snapshot indeksi.
+  // Aktif an: kaydırıcı/animasyon konumundaki snapshot indeksi.
   const activeIdx = Math.min(snapCount - 1, Math.max(0, Math.round(progress * (snapCount - 1))));
   const revealStep = activeIdx;
   const activeSnap = snapshots[activeIdx];
@@ -194,7 +194,7 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
           );
         })}
 
-        {/* Web bağlantıları — sırayla beliriyor */}
+        {/* Web bağlantıları: sırayla beliriyor */}
         {lines.map((l, i) => {
           const visible = l.step <= revealStep;
           return (
@@ -246,7 +246,7 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
           );
         })}
 
-        {/* AKTİF AN — kaydırıcının bulunduğu yaştaki gezegenler (vurgulu başlar) */}
+        {/* AKTİF AN: kaydırıcının bulunduğu yaştaki gezegenler (vurgulu başlar) */}
         {activeSnap
           ? PLANET_ORDER.map((planet) => {
               const lon = activeSnap.positions[planet];
@@ -273,12 +273,12 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
             })
           : null}
 
-        {/* Doğum noktası — merkez */}
+        {/* Doğum noktası: merkez */}
         <circle cx={CENTER} cy={CENTER} r={6} fill="#f5d061" opacity="0.95" />
         <circle cx={CENTER} cy={CENTER} r={10} fill="none" stroke="#f5d061" strokeOpacity="0.4" />
       </svg>
 
-      {/* Zaman kaydırıcı — doğumdan bugüne gezegenlerini elle gez */}
+      {/* Zaman kaydırıcı: doğumdan bugüne gezegenlerini elle gez */}
       <div className="mt-4">
         <div className="flex items-center justify-between text-[11px] text-faint">
           <span>{tr ? 'Doğum' : 'Birth'}</span>
@@ -301,7 +301,7 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
         />
       </div>
 
-      {/* Aktif andaki gezegen burçları — efemeris verisini görünür kılar */}
+      {/* Aktif andaki gezegen burçları, efemeris verisini görünür kılar */}
       {activeSnap ? (
         <div className="mt-3 grid grid-cols-3 gap-1.5 sm:grid-cols-5">
           {PLANET_ORDER.map((planet) => {
@@ -329,8 +329,8 @@ export function StarTreeOfLife({ birthISO, size = SIZE }: Props) {
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-[11px] text-faint">
         <span>
           {tr
-            ? 'Kaydırıcıyı sürükle — gezegenlerin doğumundan bugüne nasıl hareket ettiğini gör'
-            : 'Drag the scrubber — watch your planets move from birth to today'}
+            ? 'Kaydırıcıyı sürükle: gezegenlerin doğumundan bugüne nasıl hareket ettiğini gör'
+            : 'Drag the scrubber: watch your planets move from birth to today'}
         </span>
         <button
           type="button"

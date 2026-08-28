@@ -1,7 +1,7 @@
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
 // Güvenlik notu: origin artık gerçekten reddediliyor; IP, Netlify'ın sahtelenemez
-// platform header'ından (`x-nf-client-connection-ip`) okunuyor — eski
+// platform header'ından (`x-nf-client-connection-ip`) okunuyor: eski
 // `x-forwarded-for` istemci tarafından serbestçe sahtelenip rate-limit'i (ve bu
 // fonksiyon üzerinden e-posta gönderimini) bypass edebiliyordu.
 function isAllowedOrigin(origin) {

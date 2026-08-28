@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build-cities.mjs — generates src/cities-data.json from the GeoNames
+ * build-cities.mjs: generates src/cities-data.json from the GeoNames
  *   "all cities with population ≥ 1000" dataset hosted by OpenDataSoft.
  *
  * Source dataset (CC BY 4.0, derived from GeoNames):
@@ -19,7 +19,7 @@
  *
  * Why standard UTC offset (no DST):
  *   The astrology engine in src/App.jsx uses a single integer/float UTC offset
- *   (preciseAscendant). DST is intentionally NOT applied — that matches the
+ *   (preciseAscendant). DST is intentionally NOT applied, that matches the
  *   prior hard-coded behaviour and avoids historical DST-edge ambiguity in
  *   birth-time lookups. We derive the *standard* (winter, non-DST) offset
  *   from each IANA timezone using the embedded TZ_OFFSET map below.
@@ -179,7 +179,7 @@ const CAPITALS_INCLUDE = new Set([
   "Sydney","Melbourne","Auckland","Wellington",
 ]);
 
-// Turkish aliases — names that Turkish-speaking users type. Mapped to a target city in the DB.
+// Turkish aliases: names that Turkish-speaking users type. Mapped to a target city in the DB.
 // Lat/lng/tz is inherited from the target; we just add a synonym row.
 // Format: alias → ascii target name to match against.
 const TURKISH_ALIASES = [
@@ -472,7 +472,7 @@ async function main() {
   }
   console.log(`[build-cities] aliases added: ${aliasAdded} (missed: ${aliasMissed})`);
 
-  // Manual overrides — districts/cities that GeoNames misses or wrongly localizes.
+  // Manual overrides: districts/cities that GeoNames misses or wrongly localizes.
   // Format matches makeRow output: [name, lat, lon, tz, cc, ascii, pop].
   const MANUAL_OVERRIDES = [
     ["Beşiktaş", 41.0429, 29.0094, 3, "TR", "Besiktas", 200000],
@@ -493,7 +493,7 @@ async function main() {
   ];
   let overrideAdded = 0;
   for (const o of MANUAL_OVERRIDES) {
-    // Inject at top with high pop — sort will keep them first
+    // Inject at top with high pop, sort will keep them first
     out.push([...o]);
     overrideAdded++;
   }

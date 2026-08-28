@@ -23,7 +23,7 @@ interface Bi { tr: string; en: string }
 interface Option { text: Bi; weights: Weight[]; element?: string }
 interface Question { q: Bi; emoji: string; options: Option[] }
 // Türkçe → tr, diğer tüm diller → en (Sakin Mitler quiz'i iki dilli; içerik verisi
-// zaten çok dilli ama quiz UI'si tr/en yeterli — kullanıcı isteği).
+// zaten çok dilli ama quiz UI'si tr/en yeterli: kullanıcı isteği).
 const qL = (b: Bi) => (getLanguage() === 'tr' ? b.tr : b.en);
 type Mode = 'intro' | 'quiz' | 'needsProfile' | 'result';
 
@@ -125,13 +125,13 @@ const QUESTIONS: Question[] = [
     q: { tr: 'İçinde uyumayan, hep çağıran şey hangisi?', en: 'What never sleeps in you, always calling?' },
     emoji: '◈',
     options: [
-      { text: { tr: 'Bütünleşme — kayıp parçaları toplamak', en: 'Wholeness — gathering the lost pieces' },
+      { text: { tr: 'Bütünleşme: kayıp parçaları toplamak', en: 'Wholeness: gathering the lost pieces' },
         weights: [{ trait: 'self', value: 3 }, { trait: 'bütünlük', value: 3 }, { trait: 'merkez', value: 2 }] },
-      { text: { tr: 'Dönüşüm — eskiyi yakıp yenisini doğurmak', en: 'Transformation — burning the old to birth the new' },
+      { text: { tr: 'Dönüşüm: eskiyi yakıp yenisini doğurmak', en: 'Transformation: burning the old to birth the new' },
         weights: [{ trait: 'dönüşüm', value: 3 }, { trait: 'yeniden doğuş', value: 3 }, { trait: 'ölüm-doğuş', value: 2 }] },
-      { text: { tr: 'İfade — içtekini görünür kılmak', en: 'Expression — making the inner visible' },
+      { text: { tr: 'İfade: içtekini görünür kılmak', en: 'Expression: making the inner visible' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
-      { text: { tr: 'Hizmet — kendinden büyüğüne adanmak', en: 'Service — devoting to something greater' },
+      { text: { tr: 'Hizmet: kendinden büyüğüne adanmak', en: 'Service: devoting to something greater' },
         weights: [{ trait: 'aziz', value: 3 }, { trait: 'adanma', value: 2 }, { trait: 'şifa', value: 2 }] },
     ],
   },
@@ -418,7 +418,7 @@ export function MitlerFinderScreen({
         </View>
       )}
 
-      {/* Intro — ScrollView: küçük ekranda içerik taşıp üstteki sekmelerle
+      {/* Intro: ScrollView: küçük ekranda içerik taşıp üstteki sekmelerle
           çakışıyordu + kaydırılamıyordu (web kullanıcı geri bildirimi) */}
       {mode === 'intro' && (
         <ScrollView contentContainerStyle={styles.introScroll} showsVerticalScrollIndicator={false}>
@@ -450,7 +450,7 @@ export function MitlerFinderScreen({
         </ScrollView>
       )}
 
-      {/* Quiz — ScrollView: seçenekler küçük ekranda katlanıp erişilemiyordu */}
+      {/* Quiz: ScrollView: seçenekler küçük ekranda katlanıp erişilemiyordu */}
       {mode === 'quiz' && (
         <ScrollView contentContainerStyle={styles.quizScroll} showsVerticalScrollIndicator={false}>
           <View style={styles.progressWrap}>
@@ -479,7 +479,7 @@ export function MitlerFinderScreen({
         </ScrollView>
       )}
 
-      {/* Profil'e yönlendirme — doğum bilgileri eksikse */}
+      {/* Profil'e yönlendirme: doğum bilgileri eksikse */}
       {mode === 'needsProfile' && (
         <View style={styles.needsProfileWrap}>
           <Text style={styles.needsProfileEmoji}>☀</Text>

@@ -21,7 +21,7 @@ type Stone = typeof stonesData[0];
 
 // ─── Zodiac & element constants ─────────────────────────────────────────────────
 
-// Keys in stoneZodiac.json are Turkish — these are the canonical lookup keys.
+// Keys in stoneZodiac.json are Turkish: these are the canonical lookup keys.
 const ZODIAC_KEYS = [
   'Koç', 'Boğa', 'İkizler', 'Yengeç', 'Aslan', 'Başak',
   'Terazi', 'Akrep', 'Yay', 'Oğlak', 'Kova', 'Balık',
@@ -100,7 +100,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded, onBack
       const ids = (stoneZodiac.zodiacStones as Record<string, string[]>)[selection.key] || [];
       return ids.map(id => byId.get(id)).filter(Boolean) as Stone[];
     }
-    // element filter — element value stored in canonical Turkish
+    // element filter: element value stored in canonical Turkish
     return (localStones as Stone[]).filter(
       s => s.element === selection.key || s.element === 'tüm unsurlar'
     );

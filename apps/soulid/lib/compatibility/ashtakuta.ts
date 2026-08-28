@@ -1,14 +1,14 @@
-// Vedik Ashtakuta uyum sistemi — MVP 4-boyut (toplam 18 puan).
+// Vedik Ashtakuta uyum sistemi, MVP 4-boyut (toplam 18 puan).
 // Tam 8-Kuta sistemi 36 puan; Plus özelliği olarak ileride genişletilir.
 // Referans: Brihat Parashara Hora Shastra, Muhurta Chintamani.
 //
 // Hesaplanan boyutlar:
-//   - Nadi (Sağlık & soy uyumluluğu)     — 8 puan, sıfırsa kritik
-//   - Bhakuta (Duygusal & maddi denge)   — 7 puan
-//   - Gana (Mizaç uyumu)                 — 6 puan
-//   - Yoni (Cinsel & içgüdüsel uyum)     — 4 puan
+//   - Nadi (Sağlık & soy uyumluluğu), 8 puan, sıfırsa kritik
+//   - Bhakuta (Duygusal & maddi denge), 7 puan
+//   - Gana (Mizaç uyumu), 6 puan
+//   - Yoni (Cinsel & içgüdüsel uyum), 4 puan
 //
-// Skor = (toplam / 25) * 100  — UI'da 0-100 normalize edilir.
+// Skor = (toplam / 25) * 100, UI'da 0-100 normalize edilir.
 
 type Nakshatra = {
   index: number;          // 0-26
@@ -68,7 +68,7 @@ function calcBhakuta(a: Nakshatra, b: Nakshatra): number {
   const diff = Math.abs(ra - rb);
   const d = Math.min(diff, 12 - diff);
   // 6-8 ve 5-9 mesafeleri kötü; 1, 3, 4, 7, 11 nötr/iyi
-  if (d === 6) return 0;       // 6/8 dushta — en kötü
+  if (d === 6) return 0;       // 6/8 dushta: en kötü
   if (d === 5) return 0;       // 5/9 dushta
   if (d === 2 || d === 12) return 7;
   return 7;                     // varsayılan kabul
@@ -150,21 +150,21 @@ export function calculateAshtakuta(aNakIdx: number, bNakIdx: number): AshtakutaR
     raw: { nadi, bhakuta, gana, yoni, total },
     notes: {
       nadi: nadi === 8
-        ? { tr: 'Sağlık ve soy hattınız uyumlu — farklı nadi enerjisi besler.', en: 'Your health and lineage flows complement each other — different nadi energies nourish.' }
-        : { tr: 'Aynı nadi — sağlık ve enerji benzerliği güçlü ama çeşitlilik dengelenmeli.', en: 'Same nadi — strong similarity in health and energy, but variety must be cultivated.' },
+        ? { tr: 'Sağlık ve soy hattınız uyumlu, farklı nadi enerjisi besler.', en: 'Your health and lineage flows complement each other, different nadi energies nourish.' }
+        : { tr: 'Aynı nadi: sağlık ve enerji benzerliği güçlü ama çeşitlilik dengelenmeli.', en: 'Same nadi: strong similarity in health and energy, but variety must be cultivated.' },
       bhakuta: bhakuta === 7
         ? { tr: 'Duygusal ve maddi ritimleriniz birbirini destekliyor.', en: 'Your emotional and material rhythms support each other.' }
-        : { tr: 'Bhakuta gerilimi — günlük ritim farkları bilinçli uyum gerektirir.', en: 'Bhakuta tension — daily rhythm differences require conscious alignment.' },
+        : { tr: 'Bhakuta gerilimi: günlük ritim farkları bilinçli uyum gerektirir.', en: 'Bhakuta tension: daily rhythm differences require conscious alignment.' },
       gana: gana >= 5
         ? { tr: 'Mizaç olarak aynı dili konuşuyorsunuz.', en: 'You speak the same temperament language.' }
         : gana >= 1
-          ? { tr: 'Mizaçlarınız farklı — çeviri gerektiren ama büyüten bir denge.', en: 'Different temperaments — a balance that requires translation but fosters growth.' }
-          : { tr: 'Mizaçsal kutuplaşma yoğun — bu polarite öğretici olabilir.', en: 'Intense temperamental polarity — this polarity can be highly instructive.' },
+          ? { tr: 'Mizaçlarınız farklı: çeviri gerektiren ama büyüten bir denge.', en: 'Different temperaments: a balance that requires translation but fosters growth.' }
+          : { tr: 'Mizaçsal kutuplaşma yoğun: bu polarite öğretici olabilir.', en: 'Intense temperamental polarity: this polarity can be highly instructive.' },
       yoni: yoni === 4
         ? { tr: 'İçgüdüsel ve fiziksel çekim çok güçlü.', en: 'Instinctive and physical attraction is very strong.' }
         : yoni >= 2
-          ? { tr: 'Fiziksel uyum dengeli — bilinçli ifade derinleştirir.', en: 'Physical harmony is balanced — conscious expression deepens it.' }
-          : { tr: 'Yoni gerilimi — fiziksel ifade için yumuşak bir köprü kurulmalı.', en: 'Yoni tension — a soft bridge must be built for physical expression.' },
+          ? { tr: 'Fiziksel uyum dengeli: bilinçli ifade derinleştirir.', en: 'Physical harmony is balanced: conscious expression deepens it.' }
+          : { tr: 'Yoni gerilimi: fiziksel ifade için yumuşak bir köprü kurulmalı.', en: 'Yoni tension: a soft bridge must be built for physical expression.' },
       summary: {
         tr: `Vedik Ashtakuta: ${score}/100 (${total}/25 puan). Nakshatra eşi: ${NAK_NAMES[aNakIdx]} ↔ ${NAK_NAMES[bNakIdx]}.`,
         en: `Vedic Ashtakuta: ${score}/100 (${total}/25 points). Nakshatra pair: ${NAK_NAMES[aNakIdx]} ↔ ${NAK_NAMES[bNakIdx]}.`,

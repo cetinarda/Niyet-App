@@ -1,4 +1,4 @@
-// Capacitor iOS statik export'unda /api/* route'ları yok — uzaktan host'a
+// Capacitor iOS statik export'unda /api/* route'ları yok: uzaktan host'a
 // fetch atılır. Web'de relative URL aynı origin'e gider.
 
 import { isCapacitorNative } from './platform';

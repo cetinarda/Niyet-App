@@ -1,4 +1,4 @@
-# SoulProfile — UX Awards Playbook
+# SoulProfile: UX Awards Playbook
 
 > Hazırlanma: 2026-06-07
 > Hedef: SoulProfile'ı **Apple Design Award seviyesine** taşıyacak somut, kod-implementasyona hazır UX/UI plan.
@@ -9,11 +9,11 @@
 
 ## 1. Tek cümlelik teşhis
 
-**SoulProfile'ı Apple Design Award seviyesine taşımak için ŞU bir şeyi değiştirmeliyiz: tek-mode'lu (sadece koyu galaksi) klişesinden çıkıp, sembolik koyu/aydınlık geçişin kendisini "kozmik nefes" jest dili haline getirmeli — Co-Star'ın minimal monokrom dilini referans alıp, Headspace'in sıcak yumuşak duygusal palet katmanını üzerine koyarak; mevcut "kart üstü kart üstü kart" tek-scroll yığını ise tek bir "Liquid Glass nav + breathing content layer" hiyerarşisine taşınmalı.**
+**SoulProfile'ı Apple Design Award seviyesine taşımak için ŞU bir şeyi değiştirmeliyiz: tek-mode'lu (sadece koyu galaksi) klişesinden çıkıp, sembolik koyu/aydınlık geçişin kendisini "kozmik nefes" jest dili haline getirmeli: Co-Star'ın minimal monokrom dilini referans alıp, Headspace'in sıcak yumuşak duygusal palet katmanını üzerine koyarak; mevcut "kart üstü kart üstü kart" tek-scroll yığını ise tek bir "Liquid Glass nav + breathing content layer" hiyerarşisine taşınmalı.**
 
 Yani üç hareket:
 1. **Light Mode'u eşit prestijli ikinci tema** olarak doğur (Twilight Vellum paletini light'a evir).
-2. **İçerik katmanı** ile **navigasyon katmanını** ayır — Apple HIG 2025 "Liquid Glass" prensibi: glass yalnız nav'da, content saf.
+2. **İçerik katmanı** ile **navigasyon katmanını** ayır, Apple HIG 2025 "Liquid Glass" prensibi: glass yalnız nav'da, content saf.
 3. **Halka, glyph, kart ve transit jestlerini** Framer Motion `layoutId` ile shared element koreografisine taşı.
 
 ---
@@ -22,9 +22,9 @@ Yani üç hareket:
 
 | Uygulama | Ödül / Kategori | Öne çıkardığı prensip | SoulProfile'a spesifik adaptasyon |
 |---|---|---|---|
-| [**Lumy**](https://developer.apple.com/design/awards/2025/) (ADA 2025 finalist, Delight & Fun) | Sun/moon tracker — "celestial info, simple palette + Live Activity" | Tek-amaçlı kozmik veri ekranı: rakam değil, **ışığın o anki rengi** mesaj. Curated palette + Apple Watch widgets. | **Welcome hero**'da statik gradient yerine **Lumy stili "şu anki gökyüzü"** widget şeridi (Güneş yükseliş/batış + ay fazı, kullanıcının lokasyonuna göre). Tek glyph + 2 satır + 1 ışık. |
-| [**Crouton**](https://developer.apple.com/design/awards/2024/) (ADA 2024 winner, Interaction) | Recipe app — gesture-first, "cooking mode" tek-task focus | Aynı arayüz, bağlama göre **dim/highlight ile odak değiştirme** (cooking mode). | **Compatibility "Beş Pencere" tab**'inde tıklanan halka diğerlerini dim'ler (`opacity 0.35`), seçili olan kart genişler + alt metin akar. "Tek pencere odaklı okuma modu". |
-| [**Headspace**](https://www.metalab.com/work/headspace) (referans, mindfulness gold standard) | Onboarding = "breathe in–out" jesti; soft pastel + Lottie | Form değil **karşılama jesti**. Veri girmeden önce duygusal hazırlık. | **Birth form**'a girmeden 2 saniyelik "Bir nefes al, doğum anına dön" mikro-jeneriği (`SpaceIntro` zaten var ama global; ona benzer **birth-specific intro**). Reduce Motion ON ise atla. |
+| [**Lumy**](https://developer.apple.com/design/awards/2025/) (ADA 2025 finalist, Delight & Fun) | Sun/moon tracker, "celestial info, simple palette + Live Activity" | Tek-amaçlı kozmik veri ekranı: rakam değil, **ışığın o anki rengi** mesaj. Curated palette + Apple Watch widgets. | **Welcome hero**'da statik gradient yerine **Lumy stili "şu anki gökyüzü"** widget şeridi (Güneş yükseliş/batış + ay fazı, kullanıcının lokasyonuna göre). Tek glyph + 2 satır + 1 ışık. |
+| [**Crouton**](https://developer.apple.com/design/awards/2024/) (ADA 2024 winner, Interaction) | Recipe app, gesture-first, "cooking mode" tek-task focus | Aynı arayüz, bağlama göre **dim/highlight ile odak değiştirme** (cooking mode). | **Compatibility "Beş Pencere" tab**'inde tıklanan halka diğerlerini dim'ler (`opacity 0.35`), seçili olan kart genişler + alt metin akar. "Tek pencere odaklı okuma modu". |
+| [**Headspace**](https://www.metalab.com/work/headspace) (referans, mindfulness gold standard) | Onboarding = "breathe in-out" jesti; soft pastel + Lottie | Form değil **karşılama jesti**. Veri girmeden önce duygusal hazırlık. | **Birth form**'a girmeden 2 saniyelik "Bir nefes al, doğum anına dön" mikro-jeneriği (`SpaceIntro` zaten var ama global; ona benzer **birth-specific intro**). Reduce Motion ON ise atla. |
 | [**Co-Star**](https://medium.com/demagsign/how-the-design-of-the-astrology-app-co-star-is-conquering-the-masses-d6b6d235c806) (kategori gold standard, ADA değil ama tasarım kanonu) | Monokrom, serif başlık, **veri = tipografi**, illüstrasyonsuz | Spiritüel kategoride "minimum, mistik, kitap gibi" hissi. | **Report karne**'sinin print/share görseline alternatif **"Co-Star modu"**: tek beyaz/krem zemin, siyah serif başlık, glyph dışında hiç renk. Light mode'un *gerçek* meyvesi. |
 | [**Mela Recipe Manager**](https://developer.apple.com/design/awards/2025/) (ADA 2025 finalist, Interaction) | Cooking mode: Dynamic Island timer, Vision OCR, Reminders entegre | Tek özelliği değil, **Apple ekosistem yüzeylerini sırayla geçirmek**. | **Match invite akışı**: davet linki açıldığında → Live Activity'de "Sevgilin uyumu hesaplıyor" + tamamlandığında Lock Screen widget'ı. Web'de fallback: tarayıcı tab title + favicon spinner. |
 
@@ -32,25 +32,25 @@ Yani üç hareket:
 
 ## 3. Light Mode tasarım sistemi
 
-Mevcut karanlık galaksi paleti `bg: #07091a` + `gold: #f5d061` + `cosmic: #7c5cff` **gece modu** olarak kalır — kimlik korunur. Light mode aynı kategorinin **alternatif okuma alanı**: sıcak, dingin, kâğıt gibi, ışıklı.
+Mevcut karanlık galaksi paleti `bg: #07091a` + `gold: #f5d061` + `cosmic: #7c5cff` **gece modu** olarak kalır: kimlik korunur. Light mode aynı kategorinin **alternatif okuma alanı**: sıcak, dingin, kâğıt gibi, ışıklı.
 
 ### 3.1 Felsefe
 
 - **Karanlık mod** = "kozmosa bakıyorsun" → derinlik, mistik, gece okumaları, paylaşılabilir karne için ideal.
 - **Aydınlık mod** = "ışığa not ediyorsun" → günlük açış, journaling, çift okumasını birlikte oturup görme, gündüz erişilebilirlik.
-- Twilight Vellum 5-katman pastel (`chemistry/lesson/rhythm/fate/compass`) **iki modda da aynı** kalır — bu, kompozisyonun çapasıdır.
+- Twilight Vellum 5-katman pastel (`chemistry/lesson/rhythm/fate/compass`) **iki modda da aynı** kalır, bu, kompozisyonun çapasıdır.
 
 ### 3.2 Sebep: spiritüel kategoride başarılı light örnekler
 
 - **Insight Timer light mode**: less colors, less info, "fresh air" hissi ([kaynak](https://herhealthwatch.com/insight-timer-vs-calm/)).
-- **Headspace**: pastel + soft + rounded — sharp edge yok ([kaynak](https://www.neointeraction.com/blogs/headspace-a-case-study-on-successful-emotion-driven-ui-ux-design.php)).
+- **Headspace**: pastel + soft + rounded, sharp edge yok ([kaynak](https://www.neointeraction.com/blogs/headspace-a-case-study-on-successful-emotion-driven-ui-ux-design.php)).
 - **Calm 2025**: sade orta-saturation, doğal taşlar (sand/sage/stone) ([kaynak](https://www.bighuman.com/blog/trends-in-mindfulness-app-design)).
-- **Apple HIG 2025**: "semantic colors are dynamic — bg can be black in dark / white in light" — system-defined colors otomatik adapt ([kaynak](https://developer.apple.com/design/human-interface-guidelines/color)).
+- **Apple HIG 2025**: "semantic colors are dynamic: bg can be black in dark / white in light": system-defined colors otomatik adapt ([kaynak](https://developer.apple.com/design/human-interface-guidelines/color)).
 
-### 3.3 Light Mode Palette — tam hex değerleri
+### 3.3 Light Mode Palette: tam hex değerleri
 
 ```ts
-// tailwind.config.ts — yeni light tokens
+// tailwind.config.ts: yeni light tokens
 // Karanlık mevcut kalır, light bunlarla katmanlanır.
 
 const light = {
@@ -65,7 +65,7 @@ const light = {
   panelStrong:  'rgba(26, 20, 14, 0.06)',   // hover/active
 
   // İçerik renkleri
-  ink:          '#1A140E',   // espresso brown (saf siyah DEĞİL — sıcak)
+  ink:          '#1A140E',   // espresso brown (saf siyah DEĞİL, sıcak)
   inkSoft:      '#3C342A',   // body text
   muted:        'rgba(26, 20, 14, 0.62)',
   faint:        'rgba(26, 20, 14, 0.4)',
@@ -79,13 +79,13 @@ const light = {
   nebula:       '#D8508E',   // dusty fuchsia
   starlight:    '#4A86A8',   // muted teal
 
-  // Twilight Vellum — iki modda da AYNI (bu çapadır)
+  // Twilight Vellum: iki modda da AYNI (bu çapadır)
   vellum: {
-    chemistry:  '#E8C28A',   // amber — Kimya
-    lesson:     '#9CAF88',   // sage — Ders
-    rhythm:     '#C9A0A6',   // dusty rose — Ritim
-    fate:       '#8FA3C2',   // indigo dusk — Kader
-    compass:    '#C7B8E8',   // soft lavender — Pusula
+    chemistry:  '#E8C28A',   // amber, Kimya
+    lesson:     '#9CAF88',   // sage, Ders
+    rhythm:     '#C9A0A6',   // dusty rose, Ritim
+    fate:       '#8FA3C2',   // indigo dusk, Kader
+    compass:    '#C7B8E8',   // soft lavender, Pusula
   },
 
   // System (success/danger)
@@ -102,20 +102,20 @@ SoulProfile'da uygulanışı:
 
 | Katman | Karanlık mod | Aydınlık mod | Glass? |
 |---|---|---|---|
-| **Sayfa zemini** (body) | `#07091a` + nebula vignette + starDrift | `#FAF7F0` + dawn vignette + dust mote drift | Hayır — saf renk |
-| **Content kart** (article/section) | `bg-panel/30` solid | `bg-white/40` solid | Hayır — opak, blur yok |
-| **Navigation bar** (TopBar) | `bg-bg/55 backdrop-blur-xl` | `bg-bg/65 backdrop-blur-xl` | **Evet** — Liquid Glass |
+| **Sayfa zemini** (body) | `#07091a` + nebula vignette + starDrift | `#FAF7F0` + dawn vignette + dust mote drift | Hayır, saf renk |
+| **Content kart** (article/section) | `bg-panel/30` solid | `bg-white/40` solid | Hayır: opak, blur yok |
+| **Navigation bar** (TopBar) | `bg-bg/55 backdrop-blur-xl` | `bg-bg/65 backdrop-blur-xl` | **Evet**: Liquid Glass |
 | **Floating action** (theme toggle, locale) | aynı bar üzerinde glass pill | aynı bar üzerinde glass pill | **Evet** |
-| **Modal / Sheet** | `bg-bgElevated solid` | `bg-bgElevated solid` | Hayır — okunabilirlik öncelikli |
-| **Tooltip / Toast** | `bg-bg/80 blur-md` | `bg-bg/80 blur-md` | Evet — geçici element |
+| **Modal / Sheet** | `bg-bgElevated solid` | `bg-bgElevated solid` | Hayır: okunabilirlik öncelikli |
+| **Tooltip / Toast** | `bg-bg/80 blur-md` | `bg-bg/80 blur-md` | Evet: geçici element |
 
-Kural: **content okunurken arkasında bulanıklık olamaz** — sadece nav layer'da glass. Halka skorlar, kavram kartları, AI anlatım paragrafları **opak**.
+Kural: **content okunurken arkasında bulanıklık olamaz**, sadece nav layer'da glass. Halka skorlar, kavram kartları, AI anlatım paragrafları **opak**.
 
 ### 3.5 Altın rengi: koru ya da değiştir?
 
 | Durum | Karar | Sebep |
 |---|---|---|
-| Karanlık zeminde gold buton (`bg-gold`) | **Koru** `#f5d061` | Kontrast 9.2:1 — AAA |
+| Karanlık zeminde gold buton (`bg-gold`) | **Koru** `#f5d061` | Kontrast 9.2:1: AAA |
 | Aydınlık zeminde gold buton | **Değiştir** → `#B8861F` (antique) + `text-white` | `#f5d061` üzerinde beyaz okumuyor; içerik koyu → kontrast 4.8:1 (AA) |
 | Karanlık zeminde gold metin | **Koru** | Marka eşit |
 | Aydınlık zeminde gold metin | **Değiştir** → `#9C6D0E` | `#f5d061` üzerine beyaz ya da koyu kâğıt çekmiyor (3.1:1) |
@@ -143,8 +143,8 @@ Implementation: Tailwind `dark:` variant + CSS custom properties.
 ### 4.1 Konum
 
 - **Birincil**: TopBar sağında, `LanguageToggle` sol komşusu olarak. Sun/Moon ikonu, glass pill içinde.
-- **İkincil**: `/settings` "Görsel tercih" section'ı — Light / Dark / Auto üçlü segmented control.
-- **Onboarding'de YOK** — kullanıcının ilk vurgusu form'a, tema seçimine değil. (Bu kuralı [Eleken toggle UX](https://www.eleken.co/blog-posts/toggle-ux) çalışması destekliyor.)
+- **İkincil**: `/settings` "Görsel tercih" section'ı: Light / Dark / Auto üçlü segmented control.
+- **Onboarding'de YOK**: kullanıcının ilk vurgusu form'a, tema seçimine değil. (Bu kuralı [Eleken toggle UX](https://www.eleken.co/blog-posts/toggle-ux) çalışması destekliyor.)
 
 ### 4.2 Default davranış
 
@@ -156,8 +156,8 @@ Bu paten Apple HIG 2025 yaklaşımıyla uyumlu: "respect system, allow override"
 
 ### 4.3 Geçiş animasyonu
 
-- **CSS transition** ile değil — **`view-transition-name` API** ile (modern Safari 18 + Chrome 111+). Fallback: 250ms `cubic-bezier(0.4, 0, 0.6, 1)` opacity.
-- Spring DEĞİL — tema geçişi "ışık atışı" gibi olmalı, zıplama değil. 250ms ease-out doğru hissettiriyor.
+- **CSS transition** ile değil, **`view-transition-name` API** ile (modern Safari 18 + Chrome 111+). Fallback: 250ms `cubic-bezier(0.4, 0, 0.6, 1)` opacity.
+- Spring DEĞİL: tema geçişi "ışık atışı" gibi olmalı, zıplama değil. 250ms ease-out doğru hissettiriyor.
 - Kod (Next.js App Router):
 
 ```ts
@@ -186,7 +186,7 @@ function toggleTheme() {
 | Auto + system dark | dark gibi | dark gibi | dark gibi |
 | `prefers-reduced-motion` | drift kapalı, opacity 0 | sabit | sabit |
 
-Light'ta yıldızlar **görünmez değil**, sadece "toz parçacığı dalgalanması" hissinde — UI'ı bozmaz, ama paylaşılan dilin DNA'sı kaybolmaz.
+Light'ta yıldızlar **görünmez değil**, sadece "toz parçacığı dalgalanması" hissinde: UI'ı bozmaz, ama paylaşılan dilin DNA'sı kaybolmaz.
 
 ### 4.5 Toggle ikonu
 
@@ -207,20 +207,20 @@ ARIA: `role="switch" aria-checked` üçlü için `role="radiogroup"`. Tap target
 
 Mevcut: 6 section, her birinde başlık + grid → tek scroll'da gold yığını.
 
-**Öneri 1 — Hero'yu "şu anki gökyüzü" widget'ına çevir** ([Lumy ADA 2025](https://developer.apple.com/design/awards/2025/) referans).
+**Öneri 1: Hero'yu "şu anki gökyüzü" widget'ına çevir** ([Lumy ADA 2025](https://developer.apple.com/design/awards/2025/) referans).
 - NEDEN: Sayfa açılışta sabit gradient bir "PNG poster" gibi. Lumy'nin başarısı kullanıcının lokasyonuna göre **dinamik bir tek-değer** göstermesi.
-- NASIL: Hero'nun altına 3-cell strip (max-width 480, glass pill): `🌅 06:42 doğdu` · `🌑 %23 dolunay yolda` · `♋ Yengeç burcunda Güneş`. Veriler: `lib/astronomy-engine` mevcut, `lib/geocoding` ile IP konumu çek (kullanıcı onayı yok — sadece kaba günlük gökyüzü).
+- NASIL: Hero'nun altına 3-cell strip (max-width 480, glass pill): `🌅 06:42 doğdu` · `🌑 %23 dolunay yolda` · `♋ Yengeç burcunda Güneş`. Veriler: `lib/astronomy-engine` mevcut, `lib/geocoding` ile IP konumu çek (kullanıcı onayı yok, sadece kaba günlük gökyüzü).
 - KOD: `<NowSky />` component, `Tailwind: rounded-full border border-panelBorder bg-panel/40 backdrop-blur-md px-3 py-1.5 text-[11px]`
-- EFFORT: M (5–7 saat)
+- EFFORT: M (5-7 saat)
 
-**Öneri 2 — "İki Ana Yol" kartlarını shared-element olarak büyült**.
+**Öneri 2: "İki Ana Yol" kartlarını shared-element olarak büyült**.
 - NEDEN: Şu an iki kart sabit grid. Tıklayınca direkt route. ADA 2024 Crouton "mode-switch" mantığı: kart üstüne hover/tap → kartın kendisi büyür, içerik akar, sonra route'a düşer.
-- NASIL: Framer Motion `layoutId="path-self" / "path-couple"`. Tıklayınca kart fullscreen sheet'e morphlanır (300ms spring `stiffness: 380, damping: 30` — [Motion.dev iOS spring](https://motion.dev/tutorials/react-smooth-tabs)). Route push'u sheet açıldıktan sonra.
+- NASIL: Framer Motion `layoutId="path-self" / "path-couple"`. Tıklayınca kart fullscreen sheet'e morphlanır (300ms spring `stiffness: 380, damping: 30`: [Motion.dev iOS spring](https://motion.dev/tutorials/react-smooth-tabs)). Route push'u sheet açıldıktan sonra.
 - EFFORT: M
 
-**Öneri 3 — 9 sistem listesini "kelime bulutu" jestine çevir**.
+**Öneri 3: 9 sistem listesini "kelime bulutu" jestine çevir**.
 - NEDEN: 9 emoji + 9 başlık + 9 açıklama = bilişsel yük. Co-Star paterni: kategorinin DNA'sı **tipografi** olmalı, ikon listesi değil.
-- NASIL: Liste yerine display font'la (`Cormorant Garamond`) blok metin: *"Batı astrolojisi · Human Design · Numeroloji · Vedik Nakshatra · Maya Tzolkin · Çin Zodyak · Norse Rune · Tarot · Yıldız Irkı."* Her terim hover/tap'te aynı `<ConceptCard>` modal'ını açar (zaten var — sadece liste yerine inline link). Emoji yok.
+- NASIL: Liste yerine display font'la (`Cormorant Garamond`) blok metin: *"Batı astrolojisi · Human Design · Numeroloji · Vedik Nakshatra · Maya Tzolkin · Çin Zodyak · Norse Rune · Tarot · Yıldız Irkı."* Her terim hover/tap'te aynı `<ConceptCard>` modal'ını açar (zaten var: sadece liste yerine inline link). Emoji yok.
 - EFFORT: S (2 saat)
 
 ---
@@ -229,19 +229,19 @@ Mevcut: 6 section, her birinde başlık + grid → tek scroll'da gold yığını
 
 Mevcut: 5 input alt alta + photo upload + submit. Kicker + title + subtitle. Çalışıyor ama "form" hissi.
 
-**Öneri 1 — "Bir nefes" jesti'ni form'dan ÖNCE göster**.
+**Öneri 1: "Bir nefes" jesti'ni form'dan ÖNCE göster**.
 - NEDEN: Headspace onboarding: form'dan önce duygusal hazırlık. "Tıbbi/spiritüel veri verme" anı bir cooldown ister.
-- NASIL: `/birth` ilk açıldığında, üst kart yerine 1.5sn `<BreathPrompt />`: ortada büyük `✦`, "Doğduğun ana dön. Hazır olduğunda devam et." + tek buton "Başla". Reduce Motion ON ise atla, direkt form. Tek seferlik — `localStorage` flag.
-- KOD: `SpaceIntro.tsx` paterni — sadece bu sayfada, daha uzun ve copy'li.
+- NASIL: `/birth` ilk açıldığında, üst kart yerine 1.5sn `<BreathPrompt />`: ortada büyük `✦`, "Doğduğun ana dön. Hazır olduğunda devam et." + tek buton "Başla". Reduce Motion ON ise atla, direkt form. Tek seferlik: `localStorage` flag.
+- KOD: `SpaceIntro.tsx` paterni: sadece bu sayfada, daha uzun ve copy'li.
 - EFFORT: S (3 saat)
 
-**Öneri 2 — Form'u 4 mini-ekrana böl, progress dot ile**.
+**Öneri 2: Form'u 4 mini-ekrana böl, progress dot ile**.
 - NEDEN: Tek dev form = "iş yapıyor gibi". Crouton'un cooking mode'u: tek-task tek-ekran. ADA Speechify ödülü "cognitive load minimization" prensibi.
 - NASIL: Adım 1: Ad. Adım 2: Tarih + saat. Adım 3: Yer (auto-suggest). Adım 4: Fotoğraf (opsiyonel) + onay. Üstte 4 nokta progress (current solid gold, rest hairline). "İleri" butonu, son adımda "Karneyi Aç". State store'da kal. Geri butonuyla geri.
 - EFFORT: M (5 saat)
 
-**Öneri 3 — Input focus state'i Liquid Glass yap**.
-- NEDEN: Şu an input `border-gold/70` ile vurgulanıyor — flat neon glow. ADA Denim "haptic + custom" referans: focus aynı zamanda haptic + ince ışıma.
+**Öneri 3: Input focus state'i Liquid Glass yap**.
+- NEDEN: Şu an input `border-gold/70` ile vurgulanıyor: flat neon glow. ADA Denim "haptic + custom" referans: focus aynı zamanda haptic + ince ışıma.
 - NASIL: Focus'ta border'a ek `box-shadow: 0 0 0 4px rgba(245, 208, 97, 0.12)` + `backdrop-blur-sm` zaten var. Web'de `navigator.vibrate(8)` (Android), iOS Capacitor'da `@capacitor/haptics` `Impact.Light`.
 - KOD:
   ```tsx
@@ -256,51 +256,51 @@ Mevcut: 5 input alt alta + photo upload + submit. Kicker + title + subtitle. Ça
 
 Mevcut: 9 blok tek scroll'da. `MARKET_FIT.md`'in zaten yakaladığı en büyük problem.
 
-**Öneri 1 — "Aha → keşfet → derinleş" 3 katmanına böl**.
+**Öneri 1: "Aha → keşfet → derinleş" 3 katmanına böl**.
 - NEDEN: 3-step onboarding %72 tamamlanır, 7-step %16 ([Eleken](https://www.eleken.co/blog-posts/mobile-ux-design-examples)). Aynı içerik kanunu.
 - NASIL: 
-  - **Katman 1 (Aha — fold üstü)**: ReportCard + Share/Download + 1 satır AI özet (`summary` zaten var). Bu kadar.
-  - **Katman 2 (Keşfet — fold altı)**: CharacterStats + ConceptCard grid (eve sembolleri). 
-  - **Katman 3 (Derinleş — expandable)**: 3D solar sistem + StarTree + BirthChartWheel + tam AI 7 bölüm. Default `collapsed`, kullanıcı "Gökyüzünü açıyorum" der.
+  - **Katman 1 (Aha: fold üstü)**: ReportCard + Share/Download + 1 satır AI özet (`summary` zaten var). Bu kadar.
+  - **Katman 2 (Keşfet: fold altı)**: CharacterStats + ConceptCard grid (eve sembolleri). 
+  - **Katman 3 (Derinleş: expandable)**: 3D solar sistem + StarTree + BirthChartWheel + tam AI 7 bölüm. Default `collapsed`, kullanıcı "Gökyüzünü açıyorum" der.
 - KOD: `<details>` HTML5 + `<motion.section layoutId="explore">`.
 - EFFORT: M (1 gün)
 
-**Öneri 2 — ReportCard'ın "Co-Star modu" alternatifi**.
-- NEDEN: Mevcut karne karanlık galaksi — paylaşımda etkili ama "Insta story sticker" hissinde. Bazı kullanıcılar minimal, kitap-sayfa hissi ister.
+**Öneri 2: ReportCard'ın "Co-Star modu" alternatifi**.
+- NEDEN: Mevcut karne karanlık galaksi: paylaşımda etkili ama "Insta story sticker" hissinde. Bazı kullanıcılar minimal, kitap-sayfa hissi ister.
 - NASIL: ReportCard'a `variant: 'galaxy' | 'paper'` prop ekle. Paper variant: `bg-[#FAF7F0]`, espresso ink, Cormorant serif başlık, glyph dışında hiç renk. Share/Download butonlarının yanında segmented switch: "Galaksi / Kâğıt".
 - EFFORT: M (4 saat)
 
-**Öneri 3 — AI anlatımı 7 bölümünü "kart deste" jesti yap**.
+**Öneri 3: AI anlatımı 7 bölümünü "kart deste" jesti yap**.
 - NEDEN: 7 paragraf alt alta okuyamaz kullanıcı. Headspace meditation flow: tek tek pacing.
-- NASIL: AI bölümleri (`opening, astrology, humanDesign, soulStory, wisdoms, shadows, callToAction`) — sağa sola swipe edilen 7 kart. Üstte 7 nokta. Reduce Motion ON ise dikey liste (mevcut).
+- NASIL: AI bölümleri (`opening, astrology, humanDesign, soulStory, wisdoms, shadows, callToAction`): sağa sola swipe edilen 7 kart. Üstte 7 nokta. Reduce Motion ON ise dikey liste (mevcut).
 - KOD: Framer Motion `<motion.div drag="x" dragConstraints={{left: -360, right: 0}}>`.
 - EFFORT: L (1.5 gün)
 
 ---
 
-### 5.4 Compatibility (4 tab — İki Yıldız / Beş Pencere / Aynalar / Pusula)
+### 5.4 Compatibility (4 tab: İki Yıldız / Beş Pencere / Aynalar / Pusula)
 
-Mevcut: `CompatibilityView` tabsız zaten 4 tab kurmuş — temel iskelet doğru.
+Mevcut: `CompatibilityView` tabsız zaten 4 tab kurmuş, temel iskelet doğru.
 
-**Tab 0 — İki Yıldız**
+**Tab 0: İki Yıldız**
 - Öneri: İki PersonCard arasında **canlı çarpan glyph** ekle (`◇` SoulProfile mührü). 
   - NEDEN: Şu an iki kart yan yana grid. "Bir ilişki" hissini "iki ayrı varlık + araya bir bağ" çarpanı yansıtır.
   - NASIL: Mobile'da dikey, ortada `<motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 4, repeat: Infinity }}>◇</motion.div>`. Desktop'ta yatay grid.
   - EFFORT: S
 
-**Tab 1 — Beş Pencere**
+**Tab 1: Beş Pencere**
 - Öneri: 4 halkanın hover'da gizli hint'i, varsayılan görünür yap; ama "büyük halka" ekle (toplam).
-  - NEDEN: Şu an 4 küçük halka eşit boyut. ADA ödüllü Gentler Streak prensibi: "individual progression, not comparison". Toplam halkanın yokluğu doğru karar — ama içinden seçince **dim/highlight** lazım (Crouton).
-  - NASIL: Tıklanan halka `scale-110 ring-2 ring-current`, diğerleri `opacity-40 saturate-50`. Tab'i 2'ye geçirme (mevcut davranış) opsiyonel — "tek halka okuma modu" yeni davranış.
+  - NEDEN: Şu an 4 küçük halka eşit boyut. ADA ödüllü Gentler Streak prensibi: "individual progression, not comparison". Toplam halkanın yokluğu doğru karar, ama içinden seçince **dim/highlight** lazım (Crouton).
+  - NASIL: Tıklanan halka `scale-110 ring-2 ring-current`, diğerleri `opacity-40 saturate-50`. Tab'i 2'ye geçirme (mevcut davranış) opsiyonel, "tek halka okuma modu" yeni davranış.
   - EFFORT: M
 
-**Tab 2 — Aynalar**
+**Tab 2: Aynalar**
 - Öneri: HD merkezleri "ayna" metaforu için **çift-kart** (A↔B yan yana, ortada split-line).
   - NEDEN: Şu an her merkez tek kart. "Ayna" metaforu görsel olarak yansımıyor.
   - NASIL: Her merkez kartı 2 sütun: solda A'nın enerjisi (`bg-[#E8C28A]/8`), sağda B'nin (`bg-[#C9A0A6]/8`), ortada 1px dikey `border-faint`. Üstte merkez adı, altta tek cümle "X seni Y'de sınar." 
   - EFFORT: M
 
-**Tab 3 — Pusula**
+**Tab 3: Pusula**
 - Öneri: 3 tarot kartına **flip-on-tap** mikro-etkileşim ekle.
   - NEDEN: Tarot deneyimi *çekim anı* + *kart açma* anı. Şu an her şey önden görünüyor; gizemi alır.
   - NASIL: Default sırt (sigil + altın hairline), tap → 600ms `rotateY 0→180`, ön yüz açılır. Reduce Motion ON ise crossfade. İlk açılışta hepsi sırtı, kullanıcı tek tek açar.
@@ -313,14 +313,14 @@ Mevcut: `CompatibilityView` tabsız zaten 4 tab kurmuş — temel iskelet doğru
 
 Mevcut: Davet eden bilgisi + form. Çalışıyor ama "ben de form dolduruyorum" hissi.
 
-**Öneri 1 — Davet edenin küçük yıldız haritasını üstte göster**.
+**Öneri 1: Davet edenin küçük yıldız haritasını üstte göster**.
 - NEDEN: Davet alan kullanıcı "kim bu kişi?" merakında. Sun/Moon/Rising 3 glyph + isim = yatay küçük portre. Yapışkanlık katlanır.
-- NASIL: `<InviterMiniChart birth={inviterBirth} report={inviter}>` — 3 glyph + isim + doğum yeri tek satır. ~50px yükseklik, header üstünde sticky.
+- NASIL: `<InviterMiniChart birth={inviterBirth} report={inviter}>`: 3 glyph + isim + doğum yeri tek satır. ~50px yükseklik, header üstünde sticky.
 - EFFORT: S (2 saat)
 
-**Öneri 2 — Submit anında "iki yıldız buluşuyor" mikro-jenerik**.
+**Öneri 2: Submit anında "iki yıldız buluşuyor" mikro-jenerik**.
 - NEDEN: Headspace breath onboarding patternı + Lumy live activity. Compute ~2sn, bu boş zamanı duygusal payoff'a çevir.
-- NASIL: Submit'ten sonra `<CosmicLoader>` yerine `<TwoStarsMeet>` — solda A'nın sigil (gold), sağda B'nin (cosmic), 1.5sn ortada buluşma + scale + parıltı. Result hazır olunca scroll.
+- NASIL: Submit'ten sonra `<CosmicLoader>` yerine `<TwoStarsMeet>`: solda A'nın sigil (gold), sağda B'nin (cosmic), 1.5sn ortada buluşma + scale + parıltı. Result hazır olunca scroll.
 - KOD: `CosmicLoader.tsx` paternini referans al, 2 sigil + ortada `<motion.div animate={{ scale: [0, 1.2, 1] }}>◇</motion.div>`.
 - EFFORT: M
 
@@ -330,15 +330,15 @@ Mevcut: Davet eden bilgisi + form. Çalışıyor ama "ben de form dolduruyorum" 
 
 Mevcut: Tek SKU kartı + feature list + buy + restore. Doğru iskelet (Apple guideline 3.1.1 uyumlu).
 
-**Öneri 1 — "Önce blur, sonra unlock" jesti yerine "açılan kitap" metaforu**.
+**Öneri 1: "Önce blur, sonra unlock" jesti yerine "açılan kitap" metaforu**.
 - NEDEN: Şu an `DeepAnalysisBox` premium yokken bullet list gösteriyor. Klasik blur paywall'ı, doğru ama heyecansız. Mela'nın "cooking mode" prensibi: aynı UI, farklı mod.
 - NASIL: 10 bölüm başlığı altında **kapalı kitap** ikonu (`📕`) ve hairline. Tıklayınca açılma animasyonu (1.2sn flip), arkasından paywall sheet. Açılan kitap "okumaya hazır" olduğunu somutlaştırır.
 - EFFORT: M
 
-**Öneri 2 — Premium showcase'inde Live Activity preview**.
+**Öneri 2: Premium showcase'inde Live Activity preview**.
 - NEDEN: ADA paterni: Apple ekosistem yüzeylerini sıralı geçir. Premium'ın "tek kerelik ama derin" hissini Lock Screen widget mockup'ıyla göster.
-- NASIL: `/premium`'a static image (web SVG mockup yeterli): iPhone Lock Screen, üstte `Soul · Ada ↔ Cem · 87% Compass aligned`. "İşte iOS app açtığında karşına çıkacak." Sadece görsel — gerçek Live Activity Capacitor'da production sonrası.
-- EFFORT: S (3 saat — SVG mockup)
+- NASIL: `/premium`'a static image (web SVG mockup yeterli): iPhone Lock Screen, üstte `Soul · Ada ↔ Cem · 87% Compass aligned`. "İşte iOS app açtığında karşına çıkacak." Sadece görsel: gerçek Live Activity Capacitor'da production sonrası.
+- EFFORT: S (3 saat: SVG mockup)
 
 ---
 
@@ -346,7 +346,7 @@ Mevcut: Tek SKU kartı + feature list + buy + restore. Doğru iskelet (Apple gui
 
 Mevcut: Filter chip + uzun kart listesi. Çalışıyor.
 
-**Öneri 1 — Arama + alphabetik index sticky strip**.
+**Öneri 1: Arama + alphabetik index sticky strip**.
 - NEDEN: 50+ terim olduğunda filter chip yetmez. iA Writer'ın gesture-first prensibi: "swipe right for library access".
 - NASIL: Üstte `<input type="search">` + altında alphabetic sticky strip (`A B C D ... Z`). Strip'te terim olan harf gold, olmayan faint. Tıklayınca o harfin ilk terimine `scrollIntoView`.
 - KOD: 
@@ -417,7 +417,7 @@ Reduce Motion ON: `transition={{ duration: 0 }}` veya `initial/animate` aynı de
 
 ### 6.4 Skor halkaları enter animation
 
-`ScoreRing` şu an `strokeDasharray transition: 800ms ease-out` — temel doğru. Eksik: **staggered enter**. Tüm halkalar aynı anda çiziliyor.
+`ScoreRing` şu an `strokeDasharray transition: 800ms ease-out`: temel doğru. Eksik: **staggered enter**. Tüm halkalar aynı anda çiziliyor.
 
 ```tsx
 {LAYER.map((layer, i) => (
@@ -431,7 +431,7 @@ Reduce Motion ON: `transition={{ duration: 0 }}` veya `initial/animate` aynı de
 ))}
 ```
 
-Bir halka tamamlanırken sıradaki başlıyor — *sequential build-up*. Tarot kartı pull sırasına benzer ritim.
+Bir halka tamamlanırken sıradaki başlıyor, *sequential build-up*. Tarot kartı pull sırasına benzer ritim.
 
 ### 6.5 Form input focus state
 
@@ -447,7 +447,7 @@ className="
 "
 ```
 
-Liquid Glass referansı — focus DEĞİL bir nav element, hairline + soft glow yeterli. Neon glow kategori dışı.
+Liquid Glass referansı: focus DEĞİL bir nav element, hairline + soft glow yeterli. Neon glow kategori dışı.
 
 ### 6.6 Loading state'ler
 
@@ -467,7 +467,7 @@ function Skeleton() {
 }
 ```
 
-`@keyframes pulse` mevcut Tailwind. Karne yüklenirken kart yerleri tutulur, içerik akar — *cumulative layout shift sıfır*.
+`@keyframes pulse` mevcut Tailwind. Karne yüklenirken kart yerleri tutulur, içerik akar, *cumulative layout shift sıfır*.
 
 ---
 
@@ -492,11 +492,11 @@ export const kicker = 'text-[0.6875rem] font-bold uppercase tracking-[0.4em]';
 Mevcut: `globals.css`'te `body::after { animation: none }`, `main { animation: none }`. SpaceIntro'da `if (matches('(prefers-reduced-motion: reduce)')) return`. ✓
 
 **Yayılması gereken alanlar**:
-- StarTreeOfLife (14sn animasyon) — `useReducedMotion()` hook ile statik tablo göster.
-- SolarSystem3D — gezegen rotasyonu durdur (`useFrame` içinde dt = 0).
-- CompatibilityView tab geçiş layoutId — `prefers-reduced-motion` ise `transition={{ duration: 0 }}`.
-- Tarot flip — crossfade'e düş.
-- Yeni eklenecek `<TwoStarsMeet>` ve `<BreathPrompt>` — direkt atla.
+- StarTreeOfLife (14sn animasyon): `useReducedMotion()` hook ile statik tablo göster.
+- SolarSystem3D: gezegen rotasyonu durdur (`useFrame` içinde dt = 0).
+- CompatibilityView tab geçiş layoutId, `prefers-reduced-motion` ise `transition={{ duration: 0 }}`.
+- Tarot flip: crossfade'e düş.
+- Yeni eklenecek `<TwoStarsMeet>` ve `<BreathPrompt>`: direkt atla.
 
 Tek hook:
 
@@ -520,7 +520,7 @@ export function useReducedMotion() {
 
 Light mode için audit:
 - `text-muted` (`rgba(26,20,14,0.62)`) over `bg: #FAF7F0` → **4.6:1** ✓ AA
-- `text-faint` (`rgba(26,20,14,0.4)`) over `bg` → **2.9:1** ✗ — kullanım yeri "tarih, footnote" — küçük metin için AA 4.5 gerek. Çözüm: `text-faint` light'ta `rgba(26,20,14,0.55)` (3.8:1, large text AA) — sadece 14px+ alanlarda kullan.
+- `text-faint` (`rgba(26,20,14,0.4)`) over `bg` → **2.9:1** ✗: kullanım yeri "tarih, footnote": küçük metin için AA 4.5 gerek. Çözüm: `text-faint` light'ta `rgba(26,20,14,0.55)` (3.8:1, large text AA), sadece 14px+ alanlarda kullan.
 - `text-gold` light'ta `#9C6D0E` over `#FAF7F0` → **5.1:1** ✓
 - Dark mode'da mevcut `text-ink: #f4f1ff` over `#07091a` → 18:1 ✓ AAA
 
@@ -534,7 +534,7 @@ import { parse, contrast } from 'wcag-contrast';
 ### 7.4 Focus order & trap
 
 - Modallar (`ConceptCard`, `SolarSystem3D` planet detail): `focus-trap-react` ya da custom hook ile Tab key tutulsun.
-- Mevcut focus-visible: `outline: 2px solid rgba(245, 208, 97, 0.7)` — light mode için contrast düşük; semantic `outline-color: var(--color-gold)` yap.
+- Mevcut focus-visible: `outline: 2px solid rgba(245, 208, 97, 0.7)`: light mode için contrast düşük; semantic `outline-color: var(--color-gold)` yap.
 - Modal açıldığında `inert` attribute body üzerine, kapandığında kaldır.
 
 ### 7.5 VoiceOver / screen reader
@@ -555,21 +555,21 @@ Eksikler:
 
 ## 8. Hangi 5 şeyi YAPMAYALIM
 
-1. **"Cosmic gradient bombası" — sayfa başına 3 farklı nebula**. Karanlık mod'da bile aşırı doygun mor/pembe gradient (`bg-galaxy` + `bg-cosmic` + `bg-aurora` aynı sayfada kullanılmamalı). ADA paterni: tek atmosphere/sahne. Lumy tek palet, Crouton tek mood. Mevcut `CosmicBackground variant` props'u: ekran başına TEK variant, asla overlay üst üste.
+1. **"Cosmic gradient bombası": sayfa başına 3 farklı nebula**. Karanlık mod'da bile aşırı doygun mor/pembe gradient (`bg-galaxy` + `bg-cosmic` + `bg-aurora` aynı sayfada kullanılmamalı). ADA paterni: tek atmosphere/sahne. Lumy tek palet, Crouton tek mood. Mevcut `CosmicBackground variant` props'u: ekran başına TEK variant, asla overlay üst üste.
 
-2. **Emoji dağı** (🌞 ◇ ⌖ 🪷 🦋 🐉 ᛒ 🃏 ✦ ⚯ 🤝 ⏳ ↔ ⚡ 🚪 🌿 📈 ♾ 🕯 💫 — sayfa başına 9-15 emoji). Co-Star DNA'sı: tipografi öne, ikon arkaya. Çözüm: SF Symbols / custom glyph SVG seti (`◇ ✦ ⚯ ◐ ✶ ⟁` — 6 öğe, hepsi soğuk renksiz). Emoji'leri kalıcı olarak değiştirme yerine, ana yüzeyde gizle; modallarda kalabilir.
+2. **Emoji dağı** (🌞 ◇ ⌖ 🪷 🦋 🐉 ᛒ 🃏 ✦ ⚯ 🤝 ⏳ ↔ ⚡ 🚪 🌿 📈 ♾ 🕯 💫, sayfa başına 9-15 emoji). Co-Star DNA'sı: tipografi öne, ikon arkaya. Çözüm: SF Symbols / custom glyph SVG seti (`◇ ✦ ⚯ ◐ ✶ ⟁`: 6 öğe, hepsi soğuk renksiz). Emoji'leri kalıcı olarak değiştirme yerine, ana yüzeyde gizle; modallarda kalabilir.
 
-3. **"Parlaklık patlaması" — `shadow-glow` + `card-glow` + `nebula-glow` üst üste**. ADA winner'lar (Speechify, Watch Duty, Crouton) "trust through clarity". Light mode'da bunlar tamamen kapansın; dark mode'da sayfa başına max 1 glow odağı (ana CTA).
+3. **"Parlaklık patlaması": `shadow-glow` + `card-glow` + `nebula-glow` üst üste**. ADA winner'lar (Speechify, Watch Duty, Crouton) "trust through clarity". Light mode'da bunlar tamamen kapansın; dark mode'da sayfa başına max 1 glow odağı (ana CTA).
 
-4. **"Tüm zamanlar autoplay" — StarTree 14sn + 3D planet rotation + starDrift 120sn + nebula breath + 7-sistem reveal**. Sayfa açıldığında 5 paralel animasyon = pil, GPU, CLS. Kural: sayfa zemini (drift) hep çalışır + max 1 manuel-trigger animasyon. Otomatik animasyonlar Reduce Motion'a hassas; manuel olanlar sadece kullanıcı tetikleyince.
+4. **"Tüm zamanlar autoplay": StarTree 14sn + 3D planet rotation + starDrift 120sn + nebula breath + 7-sistem reveal**. Sayfa açıldığında 5 paralel animasyon = pil, GPU, CLS. Kural: sayfa zemini (drift) hep çalışır + max 1 manuel-trigger animasyon. Otomatik animasyonlar Reduce Motion'a hassas; manuel olanlar sadece kullanıcı tetikleyince.
 
-5. **"Çok ağır lottie / 3D her ekran"**. ADA winner Feather (3D draw) bile 3D'yi *araç olarak* sunuyor, *dekor* olarak değil. SolarSystem3D `/report` sayfasında **default kapalı** olmalı, "Gökyüzünü aç" butonu arkasında (zaten `showExplore` paterni var — gerçek default'u TRUE'dan FALSE'a çek). Premium showcase'inde 3D YOK.
+5. **"Çok ağır lottie / 3D her ekran"**. ADA winner Feather (3D draw) bile 3D'yi *araç olarak* sunuyor, *dekor* olarak değil. SolarSystem3D `/report` sayfasında **default kapalı** olmalı, "Gökyüzünü aç" butonu arkasında (zaten `showExplore` paterni var: gerçek default'u TRUE'dan FALSE'a çek). Premium showcase'inde 3D YOK.
 
 ---
 
 ## 9. 14 günlük tasarım sprint planı
 
-### Hafta 1 — Foundation (light mode + tokens + a11y)
+### Hafta 1: Foundation (light mode + tokens + a11y)
 
 | Gün | Görev | Effort | Çıktı |
 |---|---|---|---|
@@ -579,7 +579,7 @@ Eksikler:
 | 4 | `useReducedMotion()` hook + StarTree/SolarSystem'e yay | S | Reduce Motion path test |
 | 5 | Contrast audit + `text-faint` `kicker` token'ı rem'e çevir | M | A11y raporu |
 
-### Hafta 2 — Interaction polish (mikro-etkileşim + ekran revizyonları)
+### Hafta 2: Interaction polish (mikro-etkileşim + ekran revizyonları)
 
 | Gün | Görev | Effort | Çıktı |
 |---|---|---|---|
@@ -609,7 +609,7 @@ Eksikler:
 | Risk | Olasılık | Etki | Azaltma |
 |---|---|---|---|
 | **ReportCard PNG export bozulur** (`html-to-image` light mode'da color CSS variable'lar yakalayamayabilir) | Yüksek | Yüksek (paylaşılan görsel = viral motor) | ReportCard hep galaxy variant fallback. CSS variable yerine inline `style={}` ile renkleri yaz. Test: `scripts/test-png-export.mjs` ile 4 senaryo. |
-| **Mevcut karneler bozulur** (localStorage formatı değişmez, ama görsel render bozulabilir) | Düşük | Orta | Format değişmez — sadece görsel tema. Eski `report.savedAt` her zaman çalışmalı, yeni alanlar opsiyonel. |
+| **Mevcut karneler bozulur** (localStorage formatı değişmez, ama görsel render bozulabilir) | Düşük | Orta | Format değişmez, sadece görsel tema. Eski `report.savedAt` her zaman çalışmalı, yeni alanlar opsiyonel. |
 | **3D SolarSystem3D Suspense crash** (3D dependency'ler ağır, lazy load + Suspense katmanı) | Orta | Orta | Default collapsed yaptığımız için crash anında degrade. Her gezegen kendi Suspense. CLAUDE.md'de yazılı. |
 | **Capacitor `@capacitor/haptics` paket eklendiğinde build bozulur** | Düşük | Düşük | Web'de dynamic import. iOS native build production'da test edilir. |
 | **Framer Motion bundle boyut** (+30 kB gzipped) | Orta | Düşük | Zaten 3D var; +30kB toplam +%4. `motion/react` (slim) variant kullan. |
@@ -631,7 +631,7 @@ Bu plan tamamlandığında kabul edilebilir sayılır:
 - [ ] **Performans**: LCP < 2.5sn (mobile, throttled 3G), CLS < 0.1, total blocking time < 200ms.
 - [ ] **Bundle size delta**: +< 80 kB gzipped (Framer Motion 30 + haptics fallback 2 + theme system 4 + diğer).
 - [ ] **Visual regression**: 7 ekran × 2 tema × 2 viewport (mobile, desktop) = 28 screenshot kayıt + delta < 5%.
-- [ ] **Apple Design Award**: jüri perspektifi check — "memorable, intentional, accessible, inclusive" 4 boyutta net iyileşme var mı? Lumy/Crouton paternleri uygulandı mı?
+- [ ] **Apple Design Award**: jüri perspektifi check: "memorable, intentional, accessible, inclusive" 4 boyutta net iyileşme var mı? Lumy/Crouton paternleri uygulandı mı?
 
 ---
 
@@ -639,20 +639,20 @@ Bu plan tamamlandığında kabul edilebilir sayılır:
 
 ### A. Kaynak özeti
 
-- [Apple Design Awards 2025 winners](https://developer.apple.com/design/awards/2025/) — kategoriler ve referans uygulamalar
-- [Apple Design Awards 2024 winners](https://developer.apple.com/design/awards/2024/) — Procreate Dreams, Crouton, Gentler Streak, Rooms
-- [Apple HIG — Materials & Liquid Glass](https://developer.apple.com/design/human-interface-guidelines/materials) — nav vs content katmanlama
-- [Liquid Glass redefining hierarchy](https://www.createwithswift.com/liquid-glass-redefining-design-through-hierarchy-harmony-and-consistency/) — pratik uygulama
-- [Apple HIG — Color & semantic colors](https://developer.apple.com/design/human-interface-guidelines/color) — light/dark adaptasyon
-- [Apple HIG — SF Symbols](https://developers.apple.com/design/human-interface-guidelines/foundations/sf-symbols) — sembolik dil
-- [iOS Accessibility 2025](https://medium.com/@david-auerbach/ios-accessibility-guidelines-best-practices-for-2025-6ed0d256200e) — Dynamic Type, Reduce Motion
-- [Inclusive Dark Mode (Smashing 2025)](https://www.smashingmagazine.com/2025/04/inclusive-dark-mode-designing-accessible-dark-themes/) — halation, near-black surfaces
-- [Headspace case study (MetaLab)](https://www.metalab.com/work/headspace) — emotional onboarding, soft palette
-- [Co-Star design analysis (DeMagSign)](https://medium.com/demagsign/how-the-design-of-the-astrology-app-co-star-is-conquering-the-masses-d6b6d235c806) — monokrom + serif tipografi
-- [Motion.dev smooth tabs](https://motion.dev/tutorials/react-smooth-tabs) — shared element layoutId pattern
-- [iOS 2025 UX trends](https://medium.com/@bhumibhuva18/hot-ios-2025-ux-trends-micro-interactions-fluid-animations-and-design-principles-developers-b52673769cd6) — haptic + physics + intentional motion
-- [Mindfulness app design trends 2026](https://www.bighuman.com/blog/trends-in-mindfulness-app-design) — sage/sand/stone natural palette
-- [Tailwind v4 theming + semantic tokens](https://medium.com/@sir.raminyavari/theming-in-tailwind-css-v4-support-multiple-color-schemes-and-dark-mode-ba97aead5c14) — semantic token strategy
+- [Apple Design Awards 2025 winners](https://developer.apple.com/design/awards/2025/): kategoriler ve referans uygulamalar
+- [Apple Design Awards 2024 winners](https://developer.apple.com/design/awards/2024/): Procreate Dreams, Crouton, Gentler Streak, Rooms
+- [Apple HIG: Materials & Liquid Glass](https://developer.apple.com/design/human-interface-guidelines/materials), nav vs content katmanlama
+- [Liquid Glass redefining hierarchy](https://www.createwithswift.com/liquid-glass-redefining-design-through-hierarchy-harmony-and-consistency/), pratik uygulama
+- [Apple HIG: Color & semantic colors](https://developer.apple.com/design/human-interface-guidelines/color), light/dark adaptasyon
+- [Apple HIG: SF Symbols](https://developers.apple.com/design/human-interface-guidelines/foundations/sf-symbols), sembolik dil
+- [iOS Accessibility 2025](https://medium.com/@david-auerbach/ios-accessibility-guidelines-best-practices-for-2025-6ed0d256200e), Dynamic Type, Reduce Motion
+- [Inclusive Dark Mode (Smashing 2025)](https://www.smashingmagazine.com/2025/04/inclusive-dark-mode-designing-accessible-dark-themes/), halation, near-black surfaces
+- [Headspace case study (MetaLab)](https://www.metalab.com/work/headspace): emotional onboarding, soft palette
+- [Co-Star design analysis (DeMagSign)](https://medium.com/demagsign/how-the-design-of-the-astrology-app-co-star-is-conquering-the-masses-d6b6d235c806), monokrom + serif tipografi
+- [Motion.dev smooth tabs](https://motion.dev/tutorials/react-smooth-tabs): shared element layoutId pattern
+- [iOS 2025 UX trends](https://medium.com/@bhumibhuva18/hot-ios-2025-ux-trends-micro-interactions-fluid-animations-and-design-principles-developers-b52673769cd6), haptic + physics + intentional motion
+- [Mindfulness app design trends 2026](https://www.bighuman.com/blog/trends-in-mindfulness-app-design), sage/sand/stone natural palette
+- [Tailwind v4 theming + semantic tokens](https://medium.com/@sir.raminyavari/theming-in-tailwind-css-v4-support-multiple-color-schemes-and-dark-mode-ba97aead5c14), semantic token strategy
 
 ### B. Component'lere göre özetlenmiş değişim listesi
 
@@ -691,8 +691,8 @@ Bu plan tamamlandığında kabul edilebilir sayılır:
 
 ## Notlar
 
-- Bu plan **mevcut yapıyı korur** — store, types, lib/, supabase, payments hiçbir değişiklik gerektirmez.
+- Bu plan **mevcut yapıyı korur**, store, types, lib/, supabase, payments hiçbir değişiklik gerektirmez.
 - **Galaktik karanlık tema marka DNA'sı kalır**; light mode ikinci dil.
-- ReportCard share görseli her zaman karanlık variant — viral motor bozulmaz.
+- ReportCard share görseli her zaman karanlık variant, viral motor bozulmaz.
 - Capacitor iOS build 14 günlük sprint sonunda smoke test edilebilir; production submission Apple sırasında.
 - Sprint planı tek geliştirici (frontend + design) için. İki kişi varsa sprint 7 güne sıkışır.

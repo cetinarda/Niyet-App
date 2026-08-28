@@ -255,7 +255,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   const localAnimals = useLocalizedAnimals();
 
   // Doğum bilgisi zaten host köprüsünden geldiyse (neredeyse her zaman) "bul"
-  // akışını (intro → mod seç → sonuç) hiç göstermeden DOĞRUDAN sonuca atla —
+  // akışını (intro → mod seç → sonuç) hiç göstermeden DOĞRUDAN sonuca atla, 
   // kullanıcı: "hayvan rehberini bul butonu yerine doğrudan hayvanı gözüksün".
   // Kullanıcı isterse sonuç ekranındaki "tekrar dene" ile intro/quiz'e dönebilir.
   const initialBirthResult = React.useMemo<AnimalResult | null>(() => {
@@ -287,7 +287,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
     ? ((localAnimals.find((a: any) => a.id === result.animal.id) as typeof animalsData[0] | undefined) || result.animal)
     : null;
 
-  // birth form — host'tan gelen tüm doğum bilgisi ön-doldurulur
+  // birth form: host'tan gelen tüm doğum bilgisi ön-doldurulur
   const prefill = prefillBirthDate?.split('-') ?? [];
   const [bDay,   setBDay]   = useState(prefill[2] ? String(parseInt(prefill[2])) : '');
   const [bMonth, setBMonth] = useState(prefill[1] ? String(parseInt(prefill[1])) : '');
@@ -295,7 +295,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   const [bHour,  setBHour]  = useState(prefillBirthHour != null ? String(prefillBirthHour) : '');
   const [bCity,  setBCity]  = useState(prefillBirthCity ?? '');
 
-  // Prop sonradan gelirse (store async yüklenince) boş alanları doldur — kullanıcı
+  // Prop sonradan gelirse (store async yüklenince) boş alanları doldur, kullanıcı
   // değiştirdiyse ezme. Sadece bir-yön: boş → dolu.
   React.useEffect(() => {
     const p = prefillBirthDate?.split('-') ?? [];

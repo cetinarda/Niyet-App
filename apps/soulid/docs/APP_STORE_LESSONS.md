@@ -1,4 +1,4 @@
-# App Store Submission — Niyet.app ve TR/Astroloji Reddedilme Dersleri
+# App Store Submission: Niyet.app ve TR/Astroloji Reddedilme Dersleri
 
 > Bu doküman SoulProfile'ın App Store'a ilk gönderimde geçmesi için kritik bilgi.
 > Apple Developer Forums + tarihçesel astroloji app reddedilmeleri + niyet.app
@@ -19,7 +19,7 @@ Apple Review reddedilme kategorileri öncelik sırasıyla:
 | **2.3.7 Metadata accuracy** | 🟢 DÜŞÜK | Screenshots & description ile uyumlu |
 | **4.2 Capacitor wrapper detection** | 🟡 ORTA | Native plugin'ler + offline + interaktif |
 
-## En kritik tehdit: Guideline 4.3 (Spam — Astroloji)
+## En kritik tehdit: Guideline 4.3 (Spam: Astroloji)
 
 **Apple'ın geliştiriciye gönderdiği tam metin (Brian1703 / 2024 reddedilmesinden):**
 
@@ -71,29 +71,29 @@ SoulProfile'ı App Store'a gönderirken **hiçbir yerde** şu kelimeleri kullanm
 
 Education seçimi kritik: Sözlük (`/glossary`) + 11 tıklanabilir kavram detayı + AI'nin "Bilgelikleri/Gölgeleri" öğretim niteliğindedir. App Review Notes'a yaz: "App includes a 30+ entry educational glossary and contextual concept explanations, serving as a learning tool for introspective practices."
 
-## Guideline 4.0 (Minimum Functionality — Wrapper)
+## Guideline 4.0 (Minimum Functionality: Wrapper)
 
 Capacitor wrapper'ları reviewer'ların radarındadır. "WebView içinde web sitesi" gibi görünmemeli.
 
 ### Bizim deliller (App Review Notes'a yaz):
 
-1. **3D Solar Sistem** — three.js + WebGL, gerçek gezegen dokuları, OrbitControls
-2. **Yıldız Yaşam Ağacı** — astronomi motoru ile yaşam boyu gezegen pozisyonlarının animasyonu
-3. **Birth Chart Wheel** — interaktif SVG, gezegen pozisyonlarını gerçek zamanlı hesap
-4. **Compatibility Engine** — iki kişiyi karşılaştıran, lokal hesaplama
-5. **Native Plugin'ler** — @capacitor/share (paylaşma), @capacitor/preferences (lokal saklama), @capacitor/filesystem (PNG kaydet)
-6. **Offline çalışır** — internet olmadan da temel karne üretir (Claude API olmadan fallback aktif)
-7. **Native splash + status bar** — Capacitor StatusBar + SplashScreen plugins
+1. **3D Solar Sistem**: three.js + WebGL, gerçek gezegen dokuları, OrbitControls
+2. **Yıldız Yaşam Ağacı**: astronomi motoru ile yaşam boyu gezegen pozisyonlarının animasyonu
+3. **Birth Chart Wheel**: interaktif SVG, gezegen pozisyonlarını gerçek zamanlı hesap
+4. **Compatibility Engine**: iki kişiyi karşılaştıran, lokal hesaplama
+5. **Native Plugin'ler**: @capacitor/share (paylaşma), @capacitor/preferences (lokal saklama), @capacitor/filesystem (PNG kaydet)
+6. **Offline çalışır**: internet olmadan da temel karne üretir (Claude API olmadan fallback aktif)
+7. **Native splash + status bar**, Capacitor StatusBar + SplashScreen plugins
 
-## Guideline 3.1.1 (In-App Purchase) — kapatıldı
+## Guideline 3.1.1 (In-App Purchase): kapatıldı
 
-✅ Tek seferlik **paid app** modeli ($4.99). Apple kendi ödeme akışını kullanır. IAP, abonelik, RevenueCat, Stripe — yok.
+✅ Tek seferlik **paid app** modeli ($4.99). Apple kendi ödeme akışını kullanır. IAP, abonelik, RevenueCat, Stripe, yok.
 
 iOS build'inde `isCapacitorNative()` true olduğunda Stripe Checkout butonu gizleniyor. Premium sayfası native'de "peşin satın alındı" mesajı veriyor.
 
 ## Guideline 5.2.1 (Intellectual Property)
 
-Gezegen dokuları **jeromeetienne/threex.planets** (MIT lisanslı) — atıf zorunlu değil ama saygı için App Review Notes'a yazılır:
+Gezegen dokuları **jeromeetienne/threex.planets** (MIT lisanslı): atıf zorunlu değil ama saygı için App Review Notes'a yazılır:
 
 > "Planet textures sourced from threex.planets (MIT License, https://github.com/jeromeetienne/threex.planets). Original NASA/educational sources are public domain."
 
@@ -134,9 +134,9 @@ Doğum tarihi/saati/yeri **hassas veridir**. Privacy Manifest gerekecek (Xcode 1
 ```
 
 App Privacy section'da beyan edilecek data:
-- **Contact Info — Name** (linked to user, Functionality)
-- **Other Data Types — Other** (birth date/time/place, linked to user, Functionality)
-- **User Content — Photos** (linked to user, App Functionality, optional)
+- **Contact Info: Name** (linked to user, Functionality)
+- **Other Data Types: Other** (birth date/time/place, linked to user, Functionality)
+- **User Content: Photos** (linked to user, App Functionality, optional)
 
 Hiçbir veri "Used for Tracking" değil ✓. IDFA çekmiyoruz, ATT prompt yok.
 
@@ -157,7 +157,7 @@ a one-time-purchase introspective analysis tool that synthesizes 9 distinct
 astronomical, mathematical, and traditional symbolic systems into a single
 personal identity report, generated from birth date / time / location:
 
-1. Western astrological chart (planet positions, lunar nodes, 12 houses) —
+1. Western astrological chart (planet positions, lunar nodes, 12 houses), 
    calculated locally via astronomy-engine (MIT)
 2. Vedic / Jyotish nakshatra (lunar mansion) calculation
 3. Chinese zodiac (12 animals × 5 elements × Yin/Yang)
@@ -171,11 +171,11 @@ personal identity report, generated from birth date / time / location:
 Unique app-like functionality (NOT a website wrapper):
 - Interactive 3D solar system (WebGL/three.js) with real NASA-derived
   textures, rotating Earth, clickable planets at their birth positions
-- Animated "Star Tree of Life" — planetary trajectories from birth to now
+- Animated "Star Tree of Life": planetary trajectories from birth to now
 - Interactive birth chart wheel with rendered SVG planet positions
-- Dual Compatibility engine — synastry + Human Design center comparison
+- Dual Compatibility engine: synastry + Human Design center comparison
   with electromagnetic / dominance / companionship channel detection
-- Character Stats card — 10 archetypal traits derived from chart factors
+- Character Stats card: 10 archetypal traits derived from chart factors
 - Native plugins: @capacitor/share, @capacitor/preferences,
   @capacitor/filesystem (PNG export to Photos)
 - Works offline (fallback narrative generator)
@@ -226,7 +226,7 @@ Texture/library credits:
 İlk submission'a basmadan önce her birini ✓ yap:
 
 - [ ] App'in adı SoulProfile (sadece "Astroloji" / "Horoscope" değil)
-- [ ] Subtitle: "Doğum verisi · kimlik analizi" — astrolojiden kaçınılmış
+- [ ] Subtitle: "Doğum verisi · kimlik analizi": astrolojiden kaçınılmış
 - [ ] Keywords field'da "horoscope, fortune, psychic, palm" YOK
 - [ ] Screenshot'larda "daily horoscope" gibi yazılı UI yok
 - [ ] Screenshot'larda 3D solar system, compatibility, character stats vurgulu
@@ -251,7 +251,7 @@ Texture/library credits:
 
 İlk submission'da 4.3 yine de gelirse:
 
-1. **Resolution Center'da inat etme** — direkt cevap yaz, App Review Board'a appeal et
+1. **Resolution Center'da inat etme**: direkt cevap yaz, App Review Board'a appeal et
 2. Yanıt taslağı:
    > "Thank you for the review. SoulProfile is an introspective birth-data
    > synthesis and self-discovery tool, not a daily-horoscope, palmistry,

@@ -8,7 +8,7 @@ import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
 import { BrandMark } from '@/components/BrandMark';
 import { useT } from '@/lib/i18n';
 
-/* ── 4 eksenli radar (Kimya · Ders · Ritim · Kader) — saf SVG, capture-safe ── */
+/* ── 4 eksenli radar (Kimya · Ders · Ritim · Kader), saf SVG, capture-safe ── */
 function CompatRadar({
   scores,
   labels,

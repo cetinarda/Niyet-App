@@ -1,13 +1,13 @@
-// Astrolojik element dağılımı — "Kozmik Ağırlık Yöntemi".
+// Astrolojik element dağılımı: "Kozmik Ağırlık Yöntemi".
 //
 // Eşit sayım (her gezegen = 1) yerine profesyonel astrolojinin ağırlıklandırma
 // mantığı kullanılır:
-//   1. Temel önem ağırlığı  — ışıklar (Güneş/Ay) en ağır, kişisel gezegenler orta,
+//   1. Temel önem ağırlığı: ışıklar (Güneş/Ay) en ağır, kişisel gezegenler orta,
 //      sosyal gezegenler hafif, kuşak (trans-kişisel) gezegenleri çok hafif
 //      (bütün bir nesil paylaştığı için karakteri az tanımlar).
-//   2. Temel onurlanma (dignity) — kişisel gövdeler yönettiği burçta (domicile)
+//   2. Temel onurlanma (dignity): kişisel gövdeler yönettiği burçta (domicile)
 //      ×1.5, yüceldiği burçta (exaltation) ×1.3 güç kazanır.
-//   3. Stellium yoğunlaşması — bir burçta 3+ gövde toplanmışsa o gövdeler ×1.15.
+//   3. Stellium yoğunlaşması: bir burçta 3+ gövde toplanmışsa o gövdeler ×1.15.
 //   4. Kuzey Ay Düğümü (karmik yön) hafif ağırlıkla katılır.
 //
 // Burç sırası ateş→toprak→hava→su döngüsüdür: element = floor(longitude/30) % 4.
@@ -50,12 +50,12 @@ export const ELEMENT_META: Record<ElementKey, { tr: string; en: string; color: s
   su:     { tr: 'Su',     en: 'Water', color: '#5C9AD8', glyph: '▽', desc: 'Duygu, sezgi, derinlik. Hisseden, akan, bağ kuran enerji.', descEn: 'Emotion, intuition, depth. The energy that feels, flows and bonds.' },
 };
 
-// Element açıklaması — dile göre.
+// Element açıklaması: dile göre.
 export function elementDesc(k: ElementKey): string {
   return getLang() === 'en' ? ELEMENT_META[k].descEn : ELEMENT_META[k].desc;
 }
 
-// Element adı — dile göre.
+// Element adı: dile göre.
 export function elementName(k: ElementKey): string {
   return getLang() === 'en' ? ELEMENT_META[k].en : ELEMENT_META[k].tr;
 }
@@ -86,7 +86,7 @@ const BASE: Record<string, number> = {
   northNode: 0.9,
 };
 
-// Onurlanma — yalnızca kişisel gövdeler için (kuşak gezegenleri elementi şişirmesin)
+// Onurlanma: yalnızca kişisel gövdeler için (kuşak gezegenleri elementi şişirmesin)
 const DIGNIFY = new Set(['sun', 'moon', 'mercury', 'venus', 'mars']);
 // Yönettiği burç(lar) (modern + geleneksel)
 const DOMICILE: Record<string, number[]> = {
@@ -102,7 +102,7 @@ function signOf(lon: number): number {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// YORUM — element dengesini Sakin Tasarım diliyle anlatır. Baskın/destekleyici/
+// YORUM: element dengesini Sakin Tasarım diliyle anlatır. Baskın/destekleyici/
 // düşük element sıralamasına ve baskın ikilinin bileşik enerjisine göre üretilir.
 
 const ELEM_CORE: Record<ElementKey, string> = {
@@ -188,7 +188,7 @@ export function elementInterpretation(dist: ElementDistribution): ElementInterpr
       else role = 'var, ancak karar mekanizmanın merkezinde değil.';
     }
     const core = en ? ELEM_CORE_EN[r.k] : ELEM_CORE[r.k];
-    return { key: r.k, pct, text: `${core} — ${role}` };
+    return { key: r.k, pct, text: `${core}: ${role}` };
   });
 
   const a = ranked[0].k, b = ranked[1].k;
@@ -232,7 +232,7 @@ export function elementDistribution(personalityJD: number): ElementDistribution 
     { key: 'northNode', lon: pos.northNode },
   ];
 
-  // Stellium tespiti — burç başına gövde sayısı
+  // Stellium tespiti: burç başına gövde sayısı
   const signCount: Record<number, number> = {};
   bodies.forEach((b) => { const s = signOf(b.lon); signCount[s] = (signCount[s] || 0) + 1; });
 

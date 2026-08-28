@@ -70,7 +70,7 @@ export function calculateChinese(birthISO: string): ChineseResult {
   const month = date.getUTCMonth() + 1;
   const day = date.getUTCDate();
 
-  // Adjust for Chinese New Year — if before CNY, use previous year
+  // Adjust for Chinese New Year, if before CNY, use previous year
   const cny = CNY_DATES[year];
   if (cny && (month < cny[0] || (month === cny[0] && day < cny[1]))) {
     year -= 1;

@@ -108,7 +108,7 @@ export const ja = {
       cityHint: '生まれた土地のエネルギーが、リーディングに深みを加えます。',
       hourLabel: '出生時刻',
       hourOptional: '（任意）',
-      hourPlaceholder: '時（0–23）',
+      hourPlaceholder: '時（0-23）',
       hourHint: '時刻が分からない場合は空欄のままで構いません。それでも力強いマッチングが行われます。',
       submitBtn: 'ガイドを見つける ✦',
     },
@@ -185,7 +185,7 @@ export const ja = {
   nagual: {
     back: '← 戻る',
     familyTag: 'SAKIN · ナワル',
-    introTitle: 'ナワル — 期間の導き手',
+    introTitle: 'ナワル 、 期間の導き手',
     introText:
       'あなたのトーテムアニマルはあなたと共に生まれ、生涯ともにあります。一方、ナワルは特定の期間に\nあなたに寄り添う一時的な導き手です。試練、変容、危機のときに現れます。\nその役目を終えると、別の導き手へとその座を譲ります。',
     weekTag: '今週 · 普遍',
@@ -326,7 +326,7 @@ export const ja = {
         yearPlaceholder: '年',
         hourLabel: '出生時刻',
         hourOptional: '（HDに重要）',
-        hourPlaceholder: '時（0–23）',
+        hourPlaceholder: '時（0-23）',
         minutePlaceholder: '分',
         cityLabel: '出生地',
         cityOptional: '（タイムゾーン用）',
@@ -342,7 +342,7 @@ export const ja = {
       totemTitle: '⊕ トーテムアニマル',
       totemText:
         'すべての人は、その本性の中に一つの動物の魂を宿しています。このトーテムアニマルはあなたを表します。あなたのエネルギー、強み、そして歩む道は、その痕跡を帯びています。トーテムは決して変わりません。あなたと共に生まれ、あなたと共に育ちます。',
-      nagualTitle: '◎ ナワル — 期間の導き手',
+      nagualTitle: '◎ ナワル 、 期間の導き手',
       nagualText:
         'ナワルは、特定の期間にあなたのもとへ訪れる一時的な導き手です。試練、変容、危機のときに呼ばれます。その役目を終えると、別の導き手へとその座を譲ります。日々のリーディングで引かれる動物は、今日のナワルの声を運んでいます。',
       finderTitle: 'あなたの動物ガイドを見つける',
@@ -365,7 +365,7 @@ export const ja = {
     sakinFamily: {
       title: 'Sakin ファミリー',
       intro: '一つのエコシステム。一つのサブスクリプション。たくさんの扉。',
-      masterDesc: 'ホーム拠点 — すべてのアプリへの入口',
+      masterDesc: 'ホーム拠点 、 すべてのアプリへの入口',
       apps: {
         animalGuidance: '動物の導き',
         stoneGuidance: '結晶の導き',
@@ -506,11 +506,11 @@ export const ja = {
     },
     mit: {
       term: '神話',
-      short: '魂が出会う象徴的な力 — 影、敷居、稲妻...',
+      short: '魂が出会う象徴的な力 、 影、敷居、稲妻...',
     },
     hayatYolu: {
       term: 'ライフパスナンバー',
-      short: '生年月日の数秘術的な要約 — あなたの核となるエネルギーを示します。',
+      short: '生年月日の数秘術的な要約 、 あなたの核となるエネルギーを示します。',
     },
     numeroloji: {
       term: '数秘術',
@@ -518,15 +518,15 @@ export const ja = {
     },
     ifade: {
       term: '表現数',
-      short: '名前の文字から導かれる — あなたの生まれ持った才能と可能性。',
+      short: '名前の文字から導かれる 、 あなたの生まれ持った才能と可能性。',
     },
     ruhIstegi: {
       term: '魂の衝動数',
-      short: '名前の母音から — あなたの内なる動機。',
+      short: '名前の母音から 、 あなたの内なる動機。',
     },
     kisilik: {
       term: '人格数',
-      short: '名前の子音から — あなたが世界に見せる顔。',
+      short: '名前の子音から 、 あなたが世界に見せる顔。',
     },
     humanDesign: {
       term: 'ヒューマンデザイン',
@@ -570,7 +570,7 @@ export const ja = {
     },
     kisiselYil: {
       term: 'パーソナルイヤー',
-      short: 'あなたの数秘術的な年に固有のテーマ — 9年周期のどの段階にいるか。',
+      short: 'あなたの数秘術的な年に固有のテーマ 、 9年周期のどの段階にいるか。',
     },
     rehber: {
       term: 'スピリットアニマル',

@@ -20,7 +20,7 @@ export function CosmicBackground({ variant = 'galaxy', className }: Props) {
       className={clsx(
         'pointer-events-none absolute inset-0 -z-10 overflow-hidden nebula-glow',
         BG[variant],
-        'opacity-70', // sayfa zemini zaten kendi nebula vignette'ine sahip — daha sakin overlay
+        'opacity-70', // sayfa zemini zaten kendi nebula vignette'ine sahip: daha sakin overlay
         className,
       )}
     >

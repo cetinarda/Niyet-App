@@ -67,17 +67,17 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
         meta: entry.detailMeta,
         body: first,
         fileName: `sakin-${entry.name}.png`,
-        shareText: `${entry.name} — sakin.life`,
+        shareText: `${entry.name}: sakin.life`,
       });
       return;
     }
-    const message = `${entry.name} — ${translate(('detail.kind.' + entry.kind) as any)}\n\n${first}\n\n${translate('common.familyTag')}`;
+    const message = `${entry.name}: ${translate(('detail.kind.' + entry.kind) as any)}\n\n${first}\n\n${translate('common.familyTag')}`;
     try {
       if (Platform.OS !== 'web') {
         await Share.share({ message, title: entry.name });
       }
     } catch {
-      // user cancelled or share unavailable — silent
+      // user cancelled or share unavailable, silent
     }
   };
 

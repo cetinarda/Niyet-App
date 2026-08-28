@@ -1,4 +1,4 @@
-# Sakin Tasarım — Xcode Lokal Build & TestFlight Akışı
+# Sakin Tasarım: Xcode Lokal Build & TestFlight Akışı
 
 Bu doküman, **Sakin Tasarım**'ı kendi Mac'inde Xcode ile derleyip App Store
 Connect'e (TestFlight + App Store) yükleme adımlarını içerir. Akış,
@@ -20,7 +20,7 @@ hizalı: lokal Xcode → Archive → Distribute App → Upload.
 | **CocoaPods 1.15+** | `sudo gem install cocoapods` ya da `brew install cocoapods` |
 | **Node 20+** ve **npm 10+** | `nvm install 20` önerilir |
 | **Apple Developer Program** ($99/yıl) | https://developer.apple.com/programs/ |
-| **App Store Connect uygulaması** | https://appstoreconnect.apple.com — App ID ve uygulama kaydı için |
+| **App Store Connect uygulaması** | https://appstoreconnect.apple.com: App ID ve uygulama kaydı için |
 | **Watchman** (opsiyonel, hız için) | `brew install watchman` |
 
 İlk kurulum doğrulama:
@@ -50,7 +50,7 @@ App Store Connect'te (https://appstoreconnect.apple.com) yapılacaklar:
 2. **Users and Access → Integrations → App Store Connect API**
    - "Generate API Key" → Issuer ID + Key ID + .p8 dosyasını indir
    - Bu üçü `eas.json` submit profilinde veya `xcrun altool`/`notarytool` için kullanılır
-   - .p8 dosyası **bir kere** indirilebilir — güvenli sakla
+   - .p8 dosyası **bir kere** indirilebilir, güvenli sakla
 3. **App ID kapasiteleri (Identifiers)**
    - Bizim app için gerekli: yok (push notification yok, in-app purchase yok). Sadece varsayılan.
 4. **Pricing and Availability** → Free, tüm bölgeler.
@@ -73,11 +73,11 @@ npx expo prebuild --platform ios --clean
 ```
 
 `prebuild --clean` flag'i her seferinde `ios/` klasörünü siler ve yeniden
-üretir. Bu, Niyet-App'teki `npx cap sync ios` adımının Expo karşılığıdır —
+üretir. Bu, Niyet-App'teki `npx cap sync ios` adımının Expo karşılığıdır, 
 JS tarafındaki değişiklikleri native projeye yansıtır.
 
 > **Not:** `ios/` klasörünü repo'ya commit etmeyebilirsin (yönetilen akış)
-> ya da edersin (bare-managed hybrid). Bizim tercih: **commit etme** —
+> ya da edersin (bare-managed hybrid). Bizim tercih: **commit etme**, 
 > sürüm öncesi temiz prebuild çalıştır. Bunun için `.gitignore`'da `ios/`
 > satırı bulunmalı. (Var olan `.gitignore` zaten `ios/Pods/`'u yok sayıyor;
 > tam dışlama istersen `ios/` satırını ekle.)
@@ -124,7 +124,7 @@ Eğer kırmızı uyarı çıkarsa:
 
 ## 5. Sürüm ve Build Numarasını Ayarla
 
-**Tek doğruluk kaynağı: `app.json`**. Xcode'daki değerleri elle düzenleme —
+**Tek doğruluk kaynağı: `app.json`**. Xcode'daki değerleri elle düzenleme, 
 sonraki prebuild silinir. Bunun yerine `app.json`'u güncelle:
 
 ```jsonc
@@ -223,7 +223,7 @@ App Store Connect → **TestFlight** sekmesi:
 | `Deployment target ... is lower than ...` | `app.json` → `expo.ios.deploymentTarget: "15.1"` ekle, prebuild |
 | `xcrun: error: SDK "iphoneos" cannot be located` | `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` |
 | `ITMS-90713 Missing Info.plist value` | app.json infoPlist'e eksik anahtarı ekle, prebuild |
-| `ITMS-90683 Missing Purpose String` | Hiçbir izin (kamera, mikrofon vb.) istemiyoruz — istiyorsak `infoPlist`'e NSXxxxUsageDescription ekle |
+| `ITMS-90683 Missing Purpose String` | Hiçbir izin (kamera, mikrofon vb.) istemiyoruz: istiyorsak `infoPlist`'e NSXxxxUsageDescription ekle |
 
 ### 11.1 Temiz Sıfırlama
 
@@ -252,7 +252,7 @@ eas submit --platform ios --latest
 ```
 
 Bu yol, sertifika ve provisioning profile'ı Expo'nun kendi sunucularında
-saklar — manuel signing'e gerek kalmaz. Niyet-App lokal Xcode kullanıyor;
+saklar: manuel signing'e gerek kalmaz. Niyet-App lokal Xcode kullanıyor;
 biz de varsayılan olarak onu öneriyoruz. EAS sadece yedek.
 
 ---
@@ -272,4 +272,4 @@ biz de varsayılan olarak onu öneriyoruz. EAS sadece yedek.
 ---
 
 **Son güncelleme:** Mayıs 2026  
-**Stack referansı:** [Niyet-App](https://github.com/cetinarda/Niyet-App) — sakin.life ekosistemindeki kardeş uygulama
+**Stack referansı:** [Niyet-App](https://github.com/cetinarda/Niyet-App): sakin.life ekosistemindeki kardeş uygulama

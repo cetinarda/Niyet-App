@@ -26,16 +26,16 @@ const L = {
     },
     sentences: {
       companionship: (channel: string, theme: string) =>
-        `İkiniz de ${channel} kanalına (${theme}) sahipsiniz. Bu alanda birbirinize çok benzersiniz — aynı dili konuşur, birlikte rahat edersiniz. Yan yana yürüyen iki benzer enerji.`,
+        `İkiniz de ${channel} kanalına (${theme}) sahipsiniz. Bu alanda birbirinize çok benzersiniz, aynı dili konuşur, birlikte rahat edersiniz. Yan yana yürüyen iki benzer enerji.`,
       dominance: (lead: string, follow: string, channel: string, theme: string) =>
         `${lead} ${channel} kanalının tamamına sahip, ${follow} ise yalnızca bir ucuna. Bu temada (${theme}) ${lead} tonu belirler; ${follow} bu enerjiyi onun üzerinden deneyimler. Bilinçli olunca öğretici, değilse bastırıcı olabilir.`,
       electromagnetic: (a: string, b: string, channel: string, theme: string) =>
-        `${a} ve ${b} ${channel} kanalının (${theme}) birer ucuna sahip — birlikteyken kanal tamamlanıyor. Bu, klasik "çekim" noktası: yan yana geldiğinizde bu alan canlanır, birbirinizi tetikler ve tamamlarsınız.`,
+        `${a} ve ${b} ${channel} kanalının (${theme}) birer ucuna sahip: birlikteyken kanal tamamlanıyor. Bu, klasik "çekim" noktası: yan yana geldiğinizde bu alan canlanır, birbirinizi tetikler ve tamamlarsınız.`,
     },
     aspectFlavor: {
       fusion: 'enerjiler birleşir, yoğun ve birbirinden ayrılamaz bir tema',
       flowing: 'doğal akış, kolaylık ve karşılıklı destek',
-      tense: 'sürtünme ve gerilim — ama doğru kullanılınca en çok büyüten bağ',
+      tense: 'sürtünme ve gerilim: ama doğru kullanılınca en çok büyüten bağ',
     },
     aspects: {
       conjunction: 'kavuşum',
@@ -50,8 +50,8 @@ const L = {
       Vertex: 'Vertex',
     } as Record<string, string>,
     pairTheme: {
-      sunMoon: 'kimlik ve duygusal besleme — klasik ruh eşi göstergesi',
-      moonSun: 'duygusal besleme ve kimlik — karşılıklı yuva hissi',
+      sunMoon: 'kimlik ve duygusal besleme: klasik ruh eşi göstergesi',
+      moonSun: 'duygusal besleme ve kimlik: karşılıklı yuva hissi',
       venusMars: 'romantik ve fiziksel çekim',
       marsVenus: 'tutku ve estetik çekim',
       sunSun: 'temel kimlik ve yaşam yönü uyumu',
@@ -62,15 +62,15 @@ const L = {
       saturnSun: 'sorumluluk, kalıcılık ve olgunlaştıran bağ',
       nnSun: 'kaderî / büyüten karmik bağ',
       sunNn: 'ortak ruhsal yön ve kader hissi',
-      vertexSun: 'kader buluşması — eşin senin kim olduğunu derinden tetikliyor',
-      vertexMoon: 'kader buluşması — duygu hafızanda silinmez bir iz bırakıyor',
-      vertexVenus: 'kader buluşması — sevgi ve değer üzerinden hatırlatıcı bir bağ',
+      vertexSun: 'kader buluşması: eşin senin kim olduğunu derinden tetikliyor',
+      vertexMoon: 'kader buluşması: duygu hafızanda silinmez bir iz bırakıyor',
+      vertexVenus: 'kader buluşması: sevgi ve değer üzerinden hatırlatıcı bir bağ',
     },
     numerology: {
-      same: (lp: number) => `İkiniz de Yaşam Yolu ${lp}. Aynı temel dersi paylaşıyorsunuz — birbirinizi derinden anlarsınız ama aynı kör noktaları da paylaşırsınız.`,
+      same: (lp: number) => `İkiniz de Yaşam Yolu ${lp}. Aynı temel dersi paylaşıyorsunuz: birbirinizi derinden anlarsınız ama aynı kör noktaları da paylaşırsınız.`,
       harmonious: (a: number, b: number) => `Yaşam Yolu ${a} ve ${b} doğal olarak akan bir kombinasyon. Farklı güçler getirirsiniz ama birbirinizi tamamlarsınız.`,
-      near: (a: number, b: number) => `Yaşam Yolu ${a} ve ${b} birbirine yakın enerjiler — çoğu konuda anlaşır, bazen aynılaşmaktan sıkılırsınız.`,
-      far: (a: number, b: number) => `Yaşam Yolu ${a} ve ${b} farklı ritimlerde. Çekim güçlü olabilir ama uyum için bilinçli çaba ve saygı gerekir — en çok büyüten ilişkiler bunlardır.`,
+      near: (a: number, b: number) => `Yaşam Yolu ${a} ve ${b} birbirine yakın enerjiler: çoğu konuda anlaşır, bazen aynılaşmaktan sıkılırsınız.`,
+      far: (a: number, b: number) => `Yaşam Yolu ${a} ve ${b} farklı ritimlerde. Çekim güçlü olabilir ama uyum için bilinçli çaba ve saygı gerekir, en çok büyüten ilişkiler bunlardır.`,
     },
     headline: {
       magnetic: (a: string, b: string) => `${a} & ${b}: Manyetik bir uyum`,
@@ -90,16 +90,16 @@ const L = {
     },
     sentences: {
       companionship: (channel: string, theme: string) =>
-        `You both have channel ${channel} (${theme}). You are very alike here — speak the same language, feel comfortable together. Two similar energies walking side by side.`,
+        `You both have channel ${channel} (${theme}). You are very alike here, speak the same language, feel comfortable together. Two similar energies walking side by side.`,
       dominance: (lead: string, follow: string, channel: string, theme: string) =>
         `${lead} has the full channel ${channel}, while ${follow} only holds one end. In this theme (${theme}), ${lead} sets the tone; ${follow} experiences this energy through them. With awareness it is teaching; without, it can feel suppressive.`,
       electromagnetic: (a: string, b: string, channel: string, theme: string) =>
-        `${a} and ${b} each hold one end of channel ${channel} (${theme}) — together the channel completes. This is the classic point of "attraction": when you come together this area lights up, you trigger and complete each other.`,
+        `${a} and ${b} each hold one end of channel ${channel} (${theme}): together the channel completes. This is the classic point of "attraction": when you come together this area lights up, you trigger and complete each other.`,
     },
     aspectFlavor: {
-      fusion: 'energies merge — an intense, inseparable theme',
+      fusion: 'energies merge: an intense, inseparable theme',
       flowing: 'natural flow, ease and mutual support',
-      tense: 'friction and tension — but when used well, the most growth-driving bond',
+      tense: 'friction and tension: but when used well, the most growth-driving bond',
     },
     aspects: {
       conjunction: 'conjunction',
@@ -114,8 +114,8 @@ const L = {
       Vertex: 'Vertex',
     } as Record<string, string>,
     pairTheme: {
-      sunMoon: 'identity and emotional nourishment — the classic soul-mate marker',
-      moonSun: 'emotional nourishment and identity — a mutual sense of home',
+      sunMoon: 'identity and emotional nourishment: the classic soul-mate marker',
+      moonSun: 'emotional nourishment and identity: a mutual sense of home',
       venusMars: 'romantic and physical attraction',
       marsVenus: 'passion and aesthetic attraction',
       sunSun: 'core identity and life direction alignment',
@@ -126,15 +126,15 @@ const L = {
       saturnSun: 'responsibility, longevity and a maturing bond',
       nnSun: 'a fated, growth-driving karmic bond',
       sunNn: 'a shared spiritual direction and sense of fate',
-      vertexSun: 'a fated encounter — they trigger something deep about who you are',
-      vertexMoon: 'a fated encounter — leaving an indelible mark on your emotional memory',
-      vertexVenus: 'a fated encounter — a remembering bond through love and value',
+      vertexSun: 'a fated encounter: they trigger something deep about who you are',
+      vertexMoon: 'a fated encounter: leaving an indelible mark on your emotional memory',
+      vertexVenus: 'a fated encounter: a remembering bond through love and value',
     },
     numerology: {
-      same: (lp: number) => `You both share Life Path ${lp}. You carry the same core lesson — you understand each other deeply, but also share the same blind spots.`,
+      same: (lp: number) => `You both share Life Path ${lp}. You carry the same core lesson, you understand each other deeply, but also share the same blind spots.`,
       harmonious: (a: number, b: number) => `Life Path ${a} and ${b} are a naturally flowing combination. You bring different strengths and complement each other.`,
-      near: (a: number, b: number) => `Life Path ${a} and ${b} are close energies — you agree on most things, but can grow tired of feeling alike.`,
-      far: (a: number, b: number) => `Life Path ${a} and ${b} move at different rhythms. Attraction can be strong, but harmony requires conscious effort and respect — these are the most growth-driving relationships.`,
+      near: (a: number, b: number) => `Life Path ${a} and ${b} are close energies: you agree on most things, but can grow tired of feeling alike.`,
+      far: (a: number, b: number) => `Life Path ${a} and ${b} move at different rhythms. Attraction can be strong, but harmony requires conscious effort and respect, these are the most growth-driving relationships.`,
     },
     headline: {
       magnetic: (a: string, b: string) => `${a} & ${b}: A magnetic match`,
@@ -176,7 +176,7 @@ export type CompatibilityResult = {
   scoreHD: number;
   scoreAstro: number;
   scoreNumerology: number;
-  /** Vedik Ashtakuta — "Kader" katmanı (4-boyut MVP, 0-100) */
+  /** Vedik Ashtakuta: "Kader" katmanı (4-boyut MVP, 0-100) */
   scoreFate: number;
   hdCenters: CenterDynamic[];
   hdConnections: ChannelConnection[];
@@ -341,7 +341,7 @@ const SYNASTRY_PAIRS: Array<{ a: PlanetName; b: PlanetName; key: PairKey }> = [
   { a: 'Saturn', b: 'Sun', key: 'saturnSun' },
   { a: 'NorthNode', b: 'Sun', key: 'nnSun' },
   { a: 'Sun', b: 'NorthNode', key: 'sunNn' },
-  // Vertex — synastry kader buluşması göstergeleri (Robert Hand, Astrodienst)
+  // Vertex: synastry kader buluşması göstergeleri (Robert Hand, Astrodienst)
   { a: 'Vertex', b: 'Sun', key: 'vertexSun' },
   { a: 'Vertex', b: 'Moon', key: 'vertexMoon' },
   { a: 'Vertex', b: 'Venus', key: 'vertexVenus' },
@@ -429,7 +429,7 @@ export function compareReports(a: GalacticReport, b: GalacticReport, locale: Loc
   // Numeroloji (Ritim katmanı)
   const scoreNumerology = num.score;
 
-  // Vedik Ashtakuta (Kader katmanı) — Ay nakshatra'larından
+  // Vedik Ashtakuta (Kader katmanı), Ay nakshatra'larından
   const ashtakuta = calculateAshtakuta(
     a.systems.vedic.nakshatra.index,
     b.systems.vedic.nakshatra.index,

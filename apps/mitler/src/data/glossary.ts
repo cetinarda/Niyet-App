@@ -20,7 +20,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short: 'Bir kültürün bilinçaltını taşıyan derin hikaye.',
     long:
       'Mit, tarihsel olarak doğru olmasa da psikolojik olarak çok derin bir gerçeği taşıyan anlatıdır. Prometheus\'un ateşi, ' +
-      'İnanna\'nın yer altına inişi, Orpheus ve Eurydike — hepsi insan ruhunun temel meselelerini sembolik dilde anlatır.\n\n' +
+      'İnanna\'nın yer altına inişi, Orpheus ve Eurydike, hepsi insan ruhunun temel meselelerini sembolik dilde anlatır.\n\n' +
       'Jung der ki mitler, bir halkın rüyalarıdır. Bireyin rüyaları nasıl bilinçaltını taşıyorsa, mitler de bir kültürün ' +
       'kolektif bilinçaltını taşır.',
   },
@@ -30,7 +30,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       'İmge ya da sembol, soyut bir gerçeği somut bir biçime büründüren araçtır. Mandala bütünlüğü, yılan dönüşümü, ' +
       'ağaç yaşamı, su bilinçaltını taşır.\n\n' +
-      'Bir sembolün gücü, onun çok katmanlı oluşundadır. Tek anlama indirgenmez — kişiye, kültüre, ana göre farklı tonlarda konuşur. ' +
+      'Bir sembolün gücü, onun çok katmanlı oluşundadır. Tek anlama indirgenmez: kişiye, kültüre, ana göre farklı tonlarda konuşur. ' +
       'Sakin Mitler\'de 30 evrensel imge yer alır.',
   },
   rüya: {
@@ -46,8 +46,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     term: 'Gerçek Hayatta',
     short: 'Bir sembol uyanık deneyimde karşına çıktığında ne söylüyor?',
     long:
-      'Bir arketip, mit ya da sembolün uyanık hayatta belirmesi — bir kitapta görmek, bir kişide tanımak, ' +
-      'art arda denk gelmek, ısrarla tekrar etmek — onun şu an seninle bir iletişim kurmaya çalıştığını gösterir.\n\n' +
+      'Bir arketip, mit ya da sembolün uyanık hayatta belirmesi, bir kitapta görmek, bir kişide tanımak, ' +
+      'art arda denk gelmek, ısrarla tekrar etmek, onun şu an seninle bir iletişim kurmaya çalıştığını gösterir.\n\n' +
       '"Eşzamanlılık" (synchronicity) dediğimiz olay tam olarak budur. Jung bunu, dış olayların iç süreçle anlamlı ' +
       'biçimde örtüşmesi olarak tanımlar.',
   },
@@ -72,7 +72,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
   },
   hayatYolu: {
     term: 'Hayat Yolu Sayısı',
-    short: 'Doğum tarihinin numerolojik özeti — ana enerjini gösterir.',
+    short: 'Doğum tarihinin numerolojik özeti: ana enerjini gösterir.',
     long:
       'Hayat Yolu sayısı, doğum tarihinin tüm rakamlarının tek bir sayıya indirgenmesiyle bulunur ' +
       '(örn. 15.06.1990 → 1+5+0+6+1+9+9+0=31→4).\n\n' +
@@ -100,7 +100,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     term: 'Persona',
     short: 'Dünyaya gösterdiğin maske.',
     long:
-      'Persona, Latince "maske" demektir. Jung\'a göre, dünyaya çıkarken giydiğin sosyal yüzdür — işteki kimliğin, ' +
+      'Persona, Latince "maske" demektir. Jung\'a göre, dünyaya çıkarken giydiğin sosyal yüzdür, işteki kimliğin, ' +
       'ailedeki rolün, görünürdeki kişiliğin.\n\n' +
       'Persona zorunludur; tamamen onsuz toplumsal hayat sürdüremezsin. Ama persona ile tamamen özdeşleşirsen kendi ' +
       'gerçek yüzünü kaybedersin.',
@@ -110,7 +110,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short: 'Kendinde kabul etmediğin yan.',
     long:
       'Gölge, bilinçli olarak reddettiğin, bastırdığın ya da kabul edemediğin tüm özelliklerin toplamıdır. Öfke, ' +
-      'kıskançlık, hırs, tembellik — bunlar genelde gölgenin parçalarıdır. Ama bazen sahiplenilmemiş yaratıcılık, ' +
+      'kıskançlık, hırs, tembellik, bunlar genelde gölgenin parçalarıdır. Ama bazen sahiplenilmemiş yaratıcılık, ' +
       'cesaret ve sevgi de gölgede saklanır.\n\n' +
       'Jung der ki: "Gölgeni bilmek aydınlanmaktan değil, karanlığını bilinçli görmekten gelir."',
   },
@@ -118,9 +118,9 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     term: 'Anima / Animus',
     short: 'İçindeki karşı-cins ruh.',
     long:
-      'Anima, erkek psikesindeki dişil ruhtur — sezgi, duygu, ilham. Animus ise kadın psikesindeki eril ruh — mantık, ' +
+      'Anima, erkek psikesindeki dişil ruhtur, sezgi, duygu, ilham. Animus ise kadın psikesindeki eril ruh, mantık, ' +
       'irade, sınır kurma.\n\n' +
-      'Bunlar bilinçaltında uyuyorsa dışarıya yansıtılır — kişi karşı cinste aslında kendi içsel imgesinin peşinden ' +
+      'Bunlar bilinçaltında uyuyorsa dışarıya yansıtılır, kişi karşı cinste aslında kendi içsel imgesinin peşinden ' +
       'koşar. Tanınınca, içsel bir denge ve yaratıcılık olarak entegre olur.',
   },
   self: {
@@ -136,7 +136,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     term: 'Trickster (Hilebaz)',
     short: 'Kuralı kırarak gerçeği gösteren oyunbaz.',
     long:
-      'Trickster, mitolojide kuralları çiğneyen ama bu sayede bir hakikati gösteren figürdür — Hermes, Loki, Coyote, ' +
+      'Trickster, mitolojide kuralları çiğneyen ama bu sayede bir hakikati gösteren figürdür, Hermes, Loki, Coyote, ' +
       'Nasreddin Hoca, Keloğlan.\n\n' +
       'Modern hayatta Trickster, beklenmedik şakaların, yaratıcı kaosun ve sınır aşan ilhamın kaynağıdır. Gölge ' +
       'yanında ise manipülatör ve dolandırıcı olarak görünür.',
@@ -147,7 +147,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     long:
       'Kahraman arketipi, içsel ya da dışsal bir çağrıya yanıt vererek bildiği dünyadan ayrılan, sınanan, gölgesiyle ' +
       'yüzleşen ve dönüp ödülünü paylaşan kişidir. Joseph Campbell\'ın "monomit" haritası bu yolculuğu anlatır.\n\n' +
-      'Modern hayatta kahramanı her büyük geçişte aktif olur: yeni iş, yeni şehir, ebeveynlik, hastalık. Korku doğal — ' +
+      'Modern hayatta kahramanı her büyük geçişte aktif olur: yeni iş, yeni şehir, ebeveynlik, hastalık. Korku doğal: ' +
       'kahraman korkmaz değil, korkuya rağmen ilerler.',
   },
   bilgeYaşlı: {
@@ -172,8 +172,8 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     short: 'Aynı kökten beslenen rehber uygulamalar serisi.',
     long:
       'Sakin Ailesi, aynı ruhu farklı sembol dilleriyle taşıyan rehber uygulamalardan oluşur:\n\n' +
-      '• Sakin Hayvan — Anadolu\'dan dünyaya 50 totem hayvan.\n' +
-      '• Sakin Mitler — Jung\'un izinde arketipler, mitler ve sembolik imgeler.\n\n' +
+      '• Sakin Hayvan: Anadolu\'dan dünyaya 50 totem hayvan.\n' +
+      '• Sakin Mitler: Jung\'un izinde arketipler, mitler ve sembolik imgeler.\n\n' +
       'Tasarım aynı, içerik farklı. Her biri ruhun başka bir köşesine konuşur.',
   },
 };

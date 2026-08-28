@@ -1,4 +1,4 @@
-# SoulProfile — iOS Native App Stratejisi
+# SoulProfile: iOS Native App Stratejisi
 
 > **Hedef:** SoulProfile Next.js 14 web app'i App Store'a yayınlamak.
 > **Bundle ID:** `life.soulprofile.app`
@@ -12,18 +12,18 @@
 
 | Yaklaşım | Avantaj | Dezavantaj | Verdict |
 |---|---|---|---|
-| **Capacitor 6** | Next.js static export'u doğrudan WebView'da koşturur. `lib/` 1:1 paylaşılır. Plugin ekosistemi olgun (Camera, Push, IAP, Browser). Apple Connect upload normal `.ipa`. RevenueCat resmi SDK. | WebView performansı native değil — three.js + WebGL iOS Safari'de %85-90 native FPS. App boyutu ~30MB. | **SEÇ** |
-| **Tauri 2 (Mobile)** | Rust backend, daha hafif (~10MB). | iOS desteği hala olgunlaşıyor (1.0 → 2.0 Mobile beta). Plugin ekosistemi yetersiz. APNS + StoreKit için custom Swift gerek. Topluluk küçük. | **HAYIR** — production-ready değil 2026 Q2'de. |
-| **PWA only** | Sıfır wrapper kodu. | App Store'a koyamazsın. Push notifications iOS Safari'de 16.4+ ama Add-to-Home-Screen şart. IAP yok → ödeme sadece Stripe (Apple %30 yerine %2.9 ama App Store reach kayıp). | **HAYIR** — premium tier App Store IAP gerektirir. |
-| **React Native rewrite** | Native UI, en iyi performance. | `react-three-fiber` (Three.js) → `react-three-fiber/native` (expo-gl) port = riskli. `html-to-image` → `react-native-view-shot` (rewrite). Anthropic SDK fetch shim. Tüm component'ler yeniden. Tahmini effort: 6-8 hafta. | **HAYIR** — ROI yok, MVP'yi geciktirir. |
+| **Capacitor 6** | Next.js static export'u doğrudan WebView'da koşturur. `lib/` 1:1 paylaşılır. Plugin ekosistemi olgun (Camera, Push, IAP, Browser). Apple Connect upload normal `.ipa`. RevenueCat resmi SDK. | WebView performansı native değil, three.js + WebGL iOS Safari'de %85-90 native FPS. App boyutu ~30MB. | **SEÇ** |
+| **Tauri 2 (Mobile)** | Rust backend, daha hafif (~10MB). | iOS desteği hala olgunlaşıyor (1.0 → 2.0 Mobile beta). Plugin ekosistemi yetersiz. APNS + StoreKit için custom Swift gerek. Topluluk küçük. | **HAYIR**: production-ready değil 2026 Q2'de. |
+| **PWA only** | Sıfır wrapper kodu. | App Store'a koyamazsın. Push notifications iOS Safari'de 16.4+ ama Add-to-Home-Screen şart. IAP yok → ödeme sadece Stripe (Apple %30 yerine %2.9 ama App Store reach kayıp). | **HAYIR**: premium tier App Store IAP gerektirir. |
+| **React Native rewrite** | Native UI, en iyi performance. | `react-three-fiber` (Three.js) → `react-three-fiber/native` (expo-gl) port = riskli. `html-to-image` → `react-native-view-shot` (rewrite). Anthropic SDK fetch shim. Tüm component'ler yeniden. Tahmini effort: 6-8 hafta. | **HAYIR**: ROI yok, MVP'yi geciktirir. |
 
 ### Neden Capacitor?
 1. **Zero refactor:** Mevcut `app/`, `components/`, `lib/` aynen koşar.
-2. **Three.js + WebGL** iOS WKWebView'da `Metal` backend ile çalışır — `react-three-fiber` web kodu değişmez.
-3. **html-to-image** WKWebView'da Canvas API ile çalışır (CORS dikkat — Supabase storage CORS header'ları).
+2. **Three.js + WebGL** iOS WKWebView'da `Metal` backend ile çalışır: `react-three-fiber` web kodu değişmez.
+3. **html-to-image** WKWebView'da Canvas API ile çalışır (CORS dikkat, Supabase storage CORS header'ları).
 4. **Supabase auth** OAuth redirect için `@capacitor/browser` ile in-app Safari View Controller.
 5. **App Store IAP** için **RevenueCat Capacitor SDK** plug-and-play.
-6. **Apple Review** WebView wrapper'ları **artık reddetmiyor** (Guideline 4.2 — eski "minimum functionality" iyileştirildi; native plugin entegrasyonu + push + IAP varsa geçer).
+6. **Apple Review** WebView wrapper'ları **artık reddetmiyor** (Guideline 4.2: eski "minimum functionality" iyileştirildi; native plugin entegrasyonu + push + IAP varsa geçer).
 
 ---
 
@@ -279,12 +279,12 @@ if (Capacitor.isNativePlatform()) {
 
 ## 4. Push Notifications (APNS)
 
-### 4.1. Apple Developer Portal — APNS Key
+### 4.1. Apple Developer Portal: APNS Key
 
 1. https://developer.apple.com/account/resources/authkeys/list → **+**
 2. Name: `SoulProfile APNS`
 3. Tick **Apple Push Notifications service (APNs)**
-4. **Download** `.p8` (BİR KEZ indirebilirsin — kaybedersen yenisini yaratman gerek).
+4. **Download** `.p8` (BİR KEZ indirebilirsin: kaybedersen yenisini yaratman gerek).
 5. Not: Key ID + Team ID (sağ üst köşede).
 
 ### 4.2. Xcode'da capability ekle
@@ -332,18 +332,18 @@ export async function initPush() {
 }
 ```
 
-### 4.4. Backend (Supabase Edge Function) — APNS push gönderimi
+### 4.4. Backend (Supabase Edge Function): APNS push gönderimi
 
 ```bash
 # supabase/functions/send-push/index.ts
 # apns2 lib veya OneSignal/RevenueCat/Firebase'a delege et
 ```
 
-**Tavsiye:** APNS'i kendin yönetme — **OneSignal** (ücretsiz tier 10K MAU'ya kadar) veya **RevenueCat Targeting** kullan. .p8 yükle, bitti.
+**Tavsiye:** APNS'i kendin yönetme: **OneSignal** (ücretsiz tier 10K MAU'ya kadar) veya **RevenueCat Targeting** kullan. .p8 yükle, bitti.
 
 ---
 
-## 5. Apple IAP — RevenueCat Capacitor SDK
+## 5. Apple IAP: RevenueCat Capacitor SDK
 
 > StoreKit 2'yi doğrudan kullanma. RevenueCat = receipt validation + grace period + analytics + cross-platform sync, hepsi ücretsiz <$2.5K MTR.
 
@@ -359,8 +359,8 @@ npx cap sync ios
 1. App Store Connect → My Apps → **+ App** (`life.soulprofile.app`)
 2. **In-App Purchases** → **+** → Auto-Renewable Subscription
 3. Product IDs:
-   - `life.soulprofile.premium.monthly` — $4.99/ay
-   - `life.soulprofile.premium.yearly` — $39.99/yıl
+   - `life.soulprofile.premium.monthly`: $4.99/ay
+   - `life.soulprofile.premium.yearly`: $39.99/yıl
 4. Subscription Group: `SoulProfile Premium`
 5. RevenueCat dashboard → Project → **iOS App** → Bundle ID + App-Specific Shared Secret (App Store Connect → Users → Keys → In-App Purchase).
 
@@ -478,7 +478,7 @@ await Preferences.set({ key: 'profile', value: JSON.stringify(profile) });
 
 ```
 resources/
-  icon.png          # 1024×1024 (PNG, alpha YOK — App Store reddeder)
+  icon.png          # 1024×1024 (PNG, alpha YOK, App Store reddeder)
   icon-foreground.png  # 1024×1024 (Android adaptive için, alpha OK)
   icon-background.png  # 1024×1024 düz arka plan
   splash.png        # 2732×2732 (kare, merkezde logo, %30 margin)
@@ -582,7 +582,7 @@ Test:
 xcrun simctl openurl booted "soulprofile://share/abc123"
 ```
 
-### 9.2. Universal Links (önerilen — App Store puanı)
+### 9.2. Universal Links (önerilen: App Store puanı)
 
 1. **Associated Domains** capability ekle (Xcode → Signing & Capabilities)
 2. Domain: `applinks:soulprofile.life`
@@ -621,21 +621,21 @@ xcrun simctl openurl booted "soulprofile://share/abc123"
 
 | Feature | Web (Browser) | iOS (Capacitor) | Ekstra İzin |
 |---|---|---|---|
-| Doğum chart hesabı (astronomy-engine) | Çalışır | Çalışır | — |
-| Three.js / WebGL 3D | Çalışır | Çalışır (Metal backend) | — |
-| html-to-image PNG | Canvas API | Canvas API | — |
-| Web Share API | Modern browser | `@capacitor/share` | — |
+| Doğum chart hesabı (astronomy-engine) | Çalışır | Çalışır |, |
+| Three.js / WebGL 3D | Çalışır | Çalışır (Metal backend) |, |
+| html-to-image PNG | Canvas API | Canvas API |, |
+| Web Share API | Modern browser | `@capacitor/share` |: |
 | Save to Gallery | İndir | `Filesystem` + Share | `NSPhotoLibraryAddUsageDescription` |
 | Camera | `<input type="file" capture>` | `@capacitor/camera` | `NSCameraUsageDescription` |
 | File picker | `<input type="file">` | Native picker | `NSPhotoLibraryUsageDescription` |
-| localStorage (Zustand persist) | Çalışır | `@capacitor/preferences` | — |
+| localStorage (Zustand persist) | Çalışır | `@capacitor/preferences` |: |
 | Geolocation (geocoding) | Browser API + prompt | `@capacitor/geolocation` | `NSLocationWhenInUseUsageDescription` |
 | Push Notifications | Web Push (16.4+ PWA only) | APNS + plugin | Permission prompt |
 | OAuth (Supabase) | Redirect | `@capacitor/browser` (SFSafariViewController) | URL Scheme |
 | IAP / Subscription | Stripe | RevenueCat + StoreKit | App Store Connect setup |
-| Anthropic SDK direct | `dangerouslyAllowBrowser` çalışır ama API key expose | **YASAK** — Supabase Edge Function arkasına taşı | — |
-| Haptic feedback | YOK | `@capacitor/haptics` | — |
-| Status bar | YOK | `@capacitor/status-bar` | — |
+| Anthropic SDK direct | `dangerouslyAllowBrowser` çalışır ama API key expose | **YASAK**, Supabase Edge Function arkasına taşı |, |
+| Haptic feedback | YOK | `@capacitor/haptics` |: |
+| Status bar | YOK | `@capacitor/status-bar` |: |
 | Background fetch | YOK | Background Modes capability | Xcode |
 
 ---
@@ -680,7 +680,7 @@ npx cap sync ios --prod
 # 3. Version bump
 # Xcode → Target App → General → Identity:
 #   Version: 1.0.0 (CFBundleShortVersionString)
-#   Build:   1     (CFBundleVersion) — her yüklemede +1
+#   Build:   1     (CFBundleVersion): her yüklemede +1
 
 # 4. Archive
 # Xcode → Product → Destination → "Any iOS Device (arm64)"
@@ -696,7 +696,7 @@ Bölüm 12'de detay.
 
 ---
 
-## 12. Apple Connect Upload — Karşılaştırma
+## 12. Apple Connect Upload: Karşılaştırma
 
 | Yöntem | Hız | Otomasyon | Öğrenme | Ne zaman? |
 |---|---|---|---|---|
@@ -775,7 +775,7 @@ fastlane release           # App Store (manual submit)
 
 ## 13. iOS-Specific Bugs ve Çözümleri
 
-### 13.1. Safe area — content notch altında
+### 13.1. Safe area: content notch altında
 
 **Bug:** TopBar Dynamic Island altında kaldı.
 
@@ -841,9 +841,9 @@ await StatusBar.setBackgroundColor({ color: '#0a0118' });
 **Fix:**
 - Simülatörde GPU yavaş → gerçek cihazda test et.
 - `gl: { antialias: false, powerPreference: 'high-performance' }` Canvas prop.
-- `dpr={[1, 1.5]}` (devicePixelRatio cap) — iOS Retina display'de 3x render yer.
+- `dpr={[1, 1.5]}` (devicePixelRatio cap): iOS Retina display'de 3x render yer.
 
-### 13.5. CORS — Supabase storage görüntüleri html-to-image'de boş
+### 13.5. CORS: Supabase storage görüntüleri html-to-image'de boş
 
 **Bug:** `toPng()` Supabase'den çektiği avatar görüntülerini render edemiyor.
 
@@ -891,7 +891,7 @@ useEffect(() => {
 
 **Fix:** Zustand persist'i `@capacitor/preferences` adapter'ı ile değiştir (Bölüm 6.2).
 
-### 13.9. Universal Link açılmıyor — Safari'de açılıyor
+### 13.9. Universal Link açılmıyor: Safari'de açılıyor
 
 **Bug:** `https://soulprofile.life/share/abc` Safari'de açılıyor, app'te değil.
 
@@ -902,7 +902,7 @@ useEffect(() => {
 4. Settings → Developer → Universal Links → Diagnostics → domain test
 5. Long-press link → "Open in SoulProfile" görünmeli
 
-### 13.10. Apple Review reject — "minimum functionality"
+### 13.10. Apple Review reject: "minimum functionality"
 
 **Bug:** Reviewer "this is just a website wrapper" diyor.
 
@@ -932,7 +932,7 @@ useEffect(() => {
 - [ ] `npx capacitor-assets generate --ios`
 - [ ] İlk archive → TestFlight internal testing
 - [ ] Universal Links AASA dosyasını `public/.well-known/`'e koy
-- [ ] Privacy Manifest (`PrivacyInfo.xcprivacy`) — Xcode 15+ zorunlu
+- [ ] Privacy Manifest (`PrivacyInfo.xcprivacy`): Xcode 15+ zorunlu
 
 ---
 

@@ -4,14 +4,14 @@ export interface City {
   name: string;          // "İstanbul, Türkiye"
   lat: number;           // ondalık derece
   lng: number;
-  tz: number;            // standart UTC offset (saat) — DST haricinde
+  tz: number;            // standart UTC offset (saat), DST haricinde
   country: string;
   dst?: 'eu' | 'us' | 'tr' | 'none';   // DST kuralı
 }
 
 // Kurallar:
-// - AB: Mart son Pazar 01:00 UTC – Ekim son Pazar 01:00 UTC (+1)
-// - ABD: Mart 2. Pazar – Kasım 1. Pazar yerel 02:00 (+1)
+// - AB: Mart son Pazar 01:00 UTC - Ekim son Pazar 01:00 UTC (+1)
+// - ABD: Mart 2. Pazar - Kasım 1. Pazar yerel 02:00 (+1)
 // - Türkiye: 1985-2016 arası AB kuralları (+1), 2017+ kalıcı +1 (UTC+3 sabit).
 //   Bu yüzden Türk şehirleri tz:2 + dst:'tr' olarak tanımlandı.
 
@@ -167,14 +167,14 @@ export function searchCities(query: string, limit = 8): City[] {
   ).slice(0, limit);
 }
 
-// AB DST: Mart son Pazar 01:00 UTC – Ekim son Pazar 01:00 UTC
+// AB DST: Mart son Pazar 01:00 UTC - Ekim son Pazar 01:00 UTC
 function lastSundayOfMonth(year: number, month: number): Date {
   const d = new Date(Date.UTC(year, month + 1, 0)); // ayın son günü
   const dow = d.getUTCDay();
   d.setUTCDate(d.getUTCDate() - dow);
   return d;
 }
-// ABD DST: Mart 2. Pazar 02:00 yerel – Kasım 1. Pazar 02:00 yerel
+// ABD DST: Mart 2. Pazar 02:00 yerel - Kasım 1. Pazar 02:00 yerel
 function nthSundayOfMonth(year: number, month: number, n: number): Date {
   const d = new Date(Date.UTC(year, month, 1));
   const dow = d.getUTCDay();

@@ -1,4 +1,4 @@
-// Bağlanma sonucu — cihazda kalır. Sunucuya gitmez, karneyle birlikte
+// Bağlanma sonucu: cihazda kalır. Sunucuya gitmez, karneyle birlikte
 // dışa aktarılmaz; kullanıcı /settings'ten tüm veriyi silince bu da gider.
 
 import type { AttachmentResult, Answers } from './index';

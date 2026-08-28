@@ -1,4 +1,4 @@
-// cityDb.js — lazy-loaded world city database.
+// cityDb.js: lazy-loaded world city database.
 //
 // The data file (src/cities-data.json, ~1.4 MB raw / ~650 KB gzipped) is
 // imported via dynamic import() so it ends up as a SEPARATE chunk in the
@@ -13,7 +13,7 @@
 // Data shape per row in cities-data.json:
 //   [ name, lat, lon, tz, country, ascii? ]
 //
-// "Standard" UTC offsets (no DST) — see scripts/build-cities.mjs for rationale.
+// "Standard" UTC offsets (no DST): see scripts/build-cities.mjs for rationale.
 
 let _loadingPromise = null;
 let _loaded = false;
@@ -22,7 +22,7 @@ const _byKey = new Map();
 // Sorted array of normalized keys for autocomplete iteration.
 let _keys = [];
 
-// Same normalize as App.jsx — kept independent so this module is self-contained.
+// Same normalize as App.jsx: kept independent so this module is self-contained.
 export function normalizeCityKey(s) {
   return (s || "")
     .toLowerCase()
@@ -58,7 +58,7 @@ export function ensureCitiesLoaded() {
       _loaded = true;
     })
     .catch(err => {
-      // Keep failure non-fatal — small embedded DB still works.
+      // Keep failure non-fatal: small embedded DB still works.
       // eslint-disable-next-line no-console
       console.warn("[cityDb] failed to load cities-data.json:", err);
       _loadingPromise = null;

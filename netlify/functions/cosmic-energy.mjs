@@ -3,7 +3,7 @@ import { groqChat, stripThink, langConformanceOk } from "./_groq.mjs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
-// Güvenlik notu: bu fonksiyon hiç origin reddi ve rate-limit YAPMIYORDU — sadece
+// Güvenlik notu: bu fonksiyon hiç origin reddi ve rate-limit YAPMIYORDU, sadece
 // CDN cache'ine güveniyordu ("Cache-Control: public, max-age=21600"), ama cache
 // anahtarı tam URL olduğu için query-string'e rastgele bir parametre eklemek
 // (ör. ?lang=en&x=rastgele) her seferinde cache miss yaratıp alttaki ücretli Groq
@@ -17,7 +17,7 @@ const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capaci
 // katı kontrol kendi sitemizi 403'lüyordu ("Güneş verisi şu an alınamadı").
 // Native'de sorun yoktu: Capacitor `capacitor://localhost` origin'i gönderir.
 // Yeni kural: Origin VARSA beyaz listede olmak zorunda (katılık korunur). Origin
-// YOKSA istek kabul edilir — çünkü tarayıcı cross-site isteğinde Origin'i her
+// YOKSA istek kabul edilir, çünkü tarayıcı cross-site isteğinde Origin'i her
 // zaman gönderir, yani boş origin cross-site bir tarayıcı isteği OLAMAZ.
 // Kötüye kullanım koruması zaten IP başına rate-limit + CDN cache ile sağlanıyor.
 function isAllowedOrigin(origin) {
@@ -41,7 +41,7 @@ function _getClientIP(event) {
   return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "0").toString();
 }
 
-// ── GEZEGEN DİZİLİŞİ (efemeris — astronomy-engine) ──
+// ── GEZEGEN DİZİLİŞİ (efemeris, astronomy-engine) ──
 const ZODIAC = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
 function _eclLon(body, date) {
   if (body === "Sun") return ((SunPosition(date).elon % 360) + 360) % 360;
@@ -69,7 +69,7 @@ function planetSky(date = new Date()) {
 }
 
 // ── GEZEGEN DİZİLİŞİ / PARADE TESPİTİ ──────────────────────────────────────
-// Çıplak gözle görülebilen 5 gezegen (Merkür–Satürn) aynı gök bölgesinde mi?
+// Çıplak gözle görülebilen 5 gezegen (Merkür-Satürn) aynı gök bölgesinde mi?
 // 3+ gezegen ≤30°: dikkat çekici conjunction parade (alignment).
 // 4+ gezegen ≤50°: gezegen geçidi (planet parade).
 // Min-kuşatan yay = 360° − ardışık ekliptik boylam boşluklarının en büyüğü.
@@ -170,7 +170,7 @@ function transitNote(planets, date = new Date()) {
   const byBody = Object.fromEntries(planets.map(p => [p.body, p]));
 
   // (1) Retro gezegenler. Uranüs/Neptün/Plüton yılın yarısı retro olduğu için
-  //     kolektif "dikkat" mesajı taşımaz — sadece kişisel/sosyal gezegenler.
+  //     kolektif "dikkat" mesajı taşımaz: sadece kişisel/sosyal gezegenler.
   const retro = ["Mercury","Venus","Mars","Jupiter","Saturn"].filter(b => byBody[b]?.retrograde);
 
   // (2) En dar orb'lu tek açı. Ay hariç (2.5 günde burç değiştirir, gürültü yapar).
@@ -201,7 +201,7 @@ function transitNote(planets, date = new Date()) {
     }
     if (best) {
       const an = _PL_I18N[best.a][lang], bn = _PL_I18N[best.b][lang];
-      parts.push(`${an}–${bn} ${best.asp.name[lang]}: ${best.asp.hint[lang]}`);
+      parts.push(`${an}-${bn} ${best.asp.name[lang]}: ${best.asp.hint[lang]}`);
     }
     if (!parts.length) {
       const sun = byBody.Sun && _SIGN_I18N[byBody.Sun.sign]?.[lang];
@@ -213,8 +213,8 @@ function transitNote(planets, date = new Date()) {
   return out.tr ? out : null;
 }
 
-// ── KUYRUKLU YILDIZLAR (statik — keşif gerektirdiği için elle güncellenir) ──
-// Tutulmalar buraya GİRMEZ — astronomy-engine ile dinamik hesaplanıyor (tüm yıllar otomatik).
+// ── KUYRUKLU YILDIZLAR (statik, keşif gerektirdiği için elle güncellenir) ──
+// Tutulmalar buraya GİRMEZ: astronomy-engine ile dinamik hesaplanıyor (tüm yıllar otomatik).
 // Yeni kuyruklu yıldız: { start, peak, end:[yıl,ay,gün], name:{tr,en,...}, desc:{tr,en,...} }
 const STATIC_COMETS = [
   { start:[2026,7,1], peak:[2026,8,2], end:[2026,9,30],
@@ -242,7 +242,7 @@ function activeComets(date = new Date()) {
   });
 }
 
-// ── TUTULMALAR — DİNAMİK HESAP (astronomy-engine) — tüm yıllar otomatik ──────
+// ── TUTULMALAR: DİNAMİK HESAP (astronomy-engine): tüm yıllar otomatik ──────
 // Güneş: total + annular (kısmi atlanır). Ay: total + obscuration≥0.5 partial (penumbral atlanır).
 // ±7 günlük pencere: yaklaşan ve yeni geçen tutulmalar dahil edilir.
 const _EN = {
@@ -298,13 +298,13 @@ function dynamicEclipseEvents(date = new Date()) {
 // { peakMD:[ay,gün], window:gün }   |  window = ±N gün "aktif pencere"
 
 const _PORTALS = {
-  // ── ASLAN KAPISI — en önemli portal, uzun koridor ──
+  // ── ASLAN KAPISI: en önemli portal, uzun koridor ──
   lion_gate: {
     peakMD:[8,8], window:7,
     name:{ tr:"Aslan Kapısı Koridoru", en:"Lion's Gate Corridor", de:"Löwentor-Korridor", es:"Corredor de la Puerta del León", pt:"Corredor do Portal do Leão", fr:"Couloir de la Porte du Lion", ja:"ライオンズゲート・コリドー" },
     desc:{ tr:"Sirius Güneş ile hizalanırken Güneş Aslan burcunda ilerliyor; galaktik bir ışık koridoru açılıyor. Eski Mısır'da bu dönem yeni döngülerin başlangıcı sayılırdı: Sirius'un doğuşu Nil'in taşkınını ve bolluğu müjdelerdi. 8/8 ise bu koridorun zirve noktası, sonsuzluk sembolünün birbiriyle kesiştiği an.", en:"As Sirius aligns with the Sun moving through Leo, a galactic light corridor opens. In ancient Egypt this period marked the start of new cycles; the heliacal rising of Sirius heralded the Nile flood and abundance. 8/8 is the corridor's peak, the moment the infinity symbol crosses itself.", de:"Während Sirius sich mit der Sonne im Löwen ausrichtet, öffnet sich ein galaktischer Lichtkorridor. Im alten Ägypten begann hier ein neuer Zyklus; der Aufgang von Sirius kündete die Nilflut an. 8/8 ist der Höhepunkt, der Augenblick, wo das Unendlichkeitssymbol sich selbst kreuzt.", es:"Mientras Sirius se alinea con el Sol en Leo, se abre un corredor de luz galáctica. En el antiguo Egipto, este período marcaba el inicio de nuevos ciclos; la salida heliaca de Sirius anunciaba la inundación del Nilo. El 8/8 es el cenit del corredor.", pt:"Enquanto Sírius se alinha com o Sol em Leão, um corredor de luz galáctica se abre. No Egito antigo, este período marcava o início de novos ciclos; a ascensão heliaca de Sírius anunciava a cheia do Nilo. 8/8 é o auge do corredor.", fr:"Tandis que Sirius s'aligne avec le Soleil en Lion, un couloir de lumière galactique s'ouvre. Dans l'Égypte ancienne, cette période marquait le début de nouveaux cycles. Le 8/8 est l'apogée du couloir.", ja:"Sirius が獅子座を進む太陽と整列する。銀河の光の回廊が開く。古代エジプトではこの時期が新しいサイクルの始まりとされ、Siriusの出現がナイルの氾濫と豊穣を告げた。8/8はその頂点。" }
   },
-  // ── 11:11 PORTALI — usta sayısı ──
+  // ── 11:11 PORTALI: usta sayısı ──
   mirror_11_11: {
     peakMD:[11,11], window:3,
     name:{ tr:"11:11 Portalı", en:"11:11 Portal", de:"11:11-Portal", es:"Portal 11:11", pt:"Portal 11:11", fr:"Portail 11:11", ja:"11:11 ポータル" },
@@ -316,7 +316,7 @@ const _PORTALS = {
     name:{ tr:"1:1 Yeni Yıl Portalı", en:"1:1 New Year Portal", de:"1:1 Neujahrs-Portal", es:"Portal 1:1 Año Nuevo", pt:"Portal 1:1 Ano Novo", fr:"Portail 1:1 Nouvel An", ja:"1:1 新年ポータル" },
     desc:{ tr:"Yeni bir döngünün sıfır noktası; kolektif niyet en güçlü. Bu geçişte atılan adımlar ve beslenen niyetler yılın enerji tohumunu oluşturuyor.", en:"The zero-point of a new cycle; collective intention is at its strongest. Steps taken and intentions held at this threshold become the energy seeds of the entire year.", de:"Der Nullpunkt eines neuen Zyklus; kollektive Absicht ist am stärksten. Schritte und Absichten an diesem Übergang legen den Energiesamen für das gesamte Jahr.", es:"El punto cero de un nuevo ciclo; la intención colectiva es más poderosa. Los pasos e intenciones en este umbral se convierten en las semillas de energía del año.", pt:"O ponto zero de um novo ciclo; a intenção coletiva é mais forte. Os passos e intenções neste limiar tornam-se as sementes de energia do ano inteiro.", fr:"Le point zéro d'un nouveau cycle ; l'intention collective est à son plus fort. Les pas et intentions à ce seuil deviennent les graines d'énergie de toute l'année.", ja:"新しいサイクルのゼロ点。集合的な意図が最も強まる。この閾値での一歩と意図が、一年全体のエネルギーの種となる。" }
   },
-  // ── AYNASAL PORTALLAR (2/2 – 12/12, aslan kapısı ve 11/11 hariç) ──
+  // ── AYNASAL PORTALLAR (2/2 - 12/12, aslan kapısı ve 11/11 hariç) ──
   mirror_2_2:  { peakMD:[2,2],   window:2, name:{ tr:"2:2 Portalı",   en:"2:2 Portal",   de:"2:2-Portal",   es:"Portal 2:2",   pt:"Portal 2:2",   fr:"Portail 2:2",   ja:"2:2 ポータル"  }, desc:{ tr:"Denge ve ortaklık enerjisi; iki zıt kutbun uyum içinde birleştiği, dinleme ve alıcılık için güçlü gün.", en:"Energy of balance and partnership; the day two opposing poles harmonise, powerful for listening and receptivity.", de:"Energie von Gleichgewicht und Partnerschaft; die zwei entgegengesetzten Pole in Einklang kommen.", es:"Energía de equilibrio y asociación; los dos polos opuestos se armonizan.", pt:"Energia de equilíbrio e parceria; os dois polos opostos se harmonizam.", fr:"Énergie d'équilibre et de partenariat ; les deux pôles opposés s'harmonisent.", ja:"バランスとパートナーシップのエネルギー。二つの対極が調和する日。" } },
   mirror_3_3:  { peakMD:[3,3],   window:2, name:{ tr:"3:3 Portalı",   en:"3:3 Portal",   de:"3:3-Portal",   es:"Portal 3:3",   pt:"Portal 3:3",   fr:"Portail 3:3",   ja:"3:3 ポータル"  }, desc:{ tr:"Yaratıcılık ve ifade enerjisi; üçlü titreşim, sanatsal akışın ve özgün sözün güçlendiği an.", en:"Creativity and expression energy; the triple vibration amplifies artistic flow and authentic voice.", de:"Kreativität und Ausdrucksenergie; die Dreifachschwingung verstärkt künstlerischen Fluss.", es:"Energía de creatividad y expresión; la vibración triple amplifica el flujo artístico.", pt:"Energia de criatividade e expressão; a vibração tripla amplifica o fluxo artístico.", fr:"Énergie de créativité et d'expression ; la triple vibration amplifie le flux artistique.", ja:"創造性と表現のエネルギー。三重振動が芸術的流れを増幅させる。" } },
   mirror_4_4:  { peakMD:[4,4],   window:2, name:{ tr:"4:4 Portalı",   en:"4:4 Portal",   de:"4:4-Portal",   es:"Portal 4:4",   pt:"Portal 4:4",   fr:"Portail 4:4",   ja:"4:4 ポータル"  }, desc:{ tr:"Temel ve yapı enerjisi; dördün sağlamlığı, zor kararları sabitleme ve köklere dönme için uygun an.", en:"Foundation and structure energy; the solidity of four, an apt moment to anchor decisions and return to roots.", de:"Fundament und Struktur; die Festigkeit der Vier, ein passender Moment, Entscheidungen zu verankern.", es:"Energía de fundamento y estructura; la solidez del cuatro, momento para anclar decisiones.", pt:"Energia de fundamento e estrutura; a solidez do quatro, momento para ancorar decisões.", fr:"Énergie de fondation et de structure ; la solidité du quatre, moment pour ancrer les décisions.", ja:"基盤と構造のエネルギー。四の堅固さ、決断を固め、根源に戻るのに適した瞬間。" } },
@@ -363,7 +363,7 @@ function activeEnergyPortals(date = new Date()) {
     }
   }
 
-  // Mevsimsel kapılar (ekinoks + gündönümü) — dinamik, astronomy-engine
+  // Mevsimsel kapılar (ekinoks + gündönümü), dinamik, astronomy-engine
   try {
     const S = Seasons(y);
     const seasonal = [
@@ -392,7 +392,7 @@ function getCorsHeaders(origin) {
 }
 
 // 7-lang sözlük: tr / en / de / es / pt / fr / ja
-// Ton: Sakin'in sesi — düşük perdeden, sade, küçük harf tercihli.
+// Ton: Sakin'in sesi: düşük perdeden, sade, küçük harf tercihli.
 function kpDescription(kp) {
   if (kp < 3)   return { tr:"sakin",            en:"calm",           de:"ruhig",            es:"calmo",            pt:"calmo",            fr:"calme",            ja:"穏やか",       level:"low" };
   if (kp < 5)   return { tr:"hafif aktif",      en:"unsettled",      de:"leicht unruhig",   es:"levemente activo", pt:"levemente ativo",  fr:"légèrement agité", ja:"少し活発",     level:"moderate" };
@@ -422,7 +422,7 @@ function windDescription(speed) {
   return            { tr:"fırtına seviyesi",   en:"storm-level",de:"Sturmstärke", es:"nivel tormenta", pt:"nível tempestade",fr:"niveau orageux",ja:"嵐レベル" };
 }
 
-// ── HAVA DURUMU TARZI ANLATILAR (7 dil) — her kategori için seviyeye göre ──
+// ── HAVA DURUMU TARZI ANLATILAR (7 dil), her kategori için seviyeye göre ──
 // Ton: Sakin'in sesi; hava-durumu sunucusu gibi, merak uyandıran, manevi.
 const NARRATIVES = {
   geo_calm: { tr:"Manyetik alan sakin; zihin berrak, sezgiler net. İçine dönmek için güzel bir zaman.", en:"The magnetic field is calm; the mind clear, intuition sharp. A lovely time to turn inward.", de:"Das Magnetfeld ist ruhig; der Geist klar, die Intuition wach. Eine schöne Zeit, nach innen zu kehren.", es:"El campo magnético está en calma; la mente clara, la intuición nítida. Un buen momento para mirar hacia dentro.", pt:"O campo magnético está calmo; a mente clara, a intuição afiada. Um belo momento para olhar para dentro.", fr:"Le champ magnétique est calme ; l'esprit clair, l'intuition limpide. Un beau moment pour se tourner vers l'intérieur.", ja:"磁場は穏やか。心は澄み、直感は冴えている。内側へと向かうのにふさわしいとき。" },
@@ -447,7 +447,7 @@ const NARRATIVES = {
   meteor_quiet: { tr:"Gökyüzü sakin; bir sonraki yağmur yaklaşıyor. Dileğini şimdiden hazırla.", en:"The sky is quiet; the next shower draws near. Ready your wish even now.", de:"Der Himmel ist still; der nächste Schauer naht. Halte deinen Wunsch schon jetzt bereit.", es:"El cielo está tranquilo; la próxima lluvia se acerca. Prepara tu deseo desde ahora.", pt:"O céu está tranquilo; a próxima chuva se aproxima. Prepara já o teu desejo.", fr:"Le ciel est paisible ; la prochaine pluie approche. Prépare ton vœu dès maintenant.", ja:"空は静か。次の流星群が近づいている。今から願いを用意して。" },
 };
 
-// ── AY EVRESİ (hesaplama — API gerekmez) ──
+// ── AY EVRESİ (hesaplama, API gerekmez) ──
 const MOON_EMOJI = { new:"🌑", waxing_crescent:"🌒", first_quarter:"🌓", waxing_gibbous:"🌔", full:"🌕", waning_gibbous:"🌖", last_quarter:"🌗", waning_crescent:"🌘" };
 const MOON_LABELS = {
   new:             { tr:"Yeni Ay",        en:"New Moon",        de:"Neumond",            es:"Luna Nueva",        pt:"Lua Nova",          fr:"Nouvelle Lune",     ja:"新月" },
@@ -479,7 +479,7 @@ function moonPhase(date = new Date()) {
   return { phase, age: Math.round(age * 10) / 10, illumination, emoji: MOON_EMOJI[phase], label: MOON_LABELS[phase] };
 }
 
-// ── GÖKTAŞI YAĞMURLARI (yıllık takvim — büyük yağmurlar) ──
+// ── GÖKTAŞI YAĞMURLARI (yıllık takvim, büyük yağmurlar) ──
 const METEOR_SHOWERS = [
   { name:"Quadrantids",   nameTr:"Kuadrantidler",    start:[12,28], peak:[1,3],   end:[1,12]  },
   { name:"Lyrids",        nameTr:"Liridler",         start:[4,16],  peak:[4,22],  end:[4,25]  },
@@ -515,7 +515,7 @@ function fillMeteorName(tpl, shower) {
   return out;
 }
 
-// fetch + timeout — Netlify function sınırına takılmasın
+// fetch + timeout: Netlify function sınırına takılmasın
 async function fetchWithTimeout(url, ms = 4500, options = {}) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), ms);
@@ -527,9 +527,9 @@ async function fetchWithTimeout(url, ms = 4500, options = {}) {
   }
 }
 
-// ── ÖZGÜN KOLEKTİF GÖKYÜZÜ RAPORU (Groq sentezi — tüm gerçek veriyi yorumlar) ──
+// ── ÖZGÜN KOLEKTİF GÖKYÜZÜ RAPORU (Groq sentezi, tüm gerçek veriyi yorumlar) ──
 const _SKY_LANG_NAMES = { tr:"Turkish", en:"English", de:"German", es:"Spanish", pt:"Portuguese", fr:"French", ja:"Japanese" };
-// Her gün farklı bir açılış perspektifi — "Dünyamız bugün..." kalıbı her açılışta
+// Her gün farklı bir açılış perspektifi, "Dünyamız bugün..." kalıbı her açılışta
 // tekrar edip kullanıcıyı soğutuyordu. Gün-of-year ile deterministik döner;
 // model bu perspektifi KENDİ kelimeleriyle işler (kopyalamaz).
 const _SKY_ANGLES = [
@@ -550,7 +550,7 @@ const _SKY_ANGLES = [
 // CJK/KİRİL SIZINTISI (kullanıcı raporu): TR raporunda "Herkes aynı anda uyanırken,
 // 世界 aynı enerji alanında birleşiyor." çıktı. Model, çok dilli ağırlıklarından
 // rastgele bir Çince/Japonca/Kiril parçası bırakabiliyor. Prompt'taki "LANGUAGE
-// PURITY" kuralı bunu AZALTIYOR ama GARANTİ ETMİYOR — o yüzden çıktı tarafında
+// PURITY" kuralı bunu AZALTIYOR ama GARANTİ ETMİYOR, o yüzden çıktı tarafında
 // sert bir süzgeç: Latin-dışı yazı sistemi karakteri görülürse (ja hariç) o rapor
 // KULLANILMAZ, null döner ve çağıran taraf hazır şablon metne düşer. Kısmi silme
 // yapmıyoruz; cümlenin ortasından kelime çıkarmak daha bozuk bir metin üretir.
@@ -558,7 +558,7 @@ const _NON_LATIN_RE = /[\u3000-\u303F\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uF9
 function _sanitizeSky(text, lang) {
   let t = String(text || "").trim();
   if (!t) return t;
-  // Japonca zaten CJK kullanır — onu bu süzgeçten muaf tut.
+  // Japonca zaten CJK kullanır, onu bu süzgeçten muaf tut.
   if (lang !== "ja" && _NON_LATIN_RE.test(t)) {
     console.warn("[sky] latin-disi karakter sizintisi, rapor reddedildi:", lang, t.slice(0, 120));
     return null;   // → şablon metne düş
@@ -567,16 +567,16 @@ function _sanitizeSky(text, lang) {
     // LATİN HARFLİ YABANCI KELİME SIZINTISI. Canlıda görüldü: "world'in", "Woche",
     // "transformationsımızda", "gibous", "arrivalini", "oportunite", "Lion's Gate"...
     // İki katmanlı süzgeç:
-    // (1) Türk alfabesinde q/w/x YOK — geçen kelime kesinlikle yabancı.
+    // (1) Türk alfabesinde q/w/x YOK, geçen kelime kesinlikle yabancı.
     //     Küçük harfli VE büyük harflilerin ikisini de yakala (Almanca "Woche"
     //     büyük W ile başlar, önceden kaçıyordu).
-    // (2) Yaygın İngilizce/Almanca/Fransızca kök karalistesi — q/w/x içermeyen
+    // (2) Yaygın İngilizce/Almanca/Fransızca kök karalistesi, q/w/x içermeyen
     //     sızıntılar için (transformation, gibbous, arrival, opportunity/oportunite,
     //     corridor, comet, welt, tag, morgen...). AI bu kelimelerin Türkçe
     //     karşılıklarını bilmiyorsa şablon metne düşmek daha temiz.
     // Muaf: yalnızca özellikle işaretli özel adlar (Sirius, Sakin, gezegen adları).
     const words = t.match(/\b[\p{L}][\p{L}'’]*\b/gu) || [];
-    // Meşru özel adlar/kelimeler — bunlar q/w/x taşımıyor zaten ama karaliste
+    // Meşru özel adlar/kelimeler: bunlar q/w/x taşımıyor zaten ama karaliste
     // eşleşmelerinden muaf tutmak istediklerimiz burada.
     const allow = new Set(["Sakin","Sirius"]);
     const badQWX = words.find(w => !allow.has(w) && /[qwxQWX]/.test(w));
@@ -586,12 +586,12 @@ function _sanitizeSky(text, lang) {
     }
     // Karaliste: q/w/x içermeyen ama Türkçe olmadığı KESİN köklü kelimeler.
     // Türkçe morfemleri de kapsar: "transformation" + "ımızda", "arrival" + "ini" vs.
-    // Not: "portal" burada YOK — TR'de meşru kelime ("Portalı", "portalları"). "corridor"
+    // Not: "portal" burada YOK: TR'de meşru kelime ("Portalı", "portalları"). "corridor"
     // da benzer ama TR karşılığı "koridor" ile başlar (regex "corr..." → eşleşmez).
-    // ⚠️ KELİME SINIRI (\b) ŞART — yoksa ALT-DİZE eşleşiyordu ve meşru Türkçe
+    // ⚠️ KELİME SINIRI (\b) ŞART, yoksa ALT-DİZE eşleşiyordu ve meşru Türkçe
     // kelimeler yüzünden raporun TAMAMI reddedilip kısa şablon metne düşülüyordu.
     // Canlıda ölçüldü: "y-ERDE" ("ayaklarını yerde hisset"), "p-ERDE", "s-ERDE"
-    // hepsi Almanca "erde" sanılıyordu — "yerde" gündelik Türkçenin en sık
+    // hepsi Almanca "erde" sanılıyordu: "yerde" gündelik Türkçenin en sık
     // kelimelerinden, bu yüzden raporların ÇOĞU düşüyordu ("neden hep kısa mesaj
     // geliyor?" şikayetinin kök sebebi buydu).
     // Ayrıca Türkçede MEŞRU olan girdiler listeden çıkarıldı:
@@ -610,7 +610,7 @@ function _sanitizeSky(text, lang) {
   }
   return t;
 }
-// Gezegen + zodyak lokalize sözlükler — TR raporunda İngilizce sızıntısını (Comet, Saturn in Pisces vb.)
+// Gezegen + zodyak lokalize sözlükler, TR raporunda İngilizce sızıntısını (Comet, Saturn in Pisces vb.)
 // önlemek için AI'ya doğrudan hedef dildeki isimleri ver.
 const _PLANET_L = {
   Sun:{tr:"Güneş",en:"Sun",de:"Sonne",es:"Sol",pt:"Sol",fr:"Soleil",ja:"太陽"},
@@ -661,7 +661,7 @@ HEARTFELT INTERPRETATION: Your most important job is to help people FEEL the sky
 
 LANGUAGE PURITY (ABSOLUTE RULE): write ENTIRELY in ${name}, using ONLY ${name} vocabulary and orthography. Never mix in words or spellings from ANY other language: no English, Dutch, Romanian, French leaks (words like "procent", "dàn", "percent" are FORBIDDEN${lang === "tr" ? '; in Turkish say "yüzde", and the only accented vowels that exist are â, î, û' : ""}). If you are unsure of a word, choose a simpler native one.
 
-NOTABLE SKY EVENTS (HIGHEST PRIORITY): If the data lists any notable sky events (solar eclipse, lunar eclipse, comet, planet parade or alignment, energy portal or corridor), you MUST weave them in naturally and prominently: at least 1–2 heartfelt sentences. A solar or lunar eclipse is a rare, powerful cosmic crossing; treat it with reverence. A bright comet is a cosmic messenger from the outer reaches; acknowledge what it stirs collectively. A planet parade or tight alignment means energies are gathering in one direction; name the key planets. An energy portal or corridor (like the Lion's Gate, 11:11, solstices, equinoxes) marks a collective threshold where the subtle field is especially receptive; describe how this opening feels in the body and in collective consciousness, what it invites or releases. Never omit these if they appear. When any such event is only days away, convey the sense of anticipation.
+NOTABLE SKY EVENTS (HIGHEST PRIORITY): If the data lists any notable sky events (solar eclipse, lunar eclipse, comet, planet parade or alignment, energy portal or corridor), you MUST weave them in naturally and prominently: at least 1-2 heartfelt sentences. A solar or lunar eclipse is a rare, powerful cosmic crossing; treat it with reverence. A bright comet is a cosmic messenger from the outer reaches; acknowledge what it stirs collectively. A planet parade or tight alignment means energies are gathering in one direction; name the key planets. An energy portal or corridor (like the Lion's Gate, 11:11, solstices, equinoxes) marks a collective threshold where the subtle field is especially receptive; describe how this opening feels in the body and in collective consciousness, what it invites or releases. Never omit these if they appear. When any such event is only days away, convey the sense of anticipation.
 
 NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm; nothing memorized-sounding. 4 to 7 flowing sentences, prose only, no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.
 
@@ -690,7 +690,7 @@ Now write the collective sky-energy reading. Let us FEEL which energy the Earth 
   return txt || null;
 }
 
-// Süzgeç bir raporu reddederse HEMEN kısa şablon metne düşme — bir kez daha sor.
+// Süzgeç bir raporu reddederse HEMEN kısa şablon metne düşme, bir kez daha sor.
 // Sızıntı rastgele (modelin o seferki kelime seçimi); ikinci deneme genelde temiz
 // geliyor. Böylece kullanıcı uzun raporu çok daha sık görür.
 async function generateSkyReportWithRetry(data, lang) {
@@ -716,7 +716,7 @@ export const handler = async (event) => {
     return { statusCode: 429, headers: { ...cors, "Content-Type": "application/json" }, body: JSON.stringify({ error: "Too many requests" }) };
   }
 
-  // 4 endpoint paralel — biri çökerse diğerleri gelir
+  // 4 endpoint paralel: biri çökerse diğerleri gelir
   const [kpResult, fcResult, flareResult, windResult] = await Promise.allSettled([
     fetchWithTimeout("https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json").then(r => r.json()),
     fetchWithTimeout("https://services.swpc.noaa.gov/text/3-day-forecast.txt").then(r => r.text()),
@@ -726,7 +726,7 @@ export const handler = async (event) => {
 
   try {
     // Past 7 days Kp index (3-hourly values). NOAA Kp servisi down olsa bile
-    // FONKSİYON 502 DÖNMEZ — ay evresi, gezegenler, portallar ve meteorlar NOAA'ya
+    // FONKSİYON 502 DÖNMEZ: ay evresi, gezegenler, portallar ve meteorlar NOAA'ya
     // DEĞİL astronomy-engine'e dayanır. Kp yoksa jeomanyetik kısım "sakin" (Kp 0)
     // varsayılır, rapor yine üretilir. (Eski davranış: Kp fail → throw → 502 →
     // client'ta "Güneş verisi alınamadı" ekranı. NOAA SWPC sık sık kısa süreli
@@ -768,7 +768,7 @@ export const handler = async (event) => {
       ? Math.max(...forecastKp.flatMap(f => [f.day1, f.day2, f.day3]))
       : null;
 
-    // GÜNEŞ PATLAMALARI (son 24 saat) — opsiyonel
+    // GÜNEŞ PATLAMALARI (son 24 saat), opsiyonel
     let flares24h = { count: 0, max_class: null };
     if (flareResult.status === "fulfilled") {
       try {
@@ -788,7 +788,7 @@ export const handler = async (event) => {
       } catch { /* sessiz geç */ }
     }
 
-    // GÜNEŞ RÜZGARI (en güncel) — opsiyonel
+    // GÜNEŞ RÜZGARI (en güncel), opsiyonel
     let solarWind = { speed: null, density: null };
     if (windResult.status === "fulfilled") {
       try {
@@ -808,7 +808,7 @@ export const handler = async (event) => {
     const moon = moonPhase();
     const meteor = activeMeteorShower();
     let planets = [];
-    try { planets = planetSky(); } catch { /* efemeris hatası — sessiz */ }
+    try { planets = planetSky(); } catch { /* efemeris hatası: sessiz */ }
     // Kolektif geçiş notu (gökyüzü raporunun alt başlığı). Efemeris yoksa null.
     let transit = null;
     try { transit = transitNote(planets); } catch { /* sessiz */ }
@@ -818,7 +818,7 @@ export const handler = async (event) => {
     const _legacyComet = notableEvents.find(ev => ev.type === "comet");
     const comet = _legacyComet ? { active: true, name: _legacyComet.name.en } : { active: false };
 
-    // ── HAVA DURUMU TARZI ANLATILAR — seviyeye göre seç ──
+    // ── HAVA DURUMU TARZI ANLATILAR, seviyeye göre seç ──
     const geoLevel   = maxKp >= 5 ? "storm" : maxKp >= 3 ? "unsettled" : "calm";
     const flareCls   = flares24h.max_class?.[0]?.toUpperCase();
     const flareLevel = flareCls === "X" ? "x" : flareCls === "M" ? "m" : flareCls === "C" ? "c" : "quiet";
@@ -889,7 +889,7 @@ export const handler = async (event) => {
       },
     };
 
-    // ── ÖZGÜN AI GÖKYÜZÜ RAPORU (kolektif, seçili dilde) — başarısızsa template fallback ──
+    // ── ÖZGÜN AI GÖKYÜZÜ RAPORU (kolektif, seçili dilde), başarısızsa template fallback ──
     const lang = (() => {
       const l = event.queryStringParameters?.lang;
       return _SKY_LANG_NAMES[l] ? l : "en";

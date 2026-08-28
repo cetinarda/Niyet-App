@@ -1,4 +1,4 @@
-# SoulProfile — Payment Integration Spec
+# SoulProfile: Payment Integration Spec
 
 > Tek bir entitlement modeli üzerinden cross-platform monetization.
 > Backbone: **RevenueCat**. Web rail: **Stripe**. iOS rail: **Apple StoreKit 2**.
@@ -115,7 +115,7 @@ Supabase cache = offline-friendly, RevenueCat = source of truth.
 | `cosmic_weekly` | `life.soulprofile.app.weekly` | `STRIPE_PRICE_WEEKLY` | subscription | P1W |
 | `monthly_galactic` | `life.soulprofile.app.monthly` | `STRIPE_PRICE_MONTHLY` | subscription | P1M |
 | `solar_return_yearly` | `life.soulprofile.app.solar` | `STRIPE_PRICE_SOLAR` | subscription | P1Y |
-| `relationship_sync` | `life.soulprofile.app.relsync` | `STRIPE_PRICE_RELSYNC` | non_subscription | — |
+| `relationship_sync` | `life.soulprofile.app.relsync` | `STRIPE_PRICE_RELSYNC` | non_subscription |: |
 | `premium_bundle_yearly` | `life.soulprofile.app.bundle` | `STRIPE_PRICE_BUNDLE` | subscription | P1Y |
 
 > **Naming convention:** Apple product ID = bundle reverse-DNS + `.` + slug. RevenueCat
@@ -172,7 +172,7 @@ client `Purchases.getOfferings()` çağırır, server tarafı offering değişti
 
 ---
 
-## 3. Apple App Store Connect — IAP Setup
+## 3. Apple App Store Connect: IAP Setup
 
 ### 3.1 Ön gereksinim
 
@@ -189,7 +189,7 @@ App Store Connect → My Apps → SoulProfile → **In-App Purchases**.
 | Cosmic Weekly | Auto-Renewable Sub | `cosmic_weekly` | `life.soulprofile.app.weekly` | `soulprofile_premium` |
 | Monthly Galactic | Auto-Renewable Sub | `monthly_galactic` | `life.soulprofile.app.monthly` | `soulprofile_premium` |
 | Solar Return | Auto-Renewable Sub | `solar_return_yearly` | `life.soulprofile.app.solar` | `soulprofile_premium` |
-| Relationship Sync | Non-Consumable | `relationship_sync` | `life.soulprofile.app.relsync` | — |
+| Relationship Sync | Non-Consumable | `relationship_sync` | `life.soulprofile.app.relsync` |: |
 | Premium Bundle | Auto-Renewable Sub | `premium_bundle_yearly` | `life.soulprofile.app.bundle` | `soulprofile_premium` |
 
 > Tüm subscription'ları tek **subscription group** içine koy → kullanıcı upgrade/downgrade
@@ -199,10 +199,10 @@ App Store Connect → My Apps → SoulProfile → **In-App Purchases**.
 
 ```
 soulprofile_premium (group)
-  Level 1: premium_bundle_yearly     ($79/yr — highest service)
+  Level 1: premium_bundle_yearly     ($79/yr: highest service)
   Level 2: solar_return_yearly       ($19.99/yr)
   Level 3: monthly_galactic          ($14.99/mo)
-  Level 4: cosmic_weekly             ($2.99/wk — lowest service)
+  Level 4: cosmic_weekly             ($2.99/wk: lowest service)
 ```
 
 Upgrade → immediate. Downgrade → next renewal.
@@ -288,7 +288,7 @@ Product: Premium Bundle
 
 Her subscription price'ında **Free trial: 7 days** ayarla.
 
-### 4.3 Checkout vs Embedded — Karar
+### 4.3 Checkout vs Embedded: Karar
 
 **Hosted Checkout** kullan (`stripe.checkout.sessions.create`):
 
@@ -411,7 +411,7 @@ export interface CheckoutOptions {
 /**
  * Kullanıcıyı Stripe Checkout'a yönlendirir.
  * Backend, RevenueCat'in `app_user_id` field'ı için Supabase user_id'yi
- * client_reference_id olarak ekler — webhook reconciliation için kritik.
+ * client_reference_id olarak ekler: webhook reconciliation için kritik.
  */
 export async function startCheckout(opts: CheckoutOptions): Promise<void> {
   const res = await fetch('/api/checkout', {
@@ -428,7 +428,7 @@ export async function startCheckout(opts: CheckoutOptions): Promise<void> {
   window.location.href = url;
 }
 
-/** Customer Portal — abonelik yönet, iptal et, fatura indir. */
+/** Customer Portal: abonelik yönet, iptal et, fatura indir. */
 export async function openCustomerPortal(): Promise<void> {
   const res = await fetch('/api/portal', { method: 'POST' });
   if (!res.ok) throw new Error('Portal session failed');
@@ -442,7 +442,7 @@ export async function openCustomerPortal(): Promise<void> {
 **Karar: Next.js API route, Supabase Edge Function değil.**
 
 Gerekçe:
-1. Next.js API route Netlify Functions olarak otomatik deploy olur — ek build/deploy yok.
+1. Next.js API route Netlify Functions olarak otomatik deploy olur, ek build/deploy yok.
 2. `STRIPE_SECRET_KEY` Netlify env vars'ta tek lokasyon.
 3. Latency: edge runtime + Stripe SDK = ~150ms total.
 4. Supabase Edge Function gereken yerler: cron job, scheduled task, Anthropic key.
@@ -813,7 +813,7 @@ export async function configureRevenueCat(userId: string): Promise<void> {
   await Purchases.setLogLevel({ level: LOG_LEVEL.WARN });
   await Purchases.configure({
     apiKey: process.env.NEXT_PUBLIC_REVENUECAT_IOS_KEY!,
-    appUserID: userId, // Supabase user_id — cross-platform alias
+    appUserID: userId, // Supabase user_id, cross-platform alias
   });
   configured = true;
 }
@@ -1145,7 +1145,7 @@ interface PaywallModalProps {
   open: boolean;
   onClose: () => void;
   trigger: GatedFeature | 'manual';
-  defaultPlan?: Plan;       // 'monthly' default — sweet spot
+  defaultPlan?: Plan;       // 'monthly' default: sweet spot
   utm?: string;             // analytics
 }
 ```
@@ -1180,7 +1180,7 @@ interface PaywallModalProps {
 export type PaywallVariant = 'standard' | 'social_proof' | 'urgency';
 
 export function pickVariant(userId: string): PaywallVariant {
-  // Deterministic hash split — RevenueCat experiments'tan da gelebilir
+  // Deterministic hash split: RevenueCat experiments'tan da gelebilir
   const hash = [...userId].reduce((a, c) => a + c.charCodeAt(0), 0) % 3;
   return (['standard', 'social_proof', 'urgency'] as const)[hash];
 }
@@ -1205,7 +1205,7 @@ export function pickVariant(userId: string): PaywallVariant {
 - Apple StoreKit 2 trial = kart zorunlu (default davranış).
 - Stripe `trial_period_days` ile kart zorunlu (`payment_method_collection: 'always'`).
 - Kart koymak → intent kalitesi yüksek; CAC ROI 3-4x.
-- 7 gün = "1 haftalık transit cycle" deneyimi yeterli — Cosmic Weekly'nin
+- 7 gün = "1 haftalık transit cycle" deneyimi yeterli: Cosmic Weekly'nin
   value prop'u tam karşılanır.
 - Cancel akışı kolay (in-app Settings → Subscriptions, web → Customer Portal).
 
@@ -1214,7 +1214,7 @@ export function pickVariant(userId: string): PaywallVariant {
 Apple **3 gün önce otomatik** trial-ending notification yollar (iOS 13+).
 Stripe için ekstra: webhook `customer.subscription.trial_will_end` → Resend ile email:
 ```
-Konu: Trial'in 3 günde sona eriyor — devam etmek için bir şey yapmana gerek yok
+Konu: Trial'in 3 günde sona eriyor, devam etmek için bir şey yapmana gerek yok
 ```
 
 ### 9.3 Trial conversion guardrails
@@ -1365,7 +1365,7 @@ if (promo) {
 - ToS'a yaz: "Türkiye ve AB tüketicileri için 14 gün cayma hakkı. Yıllık abonelikler
   için kullanım oranı düşülerek iade."
 
-### 12.4 KVKK / GDPR — Payment Data
+### 12.4 KVKK / GDPR: Payment Data
 
 - Stripe customer object → email, country, IP. **PCI scope kart bilgisi bize gelmez.**
 - Supabase `stripe_customers` tablosu: sadece `user_id` ↔ `stripe_customer_id` mapping.
@@ -1374,7 +1374,7 @@ if (promo) {
 - Account deletion akışı:
   1. Supabase auth.users delete (cascade subscriptions).
   2. Stripe customer'ı **silme**, anonymize et (`email = deleted+UUID@soulprofile.life`,
-     `name = null`). Fatura/muhasebe için 8 yıl saklama (TR Vergi Usul) — finansal record.
+     `name = null`). Fatura/muhasebe için 8 yıl saklama (TR Vergi Usul), finansal record.
   3. RevenueCat: `DELETE /v1/subscribers/{app_user_id}` → soft delete (subscriber stays
      for receipt validation, attributes purged).
   4. Active subscription varsa user'a uyar: "Önce aboneliğini iptal et."
@@ -1389,7 +1389,7 @@ if (promo) {
 
 `/terms` ve `/privacy` sayfalarına ekle:
 - Ödeme sağlayıcıları: Stripe, Inc. (US/IE) ve Apple Inc.
-- Veri işleyici listesi: RevenueCat, Inc. (US — Standard Contractual Clauses)
+- Veri işleyici listesi: RevenueCat, Inc. (US: Standard Contractual Clauses)
 - Otomatik yenileme + iptal mekanizması
 - Refund policy linki
 - 16 yaş altı satın alma yasak (ek: ebeveyn onayı gerekirse Family Sharing zorunlu)
@@ -1484,7 +1484,7 @@ NEXT_PUBLIC_SITE_URL=https://soulprofile.life
 
 ## 16. Operations / Monitoring
 
-- **RevenueCat Dashboard**: MRR, conversion, churn, refund rate — günlük bak.
+- **RevenueCat Dashboard**: MRR, conversion, churn, refund rate, günlük bak.
 - **Stripe Dashboard**: dispute rate %0.75'i geçerse Stripe early warning yollar.
 - **Supabase Logs**: webhook 5xx alarm → Slack webhook (Resend transactional).
 - **Sentry**: PaywallModal error rate, purchase fail rate. > %2 fail → alert.
@@ -1513,7 +1513,7 @@ KPI hedefler (3. ay):
 
 ---
 
-## 18. Hızlı Referans — Dosya Listesi
+## 18. Hızlı Referans: Dosya Listesi
 
 ```
 docs/

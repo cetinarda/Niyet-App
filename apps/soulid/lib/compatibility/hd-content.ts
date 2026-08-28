@@ -39,7 +39,7 @@ const TR: LocalizedContent = {
     Head: {
       conditions: 'tanımlı tarafın ilham ve soruları, açık tarafı zihinsel olarak meşgul eder. Açık taraf onun sorularına kapılabilir; sınır koymayı öğrenirse büyük ilham alır.',
       bothDefined: 'ikiniz de kendi ilham kaynağınıza sahipsiniz. Zihinsel olarak birbirinizden bağımsızsınız; nadiren birbirinizin kafasını karıştırırsınız.',
-      bothOpen: 'ikiniz de dışarıdan gelen sorulara açıksınız. Birlikte "acaba" sarmalına girebilir, sürekli yeni fikirler kovalayabilirsiniz — eğlenceli ama dağıtıcı.',
+      bothOpen: 'ikiniz de dışarıdan gelen sorulara açıksınız. Birlikte "acaba" sarmalına girebilir, sürekli yeni fikirler kovalayabilirsiniz, eğlenceli ama dağıtıcı.',
     },
     Ajna: {
       conditions: 'tanımlı tarafın sabit düşünme biçimi, açık tarafa kesinlik hissi verir. Açık taraf onun gibi düşünmeye başlayabilir; bu hem güven verir hem de kendi esnek zihnini unutturabilir.',
@@ -63,7 +63,7 @@ const TR: LocalizedContent = {
     },
     SolarPlexus: {
       conditions: 'tanımlı tarafın duygusal dalgası evin havasını belirler; açık taraf bu dalgayı emer ve büyütür. Açık taraf "bu duygu bana mı ait?" diye sormayı öğrenirse, ilişki çok daha sakin akar.',
-      bothDefined: 'ikinizin de kendi duygusal dalgası var. İki dalga çakışınca yoğun, ayrı fazda olunca biri inerken diğeri çıkar — netlik için ikinizin de zamana ihtiyacı var.',
+      bothDefined: 'ikinizin de kendi duygusal dalgası var. İki dalga çakışınca yoğun, ayrı fazda olunca biri inerken diğeri çıkar, netlik için ikinizin de zamana ihtiyacı var.',
       bothOpen: 'ikiniz de duygusal olarak ortamdan etkilenirsiniz. Çatışmadan kaçma eğiliminiz ortak; gerginliği bastırmak yerine nazikçe adlandırmak ikinizi de özgürleştirir.',
     },
     Sacral: {
@@ -111,7 +111,7 @@ const EN: LocalizedContent = {
     Head: {
       conditions: "the defined side's inspirations and questions mentally occupy the open one. The open side can get swept up in those questions; with healthy boundaries it draws deep inspiration.",
       bothDefined: 'you each have your own source of inspiration. You are mentally independent; you rarely confuse each other.',
-      bothOpen: "you are both open to outside questions. Together you might spiral into 'what ifs,' constantly chasing new ideas — playful but scattering.",
+      bothOpen: "you are both open to outside questions. Together you might spiral into 'what ifs,' constantly chasing new ideas: playful but scattering.",
     },
     Ajna: {
       conditions: "the defined side's fixed way of thinking gives the open one a sense of certainty. The open side may start thinking like them; this feels reassuring but can mute their own flexible mind.",
@@ -135,7 +135,7 @@ const EN: LocalizedContent = {
     },
     SolarPlexus: {
       conditions: "the defined side's emotional wave sets the mood of the home; the open one absorbs and amplifies it. When the open side learns to ask 'does this feeling belong to me?', the relationship flows much more calmly.",
-      bothDefined: 'you both have your own emotional wave. When the waves align it is intense; when out of phase one rises as the other falls — both of you need time for clarity.',
+      bothDefined: 'you both have your own emotional wave. When the waves align it is intense; when out of phase one rises as the other falls, both of you need time for clarity.',
       bothOpen: 'you are both emotionally influenced by the environment. You share a tendency to avoid conflict; naming tension gently instead of suppressing it sets you both free.',
     },
     Sacral: {
@@ -149,7 +149,7 @@ const EN: LocalizedContent = {
       bothOpen: 'you are both open about fear and trust. Noticing each other\'s "feels good but isn\'t right" habits becomes shared healing.',
     },
     Root: {
-      conditions: "the defined side's pressure and drive energy gets the open one moving — but can also sweep them into haste. If the open side asks 'is this rush really mine?', a healthy tempo emerges.",
+      conditions: "the defined side's pressure and drive energy gets the open one moving, but can also sweep them into haste. If the open side asks 'is this rush really mine?', a healthy tempo emerges.",
       bothDefined: 'you both have your own inner rhythm and way of handling pressure. You do not pressure each other into unnecessary haste; two separate tempos flow side by side.',
       bothOpen: 'you are both open to outside pressure. Together you can fall into the "let\'s just finish and relax" trap; learning to prioritize together is freeing.',
     },

@@ -1,6 +1,6 @@
-# SoulProfile — Apple App Store Submission Package
+# SoulProfile: Apple App Store Submission Package
 
-> Versiyon: 1.0 — Tarih: 2026-05-26
+> Versiyon: 1.0: Tarih: 2026-05-26
 > Owner: Founder + Growth
 > Hedef: iOS 17.0+ (Capacitor wrapper over Next.js 14)
 > Bundle ID: `life.soulprofile.app`
@@ -21,7 +21,7 @@ Bu doküman App Store Connect'e gönderim için TAM operasyonel pakettir. Her b�
 |---|---|---|
 | Yıllık ücret | $99 | $99 |
 | Geliştirici adı | Kişi adı görünür | Şirket adı görünür ("SoulProfile Teknoloji A.Ş.") |
-| DUNS gereksinimi | Yok | VAR — ücretsiz başvuru |
+| DUNS gereksinimi | Yok | VAR, ücretsiz başvuru |
 | Onay süresi | 24-48 saat | 7-21 gün |
 | Sign in with Apple | Çalışır | Çalışır |
 | StoreKit 2 / IAP | Çalışır | Çalışır |
@@ -32,19 +32,19 @@ Bu doküman App Store Connect'e gönderim için TAM operasyonel pakettir. Her b�
    - URL: https://developer.apple.com/enroll/duns-lookup/
    - Şirket adı, adres, vergi numarası, telefon hazır olsun
    - Ücretsiz; 3-5 iş günü
-   - Kişisel şahıs şirketi (Şahıs Şirketi) için de DUNS verilir — vergi levhasındaki "ticari unvan"ı kullan
+   - Kişisel şahıs şirketi (Şahıs Şirketi) için de DUNS verilir, vergi levhasındaki "ticari unvan"ı kullan
 
 2. **Apple ID hazırla**
    - Şirket maili kullan: `dev@soulprofile.app` (alias değil, gerçek inbox)
-   - 2FA zorunlu — şirket telefonu bağla
+   - 2FA zorunlu: şirket telefonu bağla
    - **ASLA** kişisel iCloud Apple ID'sini kullanma; ileride hesap transferi 90 gün sürer
 
 3. **Apple Developer Program enrollment**
    - URL: https://developer.apple.com/programs/enroll/
    - "Company / Organization" seç
    - DUNS numarası, yasal şirket adı (vergi levhasındakiyle BİREBİR aynı), website
-   - "Legal Entity Authorization" — şirketi temsil yetkin var mı? Limited / A.Ş. için imza sirküleri sorulabilir
-   - Apple çağrı yapabilir (İngilizce, EN-only) — yetkili kişiyi bilgilendir
+   - "Legal Entity Authorization": şirketi temsil yetkin var mı? Limited / A.Ş. için imza sirküleri sorulabilir
+   - Apple çağrı yapabilir (İngilizce, EN-only), yetkili kişiyi bilgilendir
    - $99 ödeme (kredi kartı, USD)
 
 4. **Onay sonrası ilk login**
@@ -54,7 +54,7 @@ Bu doküman App Store Connect'e gönderim için TAM operasyonel pakettir. Her b�
    - **Marketing** rol: ASO/content kişisi
    - Her birine ayrı Apple ID (paylaşılan hesap App Store Connect'te BANLANIR)
 
-### 1.3 Şirket Kurulu Değilse — Geçici Plan
+### 1.3 Şirket Kurulu Değilse: Geçici Plan
 
 Şahıs şirketi açılışı (Türkiye) 2-5 iş gününde tamamlanır:
 - Vergi dairesine başvuru → vergi levhası
@@ -66,7 +66,7 @@ Acilse: **Individual** hesapla başla, 6 ay içinde Organization'a TRANSFER ET. 
 
 ---
 
-## 2. App Store Connect — App Kaydı
+## 2. App Store Connect: App Kaydı
 
 ### 2.1 Bundle ID Oluşturma
 
@@ -76,13 +76,13 @@ Acilse: **Individual** hesapla başla, 6 ay içinde Organization'a TRANSFER ET. 
    - **Description:** `SoulProfile iOS App`
    - **Bundle ID:** Explicit → `life.soulprofile.app`
    - **Capabilities** (aşağıdaki tüm kutuları işaretle):
-     - [x] **Sign In with Apple** (zorunlu — bkz. §13)
+     - [x] **Sign In with Apple** (zorunlu, bkz. §13)
      - [x] **In-App Purchase**
      - [x] **Push Notifications**
      - [x] **Associated Domains** (universal links için: `applinks:life.soulprofile.app`)
-     - [x] **App Groups** (`group.life.soulprofile.shared` — widget'lar için ileride)
-     - [ ] HealthKit — KULLANMA (privacy review uzar)
-     - [ ] HomeKit — KULLANMA
+     - [x] **App Groups** (`group.life.soulprofile.shared`: widget'lar için ileride)
+     - [ ] HealthKit: KULLANMA (privacy review uzar)
+     - [ ] HomeKit: KULLANMA
 4. Register
 
 ### 2.2 App Store Connect'te Yeni App
@@ -92,7 +92,7 @@ App Store Connect → My Apps → `+` → New App
 | Alan | Değer |
 |---|---|
 | Platforms | iOS |
-| Name | `SoulProfile` (gerçek görünür isim §6'da varyantlanacak — bu sadece kayıt için) |
+| Name | `SoulProfile` (gerçek görünür isim §6'da varyantlanacak: bu sadece kayıt için) |
 | Primary Language | Turkish (Türkiye) |
 | Bundle ID | `life.soulprofile.app` (seçilebilir listede çıkmalı) |
 | SKU | `SOULPROFILE-IOS-001` |
@@ -102,9 +102,9 @@ App Store Connect → My Apps → `+` → New App
 
 Capacitor projesi içinde `ios/App/App.entitlements` dosyasına otomatik eklenir, ama App Store Connect tarafında **provisioning profile** yenilenmesi şart. Sırayla:
 
-1. Sign in with Apple — `aps-environment`, `com.apple.developer.applesignin: [Default]`
-2. In-App Purchase — entitlement otomatik
-3. Push Notifications — APNs Auth Key oluştur (Certificates yerine Key kullan, expire olmuyor)
+1. Sign in with Apple: `aps-environment`, `com.apple.developer.applesignin: [Default]`
+2. In-App Purchase: entitlement otomatik
+3. Push Notifications: APNs Auth Key oluştur (Certificates yerine Key kullan, expire olmuyor)
    - Keys → `+` → Apple Push Notifications service (APNs) → Continue → Register → Download `.p8` (BİR KEZ indirilir, kaybedersen yenisini al)
    - Key ID + Team ID + Bundle ID = backend'e (Supabase Edge Function) push payload için
 4. Associated Domains: `apple-app-site-association` dosyasını `life.soulprofile.app/.well-known/` altına koy
@@ -124,7 +124,7 @@ Capacitor projesi içinde `ios/App/App.entitlements` dosyasına otomatik eklenir
 
 **Brand spec:**
 - Background: Gradient `#0B0F2A` → `#3D1F6E` → `#7B3FBF` (galaxy/cosmic)
-- Foreground: Tek sembol — yıldız patlaması / starseed glyph (Andromeda 8-point star önerisi)
+- Foreground: Tek sembol: yıldız patlaması / starseed glyph (Andromeda 8-point star önerisi)
 - Stil: soft glow, subtle nebula texture
 - Light/dark mode için TEK varyant (Apple iOS 18'de hala 3 varyant destekliyor ama MVP'de tek yeter)
 
@@ -151,7 +151,7 @@ Xcode 15+ "Single Size" asset catalog ile tek 1024×1024 yeterli. Manuel isterse
 | iPad App | 76pt @2x | 152×152 |
 | iPad Pro App | 83.5pt @2x | 167×167 |
 | App Store | 1024pt @1x | 1024×1024 |
-| Watch (yoksa atla) | — | — |
+| Watch (yoksa atla) |, |, |
 
 ### 3.3 Icon Kontrol Listesi (kabul kriteri)
 
@@ -187,28 +187,28 @@ Apple "iPhone 6.9 inch" tek upload'u kabul ediyor ve kalanını auto-resize ediy
 - Min 3, max 10 (her boyut için)
 - **Hedef: 10 screenshot** (tam slot kullanımı = conversion uplift)
 
-### 4.3 İçerik Planı — 10 Screenshot (Hero-Driven)
+### 4.3 İçerik Planı: 10 Screenshot (Hero-Driven)
 
-> Stil: Her screenshot'ta üst 1/3 büyük tipografi başlık + alt 2/3 cihaz mockup (cihaz mockup'sız "full bleed" de OK ve daha yüksek CTR veriyor — A/B test edilecek).
+> Stil: Her screenshot'ta üst 1/3 büyük tipografi başlık + alt 2/3 cihaz mockup (cihaz mockup'sız "full bleed" de OK ve daha yüksek CTR veriyor, A/B test edilecek).
 > Font: Brand display (Tasa Orbiter veya Söhne) başlık, Inter altmetin
 > Renk: galaxy gradient bg, beyaz tipografi, accent `#FFD86B` (altın)
 
-#### TR — Türkiye App Store
+#### TR: Türkiye App Store
 
 | # | Başlık (≤6 kelime) | Altmetin (≤12 kelime) | Görsel İçerik |
 |---|---|---|---|
-| 1 | **Sen sadece insan değilsin.** | Doğum saatinden Galaktik Karne'n 60 saniyede hazır. | Hero karne kartı — kullanıcı adı + büyük "★ 9.2 / 10" rating |
+| 1 | **Sen sadece insan değilsin.** | Doğum saatinden Galaktik Karne'n 60 saniyede hazır. | Hero karne kartı: kullanıcı adı + büyük "★ 9.2 / 10" rating |
 | 2 | **4 sistem, tek karne.** | Astroloji + Human Design + Numeroloji + Yıldız Irkı. | 4 ikon row + karne thumbnail |
 | 3 | **Bu hayattaki görevin.** | Kuzey Düğüm + ruh kontratın açıklamalı. | North Node detay sayfası |
 | 4 | **Hangi yıldızdan geldin?** | Plejyen, Sirius, Arkturus, Lyra, Andromeda. | Starseed origin reveal screen |
 | 5 | **Human Design tipini öğren.** | Manifestor, Generator, Projector, Reflector. | HD type card + body graph preview |
 | 6 | **3D solar sistemini gör.** | Doğum anında gezegenlerin tam pozisyonu. | 3D solar system viewer screenshot |
-| 7 | **AI ile sana özel anlatım.** | Tek tip yorum değil — senin profilin için yazılmış. | Narrative paragraph screen |
+| 7 | **AI ile sana özel anlatım.** | Tek tip yorum değil, senin profilin için yazılmış. | Narrative paragraph screen |
 | 8 | **Story'ye atılır kalitede.** | Tek tıkla Instagram, WhatsApp, TikTok. | Share sheet açık + 9:16 karne preview |
 | 9 | **Sevdiklerinin karnesi.** | Uyum analizi: partner, anne, arkadaş. | Compatibility split-screen (Premium badge) |
 | 10 | **Ücretsiz başla.** | Premium ile sınırsız karne + günlük transit. | Paywall ekranı (fiyat görünür) |
 
-#### EN — US / International App Store
+#### EN: US / International App Store
 
 | # | Headline | Subhead | Visual |
 |---|---|---|---|
@@ -218,7 +218,7 @@ Apple "iPhone 6.9 inch" tek upload'u kabul ediyor ve kalanını auto-resize ediy
 | 4 | **Which star did you come from?** | Pleiades, Sirius, Arcturus, Lyra, Andromeda. | Starseed reveal |
 | 5 | **Discover your Human Design.** | Manifestor, Generator, Projector, Reflector. | HD body graph |
 | 6 | **See your 3D solar system.** | Exact planetary positions at your birth. | 3D viewer |
-| 7 | **AI-written, just for you.** | No generic horoscope — written for your chart. | Narrative page |
+| 7 | **AI-written, just for you.** | No generic horoscope, written for your chart. | Narrative page |
 | 8 | **Share-worthy by design.** | One tap to Instagram, WhatsApp, TikTok. | Share sheet |
 | 9 | **Read the people you love.** | Compatibility for partners, parents, friends. | Compatibility split |
 | 10 | **Free to start.** | Premium unlocks unlimited cards + daily transits. | Paywall screen |
@@ -230,7 +230,7 @@ Apple "iPhone 6.9 inch" tek upload'u kabul ediyor ve kalanını auto-resize ediy
 ### 4.5 Screenshot Kontrol Listesi
 
 - [ ] Tüm screenshot'lar gerçek app screen'inden geliyor (mockup üstüne stock görsel = 2.3.3 rejection)
-- [ ] Status bar gerçek görünüyor (saat 09:41 — Apple standart)
+- [ ] Status bar gerçek görünüyor (saat 09:41: Apple standart)
 - [ ] Battery 100%, full signal
 - [ ] Türkçe screenshot'ta TR app data
 - [ ] İngilizce screenshot'ta EN app data
@@ -244,32 +244,32 @@ Apple "iPhone 6.9 inch" tek upload'u kabul ediyor ve kalanını auto-resize ediy
 
 3 senaryo (15-30 sn). Apple max 30 sn, min 15 sn. Format: `.mov` veya `.mp4`, H.264, 30fps, portrait 1080×1920 (6.5") / 1080×2340 (6.7+). Ses opsiyonel ama background music ile %18 daha yüksek izlenme oranı.
 
-### Video 1 — "60 Saniyede Karne" (22 sn) — Hero / Default
+### Video 1: "60 Saniyede Karne" (22 sn): Hero / Default
 
 ```
 [0-2s]   Logo bumper + slogan "Sen sadece insan değilsin."
-[2-5s]   Form ekranı — kullanıcı doğum tarihi giriyor (parmak animasyonu)
-[5-8s]   Loading — galaktik animasyon (yıldızlar açılıyor)
-[8-14s]  Karne reveal — 4 sistemli kart açılıyor, scroll
+[2-5s]   Form ekranı: kullanıcı doğum tarihi giriyor (parmak animasyonu)
+[5-8s]   Loading: galaktik animasyon (yıldızlar açılıyor)
+[8-14s]  Karne reveal: 4 sistemli kart açılıyor, scroll
 [14-17s] Detay sayfalar hızlı cut: HD type → Starseed → North Node
 [17-20s] Share button → Story preview
 [20-22s] End card: "Ücretsiz indir" + logo
 ```
 
-**Müzik:** Ambient cosmic (Epidemic Sound — "Celestial Drift" veya benzeri lisanslı)
+**Müzik:** Ambient cosmic (Epidemic Sound, "Celestial Drift" veya benzeri lisanslı)
 **Voiceover:** YOK (App Store mute autoplay → silent-friendly olmalı)
 
-### Video 2 — "Hangi Yıldızdan Geldin?" (18 sn) — Starseed Hook (US için)
+### Video 2: "Hangi Yıldızdan Geldin?" (18 sn): Starseed Hook (US için)
 
 ```
 [0-3s]   Soru ekranı: "Plejyen? Sirius? Lyra? Andromeda?"
 [3-6s]   Doğum formu hızlı fill
-[6-10s]  Starseed reveal animation — yıldız ışını bg
+[6-10s]  Starseed reveal animation: yıldız ışını bg
 [10-15s] Origin story paragrafı scroll (AI narrative)
 [15-18s] End card + CTA
 ```
 
-### Video 3 — "Karnesi Aşk Mı?" (15 sn) — Compatibility Premium Hook
+### Video 3: "Karnesi Aşk Mı?" (15 sn): Compatibility Premium Hook
 
 ```
 [0-3s]   İki kullanıcı karnesi yan yana
@@ -282,14 +282,14 @@ Apple "iPhone 6.9 inch" tek upload'u kabul ediyor ve kalanını auto-resize ediy
 
 - Apple **app icon** veya **App Store rozetlerini** videoda KULLANMA (2.3.7)
 - Sosyal medya logosu (Instagram, TikTok) videoda KULLANMA (trademark riski)
-- Video poster frame (preview thumbnail) — App Store Connect ayrı yükletir, hero shot kullan
+- Video poster frame (preview thumbnail), App Store Connect ayrı yükletir, hero shot kullan
 - Captions yok (kısa süre + min text)
 
 ---
 
-## 6. App Metadata — TR + EN
+## 6. App Metadata: TR + EN
 
-### 6.1 TR — Türkiye App Store
+### 6.1 TR: Türkiye App Store
 
 **App Name (max 30 char)**
 ```
@@ -315,10 +315,10 @@ burç,astroloji,humandesign,numeroloji,yıldız,doğum,haritası,karne,starseed,
 ```
 *(99 char)*
 
-**Description (max 4000 char) — TAM TASLAK**
+**Description (max 4000 char): TAM TASLAK**
 
 ```
-SoulProfile — Sen sadece insan değilsin, galaktik bir karnen var.
+SoulProfile: Sen sadece insan değilsin, galaktik bir karnen var.
 
 Doğum tarihin, saatin ve yerinden yola çıkarak sana özel bir "Galaktik Karne" üretiyoruz. Astroloji, Human Design, Numeroloji ve Yıldız Irkı (Starseed) analizini tek bir paylaşılabilir kartta birleştiren ilk Türk uygulaması.
 
@@ -328,8 +328,8 @@ Co-Star sadece astrolojiyi anlatır. The Pattern ilişki dinamiklerine odaklanı
 
 🌟 KARNENDE NE VAR?
 
-• Güneş, Ay ve Yükselen burcun — klasik astrolojinin temeli
-• Kuzey Düğüm (North Node) — bu hayattaki ruh görevin
+• Güneş, Ay ve Yükselen burcun, klasik astrolojinin temeli
+• Kuzey Düğüm (North Node), bu hayattaki ruh görevin
 • Human Design tipi (Manifestor, Generator, Projector, Reflector) ve otoritesi
 • Yaşam Yolu Sayısı ve kader numerolojisi
 • Yıldız Irkı kökenin: Plejyen, Sirius, Arkturus, Lyra, Andromeda...
@@ -352,7 +352,7 @@ Karne'ni doğrudan Instagram Story, WhatsApp veya TikTok'a gönder. Estetik tipo
 
 🪐 3D SOLAR SİSTEM
 
-Doğum anındaki gezegenlerin tam pozisyonunu 3D olarak gör. Yörünge animasyonu, açılar (aspekt), evler — astrology meraklıları için tam ephemeris derinliği.
+Doğum anındaki gezegenlerin tam pozisyonunu 3D olarak gör. Yörünge animasyonu, açılar (aspekt), evler, astrology meraklıları için tam ephemeris derinliği.
 
 🤖 AI ÜRETİMLİ ANLATIM
 
@@ -368,7 +368,7 @@ Tek tip burç yorumu değil. Senin spesifik chart'ın için Claude AI tarafında
 
 PREMIUM (Haftalık / Aylık / Yıllık):
 • Sınırsız karne üretimi (sevdiklerinin de)
-• Uyum analizi (compatibility) — partner, arkadaş, anne, baba
+• Uyum analizi (compatibility): partner, arkadaş, anne, baba
 • 5 ek sistem (Maya, Vedik, Çin, Norse, Tarot)
 • Günlük transit yorumları + bildirimler
 • Detaylı Human Design Body Graph
@@ -412,7 +412,7 @@ Destek: support@soulprofile.app
 ```
 *(yaklaşık 3960 char)*
 
-**What's New (Release Notes — v1.0.0)**
+**What's New (Release Notes: v1.0.0)**
 ```
 SoulProfile resmî olarak App Store'da! İlk sürümde:
 
@@ -426,7 +426,7 @@ SoulProfile resmî olarak App Store'da! İlk sürümde:
 Geri bildirim için: support@soulprofile.app
 ```
 
-### 6.2 EN — US / International
+### 6.2 EN: US / International
 
 **App Name**
 ```
@@ -455,9 +455,9 @@ astrology,humandesign,birthchart,numerology,starseed,horoscope,zodiac,natal,soul
 **Description (max 4000 char)**
 
 ```
-SoulProfile — You are not just human. You carry a galactic record.
+SoulProfile: You are not just human. You carry a galactic record.
 
-From your birth date, time, and place we generate a personal "Galactic Record" — a single shareable card that unites Astrology, Human Design, Numerology, and Starseed origin in one beautifully designed report.
+From your birth date, time, and place we generate a personal "Galactic Record": a single shareable card that unites Astrology, Human Design, Numerology, and Starseed origin in one beautifully designed report.
 
 ⭐ WHY SOULPROFILE?
 
@@ -465,8 +465,8 @@ Co-Star tells you only astrology. The Pattern focuses on relationships. Sanctuar
 
 🌟 WHAT'S ON YOUR RECORD?
 
-• Sun, Moon, and Rising sign — classical astrology foundation
-• North Node — your soul mission in this lifetime
+• Sun, Moon, and Rising sign, classical astrology foundation
+• North Node: your soul mission in this lifetime
 • Human Design type (Manifestor, Generator, Projector, Reflector) and authority
 • Life Path number and destiny numerology
 • Starseed origin: Pleiadian, Sirian, Arcturian, Lyran, Andromedan...
@@ -489,11 +489,11 @@ Send your card directly to Instagram Story, WhatsApp, or TikTok. Premium typogra
 
 🪐 3D SOLAR SYSTEM
 
-See the exact positions of planets at your birth moment in 3D. Orbital animation, aspects, houses — full ephemeris depth for astrology enthusiasts.
+See the exact positions of planets at your birth moment in 3D. Orbital animation, aspects, houses, full ephemeris depth for astrology enthusiasts.
 
 🤖 AI-WRITTEN NARRATIVE
 
-No generic horoscope. Your reading is written by Claude AI specifically for your chart — no repetition, deep insight, fresh layer every time.
+No generic horoscope. Your reading is written by Claude AI specifically for your chart, no repetition, deep insight, fresh layer every time.
 
 💎 FREE VS PREMIUM
 
@@ -505,7 +505,7 @@ FREE:
 
 PREMIUM (Weekly / Monthly / Yearly):
 • Unlimited card generation (for your loved ones too)
-• Compatibility analysis — partner, friend, parents
+• Compatibility analysis: partner, friend, parents
 • 5 additional systems (Maya, Vedic, Chinese, Norse, Tarot)
 • Daily transit readings + notifications
 • Detailed Human Design Body Graph
@@ -547,7 +547,7 @@ Terms: https://life.soulprofile.app/terms
 Support: support@soulprofile.app
 ```
 
-**What's New (EN — v1.0.0)**
+**What's New (EN: v1.0.0)**
 ```
 SoulProfile is officially on the App Store! In this first release:
 
@@ -603,7 +603,7 @@ App'in **sign in zorunlu mu?** SoulProfile MVP'de form-only akış sunabiliyor (
 - Premium FLAG = TRUE (test ortamında, prod'da Sandbox StoreKit ile gerçek IAP akışı da çalışmalı)
 - Hesap kalıcı, silinmemeli
 
-### 7.3 Notes (App Review Notes — kritik)
+### 7.3 Notes (App Review Notes, kritik)
 
 ```
 Hello App Review team,
@@ -644,7 +644,7 @@ Implemented as required by 4.8. Available on the auth screen alongside email/pas
 
 LEGAL & PRIVACY
 - Age gate: 16+ (enforced at registration with date-of-birth check)
-- GDPR + KVKK compliant (data stored in EU region — Supabase Frankfurt)
+- GDPR + KVKK compliant (data stored in EU region, Supabase Frankfurt)
 - Account deletion: Settings → Account → Delete Account (immediate, with email confirmation)
 - Data export (JSON): Settings → Privacy → Export My Data
 - Entertainment disclaimer present in footer of every screen
@@ -667,8 +667,8 @@ SoulProfile Team
 ### 7.4 Attachment
 
 App Review accepts up to 5 attachments (PDF, MP4, JPG). Yükle:
-- `flow_walkthrough.pdf` — 6 sayfa, anahtar ekranların annotated screenshot'ları
-- `deletion_flow.mp4` — 30 sn, hesap silme akışı video kanıt
+- `flow_walkthrough.pdf`: 6 sayfa, anahtar ekranların annotated screenshot'ları
+- `deletion_flow.mp4`: 30 sn, hesap silme akışı video kanıt
 
 ---
 
@@ -680,35 +680,35 @@ App Store Connect → App Privacy → Get Started
 
 | Data Type | Collected? | Linked to User? | Used to Track? | Purpose |
 |---|---|---|---|---|
-| **Contact Info — Email Address** | YES | YES | NO | App Functionality, Account Management |
-| **Contact Info — Name** | YES (opsiyonel) | YES | NO | App Functionality, Personalization |
-| **Contact Info — Phone** | NO | — | — | — |
-| **Health & Fitness** | NO | — | — | — |
-| **Financial Info** | NO (Apple IAP handles) | — | — | — |
-| **Location — Precise** | NO | — | — | — |
-| **Location — Coarse** | YES (birth city geocoding only) | YES | NO | App Functionality |
-| **Sensitive Info — Birth Date** | YES | YES | NO | App Functionality (core to chart) |
-| **Sensitive Info — Birth Time/Place** | YES | YES | NO | App Functionality |
-| **Contacts** | NO | — | — | — |
-| **User Content — Other (chart notes, custom text)** | YES | YES | NO | App Functionality |
-| **Browsing History** | NO | — | — | — |
-| **Search History** | NO | — | — | — |
-| **Identifiers — User ID** | YES | YES | NO | App Functionality, Analytics |
-| **Identifiers — Device ID (IDFV)** | YES | YES | NO | Analytics (anonymous events) |
-| **Identifiers — IDFA** | NO | — | — | — (we do NOT request ATT) |
-| **Purchases — Purchase History** | YES | YES | NO | App Functionality (entitlement check) |
-| **Usage Data — Product Interaction** | YES | NO | NO | Analytics (Posthog, anonymized) |
-| **Usage Data — Advertising Data** | NO | — | — | — |
-| **Diagnostics — Crash Data** | YES | NO | NO | App Functionality (Sentry) |
-| **Diagnostics — Performance Data** | YES | NO | NO | App Functionality |
-| **Diagnostics — Other Data** | NO | — | — | — |
-| **Other Data Types — AI Prompt Inputs** | YES (chart data → Claude API) | YES | NO | App Functionality |
+| **Contact Info: Email Address** | YES | YES | NO | App Functionality, Account Management |
+| **Contact Info: Name** | YES (opsiyonel) | YES | NO | App Functionality, Personalization |
+| **Contact Info: Phone** | NO |: |: |: |
+| **Health & Fitness** | NO |, |, |, |
+| **Financial Info** | NO (Apple IAP handles) |, |, |, |
+| **Location: Precise** | NO |: |: |: |
+| **Location: Coarse** | YES (birth city geocoding only) | YES | NO | App Functionality |
+| **Sensitive Info: Birth Date** | YES | YES | NO | App Functionality (core to chart) |
+| **Sensitive Info: Birth Time/Place** | YES | YES | NO | App Functionality |
+| **Contacts** | NO |, |, |, |
+| **User Content: Other (chart notes, custom text)** | YES | YES | NO | App Functionality |
+| **Browsing History** | NO |, |, |, |
+| **Search History** | NO |, |, |, |
+| **Identifiers: User ID** | YES | YES | NO | App Functionality, Analytics |
+| **Identifiers: Device ID (IDFV)** | YES | YES | NO | Analytics (anonymous events) |
+| **Identifiers: IDFA** | NO |: |: |: (we do NOT request ATT) |
+| **Purchases: Purchase History** | YES | YES | NO | App Functionality (entitlement check) |
+| **Usage Data: Product Interaction** | YES | NO | NO | Analytics (Posthog, anonymized) |
+| **Usage Data: Advertising Data** | NO |, |, |, |
+| **Diagnostics: Crash Data** | YES | NO | NO | App Functionality (Sentry) |
+| **Diagnostics: Performance Data** | YES | NO | NO | App Functionality |
+| **Diagnostics: Other Data** | NO |, |, |, |
+| **Other Data Types: AI Prompt Inputs** | YES (chart data → Claude API) | YES | NO | App Functionality |
 
 ### 8.2 Third-Party Services Disclosure
 
 - **Supabase (EU/Frankfurt):** Data processor, auth + DB, GDPR DPA imzalı
 - **Anthropic Claude API (US):** Data processor, chart data → narrative generation. Data Processing Addendum (DPA) signed. No training opt-in.
-- **Stripe (web only):** Not used on iOS — Apple IAP only
+- **Stripe (web only):** Not used on iOS, Apple IAP only
 - **PostHog (self-hosted EU):** Anonymized analytics
 - **Sentry (EU):** Crash reporting, PII scrubbed
 
@@ -738,7 +738,7 @@ App Store Connect → App Information → Age Rating
 | Profanity or Crude Humor | None |
 | Mature/Suggestive Themes | **Infrequent/Mild** (spiritüel referanslar) |
 | Horror/Fear Themes | None |
-| Medical/Treatment Information | **Infrequent/Mild** (wellness adjacent — DİSCLAİMER VAR) |
+| Medical/Treatment Information | **Infrequent/Mild** (wellness adjacent, DİSCLAİMER VAR) |
 | Alcohol, Tobacco, or Drug Use or References | None |
 | Sexual Content or Nudity | None |
 | Graphic Sexual Content and Nudity | None |
@@ -764,9 +764,9 @@ App Store Connect → App Information → Age Rating
 | **Secondary** | **Reference** | "Reference" altında Human Design + numeroloji "knowledge" tarafı; daha az rekabet, longtail keyword payı. |
 
 **Alternatifler (test edilebilir):**
-- Primary: `Entertainment` — keyword rekabeti çok yüksek, atla
-- Secondary: `Education` — astrology "education" sayılır mı tartışmalı, riskli
-- `Health & Fitness` — KESİNLİKLE HAYIR (medical claims rejection riski)
+- Primary: `Entertainment`: keyword rekabeti çok yüksek, atla
+- Secondary: `Education`: astrology "education" sayılır mı tartışmalı, riskli
+- `Health & Fitness`: KESİNLİKLE HAYIR (medical claims rejection riski)
 
 ---
 
@@ -782,7 +782,7 @@ App Store Connect → App Information → Age Rating
 - **Hariç:** Çin (içerik onayı + ICP lisansı gerekli, ileride ayrı SKU)
 - **Hariç:** Kuzey Kore, İran, Suriye, Küba (Apple zaten kısıtlı)
 
-### 11.3 IAP Fiyatlandırma — Region-Aware (PPP)
+### 11.3 IAP Fiyatlandırma: Region-Aware (PPP)
 
 App Store Connect "Pricing" → Apple Price Tier kullan, manuel custom değil (her tier currency conversion + PPP otomatik).
 
@@ -823,7 +823,7 @@ App Store Connect "Pricing" → Apple Price Tier kullan, manuel custom değil (h
 ### 11.4 Free Trial Stratejisi
 
 - **Haftalık:** Trial YOK (zaten kısa)
-- **Aylık:** 3 gün ücretsiz deneme (`introductory offer` — type: Free, duration: 3 days)
+- **Aylık:** 3 gün ücretsiz deneme (`introductory offer`: type: Free, duration: 3 days)
 - **Yıllık:** 7 gün ücretsiz deneme + ilk yıl %20 indirim opsiyonu (introductory offer type: Pay As You Go veya Free)
 
 > Apple guideline: Trial sırasında "Yenilenecek" tarihi paywall'da açıkça göster (3.1.2)
@@ -835,9 +835,9 @@ App Store Connect "Pricing" → Apple Price Tier kullan, manuel custom değil (h
 ### 12.1 Product ID Şeması
 
 ```
-life.soulprofile.app.sub.weekly       — Haftalık premium
-life.soulprofile.app.sub.monthly      — Aylık premium
-life.soulprofile.app.sub.yearly       — Yıllık premium
+life.soulprofile.app.sub.weekly: Haftalık premium
+life.soulprofile.app.sub.monthly: Aylık premium
+life.soulprofile.app.sub.yearly: Yıllık premium
 ```
 
 ### 12.2 Subscription Group
@@ -1011,13 +1011,13 @@ SoulProfile IDFA çekmiyor, 3rd party ad attribution kullanmıyor. Posthog event
 
 ### 15.2 İleride Reklam Verirsek
 
-Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak — IDFA gerekmez, ATT prompt gerekmez. Conversion value mapping ileride ayrı doküman.
+Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak: IDFA gerekmez, ATT prompt gerekmez. Conversion value mapping ileride ayrı doküman.
 
 ---
 
 ## 16. Common Rejection Reasons + Bizim Risk + Mitigation
 
-### 16.1 Rejection 5.1.1 — Data Collection and Storage
+### 16.1 Rejection 5.1.1: Data Collection and Storage
 
 **Apple kuralı:** Kullanıcı verisi toplamadan önce **purpose string** ile permission iste; gereksiz veri TOPLAMA.
 
@@ -1031,7 +1031,7 @@ Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak 
 - Anonim chart mode opsiyon: kullanıcı kayıt olmadan da karne üretebilmeli (Premium hariç)
 - App Privacy Nutrition Label %100 doğru (yanlış declaration = rejection + ban)
 
-### 16.2 Rejection 3.1.1 — In-App Purchase
+### 16.2 Rejection 3.1.1: In-App Purchase
 
 **Apple kuralı:** Dijital içerik = IAP zorunlu. Stripe / kart yok. Restore Purchases zorunlu. Auto-renewable disclosure zorunlu.
 
@@ -1051,7 +1051,7 @@ Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak 
   6. Restore Purchases button
   7. Free trial varsa "trial'dan sonra ücretlendirilir" ifadesi
 
-### 16.3 Rejection 4.0 — Design (Minimum Functionality)
+### 16.3 Rejection 4.0: Design (Minimum Functionality)
 
 **Apple kuralı:** Web wrapper rejection riski (4.2.1). Pure web view + minimal native = ret.
 
@@ -1068,15 +1068,15 @@ Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak 
   - [x] Status bar styling (`@capacitor/status-bar`)
   - [x] Offline first chart cache (IndexedDB → SQLite plugin)
 - App Review Notes'a yaz: "Native modules: APNs, SIWA, IAP, Share, Haptics, SQLite"
-- Build'de Safari View Controller kullanma — Capacitor in-app navigation
+- Build'de Safari View Controller kullanma, Capacitor in-app navigation
 - Initial Welcome ekranı tasarımı premium, App Store screenshots ile birebir uyumlu (Apple "consistency" arıyor)
 
-### 16.4 Rejection 2.3 — Accurate Metadata
+### 16.4 Rejection 2.3: Accurate Metadata
 
 **Apple kuralı:** Screenshots actual app screen olmalı, description abartı (#1 rating, best app) olmamalı, keyword spam yok.
 
 **Bizim risk:**
-- "İlk Türk uygulaması" claim'i — kanıtlanmazsa rejection
+- "İlk Türk uygulaması" claim'i: kanıtlanmazsa rejection
 - Screenshot'lar prototype'tan üretilirse 2.3.3 rejection
 
 **Mitigation:**
@@ -1085,7 +1085,7 @@ Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak 
 - Keywords'te competitor adı YOK (CoStar, Pattern, Sanctuary = trademark rejection)
 - Promotional text güncellemesi metadata değişikliği değil → reviewer'a düşmez (faydalı kanal)
 
-### 16.5 Rejection 5.0 — Legal
+### 16.5 Rejection 5.0: Legal
 
 **Apple kuralı:** Yerel yasalara uyum, copyright/trademark ihlali yok, age-appropriate content.
 
@@ -1101,7 +1101,7 @@ Meta/TikTok Install Ads çalıştırırsak SKAdNetwork (SKAN 4.0) kullanılacak 
 - App Review Notes'ta AI moderation bölümü
 - "Fortune telling" kelimesi description'da YOK; "reflection", "awareness", "self-discovery" kullan
 
-### 16.6 Bonus — Rejection 4.5.4 (Push spam)
+### 16.6 Bonus: Rejection 4.5.4 (Push spam)
 
 **Mitigation:**
 - Push opt-in dialog (Apple system prompt) hemen açma; user 2. session'da ve "Günlük transit bildirimi ister misin?" context'inde sor
@@ -1158,19 +1158,19 @@ Submission'dan 48 saat önce her madde tek tek kontrol edilmeli. Sorumlu kişi i
 
 ---
 
-## Ek — Submission Sonrası
+## Ek: Submission Sonrası
 
 ### Review Süresi
 - Median: 24 saat (2026 verisi)
 - p90: 48 saat
-- İlk submission'da rejection ihtimali: ~%40 — hazırlıklı ol, 1 round reject = normal
+- İlk submission'da rejection ihtimali: ~%40: hazırlıklı ol, 1 round reject = normal
 
 ### Rejection Geldi Mi?
 
 1. App Store Connect → Resolution Center → review the issue
-2. **AYNI BUILD'I expedite ile re-submit etme** — fix yap, yeni build, yükle
+2. **AYNI BUILD'I expedite ile re-submit etme**, fix yap, yeni build, yükle
 3. Reply mesajında kanıt göster (screenshot, screen recording)
-4. Expedited Review hakkı yılda ~2 — kritik launch için sakla
+4. Expedited Review hakkı yılda ~2, kritik launch için sakla
 
 ### Onaylandı
 

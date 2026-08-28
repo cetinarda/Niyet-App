@@ -1,4 +1,4 @@
-// Tek-kişi karne AI anlatımı — server-side Anthropic.
+// Tek-kişi karne AI anlatımı, server-side Anthropic.
 // Client ham GalacticReport gönderir, parse edilmiş sections döner.
 
 import type { GalacticReport, NarrativeSections } from '@/lib/types';

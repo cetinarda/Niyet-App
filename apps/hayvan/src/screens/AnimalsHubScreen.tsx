@@ -45,7 +45,7 @@ export function AnimalsHubScreen() {
         </View>
       </View>
 
-      {/* Chip tabs — fixed height, no flex growth */}
+      {/* Chip tabs: fixed height, no flex growth */}
       <View style={styles.chipWrap}>
         {PANELS.map(p => {
           const isActive = p.key === panel;

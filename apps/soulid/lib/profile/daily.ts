@@ -1,4 +1,4 @@
-// "Profilim → Günün Pusulası" — kişiye özel, deterministik günlük rehber.
+// "Profilim → Günün Pusulası": kişiye özel, deterministik günlük rehber.
 // HD günlük transiti (Güneş'in bugünkü kapısı) + Ay evresine göre söz +
 // bakılacak alan + haftaya bakış. AI yok; her gün değişir.
 
@@ -29,13 +29,13 @@ const CENTER_THEME: Record<string, { tr: string; en: string }> = {
 
 // Ay evresine (0..7) göre sakin günlük söz.
 const ADVICE: { tr: string; en: string }[] = [
-  { tr: 'Yeni bir tohum ek — küçük bir niyet bugün yeter.', en: 'Plant a seed — one small intention is enough today.' },
+  { tr: 'Yeni bir tohum ek: küçük bir niyet bugün yeter.', en: 'Plant a seed: one small intention is enough today.' },
   { tr: 'İvmeni nazikçe büyüt; acele etme, yönünü hisset.', en: 'Grow your momentum gently; feel your direction, don’t rush.' },
-  { tr: 'Bir eşiğin başındasın — cesaretle tek bir adım at.', en: 'You’re at a threshold — take one brave step.' },
+  { tr: 'Bir eşiğin başındasın: cesaretle tek bir adım at.', en: 'You’re at a threshold: take one brave step.' },
   { tr: 'Neredeyse doldun; sabrı bırakma, meyve yakın.', en: 'Almost full; keep your patience, the fruit is near.' },
   { tr: 'Bugün dolulukta dur; ne getirdiğini gör ve kutla.', en: 'Rest in fullness today; see what you brought and celebrate.' },
   { tr: 'Fazlalığı bırakmaya başla; sadeleştikçe hafiflersin.', en: 'Begin releasing excess; you lighten as you simplify.' },
-  { tr: 'Gözden geçir ve affet — kapanışlar da bir armağandır.', en: 'Review and forgive — endings are a gift too.' },
+  { tr: 'Gözden geçir ve affet: kapanışlar da bir armağandır.', en: 'Review and forgive: endings are a gift too.' },
   { tr: 'Dinlen ve içe dön; boşluk yeni başlangıcı besler.', en: 'Rest and turn inward; the void feeds the new beginning.' },
 ];
 
@@ -67,8 +67,8 @@ export function buildProfileDaily(report: GalacticReport, date: Date = new Date(
   const personal = Array.isArray(report.humanDesign.gates) && report.humanDesign.gates.includes(gate);
 
   const focus = {
-    tr: `${cap(theme.tr)} alanına bak — bugün burada küçük bir netlik seni ileri taşır.`,
-    en: `Look to ${theme.en} — a little clarity here carries you forward today.`,
+    tr: `${cap(theme.tr)} alanına bak: bugün burada küçük bir netlik seni ileri taşır.`,
+    en: `Look to ${theme.en}: a little clarity here carries you forward today.`,
   };
 
   const week = moon.waxing

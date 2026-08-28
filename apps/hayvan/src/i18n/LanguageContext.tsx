@@ -44,7 +44,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // <html lang> dile eşitlenir: Expo export index.html lang="en" gelir; CSS
   // textTransform:'uppercase' o zaman Türkçe i→I (noktasız) üretir. lang="tr"
-  // ile tarayıcı i→İ yapar — tüm uppercase stiller kökten düzelir.
+  // ile tarayıcı i→İ yapar, tüm uppercase stiller kökten düzelir.
   useEffect(() => {
     try { if (typeof document !== 'undefined') document.documentElement.lang = language; } catch {}
   }, [language]);

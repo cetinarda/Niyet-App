@@ -1,4 +1,4 @@
-// İki kişi uyum AI anlatımı — server-side Anthropic.
+// İki kişi uyum AI anlatımı, server-side Anthropic.
 // Client iki GalacticReport + CompatibilityResult gönderir, parse edilmiş
 // CompatNarrative döner.
 

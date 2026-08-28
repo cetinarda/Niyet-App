@@ -1,4 +1,4 @@
-// Sakin / Niyet — Yardım kılavuzu (glossary) sözlüğü — 7 dil
+// Sakin / Niyet: Yardım kılavuzu (glossary) sözlüğü: 7 dil
 // Yapı: kategori → öğeler → { term, desc, examples? }
 // Kategori başlıkları t("guide_cat_*") ile alınır (i18n.js / i18n-extras.js içinde).
 // Sakin'in sesi: sade, sıcak, küçük harf tercihli. Şiirsel ama bilimsel ton.

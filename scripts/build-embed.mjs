@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Build a Sakin family embed from its monorepo source and (optionally) mirror it
- * into public/embedded/<embedDir>/ — the folder the host (src/App.jsx) iframes.
+ * into public/embedded/<embedDir>/: the folder the host (src/App.jsx) iframes.
  *
  * Usage:
  *   node scripts/build-embed.mjs <app>            build; sync ONLY if the produced
@@ -20,7 +20,7 @@
  *   1. apps/<app>:  EXPO_BASE_URL=/embedded/<dir> npx expo export --platform web
  *   2. inject the Sakin embed scroll-override <style> just before </head>
  *      in dist/index.html
- *   3. mirror dist/ into public/embedded/<embedDir>/   (gated — see above)
+ *   3. mirror dist/ into public/embedded/<embedDir>/   (gated: see above)
  *
  * Fidelity status:
  *   - mitler : source reproduces the live bundle BYTE-IDENTICAL (md5 verified).
@@ -57,14 +57,14 @@ const EMBED_DIR = {
 // Injected verbatim right before </head> in the exported index.html.
 // Keep this byte-exact: it must reproduce the already-shipped index.html.
 const SCROLL_OVERRIDE = `    <style>
-      /* Sakin embed scroll override — keep an explicit height chain so React Native Web
+      /* Sakin embed scroll override, keep an explicit height chain so React Native Web
          ScrollViews can scroll internally. Previous override set html/body/#root height to
          auto which collapsed the flex chain and broke per-screen scrolling on detail views. */
       html, body { overflow: hidden !important; height: 100% !important; min-height: 100% !important; -webkit-overflow-scrolling: touch; }
       #root { height: 100% !important; min-height: 100% !important; display: flex !important; flex: 1 1 auto !important; }
     </style>
     <script>
-      /* Sakin embed lang override — Expo sabit lang üretir; CSS text-transform:uppercase
+      /* Sakin embed lang override, Expo sabit lang üretir; CSS text-transform:uppercase
          yanlış dilde İ/I hatası yapar ("DETAİLS", "HIKAYE"). UI diliyle eşitle. */
       try { var __sl = localStorage.getItem('sakin_lang') || 'tr'; document.documentElement.lang = (__sl === 'pt-BR' ? 'pt' : __sl); } catch (e) {}
     </script>
@@ -73,7 +73,7 @@ const SCROLL_OVERRIDE = `    <style>
 function injectScrollOverride(html) {
   if (html.includes("Sakin embed scroll override")) return html; // idempotent
   const idx = html.indexOf("</head>");
-  if (idx === -1) throw new Error("index.html has no </head> — cannot inject scroll override");
+  if (idx === -1) throw new Error("index.html has no </head>: cannot inject scroll override");
   return html.slice(0, idx) + SCROLL_OVERRIDE + html.slice(idx);
 }
 
@@ -102,9 +102,9 @@ function main() {
   }
 
   // 0. install deps on first run (node_modules is gitignored, so a fresh
-  //    checkout — e.g. the Mac build box — won't have them yet)
+  //    checkout: e.g. the Mac build box: won't have them yet)
   if (!fs.existsSync(path.join(appDir, "node_modules"))) {
-    console.log(`[${app}] node_modules missing — npm install …`);
+    console.log(`[${app}] node_modules missing: npm install …`);
     execSync("npm install", { cwd: appDir, stdio: "inherit" });
   }
 
@@ -144,7 +144,7 @@ function main() {
   // 3. mirror dist/ → public/embedded/<embedDir>/  (red-line gated)
   if (!identical && !force) {
     console.error(
-      `✗ [${app}] rebuild is NOT byte-identical to the shipped bundle — refusing to overwrite the live embed.\n` +
+      `✗ [${app}] rebuild is NOT byte-identical to the shipped bundle, refusing to overwrite the live embed.\n` +
         `  produced: ${bundle}\n  shipped:  ${shipped ?? "none"}\n` +
         `  The live bundle is left untouched. Re-run with --force only if you intend to ship this new build.`,
     );

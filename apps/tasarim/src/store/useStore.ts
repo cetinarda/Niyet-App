@@ -68,7 +68,7 @@ function resolveCity(raw?: string): City | null {
   const wantCity = want.split(',')[0].trim();
   hit = CITIES.find(c => c.name.toLocaleLowerCase('tr').split(',')[0].trim() === wantCity);
   if (hit) return hit;
-  // 3) son çare: arama (içerir) — ilk sonuç
+  // 3) son çare: arama (içerir): ilk sonuç
   const found = searchCities(wantCity, 1);
   return found.length ? found[0] : null;
 }
@@ -85,9 +85,9 @@ function readSakinBridge(): SakinBridge | null {
     const birthDate = get('sakin_birth_date', 'birth_date', 'birthDate');
     const birthTime = get('sakin_birth_time', 'birth_time', 'birthTime');
     const cityRaw = get('sakin_birth_city', 'birth_city', 'birthCity');
-    // Host hiçbir şey yazmadıysa köprü yok — normal akışa düş
+    // Host hiçbir şey yazmadıysa köprü yok, normal akışa düş
     if (!name && !birthDate && !birthTime && !cityRaw) return null;
-    // ŞEHİR KOORDİNATI — BİRİNCİL: host (Sakin) şehri kendi 36k DB'sinde çözüp
+    // ŞEHİR KOORDİNATI: BİRİNCİL: host (Sakin) şehri kendi 36k DB'sinde çözüp
     // lat/lon/tz'yi yazar. Bu, embed'in 118-şehir listesinden DAHA KAPSAMLI ve
     // Sakin'in YÜKSELEN BURÇ hesabıyla AYNI DB → tutarlı sonuç. Host koordinatı
     // varsa onu kullan (gerçek yer, varsayılan/tahmin değil). Yoksa (host'suz/eski
@@ -295,7 +295,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     setIsOnboarded(true);
     await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDED, '1');
-    setBridgePrefill(null); // profil kuruldu — köprü ön-doldurması artık gereksiz
+    setBridgePrefill(null); // profil kuruldu: köprü ön-doldurması artık gereksiz
     return profile;
   }, []);
 

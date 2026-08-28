@@ -1,4 +1,4 @@
-// "Bugünün Gökyüzü" — bugünkü gezegen konumlarını kişinin NATAL haritasıyla
+// "Bugünün Gökyüzü": bugünkü gezegen konumlarını kişinin NATAL haritasıyla
 // kıyaslayan deterministik transit motoru. Her gün değişir → geri gelme sebebi.
 // AI yok; klasik açı geometrisi + ev/temaları.
 
@@ -125,7 +125,7 @@ export function todayTransits(report: GalacticReport, date: Date = new Date()): 
 
   const insights: TransitInsight[] = [];
 
-  // 1) Günün ana teması — transiting Moon'un natal evi (yalnız saat biliniyorsa)
+  // 1) Günün ana teması, transiting Moon'un natal evi (yalnız saat biliniyorsa)
   if (timeKnown) {
     const tMoon = trans.find((t) => t.key === 'Moon')!;
     const mh = moonHouse(tMoon.lon, report.chart.houses);
@@ -135,8 +135,8 @@ export function todayTransits(report: GalacticReport, date: Date = new Date()): 
       glyph: '🌙',
       title: { tr: 'Günün Odağı', en: "Today's Focus" },
       body: {
-        tr: `Bugün Ay senin ${mh}. evinde — dikkatin ${focus.tr} çekiliyor. Bu alanda küçük bir jest bugün büyük hissettirir.`,
-        en: `The Moon is in your ${mh}${ord(mh)} house today — your attention turns to ${focus.en}. A small gesture here lands big.`,
+        tr: `Bugün Ay senin ${mh}. evinde: dikkatin ${focus.tr} çekiliyor. Bu alanda küçük bir jest bugün büyük hissettirir.`,
+        en: `The Moon is in your ${mh}${ord(mh)} house today: your attention turns to ${focus.en}. A small gesture here lands big.`,
       },
       tone: 'blend',
     });
@@ -153,15 +153,15 @@ export function todayTransits(report: GalacticReport, date: Date = new Date()): 
       const target = N_TARGET[tg.key];
       if (!theme || !target) continue;
       const flowTr = asp.tone === 'flow'
-        ? `${target.tr} akışkan bir destek veriyor — kapıyı zorlamadan aç.`
+        ? `${target.tr} akışkan bir destek veriyor, kapıyı zorlamadan aç.`
         : asp.tone === 'tension'
-        ? `${target.tr} bir gerilim taşıyor — sürtünme büyütür, kaçma.`
-        : `${target.tr} dolaysız değiyor — netlik ânı.`;
+        ? `${target.tr} bir gerilim taşıyor: sürtünme büyütür, kaçma.`
+        : `${target.tr} dolaysız değiyor: netlik ânı.`;
       const flowEn = asp.tone === 'flow'
-        ? `offers flowing support to ${target.en} — open the door without forcing.`
+        ? `offers flowing support to ${target.en}: open the door without forcing.`
         : asp.tone === 'tension'
-        ? `brings friction to ${target.en} — the tension grows you, don't avoid it.`
-        : `touches ${target.en} directly — a moment of clarity.`;
+        ? `brings friction to ${target.en}: the tension grows you, don't avoid it.`
+        : `touches ${target.en} directly: a moment of clarity.`;
       found.push({
         id: `${tr.key}-${asp.name}-${tg.key}`,
         glyph: theme.glyph,
@@ -189,7 +189,7 @@ export function todayTransits(report: GalacticReport, date: Date = new Date()): 
   return insights;
 }
 
-// ───────── Ay Evresi — sakin, günlük değişen kozmik hava ─────────
+// ───────── Ay Evresi: sakin, günlük değişen kozmik hava ─────────
 // Deterministik (astronomy-engine). "Bugünün Gökyüzü" başlığında gösterilir.
 export type MoonPhaseInfo = {
   fraction: number; // 0..1 aydınlanan oran

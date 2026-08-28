@@ -2,7 +2,7 @@
 
 // İki eksenli bağlanma haritası. Modelin kendisi iki boyutlu olduğu için
 // (kaygı × kaçınma) görselleştirmesi de öyle: kullanıcı bir çeyreğe DÜŞMEZ,
-// bir NOKTADA durur. Sınıra yakınsa bunu gözle görür — "ya o ya bu" değil.
+// bir NOKTADA durur. Sınıra yakınsa bunu gözle görür, "ya o ya bu" değil.
 //   X ekseni → kaçınma (sol: düşük, sağ: yüksek)
 //   Y ekseni → kaygı   (alt: düşük, üst: yüksek)
 

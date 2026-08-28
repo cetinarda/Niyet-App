@@ -28,7 +28,7 @@ To draw your bodygraph we ask for the following, which you type in yourself:
 - **A name or nickname** (so you can recognize the profile)
 - **Date of birth** (day, month, year)
 - **Time of birth** (hour, minute)
-- **Birthplace** (city name as text — no GPS, no map permission)
+- **Birthplace** (city name as text, no GPS, no map permission)
 
 We collect nothing else. No phone number, no email, no IP address, no device identifier, no advertising ID, no location permission, no camera, no microphone, no contacts.
 
@@ -43,7 +43,7 @@ We do not use the data for marketing, profiling, advertising, or analytics. The 
 All data lives in your device's own local storage (AsyncStorage on iOS/Android, LocalStorage in the browser for the web version). It is:
 
 - **Not** uploaded to our servers.
-- **Not** backed up to our cloud (your device's own OS backup — iCloud, Google Backup — may copy it; that is under your Apple/Google account control, not ours).
+- **Not** backed up to our cloud (your device's own OS backup: iCloud, Google Backup, may copy it; that is under your Apple/Google account control, not ours).
 - Stored as ordinary app data. Because it never leaves the device, we do not apply our own encryption layer on top of the OS's storage encryption.
 
 ## 5. Sharing With Third Parties
@@ -68,11 +68,11 @@ Sakin Tasarım is rated 17+ and is not designed for children under 13. We do not
 
 Under EU and UK data protection law you have the right to:
 
-- **Access** — all your data is visible inside the app itself.
-- **Rectification** — edit a profile any time.
-- **Erasure** — delete a profile or uninstall the app to remove everything.
-- **Portability** — export is on the roadmap; today you can copy the visible fields manually.
-- **Object** / **Restrict** — uninstall the app; we have no server processing to restrict.
+- **Access**: all your data is visible inside the app itself.
+- **Rectification**: edit a profile any time.
+- **Erasure**: delete a profile or uninstall the app to remove everything.
+- **Portability**: export is on the roadmap; today you can copy the visible fields manually.
+- **Object** / **Restrict**: uninstall the app; we have no server processing to restrict.
 - **Lodge a complaint** with your local supervisory authority (e.g. KVKK in Turkey, ICO in the UK, your national DPA in the EU).
 
 You do not need to file a formal request to use these rights; the app exposes them directly. If you'd like to write us anyway, email privacy@sakin.life and we will reply within 30 days.
@@ -89,7 +89,7 @@ You still have rights to know, delete, correct and limit; all of these are exerc
 
 ## 11. International Transfers
 
-There are no international transfers — the data does not travel.
+There are no international transfers, the data does not travel.
 
 ## 12. Security
 

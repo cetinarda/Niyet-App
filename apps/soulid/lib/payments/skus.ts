@@ -39,12 +39,12 @@ export const PLANS: Record<PlanKey, Plan> = {
 // çıkıyordu → App Store Guideline 4 reddi (karışık dilli arayüz).
 const FEATURES: Record<'tr' | 'en', string[]> = {
   tr: [
-    'Sınırsız karne — farklı kişilerin haritasına bak',
+    'Sınırsız karne: farklı kişilerin haritasına bak',
     'Sınırsız ikili uyum karşılaştırması',
     'Tüm özellikler + gelecek güncellemeler',
   ],
   en: [
-    'Unlimited profiles — explore anyone’s chart',
+    'Unlimited profiles: explore anyone’s chart',
     'Unlimited compatibility comparisons',
     'Every feature + future updates',
   ],

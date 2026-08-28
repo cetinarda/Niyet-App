@@ -1,4 +1,4 @@
-# Gizlilik Politikası — Sakin Uygulaması
+# Gizlilik Politikası: Sakin Uygulaması
 
 **Son güncelleme:** Mayıs 2026
 
@@ -21,7 +21,7 @@ Aşağıdaki veriler yalnızca kullanıcının kendi cihazında (yerel depolamad
 - **Doğum tarihi ve saati:** Kişiselleştirilmiş içerik için (isteğe bağlı, yalnızca cihazda)
 - **Gün serisi verisi:** Ardışık kullanım günleri (streak)
 
-### 2.2 AI Destekli Özellikler — Üçüncü Taraf Veri Paylaşımı
+### 2.2 AI Destekli Özellikler: Üçüncü Taraf Veri Paylaşımı
 
 Uygulama, "İçsel Ayna", "Reiki Analizi", "Zihinsel-Fiziksel Analiz", "Sağlık Farkındalığı" ve "Haftalık Rapor" gibi AI destekli özelliklerde kullanıcının yazdığı metinleri kişiselleştirilmiş yanıt üretmek amacıyla üçüncü taraf yapay zeka hizmetlerine gönderir.
 

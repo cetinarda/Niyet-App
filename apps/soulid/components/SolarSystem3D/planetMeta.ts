@@ -1,5 +1,5 @@
 // Gerçek dokular jeromeetienne/threex.planets MIT lisanslı kütüphaneden
-// jsdelivr CDN üzerinden — başarısız olursa procedural fallback devreye girer.
+// jsdelivr CDN üzerinden: başarısız olursa procedural fallback devreye girer.
 
 const CDN_BASE = 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images';
 

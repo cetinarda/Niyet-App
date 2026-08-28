@@ -78,9 +78,9 @@ export const LINES: Record<LineNumber, LineInfo> = {
     name: 'Rol Modeli / Bilge',
     nameEn: 'The Role Model / Sage',
     shortDesc:
-      'Üç evreli yaşam: 0–30 deneme, 30–50 çatıdan izleme, 50+ rol modelliği. Otantik örnek olur.',
+      'Üç evreli yaşam: 0-30 deneme, 30-50 çatıdan izleme, 50+ rol modelliği. Otantik örnek olur.',
     shortDescEn:
-      'A life in three phases: 0–30 experimenting, 30–50 observing from the roof, 50+ being a role model. Becomes an authentic example.',
+      'A life in three phases: 0-30 experimenting, 30-50 observing from the roof, 50+ being a role model. Becomes an authentic example.',
     shadow: 'Çatıdan kopuk hissetme, mükemmellik baskısı.',
     shadowEn: 'Feeling cut off on the roof, the pressure of perfectionism.',
   },

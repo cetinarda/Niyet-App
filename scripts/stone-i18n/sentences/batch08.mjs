@@ -1,4 +1,4 @@
-// Batch 08 — s204..s215
+// Batch 08: s204..s215
 export const BATCH08 = {
   s204: {
     de: { name:'Herkimer-Diamant', dailyMessage:'Heute ist dein Geist kristallklar. Herkimer-Diamant verstärkt deine Absichten mit strahlender Klarheit.', howToUse:'Halte ihn zwischen zwei Fingern, während du dich auf deine Absicht konzentrierst.', affirmation:'Mein Geist ist klar, meine Energie hoch, meine Absicht stark.' },

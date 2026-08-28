@@ -1,8 +1,8 @@
 ---
-description: Sakin/Niyet-App'i App Store gönderimine hazırla — sürüm kontrolü, build kontrolü, iki branch eşitliği, son durum raporu
+description: Sakin/Niyet-App'i App Store gönderimine hazırla, sürüm kontrolü, build kontrolü, iki branch eşitliği, son durum raporu
 ---
 
-Sen Sakin/Niyet-App'i iOS App Store gönderimine hazırlıyorsun. CLAUDE.md zaten okundu — kuralları biliyorsun.
+Sen Sakin/Niyet-App'i iOS App Store gönderimine hazırlıyorsun. CLAUDE.md zaten okundu: kuralları biliyorsun.
 
 Aşağıdaki adımları SIRAYLA çalıştır. Bir adım başarısızsa DUR ve kullanıcıya hata + tahmini neden + öneri sun.
 

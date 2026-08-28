@@ -13,9 +13,9 @@ const TONE_COLOR: Record<string, string> = {
 };
 
 /**
- * "Bugünün Gökyüzü" — kişinin natal haritasına göre bugünkü transitler.
+ * "Bugünün Gökyüzü": kişinin natal haritasına göre bugünkü transitler.
  * Her gün değişir; günlük geri gelme motoru. Deterministik, AI yok.
- * NOT: Date.now new Date() client'ta çalışır (SSR'da render edilmez — 'use client').
+ * NOT: Date.now new Date() client'ta çalışır (SSR'da render edilmez: 'use client').
  */
 export function TodaySky({ report }: { report: GalacticReport }) {
   const { locale } = useT();

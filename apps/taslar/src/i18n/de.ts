@@ -33,7 +33,7 @@ export const de = {
     completed: 'Abgeschlossen ✦',
     doneTitle: 'Tägliche Führung\nabgeschlossen',
     doneSub: 'Morgen beginnt eine neue Reise',
-    detailBtn: ' – tiefe Führung →',
+    detailBtn: ' - tiefe Führung →',
   },
 
   // ─── Animals hub (stones) ────────────────────────────────────────────────────
@@ -82,12 +82,12 @@ export const de = {
     headerTitle: 'Finde deinen Stein',
     intro: {
       title: 'Entdecke deinen Stein',
-      desc: 'Finde die Kristalle, die zu dir passen – nach deinem Sternzeichen oder Element.',
-      note: 'Jeder Stein trägt seine eigene Schwingung. Wähle den, der dich ruft – den Rest sagt dir deine Intuition.',
+      desc: 'Finde die Kristalle, die zu dir passen - nach deinem Sternzeichen oder Element.',
+      note: 'Jeder Stein trägt seine eigene Schwingung. Wähle den, der dich ruft - den Rest sagt dir deine Intuition.',
       birthStoneTitle: 'Dein Geburtsstein',
       zodiacLabel: 'Nach Sternzeichen',
       elementLabel: 'Nach Element',
-      elementHint: 'Jeder Kristall schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen – Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
+      elementHint: 'Jeder Kristall schwingt mit einem Naturelement; deins ergibt sich aus deinem Zeichen - Feuer: Widder·Löwe·Schütze · Erde: Stier·Jungfrau·Steinbock · Luft: Zwillinge·Waage·Wassermann · Wasser: Krebs·Skorpion·Fische.',
     },
     elements: {
       fire: 'Feuer',
@@ -109,7 +109,7 @@ export const de = {
   nagual: {
     back: '← Zurück',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Zeitweiliger Begleiter',
+    introTitle: 'Nagual: Zeitweiliger Begleiter',
     introText:
       'Dein Totemtier wird mit dir geboren und bleibt ein Leben lang. Der Nagual ist ein\nzeitweiliger Begleiter, der dich in einer bestimmten Phase begleitet. Er erscheint in\nZeiten der Prüfung, der Wandlung oder der Krise. Hat er seine Aufgabe erfüllt, überlässt\ner seinen Platz einem anderen Begleiter.',
     weekTag: 'DIESE WOCHE · UNIVERSELL',
@@ -226,7 +226,7 @@ export const de = {
       estimated: '(geschätzt)',
       hdTypeSelectHint: 'Wähle deinen Typ:',
       hdDisclaimer:
-        '⚠ Die Berechnung ist eine Schätzung — genaues HD erfordert Geburtszeit und Ephemeriden.\nWenn du deinen Typ kennst, wähle ihn oben aus.',
+        '⚠ Die Berechnung ist eine Schätzung, genaues HD erfordert Geburtszeit und Ephemeriden.\nWenn du deinen Typ kennst, wähle ihn oben aus.',
       sunGates: 'Sonnentore',
       consciousSun: 'Bewusste Sonne',
       designSun: 'Design-Sonne',
@@ -250,7 +250,7 @@ export const de = {
         yearPlaceholder: 'Jahr',
         hourLabel: 'Geburtszeit',
         hourOptional: '(wichtig für HD)',
-        hourPlaceholder: 'Stunde (0–23)',
+        hourPlaceholder: 'Stunde (0-23)',
         minutePlaceholder: 'Minute',
         cityLabel: 'Geburtsstadt',
         cityOptional: '(für die Zeitzone)',
@@ -265,8 +265,8 @@ export const de = {
       sectionTitle: 'Was ist Tierführung?',
       totemTitle: '⊕ Totemtier',
       totemText:
-        'Jeder Mensch trägt in seinem Wesen den Geist eines Tieres. Dieses Totemtier steht für dich; deine Energie, deine Stärken und der Weg, den du gehst, tragen seine Spuren. Das Totem ändert sich nie — es wird mit dir geboren und wächst mit dir.',
-      nagualTitle: '◎ Nagual — Zeitweiliger Begleiter',
+        'Jeder Mensch trägt in seinem Wesen den Geist eines Tieres. Dieses Totemtier steht für dich; deine Energie, deine Stärken und der Weg, den du gehst, tragen seine Spuren. Das Totem ändert sich nie, es wird mit dir geboren und wächst mit dir.',
+      nagualTitle: '◎ Nagual: Zeitweiliger Begleiter',
       nagualText:
         'Der Nagual ist ein zeitweiliger Begleiter, der für eine bestimmte Phase zu dir kommt. Er wird in Zeiten der Prüfung, der Wandlung oder der Krise gerufen. Hat er seine Aufgabe erfüllt, überlässt er seinen Platz einem anderen Begleiter. Das Tier deiner täglichen Lesung trägt die Stimme des heutigen Naguals.',
       finderTitle: 'Finde deinen Tierführer',
@@ -289,7 +289,7 @@ export const de = {
     sakinFamily: {
       title: 'Sakin Familie',
       intro: 'Ein Ökosystem. Ein Abonnement. Viele Türen.',
-      masterDesc: 'Zentrale — Zugang zu allen Apps',
+      masterDesc: 'Zentrale: Zugang zu allen Apps',
       apps: {
         animalGuidance: 'Tierführung',
         stoneGuidance: 'Kristallführung',
@@ -430,11 +430,11 @@ export const de = {
     },
     mit: {
       term: 'Mythos',
-      short: 'Eine symbolische Kraft, der die Seele begegnet — Schatten, Schwelle, Blitz...',
+      short: 'Eine symbolische Kraft, der die Seele begegnet, Schatten, Schwelle, Blitz...',
     },
     hayatYolu: {
       term: 'Lebensweg-Zahl',
-      short: 'Die numerologische Zusammenfassung deines Geburtsdatums — zeigt deine Kernenergie.',
+      short: 'Die numerologische Zusammenfassung deines Geburtsdatums, zeigt deine Kernenergie.',
     },
     numeroloji: {
       term: 'Numerologie',
@@ -442,15 +442,15 @@ export const de = {
     },
     ifade: {
       term: 'Ausdrucks-Zahl',
-      short: 'Aus den Buchstaben deines Namens — deine natürlichen Talente und dein Potenzial.',
+      short: 'Aus den Buchstaben deines Namens, deine natürlichen Talente und dein Potenzial.',
     },
     ruhIstegi: {
       term: 'Seelendrang-Zahl',
-      short: 'Aus den Vokalen deines Namens — deine innere Motivation.',
+      short: 'Aus den Vokalen deines Namens, deine innere Motivation.',
     },
     kisilik: {
       term: 'Persönlichkeits-Zahl',
-      short: 'Aus den Konsonanten deines Namens — das Gesicht, das du der Welt zeigst.',
+      short: 'Aus den Konsonanten deines Namens, das Gesicht, das du der Welt zeigst.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -494,7 +494,7 @@ export const de = {
     },
     kisiselYil: {
       term: 'Persönliches Jahr',
-      short: 'Das Thema deines numerologischen Jahres — in welchem Schritt des 9-Jahres-Zyklus du dich befindest.',
+      short: 'Das Thema deines numerologischen Jahres, in welchem Schritt des 9-Jahres-Zyklus du dich befindest.',
     },
     rehber: {
       term: 'Geisttier',

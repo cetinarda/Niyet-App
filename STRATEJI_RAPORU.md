@@ -1,11 +1,11 @@
-# Sakin Uygulaması — İş Modeli, Davranış Bilimleri ve Oyun Teorisi Perspektifinden İyileştirme Raporu
+# Sakin Uygulaması: İş Modeli, Davranış Bilimleri ve Oyun Teorisi Perspektifinden İyileştirme Raporu
 
 **Hazırlanma Tarihi:** 12 Mart 2026
 **Kapsam:** Freemium Model Optimizasyonu, Kullanıcı Bağlılığı, Büyüme ve Monetizasyon
 
 ---
 
-## 1. Mevcut İş Modeli Analizi — Freemium Yapının Güçlü ve Zayıf Yönleri
+## 1. Mevcut İş Modeli Analizi: Freemium Yapının Güçlü ve Zayıf Yönleri
 
 ### Güçlü Yönler
 
@@ -100,7 +100,7 @@ Organik büyümenin temeli olan viral loop, her kullanıcının en az bir yeni k
 Kullanıcının günlük niyeti, estetik bir görsel karta dönüştürülerek Instagram/WhatsApp için optimize edilmiş boyutlarda hazır sunulmalı. Kartın alt köşesinde "Sakin ile oluşturuldu" watermark'ı doğal bir marka görünürlüğü sağlar. Bu özellik yüksek paylaşım motivasyonu olan bir kullanıcı segmentine (spiritüel içerik tüketen genç kadın demografisi) hitap eder.
 
 **Astroloji/numeroloji sonuçlarının paylaşılabilirliği:**
-"Senin Kişisel Yıl Sayın X — bu ne anlama geliyor?" gibi merak uyandıran ama yanıt için uygulamaya yönlendiren paylaşım formatları, hem viral loop hem de acquisition hunnel görevi görür.
+"Senin Kişisel Yıl Sayın X, bu ne anlama geliyor?" gibi merak uyandıran ama yanıt için uygulamaya yönlendiren paylaşım formatları, hem viral loop hem de acquisition hunnel görevi görür.
 
 **"Arkadaşını davet et, birlikte niyet koy" mekaniği:**
 İki kullanıcının aynı niyet veya yolculukta birbirini görebileceği sosyal katman, uygulamayı bireysel deneyimden kolektif bir ritüele dönüştürür.
@@ -156,15 +156,15 @@ Uygulama içinden sertifikalı Reiki ustaları veya spiritüel koçlarla seans r
 Kristal, esans yağı veya meditasyon boncuğu gibi fiziksel wellness ürünlerinin uygulama içinden satışı (dropship veya partner model), spiritüel kategoride yüksek duygusal değer taşır ve sepet büyüklüğünü artırır.
 
 **Kurumsal wellness programı:**
-Şirketler için toplu lisans modeli — çalışanların stres, odaklanma ve motivasyon sorunlarına yönelik kurumsal kullanım. B2B gelir akışı, bireysel aboneliğe kıyasla daha yüksek LTV (ömür boyu değer) ve daha düşük churn sunar.
+Şirketler için toplu lisans modeli, çalışanların stres, odaklanma ve motivasyon sorunlarına yönelik kurumsal kullanım. B2B gelir akışı, bireysel aboneliğe kıyasla daha yüksek LTV (ömür boyu değer) ve daha düşük churn sunar.
 
 ### Upsell Noktaları
 
 Upsell'in en etkili olduğu an, kullanıcının uygulamadan maksimum değer aldığı "aha moment" anıdır:
 
 - **Şifa Arayışı analizi tamamlandıktan hemen sonra:** "Bu analizin tam derinliğini görmek ister misin?" CTA'sı ile premium teaser.
-- **Streak 7. güne ulaştığında:** "7 günlük serin için özel bir ödül seni bekliyor — premium'la aç."
-- **Haftalık iç harita tamamlandığında:** "Geçmiş haftaların haritasını karşılaştır — sadece premium üyelere özel."
+- **Streak 7. güne ulaştığında:** "7 günlük serin için özel bir ödül seni bekliyor, premium'la aç."
+- **Haftalık iç harita tamamlandığında:** "Geçmiş haftaların haritasını karşılaştır, sadece premium üyelere özel."
 - **İlk astroloji hesabı sonrasında:** "Doğum haritanın geri kalan %80'i premium'da seni bekliyor."
 
 ### Pricing Psikolojisi
@@ -178,7 +178,7 @@ Upsell'in en etkili olduğu an, kullanıcının uygulamadan maksimum değer ald�
 | Premium Aylık | 89 TL/ay | Tüm özellikler |
 | Premium Yıllık | 590 TL/yıl (~49 TL/ay) | Tüm özellikler + 1 kişisel rapor hediye |
 
-Yıllık plan, aylıktan %45 indirimli gösterilmeli — bu indirim oranı hem cazip hem de değer algısını zedelemeyecek bir eşikte konumlanmalıdır.
+Yıllık plan, aylıktan %45 indirimli gösterilmeli, bu indirim oranı hem cazip hem de değer algısını zedelemeyecek bir eşikte konumlanmalıdır.
 
 **Ücretsiz deneme psikolojisi:**
 "14 gün ücretsiz, kredi kartı gerekmez" yerine "14 gün premium deneyimi, sonra seç" ifadesi daha az kayıp korkusu yaratır ve dönüşüm oranlarını artırır.
@@ -193,7 +193,7 @@ Yıllık planın yanına yerleştirilen "En Çok Tercih Edilen" veya sosyal kan�
 ### Günlük Geri Getiren Mekanikler
 
 **Sabah bildirimi kişiselleştirmesi:**
-Standart "Günaydın! Niyetini belirle" bildirimi yerine, kullanıcının doğum haritasından çıkarılan günlük gezegen durumu veya kişisel yıl sayısına bağlı bir mesaj ("Bugün Merkür retroda — iletişimde yavaş ol, ama içe dön") bildirimin açılma oranını dramatik ölçüde artırır. Kişiselleştirilmiş bildirimler genel bildirimlere göre 3-4 kat daha yüksek açılma oranı göstermektedir.
+Standart "Günaydın! Niyetini belirle" bildirimi yerine, kullanıcının doğum haritasından çıkarılan günlük gezegen durumu veya kişisel yıl sayısına bağlı bir mesaj ("Bugün Merkür retroda: iletişimde yavaş ol, ama içe dön") bildirimin açılma oranını dramatik ölçüde artırır. Kişiselleştirilmiş bildirimler genel bildirimlere göre 3-4 kat daha yüksek açılma oranı göstermektedir.
 
 **"Bugünün enerjisi" döngüsü:**
 Her gün otomatik olarak değişen, astroloji + numeroloji verisine dayalı kısa bir enerji özeti, kullanıcıya "bugün için özel bir şey var" hissi verir ve uygulamayı açma alışkanlığını pekiştirir.
@@ -220,7 +220,7 @@ Belirli bir alana (nefes çalışması, çakra dengesi, niyet belirleme) odaklan
 
 ---
 
-## 6. Özet Aksiyon Listesi — Öncelikli 10 Somut Öneri
+## 6. Özet Aksiyon Listesi: Öncelikli 10 Somut Öneri
 
 Aşağıdaki öneriler, etki büyüklüğü ve uygulama kolaylığı dengesine göre önceliklendirilmiştir.
 
@@ -282,7 +282,7 @@ Ayda iki kez gerçekleşen kozmik döngülere bağlı özel meditasyon, niyet be
 
 **10. Onboarding akışını "aha moment" üzerine yeniden yapılandır (Etki: Yüksek / Efor: Orta)**
 
-İlk açılışta kullanıcıya hızla Şifa Arayışı veya kişisel harita özelliğini denettir — bu özelliklerin yarattığı "bu uygulama gerçekten benim için" hissi, Day-1 retention'ını belirleyen en kritik faktördür. Onboarding'de değer hissedilmeden geçen ilk 3 dakika, kullanıcıların %60-70'inin kaybolduğu penceredir.
+İlk açılışta kullanıcıya hızla Şifa Arayışı veya kişisel harita özelliğini denettir, bu özelliklerin yarattığı "bu uygulama gerçekten benim için" hissi, Day-1 retention'ını belirleyen en kritik faktördür. Onboarding'de değer hissedilmeden geçen ilk 3 dakika, kullanıcıların %60-70'inin kaybolduğu penceredir.
 
 ---
 
@@ -290,7 +290,7 @@ Ayda iki kez gerçekleşen kozmik döngülere bağlı özel meditasyon, niyet be
 
 Sakin, wellness ve spiritüel kategoride güçlü bir değer önerisiyle konumlanmış, ancak bu değerin kullanıcı davranışına dönüştürülmesi için oyun teorisi ve davranışsal tasarım prensiplerinden sistematik biçimde yararlanması gereken bir üründür. Kişiselleştirme derinliği (astroloji + numeroloji + AI analizi), uygulamanın rakiplerden ayrışma ve premium dönüşüm oranını artırma açısından kullanılmayan en büyük varlığıdır.
 
-Yukarıdaki aksiyon listesinde yer alan önlemlerin ardışık değil, birbirini destekleyecek şekilde paralel uygulanması — özellikle freemium sınırının netleştirilmesi, kişiselleştirilmiş bildirimler ve referans programının birlikte hayata geçirilmesi — kısa vadede hem DAU/MAU oranını hem de aylık yinelenen geliri (MRR) anlamlı ölçüde iyileştirecektir.
+Yukarıdaki aksiyon listesinde yer alan önlemlerin ardışık değil, birbirini destekleyecek şekilde paralel uygulanması, özellikle freemium sınırının netleştirilmesi, kişiselleştirilmiş bildirimler ve referans programının birlikte hayata geçirilmesi, kısa vadede hem DAU/MAU oranını hem de aylık yinelenen geliri (MRR) anlamlı ölçüde iyileştirecektir.
 
 ---
 

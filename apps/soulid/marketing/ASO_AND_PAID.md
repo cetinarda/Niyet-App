@@ -1,4 +1,4 @@
-# SoulProfile — ASO + Paid Acquisition Playbook
+# SoulProfile: ASO + Paid Acquisition Playbook
 
 Bundle ID: `life.soulprofile.app`
 Platform: iOS + Web
@@ -8,30 +8,30 @@ Rakipler: The Pattern, Co-Star, Sanctuary, Stellar
 
 ---
 
-## 1. ASO — Türkiye App Store (TR)
+## 1. ASO: Türkiye App Store (TR)
 
 ### 1.1 İsim / Altyazı / Keywords Varyantları
 
 iOS limitleri: App Name 30 char, Subtitle 30 char, Keywords field 100 char (virgülle ayrı, boşluk YOK).
 
-#### Varyant A — "Karne" odaklı (önerilen launch)
+#### Varyant A: "Karne" odaklı (önerilen launch)
 - **Name (30):** `SoulProfile: Galaktik Karne` (27)
 - **Subtitle (30):** `Astroloji + Human Design + AI` (29)
 - **Keywords (100):** `burç,astroloji,humandesign,numeroloji,yıldız,doğum,haritası,karne,starseed,enerji,ruh,kader`
 
-#### Varyant B — "Doğum Haritası" odaklı (organik trafiğe agresif)
+#### Varyant B: "Doğum Haritası" odaklı (organik trafiğe agresif)
 - **Name (30):** `SoulProfile - Doğum Haritası` (28)
 - **Subtitle (30):** `Burç, Human Design, Numeroloji` (30)
 - **Keywords (100):** `burc,yorum,astroloji,humandesign,gen anahtar,numeroloji,karne,starseed,kuzey,düğüm,enerji`
 
-#### Varyant C — "Starseed" niş (US örtüşmesi yüksek)
+#### Varyant C: "Starseed" niş (US örtüşmesi yüksek)
 - **Name (30):** `SoulProfile: Starseed Karne` (27)
 - **Subtitle (30):** `Ruh Görevin, Yıldız Kökenin` (27)
 - **Keywords (100):** `starseed,yıldız ırkı,ruh,görev,burç,astroloji,humandesign,numeroloji,karne,doğum,plejyen,arkturus`
 
 > Karar kriteri: İlk 4 hafta Varyant A canlıda kalır, Varyant B & C App Store Connect ürün sayfası optimizasyonu (Custom Product Pages) ile test edilir.
 
-### 1.2 Açıklama — İlk 5 Satır (kritik)
+### 1.2 Açıklama: İlk 5 Satır (kritik)
 
 > İlk 3 satır App Store'da "daha fazla" butonu olmadan görünür. ASO ranking sinyalinden ziyade conversion'a etki eder.
 
@@ -40,14 +40,14 @@ Doğum saatini yaz, 60 saniyede Galaktik Karne'n hazır.
 Astroloji + Human Design + Numeroloji + Yıldız Irkı kökeni tek bir kartta.
 Paylaşılabilir görsel karne. Story'ye at, arkadaşına gönder.
 
-Sadece burç yorumu değil — neden bu hayatta olduğunu anlatan bir profil.
+Sadece burç yorumu değil: neden bu hayatta olduğunu anlatan bir profil.
 Ücretsiz başla, dilersen Premium ile derinleş.
 ```
 
 ### 1.3 Long Description (≈ 3850 char)
 
 ```
-SoulProfile — Sen aslında kimsin? Doğum tarihin, saatin ve yerinden yola çıkarak sana özel bir "Galaktik Karne" üretiyoruz. Astroloji, Human Design, Numeroloji ve Yıldız Irkı analizini tek bir paylaşılabilir kartta birleştiren ilk Türk uygulaması.
+SoulProfile: Sen aslında kimsin? Doğum tarihin, saatin ve yerinden yola çıkarak sana özel bir "Galaktik Karne" üretiyoruz. Astroloji, Human Design, Numeroloji ve Yıldız Irkı analizini tek bir paylaşılabilir kartta birleştiren ilk Türk uygulaması.
 
 ⭐ NEDEN SOULPROFILE?
 
@@ -55,8 +55,8 @@ Co-Star sadece astrolojiyi anlatır. The Pattern ilişki dinamiklerine odaklanı
 
 🌟 KARNENDE NE VAR?
 
-• Güneş, Ay ve Yükselen burcun — klasik astrolojinin temeli
-• Kuzey Düğüm (North Node) — bu hayattaki ruh görevin
+• Güneş, Ay ve Yükselen burcun, klasik astrolojinin temeli
+• Kuzey Düğüm (North Node), bu hayattaki ruh görevin
 • Human Design tipi (Manifestor, Generator, Projector, Reflector) ve otoritesi
 • Yaşam Yolu Sayısı ve kader numerolojisi
 • Yıldız Irkı kökenin: Plejyen, Sirius, Arkturus, Lyra, Andromeda...
@@ -77,7 +77,7 @@ Karne'ni doğrudan Instagram Story, WhatsApp veya TikTok'a gönder. Estetik tipo
 
 PREMIUM (Haftalık / Aylık):
 • Sınırsız karne üretimi (sevdiklerinin de)
-• Uyum analizi (compatibility) — partner, arkadaş, anne, baba
+• Uyum analizi (compatibility): partner, arkadaş, anne, baba
 • Günlük transit yorumları
 • Detaylı Human Design Body Graph
 • Numeroloji yıllık tahmin
@@ -103,14 +103,14 @@ Doğum bilgilerin sadece karne üretimi için kullanılır, üçüncü taraflarl
 2. 60 saniye içinde Galaktik Karne'n hazır
 3. Paylaş, sakla, derinleş
 
-Premium abonelik App Store hesabınla otomatik yenilenir. İptal: Ayarlar → Apple Kimliği → Abonelikler. Şartlar ve gizlilik politikası: https://soulprofile.life/terms — https://soulprofile.life/privacy
+Premium abonelik App Store hesabınla otomatik yenilenir. İptal: Ayarlar → Apple Kimliği → Abonelikler. Şartlar ve gizlilik politikası: https://soulprofile.life/terms: https://soulprofile.life/privacy
 
 SoulProfile ekibi seni evrene davet ediyor. Karnen seni bekliyor 🌙
 
-— Etiketler: burç, astroloji, doğum haritası, human design, numeroloji, starseed, yıldız ırkı, kuzey düğüm, ruh görevi, karne, kişilik testi, ezoterik, spiritüel, manifestor, generator, projector, reflector, plejyen, sirius, arkturus, the pattern, co-star, sanctuary, stellar
+Etiketler: burç, astroloji, doğum haritası, human design, numeroloji, starseed, yıldız ırkı, kuzey düğüm, ruh görevi, karne, kişilik testi, ezoterik, spiritüel, manifestor, generator, projector, reflector, plejyen, sirius, arkturus, the pattern, co-star, sanctuary, stellar
 ```
 
-### 1.4 Screenshot Stratejisi (6 frame — portrait 6.7")
+### 1.4 Screenshot Stratejisi (6 frame, portrait 6.7")
 
 | # | Başlık (üst, max 5 kelime) | Alt yazı (footer) | Görsel |
 |---|---|---|---|
@@ -118,28 +118,28 @@ SoulProfile ekibi seni evrene davet ediyor. Karnen seni bekliyor 🌙
 | 2 | "Burç değil, kimlik" | Astroloji + Human Design + Numeroloji + Starseed | 4 ikon birleşip tek karneye akan animasyon (statik frame) |
 | 3 | "Yıldız kökenin haritalansın" | Plejyen mi, Sirius mu, Arkturus mu? | Galaksi background, kullanıcının "Starseed: Plejyen %78" çıkışı |
 | 4 | "Ruh görevini öğren" | Kuzey Düğüm + Human Design Otoritesi | Detay kart, "Bu hayatta neden buradasın?" başlığı |
-| 5 | "Karneni paylaş" | Story, WhatsApp, TikTok — tek dokunuş | iPhone içinde Instagram Story preview, karne yapıştırılmış |
+| 5 | "Karneni paylaş" | Story, WhatsApp, TikTok, tek dokunuş | iPhone içinde Instagram Story preview, karne yapıştırılmış |
 | 6 | "Premium ile derinleş" | Uyum, transit, sınırsız karne | Paywall preview + sosyal kanıt: "★★★★★ 12.000+ karne" |
 
 App Preview Video (15-30sn): Doğum bilgisi giriş → karne hazırlanma loader → karne reveal → story share. Müzik: lo-fi spiritüel beat. Caption yok (App Store videoları default mute).
 
 ---
 
-## 2. ASO — US App Store (EN)
+## 2. ASO: US App Store (EN)
 
 ### 2.1 İsim / Altyazı / Keywords Varyantları
 
-#### Varyant A — "Cosmic Report Card" (default launch)
+#### Varyant A: "Cosmic Report Card" (default launch)
 - **Name (30):** `SoulProfile: Cosmic Report` (25)
 - **Subtitle (30):** `Astrology + Human Design + AI` (29)
 - **Keywords (100):** `starseed,humandesign,northnode,natalchart,birthchart,astrology,numerology,soulmission,costar,pattern`
 
-#### Varyant B — "Competitor Alternative"
+#### Varyant B: "Competitor Alternative"
 - **Name (30):** `SoulProfile - Birth Chart AI` (28)
 - **Subtitle (30):** `The Co-Star Alternative` (23)
 - **Keywords (100):** `costaralternative,patternalternative,birthchart,natalchart,humandesign,starseed,northnode,numerology`
 
-#### Varyant C — "Starseed Niche"
+#### Varyant C: "Starseed Niche"
 - **Name (30):** `SoulProfile: Starseed Origin` (28)
 - **Subtitle (30):** `Find Your Soul Mission Today` (28)
 - **Keywords (100):** `starseed,pleiadian,sirian,arcturian,lightworker,soulmission,humandesign,northnode,manifestor,generator`
@@ -148,32 +148,32 @@ App Preview Video (15-30sn): Doğum bilgisi giriş → karne hazırlanma loader 
 
 ```
 Type your birth time. In 60 seconds, your Cosmic Report Card is ready.
-Astrology + Human Design + Numerology + Starseed origin — on one shareable card.
+Astrology + Human Design + Numerology + Starseed origin, on one shareable card.
 The depth of a natal chart. The fun of a quiz. The aesthetic of your story.
 
-More than horoscopes — discover why you incarnated this lifetime.
+More than horoscopes: discover why you incarnated this lifetime.
 Free to start. Premium when you're ready to go deeper.
 ```
 
 ### 2.3 Long Description (≈ 3800 char)
 
 ```
-SoulProfile — Who are you, really? From your birth date, time, and place, we generate your personal "Cosmic Report Card": astrology, Human Design, numerology, and your starseed origin — all on one beautifully designed, shareable card.
+SoulProfile: Who are you, really? From your birth date, time, and place, we generate your personal "Cosmic Report Card": astrology, Human Design, numerology, and your starseed origin, all on one beautifully designed, shareable card.
 
 ⭐ WHY SOULPROFILE?
 
-Co-Star gives you horoscopes. The Pattern reads your relationships. Sanctuary connects you to readers. SoulProfile is different: we synthesize four esoteric systems into a single "report card" — serious enough to study, aesthetic enough to post. Built for the generation that grew up with Co-Star but wants more than astrology alone.
+Co-Star gives you horoscopes. The Pattern reads your relationships. Sanctuary connects you to readers. SoulProfile is different: we synthesize four esoteric systems into a single "report card": serious enough to study, aesthetic enough to post. Built for the generation that grew up with Co-Star but wants more than astrology alone.
 
 🌟 WHAT'S IN YOUR REPORT CARD?
 
-• Sun, Moon, and Rising signs — your astrological foundation
-• North Node — your soul mission this lifetime
+• Sun, Moon, and Rising signs, your astrological foundation
+• North Node: your soul mission this lifetime
 • Human Design type (Manifestor, Generator, Projector, Reflector) + Authority
 • Life Path Number and karmic numerology
 • Starseed origin: Pleiadian, Sirian, Arcturian, Lyran, Andromedan...
 • Your soul contract and karmic load this incarnation
 • Your superpowers and your shadows
-• "Grades" section — 10-point scoring, just like a school report card
+• "Grades" section: 10-point scoring, just like a school report card
 
 📸 BUILT TO SHARE
 
@@ -214,14 +214,14 @@ Your birth data is used only to generate your card. Never sold. Never shared. De
 2. In 60 seconds, your Cosmic Report Card is ready
 3. Share it. Save it. Go deeper.
 
-Premium subscriptions auto-renew through your Apple ID. Cancel anytime: Settings → Apple ID → Subscriptions. Terms: https://soulprofile.life/terms — Privacy: https://soulprofile.life/privacy
+Premium subscriptions auto-renew through your Apple ID. Cancel anytime: Settings → Apple ID → Subscriptions. Terms: https://soulprofile.life/terms: Privacy: https://soulprofile.life/privacy
 
 The universe has been waiting for you 🌙
 
-— Tags: astrology, birth chart, natal chart, human design, numerology, starseed, pleiadian, sirian, arcturian, north node, soul mission, manifestor, generator, projector, reflector, the pattern alternative, co-star alternative, sanctuary alternative
+Tags: astrology, birth chart, natal chart, human design, numerology, starseed, pleiadian, sirian, arcturian, north node, soul mission, manifestor, generator, projector, reflector, the pattern alternative, co-star alternative, sanctuary alternative
 ```
 
-### 2.4 Screenshot Stratejisi (US — 6 frame)
+### 2.4 Screenshot Stratejisi (US: 6 frame)
 
 | # | Headline | Subline | Visual |
 |---|---|---|---|
@@ -234,14 +234,14 @@ The universe has been waiting for you 🌙
 
 ---
 
-## 3. ASO — Diğer Pazarlar (Kısa)
+## 3. ASO: Diğer Pazarlar (Kısa)
 
 ### 3.1 ES (İspanya + LATAM)
 - **Subtitle:** `Astrología + Diseño Humano + IA`
 - **Keywords:** `astrologia,cartanatal,diseñohumano,numerologia,starseed,nodo norte,signo,horoscopo,pleyadiano,sirio`
 - **Hook satırı:** "Tu Boletín Cósmico en 60 segundos."
 
-### 3.2 PT-BR (Brezilya — büyük potansiyel pazar)
+### 3.2 PT-BR (Brezilya: büyük potansiyel pazar)
 - **Subtitle:** `Mapa Astral + Design Humano + IA`
 - **Keywords:** `mapaastral,designhumano,numerologia,starseed,nodonorte,horoscopo,signo,pleiadiano,siriano,arcturiano`
 - **Hook satırı:** "Seu Boletim Cósmico em 60 segundos."
@@ -260,7 +260,7 @@ The universe has been waiting for you 🌙
 
 ---
 
-## 4. Apple Search Ads — Kampanya Yapısı
+## 4. Apple Search Ads: Kampanya Yapısı
 
 ### 4.1 Kampanya: **Discovery (Broad)**
 Amaç: Apple'ın bulduğu yeni keyword'leri keşfetmek, search match'i de keşfetmek.
@@ -288,10 +288,10 @@ Keyword listesi (exact + broad ikili):
 | Hedef CPI | 25-40 TL ($0.75-1.20) | $4.00-6.50 |
 | Günlük bütçe | 400 TL (~$12) | $200 |
 | Negatif | `delete`, `iptal`, `cancel`, `not working`, `customer service` | aynı |
-| Bid stratejisi | Tap bidding manuel — Apple'ın önerdiği max bid'in %120'si | aynı |
+| Bid stratejisi | Tap bidding manuel, Apple'ın önerdiği max bid'in %120'si | aynı |
 
 **Ad variations (CPP eşleşmeli):**
-1. "The Co-Star Alternative — But With Human Design"
+1. "The Co-Star Alternative: But With Human Design"
 2. "More Than Horoscopes. Your Full Cosmic Report Card."
 3. "What Co-Star Doesn't Tell You About Your Soul Mission"
 
@@ -329,7 +329,7 @@ Keyword grupları (her grup ayrı ad group):
 | Negatif | `tarot`, `fal`, `kart açma`, `medyum`, `mevlana`, `dua` | `tarot`, `fortune teller`, `psychic`, `bible`, `dating` |
 
 **Category Ad variations (3):**
-1. "Your Full Birth Chart — In a Shareable Card"
+1. "Your Full Birth Chart: In a Shareable Card"
 2. "Human Design Made Simple"
 3. "Sun Sign Is Just The Start. Discover Your Starseed Origin."
 
@@ -349,47 +349,47 @@ Keyword grupları (her grup ayrı ad group):
 
 ### 5.1 5 Farklı Hook (İlk 3 Saniye)
 
-**Hook 1 — "Karne Reveal" (en yüksek conversion beklenir)**
+**Hook 1: "Karne Reveal" (en yüksek conversion beklenir)**
 > [0-2s] El kamerasıyla telefon ekranı yakın çekim, loader spinning.
 > [2-3s] "Bekle bekle bekle… BU NE?" yüzünde şok ifade.
 > [3-15s] Karneyi kameraya çevirir, "Plejyen mi çıktım ben???" reaksiyonu.
-> CTA: "Linkten dene — ücretsiz."
+> CTA: "Linkten dene: ücretsiz."
 
-**Hook 2 — "POV: Co-Star kullanıyordun"**
+**Hook 2: "POV: Co-Star kullanıyordun"**
 > [0-3s] Text overlay: "POV: 3 yıldır Co-Star kullanıyordun ama hayatın hâlâ açıklanmamıştı."
 > [3-15s] Yeni karne reveal, "Meğer Manifestor'müşüm" gibi storytelling.
 > CTA: "SoulProfile'a geç."
 
-**Hook 3 — "Arkadaş Karşılaştırma"**
+**Hook 3: "Arkadaş Karşılaştırma"**
 > [0-3s] İki kız split-screen telefon ekranları.
-> "Sen Generator'sın ben Projector'müşüm — o yüzden sen hep enerji veriyordun bana!" gerçekleşme anı.
+> "Sen Generator'sın ben Projector'müşüm: o yüzden sen hep enerji veriyordun bana!" gerçekleşme anı.
 > CTA: "Karneni arkadaşınkiyle karşılaştır."
 
-**Hook 4 — "Karne Sınıf Listesi"**
+**Hook 4: "Karne Sınıf Listesi"**
 > [0-3s] Yer çekimi: bir liste, "Plejyen %42 / Sirius %28 / Arkturus %15 / Lyra %10 / Andromeda %5"
 > "Türkiye'nin en çok hangi yıldız ırkından geldiğini bulduk" hook.
 > [3-15s] Map montaj + paylaşım çağrısı.
 > CTA: "Kendi kökenini öğren."
 
-**Hook 5 — "Therapy vs Karne"**
+**Hook 5: "Therapy vs Karne"**
 > [0-3s] "Terapiye 3 ay verdim bunu söylemedi, SoulProfile 60 saniyede söyledi:"
 > [3-10s] Karne ekran kaydı, North Node açıklaması okunur sesli.
 > CTA: "Sen de gör."
 
 ### 5.2 Spark Ads Stratejisi (UGC Whitelisting)
 
-**Aşama 1 — Seed Influencer Tier (Ay 1):**
+**Aşama 1: Seed Influencer Tier (Ay 1):**
 - Türkiye: 20 mikro influencer (15K-80K takipçi), niş: astroloji / spiritüellik / yaşam tarzı
 - US: 15 mikro influencer, niş: starseed, human design, witchtok
 - Ödeme: 1.500-3.500 TL TR per video, $300-600 US per video
 - Brief: "Karneni göster, doğal reaksiyonun ne olursa o."
 - Zorunlu: TikTok Creator Marketplace üzerinden Spark Ads code paylaşımı
 
-**Aşama 2 — Top Performer Boost:**
+**Aşama 2: Top Performer Boost:**
 - Her hafta organik en yüksek view/save oranı yakalayan 3 video Spark Ads'e alınır
 - Boost bütçesi: video başı $200/gün, 7 gün test
 
-**Aşama 3 — Whitelisted Persistent Creators:**
+**Aşama 3: Whitelisted Persistent Creators:**
 - Ay 2'den itibaren en iyi 5 creator ile sürekli içerik (haftada 1 video)
 - Spark Ads code'ları 60 gün geçerli, yenileme planı
 - Performans bazlı bonus: CPI < $2.00 ise creator'a +%30 bonus
@@ -412,19 +412,19 @@ Conversion API: Server-side gönderim, RevenueCat webhook → SoulProfile backen
 
 ### 5.4 Bidding Stratejisi
 
-**Hafta 1-2 — Learning Phase:**
+**Hafta 1-2: Learning Phase:**
 - Campaign budget optimization (CBO) ON
 - **Lowest cost** bidding (cap yok)
 - Optimization event: `complete_registration` (early signal, learning'i hızlandırır)
 - Bütçe: TR 600 TL/gün, US $150/gün
 - Ad sets: 4-5 hook varyantı, her biri en az 1 saatlik learning verisi alacak şekilde
 
-**Hafta 3-4 — Mid-funnel optimization:**
+**Hafta 3-4: Mid-funnel optimization:**
 - Optimization event: `initiate_checkout`
 - Cost cap ON: TR 120 TL ($3.50), US $25 target (initiate başı)
 - Bütçe artışı: %20-30, learning'i kırmadan
 
-**Hafta 5+ — Value optimization:**
+**Hafta 5+: Value optimization:**
 - Optimization event: `subscribe` (value-based bidding)
 - Target ROAS: Hafta 5'te 0.6x, Hafta 8'de 1.0x, Hafta 12'de 1.5x
 - Cost cap KAPALI, value rules ON: yüksek LTV ülke/cinsiyet kombinasyonlarına +%20 bid
@@ -435,7 +435,7 @@ Conversion API: Server-side gönderim, RevenueCat webhook → SoulProfile backen
 
 ### 6.1 Audience Matrisi
 
-**Cold — Interest Stack ("Co-Star indirenler benzeri" inşası):**
+**Cold: Interest Stack ("Co-Star indirenler benzeri" inşası):**
 
 Tek bir interest yetmez, Meta'da bunlar combine edilir:
 
@@ -454,41 +454,41 @@ INTERESTS (OR):
 
 LAYER (AND):
 - Age 18-44
-- Interest: Instagram heavy users (proxy: Stories engagement) — Detailed targeting expansion ON
+- Interest: Instagram heavy users (proxy: Stories engagement): Detailed targeting expansion ON
 ```
 
 Audience size hedefi: TR 2-5M, US 8-15M
 
-**Warm — Lookalike Layers:**
-- LAL 1% — Subscribers (Premium ödeyenler, RevenueCat → Conversion API)
-- LAL 1-3% — App opens 7+ kez son 30 gün
-- LAL 1% — Karne paylaştı (share intent)
-- LAL 3-5% — Onboarding tamamladı
+**Warm: Lookalike Layers:**
+- LAL 1%: Subscribers (Premium ödeyenler, RevenueCat → Conversion API)
+- LAL 1-3%: App opens 7+ kez son 30 gün
+- LAL 1%: Karne paylaştı (share intent)
+- LAL 3-5%: Onboarding tamamladı
 
 **Retargeting (sıralı):**
-1. **R1 — Onboarding completed but no card** (3 gün): "Karnen 1 tıkla hazır" reminder
-2. **R2 — Card generated but no paywall view** (5 gün): "Premium ile uyumunu da gör"
-3. **R3 — Paywall viewed, no purchase** (7 gün): -%40 hafta-1 indirim
-4. **R4 — Free trial started, not converted** (14 gün): Testimonial heavy creative
-5. **R5 — Churned subscribers** (90 gün): Yeni feature launch reactivation
-6. **R6 — Site visitors no install** (30 gün): Install-only campaign, deep link
+1. **R1: Onboarding completed but no card** (3 gün): "Karnen 1 tıkla hazır" reminder
+2. **R2: Card generated but no paywall view** (5 gün): "Premium ile uyumunu da gör"
+3. **R3: Paywall viewed, no purchase** (7 gün): -%40 hafta-1 indirim
+4. **R4: Free trial started, not converted** (14 gün): Testimonial heavy creative
+5. **R5: Churned subscribers** (90 gün): Yeni feature launch reactivation
+6. **R6: Site visitors no install** (30 gün): Install-only campaign, deep link
 
 ### 6.2 3 Creative Concept
 
-**Concept A — "Karne Reveal Loop" (carousel, 5 kart)**
+**Concept A: "Karne Reveal Loop" (carousel, 5 kart)**
 - Kart 1: "60 saniye, 4 sistem, 1 karne." kapak
 - Kart 2-5: 4 farklı kullanıcı karnesinin animated reveal'i
 - Format: 4:5 square, IG Reels'e de uyumlu vertical kesim
 - CTA: "Karneni Üret"
 
-**Concept B — "Karne Quiz" (video, 15 sn)**
+**Concept B: "Karne Quiz" (video, 15 sn)**
 - 0-3s: "Sen Manifestor mısın Generator mı?"
 - 3-8s: 4 Human Design tipinin kısa açıklaması, animated icons
 - 8-12s: "Cevap karnenin içinde."
 - 12-15s: SoulProfile logo + CTA
 - Versions: TR Türkçe VO, US English VO, US silent + caption
 
-**Concept C — "Co-Star Bana Yetmedi" (UGC testimonial style)**
+**Concept C: "Co-Star Bana Yetmedi" (UGC testimonial style)**
 - Format: dikey 9:16, 30sn
 - Kullanıcı first-person: "Co-Star üç yıldır kullanıyordum, bir gün karneye baktım, Human Design tipim çıktı, hayatım açıklandı."
 - Karne screen recording arkada
@@ -512,11 +512,11 @@ Audience size hedefi: TR 2-5M, US 8-15M
 | Fraud protection | Orta | Endüstri standart (Protect360) | İyi |
 | Türkiye support | Email | Türkçe support + local team | Email |
 
-### 7.2 SoulProfile İçin Öneri: **Branch (Phase 1) → AppsFlyer (Phase 2 — $20K+/ay)**
+### 7.2 SoulProfile İçin Öneri: **Branch (Phase 1) → AppsFlyer (Phase 2, $20K+/ay)**
 
 **Neden Branch (ilk 90 gün, küçük-orta bütçe):**
-1. Web app + iOS app birlikte var — Branch'in web-to-app ve deferred deep link altyapısı buna ideal. Kullanıcı karneyi web'de görür, app'i indirir, aynı karne onu karşılar.
-2. 250K MAU'ya kadar ücretsiz — küçük bütçeli launch'ta atılım için elverişli.
+1. Web app + iOS app birlikte var, Branch'in web-to-app ve deferred deep link altyapısı buna ideal. Kullanıcı karneyi web'de görür, app'i indirir, aynı karne onu karşılar.
+2. 250K MAU'ya kadar ücretsiz: küçük bütçeli launch'ta atılım için elverişli.
 3. Karne paylaşımı (Instagram Story, WhatsApp) Branch Universal Links ile attribute edilebilir → viral döngü ölçülebilir.
 
 **Neden AppsFlyer'a geç (aylık $20K+):**
@@ -546,7 +546,7 @@ iOS 14.5+ için 64-bit conversion value (6-bit = 64 değer) önerisi:
 | 30-39 | Revenue 0-$5 LTV | Revenue tier 1 |
 | 40-49 | Revenue $5-15 LTV | Revenue tier 2 |
 | 50-59 | Revenue $15-50 LTV | Revenue tier 3 |
-| 60-63 | Revenue $50+ LTV | Whales — power users |
+| 60-63 | Revenue $50+ LTV | Whales, power users |
 
 **Conversion window:** 48h coarse + 72h fine-grained timer reset her engagement event'inde.
 **Postback locking:** İlk postback 0-24h (highest activity), ikinci postback 24-72h, üçüncü postback 72h-35d (lock revenue tier).
@@ -555,43 +555,43 @@ iOS 14.5+ için 64-bit conversion value (6-bit = 64 değer) önerisi:
 
 ## 8. İlk 90 Gün Medya Planı
 
-### 8.1 Small — $5K / ay (~150.000 TL — bootstrap, mostly TR)
+### 8.1 Small: $5K / ay (~150.000 TL: bootstrap, mostly TR)
 
 | Kanal | % | $/ay | Notlar |
 |---|---|---|---|
-| Apple Search Ads — TR | 30% | $1.500 | Discovery + Brand Defense + 1 Category group |
-| TikTok Ads — TR | 35% | $1.750 | 3 hook test, Spark Ads ağırlıklı |
-| Meta Ads — TR | 15% | $750 | 1 LAL cold + 2 retargeting layer |
+| Apple Search Ads: TR | 30% | $1.500 | Discovery + Brand Defense + 1 Category group |
+| TikTok Ads: TR | 35% | $1.750 | 3 hook test, Spark Ads ağırlıklı |
+| Meta Ads: TR | 15% | $750 | 1 LAL cold + 2 retargeting layer |
 | Influencer (Spark seeding) | 15% | $750 | 5-8 mikro influencer / ay |
 | Tools (Branch free, design, app store screenshot test) | 5% | $250 | Asset üretim |
 
 Hedef: TR'de 5.000-8.000 install/ay, 200-300 paid sub/ay, CPI ~$0.50, paying user CAC ~$15.
 
-### 8.2 Medium — $20K / ay (TR + US dengeli)
+### 8.2 Medium: $20K / ay (TR + US dengeli)
 
 | Kanal | % | $/ay |
 |---|---|---|
-| Apple Search Ads — TR | 12% | $2.400 |
-| Apple Search Ads — US | 25% | $5.000 |
-| TikTok Ads — TR | 15% | $3.000 |
-| TikTok Ads — US | 20% | $4.000 |
-| Meta Ads — TR + US | 15% | $3.000 |
+| Apple Search Ads: TR | 12% | $2.400 |
+| Apple Search Ads: US | 25% | $5.000 |
+| TikTok Ads: TR | 15% | $3.000 |
+| TikTok Ads: US | 20% | $4.000 |
+| Meta Ads: TR + US | 15% | $3.000 |
 | Influencer (TR + US) | 10% | $2.000 |
 | Attribution + tooling (AppsFlyer'a geçiş, RevenueCat charts) | 3% | $600 |
 
 Hedef: 25.000-35.000 install/ay (TR+US blended), 1.200-1.800 paid sub/ay. Blended CPI ~$0.70, paying CAC ~$12 (volume discount + lookalike maturity).
 
-### 8.3 Aggressive — $80K / ay (scale, US dominant)
+### 8.3 Aggressive: $80K / ay (scale, US dominant)
 
 | Kanal | % | $/ay |
 |---|---|---|
-| Apple Search Ads — US | 28% | $22.400 |
-| Apple Search Ads — TR | 6% | $4.800 |
-| Apple Search Ads — BR + ES + DE + FR | 8% | $6.400 |
-| TikTok Ads — US | 22% | $17.600 |
-| TikTok Ads — TR | 8% | $6.400 |
-| Meta Ads — US | 12% | $9.600 |
-| Meta Ads — TR + LATAM | 5% | $4.000 |
+| Apple Search Ads: US | 28% | $22.400 |
+| Apple Search Ads: TR | 6% | $4.800 |
+| Apple Search Ads: BR + ES + DE + FR | 8% | $6.400 |
+| TikTok Ads: US | 22% | $17.600 |
+| TikTok Ads: TR | 8% | $6.400 |
+| Meta Ads: US | 12% | $9.600 |
+| Meta Ads: TR + LATAM | 5% | $4.000 |
 | Influencer / Spark whitelisting (US 10 + TR 5 persistent) | 7% | $5.600 |
 | Attribution + creative production studio | 4% | $3.200 |
 
@@ -599,17 +599,17 @@ Hedef: 110.000-150.000 install/ay, 6.000-8.000 paid sub/ay. Blended CPI ~$0.65, 
 
 ### 8.4 90 Günlük Faz Planı (her bütçe seviyesinde geçerli)
 
-**Faz 1 — Days 1-30: Test & Learn**
+**Faz 1: Days 1-30: Test & Learn**
 - 4 hook x 3 audience = 12 ad set, ilk 14 gün
 - CPP test (Custom Product Pages) ile 3 store variant
 - Hedef: install/onboarding completion ratio %55+
 
-**Faz 2 — Days 31-60: Scale Winners**
+**Faz 2: Days 31-60: Scale Winners**
 - En iyi 3 creative %80 bütçe, kalan %20 yeni hook discovery
 - Lookalike 1% audience'ı %100 emin değer optimization'a aç
 - Hedef: paid sub CAC -%20
 
-**Faz 3 — Days 61-90: Defend & Diversify**
+**Faz 3: Days 61-90: Defend & Diversify**
 - Brand defense kampanya artırılır (organik trafik arttıkça)
 - Retargeting funnel tam aktif (R1-R6)
 - Yeni pazar açılışı (Medium ve Aggressive için): BR, DE
@@ -617,7 +617,7 @@ Hedef: 110.000-150.000 install/ay, 6.000-8.000 paid sub/ay. Blended CPI ~$0.65, 
 
 ---
 
-## 9. A/B Test Önceliği — İlk 30 Gün (Top 10)
+## 9. A/B Test Önceliği: İlk 30 Gün (Top 10)
 
 Her testin minimum stat-sig sample size'ı: install A/B için 5.000 install/variant, paywall A/B için 1.000 paywall view/variant. Test süresi minimum 7 gün (haftalık seasonality için).
 
@@ -637,7 +637,7 @@ Her testin minimum stat-sig sample size'ı: install A/B için 5.000 install/vari
 ### 9.1 Test İlerleme Diyagramı
 
 ```
-WEEK 1: Test 1, 2, 3 (ASO sayfa A/B — App Store Connect product page optimization)
+WEEK 1: Test 1, 2, 3 (ASO sayfa A/B, App Store Connect product page optimization)
 WEEK 2: Test 4, 5 (paywall) + Test 1-3 winner deploy
 WEEK 3: Test 6, 7, 8 (in-app UX)
 WEEK 4: Test 9, 10 (retention + push) + winners deploy + Day-30 kohort raporu
@@ -653,7 +653,7 @@ Bir varyantın "winner" sayılma kriteri:
 
 ---
 
-## EK — Hızlı Referans Hedef Metrik Tablosu (Day 90)
+## EK: Hızlı Referans Hedef Metrik Tablosu (Day 90)
 
 | Metrik | Small | Medium | Aggressive |
 |---|---|---|---|

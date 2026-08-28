@@ -21,7 +21,7 @@ export function DisclaimerOverlay() {
     try {
       await acceptDisclaimer();
     } catch {
-      // silently ignore — overlay will reattempt on next render if needed
+      // silently ignore: overlay will reattempt on next render if needed
     }
   };
 

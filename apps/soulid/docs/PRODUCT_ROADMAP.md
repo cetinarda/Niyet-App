@@ -1,8 +1,8 @@
-# SoulProfile — 12 Aylık Ürün Yol Haritası
+# SoulProfile: 12 Aylık Ürün Yol Haritası
 
 > Bu doküman ürün (product) boyutuna odaklanır. Pazarlama, ASO, influencer ve
 > brand voice için `marketing/` altındaki dosyalara bakın. Premium SKU teknik
-> detayları için `docs/PREMIUM_ROADMAP.md` kanonik kalır — bu doküman onun
+> detayları için `docs/PREMIUM_ROADMAP.md` kanonik kalır: bu doküman onun
 > üzerine ürün, retention, viral ve platform stratejisini örer.
 
 ---
@@ -17,7 +17,7 @@ $8 ARPU/ay ve 0.5+ K-factor üreten kategoriye özel "spiritual identity layer"
 olmalıdır.
 
 **Tek cümlelik kazanma tezi:** "Co-Star'ı paylaşırsın, The Pattern'ı okursun,
-SoulProfile'ı **olursun** — çünkü o senin galaktik kimliğin, sadece bir uygulama değil."
+SoulProfile'ı **olursun**: çünkü o senin galaktik kimliğin, sadece bir uygulama değil."
 
 ---
 
@@ -42,23 +42,23 @@ Skala: ● tam var · ◐ kısmi/zayıf · ○ yok · ★ pazarda lider
 
 **Bizim 3 büyük açığımız (Faz 1-2'de kapatılmalı):**
 
-1. **İlişki / friend sync yok** — Co-Star ve The Pattern bu özellikle viral
+1. **İlişki / friend sync yok**, Co-Star ve The Pattern bu özellikle viral
    oldu. K-factor'ümüzü tek başına ikiye katlayabilir.
-2. **Günlük geri dönüş kancası yok** — Transit/horoscope/biorhythm push'u
+2. **Günlük geri dönüş kancası yok**, Transit/horoscope/biorhythm push'u
    olmayan bir uygulama D7 retention'da %5'in altına düşer.
-3. **Hesap & senkronizasyon yok** — Tek seferlik karne üretip kapatan
+3. **Hesap & senkronizasyon yok**: Tek seferlik karne üretip kapatan
    kullanıcı = D1 churn. Cross-device profil zorunluluk.
 
 ---
 
 ## 3. Üç Killer Differentiator (Build Et!)
 
-### 3.1 "Galactic Origin Lineage" — Çoklu Yıldız Mirası Ağacı
+### 3.1 "Galactic Origin Lineage": Çoklu Yıldız Mirası Ağacı
 
 **Konsept:** Şu an kullanıcıya tek bir starseed arketipi atıyoruz. Yeni model:
 her kullanıcı **birincil (60-80%) + ikincil (15-25%) + dormant/uyuyan (5-15%)**
 olmak üzere 3 katmanlı galaktik miras alır. Yeryüzünde "tam saf" yıldız ırkı
-kalmamıştır — herkes hibrittir. Bu, hem astrolojik olarak daha defandable
+kalmamıştır: herkes hibrittir. Bu, hem astrolojik olarak daha defandable
 (çünkü gerçek bir kombinasyon matematiği var: Güneş + Ay + Yükselen + HD
 profil + Yaşam Yolu numerolojisi karışımı), hem de **paylaşma motivasyonu
 yaratır**: kullanıcı "ben %72 Pleiadyalı + %19 Arkturian + %9 dormant Mintakan'mışım"
@@ -71,11 +71,11 @@ alt = "Find yours" CTA. Insta story'de poll özelliği ile arkadaşlar tahmin
 etmeye çalışır → app açılır.
 
 **Teknik uygulama:**
-- Hafta 1-2: Lineage compute fonksiyonu (`lib/galactic/lineage.ts`) —
+- Hafta 1-2: Lineage compute fonksiyonu (`lib/galactic/lineage.ts`), 
   mevcut 10 arketipe ağırlık vektörü ekle, Güneş takımyıldızı, Ay fazı,
   HD authority ve Yaşam Yolu'ndan weighted blend hesapla.
 - Hafta 3: Yeni karne template'i (donut chart + 3 katman).
-- Hafta 4: Lineage compatibility — iki kullanıcının lineage'ları
+- Hafta 4: Lineage compatibility: iki kullanıcının lineage'ları
   birbirini ne kadar besler/zorlar (Faz 2 friend sync için temel).
 
 **KPI:** Karne paylaşım oranı %32 → %48; lineage-spesifik hashtag'lerde
@@ -83,7 +83,7 @@ ay sonu 10K+ post.
 
 ---
 
-### 3.2 "Soul Mission Tracker" — Kuzey Düğüm Görevini Oyunlaştır
+### 3.2 "Soul Mission Tracker": Kuzey Düğüm Görevini Oyunlaştır
 
 **Konsept:** Şu an "3 görev sentezi" statik bir metin. Yeni model: kullanıcı
 Kuzey Düğüm görevini **12 aylık spiritüel quest** olarak görür. Her ay
@@ -96,7 +96,7 @@ oluşur, yıl sonunda "Soul Year Wrapped" Spotify-style retrospektif görsel
 **Neden viral olur:** Spotify Wrapped + Duolingo streak + astroloji. Streak
 bozulma korkusu = günlük açılış. Yıl sonu Wrapped = Aralık'ta 30 günlük
 organik patlama. Hiçbir spiritüel uygulamada **gamified mission system**
-yok — Sanctuary statik içerik, Co-Star pasif horoscope.
+yok: Sanctuary statik içerik, Co-Star pasif horoscope.
 
 **Teknik uygulama:**
 - Hafta 1-2: `lib/missions/` mevcut → quest engine'e dönüştür. Kuzey
@@ -111,7 +111,7 @@ mission completion.
 
 ---
 
-### 3.3 "Cosmic Mirror Sessions" — AI ile Sesli Soul Chat
+### 3.3 "Cosmic Mirror Sessions": AI ile Sesli Soul Chat
 
 **Konsept:** Premium kullanıcı haftada bir, "Cosmic Mirror" adında 5-10
 dakikalık sesli bir seans alır. Claude API + ElevenLabs/Hume TTS ile
@@ -119,7 +119,7 @@ kullanıcının doğum haritası, son hafta transitleri, mission progress'i
 ve **önceki seans hafızası** kullanılarak kişisel monolog üretilir.
 Kullanıcı dinlerken sesli soru sorabilir (Whisper STT), AI cevaplar.
 Bu, Sanctuary'nin canlı astrolog modelinin **AI ile 1/50 maliyetli
-versiyonu** — ama statik horoscope'tan 100x daha kişisel.
+versiyonu**: ama statik horoscope'tan 100x daha kişisel.
 
 **Neden viral olur:** Sosyal medyada "Bu yapay zeka beni nasıl bu kadar
 iyi tanıyor" reaction video'ları. TikTok'ta `#CosmicMirror` formatı:
@@ -128,14 +128,14 @@ doluyor. Anthropic Claude'un derinliği + voice + spiritüel ton = yüksek
 duygusal yoğunluk = paylaşma.
 
 **Teknik uygulama:**
-- Hafta 1-2: Edge function `supabase/functions/cosmic-mirror/` — Claude
+- Hafta 1-2: Edge function `supabase/functions/cosmic-mirror/`: Claude
   sonnet-4-6 + prompt caching (user system prompt = tüm doğum verisi +
   son 4 seans özeti).
 - Hafta 3: ElevenLabs TTS entegrasyonu (Türkçe + İngilizce ses kütüphanesi,
   3 voice persona: "Pleiadyalı dişil", "Arkturian erkek", "Andromedan nötr").
 - Hafta 4: Audio player UI + waveform visualizer + transcript.
 - Hafta 5: Whisper STT ile sesli soru (premium tier 2).
-- Hafta 6: Session memory tablosu (`mirror_sessions`) — Claude'a
+- Hafta 6: Session memory tablosu (`mirror_sessions`): Claude'a
   geçmiş sessionların özeti yedirilir.
 
 **KPI:** Premium dönüşüm %3 → %9; premium D90 retention %38; her session
@@ -143,7 +143,7 @@ sonrası NPS 60+.
 
 ---
 
-## 4. Faz 1 (Ay 1-3) — Foundation & Retention
+## 4. Faz 1 (Ay 1-3): Foundation & Retention
 
 | # | Özellik | Kullanıcı Problemi | Çözüm | Kabul Kriteri | Effort | Pri |
 |---|---|---|---|---|---|---|
@@ -164,14 +164,14 @@ sonrası NPS 60+.
 
 ---
 
-## 5. Faz 2 (Ay 4-6) — Viral Loops & Social
+## 5. Faz 2 (Ay 4-6): Viral Loops & Social
 
 ### 5.1 Friend Sync / Compatibility ("Soul Match")
 
 **The Pattern + Co-Star karşı atak.** Üç katmanlı eşleşme:
 - **Astro Synastry:** klasik gezegen aspektleri, ev örtüşmeleri
 - **HD Composite:** iki bodygraph'tan oluşan ortak harita (tanımlı/açık merkezler)
-- **Galactic Lineage Resonance:** Differentiator 3.1'in ikinci kullanım alanı —
+- **Galactic Lineage Resonance:** Differentiator 3.1'in ikinci kullanım alanı, 
   iki kişinin lineage blend'i birbirini ne kadar besler
 
 **Akış:**
@@ -184,11 +184,11 @@ sonrası NPS 60+.
 
 ### 5.2 UGC Mekanikleri
 
-- **"Lineage of the Day" feed** — kullanıcılar opt-in ile lineage'larını
+- **"Lineage of the Day" feed**: kullanıcılar opt-in ile lineage'larını
   anonim feed'e gönderir; her gün en yaratıcı paylaşımlar uygulamada öne çıkar.
-- **Karne remix** — kullanıcı paylaştığı karneye AR filtre veya custom rengi
+- **Karne remix**: kullanıcı paylaştığı karneye AR filtre veya custom rengi
   ekleyebilir (Picsart-style mini editor).
-- **Quote cards** — kullanıcının kendi narrative'inden seçtiği bir paragrafı
+- **Quote cards**: kullanıcının kendi narrative'inden seçtiği bir paragrafı
   9:16 stylized card olarak export.
 
 ### 5.3 Referral Program ("Cosmic Kin")
@@ -199,15 +199,15 @@ sonrası NPS 60+.
 
 ### 5.4 K-factor 0.5+ Getirebilecek 3 Mekanik
 
-1. **Soul Match çift davet** (5.1) — her match = 0.8 marjinal kullanıcı
-2. **Yıldız Irkı Reveal Reels** — TikTok'ta "Don't tell me my lineage, guess
+1. **Soul Match çift davet** (5.1): her match = 0.8 marjinal kullanıcı
+2. **Yıldız Irkı Reveal Reels**: TikTok'ta "Don't tell me my lineage, guess
    it" challenge; uygulamadan otomatik 15sn reveal video export
-3. **Mission Streak share-out** — 7/14/30 gün streak bozulduğunda VEYA milestone'da
+3. **Mission Streak share-out**: 7/14/30 gün streak bozulduğunda VEYA milestone'da
    otomatik paylaşım önerisi (Strava-style)
 
 ---
 
-## 6. Faz 3 (Ay 7-9) — Premium Depth
+## 6. Faz 3 (Ay 7-9): Premium Depth
 
 ### 6.1 AI Soul Chat (Cosmic Mirror v2)
 
@@ -234,18 +234,18 @@ Saatini bilmeyen kullanıcılar için. Premium feature ($14.99 tek seferlik):
 `PREMIUM_ROADMAP.md`'deki Relationship Sync genişletilir:
 - Composite chart (iki haritanın ortası)
 - Davison chart (ortak zaman/yer)
-- HD Penta (3-5 kişilik grup dinamiği — Faz 4 hazırlığı)
+- HD Penta (3-5 kişilik grup dinamiği, Faz 4 hazırlığı)
 
 ### 6.5 Yıllık Döngü Dashboard
 
 Solar Return SKU'sunun günlük UI'ı:
-- 12 ay tema haritası (Q1: ilişki, Q2: kariyer vb. — Kişisel Yıl + Solar Return'den)
+- 12 ay tema haritası (Q1: ilişki, Q2: kariyer vb. Kişisel Yıl + Solar Return'den)
 - Her ayın "büyük transit"i (Jupiter/Saturn/Uranus dış transitleri vurgulu)
-- Aylık check-in: "Bu ay nasıl gitti?" — kullanıcı 1-5 oy verir, AI ayarlanır
+- Aylık check-in: "Bu ay nasıl gitti?": kullanıcı 1-5 oy verir, AI ayarlanır
 
 ---
 
-## 7. Faz 4 (Ay 10-12) — Platform & Ecosystem
+## 7. Faz 4 (Ay 10-12): Platform & Ecosystem
 
 ### 7.1 iOS Native App (Expo Workspace)
 
@@ -268,7 +268,7 @@ Solar Return SKU'sunun günlük UI'ı:
 **Geçiş stratejisi:**
 - Hafta 1-2: pnpm workspaces + Turborepo kurulum
 - Hafta 3-4: `lib/` → `packages/core/` taşı; web import path'leri güncelle
-- Hafta 5-8: Expo app shell — auth, birth form, karne render (react-native-svg)
+- Hafta 5-8: Expo app shell: auth, birth form, karne render (react-native-svg)
 - Hafta 9-10: Native paylaşım (`expo-sharing` + `react-native-view-shot`),
   push (`expo-notifications`)
 - Hafta 11-12: App Store submission (TR + US ilk)
@@ -284,7 +284,7 @@ Solar Return SKU'sunun günlük UI'ı:
 
 Sanctuary alternatifi. Önemli farklar:
 - Astrologlar bizim üzerimizden kullanıcı karne PDF'ini görür (preconsult)
-- 30dk session $39 (Sanctuary $59) — biz %25 alırız
+- 30dk session $39 (Sanctuary $59), biz %25 alırız
 - Astrolog onboarding: sertifika + 3 örnek reading + manual approval
 - Hedef: 60 astrolog ay 10'da, 200 astrolog ay 12'de
 
@@ -341,11 +341,11 @@ Sıra: **es → pt-br → de → fr**. Her dil için:
 ### 8.3 Edge Function Geçişi (Faz 1, P0)
 
 `supabase/functions/`:
-- `generate-report/` — tüm karne tipleri (kind paramı)
-- `cosmic-mirror/` — sesli soul chat
-- `lineage-compute/` — lineage hesabı (cache + invalidation)
-- `match-score/` — Soul Match
-- `push-orchestrator/` — günlük cron, transit detect, push fan-out
+- `generate-report/`: tüm karne tipleri (kind paramı)
+- `cosmic-mirror/`: sesli soul chat
+- `lineage-compute/`: lineage hesabı (cache + invalidation)
+- `match-score/`: Soul Match
+- `push-orchestrator/`: günlük cron, transit detect, push fan-out
 
 Tüm istemci sadece Supabase JWT ile çağırır; Anthropic key sadece env'de.
 
@@ -353,13 +353,13 @@ Tüm istemci sadece Supabase JWT ile çağırır; Anthropic key sadece env'de.
 
 **Voice (Faz 3):**
 - ElevenLabs Multilingual v2 ilk tercih (TR + EN + ES + PT desteği iyi)
-- Alternatif: Hume EVI (empathic voice — spiritüel ton için ideal)
+- Alternatif: Hume EVI (empathic voice: spiritüel ton için ideal)
 - 3 SoulProfile voice persona; kullanıcı seçer
 - Maliyet hedefi: session başına <$0.08
 
 **Image gen (Faz 4):**
 - Karne arkaplan kişiselleştirme: Replicate üzerinden SDXL veya Flux
-- Kullanıcının "soul portrait"i — yıldız ırkı + Yükselen burcu birleşimi
+- Kullanıcının "soul portrait"i: yıldız ırkı + Yükselen burcu birleşimi
   ile abstract galaxy portrait (premium feature, $4.99 one-shot)
 - Midjourney API resmi geldiğinde geçiş; şu an Flux Pro öneriliyor
 
@@ -369,7 +369,7 @@ Tüm istemci sadece Supabase JWT ile çağırır; Anthropic key sadece env'de.
 - Kullanıcının her karnesi, her Cosmic Mirror seansı, her mission completion
   özet olarak (max 200 token) kayıt
 - Her yeni AI çağrısında son 10 entry system prompt'a inject
-- Yıllık olarak Claude ile "compact" — eski entry'ler tek bir paragrafa indirgenir
+- Yıllık olarak Claude ile "compact": eski entry'ler tek bir paragrafa indirgenir
 - Privacy: kullanıcı `/data` sayfasından memory'sini görüp silebilir
 
 ---
@@ -379,27 +379,27 @@ Tüm istemci sadece Supabase JWT ile çağırır; Anthropic key sadece env'de.
 ### 9.1 Görsel Kazanma Noktaları
 
 **Rakip pozisyonları:**
-- Co-Star: brutalist beyaz/siyah, sans-serif, sarkastik — Gen Z'ye konuşur
-- The Pattern: warm/yumuşak, kahve/krem — milenyal kadın
-- Sanctuary: lüks koyu mor + altın — premium hissi
-- Stellar: data-viz mavi/cyan — teknik kitle
-- Chani: queer-friendly pastel, yumuşak — niş ama sadık
+- Co-Star: brutalist beyaz/siyah, sans-serif, sarkastik, Gen Z'ye konuşur
+- The Pattern: warm/yumuşak, kahve/krem, milenyal kadın
+- Sanctuary: lüks koyu mor + altın, premium hissi
+- Stellar: data-viz mavi/cyan: teknik kitle
+- Chani: queer-friendly pastel, yumuşak, niş ama sadık
 
-**SoulProfile'ın boş alanı:** "Cosmic awe + sıcak" — derin galaktik koyu zemin
+**SoulProfile'ın boş alanı:** "Cosmic awe + sıcak": derin galaktik koyu zemin
 (siyah değil, koyu indigo + deep violet gradients) + sıcak aurora vurguları
 (coral, gold, soft cyan). **Brutalist değil**, **lüks değil**, **çocuksu değil**.
 **"Gece gökyüzünde ev"** hissi.
 
 ### 9.2 3 Ekran Redesign Önceliği
 
-1. **Welcome (`/`)** — Şu an statik. Hedef: full-bleed animated galaxy
+1. **Welcome (`/`)**: Şu an statik. Hedef: full-bleed animated galaxy
    (Three.js veya Lottie), 3 saniyede tek bir CTA emergence. Hero text:
    "Sen sadece bir burç değilsin." Tek tap → birth.
-2. **Karne (`/report`)** — Şu an tek görsel. Hedef: scroll-driven storytelling
+2. **Karne (`/report`)**: Şu an tek görsel. Hedef: scroll-driven storytelling
    (her bölüm açıldıkça animate); paylaş butonu sticky bottom; "Cosmic Mirror"
    teaser sağ alt sticky.
-3. **Paywall (`/premium`)** — Şu an statik teaser. Hedef: dynamic — kullanıcının
-   lineage'ı ve eksik bölümleri merkezde ("Sen Pleiadyalı'sın — bu hafta
+3. **Paywall (`/premium`)**: Şu an statik teaser. Hedef: dynamic: kullanıcının
+   lineage'ı ve eksik bölümleri merkezde ("Sen Pleiadyalı'sın: bu hafta
    Pleiades'ten 3 transit alıyorsun. Görmek için ↓"); 3 plan card; trial CTA üst.
 
 ### 9.3 Motion Design ve Haptik
@@ -411,15 +411,15 @@ Tüm istemci sadece Supabase JWT ile çağırır; Anthropic key sadece env'de.
 
 ### 9.4 5 Karne Görsel Template
 
-1. **Instagram Story (9:16, 1080×1920):** Mevcut — lineage donut üstte, 3 ana
+1. **Instagram Story (9:16, 1080×1920):** Mevcut: lineage donut üstte, 3 ana
    bölüm orta, QR + URL altta
-2. **Instagram Reel cover (9:16):** Video frame için statik — animasyonlu
+2. **Instagram Reel cover (9:16):** Video frame için statik, animasyonlu
    versiyon (3 saniye loop) hem cover hem in-feed
-3. **Twitter/X card (1200×675):** Yatay — sol yarı kullanıcı fotoğrafı + lineage,
+3. **Twitter/X card (1200×675):** Yatay: sol yarı kullanıcı fotoğrafı + lineage,
    sağ yarı 3 görev özeti
-4. **LinkedIn post (1080×1080 square):** Daha "professional spiritual" — pastel
+4. **LinkedIn post (1080×1080 square):** Daha "professional spiritual": pastel
    palet, daha az emoji, "career mission" vurgulu (HD authority + Yaşam Yolu)
-5. **Print/PDF (A4 portrait):** Premium feature — yüksek çözünürlüklü, fold-out
+5. **Print/PDF (A4 portrait):** Premium feature: yüksek çözünürlüklü, fold-out
    poster formatında; doğum günü hediyesi olarak satılabilir
 
 ---
@@ -434,7 +434,7 @@ ve trial-to-paid conversion. Yapılacaklar:
 - **Soft paywall (Faz 1):** Karne sonunda 3 "kilitli" kartın 1'i kısmen açık
   (3 cümlenin ilk cümlesi görünür). Kullanıcı tap'lerse → trial offer.
 - **Triggered paywall:** Önemli transit (Jupiter house ingress vb.) gerçekleştiğinde
-  push: "Jupiter bugün 7. evine geçti — ilişki haftan açıldı. Detaylı oku →"
+  push: "Jupiter bugün 7. evine geçti: ilişki haftan açıldı. Detaylı oku →"
 - **Trial reminder triple:** Trial gün 5, 6, 7'de farklı mesaj (5: discovery,
   6: FOMO, 7: extension teklifi $1 ile 14 güne uzat)
 - **Win-back:** Churn 7 gün sonrası %50 indirim email + push (3 ay sınırlı)
@@ -466,16 +466,16 @@ karne unlock. **Yeni kullanıcı acquisition kanalı + monetization birleşik.**
 | Trial → Monthly | $14.99 | $44.97 | $179.88 | $195 |
 | Trial → Annual | $79 | $79 | $79 | $98 (renewal %62) |
 | Gift sender | $9.99 | $9.99 | $19.98 | $24 (1.2 hediye/yıl) |
-| **Blended ARPPU/ay** | — | — | — | **$8.20** |
+| **Blended ARPPU/ay** |: |: |: | **$8.20** |
 
 Hesap mantığı: free → trial dönüşüm %12, trial → paid %48, paid 12 ay
 renewal %62, churn ay başı %8.
 
 ### 10.5 Tier Geçişi Optimizasyonu
 
-- Weekly → Monthly: "30 günde 4 kez weekly aldın — Monthly'e geç, %15
+- Weekly → Monthly: "30 günde 4 kez weekly aldın, Monthly'e geç, %15
   tasarruf et" (otomatik in-app prompt)
-- Monthly → Bundle: "Bu ay 12 chat + 4 karne ürettin — Bundle'da Cosmic
+- Monthly → Bundle: "Bu ay 12 chat + 4 karne ürettin, Bundle'da Cosmic
   Mirror ses dahil, $5 fazla, %200 değer"
 - Bundle annual: Bundle aylık 6 ay olduktan sonra annual geçişe %30 indirim
 
@@ -485,29 +485,29 @@ renewal %62, churn ay başı %8.
 
 ### 11.1 D1/D7/D30 Retention için 5 Özellik
 
-1. **D1 — Onboarding completion reward:** Karne üretildikten sonra "Bunu
+1. **D1: Onboarding completion reward:** Karne üretildikten sonra "Bunu
    yarın aç, sana özel bir mesaj olacak" (next-day push = D1 hook)
-2. **D1-D7 — Daily Cosmic Weather:** Açtığında değişen anasayfa kartı
+2. **D1-D7: Daily Cosmic Weather:** Açtığında değişen anasayfa kartı
    (Faz 1 #4); push opsiyonel
-3. **D7 — İlk Soul Mission complete:** 7 günlük ilk mission rozet + lineage
-   evolution (lineage blend %1-2 hafif kayar — "you're becoming")
-4. **D14 — Soul Match invite trigger:** "İlk haftanı tamamladın — bir arkadaşınla
+3. **D7: İlk Soul Mission complete:** 7 günlük ilk mission rozet + lineage
+   evolution (lineage blend %1-2 hafif kayar, "you're becoming")
+4. **D14: Soul Match invite trigger:** "İlk haftanı tamamladın: bir arkadaşınla
    eşleş?" push + in-app modal
-5. **D30 — Aylık karne refresh:** Free kullanıcıya bile "Bu ayki versiyon
-   geldi — neyin değiştiğine bak" (regenerated narrative + Ay fazı kapağı)
+5. **D30: Aylık karne refresh:** Free kullanıcıya bile "Bu ayki versiyon
+   geldi: neyin değiştiğine bak" (regenerated narrative + Ay fazı kapağı)
 
 ### 11.2 Notification Stratejisi
 
 **Topic-based segmentation:**
-- `daily_weather` — opt-in, sabah 8:00 yerel saatte
-- `lunar_cycle` — yeni ay + dolunay (29.5 günde 2)
-- `personal_transit` — kullanıcının kişisel haritasında dış gezegen ingress (
+- `daily_weather`: opt-in, sabah 8:00 yerel saatte
+- `lunar_cycle`: yeni ay + dolunay (29.5 günde 2)
+- `personal_transit`: kullanıcının kişisel haritasında dış gezegen ingress (
   ayda ortalama 2-4)
-- `mercury_retro` — 3 kez/yıl, başlangıç + bitiş
-- `mission` — mission reminder + streak warning
-- `match_activity` — arkadaş eşleşti / mesaj geldi
-- `solar_return` — doğum gününde 7 gün öncesi
-- `monthly_drop` — her ay başı yeni karne hazır
+- `mercury_retro`: 3 kez/yıl, başlangıç + bitiş
+- `mission`: mission reminder + streak warning
+- `match_activity`: arkadaş eşleşti / mesaj geldi
+- `solar_return`: doğum gününde 7 gün öncesi
+- `monthly_drop`: her ay başı yeni karne hazır
 
 **Frekans:** kullanıcı başına ortalama haftada 3-4 push hedef; >5 = churn risk.
 
@@ -540,20 +540,20 @@ Açılış oranı hedef >%32; click >%8.
 
 | # | Risk | Olasılık | Impact | Mitigation |
 |---|---|---|---|---|
-| 1 | **Apple App Store 5.1.1 / sensitive data reddi** — doğum verisi + foto kombinasyonu | Orta | Yüksek | Foto opsiyonel; onboarding'de ayrı consent screen; data minimization; pre-submission TestFlight review |
-| 2 | **Apple Sign-in zorunluluğu (4.8)** — sosyal login varsa | Yüksek (kesin) | Düşük | Faz 4'te iOS submit öncesi Apple Sign-in eklenir; web'de opsiyonel |
-| 3 | **In-app purchase zorunluluğu (3.1.1)** — Stripe web ödeme iOS'ta yasak | Yüksek | Yüksek | Mobile'da RevenueCat + Apple IAP zorunlu; web Stripe ayrı funnel |
-| 4 | **Google Play "deceptive content" — astroloji/HD claim'leri** | Düşük | Orta | "Eğlence amaçlıdır" disclaimer her sayfa; tıbbi/finansal claim YASAK |
-| 5 | **AI hallucination** — Claude yanlış burç/transit yazıyor | Orta | Yüksek | Structured output + post-gen astrological validator (gezegen-burç matrix check); kullanıcı flag butonu |
-| 6 | **Sahte spiritüellik backlash** — TikTok/Reddit kritiği "starseed bilim değil" | Yüksek | Orta | Transparent disclaimer; "explore, don't believe" tone; bilimsel astronomi referansları (gerçek takımyıldız konumları); Chani-style açıklık |
-| 7 | **Veri ihlali — doğum verisi + foto sızıntısı** | Düşük | Çok yüksek | Supabase RLS denetimi 3 ayda bir; HaveIBeenPwned monitor; SOC2 yol haritası Faz 4; foto encryption at-rest; pen-test Ay 9 |
+| 1 | **Apple App Store 5.1.1 / sensitive data reddi**, doğum verisi + foto kombinasyonu | Orta | Yüksek | Foto opsiyonel; onboarding'de ayrı consent screen; data minimization; pre-submission TestFlight review |
+| 2 | **Apple Sign-in zorunluluğu (4.8)**: sosyal login varsa | Yüksek (kesin) | Düşük | Faz 4'te iOS submit öncesi Apple Sign-in eklenir; web'de opsiyonel |
+| 3 | **In-app purchase zorunluluğu (3.1.1)**: Stripe web ödeme iOS'ta yasak | Yüksek | Yüksek | Mobile'da RevenueCat + Apple IAP zorunlu; web Stripe ayrı funnel |
+| 4 | **Google Play "deceptive content": astroloji/HD claim'leri** | Düşük | Orta | "Eğlence amaçlıdır" disclaimer her sayfa; tıbbi/finansal claim YASAK |
+| 5 | **AI hallucination**, Claude yanlış burç/transit yazıyor | Orta | Yüksek | Structured output + post-gen astrological validator (gezegen-burç matrix check); kullanıcı flag butonu |
+| 6 | **Sahte spiritüellik backlash**, TikTok/Reddit kritiği "starseed bilim değil" | Yüksek | Orta | Transparent disclaimer; "explore, don't believe" tone; bilimsel astronomi referansları (gerçek takımyıldız konumları); Chani-style açıklık |
+| 7 | **Veri ihlali, doğum verisi + foto sızıntısı** | Düşük | Çok yüksek | Supabase RLS denetimi 3 ayda bir; HaveIBeenPwned monitor; SOC2 yol haritası Faz 4; foto encryption at-rest; pen-test Ay 9 |
 | 8 | **Anthropic API outage / fiyat artışı** | Orta | Yüksek | Multi-provider fallback (OpenAI GPT-4o veya Mistral Large); cache TTL agresif; fallback static narrative templates |
 | 9 | **The Pattern bizim lineage özelliğini kopyalar** | Orta | Orta | İlk pazara çıkış + brand association ("lineage = SoulProfile"); patent araştırması (US design patent friend matching görseli) |
-| 10 | **Co-Star friend graph'a derin yatırım yapar** | Yüksek | Orta | Bizim differansiyel HD + lineage; pure social değil — "depth, not feed" pozisyonu |
-| 11 | **Influencer reputation risk** — partner astrologu skandala karışır | Orta | Düşük | Sözleşme moral clause; kademe kademe spend; mid-tier dağıtım |
-| 12 | **TR ekonomik volatilite — USD pricing dengeleyemez** | Yüksek | Düşük | TR pricing TL'de sabit + 3 ayda bir review; PPP adjusted Latam |
+| 10 | **Co-Star friend graph'a derin yatırım yapar** | Yüksek | Orta | Bizim differansiyel HD + lineage; pure social değil: "depth, not feed" pozisyonu |
+| 11 | **Influencer reputation risk**, partner astrologu skandala karışır | Orta | Düşük | Sözleşme moral clause; kademe kademe spend; mid-tier dağıtım |
+| 12 | **TR ekonomik volatilite, USD pricing dengeleyemez** | Yüksek | Düşük | TR pricing TL'de sabit + 3 ayda bir review; PPP adjusted Latam |
 | 13 | **GDPR data subject request volume** | Düşük | Orta | `/data` sayfası self-serve; SLA 30 gün ama hedef 7 gün; automated export |
-| 14 | **ElevenLabs/voice provider TOS — "deepfake" sınırlama** | Düşük | Orta | Kullanıcının kendi sesi ile training yapılmaz (sadece preset voice); compliance check Faz 3 başında |
+| 14 | **ElevenLabs/voice provider TOS, "deepfake" sınırlama** | Düşük | Orta | Kullanıcının kendi sesi ile training yapılmaz (sadece preset voice); compliance check Faz 3 başında |
 
 ---
 
@@ -561,12 +561,12 @@ Açılış oranı hedef >%32; click >%8.
 
 | # | Feature | Özet | Faz | Effort | Impact | Bağımlılık |
 |---|---|---|---|---|---|---|
-| 1 | Supabase auth + cross-device sync | Email/Apple/Google login; profil sync | 1 | M | High | — |
+| 1 | Supabase auth + cross-device sync | Email/Apple/Google login; profil sync | 1 | M | High |, |
 | 2 | Edge function geçişi (Anthropic key güvenliği) | Tüm AI çağrıları Supabase functions üzerinden | 1 | M | High | Supabase setup |
 | 3 | Lineage donut karne v2 | 3 katmanlı galaktik miras (Differentiator 3.1) | 1 | M | High | Galactic engine refactor |
 | 4 | Daily Cosmic Weather kartı + push | Anasayfa günlük transit + Ay fazı | 1 | M | High | Push altyapı |
-| 5 | Push notification altyapısı (OneSignal/Expo) | Topic-based segmentation | 1 | M | High | — |
-| 6 | i18n TR + EN | next-intl + tüm UI + karne narrative dual | 1 | M | High | — |
+| 5 | Push notification altyapısı (OneSignal/Expo) | Topic-based segmentation | 1 | M | High |, |
+| 6 | i18n TR + EN | next-intl + tüm UI + karne narrative dual | 1 | M | High |, |
 | 7 | Karne history + favoriler | `/library` sayfası | 1 | S | Med | Auth |
 | 8 | Account deletion + JSON export | GDPR self-serve | 1 | S | Med | Auth |
 | 9 | Soul Mission tracker + streak | 144 mission, XP, badge (Differentiator 3.2) | 2 | L | High | Auth + push |
@@ -584,7 +584,7 @@ Açılış oranı hedef >%32; click >%8.
 
 ---
 
-## 14. Hedef Metrikler — 12 Aylık North Star
+## 14. Hedef Metrikler: 12 Aylık North Star
 
 ### Genel Yıl Sonu Hedef
 
@@ -630,14 +630,14 @@ Açılış oranı hedef >%32; click >%8.
    tam tersi pozisyondayız: **derin, sıcak, ciddi ama umutlu**. Komedi
    pazarına girersek hem brand tutarsızlığı hem de Co-Star ile direkt
    rekabette ezilme riski. Bir tek istisna: lineage karneleri için "fun
-   facts" mikro-format — ama bu da merak/sevgi tonu, ironi değil.
+   facts" mikro-format: ama bu da merak/sevgi tonu, ironi değil.
 
 2. **Canlı psişik/medyum chat (Nebula modeli).** Nebula bu kategoride
    $30/dk freelance medyum işletiyor. Bu hem etik gri alan (claim'ler
    doğrulanamaz), hem operasyonel ağır (medyum vetting, refund'lar,
    şikayetler), hem brand'imizi düşürür (data-driven spiritual identity
    pozisyonundan kayma). Cosmic Counsel (astrolog marketplace, Faz 4)
-   farklı — gerçek sertifikalı astrologlar, "reading" yapıyorlar,
+   farklı: gerçek sertifikalı astrologlar, "reading" yapıyorlar,
    "psişik mesaj" değil.
 
 3. **Tarot kartı satışı / fiziksel ürün.** "Cosmic kit" kristal/saat/kart/
@@ -648,7 +648,7 @@ Açılış oranı hedef >%32; click >%8.
    chart poster Faz 4'te white-label partner ile test edilebilir.
 
 4. **Social feed / DM / takip sistemi (Instagram-vari içeride).** Co-Star
-   "friend graph"a yatırım yaptı ama içerikli feed'e gitmedi — doğru karar.
+   "friend graph"a yatırım yaptı ama içerikli feed'e gitmedi: doğru karar.
    Biz de sosyal mekaniği **dış platformlara** (Instagram, TikTok) iteceğiz.
    İçeride DM, feed, beğeni olmayacak. Sadece Soul Match karşılıklı görüşme
    (private 1:1). Sebep: içerik moderation devasa ağırlık, ana ürünü

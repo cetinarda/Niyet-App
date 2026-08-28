@@ -28,7 +28,7 @@ let bootstrapped = false;
 async function bootstrap() {
   if (bootstrapped) return;
   bootstrapped = true;
-  // Host dili öncelikli — varsa onu kullan, embed-içi tercihi okuma.
+  // Host dili öncelikli: varsa onu kullan, embed-içi tercihi okuma.
   const host = readHostLang();
   if (host) {
     if (host !== currentLang) { currentLang = host; notify(); }
@@ -47,7 +47,7 @@ async function bootstrap() {
 
 // <html lang> dile eşitlenir: Expo export index.html lang="en" gelir; CSS
 // textTransform:'uppercase' o zaman Türkçe i→I (noktasız) üretir. lang="tr"
-// ile tarayıcı i→İ yapar — tüm uppercase stiller kökten düzelir.
+// ile tarayıcı i→İ yapar, tüm uppercase stiller kökten düzelir.
 function syncDocLang() {
   try { if (typeof document !== 'undefined') document.documentElement.lang = currentLang; } catch {}
 }

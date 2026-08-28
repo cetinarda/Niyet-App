@@ -1,7 +1,7 @@
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
 // Güvenlik notu: origin artık gerçekten reddediliyor (sadece CORS header'ı için
-// değil) ve istemci IP'si Netlify'ın SAHTELENEMEZ platform header'ından okunuyor —
+// değil) ve istemci IP'si Netlify'ın SAHTELENEMEZ platform header'ından okunuyor, 
 // eskiden client-supplied `x-forwarded-for` kullanılıyordu, bu da bir isteğin kendi
 // header'ını sahteleyerek OWNER_IPS eşleşmesini (ve dolayısıyla web'de ücretsiz
 // premium/dev modu) taklit edebilmesi demekti.
@@ -12,7 +12,7 @@ const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capaci
 // katı kontrol kendi sitemizi 403'lüyordu ("Güneş verisi şu an alınamadı").
 // Native'de sorun yoktu: Capacitor `capacitor://localhost` origin'i gönderir.
 // Yeni kural: Origin VARSA beyaz listede olmak zorunda (katılık korunur). Origin
-// YOKSA istek kabul edilir — çünkü tarayıcı cross-site isteğinde Origin'i her
+// YOKSA istek kabul edilir, çünkü tarayıcı cross-site isteğinde Origin'i her
 // zaman gönderir, yani boş origin cross-site bir tarayıcı isteği OLAMAZ.
 // Kötüye kullanım koruması zaten IP başına rate-limit + CDN cache ile sağlanıyor.
 function isAllowedOrigin(origin) {

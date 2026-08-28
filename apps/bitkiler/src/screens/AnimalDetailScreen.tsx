@@ -58,7 +58,7 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
                   appName: 'Sakin Bitkiler', accent: Colors.teal, emoji: stone.emoji, imageUrl: stone.imageUrl,
                   title: stone.name, meta: `${stone.element}${stone.chakra ? ' · ' + stone.chakra : ''}`,
                   body: stone.dailyMessage, cta: moreCta,
-                  fileName: `sakin-${stone.name}.png`, shareText: `${stone.name} — sakin.life`,
+                  fileName: `sakin-${stone.name}.png`, shareText: `${stone.name}: sakin.life`,
                 });
               }}
               hitSlop={12}

@@ -1,12 +1,12 @@
-# App Store Metadata — Sakin
+# App Store Metadata: Sakin
 
 ## Temel Bilgiler
 
 | Alan | Değer |
 |---|---|
 | **Uygulama Adı** | Sakin |
-| **Altyazı (Subtitle — TR)** | Kendini hep hatırla. |
-| **Altyazı (Subtitle — EN)** | Always remember yourself. |
+| **Altyazı (Subtitle: TR)** | Kendini hep hatırla. |
+| **Altyazı (Subtitle: EN)** | Always remember yourself. |
 | **Kategori (Birincil)** | Lifestyle (Yaşam Tarzı) |
 | **Kategori (İkincil)** | Entertainment (Eğlence) |
 | **Yaş Sınıfı** | 4+ |
@@ -15,7 +15,7 @@
 
 ---
 
-## Anahtar Kelimeler (Keywords — max 100 karakter)
+## Anahtar Kelimeler (Keywords: max 100 karakter)
 
 ### Türkçe Keywords (80 karakter)
 ```
@@ -36,16 +36,16 @@ calm,mindfulness,meditation,breathing,chakra,frequency,bird sounds,intention,dai
 | **Model** | Ücretsiz İndirme + IAP (Freemium) |
 | **Fiyat** | Ücretsiz |
 | **Uygulama İçi Satın Alma** | Evet (2 adet) |
-| **Yıllık Abonelik** | $4.99/yıl — `app.sakin.life.yearly` (Auto-Renewable Subscription) |
-| **Ömür Boyu Lisans** | $19.99 — `app.sakin.life.lifetime` (Non-Consumable) |
+| **Yıllık Abonelik** | $4.99/yıl: `app.sakin.life.yearly` (Auto-Renewable Subscription) |
+| **Ömür Boyu Lisans** | $19.99: `app.sakin.life.lifetime` (Non-Consumable) |
 | **Açıklama** | Ücretsiz indirme, premium özelliklere yıllık abonelik veya tek seferlik ömür boyu lisans ile erişim |
 
 ---
 
-## App Store Connect — İnceleme Bilgileri
+## App Store Connect: İnceleme Bilgileri
 
 ### Demo Hesabı
-Gerekmez — uygulama hesap kaydı olmadan kullanılabilir.
+Gerekmez: uygulama hesap kaydı olmadan kullanılabilir.
 
 ### İnceleme Notu
 Bkz. `app-review-notes.md`
@@ -65,7 +65,7 @@ Bkz. `app-review-notes.md`
 
 ## Desteklenen Ekran Yönleri
 
-- Portrait (Dikey) — tek yön
+- Portrait (Dikey): tek yön
 
 ---
 
@@ -79,17 +79,17 @@ Bkz. `app-review-notes.md`
 | iPad Pro 12.9" | 2048 x 2732 px |
 
 ### Önerilen Screenshot Sırası
-1. Giriş ekranı — "Kendini hep hatırla" tagline
-2. Sabah niyeti — kelime seçimi ekranı
-3. Nefes egzersizi — animasyon ekranı
-4. Ses Dalgaları — solfeggio frekansları + kuş sesleri
-5. 22 Çakra Farkındalığı — çakra bağlantı ekranı
-6. İçsel Ayna — AI farkındalık yansıtma ekranı
-7. Bağlantı ekranı — ilerleme ve gün serisi takibi
+1. Giriş ekranı: "Kendini hep hatırla" tagline
+2. Sabah niyeti: kelime seçimi ekranı
+3. Nefes egzersizi: animasyon ekranı
+4. Ses Dalgaları: solfeggio frekansları + kuş sesleri
+5. 22 Çakra Farkındalığı: çakra bağlantı ekranı
+6. İçsel Ayna: AI farkındalık yansıtma ekranı
+7. Bağlantı ekranı: ilerleme ve gün serisi takibi
 
 ---
 
-## App Privacy — Data Types (App Store Connect)
+## App Privacy: Data Types (App Store Connect)
 
 ### Seçilecek Veri Türleri
 

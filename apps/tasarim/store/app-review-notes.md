@@ -12,7 +12,7 @@ Hello, and thank you for reviewing Sakin Tasarım. This note is intentionally sh
 
 ## What the app is
 
-Sakin Tasarım is an on-device reference and journaling tool for the **Human Design** system — a specific body of work created by Ra Uru Hu in the late 1980s. The user types in a date, time and city of birth; the app draws their bodygraph and explains the components (type, inner authority, profile, centers, channels, gates).
+Sakin Tasarım is an on-device reference and journaling tool for the **Human Design** system, a specific body of work created by Ra Uru Hu in the late 1980s. The user types in a date, time and city of birth; the app draws their bodygraph and explains the components (type, inner authority, profile, centers, channels, gates).
 
 ## Why this is not a Guideline 4.3 (Spam) duplicate
 
@@ -26,11 +26,11 @@ Most apps Apple sees in this neighborhood are daily-horoscope, zodiac or "predic
 
 ## Why this is not a Guideline 5.2.5 (Fortune-Telling) violation
 
-The app does not claim to predict the future, reveal destiny, or read fortunes. It does not generate daily/weekly predictions, lucky numbers, lottery picks, gambling outcomes, or romantic-compatibility forecasts. The "weekly reflection" feature is a journaling prompt based on the user's own static chart — it does not forecast events.
+The app does not claim to predict the future, reveal destiny, or read fortunes. It does not generate daily/weekly predictions, lucky numbers, lottery picks, gambling outcomes, or romantic-compatibility forecasts. The "weekly reflection" feature is a journaling prompt based on the user's own static chart: it does not forecast events.
 
 The words "fortune", "predict", "future", "destiny", "fate", "horoscope" appear nowhere in the app's UI, listing copy, keywords or screenshots.
 
-## Guideline 1.4.1 (Physical Harm) — disclaimer
+## Guideline 1.4.1 (Physical Harm): disclaimer
 
 A persistent disclaimer is visible in the app's settings and in the report screens:
 
@@ -39,7 +39,7 @@ A persistent disclaimer is visible in the app's settings and in the report scree
 
 The Terms of Use (https://sakin.life/tasarim/kosullar) repeat the disclaimer.
 
-## Guideline 5.1.1 (Privacy) — zero data collection
+## Guideline 5.1.1 (Privacy): zero data collection
 
 This is the most important point. **No data leaves the device.**
 
@@ -70,7 +70,7 @@ A second sample, if helpful:
 
 ## About the developer
 
-Sakin Tasarım is part of the **sakin.life** ecosystem — a small set of calm, ad-free mobile apps published by cetinarda. Sibling apps share the same engineering posture: on-device first, no tracking, no subscriptions, no upsell.
+Sakin Tasarım is part of the **sakin.life** ecosystem: a small set of calm, ad-free mobile apps published by cetinarda. Sibling apps share the same engineering posture: on-device first, no tracking, no subscriptions, no upsell.
 
 ## Contact
 

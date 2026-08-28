@@ -1,4 +1,4 @@
-// Premium derin analiz — server-side Anthropic + entitlement gate.
+// Premium derin analiz: server-side Anthropic + entitlement gate.
 // Bearer JWT'den user_id okunur, entitlements tablosunda 'premium' kontrol edilir.
 
 import type { GalacticReport } from '@/lib/types';
@@ -35,7 +35,7 @@ type Body = {
 };
 
 export async function POST(request: Request) {
-  // Rate limit önce — entitlement sorgusunu beleş yememek için
+  // Rate limit önce: entitlement sorgusunu beleş yememek için
   const limit = rateLimit(rateKey(request, 'deep-analysis'), 3);
   if (!limit.ok) {
     return corsResponse(
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     );
   }
 
-  // Entitlement gate — auth + premium zorunlu. ANCAK lansman FREE_MODE'unda
+  // Entitlement gate: auth + premium zorunlu. ANCAK lansman FREE_MODE'unda
   // (mağazalara girene kadar her şey ücretsiz) bu gate atlanır; kötüye kullanımı
   // yukarıdaki rate limit sınırlar. NEXT_PUBLIC_FREE_MODE=0 ile eski gate döner.
   const FREE_MODE = process.env.NEXT_PUBLIC_FREE_MODE !== '0';

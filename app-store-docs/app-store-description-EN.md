@@ -1,4 +1,4 @@
-# App Store Description — English
+# App Store Description: English
 
 ## App Name
 Sakin
@@ -19,20 +19,20 @@ Simple, heartfelt tools to return to whenever you need to slow down.
 
 Physical processes transform into a multidimensional experience through conscious codes.
 
-• Breathe — guided breathing (including a one-tap calming breath for hard moments)
+• Breathe: guided breathing (including a one-tap calming breath for hard moments)
 • Set your intention and carry it with you throughout the day
 • Discover your rising sign and birth chart insights
-• A heartfelt Sky Report every day — the day's shared mood, in plain language
+• A heartfelt Sky Report every day, the day's shared mood, in plain language
 • Identify a stone or plant by photo and learn about it
-Meet the Sakin Family — gentle guides, each with its own little world:
-• Sakin Animal — your spirit animal companion
-• Sakin Stones — healing stones and their legends
-• Sakin Plants — healing plants and Anatolian folk stories
-• Sakin Myths — short myths to reflect on
-• Sakin Design — a calm look at your inner blueprint
+Meet the Sakin Family: gentle guides, each with its own little world:
+• Sakin Animal: your spirit animal companion
+• Sakin Stones: healing stones and their legends
+• Sakin Plants: healing plants and Anatolian folk stories
+• Sakin Myths: short myths to reflect on
+• Sakin Design: a calm look at your inner blueprint
 
 A quiet corner to look at yourself with a little more compassion.
-Sakin is a space for reflection and calm — not medical or psychological advice.
+Sakin is a space for reflection and calm, not medical or psychological advice.
 
 Some features are part of Sakin Premium (subscription). You can freely use Sakin's core features.
 

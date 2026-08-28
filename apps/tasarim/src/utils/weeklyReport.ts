@@ -9,7 +9,7 @@ import { LINES, PROFILES } from '../data/profiles';
 import { circuitLabel } from '../data/channels';
 
 // =============================================================
-// ISO hafta — haftalık deterministik rotasyon
+// ISO hafta: haftalık deterministik rotasyon
 // =============================================================
 export function isoWeek(d: Date): { year: number; week: number; index: number } {
   const target = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -37,66 +37,66 @@ function pick<T>(arr: T[], idx: number): T {
 const AURA_COMPATIBILITY: Record<HDType, { gets: string[]; tension: string[]; note: string }> = {
   'Manifestor': {
     gets: [
-      'Jeneratör ve Manifesting Jeneratörler — sarmalayıcı aura senin başlatma kıvılcımına yer açar',
-      'Projektör — derin görüsüyle yönünü onaylar (eğer onu davet ediyorsan)',
+      'Jeneratör ve Manifesting Jeneratörler, sarmalayıcı aura senin başlatma kıvılcımına yer açar',
+      'Projektör: derin görüsüyle yönünü onaylar (eğer onu davet ediyorsan)',
       'Sınırına saygı duyan, "neden?" demeden bildirim alabilen yetişkin tipler',
     ],
     tension: [
-      'Başka bir Manifestor — iki itici aura, alan kavgası kaçınılmaz',
+      'Başka bir Manifestor: iki itici aura, alan kavgası kaçınılmaz',
       'Seni kontrol etmeye çalışan ya da izin isteten çevre',
-      'Sınırlanmaktan çok hızlı tetiklenen Reflektör — aurasındaki itme yansır',
+      'Sınırlanmaktan çok hızlı tetiklenen Reflektör, aurasındaki itme yansır',
     ],
     note: 'Aurası karşıdakini iter; bilgilendirme aurayı yumuşatır.',
   },
   'Jeneratör': {
     gets: [
-      'Diğer Jeneratör/MG — paralel motorlar; iki sakral aynı işe verirse muazzam üretim çıkar',
-      'Projektör — sakral yanıtını okur ve doğru soruyu sorar',
+      'Diğer Jeneratör/MG: paralel motorlar; iki sakral aynı işe verirse muazzam üretim çıkar',
+      'Projektör: sakral yanıtını okur ve doğru soruyu sorar',
       'Sözünü tutan, "asıl ne istiyorsun?" diye sorabilen insanlar',
     ],
     tension: [
       'Sana açık uçlu sorular soran ve evet/hayır verme alanı bırakmayan kişiler',
       'Sevmediğin işe seni iten zayıf sınırlı arkadaşlar',
-      'Hayal kırıklığını tetikleyen "fikirlerine kapılan" kişiler — sakral değil, kafa bağlantısı kurar',
+      'Hayal kırıklığını tetikleyen "fikirlerine kapılan" kişiler: sakral değil, kafa bağlantısı kurar',
     ],
     note: 'Aurası sarmalayıcı; insanları içine alır, doyurmak için değil yanıtlamak için.',
   },
   'Manifesting Jeneratör': {
     gets: [
-      'Jeneratörler — paralel ritim',
-      'Hızını kabul eden Projektör — sana doğru çağrıyı yapar',
+      'Jeneratörler: paralel ritim',
+      'Hızını kabul eden Projektör: sana doğru çağrıyı yapar',
       'Çok yönlülüğünü hafiflik olarak gören insanlar',
     ],
     tension: [
-      'Tek odaklı, "şunu bitir önce" diyenler — atlama hediyesini görmeyenler',
-      'Bilgilendirilmediği için "neden bana sormadın?" diyen yakınlar — bildirme stratejini atlama',
+      'Tek odaklı, "şunu bitir önce" diyenler: atlama hediyesini görmeyenler',
+      'Bilgilendirilmediği için "neden bana sormadın?" diyen yakınlar: bildirme stratejini atlama',
       'Sana yavaşlaman gerektiğini söyleyen kişiler',
     ],
     note: 'Sarmalayıcı aura + manifestasyon enerjisi; bildirim aurayı yumuşatır.',
   },
   'Projektör': {
     gets: [
-      'Jeneratör ve Manifesting Jeneratör — aurasından doğal olarak beslenirsin; yakınında dolarsın',
+      'Jeneratör ve Manifesting Jeneratör: aurasından doğal olarak beslenirsin; yakınında dolarsın',
       'Senin görüşünü davet eden, ne yapacağını sormayan kişiler',
-      'Senin enerjisel sınırlarına saygı duyan yetişkinler — kalabalıktan korumak isteyenler',
+      'Senin enerjisel sınırlarına saygı duyan yetişkinler, kalabalıktan korumak isteyenler',
     ],
     tension: [
-      'Başka bir Projektör — iki yönlendirici, "kim kimi davet edecek?" gerilimi',
-      'Manifestor — itici aurası seni "şimdi mi sormalıyım?" gerilimine sokar',
-      'Davet etmediği halde tavsiye almaya gelen tipler — acılık tetikleyici',
+      'Başka bir Projektör: iki yönlendirici, "kim kimi davet edecek?" gerilimi',
+      'Manifestor: itici aurası seni "şimdi mi sormalıyım?" gerilimine sokar',
+      'Davet etmediği halde tavsiye almaya gelen tipler, acılık tetikleyici',
     ],
     note: 'Aurası odaklı ve nüfuz edici; karşındakini derinlemesine okur. Bu görü ancak davet edildiğinde değer kazanır.',
   },
   'Reflektör': {
     gets: [
-      'Sağlıklı, kendi merkezinde duran insanlar — onlar sende parlar',
+      'Sağlıklı, kendi merkezinde duran insanlar, onlar sende parlar',
       'Seni karar için sıkıştırmayan, 28 günü beklemene izin veren sevdikler',
-      'Çeşitli auralara sahip dengeli topluluklar — tek bir enerjiye yapışıp kalmayan',
+      'Çeşitli auralara sahip dengeli topluluklar, tek bir enerjiye yapışıp kalmayan',
     ],
     tension: [
-      'Yoğun, baskıcı aurada olan bir tek kişiyle uzun temas — örnekler ve aşar',
+      'Yoğun, baskıcı aurada olan bir tek kişiyle uzun temas, örnekler ve aşar',
       'Kararını hızlandırmaya çalışan, "şimdi söyle" diyen insanlar',
-      'Sağlıksız ortam (mekan, oda, ev) — her şeyden önce mekan',
+      'Sağlıksız ortam (mekan, oda, ev), her şeyden önce mekan',
     ],
     note: 'Aurası örnekleyici ve geçirgen; çevresinin enerjisini içine alır ve aynalar.',
   },
@@ -108,44 +108,44 @@ const AURA_COMPATIBILITY: Record<HDType, { gets: string[]; tension: string[]; no
 const BODY_LISTENING: Record<AuthorityKey, { howToFeel: string; whereInBody: string; redFlag: string; reset: string }> = {
   emotional: {
     howToFeel: 'Karar karşısında anında "evet" / "hayır" deme; birkaç gün boyunca aynı kararı farklı duygu durumlarında hisset.',
-    whereInBody: 'Karın boşluğu, göğüs ortası — duygu dalgasının yükseldiği ve indiği yerler. Solar plexus bölgesinde ağırlık ya da hafifleme.',
+    whereInBody: 'Karın boşluğu, göğüs ortası, duygu dalgasının yükseldiği ve indiği yerler. Solar plexus bölgesinde ağırlık ya da hafifleme.',
     redFlag: 'Heyecanın doruğunda "evet" dediğin ya da çöküntünün dibinde "asla" dediğin anlar.',
-    reset: 'Yatakta uyu, dalga durulur. Sabah aynı karara bak — duygun aynıysa o doğru karardır.',
+    reset: 'Yatakta uyu, dalga durulur. Sabah aynı karara bak: duygun aynıysa o doğru karardır.',
   },
   sacral: {
     howToFeel: 'Karşına çıkan şeye anlık beden tepkin: göğüsten "uh-huh" (yukarı/açılan) ya da "un-uh" (aşağı/kapanan) sesi.',
-    whereInBody: 'Karın derinleri ve göğüs alt bölgesi — sakral seste duyulur, hatta sesli çıkar.',
+    whereInBody: 'Karın derinleri ve göğüs alt bölgesi, sakral seste duyulur, hatta sesli çıkar.',
     redFlag: 'Beynin gerekçeleri sakral yanıtın yerini aldıysa, yorgunluk gelir.',
     reset: 'Bedenini gerçek anlamda yor; akşam yatmadan önce sakral boşalsın. Yanıtın gelmediğinde "şu an karar yok" demek meşrudur.',
   },
   splenic: {
     howToFeel: 'Anlık, sessiz, tekrar etmez sezgi. İlk fısıltıyı yakala; ikinciye gelmez.',
-    whereInBody: 'Dalakta (sol kaburga altı) hafif gerilim ya da gevşeme, koltuk altı/lenf bölgesinde ürperti, kulakta hafif çınlama, burunda ani bir koku şüphesi — sezginin somut bedensel sinyalleri.',
+    whereInBody: 'Dalakta (sol kaburga altı) hafif gerilim ya da gevşeme, koltuk altı/lenf bölgesinde ürperti, kulakta hafif çınlama, burunda ani bir koku şüphesi, sezginin somut bedensel sinyalleri.',
     redFlag: 'Gürültü, kalabalık, çok kararı bir araya getirmek splenik sesi bastırır. Geç fark ettiğin "ben aslında biliyordum" pişmanlıkları.',
-    reset: 'Sessiz mekana çık. Tek bir karara odaklan. İlk içsel sinyal geldiğinde derhal harekete geç — ertelersen kaybolur.',
+    reset: 'Sessiz mekana çık. Tek bir karara odaklan. İlk içsel sinyal geldiğinde derhal harekete geç, ertelersen kaybolur.',
   },
   ego: {
     howToFeel: 'Kararı duyarken kalbinden ne çıkıyor: "ben istiyor muyum?" sorusuna sesli yanıt ver, ağzından çıkana kulak ver.',
-    whereInBody: 'Göğüs orta — kalp ve timus bölgesi. İstemediğinde göğüste daralma; istediğinde genişleme.',
+    whereInBody: 'Göğüs orta: kalp ve timus bölgesi. İstemediğinde göğüste daralma; istediğinde genişleme.',
     redFlag: 'Başkasını mutlu etmek için söz vermek; sonra kalbinde "ah keşke" yorgunluğu.',
     reset: 'Sözünü tutmamayı bir kez göze al. Kalp kası dinlenmek de ister.',
   },
   'self-projected': {
     howToFeel: 'Güvendiğin bir dostla yüksek sesle konuş. Konuşurken sesinin tonu, hızı ve nefes ritmindeki değişimi gözle.',
-    whereInBody: 'Boğaz ve ses telleri — yanlış yönde konuşurken sıkışma; doğru yönde rahatlama ve genişleme.',
+    whereInBody: 'Boğaz ve ses telleri: yanlış yönde konuşurken sıkışma; doğru yönde rahatlama ve genişleme.',
     redFlag: 'İçinden konuşmakla yetinmek; ses çıkmadan karar vermek.',
     reset: 'Bir dostuna telefon aç. Karşının tavsiye vermesini değil, dinlemesini iste. Senin sesin yetkidir.',
   },
   mental: {
     howToFeel: 'Tek başına karar verme; doğru insan + doğru mekan kombinasyonunda netliğin açılır.',
-    whereInBody: 'Sabit bedensel sinyal yok — bu yüzden bedensel değil, çevresel okumayı öğreneceksin.',
+    whereInBody: 'Sabit bedensel sinyal yok: bu yüzden bedensel değil, çevresel okumayı öğreneceksin.',
     redFlag: 'Tek başına oturup zihnin saatlerce dönüyorsa karar oradan çıkmaz.',
-    reset: 'Birden fazla güvendiğin sesle aynı konuyu tekrar tekrar konuş. Mekanı değiştir — banka, parka, sahile götür kararı.',
+    reset: 'Birden fazla güvendiğin sesle aynı konuyu tekrar tekrar konuş. Mekanı değiştir: banka, parka, sahile götür kararı.',
   },
   lunar: {
     howToFeel: '28 günlük tam ay döngüsü boyunca kararı farklı insanlarla, farklı günlerde, farklı ruh hallerinde gözden geçir.',
     whereInBody: 'Tüm beden bir gün bir merkeze daha duyarlı olur. Ay döngüsünün her gününü ayrı bir merkezin laboratuvarı olarak gör.',
-    redFlag: 'Aceleci karar — döngüden önce verilen "evet" derin yorgunluk yaratır.',
+    redFlag: 'Aceleci karar: döngüden önce verilen "evet" derin yorgunluk yaratır.',
     reset: 'Doğru insanlarla, doğru mekanda 28 gün bekle. Sürpriz ve hayret hissi doğru yöne işarettir.',
   },
   none: {
@@ -164,7 +164,7 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
       'Yalnızlık aşırı tatlı geliyorsa: insanlardan iyice koptun',
     ],
     resets: [
-      'Bir karar almadan önce 3 kişiye kısaca bilgi ver — izin değil, haber',
+      'Bir karar almadan önce 3 kişiye kısaca bilgi ver, izin değil, haber',
       'Tek başına 30 dakika fiziksel hareket: koşu, dans, yürüyüş',
       'Manifestorlar dinlenmesini bilmez; günde 1 saat hiçbir şey yapmama',
     ],
@@ -176,7 +176,7 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
       'Beden ağrıları artıyorsa: sakralin tüketici şekilde harcanıyor',
     ],
     resets: [
-      'Akşam 30 dk fiziksel boşalma — yorgun ama dolu uyumak',
+      'Akşam 30 dk fiziksel boşalma, yorgun ama dolu uyumak',
       'Yarın bir karar karşısında sözcüklerle değil, sesle yanıt ver: "uh-huh" / "un-uh"',
       'Sevmediğin bir görevi 1 hafta bırak; ne oluyor?',
     ],
@@ -201,9 +201,9 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
       'Tanınmama hissi: yanlış kalabalıkta bulunuyorsun',
     ],
     resets: [
-      'Günde 30 dk yalnız dekompresyon — telefon yok, ses yok',
+      'Günde 30 dk yalnız dekompresyon, telefon yok, ses yok',
       'Erken yatağa git; gün biterken auranı boşalt',
-      'Yarın çağrılmadığın bir konuya görüş bildirme — sadece izle',
+      'Yarın çağrılmadığın bir konuya görüş bildirme, sadece izle',
       'Davetin geldiği yerlere yönel; gelmediği yerlerden kibarca çekil',
     ],
   },
@@ -214,7 +214,7 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
       'Karar baskısı altında bunalma: 28 günü atlamak istiyorsun',
     ],
     resets: [
-      'Tek başına, kendi mekanında 24 saat — örneklediğin enerjiden arın',
+      'Tek başına, kendi mekanında 24 saat, örneklediğin enerjiden arın',
       'Doğa, su, açık alan; yerin sallandığında doğa sabitler',
       'Ay döngünü bir takvime düş; her gün hangi merkeze duyarlı olduğunu işaretle',
     ],
@@ -230,66 +230,66 @@ const TYPE_WARNINGS: Record<HDType, { signs: string[]; resets: string[] }> = {
 const AURA_COMPATIBILITY_EN: Record<HDType, { gets: string[]; tension: string[]; note: string }> = {
   'Manifestor': {
     gets: [
-      'Generators and Manifesting Generators — their enveloping aura makes room for your spark of initiation',
-      'Projectors — their deep seeing confirms your direction (if you invite them)',
+      'Generators and Manifesting Generators, their enveloping aura makes room for your spark of initiation',
+      'Projectors: their deep seeing confirms your direction (if you invite them)',
       'Grown-ups who respect your boundary and can receive an announcement without asking "why?"',
     ],
     tension: [
-      'Another Manifestor — two repelling auras; a fight over space is inevitable',
+      'Another Manifestor: two repelling auras; a fight over space is inevitable',
       'People who try to control you or make you ask permission',
-      'A Reflector who gets triggered quickly by being confined — the push in your aura reflects back',
+      'A Reflector who gets triggered quickly by being confined, the push in your aura reflects back',
     ],
     note: 'Your aura repels; informing others softens it.',
   },
   'Jeneratör': {
     gets: [
-      'Other Generators / MGs — parallel engines; two sacrals on one task produce enormous output',
-      'Projectors — they read your sacral response and ask the right question',
+      'Other Generators / MGs: parallel engines; two sacrals on one task produce enormous output',
+      'Projectors: they read your sacral response and ask the right question',
       'People who keep their word and can ask "what do you actually want?"',
     ],
     tension: [
       'People who ask you open-ended questions and leave no room for a yes/no',
       'Friends with weak boundaries who push you into work you do not love',
-      'People who "get swept up in your ideas" — they connect to your head, not your sacral, and trigger frustration',
+      'People who "get swept up in your ideas": they connect to your head, not your sacral, and trigger frustration',
     ],
-    note: 'Your aura is enveloping; it draws people in — not to satisfy them, but to respond.',
+    note: 'Your aura is enveloping; it draws people in: not to satisfy them, but to respond.',
   },
   'Manifesting Jeneratör': {
     gets: [
-      'Generators — a parallel rhythm',
-      'A Projector who accepts your speed — they make the right call to you',
+      'Generators: a parallel rhythm',
+      'A Projector who accepts your speed, they make the right call to you',
       'People who see your many-sidedness as lightness',
     ],
     tension: [
-      'Single-focus people who say "finish this first" — they do not see the gift of skipping',
-      'People close to you asking "why didn\'t you tell me?" because they were not informed — do not skip informing',
+      'Single-focus people who say "finish this first": they do not see the gift of skipping',
+      'People close to you asking "why didn\'t you tell me?" because they were not informed, do not skip informing',
       'People who tell you that you need to slow down',
     ],
     note: 'An enveloping aura plus manifesting energy; informing softens the aura.',
   },
   'Projektör': {
     gets: [
-      'Generators and Manifesting Generators — you naturally feed on their aura; you fill up near them',
+      'Generators and Manifesting Generators, you naturally feed on their aura; you fill up near them',
       'People who invite your insight instead of asking you what to do',
       'Grown-ups who respect your energetic limits and want to protect you from crowds',
     ],
     tension: [
-      'Another Projector — two guides, and the tension of "who invites whom?"',
-      'Manifestors — their repelling aura puts you in the tension of "should I ask now?"',
-      'People who come for advice without inviting you — a bitterness trigger',
+      'Another Projector: two guides, and the tension of "who invites whom?"',
+      'Manifestors: their repelling aura puts you in the tension of "should I ask now?"',
+      'People who come for advice without inviting you, a bitterness trigger',
     ],
     note: 'Your aura is focused and penetrating; it reads the other person deeply. That seeing only gains value when invited.',
   },
   'Reflektör': {
     gets: [
-      'Healthy people who stand in their own centre — they shine in you',
+      'Healthy people who stand in their own centre, they shine in you',
       'Loved ones who do not press you for a decision and let you wait the 28 days',
-      'Balanced communities with varied auras — ones you do not get stuck to',
+      'Balanced communities with varied auras, ones you do not get stuck to',
     ],
     tension: [
-      'Long contact with a single person of intense, overbearing aura — you sample it and it takes over',
+      'Long contact with a single person of intense, overbearing aura, you sample it and it takes over',
       'People who try to hurry your decision and say "tell me now"',
-      'An unhealthy environment (place, room, home) — place comes before everything',
+      'An unhealthy environment (place, room, home), place comes before everything',
     ],
     note: 'Your aura is sampling and permeable; it takes in the energy around you and mirrors it back.',
   },
@@ -298,44 +298,44 @@ const AURA_COMPATIBILITY_EN: Record<HDType, { gets: string[]; tension: string[];
 const BODY_LISTENING_EN: Record<AuthorityKey, { howToFeel: string; whereInBody: string; redFlag: string; reset: string }> = {
   emotional: {
     howToFeel: 'Do not say an instant "yes" or "no" to a decision; feel the same decision over several days in different emotional states.',
-    whereInBody: 'The belly and the middle of the chest — where the emotional wave rises and falls. Heaviness or lightening around the solar plexus.',
+    whereInBody: 'The belly and the middle of the chest, where the emotional wave rises and falls. Heaviness or lightening around the solar plexus.',
     redFlag: 'The moments you say "yes" at the peak of excitement, or "never" at the bottom of a low.',
-    reset: 'Sleep on it; the wave settles. Look at the same decision in the morning — if the feeling is the same, it is the right one.',
+    reset: 'Sleep on it; the wave settles. Look at the same decision in the morning, if the feeling is the same, it is the right one.',
   },
   sacral: {
     howToFeel: 'Your immediate body response to what is in front of you: an "uh-huh" (rising, opening) or "un-uh" (falling, closing) sound from the chest.',
-    whereInBody: 'Deep in the belly and the lower chest — it is heard in the sacral sound, and it even comes out loud.',
+    whereInBody: 'Deep in the belly and the lower chest, it is heard in the sacral sound, and it even comes out loud.',
     redFlag: 'When your mind\'s reasoning replaces the sacral response, exhaustion follows.',
     reset: 'Truly tire your body; let the sacral empty before bed. When no response comes, "no decision right now" is a legitimate answer.',
   },
   splenic: {
     howToFeel: 'An instant, quiet intuition that does not repeat. Catch the first whisper; there is no second one.',
-    whereInBody: 'A slight tension or release in the spleen (under the left ribs), a shiver in the armpit/lymph area, a faint ringing in the ear, a sudden hint of smell — the concrete bodily signals of intuition.',
+    whereInBody: 'A slight tension or release in the spleen (under the left ribs), a shiver in the armpit/lymph area, a faint ringing in the ear, a sudden hint of smell, the concrete bodily signals of intuition.',
     redFlag: 'Noise, crowds and stacking many decisions together drown out the splenic voice. The late regret of "I actually knew".',
-    reset: 'Get to a quiet place. Focus on one decision. When the first inner signal comes, act at once — if you delay, it is gone.',
+    reset: 'Get to a quiet place. Focus on one decision. When the first inner signal comes, act at once, if you delay, it is gone.',
   },
   ego: {
     howToFeel: 'Listen to what comes from your heart as you hear the decision: answer "do I want this?" out loud and listen to what leaves your mouth.',
-    whereInBody: 'Mid-chest — the heart and thymus area. Tightening in the chest when you do not want it; widening when you do.',
+    whereInBody: 'Mid-chest: the heart and thymus area. Tightening in the chest when you do not want it; widening when you do.',
     redFlag: 'Promising in order to make someone else happy; then the "I wish I hadn\'t" fatigue in your heart.',
     reset: 'Risk breaking a promise once. The heart muscle also wants rest.',
   },
   'self-projected': {
     howToFeel: 'Speak out loud with a friend you trust. As you speak, watch the shifts in your tone, your pace and the rhythm of your breath.',
-    whereInBody: 'The throat and vocal cords — tightening when you speak in the wrong direction; ease and widening in the right one.',
+    whereInBody: 'The throat and vocal cords, tightening when you speak in the wrong direction; ease and widening in the right one.',
     redFlag: 'Settling for talking inside your head; deciding without a sound leaving you.',
     reset: 'Call a friend. Ask them to listen rather than advise. Your voice is the authority.',
   },
   mental: {
     howToFeel: 'Do not decide alone; your clarity opens in the right combination of the right people and the right place.',
-    whereInBody: 'There is no fixed bodily signal — which is why you will learn to read the environment rather than the body.',
+    whereInBody: 'There is no fixed bodily signal, which is why you will learn to read the environment rather than the body.',
     redFlag: 'If you sit alone and your mind spins for hours, the decision will not come from there.',
-    reset: 'Talk the same subject through, again and again, with more than one voice you trust. Change the place — take the decision to a bench, a park, the shore.',
+    reset: 'Talk the same subject through, again and again, with more than one voice you trust. Change the place: take the decision to a bench, a park, the shore.',
   },
   lunar: {
     howToFeel: 'Review the decision across a full 28-day lunar cycle, with different people, on different days, in different moods.',
     whereInBody: 'Each day the whole body becomes more sensitive to one centre. See every day of the lunar cycle as the laboratory of a different centre.',
-    redFlag: 'A hasty decision — a "yes" given before the cycle creates deep fatigue.',
+    redFlag: 'A hasty decision: a "yes" given before the cycle creates deep fatigue.',
     reset: 'Wait the 28 days with the right people, in the right place. A feeling of surprise and wonder points the right way.',
   },
   none: { howToFeel: '', whereInBody: '', redFlag: '', reset: '' },
@@ -349,7 +349,7 @@ const TYPE_WARNINGS_EN: Record<HDType, { signs: string[]; resets: string[] }> = 
       'If solitude tastes far too sweet: you have cut away from people entirely',
     ],
     resets: [
-      'Before making a decision, briefly inform three people — not permission, just news',
+      'Before making a decision, briefly inform three people, not permission, just news',
       '30 minutes of physical movement alone: running, dancing, walking',
       'Manifestors do not know how to rest; one hour a day of doing nothing',
     ],
@@ -361,7 +361,7 @@ const TYPE_WARNINGS_EN: Record<HDType, { signs: string[]; resets: string[] }> = 
       'If body aches are increasing: your sacral is being spent in a draining way',
     ],
     resets: [
-      '30 minutes of physical release in the evening — sleep tired but full',
+      '30 minutes of physical release in the evening, sleep tired but full',
       'Tomorrow, answer a decision with sound rather than words: "uh-huh" / "un-uh"',
       'Drop a task you do not love for one week; what happens?',
     ],
@@ -386,9 +386,9 @@ const TYPE_WARNINGS_EN: Record<HDType, { signs: string[]; resets: string[] }> = 
       'Feeling unrecognised: you are in the wrong crowd',
     ],
     resets: [
-      '30 minutes of solo decompression a day — no phone, no sound',
+      '30 minutes of solo decompression a day, no phone, no sound',
       'Go to bed early; empty your aura as the day ends',
-      'Tomorrow, do not give your view on something you were not called to — just watch',
+      'Tomorrow, do not give your view on something you were not called to, just watch',
       'Turn toward the places the invitation comes from; withdraw kindly from the ones it does not',
     ],
   },
@@ -399,7 +399,7 @@ const TYPE_WARNINGS_EN: Record<HDType, { signs: string[]; resets: string[] }> = 
       'Overwhelm under decision pressure: you want to skip the 28 days',
     ],
     resets: [
-      '24 hours alone in your own place — clear the energy you have been sampling',
+      '24 hours alone in your own place, clear the energy you have been sampling',
       'Nature, water, open space; when the ground shakes, nature steadies it',
       'Put your lunar cycle on a calendar; mark which centre you are sensitive to each day',
     ],
@@ -411,7 +411,7 @@ const isEn = () => getLang() === 'en';
 const T_AURA = () => (isEn() ? AURA_COMPATIBILITY_EN : AURA_COMPATIBILITY);
 const T_BODY = () => (isEn() ? BODY_LISTENING_EN : BODY_LISTENING);
 const T_WARN = () => (isEn() ? TYPE_WARNINGS_EN : TYPE_WARNINGS);
-// Kısa iki dilli yardımcı — gövde içindeki serbest cümleler için.
+// Kısa iki dilli yardımcı, gövde içindeki serbest cümleler için.
 const B = (tr: string, en: string) => (isEn() ? en : tr);
 
 // =============================================================
@@ -463,7 +463,7 @@ export interface WeeklyReport {
   practice: string;
   affirmation: string;
 
-  // Senin haritana özel — her hafta gösterilir
+  // Senin haritana özel: her hafta gösterilir
   compatibility: CompatibilityBlock;
   bodyListening: BodyListeningBlock;
   warnings: WarningsBlock;
@@ -474,7 +474,7 @@ export interface WeeklyReport {
 // =============================================================
 export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Date()): WeeklyReport {
   const { year, week, index: weekIndex } = isoWeek(now);
-  // KİŞİSELLEŞTİRME: rotasyon seed'ine harita parmak izi karışır — aynı hafta,
+  // KİŞİSELLEŞTİRME: rotasyon seed'ine harita parmak izi karışır, aynı hafta,
   // farklı haritalar FARKLI tema/dikkat/bırak/pratik görür (eskiden herkese aynıydı).
   const index = weekIndex + (chartHash(chart) % 997);
 
@@ -484,10 +484,10 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   mon.setDate(ref.getDate() - day);
   const sun = new Date(mon);
   sun.setDate(mon.getDate() + 6);
-  // Tarih biçimi 'tr-TR'ye sabitlenmişti → İngilizce modda "12 Oca – 18 Oca".
+  // Tarih biçimi 'tr-TR'ye sabitlenmişti → İngilizce modda "12 Oca - 18 Oca".
   const fmt = (d: Date) =>
     d.toLocaleDateString(isEn() ? 'en-GB' : 'tr-TR', { day: 'numeric', month: 'short' });
-  const weekDates = `${fmt(mon)} – ${fmt(sun)}`;
+  const weekDates = `${fmt(mon)} - ${fmt(sun)}`;
 
   const t = TYPES[chart.type];
   const a = AUTHORITIES[chart.authority];
@@ -523,8 +523,8 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     },
     {
       headline: B('Profil Çizgisi', 'Profile Line'),
-      desc: B(`${chart.profile} — ${personalitySun.line}. ${L(personalityLine,'name')} + ${designSun.line}. ${L(designLine,'name')}. Bu hafta birinin doğal akışına yer aç.`,
-              `${chart.profile} — line ${personalitySun.line} ${L(personalityLine,'name')} + line ${designSun.line} ${L(designLine,'name')}. Make room this week for the natural flow of one of them.`),
+      desc: B(`${chart.profile}: ${personalitySun.line}. ${L(personalityLine,'name')} + ${designSun.line}. ${L(designLine,'name')}. Bu hafta birinin doğal akışına yer aç.`,
+              `${chart.profile}: line ${personalitySun.line} ${L(personalityLine,'name')} + line ${designSun.line} ${L(designLine,'name')}. Make room this week for the natural flow of one of them.`),
     },
     {
       headline: B('Aktif Kanal Spotlight', 'Active Channel Spotlight'),
@@ -538,8 +538,8 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   const attentionPool: ReportItem[] = [
     {
       title: B('Yanlış frekans uyarısı', 'Wrong-frequency warning'),
-      body: B(`${tNotSelf} hissi seni uyandırırsa, bil ki bir yerde stratejini atladın. ${tStrategy} — bu kadar basit.`,
-              `If the feeling of ${lcName(tNotSelf)} wakes you, know that you skipped your strategy somewhere. ${tStrategy} — it is that simple.`),
+      body: B(`${tNotSelf} hissi seni uyandırırsa, bil ki bir yerde stratejini atladın. ${tStrategy}: bu kadar basit.`,
+              `If the feeling of ${lcName(tNotSelf)} wakes you, know that you skipped your strategy somewhere. ${tStrategy}: it is that simple.`),
       micro: B('Yarın sabah uyandığında bir dakika dur: dün hangi an doğru, hangi an yanlış hissettim?',
                'When you wake tomorrow, pause for a minute: which moment yesterday felt right, and which felt wrong?'),
     },
@@ -561,8 +561,8 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
       title: B('Yetki dışına çıkma', 'Stepping outside your authority'),
       body: B(`${aCaution || 'Yetkin dışında karar verdiğinde pişmanlık kaçınılmazdır.'} Bir karar baskısı geldiğinde duracak ve ${lcName(aName)} sesini bekleyecek misin?`,
               `${aCaution || 'When you decide outside your authority, regret is inevitable.'} When decision pressure comes, will you stop and wait for the voice of your ${lcName(aName)}?`),
-      micro: B('Telefonuna "yetkine sor" hatırlatması koy — günde bir kez.',
-               'Set a reminder on your phone that says "ask your authority" — once a day.'),
+      micro: B('Telefonuna "yetkine sor" hatırlatması koy: günde bir kez.',
+               'Set a reminder on your phone that says "ask your authority": once a day.'),
     },
   ];
   const attention = pick(attentionPool, index);
@@ -633,7 +633,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     'Tomorrow, wait 24 hours before saying "yes" to a decision.',
     'Walk for a whole day without holding your phone; watch yourself sampling the energy around you.',
     'Ask someone you love "how are you feeling right now?" and just listen.',
-    'Say a truth this week that you have never said — kindly, but say it.',
+    'Say a truth this week that you have never said, kindly, but say it.',
     'Stand outside for three minutes each morning and look at the sky. Doing nothing else.',
     'For one day, test the question "do I want this?" in place of "I should".',
   ] : [
@@ -641,7 +641,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
     'Yarın bir karar karşısında "evet" demeden önce 24 saat bekle.',
     'Bir gün boyunca cep telefonunu tutmadan yürü; çevrenin enerjisini örneklemeni gözle.',
     'Bir sevdiğine "şu an nasıl hissediyorsun?" diye sor ve sadece dinle.',
-    'Bu hafta hiç söylemediğin bir gerçeği söyle — kibarca, ama söyle.',
+    'Bu hafta hiç söylemediğin bir gerçeği söyle, kibarca, ama söyle.',
     'Her sabah 3 dakika dışarıda durup gökyüzüne bak. Hiçbir şey yapmadan.',
     'Bir gün boyunca "yapmalıyım" yerine "istiyor muyum?" sorusunu test et.',
   ];
@@ -649,15 +649,15 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
 
   const affirmations = isEn() ? [
     `${tSignature} means you are on the right path; ${lcName(tNotSelf)} means stop and "${lcName(tStrategy)}".`,
-    `Your authority is ${lcName(aName)} — trust the nature of your decision, not its speed.`,
+    `Your authority is ${lcName(aName)}: trust the nature of your decision, not its speed.`,
     'What is defined in you is fixed; what is undefined is open to the world. Both places are sacred.',
     `You are ${t.type === 'Reflektör' ? "the community's mirror" : t.type === 'Projektör' ? 'the one who shines when invited' : t.type === 'Manifestor' ? 'the power that initiates' : "life's engine"}.`,
-    `Profile ${chart.profile}: there is no hurry — life is played across six lines.`,
+    `Profile ${chart.profile}: there is no hurry: life is played across six lines.`,
     'You are not like everyone else; you were not designed to be.',
     `Your ${chart.activeChannels.length} channels bring you back to yourself; the rest are guests.`,
   ] : [
     `${t.signature} doğru yoldasın demektir; ${t.notSelf} dur, "${t.strategy.toLocaleLowerCase('tr')}" demektir.`,
-    `Yetkin ${a.name.toLocaleLowerCase('tr')} — kararın hızına değil doğasına güven.`,
+    `Yetkin ${a.name.toLocaleLowerCase('tr')}: kararın hızına değil doğasına güven.`,
     'Tanımlı olan sende sabit, tanımsız olan dünyaya açık. İkisinin de yeri kutsal.',
     `Sen ${t.type === 'Reflektör' ? 'topluluğun aynasısın' : t.type === 'Projektör' ? 'davet edildiğinde parlarsın' : t.type === 'Manifestor' ? 'başlatma gücüsün' : 'yaşamın motorusun'}.`,
     `Profil ${chart.profile}: ne acelesi var, hayat 6 çizgide oynanır.`,
@@ -719,7 +719,7 @@ export function generateWeeklyReport(chart: HumanDesignChart, now: Date = new Da
   };
 
   return {
-    weekLabel: B(`${year} — Hafta ${week}`, `${year} — Week ${week}`),
+    weekLabel: B(`${year}: Hafta ${week}`, `${year}: Week ${week}`),
     weekDates,
     theme: theme.headline,
     themeDesc: theme.desc,

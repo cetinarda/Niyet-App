@@ -1,4 +1,4 @@
-# Sakin Mitler — App Store Submission Guide (Xcode yolu)
+# Sakin Mitler: App Store Submission Guide (Xcode yolu)
 
 Niyet-App ile **aynı manuel Xcode iş akışı**: `expo prebuild` → Xcode Archive → App Store Connect Upload.
 EAS, fastlane veya CI workflow kullanılmaz.
@@ -34,7 +34,7 @@ npm run prebuild        # = expo prebuild --platform ios --clean
 cd ios && pod install && cd ..
 ```
 
-`ios/SakinMitler.xcworkspace` oluşur. **`ios/` klasörü repo'da commit'lidir** (Niyet-App pattern'i) — manuel düzenleme yapma, hep `prebuild`'ten regenerate et.
+`ios/SakinMitler.xcworkspace` oluşur. **`ios/` klasörü repo'da commit'lidir** (Niyet-App pattern'i): manuel düzenleme yapma, hep `prebuild`'ten regenerate et.
 
 ## 3. Xcode'da aç ve archive et
 
@@ -76,7 +76,7 @@ App Store Connect aynı `buildNumber` ile ikinci kez yüklemene izin vermez. Her
 - [ ] App Information → Primary Category: **Lifestyle**, Secondary: **Entertainment** (Health & Fitness ASLA)
 - [ ] App Information → Review Notes: `app-review-notes.md`'den ilgili metin yapıştırıldı
 - [ ] Age Rating: **12+** (Horoscopes/Fortune Telling: Infrequent)
-- [ ] Pricing: **Free** — **In-App Purchases: NONE — No Subscription Group** (Sakin Mitler IAP içermez, bunu açıkça not düş)
+- [ ] Pricing: **Free**: **In-App Purchases: NONE: No Subscription Group** (Sakin Mitler IAP içermez, bunu açıkça not düş)
 - [ ] App Privacy: "Data Not Collected" işaretli (gerçekten local-only)
 - [ ] Privacy Policy URL: `https://sakin.life/privacy` **yayında ve erişilebilir**
 - [ ] Support URL + Marketing URL: `https://sakin.life`
@@ -89,7 +89,7 @@ App Store Connect aynı `buildNumber` ile ikinci kez yüklemene izin vermez. Her
 - [ ] TestFlight'ta build göründü, kendi cihazında en az 1 kez çalıştırıldı
 - [ ] Submit for Review
 
-## 7. Sık Yapılan Hatalar — Önceden Kaç
+## 7. Sık Yapılan Hatalar: Önceden Kaç
 
 | Hata | Sebep | Çözüm |
 |---|---|---|
@@ -100,11 +100,11 @@ App Store Connect aynı `buildNumber` ile ikinci kez yüklemene izin vermez. Her
 | `Invalid Bundle. The bundle does not support the minimum OS Version` | iOS deployment target uyumsuz | `app.json` `expo-build-properties.ios.deploymentTarget: "15.1"` doğrula |
 | ITMS-90683 / Missing usage descriptions | `NSCameraUsageDescription` vb. eksik | Sakinmitler hiçbir hassas API'yi kullanmaz; eksiklik gelirse `Info.plist`'i boşalt |
 | Build aynı buildNumber ile reddedildi | Daha önce yüklendi | `app.json` `ios.buildNumber` artır, `npm run prebuild`, yeniden archive |
-| Apple Pay merchant ID eksik uyarısı | Şablon kalıntısı | `ios/SakinMitler/SakinMitler.entitlements` boş kalmalı (`<dict/>` — sakinmitler IAP yok) |
+| Apple Pay merchant ID eksik uyarısı | Şablon kalıntısı | `ios/SakinMitler/SakinMitler.entitlements` boş kalmalı (`<dict/>`: sakinmitler IAP yok) |
 | 4.3 spam reddi (saturated category) | Tarot/Rune kategorileri Health & Fitness ile sunulmuş | Lifestyle + Entertainment seç, açıklamada "Jungian / journaling" çerçevesi, IAP yok notu, `app-review-notes.md`'deki 4.3 cevap şablonu hazır |
 | 2.3.8 metadata reddi | Açıklamada / keyword'lerde "healing/reiki/cure/wellness" | Bu kelimeleri arat, `app-store-description-*.md` ve metadata zaten temiz; tekrar kontrol et |
 | 5.1.1(v) account deletion reddi | Silme butonu görünmüyor | Profile → "Veri ve Gizlilik" section'ı doğrula, 3 saniyelik screen recording reviewer'a ilet |
 
 ## 8. Reddedilirsen
 
-`app-review-notes.md` dosyasında **5 ayrı senaryo için hazır resolution center cevap şablonu** var (4.3, 4.2, 5.1.1, 1.4.1, 2.3.8). Reviewer'a cevap verirken o şablonu kopyala, gerekirse screen recording iliştir. Aynı bundle ile **3 büyük değişiklik** yapmadan re-submit etme — Apple "minor change" sayar, otomatik tekrar reddeder.
+`app-review-notes.md` dosyasında **5 ayrı senaryo için hazır resolution center cevap şablonu** var (4.3, 4.2, 5.1.1, 1.4.1, 2.3.8). Reviewer'a cevap verirken o şablonu kopyala, gerekirse screen recording iliştir. Aynı bundle ile **3 büyük değişiklik** yapmadan re-submit etme, Apple "minor change" sayar, otomatik tekrar reddeder.

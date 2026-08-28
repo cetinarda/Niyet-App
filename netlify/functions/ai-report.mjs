@@ -61,7 +61,7 @@ function isRateLimited(ip) {
   return false;
 }
 
-// Netlify'ın platform-set, SAHTELENEMEZ header'ı kullanılıyor — client-supplied
+// Netlify'ın platform-set, SAHTELENEMEZ header'ı kullanılıyor: client-supplied
 // `x-forwarded-for`'a güvenmek, isteğin kendi header'ını sahteleyerek bu rate
 // limit'i (ücretli Groq çağrılarını sınırsız tekrarlamak için) bypass etmesine izin veriyordu.
 function getClientIP(event) {
@@ -152,7 +152,7 @@ OPENING LINE (translate this sentence into ${meta.name} and place it at the very
 "This report is for you. It is a helper that supports the world of your thoughts. Filter it through your heart and take the part that warms you."
 
 REQUIRED SECTIONS (translate each heading into ${meta.name}, keep the same order, use ** for bold):
-**Reflection of the Week**: Overall mood and energy, direct and clear (2–3 sentences)
+**Reflection of the Week**: Overall mood and energy, direct and clear (2-3 sentences)
 **Recurring Themes**: Repeating intention words, chakra patterns; point directly to the source
 **Inner Growth**: Meaning drawn from what was learned
 **Heart of Gratitude**: A synthesis from the gratitude entries
@@ -263,12 +263,12 @@ export const handler = async (event) => {
   const gunlerText = gunler
     .map(
       (g, i) => `${L.day} ${i + 1} (${truncStr(g.tarih, 20)}):
-- ${L.intent}: ${truncStr(g.niyet, 500) || "—"}
-- ${L.words}: ${(g.kelimeler || []).map(k => truncStr(String(k), 50)).join(", ") || "—"}
-- ${L.chakra}: ${truncStr(g.chakra, 50) || "—"}
+- ${L.intent}: ${truncStr(g.niyet, 500) || "-"}
+- ${L.words}: ${(g.kelimeler || []).map(k => truncStr(String(k), 50)).join(", ") || "-"}
+- ${L.chakra}: ${truncStr(g.chakra, 50) || "-"}
 - ${L.breaths}: ${parseInt(g.nefes) || 0}
-- ${L.learned}: ${truncStr(g.ogrendim, 500) || "—"}
-- ${L.gratitude}: ${truncStr(g.sukur, 500) || "—"}`
+- ${L.learned}: ${truncStr(g.ogrendim, 500) || "-"}
+- ${L.gratitude}: ${truncStr(g.sukur, 500) || "-"}`
     )
     .join("\n\n");
 

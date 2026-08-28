@@ -1,5 +1,5 @@
 export const Colors = {
-  // Backgrounds — sakin.life ekosistemine uyumlu derin tonlar
+  // Backgrounds: sakin.life ekosistemine uyumlu derin tonlar
   background: '#0D0B14',
   backgroundSecondary: '#15111E',
   backgroundTertiary: '#1C1727',

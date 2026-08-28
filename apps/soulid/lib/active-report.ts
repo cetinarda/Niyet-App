@@ -1,8 +1,8 @@
 /**
- * Aktif karne handoff — iOS Capacitor'da sayfa değişiminde
+ * Aktif karne handoff: iOS Capacitor'da sayfa değişiminde
  * window.location.assign() tam-sayfa reload yapıyor; zustand state uçuyor.
  * Hangi karneyi göstereceğimizi sayfalar arası taşımak için karne ID'sini
- * localStorage'a yazıyoruz (ID PII değil — UUID), /report onu okuyup
+ * localStorage'a yazıyoruz (ID PII değil, UUID), /report onu okuyup
  * şifreli karne listesinden ilgili karneyi buluyor.
  */
 

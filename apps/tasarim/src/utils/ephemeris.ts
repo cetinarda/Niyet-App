@@ -1,4 +1,4 @@
-// Yüksek hassasiyetli efemerit — astronomy-engine (MIT, Don Cross).
+// Yüksek hassasiyetli efemerit: astronomy-engine (MIT, Don Cross).
 // Sun/Moon < 0.001°, gezegenler < 0.01° tropikal ekliptik longitüd.
 // HD gate (5.625°) ve line (0.94°) çözünürlüğü için fazlasıyla yeterli.
 
@@ -58,7 +58,7 @@ export function planetLongitude(name: string, jd: number): number {
   return norm360(ecl.elon);
 }
 
-// Lunar Düğüm — Astronomy-engine'de doğrudan yok; Meeus ortalama formülü
+// Lunar Düğüm: Astronomy-engine'de doğrudan yok; Meeus ortalama formülü
 // (gerçek/true düğüm için ~1.5° hata olabilir, ortalama düğüm için neredeyse tam).
 // HD'de gate ve line için yeterli hassasiyet.
 export function nodeLongitude(jd: number): number {

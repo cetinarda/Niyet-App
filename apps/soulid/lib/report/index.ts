@@ -13,7 +13,7 @@ import { calculateTarot } from '../systems/tarot';
 import type { BirthInput, GalacticReport } from '../types';
 
 /**
- * Deterministik karne kimliği — aynı doğum verisi HER ZAMAN aynı id üretir.
+ * Deterministik karne kimliği: aynı doğum verisi HER ZAMAN aynı id üretir.
  * Böylece: (1) aynı kişiyi tekrar görmek yeni karne saymaz, (2) farklı kişi
  * yeni id → ücretsiz limit kontrolü çalışır, (3) karne "sabit kalır".
  */

@@ -109,7 +109,7 @@ export function DeepAnalysisBox({ a, b, result }: Props) {
     );
   }
 
-  // Üretildi — göster + indir
+  // Üretildi: göster + indir
   const L = locale;
   return (
     <article className="space-y-5 rounded-3xl border border-gold/40 bg-gold/[0.04] p-6 md:p-8">

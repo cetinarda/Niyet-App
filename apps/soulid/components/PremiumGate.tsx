@@ -32,7 +32,7 @@ export function PremiumGate({
           onUnlocked?.();
         } else if (res.error && res.error !== 'cancelled') {
           // Ham kod / geliştirici talimatı kullanıcıya GÖSTERİLMEZ (App Review
-          // ekranda 'IAP_NOT_READY' gördü) — sadece log'a.
+          // ekranda 'IAP_NOT_READY' gördü): sadece log'a.
           console.warn('[premium-gate] purchase failed', res.error);
           setError(iapErrorText(res.error, locale));
         }
@@ -94,7 +94,7 @@ export function PremiumGate({
         ) : null}
 
         <div className="mt-7 space-y-3">
-          {/* Tek seferlik — öne çıkan */}
+          {/* Tek seferlik: öne çıkan */}
           <button
             type="button"
             onClick={() => unlock(PLANS.lifetime)}
@@ -108,7 +108,7 @@ export function PremiumGate({
             <span className="text-xl">{working === 'lifetime' ? '…' : PLANS.lifetime.price}</span>
           </button>
 
-          {/* Aylık — ikincil */}
+          {/* Aylık: ikincil */}
           <button
             type="button"
             onClick={() => unlock(PLANS.monthly)}

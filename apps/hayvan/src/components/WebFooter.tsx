@@ -17,7 +17,7 @@ const FPATHS = ['/about', '/pricing', '/terms', '/privacy', '/refund', '/support
 
 /**
  * Web-only sticky footer with policy links.
- * Renders nothing on iOS/Android — those use the in-app legal links in PaywallScreen/ProfileScreen.
+ * Renders nothing on iOS/Android, those use the in-app legal links in PaywallScreen/ProfileScreen.
  */
 export function WebFooter() {
   const { lang } = useI18n();

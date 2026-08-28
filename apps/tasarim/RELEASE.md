@@ -1,4 +1,4 @@
-# Sakin Tasarım — Sürüm Çıkarma Akışı
+# Sakin Tasarım: Sürüm Çıkarma Akışı
 
 Niyet-App ile aynı disiplin: **app.json'da version + buildNumber bump → git
 tag → Xcode archive → App Store Connect upload**.
@@ -14,7 +14,7 @@ tag → Xcode archive → App Store Connect upload**.
 | Minor (yeni özellik) | x.**Y+1**.0 | +1 |
 | Major (kırıcı değişiklik) | **X+1**.0.0 | +1 |
 
-> `buildNumber` HER upload için artmak zorunda — App Store Connect aynı
+> `buildNumber` HER upload için artmak zorunda, App Store Connect aynı
 > numarayı iki kez kabul etmez.
 
 ---
@@ -96,7 +96,7 @@ Connect → versiyon ekle → "What's New in This Version".
 
 ## 5. Geri Alma (Rollback)
 
-App Store yayınlanan bir sürümü "geri çekemezsin" — onun yerine **Phased
+App Store yayınlanan bir sürümü "geri çekemezsin": onun yerine **Phased
 Release**'i durdur veya hızlıca daha yüksek `version` ile düzeltme gönder.
 TestFlight'ta build "Expire" edilebilir.
 

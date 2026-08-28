@@ -1,4 +1,4 @@
-// Sakin Tasarım — hafif iki dilli (tr/en) yerelleştirme katmanı.
+// Sakin Tasarım: hafif iki dilli (tr/en) yerelleştirme katmanı.
 //
 // Tasarım içeriği TR yazıldı; veri dosyalarına `<field>En` kardeş alanları eklendi
 // (gates/profiles/channels/centers/authorities/glossary). Host (sakin.life) seçili

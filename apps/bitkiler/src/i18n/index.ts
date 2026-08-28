@@ -21,7 +21,7 @@ export const translations: Partial<Record<Lang, Translations>> = {
   ja: ja as unknown as Translations,
 };
 
-// Deep nested key accessor — t('home.greeting.morning', lang)
+// Deep nested key accessor, t('home.greeting.morning', lang)
 type DeepKeys<T, Prefix extends string = ''> = {
   [K in keyof T]: T[K] extends string
     ? Prefix extends '' ? `${string & K}` : `${Prefix}.${string & K}`

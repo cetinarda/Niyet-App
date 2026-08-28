@@ -58,7 +58,7 @@ function designJD(A, birthJD) {
 }
 
 // Lunar düğüm: astronomy-engine'de doğrudan yok. Meeus ORTALAMA düğüm formülü
-// (Tasarım ile birebir aynı) — kapı/çizgi hassasiyeti için fazlasıyla yeterli.
+// (Tasarım ile birebir aynı), kapı/çizgi hassasiyeti için fazlasıyla yeterli.
 function nodeLongitude(jd) {
   const T = (jd - 2451545.0) / 36525;
   return norm360(125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000);

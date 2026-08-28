@@ -1,4 +1,4 @@
-// Offline şehir sözlüğü (gazetteer) — ağ geocoding'i (Open-Meteo) BOŞ dönerse
+// Offline şehir sözlüğü (gazetteer), ağ geocoding'i (Open-Meteo) BOŞ dönerse
 // ya da başarısız olursa devreye giren yedek. App Store reviewer'ları çoğunlukla
 // California'dan test eder ve review ağı bazen üçüncü-parti API'leri yavaşlatır/
 // engeller; bu yüzden doğum yeri çözümü ASLA tek bir dış servise bağlı kalmamalı.
@@ -197,7 +197,7 @@ export const CITIES: CityEntry[] = [
   { name: 'Tunis', country: 'Tunisia', latitude: 36.8065, longitude: 10.1815, timezone: 'Africa/Tunis' },
 ];
 
-/** Türkçe/aksan duyarsız normalize — "İstanbul" == "istanbul" == "Istanbul". */
+/** Türkçe/aksan duyarsız normalize, "İstanbul" == "istanbul" == "Istanbul". */
 export function normalizePlace(s: string): string {
   return s
     .normalize('NFD')

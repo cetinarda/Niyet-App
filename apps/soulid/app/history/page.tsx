@@ -23,7 +23,7 @@ export default function HistoryPage() {
     Promise.all([listReports(), listCompat()])
       .then(([r, c]) => {
         setReports(r);
-        // En yüksek rezonans üstte — arşivde rekabet/merak mekaniği.
+        // En yüksek rezonans üstte, arşivde rekabet/merak mekaniği.
         setCompats([...c].sort((x, y) => y.scoreOverall - x.scoreOverall));
       })
       .finally(() => setLoading(false));
@@ -33,7 +33,7 @@ export default function HistoryPage() {
     <PageLayout
       kicker="GEÇMİŞ KARNELERİN"
       title="Kozmik arşivin"
-      intro="Bu cihazda kayıtlı olan karnelerin. Tarayıcı verisini sildiğinde kaybolur — kaybetmek istemiyorsan JSON olarak indir."
+      intro="Bu cihazda kayıtlı olan karnelerin. Tarayıcı verisini sildiğinde kaybolur, kaybetmek istemiyorsan JSON olarak indir."
     >
       {loading ? (
         <p className="text-sm text-muted">Yükleniyor…</p>
@@ -82,7 +82,7 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* İkili uyum arşivi — bakılan uyum haritaları */}
+      {/* İkili uyum arşivi: bakılan uyum haritaları */}
       {compats.length > 0 ? (
         <div className="mt-12">
           <p className="text-[11px] font-bold uppercase tracking-[0.35em] text-cosmic">

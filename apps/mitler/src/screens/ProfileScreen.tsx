@@ -64,7 +64,7 @@ export function ProfileScreen() {
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
 
   const [showOnboarding, setShowOnboarding] = useState(isNewUser);
-  // ── SAKİN HOST KÖPRÜSÜ — onboarding kısayolu ────────────────────────────────
+  // ── SAKİN HOST KÖPRÜSÜ, onboarding kısayolu ────────────────────────────────
   // Host ad + doğum bilgisini verdiyse onboarding TEK ekrana iner: yalnızca
   // element seçici. Ad (step 1) ve doğum (step 3) ekranları HİÇ render edilmez;
   // değerler host'tan sessizce alınır. Element doğumdan TÜRETİLEMEZ (arketip/mit
@@ -96,7 +96,7 @@ export function ProfileScreen() {
       tagline: '', detailMeta: `${i.tradition} · ${i.category}`, searchBlob: '', data: i,
     });
 
-  // step 3 birth data — köprüden gelen değerlerle pre-fill
+  // step 3 birth data, köprüden gelen değerlerle pre-fill
   const bridgeDateParts = (() => {
     const bd = bridgePrefill?.birthDate;
     if (!bd) return { d: '', m: '', y: '' };
@@ -139,7 +139,7 @@ export function ProfileScreen() {
   };
 
   const analysis = useMemo(() => {
-    // İsim host'tan gelir (fullName); yoksa görünen ada düş — embed ASLA doğum/
+    // İsim host'tan gelir (fullName); yoksa görünen ada düş: embed ASLA doğum/
     // profil formu sormaz, host (giriş + Sakin Ailesi) doğum bilgisinin sahibidir.
     const nm = profile?.fullName || profile?.name;
     if (!nm || !profile?.birthDate) return null;
@@ -445,7 +445,7 @@ export function ProfileScreen() {
               </View>
             </View>
 
-            {/* Human Design teaser removed — dedicated Sakin Tasarım app owns HD content. */}
+            {/* Human Design teaser removed, dedicated Sakin Tasarım app owns HD content. */}
 
             {/* Weekly Reading */}
             <View style={[styles.analysisCard, { borderColor: Colors.teal + '60' }]}>
@@ -648,7 +648,7 @@ export function ProfileScreen() {
         </View>
       </View>
 
-      {/* Language picker removed — host (Sakin) controls language. */}
+      {/* Language picker removed: host (Sakin) controls language. */}
 
       {/* Veri ve Gizlilik */}
       <View style={styles.section}>

@@ -23,7 +23,7 @@ function makeRng(seed: number) {
 }
 
 /**
- * Galaktik arka plan — çok yumuşak, dikkat dağıtmayan yıldız dağılımı +
+ * Galaktik arka plan: çok yumuşak, dikkat dağıtmayan yıldız dağılımı +
  * opsiyonel nebula glow. Tema göz yormamak için minimum opasiteyle.
  */
 export function Starfield({

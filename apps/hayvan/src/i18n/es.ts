@@ -108,7 +108,7 @@ export const es = {
       cityHint: 'La energía de tu lugar de nacimiento añade profundidad a la lectura.',
       hourLabel: 'Hora de nacimiento',
       hourOptional: '(opcional)',
-      hourPlaceholder: 'Hora (0–23)',
+      hourPlaceholder: 'Hora (0-23)',
       hourHint: 'Si no sabes la hora, déjalo en blanco: aun así se encontrará una fuerte coincidencia.',
       submitBtn: 'Encontrar mi guía ✦',
     },
@@ -185,7 +185,7 @@ export const es = {
   nagual: {
     back: '← Atrás',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Guía periódico',
+    introTitle: 'Nagual: Guía periódico',
     introText:
       'Tu animal tótem nace contigo y permanece toda la vida. El nagual es un guía temporal\nque te acompaña durante un período específico. Llega en momentos de prueba,\ntransformación o crisis. Una vez cumplido su propósito, cede su lugar\na otro guía.',
     weekTag: 'ESTA SEMANA · UNIVERSAL',
@@ -326,7 +326,7 @@ export const es = {
         yearPlaceholder: 'Año',
         hourLabel: 'Hora de nacimiento',
         hourOptional: '(importante para HD)',
-        hourPlaceholder: 'Hora (0–23)',
+        hourPlaceholder: 'Hora (0-23)',
         minutePlaceholder: 'Minuto',
         cityLabel: 'Ciudad de nacimiento',
         cityOptional: '(para la zona horaria)',
@@ -342,7 +342,7 @@ export const es = {
       totemTitle: '⊕ Animal tótem',
       totemText:
         'Cada persona lleva el espíritu de un animal en su naturaleza. Este animal tótem te representa; tu energía, tus fortalezas y el camino que recorres llevan sus huellas. El tótem nunca cambia: nace contigo y crece contigo.',
-      nagualTitle: '◎ Nagual — Guía periódico',
+      nagualTitle: '◎ Nagual: Guía periódico',
       nagualText:
         'El nagual es un guía temporal que viene a ti durante un período específico. Se le llama en momentos de prueba, transformación o crisis. Una vez cumplido su propósito, cede su lugar a otro guía. El animal extraído en tu lectura diaria lleva la voz del nagual de hoy.',
       finderTitle: 'Encuentra tu guía animal',
@@ -365,7 +365,7 @@ export const es = {
     sakinFamily: {
       title: 'Familia Sakin',
       intro: 'Un ecosistema. Una suscripción. Muchas puertas.',
-      masterDesc: 'Centro principal — acceso a todas las apps',
+      masterDesc: 'Centro principal: acceso a todas las apps',
       apps: {
         animalGuidance: 'Guía animal',
         stoneGuidance: 'Guía de cristales',

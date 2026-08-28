@@ -65,18 +65,18 @@ export const TR = {
   'finder.intro.title': 'Rehber Mitini Keşfet',
   'finder.intro.desc': 'Ruhunla uyumlu arketipi bulmak için iki yol var.',
   'finder.intro.poetic':
-    'Sakin sana bir ayna tutar — içinde zaten var olanı yansıtır ve olası olanı fısıldar. Onu kalbinde uyandıracak, hissedip özümseyecek olan ise yalnızca sensin.',
+    'Sakin sana bir ayna tutar, içinde zaten var olanı yansıtır ve olası olanı fısıldar. Onu kalbinde uyandıracak, hissedip özümseyecek olan ise yalnızca sensin.',
   'finder.mode.quiz.title': 'Sorularla Keşfet',
   'finder.mode.quiz.desc': '7 soru, karakterine göre eşleşir',
   'finder.mode.birth.title': 'Doğum Bilgilerimle Bul',
   'finder.mode.birth.desc': 'Profil\'indeki tarih, saat ve şehir ile natal eşleşme',
   'finder.profile.missing.title': 'Doğum Bilgilerin Yok',
-  'finder.profile.missing.desc': 'Natal eşleşme için doğum tarihini Profil\'inde tanımlaman gerek. Bilgilerin tek bir yerden yönetilir — burada tekrar sorulmaz.',
+  'finder.profile.missing.desc': 'Natal eşleşme için doğum tarihini Profil\'inde tanımlaman gerek. Bilgilerin tek bir yerden yönetilir, burada tekrar sorulmaz.',
   'finder.profile.missing.cta': 'Profil\'e Git ✦',
   'finder.profile.using': 'Bilgiler Profil\'inden alındı',
   'finder.birth.title': 'Doğum Bilgilerini Gir',
   'finder.birth.desc':
-    'Doğum anının mevsimi, yılı ve saati — hepsi sana eşlik eden arketipi şekillendiriyor.',
+    'Doğum anının mevsimi, yılı ve saati, hepsi sana eşlik eden arketipi şekillendiriyor.',
   'finder.birth.date': 'Doğum Tarihi',
   'finder.birth.day': 'Gün',
   'finder.birth.month': 'Ay',
@@ -85,8 +85,8 @@ export const TR = {
   'finder.birth.cityPlaceholder': 'Örn. İstanbul, Konya, İzmir...',
   'finder.birth.cityHint': 'Doğduğun yerin enerjisi yorumuna derinlik katar.',
   'finder.birth.hour': 'Doğum Saati',
-  'finder.birth.hourPlaceholder': 'Saat (0–23)',
-  'finder.birth.hourHint': 'Saat bilmiyorsan boş bırak — yine de güçlü bir eşleşme yapılır.',
+  'finder.birth.hourPlaceholder': 'Saat (0-23)',
+  'finder.birth.hourHint': 'Saat bilmiyorsan boş bırak: yine de güçlü bir eşleşme yapılır.',
   'finder.birth.optional': '(isteğe bağlı)',
   'finder.submit': 'Rehberimi Bul ✦',
   'finder.result.label': 'Sana Eşlik Edenler',
@@ -120,7 +120,7 @@ export const TR = {
   'detail.kind.iching': 'I CHING',
 
   // Weekly
-  'weekly.title': 'Hafta — Dönemsel Rehber',
+  'weekly.title': 'Hafta: Dönemsel Rehber',
   'weekly.desc':
     'Tüm arketiplerin seninle doğar, ömür boyu kalır. Haftalık rehber ise belirli bir dönemine eşlik eden geçici figürdür.',
   'weekly.tag.archetype': 'BU HAFTA · EVRENSEL ARKETİP',
@@ -132,7 +132,7 @@ export const TR = {
   'weekly.label.today': 'BUGÜN',
   'weekly.label.guidance': 'REHBERLİK',
   'weekly.daysLeft': '{n} gün kaldı',
-  'weekly.reason': 'Hayat Yolu {lifePath} — bu dönemde içsel ritmine eşlik etmek için seninle.',
+  'weekly.reason': 'Hayat Yolu {lifePath}: bu dönemde içsel ritmine eşlik etmek için seninle.',
   'weekly.locked.title': 'Kişisel Rehberim',
   'weekly.locked.text':
     'Doğum haritana göre sana özel dönemsel bir arketip belirlemek için profil bilgilerini tamamla.\n\nProfil → Kişisel Harita bölümünden doğum tarihini ekleyebilirsin.',
@@ -260,7 +260,7 @@ export const TR = {
   'disclaimer.accept': 'Anladım, devam et ✦',
   'disclaimer.footer': 'Yansıtma amaçlıdır · tavsiye değildir',
 
-  // Profil — veri silme
+  // Profil: veri silme
   'profile.deleteData.section': 'Veri ve Gizlilik',
   'profile.deleteData.button': 'Profilimi ve Verilerimi Sil',
   'profile.deleteData.note': 'Tüm veriler bu cihazda saklanır. Silindiğinde geri alınamaz.',
@@ -278,7 +278,7 @@ export const TR = {
   'family.intro': 'Tek ekosistem. Birçok kapı.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'Ana merkez — tüm uygulamalara giriş',
+  'family.master.desc': 'Ana merkez: tüm uygulamalara giriş',
   'family.app.hayvan.name': 'Hayvan Rehberliği',
   'family.app.hayvan.desc': 'Anadolu\'dan dünyaya totemler',
   'family.app.tas.name': 'Taş Rehberliği',
@@ -358,18 +358,18 @@ export const EN: Record<keyof typeof TR, string> = {
   'finder.intro.title': 'Discover Your Guide Myth',
   'finder.intro.desc': 'Two paths to find the archetype that resonates with your soul.',
   'finder.intro.poetic':
-    'Sakin holds up a mirror — it reflects what is already within and whispers what may be. The one who can awaken, feel and integrate it is you alone.',
+    'Sakin holds up a mirror, it reflects what is already within and whispers what may be. The one who can awaken, feel and integrate it is you alone.',
   'finder.mode.quiz.title': 'Discover with Questions',
   'finder.mode.quiz.desc': '7 questions, matched to your character',
   'finder.mode.birth.title': 'Find with Birth Data',
   'finder.mode.birth.desc': 'Natal match using the date, hour and city from your Profile',
   'finder.profile.missing.title': 'No Birth Data Yet',
-  'finder.profile.missing.desc': 'For a natal match, please add your birth date in Profile. Your data is managed from one place — we won\'t ask twice.',
+  'finder.profile.missing.desc': 'For a natal match, please add your birth date in Profile. Your data is managed from one place, we won\'t ask twice.',
   'finder.profile.missing.cta': 'Go to Profile ✦',
   'finder.profile.using': 'Data taken from your Profile',
   'finder.birth.title': 'Enter Birth Details',
   'finder.birth.desc':
-    'The season, year and hour of your birth — each shapes the archetype that walks beside you.',
+    'The season, year and hour of your birth, each shapes the archetype that walks beside you.',
   'finder.birth.date': 'Birth Date',
   'finder.birth.day': 'Day',
   'finder.birth.month': 'Month',
@@ -378,8 +378,8 @@ export const EN: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': 'e.g. Istanbul, Konya, Izmir...',
   'finder.birth.cityHint': 'Your birthplace deepens the reading.',
   'finder.birth.hour': 'Birth Hour',
-  'finder.birth.hourPlaceholder': 'Hour (0–23)',
-  'finder.birth.hourHint': 'Leave blank if you don\'t know — a strong match is still made.',
+  'finder.birth.hourPlaceholder': 'Hour (0-23)',
+  'finder.birth.hourHint': 'Leave blank if you don\'t know: a strong match is still made.',
   'finder.birth.optional': '(optional)',
   'finder.submit': 'Find My Guide ✦',
   'finder.result.label': 'Walking Beside You',
@@ -413,7 +413,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'detail.kind.iching': 'I CHING',
 
   // Weekly
-  'weekly.title': 'Week — Periodic Guide',
+  'weekly.title': 'Week: Periodic Guide',
   'weekly.desc':
     'All archetypes are born with you and stay for life. The weekly guide is a temporary figure that walks beside you for a specific period.',
   'weekly.tag.archetype': 'THIS WEEK · UNIVERSAL ARCHETYPE',
@@ -425,7 +425,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'TODAY',
   'weekly.label.guidance': 'GUIDANCE',
   'weekly.daysLeft': '{n} days left',
-  'weekly.reason': 'Life Path {lifePath} — here to accompany your inner rhythm this period.',
+  'weekly.reason': 'Life Path {lifePath}: here to accompany your inner rhythm this period.',
   'weekly.locked.title': 'My Personal Guide',
   'weekly.locked.text':
     'Complete your profile to receive a periodic archetype based on your birth chart.\n\nProfile → Personal Map section lets you add your birth date.',
@@ -486,7 +486,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'profile.map.topTradition': 'Your Tradition',
   'profile.map.timesAccompanied': '{n} times · {meta}',
   'profile.map.timesCalled': 'accompanied {n} times',
-  'profile.map.emptyHint': 'Open your first deck — your myth map will start to form.',
+  'profile.map.emptyHint': 'Open your first deck: your myth map will start to form.',
   'profile.howTo.line1':
     '• Three decks open each day: Archetypes, Myths, Symbols.',
   'profile.howTo.line2':
@@ -546,14 +546,14 @@ export const EN: Record<keyof typeof TR, string> = {
   'profile.level.6': 'Archetype Master',
   'profile.level.7': 'Symbol Elder',
 
-  // Disclaimer (entertainment & wellbeing) — EN
+  // Disclaimer (entertainment & wellbeing), EN
   'disclaimer.title': 'A Mirror, Not a Prescription',
   'disclaimer.body':
-    'Sakin Myths is a reflection and journaling companion using archetypes, myths and symbols. The content is not psychological, medical or predictive advice — it is for self-exploration only. If you are struggling, please consider seeking professional support.',
+    'Sakin Myths is a reflection and journaling companion using archetypes, myths and symbols. The content is not psychological, medical or predictive advice, it is for self-exploration only. If you are struggling, please consider seeking professional support.',
   'disclaimer.accept': 'I understand, continue ✦',
   'disclaimer.footer': 'For self-reflection · not advice',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'Data & Privacy',
   'profile.deleteData.button': 'Delete My Profile & Data',
   'profile.deleteData.note': 'All data is stored on this device. Deletion is permanent.',
@@ -571,7 +571,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'family.intro': 'One ecosystem. Many doors.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'The hub — entry to all apps',
+  'family.master.desc': 'The hub: entry to all apps',
   'family.app.hayvan.name': 'Animal Guide',
   'family.app.hayvan.desc': 'Totems from Anatolia to the world',
   'family.app.tas.name': 'Stone Guide',
@@ -647,18 +647,18 @@ export const DE: Record<keyof typeof TR, string> = {
   'finder.intro.title': 'Entdecke deinen Führungsmythos',
   'finder.intro.desc': 'Zwei Wege, um den Archetyp zu finden, der mit deiner Seele in Resonanz steht.',
   'finder.intro.poetic':
-    'Sakin hält dir einen Spiegel vor — er spiegelt, was bereits in dir ist, und flüstert, was sein könnte. Wer es erwecken, fühlen und integrieren kann, bist allein du.',
+    'Sakin hält dir einen Spiegel vor, er spiegelt, was bereits in dir ist, und flüstert, was sein könnte. Wer es erwecken, fühlen und integrieren kann, bist allein du.',
   'finder.mode.quiz.title': 'Mit Fragen entdecken',
   'finder.mode.quiz.desc': '7 Fragen, passend zu deinem Charakter',
   'finder.mode.birth.title': 'Mit Geburtsdaten finden',
   'finder.mode.birth.desc': 'Natale Übereinstimmung mit Datum, Uhrzeit und Stadt aus deinem Profil',
   'finder.profile.missing.title': 'Noch keine Geburtsdaten',
-  'finder.profile.missing.desc': 'Für eine natale Übereinstimmung füge bitte dein Geburtsdatum im Profil hinzu. Deine Daten werden an einem Ort verwaltet — wir fragen nicht zweimal.',
+  'finder.profile.missing.desc': 'Für eine natale Übereinstimmung füge bitte dein Geburtsdatum im Profil hinzu. Deine Daten werden an einem Ort verwaltet, wir fragen nicht zweimal.',
   'finder.profile.missing.cta': 'Zum Profil ✦',
   'finder.profile.using': 'Daten aus deinem Profil übernommen',
   'finder.birth.title': 'Geburtsdaten eingeben',
   'finder.birth.desc':
-    'Die Jahreszeit, das Jahr und die Stunde deiner Geburt — jedes formt den Archetyp, der dich begleitet.',
+    'Die Jahreszeit, das Jahr und die Stunde deiner Geburt, jedes formt den Archetyp, der dich begleitet.',
   'finder.birth.date': 'Geburtsdatum',
   'finder.birth.day': 'Tag',
   'finder.birth.month': 'Monat',
@@ -667,8 +667,8 @@ export const DE: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': 'z. B. Istanbul, Konya, Izmir...',
   'finder.birth.cityHint': 'Dein Geburtsort vertieft die Lesung.',
   'finder.birth.hour': 'Geburtsstunde',
-  'finder.birth.hourPlaceholder': 'Stunde (0–23)',
-  'finder.birth.hourHint': 'Lass es leer, wenn du es nicht weißt — eine starke Übereinstimmung wird trotzdem erstellt.',
+  'finder.birth.hourPlaceholder': 'Stunde (0-23)',
+  'finder.birth.hourHint': 'Lass es leer, wenn du es nicht weißt, eine starke Übereinstimmung wird trotzdem erstellt.',
   'finder.birth.optional': '(optional)',
   'finder.submit': 'Meinen Führer finden ✦',
   'finder.result.label': 'Die dich begleiten',
@@ -702,7 +702,7 @@ export const DE: Record<keyof typeof TR, string> = {
   'detail.kind.iching': 'I GING',
 
   // Weekly
-  'weekly.title': 'Woche — Periodischer Führer',
+  'weekly.title': 'Woche: Periodischer Führer',
   'weekly.desc':
     'Alle Archetypen werden mit dir geboren und bleiben ein Leben lang. Der wöchentliche Führer ist eine vorübergehende Gestalt, die dich für einen bestimmten Zeitraum begleitet.',
   'weekly.tag.archetype': 'DIESE WOCHE · UNIVERSELLER ARCHETYP',
@@ -773,7 +773,7 @@ export const DE: Record<keyof typeof TR, string> = {
   'profile.map.topTradition': 'Deine Tradition',
   'profile.map.timesAccompanied': '{n} Mal · {meta}',
   'profile.map.timesCalled': '{n} Mal begleitet',
-  'profile.map.emptyHint': 'Öffne dein erstes Deck — deine Mythenkarte beginnt sich zu bilden.',
+  'profile.map.emptyHint': 'Öffne dein erstes Deck: deine Mythenkarte beginnt sich zu bilden.',
   'profile.howTo.line1':
     '• Jeden Tag öffnen sich drei Decks: Archetypen, Mythen, Symbole.',
   'profile.howTo.line2':
@@ -833,14 +833,14 @@ export const DE: Record<keyof typeof TR, string> = {
   'profile.level.6': 'Archetyp-Meister',
   'profile.level.7': 'Symbol-Ältester',
 
-  // Disclaimer (entertainment & wellbeing) — DE
+  // Disclaimer (entertainment & wellbeing), DE
   'disclaimer.title': 'Ein Spiegel, kein Rezept',
   'disclaimer.body':
-    'Sakin Mythen ist ein Begleiter zur Reflexion und zum Tagebuchschreiben mit Archetypen, Mythen und Symbolen. Die Inhalte sind keine psychologische, medizinische oder vorhersagende Beratung — sie dienen ausschließlich der Selbsterkundung. Wenn es dir schwerfällt, ziehe bitte professionelle Unterstützung in Betracht.',
+    'Sakin Mythen ist ein Begleiter zur Reflexion und zum Tagebuchschreiben mit Archetypen, Mythen und Symbolen. Die Inhalte sind keine psychologische, medizinische oder vorhersagende Beratung, sie dienen ausschließlich der Selbsterkundung. Wenn es dir schwerfällt, ziehe bitte professionelle Unterstützung in Betracht.',
   'disclaimer.accept': 'Ich verstehe, weiter ✦',
   'disclaimer.footer': 'Zur Selbstreflexion · keine Beratung',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'Daten & Datenschutz',
   'profile.deleteData.button': 'Mein Profil & Daten löschen',
   'profile.deleteData.note': 'Alle Daten werden auf diesem Gerät gespeichert. Das Löschen ist endgültig.',
@@ -858,7 +858,7 @@ export const DE: Record<keyof typeof TR, string> = {
   'family.intro': 'Ein Ökosystem. Viele Türen.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'Das Zentrum — Zugang zu allen Apps',
+  'family.master.desc': 'Das Zentrum: Zugang zu allen Apps',
   'family.app.hayvan.name': 'Tierführer',
   'family.app.hayvan.desc': 'Totems von Anatolien in die Welt',
   'family.app.tas.name': 'Steinführer',
@@ -940,12 +940,12 @@ export const ES: Record<keyof typeof TR, string> = {
   'finder.mode.birth.title': 'Encontrar con datos de nacimiento',
   'finder.mode.birth.desc': 'Coincidencia natal usando la fecha, hora y ciudad de tu perfil',
   'finder.profile.missing.title': 'Aún sin datos de nacimiento',
-  'finder.profile.missing.desc': 'Para una coincidencia natal, añade tu fecha de nacimiento en el Perfil. Tus datos se gestionan desde un solo lugar — no preguntaremos dos veces.',
+  'finder.profile.missing.desc': 'Para una coincidencia natal, añade tu fecha de nacimiento en el Perfil. Tus datos se gestionan desde un solo lugar, no preguntaremos dos veces.',
   'finder.profile.missing.cta': 'Ir al perfil ✦',
   'finder.profile.using': 'Datos tomados de tu perfil',
   'finder.birth.title': 'Introduce los datos de nacimiento',
   'finder.birth.desc':
-    'La estación, el año y la hora de tu nacimiento — cada uno da forma al arquetipo que camina a tu lado.',
+    'La estación, el año y la hora de tu nacimiento, cada uno da forma al arquetipo que camina a tu lado.',
   'finder.birth.date': 'Fecha de nacimiento',
   'finder.birth.day': 'Día',
   'finder.birth.month': 'Mes',
@@ -954,8 +954,8 @@ export const ES: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': 'ej. Estambul, Konya, Esmirna...',
   'finder.birth.cityHint': 'Tu lugar de nacimiento profundiza la lectura.',
   'finder.birth.hour': 'Hora de nacimiento',
-  'finder.birth.hourPlaceholder': 'Hora (0–23)',
-  'finder.birth.hourHint': 'Déjalo en blanco si no la sabes — aun así se hace una coincidencia fuerte.',
+  'finder.birth.hourPlaceholder': 'Hora (0-23)',
+  'finder.birth.hourHint': 'Déjalo en blanco si no la sabes, aun así se hace una coincidencia fuerte.',
   'finder.birth.optional': '(opcional)',
   'finder.submit': 'Encontrar mi guía ✦',
   'finder.result.label': 'Quienes caminan a tu lado',
@@ -989,7 +989,7 @@ export const ES: Record<keyof typeof TR, string> = {
   'detail.kind.iching': 'I CHING',
 
   // Weekly
-  'weekly.title': 'Semana — Guía periódico',
+  'weekly.title': 'Semana: Guía periódico',
   'weekly.desc':
     'Todos los arquetipos nacen contigo y permanecen toda la vida. El guía semanal es una figura temporal que te acompaña durante un período específico.',
   'weekly.tag.archetype': 'ESTA SEMANA · ARQUETIPO UNIVERSAL',
@@ -1060,7 +1060,7 @@ export const ES: Record<keyof typeof TR, string> = {
   'profile.map.topTradition': 'Tu tradición',
   'profile.map.timesAccompanied': '{n} veces · {meta}',
   'profile.map.timesCalled': 'te acompañó {n} veces',
-  'profile.map.emptyHint': 'Abre tu primer mazo — tu mapa de mitos comenzará a formarse.',
+  'profile.map.emptyHint': 'Abre tu primer mazo: tu mapa de mitos comenzará a formarse.',
   'profile.howTo.line1':
     '• Cada día se abren tres mazos: Arquetipos, Mitos, Símbolos.',
   'profile.howTo.line2':
@@ -1120,14 +1120,14 @@ export const ES: Record<keyof typeof TR, string> = {
   'profile.level.6': 'Maestro de arquetipos',
   'profile.level.7': 'Anciano del símbolo',
 
-  // Disclaimer (entertainment & wellbeing) — ES
+  // Disclaimer (entertainment & wellbeing), ES
   'disclaimer.title': 'Un espejo, no una receta',
   'disclaimer.body':
-    'Sakin Mitos es un compañero de reflexión y de diario que trabaja con arquetipos, mitos y símbolos. El contenido no es un consejo psicológico, médico ni predictivo — es solo para la autoexploración. Si estás pasando por dificultades, considera buscar apoyo profesional.',
+    'Sakin Mitos es un compañero de reflexión y de diario que trabaja con arquetipos, mitos y símbolos. El contenido no es un consejo psicológico, médico ni predictivo, es solo para la autoexploración. Si estás pasando por dificultades, considera buscar apoyo profesional.',
   'disclaimer.accept': 'Entiendo, continuar ✦',
   'disclaimer.footer': 'Para la autorreflexión · no es un consejo',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'Datos y privacidad',
   'profile.deleteData.button': 'Eliminar mi perfil y datos',
   'profile.deleteData.note': 'Todos los datos se almacenan en este dispositivo. La eliminación es permanente.',
@@ -1145,7 +1145,7 @@ export const ES: Record<keyof typeof TR, string> = {
   'family.intro': 'Un ecosistema. Muchas puertas.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'El centro — entrada a todas las apps',
+  'family.master.desc': 'El centro: entrada a todas las apps',
   'family.app.hayvan.name': 'Guía animal',
   'family.app.hayvan.desc': 'Tótems de Anatolia al mundo',
   'family.app.tas.name': 'Guía de piedras',
@@ -1221,18 +1221,18 @@ export const PT: Record<keyof typeof TR, string> = {
   'finder.intro.title': 'Descubra seu mito guia',
   'finder.intro.desc': 'Dois caminhos para encontrar o arquétipo que ressoa com a sua alma.',
   'finder.intro.poetic':
-    'Sakin segura um espelho diante de você — ele reflete o que já existe dentro e sussurra o que pode vir a ser. Quem pode despertá-lo, senti-lo e integrá-lo é só você.',
+    'Sakin segura um espelho diante de você, ele reflete o que já existe dentro e sussurra o que pode vir a ser. Quem pode despertá-lo, senti-lo e integrá-lo é só você.',
   'finder.mode.quiz.title': 'Descobrir com perguntas',
   'finder.mode.quiz.desc': '7 perguntas, de acordo com o seu caráter',
   'finder.mode.birth.title': 'Encontrar com dados de nascimento',
   'finder.mode.birth.desc': 'Correspondência natal usando a data, a hora e a cidade do seu perfil',
   'finder.profile.missing.title': 'Ainda sem dados de nascimento',
-  'finder.profile.missing.desc': 'Para uma correspondência natal, adicione sua data de nascimento no Perfil. Seus dados são gerenciados em um só lugar — não vamos perguntar duas vezes.',
+  'finder.profile.missing.desc': 'Para uma correspondência natal, adicione sua data de nascimento no Perfil. Seus dados são gerenciados em um só lugar, não vamos perguntar duas vezes.',
   'finder.profile.missing.cta': 'Ir para o perfil ✦',
   'finder.profile.using': 'Dados obtidos do seu perfil',
   'finder.birth.title': 'Insira os dados de nascimento',
   'finder.birth.desc':
-    'A estação, o ano e a hora do seu nascimento — cada um molda o arquétipo que caminha ao seu lado.',
+    'A estação, o ano e a hora do seu nascimento, cada um molda o arquétipo que caminha ao seu lado.',
   'finder.birth.date': 'Data de nascimento',
   'finder.birth.day': 'Dia',
   'finder.birth.month': 'Mês',
@@ -1241,8 +1241,8 @@ export const PT: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': 'ex. Istambul, Konya, Esmirna...',
   'finder.birth.cityHint': 'Seu local de nascimento aprofunda a leitura.',
   'finder.birth.hour': 'Hora de nascimento',
-  'finder.birth.hourPlaceholder': 'Hora (0–23)',
-  'finder.birth.hourHint': 'Deixe em branco se você não souber — uma correspondência forte ainda é feita.',
+  'finder.birth.hourPlaceholder': 'Hora (0-23)',
+  'finder.birth.hourHint': 'Deixe em branco se você não souber, uma correspondência forte ainda é feita.',
   'finder.birth.optional': '(opcional)',
   'finder.submit': 'Encontrar meu guia ✦',
   'finder.result.label': 'Quem caminha ao seu lado',
@@ -1276,7 +1276,7 @@ export const PT: Record<keyof typeof TR, string> = {
   'detail.kind.iching': 'I CHING',
 
   // Weekly
-  'weekly.title': 'Semana — Guia periódico',
+  'weekly.title': 'Semana: Guia periódico',
   'weekly.desc':
     'Todos os arquétipos nascem com você e permanecem por toda a vida. O guia semanal é uma figura temporária que caminha ao seu lado por um período específico.',
   'weekly.tag.archetype': 'ESTA SEMANA · ARQUÉTIPO UNIVERSAL',
@@ -1347,7 +1347,7 @@ export const PT: Record<keyof typeof TR, string> = {
   'profile.map.topTradition': 'Sua tradição',
   'profile.map.timesAccompanied': '{n} vezes · {meta}',
   'profile.map.timesCalled': 'acompanhou {n} vezes',
-  'profile.map.emptyHint': 'Abra seu primeiro baralho — seu mapa de mitos começará a se formar.',
+  'profile.map.emptyHint': 'Abra seu primeiro baralho: seu mapa de mitos começará a se formar.',
   'profile.howTo.line1':
     '• Três baralhos abrem a cada dia: Arquétipos, Mitos, Símbolos.',
   'profile.howTo.line2':
@@ -1407,14 +1407,14 @@ export const PT: Record<keyof typeof TR, string> = {
   'profile.level.6': 'Mestre dos arquétipos',
   'profile.level.7': 'Ancião do símbolo',
 
-  // Disclaimer (entertainment & wellbeing) — PT
+  // Disclaimer (entertainment & wellbeing), PT
   'disclaimer.title': 'Um espelho, não uma receita',
   'disclaimer.body':
-    'Sakin Mitos é um companheiro de reflexão e de diário que trabalha com arquétipos, mitos e símbolos. O conteúdo não é aconselhamento psicológico, médico ou preditivo — é apenas para a autoexploração. Se você estiver passando por dificuldades, considere buscar apoio profissional.',
+    'Sakin Mitos é um companheiro de reflexão e de diário que trabalha com arquétipos, mitos e símbolos. O conteúdo não é aconselhamento psicológico, médico ou preditivo, é apenas para a autoexploração. Se você estiver passando por dificuldades, considere buscar apoio profissional.',
   'disclaimer.accept': 'Entendi, continuar ✦',
   'disclaimer.footer': 'Para a autorreflexão · não é aconselhamento',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'Dados e privacidade',
   'profile.deleteData.button': 'Excluir meu perfil e dados',
   'profile.deleteData.note': 'Todos os dados são armazenados neste dispositivo. A exclusão é permanente.',
@@ -1432,7 +1432,7 @@ export const PT: Record<keyof typeof TR, string> = {
   'family.intro': 'Um ecossistema. Muitas portas.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'O centro — entrada para todos os apps',
+  'family.master.desc': 'O centro: entrada para todos os apps',
   'family.app.hayvan.name': 'Guia animal',
   'family.app.hayvan.desc': 'Totens da Anatólia para o mundo',
   'family.app.tas.name': 'Guia de pedras',
@@ -1508,18 +1508,18 @@ export const FR: Record<keyof typeof TR, string> = {
   'finder.intro.title': 'Découvre ton mythe guide',
   'finder.intro.desc': 'Deux chemins pour trouver l\'archétype qui résonne avec ton âme.',
   'finder.intro.poetic':
-    'Sakin te tend un miroir — il reflète ce qui est déjà en toi et murmure ce qui pourrait être. Celui qui peut l\'éveiller, le ressentir et l\'intégrer, c\'est toi seul.',
+    'Sakin te tend un miroir, il reflète ce qui est déjà en toi et murmure ce qui pourrait être. Celui qui peut l\'éveiller, le ressentir et l\'intégrer, c\'est toi seul.',
   'finder.mode.quiz.title': 'Découvrir par des questions',
   'finder.mode.quiz.desc': '7 questions, selon ton caractère',
   'finder.mode.birth.title': 'Trouver avec les données de naissance',
   'finder.mode.birth.desc': 'Correspondance natale utilisant la date, l\'heure et la ville de ton profil',
   'finder.profile.missing.title': 'Pas encore de données de naissance',
-  'finder.profile.missing.desc': 'Pour une correspondance natale, ajoute ta date de naissance dans le Profil. Tes données sont gérées d\'un seul endroit — nous ne demanderons pas deux fois.',
+  'finder.profile.missing.desc': 'Pour une correspondance natale, ajoute ta date de naissance dans le Profil. Tes données sont gérées d\'un seul endroit: nous ne demanderons pas deux fois.',
   'finder.profile.missing.cta': 'Aller au profil ✦',
   'finder.profile.using': 'Données issues de ton profil',
   'finder.birth.title': 'Saisis les données de naissance',
   'finder.birth.desc':
-    'La saison, l\'année et l\'heure de ta naissance — chacune façonne l\'archétype qui marche à tes côtés.',
+    'La saison, l\'année et l\'heure de ta naissance: chacune façonne l\'archétype qui marche à tes côtés.',
   'finder.birth.date': 'Date de naissance',
   'finder.birth.day': 'Jour',
   'finder.birth.month': 'Mois',
@@ -1528,8 +1528,8 @@ export const FR: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': 'ex. Istanbul, Konya, Izmir...',
   'finder.birth.cityHint': 'Ton lieu de naissance approfondit la lecture.',
   'finder.birth.hour': 'Heure de naissance',
-  'finder.birth.hourPlaceholder': 'Heure (0–23)',
-  'finder.birth.hourHint': 'Laisse vide si tu ne sais pas — une correspondance forte est tout de même établie.',
+  'finder.birth.hourPlaceholder': 'Heure (0-23)',
+  'finder.birth.hourHint': 'Laisse vide si tu ne sais pas, une correspondance forte est tout de même établie.',
   'finder.birth.optional': '(facultatif)',
   'finder.submit': 'Trouver mon guide ✦',
   'finder.result.label': 'Ceux qui marchent à tes côtés',
@@ -1563,7 +1563,7 @@ export const FR: Record<keyof typeof TR, string> = {
   'detail.kind.iching': 'YI KING',
 
   // Weekly
-  'weekly.title': 'Semaine — Guide périodique',
+  'weekly.title': 'Semaine: Guide périodique',
   'weekly.desc':
     'Tous les archétypes naissent avec toi et restent toute la vie. Le guide hebdomadaire est une figure temporaire qui marche à tes côtés pour une période précise.',
   'weekly.tag.archetype': 'CETTE SEMAINE · ARCHÉTYPE UNIVERSEL',
@@ -1634,7 +1634,7 @@ export const FR: Record<keyof typeof TR, string> = {
   'profile.map.topTradition': 'Ta tradition',
   'profile.map.timesAccompanied': '{n} fois · {meta}',
   'profile.map.timesCalled': 't\'a accompagné {n} fois',
-  'profile.map.emptyHint': 'Ouvre ton premier jeu — ta carte des mythes commencera à se former.',
+  'profile.map.emptyHint': 'Ouvre ton premier jeu: ta carte des mythes commencera à se former.',
   'profile.howTo.line1':
     '• Trois jeux s\'ouvrent chaque jour : Archétypes, Mythes, Symboles.',
   'profile.howTo.line2':
@@ -1694,14 +1694,14 @@ export const FR: Record<keyof typeof TR, string> = {
   'profile.level.6': 'Maître des archétypes',
   'profile.level.7': 'Ancien du symbole',
 
-  // Disclaimer (entertainment & wellbeing) — FR
+  // Disclaimer (entertainment & wellbeing), FR
   'disclaimer.title': 'Un miroir, pas une ordonnance',
   'disclaimer.body':
-    'Sakin Mythes est un compagnon de réflexion et de journal qui travaille avec les archétypes, les mythes et les symboles. Le contenu n\'est pas un conseil psychologique, médical ou prédictif — il est uniquement destiné à l\'exploration de soi. Si tu traverses une difficulté, envisage de chercher un soutien professionnel.',
+    'Sakin Mythes est un compagnon de réflexion et de journal qui travaille avec les archétypes, les mythes et les symboles. Le contenu n\'est pas un conseil psychologique, médical ou prédictif, il est uniquement destiné à l\'exploration de soi. Si tu traverses une difficulté, envisage de chercher un soutien professionnel.',
   'disclaimer.accept': 'J\'ai compris, continuer ✦',
   'disclaimer.footer': 'Pour la réflexion sur soi · pas un conseil',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'Données et confidentialité',
   'profile.deleteData.button': 'Supprimer mon profil et mes données',
   'profile.deleteData.note': 'Toutes les données sont stockées sur cet appareil. La suppression est définitive.',
@@ -1719,7 +1719,7 @@ export const FR: Record<keyof typeof TR, string> = {
   'family.intro': 'Un écosystème. De nombreuses portes.',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': 'Le centre — accès à toutes les apps',
+  'family.master.desc': 'Le centre: accès à toutes les apps',
   'family.app.hayvan.name': 'Guide animal',
   'family.app.hayvan.desc': 'Totems de l\'Anatolie au monde',
   'family.app.tas.name': 'Guide des pierres',
@@ -1795,7 +1795,7 @@ export const JA: Record<keyof typeof TR, string> = {
   'finder.intro.title': 'あなたの導きの神話を発見する',
   'finder.intro.desc': 'あなたの魂と響き合う元型を見つける二つの道。',
   'finder.intro.poetic':
-    'Sakin はあなたに鏡を差し出します — すでに内にあるものを映し、なり得るものをささやきます。それを目覚めさせ、感じ、統合できるのはあなただけです。',
+    'Sakin はあなたに鏡を差し出します 、 すでに内にあるものを映し、なり得るものをささやきます。それを目覚めさせ、感じ、統合できるのはあなただけです。',
   'finder.mode.quiz.title': '質問で発見する',
   'finder.mode.quiz.desc': '7つの質問、あなたの性格に合わせて',
   'finder.mode.birth.title': '出生情報で見つける',
@@ -1806,7 +1806,7 @@ export const JA: Record<keyof typeof TR, string> = {
   'finder.profile.using': 'プロフィールから取得したデータ',
   'finder.birth.title': '出生情報を入力',
   'finder.birth.desc':
-    'あなたが生まれた季節、年、時刻 — そのそれぞれが、あなたに寄り添う元型を形づくります。',
+    'あなたが生まれた季節、年、時刻 、 そのそれぞれが、あなたに寄り添う元型を形づくります。',
   'finder.birth.date': '出生日',
   'finder.birth.day': '日',
   'finder.birth.month': '月',
@@ -1815,8 +1815,8 @@ export const JA: Record<keyof typeof TR, string> = {
   'finder.birth.cityPlaceholder': '例：イスタンブール、コンヤ、イズミル...',
   'finder.birth.cityHint': '出生地は読み解きを深めます。',
   'finder.birth.hour': '出生時刻',
-  'finder.birth.hourPlaceholder': '時 (0–23)',
-  'finder.birth.hourHint': 'わからない場合は空欄にしてください — それでも強いマッチングが行われます。',
+  'finder.birth.hourPlaceholder': '時 (0-23)',
+  'finder.birth.hourHint': 'わからない場合は空欄にしてください 、 それでも強いマッチングが行われます。',
   'finder.birth.optional': '(任意)',
   'finder.submit': '私のガイドを見つける ✦',
   'finder.result.label': 'あなたに寄り添う存在',
@@ -1850,7 +1850,7 @@ export const JA: Record<keyof typeof TR, string> = {
   'detail.kind.iching': '易経',
 
   // Weekly
-  'weekly.title': '週 — 周期的なガイド',
+  'weekly.title': '週 、 周期的なガイド',
   'weekly.desc':
     'すべての元型はあなたとともに生まれ、生涯とどまります。週ごとのガイドは、特定の期間にあなたに寄り添う一時的な存在です。',
   'weekly.tag.archetype': '今週 · 普遍的な元型',
@@ -1981,14 +1981,14 @@ export const JA: Record<keyof typeof TR, string> = {
   'profile.level.6': '元型の達人',
   'profile.level.7': 'シンボルの長老',
 
-  // Disclaimer (entertainment & wellbeing) — JA
+  // Disclaimer (entertainment & wellbeing), JA
   'disclaimer.title': '鏡であって、処方箋ではありません',
   'disclaimer.body':
     'Sakin 神話は、元型・神話・シンボルを用いた内省とジャーナリングの伴走者です。内容は心理的・医療的・予言的な助言ではなく、自己探求のためだけのものです。もしつらい状況にあるなら、専門家の支援を受けることを検討してください。',
   'disclaimer.accept': '理解しました、続ける ✦',
   'disclaimer.footer': '自己内省のために · 助言ではありません',
 
-  // Profile — data deletion
+  // Profile: data deletion
   'profile.deleteData.section': 'データとプライバシー',
   'profile.deleteData.button': 'プロフィールとデータを削除',
   'profile.deleteData.note': 'すべてのデータはこの端末に保存されます。削除すると元に戻せません。',
@@ -2006,7 +2006,7 @@ export const JA: Record<keyof typeof TR, string> = {
   'family.intro': 'ひとつのエコシステム。多くの扉。',
   'family.webBadge': 'WEB',
   'family.master.name': 'sakin.life',
-  'family.master.desc': '中心 — すべてのアプリへの入口',
+  'family.master.desc': '中心 、 すべてのアプリへの入口',
   'family.app.hayvan.name': '動物ガイド',
   'family.app.hayvan.desc': 'アナトリアから世界へのトーテム',
   'family.app.tas.name': '石ガイド',

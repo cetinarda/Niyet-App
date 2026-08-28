@@ -1,4 +1,4 @@
-// Norse Elder Futhark — 24 rune, doğum tarihine göre
+// Norse Elder Futhark: 24 rune, doğum tarihine göre
 
 const RUNES = [
   { name: 'Berkano', glyph: 'ᛒ', meaning: 'Huş ağacı', power: 'Doğum, büyüme, dişil koruma', from: [12, 28], to: [1, 13] },

@@ -85,7 +85,7 @@ export const fr = {
     intro: {
       title: 'Découvre ton animal spirituel',
       desc: 'Il existe deux voies pour trouver l\'animal totem aligné avec ton âme.',
-      note: 'Sakin te tend un miroir — il reflète ce qui est déjà en toi et murmure ce qui est possible.\nSeul toi peux l\'éveiller dans ton cœur, le ressentir et te l\'approprier.',
+      note: 'Sakin te tend un miroir, il reflète ce qui est déjà en toi et murmure ce qui est possible.\nSeul toi peux l\'éveiller dans ton cœur, le ressentir et te l\'approprier.',
       quizBtn: {
         title: 'Découvrir par des questions',
         desc: '7 questions, adaptées à ton caractère',
@@ -108,8 +108,8 @@ export const fr = {
       cityHint: 'L\'énergie de ton lieu de naissance ajoute de la profondeur à la lecture.',
       hourLabel: 'Heure de naissance',
       hourOptional: '(facultatif)',
-      hourPlaceholder: 'Heure (0–23)',
-      hourHint: 'Si tu ne connais pas l\'heure, laisse vide — une forte correspondance sera tout de même trouvée.',
+      hourPlaceholder: 'Heure (0-23)',
+      hourHint: 'Si tu ne connais pas l\'heure, laisse vide, une forte correspondance sera tout de même trouvée.',
       submitBtn: 'Trouver mon guide ✦',
     },
     result: {
@@ -185,7 +185,7 @@ export const fr = {
   nagual: {
     back: '← Retour',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Guide périodique',
+    introTitle: 'Nagual: Guide périodique',
     introText:
       'Ton animal totem naît avec toi et reste toute la vie. Le nagual est un guide temporaire\nqui t\'accompagne durant une période précise. Il arrive dans les moments d\'épreuve,\nde transformation ou de crise. Une fois sa mission accomplie, il cède sa place\nà un autre guide.',
     weekTag: 'CETTE SEMAINE · UNIVERSEL',
@@ -302,7 +302,7 @@ export const fr = {
       estimated: '(estimé)',
       hdTypeSelectHint: 'Sélectionne ton type :',
       hdDisclaimer:
-        '⚠ Le calcul est une estimation — un HD précis nécessite l\'heure de naissance et les éphémérides.\nSi tu connais ton type, sélectionne-le ci-dessus.',
+        '⚠ Le calcul est une estimation, un HD précis nécessite l\'heure de naissance et les éphémérides.\nSi tu connais ton type, sélectionne-le ci-dessus.',
       sunGates: 'Portes solaires',
       consciousSun: 'Soleil conscient',
       designSun: 'Soleil du design',
@@ -326,7 +326,7 @@ export const fr = {
         yearPlaceholder: 'Année',
         hourLabel: 'Heure de naissance',
         hourOptional: '(important pour HD)',
-        hourPlaceholder: 'Heure (0–23)',
+        hourPlaceholder: 'Heure (0-23)',
         minutePlaceholder: 'Minute',
         cityLabel: 'Ville de naissance',
         cityOptional: '(pour le fuseau horaire)',
@@ -341,8 +341,8 @@ export const fr = {
       sectionTitle: 'Qu\'est-ce que la guidance animale ?',
       totemTitle: '⊕ Animal totem',
       totemText:
-        'Chaque personne porte l\'esprit d\'un animal dans sa nature. Cet animal totem te représente ; ton énergie, tes forces et le chemin que tu parcours portent ses traces. Le totem ne change jamais — il naît avec toi et grandit avec toi.',
-      nagualTitle: '◎ Nagual — Guide périodique',
+        'Chaque personne porte l\'esprit d\'un animal dans sa nature. Cet animal totem te représente ; ton énergie, tes forces et le chemin que tu parcours portent ses traces. Le totem ne change jamais, il naît avec toi et grandit avec toi.',
+      nagualTitle: '◎ Nagual: Guide périodique',
       nagualText:
         'Le nagual est un guide temporaire qui vient à toi pour une période précise. Il est appelé dans les moments d\'épreuve, de transformation ou de crise. Une fois sa mission accomplie, il cède sa place à un autre guide. L\'animal tiré dans ta lecture quotidienne porte la voix du nagual du jour.',
       finderTitle: 'Trouve ton guide animal',
@@ -365,7 +365,7 @@ export const fr = {
     sakinFamily: {
       title: 'Famille Sakin',
       intro: 'Un écosystème. Un abonnement. De nombreuses portes.',
-      masterDesc: 'Centre — accès à toutes les applis',
+      masterDesc: 'Centre: accès à toutes les applis',
       apps: {
         animalGuidance: 'Guidance animale',
         stoneGuidance: 'Guidance des cristaux',
@@ -506,11 +506,11 @@ export const fr = {
     },
     mit: {
       term: 'Mythe',
-      short: 'Une force symbolique que l\'âme rencontre — Ombre, Seuil, Foudre...',
+      short: 'Une force symbolique que l\'âme rencontre: Ombre, Seuil, Foudre...',
     },
     hayatYolu: {
       term: 'Nombre du chemin de vie',
-      short: 'Le résumé numérologique de ta date de naissance — révèle ton énergie centrale.',
+      short: 'Le résumé numérologique de ta date de naissance, révèle ton énergie centrale.',
     },
     numeroloji: {
       term: 'Numérologie',
@@ -518,15 +518,15 @@ export const fr = {
     },
     ifade: {
       term: 'Nombre d\'expression',
-      short: 'Dérivé des lettres de ton nom — tes talents naturels et ton potentiel.',
+      short: 'Dérivé des lettres de ton nom, tes talents naturels et ton potentiel.',
     },
     ruhIstegi: {
       term: 'Nombre de l\'élan de l\'âme',
-      short: 'À partir des voyelles de ton nom — ta motivation intérieure.',
+      short: 'À partir des voyelles de ton nom, ta motivation intérieure.',
     },
     kisilik: {
       term: 'Nombre de personnalité',
-      short: 'À partir des consonnes de ton nom — le visage que tu montres au monde.',
+      short: 'À partir des consonnes de ton nom, le visage que tu montres au monde.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -570,7 +570,7 @@ export const fr = {
     },
     kisiselYil: {
       term: 'Année personnelle',
-      short: 'Le thème propre à ton année numérologique — à quelle étape du cycle de 9 ans tu te trouves.',
+      short: 'Le thème propre à ton année numérologique, à quelle étape du cycle de 9 ans tu te trouves.',
     },
     rehber: {
       term: 'Animal spirituel',

@@ -10,7 +10,7 @@ import { readActiveReportId } from '@/lib/active-report';
 import { useT } from '@/lib/i18n';
 
 /**
- * "Profilin" — menüden erişilen kişisel merkez. Karneden ayrı: doğum bilgileri
+ * "Profilin": menüden erişilen kişisel merkez. Karneden ayrı: doğum bilgileri
  * (düzenlenebilir) + temel bilgiler + Günün Pusulası (ProfileCard).
  * Karne (report) ile aynı hydration: aktif karne yoksa son kaydedileni yükler.
  */

@@ -83,11 +83,11 @@ export const pt = {
     intro: {
       title: 'Descubra sua pedra',
       desc: 'Encontre os cristais alinhados com você pelo seu signo ou elemento.',
-      note: 'Cada pedra carrega sua própria vibração. Escolha aquela que te chama — deixe sua intuição fazer o resto.',
+      note: 'Cada pedra carrega sua própria vibração. Escolha aquela que te chama, deixe sua intuição fazer o resto.',
       birthStoneTitle: 'Sua pedra natal',
       zodiacLabel: 'Por signo',
       elementLabel: 'Por elemento',
-      elementHint: 'Cada cristal vibra com um elemento natural; o seu vem do seu signo — fogo: Áries·Leão·Sagitário · terra: Touro·Virgem·Capricórnio · ar: Gêmeos·Libra·Aquário · água: Câncer·Escorpião·Peixes.',
+      elementHint: 'Cada cristal vibra com um elemento natural; o seu vem do seu signo, fogo: Áries·Leão·Sagitário · terra: Touro·Virgem·Capricórnio · ar: Gêmeos·Libra·Aquário · água: Câncer·Escorpião·Peixes.',
     },
     elements: {
       fire: 'Fogo',
@@ -109,7 +109,7 @@ export const pt = {
   nagual: {
     back: '← Voltar',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Guia temporário',
+    introTitle: 'Nagual: Guia temporário',
     introText:
       'Seu animal totem nasce com você e permanece por toda a vida. O nagual é um guia\ntemporário que te acompanha durante um período específico. Ele chega em momentos de prova,\ntransformação ou crise. Cumprida a sua missão, cede o lugar a\noutro guia.',
     weekTag: 'ESTA SEMANA · UNIVERSAL',
@@ -226,7 +226,7 @@ export const pt = {
       estimated: '(estimado)',
       hdTypeSelectHint: 'Selecione seu tipo:',
       hdDisclaimer:
-        '⚠ O cálculo é uma estimativa — um HD preciso exige hora de nascimento e efemérides.\nSe você conhece seu tipo, selecione-o acima.',
+        '⚠ O cálculo é uma estimativa, um HD preciso exige hora de nascimento e efemérides.\nSe você conhece seu tipo, selecione-o acima.',
       sunGates: 'Portões solares',
       consciousSun: 'Sol consciente',
       designSun: 'Sol de design',
@@ -265,8 +265,8 @@ export const pt = {
       sectionTitle: 'O que é orientação animal?',
       totemTitle: '⊕ Animal totem',
       totemText:
-        'Cada pessoa carrega em sua natureza o espírito de um animal. Esse animal totem representa você; sua energia, suas forças e o caminho que você percorre trazem as suas marcas. O totem nunca muda — nasce com você e cresce com você.',
-      nagualTitle: '◎ Nagual — Guia temporário',
+        'Cada pessoa carrega em sua natureza o espírito de um animal. Esse animal totem representa você; sua energia, suas forças e o caminho que você percorre trazem as suas marcas. O totem nunca muda: nasce com você e cresce com você.',
+      nagualTitle: '◎ Nagual: Guia temporário',
       nagualText:
         'O nagual é um guia temporário que vem até você por um período específico. Ele é chamado em momentos de prova, transformação ou crise. Cumprida a sua missão, cede o lugar a outro guia. O animal sorteado na sua leitura diária carrega a voz do nagual de hoje.',
       finderTitle: 'Encontre seu guia animal',
@@ -289,7 +289,7 @@ export const pt = {
     sakinFamily: {
       title: 'Família Sakin',
       intro: 'Um ecossistema. Uma assinatura. Muitas portas.',
-      masterDesc: 'Base central — acesso a todos os apps',
+      masterDesc: 'Base central: acesso a todos os apps',
       apps: {
         animalGuidance: 'Orientação animal',
         stoneGuidance: 'Orientação de cristais',
@@ -430,11 +430,11 @@ export const pt = {
     },
     mit: {
       term: 'Mito',
-      short: 'Uma força simbólica que a alma encontra — Sombra, Limiar, Relâmpago...',
+      short: 'Uma força simbólica que a alma encontra, Sombra, Limiar, Relâmpago...',
     },
     hayatYolu: {
       term: 'Número do caminho de vida',
-      short: 'O resumo numerológico da sua data de nascimento — mostra sua energia central.',
+      short: 'O resumo numerológico da sua data de nascimento, mostra sua energia central.',
     },
     numeroloji: {
       term: 'Numerologia',
@@ -442,15 +442,15 @@ export const pt = {
     },
     ifade: {
       term: 'Número de expressão',
-      short: 'Derivado das letras do seu nome — seus talentos naturais e seu potencial.',
+      short: 'Derivado das letras do seu nome, seus talentos naturais e seu potencial.',
     },
     ruhIstegi: {
       term: 'Número do desejo da alma',
-      short: 'Das vogais do seu nome — sua motivação interior.',
+      short: 'Das vogais do seu nome, sua motivação interior.',
     },
     kisilik: {
       term: 'Número de personalidade',
-      short: 'Das consoantes do seu nome — o rosto que você mostra ao mundo.',
+      short: 'Das consoantes do seu nome, o rosto que você mostra ao mundo.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -494,7 +494,7 @@ export const pt = {
     },
     kisiselYil: {
       term: 'Ano pessoal',
-      short: 'O tema próprio do seu ano numerológico — em que passo do ciclo de 9 anos você está.',
+      short: 'O tema próprio do seu ano numerológico, em que passo do ciclo de 9 anos você está.',
     },
     rehber: {
       term: 'Animal espiritual',

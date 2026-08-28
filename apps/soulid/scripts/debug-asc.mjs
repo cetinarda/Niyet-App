@@ -31,7 +31,7 @@ function computeAsc(date, lat, lon) {
 const TESTS = [
   { name: 'Kayseri', date: new Date('1988-04-07T20:05:00Z'), lat: 38.7322, lon: 35.4853, expectedSign: 'Sagittarius' },
   { name: 'İstanbul gündoğumu (Mart eşitnoktası ~06:00)', date: new Date('2024-03-20T03:30:00Z'), lat: 41.0, lon: 28.97, expectedSign: 'Pisces' }, // 6:30 local; Sun at 0° Aries rising
-  { name: 'NYC öğle', date: new Date('2000-06-21T16:00:00Z'), lat: 40.7, lon: -74.0, expectedSign: 'Virgo' }, // noon local NYC summer solstice — Virgo rising
+  { name: 'NYC öğle', date: new Date('2000-06-21T16:00:00Z'), lat: 40.7, lon: -74.0, expectedSign: 'Virgo' }, // noon local NYC summer solstice, Virgo rising
 ];
 
 for (const t of TESTS) {

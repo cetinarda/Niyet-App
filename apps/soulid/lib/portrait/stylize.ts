@@ -1,21 +1,21 @@
-// "Otantik portre" — kullanıcının fotoğrafını el-boyaması RPG kahraman
+// "Otantik portre": kullanıcının fotoğrafını el-boyaması RPG kahraman
 // portresine çeviren cihaz-üstü dönüşüm. Üçüncü-taraf AI servisi YOK:
 // fotoğraf cihazdan çıkmaz (gizlilik), anlık çalışır, çevrimdışı da işler.
 //
 // Pipeline (klasik illüstrasyon zinciri):
 //   1) kare kırp
-//   2) KUWAHARA yağlıboya filtresi — bölgeleri düzler, kenarları korur;
+//   2) KUWAHARA yağlıboya filtresi, bölgeleri düzler, kenarları korur;
 //      fotoğrafı gerçekten "fırçayla boyanmış" gösteren asıl adım
-//   3) posterize — renk kuantalama, illüstrasyon ton geçişleri
-//   4) Sobel mürekkep konturu — çizim hissi veren koyu hatlar
+//   3) posterize: renk kuantalama, illüstrasyon ton geçişleri
+//   4) Sobel mürekkep konturu, çizim hissi veren koyu hatlar
 //   5) sıcak fener grade'i (ışıkta altın, gölgede kozmik mor)
 //   6) vinyet + üst-soldan altın ışık → portre çerçevesi
 //   7) tuval greni
 
 export type StylizeOptions = {
   size?: number; // çıktı kenar uzunluğu (kare)
-  radius?: number; // Kuwahara yarıçapı — büyük = daha kalın fırça
-  levels?: number; // posterize seviyesi — az = daha "boyama"
+  radius?: number; // Kuwahara yarıçapı: büyük = daha kalın fırça
+  levels?: number; // posterize seviyesi: az = daha "boyama"
 };
 
 function clamp(v: number): number {
@@ -133,7 +133,7 @@ function kuwahara(src: Uint8ClampedArray, w: number, h: number, r: number): Uint
 /**
  * Fotoğrafı otantik, boyanmış bir kahraman portresine dönüştürür.
  * Girdi/çıktı data-URL (capture sırasında CORS sorunu olmaz).
- * SSR-güvenli DEĞİLDİR — yalnız client'ta çağır.
+ * SSR-güvenli DEĞİLDİR: yalnız client'ta çağır.
  */
 export async function stylizePortrait(
   dataUrl: string,
@@ -158,7 +158,7 @@ export async function stylizePortrait(
   const imageData = ctx.getImageData(0, 0, size, size);
   const src = imageData.data;
 
-  // kontur için ORİJİNAL luminans (Kuwahara öncesi — hatlar net kalsın)
+  // kontur için ORİJİNAL luminans (Kuwahara öncesi, hatlar net kalsın)
   const edgeLum = new Float32Array(size * size);
   for (let i = 0, p = 0; i < src.length; i += 4, p++) {
     edgeLum[p] = src[i]! * 0.299 + src[i + 1]! * 0.587 + src[i + 2]! * 0.114;
@@ -211,7 +211,7 @@ export async function stylizePortrait(
       }
 
       // sıcak fener grade'i: ışıkta altın, gölgede hafif kozmik mor.
-      // Ölçülü — agresif kayma renkleri bozuyor (bordo saç/yeşil hale sorunu).
+      // Ölçülü: agresif kayma renkleri bozuyor (bordo saç/yeşil hale sorunu).
       const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
       r = r * (0.99 + 0.07 * lum) + 5 * (1 - lum);
       g = g * (0.98 + 0.03 * lum);
@@ -249,7 +249,7 @@ export async function stylizePortrait(
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, size, size);
 
-  // alt derin gölge — figürü zeminden ayırır
+  // alt derin gölge: figürü zeminden ayırır
   const base = ctx.createLinearGradient(0, size * 0.5, 0, size);
   base.addColorStop(0, 'rgba(10,4,32,0)');
   base.addColorStop(1, 'rgba(10,4,32,0.6)');

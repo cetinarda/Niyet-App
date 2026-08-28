@@ -13,13 +13,13 @@
 // "Gel gel ne olursan ol", "Cennet cennet dedikleri", "Tanrı'yı insanda ara"
 // gibi ŞİİRSEL/hümanist tasavvuf sözleri KORUNUR (bunlar tam da istenen ton).
 const BLOCKLIST = new Set<string>([
-  'q015', // "Gönlünü yıka; o Allah'ın evi olacak" — doğrudan akide
-  'q058', // "Dört kapı kırk makam: şeriat, tarikat..." — doktrin/liste
-  'q073', // "Allah bir, Muhammed hak, Ali..." — kelime-i şehadet/akide
-  'q078', // "Her kim Allah'ı severse halkı da sever" — vaaz
-  'q079', // "Allah yolunda ölmek şeref" — şehadet/zühd
-  'q084', // "Dünyayı seven Allah'ı unutur" — zühd vaazı
-  'q160', // "Kul... dergâhın kapısı açılır" — akide tonu
+  'q015', // "Gönlünü yıka; o Allah'ın evi olacak": doğrudan akide
+  'q058', // "Dört kapı kırk makam: şeriat, tarikat...": doktrin/liste
+  'q073', // "Allah bir, Muhammed hak, Ali...": kelime-i şehadet/akide
+  'q078', // "Her kim Allah'ı severse halkı da sever": vaaz
+  'q079', // "Allah yolunda ölmek şeref": şehadet/zühd
+  'q084', // "Dünyayı seven Allah'ı unutur": zühd vaazı
+  'q160', // "Kul... dergâhın kapısı açılır": akide tonu
 ]);
 
 export function buildQuotePool(quotes: { id: string; source: string }[]): string[] {

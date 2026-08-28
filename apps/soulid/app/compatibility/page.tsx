@@ -87,7 +87,7 @@ export default function CompatibilityPage() {
       return;
     }
 
-    // Yer çözümü — öneriden seçilmediyse submit'te bir kez daha dene
+    // Yer çözümü: öneriden seçilmediyse submit'te bir kez daha dene
     // (ağ boşsa offline gazetteer devreye girer). Birth sayfasıyla tutarlı.
     let resolved = place;
     if (!resolved && placeQuery.trim().length >= 2) {
@@ -198,7 +198,7 @@ export default function CompatibilityPage() {
         </h1>
         <p className="mt-3 text-base leading-relaxed text-muted">{t('compat.subtitle')}</p>
 
-        {/* Kişi 1 — sen */}
+        {/* Kişi 1: sen */}
         <div className="mt-12 rounded-3xl border border-gold/30 bg-gold/[0.04] p-6 md:p-7">
           <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-gold">{t('compat.person1')}</p>
           <p className="mt-3 font-display text-2xl text-ink">{me.birth.fullName}</p>
@@ -210,7 +210,7 @@ export default function CompatibilityPage() {
           </p>
         </div>
 
-        {/* Kişi 2 — form */}
+        {/* Kişi 2: form */}
         <div className="card-surface mt-5 rounded-3xl border border-panelBorder p-6 md:p-7">
           <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-cosmic">{t('compat.person2')}</p>
 
@@ -270,7 +270,7 @@ export default function CompatibilityPage() {
           </div>
         </div>
 
-        {/* Consent — GDPR Art.6 + Apple 5.1.1(ii). Üçüncü kişinin doğum
+        {/* Consent: GDPR Art.6 + Apple 5.1.1(ii). Üçüncü kişinin doğum
             verisini sisteme girmeden önce onayı şart. */}
         <label className="mt-5 flex cursor-pointer items-start gap-3 rounded-2xl border border-panelBorder bg-panel/20 p-4">
           <input
@@ -312,7 +312,7 @@ export default function CompatibilityPage() {
 
         {result && narrative ? (
           <div id="compat-result" className="mt-12 space-y-10">
-            {/* Paylaşılabilir uyum kartı — radar + rezonans */}
+            {/* Paylaşılabilir uyum kartı: radar + rezonans */}
             {me && otherReport ? (
               <CompatShare a={me} b={otherReport} result={result} />
             ) : null}
@@ -320,7 +320,7 @@ export default function CompatibilityPage() {
             {me && otherReport ? (
               <DeepAnalysisBox a={me} b={otherReport} result={result} />
             ) : null}
-            {/* Başka birine bak — banner */}
+            {/* Başka birine bak: banner */}
             <div className="mt-4 overflow-hidden rounded-3xl border border-cosmic/50 bg-gradient-to-br from-[#0b0524] via-[#1e1a6e] to-[#9d3cb1]/30 p-6 text-center md:p-7">
               <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-cosmic">
                 {locale === 'tr' ? 'DEVAM ET' : 'KEEP GOING'}

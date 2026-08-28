@@ -1,4 +1,4 @@
-# Sosyal Medya İçerik Takvimi — İlk 30 Gün
+# Sosyal Medya İçerik Takvimi, İlk 30 Gün
 
 ## Format havuzu
 
@@ -11,7 +11,7 @@
 - CTA: "soulprofile.life'a gir, ücretsiz"
 
 **C. Konsept eğitimi (30-60sn)**
-- "Kuzey Ay Düğümü nedir?" — single concept post
+- "Kuzey Ay Düğümü nedir?": single concept post
 - "Human Design tipini nasıl anlarsın?"
 - "Master numara (11/22/33) ne demek?"
 
@@ -36,7 +36,7 @@
 | 8 | TikTok | C | Human Design Generator açıklaması |
 | 9 | IG Reel | A | Arkturian reveal: geometri ustası |
 | 10 | TikTok | D | UGC #1 share |
-| 11 | IG Reel | C | Yaşam Yolu 7 — bilge ruh |
+| 11 | IG Reel | C | Yaşam Yolu 7, bilge ruh |
 | 12 | TikTok | A | Andromedan reveal |
 | 13 | IG Story | B | Free karne CTA + countdown |
 | 14 | TikTok | C | Güney Ay Düğümü ve bırakılması gerekenler |
@@ -60,7 +60,7 @@
 ## Tone of voice
 
 - Türkçe: sıcak, ablası gibi, sahici. Çok mistik kaçma, somut hayatla bağla.
-- İngilizce: "soft mystical millennial" — Co-Star kuruluğu YOK, The Pattern romantizmi VAR.
+- İngilizce: "soft mystical millennial": Co-Star kuruluğu YOK, The Pattern romantizmi VAR.
 - Asla: "100% doğru kişilik testi" gibi iddialar. "Bir ayna" / "bir hatırlama" denecek.
 
 ## Hashtag stratejisi

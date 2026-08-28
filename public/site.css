@@ -201,7 +201,7 @@ img { max-width:100%; height:auto; display:block; }
 }
 .nav-cta:hover { opacity:.9; }
 
-/* "Yolculuk" — diğer nav linkleri gibi düz metin değil, belirgin bir KUTU
+/* "Yolculuk": diğer nav linkleri gibi düz metin değil, belirgin bir KUTU
    (kullanıcı isteği). Uygulama içindeki "Sakin Nedir → Yolculuk" sekmesine
    götürür. */
 .nav-box {

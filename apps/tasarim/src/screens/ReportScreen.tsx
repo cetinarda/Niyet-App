@@ -27,7 +27,7 @@ export function ReportScreen({ onNavigate }: Props) {
     return generateWeeklyReport(chart);
   }, [chart]);
 
-  // ── AI KİŞİSEL YORUM (premium) — chart-hash önbellekli, hata durumunda
+  // ── AI KİŞİSEL YORUM (premium), chart-hash önbellekli, hata durumunda
   //    yukarıdaki deterministik ritüeller zaten ekranda (fallback doğal).
   const aiLang = getLang() === 'en' ? 'en' : 'tr';
   const aiCacheKey = chart ? `hd_ai_v1_${chartHash(chart)}_${aiLang}` : '';
@@ -58,7 +58,7 @@ export function ReportScreen({ onNavigate }: Props) {
         })),
         channels: chart.activeChannels.map(c => `${c.id} ${c.name}`),
       };
-      const system = 'You are Sakin Tasarım\'s Human Design guide: warm, grounded, second-person, no jargon dumps, no medical/financial claims. Use ONLY the chart data provided by the user message — never invent gates, channels or centers that are not listed. Write ONE flowing personal commentary (5-7 sentences): weave together (a) how this person\'s specific hanging gates color their open centers, (b) one concrete daily "reset ritual" tailored to their authority and strongest channel, (c) one gentle strength they can lean on this week. Refer to gates/channels by number and name exactly as given.';
+      const system = 'You are Sakin Tasarım\'s Human Design guide: warm, grounded, second-person, no jargon dumps, no medical/financial claims. Use ONLY the chart data provided by the user message, never invent gates, channels or centers that are not listed. Write ONE flowing personal commentary (5-7 sentences): weave together (a) how this person\'s specific hanging gates color their open centers, (b) one concrete daily "reset ritual" tailored to their authority and strongest channel, (c) one gentle strength they can lean on this week. Refer to gates/channels by number and name exactly as given.';
       const r = await fetch(AI_BASE + '/.netlify/functions/ai-call', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -219,7 +219,7 @@ export function ReportScreen({ onNavigate }: Props) {
         <Text style={[styles.bigKicker, { color: Colors.emberSoft }]}>{getLang() === 'en' ? '🚨 WARNING SIGNS' : '🚨 UYARI İŞARETLERİ'}</Text>
         <Text style={styles.bigNote}>
           {getLang() === 'en'
-            ? 'Bodily/emotional signals that show you are off course. These are not your enemy — they are your guide.'
+            ? 'Bodily/emotional signals that show you are off course. These are not your enemy, they are your guide.'
             : 'Yanlış yönde olduğunu gösteren bedensel/duygusal sinyaller. Bunlar düşmanın değil, rehberin.'}
         </Text>
 
@@ -257,13 +257,13 @@ export function ReportScreen({ onNavigate }: Props) {
         ))}
       </View>
 
-      {/* ✦ AI KİŞİSEL YORUM — haritaya özel derin yorum (premium; chart-hash önbellekli) */}
+      {/* ✦ AI KİŞİSEL YORUM, haritaya özel derin yorum (premium; chart-hash önbellekli) */}
       <View style={[styles.bigCard, { borderColor: 'rgba(201,168,76,0.4)' }]}>
         <Text style={[styles.bigKicker, { color: Colors.gold }]}>{getLang() === 'en' ? '✦ PERSONAL AI READING' : '✦ HARİTANA ÖZEL AI YORUMU'}</Text>
         <Text style={styles.bigNote}>
           {getLang() === 'en'
-            ? 'A one-of-a-kind commentary woven from your exact gates, channels and authority — no two charts get the same words.'
-            : 'Tam olarak senin kapılarından, kanallarından ve yetkinden dokunan, eşi olmayan bir yorum — iki harita aynı cümleleri görmez.'}
+            ? 'A one-of-a-kind commentary woven from your exact gates, channels and authority, no two charts get the same words.'
+            : 'Tam olarak senin kapılarından, kanallarından ve yetkinden dokunan, eşi olmayan bir yorum, iki harita aynı cümleleri görmez.'}
         </Text>
         {!isPremium ? (
           <TouchableOpacity onPress={openPremium} activeOpacity={0.85}
@@ -285,15 +285,15 @@ export function ReportScreen({ onNavigate }: Props) {
         )}
         {aiErr && (
           <Text style={{ color: Colors.textMuted, fontSize: 12, marginTop: 8, textAlign: 'center' }}>
-            {getLang() === 'en' ? 'Could not reach the sky right now — the rituals above are fully yours meanwhile.' : 'Şu an üretilemedi — yukarıdaki ritüeller zaten tamamen sana özel.'}
+            {getLang() === 'en' ? 'Could not reach the sky right now, the rituals above are fully yours meanwhile.' : 'Şu an üretilemedi: yukarıdaki ritüeller zaten tamamen sana özel.'}
           </Text>
         )}
       </View>
 
       <Text style={styles.footerNote}>
         {getLang() === 'en'
-          ? 'The weekly theme, the attention / let-go / own-it blocks, the gate, the practice AND the warning signs are all woven from your unique chart — they shift with the week and with you.'
-          : 'Haftalık tema, dikkat / bırak / sahiplen blokları, kapı, pratik VE uyarı işaretleri — hepsi senin benzersiz haritandan dokunur; haftayla ve seninle değişir.'}
+          ? 'The weekly theme, the attention / let-go / own-it blocks, the gate, the practice AND the warning signs are all woven from your unique chart, they shift with the week and with you.'
+          : 'Haftalık tema, dikkat / bırak / sahiplen blokları, kapı, pratik VE uyarı işaretleri, hepsi senin benzersiz haritandan dokunur; haftayla ve seninle değişir.'}
       </Text>
 
       <View style={styles.disclaimerBox}>

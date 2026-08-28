@@ -1,4 +1,4 @@
-# Promosyon Metni — 7 Dil
+# Promosyon Metni: 7 Dil
 
 Kısa açıklama / promotional text (App Store, Google Play, sosyal medya bio vb. için).
 Orijinal Türkçe metin referanstır, diğerleri ondan çevrilmiştir. Uygulamanın
@@ -27,13 +27,13 @@ Une petite pause respiration dans un monde bruyant. Apaise ton esprit avec des p
 
 ---
 
-# Başlık + Altyazı — 7 Dil
+# Başlık + Altyazı: 7 Dil
 
 App Store/Play Store başlık alanı (Title, max 30 karakter) + altyazı
 (Subtitle, max 30 karakter) çifti. "Sakin" marka adı tüm dillerde sabit
-tutulur. Karakter sayıları parantez içinde — ES ve FR başlıkları orijinal
+tutulur. Karakter sayıları parantez içinde: ES ve FR başlıkları orijinal
 çeviride 32 karakterdi (sınırı aşıyordu), anlam korunarak kısaltıldı
-("Respiración"→"Respiro", "Respiration"→"Souffle" — ikisi de "nefes"
+("Respiración"→"Respiro", "Respiration"→"Souffle": ikisi de "nefes"
 için doğal/yaygın kısa terim). EN ve PT tam sınırda (30/30), payları yok.
 
 | Dil | Başlık (karakter) | Altyazı (karakter) |
@@ -48,7 +48,7 @@ için doğal/yaygın kısa terim). EN ve PT tam sınırda (30/30), payları yok.
 
 ### Kısa başlık (30 karakteri geçen/riskli olanlar için yedek)
 
-Sadece marka + tek kelime — "& Meditasyon/Meditation" kısmı yok. Hepsi
+Sadece marka + tek kelime, "& Meditasyon/Meditation" kısmı yok. Hepsi
 geniş payla (8-13 karakter) sınırın altında, EN/PT'nin tam sınırda (30/30)
 kaldığı durumda güvenli alternatif olarak kullanılabilir.
 

@@ -89,7 +89,7 @@ export function ChartScreen({ onNavigate }: Props) {
         {activeProfile.birthDate} · {activeProfile.birthTime} · {cityLabel(activeProfile.city).split(',')[0]}
       </Text>
 
-      {/* HERO — sol özet, sağ köşede küçük bodygraph */}
+      {/* HERO: sol özet, sağ köşede küçük bodygraph */}
       <View style={styles.hero}>
         <View style={styles.heroLeft}>
           <Text style={styles.heroType}>{L(t, 'name')}</Text>
@@ -132,7 +132,7 @@ export function ChartScreen({ onNavigate }: Props) {
                       ? 'Three separate groups; seeking three different connections'
                       : chart.definition.startsWith('Dörtlü')
                       ? 'Four separate groups; rare, multi-faceted bonding'
-                      : 'Reflector — sampling nature')
+                      : 'Reflector: sampling nature')
                   : (chart.definition.startsWith('Tek')
                       ? 'Tüm tanımlı merkezler tek küme; akışkan enerji'
                       : chart.definition.startsWith('Bölünmüş')
@@ -141,7 +141,7 @@ export function ChartScreen({ onNavigate }: Props) {
                       ? 'Üç ayrı küme; üç farklı bağlantı arayışı'
                       : chart.definition.startsWith('Dörtlü')
                       ? 'Dört ayrı küme; nadir, çok yönlü bağ kurma'
-                      : 'Reflektör — örnekleyici doğa')
+                      : 'Reflektör: örnekleyici doğa')
               }
             />
             <Fact
@@ -153,7 +153,7 @@ export function ChartScreen({ onNavigate }: Props) {
         </View>
       </View>
 
-      {/* HARİTA — sade, etiketli bodygraph + tanımlı/tanımsız göstergesi */}
+      {/* HARİTA: sade, etiketli bodygraph + tanımlı/tanımsız göstergesi */}
       <View style={styles.mapBlock}>
         <Bodygraph chart={chart} size={mapSize} showLabels />
         <View style={styles.legendRow}>
@@ -168,7 +168,7 @@ export function ChartScreen({ onNavigate }: Props) {
         </View>
       </View>
 
-      {/* İkinci sıra — özet rakamlar */}
+      {/* İkinci sıra: özet rakamlar */}
       <View style={styles.numberRow}>
         <NumberStat label={getLang() === 'en' ? 'Active Gate' : 'Aktif Kapı'} value={`${chart.activeGates.size}`} sub="/ 64" />
         <NumberStat label={getLang() === 'en' ? 'Active Channel' : 'Aktif Kanal'} value={`${chart.activeChannels.length}`} sub="/ 36" />
@@ -199,7 +199,7 @@ export function ChartScreen({ onNavigate }: Props) {
         {!!L(a, 'caution') && <Text style={styles.caution}>! {L(a, 'caution')}</Text>}
       </Section>
 
-      <Section title={getLang() === 'en' ? 'Your Profile' : 'Profilin'} kicker={`${chart.profile} — ${getLang() === 'en' ? L(p, 'name').toUpperCase() : p.name.toLocaleUpperCase('tr')}`}>
+      <Section title={getLang() === 'en' ? 'Your Profile' : 'Profilin'} kicker={`${chart.profile}: ${getLang() === 'en' ? L(p, 'name').toUpperCase() : p.name.toLocaleUpperCase('tr')}`}>
         <Text style={styles.body}>{L(p, 'longDesc')}</Text>
         <Text style={styles.subLabel}>{getLang() === 'en' ? 'Conscious line' : 'Bilinçli çizgi'} · Personality Sun {pSun.gate}.{pSun.line}</Text>
         <Text style={styles.body}>
@@ -220,8 +220,8 @@ export function ChartScreen({ onNavigate }: Props) {
         <KeyVal k={getLang() === 'en' ? 'Incarnation Cross' : 'İnkarnasyon Haçı'} v={crossLabel(chart.incarnationCross)} last />
         <Text style={[styles.body, { marginTop: Spacing.md }]}>
           {getLang() === 'en'
-            ? 'Definition tells you how many separate groups your defined centers connect into. If you are single-defined your energy is fluid; in split definitions you are drawn to people and situations that bridge. The Incarnation Cross is the universal theme you work on across your whole life — woven from your Personality Sun/Earth and Design Sun/Earth activations.'
-            : 'Tanım, tanımlı merkezlerinin kaç ayrı küme halinde bağlandığını söyler. Tek tanımlı isen enerjin akışkandır; bölünmüşlerde köprü kuran insan ve durumlara çekilirsin. İnkarnasyon Haçı senin yaşam boyu üzerinde çalıştığın evrensel temadır — Personality Sun/Earth ve Design Sun/Earth aktivasyonlarından örülür.'}
+            ? 'Definition tells you how many separate groups your defined centers connect into. If you are single-defined your energy is fluid; in split definitions you are drawn to people and situations that bridge. The Incarnation Cross is the universal theme you work on across your whole life, woven from your Personality Sun/Earth and Design Sun/Earth activations.'
+            : 'Tanım, tanımlı merkezlerinin kaç ayrı küme halinde bağlandığını söyler. Tek tanımlı isen enerjin akışkandır; bölünmüşlerde köprü kuran insan ve durumlara çekilirsin. İnkarnasyon Haçı senin yaşam boyu üzerinde çalıştığın evrensel temadır, Personality Sun/Earth ve Design Sun/Earth aktivasyonlarından örülür.'}
         </Text>
       </Section>
 
@@ -232,8 +232,8 @@ export function ChartScreen({ onNavigate }: Props) {
         {chart.activeChannels.length === 0 ? (
           <Text style={styles.body}>
             {getLang() === 'en'
-              ? 'You have no defined channels — Reflector nature. Your environment is your mirror.'
-              : 'Tanımlı kanalın yok — Reflektör doğası. Çevren senin aynan.'}
+              ? 'You have no defined channels, Reflector nature. Your environment is your mirror.'
+              : 'Tanımlı kanalın yok: Reflektör doğası. Çevren senin aynan.'}
           </Text>
         ) : chart.activeChannels.map(c => (
           <View key={c.id} style={styles.channelRow}>
@@ -340,7 +340,7 @@ export function ChartScreen({ onNavigate }: Props) {
                   <Text style={styles.body}>{L(c.undefined, 'notSelfQuestion')}</Text>
                   <Text style={styles.subLabel}>{getLang() === 'en' ? 'Wisdom gained' : 'Kazanılan bilgelik'}</Text>
                   <Text style={styles.body}>{L(c.undefined, 'wisdom')}</Text>
-                  {/* KİŞİSEL KATMAN — bu merkezin SENİN haritanda nasıl yaşandığı
+                  {/* KİŞİSEL KATMAN: bu merkezin SENİN haritanda nasıl yaşandığı
                       (asılı kapı + kanal ortağı çekimi + tip çaprazı) */}
                   <Text style={[styles.subLabel, { color: Colors.gold }]}>{getLang() === 'en' ? '✦ In your chart' : '✦ Senin haritanda'}</Text>
                   {undefinedCenterExtras(chart, k, getLang() === 'en' ? 'en' : 'tr').map((line, li) => (

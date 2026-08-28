@@ -328,7 +328,7 @@ export const TRANS = {
     refund_s5p:        "İade talebinde bulunmak için aşağıdaki bilgilerle bize ulaşın:",
     refund_s5l:        ["Satın alma tarihi ve işlem numarası","Satın alınan ürün adı","İade gerekçesi"],
     refund_s5p2:       "E-posta:",
-    refund_s5p3:       "Talebiniz 5 iş günü içinde yanıtlanacaktır. Onaylanan iadeler, ödeme yönteminize bağlı olarak 5–10 iş günü içinde yansıtılır.",
+    refund_s5p3:       "Talebiniz 5 iş günü içinde yanıtlanacaktır. Onaylanan iadeler, ödeme yönteminize bağlı olarak 5-10 iş günü içinde yansıtılır.",
     refund_s6:         "6. YASAL HAKLAR",
     refund_s6p:        "Bu politika, Türkiye Mesafeli Sözleşmeler Yönetmeliği ve 6502 Sayılı Tüketicinin Korunması Hakkında Kanun kapsamındaki yasal haklarınızı etkilememektedir.",
     refund_s7:         "7. İLETİŞİM",
@@ -1085,7 +1085,7 @@ export const TRANS = {
     refund_s5p:        "To submit a refund request, contact us with the following information:",
     refund_s5l:        ["Purchase date and transaction number","Name of the purchased product","Reason for refund"],
     refund_s5p2:       "Email:",
-    refund_s5p3:       "Your request will be answered within 5 business days. Approved refunds are processed within 5–10 business days depending on your payment method.",
+    refund_s5p3:       "Your request will be answered within 5 business days. Approved refunds are processed within 5-10 business days depending on your payment method.",
     refund_s6:         "6. LEGAL RIGHTS",
     refund_s6p:        "This policy does not affect your legal rights under Turkish Distance Selling Regulations and Law No. 6502 on Consumer Protection.",
     refund_s7:         "7. CONTACT",
@@ -1535,7 +1535,7 @@ export function makeTrans(lang) {
   };
 }
 
-// Desteklenen diller — UI dropdown için (sade kod gösterimi)
+// Desteklenen diller: UI dropdown için (sade kod gösterimi)
 export const LANGUAGES = [
   { code: "en",    label: "EN" },
   { code: "tr",    label: "TR" },

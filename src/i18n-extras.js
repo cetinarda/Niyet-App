@@ -1,7 +1,7 @@
-// Sakin Life — Faz 1 ek diller (DE, ES, PT-BR, FR, JA)
+// Sakin Life: Faz 1 ek diller (DE, ES, PT-BR, FR, JA)
 // EN fallback aktif: burada eksik key'ler otomatik EN'den okunur.
 // Şiirsel/spiritüel ton korunarak doğal dilde çevrildi. Hata kontrolü için ayrı bir
-// AI ajanına gönderildi — kayıt için: review pass.
+// AI ajanına gönderildi: kayıt için: review pass.
 
 export const EXTRA_LANGS = {
   // ────────────────────────────────────────────────
@@ -703,7 +703,7 @@ export const EXTRA_LANGS = {
     refund_s5p:        "Um einen Rückerstattungsantrag zu stellen, kontaktieren Sie uns mit den folgenden Informationen:",
     refund_s5l:        ["Kaufdatum und Transaktionsnummer","Name des gekauften Produkts","Grund für die Rückerstattung"],
     refund_s5p2:       "E-Mail:",
-    refund_s5p3:       "Ihr Antrag wird innerhalb von 5 Werktagen beantwortet. Genehmigte Rückerstattungen werden je nach Zahlungsmethode innerhalb von 5–10 Werktagen verarbeitet.",
+    refund_s5p3:       "Ihr Antrag wird innerhalb von 5 Werktagen beantwortet. Genehmigte Rückerstattungen werden je nach Zahlungsmethode innerhalb von 5-10 Werktagen verarbeitet.",
     refund_s6:         "6. RECHTLICHE RECHTE",
     refund_s6p:        "Diese Richtlinie berührt nicht Ihre gesetzlichen Rechte nach den türkischen Fernabsatzvorschriften und dem Gesetz Nr. 6502 über den Verbraucherschutz.",
     refund_s7:         "7. KONTAKT",
@@ -711,7 +711,7 @@ export const EXTRA_LANGS = {
   },
 
   // ────────────────────────────────────────────────
-  // PORTUGUÊS (pt) — Português do Brasil ("você")
+  // PORTUGUÊS (pt): Português do Brasil ("você")
   // ────────────────────────────────────────────────
   pt: {
     nav_about:    "O QUE É SAKIN?",

@@ -96,7 +96,7 @@ const WEEKLY_MESSAGES_EN: Record<number, string[]> = {
     'Take care of your relationships this week. Listening strengthens you.',
     'Listen to your intuition. Your inner self is showing the way.',
     'Move in cooperation and harmony. You are stronger together.',
-    'Patience energy is high. Don\'t rush — the timing is perfect.',
+    'Patience energy is high. Don\'t rush: the timing is perfect.',
   ],
   3: [
     'Express your creativity this week. A perfect time for artistic projects.',

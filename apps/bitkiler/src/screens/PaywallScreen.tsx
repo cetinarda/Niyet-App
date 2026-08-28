@@ -50,7 +50,7 @@ export function PaywallScreen({ onClose, onActivated }: Props) {
   const PREMIUM_FEATURES = [
     { icon: '✦', title: lang === 'en' ? 'Full Sakin Family' : 'Tüm Sakin Ailesi', desc: lang === 'en' ? 'Animal + Crystal + Words + Human Design + Tarot + Numerology' : 'Hayvan + Kristal + Söz + Human Design + Tarot + Numeroloji' },
     { icon: '⊕', title: lang === 'en' ? 'Cross-platform Sync' : 'Platformlar Arası Senkron', desc: lang === 'en' ? 'Same account works on iOS, Android and web' : 'Aynı hesap iOS, Android ve web\'de çalışır' },
-    { icon: '◈', title: lang === 'en' ? 'Birth Chart' : 'Doğum Haritası', desc: lang === 'en' ? 'Detailed PDF report — as a gift' : 'Detaylı PDF rapor — hediye' },
+    { icon: '◈', title: lang === 'en' ? 'Birth Chart' : 'Doğum Haritası', desc: lang === 'en' ? 'Detailed PDF report: as a gift' : 'Detaylı PDF rapor: hediye' },
     { icon: '◎', title: lang === 'en' ? 'Early Access' : 'Erken Erişim', desc: lang === 'en' ? 'Be the first into new Sakin apps' : "Yeni Sakin app'lerine ilk sen gir" },
   ];
 

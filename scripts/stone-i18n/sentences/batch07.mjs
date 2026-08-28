@@ -1,4 +1,4 @@
-// Batch 07 — s106..s113, s200..s203
+// Batch 07: s106..s113, s200..s203
 export const BATCH07 = {
   s106: {
     de: { name:'Nuummit', dailyMessage:'Berühre heute uralte Weisheit. Nuummit ist einer der ältesten Steine der Erde; er erweckt deine innere Kraft aus der Tiefe.', howToUse:'Halte ihn bei der Meditation in der Hand. Halte ihn in tiefen Arbeitsphasen nah.', affirmation:'Eine uralte Kraft erwacht in mir. Ich verwandle meine Dunkelheit in Weisheit.' },

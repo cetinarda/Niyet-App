@@ -36,7 +36,7 @@ export default function BirthPage() {
   const [suggestions, setSuggestions] = useState<GeocodeResult[]>([]);
   const [searching, setSearching] = useState(false);
 
-  // Formu son kayıtlı karnenin doğum verisiyle önceden doldur — kullanıcı
+  // Formu son kayıtlı karnenin doğum verisiyle önceden doldur, kullanıcı
   // doğum tarihini/verisini görüp DEĞİŞTİREBİLSİN (native reload'da zustand
   // boşalıyordu; menüden gelince tekrar baştan sormasın).
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function BirthPage() {
       return;
     }
 
-    // Re-encode via canvas — yüklenen dosyayı temizle, embedded script veya
+    // Re-encode via canvas: yüklenen dosyayı temizle, embedded script veya
     // metadata varsa düşür. Çıktı her zaman JPEG.
     try {
       const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -130,7 +130,7 @@ export default function BirthPage() {
       const r = await geocodePlace(value, locale);
       setSuggestions(r);
       if (r.length === 0 && value.length >= 3) {
-        // Sessiz başarısızlık yerine kullanıcıya geri bildir — iOS CORS / ağ sorunu.
+        // Sessiz başarısızlık yerine kullanıcıya geri bildir, iOS CORS / ağ sorunu.
         setError(
           locale === 'tr'
             ? 'Yer bulunamadı. İnternet bağlantını kontrol et veya farklı bir yazım dene.'
@@ -165,7 +165,7 @@ export default function BirthPage() {
       return;
     }
 
-    // Yer çözümü — kullanıcı öneriden seçtiyse lat/lng hazır. Seçmeden yazıp
+    // Yer çözümü: kullanıcı öneriden seçtiyse lat/lng hazır. Seçmeden yazıp
     // direkt submit'e bastıysa, burada bir kez daha geocode dene (öneri açılmamış
     // olabilir). Böylece "yer giremiyorum → buton açmıyor" zinciri kırılır.
     let lat = birth.latitude ?? null;
@@ -224,7 +224,7 @@ export default function BirthPage() {
       }
 
       setReport(report);
-      // Lokal kayıt awaited — iOS hard-reload öncesi karne diske düşmüş olmalı.
+      // Lokal kayıt awaited: iOS hard-reload öncesi karne diske düşmüş olmalı.
       await saveReport(report).catch((e) => console.warn('[birth] save failed', e));
       recordReportView(report.id);
       setActiveReportId(report.id);
@@ -313,7 +313,7 @@ export default function BirthPage() {
             </div>
           </LabeledField>
 
-          {/* Opsiyonel profil fotoğrafı — kompakt, en sonda */}
+          {/* Opsiyonel profil fotoğrafı: kompakt, en sonda */}
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}

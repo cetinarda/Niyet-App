@@ -1,5 +1,5 @@
 /**
- * SoulProfile marka işareti — kare çerçeve + iki nokta (iki ruh).
+ * SoulProfile marka işareti: kare çerçeve + iki nokta (iki ruh).
  * Logo ile birebir tutarlı, inline SVG. currentColor kullanır.
  */
 export function BrandMark({ size = 22, className }: { size?: number; className?: string }) {

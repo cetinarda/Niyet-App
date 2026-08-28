@@ -51,8 +51,8 @@
     "id": "q7",
     "text": "İçinde uyumayan, hep çağıran şey hangisi?",
     "options": [
-      { "label": "Bir bütünleşme — kayıp parçaları toplamak", "scores": ["ar005", "ar040", "ar031"] },
-      { "label": "Bir dönüşüm — eskiyi yakıp yenisini doğurmak", "scores": ["ar019", "ar039", "ar025"] }
+      { "label": "Bir bütünleşme: kayıp parçaları toplamak", "scores": ["ar005", "ar040", "ar031"] },
+      { "label": "Bir dönüşüm: eskiyi yakıp yenisini doğurmak", "scores": ["ar019", "ar039", "ar025"] }
     ]
   }
 ]

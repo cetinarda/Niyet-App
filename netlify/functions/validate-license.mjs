@@ -1,7 +1,7 @@
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
 // Güvenlik notu: origin artık gerçekten reddediliyor; IP, Netlify'ın sahtelenemez
-// platform header'ından (`x-nf-client-connection-ip`) okunuyor — eski
+// platform header'ından (`x-nf-client-connection-ip`) okunuyor: eski
 // `x-forwarded-for` istemci tarafından sahtelenip rate-limit'i bypass edebiliyordu.
 function isAllowedOrigin(origin) {
   return !!origin && ALLOWED_ORIGINS.includes(origin);
@@ -81,7 +81,7 @@ export const handler = async (event) => {
       };
     }
 
-    // Üçüncü parti (LemonSqueezy) hata metnini olduğu gibi client'a yansıtmıyoruz —
+    // Üçüncü parti (LemonSqueezy) hata metnini olduğu gibi client'a yansıtmıyoruz, 
     // sunucu logunda tut, client'a genel/sabit bir mesaj dön (bilgi sızıntısını önler).
     if (data.error) console.error("[validate-license] upstream error:", String(data.error).slice(0, 300));
     return {

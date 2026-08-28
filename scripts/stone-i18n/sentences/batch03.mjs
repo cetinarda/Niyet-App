@@ -1,4 +1,4 @@
-// Batch 03 — s025..s033, s067..s069
+// Batch 03: s025..s033, s067..s069
 export const BATCH03 = {
   s025: {
     de: { name:'Orangencalcit', dailyMessage:'Wärme dich heute an der Hitze der orangen Energie. Orangencalcit ist ideal für Motivation und Lernen.', howToUse:'Nimm ihn in deiner Morgenroutine in die Hand. Halte ihn vor Prüfungen oder wichtigem Lernen nah.', affirmation:'Ich fühle mich voller Energie und Motivation.' },
@@ -22,11 +22,11 @@ export const BATCH03 = {
     pt: { name:'Prehnita', dailyMessage:'Hoje, respira fundo. A prehnita está entre as pedras mais calmantes; acalma a mente e o coração ao mesmo tempo.', howToUse:'Aperta-a com firmeza quando sentires ansiedade. Coloca-a junto à almofada quando o sono for difícil.', affirmation:'Está tudo bem. Estou seguro e em paz.' },
   },
   s028: {
-    de: { name:'Kyanit', dailyMessage:'Heute ist Gleichgewicht bei dir. Kyanit nimmt niemals negative Energie auf; er bleibt stets rein und ausgleichend.', howToUse:'Halte ihn in der Meditation. Er braucht kein Aufladen — er reinigt sich selbst.', affirmation:'Mein Gleichgewicht kommt von innen. Ich bin im Frieden.' },
+    de: { name:'Kyanit', dailyMessage:'Heute ist Gleichgewicht bei dir. Kyanit nimmt niemals negative Energie auf; er bleibt stets rein und ausgleichend.', howToUse:'Halte ihn in der Meditation. Er braucht kein Aufladen: er reinigt sich selbst.', affirmation:'Mein Gleichgewicht kommt von innen. Ich bin im Frieden.' },
     es: { name:'Cianita', dailyMessage:'Hoy, el equilibrio está contigo. La cianita nunca absorbe energía negativa; siempre permanece pura y equilibrante.', howToUse:'Sostenla en meditación. No necesita carga: se limpia a sí misma.', affirmation:'Mi equilibrio viene de dentro. Estoy en paz.' },
-    fr: { name:'Cyanite', dailyMessage:'Aujourd’hui, l’équilibre est avec toi. La cyanite n’absorbe jamais l’énergie négative ; elle reste toujours pure et équilibrante.', howToUse:'Tiens-la en méditation. Elle n’a pas besoin d’être rechargée — elle se purifie elle-même.', affirmation:'Mon équilibre vient de l’intérieur. Je suis en paix.' },
-    ja: { name:'カイヤナイト', dailyMessage:'今日は調和があなたと共に。カイヤナイトは負のエネルギーを決して吸わず、常に清らかでバランスを保ちます。', howToUse:'瞑想中に握って。浄化は不要——自ら清まります。', affirmation:'私の調和は内側から来る。私は安らいでいる。' },
-    pt: { name:'Cianita', dailyMessage:'Hoje, o equilíbrio está contigo. A cianita nunca absorve energia negativa; permanece sempre pura e equilibrante.', howToUse:'Segura-a na meditação. Não precisa de carga — limpa-se a si mesma.', affirmation:'O meu equilíbrio vem de dentro. Estou em paz.' },
+    fr: { name:'Cyanite', dailyMessage:'Aujourd’hui, l’équilibre est avec toi. La cyanite n’absorbe jamais l’énergie négative ; elle reste toujours pure et équilibrante.', howToUse:'Tiens-la en méditation. Elle n’a pas besoin d’être rechargée, elle se purifie elle-même.', affirmation:'Mon équilibre vient de l’intérieur. Je suis en paix.' },
+    ja: { name:'カイヤナイト', dailyMessage:'今日は調和があなたと共に。カイヤナイトは負のエネルギーを決して吸わず、常に清らかでバランスを保ちます。', howToUse:'瞑想中に握って。浄化は不要、自ら清まります。', affirmation:'私の調和は内側から来る。私は安らいでいる。' },
+    pt: { name:'Cianita', dailyMessage:'Hoje, o equilíbrio está contigo. A cianita nunca absorve energia negativa; permanece sempre pura e equilibrante.', howToUse:'Segura-a na meditação. Não precisa de carga: limpa-se a si mesma.', affirmation:'O meu equilíbrio vem de dentro. Estou em paz.' },
   },
   s029: {
     de: { name:'Jade', dailyMessage:'Heute sind Fülle und Glück bei dir. Jade wird seit Jahrtausenden als Stein des Schutzes und des Glücks verwendet.', howToUse:'Er eignet sich ideal zum Tragen. Halte ihn nah, wenn du ein neues Vorhaben beginnst.', affirmation:'Glück und Fülle sind Teil meines natürlichen Flusses.' },

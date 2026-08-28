@@ -58,7 +58,7 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
                   appName: 'Sakin Hayvan', accent: Colors.teal, emoji: animal.emoji, imageUrl: animal.imageUrl,
                   title: animal.name, meta: `${animal.element} · ${animal.symbolism?.[0] || ''}`.replace(/ · $/, ''),
                   body: `${animal.dailyMessage} ${animal.anatolianMeaning || ''}`.trim(), cta: moreCta,
-                  fileName: `sakin-${animal.name}.png`, shareText: `${animal.name} — sakin.life`,
+                  fileName: `sakin-${animal.name}.png`, shareText: `${animal.name}: sakin.life`,
                 });
               }}
               hitSlop={12}

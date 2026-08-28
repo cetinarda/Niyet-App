@@ -5,7 +5,7 @@
 // KAPATMAZ. Böylece kullanıcı detay kartındayken geri'ye basınca Keşfet'e
 // fırlamak yerine bir önceki ekrana döner.
 //
-// `priority` iç içe geçme derinliğidir — en YÜKSEK olan önce denenir. React
+// `priority` iç içe geçme derinliğidir: en YÜKSEK olan önce denenir. React
 // effect'leri çocuk→ebeveyn sırasıyla çalıştığı için kayıt sırasına güvenilemez,
 // bu yüzden derinlik açıkça verilir.
 export const BACK_PRIORITY = {

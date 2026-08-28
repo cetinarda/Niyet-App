@@ -1,4 +1,4 @@
-// Zarif, sade paylaşım kartı — söz/içerik kartını 1080×1350 (4:5) görsele çevirir,
+// Zarif, sade paylaşım kartı, söz/içerik kartını 1080×1350 (4:5) görsele çevirir,
 // sonra native paylaşım (Instagram vb.) açar; desteklenmiyorsa indirir. Web-only
 // (embed'ler webview'de çalışır). Sakin koyu estetiği + tek accent renk.
 
@@ -6,8 +6,8 @@ export interface ShareCardSpec {
   appName: string;    // üst kicker, ör. "SAKİN TAŞLAR"
   accent: string;     // hex vurgu rengi
   emoji?: string;     // büyük sembol/emoji (imageUrl yoksa / yüklenemezse yedek)
-  imageUrl?: string;  // gerçek portre foto (taş/hayvan/bitki) — emoji yerine çizilir
-  title?: string;     // ad (taş/hayvan/bitki) — söz kartında boş
+  imageUrl?: string;  // gerçek portre foto (taş/hayvan/bitki), emoji yerine çizilir
+  title?: string;     // ad (taş/hayvan/bitki): söz kartında boş
   meta?: string;      // element · çakra vb.
   body?: string;      // günün mesajı
   quote?: string;     // söz metni / rehberlik
@@ -17,7 +17,7 @@ export interface ShareCardSpec {
   shareText?: string;
 }
 
-// Türkçe-duyarlı büyük harf — JS toUpperCase 'i'→'I' yapar (yanlış: "SAKIN").
+// Türkçe-duyarlı büyük harf: JS toUpperCase 'i'→'I' yapar (yanlış: "SAKIN").
 // Türkçe'de i→İ, ı→I olmalı ("SAKİN HAYVAN").
 function trUpper(s: string): string {
   return String(s || '').replace(/i/g, 'İ').replace(/ı/g, 'I').toUpperCase();
@@ -74,7 +74,7 @@ function ellipsize(lines: string[], n: number): string[] {
   if (n >= lines.length) return lines;
   if (n <= 0) return [];
   const kept = lines.slice(0, n);
-  let last = kept[n - 1].replace(/[\s.,;:—-]+$/, '');
+  let last = kept[n - 1].replace(/[\s.,;:-]+$/, '');
   if (!last.endsWith('…')) last += '…';
   kept[n - 1] = last;
   return kept;
@@ -142,7 +142,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
     ctx.fillText(spaceOut(trUpper(spec.appName || '')), W / 2, 150);
 
-    // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt) — kartlar sade,
+    // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt), kartlar sade,
     // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
     const zoneTop = 240, zoneBot = H - 210;
     const BODY_LH = 50, QUOTE_LH = 56, TITLE_LH = 74;
@@ -169,7 +169,7 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     let y = Math.max(zoneTop + 60, zoneTop + (zoneBot - zoneTop - blockH) / 2 + 60);
 
     if (useImg && portrait) {
-      // Gerçek portre — daire kırpma + accent halka (emoji yerine).
+      // Gerçek portre: daire kırpma + accent halka (emoji yerine).
       const d = IMG_D, cx = W / 2, cy = y - 20 + d / 2;
       ctx.save();
       ctx.beginPath(); ctx.arc(cx, cy, d / 2, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
@@ -218,11 +218,11 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
         y += 10;
         ctx.fillStyle = `rgba(${ar},${ag},${ab},0.9)`;
         ctx.font = "400 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
-        ctx.fillText('— ' + spec.quoteBy, W / 2, y);
+        ctx.fillText(', ' + spec.quoteBy, W / 2, y);
       }
     }
 
-    // Alt marka: ✦ ayraç + TEK satır. CTA metni zaten "sakin.life" içerir —
+    // Alt marka: ✦ ayraç + TEK satır. CTA metni zaten "sakin.life" içerir, 
     // ayrıca footer yazılmaz (çift "sakin.life" + yıldızın yazıya binmesi bug'ıydı).
     ctx.fillStyle = `rgba(${ar},${ag},${ab},0.8)`;
     ctx.font = '22px serif';
@@ -268,16 +268,16 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     }
   } catch (e: any) {
     // Kullanıcı paylaşım sayfasını "Vazgeç" ile kapattıysa (AbortError) HİÇBİR ŞEY
-    // yapma. Eskiden bu durumda da aşağıdaki indirme fallback'ine düşülüyordu —
+    // yapma. Eskiden bu durumda da aşağıdaki indirme fallback'ine düşülüyordu, 
     // kullanıcı açıkça "hayır" demişken sessizce bir blob: URL indirme denemesi
     // (<a download> click) tetiklemek hem yanlış davranış hem de WKWebView'de
     // paylaşım sayfası kapanışının hemen ardından İKİNCİ bir native geçiş/navigasyon
-    // denemesi anlamına geliyordu — "paylaştan dönünce zoom takılması" hatasının
+    // denemesi anlamına geliyordu: "paylaştan dönünce zoom takılması" hatasının
     // muhtemel bir bileşeni buydu.
     if (e && e.name === 'AbortError') return;
     // gerçek hata (kullanıcı iptal etmedi, paylaşım başka nedenle başarısız oldu)
   }
-  // Fallback: indir — yalnızca GERÇEK hata durumunda buraya gelinir, iptalde değil.
+  // Fallback: indir: yalnızca GERÇEK hata durumunda buraya gelinir, iptalde değil.
   try {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -83,11 +83,11 @@ export const en = {
     intro: {
       title: 'Discover Your Plant',
       desc: 'Find the plants aligned with you by your zodiac sign or element.',
-      note: 'Every plant carries its own vibration. Choose the one that calls to you — let your intuition do the rest.',
+      note: 'Every plant carries its own vibration. Choose the one that calls to you, let your intuition do the rest.',
       birthStoneTitle: 'Your Birth Plant',
       zodiacLabel: 'By Zodiac',
       elementLabel: 'By Element',
-      elementHint: 'Each plant vibrates with a natural element; yours comes from your sign — fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
+      elementHint: 'Each plant vibrates with a natural element; yours comes from your sign, fire: Aries·Leo·Sagittarius · earth: Taurus·Virgo·Capricorn · air: Gemini·Libra·Aquarius · water: Cancer·Scorpio·Pisces.',
     },
     elements: {
       fire: 'Fire',
@@ -109,7 +109,7 @@ export const en = {
   nagual: {
     back: '← Back',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Periodic Guide',
+    introTitle: 'Nagual: Periodic Guide',
     introText:
       'Your totem animal is born with you and stays for life. The nagual is a temporary guide\nthat accompanies you during a specific period. It arrives in times of trial,\ntransformation, or crisis. Once its purpose is fulfilled, it yields its place\nto another guide.',
     weekTag: 'THIS WEEK · UNIVERSAL',
@@ -226,7 +226,7 @@ export const en = {
       estimated: '(estimated)',
       hdTypeSelectHint: 'Select your type:',
       hdDisclaimer:
-        '⚠ Calculation is an estimate — accurate HD requires birth time and ephemeris.\nIf you know your type, select it above.',
+        '⚠ Calculation is an estimate, accurate HD requires birth time and ephemeris.\nIf you know your type, select it above.',
       sunGates: 'Sun Gates',
       consciousSun: 'Conscious Sun',
       designSun: 'Design Sun',
@@ -250,7 +250,7 @@ export const en = {
         yearPlaceholder: 'Year',
         hourLabel: 'Birth Time',
         hourOptional: '(important for HD)',
-        hourPlaceholder: 'Hour (0–23)',
+        hourPlaceholder: 'Hour (0-23)',
         minutePlaceholder: 'Minute',
         cityLabel: 'Birth City',
         cityOptional: '(for time zone)',
@@ -265,8 +265,8 @@ export const en = {
       sectionTitle: 'What is Animal Guidance?',
       totemTitle: '⊕ Totem Animal',
       totemText:
-        'Every person carries the spirit of an animal within their nature. This totem animal represents you; your energy, your strengths, and the path you walk carry its traces. The totem never changes — it is born with you and grows with you.',
-      nagualTitle: '◎ Nagual — Periodic Guide',
+        'Every person carries the spirit of an animal within their nature. This totem animal represents you; your energy, your strengths, and the path you walk carry its traces. The totem never changes: it is born with you and grows with you.',
+      nagualTitle: '◎ Nagual: Periodic Guide',
       nagualText:
         "The nagual is a temporary guide that comes to you for a specific period. It is called in times of trial, transformation, or crisis. Once its purpose is fulfilled, it yields its place to another guide. The animal drawn in your daily reading carries the voice of today's nagual.",
       finderTitle: 'Find Your Animal Guide',
@@ -289,7 +289,7 @@ export const en = {
     sakinFamily: {
       title: 'Sakin Family',
       intro: 'One ecosystem. One subscription. Many doors.',
-      masterDesc: 'Home base — entry to all apps',
+      masterDesc: 'Home base: entry to all apps',
       apps: {
         animalGuidance: 'Animal Guidance',
         stoneGuidance: 'Plant Guidance',
@@ -430,11 +430,11 @@ export const en = {
     },
     mit: {
       term: 'Myth',
-      short: 'A symbolic power the soul encounters — Shadow, Threshold, Lightning...',
+      short: 'A symbolic power the soul encounters, Shadow, Threshold, Lightning...',
     },
     hayatYolu: {
       term: 'Life Path Number',
-      short: 'The numerological summary of your birth date — shows your core energy.',
+      short: 'The numerological summary of your birth date, shows your core energy.',
     },
     numeroloji: {
       term: 'Numerology',
@@ -442,15 +442,15 @@ export const en = {
     },
     ifade: {
       term: 'Expression Number',
-      short: 'Derived from the letters of your name — your natural talents and potential.',
+      short: 'Derived from the letters of your name, your natural talents and potential.',
     },
     ruhIstegi: {
       term: 'Soul Urge Number',
-      short: 'From the vowels of your name — your inner motivation.',
+      short: 'From the vowels of your name, your inner motivation.',
     },
     kisilik: {
       term: 'Personality Number',
-      short: 'From the consonants of your name — the face you show the world.',
+      short: 'From the consonants of your name, the face you show the world.',
     },
     humanDesign: {
       term: 'Human Design',
@@ -494,7 +494,7 @@ export const en = {
     },
     kisiselYil: {
       term: 'Personal Year',
-      short: 'The theme specific to your numerological year — which step of the 9-year cycle you are on.',
+      short: 'The theme specific to your numerological year, which step of the 9-year cycle you are on.',
     },
     rehber: {
       term: 'Spirit Animal',

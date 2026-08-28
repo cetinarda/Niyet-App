@@ -4,11 +4,11 @@
  * NEDEN VAR: istemci `store.owned` ile TAHMİN yürütüyordu. Meta veri yüklenmiş
  * ama makbuz zinciri tamamlanmamışken owned=false okunuyor, ödeme yapan kullanıcı
  * free'ye düşürülüyordu (gerçek rapor: "üyeliğim olduğu halde deneme sürümü
- * açılıyor"). Bu yüzden otomatik iptal tamamen kapatıldı — ama o zaman da süresi
+ * açılıyor"). Bu yüzden otomatik iptal tamamen kapatıldı, ama o zaman da süresi
  * dolan abonelik sonsuza dek açık kalıyor. Tek doğru çözüm: mağazaya SUNUCUDAN
  * sormak ve kesin cevabı almak.
  *
- * ⚠️ KIRMIZI ÇİZGİ — FAIL-SAFE:
+ * ⚠️ KIRMIZI ÇİZGİ: FAIL-SAFE:
  * Bu uç nokta ASLA "emin değilim"i "abone değil" diye döndürmez. Kimlik bilgisi
  * yoksa, ağ hatası varsa, mağaza cevap vermezse → status:"unknown" döner ve
  * istemci HİÇBİR ŞEY yapmaz (premium'a dokunulmaz). Yalnızca mağaza AÇIKÇA
@@ -26,7 +26,7 @@
  *     GOOGLE_SA_EMAIL     servis hesabı e-postası
  *     GOOGLE_SA_KEY       servis hesabı private_key alanı (PEM)
  *     ANDROID_PACKAGE     com.sakin.app
- * Hiçbiri tanımlı değilse fonksiyon güvenle "unknown" döner — mevcut davranış korunur.
+ * Hiçbiri tanımlı değilse fonksiyon güvenle "unknown" döner: mevcut davranış korunur.
  */
 
 import { createSign, createPrivateKey } from "node:crypto";
@@ -44,7 +44,7 @@ const cors = (origin) => ({
 const b64url = (buf) =>
   Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
-// Rate limit — bu uç nokta bizim Apple/Google kimlik bilgilerimizle dış API çağırıyor;
+// Rate limit: bu uç nokta bizim Apple/Google kimlik bilgilerimizle dış API çağırıyor;
 // sınırsız istek Apple kotasına takılmaya ve fonksiyon maliyetine yol açar
 // (validate-license.mjs'deki aynı desen). Aşımda 429 döner; istemci !r.ok görüp DOKUNMAZ.
 const rateMap = new Map();
@@ -124,13 +124,13 @@ const APPLE_HOSTS = [
 // 6-16 gün ek süre verir ve erişimin SÜRDÜRÜLMESİNİ ister. Bu durumda YENİ bir
 // işlem oluşmaz, son işlemin expiresDate'i GEÇMİŞTE kalır. Eskiden burada
 // v2/history'deki expiresDate'e bakılıyordu ve bu kullanıcılar "süresi dolmuş"
-// sayılıp premium'ları iptal ediliyordu — ödeme yapan kullanıcıyı düşüren tam da
+// sayılıp premium'ları iptal ediliyordu: ödeme yapan kullanıcıyı düşüren tam da
 // bu yoldu. Grace period'u YALNIZCA bu uç nokta bildirir, o yüzden karar buradan verilir.
 // 3 (ödeme yeniden deneniyor) BELİRSİZ kabul edilir → iptal edilmez.
 const APPLE_ENTITLED = new Set([1, 4]);
 const APPLE_DENIED   = new Set([2, 5]);
 
-// Ömür boyu (tek seferlik) ürün abonelik uç noktasında görünmez — geçmişten okunur.
+// Ömür boyu (tek seferlik) ürün abonelik uç noktasında görünmez, geçmişten okunur.
 async function appleLifetime(host, token, transactionId) {
   try {
     const r = await jsonFetch(

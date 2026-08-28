@@ -99,7 +99,7 @@ export function ProfileScreen() {
   const [licenseStatus, setLicenseStatus] = useState<'idle' | 'busy' | 'ok' | 'error'>('idle');
   const [licenseMsg, setLicenseMsg] = useState('');
 
-  // ── SAKİN HOST KÖPRÜSÜ — onboarding kısayolu ──────────────────────────────
+  // ── SAKİN HOST KÖPRÜSÜ, onboarding kısayolu ──────────────────────────────
   // Host ad + doğum verdiyse onboarding TEK ekrana iner: yalnızca element seçici.
   // Ad (step 1) ve doğum (step 3) ekranları gösterilmez; değerler host'tan gelir.
   // Element doğumdan türetilemez (arketip hesabını bozar), onu kullanıcı seçer.
@@ -116,7 +116,7 @@ export function ProfileScreen() {
   const [element, setElement] = useState<typeof ELEMENTS[number]>('ateş');
   const [step, setStep] = useState(bridged ? ELEMENT_STEP : 1);
 
-  // step 3 birth data — köprüden gelen değerlerle ön-doldurulur
+  // step 3 birth data, köprüden gelen değerlerle ön-doldurulur
   const [fullName, setFullName] = useState(bridgePrefill?.name ?? '');
   const [birthDay, setBirthDay] = useState(bridgeDateParts.d);
   const [birthMonth, setBirthMonth] = useState(bridgeDateParts.m);
@@ -153,10 +153,10 @@ export function ProfileScreen() {
   const topAnimal = topAnimalId ? localAnimals.find(a => a.id === topAnimalId) : null;
   const topNagual = topNagualId ? localNaguals.find(n => n.id === topNagualId) : null;
 
-  // Doğum hayvanı — "en çok çıkan" (topAnimal) ile KARIŞTIRILMASIN: bu, doğum
+  // Doğum hayvanı: "en çok çıkan" (topAnimal) ile KARIŞTIRILMASIN: bu, doğum
   // tarihi/saatinden hesaplanan SABİT rehber hayvan (kullanıcı: "kişinin
   // doğum hayvanı profilde gözüksün"). Profildeki mevcut doğum bilgisiyle
-  // anında hesaplanır — "Hayvanını Bul" akışına GİRMEYE gerek yok.
+  // anında hesaplanır: "Hayvanını Bul" akışına GİRMEYE gerek yok.
   const birthAnimal = useMemo(() => {
     if (!profile?.birthDate) return null;
     const p = profile.birthDate.split('-');
@@ -191,7 +191,7 @@ export function ProfileScreen() {
 
   // compute analysis when birth data is present
   const analysis = useMemo(() => {
-    // İsim host'tan gelir; yoksa görünen ada düş — embed ASLA doğum/profil formu
+    // İsim host'tan gelir; yoksa görünen ada düş: embed ASLA doğum/profil formu
     // sormaz, host (giriş + Sakin Ailesi) doğum bilgisinin sahibidir.
     const nm = profile?.fullName || profile?.name;
     if (!nm || !profile?.birthDate) return null;
@@ -571,7 +571,7 @@ export function ProfileScreen() {
       <View style={styles.section}>
         <View style={styles.sectionTitleRow}>
           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>{t('profile.personalMap.title')}</Text>
-          {/* Doğum bilgisi düzenleme embed'de GİZLİ — doğum bilgisi yalnızca host
+          {/* Doğum bilgisi düzenleme embed'de GİZLİ: doğum bilgisi yalnızca host
               (Sakin giriş + Sakin Ailesi paneli) üzerinden girilir/değiştirilir.
               Embed sadece rehberlik gösterir, hiçbir doğum alanı göstermez. */}
         </View>
@@ -615,7 +615,7 @@ export function ProfileScreen() {
               </View>
             </View>
 
-            {/* Human Design teaser removed — dedicated Sakin Tasarım app owns HD content. */}
+            {/* Human Design teaser removed, dedicated Sakin Tasarım app owns HD content. */}
 
             {/* Weekly Reading */}
             <View style={[styles.analysisCard, { borderColor: Colors.teal + '60' }]}>
@@ -797,7 +797,7 @@ export function ProfileScreen() {
                     appName: 'Sakin Hayvan', accent: Colors.teal, emoji: (birthAnimal as any).emoji, imageUrl: (birthAnimal as any).imageUrl,
                     title: birthAnimal.name, meta: `${(birthAnimal as any).element} · ${(birthAnimal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''),
                     body: `${(birthAnimal as any).dailyMessage} ${(birthAnimal as any).anatolianMeaning || ''}`.trim(), cta: moreCta,
-                    fileName: `sakin-${birthAnimal.name}.png`, shareText: `${birthAnimal.name} — sakin.life`,
+                    fileName: `sakin-${birthAnimal.name}.png`, shareText: `${birthAnimal.name}: sakin.life`,
                   });
                 }}
                 hitSlop={10}
@@ -884,7 +884,7 @@ export function ProfileScreen() {
         )}
       </View>
 
-      {/* Sakin Ailesi — only on web. Hidden on iOS/Android to avoid App Store rejection
+      {/* Sakin Ailesi: only on web. Hidden on iOS/Android to avoid App Store rejection
           for cross-promoting external apps/services (Guideline 2.5.6 / 4.2.6). */}
       {Platform.OS === 'web' && (
       <View style={styles.section}>
@@ -994,9 +994,9 @@ export function ProfileScreen() {
         </View>
       </View>
 
-      {/* Language picker removed — host (Sakin) controls language via the bridge. */}
+      {/* Language picker removed: host (Sakin) controls language via the bridge. */}
 
-      {/* ── DEV-only — stripped from production builds ── */}
+      {/* ── DEV-only: stripped from production builds ── */}
       {__DEV__ && (
         <View style={styles.devSection}>
           <TouchableOpacity

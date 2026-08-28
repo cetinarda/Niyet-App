@@ -38,7 +38,7 @@ const CENTER_POINT: Record<CenterKey, { x: number; y: number }> = Object.fromEnt
   CENTER_LAYOUT.map(c => [c.key, { x: c.x, y: c.y }]),
 ) as Record<CenterKey, { x: number; y: number }>;
 
-// Merkez kısa etiketleri (sade, büyük harf — referans infografik tarzı, Sakin paleti).
+// Merkez kısa etiketleri (sade, büyük harf, referans infografik tarzı, Sakin paleti).
 const SHORT: Record<CenterKey, { tr: string; en: string }> = {
   head:        { tr: 'KAFA',   en: 'HEAD' },
   ajna:        { tr: 'AJNA',   en: 'AJNA' },
@@ -101,7 +101,7 @@ export function Bodygraph({ chart, size = 300, showLabels = true }: Props) {
   return (
     <View style={[styles.wrap, { width: size, height }]} accessibilityLabel={a11yLabel}>
       <Svg width={size} height={height} viewBox={`0 0 ${W} ${H}`}>
-        {/* 1) Kanal iskeleti — çok sönük, yapı ipucu (merkez-merkez) */}
+        {/* 1) Kanal iskeleti: çok sönük, yapı ipucu (merkez-merkez) */}
         {CHANNELS.map(ch => {
           const a = CENTER_POINT[ch.centers[0] as CenterKey];
           const b = CENTER_POINT[ch.centers[1] as CenterKey];
@@ -109,7 +109,7 @@ export function Bodygraph({ chart, size = 300, showLabels = true }: Props) {
           return <Line key={`sk-${ch.id}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={Colors.channelUndefined} strokeWidth={1} />;
         })}
 
-        {/* 2) Tanımlı kanallar — belirgin altın çizgi (merkezlerin altında) */}
+        {/* 2) Tanımlı kanallar: belirgin altın çizgi (merkezlerin altında) */}
         {CHANNELS.map(ch => {
           const a = CENTER_POINT[ch.centers[0] as CenterKey];
           const b = CENTER_POINT[ch.centers[1] as CenterKey];
@@ -137,7 +137,7 @@ export function Bodygraph({ chart, size = 300, showLabels = true }: Props) {
           );
         })}
 
-        {/* 4) Merkez kısa adları (şekil içinde) — tanımlı koyu, tanımsız sönük açık */}
+        {/* 4) Merkez kısa adları (şekil içinde), tanımlı koyu, tanımsız sönük açık */}
         {showLabels && CENTER_LAYOUT.map(c => {
           const isDef = defined?.has(c.key);
           // triangle-up'ta geniş alan altta, triangle-down'da üstte; merkeze yakın tut.

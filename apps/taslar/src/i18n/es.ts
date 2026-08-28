@@ -109,7 +109,7 @@ export const es = {
   nagual: {
     back: '← Atrás',
     familyTag: 'SAKIN · NAGUAL',
-    introTitle: 'Nagual — Guía temporal',
+    introTitle: 'Nagual: Guía temporal',
     introText:
       'Tu animal tótem nace contigo y permanece toda la vida. El nagual es un guía\ntemporal que te acompaña durante una etapa concreta. Llega en momentos de prueba,\ntransformación o crisis. Una vez cumplida su misión, cede su lugar a\notro guía.',
     weekTag: 'ESTA SEMANA · UNIVERSAL',
@@ -266,7 +266,7 @@ export const es = {
       totemTitle: '⊕ Animal tótem',
       totemText:
         'Cada persona lleva en su naturaleza el espíritu de un animal. Este animal tótem te representa; tu energía, tus fortalezas y el camino que recorres llevan sus huellas. El tótem nunca cambia: nace contigo y crece contigo.',
-      nagualTitle: '◎ Nagual — Guía temporal',
+      nagualTitle: '◎ Nagual: Guía temporal',
       nagualText:
         'El nagual es un guía temporal que llega a ti durante una etapa concreta. Se le invoca en momentos de prueba, transformación o crisis. Una vez cumplida su misión, cede su lugar a otro guía. El animal que aparece en tu lectura diaria lleva la voz del nagual de hoy.',
       finderTitle: 'Encuentra tu guía animal',

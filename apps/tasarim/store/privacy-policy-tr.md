@@ -28,7 +28,7 @@ Sakin Tasarım, haritanı (bodygraph) oluşturabilmek için yalnızca senin gird
 - **Doğum saati** (saat, dakika)
 - **Doğum şehri** (konum bilgisi olarak; GPS değil, sadece metin)
 
-Bunların dışında herhangi bir veri toplamıyoruz. Telefon numarası, e-posta, IP, cihaz kimliği, reklam ID, konum izni, kamera izni, mikrofon izni — hiçbiri istenmez.
+Bunların dışında herhangi bir veri toplamıyoruz. Telefon numarası, e-posta, IP, cihaz kimliği, reklam ID, konum izni, kamera izni, mikrofon izni, hiçbiri istenmez.
 
 ## 3. Verileri Nasıl Kullanırız
 
@@ -41,16 +41,16 @@ Verini pazarlama, profilleme, reklam veya analiz için kullanmıyoruz.
 Tüm veriler cihazının kendi yerel depolama alanında (iOS/Android için AsyncStorage, web için tarayıcı LocalStorage) saklanır. Veriler:
 
 - Bizim sunucularımıza **gönderilmez**.
-- Bulutta yedeklenmez (cihazının kendi sistem yedeği — iCloud, Google Backup — hariç; orası senin Apple/Google hesabının kontrolündedir).
+- Bulutta yedeklenmez (cihazının kendi sistem yedeği, iCloud, Google Backup, hariç; orası senin Apple/Google hesabının kontrolündedir).
 - Şifrelenmiş olarak değil, normal uygulama verisi olarak tutulur; çünkü cihazdan çıkmaz.
 
 ## 5. Üçüncü Taraflarla Paylaşım
 
-**Hiçbir veriyi hiçbir üçüncü tarafla paylaşmıyoruz.** Reklam ağı, analitik şirketi, bulut servis sağlayıcısı, sosyal medya, CRM — hiçbiriyle entegre değiliz. Veri zaten cihazından çıkmadığı için paylaşacak bir şey de yok.
+**Hiçbir veriyi hiçbir üçüncü tarafla paylaşmıyoruz.** Reklam ağı, analitik şirketi, bulut servis sağlayıcısı, sosyal medya, CRM, hiçbiriyle entegre değiliz. Veri zaten cihazından çıkmadığı için paylaşacak bir şey de yok.
 
 ## 6. Analitik ve İzleme
 
-Uygulamada **hiçbir analitik veya izleme SDK'sı yoktur.** Firebase Analytics, Google Analytics, Facebook SDK, Amplitude, Mixpanel, App Center — hiçbiri kullanılmaz. Çerez, piksel veya parmak izi (fingerprinting) tekniği yoktur.
+Uygulamada **hiçbir analitik veya izleme SDK'sı yoktur.** Firebase Analytics, Google Analytics, Facebook SDK, Amplitude, Mixpanel, App Center, hiçbiri kullanılmaz. Çerez, piksel veya parmak izi (fingerprinting) tekniği yoktur.
 
 ## 7. Reklam ve Satın Alma
 

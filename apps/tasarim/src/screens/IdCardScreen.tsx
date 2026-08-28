@@ -30,7 +30,7 @@ export function IdCardScreen({ onClose }: Props) {
   const [uploading, setUploading] = useState(false);
   const [sharing, setSharing] = useState<null | 'card' | 'story'>(null);
 
-  // narrowed referanslar — callback closure'larında null check kaybolmasın
+  // narrowed referanslar: callback closure'larında null check kaybolmasın
   const profile = activeProfile;
   if (!profile || !chart) {
     return (
@@ -163,7 +163,7 @@ export function IdCardScreen({ onClose }: Props) {
             {photoUri ? (
               <>
                 <Image source={{ uri: photoUri }} style={styles.photo} />
-                {/* Sakin paleti duotone overlay'i — fotoğrafı palete bağlar */}
+                {/* Sakin paleti duotone overlay'i: fotoğrafı palete bağlar */}
                 <View style={styles.photoOverlay} pointerEvents="none" />
               </>
             ) : (
@@ -315,7 +315,7 @@ export function IdCardScreen({ onClose }: Props) {
             : 'Instagram Story tam boyut (9:16, 1080×1920). Fotoğrafın yalnızca cihazında saklanır; AI servis çağrısı yapılmaz, sakin paleti lokal olarak uygulanır.'}
         </Text>
 
-        {/* OFF-SCREEN StoryCard — capture için render edilir, görünmez */}
+        {/* OFF-SCREEN StoryCard: capture için render edilir, görünmez */}
         <View style={styles.offscreen} pointerEvents="none">
           <ViewShot
             ref={storyRef}

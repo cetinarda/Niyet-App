@@ -35,7 +35,7 @@ relationship.ts    // İki insanı sentezleyen synastry
 
 Her builder aynı `generateNarrative()` arayüzünü kullanır, sadece prompt + input
 değişir. Prompt caching (Anthropic) ile kullanıcının doğum verisi system'e kaydedilir,
-her hafta sadece tarih farkı user message'ta gider — maliyet düşük kalır.
+her hafta sadece tarih farkı user message'ta gider: maliyet düşük kalır.
 
 ## Notification stratejisi
 

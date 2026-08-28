@@ -75,9 +75,9 @@ export type HumanDesign = {
   profile: string;
   incarnationCross: string;
   definedCenters: string[];
-  /** Tüm tanımlı + açık merkezler (9 merkez) — karşılaştırma için */
+  /** Tüm tanımlı + açık merkezler (9 merkez), karşılaştırma için */
   openCenters: string[];
-  /** Aktif kapılar (personality + design) — elektromanyetik karşılaştırma için */
+  /** Aktif kapılar (personality + design), elektromanyetik karşılaştırma için */
   gates: number[];
   /** Tanımlı kanallar: "a-b" formatında */
   channels: string[];

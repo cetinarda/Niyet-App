@@ -61,7 +61,7 @@ export function ArchiveScreen() {
           {(filter === 'all' || filter === 'quote') && (
             <View style={[styles.pill, { borderColor: Colors.goldDark }]}>
               <Text style={[styles.pillText, { color: Colors.gold }]} numberOfLines={1}>
-                {quote?.source || '—'}
+                {quote?.source || '-'}
               </Text>
             </View>
           )}

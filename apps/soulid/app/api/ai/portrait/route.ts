@@ -1,8 +1,8 @@
-// AI Kahraman Portresi — kullanıcının fotoğrafını otantik, el-boyaması bir
+// AI Kahraman Portresi: kullanıcının fotoğrafını otantik, el-boyaması bir
 // RPG karakter portresine çevirir. Görsel modeli SERVER-SIDE çağrılır; anahtar
 // tarayıcıya asla sızmaz (CLAUDE.md kuralı).
 //
-// NOT: Claude görsel üretmez — bu route ayrı bir görsel modeli kullanır
+// NOT: Claude görsel üretmez: bu route ayrı bir görsel modeli kullanır
 // (OpenAI gpt-image-1, images/edits). Anahtar yoksa 503 döner ve istemci
 // cihaz-üstü boyama efektine düşer (lib/portrait/stylize.ts).
 //
@@ -34,7 +34,7 @@ function dataUrlToBlob(dataUrl: string): { blob: Blob; type: string } | null {
 
 /** Kişinin haritasından gelen arketiple kişiselleştirilmiş sahne yönergesi. */
 function buildPrompt(race?: string, hdType?: string, sunSign?: string): string {
-  const archetype = [race, hdType].filter(Boolean).join(' — ') || 'mystic traveler';
+  const archetype = [race, hdType].filter(Boolean).join(': ') || 'mystic traveler';
   return [
     'Transform this portrait photo into an authentic hand-painted fantasy RPG character portrait.',
     "Preserve the person's facial likeness, age, skin tone, hair and gender presentation so they remain clearly recognizable.",
@@ -51,7 +51,7 @@ function buildPrompt(race?: string, hdType?: string, sunSign?: string): string {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  // Görsel üretimi pahalı — sıkı limit.
+  // Görsel üretimi pahalı: sıkı limit.
   const limit = rateLimit(rateKey(request, 'portrait'), 4);
   if (!limit.ok) {
     return corsResponse(

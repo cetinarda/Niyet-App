@@ -61,7 +61,7 @@ console.log('Ayanamsa :', vedic.ayanamsa.toFixed(3)+'°');
 
 console.log('\n=== ÇİN ZODYAK ===');
 const chinese = calculateChinese(birthISO);
-console.log(chinese.signature, '(beklenen: Yang Toprak Ejderha — 1988)');
+console.log(chinese.signature, '(beklenen: Yang Toprak Ejderha: 1988)');
 
 console.log('\n=== NORSE RUNE ===');
 const norse = calculateNorse(birthISO);

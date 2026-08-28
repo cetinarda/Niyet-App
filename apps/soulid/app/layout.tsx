@@ -27,11 +27,11 @@ const A = process.env.NEXT_PUBLIC_EMBED_BASE || '';
 export const metadata: Metadata = {
   metadataBase: new URL('https://soulprofile.life'),
   title: {
-    default: 'SoulProfile — Doğum Verisi · Kimlik Analizi',
+    default: 'SoulProfile: Doğum Verisi · Kimlik Analizi',
     template: '%s · SoulProfile',
   },
   description:
-    'Horoscope değil — doğum verinden kozmik kimliğini hesaplayan bir iç gözlem motoru. Astronomik harita, Human Design beden grafiği, numeroloji ve Vedik nakshatra cihazında hesaplanır; gezegenlerinin ömür boyu hareketini interaktif izle, iki kişinin ilişkisini çok katmanlı yazılı bir ayna olarak gör.',
+    'Horoscope değil: doğum verinden kozmik kimliğini hesaplayan bir iç gözlem motoru. Astronomik harita, Human Design beden grafiği, numeroloji ve Vedik nakshatra cihazında hesaplanır; gezegenlerinin ömür boyu hareketini interaktif izle, iki kişinin ilişkisini çok katmanlı yazılı bir ayna olarak gör.',
   keywords: [
     'doğum haritası', 'human design', 'numeroloji',
     'astronomik harita', 'kozmik kimlik analizi', 'doğum verisi',
@@ -65,14 +65,14 @@ export const metadata: Metadata = {
         url: '/og-image.svg',
         width: 1200,
         height: 630,
-        alt: 'SoulProfile — Galaktik Karnen',
+        alt: 'SoulProfile: Galaktik Karnen',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Doğduğunda yıldızlar sana ne söylüyordu?',
-    description: 'Horoscope değil — doğum verinden hesaplanan kozmik kimlik motoru.',
+    description: 'Horoscope değil: doğum verinden hesaplanan kozmik kimlik motoru.',
     images: ['/og-image.svg'],
   },
 };
@@ -87,7 +87,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-// FOUC önleyici — HTML render olmadan önce data-theme + data-motion set edilir.
+// FOUC önleyici: HTML render olmadan önce data-theme + data-motion set edilir.
 // Default: dark. Kullanıcı /settings'te açıkça 'light' seçerse override.
 const themeInitScript = `
 (function(){

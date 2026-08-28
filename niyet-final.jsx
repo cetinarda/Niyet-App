@@ -35,7 +35,7 @@ const TERAPI_TOTAL = 60;
 const REMINDERS = [
   {
     id:"ayna", icon:"🪞", title:"Aynada kendine bak",
-    subtitle:"30 saniye — gözlerinin içine bak. Sadece ol.",
+    subtitle:"30 saniye: gözlerinin içine bak. Sadece ol.",
     duration:30, color:"rgba(180,160,220,0.7)",
     borderColor:"rgba(180,160,220,0.25)",
     notifBody:"Aynaya git. 30 saniye boyunca sadece kendine bak.",
@@ -45,11 +45,11 @@ const REMINDERS = [
     subtitle:"Bir bardak su iç ve hisset.",
     duration:null, color:"rgba(72,130,200,0.7)",
     borderColor:"rgba(72,130,200,0.25)",
-    notifBody:"Bir bardak su iç. İçerken hisset — serin, temiz, hayat.",
+    notifBody:"Bir bardak su iç. İçerken hisset: serin, temiz, hayat.",
   },
   {
     id:"nefes", icon:"🌬", title:"Nefes farkındalığı",
-    subtitle:"1 dakika — sadece nefesini izle.",
+    subtitle:"1 dakika: sadece nefesini izle.",
     duration:60, color:"rgba(100,160,210,0.7)",
     borderColor:"rgba(100,160,210,0.25)",
     notifBody:"Dur. Bir dakika boyunca sadece nefesini izle. Buradasın.",
@@ -73,7 +73,7 @@ const REMINDERS = [
     subtitle:"Bir ağacı bul. Kollarını aç. Kalbini değdir.",
     duration:30, color:"rgba(45,120,65,0.7)",
     borderColor:"rgba(45,120,65,0.25)",
-    notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona — o da seni tutacak.",
+    notifBody:"Dışarı çık. Bir ağacı bul. Sarıl ona: o da seni tutacak.",
   },
   {
     id:"toprak", icon:"🌍", title:"Toprağa dokun",
@@ -118,11 +118,11 @@ const PROGRAM_21 = [
   { gun:3,  tema:"Beden",       emoji:"🧘", renk:"#27ae60", pastel:"#82d9a3",
     gorevler:["10 dakika esneme hareketi yap","Omuz ve boyun masajı yap (kendi kendine)","Akşam 2 dakika beden taraması: baştan ayağa hisset"] },
   { gun:4,  tema:"Su",          emoji:"💧", renk:"#1a6b8a", pastel:"#6ab4cc",
-    gorevler:["Günde en az 8 bardak su iç","Her yudum suyu bilinçli iç — hisset","Suya şükran hisset"] },
+    gorevler:["Günde en az 8 bardak su iç","Her yudum suyu bilinçli iç, hisset","Suya şükran hisset"] },
   { gun:5,  tema:"Doğa",        emoji:"🌿", renk:"#2d6a4f", pastel:"#74c69d",
     gorevler:["10 dakika dışarıda yürü","Bir ağaca ya da bitkiye dokun","Gökyüzüne en az 2 dakika bak"] },
   { gun:6,  tema:"Sessizlik",   emoji:"🤫", renk:"#34495e", pastel:"#85929e",
-    gorevler:["Sabah 10 dakika sessizlikte otur — hiçbir şey yapma","Telefonu 1 saat kapat","Yemek yerken ekransız ye"] },
+    gorevler:["Sabah 10 dakika sessizlikte otur, hiçbir şey yapma","Telefonu 1 saat kapat","Yemek yerken ekransız ye"] },
   { gun:7,  tema:"Minnet",      emoji:"🙏", renk:"#8b5a2b", pastel:"#d4a96e",
     gorevler:["3 kişiye zihinsel olarak şükret","Bugün birine iyilik yap","Akşam 5 şükür listesi yaz"] },
   { gun:8,  tema:"Kalp",        emoji:"💚", renk:"#1e8449", pastel:"#82d9a3",
@@ -152,7 +152,7 @@ const PROGRAM_21 = [
   { gun:20, tema:"Dönüşüm",     emoji:"🦋", renk:"#6c3483", pastel:"#d2b4de",
     gorevler:["İşe yaramayan 1 alışkanlığı tanımla","Bu alışkanlığın yerine 1 küçük adım koy","Dönüşüm doğal: bugün bunu hisset"] },
   { gun:21, tema:"Bütünleşme",  emoji:"🌟", renk:"#1b2631", pastel:"#aab7b8",
-    gorevler:["21 günü düşün: ne öğrendin, ne hissettin?","Kendine bir mektup yaz: 6 ay sonra aç","Bunu kutla: dans et, bağır, ağla — hissettir"] },
+    gorevler:["21 günü düşün: ne öğrendin, ne hissettin?","Kendine bir mektup yaz: 6 ay sonra aç","Bunu kutla: dans et, bağır, ağla, hissettir"] },
 ];
 
 const PACKAGES = [
@@ -1215,7 +1215,7 @@ export default function SakinApp() {
             {[
               {label:"En Aktif Çakra",value:chakra.name,color:chakra.pastel},
               {label:"Nefes Sayısı",value:`${breathCount}`,color:"#82d9a3"},
-              {label:"Niyet Kelimesi",value:selectedWords[0]||"—",color:"#f0c27f"},
+              {label:"Niyet Kelimesi",value:selectedWords[0]||"-",color:"#f0c27f"},
               {label:"Bilinçli An",value:"3",color:"#85c1e9"},
             ].map((s,i)=>(
               <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>

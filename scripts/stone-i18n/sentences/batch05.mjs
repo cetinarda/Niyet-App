@@ -1,4 +1,4 @@
-// Batch 05 — s082..s093
+// Batch 05: s082..s093
 export const BATCH05 = {
   s082: {
     de: { name:'Unakit', dailyMessage:'Begegne dir heute mit Geduld. Unakit bringt Gefühl und Verstand ins Gleichgewicht und unterstützt langsames, aber stetiges Wachstum.', howToUse:'Trage ihn in deiner Tasche. Halte ihn nah am Herzen in Momenten, in denen du mit dir Frieden schließen willst.', affirmation:'Meine Gefühle und mein Verstand sind im Gleichgewicht. Ich wachse in meinem eigenen Rhythmus.' },

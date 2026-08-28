@@ -1,5 +1,5 @@
 // Supabase yapılandırıldığında karneleri saklar/listeler.
-// Yapılandırılmamışsa şifreli localStorage'a düşer — PII koruması.
+// Yapılandırılmamışsa şifreli localStorage'a düşer: PII koruması.
 
 import { getSupabase } from './index';
 import type { GalacticReport, BirthInput } from '../types';
@@ -11,7 +11,7 @@ const LS_COMPAT_KEY = 'soulprofile.compat.v1';
 
 type StoredReport = GalacticReport & { savedAt: string };
 
-// İkili uyum arşivi — bakılan uyum haritaları (şifreli localStorage).
+// İkili uyum arşivi: bakılan uyum haritaları (şifreli localStorage).
 export type StoredCompat = {
   id: string;               // deterministik çift kimliği
   nameA: string;
@@ -69,13 +69,13 @@ async function saveLocal(reports: StoredReport[]) {
 export async function saveReport(report: GalacticReport): Promise<StoredReport> {
   const stored: StoredReport = { ...report, savedAt: new Date().toISOString() };
 
-  // 1. LOKAL ÖNCE — şifreli localStorage. iOS native'de hard-reload sonrası
+  // 1. LOKAL ÖNCE: şifreli localStorage. iOS native'de hard-reload sonrası
   // /report sayfası activeReportId üzerinden bunu okur. Supabase bekleyemeyiz.
   const list = await loadLocal();
   const dedupe = list.filter((r) => r.id !== stored.id);
   await saveLocal([stored, ...dedupe].slice(0, 30));
 
-  // 2. Supabase fire-and-forget — caller'ı bekletme.
+  // 2. Supabase fire-and-forget: caller'ı bekletme.
   const sb = getSupabase();
   if (sb) {
     sb.auth.getUser().then(({ data: userResult }) => {
@@ -129,7 +129,7 @@ export async function clearAllReports(): Promise<void> {
 }
 
 /**
- * Hesap silme — Apple guideline 5.1.1(v) + GDPR Art.17.
+ * Hesap silme: Apple guideline 5.1.1(v) + GDPR Art.17.
  * 1. Auth'lu kullanıcının profil + reports + entitlements satırlarını siler
  * 2. Storage'daki fotoğraf blob'larını temizler
  * 3. localStorage'ı sıfırlar
@@ -163,7 +163,7 @@ export async function purgeAccount(): Promise<{ ok: boolean; error?: string }> {
       await sb.storage.from('photos').remove([photoPath]).catch(() => null);
     }
 
-    // 2. PII içeren DB satırları — reports + entitlements + profiles cascade
+    // 2. PII içeren DB satırları: reports + entitlements + profiles cascade
     await Promise.allSettled([
       sb.from('reports').delete().eq('user_id', user.id),
       sb.from('entitlements').delete().eq('user_id', user.id),
@@ -185,7 +185,7 @@ export async function purgeAccount(): Promise<{ ok: boolean; error?: string }> {
         });
       }
     } catch {
-      /* Edge Function yoksa geç — DB satırları zaten silindi */
+      /* Edge Function yoksa geç, DB satırları zaten silindi */
     }
 
     await sb.auth.signOut();
