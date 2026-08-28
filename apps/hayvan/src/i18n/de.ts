@@ -25,7 +25,7 @@ export const de = {
       quote: {
         title: 'Worte',
         short: 'WORT',
-        subtitle: 'Aus anatolischer Weisheit',
+        subtitle: 'Aus den Weisheitstraditionen',
       },
     },
     tapHint: 'schütteln · tippen',

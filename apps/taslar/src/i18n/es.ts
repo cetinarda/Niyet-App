@@ -25,7 +25,7 @@ export const es = {
       quote: {
         title: 'Rumi',
         short: 'RUMI',
-        subtitle: 'Una respuesta de Rumi',
+        subtitle: 'De las tradiciones de sabiduría',
       },
     },
     tapHint: 'agita · toca',

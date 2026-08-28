@@ -25,7 +25,7 @@ export const fr = {
       quote: {
         title: 'Paroles',
         short: 'PAROLE',
-        subtitle: 'De la sagesse anatolienne',
+        subtitle: 'Des traditions de sagesse',
       },
     },
     tapHint: 'secoue · touche',

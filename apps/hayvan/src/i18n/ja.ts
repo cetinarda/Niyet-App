@@ -25,7 +25,7 @@ export const ja = {
       quote: {
         title: '言葉',
         short: '言葉',
-        subtitle: 'アナトリアの叡智より',
+        subtitle: '叡智の伝統より',
       },
     },
     tapHint: '振る · タップ',

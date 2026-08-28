@@ -25,7 +25,7 @@ export const es = {
       quote: {
         title: 'Palabras',
         short: 'PALABRA',
-        subtitle: 'De la sabiduría de Anatolia',
+        subtitle: 'De las tradiciones de sabiduría',
       },
     },
     tapHint: 'agita · toca',

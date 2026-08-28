@@ -25,7 +25,7 @@ export const fr = {
       quote: {
         title: 'Rûmî',
         short: 'RÛMÎ',
-        subtitle: 'Une réponse de Rûmî',
+        subtitle: 'Des traditions de sagesse',
       },
     },
     tapHint: 'secoue · touche',

@@ -340,7 +340,13 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     }).catch(() => {});
   };
 
-  const quote  = reading ? quotes.find(q => q.id === reading.quoteId)  : null;
+  // Soz havuzu yeniden duzenlendi (taninmayan ozanlar cikti). Eski bir gunluk
+  // kayitta duran quoteId artik havuzda olmayabilir; o zaman kart bos kalirdi.
+  // Yedek: o gunun tarihinden turetilen SABIT bir soz (gun icinde degismez).
+  const rawQuote = reading ? quotes.find(q => q.id === reading.quoteId) : null;
+  const quote = rawQuote || (reading && quotes.length
+    ? quotes[[...reading.date].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % quotes.length]
+    : null);
   const animal = reading ? animals.find(a => a.id === reading.animalId) : null;
 
   const deck = DECKS[step];

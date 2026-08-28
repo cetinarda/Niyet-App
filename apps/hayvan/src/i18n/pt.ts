@@ -25,7 +25,7 @@ export const pt = {
       quote: {
         title: 'Palavras',
         short: 'PALAVRA',
-        subtitle: 'Da sabedoria da Anatólia',
+        subtitle: 'Das tradições de sabedoria',
       },
     },
     tapHint: 'agite · toque',
