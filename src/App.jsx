@@ -293,7 +293,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.8";
+const APP_VERSION = "1.3.9";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -305,33 +305,33 @@ const APP_VERSION = "1.3.8";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.3.8",
+  version: "1.3.9",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Rüyalarını İçsel Ayna yorumlasın",
-    en:"Let the Inner Mirror read your dreams",
-    de:"Der Innere Spiegel deutet deine Träume",
-    es:"Que el Espejo Interior interprete tus sueños",
-    pt:"Deixa o Espelho Interior ler os teus sonhos",
-    fr:"Laisse le Miroir Intérieur lire tes rêves",
-    ja:"夢を内なる鏡が読み解く",
+    tr:"Günün kartı artık gün boyu açık",
+    en:"Your daily card now stays open all day",
+    de:"Deine Tageskarte bleibt jetzt den ganzen Tag offen",
+    es:"Tu carta del día ahora permanece abierta todo el día",
+    pt:"A tua carta do dia fica agora aberta o dia todo",
+    fr:"Ta carte du jour reste maintenant ouverte toute la journée",
+    ja:"今日のカードが一日中開いたままに",
   },
   items: {
-    tr:["İçsel Ayna'ya rüyanı anlat: Jung, Freud ve Gestalt yorumu, şamanik bir okumayla",
-        "İlk açılışta uygulamayı tanıtan kısa bir tur"],
-    en:["Tell your dream to the Inner Mirror: a Jung, Freud and Gestalt reading with a shamanic touch",
-        "A short guided tour on first open"],
-    de:["Erzähl dem Inneren Spiegel deinen Traum: eine Deutung nach Jung, Freud und Gestalt mit schamanischem Blick",
-        "Eine kurze Einführung beim ersten Öffnen"],
-    es:["Cuéntale tu sueño al Espejo Interior: una lectura de Jung, Freud y Gestalt con un toque chamánico",
-        "Un breve recorrido guiado al abrir por primera vez"],
-    pt:["Conta o teu sonho ao Espelho Interior: uma leitura de Jung, Freud e Gestalt com um toque xamânico",
-        "Uma breve visita guiada ao abrir pela primeira vez"],
-    fr:["Raconte ton rêve au Miroir Intérieur : une lecture de Jung, Freud et Gestalt avec une touche chamanique",
-        "Une courte visite guidée à la première ouverture"],
-    ja:["夢を内なる鏡へ：ユング、フロイト、ゲシュタルトの解釈をシャーマニックに",
-        "初回起動時の短い案内ツアー"],
+    tr:["Kartı bir kez açtın mı gün bitene kadar açık kalıyor, tekrar sallaman gerekmiyor",
+        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında"],
+    en:["Once you open a card it stays open until the day ends, no need to shake again",
+        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus"],
+    de:["Einmal geöffnet, bleibt die Karte bis zum Tagesende offen, kein erneutes Schütteln nötig",
+        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus"],
+    es:["Una vez abierta, la carta queda abierta hasta el final del día, sin volver a agitar",
+        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus"],
+    pt:["Depois de aberta, a carta fica aberta até ao fim do dia, sem precisares de agitar outra vez",
+        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus"],
+    fr:["Une fois ouverte, la carte reste ouverte jusqu'à la fin de la journée, sans avoir à secouer de nouveau",
+        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus"],
+    ja:["一度開いたカードはその日が終わるまで開いたまま、もう振らなくて大丈夫",
+        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
@@ -9047,6 +9047,45 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         kendisi artık doğrudan Ayarlar'a gidiyor (aşağıdaki
                         buton), bu yüzden bu dropdown web'de hiç açılmıyor;
                         dört buton da Ayarlar'ın GENEL grubunda duruyor. */}
+                    {/* ── APP STORE ZORUNLULARI (NATIVE) ────────────────────
+                        Ayarlar sayfası şimdilik web'e özel (taşıma listesi
+                        CLAUDE.md'de). Ama iki madde mağaza kuralı:
+                          3.1.1  "Satın Alımları Geri Yükle" bulunabilir olmalı.
+                                 Yeni cihaza geçen abone bunu arıyor, native'de
+                                 yalnızca fiyat ekranında vardı, oraya da ancak
+                                 premium olmayan biri giriyor.
+                          3.1.2  Abonelik yönetimi kolay ulaşılabilir olmalı.
+                                 Native'de HİÇ yoktu.
+                        Ayarlar native'e açıldığında bu blok kaldırılabilir,
+                        aynı ikisi orada da var (GENEL > ÖDEME grubunda). */}
+                    {isNative && (<>
+                      <div style={{ height:1, background:"rgba(255,255,255,0.08)", margin:"4px 6px" }} />
+                      <button onClick={()=>{ try{haptic();}catch(_){} setShowTopMenu(false); handleRestore(); }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background:"transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
+                        <span style={{ fontSize:15, lineHeight:1 }}>⟳</span>
+                        <span>{t("premium_restore").toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                      <button onClick={()=>{
+                          try{haptic();}catch(_){}
+                          setShowTopMenu(false);
+                          let android = false;
+                          try { android = Capacitor.getPlatform() === "android"; } catch(_) {}
+                          const url = android
+                            ? "https://play.google.com/store/account/subscriptions"
+                            : "https://apps.apple.com/account/subscriptions";
+                          try { window.open(url, "_blank", "noopener"); } catch(_) {}
+                        }}
+                        style={{ display:"flex", alignItems:"center", gap:9, padding:"10px 12px",
+                          background:"transparent", border:"none", borderRadius:10,
+                          cursor:"pointer", fontFamily:"'Jost',sans-serif", fontSize:12.5, letterSpacing:1.2,
+                          color:"rgba(210,200,230,0.85)", textAlign:"left", width:"100%" }}>
+                        <span style={{ fontSize:15, lineHeight:1 }}>▤</span>
+                        <span>{pickLang(SET_TXT.abonelik, lang).toLocaleUpperCase(t("locale_code"))}</span>
+                      </button>
+                    </>)}
                     {/* Açık/koyu tema: NATIVE'de menünün EN ALTINDA kalır.
                         Web'de Ayarlar sayfasına taşındı (kullanıcı: "renk modu"). */}
                     {isNative && (<>

@@ -26,6 +26,10 @@ for a in sys.argv[1:]:
 BAD = '—–―'
 SKIP_DIRS = {'node_modules', '.git', 'dist', '_expo', 'ios', 'android',
              '.expo', 'out', '.next', 'build', '.netlify', 'coverage'}
+# ALTIN KURAL #6: src/purchases.js'e dokunulmaz (IAP / para mantigi, Apple
+# makbuz dogrulama). Icindeki 7 uzun cizgi yalnizca yorum satirlarinda ama
+# karar kullanicinin; script kendi basina degistirmesin.
+SKIP_PATHS = {'./src/purchases.js'}
 SKIP_NAMES = set()
 EXT = ('.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs', '.json', '.md',
        '.html', '.css', '.txt', '.yml', '.yaml')
@@ -186,6 +190,8 @@ def main():
             if fn in SKIP_NAMES or not fn.endswith(EXT):
                 continue
             p = os.path.join(root, fn)
+            if p in SKIP_PATHS:
+                continue
             if ONLY and ONLY not in p:
                 continue
             targets.append(p)
