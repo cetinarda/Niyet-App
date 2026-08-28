@@ -906,7 +906,7 @@ const TODAY_TXT = {
               de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?",
               pt:"O que te dizem as estrelas hoje?", fr:"Que te disent les étoiles aujourd'hui ?",
               ja:"今日、星はあなたに何を告げている？" },
-  soulidGo: { tr:"SoulID'de bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
+  soulidGo: { tr:"Ruh Profili'nde bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
               pt:"Ver no SoulID", fr:"Voir dans SoulID", ja:"SoulIDで見る" },
 };
 const PANIC_ENTRY_TXT = {
@@ -7877,19 +7877,23 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
               // görünsün. Tekrar premium yapmak için: premium:SOULID_PREMIUM_GATE
               // yerine premium:true yaz (tek satır, gerisi kendiliğinden döner).
-              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
+              // SIRA KULLANICI TARAFINDAN BELİRLENDİ (Ağu 2026):
+              // Ruh Profili · Tasarım · Hayvan · Bitkiler · Taşlar · Mitler.
+              // Rastgele değil: önce kimlik/harita katmanı (Ruh Profili +
+              // Tasarım), sonra günlük kart uygulamaları. Değiştirme.
+              { name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
                 premium: SOULID_PREMIUM_GATE, isNew: true,
                 eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
-              { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
-                desc: t("ailesi_hayvan_desc") },
-              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
-                desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
-              { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
-                desc: t("ailesi_taslar_desc") },
+              { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
+                desc: t("ailesi_hayvan_desc") },
               { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
                 desc: t("ailesi_bitkiler_desc") },
+              { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
+                desc: t("ailesi_taslar_desc") },
+              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+                desc: t("ailesi_mitler_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background: app.premium ? "linear-gradient(180deg,rgba(232,192,122,0.06),rgba(255,255,255,0.02))" : "rgba(255,255,255,0.03)",
@@ -8999,7 +9003,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     border: screen==="ayarlar" ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
                     color:"rgba(228,218,245,0.9)",
                   }}>
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                  {/* 17px, yanındaki ⌂ ikonu 19px: BİLEREK farklı. Dişli çok
+                      detaylı bir şekil (12 diş + iç daire), aynı kutuda ev
+                      ikonundan daha İRİ ve ağır görünüyordu (optik boyut
+                      yanılsaması). 17'ye inince ikisi göz için eşitleniyor.
+                      Buton kutusu (48x38) DEĞİŞMEDİ: dokunma hedefi korunuyor. */}
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
                     <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
                       stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -11601,152 +11610,204 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.lineWidth = 4;
           ctx.stroke();
 
+          // ── AKIŞKAN DİKEY YERLEŞİM (tek `cy` imleci) ─────────────────────
+          // ESKİ HATA (kullanıcı: "yeni kart human design yaşam yolunun üstüne
+          // biniyor"): her bölümün Y'si ELLE yazılmış sabit sayıydı
+          // (820/940/1060/1250/1290/1490...). Bölüm sayısı değiştiği anda
+          // (element verisi var/yok, HD var/yok, şimdi Ay düğümleri de eklendi)
+          // bu sabitler tutmuyor, bloklar ÜST ÜSTE BİNİYORDU. Üstelik alttaki
+          // açıklama bloğu `Math.max(2, ...)` ile en az 2 satırı ZORLUYORDU,
+          // yani yer kalmasa bile yazıyor ve HD kutusunun içine giriyordu.
+          // Artık tek bir `cy` imleci var: her blok kendi yüksekliği kadar
+          // ilerletiyor, açıklama bloğu da yalnızca KALAN yere sığdığı kadar
+          // satır yazıyor, sığmıyorsa hiç yazmıyor. Çakışma imkânsız.
+          // Yeni bir bölüm eklerken tek kural: çizdikten sonra `cy`'yi ilerlet.
+          let cy = 620;
+
           // 5. Ad
           ctx.fillStyle = "#fff";
           ctx.font = "300 56px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(displayName.toLocaleUpperCase(lang), 540, 640);
+          ctx.fillText(displayName.toLocaleUpperCase(lang), 540, cy);
+          cy += 58;
 
           // 6. Burç · Yaşam Yolu
           ctx.fillStyle = "#a890c8";
           ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
           const subtitle = `${burc !== "-" ? burc.toLocaleUpperCase(lang) : ""}${yasamYolu !== "-" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
-          if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
+          if (subtitle.trim()) ctx.fillText(subtitle, 540, cy);
+          cy += 52;
 
-          // 7. Stat boxes (2x3 grid)
-          const stats = [
-            [t("gid_sun"),          burc,                  "#f0c860", 100, 820],
-            [t("gid_asc"),          yuk,                   "#a0d8b4", 560, 820],
-            [t("gid_12th"),         ev12,                  "#c8b0e8", 100, 940],
-            [t("gid_draconic"),     dra,                   "#d8c8f0", 560, 940],
-            [t("gid_life_path_card"), String(yasamYolu),   "#d0c8e8", 100, 1060],
-            [t("gid_personal_year_card"), String(kisiselYil), "#d0c8e8", 560, 1060],
-          ];
-          stats.forEach(([label, val, color, x, y]) => {
-            // box
-            ctx.fillStyle = "rgba(255,255,255,0.025)";
-            roundRect(ctx, x, y, 420, 92, 14);
-            ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.06)";
-            ctx.lineWidth = 1;
-            roundRect(ctx, x, y, 420, 92, 14);
-            ctx.stroke();
-            // label
-            ctx.fillStyle = "#7a7090";
-            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
-            ctx.textAlign = "left";
-            ctx.fillText(label, x + 22, y + 36);
-            // value
-            ctx.fillStyle = color;
-            ctx.font = "500 32px -apple-system, 'Jost', sans-serif";
-            ctx.fillText(val, x + 22, y + 76);
-          });
-
-          // 8. Element dağılımı: yüzdeler (galaktik kartta KOMPAKT 2x2 grid; pasta
-          // sadece HD embed'inde). Veri: Sakin Tasarım embed'inin yazdığı localStorage.
-          // Eski gün-serisi/en-iyi/kart istatistikleri kaldırıldı; yer buraya açıldı.
-          let yAfterElements = 1170;
-          try {
-            let ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
-            const edSum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-            // SADECE Sakin Tasarım'ın tam-harita (11 gezegen ağırlıklı) verisi kullanılır.
-            // Host'ta gezegen konumları yok → kaba 4-nokta tahmini YANLIŞ değer üretiyordu
-            // (Tasarım'la uyuşmuyordu). Doğru veri yoksa element bölümü gizlenir.
-            if (!ed || edSum <= 0.5) ed = null;
-            if (ed) {
-              const isEn = lang === "en";
-              ctx.fillStyle = "#7a7090";
-              ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
-              ctx.textAlign = "center";
-              ctx.fillText(pickLang(ELEM_I18N.title, lang).toLocaleUpperCase(lang), 540, 1250);
-              const items = [
-                ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
-                ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
-                ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
-                ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
-              ];
-              items.forEach(([k,color,glyph,name], i) => {
-                const col = i % 2, row = Math.floor(i / 2);
-                const x = 100 + col * 460, y = 1290 + row * 100;
-                ctx.fillStyle = "rgba(255,255,255,0.025)";
-                roundRect(ctx, x, y, 420, 84, 14); ctx.fill();
-                ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
-                roundRect(ctx, x, y, 420, 84, 14); ctx.stroke();
-                ctx.fillStyle = color; ctx.textAlign = "left";
-                ctx.font = "400 30px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(glyph, x + 26, y + 54);
-                ctx.fillStyle = "#cfc8e0";
-                ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(name, x + 66, y + 53);
-                const pct = Math.round((ed[k]||0)*100);
-                ctx.fillStyle = color; ctx.textAlign = "right";
-                ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(pctFmt(pct, lang), x + 394, y + 54);
-              });
-              yAfterElements = 1490;
+          // ── ÖN ÖLÇÜM: boşluğu dengeli dağıt ──────────────────────────────
+          // Kartın içeriği kullanıcıya göre değişiyor (element verisi var/yok,
+          // HD var/yok, açıklama uzunlukları farklı). Sabit boşluklarla çizince
+          // kısa içerikte ALT TARAF KOCAMAN BOŞ kalıyor, uzun içerikte de
+          // sıkışıyordu. Çözüm: çizmeden önce tüm blokların yüksekliğini ölç,
+          // artan yeri bloklar ARASINA eşit paylaştır (blok başına en fazla
+          // 34px). Böylece kart hem dolu görünüyor hem de taşma riski yok.
+          const BOTTOM_LIMIT = 1826; // footer 1878, arada nefes payı
+          const wrapLines = (text, maxW, maxLines) => {
+            ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+            const words = String(text).split(/\s+/); const out = []; let cur = "";
+            for (const w of words) {
+              const test = cur ? cur + " " + w : w;
+              if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = w; } else cur = test;
             }
-          } catch(_) {}
-
-          // 9. HD bölümü (varsa): element dağılımının altına
-          if (hdProfile && hdProfile.type) {
-            const hy = yAfterElements + 20;
-            ctx.fillStyle = "rgba(180,160,216,0.08)";
-            roundRect(ctx, 100, hy, 880, 100, 14);
-            ctx.fill();
-            ctx.strokeStyle = "rgba(180,160,216,0.18)";
-            ctx.lineWidth = 1;
-            roundRect(ctx, 100, hy, 880, 100, 14);
-            ctx.stroke();
-            ctx.fillStyle = "#9080b8";
-            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("HUMAN DESIGN", 540, hy + 40);
-            ctx.fillStyle = "#d0c8e8";
-            ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
-            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, hy + 80);
-          }
-
-          // 9.5. Yaşam Yolu + Kişisel Yıl açıklamaları, önizlemedeki bilgiler artık
-          // indirilen fotoğrafta da görünür (kullanıcı isteği). Kalan dikey alana göre
-          // satır sayısı uyarlanır; taşarsa son satır kısaltılır.
+            if (cur) out.push(cur);
+            if (out.length > maxLines) {
+              const kept = out.slice(0, maxLines);
+              let last = kept[maxLines - 1];
+              while (last.length && ctx.measureText(last + "…").width > maxW) last = last.replace(/\s*\S$/, "");
+              kept[maxLines - 1] = last + "…";
+              return kept;
+            }
+            return out;
+          };
+          const BOX_W = 420, BOX_H = 88, BOX_GAP = 12, COL_X = [100, 560];
+          const EL_H = 84, EL_GAP = 10, HD_H = 96;
+          const GAP_ELEM = 40, GAP_HD = 26, GAP_DESC = 34;
+          // Element verisi: SADECE Sakin Tasarım'ın tam-harita (11 gezegen
+          // ağırlıklı) çıktısı. Host'ta gezegen konumları yok, kaba tahmin
+          // Tasarım'la çelişen YANLIŞ değer üretiyordu. Yoksa bölüm çizilmez.
+          const elemDist = (() => {
+            try {
+              const ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
+              const s = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
+              return (ed && s > 0.5) ? ed : null;
+            } catch (_) { return null; }
+          })();
+          const hdOn = !!(hdProfile && hdProfile.type);
+          const descSrc = [];
           {
             const lpDesc = (LIFE_PATH_DESC[lang] || {})[yasamYolu];
             const pyDesc = (PERSONAL_YEAR_DESC[lang] || {})[kisiselYil];
-            const blocks = [];
-            if (lpDesc) blocks.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
-            if (pyDesc) blocks.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
-            if (blocks.length) {
-              let infoY = (hdProfile && hdProfile.type) ? (yAfterElements + 140) : (yAfterElements + 40);
-              const linesPer = Math.max(2, Math.min(4, Math.floor(((1850 - infoY) / blocks.length - 34) / 32)));
-              const wrapLines = (text, maxW, maxLines) => {
-                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
-                const words = String(text).split(/\s+/); const out = []; let cur = "";
-                for (const w of words) {
-                  const test = cur ? cur + " " + w : w;
-                  if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = w; } else cur = test;
-                }
-                if (cur) out.push(cur);
-                if (out.length > maxLines) {
-                  const kept = out.slice(0, maxLines);
-                  let last = kept[maxLines - 1];
-                  while (last.length && ctx.measureText(last + "…").width > maxW) last = last.replace(/\s*\S$/, "");
-                  kept[maxLines - 1] = last + "…";
-                  return kept;
-                }
-                return out;
-              };
-              blocks.forEach(([label, desc]) => {
-                ctx.textAlign = "left";
-                ctx.fillStyle = "#9080b8";
-                ctx.font = "600 22px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(label, 100, infoY);
-                infoY += 34;
-                ctx.fillStyle = "#bcb4cf";
-                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
-                wrapLines(desc, 880, linesPer).forEach((ln) => { ctx.fillText(ln, 100, infoY); infoY += 32; });
-                infoY += 16;
-              });
-            }
+            if (lpDesc) descSrc.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
+            if (pyDesc) descSrc.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
+          }
+          const statsH = 4 * (BOX_H + BOX_GAP) - BOX_GAP;
+          const elemH  = elemDist ? 30 + 2 * (EL_H + EL_GAP) - EL_GAP : 0;
+          const fixedH = statsH + (elemH ? GAP_ELEM + elemH : 0) + (hdOn ? GAP_HD + HD_H : 0);
+          // Açıklama satır sayısı: 4'ten başlayıp SIĞANA kadar azalt. Hiç
+          // sığmıyorsa açıklama bloğu tamamen düşer (üstteki kutuya binmez).
+          let descRows = [];
+          for (let maxLines = 4; maxLines >= 1; maxLines--) {
+            const rows = descSrc.map(([lbl, d]) => [lbl, wrapLines(d, 880, maxLines)]);
+            const h = rows.reduce((a, [, ls]) => a + 34 + ls.length * 32 + 16, 0);
+            if (cy + fixedH + (h ? GAP_DESC + h : 0) <= BOTTOM_LIMIT) { descRows = rows; break; }
+          }
+          const descH = descRows.reduce((a, [, ls]) => a + 34 + ls.length * 32 + 16, 0);
+          const naturalH = fixedH + (descH ? GAP_DESC + descH : 0);
+          // Artan yer: 4 boşluk noktasına (üst · element · HD · açıklama)
+          // eşit dağıt, blok başına en fazla 34px. Kalanı altta nefes payı.
+          const air = Math.max(0, Math.min(34, Math.floor((BOTTOM_LIMIT - cy - naturalH) / 4)));
+          cy += air;
+
+          // 7. Stat kutuları (2 sütun × 4 satır).
+          // AY DÜĞÜMLERİ EKLENDİ (kullanıcı: "kuzey ay güney ay listede yok"):
+          // önizleme kartında zaten vardı ama PAYLAŞILAN görsele hiç
+          // çizilmiyordu, iki yüzey birbiriyle çelişiyordu. Sıra artık
+          // önizlemeyle birebir aynı (bkz. aşağıdaki StatRow bloğu):
+          // güneş · yükselen / 12. ev · draconik / kuzey · güney / yol · yıl.
+          const stats = [
+            [t("gid_sun"),                   burc,               "#f0c860"],
+            [t("gid_asc"),                   yuk,                "#a0d8b4"],
+            [t("gid_12th"),                  ev12,               "#c8b0e8"],
+            [t("gid_draconic"),              dra,                "#d8c8f0"],
+            [pickLang(NODE_TXT.north, lang), kuzD,               "#a8c8f0"],
+            [pickLang(NODE_TXT.south, lang), guyD,               "#c0b0a0"],
+            [t("gid_life_path_card"),        String(yasamYolu),  "#d0c8e8"],
+            [t("gid_personal_year_card"),    String(kisiselYil), "#d0c8e8"],
+          ];
+          stats.forEach(([label, val, color], i) => {
+            const bx = COL_X[i % 2], by = cy + Math.floor(i / 2) * (BOX_H + BOX_GAP);
+            ctx.fillStyle = "rgba(255,255,255,0.025)";
+            roundRect(ctx, bx, by, BOX_W, BOX_H, 14); ctx.fill();
+            ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+            roundRect(ctx, bx, by, BOX_W, BOX_H, 14); ctx.stroke();
+            // Etiketler canvas'ta ELLE büyütülüyor: önizlemede bunu CSS
+            // textTransform yapıyor, canvas'ta öyle bir şey yok. NODE_TXT
+            // küçük harfle tanımlı, diğerleri zaten büyük (zararsız).
+            ctx.fillStyle = "#7a7090";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(String(label).toLocaleUpperCase(lang), bx + 22, by + 34);
+            ctx.fillStyle = color;
+            ctx.font = "500 32px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(val, bx + 22, by + 72);
+          });
+          cy += Math.ceil(stats.length / 2) * (BOX_H + BOX_GAP) - BOX_GAP;
+
+          // 8. Element dağılımı (varsa). Veri: Sakin Tasarım embed'inin yazdığı
+          // localStorage. SADECE onun tam-harita (11 gezegen ağırlıklı) verisi
+          // kullanılır; host'ta gezegen konumları yok, kaba tahmin Tasarım'la
+          // çelişen YANLIŞ değer üretiyordu. Doğru veri yoksa bölüm çizilmez.
+          if (elemDist) {
+            cy += GAP_ELEM + air;
+            ctx.fillStyle = "#7a7090";
+            ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(pickLang(ELEM_I18N.title, lang).toLocaleUpperCase(lang), 540, cy);
+            cy += 30;
+            const items = [
+              ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
+              ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
+              ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
+              ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
+            ];
+            items.forEach(([k,color,glyph,name], i) => {
+              const bx = COL_X[i % 2], by = cy + Math.floor(i / 2) * (EL_H + EL_GAP);
+              ctx.fillStyle = "rgba(255,255,255,0.025)";
+              roundRect(ctx, bx, by, BOX_W, EL_H, 14); ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+              roundRect(ctx, bx, by, BOX_W, EL_H, 14); ctx.stroke();
+              ctx.fillStyle = color; ctx.textAlign = "left";
+              ctx.font = "400 30px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(glyph, bx + 26, by + 54);
+              ctx.fillStyle = "#cfc8e0";
+              ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(name, bx + 66, by + 53);
+              ctx.fillStyle = color; ctx.textAlign = "right";
+              ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(pctFmt(Math.round((elemDist[k]||0)*100), lang), bx + 394, by + 54);
+            });
+            cy += 2 * (EL_H + EL_GAP) - EL_GAP;
+          }
+
+          // 9. Human Design (varsa)
+          if (hdOn) {
+            cy += GAP_HD + air;
+            ctx.fillStyle = "rgba(180,160,216,0.08)";
+            roundRect(ctx, 100, cy, 880, HD_H, 14); ctx.fill();
+            ctx.strokeStyle = "rgba(180,160,216,0.18)"; ctx.lineWidth = 1;
+            roundRect(ctx, 100, cy, 880, HD_H, 14); ctx.stroke();
+            ctx.fillStyle = "#9080b8";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("HUMAN DESIGN", 540, cy + 38);
+            ctx.fillStyle = "#d0c8e8";
+            ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, cy + 76);
+            cy += HD_H;
+          }
+
+          // 9.5. Yaşam Yolu + Kişisel Yıl açıklamaları. Satırlar yukarıda
+          // ÖLÇÜLDÜ (descRows): burada yalnızca çiziliyor, yani taşma
+          // matematiksel olarak imkânsız. Hiç sığmadıysa descRows boş kalır
+          // ve blok hiç çizilmez (eskiden en az 2 satır ZORLANIYOR ve HD
+          // kutusunun üstüne biniyordu, kullanıcının bildirdiği hata buydu).
+          if (descRows.length) {
+            cy += GAP_DESC + air;
+            descRows.forEach(([label, lines]) => {
+              ctx.textAlign = "left";
+              ctx.fillStyle = "#9080b8";
+              ctx.font = "600 22px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(label, 100, cy);
+              cy += 34;
+              ctx.fillStyle = "#bcb4cf";
+              ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+              lines.forEach((ln) => { ctx.fillText(ln, 100, cy); cy += 32; });
+              cy += 16;
+            });
           }
 
           // 10. Footer
@@ -13103,7 +13164,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 Uydurma bir metin göstermek yerine doğrudan SoulID'ye açılan
                 dürüst bir davet konuldu. */}
             <button onClick={()=>{ try{haptic();}catch(_){}
-                handleOpenEmbed({ name:"SoulID", embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
+                handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
               style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:16,textAlign:"left",cursor:"pointer",
                 background:"linear-gradient(160deg, rgba(232,192,122,0.12), rgba(255,255,255,0.02))",
                 border:"1px solid rgba(232,192,122,0.32)",borderRadius:16,padding:"15px 16px",
@@ -13112,7 +13173,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 fontSize:19,background:"radial-gradient(circle, rgba(232,192,122,0.28), rgba(232,192,122,0.08))" }}>✦</span>
               <span style={{ flex:1,minWidth:0 }}>
                 <span style={{ display:"block",fontSize:10,letterSpacing:2,color:"#e8c07acc",textTransform:"uppercase",
-                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>SoulID</span>
+                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{t("ailesi_soulid_name")}</span>
                 <span style={{ display:"block",fontSize:14,color:"#efe9f8",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
                   {pickLang(TODAY_TXT.soulid, lang)}
                 </span>
