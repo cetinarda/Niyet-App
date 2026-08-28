@@ -236,7 +236,21 @@ Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisi
 
 ## Bilinen, çözülmemiş öğeler (Layer-2 TODOs)
 
-- IAP server-side receipt validation (`992ab50` commit mesajında söz verilmiş, kodda iz yok)
-- `H2`: foreground premium recheck `store.owned`'dan grant yapıyor: revoke-only yapılmalı
-- `H3`: `UIBackgroundModes=audio` review (App Store red riski)
-- Web/iOS branch tek noktada birleştirme (deploy branch'i main'e migrate)
+- ~~IAP server-side receipt validation~~ **ÇÖZÜLDÜ:** `netlify/functions/verify-entitlement.mjs`
+  Apple App Store Server API + Google Play Developer API'ye soruyor (altın kural #6'ya bak).
+- ~~`H2`: foreground premium recheck `store.owned`'dan grant yapıyor~~ **ÇÖZÜLDÜ:**
+  `initStore()` artık `isSubscribed()` ÇAĞIRMIYOR (otomatik grant yok, App.jsx ~5169);
+  foreground doğrulaması sunucuya soruyor ve YALNIZCA `not_entitled`'da
+  `revokeLocalPremium()` çağırıyor, yani revoke-only (App.jsx ~5262).
+  Premium sadece iki yoldan verilir: kullanıcının Satın Al'ı veya Geri Yükle'si.
+- `H3`: `UIBackgroundModes=audio` **AÇIK, ama asıl sorun red riski değil:**
+  `AppDelegate.swift` açılışta `AVAudioSession.setCategory(.playback)` + `setActive(true)`
+  yapıyor. `.playback` karışmayan (non-mixing) bir kategori; oturum AÇILIŞTA aktif
+  edilince Sakin hiç ses çalmasa bile kullanıcının müziğini SUSTURUYOR. Önerilen
+  düzeltme: `setActive(true)` çalmaya başlarken, `setActive(false, .notifyOthersOnDeactivation)`
+  bitince. Arka plan modu kalsın (solfej/çakra seansları ekran kapalıyken sürüyor,
+  meşru kullanım), App Review notuna gerekçe yazılsın.
+  Dosya altın kural #7 kapsamında: onay + cihazda test olmadan değiştirme.
+- Web/iOS branch tek noktada birleştirme (deploy branch'i main'e migrate).
+  Kod tarafı hazır: `main` web-deploy-able ve gdkpd artık main'in aynısı.
+  Kalan adım KULLANICIDA: Netlify production branch'ini `main` yapmak.
