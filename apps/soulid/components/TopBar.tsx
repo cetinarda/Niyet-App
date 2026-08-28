@@ -42,6 +42,9 @@ export function TopBar() {
     { href: '/compatibility', label: tr ? 'İkili Uyum' : 'Compatibility' },
     { href: '/attachment', label: tr ? 'Bağlanma Stilin' : 'Your Attachment Style' },
     { href: '/history', label: tr ? 'Geçmişin' : 'Your History' },
+    // Ana sayfa artık açılış ekranı değil (oraya eşleşme geldi), o yüzden
+    // menüde kendi maddesi var: SoulID'nin ne olduğunu merak eden oradan bakar.
+    { href: '/', label: tr ? 'Ana Sayfa' : 'Home' },
   ];
 
   return (

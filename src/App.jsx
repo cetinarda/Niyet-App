@@ -5007,7 +5007,44 @@ export default function SakinApp() {
   }, [activeMindMode]);
   const [selectedMoods, setSelectedMoods] = useState([]);
   const [selectedNature, setSelectedNature] = useState([]);
-  const [idCardPhoto, setIdCardPhoto] = useState(null);
+  // GALAKTİK KİMLİK FOTOĞRAFI: eskiden yalnızca React state'teydi, uygulama
+  // kapanınca kayboluyordu ve SoulID embed'i (aynı origin) göremiyordu.
+  // Artık `sakin_avatar` anahtarında KÜÇÜLTÜLMÜŞ (256px, JPEG) olarak durur:
+  //   · kapanışta kaybolmaz,
+  //   · SoulID eşleşme ekranı "Siz" tarafında bu fotoğrafı kullanır.
+  // Küçültme ŞART: ham data URL birkaç MB olabiliyor, localStorage kotası
+  // (~5 MB) dolar ve BAŞKA anahtarların yazımı da sessizce patlardı.
+  const [idCardPhoto, setIdCardPhoto] = useState(() => {
+    try { return localStorage.getItem("sakin_avatar") || null; } catch(_) { return null; }
+  });
+  // Fotoğrafı 256px kareye sığdırıp JPEG'e çevirir (yaklaşık 20-40 KB).
+  const saveIdCardPhoto = (file) => {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = (ev) => {
+      const src = ev.target.result;
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const N = 256;
+          const c = document.createElement("canvas");
+          c.width = N; c.height = N;
+          const g = c.getContext("2d");
+          // kısa kenardan kare kırp, ortala
+          const side = Math.min(img.width, img.height);
+          g.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, N, N);
+          const small = c.toDataURL("image/jpeg", 0.82);
+          setIdCardPhoto(small);
+          try { localStorage.setItem("sakin_avatar", small); } catch(_) {}
+        } catch(_) {
+          setIdCardPhoto(src); // küçültme başarısızsa en azından göster
+        }
+      };
+      img.onerror = () => setIdCardPhoto(src);
+      img.src = src;
+    };
+    r.readAsDataURL(file);
+  };
   const [idCardName, setIdCardName] = useState(() => localStorage.getItem("sakin_name") || "");
   // Kart açıldığında adı doğum bilgilerine girilen isimle senkronla, idCardName
   // yalnızca uygulama İLK açıldığında localStorage'dan okunuyordu; kullanıcı Ailesi
@@ -11972,7 +12009,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         style={{ width:88,height:88,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
                         <span style={{ fontSize:30,lineHeight:1 }}>📷</span>
                         <input type="file" accept="image/*" style={{ display:"none" }}
-                          onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                          onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
                       </label>
                     )}
                     {idCardPhoto && (
@@ -11982,7 +12019,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         style={{ position:"absolute",bottom:-2,right:-2,width:30,height:30,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
                         📷
                         <input type="file" accept="image/*" style={{ display:"none" }}
-                          onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>setIdCardPhoto(ev.target.result); r.readAsDataURL(f); }}/>
+                          onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
                       </label>
                     )}
                   </div>

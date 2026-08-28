@@ -8,6 +8,15 @@ const STORAGE_KEY = 'soulprofile.locale';
 
 function detectInitial(): Locale {
   if (typeof window === 'undefined') return 'tr';
+  // SAKİN KÖPRÜSÜ: embed Sakin'in içinde açıldığında host dilini izle. Aksi
+  // halde SoulProfile kendi anahtarı yokken tarayıcı diline düşüyordu; Türkçe
+  // uygulamada İngilizce eşleşme ekranı çıkıyordu. `sakin_lang` en yüksek
+  // öncelik, sonra kullanıcının SoulID içinde yaptığı seçim, sonra tarayıcı.
+  try {
+    const sk = (localStorage.getItem('sakin_lang') || '').toLowerCase();
+    if (sk.startsWith('tr')) return 'tr';
+    if (sk.startsWith('en')) return 'en';
+  } catch { /* storage kapalı: aşağıya düş */ }
   const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
   if (saved === 'tr' || saved === 'en') return saved;
   const nav = navigator.language?.toLowerCase() ?? 'tr';

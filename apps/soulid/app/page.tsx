@@ -25,7 +25,11 @@ export default function Welcome() {
     let cancelled = false;
     tryAutoConnectFromSakin().then((res) => {
       if (cancelled) return;
-      if (res.ok) { nav.push('/report'); return; }
+      // KÖPRÜ SONRASI İLK EKRAN: karne değil EŞLEŞME (kullanıcı kararı).
+      // Kullanıcının kendi kimliği Sakin'den zaten geldi; Keşfet'ten SoulID'ye
+      // girenin eksiği ikinci kişi. Karne ve diğer bölümler bir dokunuş ötede:
+      // eşleşme ekranındaki "Atla" bölüm listesine götürür.
+      if (res.ok) { nav.push('/pair'); return; }
       markSakinBridgeSkipped();
       setConnecting(false);
     });

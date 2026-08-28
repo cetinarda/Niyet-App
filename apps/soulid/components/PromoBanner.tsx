@@ -24,6 +24,7 @@ export function PromoBanner() {
   return (
     <Link
       href={href}
+      data-promo
       className="block bg-gradient-to-r from-cosmicDeep via-cosmic to-nebula text-center text-[12px] font-bold tracking-wide text-white transition-opacity hover:opacity-90"
     >
       <div className="mx-auto max-w-6xl px-4 py-2">{t('free.banner')}</div>
