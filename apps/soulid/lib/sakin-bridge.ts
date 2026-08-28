@@ -112,3 +112,13 @@ export function sakinBridgeAttempted(): boolean {
 export function markSakinBridgeSkipped(): void {
   try { sessionStorage.setItem(DONE_KEY, '1'); } catch { /* ignore */ }
 }
+
+/**
+ * Galaktik Kimlik fotoğrafı. Sakin, kullanıcının yüklediği fotoğrafı 256px
+ * JPEG'e küçültüp `sakin_avatar` anahtarına yazar (aynı origin, embed okuyabilir).
+ * Eşleşme ekranındaki "Siz" dairesi bunu gösterir; yoksa burç sembolüne düşer.
+ */
+export function readSakinAvatar(): string | null {
+  const v = readSakinField('sakin_avatar');
+  return v.startsWith('data:image/') ? v : null;
+}

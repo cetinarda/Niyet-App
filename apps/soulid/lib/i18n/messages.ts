@@ -176,6 +176,50 @@ const tr: Dict = {
 
   // Common
   'common.back': 'Geri',
+
+  // Eşleşme akışı (Keşfet'ten SoulID'ye girişte açılan ilk ekran)
+  'pair.kicker': 'İKİLİ UYUM',
+  'pair.title': 'Uyumunuza birlikte bakalım',
+  'pair.subtitle': 'Senin kimliğin hazır. Sonucu görmek için bakmak istediğin kişiyi ekle.',
+  'pair.you': 'Sen',
+  'pair.partner': 'Kişi',
+  'pair.add': 'Kişiyi ekle',
+  'pair.skip': 'Atla',
+  'pair.next': 'İleri',
+  'pair.see': 'Uyuma bak',
+  'pair.computing': 'İki harita karşılaştırılıyor',
+  'pair.step.ad': 'Kişinin adı',
+  'pair.step.tarih': 'Doğum tarihi',
+  'pair.step.saat': 'Doğum saati',
+  'pair.step.yer': 'Doğum yeri',
+  'pair.ad.q': 'Ona nasıl hitap edelim?',
+  'pair.ad.ph': 'Adını yaz',
+  'pair.tarih.q': 'Doğum tarihi kişiliği ve bağ kurma biçimini gösterir.',
+  'pair.tarih.day': 'Gün',
+  'pair.tarih.month': 'Ay',
+  'pair.tarih.year': 'Yıl',
+  'pair.saat.q': 'Doğum saati yükseleni ve yaşam alanlarını belirler.',
+  'pair.saat.hour': 'Saat',
+  'pair.saat.minute': 'Dakika',
+  'pair.saat.unknown': 'Saatini bilmiyorum',
+  'pair.yer.q': 'Doğum yeri haritayı bulunduğu göğe oturtur.',
+  'pair.yer.ph': 'Şehir yaz, listeden seç',
+  'pair.consent': 'Bu kişinin doğum bilgisini paylaşmak için onayı olduğunu onaylıyorum. Bilgiler yalnızca bu karşılaştırma için kullanılır.',
+  'pair.err.noSelf': 'Önce kendi bilgilerin gerekiyor.',
+  'pair.err.place': 'Doğum yerini bulamadık. Şehir adını yazıp listeden seç.',
+  'pair.err.generic': 'Karşılaştırma yapılamadı. Tekrar dene.',
+  'pair.result.kicker': 'GENEL REZONANS',
+  'pair.result.unlock': 'Tamamını oku',
+  'pair.result.close': 'Kapat',
+  'pair.dim.astro': 'Kimya',
+  'pair.dim.hd': 'Ders',
+  'pair.dim.num': 'Ritim',
+  'pair.dim.fate': 'Kader',
+
+  // Bölüm listesi (Atla ve sonuç kapatma hedefi)
+  'menu.kicker': 'SOULID',
+  'menu.title': 'Nereye bakmak istersin?',
+
 };
 
 const en: Dict = {
@@ -352,6 +396,50 @@ const en: Dict = {
 
   // Common
   'common.back': 'Back',
+
+  // Pairing flow (first screen when SoulID opens from Explore)
+  'pair.kicker': 'COMPATIBILITY',
+  'pair.title': 'Let us look at your match',
+  'pair.subtitle': 'Your identity is ready. Add the person you want to compare with.',
+  'pair.you': 'You',
+  'pair.partner': 'Person',
+  'pair.add': 'Add person',
+  'pair.skip': 'Skip',
+  'pair.next': 'Next',
+  'pair.see': 'See the match',
+  'pair.computing': 'Comparing the two charts',
+  'pair.step.ad': 'Their name',
+  'pair.step.tarih': 'Birth date',
+  'pair.step.saat': 'Birth time',
+  'pair.step.yer': 'Birthplace',
+  'pair.ad.q': 'What should we call them?',
+  'pair.ad.ph': 'Type their name',
+  'pair.tarih.q': 'The birth date shows character and how they bond.',
+  'pair.tarih.day': 'Day',
+  'pair.tarih.month': 'Month',
+  'pair.tarih.year': 'Year',
+  'pair.saat.q': 'The birth time sets the rising sign and life areas.',
+  'pair.saat.hour': 'Hour',
+  'pair.saat.minute': 'Minute',
+  'pair.saat.unknown': 'I do not know the time',
+  'pair.yer.q': 'The birthplace anchors the chart to its own sky.',
+  'pair.yer.ph': 'Type a city, pick from the list',
+  'pair.consent': 'I confirm this person agreed to share their birth details. They are used for this comparison only.',
+  'pair.err.noSelf': 'We need your own details first.',
+  'pair.err.place': 'We could not find that birthplace. Type a city and pick from the list.',
+  'pair.err.generic': 'The comparison failed. Please try again.',
+  'pair.result.kicker': 'OVERALL RESONANCE',
+  'pair.result.unlock': 'Read the whole thing',
+  'pair.result.close': 'Close',
+  'pair.dim.astro': 'Chemistry',
+  'pair.dim.hd': 'Lesson',
+  'pair.dim.num': 'Rhythm',
+  'pair.dim.fate': 'Fate',
+
+  // Section list (target of Skip and of closing a result)
+  'menu.kicker': 'SOULID',
+  'menu.title': 'Where would you like to look?',
+
 };
 
 export const MESSAGES: Record<Locale, Dict> = { tr, en };

@@ -41,6 +41,8 @@ const config: Config = {
       },
       fontFamily: {
         display: ['var(--font-display)', 'Cormorant Garamond', 'serif'],
+        // Sakin imza fontu: eşleşme akışı host ile aynı tipografiyi kullanır.
+        brand: ['var(--font-brand)', 'Jost', 'Inter', 'system-ui', 'sans-serif'],
         sans: ['var(--font-sans)', 'Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {

@@ -1,14 +1,25 @@
 import './globals.css';
 import type { Metadata, Viewport } from 'next';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
-import { TopBar } from '@/components/TopBar';
-import { Footer } from '@/components/Footer';
-import { PromoBanner } from '@/components/PromoBanner';
+import { Inter, Cormorant_Garamond, Jost } from 'next/font/google';
+import { Chrome } from '@/components/Chrome';
 import { BootSync } from '@/components/BootSync';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-sans',
+  display: 'swap',
+});
+
+// SAKİN İMZA FONTU. SoulID Sakin'in içinde bir sekme gibi açılıyor; eşleşme
+// akışının "başka bir uygulamaya geçtim" hissi vermemesi için Sakin'in kendi
+// tipografisini (Jost, uppercase, geniş harf aralığı) kullanıyoruz.
+// SADECE yeni eşleşme ekranlarında (font-brand sınıfı); mevcut sayfalar
+// Inter/Cormorant ile aynı kalıyor. next/font derleme anında kendi kendine
+// barındırır: çalışma anında Google'a istek YOK, çevrimdışı da çalışır.
+const jost = Jost({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-brand',
   display: 'swap',
 });
 
@@ -114,16 +125,20 @@ const themeInitScript = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" data-theme="dark" className={`${inter.variable} ${cormorant.variable}`}>
+    <html lang="tr" data-theme="dark" className={`${inter.variable} ${cormorant.variable} ${jost.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        {/* İLK PAINT'TE ÜST BAR GİZLE (kullanıcı: "ana sayfaya tıklayana kadar
+            üst bar hiç görünmesin"). Chrome bileşeni hydration'da TopBar'ı zaten
+            kaldırıyor ama statik export prerender'ında TopBar HTML'e gömülü;
+            JS yavaş yüklenirse bir an görünürdü. Bu script React'ten önce çalışıp
+            eşleşme/menü yolunda html'e data-bare koyar, aşağıdaki stil gizler. */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var p=location.pathname||'';if(/(^|\/)(pair|menu|birth)(\/|\.html|$)/.test(p))document.documentElement.setAttribute('data-bare','1');}catch(e){}})();` }} />
+        <style dangerouslySetInnerHTML={{ __html: `html[data-bare] header,html[data-bare] [data-promo]{display:none!important}` }} />
       </head>
       <body className="bg-bg text-ink min-h-screen flex flex-col">
         <BootSync />
-        <PromoBanner />
-        <TopBar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Chrome>{children}</Chrome>
       </body>
     </html>
   );
