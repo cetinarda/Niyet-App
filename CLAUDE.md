@@ -58,7 +58,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Ağu 2026): App Store `1.3.7` (itunes lookup ile doğrulandı) · Play Store `1.3.7` (varsayılan, teyit et).** Repoda hazırlanan: `1.3.8 / build 1`, Android `versionCode 11`. `latest-ios-version.json` hâlâ `1.3.6` (mağaza yayını sonrası bump edilecek).
+   - **CANLI (Ağu 2026): App Store `1.3.8` · Play Store `1.3.8` (`node scripts/check-store-versions.mjs --check` ile doğrulandı).** Repoda hazırlanan: `1.3.9 / build 1`, Android `versionCode 12`. `latest-ios-version.json` `1.3.8` (otomatik, mağazayı yansıtıyor: 1.3.9 yayınlanınca kendi güncellenecek, ELLE bump etme).
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
@@ -187,13 +187,16 @@ Taşıma günü bu listeyi sırayla uygula ve HER MADDEYİ CİHAZDA TEST ET.
    / 1 dakika). Alt açıklama satırları kaldırıldı.
 8. **Keşfet/Bağlan geri okları** web'de kaldırıldı, native'de duruyor.
 
-**⚠️ NATIVE'DE ŞU AN EKSİK OLAN VE MAĞAZA İÇİN ÖNEMLİ OLAN İKİ ŞEY**
-(web Ayarlar'ında var, native'de yok, bir sonraki gönderimden ÖNCE ele al):
-- **"Satın Alımları Geri Yükle"** (App Review 3.1.1, ZORUNLU): `handleRestore`
-  var ama yalnızca fiyat ekranında. Yeni cihaza geçen kullanıcı Ayarlar'da
-  arıyor, bulamıyor. Reddedilme riski en yüksek eksik.
-- **"Aboneliği yönet"** (3.1.2): native'de HİÇ YOK. Sistem abonelik sayfasına
-  link (iOS `apps.apple.com/account/subscriptions`, Android Play karşılığı).
+**✅ ÇÖZÜLDÜ (1.3.9): mağaza için eksik olan iki madde native'e eklendi.**
+Ayarlar sayfası hâlâ web'e özel; onu beklemeden ☰ menüsüne (App.jsx, `isNative`
+bloğu, tema anahtarının hemen üstünde) iki satır kondu:
+- **"Satın Alımları Geri Yükle"** (App Review 3.1.1, ZORUNLU): önceden yalnızca
+  fiyat ekranındaydı, oraya da ancak premium OLMAYAN biri giriyordu. Yeni cihaza
+  geçen abone bulamıyordu.
+- **"Aboneliği yönet"** (3.1.2): sistem abonelik sayfasına gider
+  (iOS `apps.apple.com/account/subscriptions`, Android Play karşılığı).
+Ayarlar native'e açıldığında bu blok kaldırılabilir: aynı ikisi Ayarlar'ın
+GENEL > ÖDEME grubunda da var, tekrar olur.
 Native'de politika linkleri + hesap silme HÂLÂ Keşfet panelinde duruyor
 (5.1.1(v) uyumu bozulmasın diye oradan bilerek kaldırılmadı). Ayarlar native'e
 açılırsa o blok tekrar olur, o zaman Keşfet'ten çıkarılabilir.
