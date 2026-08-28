@@ -172,7 +172,19 @@ export function renderHTML(r, truncated) {
 export const handler = async (event) => {
   const token = (event.queryStringParameters?.token) || event.headers?.["x-report-token"] || "";
   const expected = process.env.REPORT_TOKEN || "";
-  if (!expected) return { statusCode: 503, body: "REPORT_TOKEN tanimli degil (rapor kapali)." };
+  if (!expected) {
+    // TEŞHİS (kullanıcı: env'i girdim ama "tanimli degil" hatasi aliyorum).
+    // Değeri ASLA sızdırmadan, sorunun kaynağını ayırt et:
+    //   · anahtar process.env'de VAR ama boş  → değer girilmemiş
+    //   · anahtar process.env'de HİÇ YOK       → fonksiyona ulaşmıyor
+    //     (en olası üç sebep: redeploy yok / Scope'ta Functions kapalı /
+    //      yalnızca Deploy Previews context'ine eklenmiş)
+    const defined = Object.prototype.hasOwnProperty.call(process.env, "REPORT_TOKEN");
+    const hint = defined
+      ? "REPORT_TOKEN env TANIMLI ama DEGERI BOS. Netlify'de degiskene gercek bir deger gir, sonra Clear cache and deploy."
+      : "REPORT_TOKEN fonksiyona ULASMIYOR (process.env'de yok). Sirayla dene: 1) Deploys > Trigger deploy > CLEAR CACHE AND DEPLOY. 2) Degiskenin SCOPE'unda 'Functions' isaretli mi. 3) Deploy context 'Production' (ya da 'all') mi, yalnizca Deploy Previews degil.";
+    return { statusCode: 503, headers: { "Content-Type": "text/plain; charset=utf-8" }, body: hint };
+  }
   if (token !== expected) return { statusCode: 401, body: "Yetkisiz." };
 
   let store;
