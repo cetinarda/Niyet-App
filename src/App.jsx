@@ -11749,15 +11749,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.fillText(t("gid_header"), 540, 180);
 
           // 4. Fotoğraf (varsa) veya placeholder
+          // KULLANICI: "profil foto kutucuğu daha küçük olabilir." Yarıçap
+          // 160 → 138 (çap 320 → 276). Önizlemedeki daire de aynı oranda
+          // küçüldü (88 → 74), iki yüzey birbirini yansıtsın.
+          // Tek sabitten besleniyor: kırpma maskesi, çerçeve, placeholder
+          // gradyanı ve fotoğrafın ölçek hesabı hep bunu okuyor, biri
+          // güncellenip diğeri unutulamaz.
+          const PHOTO_R = 138;
           if (idCardPhoto) {
             await new Promise((resolve) => {
               const img = new Image();
               img.onload = () => {
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(540, 380, 160, 0, Math.PI * 2);
+                ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
                 ctx.clip();
-                const r = Math.max(320 / img.width, 320 / img.height);
+                const r = Math.max((PHOTO_R * 2) / img.width, (PHOTO_R * 2) / img.height);
                 const w = img.width * r, h = img.height * r;
                 ctx.drawImage(img, 540 - w/2, 380 - h/2, w, h);
                 ctx.restore();
@@ -11768,12 +11775,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             });
           } else {
             // Placeholder radial gradient
-            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, 160);
+            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, PHOTO_R);
             rg.addColorStop(0, "rgba(180,140,240,0.55)");
             rg.addColorStop(1, "rgba(80,40,140,0.25)");
             ctx.fillStyle = rg;
             ctx.beginPath();
-            ctx.arc(540, 380, 160, 0, Math.PI * 2);
+            ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = "#fff";
             ctx.font = "120px -apple-system, sans-serif";
@@ -11782,7 +11789,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           }
           // Foto çerçevesi
           ctx.beginPath();
-          ctx.arc(540, 380, 160, 0, Math.PI * 2);
+          ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
           ctx.strokeStyle = "rgba(220,200,255,0.5)";
           ctx.lineWidth = 4;
           ctx.stroke();
@@ -11799,7 +11806,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // ilerletiyor, açıklama bloğu da yalnızca KALAN yere sığdığı kadar
           // satır yazıyor, sığmıyorsa hiç yazmıyor. Çakışma imkânsız.
           // Yeni bir bölüm eklerken tek kural: çizdikten sonra `cy`'yi ilerlet.
-          let cy = 620;
+          let cy = 596;   // foto alti 518 (380 + PHOTO_R), 78px nefes payi
 
           // 5. Ad
           ctx.fillStyle = "#fff";
@@ -12017,10 +12024,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.closePath();
         }
 
+        {/* Etiket + değer tek satırda. Eskiden etiket sarılabiliyordu ve
+            "GÜNEY DÜĞÜM" iki satıra düşüp o kutuyu komşularından YÜKSEK
+            yapıyordu, ızgara hizası bozuluyordu. Artık etiket sarmıyor,
+            letterSpacing 2 → 1.4 ile daralıyor; taşarsa değil etiket, DEĞER
+            kısalıyor (değerler kısa burç adları, pratikte kısalmıyor). */}
         const StatRow = ({label, value, color}) => (
-          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5 }}>
-            <span style={{ fontSize:10,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{label}</span>
-            <span style={{ fontSize:12,color: color||"#d0c8e8",fontWeight:500,letterSpacing:0.5 }}>{value}</span>
+          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5,minHeight:32,boxSizing:"border-box" }}>
+            <span style={{ fontSize:10,letterSpacing:1.4,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap",flexShrink:0 }}>{label}</span>
+            <span style={{ fontSize:12,color: color||"#d0c8e8",fontWeight:500,letterSpacing:0.5,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>{value}</span>
           </div>
         );
 
@@ -12054,19 +12066,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
                   <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
-                  <div style={{ position:"relative",width:88,height:88,margin:"10px auto 12px" }}>
+                  <div style={{ position:"relative",width:74,height:74,margin:"10px auto 12px" }}>
                     {/* Fotoğraf yoksa DAİRENİN TAMAMI tıklanabilir "fotoğraf ekle" hedefi, 
                         yıldız (✦) yerine büyük, belirgin bir kamera ikonu + kesikli çerçeve
                         koyup dokunulabilir olduğunu netleştiriyoruz. Fotoğraf varsa dairenin
                         kendisi artık fotoğrafı gösterir, değiştirmek için köşede küçük rozet kalır. */}
                     {idCardPhoto ? (
-                      <div style={{ width:88,height:88,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
+                      <div style={{ width:74,height:74,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
                     ) : (
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ width:88,height:88,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
-                        <span style={{ fontSize:30,lineHeight:1 }}>📷</span>
+                        style={{ width:74,height:74,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                        <span style={{ fontSize:25,lineHeight:1 }}>📷</span>
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
                       </label>
@@ -12075,7 +12087,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ position:"absolute",bottom:-2,right:-2,width:30,height:30,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                        style={{ position:"absolute",bottom:-2,right:-2,width:26,height:26,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
                         📷
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>

@@ -742,10 +742,58 @@ Now write the collective sky-energy reading. Let us FEEL which energy the Earth 
 // Süzgeç bir raporu reddederse HEMEN kısa şablon metne düşme, bir kez daha sor.
 // Sızıntı rastgele (modelin o seferki kelime seçimi); ikinci deneme genelde temiz
 // geliyor. Böylece kullanıcı uzun raporu çok daha sık görür.
+// ── ZİRVEDEKİ OLAY GERÇEKTEN ANLATILDI MI? ────────────────────────────────
+// KULLANICI (Ağu 2026): "Ay tutulması gerçekleşti dün ve hiç bahsetmedi raporda."
+// KÖK SEBEP: veri doğruydu (dynamicEclipseEvents olayı buluyor, prompt'a da
+// "HIGHEST PRIORITY ... MUST mention" diye giriyor) ama bu bir GARANTİ DEĞİL:
+// 0.85 sıcaklıkta bir dil modeline verilen talimat bazen tutmuyor. Şablon
+// yedeği olay adını metnin başına EKLİYORDU, AI yolunda böyle bir emniyet yoktu;
+// yani rapor AI ile üretildiğinde tutulma sessizce düşebiliyordu.
+// ÇÖZÜM: üretilen metin denetlenir. Zirvedeki bir olay metinde geçmiyorsa çıktı
+// REDDEDİLİR ve yeniden istenir; ikinci deneme de tutmazsa olay adı metnin
+// başına deterministik olarak eklenir. Böylece tutulma her hâlükârda görünür.
+//
+// Eşleştirme GÖVDEDEN yapılıyor, tam ad üzerinden değil: Türkçe ekler
+// ("tutulması / tutulmanın / tutulma") ve Almanca birleşik sözcükler tam
+// eşleşmeyi kırıyor. Adın 5+ harfli her kelimesinin ilk 6 harfi aranıyor.
+// Sözcük sınırı olmayan diller (ja/zh) için adın tamamı ve son 2 karakteri.
+function _foldForMatch(s) {
+  return String(s || "")
+    .replace(/[İIı]/g, "i").replace(/[Şş]/g, "s").replace(/[Ğğ]/g, "g")
+    .replace(/[Üü]/g, "u").replace(/[Öö]/g, "o").replace(/[Çç]/g, "c")
+    .replace(/[ÄäÀàÁáÂâ]/g, "a").replace(/[Ééèêë]/g, "e").replace(/[ß]/g, "ss")
+    .toLowerCase();
+}
+function _mentionsEvent(text, name) {
+  const t = _foldForMatch(text);
+  const n = _foldForMatch(name);
+  if (!t || !n) return false;
+  const words = n.split(/[^\p{L}\p{N}]+/u).filter((w) => w.length >= 5);
+  if (words.length) return words.some((w) => t.includes(w.slice(0, 6)));
+  // Sözcüğe ayrılamayan yazı sistemleri: tam ad ya da son iki karakter
+  return t.includes(n) || (n.length >= 2 && t.includes(n.slice(-2)));
+}
+/** Metinde geçmeyen ZİRVEDEKİ olaylar. Zirvede olmayanlar zorunlu değil. */
+function _missingPeakEvents(text, data, lang) {
+  const evs = data?.notableEvents || [];
+  return evs.filter((ev) => ev.isPeak && !_mentionsEvent(text, ev.name?.[lang] || ev.name?.en || ""));
+}
+
 async function generateSkyReportWithRetry(data, lang) {
-  const first = await generateSkyReport(data, lang);
-  if (first) return first;
-  return await generateSkyReport(data, lang);
+  let best = null;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const txt = await generateSkyReport(data, lang);
+    if (!txt) continue;                       // dil süzgeci reddetti: tekrar sor
+    if (_missingPeakEvents(txt, data, lang).length === 0) return txt;
+    best = txt;                               // metin iyi ama olayı atlamış: sakla
+  }
+  if (!best) return null;                     // hiç metin üretilemedi: şablona düş
+  // İki tur da zirvedeki olayı atladı: UYDURMADAN, olayın kendi adıyla metnin
+  // başına ekle. Şablon yedeğinin zaten yaptığı şeyin aynısı.
+  const missing = _missingPeakEvents(best, data, lang);
+  if (!missing.length) return best;
+  const lead = missing.map((ev) => ev.name?.[lang] || ev.name?.en).filter(Boolean).join(" · ");
+  return lead ? `${lead}. ${best}` : best;
 }
 
 export const handler = async (event) => {
