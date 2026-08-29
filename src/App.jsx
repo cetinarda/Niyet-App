@@ -9460,7 +9460,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const leftCX = padSide + cardW / 2;          // sol kart merkez X
         const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
         const cardTopPx = Math.round(0.81 * H) - cardH;   // kart tepesi (biraz yukarı; çizgi kısalır)
-        const pathEndY = cardTopPx + 3;               // çizgi kart tepesine DEĞER (bağlantılı)
+        const pathEndY = cardTopPx;                    // cizgi kart kenarlığında durur (seffaf bg ile iceri tasmaz)
         const sunCY = Math.round(0.25 * H);           // güneş merkezi (başlıkla birlikte aşağıda)
         const sunBottomY = sunCY + 36;
         const dy = pathEndY - sunBottomY;
