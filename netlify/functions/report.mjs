@@ -10,13 +10,15 @@ import { getStore } from "@netlify/blobs";
 const MAX_USERS = 20000; // guvenlik siniri; asilirsa raporda not dusulur
 
 // Funnel sirasi: her adim ONCEKININ alt kumesi olmasi beklenir.
+// Etiketler EKRANA basiliyor: duzgun Turkce yazilir (kod yorumlari ASCII olabilir,
+// kullaniciya gorunen metin olamaz).
 const FUNNEL = [
-  { key: "app_open",         label: "Uygulamayi acti" },
-  { key: "birth_view",       label: "Dogum formuna ulasti" },
-  { key: "profile_complete", label: "Profili tamamladi (HAZIRIM)" },
-  { key: "mandala_view",     label: "Ana ekrana ulasti" },
-  { key: "feature_any",      label: "Bir ozelligi kullandi" },
-  { key: "nefes_complete",   label: "Nefes tamamladi" },
+  { key: "app_open",         label: "Uygulamayı açtı" },
+  { key: "birth_view",       label: "Doğum formuna ulaştı" },
+  { key: "profile_complete", label: "Profili tamamladı (HAZIRIM)" },
+  { key: "mandala_view",     label: "Ana ekrana ulaştı" },
+  { key: "feature_any",      label: "Bir özelliği kullandı" },
+  { key: "nefes_complete",   label: "Nefes tamamladı" },
 ];
 
 function pct(n, d) { return d > 0 ? Math.round((n / d) * 1000) / 10 : 0; }
@@ -108,68 +110,208 @@ export function aggregate(users) {
   };
 }
 
-function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+// ⚠️ Bu sayfadaki ekran adi / dil / surum degerleri İSTEMCİDEN geliyor, yani
+// disaridan yazilabilir. Sayfaya basilan HER dis deger esc()'ten gecmeli.
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+// Ekran anahtarlarini okunakli Turkce isme cevir. Bilinmeyen anahtar oldugu
+// gibi (kacisli) gosterilir: yeni bir ekran eklendiginde rapor bozulmasin.
+const SCREEN_TR = {
+  sabah: "Sabah niyeti", gun: "Gün görevleri", nefes: "Nefes", ses: "Ses dalgaları",
+  chakra: "Çakra", aksam: "Akşam kapanışı", rehber: "İçsel Ayna", harita: "Ben / harita",
+  mandala: "Bağlantı ekranı", bugun: "Bugün", ayarlar: "Ayarlar", terapi: "Çakra terapisi",
+  fiyat: "Fiyatlandırma", hakkinda: "Sakin nedir", kesfet: "Keşfet", giris: "Giriş",
+};
+const scr = (k) => SCREEN_TR[k] || k;
+
+const CSS = `
+:root{--bg:#0b0813;--panel:#15112a;--panel2:#1b1636;--line:#2b2246;--ink:#ece8f5;
+--muted:#9a93b0;--dim:#6f6885;--acc:#b8a4d8;--gold:#e8c07a;--good:#82d9a3;--bad:#e0687f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+padding:22px 16px 60px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto}
+h1{font-size:21px;font-weight:600;letter-spacing:.3px;margin:0}
+.sub{color:var(--dim);font-size:12.5px;margin-top:5px}
+h2{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+color:var(--acc);margin:34px 0 12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:16px}
+.kpi div{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px}
+.kpi b{display:block;font-size:26px;font-weight:600;line-height:1.15;letter-spacing:-.5px}
+.kpi span{display:block;color:var(--muted);font-size:11.5px;margin-top:4px}
+.step{margin-bottom:16px}
+.step:last-child{margin-bottom:0}
+.steptop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+font-size:13.5px;margin-bottom:6px}
+.steptop b{font-weight:500}
+.steptop span{color:var(--muted);font-size:12px;white-space:nowrap}
+.bar{height:9px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:6px;
+background:linear-gradient(90deg,#7c5cc4,#b8a4d8)}
+.drop{font-size:11.5px;color:var(--bad);margin-top:5px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+td,th{padding:8px 6px;border-bottom:1px solid #241c38;text-align:left}
+tr:last-child td{border-bottom:0}
+th{color:var(--muted);font-weight:500;font-size:11.5px;letter-spacing:.6px;text-transform:uppercase}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.mini{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 15px}
+.mini h3{margin:0 0 8px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;
+color:var(--muted);font-weight:600}
+.mbar{height:6px;border-radius:4px;background:rgba(255,255,255,.06);overflow:hidden;margin-top:5px}
+.mbar i{display:block;height:100%;background:var(--acc);border-radius:4px}
+.empty{text-align:center;padding:34px 20px}
+.empty .big{font-size:34px;line-height:1}
+.empty p{color:var(--muted);font-size:14px;margin:12px auto 0;max-width:44ch}
+.warn{border-color:rgba(224,104,127,.4);background:rgba(224,104,127,.07)}
+.warn h3{color:var(--bad)}
+code{background:rgba(255,255,255,.07);border-radius:5px;padding:1px 6px;font-size:12.5px}
+.foot{color:var(--dim);font-size:11.5px;margin-top:34px;line-height:1.7}
+@media(max-width:520px){.kpi b{font-size:22px}h1{font-size:18px}}
+`;
+
+function shell(title, inner) {
+  return `<!doctype html><html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>${esc(title)}</title>
+<style>${CSS}</style></head><body><div class="wrap">${inner}</div></body></html>`;
+}
+
+function header(sub) {
+  return `<h1>Sakin · Kullanım Raporu</h1><div class="sub">${sub}</div>`;
+}
+
+/** Veri yokken / ölçüm kapalıyken gösterilen sayfa. Sıfırlarla dolu bir pano
+ *  yerine ne olduğunu ve ne yapılacağını söyleyen tek bir panel. */
+export function renderEmpty(reason) {
+  return shell("Sakin Kullanım Raporu",
+    header("Anonim birinci taraf ölçüm. Kişisel veri yok.") +
+    `<div class="card empty" style="margin-top:18px">
+      <div class="big">🌱</div>
+      <p><b>Henüz veri yok.</b></p>
+      <p>${reason}</p>
+    </div>`);
+}
 
 export function renderHTML(r, truncated) {
-  const bar = (p, color) => `<div style="height:10px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden"><div style="height:100%;width:${Math.min(100, p)}%;background:${color}"></div></div>`;
-  const funnelRows = r.funnel.map((f, i) => `
-    <div style="margin:0 0 16px">
-      <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px">
-        <span>${esc(f.label)}</span>
-        <span style="color:#9aa">${f.count} kisi &middot; %${f.ofTotal}${i > 0 ? ` &middot; onceki adimdan %${f.fromPrev}` : ""}</span>
+  if (!r.users) {
+    return renderEmpty("Ölçüm açık ve çalışıyor, ama henüz hiçbir cihazdan kayıt gelmemiş. Uygulamayı açan ilk kullanıcılarla birlikte bu sayfa dolmaya başlar.");
+  }
+
+  const kpi = `<div class="kpi">
+    <div><b>${r.users}</b><span>Toplam anonim kullanıcı</span></div>
+    <div><b>${r.newLast7}</b><span>Son 7 günde yeni</span></div>
+    <div><b style="color:var(--good)">%${r.retention.day2Pct}</b><span>Ertesi gün geri döndü</span></div>
+    <div><b style="color:var(--gold)">%${r.monetization.premiumPct}</b><span>Premium</span></div>
+  </div>`;
+
+  const funnel = r.funnel.map((f, i) => `
+    <div class="step">
+      <div class="steptop">
+        <b>${esc(f.label)}</b>
+        <span>${f.count} kişi · %${f.ofTotal}${i > 0 ? ` · öncekinden %${f.fromPrev}` : ""}</span>
       </div>
-      ${bar(f.ofTotal, "linear-gradient(90deg,#7c5cc4,#b8a4d8)")}
-      ${i > 0 && f.dropFromPrev > 0 ? `<div style="font-size:12px;color:#e08;margin-top:4px">${f.dropFromPrev} kisi burada kayboldu (%${f.dropPct} dusus)</div>` : ""}
+      <div class="bar"><i style="width:${Math.min(100, f.ofTotal)}%"></i></div>
+      ${i > 0 && f.dropFromPrev > 0
+        ? `<div class="drop">${f.dropFromPrev} kişi burada ayrıldı (%${f.dropPct} düşüş)</div>` : ""}
     </div>`).join("");
 
-  const featRows = r.features.map((f) => `
-    <tr><td>${esc(f.screen)}</td><td style="text-align:right">${f.users}</td><td style="text-align:right">${f.opens}</td></tr>`).join("");
-  const splitRows = (arr) => arr.map((x) => `<tr><td>${esc(x.k)}</td><td style="text-align:right">${x.n}</td></tr>`).join("");
+  const maxFeat = Math.max(1, ...r.features.map((f) => f.users));
+  const feats = r.features.length
+    ? `<table><tr><th>Bölüm</th><th class="num">Kullanıcı</th><th class="num">Açılış</th></tr>` +
+      r.features.map((f) => `<tr>
+        <td>${esc(scr(f.screen))}
+          <div class="mbar"><i style="width:${Math.round((f.users / maxFeat) * 100)}%"></i></div></td>
+        <td class="num">${f.users}</td><td class="num">${f.opens}</td></tr>`).join("") +
+      `</table>`
+    : `<p style="color:var(--muted);font-size:13.5px;margin:0">Henüz bölüm açılışı kaydedilmedi.</p>`;
 
-  return `<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Sakin Kullanim Raporu</title>
-<style>body{margin:0;background:#0e0a18;color:#eee;font:15px/1.5 -apple-system,system-ui,sans-serif;padding:24px} .wrap{max-width:760px;margin:0 auto} h1{font-size:22px} h2{font-size:16px;margin:32px 0 14px;color:#c9b8e8} .card{background:#181227;border:1px solid #2a2140;border-radius:14px;padding:20px;margin-bottom:16px} .kpi{display:flex;flex-wrap:wrap;gap:12px} .kpi>div{flex:1;min-width:120px;background:#181227;border:1px solid #2a2140;border-radius:12px;padding:14px} .kpi b{display:block;font-size:24px} .kpi span{color:#9aa;font-size:12px} table{width:100%;border-collapse:collapse;font-size:14px} td,th{padding:7px 6px;border-bottom:1px solid #241c38;text-align:left} th{color:#9aa;font-weight:500} .muted{color:#8a8;font-size:12px}</style></head>
-<body><div class="wrap">
-<h1>Sakin - Kullanim Raporu</h1>
-<div class="muted">Anonim birinci-taraf olcum. Kisisel veri yok.${truncated ? ` (UYARI: ${MAX_USERS}+ kullanici, kismi rapor)` : ""}</div>
-<div class="kpi" style="margin-top:16px">
-  <div><b>${r.users}</b><span>Toplam anonim kullanici</span></div>
-  <div><b>${r.newLast7}</b><span>Son 7 gun yeni</span></div>
-  <div><b>%${r.retention.day2Pct}</b><span>2. gun geri donus</span></div>
-  <div><b>%${r.monetization.premiumPct}</b><span>Premium</span></div>
-</div>
+  const split = (title, arr) => {
+    const tot = arr.reduce((a, x) => a + x.n, 0) || 1;
+    return `<div class="mini"><h3>${title}</h3>` +
+      (arr.length
+        ? arr.map((x) => `<div style="display:flex;justify-content:space-between;font-size:13px;margin-top:6px">
+             <span>${esc(x.k)}</span><span class="num">${x.n} · %${Math.round((x.n / tot) * 100)}</span></div>
+             <div class="mbar"><i style="width:${Math.round((x.n / tot) * 100)}%"></i></div>`).join("")
+        : `<div style="color:var(--muted);font-size:13px">veri yok</div>`) +
+      `</div>`;
+  };
 
-<h2>Onboarding funnel (nerede kayboluyorlar)</h2>
-<div class="card">${funnelRows}</div>
+  const mon = r.monetization;
+  return shell("Sakin Kullanım Raporu",
+    header(`Anonim birinci taraf ölçüm. Kişisel veri yok.${truncated ? ` <b style="color:var(--bad)">Uyarı: ${MAX_USERS}+ kullanıcı, kısmi rapor.</b>` : ""}`) +
+    kpi +
 
-<h2>Para kazanma</h2>
-<div class="card"><table>
-  <tr><td>Paywall gordu</td><td style="text-align:right">${r.monetization.paywallUsers} kisi &middot; %${r.monetization.ofTotal}</td></tr>
-  <tr><td>Satin aldi</td><td style="text-align:right">${r.monetization.purchaseUsers} kisi &middot; paywall gorenlerin %${r.monetization.purchaseOfPaywall}</td></tr>
-  <tr><td>Su an premium</td><td style="text-align:right">${r.monetization.premiumUsers} kisi &middot; %${r.monetization.premiumPct}</td></tr>
-</table></div>
+    `<h2>Nerede kayboluyorlar</h2>
+     <div class="card">${funnel}</div>` +
 
-<h2>Baglilik</h2>
-<div class="card"><table>
-  <tr><td>Toplam oturum</td><td style="text-align:right">${r.engagement.sessionsTotal}</td></tr>
-  <tr><td>Kullanici basi ort. oturum</td><td style="text-align:right">${r.engagement.avgSessionsPerUser}</td></tr>
-  <tr><td>Toplam nefes</td><td style="text-align:right">${r.engagement.nefesTotal}</td></tr>
-  <tr><td>Nefes yapan kullanici</td><td style="text-align:right">${r.engagement.nefesUsers}</td></tr>
-  <tr><td>Nefes yapan basi ort. nefes</td><td style="text-align:right">${r.engagement.avgNefesPerNefesUser}</td></tr>
-</table></div>
+    `<h2>Para</h2>
+     <div class="card"><table>
+       <tr><td>Ödeme ekranını gördü</td><td class="num">${mon.paywallUsers} kişi · %${mon.ofTotal}</td></tr>
+       <tr><td>Satın aldı</td><td class="num">${mon.purchaseUsers} kişi · görenlerin %${mon.purchaseOfPaywall}</td></tr>
+       <tr><td>Şu an premium</td><td class="num">${mon.premiumUsers} kişi · %${mon.premiumPct}</td></tr>
+     </table></div>` +
 
-<h2>Ozellik kullanimi</h2>
-<div class="card"><table><tr><th>Ekran</th><th style="text-align:right">Kullanici</th><th style="text-align:right">Acilis</th></tr>${featRows || '<tr><td colspan="3" class="muted">Henuz veri yok</td></tr>'}</table></div>
+    `<h2>Bağlılık</h2>
+     <div class="card"><table>
+       <tr><td>Ertesi gün geri dönen</td><td class="num">${r.retention.day2Users} kişi · %${r.retention.day2Pct}</td></tr>
+       <tr><td>7 gün kullanan</td><td class="num">${r.retention.day7Users} kişi · %${r.retention.day7Pct}</td></tr>
+       <tr><td>Toplam oturum</td><td class="num">${r.engagement.sessionsTotal}</td></tr>
+       <tr><td>Kullanıcı başına ortalama oturum</td><td class="num">${r.engagement.avgSessionsPerUser}</td></tr>
+       <tr><td>Nefes yapan kullanıcı</td><td class="num">${r.engagement.nefesUsers} kişi</td></tr>
+       <tr><td>Nefes yapan başına ortalama nefes</td><td class="num">${r.engagement.avgNefesPerNefesUser}</td></tr>
+     </table></div>` +
 
-<h2>Platform / Dil / Surum</h2>
-<div class="card"><table><tr><th>Platform</th><th style="text-align:right">Kullanici</th></tr>${splitRows(r.platform)}</table>
-<table style="margin-top:12px"><tr><th>Dil</th><th style="text-align:right">Kullanici</th></tr>${splitRows(r.lang)}</table>
-<table style="margin-top:12px"><tr><th>Surum</th><th style="text-align:right">Kullanici</th></tr>${splitRows(r.version)}</table></div>
+    `<h2>En çok açılan bölümler</h2>
+     <div class="card">${feats}</div>` +
 
-<div class="muted" style="margin:24px 0">Not: gun anahtarlari kurulum basina son 60 gunle sinirli. Rapor cagirildigi anda hesaplanir.</div>
-</div></body></html>`;
+    `<h2>Kim kullanıyor</h2>
+     <div class="row2">
+       ${split("Platform", r.platform)}
+       ${split("Dil", r.lang)}
+       ${split("Sürüm", r.version)}
+     </div>` +
+
+    `<div class="foot">Gün anahtarları kurulum başına son 60 günle sınırlı.
+     Rapor çağrıldığı anda hesaplanır, saklanmaz.<br>
+     Oluşturma: ${esc(new Date().toISOString().replace("T", " ").slice(0, 16))} UTC</div>`);
+}
+
+/** Ölçüm altyapısı kurulu değilse: sıfır tablosu yerine sebebi söyle. */
+function renderBlobsProblem(detail) {
+  return shell("Sakin Kullanım Raporu",
+    header("Anonim birinci taraf ölçüm. Kişisel veri yok.") +
+    `<div class="card empty" style="margin-top:18px">
+      <div class="big">⚙️</div>
+      <p><b>Ölçüm deposu (Netlify Blobs) açılamadı.</b></p>
+      <p>Rapor bu yüzden boş. Uygulama tarafı da yazamıyor, yani şu ana kadar
+         hiç veri birikmemiş olabilir.</p>
+    </div>
+    <div class="mini warn" style="margin-top:12px">
+      <h3>Teknik sebep</h3>
+      <div style="font-size:13px;color:var(--ink);word-break:break-word">${esc(detail || "bilinmiyor")}</div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0 0 10px;font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--muted)">Ne yapmalı</h3>
+      <div style="font-size:13.5px;line-height:1.8;color:var(--muted)">
+        1. Netlify panelinde siteyi aç, <code>Blobs</code> bölümünün etkin olduğunu doğrula.<br>
+        2. <code>Deploys → Trigger deploy → Clear cache and deploy site</code> ile yeniden yayınla.<br>
+        3. Bu sayfayı yenile; sorun sürerse yukarıdaki teknik sebebi paylaş.
+      </div>
+    </div>`);
 }
 
 export const handler = async (event) => {
+  const wantHtml = event.queryStringParameters?.html === "1";
+  const htmlHeaders = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
+  const jsonHeaders = { "Content-Type": "application/json", "Cache-Control": "no-store" };
+
   const token = (event.queryStringParameters?.token) || event.headers?.["x-report-token"] || "";
   const expected = process.env.REPORT_TOKEN || "";
   if (!expected) {
@@ -183,16 +325,27 @@ export const handler = async (event) => {
     const hint = defined
       ? "REPORT_TOKEN env TANIMLI ama DEGERI BOS. Netlify'de degiskene gercek bir deger gir, sonra Clear cache and deploy."
       : "REPORT_TOKEN fonksiyona ULASMIYOR (process.env'de yok). Sirayla dene: 1) Deploys > Trigger deploy > CLEAR CACHE AND DEPLOY. 2) Degiskenin SCOPE'unda 'Functions' isaretli mi. 3) Deploy context 'Production' (ya da 'all') mi, yalnizca Deploy Previews degil.";
-    return { statusCode: 503, headers: { "Content-Type": "text/plain; charset=utf-8" }, body: hint };
+    return wantHtml
+      ? { statusCode: 503, headers: htmlHeaders, body: renderEmpty(esc(hint)) }
+      : { statusCode: 503, headers: { "Content-Type": "text/plain; charset=utf-8" }, body: hint };
   }
   if (token !== expected) return { statusCode: 401, body: "Yetkisiz." };
 
-  let store;
+  // Blobs acilamazsa SEBEBI TASI. Eskiden yalnizca {users:0,note:"blobs yok"}
+  // donuyordu; kullanici ekranda ham JSON goruyor ve neden bos oldugunu
+  // anlayamiyordu (html=1 bile yok sayiliyordu, cunku bu dal erken donuyordu).
+  let store, blobsErr = null;
   try { store = getStore("sakin-usage"); }
-  catch (_) { return { statusCode: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ users: 0, note: "blobs yok" }) }; }
+  catch (e) { blobsErr = `${e?.name || "Error"}: ${e?.message || String(e)}`; }
+  if (!store) {
+    return wantHtml
+      ? { statusCode: 200, headers: htmlHeaders, body: renderBlobsProblem(blobsErr) }
+      : { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ users: 0, note: "blobs acilamadi", detail: blobsErr }) };
+  }
 
   const users = [];
   let truncated = false;
+  let listErr = null;
   try {
     const { blobs } = await store.list({ prefix: "u/" });
     const keys = (blobs || []).map((b) => b.key);
@@ -200,12 +353,18 @@ export const handler = async (event) => {
       if (users.length >= MAX_USERS) { truncated = true; break; }
       try { const rec = await store.get(k, { type: "json" }); if (rec) users.push(rec); } catch (_) {}
     }
-  } catch (_) {}
+  } catch (e) { listErr = `${e?.name || "Error"}: ${e?.message || String(e)}`; }
+
+  // Liste cagrisi patladiysa bu da "veri yok" degil, bir ARIZA: oyle soyle.
+  if (listErr && !users.length) {
+    return wantHtml
+      ? { statusCode: 200, headers: htmlHeaders, body: renderBlobsProblem(listErr) }
+      : { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ users: 0, note: "blobs listelenemedi", detail: listErr }) };
+  }
 
   const report = aggregate(users);
-  const wantHtml = event.queryStringParameters?.html === "1";
   if (wantHtml) {
-    return { statusCode: 200, headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" }, body: renderHTML(report, truncated) };
+    return { statusCode: 200, headers: htmlHeaders, body: renderHTML(report, truncated) };
   }
-  return { statusCode: 200, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" }, body: JSON.stringify({ ...report, truncated }, null, 2) };
+  return { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ ...report, truncated }, null, 2) };
 };
