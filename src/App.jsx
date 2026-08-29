@@ -2157,9 +2157,9 @@ const GLOBAL_CSS = `
      kutucuk seçim ışığı yansın." → sonra netleştirdi: "KENARLIKLARIN IŞIĞI
      YANMAYACAK, İÇ buton yanacak, mor ve sarı transparan, örnekteki gibi."
      Yani ışık kenarlıkta DEĞİL, kutunun İÇİNDE: her kart kendi rengiyle
-     SÜREKLİ (hover'a bağlı değil) transparan bir iç parlaklık taşıyor, tıpkı
-     referans görseldeki gibi. Kenarlık sabit renkte kalıyor, hover'da
-     parlamıyor/değişmiyor. */
+     Prototip referans: varsayilan neredeyse seffaf (rgba(255,255,255,.03)),
+     hover'da zarif renk doluyor (mor/sari ~12% opacity, 0.3s gecis).
+     Kenarlık sabit renkte kalıyor, hover'da parlamıyor. */
   @keyframes sakinYolSun {
     0%,100% { transform:scale(0.93); filter:brightness(0.94);
       box-shadow:0 0 28px 7px rgba(243,199,120,0.22), 0 0 56px 16px rgba(220,150,80,0.09); }
@@ -2169,12 +2169,24 @@ const GLOBAL_CSS = `
   .sakin-yol-sun { animation: sakinYolSun 5.5s ease-in-out infinite; }
   .sakin-yol-sun::after { content:""; position:absolute; inset:-11px; border-radius:50%; border:1px solid rgba(255,225,150,0.16); }
   .sakin-yol-card-a {
-    border-color: rgba(184,122,220,0.5) !important;
-    background: radial-gradient(120% 100% at 50% 0%, rgba(184,122,220,0.24), rgba(20,14,32,0.2) 60%, rgba(16,11,28,0.5) 100%) !important;
+    border-color: rgba(184,122,220,0.45) !important;
+    background: rgba(255,255,255,0.03) !important;
+    box-shadow: 0 0 24px rgba(184,122,220,0.10) inset;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sakin-yol-card-a:hover, .sakin-yol-card-a:active {
+    background: rgba(184,122,220,0.12) !important;
+    box-shadow: 0 0 32px rgba(184,122,220,0.22);
   }
   .sakin-yol-card-b {
-    border-color: rgba(240,192,96,0.5) !important;
-    background: radial-gradient(120% 100% at 50% 0%, rgba(240,192,96,0.24), rgba(20,14,32,0.2) 60%, rgba(16,11,28,0.5) 100%) !important;
+    border-color: rgba(240,192,96,0.45) !important;
+    background: rgba(255,255,255,0.03) !important;
+    box-shadow: 0 0 24px rgba(240,192,96,0.10) inset;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sakin-yol-card-b:hover, .sakin-yol-card-b:active {
+    background: rgba(240,192,96,0.12) !important;
+    box-shadow: 0 0 32px rgba(240,192,96,0.22);
   }
   @media (prefers-reduced-motion: reduce) {
     .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
@@ -9421,8 +9433,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const cardBase = { flex:1, boxSizing:"border-box", margin:0, appearance:"none", WebkitAppearance:"none",
           borderRadius:18, padding:"16px 10px", position:"relative", cursor:"pointer",
           display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:7,
-          textAlign:"center", background:"linear-gradient(165deg,rgba(34,25,52,0.64),rgba(16,11,28,0.64))",
-          backgroundClip:"padding-box", WebkitBackgroundClip:"padding-box", border:"1.4px solid transparent",
+          textAlign:"center", border:"1.4px solid transparent",
           fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
         // KART METİNLERİ (kullanıcı referans tasarımı). Soyut etiket ("Bağlan" /
         // "Keşfet") yerine NİYET cümlesi: kullanıcı ne yapmak istediğini seçiyor,
@@ -9497,13 +9508,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {/* Kartlar: kart tepesi çizgilere TAM denk gelir (px konum) */}
             <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
               <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
-                style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
+                style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
                 <div style={timeSt}>{baglanTime}</div>
               </button>
               <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
-                style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
+                style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
                 <div style={timeSt}>{kesfetTime}</div>
