@@ -8,6 +8,17 @@
 //     days = benzersiz gun anahtarlari (retention icin, son 60 ile sinirli)
 // KISISEL VERI SAKLAMAZ: isim/dogum/sehir/mesaj YOK. Sadece anon id + olaylar.
 // Rapor: netlify/functions/report.mjs (token korumali).
+//
+// ⚠️ FUNCTIONS V2 API (export default, Request/Response) — v1 (export const
+// handler) DEĞİL. Kullanıcı canlıda her zaman "blobs acilamadi /
+// MissingBlobsEnvironmentError" alıyordu; Netlify'ın kendi personeli forumda
+// bunu doğruladı: "Only Functions API v2 automatically get that part
+// configured [siteID/token]... In Functions v1, that's currently not
+// possible." (answers.netlify.com/t/netlify-blobs-accessing-from-function-
+// inside-sveltekit-app-requiring-explicit-token-siteid-deployid/107200)
+// v1'de getStore("ad") siteID/token'ı ASLA otomatik bulamıyor, hesap/Netlify
+// tarafında düzeltilecek bir şey değildi. v2'ye geçince istemci tarafında HİÇBİR
+// ŞEY değişmedi: URL aynı (/.netlify/functions/track), JSON gövde şekli aynı.
 import { getStore } from "@netlify/blobs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
@@ -27,7 +38,7 @@ function cors(origin) {
   };
 }
 function json(headers, code, obj) {
-  return { statusCode: code, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "no-store" }, body: JSON.stringify(obj) };
+  return new Response(JSON.stringify(obj), { status: code, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 }
 
 // IP basina siniri (dogrudan API suistimaline karsi). Kurulum basina gunde
@@ -42,8 +53,10 @@ function isRateLimited(ip) {
   e.count++;
   return e.count > RATE_MAX;
 }
-function clientIP(event) {
-  return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
+function clientIP(req, context) {
+  // v2: context.ip Netlify tarafından resmi olarak sağlanıyor; header okumaya
+  // gerek yok. Yine de context yoksa (test ortamı) header'a düş.
+  return context?.ip || req.headers.get("x-nf-client-connection-ip") || "unknown";
 }
 
 function safeId(id) {
@@ -88,20 +101,20 @@ export function mergeBatch(rec, body, now) {
   return rec;
 }
 
-export const handler = async (event) => {
-  const origin = event.headers?.origin || "";
+export default async (req, context) => {
+  const origin = req.headers.get("origin") || "";
   const originOk = isAllowedOrigin(origin);
   const headers = (originOk && origin) ? cors(origin) : {};
-  if (event.httpMethod === "OPTIONS") {
-    if (!originOk) return { statusCode: 403, body: "" };
-    return { statusCode: 204, headers, body: "" };
+  if (req.method === "OPTIONS") {
+    if (!originOk) return new Response("", { status: 403 });
+    return new Response(null, { status: 204, headers });
   }
   if (!originOk) return json(headers, 403, { error: "origin" });
-  if (event.httpMethod !== "POST") return json(headers, 405, { error: "method" });
-  if (isRateLimited(clientIP(event))) return json(headers, 200, { ok: false, throttled: true });
+  if (req.method !== "POST") return json(headers, 405, { error: "method" });
+  if (isRateLimited(clientIP(req, context))) return json(headers, 200, { ok: false, throttled: true });
 
   let body;
-  try { body = JSON.parse(event.body || "{}"); } catch (_) { return json(headers, 200, { ok: false }); }
+  try { body = await req.json(); } catch (_) { return json(headers, 200, { ok: false }); }
   const id = safeId(body.id);
   if (!id || !Array.isArray(body.ev) || !body.ev.length) return json(headers, 200, { ok: false });
 

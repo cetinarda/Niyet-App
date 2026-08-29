@@ -5,6 +5,12 @@
 //   GET ?token=XXX          -> JSON rapor
 //   GET ?token=XXX&html=1   -> HTML gosterge paneli (tarayicida ac)
 // Kaynak: netlify/functions/track.mjs'in yazdigi u/<anonId> kayitlari.
+//
+// ⚠️ FUNCTIONS V2 API — bkz. track.mjs başındaki not. Kullanıcı canlıda
+// "MissingBlobsEnvironmentError: siteID, token" alıyordu; Netlify personeli
+// forumda doğruladı: siteID/token'ı otomatik bulma SADECE v2'de çalışıyor,
+// v1'de (export const handler) hiç çalışmıyor. Hesap/Netlify tarafında
+// düzeltilecek bir şey değildi, kod tarafımızdaki API seçimiydi.
 import { getStore } from "@netlify/blobs";
 
 const MAX_USERS = 20000; // guvenlik siniri; asilirsa raporda not dusulur
@@ -307,12 +313,13 @@ function renderBlobsProblem(detail) {
     </div>`);
 }
 
-export const handler = async (event) => {
-  const wantHtml = event.queryStringParameters?.html === "1";
+export default async (req) => {
+  const url = new URL(req.url);
+  const wantHtml = url.searchParams.get("html") === "1";
   const htmlHeaders = { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" };
   const jsonHeaders = { "Content-Type": "application/json", "Cache-Control": "no-store" };
 
-  const token = (event.queryStringParameters?.token) || event.headers?.["x-report-token"] || "";
+  const token = url.searchParams.get("token") || req.headers.get("x-report-token") || "";
   const expected = process.env.REPORT_TOKEN || "";
   if (!expected) {
     // TEŞHİS (kullanıcı: env'i girdim ama "tanimli degil" hatasi aliyorum).
@@ -326,10 +333,10 @@ export const handler = async (event) => {
       ? "REPORT_TOKEN env TANIMLI ama DEGERI BOS. Netlify'de degiskene gercek bir deger gir, sonra Clear cache and deploy."
       : "REPORT_TOKEN fonksiyona ULASMIYOR (process.env'de yok). Sirayla dene: 1) Deploys > Trigger deploy > CLEAR CACHE AND DEPLOY. 2) Degiskenin SCOPE'unda 'Functions' isaretli mi. 3) Deploy context 'Production' (ya da 'all') mi, yalnizca Deploy Previews degil.";
     return wantHtml
-      ? { statusCode: 503, headers: htmlHeaders, body: renderEmpty(esc(hint)) }
-      : { statusCode: 503, headers: { "Content-Type": "text/plain; charset=utf-8" }, body: hint };
+      ? new Response(renderEmpty(esc(hint)), { status: 503, headers: htmlHeaders })
+      : new Response(hint, { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
-  if (token !== expected) return { statusCode: 401, body: "Yetkisiz." };
+  if (token !== expected) return new Response("Yetkisiz.", { status: 401 });
 
   // Blobs acilamazsa SEBEBI TASI. Eskiden yalnizca {users:0,note:"blobs yok"}
   // donuyordu; kullanici ekranda ham JSON goruyor ve neden bos oldugunu
@@ -339,8 +346,8 @@ export const handler = async (event) => {
   catch (e) { blobsErr = `${e?.name || "Error"}: ${e?.message || String(e)}`; }
   if (!store) {
     return wantHtml
-      ? { statusCode: 200, headers: htmlHeaders, body: renderBlobsProblem(blobsErr) }
-      : { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ users: 0, note: "blobs acilamadi", detail: blobsErr }) };
+      ? new Response(renderBlobsProblem(blobsErr), { status: 200, headers: htmlHeaders })
+      : new Response(JSON.stringify({ users: 0, note: "blobs acilamadi", detail: blobsErr }), { status: 200, headers: jsonHeaders });
   }
 
   const users = [];
@@ -358,13 +365,13 @@ export const handler = async (event) => {
   // Liste cagrisi patladiysa bu da "veri yok" degil, bir ARIZA: oyle soyle.
   if (listErr && !users.length) {
     return wantHtml
-      ? { statusCode: 200, headers: htmlHeaders, body: renderBlobsProblem(listErr) }
-      : { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ users: 0, note: "blobs listelenemedi", detail: listErr }) };
+      ? new Response(renderBlobsProblem(listErr), { status: 200, headers: htmlHeaders })
+      : new Response(JSON.stringify({ users: 0, note: "blobs listelenemedi", detail: listErr }), { status: 200, headers: jsonHeaders });
   }
 
   const report = aggregate(users);
   if (wantHtml) {
-    return { statusCode: 200, headers: htmlHeaders, body: renderHTML(report, truncated) };
+    return new Response(renderHTML(report, truncated), { status: 200, headers: htmlHeaders });
   }
-  return { statusCode: 200, headers: jsonHeaders, body: JSON.stringify({ ...report, truncated }, null, 2) };
+  return new Response(JSON.stringify({ ...report, truncated }, null, 2), { status: 200, headers: jsonHeaders });
 };

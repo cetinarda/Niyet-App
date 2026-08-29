@@ -4,6 +4,10 @@
 // kalıcı tutulur (üçüncü-parti analytics yok, gizlilik politikasıyla uyumlu).
 //   GET  → { count }            mevcut toplam
 //   POST → { count }            +1 artırıp yeni toplamı döndürür
+//
+// ⚠️ FUNCTIONS V2 API — bkz. track.mjs başındaki not. getStore()'un siteID/
+// token'ı otomatik bulması SADECE v2'de çalışıyor (Netlify personeli teyit
+// etti), v1'de (export const handler) sessizce "blobs yok" dönüyordu.
 import { getStore } from "@netlify/blobs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
@@ -46,21 +50,21 @@ function isRateLimited(ip) {
   e.count++;
   return e.count > RATE_MAX;
 }
-function getClientIP(event) {
-  return (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
+function getClientIP(req, context) {
+  return context?.ip || req.headers.get("x-nf-client-connection-ip") || "unknown";
 }
 
 function json(cors, code, obj) {
-  return { statusCode: code, headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "no-store" }, body: JSON.stringify(obj) };
+  return new Response(JSON.stringify(obj), { status: code, headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 }
 
-export const handler = async (event) => {
-  const origin = event.headers?.origin || "";
+export default async (req, context) => {
+  const origin = req.headers.get("origin") || "";
   const originOk = isAllowedOrigin(origin);
   const cors = (originOk && origin) ? getCorsHeaders(origin) : {};
-  if (event.httpMethod === "OPTIONS") {
-    if (!originOk) return { statusCode: 403, body: "" };
-    return { statusCode: 204, headers: cors, body: "" };
+  if (req.method === "OPTIONS") {
+    if (!originOk) return new Response("", { status: 403 });
+    return new Response(null, { status: 204, headers: cors });
   }
   if (!originOk) return json(cors, 403, { error: "Origin not allowed" });
 
@@ -73,12 +77,12 @@ export const handler = async (event) => {
     catch { return 0; }
   };
 
-  if (event.httpMethod === "GET") {
+  if (req.method === "GET") {
     return json(cors, 200, { count: await readCount() });
   }
 
-  if (event.httpMethod === "POST") {
-    const ip = getClientIP(event);
+  if (req.method === "POST") {
+    const ip = getClientIP(req, context);
     if (isRateLimited(ip)) return json(cors, 200, { count: await readCount(), throttled: true });
     try {
       const count = (await readCount()) + 1;

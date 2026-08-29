@@ -5876,7 +5876,11 @@ export default function SakinApp() {
   // Acilista bir kez baslat + "app_open" olayi. Kisisel veri gonderilmez.
   useEffect(() => {
     try {
-      initAnalytics({ platform: isNative ? "ios" : "web", ver: APP_VERSION, base: API_BASE });
+      // BAĞIMSIZ HATA (rapor teşhisi sırasında bulundu): isNative hem iOS hem
+      // Android'de true, yani Android kullanıcıları da "ios" diye
+      // işaretleniyordu. Platform bölünmesi (report.mjs) hep yanlış çıkardı.
+      const platform = isNative ? (Capacitor.getPlatform() === "android" ? "android" : "ios") : "web";
+      initAnalytics({ platform, ver: APP_VERSION, base: API_BASE });
       track("app_open");
       // Ilk acilis ekrani "giris" ise onboarding funnel'inin ilk adimini isaretle.
       if (_initialScreen() === "giris") track("screen", { s: "giris" });
