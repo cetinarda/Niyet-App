@@ -2151,10 +2151,13 @@ const GLOBAL_CSS = `
     100% { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
   }
   .sakin-mirror-live { animation: sakinMirrorCycle 4.5s ease-in-out infinite; }
-  /* YOL SEÇİMİ ekranı: güneş nefes alır, kart kenarlarında tünel ışığı döner.
-     Renk/hız ayna ikonu (sakinMirrorCycle) referans alınarak seçildi. */
-  @property --sakinBeam { syntax:'<angle>'; inherits:false; initial-value:0deg; }
-  @keyframes sakinYolBeam { to { --sakinBeam: 360deg; } }
+  /* YOL SEÇİMİ ekranı: güneş nefes alır. Kart kenarlıkları ESKİDEN sürekli
+     renk değiştiren dönen bir conic-gradient'ti (beyaz→altın→mor→kırmızı,
+     4.5sn'de bir tur). KULLANICI: "karşılama kutucuklarını renk değiştirmesin,
+     iki kutucuk kenarlıkları farklı renk mor ve sarı, üstüne geldiğinde
+     kutucuk seçim ışığı yansın." Artık her kart KENDİ statik rengiyle sabit
+     (sol/Bağlan = mor, sağ/Keşfet = sarı); ışık yalnızca etkileşimde
+     (hover masaüstünde, dokunuşta :active her yerde) yanıp sönüyor. */
   @keyframes sakinYolSun {
     0%,100% { transform:scale(0.93); filter:brightness(0.94);
       box-shadow:0 0 28px 7px rgba(243,199,120,0.22), 0 0 56px 16px rgba(220,150,80,0.09); }
@@ -2163,21 +2166,19 @@ const GLOBAL_CSS = `
   }
   .sakin-yol-sun { animation: sakinYolSun 5.5s ease-in-out infinite; }
   .sakin-yol-sun::after { content:""; position:absolute; inset:-11px; border-radius:50%; border:1px solid rgba(255,225,150,0.16); }
-  .sakin-yol-card::before {
-    content:""; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
-    background:conic-gradient(from var(--sakinBeam),
-      rgba(255,246,216,0.16), #f0d660, #8a4fd0, #ff6a6a, rgba(255,246,216,0.16));
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite:exclude;
-    pointer-events:none;
-    animation:sakinYolBeam 4.5s linear infinite;
-    filter:drop-shadow(0 0 4px rgba(200,150,220,0.4));
+  .sakin-yol-card-a, .sakin-yol-card-b { transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+  .sakin-yol-card-a { border-color: rgba(184,122,220,0.45) !important; }
+  .sakin-yol-card-b { border-color: rgba(240,192,96,0.45) !important; }
+  .sakin-yol-card-a:hover, .sakin-yol-card-a:active, .sakin-yol-card-a:focus-visible {
+    border-color: rgba(200,150,236,0.95) !important;
+    box-shadow: 0 0 0 1px rgba(184,122,220,0.35), 0 0 28px rgba(184,122,220,0.42) !important;
+  }
+  .sakin-yol-card-b:hover, .sakin-yol-card-b:active, .sakin-yol-card-b:focus-visible {
+    border-color: rgba(248,210,130,0.95) !important;
+    box-shadow: 0 0 0 1px rgba(240,192,96,0.35), 0 0 28px rgba(240,192,96,0.42) !important;
   }
   @media (prefers-reduced-motion: reduce) {
     .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
-    .sakin-yol-card::before { animation:none; }
   }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
@@ -7896,9 +7897,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
-          <LangPicker lang={lang} setLang={setLang} compact />
-        </div>
+        {/* KULLANICI: "webde en üstteki dil seçimini kapat, bi altta ortak dil
+            seçimi var zaten." Giriş ekranında AŞAĞIDA (satır ~8134'te) zaten
+            kendine ait, giriş için konumlanmış bir LangPicker var; burada da
+            gösterilince web'de giriş ekranında dil seçici İKİ KEZ görünüyordu.
+            Diğer TÜM ekranlarda (mandala/bugun/ayarlar/hakkinda vb.) bu üst
+            bar TEK dil seçici, o yüzden koşulsuz kaldırmak regresyon olurdu:
+            yalnızca "giris" ekranında gizleniyor. */}
+        {screen !== "giris" && (
+          <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
+            <LangPicker lang={lang} setLang={setLang} compact />
+          </div>
+        )}
       </div>
       )}
 
@@ -7984,23 +7994,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
               // görünsün. Tekrar premium yapmak için: premium:SOULID_PREMIUM_GATE
               // yerine premium:true yaz (tek satır, gerisi kendiliğinden döner).
-              // SIRA KULLANICI TARAFINDAN BELİRLENDİ (Ağu 2026):
-              // Ruh Profili · Tasarım · Hayvan · Bitkiler · Taşlar · Mitler.
-              // Rastgele değil: önce kimlik/harita katmanı (Ruh Profili +
-              // Tasarım), sonra günlük kart uygulamaları. Değiştirme.
+              // SIRA KULLANICI TARAFINDAN BELİRLENDİ (Ağu 2026, güncellendi):
+              // Ruh Profili · Tasarım · Mitler · Hayvan · Bitkiler · Taşlar.
+              // Mitler bilerek Tasarım'ın hemen altında: önce kimlik/harita
+              // katmanı (Ruh Profili, Tasarım, Mitler), sonra günlük kart
+              // uygulamaları (Hayvan, Bitkiler, Taşlar). Değiştirme.
               { name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
                 premium: SOULID_PREMIUM_GATE, isNew: true,
                 eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
+              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+                desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
                 desc: t("ailesi_hayvan_desc") },
               { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
                 desc: t("ailesi_bitkiler_desc") },
               { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
                 desc: t("ailesi_taslar_desc") },
-              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
-                desc: t("ailesi_mitler_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background: app.premium ? "linear-gradient(180deg,rgba(232,192,122,0.06),rgba(255,255,255,0.02))" : "rgba(255,255,255,0.03)",
@@ -9475,13 +9486,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Kartlar: kart tepesi çizgilere TAM denk gelir (px konum) */}
             <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
-              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
+              <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
                 <div style={timeSt}>{baglanTime}</div>
               </button>
-              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+              <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
                 style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
@@ -9575,14 +9586,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     (tam genişlik değil, 86% max) + altında küçük "Nefes al" +
                     dil sağ üstte (kullanıcı: "hazırımı biraz daralt, nefes al'ı
                     küçült"). Ortalı kalsın diye margin:auto. */}
+                {/* KULLANICI: "hazırımdan sonra bağlan ekranına geç (bugüne geçiyor
+                    şu an)". Kök sebep: timeAwareEntryScreen() gün ortasında
+                    (12-22) doğrudan bir ADIM ekranına (ör. "gün görevleri")
+                    düşürüyordu; o ekranın kendi başlığı "Bugün" olduğu için
+                    kullanıcı Bağlan sekmesi doğru aktif olsa bile "Bugün'e
+                    gitti" sanıyordu. Artık HAZIRIM her zaman Bağlan'ın GENEL
+                    BAKIŞ ekranına (mandala) gidiyor; belirli adıma atlama
+                    tahmini kalktı, kullanıcı GÜNE BAŞLA ile kendi girer. */}
                 <button className="sakin-btn-primary"
                   style={{ width:"86%",maxWidth:300,display:"block",boxSizing:"border-box",margin:"0 auto" }}
-                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen("mandala"); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
                     Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır.
                     Küçültüldü: padding 12/34 → 9/24, font 13 → 11.5, minHeight 44 → 38. */}
                 <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
-                  style={{ marginTop:14,padding:"9px 24px",borderRadius:100,
+                  style={{ marginTop:17,padding:"9px 24px",borderRadius:100,
                     border:"1px solid rgba(224,168,96,0.5)",background:"transparent",
                     WebkitAppearance:"none",appearance:"none",
                     color:"rgba(240,200,150,0.9)",fontSize:11.5,letterSpacing:2,
