@@ -27,15 +27,25 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    # iOS
    cd ~/Desktop/Niyet-App && \
    git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git branch -f mac-yedek HEAD && \
    git reset --hard FETCH_HEAD && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
 
    # Android (yalnızca son iki adım farklı)
    cd ~/Desktop/Niyet-App && \
    git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git branch -f mac-yedek HEAD && \
    git reset --hard FETCH_HEAD && \
    npm run build && npx cap sync android && npx cap open android
    ```
+   **`git branch -f mac-yedek HEAD` NEDEN (kullanıcı endişesi: "reset --hard
+   bir karışıklığa/hataya yol açar mı?"):** `reset --hard` geri alınamaz
+   görünüyor ve kullanıcıyı tedirgin ediyor. Bu satır reset'ten HEMEN ÖNCE
+   Mac'in o anki hâlini `mac-yedek` dalına işaretliyor. Maliyeti sıfır
+   (yalnızca bir işaretçi, dosya kopyalanmıyor, saniyenin altında). Karşılığı:
+   reset artık geri alınabilir. Bir şey kaybolduysa `git log mac-yedek` ile
+   görülür, `git checkout mac-yedek -- <dosya>` ile geri alınır. Her build'de
+   üzerine yazılıyor (`-f`), yani birikmiyor.
    **`fetch` + `reset --hard` NEDEN (İKİ ayrı hata, ikisi de yaşandı):**
    - **(1) "local changes would be overwritten":** Xcode `project.pbxproj`'u yerel
      imzalama ayarlarıyla (signing team vb.), `Info.plist`'i de kendi plist
