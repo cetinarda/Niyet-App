@@ -2155,9 +2155,12 @@ const GLOBAL_CSS = `
      renk değiştiren dönen bir conic-gradient'ti (beyaz→altın→mor→kırmızı,
      4.5sn'de bir tur). KULLANICI: "karşılama kutucuklarını renk değiştirmesin,
      iki kutucuk kenarlıkları farklı renk mor ve sarı, üstüne geldiğinde
-     kutucuk seçim ışığı yansın." Artık her kart KENDİ statik rengiyle sabit
-     (sol/Bağlan = mor, sağ/Keşfet = sarı); ışık yalnızca etkileşimde
-     (hover masaüstünde, dokunuşta :active her yerde) yanıp sönüyor. */
+     kutucuk seçim ışığı yansın." → sonra netleştirdi: "KENARLIKLARIN IŞIĞI
+     YANMAYACAK, İÇ buton yanacak, mor ve sarı transparan, örnekteki gibi."
+     Yani ışık kenarlıkta DEĞİL, kutunun İÇİNDE: her kart kendi rengiyle
+     SÜREKLİ (hover'a bağlı değil) transparan bir iç parlaklık taşıyor, tıpkı
+     referans görseldeki gibi. Kenarlık sabit renkte kalıyor, hover'da
+     parlamıyor/değişmiyor. */
   @keyframes sakinYolSun {
     0%,100% { transform:scale(0.93); filter:brightness(0.94);
       box-shadow:0 0 28px 7px rgba(243,199,120,0.22), 0 0 56px 16px rgba(220,150,80,0.09); }
@@ -2166,16 +2169,13 @@ const GLOBAL_CSS = `
   }
   .sakin-yol-sun { animation: sakinYolSun 5.5s ease-in-out infinite; }
   .sakin-yol-sun::after { content:""; position:absolute; inset:-11px; border-radius:50%; border:1px solid rgba(255,225,150,0.16); }
-  .sakin-yol-card-a, .sakin-yol-card-b { transition: border-color 0.25s ease, box-shadow 0.25s ease; }
-  .sakin-yol-card-a { border-color: rgba(184,122,220,0.45) !important; }
-  .sakin-yol-card-b { border-color: rgba(240,192,96,0.45) !important; }
-  .sakin-yol-card-a:hover, .sakin-yol-card-a:active, .sakin-yol-card-a:focus-visible {
-    border-color: rgba(200,150,236,0.95) !important;
-    box-shadow: 0 0 0 1px rgba(184,122,220,0.35), 0 0 28px rgba(184,122,220,0.42) !important;
+  .sakin-yol-card-a {
+    border-color: rgba(184,122,220,0.5) !important;
+    background: radial-gradient(120% 100% at 50% 0%, rgba(184,122,220,0.24), rgba(20,14,32,0.2) 60%, rgba(16,11,28,0.5) 100%) !important;
   }
-  .sakin-yol-card-b:hover, .sakin-yol-card-b:active, .sakin-yol-card-b:focus-visible {
-    border-color: rgba(248,210,130,0.95) !important;
-    box-shadow: 0 0 0 1px rgba(240,192,96,0.35), 0 0 28px rgba(240,192,96,0.42) !important;
+  .sakin-yol-card-b {
+    border-color: rgba(240,192,96,0.5) !important;
+    background: radial-gradient(120% 100% at 50% 0%, rgba(240,192,96,0.24), rgba(20,14,32,0.2) 60%, rgba(16,11,28,0.5) 100%) !important;
   }
   @media (prefers-reduced-motion: reduce) {
     .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
