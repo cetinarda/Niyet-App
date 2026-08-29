@@ -731,7 +731,6 @@ const NEDIR_I18N = {
   bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anındaki enerji haritanı ve karar alma biçimini gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design shows your energy map at birth and how you make decisions.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design zeigt deine Energiekarte bei der Geburt und wie du Entscheidungen triffst.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño muestra tu mapa de energía al nacer y cómo tomas decisiones.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design mostra o teu mapa de energia ao nascer e como tomas decisões.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design montre ta carte d'énergie à la naissance et comment tu prends tes décisions.", ja:"星座、動物、石、そしてあなたのデザイン。デザインは誕生の瞬間のエネルギー地図と、あなたの決め方を映します。" },
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them: your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les : ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
-  off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
   yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
   kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
   kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın: sana dair işaretler.", en:"Your sign, your design, your animal, your stone: the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein: Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra: señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra: sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre : des signes qui te concernent.", ja:"星座、デザイン、動物、石、あなたにまつわるしるし。" },
@@ -2179,6 +2178,17 @@ const GLOBAL_CSS = `
   }
   @media (prefers-reduced-motion: reduce) {
     .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
+  }
+  /* "Sakin nedir?" (yol seçimi ekranının en altı). KULLANICI: "soluk yazar,
+     tıklanınca net görünsün, bu sadeliği referans al." Dinlenme hâlinde
+     soluk/gri, dokunuşta/üstüne gelince/focus'ta netleşiyor (opak, açık renk). */
+  .sakin-nedir-link {
+    color: rgba(200,190,215,0.55); font-family:'Jost',sans-serif; font-weight:300;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: color 0.2s ease;
+  }
+  .sakin-nedir-link:hover, .sakin-nedir-link:active, .sakin-nedir-link:focus-visible {
+    color: rgba(238,232,250,0.95);
   }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
@@ -9500,17 +9510,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             </div>
 
-            {/* Sakin nedir? → Yolculuk sekmesi. Kartların ALTINA sabit (px), böylece
-                home-indicator'lı cihazlarda bile kartları KESMEZ (eski bug). Ortalı. */}
-            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ position:"absolute",left:"50%",top:cardTopPx + cardH + 20,transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,whiteSpace:"nowrap" }}>
+            {/* Sakin nedir? → Yolculuk sekmesi. KULLANICI: "en alta al, soluk
+                yazar tıklanınca net görünsün, bir daha göstermeyi kaldır
+                (zaten gün içinde bir daha göstermiyor), bu sadeliği referans
+                al." Üç değişiklik:
+                1) Konum: kartların hemen altından EKRANIN EN ALTINA taşındı
+                   (safe-area'ya sabit), referans görseldeki gibi.
+                2) Görünüm: altın pill/kenarlık kaldırıldı, düz soluk metin
+                   (className="sakin-nedir-link"); dokunulunca/üstüne
+                   gelinince netleşiyor (bkz. CSS, .sakin-nedir-link:active).
+                3) "Bir daha gösterme" TAMAMEN KALDIRILDI: bu overlay zaten
+                   günde bir kez tetikleniyor (HAZIRIM'a basınca
+                   sakin_hazirim_today o gün için işaretleniyor, sayfa aynı
+                   gün tekrar açılınca giriş ekranı hiç görünmüyor, bkz.
+                   _initialScreen). Kalıcı kapatma seçeneği gereksiz
+                   karmaşıklıktı. NOT: sakin_nedir_off bayrağını daha önce
+                   ayarlamış kullanıcılarda (eski "Bir daha gösterme"
+                   tıklaması) davranış AYNEN korunuyor, maybeShowNedir hâlâ
+                   o bayrağa bakıyor; yalnızca yeni bir kullanıcının bunu
+                   AYARLAYACAĞI yol kalmadı. */}
+            <button className="sakin-nedir-link"
+              onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
+              style={{ position:"absolute",left:0,right:0,bottom:"calc(28px + var(--sab))",textAlign:"center",background:"none",border:"none" }}>
               {pickLang(NEDIR_I18N.title, lang)}
-            </button>
-
-            {/* Bir daha gösterme: nedir'in altına sabit, ortalı */}
-            <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ position:"absolute",left:0,right:0,top:cardTopPx + cardH + 62,background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,textAlign:"center" }}>
-              {pickLang(NEDIR_I18N.off, lang)}
             </button>
           </div>
         </div>
