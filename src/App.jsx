@@ -760,15 +760,17 @@ const ONB_I18N = {
   inhale:   { tr:"Nefes al", en:"Breathe in", de:"Einatmen", es:"Inhala", pt:"Inspira", fr:"Inspire", ja:"息を吸って" },
   exhale:   { tr:"Nefes ver", en:"Breathe out", de:"Ausatmen", es:"Exhala", pt:"Expira", fr:"Expire", ja:"息を吐いて" },
   feelTitle:{ tr:"Nasıl hissettin?", en:"How did you feel?", de:"Wie hast du dich gefühlt?", es:"Como te sentiste?", pt:"Como te sentiste?", fr:"Comment tu t'es senti(e) ?", ja:"どう感じた？" },
-  feelSame: { tr:"Aynı", en:"The same", de:"Gleich", es:"Igual", pt:"Igual", fr:"Pareil", ja:"変わらない" },
-  feelLight:{ tr:"Biraz hafifledim", en:"A little lighter", de:"Etwas leichter", es:"Un poco mejor", pt:"Um pouco mais leve", fr:"Un peu plus léger", ja:"少し軽くなった" },
-  feelMuch: { tr:"Çok iyi geldi", en:"Much lighter", de:"Viel leichter", es:"Mucho mejor", pt:"Muito mais leve", fr:"Beaucoup mieux", ja:"とても軽くなった" },
+  // KISA tutuluyor (prototipteki gibi: aynı / biraz / çok). Uzun etiketler
+  // 7 dilde daireden taşıp kesiliyordu; artık hem kısa hem dairenin ALTINDA.
+  feelSame: { tr:"Aynı", en:"Same", de:"Gleich", es:"Igual", pt:"Igual", fr:"Pareil", ja:"同じ" },
+  feelLight:{ tr:"Biraz", en:"A little", de:"Etwas", es:"Un poco", pt:"Um pouco", fr:"Un peu", ja:"少し" },
+  feelMuch: { tr:"Çok", en:"Much", de:"Viel", es:"Mucho", pt:"Muito", fr:"Beaucoup", ja:"とても" },
   mirror0:  { tr:"Tamam, bir sonraki sefer kendine daha çok zaman tanı.", en:"That's OK. Next time, give yourself a little more time.", de:"Das ist OK. Gib dir beim nächsten Mal etwas mehr Zeit.", es:"Está bien. La próxima vez, date un poco más de tiempo.", pt:"Tudo bem. Da próxima vez, dá-te um pouco mais de tempo.", fr:"C'est bien. La prochaine fois, accorde-toi un peu plus de temps.", ja:"大丈夫。次はもう少し時間をかけてみて。" },
   mirror1:  { tr:"Güzel, nefes her zaman yanında.", en:"Beautiful. Breath is always with you.", de:"Schön. Der Atem ist immer bei dir.", es:"Hermoso. La respiración siempre está contigo.", pt:"Lindo. A respiração está sempre contigo.", fr:"Beau. Le souffle est toujours avec toi.", ja:"いいね。呼吸はいつもそばにある。" },
   mirror2:  { tr:"Otuz saniye bile yeter, hatırla.", en:"Even thirty seconds is enough, remember that.", de:"Sogar dreißig Sekunden genügen, vergiss das nicht.", es:"Incluso treinta segundos bastan, recuérdalo.", pt:"Até trinta segundos bastam, lembra-te disso.", fr:"Même trente secondes suffisent, souviens-t'en.", ja:"30秒でも十分。それを忘れないで。" },
   intTitle: { tr:"Bugünkü niyetin ne olsun?", en:"What is your intention for today?", de:"Was ist deine Absicht für heute?", es:"¿Cuál es tu intención para hoy?", pt:"Qual é a tua intenção para hoje?", fr:"Quelle est ton intention pour aujourd'hui ?", ja:"今日のあなたの意図は？" },
   intSub:   { tr:"Birini seç ya da kendin yaz.", en:"Pick one or write your own.", de:"Wähle eine oder schreibe deine eigene.", es:"Elige una o escribe la tuya.", pt:"Escolhe uma ou escreve a tua.", fr:"Choisis-en une ou écris la tienne.", ja:"一つ選ぶか、自分で書こう。" },
-  intDone:  { tr:"Tamam", en:"Done", de:"Fertig", es:"Listo", pt:"Pronto", fr:"Termine", ja:"完了" },
+  intDone:  { tr:"Niyetimi bırak", en:"Set my intention", de:"Absicht setzen", es:"Dejar mi intención", pt:"Deixar a minha intenção", fr:"Poser mon intention", ja:"意図を置く" },
   chips:    [
     { tr:"Huzur", en:"Peace", de:"Frieden", es:"Paz", pt:"Paz", fr:"Paix", ja:"平和" },
     { tr:"Cesaret", en:"Courage", de:"Mut", es:"Valor", pt:"Coragem", fr:"Courage", ja:"勇気" },
@@ -777,6 +779,37 @@ const ONB_I18N = {
     { tr:"Açıklık", en:"Openness", de:"Offenheit", es:"Apertura", pt:"Abertura", fr:"Ouverture", ja:"開放性" },
     { tr:"Güven", en:"Trust", de:"Vertrauen", es:"Confianza", pt:"Confiança", fr:"Confiance", ja:"信頼" },
   ],
+  // Kullanıcı cevabı verdikten SONRA kendi basar (otomatik ilerleme yok).
+  next:     { tr:"Devam", en:"Continue", de:"Weiter", es:"Continuar", pt:"Continuar", fr:"Continuer", ja:"つづける" },
+  breathHint:{ tr:"soru yok · kayıt yok · sadece nefes", en:"no questions · nothing saved · just breath", de:"keine Fragen · nichts gespeichert · nur Atem", es:"sin preguntas · nada se guarda · solo respiración", pt:"sem perguntas · nada guardado · só respiração", fr:"pas de questions · rien enregistré · juste le souffle", ja:"質問なし · 記録なし · ただ呼吸" },
+  feelEyebrow:{ tr:"Bir saniye", en:"One moment", de:"Einen Moment", es:"Un momento", pt:"Um momento", fr:"Un instant", ja:"すこしだけ" },
+  feelNote: { tr:"cevabın kaydedilmez, sadece fark etmen için", en:"your answer is not saved, it is just for you to notice", de:"deine Antwort wird nicht gespeichert, nur damit du es bemerkst", es:"tu respuesta no se guarda, es solo para que lo notes", pt:"a tua resposta não é guardada, é só para reparares", fr:"ta réponse n'est pas enregistrée, c'est juste pour que tu le remarques", ja:"回答は保存されません。気づくためだけのものです" },
+  mirrorSub:{ tr:"Sakin bundan ibaret. Gerisi sana kalmış.", en:"That is all Sakin is. The rest is up to you.", de:"Mehr ist Sakin nicht. Der Rest liegt bei dir.", es:"Sakin es solo esto. El resto depende de ti.", pt:"Sakin é só isto. O resto depende de ti.", fr:"Sakin, c'est tout. Le reste t'appartient.", ja:"サキンはこれだけ。あとはあなた次第。" },
+  intEyebrow:{ tr:"İlk niyetin", en:"Your first intention", de:"Deine erste Absicht", es:"Tu primera intención", pt:"A tua primeira intenção", fr:"Ta première intention", ja:"最初の意図" },
+  intFree:  { tr:"ya da kendi kelimen...", en:"or your own word...", de:"oder dein eigenes Wort...", es:"o tu propia palabra...", pt:"ou a tua própria palavra...", fr:"ou ton propre mot...", ja:"または自分の言葉..." },
+  // ── KEŞFET YOLU (altın): vaat → birkaç soru → doğum bilgisi → harita
+  //    animasyonu → galaktik kimlik. Prototip referansı birebir.
+  kEyebrow: { tr:"Sakin Ailesi", en:"The Sakin Family", de:"Die Sakin-Familie", es:"La Familia Sakin", pt:"A Família Sakin", fr:"La Famille Sakin", ja:"サキン・ファミリー" },
+  kPromise: { tr:"Doğum anın, gökyüzünün o anki hâlidir.", en:"The moment you were born is the sky as it was, right then.", de:"Dein Geburtsmoment ist der Himmel, wie er genau dann war.", es:"Tu momento de nacimiento es el cielo tal como estaba entonces.", pt:"O teu momento de nascimento é o céu tal como estava então.", fr:"Ton instant de naissance, c'est le ciel tel qu'il était alors.", ja:"あなたが生まれた瞬間は、そのときの空そのものです。" },
+  kPromise2:{ tr:"Bana onu anlatırsan haritanı çıkarırım.", en:"Tell me about it and I will draw your map.", de:"Erzähl ihn mir und ich zeichne deine Karte.", es:"Cuéntamelo y trazaré tu mapa.", pt:"Conta-me e eu traço o teu mapa.", fr:"Raconte-le moi et je dessinerai ta carte.", ja:"それを教えてくれたら、あなたの地図を描きます。" },
+  kTrust:   { tr:"Bu bilgi cihazında kalır", en:"This stays on your device", de:"Das bleibt auf deinem Gerät", es:"Esto queda en tu dispositivo", pt:"Isto fica no teu dispositivo", fr:"Cela reste sur ton appareil", ja:"この情報は端末に残ります" },
+  kStart:   { tr:"Başlayalım", en:"Let's begin", de:"Fangen wir an", es:"Empecemos", pt:"Vamos começar", fr:"Commençons", ja:"はじめよう" },
+  kName:    { tr:"Sana nasıl sesleneyim?", en:"What should I call you?", de:"Wie soll ich dich nennen?", es:"¿Cómo te llamo?", pt:"Como te chamo?", fr:"Comment dois-je t'appeler ?", ja:"なんとお呼びしましょう？" },
+  kNamePh:  { tr:"adın", en:"your name", de:"dein Name", es:"tu nombre", pt:"o teu nome", fr:"ton prénom", ja:"お名前" },
+  kDate:    { tr:"Hangi gün doğdun?", en:"What day were you born?", de:"An welchem Tag wurdest du geboren?", es:"¿Qué día naciste?", pt:"Em que dia nasceste?", fr:"Quel jour es-tu né(e) ?", ja:"生まれた日はいつ？" },
+  kTime:    { tr:"Saat kaçta?", en:"At what time?", de:"Um wie viel Uhr?", es:"¿A qué hora?", pt:"A que horas?", fr:"À quelle heure ?", ja:"何時ごろ？" },
+  kTimeNote:{ tr:"Bilmiyorsan sorun değil: yükselen burcun hesaplanamaz, gerisi çalışır.", en:"If you do not know, that is fine. Your rising sign cannot be calculated, everything else works.", de:"Wenn du es nicht weißt, ist das in Ordnung. Dein Aszendent lässt sich nicht berechnen, alles andere funktioniert.", es:"Si no lo sabes, no pasa nada. Tu ascendente no se puede calcular, lo demás funciona.", pt:"Se não souberes, tudo bem. O teu ascendente não pode ser calculado, o resto funciona.", fr:"Si tu ne sais pas, ce n'est pas grave. Ton ascendant ne sera pas calculé, le reste fonctionne.", ja:"わからなくても大丈夫。アセンダントは出せませんが、他はすべて使えます。" },
+  kNoTime:  { tr:"Saatimi bilmiyorum", en:"I do not know my time", de:"Ich kenne meine Uhrzeit nicht", es:"No sé mi hora", pt:"Não sei a minha hora", fr:"Je ne connais pas mon heure", ja:"時間はわかりません" },
+  kCity:    { tr:"Nerede?", en:"Where?", de:"Wo?", es:"¿Dónde?", pt:"Onde?", fr:"Où ?", ja:"どこで？" },
+  kGo:      { tr:"Haritamı çıkar", en:"Draw my map", de:"Meine Karte zeichnen", es:"Traza mi mapa", pt:"Traça o meu mapa", fr:"Dessine ma carte", ja:"地図をつくる" },
+  kCalc:    [
+    { tr:"gökyüzü hizalanıyor", en:"aligning the sky", de:"der Himmel richtet sich aus", es:"alineando el cielo", pt:"a alinhar o céu", fr:"alignement du ciel", ja:"空を合わせています" },
+    { tr:"doğum anın bulunuyor", en:"finding your moment", de:"dein Moment wird gesucht", es:"buscando tu momento", pt:"a encontrar o teu momento", fr:"recherche de ton instant", ja:"あなたの瞬間を探しています" },
+    { tr:"yükselen hesaplanıyor", en:"calculating your rising", de:"Aszendent wird berechnet", es:"calculando tu ascendente", pt:"a calcular o teu ascendente", fr:"calcul de ton ascendant", ja:"アセンダントを計算しています" },
+    { tr:"haritan çiziliyor", en:"drawing your map", de:"deine Karte wird gezeichnet", es:"trazando tu mapa", pt:"a traçar o teu mapa", fr:"dessin de ta carte", ja:"地図を描いています" },
+  ],
+  kCardTitle:{ tr:"Galaktik Kimlik", en:"Galactic Identity", de:"Galaktische Identität", es:"Identidad Galáctica", pt:"Identidade Galáctica", fr:"Identité Galactique", ja:"ギャラクティック・アイデンティティ" },
+  kNoTimeShort:{ tr:"saat yok", en:"no time", de:"keine Uhrzeit", es:"sin hora", pt:"sem hora", fr:"sans heure", ja:"時間なし" },
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
 const REVEAL_I18N = {
@@ -2235,6 +2268,10 @@ const GLOBAL_CSS = `
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
   @keyframes orbBreathe { 0%,100%{transform:translate(-50%,-50%) scale(0.55);opacity:0.6} 40%{transform:translate(-50%,-50%) scale(1);opacity:1} }
   @keyframes orbRing { 0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.5} 50%{transform:translate(-50%,-50%) scale(1.3);opacity:0} 100%{transform:translate(-50%,-50%) scale(0.8);opacity:0} }
+  /* Onboarding "haritan hazırlanıyor" halkaları + galaktik kimlik glifi
+     (prototip referansı: .calc-rings / .gc-glyph). Emoji YOK, saf CSS. */
+  @keyframes onbSpin { to { transform:rotate(360deg) } }
+  @keyframes onbSpinRev { to { transform:rotate(-360deg) } }
   @keyframes introSquareDraw { from{stroke-dashoffset:1600} to{stroke-dashoffset:0} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -5868,12 +5905,43 @@ export default function SakinApp() {
   const [onbIntention, setOnbIntention] = useState("");
   const onbTimerRef = useRef(null);
   const [onbBreathSec, setOnbBreathSec] = useState(0);
+  // Keşfet (altın) yolu: harita hazırlanıyor animasyonunun satır sayacı + ad.
+  const onbCalcRef = useRef(null);
+  const [onbCalcIdx, setOnbCalcIdx] = useState(0);
+  const [onbName, setOnbName] = useState(()=>localStorage.getItem("sakin_name")||"");
+  // Onboarding kapanınca HER İKİ zamanlayıcı da durur (interval sızıntısı yok).
   useEffect(() => {
-    if (!onbPath) { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } return; }
-    const onKey = (e) => { if (e.key === "Escape") { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } try { localStorage.setItem("sakin_onb_baglan","1"); } catch(_){} setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala"); } };
-    window.addEventListener("keydown", onKey);
-    return () => { window.removeEventListener("keydown", onKey); if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } };
+    const stopAll = () => {
+      if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
+      if (onbCalcRef.current) { clearInterval(onbCalcRef.current); onbCalcRef.current = null; }
+    };
+    if (!onbPath) { stopAll(); return; }
+    return stopAll;
   }, [onbPath]);
+  // Nefes sayacı (mor yol, adım 0). Render İÇİNDE setInterval kurmak yerine
+  // burada: React 18 StrictMode çift render'ında ikinci bir timer doğmuyor.
+  useEffect(() => {
+    if (onbPath !== "baglan" || onbStep !== 0) return;
+    setOnbBreathSec(0);
+    const id = setInterval(() => {
+      setOnbBreathSec(s => {
+        if (s >= 29) { clearInterval(id); setOnbStep(1); return 30; }
+        return s + 1;
+      });
+    }, 1000);
+    onbTimerRef.current = id;
+    return () => { clearInterval(id); onbTimerRef.current = null; };
+  }, [onbPath, onbStep]);
+  // "Haritan hazırlanıyor" satırları (altın yol, adım 5). 4 satır x 850ms,
+  // 3.6sn sonra galaktik kimlik kartına geçer.
+  useEffect(() => {
+    if (onbPath !== "kesfet" || onbStep !== 5) return;
+    setOnbCalcIdx(0);
+    const id = setInterval(() => setOnbCalcIdx(i => i + 1), 850);
+    onbCalcRef.current = id;
+    const done = setTimeout(() => { clearInterval(id); setOnbStep(6); }, 3600);
+    return () => { clearInterval(id); clearTimeout(done); onbCalcRef.current = null; };
+  }, [onbPath, onbStep]);
   // ── ANONIM KULLANIM OLCUMU (funnel / drop-off) ──────────────────────────
   // Acilista bir kez baslat + "app_open" olayi. Kisisel veri gonderilmez.
   useEffect(() => {
@@ -9021,7 +9089,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display: (screen === "giris" || !topControlsVisible) ? "none" : "flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {(() => {
           const handleNavClick = (n) => {
-            if(n.id==="ailesi"){ setShowAilesi(!showAilesi); setShowTopMenu(false); return; }
+            if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; }
             // Keşfet açıkken başka bir sekmeye geçiliyorsa Keşfet'i kapat: yoksa
             // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
             if(showAilesi) setShowAilesi(false);
@@ -9033,7 +9101,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             // ekranda sabit duruyor, çıkış her zaman elinin altında.
             if(n.id==="giris") setGirisPhase("intro");
             setScreen(n.id);
-            setShowTopMenu(false);
+            // NOT: burada bir `setShowTopMenu(false)` çağrısı duruyordu. Native
+            // açılır menü (showTopMenu) kaldırıldığında bu iki çağrı öksüz kaldı
+            // ve üst navigasyondaki HER tıklama "setShowTopMenu is not defined"
+            // ile patlıyordu (Puppeteer ile yakalandı). Menü yok, çağrı da yok.
           };
           const renderBtn = (n) => {
             // AKTİF = SADECE İÇİNDE OLUNAN MENÜ (kullanıcı: "keşfet ekranındayken
@@ -9321,118 +9392,366 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* ONBOARDING: Baglan yolu (nefes -> his -> niyet -> mandala) */}
-      {onbPath === "baglan" && !showIntro && (() => {
-        const BREATH_TOTAL = 30;
-        const finishOnb = () => {
+      {/* ── ONBOARDING (prototip referanslı, iki yol) ─────────────────────────
+          Mor (Bağlan):   0 nefes · 1 his · 2 ayna cümlesi · 3 niyet
+          Altın (Keşfet): 0 vaat · 1 ad · 2 tarih · 3 saat · 4 şehir ·
+                          5 harita animasyonu · 6 galaktik kimlik
+          KULLANICI KURALLARI (bu üçü bilerek böyle):
+          1. EMOJİ YOK. İkonlar geometrik glif (◔ ◑ ◕ ⌾) + saf CSS halkalar,
+             prototipteki gibi. Emoji platformdan platforma değişip tonu bozuyordu.
+          2. "Geç" bir SONRAKİ ADIMA gider, ana menüye DÜŞMEZ. Yalnızca son
+             adımda akışı bitirir.
+          3. Cevap verilince OTOMATİK İLERLEME YOK: kullanıcı "Devam"a basar. */}
+      {onbPath && !showIntro && (() => {
+        const isB = onbPath === "baglan";
+        const LAST = isB ? 3 : 6;
+        const c = isB ? "#A78BFA" : "#F0C27E";
+        const stop = () => {
           if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
-          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
-          if (onbIntention) { try { localStorage.setItem("sakin_niyet", onbIntention); } catch(_) {} setNiyet(onbIntention); }
-          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
-          try { track("onb_baglan_done"); } catch(_) {}
+          if (onbCalcRef.current) { clearInterval(onbCalcRef.current); onbCalcRef.current = null; }
         };
-        const skipOnb = () => {
-          if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
-          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
-          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
+        const close = (dest) => {
+          stop();
+          try { localStorage.setItem(isB ? "sakin_onb_baglan" : "sakin_onb_kesfet", "1"); } catch(_) {}
+          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setOnbCalcIdx(0);
+          if (dest) setScreen(dest);
         };
-        const c = "#b87adc";
+        const finish = () => {
+          if (isB) {
+            if (onbIntention) { try { localStorage.setItem("sakin_niyet", onbIntention); } catch(_) {} setNiyet(onbIntention); }
+            try { track("onb_baglan_done"); } catch(_) {}
+            close("mandala");
+          } else {
+            const nm = (onbName || "").trim();
+            if (nm) { try { localStorage.setItem("sakin_name", nm); } catch(_) {} setUserName(nm); setNameInput(nm); }
+            try { track("onb_kesfet_done"); } catch(_) {}
+            close("sabah");
+          }
+        };
+        // "Geç": son adımda bitirir, aksi halde SONRAKİ soruya geçer.
+        // Doğum tarihi hiç girilmeden harita/kart adımlarına düşmek anlamsız
+        // olurdu (boş kart), o durumda akış nazikçe biter.
+        const skip = () => {
+          stop();
+          if (onbStep >= LAST) { finish(); return; }
+          if (!isB && onbStep >= 2 && !birthInput && !birthDate) { finish(); return; }
+          setOnbStep(onbStep + 1);
+        };
+        const nextStep = () => { stop(); setOnbStep(Math.min(onbStep + 1, LAST)); };
+
+        // Doğum bilgisini KAYDET, sonra harita animasyonuna geç. astro/yukselen
+        // yalnızca COMMIT edilmiş state'ten türüyor (birthDate/Time/City),
+        // kart bunu bekliyor: input state'i yetmez.
+        const commitBirth = () => {
+          if (birthInput) { try { localStorage.setItem("sakin_birth_date", birthInput); } catch(_) {} setBirthDate(birthInput); markStep("birth"); }
+          if (birthTimeInput) { try { localStorage.setItem("sakin_birth_time", birthTimeInput); } catch(_) {} setBirthTime(birthTimeInput); }
+          // Tanınmayan şehir kaydedilmez: yanlış yükselen üretmektense uyar.
+          if (birthCityInput && !lookupCity(birthCityInput)) { setCityWarn(true); return false; }
+          setCityWarn(false);
+          if (birthCityInput) { try { localStorage.setItem("sakin_birth_city", birthCityInput); } catch(_) {} setBirthCity(birthCityInput); }
+          return true;
+        };
+
+        const L = (k) => pickLang(ONB_I18N[k], lang);
+        // Ortak stiller: prototipin .btn / .btn.ghost / .field / .eyebrow / h2
+        // karşılıkları. iOS WKWebView için appearance:none HER tıklanabilirde.
+        const btn = { display:"block",width:"100%",boxSizing:"border-box",padding:"15px 16px",borderRadius:100,
+          border:`1px solid ${isB ? "rgba(167,139,250,0.30)" : "rgba(240,194,126,0.28)"}`,
+          background: isB ? "rgba(167,139,250,0.10)" : "rgba(240,194,126,0.09)",
+          color: isB ? "#D9CCFF" : "#F6DDB4", fontSize:13, letterSpacing:2.2, textTransform:"uppercase",
+          fontFamily:"'Jost',sans-serif", fontWeight:300, cursor:"pointer", textAlign:"center",
+          WebkitAppearance:"none", appearance:"none" };
+        const ghost = { ...btn, background:"none", borderColor:"transparent",
+          color:"rgba(237,234,242,0.32)", fontSize:11.5, letterSpacing:2.6 };
+        const field = { width:"100%",boxSizing:"border-box",padding:"16px 18px",borderRadius:14,
+          border:"1px solid rgba(237,234,242,0.12)",background:"rgba(255,255,255,0.04)",
+          color:"#EDEAF2",fontFamily:"'Inter',sans-serif",fontSize:15.5,fontWeight:300,outline:"none",
+          WebkitAppearance:"none",appearance:"none" };
+        const eyebrow = { fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:5,
+          color:"rgba(237,234,242,0.30)",textTransform:"uppercase",textAlign:"center" };
+        const h2 = { fontFamily:"'Jost',sans-serif",fontWeight:300,fontSize:22,letterSpacing:0.2,
+          lineHeight:1.35,textAlign:"center",color:"#EDEAF2" };
+        const lede = { fontSize:14,lineHeight:1.75,color:"rgba(237,234,242,0.52)",textAlign:"center",
+          fontWeight:300,fontFamily:"'Inter',sans-serif" };
+        const tiny = { fontSize:11,color:"rgba(237,234,242,0.32)",textAlign:"center",lineHeight:1.7,
+          fontWeight:300,fontFamily:"'Inter',sans-serif" };
+        const flabel = { fontSize:10.5,letterSpacing:2,color:"rgba(237,234,242,0.42)",marginBottom:6,
+          textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"left" };
+        const pane = { flex:1,display:"flex",flexDirection:"column",justifyContent:"center",
+          width:"100%",maxWidth:340,margin:"0 auto",animation:"fadeUp 0.5s ease-out" };
+
+        // Zemin TAM OPAK olmalı: rgba(...,0.99) ile altındaki giriş ekranı
+        // (üst nav + "Yenilikler" şeridi) tepeden sızıyordu, Puppeteer ekran
+        // görüntüsünde yakalandı.
         return (
-          <div style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px" }}>
-            <button onClick={skipOnb}
-              style={{ position:"absolute",top:16,right:16,background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 12px" }}>
-              {pickLang(ONB_I18N.skip, lang)}
-            </button>
+          <div style={{ position:"fixed",inset:0,zIndex:99997,
+            background: isB
+              ? "radial-gradient(120% 100% at 50% 0%, #181026 0%, #08050f 100%)"
+              : "radial-gradient(120% 100% at 50% 0%, #201908 0%, #0a0704 100%)",
+            display:"flex",flexDirection:"column" }}>
 
-            {onbStep === 0 && (() => {
-              const isInhale = (onbBreathSec % 10) < 4;
-              const progress = Math.min(onbBreathSec / BREATH_TOTAL, 1);
-              if (onbTimerRef.current == null) {
-                onbTimerRef.current = setInterval(() => {
-                  setOnbBreathSec(s => {
-                    if (s >= BREATH_TOTAL - 1) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; setOnbStep(1); return 0; }
-                    return s + 1;
-                  });
-                }, 1000);
-              }
-              return (
-                <div key="b0" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
-                  <div style={{ position:"relative",width:160,height:160,margin:"0 auto 32px" }}>
-                    <div style={{ position:"absolute",left:"50%",top:"50%",width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle at 50% 40%, rgba(200,170,240,0.9), rgba(140,100,200,0.5) 60%, transparent 80%)`,animation:"orbBreathe 10s ease-in-out infinite",boxShadow:"0 0 40px rgba(184,122,220,0.4)" }} />
-                    <div style={{ position:"absolute",left:"50%",top:"50%",width:130,height:130,borderRadius:"50%",border:"1px solid rgba(184,122,220,0.3)",animation:"orbRing 10s ease-in-out infinite" }} />
-                  </div>
-                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:20,fontWeight:300,letterSpacing:2,color:"#e8d8ff",marginBottom:8 }}>
-                    {pickLang(isInhale ? ONB_I18N.inhale : ONB_I18N.exhale, lang)}
-                  </div>
-                  <div style={{ width:"80%",maxWidth:200,height:3,borderRadius:2,background:"rgba(255,255,255,0.08)",margin:"18px auto 0" }}>
-                    <div style={{ width:`${progress * 100}%`,height:"100%",borderRadius:2,background:`linear-gradient(90deg, ${c}, rgba(240,192,96,0.6))`,transition:"width 1s linear" }} />
-                  </div>
-                </div>
-              );
-            })()}
+            {/* ÜST ŞERİT: "Geç" için sabit yükseklikli kendi satırı. Eskiden
+                position:absolute idi ve kaydırılan içerikle üst üste binebiliyordu. */}
+            <div style={{ flex:"0 0 auto",display:"flex",justifyContent:"flex-end",
+              padding:"calc(var(--sat, 0px) + 14px) 18px 0" }}>
+              {/* "Geç" → bir SONRAKİ adım (ana menüye DEĞİL). */}
+              <button onClick={skip}
+                style={{ background:"none",border:"none",color:"rgba(237,234,242,0.32)",fontSize:11,
+                  letterSpacing:2.6,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
+                  padding:"8px 10px",WebkitAppearance:"none",appearance:"none" }}>
+                {L("skip")}
+              </button>
+            </div>
 
-            {onbStep === 1 && (
-              <div key="b1" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:32 }}>
-                  {pickLang(ONB_I18N.feelTitle, lang)}
+            {/* İÇERİK: kendi kaydırma alanı. Noktalar bunun DIŞINDA kaldığı için
+                uzun içerikte bile üstüne binmiyor. */}
+            <div style={{ flex:"1 1 auto",minHeight:0,overflowY:"auto",display:"flex",
+              flexDirection:"column",padding:"8px 26px 20px" }}>
+
+            {/* ── MOR YOL ─────────────────────────────────────────────────── */}
+            {isB && onbStep === 0 && (
+              <div style={{ ...pane,alignItems:"center",gap:34 }}>
+                <div style={{ position:"relative",width:196,height:196,display:"flex",alignItems:"center",justifyContent:"center" }}>
+                  <div style={{ position:"absolute",left:"50%",top:"50%",width:120,height:120,borderRadius:"50%",background:"radial-gradient(circle at 50% 40%, rgba(200,170,240,0.85), rgba(140,100,200,0.45) 60%, transparent 78%)",animation:"orbBreathe 10s ease-in-out infinite",boxShadow:"0 0 60px rgba(167,139,250,0.28)" }} />
+                  <div style={{ position:"absolute",left:"50%",top:"50%",width:160,height:160,borderRadius:"50%",border:"1px solid rgba(167,139,250,0.30)",animation:"orbRing 10s ease-in-out infinite" }} />
+                  <div style={{ position:"relative",zIndex:2,fontFamily:"'Jost',sans-serif",fontSize:15,letterSpacing:6,color:"rgba(237,234,242,0.72)",textTransform:"uppercase" }}>
+                    {(onbBreathSec % 10) < 4 ? L("inhale") : L("exhale")}
+                  </div>
                 </div>
-                <div style={{ display:"flex",justifyContent:"center",gap:16 }}>
-                  {[
-                    { emoji:"😐", label:ONB_I18N.feelSame, v:0 },
-                    { emoji:"🌤️", label:ONB_I18N.feelLight, v:1 },
-                    { emoji:"☀️", label:ONB_I18N.feelMuch, v:2 },
-                  ].map(f => (
-                    <button key={f.v} onClick={() => { setOnbFeeling(f.v); setTimeout(() => setOnbStep(2), 800); }}
-                      style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"16px 12px",borderRadius:16,
-                        background: onbFeeling === f.v ? "rgba(184,122,220,0.18)" : "rgba(255,255,255,0.04)",
-                        border: onbFeeling === f.v ? "1px solid rgba(184,122,220,0.5)" : "1px solid rgba(255,255,255,0.1)",
-                        cursor:"pointer",minWidth:90,transition:"all 0.3s",WebkitAppearance:"none",appearance:"none" }}>
-                      <span style={{ fontSize:28 }}>{f.emoji}</span>
-                      <span style={{ fontSize:12,color:"#c0b4d8",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{pickLang(f.label, lang)}</span>
-                    </button>
-                  ))}
+                <div style={{ width:150,height:1,background:"rgba(255,255,255,0.12)",position:"relative",borderRadius:2,overflow:"hidden" }}>
+                  <div style={{ position:"absolute",left:0,top:0,bottom:0,width:`${Math.min(onbBreathSec/30,1)*100}%`,background:c,opacity:0.75,transition:"width 1s linear" }} />
                 </div>
+                <div style={tiny}>{L("breathHint")}</div>
+              </div>
+            )}
+
+            {isB && onbStep === 1 && (
+              <div style={pane}>
+                <div style={eyebrow}>{L("feelEyebrow")}</div>
+                <div style={{ height:18 }} />
+                <div style={h2}>{L("feelTitle")}</div>
+                <div style={{ height:34 }} />
+                {/* Emoji DEĞİL: dolan daire glifleri, hafifleme hissini görsel
+                    olarak da anlatıyor (çeyrek → yarım → dörtte üç). */}
+                {/* Etiket dairenin İÇİNDE değil ALTINDA: 7 dilde uzunluk
+                    değiştiği için içeride kesiliyordu (kullanıcı bildirdi). */}
+                <div style={{ display:"flex",gap:12,justifyContent:"center" }}>
+                  {[{g:"◔",k:"feelSame",v:0},{g:"◑",k:"feelLight",v:1},{g:"◕",k:"feelMuch",v:2}].map(f => {
+                    const on = onbFeeling === f.v;
+                    return (
+                      <button key={f.v} onClick={()=>setOnbFeeling(f.v)}
+                        style={{ width:92,padding:0,background:"none",border:"none",cursor:"pointer",
+                          display:"flex",flexDirection:"column",alignItems:"center",gap:10,
+                          WebkitAppearance:"none",appearance:"none" }}>
+                        <span style={{ width:64,height:64,borderRadius:"50%",
+                          border: on ? `1px solid ${c}` : "1px solid rgba(237,234,242,0.14)",
+                          background: on ? "rgba(167,139,250,0.14)" : "rgba(255,255,255,0.03)",
+                          boxShadow: on ? "0 0 22px rgba(167,139,250,0.22)" : "none",
+                          display:"flex",alignItems:"center",justifyContent:"center",
+                          fontSize:26,lineHeight:1,transition:"0.25s",
+                          color: on ? "#DCCFFF" : "rgba(237,234,242,0.62)" }}>{f.g}</span>
+                        <span style={{ fontSize:11,letterSpacing:0.4,lineHeight:1.35,textAlign:"center",
+                          fontFamily:"'Inter',sans-serif",transition:"0.25s",
+                          color: on ? "#DCCFFF" : "rgba(237,234,242,0.42)" }}>{L(f.k)}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{ height:26 }} />
+                <div style={tiny}>{L("feelNote")}</div>
+                {/* Otomatik ilerleme YOK: cevap verilince Devam belirir. */}
                 {onbFeeling >= 0 && (
-                  <div style={{ marginTop:24,fontSize:14,color:"#b8acd0",fontFamily:"'Inter',sans-serif",lineHeight:1.7,animation:"fadeUp 0.4s ease-out" }}>
-                    {pickLang(onbFeeling === 0 ? ONB_I18N.mirror0 : onbFeeling === 1 ? ONB_I18N.mirror1 : ONB_I18N.mirror2, lang)}
+                  <div style={{ marginTop:30,animation:"fadeUp 0.4s ease-out" }}>
+                    <button onClick={nextStep} style={btn}>{L("next")}</button>
                   </div>
                 )}
               </div>
             )}
 
-            {onbStep === 2 && (
-              <div key="b2" style={{ textAlign:"center",maxWidth:380,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
-                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:8 }}>
-                  {pickLang(ONB_I18N.intTitle, lang)}
-                </div>
-                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,color:"#8878a8",marginBottom:24 }}>
-                  {pickLang(ONB_I18N.intSub, lang)}
-                </div>
-                <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:10,marginBottom:24 }}>
-                  {ONB_I18N.chips.map((ch, i) => {
-                    const sel = onbIntention === pickLang(ch, lang);
-                    return (
-                      <button key={i} onClick={() => setOnbIntention(pickLang(ch, lang))}
-                        style={{ padding:"10px 20px",borderRadius:100,fontSize:13.5,letterSpacing:1,fontFamily:"'Jost',sans-serif",fontWeight:300,cursor:"pointer",
-                          background: sel ? "rgba(184,122,220,0.22)" : "rgba(255,255,255,0.04)",
-                          border: sel ? "1px solid rgba(184,122,220,0.6)" : "1px solid rgba(255,255,255,0.12)",
-                          color: sel ? "#e0d0f4" : "#b0a4c8",
-                          transition:"all 0.25s",WebkitAppearance:"none",appearance:"none" }}>
-                        {pickLang(ch, lang)}
-                      </button>
-                    );
-                  })}
-                </div>
-                <button onClick={finishOnb}
-                  style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:"1px solid rgba(184,122,220,0.5)",background:"linear-gradient(135deg,rgba(184,122,220,0.28),rgba(184,122,220,0.14))",color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:"0 4px 20px rgba(184,122,220,0.22)",WebkitAppearance:"none",appearance:"none" }}>
-                  {pickLang(ONB_I18N.intDone, lang)}
-                </button>
+            {isB && onbStep === 2 && (
+              <div style={pane}>
+                <div style={h2}>{L(onbFeeling===0 ? "mirror0" : onbFeeling===1 ? "mirror1" : "mirror2")}</div>
+                <div style={{ height:16 }} />
+                <div style={lede}>{L("mirrorSub")}</div>
+                <div style={{ height:34 }} />
+                <button onClick={nextStep} style={btn}>{L("next")}</button>
               </div>
             )}
 
-            <div style={{ display:"flex",gap:9,position:"absolute",bottom:40 }}>
-              {[0,1,2].map(i => (
-                <div key={i} style={{ width:i===onbStep?22:7,height:7,borderRadius:6,background:i===onbStep?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
+            {isB && onbStep === 3 && (
+              <div style={pane}>
+                <div style={eyebrow}>{L("intEyebrow")}</div>
+                <div style={{ height:16 }} />
+                <div style={h2}>{L("intTitle")}</div>
+                <div style={{ height:8 }} />
+                <div style={tiny}>{L("intSub")}</div>
+                <div style={{ height:26 }} />
+                <div style={{ display:"flex",flexWrap:"wrap",gap:9,justifyContent:"center" }}>
+                  {ONB_I18N.chips.map((ch,i) => {
+                    const w = pickLang(ch, lang); const sel = onbIntention === w;
+                    return (
+                      <button key={i} onClick={()=>setOnbIntention(w)}
+                        style={{ padding:"11px 17px",borderRadius:100,
+                          border: sel ? `1px solid ${c}` : "1px solid rgba(237,234,242,0.12)",
+                          background: sel ? "rgba(167,139,250,0.16)" : "rgba(255,255,255,0.03)",
+                          color: sel ? "#DCCFFF" : "rgba(237,234,242,0.72)",
+                          fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.6,textTransform:"uppercase",
+                          cursor:"pointer",transition:"0.25s",WebkitAppearance:"none",appearance:"none" }}>{w}</button>
+                    );
+                  })}
+                </div>
+                <div style={{ height:16 }} />
+                <input value={onbIntention} onChange={e=>setOnbIntention(e.target.value)}
+                  placeholder={L("intFree")} style={field} />
+                <div style={{ height:30 }} />
+                <button onClick={finish} style={btn}>{L("intDone")}</button>
+              </div>
+            )}
+
+            {/* ── ALTIN YOL ───────────────────────────────────────────────── */}
+            {!isB && onbStep === 0 && (
+              <div style={pane}>
+                <div style={eyebrow}>{L("kEyebrow")}</div>
+                <div style={{ height:20 }} />
+                <div style={h2}>{L("kPromise")}</div>
+                <div style={{ height:16 }} />
+                <div style={lede}>{L("kPromise2")}</div>
+                <div style={{ height:34 }} />
+                <div style={{ display:"flex",gap:8,alignItems:"center",justifyContent:"center",fontSize:10.5,letterSpacing:0.5,color:"rgba(237,234,242,0.32)",fontFamily:"'Inter',sans-serif" }}>
+                  <span style={{ fontSize:13,color:"rgba(240,194,126,0.7)" }}>⌾</span>{L("kTrust")}
+                </div>
+                <div style={{ height:16 }} />
+                <button onClick={nextStep} style={btn}>{L("kStart")}</button>
+              </div>
+            )}
+
+            {!isB && onbStep === 1 && (
+              <div style={pane}>
+                <div style={h2}>{L("kName")}</div>
+                <div style={{ height:26 }} />
+                <input value={onbName} onChange={e=>setOnbName(e.target.value)}
+                  placeholder={L("kNamePh")} style={field} />
+                <div style={{ height:30 }} />
+                <button onClick={nextStep} style={btn}>{L("next")}</button>
+              </div>
+            )}
+
+            {!isB && onbStep === 2 && (
+              <div style={pane}>
+                <div style={h2}>{L("kDate")}</div>
+                <div style={{ height:26 }} />
+                <div style={flabel}>{t("birth_dob_label")}</div>
+                <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
+                <div style={{ height:30 }} />
+                <button onClick={nextStep} style={btn}>{L("next")}</button>
+              </div>
+            )}
+
+            {!isB && onbStep === 3 && (
+              <div style={pane}>
+                <div style={h2}>{L("kTime")}</div>
+                <div style={{ height:26 }} />
+                <div style={flabel}>{t("birth_time_optional")}</div>
+                <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
+                <div style={{ height:18 }} />
+                <div style={tiny}>{L("kTimeNote")}</div>
+                <div style={{ height:26 }} />
+                <button onClick={nextStep} style={btn}>{L("next")}</button>
+                <div style={{ height:10 }} />
+                <button onClick={()=>{ setBirthTimeInput(""); setOnbStep(4); }} style={ghost}>{L("kNoTime")}</button>
+              </div>
+            )}
+
+            {!isB && onbStep === 4 && (
+              <div style={pane}>
+                <div style={h2}>{L("kCity")}</div>
+                <div style={{ height:26 }} />
+                <div style={flabel}>{t("birth_city_ascendant")}</div>
+                <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
+                {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:6,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
+                <div style={{ height:30 }} />
+                <button onClick={()=>{ if (commitBirth()) setOnbStep(5); }} style={btn}>{L("kGo")}</button>
+              </div>
+            )}
+
+            {/* Harita hazırlanıyor: üç eşmerkezli halka, saf CSS (emoji/GIF yok) */}
+            {!isB && onbStep === 5 && (
+              <div style={{ ...pane,alignItems:"center",gap:34 }}>
+                <div style={{ width:170,height:170,position:"relative" }}>
+                  <div style={{ position:"absolute",inset:0,borderRadius:"50%",border:"1px solid rgba(240,194,126,0.38)",animation:"onbSpin 7s linear infinite" }} />
+                  <div style={{ position:"absolute",inset:24,borderRadius:"50%",border:"1px solid rgba(240,194,126,0.24)",animation:"onbSpinRev 11s linear infinite" }} />
+                  <div style={{ position:"absolute",inset:48,borderRadius:"50%",border:"1px solid rgba(240,194,126,0.50)",animation:"onbSpin 5s linear infinite" }} />
+                  <div style={{ position:"absolute",top:"50%",left:"50%",width:9,height:9,margin:"-4.5px 0 0 -4.5px",borderRadius:"50%",background:"#F0C27E",boxShadow:"0 0 26px 7px rgba(240,194,126,0.6)" }} />
+                </div>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:3,color:"rgba(237,234,242,0.52)",textTransform:"uppercase",textAlign:"center",minHeight:18 }}>
+                  {pickLang(ONB_I18N.kCalc[Math.min(onbCalcIdx, ONB_I18N.kCalc.length - 1)], lang)}
+                </div>
+              </div>
+            )}
+
+            {!isB && onbStep === 6 && (() => {
+              const rows = [
+                astro?.burc ? [pickLang(REVEAL_I18N.sun, lang), zodiacDisplay(astro.burc, lang)] : null,
+                yukselen    ? [pickLang(REVEAL_I18N.asc, lang), zodiacDisplay(yukselen, lang)] : null,
+                astro?.yasam? [pickLang(REVEAL_I18N.path, lang), String(astro.yasam)] : null,
+              ].filter(Boolean);
+              // birthDate depoda ISO (YYYY-MM-DD) tutuluyor; kartta okunur
+              // biçimde (GG.AA.YYYY) gösteriliyor.
+              const isoParts = (birthDate || "").split("-");
+              const birthNice = isoParts.length === 3 ? `${isoParts[2]}.${isoParts[1]}.${isoParts[0]}` : birthDate;
+              const birthLine = [birthNice, birthTime || L("kNoTimeShort"), birthCity].filter(Boolean).join(" · ");
+              return (
+                <div style={pane}>
+                  {/* Kart: tek tek margin yerine flex-column + gap (CLAUDE.md #7).
+                      Böylece ad / doğum satırı / glif / satırlar arasında boşluk
+                      hangi parça eksik olursa olsun tutarlı kalıyor. */}
+                  <div style={{ borderRadius:24,padding:"26px 22px",position:"relative",overflow:"hidden",
+                    background:"linear-gradient(165deg, rgba(240,194,126,0.12), rgba(167,139,250,0.10) 55%, rgba(0,0,0,0.5))",
+                    border:"1px solid rgba(240,194,126,0.35)",boxShadow:"0 0 56px rgba(240,194,126,0.14)",
+                    display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
+                    <div style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
+                      <div style={{ fontFamily:"'Jost',sans-serif",fontSize:9.5,letterSpacing:5,color:"rgba(240,194,126,0.75)",textAlign:"center",textTransform:"uppercase" }}>{L("kCardTitle")}</div>
+                      {onbName && <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:23,textAlign:"center",letterSpacing:0.5,color:"#EDEAF2",lineHeight:1.25 }}>{onbName}</div>}
+                      {birthDate && <div style={{ fontSize:11,color:"rgba(237,234,242,0.30)",textAlign:"center",letterSpacing:0.6,fontFamily:"'Inter',sans-serif" }}>{birthLine}</div>}
+                    </div>
+                    {/* Glif: iç içe iki elmas + merkez ışık. KUTU 112px, dönen kare
+                        64px: 45 derece çevrilen bir karenin köşegeni 64*1.414=90.5,
+                        kutuya rahat sığıyor. Eskiden kare kutuyla AYNI boyuttaydı
+                        (88), köşegeni 124'e çıkıp üstteki ismin üzerine biniyordu
+                        (kullanıcı bildirdi). */}
+                    <div style={{ width:112,height:112,position:"relative",flex:"0 0 auto" }}>
+                      <div style={{ position:"absolute",left:"50%",top:"50%",width:64,height:64,margin:"-32px 0 0 -32px",border:"1px solid rgba(240,194,126,0.5)",borderRadius:12,transform:"rotate(45deg)",animation:"onbSpin 34s linear infinite" }} />
+                      <div style={{ position:"absolute",left:"50%",top:"50%",width:46,height:46,margin:"-23px 0 0 -23px",border:"1px solid rgba(167,139,250,0.55)",borderRadius:10 }} />
+                      <div style={{ position:"absolute",left:"50%",top:"50%",width:8,height:8,margin:"-4px 0 0 -4px",borderRadius:"50%",background:"#fff",boxShadow:"0 0 18px 4px rgba(240,194,126,0.65)" }} />
+                    </div>
+                    {rows.length > 0 ? (
+                      <div style={{ display:"flex",flexDirection:"column",gap:9,width:"100%" }}>
+                        {rows.map(([k,v],i) => (
+                          <div key={i} style={{ display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,padding:"11px 14px",borderRadius:12,background:"rgba(0,0,0,0.32)",border:"1px solid rgba(255,255,255,0.06)",opacity:0,animation:`fadeUp 0.6s ease-out ${0.25 + i*0.22}s forwards` }}>
+                            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:2.5,color:"rgba(237,234,242,0.32)",textTransform:"uppercase" }}>{k}</span>
+                            <span style={{ fontSize:14,color:"#F6E4C6",fontWeight:300,fontFamily:"'Inter',sans-serif",textAlign:"right" }}>{v}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={tiny}>{L("kTrust")}</div>
+                    )}
+                  </div>
+                  <div style={{ height:22 }} />
+                  <button onClick={finish} style={btn}>{L("next")}</button>
+                </div>
+              );
+            })()}
+
+            </div>
+
+            {/* İlerleme noktaları: kendi satırı, kaydırma alanının DIŞINDA.
+                Böylece uzun içerikte metnin üstüne binmiyor. */}
+            <div style={{ flex:"0 0 auto",display:"flex",gap:8,justifyContent:"center",
+              padding:"14px 0 calc(var(--sab, 0px) + 22px)" }}>
+              {Array.from({ length: LAST + 1 }).map((_, i) => (
+                <div key={i} style={{ width: i===onbStep ? 20 : 6, height:6, borderRadius:6,
+                  background: i===onbStep ? c : "rgba(255,255,255,0.16)", transition:"all 0.3s ease" }} />
               ))}
             </div>
           </div>
@@ -9538,7 +9857,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
                 <div style={timeSt}>{baglanTime}</div>
               </button>
-              <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+              {/* Keşfet: ilk kez gelen kullanıcı altın onboarding'e girer
+                  (vaat → ad → doğum bilgisi → harita animasyonu → galaktik
+                  kimlik). Bir kez tamamlandıktan sonra doğrudan Ailesi paneli. */}
+              <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{
+                  setShowNedir(false);
+                  const done = (() => { try { return localStorage.getItem("sakin_onb_kesfet"); } catch(_) { return null; } })();
+                  if (done) { setShowAilesi(true); return; }
+                  setOnbName(userName || ""); setOnbPath("kesfet"); setOnbStep(0); setOnbCalcIdx(0);
+                }}
                 style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
