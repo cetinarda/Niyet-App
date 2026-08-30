@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, useMemo, memo } from "react";
 import { createPortal } from "react-dom";
 import { makeTrans, LANGUAGES } from "./i18n";
 import { CHAKRA_TRANS, FREQ_TRANS, ASTRO_TRANS, NOTIF_TRANS } from "./i18n-data";
@@ -731,7 +731,6 @@ const NEDIR_I18N = {
   bodyKesfet: { tr:"Burcun, hayvanın, taşın ve Tasarımın. Tasarım, doğum anındaki enerji haritanı ve karar alma biçimini gösterir.", en:"Your sign, your animal, your stone and your Design. Your Design shows your energy map at birth and how you make decisions.", de:"Dein Zeichen, dein Tier, dein Stein und dein Design. Dein Design zeigt deine Energiekarte bei der Geburt und wie du Entscheidungen triffst.", es:"Tu signo, tu animal, tu piedra y tu Diseño. Tu Diseño muestra tu mapa de energía al nacer y cómo tomas decisiones.", pt:"O teu signo, o teu animal, a tua pedra e o teu Design. O teu Design mostra o teu mapa de energia ao nascer e como tomas decisões.", fr:"Ton signe, ton animal, ta pierre et ton Design. Ton Design montre ta carte d'énergie à la naissance et comment tu prends tes décisions.", ja:"星座、動物、石、そしてあなたのデザイン。デザインは誕生の瞬間のエネルギー地図と、あなたの決め方を映します。" },
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them: your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les : ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
-  off:     { tr:"Bir daha gösterme", en:"Don't show again", de:"Nicht mehr anzeigen", es:"No mostrar de nuevo", pt:"Não mostrar novamente", fr:"Ne plus afficher", ja:"今後表示しない" },
   yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
   kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
   kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın: sana dair işaretler.", en:"Your sign, your design, your animal, your stone: the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein: Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra: señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra: sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre : des signes qui te concernent.", ja:"星座、デザイン、動物、石、あなたにまつわるしるし。" },
@@ -756,56 +755,27 @@ const NEDIR_I18N = {
 // Kullanıcı "Devam" ile ilerler, son adımda "Başla" ile bitirir; localStorage
 // `sakin_tutorial_done` ile ömür boyu bir kez gösterilir. Her adım uygulamadaki
 // gerçek menü ikonuyla eşleşir (◎ Bağlan · ✦ Keşfet · 🌌 Galaktik · 🪞 Ayna · ☁️ Gökyüzü).
-const TUTORIAL_I18N = {
-  next:  { tr:"Devam", en:"Continue", de:"Weiter", es:"Continuar", pt:"Continuar", fr:"Continuer", ja:"続ける" },
-  start: { tr:"Başla", en:"Begin", de:"Los geht's", es:"Empezar", pt:"Começar", fr:"Commencer", ja:"はじめる" },
-  skip:  { tr:"Geç", en:"Skip", de:"Überspringen", es:"Saltar", pt:"Saltar", fr:"Passer", ja:"スキップ" },
-  slides: [
-    { // 1: Bağlan (◎)
-      title: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
-      body:  { tr:"Günün küçük görevlerini yap, kendinle bağını güçlendir.",
-               en:"Do the day's small tasks and strengthen the bond with yourself.",
-               de:"Erledige die kleinen Aufgaben des Tages und stärke die Verbindung zu dir selbst.",
-               es:"Haz las pequeñas tareas del día y fortalece el vínculo contigo mismo.",
-               pt:"Faz as pequenas tarefas do dia e fortalece a ligação contigo mesmo.",
-               fr:"Fais les petites tâches du jour et renforce le lien avec toi-même.",
-               ja:"一日の小さなタスクをこなし、自分自身とのつながりを深めましょう。" } },
-    { // 2: Keşfet (✦)
-      title: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
-      body:  { tr:"Varoluşunun sana söylediklerini dinle: burcun, tasarımın, hayvanın, taşın.",
-               en:"Listen to what your existence tells you: your sign, design, animal and stone.",
-               de:"Höre, was dein Dasein dir sagt: dein Zeichen, dein Design, dein Tier und dein Stein.",
-               es:"Escucha lo que tu existencia te dice: tu signo, tu diseño, tu animal y tu piedra.",
-               pt:"Ouve o que a tua existência te diz: o teu signo, design, animal e pedra.",
-               fr:"Écoute ce que ton existence te dit : ton signe, ton design, ton animal et ta pierre.",
-               ja:"あなたの存在が語ることに耳を傾けましょう。星座、デザイン、動物、石。" } },
-    { // 3: Galaktik Kimlik (🌌)
-      title: { tr:"Galaktik Kimlik", en:"Galactic Identity", de:"Galaktische Identität", es:"Identidad Galáctica", pt:"Identidade Galáctica", fr:"Identité Galactique", ja:"ギャラクティック・アイデンティティ" },
-      body:  { tr:"Galaktik kimliğine bak, doğum haritanı analiz et.",
-               en:"Look at your galactic identity and analyze your birth chart.",
-               de:"Betrachte deine galaktische Identität und analysiere dein Geburtshoroskop.",
-               es:"Mira tu identidad galáctica y analiza tu carta natal.",
-               pt:"Vê a tua identidade galáctica e analisa o teu mapa natal.",
-               fr:"Regarde ton identité galactique et analyse ton thème natal.",
-               ja:"ギャラクティックな自分を見つめ、出生図を読み解きましょう。" } },
-    { // 4: İçsel Ayna (🪞)
-      title: { tr:"İçsel Ayna", en:"Inner Mirror", de:"Innerer Spiegel", es:"Espejo Interior", pt:"Espelho Interior", fr:"Miroir Intérieur", ja:"内なる鏡" },
-      body:  { tr:"Rüyalarını ve içinden gelenleri sor; ayna sana yansıtsın.",
-               en:"Ask about your dreams and inner stirrings; let the mirror reflect them back.",
-               de:"Frage nach deinen Träumen und inneren Regungen; der Spiegel wirft sie dir zurück.",
-               es:"Pregunta por tus sueños y lo que sientes dentro; deja que el espejo te lo refleje.",
-               pt:"Pergunta sobre os teus sonhos e o que sentes por dentro; deixa o espelho refleti-los.",
-               fr:"Interroge tes rêves et ce qui monte en toi ; laisse le miroir te le refléter.",
-               ja:"夢や心の声を尋ねれば、鏡がそれを映し返します。" } },
-    { // 5: Gökyüzü Raporu (☁️)
-      title: { tr:"Gökyüzü Raporu", en:"Sky Report", de:"Himmelsbericht", es:"Informe del Cielo", pt:"Relatório do Céu", fr:"Rapport du Ciel", ja:"空のレポート" },
-      body:  { tr:"Günlük gökyüzü raporuyla dünyanın elektromanyetik alanının sana etkisini takip et.",
-               en:"With the daily sky report, follow how Earth's electromagnetic field affects you.",
-               de:"Verfolge mit dem täglichen Himmelsbericht, wie das elektromagnetische Feld der Erde auf dich wirkt.",
-               es:"Con el informe diario del cielo, sigue cómo te afecta el campo electromagnético de la Tierra.",
-               pt:"Com o relatório diário do céu, acompanha como o campo eletromagnético da Terra te afeta.",
-               fr:"Avec le rapport quotidien du ciel, suis l'effet du champ électromagnétique de la Terre sur toi.",
-               ja:"毎日の空のレポートで、地球の電磁場があなたに与える影響を追いましょう。" } },
+const ONB_I18N = {
+  skip:     { tr:"Geç", en:"Skip", de:"Überspringen", es:"Saltar", pt:"Saltar", fr:"Passer", ja:"スキップ" },
+  inhale:   { tr:"Nefes al", en:"Breathe in", de:"Einatmen", es:"Inhala", pt:"Inspira", fr:"Inspire", ja:"息を吸って" },
+  exhale:   { tr:"Nefes ver", en:"Breathe out", de:"Ausatmen", es:"Exhala", pt:"Expira", fr:"Expire", ja:"息を吐いて" },
+  feelTitle:{ tr:"Nasıl hissettin?", en:"How did you feel?", de:"Wie hast du dich gefühlt?", es:"Como te sentiste?", pt:"Como te sentiste?", fr:"Comment tu t'es senti(e) ?", ja:"どう感じた？" },
+  feelSame: { tr:"Aynı", en:"The same", de:"Gleich", es:"Igual", pt:"Igual", fr:"Pareil", ja:"変わらない" },
+  feelLight:{ tr:"Biraz hafifledim", en:"A little lighter", de:"Etwas leichter", es:"Un poco mejor", pt:"Um pouco mais leve", fr:"Un peu plus léger", ja:"少し軽くなった" },
+  feelMuch: { tr:"Çok iyi geldi", en:"Much lighter", de:"Viel leichter", es:"Mucho mejor", pt:"Muito mais leve", fr:"Beaucoup mieux", ja:"とても軽くなった" },
+  mirror0:  { tr:"Tamam, bir sonraki sefer kendine daha çok zaman tanı.", en:"That's OK. Next time, give yourself a little more time.", de:"Das ist OK. Gib dir beim nächsten Mal etwas mehr Zeit.", es:"Está bien. La próxima vez, date un poco más de tiempo.", pt:"Tudo bem. Da próxima vez, dá-te um pouco mais de tempo.", fr:"C'est bien. La prochaine fois, accorde-toi un peu plus de temps.", ja:"大丈夫。次はもう少し時間をかけてみて。" },
+  mirror1:  { tr:"Güzel, nefes her zaman yanında.", en:"Beautiful. Breath is always with you.", de:"Schön. Der Atem ist immer bei dir.", es:"Hermoso. La respiración siempre está contigo.", pt:"Lindo. A respiração está sempre contigo.", fr:"Beau. Le souffle est toujours avec toi.", ja:"いいね。呼吸はいつもそばにある。" },
+  mirror2:  { tr:"Otuz saniye bile yeter, hatırla.", en:"Even thirty seconds is enough, remember that.", de:"Sogar dreißig Sekunden genügen, vergiss das nicht.", es:"Incluso treinta segundos bastan, recuérdalo.", pt:"Até trinta segundos bastam, lembra-te disso.", fr:"Même trente secondes suffisent, souviens-t'en.", ja:"30秒でも十分。それを忘れないで。" },
+  intTitle: { tr:"Bugünkü niyetin ne olsun?", en:"What is your intention for today?", de:"Was ist deine Absicht für heute?", es:"¿Cuál es tu intención para hoy?", pt:"Qual é a tua intenção para hoje?", fr:"Quelle est ton intention pour aujourd'hui ?", ja:"今日のあなたの意図は？" },
+  intSub:   { tr:"Birini seç ya da kendin yaz.", en:"Pick one or write your own.", de:"Wähle eine oder schreibe deine eigene.", es:"Elige una o escribe la tuya.", pt:"Escolhe uma ou escreve a tua.", fr:"Choisis-en une ou écris la tienne.", ja:"一つ選ぶか、自分で書こう。" },
+  intDone:  { tr:"Tamam", en:"Done", de:"Fertig", es:"Listo", pt:"Pronto", fr:"Termine", ja:"完了" },
+  chips:    [
+    { tr:"Huzur", en:"Peace", de:"Frieden", es:"Paz", pt:"Paz", fr:"Paix", ja:"平和" },
+    { tr:"Cesaret", en:"Courage", de:"Mut", es:"Valor", pt:"Coragem", fr:"Courage", ja:"勇気" },
+    { tr:"Şefkat", en:"Compassion", de:"Mitgefühl", es:"Compasión", pt:"Compaixão", fr:"Compassion", ja:"慈悲" },
+    { tr:"Sabır", en:"Patience", de:"Geduld", es:"Paciencia", pt:"Paciência", fr:"Patience", ja:"忍耐" },
+    { tr:"Açıklık", en:"Openness", de:"Offenheit", es:"Apertura", pt:"Abertura", fr:"Ouverture", ja:"開放性" },
+    { tr:"Güven", en:"Trust", de:"Vertrauen", es:"Confianza", pt:"Confiança", fr:"Confiance", ja:"信頼" },
   ],
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
@@ -833,6 +803,31 @@ const HD_TXT = {
   signature: { tr:"Doğru frekans", en:"Signature", de:"Signatur", es:"Firma", pt:"Assinatura", fr:"Signature", ja:"シグネチャー" },
   notSelf:   { tr:"Yanlış frekans", en:"Not-self", de:"Nicht-Selbst", es:"No-ser", pt:"Não-eu", fr:"Non-soi", ja:"ノットセルフ" },
   fullChart: { tr:"Tam harita", en:"Full chart", de:"Vollständige Karte", es:"Carta completa", pt:"Mapa completo", fr:"Carte complète", ja:"全体チャート" },
+};
+// ── RUH PROFİLİ KUTUSU (Ben ekranı, Human Design kutusunun ÜSTÜNDE) ────────
+// Kullanıcı isteği: "ben ekranında Human Design gibi Ruh Profili butonu koy,
+// hd'nin üstüne. Temel bilgileri ekle, Tam profil butonu ekle."
+// Veri SoulID'nin kendi hesabından geliyor (apps/soulid/lib/sakin-summary.ts
+// `sakin_soul_summary` anahtarına yazıyor). Host BURADA HESAP YAPMIYOR:
+// gezegen konumları host'ta yok, kaba tahmin SoulID ile ÇELİŞEN değer üretir
+// (element dağılımında bu hata bir kez yaşandı, bkz. CLAUDE.md).
+const SOUL_TXT = {
+  title:      { tr:"RUH PROFİLİ", en:"SOUL PROFILE", de:"SEELENPROFIL", es:"PERFIL DEL ALMA", pt:"PERFIL DA ALMA", fr:"PROFIL DE L'ÂME", ja:"ソウルプロフィール" },
+  family:     { tr:"Sayı Ailesi", en:"Number Family", de:"Zahlenfamilie", es:"Familia numérica", pt:"Família numérica", fr:"Famille de nombres", ja:"数字の家族" },
+  galaxy:     { tr:"Geldiği galaksi", en:"Home galaxy", de:"Heimatgalaxie", es:"Galaxia de origen", pt:"Galáxia de origem", fr:"Galaxie d'origine", ja:"出身の銀河" },
+  past:       { tr:"Önceki yaşam arketipi", en:"Past-life archetype", de:"Archetyp früherer Leben", es:"Arquetipo de vidas pasadas", pt:"Arquétipo de vidas passadas", fr:"Archétype des vies passées", ja:"過去世の元型" },
+  purpose:    { tr:"Geliş sebebi", en:"Why you came", de:"Warum du kamst", es:"Por qué viniste", pt:"Porque vieste", fr:"Pourquoi tu es venu", ja:"来た理由" },
+  strength:   { tr:"Güçlü yönü", en:"Strongest trait", de:"Stärkste Seite", es:"Mayor fortaleza", pt:"Maior força", fr:"Force principale", ja:"最も強い面" },
+  full:       { tr:"Tam profil", en:"Full profile", de:"Vollständiges Profil", es:"Perfil completo", pt:"Perfil completo", fr:"Profil complet", ja:"詳細プロフィール" },
+  // Kullanıcı SoulID'yi hiç açmadıysa özet yazılmamış olur. Boş kutu yerine
+  // ne yapması gerektiğini söyleyen tek satırlık davet gösterilir.
+  empty:      { tr:"Ruh Profili'ni bir kez aç, özetin buraya gelsin.",
+                en:"Open Soul Profile once and your summary will appear here.",
+                de:"Öffne das Seelenprofil einmal, dann erscheint deine Zusammenfassung hier.",
+                es:"Abre el Perfil del Alma una vez y tu resumen aparecerá aquí.",
+                pt:"Abre o Perfil da Alma uma vez e o teu resumo aparecerá aqui.",
+                fr:"Ouvre le Profil de l'Âme une fois et ton résumé apparaîtra ici.",
+                ja:"ソウルプロフィールを一度開くと、ここに要約が表示されます。" },
 };
 // "Ne sorabilirim?" açılır listesinin üstündeki nazik açıklama (kullanıcı
 // isteği: "bunlar örnek sorular, istediğini sorabilirsin ibaresi koy").
@@ -906,7 +901,7 @@ const TODAY_TXT = {
               de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?",
               pt:"O que te dizem as estrelas hoje?", fr:"Que te disent les étoiles aujourd'hui ?",
               ja:"今日、星はあなたに何を告げている？" },
-  soulidGo: { tr:"SoulID'de bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
+  soulidGo: { tr:"Ruh Profili'nde bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
               pt:"Ver no SoulID", fr:"Voir dans SoulID", ja:"SoulIDで見る" },
 };
 const PANIC_ENTRY_TXT = {
@@ -2126,10 +2121,16 @@ const GLOBAL_CSS = `
     100% { color:#fff6d8; filter: drop-shadow(0 0 6px rgba(255,246,216,0.75)); }
   }
   .sakin-mirror-live { animation: sakinMirrorCycle 4.5s ease-in-out infinite; }
-  /* YOL SEÇİMİ ekranı: güneş nefes alır, kart kenarlarında tünel ışığı döner.
-     Renk/hız ayna ikonu (sakinMirrorCycle) referans alınarak seçildi. */
-  @property --sakinBeam { syntax:'<angle>'; inherits:false; initial-value:0deg; }
-  @keyframes sakinYolBeam { to { --sakinBeam: 360deg; } }
+  /* YOL SEÇİMİ ekranı: güneş nefes alır. Kart kenarlıkları ESKİDEN sürekli
+     renk değiştiren dönen bir conic-gradient'ti (beyaz→altın→mor→kırmızı,
+     4.5sn'de bir tur). KULLANICI: "karşılama kutucuklarını renk değiştirmesin,
+     iki kutucuk kenarlıkları farklı renk mor ve sarı, üstüne geldiğinde
+     kutucuk seçim ışığı yansın." → sonra netleştirdi: "KENARLIKLARIN IŞIĞI
+     YANMAYACAK, İÇ buton yanacak, mor ve sarı transparan, örnekteki gibi."
+     Yani ışık kenarlıkta DEĞİL, kutunun İÇİNDE: her kart kendi rengiyle
+     Prototip referans: varsayilan neredeyse seffaf (rgba(255,255,255,.03)),
+     hover'da zarif renk doluyor (mor/sari ~12% opacity, 0.3s gecis).
+     Kenarlık sabit renkte kalıyor, hover'da parlamıyor. */
   @keyframes sakinYolSun {
     0%,100% { transform:scale(0.93); filter:brightness(0.94);
       box-shadow:0 0 28px 7px rgba(243,199,120,0.22), 0 0 56px 16px rgba(220,150,80,0.09); }
@@ -2138,21 +2139,39 @@ const GLOBAL_CSS = `
   }
   .sakin-yol-sun { animation: sakinYolSun 5.5s ease-in-out infinite; }
   .sakin-yol-sun::after { content:""; position:absolute; inset:-11px; border-radius:50%; border:1px solid rgba(255,225,150,0.16); }
-  .sakin-yol-card::before {
-    content:""; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
-    background:conic-gradient(from var(--sakinBeam),
-      rgba(255,246,216,0.16), #f0d660, #8a4fd0, #ff6a6a, rgba(255,246,216,0.16));
-    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor;
-    mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    mask-composite:exclude;
-    pointer-events:none;
-    animation:sakinYolBeam 4.5s linear infinite;
-    filter:drop-shadow(0 0 4px rgba(200,150,220,0.4));
+  .sakin-yol-card-a {
+    border-color: rgba(184,122,220,0.45) !important;
+    background: rgba(255,255,255,0.03) !important;
+    box-shadow: 0 0 24px rgba(184,122,220,0.10) inset;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sakin-yol-card-a:hover, .sakin-yol-card-a:active {
+    background: rgba(184,122,220,0.12) !important;
+    box-shadow: 0 0 32px rgba(184,122,220,0.22);
+  }
+  .sakin-yol-card-b {
+    border-color: rgba(240,192,96,0.45) !important;
+    background: rgba(255,255,255,0.03) !important;
+    box-shadow: 0 0 24px rgba(240,192,96,0.10) inset;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sakin-yol-card-b:hover, .sakin-yol-card-b:active {
+    background: rgba(240,192,96,0.12) !important;
+    box-shadow: 0 0 32px rgba(240,192,96,0.22);
   }
   @media (prefers-reduced-motion: reduce) {
     .sakin-yol-sun { animation:none; box-shadow:0 0 34px 9px rgba(243,199,120,0.28); }
-    .sakin-yol-card::before { animation:none; }
+  }
+  /* "Sakin nedir?" (yol seçimi ekranının en altı). KULLANICI: "soluk yazar,
+     tıklanınca net görünsün, bu sadeliği referans al." Dinlenme hâlinde
+     soluk/gri, dokunuşta/üstüne gelince/focus'ta netleşiyor (opak, açık renk). */
+  .sakin-nedir-link {
+    color: rgba(200,190,215,0.55); font-family:'Jost',sans-serif; font-weight:300;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    cursor: pointer; transition: color 0.2s ease;
+  }
+  .sakin-nedir-link:hover, .sakin-nedir-link:active, .sakin-nedir-link:focus-visible {
+    color: rgba(238,232,250,0.95);
   }
   @keyframes sakinTunnelBreath { 0%,100% { opacity:0.55; } 50% { opacity:0.9; } }
   .sakin-tunnel-wrap { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; animation: sakinTunnelBreath 4s ease-in-out infinite; }
@@ -2176,12 +2195,46 @@ const GLOBAL_CSS = `
     background: radial-gradient(ellipse 100% 100% at 50% 100%, rgba(255,240,190,0.34), rgba(200,150,255,0.16) 45%, transparent 72%);
     filter: blur(6px);
   }
+  /* TÜNEL AÇILIŞ IŞIĞI (kullanıcı: "tünel açılırsa hafif bi ışık çıksın,
+     eskiden ayna ikonundaki gibi; abartılı olmasın zarif olsun").
+     Adımlar tamamlanıp tünel açıldığı AN bir kez çakar, sonra kendini kapatır.
+     Renkler ayna ikonunun döngüsünden alındı (sakinMirrorCycle): sıcak beyaz →
+     altın → mor. Merkez 50%/42%, tünel maskesinin ağzıyla aynı nokta.
+     ⚠️ BU CSS BLOĞU BİR TEMPLATE LITERAL: İÇİNE TERS TIRNAK YAZMA.
+     Bu yorumda sınıf adı ters tırnak içindeydi; string orada kapanıp kalan
+     metin JS olarak yorumlandı ("X.sakin - tunnel - wrap") ve uygulama
+     TAMAMEN beyaz ekrana düştü. Build YEŞİL geçiyor, hata yalnızca çalışma
+     anında çıkıyor: bu yüzden ancak tarayıcı testinde yakalandı.
+     Işık, sakin-tunnel-wrap katmanının DIŞINDA duruyor: o katman
+     sakinTunnelBreath ile opaklığını 0.55-0.9 arasında salıyor, ışık onun
+     içinde olsaydı sönükleşirdi.
+     Tepe opaklık bilerek 0.5'te tutuldu, parlama değil "nefes" hissi versin. */
+  @keyframes sakinTunnelBloom {
+    0%   { opacity:0;   transform:translate(-50%,-50%) scale(0.82); }
+    30%  { opacity:0.5; }
+    100% { opacity:0;   transform:translate(-50%,-50%) scale(1.25); }
+  }
+  .sakin-tunnel-bloom {
+    position:fixed; left:50%; top:42%; width:118vw; height:118vw;
+    transform:translate(-50%,-50%);
+    border-radius:50%; pointer-events:none; z-index:0;
+    background: radial-gradient(circle at 50% 50%,
+      rgba(255,246,216,0.55) 0%,
+      rgba(240,214,96,0.28) 26%,
+      rgba(138,79,208,0.18) 48%,
+      transparent 70%);
+    filter: blur(14px);
+    animation: sakinTunnelBloom 2.6s ease-out forwards;
+  }
+  @media (prefers-reduced-motion: reduce) { .sakin-tunnel-bloom { animation:none; opacity:0; } }
   @keyframes navPulse    { 0%,100%{opacity:0.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.07)} }
   @keyframes navGlow     { 0%,100%{opacity:0.85} 50%{opacity:1} }
   @keyframes navSoftPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
+  @keyframes orbBreathe { 0%,100%{transform:translate(-50%,-50%) scale(0.55);opacity:0.6} 40%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+  @keyframes orbRing { 0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.5} 50%{transform:translate(-50%,-50%) scale(1.3);opacity:0} 100%{transform:translate(-50%,-50%) scale(0.8);opacity:0} }
   @keyframes introSquareDraw { from{stroke-dashoffset:1600} to{stroke-dashoffset:0} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -5508,6 +5561,25 @@ export default function SakinApp() {
   // artık başlık listesi gibi açılıyor, hiçbir bölüm kendiliğinden dolu gelmiyor.
   const [showHarita, setShowHarita] = useState(false);
   const [showHD, setShowHD] = useState(false);
+  // RUH PROFİLİ ÖZETİ: SoulID embed'i (aynı origin) `sakin_soul_summary`
+  // anahtarına yazıyor. Kullanıcı SoulID'yi kapatıp Ben'e döndüğünde taze
+  // veriyi görsün diye embed her kapandığında yeniden okunuyor (soulReloadKey).
+  const [showSoul, setShowSoul] = useState(false);
+  const [soulReloadKey, setSoulReloadKey] = useState(0);
+  const soulSummary = useMemo(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem("sakin_soul_summary") || "null");
+      return raw && raw.v === 1 ? raw : null;
+    } catch (_) { return null; }
+  }, [soulReloadKey]);
+  // Herhangi bir embed KAPANDIĞINDA özeti bir kez yeniden oku. Tek tek kapanış
+  // yollarını (Escape, geri, X, paywall, donanım geri tuşu) ayrı ayrı yamamak
+  // yerine tek yerden dinleniyor: yeni bir kapanış yolu eklense de çalışır.
+  const prevEmbedRef = useRef(null);
+  useEffect(() => {
+    if (prevEmbedRef.current && !embeddedApp) setSoulReloadKey(k => k + 1);
+    prevEmbedRef.current = embeddedApp;
+  }, [embeddedApp]);
   const [kozmikData, setKozmikData] = useState(null);
   const [kozmikDay, setKozmikDay] = useState(null);
   const [kozmikLoading, setKozmikLoading] = useState(false);
@@ -5760,6 +5832,24 @@ export default function SakinApp() {
     });
   }, [allStepsComplete, todayKey, dayInSync]);
 
+  // TÜNEL AÇILIŞ IŞIĞI: yalnızca adımlar O ANDA tamamlandığında bir kez çakar.
+  // `prevAllDone` ilk çalışmada MEVCUT değere kurulur ve o tur atlanır; yoksa
+  // günü zaten tamamlamışken uygulamayı açan kullanıcıda her açılışta (ve
+  // Bağlan'a her dönüşünde) yeniden çakardı, kutlama anlamını yitirirdi.
+  // `dayInSync` şartı seri efektiyle aynı sebeple: gün dönümünde state henüz
+  // yeni güne kurulmamışken DÜNÜN true'su ile tetiklenmesin.
+  const [tunnelBloom, setTunnelBloom] = useState(false);
+  const prevAllDone = useRef(null);
+  useEffect(() => {
+    if (!dayInSync) return;
+    const was = prevAllDone.current;
+    prevAllDone.current = allStepsComplete;
+    if (was === null || !allStepsComplete || was) return;
+    setTunnelBloom(true);
+    const id = setTimeout(() => setTunnelBloom(false), 2800);
+    return () => clearTimeout(id);
+  }, [allStepsComplete, dayInSync]);
+
   useEffect(() => {
     if (isOwner && !isNative) { setIsPremium(true); setRaporKullanildi(false); setReikiUsed(false); setZihinselUsed(false); }
   }, [isOwner]);
@@ -5772,17 +5862,27 @@ export default function SakinApp() {
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introExiting, setIntroExiting] = useState(false);
-  // İLK AÇILIŞ TANITIMI: 5 ana bölümü tanıtan kısa animasyonlu tur. Ömür boyu
-  // BİR kez (localStorage `sakin_tutorial_done`). Splash (showIntro) bitince açılır.
-  const [showTutorial, setShowTutorial] = useState(() => {
-    try { return !localStorage.getItem("sakin_tutorial_done"); } catch (_) { return false; }
-  });
-  const [tutorialStep, setTutorialStep] = useState(0);
+  const [onbPath, setOnbPath] = useState(null);
+  const [onbStep, setOnbStep] = useState(0);
+  const [onbFeeling, setOnbFeeling] = useState(-1);
+  const [onbIntention, setOnbIntention] = useState("");
+  const onbTimerRef = useRef(null);
+  const [onbBreathSec, setOnbBreathSec] = useState(0);
+  useEffect(() => {
+    if (!onbPath) { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } return; }
+    const onKey = (e) => { if (e.key === "Escape") { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } try { localStorage.setItem("sakin_onb_baglan","1"); } catch(_){} setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala"); } };
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } };
+  }, [onbPath]);
   // ── ANONIM KULLANIM OLCUMU (funnel / drop-off) ──────────────────────────
   // Acilista bir kez baslat + "app_open" olayi. Kisisel veri gonderilmez.
   useEffect(() => {
     try {
-      initAnalytics({ platform: isNative ? "ios" : "web", ver: APP_VERSION, base: API_BASE });
+      // BAĞIMSIZ HATA (rapor teşhisi sırasında bulundu): isNative hem iOS hem
+      // Android'de true, yani Android kullanıcıları da "ios" diye
+      // işaretleniyordu. Platform bölünmesi (report.mjs) hep yanlış çıkardı.
+      const platform = isNative ? (Capacitor.getPlatform() === "android" ? "android" : "ios") : "web";
+      initAnalytics({ platform, ver: APP_VERSION, base: API_BASE });
       track("app_open");
       // Ilk acilis ekrani "giris" ise onboarding funnel'inin ilk adimini isaretle.
       if (_initialScreen() === "giris") track("screen", { s: "giris" });
@@ -5792,8 +5892,6 @@ export default function SakinApp() {
   useEffect(() => {
     if (girisPhase === "birth") { try { track("birth_view"); } catch (_) {} }
   }, [girisPhase]);
-  // Tanıtım turunda parmakla kaydırma için dokunuş başlangıç X'i (sola=ileri, sağa=geri).
-  const tutTouchX = useRef(null);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i: açılışta ASLA çıkmaz (mount=false).
   // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
   // İLK 5 AÇILIŞTA (sakin_nedir_count 0→5). girisPhase her yüklemede "intro"ya döndüğü
@@ -5821,13 +5919,22 @@ export default function SakinApp() {
     cat: pickLang({ tr:"Haritan", en:"Your chart", de:"Deine Karte", es:"Tu carta",
                     pt:"O teu mapa", fr:"Ta carte", ja:"あなたのチャート" }, lang),
     sorular: [
-      pickLang({ tr:"Ateş elementim düşük, bu ne anlama geliyor?",
-                 en:"My fire element is low, what does that mean?",
-                 de:"Mein Feuerelement ist niedrig, was bedeutet das?",
-                 es:"Mi elemento fuego está bajo, ¿qué significa?",
-                 pt:"O meu elemento fogo está baixo, o que significa?",
-                 fr:"Mon élément feu est faible, qu'est-ce que cela signifie ?",
-                 ja:"火のエレメントが低いのはどういう意味？" }, lang),
+      // ⚠️ ÖRNEK SORULARDA KULLANICININ VERİSİ HAKKINDA İDDİA KURMA.
+      // Eski hali: "Ateş elementim DÜŞÜK, bu ne anlama geliyor?" Soru cümlenin
+      // içinde bir OLGU bildiriyordu; kullanıcının ateşi %49 bile olsa AI o
+      // iddiayı doğru kabul edip "düşük ateş" üzerine yorum yazıyordu
+      // (kullanıcı bildirdi). Soru artık DEĞERİ SORUYOR, dayatmıyor: AI
+      // haritadaki gerçek dağılımı okuyup ona göre konuşuyor.
+      // Kural: örnek sorular ya nötr olacak ya da kullanıcının KENDİ
+      // bildiği bir şeyi (yorgunluk, kaygı, uykusuzluk) anlatacak; uygulamanın
+      // hesapladığı bir değeri asla peşinen "yüksek/düşük" diye yazmayacak.
+      pickLang({ tr:"Element dağılımım bana ne anlatıyor?",
+                 en:"What does my element distribution tell me?",
+                 de:"Was sagt mir meine Elementverteilung?",
+                 es:"¿Qué me dice mi distribución de elementos?",
+                 pt:"O que me diz a minha distribuição de elementos?",
+                 fr:"Que me dit ma répartition des éléments ?",
+                 ja:"エレメントの配分は私に何を伝えている？" }, lang),
       pickLang({ tr:"Draconic haritamın bana söylediği mesaj ne?",
                  en:"What message does my draconic chart hold for me?",
                  de:"Welche Botschaft hat meine draconische Karte für mich?",
@@ -7789,9 +7896,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         <button className={`top-nav-btn${screen==="sartlar"?" active":""}`} onClick={()=>setScreen("sartlar")}>{t("nav_terms")}</button>
         <button className={`top-nav-btn${screen==="gizlilik"?" active":""}`} onClick={()=>setScreen("gizlilik")}>{t("nav_privacy")}</button>
         <button className={`top-nav-btn${screen==="iade"?" active":""}`} onClick={()=>setScreen("iade")}>{t("nav_refund")}</button>
-        <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
-          <LangPicker lang={lang} setLang={setLang} compact />
-        </div>
+        {/* KULLANICI: "webde en üstteki dil seçimini kapat, bi altta ortak dil
+            seçimi var zaten." Giriş ekranında AŞAĞIDA (satır ~8134'te) zaten
+            kendine ait, giriş için konumlanmış bir LangPicker var; burada da
+            gösterilince web'de giriş ekranında dil seçici İKİ KEZ görünüyordu.
+            Diğer TÜM ekranlarda (mandala/bugun/ayarlar/hakkinda vb.) bu üst
+            bar TEK dil seçici, o yüzden koşulsuz kaldırmak regresyon olurdu:
+            yalnızca "giris" ekranında gizleniyor. */}
+        {screen !== "giris" && (
+          <div style={{ marginLeft:"auto", flexShrink:0, alignSelf:"center", marginRight:4 }}>
+            <LangPicker lang={lang} setLang={setLang} compact />
+          </div>
+        )}
       </div>
       )}
 
@@ -7877,19 +7993,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               // döneminde herkes girebilsin, kartta "Premium" yerine "Yeni" rozeti
               // görünsün. Tekrar premium yapmak için: premium:SOULID_PREMIUM_GATE
               // yerine premium:true yaz (tek satır, gerisi kendiliğinden döner).
-              { name:"SoulID", embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
+              // SIRA KULLANICI TARAFINDAN BELİRLENDİ (Ağu 2026, güncellendi):
+              // Ruh Profili · Tasarım · Mitler · Hayvan · Bitkiler · Taşlar.
+              // Mitler bilerek Tasarım'ın hemen altında: önce kimlik/harita
+              // katmanı (Ruh Profili, Tasarım, Mitler), sonra günlük kart
+              // uygulamaları (Hayvan, Bitkiler, Taşlar). Değiştirme.
+              { name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", url:"", icon:"✦", color:"#e8c07a",
                 premium: SOULID_PREMIUM_GATE, isNew: true,
                 eyebrow: t("ailesi_soulid_eyebrow"), desc: t("ailesi_soulid_desc") },
-              { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
-                desc: t("ailesi_hayvan_desc") },
-              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
-                desc: t("ailesi_mitler_desc") },
               { name:t("ailesi_tasarim_name"), embed:"/embedded/humandesign/index.html", url:"https://sakindesign.netlify.app/", icon:"⌖", color:"#b4a0d8",
                 desc: t("ailesi_tasarim_desc") },
-              { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
-                desc: t("ailesi_taslar_desc") },
+              { name:t("ailesi_mitler_name"), embed:"/embedded/sakinmitler/index.html", url:"https://sakinmitler.netlify.app/", icon:"🏛️", color:"#d8b4a0",
+                desc: t("ailesi_mitler_desc") },
+              { name:t("ailesi_hayvan_name"), embed:"/embedded/sakinhayvan/index.html", url:"https://sakinhayvan.netlify.app/", icon:"◈", color:"#a0d8b4",
+                desc: t("ailesi_hayvan_desc") },
               { name:t("ailesi_bitkiler_name"), embed:"/embedded/sakinbitkiler/index.html", url:"", icon:"🌿", color:"#7BA05B",
                 desc: t("ailesi_bitkiler_desc") },
+              { name:t("ailesi_taslar_name"), embed:"/embedded/sakintaslar/index.html", url:"", icon:"💎", color:"#a0d8d8",
+                desc: t("ailesi_taslar_desc") },
             ].map(app=>(
               <div key={app.name}
                 style={{ background: app.premium ? "linear-gradient(180deg,rgba(232,192,122,0.06),rgba(255,255,255,0.02))" : "rgba(255,255,255,0.03)",
@@ -8999,7 +9120,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     border: screen==="ayarlar" ? "1px solid rgba(184,164,216,0.45)" : "1px solid rgba(255,255,255,0.16)",
                     color:"rgba(228,218,245,0.9)",
                   }}>
-                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
+                  {/* 17px, yanındaki ⌂ ikonu 19px: BİLEREK farklı. Dişli çok
+                      detaylı bir şekil (12 diş + iç daire), aynı kutuda ev
+                      ikonundan daha İRİ ve ağır görünüyordu (optik boyut
+                      yanılsaması). 17'ye inince ikisi göz için eşitleniyor.
+                      Buton kutusu (48x38) DEĞİŞMEDİ: dokunma hedefi korunuyor. */}
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" style={{ display:"block", flexShrink:0 }} aria-hidden="true">
                     <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8"/>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
                       stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
@@ -9195,77 +9321,120 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* İLK AÇILIŞ TANITIMI: 5 bölümü kısa animasyonlu bir turla tanıtır.
-          Splash (showIntro) bittikten sonra açılır; localStorage ile bir kez. */}
-      {showTutorial && !showIntro && (() => {
-        const TUT_ICONS = ["◎", "✦", "🌌", "🪞", "☁️"];
-        const TUT_COLORS = ["#b87adc", "#f0c060", "#82d9a3", "#c8a8f0", "#7ab0e0"];
-        const slides = TUTORIAL_I18N.slides;
-        const step = Math.min(tutorialStep, slides.length - 1);
-        const s = slides[step];
-        const c = TUT_COLORS[step];
-        const last = step === slides.length - 1;
-        const finish = () => {
-          try { localStorage.setItem("sakin_tutorial_done", "1"); } catch (_) {}
-          setShowTutorial(false); setTutorialStep(0);
+      {/* ONBOARDING: Baglan yolu (nefes -> his -> niyet -> mandala) */}
+      {onbPath === "baglan" && !showIntro && (() => {
+        const BREATH_TOTAL = 30;
+        const finishOnb = () => {
+          if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
+          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
+          if (onbIntention) { try { localStorage.setItem("sakin_niyet", onbIntention); } catch(_) {} setNiyet(onbIntention); }
+          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
+          try { track("onb_baglan_done"); } catch(_) {}
         };
-        const goNext = () => { if (step < slides.length - 1) setTutorialStep(v => v + 1); else finish(); };
-        const goPrev = () => setTutorialStep(v => Math.max(0, v - 1));
-        const rgba = (hex, a) => {
-          const n = parseInt(hex.slice(1), 16);
-          return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+        const skipOnb = () => {
+          if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
+          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
+          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
         };
+        const c = "#b87adc";
         return (
-          // Parmakla kaydırma: sola çek = ileri, sağa çek = geri (kullanıcı isteği).
-          <div
-            onTouchStart={e => { tutTouchX.current = e.touches[0].clientX; }}
-            onTouchEnd={e => {
-              if (tutTouchX.current == null) return;
-              const dx = e.changedTouches[0].clientX - tutTouchX.current;
-              tutTouchX.current = null;
-              if (dx <= -45) goNext();
-              else if (dx >= 45) goPrev();
-            }}
-            style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px",touchAction:"pan-y" }}>
-            {/* Geri (‹): sol üst, sadece ilk adımdan sonra */}
-            {step > 0 && (
-              <button onClick={goPrev} aria-label={pickLang({tr:"Geri",en:"Back",de:"Zurück",es:"Atrás",pt:"Voltar",fr:"Retour",ja:"戻る"}, lang)}
-                style={{ position:"absolute",top:14,left:14,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.14)",color:"#c0b4d8",fontSize:20,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Jost',sans-serif" }}>‹</button>
-            )}
-            {/* Geç (skip): sağ üst */}
-            <button onClick={finish}
+          <div style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px" }}>
+            <button onClick={skipOnb}
               style={{ position:"absolute",top:16,right:16,background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 12px" }}>
-              {pickLang(TUTORIAL_I18N.skip, lang)}
+              {pickLang(ONB_I18N.skip, lang)}
             </button>
 
-            {/* Animasyonlu içerik: key ile her adımda yeniden oynar */}
-            <div key={step} style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
-              {/* Dönen kare çerçeve içinde bölüm ikonu (adım rengine boyalı) */}
-              <div style={{ position:"relative",width:104,height:104,margin:"0 auto 30px" }}>
-                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.55)}`,borderRadius:11,animation:"diamondSpin 12s linear infinite",boxShadow:`0 0 16px ${rgba(c,0.32)},inset 0 0 12px ${rgba(c,0.10)}` }} />
-                <div style={{ position:"absolute",inset:22,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.3)}`,borderRadius:7,animation:"diamondSpin 8s linear infinite reverse" }} />
-                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",fontSize:34,lineHeight:1,filter:`drop-shadow(0 0 14px ${rgba(c,0.6)})`,color:c }}>{TUT_ICONS[step]}</div>
-              </div>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:2.5,color:"#f0e8ff",marginBottom:14 }}>
-                {pickLang(s.title, lang)}
-              </div>
-              <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14.5,fontWeight:300,lineHeight:1.75,color:"#b8acd0",minHeight:66 }}>
-                {pickLang(s.body, lang)}
-              </div>
-            </div>
+            {onbStep === 0 && (() => {
+              const isInhale = (onbBreathSec % 10) < 4;
+              const progress = Math.min(onbBreathSec / BREATH_TOTAL, 1);
+              if (onbTimerRef.current == null) {
+                onbTimerRef.current = setInterval(() => {
+                  setOnbBreathSec(s => {
+                    if (s >= BREATH_TOTAL - 1) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; setOnbStep(1); return 0; }
+                    return s + 1;
+                  });
+                }, 1000);
+              }
+              return (
+                <div key="b0" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                  <div style={{ position:"relative",width:160,height:160,margin:"0 auto 32px" }}>
+                    <div style={{ position:"absolute",left:"50%",top:"50%",width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle at 50% 40%, rgba(200,170,240,0.9), rgba(140,100,200,0.5) 60%, transparent 80%)`,animation:"orbBreathe 10s ease-in-out infinite",boxShadow:"0 0 40px rgba(184,122,220,0.4)" }} />
+                    <div style={{ position:"absolute",left:"50%",top:"50%",width:130,height:130,borderRadius:"50%",border:"1px solid rgba(184,122,220,0.3)",animation:"orbRing 10s ease-in-out infinite" }} />
+                  </div>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:20,fontWeight:300,letterSpacing:2,color:"#e8d8ff",marginBottom:8 }}>
+                    {pickLang(isInhale ? ONB_I18N.inhale : ONB_I18N.exhale, lang)}
+                  </div>
+                  <div style={{ width:"80%",maxWidth:200,height:3,borderRadius:2,background:"rgba(255,255,255,0.08)",margin:"18px auto 0" }}>
+                    <div style={{ width:`${progress * 100}%`,height:"100%",borderRadius:2,background:`linear-gradient(90deg, ${c}, rgba(240,192,96,0.6))`,transition:"width 1s linear" }} />
+                  </div>
+                </div>
+              );
+            })()}
 
-            {/* İlerleme noktaları */}
-            <div style={{ display:"flex",gap:9,margin:"34px 0 26px" }}>
-              {slides.map((_, i) => (
-                <div key={i} style={{ width:i===step?22:7,height:7,borderRadius:6,background:i===step?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
+            {onbStep === 1 && (
+              <div key="b1" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:32 }}>
+                  {pickLang(ONB_I18N.feelTitle, lang)}
+                </div>
+                <div style={{ display:"flex",justifyContent:"center",gap:16 }}>
+                  {[
+                    { emoji:"😐", label:ONB_I18N.feelSame, v:0 },
+                    { emoji:"🌤️", label:ONB_I18N.feelLight, v:1 },
+                    { emoji:"☀️", label:ONB_I18N.feelMuch, v:2 },
+                  ].map(f => (
+                    <button key={f.v} onClick={() => { setOnbFeeling(f.v); setTimeout(() => setOnbStep(2), 800); }}
+                      style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"16px 12px",borderRadius:16,
+                        background: onbFeeling === f.v ? "rgba(184,122,220,0.18)" : "rgba(255,255,255,0.04)",
+                        border: onbFeeling === f.v ? "1px solid rgba(184,122,220,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                        cursor:"pointer",minWidth:90,transition:"all 0.3s",WebkitAppearance:"none",appearance:"none" }}>
+                      <span style={{ fontSize:28 }}>{f.emoji}</span>
+                      <span style={{ fontSize:12,color:"#c0b4d8",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{pickLang(f.label, lang)}</span>
+                    </button>
+                  ))}
+                </div>
+                {onbFeeling >= 0 && (
+                  <div style={{ marginTop:24,fontSize:14,color:"#b8acd0",fontFamily:"'Inter',sans-serif",lineHeight:1.7,animation:"fadeUp 0.4s ease-out" }}>
+                    {pickLang(onbFeeling === 0 ? ONB_I18N.mirror0 : onbFeeling === 1 ? ONB_I18N.mirror1 : ONB_I18N.mirror2, lang)}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {onbStep === 2 && (
+              <div key="b2" style={{ textAlign:"center",maxWidth:380,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:8 }}>
+                  {pickLang(ONB_I18N.intTitle, lang)}
+                </div>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,color:"#8878a8",marginBottom:24 }}>
+                  {pickLang(ONB_I18N.intSub, lang)}
+                </div>
+                <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:10,marginBottom:24 }}>
+                  {ONB_I18N.chips.map((ch, i) => {
+                    const sel = onbIntention === pickLang(ch, lang);
+                    return (
+                      <button key={i} onClick={() => setOnbIntention(pickLang(ch, lang))}
+                        style={{ padding:"10px 20px",borderRadius:100,fontSize:13.5,letterSpacing:1,fontFamily:"'Jost',sans-serif",fontWeight:300,cursor:"pointer",
+                          background: sel ? "rgba(184,122,220,0.22)" : "rgba(255,255,255,0.04)",
+                          border: sel ? "1px solid rgba(184,122,220,0.6)" : "1px solid rgba(255,255,255,0.12)",
+                          color: sel ? "#e0d0f4" : "#b0a4c8",
+                          transition:"all 0.25s",WebkitAppearance:"none",appearance:"none" }}>
+                        {pickLang(ch, lang)}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button onClick={finishOnb}
+                  style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:"1px solid rgba(184,122,220,0.5)",background:"linear-gradient(135deg,rgba(184,122,220,0.28),rgba(184,122,220,0.14))",color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:"0 4px 20px rgba(184,122,220,0.22)",WebkitAppearance:"none",appearance:"none" }}>
+                  {pickLang(ONB_I18N.intDone, lang)}
+                </button>
+              </div>
+            )}
+
+            <div style={{ display:"flex",gap:9,position:"absolute",bottom:40 }}>
+              {[0,1,2].map(i => (
+                <div key={i} style={{ width:i===onbStep?22:7,height:7,borderRadius:6,background:i===onbStep?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
               ))}
             </div>
-
-            {/* Devam / Başla */}
-            <button onClick={last ? finish : () => setTutorialStep(v => v + 1)}
-              style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:`1px solid ${rgba(c,0.5)}`,background:`linear-gradient(135deg,${rgba(c,0.28)},${rgba(c,0.14)})`,color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:`0 4px 20px ${rgba(c,0.22)}` }}>
-              {pickLang(last ? TUTORIAL_I18N.start : TUTORIAL_I18N.next, lang)}
-            </button>
           </div>
         );
       })()}
@@ -9284,8 +9453,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const cardBase = { flex:1, boxSizing:"border-box", margin:0, appearance:"none", WebkitAppearance:"none",
           borderRadius:18, padding:"16px 10px", position:"relative", cursor:"pointer",
           display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:7,
-          textAlign:"center", background:"linear-gradient(165deg,rgba(34,25,52,0.64),rgba(16,11,28,0.64))",
-          backgroundClip:"padding-box", WebkitBackgroundClip:"padding-box", border:"1.4px solid transparent",
+          textAlign:"center", border:"1.4px solid transparent",
           fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
         // KART METİNLERİ (kullanıcı referans tasarımı). Soyut etiket ("Bağlan" /
         // "Keşfet") yerine NİYET cümlesi: kullanıcı ne yapmak istediğini seçiyor,
@@ -9312,7 +9480,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         const leftCX = padSide + cardW / 2;          // sol kart merkez X
         const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
         const cardTopPx = Math.round(0.81 * H) - cardH;   // kart tepesi (biraz yukarı; çizgi kısalır)
-        const pathEndY = cardTopPx + 3;               // çizgi kart tepesine DEĞER (bağlantılı)
+        const pathEndY = cardTopPx;                    // cizgi kart kenarlığında durur (seffaf bg ile iceri tasmaz)
         const sunCY = Math.round(0.25 * H);           // güneş merkezi (başlıkla birlikte aşağıda)
         const sunBottomY = sunCY + 36;
         const dy = pathEndY - sunBottomY;
@@ -9359,31 +9527,48 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Kartlar: kart tepesi çizgilere TAM denk gelir (px konum) */}
             <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
-              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
-                style={{ ...cardBase, boxShadow:"0 0 20px rgba(184,122,220,0.10)" }}>
+              <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{
+                  setShowNedir(false);
+                  const done = (() => { try { return localStorage.getItem("sakin_onb_baglan"); } catch(_) { return null; } })();
+                  if (done) { setScreen("mandala"); return; }
+                  setOnbPath("baglan"); setOnbStep(0); setOnbFeeling(-1); setOnbIntention(""); setOnbBreathSec(0);
+                }}
+                style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
                 <div style={timeSt}>{baglanTime}</div>
               </button>
-              <button className="sakin-yol-card" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
-                style={{ ...cardBase, boxShadow:"0 0 20px rgba(240,192,96,0.10)" }}>
+              <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{ setShowNedir(false); setShowAilesi(true); }}
+                style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
                 <div style={timeSt}>{kesfetTime}</div>
               </button>
             </div>
 
-            {/* Sakin nedir? → Yolculuk sekmesi. Kartların ALTINA sabit (px), böylece
-                home-indicator'lı cihazlarda bile kartları KESMEZ (eski bug). Ortalı. */}
-            <button onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ position:"absolute",left:"50%",top:cardTopPx + cardH + 20,transform:"translateX(-50%)",background:"linear-gradient(135deg,rgba(240,192,96,0.14),rgba(200,150,60,0.08))",border:"1px solid rgba(240,192,96,0.42)",borderRadius:18,padding:"7px 20px",color:"#eec46a",fontSize:11,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,whiteSpace:"nowrap" }}>
+            {/* Sakin nedir? → Yolculuk sekmesi. KULLANICI: "en alta al, soluk
+                yazar tıklanınca net görünsün, bir daha göstermeyi kaldır
+                (zaten gün içinde bir daha göstermiyor), bu sadeliği referans
+                al." Üç değişiklik:
+                1) Konum: kartların hemen altından EKRANIN EN ALTINA taşındı
+                   (safe-area'ya sabit), referans görseldeki gibi.
+                2) Görünüm: altın pill/kenarlık kaldırıldı, düz soluk metin
+                   (className="sakin-nedir-link"); dokunulunca/üstüne
+                   gelinince netleşiyor (bkz. CSS, .sakin-nedir-link:active).
+                3) "Bir daha gösterme" TAMAMEN KALDIRILDI: bu overlay zaten
+                   günde bir kez tetikleniyor (HAZIRIM'a basınca
+                   sakin_hazirim_today o gün için işaretleniyor, sayfa aynı
+                   gün tekrar açılınca giriş ekranı hiç görünmüyor, bkz.
+                   _initialScreen). Kalıcı kapatma seçeneği gereksiz
+                   karmaşıklıktı. NOT: sakin_nedir_off bayrağını daha önce
+                   ayarlamış kullanıcılarda (eski "Bir daha gösterme"
+                   tıklaması) davranış AYNEN korunuyor, maybeShowNedir hâlâ
+                   o bayrağa bakıyor; yalnızca yeni bir kullanıcının bunu
+                   AYARLAYACAĞI yol kalmadı. */}
+            <button className="sakin-nedir-link"
+              onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
+              style={{ position:"absolute",left:0,right:0,bottom:"calc(28px + var(--sab))",textAlign:"center",background:"none",border:"none" }}>
               {pickLang(NEDIR_I18N.title, lang)}
-            </button>
-
-            {/* Bir daha gösterme: nedir'in altına sabit, ortalı */}
-            <button onClick={()=>{ setShowNedir(false); try{ localStorage.setItem("sakin_nedir_off","1"); }catch(_){} }}
-              style={{ position:"absolute",left:0,right:0,top:cardTopPx + cardH + 62,background:"none",border:"none",color:"#8778a2",fontSize:11,letterSpacing:1,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,textAlign:"center" }}>
-              {pickLang(NEDIR_I18N.off, lang)}
             </button>
           </div>
         </div>
@@ -9459,14 +9644,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     (tam genişlik değil, 86% max) + altında küçük "Nefes al" +
                     dil sağ üstte (kullanıcı: "hazırımı biraz daralt, nefes al'ı
                     küçült"). Ortalı kalsın diye margin:auto. */}
+                {/* KULLANICI: "hazırımdan sonra bağlan ekranına geç (bugüne geçiyor
+                    şu an)". Kök sebep: timeAwareEntryScreen() gün ortasında
+                    (12-22) doğrudan bir ADIM ekranına (ör. "gün görevleri")
+                    düşürüyordu; o ekranın kendi başlığı "Bugün" olduğu için
+                    kullanıcı Bağlan sekmesi doğru aktif olsa bile "Bugün'e
+                    gitti" sanıyordu. Artık HAZIRIM her zaman Bağlan'ın GENEL
+                    BAKIŞ ekranına (mandala) gidiyor; belirli adıma atlama
+                    tahmini kalktı, kullanıcı GÜNE BAŞLA ile kendi girer. */}
                 <button className="sakin-btn-primary"
                   style={{ width:"86%",maxWidth:300,display:"block",boxSizing:"border-box",margin:"0 auto" }}
-                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(timeAwareEntryScreen()); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen("mandala"); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
                     Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır.
                     Küçültüldü: padding 12/34 → 9/24, font 13 → 11.5, minHeight 44 → 38. */}
                 <button onClick={goPanicBreath} aria-label={t("panic_aria")} title={t("panic_aria")}
-                  style={{ marginTop:14,padding:"9px 24px",borderRadius:100,
+                  style={{ marginTop:17,padding:"9px 24px",borderRadius:100,
                     border:"1px solid rgba(224,168,96,0.5)",background:"transparent",
                     WebkitAppearance:"none",appearance:"none",
                     color:"rgba(240,200,150,0.9)",fontSize:11.5,letterSpacing:2,
@@ -10820,13 +11013,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <div style={{ fontSize:12.5,lineHeight:1.6,color:"#8a8299",fontFamily:"'Inter',sans-serif",marginBottom:14 }}>
                         {pickLang(ASK_INTRO_TXT, lang)}
                       </div>
-                      {([...CHART_Q, ...RUYA_Q, ..._locSampleQ(lang, [
+                      {/* RÜYA EN ÜSTTE (kullanıcı isteği): en çok kullanılan
+                          giriş, listenin altında kalınca kaydırmadan
+                          görünmüyordu. Sıra: Rüya · Haritan · diğer kategoriler. */}
+                      {([...RUYA_Q, ...CHART_Q, ..._locSampleQ(lang, [
                         { cat:t("ask_cat_body"), idx:[0,3], sorular:[
                           "Kronik yorgunluk neden hep benimle?",
                           "Uykusuzluk çekiyorum, enerjetik sebebi ne?",
                         ]},
-                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "Sürekli endişeliyim, hangi çakram kapalı?",
+                        // idx 5 ("...hangi çakram KAPALI?") idx 4 ile değiştirildi:
+                        // eski soru bir çakranın kapalı OLDUĞUNU peşinen kabul
+                        // ediyor, AI'ı kapalı çakra uydurmaya itiyordu. idx 4
+                        // aynı duyguyu iddiasız soruyor. `idx` çeviri dizisinin
+                        // indeksi olduğu için 5 dilin çevirisi kendiliğinden
+                        // doğru satıra kayıyor, i18n-data.js'e dokunmak gerekmedi.
+                        { cat:t("ask_cat_emotions"), idx:[4,6], sorular:[
+                          "Bu hafta neden bu kadar dengesiz hissediyorum?",
                           "Öfkemi nasıl dönüştürebilirim?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -10846,8 +11048,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           "Why is chronic fatigue always with me?",
                           "I can't sleep. What's the energetic reason?",
                         ]},
-                        { cat:t("ask_cat_emotions"), idx:[5,6], sorular:[
-                          "I'm constantly anxious. Which chakra is blocked?",
+                        { cat:t("ask_cat_emotions"), idx:[4,6], sorular:[
+                          "Why do I feel so out of balance this week?",
                           "How can I transform my anger?",
                         ]},
                         { cat:t("ask_cat_chakra"), idx:[8,11], sorular:[
@@ -11243,6 +11445,71 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
+          {/* ── RUH PROFİLİ ── (kullanıcı: "Human Design gibi Ruh Profili
+              butonu koy, HD'nin üstüne; temel bilgileri ve Tam profil butonunu
+              ekle"). HD kutusuyla BİREBİR aynı kalıp: açılır kapanır başlık +
+              içerik + alt satırda tam uygulamaya giden düğme.
+              Veri SoulID'den geliyor, host hesaplamıyor (bkz. SOUL_TXT notu).
+              Özet henüz yoksa kutu YİNE görünür: boş bırakmak yerine "bir kez
+              aç" daveti gösterip aynı düğmeyle oraya götürüyor. */}
+          <div style={{ marginBottom:20,position:"relative" }}>
+            <button onClick={()=>setShowSoul(v=>!v)}
+              style={{
+                WebkitAppearance:"none",appearance:"none",
+                width:"100%",background:"rgba(232,192,122,0.07)",
+                border:"1px solid rgba(232,192,122,0.26)",
+                borderRadius:14,padding:"12px 18px",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#e8c07a",transition:"all 0.2s",
+              }}>
+              <span style={{ fontSize:13,letterSpacing:2 }}>{pickLang(SOUL_TXT.title, lang)}</span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showSoul?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+            {showSoul && (
+            <div style={{ marginTop:8,padding:"16px 18px",borderRadius:17,
+              background:"linear-gradient(160deg,rgba(232,192,122,0.10),rgba(255,255,255,0.02))",
+              border:"1px solid rgba(232,192,122,0.22)" }}>
+              {soulSummary ? (<>
+                <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:12 }}>
+                  {soulSummary.emoji && <span style={{ fontSize:20,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
+                  <span style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
+                    {soulSummary.race}
+                  </span>
+                </div>
+                {/* Etiket + değer satırları. Değerler uzun olabildiği için
+                    yan yana değil ALT ALTA: dar ekranda kırpılmasın. */}
+                <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
+                  {[
+                    [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+                    [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+                    [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
+                    [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+                    [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
+                  ].filter(([, v]) => !!v).map(([lbl, val]) => (
+                    <div key={lbl}>
+                      <div style={{ fontSize:9.5,letterSpacing:1.4,color:"rgba(232,192,122,0.8)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:2 }}>{lbl}</div>
+                      <div style={{ fontSize:13,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </>) : (
+                <div style={{ fontSize:12.5,color:"#8f899e",fontFamily:"'Inter',sans-serif",lineHeight:1.7 }}>
+                  {pickLang(SOUL_TXT.empty, lang)}
+                </div>
+              )}
+              <button onClick={()=>{ try{haptic();}catch(_){}
+                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:14,
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  background:"rgba(232,192,122,0.12)",border:"1px solid rgba(232,192,122,0.3)",
+                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#f0d29a",
+                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {pickLang(SOUL_TXT.full, lang)}
+                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
+              </button>
+            </div>
+            )}
+          </div>
           {/* ── TEMEL HUMAN DESIGN ── (kullanıcı: "12. ev gizli benlik üstüne
               human design bilgilerini de gir temel düzeyde")
               Tip · strateji · otorite · profil. Tam bodygraph, kanallar ve kapı
@@ -11563,15 +11830,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.fillText(t("gid_header"), 540, 180);
 
           // 4. Fotoğraf (varsa) veya placeholder
+          // KULLANICI: "profil foto kutucuğu daha küçük olabilir." Yarıçap
+          // 160 → 138 (çap 320 → 276). Önizlemedeki daire de aynı oranda
+          // küçüldü (88 → 74), iki yüzey birbirini yansıtsın.
+          // Tek sabitten besleniyor: kırpma maskesi, çerçeve, placeholder
+          // gradyanı ve fotoğrafın ölçek hesabı hep bunu okuyor, biri
+          // güncellenip diğeri unutulamaz.
+          const PHOTO_R = 138;
           if (idCardPhoto) {
             await new Promise((resolve) => {
               const img = new Image();
               img.onload = () => {
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(540, 380, 160, 0, Math.PI * 2);
+                ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
                 ctx.clip();
-                const r = Math.max(320 / img.width, 320 / img.height);
+                const r = Math.max((PHOTO_R * 2) / img.width, (PHOTO_R * 2) / img.height);
                 const w = img.width * r, h = img.height * r;
                 ctx.drawImage(img, 540 - w/2, 380 - h/2, w, h);
                 ctx.restore();
@@ -11582,12 +11856,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             });
           } else {
             // Placeholder radial gradient
-            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, 160);
+            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, PHOTO_R);
             rg.addColorStop(0, "rgba(180,140,240,0.55)");
             rg.addColorStop(1, "rgba(80,40,140,0.25)");
             ctx.fillStyle = rg;
             ctx.beginPath();
-            ctx.arc(540, 380, 160, 0, Math.PI * 2);
+            ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = "#fff";
             ctx.font = "120px -apple-system, sans-serif";
@@ -11596,157 +11870,209 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           }
           // Foto çerçevesi
           ctx.beginPath();
-          ctx.arc(540, 380, 160, 0, Math.PI * 2);
+          ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
           ctx.strokeStyle = "rgba(220,200,255,0.5)";
           ctx.lineWidth = 4;
           ctx.stroke();
+
+          // ── AKIŞKAN DİKEY YERLEŞİM (tek `cy` imleci) ─────────────────────
+          // ESKİ HATA (kullanıcı: "yeni kart human design yaşam yolunun üstüne
+          // biniyor"): her bölümün Y'si ELLE yazılmış sabit sayıydı
+          // (820/940/1060/1250/1290/1490...). Bölüm sayısı değiştiği anda
+          // (element verisi var/yok, HD var/yok, şimdi Ay düğümleri de eklendi)
+          // bu sabitler tutmuyor, bloklar ÜST ÜSTE BİNİYORDU. Üstelik alttaki
+          // açıklama bloğu `Math.max(2, ...)` ile en az 2 satırı ZORLUYORDU,
+          // yani yer kalmasa bile yazıyor ve HD kutusunun içine giriyordu.
+          // Artık tek bir `cy` imleci var: her blok kendi yüksekliği kadar
+          // ilerletiyor, açıklama bloğu da yalnızca KALAN yere sığdığı kadar
+          // satır yazıyor, sığmıyorsa hiç yazmıyor. Çakışma imkânsız.
+          // Yeni bir bölüm eklerken tek kural: çizdikten sonra `cy`'yi ilerlet.
+          let cy = 596;   // foto alti 518 (380 + PHOTO_R), 78px nefes payi
 
           // 5. Ad
           ctx.fillStyle = "#fff";
           ctx.font = "300 56px -apple-system, 'Jost', sans-serif";
           ctx.textAlign = "center";
-          ctx.fillText(displayName.toLocaleUpperCase(lang), 540, 640);
+          ctx.fillText(displayName.toLocaleUpperCase(lang), 540, cy);
+          cy += 58;
 
           // 6. Burç · Yaşam Yolu
           ctx.fillStyle = "#a890c8";
           ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
           const subtitle = `${burc !== "-" ? burc.toLocaleUpperCase(lang) : ""}${yasamYolu !== "-" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
-          if (subtitle.trim()) ctx.fillText(subtitle, 540, 700);
+          if (subtitle.trim()) ctx.fillText(subtitle, 540, cy);
+          cy += 52;
 
-          // 7. Stat boxes (2x3 grid)
-          const stats = [
-            [t("gid_sun"),          burc,                  "#f0c860", 100, 820],
-            [t("gid_asc"),          yuk,                   "#a0d8b4", 560, 820],
-            [t("gid_12th"),         ev12,                  "#c8b0e8", 100, 940],
-            [t("gid_draconic"),     dra,                   "#d8c8f0", 560, 940],
-            [t("gid_life_path_card"), String(yasamYolu),   "#d0c8e8", 100, 1060],
-            [t("gid_personal_year_card"), String(kisiselYil), "#d0c8e8", 560, 1060],
-          ];
-          stats.forEach(([label, val, color, x, y]) => {
-            // box
-            ctx.fillStyle = "rgba(255,255,255,0.025)";
-            roundRect(ctx, x, y, 420, 92, 14);
-            ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.06)";
-            ctx.lineWidth = 1;
-            roundRect(ctx, x, y, 420, 92, 14);
-            ctx.stroke();
-            // label
-            ctx.fillStyle = "#7a7090";
-            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
-            ctx.textAlign = "left";
-            ctx.fillText(label, x + 22, y + 36);
-            // value
-            ctx.fillStyle = color;
-            ctx.font = "500 32px -apple-system, 'Jost', sans-serif";
-            ctx.fillText(val, x + 22, y + 76);
-          });
-
-          // 8. Element dağılımı: yüzdeler (galaktik kartta KOMPAKT 2x2 grid; pasta
-          // sadece HD embed'inde). Veri: Sakin Tasarım embed'inin yazdığı localStorage.
-          // Eski gün-serisi/en-iyi/kart istatistikleri kaldırıldı; yer buraya açıldı.
-          let yAfterElements = 1170;
-          try {
-            let ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
-            const edSum = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
-            // SADECE Sakin Tasarım'ın tam-harita (11 gezegen ağırlıklı) verisi kullanılır.
-            // Host'ta gezegen konumları yok → kaba 4-nokta tahmini YANLIŞ değer üretiyordu
-            // (Tasarım'la uyuşmuyordu). Doğru veri yoksa element bölümü gizlenir.
-            if (!ed || edSum <= 0.5) ed = null;
-            if (ed) {
-              const isEn = lang === "en";
-              ctx.fillStyle = "#7a7090";
-              ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
-              ctx.textAlign = "center";
-              ctx.fillText(pickLang(ELEM_I18N.title, lang).toLocaleUpperCase(lang), 540, 1250);
-              const items = [
-                ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
-                ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
-                ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
-                ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
-              ];
-              items.forEach(([k,color,glyph,name], i) => {
-                const col = i % 2, row = Math.floor(i / 2);
-                const x = 100 + col * 460, y = 1290 + row * 100;
-                ctx.fillStyle = "rgba(255,255,255,0.025)";
-                roundRect(ctx, x, y, 420, 84, 14); ctx.fill();
-                ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
-                roundRect(ctx, x, y, 420, 84, 14); ctx.stroke();
-                ctx.fillStyle = color; ctx.textAlign = "left";
-                ctx.font = "400 30px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(glyph, x + 26, y + 54);
-                ctx.fillStyle = "#cfc8e0";
-                ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(name, x + 66, y + 53);
-                const pct = Math.round((ed[k]||0)*100);
-                ctx.fillStyle = color; ctx.textAlign = "right";
-                ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(pctFmt(pct, lang), x + 394, y + 54);
-              });
-              yAfterElements = 1490;
+          // ── ÖN ÖLÇÜM: boşluğu dengeli dağıt ──────────────────────────────
+          // Kartın içeriği kullanıcıya göre değişiyor (element verisi var/yok,
+          // HD var/yok, açıklama uzunlukları farklı). Sabit boşluklarla çizince
+          // kısa içerikte ALT TARAF KOCAMAN BOŞ kalıyor, uzun içerikte de
+          // sıkışıyordu. Çözüm: çizmeden önce tüm blokların yüksekliğini ölç,
+          // artan yeri bloklar ARASINA eşit paylaştır (blok başına en fazla
+          // 34px). Böylece kart hem dolu görünüyor hem de taşma riski yok.
+          const BOTTOM_LIMIT = 1826; // footer 1878, arada nefes payı
+          const wrapLines = (text, maxW, maxLines) => {
+            ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+            const words = String(text).split(/\s+/); const out = []; let cur = "";
+            for (const w of words) {
+              const test = cur ? cur + " " + w : w;
+              if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = w; } else cur = test;
             }
-          } catch(_) {}
-
-          // 9. HD bölümü (varsa): element dağılımının altına
-          if (hdProfile && hdProfile.type) {
-            const hy = yAfterElements + 20;
-            ctx.fillStyle = "rgba(180,160,216,0.08)";
-            roundRect(ctx, 100, hy, 880, 100, 14);
-            ctx.fill();
-            ctx.strokeStyle = "rgba(180,160,216,0.18)";
-            ctx.lineWidth = 1;
-            roundRect(ctx, 100, hy, 880, 100, 14);
-            ctx.stroke();
-            ctx.fillStyle = "#9080b8";
-            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("HUMAN DESIGN", 540, hy + 40);
-            ctx.fillStyle = "#d0c8e8";
-            ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
-            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, hy + 80);
-          }
-
-          // 9.5. Yaşam Yolu + Kişisel Yıl açıklamaları, önizlemedeki bilgiler artık
-          // indirilen fotoğrafta da görünür (kullanıcı isteği). Kalan dikey alana göre
-          // satır sayısı uyarlanır; taşarsa son satır kısaltılır.
+            if (cur) out.push(cur);
+            if (out.length > maxLines) {
+              const kept = out.slice(0, maxLines);
+              let last = kept[maxLines - 1];
+              while (last.length && ctx.measureText(last + "…").width > maxW) last = last.replace(/\s*\S$/, "");
+              kept[maxLines - 1] = last + "…";
+              return kept;
+            }
+            return out;
+          };
+          const BOX_W = 420, BOX_H = 88, BOX_GAP = 12, COL_X = [100, 560];
+          const EL_H = 84, EL_GAP = 10, HD_H = 96;
+          const GAP_ELEM = 40, GAP_HD = 26, GAP_DESC = 34;
+          // Element verisi: SADECE Sakin Tasarım'ın tam-harita (11 gezegen
+          // ağırlıklı) çıktısı. Host'ta gezegen konumları yok, kaba tahmin
+          // Tasarım'la çelişen YANLIŞ değer üretiyordu. Yoksa bölüm çizilmez.
+          const elemDist = (() => {
+            try {
+              const ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
+              const s = ed ? ((ed.ates||0)+(ed.toprak||0)+(ed.hava||0)+(ed.su||0)) : 0;
+              return (ed && s > 0.5) ? ed : null;
+            } catch (_) { return null; }
+          })();
+          const hdOn = !!(hdProfile && hdProfile.type);
+          const descSrc = [];
           {
             const lpDesc = (LIFE_PATH_DESC[lang] || {})[yasamYolu];
             const pyDesc = (PERSONAL_YEAR_DESC[lang] || {})[kisiselYil];
-            const blocks = [];
-            if (lpDesc) blocks.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
-            if (pyDesc) blocks.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
-            if (blocks.length) {
-              let infoY = (hdProfile && hdProfile.type) ? (yAfterElements + 140) : (yAfterElements + 40);
-              const linesPer = Math.max(2, Math.min(4, Math.floor(((1850 - infoY) / blocks.length - 34) / 32)));
-              const wrapLines = (text, maxW, maxLines) => {
-                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
-                const words = String(text).split(/\s+/); const out = []; let cur = "";
-                for (const w of words) {
-                  const test = cur ? cur + " " + w : w;
-                  if (ctx.measureText(test).width > maxW && cur) { out.push(cur); cur = w; } else cur = test;
-                }
-                if (cur) out.push(cur);
-                if (out.length > maxLines) {
-                  const kept = out.slice(0, maxLines);
-                  let last = kept[maxLines - 1];
-                  while (last.length && ctx.measureText(last + "…").width > maxW) last = last.replace(/\s*\S$/, "");
-                  kept[maxLines - 1] = last + "…";
-                  return kept;
-                }
-                return out;
-              };
-              blocks.forEach(([label, desc]) => {
-                ctx.textAlign = "left";
-                ctx.fillStyle = "#9080b8";
-                ctx.font = "600 22px -apple-system, 'Jost', sans-serif";
-                ctx.fillText(label, 100, infoY);
-                infoY += 34;
-                ctx.fillStyle = "#bcb4cf";
-                ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
-                wrapLines(desc, 880, linesPer).forEach((ln) => { ctx.fillText(ln, 100, infoY); infoY += 32; });
-                infoY += 16;
-              });
-            }
+            if (lpDesc) descSrc.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
+            if (pyDesc) descSrc.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
+          }
+          const statsH = 4 * (BOX_H + BOX_GAP) - BOX_GAP;
+          const elemH  = elemDist ? 30 + 2 * (EL_H + EL_GAP) - EL_GAP : 0;
+          const fixedH = statsH + (elemH ? GAP_ELEM + elemH : 0) + (hdOn ? GAP_HD + HD_H : 0);
+          // Açıklama satır sayısı: 4'ten başlayıp SIĞANA kadar azalt. Hiç
+          // sığmıyorsa açıklama bloğu tamamen düşer (üstteki kutuya binmez).
+          let descRows = [];
+          for (let maxLines = 4; maxLines >= 1; maxLines--) {
+            const rows = descSrc.map(([lbl, d]) => [lbl, wrapLines(d, 880, maxLines)]);
+            const h = rows.reduce((a, [, ls]) => a + 34 + ls.length * 32 + 16, 0);
+            if (cy + fixedH + (h ? GAP_DESC + h : 0) <= BOTTOM_LIMIT) { descRows = rows; break; }
+          }
+          const descH = descRows.reduce((a, [, ls]) => a + 34 + ls.length * 32 + 16, 0);
+          const naturalH = fixedH + (descH ? GAP_DESC + descH : 0);
+          // Artan yer: 4 boşluk noktasına (üst · element · HD · açıklama)
+          // eşit dağıt, blok başına en fazla 34px. Kalanı altta nefes payı.
+          const air = Math.max(0, Math.min(34, Math.floor((BOTTOM_LIMIT - cy - naturalH) / 4)));
+          cy += air;
+
+          // 7. Stat kutuları (2 sütun × 4 satır).
+          // AY DÜĞÜMLERİ EKLENDİ (kullanıcı: "kuzey ay güney ay listede yok"):
+          // önizleme kartında zaten vardı ama PAYLAŞILAN görsele hiç
+          // çizilmiyordu, iki yüzey birbiriyle çelişiyordu. Sıra artık
+          // önizlemeyle birebir aynı (bkz. aşağıdaki StatRow bloğu):
+          // güneş · yükselen / 12. ev · draconik / kuzey · güney / yol · yıl.
+          const stats = [
+            [t("gid_sun"),                   burc,               "#f0c860"],
+            [t("gid_asc"),                   yuk,                "#a0d8b4"],
+            [t("gid_12th"),                  ev12,               "#c8b0e8"],
+            [t("gid_draconic"),              dra,                "#d8c8f0"],
+            [pickLang(NODE_TXT.north, lang), kuzD,               "#a8c8f0"],
+            [pickLang(NODE_TXT.south, lang), guyD,               "#c0b0a0"],
+            [t("gid_life_path_card"),        String(yasamYolu),  "#d0c8e8"],
+            [t("gid_personal_year_card"),    String(kisiselYil), "#d0c8e8"],
+          ];
+          stats.forEach(([label, val, color], i) => {
+            const bx = COL_X[i % 2], by = cy + Math.floor(i / 2) * (BOX_H + BOX_GAP);
+            ctx.fillStyle = "rgba(255,255,255,0.025)";
+            roundRect(ctx, bx, by, BOX_W, BOX_H, 14); ctx.fill();
+            ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+            roundRect(ctx, bx, by, BOX_W, BOX_H, 14); ctx.stroke();
+            // Etiketler canvas'ta ELLE büyütülüyor: önizlemede bunu CSS
+            // textTransform yapıyor, canvas'ta öyle bir şey yok. NODE_TXT
+            // küçük harfle tanımlı, diğerleri zaten büyük (zararsız).
+            ctx.fillStyle = "#7a7090";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "left";
+            ctx.fillText(String(label).toLocaleUpperCase(lang), bx + 22, by + 34);
+            ctx.fillStyle = color;
+            ctx.font = "500 32px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(val, bx + 22, by + 72);
+          });
+          cy += Math.ceil(stats.length / 2) * (BOX_H + BOX_GAP) - BOX_GAP;
+
+          // 8. Element dağılımı (varsa). Veri: Sakin Tasarım embed'inin yazdığı
+          // localStorage. SADECE onun tam-harita (11 gezegen ağırlıklı) verisi
+          // kullanılır; host'ta gezegen konumları yok, kaba tahmin Tasarım'la
+          // çelişen YANLIŞ değer üretiyordu. Doğru veri yoksa bölüm çizilmez.
+          if (elemDist) {
+            cy += GAP_ELEM + air;
+            ctx.fillStyle = "#7a7090";
+            ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(pickLang(ELEM_I18N.title, lang).toLocaleUpperCase(lang), 540, cy);
+            cy += 30;
+            const items = [
+              ["ates","#E0683C","△", pickLang(ELEM_I18N.ates, lang)],
+              ["toprak","#6FA86F","⊕", pickLang(ELEM_I18N.toprak, lang)],
+              ["hava","#D8C25C","○", pickLang(ELEM_I18N.hava, lang)],
+              ["su","#5C9AD8","▽", pickLang(ELEM_I18N.su, lang)],
+            ];
+            items.forEach(([k,color,glyph,name], i) => {
+              const bx = COL_X[i % 2], by = cy + Math.floor(i / 2) * (EL_H + EL_GAP);
+              ctx.fillStyle = "rgba(255,255,255,0.025)";
+              roundRect(ctx, bx, by, BOX_W, EL_H, 14); ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+              roundRect(ctx, bx, by, BOX_W, EL_H, 14); ctx.stroke();
+              ctx.fillStyle = color; ctx.textAlign = "left";
+              ctx.font = "400 30px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(glyph, bx + 26, by + 54);
+              ctx.fillStyle = "#cfc8e0";
+              ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(name, bx + 66, by + 53);
+              ctx.fillStyle = color; ctx.textAlign = "right";
+              ctx.font = "500 34px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(pctFmt(Math.round((elemDist[k]||0)*100), lang), bx + 394, by + 54);
+            });
+            cy += 2 * (EL_H + EL_GAP) - EL_GAP;
+          }
+
+          // 9. Human Design (varsa)
+          if (hdOn) {
+            cy += GAP_HD + air;
+            ctx.fillStyle = "rgba(180,160,216,0.08)";
+            roundRect(ctx, 100, cy, 880, HD_H, 14); ctx.fill();
+            ctx.strokeStyle = "rgba(180,160,216,0.18)"; ctx.lineWidth = 1;
+            roundRect(ctx, 100, cy, 880, HD_H, 14); ctx.stroke();
+            ctx.fillStyle = "#9080b8";
+            ctx.font = "300 20px -apple-system, 'Jost', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("HUMAN DESIGN", 540, cy + 38);
+            ctx.fillStyle = "#d0c8e8";
+            ctx.font = "300 30px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(hdProfile.type + (hdProfile.profile ? ` · ${hdProfile.profile}` : ""), 540, cy + 76);
+            cy += HD_H;
+          }
+
+          // 9.5. Yaşam Yolu + Kişisel Yıl açıklamaları. Satırlar yukarıda
+          // ÖLÇÜLDÜ (descRows): burada yalnızca çiziliyor, yani taşma
+          // matematiksel olarak imkânsız. Hiç sığmadıysa descRows boş kalır
+          // ve blok hiç çizilmez (eskiden en az 2 satır ZORLANIYOR ve HD
+          // kutusunun üstüne biniyordu, kullanıcının bildirdiği hata buydu).
+          if (descRows.length) {
+            cy += GAP_DESC + air;
+            descRows.forEach(([label, lines]) => {
+              ctx.textAlign = "left";
+              ctx.fillStyle = "#9080b8";
+              ctx.font = "600 22px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(label, 100, cy);
+              cy += 34;
+              ctx.fillStyle = "#bcb4cf";
+              ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+              lines.forEach((ln) => { ctx.fillText(ln, 100, cy); cy += 32; });
+              cy += 16;
+            });
           }
 
           // 10. Footer
@@ -11779,10 +12105,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.closePath();
         }
 
+        {/* Etiket + değer tek satırda. Eskiden etiket sarılabiliyordu ve
+            "GÜNEY DÜĞÜM" iki satıra düşüp o kutuyu komşularından YÜKSEK
+            yapıyordu, ızgara hizası bozuluyordu. Artık etiket sarmıyor,
+            letterSpacing 2 → 1.4 ile daralıyor; taşarsa değil etiket, DEĞER
+            kısalıyor (değerler kısa burç adları, pratikte kısalmıyor). */}
         const StatRow = ({label, value, color}) => (
-          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5 }}>
-            <span style={{ fontSize:10,letterSpacing:2,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{label}</span>
-            <span style={{ fontSize:12,color: color||"#d0c8e8",fontWeight:500,letterSpacing:0.5 }}>{value}</span>
+          <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",gap:8,padding:"7px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:5,minHeight:32,boxSizing:"border-box" }}>
+            <span style={{ fontSize:10,letterSpacing:1.4,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",whiteSpace:"nowrap",flexShrink:0 }}>{label}</span>
+            <span style={{ fontSize:12,color: color||"#d0c8e8",fontWeight:500,letterSpacing:0.5,minWidth:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>{value}</span>
           </div>
         );
 
@@ -11816,19 +12147,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
                   <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
-                  <div style={{ position:"relative",width:88,height:88,margin:"10px auto 12px" }}>
+                  <div style={{ position:"relative",width:74,height:74,margin:"10px auto 12px" }}>
                     {/* Fotoğraf yoksa DAİRENİN TAMAMI tıklanabilir "fotoğraf ekle" hedefi, 
                         yıldız (✦) yerine büyük, belirgin bir kamera ikonu + kesikli çerçeve
                         koyup dokunulabilir olduğunu netleştiriyoruz. Fotoğraf varsa dairenin
                         kendisi artık fotoğrafı gösterir, değiştirmek için köşede küçük rozet kalır. */}
                     {idCardPhoto ? (
-                      <div style={{ width:88,height:88,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
+                      <div style={{ width:74,height:74,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
                     ) : (
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ width:88,height:88,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
-                        <span style={{ fontSize:30,lineHeight:1 }}>📷</span>
+                        style={{ width:74,height:74,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                        <span style={{ fontSize:25,lineHeight:1 }}>📷</span>
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
                       </label>
@@ -11837,7 +12168,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ position:"absolute",bottom:-2,right:-2,width:30,height:30,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                        style={{ position:"absolute",bottom:-2,right:-2,width:26,height:26,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
                         📷
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
@@ -13103,7 +13434,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 Uydurma bir metin göstermek yerine doğrudan SoulID'ye açılan
                 dürüst bir davet konuldu. */}
             <button onClick={()=>{ try{haptic();}catch(_){}
-                handleOpenEmbed({ name:"SoulID", embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
+                handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
               style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:16,textAlign:"left",cursor:"pointer",
                 background:"linear-gradient(160deg, rgba(232,192,122,0.12), rgba(255,255,255,0.02))",
                 border:"1px solid rgba(232,192,122,0.32)",borderRadius:16,padding:"15px 16px",
@@ -13112,7 +13443,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 fontSize:19,background:"radial-gradient(circle, rgba(232,192,122,0.28), rgba(232,192,122,0.08))" }}>✦</span>
               <span style={{ flex:1,minWidth:0 }}>
                 <span style={{ display:"block",fontSize:10,letterSpacing:2,color:"#e8c07acc",textTransform:"uppercase",
-                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>SoulID</span>
+                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{t("ailesi_soulid_name")}</span>
                 <span style={{ display:"block",fontSize:14,color:"#efe9f8",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
                   {pickLang(TODAY_TXT.soulid, lang)}
                 </span>
@@ -13313,6 +13644,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           açılıyor ve ☰ yalnızca Ben'de olduğu için sayfa çıkışsız kalıyordu
           (kullanıcı bildirdi). Politika sayfalarında bar hâlâ gizli, onların
           çıkışı üstteki marka nav'ındaki "← SAKİN". */}
+      {/* TÜNEL AÇILIŞ IŞIĞI: bilerek EN ÜST SEVİYEDE, ekrandan bağımsız.
+          Önce mandala ekranının içine konmuştu ama son adım çoğunlukla ADIM
+          ekranında (Ayna/akşam vb.) tamamlanıyor; ışık orada hiç çizilmiyor,
+          kullanıcı mandalaya döndüğünde 2.8 sn çoktan bitmiş oluyordu, yani
+          kutlama pratikte HİÇ görünmüyordu (tarayıcı testinde yakalandı).
+          Artık kullanıcı akışın neresindeyse orada çakıyor. position:fixed +
+          pointer-events:none olduğu için hiçbir ekranın düzenine karışmaz. */}
+      {tunnelBloom && <div className="sakin-tunnel-bloom" aria-hidden="true" />}
       {!["giris","terapi","hakkinda","fiyat","sartlar","gizlilik","iade"].includes(screen) && (
         <div className="sakin-bottom-nav" style={{ position:"fixed",bottom:"calc(var(--nav-gap) + var(--android-sab))",left:"50%",transform:"translateX(-50%)",
           display:"flex",gap:2,alignItems:"center",zIndex:9999,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(32px)",
