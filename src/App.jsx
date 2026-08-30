@@ -309,36 +309,29 @@ const WHATS_NEW = {
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Günün kartı artık gün boyu açık",
-    en:"Your daily card now stays open all day",
-    de:"Deine Tageskarte bleibt jetzt den ganzen Tag offen",
-    es:"Tu carta del día ahora permanece abierta todo el día",
-    pt:"A tua carta do dia fica agora aberta o dia todo",
-    fr:"Ta carte du jour reste maintenant ouverte toute la journée",
-    ja:"今日のカードが一日中開いたままに",
+    tr:"Arayüz yenilendi",
+    en:"The interface got a refresh",
+    de:"Die Oberfläche wurde erneuert",
+    es:"La interfaz se ha renovado",
+    pt:"A interface foi renovada",
+    fr:"L'interface a été renouvelée",
+    ja:"インターフェースが一新されました",
   },
   items: {
-    tr:["Kartı bir kez açtın mı gün bitene kadar açık kalıyor, tekrar sallaman gerekmiyor",
-        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında",
-        "Arayüzde düzenlemeler: bölümlere erişim daha zarif"],
-    en:["Once you open a card it stays open until the day ends, no need to shake again",
-        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus",
-        "Interface refinements: reaching each section feels more elegant"],
-    de:["Einmal geöffnet, bleibt die Karte bis zum Tagesende offen, kein erneutes Schütteln nötig",
-        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus",
-        "Feinschliff an der Oberfläche: der Weg zu den Bereichen ist eleganter"],
-    es:["Una vez abierta, la carta queda abierta hasta el final del día, sin volver a agitar",
-        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus",
-        "Ajustes en la interfaz: llegar a cada sección resulta más elegante"],
-    pt:["Depois de aberta, a carta fica aberta até ao fim do dia, sem precisares de agitar outra vez",
-        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus",
-        "Ajustes na interface: chegar a cada secção ficou mais elegante"],
-    fr:["Une fois ouverte, la carte reste ouverte jusqu'à la fin de la journée, sans avoir à secouer de nouveau",
-        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus",
-        "Retouches d'interface : accéder à chaque section est plus élégant"],
-    ja:["一度開いたカードはその日が終わるまで開いたまま、もう振らなくて大丈夫",
-        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に",
-        "画面まわりの調整：各セクションへの導線がより上品に"],
+    tr:["Karşılama artık kısa bir deneyimle başlıyor: nefesin ya da doğum bilgin, ardından galaktik kimliğin",
+        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında"],
+    en:["Welcome now opens with a short experience: your breath or your birth info, then your galactic identity",
+        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus"],
+    de:["Der Empfang beginnt jetzt mit einem kurzen Erlebnis: dein Atem oder deine Geburtsdaten, dann deine galaktische Identität",
+        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus"],
+    es:["La bienvenida ahora comienza con una breve experiencia: tu respiración o tus datos de nacimiento, después tu identidad galáctica",
+        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus"],
+    pt:["As boas-vindas agora começam com uma breve experiência: a tua respiração ou os teus dados de nascimento, depois a tua identidade galáctica",
+        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus"],
+    fr:["L'accueil commence désormais par une courte expérience : ton souffle ou tes données de naissance, puis ton identité galactique",
+        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus"],
+    ja:["お迎えが短い体験から始まります。呼吸か生まれた情報、それからギャラクティック・アイデンティティへ",
+        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
@@ -5920,13 +5913,21 @@ export default function SakinApp() {
   }, [onbPath]);
   // Nefes sayacı (mor yol, adım 0). Render İÇİNDE setInterval kurmak yerine
   // burada: React 18 StrictMode çift render'ında ikinci bir timer doğmuyor.
+  // Ses: "nefes" ekranındaki AYNI insan seslendirmesi dosyaları (playBreathTone,
+  // aşağıda tanımlı) yeniden kullanılıyor, ayrı bir ses seti üretilmedi.
+  // 10 saniyelik döngü: 0-3 al, 4-9 ver (metinle aynı eşik: onbBreathSec%10<4).
   useEffect(() => {
     if (onbPath !== "baglan" || onbStep !== 0) return;
     setOnbBreathSec(0);
+    try { playBreathTone("inhale"); } catch(_) {}
     const id = setInterval(() => {
       setOnbBreathSec(s => {
-        if (s >= 29) { clearInterval(id); setOnbStep(1); return 30; }
-        return s + 1;
+        const next = s + 1;
+        if (next >= 30) { clearInterval(id); setOnbStep(1); return 30; }
+        const mod = next % 10;
+        if (mod === 0) { try { playBreathTone("inhale"); } catch(_) {} }
+        else if (mod === 4) { try { playBreathTone("exhale"); } catch(_) {} }
+        return next;
       });
     }, 1000);
     onbTimerRef.current = id;
