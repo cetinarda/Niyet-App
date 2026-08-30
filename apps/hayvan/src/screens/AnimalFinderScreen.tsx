@@ -272,14 +272,18 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   const [mode, setMode]         = useState<Mode>(initialBirthResult ? 'result' : 'intro');
   const [qIndex, setQIndex]     = useState(0);
   const [picks, setPicks]       = useState<Option[]>([]);
-  const [chosen, setChosen]     = useState<number | null>(null);
+  // ÇOKLU SEÇİM: kullanıcı "hepsi" seçeneği aradı, tek seçime zorlanınca
+  // seçenekleri gerçekten ayıramadığını söyledi. `chosen` artık bir dizi
+  // (toggle ile eklenir/çıkarılır), tek tıkla otomatik ilerleme kalktı,
+  // "Devam" butonuyla bilerek ilerleniyor.
+  const [chosen, setChosen]     = useState<number[]>([]);
   const [result, setResult]     = useState<AnimalResult | null>(initialBirthResult);
 
   // Android donanım geri: quiz/doğum formu/sonuç ekranındayken embed'i kapatma,
   // başlangıca dön.
   useEffect(() => pushBackHandler(BACK_PRIORITY.screen, () => {
     if (mode === 'intro') return false;
-    setMode('intro'); setQIndex(0); setPicks([]); setChosen(null); setResult(null);
+    setMode('intro'); setQIndex(0); setPicks([]); setChosen([]); setResult(null);
     return true;
   }), [mode]);
 
@@ -315,23 +319,28 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
     parseInt(bYear) >= 1900 && parseInt(bYear) <= new Date().getFullYear();
 
   // ── quiz logic ──
-  const handlePick = (idx: number, opt: Option) => {
-    if (chosen !== null) return;
-    setChosen(idx);
+  // ÇOKLU SEÇİM: tek tıkla otomatik ilerleme yerine toggle + "Devam".
+  // Seçim listesi boşsa Devam pasif kalır (en az bir seçenek şart).
+  const toggleOption = (idx: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    setTimeout(() => {
-      const newPicks = [...picks, opt];
-      if (qIndex < QUESTIONS.length - 1) {
-        Animated.timing(cardFade, { toValue: 0, duration: 180, useNativeDriver: true }).start(() => {
-          setPicks(newPicks); setQIndex(i => i + 1); setChosen(null);
-          Animated.timing(cardFade, { toValue: 1, duration: 220, useNativeDriver: true }).start();
-        });
-      } else {
-        Animated.timing(cardFade, { toValue: 0, duration: 280, useNativeDriver: true }).start(() => {
-          showResult(findAnimalByQuiz(newPicks, lang));
-        });
-      }
-    }, 350);
+    setChosen(prev => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
+  };
+  const handleContinue = () => {
+    if (chosen.length === 0) return;
+    // Puanlama mantığı DEĞİŞMEDİ (findAnimalByQuiz picks dizisini düz
+    // topluyor): birden fazla seçim, o soru için birden fazla Option
+    // ağırlığının toplanması demek, ayrı bir hesap yolu gerekmiyor.
+    const newPicks = [...picks, ...chosen.map(i => QUESTIONS[qIndex].options[i])];
+    if (qIndex < QUESTIONS.length - 1) {
+      Animated.timing(cardFade, { toValue: 0, duration: 180, useNativeDriver: true }).start(() => {
+        setPicks(newPicks); setQIndex(i => i + 1); setChosen([]);
+        Animated.timing(cardFade, { toValue: 1, duration: 220, useNativeDriver: true }).start();
+      });
+    } else {
+      Animated.timing(cardFade, { toValue: 0, duration: 280, useNativeDriver: true }).start(() => {
+        showResult(findAnimalByQuiz(newPicks, lang));
+      });
+    }
   };
 
   // ── birth logic ──
@@ -369,8 +378,8 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
           <TouchableOpacity
             onPress={
               embedded
-                ? () => { setMode('intro'); setQIndex(0); setPicks([]); setChosen(null); }
-                : (mode === 'intro' || mode === 'result' ? onClose : () => { setMode('intro'); setQIndex(0); setPicks([]); setChosen(null); })
+                ? () => { setMode('intro'); setQIndex(0); setPicks([]); setChosen([]); }
+                : (mode === 'intro' || mode === 'result' ? onClose : () => { setMode('intro'); setQIndex(0); setPicks([]); setChosen([]); })
             }
             style={styles.closeBtn} activeOpacity={0.7}
           >
@@ -423,19 +432,32 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
           <Animated.View style={[styles.qCard, { opacity: cardFade }]}>
             <Text style={styles.qEmoji}>{currentQ.emoji}</Text>
             <Text style={styles.qText}>{currentQDisplay.q}</Text>
+            {/* Çoklu seçim ipucu: kullanıcı birden fazlası kendine yakın
+                geldiğinde tek seçime zorlanmasın diye eklendi. */}
+            <Text style={styles.qHint}>{t('animalFinder.quiz.hint')}</Text>
             <View style={styles.optionsWrap}>
-              {QUESTIONS[qIndex].options.map((opt, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={[styles.optBtn, chosen === i && styles.optBtnChosen, chosen !== null && chosen !== i && styles.optBtnDimmed]}
-                  onPress={() => handlePick(i, opt)}
-                  activeOpacity={0.75}
-                  disabled={chosen !== null}
-                >
-                  <Text style={[styles.optTxt, chosen === i && { color: Colors.tealLight }]}>{currentQDisplay.options[i]}</Text>
-                </TouchableOpacity>
-              ))}
+              {QUESTIONS[qIndex].options.map((opt, i) => {
+                const sel = chosen.includes(i);
+                return (
+                  <TouchableOpacity
+                    key={i}
+                    style={[styles.optBtn, sel && styles.optBtnChosen]}
+                    onPress={() => toggleOption(i)}
+                    activeOpacity={0.75}
+                  >
+                    <Text style={[styles.optTxt, sel && { color: Colors.tealLight }]}>{currentQDisplay.options[i]}</Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
+            <TouchableOpacity
+              style={[styles.quizContinueBtn, chosen.length === 0 && { opacity: 0.35 }]}
+              onPress={handleContinue}
+              activeOpacity={0.8}
+              disabled={chosen.length === 0}
+            >
+              <Text style={styles.quizContinueBtnTxt}>{t('animalFinder.quiz.continueBtn')}</Text>
+            </TouchableOpacity>
           </Animated.View>
         </>
       )}
@@ -536,7 +558,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
 
           <TouchableOpacity
             style={styles.doneBtn}
-            onPress={embedded ? () => { setMode('intro'); setResult(null); setQIndex(0); setPicks([]); setChosen(null); } : onClose}
+            onPress={embedded ? () => { setMode('intro'); setResult(null); setQIndex(0); setPicks([]); setChosen([]); } : onClose}
             activeOpacity={0.8}
           >
             <Text style={styles.doneBtnTxt}>{embedded ? t('animalFinder.result.rediscoverBtn') : t('animalFinder.result.closeBtn')}</Text>
@@ -627,6 +649,10 @@ const styles = StyleSheet.create({
     fontSize: Typography.size.xl, fontWeight: Typography.weight.semibold,
     color: Colors.textPrimary, textAlign: 'center', lineHeight: Typography.size.xl * 1.5,
   },
+  qHint: {
+    fontSize: Typography.size.xs, color: Colors.textMuted,
+    textAlign: 'center', fontStyle: 'italic', marginTop: -Spacing.sm,
+  },
   optionsWrap: { width: '100%', gap: Spacing.sm, marginTop: Spacing.sm },
   optBtn: {
     backgroundColor: Colors.backgroundCard, borderRadius: BorderRadius.md,
@@ -634,10 +660,18 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md, paddingHorizontal: Spacing.lg, alignItems: 'center',
   },
   optBtnChosen: { borderColor: Colors.teal, backgroundColor: Colors.teal + '18' },
-  optBtnDimmed: { opacity: 0.35 },
   optTxt: {
     fontSize: Typography.size.md, color: Colors.textSecondary,
     textAlign: 'center', lineHeight: Typography.size.md * 1.4,
+  },
+  quizContinueBtn: {
+    marginTop: Spacing.md, alignSelf: 'stretch',
+    backgroundColor: Colors.teal, paddingVertical: Spacing.md,
+    borderRadius: BorderRadius.round, alignItems: 'center',
+  },
+  quizContinueBtnTxt: {
+    fontSize: Typography.size.md, fontWeight: Typography.weight.bold,
+    color: '#0D1E1B', letterSpacing: 1,
   },
 
   // Birth form

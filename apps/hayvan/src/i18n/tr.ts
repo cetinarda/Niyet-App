@@ -121,6 +121,13 @@ export const tr = {
       closeBtn: 'Kapat ✦',
     },
     quiz: {
+      // Kullanıcı geri bildirimi: "hepsi" seçeneği aradı, tek seçime
+      // zorlanınca birini diğerinden gerçekten ayıramadı. Çözüm: her soru
+      // birden fazla seçilebilir (toggle), "Devam" ile ilerlenir; puanlama
+      // mantığı (findAnimalByQuiz) DEĞİŞMEDİ, sadece o soru için birden
+      // fazla seçeneğin ağırlığı toplanıyor.
+      hint: 'Birden fazlası seni çağırıyorsa hepsini seçebilirsin.',
+      continueBtn: 'Devam',
       questions: [
         {
           q: 'Doğada hangi ortam seni çağırıyor?',

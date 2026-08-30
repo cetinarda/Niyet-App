@@ -6970,7 +6970,13 @@ BEDEN-ZİHİN BAĞLANTISI:
   const generateGidYorum = async () => {
     if (gidYorum === "__loading__") return;
     // PREMIUM (kullanıcı isteği). Kimlik kartı ücretsiz kalıyor; yorum premium.
-    if (!isPremium) { closeIdCard(); setScreen("fiyat"); return; }
+    // BUG (kullanıcı bildirdi: "buraya tıklayınca bir geri atıyor"): kart
+    // Keşfet'ten açıldıysa closeIdCard() idCardFromAilesi bayrağına bakıp
+    // Ailesi panelini YENİDEN AÇIYORDU; hemen ardından setScreen("fiyat")
+    // çağrılsa da o overlay ekranın üstünde kalıp fiyat ekranını gizliyordu,
+    // kullanıcıya "ileri değil geri gitti" gibi görünüyordu. Bayrağı ÖNCE
+    // temizleyip Ailesi'nin geri açılmasını burada bilerek engelliyoruz.
+    if (!isPremium) { idCardFromAilesi.current = false; closeIdCard(); setScreen("fiyat"); return; }
     if (!_aiDailyOk()) { setGidYorum(_aiLimitMsg()); return; }
     const facts = chartFacts();
     if (!facts) return;

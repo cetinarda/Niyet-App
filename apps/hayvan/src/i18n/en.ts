@@ -118,6 +118,13 @@ export const en = {
       closeBtn: 'Close ✦',
     },
     quiz: {
+      // User feedback: they looked for an "all of the above" option and
+      // genuinely could not separate one option from another. Fix: each
+      // question is now multi-select (toggle), advanced with "Continue";
+      // the scoring logic (findAnimalByQuiz) is UNCHANGED, it just sums
+      // more than one option's weight when more than one is picked.
+      hint: 'If more than one calls to you, pick them all.',
+      continueBtn: 'Continue',
       questions: [
         {
           q: 'Which environment in nature calls to you?',
