@@ -11,7 +11,7 @@ import { tap } from '@/lib/haptics';
 // "Twilight Vellum" 5-katman pastel paleti
 const LAYER = [
   { key: 'kimya', tr: 'Kimya', en: 'Chemistry', color: '#E8C28A', hint: { tr: 'Astroloji synastry: neden çekiyorsunuz', en: 'Astrology synastry: why you attract' } },
-  { key: 'ders',  tr: 'Ders',  en: 'Lesson',    color: '#9CAF88', hint: { tr: 'Human Design: birbirinize ne öğretiyorsunuz', en: 'Human Design: what you teach each other' } },
+  { key: 'ders',  tr: 'Ders',  en: 'Lesson',    color: '#9CAF88', hint: { tr: 'Enerji Profili: birbirinize ne öğretiyorsunuz', en: 'Energy Profile: what you teach each other' } },
   { key: 'ritim', tr: 'Ritim', en: 'Rhythm',    color: '#C9A0A6', hint: { tr: 'Numeroloji: hangi tempo ile akıyorsunuz', en: 'Numerology: what tempo you flow with' } },
   { key: 'kader', tr: 'Kader', en: 'Fate',      color: '#8FA3C2', hint: { tr: 'Vedik Ashtakuta: kozmik eşleşme dokusu', en: 'Vedic Ashtakuta: cosmic match weave' } },
 ] as const;

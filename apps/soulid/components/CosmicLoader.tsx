@@ -6,7 +6,7 @@ import { useT } from '@/lib/i18n';
 const SYSTEMS_EN = [
   '🌞 Calculating your Western chart...',
   '🌙 Finding your lunar nodes...',
-  '◇ Deriving your Human Design type...',
+  '◇ Deriving your energy profile type...',
   '⚯ Opening your numerology gate...',
   '✨ Determining your starseed origin...',
   '🦋 Searching your Mayan Tzolkin Kin...',
@@ -29,7 +29,7 @@ const SYSTEMS_EN = [
 const SYSTEMS = [
   '🌞 Batı astrolojin hesaplanıyor...',
   '🌙 Ay düğümlerin bulunuyor...',
-  '◇ Human Design tipin çıkarılıyor...',
+  '◇ Enerji profilin çıkarılıyor...',
   '⚯ Numerolojik kapın açılıyor...',
   '✨ Yıldız ırkın belirleniyor...',
   '🦋 Maya Tzolkin Kin\'in aranıyor...',

@@ -42,9 +42,9 @@ export const metadata: Metadata = {
     template: '%s · SoulProfile',
   },
   description:
-    'Horoscope değil: doğum verinden kozmik kimliğini hesaplayan bir iç gözlem motoru. Astronomik harita, Human Design beden grafiği, numeroloji ve Vedik nakshatra cihazında hesaplanır; gezegenlerinin ömür boyu hareketini interaktif izle, iki kişinin ilişkisini çok katmanlı yazılı bir ayna olarak gör.',
+    'Horoscope değil: doğum verinden kozmik kimliğini hesaplayan bir iç gözlem motoru. Astronomik harita, enerji profili, numeroloji ve Vedik nakshatra cihazında hesaplanır; gezegenlerinin ömür boyu hareketini interaktif izle, iki kişinin ilişkisini çok katmanlı yazılı bir ayna olarak gör.',
   keywords: [
-    'doğum haritası', 'human design', 'numeroloji',
+    'doğum haritası', 'enerji profili', 'numeroloji',
     'astronomik harita', 'kozmik kimlik analizi', 'doğum verisi',
     'kişilik arketipi', 'iç gözlem aracı', 'starseed', 'kuzey ay düğümü',
     'nakshatra', 'tzolkin', 'doğum runu', 'tarot doğum kartı',

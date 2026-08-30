@@ -1,150 +1,230 @@
 import type { Chart, HumanDesign } from '../types';
-import { CHANNELS, GATE_SEQUENCE, type HDCenter } from './gates';
+import {
+  Body,
+  EclipticGeoMoon,
+  GeoVector,
+  Ecliptic,
+  SunPosition,
+  SearchSunLongitude,
+} from 'astronomy-engine';
+import { CHANNELS, GATE_WHEEL, WHEEL_START, GATE_TO_CENTER, type HDCenter } from './gates';
 
 const CENTERS: HDCenter[] = [
-  'Head',
-  'Ajna',
-  'Throat',
-  'G',
-  'Heart',
-  'SolarPlexus',
-  'Sacral',
-  'Spleen',
-  'Root',
+  'Head', 'Ajna', 'Throat', 'G', 'Heart',
+  'SolarPlexus', 'Sacral', 'Spleen', 'Root',
 ];
 
-const GATE_DEGREES = 360 / 64;
+const GATE_SIZE = 360 / 64; // 5.625 degrees
+
+function norm360(x: number): number {
+  let r = x % 360;
+  if (r < 0) r += 360;
+  return r;
+}
 
 export function longitudeToGate(longitude: number): { gate: number; line: number } {
-  const lon = ((longitude % 360) + 360) % 360;
-  const idx = Math.floor(lon / GATE_DEGREES);
-  const gate = GATE_SEQUENCE[idx]!;
-  const within = lon - idx * GATE_DEGREES;
-  const line = Math.min(6, Math.floor((within / GATE_DEGREES) * 6) + 1);
+  const offset = norm360(longitude - WHEEL_START);
+  const idx = Math.floor(offset / GATE_SIZE);
+  const gate = GATE_WHEEL[idx % 64]!;
+  const within = offset - idx * GATE_SIZE;
+  const line = Math.min(6, Math.max(1, Math.floor(within / (GATE_SIZE / 6)) + 1));
   return { gate, line };
 }
 
-function activeCenters(activatedGates: Set<number>): Set<HDCenter> {
-  const active = new Set<HDCenter>();
-  for (const { gates, centers } of CHANNELS) {
-    if (activatedGates.has(gates[0]) && activatedGates.has(gates[1])) {
-      active.add(centers[0]);
-      active.add(centers[1]);
-    }
-  }
-  return active;
+// ---------------------------------------------------------------------------
+// Ephemeris helpers (matching Tasarim + hd-natal.js)
+// ---------------------------------------------------------------------------
+
+const jdFromDate = (d: Date): number => d.getTime() / 86400000 + 2440587.5;
+const dateFromJD = (jd: number): Date => new Date((jd - 2440587.5) * 86400000);
+
+function sunLongitude(jd: number): number {
+  return norm360(SunPosition(dateFromJD(jd)).elon);
 }
 
-function definedChannels(activatedGates: Set<number>): string[] {
-  const result: string[] = [];
-  for (const { gates } of CHANNELS) {
-    if (activatedGates.has(gates[0]) && activatedGates.has(gates[1])) {
-      result.push(`${gates[0]}-${gates[1]}`);
-    }
-  }
-  return result;
+function nodeLongitude(jd: number): number {
+  const T = (jd - 2451545.0) / 36525;
+  return norm360(125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000);
 }
 
-function determineType(active: Set<HDCenter>, activatedGates: Set<number>): HumanDesign['type'] {
-  const sacralDefined = active.has('Sacral');
-  const throatDefined = active.has('Throat');
-  const heartDefined = active.has('Heart');
-  const rootDefined = active.has('Root');
-  const solarDefined = active.has('SolarPlexus');
-  const motorCenters = ['Sacral', 'Heart', 'SolarPlexus', 'Root'] as HDCenter[];
-  const definedMotors = motorCenters.filter((c) => active.has(c));
-
-  if (active.size === 0) return 'Reflector';
-
-  // Manifestor: motor connected to throat without sacral defined
-  const motorToThroat =
-    throatDefined && definedMotors.some((m) => m !== 'Sacral');
-
-  if (sacralDefined && throatDefined && (heartDefined || rootDefined || solarDefined)) {
-    // Likely manifesting generator if motor-throat connection in addition to sacral
-    if (motorToThroat || activatedGates.has(34) && (activatedGates.has(20) || activatedGates.has(10))) {
-      return 'ManifestingGenerator';
-    }
-    return 'Generator';
+function designJD(birthJD: number): number {
+  const target = norm360(sunLongitude(birthJD) - 88);
+  try {
+    const found = SearchSunLongitude(target, dateFromJD(birthJD - 90), 10);
+    if (found && found.date) return jdFromDate(found.date);
+  } catch { /* fallback */ }
+  let jd = birthJD - 88;
+  for (let i = 0; i < 12; i++) {
+    const diff = norm360(sunLongitude(jd) - target + 180) - 180;
+    jd -= diff / 0.9856;
+    if (Math.abs(diff) < 0.0001) break;
   }
+  return jd;
+}
 
-  if (sacralDefined) return 'Generator';
-  if (motorToThroat) return 'Manifestor';
+const PLANET_BODIES = ['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune', 'Pluto'] as const;
+
+interface Activation {
+  planet: string;
+  gate: number;
+  line: number;
+}
+
+function activationsAtJD(jd: number): Activation[] {
+  const at = dateFromJD(jd);
+  const out: Activation[] = [];
+  const push = (planet: string, lon: number) => {
+    if (typeof lon !== 'number' || Number.isNaN(lon)) return;
+    out.push({ planet, ...longitudeToGate(norm360(lon)) });
+  };
+  let sun: number;
+  try { sun = norm360(SunPosition(at).elon); } catch { return out; }
+  push('sun', sun);
+  push('earth', sun + 180);
+  try { push('moon', EclipticGeoMoon(at).lon); } catch { /* skip */ }
+  const nn = nodeLongitude(jd);
+  push('northNode', nn);
+  push('southNode', nn + 180);
+  for (const p of PLANET_BODIES) {
+    try {
+      push(p, Ecliptic(GeoVector(Body[p], at, true)).elon);
+    } catch { /* skip */ }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Graph traversal for motor-to-throat connectivity (BFS)
+// ---------------------------------------------------------------------------
+
+type ChannelInfo = (typeof CHANNELS)[number];
+
+function buildAdjacency(channels: ChannelInfo[]): Record<string, Set<string>> {
+  const adj: Record<string, Set<string>> = {};
+  for (const ch of channels) {
+    const [a, b] = ch.centers;
+    if (!adj[a]) adj[a] = new Set();
+    if (!adj[b]) adj[b] = new Set();
+    adj[a].add(b);
+    adj[b].add(a);
+  }
+  return adj;
+}
+
+function reachesMotor(adj: Record<string, Set<string>>, motors: string[]): boolean {
+  if (!adj['Throat']) return false;
+  const seen = new Set<string>(['Throat']);
+  const stack: string[] = ['Throat'];
+  while (stack.length) {
+    const cur = stack.pop()!;
+    if (motors.includes(cur)) return true;
+    for (const n of adj[cur] || []) {
+      if (!seen.has(n)) { seen.add(n); stack.push(n); }
+    }
+  }
+  return false;
+}
+
+function computeType(defined: Set<HDCenter>, channels: ChannelInfo[]): HumanDesign['type'] {
+  if (defined.size === 0) return 'Reflector';
+  const adj = buildAdjacency(channels);
+  if (defined.has('Sacral')) {
+    return reachesMotor(adj, ['Sacral', 'Heart', 'SolarPlexus', 'Root'])
+      ? 'ManifestingGenerator' : 'Generator';
+  }
+  if (defined.has('Throat') && reachesMotor(adj, ['Heart', 'SolarPlexus', 'Root'])) {
+    return 'Manifestor';
+  }
   return 'Projector';
 }
 
-function determineAuthority(active: Set<HDCenter>, type: HumanDesign['type']): string {
-  if (type === 'Reflector') return 'Ay Döngüsü Otoritesi (Lunar)';
-  if (active.has('SolarPlexus')) return 'Duygusal Otorite (Solar Plexus)';
-  if (active.has('Sacral')) return 'Sakral Otorite';
-  if (active.has('Spleen')) return 'Splenik Otorite (Sezgi)';
-  if (active.has('Heart')) return 'Ego Otoritesi';
-  if (active.has('G') && active.has('Throat')) return 'Kendini Yansıtan Otorite';
-  return 'Mental Yansıtıcı (Çevre)';
+function computeAuthority(defined: Set<HDCenter>, type: HumanDesign['type'], channels: ChannelInfo[]): string {
+  if (type === 'Reflector') return 'Ay Dongusu Otoritesi (Lunar)';
+  if (defined.has('SolarPlexus')) return 'Duygusal Otorite (Solar Plexus)';
+  if (defined.has('Sacral')) return 'Sakral Otorite';
+  if (defined.has('Spleen')) return 'Splenik Otorite (Sezgi)';
+  if (defined.has('Heart')) return 'Ego Otoritesi';
+  if (defined.has('G') && defined.has('Throat')) {
+    const gThroat = channels.find(c =>
+      c.centers.includes('G') && c.centers.includes('Throat')
+    );
+    if (gThroat) return 'Kendini Yansitan Otorite';
+  }
+  return 'Mental Yansitici (Cevre)';
 }
 
 function strategyOf(type: HumanDesign['type']): string {
   switch (type) {
-    case 'Manifestor':
-      return 'Bilgilendir & Başlat';
-    case 'Generator':
-      return 'Yanıt Vermeyi Bekle';
-    case 'ManifestingGenerator':
-      return 'Yanıtla ve Hızla Bilgilendir';
-    case 'Projector':
-      return 'Davet Bekle ve Tanın';
-    case 'Reflector':
-      return 'Ay Döngüsünü Bekle (≈28 gün)';
+    case 'Manifestor': return 'Bilgilendir & Baslat';
+    case 'Generator': return 'Yanit Vermeyi Bekle';
+    case 'ManifestingGenerator': return 'Yanitla ve Hizla Bilgilendir';
+    case 'Projector': return 'Davet Bekle ve Tanin';
+    case 'Reflector': return 'Ay Dongusunu Bekle';
   }
 }
 
-function profileLines(personalitySun: number, designSun: number): string {
-  const profile = `${personalitySun}/${designSun}`;
+function profileLines(personalitySunLine: number, designSunLine: number): string {
+  const profile = `${personalitySunLine}/${designSunLine}`;
   const map: Record<string, string> = {
-    '1/3': '1/3 Araştırmacı-Şehit',
-    '1/4': '1/4 Araştırmacı-Arkadaş',
-    '2/4': '2/4 Münzevi-Arkadaş',
-    '2/5': '2/5 Münzevi-Heretik',
-    '3/5': '3/5 Şehit-Heretik',
-    '3/6': '3/6 Şehit-Rol Modeli',
-    '4/6': '4/6 Arkadaş-Rol Modeli',
-    '4/1': '4/1 Arkadaş-Araştırmacı',
-    '5/1': '5/1 Heretik-Araştırmacı',
-    '5/2': '5/2 Heretik-Münzevi',
-    '6/2': '6/2 Rol Modeli-Münzevi',
-    '6/3': '6/3 Rol Modeli-Şehit',
+    '1/3': '1/3 Arastirmaci-Sehit',
+    '1/4': '1/4 Arastirmaci-Arkadas',
+    '2/4': '2/4 Munzevi-Arkadas',
+    '2/5': '2/5 Munzevi-Heretik',
+    '3/5': '3/5 Sehit-Heretik',
+    '3/6': '3/6 Sehit-Rol Modeli',
+    '4/6': '4/6 Arkadas-Rol Modeli',
+    '4/1': '4/1 Arkadas-Arastirmaci',
+    '5/1': '5/1 Heretik-Arastirmaci',
+    '5/2': '5/2 Heretik-Munzevi',
+    '6/2': '6/2 Rol Modeli-Munzevi',
+    '6/3': '6/3 Rol Modeli-Sehit',
   };
   return map[profile] ?? `${profile} Profil`;
 }
 
 export function calculateHumanDesign(chart: Chart, birthISO: string): HumanDesign {
-  const sunPos = chart.planets.find((p) => p.name === 'Sun')!;
-  const personalitySunGate = longitudeToGate(sunPos.longitude);
+  const birthDate = new Date(birthISO);
+  const pJD = jdFromDate(birthDate);
+  const dJD = designJD(pJD);
 
-  // Design Sun is approximately 88 solar degrees (≈88 days) before birth.
-  const designDate = new Date(new Date(birthISO).getTime() - 88 * 24 * 3600 * 1000);
-  // Approximation: subtract 88° from current sun longitude (close enough for MVP)
-  const designSunLongitude = ((sunPos.longitude - 88 + 360) % 360);
-  const designSunGate = longitudeToGate(designSunLongitude);
+  const personality = activationsAtJD(pJD);
+  const design = activationsAtJD(dJD);
 
-  // Collect activated gates from all major bodies (personality) for type determination
-  const activatedGates = new Set<number>();
-  for (const planet of chart.planets) {
-    if (planet.name === 'Ascendant' || planet.name === 'MC') continue;
-    activatedGates.add(longitudeToGate(planet.longitude).gate);
-    // Mirror with design offset for richer signal
-    activatedGates.add(longitudeToGate((planet.longitude - 88 + 360) % 360).gate);
+  const personalityGates = new Set(personality.map(a => a.gate));
+  const designGates = new Set(design.map(a => a.gate));
+  const activatedGates = new Set<number>([...personalityGates, ...designGates]);
+
+  const activeChannels = CHANNELS.filter(
+    ch => activatedGates.has(ch.gates[0]) && activatedGates.has(ch.gates[1])
+  );
+
+  const defined = new Set<HDCenter>();
+  for (const ch of activeChannels) {
+    defined.add(ch.centers[0]);
+    defined.add(ch.centers[1]);
   }
 
-  const active = activeCenters(activatedGates);
-  const type = determineType(active, activatedGates);
-  const authority = determineAuthority(active, type);
+  const type = computeType(defined, activeChannels);
+  const authority = computeAuthority(defined, type, activeChannels);
   const strategy = strategyOf(type);
-  const profile = profileLines(personalitySunGate.line, designSunGate.line);
-  const incarnationCross = `Kapı ${personalitySunGate.gate} / ${designSunGate.gate} Enkarnasyon Hattı`;
 
-  const definedSet = Array.from(active);
-  const openCenters = CENTERS.filter((c) => !active.has(c));
+  const pSun = personality.find(a => a.planet === 'sun');
+  const dSun = design.find(a => a.planet === 'sun');
+  const pEarth = personality.find(a => a.planet === 'earth');
+  const dEarth = design.find(a => a.planet === 'earth');
+
+  const profile = profileLines(pSun?.line ?? 1, dSun?.line ?? 1);
+
+  let incarnationCross = '';
+  if (pSun && pEarth && dSun && dEarth) {
+    const prof = `${pSun.line}/${dSun.line}`;
+    let angle = 'Sag Aci';
+    if (prof === '4/1') angle = 'Yan Yana (Juxtaposition)';
+    else if (['5/1', '5/2', '6/2', '6/3'].includes(prof)) angle = 'Sol Aci';
+    incarnationCross = `${angle} Hac: ${pSun.gate}/${pEarth.gate} | ${dSun.gate}/${dEarth.gate}`;
+  }
+
+  const openCenters = CENTERS.filter(c => !defined.has(c));
 
   return {
     type,
@@ -152,10 +232,10 @@ export function calculateHumanDesign(chart: Chart, birthISO: string): HumanDesig
     authority,
     profile,
     incarnationCross,
-    definedCenters: definedSet,
+    definedCenters: Array.from(defined),
     openCenters,
     gates: Array.from(activatedGates).sort((a, b) => a - b),
-    channels: definedChannels(activatedGates),
+    channels: activeChannels.map(ch => `${ch.gates[0]}-${ch.gates[1]}`),
   };
 }
 

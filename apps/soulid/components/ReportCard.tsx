@@ -64,7 +64,7 @@ export const ReportCard = forwardRef<HTMLDivElement, Props>(function ReportCard(
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p className="text-[9px] font-bold tracking-[0.25em] text-gold">HUMAN DESIGN</p>
+          <p className="text-[9px] font-bold tracking-[0.25em] text-gold">ENERJİ PROFİLİ</p>
           <p className="mt-1 font-display text-xl text-ink">{report.humanDesign.type}</p>
           <p className="text-[10px] leading-snug text-muted">
             {report.humanDesign.strategy} · {report.humanDesign.authority} · {report.humanDesign.profile}

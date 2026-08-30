@@ -3,7 +3,7 @@ import type { NarrativeSections } from '../types';
 const HEADINGS = {
   opening: ['Açılış'],
   astrology: ['Astroloji', 'Astroloji & Düğümler'],
-  humanDesign: ['Human Design', 'Human Design Pusulası'],
+  humanDesign: ['Human Design', 'Human Design Pusulası', 'Enerji Profili', 'Enerji Profili Pusulası', 'Energy Profile'],
   callToAction: ['Görev', 'Görev Çağrısı', 'Çağrı'],
   soulStory: ['Ruhun Hikâyesi', 'Ruh Hikâyesi', 'Soul Story'],
   wisdoms: ['Bilgelik', 'Bilgelikleri', 'Bilgelikler'],

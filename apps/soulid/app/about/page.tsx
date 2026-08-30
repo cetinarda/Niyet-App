@@ -12,7 +12,7 @@ export default function About() {
       <Section heading="Vizyonumuz">
         <p>
           Kimliğin yalnızca bir burç değil. Hem Güneş'in, hem Ay'ın, hem Kuzey ve Güney Düğümün,
-          hem Human Design tipin, hem Yaşam Yolu sayın, hem Vedik nakshatran, hem Maya Kin'in,
+          hem enerji profilin, hem Yaşam Yolu sayın, hem Vedik nakshatran, hem Maya Kin'in,
           hem Norse runun, hem Tarot doğum kartların ve hem de yıldız hattının birbiriyle konuşan
           bir bütünsün. SoulProfile bu sentezi tek bir kişisel karnede gösterir.
         </p>
@@ -25,7 +25,7 @@ export default function About() {
         <Bullet>Maya Tzolkin: 260 günlük takvim, Kin numarası (20 mühür × 13 ton)</Bullet>
         <Bullet>Norse Doğum Runu: Elder Futhark 24 rune</Bullet>
         <Bullet>Tarot Doğum Kartı: Kişilik + Ruh, Mary K. Greer formülü</Bullet>
-        <Bullet>Human Design: Tip, Strateji, Otorite, Profil, Enkarnasyon kapısı</Bullet>
+        <Bullet>Enerji Profili: Tip, Strateji, Otorite, Profil, Enkarnasyon kapısı</Bullet>
         <Bullet>Numeroloji: Yaşam Yolu (master 11/22/33), İfade, Ruh Arzusu, Kişisel Yıl</Bullet>
         <Bullet>Yıldız Irkı (Starseed): 10 galaktik arketipten dominant olan</Bullet>
       </Section>

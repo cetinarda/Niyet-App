@@ -8,7 +8,7 @@ import { GLOSSARY, type GlossaryEntry } from '@/lib/content/glossary';
 const FILTERS: Array<{ key: GlossaryEntry['category'] | 'all'; label: string }> = [
   { key: 'all', label: 'Tümü' },
   { key: 'astrology', label: 'Astroloji' },
-  { key: 'humandesign', label: 'Human Design' },
+  { key: 'humandesign', label: 'Enerji Profili' },
   { key: 'numerology', label: 'Numeroloji' },
   { key: 'systems', label: 'Sistemler' },
   { key: 'starseed', label: 'Yıldız Irkı' },

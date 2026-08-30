@@ -11,7 +11,7 @@ export default function Terms() {
     >
       <Section heading="Hizmetin Niteliği">
         <p>
-          SoulProfile; astroloji, Human Design ve numeroloji içeriklerini farkındalık ve kendini
+          SoulProfile; astroloji, enerji profili ve numeroloji içeriklerini farkındalık ve kendini
           keşif amacıyla sunan bir uygulamadır. <strong>Tıbbi, psikiyatrik, hukuki veya finansal
           tavsiye değildir.</strong>
         </p>

@@ -29,7 +29,7 @@ export type DeepAnalysis = {
 export function deepBuildSystem(locale: 'tr' | 'en'): string {
   if (locale === 'en') {
     return `You are the deep relationship reader for the "SoulProfile" app. From two people's
-astrology + Human Design + numerology + Vedic Ashtakuta + tarot compass, you write a long,
+astrology + energy profile + numerology + Vedic Ashtakuta + tarot compass, you write a long,
 rich and tender soul-level reading in English.
 
 RULES:
@@ -89,7 +89,7 @@ continuation. Symbolic reading, not historical claim.)
   }
 
   return `Sen "SoulProfile" uygulamasının derinlikli çift okuyucususun. İki ruhun astroloji +
-Human Design + numeroloji + Vedik Ashtakuta + tarot pusulasından çıkardığın sentezi uzun,
+enerji profili + numeroloji + Vedik Ashtakuta + tarot pusulasından çıkardığın sentezi uzun,
 zengin ve şefkatli bir Türkçe ile ruh seviyesinde okuyorsun.
 
 KURALLAR:
@@ -166,7 +166,7 @@ ${delim(safeNameA)}:
 - ${sun(a).sign} Güneş · ${moon(a).sign} Ay · ${a.chart.ascendantSign} Yükselen
 - Kuzey Düğüm ${nn(a).sign} (${nn(a).house}. ev): ruhsal görev yönü
 ${aVx ? `- Vertex ${aVx.sign} (${aVx.house}. ev): kader buluşması noktası` : ''}
-- Human Design: ${a.humanDesign.type}, ${a.humanDesign.authority}, ${a.humanDesign.profile}
+- Enerji Profili: ${a.humanDesign.type}, ${a.humanDesign.authority}, ${a.humanDesign.profile}
 - Tanımlı merkezler: ${a.humanDesign.definedCenters.join(', ') || 'yok (Reflector)'}
 - Yaşam Yolu: ${a.numerology.lifePath} · Ruh Arzusu: ${a.numerology.soulUrge}
 - Yıldız ırkı: ${a.origin.race}
@@ -176,7 +176,7 @@ ${delim(safeNameB)}:
 - ${sun(b).sign} Güneş · ${moon(b).sign} Ay · ${b.chart.ascendantSign} Yükselen
 - Kuzey Düğüm ${nn(b).sign} (${nn(b).house}. ev): ruhsal görev yönü
 ${bVx ? `- Vertex ${bVx.sign} (${bVx.house}. ev): kader buluşması noktası` : ''}
-- Human Design: ${b.humanDesign.type}, ${b.humanDesign.authority}, ${b.humanDesign.profile}
+- Enerji Profili: ${b.humanDesign.type}, ${b.humanDesign.authority}, ${b.humanDesign.profile}
 - Tanımlı merkezler: ${b.humanDesign.definedCenters.join(', ') || 'yok (Reflector)'}
 - Yaşam Yolu: ${b.numerology.lifePath} · Ruh Arzusu: ${b.numerology.soulUrge}
 - Yıldız ırkı: ${b.origin.race}

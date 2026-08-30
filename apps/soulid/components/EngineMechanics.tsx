@@ -102,7 +102,7 @@ export function EngineMechanics({ report }: { report: GalacticReport }) {
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         <Group title={tr ? 'Astroloji (tropikal)' : 'Astrology (tropical)'} rows={astro} />
-        <Group title="Human Design" rows={hdRows} />
+        <Group title={tr ? 'Enerji Profili' : 'Energy Profile'} rows={hdRows} />
         <Group title={tr ? 'Vedik (sidereal)' : 'Vedic (sidereal)'} rows={vedicRows} />
         <Group title={tr ? 'Maya · Çin' : 'Maya · Chinese'} rows={otherRows} />
         <Group title={tr ? 'Numeroloji' : 'Numerology'} rows={numRows} />

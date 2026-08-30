@@ -87,7 +87,7 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
       accent: '#c79dff',
     },
     {
-      kicker: 'HUMAN DESIGN',
+      kicker: 'ENERJİ PROFİLİ',
       title: report.humanDesign.type,
       highlight: report.humanDesign.profile,
       short: `${report.humanDesign.type} tipi olarak hayata özgün bir mekaniğin var. Stratejin "${report.humanDesign.strategy}", otoriten ${report.humanDesign.authority}.`,

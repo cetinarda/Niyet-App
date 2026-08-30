@@ -56,7 +56,7 @@ export default function Welcome() {
     locale === 'tr'
       ? [
           { emoji: '🌞', title: 'Batı Astrolojisi', desc: 'Güneş, Ay, Yükselen + Kuzey/Güney Düğüm' },
-          { emoji: '◇', title: 'Human Design', desc: 'Tip, otorite, profil, strateji, beden grafiği' },
+          { emoji: '◇', title: 'Enerji Profili', desc: 'Tip, otorite, profil, strateji, enerji merkezleri' },
           { emoji: '⌖', title: 'Numeroloji', desc: 'Yaşam Yolu, master sayılar, Kişisel Yıl' },
           { emoji: '🪷', title: 'Vedik Nakshatra', desc: "Ay'ın 27 yıldız evi + pada" },
           { emoji: '🦋', title: 'Maya Tzolkin', desc: 'Kin numarası, gün mührü, galaktik ton' },
@@ -67,7 +67,7 @@ export default function Welcome() {
         ]
       : [
           { emoji: '🌞', title: 'Western Astrology', desc: 'Sun, Moon, Rising + North/South Node' },
-          { emoji: '◇', title: 'Human Design', desc: 'Type, authority, profile, strategy, body graph' },
+          { emoji: '◇', title: 'Energy Profile', desc: 'Type, authority, profile, strategy, energy centers' },
           { emoji: '⌖', title: 'Numerology', desc: 'Life Path, master numbers, Personal Year' },
           { emoji: '🪷', title: 'Vedic Nakshatra', desc: "Moon's 27 lunar mansions + pada" },
           { emoji: '🦋', title: 'Mayan Tzolkin', desc: 'Kin number, day sign, galactic tone' },
@@ -305,7 +305,7 @@ export default function Welcome() {
                 <div className="rounded-lg border border-white/10 p-2"><div className="text-gold">♍</div>{locale === 'tr' ? 'Başak Yükselen' : 'Virgo Rising'}</div>
               </div>
               <div className="mt-3 w-full rounded-xl border border-white/10 p-3 text-left">
-                <p className="text-[9px] uppercase tracking-widest text-gold">Human Design</p>
+                <p className="text-[9px] uppercase tracking-widest text-gold">Enerji Profili</p>
                 <p className="mt-1 font-display text-lg text-ink">Generator</p>
                 <p className="text-[10px] text-muted">{locale === 'tr' ? 'Sakral Otorite · 3/5 Profil' : 'Sacral Authority · 3/5 Profile'}</p>
               </div>

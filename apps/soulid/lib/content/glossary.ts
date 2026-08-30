@@ -105,7 +105,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     id: 'hd-type',
     category: 'humandesign',
-    term: 'Human Design Tipi',
+    term: 'Enerji Tipi',
     description:
       'Beş ana tip vardır: Manifestor (başlatan), Generator (yanıt veren), Manifesting Generator (çoklu izli), Projector (gören), Reflector (yansıtan). Tip; doğru karar verme ritmini ve evrenle etkileşim mekaniğini belirler.',
   },

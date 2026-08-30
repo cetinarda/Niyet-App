@@ -12,14 +12,14 @@ export default function Privacy() {
       <Section heading="Topladığımız Veriler">
         <p>Karneni üretebilmek için aşağıdaki verileri topluyoruz:</p>
         <Bullet>Tam adın (karne başlığı için)</Bullet>
-        <Bullet>Doğum tarihi, doğum saati ve doğum yeri (gezegen pozisyonları + Human Design için zorunlu)</Bullet>
+        <Bullet>Doğum tarihi, doğum saati ve doğum yeri (gezegen pozisyonları + enerji profili için zorunlu)</Bullet>
         <Bullet>İsteğe bağlı profil fotoğrafı (karne görseline basılır)</Bullet>
         <Bullet>Anonimleştirilmiş kullanım analitikleri</Bullet>
       </Section>
 
       <Section heading="Verini Neden Topluyoruz">
         <p>
-          Astrolojik harita, Kuzey/Güney Ay Düğümü, Human Design tipi ve numerolojin için bu veriler
+          Astrolojik harita, Kuzey/Güney Ay Düğümü, enerji profili ve numerolojin için bu veriler
           zorunlu. Hesaplamalar tarayıcında yapılır. Karne kaydedilirken Supabase üzerinde şifreli
           olarak senin hesabına bağlı tutulur.
         </p>
