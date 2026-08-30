@@ -755,56 +755,27 @@ const NEDIR_I18N = {
 // Kullanıcı "Devam" ile ilerler, son adımda "Başla" ile bitirir; localStorage
 // `sakin_tutorial_done` ile ömür boyu bir kez gösterilir. Her adım uygulamadaki
 // gerçek menü ikonuyla eşleşir (◎ Bağlan · ✦ Keşfet · 🌌 Galaktik · 🪞 Ayna · ☁️ Gökyüzü).
-const TUTORIAL_I18N = {
-  next:  { tr:"Devam", en:"Continue", de:"Weiter", es:"Continuar", pt:"Continuar", fr:"Continuer", ja:"続ける" },
-  start: { tr:"Başla", en:"Begin", de:"Los geht's", es:"Empezar", pt:"Começar", fr:"Commencer", ja:"はじめる" },
-  skip:  { tr:"Geç", en:"Skip", de:"Überspringen", es:"Saltar", pt:"Saltar", fr:"Passer", ja:"スキップ" },
-  slides: [
-    { // 1: Bağlan (◎)
-      title: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
-      body:  { tr:"Günün küçük görevlerini yap, kendinle bağını güçlendir.",
-               en:"Do the day's small tasks and strengthen the bond with yourself.",
-               de:"Erledige die kleinen Aufgaben des Tages und stärke die Verbindung zu dir selbst.",
-               es:"Haz las pequeñas tareas del día y fortalece el vínculo contigo mismo.",
-               pt:"Faz as pequenas tarefas do dia e fortalece a ligação contigo mesmo.",
-               fr:"Fais les petites tâches du jour et renforce le lien avec toi-même.",
-               ja:"一日の小さなタスクをこなし、自分自身とのつながりを深めましょう。" } },
-    { // 2: Keşfet (✦)
-      title: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
-      body:  { tr:"Varoluşunun sana söylediklerini dinle: burcun, tasarımın, hayvanın, taşın.",
-               en:"Listen to what your existence tells you: your sign, design, animal and stone.",
-               de:"Höre, was dein Dasein dir sagt: dein Zeichen, dein Design, dein Tier und dein Stein.",
-               es:"Escucha lo que tu existencia te dice: tu signo, tu diseño, tu animal y tu piedra.",
-               pt:"Ouve o que a tua existência te diz: o teu signo, design, animal e pedra.",
-               fr:"Écoute ce que ton existence te dit : ton signe, ton design, ton animal et ta pierre.",
-               ja:"あなたの存在が語ることに耳を傾けましょう。星座、デザイン、動物、石。" } },
-    { // 3: Galaktik Kimlik (🌌)
-      title: { tr:"Galaktik Kimlik", en:"Galactic Identity", de:"Galaktische Identität", es:"Identidad Galáctica", pt:"Identidade Galáctica", fr:"Identité Galactique", ja:"ギャラクティック・アイデンティティ" },
-      body:  { tr:"Galaktik kimliğine bak, doğum haritanı analiz et.",
-               en:"Look at your galactic identity and analyze your birth chart.",
-               de:"Betrachte deine galaktische Identität und analysiere dein Geburtshoroskop.",
-               es:"Mira tu identidad galáctica y analiza tu carta natal.",
-               pt:"Vê a tua identidade galáctica e analisa o teu mapa natal.",
-               fr:"Regarde ton identité galactique et analyse ton thème natal.",
-               ja:"ギャラクティックな自分を見つめ、出生図を読み解きましょう。" } },
-    { // 4: İçsel Ayna (🪞)
-      title: { tr:"İçsel Ayna", en:"Inner Mirror", de:"Innerer Spiegel", es:"Espejo Interior", pt:"Espelho Interior", fr:"Miroir Intérieur", ja:"内なる鏡" },
-      body:  { tr:"Rüyalarını ve içinden gelenleri sor; ayna sana yansıtsın.",
-               en:"Ask about your dreams and inner stirrings; let the mirror reflect them back.",
-               de:"Frage nach deinen Träumen und inneren Regungen; der Spiegel wirft sie dir zurück.",
-               es:"Pregunta por tus sueños y lo que sientes dentro; deja que el espejo te lo refleje.",
-               pt:"Pergunta sobre os teus sonhos e o que sentes por dentro; deixa o espelho refleti-los.",
-               fr:"Interroge tes rêves et ce qui monte en toi ; laisse le miroir te le refléter.",
-               ja:"夢や心の声を尋ねれば、鏡がそれを映し返します。" } },
-    { // 5: Gökyüzü Raporu (☁️)
-      title: { tr:"Gökyüzü Raporu", en:"Sky Report", de:"Himmelsbericht", es:"Informe del Cielo", pt:"Relatório do Céu", fr:"Rapport du Ciel", ja:"空のレポート" },
-      body:  { tr:"Günlük gökyüzü raporuyla dünyanın elektromanyetik alanının sana etkisini takip et.",
-               en:"With the daily sky report, follow how Earth's electromagnetic field affects you.",
-               de:"Verfolge mit dem täglichen Himmelsbericht, wie das elektromagnetische Feld der Erde auf dich wirkt.",
-               es:"Con el informe diario del cielo, sigue cómo te afecta el campo electromagnético de la Tierra.",
-               pt:"Com o relatório diário do céu, acompanha como o campo eletromagnético da Terra te afeta.",
-               fr:"Avec le rapport quotidien du ciel, suis l'effet du champ électromagnétique de la Terre sur toi.",
-               ja:"毎日の空のレポートで、地球の電磁場があなたに与える影響を追いましょう。" } },
+const ONB_I18N = {
+  skip:     { tr:"Geç", en:"Skip", de:"Überspringen", es:"Saltar", pt:"Saltar", fr:"Passer", ja:"スキップ" },
+  inhale:   { tr:"Nefes al", en:"Breathe in", de:"Einatmen", es:"Inhala", pt:"Inspira", fr:"Inspire", ja:"息を吸って" },
+  exhale:   { tr:"Nefes ver", en:"Breathe out", de:"Ausatmen", es:"Exhala", pt:"Expira", fr:"Expire", ja:"息を吐いて" },
+  feelTitle:{ tr:"Nasıl hissettin?", en:"How did you feel?", de:"Wie hast du dich gefühlt?", es:"Como te sentiste?", pt:"Como te sentiste?", fr:"Comment tu t'es senti(e) ?", ja:"どう感じた？" },
+  feelSame: { tr:"Aynı", en:"The same", de:"Gleich", es:"Igual", pt:"Igual", fr:"Pareil", ja:"変わらない" },
+  feelLight:{ tr:"Biraz hafifledim", en:"A little lighter", de:"Etwas leichter", es:"Un poco mejor", pt:"Um pouco mais leve", fr:"Un peu plus léger", ja:"少し軽くなった" },
+  feelMuch: { tr:"Çok iyi geldi", en:"Much lighter", de:"Viel leichter", es:"Mucho mejor", pt:"Muito mais leve", fr:"Beaucoup mieux", ja:"とても軽くなった" },
+  mirror0:  { tr:"Tamam, bir sonraki sefer kendine daha çok zaman tanı.", en:"That's OK. Next time, give yourself a little more time.", de:"Das ist OK. Gib dir beim nächsten Mal etwas mehr Zeit.", es:"Está bien. La próxima vez, date un poco más de tiempo.", pt:"Tudo bem. Da próxima vez, dá-te um pouco mais de tempo.", fr:"C'est bien. La prochaine fois, accorde-toi un peu plus de temps.", ja:"大丈夫。次はもう少し時間をかけてみて。" },
+  mirror1:  { tr:"Güzel, nefes her zaman yanında.", en:"Beautiful. Breath is always with you.", de:"Schön. Der Atem ist immer bei dir.", es:"Hermoso. La respiración siempre está contigo.", pt:"Lindo. A respiração está sempre contigo.", fr:"Beau. Le souffle est toujours avec toi.", ja:"いいね。呼吸はいつもそばにある。" },
+  mirror2:  { tr:"Otuz saniye bile yeter, hatırla.", en:"Even thirty seconds is enough, remember that.", de:"Sogar dreißig Sekunden genügen, vergiss das nicht.", es:"Incluso treinta segundos bastan, recuérdalo.", pt:"Até trinta segundos bastam, lembra-te disso.", fr:"Même trente secondes suffisent, souviens-t'en.", ja:"30秒でも十分。それを忘れないで。" },
+  intTitle: { tr:"Bugünkü niyetin ne olsun?", en:"What is your intention for today?", de:"Was ist deine Absicht für heute?", es:"¿Cuál es tu intención para hoy?", pt:"Qual é a tua intenção para hoje?", fr:"Quelle est ton intention pour aujourd'hui ?", ja:"今日のあなたの意図は？" },
+  intSub:   { tr:"Birini seç ya da kendin yaz.", en:"Pick one or write your own.", de:"Wähle eine oder schreibe deine eigene.", es:"Elige una o escribe la tuya.", pt:"Escolhe uma ou escreve a tua.", fr:"Choisis-en une ou écris la tienne.", ja:"一つ選ぶか、自分で書こう。" },
+  intDone:  { tr:"Tamam", en:"Done", de:"Fertig", es:"Listo", pt:"Pronto", fr:"Termine", ja:"完了" },
+  chips:    [
+    { tr:"Huzur", en:"Peace", de:"Frieden", es:"Paz", pt:"Paz", fr:"Paix", ja:"平和" },
+    { tr:"Cesaret", en:"Courage", de:"Mut", es:"Valor", pt:"Coragem", fr:"Courage", ja:"勇気" },
+    { tr:"Şefkat", en:"Compassion", de:"Mitgefühl", es:"Compasión", pt:"Compaixão", fr:"Compassion", ja:"慈悲" },
+    { tr:"Sabır", en:"Patience", de:"Geduld", es:"Paciencia", pt:"Paciência", fr:"Patience", ja:"忍耐" },
+    { tr:"Açıklık", en:"Openness", de:"Offenheit", es:"Apertura", pt:"Abertura", fr:"Ouverture", ja:"開放性" },
+    { tr:"Güven", en:"Trust", de:"Vertrauen", es:"Confianza", pt:"Confiança", fr:"Confiance", ja:"信頼" },
   ],
 };
 // Doğum bilgisi kaydı sonrası anında karşılık kartı (Sprint 2, aha anı).
@@ -2262,6 +2233,8 @@ const GLOBAL_CSS = `
   @keyframes sliceUnlock { 0%{opacity:0;transform:scale(0.85)} 70%{opacity:1;transform:scale(1.03)} 100%{opacity:1;transform:scale(1)} }
   @keyframes introFadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
   @keyframes introFadeOut { from{opacity:1} to{opacity:0} }
+  @keyframes orbBreathe { 0%,100%{transform:translate(-50%,-50%) scale(0.55);opacity:0.6} 40%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+  @keyframes orbRing { 0%{transform:translate(-50%,-50%) scale(0.8);opacity:0.5} 50%{transform:translate(-50%,-50%) scale(1.3);opacity:0} 100%{transform:translate(-50%,-50%) scale(0.8);opacity:0} }
   @keyframes introSquareDraw { from{stroke-dashoffset:1600} to{stroke-dashoffset:0} }
   @keyframes introDotScale { 0%{transform:translate(-50%,-50%) scale(0)} 60%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes introTextUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
@@ -5889,12 +5862,18 @@ export default function SakinApp() {
   const [girisPhase,     setGirisPhase]     = useState("intro"); // "intro" | "birth"
   const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem("sakin_intro_seen"));
   const [introExiting, setIntroExiting] = useState(false);
-  // İLK AÇILIŞ TANITIMI: 5 ana bölümü tanıtan kısa animasyonlu tur. Ömür boyu
-  // BİR kez (localStorage `sakin_tutorial_done`). Splash (showIntro) bitince açılır.
-  const [showTutorial, setShowTutorial] = useState(() => {
-    try { return !localStorage.getItem("sakin_tutorial_done"); } catch (_) { return false; }
-  });
-  const [tutorialStep, setTutorialStep] = useState(0);
+  const [onbPath, setOnbPath] = useState(null);
+  const [onbStep, setOnbStep] = useState(0);
+  const [onbFeeling, setOnbFeeling] = useState(-1);
+  const [onbIntention, setOnbIntention] = useState("");
+  const onbTimerRef = useRef(null);
+  const [onbBreathSec, setOnbBreathSec] = useState(0);
+  useEffect(() => {
+    if (!onbPath) { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } return; }
+    const onKey = (e) => { if (e.key === "Escape") { if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } try { localStorage.setItem("sakin_onb_baglan","1"); } catch(_){} setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala"); } };
+    window.addEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; } };
+  }, [onbPath]);
   // ── ANONIM KULLANIM OLCUMU (funnel / drop-off) ──────────────────────────
   // Acilista bir kez baslat + "app_open" olayi. Kisisel veri gonderilmez.
   useEffect(() => {
@@ -5913,8 +5892,6 @@ export default function SakinApp() {
   useEffect(() => {
     if (girisPhase === "birth") { try { track("birth_view"); } catch (_) {} }
   }, [girisPhase]);
-  // Tanıtım turunda parmakla kaydırma için dokunuş başlangıç X'i (sola=ileri, sağa=geri).
-  const tutTouchX = useRef(null);
   // "SAKİN NEDİR?" / YOL SEÇİMİ overlay'i: açılışta ASLA çıkmaz (mount=false).
   // Yalnızca kullanıcı dilini seçip HAZIRIM'a basınca çıkar (~satır 5800) ve yalnızca
   // İLK 5 AÇILIŞTA (sakin_nedir_count 0→5). girisPhase her yüklemede "intro"ya döndüğü
@@ -9344,77 +9321,120 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* İLK AÇILIŞ TANITIMI: 5 bölümü kısa animasyonlu bir turla tanıtır.
-          Splash (showIntro) bittikten sonra açılır; localStorage ile bir kez. */}
-      {showTutorial && !showIntro && (() => {
-        const TUT_ICONS = ["◎", "✦", "🌌", "🪞", "☁️"];
-        const TUT_COLORS = ["#b87adc", "#f0c060", "#82d9a3", "#c8a8f0", "#7ab0e0"];
-        const slides = TUTORIAL_I18N.slides;
-        const step = Math.min(tutorialStep, slides.length - 1);
-        const s = slides[step];
-        const c = TUT_COLORS[step];
-        const last = step === slides.length - 1;
-        const finish = () => {
-          try { localStorage.setItem("sakin_tutorial_done", "1"); } catch (_) {}
-          setShowTutorial(false); setTutorialStep(0);
+      {/* ONBOARDING: Baglan yolu (nefes -> his -> niyet -> mandala) */}
+      {onbPath === "baglan" && !showIntro && (() => {
+        const BREATH_TOTAL = 30;
+        const finishOnb = () => {
+          if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
+          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
+          if (onbIntention) { try { localStorage.setItem("sakin_niyet", onbIntention); } catch(_) {} setNiyet(onbIntention); }
+          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
+          try { track("onb_baglan_done"); } catch(_) {}
         };
-        const goNext = () => { if (step < slides.length - 1) setTutorialStep(v => v + 1); else finish(); };
-        const goPrev = () => setTutorialStep(v => Math.max(0, v - 1));
-        const rgba = (hex, a) => {
-          const n = parseInt(hex.slice(1), 16);
-          return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+        const skipOnb = () => {
+          if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
+          try { localStorage.setItem("sakin_onb_baglan", "1"); } catch(_) {}
+          setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setScreen("mandala");
         };
+        const c = "#b87adc";
         return (
-          // Parmakla kaydırma: sola çek = ileri, sağa çek = geri (kullanıcı isteği).
-          <div
-            onTouchStart={e => { tutTouchX.current = e.touches[0].clientX; }}
-            onTouchEnd={e => {
-              if (tutTouchX.current == null) return;
-              const dx = e.changedTouches[0].clientX - tutTouchX.current;
-              tutTouchX.current = null;
-              if (dx <= -45) goNext();
-              else if (dx >= 45) goPrev();
-            }}
-            style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px",touchAction:"pan-y" }}>
-            {/* Geri (‹): sol üst, sadece ilk adımdan sonra */}
-            {step > 0 && (
-              <button onClick={goPrev} aria-label={pickLang({tr:"Geri",en:"Back",de:"Zurück",es:"Atrás",pt:"Voltar",fr:"Retour",ja:"戻る"}, lang)}
-                style={{ position:"absolute",top:14,left:14,width:38,height:38,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.14)",color:"#c0b4d8",fontSize:20,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Jost',sans-serif" }}>‹</button>
-            )}
-            {/* Geç (skip): sağ üst */}
-            <button onClick={finish}
+          <div style={{ position:"fixed",inset:0,zIndex:99997,background:"radial-gradient(120% 100% at 50% 0%,rgba(24,16,38,0.99),rgba(8,5,16,0.995))",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"32px 26px" }}>
+            <button onClick={skipOnb}
               style={{ position:"absolute",top:16,right:16,background:"none",border:"none",color:"#8878a8",fontSize:12.5,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",padding:"6px 12px" }}>
-              {pickLang(TUTORIAL_I18N.skip, lang)}
+              {pickLang(ONB_I18N.skip, lang)}
             </button>
 
-            {/* Animasyonlu içerik: key ile her adımda yeniden oynar */}
-            <div key={step} style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
-              {/* Dönen kare çerçeve içinde bölüm ikonu (adım rengine boyalı) */}
-              <div style={{ position:"relative",width:104,height:104,margin:"0 auto 30px" }}>
-                <div style={{ position:"absolute",inset:0,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.55)}`,borderRadius:11,animation:"diamondSpin 12s linear infinite",boxShadow:`0 0 16px ${rgba(c,0.32)},inset 0 0 12px ${rgba(c,0.10)}` }} />
-                <div style={{ position:"absolute",inset:22,transform:"rotate(45deg)",border:`1px solid ${rgba(c,0.3)}`,borderRadius:7,animation:"diamondSpin 8s linear infinite reverse" }} />
-                <div style={{ position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",fontSize:34,lineHeight:1,filter:`drop-shadow(0 0 14px ${rgba(c,0.6)})`,color:c }}>{TUT_ICONS[step]}</div>
-              </div>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:2.5,color:"#f0e8ff",marginBottom:14 }}>
-                {pickLang(s.title, lang)}
-              </div>
-              <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14.5,fontWeight:300,lineHeight:1.75,color:"#b8acd0",minHeight:66 }}>
-                {pickLang(s.body, lang)}
-              </div>
-            </div>
+            {onbStep === 0 && (() => {
+              const isInhale = (onbBreathSec % 10) < 4;
+              const progress = Math.min(onbBreathSec / BREATH_TOTAL, 1);
+              if (onbTimerRef.current == null) {
+                onbTimerRef.current = setInterval(() => {
+                  setOnbBreathSec(s => {
+                    if (s >= BREATH_TOTAL - 1) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; setOnbStep(1); return 0; }
+                    return s + 1;
+                  });
+                }, 1000);
+              }
+              return (
+                <div key="b0" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                  <div style={{ position:"relative",width:160,height:160,margin:"0 auto 32px" }}>
+                    <div style={{ position:"absolute",left:"50%",top:"50%",width:100,height:100,borderRadius:"50%",background:`radial-gradient(circle at 50% 40%, rgba(200,170,240,0.9), rgba(140,100,200,0.5) 60%, transparent 80%)`,animation:"orbBreathe 10s ease-in-out infinite",boxShadow:"0 0 40px rgba(184,122,220,0.4)" }} />
+                    <div style={{ position:"absolute",left:"50%",top:"50%",width:130,height:130,borderRadius:"50%",border:"1px solid rgba(184,122,220,0.3)",animation:"orbRing 10s ease-in-out infinite" }} />
+                  </div>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:20,fontWeight:300,letterSpacing:2,color:"#e8d8ff",marginBottom:8 }}>
+                    {pickLang(isInhale ? ONB_I18N.inhale : ONB_I18N.exhale, lang)}
+                  </div>
+                  <div style={{ width:"80%",maxWidth:200,height:3,borderRadius:2,background:"rgba(255,255,255,0.08)",margin:"18px auto 0" }}>
+                    <div style={{ width:`${progress * 100}%`,height:"100%",borderRadius:2,background:`linear-gradient(90deg, ${c}, rgba(240,192,96,0.6))`,transition:"width 1s linear" }} />
+                  </div>
+                </div>
+              );
+            })()}
 
-            {/* İlerleme noktaları */}
-            <div style={{ display:"flex",gap:9,margin:"34px 0 26px" }}>
-              {slides.map((_, i) => (
-                <div key={i} style={{ width:i===step?22:7,height:7,borderRadius:6,background:i===step?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
+            {onbStep === 1 && (
+              <div key="b1" style={{ textAlign:"center",maxWidth:360,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:32 }}>
+                  {pickLang(ONB_I18N.feelTitle, lang)}
+                </div>
+                <div style={{ display:"flex",justifyContent:"center",gap:16 }}>
+                  {[
+                    { emoji:"😐", label:ONB_I18N.feelSame, v:0 },
+                    { emoji:"🌤️", label:ONB_I18N.feelLight, v:1 },
+                    { emoji:"☀️", label:ONB_I18N.feelMuch, v:2 },
+                  ].map(f => (
+                    <button key={f.v} onClick={() => { setOnbFeeling(f.v); setTimeout(() => setOnbStep(2), 800); }}
+                      style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:8,padding:"16px 12px",borderRadius:16,
+                        background: onbFeeling === f.v ? "rgba(184,122,220,0.18)" : "rgba(255,255,255,0.04)",
+                        border: onbFeeling === f.v ? "1px solid rgba(184,122,220,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                        cursor:"pointer",minWidth:90,transition:"all 0.3s",WebkitAppearance:"none",appearance:"none" }}>
+                      <span style={{ fontSize:28 }}>{f.emoji}</span>
+                      <span style={{ fontSize:12,color:"#c0b4d8",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{pickLang(f.label, lang)}</span>
+                    </button>
+                  ))}
+                </div>
+                {onbFeeling >= 0 && (
+                  <div style={{ marginTop:24,fontSize:14,color:"#b8acd0",fontFamily:"'Inter',sans-serif",lineHeight:1.7,animation:"fadeUp 0.4s ease-out" }}>
+                    {pickLang(onbFeeling === 0 ? ONB_I18N.mirror0 : onbFeeling === 1 ? ONB_I18N.mirror1 : ONB_I18N.mirror2, lang)}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {onbStep === 2 && (
+              <div key="b2" style={{ textAlign:"center",maxWidth:380,width:"100%",animation:"fadeUp 0.55s ease-out" }}>
+                <div style={{ fontFamily:"'Jost',sans-serif",fontSize:22,fontWeight:300,letterSpacing:1.5,color:"#f0e8ff",marginBottom:8 }}>
+                  {pickLang(ONB_I18N.intTitle, lang)}
+                </div>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,color:"#8878a8",marginBottom:24 }}>
+                  {pickLang(ONB_I18N.intSub, lang)}
+                </div>
+                <div style={{ display:"flex",flexWrap:"wrap",justifyContent:"center",gap:10,marginBottom:24 }}>
+                  {ONB_I18N.chips.map((ch, i) => {
+                    const sel = onbIntention === pickLang(ch, lang);
+                    return (
+                      <button key={i} onClick={() => setOnbIntention(pickLang(ch, lang))}
+                        style={{ padding:"10px 20px",borderRadius:100,fontSize:13.5,letterSpacing:1,fontFamily:"'Jost',sans-serif",fontWeight:300,cursor:"pointer",
+                          background: sel ? "rgba(184,122,220,0.22)" : "rgba(255,255,255,0.04)",
+                          border: sel ? "1px solid rgba(184,122,220,0.6)" : "1px solid rgba(255,255,255,0.12)",
+                          color: sel ? "#e0d0f4" : "#b0a4c8",
+                          transition:"all 0.25s",WebkitAppearance:"none",appearance:"none" }}>
+                        {pickLang(ch, lang)}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button onClick={finishOnb}
+                  style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:"1px solid rgba(184,122,220,0.5)",background:"linear-gradient(135deg,rgba(184,122,220,0.28),rgba(184,122,220,0.14))",color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:"0 4px 20px rgba(184,122,220,0.22)",WebkitAppearance:"none",appearance:"none" }}>
+                  {pickLang(ONB_I18N.intDone, lang)}
+                </button>
+              </div>
+            )}
+
+            <div style={{ display:"flex",gap:9,position:"absolute",bottom:40 }}>
+              {[0,1,2].map(i => (
+                <div key={i} style={{ width:i===onbStep?22:7,height:7,borderRadius:6,background:i===onbStep?c:"rgba(255,255,255,0.18)",transition:"all 0.3s ease" }} />
               ))}
             </div>
-
-            {/* Devam / Başla */}
-            <button onClick={last ? finish : () => setTutorialStep(v => v + 1)}
-              style={{ minWidth:180,padding:"13px 34px",borderRadius:26,border:`1px solid ${rgba(c,0.5)}`,background:`linear-gradient(135deg,${rgba(c,0.28)},${rgba(c,0.14)})`,color:"#f4eeff",fontSize:14,letterSpacing:2.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",fontWeight:300,boxShadow:`0 4px 20px ${rgba(c,0.22)}` }}>
-              {pickLang(last ? TUTORIAL_I18N.start : TUTORIAL_I18N.next, lang)}
-            </button>
           </div>
         );
       })()}
@@ -9507,7 +9527,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
             {/* Kartlar: kart tepesi çizgilere TAM denk gelir (px konum) */}
             <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
-              <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{ setShowNedir(false); setScreen("mandala"); }}
+              <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{
+                  setShowNedir(false);
+                  const done = (() => { try { return localStorage.getItem("sakin_onb_baglan"); } catch(_) { return null; } })();
+                  if (done) { setScreen("mandala"); return; }
+                  setOnbPath("baglan"); setOnbStep(0); setOnbFeeling(-1); setOnbIntention(""); setOnbBreathSec(0);
+                }}
                 style={cardBase}>
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
