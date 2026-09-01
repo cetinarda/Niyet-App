@@ -1,11 +1,11 @@
 {
   "_comment_TR": "DİKKAT: Bu dosya, MAĞAZALARDA CANLI OLAN sürümü bildirir, repodaki sürümü DEĞİL. Uygulama bunu okur ve kendi APP_VERSION'ından büyükse kullanıcıya 'yeni sürüm var' bildirimi gösterip mağazaya yönlendirir. Sürüm bump'ıyla BİRLİKTE güncellenmemelidir; yalnızca yeni sürüm mağazada GERÇEKTEN YAYINLANDIKTAN SONRA güncellenir. Aksi halde kullanıcılar olmayan bir güncelleme için uyarılır. Bu dosya artık scripts/check-store-versions.mjs + .github/workflows/store-version-watch.yml tarafından OTOMATİK güncelleniyor (günlük); elle düzenlemeye normalde gerek yok.",
   "_comment_PLATFORM": "ios/android alanları platform bazlıdır, App Store ve Play Store farklı sürümlerde olabilir, her platform kendi alanını okur. Üst seviyedeki 'version' alanı 1.3.6 ve ÖNCESİ istemciler için geriye uyumluluk amacıyla duruyor ve ikisinin KÜÇÜĞÜNE eşittir (böylece eski istemci hiçbir platformda olmayan bir sürüme yönlendirilmez). Silmeyin.",
-  "version": "1.3.8",
+  "version": "1.3.9",
   "build": 1,
   "min_supported": "1.2.0",
   "ios": {
-    "version": "1.3.8",
+    "version": "1.3.9",
     "release_notes_tr": "",
     "release_notes_en": ""
   },
