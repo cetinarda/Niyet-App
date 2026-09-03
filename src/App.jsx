@@ -6519,6 +6519,40 @@ export default function SakinApp() {
     return () => { alive = false; };
   }, [birthCity, birthDate]);
 
+  // ── DOĞUM BİLGİSİNİ KAYDET: TEK KAPI, "YA HEPSİ YA HİÇBİRİ" ───────────────
+  // KÖK SEBEP (denetimde bulundu): üç ayrı form akışı (Ailesi düzenlemesi,
+  // Keşfet onboarding'i, giriş formu) aynı hatayı üç kez tekrarlıyordu:
+  // ÖNCE tarih ve saati yazıp SONRA şehri doğruluyorlardı. Şehir tanınmazsa
+  // erken `return` ediliyor, tarih/saat KAYDEDİLMİŞ ama şehir ESKİ kalıyordu.
+  // Kullanıcı "şehri değiştirdim" sanıyor, oysa yalnızca tarihi değişmiş
+  // oluyordu; yükselen de eşleşmeyen bir tarih-şehir çiftinden hesaplanıyordu.
+  // Artık doğrulama YAZMADAN ÖNCE yapılıyor ve üç akış da buradan geçiyor,
+  // yani kural bir daha üç ayrı yerde ayrışamaz.
+  //
+  // İKİ KİP:
+  //  strict  → Kaydet butonları. Bir alan geçersizse HİÇBİR ŞEY yazılmaz,
+  //            uyarı gösterilir, form açık kalır (girilenler kaybolmaz).
+  //  lenient → "Geç" yolları. Tanınmayan şehir sessizce atlanır ama yazılan
+  //            tarih/saat KAYDEDİLİR. Kullanıcı şimdi uğraşmak istemiyor diye
+  //            girdiği her şeyi kaybetmemeli.
+  // lenient kipinde eskiden kayıtlı şehir SİLİNMEZ: kullanıcı yalnızca
+  // tarihini düzeltiyor olabilir, doğum şehri zaten değişmez bir bilgi.
+  const saveBirthInputs = ({ mode = "strict", dateRequired = false } = {}) => {
+    const cityOk = !birthCityInput || !!lookupCity(birthCityInput);
+    if (mode === "strict") {
+      const dateMissing = dateRequired
+        ? !birthInput
+        : ((birthTimeInput || birthCityInput) && !birthInput);
+      if (dateMissing) { setDateWarn(true); return "dateMissing"; }
+      if (!cityOk) { setDateWarn(false); setCityWarn(true); return "cityUnknown"; }
+    }
+    setDateWarn(false); setCityWarn(false);
+    if (birthInput)     { try { localStorage.setItem("sakin_birth_date", birthInput); } catch(_) {} setBirthDate(birthInput); markStep("birth"); }
+    if (birthTimeInput) { try { localStorage.setItem("sakin_birth_time", birthTimeInput); } catch(_) {} setBirthTime(birthTimeInput); }
+    if (birthCityInput && cityOk) { try { localStorage.setItem("sakin_birth_city", birthCityInput); } catch(_) {} setBirthCity(birthCityInput); }
+    return "ok";
+  };
+
   // rehber screen is now enabled on iOS via the mirror portal
   // Yol seçimi ekranı açılınca sarmalayıcıyı ölç (çizgi-kart bağlantısı için).
   useEffect(() => {
@@ -7785,17 +7819,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           </div>
           <div style={{ display:"flex",gap:8,marginTop:4 }}>
             <button onClick={()=>{
-                // Doğum tarihi/saati HER ZAMAN kaydedilsin (kaybolmasın). Şehir
-                // tanınmıyorsa: yanlış yükselen üretmemek için o şehri kaydetme +
-                // uyarı göster + formu açık tut (kullanıcı düzeltebilsin). Save artık
-                // hiçbir durumda "hiçbir şey yapmadan" takılmaz.
-                if(!birthInput){ setDateWarn(true); setAilesiEditBirth(true); return; } // geçerli tarih şart, sessiz başarısızlık yok
-                setDateWarn(false);
-                localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth");
-                if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); setAilesiEditBirth(true); return; }
-                setCityWarn(false);
-                if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
+                // Tarih burada ZORUNLU (var olan bilgiyi düzenleme ekranı).
+                // Geçersizse hiçbir şey yazılmaz, form açık kalır: eskiden
+                // tarih/saat yazılıp şehir eski kaldığı için kullanıcı
+                // düzenlemenin yarısını kaydetmiş oluyordu.
+                if (saveBirthInputs({ dateRequired: true }) !== "ok") { setAilesiEditBirth(true); return; }
                 setAilesiEditBirth(false);
               }}
               style={{ flex:1,background:"linear-gradient(135deg,rgba(184,164,216,0.35),rgba(122,80,150,0.3))",border:"1px solid rgba(184,164,216,0.5)",borderRadius:100,padding:"9px 14px",color:"#fff",fontSize:12,letterSpacing:1.5,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
@@ -9562,6 +9590,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           stop();
           if (onbStep >= LAST) { finish(); return; }
           if (!isB && onbStep >= 2 && !birthInput && !birthDate) { finish(); return; }
+          // ŞEHİR ADIMINI GEÇERKEN KAYDET. Eskiden kayıt YALNIZCA "Haritamı
+          // çıkar" butonunda yapılıyordu: kullanıcı tarihini/saatini yazıp son
+          // adımda "Geç" derse yazdıklarının hepsi uçuyor, harita animasyonu
+          // ve galaktik kimlik kartı bomboş açılıyordu. Geçerken de yazıyoruz;
+          // şehir tanınmadıysa lenient kip onu atlar ama tarih/saati korur.
+          if (!isB && onbStep === 4) { saveBirthInputs({ mode: "lenient" }); setOnbStep(5); return; }
           setOnbStep(onbStep + 1);
         };
         const nextStep = () => { stop(); setOnbStep(Math.min(onbStep + 1, LAST)); };
@@ -9569,15 +9603,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // Doğum bilgisini KAYDET, sonra harita animasyonuna geç. astro/yukselen
         // yalnızca COMMIT edilmiş state'ten türüyor (birthDate/Time/City),
         // kart bunu bekliyor: input state'i yetmez.
-        const commitBirth = () => {
-          if (birthInput) { try { localStorage.setItem("sakin_birth_date", birthInput); } catch(_) {} setBirthDate(birthInput); markStep("birth"); }
-          if (birthTimeInput) { try { localStorage.setItem("sakin_birth_time", birthTimeInput); } catch(_) {} setBirthTime(birthTimeInput); }
-          // Tanınmayan şehir kaydedilmez: yanlış yükselen üretmektense uyar.
-          if (birthCityInput && !lookupCity(birthCityInput)) { setCityWarn(true); return false; }
-          setCityWarn(false);
-          if (birthCityInput) { try { localStorage.setItem("sakin_birth_city", birthCityInput); } catch(_) {} setBirthCity(birthCityInput); }
-          return true;
-        };
+        // Onboarding'de tarih ZORUNLU DEĞİL (kullanıcı adımları geçebiliyor).
+        // Şehir tanınmazsa hiçbir şey yazılmaz ve şehir adımında kalınır.
+        const commitBirth = () => saveBirthInputs() === "ok";
 
         const L = (k) => pickLang(ONB_I18N[k], lang);
         // Ortak stiller: prototipin .btn / .btn.ghost / .field / .eyebrow / h2
@@ -10173,15 +10201,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
                   onClick={()=>{
-                    // Onboarding atlanabilir: hiçbir şey girilmediyse geç. Ama bir şey
-                    // girilip tarih geçersizse sessiz geçme, uyar.
-                    if((birthTimeInput || birthCityInput) && !birthInput){ setDateWarn(true); return; }
-                    setDateWarn(false);
-                    if(birthInput){ localStorage.setItem("sakin_birth_date", birthInput); setBirthDate(birthInput); markStep("birth"); }
-                    if(birthTimeInput){ localStorage.setItem("sakin_birth_time", birthTimeInput); setBirthTime(birthTimeInput); }
-                    if(birthCityInput && !lookupCity(birthCityInput)){ setCityWarn(true); return; }
-                    setCityWarn(false);
-                    if(birthCityInput){ localStorage.setItem("sakin_birth_city", birthCityInput); setBirthCity(birthCityInput); }
+                    // Bu form tamamen atlanabilir (hiçbir şey girilmemişse
+                    // "Atla" davranışı korunuyor), o yüzden tarih zorunlu değil.
+                    // Ama saat/şehir girilip tarih boşsa ya da şehir tanınmazsa
+                    // HİÇBİR ŞEY yazılmaz: yarım kaydedilmiş düzenleme olmaz.
+                    if (saveBirthInputs() !== "ok") return;
                     setShowBirthForm(false);
                     // Form bir ekrandan (harita / İçsel Ayna) istendiyse ORAYA dön, 
                     // "Atla" dendiğinde kullanıcıyı girişe/pop-up'a atmak şikayet konusuydu.
