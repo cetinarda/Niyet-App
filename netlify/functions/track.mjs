@@ -64,6 +64,30 @@ function safeId(id) {
   return /^[A-Za-z0-9_-]{8,64}$/.test(id) ? id : null;
 }
 
+// ISO hafta anahtari ("2026-W36"). Kolektif nabiz (Orkestra Modu Faz 1)
+// haftalik pencerelerle calisiyor; hafta anahtari SUNUCU saatinden uretiliyor
+// (istemci gondermez, saat kaymasi/oynama olmaz). ISO-8601: hafta Pazartesi
+// baslar, yilin ilk Persembesini iceren hafta 1. hafta.
+export function isoWeek(ts) {
+  const d = new Date(ts);
+  const day = (d.getUTCDay() + 6) % 7;            // Pazartesi = 0
+  d.setUTCDate(d.getUTCDate() - day + 3);          // bu haftanin Persembesi
+  const firstThu = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+  const week = 1 + Math.round(((d - firstThu) / 86400000 - 3 + ((firstThu.getUTCDay() + 6) % 7)) / 7);
+  return d.getUTCFullYear() + "-W" + String(week).padStart(2, "0");
+}
+
+// Bir sayac haritasina (niyet kelimeleri / cakralar) guvenli artis. Anahtar
+// onceden tanimli chip'lerden gelir (kisisel serbest metin DEGIL) ama yine de
+// uzunluk ve harita boyutu sinirlanir: bozuk/istismar girdisi blob'u sismesin.
+function bumpMap(map, key, cap = 40) {
+  if (typeof key !== "string") return;
+  const k = key.slice(0, 32);
+  if (!k) return;
+  if (map[k] === undefined && Object.keys(map).length >= cap) return; // yeni anahtar icin doluysa ekleme
+  map[k] = (map[k] || 0) + 1;
+}
+
 // Bir demeti (batch) mevcut kayda birlestir. Saf fonksiyon (test edilebilir).
 export function mergeBatch(rec, body, now) {
   if (!rec) rec = { first: now, last: now, p: "web", v: "", lang: "tr", prem: false, days: [], m: {}, c: {} };
@@ -79,6 +103,18 @@ export function mergeBatch(rec, body, now) {
   const setMilestone = (name, ts) => { if (!rec.m[name]) rec.m[name] = ts || now; };
   const bump = (name, by) => { rec.c[name] = (rec.c[name] || 0) + (by || 1); };
 
+  // ── KOLEKTIF NABIZ (Orkestra Modu Faz 1) ──────────────────────────────────
+  // Haftalik sayaclar kullanicinin KENDI kaydinda tutulur (rec.wc). Boylece
+  // ayri bir "haftalik toplam" blob'una her demette yazmak gerekmez: o blob bir
+  // yazma sicak noktasi olur, get+set atomik olmadigi icin es zamanli artislar
+  // KAYBOLURDU. Burada her kullanici yalnizca kendi kaydini yazar (yaris yok);
+  // haftalik toplam OKUMA aninda (pulse.mjs) kullanici listesi taranarak
+  // hesaplanir; report.mjs'in kanitlanmis listeleme deseni.
+  // Hafta degisince sayac otomatik sifirlanir (yalnizca ICINDE BULUNULAN
+  // haftanin verisi tutulur, gecmis hafta birikmez).
+  const week = isoWeek(now);
+  if (!rec.wc || rec.wc.wk !== week) rec.wc = { wk: week, nefes: 0, freqSec: 0, words: {}, chakras: {} };
+
   for (const it of (body.ev || [])) {
     if (!it || typeof it.e !== "string") continue;
     const ts = typeof it.t === "number" ? it.t : now;
@@ -87,7 +123,14 @@ export function mergeBatch(rec, body, now) {
     else if (e === "birth_view") setMilestone("birth_view", ts);
     else if (e === "profile_complete") setMilestone("profile_complete", ts);
     else if (e === "purchase") setMilestone("purchase", ts);
-    else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); }
+    else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++; }
+    else if (e === "freq_sec") {
+      // Ses/cakra frekans dinleme saniyesi (istemci ton durunca delta gonderir).
+      const n = typeof it.n === "number" && it.n > 0 ? Math.min(it.n, 36000) : 0;
+      if (n) { bump("freqSec", n); rec.wc.freqSec += n; }
+    }
+    else if (e === "niyet_word") bumpMap(rec.wc.words, it.w);       // onceden tanimli niyet chip'i
+    else if (e === "chakra_pick") bumpMap(rec.wc.chakras, it.w);    // secilen cakra adi
     else if (e === "screen") {
       const s = typeof it.s === "string" ? it.s : "";
       if (!s) continue;
