@@ -852,19 +852,17 @@ const SOUL_TXT = {
   past:       { tr:"Önceki yaşam arketipi", en:"Past-life archetype", de:"Archetyp früherer Leben", es:"Arquetipo de vidas pasadas", pt:"Arquétipo de vidas passadas", fr:"Archétype des vies passées", ja:"過去世の元型" },
   purpose:    { tr:"Geliş sebebi", en:"Why you came", de:"Warum du kamst", es:"Por qué viniste", pt:"Porque vieste", fr:"Pourquoi tu es venu", ja:"来た理由" },
   strength:   { tr:"Güçlü yönü", en:"Strongest trait", de:"Stärkste Seite", es:"Mayor fortaleza", pt:"Maior força", fr:"Force principale", ja:"最も強い面" },
-  full:       { tr:"Tam profil", en:"Full profile", de:"Vollständiges Profil", es:"Perfil completo", pt:"Perfil completo", fr:"Profil complet", ja:"詳細プロフィール" },
   // "Ben" ekranından doğrudan Ruh Profili'nin eşleşme ekranına açılır
   // (?go=pair). Kullanıcı isteği: ikili uyuma tek dokunuşla ulaşmak.
   pair:       { tr:"İkili uyumuna bak", en:"See your compatibility", de:"Eure Übereinstimmung ansehen", es:"Ver vuestra compatibilidad", pt:"Ver a vossa compatibilidade", fr:"Voir votre compatibilité", ja:"ふたりの相性を見る" },
-  // Kullanıcı SoulID'yi hiç açmadıysa özet yazılmamış olur. Boş kutu yerine
-  // ne yapması gerektiğini söyleyen tek satırlık davet gösterilir.
-  empty:      { tr:"Ruh Profili'ni bir kez aç, özetin buraya gelsin.",
-                en:"Open Soul Profile once and your summary will appear here.",
-                de:"Öffne das Seelenprofil einmal, dann erscheint deine Zusammenfassung hier.",
-                es:"Abre el Perfil del Alma una vez y tu resumen aparecerá aquí.",
-                pt:"Abre o Perfil da Alma uma vez e o teu resumo aparecerá aqui.",
-                fr:"Ouvre le Profil de l'Âme une fois et ton résumé apparaîtra ici.",
-                ja:"ソウルプロフィールを一度開くと、ここに要約が表示されます。" },
+  // Butonun altındaki merak satırı: kimin ekleneceğini kullanıcıya sordurur.
+  pairSub:    { tr:"Senin haritan hazır. Peki ya o?",
+                en:"Your chart is ready. And theirs?",
+                de:"Deine Karte ist bereit. Und ihre?",
+                es:"Tu carta está lista. ¿Y la suya?",
+                pt:"O teu mapa está pronto. E o dele?",
+                fr:"Ta carte est prête. Et la sienne ?",
+                ja:"あなたの地図は準備できています。相手は？" },
 };
 // "Ne sorabilirim?" açılır listesinin üstündeki nazik açıklama (kullanıcı
 // isteği: "bunlar örnek sorular, istediğini sorabilirsin ibaresi koy").
@@ -1041,6 +1039,14 @@ const getFreqData = (lang) => {
       aciklama: t.aciklama?.[lang] || f.aciklama,
       etkiler: t.etkiler?.[lang] || f.etkiler };
   });
+};
+
+// Burç glifleri: "Ben" ekranındaki ikili uyum butonunda kullanıcının kendi
+// burcunu göstermek için. zodiacSign() TÜRKÇE ad döndürüyor, eşleme ona göre
+// (anahtar Türkçe, glif her dilde aynı).
+const ZODIAC_GLYPH = {
+  "Koç":"♈","Boğa":"♉","İkizler":"♊","Yengeç":"♋","Aslan":"♌","Başak":"♍",
+  "Terazi":"♎","Akrep":"♏","Yay":"♐","Oğlak":"♑","Kova":"♒","Balık":"♓",
 };
 
 // ── I CHING: GÜNÜN ÖĞÜDÜ ─────────────────────────────────────────────────────
@@ -5627,7 +5633,6 @@ export default function SakinApp() {
   // RUH PROFİLİ ÖZETİ: SoulID embed'i (aynı origin) `sakin_soul_summary`
   // anahtarına yazıyor. Kullanıcı SoulID'yi kapatıp Ben'e döndüğünde taze
   // veriyi görsün diye embed her kapandığında yeniden okunuyor (soulReloadKey).
-  const [showSoul, setShowSoul] = useState(false);
   const [soulReloadKey, setSoulReloadKey] = useState(0);
   const soulSummary = useMemo(() => {
     try {
@@ -11926,86 +11931,48 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
-          {/* ── RUH PROFİLİ ── (kullanıcı: "Human Design gibi Ruh Profili
-              butonu koy, HD'nin üstüne; temel bilgileri ve Tam profil butonunu
-              ekle"). HD kutusuyla BİREBİR aynı kalıp: açılır kapanır başlık +
-              içerik + alt satırda tam uygulamaya giden düğme.
-              Veri SoulID'den geliyor, host hesaplamıyor (bkz. SOUL_TXT notu).
-              Özet henüz yoksa kutu YİNE görünür: boş bırakmak yerine "bir kez
-              aç" daveti gösterip aynı düğmeyle oraya götürüyor. */}
-          <div style={{ marginBottom:20,position:"relative" }}>
-            <button onClick={()=>setShowSoul(v=>!v)}
-              style={{
-                WebkitAppearance:"none",appearance:"none",
-                width:"100%",background:"rgba(232,192,122,0.07)",
-                border:"1px solid rgba(232,192,122,0.26)",
-                borderRadius:14,padding:"12px 18px",cursor:"pointer",
-                display:"flex",alignItems:"center",justifyContent:"space-between",
-                fontFamily:"'Jost',sans-serif",fontWeight:300,color:"#e8c07a",transition:"all 0.2s",
-              }}>
-              <span style={{ fontSize:13,letterSpacing:2 }}>{pickLang(SOUL_TXT.title, lang)}</span>
-              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",transform:showSoul?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
-            </button>
-            {showSoul && (
-            <div style={{ marginTop:8,padding:"16px 18px",borderRadius:17,
-              background:"linear-gradient(160deg,rgba(232,192,122,0.10),rgba(255,255,255,0.02))",
-              border:"1px solid rgba(232,192,122,0.22)" }}>
-              {soulSummary ? (<>
-                <div style={{ display:"flex",alignItems:"center",gap:9,marginBottom:12 }}>
-                  {soulSummary.emoji && <span style={{ fontSize:20,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
-                  <span style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#efe9f8",fontFamily:"'Jost',sans-serif" }}>
-                    {soulSummary.race}
-                  </span>
-                </div>
-                {/* Etiket + değer satırları. Değerler uzun olabildiği için
-                    yan yana değil ALT ALTA: dar ekranda kırpılmasın. */}
-                <div style={{ display:"flex",flexDirection:"column",gap:9 }}>
-                  {[
-                    [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
-                    [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
-                    [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
-                    [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
-                    [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
-                  ].filter(([, v]) => !!v).map(([lbl, val]) => (
-                    <div key={lbl}>
-                      <div style={{ fontSize:9.5,letterSpacing:1.4,color:"rgba(232,192,122,0.8)",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:2 }}>{lbl}</div>
-                      <div style={{ fontSize:13,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{val}</div>
-                    </div>
-                  ))}
-                </div>
-              </>) : (
-                <div style={{ fontSize:12.5,color:"#8f899e",fontFamily:"'Inter',sans-serif",lineHeight:1.7 }}>
-                  {pickLang(SOUL_TXT.empty, lang)}
-                </div>
-              )}
-              <button onClick={()=>{ try{haptic();}catch(_){}
-                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
-                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:14,
-                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-                  background:"rgba(232,192,122,0.12)",border:"1px solid rgba(232,192,122,0.3)",
-                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#f0d29a",
-                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                {pickLang(SOUL_TXT.full, lang)}
-                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
-              </button>
-              {/* İKİLİ UYUM: Ruh Profili'nin eşleşme ekranını DOĞRUDAN açar.
-                  ?go=pair ile açılıyor, /pair/index.html'e değil: köprü
-                  (kimlik üretimi) welcome sayfasında çalışıyor, doğrudan
-                  derin bağlantı onu atlar ve kullanıcının kendi kimliği hiç
-                  oluşmaz. Böylece sonrası normal SoulID girişiyle aynı akıyor. */}
-              <button onClick={()=>{ try{haptic();}catch(_){}
-                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
-                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:8,
-                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
-                  background:"rgba(232,192,122,0.06)",border:"1px solid rgba(232,192,122,0.22)",
-                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#e0c193",
-                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
-                {pickLang(SOUL_TXT.pair, lang)}
-                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
-              </button>
-            </div>
-            )}
-          </div>
+          {/* ── İKİLİ UYUM ─────────────────────────────────────────────────
+              Buradaki "Ruh Profili" kutusu KALDIRILDI (kullanıcı isteği):
+              aynısı Keşfet panelinde zaten vardı, özet bilgiler de artık
+              Galaktik Kimlik kartının içinde. Yerine ikili uyuma götüren tek
+              buton kondu.
+
+              NEDEN BÖYLE GÖRÜNÜYOR: çevresindeki her şey düz, sönük bir hap
+              buton. Bu ise bir SORU soruyor. Solda kendi burcunun altın
+              halkası, yanında kesik çizgili boş bir halka ve "?": eksik olan
+              ikinci kişi görsel olarak duruyor, kullanıcı boşluğu doldurma
+              isteği hissediyor. Aynı iki halka SoulID'nin eşleşme ekranında
+              da var, yani buton varacağı yeri şimdiden gösteriyor. */}
+          <button onClick={()=>{ try{haptic();}catch(_){}
+              handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
+            style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginBottom:20,
+              display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",
+              background:"linear-gradient(120deg, rgba(232,192,122,0.13), rgba(184,122,220,0.10) 60%, rgba(255,255,255,0.02))",
+              border:"1px solid rgba(232,192,122,0.34)",borderRadius:18,padding:"15px 16px",
+              boxShadow:"0 0 26px rgba(232,192,122,0.10)" }}>
+            {/* İki halka: sen + boşluk. Üst üste binerek "ikili" hissi veriyor. */}
+            <span style={{ position:"relative",width:70,height:44,flexShrink:0 }}>
+              <span style={{ position:"absolute",left:0,top:0,width:44,height:44,borderRadius:"50%",
+                border:"1px solid rgba(232,192,122,0.75)",
+                background:"radial-gradient(circle at 50% 35%, rgba(232,192,122,0.22), transparent 70%)",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                fontSize:18,lineHeight:1,color:"#f0d29a" }}>
+                {ZODIAC_GLYPH[astro?.burc] || "✦"}
+              </span>
+              <span style={{ position:"absolute",left:26,top:0,width:44,height:44,borderRadius:"50%",
+                border:"1px dashed rgba(184,122,220,0.75)",background:"rgba(12,8,20,0.72)",
+                display:"flex",alignItems:"center",justifyContent:"center",
+                fontSize:16,lineHeight:1,color:"#c9a8e8" }}>?</span>
+            </span>
+            <span style={{ flex:1,minWidth:0 }}>
+              <span style={{ display:"block",fontSize:14,color:"#f4e6cc",fontFamily:"'Jost',sans-serif",
+                letterSpacing:0.8,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
+              <span style={{ display:"block",fontSize:11.5,color:"#a89ab8",fontFamily:"'Inter',sans-serif",lineHeight:1.45 }}>
+                {pickLang(SOUL_TXT.pairSub, lang)}
+              </span>
+            </span>
+            <span style={{ flexShrink:0,fontSize:15,color:"rgba(232,192,122,0.7)" }}>›</span>
+          </button>
           {/* ── TEMEL HUMAN DESIGN ── (kullanıcı: "12. ev gizli benlik üstüne
               human design bilgilerini de gir temel düzeyde")
               Tip · strateji · otorite · profil. Tam bodygraph, kanallar ve kapı
@@ -12392,12 +12359,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           ctx.fillText(displayName.toLocaleUpperCase(lang), 540, cy);
           cy += 58;
 
-          // 6. Burç · Yaşam Yolu
-          ctx.fillStyle = "#a890c8";
-          ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
-          const subtitle = `${burc !== "-" ? burc.toLocaleUpperCase(lang) : ""}${yasamYolu !== "-" ? ` · ${t("gid_life_path")} ${yasamYolu}` : ""}`;
-          if (subtitle.trim()) ctx.fillText(subtitle, 540, cy);
-          cy += 52;
+          // 6. İsim altındaki "burç · yaşam yolu" satırı KALDIRILDI, önizlemeyle
+          //    aynı (kullanıcı isteği: ikisi de kartın kendi kutularında ve
+          //    açıklama bloklarında zaten var). Yalnızca nefes payı bırakılıyor.
+          cy += 18;
 
           // ── ÖN ÖLÇÜM: boşluğu dengeli dağıt ──────────────────────────────
           // Kartın içeriği kullanıcıya göre değişiyor (element verisi var/yok,
@@ -12445,9 +12410,29 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             if (lpDesc) descSrc.push([`${t("gid_life_path")} ${yasamYolu}`, lpDesc]);
             if (pyDesc) descSrc.push([`${t("gid_personal_year_full")} ${kisiselYil}`, pyDesc]);
           }
-          const statsH = 4 * (BOX_H + BOX_GAP) - BOX_GAP;
+          // Stat kutuları artık 3 SATIR (6 kutu): yaşam yolu ve kişisel yıl
+          // kaldırıldı, ölçüm de ona göre (4 yazılı kalsaydı kart altında
+          // ölü boşluk kalırdı).
+          const statsH = 3 * (BOX_H + BOX_GAP) - BOX_GAP;
           const elemH  = elemDist ? 30 + 2 * (EL_H + EL_GAP) - EL_GAP : 0;
-          const fixedH = statsH + (elemH ? GAP_ELEM + elemH : 0) + (hdOn ? GAP_HD + HD_H : 0);
+          // RUH PROFİLİ ÖZETİ: satırlar ÖNCEDEN ölçülüyor ve aynı ölçüm çizimde
+          // kullanılıyor. Ölçmeden eklemek kartı BOTTOM_LIMIT'in altına taşırır
+          // (alt bilgi metninin üstüne biner).
+          const GAP_SOUL = 26;
+          const soulRowsSrc = soulSummary ? [
+            [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+            [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+            [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
+            [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+            [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
+          ].filter(([, v]) => !!v) : [];
+          const soulRows = soulRowsSrc.map(([lbl, v]) => [lbl, wrapLines(v, 1080 - COL_X[0] * 2 - 44, 2)]);
+          const soulRaceH = (soulSummary && soulSummary.race) ? 64 : 0;
+          const soulH = (soulRows.length || soulRaceH)
+            ? 30 + soulRaceH + soulRows.reduce((a, [, ls]) => a + 8 + 40 + ls.length * 30, 0)   // 30 = baslik
+            : 0;
+          const fixedH = statsH + (soulH ? GAP_SOUL + soulH : 0)
+            + (elemH ? GAP_ELEM + elemH : 0) + (hdOn ? GAP_HD + HD_H : 0);
           // Açıklama satır sayısı: 4'ten başlayıp SIĞANA kadar azalt. Hiç
           // sığmıyorsa açıklama bloğu tamamen düşer (üstteki kutuya binmez).
           let descRows = [];
@@ -12476,8 +12461,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             [t("gid_draconic"),              dra,                "#d8c8f0"],
             [pickLang(NODE_TXT.north, lang), kuzD,               "#a8c8f0"],
             [pickLang(NODE_TXT.south, lang), guyD,               "#c0b0a0"],
-            [t("gid_life_path_card"),        String(yasamYolu),  "#d0c8e8"],
-            [t("gid_personal_year_card"),    String(kisiselYil), "#d0c8e8"],
+            // YAŞAM YOLU / KİŞİSEL YIL kutuları kaldırıldı: açıklamalı
+            // blokları kartın altında zaten var (kullanıcı isteği).
           ];
           stats.forEach(([label, val, color], i) => {
             const bx = COL_X[i % 2], by = cy + Math.floor(i / 2) * (BOX_H + BOX_GAP);
@@ -12497,6 +12482,45 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ctx.fillText(val, bx + 22, by + 72);
           });
           cy += Math.ceil(stats.length / 2) * (BOX_H + BOX_GAP) - BOX_GAP;
+
+          // 7b. RUH PROFİLİ ÖZETİ (varsa): "Ben" ekranındaki ayrı kutudan buraya
+          // taşındı, önizlemeyle aynı sıra. Veri SoulID'nin kendi hesabından
+          // (sakin_soul_summary); yoksa blok hiç çizilmez.
+          if (soulH) {
+            const SOUL_W = 1080 - COL_X[0] * 2;
+            cy += GAP_SOUL + air;
+            ctx.fillStyle = "#7a7090"; ctx.textAlign = "center";
+            ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
+            ctx.fillText(pickLang(SOUL_TXT.title, lang).toLocaleUpperCase(lang), 540, cy);
+            cy += 30;
+            if (soulRaceH) {
+              ctx.fillStyle = "rgba(232,192,122,0.07)";
+              roundRect(ctx, COL_X[0], cy, SOUL_W, 64, 14); ctx.fill();
+              ctx.strokeStyle = "rgba(232,192,122,0.22)"; ctx.lineWidth = 1;
+              roundRect(ctx, COL_X[0], cy, SOUL_W, 64, 14); ctx.stroke();
+              ctx.fillStyle = "#f0d29a"; ctx.textAlign = "left";
+              ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(`${soulSummary.emoji || "✦"}  ${soulSummary.race}`, COL_X[0] + 22, cy + 41);
+              cy += 64;
+            }
+            // Satırlar ÖLÇÜMDE hesaplananlarla aynı (soulRows): çizim ile
+            // ölçüm ayrışırsa kart ya taşar ya boşluk bırakır.
+            soulRows.forEach(([lbl, lines]) => {
+              cy += 8;
+              const h = 40 + lines.length * 30;
+              ctx.fillStyle = "rgba(255,255,255,0.025)";
+              roundRect(ctx, COL_X[0], cy, 1080 - COL_X[0] * 2, h, 14); ctx.fill();
+              ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+              roundRect(ctx, COL_X[0], cy, 1080 - COL_X[0] * 2, h, 14); ctx.stroke();
+              ctx.fillStyle = "#7a7090"; ctx.textAlign = "left";
+              ctx.font = "300 19px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(String(lbl).toLocaleUpperCase(lang), COL_X[0] + 22, cy + 27);
+              ctx.fillStyle = "#d8d0e8";
+              ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
+              lines.forEach((ln, li) => ctx.fillText(ln, COL_X[0] + 22, cy + 56 + li * 30));
+              cy += h;
+            });
+          }
 
           // 8. Element dağılımı (varsa). Veri: Sakin Tasarım embed'inin yazdığı
           // localStorage. SADECE onun tam-harita (11 gezegen ağırlıklı) verisi
@@ -12676,7 +12700,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   )}
                   <input type="text" value={idCardName} onChange={e=>setIdCardName(e.target.value)} placeholder={t("gid_your_name_ph")} maxLength={24}
                     style={{ width:180,textAlign:"center",background:"transparent",border:"none",borderBottom:"1px solid rgba(255,255,255,0.15)",color:"#fff",fontSize:18,fontFamily:"'Jost',sans-serif",letterSpacing:2,marginBottom:6,padding:"3px 0",outline:"none" }}/>
-                  <div style={{ fontSize:10,letterSpacing:3,color:"#a890c8",marginBottom:14,textTransform:"uppercase" }}>{burc !== "-" ? burc : "-"} · {yasamYolu !== "-" ? `${t("gid_life_path_lower")} ${yasamYolu}` : "-"}</div>
+                  {/* İsim altındaki "burç · yaşam yolu" satırı KALDIRILDI
+                      (kullanıcı isteği): ikisi de kartın kendi kutularında ve
+                      aşağıdaki açıklama bloklarında zaten var, üçüncü kez
+                      tekrar etmek kartı kalabalıklaştırıyordu. */}
                 </div>
                 <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5,marginBottom:8 }}>
                   <StatRow label={t("gid_sun_lower")} value={burc} color="#f0c860"/>
@@ -12687,9 +12714,40 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       Kuzey Düğüm üzerinden hesaplanıyor; üçü birlikte okunur. */}
                   <StatRow label={pickLang(NODE_TXT.north, lang)} value={kuzD} color="#a8c8f0"/>
                   <StatRow label={pickLang(NODE_TXT.south, lang)} value={guyD} color="#c0b0a0"/>
-                  <StatRow label={t("gid_yaşam_yolu_lower")} value={yasamYolu}/>
-                  <StatRow label={t("gid_personal_yr_lower")} value={kisiselYil}/>
+                  {/* YAŞAM YOLU / KİŞİSEL YIL kutuları KALDIRILDI (kullanıcı:
+                      "zaten aşağıda var"): ikisinin de açıklamalı bloğu kartın
+                      alt kısmında duruyor, buradaki çıplak sayı tekrardı. */}
                 </div>
+                {/* ── RUH PROFİLİ ÖZETİ ────────────────────────────────────
+                    "Ben" ekranındaki ayrı Ruh Profili kutusundan BURAYA taşındı
+                    (kullanıcı isteği). Veri SoulID'nin kendi hesabından geliyor
+                    (sakin_soul_summary), host hesaplamıyor. Özet henüz yoksa
+                    (Ruh Profili hiç açılmamış) bu blok hiç çizilmez: kartı boş
+                    etiketlerle doldurmaktansa sessiz kalır, kullanıcı Keşfet'ten
+                    Ruh Profili'ni bir kez açınca kendiliğinden dolar. */}
+                {soulSummary && (
+                  <div style={{ display:"flex",flexDirection:"column",gap:5,marginBottom:8 }}>
+                    <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginTop:2,marginBottom:1,textAlign:"center" }}>{pickLang(SOUL_TXT.title, lang)}</div>
+                    {soulSummary.race && (
+                      <div style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 12px",background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.22)",borderRadius:10 }}>
+                        {soulSummary.emoji && <span style={{ fontSize:15,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
+                        <span style={{ fontSize:13,color:"#f0d29a",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{soulSummary.race}</span>
+                      </div>
+                    )}
+                    {[
+                      [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+                      [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+                      [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
+                      [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+                      [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
+                    ].filter(([, v]) => !!v).map(([lbl, val]) => (
+                      <div key={lbl} style={{ padding:"8px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
+                        <div style={{ fontSize:9,letterSpacing:1.6,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{lbl}</div>
+                        <div style={{ fontSize:12,color:"#d8d0e8",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{val}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
                 {/* Doğum bilgisi yoksa: neden boş olduğunu söyle + tek dokunuşla forma götür.
                     Kullanıcı formu "Atla" ile geçtiyse kart yine açılıyor, buradan girebilir. */}
                 {needBirth && (
