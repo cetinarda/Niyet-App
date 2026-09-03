@@ -53,6 +53,15 @@ async function engine() {
   return _engine;
 }
 
+// Tek gövdenin ekliptik boylamı. computeTransit ve computeGateExitDate AYNI
+// hesabı kullansın diye ayrıldı: ikisi ayrışırsa "bugün kapı 41" derken
+// "kapı 41 şu gün bitiyor" başka bir kapıyı tarayabilirdi.
+function bodyLongitude(A, body, date) {
+  if (body === "Sun") return A.SunPosition(date).elon;
+  if (body === "Moon") return A.EclipticGeoMoon(date).lon;
+  return A.Ecliptic(A.GeoVector(A.Body[body], date, true)).elon;
+}
+
 // Ay evresi. Gökyüzü Raporu başlığında kapalıyken bile görünsün diye ayrı
 // fonksiyon: kullanıcı paneli açmadan da ayın nerede olduğunu görüyor.
 // 8 evre, SoulID'nin kullandığı sınırlarla aynı mantık (0..360 açı / 45).
@@ -113,13 +122,10 @@ export async function computeTransit(date = new Date(), lang = "tr") {
   const out = { sun: null, moon: null, gates: [] };
   for (const body of BODIES) {
     let lon = null;
-    try {
-      if (body === "Sun") lon = A.SunPosition(date).elon;
-      else if (body === "Moon") lon = A.EclipticGeoMoon(date).lon;
-      else lon = A.Ecliptic(A.GeoVector(A.Body[body], date, true)).elon;
-    } catch { continue; }
+    try { lon = bodyLongitude(A, body, date); } catch { continue; }
     if (typeof lon !== "number" || Number.isNaN(lon)) continue;
-    const g = pick(longitudeToGate(norm360(lon)));
+    const gl = longitudeToGate(norm360(lon));
+    const g = pick(gl);
     if (!g) continue;
     const row = { body, ...g };
     if (body === "Sun") out.sun = row;
@@ -127,4 +133,84 @@ export async function computeTransit(date = new Date(), lang = "tr") {
     out.gates.push(row);
   }
   return out.sun ? out : null;
+}
+
+// ── BİR TRANSİT KAPISI NE ZAMAN BİTİYOR ────────────────────────────────────
+// Ayna'nın "bu geçiş ne zaman biter" sorusuna GERÇEK cevap vermesi için: bir
+// gövde şu an hangi kapıdaysa, o kapıdan ÇIKIP komşu kapıya geçtiği ilk anı
+// ileriye tarayarak bulur. Uydurma tarih yerine gerçek efemeris.
+//
+// Gövdeler çok farklı hızda ilerler (Ay ~13°/gün, Plüton ~0.003°/gün), o
+// yüzden her gövde için ayrı tarama ufku ve adımı var. Kapı 5.625° geniş;
+// gövde o kapıyı en fazla (kapı_genişliği / günlük_hız) günde geçer, tarama
+// ufku bunun biraz üstünde tutuldu. Retrograd gövdeler kapı sınırında ileri
+// geri gidebilir (birden çok giriş/çıkış); biz İLK çıkışı döndürüyoruz, yani
+// "en yakın ne zaman bu temadan çıkıyorsun" sorusunu yanıtlıyor.
+const SCAN = {
+  Moon:    { horizonDays: 4,     stepHours: 1 },
+  Sun:     { horizonDays: 10,    stepHours: 6 },
+  Mercury: { horizonDays: 40,    stepHours: 6 },
+  Venus:   { horizonDays: 40,    stepHours: 6 },
+  Mars:    { horizonDays: 90,    stepHours: 12 },
+  Jupiter: { horizonDays: 420,   stepHours: 24 },
+  Saturn:  { horizonDays: 1100,  stepHours: 24 },
+};
+
+/**
+ * Verilen gövdenin, verilen tarihte içinde bulunduğu transit kapısından
+ * çıkacağı ilk tarihi bulur.
+ * @param {string} body  "Sun" | "Moon" | "Mercury" | "Venus" | "Mars" | "Jupiter" | "Saturn"
+ * @param {Date} date
+ * @param {string} [lang]
+ * @returns {Promise<{gate:number, exitDate:Date, nextGate:number, days:number, name:string, theme:string, nextName:string, nextTheme:string}|null>}
+ */
+export async function computeGateExitDate(body, date = new Date(), lang = "tr") {
+  let A;
+  try { A = await engine(); } catch { return null; }
+  const cfg = SCAN[body];
+  if (!cfg) return null;
+  const en = lang !== "tr";
+  const gateInfo = (g) => {
+    const info = GATES[String(g)];
+    return info ? { name: en ? info.nEn : info.n, theme: en ? info.tEn : info.t } : { name: "", theme: "" };
+  };
+  let curLon;
+  try { curLon = bodyLongitude(A, body, date); } catch { return null; }
+  if (typeof curLon !== "number" || Number.isNaN(curLon)) return null;
+  const startGate = longitudeToGate(norm360(curLon)).gate;
+
+  const stepMs = cfg.stepHours * 3600 * 1000;
+  const horizonMs = cfg.horizonDays * 86400 * 1000;
+  let prev = date.getTime();
+  let prevGate = startGate;
+  for (let dt = stepMs; dt <= horizonMs; dt += stepMs) {
+    const t = date.getTime() + dt;
+    let lon;
+    try { lon = bodyLongitude(A, body, new Date(t)); } catch { continue; }
+    if (typeof lon !== "number" || Number.isNaN(lon)) continue;
+    const gate = longitudeToGate(norm360(lon)).gate;
+    if (gate !== startGate) {
+      // Kaba adımda değişim yakalandı; ikili aramayla güne indir.
+      let lo = prev, hi = t;
+      for (let i = 0; i < 40 && hi - lo > 3600 * 1000; i++) {
+        const mid = (lo + hi) / 2;
+        let ml;
+        try { ml = bodyLongitude(A, body, new Date(mid)); } catch { break; }
+        const mg = longitudeToGate(norm360(ml)).gate;
+        if (mg === startGate) lo = mid; else hi = mid;
+      }
+      const exitDate = new Date(hi);
+      const cur = gateInfo(startGate), nxt = gateInfo(gate);
+      return {
+        gate: startGate,
+        exitDate,
+        nextGate: gate,
+        days: (hi - date.getTime()) / 86400000,
+        name: cur.name, theme: cur.theme,
+        nextName: nxt.name, nextTheme: nxt.theme,
+      };
+    }
+    prev = t; prevGate = gate;
+  }
+  return null;  // ufuk içinde çıkmıyor (çok yavaş gövde), null döner
 }
