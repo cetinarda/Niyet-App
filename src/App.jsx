@@ -873,8 +873,7 @@ const ORKESTRA_TXT = {
   people:    { tr:"kişi bu hafta seninle bağlandı", en:"people connected with you this week", de:"Menschen haben sich diese Woche mit dir verbunden", es:"personas se conectaron contigo esta semana", pt:"pessoas ligaram-se contigo esta semana", fr:"personnes se sont connectées avec toi cette semaine", ja:"人が今週あなたと共につながりました" },
   breaths:   { tr:"nefes", en:"breaths", de:"Atemzüge", es:"respiraciones", pt:"respirações", fr:"respirations", ja:"回の呼吸" },
   minutes:   { tr:"dakika ses", en:"minutes of sound", de:"Minuten Klang", es:"minutos de sonido", pt:"minutos de som", fr:"minutes de son", ja:"分の音" },
-  topWord:   { tr:"En çok seçilen niyet", en:"Most chosen intention", de:"Meistgewählte Absicht", es:"Intención más elegida", pt:"Intenção mais escolhida", fr:"Intention la plus choisie", ja:"最も選ばれた意図" },
-  reflection:{ tr:"Bu haftanın kolektif yansıması", en:"This week's collective reflection", de:"Kollektive Reflexion dieser Woche", es:"Reflexión colectiva de esta semana", pt:"Reflexão coletiva desta semana", fr:"Reflet collectif de cette semaine", ja:"今週の集合的な振り返り" },
+  chakraMin: { tr:"dakika çakra", en:"minutes of chakra work", de:"Minuten Chakra-Arbeit", es:"minutos de chakra", pt:"minutos de chakra", fr:"minutes de chakra", ja:"分のチャクラ" },
   waking:    { tr:"Topluluk uyanıyor. Bu hafta ilk bağlananlardan biri ol.", en:"The community is waking up. Be one of the first to connect this week.", de:"Die Gemeinschaft erwacht. Sei diese Woche eine der ersten Verbindungen.", es:"La comunidad despierta. Sé de los primeros en conectar esta semana.", pt:"A comunidade está a despertar. Sê um dos primeiros a ligar esta semana.", fr:"La communauté s'éveille. Sois parmi les premiers à te connecter cette semaine.", ja:"コミュニティが目覚めています。今週最初につながる一人になりましょう。" },
 };
 // Giriş ekranındaki panik butonunun metni. Sağ alt köşedeki sabit rozet
@@ -3167,6 +3166,12 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
   const timerRef    = useRef(null);
   const particleRef = useRef(null);
   const chimeCxtRef = useRef(null);
+  // KOLEKTIF NABIZ (Orkestra Modu): bu ekranda geçirilen saniyeleri anonim
+  // ölçüme gönderir. acc = oturumda toplam birikmiş saniye, sent = sunucuya
+  // gönderilmiş saniye; interval her saniye tek tek göndermek yerine, seans
+  // biterken (tPhase active/connected'dan çıkarken ya da unmount'ta) delta
+  // gönderilir. freqListenSec'teki (ses) aynı desen.
+  const chakraTrackRef = useRef({ acc: 0, sent: 0 });
 
   // Seans süresi kullanıldıkça uzar: 30 sn'den başlar, her tamamlanan seansta +5 sn.
   // TAVAN 90 → 120 sn (kullanıcı: "tek seansta 120 saniye olabilir"). Bağlantının
@@ -3275,6 +3280,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         const _k = "sakin_terapi_sec_" + sakinDayKey();
         localStorage.setItem(_k, String((parseInt(localStorage.getItem(_k)) || 0) + 1));
       } catch(_) {}
+      chakraTrackRef.current.acc += 1;
       setElapsed(e => {
         const next = e + 1;
         if (next === dur) setShowCloseEyes(true);
@@ -3290,7 +3296,11 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         return next;
       });
     },1000);
-    return () => clearInterval(timerRef.current);
+    return () => {
+      clearInterval(timerRef.current);
+      const d = chakraTrackRef.current.acc - chakraTrackRef.current.sent;
+      if (d > 0) { try { track("chakra_sec", { n: d }); } catch (_) {} chakraTrackRef.current.sent = chakraTrackRef.current.acc; }
+    };
   },[tPhase]);
 
   useEffect(() => {
@@ -7788,13 +7798,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => {
     if (!isPremium && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
-    setSelectedWords(prev => {
-      const has = prev.includes(w);
-      // Kolektif nabız: kelime EKLENDIĞINDE anonim ölç (chip önceden tanımlı,
-      // kişisel serbest metin değil). Kaldırmada gönderilmez. Opt-out'a saygılı.
-      if (!has && prev.length < 3) { try { track("niyet_word", { w }); } catch (_) {} }
-      return has ? prev.filter(x=>x!==w) : (prev.length<3 ? [...prev,w] : prev);
-    });
+    setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
   };
   const breathLabel = breathStarted ? ({ready:"",inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
 
@@ -7960,11 +7964,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : t("nav_family");   // Keşfet'ten gelindiyse ya da bağlam bilinmiyorsa
   // ── ORKESTRA MODU: KOLEKTIF NABIZ (Faz 1) ─────────────────────────────────
   // Ben ekranindaki Orkestra karti icin haftalik anonim toplamlari ceker
-  // (netlify/functions/pulse.mjs). Sunucu saatlik cache'liyor, ayrica dil
-  // basina yorumu haftalik cache'liyor; istemci de ekran acilisinda bir kez
-  // ceker. Basarisiz olursa kart "topluluk uyaniyor" bos durumuna duser,
-  // asla sahte sayi gostermez. Analitik kapaliysa (opt-out) yine de OKUNUR
-  // (okuma kisisel veri gondermez), sadece kendi katkisi gonderilmez.
+  // (netlify/functions/pulse.mjs): nefes SAYISI, ses SURESI, cakra SURESI.
+  // Yazili yorum YOK (kullanici karari: "uc sayi yeterli"). Sunucu saatlik
+  // cache'liyor; istemci de ekran acilisinda bir kez ceker. Basarisiz olursa
+  // kart "topluluk uyaniyor" bos durumuna duser, asla sahte sayi gostermez.
+  // Analitik kapaliysa (opt-out) yine de OKUNUR (okuma kisisel veri
+  // gondermez), sadece kendi katkisi gonderilmez.
   const [orkestra, setOrkestra] = useState(null);
   const orkestraFetchedRef = useRef(false);
   useEffect(() => {
@@ -7973,7 +7978,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     let alive = true;
     (async () => {
       try {
-        const res = await fetch(`${API_BASE}/.netlify/functions/pulse?lang=${encodeURIComponent(lang)}`);
+        const res = await fetch(`${API_BASE}/.netlify/functions/pulse`);
         if (!res.ok) return;
         const j = await res.json();
         if (alive && j && j.ok) setOrkestra(j);
@@ -12424,9 +12429,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               basıyordu: ekranda görünen "iki parantez" oydu. */}
           {/* ── ORKESTRA MODU: KOLEKTIF NABIZ (Faz 1) ─────────────────────────
               Eski SAHTE "312 kişi" kartı GERÇEK haftalık kolektif nabızla
-              değişti (pulse.mjs). activeUsers>0 ise gerçek sayılar + haftalık
-              AI yorumu; veri yoksa/hata varsa sahte sayı DEĞİL, dürüst bir
-              "topluluk uyanıyor" durumu. Uydurma sosyal kanıt yok. */}
+              değişti (pulse.mjs). Yazılı yorum YOK (kullanıcı kararı): yalnızca
+              üç sayı, nefes SAYISI, ses SÜRESİ, çakra SÜRESİ. Veri yoksa/hata
+              varsa sahte sayı DEĞİL, dürüst bir "topluluk uyanıyor" durumu. */}
           <div style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(255,255,255,0.05))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:17,padding:"20px 20px 18px",marginBottom:24,textAlign:"center",position:"relative" }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#c8b0e8",marginBottom:12 }}>{pickLang(ORKESTRA_TXT.label, lang)}</div>
             <div style={{ marginBottom:14 }}>
@@ -12439,25 +12444,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div style={{ fontSize:15,color:"#e8e0f4",lineHeight:1.5,marginBottom:14 }}>
                   <b style={{ color:"#f0e6ff",fontSize:19 }}>{orkestra.activeUsers}</b> {pickLang(ORKESTRA_TXT.people, lang)}
                 </div>
-                <div style={{ display:"flex",justifyContent:"center",gap:22,flexWrap:"wrap",marginBottom: orkestra.comment || orkestra.topWord ? 16 : 0 }}>
+                <div style={{ display:"flex",justifyContent:"center",gap:22,flexWrap:"wrap" }}>
                   {orkestra.nefes > 0 && (
                     <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.nefes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.breaths, lang)}</div></div>
                   )}
                   {orkestra.freqMinutes > 0 && (
                     <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.freqMinutes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.minutes, lang)}</div></div>
                   )}
+                  {orkestra.chakraMinutes > 0 && (
+                    <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.chakraMinutes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.chakraMin, lang)}</div></div>
+                  )}
                 </div>
-                {orkestra.topWord && (
-                  <div style={{ fontSize:12.5,color:"#b0a4c8",marginBottom: orkestra.comment ? 14 : 0 }}>
-                    {pickLang(ORKESTRA_TXT.topWord, lang)}: <b style={{ color:"#e0d4f8" }}>{orkestra.topWord}</b>
-                  </div>
-                )}
-                {orkestra.comment && (
-                  <div style={{ borderTop:"1px solid rgba(184,164,216,0.18)",paddingTop:13,marginTop:2 }}>
-                    <div style={{ fontSize:9.5,letterSpacing:2,color:"#8878a8",textTransform:"uppercase",marginBottom:6 }}>{pickLang(ORKESTRA_TXT.reflection, lang)}</div>
-                    <div style={{ fontSize:13,color:"#cabfe0",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{orkestra.comment}</div>
-                  </div>
-                )}
               </>
             ) : (
               <div style={{ fontSize:13.5,color:"#9c93b4",lineHeight:1.6,padding:"0 6px" }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
