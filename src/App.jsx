@@ -7965,16 +7965,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // ── ORKESTRA MODU: KOLEKTIF NABIZ (Faz 1) ─────────────────────────────────
   // Ben ekranindaki Orkestra karti icin haftalik anonim toplamlari ceker
   // (netlify/functions/pulse.mjs): nefes SAYISI, ses SURESI, cakra SURESI.
-  // Yazili yorum YOK (kullanici karari: "uc sayi yeterli"). Sunucu saatlik
-  // cache'liyor; istemci de ekran acilisinda bir kez ceker. Basarisiz olursa
-  // kart "topluluk uyaniyor" bos durumuna duser, asla sahte sayi gostermez.
-  // Analitik kapaliysa (opt-out) yine de OKUNUR (okuma kisisel veri
-  // gondermez), sadece kendi katkisi gonderilmez.
+  // Yazili yorum YOK (kullanici karari: "uc sayi yeterli"). Sunucu KISA
+  // sureli cache'liyor (bkz. pulse.mjs AGG_TTL_MS).
+  // ESKIDEN istemci "oturum basina BIR KEZ" cekiyordu (orkestraFetchedRef):
+  // kullanici ses/nefes/cakra yaptiktan sonra Ben ekranina DONSE bile eski
+  // sayilari goruyordu, sayfayi tamamen yenilemesi gerekiyordu (kullanici
+  // bildirdi: "ses suresi dinledim ama yansimadi"). Artik ekrana HER
+  // GIRISTE yeniden cekiliyor: Ben sekmesine her donus taze veri getirir.
   const [orkestra, setOrkestra] = useState(null);
-  const orkestraFetchedRef = useRef(false);
   useEffect(() => {
-    if (screen !== "harita" || orkestraFetchedRef.current) return;
-    orkestraFetchedRef.current = true;
+    if (screen !== "harita") return;
     let alive = true;
     (async () => {
       try {
@@ -7985,7 +7985,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       } catch (_) { /* sessiz: kart bos duruma duser */ }
     })();
     return () => { alive = false; };
-  }, [screen, lang]);
+  }, [screen]);
 
   // SENİN BİLGİLERİN / GALAKTİK KİMLİK KARTI.
   // Keşfet panelinden "Ben" ekranının EN ÜSTÜNE taşındı (kullanıcı isteği).
