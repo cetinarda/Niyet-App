@@ -853,6 +853,9 @@ const SOUL_TXT = {
   purpose:    { tr:"Geliş sebebi", en:"Why you came", de:"Warum du kamst", es:"Por qué viniste", pt:"Porque vieste", fr:"Pourquoi tu es venu", ja:"来た理由" },
   strength:   { tr:"Güçlü yönü", en:"Strongest trait", de:"Stärkste Seite", es:"Mayor fortaleza", pt:"Maior força", fr:"Force principale", ja:"最も強い面" },
   full:       { tr:"Tam profil", en:"Full profile", de:"Vollständiges Profil", es:"Perfil completo", pt:"Perfil completo", fr:"Profil complet", ja:"詳細プロフィール" },
+  // "Ben" ekranından doğrudan Ruh Profili'nin eşleşme ekranına açılır
+  // (?go=pair). Kullanıcı isteği: ikili uyuma tek dokunuşla ulaşmak.
+  pair:       { tr:"İkili uyumuna bak", en:"See your compatibility", de:"Eure Übereinstimmung ansehen", es:"Ver vuestra compatibilidad", pt:"Ver a vossa compatibilidade", fr:"Voir votre compatibilité", ja:"ふたりの相性を見る" },
   // Kullanıcı SoulID'yi hiç açmadıysa özet yazılmamış olur. Boş kutu yerine
   // ne yapması gerektiğini söyleyen tek satırlık davet gösterilir.
   empty:      { tr:"Ruh Profili'ni bir kez aç, özetin buraya gelsin.",
@@ -11983,6 +11986,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#f0d29a",
                   fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
                 {pickLang(SOUL_TXT.full, lang)}
+                <span style={{ fontSize:12,lineHeight:1 }}>›</span>
+              </button>
+              {/* İKİLİ UYUM: Ruh Profili'nin eşleşme ekranını DOĞRUDAN açar.
+                  ?go=pair ile açılıyor, /pair/index.html'e değil: köprü
+                  (kimlik üretimi) welcome sayfasında çalışıyor, doğrudan
+                  derin bağlantı onu atlar ve kullanıcının kendi kimliği hiç
+                  oluşmaz. Böylece sonrası normal SoulID girişiyle aynı akıyor. */}
+              <button onClick={()=>{ try{haptic();}catch(_){}
+                  handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:8,
+                  display:"flex",alignItems:"center",justifyContent:"center",gap:7,
+                  background:"rgba(232,192,122,0.06)",border:"1px solid rgba(232,192,122,0.22)",
+                  borderRadius:100,padding:"9px 14px",cursor:"pointer",color:"#e0c193",
+                  fontSize:11.5,letterSpacing:1.4,fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                {pickLang(SOUL_TXT.pair, lang)}
                 <span style={{ fontSize:12,lineHeight:1 }}>›</span>
               </button>
             </div>

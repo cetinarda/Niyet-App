@@ -9,6 +9,7 @@ import { StoreBadges } from '@/components/StoreBadges';
 import { IS_CAPACITOR, useNav } from '@/lib/nav';
 import { WEB_APP_OPEN } from '@/lib/feature-flags';
 import { tryAutoConnectFromSakin, sakinBridgeAttempted, markSakinBridgeSkipped } from '@/lib/sakin-bridge';
+import { listReports } from '@/lib/supabase/reports';
 import { useT } from '@/lib/i18n';
 
 export default function Welcome() {
@@ -19,17 +20,28 @@ export default function Welcome() {
   // doldurmaz. Sadece embed'de (aynı origin) anlamlı; bağımsız sitede
   // sakin_* anahtarları hiç yazılmadığı için no-op'tur. Oturum başına bir kez.
   const [connecting, setConnecting] = useState(() => IS_CAPACITOR && !sakinBridgeAttempted());
+  // KÖPRÜ DAHA ÖNCE ÇALIŞMIŞSA: eskiden bu ekran welcome/tanıtım sayfasını
+  // gösteriyordu, yani kullanıcı Ruh Profili'ni ikinci kez açtığında karnesi
+  // yerine pazarlama sayfasına düşüyordu (kullanıcı bildirdi: "ana sayfa
+  // açılıyor"). Kayıtlı karne varsa welcome hiç gösterilmeden hedefe geçilir.
+  const [resolving, setResolving] = useState(() => IS_CAPACITOR && sakinBridgeAttempted());
+
+  // HOST HANGİ EKRANI İSTEDİ: Keşfet'ten girilince DETAYLI KARNE (varsayılan),
+  // Sakin'in "Ben" ekranındaki "İkili uyumuna bak" butonundan girilince
+  // eşleşme ekranı (?go=pair). Sorgu dizesi okunuyor çünkü doğrudan
+  // /pair/index.html'e açmak köprüyü atlar ve kendi kimliği hiç üretilmez.
+  const target = () => {
+    try {
+      return new URLSearchParams(window.location.search).get('go') === 'pair' ? '/pair' : '/report';
+    } catch { return '/report'; }
+  };
 
   useEffect(() => {
     if (!connecting) return;
     let cancelled = false;
     tryAutoConnectFromSakin().then((res) => {
       if (cancelled) return;
-      // KÖPRÜ SONRASI İLK EKRAN: karne değil EŞLEŞME (kullanıcı kararı).
-      // Kullanıcının kendi kimliği Sakin'den zaten geldi; Keşfet'ten SoulID'ye
-      // girenin eksiği ikinci kişi. Karne ve diğer bölümler bir dokunuş ötede:
-      // eşleşme ekranındaki "Atla" bölüm listesine götürür.
-      if (res.ok) { nav.push('/pair'); return; }
+      if (res.ok) { nav.push(target()); return; }
       markSakinBridgeSkipped();
       setConnecting(false);
     });
@@ -37,7 +49,21 @@ export default function Welcome() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connecting]);
 
-  if (connecting) {
+  useEffect(() => {
+    if (!resolving) return;
+    let cancelled = false;
+    listReports()
+      .then((rs) => {
+        if (cancelled) return;
+        if (rs[0]) { nav.push(target()); return; }
+        setResolving(false);   // karne yok: normal tanıtım ekranı
+      })
+      .catch(() => { if (!cancelled) setResolving(false); });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resolving]);
+
+  if (connecting || resolving) {
     return (
       <div className="relative">
         <CosmicBackground variant="galaxy" />

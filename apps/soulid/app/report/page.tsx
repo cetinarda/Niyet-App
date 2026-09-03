@@ -14,10 +14,12 @@ import { ConceptCard } from '@/components/ConceptCard';
 import { EngineMechanics } from '@/components/EngineMechanics';
 import { InviteShare } from '@/components/InviteShare';
 import { CompatibilityOutlook } from '@/components/CompatibilityOutlook';
+import { PairAvatars } from '@/components/PairAvatars';
 import { TodaySky } from '@/components/TodaySky';
 import { useSoulStore } from '@/lib/store';
 import { listReports } from '@/lib/supabase/reports';
 import { readActiveReportId } from '@/lib/active-report';
+import { readSakinAvatar } from '@/lib/sakin-bridge';
 import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
 import { premiumOpen } from '@/lib/feature-flags';
 import { buildConceptDecks } from '@/lib/concepts';
@@ -34,6 +36,10 @@ export default function ReportPage() {
   const [working, setWorking] = useState<'share' | 'download' | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [showDeeper, setShowDeeper] = useState(false);
+  // İkili uyum bölümündeki "Siz" dairesi için Galaktik Kimlik fotoğrafı
+  // (Sakin `sakin_avatar`). Eşleşme ekranıyla aynı görsel.
+  const [sakinPhoto, setSakinPhoto] = useState<string | null>(null);
+  useEffect(() => { setSakinPhoto(readSakinAvatar()); }, []);
 
   // iOS Capacitor'da sayfa geçişi tam-sayfa reload → zustand sıfırlanıyor.
   // birth/ ve history/ sayfaları nav.push'tan önce activeReportId'yi yazıyor;
@@ -329,32 +335,35 @@ export default function ReportPage() {
           ) : null}
         </section>
 
-        {/* İkili uyum CTA: büyük, görsel */}
-        <section className="mt-14 overflow-hidden rounded-3xl border border-cosmic/50 bg-gradient-to-br from-[#0b0524] via-[#1e1a6e] to-[#9d3cb1]/40 p-7 md:p-9">
-          <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-cosmic">
-                {t('home.path2.title')}
-              </p>
-              <h2 className="mt-3 font-display text-3xl leading-tight text-ink md:text-4xl">
-                {t('report.compatCta')}
-              </h2>
-              <div className="mt-5 flex flex-wrap gap-3 text-[12px] text-ink">
-                <span className="rounded-full border border-cosmic/40 bg-cosmic/[0.08] px-3 py-1">⚡ {locale === 'tr' ? 'Çekim' : 'Attraction'}</span>
-                <span className="rounded-full border border-cosmic/40 bg-cosmic/[0.08] px-3 py-1">◐ {locale === 'tr' ? 'Hâkimiyet' : 'Dominance'}</span>
-                <span className="rounded-full border border-cosmic/40 bg-cosmic/[0.08] px-3 py-1">📊 {locale === 'tr' ? 'Uyum skoru' : 'Score'}</span>
-                <span className="rounded-full border border-cosmic/40 bg-cosmic/[0.08] px-3 py-1">📜 {locale === 'tr' ? 'AI yorum' : 'AI reading'}</span>
-              </div>
-            </div>
-            <Link
-              href="/compatibility"
-              className="group inline-flex shrink-0 items-center gap-3 rounded-full bg-cosmic px-8 py-5 text-base font-bold tracking-wide text-white shadow-glow transition-transform hover:scale-105"
-            >
-              <span className="text-xl">⚯</span>
-              {t('report.compatBtn')}
-              <span className="transition-transform group-hover:translate-x-1">→</span>
-            </Link>
+        {/* İKİLİ UYUM: eşleşme ekranıyla AYNI iki daire (kullanıcı isteği:
+            "ruh profili sayfasındaki ikili uyum bölümü de aynı olsun").
+            Eskiden burada mor gradyanlı büyük bir kutu ve emoji rozetleri
+            (⚡ 📊 📜) vardı, eski /compatibility uzun formuna gidiyordu; hem
+            görsel dil hem varış noktası eşleşme akışından kopuktu. Artık
+            PairAvatars ile aynı bileşen ve aynı /pair akışı. */}
+        <section className="mt-14 rounded-3xl border border-gold/25 bg-white/[0.02] px-6 py-9">
+          <div className="text-center">
+            <p className="text-[10px] uppercase tracking-[0.45em] text-gold">{t('pair.kicker')}</p>
+            <h2 className="mt-4 text-[22px] font-medium leading-tight text-ink">{t('pair.title')}</h2>
           </div>
+          <div className="mt-10">
+            <PairAvatars
+              meLabel={(report.birth.fullName || '').trim().split(/\s+/)[0] || t('pair.you')}
+              meSign={report.chart.planets.find((p) => p.name === 'Sun')?.sign ?? null}
+              mePhoto={sakinPhoto}
+              otherLabel={t('pair.partner')}
+              onAdd={() => nav.push('/pair')}
+              addLabel={t('pair.add')}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => nav.push('/pair')}
+            className="mt-10 w-full rounded-full border border-gold/50 bg-gold/[0.07] py-4 text-[12px] uppercase tracking-[0.3em] text-gold transition-colors hover:bg-gold/[0.12]"
+            style={{ WebkitAppearance: 'none', appearance: 'none' }}
+          >
+            {t('pair.add')}
+          </button>
         </section>
 
         {/* Premium showcase: yıldız konum/hareketi (sadece premium yoksa) */}
