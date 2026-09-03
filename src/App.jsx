@@ -12,6 +12,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 // tahminiyle iptal etmesi kaldırıldı, ödeme yapan kullanıcıyı düşürüyordu.
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { readDailyIds, loadDailyIndex, pickMythOfDay, CARD_APP } from "./daily-cards";
+import { ICHING } from "./iching-data";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -923,12 +924,17 @@ const TODAY_TXT = {
   gunes:    { tr:"Güneş", en:"Sun", de:"Sonne", es:"Sol", pt:"Sol", fr:"Soleil", ja:"太陽" },
   ay:       { tr:"Ay", en:"Moon", de:"Mond", es:"Luna", pt:"Lua", fr:"Lune", ja:"月" },
   kapi:     { tr:"Kapı", en:"Gate", de:"Tor", es:"Puerta", pt:"Portão", fr:"Porte", ja:"ゲート" },
-  soulid:   { tr:"Yıldızlar bugün sana ne söylüyor?", en:"What do the stars tell you today?",
-              de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?",
-              pt:"O que te dizem as estrelas hoje?", fr:"Que te disent les étoiles aujourd'hui ?",
-              ja:"今日、星はあなたに何を告げている？" },
-  soulidGo: { tr:"Ruh Profili'nde bak", en:"See in SoulID", de:"In SoulID ansehen", es:"Ver en SoulID",
-              pt:"Ver no SoulID", fr:"Voir dans SoulID", ja:"SoulIDで見る" },
+  // soulid/soulidGo KALDIRILDI: Bugün'deki Ruh Profili davet kartı, Keşfet
+  // panelindeki aynısıyla ikilik yaratıyordu (kullanıcı isteği, bkz. görev #52).
+};
+// İ Ching kırmızı butonu (Bugün ekranı, kullanıcı isteği). Buton metni
+// bilerek EYLEM CÜMLESİ ("bir öğüt al"), etiket değil: prototip/onboarding'de
+// kurulan üslupla tutarlı.
+const ICHING_TXT = {
+  cta:    { tr:"İ Ching'den bir öğüt al", en:"Get advice from the I Ching", de:"Hol dir einen Rat vom I Ging", es:"Recibe un consejo del I Ching", pt:"Recebe um conselho do I Ching", fr:"Reçois un conseil du Yi King", ja:"易経から助言をもらう" },
+  eyebrow:{ tr:"Günün Heksagramı", en:"Hexagram of the Day", de:"Hexagramm des Tages", es:"Hexagrama del día", pt:"Hexagrama do dia", fr:"Hexagramme du jour", ja:"今日のヘキサグラム" },
+  advice: { tr:"Öğüt", en:"Advice", de:"Rat", es:"Consejo", pt:"Conselho", fr:"Conseil", ja:"助言" },
+  close:  { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
 };
 const PANIC_ENTRY_TXT = {
   tr:"Nefes al", en:"Take a breath", de:"Atme durch", es:"Respira",
@@ -1023,6 +1029,20 @@ const getFreqData = (lang) => {
       etkiler: t.etkiler?.[lang] || f.etkiler };
   });
 };
+
+// ── İ CHİNG: GÜNÜN ÖĞÜDÜ ─────────────────────────────────────────────────────
+// Bugün ekranındaki kırmızı buton için. Diğer "günün kartı"ları gibi (bkz.
+// daily-cards.js pickMythOfDay) GÜN BOYU SABİT: aynı gün tekrar açılınca aynı
+// heksagram çıkar, rastgele her tıklamada değişmez (kullanıcı beklentisi:
+// "günün kartı" felsefesiyle tutarlı, sonsuz reroll bir oyun hissi verirdi).
+function ichingHash(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h;
+}
+function pickIchingOfDay(dayKey) {
+  return ICHING[ichingHash(`iching|${dayKey}`) % ICHING.length];
+}
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
@@ -7743,6 +7763,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
   const [dailyIndex, setDailyIndex] = useState(null);
   const [dailyIds, setDailyIds] = useState(null);
+  // İ Ching kırmızı buton modalı (kullanıcı isteği, Bugün ekranı).
+  const [showIching, setShowIching] = useState(false);
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js): ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
@@ -9285,11 +9307,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* "NE YENİ" kartı: telefon otomatik güncellediyse ilk açılışta ne değiştiğini
           gösterir. Güncelleme banner'ıyla AYNI slot ve görsel dil; ikisi birlikte
           çıkmaz zaten (güncelsen "yeni sürüm var" bildirimi almazsın).
-          Kapalıyken tek satır başlık, dokununca maddeler açılır. Engelleyici değil, 
-          kullanıcı görmezden gelip devam edebilir. */}
+          Kapalıyken tek satır başlık, dokununca maddeler açılır. Engelleyici değil,
+          kullanıcı görmezden gelip devam edebilir.
+          ÜST KONUM: giriş ekranında dil seçici (LangPicker, satır ~8219) TAM BU
+          BÖLGEDE (sağ üst) duruyor. Banner'ın sabit "44px" ofseti onu hesaba
+          katmıyordu: banner z-index'i (10005) picker'ınkinden (9997) yüksek
+          olduğu için üstüne binip TAMAMEN GİZLİYORDU (kullanıcı bildirdi:
+          "yenilikler kutucuğuyla dil kutusu çarpışıyor"). Yalnızca giriş
+          ekranında dil seçicinin bittiği yerin altına iniyor. */}
       {whatsNew && !updateInfo && !showIntro && (
         <div style={{
-          position:"fixed", top:"calc(44px + var(--sat) + 8px)", left:10, right:10, zIndex:10005,
+          position:"fixed",
+          top: screen === "giris"
+            ? (topNavVisible ? "calc(52px + var(--sat) + 58px)" : "calc(10px + var(--sat) + 58px)")
+            : "calc(44px + var(--sat) + 8px)",
+          left:10, right:10, zIndex:10005,
           background:"linear-gradient(135deg,rgba(140,190,170,0.92),rgba(70,120,110,0.88))",
           backdropFilter:"blur(18px)",
           border:"1px solid rgba(200,235,220,0.3)", borderRadius:14,
@@ -9336,10 +9368,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         </div>
       )}
 
-      {/* APP GÜNCELLE banner: daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse */}
+      {/* APP GÜNCELLE banner: daha yeni iOS sürümü yayında, kullanıcı dismiss etmediyse.
+          Aynı dil-seçici çakışması burada da geçerli, aynı düzeltme (yukarıdaki nota bak). */}
       {isNative && updateInfo && updateDismissed !== updateInfo.version && (
         <div style={{
-          position:"fixed", top:"calc(44px + var(--sat) + 8px)", left:10, right:10, zIndex:10005,
+          position:"fixed",
+          top: screen === "giris"
+            ? (topNavVisible ? "calc(52px + var(--sat) + 58px)" : "calc(10px + var(--sat) + 58px)")
+            : "calc(44px + var(--sat) + 8px)",
+          left:10, right:10, zIndex:10005,
           background:"linear-gradient(135deg,rgba(184,164,216,0.92),rgba(122,80,150,0.88))",
           backdropFilter:"blur(18px)",
           border:"1px solid rgba(220,200,255,0.3)", borderRadius:14,
@@ -9432,7 +9469,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const nm = (onbName || "").trim();
             if (nm) { try { localStorage.setItem("sakin_name", nm); } catch(_) {} setUserName(nm); setNameInput(nm); }
             try { track("onb_kesfet_done"); } catch(_) {}
-            close("sabah");
+            // Kullanıcı isteği: Keşfet onboarding'i bitince Ben (harita)
+            // ekranına git, oradaki Galaktik Kimlik/Ruh Profili kutularıyla
+            // az önce oluşturduğu kimliği hemen görsün.
+            close("harita");
           }
         };
         // "Geç": son adımda bitirir, aksi halde SONRAKİ soruya geçer.
@@ -12935,7 +12975,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               {pickLang(NEDIR_I18N.koken, lang)}
             </div>
           </div>
-          <button onClick={()=>setScreen("mandala")}
+          {/* Kullanıcı geri bildirimi: bir yolu tamamlayan kullanıcı merak edip
+              diğerini (ya da aynısını) TEKRAR denemek istese bile kartlar
+              doğrudan hedefe atlıyordu (fork ekranındaki hızlı-geçiş kısayolu),
+              deneyimi tekrar görmenin hiçbir yolu yoktu. Burası ("Sakin nedir?")
+              zaten açıklama amaçlı olduğu için, buradan tıklanınca kısayol
+              ATLANIR, o yolun deneyimi (nefes/his/niyet ya da ad/doğum/harita)
+              HER ZAMAN baştan oynatılır. Günlük hızlı erişim (fork ekranı)
+              dokunulmadı, yalnızca bu "anlat/tekrar izlet" girişi değişti. */}
+          <button onClick={()=>{ setOnbPath("baglan"); setOnbStep(0); setOnbFeeling(-1); setOnbIntention(""); setOnbBreathSec(0); }}
             style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(40,30,60,0.5),rgba(20,15,32,0.55))",border:"1px solid rgba(184,122,220,0.35)",borderRadius:16,marginBottom:10,cursor:"pointer" }}>
             <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
               <span style={{ fontSize:14,letterSpacing:2,color:"#b87adc",fontFamily:"'Jost',sans-serif" }}>◎ {pickLang(NEDIR_I18N.baglanT, lang).toLocaleUpperCase(t("locale_code"))}</span>
@@ -12943,7 +12991,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             <div style={{ fontSize:13,color:"#b0a4c8",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{pickLang(NEDIR_I18N.bodyBaglan, lang)}</div>
           </button>
-          <button onClick={()=>setShowAilesi(true)}
+          <button onClick={()=>{ setOnbName(userName || ""); setOnbPath("kesfet"); setOnbStep(0); setOnbCalcIdx(0); }}
             style={{ display:"block",width:"100%",textAlign:"left",padding:"15px 17px",background:"linear-gradient(160deg,rgba(60,45,30,0.5),rgba(30,22,14,0.55))",border:"1px solid rgba(240,192,96,0.35)",borderRadius:16,marginBottom:32,cursor:"pointer" }}>
             <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6 }}>
               <span style={{ fontSize:14,letterSpacing:2,color:"#f0c060",fontFamily:"'Jost',sans-serif" }}>✦ {pickLang(NEDIR_I18N.kesfetT, lang).toLocaleUpperCase(t("locale_code"))}</span>
@@ -13761,32 +13809,68 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 appKey="myth" color="#d8b4a0" card={mith ? mith.card : null} />
             </div>
 
-            {/* SOULID: "yıldızlar bugün ne söylüyor". Burada METİN ÜRETİLMİYOR:
-                SoulID'nin günlük yorumu kendi uygulamasında hesaplanıyor ve
-                localStorage'a bir "günün kartı" olarak yazılmıyor, yani hayvan/
-                bitki/taş için işe yarayan okuma yöntemi burada uygulanamıyor.
-                Uydurma bir metin göstermek yerine doğrudan SoulID'ye açılan
-                dürüst bir davet konuldu. */}
-            <button onClick={()=>{ try{haptic();}catch(_){}
-                handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html", color:"#e8c07a" }); }}
+            {/* SOULID/RUH PROFİLİ davet kartı BURADAN KALDIRILDI (kullanıcı
+                isteği): Keşfet panelinde zaten aynı davet var (bkz. görev
+                #43), Bugün'de ikinci bir kopyası ikilik yaratıyordu.
+                KURAL (kullanıcı: "benzer durumlarda beni uyar"): bir içerik
+                Keşfet panelinde zaten varsa, aynısını başka bir ekrana da
+                eklemek uygulamanın sadeliğini bozar; yeni bir davet/kart
+                eklemeden önce Keşfet'te zaten olup olmadığını kontrol et. */}
+
+            {/* İ CHİNG: kırmızı buton, kullanıcı isteği ("bugün kırmızı buton
+                koy, İ Ching'den bir öğüt ver"). Günün heksagramı SABİT
+                (pickIchingOfDay, günün diğer kartlarıyla aynı felsefe):
+                tıklanınca aynı gün içinde hep aynı öğüt çıkar. */}
+            <button onClick={()=>{ try{haptic();}catch(_){} setShowIching(true); }}
               style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:16,textAlign:"left",cursor:"pointer",
-                background:"linear-gradient(160deg, rgba(232,192,122,0.12), rgba(255,255,255,0.02))",
-                border:"1px solid rgba(232,192,122,0.32)",borderRadius:16,padding:"15px 16px",
+                background:"linear-gradient(160deg, rgba(214,60,60,0.16), rgba(255,255,255,0.02))",
+                border:"1px solid rgba(224,80,80,0.4)",borderRadius:16,padding:"15px 16px",
                 display:"flex",alignItems:"center",gap:13,minHeight:66 }}>
               <span style={{ width:40,height:40,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-                fontSize:19,background:"radial-gradient(circle, rgba(232,192,122,0.28), rgba(232,192,122,0.08))" }}>✦</span>
+                fontSize:17,background:"radial-gradient(circle, rgba(224,80,80,0.32), rgba(224,80,80,0.10))" }}>☯</span>
               <span style={{ flex:1,minWidth:0 }}>
-                <span style={{ display:"block",fontSize:10,letterSpacing:2,color:"#e8c07acc",textTransform:"uppercase",
-                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{t("ailesi_soulid_name")}</span>
-                <span style={{ display:"block",fontSize:14,color:"#efe9f8",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
-                  {pickLang(TODAY_TXT.soulid, lang)}
+                <span style={{ display:"block",fontSize:10,letterSpacing:2,color:"#e88c8ccc",textTransform:"uppercase",
+                  fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{pickLang(TODAY_TXT.sysIching, lang)}</span>
+                <span style={{ display:"block",fontSize:14,color:"#f4e4e4",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>
+                  {pickLang(ICHING_TXT.cta, lang)}
                 </span>
               </span>
-              <span style={{ flexShrink:0,fontSize:10.5,letterSpacing:1.2,fontFamily:"'Jost',sans-serif",
-                color:"#e8c07acc",textTransform:"uppercase",whiteSpace:"nowrap" }}>
-                {pickLang(TODAY_TXT.soulidGo, lang)}
-              </span>
+              <span style={{ flexShrink:0,fontSize:16,color:"rgba(224,110,110,0.7)" }}>→</span>
             </button>
+          </div>
+        );
+      })()}
+
+      {/* İ CHİNG MODALI: günün heksagramı. sakinDayKey() ile SABİT, gün
+          bitene kadar aynı çıkar. */}
+      {showIching && (() => {
+        const hex = pickIchingOfDay(sakinDayKey());
+        return (
+          <div onClick={()=>setShowIching(false)} style={{ position:"fixed",inset:0,zIndex:99998,background:"rgba(0,0,0,0.88)",backdropFilter:"blur(14px)",display:"flex",alignItems:"center",justifyContent:"center",padding:24 }}>
+            <div onClick={e=>e.stopPropagation()} style={{ maxWidth:400,width:"100%",background:"linear-gradient(160deg,rgba(45,18,18,0.98),rgba(20,10,10,0.98))",border:"1px solid rgba(224,80,80,0.32)",borderRadius:20,padding:"30px 26px",textAlign:"center",boxShadow:"0 20px 60px rgba(0,0,0,0.6)",animation:"fadeUp 0.5s ease-out" }}>
+              <div style={{ fontSize:11,letterSpacing:3,color:"#e0a0a0",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:14 }}>
+                {pickLang(ICHING_TXT.eyebrow, lang)}
+              </div>
+              <div style={{ fontSize:34,lineHeight:1,marginBottom:10,letterSpacing:2 }}>{hex.emoji}</div>
+              <div style={{ fontSize:19,fontWeight:300,letterSpacing:0.5,color:"#f4e4e4",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
+                {pickLang(hex.name, lang)}
+              </div>
+              <div style={{ fontSize:13.5,color:"#d8c4c4",lineHeight:1.8,fontFamily:"'Inter',sans-serif",marginBottom:18 }}>
+                {pickLang(hex.essence, lang)}
+              </div>
+              <div style={{ background:"rgba(224,80,80,0.10)",border:"1px solid rgba(224,80,80,0.28)",borderRadius:14,padding:"14px 16px",marginBottom:22 }}>
+                <div style={{ fontSize:9.5,letterSpacing:2.5,color:"#e0a0a0",textTransform:"uppercase",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>
+                  {pickLang(ICHING_TXT.advice, lang)}
+                </div>
+                <div style={{ fontSize:14.5,color:"#f4e4e4",fontFamily:"'Inter',sans-serif",lineHeight:1.6 }}>
+                  {pickLang(hex.advice, lang)}
+                </div>
+              </div>
+              <button onClick={()=>setShowIching(false)}
+                style={{ display:"block",width:"100%",padding:"12px 0",fontSize:13,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",background:"rgba(224,80,80,0.16)",border:"1px solid rgba(224,80,80,0.4)",borderRadius:24,color:"#f4e4e4",cursor:"pointer" }}>
+                {pickLang(ICHING_TXT.close, lang)}
+              </button>
+            </div>
           </div>
         );
       })()}
