@@ -30,8 +30,18 @@ export type SakinSoulSummary = {
   emoji: string;
   /** Önceki yaşamlarda iz bıraktığı arketip */
   pastArchetype: string;
-  /** Geliş sebebi (görevlerin ilki) */
-  purpose: string;
+  /**
+   * Geliş sebebi. ESKİDEN görevlerin ilkinin BAŞLIĞIYDI, yani "Kuzey Düğüm
+   * Görevi: Pisces" gibi teknik bir önek geliyordu (kullanıcı bildirdi:
+   * "kuzey ay düğümü pisces yazıyor, öneki sil, ay düğümünü belirtmene gerek
+   * yok"). Artık kendi başına duran kısa bir cümle; hangi teknik veriden
+   * türediğini söylemiyor.
+   *
+   * TİP NOTU: eski sürümlerde düz string yazılmıştı. Host iki şekli de
+   * okuyor (string ise olduğu gibi, obje ise dile göre), böylece güncelleme
+   * anında elinde eski özet olan kullanıcıda kutu boşalmıyor.
+   */
+  purpose: { tr: string; en: string };
   /** En yüksek çıkan güçlü yön */
   strength: { key: 'speed' | 'creativity' | 'charisma'; tr: string; en: string };
 };
@@ -101,6 +111,30 @@ function strengthOf(report: GalacticReport): SakinSoulSummary['strength'] {
   return { key: top.key, tr: top.tr, en: top.en };
 }
 
+// ── GELİŞ SEBEBİ ──────────────────────────────────────────────────────────
+// Kuzey Düğüm, ruhun BU HAYATTA öğrenmeye geldiği yönü gösterir. Kısa bir
+// cümleye indirildi: kullanıcı kartta teknik terim değil, kendisine dair tek
+// bir cümle görmek istiyor. Metin düğümü ADLANDIRMIYOR.
+const PURPOSE_BY_NODE: Record<string, { tr: string; en: string }> = {
+  Aries:       { tr: 'Kendi ayakları üstünde durmayı öğrenmek', en: 'To learn to stand on your own' },
+  Taurus:      { tr: 'Köklenmek ve sadeleşmek',                 en: 'To take root and simplify' },
+  Gemini:      { tr: 'Merakın peşinden gitmek',                 en: 'To follow your curiosity' },
+  Cancer:      { tr: 'Duyguya alan açmak',                      en: 'To make room for feeling' },
+  Leo:         { tr: 'Kendi ışığını sahiplenmek',               en: 'To own your own light' },
+  Virgo:       { tr: 'Düzeni ve emeği bulmak',                  en: 'To find order and craft' },
+  Libra:       { tr: 'Birlikte olmayı öğrenmek',                en: 'To learn to be with others' },
+  Scorpio:     { tr: 'Derinliğe ve dönüşüme girmek',            en: 'To enter depth and change' },
+  Sagittarius: { tr: 'Kendi anlamını aramak',                   en: 'To seek your own meaning' },
+  Capricorn:   { tr: 'Sorumluluğu üstlenmek',                   en: 'To take responsibility' },
+  Aquarius:    { tr: 'Bütüne katkı vermek',                     en: 'To give back to the whole' },
+  Pisces:      { tr: 'Bırakmayı öğrenmek',                      en: 'To learn to let go' },
+};
+
+function purposeOf(report: GalacticReport): { tr: string; en: string } {
+  const nn = report.chart.planets.find((p) => p.name === 'NorthNode')?.sign ?? '';
+  return PURPOSE_BY_NODE[nn] ?? { tr: '', en: '' };
+}
+
 export function buildSakinSummary(report: GalacticReport): SakinSoulSummary {
   return {
     v: SAKIN_SUMMARY_VERSION,
@@ -110,7 +144,7 @@ export function buildSakinSummary(report: GalacticReport): SakinSoulSummary {
     race: report.origin.race,
     emoji: report.origin.emoji,
     pastArchetype: report.origin.archetype,
-    purpose: report.missions?.[0]?.title ?? '',
+    purpose: purposeOf(report),
     strength: strengthOf(report),
   };
 }
