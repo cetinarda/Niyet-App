@@ -467,6 +467,48 @@ function buildReportSystemPrompt(lang, domain = "") {
   return `You are a deep mirror and inner-awareness guide. CRITICAL LANGUAGE RULE: WRITE YOUR ENTIRE REPORT ONLY IN ${name}. Every section heading, every sentence, including quoted phrases, MUST be in ${name}. Do NOT write a single word in Turkish. This overrides any Turkish text that appears in this prompt or in the user's data. Use ONLY ${name} words and letters; insert no words from English or any other language. You are synthesizing the user's weekly data, birth profile, and 12th house (hidden self) wisdom into a poetic, heartfelt report in ${name}. Write clearly and with confidence. Avoid hedging language ("maybe", "possibly", "perhaps", "it could be that", "one might say"). Point directly at the source of the question. Show where to look inward; remind them to offer themselves love. Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction.
 ORIGINALITY (very important): Make this report one of a kind. Avoid stock phrases, clichés, and template openings. Ground it in the person's SPECIFIC data (this week's intentions, their words, birth profile, numerology/zodiac energy); do not use generic one-size-fits-all language. Vary the structure, opening and imagery in every report; never repeat the same sentences.${domainDirective(lang, domain)}`;
 }
+// Dil kodundan tam yerel ayar (tarih biçimlendirme için). aynaZamanTablosu
+// gerçek geçiş tarihlerini kullanıcının dilinde yazsın diye tek yerde tutuluyor.
+function localeFromLang(lang) {
+  return { tr:"tr-TR", en:"en-US", de:"de-DE", es:"es-ES", pt:"pt-PT", fr:"fr-FR", ja:"ja-JP" }[lang] || "en-US";
+}
+
+// ── AYNA'YA "DÜŞÜNME" TALİMATI ──────────────────────────────────────────────
+// Kullanıcı: "ayna ezber anlamsız cevaplar veriyor, daha zeki ve düşünen bir
+// algoritma yap, çok yönlü olsun." Sorun mirror prompt'unun genel-geçer bir
+// "şefkatli rehber" tonu vermesiydi: elindeki gerçek verileri (doğum haritası,
+// Human Design tipi, o günkü transit kapıları, gerçek geçiş tarihleri) çoğu
+// zaman KULLANMIYOR, herkese uyan laf ediyordu.
+// ÇÖZÜM: modeli önce KAPALI KAPIDA düşünmeye zorla (<think> bloğu sunucuda
+// stripThink ile silinir, kullanıcı görmez), o düşünmede hangi sistemin bu
+// soruya GERÇEKTEN dokunduğunu seçsin, sonra yalnızca alakalı olanı, SOMUT
+// veriyle (kapı numarası, gerçek tarih, tipinin stratejisi) yanıtlasın.
+// Yalnızca Ayna çağrısına eklenir (görev/çakra/harita yorumunun kendi biçimi var).
+function aynaReasoningDirective(lang) {
+  if (lang === "tr") {
+    return `
+
+NASIL DÜŞÜNECEĞİN (önce düşün, sonra yaz):
+Yanıta başlamadan önce <think> ... </think> etiketleri içinde SESSİZCE ve KISA düşün (en fazla birkaç satır; bu bölüm kullanıcıya GÖSTERİLMEZ ve mutlaka </think> ile kapanmalı). Düşünürken şunları yap:
+1. Kişinin sorusu tam olarak neyi soruyor? Duygusal mı, zamanla mı ilgili ("ne zaman biter/geçer"), bir karar mı, bir örüntü mü?
+2. Elindeki VERİLER arasından (doğum haritası, Human Design tipi/otoritesi/profili, bugünkü transit kapıları ve GERÇEK geçiş tarihleri, ay evresi, sayı enerjisi) yalnızca bu soruya DOKUNANLARI seç. Dokunmayanları yok say, zorla bağlama.
+3. Seçtiğin verileri BİRBİRİNE bağla: transit kapısı kişinin natal tipiyle nasıl konuşuyor, geçiş tarihi soruya nasıl somut cevap veriyor.
+4. "Ne zaman" sorusu varsa ve sana GERÇEK bir geçiş tarihi verildiyse o tarihi net söyle ("şu kapıdan çıkıyorsun, tarih şu, şu kapıya geçiyorsun"). Tarih verilmediyse uydurma; dürüstçe "şu an şu temadasın" de.
+Sonra <think> bloğunu kapat ve YALNIZCA cevabı yaz. Cevapta düşünme adımlarını gösterme.
+Kesin kural: sana verilmeyen bir tarih, kapı numarası ya da gezegen konumu UYDURMA. Emin olmadığın bir olguyu kesinmiş gibi söyleme. Elinde veri yoksa o boyuttan hiç bahsetme, sorunun özüne dürüstçe cevap ver.`;
+  }
+  const name = AI_LANG_NAMES[lang] || "English";
+  return `
+
+HOW TO THINK (think first, then write):
+Before you begin your answer, think SILENTLY and BRIEFLY inside <think> ... </think> tags (a few lines at most; this section is NOT shown to the user and MUST be closed with </think>). While thinking:
+1. What is the person actually asking? Is it emotional, about timing ("when does it end/pass"), a decision, a pattern?
+2. From the DATA you were given (birth chart, Human Design type/authority/profile, today's transit gates with REAL exit dates, moon phase, numerology), pick ONLY what genuinely bears on this question. Ignore the rest, do not force a connection.
+3. Connect the pieces you picked: how the transit gate speaks to their natal type, how the exit date concretely answers the question.
+4. If it is a "when" question and you were given a REAL exit date, state it plainly ("you are leaving this gate on <date>, moving into <gate>"). If no date was given, do not invent one; honestly say "right now you are in this theme".
+Then close the <think> block and write ONLY the answer. Do not show your reasoning steps.
+Hard rule: NEVER invent a date, gate number, or planetary position you were not given. Do not state an uncertain fact as if it were certain. If you have no data for a dimension, do not mention it; answer the heart of the question honestly. Write the answer in ${name}.`;
+}
 function compareVer(a, b) {
   const pa = String(a||"").split(".").map(n => parseInt(n)||0);
   const pb = String(b||"").split(".").map(n => parseInt(n)||0);
@@ -7196,6 +7238,81 @@ ${facts}
     }
   };
 
+  // ── AYNA GERÇEK VERİ TABLOSU ───────────────────────────────────────────────
+  // Kullanıcı: "böyle bir soruda doğrudan Human Design'a bağlanıp transit
+  // geçişime bakmalı ve özgün bir cevap vermeli; yalnızlık kapısı şu gün sona
+  // eriyor, şu kapıya doğru ilerliyorsun gibi." Ayna eskiden yalnızca metinsel
+  // harita özetini görüyordu; o günkü GERÇEK transit kapılarını ve bir geçişin
+  // GERÇEK bitiş tarihini hiç bilmiyordu, bu yüzden "28 Nisan'da biter" gibi
+  // UYDURMA tarihler yazabiliyordu. Artık bu tablo efemeristen hesaplanıp
+  // prompt'a somut olgu olarak veriliyor; model uydurmak yerine buradan okur.
+  //
+  // İki katman:
+  //  • Her zaman: natal Human Design tipi/otorite/profil + bugünkü transit
+  //    kapıları + ay evresi. Böylece Ayna çok yönlü (astroloji + HD + ay) olur.
+  //  • Yalnızca ZAMAN sorusu ("ne zaman biter/geçer") algılanırsa: her transit
+  //    gövdesinin şu anki kapısından ÇIKACAĞI gerçek tarih ileriye taranır.
+  //    Ağır efemeris taraması sadece gerektiğinde çalışsın diye niyet kapısı var.
+  const TIMING_RE = /ne zaman|ne kadar sür|kaç gün|kaç ay|kaç hafta|biter mi|bitecek|bitiyor|ne vakit|geçecek|geçer mi|geçiyor|sürecek|devam edecek|when |how long|how many days|will it end|is it over|be over|wann |wie lange|cuándo|cuánto|quand |combien de temps|いつ|どのくらい/i;
+  const HD_BODY_TR = { Sun:"Güneş", Moon:"Ay", Mercury:"Merkür", Venus:"Venüs", Mars:"Mars", Jupiter:"Jüpiter", Saturn:"Satürn" };
+  const gatherAynaFacts = async (question) => {
+    if (!birthDate) return "";
+    const loc = birthCity ? lookupCity(birthCity) : null;
+    const parts = [];
+    let hdMod = null, txMod = null;
+    try { hdMod = await import("./hd-natal"); } catch (_) {}
+    try { txMod = await import("./hd-transit"); } catch (_) {}
+
+    // 1) Natal Human Design (saat + tanınan şehir varsa)
+    if (hdMod && birthTime && loc) {
+      try {
+        const [Y, Mo, Da] = birthDate.split("-").map(Number);
+        const off = effectiveUtcOffset(loc[0], loc[1], loc[2], Y, Mo, Da);
+        const hd = await hdMod.computeNatalHD(birthDate, birthTime, off, "tr");
+        if (hd) {
+          parts.push(`Natal Human Design: ${hd.type}${hd.authority ? `, otorite: ${hd.authority}` : ""}${hd.profile ? `, profil: ${hd.profile}${hd.profileName ? ` (${hd.profileName})` : ""}` : ""}. Stratejisi: ${hd.strategy}. Not-benlik teması: ${hd.notSelf}.`);
+        }
+      } catch (_) {}
+    }
+
+    // 2) Bugünkü transit kapıları + ay evresi (çok yönlülük: HD + ay birlikte)
+    if (txMod) {
+      try {
+        const tr = await txMod.computeTransit(new Date(), "tr");
+        if (tr?.gates?.length) {
+          const rows = tr.gates.slice(0, 5).map(g =>
+            `${HD_BODY_TR[g.body] || g.body} kapı ${g.gate}.${g.line} (${g.name}): ${g.theme}`);
+          parts.push(`Bugünkü transit kapıları:\n${rows.join("\n")}`);
+        }
+      } catch (_) {}
+      try {
+        const mp = await txMod.computeMoonPhase(new Date(), "tr");
+        if (mp?.name) parts.push(`Ay evresi: ${mp.name}${typeof mp.fraction === "number" ? ` (%${Math.round(mp.fraction*100)} aydınlık)` : ""}.`);
+      } catch (_) {}
+    }
+
+    // 3) ZAMAN sorusu → gerçek geçiş tarihleri (yalnızca gerektiğinde tara)
+    if (txMod && TIMING_RE.test(question)) {
+      const locale = localeFromLang(lang);
+      const fmt = (d) => { try { return d.toLocaleDateString(locale, { day:"numeric", month:"long", year:"numeric" }); } catch { return d.toISOString().slice(0,10); } };
+      const neKadar = (d) => d < 1 ? "bugün içinde" : d < 2 ? "yarın" : `${Math.round(d)} gün sonra`;
+      const exits = [];
+      for (const body of ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"]) {
+        try {
+          const ex = await txMod.computeGateExitDate(body, new Date(), "tr");
+          if (ex) {
+            exits.push(`${HD_BODY_TR[body] || body}: şu an kapı ${ex.gate}${ex.name ? ` (${ex.name}: ${ex.theme})` : ""}, bu kapıdan ${fmt(ex.exitDate)} tarihinde (${neKadar(ex.days)}) çıkıyor, ardından kapı ${ex.nextGate}${ex.nextName ? ` (${ex.nextName}: ${ex.nextTheme})` : ""} başlıyor.`);
+          }
+        } catch (_) {}
+      }
+      if (exits.length) {
+        parts.push(`GERÇEK GEÇİŞ TARİHLERİ (bunlar efemeristen hesaplandı, uydurma DEĞİL; kullanıcının duygusuna EN YAKIN temayı taşıyan gövdeyi seç ve o gerçek tarihi ver):\n${exits.join("\n")}`);
+      }
+    }
+
+    return parts.length ? `\n\nGÜNCEL KOZMİK VERİ (kullanıcının sorusuna dokunuyorsa kullan, dokunmuyorsa yok say):\n${parts.join("\n")}\n` : "";
+  };
+
   const generateSikayetAnaliz = async () => {
     if (!sikayet.trim()) return;
     // Doğum bilgisi yoksa soru cevaplanmaz (kullanıcı: "soru soramamalı çünkü
@@ -7216,10 +7333,15 @@ HARİTAYI NE ZAMAN KULLANACAĞIN (kullanıcı isteği: "her seferinde burç yoru
 Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen, burçlar) bu verileri kullanarak SOMUT yanıtla; genel geçer astroloji anlatma, ONUN haritasından konuş.
 Soru haritayla ilgili DEĞİLSE haritadan HİÇ bahsetme. Burcunu, elementini, yükselenini, hayat yolu sayısını sırf elinde var diye yanıta sokuşturma. Bağlantı zorlama, doğrudan cevap ver. Harita yalnızca yanıta gerçekten bir şey KATIYORSA girer, o zaman da tek cümleyle ve gerekçesiyle.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
+    // GERÇEK KOZMİK VERİ: natal HD + bugünkü transit + (zaman sorusuysa) gerçek
+    // geçiş tarihleri. Ayna'nın uydurma yerine somut olguyla konuşması için.
+    // Rüya modunda da faydalı (rüya + o günkü enerji), o yüzden ikisine de eklenir.
+    const aynaFacts = await gatherAynaFacts(sikayet);
     // Rüya modu: farklı bir yorum çerçevesi (Jung/Freud/Gestalt + şamanik
     // yansıma), besin/hareket/Reiki gibi fiziksel-şikayet odaklı bölümler
     // rüya için anlamsız olduğundan ayrı bir format kullanılır.
     const userContent = ruyaModu ? `Kullanıcı bir rüya paylaştı: "${sanitizeInput(sikayet)}"
+${aynaFacts}
 ${astroTxt}
 
 ${NEFES_REHBERI}
@@ -7244,7 +7366,7 @@ Gestalt: (Rüyadaki her figür kişinin bir parçasıdır; "bu rüyadaki X aslı
 **Bugün İçin**
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.` : `Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
-
+${aynaFacts}
 ${REIKI_BILGI}
 
 ${LOUISE_HAY_REHBER}
@@ -7282,8 +7404,13 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // seçimini zaten okumuyor, _groq.mjs'deki otomatik fallback listesini
           // kullanıyor. Buradaki değer "llama-3.3-70b-versatile" idi ve o model
           // 16 Ağu 2026'da emekli oldu; kalması yanıltıcı ölü koddu.
-          max_tokens:1100, lang,
-          system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
+          // max_tokens 1400: reasoning direktifi modeli önce kapalı kapıda
+          // <think> ile düşündürüyor (sunucuda silinir). O gizli düşünme de
+          // çıktı bütçesinden yer yiyor; 1100'de uzun sorularda düşünme
+          // tamamlanıp cevap yarıda kesilebiliyordu. 1400 düşünme + cevap
+          // için rahat pay bırakır, üst sınır (MAX_TOKENS_CEIL 2000) altında.
+          max_tokens:1400, lang,
+          system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${aynaReasoningDirective(lang)}
 ${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
