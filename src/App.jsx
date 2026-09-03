@@ -863,6 +863,20 @@ const REVEAL_I18N = {
   tasarim:{ tr:"Tasarımını keşfet ✦", en:"Explore your design ✦", de:"Entdecke dein Design ✦", es:"Explora tu diseño ✦", pt:"Explora o teu design ✦", fr:"Explore ton design ✦", ja:"あなたのデザインを見る ✦" },
   gune:   { tr:"Güne başla ◎", en:"Start your day ◎", de:"Beginne den Tag ◎", es:"Empieza el día ◎", pt:"Começa o dia ◎", fr:"Commence la journée ◎", ja:"一日を始める ◎" },
 };
+// ── ORKESTRA MODU (Kolektif Nabız, Faz 1) ──────────────────────────────────
+// Ben ekranindaki karti besleyen metinler. Veri netlify/functions/pulse.mjs'ten
+// gelir (anonim toplam sayilar + haftalik AI yorumu). Eski sahte "312 kisi"
+// yerine gercek haftalik kolektif nabiz. Kod tabanindaki yerel cok-dil deseni
+// (SOUL_TXT, NODE_TXT gibi): 7 dil ayri i18n dosyalarina dokunmadan burada.
+const ORKESTRA_TXT = {
+  label:     { tr:"ORKESTRA MODU", en:"ORCHESTRA MODE", de:"ORCHESTER-MODUS", es:"MODO ORQUESTA", pt:"MODO ORQUESTRA", fr:"MODE ORCHESTRE", ja:"オーケストラモード" },
+  people:    { tr:"kişi bu hafta seninle bağlandı", en:"people connected with you this week", de:"Menschen haben sich diese Woche mit dir verbunden", es:"personas se conectaron contigo esta semana", pt:"pessoas ligaram-se contigo esta semana", fr:"personnes se sont connectées avec toi cette semaine", ja:"人が今週あなたと共につながりました" },
+  breaths:   { tr:"nefes", en:"breaths", de:"Atemzüge", es:"respiraciones", pt:"respirações", fr:"respirations", ja:"回の呼吸" },
+  minutes:   { tr:"dakika ses", en:"minutes of sound", de:"Minuten Klang", es:"minutos de sonido", pt:"minutos de som", fr:"minutes de son", ja:"分の音" },
+  topWord:   { tr:"En çok seçilen niyet", en:"Most chosen intention", de:"Meistgewählte Absicht", es:"Intención más elegida", pt:"Intenção mais escolhida", fr:"Intention la plus choisie", ja:"最も選ばれた意図" },
+  reflection:{ tr:"Bu haftanın kolektif yansıması", en:"This week's collective reflection", de:"Kollektive Reflexion dieser Woche", es:"Reflexión colectiva de esta semana", pt:"Reflexão coletiva desta semana", fr:"Reflet collectif de cette semaine", ja:"今週の集合的な振り返り" },
+  waking:    { tr:"Topluluk uyanıyor. Bu hafta ilk bağlananlardan biri ol.", en:"The community is waking up. Be one of the first to connect this week.", de:"Die Gemeinschaft erwacht. Sei diese Woche eine der ersten Verbindungen.", es:"La comunidad despierta. Sé de los primeros en conectar esta semana.", pt:"A comunidade está a despertar. Sê um dos primeiros a ligar esta semana.", fr:"La communauté s'éveille. Sois parmi les premiers à te connecter cette semaine.", ja:"コミュニティが目覚めています。今週最初につながる一人になりましょう。" },
+};
 // Giriş ekranındaki panik butonunun metni. Sağ alt köşedeki sabit rozet
 // "PANİK BUTONU" yazıyordu; kullanıcı bunu HAZIRIM'ın altına alıp "Nefes al"
 // olarak yumuşatmak istedi (giriş ekranında "panik" kelimesi sert duruyor,
@@ -4836,9 +4850,15 @@ export default function SakinApp() {
     try { return parseInt(localStorage.getItem("sakin_freq_sec_" + sakinDayKey())) || 0; } catch { return 0; }
   });
   const freqTimerRef = useRef(null);
+  // KOLEKTIF NABIZ (Orkestra Modu): dinlenen ses/frekans saniyesini anonim
+  // olcume gondermek icin oturum-ici birikim. acc = bu oturumda toplam saniye,
+  // sent = sunucuya gonderilmis saniye; ton DURUNCA delta gonderilir (her
+  // saniye tek tek gondermek yerine). track() kendi icinde opt-out'a saygili.
+  const freqTrackRef = useRef({ acc: 0, sent: 0 });
   useEffect(() => {
     if (playingHz) {
       freqTimerRef.current = setInterval(() => {
+        freqTrackRef.current.acc += 1;
         setFreqListenSec(prev => {
           const next = prev + 1;
           // Gün anahtarı ANLIK hesaplanır: dinleme gece yarısını geçerse sayaç
@@ -4849,6 +4869,9 @@ export default function SakinApp() {
       }, 1000);
     } else {
       clearInterval(freqTimerRef.current);
+      // Ton durdu: bu oturumda birikip henüz gönderilmemiş saniyeyi yolla.
+      const d = freqTrackRef.current.acc - freqTrackRef.current.sent;
+      if (d > 0) { try { track("freq_sec", { n: d }); } catch (_) {} freqTrackRef.current.sent = freqTrackRef.current.acc; }
     }
     return () => clearInterval(freqTimerRef.current);
   }, [playingHz]);
@@ -7765,7 +7788,13 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => {
     if (!isPremium && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
-    setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
+    setSelectedWords(prev => {
+      const has = prev.includes(w);
+      // Kolektif nabız: kelime EKLENDIĞINDE anonim ölç (chip önceden tanımlı,
+      // kişisel serbest metin değil). Kaldırmada gönderilmez. Opt-out'a saygılı.
+      if (!has && prev.length < 3) { try { track("niyet_word", { w }); } catch (_) {} }
+      return has ? prev.filter(x=>x!==w) : (prev.length<3 ? [...prev,w] : prev);
+    });
   };
   const breathLabel = breathStarted ? ({ready:"",inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
 
@@ -7929,6 +7958,30 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     : embedBackTarget && embedBackTarget.screen === "harita" ? pickLang(TAB_TXT.ben, lang)
     : embedBackTarget && embedBackTarget.screen === "rehber" ? pickLang(TAB_TXT.ayna, lang)
     : t("nav_family");   // Keşfet'ten gelindiyse ya da bağlam bilinmiyorsa
+  // ── ORKESTRA MODU: KOLEKTIF NABIZ (Faz 1) ─────────────────────────────────
+  // Ben ekranindaki Orkestra karti icin haftalik anonim toplamlari ceker
+  // (netlify/functions/pulse.mjs). Sunucu saatlik cache'liyor, ayrica dil
+  // basina yorumu haftalik cache'liyor; istemci de ekran acilisinda bir kez
+  // ceker. Basarisiz olursa kart "topluluk uyaniyor" bos durumuna duser,
+  // asla sahte sayi gostermez. Analitik kapaliysa (opt-out) yine de OKUNUR
+  // (okuma kisisel veri gondermez), sadece kendi katkisi gonderilmez.
+  const [orkestra, setOrkestra] = useState(null);
+  const orkestraFetchedRef = useRef(false);
+  useEffect(() => {
+    if (screen !== "harita" || orkestraFetchedRef.current) return;
+    orkestraFetchedRef.current = true;
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/.netlify/functions/pulse?lang=${encodeURIComponent(lang)}`);
+        if (!res.ok) return;
+        const j = await res.json();
+        if (alive && j && j.ok) setOrkestra(j);
+      } catch (_) { /* sessiz: kart bos duruma duser */ }
+    })();
+    return () => { alive = false; };
+  }, [screen, lang]);
+
   // SENİN BİLGİLERİN / GALAKTİK KİMLİK KARTI.
   // Keşfet panelinden "Ben" ekranının EN ÜSTÜNE taşındı (kullanıcı isteği).
   // Tek tanım, tek yerde render ediliyor; Keşfet artık yalnızca uygulama
@@ -12369,16 +12422,46 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               NOT: eskiden bu blok `{birthDate && (…)}` içindeydi; sarmalayıcı
               kaldırılırken kapanış `)}` kalmış ve JSX bunu DÜZ METİN olarak
               basıyordu: ekranda görünen "iki parantez" oydu. */}
-          <div style={{ background:"linear-gradient(135deg,rgba(255,255,255,0.09),rgba(255,255,255,0.05))",border:"1px solid rgba(255,255,255,0.16)",borderRadius:17,padding:"40px 20px 16px",marginBottom:24,textAlign:"center",position:"relative",opacity:0.65 }}>
-            {/* COMING SOON badge: üstte ortalı, kendi satırında; uzun dillerde (EN) label'a binmez */}
-            <div style={{ position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",whiteSpace:"nowrap",fontSize:9,letterSpacing:1.5,padding:"3px 10px",borderRadius:10,background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#c8b0e8" }}>{t("map_coming_soon")}</div>
-            <div style={{ fontSize:13,letterSpacing:3.5,color:"#888888",marginBottom:7 }}>{t("orchestra_label")}</div>
-            <div style={{ marginBottom:5 }}>
+          {/* ── ORKESTRA MODU: KOLEKTIF NABIZ (Faz 1) ─────────────────────────
+              Eski SAHTE "312 kişi" kartı GERÇEK haftalık kolektif nabızla
+              değişti (pulse.mjs). activeUsers>0 ise gerçek sayılar + haftalık
+              AI yorumu; veri yoksa/hata varsa sahte sayı DEĞİL, dürüst bir
+              "topluluk uyanıyor" durumu. Uydurma sosyal kanıt yok. */}
+          <div style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(255,255,255,0.05))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:17,padding:"20px 20px 18px",marginBottom:24,textAlign:"center",position:"relative" }}>
+            <div style={{ fontSize:13,letterSpacing:3.5,color:"#c8b0e8",marginBottom:12 }}>{pickLang(ORKESTRA_TXT.label, lang)}</div>
+            <div style={{ marginBottom:14 }}>
               {[...Array(7)].map((_,i)=>(
                 <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
               ))}
             </div>
-            <div style={{ fontSize:14,color:"#888888" }}>{t("orchestra_text", "312")}</div>
+            {orkestra && orkestra.activeUsers >= 1 ? (
+              <>
+                <div style={{ fontSize:15,color:"#e8e0f4",lineHeight:1.5,marginBottom:14 }}>
+                  <b style={{ color:"#f0e6ff",fontSize:19 }}>{orkestra.activeUsers}</b> {pickLang(ORKESTRA_TXT.people, lang)}
+                </div>
+                <div style={{ display:"flex",justifyContent:"center",gap:22,flexWrap:"wrap",marginBottom: orkestra.comment || orkestra.topWord ? 16 : 0 }}>
+                  {orkestra.nefes > 0 && (
+                    <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.nefes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.breaths, lang)}</div></div>
+                  )}
+                  {orkestra.freqMinutes > 0 && (
+                    <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.freqMinutes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.minutes, lang)}</div></div>
+                  )}
+                </div>
+                {orkestra.topWord && (
+                  <div style={{ fontSize:12.5,color:"#b0a4c8",marginBottom: orkestra.comment ? 14 : 0 }}>
+                    {pickLang(ORKESTRA_TXT.topWord, lang)}: <b style={{ color:"#e0d4f8" }}>{orkestra.topWord}</b>
+                  </div>
+                )}
+                {orkestra.comment && (
+                  <div style={{ borderTop:"1px solid rgba(184,164,216,0.18)",paddingTop:13,marginTop:2 }}>
+                    <div style={{ fontSize:9.5,letterSpacing:2,color:"#8878a8",textTransform:"uppercase",marginBottom:6 }}>{pickLang(ORKESTRA_TXT.reflection, lang)}</div>
+                    <div style={{ fontSize:13,color:"#cabfe0",lineHeight:1.65,fontFamily:"'Inter',sans-serif" }}>{orkestra.comment}</div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div style={{ fontSize:13.5,color:"#9c93b4",lineHeight:1.6,padding:"0 6px" }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
+            )}
           </div>
           {/* Ekranın altındaki GALAKTİK KİMLİK butonu KALDIRILDI (kullanıcı
               isteği): kimlik kartı artık bu ekranın en üstünde ve kendi
