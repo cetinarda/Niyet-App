@@ -12426,10 +12426,35 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
             [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
           ].filter(([, v]) => !!v) : [];
-          const soulRows = soulRowsSrc.map(([lbl, v]) => [lbl, wrapLines(v, 1080 - COL_X[0] * 2 - 44, 2)]);
-          const soulRaceH = (soulSummary && soulSummary.race) ? 64 : 0;
+          // İKİ SÜTUN (kullanıcı: "bu kadar genişleme uzatma, Instagram'da
+          // paylaşılıyor"). Tam genişlik satırlar kartı 5 kat uzatıyordu;
+          // hikaye formatında (1080x1920) dikey yer en kıymetli şey. Yazı da
+          // küçültüldü. Sarma ölçümü 24px'e göre (wrapLines içinde sabit),
+          // çizim 22px: ölçüm daha geniş sandığı için satır TAŞMAZ.
+          const SOUL_W = 1080 - COL_X[0] * 2;
+          // Tek sayıda kutu kalırsa SONUNCUSU TAM GENİŞLİK olur: yarım kutunun
+          // yanında boşluk bırakmak özensiz duruyordu.
+          const soulOddLast = soulRowsSrc.length % 2 === 1;
+          const soulRows = soulRowsSrc.map(([lbl, v], i) => {
+            const full = soulOddLast && i === soulRowsSrc.length - 1;
+            return [lbl, wrapLines(v, (full ? SOUL_W : BOX_W) - 36, 3), full];
+          });
+          const soulRaceH = (soulSummary && soulSummary.race) ? 58 : 0;
+          // Yan yana iki kutu AYNI yükseklikte olmalı, yoksa ızgara kırılır.
+          const rowH = (r) => 32 + r[1].length * 26 + 12;
+          const soulPairH = [];
+          for (let i = 0; i < soulRows.length; ) {
+            const a = soulRows[i];
+            if (a[2]) { soulPairH.push({ h: rowH(a), a: i, b: -1 }); i += 1; }
+            else {
+              const b2 = soulRows[i + 1];
+              soulPairH.push({ h: Math.max(rowH(a), b2 ? rowH(b2) : 0), a: i, b: b2 ? i + 1 : -1 });
+              i += 2;
+            }
+          }
+          const soulGridH = soulPairH.reduce((s, g) => s + g.h + BOX_GAP, 0) - (soulPairH.length ? BOX_GAP : 0);
           const soulH = (soulRows.length || soulRaceH)
-            ? 30 + soulRaceH + soulRows.reduce((a, [, ls]) => a + 8 + 40 + ls.length * 30, 0)   // 30 = baslik
+            ? 30 + soulRaceH + (soulRaceH && soulGridH ? BOX_GAP : 0) + soulGridH   // 30 = baslik
             : 0;
           const fixedH = statsH + (soulH ? GAP_SOUL + soulH : 0)
             + (elemH ? GAP_ELEM + elemH : 0) + (hdOn ? GAP_HD + HD_H : 0);
@@ -12487,38 +12512,44 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // taşındı, önizlemeyle aynı sıra. Veri SoulID'nin kendi hesabından
           // (sakin_soul_summary); yoksa blok hiç çizilmez.
           if (soulH) {
-            const SOUL_W = 1080 - COL_X[0] * 2;
             cy += GAP_SOUL + air;
             ctx.fillStyle = "#7a7090"; ctx.textAlign = "center";
             ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
             ctx.fillText(pickLang(SOUL_TXT.title, lang).toLocaleUpperCase(lang), 540, cy);
             cy += 30;
             if (soulRaceH) {
+              // Yıldız ırkı tek satır, tam genişlik: bölümün başlığı gibi
+              // duruyor ve altındaki iki sütunu bir arada tutuyor.
               ctx.fillStyle = "rgba(232,192,122,0.07)";
-              roundRect(ctx, COL_X[0], cy, SOUL_W, 64, 14); ctx.fill();
+              roundRect(ctx, COL_X[0], cy, SOUL_W, soulRaceH, 14); ctx.fill();
               ctx.strokeStyle = "rgba(232,192,122,0.22)"; ctx.lineWidth = 1;
-              roundRect(ctx, COL_X[0], cy, SOUL_W, 64, 14); ctx.stroke();
-              ctx.fillStyle = "#f0d29a"; ctx.textAlign = "left";
-              ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
-              ctx.fillText(`${soulSummary.emoji || "✦"}  ${soulSummary.race}`, COL_X[0] + 22, cy + 41);
-              cy += 64;
+              roundRect(ctx, COL_X[0], cy, SOUL_W, soulRaceH, 14); ctx.stroke();
+              ctx.fillStyle = "#f0d29a"; ctx.textAlign = "center";
+              ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
+              ctx.fillText(`${soulSummary.emoji || "✦"}  ${soulSummary.race}`, 540, cy + 37);
+              cy += soulRaceH;
             }
-            // Satırlar ÖLÇÜMDE hesaplananlarla aynı (soulRows): çizim ile
-            // ölçüm ayrışırsa kart ya taşar ya boşluk bırakır.
-            soulRows.forEach(([lbl, lines]) => {
-              cy += 8;
-              const h = 40 + lines.length * 30;
-              ctx.fillStyle = "rgba(255,255,255,0.025)";
-              roundRect(ctx, COL_X[0], cy, 1080 - COL_X[0] * 2, h, 14); ctx.fill();
-              ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
-              roundRect(ctx, COL_X[0], cy, 1080 - COL_X[0] * 2, h, 14); ctx.stroke();
-              ctx.fillStyle = "#7a7090"; ctx.textAlign = "left";
-              ctx.font = "300 19px -apple-system, 'Jost', sans-serif";
-              ctx.fillText(String(lbl).toLocaleUpperCase(lang), COL_X[0] + 22, cy + 27);
-              ctx.fillStyle = "#d8d0e8";
-              ctx.font = "300 24px -apple-system, 'Jost', sans-serif";
-              lines.forEach((ln, li) => ctx.fillText(ln, COL_X[0] + 22, cy + 56 + li * 30));
-              cy += h;
+            // İKİ SÜTUN ızgara: stat kutularıyla aynı hizada (COL_X, BOX_W).
+            // Satır yükseklikleri ÖLÇÜMDE hesaplananlarla aynı (soulPairH):
+            // çizim ile ölçüm ayrışırsa kart ya taşar ya boşluk bırakır.
+            if (soulRaceH && soulPairH.length) cy += BOX_GAP;
+            soulPairH.forEach((g, gi) => {
+              [g.a, g.b].forEach((ri, ci) => {
+                if (ri < 0) return;
+                const [lbl, lines, full] = soulRows[ri];
+                const bx = full ? COL_X[0] : COL_X[ci], bw = full ? SOUL_W : BOX_W;
+                ctx.fillStyle = "rgba(255,255,255,0.025)";
+                roundRect(ctx, bx, cy, bw, g.h, 14); ctx.fill();
+                ctx.strokeStyle = "rgba(255,255,255,0.06)"; ctx.lineWidth = 1;
+                roundRect(ctx, bx, cy, bw, g.h, 14); ctx.stroke();
+                ctx.fillStyle = "#7a7090"; ctx.textAlign = "left";
+                ctx.font = "300 17px -apple-system, 'Jost', sans-serif";
+                ctx.fillText(String(lbl).toLocaleUpperCase(lang), bx + 18, cy + 24);
+                ctx.fillStyle = "#d8d0e8";
+                ctx.font = "300 22px -apple-system, 'Jost', sans-serif";
+                lines.forEach((ln, li) => ctx.fillText(ln, bx + 18, cy + 50 + li * 26));
+              });
+              cy += g.h + (gi < soulPairH.length - 1 ? BOX_GAP : 0);
             });
           }
 
@@ -12729,23 +12760,31 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <div style={{ display:"flex",flexDirection:"column",gap:5,marginBottom:8 }}>
                     <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginTop:2,marginBottom:1,textAlign:"center" }}>{pickLang(SOUL_TXT.title, lang)}</div>
                     {soulSummary.race && (
-                      <div style={{ display:"flex",alignItems:"center",gap:8,padding:"9px 12px",background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.22)",borderRadius:10 }}>
-                        {soulSummary.emoji && <span style={{ fontSize:15,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
-                        <span style={{ fontSize:13,color:"#f0d29a",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{soulSummary.race}</span>
+                      <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"8px 12px",background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.22)",borderRadius:10 }}>
+                        {soulSummary.emoji && <span style={{ fontSize:14,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
+                        <span style={{ fontSize:12.5,color:"#f0d29a",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{soulSummary.race}</span>
                       </div>
                     )}
-                    {[
-                      [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
-                      [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
-                      [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
-                      [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
-                      [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
-                    ].filter(([, v]) => !!v).map(([lbl, val]) => (
-                      <div key={lbl} style={{ padding:"8px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10 }}>
-                        <div style={{ fontSize:9,letterSpacing:1.6,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:3 }}>{lbl}</div>
-                        <div style={{ fontSize:12,color:"#d8d0e8",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{val}</div>
-                      </div>
-                    ))}
+                    {/* İKİ SÜTUN: paylaşım görseliyle aynı düzen. Tam genişlik
+                        satırlar kartı gereksiz uzatıyordu (kullanıcı: Instagram
+                        hikayesinde paylaşılıyor, dikey yer kıymetli). */}
+                    <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5 }}>
+                      {[
+                        [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+                        [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+                        [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
+                        [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+                        [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
+                      ].filter(([, v]) => !!v).map(([lbl, val], i, arr) => (
+                        <div key={lbl} style={{ padding:"7px 10px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,
+                          // Tek sayida kutu kalirsa sonuncusu iki sutunu kaplar
+                          // (paylasim gorseliyle ayni), yaninda bosluk kalmasin.
+                          ...(arr.length % 2 === 1 && i === arr.length - 1 ? { gridColumn:"1 / -1" } : {}) }}>
+                          <div style={{ fontSize:8,letterSpacing:1.4,color:"#7a7090",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:2,lineHeight:1.3 }}>{lbl}</div>
+                          <div style={{ fontSize:11,color:"#d8d0e8",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>{val}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
                 {/* Doğum bilgisi yoksa: neden boş olduğunu söyle + tek dokunuşla forma götür.
