@@ -927,11 +927,14 @@ const TODAY_TXT = {
   // soulid/soulidGo KALDIRILDI: Bugün'deki Ruh Profili davet kartı, Keşfet
   // panelindeki aynısıyla ikilik yaratıyordu (kullanıcı isteği, bkz. görev #52).
 };
-// İ Ching kırmızı butonu (Bugün ekranı, kullanıcı isteği). Buton metni
+// I Ching kırmızı butonu (Bugün ekranı, kullanıcı isteği). Buton metni
 // bilerek EYLEM CÜMLESİ ("bir öğüt al"), etiket değil: prototip/onboarding'de
 // kurulan üslupla tutarlı.
+// ⚠️ YAZIM (kullanıcı uyardı): "I Ching" yabancı bir terim, Türkçe metinde de
+// DÜZ I ile yazılır; Türkçe noktalı büyük I harfi burada KULLANILMAZ. Mevcut
+// TODAY_TXT.sysIching etiketi de düz I kullanıyor, ikisi tutarlı kalmalı.
 const ICHING_TXT = {
-  cta:    { tr:"İ Ching'den bir öğüt al", en:"Get advice from the I Ching", de:"Hol dir einen Rat vom I Ging", es:"Recibe un consejo del I Ching", pt:"Recebe um conselho do I Ching", fr:"Reçois un conseil du Yi King", ja:"易経から助言をもらう" },
+  cta:    { tr:"I Ching'den bir öğüt al", en:"Get advice from the I Ching", de:"Hol dir einen Rat vom I Ging", es:"Recibe un consejo del I Ching", pt:"Recebe um conselho do I Ching", fr:"Reçois un conseil du Yi King", ja:"易経から助言をもらう" },
   eyebrow:{ tr:"Günün Heksagramı", en:"Hexagram of the Day", de:"Hexagramm des Tages", es:"Hexagrama del día", pt:"Hexagrama do dia", fr:"Hexagramme du jour", ja:"今日のヘキサグラム" },
   advice: { tr:"Öğüt", en:"Advice", de:"Rat", es:"Consejo", pt:"Conselho", fr:"Conseil", ja:"助言" },
   close:  { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
@@ -1030,7 +1033,7 @@ const getFreqData = (lang) => {
   });
 };
 
-// ── İ CHİNG: GÜNÜN ÖĞÜDÜ ─────────────────────────────────────────────────────
+// ── I CHING: GÜNÜN ÖĞÜDÜ ─────────────────────────────────────────────────────
 // Bugün ekranındaki kırmızı buton için. Diğer "günün kartı"ları gibi (bkz.
 // daily-cards.js pickMythOfDay) GÜN BOYU SABİT: aynı gün tekrar açılınca aynı
 // heksagram çıkar, rastgele her tıklamada değişmez (kullanıcı beklentisi:
@@ -6439,6 +6442,52 @@ export default function SakinApp() {
     const timer = setTimeout(() => setHdPreloadSrc(null), 6000);
     return () => clearTimeout(timer);
   }, [birthDate, birthTime, birthCity]);
+  // ── EMBED KÖPRÜSÜ: ÇÖZÜLMÜŞ DOĞUM KOORDİNATI ────────────────────────────────
+  // Kullanıcı: "ruh profili ayrıca doğum bilgisi istiyor, bu yanlış; doğum
+  // bilgisi girme kısmını kaldır, Sakin ana sistemine bağla."
+  // KÖK SEBEP: SoulID köprüsü (apps/soulid/lib/sakin-bridge.ts) `sakin_birth_city`
+  // metnini KENDİ geocode'uyla çözmeye çalışıyordu; onun şehir listesi 158 şehir
+  // + ağ çağrısı, host'unki ise 36 bin şehirlik yerel veri tabanı. Şehir
+  // bulunamayınca köprü sessizce `{ok:false}` dönüyor ve SoulID kullanıcıyı
+  // KENDİ doğum formuna düşürüyordu. Yani "şehir bulunamıyor" ile "bilgiyi
+  // tekrar soruyor" AYNI hatanın iki yüzüydü.
+  // ÇÖZÜM: host zaten çözdüğü koordinatı paylaşıyor; embed'in geocode etmesine
+  // hiç gerek kalmıyor (ağ yok, eksik şehir yok, sessiz düşme yok).
+  // ANAHTARLAR YENİ DEĞİL: `sakin_birth_lat/lon/tz` zaten Tasarım (humandesign)
+  // embed'i için handleOpenEmbed içinde yazılıyordu; burada aynı anahtarları
+  // EMBED AÇILMASINI BEKLEMEDEN, doğum şehri her değiştiğinde yazıyoruz.
+  // Sebep: SoulID başka yollardan da açılabiliyor, veri hazır olmalı.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const clear = () => { ["sakin_birth_lat","sakin_birth_lon","sakin_birth_tz","sakin_birth_tz_eff"].forEach(k => { try { localStorage.removeItem(k); } catch(_) {} }); };
+        if (!birthCity) { clear(); return; }
+        await ensureCitiesLoaded();          // 36k şehirlik tablo tembel yükleniyor
+        if (!alive) return;
+        const c = lookupCity(birthCity);     // [lat, lon, standart utcOffset] | null
+        if (c && c.length >= 3) {
+          localStorage.setItem("sakin_birth_lat", String(c[0]));
+          localStorage.setItem("sakin_birth_lon", String(c[1]));
+          localStorage.setItem("sakin_birth_tz",  String(c[2]));
+          // ETKİN OFSET, AYRI ANAHTARDA: `sakin_birth_tz` STANDART (kış) ofseti,
+          // Tasarım embed'i bunu okuyor; anlamını değiştirmek onun sonucunu
+          // sessizce kaydırırdı. Yaz saati düzeltmesi gereken hesaplar için
+          // (SoulID) doğum tarihine göre ETKİN ofseti ayrıca yazıyoruz.
+          // effectiveUtcOffset Türkiye'nin tarihsel DST kurallarını tz-db ile
+          // birebir uyguluyor: 1 saatlik hata yükseleni 1 burç kaydırır.
+          try {
+            const [Y, Mo, Da] = (birthDate || "").split("-").map(Number);
+            if (Y && Mo && Da) {
+              localStorage.setItem("sakin_birth_tz_eff", String(effectiveUtcOffset(c[0], c[1], c[2], Y, Mo, Da)));
+            } else localStorage.removeItem("sakin_birth_tz_eff");
+          } catch(_) {}
+        } else clear();
+      } catch(_) {}
+    })();
+    return () => { alive = false; };
+  }, [birthCity, birthDate]);
+
   // rehber screen is now enabled on iOS via the mirror portal
   // Yol seçimi ekranı açılınca sarmalayıcıyı ölç (çizgi-kart bağlantısı için).
   useEffect(() => {
@@ -6932,7 +6981,7 @@ BEDEN-ZİHİN BAĞLANTISI:
 3. Olumlu düşünce kalıplarıyla eski kalıpları dönüştür
 4. Kendini sevmeyi öğren, bu tüm şifanın temelidir`;
 
-  // ── I CHING (YİJİNG) REHBERİ ──────────────────────────────────────────────
+  // ── I CHING (YIJING) REHBERİ ──────────────────────────────────────────────
   // Kullanıcı isteği: "içsel ayna kısmındaki sorularda I Ching kitabından ve
   // kaynaklarından da yararlan."
   // NEDEN BU BİÇİMDE: I Ching bir "gelecek söyleyici" değil, DEĞİŞİM kitabıdır;
@@ -7763,7 +7812,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // içerik indeksi yalnızca bu ekran açılınca indiriliyor (~36 KB gzip).
   const [dailyIndex, setDailyIndex] = useState(null);
   const [dailyIds, setDailyIds] = useState(null);
-  // İ Ching kırmızı buton modalı (kullanıcı isteği, Bugün ekranı).
+  // I Ching kırmızı buton modalı (kullanıcı isteği, Bugün ekranı).
   const [showIching, setShowIching] = useState(false);
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js): ana bundle büyümesin, yalnızca bu ekranda insin.
@@ -13817,8 +13866,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 eklemek uygulamanın sadeliğini bozar; yeni bir davet/kart
                 eklemeden önce Keşfet'te zaten olup olmadığını kontrol et. */}
 
-            {/* İ CHİNG: kırmızı buton, kullanıcı isteği ("bugün kırmızı buton
-                koy, İ Ching'den bir öğüt ver"). Günün heksagramı SABİT
+            {/* I CHING: kırmızı buton, kullanıcı isteği ("bugün kırmızı buton
+                koy, I Ching'den bir öğüt ver"). Günün heksagramı SABİT
                 (pickIchingOfDay, günün diğer kartlarıyla aynı felsefe):
                 tıklanınca aynı gün içinde hep aynı öğüt çıkar. */}
             <button onClick={()=>{ try{haptic();}catch(_){} setShowIching(true); }}
@@ -13841,7 +13890,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
       })()}
 
-      {/* İ CHİNG MODALI: günün heksagramı. sakinDayKey() ile SABİT, gün
+      {/* I CHING MODALI: günün heksagramı. sakinDayKey() ile SABİT, gün
           bitene kadar aynı çıkar. */}
       {showIching && (() => {
         const hex = pickIchingOfDay(sakinDayKey());
