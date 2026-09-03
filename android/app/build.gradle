@@ -21,7 +21,7 @@ android {
         // otomatik mağaza taraması). Yüklenmiş bir versionCode kalıcı olarak
         // yanar, aynısı ikinci kez kabul edilmez: yeni yükleme 13 ile gider.
         versionCode 13
-        versionName "1.3.9"
+        versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
