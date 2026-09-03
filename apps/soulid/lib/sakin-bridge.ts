@@ -132,7 +132,10 @@ async function runBridge(
     await saveReport(report).catch(() => {});
     recordReportView(report.id);
     setActiveReportId(report.id);
-    try { sessionStorage.setItem(DONE_KEY, '1'); } catch { /* ignore */ }
+    // Başarı da parmak iziyle işaretlenir: kullanıcı Sakin'de doğum bilgisini
+    // DEĞİŞTİRİRSE (düzeltme, farklı şehir) köprü yeniden çalışıp karneyi
+    // güncel veriyle üretir; eski karneye saplanıp kalmaz.
+    try { sessionStorage.setItem(DONE_KEY, sakinDataFingerprint()); } catch { /* ignore */ }
     return { ok: true, reportId: report.id };
   } catch {
     return { ok: false };
@@ -148,18 +151,44 @@ export function hasSakinBirthData(): boolean {
   return !!readSakinField('sakin_name') && !!readSakinField('sakin_birth_date') && !!readSakinField('sakin_birth_city');
 }
 
-/** Bu oturumda köprü zaten denendi mi? (Welcome'a geri dönüşte tekrar tetiklenmesin.) */
+/**
+ * Köprünün hangi VERİYLE denendiğinin parmak izi.
+ *
+ * NEDEN PARMAK İZİ, DÜZ BAYRAK DEĞİL (kullanıcı bildirdi): eskiden bu yalnızca
+ * "denendi/denenmedi" bayrağıydı. Kullanıcı Ruh Profili'ni doğum bilgisi
+ * GİRMEDEN açarsa köprü düşüyor ve bayrak yanıyordu; sonra Sakin'de (girişte ya
+ * da Galaktik Kimlik oluştururken) doğum bilgisini girip Ruh Profili'ne geri
+ * dönünce köprü BİR DAHA denenmiyor, form yine karşısına çıkıyordu.
+ * Artık hangi veriyle denendiği yazılıyor: veri değiştiyse yeniden denenir.
+ */
+function sakinDataFingerprint(): string {
+  return [
+    readSakinField('sakin_name'),
+    readSakinField('sakin_birth_date'),
+    readSakinField('sakin_birth_time'),
+    readSakinField('sakin_birth_city'),
+    readSakinField('sakin_birth_lat'),
+    readSakinField('sakin_birth_tz_eff'),
+  ].join('|');
+}
+
+/** Köprü BU VERİYLE zaten denendi mi? (Aynı veriyle sonsuz döngüye girmesin.) */
 export function sakinBridgeAttempted(): boolean {
   try {
-    return sessionStorage.getItem(DONE_KEY) === '1';
+    const marked = sessionStorage.getItem(DONE_KEY);
+    if (!marked) return false;
+    // Eski sürümden kalan düz '1' işareti: veri parmak izi bilinmiyor, güvenli
+    // taraf yeniden denemek (kullanıcının şikayet ettiği durum tam da buydu).
+    if (marked === '1') return false;
+    return marked === sakinDataFingerprint();
   } catch {
     return false;
   }
 }
 
-/** Denendi ama veri yoktu/başarısızdı, bir daha denemesin (formu boşuna bloklama). */
+/** Denendi ama veri yoktu/başarısızdı: AYNI veriyle bir daha denemesin. */
 export function markSakinBridgeSkipped(): void {
-  try { sessionStorage.setItem(DONE_KEY, '1'); } catch { /* ignore */ }
+  try { sessionStorage.setItem(DONE_KEY, sakinDataFingerprint()); } catch { /* ignore */ }
 }
 
 /**
