@@ -5640,6 +5640,15 @@ export default function SakinApp() {
       return raw && raw.v === 1 ? raw : null;
     } catch (_) { return null; }
   }, [soulReloadKey]);
+  // GELİŞ SEBEBİ: SoulID bunu eskiden DÜZ STRING yazıyordu ve içinde teknik bir
+  // önek vardı ("Kuzey Düğüm Görevi: Pisces"). Artık {tr,en} objesi ve önek yok.
+  // Güncelleme anında kullanıcının elinde ESKİ özet olabilir, o yüzden iki şekli
+  // de okuyoruz: string ise olduğu gibi, obje ise dile göre (tr yoksa en).
+  const soulPurpose = !soulSummary ? "" : (
+    typeof soulSummary.purpose === "string"
+      ? soulSummary.purpose
+      : (lang === "tr" ? soulSummary.purpose?.tr : soulSummary.purpose?.en) || soulSummary.purpose?.en || ""
+  );
   // Herhangi bir embed KAPANDIĞINDA özeti bir kez yeniden oku. Tek tek kapanış
   // yollarını (Escape, geri, X, paywall, donanım geri tuşu) ayrı ayrı yamamak
   // yerine tek yerden dinleniyor: yeni bir kapanış yolu eklense de çalışır.
@@ -12299,18 +12308,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // Tek sabitten besleniyor: kırpma maskesi, çerçeve, placeholder
           // gradyanı ve fotoğrafın ölçek hesabı hep bunu okuyor, biri
           // güncellenip diğeri unutulamaz.
-          const PHOTO_R = 138;
+          // FOTOĞRAF KÜÇÜLTÜLDÜ (138 -> 104) ve yukarı çekildi (merkez 380 ->
+          // 330): kullanıcı isteği "profil fotosu kutucuğunu küçült, boşalan
+          // alana tasarımı yukarı taşı, taşan yeri sığdır". Kazanılan ~120px
+          // alt bloklara gidiyor, hikaye formatında içerik rahat sığıyor.
+          const PHOTO_R = 104;
           if (idCardPhoto) {
             await new Promise((resolve) => {
               const img = new Image();
               img.onload = () => {
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
+                ctx.arc(540, 330, PHOTO_R, 0, Math.PI * 2);
                 ctx.clip();
                 const r = Math.max((PHOTO_R * 2) / img.width, (PHOTO_R * 2) / img.height);
                 const w = img.width * r, h = img.height * r;
-                ctx.drawImage(img, 540 - w/2, 380 - h/2, w, h);
+                ctx.drawImage(img, 540 - w/2, 330 - h/2, w, h);
                 ctx.restore();
                 resolve();
               };
@@ -12319,12 +12332,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             });
           } else {
             // Placeholder radial gradient
-            const rg = ctx.createRadialGradient(540, 380, 0, 540, 380, PHOTO_R);
+            const rg = ctx.createRadialGradient(540, 330, 0, 540, 330, PHOTO_R);
             rg.addColorStop(0, "rgba(180,140,240,0.55)");
             rg.addColorStop(1, "rgba(80,40,140,0.25)");
             ctx.fillStyle = rg;
             ctx.beginPath();
-            ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
+            ctx.arc(540, 330, PHOTO_R, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = "#fff";
             ctx.font = "120px -apple-system, sans-serif";
@@ -12333,7 +12346,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           }
           // Foto çerçevesi
           ctx.beginPath();
-          ctx.arc(540, 380, PHOTO_R, 0, Math.PI * 2);
+          ctx.arc(540, 330, PHOTO_R, 0, Math.PI * 2);
           ctx.strokeStyle = "rgba(220,200,255,0.5)";
           ctx.lineWidth = 4;
           ctx.stroke();
@@ -12350,7 +12363,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // ilerletiyor, açıklama bloğu da yalnızca KALAN yere sığdığı kadar
           // satır yazıyor, sığmıyorsa hiç yazmıyor. Çakışma imkânsız.
           // Yeni bir bölüm eklerken tek kural: çizdikten sonra `cy`'yi ilerlet.
-          let cy = 596;   // foto alti 518 (380 + PHOTO_R), 78px nefes payi
+          let cy = 486;   // foto alti 434 (330 + PHOTO_R), 52px nefes payi
 
           // 5. Ad
           ctx.fillStyle = "#fff";
@@ -12420,10 +12433,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           // (alt bilgi metninin üstüne biner).
           const GAP_SOUL = 26;
           const soulRowsSrc = soulSummary ? [
-            [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+            // "Geldigi galaksi" KALDIRILDI (kullanici istegi): yildiz irki
+            // satiri zaten kokeni soyluyor, ikinci kez yazmak yer harciyordu.
             [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
             [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
-            [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+            [pickLang(SOUL_TXT.purpose, lang),  soulPurpose],
             [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
           ].filter(([, v]) => !!v) : [];
           // İKİ SÜTUN (kullanıcı: "bu kadar genişleme uzatma, Instagram'da
@@ -12698,19 +12712,19 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 ))}
                 <div style={{ textAlign:"center",position:"relative" }}>
                   <div style={{ fontSize:9,letterSpacing:4.5,color:"#9080c0",fontFamily:"'Jost',sans-serif",marginBottom:4,textTransform:"uppercase" }}>{t("gid_header_short")}</div>
-                  <div style={{ position:"relative",width:74,height:74,margin:"10px auto 12px" }}>
+                  <div style={{ position:"relative",width:56,height:56,margin:"6px auto 8px" }}>
                     {/* Fotoğraf yoksa DAİRENİN TAMAMI tıklanabilir "fotoğraf ekle" hedefi, 
                         yıldız (✦) yerine büyük, belirgin bir kamera ikonu + kesikli çerçeve
                         koyup dokunulabilir olduğunu netleştiriyoruz. Fotoğraf varsa dairenin
                         kendisi artık fotoğrafı gösterir, değiştirmek için köşede küçük rozet kalır. */}
                     {idCardPhoto ? (
-                      <div style={{ width:74,height:74,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
+                      <div style={{ width:56,height:56,borderRadius:"50%",background:`url(${idCardPhoto}) center/cover`,border:"2px solid rgba(220,200,255,0.45)",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }} />
                     ) : (
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ width:74,height:74,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
-                        <span style={{ fontSize:25,lineHeight:1 }}>📷</span>
+                        style={{ width:56,height:56,borderRadius:"50%",background:"radial-gradient(circle,rgba(180,140,240,0.55),rgba(80,40,140,0.25))",border:"2px dashed rgba(220,200,255,0.6)",display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",boxShadow:"0 0 22px rgba(184,164,216,0.35)" }}>
+                        <span style={{ fontSize:19,lineHeight:1 }}>📷</span>
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
                       </label>
@@ -12719,7 +12733,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <label
                         aria-label={t("gid_upload_photo")}
                         title={t("gid_upload_photo")}
-                        style={{ position:"absolute",bottom:-2,right:-2,width:26,height:26,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                        style={{ position:"absolute",bottom:-2,right:-2,width:22,height:22,borderRadius:"50%",background:"rgba(30,20,45,0.95)",border:"1.5px solid rgba(220,200,255,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,cursor:"pointer",boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
                         📷
                         <input type="file" accept="image/*" style={{ display:"none" }}
                           onChange={e=>saveIdCardPhoto(e.target.files?.[0])}/>
@@ -12770,10 +12784,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         hikayesinde paylaşılıyor, dikey yer kıymetli). */}
                     <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:5 }}>
                       {[
-                        [pickLang(SOUL_TXT.galaxy, lang),   soulSummary.galaxy],
+                        // "Geldigi galaksi" KALDIRILDI (kullanici istegi): yildiz irki
+            // satiri zaten kokeni soyluyor, ikinci kez yazmak yer harciyordu.
                         [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
                         [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
-                        [pickLang(SOUL_TXT.purpose, lang),  soulSummary.purpose],
+                        [pickLang(SOUL_TXT.purpose, lang),  soulPurpose],
                         [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
                       ].filter(([, v]) => !!v).map(([lbl, val], i, arr) => (
                         <div key={lbl} style={{ padding:"7px 10px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,
