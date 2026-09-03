@@ -46,7 +46,12 @@ function isoWeek(ts) {
 }
 
 const MAX_USERS = 20000;
-const AGG_TTL_MS = 60 * 60 * 1000; // toplu tarama en fazla saatte bir
+// KULLANICI BILDIRDI: "ses suresi dinledim ama yansimadi" - 1 saatlik cache
+// katkinin gorunmesini bir saate kadar geciktiriyordu, erken/dusuk trafik
+// donemi icin cok uzun. Kullanici sayisi kucukken tam tarama ucuz (bkz.
+// computeAggregate); 2 dakika hem tazelik hem art arda tiklamaya karsi
+// makul bir tampon. Trafik buyurse yukselt.
+const AGG_TTL_MS = 2 * 60 * 1000;
 
 // Kullanici kayitlarindan icinde bulunulan haftanin toplamini cikar. Saf
 // fonksiyon (test edilebilir), report.mjs/aggregate ile ayni ruh.
