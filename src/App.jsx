@@ -864,6 +864,29 @@ const SOUL_TXT = {
                 fr:"Ta carte est prête. Et la sienne ?",
                 ja:"あなたの地図は準備できています。相手は？" },
 };
+// GELİŞ SEBEBİ: SoulID'nin eski (önekli, düz string) formatını geriye dönük
+// eşlemek için. Eskiden "Kuzey Düğüm Görevi: Pisces" gibi teknik bir önekle
+// yazılıyordu; kullanıcı bunu şikayet etti ("ay düğümünü belirtmene gerek yok,
+// zaten yukarıda var"). SoulID artık {tr,en} objesi yazıyor ama kullanıcı
+// güncellemeden sonra Ruh Profili'ni yeniden AÇMADIYSA localStorage'da hâlâ eski
+// string durabilir. Burada AYNI kısa cümleleri (apps/soulid/lib/sakin-summary.ts
+// PURPOSE_BY_NODE ile birebir) 7 dilde tutuyoruz, host eski string'i tekrar
+// açmaya gerek kalmadan yeni metinle gösteriyor.
+const PURPOSE_LEGACY_BY_SIGN = {
+  Aries:       { tr:"Kendi ayakları üstünde durmayı öğrenmek", en:"To learn to stand on your own", de:"Auf eigenen Füßen stehen lernen", es:"Aprender a valerte por ti mismo", pt:"Aprender a valer-te por ti próprio", fr:"Apprendre à te tenir seul", ja:"自分の足で立つことを学ぶ" },
+  Taurus:      { tr:"Köklenmek ve sadeleşmek", en:"To take root and simplify", de:"Wurzeln schlagen und vereinfachen", es:"Echar raíces y simplificar", pt:"Criar raízes e simplificar", fr:"Prendre racine et simplifier", ja:"根を張り、シンプルにする" },
+  Gemini:      { tr:"Merakın peşinden gitmek", en:"To follow your curiosity", de:"Deiner Neugier folgen", es:"Seguir tu curiosidad", pt:"Seguir a tua curiosidade", fr:"Suivre ta curiosité", ja:"好奇心に従う" },
+  Cancer:      { tr:"Duyguya alan açmak", en:"To make room for feeling", de:"Gefühlen Raum geben", es:"Dar espacio a los sentimientos", pt:"Dar espaço ao sentimento", fr:"Faire de la place au ressenti", ja:"感情に居場所をつくる" },
+  Leo:         { tr:"Kendi ışığını sahiplenmek", en:"To own your own light", de:"Dein eigenes Licht annehmen", es:"Reclamar tu propia luz", pt:"Assumir a tua própria luz", fr:"Assumer ta propre lumière", ja:"自分の光を受け入れる" },
+  Virgo:       { tr:"Düzeni ve emeği bulmak", en:"To find order and craft", de:"Ordnung und Handwerk finden", es:"Encontrar orden y oficio", pt:"Encontrar ordem e ofício", fr:"Trouver l'ordre et le métier", ja:"秩序と技を見つける" },
+  Libra:       { tr:"Birlikte olmayı öğrenmek", en:"To learn to be with others", de:"Lernen, mit anderen zu sein", es:"Aprender a estar con otros", pt:"Aprender a estar com os outros", fr:"Apprendre à être avec les autres", ja:"人と共にあることを学ぶ" },
+  Scorpio:     { tr:"Derinliğe ve dönüşüme girmek", en:"To enter depth and change", de:"In Tiefe und Wandel eintauchen", es:"Entrar en la profundidad y el cambio", pt:"Entrar na profundidade e na transformação", fr:"Entrer dans la profondeur et le changement", ja:"深みと変容に踏み込む" },
+  Sagittarius: { tr:"Kendi anlamını aramak", en:"To seek your own meaning", de:"Deinen eigenen Sinn suchen", es:"Buscar tu propio sentido", pt:"Procurar o teu próprio sentido", fr:"Chercher ton propre sens", ja:"自分なりの意味を探す" },
+  Capricorn:   { tr:"Sorumluluğu üstlenmek", en:"To take responsibility", de:"Verantwortung übernehmen", es:"Asumir la responsabilidad", pt:"Assumir a responsabilidade", fr:"Assumer la responsabilité", ja:"責任を引き受ける" },
+  Aquarius:    { tr:"Bütüne katkı vermek", en:"To give back to the whole", de:"Zum Ganzen beitragen", es:"Contribuir al conjunto", pt:"Contribuir para o todo", fr:"Contribuer à l'ensemble", ja:"全体に貢献する" },
+  Pisces:      { tr:"Bırakmayı öğrenmek", en:"To learn to let go", de:"Loslassen lernen", es:"Aprender a soltar", pt:"Aprender a soltar", fr:"Apprendre à lâcher prise", ja:"手放すことを学ぶ" },
+};
+const PURPOSE_LEGACY_SIGNS = Object.keys(PURPOSE_LEGACY_BY_SIGN);
 // "Ne sorabilirim?" açılır listesinin üstündeki nazik açıklama (kullanıcı
 // isteği: "bunlar örnek sorular, istediğini sorabilirsin ibaresi koy").
 // Liste bir MENÜ değil, ilham için birkaç örnek; kullanıcı serbest metin de
@@ -5642,11 +5665,14 @@ export default function SakinApp() {
   }, [soulReloadKey]);
   // GELİŞ SEBEBİ: SoulID bunu eskiden DÜZ STRING yazıyordu ve içinde teknik bir
   // önek vardı ("Kuzey Düğüm Görevi: Pisces"). Artık {tr,en} objesi ve önek yok.
-  // Güncelleme anında kullanıcının elinde ESKİ özet olabilir, o yüzden iki şekli
-  // de okuyoruz: string ise olduğu gibi, obje ise dile göre (tr yoksa en).
+  // Güncelleme anında kullanıcının elinde ESKİ özet olabilir (SoulID'yi yeniden
+  // AÇMADIYSA localStorage'daki eski string kalıcı kalır). Eski string'i olduğu
+  // gibi basmak yerine PURPOSE_LEGACY_BY_SIGN ile aynı kısa cümlelerle yeniden
+  // eşliyoruz: sign string'in içinde geçen İngilizce burç adından bulunuyor,
+  // bulunamazsa (bilinmeyen bir biçim) son çare olarak ham string gösterilir.
   const soulPurpose = !soulSummary ? "" : (
     typeof soulSummary.purpose === "string"
-      ? soulSummary.purpose
+      ? (pickLang(PURPOSE_LEGACY_BY_SIGN[PURPOSE_LEGACY_SIGNS.find(s => soulSummary.purpose.includes(s))], lang) || soulSummary.purpose)
       : (lang === "tr" ? soulSummary.purpose?.tr : soulSummary.purpose?.en) || soulSummary.purpose?.en || ""
   );
   // Herhangi bir embed KAPANDIĞINDA özeti bir kez yeniden oku. Tek tek kapanış
@@ -12339,10 +12365,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ctx.beginPath();
             ctx.arc(540, 330, PHOTO_R, 0, Math.PI * 2);
             ctx.fill();
+            // Foto küçüldüğünde (yarıçap 138 -> 104) bu glyph eski font/baseline'la
+            // (120px, y=420) dairenin ALT KENARINA yakın kalıyordu: font boyu artık
+            // sabitlenmiyor, dairenin çapıyla orantılı (kullanıcı: "hizalama hatalı").
+            // textBaseline "middle" ile dikey merkezleme yarıçap değişse de bozulmaz.
             ctx.fillStyle = "#fff";
-            ctx.font = "120px -apple-system, sans-serif";
+            ctx.font = `${Math.round(PHOTO_R * 0.9)}px -apple-system, sans-serif`;
             ctx.textAlign = "center";
-            ctx.fillText("✦", 540, 420);
+            ctx.textBaseline = "middle";
+            ctx.fillText("✦", 540, 330);
+            ctx.textBaseline = "alphabetic";
           }
           // Foto çerçevesi
           ctx.beginPath();
