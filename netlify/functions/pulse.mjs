@@ -1,9 +1,10 @@
 // KOLEKTIF NABIZ - Orkestra Modu Faz 1 okuma ucu (public, anonim).
 // ------------------------------------------------------------------------
 // Uygulama "Ben" ekranindaki Orkestra karti bunu cagirir. Doner:
-//   { week, activeUsers, nefes, freqMinutes, topWord, topChakra, comment }
-// KISISEL VERI YOK: yalnizca toplu sayilar + onceden tanimli chip adlari
-// (niyet kelimesi / cakra). Serbest metin, isim, dogum, mesaj HICBIR SEY yok.
+//   { week, activeUsers, nefes, freqMinutes, chakraMinutes }
+// KISISEL VERI YOK: yalnizca uc toplu sayi (nefes SAYISI, ses SURESI, cakra
+// SURESI). YAZILI YORUM YOK (kullanici karari: "orkestra modunde yazi yorum
+// verme, uc sayi yeterli"). Isim, dogum, mesaj, serbest metin HICBIR SEY yok.
 //
 // NEDEN OKUMA ANINDA HESAPLANIR: haftalik toplamlar her kullanicinin kendi
 // kaydinda (u/<id>.wc) tutuluyor (track.mjs); ayri bir canli toplam blob'u
@@ -11,14 +12,11 @@
 // listesi taranip toplaniyor (report.mjs deseni), sonuc CACHE'leniyor ki her
 // uygulama acilisinda tum blob'lar taranmasin.
 //
-// CACHE:
-//   pulse/agg            -> { at, week, data }          (~1 saat tazelik)
-//   pulse/comment/W/lang -> { text }                    (hafta+dil basina bir kez)
+// CACHE: pulse/agg -> { at, week, data } (~1 saat tazelik)
 //
 // ⚠️ FUNCTIONS V2 API (export default, Request/Response) - track.mjs/report.mjs
 // ile ayni sebep: Blobs siteID/token'i yalnizca v2'de otomatik cozuluyor.
 import { getStore } from "@netlify/blobs";
-import { groqChat, stripThink } from "./_groq.mjs";
 
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 const ALLOWED_SUFFIXES = [".netlify.app"];
@@ -53,25 +51,21 @@ const AGG_TTL_MS = 60 * 60 * 1000; // toplu tarama en fazla saatte bir
 // Kullanici kayitlarindan icinde bulunulan haftanin toplamini cikar. Saf
 // fonksiyon (test edilebilir), report.mjs/aggregate ile ayni ruh.
 export function aggregatePulse(users, week) {
-  let activeUsers = 0, nefes = 0, freqSec = 0;
-  const words = {}, chakras = {};
+  let activeUsers = 0, nefes = 0, freqSec = 0, chakraSec = 0;
   for (const u of users) {
     const wc = u && u.wc;
     if (!wc || wc.wk !== week) continue;
     activeUsers++;
     nefes += wc.nefes || 0;
     freqSec += wc.freqSec || 0;
-    for (const k in (wc.words || {})) words[k] = (words[k] || 0) + wc.words[k];
-    for (const k in (wc.chakras || {})) chakras[k] = (chakras[k] || 0) + wc.chakras[k];
+    chakraSec += wc.chakraSec || 0;
   }
-  const topOf = (m) => { let best = null, n = 0; for (const k in m) if (m[k] > n) { n = m[k]; best = k; } return best; };
   return {
     week,
     activeUsers,
     nefes,
     freqMinutes: Math.round(freqSec / 60),
-    topWord: topOf(words),
-    topChakra: topOf(chakras),
+    chakraMinutes: Math.round(chakraSec / 60),
   };
 }
 
@@ -88,33 +82,6 @@ async function computeAggregate(store, week) {
   return aggregatePulse(users, week);
 }
 
-const LANG_NAME = { tr: "Turkish", en: "English", de: "German", es: "Spanish", pt: "Portuguese", fr: "French", ja: "Japanese" };
-const SAMPLE = { tr: "Türkçe karakterleri (ş ğ ı ü ö ç) eksiksiz kullan.", ja: "自然な日本語で書いてください。" };
-
-// Haftalik kolektif yorum: toplu sayilardan tek-iki cumlelik sicak bir
-// gozlem. Kisisel veri yok; yalnizca "bu hafta topluluk sunu yapti" ozeti.
-async function weeklyComment(apiKey, data, lang) {
-  const name = LANG_NAME[lang] || "English";
-  const facts = [
-    `active people this week: ${data.activeUsers}`,
-    `total breaths: ${data.nefes}`,
-    `total sound/frequency minutes: ${data.freqMinutes}`,
-    data.topWord ? `most chosen intention word: ${data.topWord}` : null,
-    data.topChakra ? `most chosen chakra: ${data.topChakra}` : null,
-  ].filter(Boolean).join("; ");
-  const system = `You write a short, warm collective reflection for a calm/mindfulness app's community screen. Write ONLY in ${name}. ${SAMPLE[lang] || ""}
-Rules: 2 sentences maximum. Speak of "the community" / "we" this week, never a single person. No medical, spiritual-certainty, or predictive claims. Do NOT invent numbers beyond the ones given. Do NOT use an em dash, en dash or horizontal bar; use a comma or period. Warm, plain, honest. No hashtags, no emojis.`;
-  const user = `This week's anonymous collective totals: ${facts}. Write the reflection.`;
-  const out = await groqChat(apiKey, "text", {
-    max_tokens: 220, temperature: 0.7, top_p: 0.9,
-    messages: [{ role: "system", content: system }, { role: "user", content: user }],
-  });
-  if (!out.ok) return "";
-  let text = stripThink(out.data.choices?.[0]?.message?.content || "").trim();
-  text = text.replace(/ [—–―] /g, ", ").replace(/[—–―]/g, "-").trim();
-  return text;
-}
-
 export default async (req) => {
   const origin = req.headers.get("origin") || "";
   const originOk = isAllowedOrigin(origin);
@@ -126,8 +93,6 @@ export default async (req) => {
   if (!originOk) return json(headers, 403, { error: "origin" });
   if (req.method !== "GET") return json(headers, 405, { error: "method" });
 
-  const url = new URL(req.url);
-  const lang = (url.searchParams.get("lang") || "tr").slice(0, 5).toLowerCase().split(/[-_]/)[0];
   const now = Date.now();
   const week = isoWeek(now);
 
@@ -135,7 +100,6 @@ export default async (req) => {
   try { store = getStore("sakin-usage"); }
   catch (_) { return json(headers, 200, { ok: false, nostore: true }); }
 
-  // 1) Toplu sayilar (saatlik cache)
   let data = null;
   try {
     const cached = await store.get("pulse/agg", { type: "json" });
@@ -146,22 +110,5 @@ export default async (req) => {
     try { await store.setJSON("pulse/agg", { at: now, week, data }); } catch (_) {}
   }
 
-  // 2) Haftalik yorum (hafta + dil basina bir kez). Anlamli veri yoksa uretme.
-  let comment = "";
-  const commentKey = `pulse/comment/${week}/${lang}`;
-  try {
-    const c = await store.get(commentKey, { type: "json" });
-    if (c && typeof c.text === "string") comment = c.text;
-  } catch (_) {}
-  if (!comment && data.activeUsers >= 1) {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (apiKey) {
-      try {
-        comment = await weeklyComment(apiKey, data, lang);
-        if (comment) { try { await store.setJSON(commentKey, { text: comment, at: now }); } catch (_) {} }
-      } catch (_) { comment = ""; }
-    }
-  }
-
-  return json(headers, 200, { ok: true, ...data, comment });
+  return json(headers, 200, { ok: true, ...data });
 };

@@ -77,17 +77,6 @@ export function isoWeek(ts) {
   return d.getUTCFullYear() + "-W" + String(week).padStart(2, "0");
 }
 
-// Bir sayac haritasina (niyet kelimeleri / cakralar) guvenli artis. Anahtar
-// onceden tanimli chip'lerden gelir (kisisel serbest metin DEGIL) ama yine de
-// uzunluk ve harita boyutu sinirlanir: bozuk/istismar girdisi blob'u sismesin.
-function bumpMap(map, key, cap = 40) {
-  if (typeof key !== "string") return;
-  const k = key.slice(0, 32);
-  if (!k) return;
-  if (map[k] === undefined && Object.keys(map).length >= cap) return; // yeni anahtar icin doluysa ekleme
-  map[k] = (map[k] || 0) + 1;
-}
-
 // Bir demeti (batch) mevcut kayda birlestir. Saf fonksiyon (test edilebilir).
 export function mergeBatch(rec, body, now) {
   if (!rec) rec = { first: now, last: now, p: "web", v: "", lang: "tr", prem: false, days: [], m: {}, c: {} };
@@ -112,8 +101,11 @@ export function mergeBatch(rec, body, now) {
   // hesaplanir; report.mjs'in kanitlanmis listeleme deseni.
   // Hafta degisince sayac otomatik sifirlanir (yalnizca ICINDE BULUNULAN
   // haftanin verisi tutulur, gecmis hafta birikmez).
+  // UC METRIK (kullanici karari, yazili yorum YOK): nefes SAYISI, ses SURESI,
+  // cakra SURESI. Niyet kelimesi/cakra secimi HARITASI kaldirildi (bumpMap),
+  // gosterilmeyen veri toplanmaz.
   const week = isoWeek(now);
-  if (!rec.wc || rec.wc.wk !== week) rec.wc = { wk: week, nefes: 0, freqSec: 0, words: {}, chakras: {} };
+  if (!rec.wc || rec.wc.wk !== week) rec.wc = { wk: week, nefes: 0, freqSec: 0, chakraSec: 0 };
 
   for (const it of (body.ev || [])) {
     if (!it || typeof it.e !== "string") continue;
@@ -125,12 +117,15 @@ export function mergeBatch(rec, body, now) {
     else if (e === "purchase") setMilestone("purchase", ts);
     else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++; }
     else if (e === "freq_sec") {
-      // Ses/cakra frekans dinleme saniyesi (istemci ton durunca delta gonderir).
+      // Ses/frekans dinleme saniyesi (istemci ton durunca delta gonderir).
       const n = typeof it.n === "number" && it.n > 0 ? Math.min(it.n, 36000) : 0;
       if (n) { bump("freqSec", n); rec.wc.freqSec += n; }
     }
-    else if (e === "niyet_word") bumpMap(rec.wc.words, it.w);       // onceden tanimli niyet chip'i
-    else if (e === "chakra_pick") bumpMap(rec.wc.chakras, it.w);    // secilen cakra adi
+    else if (e === "chakra_sec") {
+      // Cakra terapisi suresi (istemci seans/ekran degisince delta gonderir).
+      const n = typeof it.n === "number" && it.n > 0 ? Math.min(it.n, 36000) : 0;
+      if (n) { bump("chakraSec", n); rec.wc.chakraSec += n; }
+    }
     else if (e === "screen") {
       const s = typeof it.s === "string" ? it.s : "";
       if (!s) continue;
