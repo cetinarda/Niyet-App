@@ -31,9 +31,18 @@ export function birthKey(input: BirthInput): string {
   return `r_${h.toString(36)}`;
 }
 
-function buildBirthISO(date: string, time: string, timezone: string): string {
+function buildBirthISO(date: string, time: string, timezone: string, utcOffset?: number): string {
   const [yyyy, mm, dd] = date.split('-').map(Number);
   const [hh, min] = (time || '12:00').split(':').map(Number);
+  // SAYISAL OFSET ÖNCELİKLİ: Sakin köprüsü IANA saat dilimi adı değil, doğum
+  // tarihine göre hesaplanmış etkin ofset veriyor (host'un 36 bin şehirlik
+  // veri tabanı + Türkiye'nin tarihsel yaz saati kuralları). Intl'e sahte bir
+  // "UTC+03:00" dizesi verilseydi geçersiz sayılıp sessizce UTC'ye düşer ve
+  // doğum saati kayardı; burada ofset doğrudan uygulanıyor.
+  if (Number.isFinite(utcOffset as number)) {
+    const ms = Date.UTC(yyyy!, (mm! - 1), dd!, hh ?? 12, min ?? 0) - (utcOffset as number) * 3600000;
+    return new Date(ms).toISOString();
+  }
   // We expose timezone via Intl; if unavailable fallback to UTC.
   try {
     const formatter = new Intl.DateTimeFormat('en-US', {
@@ -67,7 +76,7 @@ export async function buildGalacticReport(
   input: BirthInput,
   locale: 'tr' | 'en' = 'tr',
 ): Promise<GalacticReport> {
-  const birthISO = buildBirthISO(input.birthDate, input.birthTime, input.timezone);
+  const birthISO = buildBirthISO(input.birthDate, input.birthTime, input.timezone, input.utcOffset);
   const chart = calculateChart(birthISO, input.latitude, input.longitude);
   const numerology = buildNumerology(input.birthDate, input.fullName);
   const humanDesign = calculateHumanDesign(chart, birthISO);

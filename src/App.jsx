@@ -6442,6 +6442,52 @@ export default function SakinApp() {
     const timer = setTimeout(() => setHdPreloadSrc(null), 6000);
     return () => clearTimeout(timer);
   }, [birthDate, birthTime, birthCity]);
+  // ── EMBED KÖPRÜSÜ: ÇÖZÜLMÜŞ DOĞUM KOORDİNATI ────────────────────────────────
+  // Kullanıcı: "ruh profili ayrıca doğum bilgisi istiyor, bu yanlış; doğum
+  // bilgisi girme kısmını kaldır, Sakin ana sistemine bağla."
+  // KÖK SEBEP: SoulID köprüsü (apps/soulid/lib/sakin-bridge.ts) `sakin_birth_city`
+  // metnini KENDİ geocode'uyla çözmeye çalışıyordu; onun şehir listesi 158 şehir
+  // + ağ çağrısı, host'unki ise 36 bin şehirlik yerel veri tabanı. Şehir
+  // bulunamayınca köprü sessizce `{ok:false}` dönüyor ve SoulID kullanıcıyı
+  // KENDİ doğum formuna düşürüyordu. Yani "şehir bulunamıyor" ile "bilgiyi
+  // tekrar soruyor" AYNI hatanın iki yüzüydü.
+  // ÇÖZÜM: host zaten çözdüğü koordinatı paylaşıyor; embed'in geocode etmesine
+  // hiç gerek kalmıyor (ağ yok, eksik şehir yok, sessiz düşme yok).
+  // ANAHTARLAR YENİ DEĞİL: `sakin_birth_lat/lon/tz` zaten Tasarım (humandesign)
+  // embed'i için handleOpenEmbed içinde yazılıyordu; burada aynı anahtarları
+  // EMBED AÇILMASINI BEKLEMEDEN, doğum şehri her değiştiğinde yazıyoruz.
+  // Sebep: SoulID başka yollardan da açılabiliyor, veri hazır olmalı.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const clear = () => { ["sakin_birth_lat","sakin_birth_lon","sakin_birth_tz","sakin_birth_tz_eff"].forEach(k => { try { localStorage.removeItem(k); } catch(_) {} }); };
+        if (!birthCity) { clear(); return; }
+        await ensureCitiesLoaded();          // 36k şehirlik tablo tembel yükleniyor
+        if (!alive) return;
+        const c = lookupCity(birthCity);     // [lat, lon, standart utcOffset] | null
+        if (c && c.length >= 3) {
+          localStorage.setItem("sakin_birth_lat", String(c[0]));
+          localStorage.setItem("sakin_birth_lon", String(c[1]));
+          localStorage.setItem("sakin_birth_tz",  String(c[2]));
+          // ETKİN OFSET, AYRI ANAHTARDA: `sakin_birth_tz` STANDART (kış) ofseti,
+          // Tasarım embed'i bunu okuyor; anlamını değiştirmek onun sonucunu
+          // sessizce kaydırırdı. Yaz saati düzeltmesi gereken hesaplar için
+          // (SoulID) doğum tarihine göre ETKİN ofseti ayrıca yazıyoruz.
+          // effectiveUtcOffset Türkiye'nin tarihsel DST kurallarını tz-db ile
+          // birebir uyguluyor: 1 saatlik hata yükseleni 1 burç kaydırır.
+          try {
+            const [Y, Mo, Da] = (birthDate || "").split("-").map(Number);
+            if (Y && Mo && Da) {
+              localStorage.setItem("sakin_birth_tz_eff", String(effectiveUtcOffset(c[0], c[1], c[2], Y, Mo, Da)));
+            } else localStorage.removeItem("sakin_birth_tz_eff");
+          } catch(_) {}
+        } else clear();
+      } catch(_) {}
+    })();
+    return () => { alive = false; };
+  }, [birthCity, birthDate]);
+
   // rehber screen is now enabled on iOS via the mirror portal
   // Yol seçimi ekranı açılınca sarmalayıcıyı ölç (çizgi-kart bağlantısı için).
   useEffect(() => {

@@ -176,6 +176,9 @@ export default function PairAddPage() {
           latitude: resolved.latitude,
           longitude: resolved.longitude,
           timezone: resolved.timezone,
+          // Büyük yerel şehir tablosundan gelen sonuçta IANA adı yok, sayısal
+          // ofset var; buildBirthISO doluysa onu kullanıyor (bkz. GeocodeResult).
+          utcOffset: resolved.utcOffset,
         },
         locale,
       );

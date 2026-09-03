@@ -18,6 +18,7 @@ import { saveReport, listReports } from '@/lib/supabase/reports';
 import { useT } from '@/lib/i18n';
 import { canViewReport, recordReportView } from '@/lib/entitlements';
 import { PremiumGate } from '@/components/PremiumGate';
+import { tryAutoConnectFromSakin, sakinBridgeAttempted, markSakinBridgeSkipped, hasSakinBirthData } from '@/lib/sakin-bridge';
 
 export default function BirthPage() {
   const nav = useNav();
@@ -36,6 +37,48 @@ export default function BirthPage() {
   const [suggestions, setSuggestions] = useState<GeocodeResult[]>([]);
   const [searching, setSearching] = useState(false);
 
+  // ── SAKİN KÖPRÜSÜ: HOST BİLİYORSA BU FORMU HİÇ GÖSTERME ───────────────────
+  // Kullanıcı: "ruh profili kullanıcıdan ayrıca doğum bilgilerini istiyor mu?
+  // bu yanlış." Doğru: Sakin'de doğum bilgisi zaten var, ikinci kez sormak
+  // gereksiz. Welcome ekranı köprüyü zaten deniyor ama /birth'e DOĞRUDAN da
+  // gelinebiliyor (menü, geri tuşu, kayıtlı bağlantı) ve o yolda form yine
+  // karşımıza çıkıyordu; aynı köprü burada da çalışıyor.
+  //
+  // FORM TAMAMEN KALDIRILMADI, BİLEREK: host'ta veri yoksa (kullanıcı Sakin
+  // onboarding'inde "Geç" demiş olabilir) tek veri girme yolu burası. Kaldırmak
+  // o kullanıcıyı çıkmaz sokağa sokardı. Yani kural "host biliyorsa sorma",
+  // "hiç sorma" değil.
+  // `null` = HENÜZ BİLİNMİYOR. Başlangıç değerinde localStorage OKUNMAZ:
+  // bu sayfa statik export'ta önceden render ediliyor, sunucu çıktısı ile
+  // istemcinin ilk render'ı farklı olursa hydration uyuşmazlığı (React #418)
+  // oluşuyor. Karar effect içinde, yani yalnızca istemcide veriliyor.
+  const [bridging, setBridging] = useState<boolean | null>(null);
+  // Aşağıdaki prefill effect'i async çözülüyor; o an güncel köprü durumunu
+  // state üzerinden okuyamaz (bayat closure), ref ile paylaşılıyor.
+  const bridgingRef = useRef<boolean | null>(null);
+  bridgingRef.current = bridging;
+  useEffect(() => {
+    if (bridging !== null) return;
+    if (!hasSakinBirthData() || sakinBridgeAttempted()) { setBridging(false); return; }
+    setBridging(true);
+    let cancelled = false;
+    // BİR TİK BEKLE: köprü artık ağ beklemediği için (koordinat hazır geliyor)
+    // neredeyse anında bitiyor ve `nav.replace` Capacitor build'inde SERT
+    // yönlendirme (window.location.replace) yapıyor. Hydration daha bitmeden
+    // sayfayı değiştirince React hydration'ı yarıda kalıp #418 atıyordu.
+    // setTimeout(0) tarayıcıya sırayı verip hydration'ın oturmasını sağlıyor.
+    const timer = setTimeout(() => {
+      tryAutoConnectFromSakin().then((res) => {
+        if (cancelled) return;
+        if (res.ok) { nav.replace('/pair'); return; }
+        markSakinBridgeSkipped();
+        setBridging(false);
+      });
+    }, 0);
+    return () => { cancelled = true; clearTimeout(timer); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bridging]);
+
   // Formu son kayıtlı karnenin doğum verisiyle önceden doldur, kullanıcı
   // doğum tarihini/verisini görüp DEĞİŞTİREBİLSİN (native reload'da zustand
   // boşalıyordu; menüden gelince tekrar baştan sormasın).
@@ -44,6 +87,12 @@ export default function BirthPage() {
     let cancelled = false;
     listReports().then((list) => {
       if (cancelled || !list[0]) return;
+      // KÖPRÜ ÇALIŞIRKEN FORMU DOLDURMA: köprü karneyi kaydettiği anda bu
+      // `listReports()` onu görüyor ve kontrollü input'lara (value={...})
+      // yazıyordu; bu, hydration daha bitmeden DOM'u değiştirdiği için
+      // React #418 (HTML uyuşmazlığı) atıyordu. Zaten /pair'e geçiyoruz,
+      // formu doldurmanın bir anlamı da yok.
+      if (bridgingRef.current !== false) return;
       // Async çözülene kadar kullanıcı yazmaya başladıysa girdisini ezme (race).
       const cur = useSoulStore.getState().birth;
       if (cur.fullName || cur.birthDate) return;
@@ -245,7 +294,13 @@ export default function BirthPage() {
 
   return (
     <div className="relative min-h-[80vh] py-20 md:py-28">
-      {loading ? <CosmicLoader /> : null}
+      {/* Köprü kararı verilene kadar (bridging === null) ve köprü çalışırken
+          (true) form ÜSTÜNE yükleme bindiriliyor; ayrı bir dal döndürülmüyor.
+          Sebep: bu sayfa statik export'ta önceden render ediliyor, erken
+          `return` ile ağaç şeklini değiştirmek sunucu/istemci farkı yaratıp
+          hydration hatasına (React #418) yol açıyordu. Ağaç sabit, yalnızca
+          bindirme değişiyor. */}
+      {loading || bridging !== false ? <CosmicLoader /> : null}
       <CosmicBackground variant="aurora" />
       <div className="mx-auto max-w-xl px-6">
         <p className="text-xs font-bold uppercase tracking-[0.5em] text-gold">{t('birth.kicker')}</p>

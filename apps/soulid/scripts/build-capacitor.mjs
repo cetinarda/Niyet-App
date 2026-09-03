@@ -3,7 +3,7 @@
 // app/api'yı geçici olarak app/_api'ya taşır (underscore prefix = private folder,
 // Next routing'e dahil değil), build sonrası geri alır.
 
-import { renameSync, existsSync, readFileSync } from 'fs';
+import { renameSync, existsSync, readFileSync, copyFileSync, statSync } from 'fs';
 import { execSync } from 'child_process';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -11,6 +11,26 @@ import { fileURLToPath } from 'url';
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const apiDir = join(root, 'app/api');
 const hiddenDir = join(root, 'app/_api');
+
+// ─── ŞEHİR TABLOSUNU HOST'TAN TAZELE ────────────────────────────────────────
+// SoulID'nin büyük şehir tablosu (lib/geocoding/cities-big.json) Sakin host'un
+// /src/cities-data.json dosyasının KOPYASIDIR; tek doğru kaynak host'taki
+// dosyadır. Her build'de yeniden kopyalanır ki ikisi ayrışamasın (elle senkron
+// tutma yükü yok). Monorepo dışında derleniyorsa kaynak yoktur, o zaman
+// mevcut kopya olduğu gibi kullanılır.
+{
+  const src = join(root, '../../src/cities-data.json');
+  const dst = join(root, 'lib/geocoding/cities-big.json');
+  if (existsSync(src)) {
+    const same = existsSync(dst) && statSync(src).size === statSync(dst).size;
+    if (!same) {
+      copyFileSync(src, dst);
+      console.log('✓ cities-big.json host tablosundan tazelendi');
+    }
+  } else if (!existsSync(dst)) {
+    console.warn('⚠️  cities-big.json yok ve host kaynağı bulunamadı: şehir yedeği küçük listeye düşecek.');
+  }
+}
 
 // ─── .env yükleme ───────────────────────────────────────────────────────────
 // Bu script `next build`'ten ÖNCE çalışıyor. Next.js kendi .env'ini doğru

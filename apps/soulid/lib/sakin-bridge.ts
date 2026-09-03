@@ -59,6 +59,31 @@ export async function tryAutoConnectFromSakin(): Promise<BridgeResult> {
   ]);
 }
 
+/**
+ * Sakin'in ÇÖZDÜĞÜ koordinat. Host, doğum şehrini kendi 36 bin şehirlik yerel
+ * veri tabanında çözüp `sakin_birth_lat/lon/tz` anahtarlarına yazıyor.
+ *
+ * NEDEN ÖNEMLİ: eskiden köprü şehir ADINI alıp `geocodePlace()` ile yeniden
+ * çözmeye çalışıyordu. SoulID'nin kendi listesi 158 şehir + ağ çağrısı olduğu
+ * için birçok şehir bulunamıyor, köprü `{ok:false}` dönüyor ve kullanıcı
+ * SoulID'nin KENDİ doğum formuna düşüyordu. Kullanıcının gördüğü iki şikayet
+ * ("şehir bulunamıyor" ve "doğum bilgisini tekrar soruyor") aslında bu tek
+ * hatanın sonucuydu. Koordinat hazır geldiğinde geocode adımı tamamen atlanır.
+ */
+function readSakinCoords(): { lat: number; lon: number; tz: number } | null {
+  const lat = parseFloat(readSakinField('sakin_birth_lat'));
+  const lon = parseFloat(readSakinField('sakin_birth_lon'));
+  // `sakin_birth_tz_eff` = doğum tarihine göre ETKİN ofset (Sakin, Türkiye'nin
+  // tarihsel yaz saati kurallarını tz-db ile birebir uygulayarak hesaplıyor).
+  // `sakin_birth_tz` ise STANDART (kış) ofseti; eski host sürümlerinde yalnızca
+  // o var, yedek olarak kullanılır.
+  const tzEff = parseFloat(readSakinField('sakin_birth_tz_eff'));
+  const tzStd = parseFloat(readSakinField('sakin_birth_tz'));
+  const tz = Number.isFinite(tzEff) ? tzEff : tzStd;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(tz)) return null;
+  return { lat, lon, tz };
+}
+
 async function runBridge(
   fullName: string,
   birthDate: string,
@@ -67,9 +92,23 @@ async function runBridge(
   locale: Locale,
 ): Promise<BridgeResult> {
   try {
-    const hits = await geocodePlace(birthCityRaw, locale);
-    const hit = hits[0];
-    if (!hit) return { ok: false };
+    // 1) Host koordinatı verdiyse geocode HİÇ çalışmaz: ağ yok, eksik şehir yok.
+    // 2) Vermediyse (eski host sürümü) eski yola düşülür.
+    const coords = readSakinCoords();
+    let place: { name: string; latitude: number; longitude: number; timezone: string; utcOffset?: number };
+    if (coords) {
+      // IANA saat dilimi adı YOK, sayısal ofset var. Sahte bir "UTC+03:00"
+      // dizesi UYDURMA: buildBirthISO onu Intl.DateTimeFormat'a veriyor,
+      // geçersiz olduğu için sessizce UTC'ye düşer ve doğum saati 3 saat
+      // kayardı (yükselen 1 burç şaşar). Onun yerine `utcOffset` alanı
+      // doğrudan geçiliyor, buildBirthISO varsa onu kullanıyor.
+      place = { name: birthCityRaw, latitude: coords.lat, longitude: coords.lon, timezone: '', utcOffset: coords.tz };
+    } else {
+      const hits = await geocodePlace(birthCityRaw, locale);
+      const hit = hits[0];
+      if (!hit) return { ok: false };
+      place = { name: `${hit.name}, ${hit.country}`, latitude: hit.latitude, longitude: hit.longitude, timezone: hit.timezone };
+    }
 
     const report = await buildGalacticReport(
       {
@@ -77,10 +116,11 @@ async function runBridge(
         birthDate,
         birthTime: birthTime || '12:00',
         birthTimeKnown: !!birthTime,
-        birthPlace: `${hit.name}, ${hit.country}`,
-        latitude: hit.latitude,
-        longitude: hit.longitude,
-        timezone: hit.timezone,
+        birthPlace: place.name,
+        latitude: place.latitude,
+        longitude: place.longitude,
+        timezone: place.timezone,
+        utcOffset: place.utcOffset,
       },
       locale,
     );
@@ -97,6 +137,15 @@ async function runBridge(
   } catch {
     return { ok: false };
   }
+}
+
+/**
+ * Sakin host'unda kullanılabilir doğum verisi var mı? (Köprünün çalışması için
+ * gereken asgari alanlar.) Doğum formunu göstermeden önce buna bakılır:
+ * host zaten biliyorsa kullanıcıya İKİNCİ KEZ sormak yanlış.
+ */
+export function hasSakinBirthData(): boolean {
+  return !!readSakinField('sakin_name') && !!readSakinField('sakin_birth_date') && !!readSakinField('sakin_birth_city');
 }
 
 /** Bu oturumda köprü zaten denendi mi? (Welcome'a geri dönüşte tekrar tetiklenmesin.) */

@@ -7,6 +7,13 @@ export type BirthInput = {
   latitude: number;
   longitude: number;
   timezone: string;
+  /**
+   * Saatlik SAYISAL UTC ofseti (ör. 3, -5, 5.5). Sakin köprüsü bunu doldurur:
+   * host şehri kendi veri tabanında çözüp doğum tarihine göre yaz saatini de
+   * uygulayarak ETKİN ofseti verir, IANA saat dilimi adı üretmez. Doluysa
+   * `timezone` yerine bu kullanılır (bkz. lib/report/index.ts buildBirthISO).
+   */
+  utcOffset?: number;
   photoUri?: string;
 };
 

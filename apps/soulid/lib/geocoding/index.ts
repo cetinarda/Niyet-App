@@ -13,13 +13,22 @@
 
 import { Capacitor, CapacitorHttp } from '@capacitor/core';
 import { searchLocalCities } from './cities';
+import { ensureBigCities, searchBigCities } from './cities-big';
 
 export type GeocodeResult = {
   name: string;
   country: string;
   latitude: number;
   longitude: number;
+  /** IANA saat dilimi adı. Büyük yerel tablodan gelen sonuçlarda BOŞ olur. */
   timezone: string;
+  /**
+   * Saatlik SAYISAL UTC ofseti. Yalnızca büyük yerel tablodan (cities-big)
+   * gelen sonuçlarda dolu; `timezone` boş olduğunda bu kullanılır.
+   * Sahte bir IANA dizesi ("UTC+03:00") ÜRETİLMEZ: Intl onu geçersiz sayıp
+   * sessizce UTC'ye düşer ve doğum saati kayar.
+   */
+  utcOffset?: number;
 };
 
 type RawHit = {
@@ -107,9 +116,25 @@ export async function geocodePlace(query: string, language: string = 'tr'): Prom
     timezone: r.timezone,
   }));
 
-  // Ağ sonuç döndürdüyse onu kullan (daha kapsamlı). Boş/başarısızsa, 
-  // review ağında Open-Meteo yavaş/engelli olabilir, offline gazetteer'a düş
-  // ki büyük şehirler her koşulda çözülsün ve profil oluşturulabilsin.
+  // Ağ sonuç döndürdüyse onu kullan (IANA saat dilimi adı da geliyor).
   if (hits.length > 0) return hits;
-  return searchLocalCities(query);
+
+  // Ağ boş/başarısız: önce elle seçilmiş küçük liste (IANA saat dilimli,
+  // en yüksek kalite), sonra host'tan gelen 36 binlik tablo.
+  const curated = searchLocalCities(query);
+  if (curated.length > 0) return curated;
+
+  // BÜYÜK TABLO: kullanıcı şikayetinin ("bazı şehirler yok") asıl çözümü.
+  // 1.4 MB, yalnızca buraya kadar gelindiyse indiriliyor.
+  // IANA saat dilimi adı yok, sayısal ofset var: `timezone` boş bırakılıyor,
+  // tüketici `utcOffset`i kullanıyor (bkz. report/index.ts buildBirthISO).
+  await ensureBigCities();
+  return searchBigCities(query).map((c) => ({
+    name: c.name,
+    country: c.country,
+    latitude: c.latitude,
+    longitude: c.longitude,
+    timezone: '',
+    utcOffset: c.utcOffset,
+  }));
 }
