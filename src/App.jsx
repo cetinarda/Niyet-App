@@ -294,7 +294,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.3.9";
+const APP_VERSION = "1.4.0";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -306,33 +306,40 @@ const APP_VERSION = "1.3.9";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.3.9",
+  version: "1.4.0",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Arayüz yenilendi",
-    en:"The interface got a refresh",
-    de:"Die Oberfläche wurde erneuert",
-    es:"La interfaz se ha renovado",
-    pt:"A interface foi renovada",
-    fr:"L'interface a été renouvelée",
-    ja:"インターフェースが一新されました",
+    tr:"Yeni bir karşılama, tek dokunuşluk öğüt",
+    en:"A new welcome, advice in one tap",
+    de:"Ein neuer Empfang, ein Rat mit einem Tipp",
+    es:"Una nueva bienvenida, un consejo con un toque",
+    pt:"Umas novas boas-vindas, um conselho num toque",
+    fr:"Un nouvel accueil, un conseil en un geste",
+    ja:"新しいお迎えと、ワンタップの助言",
   },
   items: {
-    tr:["Karşılama artık kısa bir deneyimle başlıyor: nefesin ya da doğum bilgin, ardından galaktik kimliğin",
-        "Sözlere yeni bir damar: Stoacılık, Budizm, Taoizm, Jung ve Gestalt, Mevlana ile Yunus'un yanında"],
-    en:["Welcome now opens with a short experience: your breath or your birth info, then your galactic identity",
-        "A new vein in the words: Stoicism, Buddhism, Taoism, Jung and Gestalt, beside Rumi and Yunus"],
-    de:["Der Empfang beginnt jetzt mit einem kurzen Erlebnis: dein Atem oder deine Geburtsdaten, dann deine galaktische Identität",
-        "Eine neue Ader in den Worten: Stoa, Buddhismus, Taoismus, Jung und Gestalt, neben Rumi und Yunus"],
-    es:["La bienvenida ahora comienza con una breve experiencia: tu respiración o tus datos de nacimiento, después tu identidad galáctica",
-        "Una nueva veta en las palabras: estoicismo, budismo, taoísmo, Jung y Gestalt, junto a Rumi y Yunus"],
-    pt:["As boas-vindas agora começam com uma breve experiência: a tua respiração ou os teus dados de nascimento, depois a tua identidade galáctica",
-        "Uma nova veia nas palavras: estoicismo, budismo, taoismo, Jung e Gestalt, ao lado de Rumi e Yunus"],
-    fr:["L'accueil commence désormais par une courte expérience : ton souffle ou tes données de naissance, puis ton identité galactique",
-        "Une nouvelle veine dans les paroles : stoïcisme, bouddhisme, taoïsme, Jung et Gestalt, aux côtés de Roumi et Yunus"],
+    tr:["Karşılama kısa bir deneyimle başlıyor: nefesin ya da doğum bilgin, ardından galaktik kimliğin",
+        "Bugün ekranında I Ching: tek dokunuşla günün heksagramı ve öğüdü",
+        "Ruh Profili artık doğum bilgini yeniden sormuyor, çok daha fazla şehri tanıyor"],
+    en:["Welcome opens with a short experience: your breath or your birth details, then your galactic identity",
+        "The I Ching on your Today screen: the day's hexagram and its advice in one tap",
+        "Soul Profile no longer asks for your birth details again, and it now knows far more cities"],
+    de:["Der Empfang beginnt mit einem kurzen Erlebnis: dein Atem oder deine Geburtsdaten, dann deine galaktische Identität",
+        "Das I Ging auf deinem Heute-Bildschirm: das Hexagramm des Tages und sein Rat mit einem Tipp",
+        "Das Seelenprofil fragt deine Geburtsdaten nicht mehr erneut ab und kennt jetzt weit mehr Orte"],
+    es:["La bienvenida empieza con una breve experiencia: tu respiración o tus datos de nacimiento, después tu identidad galáctica",
+        "El I Ching en tu pantalla de Hoy: el hexagrama del día y su consejo con un toque",
+        "El Perfil del Alma ya no vuelve a pedir tus datos de nacimiento y ahora conoce muchas más ciudades"],
+    pt:["As boas-vindas começam com uma breve experiência: a tua respiração ou os teus dados de nascimento, depois a tua identidade galáctica",
+        "O I Ching no teu ecrã de Hoje: o hexagrama do dia e o seu conselho num toque",
+        "O Perfil da Alma já não volta a pedir os teus dados de nascimento e conhece agora muitas mais cidades"],
+    fr:["L'accueil commence par une courte expérience : ton souffle ou tes données de naissance, puis ton identité galactique",
+        "Le Yi King sur ton écran Aujourd'hui : l'hexagramme du jour et son conseil en un geste",
+        "Le Profil de l'Âme ne redemande plus tes données de naissance et connaît désormais bien plus de villes"],
     ja:["お迎えが短い体験から始まります。呼吸か生まれた情報、それからギャラクティック・アイデンティティへ",
-        "言葉に新しい流れ：ストア派、仏教、道教、ユング、ゲシュタルトがルーミーやユヌスの隣に"],
+        "今日の画面に易経。ワンタップでその日のヘキサグラムと助言が届きます",
+        "ソウルプロフィールが生年月日を再び尋ねなくなり、より多くの都市に対応しました"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
@@ -6430,6 +6437,30 @@ export default function SakinApp() {
     hdLastBirthRef.current = key;
     try { localStorage.removeItem("sakin_element_dist"); } catch(_) {}
     hdPreloadDone.current = false;   // yeniden hesaplansın
+    // ── DOĞUM BİLGİSİNDEN TÜREYEN DİĞER ÖNBELLEKLER ──────────────────────
+    // Denetimde bulundu: element dağılımı temizleniyordu ama doğum haritasından
+    // türeyen ÜÇ önbellek daha vardı ve hiçbiri temizlenmiyordu. Kullanıcı
+    // doğum bilgisini düzeltse bile eski yoruma bakmaya devam ediyordu.
+    //  1) sakin_soul_summary: "Ben" ekranındaki Ruh Profili kutusu (galaksi,
+    //     sayı ailesi, önceki yaşam arketipi). SoulID yalnızca /report ekranı
+    //     açıkken yeniden yazıyor; köprü kullanıcıyı /pair'e götürdüğü için
+    //     kendiliğinden tazelenmiyordu. Silinince kutu "bir kez aç" davetine
+    //     döner, kullanıcı açınca güncel özet yazılır.
+    //  2) sakin_rapor_text/week: haftalık AI raporu. Önbellek anahtarı yalnızca
+    //     ISO hafta; metin ise burç, yaşam yolu, yükselen ve 12. ev içeriyor.
+    //     Temizlenmezse hafta sonuna kadar ESKİ haritaya göre okunurdu.
+    //  3) gidYorum: galaktik kimlik AI yorumu, bellekte duruyor ve oturum
+    //     boyunca eski yorumu göstermeye devam ediyordu.
+    try {
+      localStorage.removeItem("sakin_soul_summary");
+      localStorage.removeItem("sakin_rapor_text");
+      localStorage.removeItem("sakin_rapor_week");
+    } catch(_) {}
+    // soulSummary bir useMemo ve YALNIZCA soulReloadKey değişince yeniden
+    // okuyor; anahtarı silmek tek başına ekrandaki kutuyu tazelemez.
+    setSoulReloadKey(k => k + 1);
+    setGidYorum("");
+    setGidYorumAcik(false);
   }, [birthDate, birthTime, birthCity]);
   useEffect(() => {
     if (hdPreloadDone.current) return;
