@@ -4926,47 +4926,10 @@ export default function SakinApp() {
   // Her çağrı sitesine ayrı ayrı track eklemek yerine TEK yerden: showAilesi
   // true olduğunda bir kez ölçülür (ekstra tıklama izlenmez, "screen" olaylarıyla
   // aynı davranış: bir ekranın AÇILIŞI sayılır, kapanışı değil).
-  useEffect(() => {
-    if (showAilesi) { try { track("screen", { s: "kesfet" }); } catch (_) {} }
-  }, [showAilesi]);
-  // ── EKRAN SÜRESİ + GEÇİŞ (kullanıcı isteği: "keşfeti ayrı görmek istiyorum,
-  // ne kadar süre kaldılar, nereye geçtiler"). "screen" olayları yalnızca
-  // AÇILIŞI sayıyordu; ne kadar kaldıklarını ya da SONRA nereye gittiklerini
-  // bilmiyorduk. effectiveScreen ayrı hesaplanır: showAilesi (Keşfet katmanı)
-  // screen state'ini DEĞİŞTİRMEZ, aksi halde Keşfet'teyken süre yanlışlıkla
-  // altındaki ekrana yazılırdı.
-  const effectiveScreen = showAilesi ? "kesfet" : screen;
-  const screenTimeRef = useRef(null);
-  useEffect(() => {
-    const prev = screenTimeRef.current;
-    const now = Date.now();
-    if (prev && prev.s !== effectiveScreen) {
-      const sec = Math.round((now - prev.at) / 1000);
-      if (sec > 0) { try { track("screen_time", { from: prev.s, to: effectiveScreen, sec }); } catch (_) {} }
-    }
-    screenTimeRef.current = { s: effectiveScreen, at: now };
-  }, [effectiveScreen]);
-  // Uygulama arka plana atılırken/kapanırken o ana kadarki süre GÖNDERİLİR
-  // (aksi halde son ekranda geçirilen süre hiç ölçülmezdi); "to" bilinmediği
-  // için null gönderilir, sunucu bunu bir GEÇİŞ olarak saymaz, yalnızca süreyi
-  // sayar (bkz. track.mjs screen_time işleyicisi).
-  useEffect(() => {
-    const flushTail = () => {
-      const prev = screenTimeRef.current;
-      if (!prev) return;
-      const now = Date.now();
-      const sec = Math.round((now - prev.at) / 1000);
-      if (sec > 0) { try { track("screen_time", { from: prev.s, to: null, sec }); } catch (_) {} }
-      screenTimeRef.current = { s: prev.s, at: now };
-    };
-    const onVis = () => { if (document.visibilityState === "hidden") flushTail(); };
-    document.addEventListener("visibilitychange", onVis);
-    window.addEventListener("pagehide", flushTail);
-    return () => {
-      document.removeEventListener("visibilitychange", onVis);
-      window.removeEventListener("pagehide", flushTail);
-    };
-  }, []);
+  // Bu blok (kesfetSourceRef + effectiveScreen + süre/geçiş izleme) AŞAĞIDA,
+  // onbPath tanımlandıktan SONRA duruyor (bkz. ~6105): effectiveScreen üçüncü
+  // bir Keşfet girişini (onboarding "Sakin nedir?" tekrar oynatma) de kapsıyor,
+  // o state burada henüz tanımlı değil.
   // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği), üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
@@ -6100,6 +6063,65 @@ export default function SakinApp() {
   const onbCalcRef = useRef(null);
   const [onbCalcIdx, setOnbCalcIdx] = useState(0);
   const [onbName, setOnbName] = useState(()=>localStorage.getItem("sakin_name")||"");
+  // KEŞFET'İN ÜÇ AYRI GİRİŞ NOKTASI (kullanıcı: "ikinci sıradaki keşfet
+  // ekranının da sonuçlarını ayrı görmek istiyorum demiştim"). Üçü de
+  // kullanıcıya "Keşfet" diye görünür ama FARKLI ekranlara/deneyimlere açılır:
+  //   1) "kesfet"     alt sekme çubuğu (MAIN_TABS, id "kesfet") → asıl panel
+  //   2) "ailesi"     üst/kenar çubuğu ✦ simgesi (SIDEBAR_ITEMS, id "ailesi",
+  //                   showAilesi'nin eski/dahili adı buradan geliyor) → aynı panel
+  //   3) "onb_kesfet" "Sakin nedir?" sayfasındaki İKİNCİ kart (◎ Bağlan
+  //                   birinci, ✦ Keşfet ikinci): onboarding TANITIMINI
+  //                   (galaktik harita hazırlama animasyonu vb.) yeniden
+  //                   oynatır, asıl panelden TAMAMEN FARKLI bir deneyimdir.
+  // kesfetSourceRef HANGİ butonun tıklandığını tutar (yalnızca 1 ve 2'nin
+  // gerçek tıklama noktaları günceller; panel bir ID kartı/doğum formu
+  // kapanınca kendiliğinden yeniden açıldığında son gerçek kaynağı korur).
+  const kesfetSourceRef = useRef("kesfet");
+  useEffect(() => {
+    if (showAilesi) { try { track("screen", { s: kesfetSourceRef.current }); } catch (_) {} }
+  }, [showAilesi]);
+  useEffect(() => {
+    if (onbPath === "kesfet") { try { track("screen", { s: "onb_kesfet" }); } catch (_) {} }
+    else if (onbPath === "baglan") { try { track("screen", { s: "onb_baglan" }); } catch (_) {} }
+  }, [onbPath]);
+  // ── EKRAN SÜRESİ + GEÇİŞ (kullanıcı isteği: "keşfeti ayrı görmek istiyorum,
+  // ne kadar süre kaldılar, nereye geçtiler"). "screen" olayları yalnızca
+  // AÇILIŞI sayıyordu; ne kadar kaldıklarını ya da SONRA nereye gittiklerini
+  // bilmiyorduk. effectiveScreen üç katmanı da tek değişkende birleştirir:
+  // onboarding tanıtımı > Keşfet paneli > normal screen state (öncelik sırası,
+  // hiçbiri screen state'ini DEĞİŞTİRMEZ, aksi halde süre yanlış ekrana yazılırdı).
+  const effectiveScreen = onbPath ? ("onb_" + onbPath) : showAilesi ? kesfetSourceRef.current : screen;
+  const screenTimeRef = useRef(null);
+  useEffect(() => {
+    const prev = screenTimeRef.current;
+    const now = Date.now();
+    if (prev && prev.s !== effectiveScreen) {
+      const sec = Math.round((now - prev.at) / 1000);
+      if (sec > 0) { try { track("screen_time", { from: prev.s, to: effectiveScreen, sec }); } catch (_) {} }
+    }
+    screenTimeRef.current = { s: effectiveScreen, at: now };
+  }, [effectiveScreen]);
+  // Uygulama arka plana atılırken/kapanırken o ana kadarki süre GÖNDERİLİR
+  // (aksi halde son ekranda geçirilen süre hiç ölçülmezdi); "to" bilinmediği
+  // için null gönderilir, sunucu bunu bir GEÇİŞ olarak saymaz, yalnızca süreyi
+  // sayar (bkz. track.mjs screen_time işleyicisi).
+  useEffect(() => {
+    const flushTail = () => {
+      const prev = screenTimeRef.current;
+      if (!prev) return;
+      const now = Date.now();
+      const sec = Math.round((now - prev.at) / 1000);
+      if (sec > 0) { try { track("screen_time", { from: prev.s, to: null, sec }); } catch (_) {} }
+      screenTimeRef.current = { s: prev.s, at: now };
+    };
+    const onVis = () => { if (document.visibilityState === "hidden") flushTail(); };
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pagehide", flushTail);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("pagehide", flushTail);
+    };
+  }, []);
   // Onboarding kapanınca HER İKİ zamanlayıcı da durur (interval sızıntısı yok).
   useEffect(() => {
     const stopAll = () => {
@@ -8232,7 +8254,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     // Alt bardan başka bir sekmeye geçildi: artık Ayarlar akışında değiliz,
     // "← Ayarlar" butonu alakasız bir ekranda asılı kalmasın.
     setFromSettings(false);
-    if (id === "kesfet") { setShowAilesi(true); return; }
+    if (id === "kesfet") { kesfetSourceRef.current = "kesfet"; setShowAilesi(true); return; }
     setShowAilesi(false);
     // Ayna sekmesi: diğer sekmeler gibi ANINDA açılır (portal geçişi yok).
     if (id === "ayna")   { openMirror({ instant: true }); return; }
@@ -9461,7 +9483,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {SIDEBAR_ITEMS.filter(n=>!n.iconOnly).map(n=>(
                     <button key={n.id}
                       onClick={()=>{ setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
-                        if(n.id==="ailesi"){ setShowAilesi(true); return; } setScreen(n.id); }}
+                        if(n.id==="ailesi"){ kesfetSourceRef.current = "ailesi"; setShowAilesi(true); return; } setScreen(n.id); }}
                       style={{ background:`${n.color}18`, border:`1px solid ${n.color}44`, borderRadius:100,
                         padding:"8px 16px", color:n.color, fontSize:11, letterSpacing:1.5, cursor:"pointer",
                         fontFamily:"'Jost',sans-serif", display:"flex", alignItems:"center", gap:5 }}>
@@ -9504,7 +9526,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           minHeight:topNavVisible ? 44 : "calc(44px + var(--sat))",background:"rgba(0,0,0,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(255,255,255,0.06)",display: (screen === "giris" || !topControlsVisible) ? "none" : "flex",alignItems:"stretch",justifyContent:"space-between",gap:6,padding:topNavVisible ? "6px 10px" : "calc(6px + var(--sat)) 10px 6px 10px" }}>
         {(() => {
           const handleNavClick = (n) => {
-            if(n.id==="ailesi"){ setShowAilesi(!showAilesi); return; }
+            if(n.id==="ailesi"){ if (!showAilesi) kesfetSourceRef.current = "ailesi"; setShowAilesi(!showAilesi); return; }
             // Keşfet açıkken başka bir sekmeye geçiliyorsa Keşfet'i kapat: yoksa
             // modal ekranın üstünde açık kalır, geçilen sekme görünmez.
             if(showAilesi) setShowAilesi(false);

@@ -24,7 +24,7 @@ import { getStore } from "@netlify/blobs";
 const ALLOWED_ORIGINS = ["https://sakin.life", "https://www.sakin.life", "capacitor://localhost", "ionic://localhost", "https://localhost", "http://localhost"];
 
 // Ekran adi -> funnel kategorisi.
-const FEATURE_SCREENS = new Set(["nefes", "ses", "chakra", "terapi", "harita", "kesfet", "gun", "sabah", "aksam", "rehber", "reiki", "zihinsel"]);
+const FEATURE_SCREENS = new Set(["nefes", "ses", "chakra", "terapi", "harita", "kesfet", "ailesi", "onb_kesfet", "onb_baglan", "gun", "sabah", "aksam", "rehber", "reiki", "zihinsel"]);
 
 function isAllowedOrigin(origin) {
   if (!origin) return true;
