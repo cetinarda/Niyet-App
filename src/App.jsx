@@ -4929,6 +4929,44 @@ export default function SakinApp() {
   useEffect(() => {
     if (showAilesi) { try { track("screen", { s: "kesfet" }); } catch (_) {} }
   }, [showAilesi]);
+  // ── EKRAN SÜRESİ + GEÇİŞ (kullanıcı isteği: "keşfeti ayrı görmek istiyorum,
+  // ne kadar süre kaldılar, nereye geçtiler"). "screen" olayları yalnızca
+  // AÇILIŞI sayıyordu; ne kadar kaldıklarını ya da SONRA nereye gittiklerini
+  // bilmiyorduk. effectiveScreen ayrı hesaplanır: showAilesi (Keşfet katmanı)
+  // screen state'ini DEĞİŞTİRMEZ, aksi halde Keşfet'teyken süre yanlışlıkla
+  // altındaki ekrana yazılırdı.
+  const effectiveScreen = showAilesi ? "kesfet" : screen;
+  const screenTimeRef = useRef(null);
+  useEffect(() => {
+    const prev = screenTimeRef.current;
+    const now = Date.now();
+    if (prev && prev.s !== effectiveScreen) {
+      const sec = Math.round((now - prev.at) / 1000);
+      if (sec > 0) { try { track("screen_time", { from: prev.s, to: effectiveScreen, sec }); } catch (_) {} }
+    }
+    screenTimeRef.current = { s: effectiveScreen, at: now };
+  }, [effectiveScreen]);
+  // Uygulama arka plana atılırken/kapanırken o ana kadarki süre GÖNDERİLİR
+  // (aksi halde son ekranda geçirilen süre hiç ölçülmezdi); "to" bilinmediği
+  // için null gönderilir, sunucu bunu bir GEÇİŞ olarak saymaz, yalnızca süreyi
+  // sayar (bkz. track.mjs screen_time işleyicisi).
+  useEffect(() => {
+    const flushTail = () => {
+      const prev = screenTimeRef.current;
+      if (!prev) return;
+      const now = Date.now();
+      const sec = Math.round((now - prev.at) / 1000);
+      if (sec > 0) { try { track("screen_time", { from: prev.s, to: null, sec }); } catch (_) {} }
+      screenTimeRef.current = { s: prev.s, at: now };
+    };
+    const onVis = () => { if (document.visibilityState === "hidden") flushTail(); };
+    document.addEventListener("visibilitychange", onVis);
+    window.addEventListener("pagehide", flushTail);
+    return () => {
+      document.removeEventListener("visibilitychange", onVis);
+      window.removeEventListener("pagehide", flushTail);
+    };
+  }, []);
   // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği), üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.

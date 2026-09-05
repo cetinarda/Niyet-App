@@ -33,6 +33,12 @@ export function aggregate(users) {
   const N = users.length;
   const reach = {}; FUNNEL.forEach((f) => (reach[f.key] = 0));
   const featTotals = {}, featUsers = {};
+  // SURE + GECIS (kullanici istegi: "ne kadar sure kaldilar, nereye
+  // gectiler"). featSec/featExits ortalama sureyi hesaplar (bkz. asagida
+  // avgSec = featSec/featExits); transTotals her "kaynak>hedef" ciftinin
+  // TOPLAM kullanici sayisinda kac kez gorduldugunu tutar.
+  const featSec = {}, featExits = {};
+  const transTotals = {};
   const platform = {}, lang = {}, version = {};
   let nefesTotal = 0, nefesUsers = 0, sessionsTotal = 0;
   let paywallUsers = 0, purchaseUsers = 0, premUsers = 0;
@@ -67,8 +73,29 @@ export function aggregate(users) {
         const s = k.slice(4);
         featTotals[s] = (featTotals[s] || 0) + c[k];
         featUsers[s] = (featUsers[s] || 0) + 1;
+      } else if (k.indexOf("t_") === 0) {
+        featSec[k.slice(2)] = (featSec[k.slice(2)] || 0) + c[k];
+      } else if (k.indexOf("tn_") === 0) {
+        featExits[k.slice(3)] = (featExits[k.slice(3)] || 0) + c[k];
       }
     }
+    const tr = u.tr || {};
+    for (const key in tr) transTotals[key] = (transTotals[key] || 0) + tr[key];
+  }
+
+  // Her kaynak ekran icin en cok gidilen hedefleri cikar (yuzdesiyle).
+  const transByOrigin = {};
+  for (const key in transTotals) {
+    const sep = key.indexOf(">");
+    if (sep < 0) continue;
+    const from = key.slice(0, sep), to = key.slice(sep + 1);
+    (transByOrigin[from] || (transByOrigin[from] = [])).push({ to, count: transTotals[key] });
+  }
+  for (const from in transByOrigin) {
+    const rows = transByOrigin[from];
+    const tot = rows.reduce((a, r) => a + r.count, 0);
+    rows.sort((a, b) => b.count - a.count);
+    transByOrigin[from] = rows.slice(0, 3).map((r) => ({ ...r, pct: pct(r.count, tot) }));
   }
 
   // Funnel: her adim + toplam yuzdesi + bir onceki adima gore donusum + drop-off.
@@ -86,6 +113,11 @@ export function aggregate(users) {
 
   const features = Object.keys(featTotals).map((s) => ({
     screen: s, opens: featTotals[s], users: featUsers[s],
+    // avgSec: bu ekrandan cikarken olculen surelerin ortalamasi (tn_ sayaci
+    // "kac kez cikildi"yi tutar, acilis sayisiyla AYNI SEY DEGIL: bir kere
+    // acilip hic cikilmadan sekme kapatilirsa exits opens'tan az kalabilir).
+    avgSec: featExits[s] ? Math.round(featSec[s] / featExits[s]) : null,
+    topNext: transByOrigin[s] || [],
   })).sort((a, b) => b.users - a.users);
 
   const sortMap = (o) => Object.keys(o).map((k) => ({ k, n: o[k] })).sort((a, b) => b.n - a.n);
@@ -228,13 +260,27 @@ export function renderHTML(r, truncated) {
         ? `<div class="drop">${f.dropFromPrev} kişi burada ayrıldı (%${f.dropPct} düşüş)</div>` : ""}
     </div>`).join("");
 
+  // ne kadar sure kaldilar (avgSec) + nereye gectiler (topNext): kullanici
+  // istegi "keşfeti ayrı görmek istiyorum, ne kadar süre kaldılar, nereye
+  // geçtiler". Her ekran zaten kendi SATIRI (Keşfet dahil, diğerlerinden
+  // ayrı), bu iki sutun o satira sure + sonraki-ekran bilgisini ekliyor.
+  const fmtDur = (sec) => {
+    if (sec == null) return "-";
+    if (sec < 60) return `${sec} sn`;
+    return `${Math.round(sec / 60)} dk`;
+  };
+  const fmtNext = (topNext) => topNext.length
+    ? topNext.map((t) => `${esc(scr(t.to))} (%${t.pct})`).join(", ")
+    : "-";
+
   const maxFeat = Math.max(1, ...r.features.map((f) => f.users));
   const feats = r.features.length
-    ? `<table><tr><th>Bölüm</th><th class="num">Kullanıcı</th><th class="num">Açılış</th></tr>` +
+    ? `<table><tr><th>Bölüm</th><th class="num">Kullanıcı</th><th class="num">Açılış</th><th class="num">Ort. süre</th><th>Sonra en çok</th></tr>` +
       r.features.map((f) => `<tr>
         <td>${esc(scr(f.screen))}
           <div class="mbar"><i style="width:${Math.round((f.users / maxFeat) * 100)}%"></i></div></td>
-        <td class="num">${f.users}</td><td class="num">${f.opens}</td></tr>`).join("") +
+        <td class="num">${f.users}</td><td class="num">${f.opens}</td>
+        <td class="num">${fmtDur(f.avgSec)}</td><td style="color:var(--muted);font-size:12.5px">${fmtNext(f.topNext)}</td></tr>`).join("") +
       `</table>`
     : `<p style="color:var(--muted);font-size:13.5px;margin:0">Henüz bölüm açılışı kaydedilmedi.</p>`;
 
