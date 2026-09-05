@@ -4917,6 +4917,18 @@ export default function SakinApp() {
     else root.style.overflowY = "";
     return () => { root.style.overflowY = ""; };
   }, [showAilesi]);
+  // KEŞFET HİÇ İZLENMİYORDU (kullanıcı bildirdi: "rapor listesinde yok").
+  // KÖK SEBEP: Keşfet, screen state'i DEĞİL, ayrı bir boolean (showAilesi) ile
+  // açılıyor; ~15 farklı yerden setShowAilesi(true) çağrılıyor (alt bar, bildirim,
+  // derin bağlantı, onboarding…). Tek izleme yolu olan setScreen() sarmalayıcısı
+  // (track("screen",{s})) hiçbiri için çalışmıyordu, yani report.mjs'in zaten
+  // hazır beklediği "kesfet" ekranı sayacı (bkz. SCREEN_TR) hiç dolmuyordu.
+  // Her çağrı sitesine ayrı ayrı track eklemek yerine TEK yerden: showAilesi
+  // true olduğunda bir kez ölçülür (ekstra tıklama izlenmez, "screen" olaylarıyla
+  // aynı davranış: bir ekranın AÇILIŞI sayılır, kapanışı değil).
+  useEffect(() => {
+    if (showAilesi) { try { track("screen", { s: "kesfet" }); } catch (_) {} }
+  }, [showAilesi]);
   // İlk açılış (giriş ekranı) dışında Harita/Bağlan/Keşfet üst bar'da tek tek
   // durmak yerine sağdaki ☰ menüsüne toplanır (kullanıcı isteği), üst bar sade
   // kalır. İlk açılışta (screen==="giris") eskisi gibi 3 ayrı buton görünür.
