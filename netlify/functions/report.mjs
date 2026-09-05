@@ -162,7 +162,16 @@ const SCREEN_TR = {
   sabah: "Sabah niyeti", gun: "Gün görevleri", nefes: "Nefes", ses: "Ses dalgaları",
   chakra: "Çakra", aksam: "Akşam kapanışı", rehber: "İçsel Ayna", harita: "Ben / harita",
   mandala: "Bağlantı ekranı", bugun: "Bugün", ayarlar: "Ayarlar", terapi: "Çakra terapisi",
-  fiyat: "Fiyatlandırma", hakkinda: "Sakin nedir", kesfet: "Keşfet", giris: "Giriş",
+  fiyat: "Fiyatlandırma", hakkinda: "Sakin nedir", kesfet: "Keşfet (alt bar)", giris: "Giriş",
+  // "ailesi": Keşfet'in İKİNCİ giriş butonu (üst/kenar çubuğundaki ✦ simgesi,
+  // showAilesi state'inin eski dahili adı). Aynı panel ama FARKLI bir tıklama
+  // noktası; kullanıcı istegi uzerine "kesfet"ten ayrı satırda gösteriliyor.
+  ailesi: "Keşfet (✦ simge)",
+  // "onb_kesfet"/"onb_baglan": "Sakin nedir?" sayfasindaki iki karttan biri
+  // (Bağlan 1., Keşfet 2. sırada) tıklanınca onboarding TANITIMI yeniden
+  // oynatılır; asıl Keşfet/Bağlan panelinden TAMAMEN farklı bir deneyimdir.
+  onb_kesfet: "Keşfet (tanıtımı yeniden izle)",
+  onb_baglan: "Bağlan (tanıtımı yeniden izle)",
 };
 const scr = (k) => SCREEN_TR[k] || k;
 
