@@ -79,7 +79,8 @@ export function isoWeek(ts) {
 
 // Bir demeti (batch) mevcut kayda birlestir. Saf fonksiyon (test edilebilir).
 export function mergeBatch(rec, body, now) {
-  if (!rec) rec = { first: now, last: now, p: "web", v: "", lang: "tr", prem: false, days: [], m: {}, c: {} };
+  if (!rec) rec = { first: now, last: now, p: "web", v: "", lang: "tr", prem: false, days: [], m: {}, c: {}, tr: {} };
+  if (!rec.tr) rec.tr = {};   // eski kayitlarda yok olabilir (gecis alani sonradan eklendi)
   rec.last = now;
   if (body.p) rec.p = String(body.p).slice(0, 12);
   if (body.v) rec.v = String(body.v).slice(0, 16);
@@ -134,6 +135,30 @@ export function mergeBatch(rec, body, now) {
       else if (s === "mandala") setMilestone("mandala_view", ts);
       else if (s === "fiyat") setMilestone("paywall_view", ts);
       if (FEATURE_SCREENS.has(s)) setMilestone("feature_any", ts);
+    }
+    // ── EKRAN SURESI + GECIS (kullanici istegi: "ne kadar sure kaldilar,
+    // nereye gectiler"). Istemci her ekran degisiminde ONCEKI ekranda kac
+    // saniye kaldigini ve hangi ekrana gectigini gonderir (bkz. App.jsx
+    // effectiveScreen/screenTimeRef). "to" bilinmiyorsa (sekme arka plana
+    // atildi/kapandi) null gelir: sure sayilir, gecis SAYILMAZ.
+    else if (e === "screen_time") {
+      const from = typeof it.from === "string" ? it.from.slice(0, 24) : "";
+      const to = typeof it.to === "string" ? it.to.slice(0, 24) : null;
+      // Ust sinir 6 saat: uyuyan/arka planda unutulmus sekme gercekci olmayan
+      // dev bir sure gondermesin (ortalamayi bozar).
+      const sec = typeof it.sec === "number" && it.sec > 0 ? Math.min(Math.round(it.sec), 21600) : 0;
+      if (from && sec) {
+        bump("t_" + from, sec);   // toplam saniye (lifetime), ortalama icin
+        bump("tn_" + from, 1);    // bu ekrandan KAC KEZ cikildi (bolen)
+        if (to) {
+          const key = from + ">" + to;
+          // Harita 60'tan az anahtarla sinirli: gercekci ekran sayisi (~20)
+          // ile bu asilmaz, yalnizca bozuk/istismar girdisine karsi tavan.
+          if (rec.tr[key] !== undefined || Object.keys(rec.tr).length < 60) {
+            rec.tr[key] = (rec.tr[key] || 0) + 1;
+          }
+        }
+      }
     }
   }
   return rec;
