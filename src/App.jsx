@@ -309,37 +309,42 @@ const WHATS_NEW = {
   version: "1.4.0",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
+  // GÜNCELLENDİ (sürüm 1.4.0 döngüsü ilerledikçe): eski başlık "tek dokunuşluk
+  // öğüt" I Ching'e işaret ediyordu, ama bu döngünün asıl ağırlığı sonradan
+  // Ayna'nın gerçek transit zekası ve Orkestra Modu'na kaydı; bunlar daha
+  // büyük, kullanıcının doğrudan hissedeceği değişiklikler olduğu için 3
+  // maddelik listeye onlar girdi.
   headline: {
-    tr:"Yeni bir karşılama, tek dokunuşluk öğüt",
-    en:"A new welcome, advice in one tap",
-    de:"Ein neuer Empfang, ein Rat mit einem Tipp",
-    es:"Una nueva bienvenida, un consejo con un toque",
-    pt:"Umas novas boas-vindas, um conselho num toque",
-    fr:"Un nouvel accueil, un conseil en un geste",
-    ja:"新しいお迎えと、ワンタップの助言",
+    tr:"Daha akıllı bir Ayna, topluluğun nabzı",
+    en:"A smarter Mirror, the community's pulse",
+    de:"Ein klügerer Spiegel, der Puls der Gemeinschaft",
+    es:"Un Espejo más inteligente, el pulso de la comunidad",
+    pt:"Um Espelho mais inteligente, o pulso da comunidade",
+    fr:"Un Miroir plus intelligent, le pouls de la communauté",
+    ja:"より賢い鏡、コミュニティの鼓動",
   },
   items: {
     tr:["Karşılama kısa bir deneyimle başlıyor: nefesin ya da doğum bilgin, ardından galaktik kimliğin",
-        "Bugün ekranında I Ching: tek dokunuşla günün heksagramı ve öğüdü",
-        "Ruh Profili artık doğum bilgini yeniden sormuyor, çok daha fazla şehri tanıyor"],
+        "İçsel Ayna artık o günün gerçek gökyüzüne ve doğum haritana bakarak konuşuyor, ezber cevap vermiyor",
+        "Orkestra Modu: topluluğun bu haftaki kolektif nefesini, sesini ve çakra pratiğini gör"],
     en:["Welcome opens with a short experience: your breath or your birth details, then your galactic identity",
-        "The I Ching on your Today screen: the day's hexagram and its advice in one tap",
-        "Soul Profile no longer asks for your birth details again, and it now knows far more cities"],
+        "Inner Mirror now looks at the real sky of the day and your birth chart before it answers, no more canned replies",
+        "Orchestra Mode: see the community's collective breath, sound and chakra practice this week"],
     de:["Der Empfang beginnt mit einem kurzen Erlebnis: dein Atem oder deine Geburtsdaten, dann deine galaktische Identität",
-        "Das I Ging auf deinem Heute-Bildschirm: das Hexagramm des Tages und sein Rat mit einem Tipp",
-        "Das Seelenprofil fragt deine Geburtsdaten nicht mehr erneut ab und kennt jetzt weit mehr Orte"],
+        "Der Innere Spiegel schaut jetzt auf den echten Himmel des Tages und deine Geburtskarte, bevor er antwortet, keine vorgefertigten Antworten mehr",
+        "Orchester-Modus: sieh den kollektiven Atem, Klang und die Chakra-Praxis der Gemeinschaft diese Woche"],
     es:["La bienvenida empieza con una breve experiencia: tu respiración o tus datos de nacimiento, después tu identidad galáctica",
-        "El I Ching en tu pantalla de Hoy: el hexagrama del día y su consejo con un toque",
-        "El Perfil del Alma ya no vuelve a pedir tus datos de nacimiento y ahora conoce muchas más ciudades"],
+        "El Espejo Interior ahora mira el cielo real del día y tu carta natal antes de responder, sin respuestas prefabricadas",
+        "Modo Orquesta: mira la respiración, el sonido y la práctica de chakras colectivos de la comunidad esta semana"],
     pt:["As boas-vindas começam com uma breve experiência: a tua respiração ou os teus dados de nascimento, depois a tua identidade galáctica",
-        "O I Ching no teu ecrã de Hoje: o hexagrama do dia e o seu conselho num toque",
-        "O Perfil da Alma já não volta a pedir os teus dados de nascimento e conhece agora muitas mais cidades"],
+        "O Espelho Interior agora olha para o céu real do dia e o teu mapa natal antes de responder, sem respostas prontas",
+        "Modo Orquestra: vê a respiração, o som e a prática de chakras coletivos da comunidade esta semana"],
     fr:["L'accueil commence par une courte expérience : ton souffle ou tes données de naissance, puis ton identité galactique",
-        "Le Yi King sur ton écran Aujourd'hui : l'hexagramme du jour et son conseil en un geste",
-        "Le Profil de l'Âme ne redemande plus tes données de naissance et connaît désormais bien plus de villes"],
+        "Le Miroir Intérieur regarde maintenant le vrai ciel du jour et ton thème natal avant de répondre, plus de réponses toutes faites",
+        "Mode Orchestre : vois le souffle, le son et la pratique des chakras collectifs de la communauté cette semaine"],
     ja:["お迎えが短い体験から始まります。呼吸か生まれた情報、それからギャラクティック・アイデンティティへ",
-        "今日の画面に易経。ワンタップでその日のヘキサグラムと助言が届きます",
-        "ソウルプロフィールが生年月日を再び尋ねなくなり、より多くの都市に対応しました"],
+        "内なる鏡は答える前に、その日の実際の空とあなたの出生図を見るようになりました。決まり文句の返答はもうありません",
+        "オーケストラモード、今週のコミュニティの集合的な呼吸、音、チャクラの実践を見る"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
