@@ -182,7 +182,6 @@ export async function computeGateExitDate(body, date = new Date(), lang = "tr") 
   const stepMs = cfg.stepHours * 3600 * 1000;
   const horizonMs = cfg.horizonDays * 86400 * 1000;
   let prev = date.getTime();
-  let prevGate = startGate;
   for (let dt = stepMs; dt <= horizonMs; dt += stepMs) {
     const t = date.getTime() + dt;
     let lon;
