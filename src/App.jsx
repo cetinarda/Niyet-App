@@ -903,7 +903,9 @@ const HD_TXT = {
 const SOUL_TXT = {
   title:      { tr:"RUH PROFİLİ", en:"SOUL PROFILE", de:"SEELENPROFIL", es:"PERFIL DEL ALMA", pt:"PERFIL DA ALMA", fr:"PROFIL DE L'ÂME", ja:"ソウルプロフィール" },
   family:     { tr:"Sayı Ailesi", en:"Number Family", de:"Zahlenfamilie", es:"Familia numérica", pt:"Família numérica", fr:"Famille de nombres", ja:"数字の家族" },
-  galaxy:     { tr:"Geldiği galaksi", en:"Home galaxy", de:"Heimatgalaxie", es:"Galaxia de origen", pt:"Galáxia de origem", fr:"Galaxie d'origine", ja:"出身の銀河" },
+  // "galaxy" (Geldiği galaksi) etiketi KALDIRILDI: kutu hem paylaşım
+  // görselinden hem önizlemeden kaldırılmıştı (kullanıcı isteği), etiket
+  // gövdesi kullanılmadan kalmıştı.
   past:       { tr:"Önceki yaşam arketipi", en:"Past-life archetype", de:"Archetyp früherer Leben", es:"Arquetipo de vidas pasadas", pt:"Arquétipo de vidas passadas", fr:"Archétype des vies passées", ja:"過去世の元型" },
   purpose:    { tr:"Geliş sebebi", en:"Why you came", de:"Warum du kamst", es:"Por qué viniste", pt:"Porque vieste", fr:"Pourquoi tu es venu", ja:"来た理由" },
   strength:   { tr:"Güçlü yönü", en:"Strongest trait", de:"Stärkste Seite", es:"Mayor fortaleza", pt:"Maior força", fr:"Force principale", ja:"最も強い面" },
