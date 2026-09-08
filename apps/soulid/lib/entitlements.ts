@@ -1,99 +1,50 @@
 'use client';
 
-// Freemium modeli:
-//  - ÜCRETSİZ: kendi karne (metin/analiz/AI) + ikili uyum (derin analiz dahil).
-//  - PREMIUM: SADECE kendi haritada yıldız/gezegen konumu + hareketi
-//    (3D Güneş Sistemi, Yaşam Ağacı, zodyak çemberi). $19.99 tek seferlik
-//    ya da $4.99/ay. Web'de Stripe, iOS'ta RevenueCat IAP.
+// PREMIUM KAYNAGI = SAKIN (host). SoulID kendi odeme altyapisini (RevenueCat
+// IAP + Stripe) ARTIK KULLANMIYOR (kullanici karari: "soul profile revenuecat
+// odeme altyapisini tamamen kaldir"). SoulID embed'i Sakin ile AYNI origin'de
+// servis edildigi icin host'un premium bayragini (sakin_premium) dogrudan
+// localStorage'dan okur. Premium satin alma Sakin'in kendi paywall'inda
+// (cc.fovea IAP, calisiyor) yapilir; ikili uyum kilidine takilan kullanici
+// PremiumGate uzerinden host'a "sakin-premium-cta" postMessage'i gonderilir,
+// host embed'i kapatip fiyat ekranini acar.
 //
-// CANONICAL SOURCE: Supabase 'entitlements' tablosu (web) + RevenueCat
-// entitlement (iOS). localStorage UI cache; grantPremium() satın alım/restore/
-// webhook sonrası yazar. hasPremium() her iki platformda localStorage okur.
+// FREEMIUM (kullanici karari):
+//  - Kendi karne (metin/analiz/AI/gorseller): HER ZAMAN ucretsiz (FREE_MODE).
+//  - Ikili uyum: 1 CIFT ucretsiz, 2. cift Sakin premium ister. Bu kural
+//    FREE_MODE'dan BAGIMSIZ isler (yoksa gate hic tetiklenmezdi).
 
-import { getSupabase } from './supabase';
 import { FREE_MODE } from './feature-flags';
 
-const KEY_PREMIUM = 'soulprofile.premium';
-const KEY_PREMIUM_TS = 'soulprofile.premium.checkedAt';
-
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
-
-export function hasPremium(): boolean {
-  // Lansman: mağazalarda yayınlanana kadar her şey ücretsiz → herkes premium.
-  if (FREE_MODE) return true;
+// Sakin host premium bayragi (App.jsx localStorage'a yazar, ayni origin).
+function sakinPremium(): boolean {
   if (typeof localStorage === 'undefined') return false;
-  return localStorage.getItem(KEY_PREMIUM) === '1';
+  try { return localStorage.getItem('sakin_premium') === '1'; } catch { return false; }
 }
 
-export function grantPremium() {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem(KEY_PREMIUM, '1');
-    localStorage.setItem(KEY_PREMIUM_TS, String(Date.now()));
-  }
+// "Tam erisim" (karne gorselleri vb. icin). Lansmanda FREE_MODE herkese acar;
+// ayrica Sakin premium da acar. Ikili uyum kilidi bunu KULLANMAZ (asagi bak).
+export function hasPremium(): boolean {
+  if (FREE_MODE) return true;
+  return sakinPremium();
 }
 
-export function revokePremium() {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.removeItem(KEY_PREMIUM);
-    localStorage.removeItem(KEY_PREMIUM_TS);
-  }
-}
-
-/**
- * Canonical entitlement check: Supabase'ten okur, localStorage'ı senkronlar.
- * Boot'ta + premium-gated aksiyon öncesi çağrılmalı.
- */
-export async function refreshEntitlement(): Promise<boolean> {
-  const sb = getSupabase();
-  if (!sb) return hasPremium();
-  try {
-    const { data: userResult } = await sb.auth.getUser();
-    const user = userResult?.user;
-    if (!user) return hasPremium();
-
-    const { data, error } = await sb
-      .from('entitlements')
-      .select('active, expires_at')
-      .eq('user_id', user.id)
-      .eq('entitlement', 'premium')
-      .eq('active', true)
-      .limit(1);
-
-    if (error) return hasPremium();
-
-    const row = data?.[0] as { active?: boolean; expires_at?: string | null } | undefined;
-    const valid = !!row?.active && (!row.expires_at || new Date(row.expires_at).getTime() > Date.now());
-
-    if (valid) grantPremium();
-    else revokePremium();
-    return valid;
-  } catch {
-    return hasPremium();
-  }
-}
-
-/** localStorage cache 24 saatten eski mi? */
-export function isCacheStale(): boolean {
-  if (typeof localStorage === 'undefined') return true;
-  const ts = Number(localStorage.getItem(KEY_PREMIUM_TS) ?? '0');
-  return Date.now() - ts > CACHE_TTL_MS;
-}
-
+// DevToggle (yalnizca gelistirme) icin: Sakin premium bayragini elle cevir.
 export function togglePremium(): boolean {
-  if (hasPremium()) {
-    revokePremium();
-    return false;
-  }
-  grantPremium();
-  return true;
+  if (typeof localStorage === 'undefined') return false;
+  const now = !sakinPremium();
+  try {
+    if (now) localStorage.setItem('sakin_premium', '1');
+    else localStorage.removeItem('sakin_premium');
+  } catch { /* sessiz */ }
+  return now;
 }
 
 // ─────────────────────────────────────────────────────────────
-// Gate API'si: id-tabanlı (deterministik karne/uyum kimliği):
-//  - ÜCRETSİZ: 1 karne (kişi) + 1 uyum (çift), TAM özellikli.
-//  - Aynı kişiyi/çifti tekrar görmek yeni sayılmaz (id eşleşir).
-//  - Farklı kişi/çift → premium ($19.99 tek seferlik / $4.99 ay) = sınırsız.
-// Böylece aynı cihazdan bedavaya farklı kişilere bakmanın önü kesilir.
+// Gate API'si: id-tabanlı (deterministik karne/uyum kimligi):
+//  - Aynı kişiyi/çifti tekrar görmek yeni sayilmaz (id eslesir).
+//  - Karne: FREE_MODE'da sinirsiz ucretsiz.
+//  - Uyum: 1 cift ucretsiz, sonrasi Sakin premium.
 
 const KEY_REPORT_IDS = 'soulprofile.used.reports';
 const KEY_COMPAT_IDS = 'soulprofile.used.compat';
@@ -117,7 +68,7 @@ function addToSet(key: string, id: string) {
   localStorage.setItem(key, JSON.stringify([...s]));
 }
 
-/** Bu karne (id) görülebilir mi? Premium ya da ilk/aynı kişi ise evet. */
+/** Bu karne (id) gorulebilir mi? Karne ucretsiz kaliyor (FREE_MODE/premium). */
 export function canViewReport(reportId: string): boolean {
   if (hasPremium()) return true;
   const used = readSet(KEY_REPORT_IDS);
@@ -128,18 +79,22 @@ export function recordReportView(reportId: string): void {
   addToSet(KEY_REPORT_IDS, reportId);
 }
 
-/** Bu uyum (çift id) görülebilir mi? */
+/**
+ * Bu uyum (cift id) gorulebilir mi?
+ * FREE_MODE'a BAKMAZ (karneden farkli): yalnizca Sakin premium sinirsiz acar.
+ * Boylece 1 cift ucretsiz, 2. cift premium kurali lansmanda da isler.
+ */
 export function canViewCompat(compatId: string): boolean {
-  if (hasPremium()) return true;
+  if (sakinPremium()) return true;
   const used = readSet(KEY_COMPAT_IDS);
   return used.has(compatId) || used.size < FREE_COMPAT_LIMIT;
 }
 export function recordCompatView(compatId: string): void {
-  if (hasPremium()) return;
+  if (sakinPremium()) return;
   addToSet(KEY_COMPAT_IDS, compatId);
 }
 
-/** İki doğum-anahtarından sıralı, deterministik çift kimliği. */
+/** İki dogum-anahtarindan sirali, deterministik cift kimligi. */
 export function compatId(keyA: string, keyB: string): string {
   return [keyA, keyB].sort().join('~');
 }

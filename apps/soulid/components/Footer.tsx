@@ -11,7 +11,6 @@ export function Footer() {
   const [year, setYear] = useState<number | null>(null);
   useEffect(() => setYear(new Date().getFullYear()), []);
   const links = [
-    { href: '/premium', label: t('nav.premium') },
     { href: '/glossary', label: t('nav.glossary') },
     { href: '/about', label: t('nav.about') },
     { href: '/support', label: t('nav.support') },

@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useT } from '@/lib/i18n';
-import { hasPremium } from '@/lib/entitlements';
 import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { BrandMark } from './BrandMark';
@@ -13,7 +12,6 @@ import { BrandMark } from './BrandMark';
 export function TopBar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [premium, setPremium] = useState(true); // SSR'da gizle, mount'ta karar ver
   const { t, locale } = useT();
   const tr = locale === 'tr';
 
@@ -26,13 +24,6 @@ export function TopBar() {
     } catch {
       setStandalone(false);
     }
-  }, []);
-
-  useEffect(() => {
-    setPremium(hasPremium());
-    // Boot senkronundan (RevenueCat/Supabase) sonra da güncelle
-    const id = window.setInterval(() => setPremium(hasPremium()), 2000);
-    return () => window.clearInterval(id);
   }, []);
 
   // Tek menü (üç çizgi), 5 net bölüm, birbirine karışmaz.
@@ -111,17 +102,6 @@ export function TopBar() {
                 </Link>
               </li>
             ))}
-            {!premium ? (
-              <li>
-                <Link
-                  href="/premium"
-                  onClick={() => setOpen(false)}
-                  className="mt-1 flex items-center gap-2 rounded-xl bg-gold px-4 py-3 text-[15px] font-bold text-[#1a0a40]"
-                >
-                  <span>✦</span> {tr ? 'Satın Al' : 'Buy'}
-                </Link>
-              </li>
-            ) : null}
           </ul>
         </nav>
       ) : null}

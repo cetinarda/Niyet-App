@@ -45,8 +45,8 @@ export default function Privacy() {
           almak için.
         </Bullet>
         <Bullet>
-          <strong>Stripe / Apple / RevenueCat:</strong> Premium aboneliklerin yönetimi için (yalnız
-          ödeme yaparsan).
+          <strong>Sakin / Apple:</strong> Premium erişimi Sakin uygulaması üzerinden ve Apple
+          uygulama içi satın alma ile yönetilir (yalnız ödeme yaparsan).
         </Bullet>
       </Section>
 

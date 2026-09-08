@@ -18,8 +18,9 @@ export function PromoBanner() {
 
   if (!show) return null;
 
-  // FREE_MODE'da satın alınacak bir şey yok → banner kullanıcıyı başlamaya götürür.
-  const href = FREE_MODE ? '/birth' : '/premium';
+  // SoulID kendi odeme sayfasi kaldirildi (premium = Sakin). Banner her zaman
+  // kullaniciyi baslamaya (dogum formu) goturur.
+  const href = '/birth';
 
   return (
     <Link

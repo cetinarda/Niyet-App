@@ -21,7 +21,6 @@ import { listReports } from '@/lib/supabase/reports';
 import { readActiveReportId } from '@/lib/active-report';
 import { readSakinAvatar } from '@/lib/sakin-bridge';
 import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
-import { premiumOpen } from '@/lib/feature-flags';
 import { buildConceptDecks } from '@/lib/concepts';
 import { useT } from '@/lib/i18n';
 import { tap } from '@/lib/haptics';
@@ -126,7 +125,6 @@ export default function ReportPage() {
     }
   }
 
-  const isPremium = premiumOpen();
   const birthISO =
     report.birth.birthDate
       ? `${report.birth.birthDate}T${report.birth.birthTime || '12:00'}:00Z`
@@ -366,28 +364,10 @@ export default function ReportPage() {
           </button>
         </section>
 
-        {/* Premium showcase: yıldız konum/hareketi (sadece premium yoksa) */}
-        {!isPremium ? (
-          <section className="mt-14 rounded-2xl border border-gold/40 bg-gold/[0.06] p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-gold">
-              {locale === 'tr' ? 'SINIRSIZ ERİŞİM' : 'UNLIMITED ACCESS'}
-            </p>
-            <h3 className="mt-2 font-display text-3xl text-ink">
-              {locale === 'tr' ? 'Farklı kişilere bak, sınırsız' : 'More people, unlimited'}
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              {locale === 'tr'
-                ? 'İlk karnen ve ilk uyumun ücretsiz. Farklı kişilere bakmak ve tüm özelliklere sınırsız erişim için premium, tek seferlik $19.99 ya da aylık $4.99.'
-                : 'Your first profile and compatibility are free. For other people and unlimited access to all features, go premium, $19.99 one-time or $4.99/mo.'}
-            </p>
-            <Link
-              href="/premium"
-              className="mt-4 inline-block rounded-full bg-gold px-6 py-3 text-sm font-bold text-[#1a0a40] shadow-glow"
-            >
-              {locale === 'tr' ? 'Sınırsız Erişimi Aç' : 'Unlock Unlimited'}
-            </Link>
-          </section>
-        ) : null}
+        {/* SoulID kendi premium showcase'i (SoulID fiyatlari + /premium linki)
+            KALDIRILDI: SoulID kendi odeme altyapisini kullanmiyor, premium =
+            Sakin (host). Ucretsiz limit dolunca ikili uyum akisi zaten
+            PremiumGate ile Sakin paywall'ina yonlendiriyor. */}
 
         <div className="mt-8 text-center">
           <Link href="/" className="text-sm text-muted hover:text-gold">
