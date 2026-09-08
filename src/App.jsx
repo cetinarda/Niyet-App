@@ -9789,7 +9789,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           olduğu için üstüne binip TAMAMEN GİZLİYORDU (kullanıcı bildirdi:
           "yenilikler kutucuğuyla dil kutusu çarpışıyor"). Yalnızca giriş
           ekranında dil seçicinin bittiği yerin altına iniyor. */}
-      {whatsNew && !updateInfo && !showIntro && (
+      {whatsNew && !updateInfo && !showIntro && (screen === "giris" || screen === "mandala") && (
         <div style={{
           position:"fixed",
           top: screen === "giris"
