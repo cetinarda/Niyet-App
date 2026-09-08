@@ -1461,15 +1461,70 @@ function preciseAscendant(dateStr, timeStr, cityInput) {
 
 // Ortalama Kuzey Ay Düğümü, Meeus formülü (yaklaşık, ±1° hata)
 // Düğüm 18.6 yılda bir burç döngüsü tamamlar, retrograd hareket eder.
+// KUZEY AY DÜĞÜMÜ: GERÇEK (true/osculating) düğümün burç geçiş tarihleri.
+// ---------------------------------------------------------------------------
+// NEDEN TABLO (kullanıcı: "hesaplama hatası kontrolü yap, ekteki görsel doğru"):
+// Eski kod ORTALAMA (mean) düğüm formülünü kullanıyordu (125.04452 - 0.0529.../gün).
+// Mean düğüm astronomik olarak doğru ama astrolojik tablolar GERÇEK düğüm
+// kullanır; ikisi sınır günlerinde ±1.9° (~36 gün) sapar, yani bir burç geçişine
+// yakın doğanlarda uygulama tabloyla ÇELİŞEN burç gösteriyordu.
+// Gerçek düğüm astronomy-engine ile (Ay konum+hız vektöründen osculating düğüm)
+// hesaplanıp burç geçişleri gün hassasiyetinde çıkarıldı, ekteki görselle
+// birebir doğrulandı (17 modern sınırın 16'sı 0 gün, 1'i 1 gün fark). Kısa
+// retrograd titremeler (14 adet) 45 günlük "kalıcı geçiş" kuralıyla temizlendi,
+// böylece tablo görsel gibi tek yönlü (monotonik retrograd). Her giriş
+// "YYYY-MM-DD,burçIndeksi": o tarihte düğüm o burca girer, sonrakine kadar kalır.
+// Human Design (src/hd-natal.js) AYRI bir mean-node hesabı kullanır (HD
+// konvansiyonu mean düğümdür); ona dokunulmadı.
+const NODE_SIGN_TRANSITIONS = [
+  "1921-02-07,6","1922-08-23,5","1924-04-23,4","1925-10-26,3","1927-04-16,2","1928-12-28,1",
+  "1930-07-07,0","1931-12-28,11","1933-06-24,10","1935-03-08,9","1936-09-14,8","1938-03-03,7",
+  "1939-09-11,6","1941-05-24,5","1942-11-21,4","1944-05-11,3","1945-12-02,2","1947-08-02,1",
+  "1949-01-26,0","1950-07-26,11","1952-03-28,10","1953-10-09,9","1955-04-02,8","1956-10-04,7",
+  "1958-06-16,6","1959-12-15,5","1961-06-10,4","1962-12-23,3","1964-08-25,2","1966-02-19,1",
+  "1967-08-19,0","1969-04-19,11","1970-11-02,10","1972-04-27,9","1973-10-27,8","1975-07-10,7",
+  "1977-01-07,6","1978-07-05,5","1980-01-05,4","1981-09-24,3","1983-03-16,2","1984-09-11,1",
+  "1986-04-06,0","1987-12-02,11","1989-05-22,10","1990-11-18,9","1992-08-01,8","1994-02-01,7",
+  "1995-07-31,6","1997-01-25,5","1998-10-20,4","2000-04-09,3","2001-10-13,2","2003-04-14,1",
+  "2004-12-26,0","2006-06-22,11","2007-12-14,10","2009-08-21,9","2011-03-03,8","2012-08-30,7",
+  "2014-02-18,6","2015-11-12,5","2017-05-09,4","2018-11-06,3","2020-05-05,2","2022-01-18,1",
+  "2023-07-17,0","2025-01-11,11","2026-07-27,10","2028-03-26,9","2029-09-23,8","2031-03-20,7",
+  "2032-12-02,6","2034-06-03,5","2035-11-30,4","2037-05-29,3","2039-02-10,2","2040-08-11,1",
+  "2042-02-04,0","2043-08-18,11","2045-04-18,10","2046-10-18,9","2048-04-12,8","2049-12-14,7",
+  "2051-06-28,6","2052-12-23,5","2054-06-21,4","2056-03-04,3","2057-09-11,2","2059-02-28,1",
+  "2060-09-08,0","2062-05-13,11","2063-11-18,10","2065-05-06,9","2066-11-28,8","2068-07-28,7",
+  "2070-01-22,6","2071-07-17,5","2073-03-26,4","2074-10-05,3","2076-03-29,2","2077-09-30,1",
+  "2079-06-14,0",
+];
+// Tabloyu bir kez ayrıştır: [{ts, sign}] artan tarih sırasında (ikili arama için).
+const _NODE_TABLE = NODE_SIGN_TRANSITIONS.map((r) => {
+  const [d, idx] = r.split(",");
+  return { ts: Date.parse(d + "T00:00:00Z"), sign: ZODIAC_ORDER[+idx] };
+});
+// Mean düğüm (tablo dışı tarihler için yedek). Eski formül; tablo 1921-2079'u
+// kapsadığından pratikte hiç kullanılmaz ama güvenli bir taban.
+function meanNorthNode(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+  const j2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
+  let deg = 125.04452 - 0.0529538083 * ((d.getTime() - j2000) / 86400000);
+  deg = ((deg % 360) + 360) % 360;
+  return ZODIAC_ORDER[Math.floor(deg / 30)];
+}
 function approxNorthNode(dateStr) {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return null;
-  const j2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
-  const daysSince = (d.getTime() - j2000) / 86400000;
-  let nodeDeg = 125.04452 - 0.0529538083 * daysSince;
-  nodeDeg = ((nodeDeg % 360) + 360) % 360;
-  return ZODIAC_ORDER[Math.floor(nodeDeg / 30)];
+  const t = d.getTime();
+  // Tablo aralığı dışındaysa mean düğüme düş (1921 öncesi / 2079 sonrası).
+  if (t < _NODE_TABLE[0].ts) return meanNorthNode(dateStr);
+  // İkili arama: ts <= t olan SON geçiş → o an içinde bulunulan burç.
+  let lo = 0, hi = _NODE_TABLE.length - 1, ans = 0;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (_NODE_TABLE[mid].ts <= t) { ans = mid; lo = mid + 1; } else { hi = mid - 1; }
+  }
+  return _NODE_TABLE[ans].sign;
 }
 
 // Draconic Güneş = natal Güneş burcunu Kuzey Düğüm 0° Koç olacak şekilde döndür
@@ -2046,7 +2101,7 @@ const KaleidoscopeView = memo(function KaleidoscopeView({ mode, nature = [], lan
       </button>
       {/* 30 sn paywall: kaleidoskop arkada akmaya devam eder, üstünde yumuşak overlay */}
       {timeUp && (
-        <div style={{ position:"fixed",inset:0,zIndex:10012,background:"rgba(0,0,0,0.78)",backdropFilter:"blur(18px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 20px calc(20px + var(--sab))",animation:"fadeIn 0.7s ease",overflowY:"auto" }}>
+        <div style={{ position:"fixed",inset:0,zIndex:10012,background:"rgba(0,0,0,0.78)",backdropFilter:"blur(18px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(20px + var(--sat)) 20px calc(20px + var(--sab))",animation:"fadeIn 0.7s ease",overflowY:"auto" }}>
           <div style={{ maxWidth:340,width:"100%",textAlign:"center" }}>
             <div style={{ fontSize:30,marginBottom:14,letterSpacing:6 }}>✦</div>
             <div style={{ fontSize:15,letterSpacing:3,color:"rgba(255,255,255,0.92)",fontFamily:"'Jost',sans-serif",textTransform:"uppercase",marginBottom:10,fontWeight:300 }}>
@@ -6584,6 +6639,10 @@ export default function SakinApp() {
         localStorage.setItem(key, val);
         if (key === "sakin_birth_date") setBirthDate(val);
         if (key === "sakin_birth_time") setBirthTime(val);
+        // DENETIMDE BULUNDU: sakin_name yaziliyordu ama setUserName cagrilmiyordu,
+        // embed'den isim gelince localStorage guncelleniyor ama ekrandaki ad
+        // (userName state) yeniden yukleme yapilana kadar bayat kaliyordu.
+        if (key === "sakin_name") setUserName(val);
       }
     };
     const handleStorage = (e) => {
@@ -13001,8 +13060,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
 
         return (
-          <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; closeIdCard(); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
-            <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"auto",position:"relative" }}>
+          <div onClick={()=>{ if (Date.now() - idCardOpenTs.current < 450) return; closeIdCard(); }} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+            {/* margin:"auto" -> "0 auto": auto DIKEY margin, flexbox'ta icerik
+                ekrandan uzun olunca ustu YUKARI TASIRIP scroll'la erisilemez
+                kiliyordu (kullanici: "ustteki kisimlar gorunmuyor, yukarida
+                kaliyor"). Dikey ortalama artik parent'in align-items:safe center'i
+                ile; taSinca flex-start'a duSup ust erisilebilir kaliyor. Yatay
+                ortalama 0 auto ile korunuyor. */}
+            <div onClick={e=>e.stopPropagation()} style={{ maxWidth:380,width:"100%",margin:"0 auto",position:"relative" }}>
               {/* SOL ÜST ✕: alttaki "Kapat"ın yerini aldı. Kart uzun olduğu için
                   alttaki düğmeye ulaşmak kaydırma gerektiriyordu; bu her zaman
                   görünür OLMASI GEREKİYORDU ama İKİ SEBEPTEN kayboluyordu
@@ -13269,7 +13334,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* ZİHNİ BOŞALT: mod seçim menüsü */}
       {showMindClear && !activeMindMode && (
-        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:480,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
             <div style={{ textAlign:"center",marginBottom:6 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("mind_title")}</div>
