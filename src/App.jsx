@@ -14136,13 +14136,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         // bunu localStorage'dan okuyup açılış animasyonunu atlıyor ve doğrudan
         // detay sayfasını açıyor. Kart YOKSA ipucu bırakılmaz; uygulama normal
         // kart çekme akışıyla açılır.
-        // Mitler'de detay sayfası olmadığı için ipucu gönderilmiyor (kart
-        // içeriği zaten o ekranda satır içi gösteriliyor).
+        // MITLER de artik detaya gidiyor (kullanici: "i ching zarafet cikinca
+        // tiklaninca ONUN detayi acilsin, kartlar degil"). Mitler icin ipucu
+        // {kind:"myth", system, id} tasir: mitler Library'de o sistem+id kartinin
+        // detayini acar (bkz. apps/mitler openCardIntent.ts). ts her tiklamada
+        // taze: sticky iframe ikinci acilista da storage olayi tetiklensin.
         const HINT_KIND = { animal:"animal", plant:"plant", stone:"stone" };
-        const Card = ({ eyebrow, card, color, appKey }) => (
+        const Card = ({ eyebrow, card, color, appKey, hint }) => (
           <button onClick={()=>{ try{haptic();}catch(_){}
               try {
-                if (card && HINT_KIND[appKey]) {
+                if (appKey === "myth" && hint && hint.system && hint.id) {
+                  localStorage.setItem("sakin_open_card", JSON.stringify({ kind:"myth", system: hint.system, id: hint.id, ts: Date.now(), date: dk }));
+                } else if (card && HINT_KIND[appKey]) {
                   localStorage.setItem("sakin_open_card", JSON.stringify({ kind: HINT_KIND[appKey], date: dk }));
                 } else {
                   localStorage.removeItem("sakin_open_card");
@@ -14423,7 +14428,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   seçiliyor (bkz. pickMythOfDay). Uygulama o gün o sistemi çektiyse
                   AYNI kart gösterilir, yani host ile uygulama çelişmez. */}
               <Card eyebrow={mith ? pickLang(TODAY_TXT[SYS_LABEL[mith.system]], lang) : pickLang(TODAY_TXT.sysMyth, lang)}
-                appKey="myth" color="#d8b4a0" card={mith ? mith.card : null} />
+                appKey="myth" color="#d8b4a0" card={mith ? mith.card : null}
+                hint={mith ? { system: mith.system, id: mith.id } : null} />
             </div>
 
             {/* SOULID/RUH PROFİLİ davet kartı BURADAN KALDIRILDI (kullanıcı
