@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { MitlerFinderScreen } from './MitlerFinderScreen';
 import { WeeklyScreen } from './WeeklyScreen';
 import { useMitlerStore } from '../store/useStore';
 import { useLanguage } from '../i18n/useLanguage';
+import { onIntent } from '../utils/openCardIntent';
 
 type Panel = 'library' | 'finder' | 'weekly';
 
@@ -31,7 +32,11 @@ export function MitlerHubScreen({ onNavigateToProfile }: Props = {}) {
   const insets = useSafeAreaInsets();
   const { t } = useLanguage();
   const { profile } = useMitlerStore();
+  // Host bir kart detayi istediyse 'library' panelinde basla (kart oradaki
+  // MitlerLibraryScreen'de aciliyor). Zaten varsayilan 'library'; niyet gelirse
+  // kullanici baska panele gecmis olsa da geri getir.
   const [panel, setPanel] = useState<Panel>('library');
+  useEffect(() => onIntent(() => setPanel('library')), []);
 
   const active = PANEL_CONFIG.find(p => p.key === panel)!;
   const noClose = () => {};

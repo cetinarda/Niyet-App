@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import { useData } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind, KIND_COLOR, KIND_LABEL } from './MitlerDetailScreen';
 import { useLanguage, translate } from '../i18n/useLanguage';
 import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
+import { getInitialIntent, onIntent } from '../utils/openCardIntent';
 
 interface Props {
   onClose: () => void;
@@ -158,6 +159,20 @@ export function MitlerLibraryScreen({ onClose, embedded }: Props) {
   }), [selected]);
 
   const all = useMemo(() => buildEntries(data), [data]);
+
+  // SAKIN HOST DEEP-LINK: "Bugun" karti (or. I Ching Zarafet) tiklaninca liste
+  // degil O KARTIN detayi acilsin. Host ipucu {kind,id} ile eslesen girisi bul
+  // ve setSelected et. Ilk mount'ta taze ipucu, sonra storage olayiyla (sticky
+  // iframe ikinci acilis) tekrar. Eslesme yoksa (id/kind tutmuyorsa) liste kalir.
+  const openEntry = useCallback((kind: string, id: string) => {
+    const hit = all.find(e => e.kind === kind && e.id === id);
+    if (hit) setSelected(hit);
+  }, [all]);
+  useEffect(() => {
+    const init = getInitialIntent();
+    if (init) openEntry(init.kind, init.id);
+    return onIntent((intent) => openEntry(intent.kind, intent.id));
+  }, [openEntry]);
 
   const filtered = useMemo(() => {
     const pool = filter === 'all' ? all : all.filter(e => e.kind === filter);

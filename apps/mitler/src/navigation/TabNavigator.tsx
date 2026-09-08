@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { ArchiveScreen } from '../screens/ArchiveScreen';
 import { ProfileScreen } from '../screens/ProfileScreen';
 import { GlossaryFAB } from '../components/HelpButton';
 import { useLanguage } from '../i18n/useLanguage';
+import { getInitialIntent, onIntent } from '../utils/openCardIntent';
 
 type Tab = 'home' | 'mitler' | 'archive' | 'profile';
 
@@ -29,9 +30,14 @@ const TAB_CONFIG: { key: Tab; tKey: 'tab.home' | 'tab.mitler' | 'tab.archive' | 
 ];
 
 export function TabNavigator() {
-  const [activeTab, setActiveTab] = useState<Tab>('home');
+  // Sakin host "Bugun" karti dogrudan bir kartin detayini istediyse (getInitial
+  // Intent), acilista 'mitler' (hub) sekmesinde basla; detay panelde acilir.
+  const [activeTab, setActiveTab] = useState<Tab>(() => (getInitialIntent() ? 'mitler' : 'home'));
   const insets = useSafeAreaInsets();
   const { t } = useLanguage();
+
+  // Sticky iframe ayni gun ikinci acilista: host yeni ipucu yazar -> mitler'e gec.
+  useEffect(() => onIntent(() => setActiveTab('mitler')), []);
 
   const renderScreen = () => {
     switch (activeTab) {
