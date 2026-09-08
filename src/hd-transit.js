@@ -209,7 +209,7 @@ export async function computeGateExitDate(body, date = new Date(), lang = "tr") 
         nextName: nxt.name, nextTheme: nxt.theme,
       };
     }
-    prev = t; prevGate = gate;
+    prev = t;
   }
   return null;  // ufuk içinde çıkmıyor (çok yavaş gövde), null döner
 }

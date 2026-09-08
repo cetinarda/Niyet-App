@@ -60,6 +60,13 @@ export function aggregatePulse(users, week) {
   for (const u of users) {
     const wc = u && u.wc;
     if (!wc || wc.wk !== week) continue;
+    // "AKTIF" = bu hafta GERCEKTEN nefes/ses/cakra pratigi yapan kisi, sadece
+    // uygulamayi acan degil. track.mjs'te rec.wc, ANY event geldiginde (ornegin
+    // yalnizca "app_open"/"screen") hafta degisince sifirlanip olusturuluyor;
+    // burada kontrol etmezsek yalnizca uygulamayi acip hicbir sey yapmamis biri
+    // de "X kisi bu hafta SENINLE BAGLANDI" sayisina giriyordu (kart metni
+    // gercek katilim ima ediyor, denetimde bulundu).
+    if (!wc.nefes && !wc.freqSec && !wc.chakraSec) continue;
     activeUsers++;
     nefes += wc.nefes || 0;
     freqSec += wc.freqSec || 0;
