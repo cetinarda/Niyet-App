@@ -10652,8 +10652,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 katlanabilir bölümün başlığı zaten "Günün Bağlantısı (x/7)" diyor,
                 aynı isim iki kez görünüyordu. Sayı + çubuk kendi başına yeterli,
                 bağlam (insan iskeletinin hemen üstü) zaten anlamı taşıyor. */}
-            <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:170}}>
-              <div style={{fontSize:24,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
+            <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:210}}>
+              <div style={{fontSize:32,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
                 {/* % işareti sayıdan küçük: büyük sayı asıl vurgu, işaret
                     onun önünde ufak bir etiket gibi duruyor. */}
@@ -12100,7 +12100,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* HARİTA */}
       {screen==="harita" && (
-        <div style={{ maxWidth:405,width:"100%",padding:"62px 26px 170px",position:"relative",zIndex:1 }}>
+        <div style={{ maxWidth:440,width:"100%",padding:"62px 20px 170px",position:"relative",zIndex:1 }}>
           {/* EN ÜSTTE: kimlik kartı (ad, doğum bilgisi, burç/yükselen/yaşam yolu
               kısayolları, Galaktik Kimlik). Keşfet'ten buraya taşındı; ekranın
               en altındaki ikinci galaktik kimlik butonu da kaldırıldı, tek
