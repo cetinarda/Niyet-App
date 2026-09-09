@@ -10632,9 +10632,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div className="sakin-tunnel-ground" />
             </div>
           )}
-          {/* Alt boşluk 90 → 150px: "Güne devam et" butonu alttaki adım göstergesi
-              (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
-          <div style={{maxWidth:400,width:"100%",padding:"16px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+          {/* Alt boşluk 110 → 170px (Android raporu: iskelet büyüyünce en alttaki
+              "Günün Bağlantısı" kutusu sabit alt bar'ın (sakin-bottom-nav) altında
+              kalıyordu). 170px diğer ana ekranlarla (Ses, Ben) aynı değer: nav-gap
+              + android-sab + bar yüksekliği + görünür boşluk için yeterli pay. */}
+          <div style={{maxWidth:400,width:"100%",padding:"16px 20px 170px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* NATIVE→WEB TAŞIMA MADDE 8: Back button her platformda KALDIRILDI
                 (kullanıcı isteği): Bağlan artık alt bardaki ilk sekme, üstünde
                 de adım şeridi var; ok gereksiz. */}
