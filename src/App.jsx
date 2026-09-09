@@ -28,6 +28,11 @@ import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
 import { initAnalytics, track } from "./analytics";
 
 const isNative = Capacitor.isNativePlatform();
+// Bağlan ekranındaki iskelet/yüzde boyutu Android'de tek sayfaya sığmıyordu
+// (kullanıcı fotoğrafla bildirdi: gerçek Android cihazlarda kullanılabilir
+// dikey alan iOS'tan daha dar). iOS boyutu aynı kalır, yalnızca Android biraz
+// küçültülür.
+const isAndroid = (() => { try { return Capacitor.getPlatform() === "android"; } catch (_) { return false; } })();
 
 // SoulID (Keşfet) giriş kapısı. Kullanıcı isteğiyle tanıtım döneminde KAPALI:
 // herkes ücretsiz girer, kartta "Yeni" rozeti çıkar. Premium'a döndürmek için
@@ -10654,8 +10659,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 katlanabilir bölümün başlığı zaten "Günün Bağlantısı (x/7)" diyor,
                 aynı isim iki kez görünüyordu. Sayı + çubuk kendi başına yeterli,
                 bağlam (insan iskeletinin hemen üstü) zaten anlamı taşıyor. */}
-            <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:210}}>
-              <div style={{fontSize:32,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
+            <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:isAndroid?190:210}}>
+              <div style={{fontSize:isAndroid?28:32,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
                 {/* % işareti sayıdan küçük: büyük sayı asıl vurgu, işaret
                     onun önünde ufak bir etiket gibi duruyor. */}
@@ -10695,9 +10700,15 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {y:92,  label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
                 {y:31,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
+              // Android'de gerçek cihazlarda kullanılabilir dikey alan iOS'tan
+              // az çıktı (kullanıcı fotoğrafla bildirdi: tek sayfaya sığmıyor,
+              // "Günün Bağlantısı" kutusu ekrana girmiyor). Android'de iskelet
+              // orijinal boyutuna (220x420) yakın tutulur, iOS/web 262x500'de kalır.
+              const svgW = isAndroid ? 224 : 262;
+              const svgH = isAndroid ? 428 : 500;
               return (
-                <div style={{width:262,position:"relative"}}>
-                  <svg width="262" height="500" viewBox="0 0 220 420" style={{overflow:"visible"}}>
+                <div style={{width:svgW,position:"relative"}}>
+                  <svg width={svgW} height={svgH} viewBox="0 0 220 420" style={{overflow:"visible"}}>
                     <defs>
                       <linearGradient id="riseGrad" x1="0" y1="1" x2="0" y2="0">
                         <stop offset="0%" stopColor="rgba(255,200,60,0.6)"/>
