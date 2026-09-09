@@ -5928,7 +5928,10 @@ export default function SakinApp() {
   // olabilir ya da 3 seansta, nasıl yapmak isterse kullanıcı"). Sayaç gün boyunca
   // BİRİKİR, yani tek uzun seans da birkaç kısa seans da olur. Tek seansın 120 sn'ye
   // ulaşabilmesi için terapi seans tavanı 90 → 120 sn yükseltildi (getChakraDuration).
-  const STEP_MIN = { nefes: 10, ses: 60, chakra: 120, gun: 3 };
+  const isEarlyTunnel = (streakData.totalTunnels || 0) < 3;
+  const STEP_MIN = isEarlyTunnel
+    ? { nefes: 5, ses: 30, chakra: 60, gun: 1 }
+    : { nefes: 10, ses: 60, chakra: 120, gun: 3 };
   const readTerapiSec = () => { try { return parseInt(localStorage.getItem("sakin_terapi_sec_" + todayKey)) || 0; } catch { return 0; } };
   // gunTasksDone state'i bu satırdan SONRA tanımlı (TDZ), doğrudan localStorage'dan oku.
   const readGunTasks = () => {
@@ -6079,7 +6082,8 @@ export default function SakinApp() {
       const newBest = Math.max(prev.best, newCurrent);
       const newBadges = [...prev.badges];
       [3,7,21,40].forEach(n => { if (newCurrent >= n && !newBadges.includes(n)) newBadges.push(n); });
-      const next = { current: newCurrent, best: newBest, lastDate: todayKey, badges: newBadges };
+      const newTotal = (prev.totalTunnels || 0) + 1;
+      const next = { current: newCurrent, best: newBest, lastDate: todayKey, badges: newBadges, totalTunnels: newTotal };
       localStorage.setItem("sakin_streak", JSON.stringify(next));
       return next;
     });
@@ -10926,39 +10930,64 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </div>
                       )}
                       {/* Evrim rozetleri: 3 / 7 / 21 gun serisi.
-                          Buyuyen alev SVG'leri (Pokemon evrimi konsepti:
-                          kucuk alev -> orta alev -> kanatli alev). */}
-                      <div style={{display:"flex",gap:10,justifyContent:"center",alignItems:"end"}}>
+                          Gercek hayvan evrimi: civciv -> kus -> anka kusu. */}
+                      <div style={{display:"flex",gap:14,justifyContent:"center",alignItems:"end"}}>
                         {EVO.map(e => {
                           const reached = cur >= e.days;
                           const isCurrent = (e.days === 3 && cur >= 3 && cur < 7)
                             || (e.days === 7 && cur >= 7 && cur < 21)
                             || (e.days === 21 && cur >= 21);
-                          const col = reached ? "#ffd97a" : "#3a3a44";
+                          const col = reached ? "#ffd97a" : "#4a4a54";
+                          const glow = isCurrent ? "drop-shadow(0 0 6px rgba(255,200,60,0.7))" : "none";
                           return (
-                            <div key={e.days} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,
+                            <div key={e.days} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,
                               opacity: reached ? 1 : 0.3, transition:"opacity 0.35s"}}>
-                              <svg width={e.w+4} height={e.h+4} viewBox={`0 0 ${e.w+4} ${e.h+4}`} style={{
-                                filter: isCurrent ? "drop-shadow(0 0 5px rgba(255,200,60,0.6))" : "none"}}>
-                                {e.days === 3 && (
-                                  <path d={`M${(e.w+4)/2} 1 Q${e.w+2} ${e.h*0.5} ${(e.w+4)/2} ${e.h+2} Q2 ${e.h*0.5} ${(e.w+4)/2} 1Z`}
-                                    fill={col} opacity={0.9} />
-                                )}
-                                {e.days === 7 && (<>
-                                  <path d={`M${(e.w+4)/2} 0 Q${e.w+3} ${e.h*0.45} ${(e.w+4)/2} ${e.h+3} Q1 ${e.h*0.45} ${(e.w+4)/2} 0Z`}
-                                    fill={col} opacity={0.9} />
-                                  <path d={`M${(e.w+4)/2-2} ${e.h*0.35} Q${(e.w+4)/2} ${e.h*0.15} ${(e.w+4)/2+2} ${e.h*0.35}`}
-                                    fill="none" stroke={reached?"rgba(255,130,40,0.7)":"#333"} strokeWidth="1" />
-                                </>)}
-                                {e.days === 21 && (<>
-                                  <path d={`M${(e.w+4)/2} 0 Q${e.w+3} ${e.h*0.4} ${(e.w+4)/2} ${e.h+3} Q1 ${e.h*0.4} ${(e.w+4)/2} 0Z`}
-                                    fill={col} opacity={0.9} />
-                                  <path d={`M1 ${e.h*0.55} Q${(e.w+4)/2-3} ${e.h*0.3} ${(e.w+4)/2-1} ${e.h*0.1}`}
-                                    fill="none" stroke={reached?"rgba(255,160,40,0.6)":"#333"} strokeWidth="1.2" />
-                                  <path d={`M${e.w+3} ${e.h*0.55} Q${(e.w+4)/2+3} ${e.h*0.3} ${(e.w+4)/2+1} ${e.h*0.1}`}
-                                    fill="none" stroke={reached?"rgba(255,160,40,0.6)":"#333"} strokeWidth="1.2" />
-                                </>)}
-                              </svg>
+                              {e.days === 3 && (
+                                <svg width="22" height="20" viewBox="0 0 22 20" style={{filter:glow}}>
+                                  {/* Civciv: yuvarlak govde + kucuk bas + gaga + ayak */}
+                                  <ellipse cx="11" cy="13" rx="7" ry="6" fill={col}/>
+                                  <circle cx="11" cy="5.5" r="4.5" fill={col}/>
+                                  <circle cx="9.2" cy="4.5" r="0.8" fill={reached?"#333":"#2a2a30"}/>
+                                  <polygon points="5.5,5.5 3,4.5 5.5,4" fill={reached?"#e88030":"#555"}/>
+                                  <line x1="8" y1="19" x2="7" y2="17" stroke={reached?"#c87030":"#555"} strokeWidth="1.2"/>
+                                  <line x1="14" y1="19" x2="15" y2="17" stroke={reached?"#c87030":"#555"} strokeWidth="1.2"/>
+                                </svg>
+                              )}
+                              {e.days === 7 && (
+                                <svg width="30" height="24" viewBox="0 0 30 24" style={{filter:glow}}>
+                                  {/* Kus: govde + bas + kanat + kuyruk + gaga */}
+                                  <ellipse cx="14" cy="14" rx="8" ry="5.5" fill={col}/>
+                                  <circle cx="7" cy="9" r="4" fill={col}/>
+                                  <circle cx="5.5" cy="8" r="0.8" fill={reached?"#333":"#2a2a30"}/>
+                                  <polygon points="2,8 0,7 2,6.5" fill={reached?"#e07030":"#555"}/>
+                                  <path d="M16 10 Q22 3 28 6 Q24 8 20 12Z" fill={reached?"#e8c050":"#3d3d46"}/>
+                                  <path d="M22 15 Q26 18 28 14" fill="none" stroke={col} strokeWidth="1.5" strokeLinecap="round"/>
+                                  <line x1="10" y1="20" x2="9" y2="23" stroke={reached?"#c87030":"#555"} strokeWidth="1"/>
+                                  <line x1="14" y1="20" x2="15" y2="23" stroke={reached?"#c87030":"#555"} strokeWidth="1"/>
+                                </svg>
+                              )}
+                              {e.days === 21 && (
+                                <svg width="38" height="30" viewBox="0 0 38 30" style={{filter:glow}}>
+                                  {/* Anka kusu / Phoenix: buyuk kanatlar + alev kuyruk + tac */}
+                                  <ellipse cx="19" cy="18" rx="7" ry="5" fill={col}/>
+                                  <circle cx="14" cy="10" r="4" fill={col}/>
+                                  <circle cx="12.5" cy="9" r="0.8" fill={reached?"#333":"#2a2a30"}/>
+                                  <polygon points="9,9 7,8 9,7.5" fill={reached?"#e07030":"#555"}/>
+                                  {/* Sol kanat */}
+                                  <path d="M12 16 Q3 8 1 2 Q6 7 12 13Z" fill={reached?"#ff9030":"#3d3d46"} opacity={0.85}/>
+                                  <path d="M12 17 Q5 14 2 10" fill="none" stroke={reached?"#ffc050":"#444"} strokeWidth="0.8"/>
+                                  {/* Sag kanat */}
+                                  <path d="M26 16 Q35 8 37 2 Q32 7 26 13Z" fill={reached?"#ff9030":"#3d3d46"} opacity={0.85}/>
+                                  <path d="M26 17 Q33 14 36 10" fill="none" stroke={reached?"#ffc050":"#444"} strokeWidth="0.8"/>
+                                  {/* Alev kuyrugu */}
+                                  <path d="M24 21 Q30 24 28 29 Q26 25 23 23Z" fill={reached?"#ff6020":"#3d3d46"} opacity={0.8}/>
+                                  <path d="M22 22 Q27 26 24 29" fill="none" stroke={reached?"#ffaa40":"#444"} strokeWidth="0.7"/>
+                                  {/* Bas taci */}
+                                  <line x1="13" y1="7" x2="12" y2="3" stroke={reached?"#ff7020":"#444"} strokeWidth="1" strokeLinecap="round"/>
+                                  <line x1="15" y1="6.5" x2="15.5" y2="2.5" stroke={reached?"#ffaa30":"#444"} strokeWidth="1" strokeLinecap="round"/>
+                                  <line x1="14" y1="6.8" x2="13.5" y2="2" stroke={reached?"#ff9020":"#444"} strokeWidth="0.8" strokeLinecap="round"/>
+                                </svg>
+                              )}
                               <span style={{fontSize:10,letterSpacing:1.2,fontFamily:"'Jost',sans-serif",
                                 color: isCurrent ? "#ffd97a" : reached ? "#c8a860" : "#5f5f68"}}>
                                 {e.days}
