@@ -10691,8 +10691,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {y:31,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
               return (
-                <div style={{width:220,position:"relative"}}>
-                  <svg width="220" height="420" viewBox="0 0 220 420" style={{overflow:"visible"}}>
+                <div style={{width:262,position:"relative"}}>
+                  <svg width="262" height="500" viewBox="0 0 220 420" style={{overflow:"visible"}}>
                     <defs>
                       <linearGradient id="riseGrad" x1="0" y1="1" x2="0" y2="0">
                         <stop offset="0%" stopColor="rgba(255,200,60,0.6)"/>
