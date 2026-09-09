@@ -10691,8 +10691,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 {y:31,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
               return (
-                <div style={{width:220,position:"relative"}}>
-                  <svg width="220" height="420" viewBox="0 0 220 420" style={{overflow:"visible"}}>
+                <div style={{width:262,position:"relative"}}>
+                  <svg width="262" height="500" viewBox="0 0 220 420" style={{overflow:"visible"}}>
                     <defs>
                       <linearGradient id="riseGrad" x1="0" y1="1" x2="0" y2="0">
                         <stop offset="0%" stopColor="rgba(255,200,60,0.6)"/>
@@ -12562,9 +12562,78 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:13.5,color:"#9c93b4",lineHeight:1.6,padding:"0 6px" }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
             )}
           </div>
-          {/* Ekranın altındaki GALAKTİK KİMLİK butonu KALDIRILDI (kullanıcı
-              isteği): kimlik kartı artık bu ekranın en üstünde ve kendi
-              butonunu taşıyor, aynı giriş iki kez görünmesin. */}
+          {/* ── EVRİM: TOHUM -> FİDE -> AĞAÇ (Orkestra altı) ────────────── */}
+          {(() => {
+            const cur = streakData.current || 0;
+            const EVO = [
+              { lv:1, days:3, color:"#7ec87e", label:t("evo_seed"),
+                svg:(on)=>(<svg width="28" height="32" viewBox="0 0 28 32">
+                  <ellipse cx="14" cy="24" rx="6" ry="4" fill={on?"#8B6914":"#3a3a40"}/>
+                  <ellipse cx="14" cy="20" rx="4.5" ry="5" fill={on?"#a07830":"#3a3a40"}/>
+                  <path d="M14 18 Q12 14 14 10" fill="none" stroke={on?"#7ec87e":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                  <ellipse cx="12" cy="11" rx="3" ry="2" fill={on?"#7ec87e":"#4a4a50"} transform="rotate(-20 12 11)"/>
+                  <ellipse cx="16.5" cy="13" rx="2.5" ry="1.8" fill={on?"#5ab85a":"#3f3f45"} transform="rotate(15 16.5 13)"/>
+                </svg>)},
+              { lv:2, days:7, color:"#5ab85a", label:t("evo_sapling"),
+                svg:(on)=>(<svg width="32" height="38" viewBox="0 0 32 38">
+                  <rect x="14" y="18" width="3" height="16" rx="1.5" fill={on?"#7a5a30":"#3a3a40"}/>
+                  <ellipse cx="16" cy="34" rx="7" ry="3" fill={on?"#8B6914":"#3a3a40"} opacity={0.5}/>
+                  <path d="M15.5 18 Q10 12 7 6" fill="none" stroke={on?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M15.5 20 Q21 14 25 9" fill="none" stroke={on?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                  <ellipse cx="6" cy="5.5" rx="4" ry="3" fill={on?"#5ab85a":"#3f3f45"} transform="rotate(-30 6 5.5)"/>
+                  <ellipse cx="26" cy="8.5" rx="4" ry="3" fill={on?"#4aa84a":"#3a3a40"} transform="rotate(25 26 8.5)"/>
+                  <ellipse cx="10" cy="13" rx="3" ry="2" fill={on?"#6bc86b":"#3f3f45"} transform="rotate(-15 10 13)"/>
+                  <ellipse cx="22" cy="15" rx="3" ry="2" fill={on?"#5ab85a":"#3a3a40"} transform="rotate(20 22 15)"/>
+                </svg>)},
+              { lv:3, days:21, color:"#2e9e2e", label:t("evo_tree"),
+                svg:(on)=>(<svg width="40" height="44" viewBox="0 0 40 44">
+                  <rect x="18" y="22" width="4" height="18" rx="2" fill={on?"#6a4a20":"#3a3a40"}/>
+                  <ellipse cx="20" cy="40" rx="9" ry="3" fill={on?"#8B6914":"#3a3a40"} opacity={0.4}/>
+                  <path d="M19 22 Q12 16 6 10" fill="none" stroke={on?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
+                  <path d="M21 22 Q28 16 34 10" fill="none" stroke={on?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
+                  <path d="M19 26 Q14 22 10 18" fill="none" stroke={on?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
+                  <path d="M21 26 Q26 22 30 18" fill="none" stroke={on?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
+                  <ellipse cx="5" cy="9" rx="5" ry="4" fill={on?"#2e9e2e":"#3a3a40"} transform="rotate(-25 5 9)"/>
+                  <ellipse cx="35" cy="9" rx="5" ry="4" fill={on?"#2e9e2e":"#3a3a40"} transform="rotate(25 35 9)"/>
+                  <ellipse cx="20" cy="6" rx="7" ry="5.5" fill={on?"#3ab83a":"#3a3a40"}/>
+                  <ellipse cx="12" cy="12" rx="4" ry="3" fill={on?"#4ac84a":"#3f3f45"} transform="rotate(-10 12 12)"/>
+                  <ellipse cx="28" cy="12" rx="4" ry="3" fill={on?"#4ac84a":"#3f3f45"} transform="rotate(10 28 12)"/>
+                  <ellipse cx="9" cy="17" rx="3.5" ry="2.5" fill={on?"#3aaa3a":"#3a3a40"} transform="rotate(-20 9 17)"/>
+                  <ellipse cx="31" cy="17" rx="3.5" ry="2.5" fill={on?"#3aaa3a":"#3a3a40"} transform="rotate(20 31 17)"/>
+                </svg>)},
+            ];
+            return (
+              <div style={{ marginBottom:20 }}>
+                <div style={{ display:"flex",gap:8 }}>
+                  {EVO.map(ev => {
+                    const reached = cur >= ev.days;
+                    const active = streakLevel === ev.lv;
+                    return (
+                      <div key={ev.lv} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",
+                        padding:"14px 6px 10px",borderRadius:14,
+                        background: active ? `${ev.color}14` : "rgba(255,255,255,0.015)",
+                        border:`1.5px solid ${active ? `${ev.color}55` : "rgba(255,255,255,0.05)"}`,
+                        boxShadow: active ? `0 0 14px ${ev.color}22, inset 0 0 24px ${ev.color}08` : "none",
+                        opacity: reached ? 1 : 0.35, transition:"all 0.4s ease" }}>
+                        <div style={{ marginBottom:6 }}>{ev.svg(reached)}</div>
+                        <div style={{ fontSize:11,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
+                          color: active ? ev.color : reached ? "#8a8a90" : "#555",fontWeight: active ? 600 : 400 }}>
+                          {ev.label}
+                        </div>
+                        <div style={{ fontSize:9.5,color: active ? "#aaa" : "#555",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
+                          {ev.days} {t("evo_days")}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{ fontSize:11.5,color:"#7a7a85",textAlign:"center",marginTop:8,lineHeight:1.5,fontFamily:"'Inter',sans-serif" }}>
+                  {t("evo_desc")}
+                </div>
+              </div>
+            );
+          })()}
+
           {/* Güne zaten bağlanıldıysa "yeni güne başla" yanlış olur (kullanıcı
               bildirdi): mandala ekranındaki ile AYNI kural uygulanıyor. */}
           <button className="sakin-btn" style={{ width:"100%" }} onClick={()=>{ markStep("harita"); setScreen("mandala"); }}>
@@ -13496,76 +13565,18 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:11,letterSpacing:3,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",margin:"22px 0 10px" }}>
                 {t("conn_levels_title")}
               </div>
-              {/* Tohum -> Fide -> Agac evrimi: renkli kutucuklar, ulasilinca isik yanar */}
-              <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
-                {[
-                  { lv:1, days:3, color:"#7ec87e", bg:"rgba(126,200,126,0.08)", border:"rgba(126,200,126,0.25)",
-                    label:t("conn_lv1"), svg:(active)=>(
-                    <svg width="28" height="32" viewBox="0 0 28 32">
-                      <ellipse cx="14" cy="24" rx="6" ry="4" fill={active?"#8B6914":"#3a3a40"}/>
-                      <ellipse cx="14" cy="20" rx="4.5" ry="5" fill={active?"#a07830":"#3a3a40"}/>
-                      <path d="M14 18 Q12 14 14 10" fill="none" stroke={active?"#7ec87e":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                      <ellipse cx="12" cy="11" rx="3" ry="2" fill={active?"#7ec87e":"#4a4a50"} transform="rotate(-20 12 11)"/>
-                      <ellipse cx="16.5" cy="13" rx="2.5" ry="1.8" fill={active?"#5ab85a":"#3f3f45"} transform="rotate(15 16.5 13)"/>
-                    </svg>
-                  )},
-                  { lv:2, days:7, color:"#5ab85a", bg:"rgba(90,184,90,0.08)", border:"rgba(90,184,90,0.25)",
-                    label:t("conn_lv2"), svg:(active)=>(
-                    <svg width="32" height="38" viewBox="0 0 32 38">
-                      <rect x="14" y="18" width="3" height="16" rx="1.5" fill={active?"#7a5a30":"#3a3a40"}/>
-                      <ellipse cx="16" cy="34" rx="7" ry="3" fill={active?"#8B6914":"#3a3a40"} opacity={0.5}/>
-                      <path d="M15.5 18 Q10 12 7 6" fill="none" stroke={active?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                      <path d="M15.5 20 Q21 14 25 9" fill="none" stroke={active?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                      <ellipse cx="6" cy="5.5" rx="4" ry="3" fill={active?"#5ab85a":"#3f3f45"} transform="rotate(-30 6 5.5)"/>
-                      <ellipse cx="26" cy="8.5" rx="4" ry="3" fill={active?"#4aa84a":"#3a3a40"} transform="rotate(25 26 8.5)"/>
-                      <ellipse cx="10" cy="13" rx="3" ry="2" fill={active?"#6bc86b":"#3f3f45"} transform="rotate(-15 10 13)"/>
-                      <ellipse cx="22" cy="15" rx="3" ry="2" fill={active?"#5ab85a":"#3a3a40"} transform="rotate(20 22 15)"/>
-                    </svg>
-                  )},
-                  { lv:3, days:21, color:"#2e9e2e", bg:"rgba(46,158,46,0.08)", border:"rgba(46,158,46,0.25)",
-                    label:t("conn_lv3"), svg:(active)=>(
-                    <svg width="40" height="44" viewBox="0 0 40 44">
-                      <rect x="18" y="22" width="4" height="18" rx="2" fill={active?"#6a4a20":"#3a3a40"}/>
-                      <ellipse cx="20" cy="40" rx="9" ry="3" fill={active?"#8B6914":"#3a3a40"} opacity={0.4}/>
-                      <path d="M19 22 Q12 16 6 10" fill="none" stroke={active?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
-                      <path d="M21 22 Q28 16 34 10" fill="none" stroke={active?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
-                      <path d="M19 26 Q14 22 10 18" fill="none" stroke={active?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
-                      <path d="M21 26 Q26 22 30 18" fill="none" stroke={active?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
-                      <ellipse cx="5" cy="9" rx="5" ry="4" fill={active?"#2e9e2e":"#3a3a40"} transform="rotate(-25 5 9)"/>
-                      <ellipse cx="35" cy="9" rx="5" ry="4" fill={active?"#2e9e2e":"#3a3a40"} transform="rotate(25 35 9)"/>
-                      <ellipse cx="20" cy="6" rx="7" ry="5.5" fill={active?"#3ab83a":"#3a3a40"}/>
-                      <ellipse cx="12" cy="12" rx="4" ry="3" fill={active?"#4ac84a":"#3f3f45"} transform="rotate(-10 12 12)"/>
-                      <ellipse cx="28" cy="12" rx="4" ry="3" fill={active?"#4ac84a":"#3f3f45"} transform="rotate(10 28 12)"/>
-                      <ellipse cx="9" cy="17" rx="3.5" ry="2.5" fill={active?"#3aaa3a":"#3a3a40"} transform="rotate(-20 9 17)"/>
-                      <ellipse cx="31" cy="17" rx="3.5" ry="2.5" fill={active?"#3aaa3a":"#3a3a40"} transform="rotate(20 31 17)"/>
-                    </svg>
-                  )},
-                ].map(ev => {
-                  const cur = streakData.current || 0;
-                  const reached = cur >= ev.days;
-                  const active = streakLevel === ev.lv;
+              <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
+                {[[1,t("conn_lv1")],[2,t("conn_lv2")],[3,t("conn_lv3")]].map(([lv, label]) => {
+                  const active = streakLevel === lv;
                   return (
-                    <div key={ev.lv} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",
-                      padding:"12px 6px 10px",borderRadius:14,
-                      background: active ? ev.bg : "rgba(255,255,255,0.015)",
-                      border:`1.5px solid ${active ? ev.border : "rgba(255,255,255,0.05)"}`,
-                      boxShadow: active ? `0 0 12px ${ev.color}22, inset 0 0 20px ${ev.color}08` : "none",
-                      opacity: reached ? 1 : 0.4, transition:"all 0.4s ease" }}>
-                      <div style={{ marginBottom:6 }}>{ev.svg(reached)}</div>
-                      <div style={{ fontSize:10,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
-                        color: active ? ev.color : reached ? "#8a8a90" : "#555",fontWeight: active ? 600 : 400,
-                        marginBottom:3 }}>
-                        {ev.lv === 1 ? t("evo_seed") : ev.lv === 2 ? t("evo_sapling") : t("evo_tree")}
-                      </div>
-                      <div style={{ fontSize:9.5,color: active ? "#bbb" : "#666",fontFamily:"'Inter',sans-serif",textAlign:"center",lineHeight:1.4 }}>
-                        {ev.days} {t("evo_days")}
-                      </div>
+                    <div key={lv} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
+                      background: active ? "rgba(126,200,126,0.10)" : "rgba(255,255,255,0.02)",
+                      border:`1px solid ${active ? "rgba(126,200,126,0.35)" : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
+                      <span style={{ fontSize:13,flexShrink:0 }}>{lv===1?t("evo_seed"):lv===2?t("evo_sapling"):t("evo_tree")}</span>
+                      <span style={{ fontSize:12.5,color: active ? "#7ec87e" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
                     </div>
                   );
                 })}
-              </div>
-              <div style={{ fontSize:11.5,color:"#8a8a95",textAlign:"center",marginTop:8,lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>
-                {t("evo_desc")}
               </div>
             </div>
             <div style={{ textAlign:"center",marginBottom:28 }}>
