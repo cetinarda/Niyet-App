@@ -7546,6 +7546,17 @@ ${facts}
   //      tip-bazlı şablon ayrımı o veri birikince yapılacak (CLAUDE.md).
   // Sınıflandırma KABA ve YUMUŞAK: prompt'a "şu tipte görünüyor, yanlışsa
   // kendi okuduğunu esas al" diye geçiyor, yani yanlış tahmin cevabı bozmaz.
+  // LOUISE_HAY_REHBER'in GÖNDERİLMEDİĞİ tipler (kara liste, beyaz liste DEĞİL).
+  // İlk denemede "yalnızca beden" diye beyaz liste kurmuştum, YANLIŞTI:
+  // rehberin içeriği saf fizik değil, beden ile ZİHİN/DUYGU arasındaki
+  // eşleşmeler (depresyon, anksiyete, öfke, uyku, yorgunluk, kırgınlık hep
+  // içinde) ve şifa yaklaşımı da olumlama/affetme, yani duygusal çalışma.
+  // Dolayısıyla duygusal, ilişkisel ve sınıflandırılamayan sorularda da işe
+  // yarıyor. Dışarıda bırakılanlar yalnızca gerçekten katkısı olmayanlar:
+  // varoluşsal (misyon/anlam), zamanlama (ne zaman geçer), karar (yapmalı
+  // mıyım) ve rüya (kendi Jung/Freud/Gestalt şablonu var).
+  const LOUISE_HAY_KAPALI = ["varolussal", "zamanlama", "karar", "ruya"];
+
   function aynaSoruTipi(metin, ruyaModu) {
     if (ruyaModu) return "ruya";
     const s = String(metin || "").toLocaleLowerCase("tr");
@@ -7553,6 +7564,10 @@ ${facts}
     if (var_("ağrı", "uyku", "uyuyam", "yorgun", "mide", "bel ", "boyun", "sırt", "cilt",
              "kilo", "hasta", "sindirim", "migren", "baş ağr", "kas ", "eklem", "regl",
              "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı")) return "beden";
+    if (var_("kaygı", "anksiyete", "panik", "korku", "korkuyorum", "öfke", "kızgın", "sinir",
+             "üzgün", "üzüntü", "depres", "mutsuz", "stres", "gergin", "huzursuz", "suçluluk",
+             "utanç", "yalnız", "boşluk", "tükenmiş", "isteksiz", "motivasyon", "ağlıyorum",
+             "kırgın", "küskün", "affed")) return "duygu";
     if (var_("misyon", "amacım", "hayat amac", "anlamı ne", "kimim", "neden buraday",
              "yaşam yolu", "ruhsal görev", "kaderim", "varoluş")) return "varolussal";
     if (var_("ne zaman", "kaç gün", "ne kadar sürecek", "bitecek", "geçecek", "ne zamana kadar")) return "zamanlama";
@@ -7628,7 +7643,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 ${aynaFacts}
 ${REIKI_BILGI}
 
-${soruTipi === "beden" ? LOUISE_HAY_REHBER : ""}
+${LOUISE_HAY_KAPALI.includes(soruTipi) ? "" : LOUISE_HAY_REHBER}
 ${astroTxt}
 
 ${NEFES_REHBERI}

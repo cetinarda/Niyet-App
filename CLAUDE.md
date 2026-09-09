@@ -17,8 +17,9 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    üretiyor), o yüzden referans kalıcı.
 
 1. **iOS build branch = `main`.** `claude/check-sakin-life-update-CIpM8` build branch'in eski adı; main ile birebir eşit tutuluyor (fast-forward). Kullanıcının Mac komutu hâlâ CIpM8'i çekiyor olabilir: değişiklik push'larken her iki branch'i de aynı SHA'da tut.
-2. **Web Netlify branch = `claude/fix-text-overlap-spacing-gdkpd`** (apartılmış: apps/ kaynak YOK, sadece `src/` + `public/embedded/` bundle + `netlify/`). Web'i etkileyen değişiklikleri buraya **main'den getirerek** işle (asla doğrudan özellik ekleme): `git checkout origin/main -- src/ public/embedded/...` (netlify/ + embed-patches/ KORUNUR), build-gate, push.
-   - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
+2. ✅ **Web Netlify production branch = `main` (Eyl 2026'da değiştirildi, kullanıcı onayladı).** Yani web değişikliğini main'e işlemek YETERLİ, ayrıca bir yere taşımana gerek yok. Aşağıdaki gdkpd anlatımı TARİHSEL, o dal artık canlı değil.
+   ~~Eski: Web Netlify branch = `claude/fix-text-overlap-spacing-gdkpd`~~ (apartılmış: apps/ kaynak YOK, sadece `src/` + `public/embedded/` bundle + `netlify/`). Web'i etkileyen değişiklikleri buraya **main'den getirerek** işle (asla doğrudan özellik ekleme): `git checkout origin/main -- src/ public/embedded/...` (netlify/ + embed-patches/ KORUNUR), build-gate, push.
+   - **BİRLEŞTİRME PLANI (TAMAMLANDI):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
 2b. **🚨 ANDROID YAYIN KAPISI: R8 TESTİ GEÇMEDEN PLAY'E HİÇBİR ŞEY YÜKLENMEZ.**
@@ -352,12 +353,17 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
    **Kalan iş:** yeterli oy birikince, kötü skorlu tiplere özel şablon yaz.
    Hepsini birden bölme, yalnızca veri kötü diyen tipi böl.
 6. ⏳ **Kullanılmayan veriyi budama: İLK BUDAMA YAPILDI.**
-   `LOUISE_HAY_REHBER` (~3100 karakter, bedensel belirti/düşünce kalıbı
-   eşleşmeleri) HER soruya gidiyordu. Artık yalnızca `soruTipi === "beden"`
-   olduğunda gönderiliyor. Bu hem token/gecikme tasarrufu hem de ÖNYARGI
-   düzeltmesi: model elindeki beden tablosunu görünce varoluşsal soruları da
-   beden çerçevesine çekiyordu (bkz. "misyonum nedir" sorusuna beslenme önerme
-   hatası). **Kalan iş:** astro/HD/numeroloji bloklarının hangi tipte gerçekten
+   `LOUISE_HAY_REHBER` (~3100 karakter) HER soruya gidiyordu. Artık
+   `LOUISE_HAY_KAPALI` KARA LİSTESİYLE yönetiliyor: varolussal, zamanlama,
+   karar ve ruya tiplerinde gönderilmiyor, geri kalan her tipte gönderiliyor.
+   ⚠️ **İlk denemede "yalnızca beden" diye BEYAZ liste kurmuştum, kullanıcı
+   düzeltti ve haklıydı:** rehberin içeriği saf fizik değil, beden ile ZİHİN
+   arasındaki eşleşmeler (depresyon, anksiyete, öfke, uyku, yorgunluk,
+   kırgınlık maddeleri var) ve şifa yaklaşımı olumlama/affetme, yani duygusal
+   çalışma. Duygusal ve ilişkisel sorularda da işe yarıyor. Bu yüzden
+   sınıflandırıcıya `duygu` tipi eklendi ve kapı kara listeye çevrildi.
+   **Ders: bir bağlam bloğunu budarken içeriğini OKU, adına bakarak karar verme.**
+   **Kalan iş:** astro/HD/numeroloji bloklarının hangi tipte gerçekten
    katkı verdiğini ölçüp benzer şekilde budamak. Bu, 4'ün verisini bekliyor.
 
 ## Bağımlılık komutları (referans)
@@ -395,4 +401,7 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
   üretilmiş, `public/embedded/sakintaslar/` iki dalda FARKLI derlenmiş bundle
   taşıyor ama her dal kendi içinde tutarlı (index.html kendi hash'ini
   gösteriyor), 404 riski yok. Switch sonrası taşlar embed'ini bir kez gözle.
-  Kalan adım KULLANICIDA: Netlify production branch'ini `main` yapmak.
+  ✅ **YAPILDI (kullanıcı, Eyl 2026): Netlify production branch artık `main`.**
+  Yani gdkpd ARTIK CANLI DEĞİL. Web değişikliklerini main'e işlemek yeterli;
+  gdkpd'ye senkron ZORUNLU DEĞİL (yapılırsa da zarar vermez, sadece boş emek).
+  Bir sonraki temizlikte gdkpd tamamen emekliye ayrılabilir.
