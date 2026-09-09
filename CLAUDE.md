@@ -299,6 +299,49 @@ Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisi
 2. Hangi sürümde son çalışıyordu?
 3. Hangi branch'ten derliyor? (Mac'te `git branch --show-current`)
 
+## 🪞 İÇSEL AYNA: SÜREKLİ ZEKÂ GELİŞTİRME (daimî iş, kullanıcı isteği)
+
+**Ayna asla "bitti" sayılmaz.** Kullanıcı: "içsel aynayı sürekli daha zeki olması
+için öneriler ver, her zaman geliştireceğiz". Yani Ayna'yla ilgili bir iş
+yapıldığında, isteneni yapıp durma: gözlemlediğin zayıflığı da söyle ve somut
+bir iyileştirme öner. Kullanıcı kötü bir cevap örneği paylaşırsa önce KÖK
+SEBEBİ (hangi prompt satırı, hangi eksik veri) bul, kozmetik yama yapma.
+
+**Nerede yaşıyor:** sistem prompt'u İSTEMCİDE (`src/App.jsx`
+`buildMirrorSystemPrompt` + `aynaReasoningDirective`), backend (`netlify/
+functions/ai-call.mjs`) yalnızca dil kilidi ve kitap RAG pasajlarını ekliyor.
+Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
+
+**Şimdiye kadar yakalanan hatalar (tekrarlarsa buraya ekle):**
+- **Soru yönünü ters okuma (Eyl 2026):** "az uyudum ama dinlenmiş hissediyorum"
+  sorusuna model yakınma muamelesi yapıp olmayan bir soruna telkin yazdı. Kök
+  sebep prompt'un kapanışıydı: "sorunun kaynağına işaret et, sevgi sunmayı
+  hatırlat" her soruyu zorlanma varsayıyordu. Çözüm: zorlanma / olumlu deneyim /
+  merak ayrımı, düşünme adımı 1b.
+- **Ham veri sızıntısı (Eyl 2026):** "Güneş 64.6" gibi yorumlanmamış derece
+  değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
+  kullanılabilir.
+
+**Öneri havuzu (yapılmadı, öncelik sırasıyla):**
+1. **Geri bildirim döngüsü.** Her Ayna cevabının altına küçük bir işe yaradı /
+   yaramadı düğmesi, anonim olarak kaydedilsin. Şu an körüz: hangi prompt'un
+   hangi modelin iyi cevap ürettiğini ölçmeden tahminle ilerliyoruz. En yüksek
+   kaldıraç bu.
+2. **Regresyon seti.** Gerçek kötü cevapları (yukarıdaki uyku örneği gibi) bir
+   dosyada biriktir, prompt değişikliğinden önce hepsini çalıştırıp gözle
+   kontrol et. Ucuz, geriye düşmeyi engeller.
+3. **Süreklilik/hafıza.** Ayna arşivi zaten var ama modele geçmiş sorular
+   verilmiyor. Son birkaç sorunun özeti bağlama girerse örüntü görebilir
+   ("üç haftadır aynı şeyi soruyorsun"), bu tek başına büyük bir zekâ sıçraması.
+4. **Soru tipi yönlendiricisi.** Zamanlama / karar / duygu / rüya / ilişki /
+   beden sorularının yapısı farklı; tek genel prompt hepsini idare etmeye
+   çalışıyor. Tipe göre özel alt-prompt daha isabetli cevap verir.
+5. **Belirsizlikte tek soru sorma.** Kutup gerçekten belirsizse cevap uydurmak
+   yerine bir netleştirme sorusu sorsun. Bugünkü hatayı bu da önlerdi.
+6. **Kullanılmayan veriyi buda.** Hangi boyutların (HD, numeroloji, ay evresi)
+   cevaplarda gerçekten işe yaradığını ölç; hiç kullanılmayan bağlamı çıkar,
+   gürültü ve halüsinasyon yüzeyi azalır.
+
 ## Bağımlılık komutları (referans)
 
 - `npm run build`: Vite ile web bundle
