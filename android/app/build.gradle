@@ -1,13 +1,26 @@
 apply plugin: 'com.android.application'
 
 // Release imzalama: android/keystore.properties varsa (gitignore'lı, yerel-only)
-// oradan okunur. Yoksa release derlemesi imzasız kalır (Play Console'a
-// yüklenemez) ama Studio/CLI hata vermeden çalışmaya devam eder.
+// oradan okunur.
+//
+// ⚠️ SADECE DOSYANIN VARLIĞINA BAKMAK YETMİYOR (yaşandı): keystore.properties
+// örnekten kopyalanıp `storeFile` şablon değerinde (…/SENIN_KULLANICI_ADIN/…)
+// bırakılmıştı. Dosya "var" sayıldığı için release imzalama devreye giriyor,
+// sonra Gradle olmayan keystore'u arayıp `validateSigningRelease` ile
+// patlıyordu; yani release (R8'li) sürüm yerelde HİÇ derlenemiyordu.
+// Artık keystore DOSYASININ KENDİSİ de diskte aranıyor; yoksa release debug
+// anahtarıyla imzalanıp yerelde test edilebilir kalıyor (bkz. buildTypes).
 def keystorePropsFile = rootProject.file('keystore.properties')
 def keystoreProps = new Properties()
-def hasKeystore = keystorePropsFile.exists()
-if (hasKeystore) {
+def hasKeystore = false
+if (keystorePropsFile.exists()) {
     keystoreProps.load(new FileInputStream(keystorePropsFile))
+    def storePath = keystoreProps['storeFile']
+    hasKeystore = storePath != null && file(storePath).exists()
+    if (!hasKeystore) {
+        logger.warn("UYARI: keystore.properties var ama storeFile bulunamadi (${storePath}). " +
+                    "Release DEBUG anahtariyla imzalanacak: cihazda test edilebilir, magazaya YUKLENEMEZ.")
+    }
 }
 
 android {
