@@ -47,9 +47,17 @@
 -dontwarn com.android.billingclient.**
 
 # ── Meta / Facebook SDK (App Events) ────────────────────────────────────────
-# SDK kendi consumer-proguard kurallarını AAR içinde getiriyor, tekrar keep
-# yazmıyoruz (yazsak karartma yüzdesi boş yere düşerdi); yalnızca uyarılar
-# susturuluyor.
+# ÖNCEDEN yalnızca -dontwarn vardı ("SDK kendi consumer-proguard kurallarını
+# AAR içinde getiriyor" varsayımıyla). 1.4.0/versionCode 14 Play Store'da
+# AÇILIŞTA ÇÖKTÜ: Facebook SDK'nın FacebookInitProvider'ı (ContentProvider)
+# Application.onCreate()'TEN ÖNCE, süreç başlarken çalışıyor; bu zincirdeki
+# bir sınıf R8 tarafından yansımaya uygun olmayacak şekilde yeniden
+# adlandırılırsa/silinirse MainActivity'e hiç ulaşılamadan çöker (bildirilen
+# belirtiyle birebir örtüşüyor). Varsayım doğrulanamadığı için artık AÇIKÇA
+# tam koruma altına alındı. Karartma yüzdesini bir miktar düşürür ama
+# "uygulama hiç açılmıyor" riskinden daha ucuz.
+-keep class com.facebook.** { *; }
+-keep interface com.facebook.** { *; }
 -dontwarn com.facebook.**
 
 # ── AndroidX / Kotlin gürültüsü ─────────────────────────────────────────────

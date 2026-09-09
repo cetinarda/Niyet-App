@@ -20,10 +20,14 @@ android {
         // 1.3.9 / versionCode 12 Play'de CANLI (bkz. public/latest-ios-version.json,
         // otomatik mağaza taraması). Yüklenmiş bir versionCode kalıcı olarak
         // yanar, aynısı ikinci kez kabul edilmez.
-        // versionCode 13 Play Console'a yüklenmeye çalışıldı, "sürüm kullanıldı"
-        // hatası aldı (henüz yayınlanmamıştı ama numara yanmış): CLAUDE.md kuralı
-        // gereği +1 artırıldı, versionName aynı kaldı (henüz yayınlanmadı).
-        versionCode 14
+        // versionCode 14 Play Console'a yüklendi, onaylandı AMA Play Store'dan
+        // indirilince AÇILIŞTA ÇÖKTÜ (Facebook SDK + R8, bkz. proguard-rules.pro
+        // ve build.gradle facebook-android-sdk satırındaki not). Kullanıcı
+        // Play Console'da versionCode 12'ye rollback yaptı. Bu düzeltmeyle
+        // birlikte +1 artırıldı, versionName aynı kaldı (henüz yayınlanmadı).
+        // ⚠️ BİR SONRAKİ YÜKLEMEDEN ÖNCE GERÇEK CİHAZDA TEST ŞART (14 test
+        // edilmeden gönderildi ve bu yüzden çöktü).
+        versionCode 15
         versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -76,7 +80,12 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
     // Meta App Events (Facebook SDK) — app install/launch tracking, Meta Ads Manager.
-    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+    // ÖNCEDEN "latest.release" idi: sürüm sabitlenmediği için her build farklı
+    // bir SDK sürümü çekebiliyordu (tekrarlanabilirlik yok). 1.4.0/versionCode 14
+    // Play Store'da açılışta çöktü; kök neden araştırmasında bu satır ve
+    // proguard-rules.pro'daki eksik Facebook keep kuralları en güçlü şüpheli
+    // olarak işaretlendi (bkz. proguard-rules.pro Facebook bölümü). Sabitlendi.
+    implementation 'com.facebook.android:facebook-android-sdk:18.3.0'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
