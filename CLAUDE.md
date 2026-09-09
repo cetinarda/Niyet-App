@@ -21,21 +21,71 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
-3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı ONAYLADI, BAŞARILI, DEĞİŞTİRME):
+2b. **🚨 ANDROID YAYIN KAPISI: R8 TESTİ GEÇMEDEN PLAY'E HİÇBİR ŞEY YÜKLENMEZ.**
+   Kullanıcı Android sürümü göndermek istediğinde, mağaza komutundan ÖNCE bunu ver:
    ```
-   cd ~/Desktop/Niyet-App && git checkout -- ios/App/App.xcodeproj/project.pbxproj ios/App/App/Info.plist && \
-   git pull origin claude/check-sakin-life-update-CIpM8 && \
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
+   bash scripts/android-release-test.sh
+   ```
+   Script: web bundle + `cap sync` + `assembleRelease` (R8 AÇIK) + cihaza kurulum +
+   kurulanın DEBUGGABLE olmadığını doğrulama + uygulamayı başlatıp 15 sn izleme +
+   crash tamponu kontrolü. PASS derse mağazaya gidilir, FAIL derse crash yığınını
+   basar. Telefon USB'de ve USB hata ayıklama açık olmalı.
+   - **NEDEN VAR (acı ders, Eyl 2026):** 1.4.0 versionCode **14 ve 15** test
+     edilmeden Play'e gönderildi, İKİSİ DE açılışta çöktü, iki kez rollback
+     gerekti. Kök sebep: R8 Capacitor çekirdeğini yeniden adlandırınca
+     `@CapacitorPlugin` anotasyon zinciri kopuyor, `LocalNotificationsPlugin
+     .requestPermissions` NPE atıyordu (bkz. `android/app/proguard-rules.pro`
+     Capacitor bölümü). versionCode 16 ile düzeldi.
+   - **"Android Studio'da çalışıyordu" HİÇBİR ŞEY KANITLAMAZ:** Run tuşu DEBUG
+     derler, R8 debug'da HİÇ çalışmaz. Kullanıcı "test ettim" derse önce
+     `adb shell dumpsys package com.sakin.app | grep pkgFlags` ile sor:
+     `DEBUGGABLE` görünüyorsa yanlış sürüm test edilmiş demektir.
+   - Script'in ürettiği APK debug anahtarıyla imzalıdır (keystore.properties
+     yoksa, bkz. build.gradle), yani mağazaya YÜKLENEMEZ. Kasıtlı: test
+     artefaktı kazara yayınlanamaz. Mağaza yüklemesi Android Studio >
+     Generate Signed Bundle/APK ile yapılır.
+   - **Sıra ŞU: script PASS → elle gezme → Generate Signed Bundle (AAB) →
+     Play Console INTERNAL TESTING → oradan kur/dene → production'a terfi.**
+     Doğrudan production'a çıkma; üç kez patladı, internal testing bedava sigorta.
+   - Yüklenen her versionCode kalıcı yanar (bkz. kural #5): reddedilse de,
+     çökse de, aynı numara bir daha kabul edilmez.
+
+3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı "terminal komutu ver"
+   dediğinde SORMADAN bunu ver, iOS + Android birlikte):
+   ```
+   # iOS
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
    npm run build && npx cap sync ios && open ios/App/App.xcodeproj
+
+   # Android (yalnızca son iki adım farklı)
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
+   npm run build && npx cap sync android && npx cap open android
    ```
-   `git checkout -- project.pbxproj` ŞART: Xcode dosyayı yerel imzalama ayarlarıyla
-   (signing team vb.) kirletiyor, commit edilmemiş bu değişiklikler `git pull`'u
-   "local changes would be overwritten" hatasıyla durduruyor. Bu satır olmadan
-   komut kullanıcıda 5 kez art arda başarısız oldu, bir daha kaldırma.
-   **`Info.plist` AYNI SEBEPTEN eklendi (2. tekrar, bu sefer bu dosyada):**
-   Xcode'un "Info" sekmesi/capabilities paneli dosyayı kendi plist editörüyle
-   yeniden yazıyor: sıra değişiyor, elle eklenen XML yorumları (`<!-- ... -->`)
-   silinebiliyor. Sonuç aynı hata. Kural: Xcode'da **açılan/değişebilen HER
-   proje dosyası** bu satıra eklenmeli, tek tek keşfedip düzeltmek yerine.
+   **`fetch` + `reset --hard` NEDEN (İKİ ayrı hata, ikisi de yaşandı):**
+   - **(1) "local changes would be overwritten":** Xcode `project.pbxproj`'u yerel
+     imzalama ayarlarıyla (signing team vb.), `Info.plist`'i de kendi plist
+     editörüyle (sıra değişir, elle yazılan `<!-- ... -->` yorumları silinir)
+     kirletiyor. Commit edilmemiş bu değişiklikler `git pull`'u durduruyordu.
+     Eski çözüm `git checkout -- <dosya>` idi ama **Xcode'da açılabilen HER dosya
+     için tek tek keşfetmek gerekiyordu** (2 kez tekrarlandı: önce pbxproj, sonra
+     Info.plist). `reset --hard` hepsini birden halleder, liste tutmaya gerek yok.
+   - **(2) "Iraksak dallarınız var / divergent branches" (Ağu 2026):** Mac'teki
+     yerel branch'te origin'de olmayan commit kalınca `git pull` hangi stratejiyle
+     (merge/rebase/ff-only) birleştireceğini bilemeyip DURUYOR. `git checkout --`
+     bu hatayı ÇÖZMEZ, farklı bir hata. `reset --hard` iraksamayı da bitirir.
+   - **Güvenli:** Mac bir DERLEME makinesi, kaynak GitHub'da. `reset --hard`
+     untracked dosyalara dokunmaz (`node_modules`, `dist` durur). Yine de kullanıcı
+     Mac'te elle bir şey yazdıysa önce şunu çalıştırsın, boş çıkmalı:
+     `git fetch origin <branch> && git log --oneline HEAD ^FETCH_HEAD`
+   - **`git pull` KULLANMA**, `fetch` + `reset --hard FETCH_HEAD` kullan: pull
+     yukarıdaki iki hatanın ikisine de açık.
 4. **`public/latest-ios-version.json` ARTIK OTOMATİK: elle bump etme.**
    Bu dosya "mağazalarda CANLI olan sürüm"ü bildirir, repodaki sürümü değil.
    Uygulama açılışta okur; kendi `APP_VERSION`'ından büyükse "yeni sürüm var"
@@ -248,6 +298,49 @@ Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisi
 1. iOS'ta mı web'de mi?
 2. Hangi sürümde son çalışıyordu?
 3. Hangi branch'ten derliyor? (Mac'te `git branch --show-current`)
+
+## 🪞 İÇSEL AYNA: SÜREKLİ ZEKÂ GELİŞTİRME (daimî iş, kullanıcı isteği)
+
+**Ayna asla "bitti" sayılmaz.** Kullanıcı: "içsel aynayı sürekli daha zeki olması
+için öneriler ver, her zaman geliştireceğiz". Yani Ayna'yla ilgili bir iş
+yapıldığında, isteneni yapıp durma: gözlemlediğin zayıflığı da söyle ve somut
+bir iyileştirme öner. Kullanıcı kötü bir cevap örneği paylaşırsa önce KÖK
+SEBEBİ (hangi prompt satırı, hangi eksik veri) bul, kozmetik yama yapma.
+
+**Nerede yaşıyor:** sistem prompt'u İSTEMCİDE (`src/App.jsx`
+`buildMirrorSystemPrompt` + `aynaReasoningDirective`), backend (`netlify/
+functions/ai-call.mjs`) yalnızca dil kilidi ve kitap RAG pasajlarını ekliyor.
+Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
+
+**Şimdiye kadar yakalanan hatalar (tekrarlarsa buraya ekle):**
+- **Soru yönünü ters okuma (Eyl 2026):** "az uyudum ama dinlenmiş hissediyorum"
+  sorusuna model yakınma muamelesi yapıp olmayan bir soruna telkin yazdı. Kök
+  sebep prompt'un kapanışıydı: "sorunun kaynağına işaret et, sevgi sunmayı
+  hatırlat" her soruyu zorlanma varsayıyordu. Çözüm: zorlanma / olumlu deneyim /
+  merak ayrımı, düşünme adımı 1b.
+- **Ham veri sızıntısı (Eyl 2026):** "Güneş 64.6" gibi yorumlanmamış derece
+  değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
+  kullanılabilir.
+
+**Öneri havuzu (yapılmadı, öncelik sırasıyla):**
+1. **Geri bildirim döngüsü.** Her Ayna cevabının altına küçük bir işe yaradı /
+   yaramadı düğmesi, anonim olarak kaydedilsin. Şu an körüz: hangi prompt'un
+   hangi modelin iyi cevap ürettiğini ölçmeden tahminle ilerliyoruz. En yüksek
+   kaldıraç bu.
+2. **Regresyon seti.** Gerçek kötü cevapları (yukarıdaki uyku örneği gibi) bir
+   dosyada biriktir, prompt değişikliğinden önce hepsini çalıştırıp gözle
+   kontrol et. Ucuz, geriye düşmeyi engeller.
+3. **Süreklilik/hafıza.** Ayna arşivi zaten var ama modele geçmiş sorular
+   verilmiyor. Son birkaç sorunun özeti bağlama girerse örüntü görebilir
+   ("üç haftadır aynı şeyi soruyorsun"), bu tek başına büyük bir zekâ sıçraması.
+4. **Soru tipi yönlendiricisi.** Zamanlama / karar / duygu / rüya / ilişki /
+   beden sorularının yapısı farklı; tek genel prompt hepsini idare etmeye
+   çalışıyor. Tipe göre özel alt-prompt daha isabetli cevap verir.
+5. **Belirsizlikte tek soru sorma.** Kutup gerçekten belirsizse cevap uydurmak
+   yerine bir netleştirme sorusu sorsun. Bugünkü hatayı bu da önlerdi.
+6. **Kullanılmayan veriyi buda.** Hangi boyutların (HD, numeroloji, ay evresi)
+   cevaplarda gerçekten işe yaradığını ölç; hiç kullanılmayan bağlamı çıkar,
+   gürültü ve halüsinasyon yüzeyi azalır.
 
 ## Bağımlılık komutları (referans)
 
