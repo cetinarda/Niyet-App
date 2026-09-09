@@ -6022,7 +6022,7 @@ export default function SakinApp() {
   const STEP_NAMES = [
     (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
     t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
-    t("nav_chakra"), t("nav_evening"), t("nav_map"),
+    t("nav_chakra"), t("nav_evening"), t("bnav_connection"),
   ];
   // NOT (geri alınan hatalı düzeltme): Adımlar SADECE gerçekten tamamlanınca
   // (ekranın "DEVAM ET/İLERİ" butonuna basınca) markStep ile işaretlenir. Bir
@@ -7869,28 +7869,38 @@ ${GIZLI_BENLIK_REHBER}
 ${KITAP_BILGELIGI}
 
 ${lang === "tr"
-  ? `Rapor şu başlıkları içermeli:
-**Haftanın Yansıması**: Genel ruh hali, enerji, burç/sayı etkisi ve bu haftaki geliş ritmi (gün serisi verisi varsa), net ve doğrudan yansıt (2-3 cümle)
-**Öne Çıkan Temalar**: Tekrar eden kelimeler, çakra örüntüleri ve İçsel Ayna'ya sorulan sorulardaki ortak temalar, kaynağa doğrudan işaret et
-**İçsel Büyüme**: Öğrenilen şeylerden çıkarılan anlam, kişinin kendi içinde gördüklerini yansıt
-**Gizli Benlik & Gölge**: Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)
-**Frekans & Ses Yolculuğu**: Haftalık frekans dinleme süresi ve bu sürenin enerji bedenine etkisi (1-2 cümle)
-**Şükran Kalbi**: Şükür yazılarından bir sentez
-**Sana Bir Davet**: Bu hafta kendine nasıl sevgi sunabilirsin, nereye bakabilirsin, eleştiri değil, davet (2-3 madde)
-**Hatırla**: Bu hafta kendine hatırlatman gereken en önemli 2-3 şey (kısa, öz)
-**Gelecek Haftaya Niyet**: Kısa, ilham verici bir öneri${astro ? "\n**Kozmik Not**: Bu haftanın biyoritmi ve sayısal/burç enerjisi hakkında kısa bir not" : ""}${kozmikText ? "\n**Kozmik Enerji Durumu**: Bu hafta jeomanyetik aktivite, güneş fırtınaları ve önümüzdeki 3 günün tahminine dair yorum. Yüksek Kp dönemleri kişinin yaşadıklarıyla nasıl rezonans ettiğini şefkatle yansıt. Önümüzdeki günlere dair hazırlık daveti (3-4 cümle, somut)" : ""}
+  ? `Rapor SABİT BİR ŞABLON DEĞİL. Aşağıdakiler KAPSANABİLECEK alanlar; hangilerinin gireceğine, hangi sırayla ve kaç başlık altında anlatılacağına O HAFTANIN VERİSİNE bakarak SEN karar ver. Her hafta aynı dokuz başlıkla gelen rapor ezber gibi okunur, kullanıcı bir süre sonra okumayı bırakır.
+
+KAPSANABİLECEK ALANLAR (hiçbiri zorunlu değil):
+Haftanın ritmi ve ruh hali, geliş düzeni (gün serisi verisi varsa) · tekrar eden kelimeler ve çakra örüntüleri · İçsel Ayna'ya sorulan sorulardaki ortak tema · öğrenilenlerden çıkan anlam · 12. ev perspektifinden görünen bastırılmış tema ve bütünleşme daveti · frekans dinleme süresi ve enerji bedenine etkisi · şükür yazılarının sentezi · kendine sevgi sunma daveti (eleştiri değil) · hatırlanması gerekenler · gelecek haftaya niyet${astro ? " · biyoritim ve sayısal/burç enerjisi" : ""}${kozmikText ? " · jeomanyetik aktivite ve güneş fırtınalarının bu haftaya etkisi, önümüzdeki 3 güne hazırlık" : ""}
+
+SEÇİM KURALLARI (raporu zeki yapan şey burası):
+1. Veri zayıfsa o alanı HİÇ AÇMA. Boş bir başlığın altına dolgu cümle yazmak raporun tamamını değersizleştirir. Üç alanı doyurucu anlatmak, on alanı geçiştirmekten iyidir.
+2. Bu haftayı diğer haftalardan AYIRAN şeyle başla. En çok tekrar eden kelime, en belirgin kırılma, en dikkat çekici sayı ne ise ondan gir.
+3. Alanları birbirine BAĞLA, ayrı kutular gibi sıralama. Sorulan sorularla şükür yazıları, çakra seçimiyle nefes sayısı arasında gerçek bir ilişki varsa onu göster; yoksa uydurma.
+4. SOMUT ol: kişinin kendi kelimelerini, gerçek sayılarını ve gerçek sorularını kullan. Herkese uyan cümle kurma; bu rapor bu kişinin bu haftasına ait olmalı.
+
+BİÇİM:
+- Başlıkları SEN yaz, yukarıdaki alan adlarını kopyalama; o haftaya ait, o haftayı anlatan başlıklar olsun. Her başlığı **kalın** markdown ile yaz.
+- Başlık sayısı sabit olmasın, 4 ile 8 arasında o haftaya göre değişsin.
+- Bölümler aynı uzunlukta olmasın; asıl mesele hangisiyse ona daha çok yer ver.
 
 Samimi, nazik, biraz şiirsel bir dil kullan. "Sen" diye hitap et. Maksimum 620 kelime.`
-  : `The report MUST include the following sections (translate each section heading naturally into ${AI_LANG_NAMES[lang] || "English"}; keep the **bold** markdown around each heading):
-**Reflection of the Week**: Overall mood, energy, zodiac/number influence and this week's rhythm of showing up (streak data if present), clear and direct (2-3 sentences)
-**Recurring Themes**: Repeating words, chakra patterns and common threads across the questions asked to the Inner Mirror, point directly at the source
-**Inner Growth**: Meaning extracted from what was learned, reflect what the person saw inside themselves
-**Hidden Self & Shadow**: Suppressed themes seen through the 12th-house lens in this week's data; a gentle invitation toward integration (2-3 poetic sentences)
-**Frequency & Sound Journey**: Weekly frequency-listening duration and its effect on the energy body (1-2 sentences)
-**Heart of Gratitude**: A synthesis of the gratitude entries
-**An Invitation**: How can you offer yourself love this week, where can you look, invitation, not criticism (2-3 bullets)
-**Remember**: The 2-3 most important things to remind yourself this week (short, concise)
-**Intention for Next Week**: A short, inspiring suggestion${astro ? "\n**Cosmic Note**: A short note on this week's biorhythm and numerological/zodiac energy" : ""}${kozmikText ? "\n**Cosmic Energy State**: Commentary on this week's geomagnetic activity, solar storms, and the 3-day forecast. Reflect with compassion how high-Kp periods resonate with what the person lived. An invitation to prepare for the coming days (3-4 concrete sentences)" : ""}
+  : `The report is NOT a fixed template. Below are areas the report MAY cover; YOU decide which ones belong, in what order, and under how many headings, by looking at THIS WEEK'S DATA. A report that arrives with the same nine headings every week reads as memorised and the person stops reading it.
+
+AREAS IT MAY COVER (none of them mandatory):
+The week's rhythm and mood, the pattern of showing up (streak data if present) · repeating words and chakra patterns · the common thread across the questions asked to the Inner Mirror · the meaning drawn from what was learned · a suppressed theme seen through the 12th-house lens and a gentle invitation toward integration · frequency listening time and its effect on the energy body · a synthesis of the gratitude entries · an invitation to offer oneself love (invitation, not criticism) · what is worth remembering · an intention for next week${astro ? " · biorhythm and numerological/zodiac energy" : ""}${kozmikText ? " · how this week's geomagnetic activity and solar storms landed, and how to prepare for the next 3 days" : ""}
+
+SELECTION RULES (this is what makes the report intelligent):
+1. If the data for an area is thin, DO NOT open that area at all. Filler under an empty heading devalues the whole report. Three areas covered well beat ten areas skimmed.
+2. Open with what SEPARATES this week from other weeks: the most repeated word, the clearest shift, the most striking number.
+3. CONNECT the areas instead of listing them as separate boxes. If there is a real relation between the questions asked and the gratitude entries, or between the chakra choice and the breath count, show it. If there is none, do not invent one.
+4. Be CONCRETE: use the person's own words, real numbers and real questions. No sentence that would fit anyone; this report belongs to this person and this week.
+
+FORM:
+- Write the headings YOURSELF, do not copy the area names above; let them belong to this particular week. Put each heading in **bold** markdown.
+- Do not fix the number of headings; let it vary between 4 and 8 depending on the week.
+- Do not make the sections equal in length; give more room to whatever actually matters.
 
 Use warm, gentle, slightly poetic language. Address the reader with the informal "you" equivalent in ${AI_LANG_NAMES[lang] || "English"}. Maximum 620 words.`}`,
           ragQuery: (gunlerText || "").slice(0, 500),
@@ -8471,7 +8481,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
     // da sağ kenardaki floating ☽ gizli geçit ile açılır (App.jsx ~3951).
     // Bu satır web'de üst panelde "🪞 Ayna" yazı linki gösteriyordu: KALDIRILDI.
     {id:"mandala",icon:"◎",  label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
-    {id:"harita", icon:"🗺️", label:t("nav_map"),  color:"#82d9a3"},
+    // İSİM BİRLEŞTİRİLDİ (kullanıcı kararı): bu adım eskiden üst navda
+    // "Harita" (nav_map), bağlantı ekranında "Bağlantı" (bnav_connection)
+    // diye geçiyordu, yani aynı yer yedi dilde birden iki ayrı adla
+    // anılıyordu. Artık her yerde "Bağlantı".
+    {id:"harita", icon:"🗺️", label:t("bnav_connection"),  color:"#82d9a3"},
     {id:"ailesi", icon:"✦", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060", glow:true},
   ];
   // PANİK → sakinleştirici nefes. Eskiden yalnızca giriş ekranının sağ alt
