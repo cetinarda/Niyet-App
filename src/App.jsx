@@ -499,9 +499,8 @@ function aynaReasoningDirective(lang) {
     return `
 
 NASIL DÜŞÜNECEĞİN (önce düşün, sonra yaz):
-Yanıta başlamadan önce <think> ... </think> etiketleri içinde SESSİZCE ve KISA düşün (en fazla birkaç satır; bu bölüm kullanıcıya GÖSTERİLMEZ ve mutlaka </think> ile kapanmalı). Düşünürken şunları yap:
-1. Kişinin sorusu tam olarak neyi soruyor? Duygusal mı, zamanla mı ilgili ("ne zaman biter/geçer"), bir karar mı, bir örüntü mü?
-1b. Anlatılan şey bir ZORLANMA mı, OLUMLU bir deneyim mi, yoksa yalnızca MERAK mı? Cevabın amacı buna göre değişir: zorlanmada yol göster, olumlu ya da nötr durumda sebebini açıkla, çare önerme.
+Yanıta başlamadan önce <think> ... </think> etiketleri içinde SESSİZCE düşün. ⚠️ BU BÖLÜM EN FAZLA 5 KISA SATIR OLSUN ve MUTLAKA </think> ile KAPANSIN: kapanmazsa yanıtın tamamı geçersiz sayılır ve kullanıcı hiçbir şey göremez. Düşünmeyi uzatma, cevabın yerini yeme. Düşünürken şunları yap:
+1. Kişinin sorusu tam olarak neyi soruyor (duygu / zamanlama / karar / örüntü) ve anlattığı şey bir ZORLANMA mı, OLUMLU bir deneyim mi, yoksa yalnızca MERAK mı? Cevabın amacı buna göre değişir: zorlanmada yol göster, olumlu ya da nötr durumda sebebini açıkla ve çare önerme.
 2. Elindeki VERİLER arasından (doğum haritası, Human Design tipi/otoritesi/profili, bugünkü transit kapıları ve GERÇEK geçiş tarihleri, ay evresi, sayı enerjisi) yalnızca bu soruya DOKUNANLARI seç. Dokunmayanları yok say, zorla bağlama.
 3. Seçtiğin verileri BİRBİRİNE bağla: transit kapısı kişinin natal tipiyle nasıl konuşuyor, geçiş tarihi soruya nasıl somut cevap veriyor.
 4. "Ne zaman" sorusu varsa ve sana GERÇEK bir geçiş tarihi verildiyse o tarihi net söyle ("şu kapıdan çıkıyorsun, tarih şu, şu kapıya geçiyorsun"). Tarih verilmediyse uydurma; dürüstçe "şu an şu temadasın" de.
@@ -513,9 +512,8 @@ HAM SAYI YAZMA: derece, ondalık, koordinat gibi ham değerleri cevaba KOYMA (ö
   return `
 
 HOW TO THINK (think first, then write):
-Before you begin your answer, think SILENTLY and BRIEFLY inside <think> ... </think> tags (a few lines at most; this section is NOT shown to the user and MUST be closed with </think>). While thinking:
-1. What is the person actually asking? Is it emotional, about timing ("when does it end/pass"), a decision, a pattern?
-1b. Is what they describe a DIFFICULTY, a POSITIVE experience, or plain CURIOSITY? The purpose of your answer changes accordingly: guide them through a difficulty, but for a positive or neutral observation simply explain why it happens and prescribe nothing.
+Before you begin your answer, think SILENTLY inside <think> ... </think> tags. ⚠️ KEEP IT TO 5 SHORT LINES AT MOST and ALWAYS close it with </think>: if it stays open, your whole reply is discarded and the user sees nothing. Do not let thinking eat the answer's room. While thinking:
+1. What is the person actually asking (emotion / timing / decision / pattern), and is what they describe a DIFFICULTY, a POSITIVE experience, or plain CURIOSITY? The purpose of your answer changes accordingly: guide them through a difficulty, but for a positive or neutral observation simply explain why it happens and prescribe nothing.
 2. From the DATA you were given (birth chart, Human Design type/authority/profile, today's transit gates with REAL exit dates, moon phase, numerology), pick ONLY what genuinely bears on this question. Ignore the rest, do not force a connection.
 3. Connect the pieces you picked: how the transit gate speaks to their natal type, how the exit date concretely answers the question.
 4. If it is a "when" question and you were given a REAL exit date, state it plainly ("you are leaving this gate on <date>, moving into <gate>"). If no date was given, do not invent one; honestly say "right now you are in this theme".
@@ -5780,6 +5778,11 @@ export default function SakinApp() {
   });
   // Geri bildirim: her YENİ cevapta sıfırlanır, bir cevaba tek oy verilir.
   const [aynaGeriBildirim, setAynaGeriBildirim] = useState(null);
+  // Ekrandaki metin GERÇEK bir cevap mı, yoksa hata mesajı mı? Geri bildirim
+  // düğmeleri yalnızca gerçek cevapta çıkmalı: "Analiz alınamadı" altında
+  // "bu yanıt sana iyi geldi mi?" sormak hem saçma hem de ölçümü kirletir
+  // (kullanıcı hataya "Hayır" der, prompt kalitesi düşük sanılır).
+  const [aynaCevapGecerli, setAynaCevapGecerli] = useState(false);
   const [showAynaGecmis, setShowAynaGecmis] = useState(false);
   const [aynaGecmisTemizleOnay, setAynaGecmisTemizleOnay] = useState(false);
   const aynaGecmisiKaydet = (soru, cevap) => {
@@ -7538,6 +7541,7 @@ ${facts}
     if (!birthDate) { setSikayetAnaliz("__needbirth__"); return; }
     setSikayetAnaliz("__loading__");
     setAynaGeriBildirim(null);
+    setAynaCevapGecerli(false);
     // Rüya modu bir kerelik: bu gönderim tüketir, mod kapanır (bir sonraki
     // soru genel şikayet/soru akışına döner).
     const ruyaModu = aynaRuyaModu;
@@ -7623,31 +7627,61 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // seçimini zaten okumuyor, _groq.mjs'deki otomatik fallback listesini
           // kullanıyor. Buradaki değer "llama-3.3-70b-versatile" idi ve o model
           // 16 Ağu 2026'da emekli oldu; kalması yanıltıcı ölü koddu.
-          // max_tokens 1400: reasoning direktifi modeli önce kapalı kapıda
-          // <think> ile düşündürüyor (sunucuda silinir). O gizli düşünme de
-          // çıktı bütçesinden yer yiyor; 1100'de uzun sorularda düşünme
-          // tamamlanıp cevap yarıda kesilebiliyordu. 1400 düşünme + cevap
-          // için rahat pay bırakır, üst sınır (MAX_TOKENS_CEIL 2000) altında.
-          max_tokens:1400, lang,
+          // max_tokens 1400 → 1800 (Eyl 2026, CANLI HATA): reasoning direktifi
+          // modeli önce kapalı kapıda <think> ile düşündürüyor. O düşünme de
+          // çıktı bütçesinden yiyor ve model </think> etiketini KAPATAMADAN
+          // bütçe biterse sunucudaki stripThink her şeyi siler, sonuç BOŞ
+          // kalır, kalite kapısı yanıtı eler ve sıradaki modele geçer. Her
+          // eleme bir tur daha demek: kullanıcı önce uzun bekliyor, sonunda
+          // "Analiz alınamadı" görüyor (tam olarak bildirilen tablo).
+          // Düşünme direktifi büyüdükçe 1400 yetmez oldu. Üst sınır
+          // MAX_TOKENS_CEIL = 2000, 1800 onun altında rahat pay bırakır.
+          max_tokens:1800, lang,
           system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${aynaReasoningDirective(lang)}
 ${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
         }),
       });
-      const d = await res.json();
-      if (!res.ok || d.error) {
+      let d = await res.json();
+      let ok = res.ok && !d.error && d.text;
+      if (!ok) {
         // HAM SUNUCU HATASINI EKRANA BASMA. Kullanıcı "Hata: Input too long"
         // gördü; bu geliştirici dili, kişi ne yapacağını anlamıyor. Teknik
         // ayrıntı konsola, ekrana anlaşılır ve eyleme dönük bir cümle.
         console.warn("[Ayna] ai-call hata:", res.status, d?.error);
         const tooLong = res.status === 413 || /too long/i.test(String(d?.error || ""));
-        setSikayetAnaliz(tooLong ? pickLang(AI_ERR_I18N.tooLong, lang)
-                                 : pickLang(AI_ERR_I18N.noAnalysis, lang));
-        return;
+        if (tooLong) { setSikayetAnaliz(pickLang(AI_ERR_I18N.tooLong, lang)); return; }
+        // DÜŞÜNMESİZ TEK YENİDEN DENEME (Eyl 2026 canlı hatası).
+        // Başarısızlığın bilinen ve en sık sebebi: model <think> bloğunu
+        // kapatamadan çıktı bütçesi bitiyor, sunucu boş sonucu eliyor.
+        // Bu turda reasoning direktifi HİÇ gönderilmiyor, yani bütçenin
+        // tamamı cevaba gidiyor. Sonuç biraz daha yüzeysel olabilir ama
+        // kullanıcı "Analiz alınamadı" duvarına toslamaz: özellik çöküp
+        // susmak yerine sadece bir tık sadeleşir.
+        console.warn("[Ayna] düşünmesiz yeniden deneniyor");
+        const res2 = await aiFetch({
+          method:"POST",
+          headers:{"Content-Type":"text/plain"},
+          body: JSON.stringify({
+            max_tokens:1800, lang,
+            system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
+            ragQuery: sikayet,
+            messages:[{ role:"user", content: userContent }],
+          }),
+        });
+        d = await res2.json();
+        ok = res2.ok && !d.error && d.text;
+        if (!ok) {
+          console.warn("[Ayna] yeniden deneme de başarısız:", res2.status, d?.error);
+          setSikayetAnaliz(pickLang(AI_ERR_I18N.noAnalysis, lang));
+          return;
+        }
       }
-      setSikayetAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
-      if (d?.text) aynaGecmisiKaydet(sikayet, d.text);
+      setSikayetAnaliz(d.text);
+      setAynaCevapGecerli(true);
+      aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
@@ -11766,7 +11800,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     kurulum kimliği + olay adı gider, SORU VE CEVAP METNİ
                     GİTMEZ. Kullanıcı Ayarlar'dan analitiği kapattıysa hiçbir
                     şey gönderilmez, düğme yine de "teşekkürler" der. */}
-                {aynaGeriBildirim ? (
+                {!aynaCevapGecerli ? null : aynaGeriBildirim ? (
                   <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:1.2,color:"#7c7590",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
                     {pickLang({tr:"Teşekkürler, not aldım.",en:"Thank you, noted.",de:"Danke, notiert.",es:"Gracias, anotado.",pt:"Obrigado, anotado.",fr:"Merci, c'est noté.",ja:"ありがとう、記録しました。"}, lang)}
                   </div>
@@ -11810,7 +11844,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     style={{ background:"rgba(160,112,208,0.18)",border:"1px solid rgba(160,112,208,0.45)",borderRadius:24,color:"#c8a8f0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
                   </button>
-                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); setAynaGeriBildirim(null); }}
+                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); setAynaGeriBildirim(null); setAynaCevapGecerli(false); }}
                     style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {t("mirror_new_search")}
                   </button>
