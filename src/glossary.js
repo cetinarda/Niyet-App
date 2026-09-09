@@ -185,6 +185,10 @@ const DE = [
     { term: "12. Haus & Herrscherplanet", desc: "In der Astrologie repräsentiert das 12. Haus das Unterbewusste, verborgene Kräfte, spirituelles Potenzial und die innere Welt. Jedes Haus hat einen Herrscherplaneten, der bestimmt, wie du seine Themen erlebst." },
     { term: "Draconische Karte", desc: "Die Geburtskarte sagt dir, wer du bist; die draconische Karte sagt dir, was deine Seele vor der Inkarnation war. Berechnet mit dem Nordknoten auf 0° Widder fixiert. Von Pamela Crane und Ronald Davison in den 1970ern systematisiert. Die draconische Sonne ist die wahre Identität der Seele; die natale Sonne ist die Maske, die du in diesem Leben trägst." },
     { term: "Planetenkräfte", desc: "Jeder Planet regiert verschiedene Lebensbereiche: Sonne (Selbst), Mond (Emotionen), Merkur (Kommunikation), Venus (Liebe), Mars (Handlung), Jupiter (Expansion), Saturn (Disziplin), Uranus (Originalität), Neptun (Vorstellungskraft), Pluto (Transformation)." },
+    { term: "Nordknoten & Südknoten", desc: "Die beiden Punkte, an denen die Mondbahn die Ekliptik schneidet; kein physischer Himmelskörper, sondern ein mathematischer Schnittpunkt. Der Südknoten steht für Muster, die du aus der Vergangenheit mitbringst und die bequem sind, dich aber nicht wachsen lassen; der Nordknoten für die Richtung, der du dich in diesem Leben zuwenden darfst und die sich anfangs herausfordernd anfühlt." },
+    { term: "Rückläufigkeit (Retrograde)", desc: "Ein Planet scheint von der Erde aus betrachtet rückwärts zu laufen. In Wirklichkeit tut er das nicht; es ist eine optische Täuschung, die aus dem Geschwindigkeitsunterschied zweier Planeten entsteht. In der Astrologie gelten solche Phasen als Zeit des Überarbeitens, Abschließens und Nachinnenschauens." },
+    { term: "Transit", desc: "Die Winkelbeziehung zwischen den aktuellen Positionen der Planeten am Himmel und den Punkten deines Geburtshoroskops. Der Transit-Hinweis im Himmelsbericht von Sakin ist NICHT persönlich, sondern KOLLEKTIV: er beschreibt denselben Himmel für alle an diesem Tag." },
+    { term: "Mondphase", desc: "Der Beleuchtungszyklus, der aus der Stellung des Mondes zur Sonne entsteht; er dauert etwa 29,5 Tage. Der Neumond wird mit dem Säen von Absichten verbunden, der Vollmond mit dem Sichtbarmachen und dem Loslassen." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "Was ist ein Chakra?", desc: "Bedeutet „Rad“ im Sanskrit. Energiezentren im Körper. 7 Hauptchakren reihen sich entlang der Wirbelsäule, jedes regiert verschiedene körperliche, emotionale und spirituelle Bereiche." },
@@ -218,6 +222,13 @@ const DE = [
     { term: "Abendlicher Abschluss", desc: "Ein Ritual, um den Tag bewusst zu beenden. Extrahiere deine Bewusstheits-Zusammenfassung mit den Fragen „Was hast du heute gelernt?“ und „Dankbarkeit?“." },
     { term: "Wöchentliche Innenkarte", desc: "Übersichtsbildschirm mit Wochenstatistiken: aktivstes Chakra, Atemzüge insgesamt, Absichtsworte und bewusste Momente. Der KI-Bericht erstellt aus diesen Daten eine wöchentliche Synthese." },
     { term: "Geburtsprofil", desc: "Deine persönliche Energiekarte, berechnet aus Geburtsdatum und -zeit: Sternzeichen, Lebenszahl, persönliches Jahr, Aszendent, 12.-Haus-Analyse und wöchentliches Biorhythmus-Diagramm." },
+    { term: "Solfeggio-Frequenzen", desc: "Die sechs Grundtöne in Sakin (396, 417, 528, 639, 741, 852 Hz) sowie 963 Hz für das Kronenchakra. Jede Frequenz ist einem Chakra zugeordnet. Sie sind keine Behandlungsmethode, sondern ein akustischer Anker, der hilft, die Aufmerksamkeit im Körper zu sammeln." },
+    { term: "Verbindung & Tagesserie", desc: "Wenn du die 7 Schritte des Tages abschließt (Morgen, Tagesaufgaben, Atem, Klang, Chakra, Abend, Spiegel), wird die Verbindung aktiv und die Chakra-Säule verwandelt sich in einen Lichttunnel. Aufeinanderfolgende Tage lassen die Serie wachsen: nach 7 Tagen Stufe 2 (x2), nach 21 Tagen Stufe 3 (x4)." },
+    { term: "Himmelsbericht", desc: "Eine tägliche kollektive Zusammenfassung, die Mondphase, Sonneneruptionen, geomagnetische Aktivität (Kp-Index), Sonnenwind und Meteorschauer verbindet. Die Daten stammen aus dem offenen Weltraumwetterdienst der NOAA; die Deutung ist für alle dieselbe." },
+    { term: "Galaktische Identität", desc: "Eine teilbare persönliche Karte, die aus deinen Geburtsdaten erzeugt wird. Sie fasst Sternzeichen, Aszendent, Lebenszahl und Elementverteilung in einem Bild zusammen." },
+    { term: "Elementverteilung", desc: "Die Verteilung der Planeten deines Geburtshoroskops auf Feuer, Erde, Luft und Wasser. Sonne und Mond wiegen dabei schwerer. Das dominante Element zeigt deine natürliche Neigung, das schwächste den Bereich, den du bewusst nähren darfst." },
+    { term: "Kopf leeren (Kaleidoskop)", desc: "Ein bildschirmfüllender visuell-akustischer Ruheraum mit vier Modi (Stille, Klarheit, Hingabe, Weite). Muster und Töne entstehen im Moment; es sind keine Aufnahmen, jedes Mal fließt es anders." },
+    { term: "Panikknopf", desc: "Für plötzliche Angstmomente gedacht, mit schnellem Zugriff. Er führt dich direkt in den 4-7-8-Atemmodus. Dieser Rhythmus verlängert die Ausatmung und unterstützt das parasympathische Nervensystem. Das ist keine medizinische Maßnahme; wähle im Notfall die Notrufnummer deines Landes." },
   ]},
 ];
 
@@ -246,6 +257,10 @@ const ES = [
     { term: "Casa 12 y Planeta Regente", desc: "En astrología, la Casa 12 representa el subconsciente, los poderes ocultos, el potencial espiritual y el mundo interior. Cada casa tiene un planeta regente que determina cómo experimentas sus temas." },
     { term: "Carta Dracónica", desc: "La carta natal te dice quién eres; la carta dracónica te dice qué era tu alma antes de entrar en este cuerpo. Se calcula fijando el Nodo Norte a 0° Aries. Sistematizada por Pamela Crane y Ronald Davison en los 70. El Sol dracónico es la verdadera identidad del alma; el Sol natal es la máscara en esta vida." },
     { term: "Fuerzas Planetarias", desc: "Cada planeta rige un área de vida diferente: Sol (yo), Luna (emociones), Mercurio (comunicación), Venus (amor), Marte (acción), Júpiter (expansión), Saturno (disciplina), Urano (originalidad), Neptuno (imaginación), Plutón (transformación)." },
+    { term: "Nodo Norte y Nodo Sur", desc: "Los dos puntos donde la órbita de la Luna corta la eclíptica; no son un cuerpo físico, sino una intersección matemática. El Nodo Sur representa los patrones que traes del pasado, cómodos pero que no te hacen crecer; el Nodo Norte, la dirección hacia la que conviene moverte en esta vida, que al principio resulta exigente." },
+    { term: "Retrógrado", desc: "Un planeta parece moverse hacia atrás visto desde la Tierra. En realidad no retrocede; es una ilusión óptica que surge de la diferencia de velocidad entre dos planetas. En astrología, estos periodos se leen como tiempo de revisar, completar y mirar hacia dentro." },
+    { term: "Tránsito", desc: "La relación angular entre las posiciones actuales de los planetas y los puntos de tu carta natal. La nota de tránsito del informe del cielo de Sakin NO es personal sino COLECTIVA: describe el mismo cielo para todos ese día." },
+    { term: "Fase lunar", desc: "El ciclo de iluminación que surge de la posición de la Luna respecto al Sol; se completa en unos 29,5 días. La Luna nueva se asocia con sembrar intenciones y la Luna llena con hacer visible y soltar." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "¿Qué es un Chakra?", desc: "Significa \"rueda\" en sánscrito. Son centros de energía en el cuerpo. 7 chakras principales se alinean a lo largo de la columna, cada uno rige áreas físicas, emocionales y espirituales diferentes." },
@@ -279,6 +294,13 @@ const ES = [
     { term: "Cierre Vespertino", desc: "Un ritual para cerrar el día conscientemente. Extrae tu resumen de conciencia con las preguntas \"¿Qué aprendiste hoy?\" y \"¿Gratitud?\"." },
     { term: "Mapa Interior Semanal", desc: "Pantalla resumen que muestra las estadísticas de la semana: chakra más activo, total de respiraciones, palabras de intención y momentos conscientes. El informe IA crea una síntesis semanal a partir de estos datos." },
     { term: "Perfil de Nacimiento", desc: "Tu mapa energético personal calculado desde tu fecha y hora de nacimiento: signo zodiacal, número de camino de vida, año personal, ascendente, análisis de la Casa 12 y gráfico semanal de biorritmo." },
+    { term: "Frecuencias Solfeggio", desc: "Los seis tonos base que usa Sakin (396, 417, 528, 639, 741 y 852 Hz) y 963 Hz para el chakra corona. Cada frecuencia se asocia a un chakra. No son un tratamiento, sino un ancla sonora que ayuda a reunir la atención en el cuerpo." },
+    { term: "Conexión y racha diaria", desc: "Cuando completas los 7 pasos del día (mañana, tareas del día, respiración, sonido, chakra, noche y espejo), la conexión se activa y la columna de chakras se convierte en un túnel de luz. Los días consecutivos hacen crecer la racha: a los 7 días, nivel 2 (x2); a los 21 días, nivel 3 (x4)." },
+    { term: "Informe del cielo", desc: "Un resumen colectivo diario que combina la fase lunar, las erupciones solares, la actividad geomagnética (índice Kp), el viento solar y las lluvias de meteoros. Los datos provienen del servicio abierto de meteorología espacial de la NOAA; la interpretación es la misma para todos." },
+    { term: "Identidad galáctica", desc: "Una tarjeta personal que se puede compartir, generada a partir de tus datos de nacimiento. Reúne en una sola imagen tu signo, tu ascendente, tu número de camino de vida y tu distribución de elementos." },
+    { term: "Distribución de elementos", desc: "El reparto de los planetas de tu carta natal entre fuego, tierra, aire y agua. El Sol y la Luna pesan más. El elemento dominante muestra tu inclinación natural y el más débil, el área que conviene nutrir con conciencia." },
+    { term: "Vaciar la mente (caleidoscopio)", desc: "Un espacio de descanso visual y sonoro a pantalla completa con cuatro modos (calma, claridad, entrega, amplitud). Los patrones y los tonos se generan en el momento; no son grabaciones y cada vez fluyen distinto." },
+    { term: "Botón de pánico", desc: "Pensado para momentos de ansiedad repentina, con acceso rápido. Te lleva directamente al modo de respiración 4-7-8. Ese ritmo alarga la exhalación y apoya al sistema nervioso parasimpático. No es una intervención médica; en caso de emergencia llama al número de emergencias de tu país." },
   ]},
 ];
 
@@ -307,6 +329,10 @@ const PT = [
     { term: "Casa 12 e Planeta Regente", desc: "Na astrologia, a Casa 12 representa o subconsciente, poderes ocultos, potencial espiritual e mundo interior. Cada casa tem um planeta regente que determina como você vivencia seus temas." },
     { term: "Mapa Dracônico", desc: "O mapa natal diz quem você é; o mapa dracônico diz o que sua alma era antes desta encarnação. Calculado fixando o Nodo Norte a 0° de Áries. Sistematizado por Pamela Crane e Ronald Davison nos anos 70. O Sol dracônico é a verdadeira identidade da alma; o Sol natal é a máscara desta vida." },
     { term: "Forças Planetárias", desc: "Cada planeta rege uma área diferente da vida: Sol (eu), Lua (emoções), Mercúrio (comunicação), Vênus (amor), Marte (ação), Júpiter (expansão), Saturno (disciplina), Urano (originalidade), Netuno (imaginação), Plutão (transformação)." },
+    { term: "Nodo Norte e Nodo Sul", desc: "Os dois pontos onde a órbita da Lua cruza a eclíptica; não são um corpo físico, mas uma interseção matemática. O Nodo Sul representa os padrões que trazes do passado, confortáveis mas que não te fazem crescer; o Nodo Norte, a direção para a qual convém voltares-te nesta vida, que no início parece exigente." },
+    { term: "Retrógrado", desc: "Um planeta parece andar para trás quando visto da Terra. Na realidade não recua; é uma ilusão ótica que nasce da diferença de velocidade entre dois planetas. Na astrologia, estes períodos são lidos como tempo de rever, completar e olhar para dentro." },
+    { term: "Trânsito", desc: "A relação angular entre as posições atuais dos planetas e os pontos do teu mapa natal. A nota de trânsito no relatório do céu do Sakin NÃO é pessoal, é COLETIVA: descreve o mesmo céu para toda a gente nesse dia." },
+    { term: "Fase da Lua", desc: "O ciclo de iluminação que nasce da posição da Lua em relação ao Sol; completa-se em cerca de 29,5 dias. A Lua nova associa-se a semear intenções e a Lua cheia a tornar visível e a soltar." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "O que é um Chakra?", desc: "Significa \"roda\" em sânscrito. São centros de energia no corpo. 7 chakras principais se alinham ao longo da coluna, cada um rege áreas físicas, emocionais e espirituais diferentes." },
@@ -340,6 +366,13 @@ const PT = [
     { term: "Fechamento Noturno", desc: "Um ritual para fechar o dia conscientemente. Extraia seu resumo de consciência com as perguntas \"O que você aprendeu hoje?\" e \"Gratidão?\"." },
     { term: "Mapa Interior Semanal", desc: "Tela resumo que mostra as estatísticas da semana: chakra mais ativo, total de respirações, palavras de intenção e momentos conscientes. O relatório IA cria uma síntese semanal a partir desses dados." },
     { term: "Perfil de Nascimento", desc: "Seu mapa energético pessoal calculado a partir da data e hora de nascimento: signo, número do caminho de vida, ano pessoal, ascendente, análise da Casa 12 e gráfico semanal de biorritmo." },
+    { term: "Frequências Solfeggio", desc: "Os seis tons base usados no Sakin (396, 417, 528, 639, 741 e 852 Hz) e 963 Hz para o chakra da coroa. Cada frequência corresponde a um chakra. Não são um tratamento, mas uma âncora sonora que ajuda a reunir a atenção no corpo." },
+    { term: "Conexão e sequência diária", desc: "Quando completas os 7 passos do dia (manhã, tarefas do dia, respiração, som, chakra, noite e espelho), a conexão ativa-se e a coluna de chakras transforma-se num túnel de luz. Os dias seguidos fazem crescer a sequência: aos 7 dias, nível 2 (x2); aos 21 dias, nível 3 (x4)." },
+    { term: "Relatório do céu", desc: "Um resumo coletivo diário que junta a fase da Lua, as erupções solares, a atividade geomagnética (índice Kp), o vento solar e as chuvas de meteoros. Os dados vêm do serviço aberto de meteorologia espacial da NOAA; a interpretação é a mesma para toda a gente." },
+    { term: "Identidade galáctica", desc: "Um cartão pessoal partilhável, gerado a partir dos teus dados de nascimento. Reúne numa só imagem o teu signo, o ascendente, o número do caminho de vida e a distribuição de elementos." },
+    { term: "Distribuição dos elementos", desc: "A repartição dos planetas do teu mapa natal por fogo, terra, ar e água. O Sol e a Lua pesam mais. O elemento dominante mostra a tua inclinação natural e o mais fraco, a área que convém nutrir com consciência." },
+    { term: "Esvaziar a mente (caleidoscópio)", desc: "Um espaço de descanso visual e sonoro em ecrã inteiro, com quatro modos (calma, clareza, entrega, amplitude). Os padrões e os tons são gerados no momento; não são gravações e fluem de forma diferente de cada vez." },
+    { term: "Botão de pânico", desc: "Pensado para momentos de ansiedade repentina, com acesso rápido. Leva-te diretamente ao modo de respiração 4-7-8. Esse ritmo prolonga a expiração e apoia o sistema nervoso parassimpático. Não é uma intervenção médica; em emergência liga para o número de emergência do teu país." },
   ]},
 ];
 
@@ -368,6 +401,10 @@ const FR = [
     { term: "Maison 12 & Planète Maîtresse", desc: "En astrologie, la 12e maison représente l'inconscient, les pouvoirs cachés, le potentiel spirituel et le monde intérieur. Chaque maison a une planète maîtresse qui détermine comment tu vis ses thèmes." },
     { term: "Carte Draconique", desc: "La carte natale dit qui tu es ; la carte draconique dit ce que ton âme était avant cette incarnation. Calculée en fixant le Nœud Nord à 0° du Bélier. Systématisée par Pamela Crane et Ronald Davison dans les années 70. Le Soleil draconique est la vraie identité de l'âme ; le Soleil natal est le masque porté dans cette vie." },
     { term: "Forces Planétaires", desc: "Chaque planète régit un domaine de vie différent : Soleil (soi), Lune (émotions), Mercure (communication), Vénus (amour), Mars (action), Jupiter (expansion), Saturne (discipline), Uranus (originalité), Neptune (imagination), Pluton (transformation)." },
+    { term: "Nœud Nord et Nœud Sud", desc: "Les deux points où l'orbite de la Lune croise l'écliptique ; ce ne sont pas des corps physiques mais une intersection mathématique. Le Nœud Sud représente les schémas que tu apportes du passé, confortables mais qui ne te font pas grandir ; le Nœud Nord, la direction vers laquelle te tourner dans cette vie, exigeante au début." },
+    { term: "Rétrograde", desc: "Une planète semble reculer lorsqu'on l'observe depuis la Terre. En réalité elle ne recule pas ; c'est une illusion d'optique née de la différence de vitesse entre deux planètes. En astrologie, ces périodes se lisent comme un temps de révision, d'achèvement et de retour vers soi." },
+    { term: "Transit", desc: "La relation angulaire entre la position actuelle des planètes et les points de ton thème natal. La note de transit du rapport du ciel de Sakin n'est PAS personnelle mais COLLECTIVE : elle décrit le même ciel pour tout le monde ce jour-là." },
+    { term: "Phase de la Lune", desc: "Le cycle d'illumination né de la position de la Lune par rapport au Soleil ; il se boucle en environ 29,5 jours. La nouvelle Lune est associée aux intentions que l'on sème, la pleine Lune au fait de rendre visible et de lâcher." },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "Qu'est-ce qu'un Chakra ?", desc: "Signifie « roue » en sanskrit. Centres d'énergie du corps. 7 chakras principaux s'alignent le long de la colonne vertébrale, chacun régissant différents domaines physiques, émotionnels et spirituels." },
@@ -401,6 +438,13 @@ const FR = [
     { term: "Clôture du Soir", desc: "Un rituel pour clore consciemment la journée. Tire ton résumé de conscience avec les questions « Qu'as-tu appris aujourd'hui ? » et « Gratitude ? »." },
     { term: "Carte Intérieure Hebdomadaire", desc: "Écran récapitulatif qui montre les statistiques de la semaine : chakra le plus actif, total des respirations, mots d'intention et moments conscients. Le rapport IA en crée une synthèse hebdomadaire." },
     { term: "Profil de Naissance", desc: "Ta carte énergétique personnelle calculée à partir de ta date et heure de naissance : signe solaire, chemin de vie, année personnelle, ascendant, analyse de la 12e maison et graphique hebdomadaire du biorythme." },
+    { term: "Fréquences Solfeggio", desc: "Les six tons de base utilisés dans Sakin (396, 417, 528, 639, 741 et 852 Hz) ainsi que 963 Hz pour le chakra couronne. Chaque fréquence correspond à un chakra. Ce n'est pas un traitement, mais un ancrage sonore qui aide à rassembler l'attention dans le corps." },
+    { term: "Connexion et série de jours", desc: "Lorsque tu termines les 7 étapes de la journée (matin, tâches du jour, souffle, son, chakra, soir et miroir), la connexion s'active et la colonne des chakras devient un tunnel de lumière. Les jours consécutifs font grandir la série : au bout de 7 jours, niveau 2 (x2) ; au bout de 21 jours, niveau 3 (x4)." },
+    { term: "Rapport du ciel", desc: "Un résumé collectif quotidien qui réunit la phase de la Lune, les éruptions solaires, l'activité géomagnétique (indice Kp), le vent solaire et les pluies de météores. Les données proviennent du service ouvert de météorologie de l'espace de la NOAA ; l'interprétation est la même pour tout le monde." },
+    { term: "Identité galactique", desc: "Une carte personnelle partageable, générée à partir de tes données de naissance. Elle réunit en une seule image ton signe, ton ascendant, ton nombre de chemin de vie et ta répartition des éléments." },
+    { term: "Répartition des éléments", desc: "La répartition des planètes de ton thème natal entre le feu, la terre, l'air et l'eau. Le Soleil et la Lune pèsent davantage. L'élément dominant montre ton penchant naturel, le plus faible le domaine à nourrir consciemment." },
+    { term: "Vider l'esprit (kaléidoscope)", desc: "Un espace de repos visuel et sonore en plein écran, avec quatre modes (calme, clarté, abandon, ampleur). Les motifs et les sons sont générés sur le moment ; ce ne sont pas des enregistrements et cela coule différemment à chaque fois." },
+    { term: "Bouton panique", desc: "Conçu pour les moments d'angoisse soudaine, avec un accès rapide. Il te conduit directement au mode de respiration 4-7-8. Ce rythme allonge l'expiration et soutient le système nerveux parasympathique. Ce n'est pas une intervention médicale ; en cas d'urgence, appelle le numéro d'urgence de ton pays." },
   ]},
 ];
 
@@ -429,6 +473,10 @@ const JA = [
     { term: "第12ハウスと支配星", desc: "占星術で第12ハウスは無意識、隠れた力、霊的な可能性、内なる世界を表します。各ハウスには支配星があり、そのテーマをどう体験するかを決めます。" },
     { term: "ドラコニックチャート", desc: "ネイタルチャートは「あなたが誰か」を語り、ドラコニックチャートはこの身体に入る前の魂の姿を語ります。北のノードを牡羊座0°に固定して計算します。1970年代にパメラ・クレインとロナルド・デイヴィソンによって体系化されました。ドラコニックの太陽は魂の真の正体、ネイタルの太陽はこの人生でまとっている仮面です。" },
     { term: "惑星の力", desc: "各惑星は人生の異なる領域を司ります：太陽（自己）、月（感情）、水星（コミュニケーション）、金星（愛）、火星（行動）、木星（拡大）、土星（規律）、天王星（独自性）、海王星（想像力）、冥王星（変容）。" },
+    { term: "ノースノードとサウスノード", desc: "月の軌道が黄道と交わる二つの点で、天体そのものではなく数学的な交点です。サウスノードは過去から持ち越した、居心地はよいけれど成長をもたらさないパターンを、ノースノードはこの人生で向かうべき、はじめは負荷に感じられる方向を表します。" },
+    { term: "逆行（レトログラード）", desc: "地球から見ると惑星が後戻りしているように見える現象です。実際に戻っているわけではなく、二つの惑星の速度差から生まれる見かけ上の錯覚です。占星術では、見直し・完了・内省の時期として読まれます。" },
+    { term: "トランジット（経過）", desc: "現在の惑星の位置と、あなたの出生図の各点とが結ぶ角度の関係です。Sakin の空のレポートにあるトランジットの記述は個人的なものではなく集合的なもので、その日の同じ空をすべての人に向けて語ります。" },
+    { term: "月の満ち欠け", desc: "太陽に対する月の位置から生まれる明るさの周期で、およそ29.5日で一巡します。新月は意図の種まきに、満月は見えるようにすることと手放すことに結びつけられます。" },
   ]},
   { cat: "guide_cat_chakra", items: [
     { term: "チャクラとは？", desc: "サンスクリット語で「車輪」を意味します。身体のエネルギーセンター。7つの主要チャクラが背骨に沿って並び、それぞれ異なる身体的、感情的、霊的な領域を司ります。" },
@@ -462,6 +510,13 @@ const JA = [
     { term: "夜の締めくくり", desc: "一日を意識的に閉じる儀式。「今日何を学んだ？」と「感謝？」の問いで、その日の気づきの要約を引き出します。" },
     { term: "週の内なる地図", desc: "週の統計を示す要約画面：最もアクティブなチャクラ、呼吸の合計、意図の言葉、意識的な瞬間。AIレポートがこれらのデータから週の洞察を生成します。" },
     { term: "出生プロファイル", desc: "生年月日時から計算される個人のエネルギーマップ：星座、ライフパスナンバー、パーソナルイヤー、アセンダント、第12ハウス分析、週ごとのバイオリズムグラフ。" },
+    { term: "ソルフェジオ周波数", desc: "Sakin で使う六つの基本音（396・417・528・639・741・852 Hz）と、クラウンチャクラのための 963 Hz。各周波数はひとつのチャクラに対応します。治療法ではなく、注意を体に集める助けとなる音の錨です。" },
+    { term: "つながりと連続日数", desc: "一日の7つのステップ（朝、日中の小さな課題、呼吸、音、チャクラ、夜、鏡）を終えるとつながりが灯り、チャクラの柱が光のトンネルに変わります。続けた日数が連続記録を育てます。7日で第2段階（x2）、21日で第3段階（x4）。" },
+    { term: "空のレポート", desc: "月の満ち欠け、太陽フレア、地磁気の活動（Kp指数）、太陽風、流星群をまとめた、その日の集合的な要約です。データは NOAA の公開宇宙天気サービスに由来し、解釈はすべての人に共通です。" },
+    { term: "ギャラクティック・アイデンティティ", desc: "生まれた情報から作られる、共有できる個人カード。星座、上昇星座、ライフパスナンバー、エレメント配分をひとつの図にまとめます。" },
+    { term: "エレメント配分", desc: "出生図の惑星が火・地・風・水のどこに分かれているかを示します。太陽と月は重みが大きくなります。優勢なエレメントは生まれ持った傾きを、もっとも弱いエレメントは意識して育てたい領域を教えてくれます。" },
+    { term: "心を空にする（万華鏡）", desc: "四つのモード（静けさ、明晰さ、ゆだねること、広がり）を備えた全画面の視聴覚的な休息空間です。模様も音もその場で生成され、録音ではないため毎回ちがう流れになります。" },
+    { term: "パニックボタン", desc: "突然の不安に素早く手が届くように用意されています。押すとそのまま 4-7-8 の呼吸モードに入ります。このリズムは吐く息を長くし、副交感神経のはたらきを支えます。医療行為ではありません。緊急時はお住まいの地域の救急番号に連絡してください。" },
   ]},
 ];
 
