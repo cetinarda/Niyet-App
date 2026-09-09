@@ -17,14 +17,37 @@
 # ── Yansıma için gereken üstveri ─────────────────────────────────────────────
 -keepattributes *Annotation*, Signature, InnerClasses, EnclosingMethod, Exceptions
 
-# ── Capacitor: eklentiler isimle/anotasyonla bulunuyor ───────────────────────
-# Capacitor çekirdeğinin TAMAMI tutulmuyor (karartma yüzdesi düşerdi); yalnızca
-# köprünün adıyla aradığı eklenti sınıfları ve @PluginMethod üyeleri korunuyor.
--keep public class * extends com.getcapacitor.Plugin
--keep @com.getcapacitor.annotation.CapacitorPlugin public class *
--keepclassmembers class * extends com.getcapacitor.Plugin {
-    @com.getcapacitor.PluginMethod public <methods>;
-}
+# ── Capacitor: TAMAMI korunuyor ─────────────────────────────────────────────
+# ÖNCEDEN yalnızca eklenti sınıfları + @PluginMethod üyeleri tutuluyordu
+# ("çekirdeğin tamamını tutmayalım, karartma yüzdesi düşer" diye). BU YETMEDİ:
+# 1.4.0/versionCode 14-15 Play Store'da açılışta çöktü, gerçek cihazda alınan
+# logcat kesin sebebi gösterdi:
+#
+#   FATAL EXCEPTION: CapacitorPlugins
+#   Caused by: java.lang.NullPointerException
+#     at com.getcapacitor.d0.getPermissionStates(SourceFile:18)
+#     at com.getcapacitor.d0.getPermissionState(SourceFile:1)
+#     at com.capacitorjs.plugins.localnotifications.LocalNotificationsPlugin
+#         .requestPermissions(SourceFile:9)
+#
+# Capacitor, bir eklentinin izinlerini ÇALIŞMA ANINDA @CapacitorPlugin
+# anotasyonunu (ve içindeki @Permission değerlerini) yansımayla okuyarak
+# çözüyor. R8 çekirdeği yeniden adlandırınca (yığındaki `d0`, `g0` bunlar)
+# anotasyon zinciri kopuyor, anotasyon null dönüyor ve izin sorgusu NPE
+# atıyor. Eklenti sınıfını tutmak yetmiyor, ONU OKUYAN ÇEKİRDEK de aynen
+# durmalı. Karartma yüzdesinden feragat ediliyor: çöken uygulamanın
+# yüzdesi anlamsız.
+-keep class com.getcapacitor.** { *; }
+-keep interface com.getcapacitor.** { *; }
+-keep @interface com.getcapacitor.** { *; }
+-keep class com.capacitorjs.** { *; }
+-keep interface com.capacitorjs.** { *; }
+-keep public class * extends com.getcapacitor.Plugin { *; }
+-keep @com.getcapacitor.annotation.CapacitorPlugin public class * { *; }
+-dontwarn com.getcapacitor.**
+-dontwarn com.capacitorjs.**
+# Anotasyonlar çalışma anında OKUNABİLİR kalmalı (yukarıdaki NPE'nin özü).
+-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations,RuntimeVisibleTypeAnnotations,AnnotationDefault
 
 # ── WebView'a açılan JS arayüzleri ──────────────────────────────────────────
 # JS tarafı bu metotları ADIYLA çağırıyor, imza değişirse köprü kopar.

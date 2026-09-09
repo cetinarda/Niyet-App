@@ -33,14 +33,18 @@ android {
         // 1.3.9 / versionCode 12 Play'de CANLI (bkz. public/latest-ios-version.json,
         // otomatik mağaza taraması). Yüklenmiş bir versionCode kalıcı olarak
         // yanar, aynısı ikinci kez kabul edilmez.
-        // versionCode 14 Play Console'a yüklendi, onaylandı AMA Play Store'dan
-        // indirilince AÇILIŞTA ÇÖKTÜ (Facebook SDK + R8, bkz. proguard-rules.pro
-        // ve build.gradle facebook-android-sdk satırındaki not). Kullanıcı
-        // Play Console'da versionCode 12'ye rollback yaptı. Bu düzeltmeyle
-        // birlikte +1 artırıldı, versionName aynı kaldı (henüz yayınlanmadı).
-        // ⚠️ BİR SONRAKİ YÜKLEMEDEN ÖNCE GERÇEK CİHAZDA TEST ŞART (14 test
-        // edilmeden gönderildi ve bu yüzden çöktü).
-        versionCode 15
+        // versionCode 14 ve 15 Play'e yüklendi, İKİSİ DE açılışta çöktü ve
+        // rollback gerekti. Kök sebep gerçek cihazdan alınan logcat ile
+        // kesinleşti: R8 Capacitor çekirdeğini yeniden adlandırınca
+        // @CapacitorPlugin anotasyon zinciri kopuyor, izin sorgusu NPE atıyor
+        // (ayrıntı: proguard-rules.pro Capacitor bölümü). Keep kuralları
+        // düzeltildi, 16'ya çıkarıldı.
+        // ⚠️ YÜKLEMEDEN ÖNCE: release APK'yı cihaza kurup AÇILDIĞINI GÖR.
+        // "Android Studio'da Run" YETMEZ, o debug derler ve R8 çalışmaz.
+        //   ./gradlew assembleRelease
+        //   adb install -r app/build/outputs/apk/release/app-release.apk
+        //   (kurulu paket DEBUGGABLE görünüyorsa yanlış sürümü test ediyorsun)
+        versionCode 16
         versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
