@@ -143,7 +143,7 @@ const CONFORMANCE_RE = {
   de: /[äöüßÄÖÜ]/,
   es: /[áéíóúñ¿¡ÁÉÍÓÚÑ]/,
   fr: /[éèêàçîôûÉÈÊÀÇÎÔÛ]/,
-  "pt-BR": /[ãõáéíóúçÃÕÁÉÍÓÚÇ]/,
+  pt: /[ãõáéíóúçÃÕÁÉÍÓÚÇ]/,
   ja: /[぀-ゟ゠-ヿ一-鿿]/,
 };
 export function langConformanceOk(text, lang) {

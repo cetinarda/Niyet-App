@@ -777,7 +777,7 @@ const ELEM_I18N = {
   hava:   { tr:"Hava",   en:"Air",   de:"Luft",   es:"Aire",   pt:"Ar",    fr:"Air",   ja:"風" },
   su:     { tr:"Su",     en:"Water", de:"Wasser", es:"Agua",   pt:"Água",  fr:"Eau",   ja:"水" },
   title:  { tr:"Element Dağılımı", en:"Element Balance", de:"Elementverteilung", es:"Equilibrio Elemental", pt:"Equilíbrio Elemental", fr:"Équilibre Élémentaire", ja:"エレメントバランス" },
-  hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun, sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart, then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht, dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta, luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa, depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte, il apparaît ensuite ici.", ja:"エレメントバランスは Sakin Design から得られます。一度開いてチャートを作ると、ここに表示されます。" },
+  hint:   { tr:"Element dağılımın Sakin Tasarım'dan gelir. Bir kez aç, haritan oluşsun, sonra burada belirir.", en:"Your element balance comes from Sakin Design. Open it once to form your chart, then it appears here.", de:"Deine Elementverteilung stammt aus Sakin Design. Öffne es einmal, damit dein Diagramm entsteht, dann erscheint sie hier.", es:"Tu equilibrio elemental proviene de Sakin Diseño. Ábrelo una vez para formar tu carta, luego aparece aquí.", pt:"O teu equilíbrio elemental vem do Sakin Design. Abre-o uma vez para formar o teu mapa, depois aparece aqui.", fr:"Ton équilibre élémentaire vient de Sakin Design. Ouvre-le une fois pour former ta carte, il apparaît ensuite ici.", ja:"エレメントバランスは Sakin デザイン から得られます。一度開いてチャートを作ると、ここに表示されます。" },
 };
 // "Sakin nedir?" pop-up'ı + ikili yol menüsü metinleri (Sprint 1, basitleştirme).
 const NEDIR_I18N = {
@@ -787,7 +787,7 @@ const NEDIR_I18N = {
   bodyBaglan: { tr:"Günün küçük pratiği: niyet, nefes, ses ve minik görevler. Tikledikçe zincirin büyür, zihnin yavaşlar.", en:"Your small daily practice: intention, breath, sound and tiny tasks. Tick them: your streak grows, your mind slows.", de:"Deine kleine tägliche Praxis: Absicht, Atem, Klang und Mini-Aufgaben. Häkchen für Häkchen wächst deine Serie, dein Geist wird ruhiger.", es:"Tu pequeña práctica diaria: intención, respiración, sonido y mini tareas. Al marcarlas, tu racha crece y tu mente se calma.", pt:"A tua pequena prática diária: intenção, respiração, som e mini tarefas. A cada marca, a tua sequência cresce e a mente acalma.", fr:"Ta petite pratique quotidienne : intention, souffle, son et mini-tâches. Coche-les : ta série grandit, ton esprit ralentit.", ja:"毎日の小さな習慣：意図、呼吸、音、小さなタスク。チェックするたび続きが育ち、心が静まります。" },
   cta:     { tr:"Yolunu seç", en:"Choose your path", de:"Wähle deinen Weg", es:"Elige tu camino", pt:"Escolhe o teu caminho", fr:"Choisis ton chemin", ja:"道を選ぶ" },
   yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
-  kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explora", pt:"Explora", fr:"Explorer", ja:"見つける" },
+  kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explorar", pt:"Explorar", fr:"Explorer", ja:"探索する" },
   kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın: sana dair işaretler.", en:"Your sign, your design, your animal, your stone: the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein: Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra: señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra: sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre : des signes qui te concernent.", ja:"星座、デザイン、動物、石、あなたにまつわるしるし。" },
   baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
   baglanD: { tr:"Niyet, nefes, ses: günün küçük sakinlik pratiği.", en:"Intention, breath, sound: your small daily practice of calm.", de:"Absicht, Atem, Klang: deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido: tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som: a tua pequena prática diária de calma.", fr:"Intention, souffle, son : ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音、毎日の小さな穏やかさの習慣。" },
@@ -7446,10 +7446,10 @@ ${facts}
 (Element dağılımı verilmişse: en baskın ve en zayıf elementin ne anlama geldiğini 2-3 cümlede söyle. Zayıf element bir eksiklik değil, beslenmeye açık bir alan; baskın element ise doğal gücün. Veri verilmemişse bu başlığı HİÇ YAZMA, atla.)
 
 **Öne çıkanlar**
-(3 madde. Her madde tek cümle: haritadaki EN belirgin üç şey ve ne anlama geldiği. Madde başına "•" koy.)
+(En fazla 3 gözlem: haritadaki en belirgin şeyler ve ne anlama geldikleri. KAÇ TANE olacağı haritanın kendisine göre değişsin, üçe tamamlamak için zorlama. Hepsi aynı uzunlukta olmasın; biri tek cümle, biri iki cümle olabilir. Madde başına "•" koy.)
 
 **Küçük ipuçları**
-(3 madde, her biri tek cümle, somut ve bugün uygulanabilir. Haritayla bağlantısını kısaca belirt. Madde başına "•" koy.)` }],
+(En fazla 3 ipucu, somut ve bugün uygulanabilir. Yine sayıyı zorlama, gerçekten söyleyecek şey kadar yaz. Haritayla bağlantısını kısaca belirt. Madde başına "•" koy.)` }],
         }),
       });
       const d = await res.json();
@@ -7870,7 +7870,7 @@ ${KITAP_BILGELIGI}
 
 ${lang === "tr"
   ? `Rapor şu başlıkları içermeli:
-**Haftanın Yansıması**: Genel ruh hali, enerji, burç/sayı etkisi ve bu haftaki geliş ritmi (seri/streak verisi varsa), net ve doğrudan yansıt (2-3 cümle)
+**Haftanın Yansıması**: Genel ruh hali, enerji, burç/sayı etkisi ve bu haftaki geliş ritmi (gün serisi verisi varsa), net ve doğrudan yansıt (2-3 cümle)
 **Öne Çıkan Temalar**: Tekrar eden kelimeler, çakra örüntüleri ve İçsel Ayna'ya sorulan sorulardaki ortak temalar, kaynağa doğrudan işaret et
 **İçsel Büyüme**: Öğrenilen şeylerden çıkarılan anlam, kişinin kendi içinde gördüklerini yansıt
 **Gizli Benlik & Gölge**: Bu haftanın verilerinde 12. ev perspektifinden görülen bastırılmış temalar; bütünleşme için nazik bir davet (2-3 cümle, şiirsel)

@@ -385,8 +385,8 @@ export default async (req) => {
     //      yalnızca Deploy Previews context'ine eklenmiş)
     const defined = Object.prototype.hasOwnProperty.call(process.env, "REPORT_TOKEN");
     const hint = defined
-      ? "REPORT_TOKEN env TANIMLI ama DEGERI BOS. Netlify'de degiskene gercek bir deger gir, sonra Clear cache and deploy."
-      : "REPORT_TOKEN fonksiyona ULASMIYOR (process.env'de yok). Sirayla dene: 1) Deploys > Trigger deploy > CLEAR CACHE AND DEPLOY. 2) Degiskenin SCOPE'unda 'Functions' isaretli mi. 3) Deploy context 'Production' (ya da 'all') mi, yalnizca Deploy Previews degil.";
+      ? "REPORT_TOKEN env TANIMLI ama DEĞERİ BOŞ. Netlify'de değişkene gerçek bir değer gir, sonra Clear cache and deploy."
+      : "REPORT_TOKEN fonksiyona ULAŞMIYOR (process.env'de yok). Sırayla dene: 1) Deploys > Trigger deploy > CLEAR CACHE AND DEPLOY. 2) Değişkenin SCOPE'unda 'Functions' işaretli mi. 3) Deploy context 'Production' (ya da 'all') mi, yalnızca Deploy Previews değil.";
     return wantHtml
       ? new Response(renderEmpty(esc(hint)), { status: 503, headers: htmlHeaders })
       : new Response(hint, { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });

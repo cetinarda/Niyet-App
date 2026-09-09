@@ -103,7 +103,7 @@ const LANG_META = {
   "en":    { name: "English",              native: "English" },
   "de":    { name: "German",               native: "Deutsch" },
   "es":    { name: "Spanish",              native: "Español" },
-  "pt-BR": { name: "Brazilian Portuguese", native: "Português (Brasil)" },
+  "pt": { name: "Portuguese", native: "Português" },
   "fr":    { name: "French",               native: "Français" },
   "ja":    { name: "Japanese",             native: "日本語" },
 };
@@ -113,7 +113,7 @@ function normalizeLang(raw) {
   const v = raw.trim();
   if (LANG_META[v]) return v;
   const short = v.toLowerCase().split(/[-_]/)[0];
-  const fallback = { pt: "pt-BR" }[short] || short;
+  const fallback = short;
   return LANG_META[fallback] ? fallback : "tr";
 }
 
@@ -122,7 +122,7 @@ const DAY_LABELS = {
   "en":    { day: "Day",  date: "date",  intent: "Intention", words: "Words",     chakra: "Today's chakra",     breaths: "Breath count",  learned: "What I learned today",   gratitude: "Gratitude" },
   "de":    { day: "Tag",  date: "Datum", intent: "Absicht",   words: "Wörter",    chakra: "Chakra des Tages",   breaths: "Atemzüge",      learned: "Was ich heute gelernt habe", gratitude: "Dankbarkeit" },
   "es":    { day: "Día",  date: "fecha", intent: "Intención", words: "Palabras",  chakra: "Chakra del día",     breaths: "Respiraciones", learned: "Lo que aprendí hoy",     gratitude: "Gratitud" },
-  "pt-BR": { day: "Dia",  date: "data",  intent: "Intenção",  words: "Palavras",  chakra: "Chakra do dia",      breaths: "Respirações",   learned: "O que aprendi hoje",     gratitude: "Gratidão" },
+  "pt": { day: "Dia",  date: "data",  intent: "Intenção",  words: "Palavras",  chakra: "Chakra do dia",      breaths: "Respirações",   learned: "O que aprendi hoje",     gratitude: "Gratidão" },
   "fr":    { day: "Jour", date: "date",  intent: "Intention", words: "Mots",      chakra: "Chakra du jour",     breaths: "Respirations",  learned: "Ce que j'ai appris aujourd'hui", gratitude: "Gratitude" },
   "ja":    { day: "日",   date: "日付",  intent: "意図",      words: "言葉",      chakra: "今日のチャクラ",     breaths: "呼吸回数",      learned: "今日学んだこと",         gratitude: "感謝" },
 };
@@ -132,7 +132,7 @@ const USER_PROMPT_PREAMBLE = {
   "en":    (block) => `My daily entries for this week:\n\n${block}\n\nPlease generate my weekly inner report.`,
   "de":    (block) => `Meine täglichen Einträge dieser Woche:\n\n${block}\n\nBitte erstelle meinen wöchentlichen inneren Bericht.`,
   "es":    (block) => `Mis registros diarios de esta semana:\n\n${block}\n\nPor favor, genera mi informe interior semanal.`,
-  "pt-BR": (block) => `Meus registros diários desta semana:\n\n${block}\n\nPor favor, gere meu relatório interno semanal.`,
+  "pt": (block) => `Meus registros diários desta semana:\n\n${block}\n\nPor favor, gere meu relatório interno semanal.`,
   "fr":    (block) => `Mes entrées quotidiennes de cette semaine :\n\n${block}\n\nVeuillez générer mon rapport intérieur hebdomadaire.`,
   "ja":    (block) => `今週の日々の記録：\n\n${block}\n\n週間の内省レポートを作成してください。`,
 };

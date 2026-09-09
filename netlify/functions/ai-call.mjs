@@ -145,7 +145,7 @@ const LANG_META = {
   "en":    { name: "English",              native: "English",           sample: "Use natural, fluent English." },
   "de":    { name: "German",               native: "Deutsch",           sample: "Verwende deutsche Umlaute (ä ö ü ß) korrekt." },
   "es":    { name: "Spanish",              native: "Español",           sample: "Usa los acentos y la ñ correctamente." },
-  "pt-BR": { name: "Brazilian Portuguese", native: "Português (Brasil)", sample: "Use os acentos do português brasileiro corretamente." },
+  "pt": { name: "Portuguese", native: "Português", sample: "Usa corretamente os acentos do português." },
   "fr":    { name: "French",               native: "Français",          sample: "Utilise les accents français (é è ê à ç) correctement." },
   "ja":    { name: "Japanese",             native: "日本語",            sample: "自然な日本語で、ひらがな・カタカナ・漢字を適切に使ってください。" },
 };
@@ -155,7 +155,7 @@ function normalizeLang(raw) {
   const v = raw.trim();
   if (LANG_META[v]) return v;
   const short = v.toLowerCase().split(/[-_]/)[0];
-  const fallback = { pt: "pt-BR" }[short] || short;
+  const fallback = short;
   return LANG_META[fallback] ? fallback : "tr";
 }
 

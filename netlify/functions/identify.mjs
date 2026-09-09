@@ -131,10 +131,11 @@ ${listBlock}Identify it ONLY if you are reasonably confident. Do NOT force or gu
 - If you are NOT reasonably confident, the image is blurry or too far away, it is not ${subject}, or you cannot fill in all three lines below with real content, reply with EXACTLY this single word and nothing else: UNSURE
 
 When (and only when) you are confident, respond ENTIRELY in ${name}, using ONLY ${name} words, in exactly three short non-empty lines, each with real content (never just a number, never the word "Sakin" as a name):
-1) <name of the ${kind}>: confidence as a percentage.
-2) Two alternatives it could be.
-3) One short, warm sentence about its nature/energy, in a grounded-spiritual tone.
-No medical advice. Do NOT use an em dash (—) anywhere in your reply; connect clauses with a comma, period, or colon instead.`;
+Line 1: the ${kind}'s name, then its confidence as a percentage. Write it plainly, with NO leading number or bullet.
+Line 2: two alternatives it could be. Again NO leading number or bullet.
+Line 3: one short, warm sentence about its nature and energy, in a grounded-spiritual tone. NO leading number or bullet.
+No medical advice.
+STYLE (the reply must not read as machine-written): do NOT number or bullet the lines, do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, or colon instead. Do not use the "not just X, but Y" construction. Never open with a template salutation such as "Dear soul" or "Beloved traveler". Avoid hedging words ("maybe", "possibly", "perhaps"); be warm but definite.`;
 
   // Groq vision + otomatik model fallback (bir model emekli olursa siradakine gecer).
   const out = await groqChat(apiKey, "vision", {

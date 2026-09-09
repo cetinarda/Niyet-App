@@ -2155,7 +2155,7 @@ export const EXTRA_LANGS = {
     nav_refund:   "REMBOURSEMENT",
 
     nav_morning:  "Matin",
-    nav_breath:   "Souffle",
+    nav_breath:   "Respiration",
     nav_chakra:   "Chakra",
     nav_day:      "Jour",
     nav_evening:  "Soir",
@@ -3224,7 +3224,7 @@ export const EXTRA_LANGS = {
     bnav_chakra: "チャクラ",
     bnav_day: "タスク",
     bnav_evening: "夜",
-    bnav_connection: "接続",
+    bnav_connection: "つながり",
     bnav_3day: "3日",
     bnav_1week: "1週間",
     bnav_21day: "21日",

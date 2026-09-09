@@ -709,7 +709,7 @@ FRESHNESS (the reading must not repeat itself day after day): lead with what is 
 
 NO FORMULAS: never open with stock phrases ("Dünyamız bugün", "Bugün gökyüzü", "Today the world", or their equivalents). Each day's reading must have a genuinely different first sentence and rhythm; nothing memorized-sounding. 4 to 7 flowing sentences, prose only, no bullet points, no headings, no listing of raw numbers. Never give medical or financial advice. The proper noun "Sakin" stays untranslated.
 
-PUNCTUATION: Do NOT use an em dash (—) anywhere; connect clauses with a comma, period, colon, or semicolon instead. Do not use the "not just X, but Y" construction.`;
+PUNCTUATION AND VOICE: Do NOT use an em dash (—), en dash (–) or horizontal bar (―) anywhere; connect clauses with a comma, period, colon, or semicolon instead. Do not use the "not just X, but Y" construction. Never open with a template salutation such as "Dear soul", "Beloved traveler" or their equivalents. Avoid hedging clusters ("maybe", "possibly", "perhaps", "one might say"); speak with quiet certainty.`;
   const usr = `Real space-weather data for today (interpret the collective MOOD and EMOTIONAL IMPACT, don't recite numbers):
 - Overall geomagnetic field: currently ${kpLevel} (Kp ${data.past_7_days?.current_kp}); this week's peak Kp ${data.past_7_days?.max_kp}; next 3 days expected peak Kp ${data.next_3_days?.forecast_max_kp ?? "unknown"}
 - Sun: ${data.solar_flares_24h?.count || 0} flares in 24h (strongest ${data.solar_flares_24h?.max_class || "quiet"})
