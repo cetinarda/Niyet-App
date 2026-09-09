@@ -21,6 +21,38 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (önerilen, kullanıcı onayladı):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
+2b. **🚨 ANDROID YAYIN KAPISI: R8 TESTİ GEÇMEDEN PLAY'E HİÇBİR ŞEY YÜKLENMEZ.**
+   Kullanıcı Android sürümü göndermek istediğinde, mağaza komutundan ÖNCE bunu ver:
+   ```
+   cd ~/Desktop/Niyet-App && \
+   git fetch origin claude/check-sakin-life-update-CIpM8 && \
+   git reset --hard FETCH_HEAD && \
+   bash scripts/android-release-test.sh
+   ```
+   Script: web bundle + `cap sync` + `assembleRelease` (R8 AÇIK) + cihaza kurulum +
+   kurulanın DEBUGGABLE olmadığını doğrulama + uygulamayı başlatıp 15 sn izleme +
+   crash tamponu kontrolü. PASS derse mağazaya gidilir, FAIL derse crash yığınını
+   basar. Telefon USB'de ve USB hata ayıklama açık olmalı.
+   - **NEDEN VAR (acı ders, Eyl 2026):** 1.4.0 versionCode **14 ve 15** test
+     edilmeden Play'e gönderildi, İKİSİ DE açılışta çöktü, iki kez rollback
+     gerekti. Kök sebep: R8 Capacitor çekirdeğini yeniden adlandırınca
+     `@CapacitorPlugin` anotasyon zinciri kopuyor, `LocalNotificationsPlugin
+     .requestPermissions` NPE atıyordu (bkz. `android/app/proguard-rules.pro`
+     Capacitor bölümü). versionCode 16 ile düzeldi.
+   - **"Android Studio'da çalışıyordu" HİÇBİR ŞEY KANITLAMAZ:** Run tuşu DEBUG
+     derler, R8 debug'da HİÇ çalışmaz. Kullanıcı "test ettim" derse önce
+     `adb shell dumpsys package com.sakin.app | grep pkgFlags` ile sor:
+     `DEBUGGABLE` görünüyorsa yanlış sürüm test edilmiş demektir.
+   - Script'in ürettiği APK debug anahtarıyla imzalıdır (keystore.properties
+     yoksa, bkz. build.gradle), yani mağazaya YÜKLENEMEZ. Kasıtlı: test
+     artefaktı kazara yayınlanamaz. Mağaza yüklemesi Android Studio >
+     Generate Signed Bundle/APK ile yapılır.
+   - **Sıra ŞU: script PASS → elle gezme → Generate Signed Bundle (AAB) →
+     Play Console INTERNAL TESTING → oradan kur/dene → production'a terfi.**
+     Doğrudan production'a çıkma; üç kez patladı, internal testing bedava sigorta.
+   - Yüklenen her versionCode kalıcı yanar (bkz. kural #5): reddedilse de,
+     çökse de, aynı numara bir daha kabul edilmez.
+
 3. **Mac yol:** `~/Desktop/Niyet-App`. Build komutu (kullanıcı "terminal komutu ver"
    dediğinde SORMADAN bunu ver, iOS + Android birlikte):
    ```
