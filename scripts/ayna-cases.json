@@ -35,6 +35,13 @@
       "beklenen": "Kendisine GERÇEK bir geçiş tarihi verildiyse net söylemeli. Verilmediyse tarih UYDURMAMALI, dürüstçe şu anki temayı anlatmalı."
     },
     {
+      "id": "varolussal-beslenme",
+      "soru": "Misyonum nedir, nasıl anlayabilirim",
+      "beklenen": "Varoluşsal bir soru. 'Senin için' bölümünde Beslenme ve Hareket satırları HİÇ OLMAMALI; bunlar yalnızca bedenle ilgili sorularda (uyku, ağrı, yorgunluk, sindirim) girer. Nefes ve Uygulama satırları verilebilir.",
+      "kirmizi_bayrak": ["Beslenme:", "zencefil çayı", "Hareket:"],
+      "gecmis_hata": "Eylül 2026: misyon sorusuna zencefil çayı, ceviz, ıspanak ve yoga pozları önerildi. Şablon bölümleri soruyla ilgisine bakmadan zorunlu tutuyordu."
+    },
+    {
       "id": "veri-zorlamasi",
       "soru": "Yarın işe gitmek istemiyorum",
       "beklenen": "Doğum haritası, numeroloji, Human Design bu soruya bir şey katmıyorsa hiç anmamalı. Elinde var diye burç veya yaşam yolu sayısı sokuşturmamalı."
