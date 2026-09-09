@@ -10648,8 +10648,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 kaç adım kaldığı. */}
             {/* Blok kullanıcı isteğiyle küçültüldü: sayı 38px->24px, çubuk
                 genişliği 260px->170px (kısa ve kompakt), boşluklar sıkıştı. */}
+            {/* "BUGÜNÜN BAĞLANTISI" etiketi KALDIRILDI (kullanıcı isteği): alttaki
+                katlanabilir bölümün başlığı zaten "Günün Bağlantısı (x/7)" diyor,
+                aynı isim iki kez görünüyordu. Sayı + çubuk kendi başına yeterli,
+                bağlam (insan iskeletinin hemen üstü) zaten anlamı taşıyor. */}
             <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:170}}>
-              <div className="label-sm" style={{letterSpacing:1.6,marginBottom:7,fontSize:10,whiteSpace:"nowrap"}}>{t("mandala_today_label")}</div>
               <div style={{fontSize:24,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
                 {/* % işareti sayıdan küçük: büyük sayı asıl vurgu, işaret
