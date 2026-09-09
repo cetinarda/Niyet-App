@@ -5778,6 +5778,8 @@ export default function SakinApp() {
   const [aynaArsiv, setAynaArsiv] = useState(() => {
     try { return JSON.parse(localStorage.getItem("sakin_ayna_arsiv") || "[]"); } catch (_) { return []; }
   });
+  // Geri bildirim: her YENİ cevapta sıfırlanır, bir cevaba tek oy verilir.
+  const [aynaGeriBildirim, setAynaGeriBildirim] = useState(null);
   const [showAynaGecmis, setShowAynaGecmis] = useState(false);
   const [aynaGecmisTemizleOnay, setAynaGecmisTemizleOnay] = useState(false);
   const aynaGecmisiKaydet = (soru, cevap) => {
@@ -7151,6 +7153,36 @@ ${kisiselProfil()}`,
     return `\nKullanıcının önceki paylaşımları:\n${konular}\n${tonYonlendirmesi}\n`;
   }
 
+  // ── AYNA SÜREKLİLİĞİ: örüntü farkındalığı ─────────────────────────────────
+  // `kisiselBaglamOlustur` yalnızca son 3 sorunun METNİNİ veriyordu; model
+  // "bu kişi üç haftadır aynı şeyi soruyor" gibi bir ÖRÜNTÜYÜ göremiyordu.
+  // Burada arşivden (aynaArsiv: soru + zaman) ucuz iki sinyal çıkarılıyor:
+  // son 30 gündeki soru sayısı ve tekrar eden anahtar kelimeler. Cevap
+  // metinleri GÖNDERİLMEZ (token ve gürültü), yalnızca sorular taranır.
+  // Zorlama yok: model, bugünkü soru geçmiş temayla ilgili DEĞİLSE bağ kurmaz.
+  function aynaSureklilikBaglami(arsiv) {
+    if (!arsiv || arsiv.length === 0) return "";
+    const simdi = Date.now();
+    const GUN = 86400000;
+    const son30 = arsiv.filter(a => { const t = Date.parse(a.zaman); return t && simdi - t < 30 * GUN; });
+    if (son30.length < 2) return "";
+    // Tekrar eden temalar: 5+ harfli kelimelerin frekansı, en çok geçen 3 tanesi.
+    const say = {};
+    for (const a of son30) {
+      const kelimeler = String(a.soru || "").toLocaleLowerCase("tr").match(/[\p{L}]{5,}/gu) || [];
+      for (const k of new Set(kelimeler)) say[k] = (say[k] || 0) + 1;
+    }
+    const temalar = Object.entries(say).filter(([, n]) => n >= 2)
+      .sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k]) => k);
+    const oncekiT = Date.parse(arsiv[0]?.zaman);
+    const gunFark = oncekiT ? Math.round((simdi - oncekiT) / GUN) : null;
+    let s = `\nSÜREKLİLİK: Bu kişi son 30 günde ${son30.length} kez soru sordu.`;
+    if (gunFark !== null) s += ` Bir önceki soru ${gunFark === 0 ? "bugün" : `${gunFark} gün önce`}.`;
+    if (temalar.length) s += ` Tekrar eden temalar: ${temalar.join(", ")}.`;
+    s += ` Bugünkü soru bu temalardan biriyle GERÇEKTEN ilgiliyse örüntüyü adıyla söyle ve bağ kur; ilgili değilse geçmişe hiç değinme, zorlama.\n`;
+    return s;
+  }
+
   function sorguKaydet(tur, konu) {
     setSorguGecmisi(prev => {
       const yeni = [...prev, { tur, konu, zaman: new Date().toISOString() }].slice(-10);
@@ -7505,6 +7537,7 @@ ${facts}
     // verilen cevap kişiye özel olmaz. Nazikçe forma yönlendiriyoruz.
     if (!birthDate) { setSikayetAnaliz("__needbirth__"); return; }
     setSikayetAnaliz("__loading__");
+    setAynaGeriBildirim(null);
     // Rüya modu bir kerelik: bu gönderim tüketir, mod kapanır (bir sonraki
     // soru genel şikayet/soru akışına döner).
     const ruyaModu = aynaRuyaModu;
@@ -7518,6 +7551,7 @@ HARİTAYI NE ZAMAN KULLANACAĞIN (kullanıcı isteği: "her seferinde burç yoru
 Soru doğrudan haritayla ilgiliyse (element dağılımı, draconic, ay düğümleri, 12. ev, yükselen, burçlar) bu verileri kullanarak SOMUT yanıtla; genel geçer astroloji anlatma, ONUN haritasından konuş.
 Soru haritayla ilgili DEĞİLSE haritadan HİÇ bahsetme. Burcunu, elementini, yükselenini, hayat yolu sayısını sırf elinde var diye yanıta sokuşturma. Bağlantı zorlama, doğrudan cevap ver. Harita yalnızca yanıta gerçekten bir şey KATIYORSA girer, o zaman da tek cümleyle ve gerekçesiyle.` : "";
     const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
+    const sureklilik = aynaSureklilikBaglami(aynaArsiv);
     // GERÇEK KOZMİK VERİ: natal HD + bugünkü transit + (zaman sorusuysa) gerçek
     // geçiş tarihleri. Ayna'nın uydurma yerine somut olguyla konuşması için.
     // Rüya modunda da faydalı (rüya + o günkü enerji), o yüzden ikisine de eklenir.
@@ -7564,7 +7598,7 @@ ${UYGULAMA_BOLUMLER}
 Yanıtını şu formatta ver:
 
 **Ayna**
-(Soruya DOĞRUDAN cevap ver. Sorunun kaynağına net biçimde işaret et, kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat.
+(Soruya DOĞRUDAN cevap ver. ÖNCE anlatılanın ne olduğunu ayırt et: bir zorlanma mı, olumlu bir deneyim mi, yoksa yalnızca merak mı? Zorlanmaysa kaynağına net biçimde işaret et, kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Olumlu ya da nötr bir gözlemse SORUN GİBİ ELE ALMA, olmayan bir şikâyete çare önerme: neden böyle olabileceğini açıkla ve gerekiyorsa nasıl sürdüreceğini söyle. Yön gerçekten belirsizse tahmin edip yanlış tarafa sapma, tek bir kısa netleştirme sorusu sor.
 Çakra, kaynak bilgeliği ve doğum haritası ZORUNLU DEĞİL: yalnızca bu soruya gerçekten bir şey katıyorlarsa gir, katmıyorsa hiç anma. Üçünü birden tıkıştırma.
 Uzunluk soruya göre değişsin: net bir soruysa 3-4 cümle yeter, karmaşık bir durumsa 7-8 cümleye kadar çıkabilirsin. Sabit bir uzunluk tutturmaya çalışma, dolgu cümle ekleme.
 Şiir yazma, dürüst ve doğrudan konuş.)
@@ -7596,7 +7630,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // için rahat pay bırakır, üst sınır (MAX_TOKENS_CEIL 2000) altında.
           max_tokens:1400, lang,
           system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${aynaReasoningDirective(lang)}
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
         }),
@@ -11724,6 +11758,41 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     else if (type === "screen") { setScreen(val); }
                   }} />
                 </div>
+                {/* GERİ BİLDİRİM: cevabın işe yarayıp yaramadığını ölçen tek
+                    sinyal. Buna kadar kördük: hangi prompt'un, hangi modelin
+                    iyi cevap ürettiğini ölçmeden tahminle ilerliyorduk (bkz.
+                    CLAUDE.md "İçsel Ayna: sürekli zekâ geliştirme"). Mevcut
+                    ANONİM analitik hattını kullanır (analytics.js track):
+                    kurulum kimliği + olay adı gider, SORU VE CEVAP METNİ
+                    GİTMEZ. Kullanıcı Ayarlar'dan analitiği kapattıysa hiçbir
+                    şey gönderilmez, düğme yine de "teşekkürler" der. */}
+                {aynaGeriBildirim ? (
+                  <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:1.2,color:"#7c7590",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
+                    {pickLang({tr:"Teşekkürler, not aldım.",en:"Thank you, noted.",de:"Danke, notiert.",es:"Gracias, anotado.",pt:"Obrigado, anotado.",fr:"Merci, c'est noté.",ja:"ありがとう、記録しました。"}, lang)}
+                  </div>
+                ) : (
+                  <div style={{ display:"flex",gap:8,justifyContent:"center",alignItems:"center",flexWrap:"wrap",marginBottom:16 }}>
+                    <span style={{ fontSize:11.5,letterSpacing:1.2,color:"#7c7590",fontFamily:"'Jost',sans-serif" }}>
+                      {pickLang({tr:"Bu yanıt sana iyi geldi mi?",en:"Did this answer help you?",de:"Hat dir diese Antwort geholfen?",es:"¿Te ayudó esta respuesta?",pt:"Esta resposta ajudou-te?",fr:"Cette réponse t'a aidé ?",ja:"この答えは役に立ちましたか？"}, lang)}
+                    </span>
+                    {[
+                      { v:"up",   label:pickLang({tr:"Evet",en:"Yes",de:"Ja",es:"Sí",pt:"Sim",fr:"Oui",ja:"はい"}, lang) },
+                      { v:"down", label:pickLang({tr:"Hayır",en:"No",de:"Nein",es:"No",pt:"Não",fr:"Non",ja:"いいえ"}, lang) },
+                    ].map(o => (
+                      <button key={o.v}
+                        onClick={()=>{
+                          setAynaGeriBildirim(o.v);
+                          try { track("ayna_feedback", { v:o.v, ruya: aynaRuyaModu ? 1 : 0 }); } catch(_) {}
+                        }}
+                        style={{ WebkitAppearance:"none",appearance:"none",
+                          background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.14)",
+                          borderRadius:100,color:"#a89ec0",cursor:"pointer",fontSize:11.5,letterSpacing:1.2,
+                          padding:"5px 14px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                        {o.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {/* PAYLAŞ: Instagram hikâyesi ölçüsünde (1080x1920) kart üretir.
                     Kullanıcı: "içsel rehberi story'de paylaşabilsin, kartlardaki
                     gibi bir paylaş menüsü ekle." shareImageBlob native/web farkını
@@ -11741,7 +11810,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     style={{ background:"rgba(160,112,208,0.18)",border:"1px solid rgba(160,112,208,0.45)",borderRadius:24,color:"#c8a8f0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
                   </button>
-                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); }}
+                  <button onClick={()=>{ setSikayetAnaliz(""); setSikayet(""); setSikayetHis(""); setAynaRuyaModu(false); setAynaGeriBildirim(null); }}
                     style={{ background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:24,color:"#a070d0",cursor:"pointer",fontSize:13,letterSpacing:2.5,padding:"9px 22px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
                     {t("mirror_new_search")}
                   </button>
