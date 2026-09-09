@@ -322,25 +322,34 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
   değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
   kullanılabilir.
 
-**Öneri havuzu (yapılmadı, öncelik sırasıyla):**
-1. **Geri bildirim döngüsü.** Her Ayna cevabının altına küçük bir işe yaradı /
-   yaramadı düğmesi, anonim olarak kaydedilsin. Şu an körüz: hangi prompt'un
-   hangi modelin iyi cevap ürettiğini ölçmeden tahminle ilerliyoruz. En yüksek
-   kaldıraç bu.
-2. **Regresyon seti.** Gerçek kötü cevapları (yukarıdaki uyku örneği gibi) bir
-   dosyada biriktir, prompt değişikliğinden önce hepsini çalıştırıp gözle
-   kontrol et. Ucuz, geriye düşmeyi engeller.
-3. **Süreklilik/hafıza.** Ayna arşivi zaten var ama modele geçmiş sorular
-   verilmiyor. Son birkaç sorunun özeti bağlama girerse örüntü görebilir
-   ("üç haftadır aynı şeyi soruyorsun"), bu tek başına büyük bir zekâ sıçraması.
+**YAPILDI (Eyl 2026):**
+1. ✅ **Geri bildirim döngüsü.** Ayna cevabının altında "Bu yanıt sana iyi geldi
+   mi? Evet / Hayır". Mevcut ANONİM analitik hattını kullanır (`analytics.js`
+   `track("ayna_feedback", {v:"up"|"down", ruya:0|1})`), soru ve cevap METNİ
+   GİTMEZ. Kullanıcı analitiği kapattıysa hiçbir şey gönderilmez.
+   **Raporu okumak:** `https://sakin.life/.netlify/functions/report?token=...&html=1`
+   (REPORT_TOKEN env gerekiyor). Oran düşerse prompt'ta bir şey bozulmuş demektir.
+2. ✅ **Regresyon seti.** `scripts/ayna-cases.json` (gerçek kötü vakalar) +
+   `node scripts/ayna-eval.mjs` (canlı fonksiyona sorar, cevapları basar,
+   bilinen kırmızı bayrakları işaretler). **Prompt'a her dokunuşta çalıştır.**
+   Yeni bir kötü cevap görülürse vakayı dosyaya EKLE, yoksa aynı hata geri gelir.
+3. ✅ **Süreklilik/örüntü.** `aynaSureklilikBaglami()` arşivden iki ucuz sinyal
+   çıkarır: son 30 gündeki soru sayısı ve tekrar eden anahtar kelimeler. Cevap
+   metinleri gönderilmez. Model, bugünkü soru geçmiş temayla gerçekten ilgiliyse
+   örüntüyü adıyla söyler, değilse geçmişe hiç değinmez.
+5. ✅ **Belirsizlikte netleştirme sorusu.** Yön gerçekten belirsizse model tahmin
+   etmek yerine tek bir kısa soru sorar (hem sistem prompt'unda hem mesaj
+   şablonunda).
+
+**Sırada (yapılmadı):**
 4. **Soru tipi yönlendiricisi.** Zamanlama / karar / duygu / rüya / ilişki /
    beden sorularının yapısı farklı; tek genel prompt hepsini idare etmeye
-   çalışıyor. Tipe göre özel alt-prompt daha isabetli cevap verir.
-5. **Belirsizlikte tek soru sorma.** Kutup gerçekten belirsizse cevap uydurmak
-   yerine bir netleştirme sorusu sorsun. Bugünkü hatayı bu da önlerdi.
+   çalışıyor. Tipe göre özel alt-prompt daha isabetli olur. **Önce 1 ve 2'den
+   veri toplansın:** hangi tipte kötü cevap geldiğini bilmeden bölmek körlemesine
+   karmaşıklık ekler.
 6. **Kullanılmayan veriyi buda.** Hangi boyutların (HD, numeroloji, ay evresi)
-   cevaplarda gerçekten işe yaradığını ölç; hiç kullanılmayan bağlamı çıkar,
-   gürültü ve halüsinasyon yüzeyi azalır.
+   cevaplara gerçekten katkı verdiğini ölç, katmayanı bağlamdan çıkar; gürültü
+   ve halüsinasyon yüzeyi azalır. Bu da 1'in verisini bekliyor.
 
 ## Bağımlılık komutları (referans)
 

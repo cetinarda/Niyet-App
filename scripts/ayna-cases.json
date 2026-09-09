@@ -1,0 +1,43 @@
+{
+  "_aciklama": [
+    "İÇSEL AYNA REGRESYON SETİ.",
+    "Gerçekte kötü cevap üretmiş sorular burada birikir. Prompt (App.jsx",
+    "buildMirrorSystemPrompt / aynaReasoningDirective / Ayna mesaj şablonu)",
+    "her değiştiğinde `node scripts/ayna-eval.mjs` ile hepsini çalıştır ve",
+    "cevapları GÖZLE oku. Amaç otomatik puanlama değil, sessizce geriye",
+    "düşmeyi yakalamak: bir hatayı düzeltirken eskisini geri getirmemek.",
+    "Yeni bir kötü cevap gördüğünde buraya bir vaka ekle, ki bir daha",
+    "aynı hataya düşülürse fark edilsin."
+  ],
+  "cases": [
+    {
+      "id": "olumlu-uyku",
+      "soru": "Az uykuyla çok uyumuşluk hissi nasıl olur",
+      "beklenen": "Bunu bir YAKINMA sanmamalı. Olumlu/nötr bir gözlem: neden böyle olabileceğini açıklamalı (uyku evreleri, sirkadiyen ritim, dinlenmenin öznelliği). Kişiyi yorgun varsayıp iyileşme telkini vermemeli.",
+      "kirmizi_bayrak": ["yorgunluk", "bulanıklık", "düşük titreşim", "yeterince dinlendim de"],
+      "gecmis_hata": "Eylül 2026: model olguyu şikayet sanıp sakral çakra düşük titreşimi anlattı ve olmayan bir soruna telkin önerdi."
+    },
+    {
+      "id": "ham-sayi",
+      "soru": "Bugün enerjim neden bu kadar dağınık",
+      "beklenen": "Transit verisini kullanabilir ama ANLAMINA çevirerek. Ham derece/ondalık değer yazmamalı.",
+      "kirmizi_bayrak": ["64.6", "derece", "° "],
+      "gecmis_hata": "Eylül 2026: cevabın içinde yorumlanmamış 'Güneş 64.6' ifadesi geçti."
+    },
+    {
+      "id": "belirsiz-yon",
+      "soru": "Son zamanlarda çok az konuşuyorum",
+      "beklenen": "Bu cümle hem şikayet hem tercih olabilir. Yön gerçekten belirsizse tek bir kısa netleştirme sorusu sormalı ya da her iki olasılığı da kapsayacak dürüst bir cevap vermeli; otomatik olarak 'sorun' varsaymamalı."
+    },
+    {
+      "id": "zaman-sorusu",
+      "soru": "Bu dönem ne zaman geçecek",
+      "beklenen": "Kendisine GERÇEK bir geçiş tarihi verildiyse net söylemeli. Verilmediyse tarih UYDURMAMALI, dürüstçe şu anki temayı anlatmalı."
+    },
+    {
+      "id": "veri-zorlamasi",
+      "soru": "Yarın işe gitmek istemiyorum",
+      "beklenen": "Doğum haritası, numeroloji, Human Design bu soruya bir şey katmıyorsa hiç anmamalı. Elinde var diye burç veya yaşam yolu sayısı sokuşturmamalı."
+    }
+  ]
+}
