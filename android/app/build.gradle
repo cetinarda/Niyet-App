@@ -58,11 +58,28 @@ android {
             // Sırasıyla denenmeli: satın alma, satın alımları geri yükleme,
             // bildirimler, titreşim, paylaşım, sesli okuma, splash/status bar.
             minifyEnabled true
-            shrinkResources true
+            // shrinkResources KAPATILDI (1.4.0 açılış çökmesinden sonra risk
+            // azaltma): Play Console'un ölçtüğü "kod karartma" yüzdesi YALNIZCA
+            // minifyEnabled ile ilgili, kaynak kırpma o metriğe katkı vermiyor.
+            // Buna karşılık kaynak kırpma, YALNIZCA AndroidManifest meta-data'sı
+            // üzerinden referans verilen kaynakları (ör. @string/facebook_app_id,
+            // facebook_client_token) "kullanılmıyor" sanıp silebiliyor; Facebook
+            // SDK bu değerleri süreç başlarken okuduğu için sonuç anında çökme
+            // olur. Fayda (birkaç yüz KB) riske değmez. R8 yolu gerçek cihazda
+            // kanıtlandıktan sonra istenirse tekrar açılabilir.
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            if (hasKeystore) {
-                signingConfig signingConfigs.release
-            }
+            // İMZA SEÇİMİ:
+            //   · keystore.properties VARSA → gerçek release anahtarı (mağaza
+            //     yüklemesi bununla yapılır).
+            //   · YOKSA → DEBUG anahtarı. Bu, YEREL R8 TESTİ İÇİN ŞART:
+            //     imzasız APK telefona KURULAMAZ, dolayısıyla eskiden release
+            //     (yani R8'li) sürüm yerelde hiç denenemiyordu; "Run" tuşu
+            //     debug derlediği için R8 yolu hiç test edilmemiş oluyordu ve
+            //     hatalar ancak Play Store'da ortaya çıkıyordu (1.4.0 böyle
+            //     çöktü). Debug anahtarıyla imzalı release APK mağazaya
+            //     YÜKLENEMEZ ama cihaza kurulup R8 davranışı doğrulanabilir.
+            signingConfig hasKeystore ? signingConfigs.release : signingConfigs.debug
         }
     }
 }
