@@ -10871,15 +10871,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             ):null}
 
-            {/* KATLANIR BOLUM: Gunun baglantisi + evrim rozetleri.
-                Varsayilan KAPALI. Tiklaninca acilir/kapanir. */}
+            {/* KATLANIR BOLUM: Gunun baglantisi.
+                Varsayilan KAPALI. Tiklaninca acilir/kapanir.
+                Evrim rozetleri Ben > Yolculuk sekmesine tasindi. */}
             {(() => {
-              const cur = streakData.current || 0;
-              const EVO = [
-                {days:3, label:t("bnav_3day"),  h:10, w:8},
-                {days:7, label:t("bnav_1week"), h:14, w:11},
-                {days:21,label:t("bnav_21day"), h:18, w:16},
-              ];
               const reqs = [
                 { id:"sabah",  label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
                 { id:"gun",    label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
@@ -10929,73 +10924,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           })}
                         </div>
                       )}
-                      {/* Evrim rozetleri: 3 / 7 / 21 gun serisi.
-                          Gercek hayvan evrimi: civciv -> kus -> anka kusu. */}
-                      <div style={{display:"flex",gap:14,justifyContent:"center",alignItems:"end"}}>
-                        {EVO.map(e => {
-                          const reached = cur >= e.days;
-                          const isCurrent = (e.days === 3 && cur >= 3 && cur < 7)
-                            || (e.days === 7 && cur >= 7 && cur < 21)
-                            || (e.days === 21 && cur >= 21);
-                          const col = reached ? "#ffd97a" : "#4a4a54";
-                          const glow = isCurrent ? "drop-shadow(0 0 6px rgba(255,200,60,0.7))" : "none";
-                          return (
-                            <div key={e.days} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:4,
-                              opacity: reached ? 1 : 0.3, transition:"opacity 0.35s"}}>
-                              {e.days === 3 && (
-                                <svg width="22" height="20" viewBox="0 0 22 20" style={{filter:glow}}>
-                                  {/* Civciv: yuvarlak govde + kucuk bas + gaga + ayak */}
-                                  <ellipse cx="11" cy="13" rx="7" ry="6" fill={col}/>
-                                  <circle cx="11" cy="5.5" r="4.5" fill={col}/>
-                                  <circle cx="9.2" cy="4.5" r="0.8" fill={reached?"#333":"#2a2a30"}/>
-                                  <polygon points="5.5,5.5 3,4.5 5.5,4" fill={reached?"#e88030":"#555"}/>
-                                  <line x1="8" y1="19" x2="7" y2="17" stroke={reached?"#c87030":"#555"} strokeWidth="1.2"/>
-                                  <line x1="14" y1="19" x2="15" y2="17" stroke={reached?"#c87030":"#555"} strokeWidth="1.2"/>
-                                </svg>
-                              )}
-                              {e.days === 7 && (
-                                <svg width="30" height="24" viewBox="0 0 30 24" style={{filter:glow}}>
-                                  {/* Kus: govde + bas + kanat + kuyruk + gaga */}
-                                  <ellipse cx="14" cy="14" rx="8" ry="5.5" fill={col}/>
-                                  <circle cx="7" cy="9" r="4" fill={col}/>
-                                  <circle cx="5.5" cy="8" r="0.8" fill={reached?"#333":"#2a2a30"}/>
-                                  <polygon points="2,8 0,7 2,6.5" fill={reached?"#e07030":"#555"}/>
-                                  <path d="M16 10 Q22 3 28 6 Q24 8 20 12Z" fill={reached?"#e8c050":"#3d3d46"}/>
-                                  <path d="M22 15 Q26 18 28 14" fill="none" stroke={col} strokeWidth="1.5" strokeLinecap="round"/>
-                                  <line x1="10" y1="20" x2="9" y2="23" stroke={reached?"#c87030":"#555"} strokeWidth="1"/>
-                                  <line x1="14" y1="20" x2="15" y2="23" stroke={reached?"#c87030":"#555"} strokeWidth="1"/>
-                                </svg>
-                              )}
-                              {e.days === 21 && (
-                                <svg width="38" height="30" viewBox="0 0 38 30" style={{filter:glow}}>
-                                  {/* Anka kusu / Phoenix: buyuk kanatlar + alev kuyruk + tac */}
-                                  <ellipse cx="19" cy="18" rx="7" ry="5" fill={col}/>
-                                  <circle cx="14" cy="10" r="4" fill={col}/>
-                                  <circle cx="12.5" cy="9" r="0.8" fill={reached?"#333":"#2a2a30"}/>
-                                  <polygon points="9,9 7,8 9,7.5" fill={reached?"#e07030":"#555"}/>
-                                  {/* Sol kanat */}
-                                  <path d="M12 16 Q3 8 1 2 Q6 7 12 13Z" fill={reached?"#ff9030":"#3d3d46"} opacity={0.85}/>
-                                  <path d="M12 17 Q5 14 2 10" fill="none" stroke={reached?"#ffc050":"#444"} strokeWidth="0.8"/>
-                                  {/* Sag kanat */}
-                                  <path d="M26 16 Q35 8 37 2 Q32 7 26 13Z" fill={reached?"#ff9030":"#3d3d46"} opacity={0.85}/>
-                                  <path d="M26 17 Q33 14 36 10" fill="none" stroke={reached?"#ffc050":"#444"} strokeWidth="0.8"/>
-                                  {/* Alev kuyrugu */}
-                                  <path d="M24 21 Q30 24 28 29 Q26 25 23 23Z" fill={reached?"#ff6020":"#3d3d46"} opacity={0.8}/>
-                                  <path d="M22 22 Q27 26 24 29" fill="none" stroke={reached?"#ffaa40":"#444"} strokeWidth="0.7"/>
-                                  {/* Bas taci */}
-                                  <line x1="13" y1="7" x2="12" y2="3" stroke={reached?"#ff7020":"#444"} strokeWidth="1" strokeLinecap="round"/>
-                                  <line x1="15" y1="6.5" x2="15.5" y2="2.5" stroke={reached?"#ffaa30":"#444"} strokeWidth="1" strokeLinecap="round"/>
-                                  <line x1="14" y1="6.8" x2="13.5" y2="2" stroke={reached?"#ff9020":"#444"} strokeWidth="0.8" strokeLinecap="round"/>
-                                </svg>
-                              )}
-                              <span style={{fontSize:10,letterSpacing:1.2,fontFamily:"'Jost',sans-serif",
-                                color: isCurrent ? "#ffd97a" : reached ? "#c8a860" : "#5f5f68"}}>
-                                {e.days}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
                     </div>
                   )}
                 </div>
@@ -13568,18 +13496,76 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               <div style={{ fontSize:11,letterSpacing:3,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",margin:"22px 0 10px" }}>
                 {t("conn_levels_title")}
               </div>
-              <div style={{ display:"flex",flexDirection:"column",gap:7 }}>
-                {[[1,t("conn_lv1")],[2,t("conn_lv2")],[3,t("conn_lv3")]].map(([lv, label]) => {
-                  const active = streakLevel === lv;
+              {/* Tohum -> Fide -> Agac evrimi: renkli kutucuklar, ulasilinca isik yanar */}
+              <div style={{ display:"flex",gap:8,justifyContent:"center" }}>
+                {[
+                  { lv:1, days:3, color:"#7ec87e", bg:"rgba(126,200,126,0.08)", border:"rgba(126,200,126,0.25)",
+                    label:t("conn_lv1"), svg:(active)=>(
+                    <svg width="28" height="32" viewBox="0 0 28 32">
+                      <ellipse cx="14" cy="24" rx="6" ry="4" fill={active?"#8B6914":"#3a3a40"}/>
+                      <ellipse cx="14" cy="20" rx="4.5" ry="5" fill={active?"#a07830":"#3a3a40"}/>
+                      <path d="M14 18 Q12 14 14 10" fill="none" stroke={active?"#7ec87e":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                      <ellipse cx="12" cy="11" rx="3" ry="2" fill={active?"#7ec87e":"#4a4a50"} transform="rotate(-20 12 11)"/>
+                      <ellipse cx="16.5" cy="13" rx="2.5" ry="1.8" fill={active?"#5ab85a":"#3f3f45"} transform="rotate(15 16.5 13)"/>
+                    </svg>
+                  )},
+                  { lv:2, days:7, color:"#5ab85a", bg:"rgba(90,184,90,0.08)", border:"rgba(90,184,90,0.25)",
+                    label:t("conn_lv2"), svg:(active)=>(
+                    <svg width="32" height="38" viewBox="0 0 32 38">
+                      <rect x="14" y="18" width="3" height="16" rx="1.5" fill={active?"#7a5a30":"#3a3a40"}/>
+                      <ellipse cx="16" cy="34" rx="7" ry="3" fill={active?"#8B6914":"#3a3a40"} opacity={0.5}/>
+                      <path d="M15.5 18 Q10 12 7 6" fill="none" stroke={active?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                      <path d="M15.5 20 Q21 14 25 9" fill="none" stroke={active?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
+                      <ellipse cx="6" cy="5.5" rx="4" ry="3" fill={active?"#5ab85a":"#3f3f45"} transform="rotate(-30 6 5.5)"/>
+                      <ellipse cx="26" cy="8.5" rx="4" ry="3" fill={active?"#4aa84a":"#3a3a40"} transform="rotate(25 26 8.5)"/>
+                      <ellipse cx="10" cy="13" rx="3" ry="2" fill={active?"#6bc86b":"#3f3f45"} transform="rotate(-15 10 13)"/>
+                      <ellipse cx="22" cy="15" rx="3" ry="2" fill={active?"#5ab85a":"#3a3a40"} transform="rotate(20 22 15)"/>
+                    </svg>
+                  )},
+                  { lv:3, days:21, color:"#2e9e2e", bg:"rgba(46,158,46,0.08)", border:"rgba(46,158,46,0.25)",
+                    label:t("conn_lv3"), svg:(active)=>(
+                    <svg width="40" height="44" viewBox="0 0 40 44">
+                      <rect x="18" y="22" width="4" height="18" rx="2" fill={active?"#6a4a20":"#3a3a40"}/>
+                      <ellipse cx="20" cy="40" rx="9" ry="3" fill={active?"#8B6914":"#3a3a40"} opacity={0.4}/>
+                      <path d="M19 22 Q12 16 6 10" fill="none" stroke={active?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
+                      <path d="M21 22 Q28 16 34 10" fill="none" stroke={active?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
+                      <path d="M19 26 Q14 22 10 18" fill="none" stroke={active?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
+                      <path d="M21 26 Q26 22 30 18" fill="none" stroke={active?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
+                      <ellipse cx="5" cy="9" rx="5" ry="4" fill={active?"#2e9e2e":"#3a3a40"} transform="rotate(-25 5 9)"/>
+                      <ellipse cx="35" cy="9" rx="5" ry="4" fill={active?"#2e9e2e":"#3a3a40"} transform="rotate(25 35 9)"/>
+                      <ellipse cx="20" cy="6" rx="7" ry="5.5" fill={active?"#3ab83a":"#3a3a40"}/>
+                      <ellipse cx="12" cy="12" rx="4" ry="3" fill={active?"#4ac84a":"#3f3f45"} transform="rotate(-10 12 12)"/>
+                      <ellipse cx="28" cy="12" rx="4" ry="3" fill={active?"#4ac84a":"#3f3f45"} transform="rotate(10 28 12)"/>
+                      <ellipse cx="9" cy="17" rx="3.5" ry="2.5" fill={active?"#3aaa3a":"#3a3a40"} transform="rotate(-20 9 17)"/>
+                      <ellipse cx="31" cy="17" rx="3.5" ry="2.5" fill={active?"#3aaa3a":"#3a3a40"} transform="rotate(20 31 17)"/>
+                    </svg>
+                  )},
+                ].map(ev => {
+                  const cur = streakData.current || 0;
+                  const reached = cur >= ev.days;
+                  const active = streakLevel === ev.lv;
                   return (
-                    <div key={lv} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
-                      background: active ? "rgba(240,200,96,0.10)" : "rgba(255,255,255,0.02)",
-                      border:`1px solid ${active ? "rgba(240,200,96,0.35)" : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
-                      <span style={{ fontSize:13,flexShrink:0 }}>{lv===1?"🌱":lv===2?"🔥":"👑"}</span>
-                      <span style={{ fontSize:12.5,color: active ? "#f0c860" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
+                    <div key={ev.lv} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",
+                      padding:"12px 6px 10px",borderRadius:14,
+                      background: active ? ev.bg : "rgba(255,255,255,0.015)",
+                      border:`1.5px solid ${active ? ev.border : "rgba(255,255,255,0.05)"}`,
+                      boxShadow: active ? `0 0 12px ${ev.color}22, inset 0 0 20px ${ev.color}08` : "none",
+                      opacity: reached ? 1 : 0.4, transition:"all 0.4s ease" }}>
+                      <div style={{ marginBottom:6 }}>{ev.svg(reached)}</div>
+                      <div style={{ fontSize:10,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
+                        color: active ? ev.color : reached ? "#8a8a90" : "#555",fontWeight: active ? 600 : 400,
+                        marginBottom:3 }}>
+                        {ev.lv === 1 ? t("evo_seed") : ev.lv === 2 ? t("evo_sapling") : t("evo_tree")}
+                      </div>
+                      <div style={{ fontSize:9.5,color: active ? "#bbb" : "#666",fontFamily:"'Inter',sans-serif",textAlign:"center",lineHeight:1.4 }}>
+                        {ev.days} {t("evo_days")}
+                      </div>
                     </div>
                   );
                 })}
+              </div>
+              <div style={{ fontSize:11.5,color:"#8a8a95",textAlign:"center",marginTop:8,lineHeight:1.6,fontFamily:"'Inter',sans-serif" }}>
+                {t("evo_desc")}
               </div>
             </div>
             <div style={{ textAlign:"center",marginBottom:28 }}>
