@@ -5783,6 +5783,9 @@ export default function SakinApp() {
   // "bu yanıt sana iyi geldi mi?" sormak hem saçma hem de ölçümü kirletir
   // (kullanıcı hataya "Hayır" der, prompt kalitesi düşük sanılır).
   const [aynaCevapGecerli, setAynaCevapGecerli] = useState(false);
+  // Son sorunun tipi: geri bildirim olayına etiket olarak gider (hangi tipte
+  // kötü cevap veriyoruz sorusunu veriyle cevaplayabilmek için).
+  const [aynaSonTip, setAynaSonTip] = useState("genel");
   const [showAynaGecmis, setShowAynaGecmis] = useState(false);
   const [aynaGecmisTemizleOnay, setAynaGecmisTemizleOnay] = useState(false);
   const aynaGecmisiKaydet = (soru, cevap) => {
@@ -7533,6 +7536,33 @@ ${facts}
     return parts.length ? `\n\nGÜNCEL KOZMİK VERİ (kullanıcının sorusuna dokunuyorsa kullan, dokunmuyorsa yok say):\n${parts.join("\n")}\n` : "";
   };
 
+  // ── AYNA SORU TİPİ (yerel, ek AI çağrısı YOK, gecikme eklemez) ────────────
+  // NEDEN: tek genel şablon her soruyu aynı kalıba sokuyordu ve bu oturumda
+  // üç ayrı hataya yol açtı (soruyu ters kutupta okuma, ham derece sızdırma,
+  // varoluşsal soruya beslenme önerme). Tip bilgisi iki işe yarıyor:
+  //   1) BAĞLAM BUDAMA: yalnızca o tipe gerçekten hizmet eden veri gönderilir.
+  //   2) ÖLÇÜM: geri bildirim olayına etiket olarak gider, böylece "hangi
+  //      tipte kötü cevap veriyoruz" sorusu VERİYLE cevaplanabilir. Tam
+  //      tip-bazlı şablon ayrımı o veri birikince yapılacak (CLAUDE.md).
+  // Sınıflandırma KABA ve YUMUŞAK: prompt'a "şu tipte görünüyor, yanlışsa
+  // kendi okuduğunu esas al" diye geçiyor, yani yanlış tahmin cevabı bozmaz.
+  function aynaSoruTipi(metin, ruyaModu) {
+    if (ruyaModu) return "ruya";
+    const s = String(metin || "").toLocaleLowerCase("tr");
+    const var_ = (...k) => k.some(x => s.includes(x));
+    if (var_("ağrı", "uyku", "uyuyam", "yorgun", "mide", "bel ", "boyun", "sırt", "cilt",
+             "kilo", "hasta", "sindirim", "migren", "baş ağr", "kas ", "eklem", "regl",
+             "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı")) return "beden";
+    if (var_("misyon", "amacım", "hayat amac", "anlamı ne", "kimim", "neden buraday",
+             "yaşam yolu", "ruhsal görev", "kaderim", "varoluş")) return "varolussal";
+    if (var_("ne zaman", "kaç gün", "ne kadar sürecek", "bitecek", "geçecek", "ne zamana kadar")) return "zamanlama";
+    if (var_("ilişki", "sevgili", "partner", "eşim", "aşk", "ayrılık", "evlilik",
+             "nişan", "annem", "babam", "ailem", "arkadaş", "kavga")) return "iliski";
+    if (var_("karar", "ayrılmalı", "gitmeli", "istifa", "taşınmalı", "bırakmalı",
+             "devam etmeli", "kabul etmeli", "seçmeli")) return "karar";
+    return "genel";
+  }
+
   const generateSikayetAnaliz = async () => {
     if (!sikayet.trim()) return;
     // Doğum bilgisi yoksa soru cevaplanmaz (kullanıcı: "soru soramamalı çünkü
@@ -7546,6 +7576,12 @@ ${facts}
     // soru genel şikayet/soru akışına döner).
     const ruyaModu = aynaRuyaModu;
     if (ruyaModu) setAynaRuyaModu(false);
+    // Soru tipi: bağlam budaması + geri bildirim etiketi için (bkz. aynaSoruTipi).
+    const soruTipi = aynaSoruTipi(sikayet, ruyaModu);
+    setAynaSonTip(soruTipi);
+    // YUMUŞAK ipucu: yanlış sınıflandırma cevabı bozmasın diye modele
+    // "böyle görünüyor, katılmıyorsan kendi okuduğunu esas al" deniyor.
+    const tipIpucu = `\nSORU TİPİ (kaba tahmin, yanılmış olabilir): ${soruTipi}. Katılıyorsan cevabı buna göre yapılandır, katılmıyorsan kendi okuduğunu esas al ve tahmini yok say.\n`;
     // Harita verisi TAM gönderilir, kullanıcı artık "ateş elementim düşük ne
     // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
     // haritaya dair sorular sorabiliyor (örnek sorular listesine eklendi).
@@ -7592,7 +7628,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
 ${aynaFacts}
 ${REIKI_BILGI}
 
-${LOUISE_HAY_REHBER}
+${soruTipi === "beden" ? LOUISE_HAY_REHBER : ""}
 ${astroTxt}
 
 ${NEFES_REHBERI}
@@ -7639,7 +7675,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // MAX_TOKENS_CEIL = 2000, 1800 onun altında rahat pay bırakır.
           max_tokens:1800, lang,
           system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${aynaReasoningDirective(lang)}
-${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
         }),
@@ -7667,7 +7703,7 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
           body: JSON.stringify({
             max_tokens:1800, lang,
             system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
-${kisiselProfil()}${kisiselBagiam}${sureklilik}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
             ragQuery: sikayet,
             messages:[{ role:"user", content: userContent }],
           }),
@@ -11817,7 +11853,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       <button key={o.v}
                         onClick={()=>{
                           setAynaGeriBildirim(o.v);
-                          try { track("ayna_feedback", { v:o.v, ruya: aynaRuyaModu ? 1 : 0 }); } catch(_) {}
+                          try { track("ayna_feedback", { v:o.v, tip: aynaSonTip }); } catch(_) {}
                         }}
                         style={{ WebkitAppearance:"none",appearance:"none",
                           background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.14)",

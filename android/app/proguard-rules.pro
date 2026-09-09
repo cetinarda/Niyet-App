@@ -79,17 +79,25 @@
 -dontwarn com.android.billingclient.**
 
 # ── Meta / Facebook SDK (App Events) ────────────────────────────────────────
-# ÖNCEDEN yalnızca -dontwarn vardı ("SDK kendi consumer-proguard kurallarını
-# AAR içinde getiriyor" varsayımıyla). 1.4.0/versionCode 14 Play Store'da
-# AÇILIŞTA ÇÖKTÜ: Facebook SDK'nın FacebookInitProvider'ı (ContentProvider)
-# Application.onCreate()'TEN ÖNCE, süreç başlarken çalışıyor; bu zincirdeki
-# bir sınıf R8 tarafından yansımaya uygun olmayacak şekilde yeniden
-# adlandırılırsa/silinirse MainActivity'e hiç ulaşılamadan çöker (bildirilen
-# belirtiyle birebir örtüşüyor). Varsayım doğrulanamadığı için artık AÇIKÇA
-# tam koruma altına alındı. Karartma yüzdesini bir miktar düşürür ama
-# "uygulama hiç açılmıyor" riskinden daha ucuz.
--keep class com.facebook.** { *; }
--keep interface com.facebook.** { *; }
+# TARİHÇE (üç aşama, hangisinin neden olduğunu karıştırma):
+#   1. Başta yalnızca -dontwarn vardı.
+#   2. versionCode 14/15 açılışta çökünce Facebook baş şüpheliydi ve SDK'nın
+#      TAMAMI koruma altına alındı (-keep class com.facebook.** { *; }).
+#   3. Gerçek cihazdan alınan logcat sebebi KESİN olarak gösterdi: suçlu
+#      Facebook değil, R8'in Capacitor anotasyon zincirini kırmasıydı
+#      (yukarıdaki Capacitor bölümüne bak). versionCode 16 üretimde sorunsuz.
+# Yani 2. adımdaki tam koruma, İŞLENMEMİŞ bir suça karşı alınmış önlemdi ve
+# Play Console'un ölçtüğü karartma oranını (%33) aşağı çeken başlıca yüktü.
+# Facebook SDK kendi consumer-proguard kurallarını AAR içinde getiriyor; bu
+# standart mekanizma ve SDK'yı R8 ile kullanan milyonlarca uygulama buna
+# dayanıyor. Blanket keep kaldırıldı, yalnızca uyarılar susturuluyor.
+#
+# ⚠️ KALAN RİSK VE NASIL YAKALANIR: FacebookInitProvider bir ContentProvider
+# ve Application.onCreate()'ten ÖNCE, süreç başlarken çalışıyor. Orada bir
+# kırılma olursa belirti yine "uygulama hiç açılmıyor" olur. Bu yüzden bu
+# değişiklik scripts/android-release-test.sh kapısından GEÇMEDEN yüklenmez;
+# kapı bu senaryoyu yerelde iki dakikada yakalar. Kapı FAIL verirse ilk iş
+# bu bölümü 2. adımdaki haline geri almak.
 -dontwarn com.facebook.**
 
 # ── AndroidX / Kotlin gürültüsü ─────────────────────────────────────────────

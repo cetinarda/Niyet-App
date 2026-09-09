@@ -341,15 +341,24 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
    etmek yerine tek bir kısa soru sorar (hem sistem prompt'unda hem mesaj
    şablonunda).
 
-**Sırada (yapılmadı):**
-4. **Soru tipi yönlendiricisi.** Zamanlama / karar / duygu / rüya / ilişki /
-   beden sorularının yapısı farklı; tek genel prompt hepsini idare etmeye
-   çalışıyor. Tipe göre özel alt-prompt daha isabetli olur. **Önce 1 ve 2'den
-   veri toplansın:** hangi tipte kötü cevap geldiğini bilmeden bölmek körlemesine
-   karmaşıklık ekler.
-6. **Kullanılmayan veriyi buda.** Hangi boyutların (HD, numeroloji, ay evresi)
-   cevaplara gerçekten katkı verdiğini ölç, katmayanı bağlamdan çıkar; gürültü
-   ve halüsinasyon yüzeyi azalır. Bu da 1'in verisini bekliyor.
+4. ⏳ **Soru tipi yönlendiricisi: ÖLÇÜM PARÇASI YAPILDI, tam ayrım bekliyor.**
+   `aynaSoruTipi(metin, ruyaModu)` yerel ve kaba bir sınıflandırıcı (ek AI
+   çağrısı YOK, gecikme eklemez): beden / varolussal / zamanlama / iliski /
+   karar / ruya / genel. Şu an iki işe yarıyor:
+   - Prompt'a YUMUŞAK ipucu olarak geçiyor ("kaba tahmin, katılmıyorsan kendi
+     okuduğunu esas al"), yani yanlış tahmin cevabı bozmaz.
+   - Geri bildirim olayına etiket olarak gidiyor: `track("ayna_feedback",
+     {v, tip})`. Artık "hangi tipte kötü cevap veriyoruz" VERİYLE cevaplanabilir.
+   **Kalan iş:** yeterli oy birikince, kötü skorlu tiplere özel şablon yaz.
+   Hepsini birden bölme, yalnızca veri kötü diyen tipi böl.
+6. ⏳ **Kullanılmayan veriyi budama: İLK BUDAMA YAPILDI.**
+   `LOUISE_HAY_REHBER` (~3100 karakter, bedensel belirti/düşünce kalıbı
+   eşleşmeleri) HER soruya gidiyordu. Artık yalnızca `soruTipi === "beden"`
+   olduğunda gönderiliyor. Bu hem token/gecikme tasarrufu hem de ÖNYARGI
+   düzeltmesi: model elindeki beden tablosunu görünce varoluşsal soruları da
+   beden çerçevesine çekiyordu (bkz. "misyonum nedir" sorusuna beslenme önerme
+   hatası). **Kalan iş:** astro/HD/numeroloji bloklarının hangi tipte gerçekten
+   katkı verdiğini ölçüp benzer şekilde budamak. Bu, 4'ün verisini bekliyor.
 
 ## Bağımlılık komutları (referans)
 
@@ -374,5 +383,16 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
   Arka plan modu solfej/çakra seansları ekran kapalıyken sürsün diye gerekli;
   `silence.wav` keep-alive'ı da bu zincirin parçası (App.jsx `startSilenceKeepAlive`).
 - Web/iOS branch tek noktada birleştirme (deploy branch'i main'e migrate).
-  Kod tarafı hazır: `main` web-deploy-able ve gdkpd artık main'in aynısı.
+  **DOĞRULANDI (Eyl 2026), switch GÜVENLİ:** gdkpd'de olup main'de OLMAYAN
+  hiçbir web dosyası yok (`src/`, `public/`, `netlify/`, `netlify.toml`
+  karşılaştırıldı); `netlify.toml` birebir aynı, fonksiyon sayısı 14/14,
+  `public/embedded` 156/156.
+  **Üstelik main DAHA GÜNCEL:** `netlify/functions/waitlist.mjs` ve
+  `cosmic-energy.mjs` gdkpd'de hâlâ ESKİ v1 API'siyle duruyor (`export const
+  handler`, `event.httpMethod`), main'de v2'ye taşınmış hâli var. Yani CANLI
+  SİTE bu iki fonksiyonda bayat kod çalıştırıyor; switch bunu da düzeltir.
+  İki küçük fark daha (zararsız): `public/daily-index/*.json` farklı zamanlarda
+  üretilmiş, `public/embedded/sakintaslar/` iki dalda FARKLI derlenmiş bundle
+  taşıyor ama her dal kendi içinde tutarlı (index.html kendi hash'ini
+  gösteriyor), 404 riski yok. Switch sonrası taşlar embed'ini bir kez gözle.
   Kalan adım KULLANICIDA: Netlify production branch'ini `main` yapmak.
