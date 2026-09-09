@@ -6108,6 +6108,7 @@ export default function SakinApp() {
   }, [isOwner]);
   const [time,          setTime]          = useState(new Date());
   const [orb,           setOrb]           = useState({x:50,y:50});
+  const [baglanOpen,    setBaglanOpen]    = useState(false);
   const [birthDate,      setBirthDate]      = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [birthTime,      setBirthTime]      = useState(()=>localStorage.getItem("sakin_birth_time")||"");
   const [userName,       setUserName]       = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -10605,25 +10606,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       {/* BAĞLANTI: insan iskeleti çakra sistemi */}
       {screen==="mandala" && (() => {
         const steps = [
-          {id:"sabah",  label:t("bnav_morning"),  icon:"🌅", color:"#f0a060", glow:"255,140,60"},
-          {id:"nefes",  label:t("bnav_breath"),   icon:"🫧", color:"#60b8e8", glow:"80,160,220"},
-          {id:"ses",    label:t("bnav_sound"),    icon:"🔊", color:"#a07ae0", glow:"160,122,224"},
-          {id:"chakra", label:t("bnav_chakra"),   icon:"💜", color:"#b87adc", glow:"180,100,255"},
-          {id:"gun",    label:t("bnav_day"),      icon:"☀️", color:"#e8d060", glow:"230,200,60"},
-          {id:"aksam",  label:t("bnav_evening"),  icon:"🌙", color:"#7ab0e0", glow:"100,150,220"},
-          {id:"harita", label:t("bnav_connection"), icon:"✦",  color:"#82d9a3", glow:"80,210,140"},
+          {id:"sabah",  label:t("bnav_morning"),  color:"#f0a060", glow:"255,140,60"},
+          {id:"nefes",  label:t("bnav_breath"),   color:"#60b8e8", glow:"80,160,220"},
+          {id:"ses",    label:t("bnav_sound"),    color:"#a07ae0", glow:"160,122,224"},
+          {id:"chakra", label:t("bnav_chakra"),   color:"#b87adc", glow:"180,100,255"},
+          {id:"gun",    label:t("bnav_day"),      color:"#e8d060", glow:"230,200,60"},
+          {id:"aksam",  label:t("bnav_evening"),  color:"#7ab0e0", glow:"100,150,220"},
+          {id:"harita", label:t("bnav_connection"), color:"#82d9a3", glow:"80,210,140"},
         ];
         // "x/N ADIM" sayacı BAĞLANTI adım sayısını (6) göstermeli, `steps` dizisi
         // omurga görselinde harita düğümünü de çizdiği için 7 elemanlı, onu kullanma.
         const N=MANDALA_STEPS.length;
-        // 40 gün kaldırıldı (kullanıcı isteği). Kalan 3-7-21 rozetleri, "Sakin nedir →
-        // Yolculuk" bölümündeki 3 SEVİYE ikonlarıyla AYNI: 🌱 (L1) · 🔥 (7g → L2) ·
-        // 👑 (21g → L3). Böylece rozet ile seviye görsel olarak eşleşir.
-        const BADGES=[
-          {days:3, icon:"🌱",label:t("bnav_3day")},
-          {days:7, icon:"🔥",label:t("bnav_1week")},
-          {days:21,icon:"👑",label:t("bnav_21day")},
-        ];
         const nextStep = steps.find(s => !stepsCompleted[s.id]);
 
         return (
@@ -10637,7 +10630,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           )}
           {/* Alt boşluk 90 → 150px: "Güne devam et" butonu alttaki adım göstergesi
               (progress strip, bottom:76px) altında kalıyordu (kullanıcı raporu). */}
-          <div style={{maxWidth:400,width:"100%",padding:"54px 20px 150px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
+          <div style={{maxWidth:400,width:"100%",padding:"16px 20px 110px",position:"relative",zIndex:1,display:"flex",flexDirection:"column",alignItems:"center"}}>
             {/* NATIVE→WEB TAŞIMA MADDE 8: Back button her platformda KALDIRILDI
                 (kullanıcı isteği): Bağlan artık alt bardaki ilk sekme, üstünde
                 de adım şeridi var; ok gereksiz. */}
@@ -10651,7 +10644,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 kaç adım kaldığı. */}
             {/* Blok kullanıcı isteğiyle küçültüldü: sayı 38px->24px, çubuk
                 genişliği 260px->170px (kısa ve kompakt), boşluklar sıkıştı. */}
-            <div style={{textAlign:"center",marginBottom:16,width:"100%",maxWidth:170}}>
+            <div style={{textAlign:"center",marginBottom:8,width:"100%",maxWidth:170}}>
               <div className="label-sm" style={{letterSpacing:1.6,marginBottom:7,fontSize:10,whiteSpace:"nowrap"}}>{t("mandala_today_label")}</div>
               <div style={{fontSize:24,fontWeight:200,lineHeight:1,fontFamily:"'Jost',sans-serif",
                 color: allStepsComplete ? "#82d9a3" : "#e8e0f4" }}>
@@ -10681,21 +10674,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {/* İnsan İskeleti Çakra Bağlantı Sistemi */}
             {(() => {
               const pct = completedStepCount / N;
-              const lightY = 520 - pct * 480;
+              const lightY = 405 - pct * 374;
               const chakraNodes = [
-                {y:500, label:t("mandala_earth_lower"),     color:"#8B6914", zone:"sub"},
-                {y:430, label:steps[0].label,                color:steps[0].color, id:steps[0].id, zone:"lower"},
-                {y:378, label:steps[1].label,                color:steps[1].color, id:steps[1].id, zone:"lower"},
-                {y:326, label:steps[2].label,                color:steps[2].color, id:steps[2].id, zone:"mid"},
-                {y:274, label:steps[3].label,                color:steps[3].color, id:steps[3].id, zone:"mid"},
-                {y:222, label:steps[4].label,                color:steps[4].color, id:steps[4].id, zone:"upper"},
-                {y:170, label:steps[5].label,                color:steps[5].color, id:steps[5].id, zone:"upper"},
-                {y:118, label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
-                {y:40,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
+                {y:390, label:t("mandala_earth_lower"),     color:"#8B6914", zone:"sub"},
+                {y:335, label:steps[0].label,                color:steps[0].color, id:steps[0].id, zone:"lower"},
+                {y:294, label:steps[1].label,                color:steps[1].color, id:steps[1].id, zone:"lower"},
+                {y:254, label:steps[2].label,                color:steps[2].color, id:steps[2].id, zone:"mid"},
+                {y:213, label:steps[3].label,                color:steps[3].color, id:steps[3].id, zone:"mid"},
+                {y:173, label:steps[4].label,                color:steps[4].color, id:steps[4].id, zone:"upper"},
+                {y:132, label:steps[5].label,                color:steps[5].color, id:steps[5].id, zone:"upper"},
+                {y:92,  label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
+                {y:31,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
               return (
                 <div style={{width:220,position:"relative"}}>
-                  <svg width="220" height="540" viewBox="0 0 220 540" style={{overflow:"visible"}}>
+                  <svg width="220" height="420" viewBox="0 0 220 420" style={{overflow:"visible"}}>
                     <defs>
                       <linearGradient id="riseGrad" x1="0" y1="1" x2="0" y2="0">
                         <stop offset="0%" stopColor="rgba(255,200,60,0.6)"/>
@@ -10734,22 +10727,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           gökten girer, YER hizasında tünelin içinde biter (kullanıcı:
                           "ekranın en altına gidiyor, onu yerde bitir"). */}
                       <clipPath id="tunnelClip">
-                        <rect x="88" y="24" width="44" height="504" rx="22" />
+                        <rect x="88" y="18" width="44" height="390" rx="22" />
                       </clipPath>
                     </defs>
 
-                    {/* Omurga: ana bağlantı çizgisi */}
-                    <line x1="110" y1="500" x2="110" y2="40" stroke="url(#spineGrad)" strokeWidth="2" />
+                    {/* Omurga: ana baglanti cizgisi */}
+                    <line x1="110" y1="390" x2="110" y2="31" stroke="url(#spineGrad)" strokeWidth="2" />
 
-                    {/* Işık yükselişi: görevler tamamlandıkça yukarı çıkar */}
+                    {/* Isik yukselisi: gorevler tamamlandikca yukari cikar */}
                     {pct > 0 && (
-                      <line x1="110" y1="500" x2="110" y2={lightY}
+                      <line x1="110" y1="390" x2="110" y2={lightY}
                         stroke="url(#riseGrad)" strokeWidth="3" strokeLinecap="round"
                         filter="url(#glowF)" opacity={0.5+pct*0.5}
                         style={{transition:"y2 1s ease, opacity 0.8s"}} />
                     )}
 
-                    {/* Elektrik akımı partikülleri: yükselen ışık üzerinde */}
+                    {/* Elektrik akimi partikulleri */}
                     {pct > 0 && [0,1,2].map(i => (
                       <circle key={`ep${i}`} cx="110" r="2" fill="rgba(255,70,70,0.95)"
                         style={{animation:`electricRise ${2+i*0.7}s linear infinite`,animationDelay:`${i*0.6}s`}}>
@@ -10758,26 +10751,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         </animateMotion>
                       </circle>
                     ))}
-                    <path id="spinePath" d="M110,500 L110,40" fill="none" stroke="none" />
+                    <path id="spinePath" d="M110,390 L110,31" fill="none" stroke="none" />
 
-                    {/* İnsan silueti */}
-                    {/* Kafa */}
-                    {/* İNSAN SİLUETİ: opaklıklar 0.06-0.10 arasındaydı, telefonda (özellikle
-                        düşük parlaklıkta) neredeyse görünmüyordu. Kullanıcı: "bu ekran
-                        telefonda bazen zor görülüyor, biraz daha belirgin yap, abartma."
-                        Yaklaşık iki katına çıkarıldı; hâlâ arka plan öğesi, çakra
-                        düğümlerinin ve ışık tünelinin önüne geçmiyor. */}
-                    <circle cx="110" cy="100" r="22" fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="1.4" />
-                    {/* Boyun */}
-                    <line x1="110" y1="122" x2="110" y2="140" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
-                    {/* Gövde */}
-                    <path d="M80 140 Q110 136 140 140 L136 330 Q110 336 84 330Z" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="1.2" />
-                    {/* Kollar */}
-                    <path d="M80 150 Q60 180 50 240" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    <path d="M140 150 Q160 180 170 240" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    {/* Bacaklar */}
-                    <path d="M94 330 Q90 390 85 470" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    <path d="M126 330 Q130 390 135 470" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    {/* Insan silueti (kompakt) */}
+                    <circle cx="110" cy="78" r="17" fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="1.4" />
+                    <line x1="110" y1="95" x2="110" y2="109" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
+                    <path d="M86 109 Q110 106 134 109 L131 257 Q110 262 89 257Z" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="1.2" />
+                    <path d="M86 117 Q70 142 62 190" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M134 117 Q150 142 158 190" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M96 257 Q93 305 89 365" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M124 257 Q127 305 131 365" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
 
                     {/* Çakra düğümleri */}
                     {chakraNodes.map((node,i) => {
@@ -10822,12 +10805,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     })}
 
                     {/* Yer simgesi */}
-                    <text x="110" y="528" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▼ {t("mandala_earth_upper")}</text>
+                    <text x="110" y="412" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                      fontFamily="'Jost',sans-serif">. {t("mandala_earth_upper")}</text>
 
-                    {/* Gök simgesi */}
-                    <text x="110" y="22" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
-                      fontFamily="'Jost',sans-serif">▲ {t("mandala_sky_upper")}</text>
+                    {/* Gok simgesi */}
+                    <text x="110" y="16" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                      fontFamily="'Jost',sans-serif">. {t("mandala_sky_upper")}</text>
 
                     {/* TAM BAĞLANTI: ÇAKRA SÜTUNU IŞIK TÜNELİNE DÖNÜŞÜR
                         (kullanıcı: "tüm bağlantılar tamamlanınca onay tikleri yani
@@ -10838,8 +10821,8 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         parlak parçacıklar. "BAĞLANTI AKTİF" yazısı buradan KALDIRILDI
                         (altta kalıyordu): artık aşağıdaki kutuda gösteriliyor. */}
                     {allStepsComplete && <>
-                      {/* (1) Tünel gövdesi: çakra hattını saran koridor */}
-                      <rect x="86" y="22" width="48" height="508" rx="24"
+                      {/* (1) Tunel govdesi: cakra hattini saran koridor */}
+                      <rect x="86" y="18" width="48" height="394" rx="24"
                         fill="url(#tunnelBody)" stroke="rgba(255,240,190,0.28)" strokeWidth="1" />
                       {/* (2) Kesintisiz ışık akışı, huzme sürekli aşağı kayar
                           (gradyanın kendisi hareket eder, tek tek parçacık yok).
@@ -10853,101 +10836,25 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         <rect x="88" y="-256" width="44" height="800"
                           fill="url(#tunnelFlow)" style={{ animation:"sakinTunnelDown 2.2s linear infinite" }} />
                       </g>
-                      {/* (4) Tünel ağzı parlaması, üstte giriş, altta yeryüzü çıkışı */}
-                      <ellipse cx="110" cy="22" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
-                      <ellipse cx="110" cy="528" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
+                      {/* (4) Tunel agzi parlamasi */}
+                      <ellipse cx="110" cy="18" rx="22" ry="6" fill="rgba(255,250,225,0.5)" filter="url(#glowF)"/>
+                      <ellipse cx="110" cy="410" rx="22" ry="6" fill="rgba(255,225,170,0.45)" filter="url(#glowF)"/>
                     </>}
                   </svg>
                 </div>
               );
             })()}
 
-            {/* BAĞLANTI ŞARTLARI: kullanıcı neyin eksik olduğunu görsün (yoksa
-                "yaptım ama bağlantı olmuyor" karışıklığı olur). Sağlananlar ✓, eksikler
-                mevcut/hedef sayısıyla gösterilir. */}
-            {!allStepsComplete && (() => {
-              const reqs = [
-                { id:"sabah",  label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
-                { id:"gun",    label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
-                { id:"nefes",  label:t("bnav_breath"),   cur:breathCount,      need:STEP_MIN.nefes, unit:"" },
-                { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
-                { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
-                { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                // AYNA: 7. adım (harita yerine). Tıklamak/ekrana girmek yeterli.
-                { id:"rehber", label:t("mirror_label"),   cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
-              ];
-              return (
-                <div style={{marginTop:6,marginBottom:2,padding:"10px 14px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,maxWidth:320,width:"100%"}}>
-                  {/* Başlık "ADIM" → "Günün Bağlantısı"; kutucuklar artık TIKLANABİLİR
-                      (ilgili ekrana götürür). Alttaki tekrar eden adım navigasyonu
-                      kaldırıldı: aynı 7 adım iki kez görünüyordu (kullanıcı raporu). */}
-                  <div style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:8}}>{t("conn_today_title")}</div>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
-                    {reqs.map(r => {
-                      const ok = !!stepsCompleted[r.id];
-                      return (
-                        <button key={r.id} onClick={()=>setScreen(r.id)}
-                          style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
-                          padding:"5px 10px",borderRadius:100,cursor:"pointer",
-                          background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
-                          border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
-                          color: ok?"#82d9a3":"#8a8a95"}}>
-                          {/* need>1 olanlarda ilerleme (12/120sn gibi) anlamlı; need===1
-                              olanlarda "0/1" gereksiz gürültüydü: kaldırıldı (kullanıcı isteği). */}
-                          {ok ? "✓ " : r.need > 1 ? `${Math.min(r.cur,r.need)}/${r.need}${r.unit} ` : ""}{r.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })()}
-
-            {/* Rozetler: "Günün Bağlantısı" ile "Güne devam et" ARASINDA (kullanıcı isteği).
-                AKTİF KADEME yanar: kullanıcı hangi dilimdeyse (3 / 7 / 21) o rozet ışıklı,
-                geçilenler sönük-dolu, henüz ulaşılmayanlar soluk. */}
-            {/* Küçük ve zarif "hap" (pill) rozetler: uygulamanın sade diline uygun:
-                ikon + sade sayı yan yana, tek satır, ince çerçeve. (kullanıcı:
-                "kutucuklar daha küçük daha zarif appin diline uygun olsun 3-7-21") */}
-            <div style={{display:"flex",gap:7,marginTop:12,marginBottom:16,flexWrap:"wrap",justifyContent:"center"}}>
-              {BADGES.map(b=>{
-                const cur = streakData.current || 0;
-                const reached = cur >= b.days;                     // bu kademeye ulaşıldı
-                // Kullanıcı isteği: "3-7-21 gün açılınca bu butonlar aktifleşsin", 
-                // ULAŞILAN HER kademe aktif/parlak olsun (eskiden sadece en büyük
-                // kademe parlak, alttaki ulaşılanlar soluk kalıyordu).
-                const isActive = reached;
-                return(
-                  <div key={b.days} style={{
-                    display:"flex",alignItems:"center",gap:5,
-                    background:isActive?"rgba(255,200,60,0.10)":"transparent",
-                    border:`1px solid ${isActive?"rgba(255,200,60,0.45)":reached?"rgba(255,200,60,0.16)":"rgba(255,255,255,0.06)"}`,
-                    borderRadius:100,padding:"4px 11px",
-                    opacity:isActive?1:reached?0.7:0.3,transition:"all 0.35s",
-                    boxShadow:isActive?"0 0 12px rgba(255,200,60,0.20)":"none",
-                  }}>
-                    <span style={{fontSize:11,lineHeight:1,filter:isActive?"drop-shadow(0 0 4px rgba(255,200,60,0.5))":"none"}}>{b.icon}</span>
-                    <span style={{fontSize:10.5,letterSpacing:1.2,color:isActive?"#ffd97a":reached?"#c8a860":"#5f5f68",fontFamily:"'Jost',sans-serif"}}>{b.days}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* CTA: "Bugün tamamlandı" yerine BAĞLANTI AKTİF (kullanıcı isteği);
-                yaprak yerine elektrik ikonu. Bu yazı eskiden SVG'nin içindeydi ve
-                altta kalıyordu, oradan kaldırılıp buraya alındı. */}
+            {/* CTA: her zaman gorunur, en ustte */}
             {allStepsComplete?(
               <div style={{textAlign:"center",marginTop:4,padding:"12px 20px",background:"rgba(255,220,120,0.07)",border:"1px solid rgba(255,220,120,0.25)",borderRadius:16,maxWidth:280,width:"100%",boxShadow:"0 0 18px rgba(255,210,110,0.14)"}}>
                 <div style={{fontFamily:"'Jost',sans-serif",fontSize:14,color:"#ffd97a",letterSpacing:2.5,textTransform:"uppercase"}}>
-                  ⚡ {t("mandala_connection_active")}
+                  {t("mandala_connection_active")}
                 </div>
                 <div style={{fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.5,color:"#c8b878",marginTop:6}}>
-                  ✦ {t("mandala_streak")} {streakData.current} · L{streakLevel} · x{streakMultiplier}
-                  {nextLevelAt ? ` · →${nextLevelAt}` : ""}
+                  {t("mandala_streak")} {streakData.current} . L{streakLevel} . x{streakMultiplier}
+                  {nextLevelAt ? ` . ${nextLevelAt}` : ""}
                 </div>
-                {/* Bağlantı tamamlandıktan sonra uygulamayı kapatıp dönünce kullanıcı
-                    bu ekranda kalıyordu ve ilerleyecek buton yoktu (kullanıcı isteği:
-                    "oraya güne devam et butonu ekle, bir şeyin altında kalmasın"). */}
                 <button className="sakin-btn-primary" style={{marginTop:12,fontSize:13,letterSpacing:2,width:"100%"}}
                   onClick={()=>setScreen("sabah")}>
                   {t("mandala_continue_today")}
@@ -10960,11 +10867,111 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </button>
             ):null}
 
-
-            {/* NOT: Buradaki "GÜN: adım navigasyonu" bölümü KALDIRILDI. Yukarıdaki
-                "Günün Bağlantısı" bölümü aynı 7 adımı zaten gösteriyordu (kullanıcı:
-                "bağlanda 2 kez görsel tekrar var, en alttakini kaldır") ve o bölümün
-                kutucukları artık tıklanabilir. */}
+            {/* KATLANIR BOLUM: Gunun baglantisi + evrim rozetleri.
+                Varsayilan KAPALI. Tiklaninca acilir/kapanir. */}
+            {(() => {
+              const cur = streakData.current || 0;
+              const EVO = [
+                {days:3, label:t("bnav_3day"),  h:10, w:8},
+                {days:7, label:t("bnav_1week"), h:14, w:11},
+                {days:21,label:t("bnav_21day"), h:18, w:16},
+              ];
+              const reqs = [
+                { id:"sabah",  label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
+                { id:"gun",    label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
+                { id:"nefes",  label:t("bnav_breath"),   cur:breathCount,      need:STEP_MIN.nefes, unit:"" },
+                { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
+                { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
+                { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
+                { id:"rehber", label:t("mirror_label"),  cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
+              ];
+              return (
+                <div style={{marginTop:10,maxWidth:320,width:"100%"}}>
+                  <button onClick={()=>setBaglanOpen(!baglanOpen)}
+                    style={{WebkitAppearance:"none",appearance:"none",width:"100%",
+                      display:"flex",alignItems:"center",justifyContent:"space-between",
+                      padding:"8px 14px",cursor:"pointer",
+                      background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",
+                      borderRadius: baglanOpen ? "14px 14px 0 0" : 14,
+                      transition:"border-radius 0.2s"}}>
+                    <span style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>
+                      {t("conn_today_title")} ({completedStepCount}/{MANDALA_STEPS.length})
+                    </span>
+                    <span style={{fontSize:10,color:"#555",transform:baglanOpen?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>
+                      ▾
+                    </span>
+                  </button>
+                  {baglanOpen && (
+                    <div style={{padding:"10px 14px",background:"rgba(255,255,255,0.02)",
+                      borderLeft:"1px solid rgba(255,255,255,0.06)",
+                      borderRight:"1px solid rgba(255,255,255,0.06)",
+                      borderBottom:"1px solid rgba(255,255,255,0.06)",
+                      borderRadius:"0 0 14px 14px"}}>
+                      {!allStepsComplete && (
+                        <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginBottom:10}}>
+                          {reqs.map(r => {
+                            const ok = !!stepsCompleted[r.id];
+                            return (
+                              <button key={r.id} onClick={()=>setScreen(r.id)}
+                                style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
+                                padding:"5px 10px",borderRadius:100,cursor:"pointer",
+                                WebkitAppearance:"none",appearance:"none",
+                                background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
+                                border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
+                                color: ok?"#82d9a3":"#8a8a95"}}>
+                                {ok ? "* " : r.need > 1 ? `${Math.min(r.cur,r.need)}/${r.need}${r.unit} ` : ""}{r.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                      {/* Evrim rozetleri: 3 / 7 / 21 gun serisi.
+                          Buyuyen alev SVG'leri (Pokemon evrimi konsepti:
+                          kucuk alev -> orta alev -> kanatli alev). */}
+                      <div style={{display:"flex",gap:10,justifyContent:"center",alignItems:"end"}}>
+                        {EVO.map(e => {
+                          const reached = cur >= e.days;
+                          const isCurrent = (e.days === 3 && cur >= 3 && cur < 7)
+                            || (e.days === 7 && cur >= 7 && cur < 21)
+                            || (e.days === 21 && cur >= 21);
+                          const col = reached ? "#ffd97a" : "#3a3a44";
+                          return (
+                            <div key={e.days} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3,
+                              opacity: reached ? 1 : 0.3, transition:"opacity 0.35s"}}>
+                              <svg width={e.w+4} height={e.h+4} viewBox={`0 0 ${e.w+4} ${e.h+4}`} style={{
+                                filter: isCurrent ? "drop-shadow(0 0 5px rgba(255,200,60,0.6))" : "none"}}>
+                                {e.days === 3 && (
+                                  <path d={`M${(e.w+4)/2} 1 Q${e.w+2} ${e.h*0.5} ${(e.w+4)/2} ${e.h+2} Q2 ${e.h*0.5} ${(e.w+4)/2} 1Z`}
+                                    fill={col} opacity={0.9} />
+                                )}
+                                {e.days === 7 && (<>
+                                  <path d={`M${(e.w+4)/2} 0 Q${e.w+3} ${e.h*0.45} ${(e.w+4)/2} ${e.h+3} Q1 ${e.h*0.45} ${(e.w+4)/2} 0Z`}
+                                    fill={col} opacity={0.9} />
+                                  <path d={`M${(e.w+4)/2-2} ${e.h*0.35} Q${(e.w+4)/2} ${e.h*0.15} ${(e.w+4)/2+2} ${e.h*0.35}`}
+                                    fill="none" stroke={reached?"rgba(255,130,40,0.7)":"#333"} strokeWidth="1" />
+                                </>)}
+                                {e.days === 21 && (<>
+                                  <path d={`M${(e.w+4)/2} 0 Q${e.w+3} ${e.h*0.4} ${(e.w+4)/2} ${e.h+3} Q1 ${e.h*0.4} ${(e.w+4)/2} 0Z`}
+                                    fill={col} opacity={0.9} />
+                                  <path d={`M1 ${e.h*0.55} Q${(e.w+4)/2-3} ${e.h*0.3} ${(e.w+4)/2-1} ${e.h*0.1}`}
+                                    fill="none" stroke={reached?"rgba(255,160,40,0.6)":"#333"} strokeWidth="1.2" />
+                                  <path d={`M${e.w+3} ${e.h*0.55} Q${(e.w+4)/2+3} ${e.h*0.3} ${(e.w+4)/2+1} ${e.h*0.1}`}
+                                    fill="none" stroke={reached?"rgba(255,160,40,0.6)":"#333"} strokeWidth="1.2" />
+                                </>)}
+                              </svg>
+                              <span style={{fontSize:10,letterSpacing:1.2,fontFamily:"'Jost',sans-serif",
+                                color: isCurrent ? "#ffd97a" : reached ? "#c8a860" : "#5f5f68"}}>
+                                {e.days}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
           </>
         );
