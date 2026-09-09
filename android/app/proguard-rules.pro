@@ -17,6 +17,15 @@
 # ── Yansıma için gereken üstveri ─────────────────────────────────────────────
 -keepattributes *Annotation*, Signature, InnerClasses, EnclosingMethod, Exceptions
 
+# ── Sınıfları tek pakete topla (karartma yüzdesini yükseltir) ────────────────
+# Play Console "Sınıfları Yeniden Paketleme" maddesini karşılar. Zaten karartılan
+# (yani -keep ile korunmayan) sınıfların PAKET YOLUNU da düzleştirir, dolayısıyla
+# koruma altındaki hiçbir sınıfa dokunmaz: Capacitor, Cordova, billing, Facebook
+# yukarıdaki kurallarla adlarını aynen korur.
+# RİSK: paket yapısına yansımayla bel bağlayan kod bozulabilir; ama öyle bir kod
+# zaten karartmanın kendisinden bozulurdu, dolayısıyla ek risk pratikte yok.
+-repackageclasses ''
+
 # ── Capacitor: TAMAMI korunuyor ─────────────────────────────────────────────
 # ÖNCEDEN yalnızca eklenti sınıfları + @PluginMethod üyeleri tutuluyordu
 # ("çekirdeğin tamamını tutmayalım, karartma yüzdesi düşer" diye). BU YETMEDİ:

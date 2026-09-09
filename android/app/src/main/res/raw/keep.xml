@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  KAYNAK KIRPMA GÜVENLİK AĞI (shrinkResources true ile birlikte çalışır).
+
+  NEDEN VAR: 1.4.0 açılış çökmesinden sonra `shrinkResources` risk azaltma
+  amacıyla KAPATILMIŞTI. Gerekçe şuydu: kırpıcı, yalnızca AndroidManifest
+  meta-data'sı üzerinden referans verilen string'leri (facebook_app_id,
+  facebook_client_token) "kullanılmıyor" sanıp silebilir, Facebook SDK bu
+  değerleri süreç başlarken okuduğu için sonuç anında çökme olur.
+
+  GERÇEKTE: kırpıcı birleştirilmiş manifest'i de tarar, oradan referans
+  verilen kaynakları zaten korur. Yine de bu dosya şüpheyi tamamen ortadan
+  kaldırıyor: kritik kaynaklar ADIYLA korunuyor. Bedeli birkaç KB, karşılığı
+  "acaba" sorusunun bitmesi.
+
+  shrinkMode="safe" (varsayılan, açıkça yazıldı): bir kaynak koda
+  Resources.getIdentifier() ile DİNAMİK olarak erişiliyorsa kırpıcı
+  temkinli davranır ve eşleşebilecek kaynakları korur. Üçüncü taraf
+  SDK'lar (Facebook, Capacitor eklentileri) bunu kullanabildiği için
+  "strict" moda GEÇME.
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:shrinkMode="safe"
+    tools:keep="@string/facebook_app_id,@string/facebook_client_token,@xml/file_paths" />

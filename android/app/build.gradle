@@ -33,6 +33,9 @@ android {
         // 1.3.9 / versionCode 12 Play'de CANLI (bkz. public/latest-ios-version.json,
         // otomatik mağaza taraması). Yüklenmiş bir versionCode kalıcı olarak
         // yanar, aynısı ikinci kez kabul edilmez.
+        // versionCode 16 ÜRETİMDE SORUNSUZ ÇALIŞIYOR (kullanıcı doğruladı).
+        // 17: Play Console optimizasyon geri bildirimi (kaynak kırpma kapalıydı,
+        // sınıf yeniden paketleme yoktu). versionName 1.4.0 aynı kalıyor.
         // versionCode 14 ve 15 Play'e yüklendi, İKİSİ DE açılışta çöktü ve
         // rollback gerekti. Kök sebep gerçek cihazdan alınan logcat ile
         // kesinleşti: R8 Capacitor çekirdeğini yeniden adlandırınca
@@ -44,7 +47,7 @@ android {
         //   ./gradlew assembleRelease
         //   adb install -r app/build/outputs/apk/release/app-release.apk
         //   (kurulu paket DEBUGGABLE görünüyorsa yanlış sürümü test ediyorsun)
-        versionCode 16
+        versionCode 17
         versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
@@ -75,16 +78,17 @@ android {
             // Sırasıyla denenmeli: satın alma, satın alımları geri yükleme,
             // bildirimler, titreşim, paylaşım, sesli okuma, splash/status bar.
             minifyEnabled true
-            // shrinkResources KAPATILDI (1.4.0 açılış çökmesinden sonra risk
-            // azaltma): Play Console'un ölçtüğü "kod karartma" yüzdesi YALNIZCA
-            // minifyEnabled ile ilgili, kaynak kırpma o metriğe katkı vermiyor.
-            // Buna karşılık kaynak kırpma, YALNIZCA AndroidManifest meta-data'sı
-            // üzerinden referans verilen kaynakları (ör. @string/facebook_app_id,
-            // facebook_client_token) "kullanılmıyor" sanıp silebiliyor; Facebook
-            // SDK bu değerleri süreç başlarken okuduğu için sonuç anında çökme
-            // olur. Fayda (birkaç yüz KB) riske değmez. R8 yolu gerçek cihazda
-            // kanıtlandıktan sonra istenirse tekrar açılabilir.
-            shrinkResources false
+            // shrinkResources GERİ AÇILDI (versionCode 17). 1.4.0 çökmesinden
+            // sonra temkin amaçlı kapatılmıştı; o çökmenin sebebi kaynak kırpma
+            // DEĞİL, R8'in Capacitor anotasyon zincirini kırmasıydı (bkz.
+            // proguard-rules.pro Capacitor bölümü) ve versionCode 16 gerçek
+            // cihazda + üretimde sorunsuz çalışarak bunu kanıtladı.
+            // Play Console "Kullanılmayan kaynakları kaldırma etkin değil" diye
+            // uyarıyordu, tam olarak bu satır yüzünden.
+            // Güvenlik ağı: res/raw/keep.xml kritik kaynakları (Facebook app id
+            // ve client token, file_paths) ADIYLA koruyor ve shrinkMode="safe"
+            // ile dinamik (getIdentifier) erişimlere temkinli davranılıyor.
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // İMZA SEÇİMİ:
             //   · keystore.properties VARSA → gerçek release anahtarı (mağaza
