@@ -7608,8 +7608,9 @@ Uzunluk soruya göre değişsin: net bir soruysa 3-4 cümle yeter, karmaşık bi
 Şiir yazma, dürüst ve doğrudan konuş.)
 
 **Senin için**
-Beslenme: (bu konu ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
+⚠️ BU BÖLÜMDE HER SATIR ZORUNLU DEĞİL. Yalnızca soruya GERÇEKTEN hizmet eden satırları yaz; hizmet etmeyeni hiç yazma, başlığını bile koyma. Beslenme ve Hareket satırları YALNIZCA soru bedenle ilgiliyse girer: uyku, yorgunluk, ağrı, sindirim, gerginliğin bedendeki hâli, hastalık, enerji düşüklüğü gibi. "Misyonum nedir", "ayrılmalı mıyım", "neden böyle hissediyorum" gibi varoluşsal, duygusal ya da karar sorularında beslenme ve hareket ÖNERME: soruyla ilgisi yoktur, cevabı ciddiyetsizleştirir. Nefes ve Uygulama satırları her soruda verilebilir, onlar uygulamanın pratikleri.
+Beslenme: (YALNIZCA bedenle ilgili sorularda yaz. Bu konuya özel 3-4 besin veya bitki çayı: kısa, net)
+Hareket: (YALNIZCA bedenle ilgili sorularda yaz. 2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
 
