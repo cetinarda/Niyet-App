@@ -19,8 +19,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // 1.3.9 / versionCode 12 Play'de CANLI (bkz. public/latest-ios-version.json,
         // otomatik mağaza taraması). Yüklenmiş bir versionCode kalıcı olarak
-        // yanar, aynısı ikinci kez kabul edilmez: yeni yükleme 13 ile gider.
-        versionCode 13
+        // yanar, aynısı ikinci kez kabul edilmez.
+        // versionCode 13 Play Console'a yüklenmeye çalışıldı, "sürüm kullanıldı"
+        // hatası aldı (henüz yayınlanmamıştı ama numara yanmış): CLAUDE.md kuralı
+        // gereği +1 artırıldı, versionName aynı kaldı (henüz yayınlanmadı).
+        versionCode 14
         versionName "1.4.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
