@@ -997,6 +997,7 @@ const SET_TXT = {
   gHesap:   { tr:"Hesap", en:"Account", de:"Konto", es:"Cuenta", pt:"Conta", fr:"Compte", ja:"アカウント" },
   dil:      { tr:"Dil", en:"Language", de:"Sprache", es:"Idioma", pt:"Idioma", fr:"Langue", ja:"言語" },
   destek:   { tr:"Yardım ve destek", en:"Help and support", de:"Hilfe und Support", es:"Ayuda y soporte", pt:"Ajuda e suporte", fr:"Aide et assistance", ja:"ヘルプとサポート" },
+  geriBildirim: { tr:"Geri bildirim gönder", en:"Send feedback", de:"Feedback senden", es:"Enviar comentarios", pt:"Enviar comentários", fr:"Envoyer un retour", ja:"フィードバックを送る" },
   premium:  { tr:"Premium", en:"Premium", de:"Premium", es:"Premium", pt:"Premium", fr:"Premium", ja:"プレミアム" },
   abonelik: { tr:"Aboneliği yönet", en:"Manage subscription", de:"Abo verwalten", es:"Gestionar suscripción", pt:"Gerir subscrição", fr:"Gérer l'abonnement", ja:"サブスクリプションの管理" },
   surum:    { tr:"Sürüm", en:"Version", de:"Version", es:"Versión", pt:"Versão", fr:"Version", ja:"バージョン" },
@@ -13931,65 +13932,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
           </div>
 
-          <div className="divider" />
-
-          {/* Geri Bildirim */}
-          {!fbOpen ? (
-            <div style={{ textAlign:"center",marginBottom:24 }}>
-              <button onClick={()=>setFbOpen(true)}
-                style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(184,164,216,0.04))",border:"1px solid rgba(184,164,216,0.2)",borderRadius:16,padding:"14px 28px",cursor:"pointer",color:"#b8a4d8",fontSize:14,letterSpacing:2,fontFamily:"'Jost',sans-serif",minHeight:44 }}>
-                {t("about_send_feedback")}
-              </button>
-            </div>
-          ) : (
-            <div style={{ background:"linear-gradient(145deg,rgba(184,164,216,0.08),rgba(184,164,216,0.02))",border:"1px solid rgba(184,164,216,0.15)",borderRadius:18,padding:"20px 18px",marginBottom:24 }}>
-              <div style={{ fontSize:13,letterSpacing:2.5,color:"#b8a4d8",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif" }}>
-                {t("about_feedback_header")}
-              </div>
-              {fbDone ? (
-                <div style={{ textAlign:"center",padding:"20px 0" }}>
-                  <div style={{ fontSize:28,marginBottom:8 }}>✓</div>
-                  <div style={{ fontSize:14,color:"#50c878",letterSpacing:1.5 }}>
-                    {t("about_feedback_thanks")}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div style={{ display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",justifyContent:"center" }}>
-                    {[
-                      ["oneri", t("about_feedback_cat_oneri")],
-                      ["hata", t("about_feedback_cat_hata")],
-                      ["icerik", t("about_feedback_cat_icerik")],
-                      ["genel", t("about_feedback_cat_genel")],
-                    ].map(([k,v])=>(
-                      <button key={k} onClick={()=>setFbCat(k)}
-                        style={{ padding:"6px 14px",borderRadius:20,border:`1px solid ${fbCat===k?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:fbCat===k?"rgba(184,164,216,0.15)":"transparent",color:fbCat===k?"#b8a4d8":"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>
-                        {v}
-                      </button>
-                    ))}
-                  </div>
-                  <textarea
-                    value={fbMsg}
-                    onChange={e=>setFbMsg(e.target.value)}
-                    placeholder={t("about_feedback_ph")}
-                    rows={3}
-                    maxLength={1000}
-                    style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
-                  />
-                  <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
-                    <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
-                      style={{ padding:"10px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:13,cursor:"pointer",letterSpacing:1,minHeight:44 }}>
-                      {t("about_feedback_cancel")}
-                    </button>
-                    <button onClick={sendFeedback} disabled={!fbMsg.trim() || fbSending}
-                      style={{ padding:"10px 24px",borderRadius:12,border:"none",background:fbMsg.trim()?"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.6))":"rgba(255,255,255,0.05)",color:fbMsg.trim()?"#fff":"#555",fontSize:13,cursor:fbMsg.trim()?"pointer":"default",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",minHeight:44,opacity:fbSending?0.6:1 }}>
-                      {fbSending ? "..." : t("about_feedback_send")}
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
 
           </>
           )}
@@ -14778,6 +14720,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {/* App Review Guideline 1.5: calisan bir destek iletisimi bulunmali. */}
                   <Row icon="✉" label={pickLang(SET_TXT.destek, lang)} note="destek@sakin.life"
                     onClick={()=>{ try { window.location.href = "mailto:destek@sakin.life"; } catch(_) {} }} />
+                  {/* GERİ BİLDİRİM: "Hakkında" ekranından buraya TAŞINDI
+                      (kullanıcı isteği). Destek satırının hemen altında
+                      duruyor: ikisi de iletişim, aynı yerde aranır. Satıra
+                      basınca form bu grubun altında açılır. */}
+                  <Row icon="✎" label={pickLang(SET_TXT.geriBildirim, lang)}
+                    onClick={()=>{ try{haptic();}catch(_){} setFbOpen(v=>!v); }} />
                   {/* Renk modu: sağdaki metin tıklanabilir görünmüyordu (kullanıcı
                       bildirdi), anonim veri satırıyla AYNI sürgüye çevrildi.
                       Sürgü açık = açık tema. Mevcut durum alt notta yazılı ki
@@ -14791,6 +14739,51 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                         background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
                     </span>} />
                 </div>
+                {/* Geri bildirim formu: yukarıdaki satır açtığında görünür. */}
+                {fbOpen && (
+                  <div style={{ ...cardSt, marginTop:10, padding:"18px 16px" }}>
+                    {fbDone ? (
+                      <div style={{ textAlign:"center",padding:"16px 0" }}>
+                        <div style={{ fontSize:26,marginBottom:8 }}>✓</div>
+                        <div style={{ fontSize:14,color:"#50c878",letterSpacing:1.5 }}>{t("about_feedback_thanks")}</div>
+                      </div>
+                    ) : (
+                      <>
+                        <div style={{ display:"flex",gap:8,marginBottom:12,flexWrap:"wrap",justifyContent:"center" }}>
+                          {[
+                            ["oneri", t("about_feedback_cat_oneri")],
+                            ["hata", t("about_feedback_cat_hata")],
+                            ["icerik", t("about_feedback_cat_icerik")],
+                            ["genel", t("about_feedback_cat_genel")],
+                          ].map(([k,v])=>(
+                            <button key={k} onClick={()=>setFbCat(k)}
+                              style={{ WebkitAppearance:"none",appearance:"none",padding:"6px 14px",borderRadius:20,border:`1px solid ${fbCat===k?"rgba(184,164,216,0.5)":"rgba(255,255,255,0.1)"}`,background:fbCat===k?"rgba(184,164,216,0.15)":"transparent",color:fbCat===k?"#b8a4d8":"#888",fontSize:12,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>
+                              {v}
+                            </button>
+                          ))}
+                        </div>
+                        <textarea
+                          value={fbMsg}
+                          onChange={e=>setFbMsg(e.target.value)}
+                          placeholder={t("about_feedback_ph")}
+                          rows={3}
+                          maxLength={1000}
+                          style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
+                        />
+                        <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
+                          <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
+                            style={{ WebkitAppearance:"none",appearance:"none",padding:"10px 20px",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#888",fontSize:13,cursor:"pointer",letterSpacing:1,minHeight:44 }}>
+                            {t("about_feedback_cancel")}
+                          </button>
+                          <button onClick={sendFeedback} disabled={!fbMsg.trim() || fbSending}
+                            style={{ WebkitAppearance:"none",appearance:"none",padding:"10px 24px",borderRadius:12,border:"none",background:fbMsg.trim()?"linear-gradient(135deg,rgba(184,164,216,0.7),rgba(122,80,150,0.6))":"rgba(255,255,255,0.05)",color:fbMsg.trim()?"#fff":"#555",fontSize:13,cursor:fbMsg.trim()?"pointer":"default",letterSpacing:1.5,fontFamily:"'Jost',sans-serif",minHeight:44,opacity:fbSending?0.6:1 }}>
+                            {fbSending ? "..." : t("about_feedback_send")}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
                 {/* Dil: LangPicker kendi dropdown'unu acar, satir kalibina girmiyor. */}
                 <div style={{ ...cardSt, marginTop:10, padding:"12px 16px", display:"flex",
                   alignItems:"center", justifyContent:"space-between", gap:12 }}>
