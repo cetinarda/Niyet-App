@@ -1766,6 +1766,104 @@ const TRIAL_TXT = {
   ja: "お試し: 最初の3回のつながりはすべて開放",
 };
 
+// ── EVRİM + ORKESTRA METİNLERİ (7 dil, i18n dosyalarına dokunmadan) ─────────
+// ⚠️ HEPSİ EK-SONU GEREKTİRMEYEN kalıplarla yazıldı ("Sıradaki: Fide · 3 gün"),
+// çünkü Türkçe'de "Fide'ye / Ağaç'a" gibi ekler isme göre değişiyor ve
+// şablonla üretilince bozuk çıkıyor. Aynı sebeple sayı eki de yok
+// ("8'i senden" yerine "Senin payın: 8 nefes").
+const EVO2_TXT = {
+  next:      { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Siguiente", pt:"A seguir", fr:"Ensuite", ja:"次は" },
+  days:      { tr:"gün", en:"days", de:"Tage", es:"días", pt:"dias", fr:"jours", ja:"日" },
+  full:      { tr:"En olgun hâlindesin. Kökler derinleşmeye devam ediyor.",
+               en:"You are at full growth. The roots keep deepening.",
+               de:"Du bist voll gewachsen. Die Wurzeln vertiefen sich weiter.",
+               es:"Estás en pleno crecimiento. Las raíces siguen profundizando.",
+               pt:"Estás no crescimento pleno. As raízes continuam a aprofundar-se.",
+               fr:"Tu es à pleine croissance. Les racines continuent de s'enfoncer.",
+               ja:"いちばん成熟した姿です。根はさらに深くなっていきます。" },
+  start:     { tr:"İlk bağlantını tamamla, tohum toprağa düşsün.",
+               en:"Complete your first connection and let the seed reach the soil.",
+               de:"Schließe deine erste Verbindung ab, damit der Samen den Boden erreicht.",
+               es:"Completa tu primera conexión para que la semilla llegue a la tierra.",
+               pt:"Completa a tua primeira ligação para a semente chegar à terra.",
+               fr:"Termine ta première connexion pour que la graine touche la terre.",
+               ja:"最初のつながりを終えて、種を土に届けましょう。" },
+  // Orkestra: süs noktaları artık BUGÜNKÜ adımlarını gösteriyor, başlığı bu.
+  chord:     { tr:"Bugünkü akordun", en:"Your chord today", de:"Dein Akkord heute", es:"Tu acorde de hoy", pt:"O teu acorde de hoje", fr:"Ton accord du jour", ja:"今日のあなたの和音" },
+  myShare:   { tr:"Senin payın", en:"Your part", de:"Dein Anteil", es:"Tu parte", pt:"A tua parte", fr:"Ta part", ja:"あなたの分" },
+  min:       { tr:"dk", en:"min", de:"Min", es:"min", pt:"min", fr:"min", ja:"分" },
+};
+
+// ── SÜREKLİ BÜYÜYEN BİTKİ (Ben ekranı, evrim göstergesi) ────────────────────
+// NEDEN PARAMETRİK: eskiden üç ayrı SVG vardı (tohum / fide / ağaç) ve her biri
+// "ulaşıldı / ulaşılmadı" ikilisiydi. 4. gününde olan kullanıcı hiçbir şeyin
+// değiştiğini görmüyordu, bir sonraki sıçrama 7. gündeydi. Şimdi tek bir çizim
+// var ve `p` (0..1) ile HER GÜN biraz büyüyor: gövde uzuyor, yaprak sayısı
+// artıyor, en sonunda taç açılıyor. Yani ilerleme her gün görünür.
+//
+// `hue`: kullanıcının BASKIN ELEMENTİNDEN gelir (sakin_element_dist). Böylece
+// bitki herkeste aynı yeşil değil, kişinin haritasına göre renkleniyor: bu
+// gösterge bize özgü kalıyor, kopyalanabilir bir rozet dizisi değil.
+const PLANT_HUES = {
+  ates:   { leaf:"#e0925c", leaf2:"#c87a48", stem:"#8a6a3a" },
+  toprak: { leaf:"#7ec87e", leaf2:"#5aa85a", stem:"#6a5a30" },
+  hava:   { leaf:"#c8d05c", leaf2:"#a8b048", stem:"#7a6a38" },
+  su:     { leaf:"#5cbcc8", leaf2:"#489aa8", stem:"#4a6070" },
+};
+function plantSVG(p, hue, size = 76) {
+  const C = PLANT_HUES[hue] || PLANT_HUES.toprak;
+  const W = 64, H = 76, GROUND = 64;
+  const t = Math.max(0, Math.min(1, p));
+  const stemH = 6 + t * 42;                 // 6 → 48 px
+  const top = GROUND - stemH;
+  // Yaprak çiftleri kademeli açılır; her çift kendi eşiğinden sonra BÜYÜR,
+  // yani yeni yaprak birden belirmez, yavaşça açılır (sıçrama hissi yok).
+  const pairGrow = (th) => Math.max(0, Math.min(1, (t - th) / 0.16));
+  const pairs = [
+    { th: 0.10, y: 0.72 },
+    { th: 0.30, y: 0.52 },
+    { th: 0.52, y: 0.34 },
+  ];
+  const canopy = Math.max(0, Math.min(1, (t - 0.66) / 0.34));   // taç: son üçte bir
+  const seed = Math.max(0, 1 - t * 4);                          // tohum erirken görünür
+  return (
+    <svg width={size * (W / H)} height={size} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+      {/* Toprak */}
+      <ellipse cx="32" cy={GROUND + 4} rx={13 + t * 7} ry="3.6" fill={C.stem} opacity="0.42" />
+      {/* Tohum: yalnızca en başta, gövde uzarken kayboluyor */}
+      {seed > 0.02 && (
+        <ellipse cx="32" cy={GROUND - 3} rx="4.6" ry="5.4" fill={C.stem} opacity={0.85 * seed} />
+      )}
+      {/* Gövde */}
+      <path d={`M32 ${GROUND} Q${32 - t * 2} ${GROUND - stemH * 0.55} 32 ${top}`}
+        stroke={C.stem} strokeWidth={1.4 + t * 1.8} fill="none" strokeLinecap="round" />
+      {/* Yaprak çiftleri */}
+      {pairs.map((pr, i) => {
+        const g = pairGrow(pr.th);
+        if (g <= 0.02) return null;
+        const y = GROUND - stemH * pr.y;
+        const rx = 3.2 + g * 5.2, ry = 2.1 + g * 2.6;
+        return (
+          <g key={i} opacity={Math.min(1, g * 1.15)}>
+            <ellipse cx={32 - rx * 0.92} cy={y} rx={rx} ry={ry} fill={i % 2 ? C.leaf2 : C.leaf}
+              transform={`rotate(${-22 - g * 8} ${32 - rx * 0.92} ${y})`} />
+            <ellipse cx={32 + rx * 0.92} cy={y - 1.6} rx={rx * 0.9} ry={ry * 0.92} fill={i % 2 ? C.leaf : C.leaf2}
+              transform={`rotate(${20 + g * 8} ${32 + rx * 0.92} ${y - 1.6})`} />
+          </g>
+        );
+      })}
+      {/* Taç: olgunlaşınca açılan yumuşak küme */}
+      {canopy > 0.02 && (
+        <g opacity={Math.min(1, canopy * 1.2)}>
+          <ellipse cx="32" cy={top - 1} rx={5 + canopy * 7} ry={4 + canopy * 5.5} fill={C.leaf} />
+          <ellipse cx={32 - 7 - canopy * 3} cy={top + 5} rx={3.4 + canopy * 3.6} ry={2.8 + canopy * 2.8} fill={C.leaf2} />
+          <ellipse cx={32 + 7 + canopy * 3} cy={top + 5} rx={3.4 + canopy * 3.6} ry={2.8 + canopy * 2.8} fill={C.leaf2} />
+        </g>
+      )}
+    </svg>
+  );
+}
+
 // Paylaşım görselinin altındaki davet satırı. Hikâyede paylaşılan kartı gören
 // kişi bunun ne olduğunu ve nereden bulacağını anlamalı: tek başına "SAKİN.LIFE"
 // yazması yetmiyordu. Kısa tutuldu, 1080px genişliğe tek satır sığmalı.
@@ -2356,6 +2454,12 @@ const GLOBAL_CSS = `
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
   @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+  /* Bitkinin nefes gibi salınımı: canlı dursun ama dikkat çalmasın.
+     Dönme merkezi DİBİNDE (transform-origin), yoksa bitki havada sallanıyor
+     gibi görünüyor. 6 saniye bilerek yavaş: sakin dile uygun. */
+  @keyframes sakinSway { 0%,100%{transform:rotate(-1.1deg)} 50%{transform:rotate(1.1deg)} }
+  .sakin-plant { transform-origin: 50% 92%; animation: sakinSway 6s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .sakin-plant { animation: none; } }
   @keyframes sliceGlow   { 0%,100%{opacity:0.7} 50%{opacity:1} }
   @keyframes neuralPulse { 0%{stroke-dashoffset:40;opacity:0} 30%{opacity:1} 70%{opacity:1} 100%{stroke-dashoffset:0;opacity:0.3} }
   @keyframes neuralDot   { 0%{r:1.5;opacity:0} 20%{opacity:0.8} 50%{r:3;opacity:1} 80%{opacity:0.6} 100%{r:2;opacity:0.2} }
@@ -12930,11 +13034,43 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               varsa sahte sayı DEĞİL, dürüst bir "topluluk uyanıyor" durumu. */}
           <div style={{ background:"linear-gradient(135deg,rgba(184,164,216,0.12),rgba(255,255,255,0.05))",border:"1px solid rgba(184,164,216,0.22)",borderRadius:17,padding:"20px 20px 18px",marginBottom:24,textAlign:"center",position:"relative" }}>
             <div style={{ fontSize:13,letterSpacing:3.5,color:"#c8b0e8",marginBottom:12 }}>{pickLang(ORKESTRA_TXT.label, lang)}</div>
-            <div style={{ marginBottom:14 }}>
-              {[...Array(7)].map((_,i)=>(
-                <span key={i} style={{ display:"inline-block",width:8,height:8,borderRadius:"50%",background:`radial-gradient(circle,${CHAKRAS_7[i].pastel},transparent)`,margin:"0 3px",animation:`pulse ${1+i*0.2}s ease-in-out infinite`,animationDelay:`${i*0.14}s` }} />
-              ))}
-            </div>
+            {/* YEDİ NOKTA ARTIK SÜS DEĞİL, BUGÜNKÜ AKORDUN.
+                Eskiden yedi çakra renginde nokta durmadan yanıp sönüyordu ve
+                hiçbir şey anlatmıyordu. Orkestra metaforunun karşılığı buydu:
+                her adım bir enstrüman. Bugün tamamladığın adım kendi rengiyle
+                yanıyor, tamamlamadığın sönük duruyor; gün ilerledikçe akort
+                doluyor. Dizi ALL_MANDALA_STEPS (7): yeni kullanıcıda bağlantı
+                şartı 3 adım olsa da çakra sütunu yedi renkli kalsın, görsel
+                dil bozulmasın. */}
+            {(() => {
+              const doneCount = ALL_MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
+              const NAMES = {
+                sabah:t("bnav_morning"), gun:t("bnav_day"), nefes:t("bnav_breath"),
+                ses:t("bnav_sound"), chakra:t("bnav_chakra"), aksam:t("bnav_evening"),
+                rehber:t("mirror_label"),
+              };
+              return (
+                <div style={{ marginBottom:12 }}>
+                  <div style={{ display:"flex",justifyContent:"center",alignItems:"center",gap:7,marginBottom:7 }}>
+                    {ALL_MANDALA_STEPS.map((sid,i)=>{
+                      const on = !!stepsCompleted[sid];
+                      const c = CHAKRAS_7[i].pastel;
+                      return (
+                        <span key={sid} title={NAMES[sid] || sid} style={{ display:"inline-block",width:on?9:7,height:on?9:7,
+                          borderRadius:"50%",transition:"all 0.5s ease",
+                          background: on ? `radial-gradient(circle,${c},${c}55)` : "rgba(255,255,255,0.10)",
+                          boxShadow: on ? `0 0 9px ${c}88` : "none",
+                          animation: on ? `pulse ${2.2+i*0.18}s ease-in-out infinite` : "none",
+                          animationDelay:`${i*0.12}s` }} />
+                      );
+                    })}
+                  </div>
+                  <div style={{ fontSize:10,letterSpacing:1.6,color:"#8e86a8",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
+                    {pickLang(EVO2_TXT.chord, lang)} · {doneCount}/{ALL_MANDALA_STEPS.length}
+                  </div>
+                </div>
+              );
+            })()}
             {orkestra && orkestra.activeUsers >= 1 ? (
               <>
                 <div style={{ fontSize:15,color:"#e8e0f4",lineHeight:1.5,marginBottom:14 }}>
@@ -12951,78 +13087,118 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div><div style={{ fontSize:17,color:"#d8c8f0",fontWeight:600 }}>{orkestra.chakraMinutes.toLocaleString(localeFromLang(lang))}</div><div style={{ fontSize:11,color:"#9080b0",letterSpacing:0.5 }}>{pickLang(ORKESTRA_TXT.chakraMin, lang)}</div></div>
                   )}
                 </div>
+                {/* SENİN PAYIN: kolektif sayılar tek başına soyut kalıyordu
+                    ("13 kişi bağlandı, 36 nefes" ile kullanıcının ilişkisi yok).
+                    Son 7 günün KENDİ toplamı zaten yerelde duruyor (günlük
+                    anahtarlar), sunucuya hiçbir şey sorulmuyor. Böylece kullanıcı
+                    orkestranın içindeki kendi sesini görüyor.
+                    Hiç katkı yoksa satır HİÇ çıkmaz: "0 nefes" demek soğutur. */}
+                {(() => {
+                  let nefes = 0, freqSec = 0, chakraSec = 0;
+                  try {
+                    for (let i = 0; i < 7; i++) {
+                      const k = sakinDayKey(new Date(Date.now() - i * 86400000));
+                      nefes     += parseInt(localStorage.getItem("sakin_breath_" + k))    || 0;
+                      freqSec   += parseInt(localStorage.getItem("sakin_freq_sec_" + k))  || 0;
+                      chakraSec += parseInt(localStorage.getItem("sakin_terapi_sec_" + k))|| 0;
+                    }
+                  } catch (_) {}
+                  const freqMin = Math.round(freqSec / 60), chakraMin = Math.round(chakraSec / 60);
+                  const parts = [];
+                  // Etiketler kolektif satırdakinin AYNISI ("dakika ses",
+                  // "dakika çakra"): kelime kırpma denemedim, Japonca'da
+                  // boşluk olmadığı için her tür bölme bozuk çıkıyor.
+                  if (nefes > 0)     parts.push(`${nefes} ${pickLang(ORKESTRA_TXT.breaths, lang)}`);
+                  if (freqMin > 0)   parts.push(`${freqMin} ${pickLang(ORKESTRA_TXT.minutes, lang)}`);
+                  if (chakraMin > 0) parts.push(`${chakraMin} ${pickLang(ORKESTRA_TXT.chakraMin, lang)}`);
+                  if (!parts.length) return null;
+                  return (
+                    <div style={{ marginTop:13,paddingTop:11,borderTop:"1px solid rgba(184,164,216,0.16)",
+                      fontSize:11.5,color:"#a99cc4",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>
+                      {pickLang(EVO2_TXT.myShare, lang)}: {parts.join(" · ")}
+                    </div>
+                  );
+                })()}
               </>
             ) : (
               <div style={{ fontSize:13.5,color:"#9c93b4",lineHeight:1.6,padding:"0 6px" }}>{pickLang(ORKESTRA_TXT.waking, lang)}</div>
             )}
           </div>
-          {/* ── EVRİM: TOHUM -> FİDE -> AĞAÇ (Orkestra altı) ────────────── */}
+          {/* ── EVRİM: SÜREKLİ BÜYÜYEN BİTKİ ────────────────────────────────
+              ESKİDEN: yan yana üç kutu (tohum / fide / ağaç), her biri
+              "ulaşıldı / ulaşılmadı" ikilisi. Sorun: 4. gününde olan kullanıcı
+              hiçbir değişiklik görmüyordu, bir sonraki sıçrama 7. gündeydi;
+              üç sönük kutu da ekranı doldurup hiçbir şey anlatmıyordu.
+              ŞİMDİ: tek bir bitki var, `p` ile HER GÜN biraz büyüyor (gövde
+              uzuyor, yaprak açılıyor, sonunda taç çıkıyor) ve nefes gibi
+              salınıyor. Altında hangi aşamada olduğu + sıradakine kaç gün
+              kaldığı yazıyor, ince bir çubuk da o aralıktaki ilerlemeyi
+              gösteriyor. Rengi kullanıcının BASKIN ELEMENTİNDEN geliyor.
+              Seviye eşikleri (3 / 7 / 21) ve streakLevel matematiği
+              DEĞİŞMEDİ: yalnızca gösterim değişti. */}
           {(() => {
             const cur = streakData.current || 0;
-            const EVO = [
-              { lv:1, days:3, color:"#7ec87e", label:t("evo_seed"),
-                svg:(on)=>(<svg width="28" height="32" viewBox="0 0 28 32">
-                  <ellipse cx="14" cy="24" rx="6" ry="4" fill={on?"#8B6914":"#3a3a40"}/>
-                  <ellipse cx="14" cy="20" rx="4.5" ry="5" fill={on?"#a07830":"#3a3a40"}/>
-                  <path d="M14 18 Q12 14 14 10" fill="none" stroke={on?"#7ec87e":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                  <ellipse cx="12" cy="11" rx="3" ry="2" fill={on?"#7ec87e":"#4a4a50"} transform="rotate(-20 12 11)"/>
-                  <ellipse cx="16.5" cy="13" rx="2.5" ry="1.8" fill={on?"#5ab85a":"#3f3f45"} transform="rotate(15 16.5 13)"/>
-                </svg>)},
-              { lv:2, days:7, color:"#5ab85a", label:t("evo_sapling"),
-                svg:(on)=>(<svg width="32" height="38" viewBox="0 0 32 38">
-                  <rect x="14" y="18" width="3" height="16" rx="1.5" fill={on?"#7a5a30":"#3a3a40"}/>
-                  <ellipse cx="16" cy="34" rx="7" ry="3" fill={on?"#8B6914":"#3a3a40"} opacity={0.5}/>
-                  <path d="M15.5 18 Q10 12 7 6" fill="none" stroke={on?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                  <path d="M15.5 20 Q21 14 25 9" fill="none" stroke={on?"#5ab85a":"#4a4a50"} strokeWidth="1.5" strokeLinecap="round"/>
-                  <ellipse cx="6" cy="5.5" rx="4" ry="3" fill={on?"#5ab85a":"#3f3f45"} transform="rotate(-30 6 5.5)"/>
-                  <ellipse cx="26" cy="8.5" rx="4" ry="3" fill={on?"#4aa84a":"#3a3a40"} transform="rotate(25 26 8.5)"/>
-                  <ellipse cx="10" cy="13" rx="3" ry="2" fill={on?"#6bc86b":"#3f3f45"} transform="rotate(-15 10 13)"/>
-                  <ellipse cx="22" cy="15" rx="3" ry="2" fill={on?"#5ab85a":"#3a3a40"} transform="rotate(20 22 15)"/>
-                </svg>)},
-              { lv:3, days:21, color:"#2e9e2e", label:t("evo_tree"),
-                svg:(on)=>(<svg width="40" height="44" viewBox="0 0 40 44">
-                  <rect x="18" y="22" width="4" height="18" rx="2" fill={on?"#6a4a20":"#3a3a40"}/>
-                  <ellipse cx="20" cy="40" rx="9" ry="3" fill={on?"#8B6914":"#3a3a40"} opacity={0.4}/>
-                  <path d="M19 22 Q12 16 6 10" fill="none" stroke={on?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
-                  <path d="M21 22 Q28 16 34 10" fill="none" stroke={on?"#2e9e2e":"#4a4a50"} strokeWidth="1.8" strokeLinecap="round"/>
-                  <path d="M19 26 Q14 22 10 18" fill="none" stroke={on?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
-                  <path d="M21 26 Q26 22 30 18" fill="none" stroke={on?"#3aaa3a":"#4a4a50"} strokeWidth="1.2" strokeLinecap="round"/>
-                  <ellipse cx="5" cy="9" rx="5" ry="4" fill={on?"#2e9e2e":"#3a3a40"} transform="rotate(-25 5 9)"/>
-                  <ellipse cx="35" cy="9" rx="5" ry="4" fill={on?"#2e9e2e":"#3a3a40"} transform="rotate(25 35 9)"/>
-                  <ellipse cx="20" cy="6" rx="7" ry="5.5" fill={on?"#3ab83a":"#3a3a40"}/>
-                  <ellipse cx="12" cy="12" rx="4" ry="3" fill={on?"#4ac84a":"#3f3f45"} transform="rotate(-10 12 12)"/>
-                  <ellipse cx="28" cy="12" rx="4" ry="3" fill={on?"#4ac84a":"#3f3f45"} transform="rotate(10 28 12)"/>
-                  <ellipse cx="9" cy="17" rx="3.5" ry="2.5" fill={on?"#3aaa3a":"#3a3a40"} transform="rotate(-20 9 17)"/>
-                  <ellipse cx="31" cy="17" rx="3.5" ry="2.5" fill={on?"#3aaa3a":"#3a3a40"} transform="rotate(20 31 17)"/>
-                </svg>)},
+            const MARKS = [
+              { d: 3,  label: t("evo_seed")    },
+              { d: 7,  label: t("evo_sapling") },
+              { d: 21, label: t("evo_tree")    },
             ];
+            // Bulunulan aşama: son geçilen eşik. Hiçbiri geçilmediyse -1.
+            let idx = -1;
+            for (let i = 0; i < MARKS.length; i++) if (cur >= MARKS[i].d) idx = i;
+            const nextMark = idx + 1 < MARKS.length ? MARKS[idx + 1] : null;
+            const stageStart = idx < 0 ? 0 : MARKS[idx].d;
+            const stageEnd = nextMark ? nextMark.d : MARKS[MARKS.length - 1].d;
+            // Aşama içi ilerleme (0..1). En üstteyken tam dolu.
+            const segP = nextMark
+              ? Math.max(0, Math.min(1, (cur - stageStart) / (stageEnd - stageStart)))
+              : 1;
+            // Bitkinin toplam büyümesi: 0 gün → 21 gün ve ötesi.
+            const growth = Math.min(1, cur / 21);
+            // Baskın element (varsa) bitkinin rengini belirler.
+            const hue = (() => {
+              try {
+                const ed = JSON.parse(localStorage.getItem("sakin_element_dist") || "null");
+                if (!ed) return "toprak";
+                return ["ates","toprak","hava","su"]
+                  .reduce((a, k) => ((ed[k] || 0) > (ed[a] || 0) ? k : a), "toprak");
+              } catch { return "toprak"; }
+            })();
+            const accent = (PLANT_HUES[hue] || PLANT_HUES.toprak).leaf;
+            const stageLabel = idx < 0 ? MARKS[0].label : MARKS[idx].label;
             return (
-              <div style={{ marginBottom:20 }}>
-                <div style={{ display:"flex",gap:8 }}>
-                  {EVO.map(ev => {
-                    const reached = cur >= ev.days;
-                    const active = streakLevel === ev.lv;
-                    return (
-                      <div key={ev.lv} style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",
-                        padding:"14px 6px 10px",borderRadius:14,
-                        background: active ? `${ev.color}14` : "rgba(255,255,255,0.015)",
-                        border:`1.5px solid ${active ? `${ev.color}55` : "rgba(255,255,255,0.05)"}`,
-                        boxShadow: active ? `0 0 14px ${ev.color}22, inset 0 0 24px ${ev.color}08` : "none",
-                        opacity: reached ? 1 : 0.35, transition:"all 0.4s ease" }}>
-                        <div style={{ marginBottom:6 }}>{ev.svg(reached)}</div>
-                        <div style={{ fontSize:11,letterSpacing:1.5,fontFamily:"'Jost',sans-serif",textTransform:"uppercase",
-                          color: active ? ev.color : reached ? "#8a8a90" : "#555",fontWeight: active ? 600 : 400 }}>
-                          {ev.label}
-                        </div>
-                        <div style={{ fontSize:9.5,color: active ? "#aaa" : "#555",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
-                          {ev.days} {t("evo_days")}
-                        </div>
-                      </div>
-                    );
-                  })}
+              <div style={{ marginBottom:20,padding:"18px 16px 14px",borderRadius:16,
+                background:`linear-gradient(160deg,${accent}0e,rgba(255,255,255,0.02))`,
+                border:`1px solid ${accent}26`,display:"flex",flexDirection:"column",
+                alignItems:"center",gap:10 }}>
+                <div className="sakin-plant">{plantSVG(growth, hue, 84)}</div>
+
+                {/* Aşama adı + gün sayısı */}
+                <div style={{ display:"flex",alignItems:"baseline",gap:8,flexWrap:"wrap",justifyContent:"center" }}>
+                  <span style={{ fontSize:13,letterSpacing:2.5,textTransform:"uppercase",
+                    fontFamily:"'Jost',sans-serif",color: idx < 0 ? "#8e8e99" : accent,fontWeight:500 }}>
+                    {stageLabel}
+                  </span>
+                  <span style={{ fontSize:11.5,color:"#8e8e99",fontFamily:"'Inter',sans-serif" }}>
+                    {cur} {t("evo_days")}
+                  </span>
                 </div>
-                <div style={{ fontSize:11.5,color:"#7a7a85",textAlign:"center",marginTop:8,lineHeight:1.5,fontFamily:"'Inter',sans-serif" }}>
-                  {t("evo_desc")}
+
+                {/* Aşama içi ilerleme çubuğu: her gün gözle görülür şekilde doluyor */}
+                <div style={{ width:"100%",maxWidth:230,height:3,borderRadius:100,
+                  background:"rgba(255,255,255,0.07)",overflow:"hidden" }}>
+                  <div style={{ height:"100%",borderRadius:100,width:`${Math.round(segP*100)}%`,
+                    background:`linear-gradient(90deg,${accent}88,${accent})`,transition:"width 0.6s ease" }} />
+                </div>
+
+                {/* Sıradaki aşama / en üstteyse kapanış cümlesi */}
+                <div style={{ fontSize:11.5,color:"#9a93b3",fontFamily:"'Inter',sans-serif",
+                  textAlign:"center",lineHeight:1.55 }}>
+                  {cur <= 0
+                    ? pickLang(EVO2_TXT.start, lang)
+                    : nextMark
+                      ? `${pickLang(EVO2_TXT.next, lang)}: ${nextMark.label} · ${Math.max(0, nextMark.d - cur)} ${pickLang(EVO2_TXT.days, lang)}`
+                      : pickLang(EVO2_TXT.full, lang)}
                 </div>
               </div>
             );

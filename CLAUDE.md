@@ -321,6 +321,38 @@ Bir şeyi bozup bozmadığını anlamak için önce `isEarlyTunnel` false ile de
 altında "3 gün / 7 gün / 21 gün" yazıyor + Yolculuk sekmesinde anlatılıyor),
 kırmızı "?" balonu (kaldırılmış), 6'lı adım barı (kaldırılmış).
 
+## 🌿 EVRİM + ORKESTRA (Ben ekranı) - kullanıcı isteği: "zeki ve eğlenceli olsun"
+
+**Evrim göstergesi artık ÜÇ KUTU DEĞİL, TEK BİR BİTKİ.** `plantSVG(p, hue, size)`
+parametrik çizim: `p` (0..1, `min(1, gunSerisi/21)`) büyüdükçe gövde uzuyor,
+yaprak çiftleri sırayla AÇILIYOR (belirmiyor, yavaşça büyüyor) ve son üçte birde
+taç çıkıyor. `.sakin-plant` sınıfı nefes gibi salındırıyor (6 sn, dibinden).
+- ⚠️ **Neden değişti:** eski üç kutu "ulaşıldı / ulaşılmadı" ikilisiydi. 4.
+  gününde olan kullanıcı HİÇBİR değişiklik görmüyordu, bir sonraki sıçrama 7.
+  gündeydi. Artık her gün gözle görülür bir fark var; altındaki ince çubuk da
+  aşama içi ilerlemeyi gösteriyor.
+- **Renk kişiye özel:** `sakin_element_dist`teki BASKIN elementten geliyor
+  (`PLANT_HUES`: ates/toprak/hava/su). Herkeste aynı yeşil değil.
+- ⚠️ **Eşikler ve `streakLevel` matematiği DEĞİŞMEDİ** (3 / 7 / 21 gün, x1/x2/x4).
+  Yalnızca GÖSTERİM değişti. `badges` dizisindeki 40 hâlâ görsel karşılığı
+  olmayan ölü veri; 4. aşama ("Orman") eklenirse seviye/çarpan matematiğine de
+  karar vermek gerekir, o yüzden şimdilik eklenmedi.
+- **Metin kalıpları EK-SONU İÇERMEZ** ("Sıradaki: Fide · 3 gün"), çünkü Türkçe'de
+  "Fide'ye / Ağaç'a" ekleri isme göre değişiyor ve şablonla üretilince bozuluyor.
+  Aynı sebeple sayı eki de yok ("8'i senden" değil "Senin payın: 8 nefes").
+
+**Orkestra kartındaki yedi nokta artık SÜS DEĞİL.** Her nokta bir adım
+(`ALL_MANDALA_STEPS`); bugün tamamlanan kendi çakra rengiyle yanıyor, altında
+"Bugünkü akordun · 3/7" yazıyor. Orkestra metaforunun karşılığı bu: her adım bir
+enstrüman. Yeni kullanıcıda bağlantı şartı 3 adım olsa bile bu dizi YEDİ kalır,
+çakra sütunu görsel dili bozulmasın.
+
+**"Senin payın" satırı:** kolektif sayıların (13 kişi, 36 nefes) altında
+kullanıcının SON 7 GÜNLÜK kendi toplamı. Tamamen YEREL hesaplanıyor (günlük
+`sakin_breath_/sakin_freq_sec_/sakin_terapi_sec_` anahtarları toplanıyor),
+sunucuya hiçbir şey sorulmuyor. Katkı sıfırsa satır HİÇ çıkmaz ("0 nefes"
+demek soğutur).
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:
