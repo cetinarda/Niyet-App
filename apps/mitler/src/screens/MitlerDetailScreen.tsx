@@ -59,7 +59,11 @@ export function MitlerDetailScreen({ entry, onClose }: Props) {
     const first = sections[0]?.body ?? '';
     // Web: zarif görsel kart (indir / native paylaş → Instagram). Native: metin paylaşımı.
     if (isShareable()) {
+      // Kicker altindaki aciklama satiri: hikayede karti goren kisi ozelligi anlasin.
+      const _l = getLanguage();
+      const subGuide = ({ tr:'Bugünün sana özel arketipi', en:'Your archetype for today', de:'Dein Archetyp des Tages', es:'Tu arquetipo de hoy', pt:'O teu arquétipo de hoje', fr:'Ton archétype du jour', ja:'今日のアーキタイプ' } as any)[_l] || { tr:'Bugünün sana özel arketipi', en:'Your archetype for today', de:'Dein Archetyp des Tages', es:'Tu arquetipo de hoy', pt:'O teu arquétipo de hoje', fr:'Ton archétype du jour', ja:'今日のアーキタイプ' }.en;
       await shareCard({
+        subtitle: subGuide,
         appName: 'Sakin Mitler',
         accent,
         emoji: entry.emoji,

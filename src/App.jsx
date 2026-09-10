@@ -1779,28 +1779,20 @@ const SHARE_CTA_TXT = {
   ja: "あなたの銀河マップをつくる",
 };
 
-// ── OK'U ETİKETTEN AYIR (buton hizası) ──────────────────────────────────────
-// i18n dizeleri oku metnin İÇİNDE taşıyor: "← geri", "Sonraki Adıma Geç →".
-// Yan yana duran iki butonda etiket uzunlukları farklı olduğu için ok'lar
-// farklı satırlara düşüyor ve hiza bozuluyordu. Bu fonksiyon ok'u ayırır,
-// çağıran taraf metni üste, ok'u alta koyar; her dilde aynı hizada durur.
-// Ok bulunamazsa metin aynen döner, arrow boş kalır (kırılmaz).
-const splitArrowLabel = (s) => {
-  const str = String(s || "").trim();
-  const lead = str.match(/^([←→↑↓])\s*(.+)$/);
-  if (lead) return { arrow: lead[1], text: lead[2] };
-  const tail = str.match(/^(.+?)\s*([←→↑↓])$/);
-  if (tail) return { arrow: tail[2], text: tail[1] };
-  return { arrow: "", text: str };
-};
+// ── ADIM GEÇİŞ BUTONLARI: OK ETİKETTEN KOPMASIN ─────────────────────────────
+// i18n dizeleri oku metnin İÇİNDE taşıyor ("← geri", "Sonraki Adıma Geç →").
+// Pill dar kalınca metin sarıyor ve ok tek başına alt/üst satıra düşüyordu
+// (Android'de yaşandı; iOS'ta sığdığı için sorun yoktu). nowrap ile ok her
+// zaman etiketinin yanında kalır. Taşmaya karşı: yatay dolgu biraz kısa,
+// minWidth:0 ile buton gerekirse daralır.
 // WebkitAppearance ŞART: iOS WKWebView butona kendi görünümünü çizip şişiriyor
 // (bkz. CLAUDE.md kural 7). Chromium'da fark görünmez, iOS'ta bozuk çıkar.
-const STACKED_ARROW_BTN = {
+const INLINE_ARROW_BTN = {
   WebkitAppearance: "none", appearance: "none",
-  display: "flex", flexDirection: "column", alignItems: "center",
-  justifyContent: "center", gap: 3, lineHeight: 1.25,
+  whiteSpace: "nowrap", minWidth: 0,
+  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  paddingLeft: 18, paddingRight: 18,
 };
-const STACKED_ARROW_GLYPH = { fontSize: "0.95em", lineHeight: 1, opacity: 0.85 };
 
 // Yeni kullanıcıda bağlantının ŞARTI olmayan ama yapılabilen adımların başlığı.
 // Ton kasten davetkâr: "eksik kaldı" değil, "istersen var".
@@ -11889,26 +11881,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               })}
             </div>
 
-            {/* OK HİZASI (kullanıcı isteği): iki butonda da ok METNİN ALTINDA.
-                Eskiden i18n dizeleri oku metnin içinde taşıyordu ("← geri",
-                "Sonraki Adıma Geç →"); dar ekranda uzun etiket sarınca ok
-                aşağı, kısa etiketinki yukarıda kalıyordu, yani iki buton
-                birbirini tutmuyordu. Dizeler 7 dilde değiştirilmedi, ok burada
-                ayrılıp ikinci satıra alınıyor: hangi dilde olursa olsun hizalı.
-                align-items:stretch (satır varsayılanı) iki butonu eşit
-                yükseklikte tutar, ok satırları aynı yükseklikte oturur. */}
+            {/* OK HİZASI. SORUN YALNIZCA ANDROID'DEYDİ: iOS'ta iki etiket de tek
+                satıra sığıyor ve oklar yanda duruyor ("← geri" solda, "Sonraki
+                Adıma Geç →" sağda), yani orada zaten doğruydu. Android'de sistem
+                yazı tipi daha geniş ölçüldüğü için uzun etiket pill içinde SARIYOR
+                ve ok tek başına alt satıra düşüyordu; "← geri"de ise ok üst satırda
+                kalıyordu, iki buton birbirini tutmuyordu (kullanıcı fotoğrafı).
+                ⚠️ İLK DENEMEMDE oku bilerek alta almıştım; bu Android'i düzeltirken
+                iOS'taki DOĞRU görünümü de bozuyordu. Doğrusu ok'un yerini
+                değiştirmek değil, SARMAYI engellemek: whiteSpace:nowrap ile ok
+                etiketinden hiç kopmuyor, iki platformda da yan yana kalıyor.
+                Dar ekranda taşmasın diye yatay dolgu bir tık kısaldı ve
+                butonlar içeriğe göre daralabiliyor (minWidth:0 + flexShrink). */}
             <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center",alignItems:"stretch" }}>
               {/* Geri = geldiğin yer; eskiden sabit "nefes"e gidiyordu. Ton önce durur. */}
-              <button className="sakin-btn" style={STACKED_ARROW_BTN}
-                onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>
-                <span>{splitArrowLabel(t("back")).text}</span>
-                <span style={STACKED_ARROW_GLYPH}>{splitArrowLabel(t("back")).arrow}</span>
-              </button>
-              <button className="sakin-btn-primary" style={STACKED_ARROW_BTN}
-                onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>
-                <span>{splitArrowLabel(t("sound_btn_next")).text}</span>
-                <span style={STACKED_ARROW_GLYPH}>{splitArrowLabel(t("sound_btn_next")).arrow}</span>
-              </button>
+              <button className="sakin-btn" style={INLINE_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>{t("back")}</button>
+              <button className="sakin-btn-primary" style={INLINE_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
             </div>
           </div>
         );

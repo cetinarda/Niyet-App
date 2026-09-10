@@ -13,6 +13,10 @@ export interface ShareCardSpec {
   quote?: string;     // söz metni / rehberlik
   quoteBy?: string;   // kaynak
   cta?: string;       // alt CTA satırı (ör. "Daha fazlası için sakin.life")
+  // Kicker'ın ALTINDAKİ açıklama satırı, ör. "Bugünün sana özel rehber bitkisi".
+  // NEDEN VAR: hikâyede kartı gören kişi yalnızca "SAKİN BİTKİLER" görüyordu ve
+  // bunun ne olduğunu anlamıyordu. Bu satır özelliği tek cümlede anlatıyor
+  // (kullanıcı: "story'de dışarıdan görenlerde biraz daha anlamlaştıracak").
   fileName?: string;
   shareText?: string;
 }
@@ -141,6 +145,15 @@ export async function shareCard(spec: ShareCardSpec): Promise<void> {
     ctx.fillStyle = `rgba(${ar},${ag},${ab},0.92)`;
     ctx.font = "600 26px -apple-system, 'Helvetica Neue', Arial, sans-serif";
     ctx.fillText(spaceOut(trUpper(spec.appName || '')), W / 2, 150);
+
+    // Açıklama satırı (kicker'ın altı). Marka adı kalıyor, bunun altına ne
+    // olduğunu söyleyen tek cümle geliyor. Kicker 150'de, içerik bölgesi
+    // 240'ta başlıyor: aradaki boşluğa oturuyor, hiçbir şeyi kaydırmıyor.
+    if (spec.subtitle) {
+      ctx.fillStyle = 'rgba(255,255,255,0.62)';
+      ctx.font = "300 30px -apple-system, 'Helvetica Neue', Arial, sans-serif";
+      ctx.fillText(spec.subtitle, W / 2, 196);
+    }
 
     // İçerik bloğunu ölç. ÖNCE metni özetle (cümle sınırında kısalt), kartlar sade,
     // "özet gibi" kalsın; SONRA yine taşarsa satır kırparak "…" ile bitir → HİÇ kesilmez.
