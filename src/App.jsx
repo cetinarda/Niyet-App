@@ -1766,6 +1766,42 @@ const TRIAL_TXT = {
   ja: "お試し: 最初の3回のつながりはすべて開放",
 };
 
+// Paylaşım görselinin altındaki davet satırı. Hikâyede paylaşılan kartı gören
+// kişi bunun ne olduğunu ve nereden bulacağını anlamalı: tek başına "SAKİN.LIFE"
+// yazması yetmiyordu. Kısa tutuldu, 1080px genişliğe tek satır sığmalı.
+const SHARE_CTA_TXT = {
+  tr: "Kendi galaktik haritanı çıkar",
+  en: "Create your own galactic chart",
+  de: "Erstelle deine eigene galaktische Karte",
+  es: "Crea tu propia carta galáctica",
+  pt: "Cria o teu mapa galáctico",
+  fr: "Crée ta propre carte galactique",
+  ja: "あなたの銀河マップをつくる",
+};
+
+// ── OK'U ETİKETTEN AYIR (buton hizası) ──────────────────────────────────────
+// i18n dizeleri oku metnin İÇİNDE taşıyor: "← geri", "Sonraki Adıma Geç →".
+// Yan yana duran iki butonda etiket uzunlukları farklı olduğu için ok'lar
+// farklı satırlara düşüyor ve hiza bozuluyordu. Bu fonksiyon ok'u ayırır,
+// çağıran taraf metni üste, ok'u alta koyar; her dilde aynı hizada durur.
+// Ok bulunamazsa metin aynen döner, arrow boş kalır (kırılmaz).
+const splitArrowLabel = (s) => {
+  const str = String(s || "").trim();
+  const lead = str.match(/^([←→↑↓])\s*(.+)$/);
+  if (lead) return { arrow: lead[1], text: lead[2] };
+  const tail = str.match(/^(.+?)\s*([←→↑↓])$/);
+  if (tail) return { arrow: tail[2], text: tail[1] };
+  return { arrow: "", text: str };
+};
+// WebkitAppearance ŞART: iOS WKWebView butona kendi görünümünü çizip şişiriyor
+// (bkz. CLAUDE.md kural 7). Chromium'da fark görünmez, iOS'ta bozuk çıkar.
+const STACKED_ARROW_BTN = {
+  WebkitAppearance: "none", appearance: "none",
+  display: "flex", flexDirection: "column", alignItems: "center",
+  justifyContent: "center", gap: 3, lineHeight: 1.25,
+};
+const STACKED_ARROW_GLYPH = { fontSize: "0.95em", lineHeight: 1, opacity: 0.85 };
+
 // Yeni kullanıcıda bağlantının ŞARTI olmayan ama yapılabilen adımların başlığı.
 // Ton kasten davetkâr: "eksik kaldı" değil, "istersen var".
 const OPTIONAL_STEPS_TXT = {
@@ -5327,6 +5363,11 @@ export default function SakinApp() {
     if (idCardFromAilesi.current) { idCardFromAilesi.current = false; setShowAilesi(true); }
   };
   const [showMindClear, setShowMindClear] = useState(false);
+  // "Veya kendi karışımını yap" bölümü katlanır ve VARSAYILAN KAPALI.
+  // Neden: 18 duygu rozeti + başlıklar ekranı dolduruyordu, üstteki dört ana
+  // kart ve başlık algılanmıyordu (kullanıcı: "ekran çok dolu, üst kısımlar zor
+  // algılanıyor"). Asıl akış dört mod kartı; kendi karışımı isteyen açar.
+  const [mindCustomOpen, setMindCustomOpen] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
   // ÇİFT SES ENGELİ: "Zihni Boşalt" ses ekranının İÇİNDEN modal olarak açılıyor,
   // yani `screen` "ses" olarak kalıyor → "screen !== 'ses' ise durdur" kuralı
@@ -11848,10 +11889,26 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               })}
             </div>
 
-            <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center" }}>
+            {/* OK HİZASI (kullanıcı isteği): iki butonda da ok METNİN ALTINDA.
+                Eskiden i18n dizeleri oku metnin içinde taşıyordu ("← geri",
+                "Sonraki Adıma Geç →"); dar ekranda uzun etiket sarınca ok
+                aşağı, kısa etiketinki yukarıda kalıyordu, yani iki buton
+                birbirini tutmuyordu. Dizeler 7 dilde değiştirilmedi, ok burada
+                ayrılıp ikinci satıra alınıyor: hangi dilde olursa olsun hizalı.
+                align-items:stretch (satır varsayılanı) iki butonu eşit
+                yükseklikte tutar, ok satırları aynı yükseklikte oturur. */}
+            <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center",alignItems:"stretch" }}>
               {/* Geri = geldiğin yer; eskiden sabit "nefes"e gidiyordu. Ton önce durur. */}
-              <button className="sakin-btn" onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
+              <button className="sakin-btn" style={STACKED_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>
+                <span>{splitArrowLabel(t("back")).text}</span>
+                <span style={STACKED_ARROW_GLYPH}>{splitArrowLabel(t("back")).arrow}</span>
+              </button>
+              <button className="sakin-btn-primary" style={STACKED_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>
+                <span>{splitArrowLabel(t("sound_btn_next")).text}</span>
+                <span style={STACKED_ARROW_GLYPH}>{splitArrowLabel(t("sound_btn_next")).arrow}</span>
+              </button>
             </div>
           </div>
         );
@@ -13397,11 +13454,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             });
           }
 
-          // 10. Footer
-          ctx.fillStyle = "#605080";
-          ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+          // 10. Footer.
+          // ESKİDEN tek satır "SAKİN.LIFE" vardı ve rengi #605080 ile çok
+          // sönüktü. Hikâyede paylaşılan görsel bizim en ucuz edinme kanalımız
+          // ama gören kişi bunun ne olduğunu ve nereden bulacağını anlamıyordu
+          // (kullanıcı: "altta insanların nereden bulabileceğine dair bir link
+          // ya da daha açıklayıcı bir şey olabilir"). Artık iki satır:
+          // üstte ne olduğunu söyleyen kısa davet, altta adresin kendisi,
+          // ikisi de okunur parlaklıkta.
           ctx.textAlign = "center";
-          ctx.fillText("SAKİN.LIFE", 540, 1880);
+          ctx.fillStyle = "#9a8ac0";
+          ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(pickLang(SHARE_CTA_TXT, lang), 540, 1856);
+          ctx.fillStyle = "#c3b2e2";
+          ctx.font = "400 34px -apple-system, 'Jost', sans-serif";
+          ctx.fillText("sakin.life", 540, 1898);
 
           // Export → share sheet (Save to Files, paylaş vs.)
           canvas.toBlob(async (blob) => {
@@ -13603,12 +13670,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   return (
                     <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:10 }}>
                       <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginBottom:8,textAlign:"center" }}>{pickLang(ELEM_I18N.title, lang)}</div>
-                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
+                      {/* HİZA (kullanıcı bildirdi: "ateş biraz sağa, toprak sola
+                          kaçmış gibi 1-2px"). Sebep: △ ⊕ ○ ▽ glifleri farklı
+                          genişlikte ve farklı optik merkeze sahip; yan yana
+                          dizilince satır başları kayıyordu. Glif artık SABİT
+                          genişlikte bir kutuda ortalanıyor, dört satır da aynı
+                          x'ten başlıyor. tabular-nums da yüzdeleri hizalar.
+                          Sütun arası 6 → 20px: soldaki yüzdeler sağdaki kolonun
+                          ikonuna yapışıyordu (kullanıcı: "fazla yakın"). */}
+                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"7px 20px" }}>
                         {items.map(([k,color,glyph,name]) => (
                           <div key={k} style={{ display:"flex",alignItems:"center",gap:7 }}>
-                            <span style={{ fontSize:13,color }}>{glyph}</span>
+                            <span style={{ fontSize:13,color,width:14,flexShrink:0,textAlign:"center",
+                              display:"inline-flex",alignItems:"center",justifyContent:"center",lineHeight:1 }}>{glyph}</span>
                             <span style={{ fontSize:11,color:"#cfc8e0",flex:1 }}>{name}</span>
-                            <span style={{ fontSize:13,color,fontWeight:600 }}>{pctFmt(Math.round((ed[k]||0)*100), lang)}</span>
+                            <span style={{ fontSize:13,color,fontWeight:600,fontVariantNumeric:"tabular-nums" }}>{pctFmt(Math.round((ed[k]||0)*100), lang)}</span>
                           </div>
                         ))}
                       </div>
@@ -13712,14 +13788,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
       })()}
 
-      {/* ZİHNİ BOŞALT: mod seçim menüsü */}
+      {/* ZİHNİ BOŞALT: mod seçim menüsü.
+          Üst boşluk 20px → 52px: başlık çentikli cihazlarda durum çubuğunun
+          altına giriyordu (kullanıcı ekran görüntüsü: "ZİHNİ BOŞALT" yazısı
+          saat/pil satırıyla üst üste). safe-area zaten ekleniyordu ama içerik
+          uzun olduğu için "safe center" hizalaması bloğu tepeye yapıştırıyor. */}
       {showMindClear && !activeMindMode && (
-        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(52px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:480,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
+            {/* mind_subtitle ("Bugün nereye sığınmak istersin?") KALDIRILDI
+                (kullanıcı isteği). Dört mod kartının kendi adı zaten soruyu
+                cevaplıyordu, satır ekranı uzatmaktan başka iş yapmıyordu. */}
             <div style={{ textAlign:"center",marginBottom:6 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("mind_title")}</div>
-              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{t("mind_subtitle")}</div>
-              <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{t("mind_subdesc")}</div>
+              <div style={{ fontSize:12,color:"#8e8e99",lineHeight:1.7 }}>{t("mind_subdesc")}</div>
             </div>
 
             {/* Doğa sesleri: opsiyonel katman, drone'un altına serilir */}
@@ -13766,11 +13848,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ))}
             </div>
 
-            {/* Duygu durumuna göre karışım, kullanıcı kendi karışımını yapar */}
+            {/* Duygu durumuna göre karışım: KATLANIR, varsayılan KAPALI.
+                18 rozetlik ızgara açıkken ekranın yarısını kaplıyor ve üstteki
+                asıl akışı (dört mod kartı) bastırıyordu. */}
             <div style={{ marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+              <button onClick={()=>setMindCustomOpen(v=>!v)}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",background:"none",border:"none",
+                  cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+                  padding:"4px 0",marginBottom: mindCustomOpen ? 10 : 0 }}>
+                <span style={{ fontSize:11,letterSpacing:4,color:"#8e8e99",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                  {t("mind_or_custom")}
+                </span>
+                <span style={{ fontSize:10,color:"#777",transform: mindCustomOpen?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s",lineHeight:1 }}>▾</span>
+              </button>
+              {mindCustomOpen && (<>
               <div style={{ textAlign:"center",marginBottom:10 }}>
-                <div style={{ fontSize:11,letterSpacing:4,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{t("mind_or_custom")}</div>
-                <div style={{ fontSize:11,color:"#666",lineHeight:1.6 }}>{t("mind_pick_3")}</div>
+                <div style={{ fontSize:11,color:"#8e8e99",lineHeight:1.6 }}>{t("mind_pick_3")}</div>
               </div>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6 }}>
                 {MIND_MOODS.map(mood => {
@@ -13836,6 +13929,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   ◎ {t("mind_start_mix").replace("{n}", String(selectedMoods.length))}
                 </button>
               )}
+              </>)}
             </div>
 
             <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
