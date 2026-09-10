@@ -551,10 +551,14 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                       <TouchableOpacity
                         onPress={() => {
                           const moreCta = ({ tr:'Daha fazlası için sakin.life', en:'More at sakin.life', de:'Mehr auf sakin.life', es:'Más en sakin.life', pt:'Mais em sakin.life', fr:'Plus sur sakin.life', ja:'詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                          // Kicker altindaki aciklama: hikayede karti goren kisi
+                          // ozelligi anlasin (kullanici istegi).
+                          const subGuide = ({ tr:'Bugünün sana özel rehber taşı', en:'Your guide stone for today', de:'Dein Stein des Tages', es:'Tu piedra guía de hoy', pt:'A tua pedra guia de hoje', fr:'Ta pierre guide du jour', ja:'今日のガイドストーン' } as any)[lang] || { tr:'Bugünün sana özel rehber taşı', en:'Your guide stone for today', de:'Dein Stein des Tages', es:'Tu piedra guía de hoy', pt:'A tua pedra guia de hoje', fr:'Ta pierre guide du jour', ja:'今日のガイドストーン' }.en;
+                          const subQuote = ({ tr:'Günün sözü', en:'Quote of the day', de:'Zitat des Tages', es:'Frase del día', pt:'Frase do dia', fr:'Citation du jour', ja:'今日のことば' } as any)[lang] || { tr:'Günün sözü', en:'Quote of the day', de:'Zitat des Tages', es:'Frase del día', pt:'Frase do dia', fr:'Citation du jour', ja:'今日のことば' }.en;
                           if (step === 0 && stone) {
-                            shareCard({ appName: 'Sakin Taşlar', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: stone.name, meta: `${stone.element} · ${stone.chakra}`, body: (stone as any).dailyMessage, cta: moreCta, fileName: `sakin-${stone.name}.png`, shareText: `${stone.name}: sakin.life` });
+                            shareCard({ subtitle: subGuide, appName: 'Sakin Taşlar', accent: deck.color, emoji: (stone as any).emoji, imageUrl: (stone as any).imageUrl, title: stone.name, meta: `${stone.element} · ${stone.chakra}`, body: (stone as any).dailyMessage, cta: moreCta, fileName: `sakin-${stone.name}.png`, shareText: `${stone.name}: sakin.life` });
                           } else if (step === 1 && quote) {
-                            shareCard({ appName: 'Sakin Taşlar', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}”: ${(quote as any).source} · sakin.life` });
+                            shareCard({ subtitle: subQuote, appName: 'Sakin Taşlar', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}”: ${(quote as any).source} · sakin.life` });
                           }
                         }}
                         hitSlop={10}

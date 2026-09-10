@@ -54,8 +54,10 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
             <TouchableOpacity
               onPress={() => {
                 const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                // Kicker altindaki aciklama satiri (paylasim kartinda).
+                const subGuide = ({ tr:'Bugünün sana özel rehber hayvanı', en:'Your guide animal for today', de:'Dein Krafttier des Tages', es:'Tu animal guía de hoy', pt:'O teu animal guia de hoje', fr:'Ton animal guide du jour', ja:'今日のガイドアニマル' } as any)[lang] || { tr:'Bugünün sana özel rehber hayvanı', en:'Your guide animal for today', de:'Dein Krafttier des Tages', es:'Tu animal guía de hoy', pt:'O teu animal guia de hoje', fr:'Ton animal guide du jour', ja:'今日のガイドアニマル' }.en;
                 shareCard({
-                  appName: 'Sakin Hayvan', accent: Colors.teal, emoji: animal.emoji, imageUrl: animal.imageUrl,
+                  subtitle: subGuide, appName: 'Sakin Hayvan', accent: Colors.teal, emoji: animal.emoji, imageUrl: animal.imageUrl,
                   title: animal.name, meta: `${animal.element} · ${animal.symbolism?.[0] || ''}`.replace(/ · $/, ''),
                   body: `${animal.dailyMessage} ${animal.anatolianMeaning || ''}`.trim(), cta: moreCta,
                   fileName: `sakin-${animal.name}.png`, shareText: `${animal.name}: sakin.life`,

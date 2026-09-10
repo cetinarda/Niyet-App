@@ -1753,6 +1753,59 @@ const PREMIUM_BREATH_MODES = ["478", "kutu", "sakinletici", "uyku", "merkez", "y
 const PREMIUM_FREQ_HZ = [528, 639, 741, 852, 963];
 const PREMIUM_WORDS_TR = ["berraklık", "güç", "özgürlük", "neşe", "şükür", "güven"];
 
+// Yeni kullanıcı denemesi bilgilendirmesi (bkz. genericUnlocked, App gövdesi).
+// Kilit deneme bitince GERİ GELDİĞİ için bu satır şart: kullanıcı en baştan
+// geçici olduğunu bilsin, 3. tünelden sonra kendini kandırılmış hissetmesin.
+const TRIAL_TXT = {
+  tr: "Deneme: ilk 3 bağlantı boyunca hepsi açık",
+  en: "Trial: everything open for your first 3 connections",
+  de: "Testphase: bei deinen ersten 3 Verbindungen ist alles offen",
+  es: "Prueba: todo abierto durante tus primeras 3 conexiones",
+  pt: "Teste: tudo aberto nas tuas primeiras 3 ligações",
+  fr: "Essai : tout est ouvert pour tes 3 premières connexions",
+  ja: "お試し: 最初の3回のつながりはすべて開放",
+};
+
+// Paylaşım görselinin altındaki davet satırı. Hikâyede paylaşılan kartı gören
+// kişi bunun ne olduğunu ve nereden bulacağını anlamalı: tek başına "SAKİN.LIFE"
+// yazması yetmiyordu. Kısa tutuldu, 1080px genişliğe tek satır sığmalı.
+const SHARE_CTA_TXT = {
+  tr: "Kendi galaktik haritanı çıkar",
+  en: "Create your own galactic chart",
+  de: "Erstelle deine eigene galaktische Karte",
+  es: "Crea tu propia carta galáctica",
+  pt: "Cria o teu mapa galáctico",
+  fr: "Crée ta propre carte galactique",
+  ja: "あなたの銀河マップをつくる",
+};
+
+// ── ADIM GEÇİŞ BUTONLARI: OK ETİKETTEN KOPMASIN ─────────────────────────────
+// i18n dizeleri oku metnin İÇİNDE taşıyor ("← geri", "Sonraki Adıma Geç →").
+// Pill dar kalınca metin sarıyor ve ok tek başına alt/üst satıra düşüyordu
+// (Android'de yaşandı; iOS'ta sığdığı için sorun yoktu). nowrap ile ok her
+// zaman etiketinin yanında kalır. Taşmaya karşı: yatay dolgu biraz kısa,
+// minWidth:0 ile buton gerekirse daralır.
+// WebkitAppearance ŞART: iOS WKWebView butona kendi görünümünü çizip şişiriyor
+// (bkz. CLAUDE.md kural 7). Chromium'da fark görünmez, iOS'ta bozuk çıkar.
+const INLINE_ARROW_BTN = {
+  WebkitAppearance: "none", appearance: "none",
+  whiteSpace: "nowrap", minWidth: 0,
+  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  paddingLeft: 18, paddingRight: 18,
+};
+
+// Yeni kullanıcıda bağlantının ŞARTI olmayan ama yapılabilen adımların başlığı.
+// Ton kasten davetkâr: "eksik kaldı" değil, "istersen var".
+const OPTIONAL_STEPS_TXT = {
+  tr: "Dilersen devam et",
+  en: "Continue if you like",
+  de: "Mach weiter, wenn du magst",
+  es: "Continúa si quieres",
+  pt: "Continua se quiseres",
+  fr: "Continue si tu veux",
+  ja: "よければ続けて",
+};
+
 // Duygu durumları: kullanıcı seçer, frekanslar karışır (procedural; tıbbi iddia yok)
 const MIND_MOODS = [
   { id:"endiseli",  icon:"🌊", labelTr:"Endişeli",     labelEn:"Anxious",            labelDe:"Ängstlich",       labelEs:"Ansioso",            labelPt:"Ansioso",            labelFr:"Anxieux",            labelJa:"不安",         frequencies:[96, 144, 216],  colors:["#4a8aa0","#7ab0c4"] },
@@ -3830,7 +3883,7 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
       {progress < 1 && (
         <div className="fade-up" style={{ width:"80%",maxWidth:240,marginBottom:16 }}>
           <div style={{ display:"flex",justifyContent:"space-between",marginBottom:6 }}>
-            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#666666" }}>{displayMins}:{displaySecs}</span>
+            <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#8e8e99" }}>{displayMins}:{displaySecs}</span>
             <span style={{ fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:2,color:"#888888" }}>{Math.round(progress*100)}%</span>
           </div>
           <div style={{ width:"100%",height:4,background:"rgba(255,255,255,0.08)",borderRadius:2,overflow:"hidden" }}>
@@ -5302,6 +5355,11 @@ export default function SakinApp() {
     if (idCardFromAilesi.current) { idCardFromAilesi.current = false; setShowAilesi(true); }
   };
   const [showMindClear, setShowMindClear] = useState(false);
+  // "Veya kendi karışımını yap" bölümü katlanır ve VARSAYILAN KAPALI.
+  // Neden: 18 duygu rozeti + başlıklar ekranı dolduruyordu, üstteki dört ana
+  // kart ve başlık algılanmıyordu (kullanıcı: "ekran çok dolu, üst kısımlar zor
+  // algılanıyor"). Asıl akış dört mod kartı; kendi karışımı isteyen açar.
+  const [mindCustomOpen, setMindCustomOpen] = useState(false);
   const [activeMindMode, setActiveMindMode] = useState(null);
   // ÇİFT SES ENGELİ: "Zihni Boşalt" ses ekranının İÇİNDEN modal olarak açılıyor,
   // yani `screen` "ses" olarak kalıyor → "screen !== 'ses' ise durdur" kuralı
@@ -5946,10 +6004,47 @@ export default function SakinApp() {
   // olabilir ya da 3 seansta, nasıl yapmak isterse kullanıcı"). Sayaç gün boyunca
   // BİRİKİR, yani tek uzun seans da birkaç kısa seans da olur. Tek seansın 120 sn'ye
   // ulaşabilmesi için terapi seans tavanı 90 → 120 sn yükseltildi (getChakraDuration).
-  const isEarlyTunnel = (streakData.totalTunnels || 0) < 3;
+  // ⚠️ BUGÜNÜ SAYMA. Eskiden doğrudan `totalTunnels < 3` bakılıyordu; bu, 3. tünel
+  // TAMAMLANDIĞI AN sayacı 3'e çıkarıp deneme dönemini o saniye bitiriyordu.
+  // Sonuç kullanıcı gözünde bir hata gibi görünürdü: bağlantıyı bitirdiği anda
+  // adım sayısı 3'ten 7'ye fırlar, yüzde geri düşer, jenerik içerik kilitlenir,
+  // yani "az önce tamamladığım şey geri alındı" hissi. Bugün zaten kapandıysa
+  // (lastDate === todayKey) o tüneli saymıyoruz: geçiş GÜN SINIRINDA olur,
+  // kullanıcı ertesi gün tam düzene açılır.
+  const tunnelsBeforeToday = (streakData.totalTunnels || 0)
+    - (streakData.lastDate === todayKey ? 1 : 0);
+  const isEarlyTunnel = tunnelsBeforeToday < 3;
   const STEP_MIN = isEarlyTunnel
     ? { nefes: 5, ses: 30, chakra: 60, gun: 1 }
     : { nefes: 10, ses: 60, chakra: 120, gun: 3 };
+  // ── YENİ KULLANICI DENEMESİ (kullanıcı kararı, Eyl 2026) ────────────────────
+  // İlk 3 TÜNEL boyunca (ilk 3 gün değil: tünel = günün bağlantısının tamamlanması)
+  // jenerik içerik açık: nefes modları, solfeggio frekansları, niyet kelimeleri.
+  // 3. tünelden sonra kilit GERİ GELİR.
+  // NEDEN: bu üçü internette bedava dolaşan jenerik teknikler; kilitli olmaları
+  // ücretsiz katmanı demo gibi gösteriyordu. Bizi ayıran şey doğum haritasına
+  // bağlı kişisel yorum (İçsel Ayna, haftalık rapor), kutu nefesi değil.
+  // NEDEN KALICI AÇMIYORUZ: kullanıcı "test gibi olsun" dedi; deneme bitince
+  // kilidin dönmesi kaybetme anını yaratıyor, dönüşüm kararı orada veriliyor.
+  // ⚠️ Kilit sürprize dönüşmesin diye deneme boyunca ekranlarda TRIAL_TXT
+  // bilgilendirmesi görünür (aşağıda), yani kullanıcı bunun geçici olduğunu
+  // en baştan biliyor.
+  const genericUnlocked = isPremium || isEarlyTunnel;
+  // Yalnızca bilgilendirme şeridi için: premium kullanıcıya "deneme" demenin
+  // anlamı yok, o zaten kalıcı açık.
+  const genericTrial = isEarlyTunnel && !isPremium;
+  // Deneme bilgilendirmesi: kilidin geçici olarak AÇIK olduğu her ekranda
+  // (niyet kelimeleri, nefes modları, frekanslar) aynı satır görünür.
+  // Bileşen değil düz fonksiyon: her render'da yeni bileşen tipi üretip
+  // gereksiz remount yaratmasın.
+  const trialNote = () => genericTrial ? (
+    <div style={{ margin:"10px auto 0",maxWidth:300,textAlign:"center",
+      fontSize:10.5,letterSpacing:1.2,lineHeight:1.5,color:"#9a8fb8",
+      fontFamily:"'Jost',sans-serif",padding:"7px 12px",borderRadius:10,
+      background:"rgba(184,164,216,0.07)",border:"1px solid rgba(184,164,216,0.18)" }}>
+      {pickLang(TRIAL_TXT, lang)}
+    </div>
+  ) : null;
   const readTerapiSec = () => { try { return parseInt(localStorage.getItem("sakin_terapi_sec_" + todayKey)) || 0; } catch { return 0; } };
   // gunTasksDone state'i bu satırdan SONRA tanımlı (TDZ), doğrudan localStorage'dan oku.
   const readGunTasks = () => {
@@ -6006,7 +6101,24 @@ export default function SakinApp() {
   // (Kullanıcı önce "harita'yı çıkar, 6 yeterli" dedi, sonra "vazgeçtim 7 aşama kalsın
   // ama harita yerine ayna ekranına tıklamasını ekle; tıklaması yeterli, soru sormasına
   // gerek yok" dedi.) Ayna = "rehber" ekranı; şart yok, ekrana girmek adımı tamamlar.
-  const MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","rehber"];
+  const ALL_MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","rehber"];
+  // ── YENİ KULLANICI: 7 ADIM YERİNE 3 (ilk 3 tünel) ───────────────────────────
+  // Kullanıcı kararı (Eyl 2026): yeni kullanıcıda günlük yük 7 modülden 3'e iner,
+  // 3. tünelden sonra tam 7'ye çıkar. Kalan 4 adım SİLİNMİYOR, aşağıdaki
+  // katlanır "dilersen devam et" bölümünde duruyor ve istenirse yapılabiliyor;
+  // sadece bağlantının ŞARTI olmaktan çıkıyorlar.
+  // NEDEN BU ÜÇÜ (kullanıcı seçti): üçü de günün HERHANGİ bir saatinde
+  // bitirilebiliyor. sabah = 3 kelime + niyet · nefes = ilk tünelde 5 nefes ·
+  // rehber (Ayna) = ekrana girmek yeterli, şart yok.
+  // Kasten DIŞARIDA bırakılanlar: "aksam" (akşam kapanışı gece açılıyor, sabah
+  // kurulan yeni kullanıcı ilk günü tamamlayamazdı), "gun" (görev AI'dan geliyor,
+  // ağ hatası/günlük limit adımı tıkayabilir), "ses"/"chakra" (süre şartı var).
+  const EARLY_MANDALA_STEPS = ["sabah","nefes","rehber"];
+  const MANDALA_STEPS = isEarlyTunnel ? EARLY_MANDALA_STEPS : ALL_MANDALA_STEPS;
+  // Deneme dönemindeki kullanıcıya "şu an şart olmayan" adımlar (katlanır bölüm).
+  const OPTIONAL_STEPS = isEarlyTunnel
+    ? ALL_MANDALA_STEPS.filter(s => !EARLY_MANDALA_STEPS.includes(s))
+    : [];
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
   // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
@@ -6459,7 +6571,17 @@ export default function SakinApp() {
       </button>
     </div>
   );
+  // YOL SEÇİMİ ("Bugün ne istiyorum?": sakinleşmek / kendimi tanımak).
+  // ARTIK YALNIZCA YENİ KULLANICIDA (ilk 3 tünel) çıkar.
+  // ÖNCEDEN: HAZIRIM'a her basıldığında, yani pratikte HER GÜN, SONSUZA KADAR
+  // çıkıyordu ("bir daha gösterme" seçeneği de kaldırılmıştı, kimse kapatamıyordu).
+  // Yeni kullanıcı için bu ekran işe yarıyor: nereden başlayacağını seçtiriyor.
+  // Ama yolunu çoktan bulmuş kullanıcı için her günün başında çıkan, kapatılması
+  // gereken bir engel haline geliyordu (kullanıcı: "sade basit yormadan").
+  // 3 tünelden sonra kullanıcı zaten iki yolu da biliyor, alt bardan tek dokunuşla
+  // ikisine de gidebiliyor; ekranın işi bitmiş oluyor.
   const maybeShowNedir = () => {
+    if (!isEarlyTunnel) return;
     try { if (localStorage.getItem("sakin_nedir_off") !== "1") setShowNedir(true); } catch(_) {}
   };
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
@@ -8080,7 +8202,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const hour   = time.getHours();
   const dayPct = ((hour*60+time.getMinutes())/1440)*100;
   const toggleWord = w => {
-    if (!isPremium && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
+    if (!genericUnlocked && PREMIUM_WORDS.includes(w)) { setScreen("fiyat"); return; }
     setSelectedWords(prev => prev.includes(w)?prev.filter(x=>x!==w):prev.length<3?[...prev,w]:prev);
   };
   const breathLabel = breathStarted ? ({ready:"",inhale:t("breath_inhale"),hold:t("breath_hold"),exhale:t("breath_exhale"),hold2:t("breath_rest")}[breathPhase]||"") : "";
@@ -10698,20 +10820,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             ) : (
               <div style={{ textAlign:"left",maxWidth:280,margin:"0 auto",display:"flex",flexDirection:"column" }}>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#8e8e99",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_dob_label")}</div>
                   <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
                   {dateWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("birth_date_required")}</div>}
                 </div>
                 <div style={{ marginBottom:10 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_optional")}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#8e8e99",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_time_optional")}</div>
                   <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
                 </div>
                 <div style={{ marginBottom:14 }}>
-                  <div style={{ fontSize:11,letterSpacing:2,color:"#666666",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_ascendant")}</div>
+                  <div style={{ fontSize:11,letterSpacing:2,color:"#8e8e99",marginBottom:4,textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>{t("birth_city_ascendant")}</div>
                   <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
                   {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:5,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
                 </div>
-                <div style={{ fontSize:11,letterSpacing:1,color:"#555555",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
+                <div style={{ fontSize:11,letterSpacing:1,color:"#8e8e99",marginBottom:14,textAlign:"center",fontFamily:"'Jost',sans-serif",lineHeight:1.5 }}>
                   {t("birth_data_safe")}
                 </div>
                 <button className="sakin-btn-primary" style={{ width:"100%",alignSelf:"stretch",boxSizing:"border-box",padding:"11px 16px",fontSize:13,letterSpacing:1.5,whiteSpace:"nowrap" }}
@@ -10753,7 +10875,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
 
       {/* BAĞLANTI: insan iskeleti çakra sistemi */}
       {screen==="mandala" && (() => {
-        const steps = [
+        // Omurgadaki adım düğümleri. DENEYİMLİ kullanıcıda (3+ tünel) bu dizi
+        // BİREBİR eskisi gibi: sıra, renkler ve 7. düğümün "harita" olması dahil
+        // hiçbir şey değişmedi, o akışa dokunulmuyor.
+        // YENİ KULLANICIDA (ilk 3 tünel) yalnızca MANDALA_STEPS'teki 3 adım
+        // çiziliyor; böylece gövdede 7 düğüm görünürken sayacın "/3" demesi gibi
+        // bir çelişki oluşmuyor (raporun "sayaç tutarsızlığı" bulgusu).
+        const STEP_META = {
+          sabah:  {label:t("bnav_morning"),    color:"#f0a060", glow:"255,140,60"},
+          nefes:  {label:t("bnav_breath"),     color:"#60b8e8", glow:"80,160,220"},
+          ses:    {label:t("bnav_sound"),      color:"#a07ae0", glow:"160,122,224"},
+          chakra: {label:t("bnav_chakra"),     color:"#b87adc", glow:"180,100,255"},
+          gun:    {label:t("bnav_day"),        color:"#e8d060", glow:"230,200,60"},
+          aksam:  {label:t("bnav_evening"),    color:"#7ab0e0", glow:"100,150,220"},
+          rehber: {label:t("mirror_label"),    color:"#a070d0", glow:"160,112,208"},
+        };
+        const steps = isEarlyTunnel
+          ? MANDALA_STEPS.map(id => ({ id, ...STEP_META[id] }))
+          : [
           {id:"sabah",  label:t("bnav_morning"),  color:"#f0a060", glow:"255,140,60"},
           {id:"nefes",  label:t("bnav_breath"),   color:"#60b8e8", glow:"80,160,220"},
           {id:"ses",    label:t("bnav_sound"),    color:"#a07ae0", glow:"160,122,224"},
@@ -10828,15 +10967,25 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             {(() => {
               const pct = completedStepCount / N;
               const lightY = 405 - pct * 374;
+              // ⚠️ EskiDEN buradaki dizi steps[0]..steps[6]'yı SABİT indeksle
+              // okuyordu. Yeni kullanıcıda `steps` 3 elemanlı olduğu için bu
+              // "undefined.label" ile çökerdi; adım sayısına göre üretiliyor.
+              // 7 adımlık dizilim BİREBİR korunuyor (335·294·254·213·173·132·92),
+              // yani deneyimli kullanıcının gördüğü omurga hiç değişmedi.
+              // 3 adımda aynı üst/alt sınır içinde eşit aralık: 335 · 213 · 92.
+              const NODE_Y = steps.length === 7
+                ? [335, 294, 254, 213, 173, 132, 92]
+                : steps.length === 3 ? [335, 213, 92]
+                : steps.map((_, i) => Math.round(335 - i * (243 / Math.max(1, steps.length - 1))));
               const chakraNodes = [
                 {y:390, label:t("mandala_earth_lower"),     color:"#8B6914", zone:"sub"},
-                {y:335, label:steps[0].label,                color:steps[0].color, id:steps[0].id, zone:"lower"},
-                {y:294, label:steps[1].label,                color:steps[1].color, id:steps[1].id, zone:"lower"},
-                {y:254, label:steps[2].label,                color:steps[2].color, id:steps[2].id, zone:"mid"},
-                {y:213, label:steps[3].label,                color:steps[3].color, id:steps[3].id, zone:"mid"},
-                {y:173, label:steps[4].label,                color:steps[4].color, id:steps[4].id, zone:"upper"},
-                {y:132, label:steps[5].label,                color:steps[5].color, id:steps[5].id, zone:"upper"},
-                {y:92,  label:steps[6].label,                color:steps[6].color, id:steps[6].id, zone:"upper"},
+                ...steps.map((s, i) => ({
+                  y: NODE_Y[i], label: s.label, color: s.color, id: s.id,
+                  // zone yalnızca yarıçapı (sub/supra 8, diğerleri 10) ve id'siz
+                  // düğümlerin "done" hesabını etkiliyor; adım düğümlerinin
+                  // hepsinin id'si var, o yüzden bu etiket görüntüyü değiştirmez.
+                  zone: i < 2 ? "lower" : i < 4 ? "mid" : "upper",
+                })),
                 {y:31,  label:t("mandala_sky_lower"),       color:"#cfd8dc", zone:"supra"},
               ];
               // Android'de gerçek cihazlarda kullanılabilir dikey alan iOS'tan
@@ -10912,14 +11061,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     ))}
                     <path id="spinePath" d="M110,390 L110,31" fill="none" stroke="none" />
 
-                    {/* Insan silueti (kompakt) */}
-                    <circle cx="110" cy="78" r="17" fill="none" stroke="rgba(255,255,255,0.20)" strokeWidth="1.4" />
-                    <line x1="110" y1="95" x2="110" y2="109" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" />
-                    <path d="M86 109 Q110 106 134 109 L131 257 Q110 262 89 257Z" fill="none" stroke="rgba(255,255,255,0.16)" strokeWidth="1.2" />
-                    <path d="M86 117 Q70 142 62 190" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    <path d="M134 117 Q150 142 158 190" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    <path d="M96 257 Q93 305 89 365" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
-                    <path d="M124 257 Q127 305 131 365" stroke="rgba(255,255,255,0.14)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    {/* Insan silueti (kompakt).
+                        OPAKLIK YÜKSELTİLDİ (0.08-0.20 → 0.26-0.42). Dış UX raporu
+                        bunu ölçtü: uygulamanın ANA METAFORU (bedene inen ışık)
+                        neredeyse görünmüyordu, mağaza galerisindeki ekran
+                        görüntüsü boş siyah kare gibi duruyordu. Çizgiler hâlâ
+                        ince (1.2-1.4px) ve beyazın kendisi değil, yalnızca
+                        seçilebilir hale geldi; sakin dil bozulmuyor.
+                        Oranlar korunuyor: kafa en belirgin, boyun en sönük. */}
+                    <circle cx="110" cy="78" r="17" fill="none" stroke="rgba(255,255,255,0.42)" strokeWidth="1.4" />
+                    <line x1="110" y1="95" x2="110" y2="109" stroke="rgba(255,255,255,0.26)" strokeWidth="1.2" />
+                    <path d="M86 109 Q110 106 134 109 L131 257 Q110 262 89 257Z" fill="none" stroke="rgba(255,255,255,0.36)" strokeWidth="1.2" />
+                    <path d="M86 117 Q70 142 62 190" stroke="rgba(255,255,255,0.32)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M134 117 Q150 142 158 190" stroke="rgba(255,255,255,0.32)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M96 257 Q93 305 89 365" stroke="rgba(255,255,255,0.32)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
+                    <path d="M124 257 Q127 305 131 365" stroke="rgba(255,255,255,0.32)" strokeWidth="1.2" fill="none" strokeLinecap="round"/>
 
                     {/* Çakra düğümleri */}
                     {chakraNodes.map((node,i) => {
@@ -10941,9 +11097,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           {/* İç nokta */}
                           {(done||lit) && <circle cx="110" cy={node.y} r={r*0.35} fill={`${node.color}`} opacity={done?0.9:0.4}
                             style={{animation:done?`neuralGlow ${1.5+i*0.15}s ease-in-out infinite`:"none"}} />}
-                          {/* Etiket */}
+                          {/* Etiket. Tamamlanmamış adımın ADI okunabilir olmalı:
+                              kullanıcı sıradaki adımın ne olduğunu buradan öğreniyor.
+                              Sönük hâli 0.15 → 0.40 (dış UX raporunun kontrast bulgusu). */}
                           <text x={i%2===0?"72":"148"} y={node.y+1} textAnchor={i%2===0?"end":"start"}
-                            fontSize="8" letterSpacing="1.5" fill={done?node.color:lit?`${node.color}88`:"rgba(255,255,255,0.15)"}
+                            fontSize="8" letterSpacing="1.5" fill={done?node.color:lit?`${node.color}88`:"rgba(255,255,255,0.40)"}
                             fontFamily="'Jost',sans-serif" style={{textTransform:"uppercase",transition:"fill 0.6s",userSelect:"none"}}>
                             {node.label}
                           </text>
@@ -10964,11 +11122,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     })}
 
                     {/* Yer simgesi */}
-                    <text x="110" y="412" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                    <text x="110" y="412" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.38)"
                       fontFamily="'Jost',sans-serif">. {t("mandala_earth_upper")}</text>
 
                     {/* Gok simgesi */}
-                    <text x="110" y="16" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.2)"
+                    <text x="110" y="16" textAnchor="middle" fontSize="7" letterSpacing="2" fill="rgba(255,255,255,0.38)"
                       fontFamily="'Jost',sans-serif">. {t("mandala_sky_upper")}</text>
 
                     {/* TAM BAĞLANTI: ÇAKRA SÜTUNU IŞIK TÜNELİNE DÖNÜŞÜR
@@ -11030,15 +11188,38 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 Varsayilan KAPALI. Tiklaninca acilir/kapanir.
                 Evrim rozetleri Ben > Yolculuk sekmesine tasindi. */}
             {(() => {
-              const reqs = [
-                { id:"sabah",  label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
-                { id:"gun",    label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
-                { id:"nefes",  label:t("bnav_breath"),   cur:breathCount,      need:STEP_MIN.nefes, unit:"" },
-                { id:"ses",    label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
-                { id:"chakra", label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
-                { id:"aksam",  label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                { id:"rehber", label:t("mirror_label"),  cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
-              ];
+              // Adım rozetleri. ESKİDEN yedisi tek düz listeydi; artık ZORUNLU ve
+              // İSTEĞE BAĞLI diye ikiye ayrılıyor. Deneyimli kullanıcıda
+              // OPTIONAL_STEPS boş olduğu için görünen şey eskisiyle AYNI:
+              // yedi rozet, aynı sıra (MANDALA_STEPS zaten bu sırada).
+              const REQ_META = {
+                sabah:  { label:t("bnav_morning"),  cur:stepsCompleted["sabah"]?1:0, need:1, unit:"" },
+                gun:    { label:t("bnav_day"),      cur:readGunTasks(),   need:STEP_MIN.gun,   unit:"" },
+                nefes:  { label:t("bnav_breath"),   cur:breathCount,      need:STEP_MIN.nefes, unit:"" },
+                ses:    { label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
+                chakra: { label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
+                aksam:  { label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
+                rehber: { label:t("mirror_label"),  cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
+              };
+              const reqs    = MANDALA_STEPS.map(id => ({ id, ...REQ_META[id] }));
+              const optReqs = OPTIONAL_STEPS.map(id => ({ id, ...REQ_META[id] }));
+              // Rozet: tek bir kalıp, iki listede de kullanılıyor. `dim` yalnızca
+              // isteğe bağlı olanları görsel olarak geri plana alır.
+              const StepChip = ({ r, dim }) => {
+                const ok = !!stepsCompleted[r.id];
+                return (
+                  <button key={r.id} onClick={()=>setScreen(r.id)}
+                    style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
+                    padding:"5px 10px",borderRadius:100,cursor:"pointer",
+                    WebkitAppearance:"none",appearance:"none",
+                    background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
+                    border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
+                    opacity: dim && !ok ? 0.62 : 1,
+                    color: ok?"#82d9a3":"#8a8a95"}}>
+                    {ok ? "* " : r.need > 1 ? `${Math.min(r.cur,r.need)}/${r.need}${r.unit} ` : ""}{r.label}
+                  </button>
+                );
+              };
               return (
                 <div style={{marginTop:10,maxWidth:320,width:"100%"}}>
                   <button onClick={()=>setBaglanOpen(!baglanOpen)}
@@ -11063,20 +11244,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       borderRadius:"0 0 14px 14px"}}>
                       {!allStepsComplete && (
                         <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center",marginBottom:10}}>
-                          {reqs.map(r => {
-                            const ok = !!stepsCompleted[r.id];
-                            return (
-                              <button key={r.id} onClick={()=>setScreen(r.id)}
-                                style={{fontSize:11,letterSpacing:0.5,fontFamily:"'Jost',sans-serif",
-                                padding:"5px 10px",borderRadius:100,cursor:"pointer",
-                                WebkitAppearance:"none",appearance:"none",
-                                background: ok?"rgba(130,217,163,0.12)":"rgba(255,255,255,0.03)",
-                                border:`1px solid ${ok?"rgba(130,217,163,0.35)":"rgba(255,255,255,0.08)"}`,
-                                color: ok?"#82d9a3":"#8a8a95"}}>
-                                {ok ? "* " : r.need > 1 ? `${Math.min(r.cur,r.need)}/${r.need}${r.unit} ` : ""}{r.label}
-                              </button>
-                            );
-                          })}
+                          {reqs.map(r => <StepChip key={r.id} r={r} />)}
+                        </div>
+                      )}
+                      {/* İSTEĞE BAĞLI ADIMLAR (yalnızca yeni kullanıcıda dolu).
+                          Bağlantı tamamlansa bile görünür: kullanıcı isterse
+                          günün geri kalanına devam edebilsin, "bitti, kapandı"
+                          hissi oluşmasın. */}
+                      {optReqs.length > 0 && (
+                        <div style={{marginTop: allStepsComplete ? 0 : 4}}>
+                          <div style={{fontSize:9.5,letterSpacing:2,color:"#6a6478",textTransform:"uppercase",
+                            fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:7}}>
+                            {pickLang(OPTIONAL_STEPS_TXT, lang)}
+                          </div>
+                          <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
+                            {optReqs.map(r => <StepChip key={r.id} r={r} dim />)}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -11140,7 +11323,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 <div className="label-sm" style={{ marginBottom:12 }}>{t("choose_words")}</div>
                 <div style={{ display:"flex",flexWrap:"wrap",gap:7 }}>
                   {MORNING_WORDS.map(w=>{
-                    const locked = !isPremium && PREMIUM_WORDS.includes(w);
+                    const locked = !genericUnlocked && PREMIUM_WORDS.includes(w);
                     return (
                       <button key={w} className={`word-chip ${selectedWords.includes(w)?"selected":""}`} onClick={()=>toggleWord(w)}
                         style={locked ? { opacity:0.45, position:"relative" } : {}}>
@@ -11149,7 +11332,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     );
                   })}
                 </div>
-                {!isPremium && (
+                {/* Deneme dönemindeyken kelimeler zaten açık: "kilidi aç" butonu
+                    yanlış olurdu, yerine denemenin geçici olduğu yazıyor. */}
+                {genericTrial ? trialNote() : !isPremium && (
                   <button onClick={()=>setScreen("fiyat")} style={{ display:"block",margin:"12px auto 0",background:"none",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"8px 20px",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
                     {t("premium_unlock_words")}
                   </button>
@@ -11375,7 +11560,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   Üst açıklama kutuları (nefes anlatımları) DEĞİŞTİRİLMEDİ. */}
               {(() => {
                 const Card = ({ m }) => {
-                  const locked = !isPremium && PREMIUM_BREATH_MODES.includes(m.id);
+                  const locked = !genericUnlocked && PREMIUM_BREATH_MODES.includes(m.id);
                   const on = breathMode === m.id;
                   return (
                     <button key={m.id}
@@ -11422,7 +11607,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <div style={{ marginBottom:18 }}>
                     <div className="label-sm" style={{ marginBottom:12,letterSpacing:4,color:"rgba(255,255,255,0.7)" }}>{t(labelKey)}</div>
                     <Grid items={items} />
-                    {premium && !isPremium && (
+                    {/* Deneme dönemi: modlar açık olduğu için "kilidi aç" daveti
+                        yanlış olurdu, yerine denemenin geçici olduğu yazıyor. */}
+                    {premium && genericTrial && trialNote()}
+                    {premium && !genericUnlocked && (
                       <button onClick={()=>setScreen("fiyat")}
                         style={{ marginTop:8,width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:7,
                           padding:"9px 12px",borderRadius:100,
@@ -11625,10 +11813,12 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   <div style={{ color:"rgba(160,220,200,0.5)",fontSize:18,flexShrink:0 }}>→</div>
                 </div>
               </div>
+              {/* Deneme dönemi: frekansların tamamı geçici olarak açık. */}
+              {genericTrial && <div style={{ marginBottom:12 }}>{trialNote()}</div>}
               {FREQS.map((f, i) => {
                 const isPlaying = playingHz === f.hz;
                 const isExpanded = activeFreq === f.hz;
-                const isLocked = !isPremium && PREMIUM_FREQ_HZ.includes(f.hz);
+                const isLocked = !genericUnlocked && PREMIUM_FREQ_HZ.includes(f.hz);
                 return (
                   <div key={f.hz} className="slide-in" style={{ animationDelay:`${i*0.04}s`,opacity:0 }}>
                     <div
@@ -11655,7 +11845,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           {isPlaying && <span style={{ fontSize:11,letterSpacing:2,color:f.color,textTransform:"uppercase",animation:"pulse 1.5s ease-in-out infinite" }}>{t("sound_playing")}</span>}
                         </div>
                         <div style={{ fontSize:14,color:"#cccccc",letterSpacing:0.5 }}>{f.name}</div>
-                        <div style={{ fontSize:13,color:"#666666",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
+                        <div style={{ fontSize:13,color:"#8e8e99",letterSpacing:0.3,marginTop:2 }}>{f.tema}</div>
                         {isPlaying && (
                           <div style={{ marginTop:8,animation:"fadeIn 1s ease forwards",opacity:0 }}>
                             <HarmonySVG color={f.pastel} active={true} />
@@ -11691,10 +11881,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               })}
             </div>
 
-            <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center" }}>
+            {/* OK HİZASI. SORUN YALNIZCA ANDROID'DEYDİ: iOS'ta iki etiket de tek
+                satıra sığıyor ve oklar yanda duruyor ("← geri" solda, "Sonraki
+                Adıma Geç →" sağda), yani orada zaten doğruydu. Android'de sistem
+                yazı tipi daha geniş ölçüldüğü için uzun etiket pill içinde SARIYOR
+                ve ok tek başına alt satıra düşüyordu; "← geri"de ise ok üst satırda
+                kalıyordu, iki buton birbirini tutmuyordu (kullanıcı fotoğrafı).
+                ⚠️ İLK DENEMEMDE oku bilerek alta almıştım; bu Android'i düzeltirken
+                iOS'taki DOĞRU görünümü de bozuyordu. Doğrusu ok'un yerini
+                değiştirmek değil, SARMAYI engellemek: whiteSpace:nowrap ile ok
+                etiketinden hiç kopmuyor, iki platformda da yan yana kalıyor.
+                Dar ekranda taşmasın diye yatay dolgu bir tık kısaldı ve
+                butonlar içeriğe göre daralabiliyor (minWidth:0 + flexShrink). */}
+            <div style={{ marginTop:28,display:"flex",gap:10,justifyContent:"center",alignItems:"stretch" }}>
               {/* Geri = geldiğin yer; eskiden sabit "nefes"e gidiyordu. Ton önce durur. */}
-              <button className="sakin-btn" onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>{t("back")}</button>
-              <button className="sakin-btn-primary" onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
+              <button className="sakin-btn" style={INLINE_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); goBack("nefes"); }}>{t("back")}</button>
+              <button className="sakin-btn-primary" style={INLINE_ARROW_BTN}
+                onClick={()=>{ stopFreqTone(); markStep("ses"); setScreen("chakra"); }}>{t("sound_btn_next")}</button>
             </div>
           </div>
         );
@@ -11773,11 +11977,11 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
               {niyet && <div style={{ borderLeft:"2px solid rgba(255,255,255,0.32)",paddingLeft:15,marginBottom:26,color:"#888888",fontStyle:"italic",fontSize:15,lineHeight:1.7 }}>"{niyet}"</div>}
               <div style={{ marginBottom:18 }}>
-                <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
+                <div style={{ fontSize:13,color:"#8e8e99",marginBottom:9,letterSpacing:1 }}>{t("learned_q")}</div>
                 <textarea className="sakin-input" rows={2} autoComplete="off" autoCorrect="off" placeholder="..." value={aksamNote} onChange={e=>setAksamNote(e.target.value)} />
               </div>
               <div style={{ marginBottom:26 }}>
-                <div style={{ fontSize:13,color:"#666666",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
+                <div style={{ fontSize:13,color:"#8e8e99",marginBottom:9,letterSpacing:1 }}>{t("gratitude_q")}</div>
                 <textarea className="sakin-input" rows={2} autoComplete="off" autoCorrect="off" placeholder="..." value={sukur} onChange={e=>setSukur(e.target.value)} />
               </div>
               {/* (Gereksiz dekoratif emoji sırası kaldırıldı, kullanıcı geri bildirimi) */}
@@ -12329,7 +12533,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </svg>
                 <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column" }}>
                   <div style={{ fontSize:22,fontWeight:300 }}>{Math.round(dayPct)}%</div>
-                  <div style={{ fontSize:14,letterSpacing:3,color:"#666666" }}>{t("day_pct")}</div>
+                  <div style={{ fontSize:14,letterSpacing:3,color:"#8e8e99" }}>{t("day_pct")}</div>
                 </div>
               </div>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:9 }}>
@@ -12340,7 +12544,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   {label:t("stat_mindful"),value:`${completedStepCount}`,color:"#85c1e9"},
                 ].map((s,i)=>(
                   <div key={i} style={{ background:"rgba(255,255,255,0.022)",border:"1px solid rgba(255,255,255,0.055)",borderRadius:13,padding:"13px 15px" }}>
-                    <div style={{ fontSize:14,letterSpacing:2.5,color:"#666666",marginBottom:6 }}>{s.label.toLocaleUpperCase(lang)}</div>
+                    <div style={{ fontSize:14,letterSpacing:2.5,color:"#8e8e99",marginBottom:6 }}>{s.label.toLocaleUpperCase(lang)}</div>
                     <div style={{ fontSize:15,color:s.color,fontWeight:300 }}>{s.value}</div>
                   </div>
                 ))}
@@ -12434,7 +12638,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     </button>
                   )}
                   <button onClick={()=>setAiRapor("")}
-                    style={{ background:"none",border:"none",color:"#666666",cursor:"pointer",fontSize:13,letterSpacing:2,marginLeft:"auto" }}>
+                    style={{ background:"none",border:"none",color:"#8e8e99",cursor:"pointer",fontSize:13,letterSpacing:2,marginLeft:"auto" }}>
                     {t("refresh_label")}
                   </button>
                 </div>
@@ -13240,11 +13444,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             });
           }
 
-          // 10. Footer
-          ctx.fillStyle = "#605080";
-          ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
+          // 10. Footer.
+          // ESKİDEN tek satır "SAKİN.LIFE" vardı ve rengi #605080 ile çok
+          // sönüktü. Hikâyede paylaşılan görsel bizim en ucuz edinme kanalımız
+          // ama gören kişi bunun ne olduğunu ve nereden bulacağını anlamıyordu
+          // (kullanıcı: "altta insanların nereden bulabileceğine dair bir link
+          // ya da daha açıklayıcı bir şey olabilir"). Artık iki satır:
+          // üstte ne olduğunu söyleyen kısa davet, altta adresin kendisi,
+          // ikisi de okunur parlaklıkta.
           ctx.textAlign = "center";
-          ctx.fillText("SAKİN.LIFE", 540, 1880);
+          ctx.fillStyle = "#9a8ac0";
+          ctx.font = "300 26px -apple-system, 'Jost', sans-serif";
+          ctx.fillText(pickLang(SHARE_CTA_TXT, lang), 540, 1856);
+          ctx.fillStyle = "#c3b2e2";
+          ctx.font = "400 34px -apple-system, 'Jost', sans-serif";
+          ctx.fillText("sakin.life", 540, 1898);
 
           // Export → share sheet (Save to Files, paylaş vs.)
           canvas.toBlob(async (blob) => {
@@ -13446,12 +13660,21 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   return (
                     <div style={{ padding:"9px 12px",background:"rgba(255,255,255,0.025)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:10,marginBottom:10 }}>
                       <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginBottom:8,textAlign:"center" }}>{pickLang(ELEM_I18N.title, lang)}</div>
-                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:6 }}>
+                      {/* HİZA (kullanıcı bildirdi: "ateş biraz sağa, toprak sola
+                          kaçmış gibi 1-2px"). Sebep: △ ⊕ ○ ▽ glifleri farklı
+                          genişlikte ve farklı optik merkeze sahip; yan yana
+                          dizilince satır başları kayıyordu. Glif artık SABİT
+                          genişlikte bir kutuda ortalanıyor, dört satır da aynı
+                          x'ten başlıyor. tabular-nums da yüzdeleri hizalar.
+                          Sütun arası 6 → 20px: soldaki yüzdeler sağdaki kolonun
+                          ikonuna yapışıyordu (kullanıcı: "fazla yakın"). */}
+                      <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr",gap:"7px 20px" }}>
                         {items.map(([k,color,glyph,name]) => (
                           <div key={k} style={{ display:"flex",alignItems:"center",gap:7 }}>
-                            <span style={{ fontSize:13,color }}>{glyph}</span>
+                            <span style={{ fontSize:13,color,width:14,flexShrink:0,textAlign:"center",
+                              display:"inline-flex",alignItems:"center",justifyContent:"center",lineHeight:1 }}>{glyph}</span>
                             <span style={{ fontSize:11,color:"#cfc8e0",flex:1 }}>{name}</span>
-                            <span style={{ fontSize:13,color,fontWeight:600 }}>{pctFmt(Math.round((ed[k]||0)*100), lang)}</span>
+                            <span style={{ fontSize:13,color,fontWeight:600,fontVariantNumeric:"tabular-nums" }}>{pctFmt(Math.round((ed[k]||0)*100), lang)}</span>
                           </div>
                         ))}
                       </div>
@@ -13555,14 +13778,20 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
         );
       })()}
 
-      {/* ZİHNİ BOŞALT: mod seçim menüsü */}
+      {/* ZİHNİ BOŞALT: mod seçim menüsü.
+          Üst boşluk 20px → 52px: başlık çentikli cihazlarda durum çubuğunun
+          altına giriyordu (kullanıcı ekran görüntüsü: "ZİHNİ BOŞALT" yazısı
+          saat/pil satırıyla üst üste). safe-area zaten ekleniyordu ama içerik
+          uzun olduğu için "safe center" hizalaması bloğu tepeye yapıştırıyor. */}
       {showMindClear && !activeMindMode && (
-        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(20px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
+        <div onClick={()=>setShowMindClear(false)} style={{ position:"fixed",inset:0,zIndex:10000,background:"rgba(0,0,0,0.92)",backdropFilter:"blur(20px)",display:"flex",alignItems:"safe center",justifyContent:"center",padding:"calc(52px + var(--sat)) 16px calc(20px + var(--sab))",overflow:"auto" }}>
           <div onClick={e=>e.stopPropagation()} style={{ maxWidth:480,width:"100%",display:"flex",flexDirection:"column",gap:14 }}>
+            {/* mind_subtitle ("Bugün nereye sığınmak istersin?") KALDIRILDI
+                (kullanıcı isteği). Dört mod kartının kendi adı zaten soruyu
+                cevaplıyordu, satır ekranı uzatmaktan başka iş yapmıyordu. */}
             <div style={{ textAlign:"center",marginBottom:6 }}>
               <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("mind_title")}</div>
-              <div style={{ fontSize:18,fontWeight:300,letterSpacing:2,color:"#c0e0d0",fontFamily:"'Jost',sans-serif",marginBottom:6 }}>{t("mind_subtitle")}</div>
-              <div style={{ fontSize:12,color:"#666",lineHeight:1.7 }}>{t("mind_subdesc")}</div>
+              <div style={{ fontSize:12,color:"#8e8e99",lineHeight:1.7 }}>{t("mind_subdesc")}</div>
             </div>
 
             {/* Doğa sesleri: opsiyonel katman, drone'un altına serilir */}
@@ -13609,11 +13838,22 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               ))}
             </div>
 
-            {/* Duygu durumuna göre karışım, kullanıcı kendi karışımını yapar */}
+            {/* Duygu durumuna göre karışım: KATLANIR, varsayılan KAPALI.
+                18 rozetlik ızgara açıkken ekranın yarısını kaplıyor ve üstteki
+                asıl akışı (dört mod kartı) bastırıyordu. */}
             <div style={{ marginTop:14,paddingTop:14,borderTop:"1px solid rgba(255,255,255,0.06)" }}>
+              <button onClick={()=>setMindCustomOpen(v=>!v)}
+                style={{ WebkitAppearance:"none",appearance:"none",width:"100%",background:"none",border:"none",
+                  cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+                  padding:"4px 0",marginBottom: mindCustomOpen ? 10 : 0 }}>
+                <span style={{ fontSize:11,letterSpacing:4,color:"#8e8e99",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
+                  {t("mind_or_custom")}
+                </span>
+                <span style={{ fontSize:10,color:"#777",transform: mindCustomOpen?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s",lineHeight:1 }}>▾</span>
+              </button>
+              {mindCustomOpen && (<>
               <div style={{ textAlign:"center",marginBottom:10 }}>
-                <div style={{ fontSize:11,letterSpacing:4,color:"#888",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{t("mind_or_custom")}</div>
-                <div style={{ fontSize:11,color:"#666",lineHeight:1.6 }}>{t("mind_pick_3")}</div>
+                <div style={{ fontSize:11,color:"#8e8e99",lineHeight:1.6 }}>{t("mind_pick_3")}</div>
               </div>
               <div style={{ display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6 }}>
                 {MIND_MOODS.map(mood => {
@@ -13679,6 +13919,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                   ◎ {t("mind_start_mix").replace("{n}", String(selectedMoods.length))}
                 </button>
               )}
+              </>)}
             </div>
 
             <button onClick={()=>{ setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); }} style={{ marginTop:8,background:"none",border:"1px solid rgba(255,255,255,0.1)",borderRadius:100,padding:"10px 0",color:"#888",fontSize:13,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif",textTransform:"uppercase" }}>
@@ -14159,7 +14400,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           )}
 
           <hr className="divider" />
-          <p style={{ fontSize:14,color:"#666666",textAlign:"center",letterSpacing:1 }}>{t(isNative ? "pricing_footer" : "pricing_footer_web")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
+          <p style={{ fontSize:14,color:"#8e8e99",textAlign:"center",letterSpacing:1 }}>{t(isNative ? "pricing_footer" : "pricing_footer_web")} <a href="mailto:destek@sakin.life" style={{ color:"#888888",textDecoration:"none" }}>destek@sakin.life</a></p>
         </div>
       )}
 
@@ -15055,7 +15296,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                           {item.examples.map((ex, ei) => (
                             <div key={ei} style={{ display:"flex",gap:10,marginBottom:8,alignItems:"flex-start" }}>
                               <span style={{ fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:400,color:"#c0392b",minWidth:28,flexShrink:0,background:"rgba(192,57,43,0.1)",borderRadius:6,padding:"2px 6px",textAlign:"center" }}>{ex.num}</span>
-                              <span style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#666666",lineHeight:1.75 }}>{ex.meaning}</span>
+                              <span style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#8e8e99",lineHeight:1.75 }}>{ex.meaning}</span>
                             </div>
                           ))}
                         </div>
@@ -15142,7 +15383,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             <div style={{ display:"flex",gap:12 }}>
               <button onClick={declineAiConsent}
-                style={{ flex:1,padding:"13px 0",borderRadius:100,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#666666",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>{t("ai_consent_decline")}</button>
+                style={{ flex:1,padding:"13px 0",borderRadius:100,border:"1px solid rgba(255,255,255,0.1)",background:"transparent",color:"#8e8e99",fontFamily:"'Jost',sans-serif",fontSize:13,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s" }}>{t("ai_consent_decline")}</button>
               <button onClick={acceptAiConsent}
                 style={{ flex:1,padding:"13px 0",borderRadius:100,border:"none",background:"linear-gradient(135deg,rgba(255,255,255,0.7),rgba(255,255,255,0.5))",color:"#ffffff",fontFamily:"'Jost',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1.5,cursor:"pointer",transition:"all 0.2s",boxShadow:"0 4px 20px rgba(255,255,255,0.3)" }}>{t("ai_consent_accept")}</button>
             </div>

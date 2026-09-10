@@ -273,6 +273,54 @@ madde.** "Satın Alımları Geri Yükle" (3.1.1) ve "Aboneliği yönet" (3.1.2)
 önce ☰ açılır menüsüne kondu, madde 6 ile o menü tamamen kalktığı için artık
 YALNIZCA Ayarlar'ın GENEL > ÖDEME grubunda duruyorlar (tekrar yok).
 
+## 🌱 YENİ KULLANICI MODU (ilk 3 tünel) - kullanıcı kararı, Eyl 2026
+
+Dış UX raporunun önerileri **herkese değil, YALNIZCA yeni kullanıcıya** uygulandı
+("test gibi olsun"). Kapı tek bir bayrak: `isEarlyTunnel` (src/App.jsx).
+
+**Kapının tanımı ÖNEMLİ:** `tunnelsBeforeToday < 3`, yani BUGÜN tamamlanan tünel
+SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
+⚠️ Neden: eskiden düz `totalTunnels < 3` idi. 3. tünel tamamlandığı ANDA sayaç
+3'e çıkıp deneme o saniye bitiyordu; kullanıcı bağlantıyı bitirdiği anda adımlar
+3'ten 7'ye fırlıyor, yüzde geri düşüyor, jenerik içerik kilitleniyordu. Yani
+"az önce yaptığım şey geri alındı" hissi. Artık geçiş GÜN SINIRINDA olur.
+
+İlk 3 tünelde geçerli olan dört şey:
+1. **Günlük yük 3 adım** (`EARLY_MANDALA_STEPS = ["sabah","nefes","rehber"]`),
+   normalde 7 (`ALL_MANDALA_STEPS`). Kalan 4 adım SİLİNMEZ, Bağlan ekranının
+   katlanır bölümünde "Dilersen devam et" başlığı altında durur ve yapılabilir,
+   sadece bağlantının ŞARTI değildir. Omurga görselinde de 3 düğüm çizilir
+   (7 düğüm + "/3" sayacı çelişkisi olmasın diye).
+   - **Bu üçü neden:** üçü de günün her saatinde bitirilebiliyor. Dışarıda
+     bırakılanlar: `aksam` (22:00'den önce açılmıyor, sabah kurulan kullanıcı
+     ilk günü kapatamazdı), `gun` (görev AI'dan geliyor, ağ/limit hatası adımı
+     tıkayabilir), `ses`/`chakra` (süre şartı var).
+2. **Jenerik içerik açık** (`genericUnlocked`): nefes modları, solfeggio
+   frekansları, niyet kelimeleri. 3. tünelden sonra kilit GERİ GELİR (kullanıcı
+   kararı: kaybetme anı dönüşümü tetikler). Sürpriz olmasın diye deneme boyunca
+   `TRIAL_TXT` bilgilendirmesi ekranlarda görünür.
+3. **Yol seçimi ekranı** ("Hangi yoldan gidelim?": sakinleşmek / kendimi tanımak)
+   yalnızca burada çıkar. ⚠️ ÖNCEDEN HER GÜN, SONSUZA KADAR çıkıyordu
+   ("bir daha gösterme" seçeneği de kaldırılmıştı, kimse kapatamıyordu).
+4. `STEP_MIN` zaten yarıya iniyordu (5 nefes / 30 sn / 60 sn / 1 görev).
+
+**⚠️ DENEYİMLİ KULLANICIYA HİÇBİR ŞEY DEĞİŞMEDİ.** `steps` dizisi, omurga
+düğümlerinin sırası, 7. düğümün `harita` olması dahil her şey aynı bırakıldı.
+Bir şeyi bozup bozmadığını anlamak için önce `isEarlyTunnel` false ile dene.
+
+**Herkes için değişen iki şey (deneme kapsamı dışı, kalite düzeltmesi):**
+- İnsan silueti opaklığı 0.08-0.20 → 0.26-0.42. Ana metafor görünmüyordu,
+  mağaza ekran görüntüsü boş siyah kare gibiydi.
+- Okunması gereken gövde metinlerinde kontrast (`#555/#666` → `#8e8e99`,
+  omurga adım etiketi 0.15 → 0.40). Dekoratif eyebrow/etiketler BİLEREK
+  dokunulmadı: karanlık ve sönük dil bilinçli bir tercih, kural "okunacak
+  metin okunur olsun", "her şey parlasın" değil.
+
+**ZATEN VARDI, YENİDEN YAPMA:** yol seçimi ekranı (çatallı onboarding,
+`onbPath` "baglan"/"kesfet"), evrim rozetleri açıklaması (Tohum/Fide/Ağaç
+altında "3 gün / 7 gün / 21 gün" yazıyor + Yolculuk sekmesinde anlatılıyor),
+kırmızı "?" balonu (kaldırılmış), 6'lı adım barı (kaldırılmış).
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:

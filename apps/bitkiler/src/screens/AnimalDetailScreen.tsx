@@ -54,8 +54,10 @@ export function AnimalDetailScreen({ stone: stoneProp, animal, onClose }: Props)
             <TouchableOpacity
               onPress={() => {
                 const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                // Kicker altindaki aciklama satiri (paylasim kartinda).
+                const subGuide = ({ tr:'Bugünün sana özel rehber bitkisi', en:'Your guide plant for today', de:'Deine Pflanze des Tages', es:'Tu planta guía de hoy', pt:'A tua planta guia de hoje', fr:'Ta plante guide du jour', ja:'今日のガイドプラント' } as any)[lang] || { tr:'Bugünün sana özel rehber bitkisi', en:'Your guide plant for today', de:'Deine Pflanze des Tages', es:'Tu planta guía de hoy', pt:'A tua planta guia de hoje', fr:'Ta plante guide du jour', ja:'今日のガイドプラント' }.en;
                 shareCard({
-                  appName: 'Sakin Bitkiler', accent: Colors.teal, emoji: stone.emoji, imageUrl: stone.imageUrl,
+                  subtitle: subGuide, appName: 'Sakin Bitkiler', accent: Colors.teal, emoji: stone.emoji, imageUrl: stone.imageUrl,
                   title: stone.name, meta: `${stone.element}${stone.chakra ? ' · ' + stone.chakra : ''}`,
                   body: stone.dailyMessage, cta: moreCta,
                   fileName: `sakin-${stone.name}.png`, shareText: `${stone.name}: sakin.life`,

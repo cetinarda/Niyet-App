@@ -793,8 +793,10 @@ export function ProfileScreen() {
                 onPress={(e: any) => {
                   e.stopPropagation?.();
                   const moreCta = ({ tr: 'Daha fazlası için sakin.life', en: 'More at sakin.life', de: 'Mehr auf sakin.life', es: 'Más en sakin.life', pt: 'Mais em sakin.life', fr: 'Plus sur sakin.life', ja: '詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                  // Kicker altindaki aciklama satiri (paylasim kartinda).
+                  const subGuide = ({ tr:'Doğum haritana özel rehber hayvanın', en:'Your birth guide animal', de:'Dein Geburts-Krafttier', es:'Tu animal guía de nacimiento', pt:'O teu animal guia de nascimento', fr:'Ton animal guide de naissance', ja:'あなたの出生ガイドアニマル' } as any)[lang] || { tr:'Doğum haritana özel rehber hayvanın', en:'Your birth guide animal', de:'Dein Geburts-Krafttier', es:'Tu animal guía de nacimiento', pt:'O teu animal guia de nascimento', fr:'Ton animal guide de naissance', ja:'あなたの出生ガイドアニマル' }.en;
                   shareCard({
-                    appName: 'Sakin Hayvan', accent: Colors.teal, emoji: (birthAnimal as any).emoji, imageUrl: (birthAnimal as any).imageUrl,
+                    subtitle: subGuide, appName: 'Sakin Hayvan', accent: Colors.teal, emoji: (birthAnimal as any).emoji, imageUrl: (birthAnimal as any).imageUrl,
                     title: birthAnimal.name, meta: `${(birthAnimal as any).element} · ${(birthAnimal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''),
                     body: `${(birthAnimal as any).dailyMessage} ${(birthAnimal as any).anatolianMeaning || ''}`.trim(), cta: moreCta,
                     fileName: `sakin-${birthAnimal.name}.png`, shareText: `${birthAnimal.name}: sakin.life`,

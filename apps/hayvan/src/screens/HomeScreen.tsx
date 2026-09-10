@@ -503,12 +503,16 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                       <TouchableOpacity
                         onPress={() => {
                           const moreCta = ({ tr:'Daha fazlası için sakin.life', en:'More at sakin.life', de:'Mehr auf sakin.life', es:'Más en sakin.life', pt:'Mais em sakin.life', fr:'Plus sur sakin.life', ja:'詳しくは sakin.life' } as any)[lang] || 'sakin.life';
+                          // Kicker altindaki aciklama: hikayede karti goren kisi
+                          // ozelligi anlasin (kullanici istegi).
+                          const subGuide = ({ tr:'Bugünün sana özel rehber hayvanı', en:'Your guide animal for today', de:'Dein Krafttier des Tages', es:'Tu animal guía de hoy', pt:'O teu animal guia de hoje', fr:'Ton animal guide du jour', ja:'今日のガイドアニマル' } as any)[lang] || { tr:'Bugünün sana özel rehber hayvanı', en:'Your guide animal for today', de:'Dein Krafttier des Tages', es:'Tu animal guía de hoy', pt:'O teu animal guia de hoje', fr:'Ton animal guide du jour', ja:'今日のガイドアニマル' }.en;
+                          const subQuote = ({ tr:'Günün sözü', en:'Quote of the day', de:'Zitat des Tages', es:'Frase del día', pt:'Frase do dia', fr:'Citation du jour', ja:'今日のことば' } as any)[lang] || { tr:'Günün sözü', en:'Quote of the day', de:'Zitat des Tages', es:'Frase del día', pt:'Frase do dia', fr:'Citation du jour', ja:'今日のことば' }.en;
                           if (step === 0 && animal) {
                             // Görev listesi rehberliği (guidance) yerine hayvan hakkında DAHA FAZLA bilgi:
                             // günün mesajı + Anadolu anlamı. Alt CTA sakin.life'a yönlendirir.
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: `${(animal as any).dailyMessage} ${(animal as any).anatolianMeaning || ''}`.trim(), cta: moreCta, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name}: sakin.life` });
+                            shareCard({ subtitle: subGuide, appName: 'Sakin Hayvan', accent: deck.color, emoji: (animal as any).emoji, imageUrl: (animal as any).imageUrl, title: (animal as any).name, meta: `${(animal as any).element} · ${(animal as any).symbolism?.[0] || ''}`.replace(/ · $/, ''), body: `${(animal as any).dailyMessage} ${(animal as any).anatolianMeaning || ''}`.trim(), cta: moreCta, fileName: `sakin-${(animal as any).name}.png`, shareText: `${(animal as any).name}: sakin.life` });
                           } else if (step === 1 && quote) {
-                            shareCard({ appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}”: ${(quote as any).source} · sakin.life` });
+                            shareCard({ subtitle: subQuote, appName: 'Sakin Hayvan', accent: deck.color, quote: (quote as any).text, quoteBy: (quote as any).source, cta: moreCta, fileName: 'sakin-soz.png', shareText: `“${(quote as any).text}”: ${(quote as any).source} · sakin.life` });
                           }
                         }}
                         hitSlop={10}
