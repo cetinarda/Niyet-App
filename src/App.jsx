@@ -13209,11 +13209,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             const stageLabel = MARKS[idx].label;
             const isForest = idx === MARKS.length - 1;
             return (
-              // KUTU DARALTILDI (kullanıcı: "alttaki kutu çok geniş"): genişlik
-              // 300px ile sınırlı ve ortalı, dolgu 18/16 → 13/14, aradaki boşluk
-              // 10 → 7. Asıl boşluk sorunu bitkinin çerçevesindeydi, o da
-              // plantSVG içinde büyümeye göre kırpılıyor.
-              <div style={{ margin:"0 auto 20px",maxWidth:300,width:"100%",
+              // GENİŞLİK: sayfadaki diğer kartlarla AYNI (tam genişlik).
+              // ⚠️ Bir ara `maxWidth:300` ile daraltmıştım, yanlış anlamışım:
+              // kullanıcının "çok geniş" dediği şey YÜKSEKLİKTİ, kutunun üçte
+              // ikisi boş kalıyordu. O sorun bitkinin çerçevesinin büyümeye
+              // göre kırpılmasıyla çözüldü (plantSVG). Kart daraltılınca
+              // üstündeki Orkestra kartıyla hizası bozuluyordu.
+              // Dolgu ve iç boşluklar kompakt kalıyor (18/16 → 13/14, gap 7).
+              <div style={{ marginBottom:20,width:"100%",
                 padding:"13px 14px 12px",borderRadius:16,
                 background:`linear-gradient(160deg,${accent}0e,rgba(255,255,255,0.02))`,
                 border:`1px solid ${accent}26`,display:"flex",flexDirection:"column",

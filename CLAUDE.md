@@ -351,9 +351,13 @@ taç çıkıyor. `.sakin-plant` sınıfı nefes gibi salındırıyor (6 sn, dibi
   Yalnızca GÖSTERİM değişti. `badges` dizisindeki 40 hâlâ görsel karşılığı
   olmayan ölü veri; 4. aşama ("Orman") eklenirse seviye/çarpan matematiğine de
   karar vermek gerekir, o yüzden şimdilik eklenmedi.
-- **Kutu dar ve kompakt:** `maxWidth 300`, ortalı. Bitkinin çerçevesi de
-  büyümeye göre KIRPILIYOR (`plantSVG` viewBox'ın üstünü bitkinin tepesine
-  göre kesiyor), yoksa tohum aşamasında kutunun üçte ikisi bomboş kalıyordu.
+- **Kutu genişliği sayfadaki diğer kartlarla AYNI (tam genişlik).**
+  ⚠️ Bir ara `maxWidth:300` ile daraltılmıştı, YANLIŞ ANLAMAYDI: kullanıcının
+  "çok geniş" dediği şey YÜKSEKLİKTİ (kutunun üçte ikisi boştu), genişlik değil.
+  Daraltınca üstündeki Orkestra kartıyla hizası bozuldu, geri alındı.
+  Asıl çözüm bitkinin ÇERÇEVESİNİN büyümeye göre kırpılması (`plantSVG`
+  viewBox'ın üstünü bitkinin tepesine göre kesiyor): kutu bitkiyle birlikte
+  uzuyor, hiçbir aşamada boş alan kalmıyor. Dolgular kompakt (13/14, gap 7).
 - **Orkestra'da sönük nokta "bozuk" görünmesin:** tamamlanmayan adım nötr beyaz
   %10 ile çiziliyordu ve ölü piksel gibi duruyordu (kullanıcı "bazıları
   yanmıyor" diye bildirdi, oysa davranış doğruydu). Artık bekleyen nokta da
