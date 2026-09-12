@@ -33,7 +33,7 @@ export const TRANS = {
     conn_lv2: "2. Seviye: 7 gün düzenli devam edersen açılır (x2)",
     conn_lv3: "3. Seviye: 21 gün düzenli devam edersen açılır (x4)",
     evo_seed: "Tohum",
-    evo_sapling: "Fide",
+    evo_sapling: "Fidan",
     evo_tree: "Ağaç",
     evo_days: "gün",
     evo_desc: "Her gün tünel tamamladıkça büyürsün.",

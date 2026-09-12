@@ -323,6 +323,20 @@ kırmızı "?" balonu (kaldırılmış), 6'lı adım barı (kaldırılmış).
 
 ## 🌿 EVRİM + ORKESTRA (Ben ekranı) - kullanıcı isteği: "zeki ve eğlenceli olsun"
 
+**AŞAMALAR DÖRT: TOHUM → FİDAN → AĞAÇ → ORMAN** (kullanıcı kararı).
+Eşikler aşamanın BAŞLADIĞI gün: 0 / 3 / 7 / 21. ⚠️ İlk halinde eşikler
+"ulaşılan gün" diye yazılmıştı (Tohum=3) ve 3 günden önce hiçbir aşamada
+sayılmıyordun; 1. günde ekran "TOHUM 1 gün" derken altında "Sıradaki: Tohum"
+yazıyordu, yani zaten olduğun şey sıradaki gibi gösteriliyordu. Şimdi herkes
+0. günde TOHUM olur ve "sıradaki" her zaman gerçekten bir SONRAKİ aşama.
+Türkçe "Fide" → "Fidan" (kullanıcı tercihi, `evo_sapling`). "Orman" 7 dilde
+`EVO2_TXT.forest` içinde. Orman aşamasında ana ağacın yanına iki küçük ağaç
+çizilir, yoksa "orman" adıyla tek ağaç görmek tutarsız kalıyordu.
+⚠️ **Yolculuk sekmesindeki SEVİYE satırları artık bitki adı KULLANMIYOR**
+(sadece 1/2/3 numarası): seviye/çarpan sistemi (x1/x2/x4, 7 ve 21 gün) büyüme
+aşamasından AYRI bir eksen ve dört aşamaya geçince "Ağaç = 3. Seviye, 21 gün"
+diye çelişiyordu.
+
 **Evrim göstergesi artık ÜÇ KUTU DEĞİL, TEK BİR BİTKİ.** `plantSVG(p, hue, size)`
 parametrik çizim: `p` (0..1, `min(1, gunSerisi/21)`) büyüdükçe gövde uzuyor,
 yaprak çiftleri sırayla AÇILIYOR (belirmiyor, yavaşça büyüyor) ve son üçte birde
@@ -333,10 +347,17 @@ taç çıkıyor. `.sakin-plant` sınıfı nefes gibi salındırıyor (6 sn, dibi
   aşama içi ilerlemeyi gösteriyor.
 - **Renk kişiye özel:** `sakin_element_dist`teki BASKIN elementten geliyor
   (`PLANT_HUES`: ates/toprak/hava/su). Herkeste aynı yeşil değil.
-- ⚠️ **Eşikler ve `streakLevel` matematiği DEĞİŞMEDİ** (3 / 7 / 21 gün, x1/x2/x4).
+- ⚠️ **`streakLevel` matematiği DEĞİŞMEDİ** (x1/x2/x4, 7 ve 21 gün eşikli).
   Yalnızca GÖSTERİM değişti. `badges` dizisindeki 40 hâlâ görsel karşılığı
   olmayan ölü veri; 4. aşama ("Orman") eklenirse seviye/çarpan matematiğine de
   karar vermek gerekir, o yüzden şimdilik eklenmedi.
+- **Kutu dar ve kompakt:** `maxWidth 300`, ortalı. Bitkinin çerçevesi de
+  büyümeye göre KIRPILIYOR (`plantSVG` viewBox'ın üstünü bitkinin tepesine
+  göre kesiyor), yoksa tohum aşamasında kutunun üçte ikisi bomboş kalıyordu.
+- **Orkestra'da sönük nokta "bozuk" görünmesin:** tamamlanmayan adım nötr beyaz
+  %10 ile çiziliyordu ve ölü piksel gibi duruyordu (kullanıcı "bazıları
+  yanmıyor" diye bildirdi, oysa davranış doğruydu). Artık bekleyen nokta da
+  kendi çakra rengini soluk dolgu + ince halka olarak taşıyor.
 - **Metin kalıpları EK-SONU İÇERMEZ** ("Sıradaki: Fide · 3 gün"), çünkü Türkçe'de
   "Fide'ye / Ağaç'a" ekleri isme göre değişiyor ve şablonla üretilince bozuluyor.
   Aynı sebeple sayı eki de yok ("8'i senden" değil "Senin payın: 8 nefes").

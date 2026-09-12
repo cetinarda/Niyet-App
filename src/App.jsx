@@ -1772,6 +1772,9 @@ const TRIAL_TXT = {
 // şablonla üretilince bozuk çıkıyor. Aynı sebeple sayı eki de yok
 // ("8'i senden" yerine "Senin payın: 8 nefes").
 const EVO2_TXT = {
+  // Dördüncü ve son aşama. i18n dosyalarına dokunmadan burada duruyor
+  // (evo_seed/evo_sapling/evo_tree zaten orada, bu sonradan eklendi).
+  forest:    { tr:"Orman", en:"Forest", de:"Wald", es:"Bosque", pt:"Floresta", fr:"Forêt", ja:"森" },
   next:      { tr:"Sıradaki", en:"Next", de:"Als Nächstes", es:"Siguiente", pt:"A seguir", fr:"Ensuite", ja:"次は" },
   days:      { tr:"gün", en:"days", de:"Tage", es:"días", pt:"dias", fr:"jours", ja:"日" },
   full:      { tr:"En olgun hâlindesin. Kökler derinleşmeye devam ediyor.",
@@ -1810,9 +1813,9 @@ const PLANT_HUES = {
   hava:   { leaf:"#c8d05c", leaf2:"#a8b048", stem:"#7a6a38" },
   su:     { leaf:"#5cbcc8", leaf2:"#489aa8", stem:"#4a6070" },
 };
-function plantSVG(p, hue, size = 76) {
+function plantSVG(p, hue, scale = 1.05, forest = false) {
   const C = PLANT_HUES[hue] || PLANT_HUES.toprak;
-  const W = 64, H = 76, GROUND = 64;
+  const W = 64, FULL_H = 76, GROUND = 64;
   const t = Math.max(0, Math.min(1, p));
   const stemH = 6 + t * 42;                 // 6 → 48 px
   const top = GROUND - stemH;
@@ -1826,10 +1829,30 @@ function plantSVG(p, hue, size = 76) {
   ];
   const canopy = Math.max(0, Math.min(1, (t - 0.66) / 0.34));   // taç: son üçte bir
   const seed = Math.max(0, 1 - t * 4);                          // tohum erirken görünür
+  // ÇERÇEVE BİTKİYLE BİRLİKTE BÜYÜR. Sabit yükseklikte bir kutu kullanınca
+  // tohum aşamasında kutunun üçte ikisi bomboş kalıyordu (kullanıcı bildirdi:
+  // "alttaki kutu çok geniş"). viewBox'ın ÜSTÜ bitkinin tepesine göre
+  // kırpılıyor ve yükseklik de aynı oranda küçülüyor: ölçek sabit kalır,
+  // boşluk kalmaz, kutu gün geçtikçe kendiliğinden uzar.
+  const vbTop = Math.max(0, Math.round(top - (canopy > 0 ? 16 : 12)));
+  const vbH = FULL_H - vbTop;
+  // Küçük yan ağaçlar YALNIZCA orman aşamasında: ad "orman" olunca tek ağaç
+  // görmek tutarsız oluyordu. Mevcut genişliğin içinde duruyorlar, kutuyu
+  // genişletmiyorlar.
+  const side = (cx, k) => (
+    <g opacity="0.72">
+      <path d={`M${cx} ${GROUND} L${cx} ${GROUND - 16 * k}`} stroke={C.stem} strokeWidth="1.5" strokeLinecap="round" />
+      <ellipse cx={cx} cy={GROUND - 18 * k} rx={6.5 * k} ry={5.4 * k} fill={C.leaf2} />
+      <ellipse cx={cx - 4 * k} cy={GROUND - 13 * k} rx={4 * k} ry={3.2 * k} fill={C.leaf2} />
+      <ellipse cx={cx + 4 * k} cy={GROUND - 13 * k} rx={4 * k} ry={3.2 * k} fill={C.leaf} />
+    </g>
+  );
   return (
-    <svg width={size * (W / H)} height={size} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
+    <svg width={Math.round(W * scale)} height={Math.round(vbH * scale)}
+      viewBox={`0 ${vbTop} ${W} ${vbH}`} aria-hidden="true">
       {/* Toprak */}
       <ellipse cx="32" cy={GROUND + 4} rx={13 + t * 7} ry="3.6" fill={C.stem} opacity="0.42" />
+      {forest && <>{side(11, 0.78)}{side(53, 0.66)}</>}
       {/* Tohum: yalnızca en başta, gövde uzarken kayboluyor */}
       {seed > 0.02 && (
         <ellipse cx="32" cy={GROUND - 3} rx="4.6" ry="5.4" fill={C.stem} opacity={0.85 * seed} />
@@ -13056,9 +13079,16 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                       const on = !!stepsCompleted[sid];
                       const c = CHAKRAS_7[i].pastel;
                       return (
-                        <span key={sid} title={NAMES[sid] || sid} style={{ display:"inline-block",width:on?9:7,height:on?9:7,
-                          borderRadius:"50%",transition:"all 0.5s ease",
-                          background: on ? `radial-gradient(circle,${c},${c}55)` : "rgba(255,255,255,0.10)",
+                        // SÖNÜK NOKTA "BOZUK" GÖRÜNMESİN (kullanıcı bildirdi:
+                        // "bazıları yanmıyor"). Davranış doğruydu, tamamlanmayan
+                        // adım yanmıyor; ama nötr beyaz %10 ölü piksel gibi
+                        // duruyordu. Artık bekleyen nokta da KENDİ çakra rengini
+                        // taşıyor (soluk dolgu + ince halka): "henüz sırası
+                        // gelmedi" okunuyor, "çalışmıyor" değil.
+                        <span key={sid} title={NAMES[sid] || sid} style={{ display:"inline-block",width:on?9:8,height:on?9:8,
+                          borderRadius:"50%",transition:"all 0.5s ease",boxSizing:"border-box",
+                          background: on ? `radial-gradient(circle,${c},${c}55)` : `${c}26`,
+                          border: on ? "none" : `1px solid ${c}55`,
                           boxShadow: on ? `0 0 9px ${c}88` : "none",
                           animation: on ? `pulse ${2.2+i*0.18}s ease-in-out infinite` : "none",
                           animationDelay:`${i*0.12}s` }} />
@@ -13138,16 +13168,27 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               DEĞİŞMEDİ: yalnızca gösterim değişti. */}
           {(() => {
             const cur = streakData.current || 0;
+            // ── DÖRT AŞAMA: TOHUM → FİDAN → AĞAÇ → ORMAN (kullanıcı kararı) ──
+            // ⚠️ ÖNCEKİ HALİ HATALIYDI: eşikler "ulaşılan gün" olarak yazılmıştı
+            // (Tohum=3) ve 3 günden önce hiçbir aşamada sayılmıyordun. Sonuç:
+            // 1. günde ekranda "TOHUM 1 gün" yazarken altında "Sıradaki: Tohum"
+            // çıkıyordu, yani zaten olduğun şey sıradaki gibi gösteriliyordu.
+            // Artık eşikler aşamanın BAŞLADIĞI gün: herkes 0. günde TOHUM olur,
+            // 3'te FİDAN, 7'de AĞAÇ, 21'de ORMAN. Böylece "sıradaki" her zaman
+            // gerçekten bir SONRAKİ aşama.
+            // ⚠️ Seviye/çarpan matematiği (streakLevel, x1/x2/x4) bu listeden
+            // BAĞIMSIZ ve DEĞİŞMEDİ; burası yalnızca büyüme görseli.
             const MARKS = [
-              { d: 3,  label: t("evo_seed")    },
-              { d: 7,  label: t("evo_sapling") },
-              { d: 21, label: t("evo_tree")    },
+              { d: 0,  label: t("evo_seed")    },
+              { d: 3,  label: t("evo_sapling") },
+              { d: 7,  label: t("evo_tree")    },
+              { d: 21, label: pickLang(EVO2_TXT.forest, lang) },
             ];
-            // Bulunulan aşama: son geçilen eşik. Hiçbiri geçilmediyse -1.
-            let idx = -1;
+            // Bulunulan aşama: son geçilen eşik. İlk eşik 0 olduğu için hep >= 0.
+            let idx = 0;
             for (let i = 0; i < MARKS.length; i++) if (cur >= MARKS[i].d) idx = i;
             const nextMark = idx + 1 < MARKS.length ? MARKS[idx + 1] : null;
-            const stageStart = idx < 0 ? 0 : MARKS[idx].d;
+            const stageStart = MARKS[idx].d;
             const stageEnd = nextMark ? nextMark.d : MARKS[MARKS.length - 1].d;
             // Aşama içi ilerleme (0..1). En üstteyken tam dolu.
             const segP = nextMark
@@ -13165,18 +13206,24 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               } catch { return "toprak"; }
             })();
             const accent = (PLANT_HUES[hue] || PLANT_HUES.toprak).leaf;
-            const stageLabel = idx < 0 ? MARKS[0].label : MARKS[idx].label;
+            const stageLabel = MARKS[idx].label;
+            const isForest = idx === MARKS.length - 1;
             return (
-              <div style={{ marginBottom:20,padding:"18px 16px 14px",borderRadius:16,
+              // KUTU DARALTILDI (kullanıcı: "alttaki kutu çok geniş"): genişlik
+              // 300px ile sınırlı ve ortalı, dolgu 18/16 → 13/14, aradaki boşluk
+              // 10 → 7. Asıl boşluk sorunu bitkinin çerçevesindeydi, o da
+              // plantSVG içinde büyümeye göre kırpılıyor.
+              <div style={{ margin:"0 auto 20px",maxWidth:300,width:"100%",
+                padding:"13px 14px 12px",borderRadius:16,
                 background:`linear-gradient(160deg,${accent}0e,rgba(255,255,255,0.02))`,
                 border:`1px solid ${accent}26`,display:"flex",flexDirection:"column",
-                alignItems:"center",gap:10 }}>
-                <div className="sakin-plant">{plantSVG(growth, hue, 84)}</div>
+                alignItems:"center",gap:7 }}>
+                <div className="sakin-plant">{plantSVG(growth, hue, 1.05, isForest)}</div>
 
                 {/* Aşama adı + gün sayısı */}
                 <div style={{ display:"flex",alignItems:"baseline",gap:8,flexWrap:"wrap",justifyContent:"center" }}>
                   <span style={{ fontSize:13,letterSpacing:2.5,textTransform:"uppercase",
-                    fontFamily:"'Jost',sans-serif",color: idx < 0 ? "#8e8e99" : accent,fontWeight:500 }}>
+                    fontFamily:"'Jost',sans-serif",color:accent,fontWeight:500 }}>
                     {stageLabel}
                   </span>
                   <span style={{ fontSize:11.5,color:"#8e8e99",fontFamily:"'Inter',sans-serif" }}>
@@ -13185,7 +13232,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </div>
 
                 {/* Aşama içi ilerleme çubuğu: her gün gözle görülür şekilde doluyor */}
-                <div style={{ width:"100%",maxWidth:230,height:3,borderRadius:100,
+                <div style={{ width:"100%",maxWidth:210,height:3,borderRadius:100,
                   background:"rgba(255,255,255,0.07)",overflow:"hidden" }}>
                   <div style={{ height:"100%",borderRadius:100,width:`${Math.round(segP*100)}%`,
                     background:`linear-gradient(90deg,${accent}88,${accent})`,transition:"width 0.6s ease" }} />
@@ -14179,7 +14226,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     <div key={lv} style={{ display:"flex",alignItems:"center",gap:10,padding:"9px 12px",
                       background: active ? "rgba(126,200,126,0.10)" : "rgba(255,255,255,0.02)",
                       border:`1px solid ${active ? "rgba(126,200,126,0.35)" : "rgba(255,255,255,0.05)"}`, borderRadius:12 }}>
-                      <span style={{ fontSize:13,flexShrink:0 }}>{lv===1?t("evo_seed"):lv===2?t("evo_sapling"):t("evo_tree")}</span>
+                      {/* ⚠️ ESKİDEN burada bitki adları vardı (Tohum/Fidan/Ağaç)
+                          ve seviyelerle eşleştiriliyordu. Büyüme göstergesi dört
+                          aşamaya çıkıp eşikleri değişince (Ağaç artık 7. günde)
+                          bu satır çelişmeye başladı: "Ağaç = 3. Seviye, 21 gün"
+                          diyordu. Seviye/çarpan SİSTEMİ büyüme aşamasından AYRI
+                          bir eksen; artık kendi numarasıyla gösteriliyor. */}
+                      <span style={{ fontSize:11,flexShrink:0,width:20,height:20,borderRadius:"50%",
+                        display:"inline-flex",alignItems:"center",justifyContent:"center",
+                        fontFamily:"'Jost',sans-serif",
+                        background: active ? "rgba(126,200,126,0.18)" : "rgba(255,255,255,0.05)",
+                        color: active ? "#7ec87e" : "#8e8e99" }}>{lv}</span>
                       <span style={{ fontSize:12.5,color: active ? "#7ec87e" : "#9a94a8",lineHeight:1.55,fontFamily:"'Inter',sans-serif" }}>{label}</span>
                     </div>
                   );
