@@ -4,6 +4,7 @@ import { useNav } from '@/lib/nav';
 import { useEffect, useState } from 'react';
 import { CosmicBackground } from '@/components/CosmicBackground';
 import { ProfileCard } from '@/components/ProfileCard';
+import { CouncilButton } from '@/components/CouncilButton';
 import { useSoulStore } from '@/lib/store';
 import { listReports } from '@/lib/supabase/reports';
 import { readActiveReportId } from '@/lib/active-report';
@@ -71,6 +72,8 @@ export default function ProfilPage() {
       <div className="mx-auto max-w-4xl px-4 md:px-6">
         <ProfileCard report={report} />
       </div>
+      {/* 7'ler Meclisi: doğum tarihine dayalı nesil okuması (astroloji değil). */}
+      {report.birth?.birthDate && <CouncilButton birthDate={report.birth.birthDate} />}
     </div>
   );
 }

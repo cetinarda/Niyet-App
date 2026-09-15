@@ -218,6 +218,38 @@ Her tüketici uygulaması için `marketing/` altına:
 | Profil oluşturulamıyor → "Create Profile" ekranına geri dönüyor (App Store 2.1a) | Doğum yeri çözümü tek dış servise (Open-Meteo) bağlıydı; review ağında yavaş/engelli olunca lat/lng boş → submit takılı kalıyordu. `lib/geocoding/cities.ts` offline gazetteer + timeout eklendi; ağ boş dönerse yerel şehir listesinden çözülür (`geocodePlace` fallback) |
 | IAP satın alma `error 8` / INVALID_RECEIPT (2.1b) | Kod değil, config. En olası: Xcode scheme'i `resources/Products.storekit`'i kullanıyor (sahte receipt). Ayrıca abonelik için App-Specific Shared Secret eksik olabilir. Tam runbook: `docs/APP_STORE_UPLOAD.md` "receipt error 8" bölümü |
 
+## 7'LER MECLİSİ (profil sekmesi, kullanıcı isteği)
+
+`app/profil/page.tsx` -> `components/CouncilButton.tsx` + `lib/council.ts`.
+Büyük buton, içinde canvas partikülleri (AI motoru gibi yatay süzülme,
+reduced-motion'da sabit). Tıklayınca doğum tarihine dayalı 7 KISA analiz
+üretir; bitince "Detaylı Karnene Git" -> `/report`.
+
+**⚠️ ASTROLOJİ DEĞİL, NESİL/KUŞAK psikolojisi.** Karne astro/HD odaklıyken bu
+YALNIZCA doğum tarihinden çalışır (o dönemin küresel olayları, kültürü,
+ekonomisi, teknolojisi). Prompt burcu/gezegeni/numerolojiyi YASAKLAR; #4
+(ilişki) özellikle "astrolojiye değinme" der.
+
+**⚠️ AI BACKEND = SAKİN HOST'un `ai-call` fonksiyonu, soulprofile.life DEĞİL.**
+SoulID embed'inin kendi AI'ı uzak host'a (soulprofile.life) gider ve o backend
+BU REPODA YOK, yeni endpoint eklenemez. Onun yerine `lib/council.ts`,
+Sakin'in `netlify/functions/ai-call` fonksiyonunu çağırır (bu repoda,
+main -> Netlify deploy edilir):
+  - Web embed (sakin.life / *.netlify.app): aynı-origin relative
+    `/.netlify/functions/ai-call`.
+  - iOS native: absolute `https://sakin.life/...` (bu Origin ai-call
+    allowlist'inde: capacitor://localhost).
+Tek çağrı, 7 bölüm `[1]..[7]` delimiter'la parse (max_tokens 2000, ai-call
+tavanı). 4'ten az bölüm gelirse başarısız sayılır, kullanıcı "tekrar dene" görür.
+
+**Doğrulama (Puppeteer, ai-call mock):** köprüyle karne üret -> profil ->
+butona tıkla -> ai-call 1 kez (lang tr, max_tokens 2000) -> 7 bölüm render ->
+"Detaylı Karnene Git" `/report`'a gider. Runtime hatası yok.
+
+**Build:** SoulID embed'i yeniden derlenmeli (CLAUDE.md kök: build:ios + 3 env,
+sonra out/ -> public/embedded/soulid). Host `npm run build` public'i dist'e
+kopyalar. Ücretsiz (SOULID_PREMIUM_GATE=false ile tutarlı).
+
 ## Branş kuralı
 
 Bu repoda geliştirme branch'i: `claude/cosmic-birth-chart-app-DW89I`.
