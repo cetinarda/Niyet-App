@@ -8,10 +8,11 @@ export type Theme = 'light' | 'dark';
 const STORAGE_KEY = 'soulprofile.theme';
 const DEFAULT_THEME: Theme = 'dark';
 
+// AÇIK (light) MOD KALDIRILDI (kullanıcı isteği). Ruh Profili yalnızca karanlık
+// temada. Eskiden "light" seçmiş kullanıcılar da otomatik karanlığa döner:
+// depodaki eski değer artık okunmuyor, her zaman DEFAULT_THEME (dark).
 function readStored(): Theme {
-  if (typeof localStorage === 'undefined') return DEFAULT_THEME;
-  const v = localStorage.getItem(STORAGE_KEY);
-  return v === 'light' || v === 'dark' ? v : DEFAULT_THEME;
+  return DEFAULT_THEME;
 }
 
 type State = {

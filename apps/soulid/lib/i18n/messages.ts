@@ -144,7 +144,6 @@ const tr: Dict = {
   'loader.title': 'Kozmik kimliğin hesaplanıyor...',
 
   // Free tier + gate
-  'free.banner': 'Mağazalarda yayınlanana kadar her şey ÜCRETSİZ ✦ Tüm özellikler açık, hemen dene',
   'gate.report.title': 'Sınırsız erişim',
   'gate.report.desc': 'İlk karnen ücretsizdi. Farklı kişilerin karnesine bakmak ve tüm özelliklere sınırsız erişim için premium.',
   'gate.compat.title': 'Sınırsız erişim',
@@ -365,7 +364,6 @@ const en: Dict = {
   'loader.title': 'Computing your cosmic identity...',
 
   // Free tier + gate
-  'free.banner': 'Everything is FREE until we launch in the stores ✦ All features unlocked, try it now',
   'gate.report.title': 'Unlimited access',
   'gate.report.desc': 'Your first profile was free. For other people’s profiles and unlimited access to all features, go premium.',
   'gate.compat.title': 'Unlimited access',

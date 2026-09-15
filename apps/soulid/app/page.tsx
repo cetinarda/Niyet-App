@@ -26,14 +26,17 @@ export default function Welcome() {
   // açılıyor"). Kayıtlı karne varsa welcome hiç gösterilmeden hedefe geçilir.
   const [resolving, setResolving] = useState(() => IS_CAPACITOR && sakinBridgeAttempted());
 
-  // HOST HANGİ EKRANI İSTEDİ: Keşfet'ten girilince DETAYLI KARNE (varsayılan),
-  // Sakin'in "Ben" ekranındaki "İkili uyumuna bak" butonundan girilince
-  // eşleşme ekranı (?go=pair). Sorgu dizesi okunuyor çünkü doğrudan
-  // /pair/index.html'e açmak köprüyü atlar ve kendi kimliği hiç üretilmez.
+  // HOST HANGİ EKRANI İSTEDİ: Keşfet'ten girilince artık PROFİL sekmesi
+  // (varsayılan; kullanıcı kararı: "ilk açılış profil olsun, oraya bakan
+  // detaylı karneye zaten gider" - profil sayfasında "Detaylı Karnene Git"
+  // butonu + 7'ler Meclisi var). Sakin'in "Ben" ekranındaki "İkili uyumuna
+  // bak" butonundan girilince eşleşme ekranı (?go=pair). Sorgu dizesi
+  // okunuyor çünkü doğrudan /pair/index.html'e açmak köprüyü atlar ve kendi
+  // kimliği hiç üretilmez.
   const target = () => {
     try {
-      return new URLSearchParams(window.location.search).get('go') === 'pair' ? '/pair' : '/report';
-    } catch { return '/report'; }
+      return new URLSearchParams(window.location.search).get('go') === 'pair' ? '/pair' : '/profil';
+    } catch { return '/profil'; }
   };
 
   useEffect(() => {

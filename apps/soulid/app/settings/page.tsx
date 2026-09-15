@@ -3,7 +3,6 @@
 import { useNav } from '@/lib/nav';
 import { useState } from 'react';
 import { PageLayout, Section, Bullet } from '@/components/PageLayout';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { MotionToggle } from '@/components/MotionToggle';
 import { useSoulStore } from '@/lib/store';
 import { purgeAccount } from '@/lib/supabase/reports';
@@ -54,13 +53,6 @@ export default function Settings() {
       title="Verin senin kontrolünde"
       intro="Karneni indir, hesabını sil, abonelikleri yönet. Tüm hakların KVKK + GDPR çerçevesinde korunur."
     >
-      <Section heading="Görünüm">
-        <p>Uygulamanın temasını seç. "Sistem" cihazının ayarına uyar.</p>
-        <div className="mt-2">
-          <ThemeToggle />
-        </div>
-      </Section>
-
       <Section heading="Erişilebilirlik · Hareket">
         <p>
           Animasyonları azaltmak gözünü yorduğun an hayatını kolaylaştırır. Cihazın

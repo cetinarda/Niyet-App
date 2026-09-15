@@ -3,14 +3,13 @@
 import { usePathname } from 'next/navigation';
 import { TopBar } from '@/components/TopBar';
 import { Footer } from '@/components/Footer';
-import { PromoBanner } from '@/components/PromoBanner';
 
 /**
  * EŞLEŞME AKIŞINDA TEK PARÇA HİSSİ (kullanıcı: "kişi farklı bir appe gittiğini
  * düşünmesin", "bilgileri girerken tam ekran her zaman, ana sayfaya tıklayana
  * kadar üst bar hiç görünmesin").
  *
- * SoulProfile logolu TopBar, tanıtım şeridi (PromoBanner) ve Footer AKIŞ ve
+ * SoulProfile logolu TopBar, ve Footer AKIŞ ve
  * BİLGİ GİRİŞİ boyunca gizlenir: /pair altındaki HER SAYFA (eşleşme, partner
  * formu /pair/add, tam uyum detayı /pair/result), bölüm listesi (/menu) ve
  * kendi doğum formu (/birth). Bu ekranlar Sakin'in bir sekmesi gibi tam ekran
@@ -35,7 +34,6 @@ export function Chrome({ children }: { children: React.ReactNode }) {
   }
   return (
     <>
-      <PromoBanner />
       <TopBar />
       <main className="flex-1">{children}</main>
       <Footer />

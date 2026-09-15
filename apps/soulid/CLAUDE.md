@@ -250,6 +250,24 @@ butona tıkla -> ai-call 1 kez (lang tr, max_tokens 2000) -> 7 bölüm render ->
 sonra out/ -> public/embedded/soulid). Host `npm run build` public'i dist'e
 kopyalar. Ücretsiz (SOULID_PREMIUM_GATE=false ile tutarlı).
 
+## İlk açılış + tema + promo (kullanıcı isteği, Eyl 2026)
+
+- **İlk açılış = PROFİL sekmesi.** `app/page.tsx` `target()` varsayılanı `/report`
+  yerine `/profil` (kullanıcı: "ilk açılış profil olsun, oraya bakan detaylı
+  karneye zaten gider"). Profil'de "Detaylı Karnene Git" + 7'ler Meclisi var.
+  `?go=pair` (Ben > İkili uyum) hâlâ `/pair`.
+- **AÇIK (light) MOD KALDIRILDI.** Ruh Profili yalnızca karanlık tema. Üç yerde
+  sabitlendi: (1) `lib/theme/store.ts` `readStored()` her zaman `dark` döner
+  (eski "light" seçmiş kullanıcı da otomatik döner), (2) `app/layout.tsx` FOUC
+  scripti her zaman dark yazar (ilk boyamada bile açık gelmez), (3) `ThemeToggle`
+  bileşeni SİLİNDİ, TopBar ve Ayarlar'dan çıkarıldı. globals.css'teki light
+  token'ları duruyor ama artık hiç aktifleşmiyor.
+- **"Mağazalarda yayınlanana kadar her şey ÜCRETSİZ" ŞERİDİ KALDIRILDI.** SoulID
+  ayrı bir uygulama olarak yayınlanmaktan vazgeçildi (kalıcı olarak Sakin içinde,
+  ücretsiz). `PromoBanner` bileşeni silindi, `Chrome.tsx`'ten çıkarıldı,
+  `free.banner` i18n string'i (tr+en) silindi. `FREE_MODE` bayrağı DURUYOR
+  (paywall'ı kapalı tutuyor, doğru davranış), yalnızca görünür şerit gitti.
+
 ## Branş kuralı
 
 Bu repoda geliştirme branch'i: `claude/cosmic-birth-chart-app-DW89I`.

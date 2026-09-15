@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useT } from '@/lib/i18n';
 import { LanguageToggle } from './LanguageToggle';
-import { ThemeToggle } from './ThemeToggle';
 import { BrandMark } from './BrandMark';
 
 export function TopBar() {
@@ -69,7 +68,6 @@ export function TopBar() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
           <LanguageToggle />
           <button
             type="button"

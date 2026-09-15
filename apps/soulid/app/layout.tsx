@@ -99,14 +99,13 @@ export const viewport: Viewport = {
 };
 
 // FOUC önleyici: HTML render olmadan önce data-theme + data-motion set edilir.
-// Default: dark. Kullanıcı /settings'te açıkça 'light' seçerse override.
+// AÇIK MOD KALDIRILDI (kullanıcı isteği): tema HER ZAMAN dark. Depoda eski
+// 'light' değeri kalmış olsa bile okunmuyor, ilk boyamada bile karanlık gelir.
 const themeInitScript = `
 (function(){
   try {
-    var t = localStorage.getItem('soulprofile.theme');
-    if (t !== 'light' && t !== 'dark') t = 'dark';
-    document.documentElement.dataset.theme = t;
-    document.documentElement.style.colorScheme = t;
+    document.documentElement.dataset.theme = 'dark';
+    document.documentElement.style.colorScheme = 'dark';
   } catch(e) {
     document.documentElement.dataset.theme = 'dark';
   }
