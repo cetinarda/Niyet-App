@@ -378,6 +378,39 @@ kullanıcının SON 7 GÜNLÜK kendi toplamı. Tamamen YEREL hesaplanıyor (gün
 sunucuya hiçbir şey sorulmuyor. Katkı sıfırsa satır HİÇ çıkmaz ("0 nefes"
 demek soğutur).
 
+## 🔔 KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği, Eyl 2026)
+
+Mevcut GENEL bildirim havuzu (9000-9099, `scheduleDailyReminders`) aynen devam
+eder. Buna EK, AYRI bir kişiye özel havuz eklendi (`schedulePersonalNotifications`,
+ID 9200-9299), doğum bilgisine göre.
+
+**Günde +2 (kullanıcı kararı):** (1) günün KOLAYLAŞTIRICI mesajı 10:00,
+(2) ona özel kısa HATIRLATICI 16:00. Ayrıca (3) ELEKTROMANYETİK durum mesajı
+12:00 ama YALNIZCA jeomanyetik alan hareketliyken (Kp>=4, aktif/fırtına);
+sakin günlerde çıkmaz.
+
+**İçerik motoru = AI (haftalık) + ŞABLON YEDEĞİ (kullanıcı kararı).** Yerel
+bildirim çevrimdışı da düşmeli, o yüzden içerik uygulama açıkken ÖNCEDEN üretilip
+cihaza planlanır (fire anında AI çağrılamaz).
+- `_genPersonalNotifAI`: tek ai-call, doğum burcu + yaşam yolu + kişisel yıl +
+  7 günün ay evresini verir, `[1F][1R]..[7F][7R]` formatında 14 satır ister,
+  parse eder. 5+ gün dolu değilse şablona düşer. HAM astro sayısı YASAK (Ayna
+  dersi). max_tokens 1400.
+- `_genPersonalNotifTemplate`: doğum + gün numarasıyla tohumlanmış deterministik
+  yedek (`PNOTIF_FACIL`/`PNOTIF_REMIND`, TR+EN tam, diğer diller EN'e düşer;
+  nadir yol, AI birincil).
+- İçerik `sakin_pnotif_content`'te ISO hafta + dil + doğum damgasıyla cache'lenir
+  (haftada bir yenilenir); planlama `sakin_pnotif_sched` ile günde bir.
+
+**EM = gerçek NOAA verisi, AI değil.** `_emMessageForDay` cosmic-energy'nin
+`next_3_days.slots` Kp tahmininden günlük max Kp'yi çıkarır, `PNOTIF_EM`
+(active/storm, 7 dilde) banttan mesaj seçer. Forecast yalnızca 0..2. günü kapsar.
+
+⚠️ **Doğum bilgisi yoksa bu havuz HİÇ kurulmaz** (kişiselleştirme şart); genel
+havuz yine çalışır. Native-only (isNative guard), web'de erken çıkar.
+Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
+(pageerror yok), build temiz. Cihaz testi yapılmadı (LocalNotifications native).
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:

@@ -3200,6 +3200,210 @@ async function scheduleDailyReminders(lang) {
   } catch (e) { console.warn("[Notif] error:", e); }
 }
 
+// ── KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği) ──────────────────────────
+// Doğum bilgisine göre günde +2 bildirim: (1) günün KOLAYLAŞTIRICI mesajı,
+// (2) ona özel kısa HATIRLATICI. Ayrıca yalnızca jeomanyetik alan hareketliyken
+// (Kp>=4) günde 1 ELEKTROMANYETİK durum mesajı. Mevcut genel havuz (9000-9099)
+// aynen devam eder; bu havuz AYRI ID aralığında (9200-9299).
+//
+// İÇERİK MOTORU (kullanıcı kararı): AI (haftalık tek çağrı) + ŞABLON YEDEĞİ.
+// Yerel bildirimler çevrimdışı da düşmeli, o yüzden içerik uygulama açıkken
+// ÖNCEDEN üretilip cihaza planlanır (fire anında AI çağrılamaz). Haftada bir
+// üretilir, günlük yeniden planlanır.
+//
+// EM (elektromanyetik) mesajı gerçek NOAA verisinden (cosmic-energy Kp tahmini)
+// bantlanır: AI'ya gerek yok, veri odaklı; yalnızca aktif/fırtına günlerinde çıkar.
+
+// Şablon yedeği (AI başarısızsa). de/es/pt/fr/ja için EN'e düşer (yedek yol,
+// nadiren; AI birincil ve dili kendi zorluyor). EM ise 7 dilde tam.
+const PNOTIF_FACIL = {
+  tr: ["Bugünü küçük tut. Tek bir şeyi bitir, gerisi kendiliğinden akar.",
+       "Acele etme. Bugün yavaşlamak da bir ilerleme.",
+       "Zor gelen şeyi ikiye böl. Yarısı bugün yeter.",
+       "Bir mola planla. Dinlenmiş zihin daha hızlı toparlar.",
+       "Kendine bir iyilik yap: en kolay işi ilk yap, ivme gelsin."],
+  en: ["Keep today small. Finish one thing, the rest will follow.",
+       "No rush. Slowing down today is also progress.",
+       "Split the hard thing in two. Half is enough for today.",
+       "Plan a pause. A rested mind recovers faster.",
+       "Do yourself a kindness: start with the easiest task, let momentum build."],
+};
+const PNOTIF_REMIND = {
+  tr: ["Su içmeyi unutma. Bedenin sana teşekkür edecek.",
+       "Bir kişiye tek cümle yaz: aklımdasın. O kadar.",
+       "Bugün bir şeye 'hayır' de. Alanını koru.",
+       "Üç şeye şükret, sessizce. Gün hafifler.",
+       "Telefonu bir saat uzağa koy. An geri gelsin."],
+  en: ["Remember to drink water. Your body will thank you.",
+       "Write one line to someone: thinking of you. That's all.",
+       "Say 'no' to one thing today. Protect your space.",
+       "Give thanks for three things, quietly. The day lightens.",
+       "Put the phone an arm away for an hour. Let the moment return."],
+};
+// EM: yalnızca aktif (Kp 4) ve fırtına (Kp>=5) bantları, 7 dilde.
+const PNOTIF_EM = {
+  active: {
+    tr:"Gökyüzü bugün hafif hareketli (jeomanyetik alan aktif). Huzursuzluk ya da dalgınlık olabilir; nefesine dön, acele etme.",
+    en:"The sky is a little restless today (active geomagnetic field). You may feel edgy or scattered; come back to your breath, slow down.",
+    de:"Der Himmel ist heute leicht unruhig (aktives geomagnetisches Feld). Unruhe oder Zerstreutheit möglich; kehr zu deinem Atem zurück.",
+    es:"El cielo está algo inquieto hoy (campo geomagnético activo). Puedes sentirte inquieto o disperso; vuelve a tu respiración.",
+    pt:"O céu está um pouco agitado hoje (campo geomagnético ativo). Podes sentir-te inquieto ou disperso; volta à tua respiração.",
+    fr:"Le ciel est un peu agité aujourd'hui (champ géomagnétique actif). Tu peux te sentir nerveux ou dispersé ; reviens à ton souffle.",
+    ja:"今日は空が少し波立っています（地磁気が活発）。落ち着かなさや散漫さを感じるかも。呼吸に戻って、ゆっくりと。",
+  },
+  storm: {
+    tr:"Jeomanyetik fırtına var. Bedenin ve sezgilerin tetikte olabilir, uykun karışabilir. Bugün kendine yumuşak davran, nefesine tutun.",
+    en:"A geomagnetic storm is underway. Your body and intuition may be on alert, sleep may stir. Be gentle with yourself today, hold to your breath.",
+    de:"Ein geomagnetischer Sturm ist im Gange. Körper und Intuition in Alarm, Schlaf unruhig. Sei heute sanft zu dir, halt dich an den Atem.",
+    es:"Hay una tormenta geomagnética. Tu cuerpo e intuición pueden estar alerta, el sueño inquieto. Sé amable contigo hoy, aférrate a tu respiración.",
+    pt:"Há uma tempestade geomagnética. Corpo e intuição em alerta, sono agitado. Sê gentil contigo hoje, agarra-te à tua respiração.",
+    fr:"Une tempête géomagnétique est en cours. Corps et intuition en alerte, sommeil agité. Sois doux avec toi aujourd'hui, accroche-toi à ton souffle.",
+    ja:"地磁気の嵐が起きています。身体も直感も張りつめ、眠りが乱れるかも。今日は自分に優しく、呼吸に身を委ねて。",
+  },
+};
+
+// ISO hafta damgası (yıl + hafta no): içerik haftada bir yenilensin.
+function _isoWeekStamp(d = new Date()) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day);
+  const yStart = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  const wk = Math.ceil(((t - yStart) / 86400000 + 1) / 7);
+  return `${t.getUTCFullYear()}W${wk}`;
+}
+
+// AI ile 7 günlük (kolaylaştırıcı + hatırlatıcı) çift üret. Başarısızsa null.
+async function _genPersonalNotifAI(lang, birthDate) {
+  try {
+    const sign = zodiacSign(birthDate);          // TR ad; prompta bağlam
+    const lp = lifePathNumber(birthDate);
+    const py = personalYear(birthDate);
+    const now = new Date();
+    const dayLines = [];
+    for (let d = 0; d < 7; d++) {
+      const dt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+      const mp = moonPhase(dt);
+      dayLines.push(`Gün ${d + 1}: ay evresi ${pickLang(mp, lang)}`);
+    }
+    const system =
+      "Sen Sakin uygulamasının nazik bir bildirim yazarısın. Kullanıcının doğum " +
+      "bilgisine göre KİŞİYE ÖZEL, sıcak, destekleyici ve KISA bildirim metinleri " +
+      "yazarsın. Her metin tek cümle, en fazla ~110 karakter, ikinci tekil şahıs " +
+      "(sen). HAM ASTROLOJİ SAYISI ya da teknik terim YAZMA (derece, Kp gibi); " +
+      "yalnızca anlamını sıcak dille yansıt. Uzun çizgi (em dash) kullanma. " +
+      "Her gün için İKİ satır üret: F = o günü KOLAYLAŞTIRAN küçük bir öneri, " +
+      "R = ona özel kısa bir HATIRLATICI. Çıktı TAM olarak şu biçimde, başka hiçbir " +
+      "şey yazma: [1F] ... [1R] ... [2F] ... [2R] ... [7F] ... [7R]";
+    const user =
+      `Doğum burcu: ${sign}. Yaşam yolu teması: ${lp}. Kişisel yıl: ${py}.\n` +
+      `Önümüzdeki 7 gün:\n${dayLines.join("\n")}\n\n` +
+      "Bu kişi için 7 günlük kolaylaştırıcı (F) ve hatırlatıcı (R) çiftlerini yaz.";
+    const res = await aiFetch({
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({ system, messages: [{ role: "user", content: user }], max_tokens: 1400, lang }),
+    });
+    const d = await res.json();
+    if (!res.ok || d.error || !d.text) return null;
+    const text = String(d.text);
+    const days = [];
+    for (let i = 1; i <= 7; i++) {
+      const fm = text.match(new RegExp(`\\[${i}F\\]\\s*([^\\[]+)`));
+      const rm = text.match(new RegExp(`\\[${i}R\\]\\s*([^\\[]+)`));
+      const f = fm && fm[1].trim();
+      const r = rm && rm[1].trim();
+      days.push({ f: f || null, r: r || null });
+    }
+    // En az 5 günün ikisi de doluysa AI'yı kabul et; yoksa şablona düş.
+    const full = days.filter((x) => x.f && x.r).length;
+    return full >= 5 ? days : null;
+  } catch (_) { return null; }
+}
+
+// Şablondan 7 günlük çift (doğum + gün numarasıyla tohumlanmış, deterministik).
+function _genPersonalNotifTemplate(lang, birthDate) {
+  const seed = (birthDate || "").split("-").reduce((a, x) => a + (parseInt(x) || 0), 0);
+  const fac = PNOTIF_FACIL[lang] || PNOTIF_FACIL.en;
+  const rem = PNOTIF_REMIND[lang] || PNOTIF_REMIND.en;
+  const now = new Date();
+  const days = [];
+  for (let d = 0; d < 7; d++) {
+    const dn = dayNumber(new Date(now.getFullYear(), now.getMonth(), now.getDate() + d));
+    days.push({
+      f: fac[((seed + dn) % fac.length + fac.length) % fac.length],
+      r: rem[((seed + dn + 3) % rem.length + rem.length) % rem.length],
+    });
+  }
+  return days;
+}
+
+// O gün jeomanyetik alan aktif/fırtınalı mı? (cosmic-energy forecast, sadece 0..2. gün)
+function _emMessageForDay(kozmik, dayIndex, lang) {
+  try {
+    const slots = kozmik?.next_3_days?.slots;
+    if (!Array.isArray(slots) || !slots.length || dayIndex > 2) return null;
+    const key = "day" + (dayIndex + 1);
+    const kps = slots.map((s) => s[key]).filter((v) => Number.isFinite(v));
+    if (!kps.length) return null;
+    const kp = Math.max(...kps);
+    if (kp < 4) return null;                 // sakin/hafif → EM bildirimi yok
+    const band = kp >= 5 ? PNOTIF_EM.storm : PNOTIF_EM.active;
+    return band[lang] || band.en;
+  } catch (_) { return null; }
+}
+
+async function schedulePersonalNotifications(lang, birthDate) {
+  if (!isNative || !birthDate) return;         // kişiselleştirme doğum bilgisi ister
+  try {
+    const perm = await LocalNotifications.requestPermissions();
+    if (perm.display !== "granted") return;
+
+    // 1) İçerik: haftada bir üret, cache'le (AI birincil, şablon yedek).
+    const week = _isoWeekStamp();
+    const contentStamp = `${week}_${lang}_${birthDate}`;
+    let content = null;
+    try { content = JSON.parse(localStorage.getItem("sakin_pnotif_content") || "null"); } catch (_) {}
+    if (!content || content.stamp !== contentStamp || !Array.isArray(content.days)) {
+      const ai = await _genPersonalNotifAI(lang, birthDate);
+      const days = ai || _genPersonalNotifTemplate(lang, birthDate);
+      content = { stamp: contentStamp, source: ai ? "ai" : "tpl", days };
+      try { localStorage.setItem("sakin_pnotif_content", JSON.stringify(content)); } catch (_) {}
+    }
+
+    // 2) EM verisi: cosmic-energy'yi en iyi çabayla çek (başarısızsa EM'siz devam).
+    let kozmik = null;
+    try {
+      const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
+      if (r.ok) kozmik = await r.json();
+    } catch (_) {}
+
+    // 3) Günlük yeniden planlama damgası: aynı gün + hafta + dil zaten kuruluysa çık.
+    const schedStamp = `${sakinDayKey()}_${contentStamp}`;
+    if (localStorage.getItem("sakin_pnotif_sched") === schedStamp) return;
+
+    // Kişisel havuz ID aralığı 9200-9299 (genel havuz 9000-9099'dan ayrı).
+    await LocalNotifications.cancel({ notifications: Array.from({ length: 100 }, (_, i) => ({ id: 9200 + i })) });
+    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    const SCHED = { allowWhileIdle: true };
+    const now = new Date();
+    const at = (d, h) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, h, 0, 0);
+    const notifications = [];
+    for (let d = 0; d < 7; d++) {
+      const day = content.days[d] || {};
+      // Kolaylaştırıcı 10:00, hatırlatıcı 16:00 (mevcut 8/13/18 slotlarıyla çakışmaz).
+      const fAt = at(d, 10), rAt = at(d, 16);
+      if (day.f && fAt > now) notifications.push({ id: 9200 + d, title: "Sakin", body: day.f, schedule: { at: fAt, ...SCHED }, extra: { screen: "bugun" }, ...icon });
+      if (day.r && rAt > now) notifications.push({ id: 9210 + d, title: "Sakin", body: day.r, schedule: { at: rAt, ...SCHED }, extra: { screen: "mandala" }, ...icon });
+      // EM yalnızca aktif/fırtına günlerinde (Kp>=4), 12:00.
+      const em = _emMessageForDay(kozmik, d, lang);
+      const eAt = at(d, 12);
+      if (em && eAt > now) notifications.push({ id: 9220 + d, title: "Sakin", body: em, schedule: { at: eAt, ...SCHED }, extra: { screen: "ben" }, ...icon });
+    }
+    if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
+    localStorage.setItem("sakin_pnotif_sched", schedStamp);
+  } catch (e) { console.warn("[PNotif] error:", e); }
+}
+
 // ── EKRANI AÇIK TUT (Screen Wake Lock) ─────────────────────────────────────
 // Kullanıcı: "nefes aldığım sayfa hiç bir yere dokunmadığımda kararıyor; gözümü
 // kapatıp nefese odaklanmışken telefona tekrar dokunmam gerekiyor."
@@ -6885,6 +7089,11 @@ export default function SakinApp() {
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   // lang bağımlılığı: dil değişince bildirimler yeni dilde yeniden planlanır
   useEffect(() => { scheduleDailyReminders(lang); }, [lang]);
+  // KİŞİYE ÖZEL BİLDİRİM HAVUZU: doğum bilgisine göre günde +2 (kolaylaştırıcı +
+  // hatırlatıcı) + hareketli günlerde elektromanyetik. birthDate değişince
+  // yeniden planlanır. İçerik haftada bir AI ile üretilir (şablon yedekli),
+  // günlük yeniden planlanır; hepsi schedulePersonalNotifications içinde damgalı.
+  useEffect(() => { schedulePersonalNotifications(lang, birthDate); }, [lang, birthDate]);
   // Kilit ekranı / Control Center / Dynamic Island uzaktan kumanda olayları.
   // Native Swift plugin (SakinNowPlaying.swift) play/pause/stop'a basıldığında
   // window.dispatchEvent ile bildirir; biz Web Audio durdurma yoluna aktarırız.
