@@ -5582,7 +5582,7 @@ export default function SakinApp() {
   // ESC tuşuyla embed'den çıkış: web kullanıcıları için bir fallback (back button bulunamazsa)
   useEffect(() => {
     if (!embeddedApp) return;
-    const onKey = (e) => { if (e.key === "Escape") { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } };
+    const onKey = (e) => { if (e.key === "Escape") { releaseStandardEmbedFrame(); setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [embeddedApp]);
@@ -7339,7 +7339,20 @@ export default function SakinApp() {
   // Artık önce embed'e soruyoruz: içeride kapatılacak bir katman (detay kartı,
   // sonuç listesi, alt menü) varsa embed onu kapatıp "handled" der, biz kapatmayız.
   // Köprüsü olmayan/eski bundle cevap veremez → 260ms sonra eski davranış (kapat).
-  const closeEmbedNow = () => { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); };
+  // WKWEBVIEW BELLEK BOŞALTMA İPUCU: standart embed kapanmadan ÖNCE iframe'e
+  // about:blank navigasyonu ver. Element'i sadece kaldırmak (React unmount)
+  // WKWebView'da ağır sayfanın JS yığınını hemen bırakmayabiliyor; boş sayfaya
+  // gitmek WebKit'e "bu içeriği at" der. Aynı-origin embed olduğundan zararsız:
+  // durum zaten localStorage'da. ⚠️ mitlerIframeRef'e DOKUNMAZ: mitler her
+  // mount'ta rastgele 4 mit seçtiği için sticky kalmalı (bkz. mitlerSession);
+  // mitler açıkken embedIframeRef.current zaten null olduğu için no-op.
+  const releaseStandardEmbedFrame = () => {
+    try {
+      const f = embedIframeRef.current;
+      if (f && !/^about:blank/.test(f.getAttribute("src") || "")) f.setAttribute("src", "about:blank");
+    } catch(_) {}
+  };
+  const closeEmbedNow = () => { releaseStandardEmbedFrame(); setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); };
   const askEmbedBackThenClose = () => {
     const path = embeddedApp?.path || "";
     const frame = path.indexOf("sakinmitler") !== -1 ? mitlerIframeRef.current : embedIframeRef.current;
@@ -9413,6 +9426,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
           }}>
             <button
               onClick={()=>{ try { haptic(); } catch(_) {}
+                releaseStandardEmbedFrame();   // WKWebView belleğini bırakması için about:blank ipucu
                 setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
                 // GELDİĞİN YERE DÖN (eskiden koşulsuz Keşfet açılıyordu).
                 const r = embedReturn.current; embedReturn.current = null;

@@ -417,6 +417,27 @@ Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisi
 1. **Netlify env `REPORT_TOKEN`** ekli mi? Yoksa rapor kapalı. Ekli ise rapor: `https://sakin.life/.netlify/functions/report?token=...&html=1`
 2. **App Store gizlilik etiketi:** bir sonraki iOS gönderiminde "Kullanım Verileri (kimliğe bağlı değil)" olarak işaretlenmeli. Görünür opt-out toggle Ailesi panelinde mevcut (analytics_toggle_label).
 
+## ⚡ R8 / OPTİMİZASYON + EMBED BELLEK (kullanıcı isteği: Play uyarısı, Eyl 2026)
+
+**Play uyarısı (versionCode 16'yı ölçtü) özeti:** düşük optimizasyon/karartma/
+küçültme (~%32-33), kullanılmayan kaynak kaldırma kapalı, AGP 9 önerisi.
+- ⚠️ **Karartma artık %2 DEĞİL %33: eşiğin (%25) ÜSTÜNDE.** Bu uyarı bir ENGEL
+  değil, öneri. Düşük oran BİLİNÇLİ: Capacitor çekirdek keep'i (çökme fix'i,
+  bkz. proguard-rules.pro) sınıfları rename ettirmiyor. Daraltmak = çökme riski.
+- ✅ **"Kullanılmayan kaynak kaldırma kapalı" ZATEN ÇÖZÜLÜ:** versionCode 16'da
+  shrinkResources KAPALIYDI, versionCode 17 (repoda) AÇIK. 17'yi R8 test
+  kapısından geçirip göndermek yeterli (kod hazır, bump gerekmez).
+- **Cihazı asıl yoran R8 değil, embed'ler.** public/embedded 29 MB (APK içinde),
+  runtime'da açık olan embed + mitler (sticky).
+
+**EMBED BELLEK (yapıldı, düşük risk):** standart embed kapanırken
+`releaseStandardEmbedFrame()` iframe'e `about:blank` navigasyonu verir; WKWebView
+ağır sayfayı hemen bıraksın (element'i sadece unmount etmek WebKit'te yavaş
+boşalabiliyor). Escape + geri butonu + closeEmbedNow yollarında. ⚠️ mitler'e
+DOKUNMAZ (embedIframeRef mitler'de null; mitler her mount'ta rastgele 4 mit
+seçtiği için sticky kalmalı). Zaten var olan MutationObserver-disconnect
+temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
+
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
 - **"Build çalışmıyor / hata yine var"** → Önce kullanıcının çektiği branch'i SOR. Yanlış branch'ten derliyor olabilir. (Bir kere main fix'lerim CIpM8'e gitmedi, ortalık karıştı.)
