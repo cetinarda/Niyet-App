@@ -9788,7 +9788,8 @@ Direction (where the energy flows). Rules:
     let alive = true;
     import("./quotes-data").then(m => {
       if (!alive || !m.QUOTES?.length) return;
-      setInnerQuote(m.QUOTES[ichingHash(`quote|${todayKey}|${birthDate || ""}`) % m.QUOTES.length]);
+      // Her kaynak eşit şansla (bkz. quotes-data.js pickBalancedQuote).
+      setInnerQuote(m.pickBalancedQuote(ichingHash(`quote|${todayKey}|${birthDate || ""}`), ichingHash(`quoteIn|${todayKey}|${birthDate || ""}`)));
     }).catch(() => {});
     // Dün öğlen: günün temsilî anı (gün içinde Ay kapısı değişir, Güneş'inki değişmez).
     const y = new Date(); y.setDate(y.getDate() - 1); y.setHours(12, 0, 0, 0);

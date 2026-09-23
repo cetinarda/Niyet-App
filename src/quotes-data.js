@@ -155,3 +155,25 @@ export const QUOTES = [
 {"id": "n531", "s": "Gestalt Yaklaşımı", "t": {"tr": "Rüyandaki her figür sensin. Seni kovalayan da sensin, kaçan da.", "en": "Every figure in your dream is you. The one chasing and the one fleeing are both yours.", "de": "Jede Gestalt in deinem Traum bist du. Der Verfolger und der Fliehende sind beide du.", "es": "Cada figura de tu sueño eres tú. El que persigue y el que huye son ambos tuyos.", "pt": "Cada figura do teu sonho és tu. O que persegue e o que foge são ambos teus.", "fr": "Chaque figure de ton rêve, c'est toi. Celui qui poursuit et celui qui fuit sont tous deux toi.", "ja": "夢に現れるすべての姿はあなたである。追う者も、逃げる者も、どちらもあなただ。"}},
 {"id": "n532", "s": "Gestalt Yaklaşımı", "t": {"tr": "Tamamlanmamış olan geri döner. Bitirilmeyen bir cümle, kapatılmayan bir veda, hep kapıyı çalar.", "en": "What is unfinished returns. An unspoken sentence, a goodbye never closed, keeps knocking at the door.", "de": "Was unvollendet bleibt, kehrt zurück. Ein nicht zu Ende gesprochener Satz, ein nie geschlossener Abschied, klopft immer wieder an.", "es": "Lo inconcluso regresa. Una frase que no se terminó, una despedida que no se cerró, siempre vuelve a llamar a la puerta.", "pt": "O que fica por terminar regressa. Uma frase não acabada, uma despedida nunca fechada, batem sempre à porta.", "fr": "Ce qui reste inachevé revient. Une phrase non finie, un adieu jamais clos, frappent encore à la porte.", "ja": "終わっていないものは戻ってくる。言い終えなかった一文、閉じられなかった別れは、いつまでも扉を叩く。"}},
 ];
+
+// EŞİT AĞIRLIK (Eyl 2026, kullanıcı: "Schopenhauer, Jung, Yunus Emre, Aşık Veysel
+// eşit ağırlıkta olsun, hep aynı kişiler çıkıyor"). Eskiden QUOTES içinden düz
+// seçiliyordu; havuzun ~%40'ı Mevlana olduğu için hep aynı isimler geliyordu.
+// Şimdi önce KAYNAK (eşit şans), sonra o kaynağın sözü seçilir. Gruplama
+// Bitkiler/Taşlar/Hayvan'daki buildQuotePool ile AYNI (apps/*/src/utils/quotePool.ts).
+export const QUOTE_GROUP = {
+  "Dhammapada": "Buddha",
+  "Zen Geleneği": "Buddha",
+  "Zhuangzi": "Laozi",
+  "Seneca": "Epiktetos",
+  "Marcus Aurelius": "Epiktetos",
+};
+// seedA: kaynak seçimi, seedB: kaynak içindeki söz (ikisi ayrı hash olmalı,
+// yoksa aynı kaynaktan hep aynı sıradaki söz gelirdi).
+export function pickBalancedQuote(seedA, seedB) {
+  const groups = {};
+  for (const q of QUOTES) { const g = QUOTE_GROUP[q.s] || q.s; (groups[g] = groups[g] || []).push(q); }
+  const names = Object.keys(groups).sort();
+  const g = groups[names[Math.abs(seedA) % names.length]];
+  return g[Math.abs(seedB) % g.length];
+}
