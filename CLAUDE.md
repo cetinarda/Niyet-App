@@ -440,11 +440,20 @@ Genel, kişisel ve tarot havuzları birbirinden habersiz kuruluyordu: kıdem kur
 yalnızca genel havuza uygulanıyor, doğum bilgisi olan 30+ günlük kullanıcıya
 günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
 `scheduleAllNotifications(lang, birthDate, {ask, force})`, damga `sakin_notif_plan`.
-- **Günlük üst sınır (TÜM havuzlar birlikte):** yeni (ilk 7 gün) 3 · orta (8-30) 2
-  · eski (30+) 1. `NOTIF_CAP` + `_notifDayPlan`.
-- **Doğum VARSA öncelik:** jeomanyetik 12:00 (yalnızca Kp>=4) > kolaylaştırıcı
-  10:00 (→Bugün) > akşam 18:00 / tarot 08:30 (sınır küçükse günlere göre
-  dönüşümlü). 16:00 kişisel hatırlatıcı artık PLANLANMIYOR.
+- ⚠️ **GÜNCEL (Eyl 2026, kullanıcı: "kullanıcılar bildirimleri seviyor, normal
+  günde 3; kişiye özel seçme menüsü"):** kıdeme göre 3/2/1 sınırı KALDIRILDI.
+  Varsayılan HERKESE günde 3. Ayarlar > Bildirimler (yalnızca native; web'de
+  test için `localStorage.sakin_dev_notif="1"`): günlük sayı 1/2/3 + 7 tür
+  (kozmik, kişisel, akşam, tarot, hatırlatıcı, gün ortası, geri dönüş) tek tek
+  aç/kapa, `sakin_notif_prefs` {count, off}. Satır sırası = öncelik sırası.
+  Değişince plan `force` ile hemen yeniden kurulur. `readNotifPrefs` +
+  `_notifDayPlan(dn, day, hasBirth, hasEm, prefs)`. Analitik `notif_pref`
+  (track.mjs beyaz listede, raporda "Bildirimler" altında).
+  Varsayılanla doğum var: 08:30 tarot + 10:00 kişisel + 18:00 akşam; doğum yok:
+  13:00 (Salı/Cuma 08:00) + 18:00 = 2.
+- ~~Günlük üst sınır: yeni 3 · orta 2 · eski 1~~ (tarihsel, yukarıya bak)
+- **Doğum VARSA öncelik:** jeomanyetik 12:00 (yalnızca Kp>=4) > kişisel 10:00
+  (→Bugün) > akşam 18:00 > tarot 08:30 > hatırlatıcı 16:00 > gün ortası.
 - **Doğum YOKSA:** yalnızca genel havuz (18:00 + kıdeme göre 13:00/08:00).
   Tarot ve gömülü uygulamaya (Tasarım/Hayvan/Mitler) giden mesajlar GİTMEZ:
   hepsi doğum kapısına açılıyordu. Geri dönüşün Bugün'e giden metinleri Bağlan'a.

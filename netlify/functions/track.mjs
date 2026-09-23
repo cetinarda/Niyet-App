@@ -159,6 +159,15 @@ export function mergeBatch(rec, body, now) {
       const path = it.path === "baglan" || it.path === "kesfet" ? it.path : null;
       if (path) { bump("fork_" + path); if (it.untried == 1) bump("fork_untried_" + path); }
     }
+    // Ayarlar > Bildirimler tercihi (kullanıcının SON seçimi önemli: sayaçlar
+    // kişi başına "şu ayarla kaydetti" sinyali, rapor kişi sayısı olarak okur).
+    else if (e === "notif_pref") {
+      const c = it.c === 1 || it.c === 2 || it.c === 3 ? it.c : null;
+      if (c) { rec.np = { c, off: [] }; }
+      const offs = typeof it.off === "string" ? it.off.split(",") : [];
+      const OK = ["kisisel", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
+      if (rec.np) rec.np.off = offs.filter((k) => OK.includes(k));
+    }
     else if (e === "bugun_gate") {
       const a = it.a === "shown" || it.a === "enter" || it.a === "skip" ? it.a : null;
       if (a) bump("bgate_" + a);

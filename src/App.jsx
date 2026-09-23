@@ -806,6 +806,34 @@ const NEDIR_I18N = {
 // "bir yolu seçen diğerini merak edebilir").
 const YOL_UNTRIED_TXT = { tr:"Henüz denemedin", en:"Not tried yet", de:"Noch nicht probiert", es:"Aún no lo probaste", pt:"Ainda não experimentaste", fr:"Pas encore essayé", ja:"まだ試していない" };
 
+// AYARLAR > BİLDİRİMLER (kullanıcı isteği, Eyl 2026: "kişiye özel bildirim
+// seçme menüsü"). Satır sırası = planlayıcının ÖNCELİK sırası (bkz. _notifDayPlan).
+const NOTIF_SET_TXT = {
+  group:   { tr:"Bildirimler", en:"Notifications", de:"Benachrichtigungen", es:"Notificaciones", pt:"Notificações", fr:"Notifications", ja:"通知" },
+  count:   { tr:"Günde en fazla", en:"At most per day", de:"Höchstens pro Tag", es:"Como máximo al día", pt:"No máximo por dia", fr:"Au maximum par jour", ja:"1日の上限" },
+  order:   { tr:"Sayı dolana kadar yukarıdan aşağı sırayla gönderilir.", en:"Sent from top to bottom until the daily number is reached.", de:"Von oben nach unten gesendet, bis die Tageszahl erreicht ist.", es:"Se envían de arriba abajo hasta llegar al número diario.", pt:"Enviadas de cima para baixo até atingir o número diário.", fr:"Envoyées de haut en bas jusqu'au nombre du jour.", ja:"1日の数に達するまで上から順に送られます。" },
+  needBirth: { tr:"Doğum bilgisi gerekir", en:"Needs your birth details", de:"Benötigt Geburtsdaten", es:"Necesita tus datos de nacimiento", pt:"Precisa dos dados de nascimento", fr:"Nécessite tes données de naissance", ja:"出生情報が必要です" },
+  permOff: { tr:"Bildirim izni kapalı", en:"Notifications are off", de:"Benachrichtigungen sind aus", es:"Las notificaciones están desactivadas", pt:"As notificações estão desligadas", fr:"Les notifications sont désactivées", ja:"通知がオフになっています" },
+  permNote:{ tr:"Telefonunun Ayarlar > Sakin > Bildirimler bölümünden açabilirsin.", en:"You can turn them on in your phone's Settings > Sakin > Notifications.", de:"Du kannst sie in den Einstellungen deines Telefons > Sakin > Mitteilungen einschalten.", es:"Puedes activarlas en Ajustes del teléfono > Sakin > Notificaciones.", pt:"Podes ativá-las nas Definições do telemóvel > Sakin > Notificações.", fr:"Tu peux les activer dans Réglages du téléphone > Sakin > Notifications.", ja:"スマートフォンの設定 > Sakin > 通知 からオンにできます。" },
+  permAsk: { tr:"İzin ver", en:"Allow", de:"Erlauben", es:"Permitir", pt:"Permitir", fr:"Autoriser", ja:"許可する" },
+  types: {
+    kozmik:      { icon:"☄", l:{ tr:"Gökyüzü uyarısı", en:"Sky alert", de:"Himmelshinweis", es:"Aviso del cielo", pt:"Aviso do céu", fr:"Alerte du ciel", ja:"空のお知らせ" },
+                   n:{ tr:"12:00 · yalnızca jeomanyetik hareketli günlerde", en:"12:00 · only on geomagnetically active days", de:"12:00 · nur an geomagnetisch aktiven Tagen", es:"12:00 · solo en días de actividad geomagnética", pt:"12:00 · só em dias de atividade geomagnética", fr:"12:00 · seulement les jours d'activité géomagnétique", ja:"12:00 · 地磁気が活発な日だけ" } },
+    kisisel:     { icon:"✦", l:{ tr:"Günün kişisel mesajı", en:"Your message of the day", de:"Deine Botschaft des Tages", es:"Tu mensaje del día", pt:"A tua mensagem do dia", fr:"Ton message du jour", ja:"今日のあなたへのメッセージ" },
+                   n:{ tr:"10:00 · doğum haritana göre", en:"10:00 · based on your birth chart", de:"10:00 · nach deinem Geburtshoroskop", es:"10:00 · según tu carta natal", pt:"10:00 · segundo o teu mapa natal", fr:"10:00 · selon ton thème natal", ja:"10:00 · 出生図にもとづいて" } },
+    aksam:       { icon:"◎", l:{ tr:"Akşam pratiği", en:"Evening practice", de:"Abendpraxis", es:"Práctica de la tarde", pt:"Prática da noite", fr:"Pratique du soir", ja:"夕方のプラクティス" },
+                   n:{ tr:"18:00 · nefes, ses, gün görevleri", en:"18:00 · breath, sound, daily tasks", de:"18:00 · Atem, Klang, Tagesaufgaben", es:"18:00 · respiración, sonido, tareas del día", pt:"18:00 · respiração, som, tarefas do dia", fr:"18:00 · souffle, son, tâches du jour", ja:"18:00 · 呼吸、音、今日のタスク" } },
+    tarot:       { icon:"✧", l:{ tr:"Sabah tarot kartı", en:"Morning tarot card", de:"Morgendliche Tarotkarte", es:"Carta de tarot de la mañana", pt:"Carta de tarot da manhã", fr:"Carte de tarot du matin", ja:"朝のタロットカード" },
+                   n:{ tr:"08:30 · kartın seni bekliyor", en:"08:30 · your card is waiting", de:"08:30 · deine Karte wartet", es:"08:30 · tu carta te espera", pt:"08:30 · a tua carta espera-te", fr:"08:30 · ta carte t'attend", ja:"08:30 · カードが待っています" } },
+    hatirlatici: { icon:"❋", l:{ tr:"Kişisel hatırlatıcı", en:"Personal reminder", de:"Persönliche Erinnerung", es:"Recordatorio personal", pt:"Lembrete pessoal", fr:"Rappel personnel", ja:"パーソナルリマインダー" },
+                   n:{ tr:"16:00 · küçük bir öneri", en:"16:00 · a small suggestion", de:"16:00 · ein kleiner Vorschlag", es:"16:00 · una pequeña sugerencia", pt:"16:00 · uma pequena sugestão", fr:"16:00 · une petite suggestion", ja:"16:00 · ちょっとした提案" } },
+    ogle:        { icon:"☀", l:{ tr:"Gün ortası", en:"Midday", de:"Mittag", es:"Mediodía", pt:"Meio do dia", fr:"Mi-journée", ja:"お昼" },
+                   n:{ tr:"13:00 · Salı ve Cuma sabah 08:00", en:"13:00 · Tue and Fri at 08:00", de:"13:00 · Di und Fr um 08:00", es:"13:00 · mar y vie a las 08:00", pt:"13:00 · ter e sex às 08:00", fr:"13:00 · mar et ven à 08:00", ja:"13:00 · 火・金は08:00" } },
+    geridon:     { icon:"↺", l:{ tr:"Uzun aradan sonra", en:"After a long break", de:"Nach langer Pause", es:"Tras una larga pausa", pt:"Após uma longa pausa", fr:"Après une longue pause", ja:"しばらくぶりのとき" },
+                   n:{ tr:"uygulamayı 10 gün açmazsan", en:"if you don't open the app for 10 days", de:"wenn du die App 10 Tage nicht öffnest", es:"si no abres la app en 10 días", pt:"se não abrires a app durante 10 dias", fr:"si tu n'ouvres pas l'app pendant 10 jours", ja:"10日間アプリを開かなかったとき" } },
+  },
+};
+
 // BEN > BAĞLANMA PROFİLİ kutusu (kullanıcı isteği, Eyl 2026). Sonuç SoulID'nin
 // bağlanma testinden gelir (aynı origin localStorage: soulprofile.attachment.result,
 // bkz. apps/soulid/lib/attachment/storage.ts). Stil adları ve özleri SoulID'deki
@@ -1464,6 +1492,7 @@ async function scheduleWinBack(lang) {
     const perm = await LocalNotifications.checkPermissions();
     await LocalNotifications.cancel({ notifications: WINBACK_DAYS.map((_, i) => ({ id: 9400 + i })) });
     if (perm.display !== "granted") return;
+    if (!readNotifPrefs().on.geridon) return;   // Ayarlar > Bildirimler'de kapatıldı
     const arr = WINBACK_TXT[lang] || WINBACK_TXT.en;
     const now = new Date();
     // Doğum bilgisi yoksa Bugün kapıya açılır: o kişiyi Bağlan'a yönlendir.
@@ -3594,54 +3623,9 @@ function dayNumber(dateObj) {
 // olduğu için grace legitimate revoke'u engellemez.
 const __appStartMs = Date.now();
 
-// ── KIDEME GÖRE BİLDİRİM YOĞUNLUĞU (kullanıcı isteği 1.3.4) ─────────────────
-// Yeni kullanıcı çok bildirim ister, eski kullanıcı yorulur. Kıdem = ilk açılıştan
-// beri geçen gün. Kıdem `sakin_first_seen` (epoch-gün) ile bir kez yazılır; sonraki
-// tüm açılışlarda okunur. `sakin_log` en fazla 7 kayıt tuttuğu için kıdem ölçümüne
-// uygun değil: bu yüzden ayrı anahtar.
-//   yeni  (ilk 7 gün)  → günde 2 bildirim
-//   orta  (8-30 gün)   → gün aşırı: bir gün 2, ertesi gün 1
-//   eski  (30+ gün)    → günde 1 bildirim
-function _notifFirstSeenDay() {
-  try {
-    const raw = localStorage.getItem("sakin_first_seen");
-    if (raw) { const n = parseInt(raw, 10); if (Number.isFinite(n)) return n; }
-  } catch (_) {}
-  const today = dayNumber(new Date());
-  // İlk yazım: 1.3.4'e güncelleyen ESKİ kullanıcıyı "yeni" sayıp bir hafta 2/gün
-  // bildirimle boğma. Geçmişi varsa (isim/log/streak) kıdemini "orta" kabul et.
-  let seed = today;
-  try {
-    let logLen = 0; try { logLen = (JSON.parse(localStorage.getItem("sakin_log") || "[]") || []).length; } catch (_) {}
-    const streak = parseInt(localStorage.getItem("sakin_streak") || "0", 10) || 0;
-    const veteran = !!localStorage.getItem("sakin_name") || logLen > 0 || streak > 1;
-    if (veteran) seed = today - 15; // → orta tier (8-30 gün)
-  } catch (_) {}
-  try { localStorage.setItem("sakin_first_seen", String(seed)); } catch (_) {}
-  return seed;
-}
-function _notifTier() {
-  const days = dayNumber(new Date()) - _notifFirstSeenDay();
-  if (days <= 7) return "new";
-  if (days <= 30) return "mid";
-  return "old";
-}
-// Bir takvim günü için ikinci bildirimin slotu (akşam 18:00 zaten her gün var, 
-// çekirdek bildirim). İkinci bildirim tier'a göre eklenir.
-// SABAH (7 mesajlık küçük havuz) sadece haftanın 2 günü (Salı & Cuma) kullanılır, 
-// önceden gün paritesiyle (~yarı gün) veriliyordu, kullanıcı 1 ay kullanımdan
-// sonra bu küçük havuzu ezberlediğini bildirdi. Diğer günlerde ikinci bildirim
-// öğlene (13:00), çok daha geniş/çeşitli akşam havuzundan düşer.
+// Sabah "günaydın" bildirimi yalnızca Salı ve Cuma (7 mesajlık küçük havuz her
+// gün gelince ezberleniyordu, kullanıcı bildirdi). Diğer günler gün ortası 13:00.
 const MORNING_DAYS = [2, 5]; // Date.getDay(): 0=Paz..6=Cmt → Salı, Cuma
-function _notifSecondSlot(tier, dn, dateObj) {
-  const even = (((dn % 2) + 2) % 2) === 0;
-  let wantSecond;
-  if (tier === "new") wantSecond = true;       // her gün 2
-  else if (tier === "mid") wantSecond = even;  // gün aşırı 2 / 1
-  else wantSecond = false;                      // eski: sadece akşam
-  if (!wantSecond) return null;
-  return MORNING_DAYS.includes(dateObj.getDay()) ? "morning" : "afternoon";
-}
 
 // ── KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği) ──────────────────────────
 // Doğum bilgisine göre günde +2 bildirim: (1) günün KOLAYLAŞTIRICI mesajı,
@@ -3840,22 +3824,35 @@ function _emMessageForDay(kozmik, dayIndex, lang) {
 // ID aralıkları DEĞİŞMEDİ: genel 9050-9076, kişisel 9200-9226, tarot 9300-9331,
 // geri dönüş 9400-9403 (o ayrı, son açılışa göre kaydırılır, sınıra girmez:
 // yalnızca uygulamayı 10+ gün açmayana gider).
-const NOTIF_CAP = { new: 3, mid: 2, old: 1 };
-function _notifDayPlan(tier, dn, dayDate, hasBirth, hasEm) {
-  const cap = NOTIF_CAP[tier] || 1;
-  const par = ((dn % 2) + 2) % 2;
-  if (!hasBirth) {
-    const list = ["evening"];
-    if (_notifSecondSlot(tier, dn, dayDate)) list.push("second");
-    return list.slice(0, cap);
-  }
-  const picks = hasEm ? ["em"] : [];
-  const left = cap - picks.length;
-  if (left >= 3) picks.push("facil", "evening", "tarot");
-  else if (left === 2) picks.push("facil", par === 0 ? "evening" : "tarot");
-  else if (left === 1) picks.push(["facil", "evening", "tarot"][((dn % 3) + 3) % 3]);
-  return picks;
+// ⚠️ GÜNCEL (Eyl 2026, kullanıcı: "kullanıcılar bildirimleri sevdiklerini
+// söylediler, normal günde 3 bildirim; kişiye özel bildirim seçme menüsü"):
+// kıdeme göre azalan sınır (3/2/1) KALDIRILDI. Varsayılan herkese günde 3.
+// Kullanıcı Ayarlar > Bildirimler'den günlük sayıyı (1-3) ve türleri tek tek
+// seçer (`sakin_notif_prefs`). Sınır dolana kadar ÖNCELİK SIRASIYLA eklenir:
+//   kozmik 12:00 (yalnızca Kp>=4) > kişisel 10:00 > akşam 18:00 > tarot 08:30 >
+//   hatırlatıcı 16:00 > gün ortası 13:00 (Salı/Cuma 08:00 günaydın)
+// Varsayılanla doğum bilgisi olan kişi: 10:00 + 18:00 + 08:30 (hareketli
+// günlerde 12:00 + 10:00 + 18:00). Doğum bilgisi YOKSA yalnızca akşam + gün
+// ortası (diğerleri doğum ister; tarot Bugün kapısına düşerdi).
+const NOTIF_TYPES = ["kisisel", "aksam", "tarot", "hatirlatici", "ogle", "kozmik", "geridon"];
+const NOTIF_BIRTH_TYPES = ["kisisel", "tarot", "hatirlatici", "kozmik"];
+function readNotifPrefs() {
+  let p = null;
+  try { p = JSON.parse(localStorage.getItem("sakin_notif_prefs") || "null"); } catch (_) {}
+  const count = p && [1, 2, 3].includes(p.count) ? p.count : 3;
+  const on = {};
+  for (const k of NOTIF_TYPES) on[k] = !(p && p.off && p.off[k]);
+  return { count, on };
 }
+function _notifDayPlan(dn, dayDate, hasBirth, hasEm, prefs) {
+  const pr = prefs || readNotifPrefs();
+  const order = hasBirth
+    ? [hasEm ? "kozmik" : null, "kisisel", "aksam", "tarot", "hatirlatici", "ogle"]
+    : ["aksam", "ogle"];
+  return order.filter(k => k && pr.on[k]).slice(0, pr.count);
+}
+// Gün ortası slotu: Salı ve Cuma sabah 08:00 "günaydın", diğer günler 13:00.
+function _ogleIsMorning(dayDate) { return MORNING_DAYS.includes(dayDate.getDay()); }
 // Özellik davetlerinin GERÇEK hedefi (FEATURE_PROMOS sırasıyla birebir).
 // ÖNCEKİ SORUN: 12 davetin hepsi Bağlan'ı açıyordu; "Sakin Hayvan'ı keşfet"
 // diyen bildirim bile Bağlan'a düşüyordu.
@@ -3873,10 +3870,10 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     const perm = opts.ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
     if (perm.display !== "granted") return;
     const hasBirth = !!birthDate;
-    const tier = _notifTier();
+    const prefs = readNotifPrefs();
     const week = _isoWeekStamp();
     const contentStamp = hasBirth ? `${week}_${lang}_${birthDate}` : "-";
-    const stamp = `v2_${sakinDayKey()}_${lang}_${tier}_${contentStamp}`;
+    const stamp = `v3_${sakinDayKey()}_${lang}_${JSON.stringify(prefs)}_${contentStamp}`;
     if (!opts.force && localStorage.getItem("sakin_notif_plan") === stamp) return;
 
     // Kişisel içerik: haftada bir (AI birincil, şablon yedek), cache'li.
@@ -3935,18 +3932,19 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       const dn = dayNumber(day);
       const at = (h, m = 0) => new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0);
       const em = hasBirth ? _emMessageForDay(kozmik, d, lang) : null;
-      const plan = _notifDayPlan(tier, dn, day, hasBirth, !!em);
+      const plan = _notifDayPlan(dn, day, hasBirth, !!em, prefs);
       const pd = (content && content.days && content.days[d]) || {};
       for (const slot of plan) {
-        if (slot === "evening") { const e = pick(eveningPool, dn); add(9070 + d, at(18), e.body, e.extra); }
-        else if (slot === "second") {
-          if (_notifSecondSlot(tier, dn, day) === "morning") add(9050 + d, at(8), pick(mornings, dn), { screen: "sabah" });
+        if (slot === "aksam") { const e = pick(eveningPool, dn); add(9070 + d, at(18), e.body, e.extra); }
+        else if (slot === "ogle") {
+          if (_ogleIsMorning(day)) add(9050 + d, at(8), pick(mornings, dn), { screen: "sabah" });
           else { const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2)); add(9050 + d, at(13), alt.body, alt.extra); }
         }
-        else if (slot === "facil") add(9200 + d, at(10), pd.f, { screen: "bugun" });
+        else if (slot === "kisisel") add(9200 + d, at(10), pd.f, { screen: "bugun" });
+        else if (slot === "hatirlatici") add(9210 + d, at(16), pd.r, { screen: "mandala" });
         // ⚠️ Eskiden { screen: "ben" } idi: uygulamada "ben" adlı EKRAN YOK
         // (Ben sekmesinin ekranı "harita"), dokunan boş ekran görüyordu.
-        else if (slot === "em") add(9220 + d, at(12), em, { screen: "harita" });
+        else if (slot === "kozmik") add(9220 + d, at(12), em, { screen: "harita" });
         else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn), { screen: "bugun" });
       }
     }
@@ -6719,6 +6717,18 @@ export default function SakinApp() {
     setLicenseLoading(false);
   };
   const [fbOpen, setFbOpen] = useState(false);
+  // Bildirim tercihleri (Ayarlar > Bildirimler). Değişince tüm plan hemen
+  // yeniden kurulur (force); geri dönüş bildirimleri de tercihe uyar.
+  const [notifPrefs, setNotifPrefsState] = useState(() => readNotifPrefs());
+  const [notifPerm, setNotifPerm] = useState(null);   // "granted" | "denied" | "prompt" | null
+  const saveNotifPrefs = (next) => {
+    setNotifPrefsState(next);
+    const off = {}; for (const k of NOTIF_TYPES) if (!next.on[k]) off[k] = true;
+    try { localStorage.setItem("sakin_notif_prefs", JSON.stringify({ count: next.count, off })); } catch (_) {}
+    try { track("notif_pref", { c: next.count, off: Object.keys(off).join(",") || "-" }); } catch (_) {}
+    scheduleAllNotifications(lang, birthDate, { force: true });
+    scheduleWinBack(lang);
+  };
   const [fbMsg, setFbMsg] = useState("");
   const [fbCat, setFbCat] = useState("");
   const [fbSending, setFbSending] = useState(false);
@@ -7601,6 +7611,10 @@ export default function SakinApp() {
     }, 800);
     return () => clearInterval(id);
   }, [soulWarm]);
+  useEffect(() => {
+    if (screen !== "ayarlar" || !isNative) return;
+    LocalNotifications.checkPermissions().then(p => setNotifPerm(p.display)).catch(() => {});
+  }, [screen]);
   const hiddenAtRef = useRef(0);
   useEffect(() => {
     const onVis = () => {
@@ -16937,6 +16951,58 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   <span style={{ ...labSt, color:"#ddd8e8" }}>{pickLang(SET_TXT.dil, lang)}</span>
                   <LangPicker lang={lang} setLang={setLang} compact />
                 </div>
+
+                {/* ── BİLDİRİMLER ── (yalnızca telefonda; web'de yerel bildirim yok) */}
+                {(isNative || (() => { try { return localStorage.getItem("sakin_dev_notif") === "1"; } catch (_) { return false; } })()) && (() => {
+                  const sw = (on) => (
+                    <span role="switch" aria-checked={on}
+                      style={{ flexShrink:0,width:46,height:27,borderRadius:100,position:"relative",display:"block",
+                        background: on ? "rgba(184,164,216,0.75)" : "rgba(255,255,255,0.13)", transition:"background .2s" }}>
+                      <span style={{ position:"absolute",top:3,left: on ? 22 : 3,width:21,height:21,borderRadius:"50%",
+                        background:"#fff",transition:"left .2s",boxShadow:"0 1px 3px rgba(0,0,0,0.3)" }} />
+                    </span>
+                  );
+                  const TYPES = ["kozmik","kisisel","aksam","tarot","hatirlatici","ogle","geridon"];
+                  return (
+                    <>
+                      <div style={grpSt}>{pickLang(NOTIF_SET_TXT.group, lang)}</div>
+                      <div style={cardSt}>
+                        {notifPerm && notifPerm !== "granted" && (
+                          <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={pickLang(NOTIF_SET_TXT.permNote, lang)}
+                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); } }).catch(()=>{}); } : undefined}
+                            right={notifPerm === "prompt" ? <span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(NOTIF_SET_TXT.permAsk, lang)}</span> : null} />
+                        )}
+                        {/* Günlük sayı: 1 / 2 / 3 */}
+                        <div style={{ ...rowSt, cursor:"default" }}>
+                          <span style={{ width:20,flexShrink:0,display:"flex",justifyContent:"center",opacity:0.72,fontSize:15,lineHeight:1 }}>#</span>
+                          <span style={labSt}>{pickLang(NOTIF_SET_TXT.count, lang)}</span>
+                          <span style={{ display:"inline-flex",gap:6,flexShrink:0 }}>
+                            {[1,2,3].map(n => (
+                              <button key={n} onClick={() => saveNotifPrefs({ ...notifPrefs, count: n })}
+                                style={{ WebkitAppearance:"none",appearance:"none",width:34,height:30,borderRadius:10,cursor:"pointer",
+                                  fontFamily:"'Jost',sans-serif",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center",
+                                  border:`1px solid ${notifPrefs.count === n ? "rgba(184,164,216,0.7)" : "rgba(255,255,255,0.12)"}`,
+                                  background: notifPrefs.count === n ? "rgba(184,164,216,0.22)" : "transparent",
+                                  color: notifPrefs.count === n ? "#efe6ff" : "#9a93ae" }}>{n}</button>
+                            ))}
+                          </span>
+                        </div>
+                        {TYPES.map((k, i) => {
+                          const tt = NOTIF_SET_TXT.types[k];
+                          const needB = NOTIF_BIRTH_TYPES.includes(k) && !birthDate;
+                          const on = notifPrefs.on[k];
+                          return (
+                            <Row key={k} icon={tt.icon} label={pickLang(tt.l, lang)} last={i === TYPES.length - 1}
+                              note={needB ? pickLang(NOTIF_SET_TXT.needBirth, lang) : pickLang(tt.n, lang)}
+                              onClick={() => saveNotifPrefs({ ...notifPrefs, on: { ...notifPrefs.on, [k]: !on } })}
+                              right={sw(on && !needB)} />
+                          );
+                        })}
+                      </div>
+                      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11.5,color:"#7c7590",margin:"8px 6px 0",lineHeight:1.5 }}>{pickLang(NOTIF_SET_TXT.order, lang)}</div>
+                    </>
+                  );
+                })()}
 
                 {/* ── ÖDEMELER ── Apple 3.1.1: "Restore Purchases" ZORUNLU (yeni
                     cihaza gecen/yeniden kuran kullanici satin alimina erisebilmeli).
