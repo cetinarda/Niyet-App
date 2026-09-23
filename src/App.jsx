@@ -13,6 +13,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
 import { readDailyIds, loadDailyIndex, pickMythOfDay, CARD_APP } from "./daily-cards";
 import { ICHING } from "./iching-data";
+import { TAROT } from "./tarot-data";
 import { LocalNotifications } from "@capacitor/local-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
@@ -1155,6 +1156,49 @@ function ichingHash(s) {
 function pickIchingOfDay(dayKey) {
   return ICHING[ichingHash(`iching|${dayKey}`) % ICHING.length];
 }
+
+// ── TAROT: GÜNÜN KARTI ───────────────────────────────────────────────────────
+// Bugün ekranının altındaki tarot destesi için. I Ching ile AYNI felsefe: gün
+// boyu SABİT (aynı gün tekrar bakınca aynı kart, ters/düz de sabit), rastgele
+// reroll yok. Kart 78'lik tam desteden (major + minor) doğum verisi + güne göre
+// deterministik seçilir. Ters (reversed) ~%33: iki ayrı hash biti, kart seçimiyle
+// karışmasın diye farklı tuz.
+function pickTarotOfDay(dayKey, seed = "") {
+  const card = TAROT[ichingHash(`tarot|${seed}|${dayKey}`) % TAROT.length];
+  const reversed = (ichingHash(`tarotpos|${seed}|${dayKey}`) % 3) === 0;
+  return { card, reversed };
+}
+// Büyük Arkana kart numarası klasik olarak Roma rakamıyla (0..XXI).
+function tarotRoman(n) {
+  if (n === 0) return "0";
+  const map = [[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];
+  let r = "", x = n;
+  for (const [v, s] of map) while (x >= v) { r += s; x -= v; }
+  return r;
+}
+// elementKey -> renk (kart temasında ve destede kullanılır).
+const TAROT_ELEM_COLOR = {
+  fire:"#e08a5a", water:"#5a9ad8", air:"#c9b06a", earth:"#7BA05B", whole:"#b4a0d8",
+};
+const TAROT_TXT = {
+  eyebrow: { tr:"Günün Tarot Kartı", en:"Tarot Card of the Day", de:"Tarotkarte des Tages", es:"Carta de Tarot del día", pt:"Carta de Tarô do dia", fr:"Carte de Tarot du jour", ja:"今日のタロットカード" },
+  cta:     { tr:"Bir kart seç", en:"Draw a card", de:"Zieh eine Karte", es:"Elige una carta", pt:"Tira uma carta", fr:"Tire une carte", ja:"カードを選ぶ" },
+  hint:    { tr:"Deste bugün için tek bir kart taşıyor", en:"The deck holds a single card for today", de:"Das Deck hält heute eine einzige Karte bereit", es:"El mazo guarda una sola carta para hoy", pt:"O baralho guarda uma única carta para hoje", fr:"Le jeu ne garde qu'une carte pour aujourd'hui", ja:"デッキは今日のために一枚だけ用意している" },
+  upright: { tr:"Düz", en:"Upright", de:"Aufrecht", es:"Al derecho", pt:"Ao direito", fr:"À l'endroit", ja:"正位置" },
+  reversed:{ tr:"Ters", en:"Reversed", de:"Umgekehrt", es:"Invertida", pt:"Invertida", fr:"À l'envers", ja:"逆位置" },
+  meaning: { tr:"Anlam", en:"Meaning", de:"Bedeutung", es:"Significado", pt:"Significado", fr:"Signification", ja:"意味" },
+  advice:  { tr:"Bugün için", en:"For today", de:"Für heute", es:"Para hoy", pt:"Para hoje", fr:"Pour aujourd'hui", ja:"今日のために" },
+  again:   { tr:"Kart yarın yenilenir", en:"The card renews tomorrow", de:"Die Karte erneuert sich morgen", es:"La carta se renueva mañana", pt:"A carta renova-se amanhã", fr:"La carte se renouvelle demain", ja:"カードは明日新しくなる" },
+  major:   { tr:"Büyük Arkana", en:"Major Arcana", de:"Große Arkana", es:"Arcanos Mayores", pt:"Arcanos Maiores", fr:"Arcanes Majeurs", ja:"大アルカナ" },
+  minor:   { tr:"Küçük Arkana", en:"Minor Arcana", de:"Kleine Arkana", es:"Arcanos Menores", pt:"Arcanos Menores", fr:"Arcanes Mineurs", ja:"小アルカナ" },
+};
+// GÜNLÜK YORUM ("daha fazlası"): gökyüzü raporunun altındaki uzun günlük okuma.
+const HORO_TXT = {
+  more:    { tr:"Daha fazlası", en:"Read more", de:"Mehr lesen", es:"Ver más", pt:"Ver mais", fr:"En savoir plus", ja:"もっと読む" },
+  title:   { tr:"Günün Yorumu", en:"Your day, read", de:"Dein Tag, gedeutet", es:"Tu día, interpretado", pt:"O teu dia, interpretado", fr:"Ton jour, interprété", ja:"今日の読み解き" },
+  loading: { tr:"Gökyüzü senin için okunuyor…", en:"Reading the sky for you…", de:"Der Himmel wird für dich gelesen…", es:"Leyendo el cielo para ti…", pt:"A ler o céu para ti…", fr:"Le ciel est lu pour toi…", ja:"あなたのために空を読み解いています…" },
+  err:     { tr:"Yorum alınamadı, birazdan tekrar dene.", en:"Reading unavailable, try again shortly.", de:"Deutung nicht verfügbar, versuche es gleich erneut.", es:"Interpretación no disponible, inténtalo pronto.", pt:"Interpretação indisponível, tenta em breve.", fr:"Interprétation indisponible, réessaie bientôt.", ja:"読み解きを取得できませんでした。少し後にもう一度お試しください。" },
+};
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
@@ -2474,6 +2518,10 @@ const GLOBAL_CSS = `
     100% { opacity:1; filter:blur(0) brightness(1); transform:scale(1); }
   }
   @keyframes mandalaRotate { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+  /* Tarot: seçilen kart açılırken hafif çevrilme + belirme. */
+  @keyframes tarotFlip { 0%{opacity:0;transform:rotateY(90deg) scale(0.9)} 55%{opacity:1} 100%{opacity:1;transform:rotateY(0deg) scale(1)} }
+  /* Face-down deste yumuşak nefes: canlı dursun. */
+  @keyframes tarotDeckFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
   @keyframes petalGlow { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.4)} }
   @keyframes streakFire { 0%,100%{text-shadow:0 0 8px rgba(255,140,50,0.4)} 50%{text-shadow:0 0 18px rgba(255,140,50,0.8),0 0 36px rgba(255,80,0,0.3)} }
   @keyframes badgeUnlock { 0%{transform:scale(0) rotate(-30deg);opacity:0} 60%{transform:scale(1.2) rotate(5deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
@@ -6256,6 +6304,7 @@ export default function SakinApp() {
     } catch { /* sessiz */ }
     setKozmikLoading(false);
   };
+
   const [showKilavuz, setShowKilavuz] = useState(false);
   // Sözlük araması (kullanıcı: "soru işaretine tıklar, tüm terimler gözükür ama
   // en üstte ara kutucuğu vardır": Sakin Tasarım'daki arama ekranı gibi).
@@ -8862,12 +8911,105 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const [dailyIds, setDailyIds] = useState(null);
   // I Ching kırmızı buton modalı (kullanıcı isteği, Bugün ekranı).
   const [showIching, setShowIching] = useState(false);
+  // TAROT günün kartı: bugün çekildiyse o gün SABİT kalır (localStorage'da
+  // gün damgası). Bugün ekranı her render'da IIFE, o yüzden çekim durumu
+  // component state'inde tutuluyor ki tıklamada anında açılsın.
+  const [tarotDrawnDay, setTarotDrawnDay] = useState(() => {
+    try { return localStorage.getItem("sakin_tarot_drawn") || null; } catch { return null; }
+  });
+  // GÜNLÜK YORUM ("daha fazlası"): gökyüzü raporu altındaki uzun AI okuma.
+  const [dailyHoro, setDailyHoro] = useState(null);       // { day, sign, lang, text }
+  const [dailyHoroLoading, setDailyHoroLoading] = useState(false);
+  // ── GÜNLÜK YORUM ("daha fazlası") ───────────────────────────────────────────
+  // Gökyüzü raporunun altındaki uzun okuma. Kolektif rapor herkes için aynıyken
+  // bu, kullanıcının GÜNEŞ BURCU + günün gerçek gökyüzü ile kişiye özel bir
+  // günlük yorumdur. Gün + burç + dil ile localStorage'da cache'lenir, gün boyu
+  // sabit; ekrana girince cache'ten yüklenir (AI hakkı harcanmaz), yoksa buton
+  // görünür ve consent + günlük hak kapısından geçer.
+  const _horoCacheKey = () => {
+    const sign = birthDate ? zodiacSign(birthDate) : "genel";
+    return `${todayKey}|${sign}|${lang}`;
+  };
+  const dailyHoroDateLine = () => {
+    try {
+      const s = new Date().toLocaleDateString(localeFromLang(lang), { weekday:"long", day:"numeric", month:"long" });
+      return s.charAt(0).toLocaleUpperCase(lang) + s.slice(1);
+    } catch { return todayKey; }
+  };
+  // Cache'ten yükle (ekran açılışında ve gün/dil değişiminde).
+  useEffect(() => {
+    if (screen !== "harita") return;
+    try {
+      const raw = JSON.parse(localStorage.getItem("sakin_daily_horo") || "null");
+      if (raw && raw.key === _horoCacheKey() && raw.text) { setDailyHoro({ text: raw.text }); return; }
+    } catch { /* yok */ }
+    setDailyHoro(null);
+  }, [screen, lang, todayKey, birthDate]);
+
+  const generateDailyHoroscope = async () => {
+    // requireAiConsent hakkı ZATEN tüketti; burada tekrar sayma.
+    if (dailyHoroLoading) return;
+    setDailyHoroLoading(true);
+    try {
+      const signTr = birthDate ? zodiacSign(birthDate) : null;
+      const signEn = signTr ? (ZODIAC_EN[signTr] || signTr) : null;
+      const gokyuzu = [
+        kozmikData?.transit && pickLang(kozmikData.transit, lang),
+        (() => { try { const mp = moonPhase(); return `${pickLang(mp, lang)} (${mp.illumination}%)`; } catch { return null; } })(),
+      ].filter(Boolean).join(" · ");
+      const sysMsg = lang === "tr" ? `Sen sıcak, sezgili bir günlük gökyüzü rehberisin. Kullanıcıya BUGÜN için
+kişisel bir günlük yorum yazıyorsun (bir dergideki günlük burç köşesi gibi
+ama daha derin ve şefkatli). Kurallar:
+- İkinci tekil şahısla, doğrudan "sen" diye konuş.
+- 3 kısa paragraf: (1) günün genel enerjisi ve ruh hali, (2) ilişkiler/iletişim
+  veya iç dünya, (3) küçük somut bir öneri ya da hatırlatma.
+- Sıcak, umut veren ama gerçekçi bir ton. Falcılık değil, farkındalık.
+- HAM astronomik sayı, derece, teknik terim YAZMA (Kp, retro derecesi gibi);
+  gökyüzü verisini ancak ANLAMINA çevirerek kullan.
+- Tıbbi, finansal, hukuki kesin tahmin verme. Kadercilik yapma.
+- Yıldız, madde imi, markdown, başlık KULLANMA; sade düz paragraflar.
+- Uzun tire (—), kısa tire (–) kullanma; virgül, iki nokta ya da ayrı cümle.
+- Tek kelime bile başka dilde yazma; tamamı Türkçe olsun.` : `You are a warm, intuitive daily sky guide. You are writing a personal daily
+reading for the user for TODAY (like a magazine daily horoscope column, but
+deeper and more caring). Rules:
+- Speak directly in the second person ("you").
+- 3 short paragraphs: (1) the day's overall energy and mood, (2) relationships
+  or the inner world, (3) one small concrete suggestion or reminder.
+- Warm, hopeful yet realistic tone. Awareness, not fortune telling.
+- Do NOT write raw astronomical numbers, degrees or technical terms (like Kp or
+  retrograde degrees); use the sky data only translated into its meaning.
+- No definite medical, financial or legal predictions. No fatalism.
+- No asterisks, bullets, markdown or headings; plain paragraphs only.
+- Do not use an em dash (—) or en dash (–); use a comma, colon or separate sentence.
+- Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`;
+      const userMsg = lang === "tr"
+        ? `${signTr ? `Güneş burcum: ${signTr}. ` : ""}${gokyuzu ? `Bugünün gökyüzü: ${gokyuzu}. ` : ""}Bana bugün için kişisel bir günlük yorum yaz.`
+        : `${signEn ? `My sun sign: ${signEn}. ` : ""}${gokyuzu ? `Today's sky: ${gokyuzu}. ` : ""}Write me a personal daily reading for today.`;
+      const res = await aiFetch({
+        method: "POST",
+        headers: { "Content-Type": "text/plain" },
+        body: JSON.stringify({ max_tokens: 700, lang, system: sysMsg, messages: [{ role:"user", content:userMsg }] }),
+      });
+      const j = await res.json();
+      let text = (j?.text || j?.content || "").replace(/\*\*/g, "").trim();
+      if (!text || text.length < 40) throw new Error("bozuk");
+      setDailyHoro({ text });
+      try { localStorage.setItem("sakin_daily_horo", JSON.stringify({ key: _horoCacheKey(), text })); } catch { /* yok */ }
+    } catch {
+      setOfflineMsg(pickLang(HORO_TXT.err, lang)); setTimeout(() => setOfflineMsg(""), 4000);
+    }
+    setDailyHoroLoading(false);
+  };
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js): ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
   const [moonNow, setMoonNow] = useState(null);
   useEffect(() => {
-    if (screen !== "bugun") return;
+    // transit = Bugün ekranının günün geçişi kutusu; moonNow = gökyüzü raporu
+    // başlığındaki ay glifi. Gökyüzü raporu "Ben" ekranına taşındığı için
+    // moonNow her iki ekranda da gerekli. transit yalnızca Bugün'de kullanılır
+    // ama ekstra hesap zararsız (dinamik import zaten cache'li).
+    if (screen !== "bugun" && screen !== "harita") return;
     let alive = true;
     import("./hd-transit")
       .then(async m => {
@@ -12909,10 +13051,198 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
             </div>
             )}
           </div>
-          {/* GÖKYÜZÜ RAPORU buradan KALDIRILDI: kullanıcı isteğiyle
-              "Bugün" ekranına taşındı (günün kolektif gökyüzü bilgisi
-              günlük özetin yanında daha anlamlı). Panelin kendisi
-              `kozmikPanel` değişkeninde, Bugün ekranında render ediliyor. */}
+            {/* GÖKYÜZÜ RAPORU: "yıldızlar bugün sana ne söylüyor". Günün
+                KOLEKTİF gökyüzü durumu (ay evresi + NOAA uzay havası + geçiş
+                notu) burada, kişisel haritanın yanında. Panel açılınca
+                fetchKozmik() çağrılır (6 saat CDN cache). Altındaki "daha
+                fazlası" butonu bunu kullanıcının burcuna göre uzun bir günlük
+                yoruma çevirir. */}
+          <div style={{ marginBottom:24,position:"relative" }}>
+            <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
+              style={{
+                width:"100%",
+                background:"rgba(184,164,216,0.06)",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:14,padding:"12px 18px",
+                color:"#a888d0",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
+              {/* AY EVRESİ BAŞLIKTA (kullanıcı: "ayın evresini ayı göster, detay
+                  metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
+                  ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
+              <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
+                {moonNow && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonNow.glyph}</span>}
+                <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
+                  <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
+                  {moonNow && (
+                    <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
+                      {moonNow.name}
+                      {moonNow.fraction != null && ` · %${Math.round(moonNow.fraction * 100)}`}
+                    </span>
+                  )}
+                </span>
+              </span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",flexShrink:0,transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+
+            {showKozmik && (
+              <div style={{
+                marginTop:8,
+                background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:16,padding:"16px 18px",
+                boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
+              }}>
+                {(() => {
+                  const moon = moonPhase();
+                  return (
+                  <>
+                    {/* AY EVRESİ: saf matematik, NOAA olmadan da görünür */}
+                    <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
+                      <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
+                      <div style={{ flex:1,minWidth:0 }}>
+                        <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
+                        <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
+                        <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
+                          {(() => {
+                            const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
+                            const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
+                            return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                  );
+                })()}
+                {kozmikLoading && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
+                    {t("mirror_noaa_loading")}
+                  </div>
+                )}
+                {!kozmikLoading && !kozmikData && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
+                    {t("mirror_noaa_unavail")}
+                  </div>
+                )}
+                {!kozmikLoading && kozmikData && (() => {
+                  const moon = kozmikData.moon;
+                  const f = kozmikData.solar_flares_24h;
+                  const w = kozmikData.solar_wind;
+                  return (
+                  <>
+                    {/* Ay evresi: görsel başlık */}
+                    <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
+                      <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
+                      {moon && (
+                        <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(moon.label, lang)} · %{moon.illumination}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* KOLEKTİF GEÇİŞ NOTU: raporun ALT BAŞLIĞI (kullanıcı isteği:
+                        "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
+                        Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
+                        gerçek efemerisle hesaplanır (retro gezegenler + en dar
+                        orb'lu açı); veri yoksa satır hiç çıkmaz. */}
+                    {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
+                      <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
+                        ✦ {pickLang(kozmikData.transit, lang)}
+                      </div>
+                    )}
+
+                    {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
+                    {(kozmikData.aiReport || kozmikData.report) && (
+                      <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
+                        {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
+                      </div>
+                    )}
+
+                    {/* Gezegen-burç dizilişi kaldırıldı, kullanıcı için anlamı yok,
+                        kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
+
+                    {/* Küçük veri satırı: NOAA + hesaplama (meraklı için) */}
+                    <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
+                      <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
+                      <span>☀️ {f && f.count>0 ? f.max_class : "-"}</span>
+                      {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
+                      {moon && <span>{moon.emoji} {moon.illumination}%</span>}
+                      {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                      {kozmikData.notableEvents?.map((ev,i) => {
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
+                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
+                      })}
+                      {kozmikData.planetGrouping && (
+                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
+                      )}
+                    </div>
+                    <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
+                      {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
+                    </div>
+
+                    {/* PAYLAŞ: Ayna cevabıyla AYNI kart üreticisini kullanır.
+                        Bu metinde Ayna/Senin-için başlıkları yok, o yüzden
+                        buildMirrorStoryCard otomatik olarak eski (tek gövde)
+                        düzene döner: kolektif geçiş notu + rapor tek parça
+                        basılır. Kullanıcı isteği: gökyüzü raporuna da paylaş
+                        özelliği eklemek. */}
+                    <button onClick={async ()=>{
+                        try {
+                          const govde = [
+                            kozmikData.transit && pickLang(kozmikData.transit, lang),
+                            kozmikData.aiReport || pickLang(kozmikData.report, lang),
+                          ].filter(Boolean).join("\n\n");
+                          const cv = buildMirrorStoryCard(
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang),
+                            govde,
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang));
+                          const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+                          if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
+                        } catch (_) {}
+                      }}
+                      style={{ display:"block",margin:"14px auto 0",background:"rgba(160,112,208,0.14)",border:"1px solid rgba(160,112,208,0.4)",borderRadius:22,color:"#c8a8f0",cursor:"pointer",fontSize:12,letterSpacing:2,padding:"8px 20px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                      {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
+                    </button>
+                  </>
+                  );
+                })()}
+                {/* DAHA FAZLASI: kişiye özel GÜNLÜK YORUM. Gökyüzü raporu
+                    kolektiftir; bu buton onu kullanıcının burcuna + günün
+                    gökyüzüne göre uzun bir okumaya çevirir. AI çağrısı consent
+                    + günlük hak kapısından geçer, gün + burç + dil ile
+                    cache'lenir (gün boyu sabit). NOAA olmasa da çalışır. */}
+                <div style={{ marginTop:16,paddingTop:14,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
+                  {!dailyHoro && !dailyHoroLoading && (
+                    <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateDailyHoroscope); }}
+                      style={{ WebkitAppearance:"none",appearance:"none",width:"100%",cursor:"pointer",
+                        background:"rgba(184,164,216,0.10)",border:"1px solid rgba(184,164,216,0.3)",
+                        borderRadius:12,padding:"11px 16px",color:"#c5a6e8",fontFamily:"'Jost',sans-serif",
+                        fontWeight:300,fontSize:13,letterSpacing:1.5,display:"flex",alignItems:"center",
+                        justifyContent:"center",gap:8 }}>
+                      <span style={{ fontSize:14 }}>✦</span>{pickLang(HORO_TXT.more, lang)}
+                    </button>
+                  )}
+                  {dailyHoroLoading && (
+                    <div style={{ textAlign:"center",color:"#a894c8",fontSize:12.5,padding:"10px 0",fontStyle:"italic" }}>
+                      {pickLang(HORO_TXT.loading, lang)}
+                    </div>
+                  )}
+                  {dailyHoro && dailyHoro.text && (
+                    <div>
+                      <div style={{ fontSize:11,letterSpacing:2,color:"#8878a8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{pickLang(HORO_TXT.title, lang)}</div>
+                      <div style={{ fontSize:13,color:"#a888d0",fontFamily:"'Jost',sans-serif",marginBottom:12,letterSpacing:0.5 }}>{dailyHoroDateLine()}</div>
+                      <div style={{ fontSize:14.5,lineHeight:2.0,color:"#d8cce8",whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
           {/* HAFTALIK SAKİN RAPOR: gökyüzü raporu gibi AÇILIR-KAPANIR
               (kullanıcı: "buton olsun, açık olmasın, tıklanınca açılsın").
               Kapalı başlar; harita ekranı açılır açılmaz uzun bir AI metniyle
@@ -15124,168 +15454,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </div>
             )}
 
-            {/* GÖKYÜZÜ RAPORU: "Ben" (harita) ekranından BURAYA taşındı
-                (kullanıcı isteği). Günün kolektif gökyüzü durumu, günlük özetin
-                yanında dururken daha anlamlı; Ben ekranı da kişisel haritaya
-                odaklanıyor. Panel açılınca fetchKozmik() çağrılır, veri 6 saat
-                CDN'de önbelleklenir, yani her açılışta yeni istek gitmez. */}
-          <div style={{ marginBottom:24,position:"relative" }}>
-            <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
-              style={{
-                width:"100%",
-                background:"rgba(184,164,216,0.06)",
-                border:"1px solid rgba(184,164,216,0.25)",
-                borderRadius:14,padding:"12px 18px",
-                color:"#a888d0",cursor:"pointer",
-                display:"flex",alignItems:"center",justifyContent:"space-between",
-                fontFamily:"'Jost',sans-serif",fontWeight:300,
-                transition:"all 0.2s",
-              }}
-              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
-              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-              {/* AY EVRESİ BAŞLIKTA (kullanıcı: "ayın evresini ayı göster, detay
-                  metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
-                  ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
-              <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
-                {moonNow && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonNow.glyph}</span>}
-                <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
-                  <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
-                  {moonNow && (
-                    <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
-                      {moonNow.name}
-                      {moonNow.fraction != null && ` · %${Math.round(moonNow.fraction * 100)}`}
-                    </span>
-                  )}
-                </span>
-              </span>
-              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",flexShrink:0,transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
-            </button>
-
-            {showKozmik && (
-              <div style={{
-                marginTop:8,
-                background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
-                border:"1px solid rgba(184,164,216,0.25)",
-                borderRadius:16,padding:"16px 18px",
-                boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
-              }}>
-                {(() => {
-                  const moon = moonPhase();
-                  return (
-                  <>
-                    {/* AY EVRESİ: saf matematik, NOAA olmadan da görünür */}
-                    <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
-                      <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
-                      <div style={{ flex:1,minWidth:0 }}>
-                        <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
-                        <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
-                        <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
-                          {(() => {
-                            const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
-                            const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
-                            return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  );
-                })()}
-                {kozmikLoading && (
-                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
-                    {t("mirror_noaa_loading")}
-                  </div>
-                )}
-                {!kozmikLoading && !kozmikData && (
-                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
-                    {t("mirror_noaa_unavail")}
-                  </div>
-                )}
-                {!kozmikLoading && kozmikData && (() => {
-                  const moon = kozmikData.moon;
-                  const f = kozmikData.solar_flares_24h;
-                  const w = kozmikData.solar_wind;
-                  return (
-                  <>
-                    {/* Ay evresi: görsel başlık */}
-                    <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
-                      <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
-                      {moon && (
-                        <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
-                          {pickLang(moon.label, lang)} · %{moon.illumination}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* KOLEKTİF GEÇİŞ NOTU: raporun ALT BAŞLIĞI (kullanıcı isteği:
-                        "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
-                        Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
-                        gerçek efemerisle hesaplanır (retro gezegenler + en dar
-                        orb'lu açı); veri yoksa satır hiç çıkmaz. */}
-                    {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
-                      <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
-                        ✦ {pickLang(kozmikData.transit, lang)}
-                      </div>
-                    )}
-
-                    {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
-                    {(kozmikData.aiReport || kozmikData.report) && (
-                      <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
-                        {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
-                      </div>
-                    )}
-
-                    {/* Gezegen-burç dizilişi kaldırıldı, kullanıcı için anlamı yok,
-                        kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
-
-                    {/* Küçük veri satırı: NOAA + hesaplama (meraklı için) */}
-                    <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
-                      <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
-                      <span>☀️ {f && f.count>0 ? f.max_class : "-"}</span>
-                      {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
-                      {moon && <span>{moon.emoji} {moon.illumination}%</span>}
-                      {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
-                      {kozmikData.notableEvents?.map((ev,i) => {
-                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
-                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
-                      })}
-                      {kozmikData.planetGrouping && (
-                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
-                      )}
-                    </div>
-                    <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
-                      {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
-                    </div>
-
-                    {/* PAYLAŞ: Ayna cevabıyla AYNI kart üreticisini kullanır.
-                        Bu metinde Ayna/Senin-için başlıkları yok, o yüzden
-                        buildMirrorStoryCard otomatik olarak eski (tek gövde)
-                        düzene döner: kolektif geçiş notu + rapor tek parça
-                        basılır. Kullanıcı isteği: gökyüzü raporuna da paylaş
-                        özelliği eklemek. */}
-                    <button onClick={async ()=>{
-                        try {
-                          const govde = [
-                            kozmikData.transit && pickLang(kozmikData.transit, lang),
-                            kozmikData.aiReport || pickLang(kozmikData.report, lang),
-                          ].filter(Boolean).join("\n\n");
-                          const cv = buildMirrorStoryCard(
-                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang),
-                            govde,
-                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang));
-                          const blob = await new Promise(r => cv.toBlob(r, "image/png"));
-                          if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
-                        } catch (_) {}
-                      }}
-                      style={{ display:"block",margin:"14px auto 0",background:"rgba(160,112,208,0.14)",border:"1px solid rgba(160,112,208,0.4)",borderRadius:22,color:"#c8a8f0",cursor:"pointer",fontSize:12,letterSpacing:2,padding:"8px 20px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                      {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
-                    </button>
-                  </>
-                  );
-                })()}
-              </div>
-            )}
-          </div>
+            {/* GÖKYÜZÜ RAPORU "Ben" (harita) ekranına TAŞINDI (kullanıcı
+                isteği): "yıldızlar bugün sana ne söylüyor" bölümü kişisel
+                haritanın yanında dururken daha anlamlı. Panel + "daha fazlası"
+                günlük yorumu artık orada. */}
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
               textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.rehber, lang)}</div>
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
@@ -15331,6 +15503,105 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
               </span>
               <span style={{ flexShrink:0,fontSize:16,color:"rgba(224,110,110,0.7)" }}>→</span>
             </button>
+
+            {/* GÜNÜN TAROT KARTI: gerçek 78'lik desteden gün-kilitli tek kart
+                (kullanıcı isteği: "alt kısma gerçek tarot destesi, tek günlük
+                kart, açılınca altında yorum"). I Ching ile aynı felsefe: gün
+                boyu SABİT, reroll yok (pickTarotOfDay, seed = doğum verisi).
+                Deste kapalıyken yelpaze; kart seçilince açılır, anlamı (düz/ters)
+                ve bugün için önerisi altında görünür. Çekim gün damgasıyla
+                localStorage'da kalır: gün içinde tekrar açınca aynı kart. */}
+            {(() => {
+              const { card: tcard, reversed: trev } = pickTarotOfDay(dk, seed);
+              const tcol = TAROT_ELEM_COLOR[tcard.elementKey] || "#b4a0d8";
+              const drawn = tarotDrawnDay === dk;
+              const kw = pickLang(tcard.keywords, lang) || [];
+              const arcanaLabel = pickLang(tcard.arcana === "major" ? TAROT_TXT.major : TAROT_TXT.minor, lang);
+              return (
+                <div style={{ marginTop:26 }}>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
+                    textTransform:"uppercase",margin:"0 4px 12px" }}>{pickLang(TAROT_TXT.eyebrow, lang)}</div>
+
+                  {!drawn ? (
+                    // KAPALI DESTE: yelpaze + davet. Tıklayınca günün kartı çekilir.
+                    <button onClick={()=>{ try{haptic();}catch(_){}
+                        try { localStorage.setItem("sakin_tarot_drawn", dk); } catch(_) {}
+                        setTarotDrawnDay(dk); }}
+                      style={{ WebkitAppearance:"none",appearance:"none",width:"100%",cursor:"pointer",
+                        background:"linear-gradient(160deg, rgba(184,164,216,0.10), rgba(255,255,255,0.02))",
+                        border:"1px solid rgba(184,164,216,0.3)",borderRadius:18,padding:"24px 16px 20px",
+                        display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16 }}>
+                      <div style={{ position:"relative",width:210,height:150 }}>
+                        {/* Yelpaze: 5 kart alt-orta noktadan dönerek açılır (elde
+                            tutulan deste gibi). Hepsi aynı çapa (left:50% + negatif
+                            margin) etrafında döner; orta kart üstte. */}
+                        {[-2,-1,0,1,2].map((i)=>(
+                          <div key={i} style={{ position:"absolute",left:"50%",bottom:6,width:74,height:112,
+                            marginLeft:-37,borderRadius:11,zIndex:5-Math.abs(i),
+                            transformOrigin:"bottom center",transform:`rotate(${i*13}deg)`,
+                            background:"linear-gradient(150deg,#1c1636,#0c0a18)",
+                            border:"1px solid rgba(184,164,216,0.35)",boxShadow:"0 6px 20px rgba(0,0,0,0.55)",
+                            display:"flex",alignItems:"center",justifyContent:"center" }}>
+                            <span style={{ fontSize:20,color:"rgba(184,164,216,0.5)",transform:`rotate(${-i*13}deg)` }}>✦</span>
+                          </div>
+                        ))}
+                      </div>
+                      <span style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
+                        <span style={{ fontSize:15,color:"#e6def4",fontFamily:"'Jost',sans-serif",letterSpacing:1.5 }}>{pickLang(TAROT_TXT.cta, lang)}</span>
+                        <span style={{ fontSize:12,color:"#8f899e",fontFamily:"'Inter',sans-serif",textAlign:"center" }}>{pickLang(TAROT_TXT.hint, lang)}</span>
+                      </span>
+                    </button>
+                  ) : (
+                    // AÇILMIŞ KART: yüz + altında anlam ve bugün için öneri.
+                    <div style={{ background:`linear-gradient(160deg, ${tcol}12, rgba(255,255,255,0.02))`,
+                      border:`1px solid ${tcol}45`,borderRadius:18,padding:"20px 18px" }}>
+                      <div style={{ display:"flex",flexDirection:"column",alignItems:"center",animation:"tarotFlip 0.55s ease" }}>
+                        <div style={{ width:112,height:168,borderRadius:14,
+                          background:`radial-gradient(circle at 50% 38%, ${tcol}30, rgba(10,8,20,0.92))`,
+                          border:`1px solid ${tcol}66`,boxShadow:`0 8px 30px rgba(0,0,0,0.55),0 0 24px ${tcol}22`,
+                          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16 }}>
+                          <span style={{ fontSize:44,lineHeight:1,transform:trev?"rotate(180deg)":"none" }}>{tcard.emoji}</span>
+                          {tcard.number != null && (
+                            <span style={{ fontSize:11,letterSpacing:2,color:`${tcol}cc`,fontFamily:"'Jost',sans-serif" }}>
+                              {tcard.arcana==="major" ? tarotRoman(tcard.number) : `${tcard.number}`}
+                            </span>
+                          )}
+                        </div>
+                        <span style={{ fontSize:10,letterSpacing:2,color:`${tcol}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>
+                          {arcanaLabel}{tcard.suit ? ` · ${tcard.suit}` : ""}
+                        </span>
+                        <span style={{ fontSize:20,color:"#efe9f8",fontFamily:"'Jost',sans-serif",fontWeight:300,letterSpacing:0.8,textAlign:"center" }}>{pickLang(tcard.name, lang)}</span>
+                        <span style={{ marginTop:8,fontSize:10.5,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",
+                          color: trev ? "#d8a0a0" : "#a0d8b4",
+                          background: trev ? "rgba(216,160,160,0.12)" : "rgba(160,216,180,0.12)",
+                          border:`1px solid ${trev ? "rgba(216,160,160,0.35)" : "rgba(160,216,180,0.35)"}`,
+                          borderRadius:100,padding:"3px 12px" }}>
+                          {pickLang(trev ? TAROT_TXT.reversed : TAROT_TXT.upright, lang)}
+                        </span>
+                      </div>
+                      {kw.length>0 && (
+                        <div style={{ textAlign:"center",fontSize:12,color:"#8f899e",fontFamily:"'Inter',sans-serif",margin:"14px 0 4px" }}>
+                          {kw.slice(0,3).join(" · ")}
+                        </div>
+                      )}
+                      <div style={{ borderTop:`1px solid ${tcol}22`,marginTop:12,paddingTop:14 }}>
+                        <div style={{ fontSize:10,letterSpacing:1.8,color:`${tcol}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>{pickLang(TAROT_TXT.meaning, lang)}</div>
+                        <div style={{ fontSize:14.5,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.7,marginBottom:14 }}>
+                          {pickLang(trev ? tcard.reversed : tcard.upright, lang)}
+                        </div>
+                        <div style={{ fontSize:10,letterSpacing:1.8,color:`${tcol}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>{pickLang(TAROT_TXT.advice, lang)}</div>
+                        <div style={{ fontSize:14,color:"#cfe6d6",fontFamily:"'Inter',sans-serif",lineHeight:1.65 }}>
+                          {pickLang(tcard.advice, lang)}
+                        </div>
+                      </div>
+                      <div style={{ textAlign:"center",fontSize:11,color:"#6f6a80",fontFamily:"'Jost',sans-serif",letterSpacing:1,marginTop:16 }}>
+                        {pickLang(TAROT_TXT.again, lang)}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* GÜNE BAŞLA: Bugün artık varsayılan karşılama ekranı; asıl günlük
                 pratik (Bağlan/mandala: nefes, ses, çakra, bağlantı) buraya
