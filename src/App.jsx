@@ -300,7 +300,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.4.0";
+const APP_VERSION = "1.4.1";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -312,45 +312,40 @@ const APP_VERSION = "1.4.0";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.4.0",
+  version: "1.4.1",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
-  // GÜNCELLENDİ (sürüm 1.4.0 döngüsü ilerledikçe): eski başlık "tek dokunuşluk
-  // öğüt" I Ching'e işaret ediyordu, ama bu döngünün asıl ağırlığı sonradan
-  // Ayna'nın gerçek transit zekası ve Orkestra Modu'na kaydı; bunlar daha
-  // büyük, kullanıcının doğrudan hissedeceği değişiklikler olduğu için 3
-  // maddelik listeye onlar girdi.
   headline: {
-    tr:"Daha akıllı bir Ayna, topluluğun nabzı",
-    en:"A smarter Mirror, the community's pulse",
-    de:"Ein klügerer Spiegel, der Puls der Gemeinschaft",
-    es:"Un Espejo más inteligente, el pulso de la comunidad",
-    pt:"Um Espelho mais inteligente, o pulso da comunidade",
-    fr:"Un Miroir plus intelligent, le pouls de la communauté",
-    ja:"より賢い鏡、コミュニティの鼓動",
+    tr:"Yeni Bugün ekranı ve günün tarot kartı",
+    en:"A new Today screen and your daily tarot card",
+    de:"Ein neuer Heute-Bildschirm und deine Tarotkarte des Tages",
+    es:"Una nueva pantalla Hoy y tu carta de tarot del día",
+    pt:"Um novo ecrã Hoje e a tua carta de tarot do dia",
+    fr:"Un nouvel écran Aujourd'hui et ta carte de tarot du jour",
+    ja:"新しい「今日」画面と今日のタロットカード",
   },
   items: {
-    tr:["Karşılama kısa bir deneyimle başlıyor: nefesin ya da doğum bilgin, ardından galaktik kimliğin",
-        "İçsel Ayna artık o günün gerçek gökyüzüne ve doğum haritana bakarak konuşuyor, ezber cevap vermiyor",
-        "Orkestra Modu: topluluğun bu haftaki kolektif nefesini, sesini ve çakra pratiğini gör"],
-    en:["Welcome opens with a short experience: your breath or your birth details, then your galactic identity",
-        "Inner Mirror now looks at the real sky of the day and your birth chart before it answers, no more canned replies",
-        "Orchestra Mode: see the community's collective breath, sound and chakra practice this week"],
-    de:["Der Empfang beginnt mit einem kurzen Erlebnis: dein Atem oder deine Geburtsdaten, dann deine galaktische Identität",
-        "Der Innere Spiegel schaut jetzt auf den echten Himmel des Tages und deine Geburtskarte, bevor er antwortet, keine vorgefertigten Antworten mehr",
-        "Orchester-Modus: sieh den kollektiven Atem, Klang und die Chakra-Praxis der Gemeinschaft diese Woche"],
-    es:["La bienvenida empieza con una breve experiencia: tu respiración o tus datos de nacimiento, después tu identidad galáctica",
-        "El Espejo Interior ahora mira el cielo real del día y tu carta natal antes de responder, sin respuestas prefabricadas",
-        "Modo Orquesta: mira la respiración, el sonido y la práctica de chakras colectivos de la comunidad esta semana"],
-    pt:["As boas-vindas começam com uma breve experiência: a tua respiração ou os teus dados de nascimento, depois a tua identidade galáctica",
-        "O Espelho Interior agora olha para o céu real do dia e o teu mapa natal antes de responder, sem respostas prontas",
-        "Modo Orquestra: vê a respiração, o som e a prática de chakras coletivos da comunidade esta semana"],
-    fr:["L'accueil commence par une courte expérience : ton souffle ou tes données de naissance, puis ton identité galactique",
-        "Le Miroir Intérieur regarde maintenant le vrai ciel du jour et ton thème natal avant de répondre, plus de réponses toutes faites",
-        "Mode Orchestre : vois le souffle, le son et la pratique des chakras collectifs de la communauté cette semaine"],
-    ja:["お迎えが短い体験から始まります。呼吸か生まれた情報、それからギャラクティック・アイデンティティへ",
-        "内なる鏡は答える前に、その日の実際の空とあなたの出生図を見るようになりました。決まり文句の返答はもうありません",
-        "オーケストラモード、今週のコミュニティの集合的な呼吸、音、チャクラの実践を見る"],
+    tr:["Bugün ekranı yenilendi: güncel geçiş, günün pusulası ve her sabah açacağın bir tarot kartı",
+        "Bağlan'da kelimeler, nefes, ses ve 7 temel çakra artık herkese ücretsiz",
+        "İçsel Harita her gün niyetini ve dünkü gökyüzünü kısa bir yansımaya dönüştürüyor"],
+    en:["A renewed Today screen: current transit, the daily compass and a tarot card to open every morning",
+        "Words, breath, sound and the 7 core chakras in Connect are now free for everyone",
+        "Inner Map turns your intention and yesterday's sky into a short daily reflection"],
+    de:["Ein erneuerter Heute-Bildschirm: aktueller Transit, der Kompass des Tages und eine Tarotkarte für jeden Morgen",
+        "Worte, Atem, Klang und die 7 Grundchakren in Verbinden sind jetzt für alle kostenlos",
+        "Die Innere Landkarte macht aus deiner Absicht und dem gestrigen Himmel eine kurze tägliche Reflexion"],
+    es:["Una pantalla Hoy renovada: tránsito actual, la brújula del día y una carta de tarot para abrir cada mañana",
+        "Las palabras, la respiración, el sonido y los 7 chakras básicos en Conectar ahora son gratis para todos",
+        "El Mapa Interior convierte tu intención y el cielo de ayer en una breve reflexión diaria"],
+    pt:["Um ecrã Hoje renovado: trânsito atual, a bússola do dia e uma carta de tarot para abrir todas as manhãs",
+        "As palavras, a respiração, o som e os 7 chakras básicos em Conectar agora são gratuitos para todos",
+        "O Mapa Interior transforma a tua intenção e o céu de ontem numa breve reflexão diária"],
+    fr:["Un écran Aujourd'hui renouvelé : transit actuel, la boussole du jour et une carte de tarot à ouvrir chaque matin",
+        "Les mots, le souffle, le son et les 7 chakras de base dans Se connecter sont désormais gratuits pour tous",
+        "La Carte Intérieure transforme ton intention et le ciel d'hier en une courte réflexion quotidienne"],
+    ja:["「今日」画面をリニューアル。現在のトランジット、今日の羅針盤、毎朝めくるタロットカード",
+        "「つながる」の言葉、呼吸、音、基本の7チャクラがすべて無料に",
+        "内なる地図が、あなたの意図と昨日の空を短い毎日のふりかえりに変えます"],
   },
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a

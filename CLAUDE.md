@@ -109,7 +109,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Ağu 2026): App Store `1.3.8` · Play Store `1.3.8` (`node scripts/check-store-versions.mjs --check` ile doğrulandı).** Repoda hazırlanan: `1.3.9 / build 1`, Android `versionCode 12`. `latest-ios-version.json` `1.3.8` (otomatik, mağazayı yansıtıyor: 1.3.9 yayınlanınca kendi güncellenecek, ELLE bump etme).
+   - **CANLI (Eyl 2026): App Store `1.4.0` · Play Store `1.4.0` (`public/latest-ios-version.json`).** Repoda hazırlanan: `1.4.1 / build 1`, Android `versionCode 18` (17 hiç yüklenmedi ama kesinlik için atlandı). `latest-ios-version.json` otomatik, ELLE bump etme.
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"

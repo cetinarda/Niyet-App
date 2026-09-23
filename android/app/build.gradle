@@ -36,6 +36,7 @@ android {
         // versionCode 16 ÜRETİMDE SORUNSUZ ÇALIŞIYOR (kullanıcı doğruladı).
         // 17: Play Console optimizasyon geri bildirimi (kaynak kırpma kapalıydı,
         // sınıf yeniden paketleme yoktu). versionName 1.4.0 aynı kalıyor.
+        // 18 / 1.4.1: Bugün ekranı yenilemesi (tarot, pusula, İçsel Harita yansıması).
         // versionCode 14 ve 15 Play'e yüklendi, İKİSİ DE açılışta çöktü ve
         // rollback gerekti. Kök sebep gerçek cihazdan alınan logcat ile
         // kesinleşti: R8 Capacitor çekirdeğini yeniden adlandırınca
@@ -47,8 +48,8 @@ android {
         //   ./gradlew assembleRelease
         //   adb install -r app/build/outputs/apk/release/app-release.apk
         //   (kurulu paket DEBUGGABLE görünüyorsa yanlış sürümü test ediyorsun)
-        versionCode 17
-        versionName "1.4.0"
+        versionCode 18
+        versionName "1.4.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
