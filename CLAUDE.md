@@ -306,6 +306,11 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
 3. **Yol seçimi ekranı** ("Hangi yoldan gidelim?": sakinleşmek / kendimi tanımak)
    yalnızca burada çıkar. ⚠️ ÖNCEDEN HER GÜN, SONSUZA KADAR çıkıyordu
    ("bir daha gösterme" seçeneği de kaldırılmıştı, kimse kapatamıyordu).
+   **İLK 3 AÇILIŞ (Eyl 2026, kullanıcı: "bir yolu seçen diğerini merak eder"):**
+   `sakin_open_count` açılışları sayar (soğuk açılış + 30 dk'dan uzun arka
+   plandan dönüş). Yol seçimi ilk 3 açılışta çıkar: girişte HAZIRIM'dan, aynı
+   gün tekrar açılışta doğrudan ana sekmede (`nedirEligible`). İki yol da
+   denenmişse çıkmaz; biri denenmişse diğer kartta "Henüz denemedin" işareti.
 4. `STEP_MIN` zaten yarıya iniyordu (5 nefes / 30 sn / 60 sn / 1 görev).
 
 **⚠️ DENEYİMLİ KULLANICIYA HİÇBİR ŞEY DEĞİŞMEDİ.** `steps` dizisi, omurga
@@ -437,10 +442,20 @@ Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
 
 ## ☀️ BUGÜN EKRANI YAPISI (kullanıcı isteği, Eyl 2026)
 
+**⚠️ BUGÜN DOĞUM BİLGİSİ İSTER (kullanıcı, Eyl 2026: "doğum bilgisi olmadan
+pusula, geçiş verilmesi inandırıcılığı kaybettirir").** Doğum yoksa Bugün
+içeriği HİÇ çizilmez; sekmeye dokununca kapı kartı çıkar (Keşfet kapısıyla
+aynı dil): "Doğum bilgilerini gir" → form → kayıtta ~3 sn "Bugün ekranın
+hazırlanıyor" geçişi (`bugunPrep`, adımlar yalnızca gerçekten yapılan
+hesaplar) → Bugün. "Şimdilik atla" / dışarı dokunma → Bağlan. Doğumsuz
+kullanıcı açılışta ve HAZIRIM'da Bugün yerine Bağlan'a düşer (her gün kapı
+çıkıp dürtmesin diye).
+
 Bugün = tekrar giren kullanıcının İLK ekranı, amaç "bugüne dair çekici, uygulamayı
 kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden önce sor:
 0. **Başlık:** tarih etiketi + serif selam ("Günaydın, Arda"; saate göre, 7 dil).
-1. **Güncel geçiş** (kullanıcı: "en üstte"). HD Güneş/Ay kapısı. Eski adı
+1. **Güncel geçiş** (kullanıcı: "en üstte"). Hemen altında **Günün Pusulası**
+   (kullanıcı isteğiyle 5. sıradan buraya taşındı, ayrıntısı madde 5'te). HD Güneş/Ay kapısı. Eski adı
    "Günün geçişi" YANLIŞTI (Güneş kapısı ~5-6 gün, Ay gün içinde değişir);
    aynı sebeple "Günün vurgusu" da "Vurgu" oldu. Süre iddia eden etiket koyma.
 2. **Günün sayısı:** doğum varsa kişisel gün (`personalDayNumber`), yoksa
@@ -450,7 +465,7 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 4. **Orkestra modu** (Ben'den TAŞINDI, kullanıcı: "karşılamaya al"). pulse
    verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
-5. **Günün Pusulası** (kullanıcı isteği, "Yıldızlar bugün sana ne diyor?"
+5. **Günün Pusulası** (ARTIK 1'in hemen altında; kullanıcı isteği, "Yıldızlar bugün sana ne diyor?"
    kartlarının YERİNE; o kartlar "ilk ekranda uzun" bulundu). Ruh Profili
    profil sayfasından TAŞINDI (SoulID ProfileCard'dan kaldırıldı, tekrar yok).
    `dailyCompass()` + `COMPASS_TXT` (7 dil) = `apps/soulid/lib/profile/daily.ts`

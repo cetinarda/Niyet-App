@@ -802,6 +802,34 @@ const NEDIR_I18N = {
              fr:"Cette application a été créée par un Maître Reiki Usui Shiki Ryoho.",
              ja:"このアプリは臼井式霊気療法（Usui Shiki Ryoho）のレイキマスターによって作られました。" },
 };
+// Yol seçiminde henüz denenmemiş yolun kartındaki küçük işaret (kullanıcı:
+// "bir yolu seçen diğerini merak edebilir").
+const YOL_UNTRIED_TXT = { tr:"Henüz denemedin", en:"Not tried yet", de:"Noch nicht probiert", es:"Aún no lo probaste", pt:"Ainda não experimentaste", fr:"Pas encore essayé", ja:"まだ試していない" };
+
+// BUGÜN KAPISI: doğum bilgisi yokken Bugün'e dokununca çıkan kart + bilgi
+// girilince oynayan "hazırlanıyor" geçişi.
+const BUGUN_GATE_TXT = {
+  title: { tr:"Bugün sana göre hazırlanır", en:"Today is shaped around you", de:"Heute richtet sich nach dir", es:"Hoy se prepara a tu medida", pt:"O Hoje é preparado à tua medida", fr:"Aujourd'hui se prépare pour toi", ja:"「今日」はあなたに合わせて整います" },
+  body:  { tr:"Günün sayısı, yorumu ve gökyüzüyle bağın doğum bilgilerinden okunur. Girdiğinde Bugün ekranın sana özel hazırlanır.",
+           en:"Your number of the day, your reading and your link to the sky are drawn from your birth details. Add them and your Today screen is prepared just for you.",
+           de:"Deine Tageszahl, deine Deutung und deine Verbindung zum Himmel ergeben sich aus deinen Geburtsdaten. Trag sie ein und dein Heute wird für dich vorbereitet.",
+           es:"Tu número del día, tu lectura y tu vínculo con el cielo salen de tus datos de nacimiento. Añádelos y tu pantalla Hoy se prepara solo para ti.",
+           pt:"O teu número do dia, a tua leitura e a tua ligação ao céu vêm dos teus dados de nascimento. Adiciona-os e o teu ecrã Hoje é preparado só para ti.",
+           fr:"Ton nombre du jour, ta lecture et ton lien au ciel viennent de tes données de naissance. Ajoute-les et ton écran Aujourd'hui se prépare rien que pour toi.",
+           ja:"今日の数字、リーディング、空とのつながりは出生情報から読み取ります。入力すると「今日」画面があなただけのために整います。" },
+  skip:  { tr:"Şimdilik atla", en:"Skip for now", de:"Vorerst überspringen", es:"Omitir por ahora", pt:"Saltar por agora", fr:"Passer pour l'instant", ja:"今はスキップ" },
+  prepTitle: { tr:"Bugün ekranın hazırlanıyor", en:"Preparing your Today", de:"Dein Heute wird vorbereitet", es:"Preparando tu Hoy", pt:"A preparar o teu Hoje", fr:"Ton Aujourd'hui se prépare", ja:"あなたの「今日」を準備中" },
+  prepSteps: {
+    tr:["Doğum haritan okunuyor","Kişisel gün sayın hesaplanıyor","Bugünün gökyüzü haritanla karşılaştırılıyor","Hazır"],
+    en:["Reading your birth chart","Working out your personal day number","Comparing today's sky with your chart","Ready"],
+    de:["Dein Geburtshoroskop wird gelesen","Deine persönliche Tageszahl wird berechnet","Der heutige Himmel wird mit deinem Horoskop verglichen","Fertig"],
+    es:["Leyendo tu carta natal","Calculando tu número personal del día","Comparando el cielo de hoy con tu carta","Listo"],
+    pt:["A ler o teu mapa natal","A calcular o teu número pessoal do dia","A comparar o céu de hoje com o teu mapa","Pronto"],
+    fr:["Lecture de ton thème natal","Calcul de ton nombre personnel du jour","Comparaison du ciel du jour avec ton thème","Prêt"],
+    ja:["出生図を読んでいます","今日のパーソナル数を計算しています","今日の空をあなたの図と照らし合わせています","準備完了"],
+  },
+};
+
 // İLK AÇILIŞ TANITIMI: 5 ana bölümü kısa, animasyonlu bir tur ile tanıtır.
 // Kullanıcı "Devam" ile ilerler, son adımda "Başla" ile bitirir; localStorage
 // `sakin_tutorial_done` ile ömür boyu bir kez gösterilir. Her adım uygulamadaki
@@ -5499,7 +5527,14 @@ export default function SakinApp() {
     // TEKRAR GİREN KULLANICI (bugün HAZIRIM'a basmış): ilk karşılama artık
     // BUGÜN ekranı (kullanıcı isteği). Eskiden "mandala" (Bağlan) idi; Bağlan'a
     // artık Bugün'deki "Güne Başla" butonundan geçiliyor.
-    try { if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey()) return "bugun"; } catch(_) {}
+    // DOĞUM BİLGİSİ YOKSA BAĞLAN (kullanıcı: "doğum bilgisi olmadan Bugün'de
+    // pusula, geçiş verilmesi inandırıcılığı kaybettirir"). Bugün doğum bilgisi
+    // ister; açılışta her gün kapı çıkarıp dürtmek yerine Bağlan'da açılır,
+    // Bugün sekmesine dokununca kapı sorar.
+    try {
+      if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey())
+        return localStorage.getItem("sakin_birth_date") ? "bugun" : "mandala";
+    } catch(_) {}
     return "giris";
   };
   const [screen,        setScreenRaw]     = useState(_initialScreen);
@@ -5928,6 +5963,17 @@ export default function SakinApp() {
   // Bilgi bir kez girildiğinde bu kart bir daha hiç görünmez.
   const [birthGateApp, setBirthGateApp] = useState(null);
   const pendingEmbedRef = useRef(null);
+  // BUGÜN "HAZIRLANIYOR" GEÇİŞİ: Bugün kapısından doğum bilgisi girilince
+  // ekran bir anda belirmesin, sıra sıra ne okunduğunu gösteren kısa bir
+  // geçiş olsun (kullanıcı: "doğum bilgilerine göre sistem ona özel Bugün
+  // ekranını hazırlasın"). 0 = kapalı, 1..4 adımlar (4 = "Hazır"). Adımlar
+  // yalnızca GERÇEKTEN yapılan hesapları söyler (sahte iddia yok). ~3 sn.
+  const [bugunPrep, setBugunPrep] = useState(0);
+  useEffect(() => {
+    if (!bugunPrep) return;
+    const id = setTimeout(() => setBugunPrep(p => (p >= 4 ? 0 : p + 1)), bugunPrep >= 4 ? 900 : 700);
+    return () => clearTimeout(id);
+  }, [bugunPrep]);
   const handleOpenEmbed = (app) => {
     // Premium-kilitli embed'ler (SoulID): Sakin Premium olmayan kullanıcı
     // içeri hiç girmez, dogrudan paywall'a gider. İçeri giren herkes zaten
@@ -7353,10 +7399,54 @@ export default function SakinApp() {
   // gereken bir engel haline geliyordu (kullanıcı: "sade basit yormadan").
   // 3 tünelden sonra kullanıcı zaten iki yolu da biliyor, alt bardan tek dokunuşla
   // ikisine de gidebiliyor; ekranın işi bitmiş oluyor.
-  const maybeShowNedir = () => {
-    if (!isEarlyTunnel) return;
-    try { if (localStorage.getItem("sakin_nedir_off") !== "1") setShowNedir(true); } catch(_) {}
+  //
+  // İLK 3 AÇILIŞ (kullanıcı, Eyl 2026: "bir yolu seçen diğer yolu merak
+  // edebilir; tekrar açtığında yeni kullanıcılar için ilk 3 açılışta yol
+  // seçeneğini göster"). Eskiden yalnızca HAZIRIM'da çıkıyordu; HAZIRIM günde
+  // bir kez göründüğü için aynı gün tekrar açan kullanıcı diğer yolu hiç
+  // görmüyordu. Artık açılış SAYILIYOR (`sakin_open_count`): soğuk açılış +
+  // 30 dk'dan uzun arka plandan dönüş = bir açılış. İlk 3 açılışta çıkar.
+  // İki yolu da denemiş kullanıcıda (her iki onboarding bitti) çıkmaz, zaten
+  // merak edecek yol kalmadı. Deneyimli kullanıcıda (isEarlyTunnel false)
+  // hiç çıkmaz: güncellemeyle gelen eski kullanıcı sayaç 0'dan başlasa bile.
+  const nedirEligible = () => {
+    if (!isEarlyTunnel) return false;
+    try {
+      if (localStorage.getItem("sakin_nedir_off") === "1") return false;
+      if (localStorage.getItem("sakin_onb_baglan") && localStorage.getItem("sakin_onb_kesfet")) return false;
+      return (parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0) <= 3;
+    } catch(_) { return false; }
   };
+  const maybeShowNedir = () => { if (nedirEligible()) setShowNedir(true); };
+  const countAppOpen = () => {
+    try {
+      const n = (parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0) + 1;
+      localStorage.setItem("sakin_open_count", String(n));
+    } catch(_) {}
+  };
+  // Yalnızca ana sekmelerde açılır; giriş ekranında HAZIRIM zaten tetikler,
+  // embed/onboarding/politika sayfası ortasında araya girmez.
+  const NEDIR_OPEN_SCREENS = ["bugun", "mandala", "harita"];
+  const openCountedRef = useRef(false);
+  useEffect(() => {
+    if (openCountedRef.current) return;       // StrictMode çift çağrısına karşı
+    openCountedRef.current = true;
+    countAppOpen();
+    if (NEDIR_OPEN_SCREENS.includes(screen) && !onbPath) maybeShowNedir();
+  }, []);
+  const hiddenAtRef = useRef(0);
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === "hidden") { hiddenAtRef.current = Date.now(); return; }
+      const t0 = hiddenAtRef.current;
+      hiddenAtRef.current = 0;
+      if (!t0 || Date.now() - t0 < 30 * 60 * 1000) return;
+      countAppOpen();
+      if (NEDIR_OPEN_SCREENS.includes(screen) && !onbPath && !embeddedApp && !showNedir) maybeShowNedir();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [screen, onbPath, embeddedApp, showNedir, isEarlyTunnel]);
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -10163,6 +10253,79 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         </div>
       )}
 
+      {/* BUGÜN KAPISI (kullanıcı: "doğum bilgisi girilmediyse Bugün'e
+          tıklandığında doğum bilgilerini gir pop-up'ı açılsın; atla derse
+          Bağlan'a taşı"). Keşfet kapısıyla (birthGateApp) aynı dil. Bugün
+          içeriği bu durumda HİÇ çizilmez: doğum bilgisi olmadan geçiş, pusula,
+          sayı göstermek inandırıcılığı düşürüyordu. Dışarı dokunmak = atla. */}
+      {screen==="bugun" && !birthDate && !showNedir && !onbPath && !showIntro && (
+        <div onClick={()=>setScreen("mandala")}
+          style={{ position:"fixed",inset:0,zIndex:10030,background:"rgba(0,0,0,0.72)",backdropFilter:"blur(6px)",
+            display:"flex",alignItems:"center",justifyContent:"center",padding:"24px" }}>
+          <div onClick={e=>e.stopPropagation()}
+            style={{ maxWidth:360,width:"100%",background:"linear-gradient(160deg,rgba(20,14,32,0.99),rgba(12,8,22,0.99))",
+              border:"1px solid rgba(184,164,216,0.28)",borderRadius:20,padding:"22px 22px 18px",
+              boxShadow:"0 18px 60px rgba(0,0,0,0.7)",animation:"fadeUp 0.4s ease-out" }}>
+            <div style={{ fontSize:10,letterSpacing:3,color:"#c9a86a",textTransform:"uppercase",
+              fontFamily:"'Jost',sans-serif",marginBottom:8 }}>{pickLang(TAB_TXT.bugun, lang)}</div>
+            <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8e0f4",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
+              {pickLang(BUGUN_GATE_TXT.title, lang)}
+            </div>
+            <div style={{ fontSize:13,lineHeight:1.8,color:"#b8aed0",fontFamily:"'Inter',sans-serif",marginBottom:18 }}>
+              {pickLang(BUGUN_GATE_TXT.body, lang)}
+            </div>
+            <button onClick={()=>{
+                birthReturnRef.current = "bugun";
+                setGirisPhase("birth"); setShowBirthForm(true); setScreen("giris");
+              }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"12px 16px",borderRadius:100,
+                border:"1px solid rgba(184,164,216,0.5)",
+                background:"linear-gradient(135deg,rgba(184,164,216,0.32),rgba(122,80,150,0.26))",
+                color:"#fff",fontSize:12.5,letterSpacing:1.6,cursor:"pointer",fontFamily:"'Jost',sans-serif",
+                textTransform:"uppercase",marginBottom:9 }}>
+              {pickLang(BIRTH_TXT.enter, lang)}
+            </button>
+            <button onClick={()=>setScreen("mandala")}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"10px 16px",borderRadius:100,
+                border:"none",background:"transparent",color:"#8e8e99",fontSize:12,letterSpacing:1.2,
+                cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
+              {pickLang(BUGUN_GATE_TXT.skip, lang)}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* BUGÜN HAZIRLANIYOR: kapıdan doğum bilgisi girilince ~3 sn. Dokunmak geçer. */}
+      {bugunPrep > 0 && (() => {
+        const steps = pickLang(BUGUN_GATE_TXT.prepSteps, lang) || BUGUN_GATE_TXT.prepSteps.en;
+        return (
+          <div onClick={()=>setBugunPrep(0)}
+            style={{ position:"fixed",inset:0,zIndex:10040,display:"flex",alignItems:"center",justifyContent:"center",padding:24,
+              background:"radial-gradient(110% 60% at 50% 35%, rgba(240,205,130,0.08), transparent 60%), rgba(6,4,14,0.97)" }}>
+            <div style={{ maxWidth:320,width:"100%",display:"flex",flexDirection:"column",alignItems:"center",gap:22 }}>
+              <div className="sakin-yol-sun" style={{ position:"relative",width:52,height:52,borderRadius:"50%",
+                background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
+              <div style={{ fontFamily:"'Cormorant Garamond',serif",fontSize:24,fontWeight:400,color:"#f3ead8",textAlign:"center",letterSpacing:0.3 }}>
+                {pickLang(BUGUN_GATE_TXT.prepTitle, lang)}
+              </div>
+              <div style={{ display:"flex",flexDirection:"column",gap:10,width:"100%" }}>
+                {steps.map((s, i) => {
+                  const state = i + 1 < bugunPrep ? "done" : i + 1 === bugunPrep ? "now" : "wait";
+                  return (
+                    <div key={i} style={{ display:"flex",alignItems:"center",gap:10,opacity: state === "wait" ? 0.28 : 1,transition:"opacity 0.4s" }}>
+                      <span style={{ width:16,textAlign:"center",fontSize:11,color: state === "done" ? "#c9a86a" : "#b8a4d8" }}>
+                        {state === "done" ? "✓" : state === "now" ? "✦" : "·"}
+                      </span>
+                      <span style={{ fontFamily:"'Inter',sans-serif",fontSize:13,lineHeight:1.5,color: state === "now" ? "#efe8ff" : "#a99fc0" }}>{s}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* EMBEDDED APP: fullscreen iframe overlay with stargate portal transition */}
       {(embeddedApp || mitlerSession) && (
         // mitlerSession sticky: embeddedApp null olsa bile container DOM'da kalır (display:none) →
@@ -11683,6 +11846,16 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const baglanName = pickLang({ tr:"Şimdi sakinleşmek istiyorum", en:"I want to calm down now", de:"Ich möchte jetzt zur Ruhe kommen", es:"Quiero calmarme ahora", pt:"Quero acalmar-me agora", fr:"Je veux me calmer maintenant", ja:"いま落ち着きたい" }, lang);
         const kesfetName = pickLang({ tr:"Kendimi tanımak istiyorum", en:"I want to know myself", de:"Ich möchte mich kennenlernen", es:"Quiero conocerme", pt:"Quero conhecer-me", fr:"Je veux me connaître", ja:"自分を知りたい" }, lang);
         const baglanTime = pickLang({ tr:"1 dakika", en:"1 minute", de:"1 Minute", es:"1 minuto", pt:"1 minuto", fr:"1 minute", ja:"1分" }, lang);
+        // Tekrar açılışta (ilk 3 açılış) biri denenmiş, diğeri denenmemişse
+        // denenmemiş kartın alt kenarına küçük bir işaret: merak ettiren yol o.
+        // Mutlak konumlu: kart yüksekliğini ve çizgi geometrisini bozmaz.
+        const untried = (() => { try {
+          const b = !!localStorage.getItem("sakin_onb_baglan"), k = !!localStorage.getItem("sakin_onb_kesfet");
+          return b && !k ? "kesfet" : k && !b ? "baglan" : null;
+        } catch(_) { return null; } })();
+        const untriedSt = { position:"absolute", left:"50%", bottom:-9, transform:"translateX(-50%)", whiteSpace:"nowrap",
+          padding:"2px 9px", borderRadius:10, background:"#0c0818", border:"1px solid", fontSize:9, letterSpacing:1,
+          fontFamily:"'Jost',sans-serif", fontWeight:400 };
         const kesfetTime = pickLang({ tr:"2 dakika", en:"2 minutes", de:"2 Minuten", es:"2 minutos", pt:"2 minutos", fr:"2 minutes", ja:"2分" }, lang);
         // ── Ölçülen boyuttan px geometri: çizgiler kart tepelerine BAĞLANIR ──
         const W = nedirDims?.w || 390, H = nedirDims?.h || 844;
@@ -11752,6 +11925,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
                 <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
                 <div style={timeSt}>{baglanTime}</div>
+                {untried === "baglan" && <div style={{ ...untriedSt,color:"#d3aeee",borderColor:"rgba(197,138,232,0.45)" }}>{pickLang(YOL_UNTRIED_TXT, lang)}</div>}
               </button>
               {/* Keşfet: ilk kez gelen kullanıcı altın onboarding'e girer
                   (vaat → ad → doğum bilgisi → harita animasyonu → galaktik
@@ -11766,6 +11940,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
                 <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
                 <div style={timeSt}>{kesfetTime}</div>
+                {untried === "kesfet" && <div style={{ ...untriedSt,color:"#f3d896",borderColor:"rgba(240,192,96,0.45)" }}>{pickLang(YOL_UNTRIED_TXT, lang)}</div>}
               </button>
             </div>
 
@@ -11877,7 +12052,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     tahmini kalktı, kullanıcı GÜNE BAŞLA ile kendi girer. */}
                 <button className="sakin-btn-primary"
                   style={{ width:"86%",maxWidth:300,display:"block",boxSizing:"border-box",margin:"0 auto" }}
-                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen("bugun"); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen(birthDate ? "bugun" : "mandala"); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
                     Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır.
                     Küçültüldü: padding 12/34 → 9/24, font 13 → 11.5, minHeight 44 → 38. */}
@@ -11963,6 +12138,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     if (pend && birthInput) {
                       setScreen(back || "harita");
                       handleOpenEmbed({ ...pend, skipBirthGate: true });
+                      return;
+                    }
+                    // Bugün kapısından gelindiyse: bilgi girildiyse kısa
+                    // "hazırlanıyor" geçişiyle Bugün açılır; boş geçildiyse
+                    // (Atla) Bağlan'a gider, kapıya geri düşmez.
+                    if (back === "bugun") {
+                      if (birthInput) { setScreen("bugun"); setBugunPrep(1); }
+                      else setScreen("mandala");
                       return;
                     }
                     if (back) { setScreen(back); return; }
@@ -15655,7 +15838,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           localStorage'ından okunuyor (aynı origin; köprü/postMessage YOK,
           bkz. src/daily-cards.js). Kart o gün açılmamışsa boş kutu yerine
           "kartını aç" daveti gösterilir ve doğrudan ilgili uygulamaya gider. */}
-      {screen==="bugun" && (() => {
+      {screen==="bugun" && !!birthDate && (() => {
         const dk = sakinDayKey();
         const ids = dailyIds || { animal:null, plant:null, stone:null, archetype:null, myth:null, image:null };
         const idx = dailyIndex;
@@ -15856,6 +16039,49 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </section>
             )}
 
+            {/* ── 1b) GÜNÜN PUSULASI (Güncel geçişin hemen altı, kullanıcı isteği) ─────────────────────────
+                Eskiden burada "Yıldızlar bugün sana ne diyor?" kartları vardı;
+                kullanıcı: "ilk ekranda uzun". Yerine Ruh Profili'nden TAŞINAN
+                pusula: etiket + söz (serif) + iki açık kutu (bakman gereken yer,
+                haftaya bakış). Ay evresi adı ve "Geliş sebebin" BİLEREK yok.
+                Altında yıldızlara bağlantı: Ruh Profili karnesini açar ve
+                "Bugünün Gökyüzü" bölümüne kaydırır (?go=sky). Doğum gerekmez. */}
+            {(() => {
+              const cp = dailyCompass(moonNow, transit, lang);
+              return (
+                <section style={SEC}>
+                  {eyebrow(pickLang(COMPASS_TXT.title, lang))}
+                  {cp ? (<>
+                    <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:25,lineHeight:1.3,color:INK,margin:"0 4px 16px" }}>
+                      “{cp.advice}”
+                    </div>
+                    <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+                      <div style={{ ...SURF,padding:"15px 18px" }}>
+                        {label(pickLang(COMPASS_TXT.look, lang), GOLD)}
+                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.focus}</div>
+                      </div>
+                      <div style={{ ...SURF,padding:"15px 18px" }}>
+                        {label(pickLang(COMPASS_TXT.week, lang), GOLD)}
+                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.week}</div>
+                      </div>
+                    </div>
+                  </>) : (
+                    <div style={{ height:90 }} />
+                  )}
+                  <button onClick={()=>{ try{haptic();}catch(_){}
+                      handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=sky", color:"#e8c07a" }); }}
+                    style={{ ...BTN,...SURF,marginTop:10,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                    {icon("✧", LAV, 40, 18)}
+                    <span style={{ flex:1,minWidth:0 }}>
+                      <span style={{ display:"block",fontSize:15.5,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(COMPASS_TXT.skyQ, lang)}</span>
+                      <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2 }}>{pickLang(COMPASS_TXT.skyTap, lang)}</span>
+                    </span>
+                    {chevron()}
+                  </button>
+                </section>
+              );
+            })()}
+
             {/* ── 2) GÜNÜN SAYISI ── doğum varsa kişisel gün, yoksa takvimden. */}
             <section style={SEC}>
               {eyebrow(pickLang(birthDate ? TODAY_HERO_TXT.personalDay : TODAY_HERO_TXT.universalDay, lang))}
@@ -15972,49 +16198,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 })()}
               </div>
             </section>
-
-            {/* ── 4) GÜNÜN PUSULASI (kullanıcı isteği) ─────────────────────────
-                Eskiden burada "Yıldızlar bugün sana ne diyor?" kartları vardı;
-                kullanıcı: "ilk ekranda uzun". Yerine Ruh Profili'nden TAŞINAN
-                pusula: etiket + söz (serif) + iki açık kutu (bakman gereken yer,
-                haftaya bakış). Ay evresi adı ve "Geliş sebebin" BİLEREK yok.
-                Altında yıldızlara bağlantı: Ruh Profili karnesini açar ve
-                "Bugünün Gökyüzü" bölümüne kaydırır (?go=sky). Doğum gerekmez. */}
-            {(() => {
-              const cp = dailyCompass(moonNow, transit, lang);
-              return (
-                <section style={SEC}>
-                  {eyebrow(pickLang(COMPASS_TXT.title, lang))}
-                  {cp ? (<>
-                    <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:25,lineHeight:1.3,color:INK,margin:"0 4px 16px" }}>
-                      “{cp.advice}”
-                    </div>
-                    <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                      <div style={{ ...SURF,padding:"15px 18px" }}>
-                        {label(pickLang(COMPASS_TXT.look, lang), GOLD)}
-                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.focus}</div>
-                      </div>
-                      <div style={{ ...SURF,padding:"15px 18px" }}>
-                        {label(pickLang(COMPASS_TXT.week, lang), GOLD)}
-                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.week}</div>
-                      </div>
-                    </div>
-                  </>) : (
-                    <div style={{ height:90 }} />
-                  )}
-                  <button onClick={()=>{ try{haptic();}catch(_){}
-                      handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=sky", color:"#e8c07a" }); }}
-                    style={{ ...BTN,...SURF,marginTop:10,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                    {icon("✧", LAV, 40, 18)}
-                    <span style={{ flex:1,minWidth:0 }}>
-                      <span style={{ display:"block",fontSize:15.5,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(COMPASS_TXT.skyQ, lang)}</span>
-                      <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2 }}>{pickLang(COMPASS_TXT.skyTap, lang)}</span>
-                    </span>
-                    {chevron()}
-                  </button>
-                </section>
-              );
-            })()}
 
             {/* ── 4b) GÜNÜN YORUMU ── Gökyüzü Raporu ile AYNI kuruluş: etiket
                 üstte, kutuda yalnızca tarih, açılır-kapanır. Uzun AI okuması
