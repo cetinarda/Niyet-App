@@ -4,14 +4,20 @@
 # Smith çizimleri), Wikimedia Commons taramaları. 1909 baskısı kamu malıdır.
 # ("Rider-Waite" adı başka bir firmanın markası; arayüzde bu ad KULLANILMAZ.)
 #
-# STİL ("Sakin galaktik piksel"): kâğıt kenarı + İngilizce başlık şeridi
+# STİL ("Sakin galaktik piksel", ince): kâğıt kenarı + İngilizce başlık şeridi
 # kırpılır (kart adı arayüzde 7 dilde yazılıyor), orijinal renkler gece
-# mor/altın bir tonlamayla yarı yarıya karıştırılır, 90 px genişliğe indirilip
-# 32 renge sabitlenir (8-bit his). Arayüz `image-rendering:pixelated` ile 2x
-# büyütür, pikseller keskin kalır. Kart arkası (back.png) tamamen bize ait,
-# burada çiziliyor.
+# mor/altın bir tonlamayla yarı yarıya karıştırılır, 180x280 px'e indirilip
+# 48 renge sabitlenir (ince retro doku), sonra 2x EN YAKIN KOMŞU ile 360x560'a
+# GÖMÜLÜ büyütülür. Arayüz 180x280 CSS px gösterir.
 #
-# ÇIKTI: public/tarot/<kart-id>.png (78 kart) + public/tarot/back.png
+# ⚠️ NEDEN BÜYÜTME GÖRSELİN İÇİNDE (kullanıcı: "kartlar flu"): ilk sürüm 90 px
+# görseli CSS `image-rendering:pixelated` ile büyütüyordu. iOS WKWebView bu
+# özelliğe güvenilir şekilde uymuyor, 90 px görseli 6x (DPR3) YUMUŞATARAK
+# büyütüyor, kart bulanık çıkıyordu. Artık tarayıcıya büyütme işi bırakılmıyor.
+# Format WebP kayıpsız: aynı görsel PNG'de ~88 KB, WebP'de ~35 KB (iOS 16+ /
+# Android 7+ destekli, projenin alt sınırları bunlar).
+#
+# ÇIKTI: public/tarot/<kart-id>.webp (78 kart) + public/tarot/back.webp
 # Kullanım:  pip install pillow && python3 scripts/build-tarot-art.py
 #            (--sheet yolu verilirse tüm kartların kontrol sayfasını da üretir)
 import os, sys, time, urllib.request, urllib.parse, random
@@ -20,9 +26,10 @@ from PIL import Image, ImageOps, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "public", "tarot")
 CACHE = os.environ.get("TAROT_SRC_CACHE") or os.path.join(os.path.expanduser("~"), ".cache", "sakin-tarot-src")
-W = 90          # piksel sanat genişliği (arayüz 2x gösterir)
-CH = 140        # sabit yükseklik: tüm kartlar aynı oranda (arayüz sabit kutu)
-COLORS = 32
+W = 180         # piksel sanat genişliği
+CH = 280        # sabit yükseklik: tüm kartlar aynı oranda (arayüz sabit kutu)
+SCALE = 2       # görsele GÖMÜLÜ en-yakın-komşu büyütme (360x560 çıktı)
+COLORS = 48
 
 MAJORS = ["Fool","Magician","High_Priestess","Empress","Emperor","Hierophant","Lovers",
           "Chariot","Strength","Hermit","Wheel_of_Fortune","Justice","Hanged_Man","Death",
@@ -46,7 +53,7 @@ def card_files():
 def fetch(fn, dest):
     if os.path.exists(dest) and os.path.getsize(dest) > 0:
         return
-    url = "https://commons.wikimedia.org/wiki/Special:FilePath/" + urllib.parse.quote(fn) + "?width=320"
+    url = "https://commons.wikimedia.org/wiki/Special:FilePath/" + urllib.parse.quote(fn) + "?width=640"
     req = urllib.request.Request(url, headers={"User-Agent": "SakinTarotBuild/1.0 (sakin.life)"})
     for attempt in range(4):
         try:
@@ -96,36 +103,41 @@ def stylize(im):
     # Oturtma TAM çözünürlükte yapılır, sonra küçültülür: piksellenmiş görseli
     # sonradan ölçeklemek pikselleri eşitsiz yapardı.
     sm = ImageOps.fit(mixed, (W, CH), Image.LANCZOS, centering=(0.5, 0.45))
-    return sm.quantize(colors=COLORS, method=Image.MEDIANCUT, dither=Image.Dither.NONE)
+    q = sm.quantize(colors=COLORS, method=Image.MEDIANCUT, dither=Image.Dither.NONE).convert("RGB")
+    return q.resize((W * SCALE, CH * SCALE), Image.NEAREST)
 
-def card_back(h):
-    """Bize ait kart arkası: gece mavisi zemin, piksel yıldızlar, ortada hilal."""
+def card_back():
+    """Bize ait kart arkası: gece mavisi degrade, ince yıldızlar, altın hilal,
+    ince çift çerçeve. 4x büyük çizilip küçültülür (kenar yumuşatma), yani
+    her ekranda keskin ve zarif."""
+    SS = 4
+    w, h = W * SCALE * SS, CH * SCALE * SS
     rnd = random.Random(7)
-    im = Image.new("RGB", (W, h), (14, 11, 38))
+    im = Image.new("RGB", (w, h))
     d = ImageDraw.Draw(im)
-    for y in range(h):                       # dikey hafif degrade
+    for y in range(h):
         k = y / h
-        d.line([(0, y), (W, y)], fill=(int(14 + 16 * k), int(11 + 6 * k), int(38 + 30 * k)))
-    d.rectangle([2, 2, W - 3, h - 3], outline=(150, 128, 205))
-    d.rectangle([5, 5, W - 6, h - 6], outline=(70, 56, 120))
-    for _ in range(70):                      # yıldızlar
-        x, y = rnd.randrange(8, W - 8), rnd.randrange(8, h - 8)
-        c = rnd.choice([(200, 190, 240), (240, 220, 160), (140, 125, 200)])
-        d.point((x, y), fill=c)
-        if rnd.random() < 0.15:
-            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-                d.point((x + dx, y + dy), fill=(110, 95, 170))
-    cx, cy, R = W // 2, h // 2, 17          # hilal: dolu daire EKSİ kaydırılmış daire
-    mask = Image.new("1", (W, h), 0)        # (maskeyle; gölge diski zeminde görünmesin)
+        d.line([(0, y), (w, y)], fill=(int(16 + 14 * k), int(12 + 6 * k), int(42 + 26 * k)))
+    u = SS * SCALE                                   # 1 "tasarım pikseli"
+    d.rounded_rectangle([3 * u, 3 * u, w - 3 * u, h - 3 * u], radius=6 * u, outline=(200, 172, 110), width=u)
+    d.rounded_rectangle([6 * u, 6 * u, w - 6 * u, h - 6 * u], radius=4 * u, outline=(96, 80, 150), width=max(1, u // 2))
+    for _ in range(110):                              # yıldızlar
+        x, y = rnd.randrange(10 * u, w - 10 * u), rnd.randrange(10 * u, h - 10 * u)
+        r = rnd.choice([0.35, 0.5, 0.5, 0.8]) * u
+        c = rnd.choice([(214, 204, 244), (240, 222, 164), (150, 136, 206)])
+        d.ellipse([x - r, y - r, x + r, y + r], fill=c)
+    def spark(x, y, L):                               # dört kollu parıltı
+        d.polygon([(x, y - L), (x + L * 0.18, y), (x, y + L), (x - L * 0.18, y)], fill=(240, 222, 164))
+        d.polygon([(x - L, y), (x, y + L * 0.18), (x + L, y), (x, y - L * 0.18)], fill=(240, 222, 164))
+    spark(w // 2, 22 * u, 6 * u); spark(w // 2, h - 22 * u, 6 * u)
+    cx, cy, R = w // 2, h // 2, 34 * u               # hilal: maske (gölge diski görünmez)
+    mask = Image.new("L", (w, h), 0)
     md = ImageDraw.Draw(mask)
-    md.ellipse([cx - R, cy - R, cx + R, cy + R], fill=1)
-    md.ellipse([cx - R + 8, cy - R - 3, cx + R + 8, cy + R - 3], fill=0)
-    im.paste((240, 214, 140), (0, 0), mask)
-    for (x, y) in ((cx, 14), (cx, h - 15)):  # üst/alt küçük parıltı
-        d.point((x, y), fill=(240, 222, 160))
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1), (2, 0), (-2, 0), (0, 2), (0, -2)):
-            d.point((x + dx, y + dy), fill=(200, 180, 240))
-    return im
+    md.ellipse([cx - R, cy - R, cx + R, cy + R], fill=255)
+    md.ellipse([cx - R + 15 * u, cy - R - 6 * u, cx + R + 15 * u, cy + R - 6 * u], fill=0)
+    im.paste((236, 208, 138), (0, 0), mask)
+    d.ellipse([cx - R - 6 * u, cy - R - 6 * u, cx + R + 6 * u, cy + R + 6 * u], outline=(120, 100, 180), width=max(1, u // 2))
+    return im.resize((W * SCALE, CH * SCALE), Image.LANCZOS)
 
 def main():
     os.makedirs(OUT, exist_ok=True)
@@ -137,17 +149,17 @@ def main():
         src = os.path.join(CACHE, cid + ".jpg")
         fetch(fn, src)
         art = stylize(smart_crop(Image.open(src).convert("RGB")))
-        art.save(os.path.join(OUT, cid + ".png"), optimize=True)
-        tiles.append(art.convert("RGB"))
-    card_back(CH).save(os.path.join(OUT, "back.png"), optimize=True)
+        art.save(os.path.join(OUT, cid + ".webp"), lossless=True, method=6)
+        tiles.append(art)
+    card_back().save(os.path.join(OUT, "back.webp"), quality=90, method=6)
     total = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT))
-    print(f"{len(files)} kart + back.png -> {OUT} ({total // 1024} KB)")
+    print(f"{len(files)} kart + back.webp -> {OUT} ({total // 1024} KB)")
     if "--sheet" in sys.argv:
         dest = sys.argv[sys.argv.index("--sheet") + 1]
         cols = 13
         sheet = Image.new("RGB", (cols * (W + 4), 6 * (CH + 4)), (0, 0, 0))
         for i, tl in enumerate(tiles):
-            sheet.paste(tl, ((i % cols) * (W + 4), (i // cols) * (CH + 4)))
+            sheet.paste(tl.resize((W, CH), Image.NEAREST), ((i % cols) * (W + 4), (i // cols) * (CH + 4)))
         sheet.save(dest)
         print("sheet ->", dest)
 

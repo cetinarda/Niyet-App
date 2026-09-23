@@ -321,7 +321,9 @@ Bir şeyi bozup bozmadığını anlamak için önce `isEarlyTunnel` false ile de
 altında "3 gün / 7 gün / 21 gün" yazıyor + Yolculuk sekmesinde anlatılıyor),
 kırmızı "?" balonu (kaldırılmış), 6'lı adım barı (kaldırılmış).
 
-## 🌿 EVRİM + ORKESTRA (Ben ekranı) - kullanıcı isteği: "zeki ve eğlenceli olsun"
+## 🌿 EVRİM + ORKESTRA - kullanıcı isteği: "zeki ve eğlenceli olsun"
+
+⚠️ **Evrim bitkisi Ben ekranında, ORKESTRA kartı artık BUGÜN ekranında** (Eyl 2026 taşındı, bkz. Bugün bölümü). Aşağıdaki orkestra notları mantık olarak geçerli.
 
 **AŞAMALAR DÖRT: TOHUM → FİDAN → AĞAÇ → ORMAN** (kullanıcı kararı).
 Eşikler aşamanın BAŞLADIĞI gün: 0 / 3 / 7 / 21. ⚠️ İlk halinde eşikler
@@ -433,32 +435,62 @@ Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
 
 Bugün = tekrar giren kullanıcının İLK ekranı, amaç "bugüne dair çekici, uygulamayı
 kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden önce sor:
-1. **Karşılama:** saate göre selam + ad, yerel tarih, **günün sayısı** (doğum
-   varsa kişisel gün numerolojisi `personalDayNumber`, yoksa `universalDayNumber`,
-   `DAY_NUMBER_TXT` 9 sayı × 7 dil), **seri teşviki** (`streakData`: bugün
-   bağlandıysa ✓, yoksa "bağlanırsan N+1", tıklayınca Bağlan).
-2. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME,
-   kullanıcı açıkça istedi). `src/sky-today.js`: SoulID `transits.ts` motorunun
-   7 dilli portu (AI yok, natal × transit). Günün Odağı (Ay'ın natal evi, saat +
-   şehir şart) + en sıkı açılar. Ay evresi BURADA YOK (gökyüzü raporunda var).
-   Bilinçli sapma: her transit gezegenden tek kart (SoulID'de aynı başlık x2
-   çıkabiliyordu). Altında **"Daha fazlası"** = `generateDailyHoroscope` (AI,
-   consent + günlük hak, gün+burç+dil cache), prompt bu kartları omurga alır.
-3. **Gökyüzü raporu** (kolektif, açılır, ay evresi başlıkta). Bir ara Ben'e
-   taşındı, kullanıcı geri istedi: Bugün'de kalır.
-4. **Güncel geçiş** (HD Güneş/Ay kapısı). Eski adı "Günün geçişi" YANLIŞTI:
-   Güneş kapısı ~5-6 gün, Ay kapısı gün içinde değişir; süre iddia etme.
-5. Günün rehberleri → **İkili uyum** (Ben'den taşındı) → I Ching →
-   **Günün tarot kartı** → Güne Başla.
+0. **Başlık:** tarih etiketi + serif selam ("Günaydın, Arda"; saate göre, 7 dil).
+1. **Güncel geçiş** (kullanıcı: "en üstte"). HD Güneş/Ay kapısı. Eski adı
+   "Günün geçişi" YANLIŞTI (Güneş kapısı ~5-6 gün, Ay gün içinde değişir);
+   aynı sebeple "Günün vurgusu" da "Vurgu" oldu. Süre iddia eden etiket koyma.
+2. **Günün sayısı:** doğum varsa kişisel gün (`personalDayNumber`), yoksa
+   `universalDayNumber`, `DAY_NUMBER_TXT` 9 × 7 dil.
+3. **Pazar: Haftanın özeti** (`WEEK_TXT`): yalnızca Pazar + en az 1 aktif gün
+   (0 gün demek soğutur). 7 gün noktası + nefes/ses/çakra, tamamen YEREL veri.
+4. **Orkestra modu** (Ben'den TAŞINDI, kullanıcı: "karşılamaya al"). pulse
+   verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
+   gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
+5. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME).
+   `src/sky-today.js` = SoulID `transits.ts` motorunun 7 dilli portu (AI yok).
+   Bilinçli sapma: her transit gezegenden tek kart. Altında **"Daha fazlası"**
+   (`generateDailyHoroscope`, AI, consent + günlük hak, gün+burç+dil cache,
+   prompt bu kartları omurga alır).
+6. **Gökyüzü raporu** (kolektif, açılır). Bir ara Ben'e taşındı, geri geldi.
+7. Günün rehberleri → İkili uyum (Ben'den taşındı) → I Ching → **Tarot**.
+8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
+   etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 
-**TAROT GÖRSELLERİ:** `public/tarot/<kart-id>.png` (78) + `back.png`, üreten
-`scripts/build-tarot-art.py` (Pillow). Kaynak: 1909 orijinal deste taramaları
-(Wikimedia Commons, kamu malı). ⚠️ "Rider-Waite" adı başka firmanın MARKASI,
-arayüzde KULLANMA. Stil: başlık şeridi kırpılır (ad arayüzde 7 dilde), gece
-mor/altın tonlama %50, 90x140 px 32 renk, arayüz `image-rendering:pixelated` ile
-TAM 2x gösterir (180x280; tamsayı olmayan ölçek pikselleri bozar). Kart arkası
-bize ait (altın piksel hilal). Toplam ~590 KB. Ters kart görseli 180° döner,
-metinler düz kalır.
+**TEK GÖRSEL DİL (kullanıcı: "klas, zarif, tek görsel dil"):** Bugün bloğunun
+başındaki `SURF` (tek kart yüzeyi), `eyebrow()`, `label()`, `icon()`,
+`chevron()`, `pill()`, `smallBtn()`. Kart zeminine RENKLİ DOLGU KOYMA, renk
+yalnızca ikon dairesi/etiket/küçük vurguda. Başlık/değer Cormorant (serif),
+gövde Inter, etiket Jost. Yeni bölüm eklerken bu yardımcıları kullan.
+- ⚠️ **Yardımcılar BİLEŞEN DEĞİL, FONKSİYON:** uygulama saat yüzünden
+  SANİYEDE BİR yeniden çiziliyor; render içinde tanımlı bileşenler her saniye
+  baştan kurulur, animasyonlar (kart açılışı) tekrar tekrar oynar.
+- ⚠️ **`BTN` içinde `background:transparent; border:none` ŞART:**
+  `appearance:none` tarayıcının gri buton zeminini KALDIRMAZ; kart içindeki
+  aç/kapa satırları gri görünüyordu (yakalandı, düzeltildi).
+
+**TAROT:**
+- Görseller `public/tarot/<id>.webp` (78) + `back.webp`, üreten
+  `scripts/build-tarot-art.py`. Kaynak: 1909 orijinal deste taramaları (Wikimedia,
+  kamu malı). ⚠️ "Rider-Waite" adı MARKA, arayüzde KULLANMA.
+- ⚠️ **"Kartlar flu" (kullanıcı bildirdi, düzeltildi):** ilk sürüm 90 px
+  görseli CSS `image-rendering:pixelated` ile büyütüyordu; iOS WKWebView buna
+  güvenilir uymuyor, yumuşatıp bulanıklaştırıyordu. Artık 180x280 piksel
+  sanat görselin İÇİNE 2x gömülü (360x560), tarayıcıya büyütme bırakılmıyor.
+  WebP kayıpsız, toplam ~2.8 MB (PNG'de 6.7 MB olurdu; iOS 16+/Android 7+ destekli).
+- Kart **AÇILIR-KAPANIR** (kullanıcı: "tüm ekranı kaplamasın"): çekim anında
+  açık, sonraki girişlerde tek satır özet (`tarotExpanded`). Açıkken kompakt
+  düzen: kart solda 124 px, anlam sağda, öneri altta.
+- **Paylaş:** `buildTarotStoryCard` (1080x1920, Ayna hikâye kartıyla aynı dil,
+  gerçek kart görseli + anlam + "Bugün için").
+- **"Daha geniş açılım" = PREMIUM** (`isPremium`): üç kart (Kök · Şimdi · Yön),
+  ortadaki günün kartının kendisi (`pickTarotSpread`, gün boyu sabit) + AI
+  birleşik yorum (`generateTarotSpread`, cache). Premium değilse NAZİK kilit
+  paneli (ne olduğunu anlatır), doğrudan fiyat ekranına ATMAZ.
+- **Sabah bildirimi "Kartın seni bekliyor"** (`scheduleTarotMorning`): 08:30,
+  ID 9301-9331 (ayın gününe göre). ⚠️ Bildirim yorgunluğu: genel havuzun SABAH
+  bildirimi olan günlerde ATLANIR, kart o gün çekilince bugünkü iptal
+  (`cancelTodayTarotNotif`). İzin istemez (checkPermissions), kartın adını
+  söylemez (merak). Cihazda test EDİLMEDİ.
 
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
@@ -488,6 +520,8 @@ seçtiği için sticky kalmalı). Zaten var olan MutationObserver-disconnect
 temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
+
+- **App.jsx'te betikle blok silerken desen İLK eşleşmeyi bulur.** Aynı başlık yorumu bileşen içinde de geçebiliyor (Orkestra state yorumu gibi): bir kez ~4800 satır yanlışlıkla silindi, HEAD'den geri yüklendi. Blok silmeden önce hem sınırları hem BEKLENEN UZUNLUĞU assert et.
 
 - **"Build çalışmıyor / hata yine var"** → Önce kullanıcının çektiği branch'i SOR. Yanlış branch'ten derliyor olabilir. (Bir kere main fix'lerim CIpM8'e gitmedi, ortalık karıştı.)
 - **iOS'ta `<datalist>` öneri göstermez.** Bunun için `SmartCityInput` özel bileşeni var.
