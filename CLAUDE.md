@@ -506,6 +506,16 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
    etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 
+**Eyl 2026 eklemeleri (kullanıcı: "önerilerinin hepsini yap"):**
+- **İlk açılış ipucu** (`bugunHint`, `sakin_bugun_hint`, bir kez): alt barın
+  üstünde "Her sabah burada seni bekleyen bir tarot kartı ve günün pusulası
+  var." 9 sn ya da dokununca kapanır; tam ekran katmanlar açıkken bekler.
+- **Doğum kapısında önizleme:** bulanık "Kişisel günün" kartı (içerik bilerek
+  okunamaz, gerçek sayı doğumsuz hesaplanamaz) + "Doğum bilgilerinle netleşir".
+- **Keşfet onboarding'inde tarih + saat TEK adım** (adımlar artık 0-5, LAST=5).
+- **Analitik** (anonim, track.mjs beyaz listesi): `fork_shown`, `fork_pick`
+  {path, untried}, `bugun_gate` {shown/enter/skip}. Rapor: "Seçimler" bölümü.
+
 **TEK GÖRSEL DİL (kullanıcı: "klas, zarif, tek görsel dil"):** Bugün bloğunun
 başındaki `SURF` (tek kart yüzeyi), `eyebrow()`, `label()`, `icon()`,
 `chevron()`, `pill()`, `smallBtn()`. Kart zeminine RENKLİ DOLGU KOYMA, renk
@@ -638,7 +648,12 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
   kullanılabilir.
 
 **YAPILDI (Eyl 2026):**
-1. ✅ **Geri bildirim döngüsü.** Ayna cevabının altında "Bu yanıt sana iyi geldi
+1. ✅ **Geri bildirim döngüsü.** ⚠️ **Eyl 2026'ya kadar OYLAR KAYBOLUYORDU:**
+   istemci `ayna_feedback` gönderiyordu ama `netlify/functions/track.mjs` bu olayı
+   hiç işlemiyordu. Artık `ayna_up/down` + tip başına `aynat_<tip>_<v>` sayılıyor,
+   rapordaki "Seçimler" bölümünde tip tip oran görünüyor. Yeni bir olay eklerken
+   track.mjs'e de BEYAZ LİSTE satırı eklemeyi unutma, yoksa sessizce düşer.
+   Ayna cevabının altında "Bu yanıt sana iyi geldi
    mi? Evet / Hayır". Mevcut ANONİM analitik hattını kullanır (`analytics.js`
    `track("ayna_feedback", {v:"up"|"down", ruya:0|1})`), soru ve cevap METNİ
    GİTMEZ. Kullanıcı analitiği kapattıysa hiçbir şey gönderilmez.

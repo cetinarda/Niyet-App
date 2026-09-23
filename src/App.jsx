@@ -806,6 +806,17 @@ const NEDIR_I18N = {
 // "bir yolu seçen diğerini merak edebilir").
 const YOL_UNTRIED_TXT = { tr:"Henüz denemedin", en:"Not tried yet", de:"Noch nicht probiert", es:"Aún no lo probaste", pt:"Ainda não experimentaste", fr:"Pas encore essayé", ja:"まだ試していない" };
 
+// Bugün ilk açılış ipucu (bir kez gösterilir).
+const BUGUN_HINT_TXT = {
+  tr:"Her sabah burada seni bekleyen bir tarot kartı ve günün pusulası var.",
+  en:"Every morning a tarot card and the compass of the day are waiting for you here.",
+  de:"Jeden Morgen warten hier eine Tarotkarte und der Kompass des Tages auf dich.",
+  es:"Cada mañana te esperan aquí una carta de tarot y la brújula del día.",
+  pt:"Todas as manhãs esperam-te aqui uma carta de tarot e a bússola do dia.",
+  fr:"Chaque matin, une carte de tarot et la boussole du jour t'attendent ici.",
+  ja:"毎朝ここで、タロットカードと今日の羅針盤があなたを待っています。",
+};
+
 // BUGÜN KAPISI: doğum bilgisi yokken Bugün'e dokununca çıkan kart + bilgi
 // girilince oynayan "hazırlanıyor" geçişi.
 const BUGUN_GATE_TXT = {
@@ -817,6 +828,7 @@ const BUGUN_GATE_TXT = {
            pt:"O teu número do dia, a tua leitura e a tua ligação ao céu vêm dos teus dados de nascimento. Adiciona-os e o teu ecrã Hoje é preparado só para ti.",
            fr:"Ton nombre du jour, ta lecture et ton lien au ciel viennent de tes données de naissance. Ajoute-les et ton écran Aujourd'hui se prépare rien que pour toi.",
            ja:"今日の数字、リーディング、空とのつながりは出生情報から読み取ります。入力すると「今日」画面があなただけのために整います。" },
+  previewNote: { tr:"Doğum bilgilerinle netleşir", en:"Comes into focus with your birth details", de:"Wird mit deinen Geburtsdaten klar", es:"Se aclara con tus datos de nacimiento", pt:"Fica nítido com os teus dados de nascimento", fr:"Devient net avec tes données de naissance", ja:"出生情報でくっきり見えます" },
   skip:  { tr:"Şimdilik atla", en:"Skip for now", de:"Vorerst überspringen", es:"Omitir por ahora", pt:"Saltar por agora", fr:"Passer pour l'instant", ja:"今はスキップ" },
   prepTitle: { tr:"Bugün ekranın hazırlanıyor", en:"Preparing your Today", de:"Dein Heute wird vorbereitet", es:"Preparando tu Hoy", pt:"A preparar o teu Hoje", fr:"Ton Aujourd'hui se prépare", ja:"あなたの「今日」を準備中" },
   prepSteps: {
@@ -7174,14 +7186,14 @@ export default function SakinApp() {
     onbTimerRef.current = id;
     return () => { clearInterval(id); onbTimerRef.current = null; };
   }, [onbPath, onbStep]);
-  // "Haritan hazırlanıyor" satırları (altın yol, adım 5). 4 satır x 850ms,
+  // "Haritan hazırlanıyor" satırları (altın yol, adım 4). 4 satır x 850ms,
   // 3.6sn sonra galaktik kimlik kartına geçer.
   useEffect(() => {
-    if (onbPath !== "kesfet" || onbStep !== 5) return;
+    if (onbPath !== "kesfet" || onbStep !== 4) return;
     setOnbCalcIdx(0);
     const id = setInterval(() => setOnbCalcIdx(i => i + 1), 850);
     onbCalcRef.current = id;
-    const done = setTimeout(() => { clearInterval(id); setOnbStep(6); }, 3600);
+    const done = setTimeout(() => { clearInterval(id); setOnbStep(5); }, 3600);
     return () => { clearInterval(id); clearTimeout(done); onbCalcRef.current = null; };
   }, [onbPath, onbStep]);
   // ── ANONIM KULLANIM OLCUMU (funnel / drop-off) ──────────────────────────
@@ -7417,7 +7429,13 @@ export default function SakinApp() {
       return (parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0) <= 3;
     } catch(_) { return false; }
   };
-  const maybeShowNedir = () => { if (nedirEligible()) setShowNedir(true); };
+  // Analitik (anonim): yol seçimi kaç kez gösterildi ve hangi yol seçildi.
+  // "3 açılış" kuralının işe yarayıp yaramadığını veriyle görmek için.
+  const maybeShowNedir = () => {
+    if (!nedirEligible()) return;
+    setShowNedir(true);
+    try { track("fork_shown"); } catch(_) {}
+  };
   const countAppOpen = () => {
     try {
       const n = (parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0) + 1;
@@ -7447,6 +7465,24 @@ export default function SakinApp() {
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [screen, onbPath, embeddedApp, showNedir, isEarlyTunnel]);
+  // BUGÜN İLK AÇILIŞ İPUCU (bir kez): kullanıcı Bugün'ü ilk kez gördüğünde
+  // ekranı NEDEN tekrar açacağını öğrensin ("her sabah bir kart + pusula").
+  // Tam ekran bir katman (splash, yol seçimi, hazırlanıyor, embed) açıkken
+  // beklemede kalır. Üstteki küçük "Yenilikler" şeridiyle çakışmaz (o üstte,
+  // bu altta), o yüzden onu beklemez. 9 sn sonra ya da dokununca kapanır.
+  const [bugunHint, setBugunHint] = useState(() => { try { return !localStorage.getItem("sakin_bugun_hint"); } catch(_) { return false; } });
+  const bugunHintVisible = bugunHint && screen === "bugun" && !!birthDate && !bugunPrep
+    && !showIntro && !showNedir && !onbPath && !embeddedApp;
+  const dismissBugunHint = () => { setBugunHint(false); try { localStorage.setItem("sakin_bugun_hint", "1"); } catch(_) {} };
+  // Bugün kapısı analitiği: gösterildi / girdi / atladı (önizlemenin
+  // bilgi girme oranını artırıp artırmadığını ölçmek için).
+  const bugunGateVisible = screen === "bugun" && !birthDate && !showNedir && !onbPath && !showIntro;
+  useEffect(() => { if (bugunGateVisible) { try { track("bugun_gate", { a:"shown" }); } catch(_) {} } }, [bugunGateVisible]);
+  useEffect(() => {
+    if (!bugunHintVisible) return;
+    const id = setTimeout(dismissBugunHint, 9000);
+    return () => clearTimeout(id);
+  }, [bugunHintVisible]);
   const [showKimlikReveal, setShowKimlikReveal] = useState(false); // doğum kaydı sonrası anında karşılık kartı
   const [birthInput,     setBirthInput]     = useState(()=>localStorage.getItem("sakin_birth_date")||"");
   const [nameInput,      setNameInput]      = useState(()=>localStorage.getItem("sakin_name")||"");
@@ -10250,8 +10286,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           Bağlan'a taşı"). Keşfet kapısıyla (birthGateApp) aynı dil. Bugün
           içeriği bu durumda HİÇ çizilmez: doğum bilgisi olmadan geçiş, pusula,
           sayı göstermek inandırıcılığı düşürüyordu. Dışarı dokunmak = atla. */}
-      {screen==="bugun" && !birthDate && !showNedir && !onbPath && !showIntro && (
-        <div onClick={()=>setScreen("mandala")}
+      {bugunGateVisible && (
+        <div onClick={()=>{ try { track("bugun_gate", { a:"skip" }); } catch(_) {} setScreen("mandala"); }}
           style={{ position:"fixed",inset:0,zIndex:10030,background:"rgba(0,0,0,0.72)",backdropFilter:"blur(6px)",
             display:"flex",alignItems:"center",justifyContent:"center",padding:"24px" }}>
           <div onClick={e=>e.stopPropagation()}
@@ -10263,10 +10299,34 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             <div style={{ fontSize:19,fontWeight:300,letterSpacing:1,color:"#e8e0f4",fontFamily:"'Jost',sans-serif",marginBottom:10 }}>
               {pickLang(BUGUN_GATE_TXT.title, lang)}
             </div>
-            <div style={{ fontSize:13,lineHeight:1.8,color:"#b8aed0",fontFamily:"'Inter',sans-serif",marginBottom:18 }}>
+            <div style={{ fontSize:13,lineHeight:1.8,color:"#b8aed0",fontFamily:"'Inter',sans-serif",marginBottom:16 }}>
               {pickLang(BUGUN_GATE_TXT.body, lang)}
             </div>
+            {/* ÖNİZLEME: Bugün'de onu neyin beklediğini hissettirir. İçerik
+                BİLEREK bulanık ve okunamaz (gerçek kişisel sayı doğumsuz
+                hesaplanamaz; burada yalnızca kartın biçimi gösteriliyor). */}
+            {(() => {
+              const pv = pickLang(DAY_NUMBER_TXT[universalDayNumber()] || DAY_NUMBER_TXT[1], lang) || [];
+              return (
+                <div aria-hidden="true" style={{ position:"relative",overflow:"hidden",borderRadius:16,marginBottom:18,
+                  padding:"14px 16px",display:"flex",alignItems:"center",gap:14,
+                  background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",
+                  border:"1px solid rgba(184,164,216,0.15)" }}>
+                  <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:44,lineHeight:1,color:"#e8c07a",
+                    filter:"blur(7px)",userSelect:"none",width:34,textAlign:"center" }}>{universalDayNumber()}</div>
+                  <div style={{ flex:1,minWidth:0,display:"flex",flexDirection:"column",gap:5 }}>
+                    <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10,letterSpacing:2,color:"#b8a4d8",textTransform:"uppercase" }}>
+                      {pickLang(TODAY_HERO_TXT.personalDay, lang)}
+                    </div>
+                    <div style={{ fontFamily:"'Inter',sans-serif",fontSize:12.5,lineHeight:1.5,color:"#d6cfe6",filter:"blur(4px)",userSelect:"none",
+                      whiteSpace:"nowrap",overflow:"hidden",textOverflow:"clip" }}>{pv[0]} · {pv[1]}</div>
+                    <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11,color:"#8f88a3" }}>✦ {pickLang(BUGUN_GATE_TXT.previewNote, lang)}</div>
+                  </div>
+                </div>
+              );
+            })()}
             <button onClick={()=>{
+                try { track("bugun_gate", { a:"enter" }); } catch(_) {}
                 birthReturnRef.current = "bugun";
                 setGirisPhase("birth"); setShowBirthForm(true); setScreen("giris");
               }}
@@ -10277,7 +10337,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 textTransform:"uppercase",marginBottom:9 }}>
               {pickLang(BIRTH_TXT.enter, lang)}
             </button>
-            <button onClick={()=>setScreen("mandala")}
+            <button onClick={()=>{ try { track("bugun_gate", { a:"skip" }); } catch(_) {} setScreen("mandala"); }}
               style={{ WebkitAppearance:"none",appearance:"none",width:"100%",padding:"10px 16px",borderRadius:100,
                 border:"none",background:"transparent",color:"#8e8e99",fontSize:12,letterSpacing:1.2,
                 cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
@@ -10317,6 +10377,21 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           </div>
         );
       })()}
+
+      {/* BUGÜN İPUCU: alt barın hemen üstünde, bir kez. Dokununca kapanır. */}
+      {bugunHintVisible && (
+        <button onClick={dismissBugunHint}
+          style={{ WebkitAppearance:"none",appearance:"none",position:"fixed",left:"50%",transform:"translateX(-50%)",
+            bottom:"calc(92px + var(--sab, 0px))",zIndex:9995,width:"calc(100% - 40px)",maxWidth:380,boxSizing:"border-box",
+            display:"flex",alignItems:"center",gap:12,padding:"13px 16px",borderRadius:16,cursor:"pointer",textAlign:"left",
+            background:"linear-gradient(165deg, rgba(40,30,60,0.97), rgba(20,14,32,0.97))",
+            border:"1px solid rgba(232,192,122,0.35)",boxShadow:"0 12px 40px rgba(0,0,0,0.55)",animation:"fadeUp 0.5s ease-out" }}>
+          <span style={{ width:32,height:32,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+            color:"#e8c07a",background:"rgba(232,192,122,0.10)",border:"1px solid rgba(232,192,122,0.3)",fontSize:14,lineHeight:1 }}>✦</span>
+          <span style={{ flex:1,fontFamily:"'Inter',sans-serif",fontSize:13,lineHeight:1.55,color:"#e6def4" }}>{pickLang(BUGUN_HINT_TXT, lang)}</span>
+          <span style={{ flexShrink:0,color:"#8f88a3",fontSize:13,lineHeight:1 }}>✕</span>
+        </button>
+      )}
 
       {/* EMBEDDED APP: fullscreen iframe overlay with stargate portal transition */}
       {(embeddedApp || mitlerSession) && (
@@ -11442,8 +11517,10 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
 
       {/* ── ONBOARDING (prototip referanslı, iki yol) ─────────────────────────
           Mor (Bağlan):   0 nefes · 1 his · 2 ayna cümlesi · 3 niyet
-          Altın (Keşfet): 0 vaat · 1 ad · 2 tarih · 3 saat · 4 şehir ·
-                          5 harita animasyonu · 6 galaktik kimlik
+          Altın (Keşfet): 0 vaat · 1 ad · 2 tarih + saat · 3 şehir ·
+                          4 harita animasyonu · 5 galaktik kimlik
+          (Tarih ve saat Eyl 2026'da TEK adımda birleşti: bu yolda kullanıcıyı
+          en çok kaybettiğimiz yer uzun form, bir adım eksik = bir çıkış noktası az.)
           KULLANICI KURALLARI (bu üçü bilerek böyle):
           1. EMOJİ YOK. İkonlar geometrik glif (◔ ◑ ◕ ⌾) + saf CSS halkalar,
              prototipteki gibi. Emoji platformdan platforma değişip tonu bozuyordu.
@@ -11452,7 +11529,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           3. Cevap verilince OTOMATİK İLERLEME YOK: kullanıcı "Devam"a basar. */}
       {onbPath && !showIntro && (() => {
         const isB = onbPath === "baglan";
-        const LAST = isB ? 3 : 6;
+        const LAST = isB ? 3 : 5;
         const c = isB ? "#A78BFA" : "#F0C27E";
         const stop = () => {
           if (onbTimerRef.current) { clearInterval(onbTimerRef.current); onbTimerRef.current = null; }
@@ -11492,7 +11569,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           // adımda "Geç" derse yazdıklarının hepsi uçuyor, harita animasyonu
           // ve galaktik kimlik kartı bomboş açılıyordu. Geçerken de yazıyoruz;
           // şehir tanınmadıysa lenient kip onu atlar ama tarih/saati korur.
-          if (!isB && onbStep === 4) { saveBirthInputs({ mode: "lenient" }); setOnbStep(5); return; }
+          if (!isB && onbStep === 3) { saveBirthInputs({ mode: "lenient" }); setOnbStep(4); return; }
           setOnbStep(onbStep + 1);
         };
         const nextStep = () => { stop(); setOnbStep(Math.min(onbStep + 1, LAST)); };
@@ -11691,30 +11768,20 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             {!isB && onbStep === 2 && (
               <div style={pane}>
                 <div style={h2}>{L("kDate")}</div>
-                <div style={{ height:26 }} />
+                <div style={{ height:24 }} />
                 <div style={flabel}>{t("birth_dob_label")}</div>
                 <SmartDateInput value={birthInput} onChange={(v)=>{ setBirthInput(v); setDateWarn(false); }} lang={lang} />
-                <div style={{ height:30 }} />
+                <div style={{ height:18 }} />
+                <div style={flabel}>{t("birth_time_optional")}</div>
+                <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
+                <div style={{ height:12 }} />
+                <div style={tiny}>{L("kTimeNote")}</div>
+                <div style={{ height:26 }} />
                 <button onClick={nextStep} style={btn}>{L("next")}</button>
               </div>
             )}
 
             {!isB && onbStep === 3 && (
-              <div style={pane}>
-                <div style={h2}>{L("kTime")}</div>
-                <div style={{ height:26 }} />
-                <div style={flabel}>{t("birth_time_optional")}</div>
-                <SmartTimeInput value={birthTimeInput} onChange={setBirthTimeInput} lang={lang} />
-                <div style={{ height:18 }} />
-                <div style={tiny}>{L("kTimeNote")}</div>
-                <div style={{ height:26 }} />
-                <button onClick={nextStep} style={btn}>{L("next")}</button>
-                <div style={{ height:10 }} />
-                <button onClick={()=>{ setBirthTimeInput(""); setOnbStep(4); }} style={ghost}>{L("kNoTime")}</button>
-              </div>
-            )}
-
-            {!isB && onbStep === 4 && (
               <div style={pane}>
                 <div style={h2}>{L("kCity")}</div>
                 <div style={{ height:26 }} />
@@ -11722,12 +11789,12 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <SmartCityInput value={birthCityInput} onChange={(v)=>{ setBirthCityInput(v); setCityWarn(false); }} lang={lang} />
                 {cityWarn && <div style={{ fontSize:11,color:"#e89090",marginTop:6,fontFamily:"'Jost',sans-serif",letterSpacing:0.3,lineHeight:1.4 }}>{t("city_not_in_list")}</div>}
                 <div style={{ height:30 }} />
-                <button onClick={()=>{ if (commitBirth()) setOnbStep(5); }} style={btn}>{L("kGo")}</button>
+                <button onClick={()=>{ if (commitBirth()) setOnbStep(4); }} style={btn}>{L("kGo")}</button>
               </div>
             )}
 
             {/* Harita hazırlanıyor: üç eşmerkezli halka, saf CSS (emoji/GIF yok) */}
-            {!isB && onbStep === 5 && (
+            {!isB && onbStep === 4 && (
               <div style={{ ...pane,alignItems:"center",gap:34 }}>
                 <div style={{ width:170,height:170,position:"relative" }}>
                   <div style={{ position:"absolute",inset:0,borderRadius:"50%",border:"1px solid rgba(240,194,126,0.38)",animation:"onbSpin 7s linear infinite" }} />
@@ -11741,7 +11808,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             )}
 
-            {!isB && onbStep === 6 && (() => {
+            {!isB && onbStep === 5 && (() => {
               const rows = [
                 astro?.burc ? [pickLang(REVEAL_I18N.sun, lang), zodiacDisplay(astro.burc, lang)] : null,
                 yukselen    ? [pickLang(REVEAL_I18N.asc, lang), zodiacDisplay(yukselen, lang)] : null,
@@ -11887,6 +11954,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             <div style={{ display:"flex",gap:12,alignItems:"stretch" }}>
               {card("baglan", "◎", LAV, baglanName, baglanTime, () => {
                 setShowNedir(false);
+                try { track("fork_pick", { path:"baglan", untried: untried === "baglan" ? 1 : 0 }); } catch(_) {}
                 const done = (() => { try { return localStorage.getItem("sakin_onb_baglan"); } catch(_) { return null; } })();
                 // Sakinleşmek: onboarding sonrası (ya da daha önce yapıldıysa hemen) Bağlan.
                 if (done) { setScreen("mandala"); return; }
@@ -11894,6 +11962,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               })}
               {card("kesfet", "✦", GOLD, kesfetName, kesfetTime, () => {
                 setShowNedir(false);
+                try { track("fork_pick", { path:"kesfet", untried: untried === "kesfet" ? 1 : 0 }); } catch(_) {}
                 const done = (() => { try { return localStorage.getItem("sakin_onb_kesfet"); } catch(_) { return null; } })();
                 // Kendimi tanımak: onboarding sonrası (ya da daha önce yapıldıysa
                 // hemen) BUGÜN (kullanıcı isteği). Doğum yoksa Bugün kapısı sorar.

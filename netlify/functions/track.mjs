@@ -141,6 +141,25 @@ export function mergeBatch(rec, body, now) {
     // saniye kaldigini ve hangi ekrana gectigini gonderir (bkz. App.jsx
     // effectiveScreen/screenTimeRef). "to" bilinmiyorsa (sekme arka plana
     // atildi/kapandi) null gelir: sure sayilir, gecis SAYILMAZ.
+    // ── SEÇİM SAYAÇLARI (Eyl 2026) ─────────────────────────────────────────
+    // Yalnızca BEYAZ LİSTEDEKİ değerler sayılır: istemci serbest metin yazıp
+    // rec.c'yi şişiremesin (anahtar sayısı sabit ve küçük kalır).
+    else if (e === "fork_shown") bump("fork_shown");
+    else if (e === "fork_pick") {
+      const path = it.path === "baglan" || it.path === "kesfet" ? it.path : null;
+      if (path) { bump("fork_" + path); if (it.untried == 1) bump("fork_untried_" + path); }
+    }
+    else if (e === "bugun_gate") {
+      const a = it.a === "shown" || it.a === "enter" || it.a === "skip" ? it.a : null;
+      if (a) bump("bgate_" + a);
+    }
+    // ⚠️ Ayna "iyi geldi mi?" oyu istemciden Eyl 2026'dan beri gönderiliyordu ama
+    // burada HİÇ işlenmiyordu, yani oylar kayboluyordu. Artık sayılıyor.
+    else if (e === "ayna_feedback") {
+      const v = it.v === "up" || it.v === "down" ? it.v : null;
+      const tip = typeof it.tip === "string" && /^[a-z]{2,14}$/.test(it.tip) ? it.tip : "genel";
+      if (v) { bump("ayna_" + v); bump("aynat_" + tip + "_" + v); }
+    }
     else if (e === "screen_time") {
       const from = typeof it.from === "string" ? it.from.slice(0, 24) : "";
       const to = typeof it.to === "string" ? it.to.slice(0, 24) : null;

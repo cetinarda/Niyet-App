@@ -38,6 +38,9 @@ export function aggregate(users) {
   // avgSec = featSec/featExits); transTotals her "kaynak>hedef" ciftinin
   // TOPLAM kullanici sayisinda kac kez gorduldugunu tutar.
   const featSec = {}, featExits = {};
+  // Seçim sayaçları (track.mjs beyaz listesi): yol seçimi, Bugün kapısı, Ayna oyu.
+  const ch = {};
+  const aynaTip = {};
   const transTotals = {};
   const platform = {}, lang = {}, version = {};
   let nefesTotal = 0, nefesUsers = 0, sessionsTotal = 0;
@@ -77,6 +80,15 @@ export function aggregate(users) {
         featSec[k.slice(2)] = (featSec[k.slice(2)] || 0) + c[k];
       } else if (k.indexOf("tn_") === 0) {
         featExits[k.slice(3)] = (featExits[k.slice(3)] || 0) + c[k];
+      } else if (k.indexOf("aynat_") === 0) {
+        const rest = k.slice(6), sep = rest.lastIndexOf("_");
+        if (sep > 0) {
+          const tip = rest.slice(0, sep), v = rest.slice(sep + 1);
+          const o = aynaTip[tip] || (aynaTip[tip] = { up: 0, down: 0 });
+          if (v === "up" || v === "down") o[v] += c[k];
+        }
+      } else if (/^(fork_|bgate_|ayna_)/.test(k)) {
+        ch[k] = (ch[k] || 0) + c[k];
       }
     }
     const tr = u.tr || {};
@@ -142,6 +154,17 @@ export function aggregate(users) {
       avgNefesPerNefesUser: nefesUsers ? Math.round((nefesTotal / nefesUsers) * 10) / 10 : 0,
     },
     features,
+    choices: {
+      forkShown: ch.fork_shown || 0,
+      forkBaglan: ch.fork_baglan || 0, forkKesfet: ch.fork_kesfet || 0,
+      forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
+      gateShown: ch.bgate_shown || 0, gateEnter: ch.bgate_enter || 0, gateSkip: ch.bgate_skip || 0,
+      gateEnterPct: pct(ch.bgate_enter || 0, ch.bgate_shown || 0),
+      aynaUp: ch.ayna_up || 0, aynaDown: ch.ayna_down || 0,
+      aynaUpPct: pct(ch.ayna_up || 0, (ch.ayna_up || 0) + (ch.ayna_down || 0)),
+      aynaByTip: Object.keys(aynaTip).map((t) => ({ tip: t, up: aynaTip[t].up, down: aynaTip[t].down,
+        upPct: pct(aynaTip[t].up, aynaTip[t].up + aynaTip[t].down) })).sort((a, b) => (b.up + b.down) - (a.up + a.down)),
+    },
     platform: sortMap(platform),
     lang: sortMap(lang),
     version: sortMap(version),
@@ -328,6 +351,23 @@ export function renderHTML(r, truncated) {
        <tr><td>Nefes yapan kullanıcı</td><td class="num">${r.engagement.nefesUsers} kişi</td></tr>
        <tr><td>Nefes yapan başına ortalama nefes</td><td class="num">${r.engagement.avgNefesPerNefesUser}</td></tr>
      </table></div>` +
+
+    (() => {
+      const c = r.choices || {};
+      const tipRows = (c.aynaByTip || []).map((x) =>
+        `<tr><td>Ayna · ${esc(x.tip)}</td><td class="num">${x.up} iyi · ${x.down} değil · %${x.upPct}</td></tr>`).join("");
+      return `<h2>Seçimler</h2>
+     <div class="card"><table>
+       <tr><td>Yol seçimi gösterildi</td><td class="num">${c.forkShown || 0}</td></tr>
+       <tr><td>Sakinleşmek seçildi</td><td class="num">${c.forkBaglan || 0} (denenmemiş işaretliyken ${c.forkUntriedBaglan || 0})</td></tr>
+       <tr><td>Kendimi tanımak seçildi</td><td class="num">${c.forkKesfet || 0} (denenmemiş işaretliyken ${c.forkUntriedKesfet || 0})</td></tr>
+       <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
+       <tr><td>Kapıdan bilgi girmeye geçti</td><td class="num">${c.gateEnter || 0} · %${c.gateEnterPct || 0}</td></tr>
+       <tr><td>Kapıyı atladı</td><td class="num">${c.gateSkip || 0}</td></tr>
+       <tr><td>Ayna "iyi geldi" oranı</td><td class="num">${c.aynaUp || 0} iyi · ${c.aynaDown || 0} değil · %${c.aynaUpPct || 0}</td></tr>
+       ${tipRows}
+     </table></div>`;
+    })() +
 
     `<h2>En çok açılan bölümler</h2>
      <div class="card">${feats}</div>` +
