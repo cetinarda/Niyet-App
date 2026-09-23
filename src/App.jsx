@@ -12013,10 +12013,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           (veya "bir daha gösterme"ye kadar). iOS + web. Kartlar DOĞRUDAN tıklanır:
           ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?" butonu nedir sekmesine gider. */}
       {showNedir && !showIntro && (() => {
-        // YOL SEÇİMİ, Bugün ekranının görsel diliyle (kullanıcı: "bu ekran
-        // bozulmuş, appin genel görsel diline uygun yeniden düzenle, genel
-        // fontu kullan"). Başlık Cormorant (serif), gövde Inter, etiket Jost;
-        // kartlar Bugün'deki SURF yüzeyiyle aynı.
+        // YOL SEÇİMİ, uygulamanın görsel diliyle (kullanıcı: "bu ekran
+        // bozulmuş, appin genel görsel diline uygun yeniden düzenle"). Yazılar
+        // KURUMSAL FONT Jost (kullanıcı: "Keşfet'teki kurumsal font, bizim
+        // fontumuz o"): başlık Jost 300 geniş aralık, kart adları Jost 500,
+        // açıklama Inter. Kartlar Bugün'deki SURF yüzeyiyle aynı.
         // ⚠️ NEDEN YENİDEN: eski tasarım çizgileri ÖLÇÜLEN ekran boyutundan
         // piksel hesabıyla kart tepesine bağlıyordu (nedirDims + mutlak konum).
         // iOS'ta ölçüm ile gerçek yerleşim tutmadı, çizgiler kartların içinden
@@ -12024,7 +12025,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         // çizgisi kartların HEMEN ÜSTÜNDE, aynı genişlikte normal akışta duran
         // bir SVG; uçları iki sütunun ortasına (yüzde) iner. Mutlak konum yok.
         const GOLD = "#e8c07a", LAV = "#b8a4d8", INK = "#f1ecf9", MUTE = "#8f88a3";
-        const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
+        const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
         const SURF = { background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",
           border:"1px solid rgba(184,164,216,0.15)", borderRadius:18 };
         const BTN = { WebkitAppearance:"none", appearance:"none", cursor:"pointer", color:"inherit", font:"inherit", margin:0 };
@@ -12046,7 +12047,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               borderColor:`${color}40`, animation:"fadeUp 0.5s ease-out" }}>
             <span style={{ width:42,height:42,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
               fontSize:19,lineHeight:1,color,background:`${color}14`,border:`1px solid ${color}38` }}>{glyph}</span>
-            <span style={{ fontFamily:SERIF,fontSize:19,fontWeight:500,lineHeight:1.22,color:INK }}>{name}</span>
+            {/* Kurumsal font (kullanıcı: "Keşfet'teki kurumsal font, bizim fontumuz o"):
+                Keşfet kart adlarıyla aynı Jost 500. */}
+            <span style={{ fontFamily:JOST,fontSize:15,fontWeight:500,letterSpacing:0.6,lineHeight:1.35,color:INK }}>{name}</span>
             <span style={{ fontFamily:JOST,fontSize:11,letterSpacing:1.5,color:MUTE }}>{time}</span>
             {untried === key && (
               // Mutlak konum: iki kartın içeriği (ikon/ad/süre) aynı hizada kalsın,
@@ -12067,7 +12070,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             padding:"calc(var(--sat, 0px) + 64px) 24px calc(var(--sab, 0px) + 28px)",
             display:"flex",flexDirection:"column",alignItems:"stretch",justifyContent:"center" }}>
             <div style={{ textAlign:"center",fontFamily:JOST,fontSize:10.5,letterSpacing:3,color:"#8a82a6",textTransform:"uppercase",marginBottom:10 }}>Sakin</div>
-            <div style={{ textAlign:"center",fontFamily:SERIF,fontSize:31,fontWeight:400,lineHeight:1.2,color:INK,marginBottom:28 }}>
+            {/* Başlık Keşfet başlığıyla aynı kurumsal dil: Jost ince, geniş aralık. */}
+            <div style={{ textAlign:"center",fontFamily:JOST,fontSize:24,fontWeight:300,letterSpacing:2,lineHeight:1.3,color:INK,marginBottom:28 }}>
               {pickLang(NEDIR_I18N.yolTitle, lang)}
             </div>
             {/* Güneş: iki yolun birleştiği nokta */}
