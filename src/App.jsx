@@ -15694,14 +15694,14 @@ Direction (where the energy flows). Rules:
                 {!skyTimeKnown && (
                   <div style={{ textAlign:"center",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:12 }}>{pickLang(SKYTODAY_TXT.noTime, lang)}</div>
                 )}
-                <div style={{ textAlign:"center",fontSize:12,color:MUTE,fontFamily:INTER,margin:"14px 0 14px",lineHeight:1.5 }}>
-                  {pickLang(SKYTODAY_TXT.footer, lang)}
-                </div>
-                {/* GÜNÜN YORUMU: Gökyüzü Raporu ile AYNI tasarım (kullanıcı isteği):
-                    tek kart, başlık satırı aç/kapa, içerik kartın içinde açılır.
-                    Aynı gökyüzü + kartlar -> uzun günlük okuma (AI, consent + günlük
-                    hak; gün+burç+dil cache). Yorum yoksa İLK açılışta üretilir;
-                    varsa (cache) AI harcanmadan yalnızca açılıp kapanır. */}
+                {/* "Bugünkü gökyüzü × senin doğum haritan" alt notu KALDIRILDI
+                    (kullanıcı isteği). */}
+                {/* GÜNÜN YORUMU: Gökyüzü Raporu ile AYNI kuruluş (kullanıcı isteği):
+                    "Günün Yorumu" ÜSTTE etiket, kutuda YALNIZCA tarih. Başlık satırı
+                    aç/kapa, içerik kartın içinde açılır. Aynı gökyüzü + kartlar ->
+                    uzun günlük okuma (AI, consent + günlük hak; gün+burç+dil cache).
+                    Yorum yoksa İLK açılışta üretilir; varsa AI harcanmadan açılıp kapanır. */}
+                <div style={{ marginTop:22 }}>{eyebrow(pickLang(HORO_TXT.title, lang))}</div>
                 <div style={{ ...SURF,overflow:"hidden" }}>
                   <button onClick={()=>{ try{haptic();}catch(_){}
                       if (!dailyHoro && !dailyHoroLoading) requireAiConsent(() => { setDailyHoroOpen(true); generateDailyHoroscope(); });
@@ -15709,8 +15709,7 @@ Direction (where the energy flows). Rules:
                     style={{ ...BTN,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
                     {icon("✦", GOLD, 40, 16)}
                     <span style={{ flex:1,minWidth:0 }}>
-                      <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(HORO_TXT.title, lang)}</span>
-                      <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2 }}>{dailyHoroDateLine()}</span>
+                      <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300 }}>{dailyHoroDateLine()}</span>
                     </span>
                     {chevron(dailyHoroOpen ? 90 : 0)}
                   </button>

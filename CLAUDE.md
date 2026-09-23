@@ -449,8 +449,9 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 5. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME).
    Üstünde "Bugünün gökyüzü" etiketi YOK (kullanıcı kaldırttı, başlık yeterli).
    `src/sky-today.js` = SoulID `transits.ts` motorunun 7 dilli portu (AI yok).
-   Bilinçli sapma: her transit gezegenden tek kart. Altında **"Günün Yorumu"**
-   kartı, Gökyüzü Raporu ile AYNI açılır-kapanır tasarım (`dailyHoroOpen`):
+   Bilinçli sapma: her transit gezegenden tek kart. Kartların altındaki
+   "Bugünkü gökyüzü × doğum haritan" notu KALDIRILDI. Altında **"Günün Yorumu"**
+   (Gökyüzü Raporu gibi: etiket ÜSTTE, kutuda YALNIZCA tarih), aynı açılır-kapanır tasarım (`dailyHoroOpen`):
    ilk açılışta `generateDailyHoroscope` (AI, consent + günlük hak, gün+burç+dil
    cache, prompt bu kartları omurga alır), sonra AI harcamadan aç/kapa. Eski
    ayrı "Daha fazlası" butonu kalktı.
