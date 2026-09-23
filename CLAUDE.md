@@ -394,6 +394,29 @@ kullanıcının SON 7 GÜNLÜK kendi toplamı. Tamamen YEREL hesaplanıyor (gün
 sunucuya hiçbir şey sorulmuyor. Katkı sıfırsa satır HİÇ çıkmaz ("0 nefes"
 demek soğutur).
 
+## 📊 KULLANIM RAPORU DERSLERİ (Eyl 2026, 315 kurulum analizi)
+
+- **Geri dönüş bildirimleri** (`scheduleWinBack`, ID 9400-9403): genel/kişisel
+  havuzlar yalnızca 7 gün ileriye kuruluyor, bir hafta açmayana bir daha HİÇ
+  bildirim gitmiyordu (raporda 73 kullanıcı 1.3.9'da donmuştu). Artık son
+  açılıştan 10/14/21/30 gün sonrasına 19:30'da birer seyrek bildirim; her açılışta
+  ve arka plandan her dönüşte yeniden kurulur, düzenli kullanan hiç görmez.
+- **Sessizce düşen olaylar düzeltildi:** `onb_baglan_done`, `onb_kesfet_done`,
+  `ayna_feedback` istemciden gidiyordu ama `track.mjs` tanımıyordu. ⚠️ Yeni bir
+  `track()` olayı eklerken track.mjs'e BEYAZ LİSTE satırı eklemek ŞART.
+- **Yeni ölçümler:** `birth_saved` (doğum kayıtlı, her yoldan; eski
+  `birth_view` yalnızca giriş formunu sayıyordu), `notif_open` {k: genel/
+  kisisel/tarot/geridon} (bildirim ID aralığından `notifKind`), gömülü
+  uygulamalar `emb_<klasör>` ekranı olarak (süre artık altta kalan ekrana
+  yazılmıyor).
+- **Arka plan süresi sayılmıyor:** dönüşte sayaç sıfırdan başlar. Eski
+  ortalamalar (Ayna 11 dk, ödeme 6,6 dk) bu yüzden şişikti. Rapor artık
+  kova dağılımından ORTANCA ("Tipik süre") gösterir; ortalama yanında soluk.
+- **Huni sırası düzeltildi:** HAZIRIM → Bağlan → özellik → doğum kaydı → nefes.
+- Rapor bölümleri: Tanışma (başladı/bitirdi), Bildirimler, Seçimler.
+- ⚠️ Test ortamında `pkill -f "vite preview"` komutunu BAŞKA komutlarla aynı
+  satıra yazma: kabuk kendi komut satırını da eşleştirip kendini öldürüyor.
+
 ## 🔔 KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği, Eyl 2026)
 
 Mevcut GENEL bildirim havuzu (9000-9099, `scheduleDailyReminders`) aynen devam

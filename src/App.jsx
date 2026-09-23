@@ -1428,6 +1428,52 @@ async function scheduleTarotMorning(lang) {
     localStorage.setItem("sakin_tarot_notif_sched", stamp);
   } catch (e) { console.warn("[TarotNotif]", e); }
 }
+// ── GERİ DÖNÜŞ BİLDİRİMLERİ (kullanım raporu, Eyl 2026) ─────────────────────
+// KÖK SEBEP: genel ve kişisel havuzlar yalnızca 7 GÜN ileriye kuruluyor.
+// Uygulamayı bir hafta açmayan kişiye bir daha HİÇ bildirim gitmiyordu; raporda
+// 73 kullanıcı 1.3.9'da donmuş kalmıştı (1.4.0'dan beri hiç açmamış).
+// Çözüm: son açılıştan 10, 14, 21, 30 gün sonrasına birer SEYREK bildirim.
+// Her açılışta (ve arka plandan her dönüşte) iptal edilip YENİDEN kurulur, yani
+// düzenli kullanan kişi bunları hiçbir zaman görmez; yalnızca uzaklaşan görür.
+// Suçlayıcı değil, davet eden dil ("seri kırıldı" gibi baskı yok).
+// İzin İSTEMEZ (checkPermissions), ID 9400-9403 (diğer havuzlarla çakışmaz).
+const WINBACK_DAYS = [10, 14, 21, 30];
+const WINBACK_SCREENS = ["nefes", "bugun", "mandala", "bugun"];
+const WINBACK_TXT = {
+  tr: ["Bir süredir görüşmedik. Bir dakikalık nefes seni bekliyor.", "Bugünün kartı ve pusulan hazır. Bir bakmak ister misin?", "Yeniden başlamak için tek bir nefes yeter.", "Sakin burada. Ne zaman istersen, kaldığın yerden."],
+  en: ["It's been a while. A one-minute breath is waiting for you.", "Today's card and your compass are ready. Want a look?", "One breath is enough to begin again.", "Sakin is here. Whenever you like, right where you left off."],
+  de: ["Eine Weile her. Ein einminütiger Atemzug wartet auf dich.", "Deine Tageskarte und dein Kompass sind bereit. Magst du schauen?", "Ein Atemzug genügt, um neu zu beginnen.", "Sakin ist da. Wann immer du willst, genau dort, wo du aufgehört hast."],
+  es: ["Hace tiempo que no nos vemos. Una respiración de un minuto te espera.", "Tu carta y tu brújula de hoy están listas. ¿Echas un vistazo?", "Basta una respiración para empezar de nuevo.", "Sakin está aquí. Cuando quieras, donde lo dejaste."],
+  pt: ["Há algum tempo que não nos vemos. Uma respiração de um minuto espera-te.", "A tua carta e a tua bússola de hoje estão prontas. Queres ver?", "Basta uma respiração para recomeçar.", "O Sakin está aqui. Quando quiseres, onde paraste."],
+  fr: ["Ça fait un moment. Une respiration d'une minute t'attend.", "Ta carte et ta boussole du jour sont prêtes. Un coup d'œil ?", "Une seule respiration suffit pour recommencer.", "Sakin est là. Quand tu veux, là où tu t'étais arrêté(e)."],
+  ja: ["しばらくぶりですね。1分の呼吸があなたを待っています。", "今日のカードと羅針盤が用意できています。見てみませんか？", "もう一度始めるには、ひと呼吸で十分です。", "Sakinはここにいます。いつでも、止まったところから。"],
+};
+async function scheduleWinBack(lang) {
+  if (!isNative) return;
+  try {
+    const perm = await LocalNotifications.checkPermissions();
+    await LocalNotifications.cancel({ notifications: WINBACK_DAYS.map((_, i) => ({ id: 9400 + i })) });
+    if (perm.display !== "granted") return;
+    const arr = WINBACK_TXT[lang] || WINBACK_TXT.en;
+    const now = new Date();
+    const out = WINBACK_DAYS.map((n, i) => ({
+      id: 9400 + i, title: "Sakin", body: arr[i],
+      schedule: { at: new Date(now.getFullYear(), now.getMonth(), now.getDate() + n, 19, 30, 0), allowWhileIdle: true },
+      extra: { screen: WINBACK_SCREENS[i] },
+      smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8",
+    }));
+    await LocalNotifications.schedule({ notifications: out });
+  } catch (e) { console.warn("[WinBack]", e); }
+}
+// Bildirim ID'sinden türü (analitik için; bildirime dokunma oranı ölçülür).
+function notifKind(id) {
+  const n = Number(id);
+  if (n >= 9400 && n < 9410) return "geridon";
+  if (n >= 9300 && n < 9340) return "tarot";
+  if (n >= 9200 && n < 9300) return "kisisel";
+  if (n >= 9000 && n < 9200) return "genel";
+  return "diger";
+}
 async function cancelTodayTarotNotif() {
   if (!isNative) return;
   try { await LocalNotifications.cancel({ notifications: [{ id: _tarotNotifId(new Date()) }] }); } catch (_) {}
@@ -5897,6 +5943,8 @@ export default function SakinApp() {
     };
     const handler = (a) => {
       const x = a?.notification?.extra || {};
+      // Analitik: hangi TÜR bildirime dokunuldu (içerik gönderilmez).
+      try { track("notif_open", { k: notifKind(a?.notification?.id) }); } catch(_) {}
       // extra.embed → doğrudan ilgili aile uygulamasını aç (ör. "tasarim").
       // NOT: aşağıdaki harita burada YEREL tanımlı, postMessage köprüsündeki
       // EMBED_BY_KEY başka bir useEffect kapsamında olduğu için buradan erişilemez.
@@ -7124,16 +7172,25 @@ export default function SakinApp() {
   // onboarding tanıtımı > Keşfet paneli > normal screen state (öncelik sırası,
   // hiçbiri screen state'ini DEĞİŞTİRMEZ, aksi halde süre yanlış ekrana yazılırdı).
   const effectiveScreen = onbPath ? ("onb_" + onbPath) : showAilesi ? kesfetSourceRef.current : screen;
+  // ÖLÇÜM ANAHTARI: gömülü uygulama (Tasarım, Hayvan, Mitler, SoulID...) açıkken
+  // süre ALTTAKİ ekrana değil "emb_<ad>"a yazılır. Eskiden embed süreleri
+  // Keşfet'e ya da altta kalan ekrana karışıyordu; hangi içeriğin ilgi
+  // gördüğü raporda HİÇ görünmüyordu (kullanım raporu, Eyl 2026).
+  const embedSlug = embeddedApp?.path ? ((String(embeddedApp.path).match(/\/embedded\/([a-z0-9_-]+)/i) || [])[1] || "x") : null;
+  const analyticsScreen = embedSlug ? ("emb_" + embedSlug) : effectiveScreen;
+  useEffect(() => {
+    if (embedSlug) { try { track("screen", { s: "emb_" + embedSlug }); } catch (_) {} }
+  }, [embedSlug]);
   const screenTimeRef = useRef(null);
   useEffect(() => {
     const prev = screenTimeRef.current;
     const now = Date.now();
-    if (prev && prev.s !== effectiveScreen) {
+    if (prev && prev.s !== analyticsScreen) {
       const sec = Math.round((now - prev.at) / 1000);
-      if (sec > 0) { try { track("screen_time", { from: prev.s, to: effectiveScreen, sec }); } catch (_) {} }
+      if (sec > 0) { try { track("screen_time", { from: prev.s, to: analyticsScreen, sec }); } catch (_) {} }
     }
-    screenTimeRef.current = { s: effectiveScreen, at: now };
-  }, [effectiveScreen]);
+    screenTimeRef.current = { s: analyticsScreen, at: now };
+  }, [analyticsScreen]);
   // Uygulama arka plana atılırken/kapanırken o ana kadarki süre GÖNDERİLİR
   // (aksi halde son ekranda geçirilen süre hiç ölçülmezdi); "to" bilinmediği
   // için null gönderilir, sunucu bunu bir GEÇİŞ olarak saymaz, yalnızca süreyi
@@ -7147,7 +7204,16 @@ export default function SakinApp() {
       if (sec > 0) { try { track("screen_time", { from: prev.s, to: null, sec }); } catch (_) {} }
       screenTimeRef.current = { s: prev.s, at: now };
     };
-    const onVis = () => { if (document.visibilityState === "hidden") flushTail(); };
+    // ARKA PLAN SÜRESİ SAYILMAZ: gizlenirken o ana kadarki süre gönderilir,
+    // geri gelince sayaç SIFIRDAN başlar. Eskiden dönüşte sayaç gizlendiği
+    // andan devam ediyordu; telefonda başka uygulamada geçen dakikalar da
+    // ekrana yazılıyor, Ayna 11 dk / ödeme ekranı 6,6 dk gibi şişik ortalamalar
+    // çıkıyordu (kullanım raporu, Eyl 2026).
+    const onVis = () => {
+      if (document.visibilityState === "hidden") { flushTail(); return; }
+      const cur = screenTimeRef.current;
+      if (cur) screenTimeRef.current = { s: cur.s, at: Date.now() };
+    };
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("pagehide", flushTail);
     return () => {
@@ -7452,6 +7518,10 @@ export default function SakinApp() {
     countAppOpen();
     if (NEDIR_OPEN_SCREENS.includes(screen) && !onbPath) maybeShowNedir();
   }, []);
+  // Doğum bilgisi KAYITLI mı? (kullanım raporu: Bugün artık doğum istiyor ama
+  // kaç kişinin doğum bilgisini kaydettiği HİÇ ölçülmüyordu; eski "birth_view"
+  // yalnızca giriş ekranındaki formu sayıyordu.) Sunucu bunu bir kez işaretler.
+  useEffect(() => { if (birthDate) { try { track("birth_saved"); } catch(_) {} } }, [!!birthDate]);
   const hiddenAtRef = useRef(0);
   useEffect(() => {
     const onVis = () => {
@@ -7659,6 +7729,14 @@ export default function SakinApp() {
   useEffect(() => { scheduleDailyReminders(lang); }, [lang]);
   // "Kartın seni bekliyor" sabah bildirimi (ayrı havuz, bkz. scheduleTarotMorning).
   useEffect(() => { scheduleTarotMorning(lang); }, [lang]);
+  // Geri dönüş bildirimleri: her açılışta ve arka plandan her dönüşte yeniden
+  // kurulur (son açılış tarihine göre kaydırılır).
+  useEffect(() => {
+    scheduleWinBack(lang);
+    const onVis = () => { if (document.visibilityState === "visible") scheduleWinBack(lang); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [lang]);
   // KİŞİYE ÖZEL BİLDİRİM HAVUZU: doğum bilgisine göre günde +2 (kolaylaştırıcı +
   // hatırlatıcı) + hareketli günlerde elektromanyetik. birthDate değişince
   // yeniden planlanır. İçerik haftada bir AI ile üretilir (şablon yedekli),

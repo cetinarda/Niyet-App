@@ -116,6 +116,16 @@ export function mergeBatch(rec, body, now) {
     else if (e === "birth_view") setMilestone("birth_view", ts);
     else if (e === "profile_complete") setMilestone("profile_complete", ts);
     else if (e === "purchase") setMilestone("purchase", ts);
+    // ⚠️ Bu üçü istemciden gönderiliyordu ama burada işlenmiyordu (sessizce
+    // düşüyordu): tanışmayı kaç kişinin BİTİRDİĞİ ve doğum bilgisini kaç kişinin
+    // KAYDETTİĞİ bilinmiyordu (kullanım raporu, Eyl 2026).
+    else if (e === "onb_baglan_done") setMilestone("onb_baglan_done", ts);
+    else if (e === "onb_kesfet_done") setMilestone("onb_kesfet_done", ts);
+    else if (e === "birth_saved") setMilestone("birth_saved", ts);
+    else if (e === "notif_open") {
+      const k = ["genel", "kisisel", "tarot", "geridon", "diger"].includes(it.k) ? it.k : null;
+      if (k) { bump("notif_" + k); setMilestone("notif_open", ts); }
+    }
     else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++; }
     else if (e === "freq_sec") {
       // Ses/frekans dinleme saniyesi (istemci ton durunca delta gonderir).
@@ -134,7 +144,7 @@ export function mergeBatch(rec, body, now) {
       if (s === "giris") setMilestone("giris_view", ts);
       else if (s === "mandala") setMilestone("mandala_view", ts);
       else if (s === "fiyat") setMilestone("paywall_view", ts);
-      if (FEATURE_SCREENS.has(s)) setMilestone("feature_any", ts);
+      if (FEATURE_SCREENS.has(s) || s.indexOf("emb_") === 0) setMilestone("feature_any", ts);
     }
     // ── EKRAN SURESI + GECIS (kullanici istegi: "ne kadar sure kaldilar,
     // nereye gectiler"). Istemci her ekran degisiminde ONCEKI ekranda kac
@@ -169,6 +179,10 @@ export function mergeBatch(rec, body, now) {
       if (from && sec) {
         bump("t_" + from, sec);   // toplam saniye (lifetime), ortalama icin
         bump("tn_" + from, 1);    // bu ekrandan KAC KEZ cikildi (bolen)
+        // SURE DAGILIMI (ortanca icin): ortalama tek bir uzun oturumla sisiyor.
+        // Kovalar: <10sn, <30sn, <1dk, <3dk, <10dk, 10dk+.
+        const b = sec < 10 ? 0 : sec < 30 ? 1 : sec < 60 ? 2 : sec < 180 ? 3 : sec < 600 ? 4 : 5;
+        bump("h_" + from + "_" + b, 1);
         if (to) {
           const key = from + ">" + to;
           // Harita 60'tan az anahtarla sinirli: gercekci ekran sayisi (~20)

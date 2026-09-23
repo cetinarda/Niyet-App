@@ -18,14 +18,22 @@ const MAX_USERS = 20000; // guvenlik siniri; asilirsa raporda not dusulur
 // Funnel sirasi: her adim ONCEKININ alt kumesi olmasi beklenir.
 // Etiketler EKRANA basiliyor: duzgun Turkce yazilir (kod yorumlari ASCII olabilir,
 // kullaniciya gorunen metin olamaz).
+// ⚠️ Eyl 2026 düzeltmesi: eski sırada "Doğum formuna ulaştı" (yalnızca giriş
+// ekranındaki formu sayan dar bir olay) "HAZIRIM"ın ÖNÜNDEYDİ ve geçiş oranı
+// %254 çıkıyordu. "Profili tamamladı" da yanlış addı, olay yalnızca HAZIRIM'a
+// basmak. Doğum yerine her yoldan kaydı sayan "birth_saved" kullanılıyor.
+// Adımlar kesin alt küme DEĞİL (ör. web'de giriş atlanabilir); oran 100'ü
+// aşarsa rapor "öncekinden" yüzdesini göstermez.
 const FUNNEL = [
   { key: "app_open",         label: "Uygulamayı açtı" },
-  { key: "birth_view",       label: "Doğum formuna ulaştı" },
-  { key: "profile_complete", label: "Profili tamamladı (HAZIRIM)" },
-  { key: "mandala_view",     label: "Ana ekrana ulaştı" },
+  { key: "profile_complete", label: "Girişte HAZIRIM'a bastı" },
+  { key: "mandala_view",     label: "Bağlan ekranını gördü" },
   { key: "feature_any",      label: "Bir özelliği kullandı" },
+  { key: "birth_saved",      label: "Doğum bilgisini kaydetti" },
   { key: "nefes_complete",   label: "Nefes tamamladı" },
 ];
+// Süre kovaları (track.mjs ile aynı sıra).
+const BUCKETS = ["10 sn altı", "10-30 sn", "30 sn-1 dk", "1-3 dk", "3-10 dk", "10 dk+"];
 
 function pct(n, d) { return d > 0 ? Math.round((n / d) * 1000) / 10 : 0; }
 
@@ -41,6 +49,9 @@ export function aggregate(users) {
   // Seçim sayaçları (track.mjs beyaz listesi): yol seçimi, Bugün kapısı, Ayna oyu.
   const ch = {};
   const aynaTip = {};
+  const hist = {};   // ekran -> [6 kova]
+  const onbDone = { baglan: 0, kesfet: 0 };
+  let notifUsers = 0;
   const transTotals = {};
   const platform = {}, lang = {}, version = {};
   let nefesTotal = 0, nefesUsers = 0, sessionsTotal = 0;
@@ -57,6 +68,10 @@ export function aggregate(users) {
     if (m.mandala_view) reach.mandala_view++;
     if (m.feature_any) reach.feature_any++;
     if (m.nefes_complete) reach.nefes_complete++;
+    if (m.birth_saved) reach.birth_saved++;
+    if (m.onb_baglan_done) onbDone.baglan++;
+    if (m.onb_kesfet_done) onbDone.kesfet++;
+    if (m.notif_open) notifUsers++;
     if (days.length >= 2) ret2++;
     if (days.length >= 7) ret7++;
 
@@ -87,7 +102,14 @@ export function aggregate(users) {
           const o = aynaTip[tip] || (aynaTip[tip] = { up: 0, down: 0 });
           if (v === "up" || v === "down") o[v] += c[k];
         }
-      } else if (/^(fork_|bgate_|ayna_)/.test(k)) {
+      } else if (k.indexOf("h_") === 0) {
+        const rest = k.slice(2), sep = rest.lastIndexOf("_");
+        const b = Number(rest.slice(sep + 1));
+        if (sep > 0 && b >= 0 && b < 6) {
+          const h = hist[rest.slice(0, sep)] || (hist[rest.slice(0, sep)] = [0, 0, 0, 0, 0, 0]);
+          h[b] += c[k];
+        }
+      } else if (/^(fork_|bgate_|ayna_|notif_)/.test(k)) {
         ch[k] = (ch[k] || 0) + c[k];
       }
     }
@@ -129,6 +151,15 @@ export function aggregate(users) {
     // "kac kez cikildi"yi tutar, acilis sayisiyla AYNI SEY DEGIL: bir kere
     // acilip hic cikilmadan sekme kapatilirsa exits opens'tan az kalabilir).
     avgSec: featExits[s] ? Math.round(featSec[s] / featExits[s]) : null,
+    // Ortanca: dağılımın ortasına düşen kova (yalnızca yeni istemcilerden gelir;
+    // eski kayıtlarda yok, o zaman null).
+    medianBucket: (() => {
+      const h = hist[s]; if (!h) return null;
+      const tot = h.reduce((a, x) => a + x, 0); if (!tot) return null;
+      let acc = 0;
+      for (let i = 0; i < 6; i++) { acc += h[i]; if (acc >= tot / 2) return BUCKETS[i]; }
+      return null;
+    })(),
     topNext: transByOrigin[s] || [],
   })).sort((a, b) => b.users - a.users);
 
@@ -154,6 +185,14 @@ export function aggregate(users) {
       avgNefesPerNefesUser: nefesUsers ? Math.round((nefesTotal / nefesUsers) * 10) / 10 : 0,
     },
     features,
+    onboarding: {
+      baglanStarted: featUsers.onb_baglan || 0, baglanDone: onbDone.baglan,
+      kesfetStarted: featUsers.onb_kesfet || 0, kesfetDone: onbDone.kesfet,
+    },
+    notif: {
+      users: notifUsers,
+      byKind: ["genel", "kisisel", "tarot", "geridon", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
+    },
     choices: {
       forkShown: ch.fork_shown || 0,
       forkBaglan: ch.fork_baglan || 0, forkKesfet: ch.fork_kesfet || 0,
@@ -193,8 +232,12 @@ const SCREEN_TR = {
   // "onb_kesfet"/"onb_baglan": "Sakin nedir?" sayfasindaki iki karttan biri
   // (Bağlan 1., Keşfet 2. sırada) tıklanınca onboarding TANITIMI yeniden
   // oynatılır; asıl Keşfet/Bağlan panelinden TAMAMEN farklı bir deneyimdir.
-  onb_kesfet: "Keşfet (tanıtımı yeniden izle)",
-  onb_baglan: "Bağlan (tanıtımı yeniden izle)",
+  onb_kesfet: "Tanışma: Kendimi tanımak",
+  onb_baglan: "Tanışma: Sakinleşmek",
+  // Gömülü uygulamalar (Eyl 2026'dan itibaren ayrı sayılıyor).
+  emb_humandesign: "Tasarım (gömülü)", emb_sakinhayvan: "Hayvan (gömülü)",
+  emb_sakinmitler: "Mitler (gömülü)", emb_soulid: "Ruh Profili / SoulID (gömülü)",
+  emb_sakintaslar: "Taşlar (gömülü)", emb_sakinbitkiler: "Bitkiler (gömülü)",
 };
 const scr = (k) => SCREEN_TR[k] || k;
 
@@ -285,7 +328,7 @@ export function renderHTML(r, truncated) {
     <div class="step">
       <div class="steptop">
         <b>${esc(f.label)}</b>
-        <span>${f.count} kişi · %${f.ofTotal}${i > 0 ? ` · öncekinden %${f.fromPrev}` : ""}</span>
+        <span>${f.count} kişi · %${f.ofTotal}${i > 0 && f.fromPrev <= 100 ? ` · öncekinden %${f.fromPrev}` : ""}</span>
       </div>
       <div class="bar"><i style="width:${Math.min(100, f.ofTotal)}%"></i></div>
       ${i > 0 && f.dropFromPrev > 0
@@ -307,12 +350,13 @@ export function renderHTML(r, truncated) {
 
   const maxFeat = Math.max(1, ...r.features.map((f) => f.users));
   const feats = r.features.length
-    ? `<table><tr><th>Bölüm</th><th class="num">Kullanıcı</th><th class="num">Açılış</th><th class="num">Ort. süre</th><th>Sonra en çok</th></tr>` +
+    ? `<table><tr><th>Bölüm</th><th class="num">Kullanıcı</th><th class="num">Açılış</th><th class="num">Tipik süre</th><th class="num">Ort.</th><th>Sonra en çok</th></tr>` +
       r.features.map((f) => `<tr>
         <td>${esc(scr(f.screen))}
           <div class="mbar"><i style="width:${Math.round((f.users / maxFeat) * 100)}%"></i></div></td>
         <td class="num">${f.users}</td><td class="num">${f.opens}</td>
-        <td class="num">${fmtDur(f.avgSec)}</td><td style="color:var(--muted);font-size:12.5px">${fmtNext(f.topNext)}</td></tr>`).join("") +
+        <td class="num">${f.medianBucket ? esc(f.medianBucket) : "-"}</td>
+        <td class="num" style="color:var(--dim)">${fmtDur(f.avgSec)}</td><td style="color:var(--muted);font-size:12.5px">${fmtNext(f.topNext)}</td></tr>`).join("") +
       `</table>`
     : `<p style="color:var(--muted);font-size:13.5px;margin:0">Henüz bölüm açılışı kaydedilmedi.</p>`;
 
@@ -356,7 +400,19 @@ export function renderHTML(r, truncated) {
       const c = r.choices || {};
       const tipRows = (c.aynaByTip || []).map((x) =>
         `<tr><td>Ayna · ${esc(x.tip)}</td><td class="num">${x.up} iyi · ${x.down} değil · %${x.upPct}</td></tr>`).join("");
-      return `<h2>Seçimler</h2>
+      const o = r.onboarding || {}, nt = r.notif || { byKind: [] };
+      const NK = { genel: "Genel hatırlatma", kisisel: "Kişiye özel", tarot: "Sabah tarot", geridon: "Geri dönüş (10-30 gün)", diger: "Diğer" };
+      return `<h2>Tanışma</h2>
+     <div class="card"><table>
+       <tr><td>Sakinleşmek: başladı / bitirdi</td><td class="num">${o.baglanStarted || 0} / ${o.baglanDone || 0}</td></tr>
+       <tr><td>Kendimi tanımak: başladı / bitirdi</td><td class="num">${o.kesfetStarted || 0} / ${o.kesfetDone || 0}</td></tr>
+     </table></div>
+     <h2>Bildirimler</h2>
+     <div class="card"><table>
+       <tr><td>Bildirime dokunarak açan kullanıcı</td><td class="num">${nt.users || 0}</td></tr>
+       ${nt.byKind.map((x) => `<tr><td>${esc(NK[x.k] || x.k)}</td><td class="num">${x.n} dokunma</td></tr>`).join("")}
+     </table></div>
+     <h2>Seçimler</h2>
      <div class="card"><table>
        <tr><td>Yol seçimi gösterildi</td><td class="num">${c.forkShown || 0}</td></tr>
        <tr><td>Sakinleşmek seçildi</td><td class="num">${c.forkBaglan || 0} (denenmemiş işaretliyken ${c.forkUntriedBaglan || 0})</td></tr>
