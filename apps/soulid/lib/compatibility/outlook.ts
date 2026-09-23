@@ -9,6 +9,7 @@
 //  - DERS ORTAKLARI: Güneş karesi (90°: sürtünmeyle büyüten bağlar).
 
 import type { GalacticReport, ZodiacSign } from '../types';
+import { numberFamily } from '../numerology/families';
 
 const ORDER: ZodiacSign[] = [
   'Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo',
@@ -61,18 +62,11 @@ const HD_ALLIES: Record<HDType, OutlookAlly[]> = {
   ],
 };
 
-// Pythagorean üçlüler: 1-5-7 (zihin) · 2-4-8 (yapı) · 3-6-9 (yaratım)
-const LP_TRIADS: number[][] = [
-  [1, 5, 7],
-  [2, 4, 8],
-  [3, 6, 9],
-];
-
+// Sayı ailesi üçlüleri: TEK KAYNAK lib/numerology/families.ts (Sakin'e giden
+// özet de aynı tabloyu kullanır; bir kez ayrışıp çelişmişti).
 function lifePathFamily(lp: number): number[] {
-  // Master sayılar köke iner (11→2, 22→4, 33→6) ama kendisi de eklenir.
-  const root = lp > 9 ? (lp === 11 ? 2 : lp === 22 ? 4 : 6) : lp;
-  const triad = LP_TRIADS.find((t) => t.includes(root)) ?? [root];
-  return triad.filter((n) => n !== root);
+  const f = numberFamily(lp);
+  return f.members.filter((n) => n !== f.root);
 }
 
 export function buildOutlook(report: GalacticReport): CompatibilityOutlook {

@@ -15,6 +15,7 @@
 // özet yazılır, hiçbir yere GÖNDERİLMEZ, ad/tarih/şehir tekrar yazılmaz.
 
 import type { GalacticReport } from './types';
+import { numberFamily } from './numerology/families';
 
 export const SAKIN_SUMMARY_KEY = 'sakin_soul_summary';
 export const SAKIN_SUMMARY_VERSION = 1;
@@ -22,7 +23,7 @@ export const SAKIN_SUMMARY_VERSION = 1;
 export type SakinSoulSummary = {
   v: number;
   updatedAt: string;
-  /** Sayı Ailesi: yaşam yolu sayısının ait olduğu üçlü (bkz. NUMBER_FAMILIES) */
+  /** Sayı Ailesi: yaşam yolu sayısının ait olduğu üçlü (bkz. numerology/families.ts) */
   numberFamily: { n: number; tr: string; en: string };
   /** Geldiği yıldız sistemi / galaksi */
   galaxy: string;
@@ -47,19 +48,12 @@ export type SakinSoulSummary = {
 };
 
 // ── SAYI AİLESİ ────────────────────────────────────────────────────────────
-// Pisagor numerolojisindeki üç düzlem: 1-4-7 / 2-5-8 / 3-6-9. Usta sayılar
-// (11/22/33) kendi köklerine iner (11→2, 22→4, 33→6), çünkü aile o kökün
-// düzlemine aittir. Bu gruplama SoulID'de daha önce yoktu, burada tanımlandı.
-const NUMBER_FAMILIES: Record<number, { tr: string; en: string }> = {
-  1: { tr: 'Kurucular (1 · 4 · 7)', en: 'Founders (1 · 4 · 7)' },
-  2: { tr: 'Köprüler (2 · 5 · 8)', en: 'Bridges (2 · 5 · 8)' },
-  0: { tr: 'Işıklar (3 · 6 · 9)', en: 'Lights (3 · 6 · 9)' },
-};
-
+// TEK KAYNAK: lib/numerology/families.ts (karnedeki "Sayı Ailen" kartıyla
+// AYNI tablo). Eskiden burada mod-3 düzlemleri (1-4-7 / 2-5-8 / 3-6-9) ayrıca
+// tanımlıydı ve karneyle çelişiyordu; kaldırıldı.
 function numberFamilyOf(lifePath: number): { n: number; tr: string; en: string } {
-  const root = lifePath === 11 ? 2 : lifePath === 22 ? 4 : lifePath === 33 ? 6 : lifePath;
-  const fam = NUMBER_FAMILIES[root % 3] ?? NUMBER_FAMILIES[0];
-  return { n: root, ...fam };
+  const f = numberFamily(lifePath);
+  return { n: f.root, tr: f.label.tr, en: f.label.en };
 }
 
 // ── GÜÇLÜ YÖN: hız / yaratıcılık / karizma ────────────────────────────────

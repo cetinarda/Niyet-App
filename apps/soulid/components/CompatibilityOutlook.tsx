@@ -2,6 +2,7 @@
 
 import type { GalacticReport, ZodiacSign } from '@/lib/types';
 import { buildOutlook, type HDType } from '@/lib/compatibility/outlook';
+import { numberFamily } from '@/lib/numerology/families';
 import { SIGN_GLYPHS, SIGN_NAMES_TR } from '@/lib/content/astrology-content';
 import { useT } from '@/lib/i18n';
 
@@ -122,6 +123,11 @@ export function CompatibilityOutlook({ report }: { report: GalacticReport }) {
         <div className="card-surface rounded-3xl border border-panelBorder p-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-gold">
             {tr ? 'SAYI AİLEN · NUMEROLOJİ' : 'YOUR NUMBER FAMILY · NUMEROLOGY'}
+          </p>
+          {/* Ailenin ADI: Sakin'deki Galaktik Kimlik ile aynı isim ve üçlü
+              (tek kaynak lib/numerology/families.ts). */}
+          <p className="mt-2 font-display text-xl text-ink">
+            {(() => { const f = numberFamily(report.numerology.lifePath); return `${tr ? f.name.tr : f.name.en} · ${f.members.join(' · ')}`; })()}
           </p>
           <div className="mt-3 flex items-center gap-2">
             {o.lifePathAllies.map((n) => (

@@ -1139,6 +1139,28 @@ const getFreqData = (lang) => {
   });
 };
 
+// ── SAYI AİLESİ (Galaktik Kimlik "Sayı ailesi" satırı) ──────────────────────
+// ⚠️ TEK TABLO, SoulID ile AYNI: apps/soulid/lib/numerology/families.ts.
+// Kullanıcı bildirdi: "ruh profilimde 5-7, galaktik kimlikte Kurucular 1-4-7".
+// SoulID'de iki ayrı tablo vardı (karne 1-5-7/2-4-8/3-6-9, Sakin'e giden özet
+// mod-3 1-4-7/2-5-8/3-6-9) ve çelişiyordu; tek kaynağa bağlandı.
+// Host ETİKETİ özetten OKUMAZ, SAYIDAN kendisi hesaplar: özet yalnızca SoulID
+// karnesi açılınca yenilendiği için telefonda eski yanlış etiket ("Kurucular
+// (1 · 4 · 7)") saklı kalabiliyordu; sayı (kök) ise her zaman doğruydu.
+const LP_TRIADS = [[1, 5, 7], [2, 4, 8], [3, 6, 9]];
+const NUMBER_FAMILY_TXT = {
+  "1,5,7": { tr:"Arayanlar", en:"Seekers", de:"Suchende", es:"Buscadores", pt:"Buscadores", fr:"Chercheurs", ja:"探求者" },
+  "2,4,8": { tr:"Kurucular", en:"Builders", de:"Erbauer", es:"Constructores", pt:"Construtores", fr:"Bâtisseurs", ja:"築き手" },
+  "3,6,9": { tr:"Işıklar", en:"Lights", de:"Lichter", es:"Luces", pt:"Luzes", fr:"Lumières", ja:"光の人々" },
+};
+function numberFamilyLabel(lp, lang) {
+  if (!lp) return "";
+  const root = lp === 11 ? 2 : lp === 22 ? 4 : lp === 33 ? 6 : lp;
+  const m = LP_TRIADS.find(t => t.includes(root));
+  if (!m) return "";
+  return `${pickLang(NUMBER_FAMILY_TXT[m.join(",")], lang)} (${m.join(" · ")})`;
+}
+
 // Burç glifleri: Bugün ekranındaki ikili uyum butonunda kullanıcının kendi
 // burcunu göstermek için. zodiacSign() TÜRKÇE ad döndürüyor, eşleme ona göre
 // (anahtar Türkçe, glif her dilde aynı).
@@ -14043,7 +14065,7 @@ Direction (where the energy flows). Rules:
           const soulRowsSrc = soulSummary ? [
             // "Geldigi galaksi" KALDIRILDI (kullanici istegi): yildiz irki
             // satiri zaten kokeni soyluyor, ikinci kez yazmak yer harciyordu.
-            [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+            [pickLang(SOUL_TXT.family, lang),   numberFamilyLabel(soulSummary.numberFamily?.n || (birthDate ? lifePathNumber(birthDate) : 0), lang)],
             [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
             [pickLang(SOUL_TXT.purpose, lang),  soulPurpose],
             [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
@@ -14410,7 +14432,7 @@ Direction (where the energy flows). Rules:
                       {[
                         // "Geldigi galaksi" KALDIRILDI (kullanici istegi): yildiz irki
             // satiri zaten kokeni soyluyor, ikinci kez yazmak yer harciyordu.
-                        [pickLang(SOUL_TXT.family, lang),   lang === "tr" ? soulSummary.numberFamily?.tr : soulSummary.numberFamily?.en],
+                        [pickLang(SOUL_TXT.family, lang),   numberFamilyLabel(soulSummary.numberFamily?.n || (birthDate ? lifePathNumber(birthDate) : 0), lang)],
                         [pickLang(SOUL_TXT.past, lang),     soulSummary.pastArchetype],
                         [pickLang(SOUL_TXT.purpose, lang),  soulPurpose],
                         [pickLang(SOUL_TXT.strength, lang), lang === "tr" ? soulSummary.strength?.tr : soulSummary.strength?.en],
