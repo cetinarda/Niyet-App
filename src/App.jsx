@@ -6743,10 +6743,17 @@ export default function SakinApp() {
   // ⚠️ Kilit sürprize dönüşmesin diye deneme boyunca ekranlarda TRIAL_TXT
   // bilgilendirmesi görünür (aşağıda), yani kullanıcı bunun geçici olduğunu
   // en baştan biliyor.
-  const genericUnlocked = isPremium || isEarlyTunnel;
+  // ⚠️ KALICI ÜCRETSİZ (kullanıcı kararı, Eyl 2026: "Bağlan kısmında kelimeler,
+  // gün içindeki yapılacaklar, nefes, ses, çakra temel 7 tamamen ücretsiz olsun").
+  // Eskiden yalnızca premium + ilk 3 tünelde açıktı, sonra kilit geri geliyordu.
+  // Artık herkese açık; deneme bilgilendirmesi de gereksiz (genericTrial=false).
+  // Çakrada yalnızca 7 TEMEL çakra (level 1) ücretsiz; 2-3. seviye (ek 15
+  // çakra) premium KALIR (TerapiScreen `c.level !== 1`). Gün görevlerinde zaten
+  // kilit yoktu.
+  const genericUnlocked = true;
   // Yalnızca bilgilendirme şeridi için: premium kullanıcıya "deneme" demenin
   // anlamı yok, o zaten kalıcı açık.
-  const genericTrial = isEarlyTunnel && !isPremium;
+  const genericTrial = false;
   // Deneme bilgilendirmesi: kilidin geçici olarak AÇIK olduğu her ekranda
   // (niyet kelimeleri, nefes modları, frekanslar) aynı satır görünür.
   // Bileşen değil düz fonksiyon: her render'da yeni bileşen tipi üretip
@@ -12271,11 +12278,8 @@ Direction (where the energy flows). Rules:
                 </div>
                 {/* Deneme dönemindeyken kelimeler zaten açık: "kilidi aç" butonu
                     yanlış olurdu, yerine denemenin geçici olduğu yazıyor. */}
-                {genericTrial ? trialNote() : !isPremium && (
-                  <button onClick={()=>setScreen("fiyat")} style={{ display:"block",margin:"12px auto 0",background:"none",border:"1px solid rgba(184,164,216,0.25)",borderRadius:20,padding:"8px 20px",color:"#b8a4d8",fontSize:12,letterSpacing:2,cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                    {t("premium_unlock_words")}
-                  </button>
-                )}
+                {/* "Kelimelerin kilidini aç" premium butonu KALDIRILDI: niyet
+                    kelimelerinin tamamı artık herkese ücretsiz (genericUnlocked). */}
                 {selectedWords.length>0 && <div style={{ marginTop:10,fontSize:14,color:"#b0baca",letterSpacing:1.5 }}>{selectedWords.join(" · ")}</div>}
               </div>
               {selectedWords.length < 3 || !niyet.trim() ? (
@@ -15862,10 +15866,15 @@ Direction (where the energy flows). Rules:
                       const f = kozmikData.solar_flares_24h;
                       const w = kozmikData.solar_wind;
                       return (<>
-                        {/* KOLEKTİF GEÇİŞ NOTU (retrolar + en dar açı, sunucuda efemeris). */}
+                        {/* KOLEKTİF GEÇİŞ NOTU (retrolar + en dar açı, sunucuda efemeris).
+                            ESKİ GÖRÜNÜMÜ GERİ GELDİ (kullanıcı isteği): küçük, mor, italik,
+                            ✦ ile başlayan, altı çizgiyle ayrılmış AYRI bir açıklama.
+                            Tek görsel dil geçişinde büyük serif gövde metnine
+                            çevrilmişti, dikkat çekiciliğini kaybetmişti. */}
                         {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
-                          <div style={{ fontFamily:SERIF,fontSize:18,lineHeight:1.45,color:INK,marginBottom:12,fontStyle:"italic" }}>
-                            {pickLang(kozmikData.transit, lang)}
+                          <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,
+                            borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic",fontFamily:INTER }}>
+                            ✦ {pickLang(kozmikData.transit, lang)}
                           </div>
                         )}
                         {(kozmikData.aiReport || kozmikData.report) && (
@@ -15890,10 +15899,13 @@ Direction (where the energy flows). Rules:
                         </div>
                         <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginTop:12 }}>
                           <span style={{ fontSize:10,color:"#5f5a70" }}>{t("mirror_source_label")}NOAA · {t("mirror_moon_calc")}</span>
-                          {/* PAYLAŞ: Ayna kartı üreticisi (tek gövde düzeni). */}
+                          {/* PAYLAŞ: Ayna kartı üreticisi (tek gövde düzeni). Paylaşım
+                              kartında YALNIZCA rapor gövdesi var: "Şu an Satürn
+                              retroda..." geçiş notu kullanıcı isteğiyle karttan
+                              çıkarıldı (ekranda duruyor, görselde yok). */}
                           {smallBtn(pickLang(TAROT_UI_TXT.share, lang), async ()=>{
                             try {
-                              const govde = [kozmikData.transit && pickLang(kozmikData.transit, lang), kozmikData.aiReport || pickLang(kozmikData.report, lang)].filter(Boolean).join("\n\n");
+                              const govde = kozmikData.aiReport || pickLang(kozmikData.report, lang) || "";
                               const bas = pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang);
                               const cv = buildMirrorStoryCard(bas, govde, bas);
                               const blob = await new Promise(r => cv.toBlob(r, "image/png"));

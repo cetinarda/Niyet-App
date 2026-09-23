@@ -296,10 +296,13 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
      bırakılanlar: `aksam` (22:00'den önce açılmıyor, sabah kurulan kullanıcı
      ilk günü kapatamazdı), `gun` (görev AI'dan geliyor, ağ/limit hatası adımı
      tıkayabilir), `ses`/`chakra` (süre şartı var).
-2. **Jenerik içerik açık** (`genericUnlocked`): nefes modları, solfeggio
-   frekansları, niyet kelimeleri. 3. tünelden sonra kilit GERİ GELİR (kullanıcı
-   kararı: kaybetme anı dönüşümü tetikler). Sürpriz olmasın diye deneme boyunca
-   `TRIAL_TXT` bilgilendirmesi ekranlarda görünür.
+2. ~~Jenerik içerik yalnızca denemede açık~~ **ARTIK KALICI ÜCRETSİZ, HERKESE**
+   (kullanıcı kararı, Eyl 2026: "Bağlan'da kelimeler, gün içi yapılacaklar,
+   nefes, ses, çakra temel 7 tamamen ücretsiz olsun"). `genericUnlocked = true`,
+   `genericTrial = false` (deneme şeridi `TRIAL_TXT` artık görünmez), kelime
+   ekranındaki "kilidini aç" butonu kaldırıldı. Çakrada YALNIZCA 7 temel çakra
+   (level 1) ücretsiz, 2-3. seviyedeki 15 çakra premium KALIR. Gün görevlerinde
+   zaten kilit yoktu. Kilidi geri getirmek istenirse tek satır: `genericUnlocked`.
 3. **Yol seçimi ekranı** ("Hangi yoldan gidelim?": sakinleşmek / kendimi tanımak)
    yalnızca burada çıkar. ⚠️ ÖNCEDEN HER GÜN, SONSUZA KADAR çıkıyordu
    ("bir daha gösterme" seçeneği de kaldırılmıştı, kimse kapatamıyordu).
@@ -464,8 +467,14 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
    günlük hak, gün+burç+dil cache), sonra AI harcamadan aç/kapa. Doğum yoksa
    burçsuz genel okuma.
 6. **Gökyüzü raporu** (kolektif, açılır). Bir ara Ben'e taşındı, geri geldi.
+   İçindeki "Şu an Satürn retroda..." geçiş notu küçük MOR italik ✦ açıklama
+   olarak kalır (kullanıcı, tek görsel dil geçişinde kaybolan eski görünümü geri
+   istedi). PAYLAŞIM kartında bu not YOK, yalnızca rapor gövdesi.
 7. Günün rehberleri → I Ching → İkili uyum (Ben'den taşındı; I Ching ile yeri
    kullanıcı isteğiyle değişti) → **Tarot**.
+   ⚠️ Rehberlerdeki 4. kart (`pickMythOfDay`, src/daily-cards.js) artık TAROT
+   SEÇMEZ (5 sistem: arketip/mit/imge/rün/I Ching): tarotun kendi bölümü var,
+   aynı gün iki farklı tarot kartı görünüyordu. Mitler kütüphanesinde tarot durur.
 8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
    etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 

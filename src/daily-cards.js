@@ -71,7 +71,8 @@ export async function loadDailyIndex(lang = "tr") {
 
 // ── Mitler tarafında GÜNÜN SİSTEMİ ────────────────────────────────────────
 // Kullanıcı: "hepsinden değil, o gün hangisi gelirse doğum haritasına göre
-// birini otomatik seç (arketip, mit, imge, tarot, rune, iching)".
+// birini otomatik seç (arketip, mit, imge, tarot, rune, iching)". Tarot sonradan
+// çıkarıldı (aşağıya bak).
 // Mitler uygulaması günlük çekilişte YALNIZCA 3'ünü tutuyor (archetype/myth/
 // image); tarot/rune/iching'in günlük kaydı yok. Bu yüzden:
 //   • Seçim doğum verisi + güne göre DETERMİNİSTİK yapılır (aynı gün aynı
@@ -79,7 +80,11 @@ export async function loadDailyIndex(lang = "tr") {
 //   • Seçilen sistem uygulamanın o gün çektiklerinden biriyse ONUN ID'si
 //     kullanılır, yani host'ta görünen kart uygulamadakiyle AYNI olur.
 //   • Değilse (tarot/rune/iching) kart aynı damgadan türetilir.
-const SYSTEMS = ["archetype", "myth", "image", "tarot", "rune", "iching"];
+// ⚠️ TAROT BU LİSTEDE YOK (kullanıcı isteği, Eyl 2026): Bugün ekranında
+// tarotun kendi bölümü var ("Günün tarot kartı", 78 kart). Burada da tarot
+// çıkınca aynı gün iki farklı tarot kartı görünebiliyordu. Mitler uygulamasının
+// kütüphanesinde tarot duruyor; yalnızca GÜNÜN kartı seçiminden çıkarıldı.
+const SYSTEMS = ["archetype", "myth", "image", "rune", "iching"];
 
 function hash32(s) {
   let h = 2166136261;
