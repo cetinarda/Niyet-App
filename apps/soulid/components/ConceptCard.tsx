@@ -30,7 +30,8 @@ export function ConceptCard({ kicker, title, highlight, short, details, accent =
           {highlight}
         </p>
         <p className="mt-4 text-[14px] leading-[1.85] text-muted">{short}</p>
-        <p className="mt-4 text-[11px] text-gold opacity-0 transition-opacity group-hover:opacity-100">
+        {/* Dokunmatikte hover yok: ipucu eskiden telefonda HİÇ görünmüyordu. */}
+        <p className="mt-4 text-[11px] text-gold opacity-70 transition-opacity group-hover:opacity-100">
           Detaylar için tıkla →
         </p>
       </button>
@@ -73,7 +74,7 @@ export function ConceptCard({ kicker, title, highlight, short, details, accent =
                   <h3 className={clsx('text-[11px] font-bold uppercase tracking-[0.3em]')} style={{ color: accent }}>
                     {d.heading}
                   </h3>
-                  <p className="mt-3 text-[14px] leading-[1.85] text-muted">{d.body}</p>
+                  <p className="mt-3 whitespace-pre-line text-[14px] leading-[1.85] text-muted">{d.body}</p>
                 </section>
               ))}
             </div>

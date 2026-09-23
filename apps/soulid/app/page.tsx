@@ -45,7 +45,10 @@ export default function Welcome() {
       const go = new URLSearchParams(window.location.search).get('go');
       // ?go=sky: Sakin Bugün ekranındaki "Yıldızlar bugün sana ne söylüyor"
       // bağlantısı. Karneyi açar, "Bugünün Gökyüzü" bölümüne kaydırır.
-      return go === 'pair' ? '/pair' : go === 'sky' ? '/report?to=sky' : '/profil';
+      // go=attachment BURADA DA şart: telefonda (IS_CAPACITOR) köprü/karne
+      // hidrasyonu da target()'a yönlendiriyor; yoksa aşağıdaki doğrudan
+      // /attachment yönlendirmesiyle yarışıp kullanıcıyı /profil'e atıyordu.
+      return go === 'pair' ? '/pair' : go === 'sky' ? '/report?to=sky' : go === 'attachment' ? '/attachment' : '/profil';
     } catch { return '/profil'; }
   };
 

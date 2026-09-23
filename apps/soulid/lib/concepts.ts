@@ -1,3 +1,4 @@
+import { STAR_LORE, STAR_LORE_INTRO } from './galactic/lore';
 import type { GalacticReport } from './types';
 import { LIFE_PATH_MEANINGS, PERSONAL_YEAR_MEANINGS } from './content/numerology-content';
 import {
@@ -255,6 +256,14 @@ export function buildConceptDecks(report: GalacticReport): ConceptDeck[] {
           heading: 'KÖKEN SİSTEMİ',
           body: `${report.origin.starSystem}: galaktik haritada referans noktası.`,
         },
+        // "Andromedan ne demek?" sorusunun cevabı (kullanıcı isteği): Sakin
+        // sözlüğündeki anlatının aynısı + geleneğin inanç olduğunu söyleyen not.
+        ...(STAR_LORE[report.origin.race]
+          ? [
+              { heading: 'ANLATILARA GÖRE', body: STAR_LORE[report.origin.race].tr },
+              { heading: 'BU BİLGİ NEDİR?', body: STAR_LORE_INTRO.tr },
+            ]
+          : []),
       ],
       accent: '#f5d061',
     },

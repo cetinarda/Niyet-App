@@ -192,9 +192,16 @@ body::after {
   100% { transform: translate(0, 0); }
 }
 
-/* Sayfa içeriği yumuşak fade-in */
+/* Sayfa içeriği yumuşak fade-in.
+   ⚠️ fill-mode `backwards` (eskiden `both`): `both` animasyon bittikten sonra da
+   main'de `transform: translateY(0)` bırakıyordu. Transform'u olan bir ata,
+   içindeki `position: fixed` öğelerin referansı olur; karnedeki kavram kartı
+   modalı ve 3B gezegen detayı ekrana değil SAYFANIN TAMAMINA göre yerleşiyor,
+   içerik görünür alanın binlerce piksel dışına düşüyordu (kullanıcı: "detaylar
+   için tıkla açılmıyor, boş kalıyor"). `backwards` ile animasyon bitince
+   transform kalkar, sabit öğeler yeniden ekrana göre konumlanır. */
 main {
-  animation: spaceFadeIn 800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: spaceFadeIn 800ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 @keyframes spaceFadeIn {
