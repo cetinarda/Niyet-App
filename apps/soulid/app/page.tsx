@@ -25,6 +25,13 @@ export default function Welcome() {
   // yerine pazarlama sayfasına düşüyordu (kullanıcı bildirdi: "ana sayfa
   // açılıyor"). Kayıtlı karne varsa welcome hiç gösterilmeden hedefe geçilir.
   const [resolving, setResolving] = useState(() => IS_CAPACITOR && sakinBridgeAttempted());
+  // ?go=attachment (Sakin Ben ekranındaki "Bağlanma Profili" kutusu): karne
+  // beklenmeden DOĞRUDAN teste gidilir. Test sayfası kayıtlı sonucu kendisi
+  // gösterir ve harita merceği için karneyi arka planda kendisi yükler.
+  const [goAttach] = useState(() => {
+    try { return new URLSearchParams(window.location.search).get('go') === 'attachment'; } catch { return false; }
+  });
+  useEffect(() => { if (goAttach) nav.push('/attachment'); }, [goAttach]);
 
   // HOST HANGİ EKRANI İSTEDİ: Keşfet'ten girilince artık PROFİL sekmesi
   // (varsayılan; kullanıcı kararı: "ilk açılış profil olsun, oraya bakan
@@ -69,7 +76,7 @@ export default function Welcome() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolving]);
 
-  if (connecting || resolving) {
+  if (connecting || resolving || goAttach) {
     return (
       <div className="relative">
         <CosmicBackground variant="galaxy" />

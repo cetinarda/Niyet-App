@@ -806,6 +806,42 @@ const NEDIR_I18N = {
 // "bir yolu seçen diğerini merak edebilir").
 const YOL_UNTRIED_TXT = { tr:"Henüz denemedin", en:"Not tried yet", de:"Noch nicht probiert", es:"Aún no lo probaste", pt:"Ainda não experimentaste", fr:"Pas encore essayé", ja:"まだ試していない" };
 
+// BEN > BAĞLANMA PROFİLİ kutusu (kullanıcı isteği, Eyl 2026). Sonuç SoulID'nin
+// bağlanma testinden gelir (aynı origin localStorage: soulprofile.attachment.result,
+// bkz. apps/soulid/lib/attachment/storage.ts). Stil adları ve özleri SoulID'deki
+// STYLES ile BİREBİR (tr/en oradan; diğer 5 dil burada çevrildi). Test SoulID'de
+// yalnızca tr/en, o yüzden kutu 7 dilde ama test ekranı 2 dilde açılır.
+const ATTACH_TXT = {
+  title:   { tr:"Bağlanma Profili", en:"Attachment Profile", de:"Bindungsprofil", es:"Perfil de apego", pt:"Perfil de vinculação", fr:"Profil d'attachement", ja:"愛着プロフィール" },
+  askHead: { tr:"Yakınlıkta nasıl davranıyorsun?", en:"How do you move in closeness?", de:"Wie verhältst du dich in Nähe?", es:"¿Cómo te mueves en la cercanía?", pt:"Como te moves na proximidade?", fr:"Comment vis-tu la proximité ?", ja:"親密さの中で、あなたはどう動く？" },
+  askBody: { tr:"16 kısa soruyla ilişkilerdeki bağlanma stilini keşfet. Yaklaşık 3 dakika, sonuç yalnızca bu cihazda kalır.",
+             en:"Discover your attachment style in relationships with 16 short questions. About 3 minutes; the result stays on this device.",
+             de:"Entdecke deinen Bindungsstil in Beziehungen mit 16 kurzen Fragen. Etwa 3 Minuten; das Ergebnis bleibt auf diesem Gerät.",
+             es:"Descubre tu estilo de apego en las relaciones con 16 preguntas breves. Unos 3 minutos; el resultado queda en este dispositivo.",
+             pt:"Descobre o teu estilo de vinculação nas relações com 16 perguntas curtas. Cerca de 3 minutos; o resultado fica neste dispositivo.",
+             fr:"Découvre ton style d'attachement dans les relations en 16 courtes questions. Environ 3 minutes ; le résultat reste sur cet appareil.",
+             ja:"16の短い質問で、人間関係における愛着スタイルを知りましょう。約3分、結果はこの端末にだけ残ります。" },
+  start:   { tr:"Teste başla", en:"Start the test", de:"Test starten", es:"Empezar el test", pt:"Começar o teste", fr:"Commencer le test", ja:"テストを始める" },
+  detail:  { tr:"Ayrıntıları gör", en:"See details", de:"Details ansehen", es:"Ver detalles", pt:"Ver detalhes", fr:"Voir les détails", ja:"詳しく見る" },
+  anxiety: { tr:"Kaygı", en:"Anxiety", de:"Angst", es:"Ansiedad", pt:"Ansiedade", fr:"Anxiété", ja:"不安" },
+  avoid:   { tr:"Kaçınma", en:"Avoidance", de:"Vermeidung", es:"Evitación", pt:"Evitamento", fr:"Évitement", ja:"回避" },
+  blend:   { tr:"Karma örüntü, şu eğilim de var:", en:"A blended pattern, also leaning:", de:"Ein gemischtes Muster, auch mit Neigung zu:", es:"Un patrón mixto, también con tendencia:", pt:"Um padrão misto, também com tendência:", fr:"Un schéma mixte, penchant aussi :", ja:"混合パターン、こちらの傾向も：" },
+  styles: {
+    secure: { emoji:"🌿", color:"#5bd9a0",
+      name:{ tr:"Güvenli bağlanma", en:"Secure attachment", de:"Sichere Bindung", es:"Apego seguro", pt:"Vinculação segura", fr:"Attachement sécure", ja:"安定型の愛着" },
+      essence:{ tr:"Yakınlık da özerklik de seni tehdit etmez; ikisinin arasında rahatça gidip gelirsin.", en:"Neither closeness nor autonomy threatens you; you move between them with ease.", de:"Weder Nähe noch Autonomie bedrohen dich; du bewegst dich mühelos zwischen beiden.", es:"Ni la cercanía ni la autonomía te amenazan; te mueves entre ambas con soltura.", pt:"Nem a proximidade nem a autonomia te ameaçam; moves-te entre as duas com facilidade.", fr:"Ni la proximité ni l'autonomie ne te menacent ; tu passes de l'une à l'autre avec aisance.", ja:"親密さも自立も脅威ではなく、その間を楽に行き来できます。" } },
+    anxious: { emoji:"🌊", color:"#f5b942",
+      name:{ tr:"Kaygılı bağlanma", en:"Anxious attachment", de:"Ängstliche Bindung", es:"Apego ansioso", pt:"Vinculação ansiosa", fr:"Attachement anxieux", ja:"不安型の愛着" },
+      essence:{ tr:"Sevgiyi derinden verirsin, ama karşılığının süreceğinden emin olmakta zorlanırsın.", en:"You love deeply, yet struggle to trust that the love will stay.", de:"Du liebst tief, doch es fällt dir schwer zu vertrauen, dass die Liebe bleibt.", es:"Amas con profundidad, pero te cuesta confiar en que el amor se quede.", pt:"Amas profundamente, mas custa-te confiar que o amor vai ficar.", fr:"Tu aimes profondément, mais tu as du mal à croire que l'amour restera.", ja:"深く愛するけれど、その愛が続くと信じることに苦労します。" } },
+    avoidant: { emoji:"🏔", color:"#c77dff",
+      name:{ tr:"Kaçıngan bağlanma", en:"Avoidant attachment", de:"Vermeidende Bindung", es:"Apego evitativo", pt:"Vinculação evitante", fr:"Attachement évitant", ja:"回避型の愛着" },
+      essence:{ tr:"Kendi ayaklarının üstünde durursun; yakınlık arttığında içeride bir kapı usulca kapanır.", en:"You stand on your own; as closeness grows, a door quietly closes inside.", de:"Du stehst auf eigenen Füßen; wenn Nähe wächst, schließt sich innen leise eine Tür.", es:"Te sostienes por ti mismo; cuando crece la cercanía, una puerta se cierra en silencio por dentro.", pt:"Sustentas-te sozinho; quando a proximidade cresce, uma porta fecha-se em silêncio por dentro.", fr:"Tu tiens debout seul ; quand la proximité grandit, une porte se ferme doucement à l'intérieur.", ja:"自分の足で立つ人。親密さが増すと、内側で静かに扉が閉まります。" } },
+    disorganized: { emoji:"🌗", color:"#7aa2f7",
+      name:{ tr:"Düzensiz bağlanma", en:"Disorganized attachment", de:"Desorganisierte Bindung", es:"Apego desorganizado", pt:"Vinculação desorganizada", fr:"Attachement désorganisé", ja:"混乱型の愛着" },
+      essence:{ tr:"Hem çok yaklaşmak hem kaçmak istersin; yakınlık aynı anda hem yuva hem tehlike gibi gelir.", en:"You want to come very close and to run; intimacy feels like home and danger at once.", de:"Du willst ganz nah kommen und zugleich fliehen; Nähe fühlt sich wie Zuhause und Gefahr zugleich an.", es:"Quieres acercarte mucho y a la vez huir; la intimidad se siente como hogar y peligro a la vez.", pt:"Queres aproximar-te muito e ao mesmo tempo fugir; a intimidade parece lar e perigo ao mesmo tempo.", fr:"Tu veux te rapprocher très près et fuir à la fois ; l'intimité semble à la fois un foyer et un danger.", ja:"とても近づきたいのに逃げたくもなる。親密さが、居場所であり危険でもあるように感じます。" } },
+  },
+};
+
 // Bugün ilk açılış ipucu (bir kez gösterilir).
 const BUGUN_HINT_TXT = {
   tr:"Her sabah burada seni bekleyen bir tarot kartı ve günün pusulası var.",
@@ -6774,6 +6810,13 @@ export default function SakinApp() {
     try {
       const raw = JSON.parse(localStorage.getItem("sakin_soul_summary") || "null");
       return raw && raw.v === 1 ? raw : null;
+    } catch (_) { return null; }
+  }, [soulReloadKey]);
+  // BAĞLANMA TESTİ SONUCU (SoulID yazar, embed her kapandığında yeniden okunur).
+  const attachRes = useMemo(() => {
+    try {
+      const r = JSON.parse(localStorage.getItem("soulprofile.attachment.result") || "null");
+      return r && typeof r.anxiety === "number" && typeof r.avoidance === "number" && ATTACH_TXT.styles[r.style] ? r : null;
     } catch (_) { return null; }
   }, [soulReloadKey]);
   // GELİŞ SEBEBİ: SoulID bunu eskiden DÜZ STRING yazıyordu ve içinde teknik bir
@@ -13914,6 +13957,62 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               en altındaki ikinci galaktik kimlik butonu da kaldırıldı, tek
               giriş bu kartın içindeki buton. */}
           <div style={{ marginBottom:28 }}>{kimlikKarti}</div>
+          {/* BAĞLANMA PROFİLİ (kullanıcı isteği): test çözülmediyse teste davet,
+              çözüldüyse stil + öz + iki eksen. Dokununca SoulID'nin test sayfası
+              açılır (kayıtlı sonucu ve ayrıntıları orada gösterir). */}
+          {(() => {
+            const openAttach = () => handleOpenEmbed({ name: pickLang(ATTACH_TXT.title, lang),
+              embed: "/embedded/soulid/index.html?go=attachment", color: "#e8a0b8", skipBirthGate: true });
+            const SERIF = "'Cormorant Garamond',Georgia,serif";
+            const cardSt = { WebkitAppearance:"none",appearance:"none",width:"100%",textAlign:"left",cursor:"pointer",
+              display:"flex",flexDirection:"column",gap:10,padding:"16px 18px",borderRadius:16,color:"inherit",font:"inherit",
+              background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",
+              border:"1px solid rgba(184,164,216,0.15)",marginBottom:20 };
+            const eyebrowEl = (c) => <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:3,textTransform:"uppercase",color:c }}>{pickLang(ATTACH_TXT.title, lang)}</div>;
+            if (!attachRes) return (
+              <button onClick={openAttach} style={cardSt}>
+                {eyebrowEl("#d9a3bd")}
+                <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:"#f1ecf9" }}>{pickLang(ATTACH_TXT.askHead, lang)}</div>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,lineHeight:1.6,color:"#b8aed0" }}>{pickLang(ATTACH_TXT.askBody, lang)}</div>
+                <span style={{ alignSelf:"flex-start",display:"inline-flex",alignItems:"center",gap:6,marginTop:2,padding:"8px 16px",borderRadius:100,
+                  fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.5,textTransform:"uppercase",color:"#f3c6da",
+                  background:"rgba(232,160,184,0.12)",border:"1px solid rgba(232,160,184,0.4)" }}>{pickLang(ATTACH_TXT.start, lang)} ›</span>
+              </button>
+            );
+            const st = ATTACH_TXT.styles[attachRes.style];
+            const sec = attachRes.secondary && attachRes.blend > 0 ? ATTACH_TXT.styles[attachRes.secondary] : null;
+            const bar = (lbl, v) => (
+              <div style={{ flex:1,minWidth:0 }}>
+                <div style={{ display:"flex",justifyContent:"space-between",fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:1.2,textTransform:"uppercase",color:"#8f88a3",marginBottom:5 }}>
+                  <span>{lbl}</span><span style={{ color:"#d6cfe6" }}>{Math.round(v)}</span>
+                </div>
+                <div style={{ height:5,borderRadius:4,background:"rgba(255,255,255,0.07)",overflow:"hidden" }}>
+                  <div style={{ width:`${Math.max(0, Math.min(100, v))}%`,height:"100%",borderRadius:4,background:st.color,opacity:0.85 }} />
+                </div>
+              </div>
+            );
+            return (
+              <button onClick={openAttach} style={cardSt}>
+                {eyebrowEl(st.color)}
+                <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+                  <span style={{ width:40,height:40,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                    fontSize:19,lineHeight:1,background:`${st.color}14`,border:`1px solid ${st.color}38` }}>{st.emoji}</span>
+                  <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.2,color:"#f1ecf9" }}>{pickLang(st.name, lang)}</div>
+                </div>
+                <div style={{ fontFamily:"'Inter',sans-serif",fontSize:13,lineHeight:1.6,color:"#cfc7e0" }}>{pickLang(st.essence, lang)}</div>
+                <div style={{ display:"flex",gap:14 }}>
+                  {bar(pickLang(ATTACH_TXT.anxiety, lang), attachRes.anxiety)}
+                  {bar(pickLang(ATTACH_TXT.avoid, lang), attachRes.avoidance)}
+                </div>
+                {sec && (
+                  <div style={{ fontFamily:"'Inter',sans-serif",fontSize:12,color:"#8f88a3" }}>
+                    {pickLang(ATTACH_TXT.blend, lang)} {sec.emoji} {pickLang(sec.name, lang)}
+                  </div>
+                )}
+                <span style={{ alignSelf:"flex-end",fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.4,textTransform:"uppercase",color:st.color }}>{pickLang(ATTACH_TXT.detail, lang)} ›</span>
+              </button>
+            );
+          })()}
           {/* İÇSEL HARİTA: artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
               isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,
               draconik) aynı davranış: Ben ekranı büyük bir halka ve dört

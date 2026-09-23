@@ -640,6 +640,18 @@ altındaki halka + 4 istatistik aynen durur). Sıra:
 5. **Tek eylem: "Bugün için 4-6 nefes al"** → Nefes ekranı, `pendingBreathRef =
    "diyafram"` (4·6 ritmi) seçili açılır.
 
+## 💞 BEN > BAĞLANMA PROFİLİ KUTUSU (kullanıcı isteği, Eyl 2026)
+
+Kimlik kartının hemen altında. Veri: SoulID bağlanma testinin sonucu
+(`soulprofile.attachment.result`, aynı origin localStorage, embed her kapanınca
+`soulReloadKey` ile yeniden okunur). Test yoksa davet ("Yakınlıkta nasıl
+davranıyorsun?" + Teste başla), varsa stil + öz + Kaygı/Kaçınma çubukları +
+karma eğilim. Dokununca `/embedded/soulid/index.html?go=attachment` açılır
+(SoulID `app/page.tsx` bu parametrede karne beklemeden `/attachment`'a gider;
+alt klasörü doğrudan açmak iOS'ta güvenilir değil). Stil adları/özleri
+`ATTACH_TXT` (7 dil), SoulID `lib/attachment/index.ts` STYLES ile BİREBİR:
+orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/en.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:
