@@ -1020,7 +1020,10 @@ const TODAY_TXT = {
   sysRune:     { tr:"Rün", en:"Rune", de:"Rune", es:"Runa", pt:"Runa", fr:"Rune", ja:"ルーン" },
   sysIching:   { tr:"I Ching", en:"I Ching", de:"I Ging", es:"I Ching", pt:"I Ching", fr:"Yi King", ja:"易経" },
   // Human Design günlük transit
-  transit:  { tr:"Günün geçişi", en:"Today's transit", de:"Transit des Tages", es:"Tránsito de hoy", pt:"Trânsito de hoje", fr:"Transit du jour", ja:"今日のトランジット" },
+  // NOT: "Günün geçişi" YANILTICIYDI (kullanıcı isteği): Güneş kapısı ~5-6 günde
+  // bir, Ay kapısı ise gün içinde birkaç kez değişir, yani geçiş "günlük" değil.
+  // "Güncel geçiş" süre iddia etmez, iki gök cismi için de doğru.
+  transit:  { tr:"Güncel geçiş", en:"Current transit", de:"Aktueller Transit", es:"Tránsito actual", pt:"Trânsito atual", fr:"Transit actuel", ja:"現在のトランジット" },
   vurgu:    { tr:"Günün vurgusu", en:"Today's emphasis", de:"Schwerpunkt heute", es:"Énfasis de hoy", pt:"Ênfase de hoje", fr:"L'accent du jour", ja:"今日の焦点" },
   dikkat:   { tr:"Nelere dikkat", en:"What to watch", de:"Worauf achten", es:"A qué prestar atención", pt:"A que prestar atenção", fr:"À quoi faire attention", ja:"気をつけること" },
   gunes:    { tr:"Güneş", en:"Sun", de:"Sonne", es:"Sol", pt:"Sol", fr:"Soleil", ja:"太陽" },
