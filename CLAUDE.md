@@ -447,15 +447,22 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 4. **Orkestra modu** (Ben'den TAŞINDI, kullanıcı: "karşılamaya al"). pulse
    verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
-5. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME).
-   Üstünde "Bugünün gökyüzü" etiketi YOK (kullanıcı kaldırttı, başlık yeterli).
-   `src/sky-today.js` = SoulID `transits.ts` motorunun 7 dilli portu (AI yok).
-   Bilinçli sapma: her transit gezegenden tek kart. Kartların altındaki
-   "Bugünkü gökyüzü × doğum haritan" notu KALDIRILDI. Altında **"Günün Yorumu"**
-   (Gökyüzü Raporu gibi: etiket ÜSTTE, kutuda YALNIZCA tarih), aynı açılır-kapanır tasarım (`dailyHoroOpen`):
-   ilk açılışta `generateDailyHoroscope` (AI, consent + günlük hak, gün+burç+dil
-   cache, prompt bu kartları omurga alır), sonra AI harcamadan aç/kapa. Eski
-   ayrı "Daha fazlası" butonu kalktı.
+5. **Günün Pusulası** (kullanıcı isteği, "Yıldızlar bugün sana ne diyor?"
+   kartlarının YERİNE; o kartlar "ilk ekranda uzun" bulundu). Ruh Profili
+   profil sayfasından TAŞINDI (SoulID ProfileCard'dan kaldırıldı, tekrar yok).
+   `dailyCompass()` + `COMPASS_TXT` (7 dil) = `apps/soulid/lib/profile/daily.ts`
+   ile BİREBİR: söz ay evresi diliminden (`moonNow.index`), "Bakman gereken yer"
+   Güneş kapısının HD merkezinden (`transit.sun.center`, 64/64 SoulID ile aynı),
+   "Haftaya bakış" ay büyüyor/küçülüyor. Ay evresi adı ve "Geliş sebebin"
+   BİLEREK YOK. Doğum gerekmez. Altında "Yıldızlar bugün sana ne söylüyor?
+   Öğrenmek için tıkla" → SoulID `index.html?go=sky` → karne `/report?to=sky`
+   → "Bugünün Gökyüzü" bölümüne (`#today-sky`) kaydırır.
+   `src/sky-today.js` ekranda değil ama HÂLÂ hesaplanıyor: Günün Yorumu
+   prompt'u bu kartları omurga alır.
+5b. **Günün Yorumu** (etiket üstte, kutuda yalnızca tarih, açılır-kapanır,
+   `dailyHoroOpen`): ilk açılışta `generateDailyHoroscope` (AI, consent +
+   günlük hak, gün+burç+dil cache), sonra AI harcamadan aç/kapa. Doğum yoksa
+   burçsuz genel okuma.
 6. **Gökyüzü raporu** (kolektif, açılır). Bir ara Ben'e taşındı, geri geldi.
 7. Günün rehberleri → I Ching → İkili uyum (Ben'den taşındı; I Ching ile yeri
    kullanıcı isteğiyle değişti) → **Tarot**.

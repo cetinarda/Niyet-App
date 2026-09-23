@@ -35,7 +35,10 @@ export default function Welcome() {
   // kimliği hiç üretilmez.
   const target = () => {
     try {
-      return new URLSearchParams(window.location.search).get('go') === 'pair' ? '/pair' : '/profil';
+      const go = new URLSearchParams(window.location.search).get('go');
+      // ?go=sky: Sakin Bugün ekranındaki "Yıldızlar bugün sana ne söylüyor"
+      // bağlantısı. Karneyi açar, "Bugünün Gökyüzü" bölümüne kaydırır.
+      return go === 'pair' ? '/pair' : go === 'sky' ? '/report?to=sky' : '/profil';
     } catch { return '/profil'; }
   };
 

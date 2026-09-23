@@ -77,6 +77,18 @@ export default function ReportPage() {
     if (report) writeSakinSummary(report);
   }, [report]);
 
+  // ?to=sky (Sakin Bugün ekranından "Yıldızlar bugün sana ne söylüyor"):
+  // karne yüklenince "Bugünün Gökyüzü" bölümüne bir kez kaydır.
+  const skyScrolled = useRef(false);
+  useEffect(() => {
+    if (!report || skyScrolled.current) return;
+    try {
+      if (new URLSearchParams(window.location.search).get('to') !== 'sky') return;
+      skyScrolled.current = true;
+      setTimeout(() => document.getElementById('today-sky')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+    } catch { /* sessiz */ }
+  }, [report]);
+
   const concepts = useMemo(() => (report ? buildConceptDecks(report) : []), [report]);
 
   if (hydrated && !report) {

@@ -1404,7 +1404,72 @@ const HORO_TXT = {
   loading: { tr:"Gökyüzü senin için okunuyor…", en:"Reading the sky for you…", de:"Der Himmel wird für dich gelesen…", es:"Leyendo el cielo para ti…", pt:"A ler o céu para ti…", fr:"Le ciel est lu pour toi…", ja:"あなたのために空を読み解いています…" },
   err:     { tr:"Yorum alınamadı, birazdan tekrar dene.", en:"Reading unavailable, try again shortly.", de:"Deutung nicht verfügbar, versuche es gleich erneut.", es:"Interpretación no disponible, inténtalo pronto.", pt:"Interpretação indisponível, tenta em breve.", fr:"Interprétation indisponible, réessaie bientôt.", ja:"読み解きを取得できませんでした。少し後にもう一度お試しください。" },
 };
+// ── GÜNÜN PUSULASI (Bugün ekranı) ──────────────────────────────────────────
+// Ruh Profili'nin profil sayfasından TAŞINDI (kullanıcı isteği; SoulID'den
+// kaldırıldı, iki yerde tekrar etmesin). Motor apps/soulid/lib/profile/daily.ts
+// ile BİREBİR: söz = ay evresi dilimi (0..7, hd-transit computeMoonPhase.index,
+// aynı yuvarlama), bakılacak yer = Güneş'in bugünkü HD kapısının MERKEZİ
+// (hd-gates.json "c", SoulID GATE_TO_CENTER ile 64/64 aynı), haftaya bakış =
+// ay büyüyor mu küçülüyor mu. AI yok, doğum bilgisi GEREKMEZ. Ay evresi adı ve
+// "Geliş sebebin" kutusu BİLEREK yok (kullanıcı: "burada gerek yok").
+const COMPASS_TXT = {
+  title:   { tr:"Günün Pusulası", en:"Today's Compass", de:"Kompass des Tages", es:"Brújula del día", pt:"Bússola do dia", fr:"Boussole du jour", ja:"今日のコンパス" },
+  look:    { tr:"Bakman gereken yer", en:"Where to look", de:"Wohin du schauen solltest", es:"Hacia dónde mirar", pt:"Para onde olhar", fr:"Où regarder", ja:"目を向ける場所" },
+  week:    { tr:"Haftaya bakış", en:"The week ahead", de:"Blick auf die Woche", es:"La semana por delante", pt:"A semana que vem", fr:"La semaine à venir", ja:"今週の見通し" },
+  skyQ:    { tr:"Yıldızlar bugün sana ne söylüyor?", en:"What are the stars telling you today?", de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?", pt:"O que te dizem hoje as estrelas?", fr:"Que te disent les étoiles aujourd'hui ?", ja:"今日、星はあなたに何を語る？" },
+  skyTap:  { tr:"Öğrenmek için tıkla", en:"Tap to find out", de:"Tippe, um es zu erfahren", es:"Toca para descubrirlo", pt:"Toca para descobrir", fr:"Touche pour le découvrir", ja:"タップして確かめよう" },
+  advice: [
+    { tr:"Yeni bir tohum ek: küçük bir niyet bugün yeter.", en:"Plant a seed: one small intention is enough today.", de:"Säe einen Samen: eine kleine Absicht genügt heute.", es:"Siembra una semilla: hoy basta una pequeña intención.", pt:"Planta uma semente: hoje basta uma pequena intenção.", fr:"Plante une graine : une petite intention suffit aujourd'hui.", ja:"種をまこう。今日は小さな意図ひとつで十分。" },
+    { tr:"İvmeni nazikçe büyüt; acele etme, yönünü hisset.", en:"Grow your momentum gently; feel your direction, don't rush.", de:"Lass deinen Schwung sanft wachsen; spüre deine Richtung, ohne Eile.", es:"Haz crecer tu impulso con suavidad; siente tu rumbo, sin prisa.", pt:"Faz crescer o teu impulso com suavidade; sente o teu rumo, sem pressa.", fr:"Fais grandir ton élan en douceur ; sens ta direction, sans te presser.", ja:"勢いをやさしく育てよう。急がず、方向を感じて。" },
+    { tr:"Bir eşiğin başındasın: cesaretle tek bir adım at.", en:"You're at a threshold: take one brave step.", de:"Du stehst an einer Schwelle: mach einen mutigen Schritt.", es:"Estás en un umbral: da un paso valiente.", pt:"Estás num limiar: dá um passo corajoso.", fr:"Tu es sur un seuil : fais un pas courageux.", ja:"あなたは入り口に立っている。勇気の一歩を。" },
+    { tr:"Neredeyse doldun; sabrı bırakma, meyve yakın.", en:"Almost full; keep your patience, the fruit is near.", de:"Fast voll; bleib geduldig, die Frucht ist nah.", es:"Casi lleno; no pierdas la paciencia, el fruto está cerca.", pt:"Quase cheio; mantém a paciência, o fruto está perto.", fr:"Presque plein ; garde patience, le fruit est proche.", ja:"満ちる寸前。忍耐を手放さないで、実りは近い。" },
+    { tr:"Bugün dolulukta dur; ne getirdiğini gör ve kutla.", en:"Rest in fullness today; see what you brought and celebrate.", de:"Ruh heute in der Fülle; sieh, was du mitgebracht hast, und feiere.", es:"Descansa hoy en la plenitud; mira lo que trajiste y celébralo.", pt:"Repousa hoje na plenitude; vê o que trouxeste e celebra.", fr:"Repose-toi aujourd'hui dans la plénitude ; vois ce que tu as apporté et célèbre.", ja:"今日は満ちた中に留まろう。もたらしたものを見て、祝おう。" },
+    { tr:"Fazlalığı bırakmaya başla; sadeleştikçe hafiflersin.", en:"Begin releasing excess; you lighten as you simplify.", de:"Beginne, Überflüssiges loszulassen; je einfacher, desto leichter.", es:"Empieza a soltar lo que sobra; te aligeras al simplificar.", pt:"Começa a largar o excesso; ficas mais leve ao simplificar.", fr:"Commence à lâcher le superflu ; tu t'allèges en simplifiant.", ja:"余分を手放し始めよう。シンプルになるほど軽くなる。" },
+    { tr:"Gözden geçir ve affet: kapanışlar da bir armağandır.", en:"Review and forgive: endings are a gift too.", de:"Schau zurück und vergib: auch Abschlüsse sind ein Geschenk.", es:"Revisa y perdona: los cierres también son un regalo.", pt:"Revê e perdoa: os fechos também são um presente.", fr:"Fais le point et pardonne : les fins sont aussi un cadeau.", ja:"振り返り、ゆるそう。終わりもまた贈り物。" },
+    { tr:"Dinlen ve içe dön; boşluk yeni başlangıcı besler.", en:"Rest and turn inward; the void feeds the new beginning.", de:"Ruh dich aus und kehr nach innen; die Leere nährt den Neubeginn.", es:"Descansa y vuelve hacia dentro; el vacío nutre el nuevo comienzo.", pt:"Descansa e volta-te para dentro; o vazio alimenta o novo começo.", fr:"Repose-toi et tourne-toi vers l'intérieur ; le vide nourrit le renouveau.", ja:"休んで内側へ。空白が新しい始まりを育てる。" },
+  ],
+  // HD merkezi -> tema (hd-gates.json "c" kodlarıyla).
+  center: {
+    head:        { tr:"ilham ve merak", en:"inspiration and wonder", de:"Inspiration und Staunen", es:"la inspiración y el asombro", pt:"a inspiração e o encanto", fr:"l'inspiration et l'émerveillement", ja:"ひらめきと好奇心" },
+    ajna:        { tr:"zihin ve kavrayış", en:"the mind and insight", de:"Geist und Einsicht", es:"la mente y la comprensión", pt:"a mente e a compreensão", fr:"l'esprit et la compréhension", ja:"思考と洞察" },
+    throat:      { tr:"ifade ve eylem", en:"expression and action", de:"Ausdruck und Handeln", es:"la expresión y la acción", pt:"a expressão e a ação", fr:"l'expression et l'action", ja:"表現と行動" },
+    g:           { tr:"kimlik ve yön", en:"identity and direction", de:"Identität und Richtung", es:"la identidad y el rumbo", pt:"a identidade e o rumo", fr:"l'identité et la direction", ja:"自分らしさと方向" },
+    heart:       { tr:"irade ve öz-değer", en:"willpower and self-worth", de:"Willenskraft und Selbstwert", es:"la voluntad y el valor propio", pt:"a vontade e o valor próprio", fr:"la volonté et l'estime de soi", ja:"意志と自己価値" },
+    solarPlexus: { tr:"duygular ve arzu", en:"emotions and desire", de:"Gefühle und Verlangen", es:"las emociones y el deseo", pt:"as emoções e o desejo", fr:"les émotions et le désir", ja:"感情と願い" },
+    sacral:      { tr:"yaşam gücü ve yanıt", en:"life force and response", de:"Lebenskraft und Resonanz", es:"la fuerza vital y la respuesta", pt:"a força vital e a resposta", fr:"la force vitale et la réponse", ja:"生命力と反応" },
+    spleen:      { tr:"sezgi ve iyi oluş", en:"intuition and well-being", de:"Intuition und Wohlbefinden", es:"la intuición y el bienestar", pt:"a intuição e o bem-estar", fr:"l'intuition et le bien-être", ja:"直感と心地よさ" },
+    root:        { tr:"ivme ve dinginlik", en:"momentum and stillness", de:"Schwung und Stille", es:"el impulso y la calma", pt:"o impulso e a calma", fr:"l'élan et le calme", ja:"勢いと静けさ" },
+  },
+  // "Bakman gereken yer" cümlesi. Edat seçimi birleşme yapmayacak şekilde
+  // (fr "vers", pt "para", es "hacia"): tema öbeği artikelle geliyor.
+  focus: {
+    tr: (th) => `${th.charAt(0).toLocaleUpperCase("tr")}${th.slice(1)} alanına bak: bugün burada küçük bir netlik seni ileri taşır.`,
+    en: (th) => `Look to ${th}: a little clarity here carries you forward today.`,
+    de: (th) => `Schau auf ${th}: ein wenig Klarheit hier bringt dich heute weiter.`,
+    es: (th) => `Mira hacia ${th}: un poco de claridad aquí te impulsa hoy.`,
+    pt: (th) => `Olha para ${th}: um pouco de clareza aqui leva-te em frente hoje.`,
+    fr: (th) => `Regarde vers ${th} : un peu de clarté ici te fait avancer aujourd'hui.`,
+    ja: (th) => `${th}に目を向けて。ここでの小さな明晰さが今日あなたを前へ運ぶ。`,
+  },
+  waxing: { tr:"Bu hafta ivme büyüyor: başlat, iste, alan aç. Dolunaya doğru netleşirsin.", en:"Momentum builds this week: start, ask, make space. You clarify toward the full moon.", de:"Diese Woche wächst der Schwung: beginne, bitte, schaffe Raum. Zum Vollmond hin wirst du klarer.", es:"Esta semana crece el impulso: empieza, pide, abre espacio. Hacia la luna llena te aclaras.", pt:"Esta semana o impulso cresce: começa, pede, abre espaço. Rumo à lua cheia ganhas clareza.", fr:"Cette semaine, l'élan grandit : commence, demande, fais de la place. Vers la pleine lune, tout s'éclaircit.", ja:"今週は勢いが増していく。始め、求め、余白をつくろう。満月に向かって明確になる。" },
+  waning: { tr:"Bu hafta sadeleşme zamanı: bırak, tamamla, dinlen. Yeni aya doğru boşluk aç.", en:"A week to simplify: release, complete, rest. Make space toward the new moon.", de:"Eine Woche zum Vereinfachen: loslassen, abschließen, ruhen. Schaffe Raum zum Neumond hin.", es:"Una semana para simplificar: suelta, completa, descansa. Abre espacio hacia la luna nueva.", pt:"Uma semana para simplificar: larga, completa, descansa. Abre espaço rumo à lua nova.", fr:"Une semaine pour simplifier : lâche, termine, repose-toi. Fais de la place vers la nouvelle lune.", ja:"シンプルにする一週間。手放し、終え、休もう。新月に向けて余白をつくろう。" },
+};
+// moonNow (computeMoonPhase) + transit (computeTransit) -> pusula. Biri yoksa null.
+function dailyCompass(moonNow, transit, lang) {
+  if (!moonNow || typeof moonNow.index !== "number" || !transit || !transit.sun) return null;
+  const L = COMPASS_TXT.focus[lang] ? lang : "en";
+  const theme = pickLang(COMPASS_TXT.center[transit.sun.center] || { tr:"akış", en:"flow", de:"Fluss", es:"el flujo", pt:"o fluxo", fr:"le flux", ja:"流れ" }, lang);
+  return {
+    advice: pickLang(COMPASS_TXT.advice[moonNow.index] || COMPASS_TXT.advice[0], lang),
+    focus: COMPASS_TXT.focus[L](theme),
+    week: pickLang(moonNow.angle < 180 ? COMPASS_TXT.waxing : COMPASS_TXT.waning, lang),
+  };
+}
+
 // "YILDIZLAR BUGÜN SANA NE DİYOR?" bölümü (Bugün ekranı, src/sky-today.js).
+// ⚠️ ARTIK EKRANDA DEĞİL (kullanıcı: "ilk ekranda uzun"): yerine Günün Pusulası
+// + Ruh Profili karnesine ("?go=sky") bağlantı. Motor (skyToday) hâlâ hesaplanıyor
+// çünkü Günün Yorumu AI prompt'u bu kartları omurga olarak kullanıyor.
 const SKYTODAY_TXT = {
   eyebrow: { tr:"Bugünün gökyüzü", en:"Today's sky", de:"Himmel heute", es:"El cielo de hoy", pt:"O céu de hoje", fr:"Le ciel du jour", ja:"今日の空" },
   title:   { tr:"Yıldızlar bugün sana ne diyor?", en:"What are the stars telling you today?", de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?", pt:"O que te dizem hoje as estrelas?", fr:"Que te disent les étoiles aujourd'hui ?", ja:"今日、星はあなたに何を語る？" },
@@ -15680,76 +15745,81 @@ Direction (where the energy flows). Rules:
               </div>
             </section>
 
-            {/* ── 4) YILDIZLAR BUGÜN SANA NE DİYOR? ── ayrı başlık, gökyüzü
-                raporuna gömülmez (kullanıcı isteği). natal × transit kartlar
-                (src/sky-today.js) + altta açılır "Günün Yorumu" (uzun AI okuması).
-                Üstteki "Bugünün gökyüzü" etiketi KALDIRILDI (kullanıcı: "yıldızlar
-                başlığı yeterli"), serif başlık tek başına duruyor. */}
-            <section style={SEC}>
-              <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:30,lineHeight:1.15,color:INK,margin:"0 4px 16px" }}>
-                {pickLang(SKYTODAY_TXT.title, lang)}
-              </div>
-              {!birthDate ? (
-                <BirthLocked msg={pickLang(BIRTH_TXT.needKnow, lang)} />
-              ) : skyToday === null ? (
-                <div style={{ height:60 }} />
-              ) : (<>
-                <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
-                  {skyToday.length === 0 && (
-                    <div style={{ ...SURF,padding:"16px 18px",fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>
-                      {pickLang(SKYTODAY_TXT.quiet, lang)}
+            {/* ── 4) GÜNÜN PUSULASI (kullanıcı isteği) ─────────────────────────
+                Eskiden burada "Yıldızlar bugün sana ne diyor?" kartları vardı;
+                kullanıcı: "ilk ekranda uzun". Yerine Ruh Profili'nden TAŞINAN
+                pusula: etiket + söz (serif) + iki açık kutu (bakman gereken yer,
+                haftaya bakış). Ay evresi adı ve "Geliş sebebin" BİLEREK yok.
+                Altında yıldızlara bağlantı: Ruh Profili karnesini açar ve
+                "Bugünün Gökyüzü" bölümüne kaydırır (?go=sky). Doğum gerekmez. */}
+            {(() => {
+              const cp = dailyCompass(moonNow, transit, lang);
+              return (
+                <section style={SEC}>
+                  {eyebrow(pickLang(COMPASS_TXT.title, lang))}
+                  {cp ? (<>
+                    <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:25,lineHeight:1.3,color:INK,margin:"0 4px 16px" }}>
+                      “{cp.advice}”
                     </div>
-                  )}
-                  {skyToday.map(it => {
-                    const c = { blend:GOLD, flow:"#8fd6b0", tension:"#e8a08a" }[it.tone] || LAV;
-                    return (
-                      <div key={it.id} style={{ ...SURF,display:"flex",gap:14,alignItems:"flex-start",padding:"16px 16px" }}>
-                        {icon(it.glyph, c, 40, 19)}
-                        <span style={{ flex:1,minWidth:0 }}>
-                          {label(it.title, c)}
-                          <span style={{ display:"block",fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{it.body}</span>
-                        </span>
+                    <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
+                      <div style={{ ...SURF,padding:"15px 18px" }}>
+                        {label(pickLang(COMPASS_TXT.look, lang), GOLD)}
+                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.focus}</div>
                       </div>
-                    );
-                  })}
-                </div>
-                {!skyTimeKnown && (
-                  <div style={{ textAlign:"center",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:12 }}>{pickLang(SKYTODAY_TXT.noTime, lang)}</div>
-                )}
-                {/* "Bugünkü gökyüzü × senin doğum haritan" alt notu KALDIRILDI
-                    (kullanıcı isteği). */}
-                {/* GÜNÜN YORUMU: Gökyüzü Raporu ile AYNI kuruluş (kullanıcı isteği):
-                    "Günün Yorumu" ÜSTTE etiket, kutuda YALNIZCA tarih. Başlık satırı
-                    aç/kapa, içerik kartın içinde açılır. Aynı gökyüzü + kartlar ->
-                    uzun günlük okuma (AI, consent + günlük hak; gün+burç+dil cache).
-                    Yorum yoksa İLK açılışta üretilir; varsa AI harcanmadan açılıp kapanır. */}
-                <div style={{ marginTop:22 }}>{eyebrow(pickLang(HORO_TXT.title, lang))}</div>
-                <div style={{ ...SURF,overflow:"hidden" }}>
-                  <button onClick={()=>{ try{haptic();}catch(_){}
-                      if (!dailyHoro && !dailyHoroLoading) requireAiConsent(() => { setDailyHoroOpen(true); generateDailyHoroscope(); });
-                      else setDailyHoroOpen(v => !v); }}
-                    style={{ ...BTN,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                    {icon("✦", GOLD, 40, 16)}
-                    <span style={{ flex:1,minWidth:0 }}>
-                      <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300 }}>{dailyHoroDateLine()}</span>
-                    </span>
-                    {chevron(dailyHoroOpen ? 90 : 0)}
-                  </button>
-                  {dailyHoroOpen && (
-                    <div style={{ padding:"14px 18px 18px",borderTop:"1px solid rgba(184,164,216,0.12)",animation:"fadeIn 0.5s ease" }}>
-                      {dailyHoroLoading ? (
-                        <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"6px 0",fontStyle:"italic",fontFamily:INTER }}>
-                          {pickLang(HORO_TXT.loading, lang)}
-                        </div>
-                      ) : dailyHoro && dailyHoro.text ? (
-                        <div style={{ fontSize:15,lineHeight:1.85,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
-                      ) : (
-                        <div style={{ textAlign:"center",color:MUTE,fontSize:13,padding:"6px 0",fontFamily:INTER }}>{pickLang(HORO_TXT.err, lang)}</div>
-                      )}
+                      <div style={{ ...SURF,padding:"15px 18px" }}>
+                        {label(pickLang(COMPASS_TXT.week, lang), GOLD)}
+                        <div style={{ fontSize:14.5,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{cp.week}</div>
+                      </div>
                     </div>
+                  </>) : (
+                    <div style={{ height:90 }} />
                   )}
-                </div>
-              </>)}
+                  <button onClick={()=>{ try{haptic();}catch(_){}
+                      handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=sky", color:"#e8c07a" }); }}
+                    style={{ ...BTN,...SURF,marginTop:10,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                    {icon("✧", LAV, 40, 18)}
+                    <span style={{ flex:1,minWidth:0 }}>
+                      <span style={{ display:"block",fontSize:15.5,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(COMPASS_TXT.skyQ, lang)}</span>
+                      <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2 }}>{pickLang(COMPASS_TXT.skyTap, lang)}</span>
+                    </span>
+                    {chevron()}
+                  </button>
+                </section>
+              );
+            })()}
+
+            {/* ── 4b) GÜNÜN YORUMU ── Gökyüzü Raporu ile AYNI kuruluş: etiket
+                üstte, kutuda yalnızca tarih, açılır-kapanır. Uzun AI okuması
+                (consent + günlük hak; gün+burç+dil cache). Prompt, ekranda
+                gösterilmese de hesaplanan natal × transit kartlarını (skyToday)
+                omurga alır. Doğum yoksa burçsuz genel okuma üretir. */}
+            <section style={SEC}>
+              {eyebrow(pickLang(HORO_TXT.title, lang))}
+              <div style={{ ...SURF,overflow:"hidden" }}>
+                <button onClick={()=>{ try{haptic();}catch(_){}
+                    if (!dailyHoro && !dailyHoroLoading) requireAiConsent(() => { setDailyHoroOpen(true); generateDailyHoroscope(); });
+                    else setDailyHoroOpen(v => !v); }}
+                  style={{ ...BTN,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                  {icon("✦", GOLD, 40, 16)}
+                  <span style={{ flex:1,minWidth:0 }}>
+                    <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300 }}>{dailyHoroDateLine()}</span>
+                  </span>
+                  {chevron(dailyHoroOpen ? 90 : 0)}
+                </button>
+                {dailyHoroOpen && (
+                  <div style={{ padding:"14px 18px 18px",borderTop:"1px solid rgba(184,164,216,0.12)",animation:"fadeIn 0.5s ease" }}>
+                    {dailyHoroLoading ? (
+                      <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"6px 0",fontStyle:"italic",fontFamily:INTER }}>
+                        {pickLang(HORO_TXT.loading, lang)}
+                      </div>
+                    ) : dailyHoro && dailyHoro.text ? (
+                      <div style={{ fontSize:15,lineHeight:1.85,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
+                    ) : (
+                      <div style={{ textAlign:"center",color:MUTE,fontSize:13,padding:"6px 0",fontFamily:INTER }}>{pickLang(HORO_TXT.err, lang)}</div>
+                    )}
+                  </div>
+                )}
+              </div>
             </section>
 
             {/* ── 5) GÖKYÜZÜ RAPORU (kolektif) ── açılır-kapanır tek kart. Kapalıyken

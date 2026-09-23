@@ -39,7 +39,7 @@ export function TodaySky({ report }: { report: GalacticReport }) {
   });
 
   return (
-    <section className="mt-12 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0f1230] via-[#161a3d] to-[#0b0524] p-6 md:p-8">
+    <section id="today-sky" className="mt-12 scroll-mt-24 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0f1230] via-[#161a3d] to-[#0b0524] p-6 md:p-8">
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.4em] text-gold">

@@ -1,10 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Link } from '@/components/Link';
 import type { GalacticReport, ZodiacSign } from '@/lib/types';
-import { buildProfileDaily } from '@/lib/profile/daily';
-import { MoonDisc } from '@/components/MoonDisc';
 import { SIGN_GLYPHS, SIGN_NAMES_TR } from '@/lib/content/astrology-content';
 import { useT } from '@/lib/i18n';
 
@@ -32,7 +29,9 @@ function SignPill({ label, sign, tr }: { label: string; sign: ZodiacSign; tr: bo
  * "Profilim": karnenin en üstündeki kişisel merkez:
  *  1) Doğum bilgilerin (düzenlenebilir, yanlış tarih burada görünür/düzeltilir)
  *  2) Temel bilgiler (Güneş / Ay / Yükselen / Yıldız Kökeni / Yaşam Yolu)
- *  3) Günün Pusulası (Ay evresi + geliş sebebi + söz + odak + haftaya bakış)
+ *  (Günün Pusulası buradan Sakin'in BUGÜN ekranına TAŞINDI, kullanıcı isteği:
+ *   iki yerde tekrar etmesin. Motor: lib/profile/daily.ts, host portu
+ *   src/App.jsx COMPASS_TXT / dailyCompass.)
  *
  * Human Design ögeleri BİLEREK YOK: Sakin Tasarım uygulamasının asıl konusu,
  * burada tekrarlanması iki uygulamayı birbirinin kopyası gösteriyordu.
@@ -43,11 +42,6 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
   const b = report.birth;
   const sun = report.chart.planets.find((p) => p.name === 'Sun');
   const moon = report.chart.planets.find((p) => p.name === 'Moon');
-
-  const daily = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    return buildProfileDaily(report, new Date());
-  }, [report]);
 
   const timeText = b.birthTimeKnown === false
     ? (tr ? 'saat bilinmiyor' : 'time unknown')
@@ -123,59 +117,6 @@ export function ProfileCard({ report }: { report: GalacticReport }) {
         </div>
       </div>
 
-      {/* 3) GÜNÜN PUSULASI: geliş sebebi + söz + odak + hafta */}
-      {daily ? (
-        <div className="mt-4 overflow-hidden rounded-3xl border border-gold/30 bg-gradient-to-br from-[#0f1230] via-[#161a3d] to-[#0b0524] p-6 md:p-7">
-          <div className="flex items-start gap-4">
-            <MoonDisc fraction={daily.moon.fraction} waxing={daily.moon.waxing} size={52} />
-            <div className="flex-1">
-              <p className="text-[10px] font-bold uppercase tracking-[0.35em] text-gold">
-                {tr ? 'GÜNÜN PUSULASI' : "TODAY'S COMPASS"}
-              </p>
-              <p className="mt-1 text-[15px] leading-relaxed text-ink">
-                “{tr ? daily.advice.tr : daily.advice.en}”
-              </p>
-              <p className="mt-1 text-[11px] text-faint">
-                {tr ? daily.moon.name.tr : daily.moon.name.en}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            {/* HD GÜNLÜK TRANSİT KARTI KALDIRILDI: aynı bilgi Sakin Tasarım'da
-                ve Sakin'in "Ben" ekranındaki "Human Design günün geçişi"
-                bloğunda zaten var, yani ÜÇ yerde tekrarlanıyordu.
-                Yerine SoulID'ye özgü "geliş sebebi" (görevlerin ilki) kondu. */}
-            <div className="rounded-2xl border border-cosmic/30 bg-cosmic/[0.06] p-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cosmic">
-                {tr ? 'GELİŞ SEBEBİN' : 'WHY YOU CAME'}
-              </p>
-              <p className="mt-1.5 text-[13px] leading-snug text-ink">
-                {report.missions?.[0]?.title || report.origin.archetype}
-              </p>
-              <p className="mt-1.5 text-[11px] text-faint">
-                {report.origin.starSystem}
-              </p>
-            </div>
-
-            {/* Bakılacak yer */}
-            <div className="rounded-2xl border border-panelBorder bg-bg/40 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
-                {tr ? 'BAKMAN GEREKEN YER' : 'WHERE TO LOOK'}
-              </p>
-              <p className="mt-1.5 text-[13px] leading-snug text-ink">{tr ? daily.focus.tr : daily.focus.en}</p>
-            </div>
-
-            {/* Haftaya bakış */}
-            <div className="rounded-2xl border border-panelBorder bg-bg/40 p-4">
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">
-                {tr ? 'HAFTAYA BAKIŞ' : 'THE WEEK AHEAD'}
-              </p>
-              <p className="mt-1.5 text-[13px] leading-snug text-ink">{tr ? daily.week.tr : daily.week.en}</p>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }
