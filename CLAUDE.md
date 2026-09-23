@@ -429,6 +429,37 @@ Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
 - Doğrulama: alt bar sırası, HAZIRIM→Bugün, Güne Başla→Bağlan, tekrar açılış
   Bugün (aktif sekme BUGÜN, giriş yok) Puppeteer ile doğrulandı, hata yok.
 
+## ☀️ BUGÜN EKRANI YAPISI (kullanıcı isteği, Eyl 2026)
+
+Bugün = tekrar giren kullanıcının İLK ekranı, amaç "bugüne dair çekici, uygulamayı
+kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden önce sor:
+1. **Karşılama:** saate göre selam + ad, yerel tarih, **günün sayısı** (doğum
+   varsa kişisel gün numerolojisi `personalDayNumber`, yoksa `universalDayNumber`,
+   `DAY_NUMBER_TXT` 9 sayı × 7 dil), **seri teşviki** (`streakData`: bugün
+   bağlandıysa ✓, yoksa "bağlanırsan N+1", tıklayınca Bağlan).
+2. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME,
+   kullanıcı açıkça istedi). `src/sky-today.js`: SoulID `transits.ts` motorunun
+   7 dilli portu (AI yok, natal × transit). Günün Odağı (Ay'ın natal evi, saat +
+   şehir şart) + en sıkı açılar. Ay evresi BURADA YOK (gökyüzü raporunda var).
+   Bilinçli sapma: her transit gezegenden tek kart (SoulID'de aynı başlık x2
+   çıkabiliyordu). Altında **"Daha fazlası"** = `generateDailyHoroscope` (AI,
+   consent + günlük hak, gün+burç+dil cache), prompt bu kartları omurga alır.
+3. **Gökyüzü raporu** (kolektif, açılır, ay evresi başlıkta). Bir ara Ben'e
+   taşındı, kullanıcı geri istedi: Bugün'de kalır.
+4. **Güncel geçiş** (HD Güneş/Ay kapısı). Eski adı "Günün geçişi" YANLIŞTI:
+   Güneş kapısı ~5-6 gün, Ay kapısı gün içinde değişir; süre iddia etme.
+5. Günün rehberleri → **İkili uyum** (Ben'den taşındı) → I Ching →
+   **Günün tarot kartı** → Güne Başla.
+
+**TAROT GÖRSELLERİ:** `public/tarot/<kart-id>.png` (78) + `back.png`, üreten
+`scripts/build-tarot-art.py` (Pillow). Kaynak: 1909 orijinal deste taramaları
+(Wikimedia Commons, kamu malı). ⚠️ "Rider-Waite" adı başka firmanın MARKASI,
+arayüzde KULLANMA. Stil: başlık şeridi kırpılır (ad arayüzde 7 dilde), gece
+mor/altın tonlama %50, 90x140 px 32 renk, arayüz `image-rendering:pixelated` ile
+TAM 2x gösterir (180x280; tamsayı olmayan ölçek pikselleri bozar). Kart arkası
+bize ait (altın piksel hilal). Toplam ~590 KB. Ters kart görseli 180° döner,
+metinler düz kalır.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:

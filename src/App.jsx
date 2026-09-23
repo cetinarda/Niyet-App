@@ -1138,7 +1138,7 @@ const getFreqData = (lang) => {
   });
 };
 
-// Burç glifleri: "Ben" ekranındaki ikili uyum butonunda kullanıcının kendi
+// Burç glifleri: Bugün ekranındaki ikili uyum butonunda kullanıcının kendi
 // burcunu göstermek için. zodiacSign() TÜRKÇE ad döndürüyor, eşleme ona göre
 // (anahtar Türkçe, glif her dilde aynı).
 const ZODIAC_GLYPH = {
@@ -1194,7 +1194,18 @@ const TAROT_TXT = {
   again:   { tr:"Kart yarın yenilenir", en:"The card renews tomorrow", de:"Die Karte erneuert sich morgen", es:"La carta se renueva mañana", pt:"A carta renova-se amanhã", fr:"La carte se renouvelle demain", ja:"カードは明日新しくなる" },
   major:   { tr:"Büyük Arkana", en:"Major Arcana", de:"Große Arkana", es:"Arcanos Mayores", pt:"Arcanos Maiores", fr:"Arcanes Majeurs", ja:"大アルカナ" },
   minor:   { tr:"Küçük Arkana", en:"Minor Arcana", de:"Kleine Arkana", es:"Arcanos Menores", pt:"Arcanos Menores", fr:"Arcanes Mineurs", ja:"小アルカナ" },
+  // Küçük arkana renkleri. Veri setindeki `suit` alanı yalnızca Türkçe, o yüzden
+  // ad kart ID'sinden (cu/pe/sw/wa) bu tablodan okunur.
+  cu: { tr:"Kupa", en:"Cups", de:"Kelche", es:"Copas", pt:"Copas", fr:"Coupes", ja:"カップ" },
+  pe: { tr:"Pentagram", en:"Pentacles", de:"Münzen", es:"Oros", pt:"Ouros", fr:"Deniers", ja:"ペンタクル" },
+  sw: { tr:"Kılıç", en:"Swords", de:"Schwerter", es:"Espadas", pt:"Espadas", fr:"Épées", ja:"ソード" },
+  wa: { tr:"Asa", en:"Wands", de:"Stäbe", es:"Bastos", pt:"Paus", fr:"Bâtons", ja:"ワンド" },
 };
+// Kart ID'sinden renk anahtarı: "tr_cu_05" -> cu, "tr_co_ki_wa" -> wa, büyük arkana -> null.
+function tarotSuitKey(id) {
+  const m = /^tr_(?:co_[a-z]{2}_)?(cu|pe|sw|wa)(?:_|$)/.exec(id);
+  return m ? m[1] : null;
+}
 // GÜNLÜK YORUM ("daha fazlası"): gökyüzü raporunun altındaki uzun günlük okuma.
 const HORO_TXT = {
   more:    { tr:"Daha fazlası", en:"Read more", de:"Mehr lesen", es:"Ver más", pt:"Ver mais", fr:"En savoir plus", ja:"もっと読む" },
@@ -1202,6 +1213,53 @@ const HORO_TXT = {
   loading: { tr:"Gökyüzü senin için okunuyor…", en:"Reading the sky for you…", de:"Der Himmel wird für dich gelesen…", es:"Leyendo el cielo para ti…", pt:"A ler o céu para ti…", fr:"Le ciel est lu pour toi…", ja:"あなたのために空を読み解いています…" },
   err:     { tr:"Yorum alınamadı, birazdan tekrar dene.", en:"Reading unavailable, try again shortly.", de:"Deutung nicht verfügbar, versuche es gleich erneut.", es:"Interpretación no disponible, inténtalo pronto.", pt:"Interpretação indisponível, tenta em breve.", fr:"Interprétation indisponible, réessaie bientôt.", ja:"読み解きを取得できませんでした。少し後にもう一度お試しください。" },
 };
+// "YILDIZLAR BUGÜN SANA NE DİYOR?" bölümü (Bugün ekranı, src/sky-today.js).
+const SKYTODAY_TXT = {
+  eyebrow: { tr:"Bugünün gökyüzü", en:"Today's sky", de:"Himmel heute", es:"El cielo de hoy", pt:"O céu de hoje", fr:"Le ciel du jour", ja:"今日の空" },
+  title:   { tr:"Yıldızlar bugün sana ne diyor?", en:"What are the stars telling you today?", de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?", pt:"O que te dizem hoje as estrelas?", fr:"Que te disent les étoiles aujourd'hui ?", ja:"今日、星はあなたに何を語る？" },
+  footer:  { tr:"Bugünkü gökyüzü × senin doğum haritan. Her gün yenilenir.", en:"Today's sky × your birth chart. Renews every day.", de:"Der Himmel von heute × dein Geburtshoroskop. Jeden Tag neu.", es:"El cielo de hoy × tu carta natal. Se renueva cada día.", pt:"O céu de hoje × o teu mapa natal. Renova-se todos os dias.", fr:"Le ciel du jour × ton thème natal. Renouvelé chaque jour.", ja:"今日の空 × あなたの出生図。毎日更新。" },
+  quiet:   { tr:"Bugün gökyüzü sana sessiz: haritana değen büyük bir açı yok. Kendi ritminle ilerle.", en:"The sky is quiet for you today: no major aspect touches your chart. Move at your own rhythm.", de:"Der Himmel ist heute still für dich: kein großer Aspekt berührt dein Horoskop. Geh deinen eigenen Rhythmus.", es:"Hoy el cielo está en calma para ti: ningún aspecto mayor toca tu carta. Avanza a tu ritmo.", pt:"Hoje o céu está calmo para ti: nenhum aspeto maior toca o teu mapa. Avança ao teu ritmo.", fr:"Le ciel est calme pour toi aujourd'hui : aucun aspect majeur ne touche ton thème. Avance à ton rythme.", ja:"今日の空はあなたに静か。出生図に触れる大きなアスペクトはない。自分のリズムで進もう。" },
+  noTime:  { tr:"Doğum saatini ve şehrini eklersen Günün Odağı da açılır.", en:"Add your birth time and city to unlock Today's Focus too.", de:"Trag Geburtszeit und Ort ein, dann öffnet sich auch der Fokus des Tages.", es:"Añade tu hora y ciudad de nacimiento para abrir también el Foco del día.", pt:"Adiciona a hora e a cidade de nascimento para abrir também o Foco do dia.", fr:"Ajoute ton heure et ta ville de naissance pour ouvrir aussi le Focus du jour.", ja:"出生時刻と都市を入力すると「今日の焦点」も開きます。" },
+};
+// BUGÜN KARŞILAMA ALANI: selamlama + kişisel gün sayısı + seri teşviki.
+// Kişisel gün (numeroloji): kişisel yıl -> kişisel ay -> kişisel gün, 1-9'a
+// indirgenir. Doğum tarihi yoksa takvim tarihinin rakamlarından "bugünün sayısı".
+const TODAY_HERO_TXT = {
+  greet: [
+    { tr:"Günaydın", en:"Good morning", de:"Guten Morgen", es:"Buenos días", pt:"Bom dia", fr:"Bonjour", ja:"おはよう" },
+    { tr:"İyi günler", en:"Good afternoon", de:"Guten Tag", es:"Buenas tardes", pt:"Boa tarde", fr:"Bon après-midi", ja:"こんにちは" },
+    { tr:"İyi akşamlar", en:"Good evening", de:"Guten Abend", es:"Buenas tardes", pt:"Boa noite", fr:"Bonsoir", ja:"こんばんは" },
+    { tr:"İyi geceler", en:"Good night", de:"Gute Nacht", es:"Buenas noches", pt:"Boa noite", fr:"Bonne nuit", ja:"おやすみ" },
+  ],
+  personalDay:  { tr:"Kişisel günün", en:"Your personal day", de:"Dein persönlicher Tag", es:"Tu día personal", pt:"O teu dia pessoal", fr:"Ton jour personnel", ja:"あなたのパーソナルデー" },
+  universalDay: { tr:"Bugünün sayısı", en:"Today's number", de:"Zahl des Tages", es:"Número del día", pt:"Número do dia", fr:"Nombre du jour", ja:"今日の数" },
+  streakToday:  { tr:"Bugün bağlandın. Serin {n} gün.", en:"You connected today. {n}-day streak.", de:"Heute verbunden. Serie: {n}.", es:"Hoy te conectaste. Racha: {n}.", pt:"Ligaste-te hoje. Série: {n}.", fr:"Lien du jour fait. Série : {n}.", ja:"今日つながりました。連続{n}日。" },
+  streakAlive:  { tr:"Serin {n} gün. Bugün bağlanırsan {m} olur.", en:"{n}-day streak. Connect today to make it {m}.", de:"Deine Serie steht bei {n}. Verbinde dich heute, dann wird sie {m}.", es:"Racha: {n}. Conéctate hoy y será {m}.", pt:"Série: {n}. Liga-te hoje e passa a {m}.", fr:"Série : {n}. Connecte-toi aujourd'hui pour passer à {m}.", ja:"連続{n}日。今日つながれば{m}日に。" },
+  streakZero:   { tr:"Bugün ilk adımı at, serin başlasın.", en:"Take the first step today and start your streak.", de:"Mach heute den ersten Schritt und starte deine Serie.", es:"Da hoy el primer paso y empieza tu racha.", pt:"Dá hoje o primeiro passo e começa a tua série.", fr:"Fais le premier pas aujourd'hui et lance ta série.", ja:"今日最初の一歩を。連続記録が始まる。" },
+};
+// Sayı -> [anahtar kelime, tek cümle]. Kısa tutuldu: karşılama bir bakışta okunmalı.
+const DAY_NUMBER_TXT = {
+  1: { tr:["Başlangıç","Yeni bir şey başlatmak için güçlü bir gün. İlk adımı sen at."], en:["Beginnings","A strong day to start something new. Take the first step."], de:["Anfang","Ein starker Tag, um etwas Neues zu beginnen. Mach den ersten Schritt."], es:["Comienzo","Un día fuerte para empezar algo nuevo. Da tú el primer paso."], pt:["Início","Um dia forte para começar algo novo. Dá tu o primeiro passo."], fr:["Commencement","Un jour fort pour lancer quelque chose. Fais le premier pas."], ja:["始まり","新しいことを始めるのに力強い日。最初の一歩を踏み出そう。"] },
+  2: { tr:["Denge","Acele etme, iş birliği ve dinlemek bugün kapı açar."], en:["Balance","Don't rush. Cooperation and listening open doors today."], de:["Balance","Nichts überstürzen. Zusammenarbeit und Zuhören öffnen heute Türen."], es:["Equilibrio","Sin prisa. Cooperar y escuchar abre puertas hoy."], pt:["Equilíbrio","Sem pressa. Cooperar e ouvir abre portas hoje."], fr:["Équilibre","Sans hâte. Coopérer et écouter ouvre des portes aujourd'hui."], ja:["調和","急がないで。協力と傾聴が今日の扉を開く。"] },
+  3: { tr:["İfade","İçindekini söze, sanata ya da neşeye dök. Paylaştıkça çoğalır."], en:["Expression","Pour what's inside into words, art or joy. Sharing multiplies it."], de:["Ausdruck","Gib deinem Inneren Worte, Kunst oder Freude. Geteilt wird es mehr."], es:["Expresión","Vuelca lo que llevas dentro en palabras, arte o alegría. Compartido, crece."], pt:["Expressão","Põe o que tens dentro em palavras, arte ou alegria. Partilhado, cresce."], fr:["Expression","Mets ce que tu portes en mots, en art ou en joie. Partagé, ça grandit."], ja:["表現","内にあるものを言葉や芸術、喜びに。分かち合うほど増える。"] },
+  4: { tr:["Temel","Küçük ama düzenli adımların günü. Yarım kalan bir işi bitir."], en:["Foundations","A day for small, steady steps. Finish something left undone."], de:["Fundament","Ein Tag für kleine, stetige Schritte. Bring etwas Liegengebliebenes zu Ende."], es:["Cimientos","Un día de pasos pequeños y constantes. Termina algo pendiente."], pt:["Alicerces","Um dia de passos pequenos e constantes. Termina algo pendente."], fr:["Fondations","Un jour de petits pas réguliers. Termine ce qui traîne."], ja:["土台","小さく着実な一歩の日。やりかけのことを仕上げよう。"] },
+  5: { tr:["Değişim","Rutinin dışına bir adım at, bugün merak yol gösterir."], en:["Change","Step outside your routine; curiosity leads the way today."], de:["Wandel","Verlass deine Routine; heute führt die Neugier."], es:["Cambio","Sal de tu rutina; hoy la curiosidad guía."], pt:["Mudança","Sai da rotina; hoje a curiosidade guia."], fr:["Changement","Sors de ta routine ; aujourd'hui, la curiosité guide."], ja:["変化","いつもの流れから一歩外へ。今日は好奇心が道しるべ。"] },
+  6: { tr:["Şefkat","Sevdiklerine ve kendine özen göster. Kalp ön planda."], en:["Care","Tend to your loved ones and yourself. The heart comes first."], de:["Fürsorge","Kümmere dich um deine Liebsten und um dich. Das Herz zuerst."], es:["Cuidado","Cuida de los tuyos y de ti. El corazón primero."], pt:["Cuidado","Cuida de quem amas e de ti. O coração primeiro."], fr:["Soin","Prends soin de tes proches et de toi. Le cœur d'abord."], ja:["思いやり","大切な人と自分をいたわろう。心が第一。"] },
+  7: { tr:["İçe dönüş","Yavaşla ve sezgine kulak ver. Cevaplar içeride."], en:["Inward","Slow down and listen to your intuition. The answers are within."], de:["Innenschau","Werde langsamer und hör auf deine Intuition. Die Antworten liegen in dir."], es:["Interior","Ve más despacio y escucha tu intuición. Las respuestas están dentro."], pt:["Interior","Abranda e ouve a tua intuição. As respostas estão dentro."], fr:["Intériorité","Ralentis et écoute ton intuition. Les réponses sont en toi."], ja:["内省","ゆっくりと直感に耳を澄ませて。答えは内側にある。"] },
+  8: { tr:["Güç","Emeğinin karşılığını istemekten çekinme. Net ol."], en:["Power","Don't hesitate to ask for what your effort is worth. Be clear."], de:["Kraft","Fordere ruhig ein, was deine Mühe wert ist. Sei klar."], es:["Fuerza","No dudes en pedir lo que vale tu esfuerzo. Sé claro."], pt:["Força","Não hesites em pedir o que o teu esforço vale. Sê claro."], fr:["Force","N'hésite pas à demander ce que vaut ton effort. Sois clair."], ja:["力","努力に見合うものを求めることをためらわないで。はっきりと。"] },
+  9: { tr:["Tamamlanma","Bir şeyi bırak, bir döngüyü kapat. Yeniye yer açılıyor."], en:["Completion","Let something go, close a cycle. Room is opening for the new."], de:["Abschluss","Lass etwas los, schließ einen Kreis. Platz für Neues entsteht."], es:["Cierre","Suelta algo, cierra un ciclo. Se abre espacio para lo nuevo."], pt:["Conclusão","Larga algo, fecha um ciclo. Abre-se espaço para o novo."], fr:["Accomplissement","Lâche quelque chose, ferme un cycle. De la place s'ouvre pour le neuf."], ja:["完了","何かを手放し、ひとつの循環を閉じよう。新しいものの場所が開く。"] },
+};
+const _digitSum1 = (n) => { let x = Math.abs(n); while (x > 9) x = String(x).split("").reduce((a, d) => a + (+d), 0); return x || 9; };
+// Kişisel gün: (doğum günü + doğum ayı + bugünün yılı) -> + bugünün ayı -> + bugünün günü.
+function personalDayNumber(birthDate, d = new Date()) {
+  const [, bm, bd] = birthDate.split("-").map(Number);
+  const py = _digitSum1(_digitSum1(bd) + _digitSum1(bm) + _digitSum1(d.getFullYear()));
+  const pm = _digitSum1(py + d.getMonth() + 1);
+  return _digitSum1(pm + d.getDate());
+}
+function universalDayNumber(d = new Date()) {
+  return _digitSum1(_digitSum1(d.getFullYear()) + (d.getMonth() + 1) + d.getDate());
+}
 
 // ── Numeroloji & Astroloji yardımcıları ──────────────────────────────────────
 function reduceNum(n) {
@@ -2405,7 +2463,7 @@ function MatrixRain() {
 }
 
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&family=Jost:wght@200;300;400&family=Cormorant+Garamond:wght@500&display=swap');
   * { box-sizing: border-box; }
   /* color: eski iOS/WKWebView sürümlerinde color-scheme:dark ipucu geç/tutarsız
      uygulanabiliyor: ilk boyama UA varsayılanı (siyah) metinle başlayıp CSS tam
@@ -8939,9 +8997,10 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       return s.charAt(0).toLocaleUpperCase(lang) + s.slice(1);
     } catch { return todayKey; }
   };
-  // Cache'ten yükle (ekran açılışında ve gün/dil değişiminde).
+  // Cache'ten yükle (ekran açılışında ve gün/dil değişiminde). Bölüm Bugün
+  // ekranında ("Yıldızlar bugün sana ne diyor?" altında).
   useEffect(() => {
-    if (screen !== "harita") return;
+    if (screen !== "bugun") return;
     try {
       const raw = JSON.parse(localStorage.getItem("sakin_daily_horo") || "null");
       if (raw && raw.key === _horoCacheKey() && raw.text) { setDailyHoro({ text: raw.text }); return; }
@@ -8985,9 +9044,13 @@ deeper and more caring). Rules:
 - No asterisks, bullets, markdown or headings; plain paragraphs only.
 - Do not use an em dash (—) or en dash (–); use a comma, colon or separate sentence.
 - Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`;
+      // "Yıldızlar bugün sana ne diyor?" kartları (natal × transit) yorumun
+      // OMURGASI: kullanıcı kartları gördükten sonra "daha fazlası"na basıyor,
+      // uzun okuma aynı gökyüzünü derinleştirmeli, başka bir şey anlatmamalı.
+      const kartlar = (skyToday || []).map(x => `${x.title}: ${x.body}`).join(" | ");
       const userMsg = lang === "tr"
-        ? `${signTr ? `Güneş burcum: ${signTr}. ` : ""}${gokyuzu ? `Bugünün gökyüzü: ${gokyuzu}. ` : ""}Bana bugün için kişisel bir günlük yorum yaz.`
-        : `${signEn ? `My sun sign: ${signEn}. ` : ""}${gokyuzu ? `Today's sky: ${gokyuzu}. ` : ""}Write me a personal daily reading for today.`;
+        ? `${signTr ? `Güneş burcum: ${signTr}. ` : ""}${gokyuzu ? `Bugünün gökyüzü: ${gokyuzu}. ` : ""}${kartlar ? `Haritama bugün değen geçişler (yorumu bunların üstüne kur, derinleştir): ${kartlar}. ` : ""}Bana bugün için kişisel bir günlük yorum yaz.`
+        : `${signEn ? `My sun sign: ${signEn}. ` : ""}${gokyuzu ? `Today's sky: ${gokyuzu}. ` : ""}${kartlar ? `Transits touching my chart today (build the reading on these and go deeper): ${kartlar}. ` : ""}Write me a personal daily reading for today.`;
       const res = await aiFetch({
         method: "POST",
         headers: { "Content-Type": "text/plain" },
@@ -9008,11 +9071,9 @@ deeper and more caring). Rules:
   const [transit, setTransit] = useState(null);
   const [moonNow, setMoonNow] = useState(null);
   useEffect(() => {
-    // transit = Bugün ekranının günün geçişi kutusu; moonNow = gökyüzü raporu
-    // başlığındaki ay glifi. Gökyüzü raporu "Ben" ekranına taşındığı için
-    // moonNow her iki ekranda da gerekli. transit yalnızca Bugün'de kullanılır
-    // ama ekstra hesap zararsız (dinamik import zaten cache'li).
-    if (screen !== "bugun" && screen !== "harita") return;
+    // transit = Bugün ekranının güncel geçiş kutusu; moonNow = gökyüzü raporu
+    // başlığındaki ay glifi. İkisi de Bugün ekranında.
+    if (screen !== "bugun") return;
     let alive = true;
     import("./hd-transit")
       .then(async m => {
@@ -9027,6 +9088,32 @@ deeper and more caring). Rules:
       .catch(e => { console.warn("[bugun] transit hesaplanamadi:", e); });
     return () => { alive = false; };
   }, [screen, lang]);
+  // "YILDIZLAR BUGÜN SANA NE DİYOR?": bugünkü gökyüzü × natal harita
+  // (src/sky-today.js, SoulID ile aynı motor). null = hesaplanmadı/doğum yok,
+  // [] = hesaplandı ama haritaya değen açı yok ("sessiz gün" metni çıkar).
+  // Şehir yoksa saat dilimi +3 (TR) varsayılır ve ev hesabı yapılmaz: gezegen
+  // boylamlarında birkaç saatlik hata açıları pratikte değiştirmez, ama
+  // yükselen/ev için şehir ve saat şart (timeKnown=false -> "Günün Odağı" yok).
+  const [skyToday, setSkyToday] = useState(null);
+  const [skyTimeKnown, setSkyTimeKnown] = useState(false);
+  useEffect(() => {
+    if (screen !== "bugun" || !birthDate) { setSkyToday(null); return; }
+    let alive = true;
+    try {
+      const [Y, Mo, Da] = birthDate.split("-").map(Number);
+      const loc = birthCity ? lookupCity(birthCity) : null;
+      const tm = /^(\d{1,2}):(\d{2})/.exec(birthTime || "");
+      const timeKnown = !!(tm && loc);
+      const off = loc ? effectiveUtcOffset(loc[0], loc[1], loc[2], Y, Mo, Da) : 3;
+      const birthUtcMs = Date.UTC(Y, Mo - 1, Da, tm ? +tm[1] : 12, tm ? +tm[2] : 0) - off * 3600000;
+      setSkyTimeKnown(timeKnown);
+      import("./sky-today")
+        .then(m => m.computeSkyToday({ birthUtcMs, lat: loc ? loc[0] : null, lon: loc ? loc[1] : null, timeKnown }, new Date(), lang))
+        .then(r => { if (alive) setSkyToday(r); })
+        .catch(e => { console.warn("[bugun] sky-today hesaplanamadi:", e); if (alive) setSkyToday(null); });
+    } catch (e) { console.warn("[bugun] sky-today:", e); setSkyToday(null); }
+    return () => { alive = false; };
+  }, [screen, lang, birthDate, birthTime, birthCity, todayKey]);
   // ── BEN EKRANI: TEMEL HUMAN DESIGN ────────────────────────────────────────
   // Tip · strateji · otorite · profil. Hesap host'ta (src/hd-natal.js), kural
   // ve etiketler Tasarım uygulamasının kaynağından üretiliyor, yani iki ekran
@@ -13054,198 +13141,9 @@ deeper and more caring). Rules:
             </div>
             )}
           </div>
-            {/* GÖKYÜZÜ RAPORU: "yıldızlar bugün sana ne söylüyor". Günün
-                KOLEKTİF gökyüzü durumu (ay evresi + NOAA uzay havası + geçiş
-                notu) burada, kişisel haritanın yanında. Panel açılınca
-                fetchKozmik() çağrılır (6 saat CDN cache). Altındaki "daha
-                fazlası" butonu bunu kullanıcının burcuna göre uzun bir günlük
-                yoruma çevirir. */}
-          <div style={{ marginBottom:24,position:"relative" }}>
-            <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
-              style={{
-                width:"100%",
-                background:"rgba(184,164,216,0.06)",
-                border:"1px solid rgba(184,164,216,0.25)",
-                borderRadius:14,padding:"12px 18px",
-                color:"#a888d0",cursor:"pointer",
-                display:"flex",alignItems:"center",justifyContent:"space-between",
-                fontFamily:"'Jost',sans-serif",fontWeight:300,
-                transition:"all 0.2s",
-              }}
-              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
-              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
-              {/* AY EVRESİ BAŞLIKTA (kullanıcı: "ayın evresini ayı göster, detay
-                  metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
-                  ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
-              <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
-                {moonNow && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonNow.glyph}</span>}
-                <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
-                  <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
-                  {moonNow && (
-                    <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
-                      {moonNow.name}
-                      {moonNow.fraction != null && ` · %${Math.round(moonNow.fraction * 100)}`}
-                    </span>
-                  )}
-                </span>
-              </span>
-              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",flexShrink:0,transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
-            </button>
-
-            {showKozmik && (
-              <div style={{
-                marginTop:8,
-                background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
-                border:"1px solid rgba(184,164,216,0.25)",
-                borderRadius:16,padding:"16px 18px",
-                boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
-              }}>
-                {(() => {
-                  const moon = moonPhase();
-                  return (
-                  <>
-                    {/* AY EVRESİ: saf matematik, NOAA olmadan da görünür */}
-                    <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
-                      <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
-                      <div style={{ flex:1,minWidth:0 }}>
-                        <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
-                        <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
-                        <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
-                          {(() => {
-                            const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
-                            const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
-                            return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
-                          })()}
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                  );
-                })()}
-                {kozmikLoading && (
-                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
-                    {t("mirror_noaa_loading")}
-                  </div>
-                )}
-                {!kozmikLoading && !kozmikData && (
-                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
-                    {t("mirror_noaa_unavail")}
-                  </div>
-                )}
-                {!kozmikLoading && kozmikData && (() => {
-                  const moon = kozmikData.moon;
-                  const f = kozmikData.solar_flares_24h;
-                  const w = kozmikData.solar_wind;
-                  return (
-                  <>
-                    {/* Ay evresi: görsel başlık */}
-                    <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
-                      <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
-                      {moon && (
-                        <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
-                          {pickLang(moon.label, lang)} · %{moon.illumination}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* KOLEKTİF GEÇİŞ NOTU: raporun ALT BAŞLIĞI (kullanıcı isteği:
-                        "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
-                        Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
-                        gerçek efemerisle hesaplanır (retro gezegenler + en dar
-                        orb'lu açı); veri yoksa satır hiç çıkmaz. */}
-                    {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
-                      <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
-                        ✦ {pickLang(kozmikData.transit, lang)}
-                      </div>
-                    )}
-
-                    {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
-                    {(kozmikData.aiReport || kozmikData.report) && (
-                      <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
-                        {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
-                      </div>
-                    )}
-
-                    {/* Gezegen-burç dizilişi kaldırıldı, kullanıcı için anlamı yok,
-                        kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
-
-                    {/* Küçük veri satırı: NOAA + hesaplama (meraklı için) */}
-                    <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
-                      <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
-                      <span>☀️ {f && f.count>0 ? f.max_class : "-"}</span>
-                      {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
-                      {moon && <span>{moon.emoji} {moon.illumination}%</span>}
-                      {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
-                      {kozmikData.notableEvents?.map((ev,i) => {
-                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
-                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
-                      })}
-                      {kozmikData.planetGrouping && (
-                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
-                      )}
-                    </div>
-                    <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
-                      {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
-                    </div>
-
-                    {/* PAYLAŞ: Ayna cevabıyla AYNI kart üreticisini kullanır.
-                        Bu metinde Ayna/Senin-için başlıkları yok, o yüzden
-                        buildMirrorStoryCard otomatik olarak eski (tek gövde)
-                        düzene döner: kolektif geçiş notu + rapor tek parça
-                        basılır. Kullanıcı isteği: gökyüzü raporuna da paylaş
-                        özelliği eklemek. */}
-                    <button onClick={async ()=>{
-                        try {
-                          const govde = [
-                            kozmikData.transit && pickLang(kozmikData.transit, lang),
-                            kozmikData.aiReport || pickLang(kozmikData.report, lang),
-                          ].filter(Boolean).join("\n\n");
-                          const cv = buildMirrorStoryCard(
-                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang),
-                            govde,
-                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang));
-                          const blob = await new Promise(r => cv.toBlob(r, "image/png"));
-                          if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
-                        } catch (_) {}
-                      }}
-                      style={{ display:"block",margin:"14px auto 0",background:"rgba(160,112,208,0.14)",border:"1px solid rgba(160,112,208,0.4)",borderRadius:22,color:"#c8a8f0",cursor:"pointer",fontSize:12,letterSpacing:2,padding:"8px 20px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
-                      {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
-                    </button>
-                  </>
-                  );
-                })()}
-                {/* DAHA FAZLASI: kişiye özel GÜNLÜK YORUM. Gökyüzü raporu
-                    kolektiftir; bu buton onu kullanıcının burcuna + günün
-                    gökyüzüne göre uzun bir okumaya çevirir. AI çağrısı consent
-                    + günlük hak kapısından geçer, gün + burç + dil ile
-                    cache'lenir (gün boyu sabit). NOAA olmasa da çalışır. */}
-                <div style={{ marginTop:16,paddingTop:14,borderTop:"1px solid rgba(184,164,216,0.15)" }}>
-                  {!dailyHoro && !dailyHoroLoading && (
-                    <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateDailyHoroscope); }}
-                      style={{ WebkitAppearance:"none",appearance:"none",width:"100%",cursor:"pointer",
-                        background:"rgba(184,164,216,0.10)",border:"1px solid rgba(184,164,216,0.3)",
-                        borderRadius:12,padding:"11px 16px",color:"#c5a6e8",fontFamily:"'Jost',sans-serif",
-                        fontWeight:300,fontSize:13,letterSpacing:1.5,display:"flex",alignItems:"center",
-                        justifyContent:"center",gap:8 }}>
-                      <span style={{ fontSize:14 }}>✦</span>{pickLang(HORO_TXT.more, lang)}
-                    </button>
-                  )}
-                  {dailyHoroLoading && (
-                    <div style={{ textAlign:"center",color:"#a894c8",fontSize:12.5,padding:"10px 0",fontStyle:"italic" }}>
-                      {pickLang(HORO_TXT.loading, lang)}
-                    </div>
-                  )}
-                  {dailyHoro && dailyHoro.text && (
-                    <div>
-                      <div style={{ fontSize:11,letterSpacing:2,color:"#8878a8",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{pickLang(HORO_TXT.title, lang)}</div>
-                      <div style={{ fontSize:13,color:"#a888d0",fontFamily:"'Jost',sans-serif",marginBottom:12,letterSpacing:0.5 }}>{dailyHoroDateLine()}</div>
-                      <div style={{ fontSize:14.5,lineHeight:2.0,color:"#d8cce8",whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+          {/* GÖKYÜZÜ RAPORU + "Yıldızlar bugün sana ne diyor?" + İKİLİ UYUM
+              Bugün ekranına taşındı (kullanıcı isteği, Eyl 2026): ilk açılış
+              Bugün, günün gökyüzü ve ilişki daveti orada karşılıyor. */}
           {/* HAFTALIK SAKİN RAPOR: gökyüzü raporu gibi AÇILIR-KAPANIR
               (kullanıcı: "buton olsun, açık olmasın, tıklanınca açılsın").
               Kapalı başlar; harita ekranı açılır açılmaz uzun bir AI metniyle
@@ -13337,48 +13235,6 @@ deeper and more caring). Rules:
             </div>
             )}
           </div>
-          {/* ── İKİLİ UYUM ─────────────────────────────────────────────────
-              Buradaki "Ruh Profili" kutusu KALDIRILDI (kullanıcı isteği):
-              aynısı Keşfet panelinde zaten vardı, özet bilgiler de artık
-              Galaktik Kimlik kartının içinde. Yerine ikili uyuma götüren tek
-              buton kondu.
-
-              NEDEN BÖYLE GÖRÜNÜYOR: çevresindeki her şey düz, sönük bir hap
-              buton. Bu ise bir SORU soruyor. Solda kendi burcunun altın
-              halkası, yanında kesik çizgili boş bir halka ve "?": eksik olan
-              ikinci kişi görsel olarak duruyor, kullanıcı boşluğu doldurma
-              isteği hissediyor. Aynı iki halka SoulID'nin eşleşme ekranında
-              da var, yani buton varacağı yeri şimdiden gösteriyor. */}
-          <button onClick={()=>{ try{haptic();}catch(_){}
-              handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
-            style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginBottom:20,
-              display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",
-              background:"linear-gradient(120deg, rgba(232,192,122,0.13), rgba(184,122,220,0.10) 60%, rgba(255,255,255,0.02))",
-              border:"1px solid rgba(232,192,122,0.34)",borderRadius:18,padding:"15px 16px",
-              boxShadow:"0 0 26px rgba(232,192,122,0.10)" }}>
-            {/* İki halka: sen + boşluk. Üst üste binerek "ikili" hissi veriyor. */}
-            <span style={{ position:"relative",width:70,height:44,flexShrink:0 }}>
-              <span style={{ position:"absolute",left:0,top:0,width:44,height:44,borderRadius:"50%",
-                border:"1px solid rgba(232,192,122,0.75)",
-                background:"radial-gradient(circle at 50% 35%, rgba(232,192,122,0.22), transparent 70%)",
-                display:"flex",alignItems:"center",justifyContent:"center",
-                fontSize:18,lineHeight:1,color:"#f0d29a" }}>
-                {ZODIAC_GLYPH[astro?.burc] || "✦"}
-              </span>
-              <span style={{ position:"absolute",left:26,top:0,width:44,height:44,borderRadius:"50%",
-                border:"1px dashed rgba(184,122,220,0.75)",background:"rgba(12,8,20,0.72)",
-                display:"flex",alignItems:"center",justifyContent:"center",
-                fontSize:16,lineHeight:1,color:"#c9a8e8" }}>?</span>
-            </span>
-            <span style={{ flex:1,minWidth:0 }}>
-              <span style={{ display:"block",fontSize:14,color:"#f4e6cc",fontFamily:"'Jost',sans-serif",
-                letterSpacing:0.8,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
-              <span style={{ display:"block",fontSize:11.5,color:"#a89ab8",fontFamily:"'Inter',sans-serif",lineHeight:1.45 }}>
-                {pickLang(SOUL_TXT.pairSub, lang)}
-              </span>
-            </span>
-            <span style={{ flexShrink:0,fontSize:15,color:"rgba(232,192,122,0.7)" }}>›</span>
-          </button>
           {/* ── TEMEL HUMAN DESIGN ── (kullanıcı: "12. ev gizli benlik üstüne
               human design bilgilerini de gir temel düzeyde")
               Tip · strateji · otorite · profil. Tam bodygraph, kanallar ve kapı
@@ -15391,14 +15247,315 @@ deeper and more caring). Rules:
         );
         return (
           <div style={{ maxWidth:520,width:"100%",padding:"34px 18px 140px",position:"relative",zIndex:1,margin:"0 auto" }}>
-            <div style={{ textAlign:"center",marginBottom:26 }}>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:5,color:"#e8e0f4" }}>
-                {pickLang(TODAY_TXT.title, lang)}
+            {/* ── KARŞILAMA ────────────────────────────────────────────────
+                Bugün artık uygulamanın ilk ekranı (tekrar giren kullanıcı).
+                Kullanıcı isteği: "ilk açılışta bugüne dair ilgili, çekici ve
+                uygulamayı kullanmaya teşvik edici bilgi". İlk bakışta üç şey:
+                  1) Kişisel selam (saate göre + ad): "benim ekranım" hissi.
+                  2) Günün sayısı: doğum tarihinden kişisel gün (numeroloji),
+                     yoksa takvimden bugünün sayısı. Tek kelime + tek cümle,
+                     her gün değişir, bir bakışta okunur. AI yok, anında.
+                  3) Seri teşviki: "bugün bağlanırsan N+1" kaybetme/kazanma
+                     hissiyle Bağlan'a götürür (en alttaki Güne Başla'nın
+                     yukarıdaki kısayolu; uzun sayfada CTA en altta kaybolmasın).
+                Altında sırayla: yıldızların sana söyledikleri, kolektif gökyüzü,
+                güncel geçiş, rehber kartları, ikili uyum, I Ching, tarot. */}
+            {(() => {
+              const hr = new Date().getHours();
+              const gi = hr >= 5 && hr < 12 ? 0 : hr < 18 ? 1 : hr < 22 ? 2 : 3;
+              const nm = (userName || "").trim().split(/\s+/)[0];
+              const num = birthDate ? personalDayNumber(birthDate) : universalDayNumber();
+              const [kw, line] = pickLang(DAY_NUMBER_TXT[num], lang) || DAY_NUMBER_TXT[num].en;
+              const yKey = sakinDayKey(new Date(Date.now() - 86400000));
+              const doneToday = streakData?.lastDate === dk;
+              const alive = doneToday || streakData?.lastDate === yKey;
+              const n = alive ? (streakData?.current || 0) : 0;
+              const streakMsg = doneToday
+                ? pickLang(TODAY_HERO_TXT.streakToday, lang).replace("{n}", n)
+                : n > 0 ? pickLang(TODAY_HERO_TXT.streakAlive, lang).replace("{n}", n).replace("{m}", n + 1)
+                : pickLang(TODAY_HERO_TXT.streakZero, lang);
+              return (
+                <div style={{ marginBottom:22 }}>
+                  <div style={{ textAlign:"center",marginBottom:18 }}>
+                    <div style={{ fontFamily:"'Jost',sans-serif",fontWeight:200,fontSize:26,letterSpacing:1.5,color:"#ece4f8" }}>
+                      {pickLang(TODAY_HERO_TXT.greet[gi], lang)}{nm ? `${lang === "ja" ? "、" : ", "}${nm}` : ""}
+                    </div>
+                    <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:3,color:"#7c7590",marginTop:6,textTransform:"uppercase" }}>
+                      {dailyHoroDateLine()}
+                    </div>
+                  </div>
+                  <div style={{ display:"flex",alignItems:"center",gap:16,padding:"16px 18px",borderRadius:18,
+                    background:"linear-gradient(135deg, rgba(232,192,122,0.12), rgba(160,112,208,0.08) 65%, rgba(255,255,255,0.02))",
+                    border:"1px solid rgba(232,192,122,0.28)" }}>
+                    <span style={{ width:54,height:54,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                      fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:32,lineHeight:1,color:"#f0d29a",
+                      border:"1px solid rgba(232,192,122,0.55)",background:"radial-gradient(circle, rgba(232,192,122,0.18), transparent 70%)" }}>{num}</span>
+                    <span style={{ flex:1,minWidth:0 }}>
+                      <span style={{ display:"block",fontSize:10.5,letterSpacing:2,color:"#e8c07acc",textTransform:"uppercase",
+                        fontFamily:"'Jost',sans-serif",marginBottom:4 }}>
+                        {pickLang(birthDate ? TODAY_HERO_TXT.personalDay : TODAY_HERO_TXT.universalDay, lang)} · {kw}
+                      </span>
+                      <span style={{ display:"block",fontSize:14.5,color:"#efe9f8",fontFamily:"'Inter',sans-serif",lineHeight:1.5 }}>{line}</span>
+                    </span>
+                  </div>
+                  <button onClick={()=>{ try{haptic();}catch(_){} setScreen("mandala"); }}
+                    style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:10,cursor:"pointer",textAlign:"left",
+                      display:"flex",alignItems:"center",gap:10,padding:"11px 16px",borderRadius:14,
+                      background: doneToday ? "rgba(127,214,168,0.08)" : "rgba(255,160,90,0.08)",
+                      border:`1px solid ${doneToday ? "rgba(127,214,168,0.3)" : "rgba(255,160,90,0.3)"}` }}>
+                    <span style={{ fontSize:16,lineHeight:1,flexShrink:0 }}>{doneToday ? "✓" : "🔥"}</span>
+                    <span style={{ flex:1,minWidth:0,fontSize:13,color: doneToday ? "#bfe8d2" : "#f4d6bc",fontFamily:"'Inter',sans-serif",lineHeight:1.4 }}>{streakMsg}</span>
+                    <span style={{ flexShrink:0,fontSize:16,color:"rgba(255,255,255,0.35)" }}>›</span>
+                  </button>
+                </div>
+              );
+            })()}
+
+            {/* ── YILDIZLAR BUGÜN SANA NE DİYOR? ─────────────────────────────
+                Gökyüzü raporunun İÇİNE GÖMÜLMEZ, ayrı başlık (kullanıcı isteği,
+                Ruh Profili'ndeki "Bugünün Gökyüzü" kartı referans). Kısa, ayrı
+                kartlar: Günün Odağı (Ay'ın natal evi) + en sıkı 2 açı. Ay evresi
+                BURADA YOK: gökyüzü raporunun başlığında zaten var. Altındaki
+                "Daha fazlası" aynı gökyüzünü uzun AI okumasına çevirir. */}
+            {(() => {
+              const TONE_COL = { blend:"#e8c07a", flow:"#7fd6a8", tension:"#e8a08a" };
+              return (
+                <div style={{ marginBottom:24,borderRadius:20,padding:"22px 18px 18px",
+                  background:"linear-gradient(165deg, #18153f 0%, #0e0c26 70%)",
+                  border:"1px solid rgba(184,164,216,0.26)",boxShadow:"0 10px 36px rgba(0,0,0,0.45)" }}>
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:3.5,color:"#e8c07a",
+                    textTransform:"uppercase",marginBottom:8 }}>{pickLang(SKYTODAY_TXT.eyebrow, lang)}</div>
+                  <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontWeight:500,fontSize:30,lineHeight:1.15,
+                    color:"#f3eefb",marginBottom:18 }}>{pickLang(SKYTODAY_TXT.title, lang)}</div>
+
+                  {!birthDate ? (
+                    <BirthLocked msg={pickLang(BIRTH_TXT.needKnow, lang)} />
+                  ) : skyToday === null ? (
+                    <div style={{ height:60 }} />
+                  ) : (<>
+                    <div style={{ display:"flex",flexDirection:"column",gap:12 }}>
+                      {skyToday.length === 0 && (
+                        <div style={{ fontSize:14.5,color:"#d8d0ea",fontFamily:"'Inter',sans-serif",lineHeight:1.65,
+                          padding:"14px 16px",borderRadius:16,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)" }}>
+                          {pickLang(SKYTODAY_TXT.quiet, lang)}
+                        </div>
+                      )}
+                      {skyToday.map(it => {
+                        const c = TONE_COL[it.tone] || "#b4a0d8";
+                        return (
+                          <div key={it.id} style={{ display:"flex",gap:14,alignItems:"flex-start",padding:"16px 16px",
+                            borderRadius:16,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)" }}>
+                            <span style={{ width:42,height:42,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",
+                              justifyContent:"center",fontSize:20,lineHeight:1,color:c,background:`${c}1f` }}>{it.glyph}</span>
+                            <span style={{ flex:1,minWidth:0 }}>
+                              <span style={{ display:"block",fontSize:11,letterSpacing:2.2,color:c,textTransform:"uppercase",
+                                fontFamily:"'Jost',sans-serif",marginBottom:6,lineHeight:1.5 }}>{it.title}</span>
+                              <span style={{ display:"block",fontSize:14.5,color:"#e6e0f2",fontFamily:"'Inter',sans-serif",lineHeight:1.6 }}>{it.body}</span>
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    {!skyTimeKnown && (
+                      <div style={{ textAlign:"center",fontSize:12,color:"#8f899e",fontFamily:"'Inter',sans-serif",marginTop:12 }}>
+                        {pickLang(SKYTODAY_TXT.noTime, lang)}
+                      </div>
+                    )}
+                    <div style={{ textAlign:"center",fontSize:12,color:"#8f899e",fontFamily:"'Inter',sans-serif",margin:"14px 0 16px",lineHeight:1.5 }}>
+                      {pickLang(SKYTODAY_TXT.footer, lang)}
+                    </div>
+
+                    {/* DAHA FAZLASI: aynı gökyüzünü (kartlar dahil) kullanıcının
+                        burcuyla uzun bir günlük okumaya çevirir. AI, consent +
+                        günlük hak kapısından geçer; gün + burç + dil ile cache'li,
+                        gün boyu sabit (tekrar açınca AI hakkı harcanmaz). */}
+                    {!dailyHoro && !dailyHoroLoading && (
+                      <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateDailyHoroscope); }}
+                        style={{ WebkitAppearance:"none",appearance:"none",width:"100%",cursor:"pointer",
+                          background:"rgba(232,192,122,0.10)",border:"1px solid rgba(232,192,122,0.38)",
+                          borderRadius:14,padding:"12px 16px",color:"#f0d29a",fontFamily:"'Jost',sans-serif",
+                          fontWeight:300,fontSize:13.5,letterSpacing:1.5,display:"flex",alignItems:"center",
+                          justifyContent:"center",gap:8 }}>
+                        <span style={{ fontSize:13 }}>✦</span>{pickLang(HORO_TXT.more, lang)}
+                      </button>
+                    )}
+                    {dailyHoroLoading && (
+                      <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"10px 0",fontStyle:"italic" }}>
+                        {pickLang(HORO_TXT.loading, lang)}
+                      </div>
+                    )}
+                    {dailyHoro && dailyHoro.text && (
+                      <div style={{ marginTop:4,paddingTop:16,borderTop:"1px solid rgba(232,192,122,0.2)",animation:"fadeIn 0.6s ease" }}>
+                        <div style={{ fontSize:11,letterSpacing:2.5,color:"#e8c07a",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:4 }}>{pickLang(HORO_TXT.title, lang)}</div>
+                        <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,color:"#f3eefb",marginBottom:12 }}>{dailyHoroDateLine()}</div>
+                        <div style={{ fontSize:15,lineHeight:1.9,color:"#ddd4ee",fontFamily:"'Inter',sans-serif",whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
+                      </div>
+                    )}
+                  </>)}
+                </div>
+              );
+            })()}
+            {/* GÖKYÜZÜ RAPORU (kolektif): ay evresi + NOAA uzay havası + geçiş
+                notu. Ben ekranından GERİ taşındı (kullanıcı isteği). Kişiye özel
+                okuma bunun üstündeki "Yıldızlar bugün sana ne diyor?" bölümünde;
+                bu panel herkes için aynı gökyüzü. Açılınca fetchKozmik(). */}
+          <div style={{ marginBottom:24,position:"relative" }}>
+            <button onClick={()=>{ const next=!showKozmik; setShowKozmik(next); if(next) fetchKozmik(); }}
+              style={{
+                width:"100%",
+                background:"rgba(184,164,216,0.06)",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:14,padding:"12px 18px",
+                color:"#a888d0",cursor:"pointer",
+                display:"flex",alignItems:"center",justifyContent:"space-between",
+                fontFamily:"'Jost',sans-serif",fontWeight:300,
+                transition:"all 0.2s",
+              }}
+              onMouseEnter={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.5)"; e.currentTarget.style.color="#c5a6e8"; }}
+              onMouseLeave={e=>{ e.currentTarget.style.borderColor="rgba(184,164,216,0.25)"; e.currentTarget.style.color="#a888d0"; }}>
+              {/* AY EVRESİ BAŞLIKTA (kullanıcı: "ayın evresini ayı göster, detay
+                  metin için tıklansın ve aşağısı açılsın"). Panel kapalıyken bile
+                  ayın nerede olduğu görünüyor; asıl metin için tıklanıyor. */}
+              <span style={{ display:"flex",alignItems:"center",gap:9,minWidth:0 }}>
+                {moonNow && <span style={{ fontSize:19,lineHeight:1,flexShrink:0 }}>{moonNow.glyph}</span>}
+                <span style={{ display:"flex",flexDirection:"column",alignItems:"flex-start",minWidth:0 }}>
+                  <span style={{ fontSize:13,letterSpacing:2 }}>{t("mirror_cosmic_week")}</span>
+                  {moonNow && (
+                    <span style={{ fontSize:11,letterSpacing:0.6,color:"#8878a8",fontFamily:"'Inter',sans-serif",marginTop:2 }}>
+                      {moonNow.name}
+                      {moonNow.fraction != null && ` · %${Math.round(moonNow.fraction * 100)}`}
+                    </span>
+                  )}
+                </span>
+              </span>
+              <span style={{ fontSize:14,transition:"transform 0.25s",display:"inline-block",flexShrink:0,transform:showKozmik?"rotate(180deg)":"rotate(0deg)" }}>⌄</span>
+            </button>
+
+            {showKozmik && (
+              <div style={{
+                marginTop:8,
+                background:"linear-gradient(160deg,rgba(0,0,0,0.97),rgba(20,10,40,0.95))",
+                border:"1px solid rgba(184,164,216,0.25)",
+                borderRadius:16,padding:"16px 18px",
+                boxShadow:"0 8px 40px rgba(0,0,0,0.6),0 0 30px rgba(184,164,216,0.08)",
+              }}>
+                {(() => {
+                  const moon = moonPhase();
+                  return (
+                  <>
+                    {/* AY EVRESİ: saf matematik, NOAA olmadan da görünür */}
+                    <div style={{ marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.15)",display:"flex",alignItems:"center",gap:14 }}>
+                      <div style={{ fontSize:38,lineHeight:1,filter:"drop-shadow(0 0 8px rgba(220,210,255,0.35))" }}>{moon.emoji}</div>
+                      <div style={{ flex:1,minWidth:0 }}>
+                        <div style={{ fontSize:11,letterSpacing:3,color:"#888",textTransform:"uppercase",marginBottom:4 }}>{t("mirror_moon_phase")}</div>
+                        <div style={{ fontSize:15,color:"#d0c0f0",fontFamily:"'Jost',sans-serif",letterSpacing:1 }}>{pickLang(moon, lang)} · {moon.illumination}%</div>
+                        <div style={{ fontSize:11,color:"#888",marginTop:3 }}>
+                          {(() => {
+                            const fullLabel = moon.daysToFull < 0.5 ? t("mirror_moon_today") : moon.daysToFull < 1.5 ? t("mirror_moon_tomorrow") : t("mirror_moon_in_days").replace("{n}", String(Math.round(moon.daysToFull)));
+                            const newLabel = `${Math.round(moon.daysToNew)} ${t("mirror_moon_days")}`;
+                            return `${t("mirror_moon_full_label")}: ${fullLabel} · ${t("mirror_moon_new_label")}: ${newLabel}`;
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                  );
+                })()}
+                {kozmikLoading && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0" }}>
+                    {t("mirror_noaa_loading")}
+                  </div>
+                )}
+                {!kozmikLoading && !kozmikData && (
+                  <div style={{ textAlign:"center",color:"#888",fontSize:12,padding:"10px 0",lineHeight:1.6 }}>
+                    {t("mirror_noaa_unavail")}
+                  </div>
+                )}
+                {!kozmikLoading && kozmikData && (() => {
+                  const moon = kozmikData.moon;
+                  const f = kozmikData.solar_flares_24h;
+                  const w = kozmikData.solar_wind;
+                  return (
+                  <>
+                    {/* Ay evresi: görsel başlık */}
+                    <div style={{ textAlign:"center",marginBottom:18,paddingBottom:16,borderBottom:"1px solid rgba(184,164,216,0.15)" }}>
+                      <div style={{ fontSize:46,marginBottom:6,lineHeight:1 }}>{moon?.emoji || "🌌"}</div>
+                      {moon && (
+                        <div style={{ fontSize:13,letterSpacing:2,color:"#a888d0",fontFamily:"'Jost',sans-serif" }}>
+                          {pickLang(moon.label, lang)} · %{moon.illumination}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* KOLEKTİF GEÇİŞ NOTU: raporun ALT BAŞLIĞI (kullanıcı isteği:
+                        "hangi geçişte olduğumuzu yaz ... şu an retrodayız gibi").
+                        Kişiye özel DEĞİL, herkes için aynı gökyüzü. Sunucuda
+                        gerçek efemerisle hesaplanır (retro gezegenler + en dar
+                        orb'lu açı); veri yoksa satır hiç çıkmaz. */}
+                    {kozmikData.transit && pickLang(kozmikData.transit, lang) && (
+                      <div style={{ fontSize:12.5,lineHeight:1.85,color:"#a894c8",marginBottom:14,paddingBottom:12,borderBottom:"1px solid rgba(184,164,216,0.12)",fontStyle:"italic" }}>
+                        ✦ {pickLang(kozmikData.transit, lang)}
+                      </div>
+                    )}
+
+                    {/* ÖZGÜN AI GÖKYÜZÜ RAPORU (yoksa template fallback) */}
+                    {(kozmikData.aiReport || kozmikData.report) && (
+                      <div style={{ fontSize:15,lineHeight:2.1,color:"#d8cce8",marginBottom:12 }}>
+                        {kozmikData.aiReport || pickLang(kozmikData.report, lang)}
+                      </div>
+                    )}
+
+                    {/* Gezegen-burç dizilişi kaldırıldı, kullanıcı için anlamı yok,
+                        kolektif enerji yorumuna odaklanıldı (sadece NOAA veri satırı kalır). */}
+
+                    {/* Küçük veri satırı: NOAA + hesaplama (meraklı için) */}
+                    <div style={{ fontSize:11,color:"#888",lineHeight:1.9,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.15)",display:"flex",flexWrap:"wrap",gap:"4px 14px" }}>
+                      <span>🧲 Kp {kozmikData.past_7_days.current_kp}</span>
+                      <span>☀️ {f && f.count>0 ? f.max_class : "-"}</span>
+                      {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
+                      {moon && <span>{moon.emoji} {moon.illumination}%</span>}
+                      {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                      {kozmikData.notableEvents?.map((ev,i) => {
+                        const icon = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
+                        return <span key={i}>{icon} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
+                      })}
+                      {kozmikData.planetGrouping && (
+                        <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
+                      )}
+                    </div>
+                    <div style={{ fontSize:10,color:"#555",marginTop:8,textAlign:"right" }}>
+                      {t("mirror_source_label")}NOAA Space Weather · {t("mirror_moon_calc")}
+                    </div>
+
+                    {/* PAYLAŞ: Ayna cevabıyla AYNI kart üreticisini kullanır.
+                        Bu metinde Ayna/Senin-için başlıkları yok, o yüzden
+                        buildMirrorStoryCard otomatik olarak eski (tek gövde)
+                        düzene döner: kolektif geçiş notu + rapor tek parça
+                        basılır. Kullanıcı isteği: gökyüzü raporuna da paylaş
+                        özelliği eklemek. */}
+                    <button onClick={async ()=>{
+                        try {
+                          const govde = [
+                            kozmikData.transit && pickLang(kozmikData.transit, lang),
+                            kozmikData.aiReport || pickLang(kozmikData.report, lang),
+                          ].filter(Boolean).join("\n\n");
+                          const cv = buildMirrorStoryCard(
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang),
+                            govde,
+                            pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang));
+                          const blob = await new Promise(r => cv.toBlob(r, "image/png"));
+                          if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
+                        } catch (_) {}
+                      }}
+                      style={{ display:"block",margin:"14px auto 0",background:"rgba(160,112,208,0.14)",border:"1px solid rgba(160,112,208,0.4)",borderRadius:22,color:"#c8a8f0",cursor:"pointer",fontSize:12,letterSpacing:2,padding:"8px 20px",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>
+                      {pickLang({tr:"PAYLAŞ",en:"SHARE",de:"TEILEN",es:"COMPARTIR",pt:"PARTILHAR",fr:"PARTAGER",ja:"シェア"}, lang)}
+                    </button>
+                  </>
+                  );
+                })()}
               </div>
-              <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:3,color:"#6f6a80",marginTop:6,textTransform:"uppercase" }}>
-                {dk}
-              </div>
-            </div>
+            )}
+          </div>
             {/* ── HUMAN DESIGN GÜNÜN GEÇİŞİ ──
                 Güneş kapısı günün ana temasını, Ay kapısı gün içindeki duygusal
                 rengi taşır. "Vurgu" kapının hediyesi, "dikkat" gölgesi.
@@ -15456,11 +15613,7 @@ deeper and more caring). Rules:
                 </button>
               </div>
             )}
-
-            {/* GÖKYÜZÜ RAPORU "Ben" (harita) ekranına TAŞINDI (kullanıcı
-                isteği): "yıldızlar bugün sana ne söylüyor" bölümü kişisel
-                haritanın yanında dururken daha anlamlı. Panel + "daha fazlası"
-                günlük yorumu artık orada. */}
+            <div style={{ height:8 }} />
             <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:2.5,color:"#7c7590",
               textTransform:"uppercase",margin:"0 4px 10px" }}>{pickLang(TODAY_TXT.rehber, lang)}</div>
             <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
@@ -15478,6 +15631,49 @@ deeper and more caring). Rules:
                 hint={mith ? { system: mith.system, id: mith.id } : null} />
             </div>
 
+            <div style={{ height:16 }} />
+            {/* ── İKİLİ UYUM ─────────────────────────────────────────────────
+                Buradaki "Ruh Profili" kutusu KALDIRILDI (kullanıcı isteği):
+                aynısı Keşfet panelinde zaten vardı, özet bilgiler de artık
+                Galaktik Kimlik kartının içinde. Yerine ikili uyuma götüren tek
+                buton kondu.
+
+                NEDEN BÖYLE GÖRÜNÜYOR: çevresindeki her şey düz, sönük bir hap
+                buton. Bu ise bir SORU soruyor. Solda kendi burcunun altın
+                halkası, yanında kesik çizgili boş bir halka ve "?": eksik olan
+                ikinci kişi görsel olarak duruyor, kullanıcı boşluğu doldurma
+                isteği hissediyor. Aynı iki halka SoulID'nin eşleşme ekranında
+                da var, yani buton varacağı yeri şimdiden gösteriyor. */}
+            <button onClick={()=>{ try{haptic();}catch(_){}
+                handleOpenEmbed({ name:t("ailesi_soulid_name"), embed:"/embedded/soulid/index.html?go=pair", color:"#e8c07a" }); }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginBottom:20,
+                display:"flex",alignItems:"center",gap:14,textAlign:"left",cursor:"pointer",
+                background:"linear-gradient(120deg, rgba(232,192,122,0.13), rgba(184,122,220,0.10) 60%, rgba(255,255,255,0.02))",
+                border:"1px solid rgba(232,192,122,0.34)",borderRadius:18,padding:"15px 16px",
+                boxShadow:"0 0 26px rgba(232,192,122,0.10)" }}>
+              {/* İki halka: sen + boşluk. Üst üste binerek "ikili" hissi veriyor. */}
+              <span style={{ position:"relative",width:70,height:44,flexShrink:0 }}>
+                <span style={{ position:"absolute",left:0,top:0,width:44,height:44,borderRadius:"50%",
+                  border:"1px solid rgba(232,192,122,0.75)",
+                  background:"radial-gradient(circle at 50% 35%, rgba(232,192,122,0.22), transparent 70%)",
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  fontSize:18,lineHeight:1,color:"#f0d29a" }}>
+                  {ZODIAC_GLYPH[astro?.burc] || "✦"}
+                </span>
+                <span style={{ position:"absolute",left:26,top:0,width:44,height:44,borderRadius:"50%",
+                  border:"1px dashed rgba(184,122,220,0.75)",background:"rgba(12,8,20,0.72)",
+                  display:"flex",alignItems:"center",justifyContent:"center",
+                  fontSize:16,lineHeight:1,color:"#c9a8e8" }}>?</span>
+              </span>
+              <span style={{ flex:1,minWidth:0 }}>
+                <span style={{ display:"block",fontSize:14,color:"#f4e6cc",fontFamily:"'Jost',sans-serif",
+                  letterSpacing:0.8,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
+                <span style={{ display:"block",fontSize:11.5,color:"#a89ab8",fontFamily:"'Inter',sans-serif",lineHeight:1.45 }}>
+                  {pickLang(SOUL_TXT.pairSub, lang)}
+                </span>
+              </span>
+              <span style={{ flexShrink:0,fontSize:15,color:"rgba(232,192,122,0.7)" }}>›</span>
+            </button>
             {/* SOULID/RUH PROFİLİ davet kartı BURADAN KALDIRILDI (kullanıcı
                 isteği): Keşfet panelinde zaten aynı davet var (bkz. görev
                 #43), Bugün'de ikinci bir kopyası ikilik yaratıyordu.
@@ -15534,20 +15730,21 @@ deeper and more caring). Rules:
                         background:"linear-gradient(160deg, rgba(184,164,216,0.10), rgba(255,255,255,0.02))",
                         border:"1px solid rgba(184,164,216,0.3)",borderRadius:18,padding:"24px 16px 20px",
                         display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16 }}>
-                      <div style={{ position:"relative",width:210,height:150 }}>
+                      <div style={{ position:"relative",width:220,height:156 }}>
                         {/* Yelpaze: 5 kart alt-orta noktadan dönerek açılır (elde
                             tutulan deste gibi). Hepsi aynı çapa (left:50% + negatif
-                            margin) etrafında döner; orta kart üstte. */}
+                            margin) etrafında döner; orta kart üstte. Arka yüz
+                            (public/tarot/back.png) bize ait piksel çizim, bkz.
+                            scripts/build-tarot-art.py. 90x140 kaynak -> 72x112. */}
                         {[-2,-1,0,1,2].map((i)=>(
-                          <div key={i} style={{ position:"absolute",left:"50%",bottom:6,width:74,height:112,
-                            marginLeft:-37,borderRadius:11,zIndex:5-Math.abs(i),
-                            transformOrigin:"bottom center",transform:`rotate(${i*13}deg)`,
-                            background:"linear-gradient(150deg,#1c1636,#0c0a18)",
-                            border:"1px solid rgba(184,164,216,0.35)",boxShadow:"0 6px 20px rgba(0,0,0,0.55)",
-                            display:"flex",alignItems:"center",justifyContent:"center" }}>
-                            <span style={{ fontSize:20,color:"rgba(184,164,216,0.5)",transform:`rotate(${-i*13}deg)` }}>✦</span>
-                          </div>
+                          <img key={i} src="/tarot/back.png" alt="" draggable={false}
+                            style={{ position:"absolute",left:"50%",bottom:6,width:72,height:112,
+                              marginLeft:-36,borderRadius:6,zIndex:5-Math.abs(i),
+                              transformOrigin:"bottom center",transform:`rotate(${i*13}deg)`,
+                              imageRendering:"pixelated",boxShadow:"0 6px 20px rgba(0,0,0,0.6)" }} />
                         ))}
+                        {/* Günün kartını önceden yükle: seçilince beklemeden açılsın. */}
+                        <img src={`/tarot/${tcard.id}.png`} alt="" style={{ display:"none" }} />
                       </div>
                       <span style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
                         <span style={{ fontSize:15,color:"#e6def4",fontFamily:"'Jost',sans-serif",letterSpacing:1.5 }}>{pickLang(TAROT_TXT.cta, lang)}</span>
@@ -15559,19 +15756,20 @@ deeper and more caring). Rules:
                     <div style={{ background:`linear-gradient(160deg, ${tcol}12, rgba(255,255,255,0.02))`,
                       border:`1px solid ${tcol}45`,borderRadius:18,padding:"20px 18px" }}>
                       <div style={{ display:"flex",flexDirection:"column",alignItems:"center",animation:"tarotFlip 0.55s ease" }}>
-                        <div style={{ width:112,height:168,borderRadius:14,
-                          background:`radial-gradient(circle at 50% 38%, ${tcol}30, rgba(10,8,20,0.92))`,
-                          border:`1px solid ${tcol}66`,boxShadow:`0 8px 30px rgba(0,0,0,0.55),0 0 24px ${tcol}22`,
-                          display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,marginBottom:16 }}>
-                          <span style={{ fontSize:44,lineHeight:1,transform:trev?"rotate(180deg)":"none" }}>{tcard.emoji}</span>
-                          {tcard.number != null && (
-                            <span style={{ fontSize:11,letterSpacing:2,color:`${tcol}cc`,fontFamily:"'Jost',sans-serif" }}>
-                              {tcard.arcana==="major" ? tarotRoman(tcard.number) : `${tcard.number}`}
-                            </span>
-                          )}
+                        {/* GERÇEK KART: 1909 destesinin çizimi, galaktik piksel
+                            işlemden geçmiş (public/tarot/<id>.png, 90x140). Tam 2x
+                            gösterilir ki pikseller eşit kalsın. Ters çıktıysa
+                            geleneksel olarak kart baş aşağı durur; metinler düz. */}
+                        <div style={{ padding:5,borderRadius:10,marginBottom:16,
+                          background:"linear-gradient(160deg,#1c1640,#0b0a1f)",
+                          border:`1px solid ${tcol}77`,boxShadow:`0 10px 34px rgba(0,0,0,0.6),0 0 28px ${tcol}2e` }}>
+                          <img src={`/tarot/${tcard.id}.png`} alt={pickLang(tcard.name, lang)} draggable={false}
+                            style={{ display:"block",width:180,height:280,borderRadius:5,imageRendering:"pixelated",
+                              transform: trev ? "rotate(180deg)" : "none" }} />
                         </div>
                         <span style={{ fontSize:10,letterSpacing:2,color:`${tcol}cc`,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:5 }}>
-                          {arcanaLabel}{tcard.suit ? ` · ${tcard.suit}` : ""}
+                          {tcard.arcana === "major" && tcard.number != null ? `${tarotRoman(tcard.number)} · ` : ""}
+                          {arcanaLabel}{tarotSuitKey(tcard.id) ? ` · ${pickLang(TAROT_TXT[tarotSuitKey(tcard.id)], lang)}` : ""}
                         </span>
                         <span style={{ fontSize:20,color:"#efe9f8",fontFamily:"'Jost',sans-serif",fontWeight:300,letterSpacing:0.8,textAlign:"center" }}>{pickLang(tcard.name, lang)}</span>
                         <span style={{ marginTop:8,fontSize:10.5,letterSpacing:1.5,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",
