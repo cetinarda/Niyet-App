@@ -411,6 +411,24 @@ havuz yine çalışır. Native-only (isNative guard), web'de erken çıkar.
 Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
 (pageerror yok), build temiz. Cihaz testi yapılmadı (LocalNotifications native).
 
+## 🧭 GİRİŞ EKRANI = BUGÜN + ALT BAR SIRASI (kullanıcı isteği, Eyl 2026)
+
+- **Alt bar sırası:** Bağlan ile Bugün'ün yeri değişti. Yeni sıra:
+  **BUGÜN · KEŞFET · BAĞLAN · AYNA · BEN** (`MAIN_TABS`). Bugün artık ilk (sol)
+  sekme, Bağlan onun eski orta yerinde. `center` bayrağı kaldırıldı (zaten
+  render'da kullanılmıyordu, orta sekme ayrıcalığı çoktan iptaldi).
+- **Varsayılan karşılama = BUGÜN.** `_initialScreen()` tekrar giren kullanıcıda
+  (bugün HAZIRIM'a basmış) "mandala" yerine "bugun" döner. HAZIRIM da
+  `setScreen("bugun")` yapıyor (eskiden mandala). İlk kez giren kullanıcı akışı
+  (giriş → HAZIRIM → yol seçimi forku → onboarding) değişmedi; kural "ilk
+  kullanıcıdan SONRA, tekrar girenler Bugün görsün".
+- **Bugün ekranının altında "GÜNE BAŞLA" butonu** (`mandala_start_today`, 7 dil)
+  → Bağlan'a (mandala) yönlendirir. Bugün karşılama olduğu için asıl günlük
+  pratik (nefes/ses/çakra/bağlantı) oraya bu butonla geçiliyor. I Ching
+  butonundan hemen sonra, `sakin-btn-primary` ile.
+- Doğrulama: alt bar sırası, HAZIRIM→Bugün, Güne Başla→Bağlan, tekrar açılış
+  Bugün (aktif sekme BUGÜN, giriş yok) Puppeteer ile doğrulandı, hata yok.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:

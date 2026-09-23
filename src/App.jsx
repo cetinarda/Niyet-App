@@ -5065,7 +5065,10 @@ export default function SakinApp() {
   // (aşağıda), yeni takvim gününde anahtar eşleşmediği için tekrar giriş açılır.
   const _initialScreen = () => {
     if (URL_TO_SCREEN[window.location.pathname]) return URL_TO_SCREEN[window.location.pathname];
-    try { if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey()) return "mandala"; } catch(_) {}
+    // TEKRAR GİREN KULLANICI (bugün HAZIRIM'a basmış): ilk karşılama artık
+    // BUGÜN ekranı (kullanıcı isteği). Eskiden "mandala" (Bağlan) idi; Bağlan'a
+    // artık Bugün'deki "Güne Başla" butonundan geçiliyor.
+    try { if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey()) return "bugun"; } catch(_) {}
     return "giris";
   };
   const [screen,        setScreenRaw]     = useState(_initialScreen);
@@ -8682,10 +8685,14 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // için orta indeks 2; `center:true` olan sekme yukarı taşıyor ve dolgulu
   // dairede duruyor. Referanstaki dev logo dairesi taklit EDİLMEDİ, ölçü
   // uygulamanın diline uyacak kadar tutuldu.
+  // SIRA (kullanıcı isteği): Bağlan ile Bugün'ün yeri değişti. Bugün artık
+  // varsayılan karşılama ekranı olduğu için ilk (sol) sekme; Bağlan onun eski
+  // orta yerine geçti. `center` bayrağı zaten kullanılmıyordu (orta sekme
+  // ayrıcalığı kaldırılmıştı, bkz. alt bar render), kaldırıldı.
   const MAIN_TABS = [
-    {id:"baglan", label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
+    {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a"},
     {id:"kesfet", label:pickLang(NEDIR_I18N.kesfetT, lang), color:"#f0c060"},
-    {id:"bugun",  label:pickLang(TAB_TXT.bugun, lang),      color:"#e8c07a", center:true},
+    {id:"baglan", label:pickLang(NEDIR_I18N.baglanT, lang), color:"#b87adc"},
     {id:"ayna",   label:pickLang(TAB_TXT.ayna, lang),       color:"#c8a8e8"},
     {id:"ben",    label:pickLang(TAB_TXT.ben, lang),        color:"#82d9a3"},
   ];
@@ -11123,7 +11130,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                     tahmini kalktı, kullanıcı GÜNE BAŞLA ile kendi girer. */}
                 <button className="sakin-btn-primary"
                   style={{ width:"86%",maxWidth:300,display:"block",boxSizing:"border-box",margin:"0 auto" }}
-                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen("mandala"); maybeShowNedir(); }}>{t("btn_ready")}</button>
+                  onClick={()=>{ try { localStorage.setItem("sakin_hazirim_today", sakinDayKey()); } catch(_) {} try { track("profile_complete"); } catch(_){} setScreen("bugun"); maybeShowNedir(); }}>{t("btn_ready")}</button>
                 {/* Panik butonu HAZIRIM'ın altında, "Nefes al" olarak yumuşatıldı.
                     Davranış aynı: 4-7-8 nefesini premium istisnasıyla doğrudan başlatır.
                     Küçültüldü: padding 12/34 → 9/24, font 13 → 11.5, minHeight 44 → 38. */}
@@ -15323,6 +15330,17 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
                 </span>
               </span>
               <span style={{ flexShrink:0,fontSize:16,color:"rgba(224,110,110,0.7)" }}>→</span>
+            </button>
+
+            {/* GÜNE BAŞLA: Bugün artık varsayılan karşılama ekranı; asıl günlük
+                pratik (Bağlan/mandala: nefes, ses, çakra, bağlantı) buraya
+                yönlendirilir (kullanıcı isteği: "bugünün altında güne başla
+                butonu koy ve bağlan ekranına yönlendir"). */}
+            <button className="sakin-btn-primary"
+              onClick={()=>{ try{haptic();}catch(_){} setScreen("mandala"); }}
+              style={{ WebkitAppearance:"none",appearance:"none",width:"100%",marginTop:22,
+                display:"flex",alignItems:"center",justifyContent:"center" }}>
+              {t("mandala_start_today")}
             </button>
           </div>
         );
