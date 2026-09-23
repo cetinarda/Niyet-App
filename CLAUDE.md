@@ -344,7 +344,7 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
    denenmişse çıkmaz; biri denenmişse diğer kartta "Henüz denemedin" işareti.
    **EKRAN YENİDEN TASARLANDI (Eyl 2026):** eski tasarım çizgileri ÖLÇÜLEN
    ekran boyutundan piksel hesabıyla bağlıyordu, iOS'ta çizgiler kartların
-   içinden geçti. Artık Bugün görsel dili (Cormorant başlık, SURF kartlar) ve
+   içinden geçti. Artık SURF kartlar + KURUMSAL FONT Jost (başlık Jost 300 geniş aralık, kart adları Jost 500; kullanıcı: "Keşfet'teki kurumsal font, bizim fontumuz o", serif Cormorant kaldırıldı) ve
    ölçüme bağlı HİÇBİR şey yok: süs çizgisi kartların üstünde normal akışta
    duran SVG (uçlar yüzde ile iki sütunun ortasına iner). Mutlak konum ekleme.
 4. `STEP_MIN` zaten yarıya iniyordu (5 nefes / 30 sn / 60 sn / 1 görev).
