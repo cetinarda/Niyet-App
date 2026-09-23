@@ -13,7 +13,8 @@
     "build:hayvan": "node scripts/build-embed.mjs hayvan",
     "build:taslar": "node scripts/build-embed.mjs taslar",
     "build:bitkiler": "node scripts/build-embed.mjs bitkiler",
-    "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan && npm run build:taslar"
+    "build:embeds": "npm run build:mitler && npm run build:tasarim && npm run build:hayvan && npm run build:taslar",
+    "capacitor:copy:after": "node scripts/prune-native-web.mjs"
   },
   "dependencies": {
     "@capacitor-community/text-to-speech": "^8.0.2",

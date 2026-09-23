@@ -703,6 +703,30 @@ DOKUNMAZ (embedIframeRef mitler'de null; mitler her mount'ta rastgele 4 mit
 seçtiği için sticky kalmalı). Zaten var olan MutationObserver-disconnect
 temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 
+## ⚡ PERFORMANS / PİL / BOYUT (Eyl 2026, kullanıcı: "daha hızlı, az RAM ve şarj")
+
+- **Saat artık DAKİKADA bir:** `setTime` eskiden her saniye çağrılıp TÜM
+  uygulamayı yeniden çiziyordu. `time` yalnızca saat:dakika ve gün yüzdesi için
+  okunuyor. ⚠️ "Saat yüzünden saniyede bir yeniden çiziliyor" notları (Bugün
+  yardımcıları vb.) artık "dakikada bir" demek; kural aynı: render içinde
+  bileşen tanımlama. Saniye gösteren yeni şey KENDİ zamanlayıcısıyla yazılır.
+- **Fare takipli ışık:** telefonda kapalı, web'de kare başına en fazla bir güncelleme.
+- **Arka plan yıldızları:** 46 yıldızın yalnızca 16'sı parlıyor, "Hareketi Azalt"
+  açıksa hiçbiri.
+- Ölçüm (masaüstü Chrome, Bugün ekranı, 15 sn boşta): JS 35→4 ms, toplam iş
+  405→138 ms, stil hesaplama 478→262, JS bellek 8,9→6,7 MB.
+- **Telefon paketi 7,6 MB küçüldü:** `scripts/prune-native-web.mjs`
+  (`package.json` "capacitor:copy:after" kancası) her `cap sync/copy` sonunda
+  YALNIZCA native kopyadan web'e özgü dosyaları siler (blog, home, tanitim,
+  privacy, terms, site.*, og görseli, 2048 ikon). `dist/` ve Netlify etkilenmez.
+  ⚠️ Uygulama içinden bu yollardan birine bağlantı eklersen listeden çıkar.
+- **Ölü kod silindi:** `generateChakraAnaliz` (tanımsız `chakraEsle`/
+  `CHAKRA_ZIHINSEL` çağırıyordu, çalışsa hata verirdi) + ona bağlı iki durum,
+  `sendNotif`, `SKYTODAY_TXT`, `STEP_NAMES`, `__appStartMs`, `heartAnim`, ve
+  bildirim planlayıcısından kalan `_notifTier`/`_notifSecondSlot`.
+- Zaten iyi olanlar (dokunma): tüm zamanlayıcılar ekran/seans kapılı, sessiz
+  ses döngüsü yalnızca seans sırasında, embed'ler kapanınca `about:blank`.
+
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
 - **App.jsx'te betikle blok silerken desen İLK eşleşmeyi bulur.** Aynı başlık yorumu bileşen içinde de geçebiliyor (Orkestra state yorumu gibi): bir kez ~4800 satır yanlışlıkla silindi, HEAD'den geri yüklendi. Blok silmeden önce hem sınırları hem BEKLENEN UZUNLUĞU assert et.

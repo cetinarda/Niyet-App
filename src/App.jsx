@@ -1648,14 +1648,10 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
 // "YILDIZLAR BUGÜN SANA NE DİYOR?" bölümü (Bugün ekranı, src/sky-today.js).
 // ⚠️ ARTIK EKRANDA DEĞİL (kullanıcı: "ilk ekranda uzun"): yerine Günün Pusulası
 // + Ruh Profili karnesine ("?go=sky") bağlantı. Motor (skyToday) hâlâ hesaplanıyor
-// çünkü Günün Yorumu AI prompt'u bu kartları omurga olarak kullanıyor.
-const SKYTODAY_TXT = {
-  eyebrow: { tr:"Bugünün gökyüzü", en:"Today's sky", de:"Himmel heute", es:"El cielo de hoy", pt:"O céu de hoje", fr:"Le ciel du jour", ja:"今日の空" },
-  title:   { tr:"Yıldızlar bugün sana ne diyor?", en:"What are the stars telling you today?", de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?", pt:"O que te dizem hoje as estrelas?", fr:"Que te disent les étoiles aujourd'hui ?", ja:"今日、星はあなたに何を語る？" },
-  footer:  { tr:"Bugünkü gökyüzü × senin doğum haritan. Her gün yenilenir.", en:"Today's sky × your birth chart. Renews every day.", de:"Der Himmel von heute × dein Geburtshoroskop. Jeden Tag neu.", es:"El cielo de hoy × tu carta natal. Se renueva cada día.", pt:"O céu de hoje × o teu mapa natal. Renova-se todos os dias.", fr:"Le ciel du jour × ton thème natal. Renouvelé chaque jour.", ja:"今日の空 × あなたの出生図。毎日更新。" },
-  quiet:   { tr:"Bugün gökyüzü sana sessiz: haritana değen büyük bir açı yok. Kendi ritminle ilerle.", en:"The sky is quiet for you today: no major aspect touches your chart. Move at your own rhythm.", de:"Der Himmel ist heute still für dich: kein großer Aspekt berührt dein Horoskop. Geh deinen eigenen Rhythmus.", es:"Hoy el cielo está en calma para ti: ningún aspecto mayor toca tu carta. Avanza a tu ritmo.", pt:"Hoje o céu está calmo para ti: nenhum aspeto maior toca o teu mapa. Avança ao teu ritmo.", fr:"Le ciel est calme pour toi aujourd'hui : aucun aspect majeur ne touche ton thème. Avance à ton rythme.", ja:"今日の空はあなたに静か。出生図に触れる大きなアスペクトはない。自分のリズムで進もう。" },
-  noTime:  { tr:"Doğum saatini ve şehrini eklersen Günün Odağı da açılır.", en:"Add your birth time and city to unlock Today's Focus too.", de:"Trag Geburtszeit und Ort ein, dann öffnet sich auch der Fokus des Tages.", es:"Añade tu hora y ciudad de nacimiento para abrir también el Foco del día.", pt:"Adiciona a hora e a cidade de nascimento para abrir também o Foco do dia.", fr:"Ajoute ton heure et ta ville de naissance pour ouvrir aussi le Focus du jour.", ja:"出生時刻と都市を入力すると「今日の焦点」も開きます。" },
-};
+// çünkü Günün Yorumu AI prompt'u bu kartları omurga olarak kullanıyor. Bölümün
+// arayüz metinleri (SKYTODAY_TXT) ekranda kullanılmadığı için silindi (ölü kod
+// temizliği, Eyl 2026); gerekirse git geçmişinde.
+
 // BUGÜN KARŞILAMA ALANI: selamlama + kişisel gün sayısı + seri teşviki.
 // Kişisel gün (numeroloji): kişisel yıl -> kişisel ay -> kişisel gün, 1-9'a
 // indirgenir. Doğum tarihi yoksa takvim tarihinin rakamlarından "bugünün sayısı".
@@ -2999,6 +2995,8 @@ const GLOBAL_CSS = `
 
   /* ── Animations ── */
   @keyframes twinkle     { 0%,100%{opacity:0.05} 50%{opacity:0.45} }
+  /* Sistemde "Hareketi Azalt" açıksa arka plan yıldızları parlamaz (pil + erişilebilirlik). */
+  @media (prefers-reduced-motion: reduce) { [style*="twinkle"] { animation: none !important; } }
   @keyframes fadeUp      { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
   @keyframes fadeIn      { from{opacity:0} to{opacity:1} }
   @keyframes glow        { 0%,100%{box-shadow:0 0 22px rgba(255,255,255,0.22)} 50%{box-shadow:0 0 46px rgba(255,255,255,0.46)} }
@@ -3407,21 +3405,6 @@ const GLOBAL_CSS = `
   :root[data-platform="android"] .check-btn { width:40px; height:40px; }
 `;
 
-async function sendNotif(title, body) {
-  if (!("Notification" in window)) return "unsupported";
-  if (Notification.permission === "default") {
-    const perm = await Notification.requestPermission();
-    if (perm !== "granted") return "denied";
-  }
-  if (Notification.permission === "granted") {
-    new Notification(title, {
-      body,
-      icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>",
-    });
-    return "sent";
-  }
-  return "denied";
-}
 
 const DAILY_REMINDERS_TR = [
   "Aynaya bak ve gülümse",
@@ -3615,13 +3598,6 @@ function dayNumber(dateObj) {
   const midnight = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
   return Math.floor(midnight.getTime() / 86400000);
 }
-
-// Bundle ilk eval anı = uygulama soğuk açılış anı. Premium revoke recheck'inde
-// "açılış grace'i" için kullanılır: initStore ~8sn makbuz doğrulama penceresi
-// geçmeden revoke edilmez (ödeme yapan kullanıcının premium'u soğuk açılış
-// yarışında anlık düşmesin). Warm foreground'da (context zaten canlı) fark büyük
-// olduğu için grace legitimate revoke'u engellemez.
-const __appStartMs = Date.now();
 
 // Sabah "günaydın" bildirimi yalnızca Salı ve Cuma (7 mesajlık küçük havuz her
 // gün gelince ezberleniyordu, kullanıcı bildirdi). Diğer günler gün ortası 13:00.
@@ -4511,7 +4487,6 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
     setSelected(next);
     setTPhase(opts.autoStart ? "active" : "intro");
   };
-  const heartAnim = tPhase==="active" ? `heartbeat ${1.15-progress*0.28}s ease-in-out infinite` : "none";
   const hex = v => Math.round(v*255).toString(16).padStart(2,"0");
 
   if (tPhase==="list") return (
@@ -6751,8 +6726,6 @@ export default function SakinApp() {
   };
   const [rehberTab, setRehberTab] = useState("reiki");
   const [mirrorPortalActive, setMirrorPortalActive] = useState(false);
-  const [chakraInput, setChakraInput] = useState("");
-  const [chakraAnaliz, setChakraAnaliz] = useState("");
   const [reikiUsed, setReikiUsed] = useState(() => !devMode && localStorage.getItem("sakin_reiki_used") === "1");
   const [zihinselUsed, setZihinselUsed] = useState(() => !devMode && localStorage.getItem("sakin_zihinsel_used") === "1");
   // İki ayrı arama ekranı
@@ -7080,11 +7053,6 @@ export default function SakinApp() {
   // NAV_STEPS + currentStepIndex NATIVE→WEB TAŞIMA MADDE 3 ile öksüz kaldı:
   // yalnızca eski (kaldırılan) native progress-strip'in nokta göstergesini
   // besliyorlardı, başka hiçbir yerde kullanılmıyorlardı.
-  const STEP_NAMES = [
-    (t("gune") || "").replace(/[◎✦→\s]+$/, "").trim() || "Sakin",
-    t("nav_morning"), t("nav_day"), t("nav_breath"), t("nav_sound"),
-    t("nav_chakra"), t("nav_evening"), t("bnav_connection"),
-  ];
   // NOT (geri alınan hatalı düzeltme): Adımlar SADECE gerçekten tamamlanınca
   // (ekranın "DEVAM ET/İLERİ" butonuna basınca) markStep ile işaretlenir. Bir
   // önceki sürümde "ziyaret edilen her ekranı otomatik işaretle" denemesi vardı;
@@ -7709,7 +7677,6 @@ export default function SakinApp() {
     setSorguGecmisi([]);
     setStreakData({ current: 0, best: 0, lastDate: null, badges: [] });
     setStepsCompleted({});
-    setChakraInput(""); setChakraAnaliz("");
     setSikayet(""); setSikayetHis(""); setSikayetAnaliz(""); setAynaRuyaModu(false);
     setHastalik(""); setHastalikHis(""); setHastalikAnaliz("");
     setAiRapor("");
@@ -7816,7 +7783,22 @@ export default function SakinApp() {
   const guneyDugum = kuzeyDugum ? ZODIAC_ORDER[(ZODIAC_ORDER.indexOf(kuzeyDugum) + 6) % 12] : null;
   const draconicGunes = astro && kuzeyDugum ? draconicSun(astro.burc, kuzeyDugum) : null;
 
-  useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
+  // SAAT (performans, Eyl 2026): eskiden HER SANİYE setTime çağrılıyordu; bu
+  // 17 bin satırlık uygulamanın TAMAMINI saniyede bir yeniden çiziyordu (CPU,
+  // pil, render içinde tanımlı bileşenlerin animasyonlarını tekrar oynatma).
+  // Oysa `time` yalnızca saat:dakika ve günün yüzdesi (dakika hassasiyeti) için
+  // okunuyor. Artık dakika başına hizalı bir kez + uygulama öne gelince bir kez.
+  // Gün değişimi ayrıca todayKey'in kendi kontrolünde (30 sn), buna bağlı değil.
+  // ⚠️ Saniye gösteren yeni bir şey eklersen onu KENDİ zamanlayıcısıyla yaz
+  // (ör. nefes ekranının cycleT döngüsü gibi), bu saate güvenme.
+  useEffect(() => {
+    let iv = null;
+    const tick = () => setTime(new Date());
+    const to = setTimeout(() => { tick(); iv = setInterval(tick, 60000); }, 60000 - (Date.now() % 60000) + 50);
+    const onVis = () => { if (document.visibilityState === "visible") tick(); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => { clearTimeout(to); if (iv) clearInterval(iv); document.removeEventListener("visibilitychange", onVis); };
+  }, []);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
   // TEK BİLDİRİM PLANLAYICISI (genel + kişisel + tarot, ortak günlük sınır;
   // bkz. scheduleAllNotifications). Dil, doğum bilgisi değişince yeniden kurulur.
@@ -8402,57 +8384,6 @@ ${kisiselProfil()}`,
     });
   }
 
-  const generateChakraAnaliz = async () => {
-    if (!chakraInput.trim()) return;
-    setChakraAnaliz("__loading__");
-    const idx = chakraEsle(chakraInput);
-    const ch = CHAKRAS_7[idx];
-    const zihinsel = CHAKRA_ZIHINSEL[idx];
-    const astroText2 = astro ? `Kullanıcının doğum haritası: ${astro.burc} burcu, Yaşam Yolu Sayısı ${astro.yasam}, Kişisel Yıl ${astro.kisiselYil}${birthTime ? `, Doğum Saati ${birthTime}` : ""}${yukselen ? `, Yükselen ${yukselen}` : ""}${ev12Gezegen ? `, 12. Ev Gezegeni: ${ev12Gezegen}` : ""}.` : "";
-    const kisiselBagiam = kisiselBaglamOlustur(sorguGecmisi);
-    try {
-      const res = await aiFetch({
-        method:"POST",
-        headers:{"Content-Type":"text/plain"},
-        body: JSON.stringify({
-          max_tokens:1100, lang,
-          system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
-${kisiselProfil()}${kisiselBagiam}${KITAP_BILGELIGI}`,
-          ragQuery: chakraInput,
-          messages:[{ role:"user", content:`Kullanıcı şunu yazdı: "${sanitizeInput(chakraInput)}"
-
-İlgili çakra: ${ch.name} Çakrası (${ch.element} elementi, ${ch.hz} Hz). Açıklaması: "${ch.desc}"
-Zihinsel-bedensel bağlantısı: ${zihinsel}
-${astroText2}
-
-${NEFES_REHBERI}
-
-${UYGULAMA_BOLUMLER}
-
-Yanıtını şu formatta ver:
-
-**Ayna**
-(Bu çakrayı, kişinin yazdığını, kaynak bilgeliğini ve doğum haritasını bir arada tut. Şefkatli bir ayna gibi yansıt. Sorunun kaynağına net ve doğrudan işaret et. Kişinin nereye bakabileceğini göster, kendine sevgi sunmayı hatırlat. Şiirsel, şefkatli, detaylı: 6-7 cümle)
-
-**Senin için**
-Beslenme: (bu çakra ve duruma özel 3-4 besin veya bitki çayı: kısa, net)
-Hareket: (2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
-Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
-Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
-
-**Reiki ile Enerji Aktarımı**
-(Hangi el pozisyonu, hangi frekans, nasıl bir niyet: somut 2-3 adım. Ardından şiirsel, zarif bir kapanışla bitir: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; eğer içinde bir açılma, bir farkındalık doğarsa, Cho Ku Rei ile onu sistemine mühürlemesini, bu yeni farkındalığı kendi yaşam koduna işlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle, şiirsel. Kapanışı güçlü ve kararlı yap.)` }],
-        }),
-      });
-      const d = await res.json();
-      if (!res.ok || d.error) { setChakraAnaliz("Hata: " + (d.error || res.status)); return; }
-      setChakraAnaliz(d?.text || pickLang(AI_ERR_I18N.noAnalysis, lang));
-      sorguKaydet("çakra", chakraInput);
-    } catch(e) {
-      setChakraAnaliz(t("err_connection_prefix") + (e?.message || String(e)));
-      console.error("ChakraAnaliz error:", e);
-    }
-  };
 
   // NOT: eski `ZIHINSEL_LISTE` buradan kaldirildi. Ayni beden-zihin
   // eslesmelerini LOUISE_HAY_REHBER zaten (daha genis biçimde) tasiyordu;
@@ -9347,7 +9278,23 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
   const breathInDur  = `${tm.in/1000}s`;
   const breathOutDur = `${tm.out/1000}s`;
-  const handleMouseMove = e => { const r=e.currentTarget.getBoundingClientRect(); setOrb({x:((e.clientX-r.left)/r.width)*100,y:((e.clientY-r.top)/r.height)*100}); };
+  // Fare takipli ışık (yalnızca masaüstü web). Eskiden HER fare hareketinde
+  // setOrb → tüm uygulama yeniden çiziliyordu (saniyede onlarca kez). Artık:
+  // telefonda hiç çalışmaz (dokunmatikte anlamı yok), web'de kare başına en fazla
+  // bir kez ve yalnızca ışık %2'den fazla kaydıysa güncellenir.
+  const orbRafRef = useRef(0);
+  const orbLastRef = useRef({ x: 50, y: 50 });
+  const handleMouseMove = isNative ? undefined : (e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100, y = ((e.clientY - r.top) / r.height) * 100;
+    if (Math.abs(x - orbLastRef.current.x) < 2 && Math.abs(y - orbLastRef.current.y) < 2) return;
+    if (orbRafRef.current) return;
+    orbRafRef.current = requestAnimationFrame(() => {
+      orbRafRef.current = 0;
+      orbLastRef.current = { x, y };
+      setOrb({ x, y });
+    });
+  });
 
   // Kullanıcı isteği: sağ/sol kaydırma sırası TAM OLARAK üst nav + sidebar sırasını
   // izlemeli: sabah→gün→nefes→ses→çakra→akşam→bağlan→harita→keşfet. Bağlan(mandala)
@@ -11674,7 +11621,12 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const sz = i%11===0?2.5:i%5===0?1.8:i%3===0?1.2:0.9;
         const op = i%11===0?0.42:i%5===0?0.32:0.22;
         return (
-          <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s`,pointerEvents:"none",zIndex:0 }} />
+          // PİL: 46 yıldızın HEPSİ sürekli animasyonluydu (her karede 46 katman
+          // yeniden birleştiriliyordu, uygulama açık kaldıkça). Artık yalnızca
+          // her üçüncüsü parlıyor (16), diğerleri sabit ve biraz soluk: görüntü
+          // aynı "yaşayan gökyüzü", GPU işi üçte bir.
+          <div key={i} style={{ position:"fixed",left:`${(i*37+11)%100}%`,top:`${(i*53+7)%100}%`,width:sz,height:sz,borderRadius:"50%",background:`rgba(255,255,255,${op})`,
+            ...(i % 3 === 0 ? { animation:`twinkle ${3+(i%6)}s ease-in-out infinite`,animationDelay:`${(i*0.41)%6}s` } : { opacity:0.55 }),pointerEvents:"none",zIndex:0 }} />
         );
       })}
 
