@@ -223,6 +223,21 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Yeni" rozeti. `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.
+  - **GÜNÜN SÖZÜ = HER KAYNAK EŞİT ŞANS (Eyl 2026, kullanıcı: "Yunus Emre, Aşık
+    Veysel çok çıkıyor; Schopenhauer, Jung... eşit ağırlıkta olsun").** Kaynak havuz
+    (`apps/*/src/data/quotes.json`, 156 söz) çok dengesiz: 64'ü Mevlana. Eski
+    `buildQuotePool` kaynak başına 8 söz + Yunus'u bilerek %25 yapıyordu. Artık
+    `apps/{bitkiler,taslar,hayvan}/src/utils/quotePool.ts` (üçü BİREBİR aynı) her
+    grubu havuzda eşit yer kaplatır (12 grup, ~%8,3). Küçük gelenekler ailesine
+    katılır: Dhammapada/Zen → Buddha, Zhuangzi → Laozi, Seneca/Marcus → Epiktetos.
+    Host İçsel Harita aynı kuralı `src/quotes-data.js` `pickBalancedQuote` ile
+    uygular. Mitler'de kişi kaynaklı söz havuzu YOK (kartın kendi dersi/olumlaması).
+    O gün zaten çekilmiş okuma değişmez, yeni denge ertesi günden görünür.
+  - **Bitkiler / Taşlar / Hayvan kaynağı canlı paketi BİREBİR üretir** (Eyl 2026,
+    `diff -rq apps/<app>/dist public/embedded/<dir>` boş çıktı). ⚠️ `build-embed.mjs`
+    "byte-identical" mesajı YALNIZCA dizindeki İLK .js dosyasına (çoğu zaman
+    `empty-module-*.js`) bakıyor, asıl `index-*.js` farkını görmez. Doğrulamayı
+    `diff -rq` ile yap. Derlemek için önce `npm ci` (node_modules repoda yok).
   - **`build-embed.mjs` kırmızı-çizgi-güvenli:** default mod byte-identical değilse `public/`'e YAZMAZ. Bilerek yeni bundle göndermek için `--force`. `--check` sadece doğrular.
   - Stil davranışı için (taşınmamışlarda) host'tan CSS injection ile müdahale: App.jsx'deki iframe `onLoad` içine bak.
 - **Embedded ↔ host köprüsü:** `postMessage` ile (`sakin-premium-cta` mesajı vs). `storage` event köprüsü web-only, iOS'ta çalışmaz.
