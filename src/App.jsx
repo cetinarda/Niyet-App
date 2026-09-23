@@ -1466,6 +1466,63 @@ function dailyCompass(moonNow, transit, lang) {
   };
 }
 
+// ── İÇSEL HARİTA: GÜNLÜK YANSIMA (Ben ekranı) ─────────────────────────────
+// Kullanıcı isteği: "içsel harita bölümünü geliştir (kullanıcı verisi varsa):
+// bırakılan niyet, günün sözü (havuzdan), düne dair astrolojik bilgilerle
+// birleşen kişisel 2-3 cümlelik yansıma, akşam kapanışında yazılanlar, altında
+// tek eylem: bugün için 4-6 nefes". Veri = sabah niyeti (bugün yoksa dün) +
+// akşam notu/şükür (bugün yoksa dün). İkisi de yoksa blok HİÇ çıkmaz.
+const INNER_TXT = {
+  niyet:   { tr:"Bıraktığın niyet", en:"The intention you set", de:"Deine gesetzte Absicht", es:"La intención que dejaste", pt:"A intenção que deixaste", fr:"L'intention que tu as posée", ja:"あなたが置いた意図" },
+  quote:   { tr:"Günün sözü", en:"Saying of the day", de:"Spruch des Tages", es:"Frase del día", pt:"Frase do dia", fr:"Parole du jour", ja:"今日の言葉" },
+  reflect: { tr:"Yansıma", en:"Reflection", de:"Spiegelung", es:"Reflejo", pt:"Reflexo", fr:"Reflet", ja:"映し返し" },
+  evening: { tr:"Akşam kapanışında yazdıkların", en:"What you wrote at evening close", de:"Was du zum Abendabschluss geschrieben hast", es:"Lo que escribiste al cerrar el día", pt:"O que escreveste ao fechar o dia", fr:"Ce que tu as écrit en clôture du soir", ja:"夜の締めくくりに書いたこと" },
+  sukur:   { tr:"Şükür", en:"Gratitude", de:"Dankbarkeit", es:"Gratitud", pt:"Gratidão", fr:"Gratitude", ja:"感謝" },
+  loading: { tr:"Yansıman yazılıyor…", en:"Writing your reflection…", de:"Deine Spiegelung wird geschrieben…", es:"Escribiendo tu reflejo…", pt:"A escrever o teu reflexo…", fr:"Ton reflet s'écrit…", ja:"映し返しを書いています…" },
+  breath:  { tr:"Bugün için 4-6 nefes al", en:"Take 4-6 breaths for today", de:"Atme heute im 4-6-Rhythmus", es:"Respira 4-6 por hoy", pt:"Respira 4-6 por hoje", fr:"Respire en 4-6 pour aujourd'hui", ja:"今日のために4-6呼吸を" },
+  breathSub:{ tr:"4 saniye al, 6 saniye ver. Bir dakika yeter.", en:"In for 4, out for 6. One minute is enough.", de:"4 Sekunden ein, 6 aus. Eine Minute genügt.", es:"Inhala 4 segundos, exhala 6. Basta un minuto.", pt:"Inspira 4 segundos, expira 6. Um minuto chega.", fr:"Inspire 4 secondes, expire 6. Une minute suffit.", ja:"4秒吸って6秒吐く。1分で十分。" },
+};
+// Söz kaynağı adları veri setinde Türkçe; özel isimler (Mevlana, Yunus Emre,
+// Hacı Bektaş Veli...) olduğu gibi kalır, yalnızca GENEL adlar çevrilir.
+const QUOTE_SOURCE_I18N = {
+  "Tasavvuf Geleneği": { tr:"Tasavvuf Geleneği", en:"Sufi tradition", de:"Sufi-Tradition", es:"Tradición sufí", pt:"Tradição sufi", fr:"Tradition soufie", ja:"スーフィーの伝統" },
+  "Zen Geleneği":      { tr:"Zen Geleneği", en:"Zen tradition", de:"Zen-Tradition", es:"Tradición zen", pt:"Tradição zen", fr:"Tradition zen", ja:"禅の伝統" },
+  "Gestalt Yaklaşımı": { tr:"Gestalt Yaklaşımı", en:"Gestalt approach", de:"Gestalt-Ansatz", es:"Enfoque Gestalt", pt:"Abordagem Gestalt", fr:"Approche Gestalt", ja:"ゲシュタルト療法" },
+  "Epiktetos":         { tr:"Epiktetos", en:"Epictetus", de:"Epiktet", es:"Epicteto", pt:"Epicteto", fr:"Épictète", ja:"エピクテトス" },
+};
+const quoteSource = (s, lang) => (QUOTE_SOURCE_I18N[s] ? pickLang(QUOTE_SOURCE_I18N[s], lang) : s);
+// ŞABLON YANSIMA (AI yoksa: onay verilmemiş, günlük hak dolmuş, ağ yok).
+// Güneş kapısı adları yalnızca tr/en (hd-transit); diğer dillerde kapı adı
+// cümleye girmez, dil karışmasın. Ay evresi adı moonPhase() ile 7 dilde.
+function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
+  const q = (s) => (lang === "fr" ? `« ${s} »` : lang === "de" ? `„${s}“` : lang === "ja" ? `「${s}」` : `"${s}"`);
+  const g = (lang === "tr" || lang === "en") && gate ? gate : null;
+  const T = {
+    tr: [g ? `Dün gökyüzü ${moon} evresindeydi ve Güneş ${q(g)} kapısından geçiyordu.` : `Dün gökyüzü ${moon} evresindeydi.`,
+         niyet ? `${q(niyet)} niyetin bu havayla birlikte yol alıyor.` : hasEvening ? `Akşam kapanışında yazdıkların bu havanın izini taşıyor.` : "",
+         `Günün sözü sana bir yön gösteriyor: acele etme, bir adım yeter.`],
+    en: [g ? `Yesterday the sky was in its ${moon} phase and the Sun moved through the ${q(g)} gate.` : `Yesterday the sky was in its ${moon} phase.`,
+         niyet ? `Your intention ${q(niyet)} travels with that mood.` : hasEvening ? `What you wrote at evening close carries the trace of that mood.` : "",
+         `Today's saying points you a way: no rush, one step is enough.`],
+    de: [`Gestern stand der Himmel in der Phase ${moon}.`,
+         niyet ? `Deine Absicht ${q(niyet)} geht mit dieser Stimmung.` : hasEvening ? `Was du zum Abendabschluss geschrieben hast, trägt die Spur dieser Stimmung.` : "",
+         `Der Spruch des Tages zeigt dir eine Richtung: keine Eile, ein Schritt genügt.`],
+    es: [`Ayer el cielo estaba en fase de ${moon}.`,
+         niyet ? `Tu intención ${q(niyet)} avanza con ese clima.` : hasEvening ? `Lo que escribiste al cerrar el día lleva la huella de ese clima.` : "",
+         `La frase del día te marca un rumbo: sin prisa, basta un paso.`],
+    pt: [`Ontem o céu estava na fase ${moon}.`,
+         niyet ? `A tua intenção ${q(niyet)} segue com esse clima.` : hasEvening ? `O que escreveste ao fechar o dia leva o rasto desse clima.` : "",
+         `A frase do dia aponta-te um rumo: sem pressa, basta um passo.`],
+    fr: [`Hier, le ciel était en phase ${moon}.`,
+         niyet ? `Ton intention ${q(niyet)} avance avec cette humeur.` : hasEvening ? `Ce que tu as écrit en clôture du soir porte la trace de cette humeur.` : "",
+         `La parole du jour t'indique une direction : sans hâte, un pas suffit.`],
+    ja: [`昨日、空は${moon}だった。`,
+         niyet ? `あなたの意図${q(niyet)}はその空気と共に進んでいる。` : hasEvening ? `夜の締めくくりに書いたことには、その空気の跡が残っている。` : "",
+         `今日の言葉が方向を示している。急がず、一歩で十分。`],
+  };
+  return (T[lang] || T.en).filter(Boolean).join(lang === "ja" ? "" : " ");
+}
+
 // "YILDIZLAR BUGÜN SANA NE DİYOR?" bölümü (Bugün ekranı, src/sky-today.js).
 // ⚠️ ARTIK EKRANDA DEĞİL (kullanıcı: "ilk ekranda uzun"): yerine Günün Pusulası
 // + Ruh Profili karnesine ("?go=sky") bağlantı. Motor (skyToday) hâlâ hesaplanıyor
@@ -9421,6 +9478,114 @@ Direction (where the energy flows). Rules:
     }
     setTarotSpreadLoading(false);
   };
+
+  // ── İÇSEL HARİTA: GÜNLÜK YANSIMA ────────────────────────────────────────────
+  // Veri: sabah niyeti + seçilen kelimeler (bugün yoksa DÜN), akşam notu + şükür
+  // (bugün yoksa DÜN). İkisi de boşsa blok hiç gösterilmez.
+  const innerYesterdayKey = sakinDayKey(new Date(Date.now() - 86400000));
+  const _lsGet = (k) => { try { return localStorage.getItem(k) || ""; } catch { return ""; } };
+  const innerNiyet = (niyet || "").trim() || _lsGet("sakin_niyet_" + innerYesterdayKey).trim();
+  const innerWords = (() => {
+    if ((niyet || "").trim() && selectedWords?.length) return selectedWords;
+    try { const w = JSON.parse(_lsGet("sakin_words_" + innerYesterdayKey) || "[]"); return Array.isArray(w) ? w : []; } catch { return []; }
+  })();
+  const _todayEve = ((aksamNote || "").trim() || (sukur || "").trim());
+  const innerNote = _todayEve ? (aksamNote || "").trim() : _lsGet("sakin_aksamnote_" + innerYesterdayKey).trim();
+  const innerSukur = _todayEve ? (sukur || "").trim() : _lsGet("sakin_sukur_" + innerYesterdayKey).trim();
+  const innerHasData = !!(innerNiyet || innerNote || innerSukur);
+  // Günün sözü (src/quotes-data.js, dinamik import) + dünün gökyüzü: yalnızca
+  // İçsel Harita açıkken ve veri varken yüklenir.
+  const [innerQuote, setInnerQuote] = useState(null);      // { id, s, t }
+  const [innerSky, setInnerSky] = useState(null);          // { moon, gate, theme }
+  const [innerReflect, setInnerReflect] = useState(null);  // { key, text }
+  const [innerReflectLoading, setInnerReflectLoading] = useState(false);
+  useEffect(() => {
+    if (screen !== "harita" || !showHarita || !innerHasData) return;
+    let alive = true;
+    import("./quotes-data").then(m => {
+      if (!alive || !m.QUOTES?.length) return;
+      setInnerQuote(m.QUOTES[ichingHash(`quote|${todayKey}|${birthDate || ""}`) % m.QUOTES.length]);
+    }).catch(() => {});
+    // Dün öğlen: günün temsilî anı (gün içinde Ay kapısı değişir, Güneş'inki değişmez).
+    const y = new Date(); y.setDate(y.getDate() - 1); y.setHours(12, 0, 0, 0);
+    const moon = pickLang(moonPhase(y), lang);
+    // innerSky YALNIZCA transit hesabı bittiğinde (başarılı ya da değil) yazılır:
+    // önce kapısız sonra kapılı yazılsaydı anahtar değişir, AI iki kez çağrılırdı.
+    import("./hd-transit").then(m => m.computeTransit(y, lang)).then(tr => {
+      if (alive) setInnerSky({ moon, gate: tr?.sun?.name || null, theme: tr?.sun?.theme || null });
+    }).catch(() => { if (alive) setInnerSky({ moon, gate: null, theme: null }); });
+    return () => { alive = false; };
+  }, [screen, showHarita, innerHasData, todayKey, lang, birthDate]);
+  // Önbellek anahtarı GİRDİLERİ içerir: kullanıcı sonradan niyet ya da akşam
+  // notu yazarsa yansıma yeniden yazılır. AI yalnızca aiConsent VARSA ve günlük
+  // hak kalmışsa çağrılır (onay penceresi AÇILMAZ, bu kendiliğinden bir okuma);
+  // yoksa şablon yansıma. Şablon cache'lenmez (hak sonra açılabilir).
+  const innerKey = innerQuote && innerSky
+    ? `${todayKey}|${lang}|${ichingHash([innerNiyet, innerNote, innerSukur, innerQuote.id, innerSky.gate || ""].join("¦"))}`
+    : null;
+  useEffect(() => {
+    if (screen !== "harita" || !showHarita || !innerHasData || !innerKey) return;
+    if (innerReflect && innerReflect.key === innerKey) return;
+    try {
+      const c = JSON.parse(localStorage.getItem("sakin_inner_reflect") || "null");
+      if (c && c.key === innerKey && c.text) { setInnerReflect({ key: innerKey, text: c.text }); return; }
+    } catch { /* yok */ }
+    const tmpl = innerReflectTemplate(lang, innerSky.moon, innerSky.gate, innerNiyet, !!(innerNote || innerSukur));
+    if (!aiConsent || !navigator.onLine || innerReflectLoading || !_aiDailyOk()) { setInnerReflect({ key: innerKey, text: tmpl }); return; }
+    // Sonuç ANAHTARIYLA yazılır; ekran bu arada değiştiyse bile önbelleğe girer,
+    // görüntüde yalnızca güncel anahtarla eşleşen gösterilir. Yükleme bayrağı
+    // her durumda kapanır (yarıda kalan istek onu takılı bırakmasın).
+    const key = innerKey;
+    setInnerReflectLoading(true);
+    (async () => {
+      try {
+        const signTr = birthDate ? zodiacSign(birthDate) : null;
+        const quoteTxt = pickLang(innerQuote.t, lang);
+        const sys = lang === "tr" ? `Sen sakin, şefkatli bir iç ayna sesisin. Kullanıcıya 2-3 cümlelik KİŞİSEL bir
+yansıma yazıyorsun. Malzemen: bıraktığı niyet, günün sözü, akşam kapanışında
+yazdıkları ve DÜNÜN gökyüzü. Kurallar:
+- Tam 2-3 cümle, ikinci tekil şahıs, sıcak ve sade.
+- Niyetini onun kelimeleriyle an; sözü birebir tekrar etme, anlamını bağla.
+- Dünün gökyüzünü yalnızca ANLAMIYLA kullan; derece, kapı numarası, teknik terim yazma.
+- Akşam notu varsa ona nazikçe değin, yargılama.
+- Öğüt listesi yok, kehanet yok, tıbbi tavsiye yok.
+- Yıldız, madde imi, markdown, başlık kullanma.
+- Uzun tire (—), kısa tire (–) kullanma; virgül ya da ayrı cümle.
+- Tamamı Türkçe olsun.` : `You are a calm, caring inner-mirror voice. You write the user a PERSONAL
+reflection of 2-3 sentences. Your material: the intention they set, the saying
+of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
+- Exactly 2-3 sentences, second person, warm and simple.
+- Name their intention in their own words; do not repeat the saying verbatim, link its meaning.
+- Use yesterday's sky only through its MEANING; no degrees, gate numbers or technical terms.
+- If there is an evening note, touch it gently, without judgment.
+- No advice lists, no predictions, no medical advice.
+- No asterisks, bullets, markdown or headings.
+- Do not use an em dash (—) or en dash (–); use a comma or a separate sentence.
+- Write entirely in ${AI_LANG_NAMES[lang] || "English"}; do not mix in any other language.`;
+        const L = lang === "tr";
+        const parts = [
+          innerNiyet && `${L ? "Niyetim" : "My intention"}: ${innerNiyet}${innerWords.length ? ` (${innerWords.join(", ")})` : ""}`,
+          `${L ? "Günün sözü" : "Saying of the day"}: ${quoteTxt} (${quoteSource(innerQuote.s, lang)})`,
+          innerNote && `${L ? "Akşam kapanışında yazdıklarım" : "What I wrote at evening close"}: ${innerNote}`,
+          innerSukur && `${L ? "Şükür" : "Gratitude"}: ${innerSukur}`,
+          `${L ? "Dünün gökyüzü" : "Yesterday's sky"}: ${L ? "Ay" : "Moon"} ${innerSky.moon}${innerSky.gate ? `; ${L ? "Güneş kapısı" : "Sun gate"}: ${innerSky.gate}${innerSky.theme ? `, ${innerSky.theme}` : ""}` : ""}`,
+          signTr && `${L ? "Güneş burcum" : "My sun sign"}: ${L ? signTr : (ZODIAC_EN[signTr] || signTr)}`,
+        ].filter(Boolean).join("\n");
+        const res = await aiFetch({ method: "POST", headers: { "Content-Type": "text/plain" },
+          body: JSON.stringify({ max_tokens: 260, lang, system: sys, messages: [{ role: "user", content: parts }] }) });
+        const j = await res.json();
+        const text = (j?.text || j?.content || "").replace(/\*\*/g, "").replace(/[—–―]/g, ",").trim();
+        if (text.length < 30) throw new Error("kısa");
+        setInnerReflect({ key, text });
+        try { localStorage.setItem("sakin_inner_reflect", JSON.stringify({ key, text })); } catch { /* yok */ }
+      } catch {
+        setInnerReflect({ key, text: tmpl });
+      } finally {
+        setInnerReflectLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [screen, showHarita, innerHasData, innerKey]);
   // HD günlük transit. astronomy-engine DİNAMİK import ile yükleniyor
   // (bkz. src/hd-transit.js): ana bundle büyümesin, yalnızca bu ekranda insin.
   const [transit, setTransit] = useState(null);
@@ -13458,6 +13623,70 @@ Direction (where the energy flows). Rules:
             </button>
             {showHarita && (
             <div style={{ marginTop:8 }}>
+              {/* GÜNLÜK YANSIMA (kullanıcı isteği): niyet · günün sözü · yansıma
+                  (niyet + söz + dünün gökyüzü, 2-3 cümle) · akşam kapanışı · tek
+                  eylem (4-6 nefes). Yalnızca kullanıcı verisi varsa görünür;
+                  mantık için bkz. innerNiyet / innerReflect (bileşen gövdesi). */}
+              {innerHasData && (() => {
+                const lbl = (txt, c) => (
+                  <div style={{ fontFamily:"'Jost',sans-serif",fontSize:10.5,letterSpacing:2,textTransform:"uppercase",color:c||"#8fcfa6",marginBottom:6 }}>{txt}</div>
+                );
+                const reflectText = innerReflect && innerReflect.key === innerKey ? innerReflect.text : null;
+                return (
+                  <div style={{ marginBottom:26,padding:"18px 18px 16px",borderRadius:16,
+                    background:"linear-gradient(165deg, rgba(130,217,163,0.07), rgba(255,255,255,0.015) 70%)",
+                    border:"1px solid rgba(130,217,163,0.18)" }}>
+                    {innerNiyet && (
+                      <div style={{ marginBottom:16 }}>
+                        {lbl(pickLang(INNER_TXT.niyet, lang))}
+                        <div style={{ fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:21,lineHeight:1.3,color:"#f1ecf9" }}>“{innerNiyet}”</div>
+                        {innerWords.length > 0 && (
+                          <div style={{ fontSize:12,color:"#8f88a3",fontFamily:"'Inter',sans-serif",marginTop:4 }}>{innerWords.join(" · ")}</div>
+                        )}
+                      </div>
+                    )}
+                    {innerQuote && (
+                      <div style={{ marginBottom:16 }}>
+                        {lbl(pickLang(INNER_TXT.quote, lang))}
+                        <div style={{ fontSize:14.5,lineHeight:1.65,color:"#d6cfe6",fontFamily:"'Inter',sans-serif",fontStyle:"italic" }}>“{pickLang(innerQuote.t, lang)}”</div>
+                        <div style={{ fontSize:11.5,color:"#8f88a3",fontFamily:"'Jost',sans-serif",letterSpacing:0.5,marginTop:4 }}>{quoteSource(innerQuote.s, lang)}</div>
+                      </div>
+                    )}
+                    <div style={{ marginBottom:16,paddingTop:14,borderTop:"1px solid rgba(130,217,163,0.14)" }}>
+                      {lbl(pickLang(INNER_TXT.reflect, lang), "#e8c07a")}
+                      {reflectText ? (
+                        <div style={{ fontSize:15,lineHeight:1.75,color:"#efe9f8",fontFamily:"'Inter',sans-serif",animation:"fadeIn 0.6s ease" }}>{reflectText}</div>
+                      ) : (
+                        <div style={{ fontSize:13,color:"#c9b88e",fontStyle:"italic",fontFamily:"'Inter',sans-serif" }}>{pickLang(INNER_TXT.loading, lang)}</div>
+                      )}
+                    </div>
+                    {(innerNote || innerSukur) && (
+                      <div style={{ marginBottom:16 }}>
+                        {lbl(pickLang(INNER_TXT.evening, lang))}
+                        {innerNote && <div style={{ fontSize:14,lineHeight:1.6,color:"#d6cfe6",fontFamily:"'Inter',sans-serif",whiteSpace:"pre-wrap" }}>{innerNote}</div>}
+                        {innerSukur && (
+                          <div style={{ fontSize:13.5,lineHeight:1.55,color:"#b9b1cc",fontFamily:"'Inter',sans-serif",marginTop:innerNote ? 6 : 0 }}>
+                            <span style={{ color:"#8fcfa6" }}>{pickLang(INNER_TXT.sukur, lang)}:</span> {innerSukur}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    {/* TEK EYLEM: 4-6 nefes = Nefes ekranındaki "Diyafram" modu (4·6). */}
+                    <button onClick={()=>{ try{haptic();}catch(_){} pendingBreathRef.current = "diyafram"; setScreen("nefes"); }}
+                      style={{ WebkitAppearance:"none",appearance:"none",width:"100%",cursor:"pointer",textAlign:"left",
+                        display:"flex",alignItems:"center",gap:13,padding:"13px 16px",borderRadius:14,
+                        background:"rgba(80,200,180,0.10)",border:"1px solid rgba(80,200,180,0.35)",color:"inherit",font:"inherit" }}>
+                      <span style={{ width:38,height:38,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                        fontSize:17,color:"#7fd6c4",background:"rgba(80,200,180,0.14)",border:"1px solid rgba(80,200,180,0.35)" }}>◡</span>
+                      <span style={{ flex:1,minWidth:0 }}>
+                        <span style={{ display:"block",fontSize:15,color:"#e6fbf5",fontFamily:"'Jost',sans-serif",fontWeight:300 }}>{pickLang(INNER_TXT.breath, lang)}</span>
+                        <span style={{ display:"block",fontSize:12,color:"#8fb8ad",fontFamily:"'Inter',sans-serif",marginTop:2 }}>{pickLang(INNER_TXT.breathSub, lang)}</span>
+                      </span>
+                      <span style={{ flexShrink:0,fontSize:18,color:"#7fd6c4" }}>→</span>
+                    </button>
+                  </div>
+                );
+              })()}
               <div style={{ textAlign:"center",marginBottom:24 }}>
                 <div style={{ fontSize:13,letterSpacing:5,color:"#666666" }}>{t("weekly_label")}</div>
               </div>

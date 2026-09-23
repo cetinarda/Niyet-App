@@ -516,6 +516,26 @@ gövde Inter, etiket Jost. Yeni bölüm eklerken bu yardımcıları kullan.
   (`cancelTodayTarotNotif`). İzin istemez (checkPermissions), kartın adını
   söylemez (merak). Cihazda test EDİLMEDİ.
 
+## 🪷 İÇSEL HARİTA: GÜNLÜK YANSIMA (Ben ekranı, kullanıcı isteği, Eyl 2026)
+
+İçsel Harita açılınca, KULLANICI VERİSİ VARSA en üstte blok (yoksa hiç çıkmaz,
+altındaki halka + 4 istatistik aynen durur). Sıra:
+1. **Bıraktığın niyet** (`sakin_niyet_<gün>` + kelimeler; bugün yoksa DÜN).
+2. **Günün sözü**: `src/quotes-data.js` (Bitkiler/Taşlar ile AYNI havuz,
+   `apps/bitkiler/src/data/quotes.json`; akide/vaaz engel listesi uygulandı,
+   yalnızca kısa sözler, 150 adet, 7 dil, DİNAMİK import). Gün + doğumla sabit.
+   Genel kaynak adları `QUOTE_SOURCE_I18N` ile çevrilir, özel isimler olduğu gibi.
+3. **Yansıma (2-3 cümle)**: niyet + söz + akşam notu + DÜNÜN gökyüzü (dün öğlen
+   ay evresi + Güneş'in HD kapısı, `computeTransit`). AI YALNIZCA `aiConsent`
+   varsa ve günlük hak kalmışsa (onay penceresi AÇILMAZ, kendiliğinden okuma);
+   yoksa `innerReflectTemplate` (7 dil). Cache anahtarı GİRDİLERİ içerir
+   (`sakin_inner_reflect`): niyet/not değişirse yeniden yazılır, aç-kapa AI
+   harcamaz. ⚠️ Transit bitmeden yansıma başlamaz (yoksa anahtar değişip AI iki
+   kez çağrılıyordu).
+4. **Akşam kapanışında yazdıkların** (`sakin_aksamnote_` + `sakin_sukur_`; bugün yoksa dün).
+5. **Tek eylem: "Bugün için 4-6 nefes al"** → Nefes ekranı, `pendingBreathRef =
+   "diyafram"` (4·6 ritmi) seçili açılır.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:
