@@ -417,7 +417,34 @@ demek soğutur).
 - ⚠️ Test ortamında `pkill -f "vite preview"` komutunu BAŞKA komutlarla aynı
   satıra yazma: kabuk kendi komut satırını da eşleştirip kendini öldürüyor.
 
-## 🔔 KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği, Eyl 2026)
+## 🔔 BİLDİRİMLER: TEK PLANLAYICI + GÜNLÜK SINIR (Eyl 2026, GÜNCEL)
+
+⚠️ **Aşağıdaki eski "kişiye özel havuz" anlatımındaki "günde +2" ARTIK GEÇERSİZ.**
+Genel, kişisel ve tarot havuzları birbirinden habersiz kuruluyordu: kıdem kuralı
+yalnızca genel havuza uygulanıyor, doğum bilgisi olan 30+ günlük kullanıcıya
+günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
+`scheduleAllNotifications(lang, birthDate, {ask, force})`, damga `sakin_notif_plan`.
+- **Günlük üst sınır (TÜM havuzlar birlikte):** yeni (ilk 7 gün) 3 · orta (8-30) 2
+  · eski (30+) 1. `NOTIF_CAP` + `_notifDayPlan`.
+- **Doğum VARSA öncelik:** jeomanyetik 12:00 (yalnızca Kp>=4) > kolaylaştırıcı
+  10:00 (→Bugün) > akşam 18:00 / tarot 08:30 (sınır küçükse günlere göre
+  dönüşümlü). 16:00 kişisel hatırlatıcı artık PLANLANMIYOR.
+- **Doğum YOKSA:** yalnızca genel havuz (18:00 + kıdeme göre 13:00/08:00).
+  Tarot ve gömülü uygulamaya (Tasarım/Hayvan/Mitler) giden mesajlar GİTMEZ:
+  hepsi doğum kapısına açılıyordu. Geri dönüşün Bugün'e giden metinleri Bağlan'a.
+- **Hedefler düzeltildi:** jeomanyetik bildirimi `"ben"` diye OLMAYAN bir ekranı
+  açıyordu (Ben'in ekranı `harita`). 12 özellik davetinin hepsi Bağlan'ı
+  açıyordu; artık `PROMO_TARGETS` ile metne uygun ekran (ses/nefes/çakra/gün/
+  harita/Hayvan/Mitler). Bildirim hedefi eklerken ekran adının GERÇEKTEN
+  render edildiğini kontrol et (`screen==="..."`).
+- **İzin zamanı:** artık ilk açılışta SORULMUYOR. `askNotifPermissionOnce`: ilk
+  nefes bitince, tanışma bitince ya da en geç ikinci açılışta, bir kez
+  (`sakin_notif_asked`).
+- Kolaylaştırıcı şablon yedeği artık 7 dilde (`PNOTIF_FACIL`).
+- Doğrulama: gerçek kod Node'da sahte LocalNotifications ile çalıştırıldı
+  (tier × doğum × Kp), gün başı sayılar 3/2/1 ve 2/1-2/1 çıktı. Cihazda test EDİLMEDİ.
+
+## 🔔 KİŞİYE ÖZEL BİLDİRİM HAVUZU (TARİHSEL, üstteki tek planlayıcıya bak)
 
 Mevcut GENEL bildirim havuzu (9000-9099, `scheduleDailyReminders`) aynen devam
 eder. Buna EK, AYRI bir kişiye özel havuz eklendi (`schedulePersonalNotifications`,

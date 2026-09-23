@@ -1399,35 +1399,6 @@ const TAROT_NOTIF = {
   ja: ["今日のタロットカードが待っています。正位置？逆位置？", "デッキはシャッフル済み。今日のカードを引きますか？", "今日のために一枚、あなただけのカードがあります。"],
 };
 const _tarotNotifId = (d) => 9300 + d.getDate();
-async function scheduleTarotMorning(lang) {
-  if (!isNative) return;
-  try {
-    const perm = await LocalNotifications.checkPermissions();
-    if (perm.display !== "granted") return;
-    const todayKey = sakinDayKey();
-    const tier = _notifTier();
-    const stamp = todayKey + "_" + lang + "_" + tier;
-    if (localStorage.getItem("sakin_tarot_notif_sched") === stamp) return;
-    await LocalNotifications.cancel({ notifications: Array.from({ length: 32 }, (_, i) => ({ id: 9300 + i })) });
-    const drawnToday = localStorage.getItem("sakin_tarot_drawn") === todayKey;
-    const arr = TAROT_NOTIF[lang] || TAROT_NOTIF.en;
-    const now = new Date();
-    const out = [];
-    for (let d = 0; d < 7; d++) {
-      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      if (d === 0 && drawnToday) continue;
-      const dn = dayNumber(day);
-      if (_notifSecondSlot(tier, dn, day) === "morning") continue;
-      const at = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 8, 30, 0);
-      if (at <= now) continue;
-      out.push({ id: _tarotNotifId(day), title: "Sakin", body: arr[((dn % arr.length) + arr.length) % arr.length],
-        schedule: { at, allowWhileIdle: true }, extra: { screen: "bugun" },
-        smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" });
-    }
-    if (out.length) await LocalNotifications.schedule({ notifications: out });
-    localStorage.setItem("sakin_tarot_notif_sched", stamp);
-  } catch (e) { console.warn("[TarotNotif]", e); }
-}
 // ── GERİ DÖNÜŞ BİLDİRİMLERİ (kullanım raporu, Eyl 2026) ─────────────────────
 // KÖK SEBEP: genel ve kişisel havuzlar yalnızca 7 GÜN ileriye kuruluyor.
 // Uygulamayı bir hafta açmayan kişiye bir daha HİÇ bildirim gitmiyordu; raporda
@@ -1448,6 +1419,9 @@ const WINBACK_TXT = {
   fr: ["Ça fait un moment. Une respiration d'une minute t'attend.", "Ta carte et ta boussole du jour sont prêtes. Un coup d'œil ?", "Une seule respiration suffit pour recommencer.", "Sakin est là. Quand tu veux, là où tu t'étais arrêté(e)."],
   ja: ["しばらくぶりですね。1分の呼吸があなたを待っています。", "今日のカードと羅針盤が用意できています。見てみませんか？", "もう一度始めるには、ひと呼吸で十分です。", "Sakinはここにいます。いつでも、止まったところから。"],
 };
+// 14. gün metni "kartın ve pusulan hazır" diyor; doğum bilgisi yoksa o içerik
+// açılmadığı için yerine 3. metin (yeniden başlamak) kullanılır.
+const WINBACK_TXT_NOBIRTH = (arr, i) => (i === 1 ? arr[2] : arr[i]);
 async function scheduleWinBack(lang) {
   if (!isNative) return;
   try {
@@ -1456,10 +1430,12 @@ async function scheduleWinBack(lang) {
     if (perm.display !== "granted") return;
     const arr = WINBACK_TXT[lang] || WINBACK_TXT.en;
     const now = new Date();
+    // Doğum bilgisi yoksa Bugün kapıya açılır: o kişiyi Bağlan'a yönlendir.
+    let hasBirth = false; try { hasBirth = !!localStorage.getItem("sakin_birth_date"); } catch (_) {}
     const out = WINBACK_DAYS.map((n, i) => ({
-      id: 9400 + i, title: "Sakin", body: arr[i],
+      id: 9400 + i, title: "Sakin", body: hasBirth ? arr[i] : WINBACK_TXT_NOBIRTH(arr, i),
       schedule: { at: new Date(now.getFullYear(), now.getMonth(), now.getDate() + n, 19, 30, 0), allowWhileIdle: true },
-      extra: { screen: WINBACK_SCREENS[i] },
+      extra: { screen: (!hasBirth && WINBACK_SCREENS[i] === "bugun") ? "mandala" : WINBACK_SCREENS[i] },
       smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8",
     }));
     await LocalNotifications.schedule({ notifications: out });
@@ -3631,92 +3607,6 @@ function _notifSecondSlot(tier, dn, dateObj) {
   return MORNING_DAYS.includes(dateObj.getDay()) ? "morning" : "afternoon";
 }
 
-async function scheduleDailyReminders(lang) {
-  if (!isNative) return;
-  try {
-    const perm = await LocalNotifications.requestPermissions();
-    if (perm.display !== "granted") {
-      console.warn("[Notif] permission not granted:", perm.display);
-      return;
-    }
-    const todayKey = sakinDayKey();
-    // Damga = tarih + dil. Aynı gün dili değiştirirsen (TR↔EN) damga değişir,
-    // yeniden planlanır; aşağıdaki cancel eski dildeki kuyruğu temizler.
-    const tier = _notifTier();
-    const stamp = todayKey + "_" + lang + "_" + tier;
-    const lastScheduled = localStorage.getItem("sakin_notif_scheduled");
-    // Aynı gün + aynı dil zaten planlandıysa hiçbir şeye dokunma
-    if (lastScheduled === stamp) return;
-    // Mevcut tüm slotları temizle: hatırlatmalar 9000-9020, sabah 9050-9056,
-    // özellik 9070-9076 + eski sabah ping'leri 9100/9101 (9000-9099 hepsini kapsar)
-    await LocalNotifications.cancel({ notifications: [...Array.from({length:100},(_,i)=>({id:9000+i})), {id:9100}, {id:9101}] });
-    const isTr = lang === "tr";
-    const reminders = _localizeArr(DAILY_REMINDERS_EN, DAILY_REMINDERS_TR, NOTIF_TRANS.DAILY_REMINDERS, lang);
-    const mornings  = _localizeArr(MORNING_PINGS_EN, MORNING_PINGS_TR, NOTIF_TRANS.MORNING_PINGS, lang);
-    const promos    = _localizeArr(FEATURE_PROMOS_EN, FEATURE_PROMOS_TR, NOTIF_TRANS.FEATURE_PROMOS, lang);
-    const now = new Date();
-    const notifications = [];
-    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
-    const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
-    // ANDROID TOPLU DÜŞME FIX (kullanıcı: "yine aynı anda düştü bildirimler", Samsung).
-    // Kök sebep, plugin kaynağında (LocalNotificationManager.setExactIfPossible):
-    // Android 12+ ve exact-alarm izni YOKKEN (bkz. AndroidManifest.xml: Play
-    // politikası yüzünden o izni bilerek almıyoruz) plugin şu dala düşüyor:
-    //     allowWhileIdle ? setAndAllowWhileIdle(RTC_WAKEUP) : set(RTC)
-    // allowWhileIdle varsayılanı FALSE olduğundan alarmlar `set(AlarmManager.RTC)`
-    // ile kuruluyordu: cihazı UYANDIRMAYAN + Doze'un biriktirdiği alarm. Telefon
-    // (özellikle Samsung'un agresif uyutması) uyanana kadar hiçbiri düşmüyor,
-    // uyanınca günlerce birikmiş 5-8 tanesi AYNI DAKİKADA boşalıyordu.
-    // allowWhileIdle:true → setAndAllowWhileIdle(RTC_WAKEUP): Doze'dan muaf,
-    // cihazı uyandırır ve EK İZİN GEREKTİRMEZ (exact-alarm değil), yani Play
-    // "Tam Alarmlar" beyanı riski doğurmaz. Sistem bunu uygulama başına ~9 dk'da
-    // bire kısıtlar; bizim bildirimler saatler arayla olduğu için etkilenmez.
-    const SCHED = { allowWhileIdle: true };
-    // 7 günlük forward schedule. Bildirim yoğunluğu KIDEME göre değişir (yukarı bak):
-    //   AKŞAM 18:00 → çekirdek bildirim, her tier'da HER GÜN. Tek birleşik havuz
-    //     (özellik daveti + günlük söz + nefes + Keşfet/Tasarım). Her öğe kendi
-    //     hedefini taşır; tıklanınca doğrudan o ekran/embed açılır.
-    //   İKİNCİ bildirim → tier'a göre (yeni: her gün, orta: gün aşırı, eski: yok).
-    //     Sabah artık HER GÜN/GÜN AŞIRI değil, sadece Salı & Cuma (bkz. _notifSecondSlot), 
-    //     diğer uygun günlerde 13:00 öğle nudge'ı, akşam havuzundan yarım-tur offsetle seçilir.
-    // Mesajlar dayNumber'a göre deterministik (aynı gün → aynı mesaj).
-    for (let d = 0; d < 7; d++) {
-      const dayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-      const dn = dayNumber(dayDate);
-      const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
-      const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
-      const eveningPool = [
-        ...promos.map(b     => ({ body: b, extra: { screen: "mandala" } })),
-        ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
-        ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
-        ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
-      ];
-      // AKŞAM 18:00: çekirdek günlük bildirim (1.3.1'de 21:00'di; kullanıcı akşamüstünü tercih etti).
-      const evening = pick(eveningPool, dn);
-      const pAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 18, 0, 0);
-      if (pAt > now) notifications.push({ id: 9070 + d, title: "Sakin", body: evening.body, schedule: { at: pAt, ...SCHED }, extra: evening.extra, ...icon });
-      // İKİNCİ bildirim: tier'a göre; sabah artık sadece Salı/Cuma (_notifSecondSlot).
-      const slot = _notifSecondSlot(tier, dn, dayDate);
-      if (slot === "morning") {
-        const mAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 8, 0, 0);
-        if (mAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: pick(mornings, dn), schedule: { at: mAt, ...SCHED }, extra: { screen: "sabah" }, ...icon });
-      } else if (slot === "afternoon") {
-        const aAt = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, 13, 0, 0);
-        // Yarım-tur offset (akşamla aynı güne denk gelirse bile farklı mesaj garantisi).
-        const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2));
-        if (aAt > now) notifications.push({ id: 9050 + d, title: "Sakin", body: alt.body, schedule: { at: aAt, ...SCHED }, extra: alt.extra, ...icon });
-      }
-    }
-    if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
-    localStorage.setItem("sakin_notif_scheduled", stamp);
-    // Diagnostik: gerçekten kuyrukta kaç bildirim var?
-    try {
-      const pending = await LocalNotifications.getPending();
-      console.log("[Notif] scheduled, pending count:", pending?.notifications?.length);
-    } catch(_) {}
-  } catch (e) { console.warn("[Notif] error:", e); }
-}
-
 // ── KİŞİYE ÖZEL BİLDİRİM HAVUZU (kullanıcı isteği) ──────────────────────────
 // Doğum bilgisine göre günde +2 bildirim: (1) günün KOLAYLAŞTIRICI mesajı,
 // (2) ona özel kısa HATIRLATICI. Ayrıca yalnızca jeomanyetik alan hareketliyken
@@ -3744,6 +3634,32 @@ const PNOTIF_FACIL = {
        "Split the hard thing in two. Half is enough for today.",
        "Plan a pause. A rested mind recovers faster.",
        "Do yourself a kindness: start with the easiest task, let momentum build."],
+  // Yapay zekâ çağrısı başarısız olursa bu diller eskiden İngilizce şablona düşüyordu.
+  de: ["Halte den Tag klein. Bring eine Sache zu Ende, der Rest folgt.",
+       "Keine Eile. Heute langsamer zu werden ist auch Fortschritt.",
+       "Teil das Schwierige in zwei. Die Hälfte reicht für heute.",
+       "Plane eine Pause. Ein ausgeruhter Geist erholt sich schneller.",
+       "Tu dir etwas Gutes: fang mit der leichtesten Aufgabe an, lass Schwung entstehen."],
+  es: ["Haz que hoy sea pequeño. Termina una cosa, lo demás fluirá.",
+       "Sin prisa. Ir más despacio hoy también es avanzar.",
+       "Divide lo difícil en dos. La mitad basta por hoy.",
+       "Planea una pausa. Una mente descansada se recupera antes.",
+       "Sé amable contigo: empieza por lo más fácil y deja que llegue el impulso."],
+  pt: ["Mantém o dia pequeno. Termina uma coisa, o resto vem a seguir.",
+       "Sem pressa. Abrandar hoje também é avançar.",
+       "Divide o difícil em dois. Metade chega por hoje.",
+       "Planeia uma pausa. Uma mente descansada recupera mais depressa.",
+       "Sê gentil contigo: começa pela tarefa mais fácil e deixa o ritmo crescer."],
+  fr: ["Garde la journée petite. Termine une chose, le reste suivra.",
+       "Pas de hâte. Ralentir aujourd'hui, c'est aussi avancer.",
+       "Coupe la chose difficile en deux. La moitié suffit pour aujourd'hui.",
+       "Prévois une pause. Un esprit reposé se remet plus vite.",
+       "Fais-toi du bien : commence par le plus facile, laisse l'élan venir."],
+  ja: ["今日は小さく。ひとつだけ終わらせれば、あとは自然に流れます。",
+       "急がなくていい。今日ゆっくりすることも前進です。",
+       "難しいことは半分に。今日は半分で十分。",
+       "休憩を予定に入れて。休んだ心は早く立ち直ります。",
+       "自分にやさしく。いちばん簡単なことから始めて、勢いにまかせて。"],
 };
 const PNOTIF_REMIND = {
   tr: ["Su içmeyi unutma. Bedenin sana teşekkür edecek.",
@@ -3869,56 +3785,151 @@ function _emMessageForDay(kozmik, dayIndex, lang) {
   } catch (_) { return null; }
 }
 
-async function schedulePersonalNotifications(lang, birthDate) {
-  if (!isNative || !birthDate) return;         // kişiselleştirme doğum bilgisi ister
+// ── TEK BİLDİRİM PLANLAYICISI + GÜNLÜK ÜST SINIR (kullanıcı isteği, Eyl 2026) ─
+// ÖNCEKİ SORUN: genel, kişisel ve tarot havuzları BİRBİRİNDEN HABERSİZ ayrı
+// ayrı kuruluyordu. Kıdem kuralı ("eski kullanıcı yorulmasın, günde 1") yalnızca
+// genel havuza uygulanıyordu; doğum bilgisi olan 30+ günlük kullanıcıya günde
+// 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK planlayıcı var ve TÜM
+// havuzlar ortak bir günlük üst sınıra tabi:
+//   yeni (ilk 7 gün) 3 · orta (8-30 gün) 2 · eski (30+ gün) 1
+// Öncelik (doğum bilgisi VARSA): jeomanyetik uyarı (yalnızca Kp>=4 günleri) >
+// kişiye özel kolaylaştırıcı 10:00 > akşam 18:00 / sabah tarotu 08:30. Sınır
+// dolmadığında sıradakiler eklenir; sınır küçükse akşam ile tarot günlere göre
+// DÖNÜŞÜMLÜ gelir (orta: kolaylaştırıcı + dönüşümlü 1; eski: üçü sırayla).
+// Doğum bilgisi YOKSA: yalnızca genel havuz (akşam + kıdeme göre ikinci slot).
+// Tarot ve Tasarım/Hayvan/Mitler'e giden mesajlar bu kişiye GİTMEZ: hepsi
+// doğum bilgisi isteyen ekranlara açılıyordu, kişi kart yerine kapıyı görüyordu.
+// 16:00 kişisel hatırlatıcı sınır yüzünden artık planlanmıyor (içerik yine
+// üretiliyor, ileride sınır genişlerse kullanılabilir).
+// ID aralıkları DEĞİŞMEDİ: genel 9050-9076, kişisel 9200-9226, tarot 9300-9331,
+// geri dönüş 9400-9403 (o ayrı, son açılışa göre kaydırılır, sınıra girmez:
+// yalnızca uygulamayı 10+ gün açmayana gider).
+const NOTIF_CAP = { new: 3, mid: 2, old: 1 };
+function _notifDayPlan(tier, dn, dayDate, hasBirth, hasEm) {
+  const cap = NOTIF_CAP[tier] || 1;
+  const par = ((dn % 2) + 2) % 2;
+  if (!hasBirth) {
+    const list = ["evening"];
+    if (_notifSecondSlot(tier, dn, dayDate)) list.push("second");
+    return list.slice(0, cap);
+  }
+  const picks = hasEm ? ["em"] : [];
+  const left = cap - picks.length;
+  if (left >= 3) picks.push("facil", "evening", "tarot");
+  else if (left === 2) picks.push("facil", par === 0 ? "evening" : "tarot");
+  else if (left === 1) picks.push(["facil", "evening", "tarot"][((dn % 3) + 3) % 3]);
+  return picks;
+}
+// Özellik davetlerinin GERÇEK hedefi (FEATURE_PROMOS sırasıyla birebir).
+// ÖNCEKİ SORUN: 12 davetin hepsi Bağlan'ı açıyordu; "Sakin Hayvan'ı keşfet"
+// diyen bildirim bile Bağlan'a düşüyordu.
+const PROMO_TARGETS = [
+  { screen: "ses" }, { screen: "nefes" }, { screen: "ses" }, { screen: "chakra" },
+  { screen: "gun" },            // "Ayna alıştırması" = Gün görevlerindeki ayna görevi
+  { screen: "harita" },         // "Galaktik" = Ben ekranındaki galaktik kimlik
+  { embed: "hayvan" }, { embed: "mitler" },
+  { screen: "harita" },         // haftalık içsel rapor Ben ekranında
+  { screen: "ses" }, { screen: "mandala" }, { screen: "ses" },
+];
+async function scheduleAllNotifications(lang, birthDate, opts = {}) {
+  if (!isNative) return;
   try {
-    const perm = await LocalNotifications.requestPermissions();
+    const perm = opts.ask ? await LocalNotifications.requestPermissions() : await LocalNotifications.checkPermissions();
     if (perm.display !== "granted") return;
-
-    // 1) İçerik: haftada bir üret, cache'le (AI birincil, şablon yedek).
+    const hasBirth = !!birthDate;
+    const tier = _notifTier();
     const week = _isoWeekStamp();
-    const contentStamp = `${week}_${lang}_${birthDate}`;
+    const contentStamp = hasBirth ? `${week}_${lang}_${birthDate}` : "-";
+    const stamp = `v2_${sakinDayKey()}_${lang}_${tier}_${contentStamp}`;
+    if (!opts.force && localStorage.getItem("sakin_notif_plan") === stamp) return;
+
+    // Kişisel içerik: haftada bir (AI birincil, şablon yedek), cache'li.
     let content = null;
-    try { content = JSON.parse(localStorage.getItem("sakin_pnotif_content") || "null"); } catch (_) {}
-    if (!content || content.stamp !== contentStamp || !Array.isArray(content.days)) {
-      const ai = await _genPersonalNotifAI(lang, birthDate);
-      const days = ai || _genPersonalNotifTemplate(lang, birthDate);
-      content = { stamp: contentStamp, source: ai ? "ai" : "tpl", days };
-      try { localStorage.setItem("sakin_pnotif_content", JSON.stringify(content)); } catch (_) {}
-    }
-
-    // 2) EM verisi: cosmic-energy'yi en iyi çabayla çek (başarısızsa EM'siz devam).
     let kozmik = null;
-    try {
-      const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
-      if (r.ok) kozmik = await r.json();
-    } catch (_) {}
-
-    // 3) Günlük yeniden planlama damgası: aynı gün + hafta + dil zaten kuruluysa çık.
-    const schedStamp = `${sakinDayKey()}_${contentStamp}`;
-    if (localStorage.getItem("sakin_pnotif_sched") === schedStamp) return;
-
-    // Kişisel havuz ID aralığı 9200-9299 (genel havuz 9000-9099'dan ayrı).
-    await LocalNotifications.cancel({ notifications: Array.from({ length: 100 }, (_, i) => ({ id: 9200 + i })) });
-    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
-    const SCHED = { allowWhileIdle: true };
-    const now = new Date();
-    const at = (d, h) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + d, h, 0, 0);
-    const notifications = [];
-    for (let d = 0; d < 7; d++) {
-      const day = content.days[d] || {};
-      // Kolaylaştırıcı 10:00, hatırlatıcı 16:00 (mevcut 8/13/18 slotlarıyla çakışmaz).
-      const fAt = at(d, 10), rAt = at(d, 16);
-      if (day.f && fAt > now) notifications.push({ id: 9200 + d, title: "Sakin", body: day.f, schedule: { at: fAt, ...SCHED }, extra: { screen: "bugun" }, ...icon });
-      if (day.r && rAt > now) notifications.push({ id: 9210 + d, title: "Sakin", body: day.r, schedule: { at: rAt, ...SCHED }, extra: { screen: "mandala" }, ...icon });
-      // EM yalnızca aktif/fırtına günlerinde (Kp>=4), 12:00.
-      const em = _emMessageForDay(kozmik, d, lang);
-      const eAt = at(d, 12);
-      if (em && eAt > now) notifications.push({ id: 9220 + d, title: "Sakin", body: em, schedule: { at: eAt, ...SCHED }, extra: { screen: "ben" }, ...icon });
+    if (hasBirth) {
+      try { content = JSON.parse(localStorage.getItem("sakin_pnotif_content") || "null"); } catch (_) {}
+      if (!content || content.stamp !== contentStamp || !Array.isArray(content.days)) {
+        const ai = await _genPersonalNotifAI(lang, birthDate);
+        const days = ai || _genPersonalNotifTemplate(lang, birthDate);
+        content = { stamp: contentStamp, source: ai ? "ai" : "tpl", days };
+        try { localStorage.setItem("sakin_pnotif_content", JSON.stringify(content)); } catch (_) {}
+      }
+      try {
+        const r = await fetch(API_BASE + "/.netlify/functions/cosmic-energy?lang=" + encodeURIComponent(lang));
+        if (r.ok) kozmik = await r.json();
+      } catch (_) {}
     }
-    if (notifications.length > 0) await LocalNotifications.schedule({ notifications });
-    localStorage.setItem("sakin_pnotif_sched", schedStamp);
-  } catch (e) { console.warn("[PNotif] error:", e); }
+
+    const reminders = _localizeArr(DAILY_REMINDERS_EN, DAILY_REMINDERS_TR, NOTIF_TRANS.DAILY_REMINDERS, lang);
+    const mornings  = _localizeArr(MORNING_PINGS_EN, MORNING_PINGS_TR, NOTIF_TRANS.MORNING_PINGS, lang);
+    const promos    = _localizeArr(FEATURE_PROMOS_EN, FEATURE_PROMOS_TR, NOTIF_TRANS.FEATURE_PROMOS, lang);
+    const nefesArr  = NOTIF_NEFES[lang]  || NOTIF_NEFES.en;
+    const kesfetArr = NOTIF_KESFET[lang] || NOTIF_KESFET.en;
+    // Tek birleşik akşam havuzu; her öğe kendi hedefini taşır. Doğum bilgisi
+    // yoksa gömülü uygulamaya (doğum kapısı) giden öğeler çıkarılır.
+    const eveningPool = [
+      ...promos.map((b, i) => ({ body: b, extra: PROMO_TARGETS[i] || { screen: "mandala" } })),
+      ...reminders.map(b  => ({ body: b, extra: { screen: "gun" } })),
+      ...nefesArr.map(b   => ({ body: b, extra: { screen: "nefes" } })),
+      ...kesfetArr.map(b  => ({ body: b, extra: { embed: "tasarim" } })),
+    ].filter(x => hasBirth || !x.extra.embed);
+    const pick = (arr, dn) => arr[((dn % arr.length) + arr.length) % arr.length];
+    const tarotArr = TAROT_NOTIF[lang] || TAROT_NOTIF.en;
+    const drawnToday = localStorage.getItem("sakin_tarot_drawn") === sakinDayKey();
+
+    await LocalNotifications.cancel({ notifications: [
+      ...Array.from({ length: 100 }, (_, i) => ({ id: 9000 + i })), { id: 9100 }, { id: 9101 },
+      ...Array.from({ length: 100 }, (_, i) => ({ id: 9200 + i })),
+      ...Array.from({ length: 32 }, (_, i) => ({ id: 9300 + i })),
+    ] });
+
+    // ⚠️ allowWhileIdle ŞART (kullanıcı: "bildirimler aynı anda düştü", Samsung).
+    // Android 12+ ve exact-alarm izni YOKKEN (Play politikası yüzünden bilerek
+    // alınmıyor) plugin varsayılan olarak set(RTC) kuruyor: cihazı UYANDIRMAYAN,
+    // Doze'un biriktirdiği alarm; telefon uyanınca günlerin birikmişi aynı
+    // dakikada boşalıyordu. allowWhileIdle:true → setAndAllowWhileIdle(RTC_WAKEUP):
+    // Doze'dan muaf, EK İZİN GEREKTİRMEZ (exact-alarm değil).
+    const SCHED = { allowWhileIdle: true };
+    const icon = { smallIcon: "ic_stat_icon_config_sample", iconColor: "#b8a4d8" };
+    const now = new Date();
+    const out = [];
+    const add = (id, at, body, extra) => { if (body && at > now) out.push({ id, title: "Sakin", body, schedule: { at, ...SCHED }, extra, ...icon }); };
+    for (let d = 0; d < 7; d++) {
+      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+      const dn = dayNumber(day);
+      const at = (h, m = 0) => new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0);
+      const em = hasBirth ? _emMessageForDay(kozmik, d, lang) : null;
+      const plan = _notifDayPlan(tier, dn, day, hasBirth, !!em);
+      const pd = (content && content.days && content.days[d]) || {};
+      for (const slot of plan) {
+        if (slot === "evening") { const e = pick(eveningPool, dn); add(9070 + d, at(18), e.body, e.extra); }
+        else if (slot === "second") {
+          if (_notifSecondSlot(tier, dn, day) === "morning") add(9050 + d, at(8), pick(mornings, dn), { screen: "sabah" });
+          else { const alt = pick(eveningPool, dn + Math.floor(eveningPool.length / 2)); add(9050 + d, at(13), alt.body, alt.extra); }
+        }
+        else if (slot === "facil") add(9200 + d, at(10), pd.f, { screen: "bugun" });
+        // ⚠️ Eskiden { screen: "ben" } idi: uygulamada "ben" adlı EKRAN YOK
+        // (Ben sekmesinin ekranı "harita"), dokunan boş ekran görüyordu.
+        else if (slot === "em") add(9220 + d, at(12), em, { screen: "harita" });
+        else if (slot === "tarot" && !(d === 0 && drawnToday)) add(_tarotNotifId(day), at(8, 30), pick(tarotArr, dn), { screen: "bugun" });
+      }
+    }
+    if (out.length) await LocalNotifications.schedule({ notifications: out });
+    localStorage.setItem("sakin_notif_plan", stamp);
+  } catch (e) { console.warn("[Notif] error:", e); }
+}
+
+// İZİN ZAMANLAMASI (kullanıcı isteği): izin artık uygulamanın İLK saniyesinde,
+// açılış animasyonunun üstünde sorulmuyor. Kullanıcı bir değer gördükten sonra
+// sorulur: ilk nefesini bitirince, tanışmayı bitirince ya da en geç ikinci
+// açılışta. Bir kez sorulur (`sakin_notif_asked`); izin zaten verilmişse
+// sistem hiçbir pencere açmaz, reddedilmişse iOS tekrar sormaz.
+function notifAskedAlready() { try { return localStorage.getItem("sakin_notif_asked") === "1"; } catch (_) { return true; } }
+async function askNotifPermissionOnce(lang, birthDate) {
+  if (!isNative || notifAskedAlready()) return;
+  try { localStorage.setItem("sakin_notif_asked", "1"); } catch (_) {}
+  await scheduleAllNotifications(lang, birthDate, { ask: true, force: true });
+  scheduleWinBack(lang);
 }
 
 // ── EKRANI AÇIK TUT (Screen Wake Lock) ─────────────────────────────────────
@@ -7725,10 +7736,15 @@ export default function SakinApp() {
 
   useEffect(() => { const t=setInterval(()=>setTime(new Date()),1000); return()=>clearInterval(t); },[]);
   useEffect(() => { if (isNative) SplashScreen.hide(); }, []);
-  // lang bağımlılığı: dil değişince bildirimler yeni dilde yeniden planlanır
-  useEffect(() => { scheduleDailyReminders(lang); }, [lang]);
-  // "Kartın seni bekliyor" sabah bildirimi (ayrı havuz, bkz. scheduleTarotMorning).
-  useEffect(() => { scheduleTarotMorning(lang); }, [lang]);
+  // TEK BİLDİRİM PLANLAYICISI (genel + kişisel + tarot, ortak günlük sınır;
+  // bkz. scheduleAllNotifications). Dil, doğum bilgisi değişince yeniden kurulur.
+  // İzin burada YALNIZCA ikinci açılıştan itibaren sorulur (ilk açılışta hiç
+  // pencere yok); ilk nefes ve tanışma sonu askNotifPermissionOnce'u çağırır.
+  useEffect(() => {
+    let opens = 0; try { opens = parseInt(localStorage.getItem("sakin_open_count") || "0", 10) || 0; } catch (_) {}
+    if (!notifAskedAlready() && opens >= 2) { askNotifPermissionOnce(lang, birthDate); return; }
+    scheduleAllNotifications(lang, birthDate);
+  }, [lang, birthDate]);
   // Geri dönüş bildirimleri: her açılışta ve arka plandan her dönüşte yeniden
   // kurulur (son açılış tarihine göre kaydırılır).
   useEffect(() => {
@@ -7737,11 +7753,6 @@ export default function SakinApp() {
     document.addEventListener("visibilitychange", onVis);
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [lang]);
-  // KİŞİYE ÖZEL BİLDİRİM HAVUZU: doğum bilgisine göre günde +2 (kolaylaştırıcı +
-  // hatırlatıcı) + hareketli günlerde elektromanyetik. birthDate değişince
-  // yeniden planlanır. İçerik haftada bir AI ile üretilir (şablon yedekli),
-  // günlük yeniden planlanır; hepsi schedulePersonalNotifications içinde damgalı.
-  useEffect(() => { schedulePersonalNotifications(lang, birthDate); }, [lang, birthDate]);
   // Kilit ekranı / Control Center / Dynamic Island uzaktan kumanda olayları.
   // Native Swift plugin (SakinNowPlaying.swift) play/pause/stop'a basıldığında
   // window.dispatchEvent ile bildirir; biz Web Audio durdurma yoluna aktarırız.
@@ -9099,7 +9110,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
       if (tm.hold > 0)  { toIds.push(setTimeout(()=>{ setBreathPhase("hold"); playBreathTone("hold", tm.hold); },  t)); t += tm.hold;  }
       toIds.push(setTimeout(()=>{ setBreathPhase("exhale"); playBreathTone("exhale"); }, t)); t += tm.out;
       if (tm.hold2 > 0) { toIds.push(setTimeout(()=>{ setBreathPhase("hold2"); playBreathTone("hold2", tm.hold2); }, t)); }
-      toIds.push(setTimeout(()=>{ setBreathCount(c=>c+1); try { track("nefes"); } catch(_){} }, tm.total - 200));
+      toIds.push(setTimeout(()=>{ setBreathCount(c=>c+1); try { track("nefes"); } catch(_){} askNotifPermissionOnce(lang, birthDate); }, tm.total - 200));
     };
     setBreathPhase("ready");
     const startDelay = setTimeout(() => {
@@ -11616,6 +11627,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const close = (dest) => {
           stop();
           try { localStorage.setItem(isB ? "sakin_onb_baglan" : "sakin_onb_kesfet", "1"); } catch(_) {}
+          // Tanışma bitti: kullanıcı değeri gördü, bildirim izni şimdi sorulur (bir kez).
+          askNotifPermissionOnce(lang, (() => { try { return localStorage.getItem("sakin_birth_date") || ""; } catch (_) { return ""; } })());
           setOnbPath(null); setOnbStep(0); setOnbBreathSec(0); setOnbCalcIdx(0);
           if (dest) setScreen(dest);
         };
