@@ -204,6 +204,22 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
     - ⚠️ **DİL: SoulID yalnızca `tr` + `en` (kullanıcı kararı, "şimdilik 2 dil kalsın").** `lib/i18n/store.ts` → `Locale = 'tr' | 'en'`. Sakin'in 7 dil kuralı BURAYA UYGULANMAZ, eksik çeviri sanıp 7'ye çıkarma. Sakin tarafındaki SoulID KART metinleri (`ailesi_soulid_*`, `badge_new`) 7 dilde, o ayrı.
     - **Bağlanma Stili** (`lib/attachment/`): 16 soru → kaygı × kaçınma → 4 stil. **KIRMIZI ÇİZGİ:** stil yalnızca yanıtlardan çıkar; doğum haritası stili BELİRLEMEZ, sadece önerileri kişiselleştirir (`chart-lens.ts` başındaki nota bak).
     - ⚠️ **SAYI AİLESİ = TEK KAYNAK `apps/soulid/lib/numerology/families.ts`** (1-5-7 Arayanlar · 2-4-8 Kurucular · 3-6-9 Işıklar). Kullanıcı bildirdi: karne "5-7", Galaktik Kimlik "Kurucular 1-4-7" diyordu; `sakin-summary.ts` mod-3 düzlemlerini (1-4-7/2-5-8/3-6-9) ayrıca uydurmuştu. Artık karne (`outlook.ts`) + özet aynı dosyadan okur. Host (`src/App.jsx` `numberFamilyLabel`) etiketi özetten değil SAYIDAN 7 dilde hesaplar (özet yalnızca karne açılınca yenilendiği için telefonda eski etiket saklı kalabiliyordu). Üçlüyü değiştirirsen İKİ yeri de değiştir.
+    - ⚠️ **RUH PROFİLİ ÖZETİ (`sakin_soul_summary`) = Galaktik Kimlik kartının
+      "güzel hali" (ırk satırı + sayı ailesi/arketip/geliş sebebi/güçlü yön).**
+      Eyl 2026 regresyonu: özet yalnızca karne (/report) açılınca yazılıyordu,
+      15 Eyl'de SoulID'nin ilk açılışı profil sayfasına alınınca karneye girmeyen
+      kullanıcıda özet HİÇ oluşmadı, kart eski düzene düştü. Artık özet
+      `lib/store.ts` `setReport` içinde (her yükleme yolu) + köprü (`sakin-bridge`)
+      rapor kurunca yazılıyor. Host tarafında: kart açılıp özet yoksa SoulID
+      görünmez bir iframe'de bir kez yüklenir (`soulWarm`, 25 sn tavan), köprü
+      özeti yazar, kart ~1 sn'de dolar. Özeti yazan yeri değiştirirsen bu zinciri
+      bozma.
+    - **Yıldız ırkı tıklanır → sözlük:** karttaki ırk satırı `setKilavuzQ(race)` ile
+      sözlüğü açar; `src/glossary-starseed.js` maddeleri `key` = SoulID'nin Türkçe
+      ırk adı (her dilde aynı), sözlük tam `key` eşleşmesinde yalnızca o maddeyi
+      gösterir. Irk adı `apps/soulid/lib/galactic/index.ts`'te değişirse key'leri de
+      değiştir. İçerik starseed geleneğinin İNANÇ anlatısı ("inanılır/anlatılır"),
+      giriş maddesi bunu açıkça söylüyor; bilimsel iddia gibi yazma.
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Yeni" rozeti. `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.

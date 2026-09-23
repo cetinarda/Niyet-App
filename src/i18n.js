@@ -357,6 +357,7 @@ export const TRANS = {
     guide_cat_chakra: "Çakralar",
     guide_cat_biorhythm: "Biyoritim",
     guide_cat_reiki: "Reiki & Terapi",
+    guide_cat_starseed: "Yıldız Tohumları",
     guide_cat_app: "Uygulama Kavramları",
 
     // Mandala Harita
@@ -1120,6 +1121,7 @@ export const TRANS = {
     guide_cat_chakra: "Chakras",
     guide_cat_biorhythm: "Biorhythm",
     guide_cat_reiki: "Reiki & Therapy",
+    guide_cat_starseed: "Starseeds",
     guide_cat_app: "App Concepts",
 
     // Mandala Map

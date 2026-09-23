@@ -6,6 +6,8 @@
 // Tek bir öğeyi yerleştirme: { term, desc, examples? }
 // 7 dilin hepsi için aynı yapı korunur. Eksik dilde fallback EN → TR.
 
+import { STARSEED_BY_LANG } from "./glossary-starseed";
+
 const TR = [
   { cat: "guide_cat_numerology", items: [
     { term: "Yaşam Yolu Sayısı (Life Path Number)", desc: "Doğum tarihindeki tüm rakamların tek haneli bir sayıya (veya 11, 22, 33 usta sayılarına) indirgenmesiyle bulunan kişisel sayıdır. Hayat amacını, doğal yeteneklerini ve yaşam yolculuğunun temel enerjisini temsil eder.", examples: [
@@ -531,6 +533,9 @@ export const GLOSSARY_BY_LANG = {
 };
 
 // Dile göre glossary döndür; bilinmeyen dilde EN fallback.
+// "Yıldız Tohumları" kategorisi ayrı dosyada (glossary-starseed.js), en sona eklenir.
 export function getGlossary(lang) {
-  return GLOSSARY_BY_LANG[lang] || EN;
+  const base = GLOSSARY_BY_LANG[lang] || EN;
+  const star = STARSEED_BY_LANG[lang] || STARSEED_BY_LANG.en;
+  return [...base, { cat: "guide_cat_starseed", items: star }];
 }

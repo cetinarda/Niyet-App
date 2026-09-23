@@ -14,6 +14,7 @@ import { geocodePlace } from './geocoding';
 import { buildGalacticReport } from './report';
 import { canViewReport, recordReportView } from './entitlements';
 import { saveReport } from './supabase/reports';
+import { writeSakinSummary } from './sakin-summary';
 import { setActiveReportId } from './active-report';
 import type { Locale } from './i18n/store';
 
@@ -130,6 +131,9 @@ async function runBridge(
     if (!canViewReport(report.id)) return { ok: false };
 
     await saveReport(report).catch(() => {});
+    // Özeti HEMEN yaz: Sakin'in Galaktik Kimlik kartı profil sayfasının
+    // hidrasyonunu beklemeden dolsun.
+    try { writeSakinSummary(report); } catch { /* sessiz */ }
     recordReportView(report.id);
     setActiveReportId(report.id);
     // Başarı da parmak iziyle işaretlenir: kullanıcı Sakin'de doğum bilgisini

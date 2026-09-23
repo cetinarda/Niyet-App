@@ -24,7 +24,6 @@ import { captureNode, downloadDataUrl, shareDataUrl } from '@/lib/share';
 import { buildConceptDecks } from '@/lib/concepts';
 import { useT } from '@/lib/i18n';
 import { tap } from '@/lib/haptics';
-import { writeSakinSummary } from '@/lib/sakin-summary';
 
 export default function ReportPage() {
   const nav = useNav();
@@ -70,12 +69,9 @@ export default function ReportPage() {
     };
   }, [report, setReport]);
 
-  // Sakin'in "Ben" ekranındaki Ruh Profili kutusu için özet yaz. Karne her
-  // görüntülendiğinde tazelenir; hesap TEK YERDE (burada) yapılır, host yalnızca
-  // okur. Bkz. lib/sakin-summary.ts.
-  useEffect(() => {
-    if (report) writeSakinSummary(report);
-  }, [report]);
+  // Sakin'in Ruh Profili özeti artık store'un setReport'unda yazılıyor
+  // (lib/store.ts): karneye girmeden de oluşsun diye. Karne her açıldığında
+  // yine tazelenir (aynı rapor setReport'tan geçiyor).
 
   // ?to=sky (Sakin Bugün ekranından "Yıldızlar bugün sana ne söylüyor"):
   // karne yüklenince "Bugünün Gökyüzü" bölümüne bir kez kaydır.

@@ -254,6 +254,7 @@ export const EXTRA_LANGS = {
     guide_cat_chakra: "Chakras",
     guide_cat_biorhythm: "Biorhythmus",
     guide_cat_reiki: "Reiki & Therapie",
+    guide_cat_starseed: "Sternensaaten",
     guide_cat_app: "App-Konzepte",
 
     mandala_title: "Innere Reise",
@@ -1069,6 +1070,7 @@ export const EXTRA_LANGS = {
     guide_cat_chakra: "Chakras",
     guide_cat_biorhythm: "Biorritmo",
     guide_cat_reiki: "Reiki e Terapia",
+    guide_cat_starseed: "Sementes Estelares",
     guide_cat_app: "Conceitos do App",
 
     mandala_title: "Jornada Interior",
@@ -1708,6 +1710,7 @@ export const EXTRA_LANGS = {
     guide_cat_chakra: "Chakras",
     guide_cat_biorhythm: "Biorritmo",
     guide_cat_reiki: "Reiki y Terapia",
+    guide_cat_starseed: "Semillas Estelares",
     guide_cat_app: "Conceptos de la App",
 
     mandala_title: "Viaje Interior",
@@ -2438,6 +2441,7 @@ export const EXTRA_LANGS = {
     guide_cat_chakra: "Chakras",
     guide_cat_biorhythm: "Biorythme",
     guide_cat_reiki: "Reiki & Thérapie",
+    guide_cat_starseed: "Graines d'étoiles",
     guide_cat_app: "Concepts de l'App",
 
     mandala_title: "Voyage Intérieur",
@@ -3164,6 +3168,7 @@ export const EXTRA_LANGS = {
     guide_cat_chakra: "チャクラ",
     guide_cat_biorhythm: "バイオリズム",
     guide_cat_reiki: "レイキ & セラピー",
+    guide_cat_starseed: "スターシード",
     guide_cat_app: "アプリの概念",
 
     mandala_title: "内なる旅",

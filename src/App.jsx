@@ -7533,6 +7533,31 @@ export default function SakinApp() {
   // kaç kişinin doğum bilgisini kaydettiği HİÇ ölçülmüyordu; eski "birth_view"
   // yalnızca giriş ekranındaki formu sayıyordu.) Sunucu bunu bir kez işaretler.
   useEffect(() => { if (birthDate) { try { track("birth_saved"); } catch(_) {} } }, [!!birthDate]);
+  // RUH PROFİLİ ÖZETİNİ ARKA PLANDA HAZIRLA: Galaktik Kimlik açıldığında özet
+  // yoksa (kullanıcı Ruh Profili'ni hiç açmamış ya da 15 Eyl sonrası yalnızca
+  // profil sayfasını görmüş) SoulID görünmez bir çerçevede bir kez yüklenir;
+  // Sakin köprüsüyle raporu kurar ve özeti yazar, kart kendiliğinden dolar.
+  // Oturum başına BİR deneme, 25 sn sonra vazgeçer (ağır sayfa bellekte kalmasın).
+  const [soulWarm, setSoulWarm] = useState(false);
+  const soulWarmTried = useRef(false);
+  useEffect(() => {
+    if (!showIdCard || soulSummary || !birthDate || soulWarmTried.current) return;
+    soulWarmTried.current = true;
+    setSoulWarm(true);
+  }, [showIdCard, soulSummary, birthDate]);
+  useEffect(() => {
+    if (!soulWarm) return;
+    const started = Date.now();
+    const id = setInterval(() => {
+      let ok = false;
+      try { const r = JSON.parse(localStorage.getItem("sakin_soul_summary") || "null"); ok = !!(r && r.v === 1); } catch (_) {}
+      if (ok || Date.now() - started > 25000) {
+        clearInterval(id); setSoulWarm(false);
+        if (ok) setSoulReloadKey(k => k + 1);
+      }
+    }, 800);
+    return () => clearInterval(id);
+  }, [soulWarm]);
   const hiddenAtRef = useRef(0);
   useEffect(() => {
     const onVis = () => {
@@ -10480,6 +10505,12 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           <span style={{ flex:1,fontFamily:"'Inter',sans-serif",fontSize:13,lineHeight:1.55,color:"#e6def4" }}>{pickLang(BUGUN_HINT_TXT, lang)}</span>
           <span style={{ flexShrink:0,color:"#8f88a3",fontSize:13,lineHeight:1 }}>✕</span>
         </button>
+      )}
+
+      {/* Ruh Profili özetini hazırlayan görünmez SoulID çerçevesi (bkz. soulWarm). */}
+      {soulWarm && (
+        <iframe src="/embedded/soulid/index.html" title="soul-summary" aria-hidden="true" tabIndex={-1}
+          style={{ position:"fixed",left:-10000,top:0,width:390,height:700,opacity:0,pointerEvents:"none",border:0 }} />
       )}
 
       {/* EMBEDDED APP: fullscreen iframe overlay with stargate portal transition */}
@@ -14998,9 +15029,13 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   <div style={{ display:"flex",flexDirection:"column",gap:5,marginBottom:8 }}>
                     <div style={{ fontSize:8,letterSpacing:2.5,color:"#7a7090",textTransform:"uppercase",marginTop:2,marginBottom:1,textAlign:"center" }}>{pickLang(SOUL_TXT.title, lang)}</div>
                     {soulSummary.race && (
-                      <div style={{ display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"8px 12px",background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.22)",borderRadius:10 }}>
+                      // Dokununca sözlükte o yıldız ırkının açıklaması açılır
+                      // (kullanıcı: "Andromedan'a tıklanabilsin, sözlüğe yönlendirsin").
+                      <div role="button" onClick={()=>{ closeIdCard(); setKilavuzQ(soulSummary.race); setShowKilavuz(true); }}
+                        style={{ cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:8,padding:"8px 12px",background:"rgba(232,192,122,0.07)",border:"1px solid rgba(232,192,122,0.22)",borderRadius:10 }}>
                         {soulSummary.emoji && <span style={{ fontSize:14,lineHeight:1,flexShrink:0 }}>{soulSummary.emoji}</span>}
                         <span style={{ fontSize:12.5,color:"#f0d29a",fontFamily:"'Jost',sans-serif",letterSpacing:0.5 }}>{soulSummary.race}</span>
+                        <span style={{ fontSize:14,lineHeight:1,color:"rgba(240,210,154,0.5)",flexShrink:0 }}>›</span>
                       </div>
                     )}
                     {/* İKİ SÜTUN: paylaşım görseliyle aynı düzen. Tam genişlik
@@ -16996,8 +17031,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const _n = (x) => String(x || "").toLocaleLowerCase("tr");
         const q = _n(kilavuzQ).trim();
         const all = getGlossary(lang).map(c => ({ ...c, cat: t(c.cat) }));
+        // Tam anahtar eşleşmesi (ör. Galaktik Kimlik'te yıldız ırkına dokunuldu:
+        // q = "Andromedan"): yalnızca o maddeyi göster, içinde adı geçen
+        // diğer maddeler kalabalık yapmasın. `key` her dilde AYNI (Türkçe ırk adı).
+        const exact = q ? all.some(c => c.items.some(it => it.key && _n(it.key) === q)) : false;
         const glossary = q
-          ? all.map(c => ({ ...c, items: c.items.filter(it => _n(it.term).includes(q) || _n(it.desc).includes(q)) }))
+          ? all.map(c => ({ ...c, items: c.items.filter(it => exact
+                ? (it.key && _n(it.key) === q)
+                : (_n(it.term).includes(q) || _n(it.desc).includes(q) || _n(it.key).includes(q))) }))
                .filter(c => c.items.length)
           : all;
         const hitCount = glossary.reduce((a, c) => a + c.items.length, 0);
@@ -17062,7 +17103,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   {cat.items.map((item, ii) => (
                     <div key={ii} style={{ marginBottom:18,padding:"16px 18px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:14,transition:"all 0.2s" }}>
                       <div style={{ fontFamily:"'Jost',sans-serif",fontSize:14,fontWeight:400,color:"#ffffff",letterSpacing:0.5,marginBottom:8 }}>{item.term}</div>
-                      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbbbbb",lineHeight:1.9,letterSpacing:0.3 }}>{item.desc}</div>
+                      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:14,color:"#bbbbbb",lineHeight:1.9,letterSpacing:0.3,whiteSpace:"pre-line" }}>{item.desc}</div>
                       {item.examples && (
                         <div style={{ marginTop:12,paddingTop:12,borderTop:"1px solid rgba(255,255,255,0.05)" }}>
                           {item.examples.map((ex, ei) => (
