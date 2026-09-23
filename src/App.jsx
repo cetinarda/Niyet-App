@@ -1212,6 +1212,7 @@ const tarotImg = (id) => `/tarot/${id}.webp`;
 // Kart üstü + paylaşım + premium açılım metinleri.
 const TAROT_UI_TXT = {
   share:        { tr:"Paylaş", en:"Share", de:"Teilen", es:"Compartir", pt:"Partilhar", fr:"Partager", ja:"シェア" },
+  storyInvite:  { tr:"Kendi kartını açmak için", en:"To draw your own card", de:"Um deine eigene Karte zu ziehen", es:"Para sacar tu propia carta", pt:"Para tirar a tua própria carta", fr:"Pour tirer ta propre carte", ja:"自分のカードを引くには" },
   storyTitle:   { tr:"Bugünün tarot kartı", en:"Today's tarot card", de:"Tarotkarte des Tages", es:"La carta de tarot de hoy", pt:"A carta de tarô de hoje", fr:"La carte de tarot du jour", ja:"今日のタロットカード" },
   spread:       { tr:"Daha geniş açılım", en:"Wider spread", de:"Größere Legung", es:"Tirada ampliada", pt:"Tiragem alargada", fr:"Tirage élargi", ja:"より広いスプレッド" },
   spreadTitle:  { tr:"Üç kart açılımı", en:"Three-card spread", de:"Drei-Karten-Legung", es:"Tirada de tres cartas", pt:"Tiragem de três cartas", fr:"Tirage en trois cartes", ja:"スリーカード・スプレッド" },
@@ -1256,7 +1257,7 @@ async function buildTarotStoryCard(card, reversed, lang) {
   bg.addColorStop(0, "#0a0612"); bg.addColorStop(0.5, "#1a1230"); bg.addColorStop(1, "#0a0612");
   ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
   const stars = [[60,80,3],[260,140,2],[140,220,1.5],[820,140,3],[940,440,2],[120,760,1.5],
-    [980,820,2.5],[70,1240,1.5],[1000,1430,1.5],[120,1520,2],[980,1610,1.8],[400,1760,1.5]];
+    [980,820,2.5],[70,1240,1.5],[1000,1430,1.5],[120,1520,2],[980,1610,1.8],[90,1880,1.5]];  // alt davet metninin üstüne yıldız düşmesin
   ctx.fillStyle = "rgba(255,255,255,0.7)";
   for (const [x, y, r] of stars) { ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
   ctx.textAlign = "center";
@@ -1311,12 +1312,14 @@ async function buildTarotStoryCard(card, reversed, lang) {
   const aLines = wrap(pickLang(card.advice, lang), aFont, 860).slice(0, Math.max(1, Math.floor((1700 - y) / 48)));
   ctx.font = aFont;
   aLines.forEach((l, i) => ctx.fillText(l, W / 2, y + i * 48));
-  ctx.fillStyle = "rgba(160,112,208,0.85)";
-  ctx.font = "300 34px -apple-system, 'Jost', sans-serif";
-  ctx.fillText("SAKIN", W / 2, 1790);
-  ctx.fillStyle = "rgba(255,255,255,0.32)";
-  ctx.font = "300 28px -apple-system, 'Jost', sans-serif";
-  ctx.fillText("sakin.life", W / 2, 1845);
+  // ALT İMZA: büyük "SAKIN" yazısı KALDIRILDI (kullanıcı isteği). Yerine
+  // görseli gören kişiye DAVET: "Kendi kartını açmak için" + sakin.life.
+  ctx.fillStyle = "rgba(216,204,232,0.6)";
+  ctx.font = "300 30px -apple-system, 'Inter', sans-serif";
+  ctx.fillText(pickLang(TAROT_UI_TXT.storyInvite, lang), W / 2, 1782);
+  ctx.fillStyle = "#c8a8f0";
+  ctx.font = "400 40px -apple-system, 'Jost', sans-serif";
+  ctx.fillText("sakin.life", W / 2, 1840);
   return canvas;
 }
 
@@ -9173,6 +9176,9 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // GÜNLÜK YORUM ("daha fazlası"): gökyüzü raporu altındaki uzun AI okuma.
   const [dailyHoro, setDailyHoro] = useState(null);       // { day, sign, lang, text }
   const [dailyHoroLoading, setDailyHoroLoading] = useState(false);
+  // "Günün Yorumu" kartı Gökyüzü Raporu gibi AÇILIR-KAPANIR (kullanıcı isteği).
+  // Kapalı başlar; ilk açılışta yorum yoksa üretilir (AI), varsa cache'ten gelir.
+  const [dailyHoroOpen, setDailyHoroOpen] = useState(false);
   // ── GÜNLÜK YORUM ("daha fazlası") ───────────────────────────────────────────
   // Gökyüzü raporunun altındaki uzun okuma. Kolektif rapor herkes için aynıyken
   // bu, kullanıcının GÜNEŞ BURCU + günün gerçek gökyüzü ile kişiye özel bir
@@ -15654,10 +15660,11 @@ Direction (where the energy flows). Rules:
 
             {/* ── 4) YILDIZLAR BUGÜN SANA NE DİYOR? ── ayrı başlık, gökyüzü
                 raporuna gömülmez (kullanıcı isteği). natal × transit kartlar
-                (src/sky-today.js) + "Daha fazlası" uzun AI okuması. */}
+                (src/sky-today.js) + altta açılır "Günün Yorumu" (uzun AI okuması).
+                Üstteki "Bugünün gökyüzü" etiketi KALDIRILDI (kullanıcı: "yıldızlar
+                başlığı yeterli"), serif başlık tek başına duruyor. */}
             <section style={SEC}>
-              {eyebrow(pickLang(SKYTODAY_TXT.eyebrow, lang), GOLD)}
-              <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:30,lineHeight:1.15,color:INK,margin:"-4px 4px 16px" }}>
+              <div style={{ fontFamily:SERIF,fontWeight:500,fontSize:30,lineHeight:1.15,color:INK,margin:"0 4px 16px" }}>
                 {pickLang(SKYTODAY_TXT.title, lang)}
               </div>
               {!birthDate ? (
@@ -15690,27 +15697,37 @@ Direction (where the energy flows). Rules:
                 <div style={{ textAlign:"center",fontSize:12,color:MUTE,fontFamily:INTER,margin:"14px 0 14px",lineHeight:1.5 }}>
                   {pickLang(SKYTODAY_TXT.footer, lang)}
                 </div>
-                {/* DAHA FAZLASI: aynı gökyüzü + kartlar -> uzun günlük okuma (AI,
-                    consent + günlük hak; gün+burç+dil cache, tekrar AI harcamaz). */}
-                {!dailyHoro && !dailyHoroLoading && (
-                  <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateDailyHoroscope); }}
-                    style={{ ...BTN,...SURF,border:`1px solid ${GOLD}55`,padding:"13px 16px",display:"flex",alignItems:"center",
-                      justifyContent:"center",gap:8,fontFamily:JOST,fontSize:13,letterSpacing:2,textTransform:"uppercase",color:"#f0d29a" }}>
-                    <span style={{ fontSize:12 }}>✦</span>{pickLang(HORO_TXT.more, lang)}
+                {/* GÜNÜN YORUMU: Gökyüzü Raporu ile AYNI tasarım (kullanıcı isteği):
+                    tek kart, başlık satırı aç/kapa, içerik kartın içinde açılır.
+                    Aynı gökyüzü + kartlar -> uzun günlük okuma (AI, consent + günlük
+                    hak; gün+burç+dil cache). Yorum yoksa İLK açılışta üretilir;
+                    varsa (cache) AI harcanmadan yalnızca açılıp kapanır. */}
+                <div style={{ ...SURF,overflow:"hidden" }}>
+                  <button onClick={()=>{ try{haptic();}catch(_){}
+                      if (!dailyHoro && !dailyHoroLoading) requireAiConsent(() => { setDailyHoroOpen(true); generateDailyHoroscope(); });
+                      else setDailyHoroOpen(v => !v); }}
+                    style={{ ...BTN,padding:"14px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                    {icon("✦", GOLD, 40, 16)}
+                    <span style={{ flex:1,minWidth:0 }}>
+                      <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(HORO_TXT.title, lang)}</span>
+                      <span style={{ display:"block",fontSize:12,color:MUTE,fontFamily:INTER,marginTop:2 }}>{dailyHoroDateLine()}</span>
+                    </span>
+                    {chevron(dailyHoroOpen ? 90 : 0)}
                   </button>
-                )}
-                {dailyHoroLoading && (
-                  <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"10px 0",fontStyle:"italic",fontFamily:INTER }}>
-                    {pickLang(HORO_TXT.loading, lang)}
-                  </div>
-                )}
-                {dailyHoro && dailyHoro.text && (
-                  <div style={{ ...SURF,padding:"18px 18px",animation:"fadeIn 0.6s ease" }}>
-                    {label(pickLang(HORO_TXT.title, lang), GOLD)}
-                    <div style={{ fontFamily:SERIF,fontSize:22,color:INK,marginBottom:12 }}>{dailyHoroDateLine()}</div>
-                    <div style={{ fontSize:15,lineHeight:1.85,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
-                  </div>
-                )}
+                  {dailyHoroOpen && (
+                    <div style={{ padding:"14px 18px 18px",borderTop:"1px solid rgba(184,164,216,0.12)",animation:"fadeIn 0.5s ease" }}>
+                      {dailyHoroLoading ? (
+                        <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"6px 0",fontStyle:"italic",fontFamily:INTER }}>
+                          {pickLang(HORO_TXT.loading, lang)}
+                        </div>
+                      ) : dailyHoro && dailyHoro.text ? (
+                        <div style={{ fontSize:15,lineHeight:1.85,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap" }}>{dailyHoro.text}</div>
+                      ) : (
+                        <div style={{ textAlign:"center",color:MUTE,fontSize:13,padding:"6px 0",fontFamily:INTER }}>{pickLang(HORO_TXT.err, lang)}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </>)}
             </section>
 
@@ -15813,7 +15830,21 @@ Direction (where the energy flows). Rules:
               </div>
             </section>
 
-            {/* ── 7) İKİLİ UYUM ── iki halka: sen (burcun) + boş halka "?".
+            {/* ── 7) I CHING ── günün heksagramı (pickIchingOfDay, gün boyu sabit). */}
+            <section style={SEC}>
+              {eyebrow(pickLang(TODAY_TXT.sysIching, lang))}
+              <button onClick={()=>{ try{haptic();}catch(_){} setShowIching(true); }}
+                style={{ ...BTN,...SURF,padding:"15px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                {icon("☯", "#e09a9a", 42, 18)}
+                <span style={{ flex:1,minWidth:0 }}>
+                  {label(pickLang(ICHING_TXT.eyebrow, lang), "#e09a9a")}
+                  <span style={{ display:"block",fontSize:15.5,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(ICHING_TXT.cta, lang)}</span>
+                </span>
+                {chevron()}
+              </button>
+            </section>
+
+            {/* ── 8) İKİLİ UYUM ── (I Ching ile yer değiştirdi, kullanıcı isteği) iki halka: sen (burcun) + boş halka "?".
                 Eksik ikinci kişi görsel olarak duruyor; SoulID eşleşmesini açar. */}
             <section style={SEC}>
               {eyebrow(pickLang(TODAY_HERO_TXT.pairSection, lang))}
@@ -15833,20 +15864,6 @@ Direction (where the energy flows). Rules:
                 <span style={{ flex:1,minWidth:0 }}>
                   <span style={{ display:"block",fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:3 }}>{pickLang(SOUL_TXT.pair, lang)}</span>
                   <span style={{ display:"block",fontSize:12.5,color:MUTE,fontFamily:INTER,lineHeight:1.45 }}>{pickLang(SOUL_TXT.pairSub, lang)}</span>
-                </span>
-                {chevron()}
-              </button>
-            </section>
-
-            {/* ── 8) I CHING ── günün heksagramı (pickIchingOfDay, gün boyu sabit). */}
-            <section style={SEC}>
-              {eyebrow(pickLang(TODAY_TXT.sysIching, lang))}
-              <button onClick={()=>{ try{haptic();}catch(_){} setShowIching(true); }}
-                style={{ ...BTN,...SURF,padding:"15px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                {icon("☯", "#e09a9a", 42, 18)}
-                <span style={{ flex:1,minWidth:0 }}>
-                  {label(pickLang(ICHING_TXT.eyebrow, lang), "#e09a9a")}
-                  <span style={{ display:"block",fontSize:15.5,color:INK,fontFamily:JOST,fontWeight:300 }}>{pickLang(ICHING_TXT.cta, lang)}</span>
                 </span>
                 {chevron()}
               </button>

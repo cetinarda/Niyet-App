@@ -447,12 +447,16 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
    verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
 5. **"Yıldızlar bugün sana ne diyor?"** AYRI bölüm (gökyüzü raporuna GÖMME).
+   Üstünde "Bugünün gökyüzü" etiketi YOK (kullanıcı kaldırttı, başlık yeterli).
    `src/sky-today.js` = SoulID `transits.ts` motorunun 7 dilli portu (AI yok).
-   Bilinçli sapma: her transit gezegenden tek kart. Altında **"Daha fazlası"**
-   (`generateDailyHoroscope`, AI, consent + günlük hak, gün+burç+dil cache,
-   prompt bu kartları omurga alır).
+   Bilinçli sapma: her transit gezegenden tek kart. Altında **"Günün Yorumu"**
+   kartı, Gökyüzü Raporu ile AYNI açılır-kapanır tasarım (`dailyHoroOpen`):
+   ilk açılışta `generateDailyHoroscope` (AI, consent + günlük hak, gün+burç+dil
+   cache, prompt bu kartları omurga alır), sonra AI harcamadan aç/kapa. Eski
+   ayrı "Daha fazlası" butonu kalktı.
 6. **Gökyüzü raporu** (kolektif, açılır). Bir ara Ben'e taşındı, geri geldi.
-7. Günün rehberleri → İkili uyum (Ben'den taşındı) → I Ching → **Tarot**.
+7. Günün rehberleri → I Ching → İkili uyum (Ben'den taşındı; I Ching ile yeri
+   kullanıcı isteğiyle değişti) → **Tarot**.
 8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
    etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 
@@ -481,7 +485,9 @@ gövde Inter, etiket Jost. Yeni bölüm eklerken bu yardımcıları kullan.
   açık, sonraki girişlerde tek satır özet (`tarotExpanded`). Açıkken kompakt
   düzen: kart solda 124 px, anlam sağda, öneri altta.
 - **Paylaş:** `buildTarotStoryCard` (1080x1920, Ayna hikâye kartıyla aynı dil,
-  gerçek kart görseli + anlam + "Bugün için").
+  gerçek kart görseli + anlam + "Bugün için"). Altta büyük "SAKIN" YOK
+  (kullanıcı kaldırttı): yerine davet "Kendi kartını açmak için" + sakin.life
+  (`TAROT_UI_TXT.storyInvite`, 7 dil).
 - **"Daha geniş açılım" = PREMIUM** (`isPremium`): üç kart (Kök · Şimdi · Yön),
   ortadaki günün kartının kendisi (`pickTarotSpread`, gün boyu sabit) + AI
   birleşik yorum (`generateTarotSpread`, cache). Premium değilse NAZİK kilit
