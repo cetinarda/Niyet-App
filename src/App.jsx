@@ -5531,10 +5531,15 @@ export default function SakinApp() {
     // pusula, geçiş verilmesi inandırıcılığı kaybettirir"). Bugün doğum bilgisi
     // ister; açılışta her gün kapı çıkarıp dürtmek yerine Bağlan'da açılır,
     // Bugün sekmesine dokununca kapı sorar.
-    try {
-      if (localStorage.getItem("sakin_hazirim_today") === sakinDayKey())
-        return localStorage.getItem("sakin_birth_date") ? "bugun" : "mandala";
-    } catch(_) {}
+    // GÜNCEL KURAL (kullanıcı, Eyl 2026): "yeni olmayan kullanıcılar için her
+    // zaman app açılırken elmas döner ve Bugün ekranı açılır". Elmas = showIntro
+    // splash'i (her soğuk açılışta zaten oynuyor). Giriş/HAZIRIM ekranı artık
+    // YALNIZCA hiç HAZIRIM'a basmamış (ilk kez gelen) kullanıcıya çıkar; eskiden
+    // her YENİ GÜNÜN ilk açılışında çıkıyordu. `sakin_hazirim_today` herhangi bir
+    // değer taşıyorsa kullanıcı en az bir kez girmiştir. Doğum bilgisi yoksa
+    // Bugün kapısı sorar (atla → Bağlan). İlk 3 açılışta yol seçimi Bugün'ün
+    // üstünde açılır (nedirEligible), yani yeni kullanıcı akışı bozulmaz.
+    try { if (localStorage.getItem("sakin_hazirim_today")) return "bugun"; } catch(_) {}
     return "giris";
   };
   const [screen,        setScreenRaw]     = useState(_initialScreen);
@@ -7205,11 +7210,6 @@ export default function SakinApp() {
   // NOT (regresyon dersi): mount'ta true döndürmek (dönen kullanıcıya otomatik açılış)
   // pop-up'ı HAZIRIM'dan ÖNCE, giriş landing'inin üstünde gösteriyordu: geri alındı.
   const [showNedir, setShowNedir] = useState(false);
-  // Yol seçimi ekranı: çizgileri kart tepelerine TAM bağlamak için sarmalayıcının
-  // gerçek ölçüsü lazım (ekran yüksekliği cihaza göre değişir). Ölçüp px koordinat
-  // hesaplıyoruz → SVG 1:1, çizgiler kartlara değer, sabit viewBox tahmini bitiyor.
-  const nedirWrapRef = useRef(null);
-  const [nedirDims, setNedirDims] = useState(null);
   // KURAL: pop-up YALNIZCA açılışta, HAZIRIM'a basıldığında çıkar. Başka hiçbir
   // yerde açılmaz: doğum bilgisi ihtiyaç anında (harita/İçsel Ayna) istendiğinde
   // form kapanınca kullanıcı geldiği ekrana döner, pop-up görmez.
@@ -7825,14 +7825,6 @@ export default function SakinApp() {
   };
 
   // rehber screen is now enabled on iOS via the mirror portal
-  // Yol seçimi ekranı açılınca sarmalayıcıyı ölç (çizgi-kart bağlantısı için).
-  useEffect(() => {
-    if (!showNedir) return;
-    const measure = () => { const el = nedirWrapRef.current; if (el) { const r = el.getBoundingClientRect(); setNedirDims({ w: r.width, h: r.height }); } };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, [showNedir]);
   useEffect(() => {
     if (!showIntro) return;
     const timers = [
@@ -11327,7 +11319,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           olduğu için üstüne binip TAMAMEN GİZLİYORDU (kullanıcı bildirdi:
           "yenilikler kutucuğuyla dil kutusu çarpışıyor"). Yalnızca giriş
           ekranında dil seçicinin bittiği yerin altına iniyor. */}
-      {whatsNew && !updateInfo && !showIntro && (screen === "giris" || screen === "mandala") && (
+      {whatsNew && !updateInfo && !showIntro && !showNedir && !onbPath && (screen === "giris" || screen === "mandala" || screen === "bugun") && (
         <div style={{
           position:"fixed",
           top: screen === "giris"
@@ -11481,10 +11473,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             const nm = (onbName || "").trim();
             if (nm) { try { localStorage.setItem("sakin_name", nm); } catch(_) {} setUserName(nm); setNameInput(nm); }
             try { track("onb_kesfet_done"); } catch(_) {}
-            // Kullanıcı isteği: Keşfet onboarding'i bitince Ben (harita)
-            // ekranına git, oradaki Galaktik Kimlik/Ruh Profili kutularıyla
-            // az önce oluşturduğu kimliği hemen görsün.
-            close("harita");
+            // Kullanıcı isteği (Eyl 2026): "Kendimi tanımak" yolu BUGÜN'de
+            // biter (eskiden Ben/harita). Doğum girildiyse kısa "Bugün ekranın
+            // hazırlanıyor" geçişi oynar; girilmediyse Bugün kapısı sorar.
+            close("bugun");
+            try { if (localStorage.getItem("sakin_birth_date")) setBugunPrep(1); } catch(_) {}
           }
         };
         // "Geç": son adımda bitirir, aksi halde SONRAKİ soruya geçer.
@@ -11821,151 +11814,100 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           (veya "bir daha gösterme"ye kadar). iOS + web. Kartlar DOĞRUDAN tıklanır:
           ✦→Ailesi, ◎→mandala. Küçük "Sakin nedir?" butonu nedir sekmesine gider. */}
       {showNedir && !showIntro && (() => {
-        // YOL SEÇİMİ: "iki yol güneşte birleşir" (kullanıcı onaylı tasarım).
-        // Sol mor yol = Bağlan (mandala), sağ altın yol = Keşfet (Ailesi paneli),
-        // yukarıda güneşte birleşir. Kart kenarlarında ayna renkli tünel ışığı
-        // senkron döner. Davranışlar eski pop-up ile birebir aynı.
-        // iOS WKWebView'da <button> native görünümü şişirip içeriği kaydırıyordu:
-        // appearance:none ŞART. Ayrıca flex-column + center ile ikon/yazı dikey
-        // ortalı ve iki kart (align-items:stretch satır varsayılanı) eşit yükseklik.
-        const cardBase = { flex:1, boxSizing:"border-box", margin:0, appearance:"none", WebkitAppearance:"none",
-          borderRadius:18, padding:"16px 10px", position:"relative", cursor:"pointer",
-          display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:7,
-          textAlign:"center", border:"1.4px solid transparent",
-          fontFamily:"'Jost',sans-serif", animation:"fadeUp 0.5s ease-out" };
-        // KART METİNLERİ (kullanıcı referans tasarımı). Soyut etiket ("Bağlan" /
-        // "Keşfet") yerine NİYET cümlesi: kullanıcı ne yapmak istediğini seçiyor,
-        // uygulamanın iç adlandırmasını çözmek zorunda kalmıyor. Alt açıklama
-        // satırları ("Niyet, nefes, ses" / "Burç, tasarım, hayvan") KALDIRILDI
-        // (kullanıcı: "alt açıklamaları kaldır"); yerine tek bir süre ipucu var,
-        // çünkü seçimi asıl kolaylaştıran şey ne kadar süreceği.
-        const nameSt = { fontSize:15, letterSpacing:0.2, fontWeight:300, lineHeight:1.32, color:"#efe8ff", fontFamily:"'Jost',sans-serif", margin:0 };
-        // textTransform YOK: "lowercase" Almanca'da "1 Minute"i "1 minute" yapıyordu
-        // (Almanca'da isimler büyük harfle başlar). Metin dilin kendi yazımında kalsın.
-        const timeSt = { fontFamily:"'Jost',sans-serif", fontSize:10.5, letterSpacing:2, color:"#8d81a8", fontWeight:300, margin:0 };
+        // YOL SEÇİMİ, Bugün ekranının görsel diliyle (kullanıcı: "bu ekran
+        // bozulmuş, appin genel görsel diline uygun yeniden düzenle, genel
+        // fontu kullan"). Başlık Cormorant (serif), gövde Inter, etiket Jost;
+        // kartlar Bugün'deki SURF yüzeyiyle aynı.
+        // ⚠️ NEDEN YENİDEN: eski tasarım çizgileri ÖLÇÜLEN ekran boyutundan
+        // piksel hesabıyla kart tepesine bağlıyordu (nedirDims + mutlak konum).
+        // iOS'ta ölçüm ile gerçek yerleşim tutmadı, çizgiler kartların içinden
+        // geçip yazının üstüne bindi. Artık hiçbir şey ölçüme bağlı değil: süs
+        // çizgisi kartların HEMEN ÜSTÜNDE, aynı genişlikte normal akışta duran
+        // bir SVG; uçları iki sütunun ortasına (yüzde) iner. Mutlak konum yok.
+        const GOLD = "#e8c07a", LAV = "#b8a4d8", INK = "#f1ecf9", MUTE = "#8f88a3";
+        const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
+        const SURF = { background:"linear-gradient(165deg, rgba(184,164,216,0.075), rgba(255,255,255,0.012) 72%)",
+          border:"1px solid rgba(184,164,216,0.15)", borderRadius:18 };
+        const BTN = { WebkitAppearance:"none", appearance:"none", cursor:"pointer", color:"inherit", font:"inherit", margin:0 };
         const baglanName = pickLang({ tr:"Şimdi sakinleşmek istiyorum", en:"I want to calm down now", de:"Ich möchte jetzt zur Ruhe kommen", es:"Quiero calmarme ahora", pt:"Quero acalmar-me agora", fr:"Je veux me calmer maintenant", ja:"いま落ち着きたい" }, lang);
         const kesfetName = pickLang({ tr:"Kendimi tanımak istiyorum", en:"I want to know myself", de:"Ich möchte mich kennenlernen", es:"Quiero conocerme", pt:"Quero conhecer-me", fr:"Je veux me connaître", ja:"自分を知りたい" }, lang);
+        // textTransform YOK: "uppercase/lowercase" Almanca "Minute" yazımını bozuyordu.
         const baglanTime = pickLang({ tr:"1 dakika", en:"1 minute", de:"1 Minute", es:"1 minuto", pt:"1 minuto", fr:"1 minute", ja:"1分" }, lang);
-        // Tekrar açılışta (ilk 3 açılış) biri denenmiş, diğeri denenmemişse
-        // denenmemiş kartın alt kenarına küçük bir işaret: merak ettiren yol o.
-        // Mutlak konumlu: kart yüksekliğini ve çizgi geometrisini bozmaz.
+        const kesfetTime = pickLang({ tr:"2 dakika", en:"2 minutes", de:"2 Minuten", es:"2 minutos", pt:"2 minutos", fr:"2 minutes", ja:"2分" }, lang);
+        // Biri denenmiş, diğeri denenmemişse denenmemiş kartta küçük işaret
+        // (kullanıcı: "bir yolu seçen diğerini merak edebilir").
         const untried = (() => { try {
           const b = !!localStorage.getItem("sakin_onb_baglan"), k = !!localStorage.getItem("sakin_onb_kesfet");
           return b && !k ? "kesfet" : k && !b ? "baglan" : null;
         } catch(_) { return null; } })();
-        const untriedSt = { position:"absolute", left:"50%", bottom:-9, transform:"translateX(-50%)", whiteSpace:"nowrap",
-          padding:"2px 9px", borderRadius:10, background:"#0c0818", border:"1px solid", fontSize:9, letterSpacing:1,
-          fontFamily:"'Jost',sans-serif", fontWeight:400 };
-        const kesfetTime = pickLang({ tr:"2 dakika", en:"2 minutes", de:"2 Minuten", es:"2 minutos", pt:"2 minutos", fr:"2 minutes", ja:"2分" }, lang);
-        // ── Ölçülen boyuttan px geometri: çizgiler kart tepelerine BAĞLANIR ──
-        const W = nedirDims?.w || 390, H = nedirDims?.h || 844;
-        // cardH 106 -> 142: niyet cümlesi 2-3 satıra sarıyor (eski tek kelimelik
-        // "BAĞLAN"/"KEŞFET" etiketleri tek satırdı). Alçak bırakılırsa yazı kartı
-        // taşırıyor. Yükseklik SABİT: iki kart eşit kalsın ve alttaki "Sakin
-        // nedir?" / "bir daha gösterme" konumları (cardTopPx + cardH) kaymasın.
-        const padSide = 30, gap = 13, cardH = 142;
-        const cardW = (W - padSide * 2 - gap) / 2;
-        const leftCX = padSide + cardW / 2;          // sol kart merkez X
-        const rightCX = W - padSide - cardW / 2;      // sağ kart merkez X
-        const cardTopPx = Math.round(0.81 * H) - cardH;   // kart tepesi (biraz yukarı; çizgi kısalır)
-        const pathEndY = cardTopPx;                    // cizgi kart kenarlığında durur (seffaf bg ile iceri tasmaz)
-        const sunCY = Math.round(0.25 * H);           // güneş merkezi (başlıkla birlikte aşağıda)
-        const sunBottomY = sunCY + 36;
-        const dy = pathEndY - sunBottomY;
-        // Her iki uçta DİKEY (tünel gibi güneşe ve karta düz açılır)
-        const Lp = [[W/2,sunBottomY],[W/2,sunBottomY+dy*0.42],[leftCX,pathEndY-dy*0.42],[leftCX,pathEndY]];
-        const Rp = [[W/2,sunBottomY],[W/2,sunBottomY+dy*0.42],[rightCX,pathEndY-dy*0.42],[rightCX,pathEndY]];
-        const dPath = p => `M ${p[0][0]} ${p[0][1]} C ${p[1][0]} ${p[1][1]}, ${p[2][0]} ${p[2][1]}, ${p[3][0]} ${p[3][1]}`;
-        const cub = (p,t) => { const u=1-t,a=u*u*u,b=3*u*u*t,c=3*u*t*t,d=t*t*t; return [a*p[0][0]+b*p[1][0]+c*p[2][0]+d*p[3][0], a*p[0][1]+b*p[1][1]+c*p[2][1]+d*p[3][1]]; };
-        const Ld1=cub(Lp,0.42), Ld2=cub(Lp,0.74), Rd1=cub(Rp,0.42), Rd2=cub(Rp,0.74);
+        const card = (key, glyph, color, name, time, onClick) => (
+          <button className={"sakin-yol-card " + (key === "baglan" ? "sakin-yol-card-a" : "sakin-yol-card-b")} onClick={onClick}
+            style={{ ...BTN, ...SURF, position:"relative", flex:1, minWidth:0, boxSizing:"border-box", padding:"20px 12px 36px",
+              display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:10, textAlign:"center",
+              borderColor:`${color}40`, animation:"fadeUp 0.5s ease-out" }}>
+            <span style={{ width:42,height:42,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+              fontSize:19,lineHeight:1,color,background:`${color}14`,border:`1px solid ${color}38` }}>{glyph}</span>
+            <span style={{ fontFamily:SERIF,fontSize:19,fontWeight:500,lineHeight:1.22,color:INK }}>{name}</span>
+            <span style={{ fontFamily:JOST,fontSize:11,letterSpacing:1.5,color:MUTE }}>{time}</span>
+            {untried === key && (
+              // Mutlak konum: iki kartın içeriği (ikon/ad/süre) aynı hizada kalsın,
+              // işaret yalnızca alttaki ayrılmış boşluğa otursun.
+              <span style={{ position:"absolute",left:"50%",bottom:11,transform:"translateX(-50%)",
+                fontFamily:JOST,fontSize:10,letterSpacing:1,color,background:`${color}17`,border:`1px solid ${color}4d`,
+                borderRadius:100,padding:"2px 10px",whiteSpace:"nowrap" }}>{pickLang(YOL_UNTRIED_TXT, lang)}</span>
+            )}
+          </button>
+        );
         return (
-        <div style={{ position:"fixed",inset:0,zIndex:99998,overflow:"hidden",
-          background:"radial-gradient(110% 55% at 50% 22%, rgba(240,205,130,0.11), rgba(120,70,140,0.04) 34%, transparent 56%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
-          <div ref={nedirWrapRef} style={{ position:"absolute",inset:0,maxWidth:430,margin:"0 auto" }}>
-            {/* İki yol: güneşten iner, kart tepelerine bağlanır (1:1 viewBox) */}
-            <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" fill="none" style={{ position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none" }}>
-              <defs>
-                <linearGradient id="ynBaglan" x1={leftCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#c58ae8" stopOpacity="1"/><stop offset="0.5" stopColor="#b87adc" stopOpacity="0.92"/><stop offset="1" stopColor="#f3d59a" stopOpacity="1"/>
-                </linearGradient>
-                <linearGradient id="ynKesfet" x1={rightCX} y1={pathEndY} x2={W/2} y2={sunBottomY} gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#f5cc6a" stopOpacity="1"/><stop offset="0.5" stopColor="#f0c060" stopOpacity="0.92"/><stop offset="1" stopColor="#f8e2ad" stopOpacity="1"/>
-                </linearGradient>
-                <filter id="ynGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-              </defs>
-              <path d={dPath(Lp)} stroke="url(#ynBaglan)" strokeWidth="1.9" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <path d={dPath(Rp)} stroke="url(#ynKesfet)" strokeWidth="1.9" strokeLinecap="round" filter="url(#ynGlow)"/>
-              <circle cx={Ld1[0]} cy={Ld1[1]} r="2.6" fill="#d3aeee" opacity="1"/><circle cx={Ld2[0]} cy={Ld2[1]} r="2.6" fill="#d3aeee" opacity="1"/>
-              <circle cx={Rd1[0]} cy={Rd1[1]} r="2.6" fill="#f3d896" opacity="1"/><circle cx={Rd2[0]} cy={Rd2[1]} r="2.6" fill="#f3d896" opacity="1"/>
-            </svg>
-
-            {/* Kapat X: açılış (HAZIRIM) ekranına döner (safe-area altında) */}
-            <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
-              style={{ position:"absolute",top:"calc(var(--sat, 0px) + 14px)",right:14,width:30,height:30,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:14,lineHeight:1,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
-
-            {/* Başlık: güneşin HEMEN üstünde (bir nefes boşluğu). max() ile küçük
-                ekranlarda sensör altına düşmesi garanti (var(--sat) tabanı). */}
-            <div style={{ position:"absolute",top:`calc(max(${sunCY - 92}px, var(--sat, 0px) + 24px))`,left:0,right:0,textAlign:"center",fontSize:13,letterSpacing:4,textTransform:"uppercase",color:"#c6b596",fontWeight:300,fontFamily:"'Jost',sans-serif",opacity:0.92 }}>{pickLang(NEDIR_I18N.yolTitle, lang)}</div>
-
-            {/* Güneş: birleşme noktası, yavaş nefes alır (px konum) */}
-            <div className="sakin-yol-sun" style={{ position:"absolute",left:"50%",top:sunCY,margin:"-32px 0 0 -32px",width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
-
-            {/* "iki yol birleşir": küçük sönük hap, tünel ağzının hemen üstünde ortada */}
-            <div style={{ position:"absolute",left:"50%",top:pathEndY-40,transform:"translate(-50%,-50%)",padding:"5px 13px",borderRadius:14,whiteSpace:"nowrap",background:"linear-gradient(135deg,rgba(240,192,96,0.06),rgba(184,122,220,0.06))",border:"1px solid rgba(210,185,150,0.22)",fontSize:9.5,letterSpacing:1.2,color:"#d3c09e",opacity:0.9,fontFamily:"'Jost',sans-serif" }}>{pickLang(NEDIR_I18N.birlesir, lang)}</div>
-
-            {/* Kartlar: kart tepesi çizgilere TAM denk gelir (px konum) */}
-            <div style={{ position:"absolute",left:padSide,right:padSide,top:cardTopPx,height:cardH,display:"flex",gap:gap }}>
-              <button className="sakin-yol-card sakin-yol-card-a" onClick={()=>{
-                  setShowNedir(false);
-                  const done = (() => { try { return localStorage.getItem("sakin_onb_baglan"); } catch(_) { return null; } })();
-                  if (done) { setScreen("mandala"); return; }
-                  setOnbPath("baglan"); setOnbStep(0); setOnbFeeling(-1); setOnbIntention(""); setOnbBreathSec(0);
-                }}
-                style={cardBase}>
-                <div style={{ fontSize:22,lineHeight:1,color:"#c49bee",textShadow:"0 0 12px rgba(184,122,220,0.5)" }}>◎</div>
-                <div style={{ ...nameSt,color:"#e6dbf7" }}>{baglanName}</div>
-                <div style={timeSt}>{baglanTime}</div>
-                {untried === "baglan" && <div style={{ ...untriedSt,color:"#d3aeee",borderColor:"rgba(197,138,232,0.45)" }}>{pickLang(YOL_UNTRIED_TXT, lang)}</div>}
-              </button>
-              {/* Keşfet: ilk kez gelen kullanıcı altın onboarding'e girer
-                  (vaat → ad → doğum bilgisi → harita animasyonu → galaktik
-                  kimlik). Bir kez tamamlandıktan sonra doğrudan Ailesi paneli. */}
-              <button className="sakin-yol-card sakin-yol-card-b" onClick={()=>{
-                  setShowNedir(false);
-                  const done = (() => { try { return localStorage.getItem("sakin_onb_kesfet"); } catch(_) { return null; } })();
-                  if (done) { setShowAilesi(true); return; }
-                  setOnbName(userName || ""); setOnbPath("kesfet"); setOnbStep(0); setOnbCalcIdx(0);
-                }}
-                style={cardBase}>
-                <div style={{ fontSize:22,lineHeight:1,color:"#f0cc76",textShadow:"0 0 12px rgba(240,192,96,0.5)" }}>✦</div>
-                <div style={{ ...nameSt,color:"#f6ecd2" }}>{kesfetName}</div>
-                <div style={timeSt}>{kesfetTime}</div>
-                {untried === "kesfet" && <div style={{ ...untriedSt,color:"#f3d896",borderColor:"rgba(240,192,96,0.45)" }}>{pickLang(YOL_UNTRIED_TXT, lang)}</div>}
-              </button>
+        <div style={{ position:"fixed",inset:0,zIndex:99998,overflowY:"auto",
+          background:"radial-gradient(110% 55% at 50% 22%, rgba(240,205,130,0.10), rgba(120,70,140,0.04) 34%, transparent 56%), radial-gradient(140% 100% at 50% 120%, #150e26 0%, #0a0616 60%, #05030d 100%)" }}>
+          {/* Kapat X: açılış (HAZIRIM) ekranına döner (safe-area altında) */}
+          <button onClick={()=>{ setShowNedir(false); setGirisPhase("intro"); }} aria-label={t("common_close")}
+            style={{ ...BTN,position:"fixed",top:"calc(var(--sat, 0px) + 14px)",right:16,width:32,height:32,borderRadius:"50%",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.12)",color:"#b6a9cf",fontSize:13,lineHeight:1,display:"flex",alignItems:"center",justifyContent:"center",zIndex:2 }}>✕</button>
+          <div style={{ minHeight:"100%",maxWidth:420,margin:"0 auto",boxSizing:"border-box",
+            padding:"calc(var(--sat, 0px) + 64px) 24px calc(var(--sab, 0px) + 28px)",
+            display:"flex",flexDirection:"column",alignItems:"stretch",justifyContent:"center" }}>
+            <div style={{ textAlign:"center",fontFamily:JOST,fontSize:10.5,letterSpacing:3,color:"#8a82a6",textTransform:"uppercase",marginBottom:10 }}>Sakin</div>
+            <div style={{ textAlign:"center",fontFamily:SERIF,fontSize:31,fontWeight:400,lineHeight:1.2,color:INK,marginBottom:28 }}>
+              {pickLang(NEDIR_I18N.yolTitle, lang)}
             </div>
-
-            {/* Sakin nedir? → Yolculuk sekmesi. KULLANICI: "en alta al, soluk
-                yazar tıklanınca net görünsün, bir daha göstermeyi kaldır
-                (zaten gün içinde bir daha göstermiyor), bu sadeliği referans
-                al." Üç değişiklik:
-                1) Konum: kartların hemen altından EKRANIN EN ALTINA taşındı
-                   (safe-area'ya sabit), referans görseldeki gibi.
-                2) Görünüm: altın pill/kenarlık kaldırıldı, düz soluk metin
-                   (className="sakin-nedir-link"); dokunulunca/üstüne
-                   gelinince netleşiyor (bkz. CSS, .sakin-nedir-link:active).
-                3) "Bir daha gösterme" TAMAMEN KALDIRILDI: bu overlay zaten
-                   günde bir kez tetikleniyor (HAZIRIM'a basınca
-                   sakin_hazirim_today o gün için işaretleniyor, sayfa aynı
-                   gün tekrar açılınca giriş ekranı hiç görünmüyor, bkz.
-                   _initialScreen). Kalıcı kapatma seçeneği gereksiz
-                   karmaşıklıktı. NOT: sakin_nedir_off bayrağını daha önce
-                   ayarlamış kullanıcılarda (eski "Bir daha gösterme"
-                   tıklaması) davranış AYNEN korunuyor, maybeShowNedir hâlâ
-                   o bayrağa bakıyor; yalnızca yeni bir kullanıcının bunu
-                   AYARLAYACAĞI yol kalmadı. */}
+            {/* Güneş: iki yolun birleştiği nokta */}
+            <div className="sakin-yol-sun" style={{ position:"relative",alignSelf:"center",width:56,height:56,borderRadius:"50%",flexShrink:0,
+              background:"radial-gradient(circle at 50% 45%, #fff 0%, #ffe9b8 26%, #f3c778 50%, rgba(225,160,80,0.25) 70%, transparent 80%)" }} />
+            {/* İki yol: güneşten iki sütunun ortasına iner. Normal akışta, ölçüm yok. */}
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"
+              style={{ display:"block",width:"100%",height:92,flexShrink:0,overflow:"visible" }}>
+              <defs>
+                <linearGradient id="ynB2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stopColor={LAV}/><stop offset="1" stopColor="#f3d59a"/></linearGradient>
+                <linearGradient id="ynK2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stopColor={GOLD}/><stop offset="1" stopColor="#f8e2ad"/></linearGradient>
+              </defs>
+              <path d="M 50 0 C 50 45, 24.5 55, 24.5 100" stroke="url(#ynB2)" strokeWidth="1.4" fill="none" vectorEffect="non-scaling-stroke" opacity="0.85"/>
+              <path d="M 50 0 C 50 45, 75.5 55, 75.5 100" stroke="url(#ynK2)" strokeWidth="1.4" fill="none" vectorEffect="non-scaling-stroke" opacity="0.85"/>
+            </svg>
+            <div style={{ display:"flex",gap:12,alignItems:"stretch" }}>
+              {card("baglan", "◎", LAV, baglanName, baglanTime, () => {
+                setShowNedir(false);
+                const done = (() => { try { return localStorage.getItem("sakin_onb_baglan"); } catch(_) { return null; } })();
+                // Sakinleşmek: onboarding sonrası (ya da daha önce yapıldıysa hemen) Bağlan.
+                if (done) { setScreen("mandala"); return; }
+                setOnbPath("baglan"); setOnbStep(0); setOnbFeeling(-1); setOnbIntention(""); setOnbBreathSec(0);
+              })}
+              {card("kesfet", "✦", GOLD, kesfetName, kesfetTime, () => {
+                setShowNedir(false);
+                const done = (() => { try { return localStorage.getItem("sakin_onb_kesfet"); } catch(_) { return null; } })();
+                // Kendimi tanımak: onboarding sonrası (ya da daha önce yapıldıysa
+                // hemen) BUGÜN (kullanıcı isteği). Doğum yoksa Bugün kapısı sorar.
+                if (done) { setScreen("bugun"); return; }
+                setOnbName(userName || ""); setOnbPath("kesfet"); setOnbStep(0); setOnbCalcIdx(0);
+              })}
+            </div>
+            <div style={{ textAlign:"center",fontFamily:INTER,fontSize:12,color:MUTE,marginTop:16,letterSpacing:0.2 }}>
+              {pickLang(NEDIR_I18N.birlesir, lang)}
+            </div>
+            {/* Sakin nedir? → Yolculuk sekmesi (soluk metin, dokununca netleşir) */}
             <button className="sakin-nedir-link"
               onClick={()=>{ setShowNedir(false); setHakkindaTab("yolculuk"); setScreen("hakkinda"); }}
-              style={{ position:"absolute",left:0,right:0,bottom:"calc(28px + var(--sab))",textAlign:"center",background:"none",border:"none" }}>
+              style={{ WebkitAppearance:"none",appearance:"none",background:"none",border:"none",alignSelf:"center",marginTop:44,padding:"8px 12px" }}>
               {pickLang(NEDIR_I18N.title, lang)}
             </button>
           </div>

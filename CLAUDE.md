@@ -311,6 +311,11 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
    plandan dönüş). Yol seçimi ilk 3 açılışta çıkar: girişte HAZIRIM'dan, aynı
    gün tekrar açılışta doğrudan ana sekmede (`nedirEligible`). İki yol da
    denenmişse çıkmaz; biri denenmişse diğer kartta "Henüz denemedin" işareti.
+   **EKRAN YENİDEN TASARLANDI (Eyl 2026):** eski tasarım çizgileri ÖLÇÜLEN
+   ekran boyutundan piksel hesabıyla bağlıyordu, iOS'ta çizgiler kartların
+   içinden geçti. Artık Bugün görsel dili (Cormorant başlık, SURF kartlar) ve
+   ölçüme bağlı HİÇBİR şey yok: süs çizgisi kartların üstünde normal akışta
+   duran SVG (uçlar yüzde ile iki sütunun ortasına iner). Mutlak konum ekleme.
 4. `STEP_MIN` zaten yarıya iniyordu (5 nefes / 30 sn / 60 sn / 1 görev).
 
 **⚠️ DENEYİMLİ KULLANICIYA HİÇBİR ŞEY DEĞİŞMEDİ.** `steps` dizisi, omurga
@@ -428,6 +433,14 @@ Doğrulama: gerçek ai-call ile prompt+parse (7/7 gün, em dash yok), web smoke
   **BUGÜN · KEŞFET · BAĞLAN · AYNA · BEN** (`MAIN_TABS`). Bugün artık ilk (sol)
   sekme, Bağlan onun eski orta yerinde. `center` bayrağı kaldırıldı (zaten
   render'da kullanılmıyordu, orta sekme ayrıcalığı çoktan iptaldi).
+- ⚠️ **GÜNCEL (Eyl 2026, kullanıcı: "yeni olmayan kullanıcılar için her zaman
+  app açılırken elmas döner ve Bugün açılır"):** giriş/HAZIRIM ekranı artık
+  YALNIZCA hiç HAZIRIM'a basmamış kullanıcıya çıkar. `sakin_hazirim_today`
+  HERHANGİ bir değer taşıyorsa `_initialScreen` her zaman "bugun" döner (elmas =
+  `showIntro` splash'i, her soğuk açılışta zaten oynuyor). Doğum yoksa Bugün
+  kapısı sorar. Yol seçimi sonu: "Sakinleşmek" → onboarding → Bağlan;
+  "Kendimi tanımak" → onboarding → BUGÜN (eskiden Ben/harita), doğum varsa
+  "hazırlanıyor" geçişiyle. "Ne yeni" kartı Bugün'de de çıkar.
 - **Varsayılan karşılama = BUGÜN.** `_initialScreen()` tekrar giren kullanıcıda
   (bugün HAZIRIM'a basmış) "mandala" yerine "bugun" döner. HAZIRIM da
   `setScreen("bugun")` yapıyor (eskiden mandala). İlk kez giren kullanıcı akışı
