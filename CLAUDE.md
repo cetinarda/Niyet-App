@@ -220,6 +220,16 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       gösterir. Irk adı `apps/soulid/lib/galactic/index.ts`'te değişirse key'leri de
       değiştir. İçerik starseed geleneğinin İNANÇ anlatısı ("inanılır/anlatılır"),
       giriş maddesi bunu açıkça söylüyor; bilimsel iddia gibi yazma.
+    - ⚠️ **`main` animasyonu `backwards` OLMALI (`app/globals.css`), `both` DEĞİL:**
+      `both` bittikten sonra main'de transform bırakıyor, içindeki TÜM
+      `position:fixed` modalları (kavram kartları, 3B gezegen) sayfaya göre
+      yerleştirip ekran dışına atıyordu ("detaylar için tıkla boş kalıyor").
+    - **Yıldız Kökeni detayı** `lib/galactic/lore.ts` (Sakin sözlüğü
+      `src/glossary-starseed.js` tr/en kopyası; biri değişirse diğeri de).
+    - **Kahraman kartında Human Design rozeti YOK** (kullanıcı: "burada HD bilgisi
+      vermeyeceğiz, burası SoulID"). Karnedeki "Enerji Profili" kartı duruyor.
+    - `?go=attachment` hem `target()`'ta hem doğrudan yönlendirmede olmalı:
+      telefonda köprü/karne hidrasyonu da `target()`'a gidiyor, yoksa /profil'e düşer.
     - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Yeni" rozeti. `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.

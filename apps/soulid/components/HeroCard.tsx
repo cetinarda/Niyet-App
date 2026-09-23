@@ -156,28 +156,14 @@ export const HeroCard = forwardRef<HTMLDivElement, { report: GalacticReport; por
               </div>
             </div>
 
-            {/* Sınıf rozeti */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: -9 }}>
-              <span
-                style={{
-                  fontSize: 8.5,
-                  fontWeight: 700,
-                  letterSpacing: '0.18em',
-                  color: '#1a0a40',
-                  background: `linear-gradient(180deg,#f3dfa2,${GOLD})`,
-                  padding: '3px 12px',
-                  borderRadius: 999,
-                  textTransform: 'uppercase',
-                }}
-              >
-                {report.humanDesign.type}
-              </span>
-            </div>
-
+            {/* Sınıf rozeti (Human Design tipi) KALDIRILDI (kullanıcı: "profil resminin
+                altında kalıyor; burada Human Design bilgisi vermeyeceğiz, burası SoulID").
+                Rozet -9 px ile resmin üstüne bindiği için taşan uzun tipler
+                ("MANIFESTING GENERATOR") resmin altında eziliyordu. */}
             {/* İsim + unvan */}
             <h3
               style={{
-                margin: '9px 0 0',
+                margin: '14px 0 0',
                 textAlign: 'center',
                 fontFamily: 'var(--font-display), serif',
                 fontSize: 23,
