@@ -600,9 +600,14 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
    istedi). PAYLAŞIM kartında bu not YOK, yalnızca rapor gövdesi.
 7. Günün rehberleri → I Ching → İkili uyum (Ben'den taşındı; I Ching ile yeri
    kullanıcı isteğiyle değişti) → **Tarot**.
-   ⚠️ Rehberlerdeki 4. kart (`pickMythOfDay`, src/daily-cards.js) artık TAROT
-   SEÇMEZ (5 sistem: arketip/mit/imge/rün/I Ching): tarotun kendi bölümü var,
-   aynı gün iki farklı tarot kartı görünüyordu. Mitler kütüphanesinde tarot durur.
+   ⚠️ **Rehberlerdeki 4. kart = Mitler'de O GÜN İLK AÇILAN deste** (Eyl 2026,
+   `mythOfDayPinned`, src/daily-cards.js). Mitler 3 desteyi (arketip/mit/imge)
+   RASTGELE çeker, bu DOĞRU (kullanıcı kararı). Bugün `@mitler_revealed`
+   `steps[0]`'ı okur, o destenin adı + kartıyla gösterir ve `sakin_bugun_myth`e
+   sabitler: sonra açılan desteler Bugün'ü DEĞİŞTİRMEZ. Mitler'de kart açılmadıysa
+   "Sakin Mitler · Kartını aç" daveti. ⚠️ Eskiden damgadan HESAPLANMIŞ bir kart
+   (rün/I Ching dahil) gösteriliyordu, Mitler çekince değişiyordu ("Mitler'de kart
+   açınca Bugün değişiyor" şikâyeti); `pickMythOfDay` silindi. Tarot zaten yoktu.
 8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
    etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 

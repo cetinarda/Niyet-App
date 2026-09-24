@@ -11,7 +11,7 @@ import { StatusBar, Style } from "@capacitor/status-bar";
 // çağrılır (bkz. "PREMIUM DOĞRULAMA: SUNUCUYA SOR" bloğu). İstemcinin store.owned
 // tahminiyle iptal etmesi kaldırıldı, ödeme yapan kullanıcıyı düşürüyordu.
 import { initStore, purchaseYearly, purchaseLifetime, restorePurchases, onPurchaseUpdate, onProductsLoaded, areProductsLoaded, getProductInfo, isSubscribed, revokeLocalPremium, LIFETIME_PRODUCT_ID } from "./purchases";
-import { readDailyIds, loadDailyIndex, pickMythOfDay, CARD_APP } from "./daily-cards";
+import { readDailyIds, loadDailyIndex, mythOfDayPinned, CARD_APP } from "./daily-cards";
 import { ICHING } from "./iching-data";
 import { TAROT } from "./tarot-data";
 import { LocalNotifications } from "@capacitor/local-notifications";
@@ -1275,7 +1275,7 @@ const ZODIAC_GLYPH = {
 
 // ── I CHING: GÜNÜN ÖĞÜDÜ ─────────────────────────────────────────────────────
 // Bugün ekranındaki kırmızı buton için. Diğer "günün kartı"ları gibi (bkz.
-// daily-cards.js pickMythOfDay) GÜN BOYU SABİT: aynı gün tekrar açılınca aynı
+// daily-cards.js mythOfDayPinned) GÜN BOYU SABİT: aynı gün tekrar açılınca aynı
 // heksagram çıkar, rastgele her tıklamada değişmez (kullanıcı beklentisi:
 // "günün kartı" felsefesiyle tutarlı, sonsuz reroll bir oyun hissi verirdi).
 function ichingHash(s) {
@@ -16097,7 +16097,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const ids = dailyIds || { animal:null, plant:null, stone:null, archetype:null, myth:null, image:null };
         const idx = dailyIndex;
         const seed = `${birthDate || ""}|${birthTime || ""}`;
-        const mith = idx ? pickMythOfDay(idx, ids, seed, dk) : null;
+        const mith = idx ? mythOfDayPinned(idx, dk) : null;
         const SYS_LABEL = { archetype:"sysArchetype", myth:"sysMyth", image:"sysImage",
                             tarot:"sysTarot", rune:"sysRune", iching:"sysIching" };
 
@@ -16581,15 +16581,15 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             </section>
 
-            {/* ── 6) GÜNÜN REHBERLERİ ── hayvan/bitki/taş + mitlerden biri
-                (pickMythOfDay: host ile uygulama aynı kartı gösterir). */}
+            {/* ── 6) GÜNÜN REHBERLERİ ── hayvan/bitki/taş + Mitler'de o gün İLK
+                açılan deste (mythOfDayPinned, gün boyu sabit; bkz. daily-cards.js). */}
             <section style={SEC}>
               {eyebrow(pickLang(TODAY_TXT.rehber, lang))}
               <div style={{ display:"flex",flexDirection:"column",gap:10 }}>
                 {guideCard({ k:"animal", eb:pickLang(TODAY_TXT.hayvan, lang), appKey:"animal", color:"#a0d8b4", card: idx && ids.animal ? idx.animal?.[ids.animal] : null })}
                 {guideCard({ k:"plant", eb:pickLang(TODAY_TXT.bitki, lang), appKey:"plant", color:"#9cc47e", card: idx && ids.plant ? idx.plant?.[ids.plant] : null })}
                 {guideCard({ k:"stone", eb:pickLang(TODAY_TXT.tas, lang), appKey:"stone", color:"#a0d8d8", card: idx && ids.stone ? idx.stone?.[ids.stone] : null })}
-                {guideCard({ k:"myth", eb: mith ? pickLang(TODAY_TXT[SYS_LABEL[mith.system]], lang) : pickLang(TODAY_TXT.sysMyth, lang),
+                {guideCard({ k:"myth", eb: mith ? pickLang(TODAY_TXT[SYS_LABEL[mith.system]], lang) : t("ailesi_mitler_name"),
                   appKey:"myth", color:"#d8b4a0", card: mith ? mith.card : null, hint: mith ? { system: mith.system, id: mith.id } : null })}
               </div>
             </section>

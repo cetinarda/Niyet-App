@@ -69,51 +69,37 @@ export async function loadDailyIndex(lang = "tr") {
   return p;
 }
 
-// ── Mitler tarafında GÜNÜN SİSTEMİ ────────────────────────────────────────
-// Kullanıcı: "hepsinden değil, o gün hangisi gelirse doğum haritasına göre
-// birini otomatik seç (arketip, mit, imge, tarot, rune, iching)". Tarot sonradan
-// çıkarıldı (aşağıya bak).
-// Mitler uygulaması günlük çekilişte YALNIZCA 3'ünü tutuyor (archetype/myth/
-// image); tarot/rune/iching'in günlük kaydı yok. Bu yüzden:
-//   • Seçim doğum verisi + güne göre DETERMİNİSTİK yapılır (aynı gün aynı
-//     kişide hep aynı sonuç, rastgelelik yok).
-//   • Seçilen sistem uygulamanın o gün çektiklerinden biriyse ONUN ID'si
-//     kullanılır, yani host'ta görünen kart uygulamadakiyle AYNI olur.
-//   • Değilse (tarot/rune/iching) kart aynı damgadan türetilir.
-// ⚠️ TAROT BU LİSTEDE YOK (kullanıcı isteği, Eyl 2026): Bugün ekranında
-// tarotun kendi bölümü var ("Günün tarot kartı", 78 kart). Burada da tarot
-// çıkınca aynı gün iki farklı tarot kartı görünebiliyordu. Mitler uygulamasının
-// kütüphanesinde tarot duruyor; yalnızca GÜNÜN kartı seçiminden çıkarıldı.
-const SYSTEMS = ["archetype", "myth", "image", "rune", "iching"];
-
-function hash32(s) {
-  let h = 2166136261;
-  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
-  return h >>> 0;
-}
-
-/**
- * @param {object} index   loadDailyIndex çıktısı
- * @param {object} ids     readDailyIds çıktısı
- * @param {string} seed    doğum bilgisi (kişiye özel yapar)
- * @param {string} dayKey  gün (her gün değişmesini sağlar)
- * @returns {{system:string, id:string, card:object}|null}
- */
-export function pickMythOfDay(index, ids, seed, dayKey) {
+// ── BUGÜN'ÜN MİT KARTI = MİTLER'DE İLK AÇILAN KART (Eyl 2026) ─────────────
+// Kullanıcı: "Mitler'e girip yeni bir kart açınca Bugün'deki kart değişiyor."
+// Eski yol: Bugün, Mitler'e girilmeden önce damgadan HESAPLANMIŞ bir kart
+// gösteriyordu; Mitler desteyi rastgele çekince (`@mitler_daily`) kart ona
+// dönüyor, sonraki desteler açıldıkça da tekrar değişebiliyordu.
+// Kullanıcı kararı: Mitler RASTGELE çekmeye devam eder (3 deste: arketip /
+// mit / imge). Bugün, kullanıcının Mitler'de O GÜN İLK AÇTIĞI desteyi (o
+// destenin adıyla) gösterir. İlk açılışta `sakin_bugun_myth`e sabitlenir ve
+// sonra hangi deste açılırsa açılsın o gün değişmez. Mitler'de henüz kart
+// açılmadıysa kart YOK: diğer rehberler gibi "kartını aç" daveti çıkar
+// (hesaplanmış yedek kart gösterilmez, sonradan değişeceği için yanıltıcıydı).
+// `@mitler_revealed` = { date, steps:[deste indeksleri, açılış sırasıyla] },
+// Mitler HomeScreen'de yazılıyor (0 arketip, 1 mit, 2 imge). Salt okunur.
+export const BUGUN_MYTH_KEY = "sakin_bugun_myth";
+const DECK_SYSTEMS = ["archetype", "myth", "image"];
+export function mythOfDayPinned(index, dayKey) {
   if (!index) return null;
-  const h = hash32(`${seed || "sakin"}|${dayKey}`);
-  const system = SYSTEMS[h % SYSTEMS.length];
-  const table = index[system];
-  if (!table) return null;
-  // Uygulama o gün bu sistemden kart çektiyse AYNI kartı göster.
-  const drawn = ids[system];
-  if (drawn && table[drawn]) return { system, id: drawn, card: table[drawn] };
-  const keys = Object.keys(table);
-  if (!keys.length) return null;
-  // Farklı bir damga (h2) kullanılıyor: aksi halde sistem seçimi ile kart
-  // seçimi aynı sayıya bağlı kalır ve dağılım daralır.
-  const id = keys[hash32(`${dayKey}|${system}|${seed || ""}`) % keys.length];
-  return { system, id, card: table[id] };
+  const pin = readJson(BUGUN_MYTH_KEY);
+  if (pin && pin.date === dayKey && pin.system && pin.id) {
+    const card = index[pin.system] && index[pin.system][pin.id];
+    if (card) return { system: pin.system, id: pin.id, card };
+  }
+  const daily = readJson(KEYS.myth);
+  const rev = readJson("@mitler_revealed");
+  if (!daily || daily.date !== dayKey || !rev || rev.date !== dayKey || !Array.isArray(rev.steps)) return null;
+  const system = DECK_SYSTEMS[rev.steps[0]];
+  const id = system && daily[system + "Id"];
+  const card = id && index[system] && index[system][id];
+  if (!card) return null;
+  try { localStorage.setItem(BUGUN_MYTH_KEY, JSON.stringify({ date: dayKey, system, id })); } catch { /* kota: sabitlenmez, yine gösterilir */ }
+  return { system, id, card };
 }
 
 /** Kart yoksa kullanıcıyı doğru uygulamaya yollamak için embed yolları. */
