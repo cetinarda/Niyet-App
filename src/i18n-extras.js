@@ -230,7 +230,7 @@ export const EXTRA_LANGS = {
     analysis_suf:      "· ANALYSE",
 
     pricing_title:     "Preise",
-    pricing_sub:       "SAKIN · TRANSPARENTE PREISE",
+    pricing_sub:       "SAKIN · EIN EHRLICHES WORT",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Ganz Sakin, in seiner stillen Schlichtheit",
     paid_app_price:    "$9.99",
@@ -325,7 +325,7 @@ export const EXTRA_LANGS = {
     ailesi_premium_needed_title: "Premium nötig, um fortzufahren",
     ailesi_premium_quota: "Deine {free} kostenlosen Öffnungen von {name} sind aufgebraucht. Mit Premium uneingeschränkten Zugang zu allen Familien-Apps freischalten.",
     ailesi_get_premium: "✦ Premium holen",
-    ailesi_family_bonus: "Bonus · Sakin Familie",
+    ailesi_family_bonus: "Die Sakin-Familie ist dabei",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Mein Konto und meine Daten löschen",
@@ -958,7 +958,7 @@ export const EXTRA_LANGS = {
     analysis_suf:      "· ANÁLISE",
 
     pricing_title:     "Preços",
-    pricing_sub:       "SAKIN · PREÇOS TRANSPARENTES",
+    pricing_sub:       "SAKIN · UMA NOTA SINCERA",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin por inteiro, na sua serena simplicidade",
     paid_app_price:    "$9.99",
@@ -1141,7 +1141,7 @@ export const EXTRA_LANGS = {
     ailesi_premium_needed_title: "Premium necessário para continuar",
     ailesi_premium_quota: "Suas {free} aberturas grátis de {name} foram usadas. Desbloqueie acesso ilimitado a todos os apps da família com Premium.",
     ailesi_get_premium: "✦ Obter Premium",
-    ailesi_family_bonus: "Bônus · Família Sakin",
+    ailesi_family_bonus: "A Família Sakin está incluída",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Excluir minha conta e meus dados",
@@ -1686,7 +1686,7 @@ export const EXTRA_LANGS = {
     analysis_suf:      "· ANÁLISIS",
 
     pricing_title:     "Precios",
-    pricing_sub:       "SAKIN · PRECIOS TRANSPARENTES",
+    pricing_sub:       "SAKIN · UNA NOTA SINCERA",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin al completo, con su serena sencillez",
     paid_app_price:    "$9.99",
@@ -1781,7 +1781,7 @@ export const EXTRA_LANGS = {
     ailesi_premium_needed_title: "Necesitas Premium para continuar",
     ailesi_premium_quota: "Tus {free} aperturas gratis de {name} están agotadas. Desbloquea acceso ilimitado a todas las apps de la familia con Premium.",
     ailesi_get_premium: "✦ Obtener Premium",
-    ailesi_family_bonus: "Bono · Familia Sakin",
+    ailesi_family_bonus: "La Familia Sakin está incluida",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Eliminar mi cuenta y mis datos",
@@ -2417,7 +2417,7 @@ export const EXTRA_LANGS = {
     analysis_suf:      "· ANALYSE",
 
     pricing_title:     "Tarifs",
-    pricing_sub:       "SAKIN · TARIFS TRANSPARENTS",
+    pricing_sub:       "SAKIN · UN MOT SINCÈRE",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Tout Sakin, dans sa douce simplicité",
     paid_app_price:    "$9.99",
@@ -2512,7 +2512,7 @@ export const EXTRA_LANGS = {
     ailesi_premium_needed_title: "Premium requis pour continuer",
     ailesi_premium_quota: "Tes {free} ouvertures gratuites de {name} sont utilisées. Débloque l'accès illimité à toutes les apps de la famille avec Premium.",
     ailesi_get_premium: "✦ Obtenir Premium",
-    ailesi_family_bonus: "Bonus · Famille Sakin",
+    ailesi_family_bonus: "La Famille Sakin est incluse",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Supprimer mon compte et mes données",
@@ -3144,7 +3144,7 @@ export const EXTRA_LANGS = {
     analysis_suf:      "· 分析",
 
     pricing_title:     "価格",
-    pricing_sub:       "SAKIN · 透明な価格設定",
+    pricing_sub:       "SAKIN · 正直なお願い",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin のすべてを、静かでシンプルなままに",
     paid_app_price:    "$9.99",
@@ -3239,7 +3239,7 @@ export const EXTRA_LANGS = {
     ailesi_premium_needed_title: "続けるにはプレミアムが必要",
     ailesi_premium_quota: "{name} の無料 {free} 回が終了しました。プレミアムですべてのファミリーアプリへ無制限アクセス。",
     ailesi_get_premium: "✦ プレミアムを取得",
-    ailesi_family_bonus: "ボーナス · Sakin ファミリー",
+    ailesi_family_bonus: "Sakin ファミリーも含まれます",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "アカウントとデータを削除",

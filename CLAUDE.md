@@ -742,6 +742,17 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 - Zaten iyi olanlar (dokunma): tüm zamanlayıcılar ekran/seans kapılı, sessiz
   ses döngüsü yalnızca seans sırasında, embed'ler kapanınca `about:blank`.
 
+## 💬 SATIN ALMA EKRANI DİLİ (kullanıcı, Eyl 2026: "kapital marketing dilinden uzaklaşalım")
+
+- `fiyat` ekranında başlığın altında İMZALI İÇTEN NOT (`PRICING_NOTE_TXT`, 7 dil,
+  "Arda Çetin"): satın almak = ışığın yayılması için verilen emeğe ortak olmak,
+  geliştirmeye ve yeni uygulamalara güç vermek; açıkça "satılmaya ihtiyacı var".
+  Premium kullanıcıya yalnızca teşekkür (`owned`). Alt başlık "ŞEFFAF FİYATLANDIRMA"
+  yerine "İÇTEN BİR NOT", "Bonus · Sakin Ailesi" yerine "Sakin Ailesi de içinde".
+- ⚠️ BAĞIŞ GİBİ SUNMA: Apple IAP ile bağış toplanmasına izin vermez. Not ürünün
+  YERİNE geçmez; özellik listesi, fiyatlar, abonelik koşulları (3.1.2) aynen durur.
+  Doğrulanamayan iddia ("reklamsız", "veri satmıyoruz") EKLEME.
+
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
 - Şema: `sakin://<yol>`. Yollar `DEEP_LINK_SCREENS` (src/App.jsx): `baglan`→mandala,

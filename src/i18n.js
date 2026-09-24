@@ -237,7 +237,7 @@ export const TRANS = {
 
     // Fiyatlandırma
     pricing_title:     "Fiyatlandırma",
-    pricing_sub:       "SAKİN · ŞEFFAF FİYATLANDIRMA",
+    pricing_sub:       "SAKİN · İÇTEN BİR NOT",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "Sakin'in tamamı, sadeliğiyle seninle",
     paid_app_price:    "$9.99",
@@ -431,7 +431,7 @@ export const TRANS = {
     ailesi_premium_needed_title: "Devam etmek için Premium gerekli",
     ailesi_premium_quota: "{name} için {free} ücretsiz açılışın tamamlandı. Premium ile sınırsız aç ve tüm aile uygulamalarına eriş.",
     ailesi_get_premium: "✦ Premium'a Geç",
-    ailesi_family_bonus: "Bonus · Sakin Ailesi",
+    ailesi_family_bonus: "Sakin Ailesi de içinde",
 
     // ===== Hesap / veri silme (App Store 5.1.1(v)) =====
     delete_account_link:           "Hesabımı ve verilerimi sil",
@@ -1006,7 +1006,7 @@ export const TRANS = {
 
     // Fiyatlandırma
     pricing_title:     "Pricing",
-    pricing_sub:       "SAKIN · TRANSPARENT PRICING",
+    pricing_sub:       "SAKIN · A HONEST NOTE",
     paid_app_badge:    "PREMIUM",
     paid_app_plan:     "All of Sakin, in its quiet simplicity",
     paid_app_price:    "$9.99",
@@ -1195,7 +1195,7 @@ export const TRANS = {
     ailesi_premium_needed_title: "Premium needed to continue",
     ailesi_premium_quota: "Your {free} free opens of {name} are done. Unlock unlimited access to all family apps with Premium.",
     ailesi_get_premium: "✦ Get Premium",
-    ailesi_family_bonus: "Bonus · Sakin Family",
+    ailesi_family_bonus: "The Sakin Family is included",
 
     // ===== Account / data deletion (App Store 5.1.1(v)) =====
     delete_account_link:           "Delete my account and data",

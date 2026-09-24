@@ -844,6 +844,45 @@ const NOTIF_SET_TXT = {
 // bkz. apps/soulid/lib/attachment/storage.ts). Stil adları ve özleri SoulID'deki
 // STYLES ile BİREBİR (tr/en oradan; diğer 5 dil burada çevrildi). Test SoulID'de
 // yalnızca tr/en, o yüzden kutu 7 dilde ama test ekranı 2 dilde açılır.
+// SATIN ALMA EKRANI: İÇTEN NOT (kullanıcı, Eyl 2026: "pazarlama dilinden
+// uzaklaşalım; ışığın yayılması için verdiğimiz mücadeleye katkı, bizi app
+// geliştirmeye ve yeni uygulamalara teşvik; satılmaya ihtiyacı olduğunu da
+// samimice söyleyelim"). ⚠️ BAĞIŞ GİBİ ÇERÇEVELEME: Apple IAP ile "bağış"
+// toplanmasına izin vermez; bu not ÜRÜNÜN YERİNE geçmez, özellik listesi ve
+// net fiyat/abonelik bilgisi altında aynen durur. Doğrulanamayan iddia
+// ("reklamsız", "veri satmıyoruz" vb.) EKLEME.
+const PRICING_NOTE_TXT = {
+  p1: {
+    tr:"Sakin'i satın aldığında, ışığın yayılması için verdiğimiz emeğe ortak oluyorsun. Bu destek, Sakin'i geliştirmeye ve yeni uygulamalar yapmaya devam etmemiz için bize güç veriyor.",
+    en:"When you buy Sakin, you join the effort we make to help the light spread. Your support gives us the strength to keep improving Sakin and to build new apps.",
+    de:"Wenn du Sakin kaufst, wirst du Teil unseres Einsatzes, das Licht weiterzutragen. Deine Unterstützung gibt uns die Kraft, Sakin weiterzuentwickeln und neue Apps zu bauen.",
+    es:"Cuando compras Sakin, te sumas al esfuerzo que hacemos para que la luz se extienda. Tu apoyo nos da fuerzas para seguir mejorando Sakin y crear nuevas apps.",
+    pt:"Quando compras o Sakin, juntas-te ao esforço que fazemos para que a luz se espalhe. O teu apoio dá-nos força para continuar a melhorar o Sakin e a criar novas apps.",
+    fr:"En achetant Sakin, tu rejoins l'effort que nous menons pour que la lumière se répande. Ton soutien nous donne la force de continuer à améliorer Sakin et de créer de nouvelles applis.",
+    ja:"Sakinを購入することは、光を広げるための私たちの取り組みに加わることでもあります。あなたの支えが、Sakinを育て、新しいアプリを作り続ける力になります。",
+  },
+  p2: {
+    tr:"Açık konuşalım: Sakin'in yaşayabilmesi için satın alınmaya ihtiyacı var. Katkın bizim için gerçekten önemli.",
+    en:"To be honest with you: Sakin needs people to buy it in order to keep going. Your contribution truly matters to us.",
+    de:"Ganz ehrlich: Damit Sakin weiterleben kann, braucht es Menschen, die es kaufen. Dein Beitrag bedeutet uns wirklich viel.",
+    es:"Te lo decimos con sinceridad: Sakin necesita que la compren para poder seguir adelante. Tu aportación de verdad nos importa.",
+    pt:"Sendo sinceros: o Sakin precisa de ser comprado para poder continuar. O teu contributo é mesmo importante para nós.",
+    fr:"Pour être honnêtes : Sakin a besoin d'être acheté pour pouvoir continuer. Ta contribution compte vraiment pour nous.",
+    ja:"正直にお伝えすると、Sakinが続いていくためには、購入してくださる方が必要です。あなたの支えは、私たちにとって本当に大切です。",
+  },
+  thanks: { tr:"Teşekkür ederiz.", en:"Thank you.", de:"Danke.", es:"Gracias.", pt:"Obrigado.", fr:"Merci.", ja:"ありがとうございます。" },
+  // Premium kullanıcıya: satın almış olana aynı ricayı tekrar etme, yalnızca teşekkür.
+  owned: {
+    tr:"Desteğin için teşekkür ederiz. Sakin'i geliştirmeye ve yeni uygulamalar yapmaya devam etmemizi sen mümkün kılıyorsun.",
+    en:"Thank you for your support. You are the reason we can keep improving Sakin and building new apps.",
+    de:"Danke für deine Unterstützung. Du machst es möglich, dass wir Sakin weiterentwickeln und neue Apps bauen.",
+    es:"Gracias por tu apoyo. Gracias a ti podemos seguir mejorando Sakin y creando nuevas apps.",
+    pt:"Obrigado pelo teu apoio. É graças a ti que podemos continuar a melhorar o Sakin e a criar novas apps.",
+    fr:"Merci pour ton soutien. C'est grâce à toi que nous pouvons continuer à améliorer Sakin et créer de nouvelles applis.",
+    ja:"支えてくださり、ありがとうございます。あなたのおかげで、Sakinを育て、新しいアプリを作り続けることができます。",
+  },
+};
+
 const ATTACH_TXT = {
   title:   { tr:"Bağlanma Profili", en:"Attachment Profile", de:"Bindungsprofil", es:"Perfil de apego", pt:"Perfil de vinculação", fr:"Profil d'attachement", ja:"愛着プロフィール" },
   askHead: { tr:"Yakınlıkta nasıl davranıyorsun?", en:"How do you move in closeness?", de:"Wie verhältst du dich in Nähe?", es:"¿Cómo te mueves en la cercanía?", pt:"Como te moves na proximidade?", fr:"Comment vis-tu la proximité ?", ja:"親密さの中で、あなたはどう動く？" },
@@ -15760,6 +15799,27 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               render ediliyor): iki buton üst üste biniyordu. */}
           <h1 style={{ paddingTop:40 }}>{t("pricing_title")}</h1>
           <div className="subtitle">{t("pricing_sub")}</div>
+
+          {/* İÇTEN NOT: pazarlama başlığı yerine düz, imzalı bir mektup. */}
+          <div style={{ margin:"4px 0 22px",padding:"18px 20px",borderRadius:16,
+            background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.16)" }}>
+            {isPremium ? (
+              <p style={{ margin:0,fontSize:14.5,color:"#d6cfe6",lineHeight:1.7,fontFamily:"'Inter',sans-serif" }}>
+                {pickLang(PRICING_NOTE_TXT.owned, lang)}
+              </p>
+            ) : (<>
+              <p style={{ margin:"0 0 12px",fontSize:14.5,color:"#d6cfe6",lineHeight:1.7,fontFamily:"'Inter',sans-serif" }}>
+                {pickLang(PRICING_NOTE_TXT.p1, lang)}
+              </p>
+              <p style={{ margin:"0 0 12px",fontSize:14.5,color:"#d6cfe6",lineHeight:1.7,fontFamily:"'Inter',sans-serif" }}>
+                {pickLang(PRICING_NOTE_TXT.p2, lang)}
+              </p>
+              <p style={{ margin:0,fontSize:14.5,color:"#d6cfe6",lineHeight:1.7,fontFamily:"'Inter',sans-serif" }}>
+                {pickLang(PRICING_NOTE_TXT.thanks, lang)}
+              </p>
+            </>)}
+            <div style={{ marginTop:12,textAlign:"right",fontSize:12,letterSpacing:2,color:"#9a90b5",fontFamily:"'Jost',sans-serif" }}>Arda Çetin</div>
+          </div>
 
           {isPremium ? (
             <div style={{ textAlign:"center",padding:"32px 0" }}>
