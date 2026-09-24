@@ -691,6 +691,23 @@ alt klasörü doğrudan açmak iOS'ta güvenilir değil). Stil adları/özleri
 `ATTACH_TXT` (7 dil), SoulID `lib/attachment/index.ts` STYLES ile BİREBİR:
 orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/en.
 
+## ✉ BEN > NİYET MEKTUBU (kullanıcı isteği, Eyl 2026: "21 gün sonra açılsın, geri sayım olsun" + "fikri geliştir")
+
+Bağlanma Profili kutusunun altında, `NiyetMektubu` bileşeni (MODÜL seviyesinde,
+render içinde tanımlama). Akış: davet → yaz (ipuçları: "kalpten, içten yazmaktan
+çekinme", "olmuş gibi şimdiki zamanda") → MÜHÜRLE (21 gün açılamaz/değişmez) →
+geri sayım (gün/saat/dakika, dakikaya YUKARI yuvarlı) + 21 noktalık yol → süre
+dolunca "Mektubu aç" ritüeli → mektup + "Bu niyet sende neye dönüştü?"
+(gerçekleşti/yolda/dönüştü) → yeni mektup, eskisi arşive ("Önceki mektupların").
+- Veri YALNIZCA cihazda: `sakin_niyet_letter` (etkin) + `sakin_niyet_letters`
+  (arşiv, son 30). Metin sunucuya GİTMEZ; ekranda da "yalnızca bu cihazda" yazıyor,
+  bunu bozacak bir senkron eklersen o metni de değiştir.
+- Açılış bildirimi (native, tek sefer): ID 9500, `scheduleLetterNotif`, 10:00-21:00
+  arasına çekilir, İZİN İSTEMEZ (varsa kurar), hedef `harita`. Günlük 3 sınırının
+  DIŞINDA (21 günde bir). `notifKind` → "mektup".
+- Analitik `letter` {a: seal/open/reflect, r} (track.mjs beyaz listede, rapor
+  "Seçimler"de). Metin 7 dilde `LETTER_TXT`.
+
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 
 Kullanım ölçümü (anonim funnel) eklendi. 1.3.9 build/gönderiminde bu ikisini kullanıcıya HATIRLAT:

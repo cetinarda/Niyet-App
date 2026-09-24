@@ -123,7 +123,7 @@ export function mergeBatch(rec, body, now) {
     else if (e === "onb_kesfet_done") setMilestone("onb_kesfet_done", ts);
     else if (e === "birth_saved") setMilestone("birth_saved", ts);
     else if (e === "notif_open") {
-      const k = ["genel", "kisisel", "tarot", "geridon", "diger"].includes(it.k) ? it.k : null;
+      const k = ["genel", "kisisel", "tarot", "geridon", "mektup", "diger"].includes(it.k) ? it.k : null;
       if (k) { bump("notif_" + k); setMilestone("notif_open", ts); }
     }
     // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
@@ -159,6 +159,12 @@ export function mergeBatch(rec, body, now) {
     // ── SEÇİM SAYAÇLARI (Eyl 2026) ─────────────────────────────────────────
     // Yalnızca BEYAZ LİSTEDEKİ değerler sayılır: istemci serbest metin yazıp
     // rec.c'yi şişiremesin (anahtar sayısı sabit ve küçük kalır).
+    // Niyet mektubu (Ben): mühürlendi / açıldı / yansıma seçimi. Metin GİTMEZ.
+    else if (e === "letter") {
+      const a = ["seal", "open", "reflect"].includes(it.a) ? it.a : null;
+      if (a) bump("letter_" + a);
+      if (a === "reflect" && ["oldu", "yolda", "donustu"].includes(it.r)) bump("letter_r_" + it.r);
+    }
     else if (e === "fork_shown") bump("fork_shown");
     else if (e === "fork_pick") {
       const path = it.path === "baglan" || it.path === "kesfet" ? it.path : null;

@@ -883,6 +883,252 @@ const PRICING_NOTE_TXT = {
   },
 };
 
+// ── BEN > NİYET MEKTUBU (kullanıcı isteği, Eyl 2026) ───────────────────────
+// "Niyet bıraktığında 21 gün sonra açılsın, geri sayım olsun; niyetini 21 gün
+// sonra yeniden oku, kalpten içten yazmaktan çekinme." + "bu fikri geliştir".
+// Akış: davet → yaz → MÜHÜRLE (düzenlenemez, okunamaz) → 21 gün geri sayım +
+// 21 noktalık yol → açılış günü bildirim (native, tek sefer, ID 9500) → "Aç"
+// ritüeli → mektup + "Bu niyet sende neye dönüştü?" (gerçekleşti / yolda /
+// dönüştü) → yeni mektup; eskiler "Önceki mektupların" arşivinde.
+// Veri YALNIZCA cihazda: `sakin_niyet_letter` (etkin) + `sakin_niyet_letters`
+// (arşiv). Sunucuya metin GİTMEZ; analitik yalnızca "mühürlendi/açıldı/yansıma
+// seçimi" sayar. ⚠️ BİLEŞEN, render içinde tanımlanmaz (dakikalık yeniden
+// çizimde state sıfırlanmasın diye modül seviyesinde).
+const LETTER_DAYS = 21;
+const LETTER_KEY = "sakin_niyet_letter";
+const LETTER_ARCHIVE_KEY = "sakin_niyet_letters";
+const LETTER_NOTIF_ID = 9500;
+const LETTER_TXT = {
+  title:   { tr:"Niyet Mektubu", en:"Intention Letter", de:"Absichtsbrief", es:"Carta de intención", pt:"Carta de intenção", fr:"Lettre d'intention", ja:"意図の手紙" },
+  askHead: { tr:"21 gün sonraki kendine bir mektup", en:"A letter to yourself, 21 days from now", de:"Ein Brief an dich, in 21 Tagen", es:"Una carta para ti, dentro de 21 días", pt:"Uma carta para ti, daqui a 21 dias", fr:"Une lettre pour toi, dans 21 jours", ja:"21日後の自分への手紙" },
+  askBody: { tr:"Niyetini yaz ve mühürle. Mektup 21 gün kapalı kalır, sonra açılır ve niyetini yeniden okursun.",
+             en:"Write your intention and seal it. The letter stays closed for 21 days, then it opens and you read your intention again.",
+             de:"Schreib deine Absicht auf und versiegle sie. Der Brief bleibt 21 Tage verschlossen, dann öffnet er sich und du liest deine Absicht noch einmal.",
+             es:"Escribe tu intención y séllala. La carta queda cerrada 21 días; después se abre y vuelves a leer tu intención.",
+             pt:"Escreve a tua intenção e sela-a. A carta fica fechada 21 dias; depois abre-se e voltas a ler a tua intenção.",
+             fr:"Écris ton intention et scelle-la. La lettre reste fermée 21 jours, puis elle s'ouvre et tu relis ton intention.",
+             ja:"意図を書いて封をしましょう。手紙は21日間閉じたまま。その後ひらいて、もう一度読み返します。" },
+  write:   { tr:"Mektubunu yaz", en:"Write your letter", de:"Brief schreiben", es:"Escribe tu carta", pt:"Escreve a tua carta", fr:"Écris ta lettre", ja:"手紙を書く" },
+  hint1:   { tr:"Kalpten, içten niyetlerini yazmaktan çekinme.", en:"Don't hold back from writing your heartfelt, sincere intentions.", de:"Trau dich, deine aufrichtigen Absichten aus dem Herzen aufzuschreiben.", es:"No dudes en escribir tus intenciones más sinceras, desde el corazón.", pt:"Não hesites em escrever as tuas intenções mais sinceras, do coração.", fr:"N'hésite pas à écrire tes intentions sincères, avec le cœur.", ja:"心からの素直な意図を、ためらわずに書いてください。" },
+  hint2:   { tr:"Olmasını istediğini, olmuş gibi şimdiki zamanda yazabilirsin.", en:"You can write what you wish for as if it has already happened, in the present tense.", de:"Du kannst das Gewünschte so schreiben, als wäre es schon geschehen, in der Gegenwart.", es:"Puedes escribir lo que deseas como si ya hubiera ocurrido, en presente.", pt:"Podes escrever o que desejas como se já tivesse acontecido, no presente.", fr:"Tu peux écrire ce que tu souhaites comme si c'était déjà arrivé, au présent.", ja:"願うことを、すでに叶ったかのように現在形で書いてもかまいません。" },
+  privacy: { tr:"Mektubun yalnızca bu cihazda saklanır, kimse okuyamaz.", en:"Your letter is stored only on this device. No one else can read it.", de:"Dein Brief wird nur auf diesem Gerät gespeichert. Niemand sonst kann ihn lesen.", es:"Tu carta se guarda solo en este dispositivo. Nadie más puede leerla.", pt:"A tua carta fica guardada só neste dispositivo. Mais ninguém a pode ler.", fr:"Ta lettre est conservée uniquement sur cet appareil. Personne d'autre ne peut la lire.", ja:"手紙はこの端末にだけ保存され、ほかの誰にも読まれません。" },
+  ph:      { tr:"Sevgili ben, bu mektubu açtığında...", en:"Dear me, when you open this letter...", de:"Liebes Ich, wenn du diesen Brief öffnest...", es:"Querida yo, cuando abras esta carta...", pt:"Querido eu, quando abrires esta carta...", fr:"Cher moi, quand tu ouvriras cette lettre...", ja:"親愛なる私へ。この手紙をひらくとき…" },
+  seal:    { tr:"Mühürle", en:"Seal it", de:"Versiegeln", es:"Sellar", pt:"Selar", fr:"Sceller", ja:"封をする" },
+  cancel:  { tr:"Vazgeç", en:"Cancel", de:"Abbrechen", es:"Cancelar", pt:"Cancelar", fr:"Annuler", ja:"やめる" },
+  sealNote:{ tr:"Mühürledikten sonra 21 gün boyunca açılamaz ve değiştirilemez.", en:"Once sealed, it can't be opened or changed for 21 days.", de:"Einmal versiegelt, kann er 21 Tage lang weder geöffnet noch geändert werden.", es:"Una vez sellada, no se puede abrir ni cambiar durante 21 días.", pt:"Depois de selada, não pode ser aberta nem alterada durante 21 dias.", fr:"Une fois scellée, elle ne peut être ni ouverte ni modifiée pendant 21 jours.", ja:"封をすると、21日間はひらくことも変えることもできません。" },
+  sealedHead:{ tr:"Mektubun mühürlü", en:"Your letter is sealed", de:"Dein Brief ist versiegelt", es:"Tu carta está sellada", pt:"A tua carta está selada", fr:"Ta lettre est scellée", ja:"手紙は封をされています" },
+  sealedBody:{ tr:"Niyetini 21 gün sonra yeniden okuyacaksın. O güne kadar onu içinde taşı.", en:"You'll read your intention again in 21 days. Until then, carry it within you.", de:"In 21 Tagen liest du deine Absicht noch einmal. Bis dahin trag sie in dir.", es:"Volverás a leer tu intención dentro de 21 días. Hasta entonces, llévala dentro de ti.", pt:"Vais voltar a ler a tua intenção daqui a 21 dias. Até lá, leva-a dentro de ti.", fr:"Tu reliras ton intention dans 21 jours. D'ici là, porte-la en toi.", ja:"21日後、もう一度この意図を読み返します。その日まで、心の中に大切に持っていてください。" },
+  opensIn: { tr:"Açılmasına", en:"Opens in", de:"Öffnet sich in", es:"Se abre en", pt:"Abre dentro de", fr:"S'ouvre dans", ja:"ひらくまで" },
+  units:   { tr:["GÜN","SAAT","DAKİKA"], en:["DAYS","HOURS","MIN"], de:["TAGE","STD","MIN"], es:["DÍAS","HORAS","MIN"], pt:["DIAS","HORAS","MIN"], fr:["JOURS","HEURES","MIN"], ja:["日","時間","分"] },
+  written: { tr:"Yazıldı", en:"Written", de:"Geschrieben", es:"Escrita", pt:"Escrita", fr:"Écrite", ja:"書いた日" },
+  readyHead:{ tr:"21 gün doldu", en:"21 days have passed", de:"21 Tage sind vergangen", es:"Han pasado 21 días", pt:"Passaram 21 dias", fr:"21 jours se sont écoulés", ja:"21日が経ちました" },
+  readyBody:{ tr:"Mektubun seni bekliyor. Açmadan önce bir nefes al.", en:"Your letter is waiting for you. Take a breath before you open it.", de:"Dein Brief wartet auf dich. Atme einmal tief durch, bevor du ihn öffnest.", es:"Tu carta te espera. Respira antes de abrirla.", pt:"A tua carta está à tua espera. Respira antes de a abrir.", fr:"Ta lettre t'attend. Prends une respiration avant de l'ouvrir.", ja:"手紙があなたを待っています。ひらく前に、ひと呼吸。" },
+  open:    { tr:"Mektubu aç", en:"Open the letter", de:"Brief öffnen", es:"Abrir la carta", pt:"Abrir a carta", fr:"Ouvrir la lettre", ja:"手紙をひらく" },
+  // {n}: mektubun yazıldığından bu yana geçen GERÇEK gün (21. günden sonra açılabilir).
+  openedHead:{ tr:"{n} gün önce kendine şunu yazmıştın", en:"{n} days ago, you wrote to yourself", de:"Vor {n} Tagen hast du dir geschrieben", es:"Hace {n} días te escribiste esto", pt:"Há {n} dias escreveste-te isto", fr:"Il y a {n} jours, tu t'es écrit ceci", ja:"{n}日前、あなたは自分にこう書きました" },
+  ask:     { tr:"Bu niyet sende neye dönüştü?", en:"What did this intention become for you?", de:"Was ist aus dieser Absicht in dir geworden?", es:"¿En qué se convirtió esta intención para ti?", pt:"Em que se tornou esta intenção para ti?", fr:"Qu'est devenue cette intention pour toi ?", ja:"この意図は、あなたの中で何になりましたか？" },
+  choices: { oldu:  { tr:"Gerçekleşti", en:"It came true", de:"Erfüllt", es:"Se cumplió", pt:"Realizou-se", fr:"Réalisée", ja:"叶った" },
+             yolda: { tr:"Yolda", en:"On its way", de:"Unterwegs", es:"En camino", pt:"A caminho", fr:"En chemin", ja:"まだ途中" },
+             donustu:{ tr:"Başka bir şeye dönüştü", en:"It became something else", de:"Es wurde zu etwas anderem", es:"Se transformó en otra cosa", pt:"Transformou-se noutra coisa", fr:"Elle est devenue autre chose", ja:"別のものに変わった" } },
+  after:   { tr:"Kaydettin. Yeni bir niyete hazır olduğunda buradayız.", en:"Saved. We're here when you're ready for a new intention.", de:"Gespeichert. Wir sind da, wenn du bereit für eine neue Absicht bist.", es:"Guardado. Aquí estaremos cuando estés lista para una nueva intención.", pt:"Guardado. Estamos aqui quando estiveres pronto para uma nova intenção.", fr:"Enregistré. Nous sommes là quand tu seras prêt pour une nouvelle intention.", ja:"記録しました。新しい意図の準備ができたら、いつでもどうぞ。" },
+  newLetter:{ tr:"Yeni mektup yaz", en:"Write a new letter", de:"Neuen Brief schreiben", es:"Escribir una nueva carta", pt:"Escrever uma nova carta", fr:"Écrire une nouvelle lettre", ja:"新しい手紙を書く" },
+  archive: { tr:"Önceki mektupların", en:"Your earlier letters", de:"Deine früheren Briefe", es:"Tus cartas anteriores", pt:"As tuas cartas anteriores", fr:"Tes lettres précédentes", ja:"これまでの手紙" },
+  notif:   { tr:"21 gün önce kendine bir niyet mektubu yazdın. Mektubun artık açılabilir.", en:"21 days ago you wrote yourself an intention letter. It's ready to open now.", de:"Vor 21 Tagen hast du dir einen Absichtsbrief geschrieben. Jetzt kannst du ihn öffnen.", es:"Hace 21 días te escribiste una carta de intención. Ya puedes abrirla.", pt:"Há 21 dias escreveste-te uma carta de intenção. Já a podes abrir.", fr:"Il y a 21 jours, tu t'es écrit une lettre d'intention. Tu peux l'ouvrir maintenant.", ja:"21日前、あなたは自分に意図の手紙を書きました。いま、ひらくことができます。" },
+};
+const LETTER_LOCALE = { tr:"tr-TR", en:"en-US", de:"de-DE", es:"es-ES", pt:"pt-PT", fr:"fr-FR", ja:"ja-JP" };
+function readLetterJson(k, fb) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? fb : v; } catch (_) { return fb; } }
+// Açılış bildirimi: gece yarısı yazılan mektup gece yarısı çalmasın, 10:00-21:00 arasına çekilir.
+async function scheduleLetterNotif(opensAt, lang) {
+  if (!isNative) return;
+  try {
+    await LocalNotifications.cancel({ notifications: [{ id: LETTER_NOTIF_ID }] });
+    if (!opensAt) return;
+    const perm = await LocalNotifications.checkPermissions();
+    if (perm.display !== "granted") return;
+    const at = new Date(opensAt);
+    if (at.getHours() < 10) at.setHours(10, 0, 0, 0);
+    else if (at.getHours() >= 21) { at.setDate(at.getDate() + 1); at.setHours(10, 0, 0, 0); }
+    await LocalNotifications.schedule({ notifications: [{
+      id: LETTER_NOTIF_ID, title: pickLang(LETTER_TXT.title, lang), body: pickLang(LETTER_TXT.notif, lang),
+      schedule: { at, allowWhileIdle: true }, extra: { screen: "harita" },
+      smallIcon: "ic_stat_icon_config_sample", iconColor: "#e8c07a",
+    }] });
+  } catch (e) { console.warn("[Letter]", e); }
+}
+
+function NiyetMektubu({ lang }) {
+  const GOLD = "#e8c07a", INK = "#f1ecf9", BODY = "#cfc7e0", MUTE = "#8f88a3";
+  const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
+  const [letter, setLetter] = useState(() => readLetterJson(LETTER_KEY, null));
+  const [archive, setArchive] = useState(() => readLetterJson(LETTER_ARCHIVE_KEY, []));
+  const [composing, setComposing] = useState(false);
+  const [draft, setDraft] = useState("");
+  const [showArchive, setShowArchive] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  const sealed = !!letter && now < letter.opensAt;
+  // Geri sayım yalnızca mühürlüyken ve bu kutu ekrandayken işler (dakikada bir).
+  useEffect(() => {
+    if (!sealed) return;
+    const id = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(id);
+  }, [sealed]);
+  const save = (l) => { setLetter(l); try { l ? localStorage.setItem(LETTER_KEY, JSON.stringify(l)) : localStorage.removeItem(LETTER_KEY); } catch (_) {} };
+  const L = (o) => pickLang(o, lang);
+  const fmtDate = (ms) => { try { return new Date(ms).toLocaleDateString(LETTER_LOCALE[lang] || "en-US", { day:"numeric", month:"long", year:"numeric" }); } catch (_) { return ""; } };
+
+  const card = { width:"100%",boxSizing:"border-box",display:"flex",flexDirection:"column",gap:10,padding:"16px 18px",borderRadius:16,
+    background:"linear-gradient(165deg, rgba(232,192,122,0.07), rgba(255,255,255,0.012) 72%)",
+    border:"1px solid rgba(232,192,122,0.18)",marginBottom:20 };
+  const btnBase = { WebkitAppearance:"none",appearance:"none",cursor:"pointer",font:"inherit",display:"inline-flex",alignItems:"center",justifyContent:"center",
+    gap:6,padding:"9px 18px",borderRadius:100,fontFamily:JOST,fontSize:12,letterSpacing:1.5,textTransform:"uppercase",lineHeight:1 };
+  const primary = { ...btnBase,color:"#f6dfb0",background:"rgba(232,192,122,0.13)",border:"1px solid rgba(232,192,122,0.45)" };
+  const ghost = { ...btnBase,color:MUTE,background:"transparent",border:"1px solid rgba(255,255,255,0.12)" };
+  const eyebrow = <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:3,textTransform:"uppercase",color:GOLD }}>{L(LETTER_TXT.title)}</div>;
+  const seal = (sz = 40) => (
+    <span style={{ width:sz,height:sz,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+      fontSize:sz*0.45,lineHeight:1,color:"#2a1a08",background:"radial-gradient(circle at 35% 30%, #f3d39a, #c8913f 70%)",
+      boxShadow:"0 0 0 3px rgba(232,192,122,0.14), 0 4px 14px rgba(200,145,63,0.35)" }}>✦</span>
+  );
+  const archiveBlock = archive.length > 0 && (
+    <div style={{ borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:10 }}>
+      <button onClick={()=>setShowArchive(v=>!v)} style={{ ...ghost,border:"none",padding:"4px 0",color:MUTE }}>
+        {L(LETTER_TXT.archive)} · {archive.length} {showArchive ? "▾" : "›"}
+      </button>
+      {showArchive && archive.slice().reverse().map((a, i) => (
+        <div key={i} style={{ marginTop:10,padding:"10px 12px",borderRadius:12,background:"rgba(255,255,255,0.025)" }}>
+          <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.2,color:MUTE,marginBottom:5 }}>
+            {fmtDate(a.created)}{a.reflect && LETTER_TXT.choices[a.reflect] ? " · " + L(LETTER_TXT.choices[a.reflect]) : ""}
+          </div>
+          <div style={{ fontFamily:SERIF,fontSize:16,lineHeight:1.5,color:BODY,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{a.text}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // 1) YAZMA
+  if (composing) {
+    const ok = draft.trim().length >= 3;
+    return (
+      <div style={card}>
+        {eyebrow}
+        <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.hint1)} {L(LETTER_TXT.hint2)}</div>
+        {/* 16 px: iOS 16 px altı alana odakta sayfayı yakınlaştırır. */}
+        <textarea value={draft} onChange={(e)=>setDraft(e.target.value.slice(0, 2000))} placeholder={L(LETTER_TXT.ph)} rows={7} autoFocus
+          style={{ width:"100%",boxSizing:"border-box",resize:"vertical",padding:"14px 14px",borderRadius:12,outline:"none",
+            fontFamily:SERIF,fontSize:18,lineHeight:1.55,color:INK,background:"rgba(10,8,22,0.65)",border:"1px solid rgba(232,192,122,0.25)" }} />
+        <div style={{ fontFamily:INTER,fontSize:11.5,lineHeight:1.55,color:MUTE }}>{L(LETTER_TXT.sealNote)} {L(LETTER_TXT.privacy)}</div>
+        <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
+          <button onClick={()=>{ setComposing(false); setDraft(""); }} style={ghost}>{L(LETTER_TXT.cancel)}</button>
+          <button disabled={!ok} onClick={()=>{
+              const created = Date.now(), opensAt = created + LETTER_DAYS * 86400000;
+              save({ text: draft.trim(), created, opensAt });
+              setNow(Date.now()); setComposing(false); setDraft("");
+              try { haptic(); } catch (_) {}
+              try { track("letter", { a:"seal" }); } catch (_) {}
+              scheduleLetterNotif(opensAt, lang);
+            }} style={{ ...primary,opacity: ok ? 1 : 0.45,cursor: ok ? "pointer" : "default" }}>✦ {L(LETTER_TXT.seal)}</button>
+        </div>
+      </div>
+    );
+  }
+
+  // 2) DAVET (hiç mektup yok ya da önceki açılıp yansıması kaydedildi)
+  if (!letter) return (
+    <div style={card}>
+      {eyebrow}
+      <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+        <span style={{ width:40,height:40,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+          fontSize:18,lineHeight:1,color:GOLD,background:"rgba(232,192,122,0.08)",border:"1px solid rgba(232,192,122,0.3)" }}>✉</span>
+        <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.askHead)}</div>
+      </div>
+      <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:"#b8aed0" }}>{L(LETTER_TXT.askBody)}</div>
+      <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:"#b8aed0",fontStyle:"italic" }}>{L(LETTER_TXT.hint1)}</div>
+      <button onClick={()=>setComposing(true)} style={{ ...primary,alignSelf:"flex-start",marginTop:2 }}>{L(LETTER_TXT.write)} ›</button>
+      {archiveBlock}
+    </div>
+  );
+
+  // 3) MÜHÜRLÜ: geri sayım + 21 günlük yol
+  if (sealed) {
+    // Dakikaya YUKARI yuvarla: 5. günde "15 gün 23 sa 59 dk" değil "16 gün 00 00" görünsün.
+    const left = Math.ceil(Math.max(0, letter.opensAt - now) / 60000) * 60000;
+    const d = Math.floor(left / 86400000), h = Math.floor(left / 3600000) % 24, m = Math.floor(left / 60000) % 60;
+    const passed = Math.min(LETTER_DAYS, Math.floor((now - letter.created) / 86400000));
+    const U = L(LETTER_TXT.units);
+    const cell = (v, u) => (
+      <div style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,padding:"10px 0",
+        borderRadius:12,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(232,192,122,0.12)" }}>
+        <span style={{ fontFamily:SERIF,fontSize:28,lineHeight:1,color:INK }}>{String(v).padStart(2, "0")}</span>
+        <span style={{ fontFamily:JOST,fontSize:9.5,letterSpacing:1.8,color:MUTE }}>{u}</span>
+      </div>
+    );
+    return (
+      <div style={card}>
+        {eyebrow}
+        <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+          {seal(40)}
+          <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.sealedHead)}</div>
+        </div>
+        <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.sealedBody)}</div>
+        <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2,textTransform:"uppercase",color:MUTE,marginTop:2 }}>{L(LETTER_TXT.opensIn)}</div>
+        <div style={{ display:"flex",gap:8 }}>{cell(d, U[0])}{cell(h, U[1])}{cell(m, U[2])}</div>
+        {/* 21 günlük yol: geçen her gün bir nokta dolar. */}
+        <div style={{ display:"flex",justifyContent:"space-between",gap:2,marginTop:4 }}>
+          {Array.from({ length: LETTER_DAYS }, (_, i) => (
+            <span key={i} style={{ width:7,height:7,borderRadius:"50%",flexShrink:0,
+              background: i < passed ? GOLD : "rgba(232,192,122,0.12)",
+              boxShadow: i === passed ? "0 0 0 1px rgba(232,192,122,0.6)" : "none" }} />
+          ))}
+        </div>
+        <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE }}>{L(LETTER_TXT.written)}: {fmtDate(letter.created)}</div>
+        {archiveBlock}
+      </div>
+    );
+  }
+
+  // 4) SÜRE DOLDU, HENÜZ AÇILMADI: açma ritüeli
+  if (!letter.openedAt) return (
+    <div style={{ ...card,alignItems:"center",textAlign:"center",border:"1px solid rgba(232,192,122,0.35)" }}>
+      {eyebrow}
+      <div className="sakin-plant">{seal(58)}</div>
+      <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.readyHead)}</div>
+      <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.readyBody)}</div>
+      <button onClick={()=>{ save({ ...letter, openedAt: Date.now() }); try { haptic(); } catch (_) {} try { track("letter", { a:"open" }); } catch (_) {} }}
+        style={primary}>{L(LETTER_TXT.open)}</button>
+    </div>
+  );
+
+  // 5) AÇIK: mektup + yansıma
+  return (
+    <div style={{ ...card,animation:"fadeIn 0.8s ease" }}>
+      {eyebrow}
+      <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.5,textTransform:"uppercase",color:MUTE }}>{L(LETTER_TXT.openedHead).replace("{n}", String(Math.max(LETTER_DAYS, Math.round((Date.now() - letter.created) / 86400000))))} · {fmtDate(letter.created)}</div>
+      <div style={{ padding:"16px 16px",borderRadius:12,background:"rgba(246,223,176,0.05)",borderLeft:`2px solid ${GOLD}` }}>
+        <div style={{ fontFamily:SERIF,fontSize:19,lineHeight:1.55,color:INK,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{letter.text}</div>
+      </div>
+      {!letter.reflect ? (<>
+        <div style={{ fontFamily:SERIF,fontSize:18,lineHeight:1.3,color:INK,marginTop:4 }}>{L(LETTER_TXT.ask)}</div>
+        <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
+          {Object.keys(LETTER_TXT.choices).map((k) => (
+            <button key={k} onClick={()=>{ save({ ...letter, reflect: k }); try { track("letter", { a:"reflect", r:k }); } catch (_) {} }}
+              style={{ ...ghost,color:BODY,textTransform:"none",letterSpacing:0.3,fontSize:13.5,fontFamily:INTER }}>{L(LETTER_TXT.choices[k])}</button>
+          ))}
+        </div>
+      </>) : (<>
+        <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>
+          <span style={{ color:GOLD }}>{L(LETTER_TXT.choices[letter.reflect] || {})}</span> · {L(LETTER_TXT.after)}
+        </div>
+        <button onClick={()=>{
+            const next = [...archive, letter].slice(-30);
+            setArchive(next); try { localStorage.setItem(LETTER_ARCHIVE_KEY, JSON.stringify(next)); } catch (_) {}
+            save(null); setComposing(true);
+          }} style={{ ...primary,alignSelf:"flex-start" }}>{L(LETTER_TXT.newLetter)} ›</button>
+      </>)}
+      {archiveBlock}
+    </div>
+  );
+}
+
 const ATTACH_TXT = {
   title:   { tr:"Bağlanma Profili", en:"Attachment Profile", de:"Bindungsprofil", es:"Perfil de apego", pt:"Perfil de vinculação", fr:"Profil d'attachement", ja:"愛着プロフィール" },
   askHead: { tr:"Yakınlıkta nasıl davranıyorsun?", en:"How do you move in closeness?", de:"Wie verhältst du dich in Nähe?", es:"¿Cómo te mueves en la cercanía?", pt:"Como te moves na proximidade?", fr:"Comment vis-tu la proximité ?", ja:"親密さの中で、あなたはどう動く？" },
@@ -1553,6 +1799,7 @@ async function scheduleWinBack(lang) {
 // Bildirim ID'sinden türü (analitik için; bildirime dokunma oranı ölçülür).
 function notifKind(id) {
   const n = Number(id);
+  if (n === LETTER_NOTIF_ID) return "mektup";
   if (n >= 9400 && n < 9410) return "geridon";
   if (n >= 9300 && n < 9340) return "tarot";
   if (n >= 9200 && n < 9300) return "kisisel";
@@ -14070,6 +14317,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </button>
             );
           })()}
+          {/* NİYET MEKTUBU: 21 gün mühürlü kalan mektup (bkz. NiyetMektubu). */}
+          <NiyetMektubu lang={lang} />
           {/* İÇSEL HARİTA: artık açılır-kapanır ve KAPALI başlıyor (kullanıcı
               isteği). Ekrandaki diğer bölümlerle (haftalık rapor, 12. ev,
               draconik) aynı davranış: Ben ekranı büyük bir halka ve dört
