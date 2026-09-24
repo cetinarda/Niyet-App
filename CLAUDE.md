@@ -600,14 +600,14 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
    istedi). PAYLAŞIM kartında bu not YOK, yalnızca rapor gövdesi.
 7. Günün rehberleri → I Ching → İkili uyum (Ben'den taşındı; I Ching ile yeri
    kullanıcı isteğiyle değişti) → **Tarot**.
-   ⚠️ **Rehberlerdeki 4. kart = Mitler'de O GÜN İLK AÇILAN deste** (Eyl 2026,
-   `mythOfDayPinned`, src/daily-cards.js). Mitler 3 desteyi (arketip/mit/imge)
-   RASTGELE çeker, bu DOĞRU (kullanıcı kararı). Bugün `@mitler_revealed`
-   `steps[0]`'ı okur, o destenin adı + kartıyla gösterir ve `sakin_bugun_myth`e
-   sabitler: sonra açılan desteler Bugün'ü DEĞİŞTİRMEZ. Mitler'de kart açılmadıysa
-   "Sakin Mitler · Kartını aç" daveti. ⚠️ Eskiden damgadan HESAPLANMIŞ bir kart
-   (rün/I Ching dahil) gösteriliyordu, Mitler çekince değişiyordu ("Mitler'de kart
-   açınca Bugün değişiyor" şikâyeti); `pickMythOfDay` silindi. Tarot zaten yoktu.
+   ⚠️ **Rehberlerdeki 4. kart = GÜNÜN MİT KARTI, RASTGELE + GÜN BOYU SABİT**
+   (Eyl 2026, `mythOfDayPinned`, src/daily-cards.js). 5 sistemden biri
+   (arketip/mit/imge/rün/I Ching; tarot YOK, kendi bölümü var) gün + doğum
+   damgasından seçilir ve `sakin_bugun_myth`e sabitlenir. Mitler'in kendi
+   çekilişine (`@mitler_daily`) BİLEREK BAKILMAZ: eski kod oraya geçiyordu,
+   Mitler'de kart açınca Bugün değişiyordu (kullanıcı şikâyeti). Mitler kendi 3
+   destesini ayrıca rastgele çeker; ikisi bağımsız. ⚠️ Bir ara "Mitler'de ilk
+   açılan deste" yapıldı, YANLIŞTI (rün/I Ching hiç çıkmıyordu), geri alındı.
 8. **EN ALTTA "Bugünün ilk adımını at"** (kullanıcı: "mantık olarak devam
    etsin"): seri bilgili çağrı → Bağlan. **"Güne Başla" butonu KALDIRILDI.**
 

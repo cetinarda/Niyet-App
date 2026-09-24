@@ -16097,7 +16097,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const ids = dailyIds || { animal:null, plant:null, stone:null, archetype:null, myth:null, image:null };
         const idx = dailyIndex;
         const seed = `${birthDate || ""}|${birthTime || ""}`;
-        const mith = idx ? mythOfDayPinned(idx, dk) : null;
+        const mith = idx ? mythOfDayPinned(idx, seed, dk) : null;
         const SYS_LABEL = { archetype:"sysArchetype", myth:"sysMyth", image:"sysImage",
                             tarot:"sysTarot", rune:"sysRune", iching:"sysIching" };
 
@@ -16581,8 +16581,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             </section>
 
-            {/* ── 6) GÜNÜN REHBERLERİ ── hayvan/bitki/taş + Mitler'de o gün İLK
-                açılan deste (mythOfDayPinned, gün boyu sabit; bkz. daily-cards.js). */}
+            {/* ── 6) GÜNÜN REHBERLERİ ── hayvan/bitki/taş + günün mit kartı
+                (mythOfDayPinned: rastgele, gün boyu sabit; bkz. daily-cards.js). */}
             <section style={SEC}>
               {eyebrow(pickLang(TODAY_TXT.rehber, lang))}
               <div style={{ display:"flex",flexDirection:"column",gap:10 }}>

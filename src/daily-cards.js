@@ -69,37 +69,52 @@ export async function loadDailyIndex(lang = "tr") {
   return p;
 }
 
-// ── BUGÜN'ÜN MİT KARTI = MİTLER'DE İLK AÇILAN KART (Eyl 2026) ─────────────
-// Kullanıcı: "Mitler'e girip yeni bir kart açınca Bugün'deki kart değişiyor."
-// Eski yol: Bugün, Mitler'e girilmeden önce damgadan HESAPLANMIŞ bir kart
-// gösteriyordu; Mitler desteyi rastgele çekince (`@mitler_daily`) kart ona
-// dönüyor, sonraki desteler açıldıkça da tekrar değişebiliyordu.
-// Kullanıcı kararı: Mitler RASTGELE çekmeye devam eder (3 deste: arketip /
-// mit / imge). Bugün, kullanıcının Mitler'de O GÜN İLK AÇTIĞI desteyi (o
-// destenin adıyla) gösterir. İlk açılışta `sakin_bugun_myth`e sabitlenir ve
-// sonra hangi deste açılırsa açılsın o gün değişmez. Mitler'de henüz kart
-// açılmadıysa kart YOK: diğer rehberler gibi "kartını aç" daveti çıkar
-// (hesaplanmış yedek kart gösterilmez, sonradan değişeceği için yanıltıcıydı).
-// `@mitler_revealed` = { date, steps:[deste indeksleri, açılış sırasıyla] },
-// Mitler HomeScreen'de yazılıyor (0 arketip, 1 mit, 2 imge). Salt okunur.
+// ── BUGÜN'ÜN MİT KARTI: RASTGELE, GÜN BOYU SABİT (Eyl 2026) ───────────────
+// Kullanıcı: "Günün kartı rastgele seçilsin ve yeni kartlar açıldığında
+// değişmesin." Beş sistemden biri (arketip / mit / imge / rün / I Ching) ve o
+// sistemden bir kart, gün + doğum damgasından seçilir.
+// ⚠️ Mitler'in kendi çekilişine (`@mitler_daily`) BİLEREK BAKILMAZ: eski kod
+// seçilen sistem Mitler'in destelerinden biriyse ONUN kartına geçiyordu, yani
+// Mitler'de kart açılınca Bugün'deki kart değişiyordu (kullanıcı şikâyeti).
+// Mitler kendi 3 destesini ayrıca rastgele çekmeye devam eder; iki şey
+// birbirinden bağımsız. Bugün'deki karta dokununca Mitler o kartın detayına
+// açılır (sakin_open_card ipucu), yani kart yine Mitler'de okunur.
+// Seçim `sakin_bugun_myth`e de sabitlenir: indeks güncellense ya da doğum
+// bilgisi gün içinde değişse bile o gün aynı kart kalır.
+// ⚠️ TAROT BU LİSTEDE YOK: Bugün'de tarotun kendi bölümü var (78 kart), aynı
+// gün iki farklı tarot kartı görünüyordu.
 export const BUGUN_MYTH_KEY = "sakin_bugun_myth";
-const DECK_SYSTEMS = ["archetype", "myth", "image"];
-export function mythOfDayPinned(index, dayKey) {
+const SYSTEMS = ["archetype", "myth", "image", "rune", "iching"];
+
+function hash32(s) {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+
+function pickMythOfDay(index, seed, dayKey) {
+  const system = SYSTEMS[hash32(`${seed || "sakin"}|${dayKey}`) % SYSTEMS.length];
+  const table = index[system];
+  const keys = table ? Object.keys(table) : [];
+  if (!keys.length) return null;
+  // Ayrı damga: sistem ve kart aynı sayıya bağlı kalırsa dağılım daralır.
+  const id = keys[hash32(`${dayKey}|${system}|${seed || ""}`) % keys.length];
+  return { system, id, card: table[id] };
+}
+
+/** @returns {{system:string, id:string, card:object}|null} */
+export function mythOfDayPinned(index, seed, dayKey) {
   if (!index) return null;
   const pin = readJson(BUGUN_MYTH_KEY);
   if (pin && pin.date === dayKey && pin.system && pin.id) {
     const card = index[pin.system] && index[pin.system][pin.id];
     if (card) return { system: pin.system, id: pin.id, card };
   }
-  const daily = readJson(KEYS.myth);
-  const rev = readJson("@mitler_revealed");
-  if (!daily || daily.date !== dayKey || !rev || rev.date !== dayKey || !Array.isArray(rev.steps)) return null;
-  const system = DECK_SYSTEMS[rev.steps[0]];
-  const id = system && daily[system + "Id"];
-  const card = id && index[system] && index[system][id];
-  if (!card) return null;
-  try { localStorage.setItem(BUGUN_MYTH_KEY, JSON.stringify({ date: dayKey, system, id })); } catch { /* kota: sabitlenmez, yine gösterilir */ }
-  return { system, id, card };
+  const m = pickMythOfDay(index, seed, dayKey);
+  if (m) {
+    try { localStorage.setItem(BUGUN_MYTH_KEY, JSON.stringify({ date: dayKey, system: m.system, id: m.id })); } catch { /* kota: sabitlenmez, damga yine aynı kartı verir */ }
+  }
+  return m;
 }
 
 /** Kart yoksa kullanıcıyı doğru uygulamaya yollamak için embed yolları. */
