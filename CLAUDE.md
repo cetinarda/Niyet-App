@@ -696,8 +696,10 @@ orada değişirse burayı da değiştir. Test ekranının kendisi yalnızca tr/e
 Bağlanma Profili kutusunun altında, `NiyetMektubu` bileşeni (MODÜL seviyesinde,
 render içinde tanımlama). Akış: davet → yaz (ipuçları: "kalpten, içten yazmaktan
 çekinme", "olmuş gibi şimdiki zamanda") → MÜHÜRLE (21 gün açılamaz/değişmez) →
-geri sayım (gün/saat/dakika, dakikaya YUKARI yuvarlı) + 21 noktalık yol → süre
-dolunca "Mektubu aç" ritüeli → mektup + "Bu niyet sende neye dönüştü?"
+MÜHÜRLÜ SANDIK (`letterChest`, tarot kart arkasıyla aynı dil: çivit zemin, altın
+çift çerçeve, lavanta halka, yıldızlar; kilidin üstünde altın mühür) + 21 noktalık
+yol. ⚠️ Sayısal gün/saat/dakika sayacı KULLANICI İSTEĞİYLE KALDIRILDI ("noktalar
+daha iyi iş görüyor"), geri koyma. Süre dolunca sandığın mührü parlar + "Mektubu aç" ritüeli → mektup + "Bu niyet sende neye dönüştü?"
 (gerçekleşti/yolda/dönüştü) → yeni mektup, eskisi arşive ("Önceki mektupların").
 - Veri YALNIZCA cihazda: `sakin_niyet_letter` (etkin) + `sakin_niyet_letters`
   (arşiv, son 30). Metin sunucuya GİTMEZ; ekranda da "yalnızca bu cihazda" yazıyor,

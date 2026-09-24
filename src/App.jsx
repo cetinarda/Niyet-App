@@ -886,8 +886,8 @@ const PRICING_NOTE_TXT = {
 // ── BEN > NİYET MEKTUBU (kullanıcı isteği, Eyl 2026) ───────────────────────
 // "Niyet bıraktığında 21 gün sonra açılsın, geri sayım olsun; niyetini 21 gün
 // sonra yeniden oku, kalpten içten yazmaktan çekinme." + "bu fikri geliştir".
-// Akış: davet → yaz → MÜHÜRLE (düzenlenemez, okunamaz) → 21 gün geri sayım +
-// 21 noktalık yol → açılış günü bildirim (native, tek sefer, ID 9500) → "Aç"
+// Akış: davet → yaz → MÜHÜRLE (düzenlenemez, okunamaz) → 21 noktalık yol
+// (sayısal gün/saat/dakika sayacı kullanıcı isteğiyle KALDIRILDI) → açılış günü bildirim (native, tek sefer, ID 9500) → "Aç"
 // ritüeli → mektup + "Bu niyet sende neye dönüştü?" (gerçekleşti / yolda /
 // dönüştü) → yeni mektup; eskiler "Önceki mektupların" arşivinde.
 // Veri YALNIZCA cihazda: `sakin_niyet_letter` (etkin) + `sakin_niyet_letters`
@@ -918,8 +918,6 @@ const LETTER_TXT = {
   sealNote:{ tr:"Mühürledikten sonra 21 gün boyunca açılamaz ve değiştirilemez.", en:"Once sealed, it can't be opened or changed for 21 days.", de:"Einmal versiegelt, kann er 21 Tage lang weder geöffnet noch geändert werden.", es:"Una vez sellada, no se puede abrir ni cambiar durante 21 días.", pt:"Depois de selada, não pode ser aberta nem alterada durante 21 dias.", fr:"Une fois scellée, elle ne peut être ni ouverte ni modifiée pendant 21 jours.", ja:"封をすると、21日間はひらくことも変えることもできません。" },
   sealedHead:{ tr:"Mektubun mühürlü", en:"Your letter is sealed", de:"Dein Brief ist versiegelt", es:"Tu carta está sellada", pt:"A tua carta está selada", fr:"Ta lettre est scellée", ja:"手紙は封をされています" },
   sealedBody:{ tr:"Niyetini 21 gün sonra yeniden okuyacaksın. O güne kadar onu içinde taşı.", en:"You'll read your intention again in 21 days. Until then, carry it within you.", de:"In 21 Tagen liest du deine Absicht noch einmal. Bis dahin trag sie in dir.", es:"Volverás a leer tu intención dentro de 21 días. Hasta entonces, llévala dentro de ti.", pt:"Vais voltar a ler a tua intenção daqui a 21 dias. Até lá, leva-a dentro de ti.", fr:"Tu reliras ton intention dans 21 jours. D'ici là, porte-la en toi.", ja:"21日後、もう一度この意図を読み返します。その日まで、心の中に大切に持っていてください。" },
-  opensIn: { tr:"Açılmasına", en:"Opens in", de:"Öffnet sich in", es:"Se abre en", pt:"Abre dentro de", fr:"S'ouvre dans", ja:"ひらくまで" },
-  units:   { tr:["GÜN","SAAT","DAKİKA"], en:["DAYS","HOURS","MIN"], de:["TAGE","STD","MIN"], es:["DÍAS","HORAS","MIN"], pt:["DIAS","HORAS","MIN"], fr:["JOURS","HEURES","MIN"], ja:["日","時間","分"] },
   written: { tr:"Yazıldı", en:"Written", de:"Geschrieben", es:"Escrita", pt:"Escrita", fr:"Écrite", ja:"書いた日" },
   readyHead:{ tr:"21 gün doldu", en:"21 days have passed", de:"21 Tage sind vergangen", es:"Han pasado 21 días", pt:"Passaram 21 dias", fr:"21 jours se sont écoulés", ja:"21日が経ちました" },
   readyBody:{ tr:"Mektubun seni bekliyor. Açmadan önce bir nefes al.", en:"Your letter is waiting for you. Take a breath before you open it.", de:"Dein Brief wartet auf dich. Atme einmal tief durch, bevor du ihn öffnest.", es:"Tu carta te espera. Respira antes de abrirla.", pt:"A tua carta está à tua espera. Respira antes de a abrir.", fr:"Ta lettre t'attend. Prends une respiration avant de l'ouvrir.", ja:"手紙があなたを待っています。ひらく前に、ひと呼吸。" },
@@ -956,6 +954,51 @@ async function scheduleLetterNotif(opensAt, lang) {
   } catch (e) { console.warn("[Letter]", e); }
 }
 
+// Mühürlü SANDIK (kullanıcı: "kalan gün kutucuklarının yerine tarot destelerindeki
+// tarzda bir sandık koy ve mühürle"). Tarot kart arkasıyla (public/tarot/back.webp)
+// AYNI dil: çivit zemin, ince altın çift çerçeve, lavanta halka, küçük yıldızlar,
+// altın dört köşeli parıltı. Kilidin üstünde altın mühür. `ready` = 21 gün doldu,
+// mühür parlar. Düz fonksiyon (bileşen değil), her çizimde aynı SVG'yi döndürür.
+const CHEST_STARS = [[18,22,1],[40,120,0.8],[62,30,0.7],[190,26,1],[204,98,0.8],[172,132,0.7],[28,74,0.6],[150,20,0.6],[96,136,0.6],[212,58,0.7],[120,14,0.5],[12,130,0.6]];
+function letterChest(ready) {
+  const G = "#e8c07a", GD = "#b8904a", LAV = "#6b5aa8";
+  const spark = (x, y, r) => <path d={`M${x} ${y-r} L${x+r*0.28} ${y-r*0.28} L${x+r} ${y} L${x+r*0.28} ${y+r*0.28} L${x} ${y+r} L${x-r*0.28} ${y+r*0.28} L${x-r} ${y} L${x-r*0.28} ${y-r*0.28} Z`} fill={G} />;
+  return (
+    <svg viewBox="0 0 220 150" width="100%" style={{ display:"block",maxWidth:300,margin:"0 auto",borderRadius:10 }} role="img" aria-hidden="true">
+      <defs>
+        <linearGradient id="lcBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#120c2e" /><stop offset="1" stopColor="#1f1552" /></linearGradient>
+        <linearGradient id="lcWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4a3a92" /><stop offset="1" stopColor="#2a1f66" /></linearGradient>
+        <radialGradient id="lcSeal" cx="0.38" cy="0.32" r="0.75"><stop offset="0" stopColor="#f6dca6" /><stop offset="0.55" stopColor="#d9a352" /><stop offset="1" stopColor="#9c6a2a" /></radialGradient>
+        <radialGradient id="lcGlow" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor={G} stopOpacity={ready ? 0.45 : 0.18} /><stop offset="1" stopColor={G} stopOpacity="0" /></radialGradient>
+      </defs>
+      <rect x="0.5" y="0.5" width="219" height="149" rx="10" fill="url(#lcBg)" stroke={G} strokeOpacity="0.75" />
+      <rect x="5" y="5" width="210" height="140" rx="7" fill="none" stroke={G} strokeOpacity="0.35" />
+      {CHEST_STARS.map(([x, y, o], i) => <rect key={i} x={x} y={y} width="1.6" height="1.6" fill={i % 3 ? "#ffffff" : "#b8a4d8"} opacity={o} />)}
+      {spark(28, 28, 5)}{spark(192, 122, 5)}
+      <circle cx="110" cy="80" r="50" fill="none" stroke={LAV} strokeOpacity="0.55" />
+      <circle cx="110" cy="80" r="44" fill="url(#lcGlow)" />
+      {/* Sandık: kemerli kapak + gövde, altın kuşaklar */}
+      <ellipse cx="110" cy="116" rx="46" ry="4" fill="#000" opacity="0.45" />
+      <path d="M70 72 L70 62 Q70 44 110 44 Q150 44 150 62 L150 72 Z" fill="url(#lcWood)" stroke={G} strokeWidth="1.4" />
+      <rect x="70" y="72" width="80" height="40" rx="2" fill="url(#lcWood)" stroke={G} strokeWidth="1.4" />
+      <path d="M72 58 Q110 48 148 58" fill="none" stroke={G} strokeOpacity="0.45" />
+      <line x1="72" y1="104" x2="148" y2="104" stroke={G} strokeOpacity="0.45" />
+      <path d="M72 84 L148 84 M72 94 L148 94" stroke="#140d34" strokeOpacity="0.55" />
+      <path d="M84 47.5 L84 112 M136 47.5 L136 112" stroke={GD} strokeWidth="3" />
+      <path d="M84 47.5 L84 112 M136 47.5 L136 112" stroke={G} strokeWidth="1" />
+      <rect x="66" y="110" width="88" height="4" rx="1.5" fill={GD} opacity="0.8" />
+      {/* Kilit plakası */}
+      <rect x="101" y="64" width="18" height="18" rx="2" fill="#140d34" stroke={G} strokeWidth="1.2" />
+      {/* Mühür: kilidin üstünde altın mum, kenarı dalgalı, ortada ✦ */}
+      <path d="M110 60 l3.2 2.2 3.8 -0.4 1.3 3.6 3.3 2 -0.9 3.7 1.6 3.5 -3 2.3 -0.6 3.8 -3.8 0.6 -2.3 3 -3.5 -1.6 -3.7 0.9 -2 -3.3 -3.6 -1.3 0.4 -3.8 -2.2 -3.2 2.2 -3.2 -0.4 -3.8 3.6 -1.3 2 -3.3 3.7 0.9 Z"
+        fill="url(#lcSeal)" stroke="#8a5a20" strokeWidth="0.6" style={{ filter: ready ? "drop-shadow(0 0 4px rgba(246,220,166,0.9))" : "drop-shadow(0 1px 1.5px rgba(0,0,0,0.6))" }} />
+      <circle cx="110" cy="75" r="7.2" fill="none" stroke="#8a5a20" strokeOpacity="0.55" strokeWidth="0.8" />
+      {spark(110, 75, 4.6)}
+      <path d="M110 70.4 L111.3 73.7 L114.6 75 L111.3 76.3 L110 79.6 L108.7 76.3 L105.4 75 L108.7 73.7 Z" fill="#6e4516" />
+    </svg>
+  );
+}
+
 function NiyetMektubu({ lang }) {
   const GOLD = "#e8c07a", INK = "#f1ecf9", BODY = "#cfc7e0", MUTE = "#8f88a3";
   const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
@@ -984,11 +1027,6 @@ function NiyetMektubu({ lang }) {
   const primary = { ...btnBase,color:"#f6dfb0",background:"rgba(232,192,122,0.13)",border:"1px solid rgba(232,192,122,0.45)" };
   const ghost = { ...btnBase,color:MUTE,background:"transparent",border:"1px solid rgba(255,255,255,0.12)" };
   const eyebrow = <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:3,textTransform:"uppercase",color:GOLD }}>{L(LETTER_TXT.title)}</div>;
-  const seal = (sz = 40) => (
-    <span style={{ width:sz,height:sz,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-      fontSize:sz*0.45,lineHeight:1,color:"#2a1a08",background:"radial-gradient(circle at 35% 30%, #f3d39a, #c8913f 70%)",
-      boxShadow:"0 0 0 3px rgba(232,192,122,0.14), 0 4px 14px rgba(200,145,63,0.35)" }}>✦</span>
-  );
   const archiveBlock = archive.length > 0 && (
     <div style={{ borderTop:"1px solid rgba(255,255,255,0.07)",paddingTop:10 }}>
       <button onClick={()=>setShowArchive(v=>!v)} style={{ ...ghost,border:"none",padding:"4px 0",color:MUTE }}>
@@ -1050,28 +1088,13 @@ function NiyetMektubu({ lang }) {
 
   // 3) MÜHÜRLÜ: geri sayım + 21 günlük yol
   if (sealed) {
-    // Dakikaya YUKARI yuvarla: 5. günde "15 gün 23 sa 59 dk" değil "16 gün 00 00" görünsün.
-    const left = Math.ceil(Math.max(0, letter.opensAt - now) / 60000) * 60000;
-    const d = Math.floor(left / 86400000), h = Math.floor(left / 3600000) % 24, m = Math.floor(left / 60000) % 60;
     const passed = Math.min(LETTER_DAYS, Math.floor((now - letter.created) / 86400000));
-    const U = L(LETTER_TXT.units);
-    const cell = (v, u) => (
-      <div style={{ flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:4,padding:"10px 0",
-        borderRadius:12,background:"rgba(255,255,255,0.03)",border:"1px solid rgba(232,192,122,0.12)" }}>
-        <span style={{ fontFamily:SERIF,fontSize:28,lineHeight:1,color:INK }}>{String(v).padStart(2, "0")}</span>
-        <span style={{ fontFamily:JOST,fontSize:9.5,letterSpacing:1.8,color:MUTE }}>{u}</span>
-      </div>
-    );
     return (
       <div style={card}>
         {eyebrow}
-        <div style={{ display:"flex",alignItems:"center",gap:12 }}>
-          {seal(40)}
-          <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.sealedHead)}</div>
-        </div>
+        <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.sealedHead)}</div>
         <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.sealedBody)}</div>
-        <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:2,textTransform:"uppercase",color:MUTE,marginTop:2 }}>{L(LETTER_TXT.opensIn)}</div>
-        <div style={{ display:"flex",gap:8 }}>{cell(d, U[0])}{cell(h, U[1])}{cell(m, U[2])}</div>
+        {letterChest(false)}
         {/* 21 günlük yol: geçen her gün bir nokta dolar. */}
         <div style={{ display:"flex",justifyContent:"space-between",gap:2,marginTop:4 }}>
           {Array.from({ length: LETTER_DAYS }, (_, i) => (
@@ -1090,7 +1113,7 @@ function NiyetMektubu({ lang }) {
   if (!letter.openedAt) return (
     <div style={{ ...card,alignItems:"center",textAlign:"center",border:"1px solid rgba(232,192,122,0.35)" }}>
       {eyebrow}
-      <div className="sakin-plant">{seal(58)}</div>
+      <div style={{ width:"100%" }}>{letterChest(true)}</div>
       <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.readyHead)}</div>
       <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.readyBody)}</div>
       <button onClick={()=>{ save({ ...letter, openedAt: Date.now() }); try { haptic(); } catch (_) {} try { track("letter", { a:"open" }); } catch (_) {} }}
