@@ -3995,6 +3995,33 @@ if (isNative) {
   } catch (_) {}
 }
 
+// DEEP LINK (App Store etkinliği vb.): sakin://baglan → Bağlan ekranı.
+// Bildirim dinleyicisiyle aynı sebepten MODÜL YÜKLENİRKEN kurulur: soğuk
+// açılışta URL, React bağlanmadan önce gelebilir. Tamponla, bileşen boşaltır.
+// Yalnızca aşağıdaki haritadaki yollar kabul edilir; bilinmeyen yol = normal açılış.
+const DEEP_LINK_SCREENS = { baglan: "mandala", bugun: "bugun", nefes: "nefes", ses: "ses", cakra: "chakra" };
+function deepLinkScreen(url) {
+  try {
+    const seg = String(url || "").replace(/^[a-z][a-z0-9+.-]*:\/\//i, "").split(/[/?#]/)[0].toLowerCase();
+    return DEEP_LINK_SCREENS[seg] || null;
+  } catch (_) { return null; }
+}
+let __pendingDeepLink = null;
+let __deepLinkHandler = null;
+let __lastDeepLink = { url: "", at: 0 };
+function __onDeepLink(url) {
+  // getLaunchUrl ve appUrlOpen soğuk açılışta aynı URL'yi ikisi de verebilir.
+  const now = Date.now();
+  if (url === __lastDeepLink.url && now - __lastDeepLink.at < 3000) return;
+  __lastDeepLink = { url, at: now };
+  if (__deepLinkHandler) __deepLinkHandler(url);
+  else __pendingDeepLink = url;
+}
+if (isNative) {
+  try { CapacitorApp.addListener("appUrlOpen", (e) => __onDeepLink(e && e.url)); } catch (_) {}
+  try { CapacitorApp.getLaunchUrl().then((r) => { if (r && r.url) __onDeepLink(r.url); }).catch(() => {}); } catch (_) {}
+}
+
 // Görevden ilgili uygulama aracına köprü (Sprint 2): id → screen. Fiziksel-dünya
 // görevlerinin (su, ağaç, güneş...) köprüsü yok: sadece uygulamada yapılabilenler.
 const REMINDER_GO = { nefes: "nefes", chakra_an: "chakra" };
@@ -5999,7 +6026,22 @@ export default function SakinApp() {
       __pendingNotifAction = null;
       setTimeout(() => handler(pending), 60);
     }
-    return () => { __notifActionHandler = null; };
+    // Deep link: aynı açılış katmanı temizliği, sonra hedef ekran.
+    const linkHandler = (url) => {
+      const scr = deepLinkScreen(url);
+      if (!scr) return;
+      try { track("deeplink_open", { s: scr }); } catch(_) {}
+      clearEntryLayers();
+      try { setShowAilesi(false); } catch(_){}
+      setScreen(scr);
+    };
+    __deepLinkHandler = linkHandler;
+    if (__pendingDeepLink) {
+      const pendingUrl = __pendingDeepLink;
+      __pendingDeepLink = null;
+      setTimeout(() => linkHandler(pendingUrl), 60);
+    }
+    return () => { __notifActionHandler = null; __deepLinkHandler = null; };
   }, []);
   const [showFotoTani, setShowFotoTani] = useState(false);
   const [fotoTaniType, setFotoTaniType] = useState("stone"); // embed'den gelir: stone | plant

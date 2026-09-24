@@ -737,6 +737,18 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 - Zaten iyi olanlar (dokunma): tüm zamanlayıcılar ekran/seans kapılı, sessiz
   ses döngüsü yalnızca seans sırasında, embed'ler kapanınca `about:blank`.
 
+## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
+
+- Şema: `sakin://<yol>`. Yollar `DEEP_LINK_SCREENS` (src/App.jsx): `baglan`→mandala,
+  `bugun`, `nefes`, `ses`, `cakra`→chakra. Bilinmeyen yol = normal açılış.
+- Dinleyici bildirimdeki gibi MODÜL seviyesinde (`appUrlOpen` + `getLaunchUrl`,
+  soğuk açılış tamponu, 3 sn tekrar filtresi), açılış katmanlarını kapatıp ekrana gider.
+- Analitik `deeplink_open` {s} (track.mjs beyaz listede, raporda Bildirimler altında).
+- Android: MainActivity'de `sakin` şemalı VIEW intent-filter.
+- iOS: `Info.plist` CFBundleURLTypes'a `sakin` şeması gerekir (altın kural #7,
+  kullanıcı onayı ile). AppDelegate URL'yi zaten Capacitor'a iletiyor.
+- Universal link (https://sakin.life/...) YOK: associated domains + AASA ister.
+
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
 - **App.jsx'te betikle blok silerken desen İLK eşleşmeyi bulur.** Aynı başlık yorumu bileşen içinde de geçebiliyor (Orkestra state yorumu gibi): bir kez ~4800 satır yanlışlıkla silindi, HEAD'den geri yüklendi. Blok silmeden önce hem sınırları hem BEKLENEN UZUNLUĞU assert et.

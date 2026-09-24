@@ -198,6 +198,7 @@ export function aggregate(users) {
     notif: {
       users: notifUsers,
       byKind: ["genel", "kisisel", "tarot", "geridon", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
+      deeplink: ["mandala", "bugun", "nefes", "ses", "chakra"].map((k) => ({ k, n: ch["deeplink_" + k] || 0 })),
     },
     choices: {
       forkShown: ch.fork_shown || 0,
@@ -417,6 +418,7 @@ export function renderHTML(r, truncated) {
      <div class="card"><table>
        <tr><td>Bildirime dokunarak açan kullanıcı</td><td class="num">${nt.users || 0}</td></tr>
        ${nt.byKind.map((x) => `<tr><td>${esc(NK[x.k] || x.k)}</td><td class="num">${x.n} dokunma</td></tr>`).join("")}
+       ${(nt.deeplink || []).filter((x) => x.n).map((x) => `<tr><td>Deep link (etkinlik) → ${esc(x.k === "mandala" ? "Bağlan" : x.k)}</td><td class="num">${x.n} açılış</td></tr>`).join("")}
        ${(() => { const q = r.notifPrefs || { users: 0, count: {}, off: {} }; if (!q.users) return "";
          const OFF = { kisisel: "Kişisel mesaj", aksam: "Akşam pratiği", tarot: "Sabah tarotu", hatirlatici: "Kişisel hatırlatıcı", ogle: "Gün ortası", kozmik: "Gökyüzü uyarısı", geridon: "Uzun aradan sonra" };
          return `<tr><td>Ayarını değiştiren kullanıcı</td><td class="num">${q.users}</td></tr>

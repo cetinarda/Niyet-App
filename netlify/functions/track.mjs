@@ -126,6 +126,11 @@ export function mergeBatch(rec, body, now) {
       const k = ["genel", "kisisel", "tarot", "geridon", "diger"].includes(it.k) ? it.k : null;
       if (k) { bump("notif_" + k); setMilestone("notif_open", ts); }
     }
+    // Deep link ile açılış (App Store etkinliği vb.): hedef ekran sayılır.
+    else if (e === "deeplink_open") {
+      const s = ["mandala", "bugun", "nefes", "ses", "chakra"].includes(it.s) ? it.s : null;
+      if (s) bump("deeplink_" + s);
+    }
     else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++; }
     else if (e === "freq_sec") {
       // Ses/frekans dinleme saniyesi (istemci ton durunca delta gonderir).
