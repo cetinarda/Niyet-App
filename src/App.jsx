@@ -964,7 +964,7 @@ function letterChest(ready) {
   const G = "#e8c07a", GD = "#b8904a", LAV = "#6b5aa8";
   const spark = (x, y, r) => <path d={`M${x} ${y-r} L${x+r*0.28} ${y-r*0.28} L${x+r} ${y} L${x+r*0.28} ${y+r*0.28} L${x} ${y+r} L${x-r*0.28} ${y+r*0.28} L${x-r} ${y} L${x-r*0.28} ${y-r*0.28} Z`} fill={G} />;
   return (
-    <svg viewBox="0 0 220 150" width="100%" style={{ display:"block",maxWidth:300,margin:"0 auto",borderRadius:10 }} role="img" aria-hidden="true">
+    <svg viewBox="0 0 220 150" width="100%" style={{ display:"block",maxWidth:190,margin:"2px auto",borderRadius:10 }} role="img" aria-hidden="true">
       <defs>
         <linearGradient id="lcBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#120c2e" /><stop offset="1" stopColor="#1f1552" /></linearGradient>
         <linearGradient id="lcWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#4a3a92" /><stop offset="1" stopColor="#2a1f66" /></linearGradient>
