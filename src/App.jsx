@@ -300,7 +300,7 @@ try { if (typeof window !== "undefined") window.__sakinResumeAudio = __resumeAll
 // bildirimi gider (1.3.4'te bu hata yaşandı). Doğru sıra:
 //   1) burada + pbxproj + build.gradle bump  → gönder
 //   2) App Store'da YAYINLANDIKTAN SONRA     → latest-ios-version.json bump
-const APP_VERSION = "1.4.1";
+const APP_VERSION = "1.4.2";
 
 // ── "NE YENİ" NOTLARI ───────────────────────────────────────────────────────
 // Telefon uygulamayı OTOMATİK güncellediğinde kullanıcı "yeni sürüm var"
@@ -312,7 +312,12 @@ const APP_VERSION = "1.4.1";
 // okumak boş metin riski taşır.
 // YENİ SÜRÜMDE: `version`ı APP_VERSION ile aynı yap ve metinleri güncelle.
 const WHATS_NEW = {
-  version: "1.4.1",
+  version: "1.4.2",
+  // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
+  // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.2 yalnızca
+  // deep link ekliyor (görünmez), notlar 1.4.1'in; 1.4.0'dan doğrudan 1.4.2'ye
+  // geçen yine görür. Yeni görünür özellik gelince notları yaz, `since`i güncelle.
+  since: "1.4.1",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
@@ -6483,8 +6488,8 @@ export default function SakinApp() {
         }
       } catch(_) {}
       if (!existing) { stamp(); return; }                   // yeni kullanıcı → sessizce damgala
-    } else if (compareVer(seen, APP_VERSION) >= 0) {
-      stamp(); return;                                      // geri sürüm düşüşü → gösterme
+    } else if (compareVer(seen, WHATS_NEW.since || APP_VERSION) >= 0) {
+      stamp(); return;                                      // notları zaten gördü / geri sürüm düşüşü → gösterme
     }
     setWhatsNew(true);
   }, []);

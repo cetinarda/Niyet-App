@@ -109,7 +109,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Eyl 2026): App Store `1.4.0` · Play Store `1.4.0` (`public/latest-ios-version.json`).** Repoda hazırlanan: `1.4.1 / build 1`, Android `versionCode 18` (17 hiç yüklenmedi ama kesinlik için atlandı). `latest-ios-version.json` otomatik, ELLE bump etme.
+   - **CANLI (Eyl 2026): App Store `1.4.0` · Play Store `1.4.0` (`public/latest-ios-version.json`).** 1.4.1 App Store incelemesinde (Eyl 2026). Repoda hazırlanan: `1.4.2 / build 1`, Android `versionCode 19` (deep link için; 1.4.2 görünür özellik eklemediğinden `WHATS_NEW.since = "1.4.1"`: 1.4.1 kartını görmüş olana tekrar çıkmaz). `latest-ios-version.json` otomatik, ELLE bump etme.
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
@@ -745,8 +745,8 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
   soğuk açılış tamponu, 3 sn tekrar filtresi), açılış katmanlarını kapatıp ekrana gider.
 - Analitik `deeplink_open` {s} (track.mjs beyaz listede, raporda Bildirimler altında).
 - Android: MainActivity'de `sakin` şemalı VIEW intent-filter.
-- iOS: `Info.plist` CFBundleURLTypes'a `sakin` şeması gerekir (altın kural #7,
-  kullanıcı onayı ile). AppDelegate URL'yi zaten Capacitor'a iletiyor.
+- iOS: `Info.plist` CFBundleURLTypes'ta `sakin` şeması (kullanıcı onayladı, 1.4.2 ile
+  gelir; 1.4.1 incelemedeydi). AppDelegate URL'yi zaten Capacitor'a iletiyor.
 - Universal link (https://sakin.life/...) YOK: associated domains + AASA ister.
 
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)

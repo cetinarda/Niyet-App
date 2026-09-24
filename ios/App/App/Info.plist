@@ -119,6 +119,14 @@
 				<string>fb1578454790553495</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>app.sakin.life</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>sakin</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

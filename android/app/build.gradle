@@ -48,8 +48,8 @@ android {
         //   ./gradlew assembleRelease
         //   adb install -r app/build/outputs/apk/release/app-release.apk
         //   (kurulu paket DEBUGGABLE görünüyorsa yanlış sürümü test ediyorsun)
-        versionCode 18
-        versionName "1.4.1"
+        versionCode 19
+        versionName "1.4.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
