@@ -1,111 +1,95 @@
 # Gizlilik Politikası: Sakin Uygulaması
 
-**Son güncelleme:** Mayıs 2026
+**Son güncelleme:** Eylül 2026
+
+> Bu dosya https://sakin.life/privacy sayfasının Türkçe kaynağıdır; sayfa değişince bunu da güncelle.
 
 ## 1. Genel Bakış
 
-Sakin uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlamaktadır. Bu gizlilik politikası, Uygulamanın hangi verileri topladığını, bu verileri nasıl kullandığını ve kullanıcıların haklarını açıklamaktadır.
+Sakin uygulaması ("Uygulama"), kullanıcıların kişisel gelişimini ve günlük farkındalık pratiklerini desteklemeyi amaçlar. Sakin'de kullanıcı hesabı yoktur; verilerinizin büyük kısmı yalnızca kendi cihazınızda durur. Bu politika hangi verilerin nerede işlendiğini ve haklarınızı açıklar.
 
 ## 2. Toplanan Veriler
 
-### 2.1 Uygulama İçinde Yalnızca Cihazda Saklanan Veriler
-Aşağıdaki veriler yalnızca kullanıcının kendi cihazında (yerel depolamada) saklanır ve hiçbir sunucuya iletilmez:
+### 2.1 Yalnızca Cihazda Saklanan Veriler
 
-- **Günlük niyet metni:** Kullanıcının o gün için yazdığı niyet/hedef
-- **Seçilen motivasyon kelimeleri:** Sabah seçilen 3 kelime
-- **Akşam kapanış notları:** "Bugün ne öğrendim?" ve şükür notları
-- **Nefes sayısı:** Tamamlanan nefes egzersizi sayısı
-- **Frekans dinleme süresi:** Ses dalgaları bölümünde geçirilen süre (saniye)
-- **Hatırlatıcı tamamlanma durumu:** Günlük görevlerin işaretlenme durumu
-- **Haftalık istatistikler:** Çakra, kelime, nefes ve frekans dinleme verileri (cihazda özet olarak tutulur)
-- **Doğum tarihi ve saati:** Kişiselleştirilmiş içerik için (isteğe bağlı, yalnızca cihazda)
-- **Gün serisi verisi:** Ardışık kullanım günleri (streak)
+Aşağıdakiler yalnızca cihazınızda saklanır ve sunucularımıza gönderilmez:
 
-### 2.2 AI Destekli Özellikler: Üçüncü Taraf Veri Paylaşımı
+- **Günlük niyet ve kelimeler**, akşam kapanış ve şükür notları
+- **Niyet Mektubu**: 21 gün mühürlü mektubunuz ve önceki mektuplarınız
+- **İçsel Ayna soru geçmişi** ve **bağlanma stili testi sonucu**
+- **Nefes, ses ve çakra kayıtları**, gün serisi, haftalık istatistikler
+- **Doğum tarihi, saati ve şehri** (isteğe bağlı)
+- **Günün kartları ve tarot çekimleri**
 
-Uygulama, "İçsel Ayna", "Reiki Analizi", "Zihinsel-Fiziksel Analiz", "Sağlık Farkındalığı" ve "Haftalık Rapor" gibi AI destekli özelliklerde kullanıcının yazdığı metinleri kişiselleştirilmiş yanıt üretmek amacıyla üçüncü taraf yapay zeka hizmetlerine gönderir.
+### 2.2 Yapay Zeka Destekli Özellikler
 
-**AI sağlayıcısı:** Meta Llama (Groq altyapısı üzerinden)
+İçsel Ayna, Günün Yorumu, haftalık rapor, tarot açılımı ve günlük yansıma gibi özellikler, **yalnızca onay vermeniz halinde**, yazdığınız metni ve gereken bağlamı (ör. doğum bilginizden türetilen burç ve sayılar) Groq altyapısı üzerinden Meta Llama modeline gönderir.
 
-**Gönderilen veri tipleri:**
-- Kullanıcının yazdığı soru veya şikayet metni
-- Günlük niyet ve motivasyon kelimeleri (yalnızca haftalık rapor için)
-- Frekans dinleme süresi (haftalık rapor için)
-- Doğum tarihi bilgisi (varsa, kişiselleştirme amacıyla)
+**Gönderilmeyen:** ad, e-posta, telefon, cihaz kimliği, konum. Groq gönderilen verileri model eğitimi için kullanmaz.
 
-**Gönderilmeyen veriler:**
-- Kişisel kimlik bilgileri (ad, soyad, e-posta, telefon)
-- Cihaz tanımlayıcıları
-- Konum bilgisi
+**Fotoğrafla tanıma:** Taş ve bitki tanımada seçtiğiniz fotoğraf, tanıma için Pl@ntNet'e (bitki) ya da Groq'a (taş) gönderilir ve saklanmaz. Kameraya yalnızca bu sırada, sizin eyleminizle erişilir.
 
-**Önemli bilgiler:**
-- AI özelliklerini kullanmak tamamen isteğe bağlıdır.
-- İlk kullanımda açık rıza istenir; rıza verilmeden veri gönderilmez.
-- Gönderilen metinler anonim olarak işlenir ve kimliğe bağlanmaz.
-- Groq, gönderilen verileri model eğitimi için kullanmamaktadır.
+### 2.3 Anlık Mesajlar (Push Bildirimleri)
 
-### 2.3 Toplamadığımız Veriler
-Uygulama aşağıdaki verileri **kesinlikle toplamaz**:
+Günlük hatırlatıcılar cihazınızda yerel olarak kurulur, içerikleri sunucuya gitmez. "Sakin'den anlık mesajlar" açıkken (bildirim izni verdiyseniz varsayılan olarak açıktır) şunlar sunucumuzda saklanır: **cihazın bildirim adresi (APNs/FCM token), platform, dil, saat dilimi, uygulama sürümü**. Mesajlar Apple veya Google üzerinden iletilir, yalnızca içerik taşır ve reklam içermez. Ayarlar > Bildirimler'den kapattığınızda kayıt sunucudan silinir.
 
-- Kişisel kimlik bilgileri (ad, soyad, e-posta, telefon numarası)
-- Konum bilgisi
-- Sağlık veya tıbbi veriler
-- Biyometrik veriler
-- Cihaz kamerası veya mikrofon erişimi
-- Üçüncü taraf hesap bilgileri
-- Reklam veya takip amaçlı tanımlayıcılar
+### 2.4 Çember (Canlı Oda)
 
-### 2.4 Ses Dosyaları
-Uygulama kuş sesi kayıtları içerir. Bu dosyalar uygulamayla birlikte yerel olarak depolanır; herhangi bir ses kaydı yapılmaz ve mikrofon erişimi kullanılmaz.
+Çember'e yazdığınız mesajlar odadaki herkese açıktır. Saklananlar: **mesaj metni (en çok 140 karakter), cihazınızdan türetilen takma ad, cihaz kimliğinizin geri çevrilemeyen özeti, zaman ve bildirim sayısı**. Mesajlar yayınlanmadan önce otomatik olarak denetlenir (bağlantı, küfür ve yapay zeka moderasyonu, Groq). Kendine zarar verme içeren mesajlar odaya düşmez ve saklanmaz. Mesajlar 24 saat görünür ve 48 saat içinde silinir; yasaklanan cihazların özeti, yasak kaldırılana kadar tutulur. Çember verileri Supabase üzerinde Avrupa Birliği (Frankfurt) sunucusunda saklanır.
 
-### 2.5 Analitik Veriler
-Uygulama herhangi bir analitik veya izleme SDK'sı kullanmamaktadır.
+### 2.5 Anonim Kullanım Ölçümü
 
-## 3. Bildirimler
+Uygulamayı iyileştirmek için kendi anonim ölçümümüzü kullanırız: rastgele bir kurulum kimliği ile hangi ekranların ne kadar kullanıldığı ve hangi adımların tamamlandığı sayılır. Ad, doğum bilgisi, yazdığınız metin veya reklam kimliği **gönderilmez**. Ayarlar'daki "Anonim kullanım verisi paylaş" seçeneğiyle kapatabilirsiniz.
 
-Kullanıcı günlük hatırlatıcı bildirimleri için izin verirse:
-- Bildirimler yalnızca kullanıcının kendi cihazında tetiklenir (yerel bildirim).
-- Bildirim içerikleri sunucuya gönderilmez.
-- Bildirim izni cihaz ayarlarından her zaman iptal edilebilir.
+Ayrıca Meta (Facebook) App Events SDK'sı kurulum, açılış ve oturum gibi temel etkinlikleri ölçer; reklam kimliği (IDFA/GAID) **toplamaz** ve uygulamalar arası izleme yapmaz.
 
-## 4. Üçüncü Taraf Hizmetleri
+### 2.6 Geri Bildirim ve Satın Alma
 
-| Hizmet | Amaç | Paylaşılan Veri |
+Geri bildirim formuna yazdığınız mesaj, kategori ve dil bilgisiyle birlikte e-posta olarak (Resend) destek adresimize iletilir. Satın almalar Apple App Store ya da Google Play üzerinden yapılır; abonelik durumunuzu doğrulamak için sunucumuz yalnızca satın alma işlem kimliğini Apple veya Google'a sorar. Ödeme bilgilerinizi görmeyiz.
+
+### 2.7 Toplamadığımız Veriler
+
+Ad-soyad, e-posta, telefon gibi kimlik bilgileri (hesap yoktur), konum, sağlık ve biyometrik veriler, mikrofon, reklam kimliği ve uygulamalar arası izleme verisi **toplanmaz**.
+
+## 3. Üçüncü Taraf Hizmetleri
+
+| Hizmet | Amaç | Paylaşılan veri |
 |---|---|---|
-| Groq API (Meta Llama) | AI destekli kişisel yansıtma | Kullanıcının yazdığı metin (anonim) |
-| Apple StoreKit | Abonelik yönetimi | Satın alma durumu (Apple tarafından yönetilir) |
+| Groq (Meta Llama), ABD | Yapay zeka yanıtları, taş tanıma, Çember moderasyonu | Yazdığınız metin ve gereken bağlam, fotoğraf (saklanmaz), Çember mesajı |
+| Pl@ntNet, Fransa | Bitki tanıma | Seçtiğiniz fotoğraf (saklanmaz) |
+| Apple, Google | Satın alma ve abonelik doğrulama, bildirim iletimi | İşlem kimliği, bildirim adresi ve mesaj |
+| Supabase, AB (Frankfurt) | Çember altyapısı | Çember mesajları, takma ad, cihaz özeti |
+| Netlify, ABD | Sunucu ve web barındırma | Sunucuya giden istekler (bildirim kaydı, anonim ölçüm) |
+| Resend | Geri bildirim e-postası | Geri bildirim metni |
+| Meta App Events | Kurulum/oturum ölçümü | Anonim etkinlik sinyalleri (reklam kimliği yok) |
 
-Uygulama herhangi bir reklam ağı, analitik servisi veya sosyal medya entegrasyonu içermemektedir.
+Reklam ağı veya sosyal medya ile giriş yoktur.
 
-## 4.1 Abonelik Bilgisi
+## 4. Veri Güvenliği ve Saklama
 
-- **Sakin Yıllık Erişim:** $4.99/yıl otomatik yenilenen abonelik
-- Ödeme, Apple Kimliği hesabınızdan tahsil edilir
-- Abonelik, dönem bitiminden 24 saat önce iptal edilmezse otomatik yenilenir
-- Aboneliklerinizi Ayarlar > Apple Kimliği > Abonelikler bölümünden yönetebilirsiniz
-- Ücretsiz deneme süresi sunulmamaktadır
+Tüm iletişim HTTPS ile şifrelenir; API anahtarları sunucu tarafındadır. Sunucuda tutulan veriler: bildirim kaydı (siz kapatana ya da verilerinizi silene kadar), Çember mesajları (en çok 48 saat), yasaklanan cihaz özetleri (yasak kalkana kadar) ve anonim kullanım sayaçları (kişiyi tanımlamaz).
 
-## 5. Veri Güvenliği
+## 5. Çocukların Gizliliği
 
-- Yerel veriler kullanıcının cihazında saklanır.
-- AI istekleri HTTPS şifreli bağlantı üzerinden iletilir.
-- Kimlik doğrulama bilgileri (API anahtarları) sunucu tarafında saklanır, istemcide bulunmaz.
+Uygulamanın içeriği genel olarak her yaşa uygundur. Çember herkese açık bir canlı sohbet alanıdır ve 13 yaşından küçükler için tasarlanmamıştır. 13 yaşın altındaki çocuklardan bilerek veri toplanmaz.
 
-## 6. Çocukların Gizliliği
+## 6. Verilerinizi Silme
 
-Uygulama 4 yaş ve üzeri kullanıcılara yöneliktir. 13 yaşın altındaki çocuklardan bilerek herhangi bir veri toplanmamaktadır.
+- **Uygulama içinden:** Ayarlar'daki "Hesabımı ve verilerimi sil" ile cihazdaki tüm verileriniz anında silinir; bu işlem anlık bildirim kaydınızı da sunucudan kaldırır.
+- **Anlık mesajlar:** Ayarlar > Bildirimler'den kapattığınızda kayıt silinir.
+- **Çember:** mesajlar 48 saat içinde kendiliğinden silinir.
+- **Uygulamayı kaldırarak:** cihazdaki tüm veriler silinir.
 
-## 7. Verilerinizi Silme
+Apple/Google üzerinden aldığınız abonelik mağaza hesabınıza bağlıdır; iptal için mağaza ayarlarınızı kullanın.
 
-Uygulamayı cihazınızdan kaldırdığınızda tüm yerel veriler otomatik olarak silinir. Kullanıcı hesabı bulunmadığından ayrıca bir hesap silme işlemi gerekmemektedir.
+## 7. KVKK Aydınlatma Metni
+
+6698 sayılı Kişisel Verilerin Korunması Kanunu m.10 kapsamında: **Veri sorumlusu** Sakin uygulamasının sahibi ve işletmecisidir (destek@sakin.life). Doğum bilgisi astrolojik profil ve kişisel içerik için; niyet, not ve pratik kayıtları ilerlemenizi göstermek için; bildirim kaydı bildirim iletmek için; Çember verileri canlı sohbeti sunmak ve güvenli tutmak için işlenir. Hukuki sebep m.5/1 uyarınca açık rızanızdır (yapay zeka onayı, bildirim izni, Çember kurallarını kabul); Çember güvenliği için yapılan moderasyonda m.5/2-f meşru menfaat de esas alınır. Yapay zeka, fotoğraf tanıma, barındırma, bildirim iletimi ve Çember için gerekli veriler yukarıdaki tablodaki sağlayıcılara aktarılır; yurt dışına aktarım m.9 kapsamında açık rızanıza dayanır. m.11 kapsamındaki haklarınız (bilgi talep etme, düzeltme, silme, itiraz vb.) için destek@sakin.life adresine yazabilirsiniz.
 
 ## 8. Bu Politikanın Güncellenmesi
 
-Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler uygulama güncellemesi notlarında belirtilecektir.
+Bu politika zaman zaman güncellenebilir. Önemli değişiklikler uygulama güncelleme notlarında belirtilir.
 
 ## 9. İletişim
 
-Gizlilik politikasına ilişkin sorularınız için:
-
-**E-posta:** destek@sakin.life
-**Uygulama Adı:** Sakin
+**E-posta:** [destek@sakin.life](mailto:destek@sakin.life)

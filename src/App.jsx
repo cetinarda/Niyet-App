@@ -8765,6 +8765,9 @@ export default function SakinApp() {
   //   Premium UI flag'i (setIsPremium(false)) sadece görsel reset; restore ile geri gelir.
   const deleteAccountData = () => {
     try { haptic(ImpactStyle.Heavy); } catch(_) {}
+    // 0) Sunucudaki anlık bildirim kaydını da sil (gizlilik politikası "silinir"
+    //    diyor). Token localStorage temizlenmeden ÖNCE okunmalı.
+    try { const tok = localStorage.getItem("sakin_push_token"); if (tok) postPushRegister(tok, false); } catch(_) {}
     // 1) localStorage: sakin_ ile başlayan tüm anahtarları topla ve sil (iterasyon
     //    sırasında silmek index kaymasına yol açar, önce topla, sonra sil).
     try {

@@ -884,9 +884,11 @@ koruma sunucuda.
   Çember'i kapatır. Analitik `cember` {a: open/rules/send/report/block/crisis}.
 - **Env (Netlify):** SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY (+ mevcut
   GROQ_API_KEY, PUSH_ADMIN_TOKEN). Eksikse Çember "kapalı" gösterir.
-- ⏳ **MAĞAZA ÖNCESİ YAPILACAKLAR:** gizlilik politikası (kullanıcı içeriği, 24 saat
-  saklama), App Store gizlilik etiketi "User Content", Apple yaş anketi (kullanıcılar
+- ⏳ **MAĞAZA ÖNCESİ YAPILACAKLAR:** ~~gizlilik politikası~~ (YAPILDI, Eyl 2026, aşağıya
+  bak), App Store gizlilik etiketi "User Content", Apple yaş anketi (kullanıcılar
   arası iletişim), Play Data safety, App Review notuna moderasyon açıklaması.
+- **Presence anahtarı oturumluk rastgele** (`"p"+random`): presence anahtarı odadaki
+  HERKESE görünür, anonim ölçüm kimliğini (`getAnonId`) buraya KOYMA.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,
   küfür, AI abuse/spam/crisis, bildir→gizle, ban); tarayıcıda arayüz akışı
   (kilit, kurallar, geçmiş, gönder, bildir, engelle, link uyarısı, kriz kartı).
@@ -929,6 +931,27 @@ koruma sunucuda.
   dili tr değilse İngilizce açılır. Tanıtım (`/tanitim`) yalnızca Türkçe.
 - Dil denetimi (Eyl 2026): 10 sayfa x 7 dil dil menüsünden gezildi; kırık görsel,
   404, eksik çeviri, ölü iç bağlantı, sayfa hatası, yatay taşma YOK.
+
+## ⚖️ GİZLİLİK / KVKK / ŞARTLAR (Eyl 2026 güncellemesi)
+
+Metinler UYGULAMANIN GERÇEK DAVRANIŞINA göre yazıldı; yeni bir veri akışı
+eklersen (sunucuya giden her yeni alan, yeni üçüncü taraf) ÜÇ yeri birden güncelle:
+1. Uygulama içi: `privacy_*` / `terms_*` anahtarları, 7 dil (`src/i18n.js` tr+en,
+   `src/i18n-extras.js` de/pt/es/fr/ja). Anahtar yapısı sabit (s1..s10 + kvkk_*).
+   Hitap: gizlilik bölümleri resmî, KVKK bölümü tr dışında samimi (mevcut çeviri).
+2. Web: `public/privacy/index.html` + `public/privacy.html` (BİREBİR aynı dosya),
+   `public/terms/index.html` + `public/terms.html` (tr+en).
+3. `app-store-docs/privacy-policy-TR.md` (web Türkçesinden üretildi).
+Kapsanan akışlar: cihazda kalanlar (niyet, notlar, Niyet Mektubu, Ayna geçmişi,
+bağlanma testi, doğum bilgisi, kartlar), AI (Groq/Meta Llama, onayla), fotoğraf
+tanıma (Pl@ntNet/Groq, saklanmaz), push kaydı (token/platform/dil/tz/sürüm, Netlify
+Blobs), Çember (Supabase AB, 24 sa görünür / 48 sa silinir, cihaz özeti, AI
+moderasyon, kriz mesajı saklanmaz, ban özeti), anonim ölçüm (opt-out), Meta App
+Events (IDFA yok), geri bildirim (Resend), abonelik doğrulama (yalnızca işlem
+kimliği), yurt dışı aktarım KVKK m.9 açık rıza. Çember "13 yaş altı için değil".
+⚠️ "Hesabımı ve verilerimi sil" artık sunucudaki push kaydını da siler
+(`deleteAccountData` başında `postPushRegister(tok,false)`); metin bunu söylüyor.
+Hukukçu kontrolünden geçmedi; kullanıcıya söylendi.
 
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
