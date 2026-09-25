@@ -4,6 +4,12 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Gizli tarama İSTİSNASI (anlık bildirim, Eyl 2026): Team ID ve Key ID gizli
+  # bilgi DEĞİL, yalnızca kimlik numarası. Team ID Xcode projelerinde
+  # (DEVELOPMENT_TEAM) zaten açıkça yazılı; env "secret" işaretlenince Netlify
+  # onu apps/hayvan/ios/...pbxproj içinde bulup deploy'u durdurdu. Asıl gizli
+  # olan APNS_PRIVATE_KEY taranmaya DEVAM EDER, buraya ekleme.
+  SECRETS_SCAN_OMIT_KEYS = "APNS_TEAM_ID,APNS_KEY_ID"
 
 [functions]
   directory = "netlify/functions"
