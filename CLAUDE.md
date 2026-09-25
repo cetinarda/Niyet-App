@@ -903,6 +903,24 @@ koruma sunucuda.
   + presence çalışıyor, sahte broadcast dinleyiciye ULAŞMIYOR; kullanıcı iki
   cihazda canlı mesajlaşmayı doğruladı (Eyl 2026).
 
+## 🌐 SAKIN.LIFE TANITIM SİTESİ (public/home, site.css/js/i18n, Eyl 2026)
+
+- **Varsayılan tema KOYU** (kullanıcı kararı; eskiden açıktı). `site.js readTheme`
+  + her HTML'deki satır içi açılış betiği (`t==="light"?"light":"dark"`, 29 sayfa)
+  + `theme-color` #06060a. Açık tema yalnızca kullanıcı seçerse (`sakin_site_theme`).
+- **Gezen flu ışıklar:** `.ambient-orb` o1-o4 (site.css), 56-78 sn transform
+  animasyonu, filter:blur YOK (pil), "hareketi azalt"ta durur. `--band` artık
+  yarı saydam, yoksa ışıklar şerit bölümlerin altında kayboluyordu.
+- **Bildirimler bölümü** (`#bildirimler`, yorumların üstünde): üç örnek bildirim
+  uygulamadaki GERÇEK metinlerden (TAROT_NOTIF, PNOTIF_EM, NOTIF_SOZ); "günde en
+  fazla üç" iddiası varsayılan plana dayanır, plan değişirse metni güncelle.
+- **"Sakin'le bir gün"** (`#bir-gun`, Sakin Nedir'in altında): uygulamanın GERÇEK
+  ekranları (sabah/kart/nefes/mektup) telefon çerçevesinde, her dil kendi
+  görselini alır (`img[data-shot]` → `/home/shots/<dil>/<ekran>.webp`, site.js).
+  Yeniden çekim: `scripts/site-shots.cjs` (başındaki nota bak). de/es/pt/fr/ja'da
+  "Güncel geçiş" kartı görüntüden çıkarılır: HD kapı metinleri uygulamada yalnızca
+  tr/en (bilinen çeviri eksiği). `home/` native pakete girmez (prune listesi).
+
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
 - Şema: `sakin://<yol>`. Yollar `DEEP_LINK_SCREENS` (src/App.jsx): `baglan`→mandala,

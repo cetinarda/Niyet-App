@@ -199,6 +199,30 @@
   .rating .rlabel b { color:var(--text); font-weight:700; }
 
   /* ── Kullanıcı yorumları ─────────────────────────────────────────────── */
+  /* ── Sakin'le bir gün: gerçek ekranlar telefon çerçevesinde ── */
+  .moments { display:grid; grid-template-columns:repeat(4,1fr); gap:26px; align-items:start; }
+  .moment { margin:0; display:flex; flex-direction:column; align-items:center; gap:18px; }
+  .moment:nth-child(even) { margin-top:42px; }
+  .phone {
+    width:100%; max-width:236px; border-radius:34px; padding:7px; background:#000;
+    border:1px solid rgba(184,164,216,0.22);
+    box-shadow:0 30px 60px rgba(0,0,0,0.45), 0 0 60px rgba(160,130,225,0.14);
+    transition:transform .6s cubic-bezier(.2,.7,.2,1), box-shadow .6s ease;
+  }
+  .phone img { width:100%; height:auto; aspect-ratio:390/844; border-radius:27px; display:block; background:#07060d; }
+  .moment:hover .phone { transform:translateY(-6px); box-shadow:0 36px 70px rgba(0,0,0,0.5), 0 0 80px rgba(160,130,225,0.22); }
+  .moment figcaption { text-align:center; max-width:236px; }
+  .moment-t { display:block; font-family:var(--font-display); font-weight:300; font-size:12px; letter-spacing:4px; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+  .moment p { font-size:14.5px; line-height:1.65; color:var(--body); margin:0; }
+  .day-close { text-align:center; font-family:var(--font-display); font-weight:300; font-size:clamp(19px,2.4vw,24px); letter-spacing:.5px; color:var(--head); margin-top:56px; }
+  @media (max-width:900px) {
+    .moments { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:18px; padding:4px 26px 18px; margin:0 -26px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+    .moments::-webkit-scrollbar { display:none; }
+    .moment { flex:0 0 68%; max-width:250px; scroll-snap-align:center; }
+    .moment:nth-child(even) { margin-top:0; }
+    .phone { max-width:none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .phone { transition:none; } }
   /* ── Bildirimler bölümü: telefon bildirimi görünümünde üç örnek ── */
   .notifs { display:flex; flex-direction:column; gap:10px; max-width:440px; margin:0 auto; }
   .notif {
@@ -349,6 +373,38 @@
     <p style="font-size:16px;color:var(--body);text-align:center;margin-top:8px" data-t="nedirClose">
       Bazen ihtiyacın olan cevap, daha fazlasını öğrenmek değil; durmak, hissetmek ve içindeki sesi dinlemektir.
     </p>
+  </div>
+</section>
+
+<section class="sec day" id="bir-gun" style="--tint:rgba(184,164,216,0.10)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker" data-t="dayKicker">Sakin'le bir gün</span>
+      <h2 data-t="dayTitle" data-t-html>Küçük anlar,<br>yumuşayan bir gün.</h2>
+      <p data-t="daySub">Sakin sana yeni bir yük eklemez. Gününün içine birkaç nazik durak koyar.</p>
+    </div>
+    <!-- Görseller uygulamanın GERÇEK ekranları (web sürümü, 390x844 @2x), her dil
+         kendi klasöründen gelir (site.js data-shot). Yeniden çekmek için bkz.
+         public/home/shots/README.md. -->
+    <div class="moments">
+      <figure class="moment">
+        <div class="phone"><img data-shot="sabah" src="/home/shots/tr/sabah.webp" alt="Bugün ekranı" width="390" height="844" loading="lazy" decoding="async"></div>
+        <figcaption><span class="moment-t" data-t="day1t">Sabah</span><p data-t="day1">Güne adınla karşılanırsın. Gökyüzünün bugün sana ne fısıldadığını okursun.</p></figcaption>
+      </figure>
+      <figure class="moment">
+        <div class="phone"><img data-shot="kart" src="/home/shots/tr/kart.webp" alt="Günün tarot kartı" width="390" height="844" loading="lazy" decoding="async"></div>
+        <figcaption><span class="moment-t" data-t="day2t">Bir kart</span><p data-t="day2">Bir kart çekersin. Bazen duymaya ihtiyacın olan söz tam oradadır.</p></figcaption>
+      </figure>
+      <figure class="moment">
+        <div class="phone"><img data-shot="nefes" src="/home/shots/tr/nefes.webp" alt="Nefes ekranı" width="390" height="844" loading="lazy" decoding="async"></div>
+        <figcaption><span class="moment-t" data-t="day3t">Bir nefes</span><p data-t="day3">Dört saniye al, altı saniye ver. Dünya biraz yavaşlar.</p></figcaption>
+      </figure>
+      <figure class="moment">
+        <div class="phone"><img data-shot="mektup" src="/home/shots/tr/mektup.webp" alt="Niyet mektubu" width="390" height="844" loading="lazy" decoding="async"></div>
+        <figcaption><span class="moment-t" data-t="day4t">21 gün sonra</span><p data-t="day4">Kendine yazdığın niyet, mühürlü bir sandıkta seni bekler.</p></figcaption>
+      </figure>
+    </div>
+    <p class="day-close" data-t="dayClose">Hiçbir şeyi düzeltmek zorunda değilsin. Sadece kendine dön.</p>
   </div>
 </section>
 

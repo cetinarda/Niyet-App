@@ -117,6 +117,13 @@
       el.setAttribute("href", base + slug);
     });
 
+    // "Sakin'le bir gün" bölümündeki gerçek uygulama ekranları dile göre
+    // (public/home/shots/<dil>/<ekran>.webp, uygulamanın web sürümünden çekildi).
+    document.querySelectorAll("img[data-shot]").forEach(function (el) {
+      var src = "/home/shots/" + code + "/" + el.getAttribute("data-shot") + ".webp";
+      if (el.getAttribute("src") !== src) el.setAttribute("src", src);
+    });
+
     document.querySelectorAll("[data-lang-label]").forEach(function (el) {
       el.textContent = code.toUpperCase();
     });
