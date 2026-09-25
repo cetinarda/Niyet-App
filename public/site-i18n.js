@@ -66,7 +66,7 @@ tr: {
   closeTitle: "Sakin şimdi iOS ve Android'de 🤍",
   closeText: "Ücretsiz indir, kayıt olmadan kullanmaya başla. Temel özellikleri özgürce kullanabilirsin.",
   footNote: "Sakin; düşünmek ve sakinleşmek için bir alandır, tıbbi ya da psikolojik tavsiye değildir. Bazı özellikler Sakin Premium kapsamındadır.",
-  footApp: "Uygulama", footPrivacy: "Gizlilik", footTerms: "Hizmet Şartları",
+  footApp: "Uygulama", footPrivacy: "Gizlilik", footKvkk: "KVKK Aydınlatma Metni", footTerms: "Hizmet Şartları",
   backBlog: "← Blog"
 },
 
@@ -130,7 +130,7 @@ en: {
   closeTitle: "Sakin is now on iOS and Android 🤍",
   closeText: "Download it free and start without signing up. You can use the core features freely.",
   footNote: "Sakin is a space for reflecting and calming down; it is not medical or psychological advice. Some features are part of Sakin Premium.",
-  footApp: "App", footPrivacy: "Privacy", footTerms: "Terms of Service",
+  footApp: "App", footPrivacy: "Privacy", footKvkk: "KVKK Privacy Notice", footTerms: "Terms of Service",
   backBlog: "← Blog"
 },
 
@@ -194,7 +194,7 @@ de: {
   closeTitle: "Sakin ist jetzt für iOS und Android da 🤍",
   closeText: "Lade es kostenlos und beginne ohne Anmeldung. Die Grundfunktionen kannst du frei nutzen.",
   footNote: "Sakin ist ein Raum zum Nachdenken und Ruhigwerden, keine medizinische oder psychologische Beratung. Einige Funktionen gehören zu Sakin Premium.",
-  footApp: "App", footPrivacy: "Datenschutz", footTerms: "Nutzungsbedingungen",
+  footApp: "App", footPrivacy: "Datenschutz", footKvkk: "KVKK-Datenschutzhinweis", footTerms: "Nutzungsbedingungen",
   backBlog: "← Blog"
 },
 
@@ -258,7 +258,7 @@ es: {
   closeTitle: "Sakin ya está en iOS y Android 🤍",
   closeText: "Descárgalo gratis y empieza sin registrarte. Puedes usar libremente las funciones básicas.",
   footNote: "Sakin es un espacio para reflexionar y serenarse, no es consejo médico ni psicológico. Algunas funciones forman parte de Sakin Premium.",
-  footApp: "Aplicación", footPrivacy: "Privacidad", footTerms: "Términos del servicio",
+  footApp: "Aplicación", footPrivacy: "Privacidad", footKvkk: "Aviso KVKK", footTerms: "Términos del servicio",
   backBlog: "← Blog"
 },
 
@@ -322,7 +322,7 @@ pt: {
   closeTitle: "Sakin já está no iOS e no Android 🤍",
   closeText: "Descarrega grátis e começa sem te registares. Podes usar livremente as funcionalidades essenciais.",
   footNote: "Sakin é um espaço para refletir e acalmar, não é aconselhamento médico nem psicológico. Algumas funcionalidades fazem parte do Sakin Premium.",
-  footApp: "Aplicação", footPrivacy: "Privacidade", footTerms: "Termos de Serviço",
+  footApp: "Aplicação", footPrivacy: "Privacidade", footKvkk: "Aviso KVKK", footTerms: "Termos de Serviço",
   backBlog: "← Blog"
 },
 
@@ -386,7 +386,7 @@ fr: {
   closeTitle: "Sakin est maintenant sur iOS et Android 🤍",
   closeText: "Télécharge-le gratuitement et commence sans inscription. Tu peux utiliser librement les fonctions essentielles.",
   footNote: "Sakin est un espace pour réfléchir et s'apaiser, ce n'est pas un avis médical ou psychologique. Certaines fonctions relèvent de Sakin Premium.",
-  footApp: "Application", footPrivacy: "Confidentialité", footTerms: "Conditions d'utilisation",
+  footApp: "Application", footPrivacy: "Confidentialité", footKvkk: "Avis KVKK", footTerms: "Conditions d'utilisation",
   backBlog: "← Blog"
 },
 
@@ -450,7 +450,7 @@ ja: {
   closeTitle: "SakinはiOSとAndroidで公開中 🤍",
   closeText: "無料でダウンロードし、登録なしで始められます。基本機能は自由にお使いいただけます。",
   footNote: "Sakinは思いをめぐらせ、静まるための余白です。医学的・心理的な助言ではありません。一部の機能はSakin Premiumに含まれます。",
-  footApp: "アプリ", footPrivacy: "プライバシー", footTerms: "利用規約",
+  footApp: "アプリ", footPrivacy: "プライバシー", footKvkk: "KVKK 通知", footTerms: "利用規約",
   backBlog: "← ブログ"
 }
 

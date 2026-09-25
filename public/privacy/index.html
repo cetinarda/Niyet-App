@@ -98,7 +98,7 @@ a{color:#b0a0c8}
 </ul>
 <p>Apple/Google üzerinden aldığınız abonelik mağaza hesabınıza bağlıdır; iptal için mağaza ayarlarınızı kullanın.</p>
 
-<h2>7. KVKK Aydınlatma Metni</h2>
+<h2 class="kvkk">7. KVKK Aydınlatma Metni</h2>
 <p>6698 sayılı Kişisel Verilerin Korunması Kanunu m.10 kapsamında: <strong>Veri sorumlusu</strong> Sakin uygulamasının sahibi ve işletmecisidir (destek@sakin.life). Doğum bilgisi astrolojik profil ve kişisel içerik için; niyet, not ve pratik kayıtları ilerlemenizi göstermek için; bildirim kaydı bildirim iletmek için; Çember verileri canlı sohbeti sunmak ve güvenli tutmak için işlenir. Hukuki sebep m.5/1 uyarınca açık rızanızdır (yapay zeka onayı, bildirim izni, Çember kurallarını kabul); Çember güvenliği için yapılan moderasyonda m.5/2-f meşru menfaat de esas alınır. Yapay zeka, fotoğraf tanıma, barındırma, bildirim iletimi ve Çember için gerekli veriler yukarıdaki tablodaki sağlayıcılara aktarılır; yurt dışına aktarım m.9 kapsamında açık rızanıza dayanır. m.11 kapsamındaki haklarınız (bilgi talep etme, düzeltme, silme, itiraz vb.) için destek@sakin.life adresine yazabilirsiniz.</p>
 
 <h2>8. Bu Politikanın Güncellenmesi</h2>
@@ -177,7 +177,7 @@ a{color:#b0a0c8}
 </ul>
 <p>A subscription bought through Apple/Google is tied to your store account; use your store settings to cancel it.</p>
 
-<h2>7. KVKK (Turkish Data Protection Law) Notice</h2>
+<h2 class="kvkk">7. KVKK (Turkish Data Protection Law) Notice</h2>
 <p>Under Article 10 of Law No. 6698: the <strong>data controller</strong> is the owner and operator of the Sakin app (destek@sakin.life). Birth data is processed for your astrological profile and personal content; intentions, notes and practice records to show your progress; the notification record to deliver notifications; Circle data to provide the live chat and keep it safe. The legal basis is your explicit consent under Art. 5/1 (AI consent, notification permission, accepting the Circle rules); legitimate interest under Art. 5/2-f also applies to moderation for Circle safety. Data needed for AI, photo identification, hosting, notification delivery and the Circle is transferred to the providers in the table above; transfers abroad rely on your explicit consent under Art. 9. To exercise your rights under Art. 11 (information, correction, erasure, objection, etc.), write to destek@sakin.life.</p>
 
 <h2>8. Updates to This Policy</h2>
@@ -203,6 +203,14 @@ function showLang(lang) {
   try { l = new URLSearchParams(location.search).get('lang') || localStorage.getItem('sakin_lang') || ''; } catch (e) {}
   if (!l) l = (navigator.language || 'tr').slice(0, 2);
   if (l !== 'tr') showLang('en');
+})();
+// Alt bilgideki "KVKK Aydınlatma Metni" bağlantısı (#kvkk): görünen dildeki KVKK
+// bölümüne kaydır (iki dilde de aynı sınıf, id tekrar etmesin diye).
+(function () {
+  if (location.hash !== '#kvkk') return;
+  var box = document.getElementById('tr-content').style.display === 'none' ? 'en-content' : 'tr-content';
+  var h = document.querySelector('#' + box + ' .kvkk');
+  if (h) setTimeout(function () { h.scrollIntoView({ block: 'start' }); }, 60);
 })();
 </script>
 </body>
