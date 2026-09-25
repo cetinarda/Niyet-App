@@ -804,6 +804,11 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   App.entitlements'ta `aps-environment` (development; App Store arşivinde Xcode
   production'a çevirir). Apple Developer'da app.sakin.life için Push Notifications
   AÇIK, APNs .p8 anahtarı Netlify env'de, panel "APNs hazır" gösteriyor.
+- **İmzalama ekibi repoda sabit:** `ios/App/App.xcodeproj/project.pbxproj`
+  `DEVELOPMENT_TEAM = C8AM95FY4T` (Hayvan projesiyle ve APNs anahtarıyla aynı
+  ekip). Eskiden `""` idi; build komutundaki `git reset --hard` Xcode'da seçilen
+  Team'i her seferinde siliyor, "Signing for App requires a development team"
+  hatası çıkıyordu. BOŞALTMA.
 - Netlify gizli tarama: `APNS_TEAM_ID`/`APNS_KEY_ID` `netlify.toml`'da
   `SECRETS_SCAN_OMIT_KEYS` ile muaf (Team ID Xcode pbxproj'larda açıkça duruyor,
   deploy'u durdurmuştu). APNS_PRIVATE_KEY taranmaya devam eder.
