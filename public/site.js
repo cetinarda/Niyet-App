@@ -142,7 +142,7 @@
   }
 
   /* ── Ambient derinlik ───────────────────────────────────────────────── */
-  // Uygulamanın giriş ekranındaki fare-takipli ışık + yıldızlar efektinin
+  // Uygulamanın giriş ekranındaki ışık + yıldızlar efektinin
   // site için soluklaştırılmış hali (bkz. site.css .ambient*). Sayfa arka
   // planı boş durmasın diye eklendi; abartılı olmaması için sabit, az
   // sayıda yıldız ve çok düşük opasiteli tek bir ışık kullanılıyor.
@@ -163,9 +163,6 @@
       wrap.appendChild(orb);
     });
 
-    var cursor = document.createElement("div");
-    cursor.className = "ambient-cursor";
-    wrap.appendChild(cursor);
 
     var STAR_COUNT = 22;
     for (var i = 0; i < STAR_COUNT; i++) {
@@ -183,16 +180,7 @@
 
     document.body.insertBefore(wrap, document.body.firstChild);
 
-    var raf = null;
-    window.addEventListener("mousemove", function (e) {
-      if (raf) return;
-      raf = requestAnimationFrame(function () {
-        wrap.style.setProperty("--mx", ((e.clientX / window.innerWidth) * 100) + "%");
-        wrap.style.setProperty("--my", ((e.clientY / window.innerHeight) * 100) + "%");
-        cursor.classList.add("active");
-        raf = null;
-      });
-    }, { passive: true });
+    // Fare takipli ışık KALDIRILDI (kullanıcı isteği, Eyl 2026): ışık artık sabit.
   }
 
   /* ── Menüyü kur ─────────────────────────────────────────────────────── */
