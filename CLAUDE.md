@@ -914,7 +914,7 @@ koruma sunucuda.
 - **Bildirimler bölümü** (`#bildirimler`, yorumların üstünde): üç örnek bildirim
   uygulamadaki GERÇEK metinlerden (TAROT_NOTIF, PNOTIF_EM, NOTIF_SOZ); "günde en
   fazla üç" iddiası varsayılan plana dayanır, plan değişirse metni güncelle.
-- **"Sakin'le bir gün"** (`#bir-gun`, Sakin Nedir'in altında): uygulamanın GERÇEK
+- **"Sakin'le bir gün"** (`#bir-gun`, açılışın (hero) HEMEN altında, kullanıcı isteği): uygulamanın GERÇEK
   ekranları (sabah/kart/nefes/mektup) telefon çerçevesinde, her dil kendi
   görselini alır (`img[data-shot]` → `/home/shots/<dil>/<ekran>.webp`, site.js).
   Yeniden çekim: `scripts/site-shots.cjs` (başındaki nota bak). de/es/pt/fr/ja'da
