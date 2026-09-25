@@ -799,9 +799,14 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
 - ⚠️ ANDROID KAPALI: `PUSH_ANDROID_READY = false` (App.jsx). `google-services.json`
   (Firebase) `android/app/`'e konmadan register() native hata verir. Dosya
   eklenince bayrağı true yap, R8 test kapısından geçir.
-- ⚠️ iOS native parçası (AppDelegate'te didRegisterForRemoteNotifications
-  iletimi + App.entitlements'ta aps-environment) altın kural #7 gereği AYRI onayla
-  eklenir. Onaysız build'de register() sessizce hiçbir şey yapmaz.
+- ✅ iOS native parçası EKLENDİ (kullanıcı onayladı, Eyl 2026): AppDelegate'te
+  didRegister/didFailToRegisterForRemoteNotifications → Capacitor iletimi +
+  App.entitlements'ta `aps-environment` (development; App Store arşivinde Xcode
+  production'a çevirir). Apple Developer'da app.sakin.life için Push Notifications
+  AÇIK, APNs .p8 anahtarı Netlify env'de, panel "APNs hazır" gösteriyor.
+- Netlify gizli tarama: `APNS_TEAM_ID`/`APNS_KEY_ID` `netlify.toml`'da
+  `SECRETS_SCAN_OMIT_KEYS` ile muaf (Team ID Xcode pbxproj'larda açıkça duruyor,
+  deploy'u durdurmuştu). APNS_PRIVATE_KEY taranmaya devam eder.
 - Test: sahte APNs HTTP/2 + sahte FCM + sahte Blobs ile uçtan uca doğrulandı
   (kayıt, 401, test kodu, dile özel metin, sandbox yedeği, ölü cihaz temizliği).
   Gerçek cihazda test EDİLMEDİ.
