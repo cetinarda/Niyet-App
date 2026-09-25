@@ -471,6 +471,10 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   test için `localStorage.sakin_dev_notif="1"`): günlük sayı 1/2/3 + 7 tür
   (kozmik, kişisel, akşam, tarot, hatırlatıcı, gün ortası, geri dönüş) tek tek
   aç/kapa, `sakin_notif_prefs` {count, off}. Satır sırası = öncelik sırası.
+  **AÇILIR KUTU (Eyl 2026, kullanıcı: "çok uzun oldu"):** Ayarlar'da KAPALI
+  başlar (`notifSetOpen`); kapalıyken tek satır özet "Günde 3 bildirim / 7/7 tür
+  açık · Anlık mesajlar açık". Açınca günlük sayı + 7 tür + "Sakin'den anlık
+  mesajlar" (push) AYNI kartta, cihaz kodu kartın altında.
   Değişince plan `force` ile hemen yeniden kurulur. `readNotifPrefs` +
   `_notifDayPlan(dn, day, hasBirth, hasEm, prefs)`. Analitik `notif_pref`
   (track.mjs beyaz listede, raporda "Bildirimler" altında).

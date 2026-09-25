@@ -821,6 +821,10 @@ const NOTIF_SET_TXT = {
   needBirth: { tr:"Doğum bilgisi gerekir", en:"Needs your birth details", de:"Benötigt Geburtsdaten", es:"Necesita tus datos de nacimiento", pt:"Precisa dos dados de nascimento", fr:"Nécessite tes données de naissance", ja:"出生情報が必要です" },
   permOff: { tr:"Bildirim izni kapalı", en:"Notifications are off", de:"Benachrichtigungen sind aus", es:"Las notificaciones están desactivadas", pt:"As notificações estão desligadas", fr:"Les notifications sont désactivées", ja:"通知がオフになっています" },
   permNote:{ tr:"Telefonunun Ayarlar > Sakin > Bildirimler bölümünden açabilirsin.", en:"You can turn them on in your phone's Settings > Sakin > Notifications.", de:"Du kannst sie in den Einstellungen deines Telefons > Sakin > Mitteilungen einschalten.", es:"Puedes activarlas en Ajustes del teléfono > Sakin > Notificaciones.", pt:"Podes ativá-las nas Definições do telemóvel > Sakin > Notificações.", fr:"Tu peux les activer dans Réglages du téléphone > Sakin > Notifications.", ja:"スマートフォンの設定 > Sakin > 通知 からオンにできます。" },
+  perDay:  { tr:"Günde {n} bildirim", en:"{n} notifications a day", de:"{n} Benachrichtigungen pro Tag", es:"{n} notificaciones al día", pt:"{n} notificações por dia", fr:"{n} notifications par jour", ja:"1日{n}件の通知" },
+  pushOn:  { tr:"Anlık mesajlar açık", en:"Instant messages on", de:"Sofortnachrichten an", es:"Mensajes al instante activos", pt:"Mensagens instantâneas ativas", fr:"Messages instantanés activés", ja:"お知らせメッセージ オン" },
+  pushOff: { tr:"Anlık mesajlar kapalı", en:"Instant messages off", de:"Sofortnachrichten aus", es:"Mensajes al instante desactivados", pt:"Mensagens instantâneas desativadas", fr:"Messages instantanés désactivés", ja:"お知らせメッセージ オフ" },
+  typesOn: { tr:"{a}/{b} tür açık", en:"{a} of {b} types on", de:"{a} von {b} Arten an", es:"{a} de {b} tipos activos", pt:"{a} de {b} tipos ativos", fr:"{a} types sur {b} activés", ja:"{b}種類中{a}種類オン" },
   permAsk: { tr:"İzin ver", en:"Allow", de:"Erlauben", es:"Permitir", pt:"Permitir", fr:"Autoriser", ja:"許可する" },
   types: {
     kozmik:      { icon:"☄", l:{ tr:"Gökyüzü uyarısı", en:"Sky alert", de:"Himmelshinweis", es:"Aviso del cielo", pt:"Aviso do céu", fr:"Alerte du ciel", ja:"空のお知らせ" },
@@ -7399,6 +7403,8 @@ export default function SakinApp() {
   // Bildirim tercihleri (Ayarlar > Bildirimler). Değişince tüm plan hemen
   // yeniden kurulur (force); geri dönüş bildirimleri de tercihe uyar.
   const [notifPrefs, setNotifPrefsState] = useState(() => readNotifPrefs());
+  // Ayarlar > Bildirimler açılır kutusu (kullanıcı: "çok uzun oldu, açılabilir yap"). Kapalı başlar.
+  const [notifSetOpen, setNotifSetOpen] = useState(false);
   const [notifPerm, setNotifPerm] = useState(null);   // "granted" | "denied" | "prompt" | null
   // Anlık bildirim (push) onayı: null = henüz sorulmadı, true/false = karar verildi.
   const [pushOptin, setPushOptinState] = useState(() => readPushOptin());
@@ -17676,15 +17682,31 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     </span>
                   );
                   const TYPES = ["kozmik","kisisel","aksam","tarot","hatirlatici","ogle","geridon"];
+                  // Anlık mesajlar yalnızca push destekli cihazda (ya da web test bayrağında) listelenir.
+                  const showPush = pushSupported() || (() => { try { return localStorage.getItem("sakin_dev_notif") === "1"; } catch (_) { return false; } })();
+                  const onCount = TYPES.filter(k => notifPrefs.on[k] && !(NOTIF_BIRTH_TYPES.includes(k) && !birthDate)).length;
+                  const headLabel = pickLang(NOTIF_SET_TXT.perDay, lang).replace("{n}", String(notifPrefs.count));
+                  const summary = [
+                    pickLang(NOTIF_SET_TXT.typesOn, lang).replace("{a}", String(onCount)).replace("{b}", String(TYPES.length)),
+                    showPush ? pickLang(pushOptin ? NOTIF_SET_TXT.pushOn : NOTIF_SET_TXT.pushOff, lang) : null,
+                  ].filter(Boolean).join(" · ");
                   return (
                     <>
                       <div style={grpSt}>{pickLang(NOTIF_SET_TXT.group, lang)}</div>
+                      {/* AÇILIR KUTU (kullanıcı: "bildirimler sekmesi çok uzun oldu"): kapalıyken
+                          tek satır özet; açılınca günlük sayı, 7 tür ve anlık mesajlar AYNI kartta. */}
                       <div style={cardSt}>
                         {notifPerm && notifPerm !== "granted" && (
                           <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={pickLang(NOTIF_SET_TXT.permNote, lang)}
                             onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); } }).catch(()=>{}); } : undefined}
                             right={notifPerm === "prompt" ? <span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(NOTIF_SET_TXT.permAsk, lang)}</span> : null} />
                         )}
+                        <Row icon="◌" label={headLabel} note={summary}
+                          last={!notifSetOpen}
+                          onClick={() => { try{haptic();}catch(_){} setNotifSetOpen(v => !v); }}
+                          right={<span style={{ color:"rgba(255,255,255,0.35)",fontSize:16,flexShrink:0,display:"inline-block",
+                            transform:`rotate(${notifSetOpen ? 90 : 0}deg)`,transition:"transform .2s" }}>›</span>} />
+                        {notifSetOpen && (<>
                         {/* Günlük sayı: 1 / 2 / 3 */}
                         <div style={{ ...rowSt, cursor:"default" }}>
                           <span style={{ width:20,flexShrink:0,display:"flex",justifyContent:"center",opacity:0.72,fontSize:15,lineHeight:1 }}>#</span>
@@ -17705,22 +17727,23 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           const needB = NOTIF_BIRTH_TYPES.includes(k) && !birthDate;
                           const on = notifPrefs.on[k];
                           return (
-                            <Row key={k} icon={tt.icon} label={pickLang(tt.l, lang)} last={i === TYPES.length - 1}
+                            <Row key={k} icon={tt.icon} label={pickLang(tt.l, lang)} last={!showPush && i === TYPES.length - 1}
                               note={needB ? pickLang(NOTIF_SET_TXT.needBirth, lang) : pickLang(tt.n, lang)}
                               onClick={() => saveNotifPrefs({ ...notifPrefs, on: { ...notifPrefs.on, [k]: !on } })}
                               right={sw(on && !needB)} />
                           );
                         })}
+                          {/* Anlık bildirim (push): planlı günlük sayıdan AYRI hat, burada son satır. */}
+                          {showPush && (
+                            <Row icon="✉" label={pickLang(PUSH_TXT.label, lang)} note={pickLang(PUSH_TXT.note, lang)} last
+                              onClick={() => togglePush(!pushOptin)} right={sw(!!pushOptin)} />
+                          )}
+                        </>)}
                       </div>
-                      <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11.5,color:"#7c7590",margin:"8px 6px 0",lineHeight:1.5 }}>{pickLang(NOTIF_SET_TXT.order, lang)}</div>
-                      {/* Anlık bildirim (push): planlı günlük sayıdan AYRI, açık onayla. */}
-                      {(pushSupported() || (() => { try { return localStorage.getItem("sakin_dev_notif") === "1"; } catch (_) { return false; } })()) && (<>
-                        <div style={{ ...cardSt, marginTop:10 }}>
-                          <Row icon="✉" label={pickLang(PUSH_TXT.label, lang)} note={pickLang(PUSH_TXT.note, lang)} last
-                            onClick={() => togglePush(!pushOptin)} right={sw(!!pushOptin)} />
-                        </div>
-                        {pushOptin && pushCode && (
-                          <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:1.5,color:"#6f6a80",margin:"8px 6px 0" }}>{pickLang(PUSH_TXT.code, lang)}: {pushCode}</div>
+                      {notifSetOpen && (<>
+                        <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11.5,color:"#7c7590",margin:"8px 6px 0",lineHeight:1.5 }}>{pickLang(NOTIF_SET_TXT.order, lang)}</div>
+                        {showPush && pushOptin && pushCode && (
+                          <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:1.5,color:"#6f6a80",margin:"6px 6px 0" }}>{pickLang(PUSH_TXT.code, lang)}: {pushCode}</div>
                         )}
                       </>)}
                     </>
