@@ -1157,6 +1157,15 @@ function NiyetMektubu({ lang }) {
   );
 }
 
+// AYNA ADIMI İPUÇLARI (kullanıcı: "aynaya soru sorması gerektiğini anlayacak mı?").
+// Adım yalnızca Ayna'ya soru sorup cevap alınca tamamlandığı için hem Bağlan'daki
+// çipte hem Ayna ekranında bunu söylüyoruz. {b} = Bağlan sekmesinin o dildeki adı.
+const AYNA_STEP_TXT = {
+  chip: { tr:"Ayna'ya bir soru", en:"One question to the Mirror", de:"Eine Frage an den Spiegel", es:"Una pregunta al Espejo", pt:"Uma pergunta ao Espelho", fr:"Une question au Miroir", ja:"鏡にひとつ質問" },
+  hint: { tr:"Bugün Ayna'ya bir soru sor, {b} ekranındaki Ayna adımın tamamlansın.", en:"Ask the Mirror one question today to complete the Mirror step in {b}.", de:"Stell dem Spiegel heute eine Frage, damit dein Spiegel-Schritt in {b} abgeschlossen ist.", es:"Hazle hoy una pregunta al Espejo para completar el paso del Espejo en {b}.", pt:"Faz hoje uma pergunta ao Espelho para concluíres o passo do Espelho em {b}.", fr:"Pose une question au Miroir aujourd'hui pour valider l'étape Miroir dans {b}.", ja:"今日、鏡にひとつ質問すると「{b}」の鏡のステップが完了します。" },
+  done: { tr:"✓ Bugünkü Ayna adımın tamamlandı", en:"✓ Today's Mirror step is complete", de:"✓ Dein heutiger Spiegel-Schritt ist abgeschlossen", es:"✓ El paso del Espejo de hoy está completo", pt:"✓ O passo do Espelho de hoje está concluído", fr:"✓ L'étape Miroir du jour est validée", ja:"✓ 今日の鏡のステップが完了しました" },
+};
+
 const ATTACH_TXT = {
   title:   { tr:"Bağlanma Profili", en:"Attachment Profile", de:"Bindungsprofil", es:"Perfil de apego", pt:"Perfil de vinculação", fr:"Profil d'attachement", ja:"愛着プロフィール" },
   askHead: { tr:"Yakınlıkta nasıl davranıyorsun?", en:"How do you move in closeness?", de:"Wie verhältst du dich in Nähe?", es:"¿Cómo te mueves en la cercanía?", pt:"Como te moves na proximidade?", fr:"Comment vis-tu la proximité ?", ja:"親密さの中で、あなたはどう動く？" },
@@ -13363,7 +13372,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 ses:    { label:t("bnav_sound"),    cur:freqListenSec,    need:STEP_MIN.ses,   unit:"sn" },
                 chakra: { label:t("bnav_chakra"),   cur:readTerapiSec(),  need:STEP_MIN.chakra,unit:"sn" },
                 aksam:  { label:t("bnav_evening"),  cur:stepsCompleted["aksam"]?1:0, need:1, unit:"" },
-                rehber: { label:t("mirror_label"),  cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
+                // Tamamlanmamışken ne yapılacağını söyler (adım = Ayna'ya soru sorup cevap almak).
+                rehber: { label: stepsCompleted["rehber"] ? t("mirror_label") : pickLang(AYNA_STEP_TXT.chip, lang), cur:stepsCompleted["rehber"]?1:0,need:1, unit:"" },
               };
               const reqs    = MANDALA_STEPS.map(id => ({ id, ...REQ_META[id] }));
               const optReqs = OPTIONAL_STEPS.map(id => ({ id, ...REQ_META[id] }));
@@ -14177,6 +14187,13 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{ fontFamily:"'Inter',sans-serif",fontSize:24,fontWeight:300,letterSpacing:4,color:"#d8c8f0" }}>
                   {t("mirror_ask_heart")}
                 </div>
+                {/* Bağlan'daki Ayna adımının ne istediğini söyle (soru + cevap). */}
+                <div style={{ marginTop:10,fontFamily:"'Inter',sans-serif",fontSize:12,lineHeight:1.55,
+                  color: stepsCompleted["rehber"] ? "#82d9a3" : "#8e86a8",maxWidth:300,marginLeft:"auto",marginRight:"auto" }}>
+                  {stepsCompleted["rehber"]
+                    ? pickLang(AYNA_STEP_TXT.done, lang)
+                    : pickLang(AYNA_STEP_TXT.hint, lang).replace("{b}", pickLang(NEDIR_I18N.baglanT, lang))}
+                </div>
               </div>
             </>
           )}
@@ -14232,6 +14249,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     kurulum kimliği + olay adı gider, SORU VE CEVAP METNİ
                     GİTMEZ. Kullanıcı Ayarlar'dan analitiği kapattıysa hiçbir
                     şey gönderilmez, düğme yine de "teşekkürler" der. */}
+                {aynaCevapGecerli && stepsCompleted["rehber"] && (
+                  <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:0.6,color:"#82d9a3",marginBottom:10,fontFamily:"'Inter',sans-serif" }}>
+                    {pickLang(AYNA_STEP_TXT.done, lang)}
+                  </div>
+                )}
                 {!aynaCevapGecerli ? null : aynaGeriBildirim ? (
                   <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:1.2,color:"#7c7590",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
                     {pickLang({tr:"Teşekkürler, not aldım.",en:"Thank you, noted.",de:"Danke, notiert.",es:"Gracias, anotado.",pt:"Obrigado, anotado.",fr:"Merci, c'est noté.",ja:"ありがとう、記録しました。"}, lang)}

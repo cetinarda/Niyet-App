@@ -339,6 +339,10 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
      kullanıcısı "yanlışlıkla dokununca Ayna tiklendi" dedi. Bilinen bedel
      (kullanıcıya söylendi, kabul etti): Ayna sorusu doğum bilgisi ister, doğum
      girmemiş yeni kullanıcı ilk 3 adımlık bağlantıyı tamamlayamaz.
+     **Kullanıcı anlasın diye (`AYNA_STEP_TXT`, 7 dil):** Bağlan'daki çip
+     tamamlanmamışken "Ayna'ya bir soru" der (tamamlanınca "* İçsel Ayna"); Ayna
+     ekranında başlığın altında "Bugün Ayna'ya bir soru sor, Bağlan ekranındaki
+     Ayna adımın tamamlansın", cevaptan sonra "✓ Bugünkü Ayna adımın tamamlandı".
    - **Bu üçü neden:** üçü de günün her saatinde bitirilebiliyor. Dışarıda
      bırakılanlar: `aksam` (22:00'den önce açılmıyor, sabah kurulan kullanıcı
      ilk günü kapatamazdı), `gun` (görev AI'dan geliyor, ağ/limit hatası adımı
