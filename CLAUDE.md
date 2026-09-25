@@ -729,6 +729,17 @@ daha iyi iş görüyor"), geri koyma. Süre dolunca sandığın mührü parlar +
   DIŞINDA (21 günde bir). `notifKind` → "mektup".
 - Analitik `letter` {a: seal/open/reflect, r} (track.mjs beyaz listede, rapor
   "Seçimler"de). Metin 7 dilde `LETTER_TXT`.
+- **Yazarken ipucu** (kullanıcı, Eyl 2026): yazma kutusuna odaklanınca altın çizgili
+  satır belirir: "Yazarken tüm gücünle, sanki gerçekleşmiş gibi hayal et."
+  (`LETTER_TXT.imagine`, 7 dil).
+- **Sandık animasyonları** (kullanıcı: "sade, zarif, gizemli"): `letterChest(ready,
+  anim)` kapak (`.lc-lid`) ve mühür (`.lc-seal`) grupları ayrı. MÜHÜRLEME 2,4 sn:
+  mektup iner, kapak kapanır, mühür oturur, altın halka yayılır (1,75 sn'de haptic).
+  AÇILIŞ 2,6 sn: mühür parlayıp çözülür, kapak kalkar, ışık yükselir, mektup çıkar;
+  `openedAt` animasyon SONUNDA yazılır. Veri mühürlemede HEMEN kaydedilir (animasyon
+  yalnızca görünüm). Animasyon başında kart ekranın ortasına kaydırılır (`animRef`):
+  "Mühürle" uzun kartın altında, kart kısalınca sandık ekran dışında kalıyordu.
+  "Hareketi azalt" açıksa animasyon atlanır. CSS: global stildeki `lc*` keyframe'ler.
 
 ## ⏰ 1.3.9 BUILD ÖNCESİ HATIRLAT (kullanıcı isteği)
 

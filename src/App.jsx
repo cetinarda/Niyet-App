@@ -915,6 +915,10 @@ const LETTER_TXT = {
              ja:"意図を書いて封をしましょう。手紙は21日間閉じたまま。その後ひらいて、もう一度読み返します。" },
   write:   { tr:"Mektubunu yaz", en:"Write your letter", de:"Brief schreiben", es:"Escribe tu carta", pt:"Escreve a tua carta", fr:"Écris ta lettre", ja:"手紙を書く" },
   hint1:   { tr:"Kalpten, içten niyetlerini yazmaktan çekinme.", en:"Don't hold back from writing your heartfelt, sincere intentions.", de:"Trau dich, deine aufrichtigen Absichten aus dem Herzen aufzuschreiben.", es:"No dudes en escribir tus intenciones más sinceras, desde el corazón.", pt:"Não hesites em escrever as tuas intenções mais sinceras, do coração.", fr:"N'hésite pas à écrire tes intentions sincères, avec le cœur.", ja:"心からの素直な意図を、ためらわずに書いてください。" },
+  // Yazma kutusuna girilince beliren ipucu (kullanıcı, Eyl 2026).
+  imagine: { tr:"Yazarken tüm gücünle, sanki gerçekleşmiş gibi hayal et.", en:"As you write, imagine it with all your heart, as if it has already happened.", de:"Stell es dir beim Schreiben mit ganzer Kraft vor, als wäre es schon geschehen.", es:"Mientras escribes, imagínalo con toda tu fuerza, como si ya hubiera ocurrido.", pt:"Enquanto escreves, imagina-o com toda a tua força, como se já tivesse acontecido.", fr:"En écrivant, imagine-le de toute ta force, comme si c'était déjà arrivé.", ja:"書きながら、もう叶ったかのように、心の底から思い描いて。" },
+  sealing: { tr:"Mühürleniyor", en:"Sealing", de:"Wird versiegelt", es:"Sellando", pt:"A selar", fr:"Scellement", ja:"封をしています" },
+  opening: { tr:"Açılıyor", en:"Opening", de:"Wird geöffnet", es:"Abriendo", pt:"A abrir", fr:"Ouverture", ja:"ひらいています" },
   hint2:   { tr:"Olmasını istediğini, olmuş gibi şimdiki zamanda yazabilirsin.", en:"You can write what you wish for as if it has already happened, in the present tense.", de:"Du kannst das Gewünschte so schreiben, als wäre es schon geschehen, in der Gegenwart.", es:"Puedes escribir lo que deseas como si ya hubiera ocurrido, en presente.", pt:"Podes escrever o que desejas como se já tivesse acontecido, no presente.", fr:"Tu peux écrire ce que tu souhaites comme si c'était déjà arrivé, au présent.", ja:"願うことを、すでに叶ったかのように現在形で書いてもかまいません。" },
   privacy: { tr:"Mektubun yalnızca bu cihazda saklanır, kimse okuyamaz.", en:"Your letter is stored only on this device. No one else can read it.", de:"Dein Brief wird nur auf diesem Gerät gespeichert. Niemand sonst kann ihn lesen.", es:"Tu carta se guarda solo en este dispositivo. Nadie más puede leerla.", pt:"A tua carta fica guardada só neste dispositivo. Mais ninguém a pode ler.", fr:"Ta lettre est conservée uniquement sur cet appareil. Personne d'autre ne peut la lire.", ja:"手紙はこの端末にだけ保存され、ほかの誰にも読まれません。" },
   ph:      { tr:"Sevgili ben, bu mektubu açtığında...", en:"Dear me, when you open this letter...", de:"Liebes Ich, wenn du diesen Brief öffnest...", es:"Querida yo, cuando abras esta carta...", pt:"Querido eu, quando abrires esta carta...", fr:"Cher moi, quand tu ouvriras cette lettre...", ja:"親愛なる私へ。この手紙をひらくとき…" },
@@ -965,7 +969,9 @@ async function scheduleLetterNotif(opensAt, lang) {
 // altın dört köşeli parıltı. Kilidin üstünde altın mühür. `ready` = 21 gün doldu,
 // mühür parlar. Düz fonksiyon (bileşen değil), her çizimde aynı SVG'yi döndürür.
 const CHEST_STARS = [[18,22,1],[40,120,0.8],[62,30,0.7],[190,26,1],[204,98,0.8],[172,132,0.7],[28,74,0.6],[150,20,0.6],[96,136,0.6],[212,58,0.7],[120,14,0.5],[12,130,0.6]];
-function letterChest(ready) {
+// anim: null | "seal" (mektup iner, kapak kapanır, mühür oturur) | "open" (mühür
+// çözülür, kapak aralanır, ışık yükselir, mektup çıkar). CSS: .lc-* (global stil).
+function letterChest(ready, anim) {
   const G = "#e8c07a", GD = "#b8904a", LAV = "#6b5aa8";
   const spark = (x, y, r) => <path d={`M${x} ${y-r} L${x+r*0.28} ${y-r*0.28} L${x+r} ${y} L${x+r*0.28} ${y+r*0.28} L${x} ${y+r} L${x-r*0.28} ${y+r*0.28} L${x-r} ${y} L${x-r*0.28} ${y-r*0.28} Z`} fill={G} />;
   return (
@@ -984,22 +990,47 @@ function letterChest(ready) {
       <circle cx="110" cy="80" r="44" fill="url(#lcGlow)" />
       {/* Sandık: kemerli kapak + gövde, altın kuşaklar */}
       <ellipse cx="110" cy="116" rx="46" ry="4" fill="#000" opacity="0.45" />
-      <path d="M70 72 L70 62 Q70 44 110 44 Q150 44 150 62 L150 72 Z" fill="url(#lcWood)" stroke={G} strokeWidth="1.4" />
+      {/* Açılışta sandığın ağzından yükselen soluk ışık (kapağın ARKASINDA) */}
+      {anim === "open" && <ellipse className="lc-light" cx="110" cy="46" rx="36" ry="34" fill="url(#lcGlow)" />}
+      {/* Mühürlemede içeri inen mektup (kapak arkasında, gövdeye girer) */}
+      {anim === "seal" && (
+        <g className="lc-letter lc-letter-seal">
+          <rect x="96" y="40" width="28" height="19" rx="1.5" fill="#f3e6c8" stroke={GD} strokeWidth="0.6" />
+          <path d="M96.5 41 L110 51 L123.5 41" fill="none" stroke={GD} strokeWidth="0.6" />
+        </g>
+      )}
       <rect x="70" y="72" width="80" height="40" rx="2" fill="url(#lcWood)" stroke={G} strokeWidth="1.4" />
-      <path d="M72 58 Q110 48 148 58" fill="none" stroke={G} strokeOpacity="0.45" />
       <line x1="72" y1="104" x2="148" y2="104" stroke={G} strokeOpacity="0.45" />
       <path d="M72 84 L148 84 M72 94 L148 94" stroke="#140d34" strokeOpacity="0.55" />
-      <path d="M84 47.5 L84 112 M136 47.5 L136 112" stroke={GD} strokeWidth="3" />
-      <path d="M84 47.5 L84 112 M136 47.5 L136 112" stroke={G} strokeWidth="1" />
+      <path d="M84 72 L84 112 M136 72 L136 112" stroke={GD} strokeWidth="3" />
+      <path d="M84 72 L84 112 M136 72 L136 112" stroke={G} strokeWidth="1" />
       <rect x="66" y="110" width="88" height="4" rx="1.5" fill={GD} opacity="0.8" />
+      {/* Kapak: menteşe sağda, açılıp kapanır */}
+      <g className={anim ? `lc-lid lc-lid-${anim}` : undefined}>
+        <path d="M70 72 L70 62 Q70 44 110 44 Q150 44 150 62 L150 72 Z" fill="url(#lcWood)" stroke={G} strokeWidth="1.4" />
+        <path d="M72 58 Q110 48 148 58" fill="none" stroke={G} strokeOpacity="0.45" />
+        <path d="M84 47.5 L84 72 M136 47.5 L136 72" stroke={GD} strokeWidth="3" />
+        <path d="M84 47.5 L84 72 M136 47.5 L136 72" stroke={G} strokeWidth="1" />
+      </g>
+      {/* Açılışta sandıktan süzülen mektup (kapağın ÖNÜNDE) */}
+      {anim === "open" && (
+        <g className="lc-letter lc-letter-open">
+          <rect x="96" y="40" width="28" height="19" rx="1.5" fill="#f3e6c8" stroke={GD} strokeWidth="0.6" />
+          <path d="M96.5 41 L110 51 L123.5 41" fill="none" stroke={GD} strokeWidth="0.6" />
+        </g>
+      )}
       {/* Kilit plakası */}
       <rect x="101" y="64" width="18" height="18" rx="2" fill="#140d34" stroke={G} strokeWidth="1.2" />
       {/* Mühür: kilidin üstünde altın mum, kenarı dalgalı, ortada ✦ */}
-      <path d="M110 60 l3.2 2.2 3.8 -0.4 1.3 3.6 3.3 2 -0.9 3.7 1.6 3.5 -3 2.3 -0.6 3.8 -3.8 0.6 -2.3 3 -3.5 -1.6 -3.7 0.9 -2 -3.3 -3.6 -1.3 0.4 -3.8 -2.2 -3.2 2.2 -3.2 -0.4 -3.8 3.6 -1.3 2 -3.3 3.7 0.9 Z"
-        fill="url(#lcSeal)" stroke="#8a5a20" strokeWidth="0.6" style={{ filter: ready ? "drop-shadow(0 0 4px rgba(246,220,166,0.9))" : "drop-shadow(0 1px 1.5px rgba(0,0,0,0.6))" }} />
-      <circle cx="110" cy="75" r="7.2" fill="none" stroke="#8a5a20" strokeOpacity="0.55" strokeWidth="0.8" />
-      {spark(110, 75, 4.6)}
-      <path d="M110 70.4 L111.3 73.7 L114.6 75 L111.3 76.3 L110 79.6 L108.7 76.3 L105.4 75 L108.7 73.7 Z" fill="#6e4516" />
+      <g className={anim ? `lc-seal lc-seal-${anim}` : undefined}>
+        <path d="M110 60 l3.2 2.2 3.8 -0.4 1.3 3.6 3.3 2 -0.9 3.7 1.6 3.5 -3 2.3 -0.6 3.8 -3.8 0.6 -2.3 3 -3.5 -1.6 -3.7 0.9 -2 -3.3 -3.6 -1.3 0.4 -3.8 -2.2 -3.2 2.2 -3.2 -0.4 -3.8 3.6 -1.3 2 -3.3 3.7 0.9 Z"
+          fill="url(#lcSeal)" stroke="#8a5a20" strokeWidth="0.6" style={{ filter: ready ? "drop-shadow(0 0 4px rgba(246,220,166,0.9))" : "drop-shadow(0 1px 1.5px rgba(0,0,0,0.6))" }} />
+        <circle cx="110" cy="75" r="7.2" fill="none" stroke="#8a5a20" strokeOpacity="0.55" strokeWidth="0.8" />
+        {spark(110, 75, 4.6)}
+        <path d="M110 70.4 L111.3 73.7 L114.6 75 L111.3 76.3 L110 79.6 L108.7 76.3 L105.4 75 L108.7 73.7 Z" fill="#6e4516" />
+      </g>
+      {/* Mühür oturunca yayılan altın halka */}
+      {anim === "seal" && <circle className="lc-ring" cx="110" cy="75" r="16" fill="none" stroke={G} strokeWidth="1.2" />}
     </svg>
   );
 }
@@ -1013,6 +1044,18 @@ function NiyetMektubu({ lang }) {
   const [draft, setDraft] = useState("");
   const [showArchive, setShowArchive] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  // anim: "seal" (mühürleme) | "open" (açılış) sırasında sandık animasyonu oynar.
+  const [anim, setAnim] = useState(null);
+  const [focused, setFocused] = useState(false);
+  // Animasyon başlarken sandığı ekranın ortasına getir: "Mühürle" uzun yazma
+  // kartının en altında, kart kısalınca sandık ekranın üstünde kalıyordu.
+  const animRef = useRef(null);
+  useEffect(() => {
+    if (!anim) return;
+    const id = requestAnimationFrame(() => { try { animRef.current && animRef.current.scrollIntoView({ block:"center", behavior:"smooth" }); } catch (_) {} });
+    return () => cancelAnimationFrame(id);
+  }, [anim]);
+  const reduceMotion = () => { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (_) { return false; } };
   const sealed = !!letter && now < letter.opensAt;
   // Geri sayım yalnızca mühürlüyken ve bu kutu ekrandayken işler (dakikada bir).
   useEffect(() => {
@@ -1048,6 +1091,17 @@ function NiyetMektubu({ lang }) {
     </div>
   );
 
+  // 0) ANİMASYON: mühürleme / açılış sürerken yalnızca sandık + tek satır
+  if (anim) return (
+    <div ref={animRef} style={{ ...card,alignItems:"center",textAlign:"center",border:"1px solid rgba(232,192,122,0.3)" }}>
+      {eyebrow}
+      <div style={{ width:"100%" }}>{letterChest(anim === "open", anim)}</div>
+      <div style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:17,color:"#e9dcc0",letterSpacing:0.5,animation:"lcHint 0.9s ease both" }}>
+        {L(anim === "seal" ? LETTER_TXT.sealing : LETTER_TXT.opening)} ✦
+      </div>
+    </div>
+  );
+
   // 1) YAZMA
   if (composing) {
     const ok = draft.trim().length >= 3;
@@ -1055,18 +1109,31 @@ function NiyetMektubu({ lang }) {
       <div style={card}>
         {eyebrow}
         <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.hint1)} {L(LETTER_TXT.hint2)}</div>
+        {/* Yazma kutusuna girilince beliren ipucu (kullanıcı isteği). */}
+        {(focused || draft) && (
+          <div style={{ display:"flex",gap:8,alignItems:"flex-start",padding:"9px 12px",borderRadius:10,
+            background:"rgba(232,192,122,0.06)",borderLeft:`2px solid ${GOLD}`,animation:"lcHint 0.7s ease both" }}>
+            <span style={{ color:GOLD,fontSize:12,lineHeight:"22px" }}>✦</span>
+            <span style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:16.5,lineHeight:1.4,color:"#f3e3c0" }}>{L(LETTER_TXT.imagine)}</span>
+          </div>
+        )}
         {/* 16 px: iOS 16 px altı alana odakta sayfayı yakınlaştırır. */}
         <textarea value={draft} onChange={(e)=>setDraft(e.target.value.slice(0, 2000))} placeholder={L(LETTER_TXT.ph)} rows={7} autoFocus
+          onFocus={()=>setFocused(true)}
           style={{ width:"100%",boxSizing:"border-box",resize:"vertical",padding:"14px 14px",borderRadius:12,outline:"none",
             fontFamily:SERIF,fontSize:18,lineHeight:1.55,color:INK,background:"rgba(10,8,22,0.65)",border:"1px solid rgba(232,192,122,0.25)" }} />
         <div style={{ fontFamily:INTER,fontSize:11.5,lineHeight:1.55,color:MUTE }}>{L(LETTER_TXT.sealNote)} {L(LETTER_TXT.privacy)}</div>
         <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
-          <button onClick={()=>{ setComposing(false); setDraft(""); }} style={ghost}>{L(LETTER_TXT.cancel)}</button>
+          <button onClick={()=>{ setComposing(false); setDraft(""); setFocused(false); }} style={ghost}>{L(LETTER_TXT.cancel)}</button>
           <button disabled={!ok} onClick={()=>{
               const created = Date.now(), opensAt = created + LETTER_DAYS * 86400000;
               save({ text: draft.trim(), created, opensAt });
-              setNow(Date.now()); setComposing(false); setDraft("");
-              try { haptic(); } catch (_) {}
+              setNow(Date.now()); setComposing(false); setDraft(""); setFocused(false);
+              if (!reduceMotion()) {
+                setAnim("seal");
+                setTimeout(() => { try { haptic(); } catch (_) {} }, 1750); // mühür oturduğu an
+                setTimeout(() => setAnim(null), 2500);
+              } else { try { haptic(); } catch (_) {} }
               try { track("letter", { a:"seal" }); } catch (_) {}
               scheduleLetterNotif(opensAt, lang);
             }} style={{ ...primary,opacity: ok ? 1 : 0.45,cursor: ok ? "pointer" : "default" }}>✦ {L(LETTER_TXT.seal)}</button>
@@ -1121,7 +1188,13 @@ function NiyetMektubu({ lang }) {
       <div style={{ width:"100%" }}>{letterChest(true)}</div>
       <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.readyHead)}</div>
       <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.readyBody)}</div>
-      <button onClick={()=>{ save({ ...letter, openedAt: Date.now() }); try { haptic(); } catch (_) {} try { track("letter", { a:"open" }); } catch (_) {} }}
+      <button onClick={()=>{
+          try { haptic(); } catch (_) {} try { track("letter", { a:"open" }); } catch (_) {}
+          if (reduceMotion()) { save({ ...letter, openedAt: Date.now() }); return; }
+          setAnim("open");
+          setTimeout(() => { try { haptic(); } catch (_) {} }, 900); // mühür çözülürken
+          setTimeout(() => { save({ ...letter, openedAt: Date.now() }); setAnim(null); }, 2600);
+        }}
         style={primary}>{L(LETTER_TXT.open)}</button>
     </div>
   );
@@ -3715,6 +3788,30 @@ const GLOBAL_CSS = `
   @keyframes slideIn     { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
   @keyframes checkPop    { 0%{transform:scale(0)} 70%{transform:scale(1.3)} 100%{transform:scale(1)} }
   @keyframes diamondSpin { 0%{transform:rotate(0deg) scale(1)} 50%{transform:rotate(180deg) scale(1.06)} 100%{transform:rotate(360deg) scale(1)} }
+  /* NİYET MEKTUBU SANDIĞI: mühürleme (kapanış) + açılış. Sade, yavaş, gizemli.
+     SVG grupları transform-box:fill-box ile kendi kutularına göre döner. */
+  .lc-lid, .lc-seal, .lc-letter, .lc-ring, .lc-light { transform-box:fill-box; }
+  .lc-lid { transform-origin:100% 100%; }
+  .lc-seal, .lc-ring { transform-origin:50% 50%; }
+  .lc-light { transform-origin:50% 100%; }
+  .lc-lid-seal    { animation:lcLidClose 2.4s cubic-bezier(.45,0,.2,1) both; }
+  .lc-letter-seal { animation:lcLetterIn 2.4s cubic-bezier(.45,0,.3,1) both; }
+  .lc-seal-seal   { animation:lcSealDrop 2.4s cubic-bezier(.2,.8,.2,1) both; }
+  .lc-ring        { animation:lcRing 2.4s ease-out both; }
+  .lc-lid-open    { animation:lcLidOpen 2.6s cubic-bezier(.45,0,.2,1) both; }
+  .lc-seal-open   { animation:lcSealBreak 2.6s ease both; }
+  .lc-light       { animation:lcLight 2.6s ease-out both; }
+  .lc-letter-open { animation:lcLetterOut 2.6s cubic-bezier(.3,0,.2,1) both; }
+  @keyframes lcLidClose  { 0%,46%{transform:translateY(-11px) rotate(-6deg)} 72%,100%{transform:none} }
+  @keyframes lcLetterIn  { 0%{transform:translateY(-34px);opacity:0} 14%{opacity:1} 44%{transform:translateY(14px) scale(.82);opacity:1} 56%,100%{transform:translateY(22px) scale(.7);opacity:0} }
+  @keyframes lcSealDrop  { 0%,68%{transform:scale(2.1);opacity:0} 84%{transform:scale(.94);opacity:1} 100%{transform:scale(1);opacity:1} }
+  @keyframes lcRing      { 0%,80%{transform:scale(.35);opacity:0} 86%{opacity:.85} 100%{transform:scale(2.3);opacity:0} }
+  @keyframes lcLidOpen   { 0%,34%{transform:none} 70%,100%{transform:translateY(-11px) rotate(-6deg)} }
+  @keyframes lcSealBreak { 0%{transform:scale(1);opacity:1;filter:drop-shadow(0 0 4px rgba(246,220,166,.9))} 22%{transform:scale(1.14);filter:drop-shadow(0 0 12px rgba(246,220,166,1))} 40%,100%{transform:scale(.4) rotate(40deg);opacity:0} }
+  @keyframes lcLight     { 0%,42%{transform:scaleY(.15);opacity:0} 72%{transform:scaleY(1);opacity:.9} 100%{transform:scaleY(1.05);opacity:.55} }
+  @keyframes lcLetterOut { 0%,52%{transform:translateY(18px) scale(.7);opacity:0} 70%{opacity:1} 100%{transform:translateY(-26px) scale(1);opacity:1} }
+  @keyframes lcHint      { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+  @media (prefers-reduced-motion: reduce) { .lc-lid-seal,.lc-letter-seal,.lc-seal-seal,.lc-ring,.lc-lid-open,.lc-seal-open,.lc-light,.lc-letter-open { animation:none; } }
   @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
   @keyframes portalRingPulse { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0.85} 100%{transform:translate(-50%,-50%) scale(3.2);opacity:0} }
   @keyframes portalTunnel    { 0%{transform:translate(-50%,-50%) scale(0.4) rotate(0deg);opacity:0.9} 50%{opacity:0.5} 100%{transform:translate(-50%,-50%) scale(2.4) rotate(180deg);opacity:0} }
