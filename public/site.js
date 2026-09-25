@@ -34,12 +34,12 @@
       var v = localStorage.getItem("sakin_site_theme");
       if (v === "light" || v === "dark") return v;
     } catch (e) {}
-    return "light"; // varsayılan açık tema (kullanıcı tercihi)
+    return "dark"; // varsayılan KOYU tema (kullanıcı kararı, Eyl 2026); açık tema yalnızca seçilince
   }
   function applyTheme(t) {
     document.documentElement.setAttribute("data-theme", t);
     var m = document.querySelector('meta[name="theme-color"]');
-    if (m) m.setAttribute("content", t === "light" ? "#f6f4fa" : "#000000");
+    if (m) m.setAttribute("content", t === "light" ? "#f6f4fa" : "#06060a");
     document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
       b.textContent = t === "light" ? "☾" : "☀";
       b.setAttribute("aria-label", t === "light" ? "Koyu tema" : "Açık tema");
@@ -148,6 +148,13 @@
     var glow = document.createElement("div");
     glow.className = "ambient-glow";
     wrap.appendChild(glow);
+
+    // Gezen flu ışıklar (bkz. site.css .ambient-orb): dört yumuşak leke.
+    ["o1", "o2", "o3", "o4"].forEach(function (k) {
+      var orb = document.createElement("div");
+      orb.className = "ambient-orb " + k;
+      wrap.appendChild(orb);
+    });
 
     var cursor = document.createElement("div");
     cursor.className = "ambient-cursor";

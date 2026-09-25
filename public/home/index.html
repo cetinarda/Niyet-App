@@ -6,7 +6,7 @@
 <title>Sakin · İçindeki sesi dinle</title>
 <meta name="description" content="Gürültülü dünyanın içinde kendine küçük bir alan aç. Nefes, meditasyon, frekans, çakra, sembol ve arketip; tek bir bütünsel farkındalık sisteminde. iOS ve Android'de ücretsiz.">
 <link rel="canonical" href="https://sakin.life/">
-<meta name="theme-color" content="#fbfafd">
+<meta name="theme-color" content="#06060a">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
@@ -30,7 +30,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>(function(){try{var q=new URLSearchParams(location.search).get("theme");var t=(q==="light"||q==="dark")?q:localStorage.getItem("sakin_site_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");}catch(e){}})();</script>
+<script>(function(){try{var q=new URLSearchParams(location.search).get("theme");var t=(q==="light"||q==="dark")?q:localStorage.getItem("sakin_site_theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){}})();</script>
 <link rel="stylesheet" href="/site.css">
 
 <script type="application/ld+json">
@@ -199,6 +199,28 @@
   .rating .rlabel b { color:var(--text); font-weight:700; }
 
   /* ── Kullanıcı yorumları ─────────────────────────────────────────────── */
+  /* ── Bildirimler bölümü: telefon bildirimi görünümünde üç örnek ── */
+  .notifs { display:flex; flex-direction:column; gap:10px; max-width:440px; margin:0 auto; }
+  .notif {
+    display:flex; align-items:flex-start; gap:12px; text-align:left;
+    background:var(--surface); border:1px solid var(--line-soft); border-radius:18px;
+    padding:12px 14px; box-shadow:var(--shadow);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  }
+  .notif:nth-child(2) { margin-left:18px; margin-right:-18px; }
+  .notif-ic {
+    width:34px; height:34px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(145deg,#1b1530,#0b0915); border:1px solid var(--ring);
+  }
+  .notif-ic i { width:8px; height:8px; border-radius:50%; background:#d9c9f5; box-shadow:0 0 10px rgba(217,201,245,.8); display:block; }
+  .notif-bd { flex:1; min-width:0; }
+  .notif-hd { display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin-bottom:2px; }
+  .notif-hd b { font-family:var(--font-display); font-weight:300; letter-spacing:3px; font-size:11.5px; color:var(--head); }
+  .notif-hd span { font-size:11.5px; color:var(--faint); }
+  .notif p { font-size:14px; line-height:1.55; color:var(--text); margin:0; }
+  .notif-note { text-align:center; font-size:13.5px; color:var(--muted); margin-top:26px; }
+  @media (max-width:520px) { .notif:nth-child(2) { margin-left:8px; margin-right:-8px; } }
   .reviews { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
   .review {
     display:flex; flex-direction:column; gap:12px; margin:0;
@@ -408,6 +430,24 @@
       </a>
     </div>
     <p class="blog-note" data-t="blogLangNote"></p>
+  </div>
+</section>
+
+<section class="sec band" id="bildirimler" style="--tint:rgba(232,192,122,0.07)">
+  <div class="read">
+    <div class="sec-head">
+      <span class="kicker" data-t="notifKicker">Bildirimler</span>
+      <h2 data-t="notifTitle" data-t-html>Bildirimlerini açık tut,<br>Sakin gün içinde yanında olsun.</h2>
+      <p data-t="notifText">Sakin'in en güzel anları bazen sen aramadan gelir: sabah seni bekleyen kartlar, gökyüzü hareketlendiğinde küçük bir haber, akşamüstü içine dokunan bir söz. Bildirimleri açık tutarsan bu küçük hatırlatmalar gününe sessizce eşlik eder.</p>
+    </div>
+    <!-- Örnek bildirimler: metinler uygulamadaki GERÇEK bildirimlerden
+         (TAROT_NOTIF, PNOTIF_EM, NOTIF_SOZ). Saatler varsayılan plandan. -->
+    <div class="notifs" aria-hidden="true">
+      <div class="notif"><span class="notif-ic"><i></i></span><div class="notif-bd"><div class="notif-hd"><b>SAKİN</b><span>08:30</span></div><p data-t="notifN1">Günün rehber kartlarını çek, tarot kartını aç ve mesajını al.</p></div></div>
+      <div class="notif"><span class="notif-ic"><i></i></span><div class="notif-bd"><div class="notif-hd"><b>SAKİN</b><span>12:00</span></div><p data-t="notifN2">Gökyüzü bugün hafif hareketli. Nefesine dön, acele etme.</p></div></div>
+      <div class="notif"><span class="notif-ic"><i></i></span><div class="notif-bd"><div class="notif-hd"><b>SAKİN</b><span>18:00</span></div><p data-t="notifN3">Bazen şifa, çözerek değil bırakarak gelir.</p></div></div>
+    </div>
+    <p class="notif-note" data-t="notifNote">Günde en fazla üç. Sayısını ve türlerini uygulamada Ayarlar'dan sen seçersin.</p>
   </div>
 </section>
 
