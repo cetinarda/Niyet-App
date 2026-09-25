@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "882798565204",
+    "project_id": "sakin-fd9b7",
+    "storage_bucket": "sakin-fd9b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882798565204:android:c0110c4064223949b49ac1",
+        "android_client_info": {
+          "package_name": "com.sakin.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfIhJtT5xfX4B8Tsnwa3Ohci0P4hgEQrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

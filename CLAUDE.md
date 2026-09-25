@@ -796,9 +796,14 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   `sakin_push_optin` null). Kapatınca sunucu kaydı silinir. Dokunma →
   `PUSH_SCREENS` beyaz listesindeki ekran, soğuk açılış tamponlu. Analitik
   `push_optin` {v} + `notif_open` k="anlik" (track.mjs beyaz listede).
-- ⚠️ ANDROID KAPALI: `PUSH_ANDROID_READY = false` (App.jsx). `google-services.json`
-  (Firebase) `android/app/`'e konmadan register() native hata verir. Dosya
-  eklenince bayrağı true yap, R8 test kapısından geçir.
+- ✅ ANDROID AÇIK (Eyl 2026): `android/app/google-services.json` (Firebase projesi
+  `sakin-fd9b7`, paket com.sakin.app) repoda, `PUSH_ANDROID_READY = true`.
+  ⚠️ Dosya silinirse bayrağı false yap (Firebase'siz register() native hata verir).
+  Sunucu anahtarı Netlify `FCM_SA_JSON` (servis hesabı JSON'u, GİZLİ, repoda YOK).
+  Bildirim çubuğu simgesi `res/drawable/ic_stat_sakin.xml` (✦, tek renk) +
+  `@color/sakin_notif`, manifestte FCM varsayılanı. google-services.json
+  `SECRETS_SCAN_OMIT_PATHS` ile taramadan muaf (istemci yapılandırması, sır değil).
+  ⚠️ Firebase yeni native kod getirdi: Play'e göndermeden R8 test kapısı ŞART.
 - ✅ iOS native parçası EKLENDİ (kullanıcı onayladı, Eyl 2026): AppDelegate'te
   didRegister/didFailToRegisterForRemoteNotifications → Capacitor iletimi +
   App.entitlements'ta `aps-environment` (development; App Store arşivinde Xcode

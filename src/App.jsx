@@ -4597,9 +4597,10 @@ if (isNative) {
 // Gönderim: netlify/functions/push-admin.mjs paneli. Cihaz YALNIZCA kullanıcı
 // "Sakin'den anlık mesajlar"ı açarsa kaydolur (Apple 4.5.4: duyuru/tanıtım push'u
 // açık onay ister). Kapatınca sunucudaki kayıt silinir.
-// ⚠️ ANDROID KAPALI: google-services.json (Firebase) eklenmeden register() native
-// tarafta hata verir. Firebase dosyası android/app/'e konunca bu bayrağı true yap.
-const PUSH_ANDROID_READY = false;
+// ANDROID AÇIK (Eyl 2026): android/app/google-services.json (Firebase projesi
+// sakin-fd9b7) repoda. ⚠️ O dosya SİLİNİRSE bu bayrağı false yap: Firebase
+// yapılandırılmadan register() native tarafta hata verir.
+const PUSH_ANDROID_READY = true;
 const pushSupported = () => isNative && (Capacitor.getPlatform() === "ios" || PUSH_ANDROID_READY);
 const readPushOptin = () => { try { const v = localStorage.getItem("sakin_push_optin"); return v === "1" ? true : v === "0" ? false : null; } catch (_) { return null; } };
 let __pendingPushAction = null;

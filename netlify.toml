@@ -10,6 +10,9 @@
   # onu apps/hayvan/ios/...pbxproj içinde bulup deploy'u durdurdu. Asıl gizli
   # olan APNS_PRIVATE_KEY taranmaya DEVAM EDER, buraya ekleme.
   SECRETS_SCAN_OMIT_KEYS = "APNS_TEAM_ID,APNS_KEY_ID"
+  # google-services.json istemci yapılandırmasıdır (uygulamanın içinde açıkça
+  # durur), sır değil; gelişmiş taramanın API anahtarı kalıbına takılmasın.
+  SECRETS_SCAN_OMIT_PATHS = "android/app/google-services.json"
 
 [functions]
   directory = "netlify/functions"

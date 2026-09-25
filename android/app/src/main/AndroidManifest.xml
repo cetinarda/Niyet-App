@@ -27,6 +27,13 @@
         <meta-data
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
             android:value="false" />
+        <!-- Anlık bildirim (FCM): bildirim çubuğu simgesi + vurgu rengi. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_sakin" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/sakin_notif" />
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode|navigation|density"

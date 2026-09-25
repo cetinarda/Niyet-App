@@ -6,4 +6,5 @@
     <color name="colorAccent">#B299F0</color>
     <!-- Sistem gezinme + durum çubuğu zemini (uygulamanın koyu arka planı). -->
     <color name="sakinDark">#080C14</color>
+    <color name="sakin_notif">#B8A4D8</color>
 </resources>
