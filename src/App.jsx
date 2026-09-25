@@ -27,7 +27,7 @@ import { ensureCitiesLoaded, lookupCityBig, findCityMatches, isCitiesLoaded } fr
 import { showNowPlaying, clearNowPlaying, onRemoteCommand } from "./nowplaying";
 // Birinci-taraf ANONIM kullanim olcumu (funnel / drop-off). Kisisel veri yok,
 // reklam kimligi yok. Kullanici sakin_analytics_off ile kapatabilir.
-import { initAnalytics, track } from "./analytics";
+import { initAnalytics, track, getAnonId } from "./analytics";
 
 const isNative = Capacitor.isNativePlatform();
 // Bağlan ekranındaki iskelet/yüzde boyutu Android'de tek sayfaya sığmıyordu
@@ -1165,6 +1165,366 @@ const AYNA_STEP_TXT = {
   hint: { tr:"Bugün Ayna'ya bir soru sor, {b} ekranındaki Ayna adımın tamamlansın.", en:"Ask the Mirror one question today to complete the Mirror step in {b}.", de:"Stell dem Spiegel heute eine Frage, damit dein Spiegel-Schritt in {b} abgeschlossen ist.", es:"Hazle hoy una pregunta al Espejo para completar el paso del Espejo en {b}.", pt:"Faz hoje uma pergunta ao Espelho para concluíres o passo do Espelho em {b}.", fr:"Pose une question au Miroir aujourd'hui pour valider l'étape Miroir dans {b}.", ja:"今日、鏡にひとつ質問すると「{b}」の鏡のステップが完了します。" },
   done: { tr:"✓ Bugünkü Ayna adımın tamamlandı", en:"✓ Today's Mirror step is complete", de:"✓ Dein heutiger Spiegel-Schritt ist abgeschlossen", es:"✓ El paso del Espejo de hoy está completo", pt:"✓ O passo do Espelho de hoje está concluído", fr:"✓ L'étape Miroir du jour est validée", ja:"✓ 今日の鏡のステップが完了しました" },
 };
+
+// ── ÇEMBER: CANLI SOHBET ODASI (kullanıcı isteği, Eyl 2026: "o an online olanlarla
+// bir chat odası, eski mIRC/Kelebek gibi ama Sakin uyumlu") ──────────────────
+// Kararlar: her an açık canlı oda · Supabase Realtime · Türkçe + Global odalar.
+// YALNIZCA bugünkü bağlantısını tamamlayan girer (istemci kapısı; asıl koruma
+// sunucuda: chat-send denetimi, yavaş mod, AI moderasyonu, bildir/banla).
+// Mesaj DOĞRUDAN veritabanına yazılmaz: POST chat-send → sunucu denetler →
+// Realtime broadcast "room:<oda>" → herkese düşer. Kim odada: presence.
+// Takma ad sunucuda, cihazdan türetilir (istemci seçemez). Mesajlar 24 saat.
+// Sunucu: netlify/functions/_chat.mjs + chat-*.mjs, şema: supabase/cember.sql.
+const CEMBER_TXT = {
+  title:   { tr:"Çember", en:"Circle", de:"Kreis", es:"Círculo", pt:"Círculo", fr:"Cercle", ja:"サークル" },
+  live:    { tr:"Canlı oda", en:"Live room", de:"Live-Raum", es:"Sala en vivo", pt:"Sala ao vivo", fr:"Salon en direct", ja:"ライブルーム" },
+  here:    { tr:"{n} kişi burada", en:"{n} here now", de:"{n} gerade hier", es:"{n} aquí ahora", pt:"{n} aqui agora", fr:"{n} ici maintenant", ja:"いま{n}人" },
+  alone:   { tr:"Şimdilik yalnızca sen", en:"Just you for now", de:"Gerade nur du", es:"Por ahora solo tú", pt:"Por agora só tu", fr:"Rien que toi", ja:"いまはあなただけ" },
+  roomTr:  { tr:"Türkçe", en:"Türkçe", de:"Türkçe", es:"Türkçe", pt:"Türkçe", fr:"Türkçe", ja:"Türkçe" },
+  roomGl:  { tr:"Global", en:"Global", de:"Global", es:"Global", pt:"Global", fr:"Global", ja:"Global" },
+  empty:   { tr:"Oda şu an sessiz. İlk ışığı sen yak.", en:"The room is quiet. Light the first spark.", de:"Der Raum ist still. Zünde das erste Licht an.", es:"La sala está en silencio. Enciende la primera luz.", pt:"A sala está em silêncio. Acende a primeira luz.", fr:"Le salon est silencieux. Allume la première lumière.", ja:"いまは静か。最初の光を灯してみて。" },
+  ph:      { tr:"Bir şey paylaş...", en:"Share something...", de:"Teile etwas...", es:"Comparte algo...", pt:"Partilha algo...", fr:"Partage un mot...", ja:"ひとこと..." },
+  send:    { tr:"Gönder", en:"Send", de:"Senden", es:"Enviar", pt:"Enviar", fr:"Envoyer", ja:"送信" },
+  you:     { tr:"sen", en:"you", de:"du", es:"tú", pt:"tu", fr:"toi", ja:"あなた" },
+  locked:  { tr:"Bugünkü bağlantını tamamla, Çember açılsın.", en:"Complete today's connection to open the Circle.", de:"Schließe deine heutige Verbindung ab, dann öffnet sich der Kreis.", es:"Completa tu conexión de hoy y el Círculo se abrirá.", pt:"Completa a tua ligação de hoje e o Círculo abre-se.", fr:"Termine ta connexion du jour pour ouvrir le Cercle.", ja:"今日のつながりを完了するとサークルが開きます。" },
+  lockedSub:{ tr:"Çember, günün pratiğini tamamlayanların buluştuğu sakin bir oda.", en:"The Circle is a calm room for those who completed the day's practice.", de:"Der Kreis ist ein ruhiger Raum für alle, die die Übung des Tages abgeschlossen haben.", es:"El Círculo es una sala tranquila para quienes completaron la práctica del día.", pt:"O Círculo é uma sala calma para quem concluiu a prática do dia.", fr:"Le Cercle est un salon paisible pour celles et ceux qui ont terminé la pratique du jour.", ja:"サークルは、その日のプラクティスを終えた人が集まる静かな部屋です。" },
+  goBaglan:{ tr:"Bağlan'a git", en:"Go to Connect", de:"Zu Verbinden", es:"Ir a Conecta", pt:"Ir para Liga-te", fr:"Aller à Se relier", ja:"「つながる」へ" },
+  closed:  { tr:"Çember şu an kapalı. Birazdan tekrar dene.", en:"The Circle is closed right now. Try again soon.", de:"Der Kreis ist gerade geschlossen. Versuch es bald wieder.", es:"El Círculo está cerrado ahora. Inténtalo pronto.", pt:"O Círculo está fechado agora. Tenta daqui a pouco.", fr:"Le Cercle est fermé pour l'instant. Réessaie bientôt.", ja:"サークルは今閉じています。少ししてからまた試してね。" },
+  rulesHead:{ tr:"Çember'e hoş geldin", en:"Welcome to the Circle", de:"Willkommen im Kreis", es:"Bienvenido al Círculo", pt:"Bem-vindo ao Círculo", fr:"Bienvenue dans le Cercle", ja:"サークルへようこそ" },
+  rules: {
+    tr:["Burası bağlantısını tamamlayanların sakin odası.","Nazik ol; kimseyi yargılama, kırma.","Bağlantı, telefon ya da hesap adı paylaşma.","Rahatsız eden bir mesaja dokun: bildir ya da engelle.","Takma adın otomatik ve anonim. Mesajlar 24 saat sonra silinir."],
+    en:["This is the calm room of those who completed their connection.","Be kind; don't judge or hurt anyone.","Don't share links, phone numbers or usernames.","Tap a message that bothers you to report or block it.","Your nickname is automatic and anonymous. Messages disappear after 24 hours."],
+    de:["Das ist der ruhige Raum derer, die ihre Verbindung abgeschlossen haben.","Sei freundlich; verurteile und verletze niemanden.","Teile keine Links, Telefonnummern oder Benutzernamen.","Tippe auf eine störende Nachricht, um sie zu melden oder zu blockieren.","Dein Spitzname ist automatisch und anonym. Nachrichten verschwinden nach 24 Stunden."],
+    es:["Esta es la sala tranquila de quienes completaron su conexión.","Sé amable; no juzgues ni hieras a nadie.","No compartas enlaces, teléfonos ni nombres de usuario.","Toca un mensaje que te moleste para denunciarlo o bloquearlo.","Tu apodo es automático y anónimo. Los mensajes desaparecen a las 24 horas."],
+    pt:["Esta é a sala calma de quem concluiu a sua ligação.","Sê gentil; não julgues nem magoes ninguém.","Não partilhes links, números de telefone nem nomes de utilizador.","Toca numa mensagem que te incomode para a denunciar ou bloquear.","A tua alcunha é automática e anónima. As mensagens desaparecem após 24 horas."],
+    fr:["C'est le salon paisible de celles et ceux qui ont terminé leur connexion.","Sois bienveillant ; ne juge et ne blesse personne.","Ne partage ni liens, ni numéros de téléphone, ni pseudos.","Touche un message qui te dérange pour le signaler ou le bloquer.","Ton pseudo est automatique et anonyme. Les messages disparaissent après 24 heures."],
+    ja:["ここは、つながりを完了した人の静かな部屋です。","やさしく。誰も裁かず、傷つけないで。","リンク、電話番号、アカウント名は共有しないで。","気になるメッセージはタップして報告・ブロックできます。","ニックネームは自動・匿名。メッセージは24時間で消えます。"],
+  },
+  accept:  { tr:"Kabul ediyorum", en:"I agree", de:"Einverstanden", es:"Acepto", pt:"Aceito", fr:"J'accepte", ja:"同意する" },
+  report:  { tr:"Bildir", en:"Report", de:"Melden", es:"Denunciar", pt:"Denunciar", fr:"Signaler", ja:"報告" },
+  block:   { tr:"Engelle", en:"Block", de:"Blockieren", es:"Bloquear", pt:"Bloquear", fr:"Bloquer", ja:"ブロック" },
+  cancel:  { tr:"Vazgeç", en:"Cancel", de:"Abbrechen", es:"Cancelar", pt:"Cancelar", fr:"Annuler", ja:"やめる" },
+  reported:{ tr:"Bildirildi, teşekkürler.", en:"Reported, thank you.", de:"Gemeldet, danke.", es:"Denunciado, gracias.", pt:"Denunciado, obrigado.", fr:"Signalé, merci.", ja:"報告しました。ありがとう。" },
+  blocked: { tr:"Bu kişinin mesajları artık sana görünmeyecek.", en:"You won't see this person's messages anymore.", de:"Du siehst die Nachrichten dieser Person nicht mehr.", es:"Ya no verás los mensajes de esta persona.", pt:"Já não vais ver as mensagens desta pessoa.", fr:"Tu ne verras plus les messages de cette personne.", ja:"この人のメッセージは表示されなくなります。" },
+  slow:    { tr:"{s} sn sonra yazabilirsin", en:"You can write again in {s}s", de:"Du kannst in {s} s wieder schreiben", es:"Podrás escribir en {s} s", pt:"Podes escrever daqui a {s} s", fr:"Tu pourras écrire dans {s} s", ja:"{s}秒後に書けます" },
+  err: {
+    link:   { tr:"Bağlantı ya da iletişim bilgisi paylaşılamaz.", en:"Links and contact details can't be shared.", de:"Links und Kontaktdaten können nicht geteilt werden.", es:"No se pueden compartir enlaces ni datos de contacto.", pt:"Não é possível partilhar links nem contactos.", fr:"Les liens et coordonnées ne peuvent pas être partagés.", ja:"リンクや連絡先は共有できません。" },
+    abuse:  { tr:"Bu mesaj odanın nezaket kuralına uymuyor.", en:"This message doesn't fit the room's kindness rule.", de:"Diese Nachricht passt nicht zur Freundlichkeitsregel des Raums.", es:"Este mensaje no cumple la norma de amabilidad de la sala.", pt:"Esta mensagem não segue a regra de gentileza da sala.", fr:"Ce message ne respecte pas la règle de bienveillance du salon.", ja:"このメッセージは部屋のやさしさのルールに合いません。" },
+    spam:   { tr:"Tanıtım ve reklam paylaşılamaz.", en:"Promotion and ads can't be shared.", de:"Werbung kann nicht geteilt werden.", es:"No se permite publicidad ni promoción.", pt:"Não é permitida publicidade nem promoção.", fr:"La publicité et la promotion ne sont pas autorisées.", ja:"宣伝や広告は共有できません。" },
+    banned: { tr:"Bu cihaz Çember'e yazamıyor.", en:"This device can't write in the Circle.", de:"Dieses Gerät kann im Kreis nicht schreiben.", es:"Este dispositivo no puede escribir en el Círculo.", pt:"Este dispositivo não pode escrever no Círculo.", fr:"Cet appareil ne peut pas écrire dans le Cercle.", ja:"この端末はサークルに書き込めません。" },
+    bad:    { tr:"Mesaj gönderilemedi.", en:"Message couldn't be sent.", de:"Nachricht konnte nicht gesendet werden.", es:"No se pudo enviar el mensaje.", pt:"Não foi possível enviar a mensagem.", fr:"Le message n'a pas pu être envoyé.", ja:"送信できませんでした。" },
+    net:    { tr:"Bağlantı yok, tekrar dene.", en:"No connection, try again.", de:"Keine Verbindung, versuch es erneut.", es:"Sin conexión, inténtalo de nuevo.", pt:"Sem ligação, tenta de novo.", fr:"Pas de connexion, réessaie.", ja:"接続がありません。もう一度試してね。" },
+  },
+  crisisHead:{ tr:"Yanındayız", en:"We're with you", de:"Wir sind bei dir", es:"Estamos contigo", pt:"Estamos contigo", fr:"Nous sommes avec toi", ja:"そばにいます" },
+  crisisBody:{
+    tr:"Şu an zor bir anın içinde olabilirsin. Bu oda profesyonel destek veremez. Kendini tehlikede hissediyorsan lütfen hemen 112'yi ara ya da güvendiğin biriyle konuş.",
+    en:"You may be going through a hard moment. This room can't offer professional support. If you feel in danger, please call your local emergency number right away or talk to someone you trust.",
+    de:"Vielleicht erlebst du gerade einen schweren Moment. Dieser Raum kann keine professionelle Hilfe bieten. Wenn du dich in Gefahr fühlst, ruf bitte sofort den Notruf an oder sprich mit einem Menschen, dem du vertraust.",
+    es:"Puede que estés pasando por un momento difícil. Esta sala no puede ofrecer apoyo profesional. Si te sientes en peligro, llama ya al número de emergencias o habla con alguien de confianza.",
+    pt:"Podes estar a passar por um momento difícil. Esta sala não pode dar apoio profissional. Se te sentes em perigo, liga já para o número de emergência ou fala com alguém de confiança.",
+    fr:"Tu traverses peut-être un moment difficile. Ce salon ne peut pas offrir d'aide professionnelle. Si tu te sens en danger, appelle tout de suite le numéro d'urgence ou parle à quelqu'un de confiance.",
+    ja:"いま、つらい時間の中にいるのかもしれません。この部屋では専門的な支援はできません。危険を感じたら、すぐに緊急通報番号へ電話するか、信頼できる人に話してください。",
+  },
+  crisisBreath:{ tr:"Birlikte nefes al", en:"Breathe together", de:"Gemeinsam atmen", es:"Respira con nosotros", pt:"Respira connosco", fr:"Respirer ensemble", ja:"一緒に呼吸する" },
+  close:   { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
+  entryQuiet:{ tr:"Oda sessiz, ilk sen gel", en:"Quiet room, be the first", de:"Stiller Raum, sei der Erste", es:"Sala tranquila, sé el primero", pt:"Sala calma, sê o primeiro", fr:"Salon calme, sois le premier", ja:"静かな部屋、最初の一人に" },
+};
+// Takma ad rengi = cihazın element dilimi (sunucu `el`, 0-7).
+const CEMBER_EL_COLORS = ["#f0a070", "#7ec8e8", "#b8c890", "#c8d8f0", "#d8cff5", "#f0d080", "#e8c07a", "#a8e0d0"];
+const CEMBER_BLOCK_KEY = "sakin_cember_blocked";
+
+// Supabase istemcisi + ayarlar: oturum başına bir kez. Dinamik import: kütüphane
+// yalnızca Çember/sayaç gerektiğinde yüklenir, açılış paketini büyütmez.
+let __cemberPromise = null;
+function getCember() {
+  if (__cemberPromise) return __cemberPromise;
+  __cemberPromise = (async () => {
+    let id = null;
+    try { id = getAnonId(); } catch (_) {}
+    const r = await fetch(API_BASE + "/.netlify/functions/chat-config" + (id ? "?id=" + encodeURIComponent(id) : ""));
+    const cfg = await r.json();
+    if (!cfg || !cfg.ok) return { ok: false, id };
+    const { createClient } = await import("@supabase/supabase-js");
+    const sb = createClient(cfg.url, cfg.anon, { auth: { persistSession: false, autoRefreshToken: false }, realtime: { params: { eventsPerSecond: 5 } } });
+    return { ok: true, id, cfg, sb };
+  })().catch(() => { __cemberPromise = null; return { ok: false, net: true }; });
+  return __cemberPromise;
+}
+// Bugün kartı için: iki odadaki toplam kişi (kendisi katılmadan, yalnızca izler).
+function watchCemberCount(cb) {
+  let stopped = false; const chans = [];
+  getCember().then((c) => {
+    if (stopped || !c.ok) return;
+    const counts = {};
+    for (const room of c.cfg.rooms) {
+      const ch = c.sb.channel("room:" + room);
+      ch.on("presence", { event: "sync" }, () => {
+        counts[room] = Object.keys(ch.presenceState()).length;
+        cb(Object.values(counts).reduce((a, b) => a + b, 0));
+      }).subscribe();
+      chans.push(ch);
+    }
+  });
+  return () => { stopped = true; getCember().then((c) => { if (c.ok) chans.forEach((ch) => c.sb.removeChannel(ch)); }); };
+}
+
+function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
+  const L = (o) => pickLang(o, lang);
+  const JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
+  const INK = "#f1ecf9", MUTE = "#8f88a3", GOLD = "#e8c07a", LAV = "#b8a4d8";
+  const [room, setRoom] = useState(() => { try { return localStorage.getItem("sakin_cember_room") || (lang === "tr" ? "tr" : "global"); } catch (_) { return lang === "tr" ? "tr" : "global"; } });
+  const [state, setState] = useState("loading");     // loading | closed | ready
+  const [conf, setConf] = useState(null);
+  const [msgs, setMsgs] = useState([]);
+  const [count, setCount] = useState(0);
+  const [text, setText] = useState("");
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [waitUntil, setWaitUntil] = useState(0);
+  const [nowTick, setNowTick] = useState(Date.now());
+  const [menuFor, setMenuFor] = useState(null);
+  const [crisis, setCrisis] = useState(false);
+  const [rulesOk, setRulesOk] = useState(() => { try { return localStorage.getItem("sakin_cember_rules") === "1"; } catch (_) { return false; } });
+  const [blocked, setBlocked] = useState(() => { try { return JSON.parse(localStorage.getItem(CEMBER_BLOCK_KEY) || "[]"); } catch (_) { return []; } });
+  const listRef = useRef(null);
+  const chanRef = useRef(null);
+  const myNick = conf && conf.cfg.nick ? conf.cfg.nick[room] : null;
+
+  useEffect(() => { try { track("cember", { a: "open" }); } catch (_) {} }, []);
+  useEffect(() => { try { localStorage.setItem("sakin_cember_room", room); } catch (_) {} }, [room]);
+  // Yavaş mod geri sayımı: yalnızca beklerken saniyede bir.
+  useEffect(() => {
+    if (!waitUntil) return;
+    const id = setInterval(() => { const n = Date.now(); setNowTick(n); if (n >= waitUntil) { setWaitUntil(0); clearInterval(id); } }, 1000);
+    return () => clearInterval(id);
+  }, [waitUntil]);
+  useEffect(() => { if (!notice) return; const id = setTimeout(() => setNotice(""), 4500); return () => clearTimeout(id); }, [notice]);
+
+  const loadHistory = async (rm) => {
+    try {
+      const r = await fetch(API_BASE + "/.netlify/functions/chat-history?room=" + rm);
+      const j = await r.json();
+      if (j && j.ok) setMsgs(j.msgs || []);
+    } catch (_) {}
+  };
+
+  // Odaya bağlan: geçmiş + canlı kanal + presence. Oda değişince eskisinden çık.
+  useEffect(() => {
+    if (!unlocked || !rulesOk) return;
+    let alive = true;
+    setMsgs([]); setCount(0);
+    getCember().then((c) => {
+      if (!alive) return;
+      if (!c.ok) { setState("closed"); return; }
+      setConf(c); setState("ready");
+      loadHistory(room);
+      const ch = c.sb.channel("room:" + room, { config: { presence: { key: c.id || String(Math.random()) } } });
+      ch.on("broadcast", { event: "msg" }, ({ payload }) => {
+        if (!payload) return;
+        setMsgs((prev) => prev.some((m) => m.id === payload.id) ? prev : [...prev, payload].slice(-150));
+      });
+      ch.on("broadcast", { event: "hide" }, ({ payload }) => {
+        if (payload) setMsgs((prev) => prev.filter((m) => m.id !== payload.id));
+      });
+      ch.on("presence", { event: "sync" }, () => setCount(Object.keys(ch.presenceState()).length));
+      ch.subscribe((status) => { if (status === "SUBSCRIBED") ch.track({ n: (c.cfg.nick && c.cfg.nick[room]) || "" }); });
+      chanRef.current = ch;
+    });
+    // Arka plandan dönünce kaçırılanları çek (soket uykudayken gelenler).
+    const onVis = () => { if (document.visibilityState === "visible") loadHistory(room); };
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      alive = false;
+      document.removeEventListener("visibilitychange", onVis);
+      const ch = chanRef.current; chanRef.current = null;
+      if (ch) getCember().then((c) => { if (c.ok) c.sb.removeChannel(ch); });
+    };
+  }, [room, unlocked, rulesOk]);
+
+  // Yeni mesajda en alta kaydır (kullanıcı yukarıda okumuyorsa).
+  useEffect(() => {
+    const el = listRef.current; if (!el) return;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight < 160) el.scrollTop = el.scrollHeight;
+  }, [msgs.length]);
+
+  const send = async () => {
+    const body = text.trim();
+    if (!body || sending || waitUntil || !conf) return;
+    setSending(true);
+    try {
+      const r = await fetch(API_BASE + "/.netlify/functions/chat-send", { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: conf.id, room, body }) });
+      const j = await r.json().catch(() => null);
+      if (j && j.ok && j.msg) {
+        setText("");
+        setMsgs((prev) => prev.some((m) => m.id === j.msg.id) ? prev : [...prev, { ...j.msg, mine: true }]);
+        setWaitUntil(Date.now() + (conf.cfg.slowMs || 15000));
+        try { haptic(); } catch (_) {}
+        try { track("cember", { a: "send" }); } catch (_) {}
+        setTimeout(() => { const el = listRef.current; if (el) el.scrollTop = el.scrollHeight; }, 30);
+      } else if (j && j.reason === "crisis") {
+        setCrisis(true); setText("");
+        try { track("cember", { a: "crisis" }); } catch (_) {}
+      } else if (j && j.reason === "slow") {
+        setWaitUntil(Date.now() + (j.waitMs || 15000));
+      } else if (j && j.reason === "closed") {
+        setState("closed");
+      } else {
+        setNotice(L(CEMBER_TXT.err[(j && CEMBER_TXT.err[j.reason]) ? j.reason : "bad"]));
+      }
+    } catch (_) { setNotice(L(CEMBER_TXT.err.net)); }
+    setSending(false);
+  };
+  const report = async (m) => {
+    setMenuFor(null);
+    try { await fetch(API_BASE + "/.netlify/functions/chat-report", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: conf && conf.id, messageId: m.id }) }); } catch (_) {}
+    setNotice(L(CEMBER_TXT.reported));
+    try { track("cember", { a: "report" }); } catch (_) {}
+  };
+  const block = (m) => {
+    setMenuFor(null);
+    const next = [...new Set([...blocked, m.nick])];
+    setBlocked(next);
+    try { localStorage.setItem(CEMBER_BLOCK_KEY, JSON.stringify(next)); } catch (_) {}
+    setNotice(L(CEMBER_TXT.blocked));
+    try { track("cember", { a: "block" }); } catch (_) {}
+  };
+
+  const BTN = { WebkitAppearance:"none",appearance:"none",cursor:"pointer",font:"inherit",background:"transparent",border:"none",color:"inherit" };
+  const pillBtn = (label, onClick, active) => (
+    <button onClick={onClick} style={{ ...BTN,padding:"6px 14px",borderRadius:100,fontFamily:JOST,fontSize:12,letterSpacing:1.2,
+      display:"inline-flex",alignItems:"center",justifyContent:"center",
+      border:`1px solid ${active ? "rgba(232,192,122,0.55)" : "rgba(255,255,255,0.12)"}`,
+      background: active ? "rgba(232,192,122,0.12)" : "transparent", color: active ? "#f6dfb0" : MUTE }}>{label}</button>
+  );
+  const fmtT = (t) => { try { return new Date(t).toLocaleTimeString(localeFromLang(lang), { hour:"2-digit", minute:"2-digit" }); } catch (_) { return ""; } };
+  const secsLeft = waitUntil ? Math.max(0, Math.ceil((waitUntil - nowTick) / 1000)) : 0;
+  const visible = msgs.filter((m) => !blocked.includes(m.nick));
+
+  const shell = (children) => (
+    // En üst katman (web üst menüsü ve "Ne yeni" bandı dahil her şeyin üstünde) +
+    // OPAK zemin: gradyanın ilk rengi yarı saydam olduğu için altta düz renk şart,
+    // yoksa Bugün ekranı arkadan görünüyordu.
+    <div style={{ position:"fixed",inset:0,zIndex:100010,background:"radial-gradient(ellipse 90% 60% at 50% 0%, rgba(90,60,150,0.22), transparent 70%), #07060d",
+      display:"flex",flexDirection:"column",animation:"fadeIn 0.4s ease" }}>
+      {/* Başlık */}
+      <div style={{ padding:"calc(10px + var(--sat)) 14px 10px",display:"flex",alignItems:"center",gap:10,borderBottom:"1px solid rgba(184,164,216,0.12)" }}>
+        <button onClick={onClose} aria-label="close" style={{ ...BTN,width:36,height:36,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+          border:"1px solid rgba(255,255,255,0.12)",color:"#cfc7e0",fontSize:16,flexShrink:0 }}>←</button>
+        <div style={{ flex:1,minWidth:0 }}>
+          <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.1,color:INK }}>{L(CEMBER_TXT.title)}</div>
+          {/* Tek satır: dar ekranda 4 satıra kırılıyordu, taşan kısım "…" olur. */}
+          <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.4,textTransform:"uppercase",color:MUTE,display:"flex",alignItems:"center",gap:6,marginTop:3,minWidth:0 }}>
+            <span style={{ width:6,height:6,borderRadius:"50%",background:"#82d9a3",boxShadow:"0 0 6px #82d9a3",flexShrink:0 }} />
+            <span style={{ overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",minWidth:0 }}>
+              {state === "ready" ? (count > 1 ? L(CEMBER_TXT.here).replace("{n}", String(count)) : L(CEMBER_TXT.alone)) : L(CEMBER_TXT.live)}
+            </span>
+          </div>
+        </div>
+        {unlocked && rulesOk && state === "ready" && (
+          <div style={{ display:"flex",gap:6,flexShrink:0 }}>
+            {pillBtn(L(CEMBER_TXT.roomTr), () => setRoom("tr"), room === "tr")}
+            {pillBtn(L(CEMBER_TXT.roomGl), () => setRoom("global"), room === "global")}
+          </div>
+        )}
+      </div>
+      {children}
+    </div>
+  );
+  const centerCard = (children) => (
+    <div style={{ flex:1,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px 18px calc(20px + var(--sab))",overflowY:"auto" }}>
+      <div style={{ width:"100%",maxWidth:380,padding:"22px 20px",borderRadius:18,background:"rgba(255,255,255,0.035)",border:"1px solid rgba(184,164,216,0.16)",
+        display:"flex",flexDirection:"column",gap:12 }}>{children}</div>
+    </div>
+  );
+  const primaryBtn = (label, onClick) => (
+    <button onClick={onClick} style={{ ...BTN,alignSelf:"stretch",padding:"12px 18px",borderRadius:100,fontFamily:JOST,fontSize:13,letterSpacing:1.6,textTransform:"uppercase",
+      display:"flex",alignItems:"center",justifyContent:"center",color:"#f6dfb0",background:"rgba(232,192,122,0.13)",border:"1px solid rgba(232,192,122,0.45)" }}>{label}</button>
+  );
+
+  if (!unlocked) return shell(centerCard(<>
+    <div style={{ fontSize:26,textAlign:"center",color:GOLD }}>◌</div>
+    <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.3,color:INK,textAlign:"center" }}>{L(CEMBER_TXT.locked)}</div>
+    <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:"#b8aed0",textAlign:"center" }}>{L(CEMBER_TXT.lockedSub)}</div>
+    {primaryBtn(L(CEMBER_TXT.goBaglan), onGoBaglan)}
+  </>));
+  if (!rulesOk) return shell(centerCard(<>
+    <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.3,color:INK,textAlign:"center" }}>{L(CEMBER_TXT.rulesHead)}</div>
+    {(CEMBER_TXT.rules[lang] || CEMBER_TXT.rules.en).map((r, i) => (
+      <div key={i} style={{ display:"flex",gap:10,alignItems:"flex-start",fontFamily:INTER,fontSize:13.5,lineHeight:1.55,color:"#d6cfe6" }}>
+        <span style={{ color:GOLD,flexShrink:0 }}>✦</span><span>{r}</span>
+      </div>
+    ))}
+    {primaryBtn(L(CEMBER_TXT.accept), () => { setRulesOk(true); try { localStorage.setItem("sakin_cember_rules", "1"); } catch (_) {} try { track("cember", { a: "rules" }); } catch (_) {} })}
+  </>));
+  if (state === "closed") return shell(centerCard(<>
+    <div style={{ fontFamily:INTER,fontSize:14,lineHeight:1.6,color:"#d6cfe6",textAlign:"center" }}>{L(CEMBER_TXT.closed)}</div>
+    {primaryBtn(L(CEMBER_TXT.close), onClose)}
+  </>));
+
+  return shell(<>
+    {/* Mesajlar */}
+    <div ref={listRef} style={{ flex:1,overflowY:"auto",padding:"14px 14px 8px",display:"flex",flexDirection:"column",gap:10,WebkitOverflowScrolling:"touch" }}>
+      {state === "loading" && <div style={{ margin:"auto",color:MUTE,fontFamily:JOST,letterSpacing:2 }}>...</div>}
+      {state === "ready" && visible.length === 0 && (
+        <div style={{ margin:"auto",textAlign:"center",fontFamily:SERIF,fontSize:19,lineHeight:1.4,color:"#b8aed0",maxWidth:260 }}>{L(CEMBER_TXT.empty)}</div>
+      )}
+      {visible.map((m) => {
+        const mine = m.mine || (myNick && m.nick === myNick);
+        const col = CEMBER_EL_COLORS[(m.el || 0) % CEMBER_EL_COLORS.length];
+        return (
+          <div key={m.id} style={{ alignSelf: mine ? "flex-end" : "flex-start",maxWidth:"86%" }}>
+            <div onClick={() => { if (!mine) setMenuFor(menuFor === m.id ? null : m.id); }}
+              style={{ padding:"8px 12px 9px",borderRadius: mine ? "14px 14px 4px 14px" : "14px 14px 14px 4px",cursor: mine ? "default" : "pointer",
+                background: mine ? "rgba(232,192,122,0.1)" : "rgba(255,255,255,0.04)",
+                border:`1px solid ${mine ? "rgba(232,192,122,0.25)" : "rgba(184,164,216,0.12)"}` }}>
+              <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:3 }}>
+                <span style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col }}>{m.nick}{mine ? ` · ${L(CEMBER_TXT.you)}` : ""}</span>
+                <span style={{ fontFamily:INTER,fontSize:10,color:"#6f6a80" }}>{fmtT(m.t)}</span>
+              </div>
+              <div style={{ fontFamily:INTER,fontSize:14.5,lineHeight:1.5,color:INK,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{m.body}</div>
+            </div>
+            {menuFor === m.id && (
+              <div style={{ display:"flex",gap:6,marginTop:6 }}>
+                {pillBtn(L(CEMBER_TXT.report), () => report(m))}
+                {pillBtn(L(CEMBER_TXT.block), () => block(m))}
+                {pillBtn(L(CEMBER_TXT.cancel), () => setMenuFor(null))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+    {notice && <div style={{ margin:"0 14px 6px",padding:"8px 12px",borderRadius:12,background:"rgba(255,255,255,0.05)",color:"#d6cfe6",fontFamily:INTER,fontSize:12.5,textAlign:"center" }}>{notice}</div>}
+    {/* Yazma alanı. 16 px: iOS odakta yakınlaştırmasın. */}
+    <div style={{ padding:"8px 12px calc(10px + var(--sab))",borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",gap:8,alignItems:"flex-end",background:"rgba(7,6,13,0.85)" }}>
+      <div style={{ flex:1,minWidth:0,position:"relative" }}>
+        <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, (conf && conf.cfg.maxLen) || 140))} rows={1}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+          placeholder={secsLeft ? L(CEMBER_TXT.slow).replace("{s}", String(secsLeft)) : L(CEMBER_TXT.ph)}
+          style={{ width:"100%",boxSizing:"border-box",resize:"none",padding:"11px 44px 11px 14px",borderRadius:20,outline:"none",
+            fontFamily:INTER,fontSize:16,lineHeight:1.35,color:INK,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(184,164,216,0.22)",maxHeight:110 }} />
+        <span style={{ position:"absolute",right:12,bottom:12,fontFamily:JOST,fontSize:10,color:"#6f6a80" }}>{text.length}/{(conf && conf.cfg.maxLen) || 140}</span>
+      </div>
+      <button onClick={send} disabled={!text.trim() || sending || !!secsLeft || state !== "ready"}
+        style={{ ...BTN,height:44,padding:"0 16px",borderRadius:22,flexShrink:0,fontFamily:JOST,fontSize:12.5,letterSpacing:1.4,textTransform:"uppercase",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          color: text.trim() && !secsLeft ? "#1a1030" : "#6f6a80", background: text.trim() && !secsLeft ? GOLD : "rgba(255,255,255,0.06)",
+          opacity: sending ? 0.6 : 1 }}>{secsLeft ? `${secsLeft}s` : L(CEMBER_TXT.send)}</button>
+    </div>
+    {/* KRİZ: mesaj odaya gitmedi; yalnızca yazana özel, nazik destek kartı. */}
+    {crisis && (
+      <div style={{ position:"fixed",inset:0,zIndex:100011,background:"rgba(0,0,0,0.8)",backdropFilter:"blur(10px)",display:"flex",alignItems:"center",justifyContent:"center",padding:22 }}>
+        <div style={{ width:"100%",maxWidth:360,padding:"22px 20px",borderRadius:18,background:"#110d1f",border:"1px solid rgba(232,192,122,0.3)",display:"flex",flexDirection:"column",gap:12 }}>
+          <div style={{ fontFamily:SERIF,fontSize:23,color:INK,textAlign:"center" }}>{L(CEMBER_TXT.crisisHead)}</div>
+          <div style={{ fontFamily:INTER,fontSize:14,lineHeight:1.65,color:"#d6cfe6" }}>{L(CEMBER_TXT.crisisBody)}</div>
+          {primaryBtn(L(CEMBER_TXT.crisisBreath), () => { setCrisis(false); onGoNefes(); })}
+          <button onClick={() => setCrisis(false)} style={{ ...BTN,padding:"8px",fontFamily:JOST,fontSize:12,letterSpacing:1.4,color:MUTE,textTransform:"uppercase" }}>{L(CEMBER_TXT.close)}</button>
+        </div>
+      </div>
+    )}
+  </>);
+}
 
 const ATTACH_TXT = {
   title:   { tr:"Bağlanma Profili", en:"Attachment Profile", de:"Bindungsprofil", es:"Perfil de apego", pt:"Perfil de vinculação", fr:"Profil d'attachement", ja:"愛着プロフィール" },
@@ -6593,6 +6953,9 @@ export default function SakinApp() {
   const [aiConsent, setAiConsent] = useState(() => localStorage.getItem("sakin_ai_consent") === "1");
   const [showAiConsent, setShowAiConsent] = useState(false);
   const [showAilesi, setShowAilesi] = useState(false);
+  // ÇEMBER (canlı oda) tam ekran katmanı + Bugün kartındaki "şu an N kişi" sayacı.
+  const [showCember, setShowCember] = useState(false);
+  const [cemberCount, setCemberCount] = useState(null);
   // ANONIM KULLANIM OLCUMU opt-out toggle'i (App Store gizlilik kontrolu). ACIK
   // (varsayilan) = veri paylasilir; kapatilinca sakin_analytics_off=1 yazilir ve
   // src/analytics.js her gonderiden once bunu okuyup susar.
@@ -7808,6 +8171,12 @@ export default function SakinApp() {
   // anında işaretle" bloğu; burada olmasının sebebi gunTasksDone'ın TDZ sırası).
   useEffect(() => { if (gunTasksDone >= STEP_MIN.gun) markStep("gun"); }, [gunTasksDone]);
   const allStepsComplete = completedStepCount === MANDALA_STEPS.length;
+  // ÇEMBER sayacı: yalnızca Bugün ekranındayken, bağlantı tamamsa ve oda açık
+  // değilken iki odanın presence'ını İZLER (katılmadan). Ekrandan çıkınca kapanır.
+  useEffect(() => {
+    if (screen !== "bugun" || !allStepsComplete || showCember) return;
+    return watchCemberCount(setCemberCount);
+  }, [screen, allStepsComplete, showCember]);
 
   // ── GÜNÜN SAATİNE GÖRE GİRİŞ EKRANI ─────────────────────────────────────────
   // Kullanıcı: "appe akşam girdim bağlanmak istedim ama 'bugünü nasıl geçirmek
@@ -8831,6 +9200,7 @@ export default function SakinApp() {
   useEffect(() => {
     if (!isNative || Capacitor.getPlatform() !== "android") return;
     const sub = CapacitorApp.addListener("backButton", () => {
+      if (showCember) { setShowCember(false); return; }
       if (embeddedApp) { askEmbedBackThenClose(); return; }
       if (activeMindMode) { setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); return; }
       if (showMindClear) { setShowMindClear(false); setSelectedMoods([]); setSelectedNature([]); return; }
@@ -8851,7 +9221,7 @@ export default function SakinApp() {
       CapacitorApp.exitApp();
     });
     return () => { sub.then(s => s.remove()).catch(() => {}); };
-  }, [embeddedApp, activeMindMode, showMindClear, showIdCard, showFotoTani, showLicenseModal, showAiConsent, showDeleteConfirm, showKilavuz, showOrnekler, showKozmik, showKimlikReveal, showNedir, showAilesi]);
+  }, [showCember, embeddedApp, activeMindMode, showMindClear, showIdCard, showFotoTani, showLicenseModal, showAiConsent, showDeleteConfirm, showKilavuz, showOrnekler, showKozmik, showKimlikReveal, showNedir, showAilesi]);
 
   useEffect(() => {
     if (screen !== "harita") return;
@@ -12047,6 +12417,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         tabIndex={-1}
         style={{ position:"fixed", left:-9999, top:0, width:390, height:844, opacity:0, pointerEvents:"none" }}
       />}
+
+      {/* ÇEMBER: canlı oda (tam ekran, alt barın üstünde). Kapı: bugünkü bağlantı. */}
+      {showCember && (
+        <CemberScreen lang={lang} unlocked={allStepsComplete}
+          onClose={() => setShowCember(false)}
+          onGoBaglan={() => { setShowCember(false); setScreen("mandala"); }}
+          onGoNefes={() => { setShowCember(false); setScreen("nefes"); }} />
+      )}
 
       {/* AYNA & HARİTA BARI, sabit. iOS feature ekranlarında en üstte (safe area dahil); web/policy/giriş'te topNav'ın altında. */}
       <div style={{ position:"fixed",top: topNavVisible ? "calc(44px + var(--sat))" : 0,left:0,right:0,
@@ -17178,6 +17556,23 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     </div>
                   );
                 })()}
+                {/* ÇEMBER GİRİŞİ: bağlantıyı tamamlayana canlı oda + anlık kişi sayısı;
+                    tamamlamayana kilitli davet (dokununca açıklamalı kilit ekranı). */}
+                <button onClick={() => { try { haptic(); } catch (_) {} setShowCember(true); }}
+                  style={{ ...BTN,marginTop:14,paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",alignItems:"center",gap:12 }}>
+                  {icon("◌", allStepsComplete ? "#82d9a3" : LAV, 36, 15)}
+                  <span style={{ flex:1,minWidth:0 }}>
+                    <span style={{ display:"block",fontSize:15,color:INK,fontFamily:JOST,fontWeight:300 }}>
+                      {pickLang(CEMBER_TXT.title, lang)} · <span style={{ color:MUTE }}>{pickLang(CEMBER_TXT.live, lang)}</span>
+                    </span>
+                    <span style={{ display:"block",fontSize:12,color: allStepsComplete ? "#82d9a3" : MUTE,fontFamily:INTER,marginTop:2,lineHeight:1.45 }}>
+                      {!allStepsComplete ? pickLang(CEMBER_TXT.locked, lang)
+                        : cemberCount > 0 ? pickLang(CEMBER_TXT.here, lang).replace("{n}", String(cemberCount))
+                        : pickLang(CEMBER_TXT.entryQuiet, lang)}
+                    </span>
+                  </span>
+                  {chevron()}
+                </button>
               </div>
             </section>
 

@@ -167,6 +167,8 @@ export function mergeBatch(rec, body, now) {
     }
     // Anlık bildirim onayı (Ayarlar anahtarı ya da Bugün daveti): 1 açtı, 0 kapattı/istemedi.
     else if (e === "push_optin") { if (it.v === 1 || it.v === 0) bump("push_optin_" + it.v); }
+    // Çember (canlı oda): açma, kural onayı, gönderme, bildirme, engelleme, kriz kartı.
+    else if (e === "cember") { if (["open", "rules", "send", "report", "block", "crisis"].includes(it.a)) bump("cember_" + it.a); }
     else if (e === "fork_shown") bump("fork_shown");
     else if (e === "fork_pick") {
       const path = it.path === "baglan" || it.path === "kesfet" ? it.path : null;

@@ -847,6 +847,51 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   Configure'da "Sandbox & Production" seç. .p8 Netlify'a nasıl yapıştırılırsa
   yapıştırılsın `_push.mjs` `pem()` düzeltir (satır sonu boşluğa dönmüş vb.).
 
+## ◌ ÇEMBER: CANLI SOHBET ODASI (kullanıcı isteği, Eyl 2026)
+
+Kararlar (kullanıcı): **her an açık canlı oda · Supabase Realtime · Türkçe + Global.**
+Giriş: Bugün > Orkestra kartının altındaki "Çember · Canlı oda" satırı (anlık kişi
+sayısı). YALNIZCA bugünkü bağlantısını tamamlayan (`allStepsComplete`) girer;
+tamamlamayana kilit ekranı + "Bağlan'a git". İstemci kapısı (aşılabilir), asıl
+koruma sunucuda.
+- **Mimari:** mesaj DOĞRUDAN veritabanına yazılmaz. `chat-send` sırayla denetler:
+  env, girdi (1-140 kr), ban, bağlantı/telefon/@hesap yasağı, KRİZ ifadesi, yavaş
+  mod (15 sn), yerel küfür filtresi (TAM KELİME, `\p{L}` sınırı: "götürmek" masum),
+  AI moderasyonu (`aiModerate`, Groq). Geçerse Supabase'e yazar + Realtime
+  broadcast `room:<oda>` event `msg`. Kim odada: presence (aynı kanal).
+  Dosyalar: `netlify/functions/_chat.mjs`, `chat-config` (url+anon+takma ad),
+  `chat-history` (son 24 saat, cihaz özeti DIŞARI VERİLMEZ), `chat-send`,
+  `chat-report`, `chat-admin`. Şema: `supabase/cember.sql` (RLS AÇIK, POLİTİKA
+  YOK: anon anahtar tabloları okuyamaz/yazamaz; her şey servis anahtarıyla
+  fonksiyonlardan).
+- ⚠️ **AI moderasyonu `VERDICT: <KELİME>` biçiminde cevap ister:** groqChat'in
+  kalite kapısı 8 karakterden kısa cevabı atıyor; tek kelime "OK" hep reddedilir,
+  moderasyon SESSİZCE kapanırdı (yazarken yakalandı). Biçimi kısaltma.
+- **Takma ad sunucuda** (`nickFor`: element · canlı + sayı, TR/EN), cihaz kimliğinin
+  (`sakin_anon_id`) özetinden; istemci seçemez. Renk = element dilimi (`el`).
+- **KRİZ:** kendine zarar ifadesi (yerel regex + AI CRISIS) → mesaj odaya DÜŞMEZ,
+  yazana özel "Yanındayız" kartı (TR 112, diğer diller yerel acil numara) +
+  "Birlikte nefes al" → Nefes. Bilerek geniş tutuldu (yanlış pozitif kabul).
+- **Apple 1.2 / Play UGC:** kurallar ekranı (ilk giriş, `sakin_cember_rules`),
+  mesaja dokun → Bildir / Engelle (engel YEREL, `sakin_cember_blocked` nick listesi),
+  2 farklı cihaz bildirince otomatik gizle + herkesten kaldır (event `hide`),
+  moderasyon paneli `chat-admin?token=PUSH_ADMIN_TOKEN` (gizle/göster/cihazı banla,
+  ban listesi). Mesajlar 24 saat görünür, 48 saatten eskiler ara sıra silinir.
+- **İstemci:** `CemberScreen` (MODÜL seviyesi bileşen), zIndex 100010 + OPAK zemin
+  (yarı saydam gradyan altta Bugün'ü gösteriyordu). supabase-js DİNAMİK import
+  (ayrı ~228 KB parça, açılışı büyütmez). Bugün sayacı `watchCemberCount` yalnızca
+  Bugün'deyken + bağlantı tamamken iki odayı İZLER (katılmadan). Android geri tuşu
+  Çember'i kapatır. Analitik `cember` {a: open/rules/send/report/block/crisis}.
+- **Env (Netlify):** SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY (+ mevcut
+  GROQ_API_KEY, PUSH_ADMIN_TOKEN). Eksikse Çember "kapalı" gösterir.
+- ⏳ **MAĞAZA ÖNCESİ YAPILACAKLAR:** gizlilik politikası (kullanıcı içeriği, 24 saat
+  saklama), App Store gizlilik etiketi "User Content", Apple yaş anketi (kullanıcılar
+  arası iletişim), Play Data safety, App Review notuna moderasyon açıklaması.
+- Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,
+  küfür, AI abuse/spam/crisis, bildir→gizle, ban); tarayıcıda arayüz akışı
+  (kilit, kurallar, geçmiş, gönder, bildir, engelle, link uyarısı, kriz kartı).
+  Gerçek Supabase Realtime (canlı iletim + presence) HENÜZ DENENMEDİ.
+
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
 - Şema: `sakin://<yol>`. Yollar `DEEP_LINK_SCREENS` (src/App.jsx): `baglan`→mandala,
