@@ -4,8 +4,8 @@
 // Aç:  https://sakin.life/.netlify/functions/push-admin?token=PUSH_ADMIN_TOKEN
 // Form: metin (tüm diller için tek, ya da dil dil ayrı), hedef dil/platform,
 // dokununca açılacak ekran, "yalnız test cihazına" (Ayarlar'daki cihaz kodu) ya da
-// "herkese". Yalnızca uygulamada "Sakin'den anlık mesajlar"ı AÇAN cihazlar
-// kayıtlıdır (Apple 4.5.4: duyuru/tanıtım push'u açık onay ister).
+// "herkese". Anlık mesajlar VARSAYILAN AÇIK: bildirim izni olan ve anahtarı
+// kapatmamış cihazlar kayıtlı. ⚠️ Bu yüzden TANITIM gönderme (Apple 4.5.4).
 //
 // PUSH_ADMIN_TOKEN tanımlı değilse panel KAPALI. Ortak kod + env listesi: _push.mjs.
 // ⚠️ Senkron fonksiyon (~10 sn tavan). Birkaç bin cihaza kadar yeter (APNs tek
@@ -54,7 +54,7 @@ function panel(token, devices, cfg, log, notice = "") {
   const by = (f) => devices.reduce((m, d) => (m[f(d)] = (m[f(d)] || 0) + 1, m), {});
   const pl = by((d) => d.p), lg = by((d) => d.l);
   const status = (ok, name, env) => ok ? `<span class="ok">✓ ${name} hazır</span>` : `<span class="bad">✗ ${name} kapalı</span> <span class="muted">(${env} eksik)</span>`;
-  return `<h1>Sakin · Anlık bildirim</h1><div class="muted">Yalnızca uygulamada "Sakin'den anlık mesajlar"ı açan cihazlara gider.</div>
+  return `<h1>Sakin · Anlık bildirim</h1><div class="muted">Bildirim izni vermiş ve "Sakin'den anlık mesajlar"ı kapatmamış cihazlara gider. Varsayılan açık olduğu için yalnızca İÇERİK gönder (söz, gökyüzü günü, içten not); tanıtım/indirim/"yeni özellik" gönderme (Apple 4.5.4).</div>
 ${notice}
 <h2>Durum</h2><div class="card"><table>
 <tr><td>Kayıtlı cihaz</td><td class="n">${devices.length}</td></tr>

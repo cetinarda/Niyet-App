@@ -794,10 +794,16 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   yalnızca token/platform/dil/tz/sürüm, KİŞİSEL VERİ YOK), `push-admin.mjs`.
   Env: APNS_KEY_ID, APNS_TEAM_ID, APNS_PRIVATE_KEY, (APNS_BUNDLE_ID), FCM_SA_JSON,
   PUSH_ADMIN_TOKEN. Eksik platform panelde "kapalı" yazar, gönderim atlanır.
-- İstemci: `@capacitor/push-notifications`. Cihaz YALNIZCA açık onayla kaydolur
-  (Apple 4.5.4): Ayarlar > Bildirimler > "Sakin'den anlık mesajlar" ya da Bugün'de
-  BİR KEZ çıkan davet kartı (yalnızca native + bildirim izni verilmişse +
-  `sakin_push_optin` null). Kapatınca sunucu kaydı silinir. Dokunma →
+- İstemci: `@capacitor/push-notifications`. **VARSAYILAN AÇIK (kullanıcı kararı,
+  Eyl 2026):** `pushWanted()` = `sakin_push_optin` "0" değilse açık. Bildirim izni
+  ZATEN verilmişse `ensurePushRegistered()` sessizce kaydeder (izin istemez;
+  açılışta + `askNotifPermissionOnce` sonrası + Ayarlar'daki "İzin ver" sonrası).
+  Kapatma Ayarlar > Bildirimler (açılır kutu) > "Sakin'den anlık mesajlar";
+  kapatınca sunucu kaydı silinir. Bugün'deki tek seferlik davet kartı KALDIRILDI.
+  ⚠️ **Apple 4.5.4:** varsayılan açık olduğu için anlık mesajlar YALNIZCA İÇERİK
+  (söz, özel gökyüzü günü, içten not). "Yeni özellik", indirim, satın al çağrısı
+  GÖNDERME; açıklama metninden de "yeni özellikler" çıkarıldı. Tanıtım gerekirse
+  önce açık onaya (opt-in) dön. Dokunma →
   `PUSH_SCREENS` beyaz listesindeki ekran, soğuk açılış tamponlu. Analitik
   `push_optin` {v} + `notif_open` k="anlik" (track.mjs beyaz listede).
 - ✅ ANDROID AÇIK (Eyl 2026): `android/app/google-services.json` (Firebase projesi

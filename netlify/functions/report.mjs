@@ -434,7 +434,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Sakinleşmek seçildi</td><td class="num">${c.forkBaglan || 0} (denenmemiş işaretliyken ${c.forkUntriedBaglan || 0})</td></tr>
        <tr><td>Kendimi tanımak seçildi</td><td class="num">${c.forkKesfet || 0} (denenmemiş işaretliyken ${c.forkUntriedKesfet || 0})</td></tr>
        <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
-       <tr><td>Anlık mesajlar: açtı / istemedi</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>
+       <tr><td>Anlık mesajlar (varsayılan açık): elle açtı / kapattı</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>
        <tr><td>Niyet mektubu: mühürlendi / açıldı</td><td class="num">${c.letterSeal || 0} / ${c.letterOpen || 0}</td></tr>
        <tr><td>Mektup yansıması: gerçekleşti / yolda / dönüştü</td><td class="num">${(c.letterR || {}).oldu || 0} / ${(c.letterR || {}).yolda || 0} / ${(c.letterR || {}).donustu || 0}</td></tr>
        <tr><td>Kapıdan bilgi girmeye geçti</td><td class="num">${c.gateEnter || 0} · %${c.gateEnterPct || 0}</td></tr>

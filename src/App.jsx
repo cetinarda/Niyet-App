@@ -4514,6 +4514,7 @@ async function askNotifPermissionOnce(lang, birthDate) {
   try { localStorage.setItem("sakin_notif_asked", "1"); } catch (_) {}
   await scheduleAllNotifications(lang, birthDate, { ask: true, force: true });
   scheduleWinBack(lang);
+  ensurePushRegistered();   // izin verildiyse anlık mesajlar (varsayılan açık) da kaydolur
 }
 
 // ── EKRANI AÇIK TUT (Screen Wake Lock) ─────────────────────────────────────
@@ -4598,15 +4599,20 @@ if (isNative) {
 
 // ── ANLIK BİLDİRİM (push, kullanıcı isteği Eyl 2026: "istediğim zaman spontane
 // bildirim") ────────────────────────────────────────────────────────────────
-// Gönderim: netlify/functions/push-admin.mjs paneli. Cihaz YALNIZCA kullanıcı
-// "Sakin'den anlık mesajlar"ı açarsa kaydolur (Apple 4.5.4: duyuru/tanıtım push'u
-// açık onay ister). Kapatınca sunucudaki kayıt silinir.
+// Gönderim: netlify/functions/push-admin.mjs paneli. VARSAYILAN AÇIK (kullanıcı
+// kararı, Eyl 2026): bildirim izni verilmiş her cihaz kaydolur, kullanıcı Ayarlar >
+// Bildirimler'den kapatabilir (kapatınca sunucudaki kayıt silinir).
+// ⚠️ Apple 4.5.4: TANITIM/duyuru push'u açık onay ister. Varsayılan açık olduğu için
+// anlık mesajlar YALNIZCA içerik olmalı (söz, özel gökyüzü günü, içten not); "yeni
+// özellik", indirim, satın al çağrısı GÖNDERME. Tanıtım gerekiyorsa önce opt-in'e dön.
 // ANDROID AÇIK (Eyl 2026): android/app/google-services.json (Firebase projesi
 // sakin-fd9b7) repoda. ⚠️ O dosya SİLİNİRSE bu bayrağı false yap: Firebase
 // yapılandırılmadan register() native tarafta hata verir.
 const PUSH_ANDROID_READY = true;
 const pushSupported = () => isNative && (Capacitor.getPlatform() === "ios" || PUSH_ANDROID_READY);
 const readPushOptin = () => { try { const v = localStorage.getItem("sakin_push_optin"); return v === "1" ? true : v === "0" ? false : null; } catch (_) { return null; } };
+// null = hiç dokunulmadı = AÇIK sayılır; yalnızca "0" (kullanıcı kapattı) kapalıdır.
+const pushWanted = () => readPushOptin() !== false;
 let __pendingPushAction = null;
 let __pushActionHandler = null;
 async function postPushRegister(token, optin) {
@@ -4632,7 +4638,7 @@ if (pushSupported()) {
       const token = t && t.value;
       if (!token) return;
       try { localStorage.setItem("sakin_push_token", token); } catch (_) {}
-      if (readPushOptin()) postPushRegister(token, true);
+      if (pushWanted()) postPushRegister(token, true);
     });
     PushNotifications.addListener("registrationError", (e) => console.warn("[Push] kayıt hatası", e));
     PushNotifications.addListener("pushNotificationActionPerformed", (a) => {
@@ -4644,14 +4650,15 @@ if (pushSupported()) {
 const PUSH_SCREENS = ["bugun", "mandala", "nefes", "ses", "chakra", "harita", "gun"];
 const PUSH_TXT = {
   label: { tr:"Sakin'den anlık mesajlar", en:"Occasional messages from Sakin", de:"Gelegentliche Nachrichten von Sakin", es:"Mensajes ocasionales de Sakin", pt:"Mensagens ocasionais do Sakin", fr:"Messages ponctuels de Sakin", ja:"Sakinからのときどきのメッセージ" },
-  note:  { tr:"Planın dışında, arada bir: yeni özellikler, özel gökyüzü günleri, içten notlar", en:"Outside the schedule, now and then: new features, special sky days, heartfelt notes", de:"Außerhalb des Plans, ab und zu: neue Funktionen, besondere Himmelstage, herzliche Notizen", es:"Fuera del plan, de vez en cuando: novedades, días especiales del cielo, notas sinceras", pt:"Fora do plano, de vez em quando: novidades, dias especiais do céu, notas sinceras", fr:"En dehors du programme, de temps en temps : nouveautés, jours de ciel particuliers, mots sincères", ja:"予定とは別に、ときどき：新機能、特別な空の日、心からのひとこと" },
+  note:  { tr:"Planın dışında, arada bir: özel gökyüzü günleri, sözler, içten notlar", en:"Outside the schedule, now and then: special sky days, quotes, heartfelt notes", de:"Außerhalb des Plans, ab und zu: besondere Himmelstage, Zitate, herzliche Notizen", es:"Fuera del plan, de vez en cuando: días especiales del cielo, frases, notas sinceras", pt:"Fora do plano, de vez em quando: dias especiais do céu, frases, notas sinceras", fr:"En dehors du programme, de temps en temps : jours de ciel particuliers, citations, mots sincères", ja:"予定とは別に、ときどき：特別な空の日、言葉、心からのひとこと" },
   code:  { tr:"Cihaz kodu", en:"Device code", de:"Gerätecode", es:"Código del dispositivo", pt:"Código do dispositivo", fr:"Code de l'appareil", ja:"デバイスコード" },
-  head:  { tr:"Sakin'den ara sıra bir mesaj?", en:"A message from Sakin now and then?", de:"Ab und zu eine Nachricht von Sakin?", es:"¿Un mensaje de Sakin de vez en cuando?", pt:"Uma mensagem do Sakin de vez em quando?", fr:"Un message de Sakin de temps en temps ?", ja:"ときどきSakinからメッセージを？" },
-  body:  { tr:"Planlı bildirimlerin dışında arada bir kısa notlar göndermek istiyoruz: yeni özellikler, özel gökyüzü günleri, içten mesajlar. Sık değil.", en:"Besides your scheduled notifications, we'd like to send a short note now and then: new features, special sky days, heartfelt messages. Not often.", de:"Neben deinen geplanten Benachrichtigungen möchten wir ab und zu eine kurze Notiz senden: neue Funktionen, besondere Himmelstage, herzliche Nachrichten. Nicht oft.", es:"Además de tus notificaciones programadas, nos gustaría enviarte de vez en cuando una nota breve: novedades, días especiales del cielo, mensajes sinceros. No a menudo.", pt:"Além das notificações programadas, gostaríamos de enviar de vez em quando uma nota curta: novidades, dias especiais do céu, mensagens sinceras. Não muitas vezes.", fr:"En plus de tes notifications programmées, nous aimerions t'envoyer de temps en temps un petit mot : nouveautés, jours de ciel particuliers, messages sincères. Pas souvent.", ja:"予定された通知のほかに、ときどき短いメッセージを送りたいと思っています。新機能、特別な空の日、心からの言葉。頻繁ではありません。" },
-  yes:   { tr:"Evet, isterim", en:"Yes, please", de:"Ja, gern", es:"Sí, quiero", pt:"Sim, quero", fr:"Oui, volontiers", ja:"はい、受け取る" },
-  no:    { tr:"Şimdilik değil", en:"Not now", de:"Jetzt nicht", es:"Ahora no", pt:"Agora não", fr:"Pas maintenant", ja:"今はいい" },
-  later: { tr:"İstediğin zaman Ayarlar > Bildirimler'den değiştirebilirsin.", en:"You can change this anytime in Settings > Notifications.", de:"Du kannst das jederzeit unter Einstellungen > Benachrichtigungen ändern.", es:"Puedes cambiarlo cuando quieras en Ajustes > Notificaciones.", pt:"Podes mudar isto quando quiseres em Definições > Notificações.", fr:"Tu peux changer cela à tout moment dans Réglages > Notifications.", ja:"設定 > 通知 からいつでも変更できます。" },
 };
+// Varsayılan açık cihazı sessizce kaydet: İZİN İSTEMEZ, yalnızca izin zaten
+// verilmişse (yerel bildirim izni iOS/Android'de aynı izin) register() çağrılır.
+async function ensurePushRegistered() {
+  if (!pushSupported() || !pushWanted()) return;
+  try { const p = await PushNotifications.checkPermissions(); if (p.receive === "granted") await PushNotifications.register(); } catch (_) {}
+}
 // Açık/kapalı. Açarken izin ister (yerel bildirim izni zaten varsa sistem sormaz).
 async function setPushOptin(on) {
   if (!pushSupported()) return false;
@@ -6701,7 +6708,7 @@ export default function SakinApp() {
       setTimeout(() => pushHandler(pendingPush), 60);
     }
     // Açık olan cihaz her açılışta yeniden kaydolur (token yenilenmiş olabilir; dil/sürüm güncellenir).
-    if (pushSupported() && readPushOptin()) { try { PushNotifications.register(); } catch(_) {} }
+    ensurePushRegistered();
     if (__pendingDeepLink) {
       const pendingUrl = __pendingDeepLink;
       __pendingDeepLink = null;
@@ -17462,26 +17469,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               )}
             </section>
 
-            {/* ANLIK MESAJ DAVETİ: bir kez, yalnızca telefonda ve bildirim izni zaten
-                verilmişse (Apple 4.5.4 açık onay). Karar verilince bir daha çıkmaz;
-                Ayarlar > Bildirimler'den değiştirilebilir. */}
-            {pushSupported() && notifPerm === "granted" && pushOptin === null && (
-              <section style={SEC}>
-                <div style={{ ...SURF,padding:"16px 18px",display:"flex",flexDirection:"column",gap:10 }}>
-                  <div style={{ display:"flex",alignItems:"center",gap:12 }}>
-                    {icon("✉", "#e8c07a", 40, 17)}
-                    <span style={{ fontFamily:SERIF,fontSize:19,lineHeight:1.25,color:INK }}>{pickLang(PUSH_TXT.head, lang)}</span>
-                  </div>
-                  <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{pickLang(PUSH_TXT.body, lang)}</div>
-                  <div style={{ display:"flex",gap:10,flexWrap:"wrap" }}>
-                    {smallBtn(pickLang(PUSH_TXT.yes, lang), () => togglePush(true), "#e8c07a")}
-                    {smallBtn(pickLang(PUSH_TXT.no, lang), () => togglePush(false))}
-                  </div>
-                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE }}>{pickLang(PUSH_TXT.later, lang)}</div>
-                </div>
-              </section>
-            )}
-
             {/* ── 10) BUGÜNÜN İLK ADIMI (en altta, kullanıcı isteği: "mantık olarak
                 devam etsin", Güne Başla kaldırıldı). Sayfayı okuyan kullanıcıyı
                 günün pratiğine (Bağlan) taşır; seri bilgisi alt satırda. */}
@@ -17688,7 +17675,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   const headLabel = pickLang(NOTIF_SET_TXT.perDay, lang).replace("{n}", String(notifPrefs.count));
                   const summary = [
                     pickLang(NOTIF_SET_TXT.typesOn, lang).replace("{a}", String(onCount)).replace("{b}", String(TYPES.length)),
-                    showPush ? pickLang(pushOptin ? NOTIF_SET_TXT.pushOn : NOTIF_SET_TXT.pushOff, lang) : null,
+                    showPush ? pickLang(pushOptin !== false ? NOTIF_SET_TXT.pushOn : NOTIF_SET_TXT.pushOff, lang) : null,
                   ].filter(Boolean).join(" · ");
                   return (
                     <>
@@ -17698,7 +17685,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       <div style={cardSt}>
                         {notifPerm && notifPerm !== "granted" && (
                           <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={pickLang(NOTIF_SET_TXT.permNote, lang)}
-                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); } }).catch(()=>{}); } : undefined}
+                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); ensurePushRegistered(); } }).catch(()=>{}); } : undefined}
                             right={notifPerm === "prompt" ? <span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(NOTIF_SET_TXT.permAsk, lang)}</span> : null} />
                         )}
                         <Row icon="◌" label={headLabel} note={summary}
@@ -17736,13 +17723,13 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           {/* Anlık bildirim (push): planlı günlük sayıdan AYRI hat, burada son satır. */}
                           {showPush && (
                             <Row icon="✉" label={pickLang(PUSH_TXT.label, lang)} note={pickLang(PUSH_TXT.note, lang)} last
-                              onClick={() => togglePush(!pushOptin)} right={sw(!!pushOptin)} />
+                              onClick={() => togglePush(pushOptin === false)} right={sw(pushOptin !== false)} />
                           )}
                         </>)}
                       </div>
                       {notifSetOpen && (<>
                         <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11.5,color:"#7c7590",margin:"8px 6px 0",lineHeight:1.5 }}>{pickLang(NOTIF_SET_TXT.order, lang)}</div>
-                        {showPush && pushOptin && pushCode && (
+                        {showPush && pushOptin !== false && pushCode && (
                           <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:1.5,color:"#6f6a80",margin:"6px 6px 0" }}>{pickLang(PUSH_TXT.code, lang)}: {pushCode}</div>
                         )}
                       </>)}
