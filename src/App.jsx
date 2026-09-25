@@ -15,6 +15,7 @@ import { readDailyIds, loadDailyIndex, mythOfDayPinned, CARD_APP } from "./daily
 import { ICHING } from "./iching-data";
 import { TAROT } from "./tarot-data";
 import { LocalNotifications } from "@capacitor/local-notifications";
+import { PushNotifications } from "@capacitor/push-notifications";
 import { Share } from "@capacitor/share";
 import { App as CapacitorApp } from "@capacitor/app";
 import { TextToSpeech } from "@capacitor-community/text-to-speech";
@@ -4591,6 +4592,82 @@ if (isNative) {
   try { CapacitorApp.getLaunchUrl().then((r) => { if (r && r.url) __onDeepLink(r.url); }).catch(() => {}); } catch (_) {}
 }
 
+// ── ANLIK BİLDİRİM (push, kullanıcı isteği Eyl 2026: "istediğim zaman spontane
+// bildirim") ────────────────────────────────────────────────────────────────
+// Gönderim: netlify/functions/push-admin.mjs paneli. Cihaz YALNIZCA kullanıcı
+// "Sakin'den anlık mesajlar"ı açarsa kaydolur (Apple 4.5.4: duyuru/tanıtım push'u
+// açık onay ister). Kapatınca sunucudaki kayıt silinir.
+// ⚠️ ANDROID KAPALI: google-services.json (Firebase) eklenmeden register() native
+// tarafta hata verir. Firebase dosyası android/app/'e konunca bu bayrağı true yap.
+const PUSH_ANDROID_READY = false;
+const pushSupported = () => isNative && (Capacitor.getPlatform() === "ios" || PUSH_ANDROID_READY);
+const readPushOptin = () => { try { const v = localStorage.getItem("sakin_push_optin"); return v === "1" ? true : v === "0" ? false : null; } catch (_) { return null; } };
+let __pendingPushAction = null;
+let __pushActionHandler = null;
+async function postPushRegister(token, optin) {
+  try {
+    const r = await fetch(API_BASE + "/.netlify/functions/push-register", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, optin, platform: Capacitor.getPlatform(),
+        lang: (() => { try { return localStorage.getItem("sakin_lang") || "tr"; } catch (_) { return "tr"; } })(),
+        tz: (() => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (_) { return ""; } })(),
+        v: APP_VERSION }),
+    });
+    const j = await r.json().catch(() => null);
+    try {
+      if (optin && j && j.code) localStorage.setItem("sakin_push_code", j.code);
+      if (!optin) localStorage.removeItem("sakin_push_code");
+      window.dispatchEvent(new Event("sakin-push-code"));
+    } catch (_) {}
+  } catch (_) { /* çevrimdışı: bir sonraki açılışta yeniden denenir */ }
+}
+if (pushSupported()) {
+  try {
+    PushNotifications.addListener("registration", (t) => {
+      const token = t && t.value;
+      if (!token) return;
+      try { localStorage.setItem("sakin_push_token", token); } catch (_) {}
+      if (readPushOptin()) postPushRegister(token, true);
+    });
+    PushNotifications.addListener("registrationError", (e) => console.warn("[Push] kayıt hatası", e));
+    PushNotifications.addListener("pushNotificationActionPerformed", (a) => {
+      if (__pushActionHandler) __pushActionHandler(a); else __pendingPushAction = a;
+    });
+  } catch (_) {}
+}
+// Push'la gelen hedef ekran BEYAZ LİSTEDEN olmalı (panelle aynı liste).
+const PUSH_SCREENS = ["bugun", "mandala", "nefes", "ses", "chakra", "harita", "gun"];
+const PUSH_TXT = {
+  label: { tr:"Sakin'den anlık mesajlar", en:"Occasional messages from Sakin", de:"Gelegentliche Nachrichten von Sakin", es:"Mensajes ocasionales de Sakin", pt:"Mensagens ocasionais do Sakin", fr:"Messages ponctuels de Sakin", ja:"Sakinからのときどきのメッセージ" },
+  note:  { tr:"Planın dışında, arada bir: yeni özellikler, özel gökyüzü günleri, içten notlar", en:"Outside the schedule, now and then: new features, special sky days, heartfelt notes", de:"Außerhalb des Plans, ab und zu: neue Funktionen, besondere Himmelstage, herzliche Notizen", es:"Fuera del plan, de vez en cuando: novedades, días especiales del cielo, notas sinceras", pt:"Fora do plano, de vez em quando: novidades, dias especiais do céu, notas sinceras", fr:"En dehors du programme, de temps en temps : nouveautés, jours de ciel particuliers, mots sincères", ja:"予定とは別に、ときどき：新機能、特別な空の日、心からのひとこと" },
+  code:  { tr:"Cihaz kodu", en:"Device code", de:"Gerätecode", es:"Código del dispositivo", pt:"Código do dispositivo", fr:"Code de l'appareil", ja:"デバイスコード" },
+  head:  { tr:"Sakin'den ara sıra bir mesaj?", en:"A message from Sakin now and then?", de:"Ab und zu eine Nachricht von Sakin?", es:"¿Un mensaje de Sakin de vez en cuando?", pt:"Uma mensagem do Sakin de vez em quando?", fr:"Un message de Sakin de temps en temps ?", ja:"ときどきSakinからメッセージを？" },
+  body:  { tr:"Planlı bildirimlerin dışında arada bir kısa notlar göndermek istiyoruz: yeni özellikler, özel gökyüzü günleri, içten mesajlar. Sık değil.", en:"Besides your scheduled notifications, we'd like to send a short note now and then: new features, special sky days, heartfelt messages. Not often.", de:"Neben deinen geplanten Benachrichtigungen möchten wir ab und zu eine kurze Notiz senden: neue Funktionen, besondere Himmelstage, herzliche Nachrichten. Nicht oft.", es:"Además de tus notificaciones programadas, nos gustaría enviarte de vez en cuando una nota breve: novedades, días especiales del cielo, mensajes sinceros. No a menudo.", pt:"Além das notificações programadas, gostaríamos de enviar de vez em quando uma nota curta: novidades, dias especiais do céu, mensagens sinceras. Não muitas vezes.", fr:"En plus de tes notifications programmées, nous aimerions t'envoyer de temps en temps un petit mot : nouveautés, jours de ciel particuliers, messages sincères. Pas souvent.", ja:"予定された通知のほかに、ときどき短いメッセージを送りたいと思っています。新機能、特別な空の日、心からの言葉。頻繁ではありません。" },
+  yes:   { tr:"Evet, isterim", en:"Yes, please", de:"Ja, gern", es:"Sí, quiero", pt:"Sim, quero", fr:"Oui, volontiers", ja:"はい、受け取る" },
+  no:    { tr:"Şimdilik değil", en:"Not now", de:"Jetzt nicht", es:"Ahora no", pt:"Agora não", fr:"Pas maintenant", ja:"今はいい" },
+  later: { tr:"İstediğin zaman Ayarlar > Bildirimler'den değiştirebilirsin.", en:"You can change this anytime in Settings > Notifications.", de:"Du kannst das jederzeit unter Einstellungen > Benachrichtigungen ändern.", es:"Puedes cambiarlo cuando quieras en Ajustes > Notificaciones.", pt:"Podes mudar isto quando quiseres em Definições > Notificações.", fr:"Tu peux changer cela à tout moment dans Réglages > Notifications.", ja:"設定 > 通知 からいつでも変更できます。" },
+};
+// Açık/kapalı. Açarken izin ister (yerel bildirim izni zaten varsa sistem sormaz).
+async function setPushOptin(on) {
+  if (!pushSupported()) return false;
+  try {
+    if (on) {
+      let perm = await PushNotifications.checkPermissions();
+      if (perm.receive === "prompt" || perm.receive === "prompt-with-rationale") perm = await PushNotifications.requestPermissions();
+      if (perm.receive !== "granted") { localStorage.setItem("sakin_push_optin", "0"); return false; }
+      localStorage.setItem("sakin_push_optin", "1");
+      await PushNotifications.register();   // token "registration" dinleyicisine gelir
+      try { track("push_optin", { v: 1 }); } catch (_) {}
+      return true;
+    }
+    localStorage.setItem("sakin_push_optin", "0");
+    const t = localStorage.getItem("sakin_push_token");
+    if (t) postPushRegister(t, false);
+    try { track("push_optin", { v: 0 }); } catch (_) {}
+    return false;
+  } catch (e) { console.warn("[Push]", e); return false; }
+}
+
 // Görevden ilgili uygulama aracına köprü (Sprint 2): id → screen. Fiziksel-dünya
 // görevlerinin (su, ağaç, güneş...) köprüsü yok: sadece uygulamada yapılabilenler.
 const REMINDER_GO = { nefes: "nefes", chakra_an: "chakra" };
@@ -6605,12 +6682,27 @@ export default function SakinApp() {
       setScreen(scr);
     };
     __deepLinkHandler = linkHandler;
+    // Anlık bildirime (push) dokunma: aynı açılış katmanı temizliği, beyaz listedeki ekrana git.
+    const pushHandler = (a) => {
+      const d = (a && a.notification && a.notification.data) || {};
+      try { track("notif_open", { k: "anlik" }); } catch(_) {}
+      clearEntryLayers();
+      if (typeof d.screen === "string" && PUSH_SCREENS.includes(d.screen)) { try { setShowAilesi(false); } catch(_){} setScreen(d.screen); }
+    };
+    __pushActionHandler = pushHandler;
+    if (__pendingPushAction) {
+      const pendingPush = __pendingPushAction;
+      __pendingPushAction = null;
+      setTimeout(() => pushHandler(pendingPush), 60);
+    }
+    // Açık olan cihaz her açılışta yeniden kaydolur (token yenilenmiş olabilir; dil/sürüm güncellenir).
+    if (pushSupported() && readPushOptin()) { try { PushNotifications.register(); } catch(_) {} }
     if (__pendingDeepLink) {
       const pendingUrl = __pendingDeepLink;
       __pendingDeepLink = null;
       setTimeout(() => linkHandler(pendingUrl), 60);
     }
-    return () => { __notifActionHandler = null; __deepLinkHandler = null; };
+    return () => { __notifActionHandler = null; __deepLinkHandler = null; __pushActionHandler = null; };
   }, []);
   const [showFotoTani, setShowFotoTani] = useState(false);
   const [fotoTaniType, setFotoTaniType] = useState("stone"); // embed'den gelir: stone | plant
@@ -7307,6 +7399,15 @@ export default function SakinApp() {
   // yeniden kurulur (force); geri dönüş bildirimleri de tercihe uyar.
   const [notifPrefs, setNotifPrefsState] = useState(() => readNotifPrefs());
   const [notifPerm, setNotifPerm] = useState(null);   // "granted" | "denied" | "prompt" | null
+  // Anlık bildirim (push) onayı: null = henüz sorulmadı, true/false = karar verildi.
+  const [pushOptin, setPushOptinState] = useState(() => readPushOptin());
+  const [pushCode, setPushCode] = useState(() => { try { return localStorage.getItem("sakin_push_code") || ""; } catch (_) { return ""; } });
+  useEffect(() => {
+    const onCode = () => { try { setPushCode(localStorage.getItem("sakin_push_code") || ""); } catch (_) {} };
+    window.addEventListener("sakin-push-code", onCode);
+    return () => window.removeEventListener("sakin-push-code", onCode);
+  }, []);
+  const togglePush = (on) => { setPushOptinState(on); setPushOptin(on).then(r => setPushOptinState(on ? !!r : false)); };
   const saveNotifPrefs = (next) => {
     setNotifPrefsState(next);
     const off = {}; for (const k of NOTIF_TYPES) if (!next.on[k]) off[k] = true;
@@ -8191,7 +8292,7 @@ export default function SakinApp() {
     return () => clearInterval(id);
   }, [soulWarm]);
   useEffect(() => {
-    if (screen !== "ayarlar" || !isNative) return;
+    if ((screen !== "ayarlar" && screen !== "bugun") || !isNative) return;
     LocalNotifications.checkPermissions().then(p => setNotifPerm(p.display)).catch(() => {});
   }, [screen]);
   const hiddenAtRef = useRef(0);
@@ -17354,6 +17455,26 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               )}
             </section>
 
+            {/* ANLIK MESAJ DAVETİ: bir kez, yalnızca telefonda ve bildirim izni zaten
+                verilmişse (Apple 4.5.4 açık onay). Karar verilince bir daha çıkmaz;
+                Ayarlar > Bildirimler'den değiştirilebilir. */}
+            {pushSupported() && notifPerm === "granted" && pushOptin === null && (
+              <section style={SEC}>
+                <div style={{ ...SURF,padding:"16px 18px",display:"flex",flexDirection:"column",gap:10 }}>
+                  <div style={{ display:"flex",alignItems:"center",gap:12 }}>
+                    {icon("✉", "#e8c07a", 40, 17)}
+                    <span style={{ fontFamily:SERIF,fontSize:19,lineHeight:1.25,color:INK }}>{pickLang(PUSH_TXT.head, lang)}</span>
+                  </div>
+                  <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{pickLang(PUSH_TXT.body, lang)}</div>
+                  <div style={{ display:"flex",gap:10,flexWrap:"wrap" }}>
+                    {smallBtn(pickLang(PUSH_TXT.yes, lang), () => togglePush(true), "#e8c07a")}
+                    {smallBtn(pickLang(PUSH_TXT.no, lang), () => togglePush(false))}
+                  </div>
+                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE }}>{pickLang(PUSH_TXT.later, lang)}</div>
+                </div>
+              </section>
+            )}
+
             {/* ── 10) BUGÜNÜN İLK ADIMI (en altta, kullanıcı isteği: "mantık olarak
                 devam etsin", Güne Başla kaldırıldı). Sayfayı okuyan kullanıcıyı
                 günün pratiğine (Bağlan) taşır; seri bilgisi alt satırda. */}
@@ -17591,6 +17712,16 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                         })}
                       </div>
                       <div style={{ fontFamily:"'Inter',sans-serif",fontSize:11.5,color:"#7c7590",margin:"8px 6px 0",lineHeight:1.5 }}>{pickLang(NOTIF_SET_TXT.order, lang)}</div>
+                      {/* Anlık bildirim (push): planlı günlük sayıdan AYRI, açık onayla. */}
+                      {(pushSupported() || (() => { try { return localStorage.getItem("sakin_dev_notif") === "1"; } catch (_) { return false; } })()) && (<>
+                        <div style={{ ...cardSt, marginTop:10 }}>
+                          <Row icon="✉" label={pickLang(PUSH_TXT.label, lang)} note={pickLang(PUSH_TXT.note, lang)} last
+                            onClick={() => togglePush(!pushOptin)} right={sw(!!pushOptin)} />
+                        </div>
+                        {pushOptin && pushCode && (
+                          <div style={{ fontFamily:"'Jost',sans-serif",fontSize:11,letterSpacing:1.5,color:"#6f6a80",margin:"8px 6px 0" }}>{pickLang(PUSH_TXT.code, lang)}: {pushCode}</div>
+                        )}
+                      </>)}
                     </>
                   );
                 })()}

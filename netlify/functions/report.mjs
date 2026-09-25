@@ -197,13 +197,14 @@ export function aggregate(users) {
     notifPrefs: np,
     notif: {
       users: notifUsers,
-      byKind: ["genel", "kisisel", "tarot", "geridon", "mektup", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
+      byKind: ["genel", "kisisel", "tarot", "geridon", "mektup", "anlik", "diger"].map((k) => ({ k, n: ch["notif_" + k] || 0 })),
       deeplink: ["mandala", "bugun", "nefes", "ses", "chakra"].map((k) => ({ k, n: ch["deeplink_" + k] || 0 })),
     },
     choices: {
       forkShown: ch.fork_shown || 0,
       forkBaglan: ch.fork_baglan || 0, forkKesfet: ch.fork_kesfet || 0,
       forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
+      pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
       letterSeal: ch.letter_seal || 0, letterOpen: ch.letter_open || 0,
       letterR: { oldu: ch.letter_r_oldu || 0, yolda: ch.letter_r_yolda || 0, donustu: ch.letter_r_donustu || 0 },
       gateShown: ch.bgate_shown || 0, gateEnter: ch.bgate_enter || 0, gateSkip: ch.bgate_skip || 0,
@@ -410,7 +411,7 @@ export function renderHTML(r, truncated) {
       const tipRows = (c.aynaByTip || []).map((x) =>
         `<tr><td>Ayna · ${esc(x.tip)}</td><td class="num">${x.up} iyi · ${x.down} değil · %${x.upPct}</td></tr>`).join("");
       const o = r.onboarding || {}, nt = r.notif || { byKind: [] };
-      const NK = { genel: "Genel hatırlatma", kisisel: "Kişiye özel", tarot: "Sabah tarot", geridon: "Geri dönüş (10-30 gün)", mektup: "Niyet mektubu açıldı", diger: "Diğer" };
+      const NK = { genel: "Genel hatırlatma", kisisel: "Kişiye özel", tarot: "Sabah tarot", geridon: "Geri dönüş (10-30 gün)", mektup: "Niyet mektubu açıldı", anlik: "Anlık mesaj (panelden)", diger: "Diğer" };
       return `<h2>Tanışma</h2>
      <div class="card"><table>
        <tr><td>Sakinleşmek: başladı / bitirdi</td><td class="num">${o.baglanStarted || 0} / ${o.baglanDone || 0}</td></tr>
@@ -433,6 +434,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Sakinleşmek seçildi</td><td class="num">${c.forkBaglan || 0} (denenmemiş işaretliyken ${c.forkUntriedBaglan || 0})</td></tr>
        <tr><td>Kendimi tanımak seçildi</td><td class="num">${c.forkKesfet || 0} (denenmemiş işaretliyken ${c.forkUntriedKesfet || 0})</td></tr>
        <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
+       <tr><td>Anlık mesajlar: açtı / istemedi</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>
        <tr><td>Niyet mektubu: mühürlendi / açıldı</td><td class="num">${c.letterSeal || 0} / ${c.letterOpen || 0}</td></tr>
        <tr><td>Mektup yansıması: gerçekleşti / yolda / dönüştü</td><td class="num">${(c.letterR || {}).oldu || 0} / ${(c.letterR || {}).yolda || 0} / ${(c.letterR || {}).donustu || 0}</td></tr>
        <tr><td>Kapıdan bilgi girmeye geçti</td><td class="num">${c.gateEnter || 0} · %${c.gateEnterPct || 0}</td></tr>

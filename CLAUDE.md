@@ -778,6 +778,34 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
   YERİNE geçmez; özellik listesi, fiyatlar, abonelik koşulları (3.1.2) aynen durur.
   Doğrulanamayan iddia ("reklamsız", "veri satmıyoruz") EKLEME.
 
+## 📣 ANLIK BİLDİRİM / PUSH (kullanıcı isteği, Eyl 2026: "istediğim zaman spontane bildirim")
+
+Planlı YEREL bildirimlerden AYRI bir hat. Gönderim paneli:
+`https://sakin.life/.netlify/functions/push-admin?token=PUSH_ADMIN_TOKEN`
+(metin tek ya da dil dil, dil/platform filtresi, açılacak ekran, "yalnız test
+cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderimler).
+- Sunucu: `netlify/functions/_push.mjs` (APNs HTTP/2 + ES256 JWT, FCM HTTP v1 +
+  servis hesabı; Xcode sandbox token'ına otomatik ikinci deneme; 410/UNREGISTERED
+  cihazlar silinir), `push-register.mjs` (Blobs `sakin-push`, anahtar token özeti;
+  yalnızca token/platform/dil/tz/sürüm, KİŞİSEL VERİ YOK), `push-admin.mjs`.
+  Env: APNS_KEY_ID, APNS_TEAM_ID, APNS_PRIVATE_KEY, (APNS_BUNDLE_ID), FCM_SA_JSON,
+  PUSH_ADMIN_TOKEN. Eksik platform panelde "kapalı" yazar, gönderim atlanır.
+- İstemci: `@capacitor/push-notifications`. Cihaz YALNIZCA açık onayla kaydolur
+  (Apple 4.5.4): Ayarlar > Bildirimler > "Sakin'den anlık mesajlar" ya da Bugün'de
+  BİR KEZ çıkan davet kartı (yalnızca native + bildirim izni verilmişse +
+  `sakin_push_optin` null). Kapatınca sunucu kaydı silinir. Dokunma →
+  `PUSH_SCREENS` beyaz listesindeki ekran, soğuk açılış tamponlu. Analitik
+  `push_optin` {v} + `notif_open` k="anlik" (track.mjs beyaz listede).
+- ⚠️ ANDROID KAPALI: `PUSH_ANDROID_READY = false` (App.jsx). `google-services.json`
+  (Firebase) `android/app/`'e konmadan register() native hata verir. Dosya
+  eklenince bayrağı true yap, R8 test kapısından geçir.
+- ⚠️ iOS native parçası (AppDelegate'te didRegisterForRemoteNotifications
+  iletimi + App.entitlements'ta aps-environment) altın kural #7 gereği AYRI onayla
+  eklenir. Onaysız build'de register() sessizce hiçbir şey yapmaz.
+- Test: sahte APNs HTTP/2 + sahte FCM + sahte Blobs ile uçtan uca doğrulandı
+  (kayıt, 401, test kodu, dile özel metin, sandbox yedeği, ölü cihaz temizliği).
+  Gerçek cihazda test EDİLMEDİ.
+
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
 - Şema: `sakin://<yol>`. Yollar `DEEP_LINK_SCREENS` (src/App.jsx): `baglan`→mandala,
