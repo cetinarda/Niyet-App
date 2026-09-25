@@ -132,6 +132,13 @@ export default async (req) => {
   const entry = { ts: Date.now(), mode, text: (general || per.tr || per.en || Object.values(per).find(Boolean) || "").slice(0, 80), ok, fail, removed: dead.length };
   try { await logStore.setJSON("log", [entry, ...log].slice(0, 30)); } catch {}
   const errs = [...new Set(results.filter((r) => !r.ok).map((r) => r.why))].slice(0, 5);
-  const notice = `<div class="card" style="margin-top:16px"><b class="${fail ? "bad" : "ok"}">${mode === "test" ? "Test" : "Gönderim"} tamamlandı:</b> ${ok} başarılı, ${fail} başarısız${dead.length ? `, ${dead.length} geçersiz cihaz silindi` : ""}${skipped ? `, ${skipped} cihaz atlandı (platform anahtarı eksik)` : ""}.${errs.length ? `<div class="muted">Hatalar: ${errs.map(esc).join(" · ")}</div>` : ""}</div>`;
+  // Sık görülen APNs hatalarına Türkçe açıklama.
+  const allWhy = errs.join(" ");
+  let hint = "";
+  if (/BadEnvironmentKeyInToken/.test(allWhy)) hint = "APNs anahtarı bu cihazın ortamına izinli değil. Xcode'dan kurulan sürüm Sandbox, TestFlight ve App Store sürümü Production kullanır. Apple Developer > Keys'te anahtarı \"Sandbox & Production\" ortamıyla yeniden oluştur, yeni Key ID ve .p8 içeriğini Netlify'a gir. Ya da testi TestFlight sürümüyle yap.";
+  else if (/InvalidProviderToken/.test(allWhy)) hint = "Apple anahtarı reddetti: APNS_KEY_ID, APNS_TEAM_ID ve .p8 aynı anahtara/ekibe ait olmalı.";
+  else if (/DeviceTokenNotForTopic/.test(allWhy)) hint = "Cihaz başka bir uygulama kimliğine ait: APNS_BUNDLE_ID app.sakin.life olmalı.";
+  else if (/TopicDisallowed/.test(allWhy)) hint = "Bu uygulama kimliği için push kapalı: Apple Developer > Identifiers > app.sakin.life > Push Notifications açık olmalı.";
+  const notice = `<div class="card" style="margin-top:16px"><b class="${fail ? "bad" : "ok"}">${mode === "test" ? "Test" : "Gönderim"} tamamlandı:</b> ${ok} başarılı, ${fail} başarısız${dead.length ? `, ${dead.length} geçersiz cihaz silindi` : ""}${skipped ? `, ${skipped} cihaz atlandı (platform anahtarı eksik)` : ""}.${errs.length ? `<div class="muted">Hatalar: ${errs.map(esc).join(" · ")}</div>` : ""}${hint ? `<div style="margin-top:8px">${esc(hint)}</div>` : ""}</div>`;
   return html(panel(token, await loadDevices(store), cfg, [entry, ...log], notice));
 };

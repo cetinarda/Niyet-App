@@ -100,11 +100,18 @@ export async function sendApnsBatch(cfg, items, concurrency = 20) {
     while (i < items.length) {
       const it = items[i++];
       let r = await apnsRequest(prod, jwt, cfg, it.token, it.payload);
-      if (r.status === 400 && r.reason === "BadDeviceToken") {
+      // Üretim reddederse sandbox'ı dene: token Xcode test sürümünden (sandbox) ya
+      // da anahtar yalnızca Sandbox için oluşturulmuş olabilir.
+      const wrongEnv = (x) => (x.status === 400 && x.reason === "BadDeviceToken") || (x.status === 403 && x.reason === "BadEnvironmentKeyInToken");
+      if (wrongEnv(r)) {
+        const first = r;
         sandbox = sandbox || apnsSession(APNS_HOSTS.sandbox);
         r = await apnsRequest(sandbox, jwt, cfg, it.token, it.payload);
+        if (r.status !== 200) r = { ...r, reason: `${first.reason} / sandbox: ${r.reason}` };
       }
-      const dead = r.status === 410 || (r.status === 400 && r.reason === "BadDeviceToken");
+      // Yalnızca iki ortam da "cihaz geçersiz" derse ya da 410 gelirse kayıt silinir;
+      // anahtar/ortam uyumsuzluğunda cihaz SİLİNMEZ (sorun bizim tarafta).
+      const dead = r.status === 410 || (r.status === 400 && /^BadDeviceToken \/ sandbox: BadDeviceToken$/.test(r.reason));
       results.push({ key: it.key, ok: r.status === 200, dead, why: r.status === 200 ? "" : `${r.status} ${r.reason}` });
     }
   };
