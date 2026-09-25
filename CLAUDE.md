@@ -491,6 +491,12 @@ günde 4, yeni kullanıcıya 5 bildirim gidiyordu. Artık TEK fonksiyon:
   nefes bitince, tanışma bitince ya da en geç ikinci açılışta, bir kez
   (`sakin_notif_asked`).
 - Kolaylaştırıcı şablon yedeği artık 7 dilde (`PNOTIF_FACIL`).
+- **Sabah tarot bildirimi (`TAROT_NOTIF`) "tek bir kart ayrıldı" DEMEZ** (kullanıcı
+  bildirdi: gün içinde birden fazla kart açılıyor). Kalıp: "Günün rehber kartlarını
+  çek, tarot kartını aç ve mesajını al" (3 varyant, 7 dil).
+- **SÖZ HAVUZU (`NOTIF_SOZ`, 32 söz, 7 dil; Türkçe asıl metin kullanıcının):**
+  akşam 18:00 / gün ortası 13:00 havuzuna diğer mesajlarla ARALIKLI dizilir (sona
+  eklenirse `pick()` 32 gün üst üste söz verirdi). Dokununca Bağlan.
 - Doğrulama: gerçek kod Node'da sahte LocalNotifications ile çalıştırıldı
   (tier × doğum × Kp), gün başı sayılar 3/2/1 ve 2/1-2/1 çıktı. Cihazda test EDİLMEDİ.
 
