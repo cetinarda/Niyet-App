@@ -498,6 +498,18 @@ export const tr = {
     infoRestoreNone: "Bu hesaba bağlı aktif bir abonelik bulunamadı.",
     linkTerms: "Kullanım Şartları",
     linkPrivacy: "Gizlilik Politikası",
+    features: {
+      f1Title: "Doğum Hayvanın",
+      f1Desc: "Doğum bilgilerinle ya da birkaç soruyla rehber hayvanını bul",
+      f2Title: "Haftalık Rehberlik",
+      f2Desc: "52 haftalık döngünde nerede durduğun ve kişisel yılın",
+      f3Title: "Derin Hayvan Sayfaları",
+      f3Desc: "Mitoloji, Jung, gelenekler, gölge ve rüya anlamları",
+      f4Title: "Kişisel Harita",
+      f4Desc: "Yaşam yolun ve isminden gelen temel sayıların",
+      f5Title: "Arşiv",
+      f5Desc: "Geçmiş okumaların tek bir yerde",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

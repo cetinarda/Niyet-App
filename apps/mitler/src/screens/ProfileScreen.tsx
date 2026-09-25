@@ -13,7 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useMitlerStore } from '../store/useStore';
-import { useData } from '../data/loader';
+import { useData, traditionLabel } from '../data/loader';
 import { useLanguage } from '../i18n/useLanguage';
 import { calcNumerology } from '../utils/numerology';
 import { getLifePathMeaning } from '../utils/numerology';
@@ -625,7 +625,7 @@ export function ProfileScreen() {
             <Text style={styles.spiritEmoji}>📜</Text>
             <View style={styles.spiritInfo}>
               <Text style={styles.spiritLabel}>{t('profile.map.topTradition')}</Text>
-              <Text style={[styles.spiritValue, { color: Colors.emberLight }]}>{topTradition}</Text>
+              <Text style={[styles.spiritValue, { color: Colors.emberLight }]}>{traditionLabel(topTradition, lang)}</Text>
               <Text style={styles.spiritCount}>
                 {t('profile.map.timesCalled', { n: stats.traditionCounts[topTradition] || 0 })}
               </Text>

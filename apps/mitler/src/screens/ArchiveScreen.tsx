@@ -10,7 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useMitlerStore } from '../store/useStore';
 
-import { useData } from '../data/loader';
+import { useData, traditionLabel } from '../data/loader';
 import { useLanguage } from '../i18n/useLanguage';
 
 const DATE_LOCALE: Record<string, string> = {
@@ -162,7 +162,7 @@ export function ArchiveScreen() {
             {topTradition && (
               <View style={styles.reportItem}>
                 <Text style={styles.reportLabel}>{t('archive.label.tradition')}</Text>
-                <Text style={[styles.reportValue, { color: Colors.emberLight }]}>{topTradition}</Text>
+                <Text style={[styles.reportValue, { color: Colors.emberLight }]}>{traditionLabel(topTradition, lang)}</Text>
               </View>
             )}
           </View>

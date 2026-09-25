@@ -7,7 +7,6 @@ import quotesData from '../data/quotes.json';
 import nagualsData from '../data/naguals.json';
 import plantsData from '../data/plants.json';
 import philosophersData from '../data/philosophers.json';
-import { getAnimalLore } from '../data/animalLore';
 
 const EN_SUFFIX_FIELDS = [
   'name', 'element', 'symbolism', 'anatolianMeaning', 'dailyMessage', 'guidance',
@@ -67,30 +66,7 @@ export function useLocalizedPlants() {
   return useMemo(() => localizeAll(plantsData as any[], lang), [lang]);
 }
 
-type Bilingual = { tr: string; en: string };
-function pickB(b: Bilingual | undefined, lang: Lang): string | undefined {
-  if (!b) return undefined;
-  return lang === 'tr' ? b.tr : (b.en ?? b.tr);
-}
 
-export function useLocalizedLore(animalId: string) {
-  const lang = useLang();
-  return useMemo(() => {
-    const lore: any = getAnimalLore(animalId);
-    if (!lore) return null;
-    return {
-      jung: pickB(lore.jung, lang),
-      dream: pickB(lore.dream, lang),
-      shadow: pickB(lore.shadow, lang),
-      whenAppears: pickB(lore.whenAppears, lang),
-      traditions: lore.traditions?.map((tr: any) => ({
-        culture: pickB(tr.culture, lang),
-        meaning: pickB(tr.meaning, lang),
-      })),
-      myths: lore.myths?.map((m: any) => pickB(m, lang)),
-    };
-  }, [animalId, lang]);
-}
 
 export function useLocalizedPhilosophers() {
   const lang = useLang();

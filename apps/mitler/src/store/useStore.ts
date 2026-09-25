@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { normalizeTraditionCounts, normalizeTraditionKey } from '../data/loader';
 
 export type ReadingType = 'archetype' | 'myth' | 'image';
 
@@ -268,12 +269,14 @@ export function useMitlerStore() {
       if (archiveRaw) setArchive(JSON.parse(archiveRaw));
       if (statsRaw) {
         const s = JSON.parse(statsRaw);
+        // Eski kayıtlar gelenek adını o anki dilde tutuyordu: kararlı anahtara
+        // çevrilip birleştirilir (bir sonraki kayıtta kalıcı olur).
         setStats({
           archetypeCounts: {},
           mythCounts: {},
           imageCounts: {},
-          traditionCounts: {},
           ...s,
+          traditionCounts: normalizeTraditionCounts(s?.traditionCounts),
         });
       }
     } catch (e) {
@@ -441,11 +444,13 @@ export function useMitlerStore() {
     imageId: string,
     tradition: string,
   ) => {
+    const tKey = normalizeTraditionKey(tradition);
+    const traditionCounts = normalizeTraditionCounts(stats.traditionCounts);
     const newStats: Stats = {
       archetypeCounts: { ...stats.archetypeCounts, [archetypeId]: (stats.archetypeCounts[archetypeId] || 0) + 1 },
       mythCounts: { ...stats.mythCounts, [mythId]: (stats.mythCounts[mythId] || 0) + 1 },
       imageCounts: { ...stats.imageCounts, [imageId]: (stats.imageCounts[imageId] || 0) + 1 },
-      traditionCounts: { ...stats.traditionCounts, [tradition]: (stats.traditionCounts[tradition] || 0) + 1 },
+      traditionCounts: { ...traditionCounts, [tKey]: (traditionCounts[tKey] || 0) + 1 },
     };
     setStats(newStats);
     await AsyncStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(newStats));

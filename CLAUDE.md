@@ -1046,14 +1046,28 @@ onay ister" yalnızca 5 özellik için). Yeni onay kapısı EKLEME.
   uygulamalar (Mitler/Hayvan/Bitkiler/Taşlar): arşiv tarihleri, profil seviye
   adları, element, paylaş, Hayvan testi, sözler (Taşlar'a 5 dil eklendi) düzeltilip
   yeniden derlendi.
-- **BİLİNEN, BİLEREK BIRAKILAN:** gömülü uygulamaların satın alma özellik listesi
-  (de/es/pt/fr/ja Türkçe; Bitkiler/Taşlar'da Hayvan özellikleri yazıyor, içerik
-  kararı ister), Mitler bulucu testi yalnızca tr/en, Mitler gelenek istatistiği
-  çevrilmiş adı saklıyor, numeroloji/haftalık okuma tr dışı dillerde İngilizce,
-  burç adlarının pt yazımları, `about_step_breath_desc` "6 mod" (eski sayı),
-  ja kaynak verisinde 地/土 tutarsızlığı. Abonelik doğrulama env'leri
-  (`APPLE_*`, `GOOGLE_*`) canlıda TANIMLI DEĞİL: `verify-entitlement`
-  `apple_not_configured` döner, yani iptal kontrolü şu an sessizce kapalı.
+- **Gömülü uygulamalar, 2. tur (kullanıcı: "bunların hepsini yapalım"):**
+  satın alma listeleri 7 dilde ve HER UYGULAMANIN KENDİ özellikleriyle
+  (`paywall.features.f1..f5`; Bitkiler/Taşlar'da artık hayvan özelliği yok,
+  koddan doğrulanamayan "reklamsız, PDF harita, senkron" iddiaları silindi;
+  PaywallScreen üç uygulamada birebir aynı). Bitkiler/Taşlar'daki "Sakin Hayvan"
+  adı (bildirim, giriş, profil) ve İngilizce "Animal" deste başlığı düzeltildi.
+  Mitler testi + doğum açıklaması (`REASON_TXT`) 7 dilde; gelenek istatistiği
+  artık SABİT ANAHTAR saklar (Türkçe kültür adı), eski kayıtlar yüklenirken
+  eşlenir; `translate()` `<anahtar>.one` tekil biçimi destekler ("1 Lesung").
+  Numeroloji + haftalık okuma + Nagual gerekçesi (`apps/hayvan/src/utils/
+  nagualReason.ts`) 7 dilde, dört uygulamada. Ölü dosyalar silindi:
+  Bitkiler/Taşlar `data/animalLore.ts` (1931 satır, pakete giriyordu, ~400 KB)
+  + Taşlar `screens/NagualScreen.tsx`. Hakkında metni "9 ritim" (eskiden 6).
+- **HÂLÂ AÇIK:** gömülü uygulamalarda `APP_IS_FREE = true` (satın alma ekranı şu
+  an hiç görünmüyor); Bitkiler/Taşlar ürün kimlikleri hâlâ `life.sakin.animals.*`
+  (satın alma mantığı, dokunulmadı); yıllık planın etiketi "ay/mo" diyor;
+  gömülü uygulamaların pt metinlerinin çoğu hâlâ Brezilya "você" biçimi
+  (yalnızca dokunulanlar "tu"); Mitler testi puanlamayı Türkçe özellik
+  kelimeleriyle yapıyor, tr dışında sonuç çoğunlukla elemente dayanıyor;
+  burç adlarının pt yazımları; ja kaynak verisinde 地/土 tutarsızlığı.
+  Abonelik doğrulama env'leri (`APPLE_*`, `GOOGLE_*`) canlıda TANIMLI DEĞİL:
+  `verify-entitlement` `apple_not_configured` döner, iptal kontrolü sessizce kapalı.
 
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 

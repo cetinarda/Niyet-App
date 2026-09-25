@@ -12,7 +12,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
-import { useData } from '../data/loader';
+import { useData, traditionKeyForMyth } from '../data/loader';
 import { useMitlerStore } from '../store/useStore';
 import { useLanguage, translate, getLanguage } from '../i18n/useLanguage';
 import { shareCard, isShareable } from '../utils/shareCard';
@@ -247,7 +247,8 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
     const iIds = imagesData.map(i => i.id);
     generateDailyReading(aIds, mIds, iIds).then(r => {
       const myth = mythsData.find(m => m.id === r.mythId)!;
-      updateStats(r.archetypeId, r.mythId, r.imageId, myth.culture);
+      // Gelenek istatistiği dil bağımsız anahtarla tutulur (görünen ad gösterimde çözülür).
+      updateStats(r.archetypeId, r.mythId, r.imageId, traditionKeyForMyth(r.mythId, myth.culture));
       setReading(r);
     });
   }, [isLoading, dailyReading]);

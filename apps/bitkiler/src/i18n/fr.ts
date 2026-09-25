@@ -154,7 +154,7 @@ export const fr = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Bienvenue sur Sakin Hayvan',
+      title: "Bienvenue sur Sakin Plantes",
       subtitle: "Guidance quotidienne issue de l'ancienne tradition anatolienne",
       step1Question: 'Quel est ton nom, voyageur ?',
       step1Placeholder: 'Saisis ton nom...',
@@ -338,7 +338,7 @@ export const fr = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Rappel quotidien',
-      rationaleMessage: "Souhaites-tu que Sakin Hayvan t'envoie un rappel discret chaque matin à 08h00 pour tirer ta carte du jour ? Les notifications ne sont jamais utilisées à des fins publicitaires ou marketing.",
+      rationaleMessage: "Souhaites-tu que Sakin Plantes t'envoie un rappel discret chaque matin à 08h00 pour tirer ta carte du jour ? Les notifications ne sont jamais utilisées à des fins publicitaires ou marketing.",
       rationaleConfirm: 'Autoriser',
       rationaleCancel: 'Pas maintenant',
     },
@@ -390,13 +390,13 @@ export const fr = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: 'FAMILLE SAKIN',
-    mikroTitle: 'Guide animal ✦',
+    mikroTitle: "Guide des plantes ✦",
     premiumTitle: 'Sakin Premium',
-    mikroSub: 'Approfondis la guidance animale',
+    mikroSub: "Approfondis la guidance des plantes",
     premiumSub: 'Un compte. Toutes les applis Sakin.',
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
-    mikroCadence: 'mois · Animal seul',
+    mikroCadence: "mois · Plantes seules",
     premiumCadence: 'mois · toutes les applis',
     mostPopular: 'LE PLUS POPULAIRE',
     iosPrice: "Les prix sont affichés via l'App Store.",
@@ -411,6 +411,18 @@ export const fr = {
     infoRestoreNone: 'Aucun abonnement actif trouvé pour ce compte.',
     linkTerms: "Conditions d'utilisation",
     linkPrivacy: 'Politique de confidentialité',
+    features: {
+      f1Title: "Ta plante de naissance",
+      f1Desc: "La plante de ton mois de naissance, et celles de ton signe et de ton élément",
+      f2Title: "Guidance hebdomadaire",
+      f2Desc: "Où tu en es dans ton cycle de 52 semaines, et ton année personnelle",
+      f3Title: "Pages des plantes",
+      f3Desc: "Propriétés, origine, mythes, chakra et usage de chaque plante",
+      f4Title: "Carte personnelle",
+      f4Desc: "Ton chemin de vie et les nombres clés de ton nom",
+      f5Title: "Archives",
+      f5Desc: "Tes lectures passées, réunies en un seul endroit",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

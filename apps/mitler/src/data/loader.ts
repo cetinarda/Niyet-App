@@ -78,3 +78,53 @@ export function useData() {
     lang,
   }), [lang]);
 }
+
+// ─── Gelenek istatistiği: kararlı anahtar ───────────────────────────────────
+// traditionCounts eskiden mitin O ANKİ dildeki kültür adını saklıyordu; dil
+// değişince eski dilin adı görünüyordu (ör. arayüz Japonca iken "Japanisch
+// (Shinto)"). Artık anahtar = temel (tr) veri setindeki kültür adı, görünen ad
+// gösterim anında seçili dilden çözülür. Mit id'leri ve kültürler tüm dillerde
+// bire bir eşleşiyor, yani herhangi bir dilde kaydedilmiş eski ad da doğru
+// geleneğe geri eşlenir; tanınmayan ad olduğu gibi kalır.
+const TRADITION_KEY_BY_MYTH: Record<string, string> = {};
+for (const m of mythsTR as Myth[]) TRADITION_KEY_BY_MYTH[m.id] = m.culture;
+
+const TRADITION_ALIAS: Record<string, string> = {};
+for (const table of Object.values(TABLES.myths) as Myth[][]) {
+  for (const m of table) {
+    const key = TRADITION_KEY_BY_MYTH[m.id];
+    if (key && m.culture && !(m.culture in TRADITION_ALIAS)) TRADITION_ALIAS[m.culture] = key;
+  }
+}
+
+/** Kararlı gelenek anahtarı (mit id'sinden). */
+export function traditionKeyForMyth(mythId: string, fallback = ''): string {
+  return TRADITION_KEY_BY_MYTH[mythId] ?? normalizeTraditionKey(fallback);
+}
+
+/** Herhangi bir dilde kaydedilmiş gelenek adını kararlı anahtara çevirir. */
+export function normalizeTraditionKey(stored: string): string {
+  return TRADITION_ALIAS[stored] ?? stored;
+}
+
+/** Eski (çevrilmiş ad ile tutulmuş) sayaçları kararlı anahtarlarda birleştirir. */
+export function normalizeTraditionCounts(counts: Record<string, number> | undefined): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const [name, n] of Object.entries(counts || {})) {
+    const key = normalizeTraditionKey(name);
+    out[key] = (out[key] || 0) + (Number(n) || 0);
+  }
+  return out;
+}
+
+/** Kararlı anahtarın seçili dildeki görünen adı; bilinmiyorsa anahtarın kendisi. */
+export function traditionLabel(key: string, lang: string): string {
+  const k = normalizeTraditionKey(key);
+  const table = pick<Myth>(TABLES.myths as any, lang);
+  for (const [id, culture] of Object.entries(TRADITION_KEY_BY_MYTH)) {
+    if (culture !== k) continue;
+    const hit = table.find(m => m.id === id);
+    if (hit?.culture) return hit.culture;
+  }
+  return key;
+}

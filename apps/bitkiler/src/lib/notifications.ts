@@ -69,7 +69,7 @@ export async function scheduleDailyReminder(hour = 8, minute = 0): Promise<void>
   await Notifications.cancelAllScheduledNotificationsAsync();
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: 'Sakin Hayvan',
+      title: 'Sakin Bitkiler',
       body: pickMessage(),
       sound: 'default',
     },

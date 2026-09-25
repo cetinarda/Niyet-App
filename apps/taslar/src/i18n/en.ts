@@ -22,9 +22,9 @@ export const en = {
     defaultUser: 'Traveller',
     decks: {
       animal: {
-        title: 'Animal',
-        short: 'ANIMAL',
-        subtitle: 'Listen to your soul companion',
+        title: 'Stone',
+        short: 'STONE',
+        subtitle: "Listen to today's stone",
       },
       quote: {
         title: 'Words',
@@ -154,7 +154,7 @@ export const en = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Welcome to Sakin Hayvan',
+      title: "Welcome to Sakin Stones",
       subtitle: 'Daily guidance from the ancient Anatolian tradition',
       step1Question: 'What is your name, traveller?',
       step1Placeholder: 'Type your name...',
@@ -338,7 +338,7 @@ export const en = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Daily reminder',
-      rationaleMessage: 'Should Sakin Hayvan send a quiet reminder at 08:00 each morning so you can draw your daily card? Notifications are never used for advertising or marketing.',
+      rationaleMessage: "Should Sakin Stones send a quiet reminder at 08:00 each morning so you can draw your daily card? Notifications are never used for advertising or marketing.",
       rationaleConfirm: 'Allow',
       rationaleCancel: 'Not Now',
     },
@@ -390,13 +390,13 @@ export const en = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: "SAKIN FAMILY",
-    mikroTitle: "Animal Guide ✦",
+    mikroTitle: "Stone Guide ✦",
     premiumTitle: "Sakin Premium",
-    mikroSub: "Go deeper into animal guidance",
+    mikroSub: "Go deeper into stone guidance",
     premiumSub: "One account. All Sakin apps.",
     mikroPlan: "Micro",
     premiumPlan: "Premium",
-    mikroCadence: "mo · Animal only",
+    mikroCadence: "mo · Stones only",
     premiumCadence: "mo · all apps",
     mostPopular: "MOST POPULAR",
     iosPrice: "Prices shown via the App Store.",
@@ -411,6 +411,18 @@ export const en = {
     infoRestoreNone: "No active subscription was found for this account.",
     linkTerms: "Terms of Use",
     linkPrivacy: "Privacy Policy",
+    features: {
+      f1Title: "Your Birthstone",
+      f1Desc: "The stone of your birth month, and crystals for your sign and element",
+      f2Title: "Weekly Guidance",
+      f2Desc: "Where you stand in your 52-week cycle, and your personal year",
+      f3Title: "Stone Pages",
+      f3Desc: "Properties, origin, myths, chakra, companion plant and how to use each stone",
+      f4Title: "Personal Map",
+      f4Desc: "Your life path and the core numbers of your name",
+      f5Title: "Archive",
+      f5Desc: "Your past readings, all in one place",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

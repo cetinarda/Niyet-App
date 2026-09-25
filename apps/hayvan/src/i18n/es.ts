@@ -490,6 +490,18 @@ export const es = {
     infoRestoreNone: 'No se encontró ninguna suscripción activa para esta cuenta.',
     linkTerms: 'Términos de uso',
     linkPrivacy: 'Política de privacidad',
+    features: {
+      f1Title: "Tu animal de nacimiento",
+      f1Desc: "Encuentra tu animal guía con tus datos de nacimiento o unas pocas preguntas",
+      f2Title: "Guía semanal",
+      f2Desc: "Dónde estás en tu ciclo de 52 semanas y tu año personal",
+      f3Title: "Páginas completas de animales",
+      f3Desc: "Mitología, Jung, tradiciones, sombra y significado en los sueños",
+      f4Title: "Mapa personal",
+      f4Desc: "Tu camino de vida y los números clave de tu nombre",
+      f5Title: "Archivo",
+      f5Desc: "Tus lecturas pasadas, todas en un mismo lugar",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

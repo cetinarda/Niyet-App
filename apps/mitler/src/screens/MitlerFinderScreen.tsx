@@ -14,17 +14,17 @@ import { useData, Archetype, Myth, ImageItem } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind } from './MitlerDetailScreen';
 import { calcLifePath } from '../utils/numerology';
 import { useLanguage, getLanguage, translate } from '../i18n/useLanguage';
+import type { Lang } from '../i18n/translations';
 import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Weight { trait: string; value: number }
-interface Bi { tr: string; en: string }
+// Quiz metinleri 7 dilde. Bir dil eksik kalırsa İngilizceye düşer.
+type Bi = { tr: string; en: string } & Partial<Record<Lang, string>>;
 interface Option { text: Bi; weights: Weight[]; element?: string }
 interface Question { q: Bi; emoji: string; options: Option[] }
-// Türkçe → tr, diğer tüm diller → en (Sakin Mitler quiz'i iki dilli; içerik verisi
-// zaten çok dilli ama quiz UI'si tr/en yeterli: kullanıcı isteği).
-const qL = (b: Bi) => (getLanguage() === 'tr' ? b.tr : b.en);
+const qL = (b: Bi) => b[getLanguage()] ?? b.en;
 type Mode = 'intro' | 'quiz' | 'needsProfile' | 'result';
 
 interface FinderResult {
@@ -38,104 +38,273 @@ interface FinderResult {
 
 const QUESTIONS: Question[] = [
   {
-    q: { tr: 'Doğada hangi ortam seni çağırıyor?', en: 'Which place in nature calls you?' },
+    q: { tr: 'Doğada hangi ortam seni çağırıyor?', en: 'Which place in nature calls you?',
+        de: 'Welcher Ort in der Natur ruft dich?', es: '¿Qué lugar de la naturaleza te llama?',
+        pt: 'Que lugar da natureza te chama?', fr: 'Quel lieu de la nature t\'appelle ?',
+        ja: '自然の中で、あなたを呼ぶのはどんな場所？' },
     emoji: '⊕',
     options: [
-      { text: { tr: 'Dağlar ve açık gökyüzü', en: 'Mountains and open sky' }, element: 'hava',
+      { text: { tr: 'Dağlar ve açık gökyüzü', en: 'Mountains and open sky',
+        de: 'Berge und offener Himmel', es: 'Montañas y cielo abierto',
+        pt: 'Montanhas e céu aberto', fr: 'Montagnes et ciel ouvert',
+        ja: '山々と広い空' }, element: 'hava',
         weights: [{ trait: 'özgürlük', value: 2 }, { trait: 'vizyon', value: 2 }, { trait: 'yüksek bakış', value: 2 }] },
-      { text: { tr: 'Orman ve ıssız toprak', en: 'Forest and quiet earth' }, element: 'toprak',
+      { text: { tr: 'Orman ve ıssız toprak', en: 'Forest and quiet earth',
+        de: 'Wald und stille Erde', es: 'Bosque y tierra tranquila',
+        pt: 'Floresta e terra quieta', fr: 'Forêt et terre paisible',
+        ja: '森と静かな大地' }, element: 'toprak',
         weights: [{ trait: 'güç', value: 2 }, { trait: 'istikrar', value: 2 }, { trait: 'kök', value: 2 }] },
-      { text: { tr: 'Nehir, deniz, derin sular', en: 'River, sea, deep waters' }, element: 'su',
+      { text: { tr: 'Nehir, deniz, derin sular', en: 'River, sea, deep waters',
+        de: 'Fluss, Meer, tiefe Wasser', es: 'Río, mar, aguas profundas',
+        pt: 'Rio, mar, águas profundas', fr: 'Rivière, mer, eaux profondes',
+        ja: '川、海、深い水' }, element: 'su',
         weights: [{ trait: 'akış', value: 2 }, { trait: 'bilinçdışı', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
-      { text: { tr: 'Sıcak alev ve ateş', en: 'Warm flame and fire' }, element: 'ateş',
+      { text: { tr: 'Sıcak alev ve ateş', en: 'Warm flame and fire',
+        de: 'Warme Flamme und Feuer', es: 'Llama cálida y fuego',
+        pt: 'Chama quente e fogo', fr: 'Flamme chaude et feu',
+        ja: '温かな炎と火' }, element: 'ateş',
         weights: [{ trait: 'cesaret', value: 2 }, { trait: 'tutku', value: 2 }, { trait: 'dönüşüm', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'Zor bir karar anında tepkin nedir?', en: 'In a hard decision, what is your first move?' },
+    q: { tr: 'Zor bir karar anında tepkin nedir?', en: 'In a hard decision, what is your first move?',
+        de: 'Was ist dein erster Schritt bei einer schweren Entscheidung?', es: 'Ante una decisión difícil, ¿cuál es tu primer paso?',
+        pt: 'Perante uma decisão difícil, qual é o teu primeiro passo?', fr: 'Face à une décision difficile, quel est ton premier geste ?',
+        ja: '難しい決断のとき、あなたが最初にすることは？' },
     emoji: '↯',
     options: [
-      { text: { tr: 'Dur, gözlemle, anlamlandır', en: 'Pause, observe, make sense of it' },
+      { text: { tr: 'Dur, gözlemle, anlamlandır', en: 'Pause, observe, make sense of it',
+        de: 'Innehalten, beobachten, verstehen', es: 'Detenerme, observar, darle sentido',
+        pt: 'Parar, observar, dar-lhe sentido', fr: 'M\'arrêter, observer, comprendre',
+        ja: '立ち止まり、見つめ、意味をつかむ' },
         weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'sezgi', value: 2 }, { trait: 'derinlik', value: 2 }] },
-      { text: { tr: 'Cesaretle harekete geç', en: 'Act with courage' },
+      { text: { tr: 'Cesaretle harekete geç', en: 'Act with courage',
+        de: 'Mutig handeln', es: 'Actuar con valentía',
+        pt: 'Agir com coragem', fr: 'Agir avec courage',
+        ja: '勇気をもって動く' },
         weights: [{ trait: 'kahraman', value: 3 }, { trait: 'cesaret', value: 2 }, { trait: 'irade', value: 2 }] },
-      { text: { tr: 'Bakım veren olarak başkasını koru', en: 'Protect someone as a caregiver' },
+      { text: { tr: 'Bakım veren olarak başkasını koru', en: 'Protect someone as a caregiver',
+        de: 'Fürsorglich jemanden beschützen', es: 'Cuidar y proteger a alguien',
+        pt: 'Cuidar e proteger alguém', fr: 'Prendre soin de quelqu\'un et le protéger',
+        ja: '誰かを守り、支える' },
         weights: [{ trait: 'şefkat', value: 3 }, { trait: 'sevgi', value: 2 }, { trait: 'beslenme', value: 2 }] },
-      { text: { tr: 'Kuralı kır, yeni bir yol aç', en: 'Break the rule, open a new path' },
+      { text: { tr: 'Kuralı kır, yeni bir yol aç', en: 'Break the rule, open a new path',
+        de: 'Die Regel brechen, einen neuen Weg öffnen', es: 'Romper la regla, abrir un camino nuevo',
+        pt: 'Quebrar a regra, abrir um novo caminho', fr: 'Briser la règle, ouvrir une nouvelle voie',
+        ja: 'ルールを破り、新しい道を開く' },
         weights: [{ trait: 'asilik', value: 3 }, { trait: 'mizah', value: 2 }, { trait: 'kuralı kırmak', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'Seni en iyi anlatan sözcük hangisi?', en: 'Which word describes you best?' },
+    q: { tr: 'Seni en iyi anlatan sözcük hangisi?', en: 'Which word describes you best?',
+        de: 'Welches Wort beschreibt dich am besten?', es: '¿Qué palabra te describe mejor?',
+        pt: 'Que palavra te descreve melhor?', fr: 'Quel mot te décrit le mieux ?',
+        ja: 'あなたを最もよく表す言葉は？' },
     emoji: '✺',
     options: [
-      { text: { tr: 'Yaratıcı', en: 'Creator' },
+      { text: { tr: 'Yaratıcı', en: 'Creator',
+        de: 'Schöpfer', es: 'Creador',
+        pt: 'Criador', fr: 'Créateur',
+        ja: '創造者' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
-      { text: { tr: 'Bilge', en: 'Sage' },
+      { text: { tr: 'Bilge', en: 'Sage',
+        de: 'Weiser', es: 'Sabio',
+        pt: 'Sábio', fr: 'Sage',
+        ja: '賢者' },
         weights: [{ trait: 'bilgelik', value: 3 }, { trait: 'içgörü', value: 2 }, { trait: 'mentor', value: 2 }] },
-      { text: { tr: 'Aşık', en: 'Lover' },
+      { text: { tr: 'Aşık', en: 'Lover',
+        de: 'Liebender', es: 'Amante',
+        pt: 'Amante', fr: 'Amoureux',
+        ja: '恋する者' },
         weights: [{ trait: 'sevgi', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'adanma', value: 2 }] },
-      { text: { tr: 'Asi', en: 'Rebel' },
+      { text: { tr: 'Asi', en: 'Rebel',
+        de: 'Rebell', es: 'Rebelde',
+        pt: 'Rebelde', fr: 'Rebelle',
+        ja: '反逆者' },
         weights: [{ trait: 'başkaldırı', value: 3 }, { trait: 'özgürlük', value: 2 }, { trait: 'değişim', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'Bir grupta hangi rolü üstlenirsin?', en: 'What role do you take in a group?' },
+    q: { tr: 'Bir grupta hangi rolü üstlenirsin?', en: 'What role do you take in a group?',
+        de: 'Welche Rolle übernimmst du in einer Gruppe?', es: '¿Qué papel asumes en un grupo?',
+        pt: 'Que papel assumes num grupo?', fr: 'Quel rôle prends-tu dans un groupe ?',
+        ja: 'グループの中で、あなたはどんな役割を担う？' },
     emoji: '☾',
     options: [
-      { text: { tr: 'Lider ve yön gösteren', en: 'Leader who shows the way' },
+      { text: { tr: 'Lider ve yön gösteren', en: 'Leader who shows the way',
+        de: 'Anführen und den Weg zeigen', es: 'Liderar y mostrar el camino',
+        pt: 'Liderar e mostrar o caminho', fr: 'Mener et montrer le chemin',
+        ja: '先頭に立ち、道を示す' },
         weights: [{ trait: 'liderlik', value: 3 }, { trait: 'sorumluluk', value: 2 }, { trait: 'vizyon', value: 2 }] },
-      { text: { tr: 'Arabulucu ve dengeleyici', en: 'Mediator and balancer' },
+      { text: { tr: 'Arabulucu ve dengeleyici', en: 'Mediator and balancer',
+        de: 'Vermitteln und ausgleichen', es: 'Mediar y equilibrar',
+        pt: 'Mediar e equilibrar', fr: 'Apaiser et équilibrer',
+        ja: '間を取り持ち、調和させる' },
         weights: [{ trait: 'denge', value: 3 }, { trait: 'arabuluculuk', value: 2 }, { trait: 'uyum', value: 2 }] },
-      { text: { tr: 'İlham veren yaratıcı', en: 'Inspiring creative' },
+      { text: { tr: 'İlham veren yaratıcı', en: 'Inspiring creative',
+        de: 'Inspirieren und erschaffen', es: 'Inspirar y crear',
+        pt: 'Inspirar e criar', fr: 'Inspirer et créer',
+        ja: '創造し、周りを鼓舞する' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ilham', value: 2 }, { trait: 'estetik', value: 2 }] },
-      { text: { tr: 'Gözlemleyen analizci', en: 'Observing analyst' },
+      { text: { tr: 'Gözlemleyen analizci', en: 'Observing analyst',
+        de: 'Beobachten und analysieren', es: 'Observar y analizar',
+        pt: 'Observar e analisar', fr: 'Observer et analyser',
+        ja: '観察し、分析する' },
         weights: [{ trait: 'içgörü', value: 3 }, { trait: 'derinlik', value: 2 }, { trait: 'gözlem', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'En büyük gücün nedir?', en: 'What is your greatest strength?' },
+    q: { tr: 'En büyük gücün nedir?', en: 'What is your greatest strength?',
+        de: 'Was ist deine größte Stärke?', es: '¿Cuál es tu mayor fortaleza?',
+        pt: 'Qual é a tua maior força?', fr: 'Quelle est ta plus grande force ?',
+        ja: 'あなたの一番の強さは？' },
     emoji: '△',
     options: [
-      { text: { tr: 'Sezgi ve içgüdü', en: 'Intuition and instinct' },
+      { text: { tr: 'Sezgi ve içgüdü', en: 'Intuition and instinct',
+        de: 'Intuition und Instinkt', es: 'Intuición e instinto',
+        pt: 'Intuição e instinto', fr: 'Intuition et instinct',
+        ja: '直感と本能' },
         weights: [{ trait: 'sezgi', value: 3 }, { trait: 'bilinçaltı', value: 2 }, { trait: 'derinlik', value: 2 }] },
-      { text: { tr: 'Sabır ve dayanıklılık', en: 'Patience and endurance' },
+      { text: { tr: 'Sabır ve dayanıklılık', en: 'Patience and endurance',
+        de: 'Geduld und Ausdauer', es: 'Paciencia y resistencia',
+        pt: 'Paciência e resistência', fr: 'Patience et endurance',
+        ja: '忍耐と粘り強さ' },
         weights: [{ trait: 'sabır', value: 3 }, { trait: 'dayanıklılık', value: 2 }, { trait: 'istikrar', value: 2 }] },
-      { text: { tr: 'Zekâ ve esneklik', en: 'Wit and flexibility' },
+      { text: { tr: 'Zekâ ve esneklik', en: 'Wit and flexibility',
+        de: 'Klugheit und Beweglichkeit', es: 'Ingenio y flexibilidad',
+        pt: 'Engenho e flexibilidade', fr: 'Esprit et souplesse',
+        ja: '機知と柔軟さ' },
         weights: [{ trait: 'zekâ', value: 3 }, { trait: 'oyun', value: 2 }, { trait: 'uyum', value: 2 }] },
-      { text: { tr: 'Cesaret ve tutku', en: 'Courage and passion' },
+      { text: { tr: 'Cesaret ve tutku', en: 'Courage and passion',
+        de: 'Mut und Leidenschaft', es: 'Valor y pasión',
+        pt: 'Coragem e paixão', fr: 'Courage et passion',
+        ja: '勇気と情熱' },
         weights: [{ trait: 'cesaret', value: 3 }, { trait: 'tutku', value: 3 }, { trait: 'irade', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'İçinde en çok hangi yara konuşur?', en: 'Which wound speaks loudest within you?' },
+    q: { tr: 'İçinde en çok hangi yara konuşur?', en: 'Which wound speaks loudest within you?',
+        de: 'Welche Wunde spricht in dir am lautesten?', es: '¿Qué herida habla más fuerte en ti?',
+        pt: 'Que ferida fala mais alto em ti?', fr: 'Quelle blessure parle le plus fort en toi ?',
+        ja: 'あなたの中で最も強く語りかける傷は？' },
     emoji: '☀',
     options: [
-      { text: { tr: 'Terk edilmişlik, yalnızlık', en: 'Abandonment, loneliness' },
+      { text: { tr: 'Terk edilmişlik, yalnızlık', en: 'Abandonment, loneliness',
+        de: 'Verlassenheit, Einsamkeit', es: 'Abandono, soledad',
+        pt: 'Abandono, solidão', fr: 'Abandon, solitude',
+        ja: '見捨てられること、孤独' },
         weights: [{ trait: 'yetim', value: 3 }, { trait: 'kayıp', value: 2 }, { trait: 'sürgün', value: 2 }] },
-      { text: { tr: 'Yetersizlik, görünmemek', en: 'Not-enough-ness, feeling unseen' },
+      { text: { tr: 'Yetersizlik, görünmemek', en: 'Not-enough-ness, feeling unseen',
+        de: 'Nicht genug sein, nicht gesehen werden', es: 'No ser suficiente, no ser visto',
+        pt: 'Não ser suficiente, não ser visto', fr: 'Ne pas être assez, ne pas être vu',
+        ja: '足りないという思い、見てもらえないこと' },
         weights: [{ trait: 'maske', value: 3 }, { trait: 'gölge', value: 2 }, { trait: 'utanç', value: 2 }] },
-      { text: { tr: 'Kontrolü kaybetmek', en: 'Losing control' },
+      { text: { tr: 'Kontrolü kaybetmek', en: 'Losing control',
+        de: 'Die Kontrolle verlieren', es: 'Perder el control',
+        pt: 'Perder o controlo', fr: 'Perdre le contrôle',
+        ja: '自分を制御できなくなること' },
         weights: [{ trait: 'kontrol', value: 3 }, { trait: 'sınır', value: 2 }, { trait: 'disiplin', value: 2 }] },
-      { text: { tr: 'Anlamsızlık, derin boşluk', en: 'Meaninglessness, deep emptiness' },
+      { text: { tr: 'Anlamsızlık, derin boşluk', en: 'Meaninglessness, deep emptiness',
+        de: 'Sinnlosigkeit, tiefe Leere', es: 'Falta de sentido, un vacío profundo',
+        pt: 'Falta de sentido, um vazio profundo', fr: 'Absence de sens, vide profond',
+        ja: '意味のなさ、深い空虚' },
         weights: [{ trait: 'arayış', value: 3 }, { trait: 'bilgelik', value: 2 }, { trait: 'manevi', value: 2 }] },
     ],
   },
   {
-    q: { tr: 'İçinde uyumayan, hep çağıran şey hangisi?', en: 'What never sleeps in you, always calling?' },
+    q: { tr: 'İçinde uyumayan, hep çağıran şey hangisi?', en: 'What never sleeps in you, always calling?',
+        de: 'Was schläft nie in dir und ruft immer?', es: '¿Qué nunca duerme en ti y siempre te llama?',
+        pt: 'O que nunca dorme em ti e sempre te chama?', fr: 'Qu\'est-ce qui ne dort jamais en toi et t\'appelle toujours ?',
+        ja: 'あなたの中で決して眠らず、いつも呼びかけてくるものは？' },
     emoji: '◈',
     options: [
-      { text: { tr: 'Bütünleşme: kayıp parçaları toplamak', en: 'Wholeness: gathering the lost pieces' },
+      { text: { tr: 'Bütünleşme: kayıp parçaları toplamak', en: 'Wholeness: gathering the lost pieces',
+        de: 'Ganzheit: die verlorenen Teile sammeln', es: 'Plenitud: reunir las piezas perdidas',
+        pt: 'Inteireza: reunir as peças perdidas', fr: 'Unité : rassembler les morceaux perdus',
+        ja: '統合：失われたかけらを集めること' },
         weights: [{ trait: 'self', value: 3 }, { trait: 'bütünlük', value: 3 }, { trait: 'merkez', value: 2 }] },
-      { text: { tr: 'Dönüşüm: eskiyi yakıp yenisini doğurmak', en: 'Transformation: burning the old to birth the new' },
+      { text: { tr: 'Dönüşüm: eskiyi yakıp yenisini doğurmak', en: 'Transformation: burning the old to birth the new',
+        de: 'Wandlung: das Alte verbrennen, das Neue gebären', es: 'Transformación: quemar lo viejo para que nazca lo nuevo',
+        pt: 'Transformação: queimar o velho para fazer nascer o novo', fr: 'Transformation : brûler l\'ancien pour faire naître le nouveau',
+        ja: '変容：古いものを燃やし、新しいものを生むこと' },
         weights: [{ trait: 'dönüşüm', value: 3 }, { trait: 'yeniden doğuş', value: 3 }, { trait: 'ölüm-doğuş', value: 2 }] },
-      { text: { tr: 'İfade: içtekini görünür kılmak', en: 'Expression: making the inner visible' },
+      { text: { tr: 'İfade: içtekini görünür kılmak', en: 'Expression: making the inner visible',
+        de: 'Ausdruck: das Innere sichtbar machen', es: 'Expresión: hacer visible lo interior',
+        pt: 'Expressão: tornar visível o que está dentro', fr: 'Expression : rendre visible l\'intérieur',
+        ja: '表現：内なるものを目に見える形にすること' },
         weights: [{ trait: 'yaratım', value: 3 }, { trait: 'ifade', value: 2 }, { trait: 'sanat', value: 2 }] },
-      { text: { tr: 'Hizmet: kendinden büyüğüne adanmak', en: 'Service: devoting to something greater' },
+      { text: { tr: 'Hizmet: kendinden büyüğüne adanmak', en: 'Service: devoting to something greater',
+        de: 'Hingabe: sich etwas Größerem widmen', es: 'Servicio: entregarse a algo más grande',
+        pt: 'Serviço: dedicar-se a algo maior', fr: 'Service : se consacrer à plus grand que soi',
+        ja: '奉仕：自分より大きなものに身を捧げること' },
         weights: [{ trait: 'aziz', value: 3 }, { trait: 'adanma', value: 2 }, { trait: 'şifa', value: 2 }] },
     ],
   },
 ];
+
+// ─── Result explanation (7 languages) ────────────────────────────────────────
+// el: hava | ateş | toprak | su · season: ilkbahar | yaz | sonbahar | kış
+// hour: gece | sabah | öğlen | akşam (Türkçe iç anahtarlar, görünen metin değil)
+
+interface ReasonText {
+  quiz: string;
+  lifePath: (n: number) => string;
+  season: (el: string, season: string) => string;
+  hour: Record<string, string>;
+  city: (c: string) => string;
+}
+
+const REASON_TXT: Partial<Record<Lang, ReasonText>> & { en: ReasonText } = {
+  tr: {
+    quiz: 'Cevaplarındaki enerji örüntüsü',
+    lifePath: n => `Hayat Yolu ${n}`,
+    season: (el, s) => `${({ ilkbahar: 'İlkbahar', yaz: 'Yaz', sonbahar: 'Sonbahar', kış: 'Kış' } as Record<string, string>)[s]} doğumundan gelen ${el} enerjisi`,
+    hour: { gece: 'gece saati', sabah: 'sabah saati', öğlen: 'öğlen saati', akşam: 'akşam saati' },
+    city: c => `${c} izi`,
+  },
+  en: {
+    quiz: 'The energy pattern in your answers',
+    lifePath: n => `Life Path ${n}`,
+    season: (el, s) => `${({ hava: 'air', ateş: 'fire', toprak: 'earth', su: 'water' } as Record<string, string>)[el]} energy from your ${({ ilkbahar: 'spring', yaz: 'summer', sonbahar: 'autumn', kış: 'winter' } as Record<string, string>)[s]} birth`,
+    hour: { gece: 'night hour', sabah: 'morning hour', öğlen: 'noon hour', akşam: 'evening hour' },
+    city: c => `trace of ${c}`,
+  },
+  de: {
+    quiz: 'Das Energiemuster in deinen Antworten',
+    lifePath: n => `Lebensweg ${n}`,
+    season: (el, s) => `${({ hava: 'Energie der Luft', ateş: 'Energie des Feuers', toprak: 'Energie der Erde', su: 'Energie des Wassers' } as Record<string, string>)[el]} aus deiner Geburt ${({ ilkbahar: 'im Frühling', yaz: 'im Sommer', sonbahar: 'im Herbst', kış: 'im Winter' } as Record<string, string>)[s]}`,
+    hour: { gece: 'Stunde der Nacht', sabah: 'Stunde des Morgens', öğlen: 'Stunde des Mittags', akşam: 'Stunde des Abends' },
+    city: c => `Spur von ${c}`,
+  },
+  es: {
+    quiz: 'El patrón de energía de tus respuestas',
+    lifePath: n => `Camino de vida ${n}`,
+    season: (el, s) => `${({ hava: 'energía del aire', ateş: 'energía del fuego', toprak: 'energía de la tierra', su: 'energía del agua' } as Record<string, string>)[el]} de tu nacimiento ${({ ilkbahar: 'en primavera', yaz: 'en verano', sonbahar: 'en otoño', kış: 'en invierno' } as Record<string, string>)[s]}`,
+    hour: { gece: 'hora de la madrugada', sabah: 'hora de la mañana', öğlen: 'hora del mediodía', akşam: 'hora del anochecer' },
+    city: c => `huella de ${c}`,
+  },
+  pt: {
+    quiz: 'O padrão de energia das tuas respostas',
+    lifePath: n => `Caminho de vida ${n}`,
+    season: (el, s) => `${({ hava: 'energia do ar', ateş: 'energia do fogo', toprak: 'energia da terra', su: 'energia da água' } as Record<string, string>)[el]} vinda do teu nascimento ${({ ilkbahar: 'na primavera', yaz: 'no verão', sonbahar: 'no outono', kış: 'no inverno' } as Record<string, string>)[s]}`,
+    hour: { gece: 'hora da madrugada', sabah: 'hora da manhã', öğlen: 'hora do meio-dia', akşam: 'hora do entardecer' },
+    city: c => `marca de ${c}`,
+  },
+  fr: {
+    quiz: "Le motif d'énergie de tes réponses",
+    lifePath: n => `Chemin de vie ${n}`,
+    season: (el, s) => `${({ hava: "énergie de l'air", ateş: 'énergie du feu', toprak: 'énergie de la terre', su: "énergie de l'eau" } as Record<string, string>)[el]} de ta naissance ${({ ilkbahar: 'au printemps', yaz: 'en été', sonbahar: 'en automne', kış: 'en hiver' } as Record<string, string>)[s]}`,
+    hour: { gece: 'heure de la nuit', sabah: 'heure du matin', öğlen: 'heure de midi', akşam: 'heure du soir' },
+    city: c => `empreinte de ${c}`,
+  },
+  ja: {
+    quiz: 'あなたの答えに表れたエネルギーの模様',
+    lifePath: n => `ライフパス ${n}`,
+    season: (el, s) => `${({ ilkbahar: '春', yaz: '夏', sonbahar: '秋', kış: '冬' } as Record<string, string>)[s]}生まれの${({ hava: '風', ateş: '火', toprak: '地', su: '水' } as Record<string, string>)[el]}のエネルギー`,
+    hour: { gece: '夜の時間', sabah: '朝の時間', öğlen: '昼の時間', akşam: '夕べの時間' },
+    city: c => `${c}の痕跡`,
+  },
+};
 
 // ─── Matching algorithms ───────────────────────────────────────────────────────
 
@@ -181,7 +350,7 @@ function findByQuiz(
     archetype: scoreEntry(archetypesData, traits, elements),
     myth:      scoreEntry(mythsData,      traits, elements),
     image:     scoreEntry(imagesData,     traits, elements),
-    reason:    getLanguage() === 'tr' ? 'Cevaplarındaki enerji örüntüsü' : 'The energy pattern in your answers',
+    reason:    (REASON_TXT[getLanguage()] ?? REASON_TXT.en).quiz,
   };
 }
 
@@ -244,29 +413,15 @@ function findByBirth(
 
   const SEASON_NAMES: Record<string, string> = { hava:'ilkbahar', ateş:'yaz', toprak:'sonbahar', su:'kış' };
   const seasonName = SEASON_NAMES[seasonEl[month]];
-  // İki dilli reason (tr → Türkçe, diğer diller → İngilizce). Mevsim/element/saat çevirileri.
-  const _tr = getLanguage() === 'tr';
-  const SEASON_D: Record<string, string> = _tr
-    ? { ilkbahar:'İlkbahar', yaz:'Yaz', sonbahar:'Sonbahar', kış:'Kış' }
-    : { ilkbahar:'spring', yaz:'summer', sonbahar:'autumn', kış:'winter' };
-  const EL_D: Record<string, string> = _tr
-    ? { hava:'hava', ateş:'ateş', toprak:'toprak', su:'su' }
-    : { hava:'air', ateş:'fire', toprak:'earth', su:'water' };
-  const HOUR_D: Record<string, string> = _tr
-    ? { gece:'gece', sabah:'sabah', öğlen:'öğlen', akşam:'akşam' }
-    : { gece:'night', sabah:'morning', öğlen:'noon', akşam:'evening' };
+  // Doğum açıklaması 7 dilde (REASON_TXT). Eksik dil İngilizceye düşer.
+  const R = REASON_TXT[getLanguage()] ?? REASON_TXT.en;
   const el = seasonEl[month];
-  const reason = (_tr ? [
-    `Hayat Yolu ${lifePath}`,
-    `${SEASON_D[seasonName]} doğumundan gelen ${EL_D[el]} enerjisi`,
-    hourLabel ? `${HOUR_D[hourLabel]} saati` : '',
-    city && city.trim() ? `${city.trim()} izi` : '',
-  ] : [
-    `Life Path ${lifePath}`,
-    `${EL_D[el]} energy from your ${SEASON_D[seasonName]} birth`,
-    hourLabel ? `${HOUR_D[hourLabel]} hour` : '',
-    city && city.trim() ? `trace of ${city.trim()}` : '',
-  ]).filter(Boolean).join(' · ');
+  const reason = [
+    R.lifePath(lifePath),
+    R.season(el, seasonName),
+    hourLabel ? R.hour[hourLabel] : '',
+    city && city.trim() ? R.city(city.trim()) : '',
+  ].filter(Boolean).join(' · ');
 
   return {
     archetype: scoreEntry(archetypesData, traits, elements),

@@ -132,6 +132,7 @@ export const TR = {
   'weekly.label.today': 'BUGÜN',
   'weekly.label.guidance': 'REHBERLİK',
   'weekly.daysLeft': '{n} gün kaldı',
+  'weekly.daysLeft.one': '{n} gün kaldı',
   'weekly.reason': 'Hayat Yolu {lifePath}: bu dönemde içsel ritmine eşlik etmek için seninle.',
   'weekly.locked.title': 'Kişisel Rehberim',
   'weekly.locked.text':
@@ -140,6 +141,7 @@ export const TR = {
   // Archive
   'archive.title': 'Arşiv',
   'archive.count': '{n} okuma',
+  'archive.count.one': '{n} okuma',
   'archive.map': 'Mit Haritan',
   'archive.empty.title': 'Henüz okuma yok.',
   'archive.empty.sub': 'Ana ekrandan ilk desteni aç.',
@@ -192,7 +194,9 @@ export const TR = {
   'profile.map.topImage': 'Sembolün',
   'profile.map.topTradition': 'Geleneğin',
   'profile.map.timesAccompanied': '{n} kez · {meta}',
+  'profile.map.timesAccompanied.one': '{n} kez · {meta}',
   'profile.map.timesCalled': '{n} kez eşlik etti',
+  'profile.map.timesCalled.one': '{n} kez eşlik etti',
   'profile.map.emptyHint': 'İlk destenı aç, mit haritan oluşmaya başlasın.',
   'profile.howTo.line1':
     '• Her gün üç deste açılır: Arketipler, Mitler, İmgeler.',
@@ -425,6 +429,7 @@ export const EN: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'TODAY',
   'weekly.label.guidance': 'GUIDANCE',
   'weekly.daysLeft': '{n} days left',
+  'weekly.daysLeft.one': '{n} day left',
   'weekly.reason': 'Life Path {lifePath}: here to accompany your inner rhythm this period.',
   'weekly.locked.title': 'My Personal Guide',
   'weekly.locked.text':
@@ -433,6 +438,7 @@ export const EN: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'Archive',
   'archive.count': '{n} readings',
+  'archive.count.one': '{n} reading',
   'archive.map': 'Your Myth Map',
   'archive.empty.title': 'No readings yet.',
   'archive.empty.sub': 'Open your first deck from the home screen.',
@@ -485,7 +491,9 @@ export const EN: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'Your Symbol',
   'profile.map.topTradition': 'Your Tradition',
   'profile.map.timesAccompanied': '{n} times · {meta}',
+  'profile.map.timesAccompanied.one': 'once · {meta}',
   'profile.map.timesCalled': 'accompanied {n} times',
+  'profile.map.timesCalled.one': 'accompanied once',
   'profile.map.emptyHint': 'Open your first deck: your myth map will start to form.',
   'profile.howTo.line1':
     '• Three decks open each day: Archetypes, Myths, Symbols.',
@@ -714,6 +722,7 @@ export const DE: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'HEUTE',
   'weekly.label.guidance': 'FÜHRUNG',
   'weekly.daysLeft': 'Noch {n} Tage',
+  'weekly.daysLeft.one': 'Noch {n} Tag',
   'weekly.locked.title': 'Mein persönlicher Führer',
   'weekly.locked.text':
     'Vervollständige dein Profil, um einen periodischen Archetyp basierend auf deinem Geburtshoroskop zu erhalten.\n\nIm Bereich Profil → Persönliche Karte kannst du dein Geburtsdatum hinzufügen.',
@@ -721,6 +730,7 @@ export const DE: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'Archiv',
   'archive.count': '{n} Lesungen',
+  'archive.count.one': '{n} Lesung',
   'archive.map': 'Deine Mythenkarte',
   'archive.empty.title': 'Noch keine Lesungen.',
   'archive.empty.sub': 'Öffne dein erstes Deck vom Startbildschirm.',
@@ -772,7 +782,9 @@ export const DE: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'Dein Symbol',
   'profile.map.topTradition': 'Deine Tradition',
   'profile.map.timesAccompanied': '{n} Mal · {meta}',
+  'profile.map.timesAccompanied.one': 'Einmal · {meta}',
   'profile.map.timesCalled': '{n} Mal begleitet',
+  'profile.map.timesCalled.one': 'Einmal begleitet',
   'profile.map.emptyHint': 'Öffne dein erstes Deck: deine Mythenkarte beginnt sich zu bilden.',
   'profile.howTo.line1':
     '• Jeden Tag öffnen sich drei Decks: Archetypen, Mythen, Symbole.',
@@ -1011,6 +1023,7 @@ export const ES: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'HOY',
   'weekly.label.guidance': 'GUÍA',
   'weekly.daysLeft': 'Quedan {n} días',
+  'weekly.daysLeft.one': 'Queda {n} día',
   'weekly.locked.title': 'Mi guía personal',
   'weekly.locked.text':
     'Completa tu perfil para recibir un arquetipo periódico basado en tu carta natal.\n\nEn Perfil → Mapa personal puedes añadir tu fecha de nacimiento.',
@@ -1018,6 +1031,7 @@ export const ES: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'Archivo',
   'archive.count': '{n} lecturas',
+  'archive.count.one': '{n} lectura',
   'archive.map': 'Tu mapa de mitos',
   'archive.empty.title': 'Aún no hay lecturas.',
   'archive.empty.sub': 'Abre tu primer mazo desde la pantalla de inicio.',
@@ -1069,7 +1083,9 @@ export const ES: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'Tu símbolo',
   'profile.map.topTradition': 'Tu tradición',
   'profile.map.timesAccompanied': '{n} veces · {meta}',
+  'profile.map.timesAccompanied.one': '{n} vez · {meta}',
   'profile.map.timesCalled': 'te acompañó {n} veces',
+  'profile.map.timesCalled.one': 'te acompañó {n} vez',
   'profile.map.emptyHint': 'Abre tu primer mazo: tu mapa de mitos comenzará a formarse.',
   'profile.howTo.line1':
     '• Cada día se abren tres mazos: Arquetipos, Mitos, Símbolos.',
@@ -1308,6 +1324,7 @@ export const PT: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'HOJE',
   'weekly.label.guidance': 'ORIENTAÇÃO',
   'weekly.daysLeft': 'Faltam {n} dias',
+  'weekly.daysLeft.one': 'Falta {n} dia',
   'weekly.locked.title': 'Meu guia pessoal',
   'weekly.locked.text':
     'Complete seu perfil para receber um arquétipo periódico baseado no seu mapa de nascimento.\n\nEm Perfil → Mapa pessoal você pode adicionar sua data de nascimento.',
@@ -1315,6 +1332,7 @@ export const PT: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'Arquivo',
   'archive.count': '{n} leituras',
+  'archive.count.one': '{n} leitura',
   'archive.map': 'Seu mapa de mitos',
   'archive.empty.title': 'Ainda sem leituras.',
   'archive.empty.sub': 'Abra seu primeiro baralho na tela inicial.',
@@ -1366,7 +1384,9 @@ export const PT: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'Seu símbolo',
   'profile.map.topTradition': 'Sua tradição',
   'profile.map.timesAccompanied': '{n} vezes · {meta}',
+  'profile.map.timesAccompanied.one': '{n} vez · {meta}',
   'profile.map.timesCalled': 'acompanhou {n} vezes',
+  'profile.map.timesCalled.one': 'acompanhou {n} vez',
   'profile.map.emptyHint': 'Abra seu primeiro baralho: seu mapa de mitos começará a se formar.',
   'profile.howTo.line1':
     '• Três baralhos abrem a cada dia: Arquétipos, Mitos, Símbolos.',
@@ -1605,6 +1625,7 @@ export const FR: Record<keyof typeof TR, string> = {
   'weekly.label.today': 'AUJOURD\'HUI',
   'weekly.label.guidance': 'GUIDANCE',
   'weekly.daysLeft': 'Il reste {n} jours',
+  'weekly.daysLeft.one': 'Il reste {n} jour',
   'weekly.locked.title': 'Mon guide personnel',
   'weekly.locked.text':
     'Complète ton profil pour recevoir un archétype périodique basé sur ton thème de naissance.\n\nDans Profil → Carte personnelle, tu peux ajouter ta date de naissance.',
@@ -1612,6 +1633,7 @@ export const FR: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'Archives',
   'archive.count': '{n} lectures',
+  'archive.count.one': '{n} lecture',
   'archive.map': 'Ta carte des mythes',
   'archive.empty.title': 'Aucune lecture pour l\'instant.',
   'archive.empty.sub': 'Ouvre ton premier jeu depuis l\'écran d\'accueil.',
@@ -1663,7 +1685,9 @@ export const FR: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'Ton symbole',
   'profile.map.topTradition': 'Ta tradition',
   'profile.map.timesAccompanied': '{n} fois · {meta}',
+  'profile.map.timesAccompanied.one': '{n} fois · {meta}',
   'profile.map.timesCalled': 't\'a accompagné {n} fois',
+  'profile.map.timesCalled.one': 't\'a accompagné {n} fois',
   'profile.map.emptyHint': 'Ouvre ton premier jeu: ta carte des mythes commencera à se former.',
   'profile.howTo.line1':
     '• Trois jeux s\'ouvrent chaque jour : Archétypes, Mythes, Symboles.',
@@ -1902,6 +1926,7 @@ export const JA: Record<keyof typeof TR, string> = {
   'weekly.label.today': '今日',
   'weekly.label.guidance': '導き',
   'weekly.daysLeft': '残り {n} 日',
+  'weekly.daysLeft.one': '残り {n} 日',
   'weekly.locked.title': '私の個人的なガイド',
   'weekly.locked.text':
     'プロフィールを完成させると、出生図に基づいた周期的な元型を受け取れます。\n\nプロフィール → 個人マップで出生日を追加できます。',
@@ -1909,6 +1934,7 @@ export const JA: Record<keyof typeof TR, string> = {
   // Archive
   'archive.title': 'アーカイブ',
   'archive.count': '{n} 件の読み解き',
+  'archive.count.one': '{n} 件の読み解き',
   'archive.map': 'あなたの神話マップ',
   'archive.empty.title': 'まだ読み解きがありません。',
   'archive.empty.sub': 'ホーム画面から最初のデッキを開いてください。',
@@ -1960,7 +1986,9 @@ export const JA: Record<keyof typeof TR, string> = {
   'profile.map.topImage': 'あなたのシンボル',
   'profile.map.topTradition': 'あなたの伝統',
   'profile.map.timesAccompanied': '{n} 回 · {meta}',
+  'profile.map.timesAccompanied.one': '{n} 回 · {meta}',
   'profile.map.timesCalled': '{n} 回寄り添いました',
+  'profile.map.timesCalled.one': '{n} 回寄り添いました',
   'profile.map.emptyHint': '最初のデッキを開くと、神話マップが形づくられ始めます。',
   'profile.howTo.line1':
     '• 毎日3つのデッキが開きます：元型、神話、シンボル。',

@@ -77,7 +77,12 @@ export function translate(
   vars?: Record<string, string | number>,
 ): string {
   const dict = DICTIONARY[currentLang] || DICTIONARY.tr;
-  let value = dict[key] || (DICTIONARY.tr as any)[key] || key;
+  // Tekil biçim: {n} tekil sayıysa ve dilde "<anahtar>.one" varsa o kullanılır
+  // ("1 Lesungen" değil "1 Lesung"). Fransızcada 0 da tekildir.
+  const n = vars?.n;
+  const isOne = typeof n === 'number' && (n === 1 || (currentLang === 'fr' && n === 0));
+  const oneValue = isOne ? dict[`${key}.one`] : undefined;
+  let value = oneValue || dict[key] || (DICTIONARY.tr as any)[key] || key;
   if (vars) {
     for (const [k, v] of Object.entries(vars)) {
       value = value.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));

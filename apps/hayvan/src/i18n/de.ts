@@ -490,6 +490,18 @@ export const de = {
     infoRestoreNone: 'Für dieses Konto wurde kein aktives Abonnement gefunden.',
     linkTerms: 'Nutzungsbedingungen',
     linkPrivacy: 'Datenschutzrichtlinie',
+    features: {
+      f1Title: "Dein Geburtstier",
+      f1Desc: "Finde dein Begleittier über deine Geburtsdaten oder ein paar Fragen",
+      f2Title: "Wöchentliche Führung",
+      f2Desc: "Dein Platz im 52-Wochen-Zyklus und dein persönliches Jahr",
+      f3Title: "Ausführliche Tierseiten",
+      f3Desc: "Mythologie, Jung, Traditionen, Schatten und Traumdeutung",
+      f4Title: "Persönliche Karte",
+      f4Desc: "Dein Lebensweg und die Kernzahlen deines Namens",
+      f5Title: "Archiv",
+      f5Desc: "Deine bisherigen Lesungen an einem Ort",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

@@ -25,7 +25,7 @@ type Plan = 'mikro' | 'premium';
 
 export function PaywallScreen({ onClose, onActivated }: Props) {
   const insets = useSafeAreaInsets();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const [plan, setPlan] = useState<Plan>('mikro');
   const [busy, setBusy] = useState(false);
   const [products, setProducts] = useState<Record<Plan, OfferingProduct | undefined>>({ mikro: undefined, premium: undefined });
@@ -41,18 +41,13 @@ export function PaywallScreen({ onClose, onActivated }: Props) {
       .catch(() => { /* keep fallback prices */ });
   }, []);
 
-  const MIKRO_FEATURES = [
-    { icon: '⊕', title: lang === 'en' ? 'Full Animal Guidance' : 'Tüm Hayvan Rehberliği', desc: lang === 'en' ? 'Deep pages: mythology, Jung, traditions, shadow' : 'Derin sayfalar: mitoloji, Jung, gelenekler, gölge' },
-    { icon: '◈', title: lang === 'en' ? 'Personal Map' : 'Kişisel Harita', desc: lang === 'en' ? 'Numerology, Human Design, weekly reading' : 'Numeroloji, Human Design, haftalık okuma' },
-    { icon: '✦', title: lang === 'en' ? 'Unlimited Archive' : 'Sınırsız Arşiv', desc: lang === 'en' ? 'All past readings · annual summary' : 'Tüm geçmiş okumaların · yıllık özet' },
-    { icon: '⊙', title: lang === 'en' ? 'Ad-free' : 'Reklamsız', desc: lang === 'en' ? 'Silent space. No interruptions.' : 'Sessiz meclis. Hiç bir kesinti yok' },
-  ];
-  const PREMIUM_FEATURES = [
-    { icon: '✦', title: lang === 'en' ? 'Full Sakin Family' : 'Tüm Sakin Ailesi', desc: lang === 'en' ? 'Animal + Crystal + Words + Human Design + Tarot + Numerology' : 'Hayvan + Kristal + Söz + Human Design + Tarot + Numeroloji' },
-    { icon: '⊕', title: lang === 'en' ? 'Cross-platform Sync' : 'Platformlar Arası Senkron', desc: lang === 'en' ? 'Same account works on iOS, Android and web' : 'Aynı hesap iOS, Android ve web\'de çalışır' },
-    { icon: '◈', title: lang === 'en' ? 'Birth Chart' : 'Doğum Haritası', desc: lang === 'en' ? 'Detailed PDF report: as a gift' : 'Detaylı PDF rapor: hediye' },
-    { icon: '◎', title: lang === 'en' ? 'Early Access' : 'Erken Erişim', desc: lang === 'en' ? 'Be the first into new Sakin apps' : "Yeni Sakin app'lerine ilk sen gir" },
-  ];
+  // Premium icerigi iki planda da ayni (kod plan bazli bir fark yapmiyor,
+  // yalnizca faturalama donemi degisiyor). Metinler 7 dilde i18n'den gelir.
+  const FEATURES = (['f1', 'f2', 'f3', 'f4', 'f5'] as const).map((k, i) => ({
+    icon: ['✦', '◎', '⊕', '◈', '☾'][i],
+    title: t(`paywall.features.${k}Title` as any),
+    desc: t(`paywall.features.${k}Desc` as any),
+  }));
 
   const handlePurchase = async () => {
     setBusy(true);
@@ -76,7 +71,7 @@ export function PaywallScreen({ onClose, onActivated }: Props) {
     }
   };
 
-  const features = plan === 'mikro' ? MIKRO_FEATURES : PREMIUM_FEATURES;
+  const features = FEATURES;
 
   const handleRestore = async () => {
     if (!isIapAvailable()) {

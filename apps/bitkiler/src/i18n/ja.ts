@@ -154,7 +154,7 @@ export const ja = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Sakin Hayvan へようこそ',
+      title: "Sakin プランツ へようこそ",
       subtitle: '古代アナトリアの伝統による日々の導き',
       step1Question: 'あなたの名前は、旅人さん？',
       step1Placeholder: '名前を入力...',
@@ -338,7 +338,7 @@ export const ja = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: '毎日のリマインダー',
-      rationaleMessage: '毎朝8時に、今日のカードを引くための静かなリマインダーを Sakin Hayvan からお送りしてもよいですか？通知が広告やマーケティングに使われることは一切ありません。',
+      rationaleMessage: "毎朝8時に、今日のカードを引くための静かなリマインダーを Sakin プランツ からお送りしてもよいですか？通知が広告やマーケティングに使われることは一切ありません。",
       rationaleConfirm: '許可する',
       rationaleCancel: '今はしない',
     },
@@ -390,13 +390,13 @@ export const ja = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: 'SAKIN ファミリー',
-    mikroTitle: 'アニマルガイド ✦',
+    mikroTitle: "植物ガイド ✦",
     premiumTitle: 'Sakin Premium',
-    mikroSub: 'アニマルガイダンスをさらに深く',
+    mikroSub: "植物の導きをさらに深く",
     premiumSub: '1つのアカウントで、すべての Sakin アプリを。',
     mikroPlan: 'マイクロ',
     premiumPlan: 'プレミアム',
-    mikroCadence: '月 · アニマルのみ',
+    mikroCadence: "月 · 植物のみ",
     premiumCadence: '月 · 全アプリ',
     mostPopular: '一番人気',
     iosPrice: '価格は App Store に表示されます。',
@@ -411,6 +411,18 @@ export const ja = {
     infoRestoreNone: 'このアカウントに有効なサブスクリプションは見つかりませんでした。',
     linkTerms: '利用規約',
     linkPrivacy: 'プライバシーポリシー',
+    features: {
+      f1Title: "あなたの誕生植物",
+      f1Desc: "誕生月の植物と、星座や元素に合う植物",
+      f2Title: "週ごとの導き",
+      f2Desc: "52週のサイクルの中で今どこにいるか、そしてあなたの個人年",
+      f3Title: "植物のページ",
+      f3Desc: "それぞれの植物の性質、起源、神話、チャクラ、使い方",
+      f4Title: "個人マップ",
+      f4Desc: "ライフパスと、名前から導かれる主要な数",
+      f5Title: "アーカイブ",
+      f5Desc: "これまでのリーディングを、ひとつの場所に",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

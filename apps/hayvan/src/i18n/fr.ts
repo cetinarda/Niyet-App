@@ -490,6 +490,18 @@ export const fr = {
     infoRestoreNone: 'Aucun abonnement actif n\'a été trouvé pour ce compte.',
     linkTerms: 'Conditions d\'utilisation',
     linkPrivacy: 'Politique de confidentialité',
+    features: {
+      f1Title: "Ton animal de naissance",
+      f1Desc: "Trouve ton animal guide grâce à tes données de naissance ou à quelques questions",
+      f2Title: "Guidance hebdomadaire",
+      f2Desc: "Où tu en es dans ton cycle de 52 semaines, et ton année personnelle",
+      f3Title: "Pages animales approfondies",
+      f3Desc: "Mythologie, Jung, traditions, ombre et sens dans les rêves",
+      f4Title: "Carte personnelle",
+      f4Desc: "Ton chemin de vie et les nombres clés de ton nom",
+      f5Title: "Archives",
+      f5Desc: "Tes lectures passées, réunies en un seul endroit",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

@@ -157,7 +157,7 @@ export const tr = {
   profile: {
     // Onboarding
     onboarding: {
-      title: "Sakin Hayvan'a Hoş Geldin",
+      title: "Sakin Bitkiler'e Hoş Geldin",
       subtitle: "Anadolu'nun kadim geleneğinden günlük rehberlik",
       step1Question: 'Adın nedir, yolcu?',
       step1Placeholder: 'Adını yaz...',
@@ -341,7 +341,7 @@ export const tr = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Günlük hatırlatma',
-      rationaleMessage: 'Sakin Hayvan, her sabah 08:00\'de günün kartını çekmen için sessiz bir hatırlatma göndersin mi? Bildirim hiçbir şekilde reklam veya pazarlama amacıyla kullanılmaz.',
+      rationaleMessage: "Sakin Bitkiler, her sabah 08:00'de günün kartını çekmen için sessiz bir hatırlatma göndersin mi? Bildirim hiçbir şekilde reklam veya pazarlama amacıyla kullanılmaz.",
       rationaleConfirm: 'İzin Ver',
       rationaleCancel: 'Şimdi Değil',
     },
@@ -393,13 +393,13 @@ export const tr = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: "SAKİN AİLESİ",
-    mikroTitle: "Hayvan Rehberi ✦",
+    mikroTitle: "Bitki Rehberi ✦",
     premiumTitle: "Sakin Premium",
-    mikroSub: "Hayvan rehberliğinin derinine in",
+    mikroSub: "Bitkilerin rehberliğinin derinine in",
     premiumSub: "Bir hesap. Tüm Sakin app'leri.",
     mikroPlan: "Mikro",
     premiumPlan: "Premium",
-    mikroCadence: "ay · sadece Hayvan",
+    mikroCadence: "ay · sadece Bitkiler",
     premiumCadence: "ay · tüm aile",
     mostPopular: "EN POPÜLER",
     iosPrice: "Fiyatlar App Store üzerinden gösterilir.",
@@ -414,6 +414,18 @@ export const tr = {
     infoRestoreNone: "Bu hesaba bağlı aktif bir abonelik bulunamadı.",
     linkTerms: "Kullanım Şartları",
     linkPrivacy: "Gizlilik Politikası",
+    features: {
+      f1Title: "Doğum Bitkin",
+      f1Desc: "Doğum ayının bitkisi, burcuna ve unsuruna uyan bitkiler",
+      f2Title: "Haftalık Rehberlik",
+      f2Desc: "52 haftalık döngünde nerede durduğun ve kişisel yılın",
+      f3Title: "Bitki Sayfaları",
+      f3Desc: "Her bitkinin özellikleri, kökeni, efsaneleri, çakrası ve kullanımı",
+      f4Title: "Kişisel Harita",
+      f4Desc: "Yaşam yolun ve isminden gelen temel sayıların",
+      f5Title: "Arşiv",
+      f5Desc: "Geçmiş okumaların tek bir yerde",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

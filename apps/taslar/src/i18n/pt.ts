@@ -24,7 +24,7 @@ export const pt = {
       animal: {
         title: 'Pedra',
         short: 'PEDRA',
-        subtitle: 'Ouça a pedra de hoje',
+        subtitle: 'Ouve a pedra de hoje',
       },
       quote: {
         title: 'Rumi',
@@ -154,7 +154,7 @@ export const pt = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Bem-vindo ao Sakin Hayvan',
+      title: "Bem-vindo ao Sakin Pedras",
       subtitle: 'Orientação diária da antiga tradição da Anatólia',
       step1Question: 'Qual é o seu nome, viajante?',
       step1Placeholder: 'Digite seu nome...',
@@ -326,9 +326,9 @@ export const pt = {
     },
     // Premium teaser
     premium: {
-      hdTeaser: 'Leia sua estratégia, sua autoridade e seu tema do Não-Eu em detalhe',
-      weeklyTeaser: 'Descubra em que ponto você está do seu ciclo de 52 semanas',
-      upgradeCta: 'Tornar-se Mestre →',
+      hdTeaser: "Lê em detalhe a tua estratégia, a tua autoridade e o teu tema do Não-Eu",
+      weeklyTeaser: "Descobre em que ponto estás do teu ciclo de 52 semanas",
+      upgradeCta: "Torna-te Mestre →",
     },
     // Dev
     dev: {
@@ -338,7 +338,7 @@ export const pt = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Lembrete diário',
-      rationaleMessage: 'Quer que o Sakin Hayvan envie um lembrete silencioso toda manhã às 08:00 para você tirar a carta do dia? As notificações nunca são usadas para publicidade ou marketing.',
+      rationaleMessage: "Queres que o Sakin Pedras te envie um lembrete silencioso todas as manhãs às 08:00 para tirares a carta do dia? As notificações nunca são usadas para publicidade ou marketing.",
       rationaleConfirm: 'Permitir',
       rationaleCancel: 'Agora não',
     },
@@ -390,27 +390,39 @@ export const pt = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: 'FAMÍLIA SAKIN',
-    mikroTitle: 'Guia animal ✦',
+    mikroTitle: "Guia das pedras ✦",
     premiumTitle: 'Sakin Premium',
-    mikroSub: 'Aprofunde-se na orientação animal',
-    premiumSub: 'Uma conta. Todos os apps Sakin.',
+    mikroSub: "Aprofunda a orientação das pedras",
+    premiumSub: "Uma conta. Todas as apps Sakin.",
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
-    mikroCadence: 'mês · só Animal',
-    premiumCadence: 'mês · todos os apps',
+    mikroCadence: "mês · só Pedras",
+    premiumCadence: "mês · todas as apps",
     mostPopular: 'MAIS POPULAR',
-    iosPrice: 'Os preços são exibidos pela App Store.',
-    androidPrice: 'Os preços são exibidos pela Play Store.',
-    ctaBtn: 'Tornar-se Mestre ✦',
-    restoreBtn: 'Restaurar assinatura',
-    legal: 'O pagamento será cobrado da sua conta da App Store ao confirmar a compra. A assinatura é renovada automaticamente, a menos que seja cancelada pelo menos 24 horas antes do fim do período atual. Você pode gerenciar e cancelar assinaturas nas configurações da sua conta da App Store.',
+    iosPrice: "Os preços são apresentados pela App Store.",
+    androidPrice: "Os preços são apresentados pela Play Store.",
+    ctaBtn: "Torna-te Mestre ✦",
+    restoreBtn: "Restaurar subscrição",
+    legal: "O pagamento é cobrado na tua conta da App Store quando confirmares a compra. A subscrição renova-se automaticamente, a menos que seja cancelada pelo menos 24 horas antes do fim do período atual. Podes gerir e cancelar as subscrições nas definições da tua conta da App Store.",
     errorPurchase: 'Não foi possível concluir a compra.',
     errorPurchaseTitle: 'Erro',
-    infoRestore: 'O serviço de restauração de assinatura chegará em breve.',
+    infoRestore: "O restauro da subscrição estará disponível em breve.",
     infoRestoreTitle: 'Informação',
-    infoRestoreNone: 'Nenhuma assinatura ativa foi encontrada para esta conta.',
-    linkTerms: 'Termos de uso',
+    infoRestoreNone: "Não foi encontrada nenhuma subscrição ativa nesta conta.",
+    linkTerms: "Termos de utilização",
     linkPrivacy: 'Política de privacidade',
+    features: {
+      f1Title: "A tua pedra natal",
+      f1Desc: "A pedra do teu mês de nascimento e os cristais do teu signo e elemento",
+      f2Title: "Orientação semanal",
+      f2Desc: "Onde estás no teu ciclo de 52 semanas e o teu ano pessoal",
+      f3Title: "Páginas das pedras",
+      f3Desc: "Propriedades, origem, mitos, chakra, planta companheira e como usar cada pedra",
+      f4Title: "Mapa pessoal",
+      f4Desc: "O teu caminho de vida e os números-chave do teu nome",
+      f5Title: "Arquivo",
+      f5Desc: "As tuas leituras anteriores, todas num só lugar",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

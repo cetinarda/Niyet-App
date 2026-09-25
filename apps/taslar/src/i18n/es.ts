@@ -154,7 +154,7 @@ export const es = {
   profile: {
     // Onboarding
     onboarding: {
-      title: 'Bienvenido a Sakin Hayvan',
+      title: "Te damos la bienvenida a Sakin Piedras",
       subtitle: 'Guía diaria de la antigua tradición de Anatolia',
       step1Question: '¿Cómo te llamas, viajero?',
       step1Placeholder: 'Escribe tu nombre...',
@@ -338,7 +338,7 @@ export const es = {
     // Notification rationale (App Store 4.5.4 / Play Console)
     notif: {
       rationaleTitle: 'Recordatorio diario',
-      rationaleMessage: '¿Quieres que Sakin Hayvan te envíe un recordatorio silencioso cada mañana a las 08:00 para sacar tu carta del día? Las notificaciones nunca se usan con fines publicitarios ni de marketing.',
+      rationaleMessage: "¿Quieres que Sakin Piedras te envíe un recordatorio silencioso cada mañana a las 08:00 para sacar tu carta del día? Las notificaciones nunca se usan con fines publicitarios ni de marketing.",
       rationaleConfirm: 'Permitir',
       rationaleCancel: 'Ahora no',
     },
@@ -390,13 +390,13 @@ export const es = {
   // ─── Paywall screen ───────────────────────────────────────────────────────────
   paywall: {
     eyebrow: 'FAMILIA SAKIN',
-    mikroTitle: 'Guía animal ✦',
+    mikroTitle: "Guía de piedras ✦",
     premiumTitle: 'Sakin Premium',
-    mikroSub: 'Profundiza en la guía animal',
+    mikroSub: "Profundiza en la guía de las piedras",
     premiumSub: 'Una cuenta. Todas las apps Sakin.',
     mikroPlan: 'Micro',
     premiumPlan: 'Premium',
-    mikroCadence: 'mes · solo Animal',
+    mikroCadence: "mes · solo Piedras",
     premiumCadence: 'mes · todas las apps',
     mostPopular: 'MÁS POPULAR',
     iosPrice: 'Los precios se muestran a través de la App Store.',
@@ -411,6 +411,18 @@ export const es = {
     infoRestoreNone: 'No se encontró ninguna suscripción activa para esta cuenta.',
     linkTerms: 'Condiciones de uso',
     linkPrivacy: 'Política de privacidad',
+    features: {
+      f1Title: "Tu piedra natal",
+      f1Desc: "La piedra de tu mes de nacimiento y los cristales de tu signo y tu elemento",
+      f2Title: "Guía semanal",
+      f2Desc: "Dónde estás en tu ciclo de 52 semanas y tu año personal",
+      f3Title: "Páginas de piedras",
+      f3Desc: "Propiedades, origen, mitos, chakra, planta compañera y cómo usar cada piedra",
+      f4Title: "Mapa personal",
+      f4Desc: "Tu camino de vida y los números clave de tu nombre",
+      f5Title: "Archivo",
+      f5Desc: "Tus lecturas pasadas, todas en un mismo lugar",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────

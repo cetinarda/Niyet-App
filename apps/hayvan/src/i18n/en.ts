@@ -495,6 +495,18 @@ export const en = {
     infoRestoreNone: "No active subscription was found for this account.",
     linkTerms: "Terms of Use",
     linkPrivacy: "Privacy Policy",
+    features: {
+      f1Title: "Your Birth Animal",
+      f1Desc: "Find your guide animal through your birth details or a few questions",
+      f2Title: "Weekly Guidance",
+      f2Desc: "Where you stand in your 52-week cycle, and your personal year",
+      f3Title: "Deep Animal Pages",
+      f3Desc: "Mythology, Jung, traditions, shadow and dream meanings",
+      f4Title: "Personal Map",
+      f4Desc: "Your life path and the core numbers of your name",
+      f5Title: "Archive",
+      f5Desc: "Your past readings, all in one place",
+    },
   },
 
   // ─── Elements ─────────────────────────────────────────────────────────────────
