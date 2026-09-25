@@ -899,6 +899,9 @@ koruma sunucuda.
   politikaları: anon yalnızca DİNLER + presence yazar, broadcast yazma politikası
   BİLEREK YOK. Supabase > Realtime > Settings > "Allow public access" KAPALI.
   Bu üçünden biri bozulursa ya mesajlar gelmez ya açık geri döner.
+  ✅ Politikalar çalıştırıldı, public erişim kapatıldı; canlı testte private kanal
+  + presence çalışıyor, sahte broadcast dinleyiciye ULAŞMIYOR; kullanıcı iki
+  cihazda canlı mesajlaşmayı doğruladı (Eyl 2026).
 
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
