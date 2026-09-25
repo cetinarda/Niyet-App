@@ -85,11 +85,87 @@ const WEEKLY_MESSAGES: Record<number, string[]> = {
   ],
 };
 
+const WEEKLY_MESSAGES_EN: Record<number, string[]> = {
+  1: [
+    'Trust your leadership instincts this week. The right time to start a new project.',
+    'Take independent steps. You are setting your own path.',
+    'Courage energy is high. Begin what you have postponed this week.',
+    'Share your authentic ideas. Your leadership is inspiring.',
+  ],
+  2: [
+    'Take care of your relationships this week. Listening strengthens you.',
+    'Listen to your intuition. Your inner self is showing the way.',
+    'Move in cooperation and harmony. You are stronger together.',
+    'Patience energy is high. Don\'t rush: the timing is perfect.',
+  ],
+  3: [
+    'Express your creativity this week. A perfect time for artistic projects.',
+    'Share your joy. You scatter light around you.',
+    'Your energy for new ideas and projects is strong.',
+    'Raise your voice. Your words are especially powerful this week.',
+  ],
+  4: [
+    'Focus on order this week. Time to put your plans into action.',
+    'Move with patience and resolve. You are laying solid foundations.',
+    'Take practical steps. Each small step takes you to the great goal.',
+    'Discipline energy is high. Your routines support you.',
+  ],
+  5: [
+    'Be open to new experiences this week. Change is at your door.',
+    'Adventure and curiosity energy is high. Don\'t be afraid to explore.',
+    'Break the routine. Try a different way.',
+    'Feel your freedom. Time to expand your boundaries.',
+  ],
+  6: [
+    'Make time for your loved ones this week. Love energy is high.',
+    'Move with care and compassion. Serving strengthens you.',
+    'Home and family are your focus. Create a safe space.',
+    'If you seek harmony and balance, trust the answer that comes from within.',
+  ],
+  7: [
+    'Turn inward this week. Silence and meditation energy is high.',
+    'Ask deep questions. Answers are hidden inside.',
+    'A perfect week for research and learning.',
+    'Solitude is fertile. Ideal time for spiritual work.',
+  ],
+  8: [
+    'Trust your power this week. Focus on big goals.',
+    'You are seeking material and spiritual balance. Both matter.',
+    'Leadership energy is high. The right time to take decisions.',
+    'Transformation energy is active. Let go of old patterns.',
+  ],
+  9: [
+    'There is completion energy this week. Time to close unfinished work.',
+    'Mercy and forgiveness energy is high. Letting go frees.',
+    'Look from a universal perspective. You see the big picture.',
+    'Time of service and contribution. What you give returns multiplied.',
+  ],
+  11: [
+    'Your intuitions are sharp this week. Watch the moments of inspiration.',
+    'Spiritual messages are coming. Try to hear in the silence.',
+    'Your illuminating energy inspires others.',
+    'There is a call to higher consciousness. Make room for your spiritual practice.',
+  ],
+  22: [
+    'Move for big visions this week.',
+    'Time to materialise your dreams. Take practical steps.',
+    'Building energy is strong. Each step is lasting.',
+    'Leadership and vision together. You are starting big changes.',
+  ],
+};
+
 const THEMES: Record<number, string> = {
   1: 'Başlangıç ve Liderlik', 2: 'Denge ve İşbirliği', 3: 'Yaratıcılık ve İfade',
   4: 'Yapı ve Disiplin', 5: 'Özgürlük ve Değişim', 6: 'Sevgi ve Sorumluluk',
   7: 'İç Dünya ve Derinlik', 8: 'Güç ve Dönüşüm', 9: 'Tamamlanma ve Merhamet',
   11: 'Sezgi ve Aydınlanma', 22: 'Büyük Yapı ve Vizyon',
+};
+
+const THEMES_EN: Record<number, string> = {
+  1: 'Beginning and Leadership', 2: 'Balance and Cooperation', 3: 'Creativity and Expression',
+  4: 'Structure and Discipline', 5: 'Freedom and Change', 6: 'Love and Responsibility',
+  7: 'Inner World and Depth', 8: 'Power and Transformation', 9: 'Completion and Mercy',
+  11: 'Intuition and Enlightenment', 22: 'Great Structure and Vision',
 };
 
 export interface WeeklyReading {
@@ -99,14 +175,17 @@ export interface WeeklyReading {
   weekNumber: number;
 }
 
-export function getWeeklyReading(nums: NumerologyProfile): WeeklyReading {
+// tr dışındaki diller İngilizce metne düşer (önceden tüm diller Türkçe görüyordu).
+export function getWeeklyReading(nums: NumerologyProfile, lang: string = 'tr'): WeeklyReading {
   const week = getWeekNumber();
   const personalYear = getPersonalYear(nums.lifePath);
-  const messages = WEEKLY_MESSAGES[nums.lifePath] || WEEKLY_MESSAGES[9];
+  const msgDict = lang === 'tr' ? WEEKLY_MESSAGES : WEEKLY_MESSAGES_EN;
+  const themeDict = lang === 'tr' ? THEMES : THEMES_EN;
+  const messages = msgDict[nums.lifePath] || msgDict[9];
   const message = messages[week % messages.length];
 
   return {
-    theme: THEMES[nums.lifePath] || THEMES[9],
+    theme: themeDict[nums.lifePath] || themeDict[9],
     message,
     personalYear,
     weekNumber: week,

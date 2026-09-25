@@ -70,7 +70,7 @@ export function useLocalizedPlants() {
 type Bilingual = { tr: string; en: string };
 function pickB(b: Bilingual | undefined, lang: Lang): string | undefined {
   if (!b) return undefined;
-  return lang === 'en' ? (b.en ?? b.tr) : b.tr;
+  return lang === 'tr' ? b.tr : (b.en ?? b.tr);
 }
 
 export function useLocalizedLore(animalId: string) {

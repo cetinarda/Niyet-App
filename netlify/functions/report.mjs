@@ -12,6 +12,7 @@
 // v1'de (export const handler) hiç çalışmıyor. Hesap/Netlify tarafında
 // düzeltilecek bir şey değildi, kod tarafımızdaki API seçimiydi.
 import { getStore } from "@netlify/blobs";
+import { timingSafeEqual } from "node:crypto";
 
 const MAX_USERS = 20000; // guvenlik siniri; asilirsa raporda not dusulur
 
@@ -40,21 +41,23 @@ function pct(n, d) { return d > 0 ? Math.round((n / d) * 1000) / 10 : 0; }
 export function aggregate(users) {
   const N = users.length;
   const reach = {}; FUNNEL.forEach((f) => (reach[f.key] = 0));
-  const featTotals = {}, featUsers = {};
+  // Object.create(null): istemciden gelen ekran adları ("__proto__" gibi) prototipe
+  // yazamasın; bir kez yazılınca rapor kalıcı olarak çöküyordu (hata avı, Eyl 2026).
+  const featTotals = Object.create(null), featUsers = Object.create(null);
   // SURE + GECIS (kullanici istegi: "ne kadar sure kaldilar, nereye
   // gectiler"). featSec/featExits ortalama sureyi hesaplar (bkz. asagida
   // avgSec = featSec/featExits); transTotals her "kaynak>hedef" ciftinin
   // TOPLAM kullanici sayisinda kac kez gorduldugunu tutar.
-  const featSec = {}, featExits = {};
+  const featSec = Object.create(null), featExits = Object.create(null);
   // Seçim sayaçları (track.mjs beyaz listesi): yol seçimi, Bugün kapısı, Ayna oyu.
-  const ch = {};
-  const aynaTip = {};
-  const hist = {};   // ekran -> [6 kova]
+  const ch = Object.create(null);
+  const aynaTip = Object.create(null);
+  const hist = Object.create(null);   // ekran -> [6 kova]
   const onbDone = { baglan: 0, kesfet: 0 };
   const np = { users: 0, count: { 1: 0, 2: 0, 3: 0 }, off: {} };
   let notifUsers = 0;
-  const transTotals = {};
-  const platform = {}, lang = {}, version = {};
+  const transTotals = Object.create(null);
+  const platform = Object.create(null), lang = Object.create(null), version = Object.create(null);
   let nefesTotal = 0, nefesUsers = 0, sessionsTotal = 0;
   let paywallUsers = 0, purchaseUsers = 0, premUsers = 0;
   let ret2 = 0, ret7 = 0;
@@ -114,7 +117,9 @@ export function aggregate(users) {
           const h = hist[rest.slice(0, sep)] || (hist[rest.slice(0, sep)] = [0, 0, 0, 0, 0, 0]);
           h[b] += c[k];
         }
-      } else if (/^(fork_|bgate_|ayna_|notif_)/.test(k)) {
+      // ⚠️ cember_/letter_/deeplink_/push_optin_/jserr_ bu süzgeçte YOKTU: track.mjs
+      // onları sayıyordu ama rapor hep 0 gösteriyordu (Eyl 2026 düzeltmesi).
+      } else if (/^(fork_|bgate_|ayna_|notif_|cember_|letter_|deeplink_|push_optin_|jserr_)/.test(k)) {
         ch[k] = (ch[k] || 0) + c[k];
       }
     }
@@ -123,7 +128,7 @@ export function aggregate(users) {
   }
 
   // Her kaynak ekran icin en cok gidilen hedefleri cikar (yuzdesiyle).
-  const transByOrigin = {};
+  const transByOrigin = Object.create(null);
   for (const key in transTotals) {
     const sep = key.indexOf(">");
     if (sep < 0) continue;
@@ -206,6 +211,7 @@ export function aggregate(users) {
       forkUntriedBaglan: ch.fork_untried_baglan || 0, forkUntriedKesfet: ch.fork_untried_kesfet || 0,
       pushYes: ch.push_optin_1 || 0, pushNo: ch.push_optin_0 || 0,
       cember: ["open", "rules", "send", "report", "block", "crisis"].reduce((o, k) => (o[k] = ch["cember_" + k] || 0, o), {}),
+      jsErr: Object.keys(ch).filter((k) => k.indexOf("jserr_") === 0).reduce((n, k) => n + ch[k], 0),
       letterSeal: ch.letter_seal || 0, letterOpen: ch.letter_open || 0,
       letterR: { oldu: ch.letter_r_oldu || 0, yolda: ch.letter_r_yolda || 0, donustu: ch.letter_r_donustu || 0 },
       gateShown: ch.bgate_shown || 0, gateEnter: ch.bgate_enter || 0, gateSkip: ch.bgate_skip || 0,
@@ -437,6 +443,7 @@ export function renderHTML(r, truncated) {
        <tr><td>Bugün doğum kapısı gösterildi</td><td class="num">${c.gateShown || 0}</td></tr>
        <tr><td>Çember: açılış / kural onayı / mesaj</td><td class="num">${(c.cember || {}).open || 0} / ${(c.cember || {}).rules || 0} / ${(c.cember || {}).send || 0}</td></tr>
        <tr><td>Çember: bildirim / engelleme / kriz kartı</td><td class="num">${(c.cember || {}).report || 0} / ${(c.cember || {}).block || 0} / ${(c.cember || {}).crisis || 0}</td></tr>
+       <tr><td>Uygulama hatası (hata ekranına düşen)</td><td class="num">${c.jsErr || 0}</td></tr>
        <tr><td>Anlık mesajlar (varsayılan açık): elle açtı / kapattı</td><td class="num">${c.pushYes || 0} / ${c.pushNo || 0}</td></tr>
        <tr><td>Niyet mektubu: mühürlendi / açıldı</td><td class="num">${c.letterSeal || 0} / ${c.letterOpen || 0}</td></tr>
        <tr><td>Mektup yansıması: gerçekleşti / yolda / dönüştü</td><td class="num">${(c.letterR || {}).oldu || 0} / ${(c.letterR || {}).yolda || 0} / ${(c.letterR || {}).donustu || 0}</td></tr>
@@ -509,7 +516,8 @@ export default async (req) => {
       ? new Response(renderEmpty(esc(hint)), { status: 503, headers: htmlHeaders })
       : new Response(hint, { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
   }
-  if (token !== expected) return new Response("Yetkisiz.", { status: 401 });
+  const _a = Buffer.from(String(token || "")), _b = Buffer.from(expected);
+  if (_a.length !== _b.length || !timingSafeEqual(_a, _b)) return new Response("Yetkisiz.", { status: 401 });
 
   // Blobs acilamazsa SEBEBI TASI. Eskiden yalnizca {users:0,note:"blobs yok"}
   // donuyordu; kullanici ekranda ham JSON goruyor ve neden bos oldugunu
@@ -529,9 +537,12 @@ export default async (req) => {
   try {
     const { blobs } = await store.list({ prefix: "u/" });
     const keys = (blobs || []).map((b) => b.key);
-    for (const k of keys) {
-      if (users.length >= MAX_USERS) { truncated = true; break; }
-      try { const rec = await store.get(k, { type: "json" }); if (rec) users.push(rec); } catch (_) {}
+    // 16'şarlı PARALEL okuma: tek tek okuma kurulum sayısı büyüdükçe 10 sn tavanına
+    // dayanıyordu (pulse canlıda 7 sn ölçüldü, hata avı Eyl 2026).
+    const lim = keys.slice(0, MAX_USERS); truncated = keys.length > MAX_USERS;
+    for (let i = 0; i < lim.length; i += 16) {
+      const got = await Promise.all(lim.slice(i, i + 16).map((k) => store.get(k, { type: "json" }).catch(() => null)));
+      for (const rec of got) if (rec) users.push(rec);
     }
   } catch (e) { listErr = `${e?.name || "Error"}: ${e?.message || String(e)}`; }
 

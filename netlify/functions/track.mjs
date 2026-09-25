@@ -108,7 +108,11 @@ export function mergeBatch(rec, body, now) {
   const week = isoWeek(now);
   if (!rec.wc || rec.wc.wk !== week) rec.wc = { wk: week, nefes: 0, freqSec: 0, chakraSec: 0 };
 
-  for (const it of (body.ev || [])) {
+  // Tek istekte en fazla 60 olay; ekran adları yalnızca küçük harf/rakam/_ (istemci
+  // serbest anahtar üretip kaydı ve raporu şişiremesin / "__proto__" yazamasın).
+  const SCR = /^[a-z][a-z0-9_]{0,23}$/;
+  let nefesBatch = 0;
+  for (const it of (body.ev || []).slice(0, 60)) {
     if (!it || typeof it.e !== "string") continue;
     const ts = typeof it.t === "number" ? it.t : now;
     const e = it.e;
@@ -131,7 +135,11 @@ export function mergeBatch(rec, body, now) {
       const s = ["mandala", "bugun", "nefes", "ses", "chakra"].includes(it.s) ? it.s : null;
       if (s) bump("deeplink_" + s);
     }
-    else if (e === "nefes") { setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++; }
+    else if (e === "nefes") {
+      // Kamu sayacı (Orkestra) tek istemciyle şişirilmesin: istek başına en çok 20.
+      if (++nefesBatch > 20) continue;
+      setMilestone("nefes_complete", ts); bump("nefes"); rec.wc.nefes++;
+    }
     else if (e === "freq_sec") {
       // Ses/frekans dinleme saniyesi (istemci ton durunca delta gonderir).
       const n = typeof it.n === "number" && it.n > 0 ? Math.min(it.n, 36000) : 0;
@@ -143,7 +151,7 @@ export function mergeBatch(rec, body, now) {
       if (n) { bump("chakraSec", n); rec.wc.chakraSec += n; }
     }
     else if (e === "screen") {
-      const s = typeof it.s === "string" ? it.s : "";
+      const s = typeof it.s === "string" && SCR.test(it.s) ? it.s : "";
       if (!s) continue;
       bump("scr_" + s);
       if (s === "giris") setMilestone("giris_view", ts);
@@ -169,6 +177,8 @@ export function mergeBatch(rec, body, now) {
     else if (e === "push_optin") { if (it.v === 1 || it.v === 0) bump("push_optin_" + it.v); }
     // Çember (canlı oda): açma, kural onayı, gönderme, bildirme, engelleme, kriz kartı.
     else if (e === "cember") { if (["open", "rules", "send", "report", "block", "crisis"].includes(it.a)) bump("cember_" + it.a); }
+    // Hata sınırına düşen çizim hatası (src/main.jsx): yalnızca hata TÜRÜ sayılır.
+    else if (e === "js_error") { const k = typeof it.k === "string" && /^[A-Za-z]{1,20}$/.test(it.k) ? it.k : "Error"; bump("jserr_" + k); }
     else if (e === "fork_shown") bump("fork_shown");
     else if (e === "fork_pick") {
       const path = it.path === "baglan" || it.path === "kesfet" ? it.path : null;
@@ -195,8 +205,8 @@ export function mergeBatch(rec, body, now) {
       if (v) { bump("ayna_" + v); bump("aynat_" + tip + "_" + v); }
     }
     else if (e === "screen_time") {
-      const from = typeof it.from === "string" ? it.from.slice(0, 24) : "";
-      const to = typeof it.to === "string" ? it.to.slice(0, 24) : null;
+      const from = typeof it.from === "string" && SCR.test(it.from) ? it.from : "";
+      const to = typeof it.to === "string" && SCR.test(it.to) ? it.to : null;
       // Ust sinir 6 saat: uyuyan/arka planda unutulmus sekme gercekci olmayan
       // dev bir sure gondermesin (ortalamayi bozar).
       const sec = typeof it.sec === "number" && it.sec > 0 ? Math.min(Math.round(it.sec), 21600) : 0;

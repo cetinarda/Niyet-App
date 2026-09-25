@@ -1,4 +1,8 @@
 export const ja = {
+  common: {
+    share: 'シェア',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: '今日',
@@ -118,6 +122,8 @@ export const ja = {
       closeBtn: '閉じる ✦',
     },
     quiz: {
+      hint: '心惹かれるものが複数あれば、すべて選んでください。',
+      continueBtn: '続ける',
       questions: [
         {
           q: '自然の中で、どの環境があなたを呼んでいますか？',

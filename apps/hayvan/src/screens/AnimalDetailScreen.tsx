@@ -65,9 +65,9 @@ export function AnimalDetailScreen({ animal, onClose }: Props) {
               }}
               hitSlop={12}
               accessibilityRole="button"
-              accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+              accessibilityLabel={t('common.share')}
             >
-              <Text style={[styles.back, { color: Colors.teal }]}>{lang === 'en' ? 'Share' : 'Paylaş'}</Text>
+              <Text style={[styles.back, { color: Colors.teal }]}>{t('common.share')}</Text>
             </TouchableOpacity>
           )}
         </View>

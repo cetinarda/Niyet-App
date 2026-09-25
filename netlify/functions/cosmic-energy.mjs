@@ -997,7 +997,12 @@ export const handler = async (event) => {
     return {
       statusCode: 200,
       // AI raporu kolektif + günlük → 6 saat cache (Groq çağrısını seyrelt). Dil query'sine göre ayrı cache.
-      headers: { ...cors, "Content-Type": "application/json", "Cache-Control": "public, max-age=21600" },
+      // ⚠️ CDN bu cevabı 6 saat önbelleğe alıyor ve Vary: Origin yoktu: ilk gelen
+      // istemcinin kaynağı (ör. capacitor://localhost) herkese dağıtılıyor, Android
+      // (https://localhost) CORS hatası alıp gökyüzü verisini sessizce kaybediyordu
+      // (hata avı, Eyl 2026, canlıda doğrulandı). Veri herkese açık ve çerezsiz:
+      // başarılı cevapta "*" güvenli ve önbellekle uyumlu.
+      headers: { ...cors, "Access-Control-Allow-Origin": "*", "Content-Type": "application/json", "Cache-Control": "public, max-age=21600" },
       body: JSON.stringify(summary),
     };
   } catch (e) {

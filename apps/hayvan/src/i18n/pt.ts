@@ -1,4 +1,8 @@
 export const pt = {
+  common: {
+    share: 'Partilhar',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Hoje',
@@ -118,6 +122,8 @@ export const pt = {
       closeBtn: 'Fechar ✦',
     },
     quiz: {
+      hint: 'Se mais do que um te chama, escolhe-os todos.',
+      continueBtn: 'Continuar',
       questions: [
         {
           q: 'Qual ambiente na natureza o chama?',

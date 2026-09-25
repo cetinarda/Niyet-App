@@ -76,9 +76,17 @@ const NICK = {
 };
 export function nickFor(hash, room) {
   const n = NICK[room] || NICK.global;
-  const a = parseInt(hash.slice(0, 4), 16), b = parseInt(hash.slice(4, 8), 16), c = parseInt(hash.slice(8, 10), 16);
-  return `${n.el[a % n.el.length]} · ${n.cr[b % n.cr.length]} ${1 + (c % 99)}`;
+  const a = parseInt(hash.slice(0, 4), 16), b = parseInt(hash.slice(4, 8), 16), c = parseInt(hash.slice(8, 12), 16);
+  // Sayı 1-999 (eskiden 1-99): aynı takma adı taklit etmek artık ~10 kat zor. Asıl
+  // koruma takma ad DEĞİL: kendi mesajın id ile, engelleme authorTag ile yapılır.
+  return `${n.el[a % n.el.length]} · ${n.cr[b % n.cr.length]} ${1 + (c % 999)}`;
 }
+// Yazar etiketi: cihaz özetinden türetilen, geri çevrilemeyen ve takma addan
+// BAĞIMSIZ kısa kimlik. İstemci engellemeyi bununla yapar (takma ad taklit
+// edilebildiği için "birini engelle" başka birini de engelleyebiliyordu).
+export const authorTag = (hash) => createHash("sha256").update("tag:" + hash).digest("hex").slice(0, 12);
+// Bildirim ve moderasyon sınırı için IP özeti (IP'nin kendisi saklanmaz).
+export const ipKey = (ip) => createHash("sha256").update("ip:" + String(ip || "?")).digest("hex").slice(0, 32);
 // Takma adın rengi (element başına), istemci bununla boyar.
 export function elementIndex(hash) { return parseInt(hash.slice(0, 4), 16) % 8; }
 
@@ -109,7 +117,9 @@ export async function aiModerate(text) {
       // ⚠️ groqChat'in kalite kapısı 8 karakterden kısa cevabı ATIYOR; tek kelime
       // ("OK") her zaman reddedilir ve moderasyon sessizce devre dışı kalırdı.
       // Bu yüzden cevap "VERDICT: <KELİME>" biçiminde istenir (>= 8 karakter).
-      max_tokens: 12,
+      // gpt-oss muhakeme jetonları da bu bütçeden düşüyor: 12 jetonla cevap
+      // çoğu zaman boş dönüp bir sonraki modele düşüyordu (hata avı, Eyl 2026).
+      max_tokens: 200,
       messages: [
         { role: "system", content:
           "You moderate a calm, supportive public chat room of a meditation app. Classify the user's message. " +
@@ -143,9 +153,11 @@ export function corsFor(req) {
 export const json = (headers, code, obj) => new Response(JSON.stringify(obj), { status: code, headers: { ...headers, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 
 // Aynı sıcak fonksiyon örneğinde IP başına kaba sınır (asıl yavaş mod veritabanında).
+// `bucket` ayrı sayaçlar için (ör. "mod": moderasyon çağrısı; reddedilen mesajlar
+// yavaş moda sayılmadığı için AI moderasyonu art arda tetiklenebiliyordu).
 const rate = new Map();
-export function ipLimited(ip, max = 30) {
-  const now = Date.now(), e = rate.get(ip);
-  if (!e || now - e.t > 60000) { rate.set(ip, { t: now, n: 1 }); return false; }
+export function ipLimited(ip, max = 30, bucket = "all") {
+  const k = bucket + "|" + ip, now = Date.now(), e = rate.get(k);
+  if (!e || now - e.t > 60000) { rate.set(k, { t: now, n: 1 }); return false; }
   return ++e.n > max;
 }

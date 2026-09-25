@@ -1,7 +1,7 @@
 // ÇEMBER: mesaj bildirme (Apple 1.2 / Play UGC: bildirme mekanizması ZORUNLU).
 // Bir cihaz bir mesajı bir kez bildirir; HIDE_AFTER_REPORTS farklı cihaz
 // bildirince mesaj gizlenir ve odadaki herkesin ekranından kalkar ("hide").
-import { chatConfig, corsFor, json, rest, broadcast, deviceHash, validDeviceId, HIDE_AFTER_REPORTS, ipLimited } from "./_chat.mjs";
+import { chatConfig, corsFor, json, rest, broadcast, deviceHash, validDeviceId, HIDE_AFTER_REPORTS, ipLimited, ipKey } from "./_chat.mjs";
 
 export default async (req, context) => {
   const { ok: originOk, headers } = corsFor(req);
@@ -21,8 +21,11 @@ export default async (req, context) => {
   const msg = m.ok && Array.isArray(m.data) ? m.data[0] : null;
   if (!msg) return json(headers, 200, { ok: false });
   if (msg.device_hash === h) return json(headers, 200, { ok: true });   // kendi mesajını bildiremez
+  // Bildiren kimliği = IP ÖZETİ (cihaz kimliği değil): istemci rastgele kimlik
+  // üretebildiği için iki sahte kimlikle herhangi bir mesaj gizlenebiliyordu (hata
+  // avı, Eyl 2026). Aynı bağlantıdan gelen bildirimler tek sayılır.
   await rest(cfg, "chat_reports", { method: "POST", prefer: "resolution=ignore-duplicates",
-    body: { message_id: mid, device_hash: h } });
+    body: { message_id: mid, device_hash: ipKey(ip) } });
   const c = await rest(cfg, `chat_reports?select=device_hash&message_id=eq.${mid}`);
   const count = c.ok && Array.isArray(c.data) ? c.data.length : 1;
   const hide = count >= HIDE_AFTER_REPORTS;

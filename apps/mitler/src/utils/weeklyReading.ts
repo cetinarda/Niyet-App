@@ -175,13 +175,14 @@ export interface WeeklyReading {
   weekNumber: number;
 }
 
-export type WRLang = 'tr' | 'en';
+// tr dışındaki diller İngilizce metne düşer (önceden de/es/pt/fr/ja Türkçe görüyordu).
+export type WRLang = string;
 
 export function getWeeklyReading(nums: NumerologyProfile, lang: WRLang = 'tr'): WeeklyReading {
   const week = getWeekNumber();
   const personalYear = getPersonalYear(nums.lifePath);
-  const msgDict = lang === 'en' ? WEEKLY_MESSAGES_EN : WEEKLY_MESSAGES;
-  const themeDict = lang === 'en' ? THEMES_EN : THEMES_TR;
+  const msgDict = lang === 'tr' ? WEEKLY_MESSAGES : WEEKLY_MESSAGES_EN;
+  const themeDict = lang === 'tr' ? THEMES_TR : THEMES_EN;
   const messages = msgDict[nums.lifePath] || msgDict[9];
   const message = messages[week % messages.length];
 

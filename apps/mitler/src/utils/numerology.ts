@@ -57,7 +57,8 @@ export function calcNumerology(fullName: string, birthDate: string): NumerologyP
   };
 }
 
-export type NumLang = 'tr' | 'en';
+// tr dışındaki diller İngilizce metne düşer (önceden de/es/pt/fr/ja Türkçe görüyordu).
+export type NumLang = string;
 
 export interface LifePathMeaning { title: string; keyword: string; desc: string }
 
@@ -92,6 +93,6 @@ const LIFE_PATH_EN: Record<number, LifePathMeaning> = {
 };
 
 export function getLifePathMeaning(n: number, lang: NumLang = 'tr'): LifePathMeaning {
-  const dict = lang === 'en' ? LIFE_PATH_EN : LIFE_PATH_MEANINGS;
+  const dict = lang === 'tr' ? LIFE_PATH_MEANINGS : LIFE_PATH_EN;
   return dict[n] || dict[9];
 }

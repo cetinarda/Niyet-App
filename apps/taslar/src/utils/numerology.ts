@@ -71,3 +71,24 @@ export const LIFE_PATH_MEANINGS: Record<number, { title: string; keyword: string
   22: { title: 'Usta Yapıcı', keyword: 'Vizyon', desc: 'Usta sayı 22: Büyük hayalleri somut gerçeğe dönüştürme gücüne sahipsin. Dünyanı değiştirirsin.' },
   33: { title: 'Usta Öğretmen', keyword: 'Evrensel Sevgi', desc: 'Usta sayı 33: Sonsuz şefkat, iyileştirme ve evrensel öğretmenlik misyonundansın.' },
 };
+
+// tr dışındaki diller İngilizce anlama düşer (önceden tüm diller Türkçe görüyordu).
+const LIFE_PATH_EN: Record<number, { title: string; keyword: string; desc: string }> = {
+  1: { title: 'Pioneer', keyword: 'Leadership', desc: 'Opening new paths, independent thinking and being a forerunner are in your nature. Courage and will are your greatest powers.' },
+  2: { title: 'Mediator', keyword: 'Balance', desc: 'You carry the energy of intuition, harmony and cooperation. Your power to build bridges in relationships and to listen is unique.' },
+  3: { title: 'Creator', keyword: 'Expression', desc: 'Creativity, joy and authentic expression define you. You shine in the world of art, music and words.' },
+  4: { title: 'Builder', keyword: 'Order', desc: 'Diligence, reliability and systematic thinking are your basic energy. You love to build firm foundations.' },
+  5: { title: 'Free Spirit', keyword: 'Freedom', desc: 'Adventure, change and freedom are your essence. You learn from every experience and live life fully.' },
+  6: { title: 'Messenger of Love', keyword: 'Compassion', desc: 'Responsibility, deep love and serving are in your destiny. You become the heart of your family and your community.' },
+  7: { title: 'Sage', keyword: 'Depth', desc: 'Spiritual quest, deep analysis and turning inward light up your path. To ask questions and seek answers is your soul\'s work.' },
+  8: { title: 'Power', keyword: 'Transformation', desc: 'Finding the balance of material and spiritual power is your life path. You were born for big goals; your leadership energy is strong.' },
+  9: { title: 'Teacher', keyword: 'Mercy', desc: 'You carry universal love, mercy and the energy of serving humanity. You have the power to complete cycles and to release.' },
+  11: { title: 'Illuminator', keyword: 'Intuition', desc: 'Master number 11: a guide on the path of high intuition and spiritual enlightenment. You are a source of inspiration.' },
+  22: { title: 'Master Builder', keyword: 'Vision', desc: 'Master number 22: you have the power to turn great dreams into concrete reality. You change your world.' },
+  33: { title: 'Master Teacher', keyword: 'Universal Love', desc: 'Master number 33: you carry the mission of endless compassion, healing and universal teaching.' },
+};
+
+export function getLifePathMeaning(n: number, lang: string = 'tr') {
+  const dict = lang === 'tr' ? LIFE_PATH_MEANINGS : LIFE_PATH_EN;
+  return dict[n] || dict[9];
+}

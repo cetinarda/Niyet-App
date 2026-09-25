@@ -1,4 +1,8 @@
 export const es = {
+  common: {
+    share: 'Compartir',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Hoy',

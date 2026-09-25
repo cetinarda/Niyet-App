@@ -11,7 +11,11 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useMitlerStore } from '../store/useStore';
 
 import { useData } from '../data/loader';
-import { translate } from '../i18n/useLanguage';
+import { useLanguage } from '../i18n/useLanguage';
+
+const DATE_LOCALE: Record<string, string> = {
+  tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', pt: 'pt-PT', fr: 'fr-FR', ja: 'ja-JP',
+};
 
 type FilterType = 'all' | 'archetype' | 'myth' | 'image';
 
@@ -24,6 +28,7 @@ const FILTERS: { key: FilterType; labelKey: string; color: string }[] = [
 
 export function ArchiveScreen() {
   const insets = useSafeAreaInsets();
+  const { t, lang } = useLanguage();
   const { archive, stats, getTopStat } = useMitlerStore();
   const { archetypes: archetypesData, myths: mythsData, images: imagesData } = useData();
   const [filter, setFilter] = useState<FilterType>('all');
@@ -40,7 +45,7 @@ export function ArchiveScreen() {
 
   const formattedDate = (dateStr: string) => {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    return d.toLocaleDateString(DATE_LOCALE[lang] || 'en-US', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   const renderEntry = ({ item }: { item: typeof archive[0] }) => {
@@ -90,9 +95,9 @@ export function ArchiveScreen() {
                   {archetype.emoji} {archetype.name} · {archetype.tradition}
                 </Text>
                 <Text style={styles.expandText}>{archetype.essence}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>🌙 Rüyada</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>{t('archive.dream')}</Text>
                 <Text style={styles.expandText}>{archetype.dreamMeaning}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>☀ Gerçekte</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>{t('archive.waking')}</Text>
                 <Text style={styles.expandText}>{archetype.wakingMeaning}</Text>
               </View>
             )}
@@ -102,9 +107,9 @@ export function ArchiveScreen() {
                   {myth.emoji} {myth.name} · {myth.culture}
                 </Text>
                 <Text style={styles.expandText}>{myth.summary}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>🌙 Rüyada</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>{t('archive.dream')}</Text>
                 <Text style={styles.expandText}>{myth.dreamMeaning}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>☀ Gerçekte</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>{t('archive.waking')}</Text>
                 <Text style={styles.expandText}>{myth.wakingMeaning}</Text>
               </View>
             )}
@@ -114,9 +119,9 @@ export function ArchiveScreen() {
                   {image.emoji} {image.name} · {image.tradition}
                 </Text>
                 <Text style={styles.expandText}>{image.essence}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>🌙 Rüyada</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.purpleLight }]}>{t('archive.dream')}</Text>
                 <Text style={styles.expandText}>{image.dreamMeaning}</Text>
-                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>☀ Gerçekte</Text>
+                <Text style={[styles.expandSubLabel, { color: Colors.tealLight }]}>{t('archive.waking')}</Text>
                 <Text style={styles.expandText}>{image.wakingMeaning}</Text>
               </View>
             )}
@@ -129,34 +134,34 @@ export function ArchiveScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Arşiv</Text>
-        <Text style={styles.subtitle}>{archive.length} okuma</Text>
+        <Text style={styles.title}>{t('archive.title')}</Text>
+        <Text style={styles.subtitle}>{t('archive.count', { n: archive.length })}</Text>
       </View>
       {archive.length > 0 && (
         <View style={styles.reportCard}>
-          <Text style={styles.reportTitle}>Mit Haritan</Text>
+          <Text style={styles.reportTitle}>{t('archive.map')}</Text>
           <View style={styles.reportRow}>
             {topArchetype && (
               <View style={styles.reportItem}>
-                <Text style={styles.reportLabel}>Arketip</Text>
+                <Text style={styles.reportLabel}>{t('archive.label.archetype')}</Text>
                 <Text style={[styles.reportValue, { color: Colors.gold }]}>{topArchetype.name}</Text>
               </View>
             )}
             {topMyth && (
               <View style={styles.reportItem}>
-                <Text style={styles.reportLabel}>Mit</Text>
+                <Text style={styles.reportLabel}>{t('archive.label.myth')}</Text>
                 <Text style={[styles.reportValue, { color: Colors.purpleLight }]}>{topMyth.name}</Text>
               </View>
             )}
             {topImage && (
               <View style={styles.reportItem}>
-                <Text style={styles.reportLabel}>İmge</Text>
+                <Text style={styles.reportLabel}>{t('archive.label.image')}</Text>
                 <Text style={[styles.reportValue, { color: Colors.tealLight }]}>{topImage.name}</Text>
               </View>
             )}
             {topTradition && (
               <View style={styles.reportItem}>
-                <Text style={styles.reportLabel}>Gelenek</Text>
+                <Text style={styles.reportLabel}>{t('archive.label.tradition')}</Text>
                 <Text style={[styles.reportValue, { color: Colors.emberLight }]}>{topTradition}</Text>
               </View>
             )}
@@ -171,15 +176,15 @@ export function ArchiveScreen() {
             onPress={() => setFilter(f.key)}
           >
             <Text style={[styles.filterLabel, { color: filter === f.key ? f.color : Colors.textMuted }]}>
-              {translate(f.labelKey as any)}
+              {t(f.labelKey as any)}
             </Text>
           </TouchableOpacity>
         ))}
       </View>
       {archive.length === 0 ? (
         <View style={styles.empty}>
-          <Text style={styles.emptyText}>Henüz okuma yok.</Text>
-          <Text style={styles.emptySubtext}>Ana ekrandan ilk destenı aç.</Text>
+          <Text style={styles.emptyText}>{t('archive.empty.title')}</Text>
+          <Text style={styles.emptySubtext}>{t('archive.empty.sub')}</Text>
         </View>
       ) : (
         <FlatList

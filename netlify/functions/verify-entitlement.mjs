@@ -61,7 +61,16 @@ const clientIP = (event) =>
   (event.headers?.["x-nf-client-connection-ip"] || event.headers?.["client-ip"] || "unknown").toString();
 
 // Netlify env değişkenleri çok satırlı PEM'i genelde "\n" kaçışlarıyla saklar.
-const pem = (s) => String(s || "").replace(/\\n/g, "\n").trim();
+// Netlify'a yapıştırılan anahtarın satır sonları boşluğa dönüşebiliyor (APNs anahtarında
+// yaşandı): gövdeyi ayıklayıp 64'lük satırlarla yeniden sar (_push.mjs ile aynı).
+function pem(s) {
+  let t = String(s || "").trim().replace(/^["']|["']$/g, "").replace(/\\r|\\n/g, "\n");
+  const m = t.match(/-----BEGIN ([A-Z ]+)-----([\s\S]*?)-----END \1-----/);
+  const label = m ? m[1] : "PRIVATE KEY";
+  const body = (m ? m[2] : t).replace(/[^A-Za-z0-9+/=]/g, "");
+  if (!body) return "";
+  return `-----BEGIN ${label}-----\n${body.match(/.{1,64}/g).join("\n")}\n-----END ${label}-----\n`;
+}
 
 function signJwt(header, payload, key, alg) {
   const h = b64url(JSON.stringify(header));

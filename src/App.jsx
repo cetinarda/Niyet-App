@@ -50,6 +50,9 @@ const SOULID_PREMIUM_GATE = false;
 // yapılan her şey bir ÖNCEKİ güne yazılıyor, 03:00'te de kullanıcı hiçbir şey
 // yapmadan gün değişip bağlantı sıfırlanıyordu.
 // Çözüm: gün anahtarı artık YEREL tarihten üretilir (gece yarısı = gün dönümü).
+// Takvime göre N gün önce (aynı saat). `Date.now() - N*86400000` yaz saati
+// değişen günlerde 23/25 saatlik günde yanlış güne düşüp seriyi kırıyordu.
+function _daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d; }
 function sakinDayKey(d = new Date()) {
   const p = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
@@ -662,6 +665,19 @@ const getChakras7 = (lang) => localizeChakras(lang).filter(c => c.level === 1);
 const getChakras22 = (lang) => localizeChakras(lang);
 const CHAKRAS_7 = CHAKRAS_22_TR.filter(c => c.level === 1);
 const LEVEL_LABELS_TR = { 1:"Fiziksel Boyut", 2:"Ruhsal Boyut", 3:"İlahi & Kozmik Boyut" };
+// de/es/pt/fr/ja eskiden İngilizceye düşüyordu (çeviri denetimi, Eyl 2026).
+const LEVEL_LABELS_X = {
+  de:{ 1:"Körperliche Dimension", 2:"Seelische Dimension", 3:"Göttliche & kosmische Dimension" },
+  es:{ 1:"Dimensión física", 2:"Dimensión espiritual", 3:"Dimensión divina y cósmica" },
+  pt:{ 1:"Dimensão física", 2:"Dimensão espiritual", 3:"Dimensão divina e cósmica" },
+  fr:{ 1:"Dimension physique", 2:"Dimension spirituelle", 3:"Dimension divine et cosmique" },
+  ja:{ 1:"身体の次元", 2:"霊的な次元", 3:"神聖・宇宙の次元" },
+};
+const LEVEL_RANGES_X = {
+  de:{ 1:"Chakra 1-7", 2:"Chakra 8-15", 3:"Chakra 16-22" }, es:{ 1:"Chakra 1-7", 2:"Chakra 8-15", 3:"Chakra 16-22" },
+  pt:{ 1:"Chakra 1-7", 2:"Chakra 8-15", 3:"Chakra 16-22" }, fr:{ 1:"Chakra 1-7", 2:"Chakra 8-15", 3:"Chakra 16-22" },
+  ja:{ 1:"チャクラ 1-7", 2:"チャクラ 8-15", 3:"チャクラ 16-22" },
+};
 const LEVEL_LABELS_EN = { 1:"Physical Dimension", 2:"Spiritual Dimension", 3:"Divine & Cosmic Dimension" };
 const LEVEL_RANGES_TR = { 1:"Çakra 1-7", 2:"Çakra 8-15", 3:"Çakra 16-22" };
 const LEVEL_RANGES_EN = { 1:"Chakra 1-7", 2:"Chakra 8-15", 3:"Chakra 16-22" };
@@ -791,7 +807,7 @@ const NEDIR_I18N = {
   yolTitle:{ tr:"Hangi yoldan gidelim?", en:"Which path shall we take?", de:"Welchen Weg nehmen wir?", es:"¿Qué camino tomamos?", pt:"Que caminho seguimos?", fr:"Quel chemin prenons-nous ?", ja:"どちらの道にする？" },
   kesfetT: { tr:"Keşfet", en:"Explore", de:"Entdecken", es:"Explorar", pt:"Explorar", fr:"Explorer", ja:"探索する" },
   kesfetD: { tr:"Burcun, tasarımın, hayvanın, taşın: sana dair işaretler.", en:"Your sign, your design, your animal, your stone: the signs about you.", de:"Dein Zeichen, dein Design, dein Tier, dein Stein: Zeichen über dich.", es:"Tu signo, tu diseño, tu animal, tu piedra: señales sobre ti.", pt:"O teu signo, o teu design, o teu animal, a tua pedra: sinais sobre ti.", fr:"Ton signe, ton design, ton animal, ta pierre : des signes qui te concernent.", ja:"星座、デザイン、動物、石、あなたにまつわるしるし。" },
-  baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conecta", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
+  baglanT: { tr:"Bağlan", en:"Connect", de:"Verbinden", es:"Conectar", pt:"Liga-te", fr:"Se relier", ja:"つながる" },
   baglanD: { tr:"Niyet, nefes, ses: günün küçük sakinlik pratiği.", en:"Intention, breath, sound: your small daily practice of calm.", de:"Absicht, Atem, Klang: deine kleine tägliche Ruhepraxis.", es:"Intención, respiración, sonido: tu pequeña práctica diaria de calma.", pt:"Intenção, respiração, som: a tua pequena prática diária de calma.", fr:"Intention, souffle, son : ta petite pratique quotidienne de calme.", ja:"意図、呼吸、音、毎日の小さな穏やかさの習慣。" },
   yolSkip: { tr:"Şimdilik geç", en:"Skip for now", de:"Später", es:"Ahora no", pt:"Agora não", fr:"Plus tard", ja:"あとで" },
   birlesir:{ tr:"iki yol ileride birleşir", en:"the two paths merge ahead", de:"die zwei Wege vereinen sich", es:"los dos caminos se unen", pt:"os dois caminhos unem-se", fr:"les deux chemins se rejoignent", ja:"二つの道はやがて交わる" },
@@ -843,6 +859,47 @@ const NOTIF_SET_TXT = {
                    n:{ tr:"uygulamayı 10 gün açmazsan", en:"if you don't open the app for 10 days", de:"wenn du die App 10 Tage nicht öffnest", es:"si no abres la app en 10 días", pt:"se não abrires a app durante 10 dias", fr:"si tu n'ouvres pas l'app pendant 10 jours", ja:"10日間アプリを開かなかったとき" } },
   },
 };
+
+// Satın alma ekranı: DÜRÜST özellik listesi (Eyl 2026 taraması). Eski
+// `paid_app_features` nefes, doğum haritası, Gökyüzü Raporu gibi ZATEN
+// ÜCRETSİZ olan şeyleri premium diye sayıyordu. Burada yalnızca gerçekten
+// kilitli olanlar "premium" altında; ücretsiz kalanlar tek satırda. Kodda bir
+// kilit değişirse (AILESI_FREE_OPENS, _aiDailyState lim, isPremium kapıları)
+// bu listeyi de değiştir.
+const PREMIUM_LIST_TXT = {
+  premTitle: { tr:"Premium ile", en:"With Premium", de:"Mit Premium", es:"Con Premium", pt:"Com Premium", fr:"Avec Premium", ja:"プレミアムで" },
+  prem: {
+    tr:["2. ve 3. seviyedeki 15 çakra","Üç kartlık tarot açılımı ve birleşik yorum","Haftalık kişisel rapor","Sakin Ailesi uygulamalarına sınırsız giriş (ücretsizde günde 3)","Fotoğrafla taş ve bitki tanıma","Günde 40 yapay zekâ yanıtı (ücretsizde 10)"],
+    en:["15 chakras on levels 2 and 3","Three-card tarot spread with a combined reading","Weekly personal report","Unlimited access to the Sakin Family apps (3 a day on free)","Identify stones and plants by photo","40 AI answers a day (10 on free)"],
+    de:["15 Chakren der Stufen 2 und 3","Tarot-Legung mit drei Karten und gemeinsamer Deutung","Wöchentlicher persönlicher Bericht","Unbegrenzter Zugang zu den Apps der Sakin-Familie (kostenlos 3 pro Tag)","Steine und Pflanzen per Foto erkennen","40 KI-Antworten pro Tag (kostenlos 10)"],
+    es:["15 chakras de los niveles 2 y 3","Tirada de tarot de tres cartas con lectura conjunta","Informe personal semanal","Acceso ilimitado a las apps de la Familia Sakin (3 al día en la versión gratuita)","Identificar piedras y plantas con una foto","40 respuestas de IA al día (10 en la versión gratuita)"],
+    pt:["15 chakras dos níveis 2 e 3","Tiragem de tarot de três cartas com leitura conjunta","Relatório pessoal semanal","Acesso ilimitado às apps da Família Sakin (3 por dia na versão gratuita)","Identificar pedras e plantas por fotografia","40 respostas de IA por dia (10 na versão gratuita)"],
+    fr:["15 chakras des niveaux 2 et 3","Tirage de tarot en trois cartes avec lecture d'ensemble","Rapport personnel hebdomadaire","Accès illimité aux apps de la Famille Sakin (3 par jour en gratuit)","Identifier pierres et plantes en photo","40 réponses IA par jour (10 en gratuit)"],
+    ja:["レベル2・3の15のチャクラ","3枚引きのタロットと総合リーディング","毎週のパーソナルレポート","Sakinファミリーのアプリを無制限に(無料は1日3回)","写真で石と植物を見分ける","AIの回答が1日40回(無料は10回)"],
+  },
+  freeTitle: { tr:"Herkese ücretsiz", en:"Free for everyone", de:"Für alle kostenlos", es:"Gratis para todos", pt:"Grátis para todos", fr:"Gratuit pour tous", ja:"誰でも無料" },
+  free: {
+    tr:"Nefes, ses frekansları, 7 temel çakra, günlük adımlar, Bugün ekranı, Gökyüzü Raporu, doğum haritası, İçsel Ayna, Çember ve Niyet Mektubu.",
+    en:"Breathing, sound frequencies, the 7 core chakras, daily steps, the Today screen, the Sky Report, your birth chart, the Inner Mirror, the Circle and the Intention Letter.",
+    de:"Atmung, Klangfrequenzen, die 7 Hauptchakren, tägliche Schritte, der Heute-Bildschirm, der Himmelsbericht, dein Geburtshoroskop, der Innere Spiegel, der Kreis und der Absichtsbrief.",
+    es:"Respiración, frecuencias sonoras, los 7 chakras principales, los pasos diarios, la pantalla Hoy, el Informe del Cielo, tu carta natal, el Espejo Interior, el Círculo y la Carta de Intención.",
+    pt:"Respiração, frequências sonoras, os 7 chakras principais, os passos diários, o ecrã Hoje, o Relatório do Céu, o teu mapa natal, o Espelho Interior, o Círculo e a Carta de Intenção.",
+    fr:"La respiration, les fréquences sonores, les 7 chakras principaux, les étapes du jour, l'écran Aujourd'hui, le Rapport du ciel, ton thème natal, le Miroir intérieur, le Cercle et la Lettre d'intention.",
+    ja:"呼吸、音の周波数、7つの基本チャクラ、毎日のステップ、「今日」画面、空のレポート、出生図、内なる鏡、サークル、意図の手紙。",
+  },
+};
+function premiumFeatureList(lang) {
+  const L = PREMIUM_LIST_TXT;
+  const head = { fontSize:10.5, letterSpacing:2.5, textTransform:"uppercase", fontFamily:"'Jost',sans-serif", color:"#b8a4d8", margin:"4px 0 6px" };
+  return (
+    <>
+      <div style={head}>{pickLang(L.premTitle, lang)}</div>
+      <ul>{pickLang(L.prem, lang).map(f => (<li key={f}>{f}</li>))}</ul>
+      <div style={{ ...head, color:"#8e8e99", marginTop:12 }}>{pickLang(L.freeTitle, lang)}</div>
+      <div style={{ fontSize:13, color:"#a8a8b4", lineHeight:1.6 }}>{pickLang(L.free, lang)}</div>
+    </>
+  );
+}
 
 // BEN > BAĞLANMA PROFİLİ kutusu (kullanıcı isteği, Eyl 2026). Sonuç SoulID'nin
 // bağlanma testinden gelir (aynı origin localStorage: soulprofile.attachment.result,
@@ -921,7 +978,7 @@ const LETTER_TXT = {
   opening: { tr:"Açılıyor", en:"Opening", de:"Wird geöffnet", es:"Abriendo", pt:"A abrir", fr:"Ouverture", ja:"ひらいています" },
   hint2:   { tr:"Olmasını istediğini, olmuş gibi şimdiki zamanda yazabilirsin.", en:"You can write what you wish for as if it has already happened, in the present tense.", de:"Du kannst das Gewünschte so schreiben, als wäre es schon geschehen, in der Gegenwart.", es:"Puedes escribir lo que deseas como si ya hubiera ocurrido, en presente.", pt:"Podes escrever o que desejas como se já tivesse acontecido, no presente.", fr:"Tu peux écrire ce que tu souhaites comme si c'était déjà arrivé, au présent.", ja:"願うことを、すでに叶ったかのように現在形で書いてもかまいません。" },
   privacy: { tr:"Mektubun yalnızca bu cihazda saklanır, kimse okuyamaz.", en:"Your letter is stored only on this device. No one else can read it.", de:"Dein Brief wird nur auf diesem Gerät gespeichert. Niemand sonst kann ihn lesen.", es:"Tu carta se guarda solo en este dispositivo. Nadie más puede leerla.", pt:"A tua carta fica guardada só neste dispositivo. Mais ninguém a pode ler.", fr:"Ta lettre est conservée uniquement sur cet appareil. Personne d'autre ne peut la lire.", ja:"手紙はこの端末にだけ保存され、ほかの誰にも読まれません。" },
-  ph:      { tr:"Sevgili ben, bu mektubu açtığında...", en:"Dear me, when you open this letter...", de:"Liebes Ich, wenn du diesen Brief öffnest...", es:"Querida yo, cuando abras esta carta...", pt:"Querido eu, quando abrires esta carta...", fr:"Cher moi, quand tu ouvriras cette lettre...", ja:"親愛なる私へ。この手紙をひらくとき…" },
+  ph:      { tr:"Sevgili ben, bu mektubu açtığında...", en:"Dear me, when you open this letter...", de:"Liebes Ich, wenn du diesen Brief öffnest...", es:"Hola, yo del futuro: cuando abras esta carta...", pt:"Olá, eu do futuro: quando abrires esta carta...", fr:"Bonjour à moi du futur : quand tu ouvriras cette lettre...", ja:"親愛なる私へ。この手紙をひらくとき…" },
   seal:    { tr:"Mühürle", en:"Seal it", de:"Versiegeln", es:"Sellar", pt:"Selar", fr:"Sceller", ja:"封をする" },
   cancel:  { tr:"Vazgeç", en:"Cancel", de:"Abbrechen", es:"Cancelar", pt:"Cancelar", fr:"Annuler", ja:"やめる" },
   sealNote:{ tr:"Mühürledikten sonra 21 gün boyunca açılamaz ve değiştirilemez.", en:"Once sealed, it can't be opened or changed for 21 days.", de:"Einmal versiegelt, kann er 21 Tage lang weder geöffnet noch geändert werden.", es:"Una vez sellada, no se puede abrir ni cambiar durante 21 días.", pt:"Depois de selada, não pode ser aberta nem alterada durante 21 dias.", fr:"Une fois scellée, elle ne peut être ni ouverte ni modifiée pendant 21 jours.", ja:"封をすると、21日間はひらくことも変えることもできません。" },
@@ -937,7 +994,7 @@ const LETTER_TXT = {
   choices: { oldu:  { tr:"Gerçekleşti", en:"It came true", de:"Erfüllt", es:"Se cumplió", pt:"Realizou-se", fr:"Réalisée", ja:"叶った" },
              yolda: { tr:"Yolda", en:"On its way", de:"Unterwegs", es:"En camino", pt:"A caminho", fr:"En chemin", ja:"まだ途中" },
              donustu:{ tr:"Başka bir şeye dönüştü", en:"It became something else", de:"Es wurde zu etwas anderem", es:"Se transformó en otra cosa", pt:"Transformou-se noutra coisa", fr:"Elle est devenue autre chose", ja:"別のものに変わった" } },
-  after:   { tr:"Kaydettin. Yeni bir niyete hazır olduğunda buradayız.", en:"Saved. We're here when you're ready for a new intention.", de:"Gespeichert. Wir sind da, wenn du bereit für eine neue Absicht bist.", es:"Guardado. Aquí estaremos cuando estés lista para una nueva intención.", pt:"Guardado. Estamos aqui quando estiveres pronto para uma nova intenção.", fr:"Enregistré. Nous sommes là quand tu seras prêt pour une nouvelle intention.", ja:"記録しました。新しい意図の準備ができたら、いつでもどうぞ。" },
+  after:   { tr:"Kaydettin. Yeni bir niyete hazır olduğunda buradayız.", en:"Saved. We're here when you're ready for a new intention.", de:"Gespeichert. Wir sind da, wenn du bereit für eine neue Absicht bist.", es:"Guardado. Aquí estaremos cuando quieras escribir una nueva intención.", pt:"Guardado. Estamos aqui quando quiseres uma nova intenção.", fr:"Enregistré. Nous sommes là quand tu voudras une nouvelle intention.", ja:"記録しました。新しい意図の準備ができたら、いつでもどうぞ。" },
   newLetter:{ tr:"Yeni mektup yaz", en:"Write a new letter", de:"Neuen Brief schreiben", es:"Escribir una nueva carta", pt:"Escrever uma nova carta", fr:"Écrire une nouvelle lettre", ja:"新しい手紙を書く" },
   archive: { tr:"Önceki mektupların", en:"Your earlier letters", de:"Deine früheren Briefe", es:"Tus cartas anteriores", pt:"As tuas cartas anteriores", fr:"Tes lettres précédentes", ja:"これまでの手紙" },
   notif:   { tr:"21 gün önce kendine bir niyet mektubu yazdın. Mektubun artık açılabilir.", en:"21 days ago you wrote yourself an intention letter. It's ready to open now.", de:"Vor 21 Tagen hast du dir einen Absichtsbrief geschrieben. Jetzt kannst du ihn öffnen.", es:"Hace 21 días te escribiste una carta de intención. Ya puedes abrirla.", pt:"Há 21 dias escreveste-te uma carta de intenção. Já a podes abrir.", fr:"Il y a 21 jours, tu t'es écrit une lettre d'intention. Tu peux l'ouvrir maintenant.", ja:"21日前、あなたは自分に意図の手紙を書きました。いま、ひらくことができます。" },
@@ -945,6 +1002,14 @@ const LETTER_TXT = {
 const LETTER_LOCALE = { tr:"tr-TR", en:"en-US", de:"de-DE", es:"es-ES", pt:"pt-PT", fr:"fr-FR", ja:"ja-JP" };
 function readLetterJson(k, fb) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? fb : v; } catch (_) { return fb; } }
 // Açılış bildirimi: gece yarısı yazılan mektup gece yarısı çalmasın, 10:00-21:00 arasına çekilir.
+// Mektup mühürlendiğinde bildirim izni YOKSA açılış bildirimi hiç kurulmuyordu;
+// izin sonradan verilince burası çağrılır ve mühürlü mektubun bildirimi kurulur.
+function rescheduleLetterNotif(lang) {
+  try {
+    const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null");
+    if (l && l.opensAt > Date.now() && !l.openedAt) scheduleLetterNotif(l.opensAt, lang);
+  } catch (_) {}
+}
 async function scheduleLetterNotif(opensAt, lang) {
   if (!isNative) return;
   try {
@@ -1265,7 +1330,7 @@ const CEMBER_TXT = {
   you:     { tr:"sen", en:"you", de:"du", es:"tú", pt:"tu", fr:"toi", ja:"あなた" },
   locked:  { tr:"Bugünkü bağlantını tamamla, Çember açılsın.", en:"Complete today's connection to open the Circle.", de:"Schließe deine heutige Verbindung ab, dann öffnet sich der Kreis.", es:"Completa tu conexión de hoy y el Círculo se abrirá.", pt:"Completa a tua ligação de hoje e o Círculo abre-se.", fr:"Termine ta connexion du jour pour ouvrir le Cercle.", ja:"今日のつながりを完了するとサークルが開きます。" },
   lockedSub:{ tr:"Çember, günün pratiğini tamamlayanların buluştuğu sakin bir oda.", en:"The Circle is a calm room for those who completed the day's practice.", de:"Der Kreis ist ein ruhiger Raum für alle, die die Übung des Tages abgeschlossen haben.", es:"El Círculo es una sala tranquila para quienes completaron la práctica del día.", pt:"O Círculo é uma sala calma para quem concluiu a prática do dia.", fr:"Le Cercle est un salon paisible pour celles et ceux qui ont terminé la pratique du jour.", ja:"サークルは、その日のプラクティスを終えた人が集まる静かな部屋です。" },
-  goBaglan:{ tr:"Bağlan'a git", en:"Go to Connect", de:"Zu Verbinden", es:"Ir a Conecta", pt:"Ir para Liga-te", fr:"Aller à Se relier", ja:"「つながる」へ" },
+  goBaglan:{ tr:"Bağlan'a git", en:"Go to Connect", de:"Zu „Verbinden“ gehen", es:"Ir a Conectar", pt:"Ir para Liga-te", fr:"Aller à Se relier", ja:"「つながる」へ" },
   closed:  { tr:"Çember şu an kapalı. Birazdan tekrar dene.", en:"The Circle is closed right now. Try again soon.", de:"Der Kreis ist gerade geschlossen. Versuch es bald wieder.", es:"El Círculo está cerrado ahora. Inténtalo pronto.", pt:"O Círculo está fechado agora. Tenta daqui a pouco.", fr:"Le Cercle est fermé pour l'instant. Réessaie bientôt.", ja:"サークルは今閉じています。少ししてからまた試してね。" },
   rulesHead:{ tr:"Çember'e hoş geldin", en:"Welcome to the Circle", de:"Willkommen im Kreis", es:"Bienvenido al Círculo", pt:"Bem-vindo ao Círculo", fr:"Bienvenue dans le Cercle", ja:"サークルへようこそ" },
   rules: {
@@ -1274,11 +1339,11 @@ const CEMBER_TXT = {
     de:["Das ist der ruhige Raum derer, die ihre Verbindung abgeschlossen haben.","Sei freundlich; verurteile und verletze niemanden.","Teile keine Links, Telefonnummern oder Benutzernamen.","Tippe auf eine störende Nachricht, um sie zu melden oder zu blockieren.","Dein Spitzname ist automatisch und anonym. Nachrichten verschwinden nach 24 Stunden."],
     es:["Esta es la sala tranquila de quienes completaron su conexión.","Sé amable; no juzgues ni hieras a nadie.","No compartas enlaces, teléfonos ni nombres de usuario.","Toca un mensaje que te moleste para denunciarlo o bloquearlo.","Tu apodo es automático y anónimo. Los mensajes desaparecen a las 24 horas."],
     pt:["Esta é a sala calma de quem concluiu a sua ligação.","Sê gentil; não julgues nem magoes ninguém.","Não partilhes links, números de telefone nem nomes de utilizador.","Toca numa mensagem que te incomode para a denunciar ou bloquear.","A tua alcunha é automática e anónima. As mensagens desaparecem após 24 horas."],
-    fr:["C'est le salon paisible de celles et ceux qui ont terminé leur connexion.","Sois bienveillant ; ne juge et ne blesse personne.","Ne partage ni liens, ni numéros de téléphone, ni pseudos.","Touche un message qui te dérange pour le signaler ou le bloquer.","Ton pseudo est automatique et anonyme. Les messages disparaissent après 24 heures."],
+    fr:["C'est le salon paisible de celles et ceux qui ont terminé leur connexion.","Fais preuve de bienveillance ; ne juge et ne blesse personne.","Ne partage ni liens, ni numéros de téléphone, ni pseudos.","Touche un message qui te dérange pour le signaler ou le bloquer.","Ton pseudo est automatique et anonyme. Les messages disparaissent après 24 heures."],
     ja:["ここは、つながりを完了した人の静かな部屋です。","やさしく。誰も裁かず、傷つけないで。","リンク、電話番号、アカウント名は共有しないで。","気になるメッセージはタップして報告・ブロックできます。","ニックネームは自動・匿名。メッセージは24時間で消えます。"],
   },
   accept:  { tr:"Kabul ediyorum", en:"I agree", de:"Einverstanden", es:"Acepto", pt:"Aceito", fr:"J'accepte", ja:"同意する" },
-  report:  { tr:"Bildir", en:"Report", de:"Melden", es:"Denunciar", pt:"Denunciar", fr:"Signaler", ja:"報告" },
+  report:  { tr:"Bildir", en:"Report", de:"Melden", es:"Reportar", pt:"Reportar", fr:"Signaler", ja:"報告" },
   block:   { tr:"Engelle", en:"Block", de:"Blockieren", es:"Bloquear", pt:"Bloquear", fr:"Bloquer", ja:"ブロック" },
   cancel:  { tr:"Vazgeç", en:"Cancel", de:"Abbrechen", es:"Cancelar", pt:"Cancelar", fr:"Annuler", ja:"やめる" },
   reported:{ tr:"Bildirildi, teşekkürler.", en:"Reported, thank you.", de:"Gemeldet, danke.", es:"Denunciado, gracias.", pt:"Denunciado, obrigado.", fr:"Signalé, merci.", ja:"報告しました。ありがとう。" },
@@ -1308,7 +1373,12 @@ const CEMBER_TXT = {
 };
 // Takma ad rengi = cihazın element dilimi (sunucu `el`, 0-7).
 const CEMBER_EL_COLORS = ["#f0a070", "#7ec8e8", "#b8c890", "#c8d8f0", "#d8cff5", "#f0d080", "#e8c07a", "#a8e0d0"];
-const CEMBER_BLOCK_KEY = "sakin_cember_blocked";
+const CEMBER_BLOCK_KEY = "sakin_cember_blocked";      // ESKİ: takma ad listesi (yalnızca etiketsiz mesajlarda)
+// Engelleme ve "kendi mesajım" artık takma ada göre DEĞİL (takma ad taklit
+// edilebiliyordu, hata avı Eyl 2026): engel = sunucunun yazar etiketi (`a`),
+// kendi mesajın = gönderince sunucunun döndürdüğü mesaj id'leri.
+const CEMBER_BLOCK_TAG_KEY = "sakin_cember_blocked_a";
+const CEMBER_MINE_KEY = "sakin_cember_mine";
 
 // Supabase istemcisi + ayarlar: oturum başına bir kez. Dinamik import: kütüphane
 // yalnızca Çember/sayaç gerektiğinde yüklenir, açılış paketini büyütmez.
@@ -1320,7 +1390,8 @@ function getCember() {
     try { id = getAnonId(); } catch (_) {}
     const r = await fetch(API_BASE + "/.netlify/functions/chat-config" + (id ? "?id=" + encodeURIComponent(id) : ""));
     const cfg = await r.json();
-    if (!cfg || !cfg.ok) return { ok: false, id };
+    // Geçici "kapalı" cevabı oturum boyunca önbellekte kalmasın: sonraki açılış yeniden sorsun.
+    if (!cfg || !cfg.ok) { __cemberPromise = null; return { ok: false, id }; }
     const { createClient } = await import("@supabase/supabase-js");
     const sb = createClient(cfg.url, cfg.anon, { auth: { persistSession: false, autoRefreshToken: false }, realtime: { params: { eventsPerSecond: 5 } } });
     return { ok: true, id, cfg, sb };
@@ -1362,10 +1433,14 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
   const [menuFor, setMenuFor] = useState(null);
   const [crisis, setCrisis] = useState(false);
   const [rulesOk, setRulesOk] = useState(() => { try { return localStorage.getItem("sakin_cember_rules") === "1"; } catch (_) { return false; } });
-  const [blocked, setBlocked] = useState(() => { try { return JSON.parse(localStorage.getItem(CEMBER_BLOCK_KEY) || "[]"); } catch (_) { return []; } });
+  const [blocked] = useState(() => { try { return JSON.parse(localStorage.getItem(CEMBER_BLOCK_KEY) || "[]"); } catch (_) { return []; } });
+  const [blockedTags, setBlockedTags] = useState(() => { try { return JSON.parse(localStorage.getItem(CEMBER_BLOCK_TAG_KEY) || "[]"); } catch (_) { return []; } });
+  const [mineIds, setMineIds] = useState(() => { try { return JSON.parse(localStorage.getItem(CEMBER_MINE_KEY) || "[]"); } catch (_) { return []; } });
   const listRef = useRef(null);
   const chanRef = useRef(null);
-  const myNick = conf && conf.cfg.nick ? conf.cfg.nick[room] : null;
+  // Hızlı oda değişiminde geç gelen eski oda geçmişi yeni odanın listesini ezmesin.
+  const roomRef = useRef(room);
+  roomRef.current = room;
 
   useEffect(() => { try { track("cember", { a: "open" }); } catch (_) {} }, []);
   useEffect(() => { try { localStorage.setItem("sakin_cember_room", room); } catch (_) {} }, [room]);
@@ -1381,6 +1456,7 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
     try {
       const r = await fetch(API_BASE + "/.netlify/functions/chat-history?room=" + rm);
       const j = await r.json();
+      if (rm !== roomRef.current) return;
       if (j && j.ok) setMsgs(j.msgs || []);
     } catch (_) {}
   };
@@ -1437,6 +1513,7 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
       if (j && j.ok && j.msg) {
         setText("");
         setMsgs((prev) => prev.some((m) => m.id === j.msg.id) ? prev : [...prev, { ...j.msg, mine: true }]);
+        setMineIds((prev) => { const next = [...prev, j.msg.id].slice(-200); try { localStorage.setItem(CEMBER_MINE_KEY, JSON.stringify(next)); } catch (_) {} return next; });
         setWaitUntil(Date.now() + (conf.cfg.slowMs || 15000));
         try { haptic(); } catch (_) {}
         try { track("cember", { a: "send" }); } catch (_) {}
@@ -1462,9 +1539,10 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
   };
   const block = (m) => {
     setMenuFor(null);
-    const next = [...new Set([...blocked, m.nick])];
-    setBlocked(next);
-    try { localStorage.setItem(CEMBER_BLOCK_KEY, JSON.stringify(next)); } catch (_) {}
+    if (!m.a) return;
+    const next = [...new Set([...blockedTags, m.a])].slice(-300);
+    setBlockedTags(next);
+    try { localStorage.setItem(CEMBER_BLOCK_TAG_KEY, JSON.stringify(next)); } catch (_) {}
     setNotice(L(CEMBER_TXT.blocked));
     try { track("cember", { a: "block" }); } catch (_) {}
   };
@@ -1478,7 +1556,7 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
   );
   const fmtT = (t) => { try { return new Date(t).toLocaleTimeString(localeFromLang(lang), { hour:"2-digit", minute:"2-digit" }); } catch (_) { return ""; } };
   const secsLeft = waitUntil ? Math.max(0, Math.ceil((waitUntil - nowTick) / 1000)) : 0;
-  const visible = msgs.filter((m) => !blocked.includes(m.nick));
+  const visible = msgs.filter((m) => m.a ? !blockedTags.includes(m.a) : !blocked.includes(m.nick));
 
   const shell = (children) => (
     // En üst katman (web üst menüsü ve "Ne yeni" bandı dahil her şeyin üstünde) +
@@ -1549,7 +1627,7 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
         <div style={{ margin:"auto",textAlign:"center",fontFamily:SERIF,fontSize:19,lineHeight:1.4,color:"#b8aed0",maxWidth:260 }}>{L(CEMBER_TXT.empty)}</div>
       )}
       {visible.map((m) => {
-        const mine = m.mine || (myNick && m.nick === myNick);
+        const mine = m.mine || mineIds.includes(m.id);
         const col = CEMBER_EL_COLORS[(m.el || 0) % CEMBER_EL_COLORS.length];
         return (
           <div key={m.id} style={{ alignSelf: mine ? "flex-end" : "flex-start",maxWidth:"86%" }}>
@@ -1650,7 +1728,7 @@ const BUGUN_HINT_TXT = {
 // BUGÜN KAPISI: doğum bilgisi yokken Bugün'e dokununca çıkan kart + bilgi
 // girilince oynayan "hazırlanıyor" geçişi.
 const BUGUN_GATE_TXT = {
-  title: { tr:"Bugün sana göre hazırlanır", en:"Today is shaped around you", de:"Heute richtet sich nach dir", es:"Hoy se prepara a tu medida", pt:"O Hoje é preparado à tua medida", fr:"Aujourd'hui se prépare pour toi", ja:"「今日」はあなたに合わせて整います" },
+  title: { tr:"Bugün sana göre hazırlanır", en:"Today is shaped around you", de:"Dein Heute wird auf dich abgestimmt", es:"Hoy se prepara a tu medida", pt:"O Hoje é preparado à tua medida", fr:"Aujourd'hui se prépare pour toi", ja:"「今日」はあなたに合わせて整います" },
   body:  { tr:"Günün sayısı, yorumu ve gökyüzüyle bağın doğum bilgilerinden okunur. Girdiğinde Bugün ekranın sana özel hazırlanır.",
            en:"Your number of the day, your reading and your link to the sky are drawn from your birth details. Add them and your Today screen is prepared just for you.",
            de:"Deine Tageszahl, deine Deutung und deine Verbindung zum Himmel ergeben sich aus deinen Geburtsdaten. Trag sie ein und dein Heute wird für dich vorbereitet.",
@@ -1762,7 +1840,7 @@ const ORKESTRA_TXT = {
 // dokunmadan (NEXT_CHAKRA_TXT ile aynı desen).
 // "Ben" ekranındaki Human Design özetinin etiketleri. Tip/otorite/profil
 // ADLARI Tasarım kaynağından geliyor (tr + en); Sakin'in diğer beş dili
-// İngilizceye düşer, hd-transit.js ile aynı kural.
+// İngilizceye düşer.
 const HD_TXT = {
   strategy:  { tr:"Strateji", en:"Strategy", de:"Strategie", es:"Estrategia", pt:"Estratégia", fr:"Stratégie", ja:"戦略" },
   authority: { tr:"Otorite", en:"Authority", de:"Autorität", es:"Autoridad", pt:"Autoridade", fr:"Autorité", ja:"権威" },
@@ -1894,7 +1972,7 @@ const TODAY_TXT = {
   dikkat:   { tr:"Nelere dikkat", en:"What to watch", de:"Worauf achten", es:"A qué prestar atención", pt:"A que prestar atenção", fr:"À quoi faire attention", ja:"気をつけること" },
   gunes:    { tr:"Güneş", en:"Sun", de:"Sonne", es:"Sol", pt:"Sol", fr:"Soleil", ja:"太陽" },
   ay:       { tr:"Ay", en:"Moon", de:"Mond", es:"Luna", pt:"Lua", fr:"Lune", ja:"月" },
-  kapi:     { tr:"Kapı", en:"Gate", de:"Tor", es:"Puerta", pt:"Portão", fr:"Porte", ja:"ゲート" },
+  kapi:     { tr:"Kapı", en:"Gate", de:"Tor", es:"Puerta", pt:"Porta", fr:"Porte", ja:"ゲート" },
   // soulid/soulidGo KALDIRILDI: Bugün'deki Ruh Profili davet kartı, Keşfet
   // panelindeki aynısıyla ikilik yaratıyordu (kullanıcı isteği, bkz. görev #52).
 };
@@ -2305,7 +2383,7 @@ const HORO_TXT = {
 // ay büyüyor mu küçülüyor mu. AI yok, doğum bilgisi GEREKMEZ. Ay evresi adı ve
 // "Geliş sebebin" kutusu BİLEREK yok (kullanıcı: "burada gerek yok").
 const COMPASS_TXT = {
-  title:   { tr:"Günün Pusulası", en:"Today's Compass", de:"Kompass des Tages", es:"Brújula del día", pt:"Bússola do dia", fr:"Boussole du jour", ja:"今日のコンパス" },
+  title:   { tr:"Günün Pusulası", en:"Today's Compass", de:"Kompass des Tages", es:"Brújula del día", pt:"Bússola do dia", fr:"Boussole du jour", ja:"今日の羅針盤" },
   look:    { tr:"Bakman gereken yer", en:"Where to look", de:"Wohin du schauen solltest", es:"Hacia dónde mirar", pt:"Para onde olhar", fr:"Où regarder", ja:"目を向ける場所" },
   week:    { tr:"Haftaya bakış", en:"The week ahead", de:"Blick auf die Woche", es:"La semana por delante", pt:"A semana que vem", fr:"La semaine à venir", ja:"今週の見通し" },
   skyQ:    { tr:"Yıldızlar bugün sana ne söylüyor?", en:"What are the stars telling you today?", de:"Was sagen dir die Sterne heute?", es:"¿Qué te dicen hoy las estrellas?", pt:"O que te dizem hoje as estrelas?", fr:"Que te disent les étoiles aujourd'hui ?", ja:"今日、星はあなたに何を語る？" },
@@ -2384,11 +2462,11 @@ const QUOTE_SOURCE_I18N = {
 };
 const quoteSource = (s, lang) => (QUOTE_SOURCE_I18N[s] ? pickLang(QUOTE_SOURCE_I18N[s], lang) : s);
 // ŞABLON YANSIMA (AI yoksa: onay verilmemiş, günlük hak dolmuş, ağ yok).
-// Güneş kapısı adları yalnızca tr/en (hd-transit); diğer dillerde kapı adı
-// cümleye girmez, dil karışmasın. Ay evresi adı moonPhase() ile 7 dilde.
+// Güneş kapısı adları artık 7 dilde (hd-gates.json, Eyl 2026). Ay evresi adı
+// moonPhase() ile 7 dilde.
 function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
   const q = (s) => (lang === "fr" ? `« ${s} »` : lang === "de" ? `„${s}“` : lang === "ja" ? `「${s}」` : `"${s}"`);
-  const g = (lang === "tr" || lang === "en") && gate ? gate : null;
+  const g = gate || null;
   const T = {
     tr: [g ? `Dün gökyüzü ${moon} evresindeydi ve Güneş ${q(g)} kapısından geçiyordu.` : `Dün gökyüzü ${moon} evresindeydi.`,
          niyet ? `${q(niyet)} niyetin bu havayla birlikte yol alıyor.` : hasEvening ? `Akşam kapanışında yazdıkların bu havanın izini taşıyor.` : "",
@@ -2396,19 +2474,19 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
     en: [g ? `Yesterday the sky was in its ${moon} phase and the Sun moved through the ${q(g)} gate.` : `Yesterday the sky was in its ${moon} phase.`,
          niyet ? `Your intention ${q(niyet)} travels with that mood.` : hasEvening ? `What you wrote at evening close carries the trace of that mood.` : "",
          `Today's saying points you a way: no rush, one step is enough.`],
-    de: [`Gestern stand der Himmel in der Phase ${moon}.`,
+    de: [g ? `Gestern stand der Himmel in der Phase ${moon}, und die Sonne ging durch das Tor ${q(g)}.` : `Gestern stand der Himmel in der Phase ${moon}.`,
          niyet ? `Deine Absicht ${q(niyet)} geht mit dieser Stimmung.` : hasEvening ? `Was du zum Abendabschluss geschrieben hast, trägt die Spur dieser Stimmung.` : "",
          `Der Spruch des Tages zeigt dir eine Richtung: keine Eile, ein Schritt genügt.`],
-    es: [`Ayer el cielo estaba en fase de ${moon}.`,
+    es: [g ? `Ayer el cielo estaba en fase de ${moon} y el Sol pasaba por la puerta ${q(g)}.` : `Ayer el cielo estaba en fase de ${moon}.`,
          niyet ? `Tu intención ${q(niyet)} avanza con ese clima.` : hasEvening ? `Lo que escribiste al cerrar el día lleva la huella de ese clima.` : "",
          `La frase del día te marca un rumbo: sin prisa, basta un paso.`],
-    pt: [`Ontem o céu estava na fase ${moon}.`,
+    pt: [g ? `Ontem o céu estava na fase ${moon} e o Sol passava pela porta ${q(g)}.` : `Ontem o céu estava na fase ${moon}.`,
          niyet ? `A tua intenção ${q(niyet)} segue com esse clima.` : hasEvening ? `O que escreveste ao fechar o dia leva o rasto desse clima.` : "",
          `A frase do dia aponta-te um rumo: sem pressa, basta um passo.`],
-    fr: [`Hier, le ciel était en phase ${moon}.`,
+    fr: [g ? `Hier, le ciel était en phase ${moon} et le Soleil traversait la porte ${q(g)}.` : `Hier, le ciel était en phase ${moon}.`,
          niyet ? `Ton intention ${q(niyet)} avance avec cette humeur.` : hasEvening ? `Ce que tu as écrit en clôture du soir porte la trace de cette humeur.` : "",
          `La parole du jour t'indique une direction : sans hâte, un pas suffit.`],
-    ja: [`昨日、空は${moon}だった。`,
+    ja: [g ? `昨日、空は${moon}で、太陽は${q(g)}のゲートを通っていた。` : `昨日、空は${moon}だった。`,
          niyet ? `あなたの意図${q(niyet)}はその空気と共に進んでいる。` : hasEvening ? `夜の締めくくりに書いたことには、その空気の跡が残っている。` : "",
          `今日の言葉が方向を示している。急がず、一歩で十分。`],
   };
@@ -2985,8 +3063,8 @@ function AppStoreBadge({ lang = "tr", size = "md" }) {
         <path d="M9 12l3 3 3-3" />
       </svg>
       <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
-        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{lang==="tr" ? "App Store'dan" : "Download on the"}</span>
-        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{lang==="tr" ? "İndir" : "App Store"}</span>
+        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{pickLang({ tr:"App Store'dan", en:"Download on the", de:"Laden im", es:"Descárgalo en el", pt:"Descarregar na", fr:"Télécharger dans l'", ja:"App Storeから" }, lang)}</span>
+        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{pickLang({ tr:"İndir", en:"App Store", de:"App Store", es:"App Store", pt:"App Store", fr:"App Store", ja:"ダウンロード" }, lang)}</span>
       </div>
     </a>
   );
@@ -3012,8 +3090,8 @@ function PlayStoreBadge({ lang = "tr", size = "md" }) {
         <path d="M4 3.2c0-.5.5-.8 1-.6l14.2 8.1c.5.3.5 1 0 1.3L5 20.4c-.5.3-1 0-1-.6V3.2z" />
       </svg>
       <div style={{ display:"flex",flexDirection:"column",lineHeight:1,alignItems:"flex-start",fontFamily:"-apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif" }}>
-        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{lang==="tr" ? "Google Play'den" : "GET IT ON"}</span>
-        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{lang==="tr" ? "İndir" : "Google Play"}</span>
+        <span style={{ fontSize: isLg?11:9.5,opacity:0.85,letterSpacing:0.3 }}>{pickLang({ tr:"Google Play'den", en:"GET IT ON", de:"JETZT BEI", es:"DISPONIBLE EN", pt:"DISPONÍVEL NO", fr:"DISPONIBLE SUR", ja:"Google Playで" }, lang)}</span>
+        <span style={{ fontSize: isLg?18:14,fontWeight:600,letterSpacing:0.4,marginTop:3 }}>{pickLang({ tr:"İndir", en:"Google Play", de:"Google Play", es:"Google Play", pt:"Google Play", fr:"Google Play", ja:"手に入れよう" }, lang)}</span>
       </div>
     </a>
   );
@@ -3048,6 +3126,79 @@ const BREATH_MODES_CONFIG = {
 
 // Bu modlarda faz içi geri sayım rakamı gösterilir (kullanıcı isteği).
 const BREATH_COUNTDOWN = ["uyku", "merkez", "yenilen"];
+
+// NEFES HALKASI + GERİ SAYIM: MODÜL SEVİYESİ (performans, Eyl 2026). Eskiden
+// yörünge noktası için kökte `cycleT` state'i rAF ile saniyede 20 kez güncelleniyor,
+// seans boyunca 12 bin satırlık uygulamanın TAMAMI saniyede 20 kez yeniden
+// çiziliyordu (pil). Artık nokta DOM'da ref ile oynar (React çizimi yok), geri sayım
+// saniyede 4 kez yalnızca kendini günceller. Kök yalnızca faz değişince çizilir.
+function breathPos(tm, startRef) {
+  const s = startRef.current;
+  return s ? Math.min(1, ((Date.now() - s) % tm.total) / tm.total) : 0;
+}
+function BreathRingSvg({ rgb, size = 205, mode, phase, started, startRef }) {
+  const dotRef = useRef(null);
+  const tm = BREATH_MODES_CONFIG[mode] || BREATH_MODES_CONFIG.standart;
+  const segs = [
+    { key:"inhale", ms: tm.in },
+    { key:"hold",   ms: tm.hold },
+    { key:"exhale", ms: tm.out },
+    { key:"hold2",  ms: tm.hold2 },
+  ].filter(s => s.ms > 0);
+  const R = size/2 - 6, C = size/2, TAU = Math.PI*2;
+  const GAP = 0.035;                       // yaylar arası nefes payı (radyan)
+  const pol = (a, r=R) => [C + r*Math.cos(a - Math.PI/2), C + r*Math.sin(a - Math.PI/2)];
+  let acc = 0;
+  const arcs = segs.map(s => {
+    const frac = s.ms / tm.total;
+    const a0 = acc*TAU + GAP/2, a1 = (acc+frac)*TAU - GAP/2;
+    acc += frac;
+    const [x0,y0] = pol(a0), [x1,y1] = pol(a1);
+    return { ...s, d:`M ${x0} ${y0} A ${R} ${R} 0 ${a1-a0 > Math.PI ? 1 : 0} 1 ${x1} ${y1}` };
+  });
+  useEffect(() => {
+    if (!started) return;
+    let raf;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const el = dotRef.current; if (!el) return;
+      const [x, y] = pol(breathPos(tm, startRef) * TAU);
+      el.setAttribute("cx", x); el.setAttribute("cy", y);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [started, mode, size]);
+  const [dx, dy] = pol(breathPos(tm, startRef) * TAU);
+  return (
+    <svg width={size} height={size} style={{ position:"absolute",inset:0,pointerEvents:"none" }} aria-hidden="true">
+      {arcs.map(a => (
+        <path key={a.key} d={a.d} fill="none" strokeLinecap="round"
+          stroke={`rgba(${rgb},${phase===a.key ? 0.9 : 0.16})`}
+          strokeWidth={phase===a.key ? 3 : 1.5}
+          style={{ transition:"stroke 0.5s ease, stroke-width 0.5s ease" }} />
+      ))}
+      {started && (
+        <circle ref={dotRef} cx={dx} cy={dy} r="5" fill={`rgba(${rgb},0.95)`}
+          style={{ filter:`drop-shadow(0 0 8px rgba(${rgb},0.85))` }} />
+      )}
+    </svg>
+  );
+}
+// Faz içi kalan saniye (yalnızca BREATH_COUNTDOWN modlarında gösterilir).
+function BreathCountdown({ mode, phase, startRef, style }) {
+  const [n, setN] = useState(null);
+  useEffect(() => {
+    const tm = BREATH_MODES_CONFIG[mode] || BREATH_MODES_CONFIG.standart;
+    const off = { inhale:0, hold:tm.in, exhale:tm.in+tm.hold, hold2:tm.in+tm.hold+tm.out }[phase];
+    const len = { inhale:tm.in, hold:tm.hold, exhale:tm.out, hold2:tm.hold2 }[phase];
+    if (off == null || !len) { setN(null); return; }
+    const f = () => { const el = breathPos(tm, startRef) * tm.total - off; setN(Math.max(1, Math.ceil((len - el) / 1000))); };
+    f();
+    const id = setInterval(f, 250);
+    return () => clearInterval(id);
+  }, [mode, phase]);
+  return n == null ? null : <div style={style}>{n}</div>;
+}
 
 // ── MOD KARTLARI: TEK KAYNAK ───────────────────────────────────────────────
 // Kartlar 3 ayrı yerde elle tekrarlanıyordu (ücretsiz / premium-kilitli önizleme /
@@ -4706,6 +4857,31 @@ const PNOTIF_REMIND = {
        "Say 'no' to one thing today. Protect your space.",
        "Give thanks for three things, quietly. The day lightens.",
        "Put the phone an arm away for an hour. Let the moment return."],
+  de: ["Denk daran, Wasser zu trinken. Dein Körper wird es dir danken.",
+       "Schreib jemandem eine Zeile: Ich denk an dich. Mehr nicht.",
+       "Sag heute zu einer Sache Nein. Schütze deinen Raum.",
+       "Danke still für drei Dinge. Der Tag wird leichter.",
+       "Leg das Handy für eine Stunde weg. Lass den Moment zurückkommen."],
+  es: ["No olvides beber agua. Tu cuerpo te lo agradecerá.",
+       "Escríbele una línea a alguien: pienso en ti. Nada más.",
+       "Di que no a una cosa hoy. Protege tu espacio.",
+       "Agradece tres cosas, en silencio. El día se aligera.",
+       "Deja el móvil lejos durante una hora. Deja que vuelva el momento."],
+  pt: ["Não te esqueças de beber água. O teu corpo agradece.",
+       "Escreve uma linha a alguém: estou a pensar em ti. Só isso.",
+       "Diz 'não' a uma coisa hoje. Protege o teu espaço.",
+       "Agradece três coisas, em silêncio. O dia fica mais leve.",
+       "Deixa o telemóvel longe durante uma hora. Deixa o momento voltar."],
+  fr: ["Pense à boire de l'eau. Ton corps te remerciera.",
+       "Écris une ligne à quelqu'un : je pense à toi. C'est tout.",
+       "Dis non à une chose aujourd'hui. Protège ton espace.",
+       "Remercie pour trois choses, en silence. La journée s'allège.",
+       "Pose ton téléphone loin de toi pendant une heure. Laisse l'instant revenir."],
+  ja: ["水を飲むのを忘れずに。からだが喜びます。",
+       "誰かにひとことだけ送ってみて。あなたを思っています、と。",
+       "今日はひとつだけ「いいえ」と言ってみて。自分の場所を守って。",
+       "三つのことに、静かに感謝を。一日が軽くなります。",
+       "一時間だけスマホを遠くに置いて。今この瞬間が戻ってきます。"],
 };
 // EM: yalnızca aktif (Kp 4) ve fırtına (Kp>=5) bantları, 7 dilde.
 const PNOTIF_EM = {
@@ -4740,6 +4916,9 @@ function _isoWeekStamp(d = new Date()) {
 }
 
 // AI ile 7 günlük (kolaylaştırıcı + hatırlatıcı) çift üret. Başarısızsa null.
+// Yerel takvim günü (YYYY-MM-DD) ve iki gün arasındaki fark (yaz saatinden etkilenmez).
+function _ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function _dayDiff(a, b) { const [y1, m1, d1] = a.split("-").map(Number), [y2, m2, d2] = b.split("-").map(Number); return Math.round((Date.UTC(y2, m2 - 1, d2) - Date.UTC(y1, m1 - 1, d1)) / 86400000); }
 async function _genPersonalNotifAI(lang, birthDate) {
   try {
     const sign = zodiacSign(birthDate);          // TR ad; prompta bağlam
@@ -4895,10 +5074,15 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
     let kozmik = null;
     if (hasBirth) {
       try { content = JSON.parse(localStorage.getItem("sakin_pnotif_content") || "null"); } catch (_) {}
-      if (!content || content.stamp !== contentStamp || !Array.isArray(content.days)) {
+      // days[0] = ÜRETİLDİĞİ gün (start). Eskiden içerik haftalık önbelleğe alınıp
+      // BUGÜNE göre dizinleniyordu: pazartesi üretilen metin perşembe planlanınca
+      // pazartesinin ay evresi mesajı perşembeye düşüyordu (6 güne kadar kayma, hata
+      // avı Eyl 2026). Artık gün farkıyla okunur; 2 günden eski içerik yenilenir.
+      const _age = content && content.start ? _dayDiff(content.start, _ymd(new Date())) : 99;
+      if (!content || content.stamp !== contentStamp || !Array.isArray(content.days) || _age > 2 || _age < 0) {
         const ai = await _genPersonalNotifAI(lang, birthDate);
         const days = ai || _genPersonalNotifTemplate(lang, birthDate);
-        content = { stamp: contentStamp, source: ai ? "ai" : "tpl", days };
+        content = { stamp: contentStamp, start: _ymd(new Date()), source: ai ? "ai" : "tpl", days };
         try { localStorage.setItem("sakin_pnotif_content", JSON.stringify(content)); } catch (_) {}
       }
       try {
@@ -4955,7 +5139,8 @@ async function scheduleAllNotifications(lang, birthDate, opts = {}) {
       const at = (h, m = 0) => new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0);
       const em = hasBirth ? _emMessageForDay(kozmik, d, lang) : null;
       const plan = _notifDayPlan(dn, day, hasBirth, !!em, prefs);
-      const pd = (content && content.days && content.days[d]) || {};
+      const _off = content && content.start ? _dayDiff(content.start, _ymd(day)) : d;
+      const pd = (content && content.days && _off >= 0 && content.days[_off]) || {};
       for (const slot of plan) {
         if (slot === "aksam") { const e = pick(eveningPool, dn); add(9070 + d, at(18), e.body, e.extra); }
         else if (slot === "ogle") {
@@ -4987,6 +5172,7 @@ async function askNotifPermissionOnce(lang, birthDate) {
   await scheduleAllNotifications(lang, birthDate, { ask: true, force: true });
   scheduleWinBack(lang);
   ensurePushRegistered();   // izin verildiyse anlık mesajlar (varsayılan açık) da kaydolur
+  rescheduleLetterNotif(lang);
 }
 
 // ── EKRANI AÇIK TUT (Screen Wake Lock) ─────────────────────────────────────
@@ -5688,8 +5874,8 @@ function TerapiScreen({ onBack, onNext, lang = "tr", isPremium = false, onPaywal
         {(chakraTab === "temel" ? [1] : [3,2]).map(level => {
           const levelChakras = CHAKRAS_22.filter(c => c.level === level);
           // TR sadece TR'de; DE/ES/PT/FR/JA için EN fallback
-          const levelLabel = (lang==="tr" ? LEVEL_LABELS_TR : LEVEL_LABELS_EN)[level];
-          const levelRange = (lang==="tr" ? LEVEL_RANGES_TR : LEVEL_RANGES_EN)[level];
+          const levelLabel = (lang==="tr" ? LEVEL_LABELS_TR : (LEVEL_LABELS_X[lang] || LEVEL_LABELS_EN))[level];
+          const levelRange = (lang==="tr" ? LEVEL_RANGES_TR : (LEVEL_RANGES_X[lang] || LEVEL_RANGES_EN))[level];
           const levelColors = { 3:"rgba(200,200,210,0.4)", 2:"rgba(140,100,220,0.4)", 1:"rgba(200,120,80,0.4)" };
           return (
             <div key={level}>
@@ -6144,7 +6330,67 @@ function _cardPratikOzet(text) {
   return _cardFirstSentences(text, 2);
 }
 
-function buildMirrorStoryCard(baslik, govde, altYazi) {
+// Gökyüzü raporu küçük satırları (eskiden gezegen adları İngilizce, "geçidi/hizası"
+// her dilde Türkçe; göktaşı adı her dilde İngilizce çıkıyordu).
+// Mitler kartlarının (arketip/mit/tarot/rün/imge) element alanı her dil dosyasında
+// İngilizce kod ("air", "darkness"): de/es/pt/fr/ja'da "air · Maske" çıkıyordu.
+const CARD_EL_I18N = {
+  fire:     { de:"Feuer", es:"fuego", pt:"fogo", fr:"feu", ja:"火" },
+  earth:    { de:"Erde", es:"tierra", pt:"terra", fr:"terre", ja:"土" },
+  air:      { de:"Luft", es:"aire", pt:"ar", fr:"air", ja:"風" },
+  water:    { de:"Wasser", es:"agua", pt:"água", fr:"eau", ja:"水" },
+  darkness: { de:"Dunkelheit", es:"oscuridad", pt:"escuridão", fr:"obscurité", ja:"闇" },
+  whole:    { de:"Ganzheit", es:"totalidad", pt:"totalidade", fr:"totalité", ja:"全体" },
+};
+const cardElLabel = (el, lang) => (el && CARD_EL_I18N[el] && CARD_EL_I18N[el][lang]) || el;
+const GLOSS_UI = {
+  search: { tr:"Terim ara…", en:"Search terms…", de:"Begriffe suchen…", es:"Buscar términos…", pt:"Pesquisar termos…", fr:"Rechercher un terme…", ja:"用語を検索…" },
+  clear:  { tr:"Temizle", en:"Clear", de:"Löschen", es:"Borrar", pt:"Limpar", fr:"Effacer", ja:"クリア" },
+  terms:  { tr:"terim", en:"terms", de:"Begriffe", es:"términos", pt:"termos", fr:"termes", ja:"語" },
+  none:   { tr:"Bu terim bulunamadı.", en:"No matching term.", de:"Kein passender Begriff.", es:"Ningún término coincide.", pt:"Nenhum termo encontrado.", fr:"Aucun terme trouvé.", ja:"該当する用語がありません。" },
+};
+const PLANET_I18N = {
+  Sun:{ tr:"Güneş", en:"Sun", de:"Sonne", es:"Sol", pt:"Sol", fr:"Soleil", ja:"太陽" },
+  Moon:{ tr:"Ay", en:"Moon", de:"Mond", es:"Luna", pt:"Lua", fr:"Lune", ja:"月" },
+  Mercury:{ tr:"Merkür", en:"Mercury", de:"Merkur", es:"Mercurio", pt:"Mercúrio", fr:"Mercure", ja:"水星" },
+  Venus:{ tr:"Venüs", en:"Venus", de:"Venus", es:"Venus", pt:"Vénus", fr:"Vénus", ja:"金星" },
+  Mars:{ tr:"Mars", en:"Mars", de:"Mars", es:"Marte", pt:"Marte", fr:"Mars", ja:"火星" },
+  Jupiter:{ tr:"Jüpiter", en:"Jupiter", de:"Jupiter", es:"Júpiter", pt:"Júpiter", fr:"Jupiter", ja:"木星" },
+  Saturn:{ tr:"Satürn", en:"Saturn", de:"Saturn", es:"Saturno", pt:"Saturno", fr:"Saturne", ja:"土星" },
+  Uranus:{ tr:"Uranüs", en:"Uranus", de:"Uranus", es:"Urano", pt:"Úrano", fr:"Uranus", ja:"天王星" },
+  Neptune:{ tr:"Neptün", en:"Neptune", de:"Neptun", es:"Neptuno", pt:"Neptuno", fr:"Neptune", ja:"海王星" },
+  Pluto:{ tr:"Plüton", en:"Pluto", de:"Pluto", es:"Plutón", pt:"Plutão", fr:"Pluton", ja:"冥王星" },
+};
+const PLANET_GROUP_TXT = {
+  parade: { tr:"Gezegen geçidi", en:"Planet parade", de:"Planetenparade", es:"Desfile planetario", pt:"Desfile planetário", fr:"Parade planétaire", ja:"惑星パレード" },
+  align:  { tr:"Gezegen hizası", en:"Alignment", de:"Planetenausrichtung", es:"Alineación", pt:"Alinhamento", fr:"Alignement", ja:"惑星の並び" },
+};
+const METEOR_I18N = {
+  "Quadrantids":  { de:"Quadrantiden", es:"Cuadrántidas", pt:"Quadrântidas", fr:"Quadrantides", ja:"しぶんぎ座流星群" },
+  "Lyrids":       { de:"Lyriden", es:"Líridas", pt:"Líridas", fr:"Lyrides", ja:"こと座流星群" },
+  "Eta Aquariids":{ de:"Eta-Aquariiden", es:"Eta Acuáridas", pt:"Eta Aquáridas", fr:"Êta Aquarides", ja:"みずがめ座η流星群" },
+  "Perseids":     { de:"Perseiden", es:"Perseidas", pt:"Perseidas", fr:"Perséides", ja:"ペルセウス座流星群" },
+  "Orionids":     { de:"Orioniden", es:"Oriónidas", pt:"Oriónidas", fr:"Orionides", ja:"オリオン座流星群" },
+  "Leonids":      { de:"Leoniden", es:"Leónidas", pt:"Leónidas", fr:"Léonides", ja:"しし座流星群" },
+  "Geminids":     { de:"Geminiden", es:"Gemínidas", pt:"Gemínidas", fr:"Géminides", ja:"ふたご座流星群" },
+  "Ursids":       { de:"Ursiden", es:"Úrsidas", pt:"Úrsidas", fr:"Ursides", ja:"こぐま座流星群" },
+};
+function meteorName(m, lang) {
+  if (!m) return "";
+  if (lang === "tr") return m.nameTr || m.name;
+  return (METEOR_I18N[m.name] && METEOR_I18N[m.name][lang]) || m.name;
+}
+// Görseldeki sabit davet cümlesi (eskiden her dilde Türkçe çiziliyordu).
+const STORY_SLOGAN = {
+  tr:"Kalbinin süzgecinden geçir, seni ısıtan kısmını al.",
+  en:"Let it pass through your heart; keep what warms you.",
+  de:"Lass es durch dein Herz gehen und behalte, was dich wärmt.",
+  es:"Pásalo por el filtro de tu corazón y quédate con lo que te abriga.",
+  pt:"Passa-o pelo filtro do teu coração e guarda o que te aquece.",
+  fr:"Passe-le au filtre de ton cœur et garde ce qui te réchauffe.",
+  ja:"心のフィルターを通して、あなたを温める部分だけを受け取って。",
+};
+function buildMirrorStoryCard(baslik, govde, altYazi, lang = "tr") {
   const W = 1080, H = 1920;
   const canvas = document.createElement("canvas");
   canvas.width = W; canvas.height = H;
@@ -6175,7 +6421,8 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
   // Üst başlık
   ctx.fillStyle = "#9080c0";
   ctx.font = "300 34px -apple-system, 'Jost', sans-serif";
-  ctx.fillText(String(baslik || "").toLocaleUpperCase("tr"), W / 2, 400);
+  // Büyük harf seçili dilin kuralıyla (tr kuralı İngilizcede "WHY AM İ TİRED" yapıyordu).
+  ctx.fillText(String(baslik || "").toLocaleUpperCase(lang === "tr" ? "tr" : (lang || "en")), W / 2, 400);
 
   // Ayraç
   const line = ctx.createLinearGradient(240, 0, 840, 0);
@@ -6224,7 +6471,7 @@ function buildMirrorStoryCard(baslik, govde, altYazi) {
   // "Kalbinin süzgecinden geçir, seni ısıtan kısmını al."
   ctx.fillStyle = "rgba(200,170,240,0.55)";
   ctx.font = "italic 300 26px -apple-system, 'Inter', sans-serif";
-  ctx.fillText("Kalbinin süzgecinden geçir, seni ısıtan kısmını al.", W / 2, y);
+  ctx.fillText(pickLang(STORY_SLOGAN, lang), W / 2, y);
   y += 60;
 
   // Ayna içgörüsü: ana gövde
@@ -6297,14 +6544,24 @@ function FreqText({ text, style, onNav }) {
   const parts = text.split(new RegExp(
     "(\\*\\*[^*\\n]+\\*\\*|\"[^\"\\n]{2,28}\"|\\[\\[NEFES:[^\\]]+\\]\\]|\\[\\[EKRAN:[^\\]]+\\]\\]|\\d+\\s*Hz|"
     + _GLOSSARY_RE.source.slice(1, -1) + ")", "gi"));
+  // Model jetonun içine Türkçe mod adını yazar (prompt öyle ister); ekranda gösterilen
+  // etiket ve açıklama seçili dilde (eskiden her dilde "... nefesi →" Türkçe çıkıyordu).
+  // Eşleşme büyük/küçük harf duyarsız; model adı çevirmiş olsa da bilinen kökler yakalanır.
   const NEFES_IDS = {
-    "Akciğer":"akciger","Sakinleştirici":"sakinletici",
-    "Diyafram":"diyafram","Kutu":"kutu","4-7-8":"478","Standart":"standart"
+    "akciğer":"akciger","sakinleştirici":"sakinletici","diyafram":"diyafram","kutu":"kutu",
+    "4-7-8":"478","478":"478","standart":"standart","uykuya dal":"uyku","uyku":"uyku",
+    "merkezine çekil":"merkez","merkez":"merkez","yenilen":"yenilen","bırakış":"478",
+    "lung":"akciger","calming":"sakinletici","diaphragm":"diyafram","box":"kutu","standard":"standart",
   };
+  const _lg = _curLang(), _tt = makeTrans(_lg);
   const EKRAN_LABELS = {
-    terapi:"Çakra Terapisi 💜", nefes:"Nefes 🫧",
-    rehber:"Ayna 🪞", sabah:"Sabah Niyeti 🌅", aksam:"Akşam Kapanışı 🌙"
+    terapi: pickLang({ tr:"Çakra Terapisi", en:"Chakra Therapy", de:"Chakra-Therapie", es:"Terapia de chakras", pt:"Terapia dos chakras", fr:"Thérapie des chakras", ja:"チャクラセラピー" }, _lg) + " 💜",
+    nefes:  pickLang({ tr:"Nefes", en:"Breath", de:"Atem", es:"Respiración", pt:"Respiração", fr:"Souffle", ja:"呼吸" }, _lg) + " 🫧",
+    rehber: pickLang({ tr:"Ayna", en:"Mirror", de:"Spiegel", es:"Espejo", pt:"Espelho", fr:"Miroir", ja:"鏡" }, _lg) + " 🪞",
+    sabah:  pickLang({ tr:"Sabah Niyeti", en:"Morning Intention", de:"Morgenabsicht", es:"Intención de la mañana", pt:"Intenção da manhã", fr:"Intention du matin", ja:"朝の意図" }, _lg) + " 🌅",
+    aksam:  pickLang({ tr:"Akşam Kapanışı", en:"Evening Close", de:"Abendabschluss", es:"Cierre de la noche", pt:"Fecho da noite", fr:"Clôture du soir", ja:"夜のしめくくり" }, _lg) + " 🌙",
   };
+  const GO_TXT = pickLang({ tr:"Git", en:"Go", de:"Öffnen", es:"Ir", pt:"Ir", fr:"Aller", ja:"開く" }, _lg);
   return (
     <span style={style}>
       {parts.map((part, i) => {
@@ -6349,13 +6606,14 @@ function FreqText({ text, style, onNav }) {
         const nefesM = part.match(/^\[\[NEFES:([^\]]+)\]\]$/i);
         if (nefesM && onNav) {
           const ad = nefesM[1].trim();
-          const id = NEFES_IDS[ad] || "standart";
+          const id = NEFES_IDS[ad.toLocaleLowerCase("tr")] || NEFES_IDS[ad.toLowerCase()] || "standart";
+          const modeName = _tt("breath_mode_" + id) || ad;
           return (
-            <span key={i} onClick={() => onNav("breath", id)} title={`${ad} nefes moduna git`}
+            <span key={i} onClick={() => onNav("breath", id)} title={`${GO_TXT}: ${modeName}`}
               style={{ color:"#70b8f0", cursor:"pointer", borderBottom:"1px solid rgba(112,184,240,0.5)", fontWeight:500, padding:"1px 5px", borderRadius:4, transition:"opacity 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
-            >{ad} nefesi →</span>
+            >{modeName} →</span>
           );
         }
         const ekranM = part.match(/^\[\[EKRAN:([^\]]+)\]\]$/i);
@@ -6363,7 +6621,7 @@ function FreqText({ text, style, onNav }) {
           const id = ekranM[1].trim();
           const label = EKRAN_LABELS[id] || id;
           return (
-            <span key={i} onClick={() => onNav("screen", id)} title={`${label} bölümüne git`}
+            <span key={i} onClick={() => onNav("screen", id)} title={`${GO_TXT}: ${label}`}
               style={{ color:"#70f0b0", cursor:"pointer", borderBottom:"1px solid rgba(112,240,176,0.5)", fontWeight:500, padding:"1px 5px", borderRadius:4, transition:"opacity 0.15s" }}
               onMouseEnter={e => e.currentTarget.style.opacity = "0.7"}
               onMouseLeave={e => e.currentTarget.style.opacity = "1"}
@@ -6398,7 +6656,7 @@ function FreqText({ text, style, onNav }) {
               <span style={{ display:"block",fontSize:14.5,fontWeight:300,letterSpacing:0.8,color:"#dff0e8",marginBottom:6,fontFamily:"'Jost',sans-serif" }}>{pickLang(pz.ad, lg)}</span>
               <span style={{ display:"block",fontSize:11.5,color:"#a8c4b8",lineHeight:1.65,marginBottom:10 }}>{pickLang(pz.aciklama, lg)}</span>
               <button onClick={()=>setPose(null)} style={{ background:"rgba(143,214,180,0.14)",border:"1px solid rgba(143,214,180,0.35)",borderRadius:18,color:"#bfe6d2",fontSize:11,letterSpacing:1.8,padding:"6px 18px",cursor:"pointer",fontFamily:"'Jost',sans-serif" }}>
-                {lg === "tr" ? "KAPAT" : "CLOSE"}
+                {pickLang({ tr:"KAPAT", en:"CLOSE", de:"SCHLIESSEN", es:"CERRAR", pt:"FECHAR", fr:"FERMER", ja:"閉じる" }, lg)}
               </button>
             </span>
           </span>
@@ -6487,7 +6745,9 @@ function SmartCityInput({ value, onChange, lang }) {
     return () => { alive = false; };
   }, [bigReady]);
   const q = normalizeCity(value);
-  const cap = s => s.split(" ").map(w => (w ? w.charAt(0).toLocaleUpperCase("tr") + w.slice(1) : w)).join(" ");
+  // Türkçe büyük harf kuralı (i -> İ) yalnızca Türkiye şehirlerinde; yabancı şehirde
+  // "İnnsbruck", "İbiza" çıkıyordu. CITY_NAMES = yerleşik Türkiye listesi.
+  const cap = s => { const tr = CITY_NAMES.includes(s); return s.split(" ").map(w => (w ? (tr ? w.charAt(0).toLocaleUpperCase("tr") : w.charAt(0).toUpperCase()) + w.slice(1) : w)).join(" "); };
   // Eşleşmeler: önce yerleşik küçük DB (hızlı, hatasız), sonra büyük DB'den ek öneriler.
   let matches = [];
   if (q.length >= 1) {
@@ -6507,7 +6767,7 @@ function SmartCityInput({ value, onChange, lang }) {
       <input type="text" className="sakin-input"
         autoComplete="off" autoCorrect="off" autoCapitalize="words" spellCheck={false}
         placeholder={t("city_ph")}
-        style={{ fontSize:14,padding:"10px 34px 10px 12px",width:"100%",boxSizing:"border-box" }}
+        style={{ fontSize:16,padding:"10px 34px 10px 12px",width:"100%",boxSizing:"border-box" }}
         value={value}
         onChange={e=>onChange(e.target.value)}
         onFocus={()=>setFocused(true)}
@@ -7028,20 +7288,33 @@ export default function SakinApp() {
   // sent = sunucuya gonderilmis saniye; ton DURUNCA delta gonderilir (her
   // saniye tek tek gondermek yerine). track() kendi icinde opt-out'a saygili.
   const freqTrackRef = useRef({ acc: 0, sent: 0 });
+  const freqCountRef = useRef({ day: null, n: 0 });
   useEffect(() => {
     if (playingHz) {
+      // Sayaç ref'te tutulur; ekran ve disk 5 sn'de bir güncellenir (eskiden her
+      // saniye TÜM uygulama yeniden çiziliyor ve diske yazılıyordu, pil). Gün anahtarı
+      // her tikte ANLIK hesaplanır: gece yarısı geçilince yeni gün SIFIRDAN başlar
+      // (eskiden dünün toplamı yeni güne taşınıp ses adımını kendiliğinden tamamlıyordu).
+      const c = freqCountRef.current;
+      c.day = sakinDayKey();
+      c.n = parseInt(localStorage.getItem("sakin_freq_sec_" + c.day) || "0", 10) || 0;
       freqTimerRef.current = setInterval(() => {
         freqTrackRef.current.acc += 1;
-        setFreqListenSec(prev => {
-          const next = prev + 1;
-          // Gün anahtarı ANLIK hesaplanır: dinleme gece yarısını geçerse sayaç
-          // eski güne değil, doğru güne yazılır (todayKey closure'ı bayat kalırdı).
-          localStorage.setItem("sakin_freq_sec_" + sakinDayKey(), String(next));
-          return next;
-        });
+        const dk = sakinDayKey();
+        if (dk !== c.day) { c.day = dk; c.n = 0; }
+        c.n += 1;
+        if (c.n % 5 === 0) {
+          try { localStorage.setItem("sakin_freq_sec_" + c.day, String(c.n)); } catch (_) {}
+          setFreqListenSec(c.n);
+        }
       }, 1000);
     } else {
       clearInterval(freqTimerRef.current);
+      const c = freqCountRef.current;
+      if (c.day && c.day === sakinDayKey()) {
+        try { localStorage.setItem("sakin_freq_sec_" + c.day, String(c.n)); } catch (_) {}
+        setFreqListenSec(c.n);
+      }
       // Ton durdu: bu oturumda birikip henüz gönderilmemiş saniyeyi yolla.
       const d = freqTrackRef.current.acc - freqTrackRef.current.sent;
       if (d > 0) { try { track("freq_sec", { n: d }); } catch (_) {} freqTrackRef.current.sent = freqTrackRef.current.acc; }
@@ -7294,26 +7567,6 @@ export default function SakinApp() {
       exceeded = next > AILESI_FREE_OPENS;
     }
     setEmbedQuotaExceeded(exceeded);
-    // Hayvan (Tura) preemptive bridge: bundle AsyncStorage init'i iframe load'tan
-    // önce çalışabildiği için, @tura_profile'ı iframe oluşmadan ÖNCE same-origin
-    // localStorage'a yazıyoruz. Bundle init ettiğinde değer hazır.
-    if (app.embed && app.embed.indexOf("sakinhayvan") !== -1) {
-      try {
-        if (userName || birthDate || birthCity) {
-          const hm = (birthTime || "").split(":");
-          const bh = parseInt(hm[0], 10);
-          const bm = parseInt(hm[1], 10);
-          const turaProfile = {
-            name: userName || undefined,
-            birthDate: birthDate || undefined,
-            birthHour: (!isNaN(bh) && bh >= 0 && bh <= 23) ? bh : undefined,
-            birthMinute: (!isNaN(bm) && bm >= 0 && bm <= 59) ? bm : undefined,
-            birthCity: birthCity || undefined,
-          };
-          localStorage.setItem("@tura_profile", JSON.stringify(turaProfile));
-        }
-      } catch(_) {}
-    }
     // Sakin Mitler: sticky iframe. Gün karşılaştır: gün aynıysa aynı session devam,
     // gün değiştiyse key değişir → iframe re-mount → yeni günün mitleri seçilir.
     // Bu kontrol SADECE açılış anında yapılır (kullanıcı mitler açıkken gece yarısı
@@ -8094,7 +8347,16 @@ export default function SakinApp() {
   const [streakData, setStreakData] = useState(() => {
     try {
       const raw = localStorage.getItem("sakin_streak");
-      return raw ? JSON.parse(raw) : { current: 0, best: 0, lastDate: null, badges: [] };
+      const d = raw ? JSON.parse(raw) : { current: 0, best: 0, lastDate: null, badges: [] };
+      // `totalTunnels` 9 Eyl 2026'da eklendi. Ondan ÖNCEKİ kullanıcıda alan yok ve
+      // 0 sayılıp deneyimli kullanıcı "yeni kullanıcı modu"na (3 adım) düşüyordu
+      // (hata avı, Eyl 2026). Daha önce en az bir tünel bitirmiş eski kayıt
+      // (lastDate var) deneyimli sayılır ve değer bir kez kalıcı yazılır.
+      if (d && d.lastDate && typeof d.totalTunnels !== "number") {
+        d.totalTunnels = Math.max(3, d.best || 0, d.current || 0);
+        try { localStorage.setItem("sakin_streak", JSON.stringify(d)); } catch (_) {}
+      }
+      return d;
     } catch { return { current: 0, best: 0, lastDate: null, badges: [] }; }
   });
   const [stepsCompleted, setStepsCompleted] = useState(() => {
@@ -8332,7 +8594,7 @@ export default function SakinApp() {
     if (!allStepsComplete || !dayInSync) return;
     setStreakData(prev => {
       if (prev.lastDate === todayKey) return prev;
-      const yesterday = sakinDayKey(new Date(Date.now() - 86400000));
+      const yesterday = sakinDayKey(_daysAgo(1));
       const isConsecutive = prev.lastDate === yesterday;
       const newCurrent = isConsecutive ? prev.current + 1 : 1;
       const newBest = Math.max(prev.best, newCurrent);
@@ -8867,14 +9129,22 @@ export default function SakinApp() {
     try { const tok = localStorage.getItem("sakin_push_token"); if (tok) postPushRegister(tok, false); } catch(_) {}
     // 1) localStorage: sakin_ ile başlayan tüm anahtarları topla ve sil (iterasyon
     //    sırasında silmek index kaymasına yol açar, önce topla, sonra sil).
+    //    Gömülü uygulamaların verisi de silinir (aynı origin): SoulID (bağlanma testi,
+    //    raporlar, uyum raporlarındaki başkalarının doğum bilgisi), Hayvan/Bitkiler/
+    //    Taşlar/Mitler/Tasarım kayıtları, eski doğum kopyası `@tura_profile` ve Hayvan'ın
+    //    Supabase oturumu (`sb-`). Eskiden yalnızca `sakin_` siliniyordu (hata avı, Eyl 2026).
+    const DEL_PREFIXES = ["sakin_", "soulprofile.", "@sakin", "@mitler", "@tasarim", "@tura_profile", "sb-"];
     try {
       const toRemove = [];
       for (let i = 0; i < localStorage.length; i++) {
         const k = localStorage.key(i);
-        if (k && k.startsWith("sakin_")) toRemove.push(k);
+        if (k && DEL_PREFIXES.some((p) => k.startsWith(p))) toRemove.push(k);
       }
       toRemove.forEach(k => { try { localStorage.removeItem(k); } catch(_) {} });
     } catch(_) {}
+    // 1b) Bekleyen tüm yerel bildirimler (mektup açılışı 9500, geri dönüş 9400-9403,
+    //     günlük plan): veri silindikten sonra "mektubun hazır" gibi bildirim gelmesin.
+    if (isNative) { LocalNotifications.getPending().then((p) => { const n = (p && p.notifications) || []; if (n.length) return LocalNotifications.cancel({ notifications: n.map((x) => ({ id: x.id })) }); }).catch(() => {}); }
     // 2) sessionStorage: intro flag'i kaldır ki kullanıcı temiz başlasın.
     try { sessionStorage.removeItem("sakin_intro_seen"); } catch(_) {}
     // 3) React state reset, localStorage temizliğinden sonra mount değerleri stale
@@ -8904,6 +9174,7 @@ export default function SakinApp() {
     setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false);
     setGirisPhase("intro");
     setScreen("giris");
+    setSoulReloadKey(k => k + 1);   // Ben'deki bağlanma/SoulID kartları silinen veriyi yeniden okusun
     // 5) Kısa onay tost'u: 2.5sn sonra otomatik kapan.
     setDeleteToast(t("delete_done_toast"));
     setTimeout(() => setDeleteToast(""), 2500);
@@ -9946,6 +10217,10 @@ ${facts}
     setAynaSonTip(soruTipi);
     // YUMUŞAK ipucu: yanlış sınıflandırma cevabı bozmasın diye modele
     // "böyle görünüyor, katılmıyorsan kendi okuduğunu esas al" deniyor.
+    // Reiki bölümü + Reiki rehberi YALNIZCA beden/duygu sorularında (kullanıcı
+    // kararı, Eyl 2026): "misyonum ne", "ne zaman geçer", "ayrılmalı mıyım"
+    // sorularının sonuna sabit el pozisyonu tarifi eklemek cevabı jenerikleştiriyordu.
+    const reikiAcik = soruTipi === "beden" || soruTipi === "duygu";
     const tipIpucu = `\nSORU TİPİ (kaba tahmin, yanılmış olabilir): ${soruTipi}. Katılıyorsan cevabı buna göre yapılandır, katılmıyorsan kendi okuduğunu esas al ve tahmini yok say.\n`;
     // Harita verisi TAM gönderilir, kullanıcı artık "ateş elementim düşük ne
     // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
@@ -9991,7 +10266,7 @@ Gestalt: (Rüyadaki her figür kişinin bir parçasıdır; "bu rüyadaki X aslı
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
 Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.` : `Kullanıcının sorusu/şikayeti: "${sanitizeInput(sikayet)}"${sikayetHis ? `\nHissi: "${sanitizeInput(sikayetHis)}"` : ""}
 ${aynaFacts}
-${REIKI_BILGI}
+${reikiAcik ? REIKI_BILGI : ""}
 
 ${LOUISE_HAY_KAPALI.includes(soruTipi) ? "" : LOUISE_HAY_REHBER}
 ${astroTxt}
@@ -10013,10 +10288,10 @@ Uzunluk soruya göre değişsin: net bir soruysa 3-4 cümle yeter, karmaşık bi
 Beslenme: (YALNIZCA bedenle ilgili sorularda yaz. Bu konuya özel 3-4 besin veya bitki çayı: kısa, net)
 Hareket: (YALNIZCA bedenle ilgili sorularda yaz. 2-3 somut egzersiz veya beden pratiği. FİZİKSEL bir şikayetse MUTLAKA şu listeden 1-2 yoga pozunun TAM ADINI ÇİFT TIRNAK İÇİNDE yaz. Tırnak içinde yazarsan uygulamada tıklanabilir pop-up olur: "Kobra", "Çocuk", "Ağaç", "Savaşçı", "Köprü", "Aşağı Bakan Köpek", "Bacaklar Duvarda", "Kelebek", "Kedi-İnek", "Şavasana", "Dağ". "yoga gibi" veya "pilates gibi" gibi belirsiz ifadeler KULLANMA. Hangi poz olduğunu adıyla ve çift tırnak içinde söyle.)
 Nefes: Uygun nefes modunu öner. Mod adını şu şekilde link olarak yaz: [[NEFES:Diyafram]] veya [[NEFES:4-7-8]] gibi. Geçerli mod adları: Akciğer, Sakinleştirici, Diyafram, Kutu, 4-7-8, Standart. Yanına kısa nedenini ekle.
-Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.
+Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olarak yaz: [[EKRAN:terapi]] veya [[EKRAN:nefes]] gibi. Geçerli ekran adları: terapi, nefes, rehber, sabah, aksam. Yanına kısa açıklama ekle.${reikiAcik ? `
 
 **Reiki ile Enerji Aktarımı**
-(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından sade ve içten bir kapanış: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; içinde bir açılma doğarsa Cho Ku Rei ile onu mühürlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle. Süslemeden, kararlı bir tonla bitir.)`;
+(El pozisyonu, niyet, frekans müziği: somut 2-3 adım. Ardından sade ve içten bir kapanış: enerji akarken kalbinin sesine kulak vermeyi, hangi eski kalıbın yumuşamak istediğini hissetmeyi davet et; içinde bir açılma doğarsa Cho Ku Rei ile onu mühürlemesini, bedenine ve şimdisine taşımasını hatırlat. 2-3 cümle. Süslemeden, kararlı bir tonla bitir.)` : ""}`;
     try {
       const res = await aiFetch({
         method:"POST",
@@ -10103,22 +10378,6 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
         if (cached) { setAiRapor(cached); return; }
       }
     } catch {}
-
-    // IP bazlı kontrol: HAFTALIK (yeni hafta = yeni rapor hakkı)
-    try {
-      const ipRes = await fetch("https://api.ipify.org?format=json");
-      const { ip } = await ipRes.json();
-      const kullanim = JSON.parse(localStorage.getItem("sakin_rapor_kullanim")||"{}");
-      const _ipwk = ip + "_" + _wk;
-      if ((kullanim[_ipwk]||0) >= 1) {
-        // Bu hafta zaten üretildi → mesaj gösterme, AYNI raporu geri yükle.
-        const cached = (() => { try { return localStorage.getItem("sakin_rapor_text"); } catch { return null; } })();
-        if (cached) { setAiRapor(cached); return; }
-        // Cache yoksa engelleme: üretime devam et (kullanıcı raporsuz kalmasın).
-      }
-      kullanim[_ipwk] = 1;
-      localStorage.setItem("sakin_rapor_kullanim", JSON.stringify(kullanim));
-    } catch { /* ipify ulaşılamazsa devam et */ }
 
     setAiLoading(true); setAiRapor("");
 
@@ -10355,24 +10614,7 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // 0..1 arası tek bir ilerleme değerine çevriliyor. Zamanlamaya DOKUNULMUYOR, 
   // ses ve faz geçişleri hâlâ mevcut setTimeout zincirinden geliyor, bu sadece
   // okuma. rAF kullanılıyor: setInterval'de kare atlamaları titreme yapıyordu.
-  const [cycleT, setCycleT] = useState(0);   // 0..1: döngü içindeki konum
-  useEffect(() => {
-    if (screen !== "nefes" || !breathStarted) { setCycleT(0); return; }
-    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
-    let raf, last = 0;
-    // ~20 fps yeterli: nokta 360°'yi 10-19 saniyede dönüyor, kare başına hareket
-    // zaten çok küçük. 60 fps'te tüm nefes ekranı saniyede 60 kez yeniden
-    // render oluyordu: düşük donanımlı telefonda gereksiz yük.
-    const tick = (now) => {
-      raf = requestAnimationFrame(tick);
-      if (now - last < 50) return;
-      last = now;
-      const s = cycleStartRef.current;
-      if (s) setCycleT(Math.min(1, ((Date.now() - s) % tm.total) / tm.total));
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [screen, breathStarted, breathMode]);
+  // (Döngü ilerlemesi artık BreathRingSvg / BreathCountdown içinde, bkz. modül seviyesi.)
   // Nefes seansı sürerken ekran kararmasın (kullanıcı gözü kapalı, dokunamıyor).
   useScreenWakeLock(screen === "nefes" && breathStarted);
 
@@ -10442,52 +10684,6 @@ Use warm, gentle, slightly poetic language. Address the reader with the informal
   // yani ritmi gözle öğrenirsin. Aktif yay parlar, kenardaki nokta o yayın
   // içinde nerede olduğunu gösterir.
   // Kutu modu kendi kare formunu KORUYOR (ona özel kimlik veriyor).
-  const BreathRing = ({ rgb, size = 205 }) => {
-    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
-    const segs = [
-      { key:"inhale", ms: tm.in },
-      { key:"hold",   ms: tm.hold },
-      { key:"exhale", ms: tm.out },
-      { key:"hold2",  ms: tm.hold2 },
-    ].filter(s => s.ms > 0);
-    const R = size/2 - 6, C = size/2, TAU = Math.PI*2;
-    const GAP = 0.035;                       // yaylar arası nefes payı (radyan)
-    const pol = (a, r=R) => [C + r*Math.cos(a - Math.PI/2), C + r*Math.sin(a - Math.PI/2)];
-    let acc = 0;
-    const arcs = segs.map(s => {
-      const frac = s.ms / tm.total;
-      const a0 = acc*TAU + GAP/2, a1 = (acc+frac)*TAU - GAP/2;
-      acc += frac;
-      const [x0,y0] = pol(a0), [x1,y1] = pol(a1);
-      return { ...s, d:`M ${x0} ${y0} A ${R} ${R} 0 ${a1-a0 > Math.PI ? 1 : 0} 1 ${x1} ${y1}` };
-    });
-    const [dx,dy] = pol(cycleT*TAU);
-    return (
-      <svg width={size} height={size} style={{ position:"absolute",inset:0,pointerEvents:"none" }} aria-hidden="true">
-        {arcs.map(a => (
-          <path key={a.key} d={a.d} fill="none" strokeLinecap="round"
-            stroke={`rgba(${rgb},${breathPhase===a.key ? 0.9 : 0.16})`}
-            strokeWidth={breathPhase===a.key ? 3 : 1.5}
-            style={{ transition:"stroke 0.5s ease, stroke-width 0.5s ease" }} />
-        ))}
-        {breathStarted && (
-          <circle cx={dx} cy={dy} r="5" fill={`rgba(${rgb},0.95)`}
-            style={{ filter:`drop-shadow(0 0 8px rgba(${rgb},0.85))` }} />
-        )}
-      </svg>
-    );
-  };
-
-  // Faz içi kalan saniye, YALNIZCA BREATH_COUNTDOWN modlarında gösterilir.
-  // Diğerlerinde bilinçli olarak yok: rakam saymaya iter, bırakmaya değil.
-  const phaseRemain = (() => {
-    const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
-    const off = { inhale:0, hold:tm.in, exhale:tm.in+tm.hold, hold2:tm.in+tm.hold+tm.out }[breathPhase];
-    const len = { inhale:tm.in, hold:tm.hold, exhale:tm.out, hold2:tm.hold2 }[breathPhase];
-    if (off == null || !len) return null;
-    const el = cycleT*tm.total - off;
-    return Math.max(1, Math.ceil((len - el)/1000));
-  })();
   const breathScale = breathStarted ? (breathPhase==="exhale"||breathPhase==="hold2"||breathPhase==="ready" ? 1 : 1.6) : 1;
   const breathIsActive = breathPhase==="inhale"||breathPhase==="hold";
   const tm = BREATH_MODES_CONFIG[breathMode] || BREATH_MODES_CONFIG.standart;
@@ -10928,7 +11124,7 @@ Direction (where the energy flows). Rules:
   // ── İÇSEL HARİTA: GÜNLÜK YANSIMA ────────────────────────────────────────────
   // Veri: sabah niyeti + seçilen kelimeler (bugün yoksa DÜN), akşam notu + şükür
   // (bugün yoksa DÜN). İkisi de boşsa blok hiç gösterilmez.
-  const innerYesterdayKey = sakinDayKey(new Date(Date.now() - 86400000));
+  const innerYesterdayKey = sakinDayKey(_daysAgo(1));
   const _lsGet = (k) => { try { return localStorage.getItem(k) || ""; } catch { return ""; } };
   const innerNiyet = (niyet || "").trim() || _lsGet("sakin_niyet_" + innerYesterdayKey).trim();
   const innerWords = (() => {
@@ -11930,24 +12126,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                         set("birth_city", birthCity || ""); set("birthCity", birthCity || "");
                         set("user_name", userName || ""); set("userName", userName || "");
                         set("language", lang || "tr"); set("locale", lang || "tr");
-                        // Sakin Hayvan (Tura store), kendi AsyncStorage key'i @tura_profile.
-                        // Bundle host'tan okuma fonksiyonu içeriyor (b()) ama UI'a bağlamamış;
-                        // doğrudan profile key'ini set ediyoruz ki onboarding atlansın.
-                        try {
-                          if (userName || birthDate || birthCity) {
-                            const hm = (birthTime || "").split(":");
-                            const bh = parseInt(hm[0], 10);
-                            const bm = parseInt(hm[1], 10);
-                            const turaProfile = {
-                              name: userName || undefined,
-                              birthDate: birthDate || undefined,
-                              birthHour: (!isNaN(bh) && bh >= 0 && bh <= 23) ? bh : undefined,
-                              birthMinute: (!isNaN(bm) && bm >= 0 && bm <= 59) ? bm : undefined,
-                              birthCity: birthCity || undefined,
-                            };
-                            ls.setItem("@tura_profile", JSON.stringify(turaProfile));
-                          }
-                        } catch(_) {}
                         // Onboarding/profil "tamamlandı" bayrakları
                         set("onboarding_completed", "true");
                         set("onboardingCompleted", "true");
@@ -12773,7 +12951,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.85)", fontSize:13, cursor:"pointer", padding:"0 2px", lineHeight:1, transform: whatsNewOpen ? "rotate(180deg)" : "none", transition:"transform 0.25s" }}>
               ▾
             </button>
-            <button onClick={dismissWhatsNew} aria-label="Dismiss"
+            <button onClick={dismissWhatsNew} aria-label={t("common_close")}
               style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.7)", fontSize:18, cursor:"pointer", padding:"0 4px", lineHeight:1 }}>
               ✕
             </button>
@@ -12827,7 +13005,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
             {t("update_button")}
           </a>
           <button onClick={()=>{ setUpdateDismissed(updateInfo.version); localStorage.setItem("sakin_update_dismissed_v", updateInfo.version); }}
-            aria-label="Dismiss"
+            aria-label={t("common_close")}
             style={{ background:"transparent", border:"none", color:"rgba(255,255,255,0.7)", fontSize:18, cursor:"pointer", padding:"0 4px", lineHeight:1 }}>
             ✕
           </button>
@@ -13438,7 +13616,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {!isNative && (
                   <div style={{ marginTop:42,display:"flex",flexDirection:"column",alignItems:"center",gap:14 }}>
                     <div style={{ fontSize:11,letterSpacing:4,color:"#666",textTransform:"uppercase",fontFamily:"'Jost',sans-serif" }}>
-                      {lang==="tr" ? "Telefonunda yanında taşı" : "Take it with you"}
+                      {pickLang({ tr:"Telefonunda yanında taşı", en:"Take it with you", de:"Nimm es mit", es:"Llévalo contigo", pt:"Leva-o contigo", fr:"Emporte-le avec toi", ja:"いつもそばに" }, lang)}
                     </div>
                     <div style={{ display:"flex",gap:10,alignItems:"center",flexWrap:"wrap",justifyContent:"center" }}>
                       <AppStoreBadge lang={lang} size="md" />
@@ -14019,7 +14197,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               {[1.72,1.45,1.2].map((s,i)=>(
                 <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(80,130,200,${0.1-i*0.025})`,transform:`scale(${s})` }} />
               ))}
-              <BreathRing rgb="80,130,200" />
+              <BreathRingSvg rgb="80,130,200" mode={breathMode} phase={breathPhase} started={breathStarted} startRef={cycleStartRef} />
               <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(80,130,200,0.62),rgba(255,255,255,0.24))",transition:breathPhase==="ready"?"none":`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${breathStarted?breathScale:1})`,display:"flex",alignItems:"center",justifyContent:"center" }}>
                 <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
               </div>
@@ -14159,14 +14337,15 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     {[1.72,1.45,1.2].map((sc,i)=>(
                       <div key={i} style={{ position:"absolute",inset:0,borderRadius:"50%",border:`1px solid rgba(${c},${0.1-i*0.025})`,transform:`scale(${sc})` }} />
                     ))}
-                    <BreathRing rgb={c} />
+                    <BreathRingSvg rgb={c} mode={breathMode} phase={breathPhase} started={breathStarted} startRef={cycleStartRef} />
                     <div style={{ position:"absolute",inset:0,borderRadius:"50%",background:`radial-gradient(circle,rgba(${c},0.58),rgba(${c},0.14))`,transition:`transform ${breathIsActive?breathInDur:breathOutDur} ease`,transform:`scale(${s})`,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2 }}>
                       <div style={{ fontSize:14,letterSpacing:2,color:"rgba(255,255,255,0.82)" }}>{breathLabel}</div>
                       {/* Geri sayım YALNIZCA bu üç modda (uyku/merkez/yenilen).
                           Diğerlerinde rakam yok: saymaya değil bırakmaya davet. */}
-                      {showCount && phaseRemain != null && (
-                        <div style={{ fontFamily:"'Jost',sans-serif",fontSize:26,fontWeight:200,letterSpacing:1,
-                          color:"rgba(255,255,255,0.9)",lineHeight:1,marginTop:2 }}>{phaseRemain}</div>
+                      {showCount && breathStarted && (
+                        <BreathCountdown mode={breathMode} phase={breathPhase} startRef={cycleStartRef}
+                          style={{ fontFamily:"'Jost',sans-serif",fontSize:26,fontWeight:200,letterSpacing:1,
+                            color:"rgba(255,255,255,0.9)",lineHeight:1,marginTop:2 }} />
                       )}
                     </div>
                   </>
@@ -14774,7 +14953,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       try {
                         const cv = buildMirrorStoryCard(
                           `${sikayet} ${t("analysis_suf")}`, sikayetAnaliz,
-                          pickLang({tr:"İÇSEL AYNA",en:"INNER MIRROR",de:"INNERER SPIEGEL",es:"ESPEJO INTERIOR",pt:"ESPELHO INTERIOR",fr:"MIROIR INTÉRIEUR",ja:"内なる鏡"}, lang));
+                          pickLang({tr:"İÇSEL AYNA",en:"INNER MIRROR",de:"INNERER SPIEGEL",es:"ESPEJO INTERIOR",pt:"ESPELHO INTERIOR",fr:"MIROIR INTÉRIEUR",ja:"内なる鏡"}, lang), lang);
                         const blob = await new Promise(r => cv.toBlob(r, "image/png"));
                         if (blob) await shareImageBlob(blob, "sakin-ayna.png");
                       } catch (_) {}
@@ -14807,7 +14986,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       border:"1px solid rgba(255,255,255,0.3)",
                       borderRadius:18,
                       padding:"18px 60px 18px 20px",
-                      color:"#d0c8e8",fontSize:15,
+                      color:"#d0c8e8",fontSize:16,
                       fontFamily:"'Inter',sans-serif",
                       outline:"none",resize:"none",lineHeight:1.75,
                       letterSpacing:0.5,
@@ -16865,9 +17044,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           {/* Sakin nedir tanımı */}
           <div style={{ marginBottom:28 }}>
             <div style={{ fontSize:15,color:"#ccc",lineHeight:2.2,marginBottom:16 }}>
-              {t("about_sakin_not_meditation")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_meditation")}</span>{lang==="tr"?" değil":""}.<br/>
-              {t("about_sakin_not_therapy")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_therapy")}</span>{lang==="tr"?" değil":""}.<br/>
-              {t("about_sakin_not_todo")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_todo")}</span>{lang==="tr"?" değil":""}.<br/><br/>
+              {t("about_sakin_not_meditation")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_meditation")}</span>{lang==="tr"?" değil":lang==="ja"?"ではありません":""}.<br/>
+              {t("about_sakin_not_therapy")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_therapy")}</span>{lang==="tr"?" değil":lang==="ja"?"ではありません":""}.<br/>
+              {t("about_sakin_not_todo")} <span style={{ textDecoration:"line-through",color:"#666" }}>{t("about_sakin_todo")}</span>{lang==="tr"?" değil":lang==="ja"?"ではありません":""}.<br/><br/>
               {t("about_sakin_is")} <strong style={{ color:"#c084fc" }}>{t("about_sakin_awareness_system")}</strong>.
             </div>
           </div>
@@ -17001,7 +17180,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:"linear-gradient(90deg,#b8a4d8,#7a5096,#b8a4d8)",opacity:0.7,borderRadius:"3px 3px 0 0" }}/>
                 <div className="pricing-badge" style={{ background:"rgba(184,164,216,0.15)",border:"1px solid rgba(184,164,216,0.35)",color:"#b8a4d8" }}>✦ {t("paid_app_badge")}</div>
                 <div style={{ fontSize:17,fontWeight:300,letterSpacing:0.3,lineHeight:1.45,marginBottom:10,color:"#ffffff" }}>{t("paid_app_plan")}</div>
-                <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+                {premiumFeatureList(lang)}
 
                 <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
                   <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
@@ -17108,7 +17287,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     <div style={{ fontSize:11,color:"#9a90b5",letterSpacing:1,marginTop:3 }}>{t("premium_lifetime_name")}</div>
                   </div>
                 </div>
-                <ul>{t("paid_app_features").map(f=>(<li key={f}>{f}</li>))}</ul>
+                {premiumFeatureList(lang)}
 
                 <div style={{ marginTop:14,marginBottom:6,paddingTop:14,borderTop:"1px solid rgba(240,200,120,0.18)" }}>
                   <div style={{ fontSize:11,letterSpacing:3,color:"#c8a868",textTransform:"uppercase",fontFamily:"'Jost',sans-serif",marginBottom:10,textAlign:"center" }}>
@@ -17384,7 +17563,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {(card.k || card.el) && (
                   <span style={{ display:"block",fontSize:12,color:MUTE,marginTop:3,fontFamily:INTER,
                     overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap" }}>
-                    {[card.el, ...(card.k || [])].filter(Boolean).slice(0,3).join(" · ")}
+                    {[cardElLabel(card.el, lang), ...(card.k || [])].filter(Boolean).slice(0,3).join(" · ")}
                   </span>
                 )}
               </>) : (
@@ -17405,7 +17584,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
         const nm = (userName || "").trim().split(/\s+/)[0];
         const num = birthDate ? personalDayNumber(birthDate) : universalDayNumber();
         const [kw, line] = pickLang(DAY_NUMBER_TXT[num], lang) || DAY_NUMBER_TXT[num].en;
-        const yKey = sakinDayKey(new Date(Date.now() - 86400000));
+        const yKey = sakinDayKey(_daysAgo(1));
         const doneToday = streakData?.lastDate === dk;
         const alive = doneToday || streakData?.lastDate === yKey;
         const streakN = alive ? (streakData?.current || 0) : 0;
@@ -17417,7 +17596,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           const days = []; let nefes = 0, freqSec = 0, chakraSec = 0;
           try {
             for (let i = 6; i >= 0; i--) {
-              const d = new Date(Date.now() - i * 86400000);
+              const d = _daysAgo(i);
               const k = sakinDayKey(d);
               const b = parseInt(localStorage.getItem("sakin_breath_" + k)) || 0;
               const f = parseInt(localStorage.getItem("sakin_freq_sec_" + k)) || 0;
@@ -17644,7 +17823,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   let nefes = 0, freqSec = 0, chakraSec = 0;
                   try {
                     for (let i = 0; i < 7; i++) {
-                      const k = sakinDayKey(new Date(Date.now() - i * 86400000));
+                      const k = sakinDayKey(_daysAgo(i));
                       nefes     += parseInt(localStorage.getItem("sakin_breath_" + k))    || 0;
                       freqSec   += parseInt(localStorage.getItem("sakin_freq_sec_" + k))  || 0;
                       chakraSec += parseInt(localStorage.getItem("sakin_terapi_sec_" + k))|| 0;
@@ -17778,13 +17957,13 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           <span>☀️ {f && f.count>0 ? f.max_class : "-"}</span>
                           {w && w.speed!=null && <span>💨 {w.speed} km/s</span>}
                           {moon && <span>{moon.emoji} {moon.illumination}%</span>}
-                          {kozmikData.meteor?.active && <span>☄️ {kozmikData.meteor.name}</span>}
+                          {kozmikData.meteor?.active && <span>☄️ {meteorName(kozmikData.meteor, lang)}</span>}
                           {kozmikData.notableEvents?.map((ev,i) => {
                             const ic = ev.type==="solar_eclipse"?"🌑":ev.type==="lunar_eclipse"?"🌕":ev.type==="portal"?(ev.subtype==="lion_gate"?"🦁":ev.subtype?.includes("solstice")||ev.subtype?.includes("equinox")?"☀️":"✨"):"☄️";
                             return <span key={i}>{ic} {pickLang(ev.name,lang)}{ev.isPeak?" ✦":""}</span>;
                           })}
                           {kozmikData.planetGrouping && (
-                            <span>🪐 {kozmikData.planetGrouping.bodies.slice(0,3).join("·")} {kozmikData.planetGrouping.type==="parade"?"geçidi":"hizası"}</span>
+                            <span>🪐 {pickLang(kozmikData.planetGrouping.type==="parade" ? PLANET_GROUP_TXT.parade : PLANET_GROUP_TXT.align, lang)}: {kozmikData.planetGrouping.bodies.slice(0,3).map(x => pickLang(PLANET_I18N[x] || { en:x }, lang)).join(" · ")}</span>
                           )}
                         </div>
                         <div style={{ display:"flex",alignItems:"center",justifyContent:"space-between",gap:10,marginTop:12 }}>
@@ -17797,7 +17976,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                             try {
                               const govde = kozmikData.aiReport || pickLang(kozmikData.report, lang) || "";
                               const bas = pickLang({tr:"GÖKYÜZÜ RAPORU",en:"SKY REPORT",de:"HIMMELSBERICHT",es:"REPORTE DEL CIELO",pt:"RELATÓRIO DO CÉU",fr:"RAPPORT DU CIEL",ja:"空模様レポート"}, lang);
-                              const cv = buildMirrorStoryCard(bas, govde, bas);
+                              const cv = buildMirrorStoryCard(bas, govde, bas, lang);
                               const blob = await new Promise(r => cv.toBlob(r, "image/png"));
                               if (blob) await shareImageBlob(blob, "sakin-gokyuzu.png");
                             } catch (_) {}
@@ -18162,7 +18341,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           placeholder={t("about_feedback_ph")}
                           rows={3}
                           maxLength={1000}
-                          style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:15,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
+                          style={{ width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(184,164,216,0.15)",borderRadius:12,padding:"12px 14px",color:"#d0c8e8",fontSize:16,fontFamily:"'Inter',sans-serif",outline:"none",marginBottom:12,resize:"none",lineHeight:1.7,letterSpacing:0.3 }}
                         />
                         <div style={{ display:"flex",gap:10,justifyContent:"flex-end" }}>
                           <button onClick={()=>{ setFbOpen(false); setFbMsg(""); setFbCat(""); }}
@@ -18212,7 +18391,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       <div style={cardSt}>
                         {notifPerm && notifPerm !== "granted" && (
                           <Row icon="⚠" label={pickLang(NOTIF_SET_TXT.permOff, lang)} note={pickLang(NOTIF_SET_TXT.permNote, lang)}
-                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); ensurePushRegistered(); } }).catch(()=>{}); } : undefined}
+                            onClick={notifPerm === "prompt" ? () => { LocalNotifications.requestPermissions().then(p => { setNotifPerm(p.display); if (p.display === "granted") { try { localStorage.setItem("sakin_notif_asked","1"); } catch(_){} scheduleAllNotifications(lang, birthDate, { force:true }); scheduleWinBack(lang); ensurePushRegistered(); rescheduleLetterNotif(lang); } }).catch(()=>{}); } : undefined}
                             right={notifPerm === "prompt" ? <span style={{ flexShrink:0,fontFamily:"'Jost',sans-serif",fontSize:12,letterSpacing:1.2,textTransform:"uppercase",color:"#c9b4ef" }}>{pickLang(NOTIF_SET_TXT.permAsk, lang)}</span> : null} />
                         )}
                         <Row icon="◌" label={headLabel} note={summary}
@@ -18494,27 +18673,27 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <input
                   value={kilavuzQ}
                   onChange={e => setKilavuzQ(e.target.value)}
-                  placeholder={lang === "tr" ? "Terim ara…" : "Search terms…"}
-                  aria-label={lang === "tr" ? "Terim ara" : "Search terms"}
+                  placeholder={pickLang(GLOSS_UI.search, lang)}
+                  aria-label={pickLang(GLOSS_UI.search, lang).replace("…","")}
                   style={{ width:"100%", boxSizing:"border-box", padding:"12px 38px 12px 16px",
                     background:"rgba(255,255,255,0.04)", border:"1px solid rgba(255,255,255,0.14)",
-                    borderRadius:14, color:"#eee", fontSize:15, fontFamily:"'Inter',sans-serif",
+                    borderRadius:14, color:"#eee", fontSize:16, fontFamily:"'Inter',sans-serif",
                     outline:"none" }} />
                 {kilavuzQ && (
-                  <button onClick={() => setKilavuzQ("")} aria-label={lang === "tr" ? "Temizle" : "Clear"}
+                  <button onClick={() => setKilavuzQ("")} aria-label={pickLang(GLOSS_UI.clear, lang)}
                     style={{ position:"absolute", right:8, top:"50%", transform:"translateY(-50%)",
                       background:"none", border:"none", color:"#888", fontSize:18, cursor:"pointer",
                       padding:"4px 8px", lineHeight:1 }}>✕</button>
                 )}
               </div>
               <div style={{ fontSize:12, color:"#777", letterSpacing:1, marginBottom:22, fontFamily:"'Jost',sans-serif" }}>
-                {q ? `${hitCount} / ${totalCount}` : `${totalCount} ${lang === "tr" ? "terim" : "terms"}`}
+                {q ? `${hitCount} / ${totalCount}` : `${totalCount} ${pickLang(GLOSS_UI.terms, lang)}`}
               </div>
 
               {/* Sonuç yoksa */}
               {q && hitCount === 0 && (
                 <div style={{ textAlign:"center", color:"#888", fontSize:14, padding:"30px 0", lineHeight:1.8 }}>
-                  {lang === "tr" ? "Bu terim bulunamadı." : "No matching term."}
+                  {pickLang(GLOSS_UI.none, lang)}
                 </div>
               )}
 
@@ -18587,7 +18766,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
               value={licenseInput}
               onChange={e => setLicenseInput(e.target.value)}
-              style={{ fontSize:15,padding:"12px 14px",marginBottom:8,textAlign:"center",letterSpacing:2,fontFamily:"monospace" }}
+              style={{ fontSize:16,padding:"12px 14px",marginBottom:8,textAlign:"center",letterSpacing:2,fontFamily:"monospace" }}
             />
             {licenseError && (
               <div style={{ fontSize:13,color:"#e06060",textAlign:"center",marginBottom:8 }}>{licenseError}</div>

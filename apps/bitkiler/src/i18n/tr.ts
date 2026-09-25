@@ -1,4 +1,8 @@
 export const tr = {
+  common: {
+    share: 'Paylaş',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Bugün',

@@ -65,16 +65,36 @@ function bodyLongitude(A, body, date) {
 // Ay evresi. Gökyüzü Raporu başlığında kapalıyken bile görünsün diye ayrı
 // fonksiyon: kullanıcı paneli açmadan da ayın nerede olduğunu görüyor.
 // 8 evre, SoulID'nin kullandığı sınırlarla aynı mantık (0..360 açı / 45).
+// de/es/pt/fr/ja adları i18n-data.js NOTIF_TRANS.MOON_PHASES ile BİREBİR aynı
+// (App.jsx moonPhase() oradan okuyor); biri değişirse diğeri de değişsin.
+// Buraya kopyalandı, import edilmedi: dev i18n dosyası bu tembel chunk'a girmesin.
 const PHASE_NAMES = [
-  { tr:"Yeni Ay",        en:"New Moon" },
-  { tr:"Hilal",          en:"Waxing Crescent" },
-  { tr:"İlk Dördün",     en:"First Quarter" },
-  { tr:"Şişkin Ay",      en:"Waxing Gibbous" },
-  { tr:"Dolunay",        en:"Full Moon" },
-  { tr:"Solan Şişkin",   en:"Waning Gibbous" },
-  { tr:"Son Dördün",     en:"Last Quarter" },
-  { tr:"Solan Hilal",    en:"Waning Crescent" },
+  { tr:"Yeni Ay",      en:"New Moon",        de:"Neumond",           es:"Luna nueva",       pt:"Lua nova",         fr:"Nouvelle lune",              ja:"新月" },
+  { tr:"Hilal",        en:"Waxing Crescent", de:"Zunehmende Sichel", es:"Luna creciente",   pt:"Lua crescente",    fr:"Premier croissant",          ja:"三日月" },
+  { tr:"İlk Dördün",   en:"First Quarter",   de:"Erstes Viertel",    es:"Cuarto creciente", pt:"Quarto crescente", fr:"Premier quartier",           ja:"上弦の月" },
+  { tr:"Şişkin Ay",    en:"Waxing Gibbous",  de:"Zunehmender Mond",  es:"Gibosa creciente", pt:"Gibosa crescente", fr:"Lune gibbeuse croissante",   ja:"十三夜月" },
+  { tr:"Dolunay",      en:"Full Moon",       de:"Vollmond",          es:"Luna llena",       pt:"Lua cheia",        fr:"Pleine lune",                ja:"満月" },
+  { tr:"Solan Şişkin", en:"Waning Gibbous",  de:"Abnehmender Mond",  es:"Gibosa menguante", pt:"Gibosa minguante", fr:"Lune gibbeuse décroissante", ja:"十六夜月" },
+  { tr:"Son Dördün",   en:"Last Quarter",    de:"Letztes Viertel",   es:"Cuarto menguante", pt:"Quarto minguante", fr:"Dernier quartier",           ja:"下弦の月" },
+  { tr:"Solan Hilal",  en:"Waning Crescent", de:"Abnehmende Sichel", es:"Luna menguante",   pt:"Lua minguante",    fr:"Dernier croissant",          ja:"二十六夜月" },
 ];
+
+// ── DİL SEÇİMİ ─────────────────────────────────────────────────────────────
+// Sakin'in 7 dili. hd-gates.json alanları: n/t/g/s = Türkçe, nEn/tEn.. =
+// İngilizce, nDe/nEs/nPt/nFr/nJa.. = diğer beşi. Bilinmeyen dil ya da boş
+// alan İngilizceye düşer (eskiden tr dışındaki HER dil İngilizce görüyordu).
+// "pt-BR" gibi bölge ekli kodlar ilk iki harfe indirilir.
+const LANGS = ["tr", "en", "de", "es", "pt", "fr", "ja"];
+function normLang(lang) {
+  const l = String(lang || "").toLowerCase().slice(0, 2);
+  return LANGS.includes(l) ? l : "en";
+}
+function gateField(info, f, lang) {
+  const l = normLang(lang);
+  if (l === "tr") return info[f] || info[f + "En"] || "";
+  const v = info[f + l[0].toUpperCase() + l[1]];
+  return v || info[f + "En"] || "";
+}
 // Evreye göre ay diski görseli (emoji değil, tipografik daire dolgusu ile
 // çizilemediği için Unicode ay sembolleri kullanıldı; her platformda var).
 const PHASE_GLYPH = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"];
@@ -91,7 +111,7 @@ export async function computeMoonPhase(date = new Date(), lang = "tr") {
       angle,
       index: idx,
       glyph: PHASE_GLYPH[idx],
-      name: lang === "tr" ? PHASE_NAMES[idx].tr : PHASE_NAMES[idx].en,
+      name: PHASE_NAMES[idx][normLang(lang)] || PHASE_NAMES[idx].en,
       // Aydınlanma oranı: "ne kadar dolu" bilgisi, yüzde olarak gösterilebilir.
       fraction: illum && typeof illum.phase_fraction === "number" ? illum.phase_fraction : null,
     };
@@ -107,16 +127,15 @@ export async function computeMoonPhase(date = new Date(), lang = "tr") {
 export async function computeTransit(date = new Date(), lang = "tr") {
   let A;
   try { A = await engine(); } catch { return null; }
-  const en = lang !== "tr";
   const pick = (g) => {
     const info = GATES[String(g.gate)];
     if (!info) return null;
     return {
       gate: g.gate, line: g.line, center: info.c,
-      name:   en ? info.nEn : info.n,
-      theme:  en ? info.tEn : info.t,
-      gift:   en ? info.gEn : info.g,
-      shadow: en ? info.sEn : info.s,
+      name:   gateField(info, "n", lang),
+      theme:  gateField(info, "t", lang),
+      gift:   gateField(info, "g", lang),
+      shadow: gateField(info, "s", lang),
     };
   };
   const out = { sun: null, moon: null, gates: [] };
@@ -169,10 +188,9 @@ export async function computeGateExitDate(body, date = new Date(), lang = "tr") 
   try { A = await engine(); } catch { return null; }
   const cfg = SCAN[body];
   if (!cfg) return null;
-  const en = lang !== "tr";
   const gateInfo = (g) => {
     const info = GATES[String(g)];
-    return info ? { name: en ? info.nEn : info.n, theme: en ? info.tEn : info.t } : { name: "", theme: "" };
+    return info ? { name: gateField(info, "n", lang), theme: gateField(info, "t", lang) } : { name: "", theme: "" };
   };
   let curLon;
   try { curLon = bodyLongitude(A, body, date); } catch { return null; }

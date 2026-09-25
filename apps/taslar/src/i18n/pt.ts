@@ -1,4 +1,8 @@
 export const pt = {
+  common: {
+    share: 'Partilhar',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Hoje',

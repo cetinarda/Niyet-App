@@ -1,4 +1,8 @@
 export const fr = {
+  common: {
+    share: 'Partager',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: "Aujourd'hui",

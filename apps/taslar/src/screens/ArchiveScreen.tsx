@@ -21,6 +21,10 @@ const FILTERS: { key: FilterType; color: string }[] = [
   { key: 'stone',  color: Colors.purple },
 ];
 
+const DATE_LOCALE: Record<string, string> = {
+  tr: 'tr-TR', en: 'en-US', de: 'de-DE', es: 'es-ES', pt: 'pt-PT', fr: 'fr-FR', ja: 'ja-JP',
+};
+
 export function ArchiveScreen() {
   const insets = useSafeAreaInsets();
   const { t, lang } = useI18n();
@@ -37,7 +41,7 @@ export function ArchiveScreen() {
 
   const formattedDate = (dateStr: string) => {
     const d = new Date(dateStr);
-    const locale = lang === 'en' ? 'en-US' : 'tr-TR';
+    const locale = DATE_LOCALE[lang] || 'en-US';
     return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', year: 'numeric' });
   };
 

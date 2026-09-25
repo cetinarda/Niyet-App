@@ -34,6 +34,37 @@ const ZODIAC_EN: Record<ZodiacKey, string> = {
   'Yay': 'Sagittarius', 'Oğlak': 'Capricorn', 'Kova': 'Aquarius', 'Balık': 'Pisces',
 };
 
+// Burç adları diğer diller için (önceden tr/en dışı diller Türkçe görüyordu).
+const ZODIAC_I18N: Record<string, Record<ZodiacKey, string>> = {
+  en: ZODIAC_EN,
+  de: {
+    'Koç': 'Widder', 'Boğa': 'Stier', 'İkizler': 'Zwillinge', 'Yengeç': 'Krebs',
+    'Aslan': 'Löwe', 'Başak': 'Jungfrau', 'Terazi': 'Waage', 'Akrep': 'Skorpion',
+    'Yay': 'Schütze', 'Oğlak': 'Steinbock', 'Kova': 'Wassermann', 'Balık': 'Fische',
+  },
+  es: {
+    'Koç': 'Aries', 'Boğa': 'Tauro', 'İkizler': 'Géminis', 'Yengeç': 'Cáncer',
+    'Aslan': 'Leo', 'Başak': 'Virgo', 'Terazi': 'Libra', 'Akrep': 'Escorpio',
+    'Yay': 'Sagitario', 'Oğlak': 'Capricornio', 'Kova': 'Acuario', 'Balık': 'Piscis',
+  },
+  pt: {
+    'Koç': 'Carneiro', 'Boğa': 'Touro', 'İkizler': 'Gémeos', 'Yengeç': 'Caranguejo',
+    'Aslan': 'Leão', 'Başak': 'Virgem', 'Terazi': 'Balança', 'Akrep': 'Escorpião',
+    'Yay': 'Sagitário', 'Oğlak': 'Capricórnio', 'Kova': 'Aquário', 'Balık': 'Peixes',
+  },
+  fr: {
+    'Koç': 'Bélier', 'Boğa': 'Taureau', 'İkizler': 'Gémeaux', 'Yengeç': 'Cancer',
+    'Aslan': 'Lion', 'Başak': 'Vierge', 'Terazi': 'Balance', 'Akrep': 'Scorpion',
+    'Yay': 'Sagittaire', 'Oğlak': 'Capricorne', 'Kova': 'Verseau', 'Balık': 'Poissons',
+  },
+  ja: {
+    'Koç': '牡羊座', 'Boğa': '牡牛座', 'İkizler': '双子座', 'Yengeç': '蟹座',
+    'Aslan': '獅子座', 'Başak': '乙女座', 'Terazi': '天秤座', 'Akrep': '蠍座',
+    'Yay': '射手座', 'Oğlak': '山羊座', 'Kova': '水瓶座', 'Balık': '魚座',
+  },
+};
+const zodiacName = (z: ZodiacKey, lang: string) => ZODIAC_I18N[lang]?.[z] ?? z;
+
 const ZODIAC_SYMBOL: Record<ZodiacKey, string> = {
   'Koç': '♈', 'Boğa': '♉', 'İkizler': '♊', 'Yengeç': '♋',
   'Aslan': '♌', 'Başak': '♍', 'Terazi': '♎', 'Akrep': '♏',
@@ -131,7 +162,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded, onBack
   const resultLabel = () => {
     if (!selection) return '';
     if (selection.type === 'zodiac') {
-      const name = lang === 'en' ? ZODIAC_EN[selection.key] : selection.key;
+      const name = zodiacName(selection.key as ZodiacKey, lang);
       return t('animalFinder.result.zodiacLabel').replace('{name}', name);
     }
     const el = ELEMENTS.find(e => e.key === selection.key);
@@ -208,7 +239,7 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, embedded, onBack
                 activeOpacity={0.8}
               >
                 <Text style={styles.zodiacSymbol}>{ZODIAC_SYMBOL[z]}</Text>
-                <Text style={styles.zodiacName}>{lang === 'en' ? ZODIAC_EN[z] : z}</Text>
+                <Text style={styles.zodiacName}>{zodiacName(z, lang)}</Text>
               </TouchableOpacity>
             ))}
           </View>

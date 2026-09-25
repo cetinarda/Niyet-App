@@ -142,7 +142,7 @@ export const TR = {
   'archive.count': '{n} okuma',
   'archive.map': 'Mit Haritan',
   'archive.empty.title': 'Henüz okuma yok.',
-  'archive.empty.sub': 'Ana ekrandan ilk destenı aç.',
+  'archive.empty.sub': 'Ana ekrandan ilk desteni aç.',
   'archive.filter.all': 'Tümü',
   'archive.label.archetype': 'Arketip',
   'archive.label.myth': 'Mit',

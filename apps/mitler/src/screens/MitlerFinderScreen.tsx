@@ -13,7 +13,7 @@ import { Colors, Typography, Spacing, BorderRadius } from '../theme/colors';
 import { useData, Archetype, Myth, ImageItem } from '../data/loader';
 import { MitlerDetailScreen, MitlerEntry, Kind } from './MitlerDetailScreen';
 import { calcLifePath } from '../utils/numerology';
-import { useLanguage, getLanguage } from '../i18n/useLanguage';
+import { useLanguage, getLanguage, translate } from '../i18n/useLanguage';
 import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -504,7 +504,7 @@ export function MitlerFinderScreen({
           contentContainerStyle={styles.resultScroll}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.resultLabel}>Sana Eşlik Edenler</Text>
+          <Text style={styles.resultLabel}>{t('finder.result.label')}</Text>
           {result.reason ? <Text style={styles.resultReason}>{result.reason}</Text> : null}
 
           <TripleCard
@@ -588,7 +588,7 @@ function TripleCard({
           </View>
         ))}
       </View>
-      <Text style={[styles.openHint, { color }]}>Detayı Aç →</Text>
+      <Text style={[styles.openHint, { color }]}>{translate('common.openDetail')}</Text>
     </TouchableOpacity>
   );
 }

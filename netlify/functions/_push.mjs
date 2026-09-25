@@ -158,7 +158,9 @@ export async function sendFcmBatch(sa, items, concurrency = 10) {
         });
         const j = await r.json().catch(() => ({}));
         const code = j && j.error && (j.error.details || []).map((d) => d.errorCode).find(Boolean);
-        const dead = r.status === 404 || code === "UNREGISTERED" || code === "INVALID_ARGUMENT";
+        // INVALID_ARGUMENT yük hatası da olabilir (renk, veri tipi): ölü sayılırsa tek bir
+        // hatalı gönderim bütün Android kayıtlarını siler. Yalnızca 404 / UNREGISTERED.
+        const dead = r.status === 404 || code === "UNREGISTERED";
         results.push({ key: it.key, ok: r.ok, dead: !r.ok && dead, why: r.ok ? "" : `${r.status} ${code || ""}` });
       } catch (e) { results.push({ key: it.key, ok: false, dead: false, why: String(e && e.name || e) }); }
     }

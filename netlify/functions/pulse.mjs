@@ -86,9 +86,11 @@ async function computeAggregate(store, week) {
   try {
     const { blobs } = await store.list({ prefix: "u/" });
     const keys = (blobs || []).map((b) => b.key);
-    for (const k of keys) {
-      if (users.length >= MAX_USERS) break;
-      try { const rec = await store.get(k, { type: "json" }); if (rec) users.push(rec); } catch (_) {}
+    // 16'şarlı PARALEL okuma (tek tek okuma canlıda 7 sn sürüyordu, 10 sn tavanına yakın).
+    const lim = keys.slice(0, MAX_USERS);
+    for (let i = 0; i < lim.length; i += 16) {
+      const got = await Promise.all(lim.slice(i, i + 16).map((k) => store.get(k, { type: "json" }).catch(() => null)));
+      for (const rec of got) if (rec) users.push(rec);
     }
   } catch (_) { /* liste patlarsa bos toplamla don */ }
   return aggregatePulse(users, week);

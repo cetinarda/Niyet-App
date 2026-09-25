@@ -5,7 +5,7 @@
 // crisis, slow, abuse, spam, db.
 // ⚠️ KRİZ: mesaj odaya DÜŞMEZ; istemci yazana ÖZEL destek mesajı gösterir.
 import { chatConfig, corsFor, json, rest, broadcast, ROOMS, MAX_LEN, SLOW_MS, deviceHash, validDeviceId,
-  nickFor, elementIndex, hasLink, looksCrisis, looksProfane, aiModerate, ipLimited } from "./_chat.mjs";
+  nickFor, elementIndex, authorTag, hasLink, looksCrisis, looksProfane, aiModerate, ipLimited } from "./_chat.mjs";
 
 export default async (req, context) => {
   const { ok: originOk, headers } = corsFor(req);
@@ -35,6 +35,9 @@ export default async (req, context) => {
     if (since < SLOW_MS) return json(headers, 200, { ok: false, reason: "slow", waitMs: SLOW_MS - since });
   }
   if (looksProfane(text)) return json(headers, 200, { ok: false, reason: "abuse" });
+  // Moderasyon çağrısı IP başına dakikada en çok 8 (kimlik değiştirerek yavaş modu
+  // atlayıp AI'ı art arda çağırmaya karşı).
+  if (ipLimited(ip, 8, "mod")) return json(headers, 200, { ok: false, reason: "slow", waitMs: 30000 });
   const verdict = await aiModerate(text);            // null = AI yok/düştü: yerel filtre yeterli sayılır
   if (verdict === "CRISIS") return json(headers, 200, { ok: false, reason: "crisis" });
   if (verdict === "ABUSE" || verdict === "SEXUAL") return json(headers, 200, { ok: false, reason: "abuse" });
@@ -44,7 +47,7 @@ export default async (req, context) => {
     body: { room, nick: nickFor(h, room), body: text, device_hash: h } });
   const row = ins.ok && Array.isArray(ins.data) ? ins.data[0] : null;
   if (!row) return json(headers, 200, { ok: false, reason: "db" });
-  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h) };
+  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h) };
   await broadcast(cfg, `room:${room}`, "msg", msg);
 
   // Ara sıra eski mesajları temizle (48 saatten eski; oda zaten 24 saati gösterir).

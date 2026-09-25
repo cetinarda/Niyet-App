@@ -69,8 +69,9 @@ const HD_TYPE_EN: Record<string, string> = {
   'Manifestor': 'Manifestor',
   'Reflektör': 'Reflector',
 };
-function buildReason(lang: 'tr' | 'en', element: string, lifePath: number, hdType: string): string {
-  if (lang === 'en') {
+function buildReason(lang: string, element: string, lifePath: number, hdType: string): string {
+  // tr dışındaki diller İngilizce gerekçeye düşer (önceden de/es/pt/fr/ja Türkçe görüyordu).
+  if (lang !== 'tr') {
     const elEn = ELEMENT_TR_TO_EN[element] || element;
     const hdReason = HD_REASONS_EN[hdType] || 'your inner strength';
     const typeEn = HD_TYPE_EN[hdType] || hdType;

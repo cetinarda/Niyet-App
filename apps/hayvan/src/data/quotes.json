@@ -1585,7 +1585,18 @@
     "source": "Aşık Veysel",
     "category": "ask",
     "rarity": "common",
-    "textEn": "Your beauty would be worth nothing, were it not for this love in me."
+    "textEn": "Your beauty would be worth nothing, were it not for this love in me.",
+    "categoryEn": "love",
+    "textDe": "Deine Schönheit wäre nichts wert, gäbe es diese Liebe in mir nicht.",
+    "categoryDe": "Liebe",
+    "textEs": "Tu belleza no valdría nada si no fuera por este amor que hay en mí.",
+    "categoryEs": "amor",
+    "textPt": "A tua beleza nada valeria, não fosse este amor que há em mim.",
+    "categoryPt": "amor",
+    "textFr": "Ta beauté ne vaudrait rien sans cet amour qui est en moi.",
+    "categoryFr": "amour",
+    "textJa": "私の中のこの愛がなければ、あなたの美しさに価値はない。",
+    "categoryJa": "愛"
   },
   {
     "id": "n501",

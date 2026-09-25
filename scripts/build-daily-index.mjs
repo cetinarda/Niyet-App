@@ -82,15 +82,76 @@ const SOURCES = {
   image:     { file: path.join(APPS, "mitler/src/data/images.json"),     i18n: true },
 };
 
-// Tek dilli kaynaklarda name/nameEn/nameDe... kalıbı var (bitkiler böyle).
-const LANG_FIELD = { en: "nameEn", de: "nameDe", es: "nameEs", fr: "nameFr", ja: "nameJa", pt: "namePt" };
+// Tek dosyalı kaynaklarda (hayvan/nagual/bitki/taş) HER alanın dil kopyası
+// aynı nesnede, sonekli: name/nameEn/nameDe..., element/elementEn...,
+// symbolism/symbolismEn..., properties/propertiesEn..., dailyMessage/
+// dailyMessageEn..., guidance/guidanceEn...
+// ⚠️ Eskiden yalnızca `name` çevriliyordu: tr dışındaki 6 dilde element,
+// anahtar kelimeler ve günlük mesaj TÜRKÇE kalıyordu (dil başına ~500 metin).
+// Kural: istenen dil -> yoksa İngilizce -> Türkçe YALNIZCA tr için. Tek istisna
+// ad (`n`): hiç çevirisi yoksa özel isim sayılıp Türkçe ad kalır, kart adsız
+// kalmasın. Diğer alanlarda çeviri yoksa alan hiç yazılmaz (Türkçe sızmaz).
+const SUFFIX = { en: "En", de: "De", es: "Es", fr: "Fr", ja: "Ja", pt: "Pt" };
+const KW_FIELDS = ["keywords", "symbolism", "properties"];
 
-function localize(o, lang) {
-  const s = slim(o);
+function has(v) {
+  return Array.isArray(v) ? v.length > 0 : typeof v === "string" && v.trim() !== "";
+}
+// `base` alanının `lang` karşılığı: dil -> en -> (yalnızca tr ise) Türkçe.
+function pick(o, base, lang) {
+  if (lang === "tr") return o[base];
+  const own = o[base + SUFFIX[lang]];
+  if (has(own)) return own;
+  const en = o[base + "En"];
+  if (has(en)) return en;
+  return undefined;
+}
+
+// Kaynaklar element adının harf büyüklüğünde tutarsız (hayvan "luft"/"aire",
+// taş "Luft"/"Aire"). Kartta anahtar kelimelerle yan yana yazıldığı için tek
+// biçime çekilir: Almancada isim büyük harfle, diğerlerinde küçük (tr gibi).
+function normElement(s, lang) {
+  if (typeof s !== "string" || !s) return s;
+  if (lang === "de") return s.charAt(0).toLocaleUpperCase("de") + s.slice(1);
+  if (lang === "ja") return s;
+  return s.charAt(0).toLocaleLowerCase(lang) + s.slice(1);
+}
+
+// Sonekli alan taşıyan (tek dosyalı) kaynaklar için yerelleştirilmiş kopya.
+// Çıktı şeması slim() ile BİREBİR aynı (n/e/c/el/k/m); yalnızca değerler değişir.
+function localizedView(o, lang) {
+  const v = { ...o };
+  const n = pick(o, "name", lang);
+  v.name = has(n) ? n : o.name;
+  v.element = normElement(pick(o, "element", lang), lang);
+  // Anahtar kelime alanı kaynağa göre değişiyor; slim() ile aynı önceliği koru.
+  const kwBase = KW_FIELDS.find((f) => has(o[f]));
+  for (const f of KW_FIELDS) v[f] = undefined;
+  if (kwBase) v[kwBase] = pick(o, kwBase, lang);
+  // Mesaj slim()'e verilmez, localize() ayrıca karar veriyor (aşağıya bak).
+  v.dailyMessage = undefined;
+  v.guidance = undefined;
+  return v;
+}
+
+// Çeviriler Türkçeden uzun olabiliyor (bitki mesajları de/es/fr/pt'de 300'e
+// kadar). 240 sınırı dile göre uygulanırsa `m` bazı dillerde düşüyordu. Bu
+// yüzden `m` olup olmayacağına TÜRKÇE kaynak karar verir (şema her dilde
+// aynı), çeviri için daha geniş bir emniyet tavanı kullanılır.
+const MSG_MAX_LOCALIZED = 360;
+
+function localize(o, lang, src) {
+  // i18n:true kaynaklarda (mitler) dil başına ayrı dosya var, alanlar zaten
+  // o dilde; sonekli alan aranmaz.
+  if (lang === "tr" || src.i18n) return slim(o);
+  const s = slim(localizedView(o, lang));
   if (!s) return null;
-  if (lang !== "tr") {
-    const f = LANG_FIELD[lang];
-    if (f && o[f]) s.n = o[f];
+  const trMsg = slim(o)?.m;
+  if (trMsg !== undefined) {
+    // Türkçede hangi alan seçildiyse (dailyMessage || guidance) onun karşılığı.
+    const base = has(o.dailyMessage) ? "dailyMessage" : "guidance";
+    const msg = pick(o, base, lang);
+    if (typeof msg === "string" && msg.length <= MSG_MAX_LOCALIZED) s.m = msg;
   }
   return s;
 }
@@ -116,7 +177,7 @@ for (const lang of LANGS) {
     }
     const map = {};
     for (const o of arr) {
-      const s = localize(o, lang);
+      const s = localize(o, lang, src);
       if (s) map[o.id] = s;
     }
     bundle[key] = map;

@@ -17,6 +17,7 @@ import animalsData from '../data/animals.json';
 import { useLocalizedAnimals } from '../i18n/localize';
 import { useI18n } from '../i18n/useI18n';
 import { en } from '../i18n/en';
+import { translations } from '../i18n';
 import { pushBackHandler, BACK_PRIORITY } from '../utils/backStack';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -147,7 +148,46 @@ function scoreAnimals(traits: Record<string, number>, elements: Record<string, n
   return best;
 }
 
-function findAnimalByQuiz(picks: Option[], lang: 'tr' | 'en' = 'tr'): AnimalResult {
+// Sonuç gerekçesi tr/en dışındaki diller için (önceden bu diller Türkçe görüyordu).
+const REASON_I18N: Record<string, {
+  quiz: string;
+  birth: Record<string, string>;
+  hour: Record<string, string>;
+  city: (c: string) => string;
+}> = {
+  de: {
+    quiz: 'Das Energiemuster deiner Antworten',
+    birth: { hava: 'Frühlingsgeburt mit Luftenergie', ateş: 'Sommergeburt mit Feuerenergie', toprak: 'Herbstgeburt mit Erdenergie', su: 'Wintergeburt mit Wasserenergie' },
+    hour: { gece: 'die Energie der Nacht', sabah: 'die Energie des Morgens', öğlen: 'die Energie des Mittags', akşam: 'die Energie des Abends' },
+    city: c => `die Spur von ${c}`,
+  },
+  es: {
+    quiz: 'El patrón energético de tus respuestas',
+    birth: { hava: 'Nacimiento en primavera con energía de aire', ateş: 'Nacimiento en verano con energía de fuego', toprak: 'Nacimiento en otoño con energía de tierra', su: 'Nacimiento en invierno con energía de agua' },
+    hour: { gece: 'la energía de la noche', sabah: 'la energía de la mañana', öğlen: 'la energía del mediodía', akşam: 'la energía del atardecer' },
+    city: c => `la huella de ${c}`,
+  },
+  pt: {
+    quiz: 'O padrão energético das tuas respostas',
+    birth: { hava: 'Nascimento na primavera com energia do ar', ateş: 'Nascimento no verão com energia do fogo', toprak: 'Nascimento no outono com energia da terra', su: 'Nascimento no inverno com energia da água' },
+    hour: { gece: 'a energia da noite', sabah: 'a energia da manhã', öğlen: 'a energia do meio-dia', akşam: 'a energia do entardecer' },
+    city: c => `a marca de ${c}`,
+  },
+  fr: {
+    quiz: 'Le motif énergétique de tes réponses',
+    birth: { hava: "Naissance au printemps portant l'énergie de l'air", ateş: "Naissance en été portant l'énergie du feu", toprak: "Naissance en automne portant l'énergie de la terre", su: "Naissance en hiver portant l'énergie de l'eau" },
+    hour: { gece: "l'énergie de la nuit", sabah: "l'énergie du matin", öğlen: "l'énergie de midi", akşam: "l'énergie du soir" },
+    city: c => `l'empreinte de ${c}`,
+  },
+  ja: {
+    quiz: 'あなたの回答に表れたエネルギーのパターン',
+    birth: { hava: '風のエネルギーを宿す春生まれ', ateş: '火のエネルギーを宿す夏生まれ', toprak: '地のエネルギーを宿す秋生まれ', su: '水のエネルギーを宿す冬生まれ' },
+    hour: { gece: '夜のエネルギー', sabah: '朝のエネルギー', öğlen: '昼のエネルギー', akşam: '夕方のエネルギー' },
+    city: c => `${c}の土地の痕跡`,
+  },
+};
+
+function findAnimalByQuiz(picks: Option[], lang: string = 'tr'): AnimalResult {
   const traits: Record<string, number> = {};
   const elements: Record<string, number> = {};
   for (const p of picks) {
@@ -156,11 +196,11 @@ function findAnimalByQuiz(picks: Option[], lang: 'tr' | 'en' = 'tr'): AnimalResu
   }
   return {
     animal: scoreAnimals(traits, elements),
-    reason: lang === 'en' ? 'Energy pattern in your answers' : 'Cevaplarındaki enerji örüntüsü',
+    reason: lang === 'en' ? 'Energy pattern in your answers' : (REASON_I18N[lang]?.quiz ?? 'Cevaplarındaki enerji örüntüsü'),
   };
 }
 
-export function findAnimalByBirth(day: number, month: number, year: number, hour?: number, city?: string, lang: 'tr' | 'en' = 'tr'): AnimalResult {
+export function findAnimalByBirth(day: number, month: number, year: number, hour?: number, city?: string, lang: string = 'tr'): AnimalResult {
   const traits: Record<string, number> = {};
   const elements: Record<string, number> = {};
 
@@ -226,6 +266,16 @@ export function findAnimalByBirth(day: number, month: number, year: number, hour
       `${seasonEn} birth carrying ${elEn} energy`,
       hourLabel ? `the energy of ${HOUR_EN[hourLabel] || hourLabel}` : '',
       city && city.trim() ? `the mark of ${city.trim()}` : '',
+    ].filter(Boolean).join(' · ');
+    return { animal: scoreAnimals(traits, elements), reason };
+  }
+
+  const loc = REASON_I18N[lang];
+  if (loc) {
+    const reason = [
+      loc.birth[seasonEl[month]] || '',
+      hourLabel ? (loc.hour[hourLabel] || '') : '',
+      city && city.trim() ? loc.city(city.trim()) : '',
     ].filter(Boolean).join(' · ');
     return { animal: scoreAnimals(traits, elements), reason };
   }
@@ -359,8 +409,10 @@ export function AnimalFinderScreen({ onClose, prefillBirthDate, prefillBirthHour
   };
 
   const getDisplayQ = (i: number) => {
-    if (lang === 'en') {
-      const eq = en.animalFinder.quiz.questions[i];
+    // Soru/cevap metinleri seçili dilin sözlüğünden (önceden yalnızca en; de/es/pt/fr/ja
+    // Türkçe görüyordu). Sözlükte yoksa en'e düşer; tr kaynak dizideki metni kullanır.
+    if (lang !== 'tr') {
+      const eq = ((translations[lang] as any)?.animalFinder?.quiz?.questions?.[i]) || en.animalFinder.quiz.questions[i];
       return { q: eq.q, options: eq.options as readonly string[] };
     }
     return { q: QUESTIONS[i].q, options: QUESTIONS[i].options.map((o: Option) => o.text) };

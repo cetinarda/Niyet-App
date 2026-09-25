@@ -1,4 +1,8 @@
 export const fr = {
+  common: {
+    share: 'Partager',
+  },
+
   // ─── Tab bar ──────────────────────────────────────────────────────────────────
   tabs: {
     today: 'Aujourd\'hui',
@@ -118,6 +122,8 @@ export const fr = {
       closeBtn: 'Fermer ✦',
     },
     quiz: {
+      hint: 'Si plusieurs t\'appellent, choisis-les tous.',
+      continueBtn: 'Continuer',
       questions: [
         {
           q: 'Quel environnement de la nature t\'appelle ?',

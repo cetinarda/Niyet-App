@@ -19,7 +19,7 @@ import stonesData from '../data/stones.json';
 import animalsData from '../data/animals.json';
 import nagualsData from '../data/naguals.json';
 import { useLocalizedAnimals, useLocalizedStones, useLocalizedNaguals } from '../i18n/localize';
-import { calcNumerology, LIFE_PATH_MEANINGS } from '../utils/numerology';
+import { calcNumerology, getLifePathMeaning } from '../utils/numerology';
 import { getHDProfile, GATE_NAMES } from '../utils/humanDesign';
 import { getWeeklyReading } from '../utils/weeklyReading';
 import { AnimalFinderScreen, findAnimalByBirth } from './AnimalFinderScreen';
@@ -86,6 +86,19 @@ const HD_STRATEGY_EN: Record<string, string> = {
   'Davetleri beklemek': 'Wait for Invitation',
   'Bildirmek': 'Inform',
   '28 gün beklemek': 'Wait 28 Days',
+};
+
+// Profilde saklanan Türkçe element değeri → sözlük anahtarı (elements.*), ekranda seçili dilde.
+const ELEMENT_KEY: Record<string, string> = { 'ateş': 'fire', su: 'water', toprak: 'earth', hava: 'air' };
+
+// Seviye unvanları 7 dilde (önceden yalnızca tr/en; diğer diller Türkçe görüyordu).
+const LEVEL_TITLES: Record<string, string[]> = {
+  en: ['Seeker', 'Disciple', 'Dervish', 'Enlightened', 'Saint', 'Elder', 'Pole Star'],
+  de: ['Suchender', 'Schüler', 'Derwisch', 'Erleuchteter', 'Heiliger', 'Ältester', 'Polarstern'],
+  es: ['Buscador', 'Discípulo', 'Derviche', 'Iluminado', 'Santo', 'Anciano', 'Estrella Polar'],
+  pt: ['Buscador', 'Discípulo', 'Dervixe', 'Iluminado', 'Santo', 'Ancião', 'Estrela Polar'],
+  fr: ['Chercheur', 'Disciple', 'Derviche', 'Éveillé', 'Saint', 'Ancien', 'Étoile Polaire'],
+  ja: ['求道者', '弟子', 'デルヴィーシュ', '覚者', '聖者', '長老', '北極星'],
 };
 
 export function ProfileScreen() {
@@ -170,18 +183,13 @@ export function ProfileScreen() {
   const totalReadings = profile?.totalReadings || 0;
   const streak        = profile?.streak || 0;
   const level         = profile?.level || 1;
-  const levelTitle = lang === 'en'
-    ? ['Seeker','Disciple','Dervish','Enlightened','Saint','Elder','Pole Star'][Math.min(level - 1, 6)]
-    : getLevelTitle(level);
-  const nextLevelTitle = lang === 'en'
-    ? ['Seeker','Disciple','Dervish','Enlightened','Saint','Elder','Pole Star'][Math.min(level, 6)]
-    : getLevelTitle(level + 1);
-
   const getLevelTitleLocal = (lvl: number) => {
-    const enTitles = ['Seeker', 'Disciple', 'Dervish', 'Enlightened', 'Saint', 'Elder', 'Pole Star'];
-    if (lang === 'en') return enTitles[Math.min(lvl - 1, enTitles.length - 1)];
+    const titles = LEVEL_TITLES[lang];
+    if (titles) return titles[Math.min(Math.max(lvl, 1) - 1, titles.length - 1)];
     return getLevelTitle(lvl);
   };
+  const levelTitle = getLevelTitleLocal(level);
+  const nextLevelTitle = getLevelTitleLocal(level + 1);
 
   const levelProgress = () => {
     const nextAt    = level * 7;
@@ -206,13 +214,13 @@ export function ProfileScreen() {
       if (profile.hdTypeOverride) {
         hd.type = profile.hdTypeOverride as typeof hd.type;
       }
-      const weekly = getWeeklyReading(nums);
-      const lp     = LIFE_PATH_MEANINGS[nums.lifePath];
+      const weekly = getWeeklyReading(nums, lang);
+      const lp     = getLifePathMeaning(nums.lifePath, lang);
       return { nums, hd, weekly, lp };
     } catch {
       return null;
     }
-  }, [profile?.fullName, profile?.birthDate, profile?.hdTypeOverride]);
+  }, [profile?.fullName, profile?.birthDate, profile?.hdTypeOverride, lang]);
 
   const formatBirthDate = (d: string, m: string, y: string) => {
     const dd = d.padStart(2, '0');
@@ -529,7 +537,9 @@ export function ProfileScreen() {
         <Text style={styles.heroName}>{profile.name}</Text>
         <Text style={styles.heroLevel}>{levelTitle}</Text>
         <Text style={styles.heroElement}>
-          {ELEMENT_EMOJIS[profile.element || 'ateş']} {profile.element || t('profile.elementNotSet')}
+          {ELEMENT_EMOJIS[profile.element || 'ateş']} {profile.element
+            ? (ELEMENT_KEY[profile.element] ? t(('elements.' + ELEMENT_KEY[profile.element]) as any) : profile.element)
+            : t('profile.elementNotSet')}
         </Text>
       </View>
 
@@ -804,10 +814,10 @@ export function ProfileScreen() {
                 }}
                 hitSlop={10}
                 accessibilityRole="button"
-                accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+                accessibilityLabel={t('common.share')}
                 style={{ paddingHorizontal: 6 }}
               >
-                <Text style={{ fontSize: Typography.size.xs, color: Colors.teal }}>{lang === 'en' ? 'Share' : 'Paylaş'}</Text>
+                <Text style={{ fontSize: Typography.size.xs, color: Colors.teal }}>{t('common.share')}</Text>
               </TouchableOpacity>
             )}
             <Text style={[styles.infoToggleArrow, { color: Colors.tealLight }]}>→</Text>
@@ -1025,6 +1035,7 @@ export function ProfileScreen() {
 function PremiumTeaser({
   hint, color, onUnlock,
 }: { hint: string; color: string; onUnlock: () => void }) {
+  const { t } = useI18n();
   return (
     <TouchableOpacity
       style={[styles.teaserBox, { borderColor: color + '40', backgroundColor: color + '10' }]}
@@ -1033,7 +1044,7 @@ function PremiumTeaser({
     >
       <Text style={[styles.teaserLock, { color }]}>✦</Text>
       <Text style={styles.teaserHint}>{hint}</Text>
-      <Text style={[styles.teaserCTA, { color }]}>Üstad Ol →</Text>
+      <Text style={[styles.teaserCTA, { color }]}>{t('profile.premium.upgradeCta')}</Text>
     </TouchableOpacity>
   );
 }

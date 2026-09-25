@@ -517,9 +517,9 @@ export function HomeScreen({ onNavigateToProfile }: HomeScreenProps) {
                         }}
                         hitSlop={10}
                         accessibilityRole="button"
-                        accessibilityLabel={lang === 'en' ? 'Share' : 'Paylaş'}
+                        accessibilityLabel={t('common.share')}
                       >
-                        <Text style={[styles.frontTitle, { color: deck.color }]}>{lang === 'en' ? '↑ Share' : '↑ Paylaş'}</Text>
+                        <Text style={[styles.frontTitle, { color: deck.color }]}>{'↑ ' + t('common.share')}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
