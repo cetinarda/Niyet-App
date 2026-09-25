@@ -273,9 +273,17 @@
     box-shadow:var(--shadow); opacity:0; transition:transform .5s cubic-bezier(.2,.7,.2,1), opacity .4s ease;
   }
   .dockbar.show { transform:translate(-50%,0); opacity:1; }
-  .dockbar span { font-size:14px; color:var(--head); font-weight:500; white-space:nowrap; }
-  .dockbar .btn { padding:11px 22px; font-size:14.5px; }
-  @media (max-width:520px) { .dockbar span { display:none; } .dockbar { padding:8px; bottom:14px; } }
+  /* "Sakin'i ücretsiz indir" tıklanır: sayfa sonundaki mağaza rozetlerine kaydırır
+     (site.js buildDock), rozetler kısa bir an parlar. */
+  .dockbar .dock-dl { font-size:14px; color:var(--head); font-weight:500; white-space:nowrap;
+    text-decoration:underline; text-decoration-color:transparent; text-underline-offset:4px;
+    transition:text-decoration-color .3s ease, color .3s ease; }
+  .dockbar .dock-dl:hover, .dockbar .dock-dl:focus-visible { color:var(--title); text-decoration-color:var(--ring); }
+  .dockbar .btn { padding:11px 22px; font-size:14.5px; white-space:nowrap; flex-shrink:0; }
+  @media (max-width:520px) { .dockbar { padding:6px 6px 6px 16px; bottom:14px; gap:10px; } .dockbar .dock-dl { font-size:13px; } .dockbar .btn { padding:10px 16px; font-size:13.5px; } }
+  @media (max-width:340px) { .dockbar .dock-dl { display:none; } .dockbar { padding:6px; } }
+  .stores.flash .store { animation:storeFlash 1.6s ease; }
+  @keyframes storeFlash { 0%,100% { box-shadow:none; } 35% { box-shadow:0 0 0 3px var(--ring), 0 0 34px var(--glow-1); } }
   @media (prefers-reduced-motion: reduce) { .dockbar { transition:opacity .3s ease; } }
 </style>
 </head>
@@ -549,7 +557,7 @@
   </div>
 </section>
 
-<section class="close" style="--tint:rgba(184,164,216,0.12)">
+<section class="close" id="indir" style="--tint:rgba(184,164,216,0.12)">
   <h2 data-t="closeTitle">Sakin şimdi iOS ve Android'de 🤍</h2>
   <p data-t="closeText">Ücretsiz indir, kayıt olmadan kullanmaya başla. Temel özellikleri özgürce kullanabilirsin.</p>
   <div class="hero-actions">
@@ -592,7 +600,7 @@
 
 <!-- Sabit alt indirme çubuğu: hero geçilince belirir (site.js), footer'a gelince gizlenir. -->
 <div class="dockbar" id="dockbar" aria-hidden="true">
-  <span data-t="dockText">Sakin'i ücretsiz indir</span>
+  <a href="#indir" class="dock-dl" data-dock-dl data-t="dockText">Sakin'i ücretsiz indir</a>
   <a href="/app" class="btn btn-primary" data-t="navTry">Sakin'i Dene</a>
 </div>
 

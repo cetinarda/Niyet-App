@@ -238,9 +238,22 @@
       var y = window.scrollY || window.pageYOffset;
       var docH = document.documentElement.scrollHeight;
       var nearBottom = (y + window.innerHeight) > (docH - 220);
-      if (y > 520 && !nearBottom) dock.classList.add("show");
-      else dock.classList.remove("show");
+      var on = y > 520 && !nearBottom;
+      dock.classList.toggle("show", on);
+      dock.setAttribute("aria-hidden", on ? "false" : "true");
     }
+    // "Sakin'i ücretsiz indir": mağaza rozetlerine (#indir .stores) yumuşak kaydır,
+    // ortala ve rozetleri kısa bir an parlat. JS yoksa #indir bağlantısı çalışır.
+    var dl = dock.querySelector("[data-dock-dl]");
+    if (dl) dl.addEventListener("click", function (e) {
+      var target = document.querySelector("#indir .stores") || document.getElementById("indir");
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "center" });
+      target.classList.remove("flash");
+      setTimeout(function () { target.classList.add("flash"); }, 650);
+      setTimeout(function () { target.classList.remove("flash"); }, 2400);
+    });
     window.addEventListener("scroll", function () {
       if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
     }, { passive: true });
