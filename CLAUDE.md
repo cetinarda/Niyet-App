@@ -839,7 +839,13 @@ cihazına" = Ayarlar > Bildirimler altındaki 6 haneli CİHAZ KODU, son gönderi
   deploy'u durdurmuştu). APNS_PRIVATE_KEY taranmaya devam eder.
 - Test: sahte APNs HTTP/2 + sahte FCM + sahte Blobs ile uçtan uca doğrulandı
   (kayıt, 401, test kodu, dile özel metin, sandbox yedeği, ölü cihaz temizliği).
-  Gerçek cihazda test EDİLMEDİ.
+  ✅ **GERÇEK CİHAZDA DOĞRULANDI (Eyl 2026, kullanıcı):** iPhone (APNs) ve
+  Android (FCM) panelden test bildirimi aldı; Android R8 test kapısı PASS.
+- **APNs anahtarı:** "Sandbox & Production" ortamlı anahtar kullanılıyor (ilk
+  anahtar yalnızca Sandbox'tı, `403 BadEnvironmentKeyInToken` verdi, REVOKE edildi).
+  Anahtar ortamı SONRADAN DEĞİŞTİRİLEMEZ; yeni anahtar gerekirse oluştururken
+  Configure'da "Sandbox & Production" seç. .p8 Netlify'a nasıl yapıştırılırsa
+  yapıştırılsın `_push.mjs` `pem()` düzeltir (satır sonu boşluğa dönmüş vb.).
 
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 
