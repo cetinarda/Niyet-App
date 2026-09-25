@@ -7714,11 +7714,12 @@ export default function SakinApp() {
       return next;
     });
   };
-  // AYNA adımı: ekrana GİRMEK yeterli (kullanıcı: "tıklaması yeterli olsun, soru
-  // sormasına gerek yok"). Diğer adımlardan farklı olarak süre/eylem şartı yok.
-  useEffect(() => {
-    if (screen === "rehber") markStep("rehber");
-  }, [screen]);
+  // AYNA adımı (Eyl 2026 GÜNCEL, kullanıcı kararı): YALNIZCA Ayna'ya soru sorulup
+  // cevap alınınca tamamlanır (generateSikayetAnaliz başarı yolu). ⚠️ Eskiden
+  // "ekrana girmek yeterli" idi; Android kullanıcısı bildirdi: Ayna sekmesine
+  // yanlışlıkla dokunup çıkınca Bağlan'da Ayna tiklenmiş görünüyordu. Bilinen
+  // bedel (kullanıcı kabul etti): Ayna sorusu doğum bilgisi ister, yani doğum
+  // girmemiş kullanıcı bu adımı (yeni kullanıcıda ilk 3 adımdan biri) tamamlayamaz.
 
   // ── ŞART DOLUNCA ANINDA İŞARETLE ────────────────────────────────────────────
   // KÖK SEBEP (kullanıcı: "60 saniye dinledim ama buton açılmadı / 120 sn çakra
@@ -7747,7 +7748,8 @@ export default function SakinApp() {
   // BAĞLANTI = 7 ADIM: alt bardaki 6 sekme (sabah·gün·nefes·ses·çakra·akşam) + AYNA.
   // (Kullanıcı önce "harita'yı çıkar, 6 yeterli" dedi, sonra "vazgeçtim 7 aşama kalsın
   // ama harita yerine ayna ekranına tıklamasını ekle; tıklaması yeterli, soru sormasına
-  // gerek yok" dedi.) Ayna = "rehber" ekranı; şart yok, ekrana girmek adımı tamamlar.
+  // gerek yok" dedi.) Ayna = "rehber" ekranı. ⚠️ GÜNCEL (Eyl 2026): artık ekrana
+  // girmek YETMEZ, Ayna'ya soru sorup cevap almak gerekir (bkz. markStep("rehber")).
   const ALL_MANDALA_STEPS = ["sabah","gun","nefes","ses","chakra","aksam","rehber"];
   // ── YENİ KULLANICI: 7 ADIM YERİNE 3 (ilk 3 tünel) ───────────────────────────
   // Kullanıcı kararı (Eyl 2026): yeni kullanıcıda günlük yük 7 modülden 3'e iner,
@@ -7756,7 +7758,8 @@ export default function SakinApp() {
   // sadece bağlantının ŞARTI olmaktan çıkıyorlar.
   // NEDEN BU ÜÇÜ (kullanıcı seçti): üçü de günün HERHANGİ bir saatinde
   // bitirilebiliyor. sabah = 3 kelime + niyet · nefes = ilk tünelde 5 nefes ·
-  // rehber (Ayna) = ekrana girmek yeterli, şart yok.
+  // rehber (Ayna) = eskiden ekrana girmek yeterliydi; Eyl 2026'dan beri Ayna'ya
+  // soru sorup cevap almak gerekiyor (doğum bilgisi şart, bkz. markStep("rehber")).
   // Kasten DIŞARIDA bırakılanlar: "aksam" (akşam kapanışı gece açılıyor, sabah
   // kurulan yeni kullanıcı ilk günü tamamlayamazdı), "gun" (görev AI'dan geliyor,
   // ağ hatası/günlük limit adımı tıkayabilir), "ses"/"chakra" (süre şartı var).
@@ -9595,6 +9598,7 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
       }
       setSikayetAnaliz(d.text);
       setAynaCevapGecerli(true);
+      markStep("rehber");   // Bağlan'daki Ayna adımı: yalnızca cevap alınan soru sayılır
       aynaGecmisiKaydet(sikayet, d.text);
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }

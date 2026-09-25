@@ -333,6 +333,12 @@ SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
    katlanır bölümünde "Dilersen devam et" başlığı altında durur ve yapılabilir,
    sadece bağlantının ŞARTI değildir. Omurga görselinde de 3 düğüm çizilir
    (7 düğüm + "/3" sayacı çelişkisi olmasın diye).
+   - ⚠️ **AYNA ADIMI GÜNCEL (Eyl 2026, kullanıcı kararı):** `rehber` adımı artık
+     Ayna'ya SORU SORUP CEVAP ALINCA tamamlanır (`generateSikayetAnaliz` başarı
+     yolunda `markStep("rehber")`). Eskiden ekrana girmek yetiyordu; Android
+     kullanıcısı "yanlışlıkla dokununca Ayna tiklendi" dedi. Bilinen bedel
+     (kullanıcıya söylendi, kabul etti): Ayna sorusu doğum bilgisi ister, doğum
+     girmemiş yeni kullanıcı ilk 3 adımlık bağlantıyı tamamlayamaz.
    - **Bu üçü neden:** üçü de günün her saatinde bitirilebiliyor. Dışarıda
      bırakılanlar: `aksam` (22:00'den önce açılmıyor, sabah kurulan kullanıcı
      ilk günü kapatamazdı), `gun` (görev AI'dan geliyor, ağ/limit hatası adımı
