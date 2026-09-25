@@ -60,7 +60,7 @@ ${notice}
 <tr><td>Kayıtlı cihaz</td><td class="n">${devices.length}</td></tr>
 <tr><td>iPhone / Android</td><td class="n">${pl.ios || 0} / ${pl.android || 0}</td></tr>
 <tr><td>Dillere göre</td><td class="n">${LANGS.map((l) => `${l} ${lg[l] || 0}`).join(" · ")}</td></tr>
-<tr><td>iOS gönderimi</td><td class="n">${status(!!cfg.apns, "APNs", "APNS_KEY_ID / APNS_TEAM_ID / APNS_PRIVATE_KEY")}</td></tr>
+<tr><td>iOS gönderimi</td><td class="n">${cfg.apnsError ? `<span class="bad">✗ ${esc(cfg.apnsError)}</span>` : status(!!cfg.apns, "APNs", "APNS_KEY_ID / APNS_TEAM_ID / APNS_PRIVATE_KEY")}</td></tr>
 <tr><td>Android gönderimi</td><td class="n">${status(!!cfg.fcm, "FCM", "FCM_SA_JSON")}</td></tr>
 </table></div>
 <h2>Yeni bildirim</h2><form class="card" method="post" onsubmit="return this.mode.value!=='all'||confirm('Seçilen kitleye şimdi gönderilsin mi?')">
@@ -117,8 +117,12 @@ export default async (req) => {
   }
   const ios = targets.filter((d) => d.p === "ios"), android = targets.filter((d) => d.p === "android");
   const results = [];
+  try {
   if (ios.length && cfg.apns) results.push(...await sendApnsBatch(cfg.apns, ios.map((d) => ({ key: d.key, token: d.t, payload: apnsPayload(title, textFor(d.l), screen) }))));
   if (android.length && cfg.fcm) results.push(...await sendFcmBatch(cfg.fcm, android.map((d) => ({ key: d.key, token: d.t, payload: fcmPayload(title, textFor(d.l), screen) }))));
+  } catch (e) {
+    return html(panel(token, devices, cfg, log, `<p class="bad">Gönderim hatası: ${esc(String(e && e.message || e))}</p>`));
+  }
   const skipped = (cfg.apns ? 0 : ios.length) + (cfg.fcm ? 0 : android.length);
 
   // Uygulaması silinmiş / geçersiz cihazları temizle.

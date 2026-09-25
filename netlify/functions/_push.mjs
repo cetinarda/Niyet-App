@@ -18,7 +18,23 @@ export const tokenKey = (t) => "d/" + createHash("sha256").update(t).digest("hex
 export const deviceCode = (t) => createHash("sha256").update("code:" + t).digest("hex").slice(0, 6).toUpperCase();
 
 const b64url = (buf) => Buffer.from(buf).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-const pem = (s) => String(s || "").replace(/\\n/g, "\n").trim();
+// PEM'i NE ŞEKİLDE yapıştırılmış olursa olsun düzgün kur (Eyl 2026 çökmesi:
+// "DECODER routines::unsupported"). Netlify'ın değer kutusu çok satırlı .p8
+// içeriğinde satır sonlarını çoğu zaman BOŞLUĞA çeviriyor; Node da boşluklu tek
+// satırlık PEM'i okuyamıyor. Gövde (base64) başlıklardan ayrılır, tüm boşluk /
+// kaçış / tırnak atılır, 64'lük satırlarla yeniden sarılır. Başlıksız yapıştırılan
+// ham base64 da kabul edilir.
+function pem(s) {
+  let t = String(s || "").trim().replace(/^["']|["']$/g, "").replace(/\\r|\\n/g, "\n");
+  const m = t.match(/-----BEGIN ([A-Z ]+)-----([\s\S]*?)-----END \1-----/);
+  const label = m ? m[1] : "PRIVATE KEY";
+  const body = (m ? m[2] : t).replace(/[^A-Za-z0-9+/=]/g, "");
+  if (!body) return "";
+  return `-----BEGIN ${label}-----\n${body.match(/.{1,64}/g).join("\n")}\n-----END ${label}-----\n`;
+}
+// Anahtarı gönderimden ÖNCE bir kez dene: okunamıyorsa fonksiyon çökmesin,
+// panel "anahtar okunamadı" desin.
+function keyOk(k) { try { createPrivateKey(k); return true; } catch { return false; } }
 function signJwt(header, payload, key, alg) {
   const h = b64url(JSON.stringify(header)), p = b64url(JSON.stringify(payload));
   const signer = createSign(alg === "ES256" ? "SHA256" : "RSA-SHA256");
@@ -31,10 +47,14 @@ function signJwt(header, payload, key, alg) {
 export function pushConfig() {
   let fcm = null;
   try { const j = JSON.parse(process.env.FCM_SA_JSON || "null"); if (j && j.client_email && j.private_key && j.project_id) fcm = j; } catch { /* bozuk JSON */ }
-  const apns = process.env.APNS_KEY_ID && process.env.APNS_TEAM_ID && process.env.APNS_PRIVATE_KEY
-    ? { kid: process.env.APNS_KEY_ID, team: process.env.APNS_TEAM_ID, key: pem(process.env.APNS_PRIVATE_KEY), topic: process.env.APNS_BUNDLE_ID || "app.sakin.life" }
-    : null;
-  return { apns, fcm };
+  if (fcm && !keyOk(pem(fcm.private_key))) { fcm = null; }
+  let apns = null, apnsError = "";
+  if (process.env.APNS_KEY_ID && process.env.APNS_TEAM_ID && process.env.APNS_PRIVATE_KEY) {
+    const key = pem(process.env.APNS_PRIVATE_KEY);
+    if (keyOk(key)) apns = { kid: String(process.env.APNS_KEY_ID).trim(), team: String(process.env.APNS_TEAM_ID).trim(), key, topic: (process.env.APNS_BUNDLE_ID || "app.sakin.life").trim() };
+    else apnsError = "APNS_PRIVATE_KEY okunamadı: .p8 dosyasının içeriği eksik ya da bozuk yapıştırılmış";
+  }
+  return { apns, fcm, apnsError };
 }
 
 // ── APNs (iOS) ───────────────────────────────────────────────────────────────
