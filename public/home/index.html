@@ -50,40 +50,38 @@
   /* ── Hero ──────────────────────────────────────────────────────────── */
   .hero { position:relative; text-align:center; padding:76px 26px 70px; }
 
-  /* ── Açılış işareti ────────────────────────────────────────────────
-     Eş merkezli üç ince halka ve ortada ışıyan mor küre. Halkalar sırayla,
-     genişleyip daralıyor (6 sn); ritim uygulamanın giriş ekranındaki
-     gibi sakin ve sürekli, zıplama yok. Küre uygulamanın işaretindeki
-     parıltıyı taşır. Tüm ölçüler --s'den türetilir; boyut değişince oranlar
-     kendiliğinden korunur, tek sayı düzenlemek yeterli. */
+  /* ── Açılış işareti: UYGULAMANIN AÇILIŞINDAKİ DÖNEN ELMAS (kullanıcı isteği,
+     Eyl 2026; eski "nefes alan halkalar" kaldırıldı). src/App.jsx showIntro ile
+     BİREBİR: dış kare 12 sn, iç kare 8 sn ters yönde döner, ikisi de dönerken
+     hafifçe büyüyüp küçülür (diamondSpin), ortada ışıyan küre. Renkler temaya
+     göre --mark-* değişkenlerinden (açık temada koyulaştırılmış). */
   .breath {
-    --s: 128px;
+    --s: 120px;
     position:relative; width:var(--s); height:var(--s); margin:0 auto 34px;
   }
-  .breath span { position:absolute; border-radius:50%; }
-  .breath .r1, .breath .r2, .breath .r3 {
-    border:1.25px solid var(--mark-1);
-    animation:markBreathe 6s cubic-bezier(.42,0,.58,1) infinite;
+  .breath span { position:absolute; display:block; }
+  .breath .d1 {
+    inset:0; border:1px solid var(--mark-1); border-radius:12px;
+    box-shadow:var(--mark-sh-1);
+    animation:diamondSpin 12s linear infinite;
   }
-  .breath .r1 { inset:0; box-shadow:var(--mark-sh-1); }
-  .breath .r2 { inset:calc(var(--s) * .14);  border-color:var(--mark-2); animation-delay:.5s; }
-  .breath .r3 { inset:calc(var(--s) * .269); border-color:var(--mark-2); opacity:.6; animation-delay:1s; }
-  /* Ortalamada transform DEĞİL negatif margin: transform'u animasyon (scale)
-     kullanıyor, ikisi aynı özellikte çakışırdı. */
+  .breath .d2 {
+    inset:calc(var(--s) * .2); border:1px solid var(--mark-2); border-radius:8px;
+    box-shadow:var(--mark-sh-2);
+    animation:diamondSpin 8s linear infinite reverse;
+  }
   .breath .dot {
-    left:50%; top:50%;
-    width:calc(var(--s) * .237); height:calc(var(--s) * .237);
-    margin:calc(var(--s) * -.1185) 0 0 calc(var(--s) * -.1185);
+    left:50%; top:50%; width:16px; height:16px; margin:-8px 0 0 -8px; border-radius:50%;
     background:var(--mark-dot); box-shadow:var(--mark-dot-sh);
-    animation:markBreathe 6s cubic-bezier(.42,0,.58,1) infinite;
   }
-  @keyframes markBreathe {
-    0%, 100% { transform:scale(0.965); }
-    50%      { transform:scale(1.035); }
+  @keyframes diamondSpin {
+    0%   { transform:rotate(45deg) scale(1); }
+    50%  { transform:rotate(225deg) scale(1.06); }
+    100% { transform:rotate(405deg) scale(1); }
   }
-  /* Hareket azaltma tercihinde işaret sabit durur, hiçbir şey kaybolmaz. */
+  /* Hareket azaltma tercihinde elmas sabit durur (45° eğik), hiçbir şey kaybolmaz. */
   @media (prefers-reduced-motion: reduce) {
-    .breath .r1, .breath .r2, .breath .r3, .breath .dot { animation:none; }
+    .breath .d1, .breath .d2 { animation:none; transform:rotate(45deg); }
   }
 
   .hero h1 { margin-bottom:20px; }
@@ -305,7 +303,7 @@
 
 <header class="hero no-mark">
   <div class="breath up" style="animation-delay:.05s" aria-hidden="true">
-    <span class="r1"></span><span class="r2"></span><span class="r3"></span><span class="dot"></span>
+    <span class="d1"></span><span class="d2"></span><span class="dot"></span>
   </div>
 
   <h1 class="up" style="animation-delay:.2s"><span class="mark">SAKİN</span></h1>

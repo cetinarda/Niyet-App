@@ -1322,7 +1322,9 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
       if (!c.ok) { setState("closed"); return; }
       setConf(c); setState("ready");
       loadHistory(room);
-      const ch = c.sb.channel("room:" + room, { config: { private: true, presence: { key: c.id || String(Math.random()) } } });
+      // Presence anahtarı odadaki HERKESE görünür: anonim ölçüm kimliği (c.id)
+      // burada KULLANILMAZ, oturumluk rastgele anahtar yeter (yalnızca sayım için).
+      const ch = c.sb.channel("room:" + room, { config: { private: true, presence: { key: "p" + Math.random().toString(36).slice(2, 12) } } });
       ch.on("broadcast", { event: "msg" }, ({ payload }) => {
         if (!payload) return;
         setMsgs((prev) => prev.some((m) => m.id === payload.id) ? prev : [...prev, payload].slice(-150));
