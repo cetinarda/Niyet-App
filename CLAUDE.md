@@ -890,7 +890,15 @@ koruma sunucuda.
 - Test: sahte Supabase + sahte Groq ile sunucu uçtan uca (yavaş mod, link, kriz,
   küfür, AI abuse/spam/crisis, bildir→gizle, ban); tarayıcıda arayüz akışı
   (kilit, kurallar, geçmiş, gönder, bildir, engelle, link uyarısı, kriz kartı).
-  Gerçek Supabase Realtime (canlı iletim + presence) HENÜZ DENENMEDİ.
+  ✅ Canlı proje (Frankfurt, `sakin-cember`) kuruldu, env girildi, chat-config/history
+  `ok:true`. Canlı Realtime testi presence'ı doğruladı AMA bir AÇIK yakaladı:
+- ⚠️ **KANALLAR PRIVATE OLMALI (güvenlik):** public kanalda genel (anon) anahtarla
+  herkes `room:tr`'ye sahte `msg`/`hide` basıp moderasyonu atlayabiliyordu (anon
+  anahtar uygulamada açık). Artık istemci `channel(..., {config:{private:true}})`,
+  sunucu broadcast'i `private:true`, `cember.sql` sonunda `realtime.messages`
+  politikaları: anon yalnızca DİNLER + presence yazar, broadcast yazma politikası
+  BİLEREK YOK. Supabase > Realtime > Settings > "Allow public access" KAPALI.
+  Bu üçünden biri bozulursa ya mesajlar gelmez ya açık geri döner.
 
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 

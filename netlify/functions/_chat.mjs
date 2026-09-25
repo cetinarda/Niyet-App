@@ -43,13 +43,15 @@ export async function rest(cfg, path, { method = "GET", body, prefer } = {}) {
   return { ok: r.ok, status: r.status, data };
 }
 
-// Realtime broadcast (sunucudan kanala). İstemci supabase.channel("room:tr") dinler.
+// Realtime broadcast (sunucudan kanala). İstemci PRIVATE "room:tr" kanalını dinler;
+// servis anahtarı RLS'yi aştığı için yalnızca sunucu basabilir. private:true ŞART,
+// yoksa mesaj public kanala gider ve private dinleyicilere ULAŞMAZ.
 export async function broadcast(cfg, topic, event, payload) {
   try {
     const r = await fetch(`${cfg.url}/realtime/v1/api/broadcast`, {
       method: "POST",
       headers: { apikey: cfg.service, Authorization: `Bearer ${cfg.service}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [{ topic, event, payload }] }),
+      body: JSON.stringify({ messages: [{ topic, event, payload, private: true }] }),
       signal: AbortSignal.timeout(5000),
     });
     return r.ok;

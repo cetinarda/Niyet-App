@@ -50,3 +50,19 @@ grant select, insert, update, delete on public.chat_messages, public.chat_report
 grant usage, select on sequence public.chat_messages_id_seq to service_role;
 revoke all on public.chat_messages, public.chat_reports, public.chat_bans from anon, authenticated;
 revoke all on sequence public.chat_messages_id_seq from anon, authenticated;
+
+-- ── CANLI KANAL YETKİLERİ (Realtime Authorization) ─────────────────────────
+-- Uygulama "room:tr" / "room:global" kanallarına PRIVATE bağlanır. Genel (anon)
+-- anahtar yalnızca DİNLER (broadcast + presence okuma) ve odada olduğunu bildirir
+-- (presence yazma). Kanala MESAJ BASAMAZ: broadcast yazma politikası bilerek yok.
+-- Mesajı yalnızca sunucu (chat-send, servis anahtarı) moderasyondan sonra basar.
+-- Bununla birlikte Supabase > Realtime > Settings > "Allow public access" KAPALI
+-- olmalı; açıkken herkes public kanal açıp moderasyonsuz mesaj basabiliyordu.
+drop policy if exists "cember_listen" on realtime.messages;
+create policy "cember_listen" on realtime.messages for select to anon, authenticated
+  using ( (select realtime.topic()) in ('room:tr', 'room:global')
+          and realtime.messages.extension in ('broadcast', 'presence') );
+drop policy if exists "cember_presence" on realtime.messages;
+create policy "cember_presence" on realtime.messages for insert to anon, authenticated
+  with check ( (select realtime.topic()) in ('room:tr', 'room:global')
+               and realtime.messages.extension = 'presence' );

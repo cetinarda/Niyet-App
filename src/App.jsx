@@ -1173,6 +1173,10 @@ const AYNA_STEP_TXT = {
 // sunucuda: chat-send denetimi, yavaş mod, AI moderasyonu, bildir/banla).
 // Mesaj DOĞRUDAN veritabanına yazılmaz: POST chat-send → sunucu denetler →
 // Realtime broadcast "room:<oda>" → herkese düşer. Kim odada: presence.
+// KANALLAR PRIVATE: uygulama (anon) yalnızca DİNLER + presence bildirir, kanala
+// mesaj BASAMAZ (supabase/cember.sql realtime.messages politikaları). Public kanalda
+// anon anahtarla sahte "msg"/"hide" basılıp moderasyon atlanabiliyordu (canlı
+// testte yakalandı). Supabase > Realtime > Settings'te "Allow public access" KAPALI.
 // Takma ad sunucuda, cihazdan türetilir (istemci seçemez). Mesajlar 24 saat.
 // Sunucu: netlify/functions/_chat.mjs + chat-*.mjs, şema: supabase/cember.sql.
 const CEMBER_TXT = {
@@ -1257,7 +1261,7 @@ function watchCemberCount(cb) {
     if (stopped || !c.ok) return;
     const counts = {};
     for (const room of c.cfg.rooms) {
-      const ch = c.sb.channel("room:" + room);
+      const ch = c.sb.channel("room:" + room, { config: { private: true } });
       ch.on("presence", { event: "sync" }, () => {
         counts[room] = Object.keys(ch.presenceState()).length;
         cb(Object.values(counts).reduce((a, b) => a + b, 0));
@@ -1318,7 +1322,7 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
       if (!c.ok) { setState("closed"); return; }
       setConf(c); setState("ready");
       loadHistory(room);
-      const ch = c.sb.channel("room:" + room, { config: { presence: { key: c.id || String(Math.random()) } } });
+      const ch = c.sb.channel("room:" + room, { config: { private: true, presence: { key: c.id || String(Math.random()) } } });
       ch.on("broadcast", { event: "msg" }, ({ payload }) => {
         if (!payload) return;
         setMsgs((prev) => prev.some((m) => m.id === payload.id) ? prev : [...prev, payload].slice(-150));
