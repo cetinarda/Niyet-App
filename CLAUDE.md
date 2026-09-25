@@ -920,6 +920,15 @@ koruma sunucuda.
   Yeniden çekim: `scripts/site-shots.cjs` (başındaki nota bak). de/es/pt/fr/ja'da
   "Güncel geçiş" kartı görüntüden çıkarılır: HD kapı metinleri uygulamada yalnızca
   tr/en (bilinen çeviri eksiği). `home/` native pakete girmez (prune listesi).
+- **Blog görselleri HER DİLDE aynı fotoğraf** (`cover-sol/orta/sag.jpg` + üstüne
+  çevrilmiş başlık, `card-cover`). ⚠️ Eskiden tr dışındaki 6 dil koyu zeminli
+  yazılı PNG (`img/<dil>/blog-*.png`) kullanıyordu, karanlık temada neredeyse
+  görünmüyordu (kullanıcı: "dil değiştirince blog resimleri gidiyor"). O PNG'ler
+  artık YALNIZCA og:image/twitter:image (paylaşım önizlemesi, dilli başlık).
+- **Gizlilik / Şartlar** (tr+en, kendi düğmeleri): `sakin_lang` ya da tarayıcı
+  dili tr değilse İngilizce açılır. Tanıtım (`/tanitim`) yalnızca Türkçe.
+- Dil denetimi (Eyl 2026): 10 sayfa x 7 dil dil menüsünden gezildi; kırık görsel,
+  404, eksik çeviri, ölü iç bağlantı, sayfa hatası, yatay taşma YOK.
 
 ## 🔗 DEEP LINK (App Store etkinliği için, Eyl 2026)
 

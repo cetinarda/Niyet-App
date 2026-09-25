@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kullanım Koşulları · Sakin</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;color:#d0d0d0;max-width:680px;margin:0 auto;padding:40px 20px;line-height:1.8}
 h1{color:#d0c0f0;font-size:24px;font-weight:300;letter-spacing:2px;margin-bottom:8px}
@@ -120,9 +121,19 @@ a{color:#b0a0c8}
 function showLang(lang) {
   document.getElementById('tr-content').style.display = lang === 'tr' ? 'block' : 'none';
   document.getElementById('en-content').style.display = lang === 'en' ? 'block' : 'none';
-  document.querySelectorAll('.lang-switch a').forEach(a => a.classList.remove('active'));
-  event.target.classList.add('active');
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-switch a').forEach(function (a) {
+    a.classList.toggle('active', (a.getAttribute('onclick') || '').indexOf("'" + lang + "'") > -1);
+  });
 }
+// Sitede seçilen dil (sakin_lang) ya da tarayıcı dili Türkçe değilse İngilizce aç.
+// Sayfa yalnızca tr + en; diğer diller en okur.
+(function () {
+  var l = '';
+  try { l = new URLSearchParams(location.search).get('lang') || localStorage.getItem('sakin_lang') || ''; } catch (e) {}
+  if (!l) l = (navigator.language || 'tr').slice(0, 2);
+  if (l !== 'tr') showLang('en');
+})();
 </script>
 </body>
 </html>
