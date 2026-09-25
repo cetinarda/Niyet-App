@@ -22,6 +22,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - **BİRLEŞTİRME PLANI (TAMAMLANDI):** `main` zaten web-deploy-able (src + bundle + netlify backend + toml hepsi var). Kullanıcı Netlify production branch'ini `main` yaparsa gdkpd emekliye ayrılır → manuel main→gdkpd deploy (asıl drift kaynağı) biter. Web/iOS karışmaz: tek `src/App.jsx`, `isNative` ile runtime ayrışır; `ios/` (iOS-only) ve `netlify/` (web-only) ayrı klasör. Netlify değişene kadar gdkpd canlı kalır.
    - **ALTIN DİSİPLİN (bu oturumun acı dersi):** git proxy bazen bayat ref + sahte "pushed" döndürür; container reset yerel ağacı eski tabana düşürür. **Her push'u SHA değil İÇERİKLE doğrula** (re-fetch + `grep -c marker`). Branch+HEAD'i edit ÖNCESİ doğrula. Her milestone'da commit+push.
    - Portekizce dil kodu = **`pt`** (eski `pt-BR` değil; `sakin_lang` "pt" yazılır, embed'ler "pt" bekler). Legacy pt-BR i18n bloğu kaldırıldı.
+   - **Portekizce = AVRUPA Portekizcesi, "tu" hitabı** (Eyl 2026 çeviri denetimi): `locale_code`/`voice_lang` "pt-PT", "ecrã/tu/descarrega". Brezilya biçimi ("você", "tela", "baixar") EKLEME. Mitler'in pt sözlüğü hâlâ Brezilya biçimli (bilinen eksik).
 2b. **🚨 ANDROID YAYIN KAPISI: R8 TESTİ GEÇMEDEN PLAY'E HİÇBİR ŞEY YÜKLENMEZ.**
    Kullanıcı Android sürümü göndermek istediğinde, mağaza komutundan ÖNCE bunu ver:
    ```
@@ -802,6 +803,14 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
 - ⚠️ BAĞIŞ GİBİ SUNMA: Apple IAP ile bağış toplanmasına izin vermez. Not ürünün
   YERİNE geçmez; özellik listesi, fiyatlar, abonelik koşulları (3.1.2) aynen durur.
   Doğrulanamayan iddia ("reklamsız", "veri satmıyoruz") EKLEME.
+- **Özellik listesi DÜRÜST (Eyl 2026, `PREMIUM_LIST_TXT` + `premiumFeatureList`,
+  7 dil):** eski `paid_app_features` nefes, doğum haritası, Gökyüzü Raporu gibi
+  ÜCRETSİZ şeyleri premium diye sayıyordu. Artık "Premium ile" altında yalnızca
+  gerçekten kilitli olanlar (15 ileri çakra, üç kartlık tarot, haftalık rapor,
+  Sakin Ailesi sınırsız (ücretsiz günde 3), fotoğrafla tanıma, günde 40 AI yanıtı
+  (ücretsiz 10)), "Herkese ücretsiz" tek satırda. Bir kilidi değiştirirsen
+  (`AILESI_FREE_OPENS`, `_aiDailyState` lim, `isPremium` kapıları) listeyi de
+  değiştir. `paid_app_features` anahtarı artık kullanılmıyor.
 
 ## 📣 ANLIK BİLDİRİM / PUSH (kullanıcı isteği, Eyl 2026: "istediğim zaman spontane bildirim")
 
@@ -878,8 +887,16 @@ koruma sunucuda.
 - ⚠️ **AI moderasyonu `VERDICT: <KELİME>` biçiminde cevap ister:** groqChat'in
   kalite kapısı 8 karakterden kısa cevabı atıyor; tek kelime "OK" hep reddedilir,
   moderasyon SESSİZCE kapanırdı (yazarken yakalandı). Biçimi kısaltma.
-- **Takma ad sunucuda** (`nickFor`: element · canlı + sayı, TR/EN), cihaz kimliğinin
+- **Takma ad sunucuda** (`nickFor`: element · canlı + sayı 1-999, TR/EN), cihaz kimliğinin
   (`sakin_anon_id`) özetinden; istemci seçemez. Renk = element dilimi (`el`).
+- **Yazar etiketi `a` (Eyl 2026):** takma adlar çakışabildiği için (aynı ad iki
+  kişide) engelleme artık ada değil `authorTag(device_hash)`e bakar
+  (`sakin_cember_blocked_a`; eski ad listesi etiketsiz eski mesajlar için duruyor).
+  Etiket cihaz özetinin tek yönlü özeti, cihaz özeti yine dışarı verilmez.
+  Kendi mesajların `sakin_cember_mine` (id listesi) ile tanınır, ada göre DEĞİL.
+- **Bildir sayacı IP özetiyle** (`ipKey`): cihaz kimliği istemcide üretildiği için
+  tek kişi kimlik değiştirerek 2 bildirimle herkesin mesajını gizleyebiliyordu.
+  AI moderasyonu ayrıca IP başına ayrı sınırda (`ipLimited(ip, 8, "mod")`).
 - **KRİZ:** kendine zarar ifadesi (yerel regex + AI CRISIS) → mesaj odaya DÜŞMEZ,
   yazana özel "Yanındayız" kartı (TR 112, diğer diller yerel acil numara) +
   "Birlikte nefes al" → Nefes. Bilerek geniş tutuldu (yanlış pozitif kabul).
@@ -930,9 +947,17 @@ koruma sunucuda.
 - **"Sakin'le bir gün"** (`#bir-gun`, açılışın (hero) HEMEN altında, kullanıcı isteği): uygulamanın GERÇEK
   ekranları (sabah/kart/nefes/mektup) telefon çerçevesinde, her dil kendi
   görselini alır (`img[data-shot]` → `/home/shots/<dil>/<ekran>.webp`, site.js).
-  Yeniden çekim: `scripts/site-shots.cjs` (başındaki nota bak). de/es/pt/fr/ja'da
-  "Güncel geçiş" kartı görüntüden çıkarılır: HD kapı metinleri uygulamada yalnızca
-  tr/en (bilinen çeviri eksiği). `home/` native pakete girmez (prune listesi).
+  Yeniden çekim: `scripts/site-shots.cjs` (başındaki nota bak, `PORT` env).
+  HD kapı metinleri artık 7 dilde (`src/hd-gates.json`), "Güncel geçiş" kartı her
+  dilde görüntüde. `home/` native pakete girmez (prune listesi).
+- **Telefondan gelene mağaza önde** (kullanıcı kararı, `buildMobileStores`,
+  site.js): iOS/Android'de o platformun rozeti ilk sırada ve dolu, "Sakin'i Dene"
+  ikincil (btn-ghost), alt çubuk düğmesi doğrudan mağazaya. Masaüstü değişmez.
+- **Blog dil sayfaları statik olarak çevrili:** `data-t` metinleri dosyaya o dilde
+  yazıldı (JS öncesi / tarayıcı dışı okuyucu Türkçe görmesin). `applyLang`
+  `<title>`'ı YALNIZCA hreflang'sız sayfada (tanıtım) yazar; blog yazıları kendi
+  başlığını korur. Tema düğmesi ekrandaki `data-theme`'i okur (`?theme=` ile
+  açılan sayfada ikinci basış çalışmıyordu).
 - **Blog görselleri HER DİLDE aynı fotoğraf** (`cover-sol/orta/sag.jpg` + üstüne
   çevrilmiş başlık, `card-cover`). ⚠️ Eskiden tr dışındaki 6 dil koyu zeminli
   yazılı PNG (`img/<dil>/blog-*.png`) kullanıyordu, karanlık temada neredeyse
@@ -975,6 +1000,60 @@ Hukukçu kontrolünden geçmedi; kullanıcıya söylendi.
 - iOS: `Info.plist` CFBundleURLTypes'ta `sakin` şeması (kullanıcı onayladı, 1.4.2 ile
   gelir; 1.4.1 incelemedeydi). AppDelegate URL'yi zaten Capacitor'a iletiyor.
 - Universal link (https://sakin.life/...) YOK: associated domains + AASA ister.
+
+## 🧹 EYL 2026 TAM TARAMA DÜZELTMELERİ (3 ajan: çeviri, hata, iyileştirme)
+
+Kullanıcı: "Bu hariç hepsini yap ... her seferinde yapay zeka onayı istemeyelim,
+olanlar yeterli." ⚠️ Günün görevi, Galaktik yorum, fotoğraf tanıma ve kişisel
+bildirim metinleri onay penceresi AÇMADAN AI'a gider: BİLİNÇLİ KARAR. Gizlilik
+metni (`privacy_s4p`, web gizlilik + şartlar) buna göre yazıldı ("ilk kullanımda
+onay ister" yalnızca 5 özellik için). Yeni onay kapısı EKLEME.
+- **Hata sınırı:** `src/main.jsx` `ErrorBoundary` (7 dil yedek ekran + "Yeniden
+  aç"), `track('js_error', {k: err.name})`. track.mjs `js_error` → `jserr_<ad>`,
+  raporda "Uygulama hatası" satırı.
+- **Rapor sayaç regex'i** (`report.mjs`): `fork_|bgate_|ayna_|notif_|cember_|
+  letter_|deeplink_|push_optin_|jserr_`. ⚠️ Eskiden Çember/mektup/derin bağlantı/
+  push satırları HEP 0 görünüyordu (sayılıyor ama rapora taşınmıyordu). Yeni olay
+  öneki eklerken BURAYA da ekle (track.mjs beyaz listesine ek olarak).
+- **Rapor güvenliği:** toplayıcılar `Object.create(null)` (ekran adı
+  `__proto__` gönderilince rapor çöküyordu), token `timingSafeEqual`, blob'lar
+  16'şar paralel. track.mjs ekran adlarını `^[a-z][a-z0-9_]{0,23}$` ile süzer.
+- **Nefes halkası modül bileşeni:** `BreathRingSvg` (rAF ile yalnızca noktanın
+  cx/cy'si) + `BreathCountdown` (250 ms). Eskiden kök bileşen 20 fps yeniden
+  çiziliyordu (tüm uygulama). Nefes görseli değişecekse bu ikisine dokun.
+- **Frekans sayacı** `freqCountRef`: 5 sn'de bir yazılır, gece yarısı sıfırlanır.
+- **Gün hesabı DST güvenli:** `_daysAgo(n)`, `_ymd`, `_dayDiff`. `Date.now() -
+  86400000` KULLANMA (saat değişim gecesi dünü atlıyor/çift sayıyordu).
+- **Kişisel bildirim içeriği** `start` tarihini saklar, gün `_dayDiff(start, gün)`
+  ile seçilir (ISO hafta sınırında yanlış günün mesajı çıkıyordu), 2 günden eskiyse
+  yenilenir. `PNOTIF_REMIND` artık 7 dilde.
+- **Hesap silme** önekleri: `sakin_ soulprofile. @sakin @mitler @tasarim
+  @tura_profile sb-` + bekleyen tüm yerel bildirimler iptal + push kaydı silinir.
+- **Eski seri göçü:** `totalTunnels` olmayan eski kayıtta `max(3, best, current)`;
+  yoksa deneyimli kullanıcı "yeni kullanıcı modu"na (3 adım) düşüyordu.
+- **iOS input zoom:** yazı alanları 16px (şehir, Ayna, lisans, sözlük, geri bildirim).
+- **Ölü kod silindi:** `@tura_profile` ön yazımı (Hayvan artık `readSakinBridge`
+  kullanıyor, okuyan yok), haftalık rapordaki ipify IP kontrolü (hafta önbelleği yeter).
+- **Sunucu:** cosmic-energy CORS `*` (CDN önbelleği ilk isteyenin origin'ini
+  herkese veriyordu), FCM token yalnızca 404/UNREGISTERED'da silinir
+  (INVALID_ARGUMENT geçici olabilir), verify-entitlement `pem()` sağlam.
+- **iOS izin metinleri 7 dilde:** `ios/App/App/<dil>.lproj/InfoPlist.strings`
+  (`NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription`). Info.plist'e
+  DOKUNULMADI (Türkçe varsayılan orada). Metni değiştirirsen 8 yeri de değiştir.
+- **Çeviriler:** HD kapıları 64x4 alan 7 dilde (`hd-gates.json`), günlük indeks
+  (`public/daily-index/*.json`) yerelleştirildi, gezegen/meteor/sözlük arayüzü/
+  kart elementleri/Ayna bağlantı etiketleri/hikâye sloganı 7 dilde. Gömülü
+  uygulamalar (Mitler/Hayvan/Bitkiler/Taşlar): arşiv tarihleri, profil seviye
+  adları, element, paylaş, Hayvan testi, sözler (Taşlar'a 5 dil eklendi) düzeltilip
+  yeniden derlendi.
+- **BİLİNEN, BİLEREK BIRAKILAN:** gömülü uygulamaların satın alma özellik listesi
+  (de/es/pt/fr/ja Türkçe; Bitkiler/Taşlar'da Hayvan özellikleri yazıyor, içerik
+  kararı ister), Mitler bulucu testi yalnızca tr/en, Mitler gelenek istatistiği
+  çevrilmiş adı saklıyor, numeroloji/haftalık okuma tr dışı dillerde İngilizce,
+  burç adlarının pt yazımları, `about_step_breath_desc` "6 mod" (eski sayı),
+  ja kaynak verisinde 地/土 tutarsızlığı. Abonelik doğrulama env'leri
+  (`APPLE_*`, `GOOGLE_*`) canlıda TANIMLI DEĞİL: `verify-entitlement`
+  `apple_not_configured` döner, yani iptal kontrolü şu an sessizce kapalı.
 
 ## Sıkça karşılaşılan tuzaklar (acı çekerek öğrenildi)
 
@@ -1069,6 +1148,12 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
    **Ders: bir bağlam bloğunu budarken içeriğini OKU, adına bakarak karar verme.**
    **Kalan iş:** astro/HD/numeroloji bloklarının hangi tipte gerçekten
    katkı verdiğini ölçüp benzer şekilde budamak. Bu, 4'ün verisini bekliyor.
+   ✅ **REİKİ (Eyl 2026, kullanıcı kararı "Reiki yalnızca beden/duygu"):**
+   `REIKI_BILGI` + yanıt formatındaki "**Reiki ile Enerji Aktarımı**" bölümü
+   yalnızca `reikiAcik` (tip `beden`/`duygu`) iken gider. "Misyonum ne",
+   "ne zaman geçer" sorularının sonuna sabit el pozisyonu tarifi eklemek cevabı
+   jenerikleştiriyordu. Ayrıştırıcı (`**Senin için**` / `**Reiki`) bölüm
+   yokken de çalışıyor.
 
 ## Bağımlılık komutları (referans)
 

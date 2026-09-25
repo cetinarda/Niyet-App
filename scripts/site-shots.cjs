@@ -7,8 +7,7 @@
      # Google Fonts css + woff2 dosyalarını <FONTS_DIR>'e indir (all.css + gstatic yolu '_' ile)
      for L in tr en de es pt fr ja; do mkdir -p /tmp/shots/$L; node scripts/site-shots.cjs <FONTS_PARENT> $L /tmp/shots/$L; done
      # sonra PNG -> WebP: public/home/shots/<dil>/<ekran>.webp (genişlik 540)
-   Not: de/es/pt/fr/ja'da "Güncel geçiş" kartı gizlenir, HD kapı metinleri
-   uygulamada yalnızca tr/en. */
+   Port: PORT ortam değişkeni (varsayılan 4791). */
 const puppeteer = require('/home/user/Niyet-App/node_modules/puppeteer');
 const fs = require('fs'), path = require('path');
 const SP = process.argv[2], lang = process.argv[3] || 'tr';
@@ -31,7 +30,7 @@ const FD = SP + '/fonts'; // <FONTS_PARENT>/fonts
     window.Date = FD;
   });
   await p.setViewport({ width: 390, height: 844, deviceScaleFactor: 2 });
-  await p.goto('http://localhost:4791/index.html', { waitUntil: 'domcontentloaded' });
+  await p.goto('http://localhost:'+(process.env.PORT||4791)+'/index.html', { waitUntil: 'domcontentloaded' });
   await p.evaluate((lang) => {
     const d = new Date(); const dk = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     const name = { tr:'Deniz', en:'Mira', de:'Lena', es:'Lucía', pt:'Inês', fr:'Léa', ja:'Yui' }[lang];
@@ -54,12 +53,6 @@ const FD = SP + '/fonts'; // <FONTS_PARENT>/fonts
     let a = el.parentElement; while (a && !(/(auto|scroll)/.test(getComputedStyle(a).overflowY) && a.scrollHeight > a.clientHeight)) a = a.parentElement;
     (a || window).scrollBy({ top: -off, behavior: 'instant' }); return true; }, sel, off);
   const tabs = () => p.evaluate(() => { const bs = [...document.querySelectorAll('button')]; return bs.slice(-5).map(b => b.innerText.trim()); });
-  if (!['tr','en'].includes(lang)) await p.evaluate(() => {
-    // HD kapı metinleri uygulamada yalnızca tr/en: yarı İngilizce kart görüntüye girmesin.
-    const card = [...document.querySelectorAll('button')].find(b => (b.innerText||'').trim().startsWith('☉'));
-    if (!card) return; const prev = card.previousElementSibling; card.style.display = 'none';
-    if (prev && (prev.innerText||'').length < 40) prev.style.display = 'none';
-  });
   await hideNav(); await p.evaluate(() => window.scrollTo(0, 0)); await wait(400);
   await p.screenshot({ path: `${OUT}/sabah.png` });
   // tarot: "Bir kart seç" kartı = üst tarot bölümündeki tek kapalı kart butonu (metni değişken; alt-başlık uzun)

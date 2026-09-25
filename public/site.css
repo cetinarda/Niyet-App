@@ -335,6 +335,9 @@ h3 { font-size:19px; font-weight:600; line-height:1.4; letter-spacing:-.1px; col
   transition:border-color .25s, transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s;
 }
 .store:hover { border-color:var(--ring); transform:translateY(-2px); box-shadow:var(--shadow); }
+.store.store-primary { background:var(--btn-bg); border-color:transparent; box-shadow:var(--btn-glow); }
+.store.store-primary span, .store.store-primary b { color:var(--btn-fg); }
+.store.store-primary svg { fill:var(--btn-fg); }
 .store-txt { display:flex; flex-direction:column; line-height:1.15; text-align:left; }
 .store span { font-size:12px; color:var(--muted); letter-spacing:.2px; }
 .store b { font-size:15px; font-weight:700; color:var(--text); letter-spacing:-.2px; }

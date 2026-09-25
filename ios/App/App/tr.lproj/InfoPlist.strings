@@ -1,2 +1,4 @@
 /* Türkçe */
 "CFBundleDisplayName" = "Sakin";
+"NSCameraUsageDescription" = "Sakin, çektiğin taş veya bitki fotoğrafını tanımak için kameranı kullanır.";
+"NSPhotoLibraryUsageDescription" = "Sakin, seçtiğin taş veya bitki fotoğrafını tanımak için fotoğraf kitaplığına erişir.";

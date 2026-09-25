@@ -23,7 +23,7 @@ Aşağıdakiler yalnızca cihazınızda saklanır ve sunucularımıza gönderilm
 
 ### 2.2 Yapay Zeka Destekli Özellikler
 
-İçsel Ayna, Günün Yorumu, haftalık rapor, tarot açılımı ve günlük yansıma gibi özellikler, **yalnızca onay vermeniz halinde**, yazdığınız metni ve gereken bağlamı (ör. doğum bilginizden türetilen burç ve sayılar) Groq altyapısı üzerinden Meta Llama modeline gönderir.
+İçsel Ayna, Günün Yorumu, haftalık rapor, tarot açılımı ve günlük yansıma **ilk kullanımda onayınızı ister**. Günün görevi önerisi, Galaktik Kimlik yorumu ve fotoğrafla tanıma, siz dokunduğunuzda gereken metni ya da fotoğrafı gönderir; haftalık kişisel bildirim metinleri doğum bilginizden türetilen burç ve sayılarla arka planda hazırlanır. Bu istekler Groq altyapısındaki açık kaynak dil modellerine (ör. OpenAI gpt-oss, Meta Llama) iletilir.
 
 **Gönderilmeyen:** ad, e-posta, telefon, cihaz kimliği, konum. Groq gönderilen verileri model eğitimi için kullanmaz.
 
@@ -55,7 +55,7 @@ Ad-soyad, e-posta, telefon gibi kimlik bilgileri (hesap yoktur), konum, sağlık
 
 | Hizmet | Amaç | Paylaşılan veri |
 |---|---|---|
-| Groq (Meta Llama), ABD | Yapay zeka yanıtları, taş tanıma, Çember moderasyonu | Yazdığınız metin ve gereken bağlam, fotoğraf (saklanmaz), Çember mesajı |
+| Groq (açık kaynak modeller), ABD | Yapay zeka yanıtları, taş tanıma, Çember moderasyonu | Yazdığınız metin ve gereken bağlam, fotoğraf (saklanmaz), Çember mesajı |
 | Pl@ntNet, Fransa | Bitki tanıma | Seçtiğiniz fotoğraf (saklanmaz) |
 | Apple, Google | Satın alma ve abonelik doğrulama, bildirim iletimi | İşlem kimliği, bildirim adresi ve mesaj |
 | Supabase, AB (Frankfurt) | Çember altyapısı | Çember mesajları, takma ad, cihaz özeti |

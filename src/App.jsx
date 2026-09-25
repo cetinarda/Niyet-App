@@ -875,7 +875,7 @@ const PREMIUM_LIST_TXT = {
     es:["15 chakras de los niveles 2 y 3","Tirada de tarot de tres cartas con lectura conjunta","Informe personal semanal","Acceso ilimitado a las apps de la Familia Sakin (3 al día en la versión gratuita)","Identificar piedras y plantas con una foto","40 respuestas de IA al día (10 en la versión gratuita)"],
     pt:["15 chakras dos níveis 2 e 3","Tiragem de tarot de três cartas com leitura conjunta","Relatório pessoal semanal","Acesso ilimitado às apps da Família Sakin (3 por dia na versão gratuita)","Identificar pedras e plantas por fotografia","40 respostas de IA por dia (10 na versão gratuita)"],
     fr:["15 chakras des niveaux 2 et 3","Tirage de tarot en trois cartes avec lecture d'ensemble","Rapport personnel hebdomadaire","Accès illimité aux apps de la Famille Sakin (3 par jour en gratuit)","Identifier pierres et plantes en photo","40 réponses IA par jour (10 en gratuit)"],
-    ja:["レベル2・3の15のチャクラ","3枚引きのタロットと総合リーディング","毎週のパーソナルレポート","Sakinファミリーのアプリを無制限に(無料は1日3回)","写真で石と植物を見分ける","AIの回答が1日40回(無料は10回)"],
+    ja:["レベル2・3の15のチャクラ","3枚引きのタロットと総合リーディング","毎週のパーソナルレポート","Sakinファミリーのアプリを無制限に（無料は1日3回）","写真で石と植物を見分ける","AIの回答が1日40回（無料は10回）"],
   },
   freeTitle: { tr:"Herkese ücretsiz", en:"Free for everyone", de:"Für alle kostenlos", es:"Gratis para todos", pt:"Grátis para todos", fr:"Gratuit pour tous", ja:"誰でも無料" },
   free: {

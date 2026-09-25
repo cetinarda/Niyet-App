@@ -1,2 +1,4 @@
 /* English */
 "CFBundleDisplayName" = "Sakin";
+"NSCameraUsageDescription" = "Sakin uses your camera to identify the stone or plant you photograph.";
+"NSPhotoLibraryUsageDescription" = "Sakin accesses your photo library to identify the stone or plant photo you choose.";

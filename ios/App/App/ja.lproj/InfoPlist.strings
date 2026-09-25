@@ -1,2 +1,4 @@
 /* 日本語 */
 "CFBundleDisplayName" = "Sakin";
+"NSCameraUsageDescription" = "Sakinは、撮影した石や植物を見分けるためにカメラを使用します。";
+"NSPhotoLibraryUsageDescription" = "Sakinは、選んだ写真の石や植物を見分けるために写真ライブラリにアクセスします。";

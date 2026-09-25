@@ -47,7 +47,10 @@
     });
   }
   function toggleTheme() {
-    var next = readTheme() === "light" ? "dark" : "light";
+    // Ekrandaki temayı esas al: ?theme= ile açılan sayfada readTheme() hep
+    // URL'deki değeri döndürüyordu, düğme ikinci basıştan sonra çalışmıyordu.
+    var cur = document.documentElement.getAttribute("data-theme") || readTheme();
+    var next = cur === "light" ? "dark" : "light";
     try { localStorage.setItem("sakin_site_theme", next); } catch (e) {}
     applyTheme(next);
   }
@@ -105,8 +108,11 @@
       else el.textContent = v;
     });
 
+    // Sayfa başlığı yalnızca tek dosyalı sayfada (tanıtım) dile göre yazılır.
+    // Blog yazıları dile özel dosyalar (hreflang), kendi <title>'ları doğru;
+    // eskiden hepsi tanıtım başlığıyla eziliyordu.
     var title = dict.pageTitle || fallback.pageTitle;
-    if (title) document.title = title;
+    if (title && !document.querySelector('link[rel="alternate"][hreflang]')) document.title = title;
 
     // Blog bağlantıları seçili dilin klasörüne gitsin. Tanıtım sayfası tek
     // dosya olduğu için bağlantılar burada yeniden yazılır; blog sayfaları
@@ -275,6 +281,47 @@
     }, { passive: true });
   }
 
+  /* Telefondan gelen ziyaretçi: mağaza önde (kullanıcı kararı, Eyl 2026).
+     iOS/Android'de o platformun mağaza rozeti ilk sıraya ve öne çıkar,
+     "Sakin'i Dene" (web sürümü) ikincil düğmeye iner; alt çubuktaki düğme de
+     doğrudan mağazaya gider. Masaüstünde hiçbir şey değişmez. */
+  function mobilePlatform() {
+    var ua = navigator.userAgent || "";
+    if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
+    if (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    return null;
+  }
+  function buildMobileStores() {
+    var pf = mobilePlatform();
+    if (!pf) return;
+    var isMine = function (a) {
+      var h = a.getAttribute("href") || "";
+      return pf === "ios" ? h.indexOf("/ios") === 0 || h.indexOf("apps.apple.com") > -1
+                          : h.indexOf("play.google.com") > -1;
+    };
+    var myHref = null;
+    document.querySelectorAll(".hero-actions").forEach(function (box) {
+      var stores = box.querySelector(".stores");
+      var tryBtn = box.querySelector('a.btn-primary[href="/app"]');
+      if (!stores || !tryBtn) return;
+      stores.querySelectorAll(".store").forEach(function (a) {
+        if (isMine(a)) { a.classList.add("store-primary"); stores.insertBefore(a, stores.firstChild); myHref = a.getAttribute("href"); }
+      });
+      box.insertBefore(stores, tryBtn);
+      tryBtn.classList.remove("btn-primary");
+      tryBtn.classList.add("btn-ghost");
+    });
+    var dockBtn = document.querySelector("#dockbar .btn");
+    if (dockBtn && myHref) {
+      dockBtn.removeAttribute("data-t");
+      dockBtn.setAttribute("href", myHref);
+      dockBtn.setAttribute("target", "_blank");
+      dockBtn.setAttribute("rel", "noopener");
+      dockBtn.textContent = pf === "ios" ? "App Store" : "Google Play";
+    }
+  }
+
   function init() {
     applyTheme(readTheme());
     buildAmbient();
@@ -282,6 +329,7 @@
     applyLang(readLang());
     buildReveal();
     buildDock();
+    buildMobileStores();
     buildBreathFollow();
 
     document.querySelectorAll("[data-theme-toggle]").forEach(function (b) {
