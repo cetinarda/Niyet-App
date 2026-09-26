@@ -46,6 +46,8 @@ fi
 echo "    cihaz: $DEVICES"
 
 echo "==> Web bundle + Capacitor senkron"
+# Yeni bagimlilik eklenmis olabilir (reset --hard paket kurmaz).
+( cd "$ROOT" && npm install --no-audit --no-fund ) || { echo "HATA: npm install basarisiz"; exit 1; }
 ( cd "$ROOT" && npm run build ) || { echo "HATA: npm run build basarisiz"; exit 1; }
 ( cd "$ROOT" && npx cap sync android ) || { echo "HATA: cap sync basarisiz"; exit 1; }
 

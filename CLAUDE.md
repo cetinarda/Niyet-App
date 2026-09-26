@@ -62,13 +62,13 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    cd ~/Desktop/Niyet-App && \
    git fetch origin claude/check-sakin-life-update-CIpM8 && \
    git reset --hard FETCH_HEAD && \
-   npm run build && npx cap sync ios && open ios/App/App.xcodeproj
+   npm install && npm run build && npx cap sync ios && open ios/App/App.xcodeproj
 
    # Android (yalnızca son iki adım farklı)
    cd ~/Desktop/Niyet-App && \
    git fetch origin claude/check-sakin-life-update-CIpM8 && \
    git reset --hard FETCH_HEAD && \
-   npm run build && npx cap sync android && npx cap open android
+   npm install && npm run build && npx cap sync android && npx cap open android
    ```
    **`fetch` + `reset --hard` NEDEN (İKİ ayrı hata, ikisi de yaşandı):**
    - **(1) "local changes would be overwritten":** Xcode `project.pbxproj`'u yerel
@@ -86,6 +86,10 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
      untracked dosyalara dokunmaz (`node_modules`, `dist` durur). Yine de kullanıcı
      Mac'te elle bir şey yazdıysa önce şunu çalıştırsın, boş çıkmalı:
      `git fetch origin <branch> && git log --oneline HEAD ^FETCH_HEAD`
+   - **`npm install` NEDEN (Eyl 2026):** yeni bağımlılık eklenince (Çember için
+     `@supabase/supabase-js`) Mac'te "Rollup failed to resolve import" hatası çıktı:
+     `reset --hard` kodu getirir ama `node_modules`'a paket KURMAZ. Paket yoksa
+     birkaç saniyede geçer, komuttan çıkarma.
    - **`git pull` KULLANMA**, `fetch` + `reset --hard FETCH_HEAD` kullan: pull
      yukarıdaki iki hatanın ikisine de açık.
 4. **`public/latest-ios-version.json` ARTIK OTOMATİK: elle bump etme.**
