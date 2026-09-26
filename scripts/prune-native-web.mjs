@@ -18,6 +18,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 const WEB_ONLY = [
+  // "audio": meditasyon sesleri SUNUCUDAN çalınır (sakin.life/audio/...), telefona
+  // gömülmez (her dosya ~8 MB). Kullanıcı kararı, Eyl 2026.
+  "audio",
   "blog", "home", "tanitim", "privacy", "terms", "ios",
   "privacy.html", "terms.html", "site.js", "site.css", "site-i18n.js",
   "og-sakin.png", "sakin-app-icon-2048.png",

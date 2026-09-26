@@ -1119,6 +1119,87 @@ function letterChest(ready, anim) {
   );
 }
 
+// ── GÜNLÜK PRATİK: MEDİTASYON DENEMESİ (kullanıcı, Eyl 2026) ─────────────────
+// Ses SUNUCUDAN çalınır (sakin.life/audio/...), telefona gömülmez (prune listesi,
+// scripts/prune-native-web.mjs "audio"). 96 kbps AAC, ~8,6 MB. Kart kullanıcı bir
+// kez deneyene kadar görünür: ilk oynatmada `sakin_med_tried` = o gün; o gün
+// boyunca görünmeye devam eder (dinlerken kaybolmasın), ertesi gün gizlenir.
+// MODÜL seviyesi bileşen: çalarken yalnızca kendini günceller (ilerleme çubuğu
+// ref ile), kök bileşen saniyede bir yeniden çizilmez.
+const MEDITATION = { id: "chakra_balance", src: API_BASE + "/audio/chakra_balance.m4a", min: 12 };
+const MED_TXT = {
+  eyebrow: { tr:"Günlük pratik", en:"Daily practice", de:"Tägliche Praxis", es:"Práctica diaria", pt:"Prática diária", fr:"Pratique du jour", ja:"今日のプラクティス" },
+  title:   { tr:"Çakra Dengeleme Meditasyonu", en:"Chakra Balancing Meditation", de:"Chakra-Ausgleichs-Meditation", es:"Meditación de equilibrio de chakras", pt:"Meditação de equilíbrio dos chakras", fr:"Méditation d'équilibrage des chakras", ja:"チャクラ・バランス瞑想" },
+  sub:     { tr:"12 dk · 7 çakrayı dengele", en:"12 min · balance your 7 chakras", de:"12 Min. · deine 7 Chakren ausgleichen", es:"12 min · equilibra tus 7 chakras", pt:"12 min · equilibra os teus 7 chakras", fr:"12 min · équilibre tes 7 chakras", ja:"12分・7つのチャクラを整える" },
+  err:     { tr:"Ses yüklenemedi. İnternet bağlantını kontrol et.", en:"The audio couldn't load. Check your internet connection.", de:"Der Ton konnte nicht geladen werden. Prüfe deine Internetverbindung.", es:"No se pudo cargar el audio. Revisa tu conexión a internet.", pt:"Não foi possível carregar o áudio. Verifica a tua ligação à internet.", fr:"Le son n'a pas pu se charger. Vérifie ta connexion internet.", ja:"音声を読み込めませんでした。インターネット接続を確認してください。" },
+  play:    { tr:"Oynat", en:"Play", de:"Abspielen", es:"Reproducir", pt:"Reproduzir", fr:"Lire", ja:"再生" },
+  pause:   { tr:"Duraklat", en:"Pause", de:"Pause", es:"Pausa", pt:"Pausa", fr:"Pause", ja:"一時停止" },
+};
+function medVisible() {
+  try { const t = localStorage.getItem("sakin_med_tried"); return !t || t === sakinDayKey(); } catch (_) { return true; }
+}
+function MeditationCard({ lang, S }) {
+  const [playing, setPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState(false);
+  const barRef = useRef(null);
+  const L = (o) => pickLang(o, lang);
+  useEffect(() => {
+    const a = window.__sakinMed;
+    if (!a) return;
+    setPlaying(!a.paused && !a.error);
+    const tick = () => { if (barRef.current && a.duration) barRef.current.style.width = `${Math.min(100, (a.currentTime / a.duration) * 100)}%`; };
+    const onPlay = () => { setPlaying(true); setLoading(false); }, onPause = () => setPlaying(false);
+    a.addEventListener("timeupdate", tick); a.addEventListener("playing", onPlay); a.addEventListener("pause", onPause); a.addEventListener("ended", onPause);
+    tick();
+    return () => { a.removeEventListener("timeupdate", tick); a.removeEventListener("playing", onPlay); a.removeEventListener("pause", onPause); a.removeEventListener("ended", onPause); };
+  }, [playing, loading]);
+  const toggle = () => {
+    try { haptic(); } catch (_) {}
+    let a = window.__sakinMed;
+    if (!a) {
+      a = new Audio(MEDITATION.src);
+      a.preload = "auto";
+      // Hata sonrası nesne atılır: bir sonraki dokunuş sıfırdan dener (ağ geri gelmiş olabilir).
+      a.addEventListener("error", () => { try { a.pause(); } catch (_) {} window.__sakinMed = null; setErr(true); setLoading(false); setPlaying(false); });
+      window.__sakinMed = a;
+    }
+    setErr(false);
+    if (a.paused) {
+      setLoading(true);
+      try { localStorage.setItem("sakin_med_tried", sakinDayKey()); } catch (_) {}
+      a.play().then(() => { setPlaying(true); setLoading(false); }).catch(() => { setErr(true); setLoading(false); });
+    } else { a.pause(); }
+  };
+  const dots = ["#e05555","#f0923a","#f2cf4a","#5bc58a","#4aa3e0","#6a6fd6","#a57ad8"];
+  return (
+    <section style={S.SEC}>
+      {S.eyebrow(L(MED_TXT.eyebrow))}
+      <div style={{ ...S.SURF, padding:"12px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+        <div style={{ display:"flex", alignItems:"center", gap:14 }}>
+          <div aria-hidden="true" style={{ width:54, height:54, flexShrink:0, borderRadius:12, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2.5,
+            background:"radial-gradient(circle at 50% 40%, rgba(184,164,216,0.28), rgba(20,14,40,0.9) 72%)", border:"1px solid rgba(184,164,216,0.25)" }}>
+            {dots.map((c, i) => <span key={i} style={{ width:4.5, height:4.5, borderRadius:"50%", background:c, boxShadow:`0 0 6px ${c}` }} />)}
+          </div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontFamily:S.SERIF, fontSize:19, lineHeight:1.2, color:S.INK }}>{L(MED_TXT.title)}</div>
+            <div style={{ fontFamily:S.INTER, fontSize:12.5, color:S.MUTE, marginTop:3 }}>{L(MED_TXT.sub)}</div>
+          </div>
+          <button onClick={toggle} aria-label={L(playing ? MED_TXT.pause : MED_TXT.play)}
+            style={{ ...S.BTN, width:42, height:42, flexShrink:0, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
+              border:`1px solid ${S.GOLD}88`, color:S.GOLD, fontSize:15, lineHeight:1, opacity: loading ? 0.6 : 1 }}>
+            {playing ? "❚❚" : "▶"}
+          </button>
+        </div>
+        <div style={{ height:2, borderRadius:2, background:"rgba(255,255,255,0.07)", overflow:"hidden" }}>
+          <div ref={barRef} style={{ height:"100%", width:"0%", background:`linear-gradient(90deg, ${S.GOLD}, #b8a4d8)`, transition:"width .9s linear" }} />
+        </div>
+        {err && <div style={{ fontFamily:S.INTER, fontSize:12, color:"#d9a0a0" }}>{L(MED_TXT.err)}</div>}
+      </div>
+    </section>
+  );
+}
+
 function NiyetMektubu({ lang }) {
   const GOLD = "#e8c07a", INK = "#f1ecf9", BODY = "#cfc7e0", MUTE = "#8f88a3";
   const SERIF = "'Cormorant Garamond',Georgia,serif", JOST = "'Jost',sans-serif", INTER = "'Inter',sans-serif";
@@ -17971,6 +18052,179 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             </section>
 
+            {/* ── 9) GÜNÜN TAROT KARTI ─────────────────────────────────────────
+                Gerçek 78'lik deste (1909 çizimleri, bkz. build-tarot-art.py),
+                gün + doğum ile deterministik tek kart, reroll yok.
+                AÇILIR-KAPANIR (kullanıcı: "tüm ekranı kaplamasın"): çekim anında
+                açık, sonraki girişlerde tek satır özet. Açıkken: kart + anlam +
+                öneri + Paylaş + premium "Daha geniş açılım" (üç kart). */}
+            <section style={SEC}>
+              {eyebrow(pickLang(TAROT_TXT.eyebrow, lang))}
+              {!drawn ? (
+                <button onClick={()=>{ try{haptic();}catch(_){}
+                    try { localStorage.setItem("sakin_tarot_drawn", dk); } catch(_) {}
+                    setTarotDrawnDay(dk); setTarotExpanded(true); cancelTodayTarotNotif(); }}
+                  style={{ ...BTN,...SURF,padding:"24px 16px 20px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16 }}>
+                  {/* Yelpaze: 5 kart aynı alt-orta çapa etrafında döner, orta kart üstte. */}
+                  <div style={{ position:"relative",width:220,height:156 }}>
+                    {[-2,-1,0,1,2].map((i)=>(
+                      <img key={i} src="/tarot/back.webp" alt="" draggable={false}
+                        style={{ position:"absolute",left:"50%",bottom:6,width:72,height:112,marginLeft:-36,borderRadius:6,
+                          zIndex:5-Math.abs(i),transformOrigin:"bottom center",transform:`rotate(${i*13}deg)`,
+                          boxShadow:"0 6px 20px rgba(0,0,0,0.6)" }} />
+                    ))}
+                    {/* Günün kartını önceden yükle: seçilince beklemeden açılsın. */}
+                    <img src={tarotImg(tcard.id)} alt="" style={{ display:"none" }} />
+                  </div>
+                  <span style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
+                    <span style={{ fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,letterSpacing:1 }}>{pickLang(TAROT_TXT.cta, lang)}</span>
+                    <span style={{ fontSize:12,color:MUTE,fontFamily:INTER,textAlign:"center" }}>{pickLang(TAROT_TXT.hint, lang)}</span>
+                  </span>
+                </button>
+              ) : (
+                <div style={{ ...SURF,overflow:"hidden" }}>
+                  {/* Başlık satırı = aç/kapa. Kapalıyken tek başına bu satır görünür. */}
+                  <button onClick={()=>{ try{haptic();}catch(_){} setTarotExpanded(v => !v); }}
+                    style={{ ...BTN,padding:"12px 16px",display:"flex",alignItems:"center",gap:14 }}>
+                    {cardImg(tcard, trev, 44, { borderRadius:4, boxShadow:"0 4px 12px rgba(0,0,0,0.5)" })}
+                    <span style={{ flex:1,minWidth:0 }}>
+                      {label(arcanaLine, tcol)}
+                      <span style={{ display:"block",fontSize:16.5,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:5 }}>{pickLang(tcard.name, lang)}</span>
+                      {pill(posLbl(trev), posCol(trev))}
+                    </span>
+                    {chevron(tarotExpanded ? 90 : 0)}
+                  </button>
+                  {tarotExpanded && (
+                    <div style={{ padding:"4px 18px 18px",animation:"fadeIn 0.5s ease" }}>
+                      {/* Kompakt düzen: kart solda (124 px, 360 px kaynaktan net),
+                          anahtar kelimeler + anlam sağda; öneri tam genişlik altta. */}
+                      <div style={{ display:"flex",gap:16,alignItems:"flex-start",marginBottom:14 }}>
+                        <div style={{ padding:4,borderRadius:8,background:"#0b0a1f",border:`1px solid ${GOLD}55`,
+                          boxShadow:`0 10px 28px rgba(0,0,0,0.55), 0 0 22px ${tcol}22`,flexShrink:0 }}>
+                          {cardImg(tcard, trev, 124)}
+                        </div>
+                        <div style={{ flex:1,minWidth:0 }}>
+                          {tkw.length > 0 && (
+                            <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:12 }}>
+                              {tkw.slice(0,3).map((w, i) => <span key={i} style={{ fontSize:11.5,color:BODY,fontFamily:INTER,
+                                padding:"3px 9px",borderRadius:100,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(184,164,216,0.14)" }}>{w}</span>)}
+                            </div>
+                          )}
+                          {label(pickLang(TAROT_TXT.meaning, lang), tcol)}
+                          <div style={{ fontSize:14.5,color:INK,fontFamily:INTER,lineHeight:1.6 }}>
+                            {pickLang(trev ? tcard.reversed : tcard.upright, lang)}
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
+                        {label(pickLang(TAROT_TXT.advice, lang), "#8fcfa6")}
+                        <div style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{pickLang(tcard.advice, lang)}</div>
+                      </div>
+                      <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:16 }}>
+                        {smallBtn(<>↗ {pickLang(TAROT_UI_TXT.share, lang)}</>, shareTarot)}
+                        {smallBtn(<>✦ {pickLang(TAROT_UI_TXT.spread, lang)}{!isPremium && <span style={{ fontSize:9,letterSpacing:1,marginLeft:4,
+                            padding:"1px 6px",borderRadius:100,background:`${GOLD}22`,border:`1px solid ${GOLD}55` }}>PREMIUM</span>}</>,
+                          ()=>{ try{haptic();}catch(_){} setShowTarotSpread(v => !v); }, GOLD)}
+                      </div>
+
+                      {/* ÜÇ KART AÇILIMI (premium). Premium değilse NAZİK kilit:
+                          doğrudan fiyat ekranına ATMAZ (CLAUDE.md: soğutur),
+                          ne olduğunu anlatır, istenirse Premium'u gör. */}
+                      {showTarotSpread && (!isPremium ? (
+                        <div style={{ marginTop:14,padding:"16px 16px",borderRadius:14,background:`${GOLD}0d`,border:`1px solid ${GOLD}40`,animation:"fadeIn 0.4s ease" }}>
+                          {label(pickLang(TAROT_UI_TXT.premiumTitle, lang), GOLD)}
+                          <div style={{ fontFamily:SERIF,fontSize:20,color:INK,lineHeight:1.25,marginBottom:8 }}>{pickLang(TAROT_UI_TXT.spreadTitle, lang)}</div>
+                          <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.55,marginBottom:14 }}>{pickLang(TAROT_UI_TXT.premiumBody, lang)}</div>
+                          {smallBtn(pickLang(TAROT_UI_TXT.premiumCta, lang), ()=>{ try{haptic();}catch(_){} setScreen("fiyat"); }, GOLD)}
+                        </div>
+                      ) : (() => {
+                        const spread = pickTarotSpread(dk, seed);
+                        return (
+                          <div style={{ marginTop:16,paddingTop:16,borderTop:`1px solid ${GOLD}33`,animation:"fadeIn 0.4s ease" }}>
+                            <div style={{ fontFamily:SERIF,fontSize:21,color:INK,textAlign:"center",marginBottom:14 }}>{pickLang(TAROT_UI_TXT.spreadTitle, lang)}</div>
+                            <div style={{ display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10,marginBottom:16 }}>
+                              {spread.map(s => (
+                                <div key={s.pos} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:7,textAlign:"center" }}>
+                                  <span style={{ fontFamily:JOST,fontSize:10,letterSpacing:2,textTransform:"uppercase",color: s.pos === "now" ? GOLD : MUTE }}>{pickLang(TAROT_UI_TXT[s.pos], lang)}</span>
+                                  <div style={{ padding:3,borderRadius:6,background:"#0b0a1f",border:`1px solid ${s.pos === "now" ? GOLD + "88" : "rgba(184,164,216,0.25)"}` }}>
+                                    {cardImg(s.card, s.reversed, 84)}
+                                  </div>
+                                  <span style={{ fontSize:12,color:INK,fontFamily:JOST,fontWeight:300,lineHeight:1.3 }}>{pickLang(s.card.name, lang)}</span>
+                                  {pill(posLbl(s.reversed), posCol(s.reversed))}
+                                </div>
+                              ))}
+                            </div>
+                            <div style={{ display:"flex",flexDirection:"column",gap:10,marginBottom:14 }}>
+                              {spread.filter(s => s.pos !== "now").map(s => (
+                                <div key={s.pos}>
+                                  {label(`${pickLang(TAROT_UI_TXT[s.pos], lang)} · ${pickLang(s.card.name, lang)}`, LAV)}
+                                  <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.55 }}>{pickLang(s.reversed ? s.card.reversed : s.card.upright, lang)}</div>
+                                </div>
+                              ))}
+                            </div>
+                            {!tarotSpreadText && !tarotSpreadLoading && (
+                              <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateTarotSpread); }}
+                                style={{ ...BTN,padding:"12px 16px",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
+                                  background:`${GOLD}10`,border:`1px solid ${GOLD}55`,fontFamily:JOST,fontSize:12.5,letterSpacing:2,textTransform:"uppercase",color:"#f0d29a" }}>
+                                <span style={{ fontSize:12 }}>✦</span>{pickLang(TAROT_UI_TXT.spreadRead, lang)}
+                              </button>
+                            )}
+                            {tarotSpreadLoading && (
+                              <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"8px 0",fontStyle:"italic",fontFamily:INTER }}>{pickLang(TAROT_UI_TXT.spreadLoading, lang)}</div>
+                            )}
+                            {tarotSpreadText && (
+                              <div style={{ fontSize:14.5,lineHeight:1.8,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap",animation:"fadeIn 0.6s ease" }}>{tarotSpreadText}</div>
+                            )}
+                          </div>
+                        );
+                      })())}
+
+                      <div style={{ textAlign:"center",fontSize:11,color:"#6f6a80",fontFamily:JOST,letterSpacing:1,marginTop:16 }}>{pickLang(TAROT_TXT.again, lang)}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+
+            {/* ── 9a) GÜNLÜK PRATİK: meditasyon denemesi (denenene kadar görünür). */}
+            {medVisible() && <MeditationCard lang={lang} S={{ SEC, SURF, BTN, eyebrow, SERIF, INTER, INK, MUTE, GOLD }} />}
+
+            {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir. */}
+            {(() => {
+              const lines = String(sukur || "").split("\n").map(x => x.trim()).filter(Boolean);
+              const addGrat = () => {
+                const v = gratDraft.trim();
+                if (!v) return;
+                try { haptic(); } catch (_) {}
+                setSukur(prev => (String(prev || "").trim() ? String(prev).trim() + "\n" + v : v));
+                setGratDraft("");
+              };
+              return (
+                <section style={SEC}>
+                  {eyebrow(pickLang(GRATITUDE_TXT.title, lang))}
+                  <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
+                    <input value={gratDraft} onChange={e => setGratDraft(e.target.value.slice(0, 160))}
+                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addGrat(); } }}
+                      placeholder={pickLang(GRATITUDE_TXT.ph, lang)} aria-label={pickLang(GRATITUDE_TXT.title, lang)}
+                      style={{ flex:1,minWidth:0,background:"transparent",border:"none",outline:"none",color:INK,fontFamily:INTER,fontSize:16,padding:"6px 0" }} />
+                    <button onClick={addGrat} aria-label={pickLang(GRATITUDE_TXT.add, lang)}
+                      style={{ ...BTN,width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
+                        border:`1px solid ${gratDraft.trim() ? GOLD + "99" : "rgba(255,255,255,0.18)"}`,color: gratDraft.trim() ? GOLD : MUTE,fontSize:18,lineHeight:1 }}>+</button>
+                  </div>
+                  {lines.length > 0 && (
+                    <div style={{ display:"flex",flexDirection:"column",gap:6,margin:"10px 4px 0" }}>
+                      {lines.slice(-5).map((l, i) => (
+                        <div key={i} style={{ display:"flex",gap:8,alignItems:"baseline",fontFamily:SERIF,fontSize:17,lineHeight:1.4,color:BODY }}>
+                          <span style={{ color:GOLD,fontSize:11 }}>✦</span><span style={{ minWidth:0,overflowWrap:"anywhere" }}>{l}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE,margin:"8px 4px 0" }}>{pickLang(GRATITUDE_TXT.note, lang)}</div>
+                </section>
+              );
+            })()}
+
             {/* ── PAZAR: HAFTANIN ÖZETİ ── yalnızca Pazar + en az bir aktif gün. */}
             {week && (
               <section style={SEC}>
@@ -18270,176 +18524,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 {chevron()}
               </button>
             </section>
-
-            {/* ── 9) GÜNÜN TAROT KARTI ─────────────────────────────────────────
-                Gerçek 78'lik deste (1909 çizimleri, bkz. build-tarot-art.py),
-                gün + doğum ile deterministik tek kart, reroll yok.
-                AÇILIR-KAPANIR (kullanıcı: "tüm ekranı kaplamasın"): çekim anında
-                açık, sonraki girişlerde tek satır özet. Açıkken: kart + anlam +
-                öneri + Paylaş + premium "Daha geniş açılım" (üç kart). */}
-            <section style={SEC}>
-              {eyebrow(pickLang(TAROT_TXT.eyebrow, lang))}
-              {!drawn ? (
-                <button onClick={()=>{ try{haptic();}catch(_){}
-                    try { localStorage.setItem("sakin_tarot_drawn", dk); } catch(_) {}
-                    setTarotDrawnDay(dk); setTarotExpanded(true); cancelTodayTarotNotif(); }}
-                  style={{ ...BTN,...SURF,padding:"24px 16px 20px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:16 }}>
-                  {/* Yelpaze: 5 kart aynı alt-orta çapa etrafında döner, orta kart üstte. */}
-                  <div style={{ position:"relative",width:220,height:156 }}>
-                    {[-2,-1,0,1,2].map((i)=>(
-                      <img key={i} src="/tarot/back.webp" alt="" draggable={false}
-                        style={{ position:"absolute",left:"50%",bottom:6,width:72,height:112,marginLeft:-36,borderRadius:6,
-                          zIndex:5-Math.abs(i),transformOrigin:"bottom center",transform:`rotate(${i*13}deg)`,
-                          boxShadow:"0 6px 20px rgba(0,0,0,0.6)" }} />
-                    ))}
-                    {/* Günün kartını önceden yükle: seçilince beklemeden açılsın. */}
-                    <img src={tarotImg(tcard.id)} alt="" style={{ display:"none" }} />
-                  </div>
-                  <span style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:4 }}>
-                    <span style={{ fontSize:16,color:INK,fontFamily:JOST,fontWeight:300,letterSpacing:1 }}>{pickLang(TAROT_TXT.cta, lang)}</span>
-                    <span style={{ fontSize:12,color:MUTE,fontFamily:INTER,textAlign:"center" }}>{pickLang(TAROT_TXT.hint, lang)}</span>
-                  </span>
-                </button>
-              ) : (
-                <div style={{ ...SURF,overflow:"hidden" }}>
-                  {/* Başlık satırı = aç/kapa. Kapalıyken tek başına bu satır görünür. */}
-                  <button onClick={()=>{ try{haptic();}catch(_){} setTarotExpanded(v => !v); }}
-                    style={{ ...BTN,padding:"12px 16px",display:"flex",alignItems:"center",gap:14 }}>
-                    {cardImg(tcard, trev, 44, { borderRadius:4, boxShadow:"0 4px 12px rgba(0,0,0,0.5)" })}
-                    <span style={{ flex:1,minWidth:0 }}>
-                      {label(arcanaLine, tcol)}
-                      <span style={{ display:"block",fontSize:16.5,color:INK,fontFamily:JOST,fontWeight:300,marginBottom:5 }}>{pickLang(tcard.name, lang)}</span>
-                      {pill(posLbl(trev), posCol(trev))}
-                    </span>
-                    {chevron(tarotExpanded ? 90 : 0)}
-                  </button>
-                  {tarotExpanded && (
-                    <div style={{ padding:"4px 18px 18px",animation:"fadeIn 0.5s ease" }}>
-                      {/* Kompakt düzen: kart solda (124 px, 360 px kaynaktan net),
-                          anahtar kelimeler + anlam sağda; öneri tam genişlik altta. */}
-                      <div style={{ display:"flex",gap:16,alignItems:"flex-start",marginBottom:14 }}>
-                        <div style={{ padding:4,borderRadius:8,background:"#0b0a1f",border:`1px solid ${GOLD}55`,
-                          boxShadow:`0 10px 28px rgba(0,0,0,0.55), 0 0 22px ${tcol}22`,flexShrink:0 }}>
-                          {cardImg(tcard, trev, 124)}
-                        </div>
-                        <div style={{ flex:1,minWidth:0 }}>
-                          {tkw.length > 0 && (
-                            <div style={{ display:"flex",flexWrap:"wrap",gap:6,marginBottom:12 }}>
-                              {tkw.slice(0,3).map((w, i) => <span key={i} style={{ fontSize:11.5,color:BODY,fontFamily:INTER,
-                                padding:"3px 9px",borderRadius:100,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(184,164,216,0.14)" }}>{w}</span>)}
-                            </div>
-                          )}
-                          {label(pickLang(TAROT_TXT.meaning, lang), tcol)}
-                          <div style={{ fontSize:14.5,color:INK,fontFamily:INTER,lineHeight:1.6 }}>
-                            {pickLang(trev ? tcard.reversed : tcard.upright, lang)}
-                          </div>
-                        </div>
-                      </div>
-                      <div style={{ paddingTop:12,borderTop:"1px solid rgba(184,164,216,0.12)" }}>
-                        {label(pickLang(TAROT_TXT.advice, lang), "#8fcfa6")}
-                        <div style={{ fontSize:14,color:BODY,fontFamily:INTER,lineHeight:1.6 }}>{pickLang(tcard.advice, lang)}</div>
-                      </div>
-                      <div style={{ display:"flex",flexWrap:"wrap",gap:8,marginTop:16 }}>
-                        {smallBtn(<>↗ {pickLang(TAROT_UI_TXT.share, lang)}</>, shareTarot)}
-                        {smallBtn(<>✦ {pickLang(TAROT_UI_TXT.spread, lang)}{!isPremium && <span style={{ fontSize:9,letterSpacing:1,marginLeft:4,
-                            padding:"1px 6px",borderRadius:100,background:`${GOLD}22`,border:`1px solid ${GOLD}55` }}>PREMIUM</span>}</>,
-                          ()=>{ try{haptic();}catch(_){} setShowTarotSpread(v => !v); }, GOLD)}
-                      </div>
-
-                      {/* ÜÇ KART AÇILIMI (premium). Premium değilse NAZİK kilit:
-                          doğrudan fiyat ekranına ATMAZ (CLAUDE.md: soğutur),
-                          ne olduğunu anlatır, istenirse Premium'u gör. */}
-                      {showTarotSpread && (!isPremium ? (
-                        <div style={{ marginTop:14,padding:"16px 16px",borderRadius:14,background:`${GOLD}0d`,border:`1px solid ${GOLD}40`,animation:"fadeIn 0.4s ease" }}>
-                          {label(pickLang(TAROT_UI_TXT.premiumTitle, lang), GOLD)}
-                          <div style={{ fontFamily:SERIF,fontSize:20,color:INK,lineHeight:1.25,marginBottom:8 }}>{pickLang(TAROT_UI_TXT.spreadTitle, lang)}</div>
-                          <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.55,marginBottom:14 }}>{pickLang(TAROT_UI_TXT.premiumBody, lang)}</div>
-                          {smallBtn(pickLang(TAROT_UI_TXT.premiumCta, lang), ()=>{ try{haptic();}catch(_){} setScreen("fiyat"); }, GOLD)}
-                        </div>
-                      ) : (() => {
-                        const spread = pickTarotSpread(dk, seed);
-                        return (
-                          <div style={{ marginTop:16,paddingTop:16,borderTop:`1px solid ${GOLD}33`,animation:"fadeIn 0.4s ease" }}>
-                            <div style={{ fontFamily:SERIF,fontSize:21,color:INK,textAlign:"center",marginBottom:14 }}>{pickLang(TAROT_UI_TXT.spreadTitle, lang)}</div>
-                            <div style={{ display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:10,marginBottom:16 }}>
-                              {spread.map(s => (
-                                <div key={s.pos} style={{ display:"flex",flexDirection:"column",alignItems:"center",gap:7,textAlign:"center" }}>
-                                  <span style={{ fontFamily:JOST,fontSize:10,letterSpacing:2,textTransform:"uppercase",color: s.pos === "now" ? GOLD : MUTE }}>{pickLang(TAROT_UI_TXT[s.pos], lang)}</span>
-                                  <div style={{ padding:3,borderRadius:6,background:"#0b0a1f",border:`1px solid ${s.pos === "now" ? GOLD + "88" : "rgba(184,164,216,0.25)"}` }}>
-                                    {cardImg(s.card, s.reversed, 84)}
-                                  </div>
-                                  <span style={{ fontSize:12,color:INK,fontFamily:JOST,fontWeight:300,lineHeight:1.3 }}>{pickLang(s.card.name, lang)}</span>
-                                  {pill(posLbl(s.reversed), posCol(s.reversed))}
-                                </div>
-                              ))}
-                            </div>
-                            <div style={{ display:"flex",flexDirection:"column",gap:10,marginBottom:14 }}>
-                              {spread.filter(s => s.pos !== "now").map(s => (
-                                <div key={s.pos}>
-                                  {label(`${pickLang(TAROT_UI_TXT[s.pos], lang)} · ${pickLang(s.card.name, lang)}`, LAV)}
-                                  <div style={{ fontSize:13.5,color:BODY,fontFamily:INTER,lineHeight:1.55 }}>{pickLang(s.reversed ? s.card.reversed : s.card.upright, lang)}</div>
-                                </div>
-                              ))}
-                            </div>
-                            {!tarotSpreadText && !tarotSpreadLoading && (
-                              <button onClick={()=>{ try{haptic();}catch(_){} requireAiConsent(generateTarotSpread); }}
-                                style={{ ...BTN,padding:"12px 16px",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",gap:8,
-                                  background:`${GOLD}10`,border:`1px solid ${GOLD}55`,fontFamily:JOST,fontSize:12.5,letterSpacing:2,textTransform:"uppercase",color:"#f0d29a" }}>
-                                <span style={{ fontSize:12 }}>✦</span>{pickLang(TAROT_UI_TXT.spreadRead, lang)}
-                              </button>
-                            )}
-                            {tarotSpreadLoading && (
-                              <div style={{ textAlign:"center",color:"#c9b88e",fontSize:13,padding:"8px 0",fontStyle:"italic",fontFamily:INTER }}>{pickLang(TAROT_UI_TXT.spreadLoading, lang)}</div>
-                            )}
-                            {tarotSpreadText && (
-                              <div style={{ fontSize:14.5,lineHeight:1.8,color:BODY,fontFamily:INTER,whiteSpace:"pre-wrap",animation:"fadeIn 0.6s ease" }}>{tarotSpreadText}</div>
-                            )}
-                          </div>
-                        );
-                      })())}
-
-                      <div style={{ textAlign:"center",fontSize:11,color:"#6f6a80",fontFamily:JOST,letterSpacing:1,marginTop:16 }}>{pickLang(TAROT_TXT.again, lang)}</div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </section>
-
-            {/* ── 9b) GÜNÜN ŞÜKRANI: akşam kapanışının şükür alanına satır olarak eklenir. */}
-            {(() => {
-              const lines = String(sukur || "").split("\n").map(x => x.trim()).filter(Boolean);
-              const addGrat = () => {
-                const v = gratDraft.trim();
-                if (!v) return;
-                try { haptic(); } catch (_) {}
-                setSukur(prev => (String(prev || "").trim() ? String(prev).trim() + "\n" + v : v));
-                setGratDraft("");
-              };
-              return (
-                <section style={SEC}>
-                  {eyebrow(pickLang(GRATITUDE_TXT.title, lang))}
-                  <div style={{ ...SURF,padding:"12px 12px 12px 16px",display:"flex",alignItems:"center",gap:10 }}>
-                    <input value={gratDraft} onChange={e => setGratDraft(e.target.value.slice(0, 160))}
-                      onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addGrat(); } }}
-                      placeholder={pickLang(GRATITUDE_TXT.ph, lang)} aria-label={pickLang(GRATITUDE_TXT.title, lang)}
-                      style={{ flex:1,minWidth:0,background:"transparent",border:"none",outline:"none",color:INK,fontFamily:INTER,fontSize:16,padding:"6px 0" }} />
-                    <button onClick={addGrat} aria-label={pickLang(GRATITUDE_TXT.add, lang)}
-                      style={{ ...BTN,width:34,height:34,flexShrink:0,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",
-                        border:`1px solid ${gratDraft.trim() ? GOLD + "99" : "rgba(255,255,255,0.18)"}`,color: gratDraft.trim() ? GOLD : MUTE,fontSize:18,lineHeight:1 }}>+</button>
-                  </div>
-                  {lines.length > 0 && (
-                    <div style={{ display:"flex",flexDirection:"column",gap:6,margin:"10px 4px 0" }}>
-                      {lines.slice(-5).map((l, i) => (
-                        <div key={i} style={{ display:"flex",gap:8,alignItems:"baseline",fontFamily:SERIF,fontSize:17,lineHeight:1.4,color:BODY }}>
-                          <span style={{ color:GOLD,fontSize:11 }}>✦</span><span style={{ minWidth:0,overflowWrap:"anywhere" }}>{l}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE,margin:"8px 4px 0" }}>{pickLang(GRATITUDE_TXT.note, lang)}</div>
-                </section>
-              );
-            })()}
 
             {/* ── 10) BUGÜNÜN İLK ADIMI (en altta, kullanıcı isteği: "mantık olarak
                 devam etsin", Güne Başla kaldırıldı). Sayfayı okuyan kullanıcıyı

@@ -667,6 +667,25 @@ kullanmaya teşvik eden bilgi". Sıra (yukarıdan aşağı), değiştirmeden ön
 4. **Orkestra modu** (Ben'den TAŞINDI, kullanıcı: "karşılamaya al"). pulse
    verisi artık `screen==="bugun"`de çekiliyor. "13 kişi bu hafta" = haftalık
    gerçek veri, "bugün" diye yazma (sahte olur). Akort noktaları + Senin payın.
+⚠️ **GÜNCEL SIRA (Eyl 2026, kullanıcı: "üst aynı kalsın; tarot ve günün şükranı
+kişisel günün altına, sonra orkestra; meditasyon şükranın üstüne"):** Karşılama →
+Güncel geçiş → Pusula → Kişisel gün → **Tarot → Günlük pratik (meditasyon) → Günün
+şükranı** → Pazar özeti → Orkestra (+Çember) → Günün yorumu → Gökyüzü → Rehberler
+→ I Ching → İkili uyum → Bugünün ilk adımı. Aşağıdaki numaralar tarihsel.
+- **Günün şükranı** (`GRATITUDE_TXT`): her giriş akşam kapanışının `sukur` alanına
+  (sakin_sukur_<gün>) YENİ SATIR olarak eklenir; son 5 satır kartta görünür.
+- **Günlük pratik / meditasyon** (`MeditationCard`, MODÜL bileşeni, `MED_TXT`): ses
+  SUNUCUDAN çalınır `API_BASE + "/audio/chakra_balance.m4a"` (96 kbps AAC, 8,6 MB;
+  orijinal 256 kbps 23 MB'tı, ffmpeg ile sıkıştırıldı). `public/audio` telefon
+  paketine GİRMEZ (prune listesi "audio"). Kullanıcı bir kez deneyene kadar görünür
+  (`sakin_med_tried` = ilk oynatma günü; o gün görünmeye devam eder). Yeni meditasyon
+  eklemek: dosyayı 96k AAC m4a'ya çevir (`-c:a aac -b:a 96k -movflags +faststart`),
+  `public/audio/`'ya koy; ses dosyalarını repo köküne KOYMA (her klona iner).
+  ⚠️ Headless Chromium AAC çalamaz; test cihazda/Chrome'da yapılır.
+- **Bağlantı eşikleri herkese hafif** (`STEP_MIN` 5 nefes / 30 sn / 60 sn / 1 görev).
+- **Alt çağrı metni** seri 1'de "Dün ilk adımını attın...", sonra "{n} gün üst üste.
+  Bugünkü 3 adımı tamamla, seri {m} güne çıksın" (`streakAlive/streakOne/doneOne`).
+
 ⚠️ **KAPSAM ETİKETLERİ (Eyl 2026, kullanıcı: "vurgu ve nelere dikkat değişmiyor,
 bakman gereken yer değişmiyor; kullanıcı bugüne ait şeyler bekliyor"):** Güneş bir
 HD kapısında ~6 gün kalır. Güncel geçiş kartında Güneş/Ay satırları kalır, altındaki
