@@ -1132,29 +1132,61 @@ const MED_TXT = {
   title:   { tr:"Çakra Dengeleme Meditasyonu", en:"Chakra Balancing Meditation", de:"Chakra-Ausgleichs-Meditation", es:"Meditación de equilibrio de chakras", pt:"Meditação de equilíbrio dos chakras", fr:"Méditation d'équilibrage des chakras", ja:"チャクラ・バランス瞑想" },
   sub:     { tr:"12 dk · 7 çakrayı dengele", en:"12 min · balance your 7 chakras", de:"12 Min. · deine 7 Chakren ausgleichen", es:"12 min · equilibra tus 7 chakras", pt:"12 min · equilibra os teus 7 chakras", fr:"12 min · équilibre tes 7 chakras", ja:"12分・7つのチャクラを整える" },
   err:     { tr:"Ses yüklenemedi. İnternet bağlantını kontrol et.", en:"The audio couldn't load. Check your internet connection.", de:"Der Ton konnte nicht geladen werden. Prüfe deine Internetverbindung.", es:"No se pudo cargar el audio. Revisa tu conexión a internet.", pt:"Não foi possível carregar o áudio. Verifica a tua ligação à internet.", fr:"Le son n'a pas pu se charger. Vérifie ta connexion internet.", ja:"音声を読み込めませんでした。インターネット接続を確認してください。" },
+  close:   { tr:"Kapat", en:"Close", de:"Schließen", es:"Cerrar", pt:"Fechar", fr:"Fermer", ja:"閉じる" },
   play:    { tr:"Oynat", en:"Play", de:"Abspielen", es:"Reproducir", pt:"Reproduzir", fr:"Lire", ja:"再生" },
   pause:   { tr:"Duraklat", en:"Pause", de:"Pause", es:"Pausa", pt:"Pausa", fr:"Pause", ja:"一時停止" },
 };
 function medVisible() {
   try { const t = localStorage.getItem("sakin_med_tried"); return !t || t === sakinDayKey(); } catch (_) { return true; }
 }
+// Tam ekran oynatıcının dalgaları: 2 dalga boyu genişliğinde tekrar eden sinüs,
+// %50 kaydırınca kusursuz döngü. Her katman kendi hızında, renginde süzülür.
+function medWavePath(w, h, amp, len, phase) {
+  let d = `M0 ${h / 2}`;
+  for (let x = 0; x <= w; x += 8) d += ` L${x} ${(h / 2 + amp * Math.sin((x / len) * Math.PI * 2 + phase)).toFixed(1)}`;
+  return d;
+}
+const MED_WAVES = [
+  { amp: 26, len: 300, ph: 0,   c: "#e8c07a", o: 0.55, sw: 1.6, dur: 26 },
+  { amp: 38, len: 400, ph: 1.2, c: "#b8a4d8", o: 0.45, sw: 1.4, dur: 34 },
+  { amp: 18, len: 240, ph: 2.4, c: "#8fcfc0", o: 0.35, sw: 1.2, dur: 21 },
+  { amp: 48, len: 600, ph: 0.6, c: "#d9a0c8", o: 0.22, sw: 1.0, dur: 44 },
+];
+const fmtClock = (t) => { t = Math.max(0, Math.floor(t || 0)); return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`; };
+
 function MeditationCard({ lang, S }) {
   const [playing, setPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(false);
-  const barRef = useRef(null);
+  // Tam ekran oynatıcı (kullanıcı: "play'e basarsa tam ekran çıksın, dalgalar
+  // nazikçe süzülsün; geri aynı ekrana dönebilsin"). Kapatınca ses SÜRER, kart
+  // üzerinden duraklatılabilir; alttaki ekran hiç değişmediği için aynı yere dönülür.
+  const [full, setFull] = useState(false);
+  const barRef = useRef(null), bigBarRef = useRef(null), elRef = useRef(null), remRef = useRef(null);
   const L = (o) => pickLang(o, lang);
   useEffect(() => {
     const a = window.__sakinMed;
     if (!a) return;
     setPlaying(!a.paused && !a.error);
-    const tick = () => { if (barRef.current && a.duration) barRef.current.style.width = `${Math.min(100, (a.currentTime / a.duration) * 100)}%`; };
+    const tick = () => {
+      const pct = a.duration ? `${Math.min(100, (a.currentTime / a.duration) * 100)}%` : "0%";
+      if (barRef.current) barRef.current.style.width = pct;
+      if (bigBarRef.current) bigBarRef.current.style.width = pct;
+      if (elRef.current) elRef.current.textContent = fmtClock(a.currentTime);
+      if (remRef.current) remRef.current.textContent = a.duration ? "-" + fmtClock(a.duration - a.currentTime) : `${MEDITATION.min}:00`;
+    };
     const onPlay = () => { setPlaying(true); setLoading(false); }, onPause = () => setPlaying(false);
     a.addEventListener("timeupdate", tick); a.addEventListener("playing", onPlay); a.addEventListener("pause", onPause); a.addEventListener("ended", onPause);
     tick();
     return () => { a.removeEventListener("timeupdate", tick); a.removeEventListener("playing", onPlay); a.removeEventListener("pause", onPause); a.removeEventListener("ended", onPause); };
-  }, [playing, loading]);
-  const toggle = () => {
+  }, [playing, loading, full]);
+  // Android geri tuşu tam ekranı kapatsın.
+  useEffect(() => {
+    if (!full) return;
+    window.__sakinOverlayBack = () => setFull(false);
+    return () => { if (window.__sakinOverlayBack) window.__sakinOverlayBack = null; };
+  }, [full]);
+  const toggle = (openFull) => {
     try { haptic(); } catch (_) {}
     let a = window.__sakinMed;
     if (!a) {
@@ -1167,25 +1199,84 @@ function MeditationCard({ lang, S }) {
     setErr(false);
     if (a.paused) {
       setLoading(true);
+      if (openFull) setFull(true);
       try { localStorage.setItem("sakin_med_tried", sakinDayKey()); } catch (_) {}
       a.play().then(() => { setPlaying(true); setLoading(false); }).catch(() => { setErr(true); setLoading(false); });
     } else { a.pause(); }
   };
   const dots = ["#e05555","#f0923a","#f2cf4a","#5bc58a","#4aa3e0","#6a6fd6","#a57ad8"];
+  const W = 2400, H = 200;
+  const overlay = full && createPortal(
+    <div className={playing ? "" : "med-paused"} role="dialog" aria-label={L(MED_TXT.title)}
+      style={{ position:"fixed", inset:0, zIndex:100012, display:"flex", flexDirection:"column", overflow:"hidden",
+        background:"radial-gradient(120% 80% at 50% 38%, #1c1540 0%, #0c0920 48%, #050409 100%)",
+        paddingTop:"calc(env(safe-area-inset-top, 0px) + 14px)", paddingBottom:"calc(env(safe-area-inset-bottom, 0px) + 28px)",
+        animation:"fadeIn .5s ease" }}>
+      {/* Üst: kurumsal yuvarlak geri düğmesi + etiket */}
+      <div style={{ display:"flex", alignItems:"center", padding:"0 16px", minHeight:44 }}>
+        <button onClick={() => { try { haptic(); } catch (_) {} setFull(false); }} aria-label={L(MED_TXT.close)}
+          style={{ WebkitAppearance:"none", appearance:"none", width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.05)",
+            border:"1px solid rgba(255,255,255,0.12)", color:"#ddd", fontSize:18, cursor:"pointer", display:"flex", alignItems:"center",
+            justifyContent:"center", lineHeight:1, paddingRight:2, flexShrink:0 }}>←</button>
+        <div style={{ flex:1, textAlign:"center", marginRight:40, fontFamily:"'Jost',sans-serif", fontSize:11, letterSpacing:4, color:"#8f88a3", textTransform:"uppercase" }}>
+          {L(MED_TXT.eyebrow)}
+        </div>
+      </div>
+      {/* Başlık */}
+      <div style={{ textAlign:"center", padding:"6vh 28px 0" }}>
+        <div style={{ fontFamily:S.SERIF, fontSize:32, lineHeight:1.15, color:"#f1ecf9" }}>{L(MED_TXT.title)}</div>
+        <div style={{ fontFamily:S.INTER, fontSize:13, color:"#8f88a3", marginTop:8 }}>{L(MED_TXT.sub)}</div>
+      </div>
+      {/* Dalgalar: katmanlar farklı hızlarda sola süzülür, grup yavaşça nefes alır */}
+      <div aria-hidden="true" style={{ flex:1, position:"relative", display:"flex", alignItems:"center", minHeight:180 }}>
+        <div className="med-anim" style={{ position:"absolute", left:"50%", top:"50%", width:260, height:260, marginLeft:-130, marginTop:-130, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(232,192,122,0.16), rgba(184,164,216,0.06) 45%, transparent 70%)", animation:"medGlow 9s ease-in-out infinite" }} />
+        <div className="med-anim" style={{ position:"absolute", left:0, right:0, height:H, top:"50%", marginTop:-H / 2, animation:"medBreath 10s ease-in-out infinite", transformOrigin:"50% 50%" }}>
+          {MED_WAVES.map((wv, i) => (
+            <svg key={i} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="med-anim"
+              style={{ position:"absolute", top:0, left:0, width:"200%", height:"100%", animation:`medWave ${wv.dur}s linear infinite` }}>
+              <path d={medWavePath(W, H, wv.amp, wv.len, wv.ph)} fill="none" stroke={wv.c} strokeOpacity={wv.o} strokeWidth={wv.sw} vectorEffect="non-scaling-stroke" />
+            </svg>
+          ))}
+        </div>
+      </div>
+      {/* Alt: ilerleme + süre + oynat/duraklat */}
+      <div style={{ padding:"0 28px", display:"flex", flexDirection:"column", alignItems:"center", gap:18 }}>
+        <div style={{ width:"100%", maxWidth:420 }}>
+          <div style={{ height:2, borderRadius:2, background:"rgba(255,255,255,0.08)", overflow:"hidden" }}>
+            <div ref={bigBarRef} style={{ height:"100%", width:"0%", background:`linear-gradient(90deg, ${S.GOLD}, #b8a4d8)`, transition:"width .9s linear" }} />
+          </div>
+          <div style={{ display:"flex", justifyContent:"space-between", marginTop:8, fontFamily:"'Jost',sans-serif", fontSize:12, letterSpacing:1, color:"#8f88a3" }}>
+            <span ref={elRef}>0:00</span><span ref={remRef}>{MEDITATION.min}:00</span>
+          </div>
+        </div>
+        <button onClick={() => toggle(false)} aria-label={L(playing ? MED_TXT.pause : MED_TXT.play)}
+          style={{ WebkitAppearance:"none", appearance:"none", width:76, height:76, borderRadius:"50%", cursor:"pointer",
+            display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(232,192,122,0.08)",
+            border:`1px solid ${S.GOLD}99`, color:S.GOLD, fontSize:24, lineHeight:1, boxShadow:"0 0 40px rgba(232,192,122,0.18)", opacity: loading ? 0.6 : 1 }}>
+          {playing ? "❚❚" : "▶"}
+        </button>
+        {err && <div style={{ fontFamily:S.INTER, fontSize:12.5, color:"#d9a0a0", textAlign:"center" }}>{L(MED_TXT.err)}</div>}
+      </div>
+    </div>,
+    document.body
+  );
   return (
     <section style={S.SEC}>
+      {overlay}
       {S.eyebrow(L(MED_TXT.eyebrow))}
       <div style={{ ...S.SURF, padding:"12px 14px", display:"flex", flexDirection:"column", gap:10 }}>
         <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-          <div aria-hidden="true" style={{ width:54, height:54, flexShrink:0, borderRadius:12, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2.5,
-            background:"radial-gradient(circle at 50% 40%, rgba(184,164,216,0.28), rgba(20,14,40,0.9) 72%)", border:"1px solid rgba(184,164,216,0.25)" }}>
+          <button onClick={() => { if (playing) setFull(true); else toggle(true); }} aria-label={L(MED_TXT.title)}
+            style={{ ...S.BTN, width:54, height:54, flexShrink:0, borderRadius:12, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:2.5,
+              background:"radial-gradient(circle at 50% 40%, rgba(184,164,216,0.28), rgba(20,14,40,0.9) 72%)", border:"1px solid rgba(184,164,216,0.25)" }}>
             {dots.map((c, i) => <span key={i} style={{ width:4.5, height:4.5, borderRadius:"50%", background:c, boxShadow:`0 0 6px ${c}` }} />)}
-          </div>
+          </button>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ fontFamily:S.SERIF, fontSize:19, lineHeight:1.2, color:S.INK }}>{L(MED_TXT.title)}</div>
             <div style={{ fontFamily:S.INTER, fontSize:12.5, color:S.MUTE, marginTop:3 }}>{L(MED_TXT.sub)}</div>
           </div>
-          <button onClick={toggle} aria-label={L(playing ? MED_TXT.pause : MED_TXT.play)}
+          <button onClick={() => (playing ? toggle(false) : toggle(true))} aria-label={L(playing ? MED_TXT.pause : MED_TXT.play)}
             style={{ ...S.BTN, width:42, height:42, flexShrink:0, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center",
               border:`1px solid ${S.GOLD}88`, color:S.GOLD, fontSize:15, lineHeight:1, opacity: loading ? 0.6 : 1 }}>
             {playing ? "❚❚" : "▶"}
@@ -4148,6 +4239,11 @@ const GLOBAL_CSS = `
   @keyframes lcLetterOut { 0%,52%{transform:translateY(18px) scale(.7);opacity:0} 70%{opacity:1} 100%{transform:translateY(-26px) scale(1);opacity:1} }
   @keyframes lcHint      { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
   @keyframes lcGiftIn    { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:none} }
+  @keyframes medWave     { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+  @keyframes medBreath   { 0%,100%{transform:scaleY(.72)} 50%{transform:scaleY(1.12)} }
+  @keyframes medGlow     { 0%,100%{opacity:.55} 50%{opacity:.9} }
+  .med-paused .med-anim { animation-play-state: paused !important; }
+  @media (prefers-reduced-motion: reduce) { .med-anim { animation: none !important; } }
   @keyframes lcGiftFlip  { 0%{transform:perspective(600px) rotateY(180deg);filter:brightness(1.6)} 60%{filter:brightness(1.25)} 100%{transform:perspective(600px) rotateY(0);filter:none} }
   @media (prefers-reduced-motion: reduce) { .lc-lid-seal,.lc-letter-seal,.lc-seal-seal,.lc-ring,.lc-lid-open,.lc-seal-open,.lc-light,.lc-letter-open { animation:none; } }
   @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
@@ -9852,6 +9948,9 @@ export default function SakinApp() {
   useEffect(() => {
     if (!isNative || Capacitor.getPlatform() !== "android") return;
     const sub = CapacitorApp.addListener("backButton", () => {
+      // Modül seviyesindeki tam ekran katmanlar (meditasyon oynatıcısı) kendi
+      // kapatıcısını buraya kaydeder: geri tuşu önce onu kapatır.
+      if (typeof window !== "undefined" && window.__sakinOverlayBack) { window.__sakinOverlayBack(); return; }
       if (showCember) { setShowCember(false); return; }
       if (embeddedApp) { askEmbedBackThenClose(); return; }
       if (activeMindMode) { setActiveMindMode(null); setShowMindClear(false); setSelectedNature([]); return; }
