@@ -2773,6 +2773,7 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
 // Taşlar, Mitler BİRLİKTE günde 3 açılış. Tasarım ve SoulID sayılmaz (Bugün/Ben'deki
 // temel özellikler onları açıyor). Hak dolunca yumuşak kart: ne olduğu, ne zaman
 // yenileneceği, premium'un getirdikleri; fiyat ekranına yalnızca istenirse gidilir.
+const FREE_BADGE_TXT = { tr:"Ücretsiz", en:"Free", de:"Kostenlos", es:"Gratis", pt:"Grátis", fr:"Gratuit", ja:"無料" };
 const AILESI_GATE_TXT = {
   title:  { tr:"Bugünkü ücretsiz hakların doldu", en:"Today's free opens are used up", de:"Deine freien Öffnungen für heute sind aufgebraucht", es:"Has usado tus aperturas gratis de hoy", pt:"Usaste as aberturas gratuitas de hoje", fr:"Tes ouvertures gratuites du jour sont utilisées", ja:"今日の無料オープンを使い切りました" },
   body:   { tr:"Bugün Sakin Ailesi'ni {t} kez kullandın. Yarın sabah yine {t} hakkın olacak.", en:"You've used the Sakin Family {t} times today. You'll have {t} again tomorrow morning.", de:"Du hast die Sakin-Familie heute {t}-mal genutzt. Morgen früh hast du wieder {t}.", es:"Hoy usaste la Familia Sakin {t} veces. Mañana por la mañana tendrás {t} de nuevo.", pt:"Hoje usaste a Família Sakin {t} vezes. Amanhã de manhã terás {t} de novo.", fr:"Tu as utilisé la Famille Sakin {t} fois aujourd'hui. Demain matin, tu en auras à nouveau {t}.", ja:"今日はSakinファミリーを{t}回使いました。明日の朝また{t}回使えます。" },
@@ -7860,7 +7861,16 @@ export default function SakinApp() {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteToast, setDeleteToast] = useState("");
   const [embeddedApp, setEmbeddedApp] = useState(null); // { name, path } for fullscreen iframe overlay
-  const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Hayvan/Mitler kotası dolduysa frost+CTA
+  const [embedQuotaExceeded, setEmbedQuotaExceeded] = useState(false); // Sakin Ailesi ortak kotası dolduysa yumuşak kapı (yarım sayfa)
+  // Kapı açıkken Android geri tuşu / Escape yalnızca kapıyı kapatır.
+  useEffect(() => {
+    if (!embedQuotaExceeded) return;
+    const back = () => setEmbedQuotaExceeded(false);
+    window.__sakinOverlayBack = back;
+    const onKey = (e) => { if (e.key === "Escape") back(); };
+    window.addEventListener("keydown", onKey);
+    return () => { if (window.__sakinOverlayBack === back) window.__sakinOverlayBack = null; window.removeEventListener("keydown", onKey); };
+  }, [embedQuotaExceeded]);
   // Sakin Mitler özel: bundle her mount'ta Math.random ile "günün 4 miti"ni yeniden seçtiği için
   // kapat/aç döngüsünde mitler değişiyordu. Çözüm: iframe'i overlay container'da sürekli DOM'da
   // tut, sadece display:none ile gizle. Gün değişimi olunca key değişir → yeniden mount → yeni mitler.
@@ -7905,6 +7915,22 @@ export default function SakinApp() {
     // (bkz. apps/soulid FREE_MODE build-time bayrağı).
     if (app.premium && !isPremium) { setShowAilesi(false); setScreen("fiyat"); return; }
     if (!birthDate && !app.skipBirthGate) { setBirthGateApp(app); return; }
+    // SAKİN AİLESİ ORTAK GÜNLÜK KOTASI (Hayvan/Bitkiler/Taşlar/Mitler birlikte, 3).
+    // Hak bittiyse uygulama HİÇ AÇILMAZ: yumuşak kapı (yarım sayfa) o anki ekranın
+    // (çoğunlukla Keşfet listesi) üstüne biner, arkada liste soluk görünür (kullanıcı:
+    // "üst boş olunca tuhaf, arkada tıkladığı menü soluk görünsün").
+    // Tasarım yalnızca Bugün/Ben'deki temel özelliklerden açılınca muaf; Keşfet
+    // kartından açılınca sayılır. SoulID her yerden ücretsiz (Yeni).
+    {
+      const m = (app.embed || "").match(/\/embedded\/([^/]+)/);
+      const appKey = m ? m[1] : "unknown";
+      const quotaExempt = appKey === "soulid" || (appKey === "humandesign" && !app.fromKesfet);
+      if (!isPremium && !quotaExempt) {
+        const used = ailesiOpensUsed();
+        if (used >= AILESI_FREE_OPENS) { haptic(); setEmbedQuotaExceeded(true); return; }
+        try { localStorage.setItem(ailesiOpensKey(), String(used + 1)); } catch(_) {}
+      }
+    }
     // Nereden geldik? Keşfet paneli açıksa oraya, değilse o anki ekrana dönülecek.
     embedReturn.current = showAilesi ? { ailesi: true } : { screen };
     playPortalSound(); haptic();
@@ -7929,21 +7955,6 @@ export default function SakinApp() {
     } else {
       setEmbedLoaded(false);
     }
-    const m = (app.embed || "").match(/\/embedded\/([^/]+)/);
-    const appKey = m ? m[1] : "unknown";
-    let exceeded = false;
-    // Tasarım yalnızca Bugün/Ben'deki temel özelliklerden açılınca muaf; Keşfet
-    // kartından açılınca ortak 3 hakka sayılır (kullanıcı: "Hayvan'da 3 hak bitti,
-    // uyarı çıktı ama Tasarım'a girebiliyorum"). SoulID her yerden ücretsiz (Yeni).
-    const quotaExempt = appKey === "soulid" || (appKey === "humandesign" && !app.fromKesfet);
-    if (!isPremium && !quotaExempt) {
-      // GÜNLÜK ORTAK kota (Hayvan/Bitkiler/Taşlar/Mitler birlikte): anahtarda
-      // tarih var, her gün sıfırdan başlar. Eskiden uygulama başına ayrı 3'tü.
-      const next = ailesiOpensUsed() + 1;
-      try { localStorage.setItem(ailesiOpensKey(), String(next)); } catch(_) {}
-      exceeded = next > AILESI_FREE_OPENS;
-    }
-    setEmbedQuotaExceeded(exceeded);
     // Sakin Mitler: sticky iframe. Gün karşılaştır: gün aynıysa aynı session devam,
     // gün değiştiyse key değişir → iframe re-mount → yeni günün mitleri seçilir.
     // Bu kontrol SADECE açılış anında yapılır (kullanıcı mitler açıkken gece yarısı
@@ -12059,7 +12070,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       )}
                       {app.isNew && !app.premium && (
                         <span style={{ display:"inline-flex",alignItems:"center",fontSize:9,letterSpacing:1.2,color:"#0d0a12",background:"linear-gradient(135deg,#f0d29a,#e0b878)",padding:"3px 8px",borderRadius:100,textTransform:"uppercase",fontFamily:"'Jost',sans-serif",fontWeight:600 }}>
-                          {t("badge_new")}
+                          {/* "Yeni" yerine "Ücretsiz" (kullanıcı, Eyl 2026): kota dışı olduğunu söyler. */}
+                          {pickLang(FREE_BADGE_TXT, lang)}
                         </span>
                       )}
                     </div>
@@ -13066,63 +13078,64 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               </div>
             );
           })()}
-          {/* SAKİN AİLESİ ORTAK KOTASI dolduysa YUMUŞAK KAPI: YARIM SAYFA (alttan panel).
-              Kullanıcı kararı (Eyl 2026): üst yarı BOŞ (bitki/yıldız yok), altta panel:
-              başlık, 3 nokta, ne zaman yenileneceği, premium kazanımları, iki düğme.
-              Alttaki Bağlan/Bağlantı/Keşfet kısayolları KALDIRILDI ("yorucu"). */}
-          {embeddedApp && embedQuotaExceeded && embedLoaded && (() => {
-            const closeGate = () => { setEmbeddedApp(null); setEmbedLoaded(false); setEmbedQuotaExceeded(false); };
-            return (
-              <div onClick={closeGate}
-                style={{ position:"fixed", inset:0, zIndex:10002, backdropFilter:"blur(16px)", WebkitBackdropFilter:"blur(16px)",
-                  background:"linear-gradient(180deg, rgba(6,5,14,0.9) 0%, rgba(6,5,14,0.96) 100%)",
-                  display:"flex", flexDirection:"column", justifyContent:"flex-end", animation:"fadeIn 0.4s ease" }}>
-                <div onClick={e=>e.stopPropagation()}
-                  style={{ width:"100%", maxWidth:520, margin:"0 auto", boxSizing:"border-box",
-                    background:"linear-gradient(180deg,#141027 0%,#0d0a1a 100%)", borderTop:"1px solid rgba(184,164,216,0.18)",
-                    borderRadius:"28px 28px 0 0", boxShadow:"0 -18px 60px rgba(0,0,0,0.55)",
-                    padding:"12px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
-                    display:"flex", flexDirection:"column", alignItems:"center", gap:16, animation:"fadeUp 0.45s ease-out" }}>
-                  <div aria-hidden="true" style={{ width:40, height:4, borderRadius:4, background:"rgba(255,255,255,0.16)", marginBottom:6 }} />
-                  <div style={{ fontSize:26, color:"#f1ecf9", fontFamily:"'Cormorant Garamond',Georgia,serif", textAlign:"center", maxWidth:340, lineHeight:1.2 }}>
-                    {pickLang(AILESI_GATE_TXT.title, lang)}
-                  </div>
-                  <div style={{ display:"flex", gap:8 }} aria-hidden="true">
-                    {Array.from({ length: AILESI_FREE_OPENS }, (_, i) => <span key={i} style={{ width:9, height:9, borderRadius:"50%", background:"#e8c07a", boxShadow:"0 0 8px rgba(232,192,122,0.55)" }} />)}
-                  </div>
-                  <div style={{ fontSize:13.5, color:"#cfc7e0", lineHeight:1.6, textAlign:"center", maxWidth:330, fontFamily:"'Inter',sans-serif" }}>
-                    {pickLang(AILESI_GATE_TXT.body, lang).split("{t}").join(String(AILESI_FREE_OPENS))}
-                  </div>
-                  <div style={{ width:"100%", maxWidth:360, display:"flex", flexDirection:"column", gap:7, padding:"12px 14px", borderRadius:14,
-                    background:"rgba(232,192,122,0.05)", border:"1px solid rgba(232,192,122,0.18)", boxSizing:"border-box" }}>
-                    {pickLang(AILESI_GATE_TXT.perks, lang).map((pk, i) => (
-                      <div key={i} style={{ fontSize:13, color:"#cfc7e0", fontFamily:"'Inter',sans-serif", display:"flex", gap:8 }}><span style={{ color:"#e8c07a" }}>✦</span>{pk}</div>
-                    ))}
-                  </div>
-                  <button onClick={()=>{ closeGate(); setScreen("fiyat"); }}
-                    style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, marginTop:2, background:"linear-gradient(135deg,#e8c07a,#c9a060)",
-                      border:"none", borderRadius:100, padding:"14px 20px", color:"#1a1030", fontSize:13, letterSpacing:2, cursor:"pointer",
-                      fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500 }}>
-                    {pickLang(AILESI_GATE_TXT.cta, lang)}
-                  </button>
-                  <button onClick={closeGate}
-                    style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, background:"none", border:"1px solid rgba(255,255,255,0.16)",
-                      borderRadius:100, padding:"13px 20px", color:"#b8aed0", fontSize:12, letterSpacing:1.8, cursor:"pointer",
-                      fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
-                    {pickLang(AILESI_GATE_TXT.later, lang)}
-                  </button>
-                  <div style={{ fontSize:12, color:"#8f88a3", fontFamily:"'Inter',sans-serif" }}>
-                    {(() => { const n = new Date(), mid = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1); const mins = Math.max(0, Math.round((mid - n) / 60000));
-                      return pickLang(AILESI_GATE_TXT.reset, lang).replace("{h}", String(Math.floor(mins / 60))).replace("{m}", String(mins % 60)); })()}
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
           {/* Çıkış butonu artık üst bar'da (yukarıda). Eski absolute buton kaldırıldı. */}
         </div>
       )}
 
+      {/* SAKİN AİLESİ ORTAK KOTASI dolduysa YUMUŞAK KAPI: YARIM SAYFA (alttan panel).
+          Kullanıcı kararı (Eyl 2026): uygulama AÇILMAZ, üst yarıda o anki ekran (Keşfet
+          listesi) SOLUK görünür, bitki/yıldız yok; altta panel:
+          başlık, 3 nokta, ne zaman yenileneceği, premium kazanımları, iki düğme.
+          Alttaki Bağlan/Bağlantı/Keşfet kısayolları KALDIRILDI ("yorucu"). */}
+      {embedQuotaExceeded && (() => {
+        const closeGate = () => setEmbedQuotaExceeded(false);
+        return (
+          <div onClick={closeGate}
+            style={{ position:"fixed", inset:0, zIndex:100005, backdropFilter:"blur(2px)", WebkitBackdropFilter:"blur(2px)",
+              background:"linear-gradient(180deg, rgba(6,5,14,0.62) 0%, rgba(6,5,14,0.78) 100%)",
+              display:"flex", flexDirection:"column", justifyContent:"flex-end", animation:"fadeIn 0.4s ease" }}>
+            <div onClick={e=>e.stopPropagation()}
+              style={{ width:"100%", maxWidth:520, margin:"0 auto", boxSizing:"border-box",
+                background:"linear-gradient(180deg,#141027 0%,#0d0a1a 100%)", borderTop:"1px solid rgba(184,164,216,0.18)",
+                borderRadius:"28px 28px 0 0", boxShadow:"0 -18px 60px rgba(0,0,0,0.55)",
+                padding:"12px 24px calc(24px + env(safe-area-inset-bottom, 0px))",
+                display:"flex", flexDirection:"column", alignItems:"center", gap:16, animation:"fadeUp 0.45s ease-out" }}>
+              <div aria-hidden="true" style={{ width:40, height:4, borderRadius:4, background:"rgba(255,255,255,0.16)", marginBottom:6 }} />
+              <div style={{ fontSize:26, color:"#f1ecf9", fontFamily:"'Cormorant Garamond',Georgia,serif", textAlign:"center", maxWidth:340, lineHeight:1.2 }}>
+                {pickLang(AILESI_GATE_TXT.title, lang)}
+              </div>
+              <div style={{ display:"flex", gap:8 }} aria-hidden="true">
+                {Array.from({ length: AILESI_FREE_OPENS }, (_, i) => <span key={i} style={{ width:9, height:9, borderRadius:"50%", background:"#e8c07a", boxShadow:"0 0 8px rgba(232,192,122,0.55)" }} />)}
+              </div>
+              <div style={{ fontSize:13.5, color:"#cfc7e0", lineHeight:1.6, textAlign:"center", maxWidth:330, fontFamily:"'Inter',sans-serif" }}>
+                {pickLang(AILESI_GATE_TXT.body, lang).split("{t}").join(String(AILESI_FREE_OPENS))}
+              </div>
+              <div style={{ width:"100%", maxWidth:360, display:"flex", flexDirection:"column", gap:7, padding:"12px 14px", borderRadius:14,
+                background:"rgba(232,192,122,0.05)", border:"1px solid rgba(232,192,122,0.18)", boxSizing:"border-box" }}>
+                {pickLang(AILESI_GATE_TXT.perks, lang).map((pk, i) => (
+                  <div key={i} style={{ fontSize:13, color:"#cfc7e0", fontFamily:"'Inter',sans-serif", display:"flex", gap:8 }}><span style={{ color:"#e8c07a" }}>✦</span>{pk}</div>
+                ))}
+              </div>
+              <button onClick={()=>{ closeGate(); if (embeddedApp) closeEmbedNow(); setShowAilesi(false); setScreen("fiyat"); }}
+                style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, marginTop:2, background:"linear-gradient(135deg,#e8c07a,#c9a060)",
+                  border:"none", borderRadius:100, padding:"14px 20px", color:"#1a1030", fontSize:13, letterSpacing:2, cursor:"pointer",
+                  fontFamily:"'Jost',sans-serif", textTransform:"uppercase", fontWeight:500 }}>
+                {pickLang(AILESI_GATE_TXT.cta, lang)}
+              </button>
+              <button onClick={closeGate}
+                style={{ WebkitAppearance:"none", appearance:"none", width:"100%", maxWidth:360, background:"none", border:"1px solid rgba(255,255,255,0.16)",
+                  borderRadius:100, padding:"13px 20px", color:"#b8aed0", fontSize:12, letterSpacing:1.8, cursor:"pointer",
+                  fontFamily:"'Jost',sans-serif", textTransform:"uppercase" }}>
+                {pickLang(AILESI_GATE_TXT.later, lang)}
+              </button>
+              <div style={{ fontSize:12, color:"#8f88a3", fontFamily:"'Inter',sans-serif" }}>
+                {(() => { const n = new Date(), mid = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1); const mins = Math.max(0, Math.round((mid - n) / 60000));
+                  return pickLang(AILESI_GATE_TXT.reset, lang).replace("{h}", String(Math.floor(mins / 60))).replace("{m}", String(mins % 60)); })()}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
       {/* Görünmez ön-yükleme iframe'i: galaktik kimlik kartındaki element dağılımını
           kullanıcı Tasarım'ı hiç açmadan da hazır etmek için arka planda bir kez Sakin
           Tasarım'ı yükler (bkz. hdPreloadSrc effect'i yukarıda). Tasarım kendi same-origin

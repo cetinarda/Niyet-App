@@ -258,7 +258,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
       `setIfChanged` bu adı yok sayar. ASLA uydurma ad koyma.
     - `?go=attachment` hem `target()`'ta hem doğrudan yönlendirmede olmalı:
       telefonda köprü/karne hidrasyonu da `target()`'a gidiyor, yoksa /profil'e düşer.
-    - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Yeni" rozeti. `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
+    - **Keşfet giriş kapısı:** `SOULID_PREMIUM_GATE` (App.jsx başı) şu an `false` = herkese ücretsiz + "Ücretsiz" rozeti (`FREE_BADGE_TXT`, 7 dil; Eyl 2026'da "Yeni" yerine). `true` yapmak kilidi ve Premium rozetini geri getirir (tek satır).
     - ⚠️ **TEK MERKEZ = Niyet-App (kullanıcı kararı: "soulid reposunu unut").** `cetinarda/SoulProfile` reposu ve soulprofile.life sitesi ARTIK TAKİP EDİLMİYOR. Tüm SoulID geliştirmesi `apps/soulid` içinde yapılır, `public/embedded/soulid/`'e derlenir, sakin.life'tan yayınlanır. Sebep: iki yeri elle senkron tutmak main↔gdkpd ayrışmasının aynısını doğuruyordu; ayrıca bu oturumun git erişimi yalnızca niyet-app'e yetkili (SoulProfile'a push proxy tarafından reddediliyor).
     - **Bağlanma testinin paylaşılabilir adresi:** `sakin.life/baglanma` (EN girişi `/attachment`). `netlify.toml` bunu `/embedded/soulid/attachment/`'a **301** ile yollar. **200 rewrite KULLANMA:** embed `basePath=/embedded/soulid` ile derlendiği için farklı bir yolda Next istemci router'ı yolu eşleştiremez, hydration/gezinme bozulur. Adres uygulama içinde `TEST_URL` (app/attachment/page.tsx) + hikâye görselinde yazılı; değiştirirsen ikisini de güncelle.
   - **GÜNÜN SÖZÜ = HER KAYNAK EŞİT ŞANS (Eyl 2026, kullanıcı: "Yunus Emre, Aşık
@@ -922,8 +922,10 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
   yalnızca Bugün/Ben'deki temel özelliklerden açılınca sayılmaz, KEŞFET kartından
   açılınca (`fromKesfet`) SAYILIR (kullanıcı: "Hayvan'da hak bitti ama Tasarım'a
   girebiliyorum" hata saydı). Keşfet başlığında kalan hak rozeti YOK (kullanıcı:
-  "tedirgin etmeye gerek yok", geri koyma). Hak dolunca YUMUŞAK KAPI, YARIM SAYFA
-  (alttan panel; üst yarı BOŞ, bitki/yıldız YOK, alttaki Bağlan/Bağlantı/Keşfet
+  "tedirgin etmeye gerek yok", geri koyma). Hak dolunca uygulama HİÇ AÇILMAZ (kontrol `handleOpenEmbed`
+  başında, gömülü sayfa yüklenmez), YUMUŞAK KAPI, YARIM SAYFA (alttan panel, zIndex
+  100005; üst yarıda o anki ekran, çoğunlukla Keşfet listesi, SOLUK görünür (kullanıcı:
+  "üst boş olunca tuhaf"), bitki/yıldız YOK, Android geri/Escape kapatır, alttaki Bağlan/Bağlantı/Keşfet
   kısayolları YOK, boşluğa dokununca kapanır; `AILESI_GATE_TXT`, 7 dil):
   "Bugünkü ücretsiz hakların doldu", 3 nokta, "Bugün Sakin Ailesi'ni 3 kez
   kullandın", 3 premium kazanımı, "Premium'u incele" (fiyat ekranı
