@@ -919,8 +919,9 @@ temizliği (App.jsx ~5594, geçmiş iOS OOM fix'i) korunuyor.
   ayrı değil"):** Hayvan/Bitkiler/Taşlar/Mitler BİRLİKTE günde 3 açılış
   (`sakin_ailesi_opens_all_<gün>`, `AILESI_FREE_OPENS`). Tasarım ve SoulID SAYILMAZ
   (`AILESI_QUOTA_EXEMPT`: Bugün/Ben'deki temel özellikler onları açıyor). Keşfet
-  başlığında kalan hak rozeti ("Bugün 2/3 ücretsiz açılış"; bitince "yarın
-  yenilenir"). Hak dolunca YUMUŞAK KAPI (`AILESI_GATE_TXT`, 7 dil): "Bugün Sakin
+  başlığında kalan hak rozeti YOK (kullanıcı: "tedirgin etmeye gerek yok", kaldırıldı,
+  geri koyma). Hak dolunca YUMUŞAK KAPI (`AILESI_GATE_TXT`, 7 dil): üstte eski zarif
+  başlık (✦, "Sakin Ailesi", "Devam etmek için Premium gerekli"), altında "Bugün Sakin
   Ailesi'ni 3 kez kullandın", 3 premium kazanımı, "Premium'u incele" (fiyat ekranı
   YALNIZCA buradan) / "Yarın devam ederim", yenilenmeye kalan süre.
 - **Özellik listesi DÜRÜST (Eyl 2026, `PREMIUM_LIST_TXT` + `premiumFeatureList`,

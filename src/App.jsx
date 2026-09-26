@@ -2774,9 +2774,6 @@ function innerReflectTemplate(lang, moon, gate, niyet, hasEvening) {
 // temel özellikler onları açıyor). Hak dolunca yumuşak kart: ne olduğu, ne zaman
 // yenileneceği, premium'un getirdikleri; fiyat ekranına yalnızca istenirse gidilir.
 const AILESI_GATE_TXT = {
-  left:   { tr:"Bugün {n}/{t} ücretsiz açılış", en:"{n} of {t} free opens left today", de:"Heute noch {n} von {t} freien Öffnungen", es:"Hoy te quedan {n} de {t} aperturas gratis", pt:"Hoje restam {n} de {t} aberturas gratuitas", fr:"Encore {n} ouvertures gratuites sur {t} aujourd'hui", ja:"今日の無料オープン 残り{n}/{t}" },
-  none:   { tr:"Ücretsiz açılışların yarın yenilenir", en:"Your free opens renew tomorrow", de:"Freie Öffnungen morgen wieder da", es:"Tus aperturas gratis vuelven mañana", pt:"As aberturas gratuitas voltam amanhã", fr:"Ouvertures gratuites de retour demain", ja:"無料オープンは明日また使えます" },
-  title:  { tr:"Bugünkü ücretsiz hakların doldu", en:"Today's free opens are used up", de:"Deine freien Öffnungen für heute sind aufgebraucht", es:"Has usado tus aperturas gratis de hoy", pt:"Usaste as aberturas gratuitas de hoje", fr:"Tes ouvertures gratuites du jour sont utilisées", ja:"今日の無料オープンを使い切りました" },
   body:   { tr:"Bugün Sakin Ailesi'ni {t} kez kullandın. Yarın sabah yine {t} hakkın olacak.", en:"You've used the Sakin Family {t} times today. You'll have {t} again tomorrow morning.", de:"Du hast die Sakin-Familie heute {t}-mal genutzt. Morgen früh hast du wieder {t}.", es:"Hoy usaste la Familia Sakin {t} veces. Mañana por la mañana tendrás {t} de nuevo.", pt:"Hoje usaste a Família Sakin {t} vezes. Amanhã de manhã terás {t} de novo.", fr:"Tu as utilisé la Famille Sakin {t} fois aujourd'hui. Demain matin, tu en auras à nouveau {t}.", ja:"今日はSakinファミリーを{t}回使いました。明日の朝また{t}回使えます。" },
   perks:  { tr:["Sakin Ailesi uygulamalarına sınırsız giriş","15 ileri çakra ve üç kartlık tarot","Galaktik Kimlik yorumu ve haftalık rapor"],
             en:["Unlimited access to the Sakin Family apps","15 advanced chakras and the three-card tarot","Your Galactic ID reading and the weekly report"],
@@ -12002,18 +11999,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
               <div style={{ flex:1,textAlign:"center" }}>
                 <div style={{ fontSize:11,letterSpacing:5,color:"#888",textTransform:"uppercase",marginBottom:6 }}>{t("ailesi_title")}</div>
                 <div style={{ fontSize:22,fontWeight:300,letterSpacing:2,color:"#d0c0f0",fontFamily:"'Jost',sans-serif" }}>{t("ailesi_explore")}</div>
-                {/* Kalan ortak hak: sürpriz olmasın (premium'da gizli). */}
-                {!isPremium && (() => {
-                  const left = Math.max(0, AILESI_FREE_OPENS - ailesiOpensUsed());
-                  const txt = left > 0
-                    ? pickLang(AILESI_GATE_TXT.left, lang).replace("{n}", String(left)).replace("{t}", String(AILESI_FREE_OPENS))
-                    : pickLang(AILESI_GATE_TXT.none, lang).replace("{t}", String(AILESI_FREE_OPENS));
-                  return (
-                    <div style={{ display:"inline-block",marginTop:10,padding:"5px 12px",borderRadius:100,fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:0.8,
-                      color: left > 0 ? "#8fcfa6" : "#e8c07a", border:`1px solid ${left > 0 ? "rgba(143,207,166,0.35)" : "rgba(232,192,122,0.4)"}`,
-                      background: left > 0 ? "rgba(143,207,166,0.06)" : "rgba(232,192,122,0.06)" }}>{txt}</div>
-                  );
-                })()}
+                {/* Kalan hak rozeti ("Bugün 2/3 ücretsiz açılış") KALDIRILDI (kullanıcı:
+                    "kullanıcıyı tedirgin etmeye gerek yok"). Hak bitince yalnızca yumuşak kapı çıkar. */}
               </div>
               <div style={{ width:40,flex:"0 0 40px" }} />
             </div>
