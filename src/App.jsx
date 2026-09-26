@@ -318,44 +318,45 @@ const APP_VERSION = "1.4.2";
 const WHATS_NEW = {
   version: "1.4.2",
   // `since`: bu notların anlattığı özellikler hangi sürümde geldi. O sürümü
-  // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.2 yalnızca
-  // deep link ekliyor (görünmez), notlar 1.4.1'in; 1.4.0'dan doğrudan 1.4.2'ye
-  // geçen yine görür. Yeni görünür özellik gelince notları yaz, `since`i güncelle.
-  since: "1.4.1",
+  // (ya da sonrasını) zaten görmüş kullanıcıya kart TEKRAR çıkmaz. 1.4.2 notları
+  // 1.4.1'den SONRA gelen görünür özellikler: Çember, Niyet Mektubu, bildirim
+  // ayarları. Yeni görünür özellik gelince notları yaz, `since`i güncelle.
+  since: "1.4.2",
   // KISA TUT (kullanıcı tercihi, CLAUDE.md çalışma tarzı #3): başlık + en fazla
   // 3 madde. Değişen her şeyi saymak yerine sürümün "başlığı" ne ise onu söyle.
   headline: {
-    tr:"Yeni Bugün ekranı ve günün tarot kartı",
-    en:"A new Today screen and your daily tarot card",
-    de:"Ein neuer Heute-Bildschirm und deine Tarotkarte des Tages",
-    es:"Una nueva pantalla Hoy y tu carta de tarot del día",
-    pt:"Um novo ecrã Hoje e a tua carta de tarot do dia",
-    fr:"Un nouvel écran Aujourd'hui et ta carte de tarot du jour",
-    ja:"新しい「今日」画面と今日のタロットカード",
+    tr:"Çember ve Niyet Mektubu",
+    en:"The Circle and the Intention Letter",
+    de:"Der Kreis und der Absichtsbrief",
+    es:"El Círculo y la Carta de intención",
+    pt:"O Círculo e a Carta de intenção",
+    fr:"Le Cercle et la Lettre d'intention",
+    ja:"サークルと意図の手紙",
   },
   items: {
-    tr:["Bugün ekranı yenilendi: güncel geçiş, günün pusulası ve her sabah açacağın bir tarot kartı",
-        "Bağlan'da kelimeler, nefes, ses ve 7 temel çakra artık herkese ücretsiz",
-        "İçsel Harita her gün niyetini ve dünkü gökyüzünü kısa bir yansımaya dönüştürüyor"],
-    en:["A renewed Today screen: current transit, the daily compass and a tarot card to open every morning",
-        "Words, breath, sound and the 7 core chakras in Connect are now free for everyone",
-        "Inner Map turns your intention and yesterday's sky into a short daily reflection"],
-    de:["Ein erneuerter Heute-Bildschirm: aktueller Transit, der Kompass des Tages und eine Tarotkarte für jeden Morgen",
-        "Worte, Atem, Klang und die 7 Grundchakren in Verbinden sind jetzt für alle kostenlos",
-        "Die Innere Landkarte macht aus deiner Absicht und dem gestrigen Himmel eine kurze tägliche Reflexion"],
-    es:["Una pantalla Hoy renovada: tránsito actual, la brújula del día y una carta de tarot para abrir cada mañana",
-        "Las palabras, la respiración, el sonido y los 7 chakras básicos en Conectar ahora son gratis para todos",
-        "El Mapa Interior convierte tu intención y el cielo de ayer en una breve reflexión diaria"],
-    pt:["Um ecrã Hoje renovado: trânsito atual, a bússola do dia e uma carta de tarot para abrir todas as manhãs",
-        "As palavras, a respiração, o som e os 7 chakras básicos em Conectar agora são gratuitos para todos",
-        "O Mapa Interior transforma a tua intenção e o céu de ontem numa breve reflexão diária"],
-    fr:["Un écran Aujourd'hui renouvelé : transit actuel, la boussole du jour et une carte de tarot à ouvrir chaque matin",
-        "Les mots, le souffle, le son et les 7 chakras de base dans Se connecter sont désormais gratuits pour tous",
-        "La Carte Intérieure transforme ton intention et le ciel d'hier en une courte réflexion quotidienne"],
-    ja:["「今日」画面をリニューアル。現在のトランジット、今日の羅針盤、毎朝めくるタロットカード",
-        "「つながる」の言葉、呼吸、音、基本の7チャクラがすべて無料に",
-        "内なる地図が、あなたの意図と昨日の空を短い毎日のふりかえりに変えます"],
+    tr:["Çember: günün bağlantısını tamamlayanların buluştuğu canlı, sakin bir oda",
+        "Niyet Mektubu: niyetini yaz, 21 gün mühürlü kalsın, sonra açıp yeniden oku",
+        "Bildirimlerini kendin ayarla: günde kaç tane ve hangi türler"],
+    en:["The Circle: a calm live room for those who completed today's connection",
+        "Intention Letter: write your intention, keep it sealed for 21 days, then open it and read it again",
+        "Set your own notifications: how many a day and which kinds"],
+    de:["Der Kreis: ein ruhiger Live-Raum für alle, die die heutige Verbindung abgeschlossen haben",
+        "Absichtsbrief: schreib deine Absicht, sie bleibt 21 Tage versiegelt, dann öffnest du sie und liest sie neu",
+        "Stell deine Benachrichtigungen selbst ein: wie viele am Tag und welche Arten"],
+    es:["El Círculo: una sala en vivo y tranquila para quienes completaron la conexión de hoy",
+        "Carta de intención: escribe tu intención, queda sellada 21 días y luego la abres y la vuelves a leer",
+        "Ajusta tus notificaciones: cuántas al día y de qué tipo"],
+    pt:["O Círculo: uma sala ao vivo e tranquila para quem completou a ligação de hoje",
+        "Carta de intenção: escreve a tua intenção, fica selada 21 dias e depois abres e voltas a lê-la",
+        "Ajusta as tuas notificações: quantas por dia e de que tipo"],
+    fr:["Le Cercle : une salle en direct, paisible, pour celles et ceux qui ont terminé la connexion du jour",
+        "Lettre d'intention : écris ton intention, elle reste scellée 21 jours, puis tu l'ouvres et la relis",
+        "Règle tes notifications : combien par jour et de quel type"],
+    ja:["サークル：今日のつながりを終えた人が集う、静かなライブルーム",
+        "意図の手紙：意図を書いて21日間封をし、そのあと開いて読み返す",
+        "通知を自分で設定：1日の回数と種類"],
   },
+
 };
 // Tam (canonical) adres kullanılıyor: kısa /app/id... adresi /us/.../slug/...'a
 // 301 yönlendirme yapıyor, Instagram gibi uygulama-içi tarayıcılar bu

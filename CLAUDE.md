@@ -110,7 +110,7 @@ Bu dosya HER yeni Claude oturumunda otomatik okunur. Bu projenin kendine has kur
    - `ios/App/App.xcodeproj/project.pbxproj`: `MARKETING_VERSION` ve `CURRENT_PROJECT_VERSION` (her biri 2 occurrence)
    - `src/App.jsx`: `APP_VERSION` (~satır 14)
    - `android/app/build.gradle`: `versionCode` (artan tamsayı) ve `versionName`
-   - **CANLI (Eyl 2026): App Store `1.4.0` · Play Store `1.4.0` (`public/latest-ios-version.json`).** 1.4.1 App Store incelemesinde (Eyl 2026). Repoda hazırlanan: `1.4.2 / build 1`, Android `versionCode 19` (deep link için; 1.4.2 görünür özellik eklemediğinden `WHATS_NEW.since = "1.4.1"`: 1.4.1 kartını görmüş olana tekrar çıkmaz). `latest-ios-version.json` otomatik, ELLE bump etme.
+   - **CANLI (Eyl 2026): App Store `1.4.0` · Play Store `1.4.0` (`public/latest-ios-version.json`).** 1.4.1 App Store incelemesinde (Eyl 2026). Repoda hazırlanan: `1.4.2 / build 1`, Android `versionCode 19`. 1.4.2 = deep link + 1.4.1'den SONRA gelen görünür özellikler (Çember, Niyet Mektubu, bildirim ayarları, anlık mesajlar); "Ne yeni" kartı bunları anlatır, `WHATS_NEW.since = "1.4.2"`. `latest-ios-version.json` otomatik, ELLE bump etme.
    - ⚠️ **Sürüm bump'ında `WHATS_NEW.version` (src/App.jsx) da AYNI değere çekilmeli**, eşleşmezse "Ne yeni" kartı hiç görünmez (bayat not koruması).
    - ⚠️ **Play Console'a bir kez yüklenen `versionCode` KALICI OLARAK yanar**: reddedilse,
      silinse, taslak olarak kalsa bile o sayı bir daha ASLA kullanılamaz ("sürüm X kullanıldı"
