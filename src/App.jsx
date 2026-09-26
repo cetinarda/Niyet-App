@@ -870,13 +870,13 @@ const NOTIF_SET_TXT = {
 const PREMIUM_LIST_TXT = {
   premTitle: { tr:"Premium ile", en:"With Premium", de:"Mit Premium", es:"Con Premium", pt:"Com Premium", fr:"Avec Premium", ja:"プレミアムで" },
   prem: {
-    tr:["2. ve 3. seviyedeki 15 çakra","Üç kartlık tarot açılımı ve birleşik yorum","Haftalık kişisel rapor","Sakin Ailesi uygulamalarına sınırsız giriş (ücretsizde günde 3)","Fotoğrafla taş ve bitki tanıma","Günde 40 yapay zekâ yanıtı (ücretsizde 10)"],
-    en:["15 chakras on levels 2 and 3","Three-card tarot spread with a combined reading","Weekly personal report","Unlimited access to the Sakin Family apps (3 a day on free)","Identify stones and plants by photo","40 AI answers a day (10 on free)"],
-    de:["15 Chakren der Stufen 2 und 3","Tarot-Legung mit drei Karten und gemeinsamer Deutung","Wöchentlicher persönlicher Bericht","Unbegrenzter Zugang zu den Apps der Sakin-Familie (kostenlos 3 pro Tag)","Steine und Pflanzen per Foto erkennen","40 KI-Antworten pro Tag (kostenlos 10)"],
-    es:["15 chakras de los niveles 2 y 3","Tirada de tarot de tres cartas con lectura conjunta","Informe personal semanal","Acceso ilimitado a las apps de la Familia Sakin (3 al día en la versión gratuita)","Identificar piedras y plantas con una foto","40 respuestas de IA al día (10 en la versión gratuita)"],
-    pt:["15 chakras dos níveis 2 e 3","Tiragem de tarot de três cartas com leitura conjunta","Relatório pessoal semanal","Acesso ilimitado às apps da Família Sakin (3 por dia na versão gratuita)","Identificar pedras e plantas por fotografia","40 respostas de IA por dia (10 na versão gratuita)"],
-    fr:["15 chakras des niveaux 2 et 3","Tirage de tarot en trois cartes avec lecture d'ensemble","Rapport personnel hebdomadaire","Accès illimité aux apps de la Famille Sakin (3 par jour en gratuit)","Identifier pierres et plantes en photo","40 réponses IA par jour (10 en gratuit)"],
-    ja:["レベル2・3の15のチャクラ","3枚引きのタロットと総合リーディング","毎週のパーソナルレポート","Sakinファミリーのアプリを無制限に（無料は1日3回）","写真で石と植物を見分ける","AIの回答が1日40回（無料は10回）"],
+    tr:["Galaktik Kimliğinin yorumu: detaylı astrolojik harita çözümlemesi","2. ve 3. seviyedeki 15 çakra","Üç kartlık tarot açılımı ve birleşik yorum","Haftalık kişisel rapor","Sakin Ailesi uygulamalarına sınırsız giriş (ücretsizde günde 3)","Fotoğrafla taş ve bitki tanıma","Günde 40 yapay zekâ yanıtı (ücretsizde 10)"],
+    en:["Your Galactic ID interpreted: a detailed astrological chart reading","15 chakras on levels 2 and 3","Three-card tarot spread with a combined reading","Weekly personal report","Unlimited access to the Sakin Family apps (3 a day on free)","Identify stones and plants by photo","40 AI answers a day (10 on free)"],
+    de:["Deutung deiner Galaktischen ID: eine ausführliche astrologische Horoskopanalyse","15 Chakren der Stufen 2 und 3","Tarot-Legung mit drei Karten und gemeinsamer Deutung","Wöchentlicher persönlicher Bericht","Unbegrenzter Zugang zu den Apps der Sakin-Familie (kostenlos 3 pro Tag)","Steine und Pflanzen per Foto erkennen","40 KI-Antworten pro Tag (kostenlos 10)"],
+    es:["La interpretación de tu ID Galáctica: un análisis astrológico detallado de tu carta","15 chakras de los niveles 2 y 3","Tirada de tarot de tres cartas con lectura conjunta","Informe personal semanal","Acceso ilimitado a las apps de la Familia Sakin (3 al día en la versión gratuita)","Identificar piedras y plantas con una foto","40 respuestas de IA al día (10 en la versión gratuita)"],
+    pt:["A interpretação da tua ID Galáctica: uma análise astrológica detalhada do teu mapa","15 chakras dos níveis 2 e 3","Tiragem de tarot de três cartas com leitura conjunta","Relatório pessoal semanal","Acesso ilimitado às apps da Família Sakin (3 por dia na versão gratuita)","Identificar pedras e plantas por fotografia","40 respostas de IA por dia (10 na versão gratuita)"],
+    fr:["L'interprétation de ton ID Galactique : une analyse astrologique détaillée de ton thème","15 chakras des niveaux 2 et 3","Tirage de tarot en trois cartes avec lecture d'ensemble","Rapport personnel hebdomadaire","Accès illimité aux apps de la Famille Sakin (3 par jour en gratuit)","Identifier pierres et plantes en photo","40 réponses IA par jour (10 en gratuit)"],
+    ja:["ギャラクティックIDの解釈：出生図の詳しい占星術的読み解き","レベル2・3の15のチャクラ","3枚引きのタロットと総合リーディング","毎週のパーソナルレポート","Sakinファミリーのアプリを無制限に（無料は1日3回）","写真で石と植物を見分ける","AIの回答が1日40回（無料は10回）"],
   },
   freeTitle: { tr:"Herkese ücretsiz", en:"Free for everyone", de:"Für alle kostenlos", es:"Gratis para todos", pt:"Grátis para todos", fr:"Gratuit pour tous", ja:"誰でも無料" },
   free: {
@@ -1654,12 +1654,14 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
       })}
     </div>
     {notice && <div style={{ margin:"0 14px 6px",padding:"8px 12px",borderRadius:12,background:"rgba(255,255,255,0.05)",color:"#d6cfe6",fontFamily:INTER,fontSize:12.5,textAlign:"center" }}>{notice}</div>}
-    {/* Yazma alanı. 16 px: iOS odakta yakınlaştırmasın. */}
+    {/* Yazma alanı. 16 px: iOS odakta yakınlaştırmasın. Yavaş mod geri sayımı
+        YALNIZCA gönder düğmesinde (kullanıcı: iki yerde saymak yoruyor);
+        yazma alanı sakin kalır, beklerken de yazılabilir. */}
     <div style={{ padding:"8px 12px calc(10px + var(--sab))",borderTop:"1px solid rgba(184,164,216,0.12)",display:"flex",gap:8,alignItems:"flex-end",background:"rgba(7,6,13,0.85)" }}>
       <div style={{ flex:1,minWidth:0,position:"relative" }}>
         <textarea value={text} onChange={(e) => setText(e.target.value.slice(0, (conf && conf.cfg.maxLen) || 140))} rows={1}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
-          placeholder={secsLeft ? L(CEMBER_TXT.slow).replace("{s}", String(secsLeft)) : L(CEMBER_TXT.ph)}
+          placeholder={L(CEMBER_TXT.ph)}
           style={{ width:"100%",boxSizing:"border-box",resize:"none",padding:"11px 44px 11px 14px",borderRadius:20,outline:"none",
             fontFamily:INTER,fontSize:16,lineHeight:1.35,color:INK,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(184,164,216,0.22)",maxHeight:110 }} />
         <span style={{ position:"absolute",right:12,bottom:12,fontFamily:JOST,fontSize:10,color:"#6f6a80" }}>{text.length}/{(conf && conf.cfg.maxLen) || 140}</span>
@@ -2038,6 +2040,18 @@ function _localizeArr(enArr, trArr, transByLang, lang) {
 // Bu yüzden her kategori artık hangi ORİJİNAL indeksleri tuttuğunu `idx` ile
 // bildiriyor; çeviri o indeksten okunuyor. Böylece 5 dilin çevirileri yeniden
 // üretilmeden kısaltma yapılabildi. `idx` yoksa eski ci*4+qi davranışına düşer.
+// Ayna "Ne sorabilirim?" > Beden & Sağlık kategorisine eklenen iki soru
+// (kullanıcı isteği, Eyl 2026). SAMPLE_QUESTIONS dizisinde yer almadıkları için
+// 7 dil burada; Louise Hay rehberinde ikisinin de karşılığı var (sırt, mide).
+const AYNA_BODY_Q_EXTRA = {
+  tr:["Neden sürekli sırt ağrım var?","Mide problemlerimin sebebi ne?"],
+  en:["Why do I keep having back pain?","What is behind my stomach problems?"],
+  de:["Warum habe ich ständig Rückenschmerzen?","Was steckt hinter meinen Magenproblemen?"],
+  es:["¿Por qué tengo dolor de espalda constantemente?","¿Cuál es la causa de mis problemas de estómago?"],
+  pt:["Porque tenho sempre dores nas costas?","Qual é a causa dos meus problemas de estômago?"],
+  fr:["Pourquoi ai-je sans cesse mal au dos ?","Quelle est la cause de mes problèmes d'estomac ?"],
+  ja:["なぜいつも背中が痛むのだろう？","胃の不調の原因は何？"],
+};
 function _locSampleQ(lang, trArr, enArr) {
   if (lang === "tr") return trArr;
   const sq = NOTIF_TRANS && NOTIF_TRANS.SAMPLE_QUESTIONS && NOTIF_TRANS.SAMPLE_QUESTIONS[lang];
@@ -8502,11 +8516,13 @@ export default function SakinApp() {
   // kurulan yeni kullanıcı ilk günü tamamlayamazdı), "gun" (görev AI'dan geliyor,
   // ağ hatası/günlük limit adımı tıkayabilir), "ses"/"chakra" (süre şartı var).
   const EARLY_MANDALA_STEPS = ["sabah","nefes","rehber"];
-  const MANDALA_STEPS = isEarlyTunnel ? EARLY_MANDALA_STEPS : ALL_MANDALA_STEPS;
-  // Deneme dönemindeki kullanıcıya "şu an şart olmayan" adımlar (katlanır bölüm).
-  const OPTIONAL_STEPS = isEarlyTunnel
-    ? ALL_MANDALA_STEPS.filter(s => !EARLY_MANDALA_STEPS.includes(s))
-    : [];
+  // HERKES İÇİN 3 ADIM (kullanıcı kararı, Eyl 2026: "3 bağlantıdan sonra geniş
+  // moda geçmesin, her zaman temel 3 görev yeterli olsun"). Eskiden ilk 3
+  // tünelden sonra bağlantı 7 adıma çıkıyordu. Kalan 4 adım "Dilersen devam et"
+  // altında isteğe bağlı. `isEarlyTunnel` yalnızca yol seçimi ekranı ve
+  // STEP_MIN (yeni kullanıcıda yarı eşik) için kaldı.
+  const MANDALA_STEPS = EARLY_MANDALA_STEPS;
+  const OPTIONAL_STEPS = ALL_MANDALA_STEPS.filter(s => !EARLY_MANDALA_STEPS.includes(s));
   const completedStepCount = MANDALA_STEPS.filter(s => stepsCompleted[s]).length;
   // ADIM SAYACI (kullanıcı: "0 Güne başla, 1 sabah, 2 gün… ilerledikçe artsın; şu an
   // hep 0"). Sayaç artık TAMAMLAMA değil, bulunulan ekranın NAVİGASYON sırasını
@@ -10185,7 +10201,16 @@ ${facts}
     const var_ = (...k) => k.some(x => s.includes(x));
     if (var_("ağrı", "uyku", "uyuyam", "yorgun", "mide", "bel ", "boyun", "sırt", "cilt",
              "kilo", "hasta", "sindirim", "migren", "baş ağr", "kas ", "eklem", "regl",
-             "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı")) return "beden";
+             "adet", "tansiyon", "şişkin", "bağırsak", "boğaz", "öksür", "ateşim", "nefes darlığı",
+             // Diğer diller (örnek sorular + sık beden kelimeleri): sınıflandırıcı
+             // yalnızca Türkçe bakıyordu, tr dışı beden sorusuna Reiki/Louise Hay
+             // yönlendirmesi eksik kalıyordu.
+             "back pain", "stomach", "headache", "insomnia", "can't sleep", "fatigue", "tired",
+             "rücken", "magen", "kopfschmerz", "schlaf", "müde",
+             "espalda", "estómago", "dolor de cabeza", "insomnio", "cansad",
+             "costas", "estômago", "dor de cabeça", "insónia", "cansaç",
+             "mal au dos", "estomac", "migraine", "insomnie", "fatigu",
+             "背中", "腰痛", "胃", "頭痛", "眠れ", "疲れ")) return "beden";
     if (var_("kaygı", "anksiyete", "panik", "korku", "korkuyorum", "öfke", "kızgın", "sinir",
              "üzgün", "üzüntü", "depres", "mutsuz", "stres", "gergin", "huzursuz", "suçluluk",
              "utanç", "yalnız", "boşluk", "tükenmiş", "isteksiz", "motivasyon", "ağlıyorum",
@@ -10222,6 +10247,13 @@ ${facts}
     // kararı, Eyl 2026): "misyonum ne", "ne zaman geçer", "ayrılmalı mıyım"
     // sorularının sonuna sabit el pozisyonu tarifi eklemek cevabı jenerikleştiriyordu.
     const reikiAcik = soruTipi === "beden" || soruTipi === "duygu";
+    // BEDEN SORUSUNDA LOUISE HAY ZORUNLU (kullanıcı, Eyl 2026: "ilgili yerlerde
+    // Louise Hay zihinsel nedenler kitabından yararlandığına emin ol"). Rehber
+    // prompt'ta zaten var ama "kaynak bilgeliği ZORUNLU DEĞİL" satırı yüzünden
+    // model bazen atlıyordu. Beden tipinde açıkça isteniyor.
+    const louiseDirektif = soruTipi === "beden"
+      ? `\nBEDEN SORUSU: LOUISE HAY rehberinde bu şikâyete (bölge ya da duruma) karşılık gelen zihinsel/duygusal nedeni bul ve Ayna bölümünde bir iki cümleyle, kaynağını anarak (Louise Hay) kullan; uygun olumlamayı da ekle. Rehberde birebir madde yoksa en yakın ilgili maddeyi seç. Tıbbi teşhis koyma; şikâyet sürüyorsa bir uzmana görünmeyi nazikçe hatırlat.\n`
+      : "";
     const tipIpucu = `\nSORU TİPİ (kaba tahmin, yanılmış olabilir): ${soruTipi}. Katılıyorsan cevabı buna göre yapılandır, katılmıyorsan kendi okuduğunu esas al ve tahmini yok say.\n`;
     // Harita verisi TAM gönderilir, kullanıcı artık "ateş elementim düşük ne
     // demek", "draconic haritam ne söylüyor", "12. ev neden önemli" gibi doğrudan
@@ -10316,7 +10348,7 @@ Uygulama: Uygulamadan bir bölüm öner. Bölüm adını şu şekilde link olara
           // MAX_TOKENS_CEIL = 2000, 1800 onun altında rahat pay bırakır.
           max_tokens:1800, lang,
           system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}${aynaReasoningDirective(lang)}
-${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${louiseDirektif}${KITAP_BILGELIGI}`,
           ragQuery: sikayet,
           messages:[{ role:"user", content: userContent }],
         }),
@@ -10344,7 +10376,7 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
           body: JSON.stringify({
             max_tokens:1800, lang,
             system:`${buildMirrorSystemPrompt(lang, nextCreativeDomain(lang))}
-${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
+${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${louiseDirektif}${KITAP_BILGELIGI}`,
             ragQuery: sikayet,
             messages:[{ role:"user", content: userContent }],
           }),
@@ -10364,6 +10396,18 @@ ${kisiselProfil()}${kisiselBagiam}${sureklilik}${tipIpucu}${KITAP_BILGELIGI}`,
       sorguKaydet(ruyaModu ? "rüya" : "şikayet", sikayet);
     } catch(e) { setSikayetAnaliz(t("err_connection_prefix") + (e?.message || String(e))); console.error("SikayetAnaliz error:", e); }
   };
+  // YARIM KALAN SORUYU SÜRDÜR (kullanıcı, Eyl 2026): doğum bilgisi yokken sorulan
+  // soru "__needbirth__" davetinde bekler. Kullanıcı bilgisini girip Ayna'ya
+  // dönünce aynı soru KENDİLİĞİNDEN gönderilir; eskiden davet tekrar çıkıyor,
+  // geri deyip yeniden sormak gerekiyordu. Onay/günlük hak kapısı aynen işler.
+  const aynaResumeRef = useRef(false);
+  useEffect(() => {
+    if (sikayetAnaliz !== "__needbirth__") { aynaResumeRef.current = false; return; }
+    if (!birthDate || screen !== "rehber" || !sikayet.trim() || aynaResumeRef.current) return;
+    aynaResumeRef.current = true;
+    setSikayetAnaliz("");
+    requireAiConsent(generateSikayetAnaliz);
+  }, [birthDate, screen, sikayetAnaliz]);
 
   const generateRapor = async () => {
     let gunler; try { gunler = JSON.parse(localStorage.getItem("sakin_log")||"[]"); } catch { gunler = []; }
@@ -13726,17 +13770,7 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
           aksam:  {label:t("bnav_evening"),    color:"#7ab0e0", glow:"100,150,220"},
           rehber: {label:t("mirror_label"),    color:"#a070d0", glow:"160,112,208"},
         };
-        const steps = isEarlyTunnel
-          ? MANDALA_STEPS.map(id => ({ id, ...STEP_META[id] }))
-          : [
-          {id:"sabah",  label:t("bnav_morning"),  color:"#f0a060", glow:"255,140,60"},
-          {id:"nefes",  label:t("bnav_breath"),   color:"#60b8e8", glow:"80,160,220"},
-          {id:"ses",    label:t("bnav_sound"),    color:"#a07ae0", glow:"160,122,224"},
-          {id:"chakra", label:t("bnav_chakra"),   color:"#b87adc", glow:"180,100,255"},
-          {id:"gun",    label:t("bnav_day"),      color:"#e8d060", glow:"230,200,60"},
-          {id:"aksam",  label:t("bnav_evening"),  color:"#7ab0e0", glow:"100,150,220"},
-          {id:"harita", label:t("bnav_connection"), color:"#82d9a3", glow:"80,210,140"},
-        ];
+        const steps = MANDALA_STEPS.map(id => ({ id, ...STEP_META[id] }));
         // "x/N ADIM" sayacı BAĞLANTI adım sayısını (6) göstermeli, `steps` dizisi
         // omurga görselinde harita düğümünü de çizdiği için 7 elemanlı, onu kullanma.
         const N=MANDALA_STEPS.length;
@@ -14004,10 +14038,8 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                 <div style={{fontFamily:"'Jost',sans-serif",fontSize:14,color:"#ffd97a",letterSpacing:2.5,textTransform:"uppercase"}}>
                   {t("mandala_connection_active")}
                 </div>
-                <div style={{fontFamily:"'Jost',sans-serif",fontSize:11.5,letterSpacing:1.5,color:"#c8b878",marginTop:6}}>
-                  {t("mandala_streak")} {streakData.current} . L{streakLevel} . x{streakMultiplier}
-                  {nextLevelAt ? ` . ${nextLevelAt}` : ""}
-                </div>
+                {/* "Gün serisi 1 . L1 . x1 . 7" satırı KALDIRILDI (kullanıcı: "bir
+                    şey ifade etmiyor"). Seri Ben > İçsel Harita'da duruyor. */}
                 <button className="sakin-btn-primary" style={{marginTop:12,fontSize:13,letterSpacing:2,width:"100%"}}
                   onClick={()=>setScreen("sabah")}>
                   {t("mandala_continue_today")}
@@ -14067,7 +14099,11 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                       borderRadius: baglanOpen ? "14px 14px 0 0" : 14,
                       transition:"border-radius 0.2s"}}>
                     <span style={{fontSize:10,letterSpacing:2.5,color:"#777",textTransform:"uppercase",fontFamily:"'Jost',sans-serif"}}>
-                      {t("conn_today_title")} ({completedStepCount}/{MANDALA_STEPS.length})
+                      {/* Bağlantı kurulunca başlık "Dilersen devam et (3/7)" olur:
+                          kullanıcı 4 adım daha yapabileceğini buradan anlar. */}
+                      {allStepsComplete
+                        ? `${pickLang(OPTIONAL_STEPS_TXT, lang)} (${ALL_MANDALA_STEPS.filter(s => stepsCompleted[s]).length}/${ALL_MANDALA_STEPS.length})`
+                        : `${t("conn_today_title")} (${completedStepCount}/${MANDALA_STEPS.length})`}
                     </span>
                     <span style={{fontSize:10,color:"#555",transform:baglanOpen?"rotate(180deg)":"rotate(0)",transition:"transform 0.2s"}}>
                       ▾
@@ -14090,10 +14126,12 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           hissi oluşmasın. */}
                       {optReqs.length > 0 && (
                         <div style={{marginTop: allStepsComplete ? 0 : 4}}>
-                          <div style={{fontSize:9.5,letterSpacing:2,color:"#6a6478",textTransform:"uppercase",
-                            fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:7}}>
-                            {pickLang(OPTIONAL_STEPS_TXT, lang)}
-                          </div>
+                          {!allStepsComplete && (
+                            <div style={{fontSize:9.5,letterSpacing:2,color:"#6a6478",textTransform:"uppercase",
+                              fontFamily:"'Jost',sans-serif",textAlign:"center",marginBottom:7}}>
+                              {pickLang(OPTIONAL_STEPS_TXT, lang)}
+                            </div>
+                          )}
                           <div style={{display:"flex",flexWrap:"wrap",gap:6,justifyContent:"center"}}>
                             {optReqs.map(r => <StepChip key={r.id} r={r} dim />)}
                           </div>
@@ -14852,12 +14890,14 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                   {t("mirror_ask_heart")}
                 </div>
                 {/* Bağlan'daki Ayna adımının ne istediğini söyle (soru + cevap). */}
-                <div style={{ marginTop:10,fontFamily:"'Inter',sans-serif",fontSize:12,lineHeight:1.55,
-                  color: stepsCompleted["rehber"] ? "#82d9a3" : "#8e86a8",maxWidth:300,marginLeft:"auto",marginRight:"auto" }}>
-                  {stepsCompleted["rehber"]
-                    ? pickLang(AYNA_STEP_TXT.done, lang)
-                    : pickLang(AYNA_STEP_TXT.hint, lang).replace("{b}", pickLang(NEDIR_I18N.baglanT, lang))}
-                </div>
+                {/* Tamamlanınca "✓ Bugünkü Ayna adımın tamamlandı" YAZILMAZ (kullanıcı:
+                    "gerek yok, yoruyor"); ipucu yalnızca adım bekliyorken görünür. */}
+                {!stepsCompleted["rehber"] && (
+                  <div style={{ marginTop:10,fontFamily:"'Inter',sans-serif",fontSize:12,lineHeight:1.55,
+                    color:"#8e86a8",maxWidth:300,marginLeft:"auto",marginRight:"auto" }}>
+                    {pickLang(AYNA_STEP_TXT.hint, lang).replace("{b}", pickLang(NEDIR_I18N.baglanT, lang))}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -14913,11 +14953,6 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                     kurulum kimliği + olay adı gider, SORU VE CEVAP METNİ
                     GİTMEZ. Kullanıcı Ayarlar'dan analitiği kapattıysa hiçbir
                     şey gönderilmez, düğme yine de "teşekkürler" der. */}
-                {aynaCevapGecerli && stepsCompleted["rehber"] && (
-                  <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:0.6,color:"#82d9a3",marginBottom:10,fontFamily:"'Inter',sans-serif" }}>
-                    {pickLang(AYNA_STEP_TXT.done, lang)}
-                  </div>
-                )}
                 {!aynaCevapGecerli ? null : aynaGeriBildirim ? (
                   <div style={{ textAlign:"center",fontSize:11.5,letterSpacing:1.2,color:"#7c7590",marginBottom:16,fontFamily:"'Jost',sans-serif" }}>
                     {pickLang({tr:"Teşekkürler, not aldım.",en:"Thank you, noted.",de:"Danke, notiert.",es:"Gracias, anotado.",pt:"Obrigado, anotado.",fr:"Merci, c'est noté.",ja:"ありがとう、記録しました。"}, lang)}
@@ -15113,7 +15148,9 @@ of the day, what they wrote at evening close and YESTERDAY's sky. Rules:
                           "I'm changing jobs and feel deep anxiety. What might be the cause?",
                           "A new beginning is ahead but taking the first step feels heavy.",
                         ]},
-                      ])]).map(({cat,sorular})=>(
+                      ]).map(c => c.cat === t("ask_cat_body")
+                        ? { ...c, sorular:[...c.sorular, ...pickLang(AYNA_BODY_Q_EXTRA, lang)] } : c)
+                      ]).map(({cat,sorular})=>(
                         <div key={cat} style={{ marginBottom:14 }}>
                           <div style={{ fontSize:14,letterSpacing:2.5,color:"rgba(255,255,255,0.6)",marginBottom:8,fontFamily:"'Jost',sans-serif" }}>{cat.toLocaleUpperCase(lang)}</div>
                           {sorular.map(s=>(
