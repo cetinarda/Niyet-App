@@ -43,11 +43,16 @@ export default async (req, context) => {
   if (verdict === "ABUSE" || verdict === "SEXUAL") return json(headers, 200, { ok: false, reason: "abuse" });
   if (verdict === "SPAM") return json(headers, 200, { ok: false, reason: "spam" });
 
-  const ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation",
-    body: { room, nick: nickFor(h, room), body: text, device_hash: h } });
+  // `letter`: yazanın mühürlü Niyet Mektubu var mı (istemci söyler, yalnızca
+  // takma adın yanındaki küçük sandık ikonu için). Sütun henüz eklenmemişse
+  // (cember.sql sonundaki ALTER) ekleme sütunsuz tekrar denenir, sohbet durmaz.
+  const letter = b.letter === true;
+  const base = { room, nick: nickFor(h, room), body: text, device_hash: h };
+  let ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: { ...base, letter } });
+  if (!ins.ok && ins.status === 400) ins = await rest(cfg, "chat_messages", { method: "POST", prefer: "return=representation", body: base });
   const row = ins.ok && Array.isArray(ins.data) ? ins.data[0] : null;
   if (!row) return json(headers, 200, { ok: false, reason: "db" });
-  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h) };
+  const msg = { id: row.id, nick: row.nick, body: row.body, t: row.created_at, el: elementIndex(h), a: authorTag(h), l: row.letter === true ? 1 : 0 };
   await broadcast(cfg, `room:${room}`, "msg", msg);
 
   // Ara sıra eski mesajları temizle (48 saatten eski; oda zaten 24 saati gösterir).

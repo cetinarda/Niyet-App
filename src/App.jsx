@@ -998,9 +998,24 @@ const LETTER_TXT = {
   after:   { tr:"Kaydettin. Yeni bir niyete hazır olduğunda buradayız.", en:"Saved. We're here when you're ready for a new intention.", de:"Gespeichert. Wir sind da, wenn du bereit für eine neue Absicht bist.", es:"Guardado. Aquí estaremos cuando quieras escribir una nueva intención.", pt:"Guardado. Estamos aqui quando quiseres uma nova intenção.", fr:"Enregistré. Nous sommes là quand tu voudras une nouvelle intention.", ja:"記録しました。新しい意図の準備ができたら、いつでもどうぞ。" },
   newLetter:{ tr:"Yeni mektup yaz", en:"Write a new letter", de:"Neuen Brief schreiben", es:"Escribir una nueva carta", pt:"Escrever uma nova carta", fr:"Écrire une nouvelle lettre", ja:"新しい手紙を書く" },
   archive: { tr:"Önceki mektupların", en:"Your earlier letters", de:"Deine früheren Briefe", es:"Tus cartas anteriores", pt:"As tuas cartas anteriores", fr:"Tes lettres précédentes", ja:"これまでの手紙" },
+  // HEDİYE (kullanıcı, Eyl 2026: "kutu açılınca bir hediye gibi, motivasyon için
+  // bir havuç"): mühür açılınca mektupla birlikte YOLCULUĞUN KARTI çıkar.
+  giftTease:{ tr:"Mühür açıldığında seni küçük bir hediye bekliyor.", en:"A small gift awaits you when the seal opens.", de:"Wenn sich das Siegel öffnet, wartet ein kleines Geschenk auf dich.", es:"Cuando se abra el sello, te espera un pequeño regalo.", pt:"Quando o selo se abrir, espera-te um pequeno presente.", fr:"Quand le sceau s'ouvrira, un petit cadeau t'attend.", ja:"封がひらくとき、小さな贈り物が待っています。" },
+  giftReady:{ tr:"Hediyen de sandığın içinde.", en:"Your gift is inside the chest too.", de:"Dein Geschenk liegt auch in der Truhe.", es:"Tu regalo también está dentro del cofre.", pt:"O teu presente também está dentro do baú.", fr:"Ton cadeau est aussi dans le coffre.", ja:"贈り物も箱の中にあります。" },
+  giftHead: { tr:"Hediyen: yolculuğunun kartı", en:"Your gift: the card of your journey", de:"Dein Geschenk: die Karte deiner Reise", es:"Tu regalo: la carta de tu viaje", pt:"O teu presente: a carta da tua jornada", fr:"Ton cadeau : la carte de ton voyage", ja:"贈り物：あなたの旅のカード" },
+  giftNote: { tr:"Bu 21 günün sana bıraktığı işaret.", en:"The sign these 21 days leave you.", de:"Das Zeichen, das dir diese 21 Tage hinterlassen.", es:"La señal que te dejan estos 21 días.", pt:"O sinal que estes 21 dias te deixam.", fr:"Le signe que ces 21 jours te laissent.", ja:"この21日間があなたに残したしるし。" },
   notif:   { tr:"21 gün önce kendine bir niyet mektubu yazdın. Mektubun artık açılabilir.", en:"21 days ago you wrote yourself an intention letter. It's ready to open now.", de:"Vor 21 Tagen hast du dir einen Absichtsbrief geschrieben. Jetzt kannst du ihn öffnen.", es:"Hace 21 días te escribiste una carta de intención. Ya puedes abrirla.", pt:"Há 21 dias escreveste-te uma carta de intenção. Já a podes abrir.", fr:"Il y a 21 jours, tu t'es écrit une lettre d'intention. Tu peux l'ouvrir maintenant.", ja:"21日前、あなたは自分に意図の手紙を書きました。いま、ひらくことができます。" },
 };
 const LETTER_LOCALE = { tr:"tr-TR", en:"en-US", de:"de-DE", es:"es-ES", pt:"pt-PT", fr:"fr-FR", ja:"ja-JP" };
+// Hediye kartı havuzu: umut ve tamamlanma taşıyan Büyük Arkana kartları (Ölüm,
+// Kule, Şeytan gibi zorlu kartlar hediye olarak BİLEREK yok). Mektubun yazıldığı
+// ana göre sabit seçilir; açılışta `gift` alanına yazılır, arşivde de görünür.
+const LETTER_GIFT_POOL = ["tr_ma_00","tr_ma_01","tr_ma_03","tr_ma_06","tr_ma_08","tr_ma_09","tr_ma_10","tr_ma_14","tr_ma_17","tr_ma_19","tr_ma_20","tr_ma_21"];
+function letterGiftCard(l) {
+  if (!l) return null;
+  const id = l.gift || LETTER_GIFT_POOL[Math.abs(Math.floor((l.created || 0) / 1000)) % LETTER_GIFT_POOL.length];
+  return TAROT.find(c => c.id === id) || null;
+}
 function readLetterJson(k, fb) { try { const v = JSON.parse(localStorage.getItem(k) || "null"); return v == null ? fb : v; } catch (_) { return fb; } }
 // Açılış bildirimi: gece yarısı yazılan mektup gece yarısı çalmasın, 10:00-21:00 arasına çekilir.
 // Mektup mühürlendiğinde bildirim izni YOKSA açılış bildirimi hiç kurulmuyordu;
@@ -1149,7 +1164,7 @@ function NiyetMektubu({ lang }) {
       {showArchive && archive.slice().reverse().map((a, i) => (
         <div key={i} style={{ marginTop:10,padding:"10px 12px",borderRadius:12,background:"rgba(255,255,255,0.025)" }}>
           <div style={{ fontFamily:JOST,fontSize:10.5,letterSpacing:1.2,color:MUTE,marginBottom:5 }}>
-            {fmtDate(a.created)}{a.reflect && LETTER_TXT.choices[a.reflect] ? " · " + L(LETTER_TXT.choices[a.reflect]) : ""}
+            {fmtDate(a.created)}{a.reflect && LETTER_TXT.choices[a.reflect] ? " · " + L(LETTER_TXT.choices[a.reflect]) : ""}{a.openedAt && letterGiftCard(a) ? " · ✦ " + L(letterGiftCard(a).name) : ""}
           </div>
           <div style={{ fontFamily:SERIF,fontSize:16,lineHeight:1.5,color:BODY,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{a.text}</div>
         </div>
@@ -1233,6 +1248,7 @@ function NiyetMektubu({ lang }) {
         <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.sealedHead)}</div>
         <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.sealedBody)}</div>
         {letterChest(false)}
+        <div style={{ fontFamily:SERIF,fontStyle:"italic",fontSize:15.5,lineHeight:1.4,color:"#e9d4a4",textAlign:"center" }}>✦ {L(LETTER_TXT.giftTease)}</div>
         {/* 21 günlük yol: geçen her gün bir nokta dolar. */}
         <div style={{ display:"flex",justifyContent:"space-between",gap:2,marginTop:4 }}>
           {Array.from({ length: LETTER_DAYS }, (_, i) => (
@@ -1253,13 +1269,14 @@ function NiyetMektubu({ lang }) {
       {eyebrow}
       <div style={{ width:"100%" }}>{letterChest(true)}</div>
       <div style={{ fontFamily:SERIF,fontSize:22,lineHeight:1.25,color:INK }}>{L(LETTER_TXT.readyHead)}</div>
-      <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.readyBody)}</div>
+      <div style={{ fontFamily:INTER,fontSize:13,lineHeight:1.6,color:BODY }}>{L(LETTER_TXT.readyBody)} <span style={{ color:"#e9d4a4" }}>{L(LETTER_TXT.giftReady)}</span></div>
       <button onClick={()=>{
           try { haptic(); } catch (_) {} try { track("letter", { a:"open" }); } catch (_) {}
-          if (reduceMotion()) { save({ ...letter, openedAt: Date.now() }); return; }
+          const gift = (letterGiftCard(letter) || {}).id;
+          if (reduceMotion()) { save({ ...letter, openedAt: Date.now(), gift }); return; }
           setAnim("open");
           setTimeout(() => { try { haptic(); } catch (_) {} }, 900); // mühür çözülürken
-          setTimeout(() => { save({ ...letter, openedAt: Date.now() }); setAnim(null); }, 2600);
+          setTimeout(() => { save({ ...letter, openedAt: Date.now(), gift }); setAnim(null); }, 2600);
         }}
         style={primary}>{L(LETTER_TXT.open)}</button>
     </div>
@@ -1273,6 +1290,25 @@ function NiyetMektubu({ lang }) {
       <div style={{ padding:"16px 16px",borderRadius:12,background:"rgba(246,223,176,0.05)",borderLeft:`2px solid ${GOLD}` }}>
         <div style={{ fontFamily:SERIF,fontSize:19,lineHeight:1.55,color:INK,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{letter.text}</div>
       </div>
+      {(() => {
+        const gc = letterGiftCard(letter);
+        if (!gc) return null;
+        return (
+          <div style={{ display:"flex",gap:14,alignItems:"center",padding:"12px 12px",borderRadius:12,
+            background:"linear-gradient(160deg, rgba(232,192,122,0.1), rgba(107,90,168,0.06))",border:"1px solid rgba(232,192,122,0.28)",
+            animation:"lcGiftIn 0.7s ease 0.5s both" }}>
+            <img src={tarotImg(gc.id)} alt={L(gc.name)} draggable={false}
+              style={{ width:72,height:112,flexShrink:0,borderRadius:6,objectFit:"cover",boxShadow:"0 4px 16px rgba(0,0,0,0.5), 0 0 18px rgba(232,192,122,0.25)",
+                animation:"lcGiftFlip 1.1s cubic-bezier(.2,.7,.2,1) 0.7s both" }} />
+            <div style={{ display:"flex",flexDirection:"column",gap:4,minWidth:0 }}>
+              <div style={{ fontFamily:JOST,fontSize:10,letterSpacing:2,textTransform:"uppercase",color:GOLD }}>{L(LETTER_TXT.giftHead)}</div>
+              <div style={{ fontFamily:SERIF,fontSize:21,lineHeight:1.15,color:INK }}>{L(gc.name)}</div>
+              <div style={{ fontFamily:INTER,fontSize:12.5,lineHeight:1.5,color:BODY }}>{L(gc.upright)}</div>
+              <div style={{ fontFamily:INTER,fontSize:11.5,color:MUTE,fontStyle:"italic" }}>{L(LETTER_TXT.giftNote)}</div>
+            </div>
+          </div>
+        );
+      })()}
       {!letter.reflect ? (<>
         <div style={{ fontFamily:SERIF,fontSize:18,lineHeight:1.3,color:INK,marginTop:4 }}>{L(LETTER_TXT.ask)}</div>
         <div style={{ display:"flex",flexWrap:"wrap",gap:8 }}>
@@ -1329,6 +1365,7 @@ const CEMBER_TXT = {
   ph:      { tr:"Bir şey paylaş...", en:"Share something...", de:"Teile etwas...", es:"Comparte algo...", pt:"Partilha algo...", fr:"Partage un mot...", ja:"ひとこと..." },
   send:    { tr:"Gönder", en:"Send", de:"Senden", es:"Enviar", pt:"Enviar", fr:"Envoyer", ja:"送信" },
   you:     { tr:"sen", en:"you", de:"du", es:"tú", pt:"tu", fr:"toi", ja:"あなた" },
+  letterIc:{ tr:"Mühürlü bir niyet mektubu taşıyor", en:"Carries a sealed intention letter", de:"Trägt einen versiegelten Absichtsbrief", es:"Lleva una carta de intención sellada", pt:"Leva uma carta de intenção selada", fr:"Porte une lettre d'intention scellée", ja:"封をした意図の手紙を持っています" },
   locked:  { tr:"Bugünkü bağlantını tamamla, Çember açılsın.", en:"Complete today's connection to open the Circle.", de:"Schließe deine heutige Verbindung ab, dann öffnet sich der Kreis.", es:"Completa tu conexión de hoy y el Círculo se abrirá.", pt:"Completa a tua ligação de hoje e o Círculo abre-se.", fr:"Termine ta connexion du jour pour ouvrir le Cercle.", ja:"今日のつながりを完了するとサークルが開きます。" },
   lockedSub:{ tr:"Çember, günün pratiğini tamamlayanların buluştuğu sakin bir oda.", en:"The Circle is a calm room for those who completed the day's practice.", de:"Der Kreis ist ein ruhiger Raum für alle, die die Übung des Tages abgeschlossen haben.", es:"El Círculo es una sala tranquila para quienes completaron la práctica del día.", pt:"O Círculo é uma sala calma para quem concluiu a prática do dia.", fr:"Le Cercle est un salon paisible pour celles et ceux qui ont terminé la pratique du jour.", ja:"サークルは、その日のプラクティスを終えた人が集まる静かな部屋です。" },
   goBaglan:{ tr:"Bağlan'a git", en:"Go to Connect", de:"Zu „Verbinden“ gehen", es:"Ir a Conectar", pt:"Ir para Liga-te", fr:"Aller à Se relier", ja:"「つながる」へ" },
@@ -1509,7 +1546,9 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
     setSending(true);
     try {
       const r = await fetch(API_BASE + "/.netlify/functions/chat-send", { method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: conf.id, room, body }) });
+        // letter: mühürlü (henüz açılmamış) Niyet Mektubu var mı. Yalnızca bayrak;
+        // mektubun içeriği ASLA gönderilmez. Takma adın yanında küçük sandık ikonu.
+        body: JSON.stringify({ id: conf.id, room, body, letter: (() => { try { const l = JSON.parse(localStorage.getItem(LETTER_KEY) || "null"); return !!(l && !l.openedAt); } catch (_) { return false; } })() }) });
       const j = await r.json().catch(() => null);
       if (j && j.ok && j.msg) {
         setText("");
@@ -1637,7 +1676,18 @@ function CemberScreen({ lang, unlocked, onClose, onGoBaglan, onGoNefes }) {
                 background: mine ? "rgba(232,192,122,0.1)" : "rgba(255,255,255,0.04)",
                 border:`1px solid ${mine ? "rgba(232,192,122,0.25)" : "rgba(184,164,216,0.12)"}` }}>
               <div style={{ display:"flex",alignItems:"baseline",gap:8,marginBottom:3 }}>
-                <span style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col }}>{m.nick}{mine ? ` · ${L(CEMBER_TXT.you)}` : ""}</span>
+                <span style={{ fontFamily:JOST,fontSize:11.5,letterSpacing:0.4,color:col,display:"inline-flex",alignItems:"center",gap:4 }}>
+                  {m.nick}
+                  {m.l ? (
+                    <svg viewBox="0 0 14 12" width="12" height="10" role="img" aria-label={L(CEMBER_TXT.letterIc)} style={{ flexShrink:0 }}>
+                      <title>{L(CEMBER_TXT.letterIc)}</title>
+                      <path d="M1.5 5.2 L1.5 3.6 Q1.5 1 7 1 Q12.5 1 12.5 3.6 L12.5 5.2 Z" fill="#3b2f7a" stroke="#e8c07a" strokeWidth="0.9" />
+                      <rect x="1.5" y="5.2" width="11" height="5.6" rx="0.6" fill="#2a1f66" stroke="#e8c07a" strokeWidth="0.9" />
+                      <circle cx="7" cy="5.6" r="1.5" fill="#e0ac5a" />
+                    </svg>
+                  ) : null}
+                  {mine ? ` · ${L(CEMBER_TXT.you)}` : ""}
+                </span>
                 <span style={{ fontFamily:INTER,fontSize:10,color:"#6f6a80" }}>{fmtT(m.t)}</span>
               </div>
               <div style={{ fontFamily:INTER,fontSize:14.5,lineHeight:1.5,color:INK,whiteSpace:"pre-wrap",overflowWrap:"anywhere" }}>{m.body}</div>
@@ -3977,6 +4027,8 @@ const GLOBAL_CSS = `
   @keyframes lcLight     { 0%,42%{transform:scaleY(.15);opacity:0} 72%{transform:scaleY(1);opacity:.9} 100%{transform:scaleY(1.05);opacity:.55} }
   @keyframes lcLetterOut { 0%,52%{transform:translateY(18px) scale(.7);opacity:0} 70%{opacity:1} 100%{transform:translateY(-26px) scale(1);opacity:1} }
   @keyframes lcHint      { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:none} }
+  @keyframes lcGiftIn    { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:none} }
+  @keyframes lcGiftFlip  { 0%{transform:perspective(600px) rotateY(180deg);filter:brightness(1.6)} 60%{filter:brightness(1.25)} 100%{transform:perspective(600px) rotateY(0);filter:none} }
   @media (prefers-reduced-motion: reduce) { .lc-lid-seal,.lc-letter-seal,.lc-seal-seal,.lc-ring,.lc-lid-open,.lc-seal-open,.lc-light,.lc-letter-open { animation:none; } }
   @keyframes portalIn    { 0%{opacity:0;transform:scale(0.6) rotate(-8deg);filter:blur(18px) brightness(0.4)} 30%{opacity:0.75;transform:scale(0.88) rotate(-3deg);filter:blur(10px) brightness(0.8)} 65%{opacity:1;transform:scale(1.02) rotate(0deg);filter:blur(3px) brightness(1.1)} 100%{opacity:1;transform:scale(1);filter:blur(0) brightness(1)} }
   @keyframes portalRingPulse { 0%{transform:translate(-50%,-50%) scale(0.4);opacity:0.85} 100%{transform:translate(-50%,-50%) scale(3.2);opacity:0} }
@@ -8363,6 +8415,9 @@ export default function SakinApp() {
     try {
       const raw = localStorage.getItem("sakin_streak");
       const d = raw ? JSON.parse(raw) : { current: 0, best: 0, lastDate: null, badges: [] };
+      // Eksik/bozuk alan uygulamayı çökertmesin (badges yoksa bağlantı kurulunca
+      // "badges is not iterable" ile hata ekranı çıkıyordu).
+      if (d && !Array.isArray(d.badges)) d.badges = [];
       // `totalTunnels` 9 Eyl 2026'da eklendi. Ondan ÖNCEKİ kullanıcıda alan yok ve
       // 0 sayılıp deneyimli kullanıcı "yeni kullanıcı modu"na (3 adım) düşüyordu
       // (hata avı, Eyl 2026). Daha önce en az bir tünel bitirmiş eski kayıt
@@ -8615,7 +8670,7 @@ export default function SakinApp() {
       const isConsecutive = prev.lastDate === yesterday;
       const newCurrent = isConsecutive ? prev.current + 1 : 1;
       const newBest = Math.max(prev.best, newCurrent);
-      const newBadges = [...prev.badges];
+      const newBadges = [...(prev.badges || [])];
       [3,7,21,40].forEach(n => { if (newCurrent >= n && !newBadges.includes(n)) newBadges.push(n); });
       const newTotal = (prev.totalTunnels || 0) + 1;
       const next = { current: newCurrent, best: newBest, lastDate: todayKey, badges: newBadges, totalTunnels: newTotal };

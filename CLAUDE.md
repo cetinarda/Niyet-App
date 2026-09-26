@@ -339,6 +339,14 @@ YALNIZCA Ayarlar'ın GENEL > ÖDEME grubunda duruyorlar (tekrar yok).
 Dış UX raporunun önerileri **herkese değil, YALNIZCA yeni kullanıcıya** uygulandı
 ("test gibi olsun"). Kapı tek bir bayrak: `isEarlyTunnel` (src/App.jsx).
 
+⚠️ **GÜNCEL (Eyl 2026, kullanıcı: "3 bağlantıdan sonra geniş moda geçmesin, her
+zaman temel 3 görev yeterli"):** bağlantı artık HERKES için 3 adım
+(`MANDALA_STEPS = EARLY_MANDALA_STEPS`); kalan 4 adım her zaman "Dilersen devam et"
+altında. Bağlantı kurulunca katlanır bölümün başlığı "Dilersen devam et (x/7)" olur
+ve "Bağlantı aktif" kutusundaki "Gün serisi . L1 . x1 . 7" satırı KALDIRILDI.
+`isEarlyTunnel` yalnızca yol seçimi ekranı + `STEP_MIN` yarı eşik için duruyor.
+Aşağıdaki "ilk 3 tünel" anlatımı bu yüzden kısmen tarihsel.
+
 **Kapının tanımı ÖNEMLİ:** `tunnelsBeforeToday < 3`, yani BUGÜN tamamlanan tünel
 SAYILMAZ (`streakData.lastDate === todayKey` ise 1 düşülür).
 ⚠️ Neden: eskiden düz `totalTunnels < 3` idi. 3. tünel tamamlandığı ANDA sayaç
@@ -746,6 +754,16 @@ daha iyi iş görüyor"), geri koyma. Süre dolunca sandığın mührü parlar +
 - Açılış bildirimi (native, tek sefer): ID 9500, `scheduleLetterNotif`, 10:00-21:00
   arasına çekilir, İZİN İSTEMEZ (varsa kurar), hedef `harita`. Günlük 3 sınırının
   DIŞINDA (21 günde bir). `notifKind` → "mektup".
+- **HEDİYE (kullanıcı: "kutu açılınca bir hediye gibi, motivasyon için havuç"):**
+  mühürlüyken sandığın altında "Mühür açıldığında seni küçük bir hediye bekliyor",
+  açılınca mektubun altında YOLCULUĞUN KARTI (tarot görseli döner, ad + anlam).
+  `LETTER_GIFT_POOL`: yalnızca umut/tamamlanma taşıyan 12 Büyük Arkana (Ölüm/Kule/
+  Şeytan BİLEREK yok), mektubun `created` anına göre sabit, açılışta `gift` alanına
+  yazılır, arşivde de görünür.
+- **Çember'de sandık ikonu:** mühürlü (açılmamış) mektubu olanın mesajında takma
+  adın yanında küçük sandık. İstemci yalnızca `letter:true` bayrağı gönderir (metin
+  ASLA gitmez), sütun `chat_messages.letter` (cember.sql sonundaki ALTER; kullanıcı
+  SQL Editor'da çalıştırmalı). Sütun yoksa send/history sütunsuz tekrar dener.
 - Analitik `letter` {a: seal/open/reflect, r} (track.mjs beyaz listede, rapor
   "Seçimler"de). Metin 7 dilde `LETTER_TXT`.
 - **Yazarken ipucu** (kullanıcı, Eyl 2026): yazma kutusuna odaklanınca altın çizgili
@@ -1132,6 +1150,12 @@ Yani prompt değişikliği = App.jsx değişikliği = 4 branch'a sync.
 - **Ham veri sızıntısı (Eyl 2026):** "Güneş 64.6" gibi yorumlanmamış derece
   değeri metne girdi. Çözüm: ham sayı yasağı, veri ancak anlamına çevrilerek
   kullanılabilir.
+
+**YARIM SORU SÜRER (Eyl 2026):** doğum bilgisi yokken sorulan soru "__needbirth__"
+davetinde bekler; bilgi kaydedilip Ayna'ya dönülünce `aynaResumeRef` etkisi aynı
+soruyu kendiliğinden gönderir. Beden sorusunda `louiseDirektif` Louise Hay'in
+zihinsel nedenini açıkça ister; `aynaSoruTipi` beden kelimelerini 7 dilde tanır.
+"✓ Ayna adımın tamamlandı" yazıları kaldırıldı (kullanıcı: "yoruyor").
 
 **YAPILDI (Eyl 2026):**
 1. ✅ **Geri bildirim döngüsü.** ⚠️ **Eyl 2026'ya kadar OYLAR KAYBOLUYORDU:**

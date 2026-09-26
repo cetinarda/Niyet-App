@@ -66,3 +66,8 @@ drop policy if exists "cember_presence" on realtime.messages;
 create policy "cember_presence" on realtime.messages for insert to anon, authenticated
   with check ( (select realtime.topic()) in ('room:tr', 'room:global')
                and realtime.messages.extension = 'presence' );
+
+-- ── NİYET MEKTUBU İKONU (Eyl 2026) ───────────────────────────────────────────
+-- Mühürlü Niyet Mektubu olan kişinin mesajında takma adın yanında küçük sandık
+-- ikonu. Yalnızca bir evet/hayır bayrağı; mektubun içeriği ASLA sunucuya gitmez.
+alter table public.chat_messages add column if not exists letter boolean not null default false;

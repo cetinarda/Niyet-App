@@ -11,8 +11,11 @@ export default async (req) => {
   const room = new URL(req.url).searchParams.get("room");
   if (!ROOMS.includes(room)) return json(headers, 400, { ok: false });
   const since = new Date(Date.now() - HISTORY_HOURS * 3600e3).toISOString();
-  const r = await rest(cfg, `chat_messages?select=id,nick,body,created_at,device_hash&room=eq.${room}&hidden=is.false&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=80`);
+  const q = (cols) => rest(cfg, `chat_messages?select=${cols}&room=eq.${room}&hidden=is.false&created_at=gte.${encodeURIComponent(since)}&order=created_at.desc&limit=80`);
+  // `letter` sütunu (mühürlü Niyet Mektubu ikonu) yoksa onsuz tekrar sor.
+  let r = await q("id,nick,body,created_at,device_hash,letter");
+  if (!r.ok && r.status === 400) r = await q("id,nick,body,created_at,device_hash");
   if (!r.ok || !Array.isArray(r.data)) return json(headers, 200, { ok: false, reason: "db" });
-  const msgs = r.data.reverse().map((m) => ({ id: m.id, nick: m.nick, body: m.body, t: m.created_at, el: elementIndex(m.device_hash), a: authorTag(m.device_hash) }));
+  const msgs = r.data.reverse().map((m) => ({ id: m.id, nick: m.nick, body: m.body, t: m.created_at, el: elementIndex(m.device_hash), a: authorTag(m.device_hash), l: m.letter === true ? 1 : 0 }));
   return json(headers, 200, { ok: true, msgs });
 };
